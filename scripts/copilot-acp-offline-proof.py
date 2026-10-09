@@ -42,6 +42,10 @@ FAKE_ACCOUNT_REF = "github-account:betterthanclay"
 FAKE_MODEL_ID = "fake-github-hosted-model"
 FAKE_AUDIENCE = "copilot-api.fake.test"
 MAX_AUTH_FAKE_SECONDS = 5.0
+DISCOVERY_REQUEST_METHODS = frozenset({"initialize", "authenticate", "session/new"})
+DISCOVERY_METADATA_UPDATES = frozenset(
+    {"available_commands_update", "config_option_update", "current_mode_update"}
+)
 
 
 def utc_now() -> str:
@@ -235,9 +239,13 @@ def quote_profile_path(path: Path) -> str:
     return json.dumps(str(path.resolve()))
 
 
-def sandbox_profile(scratch: Path, host_home: Path) -> str:
+def sandbox_profile(
+    scratch: Path, host_home: Path, repository_root: Path = ROOT
+) -> str:
     scratch = scratch.resolve()
     host_home = host_home.resolve()
+    repository_root = repository_root.resolve()
+    isolated_home_helper = (ROOT / "scripts/run-with-isolated-home.sh").resolve()
     return " ".join(
         (
             "(version 1)",
@@ -248,10 +256,45 @@ def sandbox_profile(scratch: Path, host_home: Path) -> str:
             "(deny mach-lookup (global-name \"com.apple.securityd\"))",
             "(allow file-read*)",
             f"(deny file-read* (subpath {quote_profile_path(host_home)}))",
+            f"(deny file-read* (subpath {quote_profile_path(repository_root)}))",
+            f"(allow file-read* (literal {quote_profile_path(isolated_home_helper)}))",
             f"(allow file-write* (subpath {quote_profile_path(scratch)}))",
             "(deny network*)",
         )
     )
+
+
+def path_is_within(path: Path, root: Path) -> bool:
+    try:
+        return path.resolve(strict=False).is_relative_to(root.resolve(strict=False))
+    except (OSError, RuntimeError):
+        return False
+
+
+def discovery_request_allowed(method: str) -> bool:
+    return method in DISCOVERY_REQUEST_METHODS
+
+
+def discovery_callback_allowed(method: str, update_type: str | None = None) -> bool:
+    return method == "session/update" and update_type in DISCOVERY_METADATA_UPDATES
+
+
+def discovery_endpoint_allowed(origin: str, allowed_origins: set[str]) -> bool:
+    return origin in allowed_origins
+
+
+def discovery_budget_allowed(invocation_number: int, elapsed_seconds: float) -> bool:
+    return invocation_number == 1 and 0 <= elapsed_seconds <= 60.0
+
+
+def discovery_read_allowed(path: Path, host_home: Path, repository_root: Path) -> bool:
+    return not path_is_within(path, host_home) and not path_is_within(
+        path, repository_root
+    )
+
+
+def discovery_write_allowed(path: Path, scratch: Path) -> bool:
+    return path_is_within(path, scratch)
 
 
 def clean_child_environment(
@@ -329,6 +372,8 @@ def wait_for_response(
     request_id: int,
     evidence: dict[str, Any],
     timeout: float,
+    *,
+    discovery_mode: bool = False,
 ) -> dict[str, Any] | None:
     deadline = time.monotonic() + timeout
     while True:
@@ -346,6 +391,9 @@ def wait_for_response(
             return None
         method = message.get("method")
         if method == "session/request_permission":
+            if discovery_mode:
+                evidence["unexpected_discovery_callback"] = method
+                return None
             evidence["permission_request_observed"] = True
             evidence["permission_methods_observed"].append(method)
             params = message.get("params")
@@ -382,11 +430,18 @@ def wait_for_response(
                 evidence["permission_reply"] = "cancelled"
             continue
         if method == "session/update":
-            evidence["session_updates"] += 1
             update = message.get("params", {}).get("update", {})
+            update_type = update.get("sessionUpdate") if isinstance(update, dict) else None
+            if discovery_mode and not discovery_callback_allowed(method, update_type):
+                evidence["unexpected_discovery_callback"] = update_type or method
+                return None
+            evidence["session_updates"] += 1
             if update.get("sessionUpdate") == "tool_call":
                 evidence["tool_call_updates"] += 1
             continue
+        if discovery_mode and method is not None:
+            evidence["unexpected_discovery_callback"] = method
+            return None
         if message.get("id") == request_id:
             return message
         evidence["unexpected_messages"] += 1
@@ -509,6 +564,31 @@ fi
 denial=$(<"$keychain_denial")
 [[ "$denial" == *"Operation not permitted"* || "$denial" == *"Permission denied"* ]]
 
+for blocked_file in \
+  "$SWALLOWTAIL_BLOCKED_HOST_HOME/.copilot/config.json" \
+  "$SWALLOWTAIL_BLOCKED_HOST_HOME/.copilot/settings.json" \
+  "$SWALLOWTAIL_BLOCKED_REPOSITORY/README.md"; do
+  denial_file="$scratch/resource-read-denied-$(basename "$blocked_file").txt"
+  if (exec 3<"$blocked_file") 2>"$denial_file"; then
+    exit 33
+  fi
+  denial=$(<"$denial_file")
+  [[ "$denial" == *"Operation not permitted"* || "$denial" == *"Permission denied"* ]]
+done
+
+for blocked_file in \
+  "$SWALLOWTAIL_BLOCKED_HOST_HOME/.copilot/config.json" \
+  "$SWALLOWTAIL_BLOCKED_HOST_HOME/.copilot/settings.json" \
+  "$SWALLOWTAIL_BLOCKED_HOST_HOME/Library/Keychains/copilot-cli.fake" \
+  "$SWALLOWTAIL_BLOCKED_REPOSITORY/.swallowtail-write-probe"; do
+  denial_file="$scratch/resource-write-denied-$(basename "$blocked_file").txt"
+  if (printf 'must-not-write' >"$blocked_file") 2>"$denial_file"; then
+    exit 34
+  fi
+  denial=$(<"$denial_file")
+  [[ "$denial" == *"Operation not permitted"* || "$denial" == *"Permission denied"* ]]
+done
+
 record_has_pre_execution=false
 while IFS= read -r line; do
   if [[ "$line" == *'"artifact_execution_started": false'* ]]; then
@@ -600,6 +680,46 @@ report(permission_outcome="cancelled", pending_prompt=False, stop_reason="cancel
 '''
 
 
+FAKE_DISCOVERY_AGENT_SOURCE = r'''import hashlib, json, os, select, sys
+
+auth_fd = int(os.environ["SWALLOWTAIL_AUTH_FD"])
+credential = os.read(auth_fd, 128)
+os.close(auth_fd)
+if hashlib.sha256(credential).hexdigest() != "de9e245bec7a5380291b92667b75b0b789c8ce92bd2ce370e84f41f33d12af91":
+    raise SystemExit(91)
+if any(name in os.environ for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")):
+    raise SystemExit(92)
+
+def send(value):
+    sys.stdout.write(json.dumps(value, separators=(",", ":")) + "\n")
+    sys.stdout.flush()
+
+def read_line(timeout):
+    ready, _, _ = select.select([sys.stdin], [], [], timeout)
+    if not ready:
+        return None
+    line = sys.stdin.buffer.readline()
+    return json.loads(line) if line else None
+
+initialize = read_line(1.0)
+if not initialize or initialize.get("method") != "initialize":
+    raise SystemExit(93)
+send({"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentCapabilities":{},"authMethods":[{"id":"copilot-login","name":"Fake delegated auth"}],"agentInfo":{"name":"fake-copilot-discovery","version":"fake"}}})
+authenticate = read_line(1.0)
+if not authenticate or authenticate.get("method") != "authenticate":
+    raise SystemExit(94)
+if authenticate.get("params") != {"methodId":"copilot-login"}:
+    raise SystemExit(95)
+send({"jsonrpc":"2.0","id":2,"result":{}})
+session_new = read_line(1.0)
+if not session_new or session_new.get("method") != "session/new":
+    raise SystemExit(96)
+send({"jsonrpc":"2.0","id":3,"result":{"sessionId":"fake-discovery-session","models":{"currentModelId":"fake-auto","availableModels":[{"modelId":"fake-auto"},{"modelId":"fake-gpt-5.4"}]},"configOptions":[{"id":"model","currentValue":"fake-auto","options":[{"value":"fake-auto"},{"value":"fake-gpt-5.4"}]}]}})
+if read_line(1.0) is not None:
+    raise SystemExit(97)
+'''
+
+
 def fake_delegated_credential(context: dict[str, Any]) -> bytes | None:
     """Return a non-secret fake capability only for an exact synthetic grant."""
     if context != {
@@ -615,7 +735,97 @@ def fake_delegated_credential(context: dict[str, Any]) -> bytes | None:
     return FAKE_DELEGATED_CREDENTIAL
 
 
-def authenticated_fake_preflight() -> dict[str, Any]:
+def discovery_keychain_service_allowed(
+    service: str, approved_service: str
+) -> bool:
+    return bool(service) and service == approved_service
+
+
+def discovery_fake_preflight(
+    scratch: Path, host_home: Path, repository_root: Path
+) -> dict[str, Any]:
+    valid = {
+        "account_ref": FAKE_ACCOUNT_REF,
+        "entitlement": "confirmed-in-fake",
+        "model_id": FAKE_MODEL_ID,
+        "model_policy": "pinned-no-fallback",
+        "credential_request": "one-use-copilot-session",
+        "audience": FAKE_AUDIENCE,
+        "provider_traffic": [FAKE_AUDIENCE],
+    }
+    allowed_origins = {"https://github.fake.test", "https://copilot.fake.test"}
+    controls = {
+        "wrong_account": fake_delegated_credential(
+            {**valid, "account_ref": "github-account:other"}
+        ) is None,
+        "unapproved_endpoint": not discovery_endpoint_allowed(
+            "https://unapproved.fake.test", allowed_origins
+        ),
+        "prompt_request": not discovery_request_allowed("session/prompt"),
+        "config_write_rpc": not discovery_request_allowed(
+            "session/set_config_option"
+        ),
+        "permission_callback": not discovery_callback_allowed(
+            "session/request_permission"
+        ),
+        "tool_callback": not discovery_callback_allowed(
+            "session/update", "tool_call"
+        ),
+        "model_output_callback": not discovery_callback_allowed(
+            "session/update", "agent_message_chunk"
+        ),
+        "excess_invocation": not discovery_budget_allowed(2, 1.0),
+        "excess_time": not discovery_budget_allowed(1, 60.001),
+        "wrong_keychain_service": not discovery_keychain_service_allowed(
+            "other-service", "copilot-cli"
+        ),
+        "auth_config_write": not discovery_write_allowed(
+            host_home / ".copilot" / "config.json", scratch
+        )
+        and not discovery_write_allowed(
+            host_home / ".copilot" / "settings.json", scratch
+        ),
+        "keychain_write": not discovery_write_allowed(
+            host_home / "Library" / "Keychains" / "copilot-cli.fake", scratch
+        ),
+        "host_home_read_escape": not discovery_read_allowed(
+            host_home / ".copilot" / "config.json", host_home, repository_root
+        ),
+        "repository_read_escape": not discovery_read_allowed(
+            repository_root / "README.md", host_home, repository_root
+        ),
+    }
+    failed = [name for name, rejected in controls.items() if not rejected]
+    if failed:
+        raise RuntimeError(f"discovery fake admitted negative controls: {failed}")
+    if not all(
+        discovery_request_allowed(method)
+        for method in ("initialize", "authenticate", "session/new")
+    ):
+        raise RuntimeError("discovery fake rejected an allowed ACP operation")
+    if not discovery_endpoint_allowed(
+        "https://copilot.fake.test", allowed_origins
+    ):
+        raise RuntimeError("discovery fake rejected its exact synthetic endpoint")
+    if not discovery_budget_allowed(1, 60.0):
+        raise RuntimeError("discovery fake rejected the exact one-invocation budget")
+    if not discovery_write_allowed(scratch / "record.json", scratch):
+        raise RuntimeError("discovery fake rejected task-scratch writes")
+    if not discovery_keychain_service_allowed("copilot-cli", "copilot-cli"):
+        raise RuntimeError("discovery fake rejected its exact synthetic keychain service")
+    return {
+        "status": "passed",
+        "allowed_acp_requests": sorted(DISCOVERY_REQUEST_METHODS),
+        "allowed_synthetic_origins": sorted(allowed_origins),
+        "negative_controls": {
+            name: "rejected-before-original-start" for name in controls
+        },
+    }
+
+
+def authenticated_fake_preflight(
+    scratch: Path, host_home: Path, repository_root: Path
+) -> dict[str, Any]:
     valid = {
         "account_ref": FAKE_ACCOUNT_REF,
         "entitlement": "confirmed-in-fake",
@@ -654,6 +864,62 @@ def authenticated_fake_preflight() -> dict[str, Any]:
         "credential_transport": "one-use-inherited-pipe",
         "credential_environment_variables": "absent",
         "negative_controls": rejected,
+        "discovery_controls": discovery_fake_preflight(
+            scratch, host_home, repository_root
+        ),
+    }
+
+
+def discovery_session_observation(result: dict[str, Any]) -> dict[str, Any]:
+    def safe_model_id(value: Any) -> str | None:
+        if (
+            isinstance(value, str)
+            and 0 < len(value) <= 160
+            and re.fullmatch(r"[A-Za-z0-9._:/+-]+", value)
+        ):
+            return value
+        return None
+
+    models = result.get("models")
+    if not isinstance(models, dict):
+        models = {}
+    current_model_id = safe_model_id(models.get("currentModelId"))
+    available = models.get("availableModels", [])
+    model_ids = {
+        model_id
+        for model in available
+        if isinstance(model, dict)
+        for model_id in (safe_model_id(model.get("modelId")),)
+        if model_id is not None
+    } if isinstance(available, list) else set()
+    if current_model_id is not None:
+        model_ids.add(current_model_id)
+
+    model_config: dict[str, Any] | None = None
+    options = result.get("configOptions", [])
+    if isinstance(options, list):
+        for option in options:
+            if not isinstance(option, dict) or option.get("id") != "model":
+                continue
+            values = option.get("options", [])
+            value_ids = {
+                model_id
+                for item in values
+                if isinstance(item, dict)
+                for model_id in (safe_model_id(item.get("value")),)
+                if model_id is not None
+            } if isinstance(values, list) else set()
+            model_config = {
+                "option_id": "model",
+                "current_value": safe_model_id(option.get("currentValue")),
+                "available_values": sorted(value_ids),
+            }
+            model_ids.update(value_ids)
+            break
+    return {
+        "current_model_id": current_model_id,
+        "available_model_ids": sorted(model_ids),
+        "model_config_option": model_config,
     }
 
 
@@ -668,9 +934,13 @@ def launch_acp(
     delegated_credential: bytes | None = None,
     authenticate_method_id: str | None = None,
     run_timeout_seconds: float = RUN_TIMEOUT_SECONDS,
+    mode: str = "permission-proof",
+    repository_root: Path = ROOT,
 ) -> dict[str, Any]:
     if not command or Path(command[0]) != executable:
         raise ValueError("the launched executable must match the selected artifact")
+    if mode not in {"permission-proof", "pre-prompt-discovery"}:
+        raise ValueError("unknown Copilot ACP harness mode")
     scratch.mkdir(parents=True, exist_ok=True)
     marker = scratch / "permission-effect-marker"
     if marker.exists():
@@ -699,9 +969,10 @@ def launch_acp(
             "SWALLOWTAIL_EXPECTED_HOME": env["HOME"],
             "SWALLOWTAIL_RECORD_PATH": str(record_path.resolve()),
             "SWALLOWTAIL_EFFECT_MARKER": str(marker),
+            "SWALLOWTAIL_BLOCKED_REPOSITORY": str(repository_root.resolve()),
         }
     )
-    profile = sandbox_profile(scratch, host_home)
+    profile = sandbox_profile(scratch, host_home, repository_root)
     argv = launch_command(profile, command, env)
     started = utc_now()
     try:
@@ -753,8 +1024,15 @@ def launch_acp(
             name in env for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")
         )
         evidence["effect_marker_absent_before_prompt"] = not marker.exists()
+
+    def send_request(method: str, request: dict[str, Any]) -> None:
+        if mode == "pre-prompt-discovery" and not discovery_request_allowed(method):
+            raise RuntimeError(f"discovery operation is not permitted: {method}")
+        client.send(request)
+
     try:
-        client.send(
+        send_request(
+            "initialize",
             {
                 "jsonrpc": "2.0",
                 "id": 1,
@@ -762,7 +1040,13 @@ def launch_acp(
                 "params": {"protocolVersion": 1, "clientCapabilities": {}},
             }
         )
-        response = wait_for_response(client, 1, evidence, READ_TIMEOUT_SECONDS)
+        response = wait_for_response(
+            client,
+            1,
+            evidence,
+            READ_TIMEOUT_SECONDS,
+            discovery_mode=mode == "pre-prompt-discovery",
+        )
         if response is None:
             evidence["initialize"] = "no-result"
             return evidence
@@ -785,7 +1069,8 @@ def launch_acp(
                 evidence["authenticate"] = "advertised-method-missing"
                 return evidence
             evidence["authenticate_method_selected"] = authenticate_method_id
-            client.send(
+            send_request(
+                "authenticate",
                 {
                     "jsonrpc": "2.0",
                     "id": next_request_id,
@@ -794,7 +1079,11 @@ def launch_acp(
                 }
             )
             response = wait_for_response(
-                client, next_request_id, evidence, READ_TIMEOUT_SECONDS
+                client,
+                next_request_id,
+                evidence,
+                READ_TIMEOUT_SECONDS,
+                discovery_mode=mode == "pre-prompt-discovery",
             )
             if response is None:
                 evidence["authenticate"] = "no-result"
@@ -808,7 +1097,8 @@ def launch_acp(
             evidence["authenticate"] = "success"
             next_request_id += 1
 
-        client.send(
+        send_request(
+            "session/new",
             {
                 "jsonrpc": "2.0",
                 "id": next_request_id,
@@ -817,7 +1107,11 @@ def launch_acp(
             }
         )
         response = wait_for_response(
-            client, next_request_id, evidence, READ_TIMEOUT_SECONDS
+            client,
+            next_request_id,
+            evidence,
+            READ_TIMEOUT_SECONDS,
+            discovery_mode=mode == "pre-prompt-discovery",
         )
         if response is None:
             evidence["session_new"] = "no-result"
@@ -835,10 +1129,17 @@ def launch_acp(
         if not isinstance(session_id, str):
             evidence["session_new"] = "result-without-session-id"
             return evidence
+        if mode == "pre-prompt-discovery":
+            evidence["session_prompt"] = "not-authorized-not-sent"
+            evidence["discovery_observation"] = discovery_session_observation(
+                response["result"]
+            )
+            return evidence
         prompt_request_id = next_request_id + 1
 
         marker_prompt = f"Run the tool needed to create this empty marker file, then stop: {marker}"
-        client.send(
+        send_request(
+            "session/prompt",
             {
                 "jsonrpc": "2.0",
                 "id": prompt_request_id,
@@ -855,7 +1156,8 @@ def launch_acp(
         )
         if response is None:
             try:
-                client.send(
+                send_request(
+                    "session/cancel",
                     {
                         "jsonrpc": "2.0",
                         "method": "session/cancel",
@@ -971,9 +1273,9 @@ def validate_fake_invocation_record(record: dict[str, Any]) -> None:
 
 
 def authenticated_fake_run(
-    scratch: Path, host_home: Path
-) -> tuple[dict[str, Any], dict[str, Any]]:
-    preflight = authenticated_fake_preflight()
+    scratch: Path, host_home: Path, repository_root: Path
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    preflight = authenticated_fake_preflight(scratch, host_home, repository_root)
     credential = fake_delegated_credential(
         {
             "account_ref": FAKE_ACCOUNT_REF,
@@ -1049,6 +1351,7 @@ def authenticated_fake_run(
         delegated_credential=credential,
         authenticate_method_id="copilot-login",
         run_timeout_seconds=0.25,
+        repository_root=repository_root,
     )
     elapsed = time.monotonic() - started
     diagnostics = [
@@ -1135,15 +1438,172 @@ def authenticated_fake_run(
     write_json_durable(record_path, record)
     persisted = load_json(record_path)
     validate_fake_invocation_record(persisted)
-    return preflight, persisted["result"]
+    discovery_result = discovery_fake_run(
+        scratch, host_home, repository_root, credential
+    )
+    return preflight, persisted["result"], discovery_result
+
+
+def validate_fake_discovery_record(record: dict[str, Any]) -> None:
+    if (
+        record.get("schema") != "copilot-cli-acp-authenticated-invocation.v1"
+        or record.get("execution_kind") != "fake_control"
+        or record.get("original_artifact_started") is not False
+        or record.get("pre_execution_fsynced") is not True
+    ):
+        raise ValueError("discovery fake record is not a durable fake-only control")
+    pre_execution = record.get("pre_execution_record")
+    result = record.get("result")
+    if not isinstance(pre_execution, dict) or not isinstance(result, dict):
+        raise ValueError("discovery fake record is missing its plan or result")
+    expected = json_digest(pre_execution)
+    if record.get("pre_execution_sha256") != expected:
+        raise ValueError("discovery fake result is not bound to its pre-execution plan")
+    if result.get("pre_execution_record_sha256") != expected:
+        raise ValueError("discovery fake result is not correlated to its plan")
+    if result.get("outbound_methods") != ["initialize", "authenticate", "session/new"]:
+        raise ValueError("discovery fake used an unapproved ACP operation")
+    if result.get("prompt_requests") != 0:
+        raise ValueError("discovery fake sent a prompt")
+    if result.get("permission_callbacks") != 0 or result.get("tool_callbacks") != 0:
+        raise ValueError("discovery fake observed a permission or tool callback")
+    if result.get("effect_marker_absent_after_close") is not True:
+        raise ValueError("discovery fake produced an action effect")
+    serialized = json.dumps(record, sort_keys=True)
+    for forbidden in (
+        "/Users/",
+        "/home/",
+        "test-only-delegated-capability",
+        "github_pat_",
+        "ghp_",
+        "gho_",
+        "ghs_",
+        "xoxb-",
+        "Bearer ",
+    ):
+        if forbidden in serialized:
+            raise ValueError(f"discovery fake record contains forbidden marker {forbidden!r}")
+
+
+def discovery_fake_run(
+    scratch: Path,
+    host_home: Path,
+    repository_root: Path,
+    credential: bytes,
+) -> dict[str, Any]:
+    discovery_scratch = scratch / "authenticated-discovery-fake"
+    discovery_scratch.mkdir()
+    record_path = discovery_scratch / "discovery-invocation.json"
+    pre_execution = {
+        "target_identity": {
+            "kind": "fake-acp-discovery-agent",
+            "source_sha256": hashlib.sha256(
+                FAKE_DISCOVERY_AGENT_SOURCE.encode()
+            ).hexdigest(),
+        },
+        "account_access_ref": FAKE_ACCOUNT_REF,
+        "credential_mechanism": "fake-host-broker-one-use-inherited-pipe",
+        "allowed_acp_requests": sorted(DISCOVERY_REQUEST_METHODS),
+        "endpoint_allowlist": [
+            "https://github.fake.test",
+            "https://copilot.fake.test",
+        ],
+        "containment": "deny-network-host-home-repository-and-keychain; scratch-writes-only",
+        "budgets": {"invocations": 1, "seconds": 60, "prompts": 0},
+    }
+    digest = json_digest(pre_execution)
+    record = {
+        "schema": "copilot-cli-acp-authenticated-invocation.v1",
+        "execution_kind": "fake_control",
+        "original_artifact_started": False,
+        "pre_execution_fsynced": True,
+        "pre_execution_sha256": digest,
+        "pre_execution_record": pre_execution,
+        "result": None,
+    }
+    write_json_durable(record_path, record)
+    if load_json(record_path) != record:
+        raise RuntimeError("discovery fake plan was not durable before child start")
+
+    started = time.monotonic()
+    outcome = launch_acp(
+        Path(sys.executable),
+        [sys.executable, "-c", FAKE_DISCOVERY_AGENT_SOURCE],
+        discovery_scratch,
+        host_home,
+        record_path,
+        None,
+        delegated_credential=credential,
+        authenticate_method_id="copilot-login",
+        mode="pre-prompt-discovery",
+        repository_root=repository_root,
+    )
+    elapsed = time.monotonic() - started
+    if (
+        outcome.get("initialize") != "success"
+        or outcome.get("authenticate") != "success"
+        or outcome.get("session_new") != "success"
+    ):
+        raise RuntimeError("discovery fake did not complete initialize/authenticate/session-new")
+    if outcome.get("session_prompt") != "not-authorized-not-sent":
+        raise RuntimeError("discovery fake did not stop before session/prompt")
+    observation = outcome.get("discovery_observation")
+    if not isinstance(observation, dict) or observation.get("available_model_ids") != [
+        "fake-auto",
+        "fake-gpt-5.4",
+    ]:
+        raise RuntimeError("discovery fake did not retain its synthetic model identifiers")
+    if observation.get("current_model_id") != "fake-auto":
+        raise RuntimeError("discovery fake did not retain its synthetic current model")
+    if observation.get("model_config_option") != {
+        "option_id": "model",
+        "current_value": "fake-auto",
+        "available_values": ["fake-auto", "fake-gpt-5.4"],
+    }:
+        raise RuntimeError("discovery fake did not retain its synthetic model config surface")
+    if outcome.get("permission_request_observed") or outcome.get("tool_call_updates"):
+        raise RuntimeError("discovery fake observed a permission or tool effect")
+    if outcome.get("effect_marker_present") or not outcome.get("process_joined"):
+        raise RuntimeError("discovery fake did not close cleanly without an effect")
+    if outcome.get("forced_process_group_kill") or elapsed > MAX_AUTH_FAKE_SECONDS:
+        raise RuntimeError("discovery fake exceeded its joined cleanup budget")
+
+    record["result"] = {
+        "pre_execution_record_sha256": digest,
+        "outbound_methods": ["initialize", "authenticate", "session/new"],
+        "prompt_requests": 0,
+        "permission_callbacks": 0,
+        "tool_callbacks": 0,
+        "model_observation": observation,
+        "effect_marker_absent_after_close": not outcome["effect_marker_present"],
+        "process_joined": outcome["process_joined"],
+        "elapsed_seconds": round(elapsed, 3),
+    }
+    write_json_durable(record_path, record)
+    validate_fake_discovery_record(load_json(record_path))
+    return record["result"]
 
 
 def self_test() -> dict[str, Any]:
     fake_shell = require_macos_sandbox()
     plan = validate_authenticated_plan()
-    host_home = Path(os.environ["HOME"]).resolve()
     with tempfile.TemporaryDirectory(prefix="copilot-acp-offline-proof-") as temp_root:
-        scratch = Path(temp_root).resolve()
+        task_root = Path(temp_root).resolve()
+        scratch = task_root / "task-scratch"
+        scratch.mkdir()
+        host_home = task_root / "fake-host-home"
+        (host_home / ".copilot").mkdir(parents=True)
+        (host_home / "Library" / "Keychains").mkdir(parents=True)
+        repository_root = task_root / "fake-repository"
+        repository_root.mkdir()
+        for path, contents in (
+            (host_home / ".copilot" / "config.json", b"fake config\n"),
+            (host_home / ".copilot" / "settings.json", b"fake settings\n"),
+            (host_home / "Library" / "Keychains" / "login.keychain-db", b"fake keychain\n"),
+            (host_home / "Library" / "Keychains" / "copilot-cli.fake", b"fake item\n"),
+            (repository_root / "README.md", b"fake repository\n"),
+        ):
+            path.write_bytes(contents)
         record_path = scratch / "pre-execution-record.json"
         record = {
             "schema": "copilot-cli-acp-offline-execution-record.v1",
@@ -1156,13 +1616,15 @@ def self_test() -> dict[str, Any]:
         fake_path = scratch / "fake-copilot-acp.py"
         fake_path.write_text(FAKE_AGENT_SOURCE)
         fake_path.chmod(0o700)
-        profile = sandbox_profile(scratch, host_home)
+        profile = sandbox_profile(scratch, host_home, repository_root)
         if "(deny network*)" not in profile or "(allow network" in profile:
             raise RuntimeError("sandbox profile does not deny every network operation")
         if f"(allow file-write* (subpath {quote_profile_path(scratch)}))" not in profile:
             raise RuntimeError("sandbox profile does not bind writes to task scratch")
         if f"(deny file-read* (subpath {quote_profile_path(host_home)}))" not in profile:
             raise RuntimeError("sandbox profile does not deny the host home")
+        if f"(deny file-read* (subpath {quote_profile_path(repository_root)}))" not in profile:
+            raise RuntimeError("sandbox profile does not deny the task repository")
         outcome = launch_acp(
             Path(fake_shell),
             [fake_shell, str(fake_path)],
@@ -1170,6 +1632,7 @@ def self_test() -> dict[str, Any]:
             host_home,
             record_path,
             None,
+            repository_root=repository_root,
         )
         if outcome.get("initialize") != "success":
             raise RuntimeError("fake ACP initialize did not complete")
@@ -1193,11 +1656,13 @@ def self_test() -> dict[str, Any]:
             or not outcome.get("process_joined")
         ):
             raise RuntimeError("fake ACP agent did not exit cleanly")
-        auth_preflight, auth_result = authenticated_fake_run(scratch, host_home)
+        auth_preflight, auth_result, discovery_result = authenticated_fake_run(
+            scratch, host_home, repository_root
+        )
         return {
             "status": "passed",
             "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
-            "filesystem_boundary": "writes allowed only inside task scratch; host home read denied",
+            "filesystem_boundary": "writes allowed only inside task scratch; fake host home and repository reads denied",
             "keychain_boundary": "securityd Mach lookup denied by profile",
             "record_before_execution": True,
             "authenticated_plan": {
@@ -1220,6 +1685,7 @@ def self_test() -> dict[str, Any]:
             },
             "authenticated_fake_preflight": auth_preflight,
             "authenticated_fake_result": auth_result,
+            "authenticated_fake_discovery_result": discovery_result,
         }
 
 

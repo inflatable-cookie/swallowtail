@@ -51,6 +51,12 @@ that the frozen artifacts can accept delegated authentication, select Auto,
 bound retries, or expose the selected model. The proof stays disabled until
 those exact prerequisites are reviewed.
 
+[Research 426](../research/426-copilot-acp-pre-prompt-discovery-stop.md)
+records a fake-only pre-prompt discovery gate and a stop before original
+artifact start. Current official docs do not bind the frozen versions'
+Keychain item, complete authentication/model endpoint set, or a prompt-free
+model catalogue. No authenticated observation or route claim changed.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

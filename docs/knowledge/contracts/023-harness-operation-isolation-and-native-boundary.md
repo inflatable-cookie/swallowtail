@@ -445,6 +445,12 @@ prompt attempts, establish permission/no-effect behavior, qualify a route or
 authorize its later prompt continuation. Preserve the current exact `1.0.80`
 claim until those independent gates are closed.
 
+[Research 426](../../research/426-copilot-acp-pre-prompt-discovery-stop.md)
+records the fake-only pre-prompt controls and a finite stop before original
+start. The frozen artifacts' exact Keychain item, endpoint set, and prompt-free
+model catalogue remain unproved; no authenticated observation or claim change
+follows.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

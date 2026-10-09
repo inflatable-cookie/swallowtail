@@ -132,13 +132,22 @@ process ownership and cleanup, transports, adapters, paths and environment,
 packaging and consumer preparation, with architecture-specific evidence and
 explicitly documented route limits before any Windows claim.
 
-The Antigravity Windows proof and newer headless qualification are deferred
-from the currentness minor release gate into that later effort. Preserve existing
-exact qualified points, exclusions, retry settings and retained evidence; this
-ruling adds no Windows claim and waives no qualification proof. Missing resource,
-retry, authentication and native x64 evidence remain unresolved. Future scoped
-briefs require the approved environments and execution authority before work;
-this scheduling ruling grants no VM action or provider execution.
+Tom subsequently ruled on 2026-10-09: “Can we complete the antigravity work
+without the windows component of it? Remove windows from the requirements so
+we can return to it later? I'll look into copilot” (decision
+`560bf22e-10b5-4fbf-96ab-c3154b1ec20f`). This lifts the whole Antigravity task
+deferral: its non-Windows work may continue, while Windows proof remains in the
+later whole-codebase sweep and is not a requirement for that task's completion.
+
+Preserve existing exact qualified points, exclusions, retry settings and
+retained evidence. This scope change adds no Windows claim and waives no
+non-Windows proof: resource, retry, authentication and platform-specific
+control-flow gaps must be settled before corresponding qualification. An
+independently reviewed finite evidence result may identify the next exact proof
+without increasing an unproved claim. Keep that follow-up explicit; task
+completion is not qualification. Future execution still requires the approved
+environment and authority. No VM action or provider execution follows from this
+scheduling ruling.
 
 ## Dependency Topology
 

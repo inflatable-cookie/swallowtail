@@ -263,9 +263,10 @@ needs return separately. No Antigravity live usage is authorized.
 
 The later 2026-10-09 Windows scheduling ruling in
 [Contract 036](036-crate-release-and-compatibility-boundary.md#windows-compatibility-qualification)
-defers this provider-specific proof to the whole-codebase Windows sweep at a
-time Tom chooses. The authority below records the original bounded scope; it
-is not a current dispatch instruction. No original VM shutdown, clone setup or
+defers this provider-specific Windows proof to the whole-codebase Windows
+sweep at a time Tom chooses. The subsequent ruling resumes the non-Windows
+Antigravity work without this proof as its completion requirement. The authority
+below records the original Windows scope; it is not a current dispatch instruction. No original VM shutdown, clone setup or
 artifact execution follows from the scheduling ruling. Reuse retained evidence
 when the future sweep is explicitly scoped.
 

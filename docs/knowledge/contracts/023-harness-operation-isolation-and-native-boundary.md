@@ -377,6 +377,18 @@ controller/request/event flows and cancellation, stop, join, drain and cleanup
 against the existing selected transport and method boundary. Separate known
 source/control flow from missing owner or runtime evidence.
 
+[Research 427](../../research/427-deepseek-harness-web-browser-session-typed-stream-boundary.md)
+records the source-ledger review and proposed boundary. The selected `0.2.0-rc.2`
+path creates or reads a persistent DSH browser-signing record, and its current
+opaque environment and operation-scoped lease types cannot express authority
+over that record or bind it to a host principal and profile. The typed Remote
+controller and stream also have distinct request, event, permission, and
+cancellation lifecycles from the existing 11-method facade. The proposal
+therefore requires a separately versioned, explicit opt-in facade with
+host-issued store/process authority; a private-only mapping is not established.
+No target claim follows, and `0.2.0-rc.2` remains unqualified pending the
+named owner evidence and separate implementation and qualification briefs.
+
 Return an explicit opt-in access, lease and preflight design preserving old
 unauthenticated callers and defaults, with no implicit credential acquisition,
 browser launch or unauthenticated fallback. Define credential ownership,

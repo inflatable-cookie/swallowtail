@@ -4,7 +4,7 @@
   "official_channel": {
     "registry": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk",
     "selected": "dist-tags.latest",
-    "observed_at": "2026-10-08T23:56:47Z",
+    "observed_at": "2026-10-09T00:14:21Z",
     "latest": "0.3.295",
     "next": "0.3.295",
     "previous_latest": "0.3.293 (Research 416); 0.3.294 followed during that run and 0.3.295 followed during this run",
@@ -25,7 +25,7 @@
       "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.294.tgz",
       "tarball_sha256": "2c0a2db22531e690cfac98da0c764828d43b4cde38fca941dce7403cd49400d5",
       "tarball_sha1": "b21effd0e72beec3a0471c0cc24bebb8ae983d1a",
-      "npm_integrity": "sha512-CSZBecJ57adb3bRoKA5O0miiegm9to59bhGiyMoqZCdIoTlux77VFL5TNDWJmmGQOQpLyBSmSSq6SwV/Q==",
+      "npm_integrity": "sha512-CSZBecJ57adb3bRoKA5O0miiegm9to59bhGiyKfj2uMoqZCdIoTlux77VFL5TNDWJmmGQOQpLyBSmSSq6SwV/Q==",
       "file_count": 19,
       "tree_sha256": "c36f910d8041231c3e7e2687f109b765714be9e9426ece08b86a15353c71f802",
       "native_version": "2.1.294",

@@ -41,11 +41,14 @@ is `f254651a…`. Research 432's immutable `frozen_original_target` labels
 `f254651a…`. The executed pairing is executable `df347f…` with archive
 `f254651a…`. The brief's stop rule (“any drift refuses originals”; stop
 before original if identity differs) would have refused this original. The
-run proceeded without an operator ruling on that difference. Authority,
-attempt, and execution records have no exception field. Whether the consumed
-attempt stands under decision `e05b517f-e4fc-46c4-9d52-435b2422b5cf` is open
-for Tom's ruling: [Q-007](../knowledge/questions.md#q-007). Parent 119 stays
-blocked. Frozen records and the diagnostic script are not edited.
+run proceeded through that gate. Authority, attempt, and execution records
+have no exception field. Tom answered “Approve” to decision
+`f5a0b303-deee-40fd-be71-abf596f1cb0e`, accepting this one historical
+diagnostic under the
+[Consumed Initialize Archive Exception](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md#consumed-initialize-archive-exception).
+[Q-007](../knowledge/questions.md#q-007) is answered. The stop-rule breach is
+not erased. Future identity mismatches still stop. Parent 119 stays blocked.
+Frozen records and the diagnostic script are not edited.
 
 Harness and launcher identities match the reviewed 432 inputs:
 
@@ -159,5 +162,5 @@ profile widening, or reviewer original execution is authorized.
 
 Any broader isolation, authentication, state, or permission proof returns
 separately. Parent 119 does not continue from this diagnostic. The
-archive-identity mismatch is an unratified gate exception; Q-007 owns Tom's
-ruling on whether this consumed attempt stands.
+archive-identity mismatch is an accepted limited exception for this one
+historical diagnostic; future mismatches still stop.

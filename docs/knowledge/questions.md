@@ -138,33 +138,13 @@ Evidence gate scope:
 <a id="q-007"></a>
 ## Q-007 — Does the consumed Copilot no-child original initialize stand under decision e05b517f?
 
-Status: open
+Status: answered 2026-10-09
+Answer: Approve (Tom). Limited archive-identity exception for this one
+consumed diagnostic; see
+[Consumed Initialize Archive Exception](contracts/023-harness-operation-isolation-and-native-boundary.md#consumed-initialize-archive-exception).
 Asked: 2026-10-09
-Gate owner: Tom, Swallowtail operator
 
-Task 167 / PR 485 consumed one Copilot `1.0.93` initialize under reviewed
-no-child isolation. The brief named archive
-`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`. The
-executed bytes matched executable
-`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1` and archive
-`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. Research
-404 records `98640ca0…` as the Darwin ARM64 `1.0.80` archive. The run
-proceeded without an operator ruling on that difference. The brief's stop
-rule would have refused the original. Frozen records and the diagnostic
-script are not edited. Owner:
-[Contract 023](contracts/023-harness-operation-isolation-and-native-boundary.md#one-isolated-original-initialize-attempt);
-evidence: [Research 433](../research/433-copilot-acp-no-child-original-initialize-diagnostic.md).
-
-Decision tree:
-
-- If the consumed pairing is accepted as the intended `1.0.93` executable
-  with the inventory `1.0.93` archive, the Research 433 result stands as
-  startup evidence for the reviewed no-child tuple under decision
-  `e05b517f-e4fc-46c4-9d52-435b2422b5cf`.
-- If the archive mismatch is a refused identity-gate, the consumed original
-  does not stand as an authorized initialize; the immutable records remain a
-  historical stop; a later original needs separate exact authority.
-- Either outcome leaves parent 119 blocked and the exact `1.0.80` claim
-  unchanged.
-
-This question covers no feature-matrix cells. Keep it open until Tom rules.
+The brief named archive `98640ca0…`; the executed pairing is executable
+`df347f…` with archive `f254651a…`. The stop-rule breach is not erased.
+Future identity mismatches still stop. Initialize was not reached; startup
+cause unknown. Parent 119 and the exact `1.0.80` claim are unchanged.

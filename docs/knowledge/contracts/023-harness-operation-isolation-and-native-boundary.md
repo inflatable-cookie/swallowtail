@@ -1276,12 +1276,37 @@ not host-login/Auto permission evidence, qualification or authority to resume
 the retained parent. The exact `1.0.80` claim and release identities remain
 unchanged; any broader original or permission proof returns separately.
 
+### Consumed Initialize Archive Exception
+
+Tom answered “Approve” to decision
+`f5a0b303-deee-40fd-be71-abf596f1cb0e` on 2026-10-09, accepting the single
+consumed diagnostic as a limited archive-identity exception. The brief copied
+Research 432's incorrect archive identity
+`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`, which
+Research 404 identifies as the `1.0.80` archive. The executed `1.0.93`
+executable matched the intended SHA-256
+`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1` and its
+frozen-inventory archive
+`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`.
+
+This accepts the historical diagnostic under decision `e05b517f`; it does
+not erase the failure to stop on the brief's identity mismatch. Preserve the
+incorrect preparation binding, execution records, diagnostic script and
+consumed allowance unchanged. Future identity mismatches still require a
+stop and a separate ruling before execution.
+
+The attempt did not reach initialization. It supplies only the recorded
+startup failure with unknown cause; it establishes no authentication,
+permission, cancellation or no-effect guarantee. The exact `1.0.80` claim
+remains unchanged. This ruling grants no new invocation, qualification or
+parent-task continuation.
+
 [Research 433](../../research/433-copilot-acp-no-child-original-initialize-diagnostic.md)
-records the one original. Original-profile fakes passed the eight child
-denials and the lifecycle, diagnostic, and crash/replay gates. The exclusive
-attempt was fsynced before start. The original used `--acp --stdio` and the
-reviewed synthetic environment on macOS 26.6.2 build `25G83` arm64. Stage
-exec-boundary EOF was observed; ACP `initialize` was not reached;
+records the one consumed original. Original-profile fakes passed the eight
+child denials and the lifecycle, diagnostic, and crash/replay gates. The
+exclusive attempt was fsynced before start. The original used `--acp --stdio`
+and the reviewed synthetic environment on macOS 26.6.2 build `25G83` arm64.
+Stage exec-boundary EOF was observed; ACP `initialize` was not reached;
 `vendor_startup_status` is `unknown`; `failure_class` is `sandbox-denial`.
 Stderr stored the `sandbox-denial` category, 997 bounded bytes, and the
 `sandbox-marker-present` facet only. Cleanup joined.
@@ -1290,13 +1315,14 @@ The brief named archive
 `98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`. The
 executed bytes matched executable
 `df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1` and archive
-`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. The run
-proceeded without an operator ruling on that difference. Whether the consumed
-attempt stands under decision `e05b517f-e4fc-46c4-9d52-435b2422b5cf` is open
-for Tom's ruling: [Q-007](../questions.md#q-007). Parent 119 stays blocked.
+`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. That
+stop-rule breach is disclosed and not erased. The pairing is accepted for
+this one historical diagnostic under the archive exception above.
+[Q-007](../questions.md#q-007) is answered. Parent 119 stays blocked.
 Fail-closed no-child policy may prevent vendor startup and is not a route
-narrowing. Frozen records are not edited. Further original, isolation, auth,
-or permission work needs separate exact authority.
+narrowing. Frozen records are not edited. Future identity mismatches still
+stop. Further original, isolation, auth, or permission work needs separate
+exact authority.
 
 ## Command Code Explicit Model Precedence
 

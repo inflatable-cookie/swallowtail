@@ -77,6 +77,51 @@ fn catalogue_and_stream_require_observed_properties_and_leave_server_running() {
 }
 
 #[test]
+fn v0_6_0_exact_runtime_uses_the_same_attached_catalogue_and_stream_lifecycle() {
+    let fixture = Fixture::with_server(FixtureServer::start_with(
+        PropertiesFixture::V0_6_0,
+        StreamFixture::Success,
+    ));
+    let driver = LlamaCppAttachedDriver::new();
+    let models = block_on(driver.list_models(
+        fixture.plan(DriverRole::ModelCatalog),
+        ModelCatalogRequest::new(RequestId::new("catalog-v0-6-0").expect("request id is valid")),
+        fixture.services(),
+    ))
+    .expect("v0.6.0 source-derived runtime identity is accepted");
+    assert_eq!(models.len(), 1);
+    assert_eq!(models[0].id().as_str(), "swallowtail-fixture-stories260k");
+
+    let (run, events, outcome) = complete_run(&fixture);
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().expect("output exists").as_str(),
+        "Fixture output"
+    );
+    assert!(events.iter().any(|event| matches!(
+        event.kind(),
+        swallowtail_runtime::RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(_))
+    )));
+    assert_eq!(fixture.server.inference_attempts(), 1);
+    assert!(matches!(
+        block_on(run.close()),
+        swallowtail_runtime::CleanupOutcome::Clean
+    ));
+    assert!(fixture.server.is_reachable());
+    assert_eq!(
+        &fixture.server.targets()[..6],
+        [
+            "/health",
+            "/props",
+            "/v1/models",
+            "/health",
+            "/props",
+            "/v1/chat/completions"
+        ]
+    );
+}
+
+#[test]
 fn unobserved_build_fails_before_catalogue_or_inference() {
     let fixture = Fixture::with_server(FixtureServer::start_with(
         PropertiesFixture::VersionMismatch,

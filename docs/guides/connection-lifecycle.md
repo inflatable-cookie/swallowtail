@@ -192,7 +192,8 @@ Stored `ConfigFieldRef` values feed only this exact route-local handoff; their
 path, URL, or environment body never enters a portable record or diagnostic.
 Model tag and digest for Ollama stay prepare-time identities, not admission
 identity.
-Exact opaque b9910/f5525f7e7 for llama.cpp attached stays prepare-time.
+Exact opaque `b9910-f5525f7e7` and `b11429-d81235049` for llama.cpp attached
+stay prepare-time; the released binding remains `b9910-f5525f7e7`.
 After prepare, continue through the route guide and
 [provider selection](provider-selection-and-preparation.md).
 

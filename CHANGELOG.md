@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `llama-cpp.attached` with the exact opaque runtime points
+  `b9910-f5525f7e7` and `b11429-d81235049` on its existing
+  `llama.cpp.attached-runtime` claim. Research 421 links official stable
+  `v0.6.0` and the nightly build tag to the same exact source commit; the
+  semantic tag remains source evidence, not a runtime version. Research 421
+  compares every published stable hop after `b9910`; `v0.2.0` through
+  `v0.5.0` remain unqualified exact gaps. Preserve the existing binding,
+  behavior revision, attached lifecycle, local-unauthenticated boundary and
+  exclusions. Other exact values stay incompatible. No server or model was
+  installed or executed, and no live request or credential was used.
 - qualify `claude-agent.sdk` through npm `latest`/`next` `0.3.295` and its
   exact embedded native `2.1.295`, extending the retained `0.3.284`/`2.1.284`
   baselines and current claims after every published hop through `.295`.

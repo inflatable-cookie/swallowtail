@@ -15,6 +15,7 @@ const MIDSTREAM_ERROR: &str =
 #[derive(Clone, Copy)]
 pub enum PropertiesFixture {
     Expected,
+    V0_6_0,
     VersionMismatch,
     #[allow(dead_code)]
     RouteMismatch,
@@ -168,6 +169,9 @@ fn respond(
         ("GET", "/props") => {
             let body = match properties {
                 PropertiesFixture::Expected => PROPERTIES.to_owned(),
+                PropertiesFixture::V0_6_0 => {
+                    PROPERTIES.replace("b9910-f5525f7e7", "b11429-d81235049")
+                }
                 PropertiesFixture::VersionMismatch => {
                     PROPERTIES.replace("b9910-f5525f7e7", "b10069-178a6c449")
                 }

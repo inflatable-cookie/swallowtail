@@ -18,10 +18,20 @@ pub(crate) const ATTACHED_VERSION: ObservedVersion = ObservedVersion {
     commit: "f5525f7e7",
 };
 
+pub(crate) const ATTACHED_V0_6_0_VERSION: ObservedVersion = ObservedVersion {
+    build: "11429",
+    commit: "d81235049",
+};
+
+pub(crate) const ATTACHED_SUPPORTED_VERSIONS: &[ObservedVersion] =
+    &[ATTACHED_VERSION, ATTACHED_V0_6_0_VERSION];
+
 pub(crate) const OWNED_VERSION: ObservedVersion = ObservedVersion {
     build: "10069",
     commit: "178a6c449",
 };
+
+pub(crate) const OWNED_SUPPORTED_VERSIONS: &[ObservedVersion] = &[OWNED_VERSION];
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct Request {
@@ -163,12 +173,13 @@ struct Modalities {
 
 pub(crate) fn parse_properties(
     response: &Response,
-    version: ObservedVersion,
+    versions: &[ObservedVersion],
 ) -> Result<DeploymentEvidence, RuntimeFailure> {
     require_success(response, "properties request")?;
     let properties: Properties = parse_json(&response.body, "properties response")?;
-    if !properties.build_info.contains(version.build)
-        || !properties.build_info.contains(version.commit)
+    if !versions
+        .iter()
+        .any(|version| matches_build_info(&properties.build_info, *version))
     {
         return Err(failure(
             "swallowtail.llama_cpp.version_mismatch",
@@ -189,6 +200,16 @@ pub(crate) fn parse_properties(
         chat_template: properties.chat_template,
         chat_template_capabilities: properties.chat_template_caps,
     })
+}
+
+fn matches_build_info(build_info: &str, version: ObservedVersion) -> bool {
+    let Some(identity) = build_info.strip_prefix('b') else {
+        return false;
+    };
+    let Some((build, commit)) = identity.split_once('-') else {
+        return false;
+    };
+    build == version.build && commit == version.commit
 }
 
 #[derive(Deserialize)]

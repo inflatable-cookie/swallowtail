@@ -361,6 +361,34 @@ tag authority is included. Preserve the existing exact `0.1.0rc6` point,
 released consumers and separation from the local-server route until the
 classification is independently reviewed and adaptation is authorized.
 
+## DeepSeek SDK JSONRPC Distinct-Route Design
+
+Tom's 2026-10-09 board answer to decision
+`e9216ef3-b355-4423-8f39-6cbce0104ca9` is “Approve distinct-route
+contract/design study”. This accepts Research 412's distinct-route
+classification and authorizes a bounded offline contract/design study for a
+separate SDK JSONRPC route. Preserve the existing exact `0.1.0rc6` route,
+consumers, claims, baselines and exclusions. A proposed route is not production.
+
+Design independent runtime-bin and complete profile/server artifact axes.
+Require immutable native-payload-to-complete-profile provenance before any
+new tuple claim; matching JSON-RPC labels or version numbers do not establish
+that relationship. Reuse the accepted mapping evidence, identify the finite
+vendor provenance gate and avoid repeating completed artifact discovery.
+
+Specify host, principal, environment, cwd, configuration, credential and
+persistent-session ownership, selected tool/permission authority, cancellation,
+stop, join and cleanup. Review consumer preparation/preflight, public API and
+serialization compatibility and Contract 036 minor-release implications.
+Return staged fake-first, recorded original-artifact proof and implementation
+scopes, with precise unresolved boundaries for separate approval.
+
+No runtime/API implementation, artifact execution, real credentials/login,
+provider/live work, installation, host mutation, qualification or tag is
+included. Implementation, original-artifact proof and first claimed points
+require their own rulings. Local-server browser-session design remains
+independent and supplies no SDK-route qualification or authority.
+
 ## DeepSeek Local-Server Browser-Session Design Study
 
 Tom's 2026-10-09 board answer to decision

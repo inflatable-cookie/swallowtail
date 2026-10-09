@@ -213,8 +213,12 @@ fn access_status(access: &AccessProfile) -> AccessStatus {
 }
 
 pub fn fixture(name: &str) -> String {
+    fixture_at("2.1.220", name)
+}
+
+pub fn fixture_at(version: &str, name: &str) -> String {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/fixtures/claude-code-2.1.220")
+        .join(format!("tests/fixtures/claude-code-{version}"))
         .join(name);
     std::fs::read_to_string(path).unwrap_or_else(|error| panic!("failed to read {name}: {error}"))
 }

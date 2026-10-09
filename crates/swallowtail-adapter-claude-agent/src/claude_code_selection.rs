@@ -12,14 +12,15 @@ pub const CLAUDE_CODE_HEADLESS_AXIS: &str = "claude-code.headless-stream-json";
 /// Oldest qualified native Claude Code headless version.
 pub const CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str = "2.1.220";
 /// Most recent qualified native Claude Code headless version.
-pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.281";
+pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.294";
 /// Unpublished stables inside the semantic headless window.
 const HEADLESS_UNPUBLISHED_GAPS: &[&str] = &[
     "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
     "2.1.279",
 ];
 
-const HEADLESS_BEHAVIOR: &str = "claude-code.headless.stream-json.v1";
+const HEADLESS_BEHAVIOR_V1: &str = "claude-code.headless.stream-json.v1";
+const HEADLESS_BEHAVIOR_V2: &str = "claude-code.headless.stream-json.v2";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[must_use]
@@ -48,15 +49,24 @@ pub fn claude_code_headless_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::new(
-            version(CLAUDE_CODE_HEADLESS_BASELINE_VERSION)
-                .expect("static Claude Code version is valid"),
-            version(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION)
-                .expect("static Claude Code version is valid"),
-            InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR)
-                .expect("static Claude Code behavior revision is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(CLAUDE_CODE_HEADLESS_BASELINE_VERSION)
+                    .expect("static Claude Code version is valid"),
+                version("2.1.286").expect("static Claude Code v1 ceiling is valid"),
+                InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR_V1)
+                    .expect("static Claude Code v1 behavior revision is valid"),
+                InterfaceSupportStatus::Deprecated,
+            ),
+            InterfaceVersionSegment::new(
+                version("2.1.287").expect("static Claude Code v2 baseline is valid"),
+                version(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION)
+                    .expect("static Claude Code v2 ceiling is valid"),
+                InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR_V2)
+                    .expect("static Claude Code v2 behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         HEADLESS_UNPUBLISHED_GAPS
             .iter()
             .map(|gap| version(gap).expect("static Claude Code unpublished gap is valid")),
@@ -88,10 +98,12 @@ pub(crate) fn select_claude_code_headless_plan(plan: &PreflightPlan) -> Result<(
             "Claude Code headless CLI version is incompatible with this driver",
         ));
     }
-    if assessment
-        .behavior_revision()
-        .is_none_or(|revision| revision.as_str() != HEADLESS_BEHAVIOR)
-    {
+    if assessment.behavior_revision().is_none_or(|revision| {
+        !matches!(
+            revision.as_str(),
+            HEADLESS_BEHAVIOR_V1 | HEADLESS_BEHAVIOR_V2
+        )
+    }) {
         return Err(failure(
             "swallowtail.claude_code.headless.behavior_incompatible",
             "Claude Code headless behavior is not mapped by this driver",
@@ -104,9 +116,9 @@ pub(crate) fn select_claude_code_headless_plan(plan: &PreflightPlan) -> Result<(
 ///
 /// Call this only after [`select_claude_code_headless_plan`] has accepted the
 /// plan; it re-reads the same single axis binding and asks whether that exact
-/// version is one Research 226 probed. The route's own claim is deliberately
-/// weaker: it permits later stable points as `UnverifiedNewer` and spans a
-/// semantic range containing an unpublished point.
+/// version is one Research 226 probed. The route's compatibility claim covers
+/// a wider semantic window, but does not extend the maximum-turn feature to
+/// newly qualified points without exact feature evidence.
 pub(crate) fn plan_admits_maximum_turns(plan: &PreflightPlan) -> bool {
     headless_binding(plan).is_some_and(crate::claude_code_maximum_turns::admits)
 }
@@ -137,12 +149,15 @@ fn version(value: &str) -> Option<InterfaceVersion> {
 #[cfg(test)]
 mod tests {
     use super::{
-        CLAUDE_CODE_HEADLESS_AXIS, claude_code_headless_binding, claude_code_headless_claim,
+        CLAUDE_CODE_HEADLESS_AXIS, HEADLESS_BEHAVIOR_V1, HEADLESS_BEHAVIOR_V2,
+        claude_code_headless_binding, claude_code_headless_claim,
     };
-    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+    use swallowtail_core::{
+        InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+    };
 
     #[test]
-    fn qualified_window_covers_published_hops_through_2_1_270() {
+    fn qualified_segments_cover_published_hops_through_current_stable() {
         let claim = claude_code_headless_claim();
         assert!(claim.supports(&version("2.1.220")));
         assert!(claim.supports(&version("2.1.221")));
@@ -164,7 +179,13 @@ mod tests {
         for published in [
             "2.1.258", "2.1.259", "2.1.260", "2.1.261", "2.1.263", "2.1.265", "2.1.266", "2.1.267",
             "2.1.268", "2.1.269", "2.1.270", "2.1.271", "2.1.272", "2.1.273", "2.1.274", "2.1.275",
-            "2.1.276", "2.1.277", "2.1.278", "2.1.280", "2.1.281",
+            "2.1.276", "2.1.277", "2.1.278", "2.1.280", "2.1.281", "2.1.282", "2.1.283", "2.1.284",
+            "2.1.285", "2.1.286",
+        ] {
+            assert!(claim.supports(&version(published)), "{published}");
+        }
+        for published in [
+            "2.1.287", "2.1.288", "2.1.289", "2.1.290", "2.1.291", "2.1.292", "2.1.293", "2.1.294",
         ] {
             assert!(claim.supports(&version(published)), "{published}");
         }
@@ -179,9 +200,21 @@ mod tests {
         assert!(!claim.permits(&version("2.1.264")));
         assert!(!claim.permits(&version("2.1.279")));
         assert!(matches!(
-            claim.assess(&version("2.1.282")),
+            claim.assess(&version("2.1.295")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
+        let InterfaceCompatibilityAssessment::Qualified(v1) = claim.assess(&version("2.1.286"))
+        else {
+            panic!("2.1.286 must remain qualified");
+        };
+        assert_eq!(v1.support_status(), InterfaceSupportStatus::Deprecated);
+        assert_eq!(v1.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V1);
+        let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("2.1.294"))
+        else {
+            panic!("2.1.294 must remain qualified");
+        };
+        assert_eq!(v2.support_status(), InterfaceSupportStatus::Maintained);
+        assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
         assert_eq!(
             claude_code_headless_binding("2.1.270")
                 .expect("version binds")

@@ -158,7 +158,7 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
     assert_ne!(CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION);
     assert_eq!(
         swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
-        "2.1.281",
+        "2.1.294",
         "the Claude Code window is observed separately and does not transfer"
     );
     assert_ne!(

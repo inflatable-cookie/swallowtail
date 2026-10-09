@@ -148,7 +148,7 @@ fn identity_names_compatible_extension_without_changing_production() {
         "unverified_newer"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.294");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
@@ -159,14 +159,14 @@ fn identity_names_compatible_extension_without_changing_production() {
     assert!(matches!(
         headless.assess(&version("2.1.270")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     for published in PUBLISHED_HOPS.iter().copied() {
         assert!(
             matches!(
                 headless.assess(&version(published)),
                 InterfaceCompatibilityAssessment::Qualified(matched)
-                    if matched.support_status() == InterfaceSupportStatus::Maintained
+                    if matched.support_status() == InterfaceSupportStatus::Deprecated
             ),
             "{published}"
         );

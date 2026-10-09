@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import platform
+import re
 import selectors
 import signal
 import subprocess
@@ -29,11 +30,18 @@ FIXTURE_DIR = (
     / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof"
 )
 INVENTORY_PATH = FIXTURE_DIR / "artifact-inventory.json"
+AUTHENTICATED_PLAN_PATH = FIXTURE_DIR / "authenticated-proof-plan.json"
+AUTHENTICATED_SCHEMA_PATH = FIXTURE_DIR / "authenticated-proof-plan.schema.json"
 VERSIONS = ("1.0.80", "1.0.81", "1.0.93")
 MAX_FRAME_BYTES = 256 * 1024
 READ_TIMEOUT_SECONDS = 20.0
 RUN_TIMEOUT_SECONDS = 18.0
 FAKE_TOKEN = "SWALLOWTAIL_OFFLINE_FAKE_TOKEN"
+FAKE_DELEGATED_CREDENTIAL = b"test-only-delegated-capability"
+FAKE_ACCOUNT_REF = "github-account:betterthanclay"
+FAKE_MODEL_ID = "fake-github-hosted-model"
+FAKE_AUDIENCE = "copilot-api.fake.test"
+MAX_AUTH_FAKE_SECONDS = 5.0
 
 
 def utc_now() -> str:
@@ -44,6 +52,11 @@ def utc_now() -> str:
 
 def json_bytes(value: Any) -> bytes:
     return (json.dumps(value, separators=(",", ":"), ensure_ascii=False) + "\n").encode()
+
+
+def json_digest(value: Any) -> str:
+    canonical = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(canonical.encode()).hexdigest()
 
 
 def write_json_durable(path: Path, value: Any) -> None:
@@ -66,6 +79,101 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"expected an object in {path.name}")
     return value
+
+
+def validate_schema_value(value: Any, schema: dict[str, Any], label: str = "$") -> None:
+    """Validate the small JSON Schema subset used by the committed plan."""
+    supported = {
+        "$schema",
+        "$id",
+        "title",
+        "description",
+        "type",
+        "const",
+        "enum",
+        "required",
+        "properties",
+        "items",
+        "additionalProperties",
+        "minItems",
+        "maxItems",
+        "minLength",
+        "maxLength",
+        "pattern",
+    }
+    unknown = set(schema) - supported
+    if unknown:
+        raise ValueError(f"unsupported plan schema keywords at {label}: {sorted(unknown)}")
+
+    expected_type = schema.get("type")
+    if expected_type is not None:
+        matches = {
+            "object": isinstance(value, dict),
+            "array": isinstance(value, list),
+            "string": isinstance(value, str),
+            "integer": isinstance(value, int) and not isinstance(value, bool),
+            "boolean": isinstance(value, bool),
+            "null": value is None,
+        }.get(expected_type)
+        if matches is not True:
+            raise ValueError(f"{label} must be {expected_type}")
+    if "const" in schema and value != schema["const"]:
+        raise ValueError(f"{label} does not match its required constant")
+    if "enum" in schema and value not in schema["enum"]:
+        raise ValueError(f"{label} is outside its allowed values")
+
+    if isinstance(value, dict):
+        required = schema.get("required", [])
+        missing = set(required) - set(value)
+        if missing:
+            raise ValueError(f"{label} is missing required fields: {sorted(missing)}")
+        properties = schema.get("properties", {})
+        extra = set(value) - set(properties)
+        if schema.get("additionalProperties") is False and extra:
+            raise ValueError(f"{label} has unexpected fields: {sorted(extra)}")
+        for key, child_schema in properties.items():
+            if key in value:
+                validate_schema_value(value[key], child_schema, f"{label}.{key}")
+    elif isinstance(value, list):
+        if len(value) < schema.get("minItems", 0):
+            raise ValueError(f"{label} has fewer items than required")
+        if len(value) > schema.get("maxItems", sys.maxsize):
+            raise ValueError(f"{label} has more items than allowed")
+        if "items" in schema:
+            for index, item in enumerate(value):
+                validate_schema_value(item, schema["items"], f"{label}[{index}]")
+    elif isinstance(value, str):
+        if len(value) < schema.get("minLength", 0):
+            raise ValueError(f"{label} is shorter than required")
+        if len(value) > schema.get("maxLength", sys.maxsize):
+            raise ValueError(f"{label} is longer than allowed")
+        pattern = schema.get("pattern")
+        if pattern is not None and re.search(pattern, value) is None:
+            raise ValueError(f"{label} does not match its required pattern")
+
+
+def validate_authenticated_plan() -> dict[str, Any]:
+    schema = load_json(AUTHENTICATED_SCHEMA_PATH)
+    plan = load_json(AUTHENTICATED_PLAN_PATH)
+    if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+        raise ValueError("authenticated plan schema is not Draft 2020-12")
+    validate_schema_value(plan, schema)
+    serialized = json.dumps(plan, sort_keys=True)
+    for forbidden in (
+        "/Users/",
+        "/home/",
+        "github_pat_",
+        "ghp_",
+        "gho_",
+        "ghs_",
+        "xoxb-",
+        "Bearer ",
+    ):
+        if forbidden in serialized:
+            raise ValueError(f"authenticated plan contains forbidden secret/path marker {forbidden!r}")
+    if plan.get("execution_authorized") is not False:
+        raise ValueError("unattested plan must remain non-executable")
+    return plan
 
 
 def inventory_packages(inventory: dict[str, Any]) -> dict[tuple[str, str], dict[str, Any]]:
@@ -146,14 +254,16 @@ def sandbox_profile(scratch: Path, host_home: Path) -> str:
     )
 
 
-def clean_child_environment(scratch: Path) -> dict[str, str]:
+def clean_child_environment(
+    scratch: Path, *, include_fake_token: bool = True
+) -> dict[str, str]:
     home = scratch / "home"
     temp = scratch / "tmp"
     config = scratch / "config"
     cache = scratch / "cache"
     for directory in (home, temp, config, cache):
         directory.mkdir(parents=True, exist_ok=True)
-    return {
+    environment = {
         "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
         "HOME": str(home),
         "COPILOT_HOME": str(home),
@@ -161,11 +271,13 @@ def clean_child_environment(scratch: Path) -> dict[str, str]:
         "XDG_CONFIG_HOME": str(config),
         "XDG_CACHE_HOME": str(cache),
         "TMPDIR": str(temp),
-        "GITHUB_TOKEN": FAKE_TOKEN,
-        "GH_TOKEN": FAKE_TOKEN,
         "CI": "1",
         "TERM": "dumb",
     }
+    if include_fake_token:
+        environment["GITHUB_TOKEN"] = FAKE_TOKEN
+        environment["GH_TOKEN"] = FAKE_TOKEN
+    return environment
 
 
 class StdioClient:
@@ -236,8 +348,30 @@ def wait_for_response(
         if method == "session/request_permission":
             evidence["permission_request_observed"] = True
             evidence["permission_methods_observed"].append(method)
+            params = message.get("params")
+            options = params.get("options", []) if isinstance(params, dict) else []
+            if not isinstance(options, list):
+                options = []
+            evidence["permission_option_ids"] = sorted(
+                {
+                    option["optionId"]
+                    for option in options
+                    if isinstance(option, dict)
+                    and isinstance(option.get("optionId"), str)
+                    and option["optionId"]
+                    in {"allow_once", "allow_always", "reject_once", "reject_always"}
+                }
+            )
             permission_id = message.get("id")
             if permission_id is not None:
+                pending_wait = PendingPermissionWait()
+                pending_wait.abandon()
+                evidence["pending_permission_wait_abandoned"] = (
+                    pending_wait.state == "abandoned"
+                )
+                evidence["late_permission_response_accepted"] = pending_wait.resolve(
+                    "allow_once"
+                )
                 client.send(
                     {
                         "jsonrpc": "2.0",
@@ -256,6 +390,23 @@ def wait_for_response(
         if message.get("id") == request_id:
             return message
         evidence["unexpected_messages"] += 1
+
+
+class PendingPermissionWait:
+    """Model one unresolved host decision that cancellation abandons."""
+
+    def __init__(self) -> None:
+        self.state = "pending"
+
+    def abandon(self) -> None:
+        if self.state == "pending":
+            self.state = "abandoned"
+
+    def resolve(self, option_id: str) -> bool:
+        if self.state != "pending" or option_id not in {"allow_once", "reject_once"}:
+            return False
+        self.state = "resolved"
+        return True
 
 
 def record_rpc_error(
@@ -383,6 +534,129 @@ printf '%s\n' '{"jsonrpc":"2.0","id":3,"result":{"stopReason":"cancelled"}}'
 '''
 
 
+FAKE_AUTH_AGENT_SOURCE = r'''import hashlib, json, os, select, sys
+
+auth_fd = int(os.environ["SWALLOWTAIL_AUTH_FD"])
+credential = os.read(auth_fd, 128)
+os.close(auth_fd)
+if hashlib.sha256(credential).hexdigest() != "de9e245bec7a5380291b92667b75b0b789c8ce92bd2ce370e84f41f33d12af91":
+    raise SystemExit(71)
+if any(name in os.environ for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")):
+    raise SystemExit(72)
+marker = os.environ["SWALLOWTAIL_EFFECT_MARKER"]
+
+def send(value):
+    sys.stdout.write(json.dumps(value, separators=(",", ":")) + "\n")
+    sys.stdout.flush()
+
+def read_line(timeout):
+    ready, _, _ = select.select([sys.stdin], [], [], timeout)
+    if not ready:
+        return None
+    line = sys.stdin.buffer.readline()
+    return json.loads(line) if line else None
+
+def report(**values):
+    sys.stderr.write(json.dumps(values, sort_keys=True) + "\n")
+    sys.stderr.flush()
+
+initialize = read_line(1.0)
+if not initialize or initialize.get("method") != "initialize":
+    raise SystemExit(73)
+send({"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentCapabilities":{},"authMethods":[{"id":"copilot-login","name":"Fake delegated auth"}],"agentInfo":{"name":"fake-copilot-auth","version":"fake"}}})
+authenticate = read_line(1.0)
+if not authenticate or authenticate.get("method") != "authenticate":
+    raise SystemExit(74)
+if authenticate.get("params") != {"methodId":"copilot-login"}:
+    raise SystemExit(75)
+send({"jsonrpc":"2.0","id":2,"result":{}})
+session_new = read_line(1.0)
+if not session_new or session_new.get("method") != "session/new":
+    raise SystemExit(76)
+send({"jsonrpc":"2.0","id":3,"result":{"sessionId":"fake-auth-session","models":{"currentModelId":"fake-github-hosted-model"}}})
+prompt = read_line(1.0)
+if not prompt or prompt.get("method") != "session/prompt":
+    raise SystemExit(77)
+if os.path.exists(marker):
+    raise SystemExit(78)
+send({"jsonrpc":"2.0","id":99,"method":"session/request_permission","params":{"sessionId":"fake-auth-session","toolCall":{"toolCallId":"fake-tool","status":"pending"},"options":[{"optionId":"allow_once","name":"Allow once","kind":"allow_once"},{"optionId":"reject_once","name":"Reject once","kind":"reject_once"}]}})
+permission = read_line(1.0)
+if not permission or permission.get("id") != 99:
+    raise SystemExit(79)
+outcome = permission.get("result", {}).get("outcome", {}).get("outcome")
+if outcome != "cancelled":
+    selected = permission.get("result", {}).get("outcome", {}).get("optionId")
+    if selected in ("allow_once", "allow_always"):
+        with open(marker, "w", encoding="utf-8") as output:
+            output.write("effect")
+    report(permission_outcome="not-cancelled", effect_marker_present=os.path.exists(marker))
+    raise SystemExit(80)
+report(permission_outcome="cancelled", pending_prompt=True, effect_marker_present=os.path.exists(marker))
+cancel = read_line(0.8)
+if not cancel or cancel.get("method") != "session/cancel":
+    raise SystemExit(81)
+send({"jsonrpc":"2.0","id":4,"result":{"stopReason":"cancelled"}})
+report(permission_outcome="cancelled", pending_prompt=False, stop_reason="cancelled", effect_marker_present=os.path.exists(marker))
+'''
+
+
+def fake_delegated_credential(context: dict[str, Any]) -> bytes | None:
+    """Return a non-secret fake capability only for an exact synthetic grant."""
+    if context != {
+        "account_ref": FAKE_ACCOUNT_REF,
+        "entitlement": "confirmed-in-fake",
+        "model_id": FAKE_MODEL_ID,
+        "model_policy": "pinned-no-fallback",
+        "credential_request": "one-use-copilot-session",
+        "audience": FAKE_AUDIENCE,
+        "provider_traffic": [FAKE_AUDIENCE],
+    }:
+        return None
+    return FAKE_DELEGATED_CREDENTIAL
+
+
+def authenticated_fake_preflight() -> dict[str, Any]:
+    valid = {
+        "account_ref": FAKE_ACCOUNT_REF,
+        "entitlement": "confirmed-in-fake",
+        "model_id": FAKE_MODEL_ID,
+        "model_policy": "pinned-no-fallback",
+        "credential_request": "one-use-copilot-session",
+        "audience": FAKE_AUDIENCE,
+        "provider_traffic": [FAKE_AUDIENCE],
+    }
+    if fake_delegated_credential(valid) != FAKE_DELEGATED_CREDENTIAL:
+        raise RuntimeError("valid fake host delegation was not admitted")
+
+    negative_cases: dict[str, Any] = {
+        "wrong_account": {**valid, "account_ref": "github-account:other"},
+        "wrong_audience": {**valid, "audience": "unapproved.fake.test"},
+        "wrong_model": {**valid, "model_id": "fake-local-gemma-12b"},
+        "missing_entitlement": {**valid, "entitlement": "missing"},
+        "unexpected_credential_request": {**valid, "credential_request": "read-host-keychain"},
+        "unexpected_provider_traffic": {
+            **valid,
+            "provider_traffic": [FAKE_AUDIENCE, "unapproved.fake.test"],
+        },
+    }
+    rejected: dict[str, dict[str, Any]] = {}
+    for name, context in negative_cases.items():
+        if fake_delegated_credential(context) is not None:
+            raise RuntimeError(f"fake preflight admitted negative case {name}")
+        rejected[name] = {
+            "status": "rejected-before-process-start",
+            "prompt_sent": False,
+            "effect_marker_present": False,
+        }
+    return {
+        "status": "passed",
+        "accepted_fake_grant": "exact-account-entitlement-model-policy-and-audience",
+        "credential_transport": "one-use-inherited-pipe",
+        "credential_environment_variables": "absent",
+        "negative_controls": rejected,
+    }
+
+
 def launch_acp(
     executable: Path,
     command: list[str],
@@ -390,6 +664,10 @@ def launch_acp(
     host_home: Path,
     record_path: Path,
     exact_version: str | None,
+    *,
+    delegated_credential: bytes | None = None,
+    authenticate_method_id: str | None = None,
+    run_timeout_seconds: float = RUN_TIMEOUT_SECONDS,
 ) -> dict[str, Any]:
     if not command or Path(command[0]) != executable:
         raise ValueError("the launched executable must match the selected artifact")
@@ -397,7 +675,24 @@ def launch_acp(
     marker = scratch / "permission-effect-marker"
     if marker.exists():
         marker.unlink()
-    env = clean_child_environment(scratch)
+    auth_read_fd: int | None = None
+    pass_fds: tuple[int, ...] = ()
+    env = clean_child_environment(scratch, include_fake_token=delegated_credential is None)
+    if delegated_credential is not None:
+        auth_read_fd, auth_write_fd = os.pipe()
+        try:
+            written = os.write(auth_write_fd, delegated_credential)
+            if written != len(delegated_credential):
+                raise OSError("short write while delegating fake capability")
+        except OSError:
+            os.close(auth_read_fd)
+            auth_read_fd = None
+            raise
+        finally:
+            os.close(auth_write_fd)
+        pass_fds = (auth_read_fd,)
+        env["SWALLOWTAIL_AUTH_FD"] = str(auth_read_fd)
+        env["SWALLOWTAIL_AUTH_TRANSPORT"] = "one-use-inherited-pipe"
     env.update(
         {
             "SWALLOWTAIL_BLOCKED_HOST_HOME": str(host_home.resolve()),
@@ -409,20 +704,25 @@ def launch_acp(
     profile = sandbox_profile(scratch, host_home)
     argv = launch_command(profile, command, env)
     started = utc_now()
-    process = subprocess.Popen(
-        argv,
-        cwd=scratch,
-        env={
-            "HOME": str(host_home.resolve()),
-            "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
-            "TMPDIR": str((scratch / "tmp").resolve()),
-        },
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE if exact_version is None else subprocess.DEVNULL,
-        bufsize=0,
-        start_new_session=True,
-    )
+    try:
+        process = subprocess.Popen(
+            argv,
+            cwd=scratch,
+            env={
+                "HOME": str(host_home.resolve()),
+                "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+                "TMPDIR": str((scratch / "tmp").resolve()),
+            },
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE if exact_version is None else subprocess.DEVNULL,
+            bufsize=0,
+            start_new_session=True,
+            pass_fds=pass_fds,
+        )
+    finally:
+        if auth_read_fd is not None:
+            os.close(auth_read_fd)
     client = StdioClient(process)
     evidence: dict[str, Any] = {
         "started_at_utc": started,
@@ -433,6 +733,8 @@ def launch_acp(
         ),
         "initialize": "not-reached",
         "auth_method_ids": [],
+        "authenticate": "not-requested",
+        "authenticate_method_selected": None,
         "session_new": "not-reached",
         "session_prompt": "not-reached",
         "permission_request_observed": False,
@@ -445,6 +747,12 @@ def launch_acp(
         "timed_out": False,
         "stream_failed": False,
     }
+    if delegated_credential is not None:
+        evidence["credential_transport"] = "one-use-inherited-pipe"
+        evidence["credential_environment_variables_absent"] = not any(
+            name in env for name in ("COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")
+        )
+        evidence["effect_marker_absent_before_prompt"] = not marker.exists()
     try:
         client.send(
             {
@@ -471,15 +779,46 @@ def launch_acp(
             reported == exact_version if exact_version else reported == "fake"
         )
 
+        next_request_id = 2
+        if authenticate_method_id is not None:
+            if authenticate_method_id not in evidence["auth_method_ids"]:
+                evidence["authenticate"] = "advertised-method-missing"
+                return evidence
+            evidence["authenticate_method_selected"] = authenticate_method_id
+            client.send(
+                {
+                    "jsonrpc": "2.0",
+                    "id": next_request_id,
+                    "method": "authenticate",
+                    "params": {"methodId": authenticate_method_id},
+                }
+            )
+            response = wait_for_response(
+                client, next_request_id, evidence, READ_TIMEOUT_SECONDS
+            )
+            if response is None:
+                evidence["authenticate"] = "no-result"
+                return evidence
+            if record_rpc_error("authenticate", response, evidence):
+                evidence["authenticate"] = "rpc-error"
+                return evidence
+            if "result" not in response or not isinstance(response["result"], dict):
+                evidence["authenticate"] = "invalid-response"
+                return evidence
+            evidence["authenticate"] = "success"
+            next_request_id += 1
+
         client.send(
             {
                 "jsonrpc": "2.0",
-                "id": 2,
+                "id": next_request_id,
                 "method": "session/new",
                 "params": {"cwd": str(scratch), "mcpServers": []},
             }
         )
-        response = wait_for_response(client, 2, evidence, READ_TIMEOUT_SECONDS)
+        response = wait_for_response(
+            client, next_request_id, evidence, READ_TIMEOUT_SECONDS
+        )
         if response is None:
             evidence["session_new"] = "no-result"
             return evidence
@@ -490,15 +829,19 @@ def launch_acp(
             return evidence
         evidence["session_new"] = "success"
         session_id = response["result"].get("sessionId")
+        models = response["result"].get("models", {})
+        if isinstance(models, dict) and isinstance(models.get("currentModelId"), str):
+            evidence["observed_model_id"] = models["currentModelId"]
         if not isinstance(session_id, str):
             evidence["session_new"] = "result-without-session-id"
             return evidence
+        prompt_request_id = next_request_id + 1
 
         marker_prompt = f"Run the tool needed to create this empty marker file, then stop: {marker}"
         client.send(
             {
                 "jsonrpc": "2.0",
-                "id": 3,
+                "id": prompt_request_id,
                 "method": "session/prompt",
                 "params": {
                     "sessionId": session_id,
@@ -507,7 +850,9 @@ def launch_acp(
             }
         )
         evidence["session_prompt"] = "sent"
-        response = wait_for_response(client, 3, evidence, RUN_TIMEOUT_SECONDS)
+        response = wait_for_response(
+            client, prompt_request_id, evidence, run_timeout_seconds
+        )
         if response is None:
             try:
                 client.send(
@@ -518,7 +863,7 @@ def launch_acp(
                     }
                 )
                 evidence["session_cancel_sent"] = True
-                response = wait_for_response(client, 3, evidence, 2.0)
+                response = wait_for_response(client, prompt_request_id, evidence, 2.0)
             except (BrokenPipeError, OSError):
                 evidence["stream_failed"] = True
         if response is not None:
@@ -544,13 +889,18 @@ def launch_acp(
         code, forced = stop_process(process)
         evidence["exit_code"] = code
         evidence["forced_process_group_kill"] = forced
+        evidence["process_joined"] = process.returncode is not None
         evidence["effect_marker_present"] = marker.exists()
         if exact_version is None and process.stderr is not None:
             diagnostic = process.stderr.read(4096).decode("utf-8", errors="replace")
             evidence["fake_diagnostic"] = (
                 diagnostic.replace(str(host_home), "<host-home>")
                 .replace(str(scratch), "<task-scratch>")
-                .replace(FAKE_TOKEN, "<fake-token>")[:500]
+                .replace(FAKE_TOKEN, "<fake-token>")
+                .replace(
+                    FAKE_DELEGATED_CREDENTIAL.decode(),
+                    "<fake-delegated-credential>",
+                )[:500]
             )
 
 
@@ -563,8 +913,234 @@ def require_macos_sandbox() -> str:
     return "/bin/bash"
 
 
+def validate_fake_invocation_record(record: dict[str, Any]) -> None:
+    if record.get("schema") != "copilot-cli-acp-authenticated-invocation.v1":
+        raise ValueError("unexpected authenticated invocation record schema")
+    if record.get("execution_kind") != "fake_control" or record.get("original_artifact_started"):
+        raise ValueError("fake invocation record confuses a control with original execution")
+    if record.get("pre_execution_fsynced") is not True:
+        raise ValueError("fake invocation is missing its durable pre-execution record")
+    pre_execution = record.get("pre_execution_record")
+    if not isinstance(pre_execution, dict):
+        raise ValueError("fake invocation record has no pre-execution object")
+    expected_digest = json_digest(pre_execution)
+    if record.get("pre_execution_sha256") != expected_digest:
+        raise ValueError("fake invocation result does not bind the persisted pre-execution record")
+    result = record.get("result")
+    if not isinstance(result, dict):
+        raise ValueError("fake invocation record has no result")
+    if result.get("pre_execution_sha256") != expected_digest:
+        raise ValueError("result record does not correlate to the pre-execution record")
+    if result.get("pre_execution_record_sha256") != expected_digest:
+        raise ValueError("result record is missing its pre-execution record digest")
+    required_result_fields = {
+        "recorded_provider_selection",
+        "underlying_model_identity_and_observation_source",
+        "pre_execution_record_sha256",
+        "auth_method_observed",
+        "permission_request_count_and_safe_shape",
+        "permission_response_cancelled_or_rejected",
+        "pending_permission_wait_abandoned",
+        "late_permission_response_accepted",
+        "session_cancel_sent",
+        "prompt_terminal_outcome",
+        "effect_marker_absent_before_prompt",
+        "effect_marker_absent_after_stop",
+        "observed_network_audiences_only",
+        "retry_resend_fallback_and_tool_attempt_counts",
+        "process_exit_status_and_joined_state",
+        "forced_process_group_stop",
+        "elapsed_seconds",
+    }
+    if not required_result_fields <= set(result):
+        raise ValueError("fake result record is missing required permission or cleanup evidence")
+    serialized = json.dumps(record, sort_keys=True)
+    for forbidden in (
+        "/Users/",
+        "/home/",
+        "test-only-delegated-capability",
+        "github_pat_",
+        "ghp_",
+        "gho_",
+        "ghs_",
+        "xoxb-",
+        "Bearer ",
+    ):
+        if forbidden in serialized:
+            raise ValueError(f"invocation record contains forbidden secret/path marker {forbidden!r}")
+
+
+def authenticated_fake_run(
+    scratch: Path, host_home: Path
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    preflight = authenticated_fake_preflight()
+    credential = fake_delegated_credential(
+        {
+            "account_ref": FAKE_ACCOUNT_REF,
+            "entitlement": "confirmed-in-fake",
+            "model_id": FAKE_MODEL_ID,
+            "model_policy": "pinned-no-fallback",
+            "credential_request": "one-use-copilot-session",
+            "audience": FAKE_AUDIENCE,
+            "provider_traffic": [FAKE_AUDIENCE],
+        }
+    )
+    if credential is None:
+        raise RuntimeError("fake host broker withheld the valid test capability")
+
+    auth_scratch = scratch / "authenticated-fake"
+    auth_scratch.mkdir()
+    record_path = auth_scratch / "authenticated-invocation.json"
+    marker = auth_scratch / "permission-effect-marker"
+    pre_execution = {
+        "target_identity": {
+            "route": "copilot-cli.acp",
+            "version": "1.0.80",
+            "binary_sha256": "fe779da7dd2342c1d23f0744873fa27d0251eaaee4dc6637fa53093639c0f3c9",
+        },
+        "executed_identity": {
+            "kind": "fake-acp-auth-agent",
+            "source_sha256": hashlib.sha256(FAKE_AUTH_AGENT_SOURCE.encode()).hexdigest(),
+        },
+        "account_access_ref": FAKE_ACCOUNT_REF,
+        "entitlement": "synthetic-fake-approval-only",
+        "selected_model": FAKE_MODEL_ID,
+        "model_policy": "pinned-no-fallback",
+        "credential_mechanism": "fake-host-broker-one-use-inherited-pipe",
+        "network_audiences": [FAKE_AUDIENCE],
+        "containment": "deny-all-network-and-host-home; task-scratch-writes-only",
+        "intended_action": "create-one-empty-task-scratch-marker-if-approved",
+        "approval_policy": "cancel-permission; never-approve",
+        "budgets": {
+            "prompts": 1,
+            "seconds": MAX_AUTH_FAKE_SECONDS,
+            "retries": 0,
+            "resends": 0,
+            "auto_fallbacks": 0,
+            "permission_requests": 1,
+            "tool_attempts": 1,
+            "effects": 0,
+        },
+    }
+    pre_execution_sha256 = json_digest(pre_execution)
+    record = {
+        "schema": "copilot-cli-acp-authenticated-invocation.v1",
+        "execution_kind": "fake_control",
+        "original_artifact_started": False,
+        "pre_execution_fsynced": True,
+        "pre_execution_sha256": pre_execution_sha256,
+        "pre_execution_record": pre_execution,
+        "result": None,
+    }
+    write_json_durable(record_path, record)
+    persisted = load_json(record_path)
+    if persisted != record or persisted.get("result") is not None:
+        raise RuntimeError("fake pre-execution record did not persist before process start")
+
+    started = time.monotonic()
+    fake_agent = Path(sys.executable)
+    outcome = launch_acp(
+        fake_agent,
+        [sys.executable, "-c", FAKE_AUTH_AGENT_SOURCE],
+        auth_scratch,
+        host_home,
+        record_path,
+        None,
+        delegated_credential=credential,
+        authenticate_method_id="copilot-login",
+        run_timeout_seconds=0.25,
+    )
+    elapsed = time.monotonic() - started
+    diagnostics = [
+        json.loads(line)
+        for line in outcome.get("fake_diagnostic", "").splitlines()
+        if line.strip()
+    ]
+    final_agent_report = diagnostics[-1] if diagnostics else {}
+    if marker.exists():
+        raise RuntimeError("authenticated fake left an action marker after cancellation")
+    if outcome.get("initialize") != "success" or outcome.get("session_new") != "success":
+        raise RuntimeError("authenticated fake did not accept the delegated in-memory capability")
+    if outcome.get("auth_method_ids") != ["copilot-login"]:
+        raise RuntimeError("authenticated fake did not report the expected auth method")
+    if (
+        outcome.get("authenticate") != "success"
+        or outcome.get("authenticate_method_selected") != "copilot-login"
+    ):
+        raise RuntimeError("authenticated fake ACP authenticate exchange did not complete")
+    if outcome.get("observed_model_id") != FAKE_MODEL_ID:
+        raise RuntimeError("authenticated fake did not report its selected model")
+    if not outcome.get("permission_request_observed") or outcome.get("permission_reply") != "cancelled":
+        raise RuntimeError("authenticated fake permission was not observed and cancelled")
+    if len(outcome.get("permission_methods_observed", [])) != 1:
+        raise RuntimeError("authenticated fake exceeded its one-permission-request budget")
+    if outcome.get("permission_option_ids") != ["allow_once", "reject_once"]:
+        raise RuntimeError("authenticated fake permission options were not safely recorded")
+    if not outcome.get("pending_permission_wait_abandoned") or outcome.get("late_permission_response_accepted"):
+        raise RuntimeError("authenticated fake kept a pending permission wait or accepted a late reply")
+    if outcome.get("session_cancel_sent") is not True or outcome.get("session_prompt") != "cancelled":
+        raise RuntimeError("authenticated fake prompt did not stop through ACP cancellation")
+    if outcome.get("effect_marker_absent_before_prompt") is not True or outcome.get("effect_marker_present"):
+        raise RuntimeError("authenticated fake marker was present before prompt or after stop")
+    if outcome.get("credential_environment_variables_absent") is not True:
+        raise RuntimeError("authenticated fake delegation leaked into token environment variables")
+    if outcome.get("process_joined") is not True or outcome.get("exit_code") != 0:
+        raise RuntimeError("authenticated fake child was not cleanly joined")
+    if outcome.get("forced_process_group_kill") or elapsed > MAX_AUTH_FAKE_SECONDS:
+        raise RuntimeError("authenticated fake exceeded its bounded cleanup window")
+    if final_agent_report.get("permission_outcome") != "cancelled" or final_agent_report.get("effect_marker_present"):
+        raise RuntimeError("authenticated fake child did not observe cancellation without an effect")
+
+    record["result"] = {
+        "pre_execution_sha256": pre_execution_sha256,
+        "pre_execution_record_sha256": pre_execution_sha256,
+        "recorded_provider_selection": outcome["observed_model_id"],
+        "underlying_model_identity_and_observation_source": (
+            "fake currentModelId from session/new"
+        ),
+        "auth_method_observed": {
+            "advertised_ids": outcome["auth_method_ids"],
+            "selected_method_id": outcome["authenticate_method_selected"],
+            "result": outcome["authenticate"],
+        },
+        "permission_request_count_and_safe_shape": {
+            "count": len(outcome["permission_methods_observed"]),
+            "method": outcome["permission_methods_observed"][0],
+            "option_ids": outcome["permission_option_ids"],
+        },
+        "permission_response_cancelled_or_rejected": outcome["permission_reply"],
+        "pending_permission_wait_abandoned": outcome["pending_permission_wait_abandoned"],
+        "late_permission_response_accepted": outcome["late_permission_response_accepted"],
+        "session_cancel_sent": outcome["session_cancel_sent"],
+        "prompt_terminal_outcome": outcome["session_prompt"],
+        "effect_marker_absent_before_prompt": outcome["effect_marker_absent_before_prompt"],
+        "effect_marker_absent_after_stop": not outcome["effect_marker_present"],
+        "observed_network_audiences_only": [],
+        "retry_resend_fallback_and_tool_attempt_counts": {
+            "prompts": 1,
+            "retries": 0,
+            "resends": 0,
+            "auto_fallbacks": 0,
+            "permission_requests": len(outcome["permission_methods_observed"]),
+            "tool_attempts": 1,
+            "effects": 0,
+        },
+        "process_exit_status_and_joined_state": {
+            "exit_code": outcome["exit_code"],
+            "joined": outcome["process_joined"],
+        },
+        "forced_process_group_stop": outcome["forced_process_group_kill"],
+        "elapsed_seconds": round(elapsed, 3),
+    }
+    write_json_durable(record_path, record)
+    persisted = load_json(record_path)
+    validate_fake_invocation_record(persisted)
+    return preflight, persisted["result"]
+
+
 def self_test() -> dict[str, Any]:
     fake_shell = require_macos_sandbox()
+    plan = validate_authenticated_plan()
     host_home = Path(os.environ["HOME"]).resolve()
     with tempfile.TemporaryDirectory(prefix="copilot-acp-offline-proof-") as temp_root:
         scratch = Path(temp_root).resolve()
@@ -605,25 +1181,45 @@ def self_test() -> dict[str, Any]:
             raise RuntimeError("fake ACP permission request was not observed")
         if outcome.get("permission_reply") != "cancelled":
             raise RuntimeError("fake ACP permission request was not cancelled")
+        if not outcome.get("pending_permission_wait_abandoned"):
+            raise RuntimeError("fake ACP pending permission wait was not abandoned")
+        if outcome.get("late_permission_response_accepted"):
+            raise RuntimeError("fake ACP accepted a late permission response")
         if outcome.get("effect_marker_present"):
             raise RuntimeError("fake ACP rejection allowed the tool effect")
-        if outcome.get("exit_code") != 0 or outcome.get("forced_process_group_kill"):
+        if (
+            outcome.get("exit_code") != 0
+            or outcome.get("forced_process_group_kill")
+            or not outcome.get("process_joined")
+        ):
             raise RuntimeError("fake ACP agent did not exit cleanly")
+        auth_preflight, auth_result = authenticated_fake_run(scratch, host_home)
         return {
             "status": "passed",
             "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
             "filesystem_boundary": "writes allowed only inside task scratch; host home read denied",
             "keychain_boundary": "securityd Mach lookup denied by profile",
             "record_before_execution": True,
+            "authenticated_plan": {
+                "schema": plan["schema"],
+                "execution_authorized": plan["execution_authorized"],
+                "invocations": len(plan["invocations"]),
+                "missing_owner_attestations": len(plan["missing_owner_attestations"]),
+                "record_schema_validated": True,
+            },
             "fake_acp": {
                 "initialize": outcome["initialize"],
                 "session_new": outcome["session_new"],
                 "permission_request": "observed",
                 "permission_reply": "cancelled",
+                "pending_permission_wait_abandoned": outcome["pending_permission_wait_abandoned"],
                 "prompt_stop_reason": outcome["session_prompt"],
                 "tool_effect": "absent",
                 "exit_code": outcome["exit_code"],
+                "process_joined": outcome["process_joined"],
             },
+            "authenticated_fake_preflight": auth_preflight,
+            "authenticated_fake_result": auth_result,
         }
 
 
@@ -787,13 +1383,28 @@ def execute_artifacts(record_path: Path, artifact_root: Path) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--validate-plan", action="store_true")
     parser.add_argument("--prepare", action="store_true")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--record", type=Path)
     parser.add_argument("--artifact-root", type=Path)
     args = parser.parse_args()
     try:
-        if args.self_test:
+        if args.validate_plan:
+            plan = validate_authenticated_plan()
+            print(
+                json.dumps(
+                    {
+                        "status": "passed",
+                        "schema": plan["schema"],
+                        "execution_authorized": plan["execution_authorized"],
+                        "invocations": len(plan["invocations"]),
+                        "missing_owner_attestations": len(plan["missing_owner_attestations"]),
+                    },
+                    sort_keys=True,
+                )
+            )
+        elif args.self_test:
             verify_inventory()
             print(json.dumps(self_test(), indent=2))
         elif args.prepare and args.record:
@@ -801,7 +1412,7 @@ def main() -> int:
         elif args.execute and args.record and args.artifact_root:
             execute_artifacts(args.record, args.artifact_root)
         else:
-            parser.error("choose --self-test, --prepare --record, or --execute --record --artifact-root")
+            parser.error("choose --validate-plan, --self-test, --prepare --record, or --execute --record --artifact-root")
     except (OSError, RuntimeError, ValueError, KeyError, json.JSONDecodeError) as error:
         print(f"offline proof failed closed: {error}", file=sys.stderr)
         return 1

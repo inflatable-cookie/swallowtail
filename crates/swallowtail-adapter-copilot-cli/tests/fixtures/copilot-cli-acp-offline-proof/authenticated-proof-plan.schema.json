@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:swallowtail:copilot-cli-acp-authenticated-proof-plan:v1",
+  "title": "Copilot CLI ACP authenticated proof preparation plan",
+  "description": "Secret-free plan and per-invocation pre-execution record template. A plan with unresolved prerequisites is not executable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "plan_id",
+    "preparation_status",
+    "execution_authorized",
+    "scope",
+    "account_access",
+    "model_policy",
+    "credential_delegation",
+    "network_policy",
+    "containment",
+    "action",
+    "budgets",
+    "invocations",
+    "result_record_fields",
+    "missing_owner_attestations"
+  ],
+  "properties": {
+    "schema": { "const": "copilot-cli-acp-authenticated-proof-plan.v1" },
+    "plan_id": { "type": "string", "minLength": 1 },
+    "preparation_status": { "const": "prepared_not_ready_for_live_execution" },
+    "execution_authorized": { "const": false },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "selected_argv", "platform", "inventory_sha256"],
+      "properties": {
+        "route": { "const": "copilot-cli.acp" },
+        "selected_argv": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "platform": { "const": "darwin-arm64" },
+        "inventory_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "account_access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["account_ref", "source", "login_status", "entitlement_status"],
+      "properties": {
+        "account_ref": { "const": "github-account:betterthanclay" },
+        "source": { "const": "operator-reported-2026-10-09" },
+        "login_status": { "const": "operator-reported-complete" },
+        "entitlement_status": { "const": "unattested" }
+      }
+    },
+    "model_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidate", "selection_source", "excluded_path", "exact_acp_selection_status", "underlying_identity_status", "fallback_policy", "retry_mapping_status"],
+      "properties": {
+        "candidate": { "const": "Auto" },
+        "selection_source": { "const": "operator-reported-available-selection" },
+        "excluded_path": { "const": "local-Gemma-12B-is-not-a-substitute" },
+        "exact_acp_selection_status": { "const": "unproved-for-frozen-artifacts" },
+        "underlying_identity_status": { "const": "unobservable-or-unproved" },
+        "fallback_policy": { "const": "no-unapproved-model-substitution" },
+        "retry_mapping_status": { "const": "unproved-for-frozen-artifacts" }
+      }
+    },
+    "credential_delegation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "proposed_transport", "credential_store_access", "secret_exposure"],
+      "properties": {
+        "status": { "const": "fake-proved-production-mechanism-unattested" },
+        "proposed_transport": { "const": "host-owned-one-use-private-process-channel" },
+        "credential_store_access": { "const": "host-broker-only-child-home-and-keychain-denied" },
+        "secret_exposure": { "const": "never-in-environment-files-logs-or-records" }
+      }
+    },
+    "network_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "authenticated_audiences", "unexpected_traffic"],
+      "properties": {
+        "status": { "const": "exact-audiences-unresolved" },
+        "authenticated_audiences": {
+          "type": "array",
+          "items": { "type": "string" },
+          "maxItems": 0
+        },
+        "unexpected_traffic": { "const": "fail-closed-before-prompt" }
+      }
+    },
+    "containment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fake_profile_status", "fake_profile", "future_profile_status", "future_profile"],
+      "properties": {
+        "fake_profile_status": { "const": "proved" },
+        "fake_profile": { "const": "deny-network-host-home-and-keychain; scratch-writes-only" },
+        "future_profile_status": { "const": "proposed-not-proved" },
+        "future_profile": { "const": "deny-host-home-and-keychain; task-scratch-writes-only; exact-audience-proxy-only" }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path_template", "permission_required", "approval", "max_effects"],
+      "properties": {
+        "kind": { "const": "create-one-empty-task-scratch-marker" },
+        "path_template": { "const": "<task-scratch>/permission-effect-marker" },
+        "permission_required": { "const": true },
+        "approval": { "const": "never" },
+        "max_effects": { "const": 0 }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_invocations_per_version", "max_total_invocations", "max_acp_prompts_per_invocation", "max_total_seconds_per_invocation", "max_harness_retries", "max_resends", "max_auto_fallbacks", "max_permission_requests", "max_tool_attempts", "max_tool_effects", "reviewer_live_attempts"],
+      "properties": {
+        "max_invocations_per_version": { "const": 1 },
+        "max_total_invocations": { "const": 3 },
+        "max_acp_prompts_per_invocation": { "const": 1 },
+        "max_total_seconds_per_invocation": { "const": 60 },
+        "max_harness_retries": { "const": 0 },
+        "max_resends": { "const": 0 },
+        "max_auto_fallbacks": { "const": 0 },
+        "max_permission_requests": { "const": 1 },
+        "max_tool_attempts": { "const": 1 },
+        "max_tool_effects": { "const": 0 },
+        "reviewer_live_attempts": { "const": 0 }
+      }
+    },
+    "invocations": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["version", "binary_sha256", "pre_execution_record"],
+        "properties": {
+          "version": { "enum": ["1.0.80", "1.0.81", "1.0.93"] },
+          "binary_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "pre_execution_record": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["requires_fsync_before_original_start", "identity", "account_access_ref", "entitlement_status", "selected_model", "model_policy", "credential_mechanism", "network_audiences", "containment", "action", "budgets"],
+            "properties": {
+              "requires_fsync_before_original_start": { "const": true },
+              "identity": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["package", "version", "platform", "binary_sha256"],
+                "properties": {
+                  "package": { "const": "@github/copilot-darwin-arm64" },
+                  "version": { "enum": ["1.0.80", "1.0.81", "1.0.93"] },
+                  "platform": { "const": "darwin-arm64" },
+                  "binary_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+                }
+              },
+              "account_access_ref": { "const": "github-account:betterthanclay" },
+              "entitlement_status": { "const": "unattested" },
+              "selected_model": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["candidate", "resolved_identity", "status"],
+                "properties": {
+                  "candidate": { "const": "Auto" },
+                  "resolved_identity": { "type": "null" },
+                  "status": { "const": "unresolved" }
+                }
+              },
+              "model_policy": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["selection_path_status", "substitution", "retry_status"],
+                "properties": {
+                  "selection_path_status": { "const": "unproved-for-this-version" },
+                  "substitution": { "const": "fail-closed" },
+                  "retry_status": { "const": "unproved-for-this-version" }
+                }
+              },
+              "credential_mechanism": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["status", "mechanism_id", "delegation"],
+                "properties": {
+                  "status": { "const": "unattested" },
+                  "mechanism_id": { "type": "null" },
+                  "delegation": { "const": "host-owned-one-use-private-process-channel" }
+                }
+              },
+              "network_audiences": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["status", "exact_hosts", "unexpected_traffic"],
+                "properties": {
+                  "status": { "const": "unresolved" },
+                  "exact_hosts": { "type": "array", "items": { "type": "string" }, "maxItems": 0 },
+                  "unexpected_traffic": { "const": "fail-closed" }
+                }
+              },
+              "containment": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["status", "host_home", "credential_store", "writes", "network"],
+                "properties": {
+                  "status": { "const": "proposed" },
+                  "host_home": { "const": "deny" },
+                  "credential_store": { "const": "host-broker-only" },
+                  "writes": { "const": "task-scratch-only" },
+                  "network": { "const": "exact-audience-proxy-only" }
+                }
+              },
+              "action": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "path_template", "approval", "max_effects"],
+                "properties": {
+                  "kind": { "const": "create-one-empty-task-scratch-marker" },
+                  "path_template": { "const": "<task-scratch>/permission-effect-marker" },
+                  "approval": { "const": "never" },
+                  "max_effects": { "const": 0 }
+                }
+              },
+              "budgets": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["prompts", "seconds", "retries", "resends", "auto_fallbacks", "permission_requests", "tool_attempts", "effects"],
+                "properties": {
+                  "prompts": { "const": 1 },
+                  "seconds": { "const": 60 },
+                  "retries": { "const": 0 },
+                  "resends": { "const": 0 },
+                  "auto_fallbacks": { "const": 0 },
+                  "permission_requests": { "const": 1 },
+                  "tool_attempts": { "const": 1 },
+                  "effects": { "const": 0 }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "result_record_fields": {
+      "const": [
+        "recorded_provider_selection",
+        "underlying_model_identity_and_observation_source",
+        "pre_execution_record_sha256",
+        "auth_method_observed",
+        "permission_request_count_and_safe_shape",
+        "permission_response_cancelled_or_rejected",
+        "pending_permission_wait_abandoned",
+        "late_permission_response_accepted",
+        "session_cancel_sent",
+        "prompt_terminal_outcome",
+        "effect_marker_absent_before_prompt",
+        "effect_marker_absent_after_stop",
+        "observed_network_audiences_only",
+        "retry_resend_fallback_and_tool_attempt_counts",
+        "process_exit_status_and_joined_state",
+        "forced_process_group_stop",
+        "elapsed_seconds"
+      ]
+    },
+    "missing_owner_attestations": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "owner", "needed"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "needed": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

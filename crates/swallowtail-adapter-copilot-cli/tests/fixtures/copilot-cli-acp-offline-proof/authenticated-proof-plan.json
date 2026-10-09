@@ -1,0 +1,291 @@
+{
+  "schema": "copilot-cli-acp-authenticated-proof-plan.v1",
+  "plan_id": "copilot-acp-auth-157-v1",
+  "preparation_status": "prepared_not_ready_for_live_execution",
+  "execution_authorized": false,
+  "scope": {
+    "route": "copilot-cli.acp",
+    "selected_argv": ["copilot", "--acp", "--stdio"],
+    "platform": "darwin-arm64",
+    "inventory_sha256": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
+  },
+  "account_access": {
+    "account_ref": "github-account:betterthanclay",
+    "source": "operator-reported-2026-10-09",
+    "login_status": "operator-reported-complete",
+    "entitlement_status": "unattested"
+  },
+  "model_policy": {
+    "candidate": "Auto",
+    "selection_source": "operator-reported-available-selection",
+    "excluded_path": "local-Gemma-12B-is-not-a-substitute",
+    "exact_acp_selection_status": "unproved-for-frozen-artifacts",
+    "underlying_identity_status": "unobservable-or-unproved",
+    "fallback_policy": "no-unapproved-model-substitution",
+    "retry_mapping_status": "unproved-for-frozen-artifacts"
+  },
+  "credential_delegation": {
+    "status": "fake-proved-production-mechanism-unattested",
+    "proposed_transport": "host-owned-one-use-private-process-channel",
+    "credential_store_access": "host-broker-only-child-home-and-keychain-denied",
+    "secret_exposure": "never-in-environment-files-logs-or-records"
+  },
+  "network_policy": {
+    "status": "exact-audiences-unresolved",
+    "authenticated_audiences": [],
+    "unexpected_traffic": "fail-closed-before-prompt"
+  },
+  "containment": {
+    "fake_profile_status": "proved",
+    "fake_profile": "deny-network-host-home-and-keychain; scratch-writes-only",
+    "future_profile_status": "proposed-not-proved",
+    "future_profile": "deny-host-home-and-keychain; task-scratch-writes-only; exact-audience-proxy-only"
+  },
+  "action": {
+    "kind": "create-one-empty-task-scratch-marker",
+    "path_template": "<task-scratch>/permission-effect-marker",
+    "permission_required": true,
+    "approval": "never",
+    "max_effects": 0
+  },
+  "budgets": {
+    "max_invocations_per_version": 1,
+    "max_total_invocations": 3,
+    "max_acp_prompts_per_invocation": 1,
+    "max_total_seconds_per_invocation": 60,
+    "max_harness_retries": 0,
+    "max_resends": 0,
+    "max_auto_fallbacks": 0,
+    "max_permission_requests": 1,
+    "max_tool_attempts": 1,
+    "max_tool_effects": 0,
+    "reviewer_live_attempts": 0
+  },
+  "invocations": [
+    {
+      "version": "1.0.80",
+      "binary_sha256": "fe779da7dd2342c1d23f0744873fa27d0251eaaee4dc6637fa53093639c0f3c9",
+      "pre_execution_record": {
+        "requires_fsync_before_original_start": true,
+        "identity": {
+          "package": "@github/copilot-darwin-arm64",
+          "version": "1.0.80",
+          "platform": "darwin-arm64",
+          "binary_sha256": "fe779da7dd2342c1d23f0744873fa27d0251eaaee4dc6637fa53093639c0f3c9"
+        },
+        "account_access_ref": "github-account:betterthanclay",
+        "entitlement_status": "unattested",
+        "selected_model": {
+          "candidate": "Auto",
+          "resolved_identity": null,
+          "status": "unresolved"
+        },
+        "model_policy": {
+          "selection_path_status": "unproved-for-this-version",
+          "substitution": "fail-closed",
+          "retry_status": "unproved-for-this-version"
+        },
+        "credential_mechanism": {
+          "status": "unattested",
+          "mechanism_id": null,
+          "delegation": "host-owned-one-use-private-process-channel"
+        },
+        "network_audiences": {
+          "status": "unresolved",
+          "exact_hosts": [],
+          "unexpected_traffic": "fail-closed"
+        },
+        "containment": {
+          "status": "proposed",
+          "host_home": "deny",
+          "credential_store": "host-broker-only",
+          "writes": "task-scratch-only",
+          "network": "exact-audience-proxy-only"
+        },
+        "action": {
+          "kind": "create-one-empty-task-scratch-marker",
+          "path_template": "<task-scratch>/permission-effect-marker",
+          "approval": "never",
+          "max_effects": 0
+        },
+        "budgets": {
+          "prompts": 1,
+          "seconds": 60,
+          "retries": 0,
+          "resends": 0,
+          "auto_fallbacks": 0,
+          "permission_requests": 1,
+          "tool_attempts": 1,
+          "effects": 0
+        }
+      }
+    },
+    {
+      "version": "1.0.81",
+      "binary_sha256": "0f2ba6429dbee9f5adcdc2ad09ded7f5a0511f5da9af10c3a0dbc6ed070f004f",
+      "pre_execution_record": {
+        "requires_fsync_before_original_start": true,
+        "identity": {
+          "package": "@github/copilot-darwin-arm64",
+          "version": "1.0.81",
+          "platform": "darwin-arm64",
+          "binary_sha256": "0f2ba6429dbee9f5adcdc2ad09ded7f5a0511f5da9af10c3a0dbc6ed070f004f"
+        },
+        "account_access_ref": "github-account:betterthanclay",
+        "entitlement_status": "unattested",
+        "selected_model": {
+          "candidate": "Auto",
+          "resolved_identity": null,
+          "status": "unresolved"
+        },
+        "model_policy": {
+          "selection_path_status": "unproved-for-this-version",
+          "substitution": "fail-closed",
+          "retry_status": "unproved-for-this-version"
+        },
+        "credential_mechanism": {
+          "status": "unattested",
+          "mechanism_id": null,
+          "delegation": "host-owned-one-use-private-process-channel"
+        },
+        "network_audiences": {
+          "status": "unresolved",
+          "exact_hosts": [],
+          "unexpected_traffic": "fail-closed"
+        },
+        "containment": {
+          "status": "proposed",
+          "host_home": "deny",
+          "credential_store": "host-broker-only",
+          "writes": "task-scratch-only",
+          "network": "exact-audience-proxy-only"
+        },
+        "action": {
+          "kind": "create-one-empty-task-scratch-marker",
+          "path_template": "<task-scratch>/permission-effect-marker",
+          "approval": "never",
+          "max_effects": 0
+        },
+        "budgets": {
+          "prompts": 1,
+          "seconds": 60,
+          "retries": 0,
+          "resends": 0,
+          "auto_fallbacks": 0,
+          "permission_requests": 1,
+          "tool_attempts": 1,
+          "effects": 0
+        }
+      }
+    },
+    {
+      "version": "1.0.93",
+      "binary_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+      "pre_execution_record": {
+        "requires_fsync_before_original_start": true,
+        "identity": {
+          "package": "@github/copilot-darwin-arm64",
+          "version": "1.0.93",
+          "platform": "darwin-arm64",
+          "binary_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"
+        },
+        "account_access_ref": "github-account:betterthanclay",
+        "entitlement_status": "unattested",
+        "selected_model": {
+          "candidate": "Auto",
+          "resolved_identity": null,
+          "status": "unresolved"
+        },
+        "model_policy": {
+          "selection_path_status": "unproved-for-this-version",
+          "substitution": "fail-closed",
+          "retry_status": "unproved-for-this-version"
+        },
+        "credential_mechanism": {
+          "status": "unattested",
+          "mechanism_id": null,
+          "delegation": "host-owned-one-use-private-process-channel"
+        },
+        "network_audiences": {
+          "status": "unresolved",
+          "exact_hosts": [],
+          "unexpected_traffic": "fail-closed"
+        },
+        "containment": {
+          "status": "proposed",
+          "host_home": "deny",
+          "credential_store": "host-broker-only",
+          "writes": "task-scratch-only",
+          "network": "exact-audience-proxy-only"
+        },
+        "action": {
+          "kind": "create-one-empty-task-scratch-marker",
+          "path_template": "<task-scratch>/permission-effect-marker",
+          "approval": "never",
+          "max_effects": 0
+        },
+        "budgets": {
+          "prompts": 1,
+          "seconds": 60,
+          "retries": 0,
+          "resends": 0,
+          "auto_fallbacks": 0,
+          "permission_requests": 1,
+          "tool_attempts": 1,
+          "effects": 0
+        }
+      }
+    }
+  ],
+  "result_record_fields": [
+    "recorded_provider_selection",
+    "underlying_model_identity_and_observation_source",
+    "pre_execution_record_sha256",
+    "auth_method_observed",
+    "permission_request_count_and_safe_shape",
+    "permission_response_cancelled_or_rejected",
+    "pending_permission_wait_abandoned",
+    "late_permission_response_accepted",
+    "session_cancel_sent",
+    "prompt_terminal_outcome",
+    "effect_marker_absent_before_prompt",
+    "effect_marker_absent_after_stop",
+    "observed_network_audiences_only",
+    "retry_resend_fallback_and_tool_attempt_counts",
+    "process_exit_status_and_joined_state",
+    "forced_process_group_stop",
+    "elapsed_seconds"
+  ],
+  "missing_owner_attestations": [
+    {
+      "id": "copilot-cli-entitlement-and-organization-policy",
+      "owner": "Tom, as account owner",
+      "needed": "Confirm the existing account has Copilot CLI entitlement and any applicable organization policy permits CLI use; do not provide credentials."
+    },
+    {
+      "id": "exact-authentication-mechanism-and-delegation",
+      "owner": "account owner and host authentication owner",
+      "needed": "Name the existing login mechanism and approve a one-use host-owned delegation that exposes no secret to files, environment variables, logs, or arbitrary host/home reads."
+    },
+    {
+      "id": "exact-auto-acp-selection-and-model-observation",
+      "owner": "maintainer of the frozen Copilot CLI artifacts",
+      "needed": "Show for each frozen version that ACP accepts the selected Auto setting and reports the actual underlying model before prompt execution, with exact selected-path control-flow evidence."
+    },
+    {
+      "id": "exact-auth-and-provider-audiences",
+      "owner": "maintainer of the frozen Copilot CLI artifacts and host network owner",
+      "needed": "Name every exact authentication, inference, and required service audience; prove unexpected destinations fail before prompt or effect."
+    },
+    {
+      "id": "exact-retry-fallback-and-tool-attempt-limits",
+      "owner": "maintainer of the frozen Copilot CLI artifacts",
+      "needed": "Prove provider retry, model fallback, permission-request, and tool-attempt bounds or identify a shipped control that enforces the plan limits."
+    },
+    {
+      "id": "authenticated-host-containment-profile",
+      "owner": "host containment owner",
+      "needed": "Review a profile that permits only attested audiences while denying host-home and keychain access, restricting writes to task scratch, and joining the child within the 60-second invocation budget."
+    }
+  ]
+}

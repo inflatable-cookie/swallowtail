@@ -5,6 +5,10 @@ const INVENTORY: &str =
     include_str!("fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json");
 const EXECUTION: &str =
     include_str!("fixtures/copilot-cli-acp-offline-proof/execution-record.json");
+const AUTHENTICATED_PLAN: &str =
+    include_str!("fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.json");
+const AUTHENTICATED_PLAN_SCHEMA: &str =
+    include_str!("fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.schema.json");
 
 fn version_record<'a>(package: &'a Value, version: &str) -> &'a Value {
     package["versions"]
@@ -212,5 +216,144 @@ fn execution_record_is_secret_free_and_keeps_the_permission_stop_explicit() {
             !serialized.contains(forbidden),
             "record contains {forbidden}"
         );
+    }
+}
+
+#[test]
+fn authenticated_plan_is_secret_free_bounded_and_disabled_until_attested() {
+    let plan: Value = serde_json::from_str(AUTHENTICATED_PLAN).expect("authenticated plan JSON");
+    let schema: Value =
+        serde_json::from_str(AUTHENTICATED_PLAN_SCHEMA).expect("authenticated plan schema JSON");
+
+    assert_eq!(
+        schema["$schema"],
+        "https://json-schema.org/draft/2020-12/schema"
+    );
+    assert_eq!(
+        plan["schema"],
+        "copilot-cli-acp-authenticated-proof-plan.v1"
+    );
+    assert_eq!(
+        plan["preparation_status"],
+        "prepared_not_ready_for_live_execution"
+    );
+    assert_eq!(plan["execution_authorized"], false);
+    assert_eq!(plan["scope"]["route"], "copilot-cli.acp");
+    assert_eq!(
+        plan["scope"]["selected_argv"],
+        serde_json::json!(["copilot", "--acp", "--stdio"])
+    );
+
+    assert_eq!(
+        plan["account_access"]["account_ref"],
+        "github-account:betterthanclay"
+    );
+    assert_eq!(
+        plan["account_access"]["login_status"],
+        "operator-reported-complete"
+    );
+    assert_eq!(plan["account_access"]["entitlement_status"], "unattested");
+    assert_eq!(plan["model_policy"]["candidate"], "Auto");
+    assert_eq!(
+        plan["model_policy"]["excluded_path"],
+        "local-Gemma-12B-is-not-a-substitute"
+    );
+    assert_eq!(
+        plan["model_policy"]["exact_acp_selection_status"],
+        "unproved-for-frozen-artifacts"
+    );
+    assert_eq!(
+        plan["model_policy"]["underlying_identity_status"],
+        "unobservable-or-unproved"
+    );
+    assert_eq!(
+        plan["network_policy"]["authenticated_audiences"],
+        serde_json::json!([])
+    );
+
+    assert_eq!(plan["budgets"]["max_invocations_per_version"], 1);
+    assert_eq!(plan["budgets"]["max_total_invocations"], 3);
+    assert_eq!(plan["budgets"]["max_acp_prompts_per_invocation"], 1);
+    assert_eq!(plan["budgets"]["max_total_seconds_per_invocation"], 60);
+    assert_eq!(plan["budgets"]["max_harness_retries"], 0);
+    assert_eq!(plan["budgets"]["max_resends"], 0);
+    assert_eq!(plan["budgets"]["max_auto_fallbacks"], 0);
+    assert_eq!(plan["budgets"]["max_permission_requests"], 1);
+    assert_eq!(plan["budgets"]["max_tool_attempts"], 1);
+    assert_eq!(plan["budgets"]["max_tool_effects"], 0);
+    assert_eq!(plan["budgets"]["reviewer_live_attempts"], 0);
+    assert_eq!(plan["action"]["approval"], "never");
+    assert_eq!(plan["action"]["max_effects"], 0);
+
+    let invocations = plan["invocations"]
+        .as_array()
+        .expect("invocation templates");
+    assert_eq!(invocations.len(), 3);
+    let identities = [
+        (
+            "1.0.80",
+            "fe779da7dd2342c1d23f0744873fa27d0251eaaee4dc6637fa53093639c0f3c9",
+        ),
+        (
+            "1.0.81",
+            "0f2ba6429dbee9f5adcdc2ad09ded7f5a0511f5da9af10c3a0dbc6ed070f004f",
+        ),
+        (
+            "1.0.93",
+            "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+        ),
+    ];
+    for (invocation, (version, sha256)) in invocations.iter().zip(identities) {
+        assert_eq!(invocation["version"], version);
+        assert_eq!(invocation["binary_sha256"], sha256);
+        let record = &invocation["pre_execution_record"];
+        assert_eq!(record["requires_fsync_before_original_start"], true);
+        assert_eq!(record["identity"]["version"], version);
+        assert_eq!(record["identity"]["binary_sha256"], sha256);
+        assert_eq!(
+            record["account_access_ref"],
+            "github-account:betterthanclay"
+        );
+        assert_eq!(record["entitlement_status"], "unattested");
+        assert_eq!(record["selected_model"]["candidate"], "Auto");
+        assert_eq!(record["selected_model"]["resolved_identity"], Value::Null);
+        assert_eq!(record["credential_mechanism"]["status"], "unattested");
+        assert_eq!(record["network_audiences"]["status"], "unresolved");
+        assert_eq!(record["containment"]["status"], "proposed");
+        assert_eq!(record["action"]["approval"], "never");
+        assert_eq!(record["budgets"]["prompts"], 1);
+        assert_eq!(record["budgets"]["seconds"], 60);
+        assert_eq!(record["budgets"]["retries"], 0);
+        assert_eq!(record["budgets"]["resends"], 0);
+        assert_eq!(record["budgets"]["effects"], 0);
+    }
+
+    for required in [
+        "recorded_provider_selection",
+        "permission_response_cancelled_or_rejected",
+        "pending_permission_wait_abandoned",
+        "process_exit_status_and_joined_state",
+    ] {
+        assert!(
+            plan["result_record_fields"]
+                .as_array()
+                .unwrap()
+                .contains(&Value::String(required.to_owned()))
+        );
+    }
+    assert!(plan["missing_owner_attestations"].as_array().unwrap().len() >= 5);
+
+    let serialized = plan.to_string();
+    for forbidden in [
+        "/Users/",
+        "/home/",
+        "github_pat_",
+        "ghp_",
+        "gho_",
+        "ghs_",
+        "xoxb-",
+        "Bearer ",
+    ] {
+        assert!(!serialized.contains(forbidden), "plan contains {forbidden}");
     }
 }

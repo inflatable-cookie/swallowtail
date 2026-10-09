@@ -134,3 +134,17 @@ Decision tree:
 Evidence gate scope:
 
 - `cline.acp load_session`
+
+<a id="q-007"></a>
+## Q-007 — Does the consumed Copilot no-child original initialize stand under decision e05b517f?
+
+Status: answered 2026-10-09
+Answer: Approve (Tom). Limited archive-identity exception for this one
+consumed diagnostic; see
+[Consumed Initialize Archive Exception](contracts/023-harness-operation-isolation-and-native-boundary.md#consumed-initialize-archive-exception).
+Asked: 2026-10-09
+
+The brief named archive `98640ca0…`; the executed pairing is executable
+`df347f…` with archive `f254651a…`. The stop-rule breach is not erased.
+Future identity mismatches still stop. Initialize was not reached; startup
+cause unknown. Parent 119 and the exact `1.0.80` claim are unchanged.

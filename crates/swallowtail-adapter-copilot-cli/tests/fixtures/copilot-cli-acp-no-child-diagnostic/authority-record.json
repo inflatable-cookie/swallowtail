@@ -1,0 +1,31 @@
+{
+  "cleanup_seconds": 3,
+  "executable_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+  "execution_authorized": true,
+  "inventory_1_0_93_archive_sha256": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb",
+  "legacy_invocation_and_renewal_guards_remain_consumed": true,
+  "maximum_initialize_requests": 1,
+  "maximum_seconds": 60,
+  "older_artifact_starts": 0,
+  "operation_id": "8cc634d0-762a-448e-abc5-f43b06a100e0",
+  "operator_decision": "e05b517f-e4fc-46c4-9d52-435b2422b5cf",
+  "operator_ruling": "Approve one isolated initialize attempt",
+  "original_invocations_authorized": 1,
+  "original_profile_template_sha256": "4ec0e6643d8ff8e87e1186b4fb6daf3e1968a820203e32f28e0c2d2e38705023",
+  "permission_prompt_allowance_untouched": true,
+  "platform": "darwin-arm64",
+  "preparation_authority_id": "4d499c96-4046-4189-b14e-39b1a572e035",
+  "preparation_operation_id": "d67e7bb3-8314-48f3-92d1-fd73c73f1b77",
+  "qualification_changed": false,
+  "required_host": {
+    "architecture": "arm64",
+    "build": "25G83",
+    "product_version": "26.6.2"
+  },
+  "retries": 0,
+  "reviewer_original_execution": false,
+  "schema": "copilot-cli-acp-no-child-original-authority.v1",
+  "session_new_requests": 0,
+  "session_prompt_requests": 0,
+  "version": "1.0.93"
+}

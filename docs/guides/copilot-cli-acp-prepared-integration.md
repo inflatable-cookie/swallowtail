@@ -141,6 +141,23 @@ auth-service and network access denied. Its `execution_authorized` value is
 false. Fake success does not prove Copilot startup, host-login or Auto-model
 compatibility; an original attempt needs separate exact authority and review.
 
+[Research 433](../research/433-copilot-acp-no-child-original-initialize-diagnostic.md)
+records the one consumed original under that reviewed isolation. The
+original-profile fake path passed. The original sent one initialize, reached
+stage exec-boundary EOF, and exited before any ACP protocol byte with
+`failure_class` `sandbox-denial`. Vendor startup remains unknown. The brief
+named archive `98640ca0…`; the executed pairing used archive `f254651a…`.
+Tom answered “Approve” to that one historical diagnostic under the
+[Consumed Initialize Archive Exception](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md#consumed-initialize-archive-exception);
+[Q-007](../knowledge/questions.md#q-007) is answered. The stop-rule breach is
+not erased. Future identity mismatches still stop. The attempt is consumed;
+reviewers inspect the committed records and must not start the original.
+Initialize was not reached; startup cause unknown. Initialization success
+would not have proved auth, Auto, permissions, cancel/no-effect, or
+supported versions. Fail-closed no-child policy may prevent vendor startup
+and is not a route narrowing. The exact `1.0.80` claim is unchanged. Parent
+119 stays blocked.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

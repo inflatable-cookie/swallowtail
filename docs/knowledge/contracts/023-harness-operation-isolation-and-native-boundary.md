@@ -1053,6 +1053,41 @@ preflight renews an invocation, resets the consumed budget, or changes route
 qualification. A future original attempt requires new exact authority and
 must retain the bounded profile and diagnostic contract.
 
+## Copilot ACP Corrected One-Shot Renewal
+
+Tom's 2026-10-09 board answer to decision
+`411be8ce-77a0-4a50-930f-d6aeacdffce9` is “Approve one corrected 1.0.93
+attempt”. This grants exactly one additional original `1.0.93` launcher
+invocation using the independently reviewed Research 429 correction. It does
+not restore or reuse the consumed Research 428 invocation.
+
+Bind the frozen Darwin ARM64 executable SHA-256
+`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1`, the
+reviewed correction-plan identity and the exact final harness/profile after
+fake verification of any renewal delta. Keep `betterthanclay`'s host-owned
+login, Auto policy, official-destination default-deny proxy and enforced
+60-second process/network ceiling. The only added home read exception is
+read-only `.copilot/config.json`, tested under the same native-fake profile;
+its necessity for this exact binary remains unproved. No additional read,
+egress, configuration or authentication boundary is granted.
+
+Use a separate one-shot renewal authorization/attempt record bound to this
+decision and exact identities. Atomically consume and fsync it before original
+start; crash, timeout or an uncertain response cannot restore the allowance.
+Preserve the immutable historical records and old consumed guards. Missing,
+mismatched or used renewal authority refuses before staging/start. Prove this
+final admission/record delta against fakes before the renewed original.
+
+At most one ACP prompt may be sent, counted against the existing shared
+three-prompt total. No older artifact, approval, resend, second attempt or
+reviewer live spend is allowed. Persist the pre-execution record first, use
+bounded allowlisted diagnostics and joined process/proxy/stderr cleanup, and
+stop on unsupported selection, authentication, containment, permission or
+cleanup failure. Startup remains unknown until original initialize is
+observed. No token extraction, login, settings/home mutation, automatic
+qualification or tag is authorized; parent qualification needs reviewed
+original permission/cancel/no-effect evidence and any required mapping ruling.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

@@ -151,6 +151,20 @@ The proposed representation, bounds, validation, classification, preflight,
 serialization, public-API compatibility, Contract 036 classification, and
 core implementation acceptance live in
 [Spec 015 Bounded Finite Exact Opaque Compatibility Claims](../specs/015-bounded-finite-exact-opaque-compatibility-claims.md).
+Tom's 2026-10-09 “Approve the two.” answers decision
+`4a243040-701c-4e90-8bbc-9c2ec321125a`, authorizing the separate bounded
+implementation of independently reviewed Spec 015. This includes the reviewed
+`has_version_interval` query, raw 32-yield member/exclusion iterator bounds,
+exact equality membership, preflight-before-effects, stale-plan and prepared
+assessment proof, preserving singleton and ordered-scheme behaviour. Only
+core's temporary current-source `0.5.1` API inventory may record the reviewed
+additive query, under Contract 036's mandatory tagged-byte restoration before
+the next minor baseline. No other baseline, route claim or version movement
+is included. Newly refused over-limit inputs receive truthful minor
+compatibility classification; additional consumer or authority changes return
+separately. Independently reviewed implementation precedes the retained
+route's own qualification proof; approval alone implements no claim model.
+
 That spec is proposed design. Implemented Opaque claims stay one exact
 point. Implement the reviewed spec in a separate bounded task before
 resuming route qualification that needs more than one Opaque member.

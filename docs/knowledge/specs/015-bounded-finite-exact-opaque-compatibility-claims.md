@@ -641,8 +641,14 @@ Singleton regressions:
   `b10069-178a6c449` on **separate** axes; do not merge them
 
 Public API: if `has_version_interval` is added, refresh the current
-public-api baseline in that implementation PR. Do not rewrite historical
-`release-baselines/public-api-0.5.1/`.
+public-api inventory in that implementation PR. Tom's 2026-10-09 approval
+(decision `4a243040-701c-4e90-8bbc-9c2ec321125a`) permits only the additive
+query in core's temporary current-source
+`release-baselines/public-api-0.5.1/swallowtail-core.txt`, under Contract 036.
+Immutable tagged bytes and unrelated baselines stay unchanged. Restore this
+working file byte-for-byte from tagged `v0.5.1` before generating the next
+minor baseline; the temporary inventory is development truth, not rewritten
+release evidence.
 
 ## Out Of Scope
 

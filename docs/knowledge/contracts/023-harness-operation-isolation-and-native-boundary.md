@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-07
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -201,6 +201,21 @@ moving claims; preserve older qualified segments. Further narrowing, new
 public API/lifecycle or live-proof needs return for a separate ruling.
 Contract 036 patch compatibility is assessed independently.
 
+Tom's 2026-10-09 “Approve the two.” answers decision
+`7c273552-55eb-4f52-b608-ca8430c46429`. Extend the retained headless
+adaptation to exact `2.1.294` instruction-form prompt/agent hook safety and
+`Stop` / `SubagentStop` behaviour. Honour shipped action blocking and stop
+decisions while preserving selected user, project and local settings,
+read-only plan-mode authority, approved resources, bounded truthful stream
+and usage, and joined cancellation/cleanup. Exact selected-path semantic
+evidence and deterministic fake-process proof precede any claim increase;
+release notes or strings alone do not establish compatibility. Preserve
+older segments and the separate SDK, ACP and response-only routes. No
+settings/home relocation, disabled consumer hooks, artifact execution,
+credentials, provider turns, installation or release authority is included.
+Further narrowing, public API/lifecycle changes, missing selected-source
+proof or live-proof needs return separately.
+
 ## Antigravity Headless Denial And Child Status
 
 Tom's 2026-10-08 “Accept and approve all” answers decision
@@ -244,6 +259,67 @@ semantic evidence without transferring catalogue proof. New public API,
 Windows/runtime evidence, authentication/network boundaries or live-proof
 needs return separately. No Antigravity live usage is authorized.
 
+## Antigravity Windows Offline Sandbox Proof
+
+The later 2026-10-09 Windows scheduling ruling in
+[Contract 036](036-crate-release-and-compatibility-boundary.md#windows-compatibility-qualification)
+defers this provider-specific Windows proof to the whole-codebase Windows
+sweep at a time Tom chooses. The subsequent ruling resumes the non-Windows
+Antigravity work without this proof as its completion requirement. The authority
+below records the original Windows scope; it is not a current dispatch instruction. No original VM shutdown, clone setup or
+artifact execution follows from the scheduling ruling. Reuse retained evidence
+when the future sweep is explicitly scoped.
+
+Tom's 2026-10-08 board answer to decision
+`155265da-be30-4028-92cf-0ee064d1612c` is “Authorize bounded proof - I have a
+windows VM we can use”. A separate proof may execute the exact Antigravity
+`1.2.17` x64 and ARM64 Windows PE artifacts in explicitly identified,
+operator-approved disposable Windows environments. Record the VM identity,
+Windows version, architecture, execution mode and access path before execution;
+an unspecified VM or another host does not satisfy this boundary.
+
+Prove the fixture harness and containment against fakes, then persist the
+execution plan and result record before any actual artifact attempt. Use
+only task-owned scratch and fake provider/tool fixtures. Deny outbound
+provider traffic, access no real credentials or authentication stores, and
+make no host installation, persistent configuration or elevation changes.
+Command and elevation probes stay inside the approved disposable environment.
+
+Verify the original shipped PE and its published identity. Fake or patched
+artifact behavior does not establish shipped sandbox enforcement. If the
+selected path requires real authentication, provider traffic or unavailable
+sandbox facilities, stop with the exact missing proof. Record native versus
+emulated execution and never transfer proof between architectures or deployment
+modes. An unavailable platform remains an evidence gate, not a removed claim.
+
+This is provider-free proof authority, not a live provider turn, permission
+bypass, broader platform claim, production adaptation, release or tag approval.
+The separate resource-resolution and retry control-flow gates remain.
+
+Tom identified the available environment in the same conversation as Windows
+11 ARM64 in Parallels on his machine, and said he has no x64 access currently.
+Only ARM64 execution can be proved there. Keep native x64 evidence pending;
+x64 emulation on ARM64 is a distinct deployment and cannot supply native x64
+proof. Environment preparation that changes VM configuration or provisions a
+disposable environment needs separate authority under the no-configuration-
+change boundary; availability alone does not establish isolation.
+
+Tom's 2026-10-08 chat answer “approve” to decision
+`a8182378-017f-4797-8a1d-568f02cd495f` authorizes a disposable native ARM64
+clone of the identified Parallels Windows 11 VM
+`67f62782-c64a-4c02-ba9a-7d9b24d107ce`. Leave the original suspended VM,
+configuration and disks untouched. In the clone only, disable all network
+adapters and host shared folders, profile, clipboard, application and device
+integration before boot. Use a fresh unprivileged local test account and
+task-owned scratch with fake authentication/provider/tool fixtures. Stage only
+verified tools and original artifacts without host-wide installation or real
+credential-store access. Prove no outbound provider traffic or host-file access
+before vendor execution; never actually elevate the provider/tool probes or
+alter original-host security. Record process/VM identities and exits and retain
+the clone/results for independent review; deletion requires separate scope.
+If cloning or containment requires touching the original, stop. Native x64
+remains unproved and emulation is not a substitute.
+
 ## Copilot ACP Offline Artifact Proof
 
 Tom's 2026-10-08 “Accept and approve all” answers decision
@@ -263,6 +339,58 @@ its own mapping ruling before adaptation or claim movement. Fake-provider
 proof does not establish live permission or MCP honouring. A prerelease issue
 report does not qualify a final stable.
 
+## DeepSeek Harness Artifact/Profile Mapping Study
+
+Tom's 2026-10-08 board answer to decision
+`f3ca9685-76b4-4e89-88f3-45f82bf8b4b2` is “Approve bounded mapping study;
+decide adaptation after exact evidence”. This permits provider-free inspection
+of exact shipped wrappers, runtime artifacts and source for the existing
+structured-run route. The npm CLI `0.2.0-rc.2` and PyPI runtime-bin `0.1.5rc1`
+are independently identified artifacts; their version numbers or JSON-RPC
+labels do not establish compatible executable identity or provenance.
+
+Reuse retained evidence. Freeze exact executable selection/profile invocation
+and published runtime-bin hops from `0.1.0rc6`; map initialize, prompt, idle,
+shutdown, forced cancellation and join, plus approved host, Cordis, provider,
+model, working-resource, authentication, tool and permission boundaries.
+Return either exact evidence for a same-contract private mapping with a
+proposed behavior milestone/axis ledger, or a concrete distinct-route/axis
+contract proposal for another ruling. No runtime or public API implementation,
+claim change, artifact execution, live work, authentication, installation or
+tag authority is included. Preserve the existing exact `0.1.0rc6` point,
+released consumers and separation from the local-server route until the
+classification is independently reviewed and adaptation is authorized.
+
+## Copilot ACP Bounded Authenticated Proof
+
+Tom's 2026-10-08 board answer to decision
+`5b8ae2a2-8f68-40c7-8c4b-58c00652d5e2` is “Approve bounded authenticated
+proof and name existing access/model”. The offline artifact proof could not
+reach permission exchange: exact `1.0.80`, `1.0.81` and `1.0.93` each required
+authentication at `session/new`.
+
+A separately scoped proof may use one bounded ACP prompt per exact version,
+three total, after the operator identifies the existing approved account or
+access profile and model. Bind delegated credential mechanism, entitlement
+and exact authentication/provider network audiences before dispatch. The
+answer does not itself identify that account, profile or model. Tom clarified
+in chat the same day: “I don't have a copilot account yet”. Authenticated
+execution therefore awaits approved existing access; no account creation,
+subscription or substitute credential authority is implied. Do not extract
+secrets, create or switch accounts, log in, relocate authentication/home state,
+or change settings. Access identifiers are sufficient; never request tokens.
+
+Prove containment and the harness against fakes, then persist an execution
+record before each live invocation. Reject or cancel a benign task-owned
+action requiring permission; never approve it. Observe exact permission,
+cancellation and absence of tool effects, with bounded host stop/join. No
+retry, resend or additional reviewer live spend is allowed. Establish selected
+retry/fallback and effect budgets first; stop for a ruling if they cannot be
+bounded. No installation, consumer mutation, qualification or tag authority
+is included. Keep the existing exact `1.0.80` claim until independent review
+establishes the selected shipped behavior and any mapping change is ruled.
+This proof belongs to the minor currentness sweep, not the urgent SDK patch.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision
@@ -278,6 +406,50 @@ consumer-visible narrowing, return the exact proposed adaptation for a
 separate ruling before moving claims. Preserve older qualified points;
 Contract 036 compatibility remains independent.
 
+Tom's subsequent 2026-10-08 board answer to decision
+`f04070a3-4a62-4214-bda8-788ccfb3b912` is “We have to work with whatever
+command code ship”. Use official shipped Command Code artifacts. Do not build
+the proposed upstream model-lane prototype, patch or fork the provider, or
+claim a hypothetical startup fix. No upstream publication or patched-runtime
+qualification is authorized.
+
+Tom's later 2026-10-08 chat answer “approve” to decision
+`3d693da8-b1cb-4c10-a405-a3a085e0a583` accepts a version-specific change to
+the model guarantee: in plan mode on `1.73.0` and later official shipped
+artifacts, configured `featureModels.planning` may take precedence over the
+base model forwarded with `-m`. This supersedes the explicit-model guarantee
+for those newly qualified points only; preserve older qualified behavior.
+
+A bounded one-family contract/adapter adaptation must report requested versus
+effective model truthfully, prove conflicting configuration cases and add a
+justified private behavior milestone. Forwarded argv is not effective-model
+evidence. If existing public vocabulary cannot express this boundary, return
+the exact API change before implementation. Keep plan permission and no-bypass
+semantics; no persistent settings writes, authentication/home relocation,
+silent model substitution, provider patch/fork or live work. This accepts a
+consumer-visible guarantee change for the separate minor release under
+Contract 036, not the urgent SDK patch or tag authority.
+
+## Pi SDK Node Bundled TLS Roots
+
+Tom's 2026-10-08 chat answer “approve” to decision
+`1e7a9fff-9472-4e5b-93db-250779aa5c8e` accepts Node `22.23.3`'s shipped
+bundled TLS-root update as a version-specific provider trust boundary for the
+Pi SDK Node axis. Preserve exact `22.23.2`, the approved Pi package, wire and
+sidecar-source tuple, host environment and normal certificate/hostname
+verification. Do not restore removed roots, inject CAs, disable verification
+or change proxy, authentication or network policy.
+
+Before qualification, prove exact root identities/removals and selected Pi
+HTTP/TLS trust-source and failure paths through bounded task-owned offline
+fixtures, and complete the remaining Node-hop semantic review. No actual
+provider endpoint compatibility or live evidence follows from root inventories
+or fake fixtures. Custom/system trust needs, affected required endpoints,
+further authority or public-contract narrowing return for a separate ruling.
+No real credentials, provider traffic, installation, host mutation or tag
+approval is included. This axis belongs to the separate currentness minor;
+Claude's Node proof does not qualify Pi's provider-HTTP trust path.
+
 ## Kiro ACP Explicit Environment
 
 Tom's 2026-10-08 “Accept and approve all” answers decision
@@ -292,6 +464,65 @@ separate adaptation defining their admission into the approved environment.
 Further authority, public API/lifecycle or live-proof needs return for a
 separate ruling. Frozen identity and provider-free route proof must precede
 qualification; Contract 036 patch compatibility remains separate.
+
+## Kiro ACP Owner-Only State
+
+Tom's 2026-10-08 board ruling, “Accept owner-only boundary; require exact ACP
+proof”, answers decision `73ff6b53-f8be-4d7f-9031-c8b0a81e3ff1`.
+Qualification may accept Kiro `2.27.0` and later owner-only home and prior-session
+state as a documented provider boundary. Preserve the approved execution
+principal and delegated environment, local-account authentication,
+`session/new.cwd`, read-only working resource and reject-and-cancel policy.
+Preserve all older qualified points.
+
+Qualification still requires exact selected ACP entrypoint reachability,
+affected paths, symlink and ownership treatment, failure behavior and
+session-access effects. Vendor documentation and filename strings alone do
+not establish those effects. Provider-free static control-flow proof may
+establish only the behavior it actually maps. If it cannot establish the ACP
+effects, retain the existing `2.21.4` claim and record the finite missing proof
+with a concrete isolated provider-free runtime harness for separate approval.
+Do not infer compatibility, weaken ownership permissions or repeat an
+unchanged strings-only inspection.
+
+Cross-user access, a change of principal, authentication or home, mutation
+outside approved working resources, and a public API or lifecycle change need
+another ruling. This ruling authorizes no artifact execution, credential
+access, live provider work, installation, host mutation or release/tag action.
+Contract 036 release compatibility remains separate.
+
+## Kiro ACP Isolated Owner-State Proof
+
+Tom's 2026-10-08 board answer, “Approve isolated proof and name the Linux ARM64
+environment”, answers decision `99de6453-9492-4537-a346-ce7803dbfea3`.
+It approves bounded offline proof comparing original Kiro `2.26.1` control
+with `2.27.0`, `2.27.1` and `2.28.0`. The disposable native Linux aarch64 GNU
+VM or container must be explicitly designated before vendor execution.
+Tom's later 2026-10-08 chat designates a fresh Linux container through local
+Colima or Docker (decision `e49192c0-3483-4275-a34c-7f4fd56891a8`). Use a
+task-owned native Linux ARM64 GNU container named `swallowtail-kiro-owner-proof`,
+reached through the local container CLI. Verify native architecture and GNU
+runtime; emulation is not evidence. A task-owned fresh Colima profile may
+supply the backend when neither local backend is running. Starting that
+isolated backend and staging public images or artifacts is preparation, not
+permission for provider traffic. Do not alter existing profiles, install host
+software or change host settings. Verify external egress and all host mounts
+are denied before fake or vendor execution; retain the isolated environment
+for review. Return unavailable containment or required host changes separately.
+
+Deny external egress and host mounts before execution. Use two synthetic
+unprivileged UIDs and task-owned home, working directory, temporary files and
+session state inside that environment. Access no real credentials or
+authentication store, and make no provider or tool turns. Prove containment
+against fakes and persist the execution record before running original
+artifacts. Observe only ACP initialization, session creation and owner-state
+path, symlink, access and failure effects. Stop if real authentication or
+unavailable containment prevents exact reachability.
+
+Preserve the existing `2.21.4` claim, public lifecycle and exact HTTP MCP
+guarantees. Evidence does not automatically qualify newer versions. No host
+installation or mutation, consumer repin, live work or release/tag authority
+is included. Contract 036 compatibility assessment remains separate.
 
 ## Native Sandbox Boundary
 
@@ -389,3 +620,28 @@ This contract does not standardize provider tool names, approval modes, budget
 vocabulary, sandbox implementations, configuration files, transcript formats,
 or credential stores. It does not authorize repository writes, provider
 fallback, or consumer routing policy.
+
+## Pi Sidecar Replay Failure And Cleanup Repair
+
+Tom answered “Approve” on 2026-10-09 to decision
+`21daeebe-1d60-4dfe-8f5b-7bac5c6ab685`, authorizing a bounded repair of the
+recurring late-replay load failure and cleanup hang.
+
+A `replay_item` after the `session_replay` response is a protocol failure.
+The pump may still hold the armed collector (`replay_incomplete` count
+mismatch) or the load path may already have taken it (`replay_unexpected`).
+Pump shutdown and command registration share the pending lock, so a later
+`state` command cannot register after that drain and wait for a pump that
+will never answer. Fake-child controls force both orderings without a sleep
+race. Load returns no handle; process, resource, and credential cleanup still
+join. The fake host occupies its exact owned tree on start; wait reaps that
+tree and attests `OwnedTreeEmpty`. Proofs assert that empty tree and
+attestation, not only wait/resource/credential order. Host-local remains
+`RootOnly`; real-host cleanup classification is unchanged.
+
+Raising CI timeouts, skipping the failing test, weakening assertions or
+waiting for lower machine load does not establish correctness. Keep provider
+versions, compatibility claims, public API, permissions and lifecycle
+promises unchanged. Any required change to those boundaries returns for a
+separate ruling. No vendor execution, live provider work, credentials,
+installation, host mutation or release authority is included.

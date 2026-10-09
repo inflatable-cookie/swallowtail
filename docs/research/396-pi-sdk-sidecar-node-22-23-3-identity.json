@@ -1,0 +1,100 @@
+{
+  "schema": "swallowtail-node-pi-route-identity-v2",
+  "observed_at": "2026-10-08",
+  "route": "pi.sdk-sidecar-node",
+  "tuple": {
+    "sdk_package": "@earendil-works/pi-coding-agent",
+    "sdk_version": "0.84.2",
+    "wire": "swallowtail-pi-sdk-jsonl-v1",
+    "behavior_revision": "pi.sdk-sidecar-v1",
+    "source_tag": "swallowtail-pi-sdk-sidecar@0.5.1",
+    "package_source_baseline": "docs/research/181-pi-sdk-sidecar-route-qualification.md"
+  },
+  "selected_channel": "official Node.js 22 stable distribution index",
+  "channel_observation": {
+    "url": "https://nodejs.org/dist/index.json",
+    "current": { "version": "22.23.3", "date": "2026-09-23" },
+    "prior_ceiling": { "version": "22.23.2", "date": "2026-07-28" },
+    "published_hops_after_ceiling": ["22.23.3"]
+  },
+  "platform": "darwin-arm64",
+  "host_runtime_observation": {
+    "version": "v22.23.2",
+    "binary_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
+    "size_bytes": 112937728,
+    "observation_only": true,
+    "qualification_input": false
+  },
+  "release_artifacts": {
+    "22.23.2": {
+      "url": "https://nodejs.org/dist/v22.23.2/node-v22.23.2-darwin-arm64.tar.gz",
+      "tarball_sha256": "61130f394c1630d211dd50aecc4353d379480f36d3ac913cd85dbba1aed585c6",
+      "node_binary_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
+      "shasums_signature_date": "2026-07-29",
+      "shasums_signer": "Marco Ippolito",
+      "shasums_signer_fingerprint": "CC68F5A3106FF448322E48ED27F5E38D5B0A215F",
+      "source_tag_object": "490a9fef8f8adcda5a95bd6f96035b05cb43fe5b",
+      "source_commit": "aa4c77582be995286fc6e00aaf530dc7ade102a9",
+      "node_root_certs_h_sha256": "b8381bf64c65982dc9e93e87489e98f25cc660cfe46bd0f53ffaf99154ac6aac"
+    },
+    "22.23.3": {
+      "url": "https://nodejs.org/dist/v22.23.3/node-v22.23.3-darwin-arm64.tar.gz",
+      "tarball_sha256": "23b25245dcfb9af7262f8ff142e9e2e0af025368117329e7a7458a51e5922f53",
+      "node_binary_sha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+      "shasums_signature_date": "2026-09-23",
+      "shasums_signer": "Antoine du Hamel",
+      "shasums_signer_fingerprint": "5BE8A3F6C8A5C01D106C0AD820B1A390B168D356",
+      "source_tag_object": "9ff018de597f54877b72bde69eb37de4e47c15c4",
+      "source_commit": "80dc632040e6bada37aac1220dde9c79581c9c22",
+      "node_root_certs_h_sha256": "0a8a329be474650b59a08c0d0bdc20965c1591ea42983e1a7204983cdb5aaba0"
+    }
+  },
+  "release_keyring_sha256": "610b8d249da3d5733f5a128def2dd0294dbbf5b5713e6ca2529db8db419dee00",
+  "distribution_inventory": {
+    "22.23.2": {
+      "entries": 5865,
+      "regular_files": 4750,
+      "directories": 1112,
+      "symlinks": 3,
+      "json_sha256": "969fb7dcdf9947fe2aa29b4dd6a57ec1c9ce183422302dbe15b03b54142dd344"
+    },
+    "22.23.3": {
+      "entries": 5865,
+      "regular_files": 4750,
+      "directories": 1112,
+      "symlinks": 3,
+      "json_sha256": "ef0d7c4879417151cf12ae8c9d41bf6f0fc5e35c40ea4c384415efa266cdd643"
+    },
+    "path_delta": {
+      "added": 0,
+      "removed": 0,
+      "changed": 393,
+      "identical": 5472,
+      "json_sha256": "7d27b45bd8822d0ce0dfd92191a3531b43f65d4e8a0e81601f4544fb3928d776",
+      "classification": "396-pi-sdk-sidecar-node-22-23-3-hop-review.json"
+    }
+  },
+  "root_certificate_comparison": {
+    "22.23.2_count": 145,
+    "22.23.3_count": 119,
+    "prior_identities_removed_or_changed": 26,
+    "target_identities_added_or_changed": 0,
+    "diff_json_sha256": "e7d58cb8378359eb44646abfa925048a843b7a754af8704fc64ea27aa2ca7778",
+    "runtime_tls_probe": "396-pi-sdk-sidecar-node-22-23-3-tls-offline-proof.json"
+  },
+  "hop_review": "396-pi-sdk-sidecar-node-22-23-3-hop-review.json",
+  "decision": {
+    "kind": "compatible_extension",
+    "production_claim_changed": true,
+    "claim_id": "pi.sdk-sidecar.node-window-1",
+    "qualified_node_segment": "22.23.2..=22.23.3",
+    "behavior_revision": "pi.sdk-sidecar-v1",
+    "posture": "QualifiedOnly",
+    "22.23.2_retained": true,
+    "22.23.3_qualified": true,
+    "other_axes_changed": false,
+    "provider_endpoint_compatibility_inferred": false,
+    "custom_or_system_trust_supported": false,
+    "classification_boundary": "All 393 changed distribution paths are classified; Node TLS, default Fetch, Pi Codex WebSocket, and unused Undici paths have per-hop semantic findings in the hop review. Default trust verification is retained; no provider endpoint was contacted."
+  }
+}

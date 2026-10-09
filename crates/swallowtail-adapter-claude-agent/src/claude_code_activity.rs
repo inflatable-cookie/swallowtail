@@ -37,7 +37,11 @@ impl ClaudeCodeActivityProjection {
         if message.get("role").and_then(Value::as_str) != Some("assistant") {
             return Err(activity_drift());
         }
-        let stop_reason = required_string(message, "stop_reason")?;
+        let stop_reason = match message.get("stop_reason") {
+            Some(Value::Null) => None,
+            Some(Value::String(value)) if !value.is_empty() => Some(value.as_str()),
+            _ => return Err(activity_drift()),
+        };
         let blocks = message
             .get("content")
             .and_then(Value::as_array)
@@ -47,7 +51,7 @@ impl ClaudeCodeActivityProjection {
             .filter(|block| block.get("type").and_then(Value::as_str) == Some("text"))
             .map(|block| required_string(block, "text"))
             .collect::<Result<String, _>>()?;
-        let final_text = stop_reason == "end_turn" && !text.is_empty();
+        let final_text = stop_reason == Some("end_turn") && !text.is_empty();
         let mut observations = vec![
             self.completed(
                 "assistant",

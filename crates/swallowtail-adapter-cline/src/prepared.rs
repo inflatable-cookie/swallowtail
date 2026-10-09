@@ -39,7 +39,7 @@ pub struct ClinePreparationInput {
 impl ClinePreparationInput {
     #[must_use]
     #[allow(clippy::too_many_arguments)]
-    /// Creates explicit preparation input for one exact Cline package.
+    /// Creates explicit preparation input for the Cline ACP compatibility claim.
     pub const fn new(
         instance_id: ConfiguredInstanceId,
         instance_revision: InstanceRevision,
@@ -89,7 +89,7 @@ impl ClinePreparationProbe {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-/// Qualified Cline ACP integration ready to prepare one bounded session.
+/// Admitted Cline ACP integration ready to prepare one bounded session.
 pub struct ClinePreparedIntegration {
     environment: EnvironmentRef,
     target: InstalledExecutableTarget,
@@ -235,7 +235,6 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::CLINE_PACKAGE_VERSION
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,

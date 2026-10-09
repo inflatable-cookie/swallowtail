@@ -283,7 +283,6 @@ residual_exact_release_only = {
     ("unverified_newer_allowed", "mistral-vibe.headless"),
     ("unverified_newer_allowed", "qoder.headless"),
     ("unverified_newer_allowed", "copilot-cli.acp"),
-    ("unverified_newer_allowed", "goose.acp"),
     ("unverified_newer_allowed", "kiro.acp"),
     ("unverified_newer_allowed", "deepagents.acp"),
     ("unverified_newer_allowed", "command-code.headless"),

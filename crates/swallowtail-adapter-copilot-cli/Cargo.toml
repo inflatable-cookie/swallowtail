@@ -36,6 +36,10 @@ name = "copilot_cli_acp_identity"
 path = "tests/copilot_cli_acp_identity.rs"
 
 [[test]]
+name = "copilot_acp_offline_proof"
+path = "tests/copilot_acp_offline_proof.rs"
+
+[[test]]
 name = "activity_corpus"
 path = "tests/activity_corpus.rs"
 

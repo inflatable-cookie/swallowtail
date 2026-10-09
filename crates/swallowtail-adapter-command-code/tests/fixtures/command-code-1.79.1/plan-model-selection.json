@@ -1,0 +1,140 @@
+{
+  "scenario": "plan mode has a configured planning model that differs from the explicit caller model",
+  "route_id": "command-code.headless",
+  "route_version": "1.79.1",
+  "permission_mode": "plan",
+  "persistent_settings_write": false,
+  "provider_artifact_executed": false,
+  "invocation": [
+    "-p",
+    "--output-format",
+    "json",
+    "--permission-mode",
+    "plan",
+    "--skip-onboarding",
+    "--no-session",
+    "--no-auto-update",
+    "--trust",
+    "--no-skills",
+    "--max-turns",
+    "8",
+    "-m",
+    "fixture-model"
+  ],
+  "requested_model_id": "fixture-model",
+  "configured_feature_models": {
+    "planning": "configured/planning-model"
+  },
+  "stdout_ndjson": [
+    {
+      "type": "event",
+      "event": {
+        "type": "run_start",
+        "sessionId": "00000000-0000-4000-8000-000000000079"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "turn_start"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "message_start"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "model_request_start",
+        "model": "configured/planning-model"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "thinking_start"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "thinking_delta",
+        "delta": "Planning with the configured lane."
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "thinking_end"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "text_delta",
+        "delta": "pong"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "message_update"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "model_request_end",
+        "stopReason": "end_turn",
+        "usage": {
+          "inputTokens": 12,
+          "outputTokens": 3,
+          "cacheReadTokens": 0,
+          "cacheWriteTokens": 0
+        }
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "message_end"
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "turn_end",
+        "hadToolCalls": false
+      }
+    },
+    {
+      "type": "event",
+      "event": {
+        "type": "run_end"
+      }
+    },
+    {
+      "type": "result",
+      "subtype": "success",
+      "sessionId": "00000000-0000-4000-8000-000000000079",
+      "stopReason": "end_turn",
+      "usage": {
+        "inputTokens": 12,
+        "outputTokens": 3,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 0
+      },
+      "durationMs": 842,
+      "finalText": "pong"
+    }
+  ],
+  "expected_observation": {
+    "kind": "InterfaceVersion",
+    "stage": "model-selection",
+    "effective_source": "command-code.model_request_start",
+    "effective_scope": "cli-selected-model-before-sdk-request"
+  }
+}

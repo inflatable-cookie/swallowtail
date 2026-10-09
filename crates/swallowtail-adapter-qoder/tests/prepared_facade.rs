@@ -168,6 +168,32 @@ fn prepared_run_names_qoder_headless_and_package_then_drains_one_print() {
 }
 
 #[test]
+fn every_qualified_qoder_stable_point_prepares_on_a_fake_host() {
+    for (index, version) in [
+        "1.1.54", "1.1.55", "1.1.56", "1.1.57", "1.1.58", "1.1.59", "1.1.60", "1.1.61", "1.1.62",
+        "1.1.63", "1.1.64", "1.1.65",
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let host_id =
+            ExecutionHostId::new(format!("fixture.prepared.qualified.{index}")).expect("host");
+        let discovery = DiscoveryHost::new(version);
+        let prepared = block_on(prepare_qoder_headless(
+            preparation_input(host_id.clone()),
+            probe(),
+            discovery.services(host_id),
+        ))
+        .unwrap_or_else(|error| panic!("{version} should prepare: {error}"));
+        assert_eq!(
+            prepared.observation().version().version().as_str(),
+            version,
+            "prepared version"
+        );
+    }
+}
+
+#[test]
 fn preparation_rejects_access_axis_and_package_drift_before_stream_work() {
     let host_id = ExecutionHostId::new("fixture.prepared.headless.reject").expect("host");
     let prepared = prepare(host_id.clone());
@@ -233,22 +259,28 @@ fn preparation_rejects_access_axis_and_package_drift_before_stream_work() {
     );
     assert!(axis_host.observed_process().is_none());
 
-    let newer_host = ExecutionHostId::new("fixture.prepared.headless.newer").expect("host");
-    let newer = DiscoveryHost::new("1.1.26");
-    let error = block_on(prepare_qoder_headless(
-        preparation_input(newer_host.clone()),
-        probe(),
-        newer.services(newer_host),
-    ))
-    .expect_err("unqualified package fails");
-    assert_eq!(
-        error.stage(),
-        swallowtail_runtime::PreparationStage::VersionParse
-    );
-    assert_eq!(
-        newer.observed_process().expect("probe ran").arguments,
-        ["--version"]
-    );
+    for (index, version) in ["1.1.26", "1.1.53", "1.1.66"].into_iter().enumerate() {
+        let unsupported_host =
+            ExecutionHostId::new(format!("fixture.prepared.headless.unsupported.{index}"))
+                .expect("host");
+        let unsupported = DiscoveryHost::new(version);
+        let error = block_on(prepare_qoder_headless(
+            preparation_input(unsupported_host.clone()),
+            probe(),
+            unsupported.services(unsupported_host),
+        ))
+        .expect_err("unqualified package fails");
+        assert_eq!(
+            error.stage(),
+            swallowtail_runtime::PreparationStage::VersionParse,
+            "{version}"
+        );
+        assert_eq!(
+            unsupported.observed_process().expect("probe ran").arguments,
+            ["--version"],
+            "{version}"
+        );
+    }
 }
 
 #[test]

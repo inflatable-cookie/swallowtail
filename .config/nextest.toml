@@ -33,3 +33,20 @@ default-filter = "binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_s
 [profile.sdk-usage]
 inherits = "ci-process"
 default-filter = "all()"
+
+# Provider-free Codex currentness evidence, with the same bounded test lifetime.
+[profile.current-codex-app-server]
+inherits = "ci-process"
+default-filter = "all()"
+
+# Pi SDK sidecar identity and lifecycle regression proof. Keep the process
+# fixture timeout while allowing the focused task to select sidecar_driver.
+[profile.current-pi-sdk-sidecar]
+inherits = "ci-process"
+default-filter = "all()"
+
+# Bounded Pi sidecar load-replay failure and cleanup proof. Same process
+# fixture timeout as current-pi-sdk-sidecar; sidecar_driver stays selectable.
+[profile.pi-replay-cleanup]
+inherits = "ci-process"
+default-filter = "all()"

@@ -1,0 +1,1348 @@
+{
+  "compared": {
+    "deepagents-acp": [
+      "0.1.30",
+      "0.1.31",
+      "0.1.32",
+      "0.1.33",
+      "0.1.34"
+    ],
+    "deepagents": [
+      "1.13.4",
+      "1.13.5",
+      "1.14.0",
+      "1.14.1",
+      "1.14.2"
+    ]
+  },
+  "package_file_counts": {
+    "deepagents-acp": {
+      "0.1.30": 11,
+      "0.1.31": 11,
+      "0.1.32": 11,
+      "0.1.33": 11,
+      "0.1.34": 11
+    },
+    "deepagents": {
+      "1.13.4": 25,
+      "1.13.5": 25,
+      "1.14.0": 25,
+      "1.14.1": 25,
+      "1.14.2": 25
+    }
+  },
+  "package_files": {
+    "deepagents-acp": {
+      "0.1.30": {
+        "file_count": 11,
+        "tarball_sha256": "c9bc8b95d779fc120d0614bbc37f8d6d35361376b19a5c77d0ae4e870823a661",
+        "files": [
+          {
+            "path": "dist/cli.js",
+            "type": "file",
+            "sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830"
+          },
+          {
+            "path": "dist/cli.js.map",
+            "type": "file",
+            "sha256": "89a795adec4073c6c3f5b82d341c17376769a944f2a22b460fbd551f0c16a191"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe"
+          },
+          {
+            "path": "dist/index.cjs.map",
+            "type": "file",
+            "sha256": "1c1c99673b40af7039cb2609f4696e6b840bff25884793fd3204430a6633445b"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358"
+          },
+          {
+            "path": "dist/index.js.map",
+            "type": "file",
+            "sha256": "627536dc2346c5a68107eda63111aa519cb329c1fcc679eebaf460464748e4e0"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "1f7f4b7af7d87dff92bcd612ca019524aee4be8eb59df373c9397780243311b8"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "74fbf74318ef422647c77a6fa49b30ac8cebda34f106b5b37f69910d288be522"
+          }
+        ]
+      },
+      "0.1.31": {
+        "file_count": 11,
+        "tarball_sha256": "89010a8649e6de9b6c9e594206e44a9afb2e732f2e4027d9371cc84c01fe3bb3",
+        "files": [
+          {
+            "path": "dist/cli.js",
+            "type": "file",
+            "sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830"
+          },
+          {
+            "path": "dist/cli.js.map",
+            "type": "file",
+            "sha256": "89a795adec4073c6c3f5b82d341c17376769a944f2a22b460fbd551f0c16a191"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe"
+          },
+          {
+            "path": "dist/index.cjs.map",
+            "type": "file",
+            "sha256": "1c1c99673b40af7039cb2609f4696e6b840bff25884793fd3204430a6633445b"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358"
+          },
+          {
+            "path": "dist/index.js.map",
+            "type": "file",
+            "sha256": "627536dc2346c5a68107eda63111aa519cb329c1fcc679eebaf460464748e4e0"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "1e529af89b560268f5986a0665dd328be7989125b7d9f480033a0f0de87a3da6"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "74fbf74318ef422647c77a6fa49b30ac8cebda34f106b5b37f69910d288be522"
+          }
+        ]
+      },
+      "0.1.32": {
+        "file_count": 11,
+        "tarball_sha256": "742d82e3306bfe283d48683bf52430abba94a2e35bb60ba045357c6a9152266a",
+        "files": [
+          {
+            "path": "dist/cli.js",
+            "type": "file",
+            "sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830"
+          },
+          {
+            "path": "dist/cli.js.map",
+            "type": "file",
+            "sha256": "89a795adec4073c6c3f5b82d341c17376769a944f2a22b460fbd551f0c16a191"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe"
+          },
+          {
+            "path": "dist/index.cjs.map",
+            "type": "file",
+            "sha256": "1c1c99673b40af7039cb2609f4696e6b840bff25884793fd3204430a6633445b"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358"
+          },
+          {
+            "path": "dist/index.js.map",
+            "type": "file",
+            "sha256": "627536dc2346c5a68107eda63111aa519cb329c1fcc679eebaf460464748e4e0"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "b43b1a3ecf50741b57cfbe1c17eed8f001f11413ec93e1d86c135fd89b321887"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "74fbf74318ef422647c77a6fa49b30ac8cebda34f106b5b37f69910d288be522"
+          }
+        ]
+      },
+      "0.1.33": {
+        "file_count": 11,
+        "tarball_sha256": "a00e7095a7ea9af9c915b85be3771afda9c3ba55e051e5d11e3a9dbb09a28529",
+        "files": [
+          {
+            "path": "dist/cli.js",
+            "type": "file",
+            "sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830"
+          },
+          {
+            "path": "dist/cli.js.map",
+            "type": "file",
+            "sha256": "89a795adec4073c6c3f5b82d341c17376769a944f2a22b460fbd551f0c16a191"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe"
+          },
+          {
+            "path": "dist/index.cjs.map",
+            "type": "file",
+            "sha256": "1c1c99673b40af7039cb2609f4696e6b840bff25884793fd3204430a6633445b"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358"
+          },
+          {
+            "path": "dist/index.js.map",
+            "type": "file",
+            "sha256": "627536dc2346c5a68107eda63111aa519cb329c1fcc679eebaf460464748e4e0"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "ce90c3da1e020d4182fadf9583edf2a7aa3c8f82a11d122b390ded7a08ffa19a"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "74fbf74318ef422647c77a6fa49b30ac8cebda34f106b5b37f69910d288be522"
+          }
+        ]
+      },
+      "0.1.34": {
+        "file_count": 11,
+        "tarball_sha256": "7b5faf49d58b6afede606cb45d5da70569ee85b671bf7e336eac7e79ec60963f",
+        "files": [
+          {
+            "path": "dist/cli.js",
+            "type": "file",
+            "sha256": "508603abc388abac1dbe7b1d57e45ebf611d2ec6644fe4e3349c5b335064d830"
+          },
+          {
+            "path": "dist/cli.js.map",
+            "type": "file",
+            "sha256": "89a795adec4073c6c3f5b82d341c17376769a944f2a22b460fbd551f0c16a191"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "742f5b4e60da0d11db04aeb54da2e18d87e2babc821a03b8f7b51e4fa5ddc3fe"
+          },
+          {
+            "path": "dist/index.cjs.map",
+            "type": "file",
+            "sha256": "1c1c99673b40af7039cb2609f4696e6b840bff25884793fd3204430a6633445b"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "c34b3dac4d673233670cbb2163ad85bdcb0d1e5a22eb30b2f9c43e0d8ba6aed8"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "21449c09ce02096a073e4c4f77233a6d0326b48092aa54a44ae519b0e87de20b"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "6ce345349857c6f74965512cfa9fe5baaa4ae42f0401cbbdd5643c724d161358"
+          },
+          {
+            "path": "dist/index.js.map",
+            "type": "file",
+            "sha256": "627536dc2346c5a68107eda63111aa519cb329c1fcc679eebaf460464748e4e0"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "08d311c1903e2baf42558980ddec5292f6c7abcd08fb2c2e8f4bb21636c7543e"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "74fbf74318ef422647c77a6fa49b30ac8cebda34f106b5b37f69910d288be522"
+          }
+        ]
+      }
+    },
+    "deepagents": {
+      "1.13.4": {
+        "file_count": 25,
+        "tarball_sha256": "a00d90a3041794cc4f80186b0eaf519f4fdbccea16dc8576771aeb0d8b3c800c",
+        "files": [
+          {
+            "path": "dist/agent-CVBXKZAu.d.ts",
+            "type": "file",
+            "sha256": "87efec77359cd6b499c7005757db3e6d7a788b5cd3d5274552bc45512513a9c5"
+          },
+          {
+            "path": "dist/agent-D7nWARfg.d.cts",
+            "type": "file",
+            "sha256": "cb8fa2f4bead9dd16c1fd017f96b7d9208f1f62a6fb274338eeb2e01486b88ac"
+          },
+          {
+            "path": "dist/browser.cjs",
+            "type": "file",
+            "sha256": "8a56a95d61870178c79510848ba631a882c7aebe0290c097a124c6224ec7c63e"
+          },
+          {
+            "path": "dist/browser.d.cts",
+            "type": "file",
+            "sha256": "46e527d836c4cec69710731ae4774405b3db912637b364f0bee6e3b297de70be"
+          },
+          {
+            "path": "dist/browser.d.ts",
+            "type": "file",
+            "sha256": "5e63b4ab4ca3c970f740b0b126b7a794b87b744707aa62b23b1ff891b42ca809"
+          },
+          {
+            "path": "dist/browser.js",
+            "type": "file",
+            "sha256": "507dd0dfe639ffee544e1d8d50c221517653bbc6ab2e8892c3d227e94ad2ef62"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "cdf6bc356f82f8160e2698bd9059f7a2e5d4a5e8a1106fa55daa331a3e8b21d1"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "3c56c94e0687406f7f313c81d7809fc7c675ec71c65fe285d460ee48c1487313"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "2d88509f1a82e6f530b13cbbb3d81e66ba0a7806b7d9b1fa97150606b6006af4"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "5346d0c7d809dd2d0debec30ae110bc9befc469659a2b5ad7cf7ffd3529665a5"
+          },
+          {
+            "path": "dist/langsmith-BAO_h4J6.js",
+            "type": "file",
+            "sha256": "52d0b741683a27a2a08709e7aae290c35e0a7838d050f4647c158baac1672a93"
+          },
+          {
+            "path": "dist/langsmith-BAO_h4J6.js.map",
+            "type": "file",
+            "sha256": "672f58916c2d4a3906099b5197346c53dee25806251e37383ff66babeec33e38"
+          },
+          {
+            "path": "dist/langsmith-yA3yhBRa.cjs",
+            "type": "file",
+            "sha256": "64a725198653790e7ec2082b416a670aac73cc84e646e274aed30abfe50caa43"
+          },
+          {
+            "path": "dist/langsmith-yA3yhBRa.cjs.map",
+            "type": "file",
+            "sha256": "852e477d9a1e5c26e4a3235ec76da1c0d2b2c51dbca47f99660ba5fb57b62c6f"
+          },
+          {
+            "path": "dist/node.cjs",
+            "type": "file",
+            "sha256": "cdf6bc356f82f8160e2698bd9059f7a2e5d4a5e8a1106fa55daa331a3e8b21d1"
+          },
+          {
+            "path": "dist/node.d.cts",
+            "type": "file",
+            "sha256": "3c56c94e0687406f7f313c81d7809fc7c675ec71c65fe285d460ee48c1487313"
+          },
+          {
+            "path": "dist/node.d.ts",
+            "type": "file",
+            "sha256": "2d88509f1a82e6f530b13cbbb3d81e66ba0a7806b7d9b1fa97150606b6006af4"
+          },
+          {
+            "path": "dist/node.js",
+            "type": "file",
+            "sha256": "5346d0c7d809dd2d0debec30ae110bc9befc469659a2b5ad7cf7ffd3529665a5"
+          },
+          {
+            "path": "dist/src-CcY34Ckx.js",
+            "type": "file",
+            "sha256": "9709b83d8170cfadfd76791e1c9cb78e927e0d312786f8be967e0bc85f2ba834"
+          },
+          {
+            "path": "dist/src-CcY34Ckx.js.map",
+            "type": "file",
+            "sha256": "8d0054eb89bf901dddaa18cb061cdc18e7d709b9fda21d79dec30a36368004bd"
+          },
+          {
+            "path": "dist/src-D_XxmEak.cjs",
+            "type": "file",
+            "sha256": "2f1c47f145874c2e0d7f55b96bade3371ef0a1f85019d630c4605f4292c74f4d"
+          },
+          {
+            "path": "dist/src-D_XxmEak.cjs.map",
+            "type": "file",
+            "sha256": "fa1403cd5551ea683bea1c93e717e9bfe91ec313ff835a7b8a3b07ae6064da1a"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "03d74e6e1c03414ada4c27a942bdb9e94a769cbc699911921b8ca2e1f37c0d6f"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "76c7466d16aaf8e484a154dfb89717239a1a481644ce8a5584b63031600cb5de"
+          }
+        ]
+      },
+      "1.13.5": {
+        "file_count": 25,
+        "tarball_sha256": "811a6c07fe0b5e678883b66acc51672244fd7fb9c2b89e5563fc8ebc3b2f0bba",
+        "files": [
+          {
+            "path": "dist/agent-CVBXKZAu.d.ts",
+            "type": "file",
+            "sha256": "87efec77359cd6b499c7005757db3e6d7a788b5cd3d5274552bc45512513a9c5"
+          },
+          {
+            "path": "dist/agent-D7nWARfg.d.cts",
+            "type": "file",
+            "sha256": "cb8fa2f4bead9dd16c1fd017f96b7d9208f1f62a6fb274338eeb2e01486b88ac"
+          },
+          {
+            "path": "dist/browser.cjs",
+            "type": "file",
+            "sha256": "aff4ec1380c7941c9bada950fd8613a5cc4050192ac54515a1704f4dfce80737"
+          },
+          {
+            "path": "dist/browser.d.cts",
+            "type": "file",
+            "sha256": "46e527d836c4cec69710731ae4774405b3db912637b364f0bee6e3b297de70be"
+          },
+          {
+            "path": "dist/browser.d.ts",
+            "type": "file",
+            "sha256": "5e63b4ab4ca3c970f740b0b126b7a794b87b744707aa62b23b1ff891b42ca809"
+          },
+          {
+            "path": "dist/browser.js",
+            "type": "file",
+            "sha256": "f0ab0ee8e2aa399c40686502ddb182469fcf471f6bb0dbc28df835399977caa5"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "33b63e586daf48317fe145343a8f5ebae77d7c5a53ff5ee65f318521c8815c9a"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "3c56c94e0687406f7f313c81d7809fc7c675ec71c65fe285d460ee48c1487313"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "2d88509f1a82e6f530b13cbbb3d81e66ba0a7806b7d9b1fa97150606b6006af4"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "d205b41bb838dbdee2f836fc993067a41eab613627dc7887e450b75a8eb70c6a"
+          },
+          {
+            "path": "dist/langsmith-CG8px69t.cjs",
+            "type": "file",
+            "sha256": "7210602089bb90c0e1c85bba8e7b4e38b489369e29a454237652f48f785a7ec8"
+          },
+          {
+            "path": "dist/langsmith-CG8px69t.cjs.map",
+            "type": "file",
+            "sha256": "b15de8cdd586bec7fbb9f9b279f6bc9dd67e61d9c2dd9501bf6b39fa9a40026a"
+          },
+          {
+            "path": "dist/langsmith-CY7MawjU.js",
+            "type": "file",
+            "sha256": "48a0e58543ac9327115ec64a94f523646ff48971ba73f037ce610dbb9df27c90"
+          },
+          {
+            "path": "dist/langsmith-CY7MawjU.js.map",
+            "type": "file",
+            "sha256": "01ed316a1c63490caa75b94270a126b4ec212041b23492c7688469f4a2374173"
+          },
+          {
+            "path": "dist/node.cjs",
+            "type": "file",
+            "sha256": "33b63e586daf48317fe145343a8f5ebae77d7c5a53ff5ee65f318521c8815c9a"
+          },
+          {
+            "path": "dist/node.d.cts",
+            "type": "file",
+            "sha256": "3c56c94e0687406f7f313c81d7809fc7c675ec71c65fe285d460ee48c1487313"
+          },
+          {
+            "path": "dist/node.d.ts",
+            "type": "file",
+            "sha256": "2d88509f1a82e6f530b13cbbb3d81e66ba0a7806b7d9b1fa97150606b6006af4"
+          },
+          {
+            "path": "dist/node.js",
+            "type": "file",
+            "sha256": "d205b41bb838dbdee2f836fc993067a41eab613627dc7887e450b75a8eb70c6a"
+          },
+          {
+            "path": "dist/src-Bos_UCsK.js",
+            "type": "file",
+            "sha256": "0433facadc9a1f73d1e7b50b3a3d6339cf9d2094c87d30bbb2fee328caf136ee"
+          },
+          {
+            "path": "dist/src-Bos_UCsK.js.map",
+            "type": "file",
+            "sha256": "5afd7bf4e5a83ab7507c4c6ee2c933027d7747b38f697927420b5be9cb0dd87b"
+          },
+          {
+            "path": "dist/src-C2ZohcHT.cjs",
+            "type": "file",
+            "sha256": "9b991b1d09c96b04fb4e9d64b308c66999aae6ee6a6b461b4feb8484682c86db"
+          },
+          {
+            "path": "dist/src-C2ZohcHT.cjs.map",
+            "type": "file",
+            "sha256": "c40c9098aa753aa15863f6f6e39d653b58313eacda0cd01e9f44198e14bbc14a"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "474c1922e07c4c9089bcb8aea9fd744bf7053d0d7b75410cf29c0d825e81d411"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "76c7466d16aaf8e484a154dfb89717239a1a481644ce8a5584b63031600cb5de"
+          }
+        ]
+      },
+      "1.14.0": {
+        "file_count": 25,
+        "tarball_sha256": "34469f3b04e3ba22dcbf140d06e3ce77789394e6fc702d43d80fe3e2cb70834b",
+        "files": [
+          {
+            "path": "dist/agent-CrQgOsbl.d.cts",
+            "type": "file",
+            "sha256": "59b313bcc3e7df9122ee43a0fc36428351e32324f468908c5484fda0373bb3d0"
+          },
+          {
+            "path": "dist/agent-DGkf2K7U.d.ts",
+            "type": "file",
+            "sha256": "74bc822991010d03abce2927a67bad0ec2d2a1f69f72ba3bbc7ea3b8a4d53c00"
+          },
+          {
+            "path": "dist/browser.cjs",
+            "type": "file",
+            "sha256": "8f70ca6b35a610bf64d98f39745a7ffe5680566350cc4296a2784ad14d7ed0f7"
+          },
+          {
+            "path": "dist/browser.d.cts",
+            "type": "file",
+            "sha256": "e6e0d24df6c88c18846d4c9204a8034d030c70743fb68c2fd9b34b3a9ecbc901"
+          },
+          {
+            "path": "dist/browser.d.ts",
+            "type": "file",
+            "sha256": "a18d3829aa36efa3a210a8db4e945f1c015c152d556254f618cd191995af7957"
+          },
+          {
+            "path": "dist/browser.js",
+            "type": "file",
+            "sha256": "a878635d9760801e85f72338ad908ee8dc96f00f3ed5b3e6d3438587405e1bba"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "42bf45e9fdae5185a8e568023dfb1721fdf49773b826316fd370bc89f57353cb"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "fe461d01d43e0579b9e0b64cb8b3879da1b5f190feb8bc2688b16324d02640df"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "dc47ae44992fef9e8d6555aa4de639fd7766a31a34d467ad4c30883463c6b807"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "02ee53760eaeee4c0b4a32b346e0d3f0c92b230f80bd6cab2fd11099033c81f9"
+          },
+          {
+            "path": "dist/langsmith-3LzYb-m7.js",
+            "type": "file",
+            "sha256": "9f74ee6953b2ffbfc35d6cf39cbb4101ef33cbd424e558d2b392210a69cfc829"
+          },
+          {
+            "path": "dist/langsmith-3LzYb-m7.js.map",
+            "type": "file",
+            "sha256": "e1db4f644430f79d6553a3ea1cec50af4373daf3e71b7db4f0630516e59f3963"
+          },
+          {
+            "path": "dist/langsmith-C9zNPKIz.cjs",
+            "type": "file",
+            "sha256": "1536bab1d825dc396d67611618dee4c1d9baf063b8ad6d7cf7700c7eaed01274"
+          },
+          {
+            "path": "dist/langsmith-C9zNPKIz.cjs.map",
+            "type": "file",
+            "sha256": "545b39bbb77639bcade10e6bf2a8595d895c3d06a410a50bb74c31cd9d21cb50"
+          },
+          {
+            "path": "dist/node.cjs",
+            "type": "file",
+            "sha256": "42bf45e9fdae5185a8e568023dfb1721fdf49773b826316fd370bc89f57353cb"
+          },
+          {
+            "path": "dist/node.d.cts",
+            "type": "file",
+            "sha256": "fe461d01d43e0579b9e0b64cb8b3879da1b5f190feb8bc2688b16324d02640df"
+          },
+          {
+            "path": "dist/node.d.ts",
+            "type": "file",
+            "sha256": "dc47ae44992fef9e8d6555aa4de639fd7766a31a34d467ad4c30883463c6b807"
+          },
+          {
+            "path": "dist/node.js",
+            "type": "file",
+            "sha256": "02ee53760eaeee4c0b4a32b346e0d3f0c92b230f80bd6cab2fd11099033c81f9"
+          },
+          {
+            "path": "dist/src-gIoHrhh3.js",
+            "type": "file",
+            "sha256": "b9b18f2aaaadaa6738c2e3184ca47392cb15a8b9099cef55345b4b10c6e76b18"
+          },
+          {
+            "path": "dist/src-gIoHrhh3.js.map",
+            "type": "file",
+            "sha256": "938cc7616e5ffa470737063423a7e70b58df69e3985b5f53743fffe0df86a6e2"
+          },
+          {
+            "path": "dist/src-Nhlq1O0Y.cjs",
+            "type": "file",
+            "sha256": "2b36f8ea290415f75b166c0e138464a01365f8ec89b67c574c0d7063a5fa4e7c"
+          },
+          {
+            "path": "dist/src-Nhlq1O0Y.cjs.map",
+            "type": "file",
+            "sha256": "e5e6de567bd5863d4bd6a2994e64744a67bd7cde14cf2cdda3614969398a9d27"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "6a1a5ea3a0bc60baf809f26dcdbc24da9e38f526678fa331e8987431d79ae144"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "76c7466d16aaf8e484a154dfb89717239a1a481644ce8a5584b63031600cb5de"
+          }
+        ]
+      },
+      "1.14.1": {
+        "file_count": 25,
+        "tarball_sha256": "6f2fc692a6f9919a77d8f387a9143cbb0a1208d0b6ccc9aca0e1abab2eb8a7b5",
+        "files": [
+          {
+            "path": "dist/agent-B05mw_iK.d.cts",
+            "type": "file",
+            "sha256": "e85eb09d08738abb67ccfba288c419f64dc84e4f5634fc77d2c5819df4c15e9c"
+          },
+          {
+            "path": "dist/agent-CxEdojMv.d.ts",
+            "type": "file",
+            "sha256": "596aba89db5a4e03cecbd0de8de74eb6d850a43bb61c57084a7854b217b71758"
+          },
+          {
+            "path": "dist/browser.cjs",
+            "type": "file",
+            "sha256": "711ff614be3f11703114cf270a4437745d91013579b4b11f392220dbb0928f17"
+          },
+          {
+            "path": "dist/browser.d.cts",
+            "type": "file",
+            "sha256": "03a206bb7dafe9235da7ad623a974d352d230a2cf813c43bdb9261b52cbd7bd5"
+          },
+          {
+            "path": "dist/browser.d.ts",
+            "type": "file",
+            "sha256": "934c65175064a89992ed29944f62a2756a1541e93aa753f89e8a7228a607977f"
+          },
+          {
+            "path": "dist/browser.js",
+            "type": "file",
+            "sha256": "d9a69ee5d6b8038054972b997eb1e797dcc52e87d7ece468458578eac0bca0b4"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "ab63896462e38aae5af6ef9a3a1b9f393b094ef8a7f2015eddbd18f183edd26b"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "88c510da295b3ab2c90a92347ee1268bba982d00ec99e01b3ae5030a753b0fc2"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "2f260aa71e1b709ea015c215b452b5d610562b85ed010400a80ac9115a1ccd02"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "0901dd0941659791ff423018c2e11a11605db204a34cf956bee10f06eb0426e5"
+          },
+          {
+            "path": "dist/langsmith-Bgi_Ta-k.js",
+            "type": "file",
+            "sha256": "e4e79d0d0beed1193f1f3bff3bd4d31a9aca7d3e17654c1d00b7896d3096e2c9"
+          },
+          {
+            "path": "dist/langsmith-Bgi_Ta-k.js.map",
+            "type": "file",
+            "sha256": "91d2a608b31fbbf4e597a41840aafd49260b12dc4fc5d94f94fdd1e2588f2cd4"
+          },
+          {
+            "path": "dist/langsmith-Bhg_Q4ZO.cjs",
+            "type": "file",
+            "sha256": "93a356afcc030a9633d64e9caac69b0ef27b5d22eb3917eabd348e40e116cff5"
+          },
+          {
+            "path": "dist/langsmith-Bhg_Q4ZO.cjs.map",
+            "type": "file",
+            "sha256": "04f0913699e4648bec1207fc03af41bd05d2cf7e28ec09133ecace805cb34b32"
+          },
+          {
+            "path": "dist/node.cjs",
+            "type": "file",
+            "sha256": "ab63896462e38aae5af6ef9a3a1b9f393b094ef8a7f2015eddbd18f183edd26b"
+          },
+          {
+            "path": "dist/node.d.cts",
+            "type": "file",
+            "sha256": "88c510da295b3ab2c90a92347ee1268bba982d00ec99e01b3ae5030a753b0fc2"
+          },
+          {
+            "path": "dist/node.d.ts",
+            "type": "file",
+            "sha256": "2f260aa71e1b709ea015c215b452b5d610562b85ed010400a80ac9115a1ccd02"
+          },
+          {
+            "path": "dist/node.js",
+            "type": "file",
+            "sha256": "0901dd0941659791ff423018c2e11a11605db204a34cf956bee10f06eb0426e5"
+          },
+          {
+            "path": "dist/src-BGwHTd6z.js",
+            "type": "file",
+            "sha256": "f51226f47170b46b8d7abd3b82bea8f9a469f6d0a1be8a29462fac24aaed3198"
+          },
+          {
+            "path": "dist/src-BGwHTd6z.js.map",
+            "type": "file",
+            "sha256": "692954f5188a191151e863768063a4868af1b17908743babad502ea29010595a"
+          },
+          {
+            "path": "dist/src-CB_Eac87.cjs",
+            "type": "file",
+            "sha256": "8208892263898e4041d4927022220dd1a1809584be258016dfa79ec72b3491cf"
+          },
+          {
+            "path": "dist/src-CB_Eac87.cjs.map",
+            "type": "file",
+            "sha256": "f3e4d9a61d5808fa3f7b53658b62375282b8e88e5eb61e7e83fb5c8449a7ca28"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "0e2b52a868c6df5f32b011b41385c0a45273fdbbc2a97210acb38564318c291c"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "76c7466d16aaf8e484a154dfb89717239a1a481644ce8a5584b63031600cb5de"
+          }
+        ]
+      },
+      "1.14.2": {
+        "file_count": 25,
+        "tarball_sha256": "305b138366827025452f752af98c6f2f6cc9e5bdfa14aa1c371222c00cac71c4",
+        "files": [
+          {
+            "path": "dist/agent-3XynVB9Z.d.cts",
+            "type": "file",
+            "sha256": "43837387563aa616bee4c4d6739396516d43fb023704bc0c7c627a0c6238c4dd"
+          },
+          {
+            "path": "dist/agent-BKShWAoi.d.ts",
+            "type": "file",
+            "sha256": "cdbded613f5e579db16c543aaa70e3138cd8236d1a4087baad85b5a0d653f390"
+          },
+          {
+            "path": "dist/browser.cjs",
+            "type": "file",
+            "sha256": "815b9b26d3de41bc7458f827a873b7d79804249958a6e17a85213793a0c7b988"
+          },
+          {
+            "path": "dist/browser.d.cts",
+            "type": "file",
+            "sha256": "00d46f07489333dd02a199d3acc3e868e1945b476d3cf07479239a50fa013c05"
+          },
+          {
+            "path": "dist/browser.d.ts",
+            "type": "file",
+            "sha256": "3b1dd46dd545ea2da6c29b667a4fde627ed4972a570cf3d45ce13d777a210b68"
+          },
+          {
+            "path": "dist/browser.js",
+            "type": "file",
+            "sha256": "f04f22186602a848993f3462c7b4cd456468d07b2ad6d4e9c56745428a1bcd39"
+          },
+          {
+            "path": "dist/index.cjs",
+            "type": "file",
+            "sha256": "5e50512b04a95e5513d862d7781fce78ef66c199189a5246db817009d52e9fa5"
+          },
+          {
+            "path": "dist/index.d.cts",
+            "type": "file",
+            "sha256": "d1d7050556de48b882aac98235a7b28eafd2701f4a53a3c613054e74a4c77e30"
+          },
+          {
+            "path": "dist/index.d.ts",
+            "type": "file",
+            "sha256": "4811acf0d15458d772c7f170748fa2da842454f91545c599f7250b65ed6c5d23"
+          },
+          {
+            "path": "dist/index.js",
+            "type": "file",
+            "sha256": "6c6b52d1693402369b4b9691b72b9074ca3808e92f69c2c1ae2dffe96a2522d3"
+          },
+          {
+            "path": "dist/langsmith--RbtjNdQ.js",
+            "type": "file",
+            "sha256": "27980518fb69302c615b3e32613b2cae6ae0308be5aaa8991ef4c29eb5e0b4b8"
+          },
+          {
+            "path": "dist/langsmith--RbtjNdQ.js.map",
+            "type": "file",
+            "sha256": "b7f62abe3b4e0d597e603b2d24a4a17a92097bc0b5f40862baedf17f8884f451"
+          },
+          {
+            "path": "dist/langsmith-CjOWZAS2.cjs",
+            "type": "file",
+            "sha256": "6af56f9a94826444be0ba51b9b969a3c721f587160bbfe6012c96dfb5188d063"
+          },
+          {
+            "path": "dist/langsmith-CjOWZAS2.cjs.map",
+            "type": "file",
+            "sha256": "02b34b873954cdd90fb895f58d3bf2f568d206147d47c4c624f811c7159c0395"
+          },
+          {
+            "path": "dist/node.cjs",
+            "type": "file",
+            "sha256": "5e50512b04a95e5513d862d7781fce78ef66c199189a5246db817009d52e9fa5"
+          },
+          {
+            "path": "dist/node.d.cts",
+            "type": "file",
+            "sha256": "d1d7050556de48b882aac98235a7b28eafd2701f4a53a3c613054e74a4c77e30"
+          },
+          {
+            "path": "dist/node.d.ts",
+            "type": "file",
+            "sha256": "4811acf0d15458d772c7f170748fa2da842454f91545c599f7250b65ed6c5d23"
+          },
+          {
+            "path": "dist/node.js",
+            "type": "file",
+            "sha256": "6c6b52d1693402369b4b9691b72b9074ca3808e92f69c2c1ae2dffe96a2522d3"
+          },
+          {
+            "path": "dist/src-BuYhtaIW.cjs",
+            "type": "file",
+            "sha256": "92d471a09f32b96c986a3c560f287ee9ebcdc522cb8f37615829a9dbb9544c04"
+          },
+          {
+            "path": "dist/src-BuYhtaIW.cjs.map",
+            "type": "file",
+            "sha256": "bd207259beb53c6a89072e404fd3198541aac2a0a57cf3cfbb92027643824ebb"
+          },
+          {
+            "path": "dist/src-YqBMARBL.js",
+            "type": "file",
+            "sha256": "11cfce54017662b4410ca982477b01af8dc0385f2405f8e1953e2eb38df1413a"
+          },
+          {
+            "path": "dist/src-YqBMARBL.js.map",
+            "type": "file",
+            "sha256": "b4ffbc50bdafd2afbdf852861806b333674412cb19231e7c9af230edf9930332"
+          },
+          {
+            "path": "LICENSE",
+            "type": "file",
+            "sha256": "61e5e8faf0b76db76793ecd8aa0edca36a82bd8dba279d2a31972f026c132423"
+          },
+          {
+            "path": "package.json",
+            "type": "file",
+            "sha256": "ef2801c3cdb9e7768fecbfef802477f65fcca5ec57c1ac248ad87d3ee7029447"
+          },
+          {
+            "path": "README.md",
+            "type": "file",
+            "sha256": "76c7466d16aaf8e484a154dfb89717239a1a481644ce8a5584b63031600cb5de"
+          }
+        ]
+      }
+    }
+  },
+  "per_hop": {
+    "deepagents-acp": {
+      "0.1.30..0.1.31": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md",
+          "dist/cli.js",
+          "dist/cli.js.map",
+          "dist/index.cjs",
+          "dist/index.cjs.map",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/index.js.map"
+        ]
+      },
+      "0.1.31..0.1.32": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md",
+          "dist/cli.js",
+          "dist/cli.js.map",
+          "dist/index.cjs",
+          "dist/index.cjs.map",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/index.js.map"
+        ]
+      },
+      "0.1.32..0.1.33": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md",
+          "dist/cli.js",
+          "dist/cli.js.map",
+          "dist/index.cjs",
+          "dist/index.cjs.map",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/index.js.map"
+        ]
+      },
+      "0.1.33..0.1.34": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md",
+          "dist/cli.js",
+          "dist/cli.js.map",
+          "dist/index.cjs",
+          "dist/index.cjs.map",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/index.js.map"
+        ]
+      }
+    },
+    "deepagents": {
+      "1.13.4..1.13.5": {
+        "added": [
+          "dist/langsmith-CG8px69t.cjs",
+          "dist/langsmith-CG8px69t.cjs.map",
+          "dist/langsmith-CY7MawjU.js",
+          "dist/langsmith-CY7MawjU.js.map",
+          "dist/src-Bos_UCsK.js",
+          "dist/src-Bos_UCsK.js.map",
+          "dist/src-C2ZohcHT.cjs",
+          "dist/src-C2ZohcHT.cjs.map"
+        ],
+        "removed": [
+          "dist/langsmith-BAO_h4J6.js",
+          "dist/langsmith-BAO_h4J6.js.map",
+          "dist/langsmith-yA3yhBRa.cjs",
+          "dist/langsmith-yA3yhBRa.cjs.map",
+          "dist/src-CcY34Ckx.js",
+          "dist/src-CcY34Ckx.js.map",
+          "dist/src-D_XxmEak.cjs",
+          "dist/src-D_XxmEak.cjs.map"
+        ],
+        "changed": [
+          "dist/browser.cjs",
+          "dist/browser.js",
+          "dist/index.cjs",
+          "dist/index.js",
+          "dist/node.cjs",
+          "dist/node.js",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md",
+          "dist/agent-CVBXKZAu.d.ts",
+          "dist/agent-D7nWARfg.d.cts",
+          "dist/browser.d.cts",
+          "dist/browser.d.ts",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/node.d.cts",
+          "dist/node.d.ts"
+        ]
+      },
+      "1.13.5..1.14.0": {
+        "added": [
+          "dist/agent-CrQgOsbl.d.cts",
+          "dist/agent-DGkf2K7U.d.ts",
+          "dist/langsmith-3LzYb-m7.js",
+          "dist/langsmith-3LzYb-m7.js.map",
+          "dist/langsmith-C9zNPKIz.cjs",
+          "dist/langsmith-C9zNPKIz.cjs.map",
+          "dist/src-Nhlq1O0Y.cjs",
+          "dist/src-Nhlq1O0Y.cjs.map",
+          "dist/src-gIoHrhh3.js",
+          "dist/src-gIoHrhh3.js.map"
+        ],
+        "removed": [
+          "dist/agent-CVBXKZAu.d.ts",
+          "dist/agent-D7nWARfg.d.cts",
+          "dist/langsmith-CG8px69t.cjs",
+          "dist/langsmith-CG8px69t.cjs.map",
+          "dist/langsmith-CY7MawjU.js",
+          "dist/langsmith-CY7MawjU.js.map",
+          "dist/src-Bos_UCsK.js",
+          "dist/src-Bos_UCsK.js.map",
+          "dist/src-C2ZohcHT.cjs",
+          "dist/src-C2ZohcHT.cjs.map"
+        ],
+        "changed": [
+          "dist/browser.cjs",
+          "dist/browser.d.cts",
+          "dist/browser.d.ts",
+          "dist/browser.js",
+          "dist/index.cjs",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/node.cjs",
+          "dist/node.d.cts",
+          "dist/node.d.ts",
+          "dist/node.js",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md"
+        ]
+      },
+      "1.14.0..1.14.1": {
+        "added": [
+          "dist/agent-B05mw_iK.d.cts",
+          "dist/agent-CxEdojMv.d.ts",
+          "dist/langsmith-Bgi_Ta-k.js",
+          "dist/langsmith-Bgi_Ta-k.js.map",
+          "dist/langsmith-Bhg_Q4ZO.cjs",
+          "dist/langsmith-Bhg_Q4ZO.cjs.map",
+          "dist/src-BGwHTd6z.js",
+          "dist/src-BGwHTd6z.js.map",
+          "dist/src-CB_Eac87.cjs",
+          "dist/src-CB_Eac87.cjs.map"
+        ],
+        "removed": [
+          "dist/agent-CrQgOsbl.d.cts",
+          "dist/agent-DGkf2K7U.d.ts",
+          "dist/langsmith-3LzYb-m7.js",
+          "dist/langsmith-3LzYb-m7.js.map",
+          "dist/langsmith-C9zNPKIz.cjs",
+          "dist/langsmith-C9zNPKIz.cjs.map",
+          "dist/src-Nhlq1O0Y.cjs",
+          "dist/src-Nhlq1O0Y.cjs.map",
+          "dist/src-gIoHrhh3.js",
+          "dist/src-gIoHrhh3.js.map"
+        ],
+        "changed": [
+          "dist/browser.cjs",
+          "dist/browser.d.cts",
+          "dist/browser.d.ts",
+          "dist/browser.js",
+          "dist/index.cjs",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/node.cjs",
+          "dist/node.d.cts",
+          "dist/node.d.ts",
+          "dist/node.js",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md"
+        ]
+      },
+      "1.14.1..1.14.2": {
+        "added": [
+          "dist/agent-3XynVB9Z.d.cts",
+          "dist/agent-BKShWAoi.d.ts",
+          "dist/langsmith--RbtjNdQ.js",
+          "dist/langsmith--RbtjNdQ.js.map",
+          "dist/langsmith-CjOWZAS2.cjs",
+          "dist/langsmith-CjOWZAS2.cjs.map",
+          "dist/src-BuYhtaIW.cjs",
+          "dist/src-BuYhtaIW.cjs.map",
+          "dist/src-YqBMARBL.js",
+          "dist/src-YqBMARBL.js.map"
+        ],
+        "removed": [
+          "dist/agent-B05mw_iK.d.cts",
+          "dist/agent-CxEdojMv.d.ts",
+          "dist/langsmith-Bgi_Ta-k.js",
+          "dist/langsmith-Bgi_Ta-k.js.map",
+          "dist/langsmith-Bhg_Q4ZO.cjs",
+          "dist/langsmith-Bhg_Q4ZO.cjs.map",
+          "dist/src-BGwHTd6z.js",
+          "dist/src-BGwHTd6z.js.map",
+          "dist/src-CB_Eac87.cjs",
+          "dist/src-CB_Eac87.cjs.map"
+        ],
+        "changed": [
+          "dist/browser.cjs",
+          "dist/browser.d.cts",
+          "dist/browser.d.ts",
+          "dist/browser.js",
+          "dist/index.cjs",
+          "dist/index.d.cts",
+          "dist/index.d.ts",
+          "dist/index.js",
+          "dist/node.cjs",
+          "dist/node.d.cts",
+          "dist/node.d.ts",
+          "dist/node.js",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE",
+          "README.md"
+        ]
+      }
+    }
+  },
+  "selected_source_hashes": {
+    "1.13.4": {
+      "src/agent.ts": "1207db9f481c407a2fbecd8c488c93d3dd080981ca6492143083a11e1ad72667",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "be59371565ef1829897137b57d2dd4013d92f907214c17fd49df4a2d3414c291",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "e18e1c5ed4ee000e13894e13b9ce09cc6bb049b9c7a1a39e72b21dd4e15fd7f9",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "f0a21e3774e416ea5c44e71366ae395d1065a7fc9adf41174a7c9b7c9136b1e6",
+      "src/middleware/skills.ts": "e29e1e9c32b06ac55dd6eee4e9d85578377e354fab919d9f0ce3bd3ddb471971",
+      "src/middleware/subagents.ts": "0eb29e6a02ce4fb389a9903422587b6ff8db0075f2b212787a43903a26478182",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.13.5": {
+      "src/agent.ts": "1207db9f481c407a2fbecd8c488c93d3dd080981ca6492143083a11e1ad72667",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "be59371565ef1829897137b57d2dd4013d92f907214c17fd49df4a2d3414c291",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "2c09813cca84e0389bd7c2e5965fe1aa86338f6e8997796de5c76a35e67887a3",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "b3163b8b9085d7902790c63a69dce64c8a95c9a6fa5d810c9b2c2b5095d1c035",
+      "src/middleware/skills.ts": "d1e278864453f5e0767fc090743d0f34fb0a9b1f1bf4f3f792456024edbb083d",
+      "src/middleware/subagents.ts": "0eb29e6a02ce4fb389a9903422587b6ff8db0075f2b212787a43903a26478182",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.14.0": {
+      "src/agent.ts": "c869bfc124912c0db1a6b3b0214f35d5d57076f2262b72ebc909e721035f56c2",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "be59371565ef1829897137b57d2dd4013d92f907214c17fd49df4a2d3414c291",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "2c09813cca84e0389bd7c2e5965fe1aa86338f6e8997796de5c76a35e67887a3",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "b3163b8b9085d7902790c63a69dce64c8a95c9a6fa5d810c9b2c2b5095d1c035",
+      "src/middleware/skills.ts": "e4c92e8a13512c4f6cfbe222eb2fb8015dcce99c8da80dd725c674c98cb06a1e",
+      "src/middleware/subagents.ts": "4408533e991a6f49c182957d58bdef46645cbf03d41838e4e3486debc387d115",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.14.1": {
+      "src/agent.ts": "c869bfc124912c0db1a6b3b0214f35d5d57076f2262b72ebc909e721035f56c2",
+      "src/backends/composite.ts": "b8b8234692e3e63800a33e00a0c087acd9e7a5332e1c7320473c6207aa99e525",
+      "src/backends/filesystem.ts": "c1bdbbbb9fa53139b0b44709ea0ff7de0a2ad2d0f6984cbcc2c09265b8e0ba22",
+      "src/backends/state.ts": "79b967046ac61136ee27e499bb0ddf3ea4aa5ca841997749389ac05e91cbee69",
+      "src/backends/utils.ts": "2c09813cca84e0389bd7c2e5965fe1aa86338f6e8997796de5c76a35e67887a3",
+      "src/middleware/blobOffload.ts": null,
+      "src/middleware/fs.ts": "fe31760f709bf4933f633d4e42ed174cce8cfb75b0b18a944acbf106bfcf9147",
+      "src/middleware/skills.ts": "e4c92e8a13512c4f6cfbe222eb2fb8015dcce99c8da80dd725c674c98cb06a1e",
+      "src/middleware/subagents.ts": "4408533e991a6f49c182957d58bdef46645cbf03d41838e4e3486debc387d115",
+      "src/middleware/unsupportedContent.ts": null
+    },
+    "1.14.2": {
+      "src/agent.ts": "796d6d9d6e650af7ee1bc9040e00a2bef2287f695c9f0f9dbb2ae8f0b6ecd160",
+      "src/backends/composite.ts": "f8bff4cace5864269592d7e327023dacba3eda0b4440900629917773b062eece",
+      "src/backends/filesystem.ts": "c1bdbbbb9fa53139b0b44709ea0ff7de0a2ad2d0f6984cbcc2c09265b8e0ba22",
+      "src/backends/state.ts": "deaebfe1d99a78b349221386c314fe2c8464fb1f233c1fb19924ff1e09c5aaea",
+      "src/backends/utils.ts": "50dfcf1c37793d1656b931f306f132adc1b91e6047d335f4e00578b51da56521",
+      "src/middleware/blobOffload.ts": "b4c792f7d2fa4bd5ea9f14456b7031275e8427da8173ef7e735980a8d6713d48",
+      "src/middleware/fs.ts": "69ff72f70c85c98261cab053cddb25799b7d5db5f4bf0eb30863aa44287dff92",
+      "src/middleware/skills.ts": "e4c92e8a13512c4f6cfbe222eb2fb8015dcce99c8da80dd725c674c98cb06a1e",
+      "src/middleware/subagents.ts": "32737bd4a571da32155a7e50438dbfde94f7d50d6ff54213a5cf32860f0e2776",
+      "src/middleware/unsupportedContent.ts": "83fc5f842581b0b8dc4b67899056db9ff63bbc872996de441f48bcd5e78e0b9c"
+    }
+  },
+  "selected_source_changes": {
+    "1.13.4..1.13.5": [
+      "src/backends/utils.ts",
+      "src/middleware/fs.ts",
+      "src/middleware/skills.ts"
+    ],
+    "1.13.5..1.14.0": [
+      "src/agent.ts",
+      "src/middleware/skills.ts",
+      "src/middleware/subagents.ts"
+    ],
+    "1.14.0..1.14.1": [
+      "src/backends/filesystem.ts",
+      "src/middleware/fs.ts"
+    ],
+    "1.14.1..1.14.2": [
+      "src/agent.ts",
+      "src/backends/composite.ts",
+      "src/backends/state.ts",
+      "src/backends/utils.ts",
+      "src/middleware/blobOffload.ts",
+      "src/middleware/fs.ts",
+      "src/middleware/subagents.ts",
+      "src/middleware/unsupportedContent.ts"
+    ]
+  }
+}

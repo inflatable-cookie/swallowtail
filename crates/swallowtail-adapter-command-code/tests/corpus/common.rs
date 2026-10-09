@@ -20,6 +20,8 @@ use swallowtail_runtime::{
 pub(super) const ARTIFACT: &str = include_str!("../fixtures/command-code-1.65.0/artifact.json");
 pub(super) const PROTOCOL: &str = include_str!("../fixtures/command-code-1.65.0/protocol.json");
 pub(super) const VERSION: &str = include_str!("../fixtures/command-code-1.65.0/version.txt");
+pub(super) const CURRENT_VERSION: &str =
+    include_str!("../fixtures/command-code-1.79.1/version.txt");
 pub(super) const NO_TOOL_SUCCESS: &str =
     include_str!("../fixtures/command-code-1.15.1/no-tool-success.jsonl");
 pub(super) const TOOL_SUCCESS: &str =
@@ -35,8 +37,21 @@ pub(super) const FIXTURE_MODEL_ID: &str = "fixture-model";
 pub(super) fn prepare(
     host_id: ExecutionHostId,
 ) -> swallowtail_adapter_command_code::CommandCodePreparedIntegration {
+    prepare_with_version(host_id, VERSION)
+}
+
+pub(super) fn prepare_current(
+    host_id: ExecutionHostId,
+) -> swallowtail_adapter_command_code::CommandCodePreparedIntegration {
+    prepare_with_version(host_id, CURRENT_VERSION)
+}
+
+fn prepare_with_version(
+    host_id: ExecutionHostId,
+    version: &'static str,
+) -> swallowtail_adapter_command_code::CommandCodePreparedIntegration {
     let access_id = AccessProfileId::new("command-code.fixture.access").expect("access id");
-    let host = support::FixtureHost::scripted([VERSION]);
+    let host = support::FixtureHost::scripted([version]);
     let prepared = block_on(prepare_command_code_headless(
         preparation_input(
             host_id.clone(),

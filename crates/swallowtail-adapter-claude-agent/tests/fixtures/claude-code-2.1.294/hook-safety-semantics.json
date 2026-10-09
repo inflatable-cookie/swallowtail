@@ -1,0 +1,25 @@
+{
+  "version": "2.1.294",
+  "evidence": "static inspection of the exact published Linux x64 and Darwin arm64 executables; no executable was run",
+  "artifacts": {
+    "linux_x64_sha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+    "darwin_arm64_sha256": "def0d15e64dd7d89621f88d28214f885b1c38b0ddd69762fb8593e34915d6d53"
+  },
+  "prompt_and_agent_hooks": {
+    "instruction_prompt_decision": "requires ok and reason; ok=false selects a blocking outcome",
+    "pre_tool_use_deny": "permissionDecision=deny selects a blocking error before tool dispatch",
+    "pre_tool_use_rewrite": "a hook-updated input is passed through a subsequent safety and permission decision; a resulting deny blocks the call",
+    "safety_scope": "the adapter retains user, project, and local settings; it does not disable consumer hooks or add a permission bypass"
+  },
+  "stop_hooks": {
+    "events": ["Stop", "SubagentStop"],
+    "active_reentry": "stop_hook_active=true is treated as successful by the stop-condition evaluation",
+    "repeated_blocks": "uses CLAUDE_CODE_STOP_HOOK_BLOCK_CAP or defaults to 8; a positive cap overrides after the configured count"
+  },
+  "limits": {
+    "source_to_runtime_claim": false,
+    "release_note_only_inference": false,
+    "vendor_artifact_execution": false,
+    "provider_prompt_or_live_session": false
+  }
+}

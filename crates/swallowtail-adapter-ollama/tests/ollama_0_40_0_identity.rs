@@ -1,12 +1,10 @@
 use serde_json::Value;
 use swallowtail_adapter_ollama::{
-    OLLAMA_BASELINE_VERSION, OLLAMA_LATEST_QUALIFIED_VERSION, ollama_runtime_binding,
-    ollama_runtime_claim,
+    OLLAMA_BASELINE_VERSION, ollama_runtime_binding, ollama_runtime_claim,
     protocol::{ObservationBinding, Response, parse_model_detail},
 };
 use swallowtail_core::{
-    AttachedModelTag, CatalogTimestamp, ConfiguredInstanceId, InterfaceCompatibilityAssessment,
-    InterfaceSupportStatus, InterfaceVersion, ModelManifestDigest,
+    AttachedModelTag, CatalogTimestamp, ConfiguredInstanceId, ModelManifestDigest,
 };
 
 const IDENTITY: &str = include_str!("fixtures/ollama-0.40.0/identity.json");
@@ -183,29 +181,25 @@ fn identity_freezes_official_hops_and_complete_trees_before_the_0400_stop() {
 }
 
 #[test]
-fn claim_adds_only_qualified_stable_points_and_keeps_unpublished_gaps() {
+fn frozen_stop_decision_stays_historical_after_later_qualification() {
+    let identity: Value = serde_json::from_str(IDENTITY).expect("identity corpus parses");
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.35.1");
-    let claim = ollama_runtime_claim();
-
-    for version in ["0.14.0", "0.34.4", "0.35.0", "0.35.1"] {
-        assert!(matches!(
-            claim.assess(&InterfaceVersion::new(version).unwrap()),
-            InterfaceCompatibilityAssessment::Qualified(point)
-                if point.support_status() == InterfaceSupportStatus::Maintained
-                    && point.behavior_revision().as_str() == "ollama.native-text-v1"
-        ));
-    }
-    for version in ["0.32.2", "0.32.10", "0.34.5"] {
-        assert!(!claim.permits(&InterfaceVersion::new(version).unwrap()));
-    }
-    for version in ["0.35.2", "0.39.0", "0.40.0"] {
-        assert!(matches!(
-            claim.assess(&InterfaceVersion::new(version).unwrap()),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
-    assert_eq!(claim.id().as_str(), "ollama.native-runtime-window-2");
+    assert_eq!(
+        identity["decision"]["latest_qualified_after_change"],
+        "0.35.1"
+    );
+    assert_eq!(
+        identity["decision"]["unverified_current_official_stable"],
+        "0.40.0"
+    );
+    assert_eq!(
+        identity["decision"]["shape"],
+        "compatible-extension-through-0.35.1-with-0.40.0-stop"
+    );
+    assert_eq!(
+        ollama_runtime_claim().id().as_str(),
+        "ollama.native-runtime-window-2"
+    );
 }
 
 #[test]

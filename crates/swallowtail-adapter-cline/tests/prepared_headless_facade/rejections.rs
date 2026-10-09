@@ -65,7 +65,7 @@ fn preparation_rejects_access_axis_and_package_drift_before_json_work() {
     assert!(axis_host.observed_process().is_none());
 
     let newer_host = ExecutionHostId::new("fixture.prepared.headless.newer").expect("host");
-    let newer = DiscoveryHost::new("3.0.56");
+    let newer = DiscoveryHost::new("3.0.59");
     let error = block_on(prepare_cline_headless(
         preparation_input(newer_host.clone()),
         probe(),
@@ -74,7 +74,11 @@ fn preparation_rejects_access_axis_and_package_drift_before_json_work() {
     .expect_err("unqualified package fails");
     assert_eq!(
         error.stage(),
-        swallowtail_runtime::PreparationStage::VersionParse
+        swallowtail_runtime::PreparationStage::CompatibilityClassification
+    );
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.cline.headless.preparation.discovery_rejected"
     );
     assert_eq!(
         newer.observed_process().expect("probe ran").arguments,

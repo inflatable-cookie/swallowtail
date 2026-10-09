@@ -10,7 +10,7 @@ fn lifecycle_corpus_freezes_every_method_and_behavior_boundary() {
     assert_eq!(corpus["axis"], "codex.cli");
     assert_eq!(corpus["facade"], "codex-app-server-v2");
     assert_eq!(corpus["claim"], "codex.app-server.lifecycle-window-1");
-    assert_eq!(corpus["qualified_range"], "0.80.0..=0.155.1");
+    assert_eq!(corpus["qualified_range"], "0.80.0..=0.161.0");
 
     let boundaries = &corpus["method_boundaries"];
     assert_eq!(boundaries["thread/archive"]["present"], "0.80.0");
@@ -73,7 +73,7 @@ fn lifecycle_segments_keep_capabilities_independent() {
     );
     assert_segment(
         &segments[6],
-        "0.140.0..=0.155.1",
+        "0.140.0..=0.161.0",
         &["archive", "delete", "restore"],
         "best-effort",
     );
@@ -214,7 +214,8 @@ fn lifecycle_exclusions_preserve_existing_app_server_window() {
     assert_eq!(exclusions["0.151.1"], "unpublished-stable");
     assert_eq!(exclusions["0.152.2"], "unpublished-stable");
     assert_eq!(exclusions["0.154.1"], "unpublished-stable");
-    assert_eq!(corpus["unverified_newer"]["example"], "0.155.2");
+    assert_eq!(exclusions["0.155.2"], "unpublished-stable");
+    assert_eq!(corpus["unverified_newer"]["example"], "0.161.1");
     assert_eq!(
         corpus["unverified_newer"]["execution"],
         "permitted-with-explicit-unverified-status"

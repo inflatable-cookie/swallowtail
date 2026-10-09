@@ -2,8 +2,8 @@
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
   "claim": "codex.app-server.lifecycle-window-1",
-  "qualified_range": "0.80.0..=0.155.1",
-  "evidence_checked_at": "2026-07-30",
+  "qualified_range": "0.80.0..=0.161.0",
+  "evidence_checked_at": "2026-10-08",
   "upstream_repository": "https://github.com/openai/codex",
   "schema_generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
   "aggregate_schema_order": ["ClientNotification.json", "ClientRequest.json", "ServerNotification.json", "ServerRequest.json"],
@@ -65,7 +65,7 @@
       "archive_descendants": "best-effort"
     },
     {
-      "range": "0.140.0..=0.155.1",
+      "range": "0.140.0..=0.161.0",
       "behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
       "support": "maintained",
       "capabilities": ["archive", "restore", "delete"],
@@ -117,10 +117,11 @@
     {"range": "0.150.2", "reason": "unpublished-stable"},
     {"range": "0.151.1", "reason": "unpublished-stable"},
     {"range": "0.152.2", "reason": "unpublished-stable"},
-    {"range": "0.154.1", "reason": "unpublished-stable"}
+    {"range": "0.154.1", "reason": "unpublished-stable"},
+    {"range": "0.155.2", "reason": "unpublished-stable"}
   ],
   "unverified_newer": {
-    "example": "0.155.2",
+    "example": "0.161.1",
     "execution": "permitted-with-explicit-unverified-status",
     "mapped_behavior_revision": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
     "guaranteed": false

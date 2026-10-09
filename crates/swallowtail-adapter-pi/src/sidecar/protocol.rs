@@ -204,9 +204,18 @@ mod tests {
         assert_eq!(protocol["behavior_revision"], PI_SDK_SIDECAR_BEHAVIOR);
         assert_eq!(protocol["sdk_package"], PI_SDK_SIDECAR_SDK_PACKAGE);
         assert_eq!(protocol["sdk_version"], PI_SDK_SIDECAR_SDK_VERSION);
+        assert_eq!(
+            protocol["compatibility_claim"],
+            "qualified_only_exact_package_points_and_maintained_node_segment"
+        );
+        assert_eq!(protocol["cache_warming"], "off");
+        assert_eq!(protocol["sidecar_source_tag"], PI_SDK_SIDECAR_SOURCE_TAG);
         assert_eq!(protocol["node_runtime"], PI_SDK_SIDECAR_NODE_RUNTIME);
+        assert_eq!(
+            protocol["node_qualified_points"],
+            serde_json::json!(["22.23.2", "22.23.3"])
+        );
         assert_eq!(protocol["sidecar_entry_file"], PI_SDK_SIDECAR_ENTRY_FILE);
-        assert_eq!(protocol["compatibility_claim"], "qualified_only_one_point");
         assert!(
             PI_SDK_SIDECAR_SOURCE_TAG
                 .starts_with(protocol["sidecar_source_tag_prefix"].as_str().unwrap())
@@ -214,6 +223,44 @@ mod tests {
         assert!(PI_SDK_SIDECAR_SOURCE.contains(PI_SDK_SIDECAR_WIRE));
         assert!(PI_SDK_SIDECAR_SOURCE.contains(PI_SDK_SIDECAR_BEHAVIOR));
         assert!(PI_SDK_SIDECAR_SOURCE.contains(PI_SDK_SIDECAR_SDK_VERSION));
+        let settings = PI_SDK_SIDECAR_SOURCE
+            .split("sdk.SettingsManager.inMemory({")
+            .nth(1)
+            .expect("sidecar constructs in-memory SDK settings")
+            .split("});")
+            .next()
+            .expect("SDK settings object is closed");
+        assert!(settings.contains("retry: { enabled: false }"));
+        assert!(settings.contains("compaction: { enabled: false }"));
+        assert!(settings.contains("cacheWarming: \"off\""));
+        let qualified: Vec<String> = protocol["qualified_sdk_versions"]
+            .as_array()
+            .expect("qualified SDK points are an array")
+            .iter()
+            .map(|version| version.as_str().expect("SDK point is text").to_owned())
+            .collect();
+        let source_points = PI_SDK_SIDECAR_SOURCE
+            .split("const QUALIFIED_SDK_VERSIONS = new Set(")
+            .nth(1)
+            .expect("sidecar has an exact SDK allowlist")
+            .split(");")
+            .next()
+            .expect("SDK allowlist closes");
+        let source_points: Vec<String> = source_points
+            .trim()
+            .strip_prefix('[')
+            .expect("SDK allowlist opens as an array")
+            .strip_suffix(']')
+            .expect("SDK allowlist closes as an array")
+            .lines()
+            .map(str::trim)
+            .filter(|line| !line.is_empty())
+            .map(|line| {
+                serde_json::from_str(line.trim_end_matches(','))
+                    .expect("SDK allowlist entry is a JSON string")
+            })
+            .collect();
+        assert_eq!(qualified, source_points);
         assert!(FIXTURES.ends_with("pi-sdk-sidecar-v1"));
     }
 

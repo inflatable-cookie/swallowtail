@@ -51,7 +51,9 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
         assert!(!exec.supports_interface_version(&binding(version)));
         assert!(!app.supports_interface_version(&binding(version)));
     }
-    for claim in [codex_exec_claim(), codex_app_server_claim()] {
+    let exec_claim = codex_exec_claim();
+    let app_server_claim = codex_app_server_claim();
+    for claim in [&exec_claim, &app_server_claim] {
         assert_eq!(
             claim.assess(binding("0.152.2").version()),
             InterfaceCompatibilityAssessment::Incompatible,
@@ -62,17 +64,36 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
             InterfaceCompatibilityAssessment::Incompatible,
             "newly interior unpublished 0.154.1 stays incompatible"
         );
-        let newer = binding("0.155.2");
-        assert!(!claim.supports(newer.version()));
-        assert!(claim.permits(newer.version()));
-        let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-            claim.assess(newer.version())
-        else {
-            panic!("newer stable Codex version must remain unverified");
-        };
-        assert_eq!(unverified.version(), newer.version());
-        assert_eq!(unverified.latest_qualified().as_str(), "0.155.1");
     }
+    assert_eq!(
+        exec_claim.assess(binding("0.155.2").version()),
+        InterfaceCompatibilityAssessment::Incompatible,
+        "unpublished 0.155.2 remains an exec gap"
+    );
+    let exec_newer = binding("0.161.1");
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(exec_unverified) =
+        exec_claim.assess(exec_newer.version())
+    else {
+        panic!("codex.exec 0.161.1 remains unverified newer");
+    };
+    assert_eq!(exec_unverified.version(), exec_newer.version());
+    assert_eq!(exec_unverified.latest_qualified().as_str(), "0.161.0");
+    assert!(exec_claim.permits(exec_newer.version()));
+
+    assert_eq!(
+        app_server_claim.assess(binding("0.155.2").version()),
+        InterfaceCompatibilityAssessment::Incompatible,
+        "unpublished app-server 0.155.2 remains a gap"
+    );
+    let app_server_newer = binding("0.161.1");
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(app_server_unverified) =
+        app_server_claim.assess(app_server_newer.version())
+    else {
+        panic!("codex.app-server 0.161.1 remains unverified newer");
+    };
+    assert_eq!(app_server_unverified.version(), app_server_newer.version());
+    assert_eq!(app_server_unverified.latest_qualified().as_str(), "0.161.0");
+    assert!(app_server_claim.permits(app_server_newer.version()));
     assert_eq!(
         codex_exec_claim()
             .classify(binding("0.122.0").version())

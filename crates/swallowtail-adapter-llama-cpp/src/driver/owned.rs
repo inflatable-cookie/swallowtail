@@ -1,5 +1,5 @@
 use super::*;
-use crate::protocol::OWNED_VERSION;
+use crate::protocol::OWNED_SUPPORTED_VERSIONS;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     ExecutableRef, ModelArtifactLease, OwnedServingHandle, ProcessRequest, StartServingRequest,
@@ -38,7 +38,7 @@ impl LlamaCppOwnedDriver {
         Self {
             facade: LlamaCppAttachedDriver::for_facade(
                 OWNED_DRIVER_ID,
-                OWNED_VERSION,
+                OWNED_SUPPORTED_VERSIONS,
                 "llama-cpp-owned-b10069",
                 OWNED_ROUTE,
             ),

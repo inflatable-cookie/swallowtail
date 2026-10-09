@@ -31,7 +31,7 @@ const CATALOGUE: &str =
     "Available models\n\nauto - Auto (current, default)\nfixture-model - Fixture Model\n";
 const HEADLESS: &str =
     include_str!("fixtures/cursor-agent-2026.07.01-41b2de7/headless-success.jsonl");
-const QUALIFIED_RELEASES: [&str; 9] = [
+const QUALIFIED_RELEASES: [&str; 12] = [
     "2026.07.01-41b2de7",
     "2026.07.23-e383d2b",
     "2026.08.04-aaa8809",
@@ -41,6 +41,23 @@ const QUALIFIED_RELEASES: [&str; 9] = [
     "2026.09.10-fd3934a",
     "2026.09.15-d2fe57e",
     "2026.09.18-9a7762b",
+    "2026.09.26-dd393fe",
+    "2026.09.28-64d2043",
+    "2026.10.01-14929f9",
+];
+const QUALIFIED_CATALOGUE_RELEASES: [&str; 12] = [
+    "2026.07.01-41b2de7",
+    "2026.07.23-e383d2b",
+    "2026.08.04-aaa8809",
+    "2026.08.11-e8db854",
+    "2026.08.31-4057e58",
+    "2026.09.02-c22c1a3",
+    "2026.09.10-fd3934a",
+    "2026.09.15-d2fe57e",
+    "2026.09.18-9a7762b",
+    "2026.09.26-dd393fe",
+    "2026.09.28-64d2043",
+    "2026.10.01-14929f9",
 ];
 
 include!("prepared_suite/plans.rs");

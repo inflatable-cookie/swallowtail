@@ -12,7 +12,7 @@ use swallowtail_adapter_claude_agent::sdk::registered_tool::{
     CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION, CLAUDE_AGENT_SDK_LIVE_QUALIFIED_SDK_VERSION,
 };
 use swallowtail_adapter_claude_agent::sdk::{
-    CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_WIRE,
+    CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_WIRE,
 };
 
 const EVIDENCE: &str =
@@ -146,7 +146,7 @@ fn the_limitation_does_not_flip_emitted_callback_or_registered_tool_truths() {
         tuple["native"],
         CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION
     );
-    assert_eq!(tuple["node"], CLAUDE_AGENT_SDK_NODE_RUNTIME);
+    assert_eq!(tuple["node"], "22.23.2");
     // The sidecar source tag moves with every coordinated release. The
     // capsules ran the exact source build frozen in this fixture, so the
     // tuple binds to that source's coordinated version and is never

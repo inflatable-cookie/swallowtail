@@ -158,8 +158,11 @@ OpenHands adds a package without a production route.
   plan and tool replacement snapshots, tool terminal state, usage, mode,
   command, configuration, session information, and bounded unknown namespaces
   without exposing raw JSON or deciding provider/runtime policy. Its corpora
-  pin stable schema `v1.20.0` separately from exact Claude Agent, Gemini CLI,
-  and Kimi Code ranges. A separate raw remote-transport corpus freezes
+  retain exact stable schema artifacts `v1.19.0`, `v1.19.1`, and `v1.20.0`
+  separately from exact Claude Agent, Gemini CLI, and Kimi Code ranges. The
+  shared stable schema axis is qualified through `v1.24.1` while wire
+  `protocolVersion` remains `1` (Research 406). A separate raw
+  remote-transport corpus freezes
   HTTP/SSE and WebSocket lifecycle behavior against wire version 1, the Active
   transport RFD, and SDK `2.0.0` without depending on a production client
 - `swallowtail-transport-acp-remote` depends on core, runtime, and the ACP
@@ -204,11 +207,13 @@ OpenHands adds a package without a production route.
   known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
   structured-output capability. The same crate also implements the separate
-  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK at exact
-  `0.3.284`, carrying native `2.1.284`, running in a source-tagged Node
-  sidecar (exact Node `22.23.2`) over the private bounded
-  `swallowtail-claude-agent-sdk-jsonl-v1` wire, with five qualified-only
-  one-point version axes, an application-provisioned launch recipe and
+  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK with the
+  maintained package segment `0.3.284..=0.3.295` and coupled native segment
+  `2.1.284..=2.1.295` (Research 420), running in a source-tagged Node sidecar
+  with maintained Node `22.23.2..=22.23.3` (Research 387) over the private
+  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with three maintained
+  version axes and exact wire and sidecar source-tag axes, an application-
+  provisioned launch recipe and
   environment, no credential custody (delegated lease plus first-party
   `oauth` readiness only), read-only tools, consumer-mediated tool admission,
   capability-gated interrupt, and caller-bounded open, turn, interrupt, and
@@ -234,10 +239,13 @@ OpenHands adds a package without a production route.
   credential-last cleanup; dispatch does not claim effective reasoning depth
 - `swallowtail-adapter-deepseek-harness` implements two distinct exact routes:
   `0.1.0rc6` JSON-RPC over one host-owned NDJSON stdio process, and
-  `0.1.0-rc.6` Web `/api` over one host-owned loopback `dsh web` process. The
-  JSON-RPC route owns bounded idle-folded structured runs and process-kill
-  cancellation. The Web route owns bounded structured runs, catalogue/search/
-  models, control-free history, native cancel/fork, and target-only archive.
+  Web `/api` over one host-owned loopback `dsh web` process, qualified at exact
+  RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and
+  `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified pending browser-auth
+  and typed-stream adaptation (Research 411). The JSON-RPC route owns bounded
+  idle-folded structured runs and process-kill cancellation. The Web route
+  owns bounded structured runs, catalogue/search/models, control-free history,
+  native cancel/fork, and target-only archive.
   Neither route qualifies ACP, browser UI, interactive continuity, or
   DeepSeek-official SSE behavior.
 - `swallowtail-adapter-zcode` implements one exact `0.16.3` app-server route
@@ -246,8 +254,10 @@ OpenHands adds a package without a production route.
   a required runtime-preferences reply during create, and process-kill
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
-- `swallowtail-adapter-cline` implements two exact `3.0.55` routes: ACP v1
-  stdio on `cline --acp`, and envelope-NDJSON headless on
+- `swallowtail-adapter-cline` implements maintained ACP v1 stdio from npm
+  `3.0.55..=3.0.70` except unpublished `3.0.59` on `cline --acp` (Research
+  397). Its separate maintained headless envelope-NDJSON window covers the
+  same package points on
   `cline --json --auto-approve false` with optional portable
   `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
@@ -257,7 +267,8 @@ OpenHands adds a package without a production route.
   unselected provider/model and emits no selected-argv acknowledgement.
   Headless Plan is provider behavior, not isolation; omission keeps the current
   argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
-- `swallowtail-adapter-goose` implements exact GitHub `1.50.1` ACP on
+- `swallowtail-adapter-goose` implements Goose GitHub ACP at maintained exact
+  points `1.50.1`, `1.51.0`, `1.52.0`, and `1.53.0` on
   `goose acp`, with typed provider-authentication failures bound by the
   `goose.acp.stdio-v2.auth-required` behavior revision. Credentials stay
   host-owned local config.
@@ -281,11 +292,15 @@ OpenHands adds a package without a production route.
   harness-rollout selection; the Unified Harness stays unmapped. Native
   limit remains provider-failed. `vibe-acp`, TUI, `--continue`/`--resume`,
   teleport, and `--auto-approve`/`--yolo` stay out.
-- `swallowtail-adapter-qoder` implements exact npm `1.1.54` discovery and one
-  `qodercli --print --output-format stream-json` structured run with
+- `swallowtail-adapter-qoder` implements the maintained npm
+  `1.1.54..=1.1.65` window and one `qodercli --print --output-format
+  stream-json` structured run with
   `--permission-mode dont_ask`, adapter-owned `--max-turns 8`,
   `--no-session-persistence --cwd` through `prepare_qoder_headless`.
-  `error_max_turns` with the configured bound maps to provider failure.
+  Maintained stable points are `1.1.54..=1.1.65` under `QualifiedOnly`
+  (Research 389); `error_max_turns` with the configured bound maps to provider
+  failure. The `1.1.61` repeated-tool-denial reason remains a generic provider
+  failure.
   `--acp`, SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`,
   and the `qoder` IDE dispatcher stay out.
 - `swallowtail-adapter-openhands` holds exact PyPI `1.42.1` discovery, owned
@@ -298,8 +313,9 @@ OpenHands adds a package without a production route.
   on `kiro-cli acp` through `prepare_kiro_acp`. Credentials stay host-owned
   local account. `--cloud`, `--agent`, `kiro-cli chat --no-interactive`,
   `session/load`, and docs `session/prompt` field `content` stay out.
-- `swallowtail-adapter-deepagents` implements exact npm `0.1.30` ACP on
-  host-approved `deepagents-acp` with no extra argv through
+- `swallowtail-adapter-deepagents` implements `deepagents.acp` for the
+  maintained npm package window `0.1.30..=0.1.34` on host-approved
+  `deepagents-acp` with no extra argv through
   `prepare_deepagents_acp`. Working resource is the child cwd. CLI
   `agentInfo.version` `0.0.1` is not the package axis. `npx`,
   `--workspace` / `--model`, `session/load`, and field `content` stay
@@ -356,16 +372,23 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-kimi` implements exact Kimi Code `0.28.1` and
   route-specific behavior segments whose bounds differ per route.
   `kimi-code.acp` qualifies `0.29.0..=0.38.0` under `QualifiedOnly` and
-  excludes exact `0.39.0` and `0.39.1`; the uncontained ACP terminal-runner
-  local spawn is byte-identical through `0.43.0`, so every point above
-  `0.38.0` fails closed, including the published `0.40.0..=0.43.0` gap. Its
+  excludes exact `0.39.0` and `0.39.1`; the ACP runner locally spawns when
+  terminal is disabled or the call misses its argument/environment predicate,
+  unchanged through official stable `2.1.1` (Research 403). No shipped per-session
+  control covers both branches; the host-terminal design awaits separate
+  review. Every point above `0.38.0` fails closed, including published
+  `0.40.0..=0.43.1` and `2.0.0..=2.1.1`; the `2.0.0` reset adds an unmapped
+  available-command filter without changing the stop. Its
   ACP route owns ambient-host
   interactive new, load-with-replay, replay-free resume, bounded writes, and
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
   cleanup. Headless qualifies `0.29.0..=0.32.0` under
-  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.0` under
-  `kimi.headless.stream-json.v2` with a matching `system.version` preamble.
+  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.1`, `2.0.0..=2.1.1`
+  under `kimi.headless.stream-json.v2` with a matching `system.version`
+  preamble. Unpublished `0.43.2`, `1.x`, and `2.0.3` stay outside those
+  segments; exact `2.1.0` is excluded for its effective filesystem-authority
+  change.
   Public facade `kimi-headless-stream-json-v1` covers both revisions. One
   installed facade requires explicit ACP or headless selection.
   The separate local-server route owns authenticated catalogue, retained
@@ -384,10 +407,12 @@ OpenHands adds a package without a production route.
   extension UI, native abort, deadlines, joined credential-last cleanup, and
   a separate provider-suppressed `get_available_models` operation. The same
   crate also implements the separate `pi.sdk-sidecar` route: Pi's official
-  TypeScript SDK at exact `0.84.2` running in a source-tagged Node sidecar
-  (exact Node `22.23.2`) over the private bounded
-  `swallowtail-pi-sdk-jsonl-v1` wire, with four qualified-only one-point
-  version axes, application-provisioned launch recipe and environment,
+  TypeScript SDK at 18 exact published package points through `1.1.0`,
+  running in a source-tagged Node sidecar (maintained Node
+  `22.23.2..=22.23.3`; Research 396) over the private bounded
+  `swallowtail-pi-sdk-jsonl-v1` wire; the wire and source-tag axes remain exact
+  and independent (Research 400). It uses an application-provisioned launch
+  recipe and environment,
   `AmbientHost` read-only tools, fresh-session parity with the RPC route, and
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
@@ -409,8 +434,10 @@ OpenHands adds a package without a production route.
   read-only filesystem resource. The mutable update launcher, model catalogue,
   sessions, callbacks, recovery, task-list snapshots, subagents, usage, shell,
   writes, and web tools remain outside the route
-- `swallowtail-adapter-command-code` implements exact npm Command Code
-  `1.65.0` as one read-only `command-code.headless` route family. Structured
+- `swallowtail-adapter-command-code` implements 33 exact published npm
+  Command Code points from `1.65.0` through `1.79.1` as one read-only
+  `command-code.headless` route family (Research 402). Behavior v1 runs through
+  `1.72.4`; private model-selection behavior v2 runs from `1.73.0`. Structured
   runs bind `--no-session` and prohibit provider retention. Interactive turns
   follow Contract 043: first turn retains a project-scoped transcript; later
   turns pass only the exact private `--resume <sessionId>` observed from the
@@ -425,12 +452,14 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1`; exact runtime, installed and
+  `0.14.0..=0.34.4` and `0.35.0..=0.35.1` on Deprecated `ollama.native-text-v1`,
+  plus Maintained `0.40.0..=0.40.1` on `ollama.native-text-v1.manifest-list-runner`;
+  exact runtime, installed and
   running model observations, NDJSON output, and inference-caused residency
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
-  structured runs and interactive replay. Current official `0.40.0` is
-  unverified because chat can start local compatibility migration; Research
-  379 records the adapter and authority gate. The adapter adds no installation,
+  structured runs and interactive replay. From `0.40.0`, chat may disclose
+  provider-owned local compatibility migration; the adapter binds tag and
+  digest and does not substitute sibling runner rows. The adapter adds no installation,
   model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
@@ -448,11 +477,17 @@ OpenHands adds a package without a production route.
   deprecated `0.2.114..=0.2.117` remain, exact `0.2.117` carries a distinct
   private task-control behavior revision without adding public task-control
   authority, and maintained `1.0.4..=1.0.41` bind `grok-4.6`
-- `swallowtail-adapter-cursor` realizes exact Cursor Agent milestones
+- `swallowtail-adapter-cursor` retains exact Cursor Agent milestones
   `2026.07.01-41b2de7`, `2026.07.23-e383d2b`, `2026.08.04-aaa8809`,
   `2026.08.11-e8db854`, `2026.08.31-4057e58`, `2026.09.02-c22c1a3`,
-  `2026.09.10-fd3934a`, `2026.09.15-d2fe57e`, and `2026.09.18-9a7762b`
-  through three separate routes:
+  `2026.09.10-fd3934a`, `2026.09.15-d2fe57e`, and `2026.09.18-9a7762b` on
+  the ACP and headless routes. Research 395 separately qualifies ACP through
+  `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and `2026.10.01-14929f9`.
+  Headless retains its earlier points and adds those same exact builds with
+  Research 399. Research 393 qualifies only
+  `cursor-agent.catalogue` at the exact `2026.09.26-dd393fe`,
+  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points. Each route keeps its
+  own claim and exact points; calendar gaps are not inferred. The three routes are:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
   headless route binds an explicit model and workspace authority, accepts typed
@@ -659,8 +694,11 @@ Crate status:
   finals, private continuation, cache usage, consumer-authorized attempts,
   failure, cancellation, disconnect, drift, and both host topologies
 - `swallowtail-adapter-deepseek-harness` — realized for the exact `0.1.0rc6`
-  runtime-bin JSON-RPC structured-run route and exact `0.1.0-rc.6` Web `/api`
-  local-server route. The JSON-RPC branch binds host-approved Cordis
+  runtime-bin JSON-RPC structured-run route and exact selected Web `/api`
+  local-server RC points `0.1.0-rc.6`, `0.1.0-rc.7`, `0.1.0-rc.8`,
+  `0.1.1-rc.1`, and `0.1.1-rc.2`; `0.1.2-rc.1` onward remains unqualified
+  pending browser-auth and typed-stream adaptation (Research 411). The
+  JSON-RPC branch binds host-approved Cordis
   configuration, explicit provider/model, bounded stream parsing, namespaced
   unknown observations, process-kill cancellation, and joined cleanup. The
   Web branch binds loopback HTTP/WebSocket, the frozen method allowlist,
@@ -673,12 +711,14 @@ Crate status:
   `build`, bounded stream parsing, namespaced unknown observations,
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-cline` — realized for exact npm `3.0.55` ACP and
-  headless print-run routes with separate constructors, qualified-only
-  claims, local-account access, and no credential lease. The package
+- `swallowtail-adapter-cline` — realized for separate maintained ACP and
+  headless windows `3.0.55..=3.0.70`, excluding unpublished `3.0.59`, with
+  separate constructors and claims (`AllowUnverified` for ACP, `QualifiedOnly`
+  for headless), local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-goose` — realized for exact GitHub `1.50.1` ACP
-  with qualified-only claim, typed auth-failure binding, local-config access,
+- `swallowtail-adapter-goose` — realized for GitHub ACP exact points `1.50.1`,
+  `1.51.0`, `1.52.0`, and `1.53.0` with maintained claim, typed auth-failure
+  binding, local-config access,
   and no credential lease.
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-copilot-cli` — realized for exact npm `1.0.80` ACP
@@ -690,10 +730,11 @@ Crate status:
   structured run; unpublished `2.25.6` and `2.25.9` remain excluded. Use
   `prepare_mistral_vibe_headless`. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-qoder` — realized for exact npm `1.1.54` headless
-  discovery, one bounded stream-json structured run with an adapter-owned
-  eight-turn AgentLoop ceiling, and `prepare_qoder_headless`. The package
-  remains an unreleased additive candidate after `v0.3.2`.
+- `swallowtail-adapter-qoder` — realized for maintained npm
+  `1.1.54..=1.1.65` headless discovery, one bounded stream-json structured run
+  with an adapter-owned eight-turn AgentLoop ceiling, and
+  `prepare_qoder_headless`. The package remains an unreleased additive
+  candidate after `v0.3.2`.
 - `swallowtail-adapter-openhands` — realized for exact PyPI `1.42.1`
   Agent Server discovery, owned loopback spawn, and
   `prepare_openhands_agent_server`. `openhands.agent-server` is deferred:
@@ -704,9 +745,10 @@ Crate status:
   credential lease, and `prepare_kiro_acp`. `kiro.acp` is a production
   route. The package remains an unreleased additive candidate after
   `v0.3.2`.
-- `swallowtail-adapter-deepagents` — realized for exact npm `0.1.30` ACP
-  discovery and stdio driver with qualified-only claim, host-owned
-  provider API keys, no credential lease, empty extra argv, and
+- `swallowtail-adapter-deepagents` — realized for maintained npm package
+  window `0.1.30..=0.1.34` ACP discovery and stdio driver with a
+  qualified-only claim, host-owned provider API keys, no credential lease,
+  empty extra argv, and
   `prepare_deepagents_acp`. `deepagents.acp` is a production route.
   The package remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-opencode` — realized for attached model catalogue and
@@ -831,7 +873,12 @@ user configuration and rules, permits a host-approved non-Git resource, denies
 approval prompts, prevents tool subprocess environment inheritance, and states
 read-only sandbox and web-search policy explicitly. Deadline expiry and
 operator cancellation remain separate terminal outcomes; both join the process
-and release every lease.
+and release every lease. For a projectless cwd, Codex may skip automatic
+persisted project trust and the adapter does not recreate that trust. System
+and macOS MDM `application.network` allowlists and refresh remain authoritative
+for Codex network requests; host-approved search may still be denied by those
+requirements. Exec does not pass `ignore_managed_requirements` or weaken that
+policy. These host rules do not establish process containment.
 
 The separate Codex app-server driver owns long-lived JSONL-RPC framing and
 request correlation over a shared process handle. A joined reader task routes
@@ -971,8 +1018,9 @@ a separate provider id instead of forcing it into model identity.
 
 ACP v1 evidence now has a separate protocol package boundary. Wire version,
 schema artifact version, SDK version, and agent version remain distinct.
-The additive lifecycle corpus pins stable schema `v1.20.0` without rewriting
-the historical Gemini or Kimi pins. Independent close-only, delete-only,
+The additive lifecycle corpus stays pinned to stable schema `v1.20.0` without
+rewriting the historical Gemini or Kimi pins. Shared stable schema currentness
+extends through `v1.24.1` (Research 406). Independent close-only, delete-only,
 omitted, null, success, and error fixtures pass through the same bounded
 message codec used by stdio and explicit remote ACP. Portable delete truth
 remains history removal.
@@ -1240,7 +1288,8 @@ with provider-state prohibited. The separate `pi.sdk-sidecar` route now
 realizes load and resume through the public SDK: `switchSession` runs with
 the host-leased cwd as `cwdOverride`, the driver compares the effective cwd
 and session reference before readiness, load completes bounded typed replay
-before readiness, and resume attaches without replay. Durable provider state
+before readiness, a replay item after that response fails closed with no
+ready handle, and resume attaches without replay. Durable provider state
 lives in the application-provisioned session directory and is preserved on
 close. Both routes remain production; the RPC route keeps its lighter
 operational posture and the SDK route keeps the continuation surface, and
@@ -1728,18 +1777,23 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
-`0.35.0..=0.35.1` segments, exact `0.32.2` and `0.32.10` exclusions,
-unpublished gaps, and prerelease closure remain explicit. Current official
-`0.40.0` remains `UnverifiedNewer`: its chat scheduler can start background
-local model-store migration, which needs an operator ruling before this
-attached-runtime lifecycle is qualified (Research 379).
+drift fail before operation effects. Deprecated `0.14.0..=0.34.4` and
+`0.35.0..=0.35.1` stay on `ollama.native-text-v1`. Maintained `0.40.0..=0.40.1`
+uses `ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
+exclusions, unpublished gaps, and prerelease closure remain explicit. From
+`0.40.0`, chat may start provider-owned background local compatibility
+migration; the adapter binds the selected tag and digest, observes sibling
+manifest-list rows, and does not treat a new runner row as the old identity
+(Contract 031; Research 418). Synthetic `0.41.0` is the first visible
+`UnverifiedNewer` point.
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external
-endpoint, exact b9910/f5525f7e7 runtime identity, local-unauthenticated access,
-and separate catalogue or one-attempt inference plans. It exposes no serving
-start or stop authority; closing inference leaves the external server running.
+endpoint, the exact opaque `b9910-f5525f7e7` and `b11429-d81235049` runtime
+points, local-unauthenticated access, and separate catalogue or one-attempt
+inference plans. Its released binding remains `b9910-f5525f7e7`. It exposes no
+serving start or stop authority; closing inference leaves the external server
+running.
 
 `prepare_llama_cpp_owned` instead binds one host-approved executable, exact
 b10069/178a6c449 runtime identity, one GGUF artifact, one route and alias, and

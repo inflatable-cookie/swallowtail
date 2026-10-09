@@ -53,8 +53,8 @@ fn descriptor_is_a_distinct_exact_pi_sdk_sidecar_driver() {
     assert!(!descriptor.supports_role(DriverRole::Discovery));
 
     for (axis, qualified, rejected) in [
-        (PI_SDK_SIDECAR_PACKAGE_AXIS, "0.84.2", "0.84.1"),
-        (PI_SDK_SIDECAR_NODE_AXIS, "22.23.2", "22.23.3"),
+        (PI_SDK_SIDECAR_PACKAGE_AXIS, "1.1.0", "0.84.1"),
+        (PI_SDK_SIDECAR_NODE_AXIS, "22.23.3", "22.23.4"),
         (
             PI_SDK_SIDECAR_WIRE_AXIS,
             "swallowtail-pi-sdk-jsonl-v1",
@@ -80,6 +80,12 @@ fn descriptor_is_a_distinct_exact_pi_sdk_sidecar_driver() {
             ))
         );
     }
+    assert!(
+        descriptor.supports_interface_version(&InterfaceVersionBinding::new(
+            InterfaceVersionAxis::new(PI_SDK_SIDECAR_NODE_AXIS).expect("valid axis"),
+            InterfaceVersion::new("22.23.2").expect("valid version"),
+        ))
+    );
     // The RPC package axis is not part of this descriptor.
     assert!(
         !descriptor.supports_interface_version(&InterfaceVersionBinding::new(

@@ -1,12 +1,13 @@
 use crate::host_id;
 use crate::sdk_support::{
     CleanupEvent, SDK_RESULT_FIELD_NAMES, SanitizedCaptureJournal, SanitizedWireCapture,
-    SdkFixtureHost, SdkScenario, captured_services, cleanup_request, prepared_session,
+    SdkFixtureHost, SdkScenario, captured_services, cleanup_request, preparation, prepared_session,
     prepared_session_with, record_open_failure, record_success, turn_request,
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use serde_json::Value;
+use std::collections::BTreeSet;
 use std::fs;
 use std::io;
 use std::path::PathBuf;
@@ -15,6 +16,9 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::{Duration, Instant};
+use swallowtail_adapter_claude_agent::sdk::{
+    ClaudeAgentSdkPackageNativePair, prepare_claude_agent_sdk_session,
+};
 use swallowtail_core::Diagnostic;
 use swallowtail_runtime::{
     DebugObservation, DebugObservationKind, DiagnosticObserver, InteractiveSessionHandle,
@@ -500,7 +504,7 @@ fn a_canonical_effective_model_is_accepted_and_published() {
     assert_eq!(session.requested_model(), "claude-sonnet-5");
     assert_eq!(session.effective_model(), "claude-sonnet-5-20250929");
     assert_eq!(session.readiness_state(), "confirmed");
-    assert_eq!(session.node_version(), "22.23.2");
+    assert_eq!(session.node_version(), "22.23.3");
     assert_eq!(session.node_version_posture(), "Qualified");
     let _ = block_on(Box::new(session).close(cleanup_request(), cleanup_services));
 }
@@ -594,9 +598,9 @@ fn model_qualification_evidence_reaches_the_recording_observer() {
                     "effectiveMembership": effective_membership,
                     "querySource": "sdk.query",
                     "phase": "first-turn-model-qualification",
-                    "declaredSdkVersion": "0.3.284",
-                    "loadedSdkVersion": "0.3.284",
-                    "nativeVersion": "2.1.284"
+                    "declaredSdkVersion": "0.3.293",
+                    "loadedSdkVersion": "0.3.293",
+                    "nativeVersion": "2.1.293"
                 })
             );
             let detail_text = observation.detail();
@@ -808,24 +812,105 @@ fn the_live_capture_path_retains_message_fields_and_close_evidence_provider_free
 fn the_selected_model_crosses_the_wire_on_open() {
     let host = host_id("claude-agent-sdk.fixture.model");
     let fixture = SdkFixtureHost::new(SdkScenario::Complete);
-    let prepared = prepared_session(host.clone());
+    let pair = ClaudeAgentSdkPackageNativePair::V0_3_284Native2_1_284;
+    let prepared = prepare_claude_agent_sdk_session(
+        preparation(host.clone()).with_package_native_pair(pair),
+        SessionOptions::default(),
+    )
+    .expect("explicit exact pair prepares through the public facade");
+    let expected_sdk_version = prepared
+        .plan()
+        .interface_versions()
+        .find(|binding| binding.axis().as_str() == "claude-agent.sdk.package")
+        .expect("preparation binds the selected SDK package version")
+        .version()
+        .as_str()
+        .to_owned();
+    let expected_native_version = prepared
+        .plan()
+        .interface_versions()
+        .find(|binding| binding.axis().as_str() == "claude-agent.sdk.native")
+        .expect("preparation binds the selected embedded native version")
+        .version()
+        .as_str()
+        .to_owned();
+    assert_eq!(expected_sdk_version, pair.package_version());
+    assert_eq!(expected_native_version, pair.native_version());
     let services = fixture.services(host);
     let services_for_cleanup = services.clone();
-    let session = block_on(prepared.open_session(services)).expect("SDK sidecar session opens");
+    let mut session =
+        block_on(prepared.open_session(services.clone())).expect("SDK sidecar session opens");
     let open = fixture
         .inputs()
         .into_iter()
         .find(|value| value["command"] == "open")
         .expect("open command is sent");
     assert_eq!(open["params"]["model"], "claude-sonnet-5");
-    // Open carries exactly the cwd, model, admitted tool set, and permission
-    // mode. The default profile is the unchanged read-only one.
-    assert_eq!(open["params"].as_object().expect("params").len(), 4);
+    let open_params = open["params"]
+        .as_object()
+        .expect("open params are an object");
+    let open_keys = open_params
+        .keys()
+        .map(String::as_str)
+        .collect::<BTreeSet<_>>();
+    assert_eq!(
+        open_keys,
+        BTreeSet::from([
+            "cwd",
+            "expectedNativeVersion",
+            "expectedSdkVersion",
+            "model",
+            "permissionMode",
+            "tools",
+        ]),
+        "open carries only the planned, driver-owned launch fields"
+    );
+    assert_eq!(
+        open_params["expectedSdkVersion"].as_str(),
+        Some(expected_sdk_version.as_str()),
+        "SDK identity is copied from the selected prepared plan"
+    );
+    assert_eq!(
+        open_params["expectedNativeVersion"].as_str(),
+        Some(expected_native_version.as_str()),
+        "native identity is copied from the selected prepared plan"
+    );
     assert_eq!(
         open["params"]["tools"],
         serde_json::json!(["Read", "Glob", "Grep"])
     );
     assert_eq!(open["params"]["permissionMode"], "default");
+
+    // Version identity comes from the typed preparation plan, not the
+    // consumer's opaque environment reference, and stays out of query input.
+    assert_eq!(
+        fixture.process_environment_refs(),
+        [
+            swallowtail_runtime::EnvironmentRef::new("claude-agent-sdk.fixture.environment")
+                .expect("fixture environment ref is valid")
+        ]
+    );
+    let mut turn = block_on(session.start_turn(turn_request("turn-1", "read it"), services))
+        .expect("fake sidecar accepts a provider-free fixture query");
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("fake sidecar emits a terminal result"),
+    );
+    assert_eq!(
+        terminal.status(),
+        &swallowtail_runtime::TerminalStatus::Completed
+    );
+    let _ = block_on(turn.close());
+    let query = fixture
+        .inputs()
+        .into_iter()
+        .find(|value| value["command"] == "query")
+        .expect("query command is sent after open");
+    let query_params = query["params"]
+        .as_object()
+        .expect("query params are an object");
+    assert!(!query_params.contains_key("expectedSdkVersion"));
+    assert!(!query_params.contains_key("expectedNativeVersion"));
     let _ = block_on(session.close(cleanup_request(), services_for_cleanup.clone()));
 }
 

@@ -568,8 +568,8 @@ fn row_with_semantic_id<'a>(
 #[test]
 #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
 fn the_projection_publishes_the_unqualified_truth_on_a_newer_compiled_tuple() {
-    // Research 367 rebound the route to 0.3.284/2.1.284 while Research 301
-    // stays frozen on 0.3.259/2.1.259. On the accepted platform the only
+    // Research 420 extends the route through 0.3.295/2.1.295 while Research
+    // 301 stays frozen on 0.3.259/2.1.259. On the accepted platform the only
     // reason the route projects unqualified is the tuple gate: no live
     // evidence covers the compiled tuple yet.
     assert!(
@@ -740,19 +740,26 @@ fn the_newer_compiled_tuple_holds_the_live_evidence_without_inheriting_it() {
         NATIVE_VERSION,
         CLAUDE_AGENT_SDK_LIVE_QUALIFIED_NATIVE_VERSION
     );
-    // The compiled route rebound past the live evidence: the new tuple is
-    // exact and independent, never a second live-qualified point.
+    // The compiled SDK/native tuple remains separate from live acceptance.
+    // The Node-only window retains the exact runtime used by the older live
+    // tuple; that does not qualify the newer SDK/native tuple for live use.
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION,
-        "0.3.284"
+        "0.3.295"
     );
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION,
-        "2.1.284"
+        "2.1.295"
+    );
+    assert_eq!(NODE_VERSION, "22.23.2");
+    assert!(
+        swallowtail_adapter_claude_agent::sdk::claude_agent_sdk_node_claim().permits(
+            &swallowtail_core::InterfaceVersion::new(NODE_VERSION).expect("frozen Node version")
+        )
     );
     assert_eq!(
-        NODE_VERSION,
-        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME
+        swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NODE_RUNTIME,
+        "22.23.3"
     );
     // The sidecar source tag moves with every coordinated release, so the
     // live tag at this head is not the tag the capsules ran. The evidence

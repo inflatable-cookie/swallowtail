@@ -11,13 +11,14 @@ use crate::failure::failure;
 pub const DEEPAGENTS_ACP_EXECUTABLE_NAME: &str = "deepagents-acp";
 /// Opaque npm package-version axis for Deep Agents ACP.
 pub const DEEPAGENTS_ACP_PACKAGE_AXIS: &str = "deepagents-acp.package";
-/// Exact qualified Deep Agents npm package used by ACP.
-pub const DEEPAGENTS_ACP_PACKAGE_VERSION: &str = "0.1.30";
+/// Latest qualified Deep Agents npm package used by ACP.
+pub const DEEPAGENTS_ACP_PACKAGE_VERSION: &str = "0.1.34";
+const DEEPAGENTS_ACP_PACKAGE_BASELINE_VERSION: &str = "0.1.30";
 
 pub(crate) const DEEPAGENTS_ACP_BEHAVIOR: &str = "deepagents.acp.stdio-v1";
 const MAX_VERSION_BYTES: usize = 32;
 
-/// Parses installed `--version` stdout into the exact qualified Deep Agents binding.
+/// Parses installed `--version` stdout into a stable Deep Agents binding.
 #[must_use]
 pub(crate) fn parse_deepagents_acp_version_output(
     output: &[u8],
@@ -28,19 +29,22 @@ pub(crate) fn parse_deepagents_acp_version_output(
     deepagents_acp_package_binding(exact)
 }
 
-/// Parses the one qualified exact Deep Agents package version into its interface binding.
+/// Parses a bare stable Deep Agents package version into its interface binding.
 ///
-/// Returns `None` for anything other than the exact qualified release text, so
-/// observed CLI output can never panic a caller.
+/// Compatibility is decided separately by [`deepagents_acp_claim`]. Returning a
+/// binding for a stable but unqualified version lets discovery report it as
+/// incompatible instead of treating it as malformed output.
 #[must_use]
 pub fn deepagents_acp_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value != DEEPAGENTS_ACP_PACKAGE_VERSION
-        || value.is_empty()
+    if value.is_empty()
         || value.len() > MAX_VERSION_BYTES
         || value.trim() != value
         || value.chars().any(char::is_control)
-        || semver::Version::parse(value).is_err()
     {
+        return None;
+    }
+    let parsed = semver::Version::parse(value).ok()?;
+    if !parsed.pre.is_empty() || !parsed.build.is_empty() {
         return None;
     }
     Some(InterfaceVersionBinding::new(
@@ -49,7 +53,7 @@ pub fn deepagents_acp_package_binding(value: &str) -> Option<InterfaceVersionBin
     ))
 }
 
-/// Returns the qualified-only exact Deep Agents ACP protocol claim.
+/// Returns the qualified-only Deep Agents ACP package-window claim.
 #[must_use]
 pub fn deepagents_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -58,9 +62,11 @@ pub fn deepagents_acp_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::QualifiedOnly,
-        [InterfaceVersionSegment::exact(
+        [InterfaceVersionSegment::new(
+            InterfaceVersion::new(DEEPAGENTS_ACP_PACKAGE_BASELINE_VERSION)
+                .expect("static Deep Agents baseline is valid"),
             InterfaceVersion::new(DEEPAGENTS_ACP_PACKAGE_VERSION)
-                .expect("static Deep Agents version is valid"),
+                .expect("static Deep Agents ceiling is valid"),
             InterfaceBehaviorRevision::new(DEEPAGENTS_ACP_BEHAVIOR)
                 .expect("static Deep Agents behavior is valid"),
             InterfaceSupportStatus::Maintained,
@@ -132,18 +138,20 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_the_exact_qualified_release_is_bound() {
-        assert!(deepagents_acp_package_binding(DEEPAGENTS_ACP_PACKAGE_VERSION).is_some());
+    fn only_bare_stable_semver_is_bound() {
+        for accepted in ["0.1.30", "0.1.31", "0.1.32", "0.1.33", "0.1.34", "0.1.35"] {
+            assert!(
+                deepagents_acp_package_binding(accepted).is_some(),
+                "{accepted}"
+            );
+        }
         for rejected in [
             "",
-            "0.1.24",
-            "0.1.29",
-            "0.0.1",
-            "0.1.7",
             "0.1",
             "0.1.30.0",
             "v0.1.30",
             "0.1.30-beta",
+            "0.1.30+build.1",
             "0.1.30\n",
             " 0.1.30",
             "0.1.30 ",
@@ -157,33 +165,67 @@ mod tests {
     }
 
     #[test]
-    fn exact_release_is_permitted_and_newer_is_not() {
-        let permitted =
-            InterfaceVersion::new(DEEPAGENTS_ACP_PACKAGE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("0.1.31").expect("newer version");
+    fn maintained_window_preserves_baseline_and_rejects_outside_points() {
         let claim = deepagents_acp_claim();
-        assert!(claim.assess(&permitted).is_permitted());
-        assert!(!claim.assess(&newer).is_permitted());
+        assert_eq!(claim.id().as_str(), "deepagents.acp.package-window-1");
+        assert_eq!(claim.axis().as_str(), DEEPAGENTS_ACP_PACKAGE_AXIS);
+        assert_eq!(
+            claim.newer_version_posture(),
+            InterfaceNewerVersionPosture::QualifiedOnly
+        );
+        assert_eq!(
+            claim.baseline().as_str(),
+            DEEPAGENTS_ACP_PACKAGE_BASELINE_VERSION
+        );
+        assert_eq!(
+            claim.latest_qualified().as_str(),
+            DEEPAGENTS_ACP_PACKAGE_VERSION
+        );
+        assert_eq!(claim.milestones().len(), 1);
+        assert_eq!(claim.exclusions().count(), 0);
+        let milestone = claim.milestones().next().expect("one maintained segment");
+        assert_eq!(
+            milestone.behavior_revision().as_str(),
+            DEEPAGENTS_ACP_BEHAVIOR
+        );
+        assert_eq!(
+            milestone.support_status(),
+            InterfaceSupportStatus::Maintained
+        );
+        for qualified in ["0.1.30", "0.1.31", "0.1.32", "0.1.33", "0.1.34"] {
+            let version = InterfaceVersion::new(qualified).expect("qualified version");
+            assert!(claim.assess(&version).is_permitted(), "{qualified}");
+        }
+        for incompatible in ["0.1.29", "0.1.35"] {
+            let version = InterfaceVersion::new(incompatible).expect("stable version");
+            assert!(!claim.assess(&version).is_permitted(), "{incompatible}");
+        }
     }
 
     #[test]
-    fn version_stdout_parser_accepts_bare_or_named_exact_release() {
+    fn version_stdout_parser_accepts_bare_or_named_stable_release() {
         assert_eq!(
-            parse_deepagents_acp_version_output(b"0.1.30\n")
-                .expect("exact version parses")
+            parse_deepagents_acp_version_output(b"0.1.34\n")
+                .expect("current version parses")
                 .version()
                 .as_str(),
-            "0.1.30"
+            "0.1.34"
         );
         assert_eq!(
-            parse_deepagents_acp_version_output(b"deepagents-acp 0.1.30\n")
-                .expect("named version parses")
+            parse_deepagents_acp_version_output(b"deepagents-acp 0.1.31\n")
+                .expect("named stable version parses")
                 .version()
                 .as_str(),
-            "0.1.30"
+            "0.1.31"
         );
-        assert!(parse_deepagents_acp_version_output(b"0.1.29\n").is_none());
-        assert!(parse_deepagents_acp_version_output(b"0.0.1\n").is_none());
+        assert_eq!(
+            parse_deepagents_acp_version_output(b"0.1.35\n")
+                .expect("newer stable version parses")
+                .version()
+                .as_str(),
+            "0.1.35"
+        );
+        assert!(parse_deepagents_acp_version_output(b"0.1.30-beta\n").is_none());
         assert!(parse_deepagents_acp_version_output(b"v0.1.25\n").is_none());
         assert!(parse_deepagents_acp_version_output(b"deepagents-acp  0.1.25\n").is_none());
     }

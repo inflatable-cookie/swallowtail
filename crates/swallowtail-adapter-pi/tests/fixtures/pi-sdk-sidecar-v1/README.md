@@ -10,10 +10,10 @@ Identity, separate per Contract 019 and Contract 029:
   packages this asset; the consuming application provisions the entry point)
 - behavior revision: `pi.sdk-sidecar-v1`
 - SDK package: exact `@earendil-works/pi-coding-agent@0.84.2`, public exports
-  only, qualified-only one-point claim posture
-- Node runtime: exact approved `22.23.2`, satisfying the upstream `>=22.19.0`
-  requirement; observed through the bootstrap response, never through ambient
-  discovery
+  only, qualified-only claim posture
+- Node runtime: qualified `22.23.2..=22.23.3`, satisfying the upstream
+  `>=22.19.0` requirement; response fixtures exercise `22.23.3`, while
+  identity assertions retain the `22.23.2` point
 - application-provisioned paths: exact SDK module, agent directory, and
   session directory arrive through the approved environment
   (`PI_SDK_SIDECAR_SDK_MODULE`, `PI_SDK_SIDECAR_AGENT_DIR`,

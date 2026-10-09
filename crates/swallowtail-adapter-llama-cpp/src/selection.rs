@@ -17,9 +17,9 @@ use swallowtail_core::{
     ProtocolFacadeId, RuntimeReadiness, SupportAuthority,
 };
 
-/// Exact qualified build number for the externally attached route.
+/// Baseline build number retained in the externally attached route binding.
 pub const LLAMA_CPP_ATTACHED_BUILD: &str = "9910";
-/// Exact qualified source commit for the externally attached route.
+/// Baseline source commit retained in the externally attached route binding.
 pub const LLAMA_CPP_ATTACHED_COMMIT: &str = "f5525f7e7";
 /// Exact qualified build number for the host-owned route.
 pub const LLAMA_CPP_OWNED_BUILD: &str = "10069";

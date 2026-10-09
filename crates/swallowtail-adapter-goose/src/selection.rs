@@ -11,8 +11,11 @@ use crate::failure::failure;
 pub const GOOSE_EXECUTABLE_NAME: &str = "goose";
 /// Opaque GitHub-release axis for Goose ACP.
 pub const GOOSE_RELEASE_AXIS: &str = "goose.release";
-/// Exact qualified Goose CLI release used by ACP.
-pub const GOOSE_RELEASE_VERSION: &str = "1.50.1";
+/// Latest Goose CLI release qualified for ACP.
+pub const GOOSE_RELEASE_VERSION: &str = "1.53.0";
+/// First Goose CLI release retained by the ACP claim.
+#[cfg(test)]
+const GOOSE_RELEASE_BASELINE_VERSION: &str = "1.50.1";
 
 /// Adapter-private behavior revision covering typed provider authentication
 /// failures on the ACP session/new and session/prompt requests.
@@ -30,7 +33,7 @@ impl GoosePlanSelection {
     }
 }
 
-/// Parses installed `--version` stdout into the exact qualified Goose binding.
+/// Parses installed `--version` stdout into a stable Goose release binding.
 #[must_use]
 pub(crate) fn parse_goose_version_output(output: &[u8]) -> Option<InterfaceVersionBinding> {
     let output = std::str::from_utf8(output).ok()?;
@@ -39,18 +42,22 @@ pub(crate) fn parse_goose_version_output(output: &[u8]) -> Option<InterfaceVersi
     goose_release_binding(exact)
 }
 
-/// Parses the one qualified exact Goose release version into its interface binding.
+/// Parses a stable Goose release version into its interface binding.
 ///
-/// Returns `None` for anything other than the exact qualified release text, so
-/// observed CLI output can never panic a caller.
+/// The compatibility claim classifies the returned version as qualified,
+/// unverified newer, or incompatible. Non-semver, prerelease, build-metadata,
+/// whitespace-padded, and control-character values are rejected.
 #[must_use]
 pub fn goose_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value != GOOSE_RELEASE_VERSION
-        || value.is_empty()
-        || value.len() > MAX_VERSION_BYTES
-        || value.trim() != value
+    if value.is_empty() || value.len() > MAX_VERSION_BYTES || value.trim() != value {
+        return None;
+    }
+    let parsed = semver::Version::parse(value).ok()?;
+    let baseline = semver::Version::parse("1.50.1").ok()?;
+    if parsed < baseline
+        || !parsed.pre.is_empty()
+        || !parsed.build.is_empty()
         || value.chars().any(char::is_control)
-        || semver::Version::parse(value).is_err()
     {
         return None;
     }
@@ -60,7 +67,7 @@ pub fn goose_release_binding(value: &str) -> Option<InterfaceVersionBinding> {
     ))
 }
 
-/// Returns the qualified-only exact Goose ACP protocol claim.
+/// Returns the Goose ACP compatibility claim through the current stable release.
 #[must_use]
 pub fn goose_acp_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
@@ -68,13 +75,33 @@ pub fn goose_acp_claim() -> InterfaceCompatibilityClaim {
             .expect("static Goose claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
-        InterfaceNewerVersionPosture::QualifiedOnly,
-        [InterfaceVersionSegment::exact(
-            InterfaceVersion::new(GOOSE_RELEASE_VERSION).expect("static Goose version is valid"),
-            InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
-                .expect("static Goose behavior is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
+        InterfaceNewerVersionPosture::AllowUnverified,
+        [
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.50.1").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.51.0").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.52.0").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.53.0").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         [],
     )
     .expect("static Goose claim is valid")
@@ -145,20 +172,23 @@ mod tests {
     use super::*;
 
     #[test]
-    fn only_the_exact_qualified_release_is_bound() {
-        assert!(goose_release_binding(GOOSE_RELEASE_VERSION).is_some());
+    fn stable_releases_are_bound_for_claim_classification() {
+        for accepted in ["1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.53.1"] {
+            assert!(goose_release_binding(accepted).is_some(), "{accepted}");
+        }
         for rejected in [
             "",
-            "1.50.0",
-            "1.50.2",
+            "1.46.1",
             "1.50",
             "1.50.1.0",
             "v1.50.1",
             "1.50.1-beta",
+            "1.50.1+build.1",
             "1.50.1\n",
             " 1.50.1",
             "1.50.1 ",
             "goose 1.50.1",
+            "1.50.1\u{7f}",
         ] {
             assert!(
                 goose_release_binding(rejected).is_none(),
@@ -168,31 +198,60 @@ mod tests {
     }
 
     #[test]
-    fn exact_release_is_permitted_and_newer_is_not() {
-        let permitted = InterfaceVersion::new(GOOSE_RELEASE_VERSION).expect("qualified version");
-        let newer = InterfaceVersion::new("1.46.1").expect("newer version");
+    fn published_points_gaps_and_later_stable_keep_their_classification() {
         let claim = goose_acp_claim();
-        assert!(claim.assess(&permitted).is_permitted());
-        assert!(!claim.assess(&newer).is_permitted());
+        assert_eq!(claim.baseline().as_str(), GOOSE_RELEASE_BASELINE_VERSION);
+        assert_eq!(claim.latest_qualified().as_str(), GOOSE_RELEASE_VERSION);
+        assert_eq!(claim.milestones().len(), 4);
+        assert_eq!(
+            claim.newer_version_posture(),
+            InterfaceNewerVersionPosture::AllowUnverified
+        );
+        for qualified in ["1.50.1", "1.51.0", "1.52.0", "1.53.0"] {
+            let assessment = claim.assess(&InterfaceVersion::new(qualified).expect("version"));
+            let swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched) = assessment
+            else {
+                panic!("{qualified} must remain qualified");
+            };
+            assert_eq!(matched.behavior_revision().as_str(), GOOSE_ACP_BEHAVIOR);
+            assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+        }
+        for gap in ["1.50.2", "1.51.1", "1.52.1"] {
+            assert!(
+                matches!(
+                    claim.assess(&InterfaceVersion::new(gap).expect("version")),
+                    swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+                ),
+                "{gap} must stay outside the exact published points"
+            );
+        }
+        assert!(matches!(
+            claim.assess(&InterfaceVersion::new("1.53.1").expect("version")),
+            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+        assert!(matches!(
+            claim.assess(&InterfaceVersion::new("1.49.9").expect("version")),
+            swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+        ));
     }
 
     #[test]
     fn version_stdout_parser_accepts_bare_or_named_exact_release() {
         assert_eq!(
-            parse_goose_version_output(b"1.50.1\n")
+            parse_goose_version_output(b"1.53.0\n")
                 .expect("exact version parses")
                 .version()
                 .as_str(),
-            "1.50.1"
+            "1.53.0"
         );
         assert_eq!(
-            parse_goose_version_output(b"goose 1.50.1\n")
+            parse_goose_version_output(b"goose 1.53.1\n")
                 .expect("named version parses")
                 .version()
                 .as_str(),
-            "1.50.1"
+            "1.53.1"
         );
-        assert!(parse_goose_version_output(b"1.46.1\n").is_none());
+        assert!(parse_goose_version_output(b"1.53.1-beta\n").is_none());
         assert!(parse_goose_version_output(b"v1.50.1\n").is_none());
         assert!(parse_goose_version_output(b"goose  1.50.1\n").is_none());
     }

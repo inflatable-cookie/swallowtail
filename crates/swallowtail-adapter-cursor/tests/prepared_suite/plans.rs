@@ -100,6 +100,37 @@ fn explicit_routes_prepare_only_their_typed_operations() {
 }
 
 #[test]
+fn catalogue_operation_runs_at_every_exact_qualified_release() {
+    for release in QUALIFIED_CATALOGUE_RELEASES {
+        let version = format!("{release}\n");
+        let integration = prepare_release(
+            CursorPreparedDriver::Catalogue,
+            host_id(),
+            &version,
+        )
+        .unwrap_or_else(|_| panic!("catalogue prepares at {release}"));
+        let CursorPreparedIntegration::Catalogue(catalogue) = integration else {
+            panic!("catalogue route remains explicit at {release}");
+        };
+        let prepared = catalogue
+            .prepare_catalogue(CursorCatalogueProfileInput::new(request_id("catalogue-currentness")))
+            .unwrap_or_else(|_| panic!("catalogue operation prepares at {release}"));
+        let operation_host = support::FixtureHost::completed([stdout(CATALOGUE)]);
+        let models = block_on(prepared.list_models(operation_host.services(host_id())))
+            .unwrap_or_else(|_| panic!("catalogue runs at {release}"));
+
+        assert_eq!(models.len(), 2, "{release}");
+        assert_eq!(models[0].id().as_str(), "auto", "{release}");
+        assert_eq!(models[0].metadata().display_name(), Some("Auto"), "{release}");
+        assert!(models[0].metadata().is_default(), "{release}");
+        assert_eq!(operation_host.observed().arguments, ["models"], "{release}");
+        assert!(operation_host.stdin_closed(), "{release}");
+        assert!(operation_host.waited(), "{release}");
+        assert!(!operation_host.force_stopped(), "{release}");
+    }
+}
+
+#[test]
 fn headless_preparation_keeps_read_and_write_authority_distinct() {
     for access in [ResourceAccess::Read, ResourceAccess::ReadWrite] {
         let prepared = prepare(CursorPreparedDriver::Headless, host_id()).expect("prepares");

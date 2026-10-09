@@ -1,0 +1,229 @@
+{
+  "schema": "claude-agent-sdk-wrapper-dist-inventory-v1",
+  "packages": [
+    "0.3.293",
+    "0.3.294",
+    "0.3.295"
+  ],
+  "file_count": {
+    "0.3.293": 19,
+    "0.3.294": 19,
+    "0.3.295": 19
+  },
+  "tree_digest_algorithm": "SHA-256 over UTF-8 sorted lines: <file SHA-256><two spaces><relative package path><LF>.",
+  "tree_sha256": {
+    "0.3.293": "b6339d8c766a4b1b67c1ef11c7cd49cd6ddd493a9de26dafb49984ba538f5f36",
+    "0.3.294": "c36f910d8041231c3e7e2687f109b765714be9e9426ece08b86a15353c71f802",
+    "0.3.295": "9c113fe7393277787cd4964869b4c0a932055578b2538b4944f3af64b49c6c99"
+  },
+  "file_sha256": {
+    "LICENSE.md": {
+      "0.3.293": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.294": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.295": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+    },
+    "README.md": {
+      "0.3.293": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.294": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.295": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192"
+    },
+    "agentSdkTypes.d.ts": {
+      "0.3.293": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.294": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.295": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93"
+    },
+    "bridge.d.ts": {
+      "0.3.293": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf",
+      "0.3.294": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf",
+      "0.3.295": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf"
+    },
+    "bridge.mjs": {
+      "0.3.293": "60336b522b1fa039ccd42f0ab9df1c487c709033e80cf83fe1e17e9579af1d63",
+      "0.3.294": "c407b80efdc06096aec63cbd3b39410dd6eb86bbd7de24334f1e2ceef0dd862a",
+      "0.3.295": "9345a40dcf4600ca091a72bc0b46ed6b16e8d14386590c0025142ee5943da869"
+    },
+    "browser-sdk.d.ts": {
+      "0.3.293": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.294": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.295": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9"
+    },
+    "browser-sdk.js": {
+      "0.3.293": "4676c6ce5f8772b8bb8f178da2425226d45ddc4077049216f80a8c013fd87387",
+      "0.3.294": "44d69c5bcd02123401deb5c5d418fd466b334877d912b1966983b3e2d6bf396c",
+      "0.3.295": "24284d646ebb27d78c35108e2424376e073f31863a196092e03e1775ea03de60"
+    },
+    "core-9fynjcde.mjs": {
+      "0.3.293": null,
+      "0.3.294": "e799eda431a06a73dbe91d9ce016b80df072862a8d4d40f6638a6ddf0f7773e0",
+      "0.3.295": null
+    },
+    "core-ae32wa3s.mjs": {
+      "0.3.293": "f2e7750556e3a719bd6ed14987668e9c64e675541d3b9aa3a8eb34142632fc26",
+      "0.3.294": null,
+      "0.3.295": null
+    },
+    "core-d0szsqzn.mjs": {
+      "0.3.293": "5f3b67bc1fe625ba2a81dbee172153726bda7f75595eb6d3efef0bd2fb8e41da",
+      "0.3.294": null,
+      "0.3.295": null
+    },
+    "core-reghh1vn.mjs": {
+      "0.3.293": null,
+      "0.3.294": null,
+      "0.3.295": "b543117f6a67447763c2ef22576f57ace2c0a224a7bc8c3a935794a5a9ec5b3b"
+    },
+    "core-tm6xdb2r.mjs": {
+      "0.3.293": null,
+      "0.3.294": null,
+      "0.3.295": "4735ba1d66e1e19aa273a6b0fea89ff925820b75d7f3cf83ced86fba09137a68"
+    },
+    "core-z7m2ffy5.mjs": {
+      "0.3.293": null,
+      "0.3.294": "d0d40c996e2f3449537e5a5b60b09df34f9166050f75d79501cfc674e2628264",
+      "0.3.295": null
+    },
+    "core.d.ts": {
+      "0.3.293": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.294": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.295": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8"
+    },
+    "core.mjs": {
+      "0.3.293": "e0e0cb54b1dde93e0cf0397bd1aac282ab8faf4125031a9a6de4e71de596251b",
+      "0.3.294": "4615927328456cca132a66c27b4111720476221afe2a678ff3d5c1e655dced62",
+      "0.3.295": "7efafd8d67202970905f220475d1a9b8e69cd7780c477762b9b8a93c55de8db4"
+    },
+    "extractFromBunfs.d.ts": {
+      "0.3.293": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.294": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.295": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984"
+    },
+    "extractFromBunfs.js": {
+      "0.3.293": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.294": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.295": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27"
+    },
+    "manifest.json": {
+      "0.3.293": "ce867df78920b885ffcd8ddeb5b12f867bbb34f8a7dd85d42740d48b4c6ef351",
+      "0.3.294": "269e0ed1cf53f95f580d088a0d14558057648dfe418128ab669e22b0f01969a7",
+      "0.3.295": "b36d7b376c95dd409212ecce0b700cd547266d9ea014ab1f81a1d5bc49cb3cbe"
+    },
+    "manifest.zst.json": {
+      "0.3.293": "464d122108c12d6200bf3c2316da659fc3510630a7739704ed9382efdf84723f",
+      "0.3.294": "6b901af03f7b9b1fe8f51668027bc60d2f6f36e83bc28c0245d7f86b7bf35306",
+      "0.3.295": "003148bfe81ca26550553331119459a2876f687b236c1a120490ae65335a2086"
+    },
+    "package.json": {
+      "0.3.293": "6b4847168d3f1b585e4f732f47e3a986680bac8da7f3f55c7c4d36bfa4e89f21",
+      "0.3.294": "ce9c3d0a1ab936f748f84687b6292ecb063a9d1fc58a8262ebfd1d066357c1c8",
+      "0.3.295": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211"
+    },
+    "sdk-tools.d.ts": {
+      "0.3.293": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024",
+      "0.3.294": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024",
+      "0.3.295": "749e6f013c480ef06598396334512e14c1659d897b815c057385e8dd84bf3d22"
+    },
+    "sdk.d.ts": {
+      "0.3.293": "bbfe75f8b5d29109d282d8b12d990f006744be11b53f86ce1b71c67824716254",
+      "0.3.294": "bbfe75f8b5d29109d282d8b12d990f006744be11b53f86ce1b71c67824716254",
+      "0.3.295": "e4d91d71404ce4ffc918aa590f545c7a67df6a1dfe5de8cd28a05db0a7fe872b"
+    },
+    "sdk.mjs": {
+      "0.3.293": "a980b792353c301eea60d7896704cff21440de7c4aeefc3fe481be079504e203",
+      "0.3.294": "4f5311145ff206b82d145b0f5c50047fe7f70b4d3f22c8699fafdd10405d7eaf",
+      "0.3.295": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0"
+    }
+  },
+  "adjacent_hops": {
+    "293->294": {
+      "added": [
+        "core-9fynjcde.mjs",
+        "core-z7m2ffy5.mjs"
+      ],
+      "removed": [
+        "core-ae32wa3s.mjs",
+        "core-d0szsqzn.mjs"
+      ],
+      "changed": [
+        "bridge.mjs",
+        "browser-sdk.js",
+        "core.mjs",
+        "manifest.json",
+        "manifest.zst.json",
+        "package.json",
+        "sdk.mjs"
+      ],
+      "identical": [
+        "LICENSE.md",
+        "README.md",
+        "agentSdkTypes.d.ts",
+        "bridge.d.ts",
+        "browser-sdk.d.ts",
+        "core.d.ts",
+        "extractFromBunfs.d.ts",
+        "extractFromBunfs.js",
+        "sdk-tools.d.ts",
+        "sdk.d.ts"
+      ]
+    },
+    "294->295": {
+      "added": [
+        "core-reghh1vn.mjs",
+        "core-tm6xdb2r.mjs"
+      ],
+      "removed": [
+        "core-9fynjcde.mjs",
+        "core-z7m2ffy5.mjs"
+      ],
+      "changed": [
+        "bridge.mjs",
+        "browser-sdk.js",
+        "core.mjs",
+        "manifest.json",
+        "manifest.zst.json",
+        "package.json",
+        "sdk-tools.d.ts",
+        "sdk.d.ts",
+        "sdk.mjs"
+      ],
+      "identical": [
+        "LICENSE.md",
+        "README.md",
+        "agentSdkTypes.d.ts",
+        "bridge.d.ts",
+        "browser-sdk.d.ts",
+        "core.d.ts",
+        "extractFromBunfs.d.ts",
+        "extractFromBunfs.js"
+      ]
+    }
+  },
+  "identity_files": {
+    "0.3.293": {
+      "package_json_sha256": "6b4847168d3f1b585e4f732f47e3a986680bac8da7f3f55c7c4d36bfa4e89f21",
+      "manifest_json_sha256": "ce867df78920b885ffcd8ddeb5b12f867bbb34f8a7dd85d42740d48b4c6ef351",
+      "manifest_zst_json_sha256": "464d122108c12d6200bf3c2316da659fc3510630a7739704ed9382efdf84723f",
+      "sdk_mjs_sha256": "a980b792353c301eea60d7896704cff21440de7c4aeefc3fe481be079504e203",
+      "core_mjs_sha256": "e0e0cb54b1dde93e0cf0397bd1aac282ab8faf4125031a9a6de4e71de596251b",
+      "sdk_dts_sha256": "bbfe75f8b5d29109d282d8b12d990f006744be11b53f86ce1b71c67824716254",
+      "sdk_tools_dts_sha256": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024"
+    },
+    "0.3.294": {
+      "package_json_sha256": "ce9c3d0a1ab936f748f84687b6292ecb063a9d1fc58a8262ebfd1d066357c1c8",
+      "manifest_json_sha256": "269e0ed1cf53f95f580d088a0d14558057648dfe418128ab669e22b0f01969a7",
+      "manifest_zst_json_sha256": "6b901af03f7b9b1fe8f51668027bc60d2f6f36e83bc28c0245d7f86b7bf35306",
+      "sdk_mjs_sha256": "4f5311145ff206b82d145b0f5c50047fe7f70b4d3f22c8699fafdd10405d7eaf",
+      "core_mjs_sha256": "4615927328456cca132a66c27b4111720476221afe2a678ff3d5c1e655dced62",
+      "sdk_dts_sha256": "bbfe75f8b5d29109d282d8b12d990f006744be11b53f86ce1b71c67824716254",
+      "sdk_tools_dts_sha256": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024"
+    },
+    "0.3.295": {
+      "package_json_sha256": "a7458d6612be0b2ff7d104418b103186873f6a18028573edd064843c865a4211",
+      "manifest_json_sha256": "b36d7b376c95dd409212ecce0b700cd547266d9ea014ab1f81a1d5bc49cb3cbe",
+      "manifest_zst_json_sha256": "003148bfe81ca26550553331119459a2876f687b236c1a120490ae65335a2086",
+      "sdk_mjs_sha256": "86ba133f4d52e80d03f04cb47f1022d5c8010a7971c7ed937a45a629c0bf2cf0",
+      "core_mjs_sha256": "7efafd8d67202970905f220475d1a9b8e69cd7780c477762b9b8a93c55de8db4",
+      "sdk_dts_sha256": "e4d91d71404ce4ffc918aa590f545c7a67df6a1dfe5de8cd28a05db0a7fe872b",
+      "sdk_tools_dts_sha256": "749e6f013c480ef06598396334512e14c1659d897b815c057385e8dd84bf3d22"
+    }
+  }
+}

@@ -7,14 +7,331 @@
 //! part a Rust-side fake cannot: how the asset drives the SDK's own option
 //! surface and `canUseTool` contract.
 
+#[allow(dead_code)]
+mod sdk_support;
 mod sidecar_asset_support;
 
+use futures_executor::block_on;
+use sdk_support::{SdkFixtureHost, SdkScenario, cleanup_request, preparation};
 use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
+use swallowtail_adapter_claude_agent::sdk::{
+    CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS, ClaudeAgentSdkPackageNativePair,
+    claude_agent_sdk_node_claim, prepare_claude_agent_sdk_session,
+};
+use swallowtail_runtime::InteractiveSessionHandle;
 
 const EVIDENCE_BOUNDS: &str = include_str!("fixtures/claude-agent-sdk/model-evidence-bounds.json");
 const CARD126_SELECTED_SKILL: &str =
     include_str!("fixtures/claude-agent-sdk-v1/selected-skill-bundle-card126.json");
+
+#[test]
+fn all_maintained_pairs_flow_from_prepared_plan_into_the_shipped_sidecar() {
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 12);
+    for (index, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED[..10]
+        .iter()
+        .copied()
+        .enumerate()
+    {
+        let host_id = swallowtail_core::ExecutionHostId::new(format!(
+            "claude-agent-sdk.fixture.pair-{index}"
+        ))
+        .expect("fixture host id is valid");
+        let preparation = preparation(host_id.clone());
+        let preparation = if pair == ClaudeAgentSdkPackageNativePair::DEFAULT {
+            preparation
+        } else {
+            preparation.with_package_native_pair(pair)
+        };
+        let prepared = prepare_claude_agent_sdk_session(
+            preparation,
+            swallowtail_runtime::SessionOptions::default(),
+        )
+        .expect("each maintained exact pair prepares");
+        let plan_versions: Vec<_> = prepared
+            .plan()
+            .interface_versions()
+            .map(|binding| (binding.axis().as_str(), binding.version().as_str()))
+            .collect();
+        assert!(plan_versions.contains(&(CLAUDE_AGENT_SDK_PACKAGE_AXIS, pair.package_version())));
+        assert!(plan_versions.contains(&(CLAUDE_AGENT_SDK_NATIVE_AXIS, pair.native_version())));
+
+        let listing_host = SdkFixtureHost::new(SdkScenario::SessionListing);
+        let listing = block_on(prepared.list_sessions(listing_host.services(host_id.clone())))
+            .expect("prepared listing carries the selected pair");
+        assert_eq!(listing.len(), 1);
+        let list = listing_host
+            .inputs()
+            .into_iter()
+            .find(|record| record["command"] == "list_sessions")
+            .expect("driver emitted its list launch record");
+        assert_eq!(list["params"]["expectedSdkVersion"], pair.package_version());
+        assert_eq!(
+            list["params"]["expectedNativeVersion"],
+            pair.native_version()
+        );
+
+        // Open once through the public prepared facade and capture the exact
+        // private launch message produced by the real driver.
+        let fixture_host = SdkFixtureHost::new(SdkScenario::Complete);
+        let services = fixture_host.services(host_id);
+        let session = block_on(prepared.open_route_session(services.clone()))
+            .expect("prepared facade opens its selected pair");
+        let open = fixture_host
+            .inputs()
+            .into_iter()
+            .find(|record| record["command"] == "open")
+            .expect("driver emitted its open launch record");
+        assert_eq!(open["params"]["expectedSdkVersion"], pair.package_version());
+        assert_eq!(
+            open["params"]["expectedNativeVersion"],
+            pair.native_version()
+        );
+        let cleanup = block_on(Box::new(session).close(cleanup_request(), services));
+        assert!(matches!(
+            cleanup,
+            swallowtail_runtime::CleanupOutcome::Clean
+                | swallowtail_runtime::CleanupOutcome::Degraded(_)
+        ));
+
+        // Feed that same driver-produced launch configuration to the actual
+        // shipped sidecar, with matching deterministic package and manifest
+        // fixtures. This exercises the baseline and every interior pair.
+        let mut sidecar = SidecarProcess::start_package_native_pair(
+            pair.package_version(),
+            pair.native_version(),
+        );
+        let sidecar_open = sidecar.command("open-1", "open", open["params"].clone());
+        assert_eq!(
+            sidecar_open["success"],
+            true,
+            "the shipped sidecar opens {} / {}: {sidecar_open}",
+            pair.package_version(),
+            pair.native_version()
+        );
+        assert_eq!(sidecar_open["data"]["sdkVersion"], pair.package_version());
+        assert_eq!(sidecar_open["data"]["nativeVersion"], pair.native_version());
+        assert!(sidecar.sdk_was_constructed());
+        let listing = sidecar.command(
+            "list-sessions-1",
+            "list_sessions",
+            json!({
+                "cwd": sidecar.cwd(),
+                "limit": 1000,
+                "offset": 0,
+                "expectedSdkVersion": pair.package_version(),
+                "expectedNativeVersion": pair.native_version(),
+            }),
+        );
+        assert_eq!(
+            listing["success"], true,
+            "list preserves selected pair: {listing}"
+        );
+        assert_eq!(
+            sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}))["success"],
+            true
+        );
+    }
+}
+
+#[test]
+fn new_qualified_pairs_bind_through_the_prepared_facade_and_sidecar() {
+    for pair in [
+        ClaudeAgentSdkPackageNativePair::V0_3_294Native2_1_294,
+        ClaudeAgentSdkPackageNativePair::V0_3_295Native2_1_295,
+    ] {
+        let host_id = swallowtail_core::ExecutionHostId::new(format!(
+            "claude-agent-sdk.fixture.new-pair-{}",
+            pair.package_version()
+        ))
+        .expect("fixture host id is valid");
+        let prepared = prepare_claude_agent_sdk_session(
+            preparation(host_id.clone()).with_package_native_pair(pair),
+            swallowtail_runtime::SessionOptions::default(),
+        )
+        .expect("new exact pair prepares");
+        let versions: Vec<_> = prepared
+            .plan()
+            .interface_versions()
+            .map(|binding| (binding.axis().as_str(), binding.version().as_str()))
+            .collect();
+        assert!(versions.contains(&(CLAUDE_AGENT_SDK_PACKAGE_AXIS, pair.package_version())));
+        assert!(versions.contains(&(CLAUDE_AGENT_SDK_NATIVE_AXIS, pair.native_version())));
+
+        let listing_host = SdkFixtureHost::new(SdkScenario::SessionListing);
+        let listing = block_on(prepared.list_sessions(listing_host.services(host_id.clone())))
+            .expect("new pair reaches the prepared listing facade");
+        assert_eq!(listing.len(), 1);
+        let list = listing_host
+            .inputs()
+            .into_iter()
+            .find(|record| record["command"] == "list_sessions")
+            .expect("driver emitted its listing launch record");
+        assert_eq!(list["params"]["expectedSdkVersion"], pair.package_version());
+        assert_eq!(
+            list["params"]["expectedNativeVersion"],
+            pair.native_version()
+        );
+
+        let fixture_host = SdkFixtureHost::new(SdkScenario::Complete);
+        let services = fixture_host.services(host_id);
+        let session = block_on(prepared.open_route_session(services.clone()))
+            .expect("prepared facade opens new exact pair");
+        let open = fixture_host
+            .inputs()
+            .into_iter()
+            .find(|record| record["command"] == "open")
+            .expect("driver emitted its open launch record");
+        assert_eq!(open["params"]["expectedSdkVersion"], pair.package_version());
+        assert_eq!(
+            open["params"]["expectedNativeVersion"],
+            pair.native_version()
+        );
+        let cleanup = block_on(Box::new(session).close(cleanup_request(), services));
+        assert!(matches!(
+            cleanup,
+            swallowtail_runtime::CleanupOutcome::Clean
+                | swallowtail_runtime::CleanupOutcome::Degraded(_)
+        ));
+
+        let mut sidecar = SidecarProcess::start_package_native_pair(
+            pair.package_version(),
+            pair.native_version(),
+        );
+        let opened = sidecar.command("open-1", "open", open["params"].clone());
+        assert_eq!(opened["success"], true, "new pair opens: {opened}");
+        assert_eq!(opened["data"]["sdkVersion"], pair.package_version());
+        assert_eq!(opened["data"]["nativeVersion"], pair.native_version());
+        assert!(sidecar.sdk_was_constructed());
+        let listed = sidecar.command(
+            "list-sessions-1",
+            "list_sessions",
+            json!({
+                "cwd": sidecar.cwd(),
+                "limit": 1000,
+                "offset": 0,
+                "expectedSdkVersion": pair.package_version(),
+                "expectedNativeVersion": pair.native_version(),
+            }),
+        );
+        assert_eq!(
+            listed["success"], true,
+            "new pair listing succeeds: {listed}"
+        );
+        assert_eq!(
+            sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}))["success"],
+            true
+        );
+    }
+}
+
+#[test]
+fn wrong_unsupported_and_unreadable_package_native_identities_fail_before_sdk_construction() {
+    let cases = [
+        (
+            "0.3.284",
+            "2.1.285",
+            "0.3.284",
+            "2.1.284",
+            "sdk_version_mismatch",
+        ),
+        (
+            "0.3.293",
+            "2.1.293",
+            "0.3.294",
+            "2.1.294",
+            "native_version_mismatch",
+        ),
+        (
+            "0.3.296",
+            "2.1.296",
+            "0.3.296",
+            "2.1.296",
+            "sdk_version_mismatch",
+        ),
+        (
+            "0.3.294",
+            "2.1.294",
+            "0.3.295",
+            "2.1.294",
+            "sdk_version_mismatch",
+        ),
+        (
+            "0.3.295",
+            "2.1.295",
+            "0.3.295",
+            "2.1.294",
+            "native_version_mismatch",
+        ),
+        (
+            "0.3.284",
+            "2.1.284",
+            "0.3.285",
+            "2.1.284",
+            "sdk_version_mismatch",
+        ),
+        (
+            "0.3.284",
+            "2.1.284",
+            "0.3.284",
+            "2.1.285",
+            "native_version_mismatch",
+        ),
+    ];
+    for (expected_sdk, expected_native, actual_sdk, actual_native, failure) in cases {
+        let mut sidecar = SidecarProcess::start_package_native_pair(actual_sdk, actual_native);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({
+                "cwd": sidecar.cwd(),
+                "model": "m-1",
+                "expectedSdkVersion": expected_sdk,
+                "expectedNativeVersion": expected_native,
+            }),
+        );
+        assert_eq!(open["success"], false, "invalid pair must fail: {open}");
+        assert_eq!(open["failure"]["code"], failure, "pair failure: {open}");
+        assert!(!sidecar.sdk_was_constructed());
+    }
+
+    for mode in ["missing", "malformed", "unreadable"] {
+        let mut sidecar = SidecarProcess::start_native_manifest_case(mode);
+        let open = sidecar.command(
+            "open-1",
+            "open",
+            json!({"cwd": sidecar.cwd(), "model": "m-1"}),
+        );
+        assert_eq!(open["success"], false, "{mode} manifest must fail: {open}");
+        assert_eq!(open["failure"]["code"], "native_manifest_unavailable");
+        assert!(!sidecar.sdk_was_constructed());
+    }
+
+    for (sdk_version, native_version) in [(None, Some("2.1.284")), (Some("0.3.284"), None)] {
+        let mut missing_expected_pair = SidecarProcess::start();
+        let mut params = json!({
+            "cwd": missing_expected_pair.cwd(),
+            "model": "m-1",
+        });
+        if let Some(sdk_version) = sdk_version {
+            params["expectedSdkVersion"] = json!(sdk_version);
+        } else {
+            params["expectedSdkVersion"] = Value::Null;
+        }
+        if let Some(native_version) = native_version {
+            params["expectedNativeVersion"] = json!(native_version);
+        } else {
+            params["expectedNativeVersion"] = Value::Null;
+        }
+        let open = missing_expected_pair.command("open-1", "open", params);
+        assert_eq!(
+            open["success"], false,
+            "missing selected identity fails: {open}"
+        );
+        assert_eq!(open["failure"]["code"], "invalid_command");
+        assert!(!missing_expected_pair.sdk_was_constructed());
+    }
+}
 
 #[test]
 fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
@@ -26,7 +343,16 @@ fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
     );
     assert_eq!(open["success"], true, "matching identity opens: {open}");
     assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
-    assert_eq!(open["data"]["sdkVersion"], "0.3.284");
+    assert_eq!(open["data"]["sdkVersion"], "0.3.293");
+    let node_version = open["data"]["nodeVersion"]
+        .as_str()
+        .expect("the sidecar reports its executing Node version");
+    assert!(
+        claude_agent_sdk_node_claim().permits(
+            &swallowtail_core::InterfaceVersion::new(node_version)
+                .expect("the sidecar reports a semantic Node version")
+        )
+    );
     assert!(sidecar.sdk_was_constructed());
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true);
@@ -117,7 +443,7 @@ fn mismatching_sdk_package_identity_fails_before_sdk_construction_with_bounded_e
         sidecar.next_diagnostic()["evidence"],
         json!({
             "declaredSdkPackage": "@anthropic-ai/claude-agent-sdk",
-            "declaredSdkVersion": "0.3.284",
+            "declaredSdkVersion": "0.3.293",
             "loadedSdkPackage": "@anthropic-ai/claude-agent-sdk",
             "loadedSdkVersion": "0.3.258"
         })
@@ -201,7 +527,7 @@ fn package_identity_stays_bound_to_the_nested_sdk_package_root() {
         "nested package identity opens: {open}"
     );
     assert_eq!(open["data"]["sdkPackage"], "@anthropic-ai/claude-agent-sdk");
-    assert_eq!(open["data"]["sdkVersion"], "0.3.284");
+    assert_eq!(open["data"]["sdkVersion"], "0.3.293");
     assert!(sidecar.sdk_was_constructed());
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true);
@@ -1052,9 +1378,9 @@ fn model_rejection_evidence_is_bounded_and_does_not_change_the_failure_response(
                 "effectiveMembership": effective_membership,
                 "querySource": "sdk.query",
                 "phase": "first-turn-model-qualification",
-                "declaredSdkVersion": "0.3.284",
-                "loadedSdkVersion": "0.3.284",
-                "nativeVersion": "2.1.284"
+                "declaredSdkVersion": "0.3.293",
+                "loadedSdkVersion": "0.3.293",
+                "nativeVersion": "2.1.293"
             })
         );
         let wire = diagnostic.to_string();
@@ -2025,7 +2351,7 @@ fn an_optional_mcp_server_failure_is_recorded_without_failing_open() {
     assert_eq!(options["mcpServers"]["fixture"]["alwaysLoad"], false);
 }
 
-/// The fake's faithful `0.3.284` status rows carry fixture-only marker values
+/// The fake's faithful `0.3.293` status rows carry fixture-only marker values
 /// in every declared optional field (`serverInfo`, `error`, `config`, `scope`,
 /// `tools`). None of that metadata may cross the safe projection into any
 /// sidecar response; its absence is the Card 146 non-leak oracle.
@@ -2137,7 +2463,7 @@ fn an_unknown_status_row_stays_invalid_even_with_declared_metadata() {
 
 #[test]
 fn undeclared_top_level_row_fields_stay_invalid() {
-    // `url` and `headers` are config members in 0.3.284, never top-level
+    // `url` and `headers` are config members in 0.3.293, never top-level
     // `McpServerStatus` row fields; an undeclared top-level key stays
     // fail-closed even though every declared optional field is now admitted.
     for scenario in ["mcp-undeclared-url", "mcp-undeclared-headers"] {

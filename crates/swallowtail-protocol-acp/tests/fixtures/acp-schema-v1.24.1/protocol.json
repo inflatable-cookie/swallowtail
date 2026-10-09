@@ -1,0 +1,285 @@
+{
+  "schema_version": "1.0.0",
+  "wire_protocol_version": 1,
+  "stable_artifact": "schema.json",
+  "stable_method_metadata": "meta.json",
+  "unstable_artifacts_are_unselected": true,
+  "stable_hop_deltas": [
+    {
+      "from": "schema-v1.20.0",
+      "to": "schema-v1.21.0",
+      "added_definitions": [
+        "AuthCapabilities",
+        "AuthMethodTerminal",
+        "BooleanPropertySchema",
+        "CompleteElicitationNotification",
+        "CreateElicitationRequest",
+        "CreateElicitationResponse",
+        "ElicitationAcceptAction",
+        "ElicitationCapabilities",
+        "ElicitationContentValue",
+        "ElicitationFormCapabilities",
+        "ElicitationFormMode",
+        "ElicitationId",
+        "ElicitationPropertySchema",
+        "ElicitationRequestScope",
+        "ElicitationSchema",
+        "ElicitationSchemaType",
+        "ElicitationSessionScope",
+        "ElicitationUrlCapabilities",
+        "ElicitationUrlMode",
+        "EnumOption",
+        "IntegerPropertySchema",
+        "MultiSelectItems",
+        "MultiSelectPropertySchema",
+        "NumberPropertySchema",
+        "StringFormat",
+        "StringMultiSelectItems",
+        "StringPropertySchema",
+        "TitledMultiSelectItems"
+      ],
+      "removed_definitions": [],
+      "changed_definitions": [
+        "AgentNotification",
+        "AgentRequest",
+        "AuthMethod",
+        "AuthMethodAgent",
+        "ClientCapabilities",
+        "ClientRequest",
+        "ClientResponse",
+        "InitializeRequest"
+      ],
+      "added_client_methods": ["elicitation_complete", "elicitation_create"],
+      "selected_additions": [
+        "ClientCapabilities.elicitation.form",
+        "elicitation/create form mode"
+      ],
+      "unmapped_additions": [
+        "ClientCapabilities.auth",
+        "elicitation/complete",
+        "elicitation/create URL mode",
+        "form field types and option details outside the existing choice-and-Other subset"
+      ]
+    },
+    {
+      "from": "schema-v1.21.0",
+      "to": "schema-v1.22.0",
+      "added_definitions": [],
+      "removed_definitions": [],
+      "changed_definitions": ["ToolCall", "ToolCallUpdate"],
+      "added_client_methods": [],
+      "selected_additions": [],
+      "unmapped_additions": ["ToolCall.name", "ToolCallUpdate.name"]
+    },
+    {
+      "from": "schema-v1.22.0",
+      "to": "schema-v1.23.0",
+      "added_definitions": [],
+      "removed_definitions": [],
+      "changed_definitions": [],
+      "added_client_methods": [],
+      "selected_additions": [],
+      "unmapped_additions": []
+    },
+    {
+      "from": "schema-v1.23.0",
+      "to": "schema-v1.24.0",
+      "added_definitions": [],
+      "removed_definitions": [],
+      "changed_definitions": [],
+      "added_client_methods": [],
+      "selected_additions": [],
+      "unmapped_additions": []
+    },
+    {
+      "from": "schema-v1.24.0",
+      "to": "schema-v1.24.1",
+      "added_definitions": [],
+      "removed_definitions": [],
+      "changed_definitions": [],
+      "added_client_methods": [],
+      "selected_additions": [],
+      "unmapped_additions": []
+    }
+  ],
+  "selected_definition_sha256": {
+    "ProtocolVersion": {
+      "schema-v1.20.0": "7281d37a5654e372e490b26a92b3e06ba8be15ebeabb7f9fab6cb4df2c589b61",
+      "schema-v1.21.0": "7281d37a5654e372e490b26a92b3e06ba8be15ebeabb7f9fab6cb4df2c589b61",
+      "schema-v1.22.0": "7281d37a5654e372e490b26a92b3e06ba8be15ebeabb7f9fab6cb4df2c589b61",
+      "schema-v1.23.0": "7281d37a5654e372e490b26a92b3e06ba8be15ebeabb7f9fab6cb4df2c589b61",
+      "schema-v1.24.0": "7281d37a5654e372e490b26a92b3e06ba8be15ebeabb7f9fab6cb4df2c589b61",
+      "schema-v1.24.1": "7281d37a5654e372e490b26a92b3e06ba8be15ebeabb7f9fab6cb4df2c589b61"
+    },
+    "ClientCapabilities": {
+      "schema-v1.20.0": "6ea96fededacfd11c503138c1c013faf57c11fb061acf3d265cc28bc881e8e50",
+      "schema-v1.21.0": "e6431319715016c5cbfe7d3fbf4376f09e6fc11c71f592dd3fb409ceafef942c",
+      "schema-v1.22.0": "e6431319715016c5cbfe7d3fbf4376f09e6fc11c71f592dd3fb409ceafef942c",
+      "schema-v1.23.0": "e6431319715016c5cbfe7d3fbf4376f09e6fc11c71f592dd3fb409ceafef942c",
+      "schema-v1.24.0": "e6431319715016c5cbfe7d3fbf4376f09e6fc11c71f592dd3fb409ceafef942c",
+      "schema-v1.24.1": "e6431319715016c5cbfe7d3fbf4376f09e6fc11c71f592dd3fb409ceafef942c"
+    },
+    "InitializeRequest": {
+      "schema-v1.20.0": "fbf498f5062fe0cee0193b489e386c1e64f8d5f785e3c5bd9d0f75e206d16b51",
+      "schema-v1.21.0": "4f0fb7df2275303f1aa9e88bdd1b959e48054b8c78a851f4061502cbe6e35982",
+      "schema-v1.22.0": "4f0fb7df2275303f1aa9e88bdd1b959e48054b8c78a851f4061502cbe6e35982",
+      "schema-v1.23.0": "4f0fb7df2275303f1aa9e88bdd1b959e48054b8c78a851f4061502cbe6e35982",
+      "schema-v1.24.0": "4f0fb7df2275303f1aa9e88bdd1b959e48054b8c78a851f4061502cbe6e35982",
+      "schema-v1.24.1": "4f0fb7df2275303f1aa9e88bdd1b959e48054b8c78a851f4061502cbe6e35982"
+    },
+    "CreateElicitationRequest": {
+      "schema-v1.21.0": "35455e98e0780f1ff251c40bad2778208b2bd191e410dc5dab4b37a96c224742",
+      "schema-v1.22.0": "35455e98e0780f1ff251c40bad2778208b2bd191e410dc5dab4b37a96c224742",
+      "schema-v1.23.0": "35455e98e0780f1ff251c40bad2778208b2bd191e410dc5dab4b37a96c224742",
+      "schema-v1.24.0": "35455e98e0780f1ff251c40bad2778208b2bd191e410dc5dab4b37a96c224742",
+      "schema-v1.24.1": "35455e98e0780f1ff251c40bad2778208b2bd191e410dc5dab4b37a96c224742"
+    },
+    "ElicitationFormMode": {
+      "schema-v1.21.0": "327bb8f2c15e770379a0cb61d5b63c56186ab31fc1cdb4138baf1bb4bba1cbba",
+      "schema-v1.22.0": "327bb8f2c15e770379a0cb61d5b63c56186ab31fc1cdb4138baf1bb4bba1cbba",
+      "schema-v1.23.0": "327bb8f2c15e770379a0cb61d5b63c56186ab31fc1cdb4138baf1bb4bba1cbba",
+      "schema-v1.24.0": "327bb8f2c15e770379a0cb61d5b63c56186ab31fc1cdb4138baf1bb4bba1cbba",
+      "schema-v1.24.1": "327bb8f2c15e770379a0cb61d5b63c56186ab31fc1cdb4138baf1bb4bba1cbba"
+    },
+    "RequestPermissionRequest": {
+      "schema-v1.20.0": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+      "schema-v1.21.0": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+      "schema-v1.22.0": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+      "schema-v1.23.0": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+      "schema-v1.24.0": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+      "schema-v1.24.1": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336"
+    },
+    "RequestPermissionResponse": {
+      "schema-v1.20.0": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+      "schema-v1.21.0": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+      "schema-v1.22.0": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+      "schema-v1.23.0": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+      "schema-v1.24.0": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+      "schema-v1.24.1": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761"
+    },
+    "NewSessionRequest": {
+      "schema-v1.20.0": "4de7b5fbf49ec24e9d3dc31502ec680dc8bb598fa742cd86c8b53396f42ae89b",
+      "schema-v1.21.0": "4de7b5fbf49ec24e9d3dc31502ec680dc8bb598fa742cd86c8b53396f42ae89b",
+      "schema-v1.22.0": "4de7b5fbf49ec24e9d3dc31502ec680dc8bb598fa742cd86c8b53396f42ae89b",
+      "schema-v1.23.0": "4de7b5fbf49ec24e9d3dc31502ec680dc8bb598fa742cd86c8b53396f42ae89b",
+      "schema-v1.24.0": "4de7b5fbf49ec24e9d3dc31502ec680dc8bb598fa742cd86c8b53396f42ae89b",
+      "schema-v1.24.1": "4de7b5fbf49ec24e9d3dc31502ec680dc8bb598fa742cd86c8b53396f42ae89b"
+    },
+    "CloseSessionRequest": {
+      "schema-v1.20.0": "6886ed7e9efc4259c24b4582c4b0d696b992e35c617849512e4b99766a434f17",
+      "schema-v1.21.0": "6886ed7e9efc4259c24b4582c4b0d696b992e35c617849512e4b99766a434f17",
+      "schema-v1.22.0": "6886ed7e9efc4259c24b4582c4b0d696b992e35c617849512e4b99766a434f17",
+      "schema-v1.23.0": "6886ed7e9efc4259c24b4582c4b0d696b992e35c617849512e4b99766a434f17",
+      "schema-v1.24.0": "6886ed7e9efc4259c24b4582c4b0d696b992e35c617849512e4b99766a434f17",
+      "schema-v1.24.1": "6886ed7e9efc4259c24b4582c4b0d696b992e35c617849512e4b99766a434f17"
+    },
+    "DeleteSessionRequest": {
+      "schema-v1.20.0": "83c13033c90361612f135e2ced4a1699dec076dbfeb60590abf34c9d88739805",
+      "schema-v1.21.0": "83c13033c90361612f135e2ced4a1699dec076dbfeb60590abf34c9d88739805",
+      "schema-v1.22.0": "83c13033c90361612f135e2ced4a1699dec076dbfeb60590abf34c9d88739805",
+      "schema-v1.23.0": "83c13033c90361612f135e2ced4a1699dec076dbfeb60590abf34c9d88739805",
+      "schema-v1.24.0": "83c13033c90361612f135e2ced4a1699dec076dbfeb60590abf34c9d88739805",
+      "schema-v1.24.1": "83c13033c90361612f135e2ced4a1699dec076dbfeb60590abf34c9d88739805"
+    },
+    "UsageUpdate": {
+      "schema-v1.20.0": "b1489421f07f88d3b10bdca14a162639d89ede379c851ba30378814063e09b86",
+      "schema-v1.21.0": "b1489421f07f88d3b10bdca14a162639d89ede379c851ba30378814063e09b86",
+      "schema-v1.22.0": "b1489421f07f88d3b10bdca14a162639d89ede379c851ba30378814063e09b86",
+      "schema-v1.23.0": "b1489421f07f88d3b10bdca14a162639d89ede379c851ba30378814063e09b86",
+      "schema-v1.24.0": "b1489421f07f88d3b10bdca14a162639d89ede379c851ba30378814063e09b86",
+      "schema-v1.24.1": "b1489421f07f88d3b10bdca14a162639d89ede379c851ba30378814063e09b86"
+    },
+    "ToolCall": {
+      "schema-v1.20.0": "76859d2d28d49d0427920d867758b88b56f48316b00b4733423e834c4c84e807",
+      "schema-v1.21.0": "76859d2d28d49d0427920d867758b88b56f48316b00b4733423e834c4c84e807",
+      "schema-v1.22.0": "f8dc46888da9e4fa1edfc9cd88f93bc074a839ecc6d08ddb6d2d2ac12fe568fa",
+      "schema-v1.23.0": "f8dc46888da9e4fa1edfc9cd88f93bc074a839ecc6d08ddb6d2d2ac12fe568fa",
+      "schema-v1.24.0": "f8dc46888da9e4fa1edfc9cd88f93bc074a839ecc6d08ddb6d2d2ac12fe568fa",
+      "schema-v1.24.1": "f8dc46888da9e4fa1edfc9cd88f93bc074a839ecc6d08ddb6d2d2ac12fe568fa"
+    },
+    "ToolCallUpdate": {
+      "schema-v1.20.0": "e05a7f01e93b0e10f5b28b7cb3e7fe3cdd452a2d13790ff44c13ad85ef7daee2",
+      "schema-v1.21.0": "e05a7f01e93b0e10f5b28b7cb3e7fe3cdd452a2d13790ff44c13ad85ef7daee2",
+      "schema-v1.22.0": "89464d21aa887ee0a13ffe3df39ae23f1598eb6a9a15a0a2af14b46f7e4b4968",
+      "schema-v1.23.0": "89464d21aa887ee0a13ffe3df39ae23f1598eb6a9a15a0a2af14b46f7e4b4968",
+      "schema-v1.24.0": "89464d21aa887ee0a13ffe3df39ae23f1598eb6a9a15a0a2af14b46f7e4b4968",
+      "schema-v1.24.1": "89464d21aa887ee0a13ffe3df39ae23f1598eb6a9a15a0a2af14b46f7e4b4968"
+    }
+  },
+  "selected_configuration_definition_sha256": {
+    "versions": [
+      "schema-v1.20.0",
+      "schema-v1.21.0",
+      "schema-v1.22.0",
+      "schema-v1.23.0",
+      "schema-v1.24.0",
+      "schema-v1.24.1"
+    ],
+    "definitions": {
+      "NewSessionResponse": "873f144438af821b59d07936c496ecfbdf9846e0a49a8d26b7b2a8afc6094f50",
+      "SessionConfigOptionsCapabilities": "1270bd76d71ef9a7f54630b5207fe7f7d426414b58bdabb4ebdea911b50f1f24",
+      "BooleanConfigOptionCapabilities": "6b960b7f5cb02388f0ac844015e7ef22bed47a37d907b1b8df2423cbce600e99",
+      "SessionConfigOption": "4ceeac6f47f9644f960ecf4ffc5948dd63b7f89fa7d422ad1c45acba3e21bca1",
+      "SessionConfigSelect": "8d2736d67b86bd81fb94b71966c4cfc9eb0a4f3c58a96214327ca87627f62fd7",
+      "SessionConfigBoolean": "25c2db89c82f3a8e953e50803a77fec71e289bd9c7483342a7dd3b206db2abe8",
+      "SessionConfigSelectOption": "974516119c9c5bc76124a9a70153413c4d22f48213ca69c656b99c5419480c3a",
+      "SessionConfigSelectGroup": "4470fc2cf0803bd1c9fb7e47a1fe7b7917a4a66c6a9a0c04477fd84e5611ab46",
+      "SessionConfigSelectOptions": "15d7eac7b072d6bc8ecc05de0d4cbe4fd57666753c39fb065a4e3107a388bfcb",
+      "SessionConfigId": "5347c9b1fd2a3ba5510f64b5238c8be63dd014b594ca17a7119efcfcb4b95214",
+      "SessionConfigValueId": "6e59e44dd7b219b1327207f7dccce0042f49e5eea0f499a1b76af8a7be1fea99",
+      "SessionConfigOptionCategory": "7ffd6cc01a1718d9c381a738f0b1986d0efb159280fb80668752f5dadda2da40",
+      "SessionConfigGroupId": "b96973eb7bd4c7d50da5696b85093e554a8599d2ea5cd876e50b955ee37657b1",
+      "SetSessionConfigOptionRequest": "6dc9121aafade9f245b3c26094673b9f972ddb1e885cfec1c5c88503b9a59390",
+      "ConfigOptionUpdate": "b52532c7a360f3dfa9dd944d08a6eb38aad11c4d027152c7e371a2ab90d29200"
+    }
+  },
+  "selected_surfaces": {
+    "initialize": {
+      "wire_version_field": "protocolVersion",
+      "wire_version_type_and_value": "integer 1",
+      "selected_existing_capability": "ClientCapabilities.elicitation.form",
+      "first_stable_schema": "schema-v1.21.0",
+      "consumer": "claude-agent.acp"
+    },
+    "elicitation": {
+      "selected_method": "elicitation/create",
+      "selected_mode": "form",
+      "mapping": "existing bounded choice-and-Other typed user-input exchange",
+      "unselected_modes_and_methods": ["URL mode", "elicitation/complete"]
+    },
+    "lifecycle": {
+      "definitions": ["NewSessionRequest", "CloseSessionRequest", "DeleteSessionRequest"],
+      "selected_shape_changed": false,
+      "historical_corpus": "schema-v1.20.0"
+    },
+    "configuration": {
+      "definitions": ["NewSessionResponse", "SessionConfigOptionsCapabilities", "BooleanConfigOptionCapabilities", "SessionConfigOption", "SessionConfigSelect", "SessionConfigBoolean", "SessionConfigSelectOption", "SessionConfigSelectGroup", "SessionConfigSelectOptions", "SessionConfigId", "SessionConfigValueId", "SessionConfigOptionCategory", "SessionConfigGroupId", "SetSessionConfigOptionRequest", "ConfigOptionUpdate"],
+      "selected_shape_changed": false
+    },
+    "activity": {
+      "definitions": ["SessionUpdate", "ToolCall", "ToolCallUpdate"],
+      "selected_fields": ["toolCallId", "title", "kind", "status", "content", "locations"],
+      "selected_shape_changed": false,
+      "unmapped_fields": ["ToolCall.name", "ToolCallUpdate.name"]
+    },
+    "permission": {
+      "definitions": ["RequestPermissionRequest", "RequestPermissionResponse"],
+      "selected_shape_changed": false
+    },
+    "usage": {
+      "definition": "UsageUpdate",
+      "selected_fields": ["used", "size", "cost.amount", "cost.currency"],
+      "selected_shape_changed": false
+    },
+    "tool": {
+      "definitions": ["ToolCall", "ToolCallUpdate"],
+      "selected_name_field": false,
+      "selected_shape_changed": false
+    }
+  },
+  "provider_and_unstable_boundary": {
+    "schema.unstable.json": "Excluded; it is a separate unstable artifact and does not supply stable v1 proof.",
+    "meta.unstable.json": "Excluded; it is a separate unstable method list and does not supply stable v1 proof.",
+    "provider_internal_changes": "No provider artifacts or provider execution are part of the shared schema axis."
+  }
+}

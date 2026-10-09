@@ -19,8 +19,8 @@ use swallowtail_runtime::{
     ProviderSessionReconciliationDriver, RequestId, StructuredRunDriver, StructuredRunRequest,
 };
 use swallowtail_testkit::{
-    ConformanceAssertion, ConformanceReport, assert_unverified_newer_execution,
-    run_long_lived_rpc_profile, run_one_shot_structured_cli_profile,
+    ConformanceAssertion, ConformanceReport, run_long_lived_rpc_profile,
+    run_one_shot_structured_cli_profile,
 };
 
 fn binding(version: &str) -> swallowtail_core::InterfaceVersionBinding {
@@ -158,8 +158,14 @@ fn both_codex_transports_keep_gap_and_newer_execution_outside_qualified_support(
         swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
     );
     let version = binding("0.155.2");
-    assert_unverified_newer_execution(&codex_exec_claim(), version.version());
-    assert_unverified_newer_execution(&codex_app_server_claim(), version.version());
+    assert_eq!(
+        codex_exec_claim().assess(version.version()),
+        swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert_eq!(
+        codex_app_server_claim().assess(version.version()),
+        swallowtail_core::InterfaceCompatibilityAssessment::Incompatible
+    );
 }
 
 fn capabilities(plan: &swallowtail_core::PreflightPlan) -> BTreeSet<Capability> {

@@ -1,0 +1,7 @@
+# Claude Code 2.1.294 headless identity and hook adaptation
+
+This supplemental fixture extends Research 374 with the exact npm wrapper, Darwin arm64 package, and Linux x64 package for 2.1.294. `dist-inventory.json` retains every complete file inventory from 2.1.281 through 2.1.293 and adds the complete recursive 2.1.294 tree and adjacent deltas. Tarball SHA-512 integrity matches current npm registry metadata. The two platform executable hashes are tied to static hook-semantics evidence in `hook-safety-semantics.json`. No downloaded executable was run.
+
+At observation, npm `latest` and GitHub latest non-prerelease agree on 2.1.294; npm `stable` remains a delayed channel at 2.1.286. npm `next` points to 2.1.295, which is not part of the stable target.
+
+The 2.1.294 release notes identify changes to instruction-form prompt and agent hook safety and Stop/SubagentStop behavior. Static inspection of both exact platform executables establishes that rejected prompt-hook decisions block, rewritten PreToolUse inputs cross a subsequent safety and permission check, and Stop/SubagentStop reentry follows the provider's active-hook and configured cap rules. These hooks remain active through the selected `user,project,local` settings. Research 422 preserves the initial identity stop; Research 423 records the provider-free adaptation and qualification. The two JSONL headless scenarios are synthetic adapter fixtures, not captured provider transcripts.

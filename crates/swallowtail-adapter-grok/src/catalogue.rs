@@ -779,4 +779,10 @@ mod tests {
         }
         assert!(parse_catalogue(b"\xff\xfe invalid utf-8").is_err());
     }
+
+    #[test]
+    fn default_not_in_available_models_variant_fails_closed() {
+        let corpus = "Default model:  (not in the list below)\nAvailable models:\n  - grok-4.5\n";
+        assert!(parse_catalogue(corpus.as_bytes()).is_err());
+    }
 }

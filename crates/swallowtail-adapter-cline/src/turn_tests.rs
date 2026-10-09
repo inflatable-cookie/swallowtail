@@ -48,4 +48,30 @@ mod tests {
             TerminalStatus::ProviderRequestObserved(_)
         ));
     }
+
+    #[test]
+    fn generated_image_output_remains_outside_the_text_only_acp_contract() {
+        let (turn, _events, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-generated-image").expect("valid turn"),
+            "session-fixture".to_owned(),
+        )
+        .expect("turn opens");
+        let error = turn
+            .handle_update(&json!({
+                "sessionId": "session-fixture",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {
+                        "type": "image",
+                        "data": "ZmFrZQ==",
+                        "mimeType": "image/png"
+                    }
+                }
+            }))
+            .expect_err("Cline media output stays unclaimed");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.cline.acp.content_unsupported"
+        );
+    }
 }

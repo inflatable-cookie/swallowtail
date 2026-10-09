@@ -1,0 +1,600 @@
+{
+  "fixture_schema": 1,
+  "route": "llama-cpp.attached",
+  "baseline_runtime_revision": "b9910-f5525f7e7",
+  "target_runtime_revision": "b11429-d81235049",
+  "source_evidence_kind": "official source and release metadata; no binary or live runtime observation",
+  "selected_requests": [
+    [
+      "GET",
+      "/health"
+    ],
+    [
+      "GET",
+      "/props"
+    ],
+    [
+      "GET",
+      "/v1/models"
+    ],
+    [
+      "POST",
+      "/v1/chat/completions"
+    ]
+  ],
+  "selected_subset": {
+    "chat_request": {
+      "role": "user",
+      "content": "plain text only",
+      "stream": true,
+      "include_usage": true,
+      "max_tokens": "positive bounded integer",
+      "temperature": 0,
+      "tools": false,
+      "response_format": false
+    },
+    "health": "HTTP 200 {status: ok}; loading remains HTTP 503 with error.type unavailable_error",
+    "properties": [
+      "build_info",
+      "model_alias",
+      "chat_template",
+      "chat_template_caps",
+      "modalities"
+    ],
+    "catalogue": "OpenAI list with exactly one model id matching props.model_alias",
+    "chat_stream": [
+      "OpenAI chat.completion.chunk event objects",
+      "assistant role and text deltas",
+      "finish_reason stop or length",
+      "final empty choices usage chunk with prompt_tokens, completion_tokens, total_tokens",
+      "data: [DONE] terminator"
+    ],
+    "failures": "HTTP errors retain an error.type field; adapter classifies known provider types and redacts raw payloads",
+    "cancellation": "adapter closes local connection work; it does not claim remote compute interruption",
+    "attached_lifecycle": "no process start, stop, artifact lease, or endpoint ownership"
+  },
+  "selected_behavior_comparison": {
+    "segment_shape": "compatible-extension",
+    "selected_wire_and_lifecycle_changed": false,
+    "claim_id_preserved": "llama-cpp.attached-runtime-window-1",
+    "behavior_revision_preserved": "llama-cpp.attached-openai-chat-b9910",
+    "selected_changed_files": [
+      "CMakeLists.txt",
+      "common/arg.cpp",
+      "common/build-info.cpp.in",
+      "common/build-info.h",
+      "common/chat.cpp",
+      "common/chat.h",
+      "common/jinja/caps.cpp",
+      "common/jinja/caps.h",
+      "src/llama-version.h.in",
+      "tools/server/server-chat.cpp",
+      "tools/server/server-chat.h",
+      "tools/server/server-common.cpp",
+      "tools/server/server-common.h",
+      "tools/server/server-context.cpp",
+      "tools/server/server-context.h",
+      "tools/server/server-http.cpp",
+      "tools/server/server-http.h",
+      "tools/server/server-models.cpp",
+      "tools/server/server-models.h",
+      "tools/server/server-queue.cpp",
+      "tools/server/server-queue.h",
+      "tools/server/server-stream.cpp",
+      "tools/server/server-stream.h",
+      "tools/server/server-task.cpp",
+      "tools/server/server-task.h",
+      "tools/server/server.cpp",
+      "vendor/cpp-httplib/httplib.cpp",
+      "vendor/cpp-httplib/httplib.h"
+    ],
+    "source_change_classifications": {
+      "chat_message_and_template_mapping": [
+        "common/chat.cpp",
+        "common/chat.h",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-chat.h"
+      ],
+      "chat_template_capability_assessment": [
+        "common/jinja/caps.cpp",
+        "common/jinja/caps.h"
+      ],
+      "completion_usage_and_terminal_lifecycle": [
+        "tools/server/server-queue.cpp",
+        "tools/server/server-queue.h",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h"
+      ],
+      "configuration_and_permission_boundary": [
+        "common/arg.cpp",
+        "tools/server/server-http.cpp",
+        "tools/server/server-http.h",
+        "tools/server/server.cpp"
+      ],
+      "errors_and_http_stream_transport": [
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-stream.cpp",
+        "tools/server/server-stream.h",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "health_properties_and_chat_mapping": [
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h"
+      ],
+      "properties_and_model_catalogue_handlers": [
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h"
+      ],
+      "runtime_identity": [
+        "CMakeLists.txt",
+        "common/build-info.cpp.in",
+        "common/build-info.h",
+        "src/llama-version.h.in"
+      ]
+    },
+    "permission_boundary": {
+      "changed_file": "tools/server/server-http.cpp",
+      "change": "GET /v1/models is no longer in the API-key-exempt endpoint set in v0.6.0.",
+      "scope": "API-key configured deployments are outside the adapter's LocalUnauthenticated access profile. /props is API-key protected at both source tags, so that profile fails before catalogue in either release when server credentials are enabled.",
+      "classification": "outside-selected-profile; no authority or credential capability change is claimed"
+    },
+    "unmapped_or_excluded": {
+      "new_or_changed_unselected_apis": [
+        "/v1/systemone",
+        "/v1/embeddings typed vision/audio/video content",
+        "server MCP endpoints"
+      ],
+      "new_or_changed_unselected_features": [
+        "tool exchange and tool response mapping",
+        "model-router and server-managed model loading",
+        "Web UI and model download flows",
+        "model architecture, backend kernels, and quality/performance behavior"
+      ],
+      "rationale": "The adapter uses one text model, sends no tools or multimodal input, calls no router/control/management endpoint, and owns no server process or model. These surfaces do not feed the selected attached OpenAI chat request/response mapping.",
+      "unqualified_stable_hops": [
+        {
+          "semantic_release": "v0.2.0",
+          "runtime_revision": "b10566-bb4caa754",
+          "qualification": "unqualified_exact_gap"
+        },
+        {
+          "semantic_release": "v0.3.0",
+          "runtime_revision": "b10621-c1d0e7a00",
+          "qualification": "unqualified_exact_gap"
+        },
+        {
+          "semantic_release": "v0.4.0",
+          "runtime_revision": "b10809-5266f24da",
+          "qualification": "unqualified_exact_gap"
+        },
+        {
+          "semantic_release": "v0.4.1",
+          "runtime_revision": "b10964-b29c606e2",
+          "qualification": "unqualified_exact_gap"
+        },
+        {
+          "semantic_release": "v0.5.0",
+          "runtime_revision": "b11146-7fe450e19",
+          "qualification": "unqualified_exact_gap"
+        }
+      ],
+      "reasoning_effort_and_typed_content": {
+        "status": "outside_selected_operation",
+        "rationale": "The attached request sends plain text only and no tools; upstream capability calculation is observed through the existing guard, but this route adds no reasoning-effort or typed-content dispatch."
+      }
+    },
+    "source_change_classification_details": {
+      "common/jinja/caps.cpp": "Produces chat_template_caps values consumed by the adapter text-only guard. v0.2.0 adds reasoning-effort detection and refines string/typed-content analysis; v0.4.1 adds a string-versus-array check for templates that branch on content type. These flags are template-dependent; Swallowtail does not add reasoning or typed-content capability.",
+      "common/jinja/caps.h": "Adds the upstream supports_reasoning_effort member and helper declaration. The selected Rust property struct has no such field and serde ignores additive unknown fields; existing text-only fields remain consumed.",
+      "common/build-info.h": "Changes the declaration of llama_print_build_info, while llama_build_info remains the selected build_info accessor. Runtime point derivation remains the separate b{build}-{commit} formatter in common/build-info.cpp.in and CMake.",
+      "tools/server/server-models.cpp": "Contains router-mode /props and /v1/models handlers. Router additions and model loading/management remain outside the attached contract. The adapter requires the selected build/template properties and exactly one catalogue id, so router responses lacking those fields or listing multiple models fail closed. v0.6.0 adds /v1/models architecture metadata; serde ignores additive fields while id/object and one-model checks remain.",
+      "tools/server/server-models.h": "Declares the router handlers and model-manager state used by server-models.cpp; new model routing and management declarations are outside the attached facade. The selected handler outputs are classified with server-models.cpp."
+    },
+    "selected_request_contract_changed": false,
+    "selected_attached_lifecycle_changed": false,
+    "selected_capability_assessment_source_changed": true,
+    "selected_capability_assessment_limit": "The source changed how chat_template_caps is computed for model-specific templates. No server or model was executed, so the exact booleans for an arbitrary deployed template are not claimed; the adapter continues to enforce its fixed text-only capability guard on observed properties."
+  },
+  "unmapped_key_boundaries": {
+    "props_extras": [
+      "default_generation_settings",
+      "total_slots",
+      "model_path",
+      "media_marker",
+      "endpoint_slots",
+      "endpoint_props",
+      "endpoint_metrics",
+      "ui",
+      "ui_settings",
+      "bos_token",
+      "eos_token",
+      "is_sleeping",
+      "cors_proxy_enabled"
+    ],
+    "completion_extras": [
+      "system_fingerprint",
+      "timings",
+      "__verbose",
+      "logprobs"
+    ],
+    "unselected_flags_and_endpoints": [
+      "tools",
+      "response_format",
+      "MCP",
+      "server-managed routing",
+      "server controls",
+      "/v1/systemone",
+      "/v1/embeddings typed modalities"
+    ]
+  },
+  "mutation_sensitive_inventory": {
+    "path": "dist-inventory.json",
+    "exact_selected_file_list": true,
+    "exact_added_removed_changed_identical_lists": true,
+    "exact_stable_hop_selected_file_sets": true,
+    "exact_stable_hop_tree_file_set_hashes": true,
+    "selected_file_hashes_cover_every_published_hop": true
+  },
+  "stable_hop_assessments": [
+    {
+      "semantic_release": "v0.2.0",
+      "published_at": "2026-08-21T18:32:48Z",
+      "nightly_tag": "b10566",
+      "source_commit": "bb4caa7540188872173c44d161602d9271386413",
+      "runtime_revision": "b10566-bb4caa754",
+      "transition_from": "b9910",
+      "transition_to": "v0.2.0",
+      "qualification": "unqualified_exact_gap",
+      "source_tree_inventory": "dist-inventory.json#per_hop",
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/build-info.cpp.in",
+        "common/build-info.h",
+        "common/chat.cpp",
+        "common/chat.h",
+        "common/jinja/caps.cpp",
+        "common/jinja/caps.h",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-http.cpp",
+        "tools/server/server-http.h",
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h",
+        "tools/server/server-queue.cpp",
+        "tools/server/server-queue.h",
+        "tools/server/server-stream.cpp",
+        "tools/server/server-stream.h",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt",
+          "common/build-info.cpp.in",
+          "common/build-info.h"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server-http.cpp",
+          "tools/server/server-http.h",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "common/chat.h",
+          "tools/server/server-chat.cpp"
+        ],
+        "chat_template_capability_assessment": [
+          "common/jinja/caps.cpp",
+          "common/jinja/caps.h"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "tools/server/server-stream.cpp",
+          "tools/server/server-stream.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp",
+          "tools/server/server-models.h"
+        ],
+        "completion_usage_and_terminal_lifecycle": [
+          "tools/server/server-queue.cpp",
+          "tools/server/server-queue.h",
+          "tools/server/server-task.cpp",
+          "tools/server/server-task.h"
+        ]
+      }
+    },
+    {
+      "semantic_release": "v0.3.0",
+      "published_at": "2026-08-25T10:22:58Z",
+      "nightly_tag": "b10621",
+      "source_commit": "c1d0e7a004015f23bc0233470b747b596f29b264",
+      "runtime_revision": "b10621-c1d0e7a00",
+      "transition_from": "v0.2.0",
+      "transition_to": "v0.3.0",
+      "qualification": "unqualified_exact_gap",
+      "source_tree_inventory": "dist-inventory.json#per_hop",
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "common/chat.h",
+        "common/jinja/caps.cpp",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-chat.h",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-models.cpp",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "common/chat.h",
+          "tools/server/server-chat.cpp",
+          "tools/server/server-chat.h"
+        ],
+        "chat_template_capability_assessment": [
+          "common/jinja/caps.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp"
+        ],
+        "completion_usage_and_terminal_lifecycle": [
+          "tools/server/server-task.cpp",
+          "tools/server/server-task.h"
+        ]
+      }
+    },
+    {
+      "semantic_release": "v0.4.0",
+      "published_at": "2026-09-04T19:56:47Z",
+      "nightly_tag": "b10809",
+      "source_commit": "5266f24da75dc449bd56cbed7addb9c8e4a6a73e",
+      "runtime_revision": "b10809-5266f24da",
+      "transition_from": "v0.3.0",
+      "transition_to": "v0.4.0",
+      "qualification": "unqualified_exact_gap",
+      "source_tree_inventory": "dist-inventory.json#per_hop",
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/build-info.cpp.in",
+        "common/build-info.h",
+        "common/chat.cpp",
+        "src/llama-version.h.in",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt",
+          "common/build-info.cpp.in",
+          "common/build-info.h",
+          "src/llama-version.h.in"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ]
+      }
+    },
+    {
+      "semantic_release": "v0.4.1",
+      "published_at": "2026-09-14T18:27:29Z",
+      "nightly_tag": "b10964",
+      "source_commit": "b29c606e28a01b1bc8c1351026a0fa6e616bf6c4",
+      "runtime_revision": "b10964-b29c606e2",
+      "transition_from": "v0.4.0",
+      "transition_to": "v0.4.1",
+      "qualification": "unqualified_exact_gap",
+      "source_tree_inventory": "dist-inventory.json#per_hop",
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "common/chat.h",
+        "common/jinja/caps.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "common/chat.h"
+        ],
+        "chat_template_capability_assessment": [
+          "common/jinja/caps.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp",
+          "tools/server/server-models.h"
+        ]
+      }
+    },
+    {
+      "semantic_release": "v0.5.0",
+      "published_at": "2026-09-23T20:50:06Z",
+      "nightly_tag": "b11146",
+      "source_commit": "7fe450e19305b828c199d602c23a8337aaa1f03b",
+      "runtime_revision": "b11146-7fe450e19",
+      "transition_from": "v0.4.1",
+      "transition_to": "v0.5.0",
+      "qualification": "unqualified_exact_gap",
+      "source_tree_inventory": "dist-inventory.json#per_hop",
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-http.cpp",
+        "tools/server/server-http.h",
+        "tools/server/server-models.cpp",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server-http.cpp",
+          "tools/server/server-http.h",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "tools/server/server-chat.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp"
+        ]
+      }
+    },
+    {
+      "semantic_release": "v0.6.0",
+      "published_at": "2026-10-05T16:56:22Z",
+      "nightly_tag": "b11429",
+      "source_commit": "d81235049384534c167caea52b85a694f6103d14",
+      "runtime_revision": "b11429-d81235049",
+      "transition_from": "v0.5.0",
+      "transition_to": "v0.6.0",
+      "qualification": "qualified_exact_point",
+      "source_tree_inventory": "dist-inventory.json#per_hop",
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-http.cpp",
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server-http.cpp",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp",
+          "tools/server/server-models.h"
+        ],
+        "completion_usage_and_terminal_lifecycle": [
+          "tools/server/server-task.cpp",
+          "tools/server/server-task.h"
+        ]
+      }
+    }
+  ]
+}

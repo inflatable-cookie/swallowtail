@@ -1,0 +1,330 @@
+{
+  "axis": "kimi-code.executable",
+  "route": "kimi-code.acp",
+  "observed_at": "2026-10-08",
+  "npm_package": "@moonshot-ai/kimi-code",
+  "npm_latest": "2.1.1",
+  "github_latest_release": {
+    "tag_name": "@moonshot-ai/kimi-code@2.1.1",
+    "published_at": "2026-09-24T07:24:08Z",
+    "html_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.1.1",
+    "target_commitish": "main"
+  },
+  "previous_qualified_ceiling": "0.38.0",
+  "official_stable_hops_after_ceiling": [
+    {
+      "version": "0.39.0",
+      "npm_published_at": "2026-08-27T11:36:25.525Z",
+      "npm_integrity": "sha512-T+8IwTc3etpNQhJXbB6wNppLvC4URWBR0SycDM2mb2ObXmqwn8xbOKzaItQQ63ZxjyV6zSHQDaogw0BjlHmtvA==",
+      "npm_shasum": "5b610a0b029742b5e152d3a8d3a40509603661f7",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.39.0.tgz",
+      "npm_tarball_sha256": "b42ab69386d260c40f1397a6b319d05331554711815934054af815f04ca7ff48",
+      "npm_file_count": 545,
+      "npm_unpacked_size": 57931548,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.39.0",
+      "github_annotated_tag_object": "9076cf66a7ae1e0b2e28c9967099c4a6d6cfdb74",
+      "github_commit": "52e8d19dbd17efebc2e73f8e1a879bef7f23c2b1",
+      "github_tree": "5baec16caa6dce8263ab011132990a4e18298ebe"
+    },
+    {
+      "version": "0.39.1",
+      "npm_published_at": "2026-08-28T10:01:03.520Z",
+      "npm_integrity": "sha512-prxUZEhr4hFTnPtm3JLEpE3+1jFH9HvCpkAGFy4WErFHX0Ax7+7KdEgplOC+lm7IGv1cZLU6HdqT6con1IFbdQ==",
+      "npm_shasum": "6ee2d2ce457b8fd4bdd110a87f013268979dce49",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.39.1.tgz",
+      "npm_tarball_sha256": "22594a76d0aec0cdabd41050fdd354381c106c48a2f8f5edf98394b4b5e987f7",
+      "npm_file_count": 545,
+      "npm_unpacked_size": 58051777,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.39.1",
+      "github_annotated_tag_object": "1c142e2b20378bfdc92629abfcc68499946bf96f",
+      "github_commit": "5efca0c3116743855c28426000073bfe34a4862f",
+      "github_tree": "884913004aeb243aa4f366b9f482961fddf1fc8d",
+      "npm_dist_main_mjs_sha256": "ed24f532d07e5d00777ae20b42ed18437e116b050bbcfc6ae0f3bc90affca337"
+    },
+    {
+      "version": "0.40.0",
+      "npm_published_at": "2026-09-02T05:58:56.966Z",
+      "npm_integrity": "sha512-QtnLYrPjSFSnT1t5czZVMDJ/hcK/FCLHA8kX6bYNhtflMfuUhWX/qfKhurhUi8pVrg8uxuiVlbRXVfWlLLQn0w==",
+      "npm_shasum": "f88d52ec186443248092b6392df9ee91991bd06e",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.40.0.tgz",
+      "npm_tarball_sha256": "e947fa378eb3f36b306ab1ebc39f74af5aadacba49e8968a5b98ec47f0cc2e83",
+      "npm_file_count": 547,
+      "npm_unpacked_size": 58015047,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.40.0",
+      "github_annotated_tag_object": "042a03e41bbb5c6ab113412fd584ad4a3ddd70f7",
+      "github_commit": "e27ee60894d714e5844db75da69f29120a2bce43",
+      "github_tree": "4a9246c06dbad6443f0719d3a22f00d067b83a20",
+      "npm_dist_main_mjs_sha256": "c0efe89fda04f746a2ea73bd95edd6808e7cc93d257525fb379330b6adfa75a6"
+    },
+    {
+      "version": "0.40.1",
+      "npm_published_at": "2026-09-02T09:20:41.955Z",
+      "npm_integrity": "sha512-aiglDy/yFpgVGyT3tiItBJnCx1Cgp9EpuK1N5D609OB9KvABQ67qKv7m56hSr0vnyxU8USJFy1WwWQSgVFo4aA==",
+      "npm_shasum": "cb3c9e66a5f0e829c60f0e20d184100cc7f75efb",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.40.1.tgz",
+      "npm_tarball_sha256": "dd6dd058384a500a08bc9d3982a8e04eb248c69403869dd16bd20353ef75e5c3",
+      "npm_file_count": 547,
+      "npm_unpacked_size": 58042358,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.40.1",
+      "github_annotated_tag_object": "34afca12baac5b3984835a3609841a02489edde5",
+      "github_commit": "0d45dddc57510e6b1306dd12c0b0703c37b8c63a",
+      "github_tree": "c00bba788bcd263ca2833e0e981be7069b7f25fd",
+      "npm_dist_main_mjs_sha256": "d0b563b97d70d86ba98c86b1511cee15053b2f7d3cc84998d961dc3d2ccc881c"
+    },
+    {
+      "version": "0.41.0",
+      "npm_published_at": "2026-09-04T11:01:04.740Z",
+      "npm_integrity": "sha512-9F89UvhJpUVnxZm1Jjj9b+Tnb8+5Wr0BpzTE1IGedy8KXZQDZ2GErjqy5fxEfdyfHRXDOjRM6xI4N/kPfDyMAA==",
+      "npm_shasum": "b0190679d15448b31450f9485cfd074e8deb8edf",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.41.0.tgz",
+      "npm_tarball_sha256": "4421e1277bbfa5e46a8e1a863fd9ba4d1a3db8dd890d928f571171ac62a80c1e",
+      "npm_file_count": 547,
+      "npm_unpacked_size": 58167778,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.41.0",
+      "github_annotated_tag_object": "d723a3937d4b92325a71e7c9272a056cf8997baa",
+      "github_commit": "95478e8c7ba248fd2470d5bb151555ec7fedd19d",
+      "github_tree": "8d692694e0957d5c73e13fa1e8a8c174ab223f20",
+      "npm_dist_main_mjs_sha256": "db8e083187241ce6683793ce366f1e100e732caa4f65bd28bbc3fac739762e95"
+    },
+    {
+      "version": "0.42.0",
+      "npm_published_at": "2026-09-09T06:24:39.794Z",
+      "npm_integrity": "sha512-WNm2/j/7lVqK27379wwWlFrYpg6qpe20kTE8cA0fZLcrbHT2msM54MPDKwA53F6uGrKqPqUBqgX8O7BqTfCc3Q==",
+      "npm_shasum": "c93e4c28db3d83753ae6b3509480faeb729b4ad9",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.42.0.tgz",
+      "npm_tarball_sha256": "686f888cfe7ef888159ffeb760bcdce9f4816e8b7fe9962529e59251b0ac3372",
+      "npm_file_count": 547,
+      "npm_unpacked_size": 56040228,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.42.0",
+      "github_annotated_tag_object": "62290bef83b0cc2158f60d36266cf745f48076ba",
+      "github_commit": "6954d2c8bf94a5c7fc29cc6ae35b15d042cc4dcb",
+      "github_tree": "c4f8f55387398906e44e6e566a181f2d7eabea40",
+      "npm_dist_main_mjs_sha256": "3f632148344f68c15633215244e1ca8c106116051cd0e744968906773230930a"
+    },
+    {
+      "version": "0.43.0",
+      "npm_published_at": "2026-09-14T12:10:41.073Z",
+      "npm_integrity": "sha512-J8GnyiHKxjBA1kGkPGnxXWY2rbQ+O4WwBDfiOOqKAYOpptVk568l9qp5edlmz1iBXUpCZZUyw3pPnJhM5hZl2A==",
+      "npm_shasum": "d867d748d41e69c9883dd2d5c54bbba131bbc3dc",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.43.0.tgz",
+      "npm_tarball_sha256": "225bc17f06243edf6bcf0fc82bbe8838cab1cd426eb8e467e9ebab93d53ace90",
+      "npm_file_count": 543,
+      "npm_unpacked_size": 57881623,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.43.0",
+      "github_annotated_tag_object": "eb83293155ef86d7e5fccf8f764e9d698b619988",
+      "github_commit": "ffa94fae854dedf594919acbea280d98cbe8e14e",
+      "github_tree": "cfad0ffd418c396bae69a96322050738aa49dcda",
+      "npm_dist_main_mjs_sha256": "5b300a573d306f879361eb7a2baec3a19448ea94eadca28001408b19c42eeb69"
+    },
+    {
+      "version": "0.43.1",
+      "npm_published_at": "2026-09-15T06:57:35.600Z",
+      "npm_integrity": "sha512-jq60K07tJV+uZB/mTN7rgb99WU5z6PtUeLybywGhXpF5QybaehIWsWudZ9HR8hEEmc7pppB+GAA92RDqOOKnRg==",
+      "npm_shasum": "d40978815824e59fe139550e4af3e2e5144f8785",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.43.1.tgz",
+      "npm_tarball_sha256": "2ac671a704bc4f4d6f0cd1ffcec76ab10f185c376aa7edd6b0450f210563603c",
+      "npm_file_count": 545,
+      "npm_unpacked_size": 58059269,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@0.43.1",
+      "github_annotated_tag_object": "a3c66ba1b019c37e4069c5611266669d0438eb62",
+      "github_commit": "75ac010bcb2050338444455de8328492d152c919",
+      "github_tree": "b102aab935f2cc837ab78b0aae37d4d02aca6e1b",
+      "npm_dist_main_mjs_sha256": "fb44806fa7e5773749131b841bfd23d96a9b07c97bad101872b01c11aabecd76"
+    },
+    {
+      "version": "2.0.0",
+      "npm_published_at": "2026-09-17T05:28:50.465Z",
+      "npm_integrity": "sha512-bni11f/46j3AgsFXhdMqFufx0j7EjkZdMCezYd0OVqjA5CybnZ2eLEy/11SoA/L3Uj9A52L0GdyUi3vtyRpRBQ==",
+      "npm_shasum": "4718ff0f236b210b64aee77961ab526cc1ca87a3",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.0.0.tgz",
+      "npm_tarball_sha256": "d1450598a1844d9bc204f07ae9fd3bb371e7df1ec841cf7c9e86bde7c09d3cd1",
+      "npm_file_count": 541,
+      "npm_unpacked_size": 53196438,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@2.0.0",
+      "github_annotated_tag_object": "834bdd50b10b53b90d2ce5d72f5864a8a2309492",
+      "github_commit": "1b89e4b039f052d10f258464413b2047acca12ba",
+      "github_tree": "e0455fd76cf5dc3c0291661105672ab1876c90ab",
+      "npm_dist_main_mjs_sha256": "425690c99c74f6270218d486e1b4aa799e15fe5a4853dd87a8c19a7b45e55ac5"
+    },
+    {
+      "version": "2.0.1",
+      "npm_published_at": "2026-09-18T13:21:56.632Z",
+      "npm_integrity": "sha512-MiNaN3kQ5t979evcHHFYh6LcsceZ4c67Cv/JDl6Vw+EJd97IazY4pgT0ILHRQ2CGNzQ3rIutgIx7BmBmcjwv/w==",
+      "npm_shasum": "b571202dc8035f6f136ecdc73b9a5f138527eb45",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.0.1.tgz",
+      "npm_tarball_sha256": "5b0dfb03a3e5f79b0030888c6b69679459afe8f1dc1e4175d921fe5701dd3b3e",
+      "npm_file_count": 541,
+      "npm_unpacked_size": 53285289,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@2.0.1",
+      "github_annotated_tag_object": "0a3f49c1a1e9028c16b2e408a2e82ad4b4427805",
+      "github_commit": "caf7d4e2fef06967280b325da06e44a4b0516eba",
+      "github_tree": "3773a94fcd3a1890ffa9c48ccc31297625d85c71",
+      "npm_dist_main_mjs_sha256": "1e561c30f07b4f989cd604f735ef9f30806d610f19cb855a099d150c7eccf495"
+    },
+    {
+      "version": "2.0.2",
+      "npm_published_at": "2026-09-19T12:16:26.024Z",
+      "npm_integrity": "sha512-JjZIwlsrUgrpnMgH1jKZAot8FJt36NWwItdWmRq/sj7ewe9RswDPWX+mBhdlGoyhSTfAEG6KjMGanhyADKTWsA==",
+      "npm_shasum": "f6955d96daec837f08f4f6ab5267771d55ebe8a4",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.0.2.tgz",
+      "npm_tarball_sha256": "432cd0b0ed4184d01c29c5ef21a88303b81d3539f3a771ec64af6cbfa4aa8a77",
+      "npm_file_count": 541,
+      "npm_unpacked_size": 53258991,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@2.0.2",
+      "github_annotated_tag_object": "c98339a1867e0843d192b8f7454d7ae3dcd5d8d8",
+      "github_commit": "9d07f634be94ebeb1deba2f55d247807cf729315",
+      "github_tree": "6ccfdc69ac48d00137a2e860b232fd25c9e0f74b",
+      "npm_dist_main_mjs_sha256": "56d12cc74e54b0b82a2e2d8bdbbb9d6a5c9b27a9e5c9a09e0d5662b67fce1a89"
+    },
+    {
+      "version": "2.1.0",
+      "npm_published_at": "2026-09-23T12:39:56.279Z",
+      "npm_integrity": "sha512-c9rY0DS0xNOraEgUFJ5Cexz6+S3R+PczIwCVCI4eP93xv1xpIbyFLe6wyQl29VR9UMafmfQG6+dIyJcCLEAoBQ==",
+      "npm_shasum": "dd7f6b54440823c3d67c5aaadb6e673e6e0bf48f",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.1.0.tgz",
+      "npm_tarball_sha256": "25a081b7783806226434aab6c40462192d3f9e362391cba7b068af02d8b5fd71",
+      "npm_file_count": 541,
+      "npm_unpacked_size": 53508193,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@2.1.0",
+      "github_annotated_tag_object": "93a83aafacf91cc595a7b66f0ecb637f23859f77",
+      "github_commit": "52437299ff78de3d0aff7f38f054e5eb20c512e5",
+      "github_tree": "f75b5366d0a9b130ff9ff593ab202b990a4ea65e",
+      "npm_dist_main_mjs_sha256": "6f801a114b5a5d708d9fec1ea0002ac42ec19841c088a96aecd7e6117b8b1d59"
+    },
+    {
+      "version": "2.1.1",
+      "npm_published_at": "2026-09-24T07:27:15.480Z",
+      "npm_integrity": "sha512-xClqcnTQUKgKDbeOGPU78qcwxGzL8wA2rqWuOX3CLpyQ1/NhSX7jAh6hZo/JFwThSX8obkgef3uw/li5JaJNyw==",
+      "npm_shasum": "612a8312d755ae93bdb56486bb53f4e47a8dcb5e",
+      "npm_tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.1.1.tgz",
+      "npm_tarball_sha256": "6690a29d7b5e14812754dd100136b7f4ee2577add8895f00fe27025b4412049f",
+      "npm_file_count": 541,
+      "npm_unpacked_size": 53525527,
+      "npm_bin": {
+        "kimi": "dist/main.mjs"
+      },
+      "node_engine": ">=22.19.0",
+      "github_tag_name": "@moonshot-ai/kimi-code@2.1.1",
+      "github_annotated_tag_object": "a00639d0654d2c91c6f0c1388267b62ad51f8b9c",
+      "github_commit": "f67e6398fb3210ad8ace970e2dfd5bcc984ed61f",
+      "github_tree": "3269cb11ea507083ee03b975d4e3edd795a12d9f",
+      "npm_dist_main_mjs_sha256": "2563a338c94868a34e1bfd2e5579067d5a472acf4cb0bf350a3bfe1092bbe59d"
+    }
+  ],
+  "release_adjacency": {
+    "previous_ceiling": "0.38.0",
+    "published_stable_hops": [
+      "0.39.0",
+      "0.39.1",
+      "0.40.0",
+      "0.40.1",
+      "0.41.0",
+      "0.42.0",
+      "0.43.0",
+      "0.43.1",
+      "2.0.0",
+      "2.0.1",
+      "2.0.2",
+      "2.1.0",
+      "2.1.1"
+    ],
+    "unpublished_versions_between": [
+      "0.38.1",
+      "0.39.2"
+    ],
+    "no_stable_1_x": true,
+    "major_reset": "0.43.1 -> 2.0.0",
+    "unpublished_or_absent_stable_points": [
+      "0.38.1",
+      "0.39.2",
+      "0.40.2",
+      "0.41.1",
+      "0.42.1",
+      "0.43.2",
+      "no stable 1.x release",
+      "2.0.3",
+      "2.1.2"
+    ]
+  },
+  "host": {
+    "kind": "installed Kimi Code CLI",
+    "version": "0.34.0",
+    "sha256": "9f4337e10da47843f6b550474012a53ba8b30dd665f83b176a5cd479c5f7e859",
+    "size": 176894272,
+    "not_installed_by_this_run": true,
+    "not_updated_by_this_run": true,
+    "not_executed_by_this_run": true
+  },
+  "identity_decision": {
+    "route": "kimi-code.acp",
+    "verdict": "stop-unchanged",
+    "latest_qualified_stays": "0.38.0",
+    "claim_id_stays": "kimi.acp.executable-window-5",
+    "posture_stays": "QualifiedOnly",
+    "exact_exclusions_stay": [
+      "0.39.0",
+      "0.39.1"
+    ],
+    "new_exclusions": false,
+    "behavior_revision_change": false,
+    "public_api_change": false,
+    "new_operation": false,
+    "current_official_stable": "2.1.1"
+  },
+  "limits": {
+    "provider_prompt_sent": false,
+    "authenticated_catalogue_or_session_used": false,
+    "credentials_used": false,
+    "downloaded_artifact_executed": false,
+    "installation_or_host_update": false,
+    "sibling_route_evidence_transferred": false
+  }
+}

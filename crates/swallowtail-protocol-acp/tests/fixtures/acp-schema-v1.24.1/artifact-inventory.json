@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0.0",
+  "compared": [
+    "schema-v1.20.0",
+    "schema-v1.21.0",
+    "schema-v1.22.0",
+    "schema-v1.23.0",
+    "schema-v1.24.0",
+    "schema-v1.24.1"
+  ],
+  "asset_count_per_release": 4,
+  "release_assets": {
+    "schema-v1.20.0": {
+      "published_at": "2026-07-21T15:09:36Z",
+      "source_commit": "5e89c71497fe07dd4ae633c181a17224f4a8956d",
+      "files": {
+        "meta.json": {"size_bytes": 1059, "sha256": "e0bf36f8123b2544b499174197fdc371ec49a1b4572a35114513d56492741599"},
+        "meta.unstable.json": {"size_bytes": 1852, "sha256": "3026898232badf413624010d1343e20bef853e6705c62d6b56387cf9de6b0543"},
+        "schema.json": {"size_bytes": 198609, "sha256": "92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796"},
+        "schema.unstable.json": {"size_bytes": 364909, "sha256": "f71fbcb7beeae82770e9c33d1e5969999868789cacec509289331a1205816838"}
+      }
+    },
+    "schema-v1.21.0": {
+      "published_at": "2026-08-20T19:43:13Z",
+      "source_commit": "272bf799f35a258c6a4107a0410ed361e83683d3",
+      "files": {
+        "meta.json": {"size_bytes": 1159, "sha256": "061edb6efa8fb2aa2792459a86ec7268de5fe665bba48b2ffe7939df01481f88"},
+        "meta.unstable.json": {"size_bytes": 1852, "sha256": "3026898232badf413624010d1343e20bef853e6705c62d6b56387cf9de6b0543"},
+        "schema.json": {"size_bytes": 246569, "sha256": "caf62ff962ada396878372ced11efb2c6764e59d90919a38583c319948931a42"},
+        "schema.unstable.json": {"size_bytes": 370113, "sha256": "7f77702b34e0a0558e77220e9007bf8ee161a976bb8ac5021aba1b7e7b2c5708"}
+      }
+    },
+    "schema-v1.22.0": {
+      "published_at": "2026-09-17T14:57:01Z",
+      "source_commit": "9b4c23b966fa3e64b21b6b2718d8dd71fcb64882",
+      "files": {
+        "meta.json": {"size_bytes": 1159, "sha256": "061edb6efa8fb2aa2792459a86ec7268de5fe665bba48b2ffe7939df01481f88"},
+        "meta.unstable.json": {"size_bytes": 1852, "sha256": "3026898232badf413624010d1343e20bef853e6705c62d6b56387cf9de6b0543"},
+        "schema.json": {"size_bytes": 247168, "sha256": "3c17bd6385d90cf672d8a661fddc359d73422cf8b8ce6865213d25cfd4c0eca7"},
+        "schema.unstable.json": {"size_bytes": 372939, "sha256": "b74a7e07a962d3834029b14e371e088aca52dc72ae50fc3669c8e0b760e36bac"}
+      }
+    },
+    "schema-v1.23.0": {
+      "published_at": "2026-09-18T10:43:39Z",
+      "source_commit": "6d08f412a7a1370d3cc9a124e3be3d6acf92641e",
+      "files": {
+        "meta.json": {"size_bytes": 1159, "sha256": "061edb6efa8fb2aa2792459a86ec7268de5fe665bba48b2ffe7939df01481f88"},
+        "meta.unstable.json": {"size_bytes": 1852, "sha256": "3026898232badf413624010d1343e20bef853e6705c62d6b56387cf9de6b0543"},
+        "schema.json": {"size_bytes": 247168, "sha256": "3c17bd6385d90cf672d8a661fddc359d73422cf8b8ce6865213d25cfd4c0eca7"},
+        "schema.unstable.json": {"size_bytes": 373903, "sha256": "2a920d3c0f76443e07ffa7801443e3cdf008e2a3095e565581a0433fd728ce41"}
+      }
+    },
+    "schema-v1.24.0": {
+      "published_at": "2026-09-30T13:16:51Z",
+      "source_commit": "cb50abaa3ed455e2113a9d3d4323e17c5a9785cf",
+      "files": {
+        "meta.json": {"size_bytes": 1159, "sha256": "061edb6efa8fb2aa2792459a86ec7268de5fe665bba48b2ffe7939df01481f88"},
+        "meta.unstable.json": {"size_bytes": 1778, "sha256": "2c85c87aeedbd10bdac671b2f9274666e2833d38b8835decb741ca19a9d7fc5f"},
+        "schema.json": {"size_bytes": 247168, "sha256": "3c17bd6385d90cf672d8a661fddc359d73422cf8b8ce6865213d25cfd4c0eca7"},
+        "schema.unstable.json": {"size_bytes": 390753, "sha256": "f1a445dc9d91938dbecb657a950b3c4c1148624586f93b4c816c0113fad563ed"}
+      }
+    },
+    "schema-v1.24.1": {
+      "published_at": "2026-09-30T15:53:45Z",
+      "source_commit": "1761180eeddf0828d4ecc367106a632c61be06d9",
+      "files": {
+        "meta.json": {"size_bytes": 1159, "sha256": "061edb6efa8fb2aa2792459a86ec7268de5fe665bba48b2ffe7939df01481f88"},
+        "meta.unstable.json": {"size_bytes": 1778, "sha256": "2c85c87aeedbd10bdac671b2f9274666e2833d38b8835decb741ca19a9d7fc5f"},
+        "schema.json": {"size_bytes": 247168, "sha256": "3c17bd6385d90cf672d8a661fddc359d73422cf8b8ce6865213d25cfd4c0eca7"},
+        "schema.unstable.json": {"size_bytes": 390855, "sha256": "6449a87a3b3c42aa0abd30033fc9bd3236cd785078ad084ce3675766be09109e"}
+      }
+    }
+  },
+  "hops": [
+    {
+      "from": "schema-v1.20.0",
+      "to": "schema-v1.21.0",
+      "added": [],
+      "removed": [],
+      "changed": ["meta.json", "schema.json", "schema.unstable.json"],
+      "identical": ["meta.unstable.json"]
+    },
+    {
+      "from": "schema-v1.21.0",
+      "to": "schema-v1.22.0",
+      "added": [],
+      "removed": [],
+      "changed": ["schema.json", "schema.unstable.json"],
+      "identical": ["meta.json", "meta.unstable.json"]
+    },
+    {
+      "from": "schema-v1.22.0",
+      "to": "schema-v1.23.0",
+      "added": [],
+      "removed": [],
+      "changed": ["schema.unstable.json"],
+      "identical": ["meta.json", "meta.unstable.json", "schema.json"]
+    },
+    {
+      "from": "schema-v1.23.0",
+      "to": "schema-v1.24.0",
+      "added": [],
+      "removed": [],
+      "changed": ["meta.unstable.json", "schema.unstable.json"],
+      "identical": ["meta.json", "schema.json"]
+    },
+    {
+      "from": "schema-v1.24.0",
+      "to": "schema-v1.24.1",
+      "added": [],
+      "removed": [],
+      "changed": ["schema.unstable.json"],
+      "identical": ["meta.json", "meta.unstable.json", "schema.json"]
+    }
+  ],
+  "file_classifications": {
+    "schema.json": "Selected stable ACP v1 schema; classify the exact definitions in protocol.json.",
+    "meta.json": "Selected stable ACP v1 method-name metadata; stable method additions are classified in protocol.json.",
+    "schema.unstable.json": "Unselected unstable schema artifact; no stable-axis inference is made from its changes.",
+    "meta.unstable.json": "Unselected unstable method metadata; no stable-axis inference is made from its changes."
+  }
+}

@@ -21,10 +21,14 @@ pub const CODEX_EXEC_BASELINE_VERSION: &str = "0.80.0";
 pub const CODEX_APP_SERVER_BASELINE_VERSION: &str = "0.80.0";
 /// Oldest app-server version qualified for thread catalogue and import.
 pub const CODEX_APP_SERVER_THREAD_CATALOGUE_BASELINE_VERSION: &str = "0.105.0";
-/// Most recent qualified Codex CLI version.
-pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.155.1";
-/// Unpublished stables inside the maintained window. Stay incompatible.
-const CODEX_UNPUBLISHED_GAPS: &[&str] = &["0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1"];
+/// Most recent qualified Codex CLI version for the exec route.
+pub const CODEX_LATEST_QUALIFIED_VERSION: &str = "0.161.0";
+/// Most recent qualified Codex CLI version for the app-server route.
+pub(crate) const CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION: &str = "0.161.0";
+/// Unpublished Codex stables inside the selected route windows.
+const CODEX_APP_SERVER_UNPUBLISHED_GAPS: &[&str] = &[
+    "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1", "0.155.2",
+];
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION: &str = "0.131.0";
 const CODEX_EXEC_RETAINED_BOOLEAN_SEARCH_BEHAVIOR: &str =
     "codex.exec.jsonl-v1.retained-boolean-search";
@@ -35,6 +39,14 @@ const CODEX_APP_SERVER_LEGACY_DEFAULT_BEHAVIOR: &str = "codex.app-server.v2.lega
 const CODEX_APP_SERVER_LEGACY_EXPLICIT_BEHAVIOR: &str = "codex.app-server.v2.legacy-explicit-stdio";
 pub(crate) const CODEX_APP_SERVER_BASE_BEHAVIOR: &str = "codex.app-server.v2.base";
 pub(crate) const CODEX_APP_SERVER_WORKSPACE_BEHAVIOR: &str = "codex.app-server.v2.workspace-roots";
+pub(crate) const CODEX_APP_SERVER_MANAGED_POLICY_BEHAVIOR: &str =
+    "codex.app-server.v2.managed-policy-workspace-roots";
+pub(crate) const CODEX_APP_SERVER_MANAGED_NETWORK_BEHAVIOR: &str =
+    "codex.app-server.v2.managed-network-workspace-roots";
+pub(crate) const CODEX_APP_SERVER_PATH_ALIAS_BEHAVIOR: &str =
+    "codex.app-server.v2.path-alias-workspace-roots";
+pub(crate) const CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR: &str =
+    "codex.app-server.v2.protected-aws-workspace-roots";
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub(crate) enum CodexExecBehavior {
@@ -50,6 +62,10 @@ pub(crate) enum CodexAppServerBehavior {
     LegacyExplicitStdio,
     CurrentBase,
     CurrentWorkspaceRoots,
+    ManagedPolicyWorkspaceRoots,
+    ManagedNetworkWorkspaceRoots,
+    PathAliasWorkspaceRoots,
+    ProtectedAwsWorkspaceRoots,
 }
 
 impl CodexAppServerBehavior {
@@ -58,7 +74,14 @@ impl CodexAppServerBehavior {
     }
 
     pub(crate) const fn supports_workspace_roots(self) -> bool {
-        matches!(self, Self::CurrentWorkspaceRoots)
+        matches!(
+            self,
+            Self::CurrentWorkspaceRoots
+                | Self::ManagedPolicyWorkspaceRoots
+                | Self::ManagedNetworkWorkspaceRoots
+                | Self::PathAliasWorkspaceRoots
+                | Self::ProtectedAwsWorkspaceRoots
+        )
     }
 
     pub(crate) fn invocation(self) -> Vec<String> {
@@ -127,6 +150,12 @@ pub fn codex_exec_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.122.0",
+                "0.155.1",
+                CODEX_EXEC_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.156.0",
                 CODEX_LATEST_QUALIFIED_VERSION,
                 CODEX_EXEC_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
@@ -181,8 +210,32 @@ pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 CODEX_APP_SERVER_WORKSPACE_ROOTS_VERSION,
-                CODEX_LATEST_QUALIFIED_VERSION,
+                "0.155.1",
                 CODEX_APP_SERVER_WORKSPACE_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.156.0",
+                "0.156.1",
+                CODEX_APP_SERVER_MANAGED_POLICY_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.157.0",
+                "0.157.1",
+                CODEX_APP_SERVER_MANAGED_NETWORK_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.158.0",
+                "0.158.0",
+                CODEX_APP_SERVER_PATH_ALIAS_BEHAVIOR,
+                InterfaceSupportStatus::Deprecated,
+            ),
+            segment(
+                "0.159.0",
+                CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION,
+                CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
         ],
@@ -192,6 +245,7 @@ pub fn codex_app_server_claim() -> InterfaceCompatibilityClaim {
             version("0.151.1").expect("static Codex unpublished gap is valid"),
             version("0.152.2").expect("static Codex unpublished gap is valid"),
             version("0.154.1").expect("static Codex unpublished gap is valid"),
+            version("0.155.2").expect("static Codex unpublished gap is valid"),
         ],
     )
     .expect("static Codex app-server claim is valid")
@@ -232,6 +286,16 @@ pub(crate) fn classify_app_server_plan(
         }
         CODEX_APP_SERVER_BASE_BEHAVIOR => Ok(CodexAppServerBehavior::CurrentBase),
         CODEX_APP_SERVER_WORKSPACE_BEHAVIOR => Ok(CodexAppServerBehavior::CurrentWorkspaceRoots),
+        CODEX_APP_SERVER_MANAGED_POLICY_BEHAVIOR => {
+            Ok(CodexAppServerBehavior::ManagedPolicyWorkspaceRoots)
+        }
+        CODEX_APP_SERVER_MANAGED_NETWORK_BEHAVIOR => {
+            Ok(CodexAppServerBehavior::ManagedNetworkWorkspaceRoots)
+        }
+        CODEX_APP_SERVER_PATH_ALIAS_BEHAVIOR => Ok(CodexAppServerBehavior::PathAliasWorkspaceRoots),
+        CODEX_APP_SERVER_PROTECTED_AWS_BEHAVIOR => {
+            Ok(CodexAppServerBehavior::ProtectedAwsWorkspaceRoots)
+        }
         _ => Err(super::exec::failure(
             "swallowtail.codex.app_server.behavior_incompatible",
             "Codex app-server behavior is not mapped by this driver",
@@ -243,9 +307,9 @@ pub(crate) fn supports_thread_catalogue_version(version: &InterfaceVersion) -> b
     let Ok(version) = semver::Version::parse(version.as_str()) else {
         return false;
     };
-    let latest = semver::Version::parse(CODEX_LATEST_QUALIFIED_VERSION)
-        .expect("static Codex latest qualified version is valid");
-    if CODEX_UNPUBLISHED_GAPS
+    let latest = semver::Version::parse(CODEX_APP_SERVER_LATEST_QUALIFIED_VERSION)
+        .expect("static Codex app-server latest qualified version is valid");
+    if CODEX_APP_SERVER_UNPUBLISHED_GAPS
         .iter()
         .any(|gap| semver::Version::parse(gap).is_ok_and(|parsed| parsed == version))
     {

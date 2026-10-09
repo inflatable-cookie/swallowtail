@@ -1,14 +1,15 @@
 use super::CleanupEvent;
 use serde_json::Value;
-use std::collections::VecDeque;
+use std::collections::{BTreeSet, VecDeque};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::Waker;
 use std::time::Duration;
+use swallowtail_adapter_pi::sidecar::PI_SDK_SIDECAR_SDK_VERSION;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, BlockingWorkService,
-    BoxFuture, CleanupOutcome, HostServices, MaterializedFileRef, ProcessOutputChunk,
+    BoxFuture, CleanupOutcome, HostServices, MaterializedFileRef, ProcessExit, ProcessOutputChunk,
     ProcessRequest, RuntimeFailure, ScopeId,
 };
 use task_time::ThreadTaskService;
@@ -45,6 +46,8 @@ pub enum SidecarScenario {
     ReplayCountMismatch,
     ReplayOverflow,
     ReplayAfterResponse,
+    ReplayAfterResponseSameRead,
+    ReplayAfterResponseHeld,
     ReplayDuringResume,
     HoldReplay,
     ThinkingBootstrapMismatch,
@@ -59,6 +62,7 @@ pub const FIXTURE_SESSION_REF: &str = "00000000-0000-0000-0000-000000000000";
 pub struct SidecarFixtureHost {
     shared: Arc<Shared>,
     scenario: SidecarScenario,
+    sdk_version: &'static str,
     process_wait_failure: bool,
     process_exit_failure: bool,
     deadline_task_spawn_failure: bool,
@@ -81,6 +85,8 @@ struct TimeState {
     waiters: Vec<Waker>,
 }
 
+const OWNED_TREE_ROOT: &str = "root";
+
 #[derive(Default)]
 struct ProcessState {
     input: Vec<Value>,
@@ -92,6 +98,32 @@ struct ProcessState {
     bootstrap: Option<(String, String, String)>,
     session_ref: Option<String>,
     thinking_level: Option<String>,
+    late_replay_held: bool,
+    /// Exact members this fake host created. Wait may attest emptiness
+    /// only after it reaps this set.
+    owned_tree: BTreeSet<&'static str>,
+    owned_tree_occupied: bool,
+    observed_exit: Option<ProcessExit>,
+}
+
+impl ProcessState {
+    fn occupy_owned_tree(&mut self) {
+        self.owned_tree.insert(OWNED_TREE_ROOT);
+        self.owned_tree_occupied = true;
+    }
+
+    fn reap_owned_tree(&mut self, success: bool, code: Option<i32>) -> ProcessExit {
+        let attested = self.owned_tree_occupied;
+        self.owned_tree.clear();
+        let exit = if attested {
+            ProcessExit::attesting_empty_owned_tree(success, code)
+        } else {
+            ProcessExit::new(success, code)
+        };
+        self.observed_exit = Some(exit);
+        self.exited = true;
+        exit
+    }
 }
 
 impl SidecarFixtureHost {
@@ -107,10 +139,16 @@ impl SidecarFixtureHost {
                 task_spawns: AtomicUsize::new(0),
             }),
             scenario,
+            sdk_version: PI_SDK_SIDECAR_SDK_VERSION,
             process_wait_failure: false,
             process_exit_failure: false,
             deadline_task_spawn_failure: false,
         }
+    }
+
+    pub fn with_sdk_version(mut self, version: &'static str) -> Self {
+        self.sdk_version = version;
+        self
     }
 
     pub fn with_immediate_time(self) -> Self {
@@ -227,6 +265,21 @@ impl SidecarFixtureHost {
         self.shared.changed.notify_all();
     }
 
+    pub fn release_late_replay(&self) {
+        let mut state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        assert!(
+            state.late_replay_held,
+            "late replay was not held for an explicit release"
+        );
+        state.late_replay_held = false;
+        script::continuity::emit_held_late_replay(&mut state);
+        self.shared.changed.notify_all();
+    }
+
     pub fn wait_for_process_exit(&self) {
         let state = self
             .shared
@@ -263,6 +316,33 @@ impl SidecarFixtureHost {
             .lock()
             .expect("sidecar fixture cleanup lock poisoned")
             .clone()
+    }
+
+    pub fn owned_tree_members(&self) -> Vec<&'static str> {
+        self.shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned")
+            .owned_tree
+            .iter()
+            .copied()
+            .collect()
+    }
+
+    pub fn owned_tree_was_occupied(&self) -> bool {
+        self.shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned")
+            .owned_tree_occupied
+    }
+
+    pub fn observed_process_exit(&self) -> Option<ProcessExit> {
+        self.shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned")
+            .observed_exit
     }
 }
 

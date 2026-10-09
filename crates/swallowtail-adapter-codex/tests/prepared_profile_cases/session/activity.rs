@@ -122,7 +122,7 @@ fn prepared_app_server_profiles_follow_activity_milestones_without_widening_newe
     .unwrap();
     let newer = prepared(
         CodexPreparedDriver::AppServer,
-        "0.155.2",
+        "0.161.1",
         &RecordingHostServices::default(),
         false,
     )
@@ -134,8 +134,30 @@ fn prepared_app_server_profiles_follow_activity_milestones_without_widening_newe
         SessionOptions::default(),
     ))
     .unwrap();
+    let qualified_profile = qualified.evidence().operation().observable_activity();
+    let newer_profile = newer.evidence().operation().observable_activity();
     assert_eq!(
-        qualified.evidence().operation().observable_activity(),
-        newer.evidence().operation().observable_activity()
+        qualified_profile.availability(),
+        newer_profile.availability()
+    );
+    assert_eq!(
+        qualified_profile.unknown_event_posture(),
+        newer_profile.unknown_event_posture()
+    );
+    assert_eq!(
+        qualified_profile.kinds().collect::<Vec<_>>(),
+        newer_profile.kinds().collect::<Vec<_>>()
+    );
+    let qualified_basis = qualified_profile.interface_basis().collect::<Vec<_>>();
+    let newer_basis = newer_profile.interface_basis().collect::<Vec<_>>();
+    assert_eq!(qualified_basis.len(), 1);
+    assert_eq!(newer_basis.len(), 1);
+    assert_eq!(
+        qualified_basis[0].behavior_revision().as_str(),
+        "codex.app-server.v2.workspace-roots"
+    );
+    assert_eq!(
+        newer_basis[0].behavior_revision().as_str(),
+        "codex.app-server.v2.protected-aws-workspace-roots"
     );
 }

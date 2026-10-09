@@ -23,6 +23,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+sha2 = "0.10"
 swallowtail-testkit.workspace = true
 
 [lints]
@@ -63,3 +64,15 @@ path = "tests/cursor_agent_2026_09_10_identity.rs"
 [[test]]
 name = "cursor_agent_2026_09_18_identity"
 path = "tests/cursor_agent_2026_09_18_identity.rs"
+
+[[test]]
+name = "cursor_agent_2026_10_01_identity"
+path = "tests/cursor_agent_2026_10_01_identity.rs"
+
+[[test]]
+name = "cursor_agent_2026_10_01_acp_identity"
+path = "tests/cursor_agent_2026_10_01_acp_identity.rs"
+
+[[test]]
+name = "cursor_agent_headless_2026_10_01_identity"
+path = "tests/cursor_agent_headless_2026_10_01_identity.rs"

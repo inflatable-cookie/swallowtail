@@ -1,13 +1,20 @@
 # Swallowtail — current state
 
 Swallowtail is a pre-1.0 Rust library for driving AI model providers and agent
-harnesses through exact, testable routes. The current source tag is `v0.5.1`
-(40 packages, 51 production routes); see [releases](releases/README.md).
+harnesses through exact, testable routes. The current source tag is `v0.5.3`
+(40 packages, 50 released production routes); ongoing `main` includes 51 routes.
+For the tagged package and route inventory, see [releases](releases/README.md).
 
 What is true now:
 
-- Every production route family is qualified against its official release
-  through the Contract 029 currentness procedure.
+- Production route claims follow the Contract 029 exact-artifact procedure.
+  Currentness stops stay visible: `kimi-code.acp` remains qualified through
+  `0.38.0` while official stable `2.1.1` retains the local-spawn process-
+  authority stop (Research 403); a host-terminal API design awaits separate
+  review.
+- DeepSeek Harness Web now includes exact selected RCs through `0.1.1-rc.2`;
+  npm `latest`/`next` `0.2.0-rc.2` remains unqualified pending the browser-auth
+  adaptation in Research 411.
 - Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
   `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
   on exact `0.81.2` (Research 364) after Research 352's `cleanup_failed`

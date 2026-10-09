@@ -1,4 +1,4 @@
-/// Deliberate adapter-owned AgentLoop ceiling for the exact `1.1.54` route.
+/// Deliberate adapter-owned AgentLoop ceiling for qualified Qoder headless versions.
 /// The host process deadline remains the independent Swallowtail timeout.
 pub(crate) const MAXIMUM_TURNS: &str = "8";
 

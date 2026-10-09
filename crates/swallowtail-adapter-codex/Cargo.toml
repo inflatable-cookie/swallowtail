@@ -25,6 +25,7 @@ swallowtail-runtime.workspace = true
 [dev-dependencies]
 futures-executor = "0.3"
 futures-util = "0.3"
+sha2 = "0.10"
 swallowtail-host-local.workspace = true
 swallowtail-idioms.workspace = true
 swallowtail-testkit.workspace = true
@@ -59,6 +60,14 @@ path = "tests/codex_0_154_0_identity.rs"
 [[test]]
 name = "codex_0_155_1_identity"
 path = "tests/codex_0_155_1_identity.rs"
+
+[[test]]
+name = "codex_app_server_currentness_qualification"
+path = "tests/codex_app_server_currentness_qualification.rs"
+
+[[test]]
+name = "codex_app_server_currentness_review"
+path = "tests/codex_app_server_currentness_review.rs"
 
 [[test]]
 name = "codex_0_161_0_identity"

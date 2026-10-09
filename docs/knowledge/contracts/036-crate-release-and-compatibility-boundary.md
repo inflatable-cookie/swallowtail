@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-13
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -117,6 +117,38 @@ source inventory and semantic API evidence before their first tag. Historical
 tag package, dependency, API, route, and release-note inventories remain
 immutable.
 
+## Windows Compatibility Qualification
+
+Tom ruled on 2026-10-09: “We ultimately haven't claimed _any_ windows
+compatibility at all yet.. rather than letting Antigravity dictate it, I would
+rather choose a time to do a full sweep across the whole codebase and do it
+properly!” (decision `bf37c540-9f41-4e8c-bbd7-b19f0b6db096`).
+
+There is no general Windows compatibility guarantee for the source release.
+Windows qualification is a separate whole-codebase effort, scheduled by Tom.
+An individual provider's Windows artifacts, upstream support or static evidence
+do not establish Swallowtail support. The sweep must assess core/runtime, host
+process ownership and cleanup, transports, adapters, paths and environment,
+packaging and consumer preparation, with architecture-specific evidence and
+explicitly documented route limits before any Windows claim.
+
+Tom subsequently ruled on 2026-10-09: “Can we complete the antigravity work
+without the windows component of it? Remove windows from the requirements so
+we can return to it later? I'll look into copilot” (decision
+`560bf22e-10b5-4fbf-96ab-c3154b1ec20f`). This lifts the whole Antigravity task
+deferral: its non-Windows work may continue, while Windows proof remains in the
+later whole-codebase sweep and is not a requirement for that task's completion.
+
+Preserve existing exact qualified points, exclusions, retry settings and
+retained evidence. This scope change adds no Windows claim and waives no
+non-Windows proof: resource, retry, authentication and platform-specific
+control-flow gaps must be settled before corresponding qualification. An
+independently reviewed finite evidence result may identify the next exact proof
+without increasing an unproved claim. Keep that follow-up explicit; task
+completion is not qualification. Future execution still requires the approved
+environment and authority. No VM action or provider execution follows from this
+scheduling ruling.
+
 ## Dependency Topology
 
 Normal internal dependencies remain acyclic across three layers:
@@ -146,6 +178,15 @@ Before 1.0:
 Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
+
+The approved bounded Opaque claim implementation preserves released method
+signatures and adds `has_version_interval`, but it also refuses some
+previously accepted constructor inputs: more than 32 raw exclusion yields,
+Opaque version or exclusion text over 256 UTF-8 bytes, and behavior-revision
+text over 256 UTF-8 bytes. Duplicate exclusion yields count toward the bound.
+This behavior narrowing means the overall change is not universally
+patch-compatible. Classify the implementation as a pre-1.0 minor change;
+Contract 029 route claims and qualifications remain separate.
 
 Immutable `v0.3.3` was the prior tagged release. Source after that tag removed
 the previously guaranteed but unqualified `minimal` reasoning value from exact
@@ -344,6 +385,37 @@ require a disposable rehearsal checkout merely to avoid consuming local
 authority. One-shot limits remain appropriate for provider calls and external
 release mutations such as tag creation or push.
 
+## SDK Patch And Currentness Release Separation
+
+Tom's 2026-10-08 board answer to decision
+`6fd8ba99-46d5-4442-9f40-d79199034bc4` is “Separate urgent SDK patch; sweep in
+minor”. Prepare a separately reviewed `v0.5.2` SDK correction candidate from
+the released `v0.5.1` source at
+`e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27`. Include only patch-compatible
+registered-tool lifetime and usage corrections, their proved necessary
+dependencies, and corresponding release evidence. Preserve the released
+consumer API, route versions and behavior guarantees unless an exact
+patch-compatible extension is independently established. Backport dependency
+closure and compatibility must be proved; reviewed changes on `main` alone
+do not establish an isolated patch candidate.
+
+The full approved currentness sweep continues toward a pre-1.0 minor release.
+Its evidence stops, adaptation obligations and operator gates remain; none
+is waived or abandoned. This split replaces the requirement to complete that
+full sweep before the urgent SDK patch. Breaking behavior corrections and
+consumer-visible restrictions belong to the independently assessed minor
+candidate. Keep the patch branch separate from `main`; do not merge a narrow
+released-line tree over the ongoing sweep or transfer newer route proof into
+the patch.
+
+Each candidate still requires its exact source identity, API and semantic
+compatibility assessment, normal consumer evidence, dependency/security
+review, Queue-owned milestone QA and qualifying hosted CI. This direction
+authorizes candidate preparation, not a tag, publication, consumer repin or
+live proof. Tag creation and push still require Tom to name the final SHA.
+The minor version is determined by its reviewed change; `v0.6.0` is a planning
+target, not a prepared or authorized tag.
+
 ## Hosted Gate Delegation
 
 `lint`, `lint:no-features`, `test`, and `floor` are satisfied for a candidate by
@@ -381,7 +453,30 @@ tag afterwards and does not hold the tag.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.5.1` at
+Tom authorized exact `v0.5.3` annotated-tag creation and push on 2026-10-09:
+“Release approved” (decision `fa46cc92-0466-4984-843f-aa5cefbbcda8`). Current
+tagged identity is `v0.5.3` on `release/v0.5` at
+`fa5ecfd8304030f58e447fd410382aee4056396b`, tree
+`0597c27bf9b86a7e1c6bcb3f4fafa22a462303da`, tag object
+`13862f5ffe0c9b75b9872865ee347c181dfc276e`. Its source-only annotation
+records the registered-tool courier approval-wait correction with unchanged
+SDK/native/Node and wire pins. Qualifying hosted workflow-dispatch run
+`37854419710` and Queue milestone QA
+`35c6ef9b-394e-4aab-bdbe-1122b8388b9b` passed on the identical-tree reviewed
+candidate. No registry publication or GitHub Release is included. Working
+application adoption and live proof remain consumer-owned and separately gated.
+
+Tom authorized exact `v0.5.2` annotated-tag creation and push on 2026-10-08:
+“Go for it” (decision `f1e95c52-063b-4362-a562-8e5e6a162b49`). Immutable
+tagged identity is `v0.5.2` on `release/v0.5` at
+`b83db0bdca4292e0d21775b9c0dc8b80ec05d003`, tree
+`949d9ef1199cd21c188959dcb2c9e9bc5f2086ec`, tag object
+`4d54ed92ec2dcdf44ebce019463d124996267810`. Its source-only annotation
+records SDK registered-tool lease and per-turn usage corrections while
+preserving released SDK/native/Node pins and wire-v1 compatibility.
+No registry publication or GitHub Release is included.
+
+Immutable `v0.5.1` remains at
 `e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27`, tree
 `d375b3227985e8e552ba9346d8f9b8631936db5f`, tag object
 `97a6933abe13b2e8f05441e1ab950962e0683e65`, tagged 2026-09-13. Immutable

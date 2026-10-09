@@ -6,6 +6,10 @@ mutations.
 
 ## Current Release
 
+- [Swallowtail 0.5.3](0.5.3.md) — tagged `v0.5.3` at `fa5ecfd8`; tag object `13862f5f`; tagged 2026-10-09; source-only courier approval-wait correction over immutable `v0.5.2`, preserving released SDK/native/Node and wire pins
+
+- [Swallowtail 0.5.2](0.5.2.md) — tagged `v0.5.2` at `b83db0bd`; tag object `4d54ed92`; tagged 2026-10-08; source-only SDK lease and per-turn usage correction patch over immutable `v0.5.1`, preserving released provider pins
+
 - [Swallowtail 0.5.1](0.5.1.md) — tagged `v0.5.1` at `e9140b46`; tag object `97a6933a`; tagged 2026-09-13; source-only additive patch over immutable `v0.5.0` carrying the OpenCode HTTP `1.18.30` qualification and the Grok Build `1.0.25` authenticated non-inference model catalogue with additive route `grok-build.catalogue`; every `crates/` path byte-identical to Desktop-qualified source `0209dd7f`; source-only, not published
 
 - [Swallowtail 0.5.0](0.5.0.md) — tagged `v0.5.0` at `582d01d6`; tag object `c772c583`; tagged 2026-09-10; coordinated pre-1.0 minor over immutable `v0.4.4` carrying the corrected native-mediation guarantee, the Pi RPC `0.85.1` qualification, and the registered-only Claude SDK session profile; source-only, not published
@@ -26,6 +30,12 @@ Earlier immutable releases remain documented at [`v0.4.1`](0.4.1.md),
 [`v0.2.0`](0.2.0.md), [`v0.1.1`](0.1.1.md), and [`v0.1.0`](0.1.0.md). The
 release line includes no crates.io publication, GitHub Release object, binary,
 sidecar, installer, or model artifact.
+
+## Preparatory Backport Evidence
+
+- [v0.5.2 SDK backport proof](sdk-v0.5.2-backport.md) — reproducible,
+  provider-free patch recipe against immutable `v0.5.1`; not a release
+  candidate or new route qualification
 
 ## Consumer Handoffs
 

@@ -1,0 +1,208 @@
+{
+  "account_access_ref": "github-account:betterthanclay",
+  "account_identity_observation": "operator-reported reference; not independently queried",
+  "artifact_execution_started": true,
+  "artifact_inventory_sha256": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f",
+  "budgets": {
+    "max_harness_model_fallbacks": 0,
+    "max_harness_resends": 0,
+    "max_harness_retries": 0,
+    "max_invocations_per_version": 1,
+    "max_prompts_per_invocation": 1,
+    "max_seconds_per_invocation": 60,
+    "max_tool_effects": 0,
+    "max_total_invocations": 3,
+    "reviewer_original_attempts": 0,
+    "vendor_managed_retries": "allowed_within_single_prompt_and_deadline; count_unobserved"
+  },
+  "completed_at_utc": "2026-10-09T15:53:42Z",
+  "exact_permission_path_reached": false,
+  "harness_sha256": "fb99eb2f1d2c60260829160fbfa6f103ad279a797417a9281872bb5dcfe20ba3",
+  "invocations": [
+    {
+      "binary_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+      "effect_marker_present": false,
+      "invocation_consumed": true,
+      "model_observations": [],
+      "original_start_issued": true,
+      "permission_reply": "none",
+      "permission_request_count": 0,
+      "pre_execution_fsynced": true,
+      "pre_execution_record": {
+        "account_access_ref": "github-account:betterthanclay",
+        "account_identity_observation": "operator-reported-reference; not independently queried",
+        "action": {
+          "approval": "never",
+          "kind": "create-one-empty-task-scratch-marker",
+          "max_effects": 0,
+          "path": "task-scratch/permission-effect-marker",
+          "permission_required": true
+        },
+        "budgets": {
+          "max_harness_model_fallbacks": 0,
+          "max_harness_resends": 0,
+          "max_harness_retries": 0,
+          "max_invocations_per_version": 1,
+          "max_prompts_per_invocation": 1,
+          "max_seconds_per_invocation": 60,
+          "max_tool_effects": 0,
+          "max_total_invocations": 3,
+          "reviewer_original_attempts": 0,
+          "vendor_managed_retries": "allowed_within_single_prompt_and_deadline; count_unobserved"
+        },
+        "containment": {
+          "host_home_reads": "denied",
+          "keychain_service_lookup": "com.apple.securityd only; item-level reads trusted to hash-verified vendor CLI",
+          "profile_sha256": "63ab94b84b72b376f2e9093b8e94dec79a210b098a02a85d416852f1924c0334",
+          "repository_reads": "denied",
+          "subprocess_escape": "forks inherit this sandbox; process exec limited to this exact artifact; shell exec denied",
+          "writes": "task scratch only"
+        },
+        "credential_boundary": {
+          "acp_authenticate_request_sent": false,
+          "copilot_home_relocated": false,
+          "keychain_item_level_mediation": "unavailable; no per-item filter claimed",
+          "normal_keychain_access": "permitted through com.apple.securityd",
+          "source": "existing original-CLI host-owned login",
+          "token_environment_variables_absent": true,
+          "token_handling_by_harness": "never extracted, copied, logged, or persisted"
+        },
+        "identity": {
+          "binary_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+          "package": "@github/copilot-darwin-arm64",
+          "platform": "darwin-arm64",
+          "version": "1.0.93"
+        },
+        "network_policy": {
+          "allowed_exact_hosts": [
+            "github.com",
+            "github.githubassets.com",
+            "avatars.githubusercontent.com",
+            "api.github.com",
+            "default.exp-tas.com",
+            "copilot-proxy.githubusercontent.com",
+            "origin-tracker.githubusercontent.com"
+          ],
+          "allowed_subdomains": [
+            "githubcopilot.com"
+          ],
+          "authority": "official Copilot authentication and provider destinations",
+          "default": "deny",
+          "enforcement": "sandbox permits only local CONNECT proxy; proxy verifies official CONNECT host and matching TLS SNI before external dial",
+          "proxy_endpoint": {
+            "host": "127.0.0.1",
+            "port": 53448
+          },
+          "source": "https://docs.github.com/en/copilot/reference/copilot-allowlist-reference",
+          "unexpected_destinations": "reject and fail attempt without expanding policy"
+        },
+        "requires_fsync_before_original_start": true,
+        "selected_argv": [
+          "copilot",
+          "--model",
+          "auto",
+          "--acp",
+          "--stdio"
+        ],
+        "selection_policy": {
+          "binding": "original CLI --model auto process argument",
+          "harness_model_fallbacks": 0,
+          "requested": "Auto",
+          "underlying_model_identity": "record only if structured ACP data exposes it; otherwise unobserved",
+          "vendor_managed_retries": "allowed within this prompt and the process/network ceiling; internal count unobserved"
+        }
+      },
+      "pre_execution_record_sha256": "ff4dc49ce3b211162ddbd082334ec7d5c43c563d1d83107c420b0fc354561544",
+      "result": {
+        "auth_method_ids": [],
+        "authenticate_request_sent": false,
+        "auto_policy_requested": true,
+        "auto_session_created": false,
+        "credential_environment_variables_absent": true,
+        "effect_marker_absent_before_prompt": true,
+        "effect_marker_present": false,
+        "elapsed_seconds": 1.263,
+        "forced_process_group_stop": false,
+        "harness_model_fallback_count": 0,
+        "harness_prompt_retry_count": 0,
+        "harness_resend_count": 0,
+        "initialize": "not-reached",
+        "late_permission_response_accepted": false,
+        "model_identity_observation_source": null,
+        "model_observations": [],
+        "observed_network_audiences_only": [],
+        "pending_permission_wait_abandoned": false,
+        "permission_callback_ambiguous": false,
+        "permission_evidence_complete": false,
+        "permission_option_ids": [],
+        "permission_reply": "none",
+        "permission_request_count": 0,
+        "pre_prompt_permission_request": false,
+        "process_exit_code": 1,
+        "process_group_joined": true,
+        "process_joined": true,
+        "prompt_requests_sent": 0,
+        "proxy": {
+          "allowed_destination_hosts": [],
+          "connection_failure_count": 0,
+          "sni_mismatch_count": 0,
+          "unlisted_destination_count": 0
+        },
+        "proxy_threads_joined": true,
+        "reported_version_matches": false,
+        "safe_to_continue_older_versions": false,
+        "session_cancel_sent": false,
+        "session_new": "not-reached",
+        "session_prompt": "not-reached",
+        "session_updates": 0,
+        "stop_before_prompt_reason": "not-reached",
+        "stream_failed": true,
+        "timed_out": false,
+        "tool_call_updates": 0,
+        "underlying_model_identity": "unobserved",
+        "unexpected_messages": 0,
+        "vendor_internal_request_count": "unobserved",
+        "vendor_managed_retry_policy": "allowed within one ACP prompt and enforced deadline"
+      },
+      "result_recorded_at_utc": "2026-10-09T15:53:42Z",
+      "session_cancel_sent": false,
+      "started_at_utc": "2026-10-09T15:53:41Z",
+      "version": "1.0.93"
+    }
+  ],
+  "keychain_boundary": {
+    "normal_host_login_access": "permitted through original vendor CLI and com.apple.securityd",
+    "queried_item_or_service": "unobserved; no item-level mediation claimed",
+    "token_handling_by_harness": "none"
+  },
+  "network_authority_policy": {
+    "allowed_exact_hosts": [
+      "api.github.com",
+      "avatars.githubusercontent.com",
+      "copilot-proxy.githubusercontent.com",
+      "default.exp-tas.com",
+      "github.com",
+      "github.githubassets.com",
+      "origin-tracker.githubusercontent.com"
+    ],
+    "allowed_subdomains": [
+      "githubcopilot.com"
+    ],
+    "default": "deny",
+    "source": "https://docs.github.com/en/copilot/reference/copilot-allowlist-reference",
+    "unexpected_destinations": "rejected; policy never expanded"
+  },
+  "permission_boundary_proven_for_all_targets": false,
+  "plan_sha256": "6db73561b9607743a43fec5607a641a2fdb297cb289a4eb36c161d4f9d62da66",
+  "preflight_sha256": "1e7552f20e34dbf797f56bc1a00cd4cf2dd11d3f41105192acfc0e5f53f59a0f",
+  "preflight_status": "passed",
+  "prompts_used": 0,
+  "qualification_changed": false,
+  "remaining_prompt_allowance": 3,
+  "schema": "copilot-cli-acp-permission-proof-execution.v1",
+  "stopped_before_older_versions": "1.0.93",
+  "versions_not_started": [
+    "1.0.81",
+    "1.0.80"
+  ]
+}

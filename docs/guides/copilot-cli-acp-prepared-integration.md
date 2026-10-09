@@ -48,14 +48,34 @@ Host-owned GitHub Copilot login or BYOK stays outside the prepared plan.
 prepares a separately gated one-off permission proof. Its fake broker and
 execution-plan schema do not change this prepared session path or establish
 that the frozen artifacts can accept delegated authentication, select Auto,
-bound retries, or expose the selected model. The proof stays disabled until
-those exact prerequisites are reviewed.
+bound retries, or expose the selected model. At that point the proof remained
+disabled pending exact prerequisites; the later host-login/Auto ruling and
+bounded original attempt are recorded in Research 428 below.
 
 [Research 426](../research/426-copilot-acp-pre-prompt-discovery-stop.md)
 records a fake-only pre-prompt discovery gate and a stop before original
 artifact start. Current official docs do not bind the frozen versions'
 Keychain item, complete authentication/model endpoint set, or a prompt-free
 model catalogue. No authenticated observation or route claim changed.
+
+[Research 428](../research/428-copilot-acp-host-login-permission-proof-stop.md)
+records the approved host-login and Auto boundaries and a first original
+`1.0.93` start. The hash-verified vendor CLI was allowed to read its existing
+login through macOS `securityd`; no item-level filter or credential broker is
+claimed, and the harness did not handle a token. Auto remains dynamic, the
+underlying model and vendor request count are unobserved, and only vendor
+selection/retries within one prompt and the 60-second ceiling are allowed.
+The default-deny official-destination proxy and fake cancellation/no-effect
+controls passed. The original exited code 1 before ACP `initialize`; no
+egress-proxy destination, ACP authentication request, session, prompt,
+permission or effect was observed. The `sandbox-exec` launcher exited code 1;
+the record does not show whether the vendor binary reached startup. Stderr was
+discarded, so the cause is unknown. This consumed the sole
+`1.0.93` invocation; `1.0.81` and `1.0.80` were not started. Permission
+behavior remains unproved and all route claims, including exact `1.0.80`, are
+unchanged. See the committed
+[preflight record](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-preflight-record.json)
+and [original execution record](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-execution-record.json).
 
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It

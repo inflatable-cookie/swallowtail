@@ -361,6 +361,38 @@ tag authority is included. Preserve the existing exact `0.1.0rc6` point,
 released consumers and separation from the local-server route until the
 classification is independently reviewed and adaptation is authorized.
 
+## DeepSeek Local-Server Browser-Session Design Study
+
+Tom's 2026-10-09 board answer to decision
+`a0118612-e9e0-4eec-ac06-491cb815e6a0` is “Approve bounded offline design
+study; review adaptation afterward”. This authorizes a separately reviewed
+provider-free browser-session and typed-stream design study for
+`deepseek-harness.local-server`, using the accepted 51-artifact identity
+inventory in [Research 411](../../research/411-deepseek-harness-web-rc2-authentication-stop.md).
+Reuse that evidence rather than repeating completed discovery.
+
+Map exact shipped credential-record creation/read/write/delete/rotation,
+cookie scope, audience, principal and process/browser effects. Map typed
+controller/request/event flows and cancellation, stop, join, drain and cleanup
+against the existing selected transport and method boundary. Separate known
+source/control flow from missing owner or runtime evidence.
+
+Return an explicit opt-in access, lease and preflight design preserving old
+unauthenticated callers and defaults, with no implicit credential acquisition,
+browser launch or unauthenticated fallback. Define credential ownership,
+expiration/redaction, host/principal/resource binding and failure before
+effects. Classify a possible private mapping versus required public contract,
+API/serialization, lifecycle and Contract 036 minor-release changes; do not
+implement either classification under this design approval. Return precise
+independent implementation and fake-first proof scopes for another ruling.
+
+No vendor execution, credential access/creation/login, browser or server start,
+provider/live work, installation, host mutation, runtime/API implementation,
+claim increase or tag is authorized. Preserve the exact supported RC points
+through `0.1.1-rc.2`; target `0.2.0-rc.2` remains unqualified. Structured-run
+JSON-RPC artifact/profile design is independent and supplies no local-server
+authority or qualification evidence.
+
 ## Copilot ACP Bounded Authenticated Proof
 
 Tom's 2026-10-08 board answer to decision

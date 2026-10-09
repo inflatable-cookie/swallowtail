@@ -2,8 +2,11 @@ use super::PreparedOperationEvidence;
 use crate::PreparationStage;
 use swallowtail_core::{
     ActivityContentStream, ActivityDisclosure, ActivityKindClass, ActivityKindProfile,
-    ActivityLifecycleFidelity, ActivityUnknownEventPosture, InterfaceCompatibilityAssessment,
-    ObservableActivityAvailability, ObservableActivityProfile,
+    ActivityLifecycleFidelity, ActivityUnknownEventPosture, InterfaceBehaviorRevision,
+    InterfaceCompatibilityAssessment, InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId,
+    InterfaceNewerVersionPosture, InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis,
+    InterfaceVersionBinding, InterfaceVersionScheme, InterfaceVersionSegment,
+    ObservableActivityAvailability, ObservableActivityProfile, PreflightDimension,
 };
 
 #[path = "tests/support.rs"]
@@ -184,4 +187,167 @@ fn routes_without_activity_requirements_remain_usable_and_unpromoted() {
             .lifecycle(ActivityKindClass::AssistantMessage),
         ActivityLifecycleFidelity::Unavailable
     );
+}
+
+#[test]
+fn opaque_set_preflight_rejects_unknown_points_before_effects() {
+    let axis = InterfaceVersionAxis::new("fixture-executable").expect("axis is valid");
+    let claim = opaque_claim(
+        axis.clone(),
+        [opaque_member(
+            "runtime-current",
+            "runtime-v1",
+            InterfaceSupportStatus::Maintained,
+        )],
+    );
+    let observed = InterfaceVersionBinding::new(
+        axis,
+        InterfaceVersion::new("runtime-unknown").expect("observed point is valid"),
+    );
+    let fixture = Fixture::with_interface_claim(claim, observed, None);
+
+    let failure = fixture
+        .plan_with_driver(fixture.driver())
+        .expect_err("unknown opaque point fails preflight");
+    assert_eq!(failure.dimension(), PreflightDimension::InterfaceVersion);
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.preflight_rejected"
+    );
+    assert_eq!(fixture.provider_effect_count, 0);
+}
+
+#[test]
+fn opaque_set_axis_mismatch_stays_driver_incompatible_at_preflight() {
+    let claim_axis =
+        InterfaceVersionAxis::new("fixture-other-runtime").expect("claim axis is valid");
+    let claim = opaque_claim(
+        claim_axis,
+        [opaque_member(
+            "runtime-current",
+            "runtime-v1",
+            InterfaceSupportStatus::Maintained,
+        )],
+    );
+    let observed = InterfaceVersionBinding::new(
+        InterfaceVersionAxis::new("fixture-executable").expect("observed axis is valid"),
+        InterfaceVersion::new("runtime-current").expect("observed point is valid"),
+    );
+    let fixture = Fixture::with_interface_claim(claim, observed, None);
+
+    let failure = fixture
+        .plan_with_driver(fixture.driver())
+        .expect_err("a claim on another axis cannot permit the binding");
+    assert_eq!(failure.dimension(), PreflightDimension::InterfaceVersion);
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.preflight_rejected"
+    );
+}
+
+#[test]
+fn opaque_set_membership_edits_stale_a_preflight_plan() {
+    let axis = InterfaceVersionAxis::new("fixture-executable").expect("axis is valid");
+    let initial_claim = opaque_claim(
+        axis.clone(),
+        [opaque_member(
+            "runtime-old",
+            "runtime-v1",
+            InterfaceSupportStatus::Maintained,
+        )],
+    );
+    let observed = InterfaceVersionBinding::new(
+        axis.clone(),
+        InterfaceVersion::new("runtime-old").expect("observed point is valid"),
+    );
+    let fixture = Fixture::with_interface_claim(initial_claim, observed, None);
+    let plan = fixture.plan();
+
+    let changed_claim = opaque_claim(
+        axis,
+        [
+            opaque_member(
+                "runtime-old",
+                "runtime-v1",
+                InterfaceSupportStatus::Deprecated,
+            ),
+            opaque_member(
+                "runtime-current",
+                "runtime-v2",
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
+    );
+    let changed_driver = fixture.driver_with_claim(changed_claim);
+    let stale = fixture
+        .validate_plan_with_driver(&plan, &changed_driver)
+        .expect_err("claim membership edit invalidates the frozen plan");
+    assert_eq!(
+        stale.diagnostic().code(),
+        "swallowtail.preflight_plan_stale"
+    );
+}
+
+#[test]
+fn prepared_opaque_set_exposes_the_matched_member_assessment() {
+    let axis = InterfaceVersionAxis::new("fixture-executable").expect("axis is valid");
+    let claim = opaque_claim(
+        axis.clone(),
+        [
+            opaque_member(
+                "runtime-old",
+                "runtime-v1",
+                InterfaceSupportStatus::Deprecated,
+            ),
+            opaque_member(
+                "runtime-current",
+                "runtime-v2",
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
+    );
+    let observed = InterfaceVersionBinding::new(
+        axis,
+        InterfaceVersion::new("runtime-current").expect("observed point is valid"),
+    );
+    let fixture = Fixture::with_interface_claim(claim, observed, None);
+    let evidence = PreparedOperationEvidence::from_plan(fixture.plan(), fixture.access_evidence())
+        .expect("listed opaque member prepares");
+
+    let compatibility = evidence
+        .interface_compatibility()
+        .next()
+        .expect("prepared binding has compatibility evidence");
+    let InterfaceCompatibilityAssessment::Qualified(matched) = compatibility.assessment() else {
+        panic!("listed member retains its qualified assessment");
+    };
+    assert_eq!(matched.behavior_revision().as_str(), "runtime-v2");
+    assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+}
+
+fn opaque_claim(
+    axis: InterfaceVersionAxis,
+    members: impl IntoIterator<Item = InterfaceVersionSegment>,
+) -> InterfaceCompatibilityClaim {
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new("fixture.opaque-runtime").expect("claim id is valid"),
+        axis,
+        InterfaceVersionScheme::Opaque,
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        members,
+        [],
+    )
+    .expect("opaque fixture claim is valid")
+}
+
+fn opaque_member(
+    version: &str,
+    revision: &str,
+    support_status: InterfaceSupportStatus,
+) -> InterfaceVersionSegment {
+    InterfaceVersionSegment::exact(
+        InterfaceVersion::new(version).expect("opaque member is valid"),
+        InterfaceBehaviorRevision::new(revision).expect("behavior revision is valid"),
+        support_status,
+    )
 }

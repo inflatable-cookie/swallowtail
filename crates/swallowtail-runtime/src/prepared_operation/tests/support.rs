@@ -11,8 +11,9 @@ use swallowtail_core::{
     InterfaceCompatibilityClaim, InterfaceCompatibilityClaimId, InterfaceNewerVersionPosture,
     InterfaceSupportStatus, InterfaceVersion, InterfaceVersionAxis, InterfaceVersionBinding,
     InterfaceVersionScheme, InterfaceVersionSegment, ObservableActivityProfile,
-    OperationRequirements, OperationShape, PreflightContext, PreflightPlan, ProtocolFacadeId,
-    RuntimeReadiness, SupportAuthority, TransportFamilyId, preflight,
+    OperationRequirements, OperationShape, PreflightContext, PreflightFailure, PreflightPlan,
+    ProtocolFacadeId, RuntimeReadiness, StalePreflightPlan, SupportAuthority, TransportFamilyId,
+    preflight,
 };
 
 pub(super) const ACTIVITY_REVISION: &str = "activity-schema-v1";
@@ -69,10 +70,18 @@ pub(super) struct Fixture {
 
 impl Fixture {
     pub(super) fn new(activity: Option<CapabilityRequirement>) -> Self {
+        let observed = observed_interface();
+        Self::with_interface_claim(interface_claim(observed.axis().clone()), observed, activity)
+    }
+
+    pub(super) fn with_interface_claim(
+        claim: InterfaceCompatibilityClaim,
+        observed: InterfaceVersionBinding,
+        activity: Option<CapabilityRequirement>,
+    ) -> Self {
         let adapter_id = AdapterId::new("fixture.activity").expect("adapter id is valid");
         let host_id = ExecutionHostId::new("fixture.host").expect("host id is valid");
         let access_id = AccessProfileId::new("fixture.access").expect("access id is valid");
-        let observed = observed_interface();
         let advertised_activity = full_activity_profile(ACTIVITY_REVISION)
             .capability_requirement()
             .expect("available profile advertises capability");
@@ -81,7 +90,7 @@ impl Fixture {
             CapabilityRequirement::new(Capability::StreamingEvents, []),
             advertised_activity,
         ]);
-        let driver = driver(adapter_id.clone(), interface_claim(observed.axis().clone()));
+        let driver = driver(adapter_id.clone(), claim);
         let instance = instance(
             adapter_id,
             host_id.clone(),
@@ -104,9 +113,17 @@ impl Fixture {
     }
 
     pub(super) fn plan(&self) -> PreflightPlan {
+        self.plan_with_driver(&self.driver)
+            .expect("fixture preflight succeeds")
+    }
+
+    pub(super) fn plan_with_driver(
+        &self,
+        driver: &DriverDescriptor,
+    ) -> Result<PreflightPlan, PreflightFailure> {
         preflight(
             &PreflightContext::new(
-                &self.driver,
+                driver,
                 &self.instance,
                 &self.access_profile,
                 &self.access_status,
@@ -114,11 +131,32 @@ impl Fixture {
             ),
             &self.requirements,
         )
-        .expect("fixture preflight succeeds")
+    }
+
+    pub(super) fn validate_plan_with_driver(
+        &self,
+        plan: &PreflightPlan,
+        driver: &DriverDescriptor,
+    ) -> Result<(), StalePreflightPlan> {
+        plan.validate_current(&PreflightContext::new(
+            driver,
+            &self.instance,
+            &self.access_profile,
+            &self.access_status,
+            [],
+        ))
+    }
+
+    pub(super) fn driver_with_claim(&self, claim: InterfaceCompatibilityClaim) -> DriverDescriptor {
+        driver(self.driver.identity().id().clone(), claim)
     }
 
     pub(super) fn access_evidence(&self) -> PreparedAccessEvidence {
         PreparedAccessEvidence::caller_asserted(self.access_status.clone())
+    }
+
+    pub(super) const fn driver(&self) -> &DriverDescriptor {
+        &self.driver
     }
 }
 

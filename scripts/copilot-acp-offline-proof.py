@@ -26,9 +26,11 @@ import sys
 import tempfile
 import threading
 import time
+import uuid
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,6 +64,50 @@ HISTORICAL_PERMISSION_PREFLIGHT_SHA256 = (
 )
 PRIOR_PERMISSION_PROOF_HARNESS_SHA256 = (
     "fb99eb2f1d2c60260829160fbfa6f103ad279a797417a9281872bb5dcfe20ba3"
+)
+RENEWAL_DECISION = "411be8ce-77a0-4a50-930f-d6aeacdffce9"
+RENEWAL_VERSION = "1.0.93"
+RENEWAL_BINARY_SHA256 = (
+    "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"
+)
+RENEWAL_ACCOUNT_REF = "github-account:betterthanclay"
+RENEWAL_AUTHORITY_SCHEMA = "copilot-cli-acp-permission-renewal-authority.v1"
+RENEWAL_ATTEMPT_SCHEMA = "copilot-cli-acp-permission-renewal-attempt.v1"
+RENEWAL_RECORD_SCHEMA = "copilot-cli-acp-permission-renewal-execution.v1"
+RENEWAL_AUTHORITY_PATH = FIXTURE_DIR / "permission-proof-renewal-authority.json"
+RENEWAL_ATTEMPT_PATH = FIXTURE_DIR / "permission-proof-renewal-attempt.json"
+RENEWAL_RECORD_PATH = FIXTURE_DIR / "permission-proof-renewal-execution-record.json"
+RENEWAL_BUDGETS = {
+    "invocations": 1,
+    "max_prompts": 1,
+    "shared_prompt_maximum": 3,
+    "historical_prompts": 0,
+    "max_seconds": 60,
+    "harness_retries": 0,
+    "harness_resends": 0,
+    "harness_model_fallbacks": 0,
+    "max_tool_effects": 0,
+    "older_version_starts": 0,
+}
+RENEWAL_AUTHORITY_FIELDS = frozenset(
+    {
+        "schema",
+        "operator_decision",
+        "operator_ruling",
+        "operation_id",
+        "version",
+        "binary_sha256",
+        "account_access_ref",
+        "permission_plan_sha256",
+        "correction_plan_sha256",
+        "artifact_inventory_sha256",
+        "harness_sha256",
+        "prior_consumed_record_sha256",
+        "start_order",
+        "budgets",
+        "profile_basis",
+        "qualification_changed",
+    }
 )
 VERSIONS = ("1.0.80", "1.0.81", "1.0.93")
 MAX_FRAME_BYTES = 256 * 1024
@@ -2006,9 +2052,17 @@ def safe_rpc_error(response: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
-def permission_evidence_is_complete(evidence: dict[str, Any]) -> bool:
+def permission_evidence_is_complete(
+    evidence: dict[str, Any],
+    expected_probe_proxy: dict[str, int] | None = None,
+) -> bool:
     proxy = evidence.get("proxy", {})
     stderr = evidence.get("stderr", {})
+    expected_proxy = expected_probe_proxy or {
+        "unlisted_destination_count": 0,
+        "sni_mismatch_count": 0,
+        "connection_failure_count": 0,
+    }
     return bool(
         evidence.get("initialize") == "success"
         and evidence.get("reported_version_matches") is True
@@ -2033,9 +2087,7 @@ def permission_evidence_is_complete(evidence: dict[str, Any]) -> bool:
         and evidence.get("proxy_threads_joined") is True
         and evidence.get("elapsed_seconds", LIVE_PERMISSION_SECONDS + 1)
         <= LIVE_PERMISSION_SECONDS
-        and proxy.get("unlisted_destination_count") == 0
-        and proxy.get("sni_mismatch_count") == 0
-        and proxy.get("connection_failure_count") == 0
+        and all(proxy.get(name) == count for name, count in expected_proxy.items())
     )
 
 
@@ -2144,8 +2196,14 @@ def run_permission_attempt(
     repository_root: Path,
     plan: dict[str, Any],
     correction_plan: dict[str, Any],
+    *,
+    binary_sha256: str,
+    host_home: Path | None = None,
+    extra_environment: Callable[[int], dict[str, str]] | None = None,
+    proxy_fake_only: bool = False,
+    expected_probe_proxy: dict[str, int] | None = None,
 ) -> dict[str, Any]:
-    host_home = Path(os.environ["HOME"]).resolve(strict=True)
+    host_home = (host_home or Path(os.environ["HOME"])).resolve(strict=True)
     scratch.mkdir(parents=True, exist_ok=False)
     (scratch / "tmp").mkdir()
     marker = scratch / "permission-effect-marker"
@@ -2153,6 +2211,7 @@ def run_permission_attempt(
         set(plan["network_policy"]["allowed_hosts"]),
         tuple(plan["network_policy"]["allowed_subdomains"]),
         time.monotonic() + LIVE_PERMISSION_SECONDS,
+        fake_only=proxy_fake_only,
     )
     proxy_port = proxy.start()
     executable = binary.resolve(strict=True)
@@ -2168,13 +2227,9 @@ def run_permission_attempt(
         correction_plan,
     )
     environment = original_child_environment(host_home, scratch, proxy_port)
+    if extra_environment is not None:
+        environment.update(extra_environment(proxy_port))
     profile_digest = hashlib.sha256(profile.encode()).hexdigest()
-    packages = inventory_packages(verify_inventory())
-    native_package = packages[("@github/copilot-darwin-arm64", version)]
-    binary_record = next(
-        item for item in native_package["files"] if item["path"] == "package/copilot"
-    )
-    binary_sha256 = binary_record["sha256"]
     invocation: dict[str, Any] = {
         "version": version,
         "binary_sha256": binary_sha256,
@@ -2497,7 +2552,9 @@ def run_permission_attempt(
     evidence["harness_prompt_retry_count"] = 0
     evidence["harness_resend_count"] = 0
     evidence["harness_model_fallback_count"] = 0
-    evidence["permission_evidence_complete"] = permission_evidence_is_complete(evidence)
+    evidence["permission_evidence_complete"] = permission_evidence_is_complete(
+        evidence, expected_probe_proxy
+    )
     evidence["safe_to_continue_older_versions"] = evidence[
         "permission_evidence_complete"
     ]
@@ -3782,7 +3839,252 @@ def self_test() -> dict[str, Any]:
         validate_preflight_record(preflight_path, permission_plan)
         if str(host_home) in json.dumps(preflight, sort_keys=True):
             raise RuntimeError("permission preflight record exposed a synthetic home path")
+        proof["renewal_fake_controls"] = renewal_fake_controls(proof)
         return proof
+
+
+FAKE_PROBE_PROXY = {
+    "unlisted_destination_count": 1,
+    "sni_mismatch_count": 1,
+    "connection_failure_count": 0,
+}
+
+
+def renewal_authority_document(
+    binary_sha256: str, operation_id: str, harness_digest: str
+) -> dict[str, Any]:
+    return {
+        "schema": RENEWAL_AUTHORITY_SCHEMA,
+        "operator_decision": RENEWAL_DECISION,
+        "operator_ruling": "Approve one corrected 1.0.93 attempt",
+        "operation_id": operation_id,
+        "version": RENEWAL_VERSION,
+        "binary_sha256": binary_sha256,
+        "account_access_ref": RENEWAL_ACCOUNT_REF,
+        "permission_plan_sha256": file_sha256(PERMISSION_PROOF_PLAN_PATH),
+        "correction_plan_sha256": file_sha256(PERMISSION_CORRECTION_PLAN_PATH),
+        "artifact_inventory_sha256": file_sha256(INVENTORY_PATH),
+        "harness_sha256": harness_digest,
+        "prior_consumed_record_sha256": COMMITTED_PERMISSION_RECORD_SHA256,
+        "start_order": [RENEWAL_VERSION],
+        "budgets": RENEWAL_BUDGETS,
+        "profile_basis": (
+            "permission_sandbox_profile in the bound harness; the per-run profile "
+            "digest is recorded in the renewal execution record"
+        ),
+        "qualification_changed": False,
+    }
+
+
+def renewal_fake_controls(proof: dict[str, Any]) -> dict[str, Any]:
+    """Drive the renewal admission and launch sequence with the native fake only."""
+    plan = validate_permission_proof_plan()
+    correction_plan = validate_permission_correction_plan(plan)
+    current_harness = harness_sha256()
+    with tempfile.TemporaryDirectory(prefix="copilot-acp-permission-proof.") as temp_root:
+        task_root = Path(temp_root).resolve()
+        records = task_root / "records"
+        records.mkdir()
+        artifact_root = task_root / "artifacts"
+        artifact_root.mkdir()
+        host_home = task_root / "fake-host-home"
+        (host_home / ".copilot").mkdir(parents=True)
+        (host_home / ".ssh").mkdir()
+        (host_home / "Library" / "Keychains").mkdir(parents=True)
+        repository_root = task_root / "fake-repository"
+        repository_root.mkdir()
+        for path, contents in (
+            (
+                host_home / ".copilot" / "config.json",
+                b"synthetic-auth-metadata="
+                + b"SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL\n",
+            ),
+            (host_home / ".copilot" / "settings.json", b"fake settings\n"),
+            (host_home / ".ssh" / "id_ed25519", b"synthetic unrelated home file\n"),
+            (host_home / "Library" / "Keychains" / "login.keychain-db", b"fake keychain\n"),
+            (repository_root / "README.md", b"fake repository\n"),
+        ):
+            path.write_bytes(contents)
+        executable = task_root / "copilot-permission-fake"
+        fake_sha256 = compile_permission_fake(executable)["binary_sha256"]
+        paths = RenewalPaths(
+            authority=task_root / "renewal-authority.json",
+            attempt=task_root / "renewal-attempt.json",
+            result=task_root / "renewal-result.json",
+        )
+        authority = renewal_authority_document(
+            fake_sha256, str(uuid.uuid4()), current_harness
+        )
+        write_json_durable(paths.authority, authority)
+        refused: list[str] = []
+
+        def expect_refusal(label: str, action: Callable[[], Any], needle: str) -> None:
+            try:
+                action()
+            except (RuntimeError, ValueError) as error:
+                if needle not in str(error):
+                    raise RuntimeError(f"renewal control {label} refused for the wrong reason") from error
+                refused.append(label)
+                return
+            raise RuntimeError(f"renewal control {label} was accepted")
+
+        def admit(
+            authority_path: Path = paths.authority,
+            *,
+            binary_sha: str = fake_sha256,
+        ) -> dict[str, Any]:
+            return admit_renewal_invocation(
+                RenewalPaths(authority=authority_path, attempt=paths.attempt, result=paths.result),
+                expected_binary_sha256=binary_sha,
+            )
+
+        expect_refusal(
+            "missing-authority",
+            lambda: admit(task_root / "missing-authority.json"),
+            "missing or unsafe",
+        )
+        authority_link = task_root / "authority-link.json"
+        authority_link.symlink_to(paths.authority)
+        expect_refusal("symlink-authority", lambda: admit(authority_link), "missing or unsafe")
+        tampered_overrides = {
+            "tampered-decision": {"operator_decision": "00000000-0000-4000-8000-000000000000"},
+            "wrong-account": {"account_access_ref": "github-account:other-operator"},
+            "widened-prompt-budget": {"budgets": {**RENEWAL_BUDGETS, "max_prompts": 2}},
+            "changed-harness": {"harness_sha256": "0" * 64},
+            "older-version-start": {"start_order": ["1.0.81"]},
+            "qualification-change": {"qualification_changed": True},
+            "extra-authority-field": {"network_override": True},
+        }
+        for label, override in tampered_overrides.items():
+            tampered_path = task_root / f"{label}.json"
+            write_json_durable(tampered_path, {**authority, **override})
+            expect_refusal(label, lambda p=tampered_path: admit(p), "renewal authority")
+        expect_refusal(
+            "identity-mismatch-binary",
+            lambda: admit(binary_sha="0" * 64),
+            "renewal authority",
+        )
+        staged_wrong = artifact_root / RENEWAL_VERSION / "copilot"
+        staged_wrong.parent.mkdir(parents=True)
+        staged_wrong.write_bytes(b"not the granted executable\n")
+        expect_refusal(
+            "staged-binary-digest",
+            lambda: staged_renewal_binary(artifact_root, fake_sha256),
+            "differs from the granted identity",
+        )
+        cli_record = records / "cli-refusal-record.json"
+        try:
+            cli_refusal = subprocess.run(
+                [
+                    sys.executable,
+                    str(Path(__file__).resolve()),
+                    "--renewed-permission-proof",
+                    "--record",
+                    str(cli_record),
+                    "--artifact-root",
+                    str(artifact_root),
+                    "--preflight-record",
+                    str(task_root / "cli-refusal-preflight.json"),
+                ],
+                cwd=ROOT,
+                env={
+                    "HOME": str(host_home),
+                    "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+                    "TERM": "dumb",
+                },
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=30,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            raise RuntimeError("renewal CLI refusal control exceeded 30 seconds") from None
+        if (
+            cli_refusal.returncode == 0
+            or cli_record.exists()
+            or (task_root / "action").exists()
+        ):
+            raise RuntimeError("renewal CLI did not refuse before staging or original start")
+        refused.append("cli-refused-before-staging")
+        if (task_root / "action").exists():
+            raise RuntimeError("a refused renewal grant staged or started an original path")
+        admission = admit()
+        if paths.attempt.exists() or paths.result.exists():
+            raise RuntimeError("read-only admission consumed or wrote a renewal record")
+        preflight_path = task_root / "renewal-preflight.json"
+        write_json_durable(preflight_path, make_permission_preflight_record(proof))
+        record_path, preflight_path, _, resolved_task = validate_original_task_paths(
+            records / "renewal-scratch.json", artifact_root, preflight_path
+        )
+        validate_preflight_record(preflight_path, plan)
+        attempt_sha256 = consume_renewal_attempt(paths.attempt, admission)
+        expect_refusal("duplicate-after-consumption", lambda: admit(), "already consumed")
+        action_scratch = resolved_task / "action" / RENEWAL_VERSION
+        record = execute_renewal_invocation(
+            admission,
+            attempt_sha256=attempt_sha256,
+            record_path=record_path,
+            task_root=resolved_task,
+            binary=executable,
+            binary_sha256=fake_sha256,
+            preflight_sha256=file_sha256(preflight_path),
+            result_path=paths.result,
+            repository_root=repository_root,
+            host_home=host_home,
+            extra_environment=lambda port: {
+                "SWALLOWTAIL_BLOCKED_REPOSITORY": str(repository_root.resolve()),
+                "SWALLOWTAIL_EFFECT_MARKER": str(action_scratch / "permission-effect-marker"),
+                "SWALLOWTAIL_PROXY_PORT": str(port),
+                "SWALLOWTAIL_FAKE_DIAGNOSTIC": str(action_scratch / "fake-child-diagnostic.json"),
+            },
+            proxy_fake_only=True,
+            expected_probe_proxy=FAKE_PROBE_PROXY,
+        )
+        result = record["invocations"][0]["result"]
+        launch_checks = {
+            "initialize": result.get("initialize") == "success",
+            "reported_version_matches": result.get("reported_version_matches") is True,
+            "session_new": result.get("session_new") == "success",
+            "one_prompt": result.get("prompt_requests_sent") == 1,
+            "one_permission_request": result.get("permission_request_count") == 1,
+            "permission_cancelled": result.get("permission_reply") == "cancelled",
+            "prompt_cancelled": result.get("session_prompt") == "cancelled",
+            "no_effect": result.get("effect_marker_present") is False,
+            "cleanup_joined": all(
+                result.get(name) is True
+                for name in (
+                    "process_joined",
+                    "process_group_joined",
+                    "stderr_drain_joined",
+                    "proxy_threads_joined",
+                )
+            ),
+            "permission_evidence_complete": result.get("permission_evidence_complete") is True,
+            "prompt_accounting": record.get("prompts_used") == 1
+            and record.get("remaining_prompt_allowance") == 2,
+            "boundary_proven": record.get("permission_boundary_proven") is True,
+        }
+        failed_checks = sorted(name for name, passed in launch_checks.items() if not passed)
+        if failed_checks:
+            raise RuntimeError(f"renewal fake launch failed checks: {', '.join(failed_checks)}")
+        if permission_evidence_is_complete({**result, "prompt_requests_sent": 0}, FAKE_PROBE_PROXY):
+            raise RuntimeError("zero-prompt renewal evidence was accepted as a permission proof")
+        if permission_evidence_is_complete({**result, "effect_marker_present": True}, FAKE_PROBE_PROXY):
+            raise RuntimeError("renewal evidence with an effect was accepted as a permission proof")
+        expect_refusal("result-exists-after-run", lambda: admit(), "already consumed")
+        secret_free_serialization(record)
+        return {
+            "status": "passed",
+            "fake_only": True,
+            "refused_controls": refused,
+            "launch_checks": launch_checks,
+            "invocations": len(record["invocations"]),
+            "prompts_used": record["prompts_used"],
+            "remaining_prompt_allowance": record["remaining_prompt_allowance"],
+            "attempt_bound_to_record": record["attempt_sha256"] == attempt_sha256,
+            "qualification_changed": False,
+        }
 
 
 def make_permission_preflight_record(result: dict[str, Any]) -> dict[str, Any]:
@@ -3982,16 +4284,9 @@ def secret_free_serialization(value: Any) -> None:
             raise ValueError(f"permission proof record contains forbidden marker {forbidden!r}")
 
 
-def run_permission_proof(
-    record_path: Path,
-    artifact_root: Path,
-    preflight_path: Path,
-) -> None:
-    require_macos_sandbox()
-    plan = validate_permission_proof_plan()
-    enforce_permission_invocation_budget(plan)
-    correction_plan = validate_permission_correction_plan(plan)
-    inventory = verify_inventory()
+def validate_original_task_paths(
+    record_path: Path, artifact_root: Path, preflight_path: Path
+) -> tuple[Path, Path, Path, Path]:
     requested_record_path = record_path
     requested_preflight_path = preflight_path
     requested_artifact_root = artifact_root
@@ -4015,6 +4310,22 @@ def run_permission_proof(
         raise RuntimeError("exact originals must be staged inside the fresh task directory")
     if not preflight_path.is_relative_to(task_root) or preflight_path == record_path:
         raise RuntimeError("fake preflight record must be in the same task scratch")
+    return record_path, preflight_path, artifact_root, task_root
+
+
+def run_permission_proof(
+    record_path: Path,
+    artifact_root: Path,
+    preflight_path: Path,
+) -> None:
+    require_macos_sandbox()
+    plan = validate_permission_proof_plan()
+    enforce_permission_invocation_budget(plan)
+    correction_plan = validate_permission_correction_plan(plan)
+    inventory = verify_inventory()
+    record_path, preflight_path, artifact_root, task_root = validate_original_task_paths(
+        record_path, artifact_root, preflight_path
+    )
     preflight = validate_preflight_record(preflight_path, plan)
     packages = inventory_packages(inventory)
     staged: dict[str, tuple[Path, str]] = {}
@@ -4087,6 +4398,7 @@ def run_permission_proof(
             ROOT,
             plan,
             correction_plan,
+            binary_sha256=digest,
         )
         secret_free_serialization(record)
         print(json.dumps({"version": version, "result": result}, sort_keys=True))
@@ -4150,9 +4462,438 @@ def run_permission_proof(
     )
 
 
-def validate_permission_execution_record(record_path: Path) -> dict[str, Any]:
+@dataclass(frozen=True)
+class RenewalPaths:
+    authority: Path = RENEWAL_AUTHORITY_PATH
+    attempt: Path = RENEWAL_ATTEMPT_PATH
+    result: Path = RENEWAL_RECORD_PATH
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def harness_sha256() -> str:
+    return file_sha256(Path(__file__))
+
+
+def read_regular_file(path: Path, refusal: str) -> bytes:
+    if path.is_symlink() or not path.is_file():
+        raise RuntimeError(refusal)
+    return path.read_bytes()
+
+
+def create_once_durable(path: Path, value: Any) -> None:
+    """Create a record exactly once; an existing path, even a partial one, stays consumed."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise RuntimeError(f"{path.name} already exists; refusing to overwrite a consumed record")
+    try:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+    except FileExistsError:
+        raise RuntimeError(f"{path.name} already exists; refusing to overwrite a consumed record") from None
+    with os.fdopen(descriptor, "wb") as output:
+        output.write(json.dumps(value, indent=2, sort_keys=True).encode() + b"\n")
+        output.flush()
+        os.fsync(output.fileno())
+    directory_fd = os.open(path.parent, os.O_RDONLY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
+    if load_json(path) != value:
+        raise RuntimeError(f"{path.name} did not persist exactly as written")
+
+
+def validate_renewal_authority(
+    authority: dict[str, Any],
+    *,
+    expected_harness_sha256: str,
+    expected_binary_sha256: str,
+) -> None:
+    if set(authority) != RENEWAL_AUTHORITY_FIELDS:
+        raise ValueError("renewal authority fields differ from the granted record shape")
+    operation_id = authority.get("operation_id")
+    if not isinstance(operation_id, str) or not re.fullmatch(
+        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", operation_id
+    ):
+        raise ValueError("renewal authority operation ID is not a canonical UUID")
+    expected = {
+        "schema": RENEWAL_AUTHORITY_SCHEMA,
+        "operator_decision": RENEWAL_DECISION,
+        "operator_ruling": "Approve one corrected 1.0.93 attempt",
+        "version": RENEWAL_VERSION,
+        "binary_sha256": expected_binary_sha256,
+        "account_access_ref": RENEWAL_ACCOUNT_REF,
+        "permission_plan_sha256": file_sha256(PERMISSION_PROOF_PLAN_PATH),
+        "correction_plan_sha256": file_sha256(PERMISSION_CORRECTION_PLAN_PATH),
+        "artifact_inventory_sha256": file_sha256(INVENTORY_PATH),
+        "harness_sha256": expected_harness_sha256,
+        "prior_consumed_record_sha256": COMMITTED_PERMISSION_RECORD_SHA256,
+        "start_order": [RENEWAL_VERSION],
+        "budgets": RENEWAL_BUDGETS,
+        "profile_basis": (
+            "permission_sandbox_profile in the bound harness; the per-run profile "
+            "digest is recorded in the renewal execution record"
+        ),
+        "qualification_changed": False,
+    }
+    for name, value in expected.items():
+        if authority.get(name) != value:
+            raise ValueError(f"renewal authority field {name} does not match the granted identity")
+    secret_free_serialization(authority)
+
+
+def validate_committed_renewal_authority() -> dict[str, Any]:
+    authority = load_json(RENEWAL_AUTHORITY_PATH)
+    validate_renewal_authority(
+        authority,
+        expected_harness_sha256=harness_sha256(),
+        expected_binary_sha256=RENEWAL_BINARY_SHA256,
+    )
+    return authority
+
+
+def admit_renewal_invocation(
+    paths: RenewalPaths = RenewalPaths(),
+    *,
+    expected_binary_sha256: str = RENEWAL_BINARY_SHA256,
+) -> dict[str, Any]:
+    """Read-only admission: nothing is staged, consumed or started by this function."""
     plan = validate_permission_proof_plan()
+    correction_plan = validate_permission_correction_plan(plan)
+    verify_inventory()
+    authority_bytes = read_regular_file(
+        paths.authority,
+        "renewal authority is missing or unsafe; refusing original start",
+    )
+    authority = json.loads(authority_bytes)
+    current_harness = harness_sha256()
+    validate_renewal_authority(
+        authority,
+        expected_harness_sha256=current_harness,
+        expected_binary_sha256=expected_binary_sha256,
+    )
+    if paths.attempt.exists() or paths.attempt.is_symlink():
+        raise RuntimeError(
+            "renewal invocation is already consumed or uncertain; refusing original start"
+        )
+    if paths.result.exists() or paths.result.is_symlink():
+        raise RuntimeError("renewal result already exists; refusing to repeat the original invocation")
+    if RENEWAL_VERSION not in consumed_permission_versions():
+        raise RuntimeError(
+            "renewal requires the committed prior 1.0.93 consumption record; refusing original start"
+        )
+    return {
+        "plan": plan,
+        "correction_plan": correction_plan,
+        "authority": authority,
+        "authority_sha256": hashlib.sha256(authority_bytes).hexdigest(),
+        "harness_sha256": current_harness,
+    }
+
+
+def consume_renewal_attempt(attempt_path: Path, admission: dict[str, Any]) -> str:
+    attempt = {
+        "schema": RENEWAL_ATTEMPT_SCHEMA,
+        "operator_decision": RENEWAL_DECISION,
+        "operation_id": admission["authority"]["operation_id"],
+        "authority_sha256": admission["authority_sha256"],
+        "harness_sha256": admission["harness_sha256"],
+        "consumed_before_launcher_start": True,
+        "launcher_start_issued": False,
+        "consumed_at_utc": utc_now(),
+    }
+    create_once_durable(attempt_path, attempt)
+    return file_sha256(attempt_path)
+
+
+def staged_renewal_binary(artifact_root: Path, expected_sha256: str) -> tuple[Path, str]:
+    binary_path = artifact_root / RENEWAL_VERSION / "copilot"
+    if binary_path.is_symlink() or not binary_path.is_file():
+        raise RuntimeError(f"frozen original binary is absent for {RENEWAL_VERSION}")
+    binary = binary_path.resolve(strict=True)
+    if not binary.is_relative_to(artifact_root):
+        raise RuntimeError(f"frozen original binary escapes its staged root for {RENEWAL_VERSION}")
+    packages = inventory_packages(verify_inventory())
+    selected = next(
+        item
+        for item in packages[("@github/copilot-darwin-arm64", RENEWAL_VERSION)]["files"]
+        if item["path"] == "package/copilot"
+    )
+    digest = file_sha256(binary)
+    if digest != selected["sha256"] or digest != expected_sha256:
+        raise RuntimeError("staged 1.0.93 original binary differs from the granted identity")
+    return binary, digest
+
+
+def finalize_renewal_record(record: dict[str, Any], renewal_error: str | None) -> None:
+    invocations = record["invocations"]
+    results = [item.get("result") or {} for item in invocations]
+    prompts_used = sum(result.get("prompt_requests_sent", 0) for result in results)
+    record["permission_boundary_proven"] = bool(
+        len(results) == 1 and results[0].get("permission_evidence_complete") is True
+    )
+    record["exact_permission_path_reached"] = any(
+        result.get("permission_request_count", 0) > 0 for result in results
+    )
+    record["prompts_used"] = prompts_used
+    record["remaining_prompt_allowance"] = max(
+        0,
+        RENEWAL_BUDGETS["shared_prompt_maximum"]
+        - RENEWAL_BUDGETS["historical_prompts"]
+        - prompts_used,
+    )
+    if renewal_error is not None:
+        record["renewal_error_class"] = renewal_error
+    record["completed_at_utc"] = utc_now()
+
+
+def execute_renewal_invocation(
+    admission: dict[str, Any],
+    *,
+    attempt_sha256: str,
+    record_path: Path,
+    task_root: Path,
+    binary: Path,
+    binary_sha256: str,
+    preflight_sha256: str,
+    result_path: Path,
+    repository_root: Path = ROOT,
+    host_home: Path | None = None,
+    extra_environment: Callable[[int], dict[str, str]] | None = None,
+    proxy_fake_only: bool = False,
+    expected_probe_proxy: dict[str, int] | None = None,
+) -> dict[str, Any]:
+    authority = admission["authority"]
+    record: dict[str, Any] = {
+        "schema": RENEWAL_RECORD_SCHEMA,
+        "operator_decision": RENEWAL_DECISION,
+        "operation_id": authority["operation_id"],
+        "authority_sha256": admission["authority_sha256"],
+        "attempt_sha256": attempt_sha256,
+        "harness_sha256": admission["harness_sha256"],
+        "plan_sha256": file_sha256(PERMISSION_PROOF_PLAN_PATH),
+        "correction_plan_sha256": file_sha256(PERMISSION_CORRECTION_PLAN_PATH),
+        "artifact_inventory_sha256": file_sha256(INVENTORY_PATH),
+        "preflight_sha256": preflight_sha256,
+        "account_access_ref": RENEWAL_ACCOUNT_REF,
+        "account_identity_observation": "operator-reported reference; not independently queried",
+        "start_order": [RENEWAL_VERSION],
+        "versions_not_started": [],
+        "budgets": RENEWAL_BUDGETS,
+        "artifact_execution_started": False,
+        "invocations": [],
+        "started_at_utc": utc_now(),
+        "qualification_changed": False,
+    }
+    secret_free_serialization(record)
+    write_json_durable(record_path, record)
+    if load_json(record_path) != record:
+        raise RuntimeError("renewal record did not persist before original start")
+    renewal_error: str | None = None
+    try:
+        run_permission_attempt(
+            binary,
+            RENEWAL_VERSION,
+            task_root / "action" / RENEWAL_VERSION,
+            record_path.parent,
+            record_path,
+            record,
+            repository_root,
+            admission["plan"],
+            admission["correction_plan"],
+            binary_sha256=binary_sha256,
+            host_home=host_home,
+            extra_environment=extra_environment,
+            proxy_fake_only=proxy_fake_only,
+            expected_probe_proxy=expected_probe_proxy,
+        )
+    except (OSError, RuntimeError, ValueError, TimeoutError, EOFError, KeyError) as error:
+        renewal_error = type(error).__name__
+    finalize_renewal_record(record, renewal_error)
+    secret_free_serialization(record)
+    write_json_durable(record_path, record)
+    create_once_durable(result_path, record)
+    return record
+
+
+def run_renewed_permission_proof(
+    record_path: Path,
+    artifact_root: Path,
+    preflight_path: Path,
+) -> None:
+    require_macos_sandbox()
+    admission = admit_renewal_invocation()
+    record_path, preflight_path, artifact_root, task_root = validate_original_task_paths(
+        record_path, artifact_root, preflight_path
+    )
+    validate_preflight_record(preflight_path, admission["plan"])
+    binary, binary_sha256 = staged_renewal_binary(artifact_root, RENEWAL_BINARY_SHA256)
+    attempt_sha256 = consume_renewal_attempt(RENEWAL_ATTEMPT_PATH, admission)
+    record = execute_renewal_invocation(
+        admission,
+        attempt_sha256=attempt_sha256,
+        record_path=record_path,
+        task_root=task_root,
+        binary=binary,
+        binary_sha256=binary_sha256,
+        preflight_sha256=file_sha256(preflight_path),
+        result_path=RENEWAL_RECORD_PATH,
+    )
+    summary = validate_renewal_execution_record(RENEWAL_RECORD_PATH)
+    print(
+        json.dumps(
+            {
+                "record_schema": record["schema"],
+                "invocations": len(record["invocations"]),
+                "prompts_used": record["prompts_used"],
+                "remaining_prompt_allowance": record["remaining_prompt_allowance"],
+                "permission_boundary_proven": record["permission_boundary_proven"],
+                "exact_permission_path_reached": record["exact_permission_path_reached"],
+                "renewal_error_class": record.get("renewal_error_class"),
+                "validation": summary["status"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
+def validate_renewal_execution_record(record_path: Path) -> dict[str, Any]:
     record = load_json(record_path)
+    if record.get("schema") != RENEWAL_RECORD_SCHEMA:
+        raise ValueError("unexpected renewal execution record schema")
+    authority_bytes = read_regular_file(
+        RENEWAL_AUTHORITY_PATH, "committed renewal authority is missing or unsafe"
+    )
+    authority = json.loads(authority_bytes)
+    validate_renewal_authority(
+        authority,
+        expected_harness_sha256=harness_sha256(),
+        expected_binary_sha256=RENEWAL_BINARY_SHA256,
+    )
+    if record.get("authority_sha256") != hashlib.sha256(authority_bytes).hexdigest():
+        raise ValueError("renewal record does not bind the committed authority")
+    if record.get("operation_id") != authority["operation_id"]:
+        raise ValueError("renewal record operation ID differs from the granted operation")
+    if record.get("harness_sha256") != harness_sha256():
+        raise ValueError("renewal record was produced by a different harness revision")
+    if record.get("plan_sha256") != authority["permission_plan_sha256"]:
+        raise ValueError("renewal record does not match the approved permission plan")
+    if record.get("correction_plan_sha256") != authority["correction_plan_sha256"]:
+        raise ValueError("renewal record does not match the correction plan")
+    if record.get("artifact_inventory_sha256") != authority["artifact_inventory_sha256"]:
+        raise ValueError("renewal record does not match the frozen inventory")
+    attempt = load_json(RENEWAL_ATTEMPT_PATH)
+    if (
+        hashlib.sha256(RENEWAL_ATTEMPT_PATH.read_bytes()).hexdigest() != record.get("attempt_sha256")
+        or attempt.get("consumed_before_launcher_start") is not True
+        or attempt.get("operation_id") != authority["operation_id"]
+    ):
+        raise ValueError("renewal record does not bind its consumed attempt")
+    if not re.fullmatch(r"[0-9a-f]{64}", str(record.get("preflight_sha256", ""))):
+        raise ValueError("renewal record lacks a preflight digest")
+    if record.get("account_access_ref") != RENEWAL_ACCOUNT_REF:
+        raise ValueError("renewal record names a different account")
+    if record.get("budgets") != RENEWAL_BUDGETS or record.get("start_order") != [RENEWAL_VERSION]:
+        raise ValueError("renewal record budget or start order differs from the grant")
+    if record.get("versions_not_started") != []:
+        raise ValueError("renewal record misstates unstarted versions")
+    invocations = record.get("invocations")
+    if not isinstance(invocations, list) or len(invocations) > 1:
+        raise ValueError("renewal record must hold at most one invocation")
+    prompts_used = 0
+    proven = False
+    for item in invocations:
+        pre_execution = item.get("pre_execution_record")
+        if (
+            item.get("version") != RENEWAL_VERSION
+            or item.get("invocation_consumed") is not True
+            or item.get("pre_execution_fsynced") is not True
+            or not isinstance(pre_execution, dict)
+            or item.get("pre_execution_record_sha256") != json_digest(pre_execution)
+            or pre_execution.get("identity", {}).get("version") != RENEWAL_VERSION
+            or pre_execution.get("identity", {}).get("binary_sha256") != RENEWAL_BINARY_SHA256
+            or pre_execution.get("permission_plan_sha256") != record["plan_sha256"]
+            or pre_execution.get("correction_plan_sha256") != record["correction_plan_sha256"]
+            or pre_execution.get("account_access_ref") != RENEWAL_ACCOUNT_REF
+            or pre_execution.get("selection_policy", {}).get("requested") != "Auto"
+            or pre_execution.get("credential_boundary", {}).get("token_handling_by_harness")
+            != "never extracted, copied, logged, or persisted"
+            or not re.fullmatch(
+                r"[0-9a-f]{64}",
+                str(pre_execution.get("containment", {}).get("profile_sha256", "")),
+            )
+        ):
+            raise ValueError("renewal invocation is not bound to its pre-execution record")
+        result = item.get("result")
+        if not isinstance(result, dict):
+            raise ValueError("renewal invocation has no result")
+        stderr = result.get("stderr", {})
+        if (
+            stderr.get("classification") not in STDERR_CATEGORIES
+            or not isinstance(stderr.get("captured_bytes"), int)
+            or not 0 <= stderr["captured_bytes"] <= MAX_STDERR_CAPTURE_BYTES
+            or not isinstance(stderr.get("total_bytes"), int)
+            or not stderr["captured_bytes"] <= stderr["total_bytes"] <= MAX_STDERR_COUNTED_BYTES
+            or stderr.get("reader_joined") is not True
+            or stderr.get("reader_error") is not False
+            or stderr.get("raw_persisted") is not False
+            or stderr.get("raw_displayed") is not False
+        ):
+            raise ValueError("renewal invocation has unsafe stderr diagnostics")
+        if result.get("launcher_exit_status") != result.get("process_exit_code"):
+            raise ValueError("renewal launcher status does not match the process exit")
+        if result.get("initialize") == "not-reached" and result.get("vendor_startup_status") != "unknown":
+            raise ValueError("renewal vendor startup is overstated")
+        if result.get("prompt_requests_sent", 0) not in (0, 1):
+            raise ValueError("renewal invocation exceeded its prompt budget")
+        if result.get("permission_reply") not in {"none", "cancelled"}:
+            raise ValueError("renewal invocation was not safely cancelled")
+        plan = validate_permission_proof_plan()
+        for host in result.get("proxy", {}).get("allowed_destination_hosts", []):
+            if not host_allowed(
+                host,
+                set(plan["network_policy"]["allowed_hosts"]),
+                tuple(plan["network_policy"]["allowed_subdomains"]),
+            ):
+                raise ValueError("renewal record includes a non-allowlisted host")
+        prompts_used += result.get("prompt_requests_sent", 0)
+        complete = result.get("permission_evidence_complete") is True
+        if complete != permission_evidence_is_complete(result):
+            raise ValueError("renewal permission evidence flag does not match its observations")
+        if complete and (
+            result.get("prompt_requests_sent") != 1
+            or result.get("permission_request_count") != 1
+            or result.get("effect_marker_present") is not False
+        ):
+            raise ValueError("renewal permission proof lacks its prompt, request or no-effect proof")
+        proven = complete
+    if record.get("prompts_used") != prompts_used or prompts_used > RENEWAL_BUDGETS["max_prompts"]:
+        raise ValueError("renewal record does not reconcile prompt accounting")
+    if record.get("remaining_prompt_allowance") != (
+        RENEWAL_BUDGETS["shared_prompt_maximum"] - RENEWAL_BUDGETS["historical_prompts"] - prompts_used
+    ):
+        raise ValueError("renewal record misstates the remaining shared prompt allowance")
+    if record.get("permission_boundary_proven") is not (proven and len(invocations) == 1):
+        raise ValueError("renewal record misstates its permission proof result")
+    if record.get("qualification_changed") is not False:
+        raise ValueError("renewal evidence must not change route qualification")
+    secret_free_serialization(record)
+    return {
+        "status": "valid",
+        "invocations": len(invocations),
+        "prompts_used": prompts_used,
+        "permission_boundary_proven": record["permission_boundary_proven"],
+        "qualification_changed": False,
+    }
+
+
+def validate_permission_execution_record(record_path: Path) -> dict[str, Any]:
+    record = load_json(record_path)
+    if record.get("schema") == RENEWAL_RECORD_SCHEMA:
+        return validate_renewal_execution_record(record_path)
+    plan = validate_permission_proof_plan()
     record_schema = record.get("schema")
     if record_schema not in {
         "copilot-cli-acp-permission-proof-execution.v1",
@@ -4425,6 +5166,8 @@ def main() -> int:
     parser.add_argument("--record", type=Path)
     parser.add_argument("--artifact-root", type=Path)
     parser.add_argument("--permission-proof", action="store_true")
+    parser.add_argument("--renewed-permission-proof", action="store_true")
+    parser.add_argument("--validate-renewal-authority", action="store_true")
     parser.add_argument("--preflight-record", type=Path)
     args = parser.parse_args()
     try:
@@ -4528,6 +5271,28 @@ def main() -> int:
             and args.preflight_record
         ):
             run_permission_proof(args.record, args.artifact_root, args.preflight_record)
+        elif (
+            args.renewed_permission_proof
+            and args.record
+            and args.artifact_root
+            and args.preflight_record
+        ):
+            run_renewed_permission_proof(args.record, args.artifact_root, args.preflight_record)
+        elif args.validate_renewal_authority:
+            authority = validate_committed_renewal_authority()
+            print(
+                json.dumps(
+                    {
+                        "status": "passed",
+                        "operator_decision": authority["operator_decision"],
+                        "operation_id": authority["operation_id"],
+                        "version": authority["version"],
+                        "start_order": authority["start_order"],
+                        "budgets": authority["budgets"],
+                    },
+                    sort_keys=True,
+                )
+            )
         else:
             parser.error(
                 "choose --validate-plan, --self-test, --prepare --record, "

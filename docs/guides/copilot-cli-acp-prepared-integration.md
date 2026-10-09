@@ -97,6 +97,13 @@ original startup cause remains unknown, its `1.0.93` invocation remains
 consumed, and no route claim changes. Any future original attempt needs
 separate exact authority.
 
+[Research 430](../research/430-copilot-acp-renewed-1-0-93-permission-proof-stop.md)
+records the one renewed `1.0.93` invocation under decision
+`411be8ce-77a0-4a50-930f-d6aeacdffce9`. It consumed its one-shot record and
+exited before ACP `initialize` with a `sandbox-denial` stderr category. No
+prompt or permission evidence was produced. The denied operation is unobserved,
+the older artifacts were not started, and no route claim changes.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

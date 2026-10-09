@@ -1,0 +1,31 @@
+{
+  "account_access_ref": "github-account:betterthanclay",
+  "artifact_inventory_sha256": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f",
+  "binary_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+  "budgets": {
+    "harness_model_fallbacks": 0,
+    "harness_resends": 0,
+    "harness_retries": 0,
+    "historical_prompts": 0,
+    "invocations": 1,
+    "max_prompts": 1,
+    "max_seconds": 60,
+    "max_tool_effects": 0,
+    "older_version_starts": 0,
+    "shared_prompt_maximum": 3
+  },
+  "correction_plan_sha256": "42bead98fe78ba6a78f90ad95a48c24d0bc39b40071f9861bfa0e7f8f39f5559",
+  "harness_sha256": "f11f44d43e8baf432ed3627cd75c9630d65f0fd8fb95535cc1437fd1dbc40418",
+  "operation_id": "1c00be41-c012-4f12-bac8-87526f72d46b",
+  "operator_decision": "411be8ce-77a0-4a50-930f-d6aeacdffce9",
+  "operator_ruling": "Approve one corrected 1.0.93 attempt",
+  "permission_plan_sha256": "6db73561b9607743a43fec5607a641a2fdb297cb289a4eb36c161d4f9d62da66",
+  "prior_consumed_record_sha256": "ed9c866a90c96374422bd5aad3a900a4a4ca11517159aa14f4e29eec2cd2e049",
+  "profile_basis": "permission_sandbox_profile in the bound harness; the per-run profile digest is recorded in the renewal execution record",
+  "qualification_changed": false,
+  "schema": "copilot-cli-acp-permission-renewal-authority.v1",
+  "start_order": [
+    "1.0.93"
+  ],
+  "version": "1.0.93"
+}

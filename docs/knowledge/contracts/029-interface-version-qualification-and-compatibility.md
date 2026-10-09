@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-08
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -147,7 +147,7 @@ point needs its own frozen identity and behavior evidence. Opaque claims stay
 support, silent upgrade, or replacement of existing consumers. A semantic
 release tag is not an opaque runtime identity.
 
-The proposed representation, bounds, validation, classification, preflight,
+The representation, bounds, validation, classification, preflight,
 serialization, public-API compatibility, Contract 036 classification, and
 core implementation acceptance live in
 [Spec 015 Bounded Finite Exact Opaque Compatibility Claims](../specs/015-bounded-finite-exact-opaque-compatibility-claims.md).
@@ -163,19 +163,20 @@ the next minor baseline. No other baseline, route claim or version movement
 is included. Newly refused over-limit inputs receive truthful minor
 compatibility classification; additional consumer or authority changes return
 separately. Independently reviewed implementation precedes the retained
-route's own qualification proof; approval alone implements no claim model.
+route's own qualification proof.
 
-That spec is proposed design. Implemented Opaque claims stay one exact
-point. Implement the reviewed spec in a separate bounded task before
-resuming route qualification that needs more than one Opaque member.
-Until that implementation is independently reviewed, the current core
-one-point restriction and existing route claims remain in force. For llama.cpp,
-retain attached `b9910-f5525f7e7` and owned `b10069-178a6c449`; newer `b11429`
-and its correlation to release `v0.6.0` require independent route proof and
-selection adaptation. This design approval supplies neither behavioral
-qualification nor artifact execution, authentication, live work, installation
-or tag authority. Any other public authority or lifecycle change returns for
-a separate ruling; Contract 036 release compatibility remains independent.
+Core source now implements Spec 015's bounded exact opaque member set. It
+keeps one claim per axis, caps raw member and exclusion iteration at 32,
+classifies Opaque members by exact equality, and does not infer interval or
+forward support. Production claims remain unchanged. Each route that adds a
+member still needs its own exact artifact and selected-behavior qualification;
+implementation review does not supply that proof. For llama.cpp, retain
+attached `b9910-f5525f7e7` and owned `b10069-178a6c449`; newer `b11429` and its
+correlation to release `v0.6.0` require independent route proof and selection
+adaptation. This implementation supplies neither behavioral qualification nor
+artifact execution, authentication, live work, installation or tag authority.
+Any other public authority or lifecycle change returns for a separate ruling;
+Contract 036 release compatibility remains independent.
 
 
 ## Upgrade Workflow

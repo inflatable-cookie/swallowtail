@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-13
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -169,6 +169,15 @@ Before 1.0:
 Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
+
+The approved bounded Opaque claim implementation preserves released method
+signatures and adds `has_version_interval`, but it also refuses some
+previously accepted constructor inputs: more than 32 raw exclusion yields,
+Opaque version or exclusion text over 256 UTF-8 bytes, and behavior-revision
+text over 256 UTF-8 bytes. Duplicate exclusion yields count toward the bound.
+This behavior narrowing means the overall change is not universally
+patch-compatible. Classify the implementation as a pre-1.0 minor change;
+Contract 029 route claims and qualifications remain separate.
 
 Immutable `v0.3.3` was the prior tagged release. Source after that tag removed
 the previously guaranteed but unqualified `minimal` reasoning value from exact

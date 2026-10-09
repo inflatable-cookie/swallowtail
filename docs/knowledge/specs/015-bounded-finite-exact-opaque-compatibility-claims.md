@@ -1,39 +1,43 @@
 # 015 Bounded Finite Exact Opaque Compatibility Claims
 
-Status: draft; proposed core representation. Current implemented behavior
-stays the one-point Opaque restriction until a separately reviewed
-implementation of this spec lands.
+Status: implemented in core; production Opaque claims remain one point until
+their own exact route evidence and qualification are reviewed.
 Owner: Tom
-Updated: 2026-10-08
+Updated: 2026-10-09
 Authority: Contract 029 Finite Exact Opaque-Set Design Authority; Tom board
 decision `81c79a19-0035-4b5e-b241-a400380c7f4a`
 
 ## Purpose
 
 Specify a bounded finite set of exact opaque runtime points on one
-Contract 029 axis, so a later core implementation can retain existing
-one-point callers while admitting independently evidenced extra exact
-members. This spec does not change runtime code, production claims, or
-route qualification.
+Contract 029 axis, so core can retain existing one-point callers while
+admitting independently evidenced extra exact members. The implementation
+changes core construction, classification and interval introspection only.
+Production claims and route qualification do not move with it.
 
-## Proposed Versus Current
+## Before And After The Core Implementation
 
-| Surface | Current implemented behavior | This spec proposes |
+| Surface | Before this implementation | Implemented behavior |
 | --- | --- | --- |
 | Opaque membership | Exactly one `InterfaceVersionSegment` with `minimum == maximum` | One to 32 exact segments on the same axis |
-| Opaque ordering | `compare_versions` uses `InterfaceVersion` text `Ord`; construction still demands a single equal pair | Text `Ord` is storage canonicalization only; membership is equality |
+| Opaque ordering | `compare_versions` used text `Ord`; construction demanded one equal pair | Text `Ord` canonicalizes storage only; classification uses equality |
 | `QualifiedOnly` | Opaque with `AllowUnverified` is refused | Unchanged |
-| Classification | Exact equality against the one segment | Exact equality against the membership set; no interior or forward inference |
+| Classification | Exact equality against the one segment | Exact equality against the member set; no interior or forward inference |
 | Public constructors | `InterfaceCompatibilityClaim::new` plus `InterfaceVersionSegment::exact` | Same constructors; Opaque `new` streams 1..=32 exact members |
-| Opaque construction | `new` collects both `IntoIterator`s, then `validate()` | Opaque `new` streams both iterators and refuses the 33rd raw yield without consuming the tail |
-| Opaque support status | `validate()` does not inspect `support_status`; a Deprecated singleton is accepted | Singleton still accepts Maintained or Deprecated; two or more members require one Maintained revision identity |
-| Production claims | All Opaque claims remain one point | Unchanged by this spec and by the later core implementation |
+| Opaque construction | `new` collected both `IntoIterator`s, then `validate()` | Opaque `new` streams both iterators and refuses the 33rd raw yield without consuming the tail |
+| Opaque support status | `validate()` did not inspect `support_status`; a Deprecated singleton was accepted | Singleton accepts Maintained or Deprecated; multi-member sets require one Maintained revision identity |
+| Production claims | All Opaque claims are one point | Unchanged by this implementation |
 
-The one-point restriction in
-[`crates/swallowtail-core/src/interface_version/claim.rs`](../../../crates/swallowtail-core/src/interface_version/claim.rs)
-remains in force until that implementation is independently reviewed.
+The core implementation is in
+[`crates/swallowtail-core/src/interface_version/claim.rs`](../../../crates/swallowtail-core/src/interface_version/claim.rs).
+Production claim inventories remain one point until route evidence and
+qualification are reviewed separately under Contract 029.
 
-## Current Call Sites And Invariants
+## Pre-Implementation Call Sites And Invariants
+
+This section records the call-site model and risks that informed the
+approved design. Current opaque behavior and bounds are summarized above
+and in the validation rules below.
 
 ### Core claim model
 
@@ -42,16 +46,16 @@ remains in force until that implementation is independently reviewed.
 `exclusions: BTreeSet<InterfaceVersion>`. There is no serde. Equality is
 structural, so `Vec` order is part of `Eq`.
 
-Construction (`InterfaceCompatibilityClaim::new`) currently does
+Before this implementation, construction (`InterfaceCompatibilityClaim::new`) did
 `segments.into_iter().collect()` into a `Vec` and
-`exclusions.into_iter().collect()` into a `BTreeSet`, then calls
-`validate()`. There is no count cap, so an arbitrary iterator is fully
-consumed before any Opaque rule runs. `validate()` does not inspect
+`exclusions.into_iter().collect()` into a `BTreeSet`, then called
+`validate()`. There was no count cap, so an arbitrary iterator was fully
+consumed before any Opaque rule ran. `validate()` did not inspect
 `support_status`. A currently accepted constructor call is `new(...,
 Opaque, QualifiedOnly, [exact(..., Deprecated)], [])`; `classify`
 returns the stored `Deprecated`.
 
-Opaque-specific rules today:
+The previous Opaque-specific rules were:
 
 - `segments` must be non-empty
 - `segments.len() == 1`
@@ -67,23 +71,23 @@ Opaque window is refused.
 `segments.last().maximum()`. For every valid Opaque claim today those two
 values are the same point.
 
-`milestones()` yields `segments.iter()` in stored order. For Opaque that is
-one exact segment.
+`milestones()` yielded `segments.iter()` in stored order. For Opaque that
+was one exact segment.
 
 `classify` returns `None` for exclusions, invalid scheme text, and
-non-members. For Opaque, `segment_contains` uses text `Ord` against the one
-equal pair, which is equality. Semantic prerelease exact-segment matching
-does not apply.
+non-members. For Opaque, `segment_contains` used text `Ord` against the one
+equal pair, which was equality. Semantic prerelease exact-segment matching
+did not apply.
 
 `assess` maps a classified member to `Qualified`. Opaque never produces
 `UnverifiedNewer`: `assess` returns `Incompatible` when
 `scheme == Opaque`. `supports` is `classify.is_some()`. `permits` is
 `assess.is_permitted()`.
 
-`compare_versions(Opaque, left, right)` is `left.cmp(right)` on the version
-text. That path is used for bound checks and the ordered `windows(2)`
-non-overlap rule. The overlap rule never runs on a valid Opaque claim
-because `len() != 1` is already refused.
+Before this implementation, `compare_versions(Opaque, left, right)` was
+`left.cmp(right)` on version text. That path handled bound checks and the
+ordered `windows(2)` non-overlap rule. The overlap rule never ran on a valid
+Opaque claim because `len() != 1` was refused.
 
 Diagnostics use code `swallowtail.interface_compatibility_claim_rejected`
 (`error.rs`). Messages are fixed strings. Tests match the code, not the
@@ -326,8 +330,8 @@ behavior.
 Preserve:
 
 - `InterfaceCompatibilityClaim::new` and `InterfaceVersionSegment::exact`
-  for one exact Opaque member. Singleton results stay identical for
-  currently valid one-point Opaque claims, whether the member is
+  for one exact Opaque member. Within the new text and raw-yield bounds,
+  singleton results stay identical for Opaque claims, whether the member is
   Maintained or Deprecated: `baseline() == latest_qualified()`,
   `milestones().len() == 1`, `QualifiedOnly`, `assess` of that point is
   `Qualified` with the stored support status, any other point is
@@ -347,7 +351,7 @@ For Opaque with two or more members:
 - Do not render Opaque claims as `baseline..=latest_qualified`. List
   members. `scheme() == Opaque` already tells callers there is no interval.
 
-Add one patch-compatible method:
+Add one method:
 
 ```text
 fn has_version_interval(&self) -> bool
@@ -374,34 +378,29 @@ of observations must still omit host paths and raw stdout.
 
 ## Contract 036 Classification
 
-The later core implementation, if it follows this spec:
+The implementation keeps every released method signature and adds
+`has_version_interval`. It accepts bounded multi-member claims that the
+previous one-point rule refused. One-point claims retain their classification
+and support status when their member and exclusions fit the new text and raw
+yield bounds, including a Deprecated singleton.
 
-- keeps every released method signature
-- keeps every currently valid singleton Opaque claim succeeding, including
-  a Deprecated singleton, with the same `classify` / `assess` / `baseline`
-  / `latest_qualified` / `permits` results and stored support status
-- expands `new` so some inputs that today return
-  `InvalidInterfaceCompatibilityClaim` become `Ok`
-- may add `has_version_interval`
-
-That is a compatible public-API expansion plus additive diagnostics under
-Contract 036 patch rules (`compatible public API and guaranteed-behavior
-changes`, `additive public items`, `additive safe diagnostics`). It is not
-a removal, a signature break, a capability shrink, or a lifecycle change.
+The new bounds also refuse some Opaque constructor inputs that the previous
+implementation accepted: more than 32 raw exclusion yields, member or
+exclusion text over 256 UTF-8 bytes, or behavior-revision text over 256
+UTF-8 bytes. Duplicate exclusions count toward the raw-yield bound even when
+they would collapse in the stored set. These are previously accepted inputs
+that now fail construction, so the overall implementation is not universally
+patch-compatible. Contract 036 classifies this approved behavior narrowing
+as a pre-1.0 minor change. The additive query alone does not change that
+classification.
 
 The first production Opaque claim with `baseline() != latest_qualified()`
 is a later family adaptation, not this core change. Callers that already
 honor `scheme() == Opaque` as exact-only keep working. Callers that ignore
 `scheme` and print `baseline..=latest_qualified` for Opaque would mis-render
 a multi-member claim; that rendering is already wrong for one-point Opaque
-windows framed as ranges. Release notes for the core implementation must
-say: Opaque membership is a list; do not print it as an interval.
-
-Treat the core implementation as a **patch** under Contract 036. Treat it
-as a **minor** only if the implementation changes singleton results,
-allows `AllowUnverified` on Opaque, infers interiors, removes or renames
-`baseline` / `latest_qualified`, or changes existing consumer meaning of a
-released route claim. Those deviations are out of this spec.
+windows framed as ranges. The source release notes must say: Opaque
+membership is a list; do not print it as an interval.
 
 Route-family adaptation that adds members to llama.cpp or any other
 production claim is a separate Contract 029 qualification. Newly qualified
@@ -544,24 +543,24 @@ a later family task. It must not appear as an Opaque member on
 `llama.cpp.attached-runtime` or `llama.cpp.owned-runtime`. Semantic scheme
 on those runtime axes is alternative D and is refused.
 
-## Core Implementation Plan
+## Core Implementation
 
-Separate later task. This PR does not implement it. No route-family
-adaptation, no llama.cpp claim edit, no protocol `ObservedVersion` change,
-no host mutation.
+Task 155 implements this approved source-only scope. It adds no route-family
+adaptation, llama.cpp claim edit, protocol `ObservedVersion` change, or host
+mutation. Independent review of this code and each later route qualification
+remain separate.
 
 ### Code
 
 - `crates/swallowtail-core/src/interface_version/claim.rs` Opaque streaming
-  construction in `new`, validation, canonical sort, equality classify/assess
-- `crates/swallowtail-core/src/interface_version.rs` additive
-  `has_version_interval`
+  construction in `new`, validation, canonical sort, equality classify/assess,
+  and `has_version_interval`
 - `crates/swallowtail-core/src/interface_version/tests.rs` and existing
   singleton tests
 - Preflight, installed-executable, and prepared-facade tests that bind
   fixture Opaque sets; no production adapter claim edits
 
-### Named Effigy selectors (add in that implementation PR)
+### Effigy selectors
 
 ```text
 check:opaque-set-claim
@@ -576,7 +575,7 @@ validate:opaque-set-claim
 that covers the tests below. Do not run `validate:focused`, `test:rust`,
 or `qa`.
 
-### Tests the implementation must add or keep
+### Tests added or kept
 
 Construction and bounds:
 
@@ -640,8 +639,8 @@ Singleton regressions:
 - fixture shaped like attached `b9910-f5525f7e7` and owned
   `b10069-178a6c449` on **separate** axes; do not merge them
 
-Public API: if `has_version_interval` is added, refresh the current
-public-api inventory in that implementation PR. Tom's 2026-10-09 approval
+Public API: `has_version_interval` is included in the generated current-source
+public API inventory. Tom's 2026-10-09 approval
 (decision `4a243040-701c-4e90-8bbc-9c2ec321125a`) permits only the additive
 query in core's temporary current-source
 `release-baselines/public-api-0.5.1/swallowtail-core.txt`, under Contract 036.

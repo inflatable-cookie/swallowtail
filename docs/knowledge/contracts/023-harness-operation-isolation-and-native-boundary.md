@@ -1099,6 +1099,37 @@ three-prompt allowance is unchanged at three remaining. No route claim,
 qualification, public API or consumer contract changed. Any further attempt
 needs new exact authority after a reviewed diagnosis.
 
+## Copilot ACP Offline Startup Repair And Study
+
+Tom answered “Go for it” on 2026-10-09 to decision
+`f3667571-27e6-4363-ba3a-14ef769fca91`, approving the bounded offline
+repair/study in lead `63537795-747c-4592-a4d2-82095bd6570b`.
+
+The work may reconstruct the Research 404/430 launch and effective-profile
+differences, bind imported OS profile contents, and statically parse the
+retained exact `1.0.93` artifact after checking its identity. It may repair
+bounded diagnostic classification, proxy completeness and task-owned
+descendant cleanup, and prove launcher phases and containment with fakes in
+synthetic scratch state. Raw or normalized stderr hashes are excluded;
+diagnostics retain only reviewed closed-vocabulary fields. Channel closure
+alone does not prove successful exec, and process-group disappearance does
+not prove descendant cleanup.
+
+The historical `sandbox-denial` category establishes text-marker presence,
+not a diagnosed sandbox operation. The profile names the securityd job
+label rather than the demonstrated Security-framework Mach service. Its
+shipped credential mechanism and the cause of the startup failure remain
+unproved. Correcting these evidence claims does not grant service access.
+
+No original execution, artifact download, real home/config/keychain or
+credential access, auth/provider traffic, additional home/service/network
+grant, settings/home relocation, runtime API change, qualification or release
+is authorized. Both consumed attempt records and replay guards remain
+unchanged. The study returns exact startup requirements or explicit unknowns;
+future vendor-state treatment, service grants and any original invocation
+need separate authority after review. Completion does not resume or qualify
+the retained parent, whose exact `1.0.80` claim remains unchanged.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

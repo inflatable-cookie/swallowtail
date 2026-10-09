@@ -2,9 +2,12 @@
 
 Status: qualified through the frozen official stable `2.1.294` identity.
 
-Owner: swallowtail#144  
-Date: 2026-10-09  
-Axis: `claude-code.headless-stream-json`  
+Owner: swallowtail#144
+
+Date: 2026-10-09
+
+Axis: `claude-code.headless-stream-json`
+
 Route: `claude-code.headless`
 
 ## Decision

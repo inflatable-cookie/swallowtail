@@ -1324,6 +1324,42 @@ narrowing. Frozen records are not edited. Future identity mismatches still
 stop. Further original, isolation, auth, or permission work needs separate
 exact authority.
 
+
+### Copilot Normal-Runtime Containment Preparation
+
+On 2026-10-10, after the missing permission evidence and failed restrictive
+startup probes were explained, Tom directed: “Do whatever you need to do to
+get it done”. Proceed with a separately reviewed proof harness that contains
+Copilot's normal runtime child processes and state writes rather than
+requiring the provider to start under the failed no-child profile.
+
+Prepare and exercise the replacement against task-owned fakes. Inspect
+available disposable environments and implement bounded containment,
+scratch state, egress control, stage diagnostics and joined cleanup. A new
+isolated task-owned Linux container may be used for fake containment work;
+existing VMs, accounts, host configuration and credential stores stay
+unchanged. The stopped Parallels VM `macOS pristine`
+(`ddf1f166-4796-4f40-925e-eaf35172c63f`) may serve as the source of a new
+task-owned disposable clone, after fresh stopped-state and supported-clone
+checks. Do not start or modify that source. Before starting the clone, deny
+external networking and host sharing; change only the clone. Prove cleanup
+and containment against fakes before any proposed vendor execution.
+Establish a faithful environment for each claimed native payload;
+Linux evidence does not establish Darwin compatibility. If the available
+macOS host cannot enforce the required boundary, return a concrete disposable
+macOS environment requirement rather than another unchanged launch.
+
+The existing `betterthanclay` host login and Auto policy are the intended
+access path. This preparation does not authorize secret extraction, credential
+copying, new login or another original invocation. Produce a reviewable exact
+execution plan with the required credential mechanism, normal state paths,
+network audience, artifact identities and bounded permission attempts. The
+three unused permission prompts and all consumed original records remain
+unchanged. Bind later original execution to the reviewed concrete plan and
+its separately recorded authority; preparation alone does not qualify or
+resume the parent route. Preserve the exact `1.0.80` claim and released
+consumers until permission, reject/cancel and no-effect evidence exists.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

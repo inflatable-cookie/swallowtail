@@ -82,6 +82,21 @@ unchanged. See the committed
 [preflight record](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-preflight-record.json)
 and [original execution record](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-execution-record.json).
 
+[Research 429](../research/429-copilot-acp-proof-startup-diagnostics-correction.md)
+records a fake-only correction. The native fake and a future original share one
+verified profile generator. Its sole host-home read exception is the literal
+`.copilot/config.json` path, selected from current official documentation;
+that documentation is not frozen-version-specific and does not prove the
+`1.0.93` binary needs the file. The fake reads only a synthetic substitute and
+proves adjacent home/repository reads, home/repository writes, shell execution,
+and direct or unlisted egress remain denied. Its startup evidence applies only
+to the fake. Stderr collection is concurrent: at most 4096 bytes are retained
+in memory and the reported total count caps at 65536. Only safe categories and
+counts are recorded; raw stderr is never retained in records or output. The
+original startup cause remains unknown, its `1.0.93` invocation remains
+consumed, and no route claim changes. Any future original attempt needs
+separate exact authority.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

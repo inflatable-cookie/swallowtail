@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schema",
+    "plan_sha256",
+    "correction_plan_sha256",
+    "artifact_inventory_sha256",
+    "harness_sha256",
+    "preflight_sha256",
+    "artifact_execution_started",
+    "permission_boundary_proven_for_all_targets",
+    "invocations"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schema": {
+      "const": "copilot-cli-acp-permission-proof-execution.v2"
+    },
+    "plan_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "correction_plan_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "artifact_inventory_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "harness_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "preflight_sha256": {
+      "type": "string",
+      "minLength": 64,
+      "maxLength": 64
+    },
+    "artifact_execution_started": {
+      "type": "boolean"
+    },
+    "permission_boundary_proven_for_all_targets": {
+      "type": "boolean"
+    },
+    "invocations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "version",
+          "binary_sha256",
+          "invocation_consumed",
+          "pre_execution_record",
+          "result"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "version": {
+            "type": "string"
+          },
+          "binary_sha256": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 64
+          },
+          "invocation_consumed": {
+            "const": true
+          },
+          "pre_execution_record": {
+            "type": "object",
+            "required": [
+              "permission_plan_sha256",
+              "correction_plan_sha256",
+              "containment"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "permission_plan_sha256": {
+                "type": "string",
+                "minLength": 64,
+                "maxLength": 64
+              },
+              "correction_plan_sha256": {
+                "type": "string",
+                "minLength": 64,
+                "maxLength": 64
+              },
+              "containment": {
+                "type": "object"
+              }
+            }
+          },
+          "result": {
+            "type": "object",
+            "required": [
+              "launcher_exit_status",
+              "vendor_startup_status",
+              "stderr"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "launcher_exit_status": {},
+              "vendor_startup_status": {
+                "enum": [
+                  "unknown",
+                  "acp-initialize-response-observed"
+                ]
+              },
+              "stderr": {
+                "type": "object",
+                "required": [
+                  "classification",
+                  "captured_bytes",
+                  "total_bytes",
+                  "total_bytes_capped",
+                  "total_byte_count_limit",
+                  "capture_limit_bytes",
+                  "truncated",
+                  "reader_joined",
+                  "reader_error",
+                  "raw_persisted",
+                  "raw_displayed"
+                ],
+                "additionalProperties": true,
+                "properties": {
+                  "classification": {
+                    "enum": [
+                      "empty",
+                      "sandbox-denial",
+                      "access-denied",
+                      "dynamic-loader-failure",
+                      "launcher-failure",
+                      "unknown"
+                    ]
+                  },
+                  "captured_bytes": {
+                    "type": "integer"
+                  },
+                  "total_bytes": {
+                    "type": "integer"
+                  },
+                  "total_bytes_capped": {
+                    "type": "boolean"
+                  },
+                  "total_byte_count_limit": {
+                    "const": 65536
+                  },
+                  "capture_limit_bytes": {
+                    "const": 4096
+                  },
+                  "truncated": {
+                    "type": "boolean"
+                  },
+                  "reader_joined": {
+                    "type": "boolean"
+                  },
+                  "reader_error": {
+                    "type": "boolean"
+                  },
+                  "raw_persisted": {
+                    "const": false
+                  },
+                  "raw_displayed": {
+                    "const": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

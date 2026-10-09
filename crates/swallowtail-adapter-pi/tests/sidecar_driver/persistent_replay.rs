@@ -398,7 +398,7 @@ fn load_late_replay(scenario: SidecarScenario, label: &str) -> (String, SidecarF
     let error = block_on(driver(selected.credential.clone()).load_session(
         selected.plan,
         LoadSessionRequest::new(
-            RequestId::new(&format!("sidecar-late-replay-{label}")).expect("valid request"),
+            RequestId::new(format!("sidecar-late-replay-{label}")).expect("valid request"),
             binding,
             selected.resource.clone(),
             None,

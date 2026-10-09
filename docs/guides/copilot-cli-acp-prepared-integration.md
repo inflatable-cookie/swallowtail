@@ -141,6 +141,17 @@ auth-service and network access denied. Its `execution_authorized` value is
 false. Fake success does not prove Copilot startup, host-login or Auto-model
 compatibility; an original attempt needs separate exact authority and review.
 
+[Research 433](../research/433-copilot-acp-no-child-original-initialize-diagnostic.md)
+records the one authorized original under that reviewed isolation. The
+original-profile fake path passed. The original sent one initialize, reached
+stage exec-boundary EOF, and exited before any ACP protocol byte with
+`failure_class` `sandbox-denial`. Vendor startup remains unknown. The attempt
+is consumed; reviewers inspect the committed records and must not start the
+original. Initialization success would not have proved auth, Auto,
+permissions, cancel/no-effect, or supported versions. Fail-closed no-child
+policy may prevent vendor startup and is not a route narrowing. The exact
+`1.0.80` claim is unchanged.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

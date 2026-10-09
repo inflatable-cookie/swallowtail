@@ -1276,6 +1276,25 @@ not host-login/Auto permission evidence, qualification or authority to resume
 the retained parent. The exact `1.0.80` claim and release identities remain
 unchanged; any broader original or permission proof returns separately.
 
+[Research 433](../../research/433-copilot-acp-no-child-original-initialize-diagnostic.md)
+records the one original. Original-profile fakes passed the eight child
+denials and the lifecycle, diagnostic, and crash/replay gates. The exclusive
+attempt was fsynced before start. The original used `--acp --stdio` and the
+reviewed synthetic environment on macOS 26.6.2 build `25G83` arm64. Stage
+exec-boundary EOF was observed; ACP `initialize` was not reached;
+`vendor_startup_status` is `unknown`; `failure_class` is `sandbox-denial`.
+Stderr stored the `sandbox-denial` category, 997 bounded bytes, and the
+`sandbox-marker-present` facet only. Cleanup joined. The executed bytes are
+the retained `1.0.93` executable
+`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1`; the
+inventory `1.0.93` archive is
+`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`. Research
+432's immutable archive field remains
+`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`. Fail-closed
+no-child policy may prevent vendor startup and is not a route narrowing. The
+attempt is consumed. Parent 119 stays blocked. Further original, isolation,
+auth, or permission work needs separate exact authority.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

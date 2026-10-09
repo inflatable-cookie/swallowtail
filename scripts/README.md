@@ -40,6 +40,9 @@ Normal validation scripts:
 - `verify-affected-packages.sh` — independently assemble and inspect one to
   four explicit package archives, then compile them through one shared
   extracted target
+- `copilot-acp-no-child-original-diagnostic.py` — original-profile fake proof
+  and one authorized Copilot `1.0.93` initialize under the reviewed no-child
+  isolation; does not reopen the 432 preparation entrypoint
 - `run-with-isolated-home.sh` — run one command under an isolated `HOME` and
   named provider-home variables, restoring the host environment on exit
 - `run-grok-acp-client-mcp-probe.sh` — Desktop-only Grok ACP client-MCP live

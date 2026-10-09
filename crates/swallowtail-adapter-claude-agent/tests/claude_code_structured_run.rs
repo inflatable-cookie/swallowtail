@@ -2,8 +2,8 @@ mod claude_code_support;
 
 use claude_code_support::{
     ControllableTimeService, FailingTaskService, FakeProcessService, ImmediateTimeService,
-    PendingTimeService, TaskState, ThreadTaskService, fixture, host_services, local_watcher_host,
-    preparation_input, preparation_probe, watcher_host_services,
+    PendingTimeService, TaskState, ThreadTaskService, fixture, fixture_at, host_services,
+    local_watcher_host, preparation_input, preparation_probe, watcher_host_services,
 };
 use futures_executor::block_on;
 use futures_util::{FutureExt, StreamExt};

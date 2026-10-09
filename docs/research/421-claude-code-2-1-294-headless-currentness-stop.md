@@ -1,4 +1,4 @@
-# Research 415: Claude Code 2.1.294 headless currentness stop
+# Research 421: Claude Code 2.1.294 headless currentness stop
 
 Status: currentness stop; no claim changed.
 

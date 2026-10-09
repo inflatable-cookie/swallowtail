@@ -7,6 +7,8 @@ use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 const IDENTITY: &str = include_str!("fixtures/claude-code-2.1.294/identity.json");
 const INVENTORY: &str = include_str!("fixtures/claude-code-2.1.294/dist-inventory.json");
 const PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.294/protocol.json");
+const HOOK_SEMANTICS: &str =
+    include_str!("fixtures/claude-code-2.1.294/hook-safety-semantics.json");
 const PRIOR_IDENTITY: &str = include_str!("fixtures/claude-code-2.1.293/identity.json");
 const PRIOR_INVENTORY: &str = include_str!("fixtures/claude-code-2.1.293/dist-inventory.json");
 const PRIOR_PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.293/protocol.json");
@@ -36,20 +38,32 @@ fn hops() -> Vec<String> {
 }
 
 #[test]
-fn current_stable_stop_preserves_the_existing_headless_claim() {
+fn historical_stop_is_preserved_and_current_claim_is_adapted() {
     let identity = fixture(IDENTITY);
     assert_eq!(identity["axis"], "claude-code.headless-stream-json");
     assert_eq!(identity["previous_ceiling"], "2.1.281");
     assert_eq!(identity["official_latest_at_observation"], "2.1.294");
-    assert_eq!(identity["npm"]["dist_tags"], json!({
-        "latest": "2.1.294",
-        "next": "2.1.295",
-        "stable": "2.1.286"
-    }));
-    assert_eq!(identity["npm"]["other_channels"]["next"]["version"], "2.1.295");
-    assert_eq!(identity["npm"]["other_channels"]["next"]["qualified_as_stable"], false);
+    assert_eq!(
+        identity["npm"]["dist_tags"],
+        json!({
+            "latest": "2.1.294",
+            "next": "2.1.295",
+            "stable": "2.1.286"
+        })
+    );
+    assert_eq!(
+        identity["npm"]["other_channels"]["next"]["version"],
+        "2.1.295"
+    );
+    assert_eq!(
+        identity["npm"]["other_channels"]["next"]["qualified_as_stable"],
+        false
+    );
     assert_eq!(identity["github"]["latest_non_prerelease"], "v2.1.294");
-    assert_eq!(identity["github"]["tag_commits"]["2.1.294"], "71cdddec623889d38af14b7a489670a03186f659");
+    assert_eq!(
+        identity["github"]["tag_commits"]["2.1.294"],
+        "71cdddec623889d38af14b7a489670a03186f659"
+    );
     assert_eq!(
         identity["published_hops"],
         json!(versions().into_iter().skip(1).collect::<Vec<_>>())
@@ -63,11 +77,12 @@ fn current_stable_stop_preserves_the_existing_headless_claim() {
     assert_eq!(identity["github_tag_v2.1.296_present"], false);
     assert_eq!(identity["identity_decision"], "stop");
     assert_eq!(identity["segment_shape"], "stop");
-    let stops = identity["stops"]
-        .as_array()
-        .expect("frozen stop list");
+    let stops = identity["stops"].as_array().expect("frozen stop list");
     assert_eq!(
-        stops.iter().map(|stop| stop["version"].as_str().unwrap()).collect::<Vec<_>>(),
+        stops
+            .iter()
+            .map(|stop| stop["version"].as_str().unwrap())
+            .collect::<Vec<_>>(),
         ["2.1.287", "2.1.290", "2.1.294"]
     );
 
@@ -77,14 +92,18 @@ fn current_stable_stop_preserves_the_existing_headless_claim() {
         prior_identity["claim_at_observation"]
     );
     let claim = claude_code_headless_claim();
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
-    assert_eq!(claim.latest_qualified().as_str(), "2.1.281");
-    for unverified in ["2.1.294", "2.1.295"] {
-        assert!(matches!(
-            claim.assess(&InterfaceVersion::new(unverified).unwrap()),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
-    }
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.294");
+    assert_eq!(claim.latest_qualified().as_str(), "2.1.294");
+    assert!(matches!(
+        claim.assess(&InterfaceVersion::new("2.1.294").unwrap()),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
+    ));
+    assert!(matches!(
+        claim.assess(&InterfaceVersion::new("2.1.295").unwrap()),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+            if newer.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
+    ));
 }
 
 #[test]
@@ -99,7 +118,11 @@ fn published_package_inventories_retain_the_full_prefix_and_freeze_294() {
     );
     assert_eq!(
         object_keys(&inventory["packages"]),
-        ["claude-code", "claude-code-darwin-arm64", "claude-code-linux-x64"]
+        [
+            "claude-code",
+            "claude-code-darwin-arm64",
+            "claude-code-linux-x64"
+        ]
     );
 
     let wrapper_files = [
@@ -133,8 +156,7 @@ fn published_package_inventories_retain_the_full_prefix_and_freeze_294() {
         }
         for (index, hop) in hops()[..12].iter().enumerate() {
             assert_eq!(
-                inventory["file_delta"][package][hop],
-                prior["file_delta"][package][hop],
+                inventory["file_delta"][package][hop], prior["file_delta"][package][hop],
                 "{package} {index}"
             );
         }
@@ -144,7 +166,10 @@ fn published_package_inventories_retain_the_full_prefix_and_freeze_294() {
         } else {
             &platform_files
         };
-        assert_eq!(inventory["package_file_counts"][package]["2.1.294"], expected_files.len());
+        assert_eq!(
+            inventory["package_file_counts"][package]["2.1.294"],
+            expected_files.len()
+        );
         let mut files = object_keys(&record["files"]);
         files.sort_unstable();
         let mut sizes = object_keys(&record["file_sizes_bytes"]);
@@ -254,7 +279,7 @@ fn published_package_inventories_retain_the_full_prefix_and_freeze_294() {
 }
 
 #[test]
-fn selected_protocol_classification_adds_the_unapproved_hook_change() {
+fn historical_protocol_snapshot_preserves_the_original_hook_stop() {
     let protocol = fixture(PROTOCOL);
     let prior = fixture(PRIOR_PROTOCOL);
     let hops = protocol["per_hop_classification"]
@@ -268,7 +293,10 @@ fn selected_protocol_classification_adds_the_unapproved_hook_change() {
     let latest = hops.last().unwrap();
     assert_eq!(latest["hop"], "2.1.293_to_2.1.294");
     assert_eq!(latest["selected_mapped_change"], true);
-    assert_eq!(latest["decision"], "stop-before-claim; additional operator-approved adaptation required");
+    assert_eq!(
+        latest["decision"],
+        "stop-before-claim; additional operator-approved adaptation required"
+    );
     assert_eq!(
         latest["changed_files"]
             .as_array()
@@ -306,11 +334,71 @@ fn selected_protocol_classification_adds_the_unapproved_hook_change() {
         "selected lifecycle behavior candidate outside approved adaptation"
     );
     assert_eq!(protocol["decision"], "stop");
-    assert_eq!(protocol["static_string_inspection"]["versions"], json!(versions()));
+    assert_eq!(
+        protocol["static_string_inspection"]["versions"],
+        json!(versions())
+    );
     assert_eq!(protocol["static_string_inspection"]["binaries_checked"], 28);
     assert_eq!(protocol["static_string_inspection"]["missing"], json!([]));
     assert_eq!(protocol["downloaded_artifacts_executed"], false);
     assert_eq!(protocol["provider_prompt_sent"], false);
     assert_eq!(protocol["live_session"], false);
     assert_eq!(protocol["host_install_changed"], false);
+}
+
+#[test]
+fn selected_hook_semantics_are_bound_to_both_exact_runtime_hashes() {
+    let semantics = fixture(HOOK_SEMANTICS);
+    let inventory = fixture(INVENTORY);
+    assert_eq!(semantics["version"], "2.1.294");
+    assert_eq!(
+        semantics["evidence"],
+        "static inspection of the exact published Linux x64 and Darwin arm64 executables; no executable was run"
+    );
+    assert_eq!(
+        semantics["artifacts"],
+        json!({
+            "linux_x64_sha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+            "darwin_arm64_sha256": "def0d15e64dd7d89621f88d28214f885b1c38b0ddd69762fb8593e34915d6d53"
+        })
+    );
+    assert_eq!(
+        semantics["artifacts"]["linux_x64_sha256"],
+        inventory["packages"]["claude-code-linux-x64"]["2.1.294"]["files"]["claude"]
+    );
+    assert_eq!(
+        semantics["artifacts"]["darwin_arm64_sha256"],
+        inventory["packages"]["claude-code-darwin-arm64"]["2.1.294"]["files"]["claude"]
+    );
+    assert_eq!(
+        semantics["prompt_and_agent_hooks"]["instruction_prompt_decision"],
+        "requires ok and reason; ok=false selects a blocking outcome"
+    );
+    assert_eq!(
+        semantics["prompt_and_agent_hooks"]["pre_tool_use_deny"],
+        "permissionDecision=deny selects a blocking error before tool dispatch"
+    );
+    assert_eq!(
+        semantics["prompt_and_agent_hooks"]["pre_tool_use_rewrite"],
+        "a hook-updated input is passed through a subsequent safety and permission decision; a resulting deny blocks the call"
+    );
+    assert_eq!(
+        semantics["stop_hooks"]["events"],
+        json!(["Stop", "SubagentStop"])
+    );
+    assert_eq!(
+        semantics["stop_hooks"]["active_reentry"],
+        "stop_hook_active=true is treated as successful by the stop-condition evaluation"
+    );
+    assert_eq!(
+        semantics["stop_hooks"]["repeated_blocks"],
+        "uses CLAUDE_CODE_STOP_HOOK_BLOCK_CAP or defaults to 8; a positive cap overrides after the configured count"
+    );
+    assert_eq!(semantics["limits"]["source_to_runtime_claim"], false);
+    assert_eq!(semantics["limits"]["release_note_only_inference"], false);
+    assert_eq!(semantics["limits"]["vendor_artifact_execution"], false);
+    assert_eq!(
+        semantics["limits"]["provider_prompt_or_live_session"],
+        false
+    );
 }

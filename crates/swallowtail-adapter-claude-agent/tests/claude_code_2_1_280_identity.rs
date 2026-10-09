@@ -251,7 +251,7 @@ fn identity_stop_is_frozen_and_headless_qualifies_through_2_1_281() {
             .as_str()
             .expect("baseline")
     );
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.281");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.294");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
         "2.1.293"
@@ -275,7 +275,13 @@ fn identity_stop_is_frozen_and_headless_qualifies_through_2_1_281() {
     }
     assert!(matches!(
         headless.assess(&version("2.1.282")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.headless.stream-json.v1"
+    ));
+    assert!(matches!(
+        headless.assess(&version("2.1.295")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+            if newer.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));
     assert!(matches!(
         response.assess(&version("2.1.282")),

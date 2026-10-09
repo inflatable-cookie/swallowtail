@@ -267,19 +267,39 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It currently qualifies Claude Code `2.1.220` through `2.1.281`,
-excluding unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`,
-`2.1.262`, `2.1.264`, and `2.1.279`; later stable versions remain visible
-`UnverifiedNewer`. Headless does not pass `--safe-mode` and already admits
-ambient project instructions. Research 374 observed official npm and GitHub
-latest `2.1.293`. A fresh probe in Research 415 found both channels at
-`2.1.294`; npm `next` points to `2.1.295`, which is outside the stable target.
-The `2.1.287` forked-skill stream and `2.1.290` post-`PreToolUse` permission
-changes remain unqualified. The `2.1.294` release adds another selected
-behavior change to instruction-form prompt and agent hooks, which remain
-enabled through user, project, and local settings. The approved adaptation
-does not cover that change. Qualification stays at `2.1.281` pending a
-follow-up adaptation.
+capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on
+`claude-code.headless.stream-json.v1` and
+`2.1.287..=2.1.294` on private milestone `claude-code.headless.stream-json.v2`.
+Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
+`2.1.256`, `2.1.262`, `2.1.264`, and `2.1.279`. Later stable versions remain
+visible `UnverifiedNewer`; official `2.1.295` remains unverified after the
+frozen `2.1.294` identity. Headless does not pass `--safe-mode` and already
+admits ambient project instructions. The exact 2.1.294 npm wrapper, Darwin
+arm64, and Linux x64 trees and every published hop after `2.1.281` remain
+frozen in Research 421. Research 422 records exact-artifact hook-safety
+analysis and provider-free adapter fixtures for the forked stream and denied
+action cases.
+
+The 2.1.287 stream may carry forked assistant frames with a
+`parent_tool_use_id` and nullable `message.stop_reason`. A null reason is
+projected as provider-unspecified activity, not a final answer; the bounded
+output stream continues, and total usage is emitted from the terminal result.
+Static inspection of both exact 2.1.294 platform executables shows that an
+instruction-form prompt hook result of `ok: false` blocks, a rewritten
+`PreToolUse` input passes through another safety and permission decision, and
+a deny blocks the tool call. `Stop` and `SubagentStop` use their active-hook
+state to avoid blocking their own reentry; the provider's configured block cap
+remains in force. The route keeps `--permission-mode plan`, its `Read,Glob,Grep`
+tool set, and user, project, and local settings. It does not disable hooks or
+add a permission bypass. Research 422 records the static source review and
+synthetic fake-process coverage; the fixtures are adapter tests, not captured
+provider transcripts.
+
+At the identity commit, npm `latest` and GitHub latest stable agreed on
+`2.1.294`. GitHub stable `2.1.295` was published after that frozen identity;
+the currentness ruling leaves `2.1.295` visible as `UnverifiedNewer` without
+reopening this claim. SDK, ACP, response-only, and public lifecycle claims are
+unchanged.
 
 ### Maximum Agentic Turns
 
@@ -305,13 +325,17 @@ positive integer produces the documented bound, so only a positive integer is
 selectable here.
 
 A selection requires one of the exact Claude Code versions Research 226 probed.
-That set is narrower than the route's qualified window:
+That set remains narrower than the route's qualified window. This task's
+qualification through `2.1.294` does not extend the optional maximum-turn
+feature; exact `2.1.282..=2.1.294` route points are not max-turn eligible under
+Research 226. The feature still requires an exact probed version:
 
 - published qualified points `2.1.242..=2.1.281` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
   `2.1.279` were never probed for this feature
-- the compatibility claim permits later stable points as `UnverifiedNewer`, and
-  no artifact for one has been probed
+- the newly qualified `2.1.282..=2.1.294` points are not admitted by this
+  exact-version feature gate; later stable points remain `UnverifiedNewer`
+- no maximum-turn artifact was probed for any of those later points
 - the claim's segment is a semantic range that contains `2.1.230`, which was
   never published to npm, so no artifact for it exists either
 

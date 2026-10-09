@@ -1,0 +1,89 @@
+{
+  "schema": "copilot-cli-acp-permission-proof-plan.v1",
+  "operator_decision": "8b098b85-fb9e-4543-b5f1-1fbfe8bc5301",
+  "execution_authorized": true,
+  "scope": {
+    "route": "copilot-cli.acp",
+    "platform": "darwin-arm64",
+    "versions": ["1.0.80", "1.0.81", "1.0.93"],
+    "inventory_sha256": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
+  },
+  "account_access": {
+    "account_ref": "github-account:betterthanclay",
+    "source": "operator-reported-2026-10-09",
+    "credential_source": "existing original-CLI host-owned login",
+    "account_identity_observation": "not queried by harness"
+  },
+  "credential_boundary": {
+    "keychain_service": "copilot-cli per current official documentation; exact frozen-artifact lookup unobserved",
+    "normal_keychain_access": "trusted only through hash-verified vendor CLI and com.apple.securityd",
+    "item_level_mediation": "unavailable; no per-item filter claimed",
+    "token_handling": "never extracted, copied, logged, or persisted",
+    "environment_token_variables": "absent",
+    "home_relocation": "forbidden"
+  },
+  "selection_policy": {
+    "requested": "Auto",
+    "binding": "--model auto on the original process",
+    "underlying_identity": "record actual identity when structured ACP data exposes it; otherwise report unobserved",
+    "vendor_managed_retries": "allowed within one prompt and 60-second process/network ceiling; internal request count unobserved",
+    "harness_retries": 0,
+    "harness_resends": 0,
+    "harness_model_fallbacks": 0
+  },
+  "network_policy": {
+    "source": "https://docs.github.com/en/copilot/reference/copilot-allowlist-reference",
+    "source_checked": "2026-10-09",
+    "policy": "official Copilot authentication and provider destinations; not a claim that frozen-version endpoints are exhaustively known",
+    "allowed_hosts": [
+      "github.com",
+      "github.githubassets.com",
+      "avatars.githubusercontent.com",
+      "api.github.com",
+      "default.exp-tas.com",
+      "copilot-proxy.githubusercontent.com",
+      "origin-tracker.githubusercontent.com"
+    ],
+    "allowed_subdomains": ["githubcopilot.com"],
+    "default": "deny",
+    "unlisted_destination": "fail attempt; never expand policy",
+    "telemetry_destinations": "not allowlisted"
+  },
+  "containment": {
+    "host_home_reads": "deny",
+    "repository_reads": "deny",
+    "writes": "task-scratch-only",
+    "network": "local CONNECT proxy only; verify official host and matching TLS SNI before external dial",
+    "subprocess_escape": "forks inherit this sandbox; allow exec only to exact frozen binary; deny shell exec",
+    "keychain": "allow only com.apple.securityd lookup; vendor-owned read is not item-filtered"
+  },
+  "action": {
+    "kind": "create-one-empty-task-scratch-marker",
+    "permission_required": true,
+    "approval": "never",
+    "max_effects": 0
+  },
+  "budgets": {
+    "max_invocations_per_version": 1,
+    "max_total_invocations": 3,
+    "max_prompts_per_invocation": 1,
+    "max_seconds_per_invocation": 60,
+    "max_harness_retries": 0,
+    "max_harness_resends": 0,
+    "max_harness_model_fallbacks": 0,
+    "vendor_managed_retries": "allowed_within_single_prompt_and_deadline; count_unobserved",
+    "max_tool_effects": 0,
+    "reviewer_original_attempts": 0
+  },
+  "start_order": ["1.0.93", "1.0.81", "1.0.80"],
+  "stop_conditions": [
+    "unsafe containment or egress gate",
+    "unexpected destination",
+    "authentication or Auto selection cannot be established before prompt",
+    "quota or entitlement failure",
+    "effect marker appears",
+    "permission missing or ambiguous",
+    "cancellation is ambiguous",
+    "owned process group or proxy thread survives deadline"
+  ]
+}

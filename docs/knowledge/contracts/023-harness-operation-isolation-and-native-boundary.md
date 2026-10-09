@@ -1001,6 +1001,27 @@ change, automatic qualification or tag is authorized. Preserve the exact
 and any changed mapping boundary is separately ruled. Account quota or
 entitlement failure is a finite stop, not permission to change account or plan.
 
+Research 428 records one approved original `1.0.93` launcher command under
+these boundaries. The `sandbox-exec` process exited with code 1 before ACP
+`initialize`; the record does not establish whether the vendor binary reached
+startup. No egress-proxy destination, ACP authentication request, session,
+prompt, permission, model identity or effect was observed. Its one-invocation
+allowance is consumed, so the older versions were not started and must not be
+treated as covered. Fake permission controls pass, but do not establish the
+exact original sandbox profile or its host-home read set. The original profile
+denied all host-home reads, and no fake admitted a vendor-owned authentication
+metadata read. This stricter denial could have blocked startup; the cause is
+unknown because stderr was discarded and vendor-binary startup was not
+observed. Permission behavior remains unproved and no route claim changes. A
+renewed `1.0.93` attempt requires separate authority. The proof harness now
+checks the SHA-256-pinned committed execution record before staging artifacts
+or starting any original, refuses every version recorded as consumed, and
+fails closed if that record is missing or changed. The guard applies to both
+`--permission-proof` and the legacy `--execute` path. The fake self-test
+verifies that legacy execution refuses before staging. Renewed execution
+therefore requires a reviewed guard and record update under that separate
+authority.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

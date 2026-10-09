@@ -42,3 +42,29 @@ permission/tool callbacks, unapproved origins, wrong account or keychain
 service, excess invocation/time, auth/config writes, and host-home/repository
 escape. This path does not execute or authorize any frozen artifact and does
 not change the disabled status in `authenticated-proof-plan.json`.
+
+## Host-login permission proof attempt
+
+`permission-proof-plan.json` binds the separately approved host-login/Auto
+boundaries, exact artifact identities, default-deny official-destination proxy,
+one invocation and one prompt per version, and the shared three-invocation
+ceiling. `permission-proof-preflight-record.json` captures the fake-only
+containment and permission-cancellation controls before original start.
+
+`permission-proof-execution-record.json` is the secret-free original attempt.
+It binds the harness digest and a fsynced pre-execution record. The
+`sandbox-exec` launcher for exact `1.0.93` returned code 1 before ACP
+`initialize`; the record does not establish whether the vendor binary reached
+startup. No egress-proxy destination, ACP authentication request, session,
+prompt, permission, model identity or effect was observed. Stderr was
+discarded, so the cause is unknown. The one invocation was consumed, and the
+harness stopped without starting `1.0.81` or `1.0.80`. This is not permission
+evidence or a qualification change. Any new `1.0.93` invocation requires
+separate authority.
+
+Before staging artifacts or starting an original, the harness validates this
+committed record against its pinned SHA-256 and refuses every version whose
+invocation is marked consumed. Missing, changed or unsafe record paths fail
+closed. Both `--permission-proof` and legacy `--execute` use this guard. The
+fake self-test covers refusal of consumed `1.0.93` before legacy staging and
+the missing and changed-record stops; it does not launch an original.

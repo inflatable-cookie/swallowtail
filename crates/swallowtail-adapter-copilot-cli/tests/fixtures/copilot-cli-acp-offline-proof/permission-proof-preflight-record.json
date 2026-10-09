@@ -1,0 +1,207 @@
+{
+  "harness_sha256": "fb99eb2f1d2c60260829160fbfa6f103ad279a797417a9281872bb5dcfe20ba3",
+  "plan_sha256": "6db73561b9607743a43fec5607a641a2fdb297cb289a4eb36c161d4f9d62da66",
+  "recorded_at_utc": "2026-10-09T15:53:06Z",
+  "result": {
+    "authenticated_fake_discovery_result": {
+      "effect_marker_absent_after_close": true,
+      "elapsed_seconds": 0.246,
+      "model_observation": {
+        "available_model_ids": [
+          "fake-auto",
+          "fake-gpt-5.4"
+        ],
+        "current_model_id": "fake-auto",
+        "model_config_option": {
+          "available_values": [
+            "fake-auto",
+            "fake-gpt-5.4"
+          ],
+          "current_value": "fake-auto",
+          "option_id": "model"
+        }
+      },
+      "outbound_methods": [
+        "initialize",
+        "authenticate",
+        "session/new"
+      ],
+      "permission_callbacks": 0,
+      "pre_execution_record_sha256": "53a75b62d826cf8656dbdf8b42a49bb6afdc510c08c1904da00b171d28f9aeb0",
+      "process_joined": true,
+      "prompt_requests": 0,
+      "tool_callbacks": 0
+    },
+    "authenticated_fake_preflight": {
+      "accepted_fake_grant": "exact-account-entitlement-model-policy-and-audience",
+      "credential_environment_variables": "absent",
+      "credential_transport": "one-use-inherited-pipe",
+      "discovery_controls": {
+        "allowed_acp_requests": [
+          "authenticate",
+          "initialize",
+          "session/new"
+        ],
+        "allowed_synthetic_origins": [
+          "https://copilot.fake.test",
+          "https://github.fake.test"
+        ],
+        "negative_controls": {
+          "auth_config_write": "rejected-before-original-start",
+          "config_write_rpc": "rejected-before-original-start",
+          "excess_invocation": "rejected-before-original-start",
+          "excess_time": "rejected-before-original-start",
+          "host_home_read_escape": "rejected-before-original-start",
+          "keychain_write": "rejected-before-original-start",
+          "model_output_callback": "rejected-before-original-start",
+          "permission_callback": "rejected-before-original-start",
+          "prompt_request": "rejected-before-original-start",
+          "repository_read_escape": "rejected-before-original-start",
+          "tool_callback": "rejected-before-original-start",
+          "unapproved_endpoint": "rejected-before-original-start",
+          "wrong_account": "rejected-before-original-start",
+          "wrong_keychain_service": "rejected-before-original-start"
+        },
+        "status": "passed"
+      },
+      "negative_controls": {
+        "missing_entitlement": {
+          "effect_marker_present": false,
+          "prompt_sent": false,
+          "status": "rejected-before-process-start"
+        },
+        "unexpected_credential_request": {
+          "effect_marker_present": false,
+          "prompt_sent": false,
+          "status": "rejected-before-process-start"
+        },
+        "unexpected_provider_traffic": {
+          "effect_marker_present": false,
+          "prompt_sent": false,
+          "status": "rejected-before-process-start"
+        },
+        "wrong_account": {
+          "effect_marker_present": false,
+          "prompt_sent": false,
+          "status": "rejected-before-process-start"
+        },
+        "wrong_audience": {
+          "effect_marker_present": false,
+          "prompt_sent": false,
+          "status": "rejected-before-process-start"
+        },
+        "wrong_model": {
+          "effect_marker_present": false,
+          "prompt_sent": false,
+          "status": "rejected-before-process-start"
+        }
+      },
+      "status": "passed"
+    },
+    "authenticated_fake_result": {
+      "auth_method_observed": {
+        "advertised_ids": [
+          "copilot-login"
+        ],
+        "result": "success",
+        "selected_method_id": "copilot-login"
+      },
+      "effect_marker_absent_after_stop": true,
+      "effect_marker_absent_before_prompt": true,
+      "elapsed_seconds": 0.459,
+      "forced_process_group_stop": false,
+      "late_permission_response_accepted": false,
+      "observed_network_audiences_only": [],
+      "pending_permission_wait_abandoned": true,
+      "permission_request_count_and_safe_shape": {
+        "count": 1,
+        "method": "session/request_permission",
+        "option_ids": [
+          "allow_once",
+          "reject_once"
+        ]
+      },
+      "permission_response_cancelled_or_rejected": "cancelled",
+      "pre_execution_record_sha256": "415f8cdc9354c904948e67605dc45fb48c9071935ad228d71fe5c2f754396e5c",
+      "pre_execution_sha256": "415f8cdc9354c904948e67605dc45fb48c9071935ad228d71fe5c2f754396e5c",
+      "process_exit_status_and_joined_state": {
+        "exit_code": 0,
+        "joined": true
+      },
+      "prompt_terminal_outcome": "cancelled",
+      "recorded_provider_selection": "fake-github-hosted-model",
+      "retry_resend_fallback_and_tool_attempt_counts": {
+        "auto_fallbacks": 0,
+        "effects": 0,
+        "permission_requests": 1,
+        "prompts": 1,
+        "resends": 0,
+        "retries": 0,
+        "tool_attempts": 1
+      },
+      "session_cancel_sent": true,
+      "underlying_model_identity_and_observation_source": "fake currentModelId from session/new"
+    },
+    "authenticated_plan": {
+      "execution_authorized": false,
+      "invocations": 3,
+      "missing_owner_attestations": 6,
+      "record_schema_validated": true,
+      "schema": "copilot-cli-acp-authenticated-proof-plan.v1"
+    },
+    "fake_acp": {
+      "exit_code": 0,
+      "initialize": "success",
+      "pending_permission_wait_abandoned": true,
+      "permission_reply": "cancelled",
+      "permission_request": "observed",
+      "process_joined": true,
+      "prompt_stop_reason": "cancelled",
+      "session_new": "success",
+      "tool_effect": "absent"
+    },
+    "filesystem_boundary": "writes allowed only inside task scratch; fake host home and repository reads denied",
+    "host_login_permission_fake": {
+      "child_exit_code": -9,
+      "effect_marker_absent": true,
+      "forced_cleanup_verified": true,
+      "late_approval_accepted": false,
+      "model_policy": "--model auto applied to original command shape",
+      "negative_controls": {
+        "effect_marker_rejected": true,
+        "late_approval_rejected": true,
+        "missing_permission_rejected": true,
+        "sni_mismatch_rejected": true,
+        "unlisted_egress_rejected": true
+      },
+      "network": {
+        "allowed_destination_hosts": [
+          "api.github.com"
+        ],
+        "connection_failure_count": 0,
+        "sni_mismatch_count": 1,
+        "unlisted_destination_count": 1
+      },
+      "pending_wait_abandoned": true,
+      "permission_reply": "cancelled",
+      "permission_requests": 1,
+      "pre_execution_record_fsynced_before_child": true,
+      "pre_execution_record_sha256": "93252cd02654030b4fba8ba1bbfba259cb19f3180ec8a80c49f372abb2b61aaf",
+      "process_group_joined": true,
+      "proxy_threads_joined": true,
+      "sandbox_profile": "securityd-only Mach lookup; host home/repository reads denied; scratch-only writes; forks inherit the sandbox and shell exec is denied",
+      "session_cancel_sent": true
+    },
+    "keychain_boundary": "securityd Mach lookup denied by profile",
+    "network_denial": "loopback and reserved external connect both returned EPERM/EACCES",
+    "permission_boundary_plan": {
+      "allowed_hosts": 7,
+      "attempts": 3,
+      "decision_id": "8b098b85-fb9e-4543-b5f1-1fbfe8bc5301",
+      "execution_authorized": true
+    },
+    "record_before_execution": true,
+    "status": "passed"
+  },
+  "schema": "copilot-cli-acp-permission-proof-preflight.v1"
+}

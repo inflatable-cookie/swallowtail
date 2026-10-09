@@ -70,9 +70,10 @@ fn the_gate_env_var_and_its_polarity_are_pinned_on_both_sides() {
 fn the_production_claim_splits_at_exactly_that_boundary() {
     let claim = kimi_headless_claim();
     let segments = claim.milestones().collect::<Vec<_>>();
-    assert_eq!(segments.len(), 2);
+    assert_eq!(segments.len(), 3);
     assert_eq!(segments[0].maximum().as_str(), LAST_V1);
     assert_eq!(segments[1].minimum().as_str(), BOUNDARY);
+    assert_eq!(segments[2].minimum().as_str(), "2.0.0");
 
     let InterfaceCompatibilityAssessment::Qualified(last_v1) = claim.assess(&version(LAST_V1))
     else {

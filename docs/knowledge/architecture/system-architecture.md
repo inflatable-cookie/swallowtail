@@ -207,12 +207,13 @@ OpenHands adds a package without a production route.
   known-bad exclusions, and a
   fail-closed provider-suppressed tool/MCP surface with no working resource or
   structured-output capability. The same crate also implements the separate
-  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK at exact
-  `0.3.284`, carrying native `2.1.284`, running in a source-tagged Node
-  sidecar (maintained Node `22.23.2..=22.23.3`; Research 387) over the private
-  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with four
-  qualified-only one-point version axes and one maintained Node 22 patch
-  segment, an application-provisioned launch recipe and
+  `claude-agent.sdk` route: Anthropic's official Claude Agent SDK with the
+  maintained package segment `0.3.284..=0.3.295` and coupled native segment
+  `2.1.284..=2.1.295` (Research 420), running in a source-tagged Node sidecar
+  with maintained Node `22.23.2..=22.23.3` (Research 387) over the private
+  bounded `swallowtail-claude-agent-sdk-jsonl-v1` wire, with three maintained
+  version axes and exact wire and sidecar source-tag axes, an application-
+  provisioned launch recipe and
   environment, no credential custody (delegated lease plus first-party
   `oauth` readiness only), read-only tools, consumer-mediated tool admission,
   capability-gated interrupt, and caller-bounded open, turn, interrupt, and
@@ -383,8 +384,11 @@ OpenHands adds a package without a production route.
   negotiated model evidence. Its separate headless route owns one default-
   engine stream-JSON prompt with durable provider retention and joined process
   cleanup. Headless qualifies `0.29.0..=0.32.0` under
-  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.0` under
-  `kimi.headless.stream-json.v2` with a matching `system.version` preamble.
+  `kimi.headless.stream-json.v1` and `0.33.0..=0.43.1`, `2.0.0..=2.1.1`
+  under `kimi.headless.stream-json.v2` with a matching `system.version`
+  preamble. Unpublished `0.43.2`, `1.x`, and `2.0.3` stay outside those
+  segments; exact `2.1.0` is excluded for its effective filesystem-authority
+  change.
   Public facade `kimi-headless-stream-json-v1` covers both revisions. One
   installed facade requires explicit ACP or headless selection.
   The separate local-server route owns authenticated catalogue, retained
@@ -448,12 +452,14 @@ OpenHands adds a package without a production route.
   mapping now use the common compatible-chat framing and envelope codec
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
-  `0.14.0..=0.34.4` plus `0.35.0..=0.35.1`; exact runtime, installed and
+  `0.14.0..=0.34.4` and `0.35.0..=0.35.1` on Deprecated `ollama.native-text-v1`,
+  plus Maintained `0.40.0..=0.40.1` on `ollama.native-text-v1.manifest-list-runner`;
+  exact runtime, installed and
   running model observations, NDJSON output, and inference-caused residency
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
-  structured runs and interactive replay. Current official `0.40.0` is
-  unverified because chat can start local compatibility migration; Research
-  379 records the adapter and authority gate. The adapter adds no installation,
+  structured runs and interactive replay. From `0.40.0`, chat may disclose
+  provider-owned local compatibility migration; the adapter binds tag and
+  digest and does not substitute sibling runner rows. The adapter adds no installation,
   model acquisition, cloud access, unload, or server ownership.
 - `swallowtail-adapter-xai` implements resource-free direct inference over one
   host-approved Responses WebSocket as either one bounded response without
@@ -1770,12 +1776,15 @@ installed inventory, running inventory, and selected-model detail without
 inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
-drift fail before operation effects. Maintained `0.14.0..=0.34.4` and
-`0.35.0..=0.35.1` segments, exact `0.32.2` and `0.32.10` exclusions,
-unpublished gaps, and prerelease closure remain explicit. Current official
-`0.40.0` remains `UnverifiedNewer`: its chat scheduler can start background
-local model-store migration, which needs an operator ruling before this
-attached-runtime lifecycle is qualified (Research 379).
+drift fail before operation effects. Deprecated `0.14.0..=0.34.4` and
+`0.35.0..=0.35.1` stay on `ollama.native-text-v1`. Maintained `0.40.0..=0.40.1`
+uses `ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
+exclusions, unpublished gaps, and prerelease closure remain explicit. From
+`0.40.0`, chat may start provider-owned background local compatibility
+migration; the adapter binds the selected tag and digest, observes sibling
+manifest-list rows, and does not treat a new runner row as the old identity
+(Contract 031; Research 418). Synthetic `0.41.0` is the first visible
+`UnverifiedNewer` point.
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

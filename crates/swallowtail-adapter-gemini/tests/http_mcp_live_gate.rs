@@ -12,9 +12,8 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::time::Duration;
 use swallowtail_adapter_gemini::{
-    GEMINI_ACP_MCP_SERVER_NAME, GEMINI_CLI_ACP_AXIS, GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION,
-    GeminiAcpHttpMcpPlacement, GeminiPreparationInput, GeminiPreparationProbe,
-    GeminiSessionProfileInput, prepare_gemini_acp,
+    GEMINI_ACP_MCP_SERVER_NAME, GEMINI_CLI_ACP_AXIS, GeminiAcpHttpMcpPlacement,
+    GeminiPreparationInput, GeminiPreparationProbe, GeminiSessionProfileInput, prepare_gemini_acp,
 };
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
@@ -30,7 +29,7 @@ use swallowtail_runtime::{
 };
 
 const LIVE_GATE: &str = "SWALLOWTAIL_LIVE_GEMINI_ACP_HTTP_MCP";
-const EXACT_VERSION: &str = GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION;
+const EXACT_VERSION: &str = "0.61.0";
 const CREDENTIAL: &str = "live.gemini.acp.credential";
 const AUDIENCE: &str = "gemini-developer-api";
 

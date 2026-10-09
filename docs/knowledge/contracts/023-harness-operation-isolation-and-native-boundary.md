@@ -201,6 +201,21 @@ moving claims; preserve older qualified segments. Further narrowing, new
 public API/lifecycle or live-proof needs return for a separate ruling.
 Contract 036 patch compatibility is assessed independently.
 
+Tom's 2026-10-09 “Approve the two.” answers decision
+`7c273552-55eb-4f52-b608-ca8430c46429`. Extend the retained headless
+adaptation to exact `2.1.294` instruction-form prompt/agent hook safety and
+`Stop` / `SubagentStop` behaviour. Honour shipped action blocking and stop
+decisions while preserving selected user, project and local settings,
+read-only plan-mode authority, approved resources, bounded truthful stream
+and usage, and joined cancellation/cleanup. Exact selected-path semantic
+evidence and deterministic fake-process proof precede any claim increase;
+release notes or strings alone do not establish compatibility. Preserve
+older segments and the separate SDK, ACP and response-only routes. No
+settings/home relocation, disabled consumer hooks, artifact execution,
+credentials, provider turns, installation or release authority is included.
+Further narrowing, public API/lifecycle changes, missing selected-source
+proof or live-proof needs return separately.
+
 ## Antigravity Headless Denial And Child Status
 
 Tom's 2026-10-08 “Accept and approve all” answers decision

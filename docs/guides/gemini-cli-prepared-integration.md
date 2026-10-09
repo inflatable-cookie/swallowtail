@@ -27,22 +27,32 @@ the plan or diagnostics.
 
 Swallowtail does not install Gemini CLI, search `PATH`, choose an account,
 credential, model, workspace, sandbox, endpoint, billing route, or fallback.
-ACP `0.51.0..=0.61.0` excluding unpublished `0.56.1` and `0.59.1` is
-qualified. Headless `0.51.0..=0.61.0` excluding unpublished `0.56.1` and
-`0.59.1` is qualified. Official npm `latest` and GitHub's latest stable agree
-on `0.63.0`. Points `0.62.0` and `0.63.0` remain visible `UnverifiedNewer`
-pending the selected
-Plan Mode permission, authority, and tool-output/context ruling in Research
-371. Later stable releases may prepare as visible `UnverifiedNewer`; older and
-excluded releases do not prepare and newer releases gain no capability.
+ACP `0.51.0..=0.61.0` excluding unpublished `0.56.1` and `0.59.1` retains
+`gemini-cli.acp.v0.51.0`. Exact `0.62.0` uses the private
+`gemini-cli.acp.v0.62.0-tool-updates` milestone, and exact `0.63.0` uses
+`gemini-cli.acp.v0.63.0-restricted-files` ([Research 415](../research/415-gemini-cli-0-63-0-acp-policy-adaptation.md)).
+Headless remains qualified through `0.61.0` with the same unpublished
+exclusions. `0.62.0` and `0.63.0` remain `UnverifiedNewer` for headless:
+Research 417 shows noninteractive Plan policy allows `exit_plan_mode` to
+switch approval to YOLO, and the selected adapter has no guard for that
+transition. A separate authority-preserving adaptation must settle that
+boundary before the headless claim can move. Later stable releases may prepare
+as visible `UnverifiedNewer`; older and excluded releases do not prepare, and newer
+releases gain no capability.
 
-The current official stable is `0.63.0`. `0.62.0` and `0.63.0` remain
-`UnverifiedNewer` for ACP pending the permission and file-boundary adaptation
-in [Research 372](../research/372-gemini-cli-0-63-0-acp-currentness-stop.md).
-At `0.63.0`, `.gemini` writes and some redirected shell commands can require
-provider confirmation, which this route rejects and cancels. The
-`0.61.0` bounded-write ceiling and the exact `0.61.0` HTTP MCP honouring
-evidence remain unchanged.
+On ACP `0.63.0`, ordinary bounded text reads and writes remain available.
+Writes to `.gemini` configuration paths and matching shell command-prefix
+rules with redirection can require `ASK_USER`; this route rejects and cancels
+permission requests. Gemini's non-interactive policy converts those requests
+to `DENY`, and its `YOLO` path cannot override an explicit ask. Reads resolve
+and revalidate the real path; `.env.*` files are protected except
+`.env.example`, `.env.sample`, `.env.template`, and `.env.dist`. The host
+callback separately refuses paths outside the approved resource, including
+traversal and symlink escapes. Provider tool output is stored up to 64 KiB
+and truncated beyond that bound; untrusted text remains opaque provider
+display content. These limits do not establish process containment. HTTP MCP
+live honouring remains proven only on exact host `0.61.0` and is not inferred
+for newer points.
 
 ## Prepare The Installation
 

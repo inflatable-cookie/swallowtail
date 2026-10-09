@@ -60,14 +60,18 @@ ACP does not admit `UnverifiedNewer`.
 
 Headless `0.29.0..=0.32.0` is qualified under the audited legacy agent-core v1
 stream-json corpus (`kimi.headless.stream-json.v1`) as `Deprecated`. Headless
-`0.33.0..=0.43.0` qualifies under agent-core-v2 `runV2Print`
-(`kimi.headless.stream-json.v2`) with a matching `system.version` preamble.
+`0.33.0..=0.43.1` and `2.0.0..=2.1.1` qualify under agent-core-v2
+`runV2Print` (`kimi.headless.stream-json.v2`) with a matching `system.version`
+preamble.
 The split point is exact: through `0.32.0` the print engine is selected by
 `KIMI_CODE_EXPERIMENTAL_FLAG` and defaults to v1; from `0.33.0` it is selected
 by `KIMI_CODE_LEGACY_FLAG` and defaults to v2, and this adapter never sets
 that flag. From `0.42.0` the legacy v1 body and that gate are deleted and the
 v2 print path is unconditional. Public facade
-`kimi-headless-stream-json-v1` covers both revisions. Later headless stables
+`kimi-headless-stream-json-v1` covers both revisions. Unpublished `0.43.2` and
+`2.0.3`, the `1.x` line, and exact `2.1.0` remain unsupported. Research 413
+records that `2.1.0` adds effective symlink-aware filesystem checks to the
+built-in tools, while `2.1.1` removes them. Later stable points above `2.1.1`
 remain visible `UnverifiedNewer`; they do not inherit ACP catalogue/import
 support. Older, excluded, and prerelease observations do not prepare.
 
@@ -230,9 +234,11 @@ cannot accept that host boundary should use another route.
 
 The prepared route qualifies the audited legacy agent-core v1 stream-json
 corpus through exact `0.32.0` as `Deprecated` (`kimi.headless.stream-json.v1`).
-Headless `0.33.0..=0.43.0` qualifies under agent-core-v2 `runV2Print`
-(`kimi.headless.stream-json.v2`) with a matching `system.version` preamble
-before shared JSONL output. The v1 window ends at `0.32.0` because the default
+Headless `0.33.0..=0.43.1` and `2.0.0..=2.1.1` qualify under agent-core-v2
+`runV2Print` (`kimi.headless.stream-json.v2`) with a matching `system.version`
+preamble before shared JSONL output. Unpublished `0.43.2`, the `1.x` line,
+unpublished `2.0.3`, and exact `2.1.0` remain unsupported. The v1 window ends
+at `0.32.0` because the default
 `-p` engine becomes agent-core-v2 at `0.33.0`; from `0.42.0` the legacy v1 body
 is deleted. Public facade
 `kimi-headless-stream-json-v1` covers both revisions. The adapter does not

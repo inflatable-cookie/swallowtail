@@ -43,6 +43,14 @@ host configuration reference, access profile, and preflight evidence. Validate
 that binding before reusing it. The access profile is local and unauthenticated:
 Swallowtail receives no credential reference and opens no credential lease.
 
+An evidence-only mapping study inspected the separate `dsh` SDK JSON-RPC
+profile and PyPI runtime-bin chain; see [Research 412](../research/412-deepseek-harness-sdk-jsonrpc-profile-mapping-study.md).
+It found different session, persistence, provider, credential, and tool-policy
+boundaries, and could not tie the SDK runtime wheel to the current npm profile
+package set. The study does not qualify a newer point or change this route's
+exact `0.1.0rc6` claim. A separate SDK route and independently pinned axes are
+proposed for another ruling; no evidence transfers to the local Web route.
+
 ## Structured Run
 
 Create `DeepSeekHarnessModelSelection` with an application-owned route ID and

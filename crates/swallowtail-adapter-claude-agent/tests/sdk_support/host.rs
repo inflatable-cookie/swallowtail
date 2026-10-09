@@ -283,6 +283,16 @@ impl SdkFixtureHost {
             .clone()
     }
 
+    pub fn process_environment_refs(&self) -> Vec<swallowtail_runtime::EnvironmentRef> {
+        self.shared
+            .process_request
+            .lock()
+            .expect("SDK fixture process lock poisoned")
+            .as_ref()
+            .map(|request| request.environment().cloned().collect())
+            .unwrap_or_default()
+    }
+
     pub fn credential_acquisitions(&self) -> usize {
         self.shared.credential_acquisitions.load(Ordering::SeqCst)
     }

@@ -227,8 +227,8 @@ fn exact_0_31_1_corpus_binds_route_deltas_to_expanded_claims() {
             .expect("headless claim exists")
             .latest_qualified()
             .as_str(),
-        // Research 325 extended the live installed headless ceiling to 0.43.0.
-        "0.43.0"
+        // Research 403 qualified the current headless ceiling at 2.1.1.
+        "2.1.1"
     );
     assert_eq!(
         kimi_local_server_claim().latest_qualified().as_str(),

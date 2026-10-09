@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "task": "swallowtail#145",
+  "axis": "ollama.runtime",
+  "package": "swallowtail-adapter-ollama",
+  "observation_date": "2026-10-08",
+  "github_repository": "ollama/ollama",
+  "selected_channel": {
+    "name": "official GitHub non-prerelease releases",
+    "latest_endpoint": "https://api.github.com/repos/ollama/ollama/releases/latest",
+    "latest_version": "0.40.1",
+    "latest_release_url": "https://github.com/ollama/ollama/releases/tag/v0.40.1",
+    "release_id": 406237079,
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2026-10-07T23:22:59Z",
+    "tag_commit": "cf2a313a298066d572c36812e5ad30a21c0db13b",
+    "tree": "6ae219abaf2a32dc26c8dc14d71357b92532dec2",
+    "source_archive_sha256": "675cfca761a964d3b40d1331c006fd8a630bdb0b5a9b605ace3494e7d47c3e88"
+  },
+  "host_observation": {
+    "client_version": "0.33.3",
+    "no_runtime_reachable": true,
+    "host_not_mutated": true,
+    "note": "Only the local client version was queried. No local server was reachable or started."
+  },
+  "previous_ceiling": "0.35.1",
+  "historical_stop_corpus": "ollama-0.40.0",
+  "published_stables_after_previous_ceiling": [
+    {
+      "version": "0.40.0",
+      "release_id": 396253453,
+      "published_at": "2026-09-25T03:31:52Z",
+      "draft": false,
+      "prerelease": false,
+      "commit": "0d0720e51fb2fd9aa58781c3d720c06d720c2e7b",
+      "tree": "d65785382b4d8b6dd98b25b09c59a4ec5b22d168",
+      "source_archive_sha256": "9fe3b69d3e539bd0168dfc1cbb7af9f15bac654d31744f96560f13f69672516f"
+    },
+    {
+      "version": "0.40.1",
+      "release_id": 406237079,
+      "published_at": "2026-10-07T23:22:59Z",
+      "draft": false,
+      "prerelease": false,
+      "commit": "cf2a313a298066d572c36812e5ad30a21c0db13b",
+      "tree": "6ae219abaf2a32dc26c8dc14d71357b92532dec2",
+      "source_archive_sha256": "675cfca761a964d3b40d1331c006fd8a630bdb0b5a9b605ace3494e7d47c3e88"
+    }
+  ],
+  "absent_stable_tag_patterns_checked": [
+    "v0.35.2*",
+    "v0.36.*",
+    "v0.37.*",
+    "v0.38.*",
+    "v0.39.*",
+    "v0.40.2",
+    "v0.41.*"
+  ],
+  "matching_unreleased_prerelease_tag": "v0.40.2",
+  "matching_prerelease_rc_tag": "v0.40.2-rc0",
+  "current_claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.35.1",
+    "claim_id": "ollama.native-runtime-window-2",
+    "behavior_revision": "ollama.native-text-v1",
+    "posture": "AllowUnverified",
+    "known_exclusions": ["0.32.2", "0.32.10"]
+  },
+  "decision": {
+    "shape": "compatible-extension-through-0.40.1-with-migration-mapping",
+    "qualified_hops": ["0.40.0", "0.40.1"],
+    "latest_qualified_after_change": "0.40.1",
+    "unverified_current_official_stable": null,
+    "synthetic_unverified_newer": "0.41.0",
+    "milestone_behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+    "retain_prior_behavior_revision": "ollama.native-text-v1",
+    "keep_baseline": "0.14.0",
+    "keep_claim_id": "ollama.native-runtime-window-2",
+    "keep_exclusions": ["0.32.2", "0.32.10"],
+    "keep_allow_unverified": true,
+    "preserve_unqualified_gaps": ["0.34.5", "0.35.2", "0.36.0..0.39.x"],
+    "new_public_operation": false,
+    "consumer_visible_contract_change": false,
+    "operator_ruling": "29ebdfbc-ef0b-47f1-9a6b-47b5cd24245b",
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "model_downloaded": false,
+    "live_inference_performed": false,
+    "model_store_mutated": false
+  }
+}

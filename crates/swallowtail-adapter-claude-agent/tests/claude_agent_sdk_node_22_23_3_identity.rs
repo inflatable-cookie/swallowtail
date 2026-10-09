@@ -308,8 +308,8 @@ fn node_window_extends_the_existing_claim_without_transferring_other_axes() {
             "{version}"
         );
     }
-    assert_eq!(CLAUDE_AGENT_SDK_VERSION, "0.3.284");
-    assert_eq!(CLAUDE_AGENT_SDK_NATIVE_VERSION, "2.1.284");
+    assert_eq!(CLAUDE_AGENT_SDK_VERSION, "0.3.295");
+    assert_eq!(CLAUDE_AGENT_SDK_NATIVE_VERSION, "2.1.295");
     assert_eq!(
         CLAUDE_AGENT_SDK_WIRE,
         "swallowtail-claude-agent-sdk-jsonl-v1"

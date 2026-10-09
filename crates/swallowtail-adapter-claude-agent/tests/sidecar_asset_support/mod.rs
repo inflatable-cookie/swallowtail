@@ -23,6 +23,9 @@ struct Fixture {
     identity_field: Option<&'static str>,
     identity_value: Option<String>,
     model_evidence_value: Option<String>,
+    sdk_version: Option<String>,
+    native_version: Option<String>,
+    native_manifest_mode: Option<&'static str>,
 }
 
 impl Default for Fixture {
@@ -33,6 +36,9 @@ impl Default for Fixture {
             identity_field: None,
             identity_value: None,
             model_evidence_value: None,
+            sdk_version: None,
+            native_version: None,
+            native_manifest_mode: None,
         }
     }
 }
@@ -87,6 +93,23 @@ impl SidecarProcess {
         })
     }
 
+    /// Starts the shipped sidecar with one exact fake package/native pair.
+    pub fn start_package_native_pair(sdk_version: &str, native_version: &str) -> Self {
+        Self::start_with(&Fixture {
+            sdk_version: Some(sdk_version.to_owned()),
+            native_version: Some(native_version.to_owned()),
+            ..Fixture::default()
+        })
+    }
+
+    /// Starts the sidecar with an absent, malformed, or unreadable native manifest.
+    pub fn start_native_manifest_case(mode: &'static str) -> Self {
+        Self::start_with(&Fixture {
+            native_manifest_mode: Some(mode),
+            ..Fixture::default()
+        })
+    }
+
     /// Starts the asset with a fake native child that outlives any bound the
     /// test declares.
     pub fn start_with_surviving_native_child() -> Self {
@@ -124,12 +147,25 @@ impl SidecarProcess {
             scenario,
             fixture.identity_field,
             fixture.identity_value.as_deref(),
+            fixture.sdk_version.as_deref().unwrap_or("0.3.293"),
         );
-        std::fs::write(
-            directory.join("manifest.json"),
-            json!({"version": "2.1.284"}).to_string(),
-        )
-        .expect("fake manifest is written");
+        let native_manifest = directory.join("manifest.json");
+        match fixture.native_manifest_mode {
+            Some("missing") => {}
+            Some("malformed") => {
+                std::fs::write(&native_manifest, b"{").expect("malformed fake manifest is written")
+            }
+            Some("unreadable") => {
+                std::fs::create_dir(&native_manifest).expect("unreadable fake manifest is created")
+            }
+            Some(mode) => panic!("unknown native manifest fixture mode: {mode}"),
+            None => std::fs::write(
+                native_manifest,
+                json!({"version": fixture.native_version.as_deref().unwrap_or("2.1.293")})
+                    .to_string(),
+            )
+            .expect("fake manifest is written"),
+        }
 
         let node = std::env::var("SWALLOWTAIL_CLAUDE_AGENT_SDK_NODE")
             .unwrap_or_else(|_| "node".to_owned());
@@ -289,7 +325,18 @@ impl SidecarProcess {
 
     /// Sends one command and returns its correlated response, collecting any
     /// callbacks that arrive first.
-    pub fn command(&mut self, id: &str, command: &str, params: Value) -> Value {
+    pub fn command(&mut self, id: &str, command: &str, mut params: Value) -> Value {
+        if matches!(command, "open" | "list_sessions") {
+            let object = params
+                .as_object_mut()
+                .expect("sidecar command parameters are an object");
+            object
+                .entry("expectedSdkVersion")
+                .or_insert_with(|| json!("0.3.293"));
+            object
+                .entry("expectedNativeVersion")
+                .or_insert_with(|| json!("2.1.293"));
+        }
         self.write(json!({"type": "command", "id": id, "command": command, "params": params}));
         loop {
             let record = self.next_received_record();
@@ -546,6 +593,7 @@ fn write_sdk_fixture(
     scenario: &str,
     identity_field: Option<&str>,
     identity_value: Option<&str>,
+    sdk_version: &str,
 ) -> PathBuf {
     let nested_identity = matches!(
         scenario,
@@ -571,7 +619,7 @@ fn write_sdk_fixture(
     let package_manifest = directory.join("package.json");
     let correct_manifest = json!({
         "name": "@anthropic-ai/claude-agent-sdk",
-        "version": "0.3.284"
+        "version": sdk_version
     })
     .to_string();
     let mismatch_manifest = json!({
@@ -636,7 +684,7 @@ fn write_sdk_fixture(
             };
             let mut manifest = json!({
                 "name": "@anthropic-ai/claude-agent-sdk",
-                "version": "0.3.284"
+                "version": sdk_version
             });
             manifest[manifest_field] = json!(identity_value.expect("identity boundary value"));
             std::fs::write(package_manifest, manifest.to_string())

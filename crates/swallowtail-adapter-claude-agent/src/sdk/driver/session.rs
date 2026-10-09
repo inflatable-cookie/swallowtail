@@ -402,7 +402,7 @@ impl ClaudeAgentSdkSessionHandle {
         self.readiness.node_version()
     }
 
-    /// Returns `Qualified` for the exact point or `UnverifiedNewer` for a
+    /// Returns `Qualified` for the exact Node point or `UnverifiedNewer` for a
     /// newer runtime that passed the sidecar floor.
     #[must_use]
     pub const fn node_version_posture(&self) -> &'static str {

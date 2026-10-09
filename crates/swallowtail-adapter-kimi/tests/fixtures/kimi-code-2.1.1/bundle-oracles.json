@@ -1,0 +1,281 @@
+{
+  "markers": {
+    "prompt_json_writer": "PromptJsonWriter = class {",
+    "prompt_transcript_writer": "PromptTranscriptWriter = class {",
+    "write_experimental_version": "function writeExperimentalVersion(",
+    "write_resume_hint": "function writeResumeHint(",
+    "stringify_tool_output": "function stringifyToolOutput(",
+    "dispatch_native_event": "function dispatchNativeEvent(",
+    "run_prompt_dispatch": "async function runPrompt(",
+    "run_v2_print": "async function runV2Print(",
+    "apply_print_background_policy": "async function applyPrintBackgroundPolicy("
+  },
+  "points": {
+    "0.43.0": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "b2815ff488422ec1d13b604326ce47a20459cafa6ec78f75874d0016aa4f032b",
+        "size": 1761
+      }
+    },
+    "0.43.1": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "b2815ff488422ec1d13b604326ce47a20459cafa6ec78f75874d0016aa4f032b",
+        "size": 1761
+      }
+    },
+    "2.0.0": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "b2815ff488422ec1d13b604326ce47a20459cafa6ec78f75874d0016aa4f032b",
+        "size": 1761
+      }
+    },
+    "2.0.1": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+        "size": 2157
+      }
+    },
+    "2.0.2": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+        "size": 2157
+      }
+    },
+    "2.1.0": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+        "size": 2157
+      }
+    },
+    "2.1.1": {
+      "prompt_json_writer": {
+        "sha256": "e53458b2f352a99b2fefed2df4fd06b0706edb2f90003555d4dbe462c08fbd10",
+        "size": 2567
+      },
+      "prompt_transcript_writer": {
+        "sha256": "ba5717abbf6fde8cf4ce717b674338ec8e2a930f000a68af1eacc98f6310f3e8",
+        "size": 851
+      },
+      "write_experimental_version": {
+        "sha256": "0c6ba81895c947d418ce83047f0c878e4b388f1e8e14a71acad014b37b4356c7",
+        "size": 300
+      },
+      "write_resume_hint": {
+        "sha256": "f4e14f24f32ae884c2b0d98c06d23aec64eecde67e3aecd5d8bf388d84e444a1",
+        "size": 419
+      },
+      "stringify_tool_output": {
+        "sha256": "8aacfc7ceff357af94a4cd3e6176d26b195c8f88520fc456c31382b354885bfb",
+        "size": 138
+      },
+      "dispatch_native_event": {
+        "sha256": "4e0102b33cb2134bfa9513165c7da9f1b7fbe54a77f962246e5a490719e5815f",
+        "size": 1145
+      },
+      "run_prompt_dispatch": {
+        "sha256": "729a6646e9ca6c892c3a2b2c92531662291e09ba713ba46f6a396a5aa9795f29",
+        "size": 47
+      },
+      "run_v2_print": {
+        "sha256": "abc79245e6210c0f50c7352f0a96a6be96d5faaa00af6b845f8234bd710bdbe0",
+        "size": 48
+      },
+      "apply_print_background_policy": {
+        "sha256": "766b441016e200c6da90cc4a7036e06c33c744ebb3d38910d09569af590caa16",
+        "size": 2157
+      }
+    }
+  }
+}

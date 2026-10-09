@@ -25,7 +25,7 @@ pub enum SdkScenario {
     AccountNotFirstParty,
     /// Open leaks an account identity field.
     AccountIdentityLeak,
-    /// Open reports a version outside the bound one-point claim.
+    /// Open reports a version outside the bound package/native segment.
     IdentityMismatch,
     /// Open reports a cwd other than the leased resource root.
     CwdMismatch,

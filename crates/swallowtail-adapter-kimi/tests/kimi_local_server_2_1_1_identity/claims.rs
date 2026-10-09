@@ -59,7 +59,7 @@ fn production_local_server_claim_qualifies_through_2_1_1() {
 #[test]
 fn sibling_kimi_families_do_not_move() {
     assert_eq!(KIMI_CODE_LATEST_QUALIFIED_VERSION, "0.38.0");
-    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "0.43.0");
+    assert_eq!(KIMI_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.1");
     assert_eq!(
         kimi_acp_claim().assess(&version("2.1.1")),
         InterfaceCompatibilityAssessment::Incompatible

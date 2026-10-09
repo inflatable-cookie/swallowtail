@@ -66,11 +66,16 @@ claimed, and the harness did not handle a token. Auto remains dynamic, the
 underlying model and vendor request count are unobserved, and only vendor
 selection/retries within one prompt and the 60-second ceiling are allowed.
 The default-deny official-destination proxy and fake cancellation/no-effect
-controls passed. The original exited code 1 before ACP `initialize`; no
-egress-proxy destination, ACP authentication request, session, prompt,
-permission or effect was observed. The `sandbox-exec` launcher exited code 1;
-the record does not show whether the vendor binary reached startup. Stderr was
-discarded, so the cause is unknown. This consumed the sole
+controls passed under a fake sandbox profile. That profile differs from the
+original: it maps Python `sys.prefix`, and no fake admitted the vendor-owned
+host-home authentication metadata reads allowed by the ruling. The original
+profile denied all host-home reads, not only unrelated reads. This could have
+blocked startup if the CLI needed an approved metadata read. The original
+`sandbox-exec` launcher exited code 1 before ACP `initialize`; no egress-proxy
+destination or ACP authentication request, session, prompt, permission or
+effect was observed. The record does not show whether the vendor binary
+reached startup, and stderr was discarded, so the cause is unknown. This
+consumed the sole
 `1.0.93` invocation; `1.0.81` and `1.0.80` were not started. Permission
 behavior remains unproved and all route claims, including exact `1.0.80`, are
 unchanged. See the committed

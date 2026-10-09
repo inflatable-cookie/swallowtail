@@ -39,12 +39,25 @@ The policy permits `github.com`, `github.githubassets.com`,
 `copilot-proxy.githubusercontent.com`, `origin-tracker.githubusercontent.com`,
 and subdomains of `githubcopilot.com`.
 
-The exact fake containment path passed before original execution. Controls
-proved an allowed local proxy path and rejected an unlisted destination, TLS
-SNI mismatch, direct egress, home and repository reads, writes outside task
-scratch, shell execution, late approval, and effect creation. The fake ACP
-permission request was cancelled, and the owned process and proxy were stopped
-and joined, including the forced-stop control. The committed
+The fake-only ACP agent passed its permission-cancel/no-effect and negative
+controls under the fake sandbox profile. It exercised an allowed local proxy
+path and rejected an unlisted destination, TLS SNI mismatch, direct egress,
+home and repository reads, writes outside task scratch, shell execution, late
+approval, and effect creation. Its permission request was cancelled, and its
+owned process and proxy were stopped and joined, including the forced-stop
+control. These controls did not prove the exact original sandbox profile: the
+fake profile maps Python `sys.prefix` for executable and dynamic-library reads,
+while the original profile adds no such mapped root.
+
+The original profile also denied every host-home read (profile SHA-256
+`63ab94b84b72b376f2e9093b8e94dec79a210b098a02a85d416852f1924c0334`). The
+approved boundary denies unrelated home reads while admitting only
+vendor-owned authentication metadata reads required by that boundary. No fake
+control admitted or exercised such a vendor-owned read, so the selected
+original read set was not validated before launch. This broader denial could
+have blocked startup if the CLI needed an approved home metadata read; with
+stderr discarded and vendor-binary startup unobserved, that remains a possible
+cause, not an established explanation. The committed
 [preflight record](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-preflight-record.json)
 and [execution record](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-execution-record.json)
 are secret-free. The execution record binds the exact harness digest.
@@ -74,8 +87,9 @@ authority.
 
 ## Result
 
-The approved host-login and Auto boundaries are now explicit in Contract 023.
-Fake containment and permission-cancellation controls pass, but the only
-authorized original start ended before ACP initialization. Preserve all
-existing route claims, including the exact `1.0.80` control. Do not start
-older versions or repeat `1.0.93` under this proof allowance.
+The approved host-login and Auto boundaries are explicit in Contract 023. Fake
+permission-cancellation controls pass, but they do not prove the exact original
+profile or its host-home read set. The only authorized original start ended
+before ACP initialization. Preserve all existing route claims, including the
+exact `1.0.80` control. Do not start older versions or repeat `1.0.93` under
+this proof allowance.

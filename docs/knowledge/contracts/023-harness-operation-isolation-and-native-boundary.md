@@ -873,10 +873,13 @@ these boundaries. The `sandbox-exec` process exited with code 1 before ACP
 startup. No egress-proxy destination, ACP authentication request, session,
 prompt, permission, model identity or effect was observed. Its one-invocation
 allowance is consumed, so the older versions were not started and must not be
-treated as covered. Fake cancellation and containment pass, but permission
-behavior remains unproved and no route claim changes. The harness discarded
-stderr, leaving the launch failure's cause unknown. A renewed `1.0.93` attempt
-requires separate authority.
+treated as covered. Fake permission controls pass, but do not establish the
+exact original sandbox profile or its host-home read set. The original profile
+denied all host-home reads, and no fake admitted a vendor-owned authentication
+metadata read. This stricter denial could have blocked startup; the cause is
+unknown because stderr was discarded and vendor-binary startup was not
+observed. Permission behavior remains unproved and no route claim changes. A
+renewed `1.0.93` attempt requires separate authority.
 
 ## Command Code Explicit Model Precedence
 

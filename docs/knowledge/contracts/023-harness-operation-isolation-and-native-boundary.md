@@ -1360,6 +1360,22 @@ its separately recorded authority; preparation alone does not qualify or
 resume the parent route. Preserve the exact `1.0.80` claim and released
 consumers until permission, reject/cancel and no-effect evidence exists.
 
+
+For this preparation, Tom's delegated direction also permits creating a new,
+uniquely named task-owned Parallels host-only network. This is the narrow
+exception to leaving host configuration unchanged: do not modify or reuse an
+existing network's settings, host firewall, forwarding configuration, source
+VM or unrelated guest. Require supported controls that bind the disposable
+clone to the dedicated network, disconnect the host, omit NAT and external
+uplinks, and account for both IPv4 and IPv6. Record network ownership and
+configuration before starting the clone. Verify the actual guest interfaces
+and routes as well as host-side topology before executing fixtures. An
+adapter-disconnected readback or reserved-address timeout is not proof.
+If the installed supported controls cannot establish this boundary, keep the
+clone stopped and return the exact unsupported control; do not edit private
+Parallels configuration or weaken containment. Original execution and guest
+login remain separately gated by the reviewed plan.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

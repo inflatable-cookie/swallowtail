@@ -410,6 +410,41 @@ is included. Keep the existing exact `1.0.80` claim until independent review
 establishes the selected shipped behavior and any mapping change is ruled.
 This proof belongs to the minor currentness sweep, not the urgent SDK patch.
 
+## Copilot ACP Pre-Prompt Discovery
+
+Tom's 2026-10-09 board answer to decision
+`45b2b006-76a7-4c55-a1e7-445563473844` is “Approve bounded pre-prompt
+discovery”. This authorizes a separately reviewed discovery proof against
+exact Darwin ARM64 Copilot CLI `1.0.80`, `1.0.81` and `1.0.93`, using
+`betterthanclay`'s existing login, to establish the selected ACP authentication
+and model/configuration surface. It does not authorize a model prompt.
+
+Prove containment and operation filtering against fakes, then persist the
+exact original identity, approved authentication read paths/keychain service,
+network destinations, operations, budgets and cleanup plan before execution.
+Only narrowly listed vendor-owned authentication/configuration reads and
+authentication/model-discovery network traffic are allowed. Deny unrelated
+host-home/repository reads, unlisted destinations and all writes outside task
+scratch. Never extract, copy or log secrets, switch accounts, log in again,
+relocate home/authentication state or persist configuration changes. Stop
+before the original if that narrow boundary cannot be established; access to
+the whole home is not an alternative.
+
+Allow initialize, authenticate when required, session/new, supported model or
+configuration discovery and joined close. Start with `1.0.93`; only proceed
+to older controls if its gates are safe. Each exact version has one invocation
+of at most 60 seconds, with no retry or resend. No session/prompt, model
+generation, permission approval or tool action is allowed. Record secret-free
+protocol, endpoint, model, account-access and cleanup observations. Auto does
+not establish a fixed underlying model, and local Gemma is not a substitute
+provider path. If authentication, containment or observation fails, preserve
+a finite evidence stop and the precise next proof.
+
+Discovery does not consume the separately bounded three permission-proof
+prompt attempts, establish permission/no-effect behavior, qualify a route or
+authorize its later prompt continuation. Preserve the current exact `1.0.80`
+claim until those independent gates are closed.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

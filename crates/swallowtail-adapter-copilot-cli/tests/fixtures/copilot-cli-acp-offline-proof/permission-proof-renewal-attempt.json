@@ -1,0 +1,10 @@
+{
+  "authority_sha256": "f2cc1dacc9a3ee8c14550132f27c27d884d16feaeb88a9198ae8496be72dac08",
+  "consumed_at_utc": "2026-10-09T18:15:23Z",
+  "consumed_before_launcher_start": true,
+  "harness_sha256": "f11f44d43e8baf432ed3627cd75c9630d65f0fd8fb95535cc1437fd1dbc40418",
+  "launcher_start_issued": false,
+  "operation_id": "1c00be41-c012-4f12-bac8-87526f72d46b",
+  "operator_decision": "411be8ce-77a0-4a50-930f-d6aeacdffce9",
+  "schema": "copilot-cli-acp-permission-renewal-attempt.v1"
+}

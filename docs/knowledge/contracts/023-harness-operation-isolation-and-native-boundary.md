@@ -1088,6 +1088,17 @@ observed. No token extraction, login, settings/home mutation, automatic
 qualification or tag is authorized; parent qualification needs reviewed
 original permission/cancel/no-effect evidence and any required mapping ruling.
 
+Observed 2026-10-09 ([Research 430](../../research/430-copilot-acp-renewed-1-0-93-permission-proof-stop.md)):
+operation `1c00be41-c012-4f12-bac8-87526f72d46b` consumed its one-shot
+renewal attempt before launch. The single `1.0.93` invocation exited with
+launcher code 1 after 1.289 seconds, before ACP `initialize`, with stderr
+category `sandbox-denial`. No prompt, permission request, cancel, effect or
+egress destination was observed, and vendor startup stays unknown. The
+renewal is consumed; `1.0.81` and `1.0.80` were not started. The shared
+three-prompt allowance is unchanged at three remaining. No route claim,
+qualification, public API or consumer contract changed. Any further attempt
+needs new exact authority after a reviewed diagnosis.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

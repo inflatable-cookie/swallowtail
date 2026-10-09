@@ -94,3 +94,17 @@ means original vendor startup remains `unknown`; fake startup does not prove
 original startup. This correction neither renews the consumed `1.0.93`
 invocation nor changes qualification. A future original run needs new exact
 authority.
+
+## Renewed 1.0.93 attempt
+
+`permission-proof-renewal-authority.json` grants one `1.0.93` invocation under
+decision `411be8ce-77a0-4a50-930f-d6aeacdffce9`. Admission is read-only and
+refuses missing, tampered, mismatched or consumed authority before staging.
+`permission-proof-renewal-attempt.json` is created exclusively before launch.
+`permission-proof-renewal-execution-record.json` is created exclusively after
+the run and checked by `check:copilot-acp-permission-record`.
+
+The renewed invocation exited before ACP `initialize` with a `sandbox-denial`
+stderr category, zero prompts and no permission evidence. The renewal is
+consumed. Older artifacts were not started. See
+[Research 430](../../../../../docs/research/430-copilot-acp-renewed-1-0-93-permission-proof-stop.md).

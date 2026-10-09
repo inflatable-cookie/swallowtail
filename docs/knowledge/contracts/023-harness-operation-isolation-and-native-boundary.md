@@ -119,20 +119,131 @@ design; implementation returns separately”. This authorizes a bounded offline
 enforcement design for Research 417's selected Plan-to-YOLO transition, reusing
 completed source, identity and fake evidence.
 
-Investigate exact shipped process-scoped mechanisms that block
-`exit_plan_mode` before tool effects while retaining bounded Plan reads,
-approved working resources, environment/authentication binding and
-reject/cancel/no-bypass. Prove proposed control precedence from the selected
-source and invocation, including overlays, defaults and alternative
-transitions. Stream observation or cancellation after effects is not
-prevention. Do not mutate persistent settings, relocate home/authentication,
-fork the vendor, silently drop selected behavior or disable provider safety.
+### Frozen control ledger
 
-If no private shipped mechanism preserves those promises, return a concrete
-host/tool-interposition or contract/API design with explicit consumer,
-preflight, permission/lifecycle, serialization and Contract 036 minor-release
-limits. Return staged fake-first negative proof and implementation scopes for
-a separate ruling before coding.
+Research 417 pins Gemini CLI `0.63.0` to source commit
+`573846625af9e93b3b968e0e0b86bb093a4c9b16` and tree manifest
+`fbb5d78fd631e4a53e26a62284f8c15d5d90a1ef2743d4d79a5517218dfc6e51`. The
+selected authority hashes remain in the
+[frozen authority fixture](../../../crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-headless-authority-0.63.0/authority-evidence.json);
+the complete path hashes are in the
+[frozen source inventory](../../../crates/swallowtail-adapter-gemini/tests/fixtures/gemini-cli-0.63.0/source-tree-inventory.json).
+The additional files below are read-only source analysis against that same
+tree. Their hashes are from that inventory.
+
+| Control | Frozen source | Result |
+| --- | --- | --- |
+| Invocation and overlays | [`packages/cli/src/config/config.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L321-L343), `bdb490bbf0ea1803d74e8bc1748432096eff7063abec0447e5e7aa467e4187b8`; [argument-to-settings mapping](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/cli/src/config/config.ts#L768-L799) | The selected CLI exposes `--approval-mode`, `--policy`, and `--admin-policy`; it has no mapped `--exclude-tools` option. `--policy` replaces the default user-policy directory when supplied. `--admin-policy` replaces the settings path list, and Gemini ignores supplemental admin paths when its system policy directory contains TOML files. |
+| Policy tiering | [`packages/core/src/policy/config.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/config.ts#L88-L120), `522fa65371cf269bea9bce5fe558de9757db698c542f5da84b98869ce8423ee9`; [`toml-loader.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/toml-loader.ts#L35-L65), `605e9e5031daa0f1b57a18f72e01edbf6cff6e2395e499a724805ca11ef8fda6` | Default → extension → workspace → user → admin. TOML priorities are `0..999` within each tier. `tools.exclude` creates a user-tier deny at `4.4`; a user policy can reach `4.999`, and an admin allow is higher. A user-tier exclusion therefore is not a non-overridable guard. |
+| Plan defaults | [`plan.toml`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/plan.toml#L30-L76), `cbc98437f7a0c3df44465e853863c1016d66d725da2b9a223946e802ffd2b777`; [`read-only.toml`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policies/read-only.toml#L28-L55), `4899746262c3beedce94ca90fdcbb50028e52232747288e5bff73c523db05bfb` | In noninteractive Plan mode, the default policy explicitly allows `exit_plan_mode` at priority 70. Plan's catch-all deny is priority 40 and its read-only list is priority 50. That built-in list also names topic, task, and tracker tools, so its label alone is not a filesystem read allowlist. |
+| Decision and transition | [`policy-engine.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/policy/policy-engine.ts#L859-L867), `3b7118ceadaa36589f64def7669a503d64bd805fbff696077f5f7929361dfad2`; [`exit-plan-mode.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/tools/exit-plan-mode.ts#L135-L143), `1e1589584223a824c817a24be784cf84922fc67785c544ec99e10dfe1e889435` | The engine selects the highest-priority matching rule, then converts `ASK_USER` to `DENY` in noninteractive mode. It leaves an explicit `ALLOW` intact. An allowed noninteractive exit selects YOLO and updates the active mode. |
+| Pre-effect hook | [`scheduler.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/scheduler/scheduler.ts#L590-L653), `79d3ceaceac098d96bae070c97fbd48e566d5c425cfadec5e1c9bc294ee3c629`; [`hook-utils.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/scheduler/hook-utils.ts#L25-L65), `51fcfdf0e891bd2372e993e5792011a7781a3d51de7c546cd5fdaa148d81c9dc`; [`coreToolHookTriggers.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/core/coreToolHookTriggers.ts#L62-L111), `e2e3b008a789490f5e097a7729d1afad0bf72c9c099bb0d31e864eaf93cd1c6f` | The scheduler checks `BeforeTool` before policy, confirmation and execution. A blocking hook returns a policy-violation result before `invocation.execute()`. The hook aggregator gives any `block` or `deny` decision precedence over `ask` or `allow`; see [`hookAggregator.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/hooks/hookAggregator.ts#L104-L141), `c5c16d0c17243e70a0e79f2b917cab70a399142ed77fe549a989b0ce47713d7`. |
+
+The selected route's `--approval-mode plan` can also fall back to `default` when
+Plan is disabled in settings or the folder is not trusted. Its selected
+`--skip-trust` flag addresses the latter path, but the future adapter still
+must fail before the prompt unless its effective mode and tool registry match
+the prepared Plan profile. Stream-json emits `tool_use` before the scheduler;
+observing that event or cancelling the process is not a pre-effect control.
+
+### Enforcement design
+
+Gemini ships an internal, in-memory `BeforeTool` seam that can block the call
+before its effect. `HookRegistry.registerHook` can register a `Runtime` hook
+before initialization, and initialization retains runtime hooks alongside
+configuration hooks; see [`hookRegistry.ts`](https://github.com/google-gemini/gemini-cli/blob/573846625af9e93b3b968e0e0b86bb093a4c9b16/packages/core/src/hooks/hookRegistry.ts#L39-L75),
+`1e79ac1bb97cf1144ace5aa449cd06d400543f4292e97eeead4d6e0618e47614`. A runtime
+block is not defeated by a higher-priority policy file or another hook's
+allow. It does not require a settings file, extension, auth-home change, or
+provider prompt.
+
+The selected Swallowtail path launches the external CLI and has no supported
+argument or IPC channel to register that runtime hook. A hook configured in
+user, workspace, or system settings is persistent consumer configuration,
+not an adapter-owned per-run control. Enabling an extension would change the
+selected `--extensions none` invocation. `--policy` and `--admin-policy` can
+replace existing consumer-selected policy paths or be suppressed by system
+policy, so they are not acceptable substitutes.
+
+The candidate enforcement contract is a provider-supported, process-local
+pre-tool guard that registers an adapter-owned runtime hook in the actual
+Gemini scheduler before initialization. Its prepared policy binds to the
+selected Plan tool registry: always block `exit_plan_mode`; permit only the
+exact pre-transition tools and resource rules already approved by the prepared
+profile; block every other or unknown tool before effect. This covers a direct
+write tool allowed by an overlay as well as the named transition. Keep
+provider path checks, `.gemini` write safety, output bounds, selected cwd,
+environment and authentication binding. Do not use the hook to change
+settings, home, provider flags outside the prepared profile, or process
+containment claims.
+
+No shipped CLI interface currently connects the external-process adapter to
+that internal hook. The precise unavailable edge is process-local hook
+injection while retaining all loaded consumer policy and settings. The
+concrete next adaptation is a separately approved typed adapter-to-host
+capability for Gemini runtime hook registration: the host must construct the
+hook in memory before Gemini initialization, bind it to the prepared Plan
+profile, and fail startup before the prompt if the selected runtime cannot
+register or confirm the guard. This requires a supported Gemini injection
+surface or a reviewed in-process integration; it is not implementable by
+adding a CLI policy file or watching stream events. Do not patch or fork the
+vendor runtime. Until that capability exists, consumers get no new guarantee
+that the external CLI cannot transition to YOLO, and the adapter must not
+describe the prepared Plan route as enforcing this guard. Any decision to
+disable or narrow that route is a separate consumer-visible ruling. The
+versioned strict serialization described below is only for the future typed
+host boundary; it is not a mechanism the current CLI accepts.
+
+### Consumer, preflight, and lifecycle contract
+
+- A prepared Plan read within the selected approved resources continues
+  through Gemini's defensive real-path checks and existing bounded-output
+  behavior.
+- A model request for `exit_plan_mode` is blocked before confirmation and
+  tool execution. Approval mode stays Plan; no `ASK_USER` callback, fallback
+  allow, YOLO transition, or policy persistence occurs.
+- A direct write, shell, edit, unknown tool, or alternative transition that
+  is not in the prepared Plan allow-set is blocked before execution, including
+  when a user or admin policy would otherwise allow it. An unrecognized
+  effective tool set is a preflight failure, not a silent tool removal.
+- Missing, disabled, malformed, or mismatched guard state fails before the
+  model prompt. Cancellation and denial must leave the fake effect log empty,
+  then join process and stream cleanup. Do not infer prevention from a
+  cancellation after execution.
+- The hook returns Gemini's normal policy-violation tool result. The adapter
+  keeps its current tool-event, usage, terminal, and error projection; it
+  adds no approval callback or stream field. Prove exact stream and terminal
+  outcomes with fakes before any claim changes.
+
+The proposed launch serialization must be versioned and strict, carry only the
+prepared tool names and authority mode, and contain no prompt, path, credential,
+or environment value. Unknown schema versions and fields fail before the
+prompt. The guard remains in process memory and is not written to provider
+settings. No integration or API is approved by this design.
+
+### Proof and release boundary
+
+The separate implementation brief should prove, with fake-first tests:
+
+1. baseline and user/workspace/admin allow overlays cannot run
+   `exit_plan_mode` or any non-allowlisted tool;
+2. default bounded Plan reads still work and preserve defensive paths and
+   truthful truncation/collapse semantics;
+3. deny, cancellation, malformed guard, failed startup, and unknown tool
+   cases produce no fake tool effects, no `ASK_USER` bypass, no mode change,
+   and joined cleanup;
+4. serialized events contain no new fields, parameters, or result bodies,
+   and existing adapter projection remains exact.
+
+No whole-package suite, old fake, artifact inventory, or provider proof is
+repeated here. Preserve the `0.51.0..=0.61.0` headless claim, its exclusions,
+and Gemini ACP independence. Under [Contract 036](036-crate-release-and-compatibility-boundary.md),
+a private guard that preserves the documented Plan contract and existing
+consumer event/lifecycle surface may be patch-compatible by behavior; a new
+public API, changed terminal or permission lifecycle, serialized contract
+change, or newly narrowed consumer guarantee is a pre-1.0 minor change. The
+currentness sweep remains assigned to the minor release; this design grants
+no qualification or release authority.
 
 This is documentation and offline source analysis only: no runtime/API
 implementation, artifact execution, live/provider work, credentials, install

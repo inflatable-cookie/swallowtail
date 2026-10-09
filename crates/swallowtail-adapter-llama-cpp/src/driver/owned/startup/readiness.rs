@@ -81,7 +81,7 @@ pub(crate) async fn verify_owned_readiness(
     )
     .await
     .map_err(readiness_failure)?;
-    let evidence = parse_properties(&properties, facade.version).map_err(readiness_failure)?;
+    let evidence = parse_properties(&properties, facade.versions).map_err(readiness_failure)?;
     validate_evidence(&evidence, Some(alias)).map_err(|_| {
         failure(
             "swallowtail.llama_cpp.serving_route_mismatch",

@@ -1288,7 +1288,8 @@ with provider-state prohibited. The separate `pi.sdk-sidecar` route now
 realizes load and resume through the public SDK: `switchSession` runs with
 the host-leased cwd as `cwdOverride`, the driver compares the effective cwd
 and session reference before readiness, load completes bounded typed replay
-before readiness, and resume attaches without replay. Durable provider state
+before readiness, a replay item after that response fails closed with no
+ready handle, and resume attaches without replay. Durable provider state
 lives in the application-provisioned session directory and is preserved on
 close. Both routes remain production; the RPC route keeps its lighter
 operational posture and the SDK route keeps the continuation surface, and
@@ -1788,9 +1789,11 @@ manifest-list rows, and does not treat a new runner row as the old identity
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external
-endpoint, exact b9910/f5525f7e7 runtime identity, local-unauthenticated access,
-and separate catalogue or one-attempt inference plans. It exposes no serving
-start or stop authority; closing inference leaves the external server running.
+endpoint, the exact opaque `b9910-f5525f7e7` and `b11429-d81235049` runtime
+points, local-unauthenticated access, and separate catalogue or one-attempt
+inference plans. Its released binding remains `b9910-f5525f7e7`. It exposes no
+serving start or stop authority; closing inference leaves the external server
+running.
 
 `prepare_llama_cpp_owned` instead binds one host-approved executable, exact
 b10069/178a6c449 runtime identity, one GGUF artifact, one route and alias, and

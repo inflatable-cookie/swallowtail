@@ -46,7 +46,7 @@ use super::*;
 
     #[test]
     fn properties_bind_exact_build_template_and_text_only_capability_evidence() {
-        let evidence = parse_properties(&response(200, PROPERTIES), ATTACHED_VERSION)
+        let evidence = parse_properties(&response(200, PROPERTIES), &[ATTACHED_VERSION])
             .expect("properties parse");
         assert_eq!(evidence.model_alias, "swallowtail-fixture-stories260k");
         assert_eq!(evidence.chat_template, "chatml");
@@ -60,10 +60,53 @@ use super::*;
         wrong["build_info"] = json!("b10069-178a6c449");
         let error = parse_properties(
             &response(200, &serde_json::to_vec(&wrong).expect("JSON serializes")),
-            ATTACHED_VERSION,
+            &[ATTACHED_VERSION],
         )
             .expect_err("unobserved version fails");
         assert_eq!(error.diagnostic().code(), "swallowtail.llama_cpp.version_mismatch");
+    }
+
+    #[test]
+    fn properties_accept_only_the_two_qualified_attached_runtime_pairs() {
+        for build_info in ["b9910-f5525f7e7", "b11429-d81235049"] {
+            let mut properties: Value =
+                serde_json::from_slice(PROPERTIES).expect("properties JSON parses");
+            properties["build_info"] = json!(build_info);
+            parse_properties(
+                &response(
+                    200,
+                    &serde_json::to_vec(&properties).expect("JSON serializes"),
+                ),
+                ATTACHED_SUPPORTED_VERSIONS,
+            )
+            .unwrap_or_else(|_| panic!("qualified runtime {build_info} must parse"));
+        }
+
+        for build_info in [
+            "prefix-b9910-f5525f7e7",
+            "b9910-f5525f7e7-extra",
+            "b99100-f5525f7e7",
+            "b11429-d8123504",
+            "b114290-d81235049",
+            "b10069-178a6c449",
+        ] {
+            let mut properties: Value =
+                serde_json::from_slice(PROPERTIES).expect("properties JSON parses");
+            properties["build_info"] = json!(build_info);
+            let error = parse_properties(
+                &response(
+                    200,
+                    &serde_json::to_vec(&properties).expect("JSON serializes"),
+                ),
+                ATTACHED_SUPPORTED_VERSIONS,
+            )
+            .expect_err("unqualified runtime identity fails closed");
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.llama_cpp.version_mismatch",
+                "build_info={build_info}"
+            );
+        }
     }
 
     #[test]

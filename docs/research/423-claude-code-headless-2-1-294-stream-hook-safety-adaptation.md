@@ -1,4 +1,4 @@
-# Research 422: Claude Code Headless 2.1.294 Stream and Hook-Safety Adaptation
+# Research 423: Claude Code Headless 2.1.294 Stream and Hook-Safety Adaptation
 
 Status: qualified through the frozen official stable `2.1.294` identity.
 
@@ -25,7 +25,7 @@ set; this qualification does not widen it to `2.1.282..=2.1.294`.
 
 ## Frozen artifacts and selected path
 
-Research 421 retains the complete npm wrapper, Darwin arm64, and Linux x64
+Research 422 retains the complete npm wrapper, Darwin arm64, and Linux x64
 package trees and every published hop after `2.1.281` through `2.1.294`.
 Research 374 retains the per-hop selected-path classification through
 `2.1.293`; this record reuses its unchanged hop findings and resolves the
@@ -106,7 +106,7 @@ claims. Contract 036 release compatibility remains a separate gate.
 
 ## Sources
 
-- [Research 421: original 2.1.294 currentness stop](./421-claude-code-2-1-294-headless-currentness-stop.md)
+- [Research 422: original 2.1.294 currentness stop](./422-claude-code-2-1-294-headless-currentness-stop.md)
 - [Research 374: selected hop classifications through 2.1.293](./374-claude-code-2-1-293-headless-currentness-stop.md)
 - [Exact 2.1.294 package inventories and static semantics](../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.294/)
 - [Claude Code 2.1.294 release](https://github.com/anthropics/claude-code/releases/tag/v2.1.294)

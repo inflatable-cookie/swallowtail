@@ -50,13 +50,13 @@ impl LlamaCppAttachedPreparedIntegration {
         &self.evidence
     }
 
-    /// Returns the exact attached llama.cpp build expected at execution.
+    /// Returns the retained baseline build in the attached route binding.
     #[must_use]
     pub const fn expected_build(&self) -> &'static str {
         crate::LLAMA_CPP_ATTACHED_BUILD
     }
 
-    /// Returns the exact attached llama.cpp commit expected at execution.
+    /// Returns the retained baseline commit in the attached route binding.
     #[must_use]
     pub const fn expected_commit(&self) -> &'static str {
         crate::LLAMA_CPP_ATTACHED_COMMIT

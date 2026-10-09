@@ -1,7 +1,7 @@
 use crate::failure::{failure, unsupported};
 use crate::protocol::{
-    ATTACHED_VERSION, ChatTemplateCapabilities, DeploymentEvidence, Event, ObservedVersion,
-    Readiness, Request, parse_event, parse_health, parse_models, parse_properties,
+    ATTACHED_SUPPORTED_VERSIONS, ChatTemplateCapabilities, DeploymentEvidence, Event,
+    ObservedVersion, Readiness, Request, parse_event, parse_health, parse_models, parse_properties,
 };
 use crate::transport::{CurlTransport, Subscription};
 use std::future::Future;
@@ -35,7 +35,7 @@ pub use descriptor::llama_cpp_attached_descriptor;
 pub struct LlamaCppAttachedDriver {
     transport: CurlTransport,
     driver_id: &'static str,
-    version: ObservedVersion,
+    versions: &'static [ObservedVersion],
     run_id_prefix: &'static str,
     route: &'static str,
 }
@@ -47,12 +47,12 @@ impl Default for LlamaCppAttachedDriver {
 }
 
 impl LlamaCppAttachedDriver {
-    /// Creates the exact build-9910 attached-server facade.
+    /// Creates the attached-server facade for the qualified exact runtime set.
     #[must_use]
     pub fn new() -> Self {
         Self::for_facade(
             DRIVER_ID,
-            ATTACHED_VERSION,
+            ATTACHED_SUPPORTED_VERSIONS,
             "llama-cpp-attached",
             ATTACHED_ROUTE,
         )
@@ -60,14 +60,14 @@ impl LlamaCppAttachedDriver {
 
     fn for_facade(
         driver_id: &'static str,
-        version: ObservedVersion,
+        versions: &'static [ObservedVersion],
         run_id_prefix: &'static str,
         route: &'static str,
     ) -> Self {
         Self {
             transport: CurlTransport,
             driver_id,
-            version,
+            versions,
             run_id_prefix,
             route,
         }
@@ -133,7 +133,7 @@ impl LlamaCppAttachedDriver {
             cancelled,
         )
         .await?;
-        let evidence = parse_properties(&properties, self.version)?;
+        let evidence = parse_properties(&properties, self.versions)?;
         validate_evidence(&evidence, expected_model)?;
         Ok(evidence)
     }

@@ -108,6 +108,21 @@ pub(super) fn session_replay(
             replay_response(state, id, 1, true);
             replay_item(state, 1);
         }
+        SidecarScenario::ReplayAfterResponseSameRead => {
+            super::output_batch(
+                state,
+                &[
+                    replay_item_value(0),
+                    replay_response_value(id, 1, true),
+                    replay_item_value(1),
+                ],
+            );
+        }
+        SidecarScenario::ReplayAfterResponseHeld => {
+            replay_item(state, 0);
+            replay_response(state, id, 1, true);
+            state.late_replay_held = true;
+        }
         SidecarScenario::HoldReplay => {
             replay_item(state, 0);
         }
@@ -120,7 +135,15 @@ pub(super) fn session_replay(
     }
 }
 
+pub(in super::super) fn emit_held_late_replay(state: &mut ProcessState) {
+    replay_item(state, 1);
+}
+
 fn replay_item(state: &mut ProcessState, sequence: u64) {
+    output(state, replay_item_value(sequence));
+}
+
+fn replay_item_value(sequence: u64) -> Value {
     let item = match sequence % 3 {
         0 => json!({"kind": "user", "text": "fixture question", "images": 0}),
         1 => json!({
@@ -137,21 +160,19 @@ fn replay_item(state: &mut ProcessState, sequence: u64) {
             json!({"kind": "tool_result", "toolName": "read", "isError": false, "text": "fixture file body"})
         }
     };
-    output(
-        state,
-        json!({"type": "event", "event": "replay_item", "sequence": sequence, "item": item}),
-    );
+    json!({"type": "event", "event": "replay_item", "sequence": sequence, "item": item})
 }
 
 fn replay_response(state: &mut ProcessState, id: Option<&str>, items: u64, complete: bool) {
-    output(
-        state,
-        json!({
-            "type": "response",
-            "id": id,
-            "command": "session_replay",
-            "success": true,
-            "data": {"items": items, "complete": complete}
-        }),
-    );
+    output(state, replay_response_value(id, items, complete));
+}
+
+fn replay_response_value(id: Option<&str>, items: u64, complete: bool) -> Value {
+    json!({
+        "type": "response",
+        "id": id,
+        "command": "session_replay",
+        "success": true,
+        "data": {"items": items, "complete": complete}
+    })
 }

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-07
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -619,3 +619,28 @@ This contract does not standardize provider tool names, approval modes, budget
 vocabulary, sandbox implementations, configuration files, transcript formats,
 or credential stores. It does not authorize repository writes, provider
 fallback, or consumer routing policy.
+
+## Pi Sidecar Replay Failure And Cleanup Repair
+
+Tom answered “Approve” on 2026-10-09 to decision
+`21daeebe-1d60-4dfe-8f5b-7bac5c6ab685`, authorizing a bounded repair of the
+recurring late-replay load failure and cleanup hang.
+
+A `replay_item` after the `session_replay` response is a protocol failure.
+The pump may still hold the armed collector (`replay_incomplete` count
+mismatch) or the load path may already have taken it (`replay_unexpected`).
+Pump shutdown and command registration share the pending lock, so a later
+`state` command cannot register after that drain and wait for a pump that
+will never answer. Fake-child controls force both orderings without a sleep
+race. Load returns no handle; process, resource, and credential cleanup still
+join. The fake host occupies its exact owned tree on start; wait reaps that
+tree and attests `OwnedTreeEmpty`. Proofs assert that empty tree and
+attestation, not only wait/resource/credential order. Host-local remains
+`RootOnly`; real-host cleanup classification is unchanged.
+
+Raising CI timeouts, skipping the failing test, weakening assertions or
+waiting for lower machine load does not establish correctness. Keep provider
+versions, compatibility claims, public API, permissions and lifecycle
+promises unchanged. Any required change to those boundaries returns for a
+separate ruling. No vendor execution, live provider work, credentials,
+installation, host mutation or release authority is included.

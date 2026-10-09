@@ -120,6 +120,12 @@ section = "Research Records"
 ]
 "check:current-pi-sdk-sidecar" = "cargo check --locked --all-targets -p swallowtail-adapter-pi"
 "validate:current-pi-sdk-sidecar" = "cargo nextest run --locked --profile current-pi-sdk-sidecar --no-fail-fast -p swallowtail-adapter-pi --lib --test integration --test sidecar_driver -E 'binary(sidecar_driver) | test(/pi_sdk_sidecar_identity::|pi_sdk_sidecar_artifact_identity::|selection::tests::/) | test(/protocol::tests::(qualified_corpora_decode|corpus_identity_matches_the_frozen_sidecar_identity)/) | test(/wire::tests::/) | test(sdk_sidecar_keeps_its_observed_baseline_independent_of_rpc)'"
+"format:pi-replay-cleanup" = [
+  "cargo fmt -p swallowtail-adapter-pi",
+  "cargo fmt -p swallowtail-adapter-pi -- --check",
+]
+"check:pi-replay-cleanup" = "cargo check --locked --all-targets -p swallowtail-adapter-pi"
+"validate:pi-replay-cleanup" = "cargo nextest run --locked --profile pi-replay-cleanup --no-fail-fast -p swallowtail-adapter-pi --lib --test sidecar_driver -E 'test(/persistent_replay::/) | test(/sidecar::connection::connection_tests::/) | test(/sidecar::replay::tests::/)'"
 "format:current-antigravity-catalogue" = [
   "cargo fmt -p swallowtail-adapter-antigravity",
   "cargo fmt -p swallowtail-adapter-antigravity -- --check",
@@ -151,6 +157,12 @@ section = "Research Records"
 "validate:current-cline-headless" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-cline --lib --test cline_headless_identity --test cline_headless_currentness --test activity_corpus --test headless_suite --test prepared_headless_facade --test prepared_facade --test consumer_route_projection -E 'binary(cline_headless_identity) | binary(cline_headless_currentness) | binary(activity_corpus) | binary(headless_suite) | binary(prepared_headless_facade) | binary(consumer_route_projection) | test(/selection::tests::/) | test(/preparation_rejects_access_axis_and_package_drift_before_acp_work/) | test(newer_media_content_type_fails_closed_without_projection)'"
 "check:current-ollama-attached" = "cargo check --locked --all-targets -p swallowtail-adapter-ollama"
 "validate:current-ollama-attached" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-ollama --lib --test ollama_0_40_1_identity --test ollama_0_40_0_identity --test ollama_0_34_4_identity --test ollama_0_34_2_identity --test ollama_0_34_0_identity --test ollama_runtime_identity --test prepared_facade --test attached_driver --test connection_lifecycle --test context_window_corpus --test interactive_session_corpus --test conformance --test generation_control_corpus -E 'binary(ollama_0_40_1_identity) | binary(ollama_0_40_0_identity) | binary(ollama_0_34_4_identity) | binary(ollama_0_34_2_identity) | binary(ollama_0_34_0_identity) | binary(ollama_runtime_identity) | binary(prepared_facade) | binary(attached_driver) | binary(connection_lifecycle) | binary(context_window_corpus) | binary(interactive_session_corpus) | binary(conformance) | binary(generation_control_corpus) | test(/(descriptor_publishes_maintained_segments_without_filling_published_holes|claim_keeps_historical_native_text_and_adds_manifest_list_runner_milestone|exact_version_codec_separates_qualified_unverified_and_incompatible_points|manifest_list_binds_tag_and_digest_and_skips_unmapped_siblings|runner_pin_is_omitted_unless_the_matching_catalogue_row_has_one)/)'"
+"format:current-llama-cpp-attached" = [
+  "cargo fmt -p swallowtail-adapter-llama-cpp",
+  "cargo fmt -p swallowtail-adapter-llama-cpp -- --check",
+]
+"check:current-llama-cpp-attached" = "cargo check --locked --all-targets -p swallowtail-adapter-llama-cpp"
+"validate:current-llama-cpp-attached" = "cargo nextest run --locked --profile ci --all-features -p swallowtail-adapter-llama-cpp --lib --test attached_driver --test prepared_facades --test llama_cpp_attached_v0_6_0_identity -E 'binary(attached_driver) | binary(llama_cpp_attached_v0_6_0_identity) | test(/protocol::tests::(properties_bind_exact_build_template_and_text_only_capability_evidence|properties_accept_only_the_two_qualified_attached_runtime_pairs)/) | test(attached_facade_binds_catalogue_and_inference_without_stop_authority)'"
 "format:current-oh-my-pi-rpc" = [
   "cargo fmt -p swallowtail-adapter-oh-my-pi",
   "cargo fmt -p swallowtail-adapter-oh-my-pi -- --check",

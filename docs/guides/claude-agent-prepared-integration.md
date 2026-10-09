@@ -276,7 +276,7 @@ visible `UnverifiedNewer`; official `2.1.295` remains unverified after the
 frozen `2.1.294` identity. Headless does not pass `--safe-mode` and already
 admits ambient project instructions. The exact 2.1.294 npm wrapper, Darwin
 arm64, and Linux x64 trees and every published hop after `2.1.281` remain
-frozen in Research 421. Research 422 records exact-artifact hook-safety
+frozen in Research 422. Research 423 records exact-artifact hook-safety
 analysis and provider-free adapter fixtures for the forked stream and denied
 action cases.
 
@@ -291,7 +291,7 @@ a deny blocks the tool call. `Stop` and `SubagentStop` use their active-hook
 state to avoid blocking their own reentry; the provider's configured block cap
 remains in force. The route keeps `--permission-mode plan`, its `Read,Glob,Grep`
 tool set, and user, project, and local settings. It does not disable hooks or
-add a permission bypass. Research 422 records the static source review and
+add a permission bypass. Research 423 records the static source review and
 synthetic fake-process coverage; the fixtures are adapter tests, not captured
 provider transcripts.
 

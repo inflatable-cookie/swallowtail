@@ -536,13 +536,16 @@ fn official_identity_freezes_the_exact_runtime_bridge_and_complete_inventory() {
         protocol["selected_behavior_comparison"]["selected_capability_assessment_source_changed"],
         true
     );
-    assert_eq!(
+    let mut selected_classification_detail_paths =
         protocol["selected_behavior_comparison"]["source_change_classification_details"]
             .as_object()
             .expect("omitted source paths have details")
             .keys()
             .map(String::as_str)
-            .collect::<Vec<_>>(),
+            .collect::<Vec<_>>();
+    selected_classification_detail_paths.sort_unstable();
+    assert_eq!(
+        selected_classification_detail_paths,
         [
             "common/build-info.h",
             "common/jinja/caps.cpp",

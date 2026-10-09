@@ -1069,6 +1069,7 @@ pub const fn swallowtail_core::InterfaceCompatibilityClaim::axis(&self) -> &swal
 pub fn swallowtail_core::InterfaceCompatibilityClaim::baseline(&self) -> &swallowtail_core::InterfaceVersion
 pub fn swallowtail_core::InterfaceCompatibilityClaim::classify(&self, &swallowtail_core::InterfaceVersion) -> core::option::Option<swallowtail_core::InterfaceCompatibilityMatch>
 pub fn swallowtail_core::InterfaceCompatibilityClaim::exclusions(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersion>
+pub const fn swallowtail_core::InterfaceCompatibilityClaim::has_version_interval(&self) -> bool
 pub const fn swallowtail_core::InterfaceCompatibilityClaim::id(&self) -> &swallowtail_core::InterfaceCompatibilityClaimId
 pub fn swallowtail_core::InterfaceCompatibilityClaim::latest_qualified(&self) -> &swallowtail_core::InterfaceVersion
 pub fn swallowtail_core::InterfaceCompatibilityClaim::milestones(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_core::InterfaceVersionSegment>

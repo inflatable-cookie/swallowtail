@@ -52,6 +52,14 @@ section = "Research Records"
 "qa:docs:front-door" = "effigy docs check contains docs/README.md --require 'knowledge/README.md' --require 'Queue'"
 
 "format:check" = "cargo fmt --all -- --check"
+"format:opaque-set-claim" = [
+  "cargo fmt -p swallowtail-core",
+  "cargo fmt -p swallowtail-runtime",
+  "cargo fmt -p swallowtail-core -- --check",
+  "cargo fmt -p swallowtail-runtime -- --check",
+]
+"check:opaque-set-claim" = "cargo check --locked --all-targets -p swallowtail-core -p swallowtail-runtime"
+"validate:opaque-set-claim" = "cargo nextest run --locked --profile ci -p swallowtail-core -p swallowtail-runtime --lib -E 'test(/interface_version::tests::/) | test(/installed_executable::tests::/) | test(/connection_lifecycle::tests::/) | test(/connection_lifecycle::update_tests::/) | test(/prepared_operation::tests::(opaque_set|prepared_opaque_set)/)'"
 "format:copilot-acp-offline-proof" = [
   "cargo fmt -p swallowtail-adapter-copilot-cli",
   "cargo fmt -p swallowtail-adapter-copilot-cli -- --check",

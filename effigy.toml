@@ -73,6 +73,15 @@ section = "Research Records"
   "python3 scripts/copilot-acp-offline-proof.py --self-test",
   "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",
 ]
+"check:copilot-acp-authenticated-proof" = [
+  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-offline-proof.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.schema.json\")]'",
+  "python3 scripts/copilot-acp-offline-proof.py --validate-plan",
+  "cargo check --locked -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof",
+]
+"validate:copilot-acp-authenticated-proof" = [
+  "python3 scripts/copilot-acp-offline-proof.py --self-test",
+  "cargo nextest run --locked --profile ci --no-fail-fast -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",
+]
 "check:kiro-acp-owner-state-offline" = "python3 -c 'from pathlib import Path; file = Path(\"scripts/kiro-acp-owner-state-offline-proof.py\"); compile(file.read_bytes(), str(file), \"exec\")'"
 "validate:kiro-acp-owner-state-offline" = "python3 scripts/kiro-acp-owner-state-offline-proof.py --run"
 "check:sdk-usage-projection" = "cargo check --locked -p swallowtail-adapter-claude-agent --all-targets"

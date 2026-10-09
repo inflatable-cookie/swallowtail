@@ -369,6 +369,18 @@ proof and name existing access/model”. The offline artifact proof could not
 reach permission exchange: exact `1.0.80`, `1.0.81` and `1.0.93` each required
 authentication at `session/new`.
 
+[Research 425](../../research/425-copilot-acp-authenticated-proof-preparation.md)
+records preparation of that proof. The offline fake now tests a
+host-owned one-use in-memory delegation channel and fake ACP `authenticate`
+exchange, fail-closed account/model/audience/entitlement checks, cancelled
+permission, abandoned pending wait, and joined no-effect cleanup. The
+secret-free plan schema lists one bounded record template for each exact
+artifact and keeps live execution disabled.
+The fake does not establish any frozen artifact's ACP authentication,
+Auto/model observation, entitlement, audiences, retry bounds, or permission
+behavior. These remain prerequisites for the separately reviewed live
+continuation; no original artifact or real credential was accessed.
+
 A separately scoped proof may use one bounded ACP prompt per exact version,
 three total, after the operator identifies the existing approved account or
 access profile and model. Bind delegated credential mechanism, entitlement

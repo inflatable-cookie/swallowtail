@@ -44,6 +44,13 @@ Swallowtail does not install Copilot CLI, search `PATH`, run GitHub login, bind
 `GH_TOKEN` / `GITHUB_TOKEN` as a Swallowtail lease, or default `--yolo`.
 Host-owned GitHub Copilot login or BYOK stays outside the prepared plan.
 
+[Research 425](../research/425-copilot-acp-authenticated-proof-preparation.md)
+prepares a separately gated one-off permission proof. Its fake broker and
+execution-plan schema do not change this prepared session path or establish
+that the frozen artifacts can accept delegated authentication, select Auto,
+bound retries, or expose the selected model. The proof stays disabled until
+those exact prerequisites are reviewed.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

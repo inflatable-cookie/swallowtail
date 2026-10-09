@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
-  "required": ["schema", "recorded_at_utc", "plan_sha256", "correction_plan_sha256", "harness_sha256", "native_fake_source_sha256", "native_fake_binary_sha256", "result"],
+  "required": ["schema", "recorded_at_utc", "plan_sha256", "correction_plan_sha256", "harness_sha256", "native_fake_source_sha256", "native_fake_binary_sha256", "stage_launcher_source_sha256", "stage_launcher_binary_sha256", "result"],
   "additionalProperties": false,
   "properties": {
     "schema": { "const": "copilot-cli-acp-permission-proof-preflight.v2" },
@@ -11,6 +11,8 @@
     "harness_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
     "native_fake_source_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
     "native_fake_binary_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "stage_launcher_source_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "stage_launcher_binary_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
     "result": {
       "type": "object",
       "required": ["status", "host_login_permission_fake"],
@@ -19,7 +21,7 @@
         "status": { "const": "passed" },
         "host_login_permission_fake": {
           "type": "object",
-          "required": ["permission_reply", "effect_marker_absent", "process_group_joined", "proxy_threads_joined", "stderr_reader_joined", "stderr", "stderr_controls", "sandbox_policy"],
+          "required": ["permission_reply", "effect_marker_absent", "process_group_joined", "proxy_threads_joined", "stderr_reader_joined", "stderr", "stderr_controls", "sandbox_policy", "stage_channel", "launch_diagnostic", "profile_replay_inputs", "stage_failure_controls", "diagnostic_controls", "config_path_controls", "escaped_descendant_control", "proxy_accounting_controls", "stage_launcher_source_sha256", "stage_launcher_binary_sha256"],
           "additionalProperties": true,
           "properties": {
             "permission_reply": { "const": "cancelled" },
@@ -29,10 +31,14 @@
             "stderr_reader_joined": { "const": true },
             "stderr": {
               "type": "object",
-              "required": ["classification", "captured_bytes", "total_bytes", "total_bytes_capped", "total_byte_count_limit", "capture_limit_bytes", "truncated", "reader_joined", "reader_error", "raw_persisted", "raw_displayed"],
+              "required": ["classification", "classification_basis", "marker_facets", "cause", "diagnostic_template", "captured_bytes", "total_bytes", "total_bytes_capped", "total_byte_count_limit", "capture_limit_bytes", "truncated", "reader_joined", "reader_error", "raw_persisted", "raw_displayed"],
               "additionalProperties": true,
               "properties": {
                 "classification": { "type": "string" },
+                "classification_basis": { "const": "bounded fixed marker presence only" },
+                "marker_facets": { "type": "array", "items": { "type": "string" } },
+                "cause": { "const": "unknown" },
+                "diagnostic_template": { "type": "string" },
                 "captured_bytes": { "type": "integer" },
                 "total_bytes": { "type": "integer" },
                 "total_bytes_capped": { "type": "boolean" },
@@ -46,6 +52,68 @@
               }
             },
             "stderr_controls": { "type": "object" },
+            "stage_channel": {
+              "type": "object",
+              "required": ["launcher_entered", "exec_boundary_eof", "exec_errno", "channel_joined", "protocol_valid"],
+              "properties": {
+                "launcher_entered": { "const": true },
+                "exec_boundary_eof": { "const": true },
+                "exec_errno": { "const": "none" },
+                "channel_joined": { "const": true },
+                "protocol_valid": { "const": true }
+              }
+            },
+            "launch_diagnostic": {
+              "type": "object",
+              "required": ["stage", "operation", "path_role", "errno", "fake_initialization_confirmed", "vendor_startup_status"],
+              "properties": {
+                "stage": { "const": "acp-initialize" },
+                "operation": { "const": "initialize-acp" },
+                "path_role": { "const": "fake-executable" },
+                "errno": { "const": "none" },
+                "fake_initialization_confirmed": { "const": true },
+                "vendor_startup_status": { "const": "fake-initialization-confirmed" }
+              }
+            },
+            "profile_replay_inputs": {
+              "type": "object",
+              "required": ["layout", "profile_template", "profile_template_sha256", "host_identity", "dyld_support_closure"]
+            },
+            "stage_failure_controls": {
+              "type": "object",
+              "required": ["status", "compile_failure", "sandbox_apply_failure", "exec_failure", "loader_failure"],
+              "properties": { "status": { "const": "passed" } }
+            },
+            "diagnostic_controls": {
+              "type": "object",
+              "required": ["status", "malformed_input", "vendor_sandbox_text", "conflicting_markers", "failure_stages", "cloexec_eof_without_startup"],
+              "properties": { "status": { "const": "passed" } }
+            },
+            "config_path_controls": {
+              "type": "object",
+              "required": ["status", "path_role", "cases"],
+              "properties": { "status": { "const": "passed" } }
+            },
+            "escaped_descendant_control": {
+              "type": "object",
+              "required": ["escaped_process_group_observed", "known_direct_descendant_count", "reaped_direct_descendant_count", "direct_child_identity_bound_by_parent", "direct_parent_waitpid_confirmed", "process_joined", "process_group_joined", "unknown_descendant_count", "stage_channel_joined", "general_vendor_containment", "cleanup_complete_for_fake"],
+              "properties": {
+                "general_vendor_containment": { "const": "not-proven" },
+                "cleanup_complete_for_fake": { "const": true }
+              }
+            },
+            "proxy_accounting_controls": {
+              "type": "object",
+              "required": ["early_close_observed", "timeout_observed", "unfinished_handler_rejected_before_cleanup", "proxy_threads_joined", "final_accounting"],
+              "properties": {
+                "early_close_observed": { "const": true },
+                "timeout_observed": { "const": true },
+                "unfinished_handler_rejected_before_cleanup": { "const": true },
+                "proxy_threads_joined": { "const": true }
+              }
+            },
+            "stage_launcher_source_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
+            "stage_launcher_binary_sha256": { "type": "string", "minLength": 64, "maxLength": 64 },
             "sandbox_policy": {
               "type": "object",
               "required": ["auth_metadata_read", "auth_metadata_write_denied", "adjacent_home_reads_denied", "repository_reads_denied", "fake_runtime_roots"],

@@ -4,12 +4,14 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <poll.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -40,6 +42,173 @@ static bool read_approved_auth_metadata(const char *path) {
     }
     contents[count] = '\0';
     return strstr(contents, AUTH_SENTINEL) != NULL;
+}
+
+static int run_config_path_probe(const char *mode) {
+    const char *home = getenv("HOME");
+    char metadata_path[4096];
+    if (home == NULL || !path_for(metadata_path, sizeof(metadata_path), home, ".copilot/config.json")) {
+        return 50;
+    }
+    if (strcmp(mode, "--config-read") == 0) {
+        return read_approved_auth_metadata(metadata_path) ? 0 : 51;
+    }
+    if (strcmp(mode, "--config-write") == 0) {
+        int descriptor = open(metadata_path, O_WRONLY);
+        if (descriptor >= 0) {
+            close(descriptor);
+            return 52;
+        }
+        return denied_errno(errno) ? 0 : 53;
+    }
+    if (strcmp(mode, "--config-parent-metadata") == 0) {
+        char parent_path[4096];
+        struct stat metadata;
+        if (!path_for(parent_path, sizeof(parent_path), home, ".copilot")) {
+            return 54;
+        }
+        if (stat(parent_path, &metadata) == 0) {
+            return 55;
+        }
+        return denied_errno(errno) ? 0 : 56;
+    }
+    if (strcmp(mode, "--config-adjacent-home-read") == 0) {
+        char adjacent_path[4096];
+        if (!path_for(adjacent_path, sizeof(adjacent_path), home, ".ssh/id_ed25519")) {
+            return 62;
+        }
+        int descriptor = open(adjacent_path, O_RDONLY);
+        if (descriptor >= 0) {
+            close(descriptor);
+            return 63;
+        }
+        return denied_errno(errno) ? 0 : 64;
+    }
+    if (strcmp(mode, "--config-missing") == 0) {
+        int descriptor = open(metadata_path, O_RDONLY);
+        if (descriptor >= 0) {
+            close(descriptor);
+            return 57;
+        }
+        return errno == ENOENT ? 0 : 58;
+    }
+    if (strcmp(mode, "--config-symlink") == 0 ||
+        strcmp(mode, "--config-symlink-escape") == 0) {
+        int descriptor = open(metadata_path, O_RDONLY);
+        if (descriptor >= 0) {
+            close(descriptor);
+            return 59;
+        }
+        return denied_errno(errno) ? 0 : 60;
+    }
+    return 61;
+}
+
+static volatile sig_atomic_t escaped_parent_stop_requested = 0;
+
+static void escaped_parent_stop(int signal_number) {
+    (void)signal_number;
+    escaped_parent_stop_requested = 1;
+}
+
+static bool release_and_wait_direct_child(int control_descriptor, pid_t child, int *status) {
+    const char release = 'E';
+    ssize_t written;
+    do {
+        written = write(control_descriptor, &release, 1);
+    } while (written < 0 && errno == EINTR);
+    close(control_descriptor);
+    pid_t waited;
+    do {
+        waited = waitpid(child, status, 0);
+    } while (waited < 0 && errno == EINTR);
+    return written == 1 && waited == child && WIFEXITED(*status) && WEXITSTATUS(*status) == 0;
+}
+
+static int run_escaped_descendant_control(void) {
+    int ready_pipe[2];
+    int control_pipe[2];
+    if (pipe(ready_pipe) != 0) {
+        return 70;
+    }
+    if (pipe(control_pipe) != 0) {
+        close(ready_pipe[0]);
+        close(ready_pipe[1]);
+        return 70;
+    }
+    (void)signal(SIGPIPE, SIG_IGN);
+    pid_t child = fork();
+    if (child < 0) {
+        close(ready_pipe[0]);
+        close(ready_pipe[1]);
+        close(control_pipe[0]);
+        close(control_pipe[1]);
+        return 71;
+    }
+    if (child == 0) {
+        close(ready_pipe[0]);
+        close(control_pipe[1]);
+        alarm(5);
+        if (setsid() < 0) {
+            _exit(72);
+        }
+        char ready = 'R';
+        if (write(ready_pipe[1], &ready, 1) != 1) {
+            _exit(73);
+        }
+        close(ready_pipe[1]);
+        char command = 0;
+        ssize_t received;
+        do {
+            received = read(control_pipe[0], &command, 1);
+        } while (received < 0 && errno == EINTR);
+        close(control_pipe[0]);
+        _exit(received == 1 && command == 'E' ? 0 : 78);
+    }
+
+    close(ready_pipe[1]);
+    close(control_pipe[0]);
+    char ready = 0;
+    ssize_t count;
+    do {
+        count = read(ready_pipe[0], &ready, 1);
+    } while (count < 0 && errno == EINTR);
+    close(ready_pipe[0]);
+    bool escaped = count == 1 && ready == 'R' && getpgid(child) == child;
+    if (!escaped) {
+        int status = 0;
+        (void)release_and_wait_direct_child(control_pipe[1], child, &status);
+        return 74;
+    }
+
+    struct sigaction action = {0};
+    action.sa_handler = escaped_parent_stop;
+    sigemptyset(&action.sa_mask);
+    if (sigaction(SIGTERM, &action, NULL) != 0 ||
+        puts("FAKE_DESCENDANT_READY") < 0 || fflush(stdout) != 0) {
+        int status = 0;
+        (void)release_and_wait_direct_child(control_pipe[1], child, &status);
+        return 75;
+    }
+
+    struct pollfd input = {.fd = STDIN_FILENO, .events = POLLIN};
+    int poll_result;
+    do {
+        poll_result = poll(&input, 1, 2000);
+    } while (poll_result < 0 && errno == EINTR && !escaped_parent_stop_requested);
+    char command = 0;
+    bool join_requested = poll_result > 0 && (input.revents & POLLIN) != 0 &&
+        read(STDIN_FILENO, &command, 1) == 1 && command == 'J';
+    int status = 0;
+    bool joined = release_and_wait_direct_child(control_pipe[1], child, &status);
+    if (!joined) {
+        return 76;
+    }
+    if (join_requested && !escaped_parent_stop_requested &&
+        puts("FAKE_DESCENDANT_REAPED") >= 0 && fflush(stdout) == 0) {
+        return 0;
+    }
+    return 77;
 }
 
 static bool read_denied(const char *path) {
@@ -441,6 +610,16 @@ static int run_permission_agent(int argument_count, char **arguments) {
 }
 
 static int run_diagnostic_mode(const char *mode) {
+    if (strncmp(mode, "--config-", 9) == 0) {
+        printf("FAKE_NATIVE_STARTED:%s\n", mode);
+        fflush(stdout);
+        return run_config_path_probe(mode);
+    }
+    if (strcmp(mode, "--escaped-descendant-control") == 0) {
+        puts("FAKE_NATIVE_STARTED:--escaped-descendant-control");
+        fflush(stdout);
+        return run_escaped_descendant_control();
+    }
     if (strcmp(mode, "--stderr-fullpipe") == 0) {
         char chunk[4096];
         puts("FAKE_NATIVE_STARTED:--stderr-fullpipe");
@@ -465,6 +644,27 @@ static int run_diagnostic_mode(const char *mode) {
             home == NULL ? "synthetic-home" : home);
         fputc(0xff, stderr);
         return 37;
+    }
+    if (strcmp(mode, "--stderr-sandbox-vendor-text") == 0) {
+        puts("FAKE_NATIVE_STARTED:--stderr-sandbox-vendor-text");
+        fflush(stdout);
+        fputs("vendor note: sandbox mode is available; startup continues\n", stderr);
+        return fflush(stderr) == 0 ? 0 : 38;
+    }
+    if (strcmp(mode, "--stderr-conflicting-markers") == 0) {
+        puts("FAKE_NATIVE_STARTED:--stderr-conflicting-markers");
+        fflush(stdout);
+        fputs(
+            "startup continued; sandbox marker; permission denied; dyld: Library not loaded; "
+            "exec format error\n",
+            stderr);
+        return fflush(stderr) == 0 ? 0 : 39;
+    }
+    if (strcmp(mode, "--stderr-loader-marker") == 0) {
+        puts("FAKE_NATIVE_STARTED:--stderr-loader-marker");
+        fflush(stdout);
+        fputs("dyld: Library not loaded: synthetic runtime role\n", stderr);
+        return fflush(stderr) == 0 ? 0 : 40;
     }
     if (strcmp(mode, "--early-exit") == 0) {
         puts("FAKE_NATIVE_STARTED:--early-exit");

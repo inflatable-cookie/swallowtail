@@ -1149,6 +1149,42 @@ not full cleanup evidence. Both consumed attempt records and replay guards
 remain unchanged. Any future original attempt needs a separate reviewed brief
 and exact authority.
 
+### Fake-Only Diagnostic And Cleanup Continuation
+
+Task 165 adds an independent fake-only stage launcher. It reports launcher
+entry and a bounded errno code on target-exec failure; close-on-exec EOF is a
+separate boundary observation. EOF without the task-owned fake's explicit
+startup marker remains `unknown`. Fixed stage, operation, path-role and errno
+vocabularies describe compile, the controlled invalid-profile fixture, exec,
+loader and native-main cases. Stderr collection remains volatile and bounded;
+records contain marker facets, fixed templates, counts and joined-reader state,
+never stderr text, paths, URLs, tokens, or stderr hashes. A single sandbox
+marker denotes marker presence and has no inferred cause. Conflicting marker
+facets remain `unknown`.
+
+New fake-only records bind the current OS product version, build and
+architecture and the imported `dyld-support.sb` closure by relative role,
+size and digest. They also record a symbolic relative mirror of artifact,
+record, action, scratch, synthetic-home and synthetic-repository roles. No
+original artifact is staged in that mirror, and these values do not reproduce
+Research 430's missing rendered profile or historical host identity. Synthetic
+config probes cover read, write, parent metadata, missing-file, symlink,
+repository escape, `..` and symlink home aliases. They record only fixed case
+names and outcomes.
+
+The proxy accounts for each accepted handler through completion, including
+early close, timeout, cleanup cancellation and unfinished-handler rejection.
+It retains no request contents, headers or arbitrary destinations. A forked
+fake child leaves its parent's process group; the fake parent joins that known
+direct child by PID with `waitpid`. This proves cleanup only for that controlled
+lineage. General vendor-descendant enumeration and race-safe joining remain
+unproved, so original-artifact admission stays fail-closed. The independent
+fake launcher is not wired into an authorized original invocation; its exact
+exec grant exists only in the task-owned fake profile. The effective original
+profile receives no home, service, executable, network or credential authority
+change. These controls do not change the exact `1.0.80` claim or either
+consumed record.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

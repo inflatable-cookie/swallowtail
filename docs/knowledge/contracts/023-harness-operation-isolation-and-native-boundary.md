@@ -399,24 +399,302 @@ classification and authorizes a bounded offline contract/design study for a
 separate SDK JSONRPC route. Preserve the existing exact `0.1.0rc6` route,
 consumers, claims, baselines and exclusions. A proposed route is not production.
 
-Design independent runtime-bin and complete profile/server artifact axes.
-Require immutable native-payload-to-complete-profile provenance before any
-new tuple claim; matching JSON-RPC labels or version numbers do not establish
-that relationship. Reuse the accepted mapping evidence, identify the finite
-vendor provenance gate and avoid repeating completed artifact discovery.
+The proposal is `deepseek-harness.sdk-jsonrpc`. It is a design label only:
+there is no production route, claim, registry entry, or consumer API under this
+name yet. It must not be substituted for `deepseek-harness.jsonrpc` or
+`deepseek-harness.local-server`.
 
-Specify host, principal, environment, cwd, configuration, credential and
-persistent-session ownership, selected tool/permission authority, cancellation,
-stop, join and cleanup. Review consumer preparation/preflight, public API and
-serialization compatibility and Contract 036 minor-release implications.
-Return staged fake-first, recorded original-artifact proof and implementation
-scopes, with precise unresolved boundaries for separate approval.
+### Route and artifact identities
+
+Keep four identities separate:
+
+| Identity | Proposed value or rule | Boundary |
+| --- | --- | --- |
+| Route | `deepseek-harness.sdk-jsonrpc` | New route family. No existing route or consumer projection is renamed. |
+| Runtime carrier axis | `deepseek-harness.sdk-runtime-bin` | Exact platform wheel and selected native payload. This does not identify the SDK profile. |
+| SDK profile axis | `deepseek-harness.sdk-profile` | Exact complete CLI/profile/server/protocol package closure and its bundled configuration. This does not identify the native runtime that reaches it. |
+| Behavior and protocol revisions | New route-local revisions, distinct from `deepseek-harness.jsonrpc-rc6-1` and `deepseek-harness.sdk-jsonrpc-v1` | Assign only when an implementation brief defines the public serialization and behavior. Never reuse the old facade revision. |
+
+The current candidate observations are exact but unqualified: runtime wheel
+`deepseek-harness-runtime-bin==0.1.5rc1`, macOS arm64, wheel SHA-256
+`65f20c541a499f08c36ac3bfdafce350ca8c7cc23488c1faf4d9b9524b547156`, selected
+payload SHA-256
+`6f98dfe1745f6c952c6157dfade5ac2c6a8aeb672291b2c0703b21adf11cf88c`; and npm
+`@deepseek-ai/dsh` `0.2.0-rc.2` with the six selected profile packages recorded
+in Research 412. Neither identity is a claim. Research 412's package inventory,
+runtime-bin inventory, and hop ledger are retained evidence and must be reused;
+do not repeat their discovery.
+
+The profile ledger is a closure, not a list of the six anchor packages alone.
+It must freeze every direct and transitive package, every platform-selected
+package, the package-manager resolution and integrity edges, and all profile,
+server, protocol, and base-composition resources that affect dispatch. For
+each package, retain its exact name, version, registry tarball identity and
+integrity, byte count, and every unpacked member's path, size, and SHA-256.
+Retain the closure manifest digest and the profile configuration digests.
+Research 412's six exact npm tarballs remain anchors in this expanded ledger;
+they are not evidence that the unrecorded transitive closure is complete.
+
+Keep one exact-point evidence ledger for each axis. An observation row records
+the official artifact identity, platform where relevant, artifact and
+selected-member digests, immutable source or registry location, observation
+date, and the selected-path change from its predecessor. A separate hole row
+records the exact version or missing artifact query, axis, platform, observed
+digest when present, reason it is not qualified, evidence link, and next finite
+proof or decision. A hole is evidence bookkeeping, not a Contract 029 claim
+classification or a supported segment. An unobserved version is not a point.
+Reuse Research 412's entries for `0.1.0rc7`, `0.1.1rc1`, `0.1.2a3`,
+`0.1.2rc1`, and `0.1.5rc1`, including the `0.1.2a3` package reset and the
+absent PyPI `0.2.0rc2` query. Do not infer a segment across them. The old exact
+`0.1.0rc6` point stays solely on `deepseek-harness.runtime-bin` and remains
+unchanged.
+
+Contract 029 applies independently to each axis: exact identity precedes a
+point, each behavior revision owns its own support segments, and no segment or
+maintained window follows from a vendor version label. The route's dispatch
+claim is a relation over an exact runtime artifact, an exact complete profile
+closure, target platform, provenance statement, and behavior revision. An
+axis point alone does not make that relation qualified. No route claim exists
+while provenance is absent. Once a claim is reviewed, Contract 029 classifies
+an exact attempt as qualified, unverified newer only where that claim permits
+it, or incompatible. A hole stays outside every qualified segment and must be
+represented by the exact unsupported gap or exclusion required by Contract
+029; do not invent an `evidence_pending` classification. Do not give it credit
+from the old route, the local-server route, `latest`, matching versions, or
+matching JSON-RPC names.
+
+### Finite vendor-provenance gate
+
+Before any tuple claim, one immutable vendor build attestation or equivalent
+reproducible build manifest must bind all of the following in a single
+verifiable record:
+
+1. The exact platform runtime wheel digest and the selected native payload
+   digest, path, and target architecture.
+2. The exact complete SDK profile closure-manifest digest, including the
+   locked package identities, integrity edges, profile/server resources, and
+   configuration digests defined above.
+3. The immutable source/build identity and build output relationship that
+   connects that native payload to that closure. A repository tag, package
+   name, version string, release note, marker such as `0.0.0-dev`, or an
+   unbound source archive is insufficient.
+4. A vendor signature or independently reproducible verification procedure
+   for the record, with every input digest needed to repeat the check.
+
+The gate is binary. Accept only if all four fields verify against the frozen
+artifacts; otherwise retain the exact `evidence_pending` hole and request the
+missing vendor record. Do not replace it with another version-number
+comparison or repeat the already-completed inventories. Passing this
+provenance gate establishes artifact identity only; it does not establish
+runtime behavior, a first claim, a maintained interval, or Contract 036
+compatibility.
+
+### Preparation and preflight boundary
+
+A future public API should use a distinct prepared type for this route, not
+extend the existing `DeepSeekHarnessPreparationInput` or reuse the old
+prepared-integration type. Its immutable preparation binding contains:
+
+- configured instance and revision, execution host, and host principal;
+- one exact runtime target and digest plus one complete profile-closure digest
+  and the verified provenance-record digest;
+- the selected provider and model, each chosen explicitly by the consumer and
+  fixed process-wide for the prepared instance;
+- an explicit cwd working-resource binding and an explicit host environment
+  allowlist; and
+- an explicit session-state binding and credential policy. Neither can be
+  inferred from the process account or current directory.
+
+Preflight verifies both artifact bindings, the provenance record, route and
+protocol revisions, host/principal, provider/model, cwd, environment, and
+state-resource ownership before process creation. It resolves the executable
+from the exact prepared target, never from `PATH`, and passes one explicit
+profile invocation. The final argv must be established against the frozen
+original artifacts; the npm CLI's observed `dsh --profile sdk` expansion is
+not proof that the PyPI runtime accepts that invocation. Preparation rejects
+missing or mismatched artifact identities, provenance, cwd, environment,
+principal, profile, provider, model, or state binding before any child starts.
+
+Configuration authority is deliberately narrow. The invocation uses the
+selected immutable SDK profile and only explicitly supplied configuration.
+It does not import ambient home settings, user or project `.env` files,
+ambient `$DSH_HOME/.credentials.yaml`, `$DSH_HOME/cordis.patch.yml`, arbitrary
+`--patch` arguments, or inherited provider/model defaults. A typed host
+credential capability may later use a short-lived route-owned handoff if the
+frozen SDK requires that file; this is an explicit secret path, not ambient
+home access. The process environment is an allowlist with a route-owned
+`DSH_HOME`; a caller may add a setting only through a typed preparation input
+recorded in preflight. Because the published profile statically admits those
+home, dotenv, and overlay sources, a future implementation must disable them
+or prove an equivalent host-enforced read boundary. If neither is available,
+preparation fails closed. Cwd remains the explicit working resource; changing
+cwd to hide dotenv files is not a substitute for controlling configuration
+reads.
+
+The selected npm protocol surface includes `initialize`, `session/prompt`,
+session and agent notifications, and server `shutdown`. Static source has no
+per-prompt result, per-session close, or per-prompt cancel method. Original
+runtime reachability and these methods' behavior remain unproved until the
+separately authorized artifact pass.
+
+### Operation and authority matrix
+
+| Operation or boundary | Proposed consumer contract | Reuse from the selected old route | Required adaptation or proof |
+| --- | --- | --- | --- |
+| Prepare and discover | Prepare one explicit runtime/profile tuple for one configured host principal. Report both axes and both digests. | Reuse typed target selection, host identity, deadline-bound discovery, access evidence, preflight-bound services, bounded diagnostics, and digest checks as design patterns. | Bind the independent profile closure and provenance digest. No old route binding or protocol facade may stand in for them. |
+| Initialize | Initialize one SDK process with explicit cwd, provider, model, reasoning and token policy. These values are immutable for every session in that process. | Reuse explicit provider/model selection from the old prepared operation. | Adapt the SDK's process-wide selection. Reject changes after initialize and reject an unknown provider before accepting the handshake. Do not mount `deepseek-official` as an automatic fallback; an explicitly selected, supported provider is not a fallback. |
+| Profile and configuration | Select the frozen SDK profile by one explicit invocation; accept no ambient profile, home, or launch overlay. Keep stdout exclusively for bounded JSON-RPC frames and send diagnostics to stderr. | Reuse host-owned environment references and immutable plan validation. | Disable profile/HMR reload, home `cordis.patch.yml`, CLI `--patch`, user/project dotenv, and inherited defaults, or prove host read denial. Prove stdio ownership and that no startup banner or SDK log enters stdout. The npm launcher accepting stdio after profile validation is a candidate mechanism, not proof of exact runtime reachability. |
+| Credentials | Default to no credential. When a consumer explicitly selects a host credential capability, bind its provider audience and principal and expose only a redacted reference in plans, events, errors, and diagnostics. | Reuse the principle that opaque credential references and leases stay host-owned; the old route itself opens no credential lease. | Adapt SDK credential lookup so it cannot search a user home or dotenv. If the frozen SDK requires `.credentials.yaml`, use only an isolated route-owned home and a host broker's short-lived, scoped secret handoff; prove file creation, access, zeroization/deletion, and cleanup. If this cannot be enforced, authenticated preparation is unavailable. Never copy a host credential file. |
+| Session creation and identity | Bind one opaque consumer session identity to one host principal, provider/model, cwd working resource, and session-state resource. Reject reuse across any changed binding. | Reuse existing typed session identity and host-bound resource patterns. | The SDK creates or reuses agents by caller session ID and persists JSONL state. Prove collision resistance, exact identity lookup, cross-session isolation, and restart behavior before advertising resume. A session ID or enqueue receipt is not completion. |
+| Prompt queue and idle | Permit at most one uncompleted prompt per session. Return an accepted-message token separately from terminal completion. Complete only after the accepted message's session reaches a proven idle boundary; preserve event order and bound event count/size. | Reuse the old route's bounded framing, selected notification decoding, terminal outcome, and exact idle fold as implementation patterns only. | The SDK accepts multiple queued prompts and has no per-prompt result. Prove message/event correlation and idle cardinality. Reject a second prompt while one is pending; reject ambiguous, stale, foreign-session, or missing idle evidence. No idle inference from `{messageId}`. |
+| Persistence and retention | Require `Ephemeral` or an explicit caller-owned `SessionStateRef`; disclose that the SDK writes durable session records and a projection cache. State is scoped to the bound principal and integration. | Reuse host-owned state/resource leases and bounded lifecycle evidence. | The future route must bind the SDK's `$DSH_HOME/sessions` and projection cache to the selected state resource, make retention explicit, and prove no writes outside it. Do not claim restoration until restart proof passes. Process shutdown disposes agents but does not itself erase durable session files. |
+| Images | No image input in the first public route revision; reject image blocks in request validation before attachment writes. | Reuse typed content validation and bounded rejection patterns. | The SDK admits images through an attachment store. Add image capability only after file admission, size/type limits, attachment path ownership, cleanup, and provider-visible effects have their own contract and proof. |
+| Tools and permission | First route revision exposes no filesystem or shell tools and no consumer permission callback. Reject unexpected tool or permission requests, cancel the process, and verify no effect. | Reuse the old route's host-selected access profile, typed process ownership, and non-secret diagnostics. | The SDK composition includes read/write/edit, shell, and bundled services with application-level approval modes. Override it to no tools or a strictly host-enforced, separately reviewed set. Never equate `ask`, `workspace-write`, or `danger-full-access` with an OS sandbox. No permission grant or shell composition is implicit. |
+| Cancel, stop, shutdown, join | Cancellation ends the entire SDK process because the protocol has no per-prompt cancel or per-session close. First request orderly SDK shutdown when the exact method is accepted; otherwise close stdin, stop the owned process tree by deadline, escalate, and join all owned work. | Reuse exact child ownership, cancellation signaling, host deadline, forced stop, and joined cleanup from the existing route. | The old route's cleanup does not prove SDK subprocess or agent cleanup. Prove graceful `shutdown`, stdin EOF, SIGINT/SIGTERM, forced process-tree stop, reaping, and no descendants/leases after join. Mark an interrupted durable session incomplete; do not report it successful or silently replay its prompt. |
+| Output and diagnostics | Expose only bounded, route-versioned results and typed failures. Redact credentials, session contents, home/workspace paths, raw SDK errors, and tool payloads. | Reuse bounded error projection, frame limits, unknown-event posture, and terminal cleanup reporting. | Freeze SDK notification/result mapping and serialization in a new facade. Raw SDK event names or JSON-RPC shapes do not become public API by pass-through. |
+
+The selected source patterns above are design inputs, not inherited proof.
+The old route's explicit target and Cordis binding, provider/model selection,
+bounded JSON-RPC parser, single-operation idle fold, owned child, deadline,
+forced stop, join, and redacted output can preserve their authority boundaries
+when reimplemented against this route. They do not preserve SDK-added
+process-wide defaults, arbitrary configuration layers, home credentials,
+multi-session persistence, image files, or permissioned tools. Each added
+boundary needs the adaptation and proof named in the matrix.
+
+### Consumer examples and negative cases
+
+The following is schematic public API, not current Rust code. Every name is a
+design placeholder until an implementation brief and API review.
+
+```rust
+let prepared = prepare_sdk_jsonrpc(SdkJsonRpcPreparationInput {
+    runtime: exact_runtime_target(runtime_digest),
+    profile: complete_sdk_profile(closure_digest, provenance_digest),
+    host: execution_host,
+    principal: host_principal,
+    cwd: approved_working_resource,
+    environment: explicit_environment_allowlist,
+    provider: chosen_provider,
+    model: chosen_model,
+    credentials: CredentialPolicy::None,
+    session_state: SessionState::Ephemeral,
+    tools: ToolPolicy::None,
+}).await?;
+
+let mut session = prepared.open_session(consumer_session_id).await?;
+let accepted = session.enqueue_text(prompt).await?;
+// Acceptance is only queue acknowledgement; it is not a completed turn.
+let terminal = session.wait_for_idle(accepted, deadline).await?;
+prepared.close_and_join().await?; // Stops the process and all SDK-created agents.
+```
+
+The API must reject these cases before effects, or stop and join after an
+unexpected runtime effect:
+
+- `runtime=0.1.5rc1` and `profile=0.2.0-rc.2` with no verified provenance
+  statement, even when both strings appear in one configuration;
+- selecting `dsh sdk` or inheriting a user's `DSH_HOME`, dotenv, credential,
+  profile, or Cordis overlay instead of the prepared target and allowlist;
+- changing provider or model after initialize, requesting an unregistered
+  provider, or reaching `deepseek-official` because another provider was
+  missing;
+- sending a second prompt before the prior accepted message reaches proven
+  idle, treating its message ID as final output, or accepting idle from another
+  session;
+- supplying image content, mounting a shell/write/edit service, approving an
+  unexpected permission request, or allowing tool access beyond the prepared
+  host resource; and
+- reusing a durable session under another principal, provider/model, cwd, or
+  state resource, or describing process shutdown as deletion of persistent
+  session records.
+
+### Fake-first, recorded proof design
+
+No proof is run under this design task. A later proof brief should stage the
+work and label fake observations separately from original-artifact
+observations:
+
+1. **Harness-only fake pass.** Exercise the proposed adapter supervisor with a
+   fake JSON-RPC child and synthetic process tree. Prove target/provenance
+   mismatch rejection; initialization binding; acknowledgement versus idle;
+   event/session correlation; queue limits; credential redaction; no-tool and
+   no-image policy; cancellation; stop escalation; join; and cleanup ordering.
+   This establishes the harness behavior only. It must not claim that a vendor
+   executable or profile is reachable.
+2. **Frozen original-artifact reachability.** Only after the provenance record
+   and a separate exact-artifact execution ruling exist, execute the frozen
+   original carrier and profile in an isolated, provider-free environment.
+   Record the exact wheel, payload, package-closure, invocation, and platform
+   digests. Prove the selected entrypoint starts that payload, selects the SDK
+   profile, and reaches JSON-RPC initialize and one queued prompt against a
+   loopback fake model/tool boundary. Label every result `original_artifact`;
+   fixture success cannot substitute for this stage.
+3. **Selected-boundary proof.** With the same separately authorized artifacts,
+   exercise explicit provider/model and cwd bindings, config/credential
+   sentinels, session state and restart, message/idle cardinality, image and
+   tool rejection, graceful shutdown, signal/forced stop, process-tree reaping,
+   and joined cleanup. Record allowed and denied filesystem operations,
+   process identities and descendants, sockets, and credential-source reads.
+   A fake boundary is labelled `fixture`; an observed vendor effect is labelled
+   `original_artifact` and tied to its digest.
+
+Every stage uses a fresh task-owned scratch root with no links to a checkout,
+a default-deny network boundary allowing only an explicitly observed local
+fake endpoint, no real credentials, and no provider endpoint. The proof records
+filesystem reads/writes/deletes, spawned process tree and exit statuses,
+network attempts, credential sentinels, time bounds, and cleanup outcome.
+External network, unowned home paths, real credential stores, and tool effects
+outside the scratch working resource are denied and counted as proof failures.
+Preserve secret-free traces and exact artifact identities with the result.
+
+### API, serialization, and release boundary
+
+The eventual route adds a distinct prepared integration, preparation input,
+preflight binding, session/request/result types, route projection, driver and
+protocol facade. It must not mutate old route IDs, the old runtime-bin axis,
+the `deepseek-harness.sdk-jsonrpc-v1` facade, old protocol fixtures, baselines,
+or consumer types. Add new versioned serialization for the SDK route; do not
+extend an existing serialized enum in a way that changes its meaning or makes
+old decoders silently accept this lifecycle. Public Rust API additions receive
+their own semantic API evidence. Review every public enum/struct addition for
+exhaustive-match and serde compatibility under Contract 036 before choosing
+the compatibility classification.
+
+The route introduces new lifecycle, configuration, credential, persistence,
+and tool-permission decisions. It therefore cannot be treated as an urgent
+SDK patch correction. Implementation belongs in a separately reviewed
+pre-1.0 minor candidate (the current `v0.6.0` planning target remains
+provisional), with a distinct route/API baseline and release note. Contract
+036 assessment must decide the public API and serialized-shape compatibility
+of the actual implementation; a design proposal cannot pre-approve that
+classification or a tag.
+
+### Separate follow-up scopes
+
+This design task completes only the proposal. The next review should split
+authority into finite work:
+
+1. **Contract/API implementation brief:** add a new route and prepared/session
+   surface using the boundaries above, after a separate ruling on any remaining
+   public credential, durable-state, or permission choices. No vendor artifact
+   execution or qualification is implied.
+2. **Provenance and original-artifact proof brief:** request and verify the
+   single vendor provenance record; then, only under separate execution
+   authority, run the staged provider-free proof against its exact artifacts.
+   If the vendor cannot satisfy the finite gate, preserve the exact hole and
+   return the source/build correlation blocker; do not infer provenance.
+3. **First-claim brief:** after implementation and proof, decide exact
+   platform-specific points, behavior revision, Contract 029 segment/hole
+   records, and any maintained interval from the evidence. Contract 036
+   release compatibility is reviewed separately.
 
 No runtime/API implementation, artifact execution, real credentials/login,
 provider/live work, installation, host mutation, qualification or tag is
-included. Implementation, original-artifact proof and first claimed points
-require their own rulings. Local-server browser-session design remains
-independent and supplies no SDK-route qualification or authority.
+included here. Implementation, original-artifact proof, and first claimed
+points require separate review and authority. DeepSeek local-server
+browser-session design remains independent and supplies no SDK-route evidence
+or authority.
 
 ## DeepSeek Local-Server Browser-Session Design Study
 

@@ -120,7 +120,7 @@ fn historical_v1_corpus_identity_stays_frozen_while_sidecar_map_extends() {
     assert_eq!(protocol["package_baseline"], "0.3.284");
     assert_eq!(protocol["native_baseline"], "2.1.284");
     let maintained_pairs: Vec<_> = ClaudeAgentSdkPackageNativePair::MAINTAINED[..10]
-        .into_iter()
+        .iter()
         .map(|pair| {
             serde_json::json!({
                 "sdk_package_version": pair.package_version(),

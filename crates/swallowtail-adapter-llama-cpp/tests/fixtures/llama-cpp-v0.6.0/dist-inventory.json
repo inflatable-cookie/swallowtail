@@ -1,10 +1,20 @@
 {
   "compared": [
     "b9910",
+    "v0.2.0",
+    "v0.3.0",
+    "v0.4.0",
+    "v0.4.1",
+    "v0.5.0",
     "v0.6.0"
   ],
   "package_file_counts": {
     "b9910": 3031,
+    "v0.2.0": 3446,
+    "v0.3.0": 3494,
+    "v0.4.0": 3527,
+    "v0.4.1": 3588,
+    "v0.5.0": 3619,
     "v0.6.0": 3687
   },
   "from_b9910_to_v0.6.0": {
@@ -3876,95 +3886,669 @@
   "hashes": {
     "CMakeLists.txt": {
       "b9910": "sha256:272b66f1e71b0be5bb8a59b2b92dc5f97f1292aba2a72f86c9cb3673362374cc",
+      "v0.2.0": "sha256:f79c17bd8c89dadbc7031d0f6adec8c17ecf5a3e70bb54e1abb42932c9ce1c41",
+      "v0.3.0": "sha256:22f825aebd7c6dcb5edda6af4e0ea5ae10c34e037c2bc07849cd38bafc64abec",
+      "v0.4.0": "sha256:2904ff5f58eecf40ccfee5e18f2c9f01d23d5fc149efd005e260ba278d1193f6",
+      "v0.4.1": "sha256:5710c157d361b8e0e483f9833423066f7d52771656e61cba13c0ff3eb49fffc4",
+      "v0.5.0": "sha256:cc74926303df70623265bd8439680adca32d4ed5aba8af1cdb64911e473e5c21",
       "v0.6.0": "sha256:94d646f48594469909522d2a539aad943705309686646fd8a69cc15c43029e69"
     },
     "common/arg.cpp": {
       "b9910": "sha256:b53e0e1a2a8c905228c66eb3642b39ec6d17cfbff34eb1af3c1bbee64c580928",
+      "v0.2.0": "sha256:50fed8a655fd0911d66d287670e575bbfabbcf6fa8ec8b7aa722013dec448df4",
+      "v0.3.0": "sha256:35208607f88a398b67b244363591d13c8f98bf8ba0a8674cad53c7f86109f682",
+      "v0.4.0": "sha256:b00aa1ef758eea76b50cd5c87f6a012b9ab6066710778d072181190043bd13ae",
+      "v0.4.1": "sha256:6e71ad4f63c79fee81fe218ab6755ed97813ba84d179e38ae02924be1556d46e",
+      "v0.5.0": "sha256:25c465a79b18a360d8bbe422feafa292ebca1f570985b21d69bbdc0f3df6e1f9",
       "v0.6.0": "sha256:60fe5331fbc60b7dcefcebce8d2097b5b986a1cd3a4dca126c0e6d21060df4d3"
     },
     "common/build-info.cpp.in": {
       "b9910": "sha256:92800df1a8eb9ace5c5e471a55f1d3f80c6d3d2350ce45ae121e06fcb7ca4a69",
+      "v0.2.0": "sha256:628ad2fdc9163c0c509b224e6654de387d972dd474d5e55e522d09db6a4c1cb8",
+      "v0.3.0": "sha256:628ad2fdc9163c0c509b224e6654de387d972dd474d5e55e522d09db6a4c1cb8",
+      "v0.4.0": "sha256:e5157603f0dbaf1dc61a6be530a2ea5124644baed3170d32ea4bbcc645ef7ea6",
+      "v0.4.1": "sha256:e5157603f0dbaf1dc61a6be530a2ea5124644baed3170d32ea4bbcc645ef7ea6",
+      "v0.5.0": "sha256:e5157603f0dbaf1dc61a6be530a2ea5124644baed3170d32ea4bbcc645ef7ea6",
       "v0.6.0": "sha256:e5157603f0dbaf1dc61a6be530a2ea5124644baed3170d32ea4bbcc645ef7ea6"
+    },
+    "common/build-info.h": {
+      "b9910": "sha256:a255949ff4f726bef2dc3464188ad05a8af4465689a0939503940066eefbb393",
+      "v0.2.0": "sha256:4dea46f517c2e817a8a3d6bdf12d619b2ee6b4629db63342e7e4f8e5d1e7c7f4",
+      "v0.3.0": "sha256:4dea46f517c2e817a8a3d6bdf12d619b2ee6b4629db63342e7e4f8e5d1e7c7f4",
+      "v0.4.0": "sha256:184dab4cba9a945a5fac69b6818e4f593e34d5ca762357b8b30f7520a745f7ec",
+      "v0.4.1": "sha256:184dab4cba9a945a5fac69b6818e4f593e34d5ca762357b8b30f7520a745f7ec",
+      "v0.5.0": "sha256:184dab4cba9a945a5fac69b6818e4f593e34d5ca762357b8b30f7520a745f7ec",
+      "v0.6.0": "sha256:184dab4cba9a945a5fac69b6818e4f593e34d5ca762357b8b30f7520a745f7ec"
     },
     "common/chat.cpp": {
       "b9910": "sha256:6b04e0551d3e28784e00a29a5945ea7bd2e74aa7e753cb5c27874e22ba81a92d",
+      "v0.2.0": "sha256:c496276f42bb1ebae017ae67c58da9f045190b61b2bea852c46262bef9658675",
+      "v0.3.0": "sha256:aff2acfff3ac8ca8a931c25626cf7461e07f8ace6fb112c94a30d4d8751199d6",
+      "v0.4.0": "sha256:abab0d03a111bd198693a518c7cdd07a33326a6a6685cc182a88d4fdae5f61dc",
+      "v0.4.1": "sha256:a226aa0cbf844490cd480bb805c458df16af8771b1ecb53a8fe608e3b2e60d3c",
+      "v0.5.0": "sha256:3d28ec8d7d0d96c4b462b69026deaac3d6454327ae87ff09aeec7451c43f73f1",
       "v0.6.0": "sha256:5bc92318d3b926c9b4491bf3a6ac7770843dadee218e84cbd5a5f8fdb1011840"
     },
     "common/chat.h": {
       "b9910": "sha256:f90ed844711bf62be95178db26e96c4b6ad9e8d49fc54c154b7b7a974388adc2",
+      "v0.2.0": "sha256:fe4f9ff8ebd9b1fb6696f19175acf6501300c8eb1aca9a1141fc215df749050e",
+      "v0.3.0": "sha256:2e9d19421fde1deeaebba9f9cdc18097b41e3a9974a89bbb9061792faabf2ea3",
+      "v0.4.0": "sha256:2e9d19421fde1deeaebba9f9cdc18097b41e3a9974a89bbb9061792faabf2ea3",
+      "v0.4.1": "sha256:12b3f8a287698b1b5f3f4e020e52162f5026b06596b55946fa865a4a0b3c4abc",
+      "v0.5.0": "sha256:12b3f8a287698b1b5f3f4e020e52162f5026b06596b55946fa865a4a0b3c4abc",
       "v0.6.0": "sha256:12b3f8a287698b1b5f3f4e020e52162f5026b06596b55946fa865a4a0b3c4abc"
+    },
+    "common/jinja/caps.cpp": {
+      "b9910": "sha256:2b2db183108ff4fe5e58a31f6dc3e7da4ed0162d4f51e47761b0da84cb663d35",
+      "v0.2.0": "sha256:4e4edfdc79efd8d00253f0c3baf5a47616175f3d240a21a87ae78698ceb36c34",
+      "v0.3.0": "sha256:cc497360610e81359fa843656fa8352a917dd37926737cfc9d888cf6f7d1baa0",
+      "v0.4.0": "sha256:cc497360610e81359fa843656fa8352a917dd37926737cfc9d888cf6f7d1baa0",
+      "v0.4.1": "sha256:4ad7e2bdcdf55eb33c7d8549d7cc76d15d8ccbba33e0f57cff713e14b8e01174",
+      "v0.5.0": "sha256:4ad7e2bdcdf55eb33c7d8549d7cc76d15d8ccbba33e0f57cff713e14b8e01174",
+      "v0.6.0": "sha256:4ad7e2bdcdf55eb33c7d8549d7cc76d15d8ccbba33e0f57cff713e14b8e01174"
+    },
+    "common/jinja/caps.h": {
+      "b9910": "sha256:30f25aee0be5e9deed745c522eca969998564a27926f59238bdfe2a5a160cfd0",
+      "v0.2.0": "sha256:50b2c243067d236480dbf7fcaafa30a7a5b70d770b0671d6b4168f122548b75a",
+      "v0.3.0": "sha256:50b2c243067d236480dbf7fcaafa30a7a5b70d770b0671d6b4168f122548b75a",
+      "v0.4.0": "sha256:50b2c243067d236480dbf7fcaafa30a7a5b70d770b0671d6b4168f122548b75a",
+      "v0.4.1": "sha256:50b2c243067d236480dbf7fcaafa30a7a5b70d770b0671d6b4168f122548b75a",
+      "v0.5.0": "sha256:50b2c243067d236480dbf7fcaafa30a7a5b70d770b0671d6b4168f122548b75a",
+      "v0.6.0": "sha256:50b2c243067d236480dbf7fcaafa30a7a5b70d770b0671d6b4168f122548b75a"
     },
     "src/llama-version.h.in": {
       "b9910": null,
+      "v0.2.0": null,
+      "v0.3.0": null,
+      "v0.4.0": "sha256:80db9c43e37fed5e57362ef196270e37d6ecf3e968e166ec0c0d166a2bfa48a3",
+      "v0.4.1": "sha256:80db9c43e37fed5e57362ef196270e37d6ecf3e968e166ec0c0d166a2bfa48a3",
+      "v0.5.0": "sha256:80db9c43e37fed5e57362ef196270e37d6ecf3e968e166ec0c0d166a2bfa48a3",
       "v0.6.0": "sha256:80db9c43e37fed5e57362ef196270e37d6ecf3e968e166ec0c0d166a2bfa48a3"
     },
     "tools/server/server-chat.cpp": {
       "b9910": "sha256:3ab6474fbbbe3b120a99b332d0cdb1c1b26ce64892d91fb103513ffaabd331ff",
+      "v0.2.0": "sha256:6a94a4ba82ff5e8fa7b8fa2b535175d734af1269b33ecc06213945f71352ce10",
+      "v0.3.0": "sha256:a7b148e59d1104adf2d3a04f9e23602511ca88bb01a1788c830360d792677c94",
+      "v0.4.0": "sha256:a7b148e59d1104adf2d3a04f9e23602511ca88bb01a1788c830360d792677c94",
+      "v0.4.1": "sha256:a7b148e59d1104adf2d3a04f9e23602511ca88bb01a1788c830360d792677c94",
+      "v0.5.0": "sha256:91f48e09afc5a345033866380e82db1c3ad4d18baf1cec38ffa6cddaf6a6263e",
       "v0.6.0": "sha256:91f48e09afc5a345033866380e82db1c3ad4d18baf1cec38ffa6cddaf6a6263e"
     },
     "tools/server/server-chat.h": {
       "b9910": "sha256:4372b4df8c73566790549cac0da35ceddfd7020d160c6835816eecd411255461",
+      "v0.2.0": "sha256:4372b4df8c73566790549cac0da35ceddfd7020d160c6835816eecd411255461",
+      "v0.3.0": "sha256:cf75156087e4abe3e6879617abfccbe84561daa00de300396606c9bc99801d41",
+      "v0.4.0": "sha256:cf75156087e4abe3e6879617abfccbe84561daa00de300396606c9bc99801d41",
+      "v0.4.1": "sha256:cf75156087e4abe3e6879617abfccbe84561daa00de300396606c9bc99801d41",
+      "v0.5.0": "sha256:cf75156087e4abe3e6879617abfccbe84561daa00de300396606c9bc99801d41",
       "v0.6.0": "sha256:cf75156087e4abe3e6879617abfccbe84561daa00de300396606c9bc99801d41"
     },
     "tools/server/server-common.cpp": {
       "b9910": "sha256:08f457d8ffa3121b23cbf07c5fd066994ed0f1db39450df000b71011f9889e12",
+      "v0.2.0": "sha256:6538982c60d639b5e5cb594825bcad4ae44327337e91b6f1f9e2b6e8f767f1c6",
+      "v0.3.0": "sha256:e4d77b1d5aa2565ca1781bdd1d3c4fe597ec6c22932d6a6c8aac681ee1bcbf7e",
+      "v0.4.0": "sha256:bbece72259e2aaab94ac0f31ba404b4a3f2868848cce1fe19a255009a60c6eb1",
+      "v0.4.1": "sha256:de3a89422f67b97eb385041fae17e553dc677aac6b67f2e98e9f0beff672b4e0",
+      "v0.5.0": "sha256:7423d66fb1b6d8fe8d18812526cc73808017a7181df3e47c67f356cedd321113",
       "v0.6.0": "sha256:74181b0fa4ac076debdffaac77c61f371bf1176836fa6743a1a6692f92104401"
     },
     "tools/server/server-common.h": {
       "b9910": "sha256:23cf04f5394609124e1b1acb872f8934e1bfa9335cc578722ab538b057e67b9e",
+      "v0.2.0": "sha256:470318bda7f2d4cee1f9334198f0ffe9a51116e96c8c469321627d5b0a48aad5",
+      "v0.3.0": "sha256:c0b744eec3faf9495171f031262c1a8bd863f8d31cff75147ee69e23d9ec6612",
+      "v0.4.0": "sha256:e09b6448fdacc6fa69c515ff52786c0b9d4e48dd7a0c9dcb75f40dc72f3b4cb2",
+      "v0.4.1": "sha256:635a7e37085dee6a1a3767bed21793bf1879828372e359350cae2c75fb167b17",
+      "v0.5.0": "sha256:635a7e37085dee6a1a3767bed21793bf1879828372e359350cae2c75fb167b17",
       "v0.6.0": "sha256:8bef5fa588bb6576dc2fb1ce2575792942d47ae670a799559e08cb44d0685aab"
     },
     "tools/server/server-context.cpp": {
       "b9910": "sha256:64ae82af8ae454ca6ba3737e4d3e8eeb716325cf97cecf1add7121446980c5f5",
+      "v0.2.0": "sha256:61265ad59160fc8bb73a37531be59331768e981035817e7e2f6ae03c0d00bfcf",
+      "v0.3.0": "sha256:a79cf9e1d4a8d7c1f0ee608aa781628db403e8f59e25e731f997d0952d230e47",
+      "v0.4.0": "sha256:c347b2403b0f7e314960b9170f39e27fe67049420fe9ae272852d98028955ce7",
+      "v0.4.1": "sha256:2f5d65ce6ef0504b5c8cf55a74c68d3959c49784ba380ef836566b7a7d5fa12b",
+      "v0.5.0": "sha256:5f751fef3744521b86295c073ecc55f5da4810d28508f7911aa99a71647a93ee",
       "v0.6.0": "sha256:7309e8b68c686ba1cf8f3b907d9b79587e2b714e58e37b04b259a781d6469930"
     },
     "tools/server/server-context.h": {
       "b9910": "sha256:5ec57aea2b710aa211a7829d7cbb5d3f8a3f81a4108162bb1a00e589bc2593d0",
+      "v0.2.0": "sha256:33b2ae6049f0e97e4123761ba71fbae69958ae778df510f3bf36f971dbf962d0",
+      "v0.3.0": "sha256:b973a2675eda55fe665a9440f90c6e414bc3bf434acb1cecb6c9f2cd86437c14",
+      "v0.4.0": "sha256:8885184dc08bd35f7b96cdbec92efa440b0b4d4e2bd5fc81ab8cf0c408430b73",
+      "v0.4.1": "sha256:8885184dc08bd35f7b96cdbec92efa440b0b4d4e2bd5fc81ab8cf0c408430b73",
+      "v0.5.0": "sha256:00280792ad14fddd52e93f429d5bdc0b34c67ef922bb6599e023f3729140c8ed",
       "v0.6.0": "sha256:a7fc0937c33e62f4bbc863e0ad4c58015b0726607fd1fa6e7ca065b32b2579f4"
     },
     "tools/server/server-http.cpp": {
       "b9910": "sha256:4da05a5e72fd80d883e4ebab7d709d6c2a73a05dd40f1ac2d8b1799559111596",
+      "v0.2.0": "sha256:fc9d307525d7db13fcee3d32e0d4587cbd2f3d93bcc70a86b2cedc16b336ce11",
+      "v0.3.0": "sha256:fc9d307525d7db13fcee3d32e0d4587cbd2f3d93bcc70a86b2cedc16b336ce11",
+      "v0.4.0": "sha256:fc9d307525d7db13fcee3d32e0d4587cbd2f3d93bcc70a86b2cedc16b336ce11",
+      "v0.4.1": "sha256:fc9d307525d7db13fcee3d32e0d4587cbd2f3d93bcc70a86b2cedc16b336ce11",
+      "v0.5.0": "sha256:b7a60c6bb3a6dc90a0e122b7467eba674922cae369295033a03adce3db4b5b05",
       "v0.6.0": "sha256:24ede172e526763567dbe929da5b16250693d7a2e44334ef0126649b6d3f5fdb"
     },
     "tools/server/server-http.h": {
       "b9910": "sha256:d925e4d62a68c7c60abec13ba33ab5da54e3195d2f3b7ce2cf7eaf31a1b0974d",
+      "v0.2.0": "sha256:822a22ab2e8072b3447aadda5c941e9968b7d21bf01277f817b5ab0fce8c5e41",
+      "v0.3.0": "sha256:822a22ab2e8072b3447aadda5c941e9968b7d21bf01277f817b5ab0fce8c5e41",
+      "v0.4.0": "sha256:822a22ab2e8072b3447aadda5c941e9968b7d21bf01277f817b5ab0fce8c5e41",
+      "v0.4.1": "sha256:822a22ab2e8072b3447aadda5c941e9968b7d21bf01277f817b5ab0fce8c5e41",
+      "v0.5.0": "sha256:b40dfa1b416f51b5763b0473c27ffffbb118c08233dd182e78549125441ec68a",
       "v0.6.0": "sha256:b40dfa1b416f51b5763b0473c27ffffbb118c08233dd182e78549125441ec68a"
+    },
+    "tools/server/server-models.cpp": {
+      "b9910": "sha256:df155fa35591386426fa67f521a66faa583b9868dbccea8bc39a4990d196e715",
+      "v0.2.0": "sha256:777864e684bfc378c96ccc8a6f99a6f07a9df76403132967b4c9b947ba2b68ab",
+      "v0.3.0": "sha256:c594bd934ee4539001e34e4f91842dc506ad2447fa1ebf71df9aeffd23b7e8c5",
+      "v0.4.0": "sha256:c594bd934ee4539001e34e4f91842dc506ad2447fa1ebf71df9aeffd23b7e8c5",
+      "v0.4.1": "sha256:854db15a62e1d6e68670b36d38da7d750753ca2d0054288e2b2346e7c37bee8b",
+      "v0.5.0": "sha256:b57db39ee061e2685c8ad649348c32e4b95ff42ed207bce7848f76d6ebd20229",
+      "v0.6.0": "sha256:d165d053ebf587db6c40f3eb1b965136ecf5c96a32e53dc6e1a82f5166801a0a"
+    },
+    "tools/server/server-models.h": {
+      "b9910": "sha256:e14ecfc4323f989874370670caf09561052257739d420040c2c155e6d01266dc",
+      "v0.2.0": "sha256:6f6b00a27eb4a71d19c33181b77825d824cd35d14b72060d5581e617083a25fd",
+      "v0.3.0": "sha256:6f6b00a27eb4a71d19c33181b77825d824cd35d14b72060d5581e617083a25fd",
+      "v0.4.0": "sha256:6f6b00a27eb4a71d19c33181b77825d824cd35d14b72060d5581e617083a25fd",
+      "v0.4.1": "sha256:62707595e45bc3b4c267add5bf669a53e5d984b6acda7a01fd3e612732f66de4",
+      "v0.5.0": "sha256:62707595e45bc3b4c267add5bf669a53e5d984b6acda7a01fd3e612732f66de4",
+      "v0.6.0": "sha256:2988f752866a7ff1697b274cbed80684778e4df5a6a14a8d3a13385a228ff773"
     },
     "tools/server/server-queue.cpp": {
       "b9910": "sha256:4f9173c7a9c2d19038586d1c84903e7e757949d71b91dbc8953c7d682e40c8bc",
+      "v0.2.0": "sha256:0e196113d16f130230d2cc0b232915e1f5b4f1dda184790afbfdc4986dd1fd58",
+      "v0.3.0": "sha256:0e196113d16f130230d2cc0b232915e1f5b4f1dda184790afbfdc4986dd1fd58",
+      "v0.4.0": "sha256:0e196113d16f130230d2cc0b232915e1f5b4f1dda184790afbfdc4986dd1fd58",
+      "v0.4.1": "sha256:0e196113d16f130230d2cc0b232915e1f5b4f1dda184790afbfdc4986dd1fd58",
+      "v0.5.0": "sha256:0e196113d16f130230d2cc0b232915e1f5b4f1dda184790afbfdc4986dd1fd58",
       "v0.6.0": "sha256:0e196113d16f130230d2cc0b232915e1f5b4f1dda184790afbfdc4986dd1fd58"
     },
     "tools/server/server-queue.h": {
       "b9910": "sha256:5561113dc34a44f57346978ea14a0504a41911b51112fb2b053664e28af88968",
+      "v0.2.0": "sha256:03589a5d4feaec7910f2d11a87cf86edb932cf04ff97b1bb26a2c6b8593156b3",
+      "v0.3.0": "sha256:03589a5d4feaec7910f2d11a87cf86edb932cf04ff97b1bb26a2c6b8593156b3",
+      "v0.4.0": "sha256:03589a5d4feaec7910f2d11a87cf86edb932cf04ff97b1bb26a2c6b8593156b3",
+      "v0.4.1": "sha256:03589a5d4feaec7910f2d11a87cf86edb932cf04ff97b1bb26a2c6b8593156b3",
+      "v0.5.0": "sha256:03589a5d4feaec7910f2d11a87cf86edb932cf04ff97b1bb26a2c6b8593156b3",
       "v0.6.0": "sha256:03589a5d4feaec7910f2d11a87cf86edb932cf04ff97b1bb26a2c6b8593156b3"
     },
     "tools/server/server-stream.cpp": {
       "b9910": "sha256:560fe3fdd380defc898f97b504d3eef3b69f2df09313fad98453b5a9f045ed10",
+      "v0.2.0": "sha256:96cea95271afcb6e359fd5666c3de93e1dc9c94b35b7d961ca3e9d9854575b1a",
+      "v0.3.0": "sha256:96cea95271afcb6e359fd5666c3de93e1dc9c94b35b7d961ca3e9d9854575b1a",
+      "v0.4.0": "sha256:96cea95271afcb6e359fd5666c3de93e1dc9c94b35b7d961ca3e9d9854575b1a",
+      "v0.4.1": "sha256:96cea95271afcb6e359fd5666c3de93e1dc9c94b35b7d961ca3e9d9854575b1a",
+      "v0.5.0": "sha256:96cea95271afcb6e359fd5666c3de93e1dc9c94b35b7d961ca3e9d9854575b1a",
       "v0.6.0": "sha256:96cea95271afcb6e359fd5666c3de93e1dc9c94b35b7d961ca3e9d9854575b1a"
     },
     "tools/server/server-stream.h": {
       "b9910": "sha256:9347175b8c33f1402c434df4bebf450e5ab4c33ff4790bdc3a90bf7db271851c",
+      "v0.2.0": "sha256:01986f4c46882f94f5c08c5d481cb47e30150c312c927219d3eefc34f5a67fed",
+      "v0.3.0": "sha256:01986f4c46882f94f5c08c5d481cb47e30150c312c927219d3eefc34f5a67fed",
+      "v0.4.0": "sha256:01986f4c46882f94f5c08c5d481cb47e30150c312c927219d3eefc34f5a67fed",
+      "v0.4.1": "sha256:01986f4c46882f94f5c08c5d481cb47e30150c312c927219d3eefc34f5a67fed",
+      "v0.5.0": "sha256:01986f4c46882f94f5c08c5d481cb47e30150c312c927219d3eefc34f5a67fed",
       "v0.6.0": "sha256:01986f4c46882f94f5c08c5d481cb47e30150c312c927219d3eefc34f5a67fed"
     },
     "tools/server/server-task.cpp": {
       "b9910": "sha256:140f34b173a4e608278d01f312d6d118855426f04e7b5e4a103b3bffb80fc39c",
+      "v0.2.0": "sha256:004526bacda58f8b413166cf18c53bef3f472504c7db8d8df711dbc5c995b1f4",
+      "v0.3.0": "sha256:0fd5c8df2525e61214986e8abe3fc4edbb92f5dd652c9c2bfd1bc2712218a585",
+      "v0.4.0": "sha256:0fd5c8df2525e61214986e8abe3fc4edbb92f5dd652c9c2bfd1bc2712218a585",
+      "v0.4.1": "sha256:0fd5c8df2525e61214986e8abe3fc4edbb92f5dd652c9c2bfd1bc2712218a585",
+      "v0.5.0": "sha256:0fd5c8df2525e61214986e8abe3fc4edbb92f5dd652c9c2bfd1bc2712218a585",
       "v0.6.0": "sha256:aa752f0ba1ce4be15c65dbce43b769fdeeb5b0f72286005ef40028eea1f56e95"
     },
     "tools/server/server-task.h": {
       "b9910": "sha256:6e4d5967eb014ac30071be874a028f4ac50dd6c99547747bc373aa139f11cf5c",
+      "v0.2.0": "sha256:25b7cb7f12b4dab6b5bb5b4f7864792d66947d959b1abb98a45f7daf5436b0cf",
+      "v0.3.0": "sha256:413733f2c47897e9a531dbc382a72e7676d46164d92996da1f008185f059bcf2",
+      "v0.4.0": "sha256:413733f2c47897e9a531dbc382a72e7676d46164d92996da1f008185f059bcf2",
+      "v0.4.1": "sha256:413733f2c47897e9a531dbc382a72e7676d46164d92996da1f008185f059bcf2",
+      "v0.5.0": "sha256:413733f2c47897e9a531dbc382a72e7676d46164d92996da1f008185f059bcf2",
       "v0.6.0": "sha256:8275cc031ef9a582eda7efb64f1619db66d2adea1dd5712934d27df862ba92df"
     },
     "tools/server/server.cpp": {
       "b9910": "sha256:f164339ba380604688e28827fcb7d509ddb32422990b933125c4f2d736e9eede",
+      "v0.2.0": "sha256:2833d9d237e77a70a75736426f11432b964bc66f8e85c5751451f77444338703",
+      "v0.3.0": "sha256:2833d9d237e77a70a75736426f11432b964bc66f8e85c5751451f77444338703",
+      "v0.4.0": "sha256:a0b400372a697182fb552c946579f74e81a845aa6d37e4b40b978ff4be5e016c",
+      "v0.4.1": "sha256:a0b400372a697182fb552c946579f74e81a845aa6d37e4b40b978ff4be5e016c",
+      "v0.5.0": "sha256:7b093559250403e1f8bfbc53848ff2ffbbbf89f0637085761f858c732e9f64e5",
       "v0.6.0": "sha256:525d74866c4606c0252aa09ec8b8b51ff95d98b861e5ac06f3aa3256c7c2cccc"
     },
     "vendor/cpp-httplib/httplib.cpp": {
       "b9910": "sha256:6de3ecac7583e75bb06e935b680fffa691b9f5d10dc516bef15557ef160a6e17",
+      "v0.2.0": "sha256:8b1de0a587d68006d1c3cb3e056e0b80363b93f12d0ad3a26a9c83a236515f40",
+      "v0.3.0": "sha256:8b1de0a587d68006d1c3cb3e056e0b80363b93f12d0ad3a26a9c83a236515f40",
+      "v0.4.0": "sha256:c796420a111cd2c5f4a3efaa48f9dc6f5ad8086c39646b5e3921fa3e30e7e4ee",
+      "v0.4.1": "sha256:e2e4845c2626afd5bb4186e5590160889a052d88e5145a0c73b2e232a5ba79f7",
+      "v0.5.0": "sha256:4d61c14f6ca2638eee0fee0768b3e405621ae5d9803be72ad79e474d2706c67e",
       "v0.6.0": "sha256:3fcfda708677cdde638fa5789bad0303bb60429bdd32a87c84a81def2bf3550b"
     },
     "vendor/cpp-httplib/httplib.h": {
       "b9910": "sha256:cb3e2bca7921aac5f57aab3615cf7e396a8325704cc69e857aaa9909cdad2d02",
+      "v0.2.0": "sha256:b36e352ed5c39eabd26540f2089c83aafbcb29c5f36feb48a63575c63451ed7d",
+      "v0.3.0": "sha256:b36e352ed5c39eabd26540f2089c83aafbcb29c5f36feb48a63575c63451ed7d",
+      "v0.4.0": "sha256:300a319f104096c8308b2c760a6d2b14de2505ac8e76a16cb51e2dd7787b55d0",
+      "v0.4.1": "sha256:e6b21d80b2785610e93a2ac1aef34c62b8f8aadf6c59391759ccca25f494574e",
+      "v0.5.0": "sha256:81e75f6ed590434cf150cd35b01952d335cae682dd8c365b302de97dc2e9373f",
       "v0.6.0": "sha256:4a6ae65e2518407789a36c10623be16808cd7419ddf87f251a77741532977a4a"
     }
-  }
+  },
+  "per_hop": [
+    {
+      "from": "b9910",
+      "to": "v0.2.0",
+      "package_file_counts": {
+        "b9910": 3031,
+        "v0.2.0": 3446
+      },
+      "counts": {
+        "added": 546,
+        "removed": 131,
+        "changed": 1070,
+        "identical": 1830
+      },
+      "file_set_sha256": {
+        "added": "sha256:0c1fa69879faf44a461504f95732a371154237fa2cd824ab5771abf847cd1a0d",
+        "removed": "sha256:27b46d5484d86be9951ec5c1dadb73c5722e448a9a359cb6f654aa51f7f1add2",
+        "changed": "sha256:4f9d886bbc4a7dbd808b55c68399604110182e4c703cffc2f7a1b5221ca69bfe",
+        "identical": "sha256:d397963ab9246d69cbbea461d81c783a182ab00b855518fc50b170db3c3bd26f"
+      },
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/build-info.cpp.in",
+        "common/build-info.h",
+        "common/chat.cpp",
+        "common/chat.h",
+        "common/jinja/caps.cpp",
+        "common/jinja/caps.h",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-http.cpp",
+        "tools/server/server-http.h",
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h",
+        "tools/server/server-queue.cpp",
+        "tools/server/server-queue.h",
+        "tools/server/server-stream.cpp",
+        "tools/server/server-stream.h",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt",
+          "common/build-info.cpp.in",
+          "common/build-info.h"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server-http.cpp",
+          "tools/server/server-http.h",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "common/chat.h",
+          "tools/server/server-chat.cpp"
+        ],
+        "chat_template_capability_assessment": [
+          "common/jinja/caps.cpp",
+          "common/jinja/caps.h"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "tools/server/server-stream.cpp",
+          "tools/server/server-stream.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp",
+          "tools/server/server-models.h"
+        ],
+        "completion_usage_and_terminal_lifecycle": [
+          "tools/server/server-queue.cpp",
+          "tools/server/server-queue.h",
+          "tools/server/server-task.cpp",
+          "tools/server/server-task.h"
+        ]
+      }
+    },
+    {
+      "from": "v0.2.0",
+      "to": "v0.3.0",
+      "package_file_counts": {
+        "v0.2.0": 3446,
+        "v0.3.0": 3494
+      },
+      "counts": {
+        "added": 54,
+        "removed": 6,
+        "changed": 193,
+        "identical": 3247
+      },
+      "file_set_sha256": {
+        "added": "sha256:a31ef338161bdc382689dd436a78f66d48dffb69b49d04781edfe63fed2d357d",
+        "removed": "sha256:7bdc7a78ac5d52e3034757679647dd8950cbf61b1e85b8f22eacf3e6f1054c50",
+        "changed": "sha256:764cb931f90ac0c9bb39521b5fbc08e1ff79b336a456469b45862c0f9ee2adb3",
+        "identical": "sha256:e70581b2c9599e981752a8e24195a91aa4a14be11eb5b66e6c44dc931680bacd"
+      },
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "common/chat.h",
+        "common/jinja/caps.cpp",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-chat.h",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-models.cpp",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "common/chat.h",
+          "tools/server/server-chat.cpp",
+          "tools/server/server-chat.h"
+        ],
+        "chat_template_capability_assessment": [
+          "common/jinja/caps.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp"
+        ],
+        "completion_usage_and_terminal_lifecycle": [
+          "tools/server/server-task.cpp",
+          "tools/server/server-task.h"
+        ]
+      }
+    },
+    {
+      "from": "v0.3.0",
+      "to": "v0.4.0",
+      "package_file_counts": {
+        "v0.3.0": 3494,
+        "v0.4.0": 3527
+      },
+      "counts": {
+        "added": 52,
+        "removed": 19,
+        "changed": 686,
+        "identical": 2789
+      },
+      "file_set_sha256": {
+        "added": "sha256:86233c54d6d26054d946f1b309d241cee3610bc415fe7cbd5b7acd966288bb66",
+        "removed": "sha256:50ee19a3fde93b1014767665d3a8a39a22ed1b5f16742df94f3e2b56e2a4e156",
+        "changed": "sha256:79c216ae331bbeec9432de796ff6758afaeddf956bdb0c79a7e9ac30a224797c",
+        "identical": "sha256:276b511e56bd239f4cd57e47030d1126501116c9f0f3dccd045071f204f4dd2d"
+      },
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/build-info.cpp.in",
+        "common/build-info.h",
+        "common/chat.cpp",
+        "src/llama-version.h.in",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt",
+          "common/build-info.cpp.in",
+          "common/build-info.h",
+          "src/llama-version.h.in"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ]
+      }
+    },
+    {
+      "from": "v0.4.0",
+      "to": "v0.4.1",
+      "package_file_counts": {
+        "v0.4.0": 3527,
+        "v0.4.1": 3588
+      },
+      "counts": {
+        "added": 66,
+        "removed": 5,
+        "changed": 340,
+        "identical": 3182
+      },
+      "file_set_sha256": {
+        "added": "sha256:49aa19f30a2f97d461a02112242496d8ca5c2578500bf5a7f23c4d6cc204a644",
+        "removed": "sha256:fa0bdc252bfbb6a5ba4c85d8fd682ed60cf27655378d5741cfebb882440e8e0a",
+        "changed": "sha256:c13a80104bd87d52d8b71a8f5fe4b353d3d203d135350bc97ab7faafd475e79f",
+        "identical": "sha256:9176d40d74b3a60ee97adf77aed89de471cd380d2d6743e90154e60ca41bbe2b"
+      },
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "common/chat.h",
+        "common/jinja/caps.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "common/chat.h"
+        ],
+        "chat_template_capability_assessment": [
+          "common/jinja/caps.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp",
+          "tools/server/server-models.h"
+        ]
+      }
+    },
+    {
+      "from": "v0.4.1",
+      "to": "v0.5.0",
+      "package_file_counts": {
+        "v0.4.1": 3588,
+        "v0.5.0": 3619
+      },
+      "counts": {
+        "added": 36,
+        "removed": 5,
+        "changed": 378,
+        "identical": 3205
+      },
+      "file_set_sha256": {
+        "added": "sha256:eefb36e14f5a9e04589ae504f5a032e36221377ab7f1774ac84b793a3ae1be3e",
+        "removed": "sha256:b0283e2abbed821d7b10530c4926d17774b0cd70be8933f5bf265b951b181624",
+        "changed": "sha256:56fc060c610fc228baf85bfabba40fd0f1832d9ee2b7142c3959454645310f34",
+        "identical": "sha256:e17b65a7773fcc86acd36aa8be4dc730faebe16d2ba15c5f1707df47696b3506"
+      },
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "tools/server/server-chat.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-http.cpp",
+        "tools/server/server-http.h",
+        "tools/server/server-models.cpp",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server-http.cpp",
+          "tools/server/server-http.h",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp",
+          "tools/server/server-chat.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp"
+        ]
+      }
+    },
+    {
+      "from": "v0.5.0",
+      "to": "v0.6.0",
+      "package_file_counts": {
+        "v0.5.0": 3619,
+        "v0.6.0": 3687
+      },
+      "counts": {
+        "added": 73,
+        "removed": 5,
+        "changed": 524,
+        "identical": 3090
+      },
+      "file_set_sha256": {
+        "added": "sha256:eb503a690cdc61f7824802752934a0086a551ecc40c80ef09c61e9973ef322ac",
+        "removed": "sha256:523b31fe4359fb5fe5ebe11bf3f1eebdaa491c50275610d32cde725f9d792ad2",
+        "changed": "sha256:c4c98e891feb7f2f5aa8f11117f8469c17710c5059db60c92f324b8a67765e3b",
+        "identical": "sha256:0f63345ed62076862ec38df35592c332e6aa407851529a589e027287d276e99e"
+      },
+      "selected_changed_files": [
+        "CMakeLists.txt",
+        "common/arg.cpp",
+        "common/chat.cpp",
+        "tools/server/server-common.cpp",
+        "tools/server/server-common.h",
+        "tools/server/server-context.cpp",
+        "tools/server/server-context.h",
+        "tools/server/server-http.cpp",
+        "tools/server/server-models.cpp",
+        "tools/server/server-models.h",
+        "tools/server/server-task.cpp",
+        "tools/server/server-task.h",
+        "tools/server/server.cpp",
+        "vendor/cpp-httplib/httplib.cpp",
+        "vendor/cpp-httplib/httplib.h"
+      ],
+      "selected_change_classification": {
+        "runtime_identity": [
+          "CMakeLists.txt"
+        ],
+        "configuration_and_permission_boundary": [
+          "common/arg.cpp",
+          "tools/server/server-http.cpp",
+          "tools/server/server.cpp"
+        ],
+        "chat_message_and_template_mapping": [
+          "common/chat.cpp"
+        ],
+        "errors_and_http_stream_transport": [
+          "tools/server/server-common.cpp",
+          "tools/server/server-common.h",
+          "vendor/cpp-httplib/httplib.cpp",
+          "vendor/cpp-httplib/httplib.h"
+        ],
+        "health_properties_and_chat_mapping": [
+          "tools/server/server-context.cpp",
+          "tools/server/server-context.h"
+        ],
+        "properties_and_model_catalogue_handlers": [
+          "tools/server/server-models.cpp",
+          "tools/server/server-models.h"
+        ],
+        "completion_usage_and_terminal_lifecycle": [
+          "tools/server/server-task.cpp",
+          "tools/server/server-task.h"
+        ]
+      }
+    }
+  ]
 }

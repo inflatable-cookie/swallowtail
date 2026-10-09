@@ -156,7 +156,7 @@ section = "Research Records"
   "cargo fmt -p swallowtail-adapter-llama-cpp -- --check",
 ]
 "check:current-llama-cpp-attached" = "cargo check --locked --all-targets -p swallowtail-adapter-llama-cpp"
-"validate:current-llama-cpp-attached" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-llama-cpp --lib --test attached_driver --test prepared_facades --test llama_cpp_attached_v0_6_0_identity -E 'binary(attached_driver) | binary(llama_cpp_attached_v0_6_0_identity) | test(/protocol::tests::(properties_bind_exact_build_template_and_text_only_capability_evidence|properties_accept_only_the_two_qualified_attached_runtime_pairs)/) | test(/prepared_facades::attached_facade_binds_catalogue_and_inference_without_stop_authority/)'"
+"validate:current-llama-cpp-attached" = "cargo nextest run --locked --profile ci -p swallowtail-adapter-llama-cpp --lib --test attached_driver --test prepared_facades --test llama_cpp_attached_v0_6_0_identity -E 'binary(attached_driver) | binary(llama_cpp_attached_v0_6_0_identity) | test(/protocol::tests::(properties_bind_exact_build_template_and_text_only_capability_evidence|properties_accept_only_the_two_qualified_attached_runtime_pairs)/) | test(attached_facade_binds_catalogue_and_inference_without_stop_authority)'"
 "format:current-oh-my-pi-rpc" = [
   "cargo fmt -p swallowtail-adapter-oh-my-pi",
   "cargo fmt -p swallowtail-adapter-oh-my-pi -- --check",

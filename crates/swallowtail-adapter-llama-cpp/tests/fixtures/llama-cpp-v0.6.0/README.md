@@ -12,8 +12,11 @@ its opaque runtime axis to the value exposed by `/props`; the semantic release
 is the official stable point that maps to that exact source/runtime identity.
 
 `dist-inventory.json` records the complete source tree comparison from the
-qualified `b9910` source commit through `v0.6.0`. `protocol.json` records the
-selected request subset, changed mapped files, and explicitly excluded APIs.
+qualified `b9910` source commit through `v0.6.0`, plus all six adjacent
+published stable hops. The `v0.2.0` through `v0.5.0` runtime identities remain
+unqualified exact gaps. `protocol.json` records the selected request subset,
+changed mapped files by hop, their classifications, and explicitly excluded
+APIs.
 The `GET /v1/models` API-key change applies only to configured authenticated
 servers, outside this route's local-unauthenticated profile; `/props` already
 requires the key in both tags. No authentication capability is claimed.

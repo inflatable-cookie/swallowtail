@@ -66,6 +66,8 @@ text-chat behavior. The released binding remains `b9910-f5525f7e7` for
 consumer compatibility. The claim is opaque and `QualifiedOnly`: other build
 identities, including text between the two points, are incompatible. The
 semantic source tag `v0.6.0` is evidence for `b11429`, not a runtime version.
+Published stable hops `v0.2.0` through `v0.5.0` remain unqualified exact
+gaps after per-hop source comparison; see [Research 421](../research/421-llama-cpp-v0-6-0-identity.md).
 
 The prepared integration exposes two typed operations:
 

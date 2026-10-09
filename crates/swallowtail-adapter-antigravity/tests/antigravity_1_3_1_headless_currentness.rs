@@ -74,6 +74,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "scope",
             "official_stable_observed_at",
             "official_stable",
+            "post_freeze_channel_observation",
             "current_ceiling",
             "current_claim_id",
             "baseline",
@@ -87,7 +88,36 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         ],
     );
     assert_eq!(currentness["scope"], "antigravity.headless");
+    assert_eq!(
+        currentness["record"],
+        "docs/research/424-antigravity-headless-1-3-1-currentness-stop.md"
+    );
     assert_eq!(currentness["official_stable"], "1.3.1");
+    let post_freeze = &currentness["post_freeze_channel_observation"];
+    assert_exact_keys(
+        post_freeze,
+        &[
+            "version",
+            "observed_at",
+            "published_at",
+            "tag_commit_prefix",
+            "release_url",
+            "classification",
+            "artifact_identity_frozen",
+            "artifact_downloaded",
+        ],
+    );
+    assert_eq!(post_freeze["version"], "1.3.2");
+    assert_eq!(post_freeze["observed_at"], "2026-10-09");
+    assert_eq!(post_freeze["published_at"], "2026-10-08T22:39:48Z");
+    assert_eq!(post_freeze["tag_commit_prefix"], "8c1310b");
+    assert_eq!(
+        post_freeze["release_url"],
+        "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.2"
+    );
+    assert_eq!(post_freeze["classification"], "UnverifiedNewer");
+    assert_eq!(post_freeze["artifact_identity_frozen"], false);
+    assert_eq!(post_freeze["artifact_downloaded"], false);
     assert_eq!(currentness["current_ceiling"], "1.2.11");
     assert_eq!(
         currentness["current_claim_id"],
@@ -707,7 +737,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
     let unpublished = currentness["unpublished_points"]
         .as_array()
         .expect("unpublished points");
-    assert_eq!(unpublished.len(), 2);
+    assert_eq!(unpublished.len(), 1);
     assert_exact_string_array(
         &Value::Array(
             unpublished
@@ -715,7 +745,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
                 .map(|point| point["version"].clone())
                 .collect(),
         ),
-        &["1.2.18", "1.3.2"],
+        &["1.2.18"],
     );
     for point in unpublished {
         assert_exact_keys(
@@ -737,6 +767,24 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         .expect("source hop ledger");
     assert_eq!(route_hops.len(), HOPS.len());
     assert_eq!(source_hops.len(), HOPS.len());
+    assert_exact_string_array(
+        &Value::Array(
+            route_hops
+                .iter()
+                .map(|hop| hop["classification"].clone())
+                .collect(),
+        ),
+        &[
+            "approved-environment-evidence-gate",
+            "retry-control-evidence-gate",
+            "compatible-selected-schema-extension",
+            "approved-soft-denial-route-limit",
+            "selected-lifecycle-extension-identity-only-child-unknown-milestone",
+            "windows-runtime-deferred-outside-task",
+            "selected-resource-path-mapped-effect-unresolved",
+            "identity-only-child-status-unknown-milestone",
+        ],
+    );
     for (index, (from, to, published_at, commit)) in HOPS.iter().enumerate() {
         let hop = &route_hops[index];
         let source = &source_hops[index];
@@ -896,6 +944,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
             "private_adapter_milestones",
             "contract_036_impact",
             "soft_denial_mapping",
+            "follow_up_lead",
             "remaining_evidence_gates",
             "provider_prompt_sent",
             "live_provider_call",
@@ -906,7 +955,7 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
     );
     assert_eq!(identity_sources["published_windows_assets_unpacked"], true);
     assert_eq!(identity_sources["windows_runtime_exercised"], false);
-    assert_eq!(currentness["result"]["qualification"], "blocked");
+    assert_eq!(currentness["result"]["qualification"], "not_extended");
     assert_eq!(currentness["result"]["claim_changed"], false);
     assert_eq!(
         currentness["result"]["preserve_incompatible_hole"],
@@ -943,13 +992,19 @@ fn headless_currentness_record_freezes_all_hops_and_gates() {
         currentness["result"]["soft_denial_mapping"],
         "unclaimed; do not parse unspecified stderr or invent a stdout event"
     );
+    assert_eq!(
+        currentness["result"]["follow_up_lead"],
+        "eca55612-015c-46ed-a38b-52a85b30f15e"
+    );
     assert_exact_string_array(
         &currentness["result"]["remaining_evidence_gates"],
         &[
-            "selected 1.3.0 and 1.3.1 special-path and project-custom-agent mapping",
-            "Windows 1.2.17 ProviderEnforced --sandbox runtime behavior",
-            "AGY_CLI_MODEL_API_MAX_RETRIES=0 semantics on affected newer artifacts",
-            "approved-environment evidence for GEMINI_API_KEY absence",
+            "backend RPC and indirect permission-callback flow from resolved workspace or agent resources to selected tool decisions",
+            "resource-leaf symlink and alias equivalence after lexical path resolution",
+            "AGY_CLI_MODEL_API_MAX_RETRIES=0 flow into newer request budgets, retry classes, delay floors, and caps",
+            "approved-environment owner evidence for GEMINI_API_KEY presence or absence and its retry-class effect",
+            "Linux selected control-flow evidence; Mac ARM64 static mappings do not transfer",
+            "official stable 1.3.2 exact artifact identity and selected-path hop review",
         ],
     );
     assert_eq!(currentness["result"]["provider_prompt_sent"], false);

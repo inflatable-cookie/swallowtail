@@ -55,8 +55,12 @@ retryable class, and invalid values warn and keep the default. The exact
 in its approved environment; provider-managed retry is disabled there, so
 no Contract 023 exception applies. `1.1.18..=1.2.10` stay unqualified for
 headless runs and turn continuation until per-point pin evidence lands.
-Later stable versions remain visible as unverified newer. `1.1.8` is not
-silently accepted from the shared documentation tag.
+Research 401 maps newer Mac ARM64 selected paths but leaves resource/permission
+value flow, retry-budget, and approved-environment auth edges open; it does not
+extend this claim. Official stable `1.3.2` was published after that frozen
+identity and remains `UnverifiedNewer` for headless (Research 424). The
+`1.1.18..=1.2.10` hole remains. `1.1.8` is not silently accepted from the
+shared documentation tag.
 
 ## Prepare The Installation
 

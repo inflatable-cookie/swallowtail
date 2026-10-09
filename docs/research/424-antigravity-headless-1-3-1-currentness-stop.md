@@ -1,22 +1,37 @@
-# 388 Antigravity Headless 1.3.1 Currentness Stop
+# 424 Antigravity Headless 1.3.1 Currentness Stop
 
-Status: the authorized provider-free child-status and soft-denial adaptations
-are implemented and documented; qualification remains blocked at the existing
-claim pending selected path/config mapping, Windows sandbox runtime, and
-approved-environment retry/auth proof. Contract 036 classifies the child
-lifecycle correction as breaking if shipped.
+Status: finite task result; no qualification extension. The approved
+provider-free child-status and soft-denial adaptations are present and
+documented. The exact claim, its segments, hole, behavior revision, and retry
+pin remain unchanged. Exact Mac ARM64 static mapping now locates the newer
+resource and retry code on selected paths, but does not close the RPC,
+permission-callback, resource-alias, request-budget, retry-class, or
+approved-environment auth edges listed below. Current official stable `1.3.2`
+was published after the frozen identity through `1.3.1`; it remains
+`UnverifiedNewer`. Windows sandbox runtime work is deferred to the
+windows-compatibility lane and is not a gate or platform claim change here.
+Contract 036 classifies the approved child-lifecycle correction as breaking if
+shipped.
 
 Owner: swallowtail#111 (`antigravity.headless`)
-Date: 2026-10-08
+Date: 2026-10-09
 Axis: `antigravity-cli.release`
 Package: `swallowtail-adapter-antigravity`
 
 ## Current state
 
-The official GitHub stable channel was re-probed on 2026-10-08. Its latest
-release was `1.3.1`, published `2026-10-07T03:22:02Z`; the tag commit is
-`968f1170bd0e002e9d0914730975bc8a2cc65861`. The headless claim stays at exact
-`1.2.11`. Keep claim `antigravity.headless.release-window-2`, baseline
+The official GitHub stable channel was re-probed on 2026-10-08. At the frozen
+artifact cutoff, its latest release was `1.3.1`, published
+`2026-10-07T03:22:02Z`; the tag commit is
+`968f1170bd0e002e9d0914730975bc8a2cc65861`. A fresh channel check on
+2026-10-09 now finds `1.3.2`, released `2026-10-08T22:39:48Z` at short commit
+`8c1310b`. This point postdates the frozen identity. No `1.3.2` artifact was
+downloaded, inspected, or added to the hop ledger; it is `UnverifiedNewer`.
+Its release notes mention plugin installation and a changed
+`--dangerously-skip-permissions` effect in `/plan`. Those notes do not prove
+the selected headless effect, so no behavior or permission conclusion is
+transferred. The headless claim stays at exact `1.2.11`. Keep claim
+`antigravity.headless.release-window-2`, baseline
 `1.1.9`, deprecated segment `1.1.9..=1.1.17`, maintained exact point `1.2.11`,
 interior hole `1.1.18..=1.2.10`, and the exact
 `AGY_CLI_MODEL_API_MAX_RETRIES=0` pin. Catalogue evidence is not transferred.
@@ -33,11 +48,11 @@ archives were also downloaded, matched to their published digests, and unpacked
 offline. Each contains one `antigravity.exe`; its digest and PE architecture
 are recorded in the route-specific evidence fixture. Static strings were
 inspected; no binary was executed and Windows sandbox runtime behavior remains
-unproven.
-Release notes are discovery evidence, not a substitute for artifact identity.
-The unpublished `1.2.18` point inside the version interval remains without a
-release or tag, and `1.3.2` is the first unpublished point after current stable;
-neither point is added to the claim.
+unproven. Under the 2026-10-09 scope ruling, Windows runtime proof belongs to
+the later windows-compatibility lane; no Windows claim or support boundary
+changes in this task. Release notes are discovery evidence, not a substitute
+for artifact identity. The unpublished `1.2.18` point inside the version
+interval remains without a release or tag; it remains outside the claim.
 
 | Hop | Headless classification | Selected-path evidence and remaining gate |
 | --- | --- | --- |
@@ -46,9 +61,9 @@ neither point is added to the claim.
 | `1.2.13→1.2.14` | Compatible selected schema extension | Startup now rejects unsupported schema input and non-object roots. The adapter supplies inline JSON with an object root. Keep the existing schema decoder and failure coverage. |
 | `1.2.14→1.2.15` | Approved soft-denial route limit | A denied permission is respected without alternate command, script, or tool workarounds. The official guide documents a continuing run with exit `0` and an stderr notice. Run completion does not prove each requested tool executed; no structured denial projection is claimed. |
 | `1.2.15→1.2.16` | Selected lifecycle extension; identity-only child status is `Unknown` | Headless print now waits for background commands; image generation appears as a subagent. The adapter drains stdout through EOF and waits for the process. The approved fallback preserves child identity without inferring completion. |
-| `1.2.16→1.2.17` | Windows sandbox runtime evidence gate | Windows sandbox behavior changes on the selected `ProviderEnforced --sandbox` path. Both exact Windows assets and PE digests are now frozen, but static inspection does not prove runtime enforcement; do not narrow platform support. |
-| `1.2.17→1.3.0` | Selected path and custom-agent extension review | Special-character/Windows paths and project-scoped custom-agent discovery change. The verbosity and `/diff` changes are TUI-only under explicit stream JSON. The release note names selected path/config behavior, but does not establish the exact headless mapping or whether newly recognized project agents broaden the selected tool behavior. |
-| `1.3.0→1.3.1` | Identity-only child-status `Unknown`; path/config and retry/auth gates remain | The error note names `/agents` and the running-agent list. Official stream docs describe child identity, log, and workspace fields, but no child error/status field; preserve identity as `Unknown`. Relative custom-agent path resolution is also a selected config change whose exact headless mapping remains unproven; the API-key retry note remains conditional on exact pin and approved-environment evidence. |
+| `1.2.16→1.2.17` | Windows behavior deferred | Windows sandbox behavior changes on the selected `ProviderEnforced --sandbox` path. Exact Windows assets and PE digests remain inventoried, but runtime proof is deferred to the windows-compatibility lane; this task makes no Windows support claim. |
+| `1.2.17→1.3.0` | Selected path/resource mapping found; effects remain unresolved | Research 401 maps project-path and custom-agent discovery into the Mac ARM64 selected headless entrypoint and resolves relative resource paths in the custom-agent loader. The value flow through the service boundary to a tool or permission decision remains unresolved; no capability or unchanged-behavior claim follows. |
+| `1.3.0→1.3.1` | Identity-only child-status `Unknown`; selected resource and retry/auth edges remain | Research 401 maps `loadMDAgent`'s new `setDefaultAgentPath` call and relative-path resolution. It does not establish the downstream selected tool effect. The error note names `/agents` and the running-agent list; official stream docs describe child identity, log, and workspace fields but no child error/status field. Preserve identity as `Unknown`; API-key retry remains conditional on exact retry and approved-environment evidence. |
 
 The 2026-10-08 official headless guide distinguishes three error scopes. A
 failed tool step may carry `tool_info.error` with `type` and `message`; the
@@ -151,47 +166,109 @@ static identity fields and disassembly do not prove a successful child. No
 provider-free exact child-error stream was found in the released documentation
 or retained corpus. The documented `result.error` belongs to the outer run,
 not an individual subagent. Under the approved Contract 023 ruling, the
-adapter now retains child identity and projects `SubagentStatus::Unknown` when
-the selected stream has no usable child status. Synthetic fixtures prove that
+adapter retains child identity and projects `SubagentStatus::Unknown` when the
+selected stream has no usable child status. Synthetic fixtures prove that
 identity does not inherit the enclosing step or whole-run outcome; they do not
 pretend to be a provider capture.
 
-Three independent evidence gates remain. First, the `1.3.0` and `1.3.1`
-release notes change special-path handling, project-scoped agent discovery,
-and custom-agent path resolution. The selected working directory and project
-configuration can feed this headless path; the notes alone do not establish
-whether this repairs existing behavior or broadens the selected tool behavior.
-Freeze exact artifact-level evidence for the selected path/config mapping
-before qualifying it.
+Research 401 replaces the earlier strings-only review with exact Mac ARM64
+function and direct-call mappings for every frozen artifact from `1.2.11`
+through `1.3.1`. It maps the selected `--print --output-format stream-json`
+entrypoint, workspace and custom-agent resource branches, retry-override
+parsing and configuration write, retry executors and classifiers, and
+symbolic `GEMINI_API_KEY` references. The `1.3.0` and `1.3.1` path/config
+changes are therefore located in code reachable from the selected entrypoint.
+The mapping remains Mac ARM64 static evidence; it does not prove Linux
+behavior or a compatible extension.
 
-Second, the exact `1.2.17` Windows x64 and
-ARM64 archives are digest-verified and unpack to one inventoried PE executable
-each. Static string tables contain the retry variable, API-key provider, and
-terminal-sandbox markers; these strings do not establish retry control flow or
-Windows sandbox enforcement. Qualification needs provider-free proof on the
-exact Windows runtime for the selected `--sandbox` path. Do not narrow Windows
-support based on this gap.
+For the eight frozen hops, Research 401 maps the selected retry surface as
+follows. These are exact function/call-inventory deltas, not a claim that a
+later attempt limit or retryable-class set is understood:
 
-Third, the `1.2.12`, `1.2.13`, and `1.3.1` notes also change API-key quota or retry
-behavior. The exact `AGY_CLI_MODEL_API_MAX_RETRIES=0` behavior is proven only
-on `1.2.11`, and the selected `EnvironmentRef` does not expose an approved
-child-environment key set. Qualification needs exact newer-artifact proof
-that the zero pin still bounds retries and approved-environment evidence that
-`GEMINI_API_KEY` is absent from this personal-subscription child environment.
-No credential value was accessed and no new environment restriction is
-asserted.
+| Hop | Mapped retry/auth finding |
+| --- | --- |
+| `1.2.11→1.2.12` | The retry classifier adds `isGeminiAPIHardQuotaError`; the release note describes API-key quota handling. |
+| `1.2.12→1.2.13` | The classifier adds `isHardQuotaExhaustedMessage` and another retry-delay extraction call. |
+| `1.2.13→1.2.14` | The classifier body digest changes; no new helper family is inferred. |
+| `1.2.14→1.2.15` | The classifier adds `hasErrorInfoReason`; this does not establish the selected soft-denial stdout shape. |
+| `1.2.15→1.2.16` | The mapped API retry executor moves from `gemini_coder` to `oneharness`; its mapped body changes. |
+| `1.2.16→1.2.17` | Exact retry bodies are remapped; no additional retry class is inferred. Windows behavior is deferred. |
+| `1.2.17→1.3.0` | Exact retry bodies are remapped; no additional retry class is inferred. Selected path and custom-agent resource behavior is mapped, with downstream effect unresolved. |
+| `1.3.0→1.3.1` | The same mapped retry helper families remain; `loadMDAgent` newly calls `setDefaultAgentPath`. API-key retry remains an approved-environment gate. |
 
-## Proposed authority-preserving continuation
+In every binary, the literal `AGY_CLI_MODEL_API_MAX_RETRIES` has one mapped
+reference in `backend.applyModelAPIMaxRetriesOverride`; the function reads and
+parses the value and stores it in backend retry configuration. All builds also
+map the API-key functions `genai.defaultEnvVarProvider`,
+`genai.getAPIKeyFromEnv`, and `ServerBackendConfig.chainedAuthOrDefault`.
+Research 401 does not connect the config field to the request loop or prove
+which auth result reaches each retry class, so the `0` → one request result
+remains exact to Research 359's `1.2.11` artifact and fake proof.
 
-Keep the existing claim and all qualified points while resolving all three gates:
-provide exact, provider-free proof of retry pin semantics for the affected
-newer artifacts and evidence for the approved child environment's API-key
-boundary; provide exact-artifact Windows runtime proof for the selected
-`--sandbox` path. If those proofs require live provider work, credentials,
-host mutation, a new environment restriction, or narrower platform support,
-return for the needed separate authority instead of weakening the evidence.
-The approved soft-denial route limit and identity-only `Unknown` child
-projection remain private behavior adaptations with no new operation or
+The remaining non-Windows edges are finite and exact:
+
+1. **Resource, tool, and permission flow:** `launchCLI` reaches project-path
+   resolution and custom-agent discovery, and the mapped loader resolves
+   configured resource paths against an agent-file base. However,
+   `store.Manager.SendUserMessage` is not connected through the backend RPC
+   dispatch to its server implementation; `newSession` is not connected to
+   `Manager.GetDefinedAgentByName`; and resolved resource values are not
+   followed into a specific tool or permission decision. The call to
+   `permissionManager.EnsurePermissions` reaches its callback indirectly, so
+   the selected result is not established. To close this edge, a reviewed
+   interprocedural reconstruction must follow those exact functions and values
+   through the RPC and callback boundaries for each affected frozen Mac
+   artifact. Existing fake-process tests cover the adapter command and its
+   projections, not the vendor's internal decisions.
+2. **Resource aliases:** from `1.2.16`, workspace roots are passed through
+   `EvalSymlinks`; relative config entries are joined to their containing base
+   and lexically cleaned; a `Path.Join` call is present in `resolveDir`.
+   Research 401 does not establish symlink resolution for each leaf or whether
+   two aliased paths resolve to one resource. Exact leaf-value/call-flow
+   analysis is needed before claiming alias behavior.
+3. **Retry pin and retry classes:** each inspected build reads
+   `AGY_CLI_MODEL_API_MAX_RETRIES`, parses base-10 unsigned input and writes a
+   valid value, including zero, into backend retry configuration. That does
+   not show the field reaching the version-specific request loop or that zero
+   means one attempt on versions after `1.2.11`. The executor/classifier
+   functions are identified, but the per-class predicate, delay selection,
+   attempt budget, and effective floor/cap remain unresolved on the later
+   artifacts. Close this only with exact-artifact field and control-flow proof;
+   Research 359's fake and request-count proof remains bound to `1.2.11`.
+4. **Approved-environment auth:** the API-key provider and chained-auth
+   branches are identified, but the mapping does not establish which
+   present/absent auth result reaches each retry class. The selected
+   `EnvironmentRef` is opaque and proves neither the child key set nor that
+   `GEMINI_API_KEY` is absent. Any future absence assertion needs a sanitized
+   attestation from the approved-environment owner that exposes no secret
+   value; this task creates no new environment boundary.
+5. **Platform and latest movement:** Linux x64 selected control flow has not
+   been mapped, so the Mac findings do not transfer. Windows sandbox runtime
+   work is explicitly deferred to the later windows-compatibility lane, with
+   no support narrowing in this task. Stable `1.3.2` postdates the frozen
+   identity and remains `UnverifiedNewer`; its release notes alone do not
+   qualify any selected behavior.
+
+## Finite follow-up
+
+This task records the completed provider-free adaptation and the best exact
+static evidence now available; it does not raise the headless claim. The
+prepared follow-up lead is
+`eca55612-015c-46ed-a38b-52a85b30f15e`.
+The next evidence work is limited to the listed RPC/resource/permission
+value-flow and alias edges, exact newer retry-budget/classifier flow, and an
+approved-environment owner attestation about whether the key is absent. Use
+the already frozen Mac artifacts and static mapping as inputs; do not repeat
+their downloads, string scans, or completed analyzer proof. If reviewed static
+analysis cannot resolve an edge, the follow-up must request explicit authority
+for the precise provider-free runtime method before any vendor artifact is
+executed. No credential access, live provider work, install, host mutation,
+new environment rule, or support narrowing is authorized here. Linux remains
+unproved, Windows is deferred, and `1.3.2` is unverified.
+
+Preserve the existing exact claim and all qualified points while that follow-up
+proceeds. The approved soft-denial route limit and identity-only `Unknown`
+child projection remain private behavior adaptations with no new operation or
 approval bypass.
 
 If the child-lifecycle correction ships, Contract 036 requires a pre-1.0 minor
@@ -201,12 +278,15 @@ the earlier `1.2.11` segment and the `1.1.18..=1.2.10` hole. Do not infer live
 provider honoring from static proof.
 
 No provider prompt, live turn, credential access, CLI version command,
-installation, host update, claim change, guide/matrix change, release change,
-tag, or publication occurred.
+installation, host update, claim change, matrix change, release change, tag,
+or publication occurred. The integration guide and Unreleased changelog note
+were updated to point to this finite evidence result and the post-freeze
+stable-channel movement.
 
 ## Sources
 
 - [Official Antigravity CLI stable release `1.3.1`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.1)
+- [Official Antigravity CLI stable release `1.3.2`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.2) (post-freeze; `UnverifiedNewer`)
 - [Official Antigravity CLI stable release `1.3.0`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.0)
 - [Official Antigravity CLI stable release `1.2.17`](https://github.com/google-antigravity/antigravity-cli/releases/tag/1.2.17)
 - [Official headless-mode stream and permission documentation](https://www.antigravity.google/docs/cli/headless/)
@@ -216,6 +296,7 @@ tag, or publication occurred.
 - [Complete selected Linux x64 and Mac ARM64 archive inventory](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.3.1/dist-inventory.json)
 - [Complete public asset manifests and source-hop inventory](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.3.1/identity.json)
 - [Research 359: exact `1.2.11` retry pin](./359-antigravity-headless-retry-pin-evidence.md)
+- [Research 401: Mac ARM64 headless static control-flow mappings](./401-antigravity-headless-static-control-flow-evidence.md)
 - [Contract 023: Antigravity denial and child-status ruling](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md#antigravity-headless-denial-and-child-status)
 - [Contract 029: interface version qualification](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
 - [Contract 036: source compatibility boundary](../knowledge/contracts/036-crate-release-and-compatibility-boundary.md#coordinated-pre-10-version)

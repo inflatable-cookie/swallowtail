@@ -6,6 +6,17 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- close the bounded `antigravity.headless` evidence task without claiming a
+  newer point. The exact `1.2.11` ceiling, baseline `1.1.9`, deprecated
+  `1.1.9..=1.1.17`, `1.1.18..=1.2.10` hole, and
+  `AGY_CLI_MODEL_API_MAX_RETRIES=0` pin remain unchanged. Research 424 reuses
+  Research 401's exact Mac ARM64 selected-path mappings and records the
+  remaining resource/RPC/permission, retry-budget, and approved-environment
+  auth edges for follow-up `eca55612-015c-46ed-a38b-52a85b30f15e`. The child
+  `Unknown` projection is a Contract 036 breaking lifecycle correction and
+  requires a pre-1.0 minor release if shipped. Windows remains deferred with
+  no support change; official stable `1.3.2`, published after the frozen
+  identity, stays `UnverifiedNewer`. No release or tag is authorized here.
 - qualify `llama-cpp.attached` with the exact opaque runtime points
   `b9910-f5525f7e7` and `b11429-d81235049` on its existing
   `llama.cpp.attached-runtime` claim. Research 421 links official stable

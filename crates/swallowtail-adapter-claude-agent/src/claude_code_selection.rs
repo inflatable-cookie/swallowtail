@@ -56,7 +56,7 @@ pub fn claude_code_headless_claim() -> InterfaceCompatibilityClaim {
                 version("2.1.286").expect("static Claude Code v1 ceiling is valid"),
                 InterfaceBehaviorRevision::new(HEADLESS_BEHAVIOR_V1)
                     .expect("static Claude Code v1 behavior revision is valid"),
-                InterfaceSupportStatus::Maintained,
+                InterfaceSupportStatus::Deprecated,
             ),
             InterfaceVersionSegment::new(
                 version("2.1.287").expect("static Claude Code v2 baseline is valid"),
@@ -152,7 +152,9 @@ mod tests {
         CLAUDE_CODE_HEADLESS_AXIS, HEADLESS_BEHAVIOR_V1, HEADLESS_BEHAVIOR_V2,
         claude_code_headless_binding, claude_code_headless_claim,
     };
-    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+    use swallowtail_core::{
+        InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+    };
 
     #[test]
     fn qualified_segments_cover_published_hops_through_current_stable() {
@@ -201,22 +203,18 @@ mod tests {
             claim.assess(&version("2.1.295")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
-        assert_eq!(
-            claim
-                .assess(&version("2.1.286"))
-                .behavior_revision()
-                .unwrap()
-                .as_str(),
-            HEADLESS_BEHAVIOR_V1
-        );
-        assert_eq!(
-            claim
-                .assess(&version("2.1.294"))
-                .behavior_revision()
-                .unwrap()
-                .as_str(),
-            HEADLESS_BEHAVIOR_V2
-        );
+        let InterfaceCompatibilityAssessment::Qualified(v1) = claim.assess(&version("2.1.286"))
+        else {
+            panic!("2.1.286 must remain qualified");
+        };
+        assert_eq!(v1.support_status(), InterfaceSupportStatus::Deprecated);
+        assert_eq!(v1.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V1);
+        let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("2.1.294"))
+        else {
+            panic!("2.1.294 must remain qualified");
+        };
+        assert_eq!(v2.support_status(), InterfaceSupportStatus::Maintained);
+        assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);
         assert_eq!(
             claude_code_headless_binding("2.1.270")
                 .expect("version binds")

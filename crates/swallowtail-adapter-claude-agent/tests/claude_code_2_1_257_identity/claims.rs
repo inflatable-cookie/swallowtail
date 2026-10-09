@@ -117,12 +117,12 @@ fn unpublished_gaps_and_later_2_1_258_stay_classified() {
     assert!(matches!(
         headless.assess(&version("2.1.257")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(matches!(
         headless.assess(&version("2.1.258")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(!headless.permits(&version("2.1.279")));
     let response = claude_code_response_only_claim();
@@ -186,12 +186,12 @@ fn identity_and_claim_qualify_2_1_257_as_compatible_extension() {
     assert!(matches!(
         headless.assess(&version("2.1.252")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(matches!(
         headless.assess(&version("2.1.257")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     let response = claude_code_response_only_claim();
     assert!(matches!(

@@ -13,12 +13,13 @@ Route: `claude-code.headless`
 ## Decision
 
 Extend only the headless route from its preserved `2.1.281` ceiling through
-official stable `2.1.294`. Keep behavior v1 on `2.1.220..=2.1.286` and add
-private behavior v2 on `2.1.287..=2.1.294`. Preserve unpublished gaps,
-`AllowUnverified`, the baseline, claim id, SDK/ACP/response-only routes, and
-the public operation lifecycle. The new point does not change the read-only
-Plan policy, admitted `Read,Glob,Grep` tools, approved working resource, or
-ambient `user,project,local` settings.
+official stable `2.1.294`. Retain behavior v1 on `2.1.220..=2.1.286` as
+Deprecated and add private behavior v2 on `2.1.287..=2.1.294` as Maintained,
+following Contract 029's segment support-status rule. Preserve unpublished
+gaps, `AllowUnverified`, the baseline, claim id, SDK/ACP/response-only routes,
+and the public operation lifecycle. The new point does not change the
+read-only Plan policy, admitted `Read,Glob,Grep` tools, approved working
+resource, or ambient `user,project,local` settings.
 The optional maximum-turn feature remains restricted to its exact Research 226
 set; this qualification does not widen it to `2.1.282..=2.1.294`.
 

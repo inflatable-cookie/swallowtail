@@ -347,12 +347,14 @@ annotated Git tags from the canonical repository.
   adaptation or ruling needed. HTTP MCP live honouring remains exact
   `0.61.0`; the headless claim is untouched.
 - qualify `claude-code.headless` through official stable `2.1.294` using a
-  private stream-JSON behavior segment for `2.1.287..=2.1.294`. The adapter
+  private stream-JSON behavior segment for `2.1.287..=2.1.294`, with the
+  retained `2.1.220..=2.1.286` v1 segment labeled Deprecated. The adapter
   accepts forked assistant frames with a nullable stop reason, retains bounded
   usage from the terminal result, and keeps plan mode, the read-only tool set,
   and user, project, and local hooks enabled. Exact published-binary review
   covers the `2.1.294` instruction-form hook and Stop/SubagentStop decisions;
-  `2.1.295` remains `UnverifiedNewer`. Research 422 records the adaptation.
+  v2 is Maintained and `2.1.295` remains `UnverifiedNewer`. Research 422
+  records the adaptation.
 - close the Claude Agent SDK command-admission race when its pump rejects an
   unsolicited event or reaches EOF. The pump now closes admission and resolves
   pending commands before escalation and process wait; command registration

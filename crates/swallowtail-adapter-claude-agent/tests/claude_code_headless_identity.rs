@@ -111,17 +111,17 @@ fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
     assert!(matches!(
         claim.assess(&version("2.1.251")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(matches!(
         claim.assess(&version("2.1.252")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(matches!(
         claim.assess(&version("2.1.257")),
         InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
+            if matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
     assert!(!claim.permits(&version("2.1.253")));
     assert!(!claim.permits(&version("2.1.262")));
@@ -136,7 +136,7 @@ fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
             matches!(
                 claim.assess(&version(published)),
                 InterfaceCompatibilityAssessment::Qualified(matched)
-                    if matched.support_status() == InterfaceSupportStatus::Maintained
+                    if matched.support_status() == InterfaceSupportStatus::Deprecated
             ),
             "{published}"
         );

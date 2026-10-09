@@ -267,9 +267,9 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 `xhigh`, and `max` reasoning selections, and requires the initialized and
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
-capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on
-`claude-code.headless.stream-json.v1` and
-`2.1.287..=2.1.294` on private milestone `claude-code.headless.stream-json.v2`.
+capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on deprecated
+`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.294` on maintained
+private milestone `claude-code.headless.stream-json.v2`.
 Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, `2.1.264`, and `2.1.279`. Later stable versions remain
 visible `UnverifiedNewer`; official `2.1.295` remains unverified after the

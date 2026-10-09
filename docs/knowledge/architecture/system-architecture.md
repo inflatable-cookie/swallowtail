@@ -1288,7 +1288,8 @@ with provider-state prohibited. The separate `pi.sdk-sidecar` route now
 realizes load and resume through the public SDK: `switchSession` runs with
 the host-leased cwd as `cwdOverride`, the driver compares the effective cwd
 and session reference before readiness, load completes bounded typed replay
-before readiness, and resume attaches without replay. Durable provider state
+before readiness, a replay item after that response fails closed with no
+ready handle, and resume attaches without replay. Durable provider state
 lives in the application-provisioned session directory and is preserved on
 close. Both routes remain production; the RPC route keeps its lighter
 operational posture and the SDK route keeps the continuation surface, and

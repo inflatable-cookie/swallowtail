@@ -46,6 +46,8 @@ pub enum SidecarScenario {
     ReplayCountMismatch,
     ReplayOverflow,
     ReplayAfterResponse,
+    ReplayAfterResponseSameRead,
+    ReplayAfterResponseHeld,
     ReplayDuringResume,
     HoldReplay,
     ThinkingBootstrapMismatch,
@@ -94,6 +96,7 @@ struct ProcessState {
     bootstrap: Option<(String, String, String)>,
     session_ref: Option<String>,
     thinking_level: Option<String>,
+    late_replay_held: bool,
 }
 
 impl SidecarFixtureHost {
@@ -232,6 +235,21 @@ impl SidecarFixtureHost {
         if state.close_requested {
             state.stopped = true;
         }
+        self.shared.changed.notify_all();
+    }
+
+    pub fn release_late_replay(&self) {
+        let mut state = self
+            .shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned");
+        assert!(
+            state.late_replay_held,
+            "late replay was not held for an explicit release"
+        );
+        state.late_replay_held = false;
+        script::continuity::emit_held_late_replay(&mut state);
         self.shared.changed.notify_all();
     }
 

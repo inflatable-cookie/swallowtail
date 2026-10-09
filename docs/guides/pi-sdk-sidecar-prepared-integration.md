@@ -126,7 +126,10 @@ plan, resource, and policy, and failure never falls back to a new session.
 `load_session` switches the fresh sidecar to the bound session with the
 expected-cwd gate, rejects a substituted session reference, transports the
 bounded ordered typed replay (1,024 messages, 4 MiB of content), and becomes
-ready only after the replay response and state re-check. `resume_session`
+ready only after the replay response and state re-check. A replay item after
+that response fails the load before readiness (`replay_incomplete` while the
+collector is still armed, `replay_unexpected` after it is taken) and still
+joins process, resource, and credential cleanup. `resume_session`
 attaches to the same bound session with no replay phase; replay evidence
 during resume fails the transport. Close and disconnect preserve the durable
 provider state while joining process, resource, and credential work.
@@ -172,6 +175,9 @@ binding, bounded fixtures, and route-matrix coverage.
 effigy format:current-pi-sdk-sidecar
 effigy validate:current-pi-sdk-sidecar
 effigy check:current-pi-sdk-sidecar
+effigy format:pi-replay-cleanup
+effigy validate:pi-replay-cleanup
+effigy check:pi-replay-cleanup
 ```
 
 No Node install, package resolution, configured provider call, credential

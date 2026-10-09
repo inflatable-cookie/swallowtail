@@ -6,6 +6,8 @@ use serde_json::Value;
 use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
+#[cfg(test)]
+use std::sync::Barrier;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
@@ -15,6 +17,8 @@ use swallowtail_runtime::{
     RuntimeFailure,
 };
 
+#[cfg(test)]
+mod connection_tests;
 mod pump;
 
 const MAXIMUM_PENDING_COMMANDS: usize = 16;
@@ -34,6 +38,8 @@ pub(crate) struct SidecarConnection {
     closed: AtomicBool,
     terminal_error: Mutex<Option<SafeDiagnostic>>,
     cleanup: Mutex<Option<CleanupOutcome>>,
+    #[cfg(test)]
+    send_registration_gate: Mutex<Option<Arc<(Barrier, Barrier)>>>,
 }
 
 impl SidecarConnection {
@@ -48,6 +54,8 @@ impl SidecarConnection {
             closed: AtomicBool::new(false),
             terminal_error: Mutex::new(None),
             cleanup: Mutex::new(None),
+            #[cfg(test)]
+            send_registration_gate: Mutex::new(None),
         })
     }
 
@@ -71,6 +79,16 @@ impl SidecarConnection {
         if self.closed.load(Ordering::SeqCst) {
             return Err(self.closed_failure());
         }
+        #[cfg(test)]
+        if let Some(gate) = self
+            .send_registration_gate
+            .lock()
+            .expect("sidecar test send gate lock poisoned")
+            .clone()
+        {
+            gate.0.wait();
+            gate.1.wait();
+        }
         if !self
             .used_ids
             .lock()
@@ -85,6 +103,12 @@ impl SidecarConnection {
         let (sender, response) = response_channel();
         {
             let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
+            // The pump can close the connection after the fast check above.
+            // Recheck under the lock used to drain pending work, so a sender
+            // cannot register after that drain and wait forever.
+            if self.closed.load(Ordering::SeqCst) {
+                return Err(self.closed_failure());
+            }
             if pending.len() >= MAXIMUM_PENDING_COMMANDS {
                 return Err(failure(
                     "swallowtail.pi.sdk-sidecar.command_capacity_exceeded",
@@ -199,7 +223,7 @@ struct ResponseState {
     waiter: Option<Waker>,
 }
 
-struct ResponseSender(Arc<Mutex<ResponseState>>);
+pub(super) struct ResponseSender(Arc<Mutex<ResponseState>>);
 struct ResponseFuture(Arc<Mutex<ResponseState>>);
 
 fn response_channel() -> (ResponseSender, ResponseFuture) {
@@ -208,7 +232,7 @@ fn response_channel() -> (ResponseSender, ResponseFuture) {
 }
 
 impl ResponseSender {
-    fn complete(self, result: Result<CommandResult, RuntimeFailure>) {
+    pub(super) fn complete(self, result: Result<CommandResult, RuntimeFailure>) {
         let mut state = self.0.lock().expect("sidecar response lock poisoned");
         state.result = Some(result);
         if let Some(waiter) = state.waiter.take() {
@@ -232,13 +256,33 @@ impl Future for ResponseFuture {
 }
 
 impl SidecarConnection {
-    /// Records the terminal transport failure before the closed flag so a
-    /// later command observes the exact cause instead of a generic close.
-    pub(crate) fn record_terminal_error(&self, error: &RuntimeFailure) {
-        *self
-            .terminal_error
+    /// Closes command admission and resolves every waiter when the pump can no
+    /// longer receive responses. The pending lock makes closure and draining
+    /// one linearized transition with command registration.
+    pub(crate) fn fail_connection(&self, error: &RuntimeFailure) {
+        let pending = {
+            let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
+            *self
+                .terminal_error
+                .lock()
+                .expect("sidecar terminal-error lock poisoned") = Some(error.diagnostic().clone());
+            self.closed.store(true, Ordering::SeqCst);
+            std::mem::take(&mut *pending)
+        };
+        for (_, pending) in pending {
+            pending
+                .sender
+                .complete(Err(RuntimeFailure::new(error.diagnostic().clone())));
+        }
+        if let Some(turn) = self
+            .active_turn
             .lock()
-            .expect("sidecar terminal-error lock poisoned") = Some(error.diagnostic().clone());
+            .expect("sidecar active lock poisoned")
+            .take()
+            && !turn.is_finished()
+        {
+            turn.fail_connection(error.diagnostic().clone());
+        }
     }
 
     fn closed_failure(&self) -> RuntimeFailure {

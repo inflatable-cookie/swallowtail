@@ -44,3 +44,9 @@ default-filter = "all()"
 [profile.current-pi-sdk-sidecar]
 inherits = "ci-process"
 default-filter = "all()"
+
+# Bounded Pi sidecar load-replay failure and cleanup proof. Same process
+# fixture timeout as current-pi-sdk-sidecar; sidecar_driver stays selectable.
+[profile.pi-replay-cleanup]
+inherits = "ci-process"
+default-filter = "all()"

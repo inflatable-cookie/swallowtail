@@ -4,6 +4,7 @@ use crate::support::{
     sidecar_selection,
 };
 use futures_executor::block_on;
+use std::thread;
 use swallowtail_adapter_pi::{PiSdkSidecarSessionPreparation, prepare_pi_sdk_sidecar_session};
 use swallowtail_core::{
     AccessProfileId, ConfiguredInstanceId, ExecutionHostId, InstanceRevision, InstanceTargetRef,
@@ -258,43 +259,66 @@ fn load_and_resume_reject_switch_drift_before_readiness() {
 
 #[test]
 fn replay_items_after_the_replay_response_fail_the_load() {
-    // The stray replay item may be caught by the armed collector (count
-    // mismatch) or by the disarmed pump (unexpected replay); both fail the
-    // load before readiness and return no handle.
-    let host_id = make_host_id("pi.fixture.sdk-sidecar.late-replay");
-    let fixture = SidecarFixtureHost::new(SidecarScenario::ReplayAfterResponse);
-    let selected = sidecar_selection(host_id.clone());
-    let binding = fixture_binding(&selected.plan);
-    let error = block_on(driver(selected.credential.clone()).load_session(
-        selected.plan,
-        LoadSessionRequest::new(
-            RequestId::new("sidecar-late-replay").expect("valid request"),
-            binding,
-            selected.resource.clone(),
-            None,
-            agreement(),
-        ),
-        fixture.services(host_id),
-    ))
-    .err()
-    .expect("late replay evidence fails the load");
+    // Unpaced separate chunks are the original CI reproducer. Command
+    // registration is linearized with pump shutdown, so either the armed
+    // collector (count mismatch) or the disarmed pump (unexpected replay)
+    // fails the load before readiness; neither can hang waiting for a
+    // response the stopped pump will never send.
+    let (code, fixture) = load_late_replay(SidecarScenario::ReplayAfterResponse, "unpaced");
     assert!(
         matches!(
-            error.diagnostic().code(),
+            code.as_str(),
             "swallowtail.pi.sdk-sidecar.replay_unexpected"
                 | "swallowtail.pi.sdk-sidecar.replay_incomplete"
         ),
-        "unexpected code {}",
-        error.diagnostic().code()
+        "unexpected code {code}"
     );
-    assert_eq!(
-        fixture.cleanup_events(),
-        [
-            CleanupEvent::ProcessWait,
-            CleanupEvent::ResourceRelease,
-            CleanupEvent::CredentialRelease,
-        ]
+    assert_joined_cleanup(&fixture);
+}
+
+#[test]
+fn late_replay_in_the_same_read_as_the_response_fails_incomplete() {
+    // One stdout chunk contains the item, the response, and the extra item.
+    // The pump applies the whole decoded batch before completing the
+    // response, so the extra item lands while the collector is still armed.
+    let (code, fixture) =
+        load_late_replay(SidecarScenario::ReplayAfterResponseSameRead, "same-read");
+    assert_eq!(code, "swallowtail.pi.sdk-sidecar.replay_incomplete");
+    assert_joined_cleanup(&fixture);
+}
+
+#[test]
+fn late_replay_after_collector_disarm_fails_unexpected() {
+    // The extra item is held until load has taken the collector and issued
+    // the post-replay state command. Releasing it then fails the transport
+    // closed and wakes that pending command.
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.late-replay-held");
+    let fixture = SidecarFixtureHost::new(SidecarScenario::ReplayAfterResponseHeld);
+    let selected = sidecar_selection(host_id.clone());
+    let binding = fixture_binding(&selected.plan);
+    let request = LoadSessionRequest::new(
+        RequestId::new("sidecar-late-replay-held").expect("valid request"),
+        binding,
+        selected.resource.clone(),
+        None,
+        agreement(),
     );
+    let services = fixture.services(host_id);
+    let driver = driver(selected.credential.clone());
+    let worker = thread::spawn(move || {
+        block_on(driver.load_session(selected.plan, request, services))
+            .err()
+            .expect("late replay after disarm fails the load")
+            .diagnostic()
+            .code()
+            .to_owned()
+    });
+    fixture.wait_for_command("session_replay");
+    fixture.wait_for_command("state");
+    fixture.release_late_replay();
+    let code = worker.join().expect("load thread joins");
+    assert_eq!(code, "swallowtail.pi.sdk-sidecar.replay_unexpected");
+    assert_joined_cleanup(&fixture);
 }
 
 #[test]
@@ -356,6 +380,38 @@ fn deadline_during_replay_stops_the_load_without_a_handle() {
     fixture.advance_time(500);
     let code = worker.join().expect("load thread joins");
     assert_eq!(code, "swallowtail.pi.sdk-sidecar.attach_timed_out");
+    assert_eq!(
+        fixture.cleanup_events(),
+        [
+            CleanupEvent::ProcessWait,
+            CleanupEvent::ResourceRelease,
+            CleanupEvent::CredentialRelease,
+        ]
+    );
+}
+
+fn load_late_replay(scenario: SidecarScenario, label: &str) -> (String, SidecarFixtureHost) {
+    let host_id = make_host_id(&format!("pi.fixture.sdk-sidecar.late-replay-{label}"));
+    let fixture = SidecarFixtureHost::new(scenario);
+    let selected = sidecar_selection(host_id.clone());
+    let binding = fixture_binding(&selected.plan);
+    let error = block_on(driver(selected.credential.clone()).load_session(
+        selected.plan,
+        LoadSessionRequest::new(
+            RequestId::new(&format!("sidecar-late-replay-{label}")).expect("valid request"),
+            binding,
+            selected.resource.clone(),
+            None,
+            agreement(),
+        ),
+        fixture.services(host_id),
+    ))
+    .err()
+    .expect("late replay evidence fails the load");
+    (error.diagnostic().code().to_owned(), fixture)
+}
+
+fn assert_joined_cleanup(fixture: &SidecarFixtureHost) {
     assert_eq!(
         fixture.cleanup_events(),
         [

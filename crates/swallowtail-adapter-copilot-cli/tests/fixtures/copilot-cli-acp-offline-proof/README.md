@@ -33,3 +33,12 @@ record. A matching `Authentication required` response is the stop condition
 when running without auth or network. The committed execution record describes
 the completed run; do not repeat the exact binary attempts as part of routine
 validation.
+
+The authenticated-proof harness also runs a separate fake-only pre-prompt
+discovery path. It accepts initialize, authenticate, and session creation,
+records only synthetic model/configuration identifiers, sends no prompt, then
+closes and joins the child. Its negative controls reject prompt and
+permission/tool callbacks, unapproved origins, wrong account or keychain
+service, excess invocation/time, auth/config writes, and host-home/repository
+escape. This path does not execute or authorize any frozen artifact and does
+not change the disabled status in `authenticated-proof-plan.json`.

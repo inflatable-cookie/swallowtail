@@ -1185,6 +1185,33 @@ profile receives no home, service, executable, network or credential authority
 change. These controls do not change the exact `1.0.80` claim or either
 consumed record.
 
+### Credential-Free No-Child Diagnostic Preparation
+
+Tom answered “Approve fake-only diagnostic preparation” to decision
+`4d499c96-4046-4189-b14e-39b1a572e035` on 2026-10-09, approving lead
+`63377791-fce4-4c8d-8e9e-44bee889d756`.
+
+Preparation may use task-owned fakes and synthetic home, configuration, cache
+and temporary state to prove a narrower initialization-only boundary. It must
+demonstrate denial of `fork`, `vfork` and `posix_spawn`, including self-spawn,
+helper execution and session escape, after the single owned launcher-to-target
+exec transition. A deny-rule string or cooperative fake-child join is not
+proof. Bind the current OS and imported-profile closure, replayable synthetic
+layout, bounded diagnostics, one-shot records and owned-root stop/join.
+
+The proposed later diagnostic uses `--acp --stdio`, at most one initialize
+request and a 60-second ceiling, with all external network and real
+home/config/keychain/auth access denied. It does not use the host login or
+Auto model policy and cannot establish their permission-proof compatibility.
+If the no-child boundary cannot be enforced, return a concrete isolated
+environment requirement; do not substitute process-group cleanup.
+
+This ruling authorizes preparation and fake proof only. No original Copilot
+invocation, additional credential/service access, qualification or release is
+included. A later original needs separate exact authority after independent
+review. Both consumed attempt records, existing replay guards and the exact
+`1.0.80` claim remain unchanged; original admission stays fail-closed.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

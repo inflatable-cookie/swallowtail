@@ -65,5 +65,6 @@ separate authority.
 Before staging artifacts or starting an original, the harness validates this
 committed record against its pinned SHA-256 and refuses every version whose
 invocation is marked consumed. Missing, changed or unsafe record paths fail
-closed. The fake self-test covers refusal of consumed `1.0.93` and the missing
-and changed-record stops; it does not launch an original.
+closed. Both `--permission-proof` and legacy `--execute` use this guard. The
+fake self-test covers refusal of consumed `1.0.93` before legacy staging and
+the missing and changed-record stops; it does not launch an original.

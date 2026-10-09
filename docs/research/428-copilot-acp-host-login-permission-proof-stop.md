@@ -87,9 +87,10 @@ authority. The harness now reads and validates the committed execution record
 before artifact staging or any original start. It compares the record against
 its pinned SHA-256 and refuses all versions marked consumed; a missing or
 changed record also stops execution. Since this record marks `1.0.93` consumed,
-the current harness cannot repeat that attempt. Separate authority and a
-reviewed update to the guard and record identity are required for renewed
-execution.
+both `--permission-proof` and legacy `--execute` refuse before staging or
+starting any original. A fake self-test covers the legacy refusal before
+staging. Separate authority and a reviewed update to the guard and record
+identity are required for renewed execution.
 
 ## Result
 

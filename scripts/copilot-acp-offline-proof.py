@@ -3291,6 +3291,24 @@ def self_test() -> dict[str, Any]:
             raise RuntimeError(
                 "cross-run budget fake did not refuse the consumed 1.0.93 invocation"
             )
+        legacy_record_path = task_root / "legacy-execution-record.json"
+        legacy_artifact_root = task_root / "legacy-artifacts"
+        try:
+            execute_artifacts(legacy_record_path, legacy_artifact_root)
+        except RuntimeError as error:
+            if (
+                "1.0.93" not in str(error)
+                or "separate authority is required" not in str(error)
+            ):
+                raise
+        else:
+            raise RuntimeError(
+                "cross-run budget fake did not block the legacy execute path"
+            )
+        if legacy_record_path.exists() or legacy_artifact_root.exists():
+            raise RuntimeError(
+                "legacy execute path changed record or artifact state before refusal"
+            )
         altered_record_path = task_root / "altered-committed-permission-record.json"
         altered_record_path.write_bytes(
             COMMITTED_PERMISSION_RECORD_PATH.read_bytes() + b"\n"
@@ -3348,6 +3366,7 @@ def self_test() -> dict[str, Any]:
                 "committed_record_sha256": COMMITTED_PERMISSION_RECORD_SHA256,
                 "consumed_versions": sorted(consumed_versions),
                 "consumed_1_0_93_refused": True,
+                "legacy_execute_refused_before_staging": True,
                 "missing_or_changed_record_fails_closed": True,
             },
         }
@@ -3707,6 +3726,8 @@ def validate_permission_execution_record(record_path: Path) -> dict[str, Any]:
 
 def execute_artifacts(record_path: Path, artifact_root: Path) -> None:
     require_macos_sandbox()
+    plan = validate_permission_proof_plan()
+    enforce_permission_invocation_budget(plan)
     inventory = verify_inventory()
     record = load_json(record_path)
     if record.get("pre_execution_record_persisted") is not True:

@@ -4,7 +4,10 @@
 //! `session_replay` command and its response. The collector enforces the
 //! strictly increasing wire sequence, the message count cap, and the total
 //! content byte bound, and projects each typed message onto the runtime's
-//! `SessionReplayItem` surface with distinct semantic kinds.
+//! `SessionReplayItem` surface with distinct semantic kinds. An extra item
+//! after the response fails the load before readiness: count mismatch while
+//! the collector is still armed, or `replay_unexpected` once it has been
+//! taken.
 
 use super::failure::failure;
 use super::wire::replay::{PiSdkReplayItem, PiSdkReplayPart};

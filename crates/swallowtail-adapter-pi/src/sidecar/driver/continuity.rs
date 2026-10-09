@@ -4,7 +4,8 @@
 //! directory, switch to the bound provider session through the public SDK
 //! runtime, and verify the effective cwd and session reference before
 //! readiness. Load additionally completes the bounded typed replay phase
-//! before the state re-check; resume emits no replay by construction.
+//! before the state re-check; a replay item after that response fails closed
+//! with no ready handle. Resume emits no replay by construction.
 
 use super::validation::{AttachmentSurface, validate_attachment};
 use super::{PiSdkSidecarDriver, session_binding, startup};

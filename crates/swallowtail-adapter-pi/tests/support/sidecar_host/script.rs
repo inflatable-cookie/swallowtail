@@ -1,6 +1,6 @@
 use super::{FIXTURE_SESSION_REF, ProcessState, SidecarScenario, fixture_failure};
 
-mod continuity;
+pub(super) mod continuity;
 
 enum ThinkingPhase {
     Bootstrap,
@@ -117,6 +117,11 @@ pub(super) fn respond(
             );
         }
         "state" => {
+            if state.late_replay_held {
+                // Hold the state response so load cannot become ready before
+                // the explicit late replay is released into the pump.
+                return Ok(());
+            }
             let (cwd, provider, model) = state.bootstrap.clone().ok_or_else(fixture_failure)?;
             let session_ref = state.session_ref.clone().ok_or_else(fixture_failure)?;
             let provider = if matches!(scenario, SidecarScenario::StateMismatch) {
@@ -228,6 +233,8 @@ pub(super) fn respond(
                 | SidecarScenario::ReplayCountMismatch
                 | SidecarScenario::ReplayOverflow
                 | SidecarScenario::ReplayAfterResponse
+                | SidecarScenario::ReplayAfterResponseSameRead
+                | SidecarScenario::ReplayAfterResponseHeld
                 | SidecarScenario::ReplayDuringResume
                 | SidecarScenario::HoldReplay
                 | SidecarScenario::ThinkingBootstrapMismatch
@@ -319,6 +326,15 @@ fn settled(state: &mut ProcessState, stop_reason: &str) {
 fn output(state: &mut ProcessState, value: Value) {
     let mut bytes = serde_json::to_vec(&value).expect("sidecar fixture JSON serializes");
     bytes.push(b'\n');
+    raw(state, &bytes);
+}
+
+pub(super) fn output_batch(state: &mut ProcessState, values: &[Value]) {
+    let mut bytes = Vec::new();
+    for value in values {
+        bytes.extend(serde_json::to_vec(value).expect("sidecar fixture JSON serializes"));
+        bytes.push(b'\n');
+    }
     raw(state, &bytes);
 }
 

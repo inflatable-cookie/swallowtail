@@ -25,6 +25,11 @@ impl ProcessService for SidecarFixtureHost {
             .process_request
             .lock()
             .expect("sidecar fixture process lock poisoned") = Some(request);
+        self.shared
+            .process
+            .lock()
+            .expect("sidecar fixture state lock poisoned")
+            .occupy_owned_tree();
         let handle = SidecarFixtureProcess {
             shared: Arc::clone(&self.shared),
             scenario: self.scenario,
@@ -124,18 +129,20 @@ impl ProcessHandle for SidecarFixtureProcess {
                     "fixture hang guard: held sidecar exit was never released within {HANG_GUARD:?}"
                 );
             }
-            let result = if wait_failure {
-                Err(fixture_failure())
-            } else if exit_failure {
-                Ok(ProcessExit::new(false, Some(1)))
-            } else {
-                Ok(ProcessExit::new(true, Some(0)))
-            };
-            shared
+            let mut state = shared
                 .process
                 .lock()
-                .expect("sidecar fixture state lock poisoned")
-                .exited = true;
+                .expect("sidecar fixture state lock poisoned");
+            let result = if wait_failure {
+                // No exit observation: members stay, no emptiness claim.
+                state.exited = true;
+                Err(fixture_failure())
+            } else if exit_failure {
+                Ok(state.reap_owned_tree(false, Some(1)))
+            } else {
+                Ok(state.reap_owned_tree(true, Some(0)))
+            };
+            drop(state);
             shared.changed.notify_all();
             result
         })

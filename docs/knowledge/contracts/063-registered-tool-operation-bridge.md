@@ -726,3 +726,27 @@ and resolves the executable reference. A conforming consumer-built courier is
 admitted, bound by the wire specification and its falsifiers, never by the
 artifact. Any claim that an external courier conforms requires the wire
 module to have been promoted to its own crate with a frozen version.
+
+## Mediated Courier Call-Wait Boundary — 2026-10-08
+
+Tom relayed Desktop’s v0.5.2 delayed-approval evidence and requested a
+source-only v0.5.3 correction on the same SDK, native, Node and wire pins.
+The fixed ten-second socket I/O timeout must not expire a valid registered
+tool call while its host dispatcher awaits human permission. Connection
+acquisition and readiness retain their existing bounded opening budgets.
+Call response waiting follows the effective caller/per-call/optional lease
+deadline; it does not acquire a second, shorter approval deadline.
+
+A settled call timeout is delivered as a correlated error for that call and
+does not itself terminate the courier or desynchronize later responses.
+Subsequent calls may proceed only while the lease and admission remain valid.
+Explicit lease expiry, revocation, terminal close and actual transport loss
+retain their existing fail-closed behavior. Cancellation and cleanup still
+require joined ownership; an uncooperative dispatcher must not be detached,
+replayed or reported as a successful no-effect result. Permission waiting
+does not imply permission to execute after denial, cancellation or expiry.
+
+The correction must be proved against the actual courier and fake consumers
+before a new source candidate is released. This request authorizes the
+bounded patch preparation and review, not live provider work, credential use,
+tag creation or push; those remain separately authorized at exact identity.

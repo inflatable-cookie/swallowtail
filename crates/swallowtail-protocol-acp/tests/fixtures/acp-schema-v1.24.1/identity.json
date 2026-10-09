@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0.0",
+  "axis": "acp.schema",
+  "observed_at": "2026-10-08",
+  "source": {
+    "repository": "https://github.com/agentclientprotocol/agent-client-protocol",
+    "artifact_family": "GitHub stable schema release assets",
+    "source_package": "agent-client-protocol-json-schema-v1",
+    "runtime_identity": "data-only schema artifacts; no runtime",
+    "host_observation": null,
+    "stable_assets": ["schema.json", "meta.json"],
+    "excluded_unstable_assets": ["schema.unstable.json", "meta.unstable.json"]
+  },
+  "claim_at_observation": {
+    "latest_qualified": "schema-v1.20.0",
+    "wire_protocol_version": 1,
+    "historical_artifact_pins": [
+      "schema-v1.19.0",
+      "schema-v1.19.1",
+      "schema-v1.20.0"
+    ],
+    "provider_route_claims": "independent and unchanged"
+  },
+  "official_latest": {
+    "tag": "schema-v1.24.1",
+    "published_at": "2026-09-30T15:53:45Z",
+    "source_commit": "1761180eeddf0828d4ecc367106a632c61be06d9",
+    "release_url": "https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.24.1",
+    "tag_signature": {
+      "verified": true,
+      "key_id": "B5690EEEBB952194"
+    },
+    "stable_asset_sha256": {
+      "meta.json": "061edb6efa8fb2aa2792459a86ec7268de5fe665bba48b2ffe7939df01481f88",
+      "schema.json": "3c17bd6385d90cf672d8a661fddc359d73422cf8b8ce6865213d25cfd4c0eca7"
+    }
+  },
+  "published_hops_after_ceiling": [
+    "schema-v1.21.0",
+    "schema-v1.22.0",
+    "schema-v1.23.0",
+    "schema-v1.24.0",
+    "schema-v1.24.1"
+  ],
+  "unpublished_next_stable": "schema-v1.24.2",
+  "qualification": {
+    "shape": "compatible-extension",
+    "segment": {
+      "from_existing_ceiling": "schema-v1.20.0",
+      "through": "schema-v1.24.1",
+      "all_published_stable_hops_included": true,
+      "published_holes": []
+    },
+    "wire_protocol_version": 1,
+    "claim_ids": "not applicable to shared schema evidence",
+    "adapter_behavior_revisions": "unchanged",
+    "historical_artifact_pins_preserved": true,
+    "provider_route_claims_preserved": true,
+    "unverified_newer": "schema-v1.24.2"
+  },
+  "artifact_inventory": "artifact-inventory.json",
+  "selected_protocol_ledger": "protocol.json"
+}

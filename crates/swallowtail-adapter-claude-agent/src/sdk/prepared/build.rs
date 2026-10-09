@@ -5,11 +5,10 @@ use super::super::driver::{ACCESS_NAMESPACE, ENDPOINT_AUDIENCE};
 use super::super::selection::{
     claude_agent_sdk_native_binding, claude_agent_sdk_node_binding,
     claude_agent_sdk_package_binding, claude_agent_sdk_sidecar_binding,
-    claude_agent_sdk_wire_binding,
+    claude_agent_sdk_wire_binding, preparation_pair_is_qualified,
 };
 use super::super::{
-    CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
-    CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
+    CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_WIRE,
 };
 use super::{ClaudeAgentSdkPreparedSession, ClaudeAgentSdkSessionPreparation, preparation_failure};
 use std::num::NonZeroU32;
@@ -47,6 +46,14 @@ pub(super) fn prepare(
             message,
         ));
     }
+    let package_native_pair = input.package_native_pair;
+    if !preparation_pair_is_qualified(package_native_pair) {
+        return Err(preparation_failure(
+            swallowtail_runtime::PreparationStage::Preflight,
+            "swallowtail.claude-agent.sdk.preparation.package_native_pair_unqualified",
+            "Claude Agent SDK preparation requires one exact maintained package/native pair",
+        ));
+    }
     // The admitted tool set, or the registered-only explicit lease, decides
     // the access this plan asks for. A write lease without a matching host
     // grant fails at open, so no write reaches a read-only working resource.
@@ -79,8 +86,8 @@ pub(super) fn prepare(
     }
     let capabilities = CapabilityProfile::new(capability_requirements.clone());
     let versions = [
-        claude_agent_sdk_package_binding(CLAUDE_AGENT_SDK_VERSION),
-        claude_agent_sdk_native_binding(CLAUDE_AGENT_SDK_NATIVE_VERSION),
+        claude_agent_sdk_package_binding(package_native_pair.package_version()),
+        claude_agent_sdk_native_binding(package_native_pair.native_version()),
         claude_agent_sdk_node_binding(CLAUDE_AGENT_SDK_NODE_RUNTIME),
         claude_agent_sdk_wire_binding(CLAUDE_AGENT_SDK_WIRE),
         claude_agent_sdk_sidecar_binding(CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG),

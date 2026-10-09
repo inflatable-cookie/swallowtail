@@ -810,6 +810,7 @@ impl ClaudeAgentSdkDriver {
             .await?;
         let listing = startup::list(
             &pending.connection,
+            plan,
             request.request_id().as_str(),
             &pending.leased_cwd,
             1_000,

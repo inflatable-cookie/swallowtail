@@ -1,0 +1,1570 @@
+{
+  "axis": "kimi-code.executable",
+  "qualified_route": "kimi-code.headless",
+  "npm_package": "@moonshot-ai/kimi-code",
+  "observed_at": "2026-10-08",
+  "previous_ceiling": "0.43.0",
+  "npm_latest": "2.1.1",
+  "github_latest": "@moonshot-ai/kimi-code@2.1.1",
+  "github_latest_published_at": "2026-09-24T07:24:08Z",
+  "stable_hops": [
+    "0.43.1",
+    "2.0.0",
+    "2.0.1",
+    "2.0.2",
+    "2.1.0",
+    "2.1.1"
+  ],
+  "points": {
+    "0.43.0": {
+      "npm": {
+        "published_at": "2026-09-14T12:10:41.073Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.43.0.tgz",
+        "integrity": "sha512-J8GnyiHKxjBA1kGkPGnxXWY2rbQ+O4WwBDfiOOqKAYOpptVk568l9qp5edlmz1iBXUpCZZUyw3pPnJhM5hZl2A==",
+        "shasum": "d867d748d41e69c9883dd2d5c54bbba131bbc3dc",
+        "tarball_sha256": "225bc17f06243edf6bcf0fc82bbe8838cab1cd426eb8e467e9ebab93d53ace90",
+        "file_count": 543,
+        "unpacked_size": 57881623,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "5b300a573d306f879361eb7a2baec3a19448ea94eadca28001408b19c42eeb69",
+        "runtime_entry_size": 21546758,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@0.43.0",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%400.43.0",
+        "published_at": "2026-09-14T12:03:30Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "eb83293155ef86d7e5fccf8f764e9d698b619988",
+        "commit": "ffa94fae854dedf594919acbea280d98cbe8e14e",
+        "tree": "cfad0ffd418c396bae69a96322050738aa49dcda",
+        "tag_annotation": "object ffa94fae854dedf594919acbea280d98cbe8e14e",
+        "package_version": "0.43.0",
+        "tagged_source_tree_file_count": 4425,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 60502757,
+            "digest": "sha256:b97bde0fd2626ddcfd89ddb4bc3d3f1f074a9073bd5a04c5eb606d3185ae8b9a"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:4bfd52e606734d9592b5fe4719d9cd8b03668a29271e9d921838a30583d0e0cd"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 61606909,
+            "digest": "sha256:f5c18d9dc4fd5b0d3249ce70d6d23e9dd6c7aaee3e71cc9a49e8f64be8ceec22"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:7a3e6d2b1ff1e3711e990f0979911b38791b85c8ab86da83ce41c29b2385311d"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 46319255,
+            "digest": "sha256:b8639a07b61918266a47ddb4bc24574ee7b816e13eda6929626715f77d73fdc2"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:64749428ac7c1c409e834d091f158fbf71daa1d6c885eb42c6fb6666bb832d36"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 61760130,
+            "digest": "sha256:200136542590820e811ce73dbb44aa0bbaab7626c78122726d42247f1ff6bc44"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:501428f8780f0ecdd1c67b2121073d388ca0374fed4c0e1f6dc50d87b22003f9"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 62614675,
+            "digest": "sha256:467b751a4d340f8c20e7a33b84f5bef282663c39b60bd2fc2d0bdc7820bb4788"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:18fe29ef4ee4ce43d570b4c306ce53fe5e7d48b29ff217c9c6993acf6cd621b6"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 47789681,
+            "digest": "sha256:04c7bf8f45d9cb712ddf150c3ffc59a2ba028880378198b6ae8e811cd424fd96"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:0489420a65e3d4c7eab52828a60d1ba5cb550e49bf5f13008b964ba7878d22c7"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 63609695,
+            "digest": "sha256:edaa76ed54be02b0e3581a5514cbc0641448bef05c854b7c771f641844192cc6"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:417820c18fbd7114cce57d2e1db333f450687a0171c96d25a54f02e25d452118"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 64973453,
+            "digest": "sha256:1f501c0fa7ec8d94246eedeca55c4c8a701c4727b6eb3612f4c4bad2e50361d5"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:7e0445a1793fcbad8c40a9437ad043da41e46177d02aa7066e1bd746958482a0"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 49883046,
+            "digest": "sha256:cc51df1bfa7a27cddc831659cd8dac5ca908d23d3e85d6ca1055111b3911f225"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:83dfe0a3f9b77b947b8dbae1fe40930c2cb4e0e5cebfa6afb6e02e373481b228"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 63918430,
+            "digest": "sha256:80ee35d2157e4580e7490601cccace568171f551eba318580a3c69f93787f5b0"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:0d9749ff9d1e721da705d1de33fd94b40780de2b7f0bc907a85453d16b72a137"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 65020535,
+            "digest": "sha256:559d45c2b833cfc14f1aded5002b982cbe580ceb892356e50f700f1ac5be3df3"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:25415f2093f56908c9f2257edc8fb9876336d9befcac1f47b680cd06705f5c84"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 49938999,
+            "digest": "sha256:27398de81fdcc7ec12a137d8f923c127bfc75c6c0fc3b4e34f4160f810c6a355"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:af694f11babc99210f4fdef988b574c952c7bdb2d6895b66c63a94ccf7f7646a"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 51512205,
+            "digest": "sha256:f5c2974061998060b4c3907b096c827a8693f31427be0d61878013c2813286e8"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:fcec6c818daba33dc47c1d89f0cd0c4ad0085bd30c564506c8ef001a0cea88c8"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 52613267,
+            "digest": "sha256:5893502c193be05ad046c700aef99df8bb008b636800b83d080f9aa362428c1c"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:73ad6beff2c2e9dab8f361a9879e93c7bfd5ae2e8065fe6a27f5645a8abbe9c9"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 40276202,
+            "digest": "sha256:1db1418c28ad320049e49362f59cf33269a6c51cb1eca91aeba9aea3739d558d"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:67c6c82e90f142083ee74bdc72ba272fe3c48aa014093dac92bcfd6cebfcac10"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 55454416,
+            "digest": "sha256:89fec48c32b1ba43ab297dc24fb8628f83967b6591563e48479d9615ea117303"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:284f8a1e24799603a2ac24063eec89a122842d4ec54eb44d8fd95f4e9d9e456d"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 56405942,
+            "digest": "sha256:a9cdc000d9a3036e3856dedca8cff9204129760b9d41cafebf188097706d0566"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:6efe758ff15b8ecea875af1fb7671494c513f97ac7a062fdfb113675e438227c"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 43217452,
+            "digest": "sha256:3821ffc8a039da6c0d05b9f07582b9fd093258f37433855c03445f15804dcefe"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:bcd5576fa6f1f91dfe28a89698178943c4aa751afc8ac61ffdf60131daf1125b"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2023,
+            "digest": "sha256:3edbbb19c15ad7250e3a7e450278c28c2480823890ef7d7f7c52152f46dd4941"
+          }
+        ]
+      }
+    },
+    "0.43.1": {
+      "npm": {
+        "published_at": "2026-09-15T06:57:35.600Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-0.43.1.tgz",
+        "integrity": "sha512-jq60K07tJV+uZB/mTN7rgb99WU5z6PtUeLybywGhXpF5QybaehIWsWudZ9HR8hEEmc7pppB+GAA92RDqOOKnRg==",
+        "shasum": "d40978815824e59fe139550e4af3e2e5144f8785",
+        "tarball_sha256": "2ac671a704bc4f4d6f0cd1ffcec76ab10f185c376aa7edd6b0450f210563603c",
+        "file_count": 545,
+        "unpacked_size": 58059269,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "fb44806fa7e5773749131b841bfd23d96a9b07c97bad101872b01c11aabecd76",
+        "runtime_entry_size": 21618283,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@0.43.1",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%400.43.1",
+        "published_at": "2026-09-15T06:51:26Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "a3c66ba1b019c37e4069c5611266669d0438eb62",
+        "commit": "75ac010bcb2050338444455de8328492d152c919",
+        "tree": "b102aab935f2cc837ab78b0aae37d4d02aca6e1b",
+        "tag_annotation": "object 75ac010bcb2050338444455de8328492d152c919",
+        "package_version": "0.43.1",
+        "tagged_source_tree_file_count": 4446,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 60525576,
+            "digest": "sha256:984b8136a37f00a12e57dec2d1b515a6a6bae5b49916f339d79edf72131da4a3"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:5005a72a833563852c71f099a1d452cafcb7d44fea164caea825e8c111be4230"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 61623368,
+            "digest": "sha256:9182de94dc2651442d2124c778abcb4e07a367efe0f4d0d3bdd3e50174184702"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:a4cbbb2bb6ad5a63bf6258122af209c0b5529492f4295fd85f0ed8a0278a2e5e"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 46517493,
+            "digest": "sha256:9283738f85aebf16fc9dd00265241d0d9ea5856404b7bfcb39bbbfec4630bb24"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:d4f6492425f6975acd0e64084251ad5309ed43081509ccbd31e9e4a9db7147cb"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 61783553,
+            "digest": "sha256:354f91d880e90ef5b040c54228103bc9791a7331ad43859ed736cd2b3372ce62"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:f17b8c191a9bd2079db1b419b854c0b68e944a4d0464d3367e46e41f03031ab8"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 62639982,
+            "digest": "sha256:81cfe8ab4ee12a8fe49e458bd301f87abf144e5d750d374088491dca6f35d260"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:c32d51dfcc2a9e74d7619becd72db7b11702993726d98472380ecf309bd47dfa"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 47390587,
+            "digest": "sha256:85cf73470e29796bd3848c1e18f91f69e87fac35de9261ee2f95a47346ee3447"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:97f90e299f87a9dd500173ec556a1fb1b510ff15fe15331d578a5fe76eb27e51"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 63615077,
+            "digest": "sha256:2dc6642b6cd526d39df9c41bbcab84aad2d6c9c7d8295a5af6146f36443accad"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:f352d92699be9dfdeba05f29447577be576cd15cafa44f614876b7d20a4ba9ba"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 64970227,
+            "digest": "sha256:ec138213f6444a6958449671d648da79e6c356a18a45aace917cedc63d4f93a7"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:16c01f3ee1899b3db7a4d2add671621e62d002e9b26f0f76c1d11b25709781b8"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 49780763,
+            "digest": "sha256:71e7e51e06f17841b5a44463d408711e0fbd0e9e399b566224b7b66902521a27"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:b3da300243a4f77de5655305ab27c6dc2695e39418b75d41c1ce7c6b06d782d5"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 63936063,
+            "digest": "sha256:53518bb71d2562c6d4c52972ba9393208f6f614f6e0862da6ecd5dc8abc71c12"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:d8140af8f6e6f0e165948eb92b9d0bdca8fe02f65901cb8667bc37da4809581c"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 65050715,
+            "digest": "sha256:757dd5b9eefcc9da5f903abf2b0ed07cf9f7e52a64305499b2e190df0a8d1756"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:c76d555e21bac286bbb0fddc5ffbe30e7f922f291fb607441737181f6fb673aa"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 49880956,
+            "digest": "sha256:2fc43b84ebbca09230f47f5f51924da1df2d5fa5476de769663d6d7a57cd40ff"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:fb24346aac3ac70fdad2edb9a02ea20fd09d25d6fa022d73c14b784fac85a424"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 51517743,
+            "digest": "sha256:eae06d9cbbd52ff1a886a4b15628ba9314faf5ee6afcab834ecc9340ff6bc31c"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:1b63be044793c30a79a49953ece7fcd7b401d1b232c7e4e1701ecce8122a48f9"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 52612428,
+            "digest": "sha256:dee06fac653c623a1a1593f3480ce62c152d46be0b4845d2374c0af90a1200f4"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:b84ee673128f0ed02c6975979958761c517c06bbedcc2ba1113338efc0ba0ad6"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 40413684,
+            "digest": "sha256:fae212323b105930961c42ebefea2b2ce744440d5d83bdfe404e630826634b5b"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:729bb4a6c8c74bfed135f1796e59d9af266f516c0d5b84c4777207ef7215c1d3"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 55497776,
+            "digest": "sha256:b35bba16359c82f212f7e465bb882b1e7ced90baa41dadb549624fc37162f04f"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:7d9b0868265a50eaa066c92cbd7a29acf8b8fe447918edc702befa6b5b5a76a3"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 56438990,
+            "digest": "sha256:d4eba4f99e777b4247b911d138e7784bb20b86ff427c859157b01e4f5c3495dd"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:959a239b760d9d271a7867008a994d199bfe23818ff53f046392f2ebaf46cd5d"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 42952694,
+            "digest": "sha256:2da73d3ae8310c0e7cf77e4d012fc1d8a036625c70a582d1b2bde36cb6b453cb"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:96a9a4a2982dd00b92559ea9cfbe2d8ef39d0a4c8a3beb5a80c8b68a2349a4fc"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2023,
+            "digest": "sha256:6fda6843e0f43e5e42eb7f04206d2dd5c5ec60378d40be23ae5ec0d503eb8113"
+          }
+        ]
+      }
+    },
+    "2.0.0": {
+      "npm": {
+        "published_at": "2026-09-17T05:28:50.465Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.0.0.tgz",
+        "integrity": "sha512-bni11f/46j3AgsFXhdMqFufx0j7EjkZdMCezYd0OVqjA5CybnZ2eLEy/11SoA/L3Uj9A52L0GdyUi3vtyRpRBQ==",
+        "shasum": "4718ff0f236b210b64aee77961ab526cc1ca87a3",
+        "tarball_sha256": "d1450598a1844d9bc204f07ae9fd3bb371e7df1ec841cf7c9e86bde7c09d3cd1",
+        "file_count": 541,
+        "unpacked_size": 53196438,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "425690c99c74f6270218d486e1b4aa799e15fe5a4853dd87a8c19a7b45e55ac5",
+        "runtime_entry_size": 21874014,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@2.0.0",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.0.0",
+        "published_at": "2026-09-17T05:22:40Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "834bdd50b10b53b90d2ce5d72f5864a8a2309492",
+        "commit": "1b89e4b039f052d10f258464413b2047acca12ba",
+        "tree": "e0455fd76cf5dc3c0291661105672ab1876c90ab",
+        "tag_annotation": "object 1b89e4b039f052d10f258464413b2047acca12ba",
+        "package_version": "2.0.0",
+        "tagged_source_tree_file_count": 4459,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 58600114,
+            "digest": "sha256:09d7e59721e75ea59ca987a89b7455c56c5bc9153958edd184318e855a9b81ff"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:a782bf861935c2f3650c9357c40b37e2a74723b3edbf0745bbd227fb9c762db8"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 59719391,
+            "digest": "sha256:d6cafa5ccc4405e7159b45ae06f249e80a1975dd3ffa5be1365fa2f2569dfcb5"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:3a048b25dc7569ce3c0211b79875b5a71179b1ab25096b4d188e0ba46833c01e"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 45102107,
+            "digest": "sha256:d2c1097486c26e53c9f162e899bf08e349762d11e870cf39bafa66e41b25b29e"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:009fbdd6c38323f3016ad3e85053cfe2b88c371908f68fdef32711ab4857f42d"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 59862901,
+            "digest": "sha256:8ad7cdbbb514af541148f5183b9f0e65b3295967dd7ec7772a955843b32ab241"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:30dcb60cdb545ba428eab6e77d7b1e8b483b3898853c112c589147d2317e1052"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 60731397,
+            "digest": "sha256:652a28a3645de9f6cc84990c368b92af8e3d4cb08cfceb5878ac10b54cfce6f2"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:37e5370b0a7dc23563eeacb00f51bb912a9c6a730cbe3186922703343a5b1f32"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 46117278,
+            "digest": "sha256:9e90e2edd7017e5da0bd435b7e7d8c8415d06202ff860acf0826c6a99842ccdc"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:5648eaa118741832c1def5a1d7018d808d81e8d794f13218b8374860a42aedbb"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 61733184,
+            "digest": "sha256:870fdb2fc45622fed92753bc4995ff80ba02e15a6304b396b5a70df1c7a23174"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:20a43435493dc5c655a2cd43db8344f89a1389920eb95693acabaf7069097089"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 63105836,
+            "digest": "sha256:93f92f1f151effd07c49791f638bc22842f85f1bd72ee3fe7a1eccfffe5870b8"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:b8d6b33250092c29779f6af93e25e6fec376cbcdb8a5cccf3bcd552d672442b9"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 48291246,
+            "digest": "sha256:99de9600e6283c76c3c7aa63d5d1f19f18f9cde428e363130a02e66e019c9e1a"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:0cc8a71630c79ccf8ddebcbe8270659db5c9c54f425abb222b67274aa4dd648d"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 62048384,
+            "digest": "sha256:ebc1ad504e458d66f0cc57d4e9d709a2060647f5b89d4e21026903b96204c3ed"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:8e293202ff21ae623c8c60c51bac6d8789c67a28d5b46f8deb44960f9272d587"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 63171002,
+            "digest": "sha256:7d131a3e173f56d92a52e7c6bf86214a2a6e3516f2b951360567f8248bd62ba6"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:1bcc9a42bee16a5ae4412085fd43ef38f3352723aaf697425557768574c4535f"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 48269224,
+            "digest": "sha256:0431c509aad10ff7d6b908e0f2ba3a080c95c3b8abda75ff55b5963d44c0b933"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:f27777fe2f3a2ce0d573a3538600dcfa26972b744f5887e10f3dd7c61be008ee"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 49670148,
+            "digest": "sha256:15e21cadf876bf7921a6a7a3d3283d2d60da460b42c0f3e2805d4316907f63eb"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:52bb40d8a57a9195d16a122d0b82e58226b233d4bcd1229eb23331a77a6a511f"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 50777038,
+            "digest": "sha256:ebf00fd8ffacc39d69c690e7e9a252cbec93e9ecaeef108bd59c717f67725635"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:fa2aed3e816a0227871316c7d45d171bb9243ca1be7ce35f410965856e940c8d"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 38709171,
+            "digest": "sha256:9f326bf149ee7a02d994341a2f9da3ec6a490b6ba6d6b228556f8e32d7aa792b"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:2e4b1d9a45160a5456dc0b5b9c30454a93a78b53fe410e93f9dcdeddadccd37e"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 53599955,
+            "digest": "sha256:a904c698f6e771d2981975f9d2d161a6eeb3067533d8b73b32d7e1be3dcb418f"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:0f865f6586b03f3b8fc449f9b9fbeb501e4b22875916594ee372812d0ba3b573"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 54562166,
+            "digest": "sha256:b5b3d3451a2326d108bd3ea6334402ff678482b74c3021ba7d836f5480ba3bb5"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:f445ff9057adaeee094b72dbe43b8e3a8cc973f4090290c306f819b033177a76"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 41428466,
+            "digest": "sha256:266164db271d63c94015d4d31229c4008652fb562ff8c4e38a566f0b92234f83"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:966c19906119c9fca6d53c629c2f37f89eabf675d8c40994046b69bb72cf7af4"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2021,
+            "digest": "sha256:81c75c0de3bdafdfdb3846d219c3fe8b1e77d7158e950063ef7196c694ca2560"
+          }
+        ]
+      }
+    },
+    "2.0.1": {
+      "npm": {
+        "published_at": "2026-09-18T13:21:56.632Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.0.1.tgz",
+        "integrity": "sha512-MiNaN3kQ5t979evcHHFYh6LcsceZ4c67Cv/JDl6Vw+EJd97IazY4pgT0ILHRQ2CGNzQ3rIutgIx7BmBmcjwv/w==",
+        "shasum": "b571202dc8035f6f136ecdc73b9a5f138527eb45",
+        "tarball_sha256": "5b0dfb03a3e5f79b0030888c6b69679459afe8f1dc1e4175d921fe5701dd3b3e",
+        "file_count": 541,
+        "unpacked_size": 53285289,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "1e561c30f07b4f989cd604f735ef9f30806d610f19cb855a099d150c7eccf495",
+        "runtime_entry_size": 21959519,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@2.0.1",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.0.1",
+        "published_at": "2026-09-18T13:13:46Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "0a3f49c1a1e9028c16b2e408a2e82ad4b4427805",
+        "commit": "caf7d4e2fef06967280b325da06e44a4b0516eba",
+        "tree": "3773a94fcd3a1890ffa9c48ccc31297625d85c71",
+        "tag_annotation": "object caf7d4e2fef06967280b325da06e44a4b0516eba",
+        "package_version": "2.0.1",
+        "tagged_source_tree_file_count": 4466,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 58624604,
+            "digest": "sha256:30b5e9e3ef3a70e67a8335445efce8f27e0927ea0030af164bb2bdf1db946738"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:b1b81d148bcfdb0fb1ab64d1a256800c1264efb2088db4355556498ec4ab10a1"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 59743740,
+            "digest": "sha256:edcc5471fd4f036bc2b802aa952abe8123622ae8491c8170d7d0cd394029e522"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:d272a7d2429e62cb648826bc8bc2111f3f8e9e55cdeb8b1a1f1aabf010f1bc94"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 45076479,
+            "digest": "sha256:18b58b3656c64c06d63c079d3999e9c58e024005649231735649c545d5f5c12d"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:3f71977cf6c5d9c8f82d5f9240784c71ba583fcf7965326550a92816147d8d82"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 59883969,
+            "digest": "sha256:f64477ce012a91d2ebaa37427b61f27c8b774b0703d2666027ed979dab0dbd98"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:cfcda5984055cf19ea9f63eeeb58f7c4e1d54cd588ee5db9f5f9be1d5502f93b"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 60757083,
+            "digest": "sha256:5c7832e719c017b6b8ec4d58cee8fd504b96f68275190ec9c12e02c9c0a74864"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:1a9b492d355be836e6a463e336fdec0b75b371be6377d2bcc1e4e9cbab4559e9"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 46182824,
+            "digest": "sha256:55f6024d0279884b4e30335edceee2f448bd8c8a3cb8659602f8bb20fb017e64"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:8632edbdd679a8e0bd6a9118ad5f383b14fc9a4241ebae13bdb269d4a3cd3515"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 61756697,
+            "digest": "sha256:fdccbc96770c60091214b384a4686a0a901104ab5f9478e992e1d58e61bc3ca9"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:97fd857e9db989a79449742e8eb3b9b7adaa2b919a1cae5799ea4f56ee4de5c0"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 63131474,
+            "digest": "sha256:8b99cf5fda099ed795ff60582a2b52294770cd7abfb1969543166d8f778897a5"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:c04984d129fd6a6066144c1d8c8a7d8bc959a274e66e53ef1c0d46c836092248"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 48305092,
+            "digest": "sha256:5cb323dc4df5628279a9d2d4f38b84901f4068c94fa6b774bf79a5994f8c1265"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:8e7023c92583cd687c708d9ac803a8b098f959976bb18b1b49dac7f224b3e92f"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 62071264,
+            "digest": "sha256:ff5c4192a05a254793479a830a0294a83e0ebf9affa0d1ae0f629b7c86c168aa"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:e095affd7675db5b19bf2693b7417bfb07bf0155d64c637f9d3d524d64073b8a"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 63189450,
+            "digest": "sha256:2f3dd6fe91577fdf9a81c98ae22897eee6692f8150e0ca88d02a2e27c2b8f211"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:60e0c9b09c7b51d99e1f72bc96f559af6d8e1dff091f1aec212a7540f57f361e"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 48285480,
+            "digest": "sha256:375d539a4965747013e7a7b3f937b9c3bd54c292f37ab2c0dd364654717b70e6"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:46f1d7306fac898342b8be5f8ee383a9edeee6b3651b76002591b7c49a84a1ae"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 49692637,
+            "digest": "sha256:42c35e8d336b8c19f696f18f1bc98b2fe5ac90c232b804408eb1b2f00975120d"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:a2b6f8536df3b34a8dd9faf3d4abd9485cdac179f4082d7c1d3bec0f313cba74"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 50795701,
+            "digest": "sha256:6c60c799cb05b3ebe031cfceda879db876e741262c4e6721ae5942bcbdaf91af"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:ed48d1d208605dc34507cf504a2a141760f14a9d6552ff0d2d2dddc219728c06"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 38718398,
+            "digest": "sha256:460abf170d9cea1fa302cd3a231cf26f95aa7d4a3a30a01249cd02348ce5825c"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:7608a4550af7877186650c15d661726cc673e191879e734b6fc5989ce3c910c9"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 53624977,
+            "digest": "sha256:28146f166710a4407324ac0a3203622208ac453ac3274f93094f5b1ea7a92426"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:dc987aab06d35fb67f2ff0c27b5e36ef57cac1e75664ecac5ec8a817a0954320"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 54591393,
+            "digest": "sha256:e5c5c313ea38dfca4a6a09fb9ef456c108f7a7b8796e35496d9a4f2eaf8c4b9e"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:26a675b24c8f984d24eff6f9ee2618d4185f4a7cb781ab6cdcb890afb73bac15"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 41443306,
+            "digest": "sha256:0334ae52968ca0d82a5495f8edf279dc31a6f93d476ff9cbb504000e88a4c199"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:ea1446db64cb3b91684726a3258bb99826c2d0b0ded82350d1aaf679e406e278"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2021,
+            "digest": "sha256:4cbd71237bf551ac2dadf8a56f4fe1a29e478b225e43498a610c3a92fdce3d0b"
+          }
+        ]
+      }
+    },
+    "2.0.2": {
+      "npm": {
+        "published_at": "2026-09-19T12:16:26.024Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.0.2.tgz",
+        "integrity": "sha512-JjZIwlsrUgrpnMgH1jKZAot8FJt36NWwItdWmRq/sj7ewe9RswDPWX+mBhdlGoyhSTfAEG6KjMGanhyADKTWsA==",
+        "shasum": "f6955d96daec837f08f4f6ab5267771d55ebe8a4",
+        "tarball_sha256": "432cd0b0ed4184d01c29c5ef21a88303b81d3539f3a771ec64af6cbfa4aa8a77",
+        "file_count": 541,
+        "unpacked_size": 53258991,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "56d12cc74e54b0b82a2e2d8bdbbb9d6a5c9b27a9e5c9a09e0d5662b67fce1a89",
+        "runtime_entry_size": 21765621,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@2.0.2",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.0.2",
+        "published_at": "2026-09-19T12:09:15Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "c98339a1867e0843d192b8f7454d7ae3dcd5d8d8",
+        "commit": "9d07f634be94ebeb1deba2f55d247807cf729315",
+        "tree": "6ccfdc69ac48d00137a2e860b232fd25c9e0f74b",
+        "tag_annotation": "object 9d07f634be94ebeb1deba2f55d247807cf729315",
+        "package_version": "2.0.2",
+        "tagged_source_tree_file_count": 4400,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 58648856,
+            "digest": "sha256:adaa655c4cc07533b728d729fb28762563060edcd726a169f2b5b846e42f18b2"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:24c4d0ab4bd5ffdd73e864c2f4f2197e561006dc61786ef34d3c4973eea31342"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 59759725,
+            "digest": "sha256:339bcb40b36bccbd49f8c0ca0e974302fbfdce510cccb8027d90bc004ea98b14"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:5c205da085344fe8cc1eb5bd043a2fa6b2337e659e2437c2f295baa76d30d10b"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 45157073,
+            "digest": "sha256:0e34c5db304a2954dc84058d13da4fdcd128607664c8acb863a3c61360042a34"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:eb3cd5791dd0a9f14daeb44feafd80e5268c604cc9799a386b25faeab82e507e"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 59892740,
+            "digest": "sha256:40516da0f32777397969c4521cbb186e8fcc629ca52f152910fdeb511be99732"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:2946853d5d5888174592c1c9efac3f17f1abdf711bdb3981bfca7d4a89bdef50"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 60757498,
+            "digest": "sha256:1b01806b1bb40c5ac4a9901c85eb1e49d1710e872fec9044649626737e99209f"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:b937a02351bd810b7d639c3f0318fdb98486d90d5458705ab336ef720ed3fd5b"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 46199907,
+            "digest": "sha256:d47231b6d04b15fe0cac2061b1cf4476cf37288a750d7f58a7c22d89dc485bb8"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:f8ad74e8fff129924e89041326eedb03adc2dca6a0a2460a0def237e6e10bbe5"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 61761849,
+            "digest": "sha256:2965c558fc2bfb7870033712768870e628de1fcdbefc7b8cddd92e9394067877"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:97439d412b1e78508d7fc1938d1825b0984b005d82b493ef294636790576ab21"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 63136093,
+            "digest": "sha256:d80774e490f3d916fe69a7084d962bd89fa4eae387fd13eb28e860f25f46518d"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:3896dccb9eb8a77d832c38bab2e13f31312f0558521f20049e5f1b58f5976604"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 48250074,
+            "digest": "sha256:ab51d6840cf1213c904b40f03a0974c6fd3b511728fb975cdf4b45326c5423a0"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:0bed37e7e669700fcb537afeaace8e1343c523ca78c0fb32ec8c88c6068fa8f5"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 62072627,
+            "digest": "sha256:3c65aa6f983f157212401d0425a1b15f01c9704bc36f6e4a83bb8e91c4c04da9"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:3a2db684e2a2068dbbdbaf4648ddb9e8fccbd3b443f0022b9441d1912ece653f"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 63188176,
+            "digest": "sha256:8bbafd1c5b993d290b9bf6dc8b10adfefe2ab1dd762eb82b0e53e250d396fef4"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:5cf4cefe645cf6e96718c7802756c6c51a3ac2e9e9020b1422958060e79df840"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 48254725,
+            "digest": "sha256:751f60c54748c0cee95f46f594d16899cecee46603819750628b526996942e47"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:6a2cd7599aa953879c7fd71951541f54ca18e5c21eaf055edd2af91ae8178bb1"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 49661354,
+            "digest": "sha256:9984258dd670c51c3107433cc91fd3d6da551f8996f728c5b7c22f6a1438ddf4"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:1b4ad834a6f91a838a7a67771da4d4f8585ca41e65db4ff07d3d79179b70e4ff"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 50774448,
+            "digest": "sha256:cc602ad42a4fdabd770a7958c8ac46fa6ee00599529d0bdbb9b47a4c1f46aada"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:b1492a7a5e72ff6fe1ccc7efffdf58a12527bb1faa9e153a0b6139d8d8ee61b7"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 38871147,
+            "digest": "sha256:147e5fbd733d90e48b9056727eb0cfa68524923f1723ef96e32f7d09ad35e42a"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:04c7a4f2c56114a278eabc6dd412c8b35302e48bb420978e864ed6736aba01ba"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 53650495,
+            "digest": "sha256:2015724251857c1b48f456203b5bb1c3cff23babb01829bdc7402753f9d177dd"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:e005ce50eed737f05a16db58f93b619c39c326f21ebdaa76d0b6d0f5d74d9bf9"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 54616616,
+            "digest": "sha256:87233e189cbeb265285f2b94ec5bc22a42d505f38c09c2917cb4eb512d6f9462"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:90254cd2689ec43690810801bd07d573d47c8ff8d73f545b2146e4e6082ecab2"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 41582698,
+            "digest": "sha256:beaf4bd5ab1a6f829b1145da05586c52bedb048e850ac1368a01721de136538d"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:2b43acdc035f11afe3b1a35fc6ed2bac6c65ef5a6765f2ec97b57acf2dad1126"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2021,
+            "digest": "sha256:bebd64633a5095946f07da648d36581119c159dc857c8144bca8660007180e8b"
+          }
+        ]
+      }
+    },
+    "2.1.0": {
+      "npm": {
+        "published_at": "2026-09-23T12:39:56.279Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.1.0.tgz",
+        "integrity": "sha512-c9rY0DS0xNOraEgUFJ5Cexz6+S3R+PczIwCVCI4eP93xv1xpIbyFLe6wyQl29VR9UMafmfQG6+dIyJcCLEAoBQ==",
+        "shasum": "dd7f6b54440823c3d67c5aaadb6e673e6e0bf48f",
+        "tarball_sha256": "25a081b7783806226434aab6c40462192d3f9e362391cba7b068af02d8b5fd71",
+        "file_count": 541,
+        "unpacked_size": 53508193,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "6f801a114b5a5d708d9fec1ea0002ac42ec19841c088a96aecd7e6117b8b1d59",
+        "runtime_entry_size": 21971251,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@2.1.0",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.1.0",
+        "published_at": "2026-09-23T12:31:44Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "93a83aafacf91cc595a7b66f0ecb637f23859f77",
+        "commit": "52437299ff78de3d0aff7f38f054e5eb20c512e5",
+        "tree": "f75b5366d0a9b130ff9ff593ab202b990a4ea65e",
+        "tag_annotation": "object 52437299ff78de3d0aff7f38f054e5eb20c512e5",
+        "package_version": "2.1.0",
+        "tagged_source_tree_file_count": 4417,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 62298935,
+            "digest": "sha256:b5e9a77313855e6a763608bda12ff0e26855d311a4faeed770ae915c7ee7c39a"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:2eb4218f0f6d00985655a5f430b58f044dd93600742f6303b7d1df19d8136346"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 63465069,
+            "digest": "sha256:63d62c20f920fd5251509c87abc8d33aa7c54beb7df578fc5ff0dc5d6f483ce2"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:5fe8e85f40454f2919507781cc2862798e69c6e7b13de323ced9d4ab107b0d60"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 48067913,
+            "digest": "sha256:f0b411861bf51fd7e135456b140e171663e4838c42605a8e38bf2475555e272e"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:84d468557acadae195a2ee2be93549318739391dc525100647e1545721dc695b"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 63560497,
+            "digest": "sha256:f438bbbf64123f699328fcf3579c7e04f2c2cc9d64e8db306530f2f47669a416"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:e5047ab1ad518ce6b1076ad1940bef091dce9c0a3e376d3684045eb0cc247c7e"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 64472697,
+            "digest": "sha256:6f5d3442189fc8ee374a3b27d405ec918c2b4a42a5e614983d3f9cb20bb74cc2"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:42faf0ce80d5c3992205d339a2cb99bd032a8fd970b81fd4ca6d3e3e3ee7f786"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 49149305,
+            "digest": "sha256:05ebe5f777c96dd969efd34a4ebf257481b6ab3c1ec62b848c02a7018f3e393e"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:98d76e2b865f846be6cc6a6ea004481806b6fbba82685c9d73f80725d493a7b9"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 65343057,
+            "digest": "sha256:6d98c40c57bd54467134a2c43c438dbcff2c81eca71e02ac3c5bf91f4b532c30"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:a202f72f12a738e7b453ddd1f635a4d432e1c9d43888b26a9bdd3bb47964a382"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 66770873,
+            "digest": "sha256:90b368904b9b9aa8c1aa5f0515e3a6b1ef24421dd7a40410da2baa3ec9838cbb"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:6b186c95acf60bce0db9d2ae97995c35d2656d2bf890cfae24e9242064132a93"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 51065339,
+            "digest": "sha256:9d3906387f98367670e55184b43ac848cfea18ca37a18efb43fabaebfd170a1d"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:1be75303e427d184bb33d67ea9b12465c40a0c282016f63bc97ffbf04723fc37"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 65647638,
+            "digest": "sha256:2e23d34146a702a8e02c20e4bdd66dbdeb8d452f1dc37a06dd5e1d9a1bc566da"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:9256e7e0bd88e960dadbd9ac4e51e045edb6db72195fb48a0461243e6e38b738"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 66818894,
+            "digest": "sha256:11f128ac6a48043487efc41fa625d4dec93bd8b374cb6548dc042abd82eb8658"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:d0a34f4635cf8db4603d45e8b1eb85bf3ebf3555334b8f61efe1f6ddee7abc79"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 50941149,
+            "digest": "sha256:3b07fa755b965dd58b6a4ba88f53ef5d5b0e4cd8b8bc0c584bdbf2b1c0e069d5"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:b3c20355ab5b090086d3a042fa21cc769bde37640b7d2377e87772358d9ac0e1"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 53253720,
+            "digest": "sha256:a727ca63f4653de7368fb3855b31908f7c93d41f4079cfbcd7055e5936f9ab1e"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:1e35755985839fcc15c1cddf9da87d030be153e1156a3f44ee714ecc7e0c0123"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 54419099,
+            "digest": "sha256:4e016d1db16bc3a187161093e4a4b24c7250f7aa47b6634b0cce7b87b7c7dfe2"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:516f2d8b1e0c554df74ebc75e4eaa035d23241916426261dbc62aaf1c63f6434"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 41538471,
+            "digest": "sha256:3d3bd4a0c3a5559aa6c5a7a3c65ef487dd20fcedb0360f2ba796dbe7f8b1e683"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:fc73c04c3f13c12e3436abedb8020b623145aab571f6c678c14392f3d3de3e5e"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 57198875,
+            "digest": "sha256:69c41f11cb6fbbbf5a628ecfbbf201d255d1c2088f85adf65d4ed36a750946af"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:7d8433dbeb4cb8521c67cfbee40e78deb5c5f487861b72d4f0a25316dbc05065"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 58212267,
+            "digest": "sha256:811af1289446bd904db34cf9c2ec3f8c8c8fc6dc8ef25d9f4925f21c6618438c"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:416291e983bec59fc1a0796aa2221182eeff64e4f8e1f586b25ef158dd5ac13b"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 44235960,
+            "digest": "sha256:a2e4ef0c78cdf8b8cd8f32247ec1682166ee3a25faeefc15a1ff85c8e1ec0da2"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:59a8ae465479e8603f656224252324dc1c12eaf97b068c299722036792bdbde6"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2021,
+            "digest": "sha256:c2223324dbe28ed36d0810aa0fe6394504d739574023a78894aed3d9fc891f94"
+          }
+        ]
+      }
+    },
+    "2.1.1": {
+      "npm": {
+        "published_at": "2026-09-24T07:27:15.480Z",
+        "tarball_url": "https://registry.npmjs.org/@moonshot-ai/kimi-code/-/kimi-code-2.1.1.tgz",
+        "integrity": "sha512-xClqcnTQUKgKDbeOGPU78qcwxGzL8wA2rqWuOX3CLpyQ1/NhSX7jAh6hZo/JFwThSX8obkgef3uw/li5JaJNyw==",
+        "shasum": "612a8312d755ae93bdb56486bb53f4e47a8dcb5e",
+        "tarball_sha256": "6690a29d7b5e14812754dd100136b7f4ee2577add8895f00fe27025b4412049f",
+        "file_count": 541,
+        "unpacked_size": 53525527,
+        "bin": {
+          "kimi": "dist/main.mjs"
+        },
+        "node_engine": ">=22.19.0",
+        "runtime_entry": "dist/main.mjs",
+        "runtime_entry_sha256": "2563a338c94868a34e1bfd2e5579067d5a472acf4cb0bf350a3bfe1092bbe59d",
+        "runtime_entry_size": 21988585,
+        "git_head": null
+      },
+      "source": {
+        "github_tag": "@moonshot-ai/kimi-code@2.1.1",
+        "release_url": "https://github.com/MoonshotAI/kimi-code/releases/tag/%40moonshot-ai/kimi-code%402.1.1",
+        "published_at": "2026-09-24T07:24:08Z",
+        "prerelease": false,
+        "draft": false,
+        "tag_object": "a00639d0654d2c91c6f0c1388267b62ad51f8b9c",
+        "commit": "f67e6398fb3210ad8ace970e2dfd5bcc984ed61f",
+        "tree": "3269cb11ea507083ee03b975d4e3edd795a12d9f",
+        "tag_annotation": "object f67e6398fb3210ad8ace970e2dfd5bcc984ed61f",
+        "package_version": "2.1.1",
+        "tagged_source_tree_file_count": 4410,
+        "github_release_assets": [
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz",
+            "size": 62296524,
+            "digest": "sha256:8c3bad99571b16abd113ab5d511a98a36b852c0d5493991842a67b8c2bc4ecd0"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.tar.gz.sha256",
+            "size": 96,
+            "digest": "sha256:8ca41465d4733a6b59054621ab1e0e79035a33f71877775756648e87abb58a2a"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip",
+            "size": 63460883,
+            "digest": "sha256:7d96d500d4ee2214347f4d9c9626b2bb422a809e376f4ba93cb84af1aa23a6bd"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zip.sha256",
+            "size": 93,
+            "digest": "sha256:206a232b2f82fb0cc0b83a444591b8d64a9b77fb0de6e2f0532f88ad6e21b87e"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst",
+            "size": 48056930,
+            "digest": "sha256:a18093bb715984567309d118368213a53e5a4c4d07799e0f318d6b40766589ec"
+          },
+          {
+            "name": "kimi-code-darwin-arm64.zst.sha256",
+            "size": 93,
+            "digest": "sha256:5bd90d41eb638c28fde0230050ba19d80db75e26bb23b3f83e9c2d462e038eb4"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz",
+            "size": 63561208,
+            "digest": "sha256:f6dc0289112c24119d070f9203d44bcd53580e380819db25b58be65643b75bd4"
+          },
+          {
+            "name": "kimi-code-darwin-x64.tar.gz.sha256",
+            "size": 94,
+            "digest": "sha256:6e794fc5f359833058710c1c511a8c09f5774b509ede8fae1df139d73d34b670"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip",
+            "size": 64474051,
+            "digest": "sha256:9ee6a84f84a3a2810a56af81f64f00034e7d8544cb8a04e0c8b18a6c2639f828"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zip.sha256",
+            "size": 91,
+            "digest": "sha256:d5e35503c6baf367917598715809ee1e79223b9ee03d219ea5ed19ed1692faec"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst",
+            "size": 49213723,
+            "digest": "sha256:20ba912cbfddcb6a79e11727c34745a0c254b662b175b3dd8bd39e6100878c36"
+          },
+          {
+            "name": "kimi-code-darwin-x64.zst.sha256",
+            "size": 91,
+            "digest": "sha256:82f643215baf894c2ddfea4efcdd4883841007c74386212a5dbfbaa6bdeda08c"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz",
+            "size": 65342666,
+            "digest": "sha256:5c68d74b139b47fb3457f3805a159cdfa942a6a98a159ab158a1baf93b024bbd"
+          },
+          {
+            "name": "kimi-code-linux-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:4de10c6b9d0322ba7a36f1df0d5db3473c6f276e7d30d963d8086a7e1fa4bc6b"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip",
+            "size": 66766371,
+            "digest": "sha256:5f407262d6b2c5a19c5c5e1ffc8ac97eabe8be02d260ab9f2a3c5788d74db103"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:995c5f8fa81d11a7b6d08b2168f7c7ce643ab3cad2af91543d08b634d378ea64"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst",
+            "size": 51059474,
+            "digest": "sha256:d103ff73c7d6d7c54618c8e15d8682c03d611a3d00cccbacf08bc084bbfdb4cf"
+          },
+          {
+            "name": "kimi-code-linux-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:856f9be254aa9b50d7660e5c22ca9fff68dd4495ceae71044779d506e4939423"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz",
+            "size": 65645833,
+            "digest": "sha256:b66cc3787bc9dfa6a06761305dc8878f98e7a24f79fa4494c00714229a1486e8"
+          },
+          {
+            "name": "kimi-code-linux-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:f3724902d407380a060b533fbda0d811f12581724040d8022112c0b4026b179c"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip",
+            "size": 66811081,
+            "digest": "sha256:9e942923ee18482d027ea96d7c85d459fefe0815fc24f3222f18ecda8b756c00"
+          },
+          {
+            "name": "kimi-code-linux-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:00d6d5acd4f0786ab1475c1f2923cf932074ebdace8ddd24adb8fe674472a334"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst",
+            "size": 50936050,
+            "digest": "sha256:ce7a95114b5456e42dad646c93d3fbeda563ece8344bab17910e68218d97f6d6"
+          },
+          {
+            "name": "kimi-code-linux-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:e15c812c96b241557a8bd2ca05d071722b85a12e92ceb16b9fedc72f90cdc594"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz",
+            "size": 53253558,
+            "digest": "sha256:72bb17fef0d165a5f61905ede7e57c552791905d605a778967d054fe702873d4"
+          },
+          {
+            "name": "kimi-code-win32-arm64.tar.gz.sha256",
+            "size": 95,
+            "digest": "sha256:2f6a6622d45a9f80356f5539cf3102e99c70e6be0e5401c97576a55b1edc1ef3"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip",
+            "size": 54419242,
+            "digest": "sha256:c07b97549d24746d2dba73923f82fd3637b09bee4bc715af7c8ade40e5749a1d"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zip.sha256",
+            "size": 92,
+            "digest": "sha256:c17004b198d793f2b618b3ed53fa72dcdfd2d371623b98ecb06c720c251d0666"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst",
+            "size": 41536417,
+            "digest": "sha256:5b4f30a44845258750b8910256372549079bff9ba7111323b0e12de69eabd1ef"
+          },
+          {
+            "name": "kimi-code-win32-arm64.zst.sha256",
+            "size": 92,
+            "digest": "sha256:141bbc75e347d0d313c4ea2791665942fda8b4f1d134acdc1afe423fadcf5192"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz",
+            "size": 57199340,
+            "digest": "sha256:87756a53a9bb0915842d884eaf43f69a06b2e404bcbb05d41c519c12d4b410cb"
+          },
+          {
+            "name": "kimi-code-win32-x64.tar.gz.sha256",
+            "size": 93,
+            "digest": "sha256:be6eeb642638e77428c3362d8b7c013769155cbef728a483a18aca7070b4200f"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip",
+            "size": 58212149,
+            "digest": "sha256:325a42e7954854d4f737199b331bf3c05622e4a5e71bb74dd31a87df0400b92e"
+          },
+          {
+            "name": "kimi-code-win32-x64.zip.sha256",
+            "size": 90,
+            "digest": "sha256:5b36d9648aec4ddb16056fc12e0b96329bcd44fc525688b222300cc1917e89b3"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst",
+            "size": 44231200,
+            "digest": "sha256:466a7c75a79568adb88eb52a98fc90747d1ad156657a74c3815c512983d98093"
+          },
+          {
+            "name": "kimi-code-win32-x64.zst.sha256",
+            "size": 90,
+            "digest": "sha256:044bcd29b15a0b2012746b316d093393055498a48f099604fd408493a4e088b4"
+          },
+          {
+            "name": "manifest.json",
+            "size": 2021,
+            "digest": "sha256:90cce265c16ca85d1cfa1d0425b1d1f2f45bb0c22355003edda184ca028d2df6"
+          }
+        ]
+      }
+    }
+  },
+  "host": {
+    "version": "0.34.0",
+    "executable_sha256": "9f4337e10da47843f6b550474012a53ba8b30dd665f83b176a5cd479c5f7e859",
+    "size_bytes": 176894272,
+    "observed_by": "isolated --version plus file digest",
+    "host_updated": false
+  },
+  "artifact_method": {
+    "npm_tarballs_downloaded": true,
+    "npm_integrity_and_shasum_reproduced": true,
+    "npm_bundles_executed": false,
+    "github_release_assets_downloaded": false,
+    "github_release_asset_sha256_source": "GitHub release API published digest fields",
+    "credentials_used": false,
+    "provider_prompts_sent": false,
+    "live_sessions_started": false
+  }
+}

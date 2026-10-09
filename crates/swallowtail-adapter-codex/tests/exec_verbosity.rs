@@ -102,7 +102,7 @@ fn unretrieved_version_identities_reject_verbosity_before_process_start() {
         "0.147.1",
         "0.148.1",
         "0.149.1+build.1",
-        "0.155.2",
+        "0.161.0",
     ] {
         let (process, state) = FakeProcessService::completed("");
         let request = StructuredRunRequest::new(

@@ -52,26 +52,22 @@ impl OllamaNativeAttachedDriver {
             Arc::clone(&cancelled),
         )
         .await?;
-        let installed = parse_inventory(
+        let installed_parse = parse_inventory_rows(
             &installed_response,
             AttachedModelObservationScope::InstalledInventory,
             &binding,
         )?;
-        let selected = installed
-            .iter()
-            .find(|item| item.model_tag() == expected.model_tag())
-            .ok_or_else(|| {
-                failure(
-                    "swallowtail.ollama.model_not_installed",
-                    "The preflight-bound Ollama model is not installed",
-                )
-            })?;
-        if selected.manifest_digest() != Some(expected.manifest_digest()) {
-            return Err(failure(
-                "swallowtail.ollama.manifest_drift",
-                "The preflight-bound Ollama model manifest changed",
-            ));
-        }
+        let selected = bind_selected_inventory(
+            &installed_parse,
+            expected.model_tag(),
+            expected.manifest_digest(),
+        )?;
+        let selected_runner = selected.runner;
+        let installed = installed_parse
+            .mapped
+            .into_iter()
+            .map(|row| row.observation)
+            .collect::<Vec<_>>();
         let running_response = complete_before_deadline(
             self.transport.request(
                 scope.clone(),
@@ -85,11 +81,15 @@ impl OllamaNativeAttachedDriver {
             Arc::clone(&cancelled),
         )
         .await?;
-        let running = parse_inventory(
+        let running = parse_inventory_rows(
             &running_response,
             AttachedModelObservationScope::RunningInventory,
             &binding,
-        )?;
+        )?
+        .mapped
+        .into_iter()
+        .map(|row| row.observation)
+        .collect::<Vec<_>>();
         if running.iter().any(|candidate| {
             !installed.iter().any(|installed| {
                 installed.model_tag() == candidate.model_tag()
@@ -105,7 +105,7 @@ impl OllamaNativeAttachedDriver {
             self.transport.request(
                 scope,
                 endpoint.to_owned(),
-                Request::show(expected.model_tag().as_str())?,
+                Request::show_with_runner(expected.model_tag().as_str(), selected_runner)?,
                 services,
                 Arc::clone(&cancelled),
             ),
@@ -124,6 +124,7 @@ impl OllamaNativeAttachedDriver {
             installed,
             running,
             detail: detail.observation().clone(),
+            selected_runner,
         })
     }
 }
@@ -132,6 +133,7 @@ struct ObservedCatalogue {
     installed: Vec<AttachedModelObservation>,
     running: Vec<AttachedModelObservation>,
     detail: AttachedModelObservation,
+    selected_runner: Option<OllamaNativeRunner>,
 }
 
 impl ObservedCatalogue {

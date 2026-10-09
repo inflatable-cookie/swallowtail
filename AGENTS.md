@@ -131,15 +131,20 @@ Artifacts and PR descriptions use glue-light style:
 
 ## Validate
 
-Briefs name targeted Effigy selectors: tests for the changed behaviour and a
-compile of the touched code, plus `effigy qa:docs` when docs change and
-`effigy qa:routes` when route or matrix truth changes. Workers run those checks
-once, open the PR and report. Reviewers run the same checks and exercise the
-behaviour. No whole package suites or repeat passes per task.
+Briefs name every Effigy selector covering the change: tests and QA groups
+for touched code, a compile of it, `effigy qa:docs` when docs change,
+`effigy qa:routes` when route or matrix truth changes, and any proof the brief
+names or the change alters. Include format, API, package or other covering
+proof when the actual change requires it. Workers run those checks once, open
+the PR and report. Reviewers run the same checks and exercise the behaviour.
+Skip the full `effigy qa` / `ci` and repeat passes per task; do not skip a
+covering selector merely because it belongs to a QA group.
 
-The planner runs `effigy qa` on `main` at release points and after major chunks
-of work, then briefs fixes for failures. `validate:focused` runs whole package
-suites; it is not targeted task validation.
+The planner runs full `effigy qa` through Queue on `main` at release points
+and after major chunks of work, then briefs fixes for failures.
+`validate:focused` runs whole package suites; it is not the task default.
+Use it only when the brief establishes that this package scope covers the
+change, rather than adding it as a validation ritual.
 
 Queue validates merges through GitHub CI; it runs no separate pre-merge
 command for this repository (Q-002).

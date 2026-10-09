@@ -186,7 +186,9 @@ impl DeepSeekHarnessWebPreparedIntegration {
     }
 
     #[must_use]
-    /// Returns the exact npm release admitted by this route.
+    /// Returns the original frozen npm baseline point.
+    ///
+    /// The exact observed package version is available through [`Self::observation`].
     pub const fn release_version(&self) -> &'static str {
         crate::web::DEEPSEEK_HARNESS_WEB_RELEASE_VERSION
     }
@@ -577,8 +579,6 @@ fn promote(
         })?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str()
-            != crate::web::DEEPSEEK_HARNESS_WEB_RELEASE_VERSION
     {
         return Err(preparation_failure_message(
             "Web discovery does not match the prepared host and release",

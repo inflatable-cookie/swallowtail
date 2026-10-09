@@ -6,6 +6,96 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Notes
+- qualify `claude-agent.sdk` through npm `latest`/`next` `0.3.295` and its
+  exact embedded native `2.1.295`, extending the retained `0.3.284`/`2.1.284`
+  baselines and current claims after every published hop through `.295`.
+  Research 420 pins the `.294` and `.295` wrapper and native identities and
+  classifies each adjacent selected-surface change. SDK `.295` changes named
+  CLI option serialization to `--flag=value`; the selected option names,
+  values, sidecar configuration, permission mediation, message projection,
+  usage bounds and lifecycle remain within the existing route contract. Keep
+  the independent Node, wire and sidecar axes, the `.293` default pair, and
+  Research 301 registered-tool live evidence at `.259`/`2.1.259`. No provider
+  session, credential, artifact execution, host update, release or tag.
+- qualify only `ollama.attached` from preserved `0.35.1` through official
+  GitHub stable `0.40.1`. Add maintained `0.40.0..=0.40.1` on adapter-private
+  milestone `ollama.native-text-v1.manifest-list-runner`. Retain prior
+  `ollama.native-text-v1` segments as Deprecated, plus the existing exclusions
+  and unpublished gaps. From `0.40.0`, chat may start provider-owned
+  background local compatibility migration; the adapter binds the selected
+  tag and digest, pins `ggml` or `llamacpp` from the matching row, observes
+  sibling manifest-list rows, and fails closed on identity drift. Unrelated
+  empty-family GGUF rows are skipped; empty family fails only for the selected
+  tag and digest. Public
+  operation shape is unchanged. Preparation still issues no mutation.
+  Research 418 records the qualification; Research 379 remains the historical
+  `0.40.0` stop. No local runtime, provider prompt, model download, or host
+  mutation occurred.
+- qualify only `gemini-cli.acp` through official stable `0.63.0`. Preserve
+  `0.51.0..=0.61.0` on its existing behavior revision and the published
+  exclusions; qualify exact `0.62.0` on the pending/failed tool-update
+  milestone and exact `0.63.0` on the restricted-file milestone. Document
+  `.gemini` and shell-redirection permission stops, real-path reads, protected
+  `.env.*` exceptions, and the 64 KiB stored-tool-output cap in Research 415.
+  The headless claim remains through `0.61.0`, and HTTP MCP live honouring
+  remains exact `0.61.0`. No public API or lifecycle changed, and no provider
+  was run.
+- qualify only `kimi-code.headless` through official npm and GitHub stable
+  `2.1.1` after every published hop from the qualified `0.43.0` ceiling.
+  Research 413 freezes the exact package/source identities, complete trees,
+  per-hop classifications, and selected bundle oracles. Preserve the legacy
+  v1 segment; qualify v2 `0.33.0..=0.43.1` and `2.0.0..=2.1.1`, while keeping
+  unpublished `0.43.2`, `1.x`, and `2.0.3` outside the claim and exact `2.1.0`
+  excluded for its effective filesystem-authority change. The operator ruling
+  qualifies `2.1.1` with `2.1.0` unsupported. No public API or behavior revision
+  changes; ACP and local-server claims remain separate. No provider prompt,
+  credentials, live session, artifact execution, host update, release, or tag.
+- qualify only `codex.exec` through official stable `0.161.0` as a compatible
+  extension on `codex.exec.jsonl-v1`. Research 410 reuses the reviewed
+  `0.155.1`→`0.161.0` source and artifact chain from Research 370 with
+  independent digest checks. Projectless startup does not restore persisted
+  trust; system/macOS MDM managed-network allowlists and refresh remain
+  authoritative, and provider denial remains a bounded failure. Keep the
+  unpublished `0.155.2` gap, prior exclusions, and independent app-server
+  claim. No provider prompt, live session, credential, installation, or host
+  update was used.
+- keep `gemini-cli.headless` at its `0.61.0` ceiling after the
+  authority-preserving adaptation to official stable `0.63.0` stops on the
+  noninteractive Plan Mode exit path. Research 417 pins the source behavior:
+  noninteractive policy allows `exit_plan_mode`, whose allowed transition
+  selects YOLO; the selected adapter has no guard. This cannot preserve the
+  no-automatic-implementation-transition contract within the approved scope.
+  Keep `0.62.0` and `0.63.0` `UnverifiedNewer`, preserve the unpublished
+  `0.56.1` and `0.59.1` exclusions, and leave ACP independent. Any new
+  enforcement design or authority/lifecycle change needs a separate ruling.
+- Keep `kimi-code.acp` at its `0.38.0` ceiling while the official npm and
+  GitHub stable `2.1.1` remains blocked by the same unmediated terminal process
+  spawn from both the terminal-disabled branch and non-Bash fallback. Research
+  403 freezes all thirteen published hops after `0.38.0`, the complete npm
+  trees from `0.43.0` through `2.1.1`, and the selected ACP bundle changes
+  across the `2.0.0` reset. No shipped per-session control covers both local
+  spawn branches; a host-terminal API design is proposed for separate review.
+  No claim, exclusion, public operation, or capability changes.
+- qualify shared stable ACP schema from `schema-v1.20.0` through current
+  official `schema-v1.24.1`, covering all five published hops. Research 406
+  freezes each tag, all four release assets, the complete per-hop file ledger,
+  and the selected wire subset. Wire `protocolVersion` remains `1`. The
+  selected Claude Agent form-elicitation subset was already mapped; optional
+  tool names remain unmapped; lifecycle, permission, usage, and other selected
+  configuration, activity, lifecycle, permission, and usage fields are
+  unchanged. Unstable schema assets stay outside the axis,
+  and historical schema corpora, provider version ranges, and feature cells
+  remain unchanged. No provider session, credential, installation, or host
+  update was used.
+- qualify `deepseek-harness.web` at published RC points `0.1.0-rc.6`,
+  `0.1.0-rc.7`, `0.1.0-rc.8`, `0.1.1-rc.1`, and `0.1.1-rc.2` under the
+  existing `deepseek-harness.apiproxy-v1` facade. The adapter suppresses the
+  default browser handoff from `0.1.0-rc.8` with the published `--no-open`
+  flag. Research 411 freezes these artifacts and stops at `0.1.2-rc.1`, where
+  `/api` requires persistent DSH browser authentication. Current npm
+  `latest`/`next` `0.2.0-rc.2` remains unqualified pending a ruling and tested
+  authentication/stream adaptation. No host DSH, browser, credentials, server,
+  catalogue, or session was accessed.
 - qualify only `cursor-agent.headless` through official ACP registry stable
   `2026.10.01-14929f9`, after every published hop following
   `2026.09.18-9a7762b`. Research 399 freezes both platform archives, complete
@@ -210,13 +300,12 @@ annotated Git tags from the canonical repository.
   credential use, package installation, or artifact execution occurred.
 - extend `ollama.attached` through the exact official stable points `0.35.0`
   and `0.35.1`, retaining `ollama.native-text-v1`, the prior exclusions, and
-  unpublished gaps. Current official stable `0.40.0` remains
-  `UnverifiedNewer`: chat scheduling starts background local compatibility
-  migration that can write converted model blobs and manifest-list entries,
-  changing the attached store lifecycle and later catalogue shape. Research
-  379 freezes the release identities and complete source trees and names the
-  ruling/adaptation needed before the claim can move again. No local runtime,
-  provider prompt, model download, or host mutation occurred.
+  unpublished gaps. Research 379 froze `0.40.0` as `UnverifiedNewer` because
+  chat scheduling starts background local compatibility migration that can
+  write converted model blobs and manifest-list entries, changing the attached
+  store lifecycle and later catalogue shape. That stop remains historical;
+  current official stable `0.40.1` is qualified above (Research 418). No local
+  runtime, provider prompt, model download, or host mutation occurred.
 - qualify `grok-build.acp` through current official npm `@xai-official/grok`
   `1.0.46`. Research 340 freezes published stable hops `1.0.31..=1.0.41`
   after the exact `1.0.30` catalogue ceiling; Research 385 freezes hops
@@ -226,6 +315,12 @@ annotated Git tags from the canonical repository.
   Published `1.0.47` through `1.0.49` remain `UnverifiedNewer`; alpha-tagged
   `1.0.50` is excluded. The `1.0.30` catalogue, exact `1.0.4`/`1.0.5`
   registered-tool courier, and HTTP MCP evidence remain independently bounded.
+- keep `grok-build.catalogue` at exact `1.0.30` under `QualifiedOnly`. Research
+  405 freezes all selected stable hops through official `1.0.46` and records a
+  new default-not-in-list header that the current parser rejects. A same-
+  contract mapping or operator ruling is needed before the catalogue claim can
+  move. No live catalogue, prompt, credential, installation, or host mutation
+  occurred.
 - qualify the current `claude-agent.acp` stable point through official npm
   `@agentclientprotocol/claude-agent-acp` `0.87.0`, after exact published
   stable hops `0.82.0`, `0.83.0`, `0.84.0`, `0.85.0`, `0.85.1`, `0.86.0`,
@@ -276,9 +371,10 @@ annotated Git tags from the canonical repository.
   advancing the existing `0.61.0` ceiling: Research 371 freezes published
   hops `0.62.0` and `0.63.0` plus complete npm/source trees. The selected
   `0.63.0` Plan Mode authority, noninteractive permission, and
-  tool-output/context changes need an operator ruling before qualification;
-  both later points remain `UnverifiedNewer`, and the unpublished `0.56.1`
-  and `0.59.1` exclusions remain in force.
+  tool-output/context changes were assessed under the bounded adaptation
+  approved in decision de317828. Research 417 records the source-level stop
+  and remaining enforcement gate. Both later points remain `UnverifiedNewer`,
+  and the unpublished `0.56.1` and `0.59.1` exclusions remain in force.
 - qualify only `codex.app-server` through official npm/GitHub stable `0.161.0`;
   Research 388 freezes package and runtime identities, complete source trees,
   all twelve selected stable hops, and the exact selected-route policy proof.
@@ -302,21 +398,29 @@ annotated Git tags from the canonical repository.
   Existing operation-scoped callers keep their previous deadline behavior.
   A virtual-clock fake-SDK regression covers a delayed call after open expiry
   and a later call on the same connected courier.
-- rebind the Claude Agent SDK exact one-point package/native tuple to official
-  npm `@anthropic-ai/claude-agent-sdk` `0.3.284` carrying native `2.1.284`:
-  Research 367 freezes all thirteen published hops after the `0.3.270` ceiling
-  (`0.3.271`–`0.3.278`, `0.3.280`–`0.3.283`; gap `0.3.279`) with
-  wrapper/native coupling, tarball digests, native commits, platform
-  payloads, and a complete tree inventory (15 files through `0.3.281`, 19
-  from the `0.3.282` `./core` split). Mapped query, session, permission,
-  model, tool-admission, MCP-stdio, and close surfaces stay unchanged;
-  `McpServerStatus.source` is an admitted discarded Card 146 key, not a new
-  mapped surface. Keep the behavior revision, wire, Node `22.23.2`, sidecar
-  source-tag axes, claim ids, and `QualifiedOnly` posture with no
-  unverified-newer. Research 301 live registered-tool acceptance stays bound
-  to `0.3.259`/`2.1.259` and does not transfer. `next` `0.3.285` is ignored;
-  unpublished `0.3.286` stays the first later synthetic. No provider
-  operation, downloaded-artifact execution, or host mutation occurred.
+- qualify `claude-agent.sdk` through the Oct 7 official npm latest observation
+  `@anthropic-ai/claude-agent-sdk` `0.3.293` carrying embedded native
+  `2.1.293`. Research 416 freezes every published hop from the retained
+  `0.3.284`/`2.1.284` baseline, exact npm integrity and native manifest
+  identities, complete package trees, and per-hop classifications. The
+  package and native claims keep their baselines, claim ids, behavior
+  revision, `QualifiedOnly` posture, and point-for-point coupling. Selected
+  query, session, permission, model, tool-admission, MCP-stdio, usage, and
+  close mappings stay compatible; the `0.3.285` server `alwaysLoad` metadata
+  remains a server-controlled discovery choice, with required servers still
+  requested and mediated. The Node segment remains separately qualified
+  through `22.23.3` (Research 387); wire and sidecar source stay exact.
+  Prepared callers may now choose one of the ten typed package/native pairs;
+  existing callers keep the `.293` default. The prepared plan carries that
+  pair to the shipped sidecar, which verifies both identities before SDK
+  construction. Fake package/native fixtures exercise all ten pairs without
+  extending the separate live registered-tool gate.
+  Research 301 live registered-tool acceptance remains bound to
+  `0.3.259`/`2.1.259` and does not transfer. No provider operation,
+  downloaded-artifact execution, or host mutation occurred.
+  The Oct 8 npm re-probe found current `latest`/`next` at `0.3.294` with
+  embedded native `2.1.294`; that newly published hop remains unqualified
+  pending selected-surface classification (Research 416).
 - raise the Claude Agent ACP qualified ceiling from `0.79.0` to official npm
   `@agentclientprotocol/claude-agent-acp` `0.81.2`. Compatible extension of
   `claude-agent.acp.initialize-meta-extensions-v7`: selected mapped ACP

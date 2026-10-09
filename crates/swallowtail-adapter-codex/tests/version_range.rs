@@ -65,14 +65,19 @@ fn descriptors_publish_independent_closed_claims_on_one_observed_axis() {
             "newly interior unpublished 0.154.1 stays incompatible"
         );
     }
-    let exec_newer = binding("0.155.2");
+    assert_eq!(
+        exec_claim.assess(binding("0.155.2").version()),
+        InterfaceCompatibilityAssessment::Incompatible,
+        "unpublished 0.155.2 remains an exec gap"
+    );
+    let exec_newer = binding("0.161.1");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(exec_unverified) =
         exec_claim.assess(exec_newer.version())
     else {
-        panic!("codex.exec 0.155.2 remains unverified newer");
+        panic!("codex.exec 0.161.1 remains unverified newer");
     };
     assert_eq!(exec_unverified.version(), exec_newer.version());
-    assert_eq!(exec_unverified.latest_qualified().as_str(), "0.155.1");
+    assert_eq!(exec_unverified.latest_qualified().as_str(), "0.161.0");
     assert!(exec_claim.permits(exec_newer.version()));
 
     assert_eq!(

@@ -12,7 +12,7 @@ pub const GEMINI_CLI_ACP_AXIS: &str = "gemini-cli.acp-agent";
 /// Oldest Gemini CLI version qualified for ACP interaction.
 pub const GEMINI_CLI_ACP_BASELINE_VERSION: &str = "0.51.0";
 /// Newest Gemini CLI version behaviorally qualified for ACP interaction.
-pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
+pub const GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION: &str = "0.63.0";
 /// Semantic-version axis reported by the Gemini CLI headless route.
 pub const GEMINI_CLI_HEADLESS_AXIS: &str = "gemini-cli.headless-stream-json";
 /// Oldest Gemini CLI version qualified for headless stream-JSON runs.
@@ -24,6 +24,8 @@ pub const GEMINI_CLI_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "0.61.0";
 /// (Research 324 and 358).
 const GEMINI_CLI_UNPUBLISHED_GAPS: [&str; 2] = ["0.56.1", "0.59.1"];
 const BASELINE_BEHAVIOR: &str = "gemini-cli.acp.v0.51.0";
+const PENDING_TOOL_UPDATES_BEHAVIOR: &str = "gemini-cli.acp.v0.62.0-tool-updates";
+const RESTRICTED_FILE_BEHAVIOR: &str = "gemini-cli.acp.v0.63.0-restricted-files";
 pub(crate) const HEADLESS_BEHAVIOR: &str = "gemini-cli.headless.stream-json.v1";
 const MAX_VERSION_BYTES: usize = 64;
 
@@ -76,14 +78,30 @@ pub fn gemini_cli_acp_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::new(
-            version(GEMINI_CLI_ACP_BASELINE_VERSION).expect("static Gemini CLI version is valid"),
-            version(GEMINI_CLI_ACP_LATEST_QUALIFIED_VERSION)
-                .expect("static Gemini CLI version is valid"),
-            InterfaceBehaviorRevision::new(BASELINE_BEHAVIOR)
-                .expect("static Gemini behavior revision is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(GEMINI_CLI_ACP_BASELINE_VERSION)
+                    .expect("static Gemini CLI version is valid"),
+                version("0.61.0").expect("static Gemini CLI version is valid"),
+                InterfaceBehaviorRevision::new(BASELINE_BEHAVIOR)
+                    .expect("static Gemini behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version("0.62.0").expect("static Gemini CLI version is valid"),
+                version("0.62.0").expect("static Gemini CLI version is valid"),
+                InterfaceBehaviorRevision::new(PENDING_TOOL_UPDATES_BEHAVIOR)
+                    .expect("static Gemini behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version("0.63.0").expect("static Gemini CLI version is valid"),
+                version("0.63.0").expect("static Gemini CLI version is valid"),
+                InterfaceBehaviorRevision::new(RESTRICTED_FILE_BEHAVIOR)
+                    .expect("static Gemini behavior revision is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         unpublished_gaps(),
     )
     .expect("static Gemini CLI compatibility claim is valid")
@@ -138,10 +156,14 @@ pub(crate) fn select_gemini_acp_plan(
             "Gemini ACP CLI version is incompatible with this driver",
         ));
     }
-    if assessment
-        .behavior_revision()
-        .is_none_or(|revision| revision.as_str() != BASELINE_BEHAVIOR)
-    {
+    if assessment.behavior_revision().is_none_or(|revision| {
+        ![
+            BASELINE_BEHAVIOR,
+            PENDING_TOOL_UPDATES_BEHAVIOR,
+            RESTRICTED_FILE_BEHAVIOR,
+        ]
+        .contains(&revision.as_str())
+    }) {
         return Err(failure(
             "swallowtail.gemini.acp.behavior_incompatible",
             "Gemini ACP behavior is not mapped by this driver",
@@ -224,7 +246,7 @@ mod tests {
         let claim = gemini_cli_acp_claim();
         for published in [
             "0.51.0", "0.52.0", "0.53.0", "0.53.1", "0.54.0", "0.54.4", "0.55.1", "0.56.0",
-            "0.57.0", "0.58.0", "0.59.0", "0.60.0", "0.61.0",
+            "0.57.0", "0.58.0", "0.59.0", "0.60.0", "0.61.0", "0.62.0", "0.63.0",
         ] {
             assert!(
                 claim.supports(&version(published)),
@@ -236,9 +258,33 @@ mod tests {
         assert!(!claim.permits(&version("0.56.1")));
         assert!(!claim.permits(&version("0.59.1")));
         assert!(matches!(
-            claim.assess(&version("0.61.1")),
+            claim.assess(&version("0.63.1")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
+        assert_eq!(
+            claim
+                .assess(&version("0.61.0"))
+                .behavior_revision()
+                .expect("baseline segment remains mapped")
+                .as_str(),
+            "gemini-cli.acp.v0.51.0"
+        );
+        assert_eq!(
+            claim
+                .assess(&version("0.62.0"))
+                .behavior_revision()
+                .expect("pending tool update segment is mapped")
+                .as_str(),
+            "gemini-cli.acp.v0.62.0-tool-updates"
+        );
+        assert_eq!(
+            claim
+                .assess(&version("0.63.0"))
+                .behavior_revision()
+                .expect("restricted file segment is mapped")
+                .as_str(),
+            "gemini-cli.acp.v0.63.0-restricted-files"
+        );
     }
 
     #[test]

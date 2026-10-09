@@ -8,6 +8,10 @@ use super::{
 use std::cmp::Ordering;
 use std::collections::BTreeSet;
 
+const MAX_OPAQUE_MEMBERS: usize = 32;
+const MAX_OPAQUE_EXCLUSIONS: usize = 32;
+const MAX_OPAQUE_TEXT_BYTES: usize = 256;
+
 /// One inclusive compatibility segment. Segment starts are behavior milestones.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InterfaceVersionSegment {
@@ -88,7 +92,8 @@ pub struct InterfaceCompatibilityClaim {
 impl InterfaceCompatibilityClaim {
     /// Creates and validates a compatibility claim for one interface axis.
     ///
-    /// Segments must be ordered, non-overlapping, and valid for `scheme`.
+    /// Ordered-scheme segments must be ordered and non-overlapping. Opaque
+    /// members are exact points and are stored in canonical text order.
     pub fn new(
         id: InterfaceCompatibilityClaimId,
         axis: InterfaceVersionAxis,
@@ -97,15 +102,41 @@ impl InterfaceCompatibilityClaim {
         segments: impl IntoIterator<Item = InterfaceVersionSegment>,
         exclusions: impl IntoIterator<Item = InterfaceVersion>,
     ) -> Result<Self, InvalidInterfaceCompatibilityClaim> {
+        let (segments, exclusions) = if scheme == InterfaceVersionScheme::Opaque {
+            let segments = collect_bounded(
+                segments,
+                MAX_OPAQUE_MEMBERS,
+                "Opaque compatibility claims permit at most 32 exact members",
+            )?;
+            let exclusions: BTreeSet<InterfaceVersion> = collect_bounded(
+                exclusions,
+                MAX_OPAQUE_EXCLUSIONS,
+                "Opaque compatibility claims permit at most 32 exclusions",
+            )?
+            .into_iter()
+            .collect();
+            (segments, exclusions)
+        } else {
+            (
+                segments.into_iter().collect(),
+                exclusions.into_iter().collect(),
+            )
+        };
         let claim = Self {
             id,
             axis,
             scheme,
             newer_version_posture,
-            segments: segments.into_iter().collect(),
-            exclusions: exclusions.into_iter().collect(),
+            segments,
+            exclusions,
         };
         claim.validate()?;
+        let mut claim = claim;
+        if claim.scheme == InterfaceVersionScheme::Opaque {
+            claim
+                .segments
+                .sort_by(|left, right| left.minimum().cmp(right.minimum()));
+        }
         Ok(claim)
     }
 
@@ -134,7 +165,13 @@ impl InterfaceCompatibilityClaim {
     }
 
     #[must_use]
-    /// Returns the first version in the qualified window.
+    /// Reports whether the scheme defines an interval; Opaque claims are sets.
+    pub const fn has_version_interval(&self) -> bool {
+        !matches!(self.scheme, InterfaceVersionScheme::Opaque)
+    }
+
+    #[must_use]
+    /// Returns the first ordered boundary or canonical opaque member.
     pub fn baseline(&self) -> &InterfaceVersion {
         self.segments
             .first()
@@ -143,7 +180,7 @@ impl InterfaceCompatibilityClaim {
     }
 
     #[must_use]
-    /// Returns the last version in the qualified window.
+    /// Returns the last ordered boundary or canonical opaque member.
     pub fn latest_qualified(&self) -> &InterfaceVersion {
         self.segments
             .last()
@@ -151,7 +188,7 @@ impl InterfaceCompatibilityClaim {
             .maximum()
     }
 
-    /// Iterates behavior-milestone segments in ascending version order.
+    /// Iterates behavior milestones in scheme order or opaque text order.
     pub fn milestones(&self) -> impl ExactSizeIterator<Item = &InterfaceVersionSegment> {
         self.segments.iter()
     }
@@ -169,27 +206,24 @@ impl InterfaceCompatibilityClaim {
         if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
             return None;
         }
+        if self.scheme == InterfaceVersionScheme::Opaque {
+            return self
+                .segments
+                .iter()
+                .find(|segment| segment.minimum() == version)
+                .map(segment_match);
+        }
         if self.scheme == InterfaceVersionScheme::Semantic && is_semantic_prerelease(version) {
             return self
                 .segments
                 .iter()
                 .find(|segment| segment.minimum() == version && segment.maximum() == version)
-                .map(|segment| {
-                    InterfaceCompatibilityMatch::new(
-                        segment.behavior_revision.clone(),
-                        segment.support_status,
-                    )
-                });
+                .map(segment_match);
         }
         self.segments
             .iter()
             .find(|segment| segment_contains(self.scheme, segment, version))
-            .map(|segment| {
-                InterfaceCompatibilityMatch::new(
-                    segment.behavior_revision.clone(),
-                    segment.support_status,
-                )
-            })
+            .map(segment_match)
     }
 
     #[must_use]
@@ -230,37 +264,101 @@ impl InterfaceCompatibilityClaim {
     }
 
     fn validate(&self) -> Result<(), InvalidInterfaceCompatibilityClaim> {
-        self.validate_segments()?;
-        if self.scheme == InterfaceVersionScheme::Opaque
-            && self.newer_version_posture != InterfaceNewerVersionPosture::QualifiedOnly
-        {
-            return Err(InvalidInterfaceCompatibilityClaim::new(
-                "Opaque compatibility claims must remain qualified-only",
-            ));
+        if self.scheme == InterfaceVersionScheme::Opaque {
+            return self.validate_opaque();
         }
+        self.validate_ordered_segments()?;
         for exclusion in &self.exclusions {
             validate_version(self.scheme, exclusion)?;
         }
         Ok(())
     }
 
-    fn validate_segments(&self) -> Result<(), InvalidInterfaceCompatibilityClaim> {
+    fn validate_opaque(&self) -> Result<(), InvalidInterfaceCompatibilityClaim> {
+        if self.newer_version_posture != InterfaceNewerVersionPosture::QualifiedOnly {
+            return Err(InvalidInterfaceCompatibilityClaim::new(
+                "Opaque compatibility claims must remain qualified-only",
+            ));
+        }
         if self.segments.is_empty() {
             return Err(InvalidInterfaceCompatibilityClaim::new(
                 "Compatibility window must contain at least one segment",
             ));
         }
-        if self.scheme == InterfaceVersionScheme::Opaque && self.segments.len() != 1 {
+
+        let mut member_versions = BTreeSet::<InterfaceVersion>::new();
+        for segment in &self.segments {
+            validate_version(InterfaceVersionScheme::Opaque, segment.minimum())?;
+            validate_version(InterfaceVersionScheme::Opaque, segment.maximum())?;
+            if segment.minimum() != segment.maximum() {
+                return Err(InvalidInterfaceCompatibilityClaim::new(
+                    "Compatibility segment boundaries are invalid",
+                ));
+            }
+            if segment.minimum().as_str().len() > MAX_OPAQUE_TEXT_BYTES {
+                return Err(InvalidInterfaceCompatibilityClaim::new(
+                    "Opaque version text exceeds 256 bytes",
+                ));
+            }
+            if segment.behavior_revision.as_str().len() > MAX_OPAQUE_TEXT_BYTES {
+                return Err(InvalidInterfaceCompatibilityClaim::new(
+                    "Opaque behavior revision text exceeds 256 bytes",
+                ));
+            }
+            if !member_versions.insert(segment.minimum().clone()) {
+                return Err(InvalidInterfaceCompatibilityClaim::new(
+                    "Opaque compatibility members must be unique",
+                ));
+            }
+        }
+
+        for exclusion in &self.exclusions {
+            if exclusion.as_str().len() > MAX_OPAQUE_TEXT_BYTES {
+                return Err(InvalidInterfaceCompatibilityClaim::new(
+                    "Opaque version text exceeds 256 bytes",
+                ));
+            }
+            validate_version(InterfaceVersionScheme::Opaque, exclusion)?;
+            if member_versions.contains(exclusion) {
+                return Err(InvalidInterfaceCompatibilityClaim::new(
+                    "Opaque exclusions cannot name a claimed member",
+                ));
+            }
+        }
+
+        if self.segments.len() >= 2 {
+            let Some(maintained_revision) = self
+                .segments
+                .iter()
+                .find(|segment| segment.support_status == InterfaceSupportStatus::Maintained)
+                .map(|segment| &segment.behavior_revision)
+            else {
+                return Err(opaque_support_status_error());
+            };
+            if self.segments.iter().any(|segment| {
+                (segment.support_status == InterfaceSupportStatus::Maintained
+                    && &segment.behavior_revision != maintained_revision)
+                    || (segment.support_status == InterfaceSupportStatus::Deprecated
+                        && &segment.behavior_revision == maintained_revision)
+            }) {
+                return Err(opaque_support_status_error());
+            }
+        }
+
+        Ok(())
+    }
+
+    fn validate_ordered_segments(&self) -> Result<(), InvalidInterfaceCompatibilityClaim> {
+        if self.segments.is_empty() {
             return Err(InvalidInterfaceCompatibilityClaim::new(
-                "Opaque version windows permit one exact segment only",
+                "Compatibility window must contain at least one segment",
             ));
         }
         for segment in &self.segments {
             validate_version(self.scheme, segment.minimum())?;
             validate_version(self.scheme, segment.maximum())?;
-            let ordering = compare_versions(self.scheme, segment.minimum(), segment.maximum())?;
-            if ordering == Ordering::Greater
-                || (self.scheme == InterfaceVersionScheme::Opaque && ordering != Ordering::Equal)
+            if compare_versions(self.scheme, segment.minimum(), segment.maximum())?
+                == Ordering::Greater
             {
                 return Err(InvalidInterfaceCompatibilityClaim::new(
                     "Compatibility segment boundaries are invalid",
@@ -278,6 +376,35 @@ impl InterfaceCompatibilityClaim {
         }
         Ok(())
     }
+}
+
+fn collect_bounded<T>(
+    values: impl IntoIterator<Item = T>,
+    maximum: usize,
+    overflow_message: &'static str,
+) -> Result<Vec<T>, InvalidInterfaceCompatibilityClaim> {
+    let mut values = values.into_iter();
+    let mut collected = Vec::with_capacity(maximum);
+    while collected.len() < maximum {
+        match values.next() {
+            Some(value) => collected.push(value),
+            None => return Ok(collected),
+        }
+    }
+    if values.next().is_some() {
+        return Err(InvalidInterfaceCompatibilityClaim::new(overflow_message));
+    }
+    Ok(collected)
+}
+
+fn segment_match(segment: &InterfaceVersionSegment) -> InterfaceCompatibilityMatch {
+    InterfaceCompatibilityMatch::new(segment.behavior_revision.clone(), segment.support_status)
+}
+
+fn opaque_support_status_error() -> InvalidInterfaceCompatibilityClaim {
+    InvalidInterfaceCompatibilityClaim::new(
+        "Opaque support status must follow the claim's maintained behavior revision",
+    )
 }
 
 fn segment_contains(

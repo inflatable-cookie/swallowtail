@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-09-13
+Updated: 2026-10-09
 
 ## Purpose
 
@@ -117,6 +117,29 @@ source inventory and semantic API evidence before their first tag. Historical
 tag package, dependency, API, route, and release-note inventories remain
 immutable.
 
+## Windows Compatibility Qualification
+
+Tom ruled on 2026-10-09: “We ultimately haven't claimed _any_ windows
+compatibility at all yet.. rather than letting Antigravity dictate it, I would
+rather choose a time to do a full sweep across the whole codebase and do it
+properly!” (decision `bf37c540-9f41-4e8c-bbd7-b19f0b6db096`).
+
+There is no general Windows compatibility guarantee for the source release.
+Windows qualification is a separate whole-codebase effort, scheduled by Tom.
+An individual provider's Windows artifacts, upstream support or static evidence
+do not establish Swallowtail support. The sweep must assess core/runtime, host
+process ownership and cleanup, transports, adapters, paths and environment,
+packaging and consumer preparation, with architecture-specific evidence and
+explicitly documented route limits before any Windows claim.
+
+The Antigravity Windows proof and newer headless qualification are deferred
+from the currentness minor release gate into that later effort. Preserve existing
+exact qualified points, exclusions, retry settings and retained evidence; this
+ruling adds no Windows claim and waives no qualification proof. Missing resource,
+retry, authentication and native x64 evidence remain unresolved. Future scoped
+briefs require the approved environments and execution authority before work;
+this scheduling ruling grants no VM action or provider execution.
+
 ## Dependency Topology
 
 Normal internal dependencies remain acyclic across three layers:
@@ -146,6 +169,15 @@ Before 1.0:
 Patch-compatible changes may include additive public items, internal
 refactoring, safety fixes preserving documented behavior, additive safe
 diagnostics, and newly qualified provider-interface versions.
+
+The approved bounded Opaque claim implementation preserves released method
+signatures and adds `has_version_interval`, but it also refuses some
+previously accepted constructor inputs: more than 32 raw exclusion yields,
+Opaque version or exclusion text over 256 UTF-8 bytes, and behavior-revision
+text over 256 UTF-8 bytes. Duplicate exclusion yields count toward the bound.
+This behavior narrowing means the overall change is not universally
+patch-compatible. Classify the implementation as a pre-1.0 minor change;
+Contract 029 route claims and qualifications remain separate.
 
 Immutable `v0.3.3` was the prior tagged release. Source after that tag removed
 the previously guaranteed but unqualified `minimal` reasoning value from exact
@@ -412,7 +444,30 @@ tag afterwards and does not hold the tag.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
-Current tagged identity is `v0.5.1` at
+Tom authorized exact `v0.5.3` annotated-tag creation and push on 2026-10-09:
+“Release approved” (decision `fa46cc92-0466-4984-843f-aa5cefbbcda8`). Current
+tagged identity is `v0.5.3` on `release/v0.5` at
+`fa5ecfd8304030f58e447fd410382aee4056396b`, tree
+`0597c27bf9b86a7e1c6bcb3f4fafa22a462303da`, tag object
+`13862f5ffe0c9b75b9872865ee347c181dfc276e`. Its source-only annotation
+records the registered-tool courier approval-wait correction with unchanged
+SDK/native/Node and wire pins. Qualifying hosted workflow-dispatch run
+`37854419710` and Queue milestone QA
+`35c6ef9b-394e-4aab-bdbe-1122b8388b9b` passed on the identical-tree reviewed
+candidate. No registry publication or GitHub Release is included. Working
+application adoption and live proof remain consumer-owned and separately gated.
+
+Tom authorized exact `v0.5.2` annotated-tag creation and push on 2026-10-08:
+“Go for it” (decision `f1e95c52-063b-4362-a562-8e5e6a162b49`). Immutable
+tagged identity is `v0.5.2` on `release/v0.5` at
+`b83db0bdca4292e0d21775b9c0dc8b80ec05d003`, tree
+`949d9ef1199cd21c188959dcb2c9e9bc5f2086ec`, tag object
+`4d54ed92ec2dcdf44ebce019463d124996267810`. Its source-only annotation
+records SDK registered-tool lease and per-turn usage corrections while
+preserving released SDK/native/Node pins and wire-v1 compatibility.
+No registry publication or GitHub Release is included.
+
+Immutable `v0.5.1` remains at
 `e9140b4634ee8ccd7cb0b08979cafe7d9e1e9e27`, tree
 `d375b3227985e8e552ba9346d8f9b8631936db5f`, tag object
 `97a6933abe13b2e8f05441e1ab950962e0683e65`, tagged 2026-09-13. Immutable

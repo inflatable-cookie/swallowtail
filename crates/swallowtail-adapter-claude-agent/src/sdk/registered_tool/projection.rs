@@ -8,10 +8,10 @@
 //! make.
 //!
 //! The registered capability is qualified only for the exact accepted Card 318
-//! live tuple (Research 301: SDK `0.3.259`, native `2.1.259`). The route's
-//! one-point claims pin the wrapper, native, Node, wire, and sidecar axes
-//! exactly, but rebinding the wrapper/native axes does not extend the live
-//! evidence: the qualification additionally requires the compiled tuple to
+//! live tuple (Research 301: SDK `0.3.259`, native `2.1.259`). The wrapper and
+//! native claims now qualify maintained segments, while Node, wire, and
+//! sidecar remain exact. Rebinding the package/native axes does not extend the
+//! live evidence: the qualification additionally requires the compiled tuple to
 //! equal the frozen live tuple, and the accepted capsules ran on Darwin
 //! arm64. Off that tuple or that target the projection publishes the
 //! unqualified truth and never infers the live evidence. The qualified

@@ -759,7 +759,7 @@ function editingSession(prompt, options, child) {
   return iterator;
 }
 
-// Card 146 faithful rows. The exact 0.3.284 `McpServerStatus` declaration
+// Card 146 faithful rows. The exact 0.3.293 `McpServerStatus` declaration
 // (package/sdk.d.ts:1226) permits optional `serverInfo`, `error`, `config`,
 // `scope`, `source`, and `tools` on every row, and the shipped
 // `mcpServerStatus` query passes native `mcp_status` rows through unchanged.

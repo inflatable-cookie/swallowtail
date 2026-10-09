@@ -14,7 +14,7 @@ fn binding(version: &str) -> InterfaceVersionBinding {
 fn exec_claim_is_closed_at_the_corpus_boundaries() {
     let case = ClosedSemanticWindowCase::new(
         InterfaceVersion::new("0.80.0").unwrap(),
-        InterfaceVersion::new("0.155.1").unwrap(),
+        InterfaceVersion::new("0.161.0").unwrap(),
     )
     .with_accepted([
         InterfaceVersion::new("0.81.0").unwrap(),
@@ -34,6 +34,20 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
         InterfaceVersion::new("0.150.1").unwrap(),
         InterfaceVersion::new("0.151.0").unwrap(),
         InterfaceVersion::new("0.152.0").unwrap(),
+        InterfaceVersion::new("0.155.0").unwrap(),
+        InterfaceVersion::new("0.155.1").unwrap(),
+        InterfaceVersion::new("0.156.0").unwrap(),
+        InterfaceVersion::new("0.156.1").unwrap(),
+        InterfaceVersion::new("0.157.0").unwrap(),
+        InterfaceVersion::new("0.157.1").unwrap(),
+        InterfaceVersion::new("0.158.0").unwrap(),
+        InterfaceVersion::new("0.159.0").unwrap(),
+        InterfaceVersion::new("0.159.1").unwrap(),
+        InterfaceVersion::new("0.159.2").unwrap(),
+        InterfaceVersion::new("0.159.3").unwrap(),
+        InterfaceVersion::new("0.160.0").unwrap(),
+        InterfaceVersion::new("0.160.1").unwrap(),
+        InterfaceVersion::new("0.161.0").unwrap(),
     ])
     .with_rejected([
         InterfaceVersion::new("0.79.0").unwrap(),
@@ -46,6 +60,8 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
         InterfaceVersion::new("0.150.2").unwrap(),
         InterfaceVersion::new("0.151.1").unwrap(),
         InterfaceVersion::new("0.152.2").unwrap(),
+        InterfaceVersion::new("0.154.1").unwrap(),
+        InterfaceVersion::new("0.155.2").unwrap(),
     ]);
     assert_closed_semantic_compatibility_window(&codex_exec_claim(), &case);
     assert_eq!(
@@ -55,6 +71,26 @@ fn exec_claim_is_closed_at_the_corpus_boundaries() {
             .support_status(),
         InterfaceSupportStatus::Deprecated
     );
+}
+
+#[test]
+fn exec_currentness_hops_reuse_the_maintained_wire_behavior() {
+    for version in [
+        "0.155.1", "0.156.0", "0.156.1", "0.157.0", "0.157.1", "0.158.0", "0.159.0", "0.159.1",
+        "0.159.2", "0.159.3", "0.160.0", "0.160.1", "0.161.0",
+    ] {
+        let matched = codex_exec_claim()
+            .classify(binding(version).version())
+            .expect("qualified exec point has a segment");
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
+        assert_eq!(matched.behavior_revision().as_str(), CODEX_EXEC_BEHAVIOR);
+    }
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+        codex_exec_claim().assess(binding("0.161.1").version())
+    else {
+        panic!("first stable release above the qualified ceiling stays visible");
+    };
+    assert_eq!(newer.latest_qualified().as_str(), "0.161.0");
 }
 
 #[test]

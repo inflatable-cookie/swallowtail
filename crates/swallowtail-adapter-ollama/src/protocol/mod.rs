@@ -13,6 +13,7 @@ pub use catalog::{
     ObservationBinding, OllamaModelCapability, SelectedModelDetail, parse_inventory,
     parse_model_detail, parse_version,
 };
+pub(crate) use catalog::{OllamaNativeRunner, bind_selected_inventory, parse_inventory_rows};
 pub use chat::{ChatDecoder, NativeEvent};
 
 const MAX_CATALOG_MODELS: usize = 256;
@@ -78,12 +79,21 @@ impl Request {
 
     /// Builds a selected-model detail request.
     pub fn show(model: &str) -> Result<Self, RuntimeFailure> {
-        encode_json(
-            "/api/show",
-            &serde_json::json!({
-                "model": model
-            }),
-        )
+        Self::show_with_runner(model, None)
+    }
+
+    /// Builds selected-model detail, pinning a catalogue runner when present.
+    pub(crate) fn show_with_runner(
+        model: &str,
+        runner: Option<OllamaNativeRunner>,
+    ) -> Result<Self, RuntimeFailure> {
+        let mut request = serde_json::json!({
+            "model": model
+        });
+        if let Some(runner) = runner {
+            request["runner"] = serde_json::json!(runner.as_str());
+        }
+        encode_json("/api/show", &request)
     }
 
     /// Builds a streaming chat request for one prompt.
@@ -104,6 +114,7 @@ impl Request {
             None,
             reasoning,
             structured_output,
+            None,
         )
     }
 
@@ -114,6 +125,7 @@ impl Request {
         context_window: Option<u32>,
         reasoning: Option<&ReasoningMode>,
         structured_output: Option<&StructuredOutputDescriptor>,
+        runner: Option<OllamaNativeRunner>,
     ) -> Result<Self, RuntimeFailure> {
         let messages = [ChatMessage::user(content)];
         Self::chat_with_messages(
@@ -123,6 +135,7 @@ impl Request {
             context_window,
             reasoning,
             structured_output,
+            runner,
         )
     }
 
@@ -131,6 +144,7 @@ impl Request {
         messages: &[ChatMessage],
         maximum_output_tokens: u64,
         context_window: Option<u32>,
+        runner: Option<OllamaNativeRunner>,
     ) -> Result<Self, RuntimeFailure> {
         Self::chat_with_messages(
             model,
@@ -139,6 +153,7 @@ impl Request {
             context_window,
             None,
             None,
+            runner,
         )
     }
 
@@ -149,6 +164,7 @@ impl Request {
         context_window: Option<u32>,
         reasoning: Option<&ReasoningMode>,
         structured_output: Option<&StructuredOutputDescriptor>,
+        runner: Option<OllamaNativeRunner>,
     ) -> Result<Self, RuntimeFailure> {
         let maximum = u32::try_from(maximum_output_tokens)
             .ok()
@@ -191,6 +207,9 @@ impl Request {
                     return Err(protocol_failure("structured-output schema"));
                 }
             };
+        }
+        if let Some(runner) = runner {
+            request["runner"] = serde_json::json!(runner.as_str());
         }
         encode_json("/api/chat", &request)
     }

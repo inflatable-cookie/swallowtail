@@ -1,0 +1,697 @@
+{
+  "compared": [
+    "0.3.284",
+    "0.3.285",
+    "0.3.286",
+    "0.3.287",
+    "0.3.288",
+    "0.3.289",
+    "0.3.290",
+    "0.3.291",
+    "0.3.292",
+    "0.3.293"
+  ],
+  "package_file_counts": {
+    "0.3.284": 19,
+    "0.3.285": 19,
+    "0.3.286": 19,
+    "0.3.287": 19,
+    "0.3.288": 19,
+    "0.3.289": 19,
+    "0.3.290": 19,
+    "0.3.291": 19,
+    "0.3.292": 19,
+    "0.3.293": 19
+  },
+  "identical_through_0_3_284_to_0_3_293": [
+    "LICENSE.md",
+    "README.md",
+    "agentSdkTypes.d.ts",
+    "browser-sdk.d.ts",
+    "core.d.ts",
+    "extractFromBunfs.d.ts",
+    "extractFromBunfs.js"
+  ],
+  "tree_digest_algorithm": "SHA-256 over UTF-8 sorted lines: <file SHA-256><two spaces><relative package path><LF>.",
+  "tree_sha256": {
+    "0.3.284": "069235a5598d5eea0f3dfa0698e451677e5e56d1f5091c2a92e73d185da92372",
+    "0.3.285": "40c755a76bb6cef40716069e45a4a605df732e3f37789af7d970fc4c1dbe923e",
+    "0.3.286": "24fb1bee6c7274691bc7bd796bd7d552d0736a723c426b0dffa028648e110041",
+    "0.3.287": "9e071a2e789003aeca3e7c3c420e14a75c34e32be56962c12f11010abd367d43",
+    "0.3.288": "242975636b7a1a2a94cc1c89f3d0a78a93d3638b9decb79abb846414dfb57a99",
+    "0.3.289": "82e44817e8a20a031bd53d12b959315d0905158574096faaae1d64f761b1ac2d",
+    "0.3.290": "a11dcff5096b52d6ac3b01357adc8feba43d44c18638219a9e2b7320d210924a",
+    "0.3.291": "d69a861b3f1473542cf5dfb13df1b68dca2cf8f2369b332782b52afb19fc16ff",
+    "0.3.292": "4e7cdbac0fc10849f793526b81fdf599279d146a5ffcb35c1f9bed2dc4f8b125",
+    "0.3.293": "b6339d8c766a4b1b67c1ef11c7cd49cd6ddd493a9de26dafb49984ba538f5f36"
+  },
+  "file_hashes": {
+    "LICENSE.md": {
+      "0.3.284": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.285": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.286": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.287": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.288": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.289": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.290": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.291": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.292": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+      "0.3.293": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a"
+    },
+    "README.md": {
+      "0.3.284": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.285": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.286": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.287": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.288": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.289": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.290": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.291": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.292": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192",
+      "0.3.293": "786e57ced73510c752e2e15901d290c7c22786e4791d8a2e2d96991a9a97c192"
+    },
+    "agentSdkTypes.d.ts": {
+      "0.3.284": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.285": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.286": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.287": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.288": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.289": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.290": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.291": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.292": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93",
+      "0.3.293": "1005d810b1bec12c856632bb7d54087af7c516251a4b557eb05ae8d474fc5a93"
+    },
+    "bridge.d.ts": {
+      "0.3.284": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+      "0.3.285": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+      "0.3.286": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+      "0.3.287": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+      "0.3.288": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+      "0.3.289": "1ee98f40a605ef53c50c31aab8998a3df986298c398e8c95faacefc34fc7bac6",
+      "0.3.290": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf",
+      "0.3.291": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf",
+      "0.3.292": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf",
+      "0.3.293": "ccb7b26ff6e89cc11dc5748ec71ce9b5363e5a39fc1a2eec2d8a53cabe17f5bf"
+    },
+    "bridge.mjs": {
+      "0.3.284": "684b2eef359bef0e8c32ad8a00b2fe80363d0deacfaa00bcd691f1808cc2688b",
+      "0.3.285": "817793bd9fd46592b39ca3fc1fee86ac7526432375889ccaa9369f8abe38deff",
+      "0.3.286": "3f65b7b49f16cb737ca147d37a3b5e89e4eb54972d6e3bc0619e6f317a129b2f",
+      "0.3.287": "0447d93793e35b19de8387e4ab61255e116e4296960529a4cbb7ce63004ece17",
+      "0.3.288": "4e1a59ca7efd01b4926d5fd1731b3651522aaa6eaf3de2e46fcb36f08b9c2524",
+      "0.3.289": "09a4eeac54a585f9f97797e77440d77b3071211196b60177d7c76691d35fa684",
+      "0.3.290": "91e61513faf40e1effdf2a3476889751cb1af876429071c391331ded160ad646",
+      "0.3.291": "c5ccb449fc6b5c343a349b74bb75741294ac44ae3de48e6274ad7d96f3c10943",
+      "0.3.292": "393327cb8330b9ed07e846d0e2e902cca579a5b5f707906cb0105dbf24281bad",
+      "0.3.293": "60336b522b1fa039ccd42f0ab9df1c487c709033e80cf83fe1e17e9579af1d63"
+    },
+    "browser-sdk.d.ts": {
+      "0.3.284": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.285": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.286": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.287": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.288": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.289": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.290": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.291": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.292": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9",
+      "0.3.293": "d98512eb8c7d656f5f8698ad712be2f501d4f570470391af1069b17eeb8992d9"
+    },
+    "browser-sdk.js": {
+      "0.3.284": "51963bedc7d7ab07121a7b138f13722112b7c116f4d808f96b76938b0b549d48",
+      "0.3.285": "6fa8b31cfdb0046748509962ffbad7d0d09cb9e484df14ded6a9044c5dd9f5e0",
+      "0.3.286": "38dab9f9a4c8bc6026c1035d56f4cb125921b4ceba35ec169bdfb9466d22e8a2",
+      "0.3.287": "8c363707b47da6a04d5f12b9094caf8640e706af4af9a4e9c855a24fec39d8c6",
+      "0.3.288": "53a6381d6657c11043d43a5733c3323aa5c0b4f0c1ef5cad52c5c94e0299fae4",
+      "0.3.289": "5c2a96a4498874cc5ff46aa3f93f46b52879ea71560e6bfff6c323c5b8fb3e71",
+      "0.3.290": "8f6f1e47f9089e5f21187435d1f9407193f4308e418e9f1faa7052e107b153af",
+      "0.3.291": "f47b371e40fc43df00970941029b1f50bf0796a938f63258434f00bc37efb29e",
+      "0.3.292": "d1f5400dfcfe60827a6e8f973ac31c95e2c8fa294158b1554fea2aabb1e533d0",
+      "0.3.293": "4676c6ce5f8772b8bb8f178da2425226d45ddc4077049216f80a8c013fd87387"
+    },
+    "core-29pt3grd.mjs": {
+      "0.3.290": "17698fc91b4fe149cd3efba45b61f6497f9355982796271d59ab359f52e14307"
+    },
+    "core-3ctbshc7.mjs": {
+      "0.3.284": "300b22fb7b2d516e20441a3be2343d62eae09fde0a1b2af3c2086bec115ee5ac"
+    },
+    "core-5c9xf7pv.mjs": {
+      "0.3.286": "e4ad141ad570c13346548a997f3bd17afcc6e8d8dbeedf274f873b9c06749492"
+    },
+    "core-8p15jxca.mjs": {
+      "0.3.289": "36e5ad003240b77ef1063eb65c51d701beeb11cb12c4f812b8b9f0f66005d2af"
+    },
+    "core-95ey60bt.mjs": {
+      "0.3.292": "38497094893f1cfffa206f91c649be5de10e709ab3ec861cc646941949d76558"
+    },
+    "core-ae32wa3s.mjs": {
+      "0.3.293": "f2e7750556e3a719bd6ed14987668e9c64e675541d3b9aa3a8eb34142632fc26"
+    },
+    "core-czfq02x9.mjs": {
+      "0.3.292": "c14edd3fbd1eb98c2899a502475da0deb5d716abb7b51ef7d6fe24c23c28e367"
+    },
+    "core-d0szsqzn.mjs": {
+      "0.3.293": "5f3b67bc1fe625ba2a81dbee172153726bda7f75595eb6d3efef0bd2fb8e41da"
+    },
+    "core-eg2e19h0.mjs": {
+      "0.3.284": "acf908ea12506af1ebe374d5c981b77c320dc811570f19c083e238bc04c68921"
+    },
+    "core-ejtftkpy.mjs": {
+      "0.3.288": "b5e59c8770f278d84052241fe85e173e773b40e01fa86faacebac7990279f742"
+    },
+    "core-fgc83rkd.mjs": {
+      "0.3.291": "790c9492bfdb2f264d651a7b2bb9e811e6d06681e12009cb23c3b8dae4cd35ed"
+    },
+    "core-ke40g9bw.mjs": {
+      "0.3.291": "a8d8d1866a8dadab797439a07b24978b528ec259ad9a12c7408e392c40515909"
+    },
+    "core-kgfyd2t2.mjs": {
+      "0.3.287": "58d2dd22e4566fe71b6646b0203424149e72813410cd66032fc004d01d1bd17d"
+    },
+    "core-q38rzykt.mjs": {
+      "0.3.287": "3caa66457c5acb5a9ea432e32f7f378af744d66e691377f3141397e2657c5e27"
+    },
+    "core-repw6452.mjs": {
+      "0.3.289": "ebc99a96e54cbbfb0068803fceb8caa1470399938db3725456870e1daba7f98e"
+    },
+    "core-rf2bg9hj.mjs": {
+      "0.3.285": "db254e443ce20b59f175d8d28229d42c4b2e3f996f21af8c673bd711abb40d1a"
+    },
+    "core-w2yya30y.mjs": {
+      "0.3.285": "0342a90b93dde46f89fef59b0ea69ab220e046a95217eeba772938bbd33fc9af"
+    },
+    "core-wn2j871p.mjs": {
+      "0.3.288": "8ec5ed875b5df16189c98017f205d018eb180f1b46524950c40143b7761061d7"
+    },
+    "core-y9rc2t7d.mjs": {
+      "0.3.286": "4b77305dd4dc48aec60b8b77ebff6c92b3ea0ac1d710a577be08681336f0bacb"
+    },
+    "core-ygywjedj.mjs": {
+      "0.3.290": "e040dbe4e6b109bf471c4d87af8cf3bc829a40c440cf41c6d97dc459a26a7530"
+    },
+    "core.d.ts": {
+      "0.3.284": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.285": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.286": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.287": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.288": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.289": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.290": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.291": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.292": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8",
+      "0.3.293": "df8b63bf4bc2300a9afc91aa38a1767aa6adecbe45139ed320e679ca7afd2df8"
+    },
+    "core.mjs": {
+      "0.3.284": "eaaef071750c68f168588c817f964ea756e11620554e715d15e8ab267b189355",
+      "0.3.285": "5aba089253f21cf6a68bec94322c5b5b980184e35f5ce335a3492f9baeaeb4ea",
+      "0.3.286": "48ca0ea8740bb01e0d8a865b8b78c0f09b90daaf43ba6d65ae2334c043c4e936",
+      "0.3.287": "c92fa33ef0d3eb6b1f58583db24d3643347b67b440cb0a9eb6222379f4bb5593",
+      "0.3.288": "ca58852103d8916f40317faee330469099e7e2dd828dda2839a0b3f283534671",
+      "0.3.289": "81ab4c6ced428a5d2dfcdf3e7dabf3ad42610413fcc6f55b8b7dbf9e9a603d28",
+      "0.3.290": "968dd41974e272e0e7804335805e2fc212fc4c0e6da1be95c9a413c43c09e55f",
+      "0.3.291": "17006d379b5a538ed50bf64379e8ac08ed2609649c502cf69ed8e71616122185",
+      "0.3.292": "5d17596ce9832447d5de9522c8814776ebd61e64a9c9cffafd5573c841121d1e",
+      "0.3.293": "e0e0cb54b1dde93e0cf0397bd1aac282ab8faf4125031a9a6de4e71de596251b"
+    },
+    "extractFromBunfs.d.ts": {
+      "0.3.284": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.285": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.286": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.287": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.288": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.289": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.290": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.291": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.292": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984",
+      "0.3.293": "eedc9d6a3adb2e0f12984ddf3d2cc3a72f56906b4a4069660bd08fd36c3d2984"
+    },
+    "extractFromBunfs.js": {
+      "0.3.284": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.285": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.286": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.287": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.288": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.289": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.290": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.291": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.292": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27",
+      "0.3.293": "1286171f98b1147a4ed46d48296a1ab8ee4f79cee2d893ace5210ebe361d8c27"
+    },
+    "manifest.json": {
+      "0.3.284": "89d15995a702c15a37cbc986a33cba415aa93e9671114971e137592aad7b2bd1",
+      "0.3.285": "ab45eee79e59db6c01147e19b83074df8773304d790f5553b03c2a495eaa8297",
+      "0.3.286": "c84e2bef8910fdec338c5e198192fc02d574182f71e57f2c262519541c697523",
+      "0.3.287": "7654db465063ffed4718ac52ad9eaaba489511bb326abdbbbc2203e44b8e61fe",
+      "0.3.288": "9a2acd1052522ebacd592dfddac56075782ce02a7316b66d82d1258c7799a48b",
+      "0.3.289": "0fac4e2ae412434d3443e603154198ff8705dfd64f65d949a3004d82759274ba",
+      "0.3.290": "eec92e99a783cc0a94f4a1157db97e14a6561c68bf11fc228734cd5dda4bf4eb",
+      "0.3.291": "c5043b04e2e352f6e347e06ec26426c6d0565b657ee99e0a9b28911c2459926a",
+      "0.3.292": "64f5abe05a43151810acf8c25169872e41293c96d3ae73d6508733a8b336e2b1",
+      "0.3.293": "ce867df78920b885ffcd8ddeb5b12f867bbb34f8a7dd85d42740d48b4c6ef351"
+    },
+    "manifest.zst.json": {
+      "0.3.284": "be06b4c4749fb9dc1898504e2d321a319bbe7ac1f5ff1df6e3c782e8430f52a9",
+      "0.3.285": "7a1e9d18774036edfff9c149df2b8a1d9333169ecb3bb1887aed933385430794",
+      "0.3.286": "b095a98766d95772caa53f56227b6b0c799694784bd7dc61c6aad42e689a4666",
+      "0.3.287": "b1863cabc63a02f5f498e7040f99814879a81c08abfa73a598b9016e392add6e",
+      "0.3.288": "5f1a6183f3eddffdfe4f9e611d7610bbcfdeed2f5ac202eb0f79a97f8f84526b",
+      "0.3.289": "6ac166ec029e2eec63fe4fe9615a39e4df02a3dfcea43df9d94b67d590da3fec",
+      "0.3.290": "101dea1587c4f216c615f4b9914957032826a233aa7ac33f0934a7b24595d093",
+      "0.3.291": "9b741f82ac530222a9f32edf80a019bee9bf0dbe6babe6bba3c8f7b27d7d65ec",
+      "0.3.292": "ddce6bd210fc1a6680cf185309120963fe42a9e423dfd3500397935aa917d8aa",
+      "0.3.293": "464d122108c12d6200bf3c2316da659fc3510630a7739704ed9382efdf84723f"
+    },
+    "package.json": {
+      "0.3.284": "5045b4b1e147978878f3c5cbc7fb241e697ad9ea384468e0dbdb7d02f6bea272",
+      "0.3.285": "aacda5f28008c799fc412c698c68942960b51ed63d8ad7f48e68490cb4f525ad",
+      "0.3.286": "c06faa6837b2188a1e278b14a845239c736abf28c547011e9b213c4c154e9f4a",
+      "0.3.287": "9383c390073a387bcb300c7c5e833f30e3c971093ad031537fa142bc33f7806d",
+      "0.3.288": "eede5924ec130f81941dafb3b99ae821310890bfc343ce0bb2c5d1fb6f597424",
+      "0.3.289": "a7130ef41b63489c9caea963f8c921112d39720775613a2ec74ed7788d41f099",
+      "0.3.290": "ab573b2052ad648ff3871ad0ae792a8900df4caae716d4d9279895ddb04ceef3",
+      "0.3.291": "6fcbf7b74a2455aa54e5cba35ec08936b86ef5b4620172cbedec6a2f17f142f0",
+      "0.3.292": "3de3fa7a76a15bc64951d0e5f46a401b7caafd09908f1242a01dcc18f60572f0",
+      "0.3.293": "6b4847168d3f1b585e4f732f47e3a986680bac8da7f3f55c7c4d36bfa4e89f21"
+    },
+    "sdk-tools.d.ts": {
+      "0.3.284": "5f159fcf690556d5d8674a663d21b9043df132f4f0d2c4db7dcd156935723b0e",
+      "0.3.285": "91ab2df2cb687cd3692f74a149867a847e3a4c88478c55a255e6a33df7fc5fca",
+      "0.3.286": "91ab2df2cb687cd3692f74a149867a847e3a4c88478c55a255e6a33df7fc5fca",
+      "0.3.287": "91ab2df2cb687cd3692f74a149867a847e3a4c88478c55a255e6a33df7fc5fca",
+      "0.3.288": "91ab2df2cb687cd3692f74a149867a847e3a4c88478c55a255e6a33df7fc5fca",
+      "0.3.289": "91ab2df2cb687cd3692f74a149867a847e3a4c88478c55a255e6a33df7fc5fca",
+      "0.3.290": "60e2ab811eacc6769674c462bd55e4c703cd05a130a1605d82bbf1e82ae9d2eb",
+      "0.3.291": "60e2ab811eacc6769674c462bd55e4c703cd05a130a1605d82bbf1e82ae9d2eb",
+      "0.3.292": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024",
+      "0.3.293": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024"
+    },
+    "sdk.d.ts": {
+      "0.3.284": "048ae2e6c796cc2aa3c423afaad59a08972cb48c271ffcc9847d910ff65f61b2",
+      "0.3.285": "3bc04bbd9858b00a2589b899317c66852ff875e841eb90c2a741ef9047e235bf",
+      "0.3.286": "0b1564229ad370acc51f47b42b2ef61c5d4e3ccb243c8993c8d6cdcf966cfe71",
+      "0.3.287": "e21c63715af18e383c817716d8cb4a68466ef1b8aff93fc5807c9fcaabbaf240",
+      "0.3.288": "52d1c2c93ecb35a301044319f60e10d365f8e1ea0f1812054e1d4b4b2f183fb7",
+      "0.3.289": "52d1c2c93ecb35a301044319f60e10d365f8e1ea0f1812054e1d4b4b2f183fb7",
+      "0.3.290": "193becad9d69bc4d2ccd22def53fb9bff9e2628e324f7657d9497da9476af541",
+      "0.3.291": "193becad9d69bc4d2ccd22def53fb9bff9e2628e324f7657d9497da9476af541",
+      "0.3.292": "194b357b9c0966595b2ab37be466c3133aff42c5b568e497bfd48584eba578f6",
+      "0.3.293": "bbfe75f8b5d29109d282d8b12d990f006744be11b53f86ce1b71c67824716254"
+    },
+    "sdk.mjs": {
+      "0.3.284": "32d062c37b03e10870fbf839f54694545ee01bc0ec719e47078fbed76e30ef71",
+      "0.3.285": "437c1e85b41958c04b3ce38096ed5e9e6d1b7ade54eba6df7f7d6362c9c073f8",
+      "0.3.286": "9ddccce86cdcd40175fc32ea55d00d07539c04428d013ca42a97aece9b988315",
+      "0.3.287": "21fbc4b359e517a370524dd6e25c40c5eab40368eb122491530ac4233021925d",
+      "0.3.288": "52dd9e10c1d1bde4cd53d2bcb035e6ae75123b28edafb1fba208552bdc679a10",
+      "0.3.289": "14dd69730612135f9bd3a67793f291651d9d0ff4b8f05500963fe2a84fa0af1c",
+      "0.3.290": "6a628372e492ad4e2bba08c95862055dd02aaa0786365426f166a60f19f540a2",
+      "0.3.291": "88803c0f00e72594ed470272cf295b16a0cd12f93c46e3938ef21b40e1f98614",
+      "0.3.292": "4ea6e06b230b6761175d85f0c4e663774fcb7217ea06fb98202c3cbbfca1ba7b",
+      "0.3.293": "a980b792353c301eea60d7896704cff21440de7c4aeefc3fe481be079504e203"
+    }
+  },
+  "native_manifest_sha256": {
+    "0.3.284": "89d15995a702c15a37cbc986a33cba415aa93e9671114971e137592aad7b2bd1",
+    "0.3.285": "ab45eee79e59db6c01147e19b83074df8773304d790f5553b03c2a495eaa8297",
+    "0.3.286": "c84e2bef8910fdec338c5e198192fc02d574182f71e57f2c262519541c697523",
+    "0.3.287": "7654db465063ffed4718ac52ad9eaaba489511bb326abdbbbc2203e44b8e61fe",
+    "0.3.288": "9a2acd1052522ebacd592dfddac56075782ce02a7316b66d82d1258c7799a48b",
+    "0.3.289": "0fac4e2ae412434d3443e603154198ff8705dfd64f65d949a3004d82759274ba",
+    "0.3.290": "eec92e99a783cc0a94f4a1157db97e14a6561c68bf11fc228734cd5dda4bf4eb",
+    "0.3.291": "c5043b04e2e352f6e347e06ec26426c6d0565b657ee99e0a9b28911c2459926a",
+    "0.3.292": "64f5abe05a43151810acf8c25169872e41293c96d3ae73d6508733a8b336e2b1",
+    "0.3.293": "ce867df78920b885ffcd8ddeb5b12f867bbb34f8a7dd85d42740d48b4c6ef351"
+  },
+  "from_0_3_284_to_0_3_285": {
+    "added": [
+      "core-rf2bg9hj.mjs",
+      "core-w2yya30y.mjs"
+    ],
+    "removed": [
+      "core-3ctbshc7.mjs",
+      "core-eg2e19h0.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk-tools.d.ts",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk-tools.d.ts": "unselected tool declarations; this route does not import or map the SDK tool catalog",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_285_to_0_3_286": {
+    "added": [
+      "core-5c9xf7pv.mjs",
+      "core-y9rc2t7d.mjs"
+    ],
+    "removed": [
+      "core-rf2bg9hj.mjs",
+      "core-w2yya30y.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js",
+      "sdk-tools.d.ts"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_286_to_0_3_287": {
+    "added": [
+      "core-kgfyd2t2.mjs",
+      "core-q38rzykt.mjs"
+    ],
+    "removed": [
+      "core-5c9xf7pv.mjs",
+      "core-y9rc2t7d.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js",
+      "sdk-tools.d.ts"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_287_to_0_3_288": {
+    "added": [
+      "core-ejtftkpy.mjs",
+      "core-wn2j871p.mjs"
+    ],
+    "removed": [
+      "core-kgfyd2t2.mjs",
+      "core-q38rzykt.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js",
+      "sdk-tools.d.ts"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_288_to_0_3_289": {
+    "added": [
+      "core-8p15jxca.mjs",
+      "core-repw6452.mjs"
+    ],
+    "removed": [
+      "core-ejtftkpy.mjs",
+      "core-wn2j871p.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js",
+      "sdk-tools.d.ts",
+      "sdk.d.ts"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_289_to_0_3_290": {
+    "added": [
+      "core-29pt3grd.mjs",
+      "core-ygywjedj.mjs"
+    ],
+    "removed": [
+      "core-8p15jxca.mjs",
+      "core-repw6452.mjs"
+    ],
+    "changed": [
+      "bridge.d.ts",
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk-tools.d.ts",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js"
+    ],
+    "changed_file_classification": {
+      "bridge.d.ts": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk-tools.d.ts": "unselected tool declarations; this route does not import or map the SDK tool catalog",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_290_to_0_3_291": {
+    "added": [
+      "core-fgc83rkd.mjs",
+      "core-ke40g9bw.mjs"
+    ],
+    "removed": [
+      "core-29pt3grd.mjs",
+      "core-ygywjedj.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js",
+      "sdk-tools.d.ts",
+      "sdk.d.ts"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_291_to_0_3_292": {
+    "added": [
+      "core-95ey60bt.mjs",
+      "core-czfq02x9.mjs"
+    ],
+    "removed": [
+      "core-fgc83rkd.mjs",
+      "core-ke40g9bw.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk-tools.d.ts",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk-tools.d.ts": "unselected tool declarations; this route does not import or map the SDK tool catalog",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  },
+  "from_0_3_292_to_0_3_293": {
+    "added": [
+      "core-ae32wa3s.mjs",
+      "core-d0szsqzn.mjs"
+    ],
+    "removed": [
+      "core-95ey60bt.mjs",
+      "core-czfq02x9.mjs"
+    ],
+    "changed": [
+      "bridge.mjs",
+      "browser-sdk.js",
+      "core.mjs",
+      "manifest.json",
+      "manifest.zst.json",
+      "package.json",
+      "sdk.d.ts",
+      "sdk.mjs"
+    ],
+    "identical": [
+      "LICENSE.md",
+      "README.md",
+      "agentSdkTypes.d.ts",
+      "bridge.d.ts",
+      "browser-sdk.d.ts",
+      "core.d.ts",
+      "extractFromBunfs.d.ts",
+      "extractFromBunfs.js",
+      "sdk-tools.d.ts"
+    ],
+    "changed_file_classification": {
+      "bridge.mjs": "unselected ./bridge subpath; credential-bearing bridge is forbidden by sidecar asset checks",
+      "browser-sdk.js": "unselected ./browser subpath; sidecar imports only dot entry",
+      "core.mjs": "unselected ./core subpath; sidecar imports only dot entry",
+      "manifest.json": "embedded_native_identity: exact native version, source commits, harness schema and platform digests recorded in identity.json",
+      "manifest.zst.json": "compressed CLI manifest: not loaded by selected dot entry; host provisions explicit native path and no install/update occurs",
+      "package.json": "package_identity_metadata: wrapper version, exports, peer and platform dependency metadata; exact artifact identity only",
+      "sdk.d.ts": "default_entry_declarations: selected signatures are compared and added fields/operations classified in protocol.json",
+      "sdk.mjs": "default_entry_implementation: selected dot entry; byte changes reviewed against selected options, query, permission, message, usage, failure and cleanup surface in protocol.json"
+    }
+  }
+}

@@ -42,24 +42,36 @@ ACP exact `0.28.1` and `0.29.0..=0.38.0` are qualified under `QualifiedOnly`.
 Exact `0.39.0` and `0.39.1` are **excluded**: from `0.39.0` the agent-core-v2
 ACP terminal runner replaces two fail-closed errors with a local host-process
 spawn in the leased working resource, and this route always advertises
-`terminal: false`, so that branch always applies. Nothing in the adapter or
-the runtime contains that spawn. Research 325 confirmed the same
-`acpTerminalRunner` source blob and the same bundled `AcpProcessService` digest
-at `0.40.0`, `0.40.1`, `0.41.0`, `0.42.0`, and `0.43.0`. Every point above
-`0.38.0` fails closed, including unpublished `0.38.1`, the named exclusions,
-unpublished `0.39.2`, and the published `0.40.0..=0.43.0` gap. ACP does not
-admit `UnverifiedNewer`.
+`terminal: false`, so every spawn takes the local branch. With terminal true,
+calls outside the argument/environment shape still take the local branch,
+including non-Bash calls. Nothing in the adapter or the runtime contains the
+spawn. Research 325 confirmed the same `acpTerminalRunner` source blob through
+`0.43.0`; Research 403 reproduces both branches through official stable
+`2.1.1`, including the `2.0.0` major reset, and finds no shipped per-session
+control for both. A host-terminal API design awaits separate review.
+
+At `2.0.0`, the only changed ACP source module adds a filter to
+available-command discovery, which this adapter does not expose. Every point
+above `0.38.0` fails closed, including unpublished `0.38.1`, `0.39.2`,
+`0.40.2`, `0.41.1`,
+`0.42.1`, `0.43.2`, `2.0.3`, and `2.1.2`, the exact exclusions, and published
+`0.40.0..=0.43.1` and `2.0.0..=2.1.1`. There is no published stable 1.x line.
+ACP does not admit `UnverifiedNewer`.
 
 Headless `0.29.0..=0.32.0` is qualified under the audited legacy agent-core v1
 stream-json corpus (`kimi.headless.stream-json.v1`) as `Deprecated`. Headless
-`0.33.0..=0.43.0` qualifies under agent-core-v2 `runV2Print`
-(`kimi.headless.stream-json.v2`) with a matching `system.version` preamble.
+`0.33.0..=0.43.1` and `2.0.0..=2.1.1` qualify under agent-core-v2
+`runV2Print` (`kimi.headless.stream-json.v2`) with a matching `system.version`
+preamble.
 The split point is exact: through `0.32.0` the print engine is selected by
 `KIMI_CODE_EXPERIMENTAL_FLAG` and defaults to v1; from `0.33.0` it is selected
 by `KIMI_CODE_LEGACY_FLAG` and defaults to v2, and this adapter never sets
 that flag. From `0.42.0` the legacy v1 body and that gate are deleted and the
 v2 print path is unconditional. Public facade
-`kimi-headless-stream-json-v1` covers both revisions. Later headless stables
+`kimi-headless-stream-json-v1` covers both revisions. Unpublished `0.43.2` and
+`2.0.3`, the `1.x` line, and exact `2.1.0` remain unsupported. Research 413
+records that `2.1.0` adds effective symlink-aware filesystem checks to the
+built-in tools, while `2.1.1` removes them. Later stable points above `2.1.1`
 remain visible `UnverifiedNewer`; they do not inherit ACP catalogue/import
 support. Older, excluded, and prerelease observations do not prepare.
 
@@ -222,9 +234,11 @@ cannot accept that host boundary should use another route.
 
 The prepared route qualifies the audited legacy agent-core v1 stream-json
 corpus through exact `0.32.0` as `Deprecated` (`kimi.headless.stream-json.v1`).
-Headless `0.33.0..=0.43.0` qualifies under agent-core-v2 `runV2Print`
-(`kimi.headless.stream-json.v2`) with a matching `system.version` preamble
-before shared JSONL output. The v1 window ends at `0.32.0` because the default
+Headless `0.33.0..=0.43.1` and `2.0.0..=2.1.1` qualify under agent-core-v2
+`runV2Print` (`kimi.headless.stream-json.v2`) with a matching `system.version`
+preamble before shared JSONL output. Unpublished `0.43.2`, the `1.x` line,
+unpublished `2.0.3`, and exact `2.1.0` remain unsupported. The v1 window ends
+at `0.32.0` because the default
 `-p` engine becomes agent-core-v2 at `0.33.0`; from `0.42.0` the legacy v1 body
 is deleted. Public facade
 `kimi-headless-stream-json-v1` covers both revisions. The adapter does not

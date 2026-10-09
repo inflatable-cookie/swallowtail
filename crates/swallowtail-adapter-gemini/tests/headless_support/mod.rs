@@ -6,8 +6,11 @@ mod run;
 mod task;
 mod time;
 
+#[allow(unused_imports)]
 pub use preflight::{cli_preparation_input, cli_probe, plan_for, request_for};
+#[allow(unused_imports)]
 pub use process::{FakeProcessService, ScriptedProcessService};
+#[allow(unused_imports)]
 pub use run::{assert_redacted, assert_status_code, cancelled, completed, driver, timed_out};
 pub use task::TaskState;
 pub use time::{ImmediateTimeService, PendingTimeService};

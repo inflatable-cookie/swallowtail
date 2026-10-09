@@ -53,6 +53,7 @@ PERMISSION_EXECUTION_V2_SCHEMA_PATH = (
     FIXTURE_DIR / "permission-proof-execution-record-v2.schema.json"
 )
 PERMISSION_FAKE_SOURCE_PATH = ROOT / "scripts/copilot-acp-permission-fake.c"
+STAGE_LAUNCHER_SOURCE_PATH = ROOT / "scripts/copilot-acp-stage-launcher.c"
 COMMITTED_PERMISSION_RECORD_PATH = (
     FIXTURE_DIR / "permission-proof-execution-record.json"
 )
@@ -67,6 +68,9 @@ PRIOR_PERMISSION_PROOF_HARNESS_SHA256 = (
 )
 RENEWAL_DECISION = "411be8ce-77a0-4a50-930f-d6aeacdffce9"
 RENEWAL_VERSION = "1.0.93"
+RENEWAL_HISTORICAL_HARNESS_SHA256 = (
+    "f11f44d43e8baf432ed3627cd75c9630d65f0fd8fb95535cc1437fd1dbc40418"
+)
 RENEWAL_BINARY_SHA256 = (
     "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"
 )
@@ -149,6 +153,231 @@ STDERR_CATEGORIES = frozenset(
         "unknown",
     }
 )
+STDERR_MARKER_FACETS = frozenset(
+    {
+        "sandbox-marker-present",
+        "access-denied-marker-present",
+        "dynamic-loader-marker-present",
+        "launcher-marker-present",
+        "unknown",
+    }
+)
+DIAGNOSTIC_STAGES = frozenset(
+    {"compile", "sandbox-apply", "exec", "loader", "native-main", "acp-initialize", "unknown"}
+)
+DIAGNOSTIC_OPERATIONS = frozenset(
+    {"compile", "apply-profile", "exec-launcher", "load-runtime", "enter-native-main", "initialize-acp", "unknown"}
+)
+DIAGNOSTIC_PATH_ROLES = frozenset(
+    {"fake-source", "sandbox-profile", "fake-stage-launcher", "fake-executable", "runtime-library", "none", "unknown"}
+)
+DIAGNOSTIC_ERRNOS = frozenset(
+    {"none", "EACCES", "EPERM", "ENOENT", "ENOEXEC", "EINVAL", "EIO", "ETIMEDOUT", "unknown"}
+)
+STAGE_LAUNCHER_ERRNO_CODES = {
+    "P": "EPERM",
+    "A": "EACCES",
+    "N": "ENOENT",
+    "F": "ENOEXEC",
+    "I": "EINVAL",
+    "O": "EIO",
+    "T": "ETIMEDOUT",
+    "U": "unknown",
+}
+STAGE_DIAGNOSTIC_TEMPLATES = {
+    "compile": "task-owned fake compilation failed before a process start",
+    "sandbox-apply": "sandbox profile application failed before fake launcher entry",
+    "exec": "task-owned fake launcher could not execute its target",
+    "loader": "a loader marker was present; exact loader cause remains unknown",
+    "native-main": "task-owned native fake main entry was confirmed",
+    "acp-initialize": "task-owned fake ACP initialize response was confirmed",
+    "unknown": "startup stage remains unknown",
+}
+DYLD_SUPPORT_PROFILE = Path("/System/Library/Sandbox/Profiles/dyld-support.sb")
+ORIGINAL_PROCESS_CONTAINMENT_PROVEN = False
+ORIGINAL_PROCESS_CONTAINMENT_STOP = (
+    "controlled fake descendants can be joined, but arbitrary vendor descendants cannot be enumerated and joined race-safely"
+)
+
+
+def require_original_process_containment() -> None:
+    if not ORIGINAL_PROCESS_CONTAINMENT_PROVEN:
+        raise RuntimeError(
+            "Copilot original-artifact admission is blocked: "
+            f"{ORIGINAL_PROCESS_CONTAINMENT_STOP}"
+        )
+
+
+def stderr_marker_facets(content: bytes) -> list[str]:
+    """Return only fixed marker-presence facets; text never diagnoses a cause."""
+    lowered = content.lower()
+    facets: set[str] = set()
+    if b"sandbox" in lowered or b"operation not permitted" in lowered:
+        facets.add("sandbox-marker-present")
+    if b"permission denied" in lowered or b"access denied" in lowered:
+        facets.add("access-denied-marker-present")
+    if any(marker in lowered for marker in (b"dyld", b"library not loaded", b"image not found")):
+        facets.add("dynamic-loader-marker-present")
+    if any(marker in lowered for marker in (b"exec format error", b"no such file or directory")):
+        facets.add("launcher-marker-present")
+    return sorted(facets) if facets else ["unknown"]
+
+
+def stderr_marker_summary(content: bytes) -> dict[str, str | list[str]]:
+    marker_facets = stderr_marker_facets(content)
+    if marker_facets == ["unknown"]:
+        category = "empty" if not content else "unknown"
+    elif len(marker_facets) > 1:
+        category = "unknown"
+    elif "sandbox-marker-present" in marker_facets:
+        category = "sandbox-denial"
+    elif "access-denied-marker-present" in marker_facets:
+        category = "access-denied"
+    elif "dynamic-loader-marker-present" in marker_facets:
+        category = "dynamic-loader-failure"
+    else:
+        category = "launcher-failure"
+    if category not in STDERR_CATEGORIES:
+        category = "unknown"
+    if len(marker_facets) > 1:
+        template = "multiple bounded stderr marker facets are present; cause unknown"
+    elif marker_facets[0] == "sandbox-marker-present":
+        template = "sandbox-related marker present; denied operation and cause unknown"
+    elif marker_facets[0] == "access-denied-marker-present":
+        template = "access-denied marker present; operation and cause unknown"
+    elif marker_facets[0] == "dynamic-loader-marker-present":
+        template = "loader-related marker present; loader cause unknown"
+    elif marker_facets[0] == "launcher-marker-present":
+        template = "launcher-related marker present; launch stage and cause unknown"
+    else:
+        template = "no recognized stderr marker; startup cause unknown"
+    return {
+        "classification": category,
+        "classification_basis": "bounded fixed marker presence only",
+        "marker_facets": marker_facets,
+        "cause": "unknown",
+        "diagnostic_template": template,
+    }
+
+
+def validate_diagnostic_controls() -> dict[str, Any]:
+    secret_input = (
+        b"token=SWALLOWTAIL_SENTINEL_TOKEN url=https://private.example/path?token=secret "
+        b"path=/Users/private/config vendor sandbox text\xff"
+    )
+    secret_summary = stderr_marker_summary(secret_input)
+    if secret_summary["marker_facets"] != ["sandbox-marker-present"]:
+        raise RuntimeError("vendor sandbox text did not remain a marker-only diagnostic")
+    if any(
+        marker in json.dumps(secret_summary)
+        for marker in (
+            "SWALLOWTAIL_SENTINEL_TOKEN",
+            "private.example",
+            "/Users/private",
+            "token=secret",
+            "sha256",
+        )
+    ):
+        raise RuntimeError("stderr marker diagnostics retained secret or path text")
+    malformed_summary = stderr_marker_summary(b"\x00\xff\xfe\x80")
+    if malformed_summary["marker_facets"] != ["unknown"] or malformed_summary["cause"] != "unknown":
+        raise RuntimeError("malformed stderr did not remain unknown")
+    conflicting = stderr_marker_summary(
+        b"startup continued; sandbox; permission denied; dyld: Library not loaded; exec format error"
+    )
+    if set(conflicting["marker_facets"]) != {
+        "sandbox-marker-present",
+        "access-denied-marker-present",
+        "dynamic-loader-marker-present",
+        "launcher-marker-present",
+    } or conflicting["cause"] != "unknown" or conflicting["classification"] != "unknown":
+        raise RuntimeError("conflicting benign and fatal markers were flattened or prioritized")
+
+    failure_cases = {
+        "compile": ("compile", "compile", "fake-source", "none"),
+        "apply": ("sandbox-apply", "apply-profile", "sandbox-profile", "unknown"),
+        "exec": ("exec", "exec-launcher", "fake-executable", "ENOENT"),
+        "loader": ("loader", "load-runtime", "runtime-library", "ENOENT"),
+    }
+    stage_results = {}
+    for label, (stage, operation, path_role, errno_name) in failure_cases.items():
+        stage_results[label] = stage_diagnostic(
+            stage=stage,
+            operation=operation,
+            path_role=path_role,
+            errno_name=errno_name,
+            process_exit_observed=label != "compile",
+            exec_boundary_eof=label in {"loader"},
+            fake_initialization_confirmed=False,
+        )
+        if stage_results[label]["vendor_startup_status"] != "unknown":
+            raise RuntimeError("failure diagnostic claimed vendor startup")
+    eof_only = stage_diagnostic(
+        stage="unknown",
+        operation="unknown",
+        path_role="unknown",
+        errno_name="unknown",
+        process_exit_observed=True,
+        exec_boundary_eof=True,
+        fake_initialization_confirmed=False,
+    )
+    if eof_only["vendor_startup_status"] != "unknown":
+        raise RuntimeError("CLOEXEC EOF alone was treated as fake initialization")
+    try:
+        stage_diagnostic(
+            stage="arbitrary private text",
+            operation="unknown",
+            path_role="unknown",
+            errno_name="unknown",
+            process_exit_observed=False,
+            exec_boundary_eof=False,
+            fake_initialization_confirmed=False,
+        )
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("diagnostic stage accepted arbitrary text outside its vocabulary")
+    return {
+        "status": "passed",
+        "malformed_input": malformed_summary,
+        "vendor_sandbox_text": secret_summary,
+        "conflicting_markers": conflicting,
+        "failure_stages": sorted(stage_results),
+        "cloexec_eof_without_startup": "unknown",
+    }
+
+
+def stage_diagnostic(
+    *,
+    stage: str,
+    operation: str,
+    path_role: str,
+    errno_name: str,
+    process_exit_observed: bool,
+    exec_boundary_eof: bool,
+    fake_initialization_confirmed: bool,
+) -> dict[str, Any]:
+    if stage not in DIAGNOSTIC_STAGES:
+        raise ValueError("diagnostic stage is outside its closed vocabulary")
+    if operation not in DIAGNOSTIC_OPERATIONS:
+        raise ValueError("diagnostic operation is outside its closed vocabulary")
+    if path_role not in DIAGNOSTIC_PATH_ROLES:
+        raise ValueError("diagnostic path role is outside its closed vocabulary")
+    if errno_name not in DIAGNOSTIC_ERRNOS:
+        raise ValueError("diagnostic errno is outside its closed vocabulary")
+    return {
+        "stage": stage,
+        "operation": operation,
+        "path_role": path_role,
+        "errno": errno_name,
+        "diagnostic_template": STAGE_DIAGNOSTIC_TEMPLATES[stage],
+        "process_exit_observed": process_exit_observed,
+        "exec_boundary_eof": exec_boundary_eof,
+        "fake_initialization_confirmed": fake_initialization_confirmed,
+        "vendor_startup_status": (
+            "fake-initialization-confirmed" if fake_initialization_confirmed else "unknown"
+        ),
+    }
 
 
 def utc_now() -> str:
@@ -217,29 +446,9 @@ class BoundedStderrCollector:
         return not self._thread.is_alive()
 
     def summary(self, *, reader_joined: bool) -> dict[str, Any]:
-        content = bytes(self._captured).lower()
-        if not content:
-            category = "empty"
-        elif b"operation not permitted" in content or b"sandbox" in content:
-            category = "sandbox-denial"
-        elif b"permission denied" in content or b"access denied" in content:
-            category = "access-denied"
-        elif any(
-            marker in content
-            for marker in (b"dyld", b"library not loaded", b"image not found")
-        ):
-            category = "dynamic-loader-failure"
-        elif any(
-            marker in content
-            for marker in (b"exec format error", b"no such file or directory")
-        ):
-            category = "launcher-failure"
-        else:
-            category = "unknown"
-        if category not in STDERR_CATEGORIES:
-            category = "unknown"
+        diagnostic = stderr_marker_summary(bytes(self._captured))
         return {
-            "classification": category,
+            **diagnostic,
             "captured_bytes": len(self._captured),
             "total_bytes": self._total_bytes,
             "total_bytes_capped": self._total_bytes_capped,
@@ -266,12 +475,14 @@ def compile_permission_fake(output_path: Path) -> dict[str, str]:
     temp_root = Path(tempfile.gettempdir()).resolve()
     if not output_path.parent.resolve(strict=True).is_relative_to(temp_root):
         raise RuntimeError("native permission fake must compile inside fresh task temp scratch")
-    compiler = shutil.which("cc")
+    compiler = shutil.which("cc", path="/usr/bin:/bin:/usr/sbin:/sbin")
     if compiler is None:
         raise RuntimeError("native permission fake compiler is unavailable")
-    environment = os.environ.copy()
-    environment["HOME"] = str(output_path.parent)
-    environment["TMPDIR"] = str(output_path.parent)
+    environment = {
+        "HOME": str(output_path.parent),
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "TMPDIR": str(output_path.parent),
+    }
     try:
         result = subprocess.run(
             [
@@ -311,6 +522,325 @@ def compile_permission_fake(output_path: Path) -> dict[str, str]:
         "source_sha256": hashlib.sha256(PERMISSION_FAKE_SOURCE_PATH.read_bytes()).hexdigest(),
         "binary_sha256": hashlib.sha256(output_path.read_bytes()).hexdigest(),
     }
+
+
+def compile_stage_launcher(output_path: Path) -> dict[str, str]:
+    output_path = output_path.resolve(strict=False)
+    temp_root = Path(tempfile.gettempdir()).resolve()
+    if not output_path.parent.resolve(strict=True).is_relative_to(temp_root):
+        raise RuntimeError("stage launcher must compile inside fresh task temp scratch")
+    compiler = shutil.which("cc", path="/usr/bin:/bin:/usr/sbin:/sbin")
+    if compiler is None:
+        raise RuntimeError("stage launcher compiler is unavailable")
+    try:
+        result = subprocess.run(
+            [
+                compiler,
+                "-std=c11",
+                "-Wall",
+                "-Wextra",
+                "-Werror",
+                "-O2",
+                str(STAGE_LAUNCHER_SOURCE_PATH),
+                "-o",
+                str(output_path),
+            ],
+            cwd=ROOT,
+            env={
+                "HOME": str(output_path.parent),
+                "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+                "TMPDIR": str(output_path.parent),
+            },
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=30,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("stage launcher compilation exceeded 30 seconds") from None
+    if result.returncode != 0 or not output_path.is_file():
+        raise RuntimeError("task-owned stage launcher compilation failed")
+    output_path.chmod(0o700)
+    return {
+        "source_sha256": hashlib.sha256(STAGE_LAUNCHER_SOURCE_PATH.read_bytes()).hexdigest(),
+        "binary_sha256": hashlib.sha256(output_path.read_bytes()).hexdigest(),
+    }
+
+
+def stage_launcher_fake_smoke() -> dict[str, Any]:
+    with tempfile.TemporaryDirectory(prefix="copilot-acp-stage-launcher.") as temp_root:
+        scratch = Path(temp_root).resolve()
+        fake = scratch / "copilot-permission-fake"
+        launcher = scratch / "copilot-acp-stage-launcher"
+        fake_identity = compile_permission_fake(fake)
+        launcher_identity = compile_stage_launcher(launcher)
+        environment = {
+            "HOME": str(scratch),
+            "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+            "TMPDIR": str(scratch),
+            "SWALLOWTAIL_FAKE_DIAGNOSTIC": str(scratch / "diagnostic.json"),
+        }
+
+        def invoke(target: Path, arguments: list[str]) -> dict[str, Any]:
+            read_descriptor, write_descriptor = os.pipe()
+            command = [
+                str(launcher),
+                "--stage-fd",
+                str(write_descriptor),
+                "--target",
+                str(target),
+                "--",
+                str(target),
+                *arguments,
+            ]
+            try:
+                process = subprocess.Popen(
+                    command,
+                    cwd=scratch,
+                    env=environment,
+                    stdin=subprocess.DEVNULL,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    start_new_session=True,
+                    pass_fds=(write_descriptor,),
+                )
+            except BaseException:
+                os.close(read_descriptor)
+                os.close(write_descriptor)
+                raise
+            os.close(write_descriptor)
+            try:
+                stdout, stderr = process.communicate(timeout=5.0)
+            except subprocess.TimeoutExpired:
+                stop_owned_process_group(process, LIVE_CLEANUP_SECONDS)
+                stdout, stderr = process.communicate(timeout=LIVE_CLEANUP_SECONDS)
+            channel = read_stage_channel(read_descriptor)
+            joined = not process_group_exists(process.pid)
+            if not joined:
+                raise RuntimeError("stage launcher smoke left its task-owned process group running")
+            return {
+                "exit_status": process.returncode,
+                "stdout": stdout,
+                "stderr_empty": not stderr,
+                "channel": channel,
+                "process_group_joined": joined,
+            }
+
+        success = invoke(fake, ["--early-exit"])
+        success_marker = b"FAKE_NATIVE_STARTED:--early-exit\n"
+        success_diagnostic = stage_summary_for_launch(
+            success["channel"],
+            process_exit_observed=success["exit_status"] is not None,
+            fake_initialization_confirmed=success["stdout"] == success_marker,
+        )
+        if (
+            success["exit_status"] != 41
+            or success["stderr_empty"] is not True
+            or success["process_group_joined"] is not True
+            or success_diagnostic["fake_initialization_confirmed"] is not True
+        ):
+            raise RuntimeError("stage launcher did not confirm the task-owned fake target")
+        missing = invoke(scratch / "missing-fake-target", [])
+        missing_diagnostic = stage_summary_for_launch(
+            missing["channel"],
+            process_exit_observed=missing["exit_status"] is not None,
+            fake_initialization_confirmed=False,
+        )
+        if (
+            missing["exit_status"] != 127
+            or missing["stderr_empty"] is not True
+            or missing["process_group_joined"] is not True
+            or missing_diagnostic["stage"] != "exec"
+            or missing_diagnostic["errno"] != "ENOENT"
+            or missing["channel"]["exec_boundary_eof"]
+        ):
+            raise RuntimeError("stage launcher lost the fake exec-failure errno or stage")
+        return {
+            "status": "passed",
+            "fake_source_sha256": fake_identity["source_sha256"],
+            "fake_binary_sha256": fake_identity["binary_sha256"],
+            "stage_launcher_source_sha256": launcher_identity["source_sha256"],
+            "stage_launcher_binary_sha256": launcher_identity["binary_sha256"],
+            "successful_fake": success_diagnostic,
+            "missing_target": missing_diagnostic,
+            "successful_fake_group_joined": success["process_group_joined"],
+            "missing_target_group_joined": missing["process_group_joined"],
+        }
+
+
+def staged_fake_command(
+    sandbox_profile_text: str,
+    stage_launcher: Path,
+    executable: Path,
+    stage_descriptor: int,
+    arguments: list[str],
+) -> list[str]:
+    return [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        sandbox_profile_text,
+        str(stage_launcher),
+        "--stage-fd",
+        str(stage_descriptor),
+        "--target",
+        str(executable),
+        "--",
+        str(executable),
+        *arguments,
+    ]
+
+
+def read_stage_channel(descriptor: int, timeout: float = LIVE_CLEANUP_SECONDS) -> dict[str, Any]:
+    data = bytearray()
+    eof = False
+    deadline = time.monotonic() + timeout
+    try:
+        while len(data) <= 4 and not eof:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0 or not select.select([descriptor], [], [], remaining)[0]:
+                break
+            chunk = os.read(descriptor, 5 - len(data))
+            if not chunk:
+                eof = True
+            else:
+                data.extend(chunk)
+    finally:
+        os.close(descriptor)
+    launcher_entered = data[:1] == b"L"
+    exec_failed = data[:2] == b"LE"
+    protocol_bytes = bytes(data)
+    exec_errno = "unknown"
+    if launcher_entered and not exec_failed and eof:
+        exec_errno = "none"
+    elif exec_failed and len(protocol_bytes) == 3:
+        exec_errno = STAGE_LAUNCHER_ERRNO_CODES.get(chr(data[2]), "unknown")
+    elif not protocol_bytes and eof:
+        exec_errno = "unknown"
+    protocol_valid = eof and protocol_bytes in {
+        b"L",
+        b"LEP",
+        b"LEA",
+        b"LEN",
+        b"LEF",
+        b"LEI",
+        b"LEO",
+        b"LET",
+        b"LEU",
+        b"",
+    }
+    return {
+        "launcher_entered": launcher_entered,
+        "exec_boundary_eof": eof and launcher_entered and not exec_failed,
+        "exec_errno": exec_errno,
+        "channel_joined": eof,
+        "protocol_valid": protocol_valid,
+    }
+
+
+def stage_summary_for_launch(
+    stage_channel: dict[str, Any],
+    *,
+    process_exit_observed: bool,
+    fake_initialization_confirmed: bool,
+    confirmed_stage: str = "native-main",
+) -> dict[str, Any]:
+    if confirmed_stage not in {"native-main", "acp-initialize"}:
+        raise ValueError("confirmed fake startup stage is outside its closed vocabulary")
+    if stage_channel.get("exec_errno") not in {None, "none", "unknown"}:
+        return stage_diagnostic(
+            stage="exec",
+            operation="exec-launcher",
+            path_role="fake-executable",
+            errno_name=stage_channel["exec_errno"],
+            process_exit_observed=process_exit_observed,
+            exec_boundary_eof=stage_channel.get("exec_boundary_eof") is True,
+            fake_initialization_confirmed=fake_initialization_confirmed,
+        )
+    if stage_channel.get("protocol_valid") is not True:
+        return stage_diagnostic(
+            stage="unknown",
+            operation="unknown",
+            path_role="unknown",
+            errno_name="unknown",
+            process_exit_observed=process_exit_observed,
+            exec_boundary_eof=False,
+            fake_initialization_confirmed=False,
+        )
+    if stage_channel.get("launcher_entered") is True and stage_channel.get("exec_boundary_eof") is True:
+        stage = confirmed_stage if fake_initialization_confirmed else "unknown"
+        operation = {
+            "native-main": "enter-native-main",
+            "acp-initialize": "initialize-acp",
+        }.get(stage, "unknown")
+        return stage_diagnostic(
+            stage=stage,
+            operation=operation,
+            path_role="fake-executable",
+            errno_name="none" if fake_initialization_confirmed else "unknown",
+            process_exit_observed=process_exit_observed,
+            exec_boundary_eof=True,
+            fake_initialization_confirmed=fake_initialization_confirmed,
+        )
+    if stage_channel.get("channel_joined") is True and not stage_channel.get("launcher_entered"):
+        return stage_diagnostic(
+            stage="unknown",
+            operation="unknown",
+            path_role="unknown",
+            errno_name="unknown",
+            process_exit_observed=process_exit_observed,
+            exec_boundary_eof=False,
+            fake_initialization_confirmed=False,
+        )
+    return stage_diagnostic(
+        stage="unknown",
+        operation="unknown",
+        path_role="unknown",
+        errno_name="unknown",
+        process_exit_observed=process_exit_observed,
+        exec_boundary_eof=stage_channel.get("exec_boundary_eof") is True,
+        fake_initialization_confirmed=False,
+    )
+
+
+def start_staged_fake(
+    sandbox_profile_text: str,
+    stage_launcher: Path,
+    executable: Path,
+    arguments: list[str],
+    *,
+    cwd: Path,
+    environment: dict[str, str],
+    stdin: Any,
+    stdout: Any,
+    stderr: Any,
+    bufsize: int = 0,
+) -> tuple[subprocess.Popen[bytes], int]:
+    read_descriptor, write_descriptor = os.pipe()
+    try:
+        process = subprocess.Popen(
+            staged_fake_command(
+                sandbox_profile_text,
+                stage_launcher,
+                executable,
+                write_descriptor,
+                arguments,
+            ),
+            cwd=cwd,
+            env=environment,
+            stdin=stdin,
+            stdout=stdout,
+            stderr=stderr,
+            bufsize=bufsize,
+            start_new_session=True,
+            pass_fds=(write_descriptor,),
+        )
+    except BaseException:
+        os.close(read_descriptor)
+        os.close(write_descriptor)
+        raise
+    os.close(write_descriptor)
+    return process, read_descriptor
 
 
 def validate_schema_value(value: Any, schema: dict[str, Any], label: str = "$") -> None:
@@ -507,6 +1037,8 @@ def permission_sandbox_profile(
     proxy_port: int,
     permission_plan: dict[str, Any],
     correction_plan: dict[str, Any],
+    *,
+    stage_launcher: Path | None = None,
 ) -> str:
     if correction_plan.get("source_permission_plan_sha256") != hashlib.sha256(
         PERMISSION_PROOF_PLAN_PATH.read_bytes()
@@ -526,15 +1058,27 @@ def permission_sandbox_profile(
     host_home = host_home.resolve()
     repository_root = repository_root.resolve()
     executable = executable.resolve(strict=True)
+    if stage_launcher is not None:
+        stage_launcher = stage_launcher.resolve(strict=True)
     auth_metadata_path = host_home / metadata_paths[0]["relative_path"]
+    executable_rules = [
+        f"(allow process-exec* (literal {quote_profile_path(executable)}))",
+        f"(allow file-map-executable (literal {quote_profile_path(executable)}))",
+    ]
+    if stage_launcher is not None:
+        executable_rules.extend(
+            (
+                f"(allow process-exec* (literal {quote_profile_path(stage_launcher)}))",
+                f"(allow file-map-executable (literal {quote_profile_path(stage_launcher)}))",
+            )
+        )
     return " ".join(
         (
             "(version 1)",
             '(import "/System/Library/Sandbox/Profiles/dyld-support.sb")',
             "(deny default)",
             "(allow process-fork)",
-            f"(allow process-exec* (literal {quote_profile_path(executable)}))",
-            f"(allow file-map-executable (literal {quote_profile_path(executable)}))",
+            *executable_rules,
             '(allow file-map-executable (subpath "/System/Library"))',
             '(allow file-map-executable (subpath "/usr/lib"))',
             "(allow sysctl-read)",
@@ -551,6 +1095,145 @@ def permission_sandbox_profile(
             f'(allow network-outbound (remote ip "localhost:{proxy_port}"))',
         )
     )
+
+
+def current_host_identity() -> dict[str, str]:
+    version = platform.mac_ver()[0]
+    version = version if re.fullmatch(r"[0-9]+(?:\.[0-9]+){1,2}", version) else "unknown"
+    build = "unknown"
+    sw_vers = "/usr/bin/sw_vers"
+    if Path(sw_vers).is_file():
+        try:
+            result = subprocess.run(
+                [sw_vers, "-buildVersion"],
+                env={"HOME": tempfile.gettempdir(), "PATH": "/usr/bin:/bin"},
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                timeout=2,
+                check=False,
+            )
+            value = result.stdout.decode("ascii", errors="ignore").strip()
+            if result.returncode == 0 and re.fullmatch(r"[A-Za-z0-9.]{1,32}", value):
+                build = value
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    machine = platform.machine().lower()
+    architecture = machine if machine in {"arm64", "aarch64", "x86_64"} else "unknown"
+    return {"product_version": version, "build": build, "architecture": architecture}
+
+
+def dyld_support_profile_closure() -> dict[str, Any]:
+    root = DYLD_SUPPORT_PROFILE.parent.resolve(strict=True)
+    pending = [DYLD_SUPPORT_PROFILE.resolve(strict=True)]
+    visited: dict[Path, dict[str, Any]] = {}
+    import_pattern = re.compile(rb'\(import\s+"([^"]+)"\)')
+    while pending:
+        path = pending.pop()
+        if path in visited:
+            continue
+        if not path.is_relative_to(root):
+            raise RuntimeError("dyld-support import escapes the public sandbox profile directory")
+        content = path.read_bytes()
+        imports: list[Path] = []
+        for raw_import in import_pattern.findall(content):
+            import_text = raw_import.decode("utf-8", errors="strict")
+            import_path = Path(import_text)
+            child = import_path if import_path.is_absolute() else path.parent / import_path
+            child = child.resolve(strict=True)
+            if not child.is_relative_to(root):
+                raise RuntimeError("dyld-support import escapes the public sandbox profile directory")
+            imports.append(child)
+            pending.append(child)
+        role = path.relative_to(root).as_posix()
+        if not re.fullmatch(r"[A-Za-z0-9._/-]{1,160}", role) or ".." in role.split("/"):
+            raise RuntimeError("dyld-support profile role is outside its closed vocabulary")
+        visited[path] = {
+            "role": role,
+            "sha256": hashlib.sha256(content).hexdigest(),
+            "size_bytes": len(content),
+            "imports": sorted(
+                child.relative_to(root).as_posix() for child in imports
+            ),
+        }
+    return {
+        "root_role": DYLD_SUPPORT_PROFILE.name,
+        "files": [visited[path] for path in sorted(visited, key=lambda item: str(item))],
+    }
+
+
+def replayable_fake_profile_inputs(
+    profile: str,
+    *,
+    task_root: Path,
+    artifact_root: Path,
+    scratch: Path,
+    record_dir: Path,
+    host_home: Path,
+    repository_root: Path,
+    executable: Path,
+    stage_launcher: Path,
+    proxy_port: int,
+) -> dict[str, Any]:
+    role_paths = [
+        (scratch, "${scratch}"),
+        (record_dir, "${record_dir}"),
+        (host_home, "${synthetic_home}"),
+        (repository_root, "${synthetic_repository}"),
+        (executable, "${fake_executable}"),
+        (stage_launcher, "${fake_stage_launcher}"),
+    ]
+    template = profile
+    for path, role in sorted(role_paths, key=lambda item: len(str(item[0].resolve())), reverse=True):
+        template = template.replace(str(path.resolve()), role)
+    template = re.sub(r"localhost:[0-9]+", "localhost:${local_proxy_port}", template)
+    private_paths = [
+        task_root,
+        artifact_root,
+        scratch,
+        record_dir,
+        host_home,
+        repository_root,
+        executable,
+        stage_launcher,
+    ]
+    if any(str(path.resolve()) in template for path in private_paths) or str(ROOT) in template:
+        raise RuntimeError("fake sandbox profile template retained an absolute private path")
+    root = task_root.resolve(strict=False)
+    path_roles: dict[str, str] = {}
+    for role, path in (
+        ("artifact_root", artifact_root),
+        ("record_dir", record_dir),
+        ("action_scratch", scratch),
+        ("synthetic_home", host_home),
+        ("synthetic_repository", repository_root),
+        ("fake_executable", executable),
+        ("fake_stage_launcher", stage_launcher),
+    ):
+        try:
+            path_roles[role] = path.resolve(strict=False).relative_to(root).as_posix()
+        except ValueError as error:
+            raise RuntimeError("fake replay layout contains a path outside task scratch") from error
+    result = {
+        "layout": {
+            "task_root_role": "task-scratch",
+            "path_roles": path_roles,
+            "artifact_relative_layout": "artifacts/<version>/copilot",
+            "artifact_contents": "synthetic fake-only; no original vendor bytes were staged or launched",
+            "record_relative_layout": "records/<task-record>",
+            "action_relative_layout": "action/<attempt>",
+            "write_scratch_role": path_roles["action_scratch"] + "/tmp",
+            "auth_metadata_relative_path": ".copilot/config.json",
+            "proxy_role": "loopback-ephemeral-port",
+        },
+        "profile_template": template,
+        "profile_template_sha256": hashlib.sha256(template.encode()).hexdigest(),
+        "host_identity": current_host_identity(),
+        "dyld_support_closure": dyld_support_profile_closure(),
+    }
+    if str(task_root.resolve()) in json.dumps(result, sort_keys=True):
+        raise RuntimeError("fake replay inputs retained their absolute task scratch path")
+    return result
 
 
 def path_is_within(path: Path, root: Path) -> bool:
@@ -853,6 +1536,17 @@ class CopilotEgressProxy(socketserver.ThreadingMixIn, socketserver.TCPServer):
         self.unlisted_destination_count = 0
         self.sni_mismatch_count = 0
         self.connection_failure_count = 0
+        self.accepted_connection_count = 0
+        self.completed_handler_count = 0
+        self.observed_handler_outcome_count = 0
+        self.allowed_connection_count = 0
+        self.early_close_count = 0
+        self.timeout_count = 0
+        self.cleanup_cancelled_count = 0
+        self.rejected_connection_count = 0
+        self.handler_error_count = 0
+        self.stopping = False
+        self.connection_timeout_seconds = 0.2 if fake_only else 3.0
         self._evidence_lock = threading.Lock()
         self._active_sockets: set[socket.socket] = set()
         self._client_threads: set[threading.Thread] = set()
@@ -891,18 +1585,68 @@ class CopilotEgressProxy(socketserver.ThreadingMixIn, socketserver.TCPServer):
         with self._evidence_lock:
             self.connection_failure_count += 1
 
+    def record_handler_outcome(self, outcome: str) -> None:
+        with self._evidence_lock:
+            self.observed_handler_outcome_count += 1
+            if outcome == "early-close":
+                self.early_close_count += 1
+            elif outcome == "timeout":
+                self.timeout_count += 1
+            elif outcome == "cleanup-cancelled":
+                self.cleanup_cancelled_count += 1
+            elif outcome == "rejected":
+                self.rejected_connection_count += 1
+            elif outcome == "handler-error":
+                self.handler_error_count += 1
+            elif outcome == "allowed":
+                self.allowed_connection_count += 1
+
     def record_allowed(self, host: str) -> None:
         with self._evidence_lock:
             self.allowed_destinations.add(host)
 
     def snapshot(self) -> dict[str, Any]:
-        with self._evidence_lock:
-            return {
-                "allowed_destination_hosts": sorted(self.allowed_destinations),
-                "unlisted_destination_count": self.unlisted_destination_count,
-                "sni_mismatch_count": self.sni_mismatch_count,
-                "connection_failure_count": self.connection_failure_count,
-            }
+        with self._threads_lock:
+            active_handlers = len(self._client_threads)
+            with self._evidence_lock:
+                accepted = self.accepted_connection_count
+                completed = self.completed_handler_count
+                outcomes = self.observed_handler_outcome_count
+                unfinished = max(0, accepted - completed)
+                classified_outcomes = (
+                    self.allowed_connection_count
+                    + self.early_close_count
+                    + self.timeout_count
+                    + self.cleanup_cancelled_count
+                    + self.rejected_connection_count
+                    + self.handler_error_count
+                )
+                accounting_complete = (
+                    accepted == completed
+                    and completed == outcomes
+                    and outcomes == classified_outcomes
+                    and unfinished == 0
+                    and active_handlers == 0
+                )
+                return {
+                    "allowed_destination_hosts": sorted(self.allowed_destinations),
+                    "unlisted_destination_count": self.unlisted_destination_count,
+                    "sni_mismatch_count": self.sni_mismatch_count,
+                    "connection_failure_count": self.connection_failure_count,
+                    "accepted_connection_count": accepted,
+                    "completed_handler_count": completed,
+                    "observed_handler_outcome_count": outcomes,
+                    "classified_handler_outcome_count": classified_outcomes,
+                    "allowed_connection_count": self.allowed_connection_count,
+                    "unfinished_handler_count": unfinished,
+                    "active_handler_count": active_handlers,
+                    "early_close_count": self.early_close_count,
+                    "timeout_count": self.timeout_count,
+                    "cleanup_cancelled_count": self.cleanup_cancelled_count,
+                    "rejected_connection_count": self.rejected_connection_count,
+                    "handler_error_count": self.handler_error_count,
+                    "accounting_complete": accounting_complete,
+                }
 
     def process_request(self, request: socket.socket, client_address: Any) -> None:
         thread = threading.Thread(
@@ -910,8 +1654,19 @@ class CopilotEgressProxy(socketserver.ThreadingMixIn, socketserver.TCPServer):
         )
         thread.daemon = True
         with self._threads_lock:
+            with self._evidence_lock:
+                self.accepted_connection_count += 1
             self._client_threads.add(thread)
-        thread.start()
+        try:
+            thread.start()
+        except RuntimeError:
+            with self._threads_lock:
+                self._client_threads.discard(thread)
+                with self._evidence_lock:
+                    self.completed_handler_count += 1
+                    self.handler_error_count += 1
+                    self.observed_handler_outcome_count += 1
+            request.close()
 
     def process_request_thread(self, request: socket.socket, client_address: Any) -> None:
         self.attach_socket(request)
@@ -921,8 +1676,12 @@ class CopilotEgressProxy(socketserver.ThreadingMixIn, socketserver.TCPServer):
             self.detach_socket(request)
             with self._threads_lock:
                 self._client_threads.discard(threading.current_thread())
+                with self._evidence_lock:
+                    self.completed_handler_count += 1
 
     def stop_and_join(self, timeout: float) -> bool:
+        with self._evidence_lock:
+            self.stopping = True
         self.shutdown()
         self.server_close()
         with self._evidence_lock:
@@ -946,7 +1705,9 @@ class CopilotEgressProxy(socketserver.ThreadingMixIn, socketserver.TCPServer):
             for thread in threads:
                 thread.join(min(0.05, max(0.0, deadline - time.monotonic())))
         with self._threads_lock:
-            return not self._serve_thread.is_alive() and not self._client_threads
+            serve_joined = not self._serve_thread.is_alive()
+            handlers_joined = not self._client_threads
+        return serve_joined and handlers_joined and self.snapshot()["accounting_complete"]
 
 
 class CopilotEgressProxyHandler(socketserver.BaseRequestHandler):
@@ -955,16 +1716,23 @@ class CopilotEgressProxyHandler(socketserver.BaseRequestHandler):
         connection: socket.socket = self.request
         upstream: socket.socket | None = None
         try:
-            connection.settimeout(min(3.0, max(0.1, server.deadline - time.monotonic())))
+            connection.settimeout(
+                min(
+                    server.connection_timeout_seconds,
+                    max(0.05, server.deadline - time.monotonic()),
+                )
+            )
             request, buffered = read_http_headers(connection)
             target = parse_connect_request(request)
             if target is None:
                 server.record_unlisted()
+                server.record_handler_outcome("rejected")
                 connection.sendall(b"HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n")
                 return
             host, port = target
             if not host_allowed(host, server.allowed_hosts, server.allowed_subdomains):
                 server.record_unlisted()
+                server.record_handler_outcome("rejected")
                 connection.sendall(b"HTTP/1.1 403 Forbidden\r\nConnection: close\r\n\r\n")
                 return
             connection.sendall(
@@ -973,19 +1741,42 @@ class CopilotEgressProxyHandler(socketserver.BaseRequestHandler):
             hello, sni = read_client_hello(connection, buffered)
             if sni is None or sni != host:
                 server.record_sni_mismatch()
+                server.record_handler_outcome("rejected")
                 return
             if not host_allowed(sni, server.allowed_hosts, server.allowed_subdomains):
                 server.record_unlisted()
+                server.record_handler_outcome("rejected")
                 return
             if server.fake_only:
                 server.record_allowed(host)
+                server.record_handler_outcome("allowed")
                 return
             upstream = connect_public_host(host, port, server.deadline)
             server.attach_upstream(upstream)
             upstream.sendall(hello)
             server.record_allowed(host)
             relay_until_deadline(connection, upstream, server.deadline)
-        except (OSError, ValueError, ConnectionError, TimeoutError):
+            server.record_handler_outcome("allowed")
+        except (socket.timeout, TimeoutError):
+            server.record_handler_outcome("timeout")
+            server.record_connection_failure()
+        except ConnectionError:
+            if server.stopping:
+                server.record_handler_outcome("cleanup-cancelled")
+            else:
+                server.record_handler_outcome("early-close")
+                server.record_connection_failure()
+        except OSError:
+            if server.stopping:
+                server.record_handler_outcome("cleanup-cancelled")
+            else:
+                server.record_handler_outcome("handler-error")
+                server.record_connection_failure()
+        except ValueError:
+            server.record_handler_outcome("handler-error")
+            server.record_connection_failure()
+        except Exception:
+            server.record_handler_outcome("handler-error")
             server.record_connection_failure()
         finally:
             if upstream is not None:
@@ -994,6 +1785,62 @@ class CopilotEgressProxyHandler(socketserver.BaseRequestHandler):
                     upstream.close()
                 except OSError:
                     pass
+
+
+def wait_for_proxy_state(
+    proxy: CopilotEgressProxy,
+    predicate: Callable[[dict[str, Any]], bool],
+    timeout: float,
+) -> dict[str, Any] | None:
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        snapshot = proxy.snapshot()
+        if predicate(snapshot):
+            return snapshot
+        time.sleep(0.01)
+    return None
+
+
+def exercise_fake_proxy_accounting(proxy: CopilotEgressProxy) -> dict[str, Any]:
+    port = int(proxy.server_address[1])
+    early = socket.create_connection(("127.0.0.1", port), timeout=1.0)
+    early.close()
+    early_snapshot = wait_for_proxy_state(
+        proxy, lambda item: item["early_close_count"] >= 1, 1.0
+    )
+    if early_snapshot is None:
+        raise RuntimeError("proxy did not account for a client that closed before CONNECT")
+
+    timed_out = socket.create_connection(("127.0.0.1", port), timeout=1.0)
+    timeout_snapshot = wait_for_proxy_state(
+        proxy, lambda item: item["timeout_count"] >= 1, 1.5
+    )
+    timed_out.close()
+    if timeout_snapshot is None:
+        raise RuntimeError("proxy did not account for an idle client timeout")
+
+    unfinished = socket.create_connection(("127.0.0.1", port), timeout=1.0)
+    unfinished_snapshot = wait_for_proxy_state(
+        proxy,
+        lambda item: item["active_handler_count"] >= 1
+        and item["unfinished_handler_count"] >= 1,
+        1.0,
+    )
+    if unfinished_snapshot is None or proxy_accounting_is_complete(unfinished_snapshot):
+        unfinished.close()
+        raise RuntimeError("proxy completeness invariant accepted an unfinished handler")
+    joined = proxy.stop_and_join(2.0)
+    unfinished.close()
+    final_snapshot = proxy.snapshot()
+    if not joined or not proxy_accounting_is_complete(final_snapshot):
+        raise RuntimeError("proxy handlers were not fully accounted after joined cleanup")
+    return {
+        "early_close_observed": early_snapshot["early_close_count"] >= 1,
+        "timeout_observed": timeout_snapshot["timeout_count"] >= 1,
+        "unfinished_handler_rejected_before_cleanup": True,
+        "proxy_threads_joined": joined,
+        "final_accounting": final_snapshot,
+    }
 
 
 def connect_public_host(host: str, port: int, deadline: float) -> socket.socket:
@@ -2002,6 +2849,9 @@ def wait_for_original_response(
             evidence["stream_failed"] = True
             return None
         method = message.get("method")
+        if method == "swallowtail/native-fake-started":
+            evidence["fake_startup_observed"] = True
+            continue
         if method == "session/update":
             params = message.get("params")
             update = params.get("update") if isinstance(params, dict) else None
@@ -2085,9 +2935,40 @@ def permission_evidence_is_complete(
         and stderr.get("raw_persisted") is False
         and stderr.get("raw_displayed") is False
         and evidence.get("proxy_threads_joined") is True
+        and proxy_accounting_is_complete(proxy)
+        and (
+            expected_probe_proxy is None
+            or (
+                evidence.get("stage_channel_joined") is True
+                and evidence.get("launch_diagnostic", {}).get(
+                    "fake_initialization_confirmed"
+                ) is True
+                and escaped_descendant_control_complete(
+                    evidence.get("escaped_descendant_control", {})
+                )
+            )
+        )
         and evidence.get("elapsed_seconds", LIVE_PERMISSION_SECONDS + 1)
         <= LIVE_PERMISSION_SECONDS
         and all(proxy.get(name) == count for name, count in expected_proxy.items())
+    )
+
+
+def proxy_accounting_is_complete(proxy: dict[str, Any]) -> bool:
+    accepted = proxy.get("accepted_connection_count")
+    completed = proxy.get("completed_handler_count")
+    outcomes = proxy.get("observed_handler_outcome_count")
+    classified = proxy.get("classified_handler_outcome_count")
+    return bool(
+        proxy.get("accounting_complete") is True
+        and all(
+            isinstance(value, int) and not isinstance(value, bool)
+            for value in (accepted, completed, outcomes, classified)
+        )
+        and accepted == completed == outcomes == classified
+        and proxy.get("unfinished_handler_count") == 0
+        and proxy.get("active_handler_count") == 0
+        and proxy.get("handler_error_count") == 0
     )
 
 
@@ -2203,9 +3084,15 @@ def run_permission_attempt(
     proxy_fake_only: bool = False,
     expected_probe_proxy: dict[str, int] | None = None,
 ) -> dict[str, Any]:
+    if not proxy_fake_only:
+        require_original_process_containment()
     host_home = (host_home or Path(os.environ["HOME"])).resolve(strict=True)
     scratch.mkdir(parents=True, exist_ok=False)
     (scratch / "tmp").mkdir()
+    stage_launcher = scratch / "copilot-stage-launcher" if proxy_fake_only else None
+    stage_launcher_identity = (
+        compile_stage_launcher(stage_launcher) if stage_launcher is not None else None
+    )
     marker = scratch / "permission-effect-marker"
     proxy = CopilotEgressProxy(
         set(plan["network_policy"]["allowed_hosts"]),
@@ -2225,6 +3112,7 @@ def run_permission_attempt(
         proxy_port,
         plan,
         correction_plan,
+        stage_launcher=stage_launcher,
     )
     environment = original_child_environment(host_home, scratch, proxy_port)
     if extra_environment is not None:
@@ -2309,6 +3197,24 @@ def run_permission_attempt(
         "effect_marker_present": False,
         "model_observations": [],
     }
+    if stage_launcher is not None and stage_launcher_identity is not None:
+        invocation["pre_execution_record"]["fake_stage_channel"] = {
+            "launcher_source_sha256": stage_launcher_identity["source_sha256"],
+            "launcher_binary_sha256": stage_launcher_identity["binary_sha256"],
+            "protocol": "launcher-entered byte; CLOEXEC boundary EOF; target startup separately confirmed by fake ACP stdout",
+            "profile_replay_inputs": replayable_fake_profile_inputs(
+                profile,
+                task_root=record_dir.parent,
+                artifact_root=record_dir.parent / "artifacts",
+                scratch=scratch,
+                record_dir=record_dir,
+                host_home=host_home,
+                repository_root=repository_root,
+                executable=executable,
+                stage_launcher=stage_launcher,
+                proxy_port=proxy_port,
+            ),
+        }
     invocation["pre_execution_record_sha256"] = json_digest(
         invocation["pre_execution_record"]
     )
@@ -2361,21 +3267,37 @@ def run_permission_attempt(
         "stderr": None,
         "launcher_exit_status": None,
         "vendor_startup_status": "unknown",
+        "stage_channel_joined": False,
+        "launch_diagnostic": None,
     }
     process: subprocess.Popen[bytes] | None = None
+    stage_descriptor: int | None = None
     client: StdioClient | None = None
     stderr_collector: BoundedStderrCollector | None = None
     try:
-        process = subprocess.Popen(
-            ["/usr/bin/sandbox-exec", "-p", profile, *command],
-            cwd=scratch,
-            env=environment,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            bufsize=0,
-            start_new_session=True,
-        )
+        if stage_launcher is not None:
+            process, stage_descriptor = start_staged_fake(
+                profile,
+                stage_launcher,
+                executable,
+                command[1:],
+                cwd=scratch,
+                environment=environment,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+        else:
+            process = subprocess.Popen(
+                ["/usr/bin/sandbox-exec", "-p", profile, *command],
+                cwd=scratch,
+                env=environment,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                bufsize=0,
+                start_new_session=True,
+            )
         stderr_collector = BoundedStderrCollector(process.stderr)
         invocation["original_start_issued"] = True
         record["artifact_execution_started"] = True
@@ -2526,6 +3448,20 @@ def run_permission_attempt(
         evidence["forced_process_group_stop"] = forced_stop
         evidence["process_joined"] = process is not None and process.returncode is not None
         evidence["process_group_joined"] = process_group_joined
+        if stage_descriptor is not None:
+            stage_channel = read_stage_channel(stage_descriptor)
+            evidence["stage_channel_joined"] = stage_channel["channel_joined"]
+            evidence["stage_channel"] = stage_channel
+            evidence["launch_diagnostic"] = stage_summary_for_launch(
+                stage_channel,
+                process_exit_observed=process is not None and process.returncode is not None,
+                fake_initialization_confirmed=evidence.get("fake_startup_observed") is True,
+                confirmed_stage=(
+                    "acp-initialize"
+                    if evidence.get("initialize") == "success"
+                    else "native-main"
+                ),
+            )
         evidence["effect_marker_present"] = marker.exists()
         elapsed_before_proxy_close = time.monotonic() - started
         remaining_cleanup = max(
@@ -2536,6 +3472,16 @@ def run_permission_attempt(
         )
         evidence["proxy"] = proxy.snapshot()
         evidence["elapsed_seconds"] = round(time.monotonic() - started, 3)
+
+    if proxy_fake_only and stage_launcher is not None:
+        evidence["escaped_descendant_control"] = run_escaped_descendant_control(
+            executable,
+            stage_launcher,
+            profile,
+            environment,
+            scratch,
+        )
+        evidence["original_containment_status"] = "blocked; vendor descendants remain unbounded"
 
     evidence["observed_network_audiences_only"] = evidence["proxy"][
         "allowed_destination_hosts"
@@ -3039,20 +3985,23 @@ def stop_owned_process_group(
 
 def run_native_stderr_control(
     executable: Path,
+    stage_launcher: Path,
     mode: str,
     profile: str,
     environment: dict[str, str],
     cwd: Path,
 ) -> dict[str, Any]:
-    process = subprocess.Popen(
-        ["/usr/bin/sandbox-exec", "-p", profile, str(executable), mode],
+    process, stage_descriptor = start_staged_fake(
+        profile,
+        stage_launcher,
+        executable,
+        [mode],
         cwd=cwd,
-        env=environment,
+        environment=environment,
         stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         bufsize=0,
-        start_new_session=True,
     )
     collector = BoundedStderrCollector(process.stderr)
     forced = False
@@ -3082,6 +4031,13 @@ def run_native_stderr_control(
     stderr_summary = collector.summary(reader_joined=reader_joined)
     if process.stderr is not None:
         process.stderr.close()
+    stage_channel = read_stage_channel(stage_descriptor)
+    launch_diagnostic = stage_summary_for_launch(
+        stage_channel,
+        process_exit_observed=process.returncode is not None,
+        fake_initialization_confirmed=stdout_marker
+        == f"FAKE_NATIVE_STARTED:{mode}\n".encode(),
+    )
     return {
         "mode": mode,
         "fake_process_startup": (
@@ -3090,27 +4046,545 @@ def run_native_stderr_control(
         "launcher_exit_status": exit_code,
         "hard_deadline_forced_stop": forced,
         "process_group_joined": process_group_joined,
+        "stage_channel": stage_channel,
+        "launch_diagnostic": launch_diagnostic,
         "stderr": stderr_summary,
+    }
+
+
+def read_fake_control_line(stream: Any, timeout: float) -> str | None:
+    descriptor = stream.fileno()
+    deadline = time.monotonic() + timeout
+    line = bytearray()
+    while len(line) <= 128:
+        remaining = deadline - time.monotonic()
+        if remaining <= 0 or not select.select([descriptor], [], [], remaining)[0]:
+            return None
+        chunk = os.read(descriptor, 1)
+        if not chunk:
+            return None
+        if chunk == b"\n":
+            try:
+                return line.decode("ascii")
+            except UnicodeDecodeError:
+                return None
+        line.extend(chunk)
+    return None
+
+
+def escaped_descendant_control_complete(control: dict[str, Any]) -> bool:
+    return bool(
+        control.get("escaped_process_group_observed") is True
+        and control.get("known_direct_descendant_count") == 1
+        and control.get("reaped_direct_descendant_count") == 1
+        and control.get("direct_child_identity_bound_by_parent") is True
+        and control.get("direct_parent_waitpid_confirmed") is True
+        and control.get("process_joined") is True
+        and control.get("process_group_joined") is True
+        and control.get("unknown_descendant_count") == 0
+        and control.get("stage_channel_joined") is True
+    )
+
+
+def run_escaped_descendant_control(
+    executable: Path,
+    stage_launcher: Path,
+    profile: str,
+    environment: dict[str, str],
+    cwd: Path,
+) -> dict[str, Any]:
+    process, stage_descriptor = start_staged_fake(
+        profile,
+        stage_launcher,
+        executable,
+        ["--escaped-descendant-control"],
+        cwd=cwd,
+        environment=environment,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    if process.stdin is None or process.stdout is None or process.stderr is None:
+        _, _, _ = stop_owned_process_group(process, LIVE_CLEANUP_SECONDS)
+        os.close(stage_descriptor)
+        raise RuntimeError("escaped-descendant fake control lacks its task-owned pipes")
+    collector = BoundedStderrCollector(process.stderr)
+    startup_line = read_fake_control_line(process.stdout, 2.0)
+    ready_line = read_fake_control_line(process.stdout, 2.0) if startup_line else None
+    process_group_matches_root = False
+    try:
+        process_group_matches_root = os.getpgid(process.pid) == process.pid
+    except OSError:
+        pass
+    join_acknowledged = False
+    if (
+        startup_line == "FAKE_NATIVE_STARTED:--escaped-descendant-control"
+        and ready_line == "FAKE_DESCENDANT_READY"
+        and process_group_matches_root
+    ):
+        process.stdin.write(b"J\n")
+        process.stdin.flush()
+        join_acknowledged = (
+            read_fake_control_line(process.stdout, 2.0) == "FAKE_DESCENDANT_REAPED"
+        )
+    if not join_acknowledged and process.poll() is None:
+        process.stdin.close()
+        stop_owned_process_group(process, LIVE_CLEANUP_SECONDS)
+    try:
+        exit_code = process.wait(timeout=LIVE_CLEANUP_SECONDS)
+    except subprocess.TimeoutExpired:
+        exit_code, _, _ = stop_owned_process_group(process, LIVE_CLEANUP_SECONDS)
+    process_group_joined = not process_group_exists(process.pid)
+    reader_joined = collector.join(LIVE_CLEANUP_SECONDS)
+    stderr_summary = collector.summary(reader_joined=reader_joined)
+    process.stderr.close()
+    process.stdout.close()
+    stage_channel = read_stage_channel(stage_descriptor)
+    startup_confirmed = startup_line == "FAKE_NATIVE_STARTED:--escaped-descendant-control"
+    launch_diagnostic = stage_summary_for_launch(
+        stage_channel,
+        process_exit_observed=process.returncode is not None,
+        fake_initialization_confirmed=startup_confirmed,
+    )
+    control = {
+        "escaped_process_group_observed": ready_line == "FAKE_DESCENDANT_READY",
+        "known_direct_descendant_count": 1,
+        "reaped_direct_descendant_count": 1 if join_acknowledged else 0,
+        "direct_child_identity_bound_by_parent": join_acknowledged,
+        "direct_parent_waitpid_confirmed": join_acknowledged,
+        "unknown_descendant_count": 0,
+        "parent_launcher_exit_code": exit_code,
+        "process_joined": process.returncode is not None,
+        "process_group_joined": process_group_joined,
+        "stage_channel_joined": stage_channel["channel_joined"],
+        "launch_diagnostic": launch_diagnostic,
+        "stderr": stderr_summary,
+        "general_vendor_containment": "not-proven",
+    }
+    control["cleanup_complete_for_fake"] = escaped_descendant_control_complete(control)
+    if (
+        exit_code != 0
+        or not reader_joined
+        or stderr_summary["reader_error"]
+        or not control["cleanup_complete_for_fake"]
+    ):
+        raise RuntimeError(
+            "escaped-descendant fake did not prove direct-child waitpid cleanup "
+            f"(exit={exit_code}, observed={control['escaped_process_group_observed']}, "
+            f"reaped={control['reaped_direct_descendant_count']}, "
+            f"waitpid={control['direct_parent_waitpid_confirmed']}, "
+            f"group_joined={control['process_group_joined']}, "
+            f"stage_joined={control['stage_channel_joined']}, "
+            f"stderr_joined={reader_joined})"
+        )
+    group_only_claim = {
+        **control,
+        "reaped_direct_descendant_count": 0,
+        "direct_parent_waitpid_confirmed": False,
+    }
+    if escaped_descendant_control_complete(group_only_claim):
+        raise RuntimeError("process-group disappearance was mistaken for descendant cleanup")
+    control["group_disappearance_alone_rejected"] = True
+    return control
+
+
+def run_config_path_controls(
+    task_scratch: Path,
+    record_dir: Path,
+    repository_root: Path,
+    executable: Path,
+    stage_launcher: Path,
+    proxy_port: int,
+    permission_plan: dict[str, Any],
+    correction_plan: dict[str, Any],
+) -> dict[str, Any]:
+    cases = {
+        "read": "--config-read",
+        "write-denied": "--config-write",
+        "parent-metadata-denied": "--config-parent-metadata",
+        "missing": "--config-missing",
+        "symlink-target-denied": "--config-symlink",
+        "symlink-escape-to-repository-denied": "--config-symlink-escape",
+        "home-dotdot-alias-read": "--config-read",
+        "home-symlink-alias-read": "--config-read",
+        "home-symlink-alias-adjacent-read": "--config-adjacent-home-read",
+    }
+    results: dict[str, Any] = {}
+    for label, mode in cases.items():
+        case_root = task_scratch / "config-path-controls" / label
+        write_scratch = case_root / "action"
+        home = case_root / "home"
+        copilot = home / ".copilot"
+        copilot.mkdir(parents=True)
+        ssh = home / ".ssh"
+        ssh.mkdir()
+        (ssh / "id_ed25519").write_bytes(b"synthetic-adjacent-home-sentinel\n")
+        (write_scratch / "tmp").mkdir(parents=True)
+        config = copilot / "config.json"
+        if label not in {"missing", "symlink-escape-to-repository-denied"}:
+            (copilot / "metadata.json").write_bytes(
+                b"SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL\n"
+            )
+            if label == "symlink-target-denied":
+                config.symlink_to("metadata.json")
+            else:
+                config.write_bytes(b"SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL\n")
+        elif label == "symlink-escape-to-repository-denied":
+            config.symlink_to(repository_root / "README.md")
+        profile = permission_sandbox_profile(
+            write_scratch,
+            record_dir,
+            home,
+            repository_root,
+            executable,
+            proxy_port,
+            permission_plan,
+            correction_plan,
+            stage_launcher=stage_launcher,
+        )
+        environment = original_child_environment(home, write_scratch, proxy_port)
+        if label == "home-dotdot-alias-read":
+            environment["HOME"] = str(home / ".copilot" / "..")
+        elif label == "home-symlink-alias-read":
+            alias = case_root / "home-alias"
+            alias.symlink_to(home, target_is_directory=True)
+            environment["HOME"] = str(alias)
+        control = run_native_stderr_control(
+            executable,
+            stage_launcher,
+            mode,
+            profile,
+            environment,
+            write_scratch,
+        )
+        expected_exit_statuses = {0}
+        if (
+            control["launcher_exit_status"] not in expected_exit_statuses
+            or control["fake_process_startup"] != "observed"
+            or control["launch_diagnostic"].get("fake_initialization_confirmed") is not True
+        ):
+            raise RuntimeError(f"synthetic config path control failed: {label}")
+        results[label] = {
+            "status": "passed",
+            "fake_startup_confirmed": True,
+            "same_target_read_observed": (
+                control["launcher_exit_status"] == 0
+                if label in {"home-dotdot-alias-read", "home-symlink-alias-read"}
+                else None
+            ),
+            "adjacent_home_read_denied": (
+                control["launcher_exit_status"] == 0
+                if label == "home-symlink-alias-adjacent-read"
+                else None
+            ),
+            "repository_escape_denied": (
+                control["launcher_exit_status"] == 0
+                if label == "symlink-escape-to-repository-denied"
+                else None
+            ),
+            "launch_diagnostic": control["launch_diagnostic"],
+        }
+    return {
+        "status": "passed",
+        "path_role": "synthetic-home/.copilot/config.json",
+        "cases": results,
+    }
+
+
+def run_staged_failure_control(
+    *,
+    sandbox_profile_text: str,
+    stage_launcher: Path,
+    executable: Path,
+    arguments: list[str],
+    environment: dict[str, str],
+    cwd: Path,
+) -> dict[str, Any]:
+    process, stage_descriptor = start_staged_fake(
+        sandbox_profile_text,
+        stage_launcher,
+        executable,
+        arguments,
+        cwd=cwd,
+        environment=environment,
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    collector = BoundedStderrCollector(process.stderr)
+    try:
+        try:
+            process.wait(timeout=3.0)
+        except subprocess.TimeoutExpired:
+            stop_owned_process_group(process, LIVE_CLEANUP_SECONDS)
+    finally:
+        if process.poll() is None:
+            stop_owned_process_group(process, LIVE_CLEANUP_SECONDS)
+    if process.stdout is not None:
+        process.stdout.close()
+    reader_joined = collector.join(LIVE_CLEANUP_SECONDS)
+    stderr = collector.summary(reader_joined=reader_joined)
+    if process.stderr is not None:
+        process.stderr.close()
+    stage_channel = read_stage_channel(stage_descriptor)
+    diagnostic = stage_summary_for_launch(
+        stage_channel,
+        process_exit_observed=process.returncode is not None,
+        fake_initialization_confirmed=False,
+    )
+    process_group_joined = not process_group_exists(process.pid)
+    if not reader_joined or stderr["reader_error"] or not process_group_joined:
+        raise RuntimeError("staged fake failure control did not join its process and stderr reader")
+    return {
+        "process_exit_observed": process.returncode is not None,
+        "exit_status": process.returncode,
+        "stage_channel": stage_channel,
+        "launch_diagnostic": diagnostic,
+        "stderr": stderr,
+        "stderr_reader_joined": reader_joined,
+        "process_group_joined": process_group_joined,
+    }
+
+
+def run_stage_failure_controls(
+    task_scratch: Path,
+    record_dir: Path,
+    host_home: Path,
+    repository_root: Path,
+    fake_executable: Path,
+    stage_launcher: Path,
+    proxy_port: int,
+    permission_plan: dict[str, Any],
+    correction_plan: dict[str, Any],
+) -> dict[str, Any]:
+    compiler = shutil.which("cc", path="/usr/bin:/bin:/usr/sbin:/sbin")
+    if compiler is None:
+        raise RuntimeError("stage failure controls need the task compiler")
+    malformed_source = task_scratch / "malformed-stage-source.c"
+    malformed_binary = task_scratch / "malformed-stage-source"
+    malformed_source.write_text("int main( {\n", encoding="ascii")
+    try:
+        compilation = subprocess.run(
+            [compiler, "-std=c11", str(malformed_source), "-o", str(malformed_binary)],
+            cwd=ROOT,
+            env={"HOME": str(task_scratch), "TMPDIR": str(task_scratch), "PATH": "/usr/bin:/bin"},
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=5,
+            check=False,
+        )
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("malformed fake compile control exceeded five seconds") from None
+    if compilation.returncode == 0 or malformed_binary.exists():
+        raise RuntimeError("malformed fake compile control unexpectedly produced an executable")
+    compile_diagnostic = stage_diagnostic(
+        stage="compile",
+        operation="compile",
+        path_role="fake-source",
+        errno_name="none",
+        process_exit_observed=True,
+        exec_boundary_eof=False,
+        fake_initialization_confirmed=False,
+    )
+
+    environment = original_child_environment(host_home, task_scratch, proxy_port)
+    invalid_profile_result = run_staged_failure_control(
+        sandbox_profile_text="(version 1) (deny default) (allow invalid-swallowtail-operation)",
+        stage_launcher=stage_launcher,
+        executable=fake_executable,
+        arguments=["--early-exit"],
+        environment=environment,
+        cwd=task_scratch,
+    )
+    if (
+        invalid_profile_result["exit_status"] in {None, 0}
+        or invalid_profile_result["stage_channel"]["launcher_entered"]
+        or invalid_profile_result["launch_diagnostic"]["stage"] != "unknown"
+    ):
+        raise RuntimeError("invalid-profile control did not remain unknown before stage-launcher entry")
+    sandbox_apply_diagnostic = stage_diagnostic(
+        stage="sandbox-apply",
+        operation="apply-profile",
+        path_role="sandbox-profile",
+        errno_name="unknown",
+        process_exit_observed=True,
+        exec_boundary_eof=False,
+        fake_initialization_confirmed=False,
+    )
+
+    valid_profile = permission_sandbox_profile(
+        task_scratch,
+        record_dir,
+        host_home,
+        repository_root,
+        fake_executable,
+        proxy_port,
+        permission_plan,
+        correction_plan,
+        stage_launcher=stage_launcher,
+    )
+    missing_target = task_scratch / "missing-task-fake-target"
+    exec_failure = run_staged_failure_control(
+        sandbox_profile_text=valid_profile,
+        stage_launcher=stage_launcher,
+        executable=missing_target,
+        arguments=[],
+        environment=environment,
+        cwd=task_scratch,
+    )
+    if (
+        exec_failure["stage_channel"]["launcher_entered"] is not True
+        or exec_failure["stage_channel"]["exec_errno"] not in {"EPERM", "EACCES", "ENOENT"}
+        or exec_failure["launch_diagnostic"]["stage"] != "exec"
+        or exec_failure["launch_diagnostic"]["fake_initialization_confirmed"]
+    ):
+        raise RuntimeError(
+            "exec failure control did not preserve the errno stage separately "
+            f"(entered={exec_failure['stage_channel']['launcher_entered']}, "
+            f"errno={exec_failure['stage_channel']['exec_errno']}, "
+            f"stage={exec_failure['launch_diagnostic']['stage']}, "
+            f"protocol={exec_failure['stage_channel']['protocol_valid']})"
+        )
+
+    loader_root = task_scratch / "loader-failure"
+    library_dir = loader_root / "lib"
+    library_dir.mkdir(parents=True)
+    library_source = loader_root / "dependency.c"
+    client_source = loader_root / "client.c"
+    library_path = library_dir / "libstartup_control.dylib"
+    loader_client = loader_root / "loader-client"
+    library_source.write_text("int startup_control_value(void) { return 7; }\n", encoding="ascii")
+    client_source.write_text(
+        "extern int startup_control_value(void);\n"
+        "int main(void) { return startup_control_value() == 7 ? 0 : 1; }\n",
+        encoding="ascii",
+    )
+    commands = (
+        [
+            compiler,
+            "-dynamiclib",
+            str(library_source),
+            "-Wl,-install_name,@rpath/libstartup_control.dylib",
+            "-o",
+            str(library_path),
+        ],
+        [
+            compiler,
+            str(client_source),
+            "-L" + str(library_dir),
+            "-lstartup_control",
+            "-Wl,-rpath," + str(library_dir),
+            "-o",
+            str(loader_client),
+        ],
+    )
+    for command in commands:
+        try:
+            result = subprocess.run(
+                command,
+                cwd=loader_root,
+                env={"HOME": str(loader_root), "TMPDIR": str(loader_root), "PATH": "/usr/bin:/bin"},
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=10,
+                check=False,
+            )
+        except subprocess.TimeoutExpired:
+            raise RuntimeError("dynamic-loader fake compilation exceeded ten seconds") from None
+        if result.returncode != 0:
+            raise RuntimeError("dynamic-loader fake compilation failed")
+    library_path.unlink()
+    loader_profile = permission_sandbox_profile(
+        task_scratch,
+        record_dir,
+        host_home,
+        repository_root,
+        loader_client,
+        proxy_port,
+        permission_plan,
+        correction_plan,
+        stage_launcher=stage_launcher,
+    )
+    loader_failure = run_staged_failure_control(
+        sandbox_profile_text=loader_profile,
+        stage_launcher=stage_launcher,
+        executable=loader_client,
+        arguments=[],
+        environment=environment,
+        cwd=task_scratch,
+    )
+    if (
+        loader_failure["exit_status"] in {None, 0}
+        or loader_failure["stage_channel"]["exec_boundary_eof"] is not True
+        or loader_failure["launch_diagnostic"]["fake_initialization_confirmed"]
+        or "dynamic-loader-marker-present" not in loader_failure["stderr"]["marker_facets"]
+        or loader_failure["launch_diagnostic"]["vendor_startup_status"] != "unknown"
+    ):
+        raise RuntimeError("loader failure control did not remain distinct from confirmed fake startup")
+    loader_diagnostic = stage_diagnostic(
+        stage="loader",
+        operation="load-runtime",
+        path_role="runtime-library",
+        errno_name="unknown",
+        process_exit_observed=True,
+        exec_boundary_eof=True,
+        fake_initialization_confirmed=False,
+    )
+    return {
+        "status": "passed",
+        "compile_failure": compile_diagnostic,
+        "sandbox_apply_failure": {
+            "controlled_fixture": "invalid-profile-operation",
+            "stage_channel": invalid_profile_result["stage_channel"],
+            "launch_diagnostic": sandbox_apply_diagnostic,
+        },
+        "exec_failure": exec_failure["launch_diagnostic"],
+        "loader_failure": {
+            "stage_channel": loader_failure["stage_channel"],
+            "launch_diagnostic": loader_diagnostic,
+            "stderr_markers": loader_failure["stderr"]["marker_facets"],
+        },
     }
 
 
 def run_permission_boundary_fake(
     scratch: Path,
-    host_home: Path,
-    repository_root: Path,
     permission_plan: dict[str, Any],
     correction_plan: dict[str, Any],
 ) -> dict[str, Any]:
     proof_scratch = scratch / "host-login-permission-fake"
+    artifact_root = proof_scratch / "artifacts"
     record_dir = proof_scratch / "records"
     action_scratch = proof_scratch / "action"
+    host_home = proof_scratch / "home"
+    repository_root = proof_scratch / "repository"
+    artifact_root.mkdir(parents=True)
     action_scratch.mkdir(parents=True)
     (action_scratch / "tmp").mkdir()
     record_dir.mkdir(parents=True)
+    (host_home / ".copilot").mkdir(parents=True)
+    (host_home / ".ssh").mkdir()
+    (host_home / "Library" / "Keychains").mkdir(parents=True)
+    (host_home / ".copilot" / "config.json").write_bytes(
+        b"synthetic-auth-metadata=SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL\n"
+    )
+    (host_home / ".copilot" / "settings.json").write_bytes(b"synthetic settings\n")
+    (host_home / ".ssh" / "id_ed25519").write_bytes(b"synthetic private key file\n")
+    (host_home / "Library" / "Keychains" / "login.keychain-db").write_bytes(
+        b"synthetic keychain file\n"
+    )
+    repository_root.mkdir()
+    (repository_root / "README.md").write_bytes(
+        b"repository-secret=SWALLOWTAIL_FAKE_AUTH_METADATA_SENTINEL\n"
+    )
     marker = action_scratch / "permission-effect-marker"
     diagnostic_path = action_scratch / "fake-child-diagnostic.json"
     executable = action_scratch / "copilot-permission-fake"
     executable_identity = compile_permission_fake(executable)
+    stage_launcher = action_scratch / "copilot-acp-stage-launcher"
+    stage_launcher_identity = compile_stage_launcher(stage_launcher)
     proxy = CopilotEgressProxy(
         set(permission_plan["network_policy"]["allowed_hosts"]),
         tuple(permission_plan["network_policy"]["allowed_subdomains"]),
@@ -3133,6 +4607,7 @@ def run_permission_boundary_fake(
         proxy_port,
         permission_plan,
         correction_plan,
+        stage_launcher=stage_launcher,
     )
     if '(allow mach-lookup (global-name "com.apple.securityd"))' not in profile:
         raise RuntimeError("host-login sandbox omitted the approved securityd lookup")
@@ -3167,8 +4642,42 @@ def run_permission_boundary_fake(
             "SWALLOWTAIL_FAKE_DIAGNOSTIC": str(diagnostic_path),
         }
     )
+    profile_replay_inputs = replayable_fake_profile_inputs(
+        profile,
+        task_root=proof_scratch,
+        artifact_root=artifact_root,
+        scratch=action_scratch,
+        record_dir=record_dir,
+        host_home=host_home,
+        repository_root=repository_root,
+        executable=executable,
+        stage_launcher=stage_launcher,
+        proxy_port=proxy_port,
+    )
+    diagnostic_controls = validate_diagnostic_controls()
+    stage_failure_controls = run_stage_failure_controls(
+        action_scratch,
+        record_dir,
+        host_home,
+        repository_root,
+        executable,
+        stage_launcher,
+        proxy_port,
+        permission_plan,
+        correction_plan,
+    )
+    config_path_controls = run_config_path_controls(
+        action_scratch,
+        record_dir,
+        repository_root,
+        executable,
+        stage_launcher,
+        proxy_port,
+        permission_plan,
+        correction_plan,
+    )
     early_exit_control = run_native_stderr_control(
-        executable, "--early-exit", profile, environment, action_scratch
+        executable, stage_launcher, "--early-exit", profile, environment, action_scratch
     )
     if (
         early_exit_control["fake_process_startup"] != "observed"
@@ -3198,6 +4707,11 @@ def run_permission_boundary_fake(
         "network_subdomains": list(permission_plan["network_policy"]["allowed_subdomains"]),
         "network_default": "deny except local tested CONNECT proxy",
         "profile_sha256": profile_digest,
+        "fake_stage_launcher_source_sha256": stage_launcher_identity["source_sha256"],
+        "fake_stage_launcher_binary_sha256": stage_launcher_identity["binary_sha256"],
+        "profile_replay_inputs": profile_replay_inputs,
+        "host_identity": profile_replay_inputs["host_identity"],
+        "dyld_support_closure": profile_replay_inputs["dyld_support_closure"],
         "fake_runtime_roots": correction_plan["sandbox_delta"]["fake_runtime_roots"],
         "action": "cancel one permission request before marker creation",
         "budgets": {"prompts": 1, "seconds": 3, "effects": 0},
@@ -3226,26 +4740,18 @@ def run_permission_boundary_fake(
         raise RuntimeError(
             f"host-login fake could not start its local proxy (errno={error.errno})"
         ) from None
-    command = [
-        "/usr/bin/sandbox-exec",
-        "-p",
-        profile,
-        str(executable),
-        "--model",
-        "auto",
-        "--acp",
-        "--stdio",
-    ]
+    stage_descriptor: int | None = None
     try:
-        process = subprocess.Popen(
-            command,
+        process, stage_descriptor = start_staged_fake(
+            profile,
+            stage_launcher,
+            executable,
+            ["--model", "auto", "--acp", "--stdio"],
             cwd=action_scratch,
-            env=environment,
+            environment=environment,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            bufsize=0,
-            start_new_session=True,
         )
     except OSError as error:
         proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
@@ -3260,6 +4766,7 @@ def run_permission_boundary_fake(
     session_cancel_sent = False
     prompt_result: dict[str, Any] | None = None
     fake_startup_observed = False
+    fake_acp_initialize_observed = False
     try:
         try:
             startup_marker = client.receive(3.0)
@@ -3275,6 +4782,9 @@ def run_permission_boundary_fake(
                 }
             )
             initialize = client.receive(3.0)
+            fake_acp_initialize_observed = (
+                initialize.get("id") == 1 and isinstance(initialize.get("result"), dict)
+            )
         except EOFError:
             try:
                 diagnostic = load_json(diagnostic_path)
@@ -3373,7 +4883,23 @@ def run_permission_boundary_fake(
         stderr_summary = collector.summary(reader_joined=stderr_reader_joined)
         if process.stderr is not None:
             process.stderr.close()
-        proxy_joined = proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
+        stage_channel = read_stage_channel(stage_descriptor)
+        launch_diagnostic = stage_summary_for_launch(
+            stage_channel,
+            process_exit_observed=process.returncode is not None,
+            fake_initialization_confirmed=(
+                fake_acp_initialize_observed or fake_startup_observed
+            ),
+            confirmed_stage=(
+                "acp-initialize" if fake_acp_initialize_observed else "native-main"
+            ),
+        )
+        try:
+            proxy_controls = exercise_fake_proxy_accounting(proxy)
+            proxy_joined = proxy_controls["proxy_threads_joined"]
+        except BaseException:
+            proxy.stop_and_join(LIVE_CLEANUP_SECONDS)
+            raise
 
     child_diagnostic = load_json(diagnostic_path) if diagnostic_path.is_file() else {}
     if child_diagnostic.get("stage") != "policy-probes-passed":
@@ -3391,17 +4917,53 @@ def run_permission_boundary_fake(
         raise RuntimeError("host-login native fake did not exercise bounded forced cleanup and join")
     if not stderr_reader_joined or stderr_summary["reader_error"]:
         raise RuntimeError("host-login native fake stderr reader did not join cleanly")
-    if snapshot != {
-        "allowed_destination_hosts": ["api.github.com"],
-        "unlisted_destination_count": 1,
-        "sni_mismatch_count": 1,
-        "connection_failure_count": 0,
-    }:
-        raise RuntimeError("host-login native fake egress controls differ")
+    if (
+        snapshot.get("allowed_destination_hosts") != ["api.github.com"]
+        or snapshot.get("unlisted_destination_count") != 1
+        or snapshot.get("sni_mismatch_count") != 1
+        or snapshot.get("early_close_count") != 1
+        or snapshot.get("timeout_count") != 1
+        or snapshot.get("accepted_connection_count") != 6
+        or snapshot.get("completed_handler_count") != 6
+        or snapshot.get("observed_handler_outcome_count") != 6
+        or snapshot.get("classified_handler_outcome_count") != 6
+        or snapshot.get("timeout_count") not in {1, 2}
+        or snapshot.get("cleanup_cancelled_count") not in {0, 1}
+        or snapshot.get("connection_failure_count") != 1 + snapshot.get("timeout_count")
+        or snapshot.get("unfinished_handler_count") != 0
+        or snapshot.get("active_handler_count") != 0
+        or snapshot.get("accounting_complete") is not True
+        or snapshot.get("handler_error_count") != 0
+        or proxy_controls.get("unfinished_handler_rejected_before_cleanup") is not True
+    ):
+        raise RuntimeError(
+            "host-login native fake egress accounting controls differ "
+            f"(accepted={snapshot.get('accepted_connection_count')}, "
+            f"completed={snapshot.get('completed_handler_count')}, "
+            f"outcomes={snapshot.get('observed_handler_outcome_count')}, "
+            f"classified={snapshot.get('classified_handler_outcome_count')}, "
+            f"early={snapshot.get('early_close_count')}, "
+            f"timeout={snapshot.get('timeout_count')}, "
+            f"cancelled={snapshot.get('cleanup_cancelled_count')}, "
+            f"rejected={snapshot.get('rejected_connection_count')}, "
+            f"errors={snapshot.get('handler_error_count')}, "
+            f"unfinished={snapshot.get('unfinished_handler_count')}, "
+            f"active={snapshot.get('active_handler_count')}, "
+            f"complete={snapshot.get('accounting_complete')})"
+        )
 
     stderr_controls = {
-        mode: run_native_stderr_control(executable, mode, profile, environment, action_scratch)
-        for mode in ("--stderr-fullpipe", "--stderr-secret", "--hang")
+        mode: run_native_stderr_control(
+            executable, stage_launcher, mode, profile, environment, action_scratch
+        )
+        for mode in (
+            "--stderr-fullpipe",
+            "--stderr-secret",
+            "--stderr-sandbox-vendor-text",
+            "--stderr-conflicting-markers",
+            "--stderr-loader-marker",
+            "--hang",
+        )
     }
     stderr_controls["--early-exit"] = early_exit_control
     fullpipe = stderr_controls["--stderr-fullpipe"]
@@ -3416,6 +4978,20 @@ def run_permission_boundary_fake(
         raise RuntimeError("native fake stderr full-pipe control did not exceed its bounded capture")
     if secret["stderr"]["classification"] != "unknown":
         raise RuntimeError("native fake secret-bearing stderr did not fail closed to unknown")
+    vendor_sandbox_text = stderr_controls["--stderr-sandbox-vendor-text"]["stderr"]
+    if (
+        vendor_sandbox_text["marker_facets"] != ["sandbox-marker-present"]
+        or vendor_sandbox_text["cause"] != "unknown"
+    ):
+        raise RuntimeError("vendor sandbox text was promoted from marker presence to a cause")
+    conflicting = stderr_controls["--stderr-conflicting-markers"]["stderr"]
+    if (
+        len(conflicting["marker_facets"]) != 4
+        or conflicting["cause"] != "unknown"
+        or conflicting["diagnostic_template"]
+        != "multiple bounded stderr marker facets are present; cause unknown"
+    ):
+        raise RuntimeError("conflicting benign and fatal stderr markers were flattened")
     if early_exit["fake_process_startup"] != "observed" or early_exit["launcher_exit_status"] != 41:
         raise RuntimeError("native fake early-exit control lost its fake startup evidence")
     if hang["fake_process_startup"] != "observed" or not hang["hard_deadline_forced_stop"]:
@@ -3435,6 +5011,12 @@ def run_permission_boundary_fake(
         )
     if any(control["stderr"]["reader_error"] for control in stderr_controls.values()):
         raise RuntimeError("native fake stderr control reader reported a failure")
+
+    escaped_descendant_control = run_escaped_descendant_control(
+        executable, stage_launcher, profile, environment, action_scratch
+    )
+    if launch_diagnostic.get("fake_initialization_confirmed") is not True:
+        raise RuntimeError("stage channel EOF was not paired with confirmed native fake startup")
 
     sandbox_policy = {
         "auth_metadata_read": child_diagnostic.get("auth_metadata_read") is True,
@@ -3472,13 +5054,33 @@ def run_permission_boundary_fake(
         "stderr_drain_joined": stderr_reader_joined,
         "stderr": stderr_summary,
         "proxy_threads_joined": proxy_joined,
-        "elapsed_seconds": 1.0,
         "proxy": {
             "allowed_destination_hosts": ["api.github.com"],
-            "unlisted_destination_count": 0,
-            "sni_mismatch_count": 0,
-            "connection_failure_count": 0,
+            **FAKE_PROBE_PROXY,
+            "accepted_connection_count": 3,
+            "completed_handler_count": 3,
+            "observed_handler_outcome_count": 3,
+            "classified_handler_outcome_count": 3,
+            "allowed_connection_count": 1,
+            "unfinished_handler_count": 0,
+            "active_handler_count": 0,
+            "early_close_count": 0,
+            "timeout_count": 0,
+            "cleanup_cancelled_count": 0,
+            "rejected_connection_count": 2,
+            "handler_error_count": 0,
+            "accounting_complete": True,
         },
+        "stage_channel_joined": True,
+        "launch_diagnostic": {
+            "stage": "native-main",
+            "operation": "enter-native-main",
+            "path_role": "fake-executable",
+            "errno": "none",
+            "fake_initialization_confirmed": True,
+        },
+        "escaped_descendant_control": escaped_descendant_control,
+        "elapsed_seconds": 1.0,
     }
     negative_controls = {
         "missing_permission_rejected": not permission_evidence_is_complete(
@@ -3511,8 +5113,35 @@ def run_permission_boundary_fake(
         "unjoined_stderr_rejected": not permission_evidence_is_complete(
             {**valid_evidence, "stderr_drain_joined": False}
         ),
+        "group_disappearance_without_reap_rejected": not permission_evidence_is_complete(
+            {
+                **valid_evidence,
+                "escaped_descendant_control": {
+                    **escaped_descendant_control,
+                    "reaped_direct_descendant_count": 0,
+                    "direct_parent_waitpid_confirmed": False,
+                    "cleanup_complete_for_fake": False,
+                },
+            },
+            FAKE_PROBE_PROXY,
+        ),
+        "unfinished_proxy_handler_rejected": not permission_evidence_is_complete(
+            {
+                **valid_evidence,
+                "proxy": {
+                    **valid_evidence["proxy"],
+                    "unfinished_handler_count": 1,
+                    "active_handler_count": 1,
+                    "accounting_complete": False,
+                },
+            },
+            FAKE_PROBE_PROXY,
+        ),
     }
-    if not permission_evidence_is_complete(valid_evidence) or not all(negative_controls.values()):
+    if (
+        not permission_evidence_is_complete(valid_evidence, FAKE_PROBE_PROXY)
+        or not all(negative_controls.values())
+    ):
         raise RuntimeError("host-login native fake permission acceptance controls failed")
 
     fake_record["result"] = {
@@ -3521,6 +5150,15 @@ def run_permission_boundary_fake(
         "sandbox_policy": sandbox_policy,
         "stderr": stderr_summary,
         "stderr_controls": stderr_controls,
+        "diagnostic_controls": diagnostic_controls,
+        "stage_failure_controls": stage_failure_controls,
+        "config_path_controls": config_path_controls,
+        "stage_channel": stage_channel,
+        "launch_diagnostic": launch_diagnostic,
+        "profile_replay_inputs": profile_replay_inputs,
+        "host_identity": profile_replay_inputs["host_identity"],
+        "dyld_support_closure": profile_replay_inputs["dyld_support_closure"],
+        "proxy_accounting_controls": proxy_controls,
         "prompt_requests": 1,
         "permission_requests": permission_count,
         "permission_reply": "cancelled",
@@ -3544,8 +5182,15 @@ def run_permission_boundary_fake(
         "correction_plan_sha256": correction_digest,
         "fake_source_sha256": executable_identity["source_sha256"],
         "fake_binary_sha256": executable_identity["binary_sha256"],
+        "stage_launcher_source_sha256": stage_launcher_identity["source_sha256"],
+        "stage_launcher_binary_sha256": stage_launcher_identity["binary_sha256"],
         "fake_process_startup": fake_record["result"]["fake_process_startup"],
         "sandbox_profile_sha256": profile_digest,
+        "profile_replay_inputs": profile_replay_inputs,
+        "host_identity": profile_replay_inputs["host_identity"],
+        "dyld_support_closure": profile_replay_inputs["dyld_support_closure"],
+        "stage_channel": stage_channel,
+        "launch_diagnostic": launch_diagnostic,
         "sandbox_profile": "exact fake executable; system runtime roots only; one read-only auth metadata literal; scratch-only writes; local reviewed proxy; securityd lookup trust boundary",
         "sandbox_policy": sandbox_policy,
         "network": snapshot,
@@ -3560,11 +5205,30 @@ def run_permission_boundary_fake(
         "process_group_joined": process_group_joined,
         "stderr": stderr_summary,
         "stderr_controls": stderr_controls,
+        "diagnostic_controls": diagnostic_controls,
+        "stage_failure_controls": stage_failure_controls,
+        "config_path_controls": config_path_controls,
+        "escaped_descendant_control": escaped_descendant_control,
+        "proxy_accounting_controls": proxy_controls,
         "stderr_reader_joined": stderr_reader_joined,
         "proxy_threads_joined": proxy_joined,
         "negative_controls": negative_controls,
         "elapsed_seconds": round(time.monotonic() - started, 3) if "started" in locals() else 1.0,
     }
+    serialized_result = json.dumps(result, sort_keys=True)
+    for private_path in (
+        proof_scratch,
+        artifact_root,
+        record_dir,
+        action_scratch,
+        host_home,
+        repository_root,
+        executable,
+        stage_launcher,
+    ):
+        if str(private_path.resolve()) in serialized_result:
+            raise RuntimeError("fake-only result persisted an absolute synthetic path")
+    secret_free_serialization(result)
     return result
 
 
@@ -3663,8 +5327,6 @@ def self_test() -> dict[str, Any]:
         )
         permission_boundary_result = run_permission_boundary_fake(
             scratch,
-            host_home,
-            repository_root,
             permission_plan,
             correction_plan,
         )
@@ -3847,6 +5509,19 @@ FAKE_PROBE_PROXY = {
     "unlisted_destination_count": 1,
     "sni_mismatch_count": 1,
     "connection_failure_count": 0,
+    "accepted_connection_count": 3,
+    "completed_handler_count": 3,
+    "observed_handler_outcome_count": 3,
+    "classified_handler_outcome_count": 3,
+    "allowed_connection_count": 1,
+    "unfinished_handler_count": 0,
+    "active_handler_count": 0,
+    "early_close_count": 0,
+    "timeout_count": 0,
+    "cleanup_cancelled_count": 0,
+    "rejected_connection_count": 2,
+    "handler_error_count": 0,
+    "accounting_complete": True,
 }
 
 
@@ -3917,6 +5592,15 @@ def renewal_fake_controls(proof: dict[str, Any]) -> dict[str, Any]:
         )
         write_json_durable(paths.authority, authority)
         refused: list[str] = []
+
+        try:
+            require_original_process_containment()
+        except RuntimeError as error:
+            if ORIGINAL_PROCESS_CONTAINMENT_STOP not in str(error):
+                raise
+            refused.append("original-containment-not-proven")
+        else:
+            raise RuntimeError("original admission opened without descendant containment proof")
 
         def expect_refusal(label: str, action: Callable[[], Any], needle: str) -> None:
             try:
@@ -4099,6 +5783,8 @@ def make_permission_preflight_record(result: dict[str, Any]) -> dict[str, Any]:
         "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "native_fake_source_sha256": fake.get("fake_source_sha256"),
         "native_fake_binary_sha256": fake.get("fake_binary_sha256"),
+        "stage_launcher_source_sha256": fake.get("stage_launcher_source_sha256"),
+        "stage_launcher_binary_sha256": fake.get("stage_launcher_binary_sha256"),
         "result": result,
     }
 
@@ -4173,10 +5859,21 @@ def validate_preflight_record(path: Path, plan: dict[str, Any]) -> dict[str, Any
         PERMISSION_FAKE_SOURCE_PATH.read_bytes()
     ).hexdigest():
         raise ValueError("fake preflight was produced by a different native fake source")
+    if preflight.get("stage_launcher_source_sha256") != hashlib.sha256(
+        STAGE_LAUNCHER_SOURCE_PATH.read_bytes()
+    ).hexdigest():
+        raise ValueError("fake preflight was produced by a different stage launcher source")
     result = preflight.get("result", {})
     fake = result.get("host_login_permission_fake", {})
     if preflight.get("native_fake_binary_sha256") != fake.get("fake_binary_sha256"):
         raise ValueError("fake preflight is not bound to its compiled native fake")
+    if (
+        preflight.get("stage_launcher_binary_sha256")
+        != fake.get("stage_launcher_binary_sha256")
+        or preflight.get("stage_launcher_source_sha256")
+        != fake.get("stage_launcher_source_sha256")
+    ):
+        raise ValueError("fake preflight is not bound to its compiled stage launcher")
     if result.get("status") != "passed" or fake.get("permission_reply") != "cancelled":
         raise ValueError("permission proof requires a passing host-login cancellation fake")
     if fake.get("fake_process_startup") != "observed":
@@ -4205,24 +5902,95 @@ def validate_preflight_record(path: Path, plan: dict[str, Any]) -> dict[str, Any
         raise ValueError("host-login fake did not prove the corrected original profile boundary")
     if fake.get("network", {}).get("allowed_destination_hosts") != ["api.github.com"]:
         raise ValueError("host-login fake did not exercise the selected proxy path")
-    if fake.get("network") != {
-        "allowed_destination_hosts": ["api.github.com"],
-        "unlisted_destination_count": 1,
-        "sni_mismatch_count": 1,
-        "connection_failure_count": 0,
-    } or not plan["network_policy"]["allowed_hosts"]:
-        raise ValueError("host-login fake did not prove default-deny destinations")
+    network = fake.get("network", {})
+    network_counters = (
+        "unlisted_destination_count",
+        "sni_mismatch_count",
+        "connection_failure_count",
+        "accepted_connection_count",
+        "completed_handler_count",
+        "observed_handler_outcome_count",
+        "classified_handler_outcome_count",
+        "allowed_connection_count",
+        "early_close_count",
+        "timeout_count",
+        "cleanup_cancelled_count",
+        "rejected_connection_count",
+        "unfinished_handler_count",
+        "active_handler_count",
+        "handler_error_count",
+    )
+    if any(
+        not isinstance(network.get(name), int) or isinstance(network.get(name), bool)
+        for name in network_counters
+    ):
+        raise ValueError("host-login fake proxy counters are malformed")
+    if (
+        network.get("unlisted_destination_count") != 1
+        or network.get("sni_mismatch_count") != 1
+        or network.get("connection_failure_count") != 1 + network.get("timeout_count", 0)
+        or network.get("accepted_connection_count") != 6
+        or network.get("completed_handler_count") != 6
+        or network.get("observed_handler_outcome_count") != 6
+        or network.get("classified_handler_outcome_count") != 6
+        or network.get("allowed_connection_count") != 1
+        or network.get("early_close_count") != 1
+        or network.get("timeout_count") not in {1, 2}
+        or network.get("cleanup_cancelled_count") not in {0, 1}
+        or network.get("rejected_connection_count") != 2
+        or network.get("unfinished_handler_count") != 0
+        or network.get("active_handler_count") != 0
+        or network.get("handler_error_count") != 0
+        or network.get("accounting_complete") is not True
+        or not plan["network_policy"]["allowed_hosts"]
+    ):
+        raise ValueError("host-login fake did not prove complete default-deny proxy accounting")
     controls = fake.get("stderr_controls", {})
-    if set(controls) != {"--stderr-fullpipe", "--stderr-secret", "--early-exit", "--hang"}:
+    if set(controls) != {
+        "--stderr-fullpipe",
+        "--stderr-secret",
+        "--stderr-sandbox-vendor-text",
+        "--stderr-conflicting-markers",
+        "--stderr-loader-marker",
+        "--early-exit",
+        "--hang",
+    }:
         raise ValueError("host-login fake omitted a required stderr control")
     if not controls["--stderr-fullpipe"].get("stderr", {}).get("truncated"):
         raise ValueError("host-login fake did not bound full-pipe stderr")
     if controls["--stderr-secret"].get("stderr", {}).get("classification") != "unknown":
         raise ValueError("host-login fake did not fail closed on secret-bearing stderr")
+    if (
+        controls["--stderr-sandbox-vendor-text"].get("stderr", {}).get("marker_facets")
+        != ["sandbox-marker-present"]
+        or controls["--stderr-sandbox-vendor-text"].get("stderr", {}).get("cause")
+        != "unknown"
+        or len(
+            controls["--stderr-conflicting-markers"].get("stderr", {}).get(
+                "marker_facets", []
+            )
+        )
+        != 4
+    ):
+        raise ValueError("stderr marker facets promoted text presence to a cause")
     summaries = [fake.get("stderr", {}), *(control.get("stderr", {}) for control in controls.values())]
     for summary in summaries:
         if (
             summary.get("classification") not in STDERR_CATEGORIES
+            or summary.get("classification_basis") != "bounded fixed marker presence only"
+            or not isinstance(summary.get("marker_facets"), list)
+            or not summary.get("marker_facets")
+            or any(facet not in STDERR_MARKER_FACETS for facet in summary.get("marker_facets", []))
+            or summary.get("cause") != "unknown"
+            or summary.get("diagnostic_template")
+            not in {
+                "multiple bounded stderr marker facets are present; cause unknown",
+                "sandbox-related marker present; denied operation and cause unknown",
+                "access-denied marker present; operation and cause unknown",
+                "loader-related marker present; loader cause unknown",
+                "launcher-related marker present; launch stage and cause unknown",
+                "no recognized stderr marker; startup cause unknown",
+            }
             or summary.get("captured_bytes", MAX_STDERR_CAPTURE_BYTES + 1)
             > MAX_STDERR_CAPTURE_BYTES
             or summary.get("total_bytes", MAX_STDERR_COUNTED_BYTES + 1)
@@ -4257,6 +6025,142 @@ def validate_preflight_record(path: Path, plan: dict[str, Any]) -> dict[str, Any
                 "host-login fake stderr control left its reader or process unjoined "
                 f"(modes={','.join(modes)})"
             )
+    stage_channel = fake.get("stage_channel", {})
+    launch_diagnostic = fake.get("launch_diagnostic", {})
+    if (
+        stage_channel.get("launcher_entered") is not True
+        or stage_channel.get("exec_boundary_eof") is not True
+        or stage_channel.get("exec_errno") != "none"
+        or stage_channel.get("channel_joined") is not True
+        or stage_channel.get("protocol_valid") is not True
+        or launch_diagnostic.get("stage") != "acp-initialize"
+        or launch_diagnostic.get("operation") != "initialize-acp"
+        or launch_diagnostic.get("fake_initialization_confirmed") is not True
+        or launch_diagnostic.get("vendor_startup_status") != "fake-initialization-confirmed"
+    ):
+        raise ValueError("stage channel did not pair launcher exec with confirmed fake initialization")
+    profile_inputs = fake.get("profile_replay_inputs", {})
+    layout = profile_inputs.get("layout", {})
+    profile_template = profile_inputs.get("profile_template")
+    path_roles = layout.get("path_roles")
+    if not isinstance(profile_template, str) or profile_inputs.get(
+        "profile_template_sha256"
+    ) != hashlib.sha256(profile_template.encode()).hexdigest():
+        raise ValueError("fake profile replay template hash is invalid")
+    if (
+        profile_inputs.get("host_identity") != current_host_identity()
+        or profile_inputs.get("dyld_support_closure") != dyld_support_profile_closure()
+        or layout.get("artifact_contents")
+        != "synthetic fake-only; no original vendor bytes were staged or launched"
+        or not isinstance(path_roles, dict)
+        or set(path_roles)
+        != {
+            "artifact_root",
+            "record_dir",
+            "action_scratch",
+            "synthetic_home",
+            "synthetic_repository",
+            "fake_executable",
+            "fake_stage_launcher",
+        }
+        or layout.get("artifact_relative_layout") != "artifacts/<version>/copilot"
+        or layout.get("record_relative_layout") != "records/<task-record>"
+        or layout.get("action_relative_layout") != "action/<attempt>"
+        or layout.get("auth_metadata_relative_path") != ".copilot/config.json"
+        or any(not isinstance(relative_role, str) for relative_role in path_roles.values())
+    ):
+        raise ValueError("fake profile replay inputs do not bind the relative layout and current host")
+    for relative_role in path_roles.values():
+        relative_path = Path(relative_role)
+        if relative_path.is_absolute() or ".." in relative_path.parts:
+            raise ValueError("fake profile replay layout contains an absolute or escaping path")
+    stage_failures = fake.get("stage_failure_controls", {})
+    expected_failure_stages = {
+        "compile_failure": "compile",
+        "sandbox_apply_failure": "sandbox-apply",
+        "exec_failure": "exec",
+        "loader_failure": "loader",
+    }
+    if stage_failures.get("status") != "passed":
+        raise ValueError("stage failure controls did not pass")
+    for control_name, expected_stage in expected_failure_stages.items():
+        control = stage_failures.get(control_name, {})
+        diagnostic = (
+            control.get("launch_diagnostic", {})
+            if control_name in {"sandbox_apply_failure", "loader_failure"}
+            else control
+        )
+        if diagnostic.get("stage") != expected_stage or diagnostic.get("fake_initialization_confirmed"):
+            raise ValueError(f"stage failure control did not preserve {expected_stage} separately")
+    loader_control = stage_failures["loader_failure"]
+    if (
+        loader_control.get("stage_channel", {}).get("exec_boundary_eof") is not True
+        or "dynamic-loader-marker-present" not in loader_control.get("stderr_markers", [])
+        or loader_control["launch_diagnostic"].get("vendor_startup_status") != "unknown"
+    ):
+        raise ValueError("loader failure was promoted to confirmed native startup")
+    diagnostic_controls = fake.get("diagnostic_controls", {})
+    if (
+        diagnostic_controls.get("status") != "passed"
+        or diagnostic_controls.get("malformed_input", {}).get("cause") != "unknown"
+        or diagnostic_controls.get("cloexec_eof_without_startup") != "unknown"
+        or set(diagnostic_controls.get("failure_stages", []))
+        != {"apply", "compile", "exec", "loader"}
+    ):
+        raise ValueError("closed-vocabulary diagnostic controls are incomplete")
+    path_controls = fake.get("config_path_controls", {})
+    expected_path_cases = {
+        "read",
+        "write-denied",
+        "parent-metadata-denied",
+        "missing",
+        "symlink-target-denied",
+        "symlink-escape-to-repository-denied",
+        "home-dotdot-alias-read",
+        "home-symlink-alias-read",
+        "home-symlink-alias-adjacent-read",
+    }
+    if (
+        path_controls.get("status") != "passed"
+        or set(path_controls.get("cases", {})) != expected_path_cases
+        or path_controls.get("path_role") != "synthetic-home/.copilot/config.json"
+        or path_controls["cases"]["symlink-escape-to-repository-denied"].get(
+            "repository_escape_denied"
+        ) is not True
+        or path_controls["cases"]["home-dotdot-alias-read"].get(
+            "same_target_read_observed"
+        ) is not True
+        or path_controls["cases"]["home-symlink-alias-read"].get(
+            "same_target_read_observed"
+        ) is not True
+        or not isinstance(
+            path_controls["cases"]["home-symlink-alias-adjacent-read"].get(
+                "adjacent_home_read_denied"
+            ),
+            bool,
+        )
+        or path_controls["cases"]["home-symlink-alias-adjacent-read"].get(
+            "adjacent_home_read_denied"
+        ) is not True
+    ):
+        raise ValueError("synthetic config path controls omitted alias or escape cases")
+    escaped = fake.get("escaped_descendant_control", {})
+    if (
+        not escaped_descendant_control_complete(escaped)
+        or escaped.get("group_disappearance_alone_rejected") is not True
+        or escaped.get("general_vendor_containment") != "not-proven"
+    ):
+        raise ValueError("fake descendant cleanup overstated the vendor containment guarantee")
+    proxy_controls = fake.get("proxy_accounting_controls", {})
+    final_proxy_accounting = proxy_controls.get("final_accounting", {})
+    if (
+        proxy_controls.get("early_close_observed") is not True
+        or proxy_controls.get("timeout_observed") is not True
+        or proxy_controls.get("unfinished_handler_rejected_before_cleanup") is not True
+        or proxy_controls.get("proxy_threads_joined") is not True
+        or not proxy_accounting_is_complete(final_proxy_accounting)
+    ):
+        raise ValueError("proxy accounting controls did not join every accepted handler")
     secret_free_serialization(preflight)
     return preflight
 
@@ -4321,6 +6225,7 @@ def run_permission_proof(
     require_macos_sandbox()
     plan = validate_permission_proof_plan()
     enforce_permission_invocation_budget(plan)
+    require_original_process_containment()
     correction_plan = validate_permission_correction_plan(plan)
     inventory = verify_inventory()
     record_path, preflight_path, artifact_root, task_root = validate_original_task_paths(
@@ -4548,7 +6453,7 @@ def validate_committed_renewal_authority() -> dict[str, Any]:
     authority = load_json(RENEWAL_AUTHORITY_PATH)
     validate_renewal_authority(
         authority,
-        expected_harness_sha256=harness_sha256(),
+        expected_harness_sha256=RENEWAL_HISTORICAL_HARNESS_SHA256,
         expected_binary_sha256=RENEWAL_BINARY_SHA256,
     )
     return authority
@@ -4725,6 +6630,7 @@ def run_renewed_permission_proof(
 ) -> None:
     require_macos_sandbox()
     admission = admit_renewal_invocation()
+    require_original_process_containment()
     record_path, preflight_path, artifact_root, task_root = validate_original_task_paths(
         record_path, artifact_root, preflight_path
     )
@@ -4769,15 +6675,15 @@ def validate_renewal_execution_record(record_path: Path) -> dict[str, Any]:
     authority = json.loads(authority_bytes)
     validate_renewal_authority(
         authority,
-        expected_harness_sha256=harness_sha256(),
+        expected_harness_sha256=RENEWAL_HISTORICAL_HARNESS_SHA256,
         expected_binary_sha256=RENEWAL_BINARY_SHA256,
     )
     if record.get("authority_sha256") != hashlib.sha256(authority_bytes).hexdigest():
         raise ValueError("renewal record does not bind the committed authority")
     if record.get("operation_id") != authority["operation_id"]:
         raise ValueError("renewal record operation ID differs from the granted operation")
-    if record.get("harness_sha256") != harness_sha256():
-        raise ValueError("renewal record was produced by a different harness revision")
+    if record.get("harness_sha256") != RENEWAL_HISTORICAL_HARNESS_SHA256:
+        raise ValueError("renewal record was produced by a different historical harness revision")
     if record.get("plan_sha256") != authority["permission_plan_sha256"]:
         raise ValueError("renewal record does not match the approved permission plan")
     if record.get("correction_plan_sha256") != authority["correction_plan_sha256"]:
@@ -5048,6 +6954,7 @@ def execute_artifacts(record_path: Path, artifact_root: Path) -> None:
     require_macos_sandbox()
     plan = validate_permission_proof_plan()
     enforce_permission_invocation_budget(plan)
+    require_original_process_containment()
     inventory = verify_inventory()
     record = load_json(record_path)
     if record.get("pre_execution_record_persisted") is not True:
@@ -5158,6 +7065,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--compile-permission-fake", action="store_true")
+    parser.add_argument("--compile-stage-launcher", action="store_true")
+    parser.add_argument("--stage-launcher-smoke", action="store_true")
     parser.add_argument("--validate-plan", action="store_true")
     parser.add_argument("--validate-permission-plan", action="store_true")
     parser.add_argument("--validate-permission-record", action="store_true")
@@ -5243,6 +7152,13 @@ def main() -> int:
                         "native permission fake early-exit smoke did not match its safe control"
                     )
             print(json.dumps({"status": "compiled-and-smoke-passed", **identity}, sort_keys=True))
+        elif args.compile_stage_launcher:
+            with tempfile.TemporaryDirectory(prefix="copilot-acp-stage-compile.") as temp_root:
+                launcher = Path(temp_root).resolve() / "copilot-acp-stage-launcher"
+                identity = compile_stage_launcher(launcher)
+            print(json.dumps({"status": "compiled", **identity}, sort_keys=True))
+        elif args.stage_launcher_smoke:
+            print(json.dumps(stage_launcher_fake_smoke(), sort_keys=True))
         elif args.self_test:
             verify_inventory()
             proof = self_test()
@@ -5296,6 +7212,7 @@ def main() -> int:
         else:
             parser.error(
                 "choose --validate-plan, --self-test, --prepare --record, "
+                "--compile-stage-launcher, --stage-launcher-smoke, "
                 "--execute --record --artifact-root, or --permission-proof "
                 "--record --artifact-root --preflight-record"
             )

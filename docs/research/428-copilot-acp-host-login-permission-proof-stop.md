@@ -100,3 +100,10 @@ profile or its host-home read set. The only authorized original start ended
 before ACP initialization. Preserve all existing route claims, including the
 exact `1.0.80` control. Do not start older versions or repeat `1.0.93` under
 this proof allowance.
+
+## Correction note — Research 431
+
+[Research 431](./431-copilot-acp-offline-startup-trace-stop.md) clarifies that
+the recorded process-group join does not establish cleanup of a descendant
+that escaped the group. The original startup remains unknown. This note does
+not alter the consumed record or its result.

@@ -121,3 +121,11 @@ selector. Exact authentication/model discovery remains stopped before any
 original launch because the keychain-item, endpoint, and prompt-free catalogue
 gates are not established. The exact `1.0.80` route claim and every other
 claim remain unchanged.
+
+## Correction note — Research 431
+
+[Research 431](./431-copilot-acp-offline-startup-trace-stop.md) finds no
+static source for the exact `1.0.93` ACP startup or authentication mechanism in
+the retained SEA payload. The current public service declaration does not
+prove which service that binary uses. Research 426's frozen records and result
+remain unchanged.

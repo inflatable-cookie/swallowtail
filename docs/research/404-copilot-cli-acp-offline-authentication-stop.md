@@ -77,3 +77,11 @@ live MCP honoring follows. Additional permission evidence requires an approved
 authentication path outside this synthetic-only, no-network run. The
 secret-free execution record and reproduction notes are in the
 [`offline proof fixture`](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/README.md).
+
+## Correction note — Research 431
+
+[Research 431](./431-copilot-acp-offline-startup-trace-stop.md) confirms that
+the successful `1.0.93` initialization used `copilot --acp --stdio`, synthetic
+home paths, synthetic token placeholders, denied network, and a different
+profile from Research 430. It does not explain the later failure. This note
+does not alter the frozen records, their identities, or their results.

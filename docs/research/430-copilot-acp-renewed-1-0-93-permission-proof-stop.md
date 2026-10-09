@@ -79,3 +79,14 @@ unmapped runtime or cache path, a home write, a read outside the approved
 exception, or the approved `config.json` exception being insufficient for
 this binary. Widening the profile during an invocation is out of scope. A new
 profile needs a reviewed correction and separate authority.
+
+## Correction note — Research 431
+
+[Research 431](./431-copilot-acp-offline-startup-trace-stop.md) clarifies that
+the `sandbox-denial` category records a marker, not a diagnosed denial. It
+also records that the bound profile digest cannot be regenerated from retained
+inputs, Research 430 does not bind an OS build, and the retained SEA does not
+expose the exact startup path. On the current audit host, the launch-daemon
+label `com.apple.securityd` advertises `com.apple.SecurityServer` as a Mach
+service; this evidence correction adds no grant. The consumed attempt and its
+result remain unchanged.

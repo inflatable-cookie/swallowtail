@@ -104,6 +104,33 @@ exited before ACP `initialize` with a `sandbox-denial` stderr category. No
 prompt or permission evidence was produced. The denied operation is unobserved,
 the older artifacts were not started, and no route claim changes.
 
+[Research 431](../research/431-copilot-acp-offline-startup-trace-stop.md)
+confirms the same executable digest initialized in Research 404 under a
+different argv, environment, home-path, and sandbox tuple. The failure cause
+is unknown. `sandbox-denial` means a stderr marker was present; it does not name
+an operation or path. On the current audit host, the `com.apple.securityd`
+launch-daemon label advertises `com.apple.SecurityServer` as a Mach service;
+no access grant follows from that correction. Exact SEA startup remains
+unrecovered, and original-artifact admission is blocked until fake-only
+descendant containment and diagnostic gates are reviewed.
+
+The task 165 fake-only continuation adds a stage pipe that separates launcher
+entry, target-exec errno, and confirmed fake ACP startup. EOF by itself remains
+unknown. Stderr evidence stores only bounded marker facets and fixed diagnostic
+templates; a sandbox marker has unknown cause. The synthetic profile record
+binds current OS identity and the imported `dyld-support.sb` closure, and uses
+relative artifact, record, action, scratch, home and repository roles without
+persisting personal paths. Fake controls cover config reads and writes, parent
+metadata, missing files, symlink and repository escapes, home aliases, proxy
+handler completeness, and a known child that escapes its process group. That
+child is joined by its fake parent with `waitpid`; arbitrary vendor descendants
+remain unbounded. Original-artifact entrypoints remain fail-closed, and the
+new launcher is not wired into an original invocation; its exact exec grant
+exists only in the task-owned fake profile. The effective original profile
+has no permission change. See the
+[Contract 023 offline-startup continuation](../knowledge/contracts/023-harness-operation-isolation-and-native-boundary.md#fake-only-diagnostic-and-cleanup-continuation)
+for the evidence boundary.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

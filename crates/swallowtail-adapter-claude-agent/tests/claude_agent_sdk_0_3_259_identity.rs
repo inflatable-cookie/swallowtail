@@ -33,7 +33,7 @@ fn the_bound_points_are_exactly_the_frozen_official_artifact() {
     let identity = json(IDENTITY);
     // This ledger is historical since the g05.065 rebind: it pins the frozen
     // hop with literals, while the live constants now qualify through
-    // 0.3.293/2.1.293.
+    // 0.3.295/2.1.295.
     assert_eq!(identity["official"]["version"], "0.3.259");
     assert_eq!(identity["native"]["0.3.259"]["version"], "2.1.259");
     // The npm digest is the sole artifact identity for this family, so it is

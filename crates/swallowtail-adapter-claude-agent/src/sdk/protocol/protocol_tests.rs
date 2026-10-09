@@ -1,8 +1,8 @@
 use super::{ClaudeAgentSdkProtocolFailureKind, ClaudeAgentSdkRecordKind, decode_records};
 use crate::sdk::wire::ClaudeAgentSdkDecoder;
 use crate::sdk::{
-    CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
-    CLAUDE_AGENT_SDK_PACKAGE, CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE,
+    CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_PACKAGE,
+    CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE,
     CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
     ClaudeAgentSdkPackageNativePair,
 };
@@ -101,14 +101,14 @@ fn streaming_decoder_bounds_oversized_and_partial_records() {
 }
 
 #[test]
-fn corpus_identity_matches_the_frozen_sidecar_identity() {
+fn historical_v1_corpus_identity_stays_frozen_while_sidecar_map_extends() {
     let protocol: serde_json::Value = serde_json::from_str(PROTOCOL).unwrap();
     assert_eq!(protocol["wire"], CLAUDE_AGENT_SDK_WIRE);
     assert_eq!(protocol["behavior_revision"], CLAUDE_AGENT_SDK_BEHAVIOR);
     assert_eq!(protocol["sdk_package"], CLAUDE_AGENT_SDK_PACKAGE);
-    assert_eq!(protocol["sdk_version"], CLAUDE_AGENT_SDK_VERSION);
-    assert_eq!(protocol["native_version"], CLAUDE_AGENT_SDK_NATIVE_VERSION);
-    assert_eq!(protocol["node_runtime"], CLAUDE_AGENT_SDK_NODE_RUNTIME);
+    assert_eq!(protocol["sdk_version"], "0.3.293");
+    assert_eq!(protocol["native_version"], "2.1.293");
+    assert_eq!(protocol["node_runtime"], "22.23.3");
     assert_eq!(
         protocol["sidecar_entry_file"],
         CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE
@@ -119,8 +119,8 @@ fn corpus_identity_matches_the_frozen_sidecar_identity() {
     );
     assert_eq!(protocol["package_baseline"], "0.3.284");
     assert_eq!(protocol["native_baseline"], "2.1.284");
-    let maintained_pairs: Vec<_> = ClaudeAgentSdkPackageNativePair::MAINTAINED
-        .into_iter()
+    let maintained_pairs: Vec<_> = ClaudeAgentSdkPackageNativePair::MAINTAINED[..10]
+        .iter()
         .map(|pair| {
             serde_json::json!({
                 "sdk_package_version": pair.package_version(),

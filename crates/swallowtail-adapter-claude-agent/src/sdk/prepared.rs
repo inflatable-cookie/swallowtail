@@ -101,7 +101,7 @@ impl ClaudeAgentSdkSessionPreparation {
 
     /// Selects one exact SDK package and embedded native pair from the
     /// maintained, artifact-qualified segment. Existing preparations keep the
-    /// current `0.3.293` / `2.1.293` pair by default.
+    /// retained `0.3.293` / `2.1.293` pair by default.
     #[must_use]
     pub const fn with_package_native_pair(mut self, pair: ClaudeAgentSdkPackageNativePair) -> Self {
         self.package_native_pair = pair;

@@ -83,13 +83,13 @@ pub const CLAUDE_AGENT_SDK_PACKAGE: &str = "@anthropic-ai/claude-agent-sdk";
 /// First qualified SDK wrapper package version in the maintained segment.
 pub(crate) const CLAUDE_AGENT_SDK_BASELINE_VERSION: &str = "0.3.284";
 /// Current qualified SDK wrapper package version.
-pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.293";
+pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.295";
 /// First qualified native binary version in the maintained segment.
 pub(crate) const CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION: &str = "2.1.284";
 /// Current native version the shipped SDK manifest declares. The wrapper and
 /// native axes are coupled but never equal, and neither transfers a Claude
 /// Code qualification to this route.
-pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.293";
+pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.295";
 /// Current official Node 22 runtime satisfying the upstream `>=18.0.0`
 /// requirement. The qualified Node claim retains the earlier `22.23.2` point.
 pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.3";

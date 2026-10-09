@@ -4,7 +4,7 @@
 //! manifest, the approved Node runtime, the private sidecar wire, and the
 //! source-tagged sidecar revision. The package/native axes retain their
 //! baselines and claim IDs while extending across published hops `0.3.285`–
-//! `0.3.293`; the independent Node axis is maintained through `22.23.3` (Research
+//! `0.3.295`; the independent Node axis is maintained through `22.23.3` (Research
 //! 387). Wire and sidecar source stay exact. Package/native versions are checked
 //! together; no Claude Code or ACP qualification transfers here.
 
@@ -60,6 +60,10 @@ pub enum ClaudeAgentSdkPackageNativePair {
     V0_3_292Native2_1_292,
     /// SDK package `0.3.293` with native `2.1.293`.
     V0_3_293Native2_1_293,
+    /// SDK package `0.3.294` with native `2.1.294`.
+    V0_3_294Native2_1_294,
+    /// SDK package `0.3.295` with native `2.1.295`.
+    V0_3_295Native2_1_295,
 }
 
 impl ClaudeAgentSdkPackageNativePair {
@@ -67,7 +71,7 @@ impl ClaudeAgentSdkPackageNativePair {
     pub const DEFAULT: Self = Self::V0_3_293Native2_1_293;
 
     /// Every maintained coupled pair, ordered by publication.
-    pub const MAINTAINED: [Self; 10] = [
+    pub const MAINTAINED: [Self; 12] = [
         Self::V0_3_284Native2_1_284,
         Self::V0_3_285Native2_1_285,
         Self::V0_3_286Native2_1_286,
@@ -78,6 +82,8 @@ impl ClaudeAgentSdkPackageNativePair {
         Self::V0_3_291Native2_1_291,
         Self::V0_3_292Native2_1_292,
         Self::V0_3_293Native2_1_293,
+        Self::V0_3_294Native2_1_294,
+        Self::V0_3_295Native2_1_295,
     ];
 
     /// Returns the exact SDK wrapper package version.
@@ -94,6 +100,8 @@ impl ClaudeAgentSdkPackageNativePair {
             Self::V0_3_291Native2_1_291 => "0.3.291",
             Self::V0_3_292Native2_1_292 => "0.3.292",
             Self::V0_3_293Native2_1_293 => "0.3.293",
+            Self::V0_3_294Native2_1_294 => "0.3.294",
+            Self::V0_3_295Native2_1_295 => "0.3.295",
         }
     }
 
@@ -111,6 +119,8 @@ impl ClaudeAgentSdkPackageNativePair {
             Self::V0_3_291Native2_1_291 => "2.1.291",
             Self::V0_3_292Native2_1_292 => "2.1.292",
             Self::V0_3_293Native2_1_293 => "2.1.293",
+            Self::V0_3_294Native2_1_294 => "2.1.294",
+            Self::V0_3_295Native2_1_295 => "2.1.295",
         }
     }
 }

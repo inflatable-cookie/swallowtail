@@ -1276,6 +1276,32 @@ not host-login/Auto permission evidence, qualification or authority to resume
 the retained parent. The exact `1.0.80` claim and release identities remain
 unchanged; any broader original or permission proof returns separately.
 
+
+### Consumed Initialize Archive Exception
+
+Tom answered “Approve” to decision
+`f5a0b303-deee-40fd-be71-abf596f1cb0e` on 2026-10-09, accepting the single
+consumed diagnostic as a limited archive-identity exception. The brief copied
+Research 432's incorrect archive identity
+`98640ca0de6576807f369c533c839b5742b038f105a970bdd7cb0d7efc8a7a71`, which
+Research 404 identifies as the `1.0.80` archive. The executed `1.0.93`
+executable matched the intended SHA-256
+`df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1` and its
+frozen-inventory archive
+`f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb`.
+
+This accepts the historical diagnostic under decision `e05b517f`; it does
+not erase the failure to stop on the brief's identity mismatch. Preserve the
+incorrect preparation binding, execution records, diagnostic script and
+consumed allowance unchanged. Future identity mismatches still require a
+stop and a separate ruling before execution.
+
+The attempt did not reach initialization. It supplies only the recorded
+startup failure with unknown cause; it establishes no authentication,
+permission, cancellation or no-effect guarantee. The exact `1.0.80` claim
+remains unchanged. This ruling grants no new invocation, qualification or
+parent-task continuation.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

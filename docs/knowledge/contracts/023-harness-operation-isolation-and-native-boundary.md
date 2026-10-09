@@ -373,10 +373,17 @@ A separately scoped proof may use one bounded ACP prompt per exact version,
 three total, after the operator identifies the existing approved account or
 access profile and model. Bind delegated credential mechanism, entitlement
 and exact authentication/provider network audiences before dispatch. The
-answer does not itself identify that account, profile or model. Tom clarified
-in chat the same day: “I don't have a copilot account yet”. Authenticated
-execution therefore awaits approved existing access; no account creation,
-subscription or substitute credential authority is implied. Do not extract
+answer did not itself identify that account, profile or model. On 2026-10-09,
+Tom completed CLI login and identified the GitHub account as “betterthanclay”.
+He reported Auto and a local Gemma 12B model as available selections. Use the
+existing account as the proof access reference; Auto is the candidate GitHub-
+hosted selection, conditional on exact shipped-artifact support, selected-model
+observability and bounded retry/fallback evidence. Local Gemma is a separate
+provider path and does not substitute for this authenticated proof. The login
+removes the missing-account prerequisite; it does not establish entitlement,
+credential delegation, network audiences or those model/effect budgets. No
+additional account creation, subscription or substitute credential authority
+is implied. Do not extract
 secrets, create or switch accounts, log in, relocate authentication/home state,
 or change settings. Access identifiers are sufficient; never request tokens.
 

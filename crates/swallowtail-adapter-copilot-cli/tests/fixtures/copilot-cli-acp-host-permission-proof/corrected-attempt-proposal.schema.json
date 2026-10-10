@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "copilot-cli-acp-host-permission-correction-plan.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "plan_id", "preparation_execution_authorized",
+    "original_execution_enabled", "execution_authorized",
+    "separate_original_authority_required", "qualification_changed",
+    "source_attempt", "artifact_inventory", "artifacts", "runner",
+    "pre_probes", "invocation", "action", "attempt", "ledger",
+    "normal_host_access", "cleanup"
+  ],
+  "properties": {
+    "schema": {"const": "copilot-cli-acp-host-permission-correction-plan.v1"},
+    "plan_id": {"const": "copilot-acp-normal-host-permission-1.0.93-corrected-v1"},
+    "preparation_execution_authorized": {"const": false},
+    "original_execution_enabled": {"const": false},
+    "execution_authorized": {"const": false},
+    "separate_original_authority_required": {"const": true},
+    "qualification_changed": {"const": false},
+    "source_attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["research", "attempt_record_sha256", "observation_record_sha256", "preserve_all_existing_records", "shared_prompt_slots_remaining"],
+      "properties": {
+        "research": {"const": "docs/research/435-copilot-acp-normal-host-permission-observation.md"},
+        "attempt_record_sha256": {"const": "30f16a9f2d6b0e168b0486cacb71c0f96a719bc3f7f13687807a81c11731929c"},
+        "observation_record_sha256": {"const": "982d716e615daaa7d92612c74ae84ac13ab62c26fb19005841eb1ec09ea6ac94"},
+        "preserve_all_existing_records": {"const": true},
+        "shared_prompt_slots_remaining": {"const": 3}
+      }
+    },
+    "artifact_inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"const": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"},
+        "sha256": {"const": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["wrapper_archive_sha256", "wrapper_loader_sha256", "native_archive_sha256", "native_executable_sha256", "native_manifest_sha256", "route_version", "platform"],
+      "properties": {
+        "wrapper_archive_sha256": {"const": "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"},
+        "wrapper_loader_sha256": {"const": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88"},
+        "native_archive_sha256": {"const": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb"},
+        "native_executable_sha256": {"const": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"},
+        "native_manifest_sha256": {"const": "44de35dc12ce1b582678cf565d9f8ddddb786b00dd083373948d6e453e1eb729"},
+        "route_version": {"const": "1.0.93"},
+        "platform": {"const": "darwin-arm64"}
+      }
+    },
+    "runner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "preparation_runner_sha256", "implementation_sha256"],
+      "properties": {
+        "path": {"const": "scripts/copilot-acp-host-permission-proof.py"},
+        "preparation_runner_sha256": {"const": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc"},
+        "implementation_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "pre_probes": {"type": "array", "maxItems": 0},
+    "invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executable", "argv", "wrapper_executed", "existing_account", "environment_policy", "temporary_package_cache_removed_after_cleanup", "version_gate"],
+      "properties": {
+        "executable": {"const": "exact staged package/copilot"},
+        "argv": {"const": ["--model", "auto", "--acp", "--stdio"]},
+        "wrapper_executed": {"const": false},
+        "existing_account": {"const": "betterthanclay"},
+        "environment_policy": {"type": "string"},
+        "temporary_package_cache_removed_after_cleanup": {"const": true},
+        "version_gate": {"type": "string"}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prompt", "path", "permission_reply", "approval", "resend", "effect_limit", "effect_observation"],
+      "properties": {
+        "prompt": {"type": "string"},
+        "path": {"const": "permission-sentinel.txt"},
+        "permission_reply": {"const": "cancelled only"},
+        "approval": {"const": "never"},
+        "resend": {"const": false},
+        "effect_limit": {"const": 0},
+        "effect_observation": {"type": "string"}
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_invocations", "maximum_prompts", "shared_prompt_ceiling", "shared_prompt_slots_before", "maximum_seconds_including_cleanup", "cleanup_seconds", "harness_retries", "harness_resends", "model_fallbacks", "reviewer_original_attempts", "failure_consumes_invocation", "prompt_slot_consumed_before_send"],
+      "properties": {
+        "maximum_invocations": {"const": 1},
+        "maximum_prompts": {"const": 1},
+        "shared_prompt_ceiling": {"const": 3},
+        "shared_prompt_slots_before": {"const": 3},
+        "maximum_seconds_including_cleanup": {"const": 60},
+        "cleanup_seconds": {"const": 3},
+        "harness_retries": {"const": 0},
+        "harness_resends": {"const": 0},
+        "model_fallbacks": {"const": 0},
+        "reviewer_original_attempts": {"const": 0},
+        "failure_consumes_invocation": {"const": true},
+        "prompt_slot_consumed_before_send": {"const": true}
+      }
+    },
+    "ledger": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root", "attempt_path", "prompt_path", "execution_path", "record_mode", "creation", "failure_policy", "created_in_this_task"],
+      "properties": {
+        "root": {"const": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170"},
+        "attempt_path": {"const": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170/1.0.93-corrected-attempt.json"},
+        "prompt_path": {"const": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170/1.0.93-corrected-prompt-1.json"},
+        "execution_path": {"const": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170/1.0.93-corrected-execution.json"},
+        "record_mode": {"const": "0600"},
+        "creation": {"type": "string"},
+        "failure_policy": {"type": "string"},
+        "created_in_this_task": {"const": false}
+      }
+    },
+    "normal_host_access": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["use_existing_normal_host_login", "ordinary_vendor_network_and_state_access", "credentials_or_configuration_read_by_harness", "qualification_credit"],
+      "properties": {
+        "use_existing_normal_host_login": {"const": true},
+        "ordinary_vendor_network_and_state_access": {"const": true},
+        "credentials_or_configuration_read_by_harness": {"const": false},
+        "qualification_credit": {"const": false}
+      }
+    },
+    "cleanup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["root_and_streams", "process_group_observation", "arbitrary_descendant_cleanup"],
+      "properties": {
+        "root_and_streams": {"type": "string"},
+        "process_group_observation": {"const": true},
+        "arbitrary_descendant_cleanup": {"const": "unknown-for-arbitrary-vendor-descendants"}
+      }
+    }
+  }
+}

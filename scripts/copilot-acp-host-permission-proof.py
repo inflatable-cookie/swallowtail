@@ -29,6 +29,8 @@ SCRIPT_PATH = Path(__file__).resolve()
 FIXTURE_DIR = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof"
 PLAN_PATH = FIXTURE_DIR / "plan.json"
 SCHEMA_PATH = FIXTURE_DIR / "plan.schema.json"
+CORRECTION_PLAN_PATH = FIXTURE_DIR / "corrected-attempt-proposal.json"
+CORRECTION_SCHEMA_PATH = FIXTURE_DIR / "corrected-attempt-proposal.schema.json"
 AUTHORITY_PATH = FIXTURE_DIR / "original-execution-authority.json"
 AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "original-execution-authority.schema.json"
 INVENTORY_PATH = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"
@@ -64,11 +66,20 @@ FAKE_SCENARIOS = frozenset(
         "crash-after-prompt",
         "tool-call-without-permission",
         "wrong-version",
+        "missing-version",
+        "invalid-version",
+        "oversized-version",
+        "secret-version",
+        "arbitrary-version",
+        "nonstring-version",
         "session-new-error",
     }
 )
 PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-v1"
+CORRECTION_PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-corrected-v1"
 PREPARATION_RUNNER_SHA256 = "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc"
+ORIGINAL_AUTHORITY_RUNNER_SHA256 = "42b1cd5a09e6a8cf80674f972079cbdae618c7e882f9fcfea1d662744b56aa4b"
+HISTORICAL_AUTHORITY_SHA256 = "8df1d77fe399084345c0dd94c6b954428540d37e50380578542626fc0ad17eed"
 BRIEF_SHA256 = "bdc07153187bde4f603b10e3f3a55d2b7e3b17bca23fcf7e8c7dd5afe2654a29"
 EXPECTED_INVENTORY_SHA256 = "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
 EXPECTED_WRAPPER_ARCHIVE_SHA256 = "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"
@@ -84,6 +95,17 @@ FORBIDDEN_PERSISTED_MARKERS = (
     "GH_TOKEN",
     "COPILOT_GITHUB_TOKEN",
     "-----BEGIN",
+)
+REPORTED_VERSION_MAX_LENGTH = 64
+SEMVER_IDENTIFIER = r"(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)"
+SEMVER_RE = re.compile(
+    r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)"
+    rf"(?:-{SEMVER_IDENTIFIER}(?:\.{SEMVER_IDENTIFIER})*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+)
+VERSION_SECRET_MARKER_RE = re.compile(
+    r"(?i)(?:token|secret|auth|credential|password|bearer|github_pat_|"
+    r"gh[pors][_-]|xox[baprs]-)"
 )
 
 
@@ -289,6 +311,50 @@ def load_object(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{path.name} must contain a JSON object")
     return value
+
+
+def sanitized_reported_version(value: Any) -> str | None:
+    if (
+        not isinstance(value, str)
+        or len(value) > REPORTED_VERSION_MAX_LENGTH
+        or SEMVER_RE.fullmatch(value) is None
+        or VERSION_SECRET_MARKER_RE.search(value) is not None
+    ):
+        return None
+    return value
+
+
+def classify_agent_version(value: Any, target: str = "1.0.93") -> tuple[str, str | None]:
+    if value is None:
+        return "unknown", None
+    if not isinstance(value, str):
+        return "invalid", None
+    reported = sanitized_reported_version(value)
+    if reported is None:
+        return "invalid", None
+    if reported == target:
+        return f"matched-{target}", reported
+    return "mismatch", reported
+
+
+def plan_path_for(plan: dict[str, Any]) -> Path:
+    if plan.get("plan_id") == PLAN_ID:
+        return PLAN_PATH
+    if plan.get("plan_id") == CORRECTION_PLAN_ID:
+        return CORRECTION_PLAN_PATH
+    raise ValueError("plan identity is outside the reviewed Copilot attempt set")
+
+
+def expected_runner_sha256(plan: dict[str, Any], execution_kind: str) -> str:
+    if plan.get("plan_id") == PLAN_ID and execution_kind == "original":
+        authority = load_object(AUTHORITY_PATH)
+        if sha256_file(AUTHORITY_PATH) != HISTORICAL_AUTHORITY_SHA256:
+            raise ValueError("historical authority identity changed")
+        runner_sha256 = authority.get("final_runner_sha256")
+        if runner_sha256 != ORIGINAL_AUTHORITY_RUNNER_SHA256:
+            raise ValueError("historical authority runner identity changed")
+        return runner_sha256
+    return sha256_file(SCRIPT_PATH)
 
 
 def validate_inventory_package(
@@ -538,6 +604,128 @@ def validate_plan() -> dict[str, Any]:
     return plan
 
 
+def validate_correction_plan() -> dict[str, Any]:
+    plan = load_object(CORRECTION_PLAN_PATH)
+    schema = load_object(CORRECTION_SCHEMA_PATH)
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-correction-plan.v1"
+        or schema.get("additionalProperties") is not False
+        or set(plan) != set(schema.get("required", []))
+        or set(plan) != set(schema.get("properties", {}))
+        or plan.get("schema") != "copilot-cli-acp-host-permission-correction-plan.v1"
+        or plan.get("plan_id") != CORRECTION_PLAN_ID
+        or plan.get("preparation_execution_authorized") is not False
+        or plan.get("original_execution_enabled") is not False
+        or plan.get("execution_authorized") is not False
+        or plan.get("separate_original_authority_required") is not True
+        or plan.get("qualification_changed") is not False
+        or plan.get("pre_probes") != []
+    ):
+        raise ValueError("corrected attempt proposal is malformed or enabled")
+    if plan.get("source_attempt") != {
+        "research": "docs/research/435-copilot-acp-normal-host-permission-observation.md",
+        "attempt_record_sha256": "30f16a9f2d6b0e168b0486cacb71c0f96a719bc3f7f13687807a81c11731929c",
+        "observation_record_sha256": "982d716e615daaa7d92612c74ae84ac13ab62c26fb19005841eb1ec09ea6ac94",
+        "preserve_all_existing_records": True,
+        "shared_prompt_slots_remaining": 3,
+    }:
+        raise ValueError("corrected proposal does not preserve the consumed 435 attempt")
+    if (
+        plan.get("artifact_inventory") != {
+            "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json",
+            "sha256": EXPECTED_INVENTORY_SHA256,
+        }
+        or plan.get("artifacts") != {
+            "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
+            "wrapper_loader_sha256": EXPECTED_WRAPPER_LOADER_SHA256,
+            "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
+            "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
+            "native_manifest_sha256": EXPECTED_NATIVE_MANIFEST_SHA256,
+            "route_version": "1.0.93",
+            "platform": "darwin-arm64",
+        }
+        or plan.get("runner") != {
+            "path": "scripts/copilot-acp-host-permission-proof.py",
+            "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+            "implementation_sha256": sha256_file(SCRIPT_PATH),
+        }
+    ):
+        raise ValueError("corrected proposal changed the frozen artifact or runner binding")
+    expected_environment_policy = (
+        "copy inherited environment without logging or serializing values; set "
+        "COPILOT_AUTO_UPDATE=false; set COPILOT_PKG_CACHE_HOME to a fresh temporary "
+        "directory inside task-owned scratch; remove COPILOT_CLI_VERSION and "
+        "COPILOT_CLI_DIST_DIR; preserve HOME, COPILOT_HOME, existing login, model "
+        "selection and all other inherited entries"
+    )
+    if plan.get("invocation") != {
+        "executable": "exact staged package/copilot",
+        "argv": ["--model", "auto", "--acp", "--stdio"],
+        "wrapper_executed": False,
+        "existing_account": "betterthanclay",
+        "environment_policy": expected_environment_policy,
+        "temporary_package_cache_removed_after_cleanup": True,
+        "version_gate": "retain only strict bounded SemVer; require exactly 1.0.93 before session/new; otherwise fail before session or prompt",
+    }:
+        raise ValueError("corrected launch changed its exact identity, environment or Auto policy")
+    expected_action = {
+        "prompt": PROMPT_TEXT,
+        "path": "permission-sentinel.txt",
+        "permission_reply": "cancelled only",
+        "approval": "never",
+        "resend": False,
+        "effect_limit": 0,
+        "effect_observation": "compare exact task sentinel bytes before and after; mismatch, unexpected action, missing permission, tool-call update before permission or uncertain result fails",
+    }
+    expected_attempt = {
+        "maximum_invocations": 1,
+        "maximum_prompts": 1,
+        "shared_prompt_ceiling": 3,
+        "shared_prompt_slots_before": 3,
+        "maximum_seconds_including_cleanup": 60,
+        "cleanup_seconds": 3,
+        "harness_retries": 0,
+        "harness_resends": 0,
+        "model_fallbacks": 0,
+        "reviewer_original_attempts": 0,
+        "failure_consumes_invocation": True,
+        "prompt_slot_consumed_before_send": True,
+    }
+    expected_ledger = {
+        "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170",
+        "attempt_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170/1.0.93-corrected-attempt.json",
+        "prompt_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170/1.0.93-corrected-prompt-1.json",
+        "execution_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 170/1.0.93-corrected-execution.json",
+        "record_mode": "0600",
+        "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, fsync file and parent directory; existing record refuses all relaunch",
+        "failure_policy": "never delete, reset, replace or retry a consumed attempt or prompt slot",
+        "created_in_this_task": False,
+    }
+    if (
+        plan.get("action") != expected_action
+        or plan.get("attempt") != expected_attempt
+        or plan.get("ledger") != expected_ledger
+        or plan.get("normal_host_access") != {
+            "use_existing_normal_host_login": True,
+            "ordinary_vendor_network_and_state_access": True,
+            "credentials_or_configuration_read_by_harness": False,
+            "qualification_credit": False,
+        }
+        or plan.get("cleanup") != {
+            "root_and_streams": "bounded and joined within the 60-second inclusive ceiling",
+            "process_group_observation": True,
+            "arbitrary_descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+        }
+        or sha256_file(INVENTORY_PATH) != EXPECTED_INVENTORY_SHA256
+        or sha256_file(ROOT / "docs/research/435-copilot-acp-normal-host-permission-attempt.json")
+        != "30f16a9f2d6b0e168b0486cacb71c0f96a719bc3f7f13687807a81c11731929c"
+        or sha256_file(ROOT / "docs/research/435-copilot-acp-normal-host-permission-observation.json")
+        != "982d716e615daaa7d92612c74ae84ac13ab62c26fb19005841eb1ec09ea6ac94"
+    ):
+        raise ValueError("corrected proposal changed its one-shot, sentinel, host or cleanup boundary")
+    return plan
+
+
 def validate_execution_authority(
     authority_path: Path = AUTHORITY_PATH,
     *,
@@ -563,7 +751,7 @@ def validate_execution_authority(
         "operator_decision": "d6c0fdf0-5abe-4562-a59f-e79520b20dca",
         "preparation_plan_sha256": sha256_file(PLAN_PATH),
         "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
-        "final_runner_sha256": sha256_file(SCRIPT_PATH),
+        "final_runner_sha256": ORIGINAL_AUTHORITY_RUNNER_SHA256,
         "plan_id": PLAN_ID,
         "route": "copilot-cli.acp",
         "target_version": "1.0.93",
@@ -594,7 +782,7 @@ def validate_execution_authority(
 
 
 def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
-    expected_fields = {
+    legacy_fields = {
         "schema", "plan_sha256", "runner_sha256", "execution_kind", "original_execution",
         "scenario", "status", "failure_class", "launch_error", "agent_version_observation",
         "failure_stage", "initialize_observed", "session_observed", "prompt_send_attempted",
@@ -604,9 +792,17 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         "exit_code", "cleanup", "descendant_cleanup", "stderr", "raw_protocol_persisted",
         "raw_stderr_persisted", "completed_at",
     }
-    if set(record) != expected_fields:
+    schema = record.get("schema")
+    if not (
+        schema == "copilot-cli-acp-host-permission-execution.v1" and set(record) == legacy_fields
+        or schema == "copilot-cli-acp-host-permission-execution.v2"
+        and set(record) == legacy_fields | {"agent_version_reported"}
+    ):
         raise ValueError("execution record fields differ from the reviewed safe vocabulary")
-    if record.get("schema") != "copilot-cli-acp-host-permission-execution.v1":
+    if schema not in {
+        "copilot-cli-acp-host-permission-execution.v1",
+        "copilot-cli-acp-host-permission-execution.v2",
+    }:
         raise ValueError("unexpected host permission execution record schema")
     if record.get("plan_sha256") != sha256_file(PLAN_PATH):
         raise ValueError("execution record does not bind the reviewed plan")
@@ -678,6 +874,7 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         "initialize-rpc-error",
         "initialize-protocol-mismatch",
         "agent-version-mismatch",
+        "agent-version-invalid",
         "agent-version-unobserved",
         "session-new-rpc-error",
         "session-new-protocol-mismatch",
@@ -718,9 +915,32 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         raise ValueError("execution record launch diagnostic is outside its closed vocabulary")
     if (
         not isinstance(record.get("agent_version_observation"), str)
-        or record.get("agent_version_observation") not in {"matched-1.0.93", "mismatch", "unknown"}
+        or record.get("agent_version_observation") not in {"matched-1.0.93", "mismatch", "invalid", "unknown"}
     ):
         raise ValueError("execution record agent-version observation is outside its closed vocabulary")
+    if "agent_version_reported" in record:
+        reported = record["agent_version_reported"]
+        observation = record["agent_version_observation"]
+        if reported is not None and sanitized_reported_version(reported) != reported:
+            raise ValueError("execution record reported version is not a bounded public SemVer")
+        if (
+            observation == "matched-1.0.93" and reported != "1.0.93"
+            or observation == "mismatch" and (reported is None or reported == "1.0.93")
+            or observation in {"invalid", "unknown"} and reported is not None
+        ):
+            raise ValueError("execution record reported version conflicts with its classification")
+        expected_version_failure = {
+            "mismatch": "agent-version-mismatch",
+            "invalid": "agent-version-invalid",
+        }.get(observation)
+        if expected_version_failure is not None and record.get("failure_class") != expected_version_failure:
+            raise ValueError("execution record failure class conflicts with its version classification")
+        if observation == "unknown" and (
+            record.get("session_observed") is True
+            or record.get("prompt_send_attempted") is True
+            or record.get("failure_stage") not in {"launch", "initialize"}
+        ):
+            raise ValueError("unknown agent version followed an accepted initialize")
     if not isinstance(record.get("elapsed_milliseconds"), int) or not 0 <= record["elapsed_milliseconds"] <= MAX_OUTER_SECONDS * 1000:
         raise ValueError("execution record exceeds the operation ceiling")
     if not isinstance(record.get("prompt_send_attempted"), bool) or not isinstance(record.get("prompt_send_completed"), bool):
@@ -752,6 +972,7 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         or record.get("initialize_observed") is not True
         or record.get("session_observed") is not True
         or record.get("agent_version_observation") != "matched-1.0.93"
+        or "agent_version_reported" in record and record.get("agent_version_reported") != "1.0.93"
         or record.get("prompt_send_attempted") is not True
         or record.get("prompt_send_completed") is not True
         or record.get("prompt_slot_fsynced_before_send") is not True
@@ -787,13 +1008,13 @@ def write_attempt_ledger(
     value = {
         "schema": "copilot-cli-acp-host-attempt-consumed.v1",
         "plan_id": plan["plan_id"],
-        "plan_sha256": sha256_file(PLAN_PATH),
-        "preparation_runner_sha256": plan["runner"]["sha256"],
-        "runner_sha256": sha256_file(SCRIPT_PATH),
-        "version": plan["scope"]["target_version"],
-        "wrapper_archive_sha256": plan["artifacts"]["wrapper"]["archive_sha256"],
-        "native_archive_sha256": plan["artifacts"]["native"]["archive_sha256"],
-        "native_executable_sha256": plan["artifacts"]["native"]["executable_sha256"],
+        "plan_sha256": sha256_file(plan_path_for(plan)),
+        "preparation_runner_sha256": plan["runner"].get("sha256", plan["runner"].get("preparation_runner_sha256")),
+        "runner_sha256": expected_runner_sha256(plan, execution_kind),
+        "version": plan["scope"]["target_version"] if "scope" in plan else plan["artifacts"]["route_version"],
+        "wrapper_archive_sha256": plan["artifacts"]["wrapper"]["archive_sha256"] if "scope" in plan else plan["artifacts"]["wrapper_archive_sha256"],
+        "native_archive_sha256": plan["artifacts"]["native"]["archive_sha256"] if "scope" in plan else plan["artifacts"]["native_archive_sha256"],
+        "native_executable_sha256": plan["artifacts"]["native"]["executable_sha256"] if "scope" in plan else plan["artifacts"]["native_executable_sha256"],
         "argv_sha256": sha256_bytes(json.dumps(plan["invocation"]["argv"], separators=(",", ":")).encode()),
         "environment_policy": plan["invocation"]["environment_policy"],
         "account_ref": plan["invocation"]["existing_account"],
@@ -818,10 +1039,10 @@ def validate_attempt_record(
     expected = {
         "schema": "copilot-cli-acp-host-attempt-consumed.v1",
         "plan_id": plan["plan_id"],
-        "plan_sha256": sha256_file(PLAN_PATH),
-        "preparation_runner_sha256": plan["runner"]["sha256"],
-        "runner_sha256": sha256_file(SCRIPT_PATH),
-        "version": "1.0.93",
+        "plan_sha256": sha256_file(plan_path_for(plan)),
+        "preparation_runner_sha256": plan["runner"].get("sha256", plan["runner"].get("preparation_runner_sha256")),
+        "runner_sha256": expected_runner_sha256(plan, execution_kind),
+        "version": plan["scope"]["target_version"] if "scope" in plan else plan["artifacts"]["route_version"],
         "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
         "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
         "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
@@ -847,9 +1068,9 @@ def write_prompt_slot(path: Path, attempt_bytes: bytes, plan: dict[str, Any]) ->
     value = {
         "schema": "copilot-cli-acp-host-prompt-slot-consumed.v1",
         "plan_id": plan["plan_id"],
-        "plan_sha256": sha256_file(PLAN_PATH),
+        "plan_sha256": sha256_file(plan_path_for(plan)),
         "attempt_record_sha256": sha256_bytes(attempt_bytes),
-        "version": plan["scope"]["target_version"],
+        "version": plan["scope"]["target_version"] if "scope" in plan else plan["artifacts"]["route_version"],
         "slot": 1,
         "prompt_consumed_before_send": True,
         "created_at": utc_now(),
@@ -861,9 +1082,9 @@ def validate_prompt_slot(value: dict[str, Any], attempt_bytes: bytes, plan: dict
     expected = {
         "schema": "copilot-cli-acp-host-prompt-slot-consumed.v1",
         "plan_id": plan["plan_id"],
-        "plan_sha256": sha256_file(PLAN_PATH),
+        "plan_sha256": sha256_file(plan_path_for(plan)),
         "attempt_record_sha256": sha256_bytes(attempt_bytes),
-        "version": "1.0.93",
+        "version": plan["scope"]["target_version"] if "scope" in plan else plan["artifacts"]["route_version"],
         "slot": 1,
         "prompt_consumed_before_send": True,
     }
@@ -880,7 +1101,7 @@ def validate_original_execution_record(
     plan: dict[str, Any],
     authority_sha256: str,
 ) -> dict[str, Any]:
-    fields = {
+    legacy_fields = {
         "schema", "execution_kind", "original_execution", "plan_sha256",
         "preparation_runner_sha256", "runner_sha256", "authority_sha256",
         "attempt_record_sha256", "prompt_slot_record_sha256", "target_version",
@@ -893,15 +1114,23 @@ def validate_original_execution_record(
         "action_directory_unchanged", "exit_code", "cleanup", "descendant_cleanup",
         "stderr", "raw_protocol_persisted", "raw_stderr_persisted", "completed_at",
     }
-    if set(record) != fields:
+    schema = record.get("schema")
+    if not (
+        schema == "copilot-cli-acp-host-permission-original-execution.v1" and set(record) == legacy_fields
+        or schema == "copilot-cli-acp-host-permission-original-execution.v2"
+        and set(record) == legacy_fields | {"agent_version_reported"}
+    ):
         raise ValueError("original record fields differ from the reviewed safe vocabulary")
     if (
-        record.get("schema") != "copilot-cli-acp-host-permission-original-execution.v1"
+        schema not in {
+            "copilot-cli-acp-host-permission-original-execution.v1",
+            "copilot-cli-acp-host-permission-original-execution.v2",
+        }
         or record.get("execution_kind") != "original"
         or record.get("original_execution") is not True
-        or record.get("plan_sha256") != sha256_file(PLAN_PATH)
+        or record.get("plan_sha256") != sha256_file(plan_path_for(plan))
         or record.get("preparation_runner_sha256") != PREPARATION_RUNNER_SHA256
-        or record.get("runner_sha256") != sha256_file(SCRIPT_PATH)
+        or record.get("runner_sha256") != expected_runner_sha256(plan, "original")
         or record.get("authority_sha256") != authority_sha256
         or record.get("target_version") != "1.0.93"
         or record.get("argv_sha256")
@@ -926,6 +1155,7 @@ def validate_original_execution_record(
         or record.get("failure_class") not in {
             "none", "launch-failure", "protocol-write-failure", "initialize-rpc-error",
             "initialize-protocol-mismatch", "agent-version-mismatch",
+            "agent-version-invalid",
             "agent-version-unobserved", "session-new-rpc-error",
             "session-new-protocol-mismatch", "sentinel-changed-before-prompt",
             "unexpected-action-before-prompt", "unapproved-effect-before-prompt",
@@ -945,7 +1175,7 @@ def validate_original_execution_record(
             "none", "subprocess-launch-error", "pipe-or-launch-error", "pipe-error"
         }
         or record.get("agent_version_observation") not in {
-            "matched-1.0.93", "mismatch", "unknown"
+            "matched-1.0.93", "mismatch", "invalid", "unknown"
         }
         or record.get("permission_reply") not in {"none", "cancelled"}
         or record.get("prompt_result") not in {"none", "cancelled", "end_turn", "unknown", "other"}
@@ -969,6 +1199,25 @@ def validate_original_execution_record(
         or not isinstance(record.get("completed_at"), str)
     ):
         raise ValueError("original record has invalid bounded outcomes or observations")
+    if "agent_version_reported" in record:
+        reported = record["agent_version_reported"]
+        observation = record["agent_version_observation"]
+        if reported is not None and sanitized_reported_version(reported) != reported:
+            raise ValueError("original record reported version is not a bounded public SemVer")
+        if (
+            observation == "matched-1.0.93" and reported != "1.0.93"
+            or observation == "mismatch" and (reported is None or reported == "1.0.93")
+            or observation in {"invalid", "unknown"} and reported is not None
+            or observation == "mismatch" and record.get("failure_class") != "agent-version-mismatch"
+            or observation == "invalid" and record.get("failure_class") != "agent-version-invalid"
+        ):
+            raise ValueError("original record reported version conflicts with its classification")
+        if observation == "unknown" and (
+            record.get("session_observed") is True
+            or record.get("prompt_send_attempted") is True
+            or record.get("failure_stage") not in {"launch", "initialize"}
+        ):
+            raise ValueError("unknown agent version followed an accepted initialize")
     for name in ("attempt_record_sha256", "prompt_slot_record_sha256"):
         value = record.get(name)
         if value is not None and (not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None):
@@ -1014,6 +1263,7 @@ def validate_original_execution_record(
     if record.get("status") == "passed" and (
         record.get("failure_class") != "none"
         or record.get("agent_version_observation") != "matched-1.0.93"
+        or "agent_version_reported" in record and record.get("agent_version_reported") != "1.0.93"
         or record.get("initialize_observed") is not True
         or record.get("session_observed") is not True
         or record.get("prompt_send_attempted") is not True
@@ -1251,6 +1501,17 @@ def original_directory_unchanged(action: Path) -> bool:
         return False
 
 
+def corrected_launch_environment(
+    base_environment: dict[str, str], package_cache_home: Path
+) -> dict[str, str]:
+    environment = dict(base_environment)
+    environment.pop("COPILOT_CLI_VERSION", None)
+    environment.pop("COPILOT_CLI_DIST_DIR", None)
+    environment["COPILOT_AUTO_UPDATE"] = "false"
+    environment["COPILOT_PKG_CACHE_HOME"] = str(package_cache_home)
+    return environment
+
+
 def run_original_session(
     executable: Path,
     action: Path,
@@ -1264,6 +1525,7 @@ def run_original_session(
     outer_seconds: float = MAX_OUTER_SECONDS,
     cleanup_seconds: float = MAX_CLEANUP_SECONDS,
     fake_test: bool = False,
+    base_environment: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     if not fake_test and sha256_file(executable) != EXPECTED_EXECUTABLE_SHA256:
         raise RuntimeError("staged executable identity changed before launch")
@@ -1281,6 +1543,8 @@ def run_original_session(
     total_deadline = started + outer_budget
     process: subprocess.Popen[bytes] | None = None
     client: StdioSession | None = None
+    package_cache: tempfile.TemporaryDirectory | None = None
+    child_environment: dict[str, str] | None = None
     stage = "launch"
     failure_stage = "none"
     failure = "none"
@@ -1296,6 +1560,7 @@ def run_original_session(
     prompt_slot_bytes: bytes | None = None
     tool_updates = 0
     version_observation = "unknown"
+    version_reported: str | None = None
     model_observation = "unobserved"
     stderr = BoundedDiagnostics()
     cleanup = {
@@ -1308,10 +1573,18 @@ def run_original_session(
     }
     try:
         argv = [str(executable), *plan["invocation"]["argv"]]
+        if plan.get("plan_id") == CORRECTION_PLAN_ID:
+            package_cache = tempfile.TemporaryDirectory(
+                prefix="copilot-acp-package-cache.", dir=action.parent
+            )
+            child_environment = corrected_launch_environment(
+                os.environ if base_environment is None else base_environment,
+                Path(package_cache.name),
+            )
         process = subprocess.Popen(
             argv,
             cwd=action,
-            env=None,
+            env=child_environment,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -1334,14 +1607,13 @@ def run_original_session(
             raise ProtocolFailure(failure)
         agent_info = result.get("agentInfo")
         version = agent_info.get("version") if isinstance(agent_info, dict) else None
-        if version == "1.0.93":
-            version_observation = "matched-1.0.93"
-        elif isinstance(version, str):
-            version_observation = "mismatch"
-            failure = "agent-version-mismatch"
-            raise ProtocolFailure(failure)
-        else:
-            failure = "agent-version-unobserved"
+        version_observation, version_reported = classify_agent_version(version)
+        if version_observation != "matched-1.0.93":
+            failure = {
+                "mismatch": "agent-version-mismatch",
+                "invalid": "agent-version-invalid",
+                "unknown": "agent-version-unobserved",
+            }[version_observation]
             raise ProtocolFailure(failure)
         for container in (result, agent_info):
             if isinstance(container, dict):
@@ -1485,6 +1757,8 @@ def run_original_session(
                         stream.close()
                     except OSError:
                         pass
+        if package_cache is not None:
+            package_cache.cleanup()
 
     sentinel_unchanged = original_directory_unchanged(action)
     action_directory_unchanged = sentinel_unchanged
@@ -1516,12 +1790,12 @@ def run_original_session(
         failure = "permission-proof-incomplete"
         failure_stage = "cleanup"
     record = {
-        "schema": "copilot-cli-acp-host-permission-original-execution.v1",
+        "schema": "copilot-cli-acp-host-permission-original-execution.v2",
         "execution_kind": "original",
         "original_execution": True,
-        "plan_sha256": sha256_file(PLAN_PATH),
+        "plan_sha256": sha256_file(plan_path_for(plan)),
         "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
-        "runner_sha256": sha256_file(SCRIPT_PATH),
+        "runner_sha256": expected_runner_sha256(plan, "original"),
         "authority_sha256": authority_sha256,
         "attempt_record_sha256": sha256_bytes(attempt_bytes),
         "prompt_slot_record_sha256": sha256_bytes(prompt_slot_bytes) if prompt_slot_bytes is not None else None,
@@ -1532,6 +1806,7 @@ def run_original_session(
         "launch_error": launch_error,
         "failure_stage": "none" if passed else failure_stage,
         "agent_version_observation": version_observation,
+        "agent_version_reported": version_reported,
         "model_observation": model_observation,
         "initialize_observed": initialize_observed,
         "session_observed": session_observed,
@@ -1565,6 +1840,8 @@ def run_original_session(
 def execute_original(authority_path: Path = AUTHORITY_PATH) -> dict[str, Any]:
     plan = validate_plan()
     authority, authority_sha256 = validate_execution_authority(authority_path, plan=plan)
+    if authority["final_runner_sha256"] != sha256_file(SCRIPT_PATH):
+        raise RuntimeError("the consumed authority is bound to an earlier runner; refusing relaunch")
     if platform.system() != "Darwin" or platform.machine().lower() not in {"arm64", "aarch64"}:
         raise RuntimeError("normal-host execution requires the reviewed Darwin arm64 platform")
     paths = original_ledger_paths(plan)
@@ -1771,6 +2048,7 @@ def run_fake_scenario(
         "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
     }
     agent_version_observation = "unknown"
+    agent_version_reported: str | None = None
     stderr = BoundedDiagnostics()
     launch_error = "none"
     try:
@@ -1804,14 +2082,13 @@ def run_fake_scenario(
             raise ProtocolFailure(failure)
         info = result.get("agentInfo")
         agent_version = info.get("version") if isinstance(info, dict) else None
-        if agent_version == "1.0.93":
-            agent_version_observation = "matched-1.0.93"
-        elif isinstance(agent_version, str):
-            agent_version_observation = "mismatch"
-            failure = "agent-version-mismatch"
-            raise ProtocolFailure(failure)
-        else:
-            failure = "agent-version-unobserved"
+        agent_version_observation, agent_version_reported = classify_agent_version(agent_version)
+        if agent_version_observation != "matched-1.0.93":
+            failure = {
+                "mismatch": "agent-version-mismatch",
+                "invalid": "agent-version-invalid",
+                "unknown": "agent-version-unobserved",
+            }[agent_version_observation]
             raise ProtocolFailure(failure)
         initialize_observed = True
         stage = "session-new"
@@ -1959,7 +2236,7 @@ def run_fake_scenario(
     if failure != "none" and failure_stage == "none":
         failure_stage = "cleanup"
     record = {
-        "schema": "copilot-cli-acp-host-permission-execution.v1",
+        "schema": "copilot-cli-acp-host-permission-execution.v2",
         "plan_sha256": sha256_file(PLAN_PATH),
         "runner_sha256": sha256_file(SCRIPT_PATH),
         "execution_kind": "fake",
@@ -1969,6 +2246,7 @@ def run_fake_scenario(
         "failure_class": failure,
         "launch_error": launch_error,
         "agent_version_observation": agent_version_observation,
+        "agent_version_reported": agent_version_reported,
         "failure_stage": failure_stage,
         "initialize_observed": initialize_observed,
         "session_observed": session_observed,
@@ -2156,14 +2434,24 @@ def fake_agent(scenario: str) -> int:
     if scenario == "initialize-error":
         send_fake({"jsonrpc": "2.0", "id": 1, "error": {"code": -32000, "message": "Authentication required"}})
         return 0
-    version = "1.0.92" if scenario == "wrong-version" else "1.0.93"
+    version = {
+        "wrong-version": "1.0.92",
+        "invalid-version": "/Users/operator/copilot",
+        "oversized-version": "1.0.93+" + ("a" * REPORTED_VERSION_MAX_LENGTH),
+        "secret-version": "1.0.93+token-secret",
+        "arbitrary-version": "Copilot 1.0.93 authentication failed",
+        "nonstring-version": 93,
+    }.get(scenario, "1.0.93")
+    agent_info = {"name": "task-owned-fake"}
+    if scenario != "missing-version":
+        agent_info["version"] = version
     send_fake(
         {
             "jsonrpc": "2.0",
             "id": 1,
             "result": {
                 "protocolVersion": 1,
-                "agentInfo": {"name": "task-owned-fake", "version": version},
+                "agentInfo": agent_info,
                 "agentCapabilities": {},
             },
         }
@@ -2306,6 +2594,22 @@ if os.environ.get("SWALLOWTAIL_TEST_INHERITED_VALUE") != "synthetic-inherited-va
     raise SystemExit(21)
 scenario = os.environ.get("SWALLOWTAIL_TEST_ORIGINAL_SCENARIO")
 receipt = Path(os.environ["SWALLOWTAIL_TEST_RECEIPT"])
+launch_observation = Path(os.environ["SWALLOWTAIL_TEST_LAUNCH_OBSERVATION"])
+package_cache = Path(os.environ["COPILOT_PKG_CACHE_HOME"])
+launch_values = {
+    "auto_update_disabled": os.environ.get("COPILOT_AUTO_UPDATE") == "false",
+    "private_package_cache": package_cache.parent == Path(os.environ["SWALLOWTAIL_TEST_CACHE_PARENT"]),
+    "package_cache_empty": not any(package_cache.iterdir()),
+    "cli_version_override_removed": "COPILOT_CLI_VERSION" not in os.environ,
+    "distribution_override_removed": "COPILOT_CLI_DIST_DIR" not in os.environ,
+    "existing_home_preserved": os.environ.get("HOME") == os.environ.get("SWALLOWTAIL_TEST_HOST_HOME"),
+    "existing_copilot_home_preserved": os.environ.get("COPILOT_HOME") == "/synthetic-existing-copilot-home",
+    "existing_login_preserved": os.environ.get("COPILOT_GITHUB_TOKEN") == "synthetic-login-marker" and os.environ.get("GH_TOKEN") == "synthetic-gh-marker",
+    "model_default_preserved": os.environ.get("COPILOT_MODEL") == "auto",
+}
+launch_observation.write_text(json.dumps(launch_values, sort_keys=True), encoding="utf-8")
+if not all(launch_values.values()):
+    raise SystemExit(30)
 
 def read_message():
     line = sys.stdin.buffer.readline(262145)
@@ -2372,31 +2676,39 @@ def run_fake_original(
     action = prepare_action_directory(root)
     records = root / "records"
     records.mkdir(mode=0o700)
+    synthetic_home = root / "synthetic-host-home"
+    synthetic_home.mkdir(mode=0o700)
     executable = root / "fake-native"
     write_fake_native(executable)
     attempt = records / "attempt.json"
     prompt = records / "prompt.json"
     execution = records / "execution.json"
     receipt = root / "prompt-received"
-    test_values = {
+    launch_observation = root / "launch-observation.json"
+    base_environment = {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": str(synthetic_home),
+        "COPILOT_HOME": "/synthetic-existing-copilot-home",
+        "COPILOT_GITHUB_TOKEN": "synthetic-login-marker",
+        "GH_TOKEN": "synthetic-gh-marker",
+        "COPILOT_AUTO_UPDATE": "true",
+        "COPILOT_PKG_CACHE_HOME": "/synthetic-old-package-cache",
+        "COPILOT_CLI_VERSION": "1.0.95",
+        "COPILOT_CLI_DIST_DIR": "/synthetic-dist-override",
+        "COPILOT_MODEL": "auto",
         "SWALLOWTAIL_TEST_INHERITED_VALUE": "synthetic-inherited-value",
         "SWALLOWTAIL_TEST_ORIGINAL_SCENARIO": scenario,
         "SWALLOWTAIL_TEST_RECEIPT": str(receipt),
+        "SWALLOWTAIL_TEST_LAUNCH_OBSERVATION": str(launch_observation),
+        "SWALLOWTAIL_TEST_CACHE_PARENT": str(root),
+        "SWALLOWTAIL_TEST_HOST_HOME": str(synthetic_home),
     }
-    prior = {key: os.environ.get(key) for key in test_values}
-    os.environ.update(test_values)
-    try:
-        record = run_original_session(
-            executable, action, attempt, prompt, execution, plan, authority,
-            authority_sha256, outer_seconds=outer_seconds,
-            cleanup_seconds=cleanup_seconds, fake_test=True,
-        )
-    finally:
-        for key, value in prior.items():
-            if value is None:
-                os.environ.pop(key, None)
-            else:
-                os.environ[key] = value
+    record = run_original_session(
+        executable, action, attempt, prompt, execution, plan, authority,
+        authority_sha256, outer_seconds=outer_seconds,
+        cleanup_seconds=cleanup_seconds, fake_test=True,
+        base_environment=base_environment,
+    )
     return record, {
         "root": root,
         "action": action,
@@ -2405,12 +2717,20 @@ def run_fake_original(
         "prompt": prompt,
         "execution": execution,
         "receipt": receipt,
+        "launch_observation": launch_observation,
     }
 
 
 def self_test() -> dict[str, Any]:
     plan = validate_plan()
+    correction_plan = validate_correction_plan()
     authority, authority_sha256 = validate_execution_authority(plan=plan)
+    fake_authority = {"execution_authorized": False}
+    fake_authority_sha256 = sha256_bytes(b"disabled-correction-plan-fake-authority")
+    historical_record_hashes = {
+        "attempt": sha256_file(ROOT / "docs/research/435-copilot-acp-normal-host-permission-attempt.json"),
+        "observation": sha256_file(ROOT / "docs/research/435-copilot-acp-normal-host-permission-observation.json"),
+    }
     results: dict[str, Any] = {}
     with tempfile.TemporaryDirectory(prefix="copilot-acp-host-permission-proof.") as temp_root:
         scratch = Path(temp_root).resolve()
@@ -2420,6 +2740,11 @@ def self_test() -> dict[str, Any]:
             "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
             "final_runner_sha256": sha256_file(SCRIPT_PATH),
             "execution_authority_sha256": authority_sha256,
+        }
+        results["corrected_proposal"] = {
+            "plan_sha256": sha256_file(CORRECTION_PLAN_PATH),
+            "execution_authorized": correction_plan["execution_authorized"],
+            "pre_probes": len(correction_plan["pre_probes"]),
         }
 
         bad_authority_path = scratch / "mismatched-authority.json"
@@ -2435,6 +2760,15 @@ def self_test() -> dict[str, Any]:
         if not mismatch_refused or (scratch / "mismatch-effects").exists():
             raise RuntimeError("authority identity mismatch was not rejected before effects")
         results["identity_mismatch_before_effects"] = mismatch_refused
+
+        stale_authority_refused = False
+        try:
+            execute_original()
+        except RuntimeError as error:
+            stale_authority_refused = "earlier runner" in str(error)
+        if not stale_authority_refused:
+            raise RuntimeError("consumed authority did not refuse launch under the changed runner")
+        results["consumed_authority_stale_runner_refused"] = stale_authority_refused
 
         def run(name: str, scenario: str, **kwargs: Any) -> tuple[dict[str, Any], dict[str, Path]]:
             return run_fake_scenario(scratch / name, scenario, **kwargs)
@@ -2467,25 +2801,46 @@ def self_test() -> dict[str, Any]:
         results["success"] = success
 
         original_success, original_paths = run_fake_original(
-            scratch / "original-success", "success", plan, authority, authority_sha256
+            scratch / "original-success", "success", correction_plan,
+            fake_authority, fake_authority_sha256,
         )
         validate_original_execution_evidence(
             original_paths["execution"], original_paths["attempt"],
-            original_paths["prompt"], plan, authority_sha256,
+            original_paths["prompt"], correction_plan, fake_authority_sha256,
         )
+        launch_observation = load_object(original_paths["launch_observation"])
         if (
             original_success["status"] != "passed"
+            or original_success["agent_version_reported"] != "1.0.93"
             or original_success["permission_reply"] != "cancelled"
             or original_success["permission_action_matches_sentinel"] is not True
             or original_success["sentinel_unchanged"] is not True
             or original_success["action_directory_unchanged"] is not True
             or original_success["model_observation"] != "fake-model"
+            or not all(launch_observation.values())
+            or list(original_paths["root"].glob("copilot-acp-package-cache.*"))
         ):
-            raise RuntimeError("original-shaped fake did not prove cancellation and no effect")
+            raise RuntimeError(
+                "corrected original-shaped fake failed sanitized checks: "
+                + json.dumps({
+                    "status": original_success["status"],
+                    "failure_class": original_success["failure_class"],
+                    "session_observed": original_success["session_observed"],
+                    "action_directory_unchanged": original_success["action_directory_unchanged"],
+                    "action_entry_names": sorted(item.name for item in original_paths["action"].iterdir()),
+                    "sentinel_matches": (
+                        (original_paths["action"] / "permission-sentinel.txt").is_file()
+                        and (original_paths["action"] / "permission-sentinel.txt").read_bytes() == SENTINEL_BEFORE
+                    ),
+                    "launch": launch_observation,
+                    "cache_remains": bool(list(original_paths["root"].glob("copilot-acp-package-cache.*"))),
+                }, sort_keys=True)
+            )
         results["original_shaped_launch"] = {
             "status": original_success["status"],
             "argv": "matched --model auto --acp --stdio",
-            "environment": "synthetic marker inherited with env=None",
+            "environment": launch_observation,
+            "private_package_cache_removed_after_cleanup": True,
             "permission_reply": original_success["permission_reply"],
             "prompt_result": original_success["prompt_result"],
             "sentinel_unchanged": original_success["sentinel_unchanged"],
@@ -2500,7 +2855,7 @@ def self_test() -> dict[str, Any]:
             tampered = dict(original_success)
             tampered.update(changes)
             try:
-                validate_original_execution_record(tampered, plan, authority_sha256)
+                validate_original_execution_record(tampered, correction_plan, fake_authority_sha256)
             except ValueError:
                 original_record_tamper_rejections[name] = True
             else:
@@ -2509,14 +2864,39 @@ def self_test() -> dict[str, Any]:
             "authority": True, "permission": True, "raw-field": True
         }:
             raise RuntimeError("original record validator accepted a mismatched authority or unsafe result")
+        version_record_tamper_rejections: dict[str, bool] = {}
+        for name, reported in (
+            ("path", "/Users/operator/copilot"),
+            ("oversized", "1.0.93+" + ("a" * REPORTED_VERSION_MAX_LENGTH)),
+            ("secret-like", "1.0.93+token-secret"),
+            ("arbitrary-string", "Copilot 1.0.93 authentication failed"),
+            ("valid-drift", "1.0.92"),
+        ):
+            tampered = dict(original_success)
+            tampered["agent_version_reported"] = reported
+            try:
+                validate_original_execution_record(tampered, correction_plan, fake_authority_sha256)
+            except ValueError:
+                version_record_tamper_rejections[name] = True
+            else:
+                version_record_tamper_rejections[name] = False
+        if version_record_tamper_rejections != {
+            "path": True,
+            "oversized": True,
+            "secret-like": True,
+            "arbitrary-string": True,
+            "valid-drift": True,
+        }:
+            raise RuntimeError("original record validator accepted an unsafe reported version")
+        results["reported_version_tamper_rejections"] = version_record_tamper_rejections
         results["original_record_tamper_rejections"] = original_record_tamper_rejections
 
         original_attempt_bytes = original_paths["attempt"].read_bytes()
         original_attempt_replay_refused = False
         try:
             write_attempt_ledger(
-                original_paths["attempt"], plan, "original",
-                authority_sha256=authority_sha256,
+                original_paths["attempt"], correction_plan, "original",
+                authority_sha256=fake_authority_sha256,
             )
         except FileExistsError:
             original_attempt_replay_refused = True
@@ -2525,7 +2905,7 @@ def self_test() -> dict[str, Any]:
         original_prompt_bytes = original_paths["prompt"].read_bytes()
         original_prompt_replay_refused = False
         try:
-            write_prompt_slot(original_paths["prompt"], original_attempt_bytes, plan)
+            write_prompt_slot(original_paths["prompt"], original_attempt_bytes, correction_plan)
         except FileExistsError:
             original_prompt_replay_refused = True
         if not original_prompt_replay_refused or original_paths["prompt"].read_bytes() != original_prompt_bytes:
@@ -2540,12 +2920,12 @@ def self_test() -> dict[str, Any]:
             ("crash-after-prompt", {"unknown-eof"}, True),
         ):
             record, paths = run_fake_original(
-                scratch / f"original-{scenario}", scenario, plan, authority,
-                authority_sha256,
+                scratch / f"original-{scenario}", scenario, correction_plan,
+                fake_authority, fake_authority_sha256,
             )
             validate_original_execution_evidence(
                 paths["execution"], paths["attempt"], paths["prompt"],
-                plan, authority_sha256,
+                correction_plan, fake_authority_sha256,
             )
             if (
                 record["failure_class"] not in expected_failure
@@ -2562,8 +2942,8 @@ def self_test() -> dict[str, Any]:
             }
 
         bounded, bounded_paths = run_fake_original(
-            scratch / "original-bounded-cleanup", "hang-after-permission", plan,
-            authority, authority_sha256, outer_seconds=0.8, cleanup_seconds=0.25,
+            scratch / "original-bounded-cleanup", "hang-after-permission", correction_plan,
+            fake_authority, fake_authority_sha256, outer_seconds=0.8, cleanup_seconds=0.25,
         )
         if (
             bounded["failure_class"] != "timeout"
@@ -2585,14 +2965,22 @@ def self_test() -> dict[str, Any]:
         tampered_action["permission_action_matches_sentinel"] = False
         tampered_extra = dict(success)
         tampered_extra["unreviewed_diagnostic"] = FAKE_SECRET
-        for name, tampered in (("action", tampered_action), ("field", tampered_extra)):
+        tampered_version = dict(success)
+        tampered_version["agent_version_reported"] = "1.0.92"
+        for name, tampered in (
+            ("action", tampered_action),
+            ("field", tampered_extra),
+            ("reported-version", tampered_version),
+        ):
             try:
                 validate_execution_record(tampered, plan)
             except ValueError:
                 tamper_rejections[name] = True
             else:
                 tamper_rejections[name] = False
-        if tamper_rejections != {"action": True, "field": True}:
+        if tamper_rejections != {
+            "action": True, "field": True, "reported-version": True
+        }:
             raise RuntimeError("execution record validator accepted a false proof or an extra raw field")
         results["tamper_rejections"] = tamper_rejections
 
@@ -2606,6 +2994,12 @@ def self_test() -> dict[str, Any]:
             "early-eof": "unknown-eof",
             "initialize-error": "initialize-rpc-error",
             "wrong-version": "agent-version-mismatch",
+            "missing-version": "agent-version-unobserved",
+            "invalid-version": "agent-version-invalid",
+            "oversized-version": "agent-version-invalid",
+            "secret-version": "agent-version-invalid",
+            "arbitrary-version": "agent-version-invalid",
+            "nonstring-version": "agent-version-invalid",
             "session-new-error": "session-new-rpc-error",
             "tool-call-without-permission": "tool-call-without-host-permission",
             "hang-initialize": "timeout",
@@ -2625,17 +3019,42 @@ def self_test() -> dict[str, Any]:
                 received_marker = (paths["state"] / "prompt-received").exists()
                 if not prompt_record_exists or received_marker != (scenario == "crash-after-prompt"):
                     raise RuntimeError(f"fake {scenario} lost before/after-send consumption evidence")
-            if scenario == "wrong-version" and (
+            if scenario in {
+                "wrong-version", "missing-version", "invalid-version", "oversized-version",
+                "secret-version", "arbitrary-version", "nonstring-version",
+            } and (
                 record["initialize_observed"] is not False
                 or record["session_observed"] is not False
                 or record["prompt_send_attempted"] is not False
             ):
-                raise RuntimeError("wrong-version fake reached a session or prompt before identity rejection")
+                raise RuntimeError("version-drift fake reached a session or prompt before identity rejection")
+            expected_reported_versions = {
+                "wrong-version": "1.0.92",
+                "missing-version": None,
+                "invalid-version": None,
+                "oversized-version": None,
+                "secret-version": None,
+                "arbitrary-version": None,
+                "nonstring-version": None,
+            }
+            if scenario in expected_reported_versions and record.get("agent_version_reported") != expected_reported_versions[scenario]:
+                raise RuntimeError(f"fake {scenario} did not preserve only a safe public version")
             saved = (paths["records"] / "fake-execution.json").read_bytes()
             if any(marker.encode() in saved for marker in FORBIDDEN_PERSISTED_MARKERS):
                 raise RuntimeError(f"fake {scenario} persisted a forbidden marker")
+            if scenario in {
+                "invalid-version", "oversized-version", "secret-version", "arbitrary-version"
+            }:
+                forbidden_versions = (
+                    b"/Users/operator/copilot", b"1.0.93+" + b"a" * REPORTED_VERSION_MAX_LENGTH,
+                    b"1.0.93+token-secret", b"Copilot 1.0.93 authentication failed",
+                )
+                if any(value in saved for value in forbidden_versions):
+                    raise RuntimeError(f"fake {scenario} retained an unsafe version string")
             results[scenario] = {
                 "failure_class": record["failure_class"],
+                "agent_version_observation": record["agent_version_observation"],
+                "agent_version_reported": record["agent_version_reported"],
                 "permission_reply": record["permission_reply"],
                 "prompt_slot_fsynced_before_send": record["prompt_slot_fsynced_before_send"],
                 "root_exit_observed": record["cleanup"]["root_exit_observed"],
@@ -2666,7 +3085,7 @@ def self_test() -> dict[str, Any]:
         disabled_path = success_paths["records"] / "disabled-original-attempt.json"
         original_refused = False
         try:
-            write_attempt_ledger(disabled_path, plan, "original")
+            write_attempt_ledger(disabled_path, correction_plan, "original")
         except RuntimeError:
             original_refused = True
         if not original_refused or disabled_path.exists():
@@ -2675,9 +3094,17 @@ def self_test() -> dict[str, Any]:
         results["replay_refused"] = refused
         results["prompt_replay_refused"] = prompt_refused
         results["original_entrypoint_refused"] = original_refused
+        if historical_record_hashes != {
+            "attempt": sha256_file(ROOT / "docs/research/435-copilot-acp-normal-host-permission-attempt.json"),
+            "observation": sha256_file(ROOT / "docs/research/435-copilot-acp-normal-host-permission-observation.json"),
+        }:
+            raise RuntimeError("offline fake work changed the consumed Research 435 records")
+        results["research_435_records_unchanged"] = True
     results["status"] = "passed"
     results["execution_authorized"] = plan["original_execution_enabled"]
-    results["separate_execution_authority_validated"] = True
+    results["historical_authority_validated_but_stale_for_current_runner"] = (
+        authority["final_runner_sha256"] != sha256_file(SCRIPT_PATH)
+    )
     results["execution_authority_sha256"] = authority_sha256
     results["runner_sha256"] = sha256_file(SCRIPT_PATH)
     results["preparation_plan_sha256"] = sha256_file(PLAN_PATH)
@@ -2690,6 +3117,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_mutually_exclusive_group(required=True)
     actions.add_argument("--validate-plan", action="store_true")
+    actions.add_argument("--validate-correction-plan", action="store_true")
     actions.add_argument("--validate-authority", action="store_true")
     actions.add_argument("--self-test", action="store_true")
     actions.add_argument("--validate-record", metavar="PATH")
@@ -2700,12 +3128,24 @@ def main() -> int:
         if args.validate_plan:
             plan = validate_plan()
             print(json.dumps({"status": "valid", "plan_id": plan["plan_id"], "original_execution_enabled": False}))
+        elif args.validate_correction_plan:
+            plan = validate_correction_plan()
+            print(json.dumps({
+                "status": "valid",
+                "plan_id": plan["plan_id"],
+                "original_execution_enabled": plan["original_execution_enabled"],
+                "execution_authorized": plan["execution_authorized"],
+                "implementation_sha256": plan["runner"]["implementation_sha256"],
+            }, sort_keys=True))
         elif args.validate_authority:
             plan = validate_plan()
             authority, authority_sha256 = validate_execution_authority(plan=plan)
             print(json.dumps({
                 "status": "valid",
-                "execution_authorized": authority["execution_authorized"],
+                "execution_authorized": (
+                    authority["execution_authorized"]
+                    and authority["final_runner_sha256"] == sha256_file(SCRIPT_PATH)
+                ),
                 "authority_sha256": authority_sha256,
                 "final_runner_sha256": authority["final_runner_sha256"],
                 "preparation_plan_sha256": authority["preparation_plan_sha256"],
@@ -2733,6 +3173,8 @@ def main() -> int:
         return 0
     except (OSError, ValueError, RuntimeError, ProtocolFailure, subprocess.SubprocessError) as error:
         detail = str(error) if isinstance(error, (ValueError, RuntimeError, ProtocolFailure)) else type(error).__name__
+        if args.self_test and isinstance(error, OSError) and isinstance(error.filename, str):
+            detail += f" near {Path(error.filename).name}"
         print(f"copilot host permission proof failed: {detail}", file=sys.stderr)
         return 1
 

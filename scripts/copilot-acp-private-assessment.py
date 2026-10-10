@@ -52,10 +52,12 @@ SOURCE_PATHS = [
     "crates/swallowtail-adapter-copilot-cli/src/selection.rs",
     "crates/swallowtail-adapter-copilot-cli/src/turn.rs",
     "crates/swallowtail-adapter-copilot-cli/src/turn_tests.rs",
+    "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-original-binding.schema.json",
     "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.schema.json",
     "crates/swallowtail-adapter-copilot-cli/tests/support/agent.rs",
     "crates/swallowtail-adapter-copilot-cli/tests/support/mod.rs",
     "effigy.toml",
+    "scripts/copilot-acp-original-entry.sh",
 ]
 
 
@@ -126,16 +128,40 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     effigy = (ROOT / "effigy.toml").read_text(encoding="utf-8")
     require(
         '"validate:copilot-acp-private-assessment" = [' in effigy
-        and "--lib -E 'test(/assessment_tests::/)" in effigy,
-        "the frozen enable command no longer selects the private Rust runner tests",
+        and "--lib -E 'test(/assessment_tests::/)" in effigy
+        and '"observe:copilot-acp-private-assessment" = "bash scripts/copilot-acp-original-entry.sh {args}"' in effigy,
+        "the fake validation and dedicated observe selector must remain separate",
+    )
+    validation_block = effigy.split('"validate:copilot-acp-private-assessment" = [', 1)[1].split("\n]", 1)[0]
+    launcher = (ROOT / "scripts/copilot-acp-original-entry.sh").read_text(encoding="utf-8")
+    require(
+        "run-ignored" not in validation_block
+        and "observe:copilot-acp-private-assessment" not in validation_block
+        and "--run-ignored ignored-only" in launcher
+        and "assessment_tests::runner::invoke_reviewed_original_entry" in launcher,
+        "ordinary validation must exclude the ignored real-original entry",
+    )
+    binding_schema = load_object(FIXTURE / "private-original-binding.schema.json")
+    require(
+        binding_schema.get("$id") == "copilot-acp-private-original-binding.v1"
+        and binding_schema.get("additionalProperties") is False
+        and binding_schema.get("maxBytes") == 8192
+        and set(binding_schema.get("properties", {})) == set(binding_schema.get("required", [])) == {
+            "schema", "reviewed_head", "plan_sha256", "enable_command",
+            "execution_host_id", "executable_ref", "environment_ref",
+            "working_resource_ref", "home_directory",
+        },
+        "the bounded original binding payload schema changed",
     )
     runner_source = (ROOT / "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs").read_text(
         encoding="utf-8"
     )
     require(
-        "fn frozen_enable_command_dispatches_via_local_host_to_private_runner()" in runner_source
-        and "run_original_task_once(" in runner_source,
-        "the frozen enable command no longer reaches the private one-shot runner entry",
+        "fn frozen_enable_entry_dispatches_payload_through_the_one_shot_runner()" in runner_source
+        and "fn invoke_reviewed_original_from_environment()" in runner_source
+        and "run_original_task_once(" in runner_source
+        and "OriginalRunPolicy::production()" in runner_source,
+        "the observe entry no longer dispatches into the fixed production one-shot runner",
     )
 
     route = plan.get("production_route", {})
@@ -156,7 +182,7 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "environment_ref": {
             "source": "approved host-owned EnvironmentRef",
             "forwarding": "pass unchanged through the prepared driver",
-            "capture": "capture the exact safe EnvironmentRef identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; never read or serialize environment values",
+            "capture": "capture the exact safe EnvironmentRef identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; accept only the host home path in the private binding payload and never read or serialize credential/configuration environment values",
             "drift": "fail closed before process start",
         },
         "argv": ARGV,
@@ -234,14 +260,16 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "original_execution_enabled": False,
     }, "persistent record policy changed")
     require(plan.get("original_enable_gate") == {
-        "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied LocalHostServices; the frozen selector dispatches into this runner for fake proof, while the committed exact plan fails closed before original effects; Python only validates and cannot launch",
-        "command_dispatch": "the frozen Effigy selector runs assessment_tests including frozen_enable_command_dispatches_via_local_host_to_private_runner; that test drives the shared one-shot entry with real LocalProcessHost services and only a task-owned fake ACP child; the committed exact plan remains disabled and the test-only continuation cannot launch the vendor executable",
+        "enforcement": "private ignored Rust test entry binds the planner-reviewed head, exact plan, host-binding digest and command before constructing real LocalHostServices; the committed exact plan fails closed before host input resolution and original effects; Python only validates and cannot launch",
+        "command_dispatch": "effigy observe:copilot-acp-private-assessment <binding-payload.json> selects only the ignored original-entry test; the ordinary validate selector runs fake dispatch tests and never selects the ignored entry",
         "state": "disabled in this preparation turn",
         "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-        "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; persist those safe identifiers and their hashes in private mode-0600 consumed records; hash approved executable bytes before discovery; freeze the bytes in a private mode-0700 directory and mode-0400 file with no planned writers; re-hash the approved path at the private prepared ProcessService boundary and forward the exact request; hash the original path and protected copy after cleanup; never read or serialize environment values; accept and disclose the trusted normal-host check-to-open path race",
-        "launch_side_persistence": "the disabled Rust original branch writes no user-data record and starts no original; real local-process fake runs exercise the same exclusive fsynced attempt-4 and prompt-3 writers before prepared open and prompt",
+        "before_effect": "read only a private mode-0600 bounded payload with exact safe ExecutionHostId, ExecutableRef, EnvironmentRef, working-resource ref and HOME path; bind its safe identifier digest to the plan; verify the current HOME matches; persist safe IDs and hashes in consumed records before effects; hash approved executable bytes before discovery; freeze bytes in private mode-0700/mode-0400 scratch; re-hash approved path at prepared ProcessService boundary and forward the exact request; hash original path and protected copy after cleanup; do not read or serialize credential/configuration environment values; accept and disclose trusted normal-host check-to-open path race",
+        "binding_sha256": None,
+        "binding_payload_schema": "copilot-acp-private-original-binding.v1; exact nine keys, mode 0600, maximum 8192 bytes; gate digest is compact sorted-key JSON over the five safe host-binding fields",
+        "launch_side_persistence": "the disabled Rust original entry returns before resolving host services or writing user-data records; after planner binding, the same one-shot runner writes exclusive fsynced attempt-4 and prompt-3 records before prepared open and prompt",
         "one_shot": "attempt-4 exclusive invocation record fsynced before prepared process start; prompt-3 exclusive prompt record fsynced before prepared turn; result follows cancellation, process stop, joins and release",
-        "enable_command": "effigy validate:copilot-acp-private-assessment",
+        "enable_command": "effigy observe:copilot-acp-private-assessment <binding-payload.json>",
         "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     }, "original enable gate changed")
     require(plan.get("original_execution_enabled") is False, "original execution must remain disabled")

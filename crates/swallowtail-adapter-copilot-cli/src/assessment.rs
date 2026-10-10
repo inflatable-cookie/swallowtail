@@ -41,7 +41,9 @@ impl CopilotCliAssessmentAction {
 ///
 /// Exact safe identifiers remain private for binding checks. The task runner
 /// writes those identifiers and their hashes only into mode-0600 consumed
-/// records; environment variable values are never read or serialized.
+/// records. The private original entry carries the host home path to the local
+/// process host as `HOME`; it never reads or serializes credential or
+/// configuration environment values.
 #[derive(Clone, Eq, PartialEq)]
 pub(crate) struct CopilotCliAssessmentHostBinding {
     pub(crate) execution_host_id: String,

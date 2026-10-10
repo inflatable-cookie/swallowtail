@@ -64,12 +64,14 @@
     "timeout_seconds_including_cleanup": 60
   },
   "original_enable_gate": {
-    "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; persist those safe identifiers and their hashes in private mode-0600 consumed records; hash approved executable bytes before discovery; freeze the bytes in a private mode-0700 directory and mode-0400 file with no planned writers; re-hash the approved path at the private prepared ProcessService boundary and forward the exact request; hash the original path and protected copy after cleanup; never read or serialize environment values; accept and disclose the trusted normal-host check-to-open path race",
-    "command_dispatch": "the frozen Effigy selector runs assessment_tests including frozen_enable_command_dispatches_via_local_host_to_private_runner; that test drives the shared one-shot entry with real LocalProcessHost services and only a task-owned fake ACP child; the committed exact plan remains disabled and the test-only continuation cannot launch the vendor executable",
-    "enable_command": "effigy validate:copilot-acp-private-assessment",
+    "before_effect": "read only a private mode-0600 bounded payload with exact safe ExecutionHostId, ExecutableRef, EnvironmentRef, working-resource ref and HOME path; bind its safe identifier digest to the plan; verify the current HOME matches; persist safe IDs and hashes in consumed records before effects; hash approved executable bytes before discovery; freeze bytes in private mode-0700/mode-0400 scratch; re-hash approved path at prepared ProcessService boundary and forward the exact request; hash original path and protected copy after cleanup; do not read or serialize credential/configuration environment values; accept and disclose trusted normal-host check-to-open path race",
+    "command_dispatch": "effigy observe:copilot-acp-private-assessment <binding-payload.json> selects only the ignored original-entry test; the ordinary validate selector runs fake dispatch tests and never selects the ignored entry",
+    "enable_command": "effigy observe:copilot-acp-private-assessment <binding-payload.json>",
+    "binding_sha256": null,
+    "binding_payload_schema": "copilot-acp-private-original-binding.v1; exact nine keys, mode 0600, maximum 8192 bytes; gate digest is compact sorted-key JSON over the five safe host-binding fields",
     "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-    "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied LocalHostServices; the frozen selector dispatches into this runner for fake proof, while the committed exact plan fails closed before original effects; Python only validates and cannot launch",
-    "launch_side_persistence": "the disabled Rust original branch writes no user-data record and starts no original; real local-process fake runs exercise the same exclusive fsynced attempt-4 and prompt-3 writers before prepared open and prompt",
+    "enforcement": "private ignored Rust test entry binds the planner-reviewed head, exact plan, host-binding digest and command before constructing real LocalHostServices; the committed exact plan fails closed before host input resolution and original effects; Python only validates and cannot launch",
+    "launch_side_persistence": "the disabled Rust original entry returns before resolving host services or writing user-data records; after planner binding, the same one-shot runner writes exclusive fsynced attempt-4 and prompt-3 records before prepared open and prompt",
     "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     "one_shot": "attempt-4 exclusive invocation record fsynced before prepared process start; prompt-3 exclusive prompt record fsynced before prepared turn; result follows cancellation, process stop, joins and release",
     "state": "disabled in this preparation turn"
@@ -96,11 +98,11 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment.rs",
-        "sha256": "2cc35e1f9da9a35cef1d98376c1caac6ae96504a684899913eecd1a1aa1a04ac"
+        "sha256": "7d650cfd7f1c4830932757bee3053bba8d1c7d5844c2a76b8feb389aee0bc2a1"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-        "sha256": "55926520d1b4f99607b6cdd9f771a6f5ba7a376bddb9724af5434949efecf8ed"
+        "sha256": "d2574150518dbc38aaaaaba61f1cb318a157624c48c22276ac781316c4017839"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
@@ -151,6 +153,10 @@
         "sha256": "39a70f377de8c39537a13dd1081699692c3d0fd95e66ac108c3de59ac3d23106"
       },
       {
+        "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-original-binding.schema.json",
+        "sha256": "a6cf52ac1511b33ec4a2bf8672d121dde69c452b1897b1095c628cb7ddd1ab60"
+      },
+      {
         "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.schema.json",
         "sha256": "d4b93e3f0e3fb6cdc5d48aec8a0fcb6a3e6810a4e700ee464ac24f5c34828775"
       },
@@ -164,10 +170,14 @@
       },
       {
         "path": "effigy.toml",
-        "sha256": "898e8f85a76a4a4298ba566d11c705cae148c747d17836b5a751abb8d8a33d50"
+        "sha256": "1451c8dabacd55e071827436b0145eb0f2dd6ea67275986ff51b9ec51adbc7d7"
+      },
+      {
+        "path": "scripts/copilot-acp-original-entry.sh",
+        "sha256": "3d756bd0a7d59cf1091ae2630a0aaa893b2857201efb14aac1709772c3c1af7e"
       }
     ],
-    "sha256": "a2d500827546b9f065094c0f1190c2afd18c1dfa26cfca7996d8037e8befe27a"
+    "sha256": "607fb75afc4d2716e974d2946b9c416e3841dc657390ddc02ddfcc189b11f104"
   },
   "production_route": {
     "argv": [
@@ -176,7 +186,7 @@
     ],
     "containment": "task scratch and joined owned process only; no arbitrary host or escaped-descendant containment claim",
     "environment_ref": {
-      "capture": "capture the exact safe EnvironmentRef identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; never read or serialize environment values",
+      "capture": "capture the exact safe EnvironmentRef identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; accept only the host home path in the private binding payload and never read or serialize credential/configuration environment values",
       "drift": "fail closed before process start",
       "forwarding": "pass unchanged through the prepared driver",
       "source": "approved host-owned EnvironmentRef"
@@ -231,9 +241,9 @@
   },
   "runner": {
     "implementation_path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-    "implementation_sha256": "55926520d1b4f99607b6cdd9f771a6f5ba7a376bddb9724af5434949efecf8ed",
+    "implementation_sha256": "d2574150518dbc38aaaaaba61f1cb318a157624c48c22276ac781316c4017839",
     "path": "scripts/copilot-acp-private-assessment.py",
-    "sha256": "efc1afcb3cec2f61f7a047f958d9fbec50afc8b7f8a6432e8316b420846a24ce"
+    "sha256": "807e90b159c4817e280814488e58e0f9023de6a39b5c32e1b21638b6f83e35a3"
   },
   "schema": "copilot-cli-private-assessment-plan.v1",
   "task": {

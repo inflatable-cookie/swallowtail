@@ -76,6 +76,7 @@ section = "Research Records"
 "check:current-copilot-cli-acp" = [
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/copilot-acp-currentness-ledger.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/copilot-acp-private-assessment.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
+  "bash -n scripts/copilot-acp-original-entry.sh",
   "python3 scripts/copilot-acp-private-assessment.py --validate-plan",
   "cargo check --locked --all-targets -p swallowtail-adapter-copilot-cli",
 ]
@@ -87,6 +88,7 @@ section = "Research Records"
   "cargo nextest run --locked --profile ci --test-threads 1 -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::/)'",
   "python3 scripts/copilot-acp-private-assessment.py --self-test",
 ]
+"observe:copilot-acp-private-assessment" = "bash scripts/copilot-acp-original-entry.sh {args}"
 "check:copilot-acp-authenticated-proof" = [
   "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-offline-proof.py\"), Path(\"scripts/stage-copilot-acp-offline-artifacts.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-correction-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-correction-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-preflight-record.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-execution-record-v2.schema.json\")]'",
   "python3 scripts/copilot-acp-offline-proof.py --validate-plan",

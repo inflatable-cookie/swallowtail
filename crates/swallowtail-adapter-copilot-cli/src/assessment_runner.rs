@@ -14,7 +14,12 @@ use swallowtail_runtime::{
 };
 
 const TASK_ID: &str = "7823a168-9b8f-4604-8fd7-201c2998722e";
-const FROZEN_ENABLE_COMMAND: &str = "effigy validate:copilot-acp-private-assessment";
+const FROZEN_ENABLE_COMMAND: &str =
+    "effigy observe:copilot-acp-private-assessment <binding-payload.json>";
+const ORIGINAL_ENTRY_PAYLOAD_SCHEMA: &str = "copilot-acp-private-original-binding.v1";
+const ORIGINAL_ENTRY_PAYLOAD_MAX_BYTES: u64 = 8 * 1024;
+const ORIGINAL_TOTAL_BUDGET: Duration = Duration::from_secs(60);
+const ORIGINAL_CLEANUP_BUDGET: Duration = Duration::from_secs(3);
 const SENTINEL_AFTER_TEXT: &str = "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n";
 const FAKE_PROTOCOL_SCRIPT: &str = r#"import atexit, json, os, signal, sys
 
@@ -459,6 +464,10 @@ fn run_fake_original_branch_with_scratch(
             .expect("fake reviewed head")
             .to_owned(),
         plan_sha256,
+        binding_sha256: plan["original_enable_gate"]["binding_sha256"]
+            .as_str()
+            .expect("fake host binding digest")
+            .to_owned(),
         enable_command: plan["original_enable_gate"]["enable_command"]
             .as_str()
             .expect("fake enable command")
@@ -515,6 +524,7 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
         serde_json::Value::String("0123456789abcdef0123456789abcdef01234567".to_owned());
     plan["original_enable_gate"]["enable_command"] =
         serde_json::Value::String(FROZEN_ENABLE_COMMAND.to_owned());
+    plan["original_enable_gate"]["binding_sha256"] = serde_json::Value::String("0".repeat(64));
     plan
 }
 
@@ -1057,6 +1067,7 @@ fn drive_prepared_session(
 struct PlannerBoundContinuation {
     reviewed_head: String,
     plan_sha256: String,
+    binding_sha256: String,
     enable_command: String,
 }
 
@@ -1224,6 +1235,11 @@ fn authorize_original_run(
             .get("enable_command")
             .and_then(serde_json::Value::as_str)
             != Some(continuation.enable_command.as_str())
+        || !is_lower_hex_digest(&continuation.binding_sha256)
+        || gate
+            .get("binding_sha256")
+            .and_then(serde_json::Value::as_str)
+            != Some(continuation.binding_sha256.as_str())
         || continuation.plan_sha256 != plan_sha256
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
@@ -1406,6 +1422,381 @@ struct OriginalRunPolicy {
     expected_executable_sha256: String,
     original_started: bool,
     execution_mode: &'static str,
+}
+
+impl OriginalRunPolicy {
+    fn production() -> Self {
+        Self {
+            total: ORIGINAL_TOTAL_BUDGET,
+            cleanup: ORIGINAL_CLEANUP_BUDGET,
+            expected_executable_sha256: crate::assessment::NATIVE_EXECUTABLE_SHA256.to_owned(),
+            original_started: true,
+            execution_mode: "approved-local-process-host-original",
+        }
+    }
+}
+
+struct OriginalEntryBinding {
+    reviewed_head: String,
+    plan_sha256: String,
+    enable_command: String,
+    execution_host_id: String,
+    executable_ref: String,
+    environment_ref: String,
+    working_resource_ref: String,
+    home_directory: String,
+}
+
+struct OriginalEntryHost {
+    local: LocalHostServices,
+    input: CopilotCliPreparationInput,
+    working_resource: WorkingResourceRef,
+    task_directory: PathBuf,
+    trace: Option<PathBuf>,
+}
+
+fn production_original_entry_arguments() -> Result<Vec<OsString>, OriginalRunDenied> {
+    let payload = std::env::var_os("SWALLOWTAIL_COPILOT_ACP_BINDING_PAYLOAD")
+        .ok_or(OriginalRunDenied::ContinuationMismatch)?;
+    Ok(vec![OsString::from("--payload"), payload])
+}
+
+fn invoke_reviewed_original_from_environment() -> Result<RunEvidence, OriginalRunDenied> {
+    let arguments = production_original_entry_arguments()?;
+    let plan_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
+    let plan = read_json_object(&plan_path).map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    dispatch_original_entry(&arguments, &plan, build_production_original_host)
+}
+
+fn dispatch_original_entry(
+    arguments: &[OsString],
+    plan: &serde_json::Value,
+    resolve_host: impl FnOnce(&OriginalEntryBinding) -> Result<OriginalEntryHost, OriginalRunDenied>,
+) -> Result<RunEvidence, OriginalRunDenied> {
+    let payload_path = parse_original_entry_arguments(arguments)?;
+    let payload = read_bounded_original_binding(&payload_path)?;
+    let binding = parse_original_entry_binding(&payload)?;
+    let continuation = PlannerBoundContinuation {
+        reviewed_head: binding.reviewed_head.clone(),
+        plan_sha256: binding.plan_sha256.clone(),
+        binding_sha256: original_entry_binding_sha256(&binding)?,
+        enable_command: binding.enable_command.clone(),
+    };
+
+    // The committed disabled plan is checked before resolving host IDs, paths,
+    // environment bindings, scratch, or persistent records.
+    authorize_original_run(plan, Some(&continuation))?;
+    let host = resolve_host(&binding)?;
+    let records_directory = records_directory(plan, &binding.home_directory)?;
+    run_original_task_once(
+        plan,
+        Some(&continuation),
+        host.input,
+        RequestId::new("copilot-cli.assessment.original.probe")
+            .map_err(|_| OriginalRunDenied::ContinuationMismatch)?,
+        RequestId::new("copilot-cli.assessment.original.session")
+            .map_err(|_| OriginalRunDenied::ContinuationMismatch)?,
+        host.working_resource,
+        &host.local,
+        &host.task_directory,
+        &records_directory,
+        host.trace.as_deref(),
+        OriginalRunPolicy::production(),
+    )
+}
+
+fn parse_original_entry_arguments(arguments: &[OsString]) -> Result<PathBuf, OriginalRunDenied> {
+    if arguments.len() != 2 || arguments[0] != OsString::from("--payload") {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    let path = PathBuf::from(&arguments[1]);
+    if !path.is_absolute()
+        || path.as_os_str().len() > 1024
+        || path.components().any(|component| {
+            matches!(
+                component,
+                std::path::Component::ParentDir | std::path::Component::CurDir
+            )
+        })
+    {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    Ok(path)
+}
+
+fn read_bounded_original_binding(path: &Path) -> Result<Vec<u8>, OriginalRunDenied> {
+    use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
+
+    let metadata =
+        fs::symlink_metadata(path).map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    if !metadata.is_file()
+        || metadata.file_type().is_symlink()
+        || metadata.len() > ORIGINAL_ENTRY_PAYLOAD_MAX_BYTES
+        || metadata.mode() & 0o7777 != 0o600
+    {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    let mut file = OpenOptions::new()
+        .read(true)
+        .custom_flags(libc::O_NOFOLLOW)
+        .open(path)
+        .map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    let opened = file
+        .metadata()
+        .map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    if opened.dev() != metadata.dev()
+        || opened.ino() != metadata.ino()
+        || opened.len() > ORIGINAL_ENTRY_PAYLOAD_MAX_BYTES
+        || opened.mode() & 0o7777 != 0o600
+    {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    let mut bytes = Vec::with_capacity(opened.len() as usize);
+    use std::io::Read;
+    (&mut file)
+        .take(ORIGINAL_ENTRY_PAYLOAD_MAX_BYTES + 1)
+        .read_to_end(&mut bytes)
+        .map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    if bytes.len() as u64 > ORIGINAL_ENTRY_PAYLOAD_MAX_BYTES {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    Ok(bytes)
+}
+
+fn parse_original_entry_binding(bytes: &[u8]) -> Result<OriginalEntryBinding, OriginalRunDenied> {
+    let value: serde_json::Value =
+        serde_json::from_slice(bytes).map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    let object = value
+        .as_object()
+        .ok_or(OriginalRunDenied::ContinuationMismatch)?;
+    const KEYS: [&str; 9] = [
+        "schema",
+        "reviewed_head",
+        "plan_sha256",
+        "enable_command",
+        "execution_host_id",
+        "executable_ref",
+        "environment_ref",
+        "working_resource_ref",
+        "home_directory",
+    ];
+    if object.len() != KEYS.len() || KEYS.iter().any(|key| !object.contains_key(*key)) {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    let get = |key: &str| {
+        object
+            .get(key)
+            .and_then(serde_json::Value::as_str)
+            .map(str::to_owned)
+            .ok_or(OriginalRunDenied::ContinuationMismatch)
+    };
+    let binding = OriginalEntryBinding {
+        reviewed_head: get("reviewed_head")?,
+        plan_sha256: get("plan_sha256")?,
+        enable_command: get("enable_command")?,
+        execution_host_id: get("execution_host_id")?,
+        executable_ref: get("executable_ref")?,
+        environment_ref: get("environment_ref")?,
+        working_resource_ref: get("working_resource_ref")?,
+        home_directory: get("home_directory")?,
+    };
+    if get("schema")? != ORIGINAL_ENTRY_PAYLOAD_SCHEMA
+        || binding.reviewed_head.len() != 40
+        || !binding
+            .reviewed_head
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit())
+        || !is_lower_hex_digest(&binding.plan_sha256)
+        || binding.enable_command != FROZEN_ENABLE_COMMAND
+        || !is_safe_host_id(&binding.execution_host_id)
+        || !is_safe_host_id(&binding.environment_ref)
+        || !is_safe_host_id(&binding.working_resource_ref)
+        || !is_absolute_plain_path(&binding.executable_ref)
+        || !is_absolute_plain_path(&binding.home_directory)
+    {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    Ok(binding)
+}
+
+fn original_entry_binding_sha256(
+    binding: &OriginalEntryBinding,
+) -> Result<String, OriginalRunDenied> {
+    let safe_binding = BTreeMap::from([
+        ("execution_host_id", binding.execution_host_id.as_str()),
+        ("executable_ref", binding.executable_ref.as_str()),
+        ("environment_ref", binding.environment_ref.as_str()),
+        (
+            "working_resource_ref",
+            binding.working_resource_ref.as_str(),
+        ),
+        ("home_directory", binding.home_directory.as_str()),
+    ]);
+    let bytes =
+        serde_json::to_vec(&safe_binding).map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
+    sha256_reader(bytes.as_slice()).map_err(|_| OriginalRunDenied::ContinuationMismatch)
+}
+
+fn is_lower_hex_digest(value: &str) -> bool {
+    value.len() == 64
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+}
+
+fn is_safe_host_id(value: &str) -> bool {
+    !value.is_empty()
+        && value.len() <= 128
+        && value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'_' | b'-'))
+}
+
+fn is_absolute_plain_path(value: &str) -> bool {
+    let path = Path::new(value);
+    path.is_absolute()
+        && value.len() <= 1024
+        && path.components().all(|component| {
+            matches!(
+                component,
+                std::path::Component::RootDir | std::path::Component::Normal(_)
+            )
+        })
+}
+
+fn read_json_object(path: &Path) -> std::io::Result<serde_json::Value> {
+    let bytes = fs::read(path)?;
+    let value: serde_json::Value = serde_json::from_slice(&bytes)
+        .map_err(|error| std::io::Error::new(std::io::ErrorKind::InvalidData, error))?;
+    if !value.is_object() {
+        return Err(std::io::Error::other("assessment plan is not an object"));
+    }
+    Ok(value)
+}
+
+fn records_directory(
+    plan: &serde_json::Value,
+    home_directory: &str,
+) -> Result<PathBuf, OriginalRunDenied> {
+    let root = plan
+        .get("records")
+        .and_then(|value| value.get("root"))
+        .and_then(serde_json::Value::as_str)
+        .and_then(|root| root.strip_prefix("$HOME/"))
+        .ok_or(OriginalRunDenied::RecordRootUnsafe)?;
+    if !is_absolute_plain_path(home_directory) {
+        return Err(OriginalRunDenied::RecordRootUnsafe);
+    }
+    Ok(Path::new(home_directory).join(root))
+}
+
+fn build_production_original_host(
+    binding: &OriginalEntryBinding,
+) -> Result<OriginalEntryHost, OriginalRunDenied> {
+    let home = PathBuf::from(&binding.home_directory);
+    if std::env::var_os("HOME").as_deref() != Some(home.as_os_str()) {
+        return Err(OriginalRunDenied::HostInputMismatch);
+    }
+    let home_metadata =
+        fs::symlink_metadata(&home).map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+    if !home_metadata.is_dir() || home_metadata.file_type().is_symlink() {
+        return Err(OriginalRunDenied::HostInputMismatch);
+    }
+    let execution_host_id = ExecutionHostId::new(binding.execution_host_id.clone())
+        .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+    let executable_ref = ExecutableRef::new(binding.executable_ref.clone())
+        .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+    let environment_ref = EnvironmentRef::new(binding.environment_ref.clone())
+        .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+    let working_resource = WorkingResourceRef::new(binding.working_resource_ref.clone())
+        .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+    let executable_path = PathBuf::from(executable_ref.as_host_value());
+    let task_directory = fresh_original_task_directory()?;
+    create_sentinel(&task_directory.join(SENTINEL_PATH))?;
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(executable_ref.clone(), executable_path)
+        // HOME is the sole environment value passed to the child so its
+        // existing host-owned login/config and configured default remain in use.
+        .approve_environment(
+            environment_ref.clone(),
+            [(OsString::from("HOME"), home.as_os_str().to_owned())],
+        )
+        .approve_working_resource(working_resource.clone(), task_directory.clone())
+        .build_services(execution_host_id.clone());
+    let input = original_preparation_input(execution_host_id, executable_ref, environment_ref);
+    Ok(OriginalEntryHost {
+        local,
+        input,
+        working_resource,
+        task_directory,
+        trace: None,
+    })
+}
+
+fn original_preparation_input(
+    host: ExecutionHostId,
+    executable: ExecutableRef,
+    environment: EnvironmentRef,
+) -> CopilotCliPreparationInput {
+    let profile = AccessProfileId::new("copilot-cli.assessment.host-account")
+        .expect("static profile id is valid");
+    CopilotCliPreparationInput::new(
+        ConfiguredInstanceId::new("copilot-cli.assessment.instance")
+            .expect("static instance id is valid"),
+        InstanceRevision::new("1").expect("static revision is valid"),
+        host,
+        InstalledExecutableTarget::new(
+            executable,
+            InterfaceVersionAxis::new(COPILOT_CLI_PACKAGE_AXIS)
+                .expect("static version axis is valid"),
+        ),
+        environment,
+        copilot_cli_host_account_access_profile(profile.clone()),
+        PreparedAccessEvidence::caller_asserted(AccessStatus::new(
+            profile,
+            CredentialState::NotRequired,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::ExperimentalObserved,
+        )),
+    )
+}
+
+fn fresh_original_task_directory() -> Result<PathBuf, OriginalRunDenied> {
+    let output = Command::new("mktemp")
+        .args(["-d", "-t", "copilot-acp-original-task"])
+        .output()
+        .map_err(|_| OriginalRunDenied::ScratchMismatch)?;
+    if !output.status.success() {
+        return Err(OriginalRunDenied::ScratchMismatch);
+    }
+    let path = PathBuf::from(
+        String::from_utf8(output.stdout)
+            .map_err(|_| OriginalRunDenied::ScratchMismatch)?
+            .trim(),
+    );
+    if !path.is_absolute() {
+        return Err(OriginalRunDenied::ScratchMismatch);
+    }
+    Ok(path)
+}
+
+fn create_sentinel(path: &Path) -> Result<(), OriginalRunDenied> {
+    use std::os::unix::fs::OpenOptionsExt;
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(path)
+        .map_err(|_| OriginalRunDenied::ScratchMismatch)?;
+    file.write_all(SENTINEL_BEFORE)
+        .and_then(|()| file.sync_all())
+        .map_err(|_| OriginalRunDenied::ScratchMismatch)?;
+    File::open(path.parent().ok_or(OriginalRunDenied::ScratchMismatch)?)
+        .and_then(|directory| directory.sync_all())
+        .map_err(|_| OriginalRunDenied::ScratchMismatch)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -1683,7 +2074,7 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
         &scratch.task,
         &scratch.records,
         None,
-        disabled_original_policy(),
+        OriginalRunPolicy::production(),
     );
     assert!(matches!(result, Err(OriginalRunDenied::Disabled)));
     assert_eq!(
@@ -1696,6 +2087,7 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
     let untrusted = PlannerBoundContinuation {
         reviewed_head: "untrusted-head".to_owned(),
         plan_sha256: "untrusted-plan".to_owned(),
+        binding_sha256: "untrusted-binding".to_owned(),
         enable_command: "untrusted-command".to_owned(),
     };
     let denied = run_original_task_once(
@@ -1712,7 +2104,7 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
         &scratch.task,
         &scratch.records,
         None,
-        disabled_original_policy(),
+        OriginalRunPolicy::production(),
     );
     assert!(matches!(denied, Err(OriginalRunDenied::Disabled)));
     assert_eq!(
@@ -1721,16 +2113,6 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
             .count(),
         0
     );
-}
-
-fn disabled_original_policy() -> OriginalRunPolicy {
-    OriginalRunPolicy {
-        total: Duration::from_secs(60),
-        cleanup: Duration::from_secs(3),
-        expected_executable_sha256: crate::assessment::NATIVE_EXECUTABLE_SHA256.to_owned(),
-        original_started: true,
-        execution_mode: "approved-local-process-host-original",
-    }
 }
 
 #[test]
@@ -1845,7 +2227,7 @@ fn real_local_prepared_path_timeout_cancels_joins_and_records_cleanup() {
 }
 
 #[test]
-fn frozen_enable_command_dispatches_via_local_host_to_private_runner() {
+fn prepared_path_fake_permission_and_action_correlation_are_preserved() {
     let plan_path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
     let plan: serde_json::Value =
@@ -1925,6 +2307,198 @@ fn frozen_enable_command_dispatches_via_local_host_to_private_runner() {
         assert!(invalid.record_files_private, "{mode}");
         assert!(invalid.protected_executable_removed, "{mode}");
     }
+}
+
+#[test]
+fn frozen_enable_entry_dispatches_payload_through_the_one_shot_runner() {
+    let scratch = RealScratch::new();
+    let mut plan = enabled_fake_plan(&scratch);
+    let home = std::env::var("HOME").expect("test process has an approved home directory");
+    let mut payload = serde_json::json!({
+        "schema": ORIGINAL_ENTRY_PAYLOAD_SCHEMA,
+        "reviewed_head": "0123456789abcdef0123456789abcdef01234567",
+        "plan_sha256": "0".repeat(64),
+        "enable_command": FROZEN_ENABLE_COMMAND,
+        "execution_host_id": "assessment.dispatch.fake-host",
+        "executable_ref": scratch.executable.to_string_lossy(),
+        "environment_ref": APPROVED_ENVIRONMENT,
+        "working_resource_ref": "assessment.dispatch.fake-working-resource",
+        "home_directory": home,
+    });
+    let binding = parse_original_entry_binding(
+        serde_json::to_vec(&payload)
+            .expect("fake binding serializes")
+            .as_slice(),
+    )
+    .expect("fake binding validates");
+    plan["original_enable_gate"]["binding_sha256"] = serde_json::Value::String(
+        original_entry_binding_sha256(&binding).expect("safe binding hashes"),
+    );
+    payload["plan_sha256"] = serde_json::Value::String(
+        sha256_reader(
+            serde_json::to_vec(&plan)
+                .expect("fake enabled plan serializes")
+                .as_slice(),
+        )
+        .expect("fake enabled plan hashes"),
+    );
+    let payload_path = scratch.executable.parent().unwrap().join("binding.json");
+    write_private_payload(&payload_path, &payload);
+    let arguments = vec![
+        OsString::from("--payload"),
+        payload_path.clone().into_os_string(),
+    ];
+
+    let resolved = std::cell::Cell::new(false);
+    let result = dispatch_original_entry(&arguments, &plan, |binding| {
+        resolved.set(true);
+        let host = ExecutionHostId::new(binding.execution_host_id.clone())
+            .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+        let executable = ExecutableRef::new(binding.executable_ref.clone())
+            .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+        let environment = EnvironmentRef::new(binding.environment_ref.clone())
+            .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+        let working_resource = WorkingResourceRef::new(binding.working_resource_ref.clone())
+            .map_err(|_| OriginalRunDenied::HostInputMismatch)?;
+        let python = find_program("python3").expect("Effigy provides python3");
+        let (builder, _target) = LocalProcessHost::builder(LocalProcessLimits::default())
+            .approve_installed_executable_launch(
+                executable.clone(),
+                InterfaceVersionAxis::new(COPILOT_CLI_PACKAGE_AXIS).expect("static package axis"),
+                LocalExecutableLaunch::interpreted_script(python, scratch.executable.clone()),
+            );
+        let local = builder
+            .approve_environment(
+                environment.clone(),
+                [
+                    (
+                        OsString::from("HOME"),
+                        OsString::from(&binding.home_directory),
+                    ),
+                    (
+                        OsString::from("SWALLOWTAIL_FAKE_MODE"),
+                        OsString::from("permission"),
+                    ),
+                    (
+                        OsString::from("SWALLOWTAIL_FAKE_TRACE"),
+                        scratch.trace.as_os_str().to_owned(),
+                    ),
+                    (
+                        OsString::from("SWALLOWTAIL_FAKE_RECORDS"),
+                        scratch.records.as_os_str().to_owned(),
+                    ),
+                ],
+            )
+            .approve_working_resource(working_resource.clone(), scratch.task.clone())
+            .build_services(host.clone());
+        Ok(OriginalEntryHost {
+            local,
+            input: original_preparation_input(host, executable, environment),
+            working_resource,
+            task_directory: scratch.task.clone(),
+            trace: Some(scratch.trace.clone()),
+        })
+    });
+    assert!(resolved.get());
+    assert!(matches!(
+        result,
+        Err(OriginalRunDenied::ExecutableIdentityMismatch)
+    ));
+    assert_eq!(fs::read_dir(&scratch.records).unwrap().count(), 0);
+    assert!(fs::read_to_string(&scratch.trace).is_err());
+    let production = OriginalRunPolicy::production();
+    assert_eq!(production.total, Duration::from_secs(60));
+    assert_eq!(production.cleanup, Duration::from_secs(3));
+    assert_eq!(
+        production.expected_executable_sha256,
+        crate::assessment::NATIVE_EXECUTABLE_SHA256
+    );
+    assert!(production.original_started);
+    assert_eq!(
+        production.execution_mode,
+        "approved-local-process-host-original"
+    );
+
+    let mut drifted = payload;
+    drifted["environment_ref"] =
+        serde_json::Value::String("assessment.other-environment".to_owned());
+    write_private_payload(&payload_path, &drifted);
+    let resolved = std::cell::Cell::new(false);
+    let result = dispatch_original_entry(&arguments, &plan, |_| {
+        resolved.set(true);
+        Err(OriginalRunDenied::HostInputMismatch)
+    });
+    assert!(matches!(
+        result,
+        Err(OriginalRunDenied::ContinuationMismatch)
+    ));
+    assert!(!resolved.get());
+    assert_eq!(fs::read_dir(&scratch.records).unwrap().count(), 0);
+}
+
+#[test]
+fn disabled_original_entry_rejects_before_host_resolution_or_record_effects() {
+    let scratch = RealScratch::new();
+    let plan_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
+    let plan = read_json_object(&plan_path).expect("disabled plan is readable");
+    let plan_sha256 = sha256_reader(
+        serde_json::to_vec(&plan)
+            .expect("disabled plan serializes")
+            .as_slice(),
+    )
+    .expect("disabled plan hashes");
+    let payload = serde_json::json!({
+        "schema": ORIGINAL_ENTRY_PAYLOAD_SCHEMA,
+        "reviewed_head": "0123456789abcdef0123456789abcdef01234567",
+        "plan_sha256": plan_sha256,
+        "enable_command": FROZEN_ENABLE_COMMAND,
+        "execution_host_id": "assessment.disabled.fake-host",
+        "executable_ref": scratch.executable.to_string_lossy(),
+        "environment_ref": APPROVED_ENVIRONMENT,
+        "working_resource_ref": "assessment.disabled.fake-working-resource",
+        "home_directory": std::env::var("HOME").expect("HOME is set"),
+    });
+    let payload_path = scratch
+        .executable
+        .parent()
+        .unwrap()
+        .join("disabled-binding.json");
+    write_private_payload(&payload_path, &payload);
+    let arguments = vec![OsString::from("--payload"), payload_path.into_os_string()];
+    let resolved = std::cell::Cell::new(false);
+    let result = dispatch_original_entry(&arguments, &plan, |_| {
+        resolved.set(true);
+        Err(OriginalRunDenied::HostInputMismatch)
+    });
+    assert!(matches!(result, Err(OriginalRunDenied::Disabled)));
+    assert!(!resolved.get());
+    assert_eq!(fs::read_dir(&scratch.records).unwrap().count(), 0);
+    assert!(fs::read_to_string(&scratch.trace).is_err());
+}
+
+#[test]
+#[ignore = "only the planner-bound observe selector may invoke the original entry"]
+fn invoke_reviewed_original_entry() {
+    let evidence = invoke_reviewed_original_from_environment()
+        .unwrap_or_else(|_| panic!("reviewed Copilot ACP original entry failed closed"));
+    assert_eq!(evidence.cleanup, "clean");
+    assert_eq!(evidence.status, "permission-cancelled");
+    assert_eq!(evidence.result_record["effect_count"], 0);
+}
+
+fn write_private_payload(path: &Path, value: &serde_json::Value) {
+    use std::os::unix::fs::OpenOptionsExt;
+    let mut file = OpenOptions::new()
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .mode(0o600)
+        .open(path)
+        .expect("create mode-0600 test binding payload");
+    file.write_all(&serde_json::to_vec(value).expect("payload serializes"))
+        .expect("write test binding payload");
+    file.sync_all().expect("sync test binding payload");
 }
 
 #[test]
@@ -2058,6 +2632,10 @@ fn enabled_runner_requires_the_exact_planner_head_plan_and_command_binding() {
                 .as_slice(),
         )
         .expect("fake plan hashes"),
+        binding_sha256: plan["original_enable_gate"]["binding_sha256"]
+            .as_str()
+            .expect("fake host binding digest exists")
+            .to_owned(),
         enable_command: plan["original_enable_gate"]["enable_command"]
             .as_str()
             .expect("fake enable command exists")
@@ -2099,6 +2677,10 @@ fn enabled_runner_requires_the_exact_planner_head_plan_and_command_binding() {
                 .as_slice(),
         )
         .expect("record-gate plan hashes"),
+        binding_sha256: plan["original_enable_gate"]["binding_sha256"]
+            .as_str()
+            .expect("fake host binding digest exists")
+            .to_owned(),
         enable_command: plan["original_enable_gate"]["enable_command"]
             .as_str()
             .expect("fake enable command exists")

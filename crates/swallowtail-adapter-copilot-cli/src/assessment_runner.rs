@@ -42,6 +42,8 @@ if "--version" in sys.argv:
     if mode == "discovery-mutates-executable":
         with open(__file__, "a", encoding="utf-8") as stream:
             stream.write("\n# task-owned executable mutation\n")
+    if mode == "discovery-removes-approved-executable":
+        os.unlink(__file__)
     if mode == "discovery-removes-task-scratch":
         task = os.environ.get("SWALLOWTAIL_FAKE_TASK", TASK_SCRATCH_FALLBACK)
         os.unlink(os.path.join(task, "permission-sentinel.txt"))
@@ -1073,8 +1075,8 @@ fn drive_prepared_session(
     let executable_digest_after_cleanup = measured_file_sha256(executable_path);
     let identity_drift_after_cleanup = executable_digest_after_cleanup
         .as_deref()
-        .map(|digest| digest != binding.executable_bytes_sha256);
-    if identity_drift_after_cleanup == Some(true) {
+        .is_none_or(|digest| digest != binding.executable_bytes_sha256);
+    if identity_drift_after_cleanup {
         status = "identity-drift-after-cleanup";
     }
     let protected_executable_drift = protected_executable_sha256_before_cleanup
@@ -1125,7 +1127,7 @@ fn drive_prepared_session(
         process_trace.contains("prompt-record-visible-before-send:True");
     let mut terminal_accepted = effect_count == Some(0)
         && cleanup_label == "clean"
-        && identity_drift_after_cleanup == Some(false)
+        && !identity_drift_after_cleanup
         && protected_executable_drift == Some(false)
         && protected_executable_removed
         && match terminal_label {
@@ -3149,6 +3151,28 @@ fn actual_prepared_runner_retains_bounded_preparation_causes_and_cleanup_evidenc
     assert_eq!(
         changed_executable.result_record["effect_state"],
         "unchanged"
+    );
+
+    let missing_approved_executable = run_fake_original_branch(
+        "discovery-removes-approved-executable",
+        Duration::from_secs(3),
+        Duration::from_millis(500),
+    );
+    assert_eq!(
+        missing_approved_executable.status,
+        "identity-drift-after-cleanup"
+    );
+    assert!(
+        missing_approved_executable.result_record["approved_executable_sha256_after_cleanup"]
+            .is_null()
+    );
+    assert_eq!(
+        missing_approved_executable.result_record["identity_drift_after_cleanup"],
+        true
+    );
+    assert_eq!(
+        missing_approved_executable.result_record["terminal_accepted"],
+        false
     );
 
     let unavailable_measurement = run_fake_original_branch(

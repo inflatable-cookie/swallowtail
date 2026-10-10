@@ -1708,6 +1708,33 @@ vocabulary, sandbox implementations, configuration files, transcript formats,
 or credential stores. It does not authorize repository writes, provider
 fallback, or consumer routing policy.
 
+## Copilot Corrected Normal Host Attempt
+
+Tom answered “Approve one corrected attempt” to decision
+`acb7a075-390a-48b6-99b5-a6eea4d9920e` on 2026-10-10. This authorizes
+exactly one original attempt under the reviewed
+[Research 436 proposal](../../research/436-copilot-acp-initialize-version-diagnostic.md),
+proposal SHA-256 `1e42dcf2188bedeeb8bd5b0e0505b4303c864a0063b2e1f47deb94c1b951717e`.
+The frozen native executable and archive remain `df347f27…` and `f254651a…`.
+
+Before execution, fix and fake-prove the private package-cache cleanup exception
+so cleanup failure cannot prevent the sanitized outcome record from being
+written. Bind the final authority, launch delta and runner identity, and persist
+the fake-pass record and exclusive consumed invocation record before launch.
+
+Only the child environment changes: set `COPILOT_AUTO_UPDATE=false`, use a
+fresh task-owned package cache, and remove `COPILOT_CLI_VERSION` and
+`COPILOT_CLI_DIST_DIR`. Preserve `HOME`, existing `betterthanclay` login and
+Auto. Retain only a strict bounded public version and require exactly `1.0.93`
+before session creation or the one harmless sentinel prompt. Cancel permission;
+never approve. The limit is 60 seconds including cleanup, with no pre-probes,
+retry, resend or reviewer original execution.
+
+Preserve every prior consumed record. At most one of the three unused shared
+prompt slots may be consumed. No VM, new login, credential extraction, user
+settings changes, automatic qualification or release authority is included.
+The normal-host access and truthful descendant-cleanup limits still apply.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

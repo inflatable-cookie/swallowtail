@@ -40,6 +40,14 @@ CORRECTED_AUTHORITY_PATH = FIXTURE_DIR / "corrected-execution-authority.json"
 CORRECTED_AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "corrected-execution-authority.schema.json"
 NEXT_ATTEMPT_PROPOSAL_PATH = FIXTURE_DIR / "task-172-attempt-proposal.json"
 NEXT_ATTEMPT_PROPOSAL_SCHEMA_PATH = FIXTURE_DIR / "task-172-attempt-proposal.schema.json"
+TASK173_PLAN_PATH = FIXTURE_DIR / "task-173-execution-plan.json"
+TASK173_PLAN_SCHEMA_PATH = FIXTURE_DIR / "task-173-execution-plan.schema.json"
+TASK173_AUTHORITY_PATH = FIXTURE_DIR / "task-173-execution-authority.json"
+TASK173_AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "task-173-execution-authority.schema.json"
+TASK173_FAKE_PASS_PATH = ROOT / "docs/research/439-copilot-acp-pending-announcement-cancellation-fake-pass.json"
+TASK173_ATTEMPT_EVIDENCE_PATH = ROOT / "docs/research/439-copilot-acp-pending-announcement-cancellation-attempt.json"
+TASK173_PROMPT_EVIDENCE_PATH = ROOT / "docs/research/439-copilot-acp-pending-announcement-cancellation-prompt-slot.json"
+TASK173_EXECUTION_EVIDENCE_PATH = ROOT / "docs/research/439-copilot-acp-pending-announcement-cancellation-execution.json"
 ACP_PROTOCOL_FIXTURE_PATH = ROOT / "crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/protocol.json"
 INVENTORY_PATH = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"
 CORRECTED_FAKE_PASS_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json"
@@ -118,6 +126,19 @@ CORRECTED_OPERATOR_DECISION = "acb7a075-390a-48b6-99b5-a6eea4d9920e"
 TASK172_ID = "09baa0ef-09bc-45d8-a201-96149af03d7b"
 TASK172_RUN_ID = "24b836d2-df09-4cc1-91b3-8f44454f9d2b"
 TASK172_PROPOSAL_ID = "copilot-acp-normal-host-permission-1.0.93-task-172-v1"
+TASK172_RUNNER_SHA256 = "82329be0e4f1853f378d5a80143c5c197836ed3591464b6953f2326b0c37c04b"
+TASK172_PROPOSAL_SHA256 = "fa0da4b9c73db7f099f1ccaaa18ef8d7fd16e74387ba94a94a2796494c3c4c0b"
+TASK173_ID = "4776be7a-f552-492f-ba62-cfb6b6b99cad"
+TASK173_RUN_ID = "2c9994e6-c963-4fe2-91ad-e2d69039e60e"
+TASK173_BRIEF_SHA256 = "16bcef0518003c40a1c9d8f9621b7f163a53f65a33f1641741b5abb3f6ee8400"
+TASK173_OPERATOR_DECISION = "d7b9664a-98bc-441a-9f01-f91b9c236699"
+TASK173_PREVIOUS_AUTHORITY_SHA256 = "bd06e2544216e8ce300dbae59d1f13e055e23bb137862025e92c4288ab22450c"
+TASK173_SOURCE_ATTEMPT_SHA256 = "10639b7fdd2cd10899d52eb13cd44b66c51167672407ff2a069e42ffbf65d928"
+TASK173_SOURCE_PROMPT_SHA256 = "e2dec4e3714a282b640ab1b9e9a5820e473b0cea69f7199fe28c5c293a554c58"
+TASK173_SOURCE_EXECUTION_SHA256 = "1de648daa5e5491bb75a37c4fda44565e49876caa9f8e6df7ec4a31e706f0bca"
+TASK173_SOURCE_FAKE_PASS_SHA256 = "905866db7aaeac5876e7fcfd5845127b522647b918b7b98d14eda993f420cc1d"
+TASK173_PROTOCOL_STATE_MACHINE_SHA256 = "8b4d9f3e81b5ccffabde082e2cb7f028c050fdd562475b725765fa60c4da637b"
+TASK173_FINAL_PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-task-173-v1"
 FINAL_CORRECTED_ATTEMPT_RUNNER_SHA256 = "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040"
 EXPECTED_INVENTORY_SHA256 = "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
 EXPECTED_WRAPPER_ARCHIVE_SHA256 = "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"
@@ -382,6 +403,8 @@ def plan_path_for(plan: dict[str, Any]) -> Path:
         return CORRECTION_PLAN_PATH
     if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
         return FINAL_CORRECTION_PLAN_PATH
+    if plan.get("plan_id") == TASK173_FINAL_PLAN_ID:
+        return TASK173_PLAN_PATH
     raise ValueError("plan identity is outside the reviewed Copilot attempt set")
 
 
@@ -399,6 +422,8 @@ def expected_runner_sha256(plan: dict[str, Any], execution_kind: str) -> str:
             raise ValueError("historical corrected proposal runner identity changed")
         return TASK170_CORRECTION_RUNNER_SHA256
     if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        return plan.get("runner", {}).get("implementation_sha256", "")
+    if plan.get("plan_id") == TASK173_FINAL_PLAN_ID:
         return plan.get("runner", {}).get("implementation_sha256", "")
     return sha256_file(SCRIPT_PATH)
 
@@ -935,7 +960,7 @@ def validate_task172_proposal() -> dict[str, Any]:
         or proposal.get("runner") != {
             "path": "scripts/copilot-acp-host-permission-proof.py",
             "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
-            "implementation_sha256": sha256_file(SCRIPT_PATH),
+            "implementation_sha256": TASK172_RUNNER_SHA256,
         }
         or proposal.get("pre_probes") != []
         or proposal.get("invocation") != invocation
@@ -980,6 +1005,334 @@ def validate_task172_proposal() -> dict[str, Any]:
     if any(marker in serialized for marker in FORBIDDEN_PERSISTED_MARKERS):
         raise ValueError("Task 172 proposal contains a secret or synthetic marker")
     return proposal
+
+
+def task173_source_attempt() -> dict[str, Any]:
+    return {
+        "consumed_task_number": 171,
+        "research": "docs/research/437-copilot-acp-corrected-normal-host-attempt.md",
+        "attempt_record_sha256": TASK173_SOURCE_ATTEMPT_SHA256,
+        "prompt_slot_record_sha256": TASK173_SOURCE_PROMPT_SHA256,
+        "execution_record_sha256": TASK173_SOURCE_EXECUTION_SHA256,
+        "fake_pass_record_sha256": TASK173_SOURCE_FAKE_PASS_SHA256,
+        "prior_authority_sha256": TASK173_PREVIOUS_AUTHORITY_SHA256,
+        "invocations_consumed_before": 2,
+        "shared_prompt_ceiling": 3,
+        "prompts_consumed_before": 1,
+        "shared_prompt_slots_remaining_before": 2,
+        "first_tool_call_status": "not-recorded",
+        "protocol_state_machine_sha256": TASK173_PROTOCOL_STATE_MACHINE_SHA256,
+        "preserve_all_existing_records": True,
+    }
+
+
+def validate_task173_plan() -> dict[str, Any]:
+    plan = load_object(TASK173_PLAN_PATH)
+    schema = load_object(TASK173_PLAN_SCHEMA_PATH)
+    proposal = validate_task172_proposal()
+    ledger_root = "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 172"
+    expected_ledger = dict(proposal["ledger"])
+    expected_ledger["created_in_this_task"] = True
+    expected_invocation = {
+        "executable": "exact staged package/copilot",
+        "argv": ["--model", "auto", "--acp", "--stdio"],
+        "wrapper_executed": False,
+        "existing_account": "betterthanclay",
+        "model": "Auto",
+        "environment_policy": (
+            "copy the inherited environment without reading or logging it; only in the child set "
+            "COPILOT_AUTO_UPDATE=false, set COPILOT_PKG_CACHE_HOME to a fresh temporary "
+            "directory, and remove COPILOT_CLI_VERSION and COPILOT_CLI_DIST_DIR; preserve HOME, "
+            "COPILOT_HOME, the existing login, Auto selection and all other inherited entries"
+        ),
+        "temporary_package_cache_removed_after_cleanup": True,
+        "version_gate": "require the bounded public agentInfo.version to equal 1.0.93 before session/new and the prompt",
+    }
+    expected_action = {
+        "prompt": PROMPT_TEXT,
+        "path": "permission-sentinel.txt",
+        "permission_reply": "cancelled only",
+        "approval": "never",
+        "resend": False,
+        "effect_limit": 0,
+        "effect_observation": "compare the exact sentinel bytes and action-directory entries before and after; retain no paths or raw protocol",
+    }
+    expected_attempt = {
+        "maximum_invocations": 1,
+        "maximum_prompts": 1,
+        "invocations_consumed_before": 2,
+        "shared_prompt_ceiling": 3,
+        "shared_prompt_slots_consumed_before": 1,
+        "shared_prompt_slots_remaining_before": 2,
+        "shared_prompt_slots_remaining_after": 1,
+        "maximum_seconds_including_cleanup": 60,
+        "cleanup_seconds": 3,
+        "harness_retries": 0,
+        "harness_resends": 0,
+        "model_fallbacks": 0,
+        "reviewer_original_attempts": 0,
+        "failure_consumes_invocation": True,
+        "prompt_slot_consumed_before_send": True,
+    }
+    expected_artifacts = {
+        "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
+        "wrapper_manifest_sha256": EXPECTED_WRAPPER_MANIFEST_SHA256,
+        "wrapper_loader_sha256": EXPECTED_WRAPPER_LOADER_SHA256,
+        "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
+        "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
+        "native_manifest_sha256": EXPECTED_NATIVE_MANIFEST_SHA256,
+        "route_version": "1.0.93",
+        "platform": "darwin-arm64",
+    }
+    expected_fake_path = "docs/research/439-copilot-acp-pending-announcement-cancellation-fake-pass.json"
+    expected_authority_path = "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-authority.json"
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-task-173-final-plan.v1"
+        or schema.get("additionalProperties") is not False
+        or set(plan) != set(schema.get("required", []))
+        or set(plan) != set(schema.get("properties", {}))
+        or plan.get("schema") != schema.get("$id")
+        or plan.get("plan_id") != TASK173_FINAL_PLAN_ID
+        or plan.get("task_number") != 173
+        or plan.get("task_id") != TASK173_ID
+        or plan.get("run_id") != TASK173_RUN_ID
+        or plan.get("brief_sha256") != TASK173_BRIEF_SHA256
+        or plan.get("operator_decision") != TASK173_OPERATOR_DECISION
+        or plan.get("source_proposal_path") != "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-172-attempt-proposal.json"
+        or plan.get("source_proposal_sha256") != TASK172_PROPOSAL_SHA256
+        or sha256_file(NEXT_ATTEMPT_PROPOSAL_PATH) != TASK172_PROPOSAL_SHA256
+        or plan.get("source_attempt") != task173_source_attempt()
+        or plan.get("protocol_state_machine_sha256") != TASK173_PROTOCOL_STATE_MACHINE_SHA256
+        or plan.get("artifact_inventory") != {
+            "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json",
+            "sha256": EXPECTED_INVENTORY_SHA256,
+        }
+        or plan.get("artifacts") != expected_artifacts
+        or plan.get("runner") != {
+            "path": "scripts/copilot-acp-host-permission-proof.py",
+            "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+            "source_runner_sha256": TASK172_RUNNER_SHA256,
+            "implementation_sha256": sha256_file(SCRIPT_PATH),
+        }
+        or plan.get("preparation_plan_sha256") != sha256_file(PLAN_PATH)
+        or plan.get("preparation_runner_sha256") != PREPARATION_RUNNER_SHA256
+        or plan.get("preparation_execution_authorized") is not False
+        or plan.get("original_execution_enabled") is not True
+        or plan.get("execution_authorized") is not True
+        or plan.get("separate_original_authority_required") is not True
+        or plan.get("qualification_changed") is not False
+        or plan.get("pre_probes") != []
+        or plan.get("invocation") != expected_invocation
+        or plan.get("action") != expected_action
+        or plan.get("attempt") != expected_attempt
+        or plan.get("ledger") != expected_ledger
+        or plan.get("ledger", {}).get("root") != ledger_root
+        or plan.get("normal_host_access") != {
+            "use_existing_normal_host_login": True,
+            "ordinary_vendor_network_and_state_access": True,
+            "credentials_or_configuration_read_by_harness": False,
+            "qualification_credit": False,
+        }
+        or plan.get("cleanup") != {
+            "root_and_streams": "bounded and joined within the 60-second inclusive ceiling",
+            "process_group_observation": True,
+            "arbitrary_descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+        }
+        or plan.get("fake_pass_record_path") != expected_fake_path
+        or plan.get("authority_path") != expected_authority_path
+    ):
+        raise ValueError("Task 173 plan is malformed or detached from the reviewed Task 172 proposal")
+    if sha256_file(INVENTORY_PATH) != EXPECTED_INVENTORY_SHA256:
+        raise ValueError("Task 173 artifact inventory changed")
+    runner_source = SCRIPT_PATH.read_bytes()
+    machine_marker = runner_source.find(b"\nTOOL_STATUSES = ")
+    machine_start = machine_marker + 1
+    machine_end = runner_source.find(b"\ndef process_group_exists", machine_start)
+    if (
+        machine_marker < 0
+        or machine_end <= machine_start
+        or sha256_bytes(runner_source[machine_start:machine_end]) != TASK173_PROTOCOL_STATE_MACHINE_SHA256
+    ):
+        raise ValueError("Task 173 changed the already-reviewed pending cancellation state machine")
+    for path, expected_sha in (
+        (ROOT / "docs/research/437-copilot-acp-corrected-normal-host-attempt.json", TASK173_SOURCE_ATTEMPT_SHA256),
+        (ROOT / "docs/research/437-copilot-acp-corrected-normal-host-prompt-slot.json", TASK173_SOURCE_PROMPT_SHA256),
+        (ROOT / "docs/research/437-copilot-acp-corrected-normal-host-execution.json", TASK173_SOURCE_EXECUTION_SHA256),
+        (ROOT / "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json", TASK173_SOURCE_FAKE_PASS_SHA256),
+        (CORRECTED_AUTHORITY_PATH, TASK173_PREVIOUS_AUTHORITY_SHA256),
+    ):
+        if sha256_file(path) != expected_sha:
+            raise ValueError("Task 173 source evidence or consumed authority changed")
+    serialized = json.dumps(plan, sort_keys=True)
+    if any(marker in serialized for marker in FORBIDDEN_PERSISTED_MARKERS):
+        raise ValueError("Task 173 plan contains a secret or synthetic marker")
+    return plan
+
+
+def validate_task173_fake_pass(plan: dict[str, Any] | None = None) -> dict[str, Any]:
+    bound_plan = plan if plan is not None else validate_task173_plan()
+    record = load_object(TASK173_FAKE_PASS_PATH)
+    expected_results = {
+        "task_172_proposal_remains_disabled": True,
+        "research_437_consumed_records_preserved": True,
+        "research_437_authority_was_consumed": True,
+        "task_171_authority_refused_before_effects": True,
+        "task_172_ledger_paths_bound": True,
+        "shared_pending_cancellation_state_machine_reused": True,
+        "raw_protocol_and_authentication_not_persisted": True,
+    }
+    expected = {
+        "schema": "copilot-cli-acp-host-permission-task-173-binding-fake-pass.v1",
+        "task_number": 173,
+        "task_id": TASK173_ID,
+        "run_id": TASK173_RUN_ID,
+        "operator_decision": TASK173_OPERATOR_DECISION,
+        "source_proposal_sha256": TASK172_PROPOSAL_SHA256,
+        "plan_sha256": sha256_file(TASK173_PLAN_PATH),
+        "runner_sha256": bound_plan["runner"]["implementation_sha256"],
+        "status": "passed",
+        "originals_run": False,
+        "invocations_consumed_before": 2,
+        "prompt_slots_consumed_before": 1,
+        "prompt_slots_remaining_before": 2,
+        "results": expected_results,
+    }
+    if record != expected:
+        raise ValueError("Task 173 fake-pass record does not bind the final delta proof")
+    serialized = json.dumps(record, sort_keys=True)
+    if any(marker in serialized for marker in FORBIDDEN_PERSISTED_MARKERS):
+        raise ValueError("Task 173 fake-pass record contains a secret or synthetic marker")
+    return record
+
+
+def validate_task173_authority(
+    authority_path: Path = TASK173_AUTHORITY_PATH,
+    *,
+    plan: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any], str]:
+    bound_plan = plan if plan is not None else validate_task173_plan()
+    authority = load_object(authority_path)
+    schema = load_object(TASK173_AUTHORITY_SCHEMA_PATH)
+    fake_pass = validate_task173_fake_pass(bound_plan)
+    fake_pass_sha = sha256_file(TASK173_FAKE_PASS_PATH)
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-task-173-execution-authority.v1"
+        or schema.get("additionalProperties") is not False
+        or set(authority) != set(schema.get("required", []))
+        or set(authority) != set(schema.get("properties", {}))
+    ):
+        raise ValueError("Task 173 authority schema does not describe the exact binding")
+    expected = {
+        "schema": "copilot-cli-acp-host-permission-task-173-execution-authority.v1",
+        "task_number": 173,
+        "task_id": TASK173_ID,
+        "run_id": TASK173_RUN_ID,
+        "brief_sha256": TASK173_BRIEF_SHA256,
+        "operator_decision": TASK173_OPERATOR_DECISION,
+        "source_proposal_sha256": TASK172_PROPOSAL_SHA256,
+        "source_runner_sha256": TASK172_RUNNER_SHA256,
+        "source_attempt_record_sha256": TASK173_SOURCE_ATTEMPT_SHA256,
+        "source_prompt_slot_record_sha256": TASK173_SOURCE_PROMPT_SHA256,
+        "source_execution_record_sha256": TASK173_SOURCE_EXECUTION_SHA256,
+        "source_fake_pass_record_sha256": TASK173_SOURCE_FAKE_PASS_SHA256,
+        "prior_consumed_authority_sha256": TASK173_PREVIOUS_AUTHORITY_SHA256,
+        "preparation_plan_sha256": sha256_file(PLAN_PATH),
+        "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+        "final_plan_sha256": sha256_file(TASK173_PLAN_PATH),
+        "plan_id": TASK173_FINAL_PLAN_ID,
+        "final_runner_sha256": bound_plan["runner"]["implementation_sha256"],
+        "fake_pass_record_path": bound_plan["fake_pass_record_path"],
+        "fake_pass_record_sha256": fake_pass_sha,
+        "route": "copilot-cli.acp",
+        "target_version": "1.0.93",
+        "platform": "darwin-arm64",
+        "account_ref": "betterthanclay",
+        "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
+        "wrapper_manifest_sha256": EXPECTED_WRAPPER_MANIFEST_SHA256,
+        "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
+        "native_manifest_sha256": EXPECTED_NATIVE_MANIFEST_SHA256,
+        "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
+        "argv": ["--model", "auto", "--acp", "--stdio"],
+        "environment_policy": bound_plan["invocation"]["environment_policy"],
+        "execution_authorized": True,
+        "maximum_invocations": 1,
+        "maximum_prompts": 1,
+        "invocations_consumed_before": 2,
+        "shared_prompt_slots_consumed_before": 1,
+        "shared_prompt_slots_remaining_before": 2,
+        "maximum_seconds": 60,
+        "cleanup_seconds": 3,
+        "attempt_path": bound_plan["ledger"]["attempt_path"],
+        "prompt_path": bound_plan["ledger"]["prompt_path"],
+        "execution_record_path": bound_plan["ledger"]["execution_path"],
+        "qualification_changed": False,
+        "reviewer_original_attempts": 0,
+        "older_versions_started": [],
+    }
+    if authority != expected:
+        raise ValueError("Task 173 authority does not exactly bind this one-shot decision and fake proof")
+    if (
+        fake_pass.get("runner_sha256") != authority["final_runner_sha256"]
+        or authority["final_runner_sha256"] != sha256_file(SCRIPT_PATH)
+        or fake_pass.get("originals_run") is not False
+    ):
+        raise ValueError("Task 173 authority and fake-pass runner identities differ")
+    return authority, sha256_file(authority_path)
+
+
+def validate_task173_binding() -> dict[str, Any]:
+    plan = validate_task173_plan()
+    authority, authority_sha = validate_task173_authority(plan=plan)
+    fake_pass = validate_task173_fake_pass(plan)
+    source_attempt = load_object(ROOT / "docs/research/437-copilot-acp-corrected-normal-host-attempt.json")
+    source_execution = load_object(ROOT / "docs/research/437-copilot-acp-corrected-normal-host-execution.json")
+    if (
+        source_attempt.get("execution_authority_sha256") != TASK173_PREVIOUS_AUTHORITY_SHA256
+        or source_execution.get("authority_sha256") != TASK173_PREVIOUS_AUTHORITY_SHA256
+        or source_attempt.get("task_number") != 171
+        or source_execution.get("task_number") != 171
+        or source_attempt.get("invocation_consumed_before_launch") is not True
+        or source_attempt.get("budgets", {}).get("prompt_slot_consumed_before_send") is not True
+    ):
+        raise ValueError("Task 171 authority or consumed record does not match the preserved evidence")
+    previous_authority = load_object(CORRECTED_AUTHORITY_PATH)
+    previous_invocations = previous_authority.get("consumed_invocations_before")
+    if (
+        type(previous_invocations) is not int
+        or previous_invocations + 1 != authority["invocations_consumed_before"]
+        or previous_authority.get("maximum_invocations") != 1
+        or source_execution.get("original_execution") is not True
+        or source_execution.get("execution_kind") != "original"
+    ):
+        raise ValueError("Task 173 invocation counter does not include the consumed prior authority")
+    before = {
+        path: (path.exists() or path.is_symlink(), sha256_file(path) if path.is_file() and not path.is_symlink() else None)
+        for path in original_ledger_paths(plan).values()
+    }
+    stale_refused = False
+    try:
+        execute_corrected_original(CORRECTED_AUTHORITY_PATH)
+    except (ValueError, RuntimeError):
+        stale_refused = True
+    after = {
+        path: (path.exists() or path.is_symlink(), sha256_file(path) if path.is_file() and not path.is_symlink() else None)
+        for path in original_ledger_paths(plan).values()
+    }
+    if not stale_refused or before != after:
+        raise RuntimeError("consumed Task 171 authority was not refused before effects")
+    if not all(fake_pass["results"].values()):
+        raise ValueError("Task 173 fake-pass record does not contain every binding result")
+    return {
+        "status": "passed",
+        "plan_sha256": sha256_file(TASK173_PLAN_PATH),
+        "authority_sha256": authority_sha,
+        "fake_pass_record_sha256": sha256_file(TASK173_FAKE_PASS_PATH),
+        "runner_sha256": plan["runner"]["implementation_sha256"],
+        "originals_run": False,
+        "stale_prior_authority_refused_before_effects": stale_refused,
+        "invocations_consumed_before": authority["invocations_consumed_before"],
+        "prompt_slots_remaining_before": authority["shared_prompt_slots_remaining_before"],
+    }
 
 
 def validate_fake_pass_record(path: Path = CORRECTED_FAKE_PASS_PATH) -> dict[str, Any]:
@@ -1489,7 +1842,7 @@ def write_attempt_ledger(
         "invocation_consumed_before_launch": True,
         "created_at": utc_now(),
     }
-    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+    if plan.get("plan_id") in {FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID}:
         value.update({
             "task_number": plan["task_number"],
             "task_id": plan["task_id"],
@@ -1528,7 +1881,7 @@ def validate_attempt_record(
     }
     if execution_kind == "original":
         expected["execution_authority_sha256"] = authority_sha256
-    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+    if plan.get("plan_id") in {FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID}:
         expected.update({
             "task_number": plan["task_number"],
             "task_id": plan["task_id"],
@@ -1668,6 +2021,29 @@ def validate_original_execution_record(
             _, expected_authority_sha256 = validate_corrected_authority()
             if authority_sha256 != expected_authority_sha256:
                 raise ValueError("corrected original record does not bind the task authority")
+    if schema == "copilot-cli-acp-host-permission-original-execution.v4" and "task_number" in record:
+        if plan.get("plan_id") not in {FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID} or any(
+            record.get(name) != plan.get(name)
+            for name in ("task_number", "task_id", "run_id", "operator_decision")
+        ):
+            raise ValueError("corrected original record does not bind this task and decision")
+    if schema == "copilot-cli-acp-host-permission-original-execution.v4" and "package_cache_cleanup" in record:
+        if (
+            record.get("package_cache_cleanup") not in {"not-created", "removed", "failed"}
+            or record.get("package_cache_cleanup_error") not in {"none", "os-error", "cache-remains"}
+            or (record.get("package_cache_cleanup") == "removed")
+            != (record.get("package_cache_cleanup_error") == "none")
+            or record.get("package_cache_cleanup") == "not-created"
+            and record.get("package_cache_cleanup_error") != "none"
+            or record.get("package_cache_cleanup") == "failed"
+            and record.get("package_cache_cleanup_error") == "none"
+        ):
+            raise ValueError("package-cache cleanup observation is invalid")
+        if record.get("failure_class") == "package-cache-cleanup-failed" and (
+            record.get("package_cache_cleanup") != "failed"
+            or record.get("failure_stage") != "cleanup"
+        ):
+            raise ValueError("package-cache cleanup failure classification is inconsistent")
     model = record.get("model_observation")
     if model != "unobserved" and (
         not isinstance(model, str)
@@ -1943,6 +2319,44 @@ def validate_corrected_original_evidence(public_record_path: Path) -> dict[str, 
     }
 
 
+def validate_task173_original_evidence(public_record_path: Path) -> dict[str, Any]:
+    if public_record_path.resolve() != TASK173_EXECUTION_EVIDENCE_PATH.resolve():
+        raise ValueError("Task 173 original validation requires its allocated execution record")
+    plan = validate_task173_plan()
+    authority, authority_sha256 = validate_task173_authority(plan=plan)
+    paths = original_ledger_paths(plan)
+    result = validate_original_execution_evidence(
+        paths["execution"], paths["attempt"], paths["prompt"], plan, authority_sha256
+    )
+    public_pairs = [
+        (TASK173_ATTEMPT_EVIDENCE_PATH, paths["attempt"]),
+        (TASK173_EXECUTION_EVIDENCE_PATH, paths["execution"]),
+    ]
+    private_prompt_present = paths["prompt"].exists() or paths["prompt"].is_symlink()
+    public_prompt_present = (
+        TASK173_PROMPT_EVIDENCE_PATH.exists()
+        or TASK173_PROMPT_EVIDENCE_PATH.is_symlink()
+    )
+    if private_prompt_present != public_prompt_present:
+        raise ValueError("Task 173 public prompt-slot evidence does not match its consumed ledger")
+    if private_prompt_present:
+        public_pairs.append((TASK173_PROMPT_EVIDENCE_PATH, paths["prompt"]))
+    for public_path, private_path in public_pairs:
+        if (
+            public_path.is_symlink()
+            or not public_path.is_file()
+            or public_path.read_bytes() != private_path.read_bytes()
+        ):
+            raise ValueError("Task 173 public evidence copy differs from its durable private record")
+    prompt_slots_consumed = 1 if private_prompt_present else 0
+    return {
+        **result,
+        "invocations_consumed_total": authority["invocations_consumed_before"] + 1,
+        "prompt_slots_consumed_total": authority["shared_prompt_slots_consumed_before"] + prompt_slots_consumed,
+        "prompt_slots_remaining": authority["shared_prompt_slots_remaining_before"] - prompt_slots_consumed,
+    }
+
+
 def validate_original_ledger_bindings(
     record: dict[str, Any],
     attempt_bytes: bytes,
@@ -2080,7 +2494,7 @@ def stage_reviewed_artifacts(root: Path, plan: dict[str, Any]) -> Path:
     native = validate_inventory_package(inventory, "@github/copilot-darwin-arm64", "1.0.93")
     stage_root = root / "staged-artifacts"
     stage_root.mkdir(mode=0o700)
-    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+    if plan.get("plan_id") in {FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID}:
         wrapper_identity = {
             "package": "@github/copilot",
             "version": "1.0.93",
@@ -2108,7 +2522,7 @@ def stage_reviewed_artifacts(root: Path, plan: dict[str, Any]) -> Path:
     validate_archive_payload(native_archive, native_identity, native, output_executable=executable)
     expected_executable_sha256 = (
         plan["artifacts"]["native_executable_sha256"]
-        if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID
+        if plan.get("plan_id") in {FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID}
         else plan["artifact_staging"]["native_executable_sha256"]
     )
     if sha256_file(executable) != expected_executable_sha256:
@@ -2118,10 +2532,12 @@ def stage_reviewed_artifacts(root: Path, plan: dict[str, Any]) -> Path:
 
 def original_ledger_paths(plan: dict[str, Any]) -> dict[str, Path]:
     root_suffix = (
-        "Task 170" if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID else "Task 168"
+        "Task 172" if plan.get("plan_id") == TASK173_FINAL_PLAN_ID
+        else "Task 170" if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID
+        else "Task 168"
     )
     root = Path.home() / "Library/Application Support/Swallowtail/Copilot ACP Permission Proof" / root_suffix
-    corrected = root_suffix == "Task 170"
+    corrected = root_suffix in {"Task 170", "Task 172"}
     names = (
         ("1.0.93-corrected-attempt.json", "1.0.93-corrected-prompt-1.json", "1.0.93-corrected-execution.json")
         if corrected
@@ -2236,7 +2652,7 @@ def run_original_session(
     }
     try:
         argv = [str(executable), *plan["invocation"]["argv"]]
-        if plan.get("plan_id") in {CORRECTION_PLAN_ID, FINAL_CORRECTION_PLAN_ID}:
+        if plan.get("plan_id") in {CORRECTION_PLAN_ID, FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID}:
             package_cache = tempfile.TemporaryDirectory(
                 prefix="copilot-acp-package-cache.", dir=action.parent
             )
@@ -2471,7 +2887,7 @@ def run_original_session(
         "raw_stderr_persisted": False,
         "completed_at": utc_now(),
     }
-    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+    if plan.get("plan_id") in {FINAL_CORRECTION_PLAN_ID, TASK173_FINAL_PLAN_ID}:
         record.update({
             "task_number": plan["task_number"],
             "task_id": plan["task_id"],
@@ -2518,23 +2934,25 @@ def execute_original(authority_path: Path = AUTHORITY_PATH) -> dict[str, Any]:
         )
 
 
-def execute_corrected_original() -> dict[str, Any]:
-    plan = validate_final_correction_plan()
-    authority, authority_sha256 = validate_corrected_authority(plan=plan)
+def execute_corrected_original(
+    authority_path: Path = TASK173_AUTHORITY_PATH,
+) -> dict[str, Any]:
+    plan = validate_task173_plan()
+    authority, authority_sha256 = validate_task173_authority(authority_path, plan=plan)
     if authority["final_runner_sha256"] != sha256_file(SCRIPT_PATH):
-        raise RuntimeError("corrected authority is bound to an earlier runner; refusing launch")
+        raise RuntimeError("Task 173 authority is bound to an earlier runner; refusing launch")
     if platform.system() != "Darwin" or platform.machine().lower() not in {"arm64", "aarch64"}:
         raise RuntimeError("normal-host execution requires the reviewed Darwin arm64 platform")
     paths = original_ledger_paths(plan)
     if any(path.exists() or path.is_symlink() for path in (paths["attempt"], paths["prompt"], paths["execution"])):
-        raise RuntimeError("a corrected attempt, prompt slot or execution record already exists")
-    with tempfile.TemporaryDirectory(prefix="copilot-acp-normal-host-corrected-permission.") as temp_root:
+        raise RuntimeError("a Task 173 attempt, prompt slot or execution record already exists")
+    with tempfile.TemporaryDirectory(prefix="copilot-acp-normal-host-task-173-permission.") as temp_root:
         root = Path(temp_root).resolve()
         if root == ROOT or ROOT in root.parents:
             raise RuntimeError("artifact staging root must be a fresh directory outside the checkout")
         executable = stage_reviewed_artifacts(root, plan)
         if sha256_file(executable) != authority["native_executable_sha256"]:
-            raise ValueError("staged executable does not match the corrected execution authority")
+            raise ValueError("staged executable does not match the Task 173 execution authority")
         action = prepare_action_directory(root)
         return run_original_session(
             executable, action, paths["attempt"], paths["prompt"], paths["execution"],
@@ -4473,12 +4891,16 @@ def main() -> int:
     actions.add_argument("--validate-correction-plan", action="store_true")
     actions.add_argument("--validate-final-plan", action="store_true")
     actions.add_argument("--validate-task-172-proposal", action="store_true")
+    actions.add_argument("--validate-task-173-plan", action="store_true")
+    actions.add_argument("--validate-task-173-authority", action="store_true")
+    actions.add_argument("--validate-task-173-binding", action="store_true")
     actions.add_argument("--validate-authority", action="store_true")
     actions.add_argument("--validate-corrected-authority", action="store_true")
     actions.add_argument("--self-test", action="store_true")
     actions.add_argument("--validate-record", metavar="PATH")
     actions.add_argument("--validate-original-record", metavar="PATH")
     actions.add_argument("--validate-corrected-original-record", metavar="PATH")
+    actions.add_argument("--validate-task-173-original-record", metavar="PATH")
     actions.add_argument("--execute-original", action="store_true")
     actions.add_argument("--execute-corrected-original", action="store_true")
     parser.add_argument("--fake-pass-record", metavar="PATH")
@@ -4517,6 +4939,28 @@ def main() -> int:
                 "shared_prompt_slots_remaining": proposal["source_attempt"]["shared_prompt_slots_remaining"],
                 "runner_sha256": proposal["runner"]["implementation_sha256"],
             }, sort_keys=True))
+        elif args.validate_task_173_plan:
+            plan = validate_task173_plan()
+            print(json.dumps({
+                "status": "valid",
+                "plan_id": plan["plan_id"],
+                "task_number": plan["task_number"],
+                "plan_sha256": sha256_file(TASK173_PLAN_PATH),
+                "runner_sha256": plan["runner"]["implementation_sha256"],
+            }, sort_keys=True))
+        elif args.validate_task_173_authority:
+            plan = validate_task173_plan()
+            authority, authority_sha256 = validate_task173_authority(plan=plan)
+            print(json.dumps({
+                "status": "valid",
+                "execution_authorized": authority["execution_authorized"],
+                "authority_sha256": authority_sha256,
+                "final_plan_sha256": authority["final_plan_sha256"],
+                "final_runner_sha256": authority["final_runner_sha256"],
+                "fake_pass_record_sha256": authority["fake_pass_record_sha256"],
+            }, sort_keys=True))
+        elif args.validate_task_173_binding:
+            print(json.dumps(validate_task173_binding(), sort_keys=True))
         elif args.validate_authority:
             plan = validate_plan()
             authority, authority_sha256 = validate_execution_authority(plan=plan)
@@ -4560,6 +5004,10 @@ def main() -> int:
         elif args.validate_corrected_original_record:
             print(json.dumps(validate_corrected_original_evidence(
                 Path(args.validate_corrected_original_record)
+            ), sort_keys=True))
+        elif args.validate_task_173_original_record:
+            print(json.dumps(validate_task173_original_evidence(
+                Path(args.validate_task_173_original_record)
             ), sort_keys=True))
         elif args.execute_original:
             record = execute_original()

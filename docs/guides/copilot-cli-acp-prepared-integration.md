@@ -216,6 +216,16 @@ opaque `rawInput` or trust a title. It sends
 `session/cancel` as a notification when cancelling the prompt, and checks the
 actual stop reason. See [Research 438](../research/438-copilot-acp-permission-ordering-correction.md).
 
+[Research 439](../research/439-copilot-acp-pending-announcement-cancellation.md)
+records one authorized `1.0.93` observation with the corrected ordering. The
+pending announcement correlated with one permission request, but its
+attributable `execute` action did not match the requested sentinel edit. The
+runner cancelled the prompt and permission, ACP returned `cancelled`, and the
+sentinel and directory stayed unchanged. The finite result is
+`permission-action-mismatch`; this does not qualify `1.0.93` or change the
+exact `1.0.80` claim. Reviewers inspect the records without starting another
+original.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

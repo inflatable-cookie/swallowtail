@@ -63,8 +63,10 @@
     "timeout_seconds_including_cleanup": 60
   },
   "original_enable_gate": {
-    "before_effect": "capture and fsync exact approved ExecutionHostId, ExecutableRef, EnvironmentRef safe identities and SHA-256 values; verify the host/executable/environment tuple has not drifted",
+    "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; hash the bytes read from the approved ExecutableRef and reject digest drift before discovery; never read or serialize environment values",
+    "enforcement": "preparation build has no original launcher; authorize_original_execution fails closed even when passed a continuation value",
     "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
+    "launch_side_persistence": "fsynced invocation and prompt-consumed records plus actual original launch remain deferred to the planner-bound continuation",
     "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     "one_shot": "exclusive invocation record fsynced before process start; exclusive prompt record fsynced before prompt send",
     "state": "disabled in this preparation turn"
@@ -74,12 +76,16 @@
   "prepared_path_sources": {
     "files": [
       {
+        "path": "crates/swallowtail-adapter-copilot-cli/Cargo.toml",
+        "sha256": "6f14e8dfbe3bcfc3c1854f955ba03464ca2987e413acf6786a54451e369c6bc7"
+      },
+      {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment.rs",
-        "sha256": "dd6048347f02e4b7550cfe601742c61fbaeaeb00be4ad7ddb48ffa02ec952bf5"
+        "sha256": "81ecba8c31cec47b9e9c3b7599e21bbe65176e9a553c143edeaa9995eb44140e"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
-        "sha256": "cb37b733dabd02aa6531fe2ccfb5462ea508e7a2ae843b9ceb53b9b085413340"
+        "sha256": "6aa59c65faaabebc1673b25dbc1b1ce8cffb579acac25306336b31ba2dbf28f5"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/discovery.rs",
@@ -95,7 +101,7 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/prepared.rs",
-        "sha256": "1c31a09069b0911e5ca3a6c5d6239c87deb3256037899f297062d96739d4d754"
+        "sha256": "c6fc74c38955d1bb99bf3edae70babfa47143117c58dd140d16c78c3de9d139a"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/prepared/session.rs",
@@ -114,7 +120,7 @@
         "sha256": "2e40bfabbafb318e17b679d7a2601dd0b4a02cca6cf0899c3b79bf47241fc0c3"
       }
     ],
-    "sha256": "5d4723ad4e1830e246bcb5c8c9394a53999d86f9d783656bba164f5b77829d3e"
+    "sha256": "a53f4352bb4444c28db18f19e6b7eddc36da54b353c8dc93e86856824753cbc3"
   },
   "production_route": {
     "argv": [
@@ -123,20 +129,20 @@
     ],
     "containment": "task scratch and joined owned process only; no arbitrary host or escaped-descendant containment claim",
     "environment_ref": {
-      "capture": "persist exact safe EnvironmentRef identifier and SHA-256 before the first process or prompt; never read or serialize environment values",
+      "capture": "capture exact safe EnvironmentRef identifier and SHA-256 in private prepared binding before discovery; durable original-run record remains planner-bound; never read or serialize environment values",
       "drift": "fail closed before process start",
       "forwarding": "pass unchanged through the prepared driver",
       "source": "approved host-owned EnvironmentRef"
     },
     "executable_ref": {
-      "capture": "persist exact safe ExecutableRef and SHA-256 before the first process or prompt",
+      "capture": "capture exact safe ExecutableRef and SHA-256 in private prepared binding before discovery; hash bytes from the approved reference; durable original-run record remains planner-bound",
       "drift": "fail closed before process start",
       "sha256": "35d33e040e8aa0554a02385f02648396ba3b853f026ed1db17d30d051a764e4b",
       "source": "approved InstalledExecutableTarget",
       "target": "exact frozen native package/copilot bytes"
     },
     "execution_host_id": {
-      "capture": "persist exact safe identifier and SHA-256 before the first process or prompt",
+      "capture": "capture exact safe identifier and SHA-256 in private prepared binding before discovery; durable original-run record remains planner-bound",
       "drift": "fail closed before process start",
       "source": "approved host input to the prepared facade"
     },
@@ -177,7 +183,7 @@
   },
   "runner": {
     "path": "scripts/copilot-acp-private-assessment.py",
-    "sha256": "5cb1a6fb366e80eab79977e6cb3a3b82c7e9ed4d1331df622f3cbdeb07587872"
+    "sha256": "5cba720bfa62fb316097128fa87026733b83b2c38dddb11fb2b89e4aac18062c"
   },
   "schema": "copilot-cli-private-assessment-plan.v1",
   "task": {

@@ -2969,6 +2969,7 @@ dependencies = [
  "futures-executor",
  "futures-util",
  "semver",
+ "sha2 0.10.9",
  "serde_json",
  "swallowtail-core",
  "swallowtail-protocol-acp",

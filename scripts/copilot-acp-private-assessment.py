@@ -15,7 +15,6 @@ ROOT = Path(__file__).resolve().parent.parent
 FIXTURE = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95"
 PLAN_PATH = FIXTURE / "private-assessment-plan.json"
 SCHEMA_PATH = FIXTURE / "private-assessment-plan.schema.json"
-FAKE_PASS_PATH = FIXTURE / "private-assessment-fake-pass.json"
 LEDGER_PATH = FIXTURE / "artifact-hop-ledger.json"
 
 TASK_NUMBER = 119
@@ -35,6 +34,7 @@ PROMPT = (
 )
 
 SOURCE_PATHS = [
+    "crates/swallowtail-adapter-copilot-cli/Cargo.toml",
     "crates/swallowtail-adapter-copilot-cli/src/assessment.rs",
     "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
     "crates/swallowtail-adapter-copilot-cli/src/discovery.rs",
@@ -117,12 +117,12 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     require(route == {
         "execution_host_id": {
             "source": "approved host input to the prepared facade",
-            "capture": "persist exact safe identifier and SHA-256 before the first process or prompt",
+            "capture": "capture exact safe identifier and SHA-256 in private prepared binding before discovery; durable original-run record remains planner-bound",
             "drift": "fail closed before process start",
         },
         "executable_ref": {
             "source": "approved InstalledExecutableTarget",
-            "capture": "persist exact safe ExecutableRef and SHA-256 before the first process or prompt",
+            "capture": "capture exact safe ExecutableRef and SHA-256 in private prepared binding before discovery; hash bytes from the approved reference; durable original-run record remains planner-bound",
             "target": "exact frozen native package/copilot bytes",
             "sha256": NATIVE_EXECUTABLE_SHA256,
             "drift": "fail closed before process start",
@@ -130,7 +130,7 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "environment_ref": {
             "source": "approved host-owned EnvironmentRef",
             "forwarding": "pass unchanged through the prepared driver",
-            "capture": "persist exact safe EnvironmentRef identifier and SHA-256 before the first process or prompt; never read or serialize environment values",
+            "capture": "capture exact safe EnvironmentRef identifier and SHA-256 in private prepared binding before discovery; durable original-run record remains planner-bound; never read or serialize environment values",
             "drift": "fail closed before process start",
         },
         "argv": ARGV,
@@ -207,9 +207,11 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "original_execution_enabled": False,
     }, "persistent record policy changed")
     require(plan.get("original_enable_gate") == {
+        "enforcement": "preparation build has no original launcher; authorize_original_execution fails closed even when passed a continuation value",
         "state": "disabled in this preparation turn",
         "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-        "before_effect": "capture and fsync exact approved ExecutionHostId, ExecutableRef, EnvironmentRef safe identities and SHA-256 values; verify the host/executable/environment tuple has not drifted",
+        "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; hash the bytes read from the approved ExecutableRef and reject digest drift before discovery; never read or serialize environment values",
+        "launch_side_persistence": "fsynced invocation and prompt-consumed records plus actual original launch remain deferred to the planner-bound continuation",
         "one_shot": "exclusive invocation record fsynced before process start; exclusive prompt record fsynced before prompt send",
         "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     }, "original enable gate changed")
@@ -222,6 +224,19 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     expected_manifest = source_manifest()
     require(plan.get("prepared_path_sources") == expected_manifest, "prepared-path source identity changed")
     return plan, sha256_bytes(canonical_bytes(plan))
+
+
+class OriginalExecutionDenied(RuntimeError):
+    """The preparation checkpoint has no enabled original-execution path."""
+
+
+def authorize_original_execution(plan: dict[str, Any], continuation: Any = None) -> None:
+    """Fail closed; only a later planner-bound continuation can add a launcher."""
+    if plan.get("original_execution_enabled") is not False:
+        raise OriginalExecutionDenied("preparation plan is not in the disabled state")
+    if continuation is not None:
+        raise OriginalExecutionDenied("this preparation build has no continuation-token consumer")
+    raise OriginalExecutionDenied("original execution is not available in the preparation build")
 
 
 def action_gate(trace: dict[str, Any]) -> bool:
@@ -265,7 +280,7 @@ def write_exclusive_fsynced(path: Path, data: bytes) -> None:
         os.close(parent_fd)
 
 
-def fake_ledger_scenarios() -> dict[str, bool]:
+def fake_ledger_scenarios(plan: dict[str, Any]) -> dict[str, bool]:
     results: dict[str, bool] = {}
     successful = {
         "initialize_version": VERSION,
@@ -296,6 +311,7 @@ def fake_ledger_scenarios() -> dict[str, bool]:
     }
     require(action_gate(successful), "matching cancellation fake was rejected")
     results["correlated_execute_permission_cancel_no_effect_cleanup"] = True
+    results["preparation_original_gate_rejected"] = fake_gate_scenarios(plan)
 
     for name, changes in {
         "missing_action_metadata": {"announced_tool_call_id": None, "action_path": None},
@@ -332,59 +348,84 @@ def fake_ledger_scenarios() -> dict[str, bool]:
                 "consumed fake ledger did not fail closed and persist")
         results["exclusive_fsynced_consumption_and_failure_retention"] = True
 
+    require(set(results) == {
+        "correlated_execute_permission_cancel_no_effect_cleanup",
+        "preparation_original_gate_rejected",
+        "missing_action_metadata_fails_closed",
+        "mismatched_action_id_fails_closed",
+        "wrong_action_path_fails_closed",
+        "provider_effect_fails_closed",
+        "execution_failure_fails_closed",
+        "deadline_or_cleanup_failure_fails_closed",
+        "identity_drift_fails_closed",
+        "exclusive_fsynced_consumption_and_failure_retention",
+    }, "fake scenario set changed")
     return results
 
 
-def validate_fake_pass(plan_hash: str) -> None:
-    record = load_object(FAKE_PASS_PATH)
+def validate_fake_pass_record(record: dict[str, Any], plan_hash: str, results: dict[str, bool]) -> None:
+    """Validate the pass record just produced by this self-test run."""
     required = {
         "schema", "task_number", "task_id", "run_id", "plan_sha256", "runner_sha256",
-        "status", "originals_run", "prepared_route_tests", "fake_results",
+        "status", "originals_run", "original_gate_rejected", "fake_results",
+        "fake_results_sha256", "launch_side_capture",
     }
-    require(set(record) == required, "fake pass record key set changed")
-    require(record.get("schema") == "copilot-cli-private-assessment-fake-pass.v1", "fake pass schema mismatch")
+    require(set(record) == required, "generated fake pass key set changed")
+    require(record.get("schema") == "copilot-cli-private-assessment-fake-pass.v2", "fake pass schema mismatch")
     require(record.get("task_number") == TASK_NUMBER and record.get("task_id") == TASK_ID and record.get("run_id") == RUN_ID,
             "fake pass task binding changed")
     require(record.get("plan_sha256") == plan_hash, "fake pass plan hash mismatch")
     require(record.get("runner_sha256") == sha256_file(Path(__file__)), "fake pass runner hash mismatch")
     require(record.get("status") == "passed" and record.get("originals_run") is False,
             "fake pass record claims an original or failure")
-    require(record.get("prepared_route_tests") == [
-        "assessment_tests::exact_095_assessment_is_private_and_ordinary_preparation_stays_080",
-        "assessment_tests::prepared_095_assessment_correlates_execute_permission_cancels_and_joins",
-        "assessment_tests::assessment_fake_gate_rejects_missing_or_mismatched_execute_metadata",
-    ], "prepared-route test set changed")
-    expected_results = {
-        "decoded_pending_execute_activity_and_cancelled_activity": True,
-        "correlated_execute_permission_cancel_no_effect_cleanup": True,
-        "missing_action_metadata_fails_closed": True,
-        "mismatched_action_id_fails_closed": True,
-        "wrong_action_path_fails_closed": True,
-        "provider_effect_fails_closed": True,
-        "execution_failure_fails_closed": True,
-        "deadline_or_cleanup_failure_fails_closed": True,
-        "identity_drift_fails_closed": True,
-        "exclusive_fsynced_consumption_and_failure_retention": True,
-    }
-    require(record.get("fake_results") == expected_results, "fake result set changed")
+    require(record.get("original_gate_rejected") is True, "original execution gate was not exercised")
+    require(record.get("fake_results") == results, "generated fake result set changed")
+    require(record.get("fake_results_sha256") == sha256_bytes(canonical_bytes(results)),
+            "generated fake result digest changed")
+    require(record.get("launch_side_capture") ==
+            "exact host inputs and executable digest are captured before discovery; durable consumed records and original launch remain planner-bound",
+            "launch-side capture disclosure changed")
 
 
 def self_test() -> None:
     plan, plan_hash = validate_plan()
-    require(plan.get("original_execution_enabled") is False, "disabled original gate was enabled")
-    require(fake_ledger_scenarios() == {
-        "correlated_execute_permission_cancel_no_effect_cleanup": True,
-        "missing_action_metadata_fails_closed": True,
-        "mismatched_action_id_fails_closed": True,
-        "wrong_action_path_fails_closed": True,
-        "provider_effect_fails_closed": True,
-        "execution_failure_fails_closed": True,
-        "deadline_or_cleanup_failure_fails_closed": True,
-        "identity_drift_fails_closed": True,
-        "exclusive_fsynced_consumption_and_failure_retention": True,
-    }, "fake result set differs")
-    validate_fake_pass(plan_hash)
-    print(f"private assessment plan and fake pass validated; plan sha256 {plan_hash}")
+    results = fake_ledger_scenarios(plan)
+    record = {
+        "schema": "copilot-cli-private-assessment-fake-pass.v2",
+        "task_number": TASK_NUMBER,
+        "task_id": TASK_ID,
+        "run_id": RUN_ID,
+        "plan_sha256": plan_hash,
+        "runner_sha256": sha256_file(Path(__file__)),
+        "status": "passed",
+        "originals_run": False,
+        "original_gate_rejected": results["preparation_original_gate_rejected"],
+        "fake_results": results,
+        "fake_results_sha256": sha256_bytes(canonical_bytes(results)),
+        "launch_side_capture": (
+            "exact host inputs and executable digest are captured before discovery; "
+            "durable consumed records and original launch remain planner-bound"
+        ),
+    }
+    validate_fake_pass_record(record, plan_hash, results)
+    # Exercise actual record creation and readback in a fresh scratch directory;
+    # the checked-in evidence is generated by this run, never a static attestation.
+    with tempfile.TemporaryDirectory(prefix="copilot-acp-assessment-result-") as root_text:
+        result_path = Path(root_text) / "fake-pass.json"
+        write_exclusive_fsynced(result_path, canonical_bytes(record))
+        generated = load_object(result_path)
+        validate_fake_pass_record(generated, plan_hash, results)
+    print(json.dumps(record, sort_keys=True, separators=(",", ":")))
+
+
+def fake_gate_scenarios(plan: dict[str, Any]) -> bool:
+    for continuation in (None, {"reviewed_head": "untrusted"}):
+        try:
+            authorize_original_execution(plan, continuation)
+        except OriginalExecutionDenied:
+            continue
+        raise ValueError("preparation build allowed an original execution")
+    return True
 
 
 def main() -> int:
@@ -396,7 +437,6 @@ def main() -> int:
         self_test()
     elif args.validate_plan:
         _, plan_hash = validate_plan()
-        validate_fake_pass(plan_hash)
         print(f"private assessment plan valid; plan sha256 {plan_hash}")
     else:
         parser.error("select --validate-plan or --self-test")

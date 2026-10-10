@@ -1,9 +1,11 @@
 use crate::{
     CopilotCliPreparationInput, CopilotCliPreparationProbe, CopilotCliSessionProfileInput,
-    assessment::CopilotCliAssessmentArtifactIdentity,
+    assessment::{NATIVE_EXECUTABLE_SHA256, sha256_reader},
     copilot_cli_acp_claim, copilot_cli_host_account_access_profile, copilot_cli_package_binding,
     prepare_copilot_cli_acp,
-    prepared::prepare_copilot_cli_acp_for_assessment,
+    prepared::{
+        prepare_copilot_cli_acp_for_assessment, prepare_copilot_cli_acp_for_assessment_with_reader,
+    },
     selection::{
         COPILOT_CLI_PACKAGE_AXIS, COPILOT_CLI_PACKAGE_VERSION, PRIVATE_ASSESSMENT_VERSION,
     },
@@ -14,6 +16,7 @@ use crate::{
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
+use std::io::Cursor;
 use swallowtail_core::{
     AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialState, EndpointAuthorization,
     EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
@@ -32,7 +35,7 @@ const SENTINEL_PATH: &str = "permission-sentinel.txt";
 const SENTINEL_BEFORE: &[u8] = b"SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n";
 
 #[test]
-fn exact_095_assessment_is_private_and_ordinary_preparation_stays_080() {
+fn assessment_admission_is_private_and_hash_mismatch_stops_before_discovery() {
     assert_eq!(COPILOT_CLI_PACKAGE_VERSION, "1.0.80");
     assert!(copilot_cli_package_binding("1.0.80").is_some());
     assert!(copilot_cli_package_binding(PRIVATE_ASSESSMENT_VERSION).is_none());
@@ -48,23 +51,40 @@ fn exact_095_assessment_is_private_and_ordinary_preparation_stays_080() {
     );
 
     let host = ExecutionHostId::new("assessment.fake.execution-host").expect("host");
-    let wrong_identity = CopilotCliAssessmentArtifactIdentity {
-        wrapper_archive_sha256: "wrong".to_owned(),
-        ..CopilotCliAssessmentArtifactIdentity::frozen_1_0_95()
-    };
+    let fake_executable = b"changed approved executable bytes";
     let discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
-    let error = block_on(prepare_copilot_cli_acp_for_assessment(
+    let error = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
         preparation_input(host.clone()),
         probe(),
         discovery.services(host.clone()),
-        &wrong_identity,
+        Cursor::new(fake_executable),
+        NATIVE_EXECUTABLE_SHA256,
     ))
     .expect_err("artifact drift must fail before discovery");
     assert_eq!(
         error.diagnostic().safe().code(),
-        "swallowtail.copilot-cli.acp.assessment.artifact_identity_mismatch"
+        "swallowtail.copilot-cli.acp.assessment.executable_digest_mismatch"
     );
     assert!(discovery.observed_process().is_none());
+
+    let frozen_check = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
+    let repository_manifest = std::env::current_dir()
+        .expect("test runner has a current directory")
+        .join("Cargo.toml");
+    let repository_manifest = repository_manifest
+        .to_str()
+        .expect("repository path is UTF-8");
+    let error = block_on(prepare_copilot_cli_acp_for_assessment(
+        preparation_input_with_executable(host.clone(), repository_manifest),
+        probe(),
+        frozen_check.services(host.clone()),
+    ))
+    .expect_err("actual assessment path hashes the approved reference before discovery");
+    assert_eq!(
+        error.diagnostic().safe().code(),
+        "swallowtail.copilot-cli.acp.assessment.executable_digest_mismatch"
+    );
+    assert!(frozen_check.observed_process().is_none());
 
     let ordinary_discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
     let error = block_on(prepare_copilot_cli_acp(
@@ -87,7 +107,7 @@ fn exact_095_assessment_is_private_and_ordinary_preparation_stays_080() {
 }
 
 #[test]
-fn prepared_095_assessment_correlates_execute_permission_cancels_and_joins() {
+fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins() {
     let host = ExecutionHostId::new("assessment.fake.execution-host").expect("host");
     let discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
     let operation =
@@ -100,13 +120,46 @@ fn prepared_095_assessment_correlates_execute_permission_cancels_and_joins() {
             .expect("resource service")
             .clone(),
     );
-    let prepared = block_on(prepare_copilot_cli_acp_for_assessment(
+    let fake_executable = b"fixture bytes for the approved assessment executable";
+    let prepared = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
         preparation_input(host.clone()),
         probe(),
         services,
-        &CopilotCliAssessmentArtifactIdentity::frozen_1_0_95(),
+        Cursor::new(fake_executable),
+        &sha256_reader(&fake_executable[..]).expect("fixture executable hashes"),
     ))
     .expect("the exact frozen point prepares through the real facade");
+    let captured = prepared
+        .assessment_binding
+        .as_ref()
+        .expect("safe host inputs were captured before discovery");
+    assert_eq!(captured.execution_host_id, "assessment.fake.execution-host");
+    assert_eq!(captured.executable_ref, APPROVED_EXECUTABLE);
+    assert_eq!(captured.environment_ref, APPROVED_ENVIRONMENT);
+    assert_eq!(
+        captured.execution_host_id_sha256,
+        sha256_reader(captured.execution_host_id.as_bytes()).expect("host id hashes")
+    );
+    assert_eq!(
+        captured.executable_ref_sha256,
+        sha256_reader(captured.executable_ref.as_bytes()).expect("executable ref hashes")
+    );
+    assert_eq!(
+        captured.environment_ref_sha256,
+        sha256_reader(captured.environment_ref.as_bytes()).expect("environment ref hashes")
+    );
+    assert_eq!(
+        captured.executable_bytes_sha256,
+        sha256_reader(&fake_executable[..]).expect("fixture executable hashes")
+    );
+    assert_eq!(
+        captured.wrapper_archive_sha256,
+        crate::assessment::WRAPPER_ARCHIVE_SHA256
+    );
+    assert_eq!(
+        captured.native_archive_sha256,
+        crate::assessment::NATIVE_ARCHIVE_SHA256
+    );
     assert_eq!(
         prepared.observation().version().version().as_str(),
         PRIVATE_ASSESSMENT_VERSION
@@ -264,11 +317,13 @@ fn assessment_fake_gate_rejects_missing_or_mismatched_execute_metadata() {
                 .expect("resource service")
                 .clone(),
         );
-        let prepared = block_on(prepare_copilot_cli_acp_for_assessment(
+        let fake_executable = b"fixture bytes for the approved assessment executable";
+        let prepared = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
             preparation_input(host.clone()),
             probe(),
             services,
-            &CopilotCliAssessmentArtifactIdentity::frozen_1_0_95(),
+            Cursor::new(fake_executable),
+            &sha256_reader(&fake_executable[..]).expect("fixture executable hashes"),
         ))
         .expect("exact version assessment prepares");
         let session = prepared
@@ -336,12 +391,19 @@ const fn scenario_name(scenario: Scenario) -> &'static str {
 }
 
 fn preparation_input(host: ExecutionHostId) -> CopilotCliPreparationInput {
+    preparation_input_with_executable(host, APPROVED_EXECUTABLE)
+}
+
+fn preparation_input_with_executable(
+    host: ExecutionHostId,
+    executable: &str,
+) -> CopilotCliPreparationInput {
     CopilotCliPreparationInput::new(
         ConfiguredInstanceId::new("copilot-cli.assessment.instance").expect("instance"),
         InstanceRevision::new("1").expect("revision"),
         host,
         InstalledExecutableTarget::new(
-            ExecutableRef::new(APPROVED_EXECUTABLE).expect("executable"),
+            ExecutableRef::new(executable).expect("executable"),
             InterfaceVersionAxis::new(COPILOT_CLI_PACKAGE_AXIS).expect("axis"),
         ),
         EnvironmentRef::new(APPROVED_ENVIRONMENT).expect("environment"),

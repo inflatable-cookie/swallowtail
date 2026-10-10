@@ -9,8 +9,9 @@ use swallowtail_host_local::{
     LocalExecutableLaunch, LocalHostServices, LocalProcessHost, LocalProcessLimits,
 };
 use swallowtail_runtime::{
-    ActivityKind, ActivityLifecyclePhase, ActivityStatus, CleanupOutcome, ProviderObservation,
-    RuntimeEventKind, SessionCleanupRequest,
+    ActivityKind, ActivityLifecyclePhase, ActivityStatus, CancellationControl, CleanupOutcome,
+    DiscoveryCancellation, HostServices, PreparationFailure, PreparationStage, ProviderObservation,
+    RuntimeEventKind, RuntimeFailure, SessionCleanupRequest,
 };
 
 const TASK_ID: &str = "7823a168-9b8f-4604-8fd7-201c2998722e";
@@ -21,13 +22,35 @@ const ORIGINAL_ENTRY_PAYLOAD_MAX_BYTES: u64 = 8 * 1024;
 const ORIGINAL_TOTAL_BUDGET: Duration = Duration::from_secs(60);
 const ORIGINAL_CLEANUP_BUDGET: Duration = Duration::from_secs(3);
 const SENTINEL_AFTER_TEXT: &str = "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n";
-const FAKE_PROTOCOL_SCRIPT: &str = r#"import atexit, json, os, signal, sys
+const FAKE_PROTOCOL_SCRIPT: &str = r#"import atexit, json, os, signal, sys, time
+
+mode = os.environ.get("SWALLOWTAIL_FAKE_MODE", "")
 
 if "--version" in sys.argv:
+    if mode == "discovery-execution-failure":
+        sys.stderr.write("SECRET_DIAGNOSTIC_SHOULD_NOT_LEAK\n")
+        raise SystemExit(19)
+    if mode == "discovery-malformed-version" or mode == "cleanup-failure":
+        print("copilot SECRET_VERSION_SHOULD_NOT_LEAK", flush=True)
+        raise SystemExit(0)
+    if mode == "discovery-incompatible-version":
+        print("copilot 1.0.94", flush=True)
+        raise SystemExit(0)
+    if mode == "discovery-timeout":
+        time.sleep(30)
+        raise SystemExit(0)
+    if mode == "discovery-mutates-executable":
+        with open(__file__, "a", encoding="utf-8") as stream:
+            stream.write("\n# task-owned executable mutation\n")
+    if mode == "discovery-removes-approved-executable":
+        os.unlink(__file__)
+    if mode == "discovery-removes-task-scratch":
+        task = os.environ.get("SWALLOWTAIL_FAKE_TASK", TASK_SCRATCH_FALLBACK)
+        os.unlink(os.path.join(task, "permission-sentinel.txt"))
+        os.rmdir(task)
     print("copilot 1.0.95", flush=True)
     raise SystemExit(0)
 
-mode = os.environ["SWALLOWTAIL_FAKE_MODE"]
 trace_path = os.environ["SWALLOWTAIL_FAKE_TRACE"]
 records_root = os.environ.get("SWALLOWTAIL_FAKE_RECORDS")
 task_dir = None
@@ -45,6 +68,7 @@ def stopped(_signum, _frame):
 
 signal.signal(signal.SIGTERM, stopped)
 atexit.register(lambda: trace("process-exited"))
+trace("acp-process-started")
 
 def send(value):
     sys.stdout.write(json.dumps(value, separators=(",", ":")) + "\n")
@@ -116,12 +140,29 @@ struct RealScratch {
 
 impl RealScratch {
     fn new() -> Self {
+        Self::with_discovery_mode("")
+    }
+
+    fn with_discovery_mode(discovery_mode: &str) -> Self {
         let task = fresh_temp_dir("copilot-acp-real-task");
         let executable_root = fresh_temp_dir("copilot-acp-real-executable");
         let executable = executable_root.join("copilot.py");
         let sentinel = task.join(SENTINEL_PATH);
         let trace = executable_root.join("fake-trace.log");
-        fs::write(&executable, FAKE_PROTOCOL_SCRIPT).expect("write test-owned fake ACP executable");
+        let mode_literal =
+            serde_json::to_string(discovery_mode).expect("fake mode literal serializes");
+        let task_literal = serde_json::to_string(
+            task.to_str()
+                .expect("task-owned fake scratch path is UTF-8"),
+        )
+        .expect("fake task path literal serializes");
+        let script = FAKE_PROTOCOL_SCRIPT
+            .replace(
+                "mode = os.environ.get(\"SWALLOWTAIL_FAKE_MODE\", \"\")",
+                &format!("mode = os.environ.get(\"SWALLOWTAIL_FAKE_MODE\", {mode_literal})"),
+            )
+            .replace("TASK_SCRATCH_FALLBACK", &task_literal);
+        fs::write(&executable, script).expect("write test-owned fake ACP executable");
         let protected_executable =
             ProtectedExecutable::copy_from(&executable, &sha256_file(&executable))
                 .expect("freeze exact fake executable bytes in private scratch");
@@ -196,7 +237,10 @@ impl ProtectedExecutable {
 
 impl Drop for RealScratch {
     fn drop(&mut self) {
-        fs::remove_dir_all(&self.task).expect("remove only the fresh task-owned fixture directory");
+        if self.task.exists() {
+            fs::remove_dir_all(&self.task)
+                .expect("remove only the fresh task-owned fixture directory");
+        }
         fs::remove_dir_all(
             self.executable
                 .parent()
@@ -204,6 +248,13 @@ impl Drop for RealScratch {
         )
         .expect("remove only the fresh fake executable directory");
         fs::remove_dir_all(&self.records).expect("remove only the fresh fake record directory");
+        if self.protected_executable.root.exists() {
+            let _ = fs::set_permissions(
+                &self.protected_executable.root,
+                fs::Permissions::from_mode(0o700),
+            );
+            let _ = fs::remove_file(self.protected_executable.root.join("cleanup-blocker"));
+        }
     }
 }
 
@@ -234,13 +285,15 @@ struct RunEvidence {
     session_cancel_sent: bool,
     prompt_cancelled: bool,
     original_started: bool,
-    before_tree_sha256: String,
-    after_tree_sha256: String,
+    before_tree_sha256: Option<String>,
+    after_tree_sha256: Option<String>,
     attempt_record: serde_json::Value,
     prompt_record: Option<serde_json::Value>,
     result_record: serde_json::Value,
     record_files_private: bool,
     protected_executable_removed: bool,
+    primary_failure: Option<serde_json::Value>,
+    cleanup_failure: Option<serde_json::Value>,
 }
 
 fn run_with_local_host(mode: &str, total: Duration, cleanup: Duration) -> RunEvidence {
@@ -279,6 +332,10 @@ fn run_with_local_host(mode: &str, total: Duration, cleanup: Duration) -> RunEvi
                     OsString::from("SWALLOWTAIL_FAKE_RECORDS"),
                     scratch.records.as_os_str().to_owned(),
                 ),
+                (
+                    OsString::from("SWALLOWTAIL_FAKE_TASK"),
+                    scratch.task.as_os_str().to_owned(),
+                ),
             ],
         )
         .approve_working_resource(working.clone(), scratch.task.clone())
@@ -287,7 +344,7 @@ fn run_with_local_host(mode: &str, total: Duration, cleanup: Duration) -> RunEvi
     let started = Instant::now();
     let action_window = total - cleanup;
     let action_deadline = local.deadline_after(action_window.saturating_sub(started.elapsed()));
-    let before_tree_sha256 = tree_sha256(&scratch.task);
+    let before_tree_sha256 = measured_tree_sha256(&scratch.task);
     let plan_path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
     let plan: serde_json::Value =
@@ -411,7 +468,7 @@ fn run_with_local_host(mode: &str, total: Duration, cleanup: Duration) -> RunEvi
 }
 
 fn run_fake_original_branch(mode: &str, total: Duration, cleanup: Duration) -> RunEvidence {
-    let scratch = RealScratch::new();
+    let scratch = RealScratch::with_discovery_mode(mode);
     run_fake_original_branch_with_scratch(&scratch, mode, total, cleanup)
         .expect("test-only planner binding runs only the fake child")
 }
@@ -439,26 +496,33 @@ fn run_fake_original_branch_with_scratch(
             InterfaceVersionAxis::new(COPILOT_CLI_PACKAGE_AXIS).expect("version axis"),
             LocalExecutableLaunch::interpreted_script(python, scratch.executable.clone()),
         );
-    let local = builder
-        .approve_environment(
-            environment,
-            [
-                (
-                    OsString::from("SWALLOWTAIL_FAKE_MODE"),
-                    OsString::from(mode),
-                ),
-                (
-                    OsString::from("SWALLOWTAIL_FAKE_TRACE"),
-                    scratch.trace.as_os_str().to_owned(),
-                ),
-                (
-                    OsString::from("SWALLOWTAIL_FAKE_RECORDS"),
-                    scratch.records.as_os_str().to_owned(),
-                ),
-            ],
-        )
-        .approve_working_resource(working.clone(), scratch.task.clone())
-        .build_services(host.clone());
+    let builder = builder.approve_environment(
+        environment,
+        [
+            (
+                OsString::from("SWALLOWTAIL_FAKE_MODE"),
+                OsString::from(mode),
+            ),
+            (
+                OsString::from("SWALLOWTAIL_FAKE_TRACE"),
+                scratch.trace.as_os_str().to_owned(),
+            ),
+            (
+                OsString::from("SWALLOWTAIL_FAKE_RECORDS"),
+                scratch.records.as_os_str().to_owned(),
+            ),
+            (
+                OsString::from("SWALLOWTAIL_FAKE_TASK"),
+                scratch.task.as_os_str().to_owned(),
+            ),
+        ],
+    );
+    let builder = if mode == "preflight-failure" {
+        builder
+    } else {
+        builder.approve_working_resource(working.clone(), scratch.task.clone())
+    };
+    let local = builder.build_services(host.clone());
     let plan = enabled_fake_plan(scratch);
     let plan_sha256 = sha256_reader(
         serde_json::to_vec(&plan)
@@ -482,6 +546,10 @@ fn run_fake_original_branch_with_scratch(
             .to_owned(),
     };
     let executable_sha256 = sha256_file(&scratch.executable);
+    if mode == "record-write-failure" {
+        fs::create_dir(scratch.records.join("1.0.95-execution.json"))
+            .expect("reserve only this task-owned result path to force the fallback writer");
+    }
     run_original_task_once(
         &plan,
         Some(&continuation),
@@ -505,8 +573,24 @@ fn run_fake_original_branch_with_scratch(
             expected_executable_sha256: executable_sha256,
             original_started: false,
             execution_mode: "fake-local-process-only",
+            cancel_discovery_before_start: mode == "discovery-cancelled",
+            fail_protected_cleanup_for_test: mode == "cleanup-failure",
+            services_override: (mode == "preflight-failure")
+                .then(|| services_without_working_resource(local.services())),
         },
     )
+}
+
+fn services_without_working_resource(services: &HostServices) -> HostServices {
+    HostServices::new(services.execution_host_id().clone())
+        .with_task(services.task().expect("fake task service exists").clone())
+        .with_time(services.time().expect("fake time service exists").clone())
+        .with_process(
+            services
+                .process()
+                .expect("fake process service exists")
+                .clone(),
+        )
 }
 
 fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
@@ -524,6 +608,28 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
         .expect("fresh fake record directory is under HOME");
     plan["records"]["root"] =
         serde_json::Value::String(format!("$HOME/{}", relative_records.display()));
+    // Full-workspace nextest can run other packages' nested Cargo builds in
+    // parallel. The committed plan still binds Cargo.lock and the check
+    // selector validates that pin; this synthetic fake continuation omits the
+    // lockfile because the fake runner does not consume it and Cargo may
+    // rewrite it while parallel tests run.
+    let manifest_sha256 = {
+        let files = plan["prepared_path_sources"]["files"]
+            .as_array_mut()
+            .expect("prepared source manifest files are present");
+        let original_len = files.len();
+        files.retain(|entry| {
+            entry.get("path").and_then(serde_json::Value::as_str) != Some("Cargo.lock")
+        });
+        assert_eq!(
+            files.len() + 1,
+            original_len,
+            "fake plan omits one Cargo.lock entry"
+        );
+        let encoded = serde_json::to_vec(files).expect("fake source manifest serializes");
+        sha256_reader(encoded.as_slice()).expect("fake source manifest hashes")
+    };
+    plan["prepared_path_sources"]["sha256"] = serde_json::Value::String(manifest_sha256);
     plan["records"]["original_execution_enabled"] = serde_json::Value::Bool(true);
     plan["original_execution_enabled"] = serde_json::Value::Bool(true);
     plan["original_enable_gate"]["state"] =
@@ -564,7 +670,7 @@ struct SessionRunIdentity {
 struct SessionRunAccounting {
     attempt_record_visible_before_version: bool,
     attempt_path: PathBuf,
-    before_tree_sha256: String,
+    before_tree_sha256: Option<String>,
     original_started: bool,
     execution_mode: &'static str,
 }
@@ -620,6 +726,8 @@ fn drive_prepared_session(
     let mut cancel_request_sent = false;
     let mut cancellation_request_failed = false;
     let mut prompt_record_failed = false;
+    let mut primary_failure = None;
+    let mut cleanup_failure = None;
     let mut action_id = None;
     let mut action_count = 0;
     let mut action_content_matches = false;
@@ -639,22 +747,27 @@ fn drive_prepared_session(
         open_action_deadline,
         open_total_deadline,
     ));
+    let session_open_succeeded = opened.is_ok();
     match opened {
         Err(error) => {
-            status = if error.diagnostic().code().ends_with("session_open_deadline") {
+            let error_code = error.diagnostic().code();
+            status = if error_code.ends_with("session_open_deadline") {
                 "session-open-timeout"
             } else {
                 "session-open-failed"
             };
-            cleanup_label = if error
-                .diagnostic()
-                .code()
-                .ends_with("session_open_cleanup_failed")
-            {
-                "failed"
+            if error_code.ends_with("session_open_cleanup_failed") {
+                primary_failure = Some(serde_json::json!({
+                    "stage": "session_open",
+                    "class": "session_open_cause_unknown",
+                    "diagnostic": "underlying_open_failure_not_exposed"
+                }));
+                cleanup_failure = Some(cleanup_failure_record("session_open_cleanup_failed"));
+                cleanup_label = "failed";
             } else {
-                "driver-joined"
-            };
+                primary_failure = Some(runtime_failure_record("session_open", &error));
+                cleanup_label = "driver-joined";
+            }
         }
         Ok(mut handle) => {
             if started.elapsed() >= action_window {
@@ -664,6 +777,9 @@ fn drive_prepared_session(
                 let cleanup_outcome =
                     block_on(handle.close(SessionCleanupRequest::new(deadline), services.clone()));
                 cleanup_label = cleanup_name(&cleanup_outcome);
+                if let Some(class) = cleanup_failure_class(&cleanup_outcome) {
+                    cleanup_failure.get_or_insert_with(|| cleanup_failure_record(class));
+                }
             } else {
                 let prompt_record = serde_json::json!({
                     "schema": "copilot-cli-private-assessment-consumed.v1",
@@ -766,7 +882,13 @@ fn drive_prepared_session(
                                                     }
                                                     wait = remaining_wait;
                                                 }
-                                                Either::Left((Some(Err(_)), _)) => {
+                                                Either::Left((Some(Err(error)), _)) => {
+                                                    primary_failure.get_or_insert_with(|| {
+                                                        runtime_failure_record(
+                                                            "turn_events",
+                                                            &error,
+                                                        )
+                                                    });
                                                     break;
                                                 }
                                                 Either::Left((None, _)) => break,
@@ -783,7 +905,8 @@ fn drive_prepared_session(
                                                         Either::Left((Ok(_), _)) => {
                                                             cancel_request_sent = true;
                                                         }
-                                                        _ => {
+                                                        Either::Right((_, _))
+                                                        | Either::Left((Err(_), _)) => {
                                                             cancellation_request_failed = true;
                                                         }
                                                     }
@@ -830,13 +953,25 @@ fn drive_prepared_session(
                                     }
                                     drop(turn);
                                 }
-                                Err(_) => {
+                                Err(error) => {
                                     terminal_label = "runtime-failed";
+                                    primary_failure.get_or_insert_with(|| {
+                                        runtime_failure_record("turn_start", &error)
+                                    });
                                 }
                             }
                         }
                     }
-                    Err(_) => prompt_record_failed = true,
+                    Err(_) => {
+                        prompt_record_failed = true;
+                        primary_failure.get_or_insert_with(|| {
+                            serde_json::json!({
+                                "stage": "prompt_record",
+                                "class": "consumed_record_write_failed",
+                                "diagnostic": "exclusive_record_write_failed"
+                            })
+                        });
+                    }
                 }
                 let remaining = total.saturating_sub(started.elapsed());
                 let cleanup_deadline = local.deadline_after(remaining);
@@ -845,6 +980,9 @@ fn drive_prepared_session(
                     services.clone(),
                 ));
                 cleanup_label = cleanup_name(&cleanup_outcome);
+                if let Some(class) = cleanup_failure_class(&cleanup_outcome) {
+                    cleanup_failure.get_or_insert_with(|| cleanup_failure_record(class));
+                }
                 let protocol_trace = scratch
                     .trace
                     .and_then(|path| fs::read_to_string(path).ok())
@@ -900,49 +1038,62 @@ fn drive_prepared_session(
         && action_count == 1
         && action_content_matches
         && action_id.as_deref() == Some("sentinel-edit");
-    let after_tree_sha256 = tree_sha256(scratch.task);
-    let effect_count = usize::from(before_tree_sha256 != after_tree_sha256);
-    if effect_count != 0 {
+    let after_tree_sha256 = measured_tree_sha256(scratch.task);
+    let effect_state = effect_state(before_tree_sha256.as_deref(), after_tree_sha256.as_deref());
+    let effect_count = match effect_state {
+        "unchanged" => Some(0),
+        "changed" => Some(1),
+        _ => None,
+    };
+    if effect_state == "changed" {
         status = "effect-detected";
     }
-    let process_trace = scratch
-        .trace
-        .and_then(|path| fs::read_to_string(path).ok())
-        .unwrap_or_default();
+    let (process_trace, process_trace_available) = match scratch.trace {
+        Some(path) => match fs::read_to_string(path) {
+            Ok(trace) => (trace, true),
+            Err(_) => (String::new(), false),
+        },
+        None => (String::new(), false),
+    };
     let executable_path = Path::new(&binding.executable_ref);
-    let executable_digest_after_cleanup = fs::symlink_metadata(executable_path)
-        .ok()
-        .filter(|metadata| metadata.is_file() && !metadata.file_type().is_symlink())
-        .map(|_| sha256_file(executable_path));
-    let identity_drift_after_cleanup = executable_digest_after_cleanup.as_deref()
-        != Some(binding.executable_bytes_sha256.as_str());
-    if identity_drift_after_cleanup {
-        status = "identity-drift-after-cleanup";
-    }
-    let protected_executable_sha256_after_cleanup =
-        scratch.protected_executable.and_then(|protected| {
-            fs::symlink_metadata(&protected.path)
-                .ok()
-                .filter(|metadata| metadata.is_file() && !metadata.file_type().is_symlink())
-                .map(|_| sha256_file(&protected.path))
-        });
-    let protected_executable_drift = protected_executable_sha256_after_cleanup.as_deref()
-        != scratch
-            .protected_executable
-            .map(|protected| protected.sha256.as_str());
-    if protected_executable_drift {
-        status = "protected-executable-drift";
-    }
+    let protected_executable_sha256_before_cleanup = scratch
+        .protected_executable
+        .and_then(|protected| measured_file_sha256(&protected.path));
     let protected_executable_removed = scratch
         .protected_executable
         .is_none_or(ProtectedExecutable::cleanup);
     if !protected_executable_removed {
         status = "protected-executable-cleanup-failed";
         cleanup_label = "failed";
+        cleanup_failure
+            .get_or_insert_with(|| cleanup_failure_record("protected_executable_cleanup_failed"));
+    }
+    let protected_executable_after_cleanup = scratch
+        .protected_executable
+        .map(|protected| path_state(&protected.root))
+        .unwrap_or("not-applicable");
+    let executable_digest_after_cleanup = measured_file_sha256(executable_path);
+    let identity_drift_after_cleanup = executable_digest_after_cleanup
+        .as_deref()
+        .is_none_or(|digest| digest != binding.executable_bytes_sha256);
+    if identity_drift_after_cleanup {
+        status = "identity-drift-after-cleanup";
+    }
+    let protected_executable_drift = protected_executable_sha256_before_cleanup
+        .as_deref()
+        .zip(
+            scratch
+                .protected_executable
+                .map(|protected| protected.sha256.as_str()),
+        )
+        .map(|(actual, expected)| actual != expected);
+    if protected_executable_drift == Some(true) {
+        status = "protected-executable-drift";
     }
     let permission_cancelled = process_trace.contains("permission-cancelled");
     let session_cancel_sent = process_trace.contains("session-cancel");
     let prompt_cancelled = process_trace.contains("prompt-result-cancelled");
+    let process_started = process_trace.contains("acp-process-started");
     if cleanup_label == "not-run" {
         cleanup_label = if process_trace.contains("process-exited") {
             "driver-joined"
@@ -950,19 +1101,34 @@ fn drive_prepared_session(
             "unknown"
         };
     }
-    let task_joined = matches!(cleanup_label, "clean" | "driver-joined");
-    let resource_released = task_joined;
-    let host_confirmed_process_cleanup = matches!(cleanup_label, "clean" | "driver-joined");
+    let host_confirmed_process_cleanup = matches!(cleanup_label, "clean" | "driver-joined")
+        && (session_open_succeeded || process_started);
     let process_stopped =
         process_trace.contains("process-stopped") || host_confirmed_process_cleanup;
     let process_exited = process_trace.contains("process-exited") || host_confirmed_process_cleanup;
+    let process_state = if process_started {
+        if process_exited && process_stopped {
+            "joined"
+        } else {
+            "unknown"
+        }
+    } else if process_trace_available {
+        "not-started"
+    } else if session_open_succeeded && host_confirmed_process_cleanup {
+        "joined"
+    } else {
+        "unknown"
+    };
+    let task_joined = process_state == "joined" || process_state == "not-started";
+    let resource_released = (process_started || session_open_succeeded)
+        && matches!(cleanup_label, "clean" | "driver-joined");
     let attempt_visible_before_version = attempt_record_visible_before_version;
     let prompt_visible_before_send =
         process_trace.contains("prompt-record-visible-before-send:True");
-    let mut terminal_accepted = effect_count == 0
+    let mut terminal_accepted = effect_count == Some(0)
         && cleanup_label == "clean"
         && !identity_drift_after_cleanup
-        && !protected_executable_drift
+        && protected_executable_drift == Some(false)
         && protected_executable_removed
         && match terminal_label {
             "permission-observed" => {
@@ -999,31 +1165,38 @@ fn drive_prepared_session(
         "working_resource_released": resource_released,
         "process_stopped": process_stopped,
         "process_exited": process_exited,
+        "process_state": process_state,
+        "process_started": process_started,
+        "process_cleanup": if cleanup_label == "driver-joined" || cleanup_label == "clean" { "joined" } else { cleanup_label },
+        "working_resource_cleanup": if resource_released { "released" } else { "unknown" },
         "attempt_record_visible_before_version": attempt_visible_before_version,
         "prompt_record_visible_before_send": prompt_visible_before_send,
         "plan_sha256": plan_sha256,
         "runner_sha256": runner_sha256,
-                    "rust_runner_sha256": rust_runner_sha256,
-                    "authority_binding_sha256": authority_binding_sha256,
-                    "reviewed_head": reviewed_head,
-                    "enable_command": enable_command,
-                    "source_manifest_sha256": source_manifest_sha256,
+        "rust_runner_sha256": rust_runner_sha256,
+        "authority_binding_sha256": authority_binding_sha256,
+        "reviewed_head": reviewed_head,
+        "enable_command": enable_command,
+        "source_manifest_sha256": source_manifest_sha256,
         "execution_host_id_sha256": binding.execution_host_id_sha256,
         "executable_ref_sha256": binding.executable_ref_sha256,
         "environment_ref_sha256": binding.environment_ref_sha256,
         "executable_bytes_sha256": binding.executable_bytes_sha256,
-        "executable_digest_after_cleanup": executable_digest_after_cleanup,
+        "approved_executable_sha256_before": binding.executable_bytes_sha256,
+        "approved_executable_sha256_after_cleanup": executable_digest_after_cleanup,
         "identity_drift_after_cleanup": identity_drift_after_cleanup,
-        "protected_executable_sha256": scratch.protected_executable.map(|protected| &protected.sha256),
-        "protected_executable_sha256_after_cleanup": protected_executable_sha256_after_cleanup,
+        "protected_executable_sha256_before_cleanup": scratch.protected_executable.map(|protected| &protected.sha256),
+        "protected_executable_sha256_measured_before_cleanup": protected_executable_sha256_before_cleanup,
         "protected_executable_drift": protected_executable_drift,
         "protected_executable_removed": protected_executable_removed,
+        "protected_executable_after_cleanup": protected_executable_after_cleanup,
         "wrapper_archive_sha256": binding.wrapper_archive_sha256,
         "native_archive_sha256": binding.native_archive_sha256,
         "argv": ["--acp", "--stdio"],
         "task_directory_sha256_before": before_tree_sha256,
         "task_directory_sha256_after": after_tree_sha256,
         "effect_count": effect_count,
+        "effect_state": effect_state,
         "action_id": action_id,
         "action_count": action_count,
         "action_content_matches_requested_new_bytes": action_content_matches,
@@ -1039,39 +1212,31 @@ fn drive_prepared_session(
         "timed_out": timed_out,
         "cancel_request_sent": cancel_request_sent,
         "elapsed_milliseconds_before_result_fsync": elapsed_before_result_fsync.as_millis(),
+        "primary_failure": primary_failure,
+        "cleanup_failure": cleanup_failure,
         "original_started": original_started
     });
-    let result_write = write_exclusive_fsynced(&result_path, &result);
-    if result_write.is_err() {
+    let mut persisted = persist_result_record(scratch.records, &result_path, &mut result);
+    if persisted.state == "unavailable" {
         status = "result-record-write-failed";
         terminal_accepted = false;
-        result["status"] = serde_json::Value::String(status.to_owned());
-        result["terminal_accepted"] = serde_json::Value::Bool(false);
+        persisted.record["status"] = serde_json::Value::String(status.to_owned());
+        persisted.record["terminal_accepted"] = serde_json::Value::Bool(false);
     }
-    let attempt_record = serde_json::from_slice(
-        &fs::read(&attempt_path).expect("consumed invocation record remains readable"),
-    )
-    .expect("invocation record round-trips");
-    let prompt_record = prompt_record_path.as_ref().map(|path| {
-        serde_json::from_slice(&fs::read(path).expect("consumed prompt record remains readable"))
-            .expect("prompt record round-trips")
-    });
-    let result_record = fs::read(&result_path)
-        .ok()
-        .and_then(|bytes| serde_json::from_slice(&bytes).ok())
-        .unwrap_or(result);
+    let attempt_record = read_json_value(&attempt_path).unwrap_or(serde_json::Value::Null);
+    let prompt_record = prompt_record_path
+        .as_ref()
+        .map(|path| read_json_value(path).unwrap_or(serde_json::Value::Null));
+    let result_record = persisted.record;
     let elapsed = started.elapsed();
     let record_files_private = [
         Some(attempt_path.as_path()),
         prompt_record_path.as_deref(),
-        Some(result_path.as_path()),
+        persisted.path.as_deref(),
     ]
     .into_iter()
     .flatten()
-    .all(|path| {
-        fs::symlink_metadata(path)
-            .is_ok_and(|metadata| metadata.is_file() && metadata.permissions().mode() & 0o077 == 0)
-    });
+    .all(private_record_file);
     RunEvidence {
         status,
         terminal: terminal_label,
@@ -1105,6 +1270,8 @@ fn drive_prepared_session(
         result_record,
         record_files_private,
         protected_executable_removed,
+        primary_failure,
+        cleanup_failure,
     }
 }
 
@@ -1441,6 +1608,9 @@ fn run_original_task_once(
         expected_executable_sha256,
         original_started,
         execution_mode,
+        cancel_discovery_before_start,
+        fail_protected_cleanup_for_test,
+        services_override,
     } = policy;
     run_original_task_with_budget(
         plan,
@@ -1458,6 +1628,9 @@ fn run_original_task_once(
         &expected_executable_sha256,
         original_started,
         execution_mode,
+        cancel_discovery_before_start,
+        fail_protected_cleanup_for_test,
+        services_override,
     )
 }
 
@@ -1467,6 +1640,210 @@ struct OriginalRunPolicy {
     expected_executable_sha256: String,
     original_started: bool,
     execution_mode: &'static str,
+    cancel_discovery_before_start: bool,
+    fail_protected_cleanup_for_test: bool,
+    services_override: Option<HostServices>,
+}
+
+struct PreparedFailureContext<'a> {
+    status: &'static str,
+    started: Instant,
+    task_directory: &'a Path,
+    records_directory: &'a Path,
+    attempt_path: &'a Path,
+    result_path: &'a Path,
+    executable_path: &'a Path,
+    binding: &'a crate::assessment::CopilotCliAssessmentHostBinding,
+    protected_executable: &'a ProtectedExecutable,
+    before_tree_sha256: Option<String>,
+    plan_sha256: &'a str,
+    runner_sha256: &'a str,
+    rust_runner_sha256: &'a str,
+    authority_binding_sha256: &'a str,
+    reviewed_head: Option<&'a str>,
+    enable_command: Option<&'a str>,
+    source_manifest_sha256: &'a str,
+    original_started: bool,
+    execution_mode: &'a str,
+    fail_protected_cleanup_for_test: bool,
+}
+
+struct PersistedResult {
+    record: serde_json::Value,
+    path: Option<PathBuf>,
+    state: &'static str,
+}
+
+fn record_prepared_failure(
+    context: PreparedFailureContext<'_>,
+    mut primary_failure: serde_json::Value,
+) -> RunEvidence {
+    let PreparedFailureContext {
+        status,
+        started,
+        task_directory,
+        records_directory,
+        attempt_path,
+        result_path,
+        executable_path,
+        binding,
+        protected_executable,
+        before_tree_sha256,
+        plan_sha256,
+        runner_sha256,
+        rust_runner_sha256,
+        authority_binding_sha256,
+        reviewed_head,
+        enable_command,
+        source_manifest_sha256,
+        original_started,
+        execution_mode,
+        fail_protected_cleanup_for_test,
+    } = context;
+
+    let mut cleanup_failure = None;
+    let discovery_cleanup_failed = primary_failure["class"] == "discovery_cleanup_failed";
+    if discovery_cleanup_failed {
+        cleanup_failure = Some(cleanup_failure_record("discovery_cleanup_failed"));
+        primary_failure = serde_json::json!({
+            "stage": "discovery",
+            "class": "discovery_cause_unknown",
+            "diagnostic": "underlying_discovery_cause_not_exposed"
+        });
+    }
+
+    if fail_protected_cleanup_for_test && execution_mode == "fake-local-process-only" {
+        let blocker = protected_executable.root.join("cleanup-blocker");
+        let _ = fs::write(blocker, b"task-owned cleanup failure fixture");
+        let _ = fs::set_permissions(
+            &protected_executable.root,
+            fs::Permissions::from_mode(0o500),
+        );
+    }
+    let protected_executable_sha256_before_cleanup =
+        measured_file_sha256(&protected_executable.path);
+    let protected_executable_removed = protected_executable.cleanup();
+    if !protected_executable_removed {
+        cleanup_failure
+            .get_or_insert_with(|| cleanup_failure_record("protected_executable_cleanup_failed"));
+    }
+
+    let after_tree_sha256 = measured_tree_sha256(task_directory);
+    let effect_state = effect_state(before_tree_sha256.as_deref(), after_tree_sha256.as_deref());
+    let approved_executable_sha256_after_cleanup = measured_file_sha256(executable_path);
+    let identity_state = match approved_executable_sha256_after_cleanup.as_deref() {
+        Some(digest) if digest == binding.executable_bytes_sha256 => "matched",
+        Some(_) => "changed",
+        None => "unknown",
+    };
+    let protected_executable_after_cleanup = path_state(&protected_executable.root);
+    let cleanup_state = if cleanup_failure.is_some() {
+        "failed"
+    } else {
+        "clean"
+    };
+    let task_join_state = if discovery_cleanup_failed {
+        "unknown"
+    } else {
+        "joined_or_not_started"
+    };
+    let mut result = serde_json::json!({
+        "schema": "copilot-cli-private-assessment-result.v1",
+        "task_id": TASK_ID,
+        "version": PRIVATE_ASSESSMENT_VERSION,
+        "status": status,
+        "terminal": "not-started",
+        "cleanup": cleanup_state,
+        "discovery_process_cleanup": if discovery_cleanup_failed { "failed" } else { "joined_or_not_started" },
+        "owned_tasks_joined": if discovery_cleanup_failed { serde_json::Value::Null } else { serde_json::Value::Bool(true) },
+        "working_resource_release": "not-acquired",
+        "process_stopped": serde_json::Value::Null,
+        "process_exited": serde_json::Value::Null,
+        "attempt_record_visible_before_version": consumed_record_visible_before_effect(attempt_path, "invocation-consumed-before-prepared-open"),
+        "prompt_record_visible_before_send": false,
+        "plan_sha256": plan_sha256,
+        "runner_sha256": runner_sha256,
+        "rust_runner_sha256": rust_runner_sha256,
+        "authority_binding_sha256": authority_binding_sha256,
+        "reviewed_head": reviewed_head,
+        "enable_command": enable_command,
+        "source_manifest_sha256": source_manifest_sha256,
+        "execution_host_id_sha256": binding.execution_host_id_sha256,
+        "executable_ref_sha256": binding.executable_ref_sha256,
+        "environment_ref_sha256": binding.environment_ref_sha256,
+        "approved_executable_sha256_before": binding.executable_bytes_sha256,
+        "approved_executable_sha256_after_cleanup": approved_executable_sha256_after_cleanup,
+        "approved_executable_identity_after_cleanup": identity_state,
+        "protected_executable_sha256_before_cleanup": protected_executable.sha256,
+        "protected_executable_sha256_measured_before_cleanup": protected_executable_sha256_before_cleanup,
+        "protected_executable_removed": protected_executable_removed,
+        "protected_executable_after_cleanup": protected_executable_after_cleanup,
+        "wrapper_archive_sha256": binding.wrapper_archive_sha256,
+        "native_archive_sha256": binding.native_archive_sha256,
+        "argv": ["--acp", "--stdio"],
+        "task_directory_sha256_before": before_tree_sha256,
+        "task_directory_sha256_after": after_tree_sha256,
+        "effect_state": effect_state,
+        "effect_count": match effect_state { "unchanged" => Some(0), "changed" => Some(1), _ => None },
+        "primary_failure": primary_failure,
+        "cleanup_failure": cleanup_failure,
+        "original_started": original_started,
+        "elapsed_milliseconds_before_result_fsync": started.elapsed().as_millis()
+    });
+    let mut persisted = persist_result_record(records_directory, result_path, &mut result);
+    let timed_out = persisted.record["primary_failure"]["class"] == "discovery_timeout";
+    let attempt_visible_before_version =
+        persisted.record["attempt_record_visible_before_version"] == true;
+    let primary_failure = persisted.record.get("primary_failure").cloned();
+    let cleanup_failure = persisted.record.get("cleanup_failure").cloned();
+    let status = if persisted.state == "unavailable" {
+        persisted.record["status"] =
+            serde_json::Value::String("result-record-write-failed".to_owned());
+        "result-record-write-failed"
+    } else {
+        status
+    };
+    let attempt_record = read_json_value(attempt_path).unwrap_or(serde_json::Value::Null);
+    let record_files_private = [Some(attempt_path), persisted.path.as_deref()]
+        .into_iter()
+        .flatten()
+        .all(private_record_file);
+    RunEvidence {
+        status,
+        terminal: "not-started",
+        cleanup: cleanup_state,
+        task_joined: task_join_state != "unknown",
+        resource_released: false,
+        process_stopped: false,
+        process_exited: false,
+        attempt_visible_before_version,
+        prompt_visible_before_send: false,
+        elapsed: started.elapsed(),
+        timed_out,
+        cancel_request_sent: false,
+        action_id: None,
+        action_count: 0,
+        action_content_matches: false,
+        permission_action_metadata_verified: false,
+        terminal_accepted: false,
+        action_cancelled: false,
+        permission_request: None,
+        permission_request_count: 0,
+        permission_action_id: None,
+        permission_cancelled: false,
+        session_cancel_sent: false,
+        prompt_cancelled: false,
+        original_started,
+        before_tree_sha256,
+        after_tree_sha256,
+        attempt_record,
+        prompt_record: None,
+        result_record: persisted.record,
+        record_files_private,
+        protected_executable_removed,
+        primary_failure,
+        cleanup_failure,
+    }
 }
 
 impl OriginalRunPolicy {
@@ -1477,6 +1854,9 @@ impl OriginalRunPolicy {
             expected_executable_sha256: crate::assessment::NATIVE_EXECUTABLE_SHA256.to_owned(),
             original_started: true,
             execution_mode: "approved-local-process-host-original",
+            cancel_discovery_before_start: false,
+            fail_protected_cleanup_for_test: false,
+            services_override: None,
         }
     }
 }
@@ -1861,13 +2241,16 @@ fn run_original_task_with_budget(
     expected_executable_sha256: &str,
     original_started: bool,
     execution_mode: &'static str,
+    cancel_discovery_before_start: bool,
+    fail_protected_cleanup_for_test: bool,
+    services_override: Option<HostServices>,
 ) -> Result<RunEvidence, OriginalRunDenied> {
     let started = Instant::now();
     if total <= cleanup {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
     let (plan_sha256, runner_sha256) = authorize_original_run(plan, continuation)?;
-    let services = local.services().clone();
+    let services = services_override.unwrap_or_else(|| local.services().clone());
     if input.execution_host_id() != services.execution_host_id() {
         return Err(OriginalRunDenied::HostInputMismatch);
     }
@@ -1903,12 +2286,13 @@ fn run_original_task_with_budget(
 
     let action_window = total - cleanup;
     let action_deadline = local.deadline_after(action_window.saturating_sub(started.elapsed()));
-    let before_tree_sha256 = tree_sha256(task_directory);
+    let before_tree_sha256 = measured_tree_sha256(task_directory);
     let (authority_binding_sha256, reviewed_head, enable_command, source_manifest_sha256) =
         plan_binding_metadata(plan);
     let rust_runner_sha256 =
         sha256_file(&Path::new(env!("CARGO_MANIFEST_DIR")).join("src/assessment_runner.rs"));
     let attempt_path = records_directory.join("1.0.95-attempt-4.json");
+    let result_path = records_directory.join("1.0.95-execution.json");
     let attempt = serde_json::json!({
         "schema": "copilot-cli-private-assessment-consumed.v1",
         "phase": "invocation-consumed-before-prepared-open",
@@ -1917,11 +2301,11 @@ fn run_original_task_with_budget(
         "invocation_number": 4,
         "plan_sha256": plan_sha256,
         "runner_sha256": runner_sha256,
-                    "rust_runner_sha256": rust_runner_sha256,
-                    "authority_binding_sha256": authority_binding_sha256,
-                    "reviewed_head": reviewed_head,
-                    "enable_command": enable_command,
-                    "source_manifest_sha256": source_manifest_sha256,
+        "rust_runner_sha256": rust_runner_sha256,
+        "authority_binding_sha256": authority_binding_sha256,
+        "reviewed_head": reviewed_head,
+        "enable_command": enable_command,
+        "source_manifest_sha256": source_manifest_sha256,
         "execution_host_id": host_binding.execution_host_id,
         "execution_host_id_sha256": host_binding.execution_host_id_sha256,
         "executable_ref": host_binding.executable_ref,
@@ -1937,41 +2321,62 @@ fn run_original_task_with_budget(
     });
     write_exclusive_fsynced(&attempt_path, &attempt)
         .map_err(|_| OriginalRunDenied::RecordRootUnsafe)?;
+    let discovery_cancellation = DiscoveryCancellation::new();
+    if cancel_discovery_before_start {
+        block_on(CancellationControl::request(&discovery_cancellation))
+            .expect("task-owned fake cancellation is acknowledged");
+    }
     let probe = CopilotCliPreparationProbe::new(
         probe_request,
         ScopeId::new(format!("copilot-cli.assessment:{TASK_ID}:probe"))
             .expect("static task scope is valid"),
         action_deadline,
-        DiscoveryCancellation::new(),
+        discovery_cancellation,
     );
-    let prepared = match block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
-        input,
-        probe,
-        services.clone(),
-        File::open(executable_path).map_err(|_| OriginalRunDenied::ExecutableIdentityMismatch)?,
-        expected_executable_sha256,
-    )) {
+    let prepared = match File::open(executable_path) {
+        Ok(executable) => block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
+            input,
+            probe,
+            services.clone(),
+            executable,
+            expected_executable_sha256,
+        )),
+        Err(_) => Err(PreparationFailure::new(
+            PreparationStage::CompatibilityClassification,
+            swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.assessment.executable_unavailable",
+                "Private Copilot CLI assessment could not read its approved executable",
+            )),
+        )),
+    };
+    let prepared = match prepared {
         Ok(prepared) => prepared,
-        Err(_) => {
-            let result = serde_json::json!({
-                "schema": "copilot-cli-private-assessment-result.v1",
-                "task_id": TASK_ID,
-                "version": PRIVATE_ASSESSMENT_VERSION,
-                "status": "preparation-failed",
-                "cleanup": "not-started",
-                "plan_sha256": plan_sha256,
-                "runner_sha256": runner_sha256,
-                    "rust_runner_sha256": rust_runner_sha256,
-                    "authority_binding_sha256": authority_binding_sha256,
-                    "reviewed_head": reviewed_head,
-                    "enable_command": enable_command,
-                    "source_manifest_sha256": source_manifest_sha256,
-                "executable_bytes_sha256": host_binding.executable_bytes_sha256,
-                "original_started": original_started
-            });
-            let result_path = records_directory.join("1.0.95-execution.json");
-            let _ = write_exclusive_fsynced(&result_path, &result);
-            return Err(OriginalRunDenied::ExecutableIdentityMismatch);
+        Err(error) => {
+            return Ok(record_prepared_failure(
+                PreparedFailureContext {
+                    status: "preparation-failed",
+                    started,
+                    task_directory,
+                    records_directory,
+                    attempt_path: &attempt_path,
+                    result_path: &result_path,
+                    executable_path,
+                    binding: &host_binding,
+                    protected_executable: &protected_executable,
+                    before_tree_sha256,
+                    plan_sha256: &plan_sha256,
+                    runner_sha256: &runner_sha256,
+                    rust_runner_sha256: &rust_runner_sha256,
+                    authority_binding_sha256: &authority_binding_sha256,
+                    reviewed_head: reviewed_head.as_deref(),
+                    enable_command: enable_command.as_deref(),
+                    source_manifest_sha256: &source_manifest_sha256,
+                    original_started,
+                    execution_mode,
+                    fail_protected_cleanup_for_test,
+                },
+                preparation_failure_record(&error),
+            ));
         }
     };
     let session = match prepared.prepare_session(CopilotCliSessionProfileInput::new(
@@ -1979,26 +2384,32 @@ fn run_original_task_with_budget(
         working_resource,
     )) {
         Ok(session) => session,
-        Err(_) => {
-            let result = serde_json::json!({
-                    "schema": "copilot-cli-private-assessment-result.v1",
-                    "task_id": TASK_ID,
-                    "version": PRIVATE_ASSESSMENT_VERSION,
-                    "status": "session-preparation-failed",
-                    "cleanup": "not-started",
-                    "plan_sha256": plan_sha256,
-                    "runner_sha256": runner_sha256,
-            "rust_runner_sha256": rust_runner_sha256,
-            "authority_binding_sha256": authority_binding_sha256,
-            "reviewed_head": reviewed_head,
-            "enable_command": enable_command,
-            "source_manifest_sha256": source_manifest_sha256,
-                    "executable_bytes_sha256": host_binding.executable_bytes_sha256,
-                    "original_started": original_started
-                });
-            let result_path = records_directory.join("1.0.95-execution.json");
-            let _ = write_exclusive_fsynced(&result_path, &result);
-            return Err(OriginalRunDenied::HostInputMismatch);
+        Err(error) => {
+            return Ok(record_prepared_failure(
+                PreparedFailureContext {
+                    status: "session-preparation-failed",
+                    started,
+                    task_directory,
+                    records_directory,
+                    attempt_path: &attempt_path,
+                    result_path: &result_path,
+                    executable_path,
+                    binding: &host_binding,
+                    protected_executable: &protected_executable,
+                    before_tree_sha256,
+                    plan_sha256: &plan_sha256,
+                    runner_sha256: &runner_sha256,
+                    rust_runner_sha256: &rust_runner_sha256,
+                    authority_binding_sha256: &authority_binding_sha256,
+                    reviewed_head: reviewed_head.as_deref(),
+                    enable_command: enable_command.as_deref(),
+                    source_manifest_sha256: &source_manifest_sha256,
+                    original_started,
+                    execution_mode,
+                    fail_protected_cleanup_for_test,
+                },
+                preparation_failure_record(&error),
+            ));
         }
     };
     Ok(drive_prepared_session(
@@ -2599,6 +3010,10 @@ fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
         Duration::from_millis(500),
     );
     assert_eq!(failed.status, "session-open-failed");
+    assert_eq!(
+        failed.primary_failure.as_ref().unwrap()["class"],
+        "session_open_failed"
+    );
     assert_eq!(failed.cleanup, "driver-joined");
     assert!(failed.elapsed < Duration::from_secs(2));
     assert!(failed.prompt_record.is_none());
@@ -2611,6 +3026,10 @@ fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
     assert!(failed.attempt_visible_before_version);
     assert!(!failed.prompt_visible_before_send);
     assert!(failed.protected_executable_removed);
+    let failed_record =
+        serde_json::to_string(&failed.result_record).expect("failure record serializes");
+    assert!(!failed_record.contains("fixture session/new failed"));
+    assert!(!failed_record.contains("SECRET_DIAGNOSTIC_SHOULD_NOT_LEAK"));
 
     let timed_out = run_fake_original_branch(
         "session-new-hang",
@@ -2618,6 +3037,10 @@ fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
         Duration::from_secs(2),
     );
     assert_eq!(timed_out.status, "session-open-timeout");
+    assert_eq!(
+        timed_out.primary_failure.as_ref().unwrap()["class"],
+        "session_open_timeout"
+    );
     assert_eq!(timed_out.cleanup, "driver-joined");
     assert!(timed_out.elapsed < Duration::from_secs(6));
     assert!(timed_out.prompt_record.is_none());
@@ -2630,6 +3053,179 @@ fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
     assert!(timed_out.attempt_visible_before_version);
     assert!(!timed_out.prompt_visible_before_send);
     assert!(timed_out.protected_executable_removed);
+}
+
+#[test]
+fn actual_prepared_runner_retains_bounded_preparation_causes_and_cleanup_evidence() {
+    let cases = [
+        (
+            "discovery-execution-failure",
+            "preparation-failed",
+            "process_spawn",
+            "discovery_execution_failed",
+        ),
+        (
+            "discovery-malformed-version",
+            "preparation-failed",
+            "version_parse",
+            "discovery_version_invalid",
+        ),
+        (
+            "discovery-incompatible-version",
+            "preparation-failed",
+            "version_parse",
+            "discovery_version_invalid",
+        ),
+        (
+            "discovery-cancelled",
+            "preparation-failed",
+            "bounded_output",
+            "discovery_cancelled",
+        ),
+        (
+            "discovery-timeout",
+            "preparation-failed",
+            "bounded_output",
+            "discovery_timeout",
+        ),
+        (
+            "preflight-failure",
+            "session-preparation-failed",
+            "preflight",
+            "preflight_rejected",
+        ),
+    ];
+    for (mode, expected_status, expected_stage, expected_class) in cases {
+        let evidence =
+            run_fake_original_branch(mode, Duration::from_secs(3), Duration::from_millis(500));
+        assert_eq!(evidence.status, expected_status, "{mode}");
+        assert_eq!(
+            evidence.primary_failure.as_ref().unwrap()["class"],
+            expected_class,
+            "{mode}"
+        );
+        assert_eq!(
+            evidence.primary_failure.as_ref().unwrap()["stage"],
+            expected_stage,
+            "{mode}"
+        );
+        assert_eq!(
+            evidence.result_record["primary_failure"]["class"], expected_class,
+            "{mode}"
+        );
+        assert_eq!(
+            evidence.result_record["effect_state"], "unchanged",
+            "{mode}"
+        );
+        assert_eq!(evidence.cleanup, "clean", "{mode}");
+        assert!(evidence.protected_executable_removed, "{mode}");
+        assert!(evidence.prompt_record.is_none(), "{mode}");
+        assert!(!evidence.original_started, "{mode}");
+        let record = serde_json::to_string(&evidence.result_record).expect("record serializes");
+        assert!(
+            !record.contains("SECRET_DIAGNOSTIC_SHOULD_NOT_LEAK"),
+            "{mode}"
+        );
+        assert!(!record.contains("SECRET_VERSION_SHOULD_NOT_LEAK"), "{mode}");
+    }
+
+    let changed_executable = run_fake_original_branch(
+        "discovery-mutates-executable",
+        Duration::from_secs(3),
+        Duration::from_millis(500),
+    );
+    assert_eq!(changed_executable.status, "identity-drift-after-cleanup");
+    assert_eq!(
+        changed_executable.primary_failure.as_ref().unwrap()["class"],
+        "executable_identity_mismatch"
+    );
+    assert_eq!(
+        changed_executable.result_record["identity_drift_after_cleanup"],
+        true
+    );
+    assert_ne!(
+        changed_executable.result_record["approved_executable_sha256_before"],
+        changed_executable.result_record["approved_executable_sha256_after_cleanup"]
+    );
+    assert!(changed_executable.prompt_record.is_none());
+    assert_eq!(
+        changed_executable.result_record["effect_state"],
+        "unchanged"
+    );
+
+    let missing_approved_executable = run_fake_original_branch(
+        "discovery-removes-approved-executable",
+        Duration::from_secs(3),
+        Duration::from_millis(500),
+    );
+    assert_eq!(
+        missing_approved_executable.status,
+        "identity-drift-after-cleanup"
+    );
+    assert!(
+        missing_approved_executable.result_record["approved_executable_sha256_after_cleanup"]
+            .is_null()
+    );
+    assert_eq!(
+        missing_approved_executable.result_record["identity_drift_after_cleanup"],
+        true
+    );
+    assert_eq!(
+        missing_approved_executable.result_record["terminal_accepted"],
+        false
+    );
+
+    let unavailable_measurement = run_fake_original_branch(
+        "discovery-removes-task-scratch",
+        Duration::from_secs(3),
+        Duration::from_millis(500),
+    );
+    assert_eq!(
+        unavailable_measurement.result_record["effect_state"],
+        "unknown"
+    );
+    assert!(unavailable_measurement.result_record["task_directory_sha256_after"].is_null());
+    assert!(!unavailable_measurement.prompt_visible_before_send);
+    assert!(!unavailable_measurement.original_started);
+
+    let cleanup_failure = run_fake_original_branch(
+        "cleanup-failure",
+        Duration::from_secs(3),
+        Duration::from_millis(500),
+    );
+    assert_eq!(cleanup_failure.status, "preparation-failed");
+    assert_eq!(cleanup_failure.cleanup, "failed");
+    assert_eq!(
+        cleanup_failure.primary_failure.as_ref().unwrap()["class"],
+        "discovery_version_invalid"
+    );
+    assert_eq!(
+        cleanup_failure.cleanup_failure.as_ref().unwrap()["class"],
+        "protected_executable_cleanup_failed"
+    );
+    assert_eq!(
+        cleanup_failure.result_record["protected_executable_after_cleanup"],
+        "present"
+    );
+
+    // Keep this persistence-fallback case from racing the total deadline on
+    // slower hosts; the assertion concerns record recovery, not open timeout.
+    let record_fallback = run_fake_original_branch(
+        "record-write-failure",
+        Duration::from_secs(15),
+        Duration::from_millis(500),
+    );
+    assert_eq!(record_fallback.status, "permission-cancelled");
+    assert_eq!(
+        record_fallback.result_record["record_persistence"],
+        "fallback"
+    );
+    assert_eq!(
+        record_fallback.result_record["record_write_failure"],
+        "primary_record_unavailable"
+    );
+    assert!(record_fallback.record_files_private);
+    assert!(!record_fallback.original_started);
 }
 
 #[test]
@@ -2758,6 +3354,242 @@ fn cleanup_name(outcome: &CleanupOutcome) -> &'static str {
         CleanupOutcome::Degraded(_) => "degraded",
         CleanupOutcome::NotApplicable => "not-applicable",
         CleanupOutcome::Failed(_) => "failed",
+    }
+}
+
+fn cleanup_failure_class(outcome: &CleanupOutcome) -> Option<&'static str> {
+    match outcome {
+        CleanupOutcome::Clean | CleanupOutcome::NotApplicable => None,
+        CleanupOutcome::Degraded(_) => Some("session_cleanup_degraded"),
+        CleanupOutcome::Failed(_) => Some("session_cleanup_failed"),
+    }
+}
+
+fn cleanup_failure_record(class: &'static str) -> serde_json::Value {
+    serde_json::json!({"stage": "cleanup", "class": class})
+}
+
+fn preparation_failure_record(error: &PreparationFailure) -> serde_json::Value {
+    let code = error.diagnostic().safe().code();
+    serde_json::json!({
+        "stage": preparation_stage_name(error.stage()),
+        "class": preparation_failure_class(error.stage(), code),
+        "diagnostic": allowlisted_diagnostic_discriminant(code)
+    })
+}
+
+fn preparation_stage_name(stage: PreparationStage) -> &'static str {
+    match stage {
+        PreparationStage::TargetSelection => "target_selection",
+        PreparationStage::ProcessSpawn => "process_spawn",
+        PreparationStage::BoundedOutput => "bounded_output",
+        PreparationStage::ProcessExit => "process_exit",
+        PreparationStage::VersionParse => "version_parse",
+        PreparationStage::CompatibilityClassification => "compatibility_classification",
+        PreparationStage::AccessEvidence => "access_evidence",
+        PreparationStage::Preflight => "preflight",
+        PreparationStage::Cleanup => "cleanup",
+    }
+}
+
+fn preparation_failure_class(stage: PreparationStage, code: &str) -> &'static str {
+    match code {
+        "swallowtail.copilot-cli.discovery_absent" => "discovery_executable_absent",
+        "swallowtail.copilot-cli.discovery_failed" => "discovery_execution_failed",
+        "swallowtail.copilot-cli.discovery_malformed" => "discovery_version_invalid",
+        "swallowtail.copilot-cli.discovery_incompatible" => "discovery_version_incompatible",
+        "swallowtail.copilot-cli.discovery_timed_out" => "discovery_timeout",
+        "swallowtail.copilot-cli.discovery_cancelled" => "discovery_cancelled",
+        "swallowtail.copilot-cli.discovery_cleanup_failed" => "discovery_cleanup_failed",
+        "swallowtail.copilot-cli.acp.preparation.observation_mismatch"
+        | "swallowtail.copilot-cli.acp.assessment.executable_digest_mismatch"
+        | "swallowtail.copilot-cli.acp.assessment.launch_digest_mismatch"
+        | "swallowtail.copilot-cli.acp.assessment.launch_binding_mismatch" => {
+            "executable_identity_mismatch"
+        }
+        "swallowtail.copilot-cli.acp.assessment.executable_unavailable"
+        | "swallowtail.copilot-cli.acp.assessment.executable_read_failed" => {
+            "executable_unavailable"
+        }
+        _ => match stage {
+            PreparationStage::TargetSelection => "target_selection_rejected",
+            PreparationStage::ProcessSpawn | PreparationStage::ProcessExit => {
+                "discovery_execution_failed"
+            }
+            PreparationStage::BoundedOutput => "discovery_timeout_or_cancel_unknown",
+            PreparationStage::VersionParse => "discovery_version_invalid",
+            PreparationStage::CompatibilityClassification => "compatibility_rejected",
+            PreparationStage::AccessEvidence => "access_evidence_rejected",
+            PreparationStage::Preflight => "preflight_rejected",
+            PreparationStage::Cleanup => "discovery_cleanup_failed",
+        },
+    }
+}
+
+fn allowlisted_diagnostic_discriminant(code: &str) -> &'static str {
+    match code {
+        "swallowtail.copilot-cli.discovery_absent" => "discovery_absent",
+        "swallowtail.copilot-cli.discovery_failed" => "discovery_failed",
+        "swallowtail.copilot-cli.discovery_malformed" => "discovery_malformed",
+        "swallowtail.copilot-cli.discovery_incompatible" => "discovery_incompatible",
+        "swallowtail.copilot-cli.discovery_timed_out" => "discovery_timed_out",
+        "swallowtail.copilot-cli.discovery_cancelled" => "discovery_cancelled",
+        "swallowtail.copilot-cli.discovery_cleanup_failed" => "discovery_cleanup_failed",
+        "swallowtail.copilot-cli.acp.preparation.observation_mismatch" => "observation_mismatch",
+        "swallowtail.copilot-cli.acp.assessment.executable_digest_mismatch" => {
+            "executable_digest_mismatch"
+        }
+        "swallowtail.copilot-cli.acp.assessment.launch_digest_mismatch" => "launch_digest_mismatch",
+        "swallowtail.copilot-cli.acp.assessment.launch_binding_mismatch" => {
+            "launch_binding_mismatch"
+        }
+        "swallowtail.copilot-cli.acp.assessment.executable_unavailable" => "executable_unavailable",
+        "swallowtail.copilot-cli.acp.assessment.executable_read_failed" => "executable_read_failed",
+        "swallowtail.copilot-cli.acp.assessment.host_mismatch" => "host_mismatch",
+        "swallowtail.copilot-cli.acp.preparation.target_axis_mismatch" => "target_axis_mismatch",
+        "swallowtail.copilot-cli.acp.preparation.access_profile_rejected" => {
+            "access_profile_rejected"
+        }
+        "swallowtail.copilot-cli.acp.preparation.access_evidence_mismatch" => {
+            "access_evidence_mismatch"
+        }
+        "swallowtail.copilot-cli.acp.preparation.target_invalid" => "target_invalid",
+        _ => "unclassified",
+    }
+}
+
+fn runtime_failure_record(stage: &'static str, error: &RuntimeFailure) -> serde_json::Value {
+    let code = error.diagnostic().code();
+    let class = match code {
+        "swallowtail.copilot-cli.acp.assessment.session_open_deadline" => "session_open_timeout",
+        "swallowtail.copilot-cli.acp.assessment.launch_digest_mismatch" => {
+            "executable_identity_mismatch"
+        }
+        "swallowtail.copilot-cli.acp.assessment.session_open_cleanup_failed" => {
+            "session_open_cause_unknown"
+        }
+        _ => "session_open_failed",
+    };
+    serde_json::json!({
+        "stage": stage,
+        "class": class,
+        "diagnostic": match code {
+            "swallowtail.copilot-cli.acp.assessment.session_open_deadline" => "session_open_deadline",
+            "swallowtail.copilot-cli.acp.assessment.launch_digest_mismatch" => "launch_digest_mismatch",
+            "swallowtail.copilot-cli.acp.assessment.session_open_cleanup_failed" => "session_open_cleanup_failed",
+            _ => "unclassified"
+        }
+    })
+}
+
+fn effect_state(before: Option<&str>, after: Option<&str>) -> &'static str {
+    match (before, after) {
+        (Some(before), Some(after)) if before == after => "unchanged",
+        (Some(_), Some(_)) => "changed",
+        _ => "unknown",
+    }
+}
+
+fn measured_file_sha256(path: &Path) -> Option<String> {
+    let metadata = fs::symlink_metadata(path).ok()?;
+    if !metadata.is_file() || metadata.file_type().is_symlink() {
+        return None;
+    }
+    crate::assessment::sha256_reader(File::open(path).ok()?).ok()
+}
+
+fn path_state(path: &Path) -> &'static str {
+    match fs::symlink_metadata(path) {
+        Ok(metadata) if metadata.is_dir() && !metadata.file_type().is_symlink() => "present",
+        Ok(metadata) if metadata.is_file() && !metadata.file_type().is_symlink() => "present",
+        Ok(_) => "unsafe_or_unexpected",
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => "absent",
+        Err(_) => "unknown",
+    }
+}
+
+fn measured_tree_sha256(root: &Path) -> Option<String> {
+    let mut entries = BTreeMap::new();
+    collect_tree_measured(root, root, &mut entries).ok()?;
+    let bytes = serde_json::to_vec(&entries).ok()?;
+    crate::assessment::sha256_reader(bytes.as_slice()).ok()
+}
+
+fn collect_tree_measured(
+    root: &Path,
+    current: &Path,
+    entries: &mut BTreeMap<String, String>,
+) -> std::io::Result<()> {
+    for entry in fs::read_dir(current)? {
+        let path = entry?.path();
+        let metadata = fs::symlink_metadata(&path)?;
+        if metadata.file_type().is_symlink() {
+            return Err(std::io::Error::other("task scratch contains a link"));
+        }
+        if metadata.is_dir() {
+            collect_tree_measured(root, &path, entries)?;
+        } else if metadata.is_file() {
+            let digest = crate::assessment::sha256_reader(File::open(&path)?)
+                .map_err(|_| std::io::Error::other("task scratch file could not be hashed"))?;
+            let relative = path
+                .strip_prefix(root)
+                .map_err(|_| std::io::Error::other("task scratch entry escaped its root"))?;
+            let name = relative.to_string_lossy().replace('\\', "/");
+            entries.insert(name, digest);
+        } else {
+            return Err(std::io::Error::other(
+                "task scratch entry is not a regular file",
+            ));
+        }
+    }
+    Ok(())
+}
+
+fn read_json_value(path: &Path) -> Option<serde_json::Value> {
+    serde_json::from_slice(&fs::read(path).ok()?).ok()
+}
+
+fn private_record_file(path: &Path) -> bool {
+    fs::symlink_metadata(path).is_ok_and(|metadata| {
+        metadata.is_file()
+            && !metadata.file_type().is_symlink()
+            && metadata.permissions().mode() & 0o077 == 0
+    })
+}
+
+fn persist_result_record(
+    records_directory: &Path,
+    result_path: &Path,
+    record: &mut serde_json::Value,
+) -> PersistedResult {
+    record["record_persistence"] = serde_json::Value::String("primary".to_owned());
+    if write_exclusive_fsynced(result_path, record).is_ok() {
+        return PersistedResult {
+            record: record.clone(),
+            path: Some(result_path.to_path_buf()),
+            state: "primary",
+        };
+    }
+
+    record["record_persistence"] = serde_json::Value::String("fallback".to_owned());
+    record["record_write_failure"] =
+        serde_json::Value::String("primary_record_unavailable".to_owned());
+    let fallback_path = records_directory.join("1.0.95-execution-failure.json");
+    if write_exclusive_fsynced(&fallback_path, record).is_ok() {
+        return PersistedResult {
+            record: record.clone(),
+            path: Some(fallback_path),
+            state: "fallback",
+        };
+    }
+
+    record["record_persistence"] = serde_json::Value::String("unavailable".to_owned());
+    record["record_write_failure"] =
+        serde_json::Value::String("all_result_record_paths_unavailable".to_owned());
+    PersistedResult {
+        record: record.clone(),
+        path: None,
+        state: "unavailable",
     }
 }
 

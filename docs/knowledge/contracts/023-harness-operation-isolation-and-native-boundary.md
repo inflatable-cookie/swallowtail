@@ -1376,6 +1376,42 @@ clone stopped and return the exact unsupported control; do not edit private
 Parallels configuration or weaken containment. Original execution and guest
 login remain separately gated by the reviewed plan.
 
+### Copilot Normal Host Proof Direction
+
+On 2026-10-10 Tom answered “Yeah keep it simple please. A vm is overkill”
+to the explained alternative of testing the normal logged-in CLI against a
+disposable directory with a benign action and bounded supervision. Decision
+`d6c0fdf0-5abe-4562-a59f-e79520b20dca` records this ruling. His preceding direction
+“Do whatever you need to do to get it done” remains completion authority.
+
+This supersedes the VM, dedicated network and no-child prerequisites for the
+next Copilot permission proof. Use the existing `betterthanclay` CLI login
+and Auto policy on the normal macOS host. Trust the exact reviewed vendor CLI
+with its ordinary host login reads, runtime child processes, managed state
+and provider networking; do not describe a disposable working directory as
+OS containment or claim default-deny egress. The prompt names only a benign
+action against a task-owned sentinel. Reject or cancel every permission
+request; never approve, resend or ask for broad host changes. No token
+extraction, credential copying, new login or account/settings changes by the
+harness. Normal vendor-managed logs/state must be disclosed.
+
+First fake-prove and independently review the simple ACP harness, exact
+artifact/launch plan, fsynced consumption record, 60-second deadline, bounded
+sanitized diagnostics, sentinel observations and cleanup. Preserve all old
+consumed records and the shared maximum of three unused permission prompts.
+Start with one exact retained `1.0.93` permission attempt under that reviewed
+plan; no failed invocation retries or extra reviewer spend. Bind remaining
+version-specific attempts and currentness scope from its actual results.
+Process-group exit alone does not establish arbitrary descendant cleanup;
+report observed cleanup and any limitation truthfully. Host supervision is
+not a security guarantee that the vendor has no ambient access.
+
+The existing task clone remains stopped and its ownership/evidence is
+preserved; no new VM or network work is needed. No compatibility claim moves
+until reviewed original permission, reject/cancel and no-effect evidence
+exists. Released consumers, the exact `1.0.80` claim and all original records
+remain unchanged.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

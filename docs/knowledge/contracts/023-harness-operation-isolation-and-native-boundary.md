@@ -1443,6 +1443,18 @@ permission behavior or route compatibility. Preserve all prior consumed
 records and the three-prompt shared ceiling; a later original attempt remains
 separately gated to this exact plan and reviewed authority.
 
+Task 169 used a separate manifest binding its brief, Research 434 preparation,
+and final runner to make one original start available. The exact native
+`1.0.93` attempt returned an `agentInfo.version` mismatch during initialize,
+before the harness accepted initialization, created a session or sent the
+permission prompt. The invocation record was consumed; no prompt slot was
+created, so all three shared permission prompts remain. The sentinel and action
+directory were unchanged. The root, process group and stdio readers joined;
+arbitrary escaped descendant cleanup remains unknown. Research 435 retains the
+authority, fake-pass record, consumed ledger and sanitized original result.
+This is a finite failed observation, not cancellation evidence or route
+qualification. Do not retry this attempt or start a reviewer original.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

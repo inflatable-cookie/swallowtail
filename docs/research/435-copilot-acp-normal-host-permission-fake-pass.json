@@ -1,0 +1,77 @@
+{
+  "schema": "copilot-cli-acp-normal-host-permission-fake-pass.v1",
+  "status": "passed",
+  "selectors": [
+    "check:copilot-acp-host-permission-delta",
+    "validate:copilot-acp-host-permission-delta"
+  ],
+  "identities": {
+    "preparation_plan_sha256": "469cacfe46125141c6142b7b8b9418805da00ae550fb6d9c672b994f439dd664",
+    "preparation_runner_sha256": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc",
+    "final_runner_sha256": "42b1cd5a09e6a8cf80674f972079cbdae618c7e882f9fcfea1d662744b56aa4b",
+    "execution_authority_sha256": "8df1d77fe399084345c0dd94c6b954428540d37e50380578542626fc0ad17eed"
+  },
+  "scope": {
+    "original_execution_authorized_by_preparation_plan": false,
+    "separate_task_authority_validated": true,
+    "originals_run": false,
+    "qualification_changed": false
+  },
+  "original_shaped_launch": {
+    "argv": ["--model", "auto", "--acp", "--stdio"],
+    "environment": "env=None inherited a synthetic test marker",
+    "permission_reply": "cancelled",
+    "prompt_result": "cancelled",
+    "sentinel_unchanged": true,
+    "action_directory_unchanged": true
+  },
+  "authority_and_record_checks": {
+    "identity_mismatch_rejected_before_effects": true,
+    "attempt_replay_refused_without_changing_record": true,
+    "prompt_slot_replay_refused_without_changing_record": true,
+    "authority_tampering_rejected": true,
+    "approval_record_tampering_rejected": true,
+    "raw_field_tampering_rejected": true
+  },
+  "crash_fixtures": {
+    "before_prompt_read": {
+      "failure_class": "unknown-eof",
+      "prompt_slot_fsynced_before_send": true,
+      "prompt_send_completed": true,
+      "fake_prompt_received": false
+    },
+    "after_prompt_read": {
+      "failure_class": "unknown-eof",
+      "prompt_slot_fsynced_before_send": true,
+      "prompt_send_completed": true,
+      "fake_prompt_received": true
+    },
+    "interpretation": "The fake receipt marker distinguishes whether the fake read the prompt; a successful pipe write alone does not claim delivery."
+  },
+  "bounded_cleanup": {
+    "failure_class": "timeout",
+    "elapsed_milliseconds": 706,
+    "root_exit_observed": true,
+    "streams_joined": true,
+    "arbitrary_descendant_cleanup": "unknown-for-arbitrary-vendor-descendants"
+  },
+  "negative_protocol_fixtures": {
+    "spontaneous_effect": "unapproved-effect-observed",
+    "missing_permission": "permission-request-missing",
+    "wrong_action": "permission-action-mismatch",
+    "duplicate_permission": "duplicate-permission-request",
+    "initialize_error": "initialize-rpc-error",
+    "session_creation_error": "session-new-rpc-error",
+    "version_mismatch": "agent-version-mismatch",
+    "unpermitted_tool_update": "tool-call-without-host-permission",
+    "malformed_frame": "malformed-frame",
+    "oversized_frame": "inbound-frame-oversized",
+    "eof": "unknown-eof",
+    "timeouts": "timeout"
+  },
+  "diagnostics": {
+    "raw_protocol_persisted": false,
+    "raw_stderr_persisted": false,
+    "host_paths_or_credentials_observed": false
+  }
+}

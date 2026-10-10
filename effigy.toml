@@ -102,6 +102,14 @@ section = "Research Records"
   "python3 scripts/copilot-acp-host-permission-proof.py --validate-plan",
 ]
 "validate:copilot-acp-host-permission-proof" = "python3 scripts/copilot-acp-host-permission-proof.py --self-test"
+"check:copilot-acp-host-permission-delta" = [
+  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-host-permission-proof.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/original-execution-authority.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/original-execution-authority.schema.json\")]'",
+  "python3 scripts/copilot-acp-host-permission-proof.py --validate-plan",
+  "python3 scripts/copilot-acp-host-permission-proof.py --validate-authority",
+]
+"validate:copilot-acp-host-permission-delta" = "python3 scripts/copilot-acp-host-permission-proof.py --self-test"
+"execute:copilot-acp-host-permission-original" = "python3 scripts/copilot-acp-host-permission-proof.py --execute-original"
+"check:copilot-acp-host-permission-original-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-original-record docs/research/435-copilot-acp-normal-host-permission-observation.json"
 "validate:copilot-acp-authenticated-proof" = [
   "python3 scripts/copilot-acp-offline-proof.py --self-test",
   "cargo nextest run --locked --profile ci --no-fail-fast -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",

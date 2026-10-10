@@ -170,6 +170,13 @@ vendor artifact, access the login, send a provider request or consume an
 invocation/prompt allowance. The `1.0.80` claim and released consumers remain
 unchanged.
 
+Research 435 records the separately authorized original attempt. The exact
+native `1.0.93` process returned an `agentInfo.version` mismatch during
+initialize; it did not create a session or send a prompt. The invocation was
+consumed, no prompt slot was used, and the sentinel remained unchanged. This
+does not prove permission cancellation or change the `1.0.80` claim. Reviewers
+validate the persisted result and do not start another original.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

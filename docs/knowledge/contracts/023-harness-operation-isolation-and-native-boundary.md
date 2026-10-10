@@ -1831,6 +1831,34 @@ No new live attempt, approval callback, settings/auth/host changes or release
 authority is included. Preserve consumed records and the remaining shared
 prompt allowance.
 
+## Copilot Production Route Matched Current Point
+
+Tom answered “Go for it” to decision
+`cb6e5ac3-fe5e-4c68-bc04-590080db9718` on 2026-10-10. Prepare and
+independently review a production-route-matched `1.0.95` proof, then run
+exactly one original invocation and prompt from the one remaining shared
+slot. Frozen artifact identities are wrapper archive `838be553…`, native
+archive `95d49e30…` and native executable `35d33e04…` in the retained
+Research 440 ledger. Do not substitute another target.
+
+Use the actual prepared facade/driver, approved executable and `EnvironmentRef`,
+and exact `--acp --stdio` arguments without a `--model` addition. Preserve
+the existing `betterthanclay` login and the provider's configured/default model
+policy; record the model only if exposed safely. Prove the harness against
+fakes and persist the exact reviewed launch plan, authority and consumed
+records before original execution. The limit is 60 seconds including cleanup.
+Observe correlated pending execute and permission events, cancel only, and
+require the selected action/no-effect proof. Never approve, retry, resend or
+spend a reviewer original. No auth, settings or host changes are included.
+
+Only after all mapped route gates close may `1.0.95` be added as a separate
+exact `QualifiedOnly` point. Preserve `1.0.80` and leave unproved
+`1.0.81` through `1.0.94` unqualified; do not infer an interval. Preserve all
+historical records and consumed allowances. If approved pinning/environment,
+action attribution/no-effect or public authority/lifecycle cannot be aligned,
+return a concrete mapping ruling before implementing or spending outside
+scope. No additional prompts or release/tag authority are included.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

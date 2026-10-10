@@ -9,6 +9,12 @@ pub use session::{CopilotCliPreparedSession, CopilotCliSessionProfileInput};
 
 use crate::CopilotCliAcpDriver;
 use std::collections::BTreeSet;
+#[cfg(test)]
+use std::fs::File;
+#[cfg(test)]
+use std::io::Read;
+#[cfg(test)]
+use std::path::Path;
 use swallowtail_core::{
     AccessProfile, ConfiguredInstance, ConfiguredInstanceId, CredentialMechanism, DiscoveryOutcome,
     DiscoveryStatus, EntitlementMetering, ExecutionHostId, HarnessConfigurationPosture,
@@ -59,6 +65,21 @@ impl CopilotCliPreparationInput {
             access_evidence,
         }
     }
+
+    #[cfg(test)]
+    pub(crate) const fn execution_host_id(&self) -> &ExecutionHostId {
+        &self.execution_host_id
+    }
+
+    #[cfg(test)]
+    pub(crate) const fn target(&self) -> &InstalledExecutableTarget {
+        &self.target
+    }
+
+    #[cfg(test)]
+    pub(crate) const fn environment(&self) -> &EnvironmentRef {
+        &self.environment
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -98,6 +119,9 @@ pub struct CopilotCliPreparedIntegration {
     access_evidence: PreparedAccessEvidence,
     instance: ConfiguredInstance,
     available_host_services: BTreeSet<HostServiceKind>,
+    admission: crate::selection::CopilotCliPlanAdmission,
+    #[cfg(test)]
+    pub(crate) assessment_binding: Option<crate::assessment::CopilotCliAssessmentHostBinding>,
 }
 
 impl CopilotCliPreparedIntegration {
@@ -148,6 +172,10 @@ impl CopilotCliPreparedIntegration {
         CopilotCliAcpDriver::new(self.environment.clone())
     }
 
+    pub(crate) const fn admission(&self) -> crate::selection::CopilotCliPlanAdmission {
+        self.admission
+    }
+
     /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
@@ -171,6 +199,115 @@ pub async fn prepare_copilot_cli_acp(
     probe: CopilotCliPreparationProbe,
     services: HostServices,
 ) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
+    prepare_with_admission(
+        input,
+        probe,
+        services,
+        crate::selection::CopilotCliPlanAdmission::PublicQualified,
+    )
+    .await
+}
+
+#[cfg(test)]
+pub(crate) async fn prepare_copilot_cli_acp_for_assessment(
+    input: CopilotCliPreparationInput,
+    probe: CopilotCliPreparationProbe,
+    services: HostServices,
+) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
+    validate_input(&input)?;
+    if services.execution_host_id() != &input.execution_host_id {
+        return Err(failure(
+            PreparationStage::TargetSelection,
+            "swallowtail.copilot-cli.acp.assessment.host_mismatch",
+            "Private Copilot CLI assessment host input does not match its host services",
+        ));
+    }
+    let executable_path = Path::new(input.target.executable().as_host_value());
+    if !executable_path.is_absolute() {
+        return Err(failure(
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.copilot-cli.acp.assessment.executable_unavailable",
+            "Private Copilot CLI assessment requires an absolute approved executable reference",
+        ));
+    }
+    let executable = File::open(executable_path).map_err(|_| {
+        failure(
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.copilot-cli.acp.assessment.executable_unavailable",
+            "Private Copilot CLI assessment could not read its approved executable",
+        )
+    })?;
+    prepare_copilot_cli_acp_for_assessment_with_reader(
+        input,
+        probe,
+        services,
+        executable,
+        crate::assessment::NATIVE_EXECUTABLE_SHA256,
+    )
+    .await
+}
+
+/// Test-only variant that hashes bytes from a fake executable source.
+///
+/// Production assessment admission above always reads the approved executable
+/// reference and pins the frozen 1.0.95 digest. This fixture seam only allows a
+/// locally computed fake digest so the prepared facade can be exercised without
+/// executing or installing Copilot.
+#[cfg(test)]
+pub(crate) async fn prepare_copilot_cli_acp_for_assessment_with_reader(
+    input: CopilotCliPreparationInput,
+    probe: CopilotCliPreparationProbe,
+    services: HostServices,
+    executable: impl Read,
+    expected_executable_sha256: &str,
+) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
+    validate_input(&input)?;
+    if services.execution_host_id() != &input.execution_host_id {
+        return Err(failure(
+            PreparationStage::TargetSelection,
+            "swallowtail.copilot-cli.acp.assessment.host_mismatch",
+            "Private Copilot CLI assessment host input does not match its host services",
+        ));
+    }
+    let binding = crate::assessment::capture_host_binding(
+        &input.execution_host_id,
+        input.target.executable(),
+        &input.environment,
+        executable,
+        expected_executable_sha256,
+    )
+    .map_err(|error| match error {
+        crate::assessment::CaptureError::Read => failure(
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.copilot-cli.acp.assessment.executable_read_failed",
+            "Private Copilot CLI assessment could not hash its approved executable",
+        ),
+        crate::assessment::CaptureError::ExecutableDigestMismatch => failure(
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.copilot-cli.acp.assessment.executable_digest_mismatch",
+            "Private Copilot CLI assessment executable bytes do not match the pinned digest",
+        ),
+    })?;
+    let services = crate::assessment::guard_prepared_assessment_discovery(services, &binding)
+        .map_err(|_| {
+            failure(
+                PreparationStage::CompatibilityClassification,
+                "swallowtail.copilot-cli.acp.assessment.launch_binding_mismatch",
+                "Private Copilot CLI discovery does not match its captured host binding",
+            )
+        })?;
+    let mut prepared =
+        prepare_with_admission(input, probe, services, crate::assessment::admission()).await?;
+    prepared.assessment_binding = Some(binding);
+    Ok(prepared)
+}
+
+async fn prepare_with_admission(
+    input: CopilotCliPreparationInput,
+    probe: CopilotCliPreparationProbe,
+    services: HostServices,
+    admission: crate::selection::CopilotCliPlanAdmission,
+) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
     validate_input(&input)?;
     let available_host_services = services.available_kinds();
     let request = InstalledExecutableDiscoveryRequest::new(
@@ -181,12 +318,12 @@ pub async fn prepare_copilot_cli_acp(
         probe.deadline,
         probe.cancellation,
     );
-    let driver = CopilotCliAcpDriver::new(input.environment.clone());
+    let driver = CopilotCliAcpDriver::with_admission(input.environment.clone(), admission);
     let outcome = driver
         .discover_installed_executable(request, services)
         .await
         .map_err(discovery_runtime_failure)?;
-    promote(input, outcome, available_host_services)
+    promote(input, outcome, available_host_services, admission)
 }
 
 fn validate_input(input: &CopilotCliPreparationInput) -> Result<(), PreparationFailure> {
@@ -227,6 +364,7 @@ fn promote(
     input: CopilotCliPreparationInput,
     outcome: DiscoveryOutcome,
     available_host_services: BTreeSet<HostServiceKind>,
+    admission: crate::selection::CopilotCliPlanAdmission,
 ) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
     let observation = outcome
         .installed_executable_observation()
@@ -235,7 +373,7 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::COPILOT_CLI_PACKAGE_VERSION
+        || observation.version().version().as_str() != admission.version()
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,
@@ -243,7 +381,7 @@ fn promote(
             "Copilot CLI discovery observation does not match the prepared host and package",
         ));
     }
-    let instance = configured_instance(&input, &observation)?;
+    let instance = configured_instance(&input, &observation, admission)?;
     Ok(CopilotCliPreparedIntegration {
         environment: input.environment,
         target: input.target,
@@ -252,12 +390,16 @@ fn promote(
         access_evidence: input.access_evidence,
         instance,
         available_host_services,
+        admission,
+        #[cfg(test)]
+        assessment_binding: None,
     })
 }
 
 fn configured_instance(
     input: &CopilotCliPreparationInput,
     observation: &InstalledExecutableObservation,
+    admission: crate::selection::CopilotCliPlanAdmission,
 ) -> Result<ConfiguredInstance, PreparationFailure> {
     let target =
         InstanceTargetRef::new(input.target.executable().as_host_value()).map_err(|_| {
@@ -270,7 +412,10 @@ fn configured_instance(
     Ok(ConfiguredInstance::new(
         input.instance_id.clone(),
         input.instance_revision.clone(),
-        crate::copilot_cli_acp_descriptor().identity().id().clone(),
+        crate::driver::copilot_cli_acp_descriptor_for(admission)
+            .identity()
+            .id()
+            .clone(),
         input.execution_host_id.clone(),
         target,
         InstanceOwnership::HostOwnedEphemeral,

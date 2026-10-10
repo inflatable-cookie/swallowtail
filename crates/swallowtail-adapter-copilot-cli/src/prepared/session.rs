@@ -49,6 +49,9 @@ pub struct CopilotCliPreparedSession {
     request: OpenSessionRequest,
     environment: swallowtail_runtime::EnvironmentRef,
     http_mcp: Option<CopilotCliAcpRemoteMcpPlacement>,
+    admission: crate::selection::CopilotCliPlanAdmission,
+    #[cfg(test)]
+    assessment_binding: Option<crate::assessment::CopilotCliAssessmentHostBinding>,
 }
 
 impl CopilotCliPreparedIntegration {
@@ -81,7 +84,7 @@ impl CopilotCliPreparedIntegration {
         .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
         .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
         .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
-        let descriptor = crate::copilot_cli_acp_descriptor();
+        let descriptor = crate::driver::copilot_cli_acp_descriptor_for(self.admission());
         let context = PreflightContext::new(
             &descriptor,
             &instance,
@@ -106,6 +109,9 @@ impl CopilotCliPreparedIntegration {
             request,
             environment: self.environment().clone(),
             http_mcp: input.http_mcp,
+            admission: self.admission(),
+            #[cfg(test)]
+            assessment_binding: self.assessment_binding.clone(),
         })
     }
 }
@@ -140,7 +146,18 @@ impl CopilotCliPreparedSession {
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        let mut driver = crate::CopilotCliAcpDriver::new(self.environment.clone());
+        #[cfg(test)]
+        let services = match self.assessment_binding.as_ref() {
+            Some(binding) => {
+                match crate::assessment::guard_prepared_assessment_launch(services, binding) {
+                    Ok(services) => services,
+                    Err(error) => return Box::pin(async move { Err(error) }),
+                }
+            }
+            None => services,
+        };
+        let mut driver =
+            crate::CopilotCliAcpDriver::with_admission(self.environment.clone(), self.admission);
         if let Some(server) = self.http_mcp.clone() {
             driver = match driver.with_http_mcp_placement(server) {
                 Ok(driver) => driver,
@@ -152,6 +169,46 @@ impl CopilotCliPreparedSession {
         Box::pin(async move { driver.open_session(plan, request, services).await })
     }
 
+    #[cfg(test)]
+    pub(crate) fn open_assessment_session_with_deadlines(
+        &self,
+        services: HostServices,
+        action_deadline: swallowtail_runtime::Deadline,
+        cleanup_deadline: swallowtail_runtime::Deadline,
+    ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        let services = match self.assessment_binding.as_ref() {
+            Some(binding) => {
+                match crate::assessment::guard_prepared_assessment_launch(services, binding) {
+                    Ok(services) => services,
+                    Err(error) => return Box::pin(async move { Err(error) }),
+                }
+            }
+            None => {
+                return Box::pin(async {
+                    Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                        "swallowtail.copilot-cli.acp.assessment.binding_missing",
+                        "Private Copilot assessment session has no captured host binding",
+                    )))
+                });
+            }
+        };
+        let mut driver =
+            crate::CopilotCliAcpDriver::with_admission(self.environment.clone(), self.admission);
+        if let Some(server) = self.http_mcp.clone() {
+            driver = match driver.with_http_mcp_placement(server) {
+                Ok(driver) => driver,
+                Err(error) => return Box::pin(async move { Err(error) }),
+            };
+        }
+        let plan = self.plan().clone();
+        let request = self.request.clone();
+        Box::pin(async move {
+            driver
+                .open_assessment_session(plan, request, services, action_deadline, cleanup_deadline)
+                .await
+        })
+    }
+
     #[must_use]
     /// Prepares a context-losing replacement after an interrupted turn.
     pub fn prepare_working_state_restoration(
@@ -160,7 +217,7 @@ impl CopilotCliPreparedSession {
     ) -> PreparedWorkingStateRestoration {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
-            crate::CopilotCliAcpDriver::new(self.environment.clone())
+            crate::CopilotCliAcpDriver::with_admission(self.environment.clone(), self.admission)
                 .with_prepared_http_mcp(self.http_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),

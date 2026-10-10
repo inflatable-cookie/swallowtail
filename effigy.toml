@@ -73,6 +73,22 @@ section = "Research Records"
   "python3 scripts/copilot-acp-offline-proof.py --self-test",
   "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",
 ]
+"check:current-copilot-cli-acp" = [
+  "python3 -c 'from pathlib import Path; file = Path(\"scripts/copilot-acp-currentness-ledger.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
+  "python3 -c 'from pathlib import Path; file = Path(\"scripts/copilot-acp-private-assessment.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
+  "bash -n scripts/copilot-acp-original-entry.sh",
+  "python3 scripts/copilot-acp-private-assessment.py --validate-plan",
+  "cargo check --locked --all-targets -p swallowtail-adapter-copilot-cli",
+]
+"validate:current-copilot-cli-acp" = [
+  "python3 scripts/copilot-acp-currentness-ledger.py",
+  "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_cli_acp_identity --test prepared_facade --test activity_corpus --test acp_suite --lib -E 'binary(copilot_cli_acp_identity) | binary(prepared_facade) | binary(activity_corpus) | binary(acp_suite) | test(/turn::tests::/)'",
+]
+"validate:copilot-acp-private-assessment" = [
+  "cargo nextest run --locked --profile ci --test-threads 1 -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::/)'",
+  "python3 scripts/copilot-acp-private-assessment.py --self-test",
+]
+"observe:copilot-acp-private-assessment" = "bash scripts/copilot-acp-original-entry.sh {args}"
 "check:copilot-acp-authenticated-proof" = [
   "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-offline-proof.py\"), Path(\"scripts/stage-copilot-acp-offline-artifacts.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-correction-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-correction-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-preflight-record.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-execution-record-v2.schema.json\")]'",
   "python3 scripts/copilot-acp-offline-proof.py --validate-plan",

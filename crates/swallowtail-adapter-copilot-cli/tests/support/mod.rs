@@ -1,7 +1,9 @@
 use futures_executor::block_on;
 use serde_json::{Value, json};
 use std::{
-    collections::VecDeque,
+    collections::{BTreeMap, VecDeque},
+    fs,
+    path::{Path, PathBuf},
     sync::{
         Arc, Condvar, Mutex,
         atomic::{AtomicUsize, Ordering},
@@ -44,12 +46,69 @@ impl FixtureHost {
     }
 
     pub fn with_version(scenario: Scenario, version: &str) -> Self {
+        Self::with_task_directory(scenario, version, None)
+    }
+
+    pub fn with_version_and_task_directory(
+        scenario: Scenario,
+        version: &str,
+        task_directory: PathBuf,
+    ) -> Self {
+        Self::with_task_directory(scenario, version, Some(task_directory))
+    }
+
+    fn with_task_directory(
+        scenario: Scenario,
+        version: &str,
+        task_directory: Option<PathBuf>,
+    ) -> Self {
+        Self::with_task_directory_and_progress(scenario, version, task_directory, None)
+    }
+
+    pub fn with_version_task_directory_and_progress(
+        scenario: Scenario,
+        version: &str,
+        task_directory: PathBuf,
+        progress_ticks: Arc<AtomicUsize>,
+    ) -> Self {
+        Self::with_task_directory_and_progress(
+            scenario,
+            version,
+            Some(task_directory),
+            Some(progress_ticks),
+        )
+    }
+
+    fn with_task_directory_and_progress(
+        scenario: Scenario,
+        version: &str,
+        task_directory: Option<PathBuf>,
+        progress_ticks: Option<Arc<AtomicUsize>>,
+    ) -> Self {
+        let task_directory_before = task_directory
+            .as_deref()
+            .map(snapshot_task_directory)
+            .unwrap_or_default();
+        let sentinel_before = task_directory_before
+            .get("permission-sentinel.txt")
+            .cloned()
+            .unwrap_or_default();
         Self {
             agent: Arc::new(SharedAgent {
-                state: Mutex::new(AgentState::default()),
+                state: Mutex::new(AgentState {
+                    assessment_trace: AssessmentTrace {
+                        sentinel_before,
+                        task_directory_before,
+                        ..AssessmentTrace::default()
+                    },
+                    ..AgentState::default()
+                }),
                 changed: Condvar::new(),
                 scenario,
                 version: version.to_owned(),
+                task_directory,
+                progress_ticks,
+                joined_tasks: AtomicUsize::new(0),
             }),
             process: Arc::new(Mutex::new(None)),
             releases: Arc::new(AtomicUsize::new(0)),
@@ -58,7 +117,7 @@ impl FixtureHost {
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService))
+            .with_task(Arc::new(ThreadTaskService(Arc::clone(&self.agent))))
             .with_time(Arc::new(FixtureTime))
             .with_process(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -87,6 +146,18 @@ impl FixtureHost {
         self.releases.load(Ordering::SeqCst)
     }
 
+    pub fn joined_tasks(&self) -> usize {
+        self.agent.joined_tasks.load(Ordering::SeqCst)
+    }
+
+    pub fn process_stopped(&self) -> bool {
+        self.agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .stopped
+    }
+
     pub fn writes(&self) -> Vec<Value> {
         self.agent
             .state
@@ -95,6 +166,77 @@ impl FixtureHost {
             .writes
             .clone()
     }
+
+    pub fn assessment_trace(&self) -> AssessmentTrace {
+        self.agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .assessment_trace
+            .clone()
+    }
+
+    pub fn capture_assessment_task_directory_after(&self) -> AssessmentTrace {
+        let task_directory_after = self
+            .agent
+            .task_directory
+            .as_deref()
+            .map(snapshot_task_directory)
+            .unwrap_or_default();
+        let mut state = self
+            .agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned");
+        let trace = &mut state.assessment_trace;
+        trace.sentinel_after = task_directory_after
+            .get("permission-sentinel.txt")
+            .cloned()
+            .unwrap_or_default();
+        trace.effect_count = trace
+            .task_directory_before
+            .iter()
+            .filter(|(path, before)| task_directory_after.get(*path) != Some(*before))
+            .count()
+            + task_directory_after
+                .keys()
+                .filter(|path| !trace.task_directory_before.contains_key(*path))
+                .count();
+        trace.task_directory_after = task_directory_after;
+        trace.clone()
+    }
+}
+
+fn snapshot_task_directory(root: &Path) -> BTreeMap<String, Vec<u8>> {
+    fn collect(root: &Path, current: &Path, files: &mut BTreeMap<String, Vec<u8>>) {
+        for entry in fs::read_dir(current).expect("task-owned scratch directory is readable") {
+            let entry = entry.expect("task-owned scratch entry is readable");
+            let path = entry.path();
+            let file_type = entry.file_type().expect("task-owned file type is readable");
+            if file_type.is_dir() {
+                collect(root, &path, files);
+            } else {
+                assert!(
+                    file_type.is_file(),
+                    "scratch contains no links or special files"
+                );
+                let relative = path
+                    .strip_prefix(root)
+                    .expect("scratch entry remains inside task-owned root")
+                    .to_str()
+                    .expect("task-owned scratch path is UTF-8")
+                    .replace(std::path::MAIN_SEPARATOR, "/");
+                files.insert(
+                    relative,
+                    fs::read(&path).expect("task-owned scratch file is readable"),
+                );
+            }
+        }
+    }
+
+    let mut files = BTreeMap::new();
+    collect(root, root, &mut files);
+    files
 }
 
 struct FixtureTime;
@@ -115,10 +257,16 @@ impl ProcessService for FixtureHost {
         _scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        self.agent.advance_progress(250);
         *self.process.lock().expect("fixture process lock poisoned") = Some(ObservedProcess {
             arguments: request.arguments().map(str::to_owned).collect(),
             environment_count: request.environment().len(),
             working_resource: request.working_resource().cloned(),
+            executable: request.executable().as_host_value().to_owned(),
+            environments: request
+                .environment()
+                .map(|environment| environment.as_host_value().to_owned())
+                .collect(),
         });
         let handle =
             Box::new(FixtureProcessHandle(Arc::clone(&self.agent))) as Box<dyn ProcessHandle>;
@@ -134,9 +282,15 @@ impl WorkingResourceService for FixtureHost {
         access: ResourceAccess,
         representation: ResourceRepresentation,
     ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        let path = self
+            .agent
+            .task_directory
+            .as_ref()
+            .map(|path| path.to_string_lossy().into_owned())
+            .unwrap_or_else(|| "/private/fixture".to_owned());
         let lease = ResourceLease::consumer_owned(scope, reference, access, representation)
             .with_filesystem(
-                swallowtail_runtime::MaterializedResourceRef::new("/private/fixture")
+                swallowtail_runtime::MaterializedResourceRef::new(path)
                     .expect("fixture path is valid"),
             );
         Box::pin(async move { Ok(lease) })
@@ -153,13 +307,14 @@ impl WorkingResourceService for FixtureHost {
 
     fn release(&self, _lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
         self.releases.fetch_add(1, Ordering::SeqCst);
+        self.agent.advance_progress(500);
         Box::pin(async { CleanupOutcome::NotApplicable })
     }
 }
 
-struct ThreadTaskService;
+struct ThreadTaskService(Arc<SharedAgent>);
 
-struct ThreadTask(Option<JoinHandle<()>>);
+struct ThreadTask(Option<JoinHandle<()>>, Arc<SharedAgent>);
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
@@ -167,16 +322,22 @@ impl ScopedTaskService for ThreadTaskService {
         _scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-        Ok(Box::new(ThreadTask(Some(std::thread::spawn(move || {
-            block_on(task);
-        })))))
+        let thread = std::thread::spawn(move || block_on(task));
+        self.0.advance_progress(250);
+        Ok(Box::new(ThreadTask(Some(thread), Arc::clone(&self.0))))
     }
 }
 
 impl JoinedTask for ThreadTask {
     fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
         let handle = self.0.take().expect("fixture task joins once");
-        Box::pin(async move { handle.join().map_err(|_| fixture_failure()) })
+        let agent = Arc::clone(&self.1);
+        Box::pin(async move {
+            handle.join().map_err(|_| fixture_failure())?;
+            agent.joined_tasks.fetch_add(1, Ordering::SeqCst);
+            agent.advance_progress(500);
+            Ok(())
+        })
     }
 }
 

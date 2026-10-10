@@ -28,6 +28,8 @@ pub(crate) struct ActiveTurn {
     output: Mutex<String>,
     activity: Mutex<crate::acp_activity::AcpActivityProjection>,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
+    #[cfg(test)]
+    assessment_permission_action: Option<crate::assessment::CopilotCliAssessmentAction>,
     cancelled: AtomicBool,
     finished: AtomicBool,
 }
@@ -50,6 +52,36 @@ impl ActiveTurn {
                 output: Mutex::new(String::new()),
                 activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
                 provider_observation: Mutex::new(None),
+                #[cfg(test)]
+                assessment_permission_action: None,
+                cancelled: AtomicBool::new(false),
+                finished: AtomicBool::new(false),
+            }),
+            Box::pin(stream),
+            future,
+        ))
+    }
+
+    #[cfg(test)]
+    pub(crate) fn new_for_assessment(
+        runtime_id: RuntimeTurnId,
+        session_id: String,
+        action: crate::assessment::CopilotCliAssessmentAction,
+    ) -> Result<(Arc<Self>, BoxEventStream, TerminalOutcomeFuture), RuntimeFailure> {
+        let (events, stream) = runtime_event_channel(EVENT_CAPACITY)?;
+        events.send(RuntimeEvent::new(0, RuntimeEventKind::Started))?;
+        let (terminal, future) = terminal_outcome_channel();
+        Ok((
+            Arc::new(Self {
+                runtime_id: runtime_id.clone(),
+                session_id,
+                events,
+                terminal,
+                sequence: AtomicU64::new(1),
+                output: Mutex::new(String::new()),
+                activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
+                provider_observation: Mutex::new(None),
+                assessment_permission_action: Some(action),
                 cancelled: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
             }),
@@ -73,7 +105,25 @@ impl ActiveTurn {
     pub(crate) fn observe_permission(
         &self,
         provider_request_id: &Value,
+        _tool_call_id: &str,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+        #[cfg(test)]
+        if let Some(action) = self.assessment_permission_action {
+            let activity = self.activity.lock().expect("turn activity lock poisoned");
+            let action_is_pending = _tool_call_id == action.tool_call_id
+                && activity.is_pending_execute_for_assessment(
+                    _tool_call_id,
+                    action.path,
+                    action.old_text,
+                    action.new_text,
+                );
+            if !action_is_pending {
+                return Err(failure(
+                    "swallowtail.copilot-cli.acp.permission_action_mismatch",
+                    "Copilot CLI permission request does not match the assessment sentinel action",
+                ));
+            }
+        }
         let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
         let callback_id = swallowtail_runtime::CallbackId::new(format!(
             "{}:permission:{sequence}",

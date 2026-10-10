@@ -68,6 +68,7 @@ FAKE_SCENARIOS = frozenset(
         "no-permission",
         "wrong-action",
         "wrong-kind",
+        "missing-kind",
         "missing-action",
         "raw-input-only",
         "diff-action",
@@ -967,6 +968,8 @@ def validate_task172_proposal() -> dict[str, Any]:
     update_model = (ROOT / protocol_identity["sparse_update_source"]).read_text(encoding="utf-8")
     if (
         "unwrap_or(AcpToolCallStatus::Pending)" not in decoder
+        or "kind: optional_kind(update, limits)?.unwrap_or_else(default_tool_kind)" not in decoder
+        or 'AcpBoundedText("other".to_owned())' not in decoder
         or "pub status: Option<AcpToolCallStatus>" not in update_model
         or "locations_replacement" not in update_model
         or '"edit" => AcpToolKind::Edit' not in decoder
@@ -2703,7 +2706,7 @@ def permission_exchange(
                     continue
                 evidence["tool_status"] = call["status"]
                 evidence["tool_announcement_status"] = call["status"]
-                evidence["tool_kind"] = call["kind"] or "unknown"
+                evidence["tool_kind"] = call.get("kind") or "unknown"
                 mark_correlated()
                 if call["status"] != "pending":
                     evidence["execution_reported"] = True
@@ -2727,7 +2730,7 @@ def permission_exchange(
                     continue
                 mark_correlated()
                 evidence["tool_status"] = call["status"]
-                evidence["tool_kind"] = call["kind"] or "unknown"
+                evidence["tool_kind"] = call.get("kind") or "unknown"
                 if call["status"] != "pending":
                     evidence["execution_reported"] = True
                     if evidence["permission_reply"] == "none":
@@ -2793,7 +2796,7 @@ def permission_exchange(
                     send_session_cancel()
                     continue
                 evidence["tool_status"] = call["status"]
-                evidence["tool_kind"] = call["kind"] or "unknown"
+                evidence["tool_kind"] = call.get("kind") or "unknown"
                 if call["status"] != "pending":
                     evidence["execution_reported"] = True
                     fail("tool-execution-before-permission")
@@ -2901,6 +2904,8 @@ def merge_tool_call(
         if not isinstance(kind, str):
             raise ValueError("tool-call-kind-invalid")
         result["kind"] = kind if kind in TOOL_KINDS else "other"
+    elif initial:
+        result["kind"] = "other"
 
     raw_input = snapshot.get("rawInput")
     if raw_input is not None:
@@ -3609,8 +3614,9 @@ def fake_agent(scenario: str) -> int:
         "sessionUpdate": "tool_call",
         "toolCallId": tool_id,
         "title": "Editing file",
-        "kind": "write" if scenario == "wrong-kind" else "edit",
     }
+    if scenario != "missing-kind":
+        announcement["kind"] = "write" if scenario == "wrong-kind" else "edit"
     if scenario == "diff-action":
         announcement["status"] = "pending"
     if scenario == "raw-input-only":
@@ -4313,6 +4319,7 @@ def self_test() -> dict[str, Any]:
             "no-permission": "permission-request-missing",
             "wrong-action": "permission-action-mismatch",
             "wrong-kind": "permission-action-unattributable",
+            "missing-kind": "permission-action-unattributable",
             "missing-action": "permission-action-unattributable",
             "raw-input-only": "permission-action-unattributable",
             "wrong-id": "permission-tool-call-uncorrelated",
@@ -4350,6 +4357,12 @@ def self_test() -> dict[str, Any]:
                 raise RuntimeError(f"fake {scenario} classified as {record.get('failure_class')!r}, expected {expected!r}")
             if record.get("permission_reply") not in {"none", "cancelled"}:
                 raise RuntimeError(f"fake {scenario} was not fail-closed")
+            if scenario == "missing-kind" and (
+                record.get("tool_kind") != "other"
+                or record.get("permission_action_attributed") is not False
+                or record.get("permission_action_matches_sentinel") is not False
+            ):
+                raise RuntimeError("missing optional kind was not safely defaulted as unattributable")
             if scenario in {"crash-before-prompt", "crash-after-prompt"}:
                 prompt_record_exists = (paths["records"] / "1.0.93-prompt-1.json").is_file()
                 received_marker = (paths["state"] / "prompt-received").exists()

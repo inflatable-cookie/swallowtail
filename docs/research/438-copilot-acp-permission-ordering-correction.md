@@ -18,8 +18,9 @@ schema v1.24.1 identity in
 `8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336`, and
 `RequestPermissionResponse` SHA-256
 `bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761`.
-The frozen decoder defaults omitted status to `pending`; update status and
-locations are optional replacements in the [tool decoder](../../crates/swallowtail-protocol-acp/src/activity/decode/tool.rs)
+The frozen decoder defaults omitted status to `pending` and omitted kind to
+`other`; update status and locations are optional replacements in the
+[tool decoder](../../crates/swallowtail-protocol-acp/src/activity/decode/tool.rs)
 and [typed record](../../crates/swallowtail-protocol-acp/src/activity/tool_record.rs).
 ACP v1 describes `edit` as the file
 modification kind, allows optional `rawInput`, and defines `session/cancel` as
@@ -48,8 +49,10 @@ the pending permission request with outcome `cancelled`, and accepts the
 result only when the prompt reports its actual `cancelled` stop reason. The
 fake covers pending status both explicit and omitted, sparse snapshots, wrong
 IDs/session/action/kind, `in_progress` and `completed` before permission,
-spontaneous effect, duplicate requests, missing permission, timeout and
-post-cancel notifications.
+spontaneous effect, duplicate requests, missing permission, timeout,
+post-cancel notifications, and a `tool_call` announcement with no `kind`.
+That missing-kind case remains safely unattributable under the frozen `other`
+default; it no longer escapes the runner or omits its execution record.
 
 The task-specific proposal is
 [`task-172-attempt-proposal.json`](../../crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-172-attempt-proposal.json).

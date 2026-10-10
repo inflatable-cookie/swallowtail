@@ -40,12 +40,17 @@
   "runner": {
     "path": "scripts/copilot-acp-host-permission-proof.py",
     "preparation_runner_sha256": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc",
-    "implementation_sha256": "892e85fafa112e37068ef45108455d14dc3a980d4a59b8f099f9e7410e39711e"
+    "implementation_sha256": "82329be0e4f1853f378d5a80143c5c197836ed3591464b6953f2326b0c37c04b"
   },
   "pre_probes": [],
   "invocation": {
     "executable": "exact staged package/copilot",
-    "argv": ["--model", "auto", "--acp", "--stdio"],
+    "argv": [
+      "--model",
+      "auto",
+      "--acp",
+      "--stdio"
+    ],
     "wrapper_executed": false,
     "existing_account": "betterthanclay",
     "model": "Auto",

@@ -1771,6 +1771,32 @@ creates a disabled one-attempt `1.0.93` proposal. The original invocation
 allowance remains consumed; two of three shared prompt slots remain. Separate
 renewed original authority is required after review.
 
+## Copilot Pending Announcement Proof Renewal
+
+Tom answered “Approve one renewed attempt” to decision
+`d7b9664a-98bc-441a-9f01-f91b9c236699` on 2026-10-10. This binds exactly
+one original attempt to the independently reviewed
+[Research 438 proposal](../../research/438-copilot-acp-permission-ordering-correction.md),
+SHA-256 `fa0da4b9c73db7f099f1ccaaa18ef8d7fd16e74387ba94a94a2796494c3c4c0b`,
+and runner `82329be0e4f1853f378d5a80143c5c197836ed3591464b6953f2326b0c37c04b`.
+Fake-prove only the necessary final authority and launch binding before spending
+the attempt; persist the plan, fake-pass and exclusive consumed records first.
+
+Keep frozen native executable `df347f27…` and archive `f254651a…`, existing
+`betterthanclay` login, Auto and the child-only update/cache controls. The limit
+is 60 seconds including cleanup and at most one harmless sentinel prompt from
+the two remaining shared slots. No approval, retry, resend, pre-probe or
+reviewer original is authorized.
+
+Correlated pending tool announcements may precede permission. Cancel the
+prompt and permission safely; require an attributable exact sentinel edit and
+unchanged bytes for successful evidence. Opaque `rawInput` or missing action
+metadata remains incomplete evidence, never guessed. Execution or effect
+without permission, or identity drift, fails the observation. Preserve every
+consumed record and use new exclusive ledgers. No automatic qualification,
+host settings or login changes are included; normal-host access and truthful
+descendant-cleanup limits remain unchanged.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

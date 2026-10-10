@@ -50,6 +50,8 @@ pub struct CopilotCliPreparedSession {
     environment: swallowtail_runtime::EnvironmentRef,
     http_mcp: Option<CopilotCliAcpRemoteMcpPlacement>,
     admission: crate::selection::CopilotCliPlanAdmission,
+    #[cfg(test)]
+    assessment_binding: Option<crate::assessment::CopilotCliAssessmentHostBinding>,
 }
 
 impl CopilotCliPreparedIntegration {
@@ -108,6 +110,8 @@ impl CopilotCliPreparedIntegration {
             environment: self.environment().clone(),
             http_mcp: input.http_mcp,
             admission: self.admission(),
+            #[cfg(test)]
+            assessment_binding: self.assessment_binding.clone(),
         })
     }
 }
@@ -142,6 +146,16 @@ impl CopilotCliPreparedSession {
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
+        #[cfg(test)]
+        let services = match self.assessment_binding.as_ref() {
+            Some(binding) => {
+                match crate::assessment::guard_prepared_assessment_launch(services, binding) {
+                    Ok(services) => services,
+                    Err(error) => return Box::pin(async move { Err(error) }),
+                }
+            }
+            None => services,
+        };
         let mut driver =
             crate::CopilotCliAcpDriver::with_admission(self.environment.clone(), self.admission);
         if let Some(server) = self.http_mcp.clone() {

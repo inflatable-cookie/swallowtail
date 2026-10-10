@@ -7,6 +7,7 @@ pub enum Scenario {
     AssessmentProviderEffect,
     AssessmentExecutionFailure,
     AssessmentSessionNewFailure,
+    AssessmentHangingUntilCancel,
     AssessmentPermissionMissingAction,
     AssessmentPermissionMismatchedAction,
     Cancellation,
@@ -62,6 +63,8 @@ struct SharedAgent {
     scenario: Scenario,
     version: String,
     task_directory: Option<std::path::PathBuf>,
+    progress_ticks: Option<Arc<AtomicUsize>>,
+    joined_tasks: AtomicUsize,
 }
 
 impl Scenario {
@@ -72,6 +75,7 @@ impl Scenario {
                 | Self::AssessmentProviderEffect
                 | Self::AssessmentExecutionFailure
                 | Self::AssessmentSessionNewFailure
+                | Self::AssessmentHangingUntilCancel
                 | Self::AssessmentPermissionMissingAction
                 | Self::AssessmentPermissionMismatchedAction
         )
@@ -106,6 +110,7 @@ impl SharedAgent {
     fn handle_write(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
         let message: Value =
             serde_json::from_slice(chunk.bytes()).map_err(|_| fixture_failure())?;
+        self.advance_progress(250);
         let mut state = self.state.lock().expect("fixture agent lock poisoned");
         state.writes.push(message.clone());
         let id = message.get("id").and_then(Value::as_u64);
@@ -358,6 +363,7 @@ impl SharedAgent {
                             }
                         }),
                     ),
+                    Scenario::AssessmentHangingUntilCancel => {}
                     Scenario::Oversized => {
                         let mut bytes = b"{\"jsonrpc\":\"2.0\",\"method\":\"session/update\",\"params\":{\"sessionId\":\"opaque-fixture-session\",\"update\":{\"sessionUpdate\":\"agent_message_chunk\",\"content\":{\"type\":\"text\",\"text\":\"".to_vec();
                         bytes.extend(std::iter::repeat_n(b'x', 64 * 1024));
@@ -374,11 +380,11 @@ impl SharedAgent {
                 }
             }
             Some("session/cancel") => {
-                if self.scenario.emits_assessment_permission() {
+                if self.scenario.is_assessment_point() {
                     state.assessment_trace.session_cancel_seen = true;
                 }
                 if let Some(prompt_id) = state.prompt_id.take() {
-                    if self.scenario.emits_assessment_permission() {
+                    if self.scenario.is_assessment_point() {
                         state.assessment_trace.prompt_result = Some("cancelled".to_owned());
                     }
                     Self::enqueue(
@@ -525,8 +531,21 @@ impl ProcessHandle for FixtureProcessHandle {
 impl FixtureProcessHandle {
     fn stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         let mut state = self.0.state.lock().expect("fixture agent lock poisoned");
+        let newly_stopped = !state.stopped;
         state.stopped = true;
         self.0.changed.notify_all();
+        drop(state);
+        if newly_stopped {
+            self.0.advance_progress(500);
+        }
         Box::pin(async { Ok(()) })
+    }
+}
+
+impl SharedAgent {
+    fn advance_progress(&self, ticks: usize) {
+        if let Some(progress) = &self.progress_ticks {
+            progress.fetch_add(ticks, Ordering::SeqCst);
+        }
     }
 }

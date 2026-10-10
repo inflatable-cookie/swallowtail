@@ -62,6 +62,29 @@ impl FixtureHost {
         version: &str,
         task_directory: Option<PathBuf>,
     ) -> Self {
+        Self::with_task_directory_and_progress(scenario, version, task_directory, None)
+    }
+
+    pub fn with_version_task_directory_and_progress(
+        scenario: Scenario,
+        version: &str,
+        task_directory: PathBuf,
+        progress_ticks: Arc<AtomicUsize>,
+    ) -> Self {
+        Self::with_task_directory_and_progress(
+            scenario,
+            version,
+            Some(task_directory),
+            Some(progress_ticks),
+        )
+    }
+
+    fn with_task_directory_and_progress(
+        scenario: Scenario,
+        version: &str,
+        task_directory: Option<PathBuf>,
+        progress_ticks: Option<Arc<AtomicUsize>>,
+    ) -> Self {
         let task_directory_before = task_directory
             .as_deref()
             .map(snapshot_task_directory)
@@ -84,6 +107,8 @@ impl FixtureHost {
                 scenario,
                 version: version.to_owned(),
                 task_directory,
+                progress_ticks,
+                joined_tasks: AtomicUsize::new(0),
             }),
             process: Arc::new(Mutex::new(None)),
             releases: Arc::new(AtomicUsize::new(0)),
@@ -92,7 +117,7 @@ impl FixtureHost {
 
     pub fn services(&self, host: ExecutionHostId) -> HostServices {
         HostServices::new(host)
-            .with_task(Arc::new(ThreadTaskService))
+            .with_task(Arc::new(ThreadTaskService(Arc::clone(&self.agent))))
             .with_time(Arc::new(FixtureTime))
             .with_process(Arc::new(self.clone()))
             .with_working_resource(Arc::new(self.clone()))
@@ -119,6 +144,18 @@ impl FixtureHost {
 
     pub fn releases(&self) -> usize {
         self.releases.load(Ordering::SeqCst)
+    }
+
+    pub fn joined_tasks(&self) -> usize {
+        self.agent.joined_tasks.load(Ordering::SeqCst)
+    }
+
+    pub fn process_stopped(&self) -> bool {
+        self.agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .stopped
     }
 
     pub fn writes(&self) -> Vec<Value> {
@@ -220,6 +257,7 @@ impl ProcessService for FixtureHost {
         _scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        self.agent.advance_progress(250);
         *self.process.lock().expect("fixture process lock poisoned") = Some(ObservedProcess {
             arguments: request.arguments().map(str::to_owned).collect(),
             environment_count: request.environment().len(),
@@ -269,13 +307,14 @@ impl WorkingResourceService for FixtureHost {
 
     fn release(&self, _lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
         self.releases.fetch_add(1, Ordering::SeqCst);
+        self.agent.advance_progress(500);
         Box::pin(async { CleanupOutcome::NotApplicable })
     }
 }
 
-struct ThreadTaskService;
+struct ThreadTaskService(Arc<SharedAgent>);
 
-struct ThreadTask(Option<JoinHandle<()>>);
+struct ThreadTask(Option<JoinHandle<()>>, Arc<SharedAgent>);
 
 impl ScopedTaskService for ThreadTaskService {
     fn spawn(
@@ -283,16 +322,22 @@ impl ScopedTaskService for ThreadTaskService {
         _scope: ScopeId,
         task: BoxFuture<'static, ()>,
     ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-        Ok(Box::new(ThreadTask(Some(std::thread::spawn(move || {
-            block_on(task);
-        })))))
+        let thread = std::thread::spawn(move || block_on(task));
+        self.0.advance_progress(250);
+        Ok(Box::new(ThreadTask(Some(thread), Arc::clone(&self.0))))
     }
 }
 
 impl JoinedTask for ThreadTask {
     fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
         let handle = self.0.take().expect("fixture task joins once");
-        Box::pin(async move { handle.join().map_err(|_| fixture_failure()) })
+        let agent = Arc::clone(&self.1);
+        Box::pin(async move {
+            handle.join().map_err(|_| fixture_failure())?;
+            agent.joined_tasks.fetch_add(1, Ordering::SeqCst);
+            agent.advance_progress(500);
+            Ok(())
+        })
     }
 }
 

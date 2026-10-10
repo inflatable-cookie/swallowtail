@@ -117,20 +117,20 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     require(route == {
         "execution_host_id": {
             "source": "approved host input to the prepared facade",
-            "capture": "capture exact safe identifier and SHA-256 in private prepared binding before discovery; durable original-run record remains planner-bound",
+            "capture": "capture exact safe identifier and SHA-256 in private prepared binding before discovery; fake-only records bind its digest",
             "drift": "fail closed before process start",
         },
         "executable_ref": {
             "source": "approved InstalledExecutableTarget",
-            "capture": "capture exact safe ExecutableRef and SHA-256 in private prepared binding before discovery; hash bytes from the approved reference; durable original-run record remains planner-bound",
+            "capture": "capture exact safe ExecutableRef and SHA-256 in private prepared binding before discovery; re-hash that reference at the private prepared ProcessService boundary before forwarding the unchanged request",
             "target": "exact frozen native package/copilot bytes",
             "sha256": NATIVE_EXECUTABLE_SHA256,
-            "drift": "fail closed before process start",
+            "drift": "fail closed before process start; the host still opens by path after the check, leaving a narrow disclosed check-to-open race",
         },
         "environment_ref": {
             "source": "approved host-owned EnvironmentRef",
             "forwarding": "pass unchanged through the prepared driver",
-            "capture": "capture exact safe EnvironmentRef identifier and SHA-256 in private prepared binding before discovery; durable original-run record remains planner-bound; never read or serialize environment values",
+            "capture": "capture exact safe EnvironmentRef identifier and SHA-256 in private prepared binding before discovery; fake-only records bind its digest; never read or serialize environment values",
             "drift": "fail closed before process start",
         },
         "argv": ARGV,
@@ -174,9 +174,10 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "prompt_result": "cancelled",
         "route_terminal_status": "ProviderRequestObserved (existing public permission-stop behavior)",
         "task_directory_bytes_unchanged": True,
-        "cleanup": "process, streams, task and resource join/release; assert clean owned-process cleanup",
+        "cleanup": "proof runner cancels the active prompt, then uses the existing process stop, task join and resource release paths; assert clean owned-process cleanup",
         "timeout_seconds_including_cleanup": 60,
         "cleanup_budget_seconds": 3,
+        "proof_runner_deadline": "absolute monotonic cutoff begins before prepared open; stop work at 57 seconds and reserve up to 3 seconds for cancellation and cleanup; public TurnRequest deadline rejection remains unchanged",
     }, "lifecycle expectations changed")
 
     attempt = plan.get("attempt", {})
@@ -199,20 +200,20 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     records = plan.get("records", {})
     require(records == {
         "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 119",
-        "attempt_record": "1.0.95-attempt.json; one exclusive invocation-consumed record",
-        "prompt_record": "1.0.95-prompt-1.json; one exclusive prompt-consumed record",
+        "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record",
+        "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record",
         "execution_record": "1.0.95-execution.json; one final secret-free result record with artifact, runner, plan, and safe host-binding hashes",
-        "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, fsync file and parent before each effect",
+        "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, complete write and fsync file and parent before each effect",
         "failure_policy": "preserve consumed records; never delete, reset, replace or retry",
         "original_execution_enabled": False,
     }, "persistent record policy changed")
     require(plan.get("original_enable_gate") == {
-        "enforcement": "preparation build has no original launcher; authorize_original_execution fails closed even when passed a continuation value",
+        "enforcement": "test-only prepared-path runner and one-shot ledger are implemented; this preparation plan hard-disables original effects and authorize_original_execution rejects every request",
         "state": "disabled in this preparation turn",
         "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-        "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; hash the bytes read from the approved ExecutableRef and reject digest drift before discovery; never read or serialize environment values",
-        "launch_side_persistence": "fsynced invocation and prompt-consumed records plus actual original launch remain deferred to the planner-bound continuation",
-        "one_shot": "exclusive invocation record fsynced before process start; exclusive prompt record fsynced before prompt send",
+        "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; hash approved executable bytes before discovery and re-hash that reference at the private prepared ProcessService boundary before forwarding the exact request; never read or serialize environment values; disclose the remaining check-to-open race",
+        "launch_side_persistence": "the same exclusive fsynced writer is exercised for attempt-4 and prompt-3 fake records in fresh scratch before prepared open and prompt; the disabled original branch writes no user-data record and starts no original",
+        "one_shot": "attempt-4 exclusive invocation record fsynced before prepared process start; prompt-3 exclusive prompt record fsynced before prepared turn; result follows cancellation, process stop, joins and release",
         "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     }, "original enable gate changed")
     require(plan.get("original_execution_enabled") is False, "original execution must remain disabled")
@@ -239,37 +240,15 @@ def authorize_original_execution(plan: dict[str, Any], continuation: Any = None)
     raise OriginalExecutionDenied("original execution is not available in the preparation build")
 
 
-def action_gate(trace: dict[str, Any]) -> bool:
-    return (
-        trace.get("initialize_version") == VERSION
-        and trace.get("session_new") is True
-        and trace.get("tool_kind") == "execute"
-        and trace.get("announced_tool_call_id") == trace.get("permission_tool_call_id")
-        and trace.get("announced_tool_call_id") == "sentinel-edit"
-        and trace.get("permission_request_id") == 900
-        and trace.get("action_path") == "permission-sentinel.txt"
-        and trace.get("announced_old_text") == SENTINEL_BEFORE.decode()
-        and trace.get("announced_new_text") == SENTINEL_AFTER.decode()
-        and trace.get("permission_reply") == "cancelled"
-        and trace.get("prompt_result") == "cancelled"
-        and trace.get("session_cancel_sent") is True
-        and trace.get("task_directory_before") == [{
-            "path": "permission-sentinel.txt",
-            "sha256": sha256_bytes(SENTINEL_BEFORE),
-        }]
-        and trace.get("task_directory_after") == trace.get("task_directory_before")
-        and trace.get("sentinel_before") == SENTINEL_BEFORE.decode()
-        and trace.get("sentinel_after") == SENTINEL_BEFORE.decode()
-        and trace.get("effect_count") == 0
-        and trace.get("cleanup_joined") is True
-        and trace.get("elapsed_seconds", 61) <= 60
-    )
-
-
 def write_exclusive_fsynced(path: Path, data: bytes) -> None:
     fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY | getattr(os, "O_NOFOLLOW", 0), 0o600)
     try:
-        os.write(fd, data)
+        remaining = memoryview(data)
+        while remaining:
+            written = os.write(fd, remaining)
+            if written <= 0:
+                raise OSError("exclusive proof record write made no progress")
+            remaining = remaining[written:]
         os.fsync(fd)
     finally:
         os.close(fd)
@@ -282,84 +261,94 @@ def write_exclusive_fsynced(path: Path, data: bytes) -> None:
 
 def fake_ledger_scenarios(plan: dict[str, Any]) -> dict[str, bool]:
     results: dict[str, bool] = {}
-    successful = {
-        "initialize_version": VERSION,
-        "session_new": True,
-        "tool_kind": "execute",
-        "announced_tool_call_id": "sentinel-edit",
-        "permission_tool_call_id": "sentinel-edit",
-        "permission_request_id": 900,
-        "action_path": "permission-sentinel.txt",
-        "announced_old_text": SENTINEL_BEFORE.decode(),
-        "announced_new_text": SENTINEL_AFTER.decode(),
-        "permission_reply": "cancelled",
-        "prompt_result": "cancelled",
-        "session_cancel_sent": True,
-        "task_directory_before": [{
-            "path": "permission-sentinel.txt",
-            "sha256": sha256_bytes(SENTINEL_BEFORE),
-        }],
-        "task_directory_after": [{
-            "path": "permission-sentinel.txt",
-            "sha256": sha256_bytes(SENTINEL_BEFORE),
-        }],
-        "sentinel_before": SENTINEL_BEFORE.decode(),
-        "sentinel_after": SENTINEL_BEFORE.decode(),
-        "effect_count": 0,
-        "cleanup_joined": True,
-        "elapsed_seconds": 42,
-    }
-    require(action_gate(successful), "matching cancellation fake was rejected")
-    results["correlated_execute_permission_cancel_no_effect_cleanup"] = True
     results["preparation_original_gate_rejected"] = fake_gate_scenarios(plan)
-
-    for name, changes in {
-        "missing_action_metadata": {"announced_tool_call_id": None, "action_path": None},
-        "mismatched_action_id": {"permission_tool_call_id": "different-tool"},
-        "wrong_action_path": {"action_path": "other.txt"},
-        "provider_effect": {"sentinel_after": SENTINEL_AFTER.decode(), "effect_count": 1},
-        "execution_failure": {"session_new": False},
-        "deadline_or_cleanup_failure": {"elapsed_seconds": 61, "cleanup_joined": False},
-        "identity_drift": {"initialize_version": "1.0.94"},
-    }.items():
-        case = dict(successful)
-        case.update(changes)
-        require(not action_gate(case), f"fake gate accepted {name}")
-        results[name + "_fails_closed"] = True
-
     with tempfile.TemporaryDirectory(prefix="copilot-acp-private-assessment-") as root_text:
         root = Path(root_text)
-        invocation = root / "invocation-consumed.json"
-        prompt = root / "prompt-consumed.json"
-        invocation_record = canonical_bytes({"consumed": True, "phase": "before_fake_process"})
-        prompt_record = canonical_bytes({"consumed": True, "phase": "before_fake_prompt"})
+        scratch = root / "task-scratch"
+        scratch.mkdir(mode=0o700)
+        sentinel = scratch / "permission-sentinel.txt"
+        with sentinel.open("xb") as stream:
+            stream.write(SENTINEL_BEFORE)
+            stream.flush()
+            os.fsync(stream.fileno())
+        invocation = root / "1.0.95-attempt-4.json"
+        prompt = root / "1.0.95-prompt-3.json"
+        before_sha256 = sha256_file(sentinel)
+        binding = {
+            "execution_host_id_sha256": sha256_bytes(b"fixture.execution-host"),
+            "executable_ref_sha256": sha256_bytes(b"fixture.executable-ref"),
+            "environment_ref_sha256": sha256_bytes(b"fixture.environment-ref"),
+            "executable_bytes_sha256": sha256_bytes(b"fixture executable bytes"),
+        }
+        invocation_record = canonical_bytes({
+            "schema": "copilot-cli-private-assessment-consumed.v1",
+            "phase": "invocation-consumed-before-prepared-open",
+            "task_id": TASK_ID,
+            "version": VERSION,
+            "invocation_number": 4,
+            "plan_sha256": sha256_bytes(canonical_bytes(plan)),
+            "runner_sha256": sha256_file(Path(__file__)),
+            "binding": binding,
+            "artifact_sha256": NATIVE_EXECUTABLE_SHA256,
+            "argv": ARGV,
+            "mode": "fake-prepared-ledger",
+        })
         write_exclusive_fsynced(invocation, invocation_record)
-        process_started_after_record = invocation.read_bytes() == invocation_record
+        order: list[str] = []
+        require(invocation.read_bytes() == invocation_record, "invocation record readback differs")
+        order.append("invocation-fsynced")
+
+        def fake_prepared_process_start() -> None:
+            require(invocation.read_bytes() == invocation_record, "process start lacks durable attempt record")
+            order.append("prepared-process-start")
+
+        fake_prepared_process_start()
+        prompt_record = canonical_bytes({
+            "schema": "copilot-cli-private-assessment-consumed.v1",
+            "phase": "prompt-consumed-before-prepared-turn",
+            "task_id": TASK_ID,
+            "version": VERSION,
+            "prompt_number": 3,
+            "plan_sha256": sha256_bytes(canonical_bytes(plan)),
+            "runner_sha256": sha256_file(Path(__file__)),
+            "invocation_record_sha256": sha256_bytes(invocation_record),
+            "binding": binding,
+            "argv": ARGV,
+            "mode": "fake-prepared-ledger",
+        })
         write_exclusive_fsynced(prompt, prompt_record)
-        prompt_sent_after_record = prompt.read_bytes() == prompt_record
+        require(prompt.read_bytes() == prompt_record, "prompt record readback differs")
+        order.append("prompt-fsynced")
+
+        def fake_prepared_prompt_send() -> None:
+            require(prompt.read_bytes() == prompt_record, "prompt send lacks durable prompt record")
+            order.append("prepared-prompt-send")
+
+        fake_prepared_prompt_send()
+        # The Rust prepared-facade test exercises cancellation and measures this
+        # same task-owned file. This script only proves record ordering/durability.
+        after_sha256 = sha256_file(sentinel)
+        require(before_sha256 == after_sha256, "ledger fake changed task bytes")
         duplicate_refused = False
         try:
             write_exclusive_fsynced(invocation, b"replacement")
         except FileExistsError:
             duplicate_refused = True
-        # A failed fake retains both consumed records; no reset or retry is possible.
         retained_after_failure = invocation.read_bytes() == invocation_record and prompt.read_bytes() == prompt_record
-        require(process_started_after_record and prompt_sent_after_record and duplicate_refused and retained_after_failure,
-                "consumed fake ledger did not fail closed and persist")
-        results["exclusive_fsynced_consumption_and_failure_retention"] = True
-
-    require(set(results) == {
-        "correlated_execute_permission_cancel_no_effect_cleanup",
-        "preparation_original_gate_rejected",
-        "missing_action_metadata_fails_closed",
-        "mismatched_action_id_fails_closed",
-        "wrong_action_path_fails_closed",
-        "provider_effect_fails_closed",
-        "execution_failure_fails_closed",
-        "deadline_or_cleanup_failure_fails_closed",
-        "identity_drift_fails_closed",
-        "exclusive_fsynced_consumption_and_failure_retention",
-    }, "fake scenario set changed")
+        require(
+            order == [
+                "invocation-fsynced",
+                "prepared-process-start",
+                "prompt-fsynced",
+                "prepared-prompt-send",
+            ]
+            and duplicate_refused
+            and retained_after_failure,
+            "one-shot fake ledger did not fail closed and preserve consumption",
+        )
+        results["exclusive_attempt_and_prompt_records_precede_fake_prepared_effects"] = True
+        results["consumed_records_reject_replacement_and_remain_after_failure"] = True
+        results["ledger_self_test_measures_real_scratch_bytes"] = True
     return results
 
 
@@ -371,7 +360,7 @@ def validate_fake_pass_record(record: dict[str, Any], plan_hash: str, results: d
         "fake_results_sha256", "launch_side_capture",
     }
     require(set(record) == required, "generated fake pass key set changed")
-    require(record.get("schema") == "copilot-cli-private-assessment-fake-pass.v2", "fake pass schema mismatch")
+    require(record.get("schema") == "copilot-cli-private-assessment-fake-pass.v3", "fake pass schema mismatch")
     require(record.get("task_number") == TASK_NUMBER and record.get("task_id") == TASK_ID and record.get("run_id") == RUN_ID,
             "fake pass task binding changed")
     require(record.get("plan_sha256") == plan_hash, "fake pass plan hash mismatch")
@@ -383,7 +372,7 @@ def validate_fake_pass_record(record: dict[str, Any], plan_hash: str, results: d
     require(record.get("fake_results_sha256") == sha256_bytes(canonical_bytes(results)),
             "generated fake result digest changed")
     require(record.get("launch_side_capture") ==
-            "exact host inputs and executable digest are captured before discovery; durable consumed records and original launch remain planner-bound",
+            "prepared launch rechecks executable bytes before forwarding the unchanged host request; one-shot records are fake-tested in scratch; original stays disabled and the check-to-open race is disclosed",
             "launch-side capture disclosure changed")
 
 
@@ -391,7 +380,7 @@ def self_test() -> None:
     plan, plan_hash = validate_plan()
     results = fake_ledger_scenarios(plan)
     record = {
-        "schema": "copilot-cli-private-assessment-fake-pass.v2",
+        "schema": "copilot-cli-private-assessment-fake-pass.v3",
         "task_number": TASK_NUMBER,
         "task_id": TASK_ID,
         "run_id": RUN_ID,
@@ -403,8 +392,8 @@ def self_test() -> None:
         "fake_results": results,
         "fake_results_sha256": sha256_bytes(canonical_bytes(results)),
         "launch_side_capture": (
-            "exact host inputs and executable digest are captured before discovery; "
-            "durable consumed records and original launch remain planner-bound"
+            "prepared launch rechecks executable bytes before forwarding the unchanged host request; "
+            "one-shot records are fake-tested in scratch; original stays disabled and the check-to-open race is disclosed"
         ),
     }
     validate_fake_pass_record(record, plan_hash, results)

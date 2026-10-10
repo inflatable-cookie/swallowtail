@@ -16,12 +16,19 @@ use crate::{
     assessment_test_support::{FixtureHost, Scenario},
 };
 use futures_executor::block_on;
-use futures_util::StreamExt;
+use futures_util::{
+    StreamExt,
+    future::{Either, select},
+};
 use std::{
     fs::{self, File, OpenOptions},
     io::{Cursor, Write},
     path::{Path, PathBuf},
     process::Command,
+    sync::{
+        Arc,
+        atomic::{AtomicUsize, Ordering},
+    },
 };
 use swallowtail_core::{
     AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialState, EndpointAuthorization,
@@ -29,10 +36,11 @@ use swallowtail_core::{
     SupportAuthority,
 };
 use swallowtail_runtime::{
-    ActivityKind, ActivityLifecyclePhase, ActivityStatus, CleanupOutcome, Deadline,
-    DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
-    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderObservation, RequestId,
-    RuntimeEventKind, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest, WorkingResourceRef,
+    ActivityKind, ActivityLifecyclePhase, ActivityStatus, BoxFuture, CleanupOutcome, Deadline,
+    DeadlineObservation, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
+    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
+    ProviderObservation, RequestId, RuntimeEventKind, RuntimeTurnId, ScopeId,
+    SessionCleanupRequest, TerminalStatus, TimeService, TurnRequest, WorkingResourceRef,
 };
 
 const APPROVED_EXECUTABLE: &str = "/approved/copilot/1.0.95/copilot";
@@ -134,13 +142,19 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
             .expect("resource service")
             .clone(),
     );
-    let fake_executable = b"fixture bytes for the approved assessment executable";
+    let fake_executable = fs::read(&scratch.executable_path).expect("fixture executable bytes");
     let prepared = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
-        preparation_input(host.clone()),
+        preparation_input_with_executable(
+            host.clone(),
+            scratch
+                .executable_path
+                .to_str()
+                .expect("fixture path is UTF-8"),
+        ),
         probe(),
         services,
-        Cursor::new(fake_executable),
-        &sha256_reader(&fake_executable[..]).expect("fixture executable hashes"),
+        Cursor::new(fake_executable.as_slice()),
+        &sha256_reader(fake_executable.as_slice()).expect("fixture executable hashes"),
     ))
     .expect("the exact frozen point prepares through the real facade");
     let captured = prepared
@@ -148,7 +162,13 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
         .as_ref()
         .expect("safe host inputs were captured before discovery");
     assert_eq!(captured.execution_host_id, "assessment.fake.execution-host");
-    assert_eq!(captured.executable_ref, APPROVED_EXECUTABLE);
+    assert_eq!(
+        captured.executable_ref,
+        scratch
+            .executable_path
+            .to_str()
+            .expect("fixture path is UTF-8")
+    );
     assert_eq!(captured.environment_ref, APPROVED_ENVIRONMENT);
     assert_eq!(
         captured.execution_host_id_sha256,
@@ -283,7 +303,10 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
     ));
 
     let process = operation.observed_process();
-    assert_eq!(process.executable, APPROVED_EXECUTABLE);
+    assert_eq!(
+        process.executable,
+        scratch.executable_path.to_string_lossy().as_ref()
+    );
     assert_eq!(process.environments, [APPROVED_ENVIRONMENT]);
     assert_eq!(process.arguments, ["--acp", "--stdio"]);
     let writes = operation.writes();
@@ -306,6 +329,8 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
         CleanupOutcome::Clean
     );
     assert_eq!(operation.releases(), 1);
+    assert!(operation.process_stopped());
+    assert_eq!(operation.joined_tasks(), 2);
     let sentinel_after = fs::read(&scratch.sentinel_path).expect("sentinel remains readable");
     let sentinel_after_sha256 = sha256_file(&scratch.sentinel_path);
     let trace = operation.capture_assessment_task_directory_after();
@@ -364,6 +389,9 @@ fn prepared_execution_and_session_new_failures_leave_the_sentinel_untouched() {
     );
     assert!(execution.terminal_runtime_failed);
     assert!(!execution.terminal_provider_request_observed);
+    assert!(execution.operation.process_stopped());
+    assert_eq!(execution.operation.joined_tasks(), 2);
+    assert_eq!(execution.operation.releases(), 1);
     let execution_trace = execution
         .operation
         .capture_assessment_task_directory_after();
@@ -387,6 +415,9 @@ fn prepared_execution_and_session_new_failures_leave_the_sentinel_untouched() {
             .open_session(fixture.operation.services(fixture.host.clone())),
     );
     assert!(opened.is_err(), "session/new error must fail session open");
+    assert!(fixture.operation.process_stopped());
+    assert_eq!(fixture.operation.joined_tasks(), 1);
+    assert_eq!(fixture.operation.releases(), 1);
     let writes = fixture.operation.writes();
     assert!(
         writes
@@ -406,6 +437,233 @@ fn prepared_execution_and_session_new_failures_leave_the_sentinel_untouched() {
     assert!(!session_new_trace.session_new_seen);
     assert_eq!(session_new_trace.effect_count, 0);
     assert!(!assessment_trace_is_complete(&session_new_trace));
+}
+
+#[test]
+fn prepared_launch_rejects_executable_replacement_before_process_effects() {
+    let scratch = TaskScratch::new();
+    let fixture = prepared_assessment_fixture(
+        Scenario::AssessmentHangingUntilCancel,
+        &scratch,
+        "launch-drift",
+    );
+    fs::write(
+        &scratch.executable_path,
+        b"replacement after prepared identity capture",
+    )
+    .expect("task-owned fake executable is replaced before process start");
+
+    let error = block_on(
+        fixture
+            .session
+            .open_session(fixture.operation.services(fixture.host.clone())),
+    )
+    .err()
+    .expect("changed executable must fail before the process service starts");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.copilot-cli.acp.assessment.launch_digest_mismatch"
+    );
+    assert!(!fixture.operation.process_started());
+    assert!(fixture.operation.writes().is_empty());
+    assert_eq!(fixture.operation.releases(), 1);
+    assert_eq!(fixture.operation.joined_tasks(), 0);
+}
+
+#[test]
+fn prepared_path_runner_cancels_at_budget_and_joins_cleanup_inside_sixty_seconds() {
+    const MONOTONIC_TICKS_PER_SECOND: u64 = 1_000;
+    const TOTAL_BUDGET_TICKS: u64 = 60 * MONOTONIC_TICKS_PER_SECOND;
+    const CLEANUP_RESERVE_TICKS: u64 = 3 * MONOTONIC_TICKS_PER_SECOND;
+    let scratch = TaskScratch::new();
+    let sentinel_before_sha256 = sha256_file(&scratch.sentinel_path);
+    let ticks = Arc::new(AtomicUsize::new(0));
+    let clock = Arc::new(AssessmentClock(Arc::clone(&ticks)));
+    let budget = crate::assessment::PreparedAttemptBudget::new(
+        clock.now(),
+        TOTAL_BUDGET_TICKS,
+        CLEANUP_RESERVE_TICKS,
+    );
+    assert_eq!(
+        budget.action_cutoff().instant().ticks(),
+        57 * MONOTONIC_TICKS_PER_SECOND
+    );
+    let fixture = prepared_assessment_fixture_with_progress(
+        Scenario::AssessmentHangingUntilCancel,
+        &scratch,
+        "deadline-cleanup",
+        Arc::clone(&ticks),
+    );
+    let (plan_sha256, runner_sha256) = assessment_plan_and_runner_hashes();
+    let invocation_record_path = scratch.executable_root.join("1.0.95-attempt-4.json");
+    let prompt_record_path = scratch.executable_root.join("1.0.95-prompt-3.json");
+    let invocation_record = serde_json::json!({
+        "schema": "copilot-cli-private-assessment-consumed.v1",
+        "phase": "invocation-consumed-before-prepared-open",
+        "task_id": "7823a168-9b8f-4604-8fd7-201c2998722e",
+        "version": PRIVATE_ASSESSMENT_VERSION,
+        "invocation_number": 4,
+        "plan_sha256": plan_sha256.clone(),
+        "runner_sha256": runner_sha256.clone(),
+        "execution_host_id_sha256": fixture.binding.execution_host_id_sha256.clone(),
+        "executable_ref_sha256": fixture.binding.executable_ref_sha256.clone(),
+        "environment_ref_sha256": fixture.binding.environment_ref_sha256.clone(),
+        "executable_bytes_sha256": fixture.binding.executable_bytes_sha256.clone(),
+        "wrapper_archive_sha256": crate::assessment::WRAPPER_ARCHIVE_SHA256,
+        "native_archive_sha256": crate::assessment::NATIVE_ARCHIVE_SHA256,
+        "argv": ["--acp", "--stdio"],
+        "mode": "fake-prepared-path",
+        "original_started": false
+    });
+    write_exclusive_fsynced(&invocation_record_path, &invocation_record)
+        .expect("invocation-consumed record is exclusive and fsynced before prepared open");
+    let services = fixture
+        .operation
+        .services(fixture.host.clone())
+        .with_time(clock.clone());
+    let mut handle = block_on(fixture.session.open_session(services.clone()))
+        .expect("prepared facade opens before the budget cutoff");
+    let prompt_record = serde_json::json!({
+        "schema": "copilot-cli-private-assessment-consumed.v1",
+        "phase": "prompt-consumed-before-prepared-turn",
+        "task_id": "7823a168-9b8f-4604-8fd7-201c2998722e",
+        "version": PRIVATE_ASSESSMENT_VERSION,
+        "prompt_number": 3,
+        "plan_sha256": plan_sha256,
+        "runner_sha256": runner_sha256,
+        "invocation_record_sha256": sha256_file(&invocation_record_path),
+        "execution_host_id_sha256": fixture.binding.execution_host_id_sha256.clone(),
+        "executable_ref_sha256": fixture.binding.executable_ref_sha256.clone(),
+        "environment_ref_sha256": fixture.binding.environment_ref_sha256.clone(),
+        "executable_bytes_sha256": fixture.binding.executable_bytes_sha256.clone(),
+        "argv": ["--acp", "--stdio"],
+        "mode": "fake-prepared-path",
+        "prompt_sent": false
+    });
+    write_exclusive_fsynced(&prompt_record_path, &prompt_record)
+        .expect("prompt-consumed record is exclusive and fsynced before prepared turn");
+    let mut turn = block_on(handle.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("assessment.deadline-cleanup.turn").expect("turn"),
+            OperationContent::new(SENTINEL_PROMPT).expect("prompt"),
+        ),
+        services.clone(),
+    ))
+    .expect("prepared prompt starts without a public turn deadline");
+    let mut events = turn.take_events().expect("event stream");
+    let mut cutoff = clock.wait_until(budget.action_cutoff());
+    loop {
+        match block_on(select(Box::pin(events.next()), cutoff)) {
+            Either::Left((Some(Ok(_)), remaining_cutoff)) => cutoff = remaining_cutoff,
+            Either::Left((Some(Err(error)), _)) => panic!("prepared events failed: {error}"),
+            Either::Left((None, _)) => panic!("prepared event stream ended before cutoff"),
+            Either::Right((observation, _pending_events)) => {
+                assert_eq!(observation.deadline(), budget.action_cutoff());
+                assert_eq!(observation.observed_at(), budget.action_cutoff().instant());
+                break;
+            }
+        }
+    }
+
+    assert_eq!(clock.now(), budget.action_cutoff().instant());
+    block_on(turn.cancellation().request()).expect("deadline requests ACP prompt cancellation");
+    let terminal = block_on(turn.take_terminal_outcome().expect("terminal outcome"));
+    assert!(matches!(terminal.status(), TerminalStatus::Cancelled));
+    let writes = fixture.operation.writes();
+    assert_eq!(
+        writes
+            .iter()
+            .filter(|message| message["method"] == "session/prompt")
+            .count(),
+        1,
+        "one consumed prompt is sent"
+    );
+    assert_eq!(
+        writes
+            .iter()
+            .filter(|message| message["method"] == "session/cancel")
+            .count(),
+        1,
+        "the prompt is cancelled once without a resend"
+    );
+    assert!(
+        !writes.iter().any(|message| message["id"] == 900),
+        "the deadline fake selects no permission option"
+    );
+    assert!(
+        writes
+            .iter()
+            .any(|message| message["method"] == "session/cancel")
+    );
+    let trace = fixture.operation.assessment_trace();
+    assert!(trace.session_cancel_seen);
+    assert_eq!(trace.prompt_result.as_deref(), Some("cancelled"));
+
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(handle.close(
+            SessionCleanupRequest::new(budget.total_deadline()),
+            services,
+        )),
+        CleanupOutcome::Clean
+    );
+    assert!(
+        fixture.operation.process_stopped(),
+        "owned child was stopped"
+    );
+    assert_eq!(
+        fixture.operation.joined_tasks(),
+        2,
+        "prompt and pump joined"
+    );
+    assert_eq!(
+        fixture.operation.releases(),
+        1,
+        "task resource released once"
+    );
+    let finished_at = clock.now();
+    let elapsed = finished_at.ticks();
+    assert!(
+        !budget.expired(finished_at),
+        "cleanup finished inside the hard budget"
+    );
+    assert!(budget.cleanup_within_reserve(finished_at));
+    assert!(elapsed < TOTAL_BUDGET_TICKS);
+    assert_eq!(sentinel_before_sha256, sha256_file(&scratch.sentinel_path));
+    let trace = fixture.operation.capture_assessment_task_directory_after();
+    assert_eq!(trace.effect_count, 0);
+    assert_eq!(trace.task_directory_before, trace.task_directory_after);
+    let result_record_path = scratch.executable_root.join("execution-result.json");
+    let result_record = serde_json::json!({
+        "schema": "copilot-cli-private-assessment-result.v1",
+        "status": "cancelled",
+        "task_directory_sha256_before": sentinel_before_sha256,
+        "task_directory_sha256_after": sha256_file(&scratch.sentinel_path),
+        "effect_count": trace.effect_count,
+        "cleanup": "clean",
+        "process_stopped": fixture.operation.process_stopped(),
+        "joined_tasks": fixture.operation.joined_tasks(),
+        "resource_releases": fixture.operation.releases(),
+        "elapsed_ticks": elapsed,
+        "original_started": false
+    });
+    write_exclusive_fsynced(&result_record_path, &result_record)
+        .expect("fake result record is fsynced after joined cleanup");
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(
+            &fs::read(&invocation_record_path).expect("invocation record persists in test scratch")
+        )
+        .expect("invocation record parses"),
+        invocation_record
+    );
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(
+            &fs::read(&prompt_record_path).expect("prompt record persists in test scratch")
+        )
+        .expect("prompt record parses"),
+        prompt_record
+    );
+    assert!(write_exclusive_fsynced(&invocation_record_path, &invocation_record).is_err());
 }
 
 #[test]
@@ -431,13 +689,19 @@ fn assessment_fake_gate_rejects_missing_or_mismatched_execute_metadata() {
                 .expect("resource service")
                 .clone(),
         );
-        let fake_executable = b"fixture bytes for the approved assessment executable";
+        let fake_executable = fs::read(&scratch.executable_path).expect("fixture executable bytes");
         let prepared = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
-            preparation_input(host.clone()),
+            preparation_input_with_executable(
+                host.clone(),
+                scratch
+                    .executable_path
+                    .to_str()
+                    .expect("fixture path is UTF-8"),
+            ),
             probe(),
             services,
-            Cursor::new(fake_executable),
-            &sha256_reader(&fake_executable[..]).expect("fixture executable hashes"),
+            Cursor::new(fake_executable.as_slice()),
+            &sha256_reader(fake_executable.as_slice()).expect("fixture executable hashes"),
         ))
         .expect("exact version assessment prepares");
         let session = prepared
@@ -505,6 +769,7 @@ struct PreparedAssessmentFixture {
     session: CopilotCliPreparedSession,
     operation: FixtureHost,
     host: ExecutionHostId,
+    binding: crate::assessment::CopilotCliAssessmentHostBinding,
 }
 
 struct PreparedAssessmentRun {
@@ -519,12 +784,42 @@ fn prepared_assessment_fixture(
     scratch: &TaskScratch,
     label: &str,
 ) -> PreparedAssessmentFixture {
+    prepared_assessment_fixture_inner(scenario, scratch, label, None)
+}
+
+fn prepared_assessment_fixture_with_progress(
+    scenario: Scenario,
+    scratch: &TaskScratch,
+    label: &str,
+    progress_ticks: Arc<AtomicUsize>,
+) -> PreparedAssessmentFixture {
+    prepared_assessment_fixture_inner(scenario, scratch, label, Some(progress_ticks))
+}
+
+fn prepared_assessment_fixture_inner(
+    scenario: Scenario,
+    scratch: &TaskScratch,
+    label: &str,
+    progress_ticks: Option<Arc<AtomicUsize>>,
+) -> PreparedAssessmentFixture {
     let host = ExecutionHostId::new(format!("assessment.fake.{label}")).expect("host");
     let discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
-    let operation = FixtureHost::with_version_and_task_directory(
-        scenario,
-        PRIVATE_ASSESSMENT_VERSION,
-        scratch.root.clone(),
+    let operation = progress_ticks.map_or_else(
+        || {
+            FixtureHost::with_version_and_task_directory(
+                scenario,
+                PRIVATE_ASSESSMENT_VERSION,
+                scratch.root.clone(),
+            )
+        },
+        |ticks| {
+            FixtureHost::with_version_task_directory_and_progress(
+                scenario,
+                PRIVATE_ASSESSMENT_VERSION,
+                scratch.root.clone(),
+                ticks,
+            )
+        },
     );
     let mut services = discovery.services(host.clone());
     services = services.with_working_resource(
@@ -534,15 +829,25 @@ fn prepared_assessment_fixture(
             .expect("resource service")
             .clone(),
     );
-    let fake_executable = b"fixture bytes for the approved assessment executable";
+    let fake_executable = fs::read(&scratch.executable_path).expect("fixture executable bytes");
     let prepared = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
-        preparation_input(host.clone()),
+        preparation_input_with_executable(
+            host.clone(),
+            scratch
+                .executable_path
+                .to_str()
+                .expect("fixture path is UTF-8"),
+        ),
         probe(),
         services,
-        Cursor::new(fake_executable),
-        &sha256_reader(&fake_executable[..]).expect("fixture executable hashes"),
+        Cursor::new(fake_executable.as_slice()),
+        &sha256_reader(fake_executable.as_slice()).expect("fixture executable hashes"),
     ))
     .expect("exact version assessment prepares through the real facade");
+    let binding = prepared
+        .assessment_binding
+        .clone()
+        .expect("test-only exact host binding is available");
     let session = prepared
         .prepare_session(CopilotCliSessionProfileInput::new(
             RequestId::new(format!("assessment.{label}.session")).expect("request"),
@@ -553,6 +858,28 @@ fn prepared_assessment_fixture(
         session,
         operation,
         host,
+        binding,
+    }
+}
+
+#[derive(Clone)]
+struct AssessmentClock(Arc<AtomicUsize>);
+
+// The fake host defines 1,000 monotonic ticks as one simulated second.
+impl TimeService for AssessmentClock {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(self.0.load(Ordering::SeqCst) as u64)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let ticks = Arc::clone(&self.0);
+        Box::pin(async move {
+            ticks.fetch_max(deadline.instant().ticks() as usize, Ordering::SeqCst);
+            DeadlineObservation::new(
+                deadline,
+                MonotonicInstant::from_ticks(ticks.load(Ordering::SeqCst) as u64),
+            )
+        })
     }
 }
 
@@ -596,6 +923,8 @@ fn run_prepared_assessment_turn(
         CleanupOutcome::Clean
     );
     assert_eq!(fixture.operation.releases(), 1);
+    assert!(fixture.operation.process_stopped());
+    assert_eq!(fixture.operation.joined_tasks(), 2);
     fixture.operation.capture_assessment_task_directory_after();
     PreparedAssessmentRun {
         operation: fixture.operation,
@@ -608,29 +937,21 @@ fn run_prepared_assessment_turn(
 struct TaskScratch {
     root: PathBuf,
     sentinel_path: PathBuf,
+    executable_root: PathBuf,
+    executable_path: PathBuf,
 }
 
 impl TaskScratch {
     fn new() -> Self {
-        let output = Command::new("mktemp")
-            .args(["-d", "-t", "copilot-acp-assessment"])
-            .output()
-            .expect("mktemp creates a fresh task-owned directory");
-        assert!(
-            output.status.success(),
-            "mktemp failed: {}",
-            String::from_utf8_lossy(&output.stderr)
-        );
-        let root = PathBuf::from(
-            String::from_utf8(output.stdout)
-                .expect("mktemp path is UTF-8")
-                .trim(),
-        );
-        assert!(root.is_absolute(), "mktemp returns an absolute path");
+        let root = fresh_temp_dir("copilot-acp-assessment");
+        let executable_root = fresh_temp_dir("copilot-acp-executable");
         let sentinel_path = root.join(SENTINEL_PATH);
+        let executable_path = executable_root.join("copilot");
         let scratch = Self {
             root,
             sentinel_path,
+            executable_root,
+            executable_path,
         };
         OpenOptions::new()
             .write(true)
@@ -639,6 +960,13 @@ impl TaskScratch {
             .expect("fresh task scratch has no sentinel yet")
             .write_all(SENTINEL_BEFORE)
             .expect("sentinel bytes are written only inside task scratch");
+        OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&scratch.executable_path)
+            .expect("fresh executable fixture has no file yet")
+            .write_all(b"fixture bytes for the approved assessment executable")
+            .expect("fixture executable bytes are isolated and never executed");
         scratch
     }
 }
@@ -646,12 +974,57 @@ impl TaskScratch {
 impl Drop for TaskScratch {
     fn drop(&mut self) {
         fs::remove_dir_all(&self.root).expect("remove only the test-owned scratch directory");
+        fs::remove_dir_all(&self.executable_root)
+            .expect("remove only the test-owned executable fixture directory");
     }
+}
+
+fn fresh_temp_dir(prefix: &str) -> PathBuf {
+    let output = Command::new("mktemp")
+        .args(["-d", "-t", prefix])
+        .output()
+        .expect("mktemp creates a fresh task-owned directory");
+    assert!(
+        output.status.success(),
+        "mktemp failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let root = PathBuf::from(
+        String::from_utf8(output.stdout)
+            .expect("mktemp path is UTF-8")
+            .trim(),
+    );
+    assert!(root.is_absolute(), "mktemp returns an absolute path");
+    root
 }
 
 fn sha256_file(path: &Path) -> String {
     sha256_reader(File::open(path).expect("task-owned sentinel is readable"))
         .expect("sentinel SHA-256 is readable")
+}
+
+fn assessment_plan_and_runner_hashes() -> (String, String) {
+    let crate_root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let plan_path = crate_root
+        .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
+    let plan: serde_json::Value = serde_json::from_slice(
+        &fs::read(plan_path).expect("current private assessment plan is readable"),
+    )
+    .expect("current private assessment plan parses");
+    let plan_bytes = serde_json::to_vec(&plan).expect("plan has canonical sorted JSON keys");
+    let plan_sha256 = sha256_reader(plan_bytes.as_slice()).expect("plan digest is readable");
+    let runner_path = crate_root.join("../../scripts/copilot-acp-private-assessment.py");
+    let runner_sha256 = sha256_file(&runner_path);
+    (plan_sha256, runner_sha256)
+}
+
+fn write_exclusive_fsynced(path: &Path, record: &serde_json::Value) -> std::io::Result<()> {
+    let bytes = serde_json::to_vec(record).expect("secret-free proof record serializes");
+    let mut file = OpenOptions::new().write(true).create_new(true).open(path)?;
+    file.write_all(&bytes)?;
+    file.sync_all()?;
+    drop(file);
+    File::open(path.parent().expect("record has a parent directory"))?.sync_all()
 }
 
 const fn scenario_name(scenario: Scenario) -> &'static str {

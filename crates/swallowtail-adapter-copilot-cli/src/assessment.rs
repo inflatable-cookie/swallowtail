@@ -2,9 +2,12 @@
 
 use sha2::{Digest, Sha256};
 use std::fmt;
-use std::io::Read;
-use swallowtail_core::ExecutionHostId;
-use swallowtail_runtime::{EnvironmentRef, ExecutableRef};
+use std::{io::Read, path::Path, sync::Arc};
+use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+use swallowtail_runtime::{
+    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, ProcessHandle, ProcessRequest,
+    ProcessService, RuntimeFailure, ScopeId,
+};
 
 pub(crate) const WRAPPER_ARCHIVE_SHA256: &str =
     "838be5537db8bd0f7c7c2e555063770ab559249cf2c3ff3c23b2efc81c854779";
@@ -108,6 +111,83 @@ pub(crate) enum CaptureError {
     ExecutableDigestMismatch,
 }
 
+/// Adds a test-build-only identity guard immediately before the prepared host
+/// process service receives the unchanged request. The host service still
+/// opens the executable by reference after this read, so a path replacement
+/// in that narrow interval remains a disclosed host boundary.
+#[cfg(test)]
+pub(crate) fn guard_prepared_assessment_launch(
+    services: HostServices,
+    binding: &CopilotCliAssessmentHostBinding,
+) -> Result<HostServices, RuntimeFailure> {
+    if services.execution_host_id().as_str() != binding.execution_host_id.as_str() {
+        return Err(launch_identity_failure());
+    }
+    let delegate = services
+        .process()
+        .cloned()
+        .ok_or_else(launch_identity_failure)?;
+    Ok(services.with_process(Arc::new(AssessmentLaunchGuard {
+        delegate,
+        executable_ref: binding.executable_ref.clone(),
+        environment_ref: binding.environment_ref.clone(),
+        executable_bytes_sha256: binding.executable_bytes_sha256.clone(),
+    })))
+}
+
+#[cfg(test)]
+struct AssessmentLaunchGuard {
+    delegate: Arc<dyn ProcessService>,
+    executable_ref: String,
+    environment_ref: String,
+    executable_bytes_sha256: String,
+}
+
+#[cfg(test)]
+impl ProcessService for AssessmentLaunchGuard {
+    fn start(
+        &self,
+        scope: ScopeId,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        let result = (|| {
+            let arguments = request.arguments().collect::<Vec<_>>();
+            let environments = request
+                .environment()
+                .map(|environment| environment.as_host_value())
+                .collect::<Vec<_>>();
+            if request.executable().as_host_value() != self.executable_ref
+                || arguments != ["--acp", "--stdio"]
+                || environments != [self.environment_ref.as_str()]
+            {
+                return Err(launch_identity_failure());
+            }
+            let path = Path::new(&self.executable_ref);
+            let executable = std::fs::File::open(path).map_err(|_| launch_identity_failure())?;
+            let digest = sha256_reader(executable).map_err(|_| launch_identity_failure())?;
+            if digest != self.executable_bytes_sha256 {
+                return Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "swallowtail.copilot-cli.acp.assessment.launch_digest_mismatch",
+                    "Approved Copilot CLI executable changed before prepared process start",
+                )));
+            }
+            Ok(())
+        })();
+        if let Err(error) = result {
+            return Box::pin(async move { Err(error) });
+        }
+        self.delegate.start(scope, request)
+    }
+}
+
+#[cfg(test)]
+fn launch_identity_failure() -> RuntimeFailure {
+    RuntimeFailure::new(SafeDiagnostic::new(
+        "swallowtail.copilot-cli.acp.assessment.launch_binding_mismatch",
+        "Prepared Copilot CLI launch does not match its captured host binding",
+    ))
+}
+
 impl fmt::Debug for CaptureError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -116,6 +196,55 @@ impl fmt::Debug for CaptureError {
                 formatter.write_str("CaptureError::ExecutableDigestMismatch")
             }
         }
+    }
+}
+
+/// Absolute monotonic proof-run budget with cleanup time reserved in advance.
+#[cfg(test)]
+#[derive(Clone, Copy)]
+pub(crate) struct PreparedAttemptBudget {
+    action_cutoff: swallowtail_runtime::Deadline,
+    total_deadline: swallowtail_runtime::Deadline,
+}
+
+#[cfg(test)]
+impl PreparedAttemptBudget {
+    /// Creates one proof budget from the monotonic start of the prepared route.
+    pub(crate) fn new(
+        started_at: swallowtail_runtime::MonotonicInstant,
+        total_ticks: u64,
+        cleanup_ticks: u64,
+    ) -> Self {
+        assert!(
+            total_ticks > cleanup_ticks,
+            "cleanup must fit inside total budget"
+        );
+        let total = started_at.ticks().saturating_add(total_ticks);
+        let action = total.saturating_sub(cleanup_ticks);
+        Self {
+            action_cutoff: swallowtail_runtime::Deadline::at(
+                swallowtail_runtime::MonotonicInstant::from_ticks(action),
+            ),
+            total_deadline: swallowtail_runtime::Deadline::at(
+                swallowtail_runtime::MonotonicInstant::from_ticks(total),
+            ),
+        }
+    }
+
+    pub(crate) const fn action_cutoff(self) -> swallowtail_runtime::Deadline {
+        self.action_cutoff
+    }
+
+    pub(crate) const fn total_deadline(self) -> swallowtail_runtime::Deadline {
+        self.total_deadline
+    }
+
+    pub(crate) fn expired(self, now: swallowtail_runtime::MonotonicInstant) -> bool {
+        now >= self.total_deadline.instant()
+    }
+
+    pub(crate) fn cleanup_within_reserve(self, now: swallowtail_runtime::MonotonicInstant) -> bool {
+        now >= self.action_cutoff.instant() && now <= self.total_deadline.instant()
     }
 }
 

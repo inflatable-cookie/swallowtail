@@ -1412,6 +1412,37 @@ until reviewed original permission, reject/cancel and no-effect evidence
 exists. Released consumers, the exact `1.0.80` claim and all original records
 remain unchanged.
 
+The task 168 preparation adds a standalone fake-only stdio runner and disabled
+`1.0.93` execution plan. Its plan validator binds the retained wrapper and
+Darwin ARM64 native package labels, archive SHA-256 and SRI, extracted
+manifest/executable digests, and direct native `--model auto --acp --stdio`
+launch. The wrapper is an independent identity cross-check and is not run.
+The plan's normal-host boundary and sentinel action are review inputs; the
+original-enabled and preparation-execution flags remain false. No vendor
+artifact was staged or run during preparation.
+
+The fake ACP path creates ordinary synthetic home, XDG, Copilot state, log and
+scratch directories, then exercises initialize, session creation, one prompt,
+matching permission request and cancel outcome. It rejects wrong or duplicate
+permission actions, unapproved tool updates, missing permission, changed
+sentinel bytes, malformed/oversized frames, EOF, startup/session errors and
+timeouts. Exclusive attempt and prompt records bind the reviewed plan, runner,
+artifacts, argv, environment policy, account reference, action and budgets;
+their files and parent directory are fsynced. Replay and original-entrypoint
+tests refuse existing or disabled records. Fake fork, spawned and `setsid`
+children are waited by exact child handles. The record reports root, process
+group and stdio observations separately and keeps arbitrary vendor descendant
+cleanup `unknown`; process-group exit is not treated as proof that every
+descendant joined. Stderr is drained concurrently and only bounded sanitized
+categories and byte counts are retained. Synthetic timeout/failure fixtures
+exercise the identity-query helper; its production default caps the combined
+host query at two seconds without waiting for a quiet host. Research 434
+records the exact runner/plan identities and fake outcomes.
+These results do not prove original startup, host login, Auto selection,
+permission behavior or route compatibility. Preserve all prior consumed
+records and the three-prompt shared ceiling; a later original attempt remains
+separately gated to this exact plan and reviewed authority.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

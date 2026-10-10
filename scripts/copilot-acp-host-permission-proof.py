@@ -97,6 +97,7 @@ CORRECTED_BRIEF_SHA256 = "5b69971124d97b98f8d95ef4ca274465fa80e80a317e1732e48868
 CORRECTED_TASK_ID = "251ff078-07d9-4b7d-8015-c9446788250c"
 CORRECTED_RUN_ID = "27ec8859-5efc-4511-a9b3-56e3710f3097"
 CORRECTED_OPERATOR_DECISION = "acb7a075-390a-48b6-99b5-a6eea4d9920e"
+FINAL_CORRECTED_ATTEMPT_RUNNER_SHA256 = "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040"
 EXPECTED_INVENTORY_SHA256 = "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
 EXPECTED_WRAPPER_ARCHIVE_SHA256 = "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"
 EXPECTED_NATIVE_ARCHIVE_SHA256 = "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb"
@@ -784,7 +785,7 @@ def validate_final_correction_plan() -> dict[str, Any]:
     expected_runner = {
         "path": "scripts/copilot-acp-host-permission-proof.py",
         "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
-        "implementation_sha256": sha256_file(SCRIPT_PATH),
+        "implementation_sha256": FINAL_CORRECTED_ATTEMPT_RUNNER_SHA256,
     }
     if plan.get("runner") != expected_runner:
         raise ValueError("final corrected plan does not bind this runner")
@@ -824,7 +825,7 @@ def validate_fake_pass_record(path: Path = CORRECTED_FAKE_PASS_PATH) -> dict[str
         or record.get("operator_decision") != CORRECTED_OPERATOR_DECISION
         or record.get("source_proposal_sha256") != CORRECTION_PROPOSAL_SHA256
         or record.get("plan_sha256") != sha256_file(FINAL_CORRECTION_PLAN_PATH)
-        or record.get("runner_sha256") != sha256_file(SCRIPT_PATH)
+        or record.get("runner_sha256") != plan["runner"]["implementation_sha256"]
         or record.get("status") != "passed"
         or record.get("originals_run") is not False
         or not isinstance(record.get("results"), dict)
@@ -855,6 +856,14 @@ def validate_fake_pass_record(path: Path = CORRECTED_FAKE_PASS_PATH) -> dict[str
 
 def create_fake_pass_record(results: dict[str, Any]) -> dict[str, Any]:
     plan = validate_final_correction_plan()
+    if results.get("status") != "passed" or results.get("originals_run") is not False:
+        raise RuntimeError("fake-proof results cannot be retained as a passing record")
+    if CORRECTED_FAKE_PASS_PATH.is_symlink():
+        raise RuntimeError("fake-pass evidence path must not be a symlink")
+    if CORRECTED_FAKE_PASS_PATH.exists():
+        return validate_fake_pass_record(CORRECTED_FAKE_PASS_PATH)
+    if sha256_file(SCRIPT_PATH) != plan["runner"]["implementation_sha256"]:
+        raise RuntimeError("cannot create historical fake-pass evidence from a changed runner")
     record = {
         "schema": "copilot-cli-acp-host-permission-fake-pass.v1",
         "task_number": 171,
@@ -863,13 +872,11 @@ def create_fake_pass_record(results: dict[str, Any]) -> dict[str, Any]:
         "operator_decision": CORRECTED_OPERATOR_DECISION,
         "source_proposal_sha256": CORRECTION_PROPOSAL_SHA256,
         "plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
-        "runner_sha256": sha256_file(SCRIPT_PATH),
+        "runner_sha256": plan["runner"]["implementation_sha256"],
         "status": "passed",
         "originals_run": False,
         "results": results,
     }
-    if results.get("status") != "passed" or results.get("originals_run") is not False:
-        raise RuntimeError("fake-proof results cannot be retained as a passing record")
     encoded = json.dumps(record, sort_keys=True, indent=2).encode() + b"\n"
     parent = CORRECTED_FAKE_PASS_PATH.parent
     if parent.is_symlink():
@@ -926,7 +933,7 @@ def validate_corrected_authority(
         "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
         "final_plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
         "plan_id": FINAL_CORRECTION_PLAN_ID,
-        "final_runner_sha256": sha256_file(SCRIPT_PATH),
+        "final_runner_sha256": bound_plan["runner"]["implementation_sha256"],
         "fake_pass_record_path": bound_plan["fake_pass_record_path"],
         "fake_pass_record_sha256": fake_pass_sha256,
         "route": "copilot-cli.acp",
@@ -1580,7 +1587,26 @@ def validate_original_execution_evidence(
     authority_sha256: str,
     *,
     allow_fake_authority: bool = False,
+    require_private_records: bool = True,
 ) -> dict[str, Any]:
+    evidence_paths = (
+        (record_path, True),
+        (attempt_path, True),
+        (prompt_path, prompt_path.exists() or prompt_path.is_symlink()),
+    )
+    for path, required in evidence_paths:
+        try:
+            metadata = path.lstat()
+        except FileNotFoundError:
+            if required:
+                raise ValueError("original evidence record is missing") from None
+            continue
+        if not stat.S_ISREG(metadata.st_mode):
+            raise ValueError("original evidence record is not a regular file")
+        if require_private_records and (
+            metadata.st_uid != os.getuid() or metadata.st_mode & 0o777 != 0o600
+        ):
+            raise ValueError("original evidence record is not a private current-user file")
     record = load_object(record_path)
     result = validate_original_execution_record(
         record, plan, authority_sha256, allow_fake_authority=allow_fake_authority
@@ -1600,15 +1626,6 @@ def validate_original_execution_evidence(
     validate_original_ledger_bindings(
         record, attempt_bytes, prompt_bytes, plan, authority_sha256
     )
-    for path in (attempt_path, *([prompt_path] if prompt_bytes is not None else []), record_path):
-        metadata = path.lstat()
-        if (
-            not path.is_file()
-            or path.is_symlink()
-            or metadata.st_uid != os.getuid()
-            or metadata.st_mode & 0o777 != 0o600
-        ):
-            raise ValueError("original evidence record is not a private current-user file")
     return result
 
 
@@ -3066,6 +3083,7 @@ if session_new.get("params", {}).get("mcpServers") != [] or session_new.get("par
     raise SystemExit(25)
 send_message({"jsonrpc":"2.0","id":2,"result":{"sessionId":"synthetic-session"}})
 if scenario == "crash-before-prompt":
+    time.sleep(0.05)
     raise SystemExit(17)
 prompt = read_message()
 if prompt.get("method") != "session/prompt" or prompt.get("id") != 3:
@@ -3408,7 +3426,16 @@ def self_test() -> dict[str, Any]:
                 or paths["receipt"].exists() is not received
                 or received and record["prompt_send_completed"] is not True
             ):
-                raise RuntimeError(f"original-shaped fake lost {scenario} consumption evidence")
+                raise RuntimeError(
+                    f"original-shaped fake lost {scenario} consumption evidence: "
+                    + json.dumps({
+                        "failure_class": record["failure_class"],
+                        "prompt_slot_fsynced_before_send": record["prompt_slot_fsynced_before_send"],
+                        "prompt_send_completed": record["prompt_send_completed"],
+                        "fake_prompt_received": paths["receipt"].exists(),
+                        "exit_code": record["exit_code"],
+                    }, sort_keys=True)
+                )
             results[f"original-{scenario}"] = {
                 "failure_class": record["failure_class"],
                 "prompt_slot_fsynced_before_send": record["prompt_slot_fsynced_before_send"],
@@ -3722,6 +3749,7 @@ def main() -> int:
                 record_path.with_name(PROMPT_EVIDENCE_NAME),
                 plan,
                 authority_sha256,
+                require_private_records=False,
             ), sort_keys=True))
         elif args.validate_corrected_original_record:
             print(json.dumps(validate_corrected_original_evidence(

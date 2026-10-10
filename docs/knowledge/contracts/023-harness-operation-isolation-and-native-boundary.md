@@ -1455,6 +1455,29 @@ authority, fake-pass record, consumed ledger and sanitized original result.
 This is a finite failed observation, not cancellation evidence or route
 qualification. Do not retry this attempt or start a reviewer original.
 
+Task 170 statically traced the exact `1.0.93` launcher. The npm wrapper passes
+the original argv and inherited stdio to the native executable. In the native
+launcher, `COPILOT_AUTO_UPDATE=false` disables newer cached-package selection;
+a fresh `COPILOT_PKG_CACHE_HOME` by itself does not, because other cache paths
+are also scanned. With update disabled, the launcher loads or extracts the
+package matching its own `1.0.93` binary. This is package extraction, not a
+newer-binary re-exec. The launcher also honors `COPILOT_CLI_VERSION` and
+`COPILOT_CLI_DIST_DIR`; a corrected proposal clears those two overrides.
+
+This control flow does not recover the native ACP implementation's
+`agentInfo.version` construction or the value discarded by Research 435. It
+does not establish why Research 435 mismatched. New v2 diagnostic records
+retain only a strict SemVer bounded to 64 characters, plus a closed mismatch,
+invalid, or unknown classification; invalid strings and secret-like values
+are omitted. The v1 record reader keeps the frozen Research 435 record valid.
+Research 436 binds a corrected, fake-tested single-attempt proposal with exact
+artifact identity, the existing Auto model and host login, a private
+process-scoped package cache, cancellation-only sentinel action, no retries,
+and a 60-second inclusive cleanup budget. The proposal remains disabled until
+separate original authority is supplied. Research 435's consumed authority
+cannot authorize the changed runner. No live original, qualification credit,
+or `1.0.80` claim change follows from this work.
+
 ## Command Code Explicit Model Precedence
 
 Tom's 2026-10-08 “Accept and approve all” chooses the recommendation in decision

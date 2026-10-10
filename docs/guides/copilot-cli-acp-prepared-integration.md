@@ -177,6 +177,25 @@ consumed, no prompt slot was used, and the sentinel remained unchanged. This
 does not prove permission cancellation or change the `1.0.80` claim. Reviewers
 validate the persisted result and do not start another original.
 
+Research 436 recovers the launcher's process-scoped update control. Setting
+`COPILOT_AUTO_UPDATE=false` selects the package matching the exact native
+binary; the launcher may extract that package into a fresh private
+`COPILOT_PKG_CACHE_HOME`. A private cache alone is insufficient because the
+enabled update path scans other package caches. The wrapper adds no version or
+environment settings. Static evidence does not recover the ACP handler's
+`agentInfo.version` construction or explain the Research 435 mismatch.
+
+New diagnostic records retain a reported version only when it is a strict
+SemVer no longer than 64 characters and no recognized secret marker is
+present. Invalid values are omitted and classified; old v1 records remain
+valid. The separate corrected-attempt proposal preserves the direct native
+`--model auto --acp --stdio` launch and existing host login, removes only the
+version/distribution overrides, disables package updates for that child, and
+fails before session creation unless the reported version is exactly
+`1.0.93`. It is fake-tested and disabled pending separate original authority.
+It does not change the adapter guard, the `1.0.80` claim, or released
+contracts.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

@@ -21,6 +21,19 @@ mod prepared;
 mod selection;
 mod turn;
 
+#[cfg(test)]
+mod assessment;
+#[cfg(test)]
+#[path = "../tests/support/discovery.rs"]
+mod assessment_discovery_support;
+#[cfg(test)]
+#[path = "../tests/support/mod.rs"]
+mod assessment_test_support;
+#[cfg(test)]
+mod assessment_tests;
+#[cfg(test)]
+extern crate self as swallowtail_adapter_copilot_cli;
+
 pub use access::{COPILOT_CLI_HOST_ACCOUNT_AUDIENCE, copilot_cli_host_account_access_profile};
 pub use driver::{CopilotCliAcpDriver, copilot_cli_acp_descriptor};
 pub use mcp::{

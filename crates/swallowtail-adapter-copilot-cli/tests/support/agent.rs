@@ -3,6 +3,9 @@ pub enum Scenario {
     Success,
     UnexpectedWrite,
     Permission,
+    AssessmentPermission,
+    AssessmentPermissionMissingAction,
+    AssessmentPermissionMismatchedAction,
     Cancellation,
     Disconnect,
     AuthRequired,
@@ -16,6 +19,8 @@ pub struct ObservedProcess {
     pub arguments: Vec<String>,
     pub environment_count: usize,
     pub working_resource: Option<WorkingResourceRef>,
+    pub executable: String,
+    pub environments: Vec<String>,
 }
 
 #[derive(Default)]
@@ -24,6 +29,28 @@ struct AgentState {
     writes: Vec<Value>,
     prompt_id: Option<u64>,
     stopped: bool,
+    assessment_trace: AssessmentTrace,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct AssessmentTrace {
+    pub initialized_version: Option<String>,
+    pub session_new_seen: bool,
+    pub announced_tool_call_id: Option<String>,
+    pub announced_kind: Option<String>,
+    pub announced_path: Option<String>,
+    pub announced_old_text: Option<String>,
+    pub announced_new_text: Option<String>,
+    pub permission_request_id: Option<u64>,
+    pub permission_tool_call_id: Option<String>,
+    pub permission_reply: Option<String>,
+    pub session_cancel_seen: bool,
+    pub prompt_result: Option<String>,
+    pub sentinel_before: Vec<u8>,
+    pub sentinel_after: Vec<u8>,
+    pub task_directory_before: BTreeMap<String, Vec<u8>>,
+    pub task_directory_after: BTreeMap<String, Vec<u8>>,
+    pub effect_count: usize,
 }
 
 struct SharedAgent {
@@ -70,6 +97,22 @@ impl SharedAgent {
                         }
                     }),
                 ),
+                Scenario::AssessmentPermission
+                | Scenario::AssessmentPermissionMissingAction
+                | Scenario::AssessmentPermissionMismatchedAction => {
+                    state.assessment_trace.initialized_version = Some(self.version.clone());
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": id,
+                            "result": {
+                                "protocolVersion": 1,
+                                "agentInfo": {"name": "copilot", "version": self.version}
+                            }
+                        }),
+                    );
+                }
                 _ => Self::enqueue(
                     &mut state,
                     json!({
@@ -94,6 +137,24 @@ impl SharedAgent {
                     }),
                 ),
                 _ => {
+                    if matches!(
+                        self.scenario,
+                        Scenario::AssessmentPermission
+                            | Scenario::AssessmentPermissionMissingAction
+                            | Scenario::AssessmentPermissionMismatchedAction
+                    ) {
+                        state.assessment_trace.session_new_seen = true;
+                        state.assessment_trace.sentinel_before =
+                            b"SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n".to_vec();
+                        state.assessment_trace.sentinel_after =
+                            state.assessment_trace.sentinel_before.clone();
+                        let directory = BTreeMap::from([(
+                            "permission-sentinel.txt".to_owned(),
+                            state.assessment_trace.sentinel_before.clone(),
+                        )]);
+                        state.assessment_trace.task_directory_before = directory.clone();
+                        state.assessment_trace.task_directory_after = directory;
+                    }
                     Self::enqueue(
                         &mut state,
                         json!({
@@ -182,6 +243,82 @@ impl SharedAgent {
                             }
                         }),
                     ),
+                    Scenario::AssessmentPermission
+                    | Scenario::AssessmentPermissionMissingAction
+                    | Scenario::AssessmentPermissionMismatchedAction => {
+                        if self.scenario != Scenario::AssessmentPermissionMissingAction {
+                            let tool_call_id = if self.scenario
+                                == Scenario::AssessmentPermissionMismatchedAction
+                            {
+                                "different-tool"
+                            } else {
+                                "sentinel-edit"
+                            };
+                            state.assessment_trace.announced_tool_call_id =
+                                Some(tool_call_id.to_owned());
+                            state.assessment_trace.announced_kind = Some("execute".to_owned());
+                            state.assessment_trace.announced_path =
+                                Some("permission-sentinel.txt".to_owned());
+                            state.assessment_trace.announced_old_text = Some(
+                                "SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n".to_owned(),
+                            );
+                            state.assessment_trace.announced_new_text = Some(
+                                "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n".to_owned(),
+                            );
+                            Self::enqueue(
+                                &mut state,
+                                json!({
+                                    "jsonrpc": "2.0",
+                                    "method": "session/update",
+                                    "params": {
+                                        "sessionId": "opaque-fixture-session",
+                                        "update": {
+                                            "sessionUpdate": "tool_call",
+                                            "toolCallId": tool_call_id,
+                                            "title": "Overwrite the task-owned permission sentinel",
+                                            "kind": "execute",
+                                            "status": "pending",
+                                            "content": [{
+                                                "type": "diff",
+                                                "path": "permission-sentinel.txt",
+                                                "oldText": "SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n",
+                                                "newText": "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n"
+                                            }],
+                                            "locations": [{"path": "permission-sentinel.txt"}]
+                                        }
+                                    }
+                                }),
+                            );
+                        }
+                        let permission_tool_call_id = if self.scenario
+                            == Scenario::AssessmentPermissionMismatchedAction
+                        {
+                            "sentinel-edit"
+                        } else {
+                            "sentinel-edit"
+                        };
+                        state.assessment_trace.permission_request_id = Some(900);
+                        state.assessment_trace.permission_tool_call_id =
+                            Some(permission_tool_call_id.to_owned());
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "id": 900,
+                                "method": "session/request_permission",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "toolCall": {"toolCallId": permission_tool_call_id, "status": "pending"},
+                                    "options": [
+                                        {"optionId": "allow_always", "name": "allow_always", "kind": "allow_always"},
+                                        {"optionId": "allow_once", "name": "allow_once", "kind": "allow_once"},
+                                        {"optionId": "reject_once", "name": "reject_once", "kind": "reject_once"},
+                                        {"optionId": "reject_always", "name": "reject_always", "kind": "reject_always"}
+                                    ]
+                                }
+                            }),
+                        );
+                    }
                     Scenario::Oversized => {
                         let mut bytes = b"{\"jsonrpc\":\"2.0\",\"method\":\"session/update\",\"params\":{\"sessionId\":\"opaque-fixture-session\",\"update\":{\"sessionUpdate\":\"agent_message_chunk\",\"content\":{\"type\":\"text\",\"text\":\"".to_vec();
                         bytes.extend(std::iter::repeat_n(b'x', 64 * 1024));
@@ -195,7 +332,19 @@ impl SharedAgent {
                 }
             }
             Some("session/cancel") => {
+                if self.scenario == Scenario::AssessmentPermission
+                    || self.scenario == Scenario::AssessmentPermissionMissingAction
+                    || self.scenario == Scenario::AssessmentPermissionMismatchedAction
+                {
+                    state.assessment_trace.session_cancel_seen = true;
+                }
                 if let Some(prompt_id) = state.prompt_id.take() {
+                    if self.scenario == Scenario::AssessmentPermission
+                        || self.scenario == Scenario::AssessmentPermissionMissingAction
+                        || self.scenario == Scenario::AssessmentPermissionMismatchedAction
+                    {
+                        state.assessment_trace.prompt_result = Some("cancelled".to_owned());
+                    }
                     Self::enqueue(
                         &mut state,
                         json!({
@@ -207,7 +356,19 @@ impl SharedAgent {
                 }
             }
             Some("session/load") | Some("authenticate") => return Err(fixture_failure()),
-            None if id == Some(900) => {}
+            None if id == Some(900) => {
+                if self.scenario == Scenario::AssessmentPermission
+                    || self.scenario == Scenario::AssessmentPermissionMissingAction
+                    || self.scenario == Scenario::AssessmentPermissionMismatchedAction
+                {
+                    state.assessment_trace.permission_reply = message
+                        .get("result")
+                        .and_then(|result| result.get("outcome"))
+                        .and_then(|outcome| outcome.get("outcome"))
+                        .and_then(Value::as_str)
+                        .map(str::to_owned);
+                }
+            }
             None if id == Some(702) => {}
             _ => return Err(fixture_failure()),
         }

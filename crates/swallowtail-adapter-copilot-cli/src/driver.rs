@@ -30,6 +30,7 @@ const DRIVER_ID: &str = "swallowtail.copilot-cli.acp";
 pub struct CopilotCliAcpDriver {
     isolated_environment: EnvironmentRef,
     http_mcp: Option<CopilotCliAcpRemoteMcpPlacement>,
+    admission: crate::selection::CopilotCliPlanAdmission,
 }
 
 impl CopilotCliAcpDriver {
@@ -39,7 +40,23 @@ impl CopilotCliAcpDriver {
         Self {
             isolated_environment,
             http_mcp: None,
+            admission: crate::selection::CopilotCliPlanAdmission::PublicQualified,
         }
+    }
+
+    pub(crate) const fn with_admission(
+        isolated_environment: EnvironmentRef,
+        admission: crate::selection::CopilotCliPlanAdmission,
+    ) -> Self {
+        Self {
+            isolated_environment,
+            http_mcp: None,
+            admission,
+        }
+    }
+
+    pub(crate) const fn admission(&self) -> crate::selection::CopilotCliPlanAdmission {
+        self.admission
     }
 
     /// Admits one route-owned streamable-HTTP MCP declaration onto production `session/new`.
@@ -90,13 +107,19 @@ impl CopilotCliAcpDriver {
                 "Copilot CLI ACP requires explicit ambient-host isolation posture",
             ));
         }
-        crate::selection::select_copilot_cli_acp_plan(plan)
+        crate::selection::select_copilot_cli_acp_plan_for(plan, self.admission)
     }
 }
 
 /// Describes the installed Copilot CLI ACP discovery and session roles.
 #[must_use]
 pub fn copilot_cli_acp_descriptor() -> DriverDescriptor {
+    copilot_cli_acp_descriptor_for(crate::selection::CopilotCliPlanAdmission::PublicQualified)
+}
+
+pub(crate) fn copilot_cli_acp_descriptor_for(
+    admission: crate::selection::CopilotCliPlanAdmission,
+) -> DriverDescriptor {
     DriverDescriptor::new(
         AdapterIdentity::new(
             AdapterId::new(DRIVER_ID).expect("static adapter id is valid"),
@@ -126,7 +149,7 @@ pub fn copilot_cli_acp_descriptor() -> DriverDescriptor {
         ],
     )
     .with_discovery_actions([swallowtail_core::DiscoveryAction::Probe])
-    .with_interface_compatibility(crate::copilot_cli_acp_claim())
+    .with_interface_compatibility(crate::selection::copilot_cli_acp_claim_for(admission))
 }
 
 impl InteractiveSessionDriver for CopilotCliAcpDriver {

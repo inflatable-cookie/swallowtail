@@ -1,7 +1,7 @@
 use futures_executor::block_on;
 use serde_json::{Value, json};
 use std::{
-    collections::VecDeque,
+    collections::{BTreeMap, VecDeque},
     sync::{
         Arc, Condvar, Mutex,
         atomic::{AtomicUsize, Ordering},
@@ -95,6 +95,15 @@ impl FixtureHost {
             .writes
             .clone()
     }
+
+    pub fn assessment_trace(&self) -> AssessmentTrace {
+        self.agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned")
+            .assessment_trace
+            .clone()
+    }
 }
 
 struct FixtureTime;
@@ -119,6 +128,11 @@ impl ProcessService for FixtureHost {
             arguments: request.arguments().map(str::to_owned).collect(),
             environment_count: request.environment().len(),
             working_resource: request.working_resource().cloned(),
+            executable: request.executable().as_host_value().to_owned(),
+            environments: request
+                .environment()
+                .map(|environment| environment.as_host_value().to_owned())
+                .collect(),
         });
         let handle =
             Box::new(FixtureProcessHandle(Arc::clone(&self.agent))) as Box<dyn ProcessHandle>;

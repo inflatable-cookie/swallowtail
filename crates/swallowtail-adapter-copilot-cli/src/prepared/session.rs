@@ -49,6 +49,7 @@ pub struct CopilotCliPreparedSession {
     request: OpenSessionRequest,
     environment: swallowtail_runtime::EnvironmentRef,
     http_mcp: Option<CopilotCliAcpRemoteMcpPlacement>,
+    admission: crate::selection::CopilotCliPlanAdmission,
 }
 
 impl CopilotCliPreparedIntegration {
@@ -81,7 +82,7 @@ impl CopilotCliPreparedIntegration {
         .with_harness_configuration_posture(HarnessConfigurationPosture::Ambient)
         .with_session_access_policy(SessionAccessPolicy::ambient_harness(ResourceAccess::Read))
         .with_session_provider_state_policy(SessionProviderStatePolicy::Prohibited);
-        let descriptor = crate::copilot_cli_acp_descriptor();
+        let descriptor = crate::driver::copilot_cli_acp_descriptor_for(self.admission());
         let context = PreflightContext::new(
             &descriptor,
             &instance,
@@ -106,6 +107,7 @@ impl CopilotCliPreparedIntegration {
             request,
             environment: self.environment().clone(),
             http_mcp: input.http_mcp,
+            admission: self.admission(),
         })
     }
 }
@@ -140,7 +142,8 @@ impl CopilotCliPreparedSession {
         &self,
         services: HostServices,
     ) -> BoxFuture<'static, Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure>> {
-        let mut driver = crate::CopilotCliAcpDriver::new(self.environment.clone());
+        let mut driver =
+            crate::CopilotCliAcpDriver::with_admission(self.environment.clone(), self.admission);
         if let Some(server) = self.http_mcp.clone() {
             driver = match driver.with_http_mcp_placement(server) {
                 Ok(driver) => driver,
@@ -160,7 +163,7 @@ impl CopilotCliPreparedSession {
     ) -> PreparedWorkingStateRestoration {
         PreparedWorkingStateRestoration::fresh_session_replacement(
             interrupted_turn_id,
-            crate::CopilotCliAcpDriver::new(self.environment.clone())
+            crate::CopilotCliAcpDriver::with_admission(self.environment.clone(), self.admission)
                 .with_prepared_http_mcp(self.http_mcp.clone()),
             self.plan().clone(),
             self.request.clone(),

@@ -98,6 +98,7 @@ pub struct CopilotCliPreparedIntegration {
     access_evidence: PreparedAccessEvidence,
     instance: ConfiguredInstance,
     available_host_services: BTreeSet<HostServiceKind>,
+    admission: crate::selection::CopilotCliPlanAdmission,
 }
 
 impl CopilotCliPreparedIntegration {
@@ -148,6 +149,10 @@ impl CopilotCliPreparedIntegration {
         CopilotCliAcpDriver::new(self.environment.clone())
     }
 
+    pub(crate) const fn admission(&self) -> crate::selection::CopilotCliPlanAdmission {
+        self.admission
+    }
+
     /// Rejects host or executable drift from the prepared target.
     pub fn validate_execution_binding(
         &self,
@@ -171,6 +176,38 @@ pub async fn prepare_copilot_cli_acp(
     probe: CopilotCliPreparationProbe,
     services: HostServices,
 ) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
+    prepare_with_admission(
+        input,
+        probe,
+        services,
+        crate::selection::CopilotCliPlanAdmission::PublicQualified,
+    )
+    .await
+}
+
+#[cfg(test)]
+pub(crate) async fn prepare_copilot_cli_acp_for_assessment(
+    input: CopilotCliPreparationInput,
+    probe: CopilotCliPreparationProbe,
+    services: HostServices,
+    identity: &crate::assessment::CopilotCliAssessmentArtifactIdentity,
+) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
+    if !identity.matches_frozen_target() {
+        return Err(failure(
+            PreparationStage::CompatibilityClassification,
+            "swallowtail.copilot-cli.acp.assessment.artifact_identity_mismatch",
+            "Private Copilot CLI assessment does not match the frozen exact artifact identity",
+        ));
+    }
+    prepare_with_admission(input, probe, services, crate::assessment::admission()).await
+}
+
+async fn prepare_with_admission(
+    input: CopilotCliPreparationInput,
+    probe: CopilotCliPreparationProbe,
+    services: HostServices,
+    admission: crate::selection::CopilotCliPlanAdmission,
+) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
     validate_input(&input)?;
     let available_host_services = services.available_kinds();
     let request = InstalledExecutableDiscoveryRequest::new(
@@ -181,12 +218,12 @@ pub async fn prepare_copilot_cli_acp(
         probe.deadline,
         probe.cancellation,
     );
-    let driver = CopilotCliAcpDriver::new(input.environment.clone());
+    let driver = CopilotCliAcpDriver::with_admission(input.environment.clone(), admission);
     let outcome = driver
         .discover_installed_executable(request, services)
         .await
         .map_err(discovery_runtime_failure)?;
-    promote(input, outcome, available_host_services)
+    promote(input, outcome, available_host_services, admission)
 }
 
 fn validate_input(input: &CopilotCliPreparationInput) -> Result<(), PreparationFailure> {
@@ -227,6 +264,7 @@ fn promote(
     input: CopilotCliPreparationInput,
     outcome: DiscoveryOutcome,
     available_host_services: BTreeSet<HostServiceKind>,
+    admission: crate::selection::CopilotCliPlanAdmission,
 ) -> Result<CopilotCliPreparedIntegration, PreparationFailure> {
     let observation = outcome
         .installed_executable_observation()
@@ -235,7 +273,7 @@ fn promote(
         .ok_or_else(|| discovery_outcome_failure(&outcome))?;
     if observation.execution_host_id() != &input.execution_host_id
         || observation.version().axis() != input.target.version_axis()
-        || observation.version().version().as_str() != crate::COPILOT_CLI_PACKAGE_VERSION
+        || observation.version().version().as_str() != admission.version()
     {
         return Err(failure(
             PreparationStage::CompatibilityClassification,
@@ -243,7 +281,7 @@ fn promote(
             "Copilot CLI discovery observation does not match the prepared host and package",
         ));
     }
-    let instance = configured_instance(&input, &observation)?;
+    let instance = configured_instance(&input, &observation, admission)?;
     Ok(CopilotCliPreparedIntegration {
         environment: input.environment,
         target: input.target,
@@ -252,12 +290,14 @@ fn promote(
         access_evidence: input.access_evidence,
         instance,
         available_host_services,
+        admission,
     })
 }
 
 fn configured_instance(
     input: &CopilotCliPreparationInput,
     observation: &InstalledExecutableObservation,
+    admission: crate::selection::CopilotCliPlanAdmission,
 ) -> Result<ConfiguredInstance, PreparationFailure> {
     let target =
         InstanceTargetRef::new(input.target.executable().as_host_value()).map_err(|_| {
@@ -270,7 +310,10 @@ fn configured_instance(
     Ok(ConfiguredInstance::new(
         input.instance_id.clone(),
         input.instance_revision.clone(),
-        crate::copilot_cli_acp_descriptor().identity().id().clone(),
+        crate::driver::copilot_cli_acp_descriptor_for(admission)
+            .identity()
+            .id()
+            .clone(),
         input.execution_host_id.clone(),
         target,
         InstanceOwnership::HostOwnedEphemeral,

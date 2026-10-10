@@ -1,0 +1,34 @@
+{
+  "$id": "copilot-cli-acp-host-permission-task-proposal.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema", "plan_id", "task_number", "task_id", "run_id",
+    "original_execution_enabled", "execution_authorized",
+    "separate_original_authority_required", "qualification_changed",
+    "source_attempt", "protocol", "artifacts", "runner", "pre_probes",
+    "invocation", "action", "attempt", "ledger", "normal_host_access", "cleanup"
+  ],
+  "properties": {
+    "schema": {"const": "copilot-cli-acp-host-permission-task-proposal.v1"},
+    "plan_id": {"type": "string", "minLength": 1},
+    "task_number": {"const": 172},
+    "task_id": {"type": "string", "format": "uuid"},
+    "run_id": {"type": "string", "format": "uuid"},
+    "original_execution_enabled": {"const": false},
+    "execution_authorized": {"const": false},
+    "separate_original_authority_required": {"const": true},
+    "qualification_changed": {"const": false},
+    "source_attempt": {"type": "object"},
+    "protocol": {"type": "object"},
+    "artifacts": {"type": "object"},
+    "runner": {"type": "object"},
+    "pre_probes": {"const": []},
+    "invocation": {"type": "object"},
+    "action": {"type": "object"},
+    "attempt": {"type": "object"},
+    "ledger": {"type": "object"},
+    "normal_host_access": {"type": "object"},
+    "cleanup": {"type": "object"}
+  }
+}

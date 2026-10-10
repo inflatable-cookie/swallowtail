@@ -38,6 +38,9 @@ AUTHORITY_PATH = FIXTURE_DIR / "original-execution-authority.json"
 AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "original-execution-authority.schema.json"
 CORRECTED_AUTHORITY_PATH = FIXTURE_DIR / "corrected-execution-authority.json"
 CORRECTED_AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "corrected-execution-authority.schema.json"
+NEXT_ATTEMPT_PROPOSAL_PATH = FIXTURE_DIR / "task-172-attempt-proposal.json"
+NEXT_ATTEMPT_PROPOSAL_SCHEMA_PATH = FIXTURE_DIR / "task-172-attempt-proposal.schema.json"
+ACP_PROTOCOL_FIXTURE_PATH = ROOT / "crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/protocol.json"
 INVENTORY_PATH = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"
 CORRECTED_FAKE_PASS_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json"
 CORRECTED_ATTEMPT_EVIDENCE_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-attempt.json"
@@ -64,6 +67,21 @@ FAKE_SCENARIOS = frozenset(
         "spontaneous-effect",
         "no-permission",
         "wrong-action",
+        "wrong-kind",
+        "missing-kind",
+        "missing-action",
+        "raw-input-only",
+        "diff-action",
+        "wrong-id",
+        "wrong-session",
+        "missing-tool-id",
+        "unknown-tool-update",
+        "in-progress-before-permission",
+        "completed-before-permission",
+        "failed-before-permission",
+        "post-cancel-completed",
+        "malformed-permission-options",
+        "permission-end-turn",
         "duplicate-permission",
         "malformed-frame",
         "oversized-frame",
@@ -97,6 +115,9 @@ CORRECTED_BRIEF_SHA256 = "5b69971124d97b98f8d95ef4ca274465fa80e80a317e1732e48868
 CORRECTED_TASK_ID = "251ff078-07d9-4b7d-8015-c9446788250c"
 CORRECTED_RUN_ID = "27ec8859-5efc-4511-a9b3-56e3710f3097"
 CORRECTED_OPERATOR_DECISION = "acb7a075-390a-48b6-99b5-a6eea4d9920e"
+TASK172_ID = "09baa0ef-09bc-45d8-a201-96149af03d7b"
+TASK172_RUN_ID = "24b836d2-df09-4cc1-91b3-8f44454f9d2b"
+TASK172_PROPOSAL_ID = "copilot-acp-normal-host-permission-1.0.93-task-172-v1"
 FINAL_CORRECTED_ATTEMPT_RUNNER_SHA256 = "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040"
 EXPECTED_INVENTORY_SHA256 = "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
 EXPECTED_WRAPPER_ARCHIVE_SHA256 = "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"
@@ -808,6 +829,159 @@ def validate_final_correction_plan() -> dict[str, Any]:
     return plan
 
 
+def validate_task172_proposal() -> dict[str, Any]:
+    proposal = load_object(NEXT_ATTEMPT_PROPOSAL_PATH)
+    schema = load_object(NEXT_ATTEMPT_PROPOSAL_SCHEMA_PATH)
+    source_attempt = {
+        "consumed_task_number": 171,
+        "research": "docs/research/437-copilot-acp-corrected-normal-host-attempt.md",
+        "attempt_record_sha256": "10639b7fdd2cd10899d52eb13cd44b66c51167672407ff2a069e42ffbf65d928",
+        "prompt_slot_record_sha256": "e2dec4e3714a282b640ab1b9e9a5820e473b0cea69f7199fe28c5c293a554c58",
+        "execution_record_sha256": "1de648daa5e5491bb75a37c4fda44565e49876caa9f8e6df7ec4a31e706f0bca",
+        "shared_prompt_ceiling": 3,
+        "prompts_consumed": 1,
+        "shared_prompt_slots_remaining": 2,
+        "first_tool_call_status": "not-recorded",
+        "preserve_all_existing_records": True,
+    }
+    protocol = load_object(ACP_PROTOCOL_FIXTURE_PATH)
+    schema_version = "schema-v1.24.1"
+    protocol_identity = {
+        "path": "crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/protocol.json",
+        "schema_version": schema_version,
+        "tool_call_sha256": "f8dc46888da9e4fa1edfc9cd88f93bc074a839ecc6d08ddb6d2d2ac12fe568fa",
+        "tool_call_update_sha256": "89464d21aa887ee0a13ffe3df39ae23f1598eb6a9a15a0a2af14b46f7e4b4968",
+        "request_permission_request_sha256": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+        "request_permission_response_sha256": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+        "pending_default_source": "crates/swallowtail-protocol-acp/src/activity/decode/tool.rs",
+        "sparse_update_source": "crates/swallowtail-protocol-acp/src/activity/tool_record.rs",
+    }
+    invocation = {
+        "executable": "exact staged package/copilot",
+        "argv": ["--model", "auto", "--acp", "--stdio"],
+        "wrapper_executed": False,
+        "existing_account": "betterthanclay",
+        "model": "Auto",
+        "environment_policy": (
+            "copy the inherited environment without reading or logging it; only in the child set "
+            "COPILOT_AUTO_UPDATE=false, set COPILOT_PKG_CACHE_HOME to a fresh task-owned temporary "
+            "directory, and remove COPILOT_CLI_VERSION and COPILOT_CLI_DIST_DIR; preserve HOME, "
+            "COPILOT_HOME, the existing login, Auto selection and all other inherited entries"
+        ),
+        "version_gate": "require the bounded public agentInfo.version to equal 1.0.93 before session/new and the prompt",
+    }
+    action_proposal = {
+        "prompt": PROMPT_TEXT,
+        "path": "permission-sentinel.txt",
+        "permission_reply": "cancelled only",
+        "approval": "never",
+        "resend": False,
+        "effect_limit": 0,
+        "effect_observation": "compare the exact sentinel bytes and action-directory entries before and after; retain no paths or raw protocol",
+    }
+    attempt = {
+        "maximum_invocations": 1,
+        "maximum_prompts": 1,
+        "shared_prompt_ceiling": 3,
+        "shared_prompt_slots_before": 2,
+        "shared_prompt_slots_remaining_after": 1,
+        "maximum_seconds_including_cleanup": 60,
+        "cleanup_seconds": 3,
+        "harness_retries": 0,
+        "harness_resends": 0,
+        "model_fallbacks": 0,
+        "reviewer_original_attempts": 0,
+        "failure_consumes_invocation": True,
+        "prompt_slot_consumed_before_send": True,
+    }
+    ledger_root = "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 172"
+    ledger = {
+        "root": ledger_root,
+        "attempt_path": f"{ledger_root}/1.0.93-corrected-attempt.json",
+        "prompt_path": f"{ledger_root}/1.0.93-corrected-prompt-1.json",
+        "execution_path": f"{ledger_root}/1.0.93-corrected-execution.json",
+        "record_mode": "0600",
+        "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, fsync file and parent; existing files refuse launch",
+        "failure_policy": "preserve all consumed records and never retry",
+        "created_in_this_task": False,
+    }
+    normal_host_access = {
+        "use_existing_normal_host_login": True,
+        "ordinary_vendor_network_and_state_access": True,
+        "credentials_or_configuration_read_by_harness": False,
+        "qualification_credit": False,
+    }
+    cleanup = {
+        "root_and_streams": "bounded and joined within the 60-second inclusive ceiling",
+        "process_group_observation": True,
+        "arbitrary_descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+    }
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-task-proposal.v1"
+        or schema.get("additionalProperties") is not False
+        or set(proposal) != set(schema.get("required", []))
+        or set(proposal) != set(schema.get("properties", {}))
+        or proposal.get("schema") != schema.get("$id")
+        or proposal.get("task_number") != 172
+        or proposal.get("task_id") != TASK172_ID
+        or proposal.get("run_id") != TASK172_RUN_ID
+        or proposal.get("plan_id") != TASK172_PROPOSAL_ID
+        or proposal.get("original_execution_enabled") is not False
+        or proposal.get("execution_authorized") is not False
+        or proposal.get("separate_original_authority_required") is not True
+        or proposal.get("qualification_changed") is not False
+        or proposal.get("source_attempt") != source_attempt
+        or proposal.get("protocol") != protocol_identity
+        or proposal.get("runner") != {
+            "path": "scripts/copilot-acp-host-permission-proof.py",
+            "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+            "implementation_sha256": sha256_file(SCRIPT_PATH),
+        }
+        or proposal.get("pre_probes") != []
+        or proposal.get("invocation") != invocation
+        or proposal.get("action") != action_proposal
+        or proposal.get("attempt") != attempt
+        or proposal.get("ledger") != ledger
+        or proposal.get("normal_host_access") != normal_host_access
+        or proposal.get("cleanup") != cleanup
+        or proposal.get("artifacts") != {
+            "route": "copilot-cli.acp",
+            "version": "1.0.93",
+            "platform": "darwin-arm64",
+            "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
+            "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
+        }
+        or protocol.get("selected_definition_sha256", {}).get("ToolCall", {}).get(schema_version)
+        != protocol_identity["tool_call_sha256"]
+        or protocol.get("selected_definition_sha256", {}).get("ToolCallUpdate", {}).get(schema_version)
+        != protocol_identity["tool_call_update_sha256"]
+        or protocol.get("selected_definition_sha256", {}).get("RequestPermissionRequest", {}).get(schema_version)
+        != protocol_identity["request_permission_request_sha256"]
+        or protocol.get("selected_definition_sha256", {}).get("RequestPermissionResponse", {}).get(schema_version)
+        != protocol_identity["request_permission_response_sha256"]
+        or protocol.get("selected_surfaces", {}).get("activity", {}).get("selected_shape_changed") is not False
+        or protocol.get("selected_surfaces", {}).get("permission", {}).get("selected_shape_changed") is not False
+    ):
+        raise ValueError("Task 172 proposal is enabled, stale or detached from frozen ACPv1 source")
+
+    decoder = (ROOT / protocol_identity["pending_default_source"]).read_text(encoding="utf-8")
+    update_model = (ROOT / protocol_identity["sparse_update_source"]).read_text(encoding="utf-8")
+    if (
+        "unwrap_or(AcpToolCallStatus::Pending)" not in decoder
+        or "kind: optional_kind(update, limits)?.unwrap_or_else(default_tool_kind)" not in decoder
+        or 'AcpBoundedText("other".to_owned())' not in decoder
+        or "pub status: Option<AcpToolCallStatus>" not in update_model
+        or "locations_replacement" not in update_model
+        or '"edit" => AcpToolKind::Edit' not in decoder
+    ):
+        raise ValueError("Task 172 proposal no longer matches the frozen ACPv1 implementation")
+
+    serialized = json.dumps(proposal, sort_keys=True)
+    if any(marker in serialized for marker in FORBIDDEN_PERSISTED_MARKERS):
+        raise ValueError("Task 172 proposal contains a secret or synthetic marker")
+    return proposal
+
+
 def validate_fake_pass_record(path: Path = CORRECTED_FAKE_PASS_PATH) -> dict[str, Any]:
     record = load_object(path)
     expected_keys = {
@@ -1033,16 +1207,24 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         "exit_code", "cleanup", "descendant_cleanup", "stderr", "raw_protocol_persisted",
         "raw_stderr_persisted", "completed_at",
     }
+    protocol_fields = {
+        "permission_outcome", "permission_action_attributed", "correlation_valid",
+        "tool_announced", "tool_announcement_count", "tool_announcement_status", "tool_status", "tool_kind",
+        "execution_reported", "actual_effect_observed", "session_cancel_sent",
+    }
     schema = record.get("schema")
     if not (
         schema == "copilot-cli-acp-host-permission-execution.v1" and set(record) == legacy_fields
         or schema == "copilot-cli-acp-host-permission-execution.v2"
         and set(record) == legacy_fields | {"agent_version_reported"}
+        or schema == "copilot-cli-acp-host-permission-execution.v3"
+        and set(record) == legacy_fields | {"agent_version_reported"} | protocol_fields
     ):
         raise ValueError("execution record fields differ from the reviewed safe vocabulary")
     if schema not in {
         "copilot-cli-acp-host-permission-execution.v1",
         "copilot-cli-acp-host-permission-execution.v2",
+        "copilot-cli-acp-host-permission-execution.v3",
     }:
         raise ValueError("unexpected host permission execution record schema")
     if record.get("plan_sha256") != sha256_file(PLAN_PATH):
@@ -1132,6 +1314,21 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         "unexpected-response-id",
         "unexpected-callback-before-response",
         "unrequested-tool-call-update",
+        "session-id-mismatch",
+        "malformed-session-update",
+        "tool-call-id-invalid",
+        "tool-call-status-invalid",
+        "tool-call-kind-invalid",
+        "tool-call-snapshot-invalid",
+        "tool-call-update-uncorrelated",
+        "permission-tool-call-uncorrelated",
+        "permission-action-unattributable",
+        "permission-request-malformed",
+        "duplicate-tool-call-announcement",
+        "tool-execution-before-permission",
+        "tool-execution-after-cancel",
+        "unexpected-session-update",
+        "prompt-rpc-error",
         "malformed-frame",
         "inbound-frame-oversized",
         "outbound-frame-oversized",
@@ -1198,16 +1395,30 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
     ):
         raise ValueError("execution record exit code is invalid")
     if (
-        not isinstance(record.get("permission_request_count"), int)
-        or not 0 <= record["permission_request_count"] <= 2
+        type(record.get("permission_request_count")) is not int
+        or not 0 <= record["permission_request_count"] <= MAX_PROMPT_MESSAGES
         or not isinstance(record.get("permission_action_matches_sentinel"), bool)
-        or not isinstance(record.get("tool_call_updates"), int)
-        or record["tool_call_updates"] < 0
+        or type(record.get("tool_call_updates")) is not int
+        or not 0 <= record["tool_call_updates"] <= MAX_PROMPT_MESSAGES
         or not isinstance(record.get("prompt_slot_fsynced_before_send"), bool)
         or not isinstance(record.get("sentinel_unchanged"), bool)
         or not isinstance(record.get("unapproved_effect_absent"), bool)
     ):
         raise ValueError("execution record observations have invalid types or bounds")
+    if schema == "copilot-cli-acp-host-permission-execution.v3":
+        if (
+            record.get("permission_outcome") not in {"none", "cancelled"}
+            or any(not isinstance(record.get(name), bool) for name in (
+                "permission_action_attributed", "correlation_valid", "tool_announced",
+                "execution_reported", "actual_effect_observed", "session_cancel_sent",
+            ))
+            or type(record.get("tool_announcement_count")) is not int
+            or not 0 <= record["tool_announcement_count"] <= MAX_PROMPT_MESSAGES
+            or record.get("tool_announcement_status") not in {"unknown", *TOOL_STATUSES}
+            or record.get("tool_status") not in {"unknown", *TOOL_STATUSES}
+            or record.get("tool_kind") not in {"unknown", *TOOL_KINDS, "other"}
+        ):
+            raise ValueError("execution record protocol state is outside its safe vocabulary")
     if record.get("status") == "passed" and (
         record.get("failure_class") != "none"
         or record.get("initialize_observed") is not True
@@ -1220,12 +1431,25 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         or record.get("permission_request_count") != 1
         or record.get("permission_action_matches_sentinel") is not True
         or record.get("permission_reply") != "cancelled"
+        or schema == "copilot-cli-acp-host-permission-execution.v3"
+        and record.get("permission_outcome") != "cancelled"
         or record.get("prompt_result") != "cancelled"
         or record.get("sentinel_unchanged") is not True
         or record.get("unapproved_effect_absent") is not True
         or cleanup.get("root_exit_observed") is not True
         or cleanup.get("process_group_empty_observed") is not True
         or cleanup.get("streams_joined") is not True
+        or schema == "copilot-cli-acp-host-permission-execution.v3"
+        and (
+            record.get("tool_announced") is not True
+            or record.get("tool_announcement_count") != 1
+            or record.get("permission_action_attributed") is not True
+            or record.get("correlation_valid") is not True
+            or record.get("session_cancel_sent") is not True
+            or record.get("tool_announcement_status") != "pending"
+            or record.get("actual_effect_observed") is not False
+            or record.get("tool_status") not in {"pending", "failed"}
+        )
     ):
         raise ValueError("passing execution record lacks the complete fake cancellation proof")
     if record.get("status") == "failed" and record.get("failure_class") == "none":
@@ -1371,6 +1595,11 @@ def validate_original_execution_record(
         "action_directory_unchanged", "exit_code", "cleanup", "descendant_cleanup",
         "stderr", "raw_protocol_persisted", "raw_stderr_persisted", "completed_at",
     }
+    protocol_fields = {
+        "permission_outcome", "permission_action_attributed", "correlation_valid",
+        "tool_announced", "tool_announcement_count", "tool_announcement_status", "tool_status", "tool_kind",
+        "execution_reported", "actual_effect_observed", "session_cancel_sent",
+    }
     schema = record.get("schema")
     if not (
         schema == "copilot-cli-acp-host-permission-original-execution.v1" and set(record) == legacy_fields
@@ -1381,6 +1610,15 @@ def validate_original_execution_record(
             "agent_version_reported", "task_number", "task_id", "run_id",
             "operator_decision", "package_cache_cleanup", "package_cache_cleanup_error",
         }
+        or schema == "copilot-cli-acp-host-permission-original-execution.v4"
+        and frozenset(record) in {
+            frozenset(legacy_fields | protocol_fields),
+            frozenset(legacy_fields | protocol_fields | {"agent_version_reported"}),
+            frozenset(legacy_fields | protocol_fields | {
+                "agent_version_reported", "task_number", "task_id", "run_id",
+                "operator_decision", "package_cache_cleanup", "package_cache_cleanup_error",
+            }),
+        }
     ):
         raise ValueError("original record fields differ from the reviewed safe vocabulary")
     if (
@@ -1388,6 +1626,7 @@ def validate_original_execution_record(
             "copilot-cli-acp-host-permission-original-execution.v1",
             "copilot-cli-acp-host-permission-original-execution.v2",
             "copilot-cli-acp-host-permission-original-execution.v3",
+            "copilot-cli-acp-host-permission-original-execution.v4",
         }
         or record.get("execution_kind") != "original"
         or record.get("original_execution") is not True
@@ -1451,6 +1690,14 @@ def validate_original_execution_record(
             "unapproved-effect-observed", "permission-request-missing-id",
             "permission-action-mismatch", "duplicate-permission-request",
             "tool-call-without-host-permission", "permission-request-missing",
+            "session-id-mismatch", "malformed-session-update", "tool-call-id-invalid",
+            "tool-call-status-invalid", "tool-call-kind-invalid",
+            "tool-call-snapshot-invalid", "tool-call-update-uncorrelated",
+            "permission-tool-call-uncorrelated", "permission-action-unattributable",
+            "permission-request-malformed",
+            "duplicate-tool-call-announcement", "tool-execution-before-permission",
+            "tool-execution-after-cancel",
+            "unexpected-session-update", "prompt-rpc-error",
             "prompt-not-cancelled", "unexpected-callback", "unexpected-response-id",
             "unexpected-callback-before-response", "unrequested-tool-call-update",
             "malformed-frame", "inbound-frame-oversized", "outbound-frame-oversized",
@@ -1477,10 +1724,14 @@ def validate_original_execution_record(
         or record.get("prompt_send_completed") and not record.get("prompt_send_attempted")
         or not isinstance(record.get("prompt_slot_fsynced_before_send"), bool)
         or type(record.get("permission_request_count")) is not int
-        or not 0 <= record["permission_request_count"] <= 2
+        or not 0 <= record["permission_request_count"] <= (
+            MAX_PROMPT_MESSAGES
+            if schema == "copilot-cli-acp-host-permission-original-execution.v4"
+            else 2
+        )
         or not isinstance(record.get("permission_action_matches_sentinel"), bool)
         or type(record.get("tool_call_updates")) is not int
-        or not 0 <= record["tool_call_updates"] <= 1
+        or not 0 <= record["tool_call_updates"] <= (MAX_PROMPT_MESSAGES if schema == "copilot-cli-acp-host-permission-original-execution.v4" else 1)
         or not isinstance(record.get("sentinel_unchanged"), bool)
         or not isinstance(record.get("action_directory_unchanged"), bool)
         or record.get("exit_code") is not None
@@ -1488,6 +1739,19 @@ def validate_original_execution_record(
         or not isinstance(record.get("completed_at"), str)
     ):
         raise ValueError("original record has invalid bounded outcomes or observations")
+    if schema == "copilot-cli-acp-host-permission-original-execution.v4" and (
+        record.get("permission_outcome") not in {"none", "cancelled"}
+        or any(not isinstance(record.get(name), bool) for name in (
+            "permission_action_attributed", "correlation_valid", "tool_announced",
+            "execution_reported", "actual_effect_observed", "session_cancel_sent",
+        ))
+        or type(record.get("tool_announcement_count")) is not int
+        or not 0 <= record["tool_announcement_count"] <= MAX_PROMPT_MESSAGES
+        or record.get("tool_announcement_status") not in {"unknown", *TOOL_STATUSES}
+        or record.get("tool_status") not in {"unknown", *TOOL_STATUSES}
+        or record.get("tool_kind") not in {"unknown", *TOOL_KINDS, "other"}
+    ):
+        raise ValueError("original record protocol state is outside its safe vocabulary")
     if "agent_version_reported" in record:
         reported = record["agent_version_reported"]
         observation = record["agent_version_observation"]
@@ -1561,6 +1825,8 @@ def validate_original_execution_record(
         or record.get("permission_request_count") != 1
         or record.get("permission_action_matches_sentinel") is not True
         or record.get("permission_reply") != "cancelled"
+        or schema == "copilot-cli-acp-host-permission-original-execution.v4"
+        and record.get("permission_outcome") != "cancelled"
         or record.get("prompt_result") != "cancelled"
         or record.get("sentinel_unchanged") is not True
         or record.get("action_directory_unchanged") is not True
@@ -1571,6 +1837,17 @@ def validate_original_execution_record(
         and (
             record.get("package_cache_cleanup") != "removed"
             or record.get("package_cache_cleanup_error") != "none"
+        )
+        or schema == "copilot-cli-acp-host-permission-original-execution.v4"
+        and (
+            record.get("tool_announced") is not True
+            or record.get("tool_announcement_count") != 1
+            or record.get("permission_action_attributed") is not True
+            or record.get("correlation_valid") is not True
+            or record.get("session_cancel_sent") is not True
+            or record.get("tool_announcement_status") != "pending"
+            or record.get("actual_effect_observed") is not False
+            or record.get("tool_status") not in {"pending", "failed"}
         )
     ):
         raise ValueError("passing original record lacks the reviewed cancellation and cleanup evidence")
@@ -1939,14 +2216,10 @@ def run_original_session(
     launch_error = "none"
     initialize_observed = False
     session_observed = False
-    permission_count = 0
-    permission_reply = "none"
-    permission_action_match = False
-    prompt_result = "none"
+    exchange = new_permission_exchange()
     prompt_send_attempted = False
     prompt_send_completed = False
     prompt_slot_bytes: bytes | None = None
-    tool_updates = 0
     version_observation = "unknown"
     version_reported: str | None = None
     model_observation = "unobserved"
@@ -2025,7 +2298,7 @@ def run_original_session(
             raise ProtocolFailure(failure)
         session_result = session.get("result")
         session_id = session_result.get("sessionId") if isinstance(session_result, dict) else None
-        if not isinstance(session_id, str) or not session_id:
+        if not isinstance(session_id, str) or not session_id or len(session_id) > MAX_SESSION_ID_LENGTH:
             failure = "session-new-protocol-mismatch"
             raise ProtocolFailure(failure)
         if model_observation == "unobserved" and isinstance(session_result, dict):
@@ -2044,58 +2317,12 @@ def run_original_session(
             "params": {"sessionId": session_id, "prompt": [{"type": "text", "text": PROMPT_TEXT}]},
         })
         prompt_send_completed = True
-        messages_seen = 0
-        while True:
-            message = client.receive(operation_deadline)
-            messages_seen += 1
-            if messages_seen > 64:
-                failure = "permission-proof-incomplete"
-                raise ProtocolFailure(failure)
-            method = message.get("method")
-            if method == "session/request_permission":
-                permission_count += 1
-                permission_action_match = expected_permission_action(message, session_id)
-                request_id = message.get("id")
-                if request_id is None or isinstance(request_id, bool) or not isinstance(request_id, (int, str)):
-                    failure = "permission-request-missing-id"
-                    raise ProtocolFailure(failure)
-                client.send({"jsonrpc": "2.0", "id": request_id, "result": {"outcome": {"outcome": "cancelled"}}})
-                permission_reply = "cancelled"
-                if permission_count > 1:
-                    failure = "duplicate-permission-request"
-                    raise ProtocolFailure(failure)
-                if not permission_action_match:
-                    failure = "permission-action-mismatch"
-                    raise ProtocolFailure(failure)
-                if not original_directory_unchanged(action):
-                    failure = "unapproved-effect-observed"
-                    raise ProtocolFailure(failure)
-                continue
-            if method == "session/update":
-                params = message.get("params")
-                update = params.get("update", {}) if isinstance(params, dict) else {}
-                if isinstance(update, dict) and update.get("sessionUpdate") == "tool_call":
-                    tool_updates = 1
-                    failure = "tool-call-without-host-permission"
-                    raise ProtocolFailure(failure)
-                continue
-            if method is not None:
-                failure = "unexpected-callback"
-                raise ProtocolFailure(failure)
-            if message.get("id") != 3:
-                failure = "unexpected-response-id"
-                raise ProtocolFailure(failure)
-            response = message.get("result")
-            stop_reason = response.get("stopReason") if isinstance(response, dict) else None
-            prompt_result = (
-                stop_reason if isinstance(stop_reason, str) and stop_reason in {"cancelled", "end_turn"}
-                else "unknown" if stop_reason is None else "other"
-            )
-            if permission_count == 0 and failure == "none":
-                failure = "permission-request-missing"
-            if prompt_result != "cancelled" and failure == "none":
-                failure = "prompt-not-cancelled"
-            break
+        exchange = permission_exchange(
+            client, session_id, action, operation_deadline,
+            lambda: original_directory_unchanged(action),
+        )
+        if exchange["failure"] != "none":
+            failure = exchange["failure"]
     except ProtocolFailure as error:
         if failure == "none":
             failure = error.category
@@ -2184,11 +2411,13 @@ def run_original_session(
         and prompt_send_attempted
         and prompt_send_completed
         and prompt_slot_bytes is not None
-        and permission_count == 1
-        and permission_reply == "cancelled"
-        and permission_action_match
-        and prompt_result == "cancelled"
-        and tool_updates == 0
+        and exchange["permission_request_count"] == 1
+        and exchange["permission_reply"] == "cancelled"
+        and exchange["permission_action_matches_sentinel"]
+        and exchange["correlation_valid"]
+        and exchange["session_cancel_sent"]
+        and exchange["prompt_result"] == "cancelled"
+        and not exchange["actual_effect_observed"]
         and sentinel_unchanged
         and action_directory_unchanged
         and cleanup["root_exit_observed"]
@@ -2201,11 +2430,7 @@ def run_original_session(
         failure = "permission-proof-incomplete"
         failure_stage = "cleanup"
     record = {
-        "schema": (
-            "copilot-cli-acp-host-permission-original-execution.v3"
-            if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID
-            else "copilot-cli-acp-host-permission-original-execution.v2"
-        ),
+        "schema": "copilot-cli-acp-host-permission-original-execution.v4",
         "execution_kind": "original",
         "original_execution": True,
         "plan_sha256": sha256_file(plan_path_for(plan)),
@@ -2229,11 +2454,13 @@ def run_original_session(
         "prompt_send_completed": prompt_send_completed,
         "elapsed_milliseconds": int((time.monotonic() - started) * 1000),
         "prompt_slot_fsynced_before_send": prompt_slot_bytes is not None,
-        "permission_request_count": permission_count,
-        "permission_action_matches_sentinel": permission_action_match,
-        "permission_reply": permission_reply,
-        "prompt_result": prompt_result,
-        "tool_call_updates": tool_updates,
+        **{key: exchange[key] for key in (
+            "permission_request_count", "permission_reply", "permission_outcome",
+            "permission_action_matches_sentinel", "permission_action_attributed",
+            "correlation_valid", "tool_announced", "tool_announcement_count",
+            "tool_announcement_status", "tool_status", "tool_kind", "tool_call_updates", "execution_reported",
+            "actual_effect_observed", "prompt_result", "session_cancel_sent",
+        )},
         "sentinel_unchanged": sentinel_unchanged,
         "action_directory_unchanged": action_directory_unchanged,
         "exit_code": process.returncode if process is not None else None,
@@ -2331,27 +2558,435 @@ def response_for(client: StdioSession, request_id: int, deadline: float) -> dict
         raise ProtocolFailure("unexpected-response-id")
 
 
-def expected_permission_action(message: dict[str, Any], session_id: str) -> bool:
-    params = message.get("params")
-    tool_call = params.get("toolCall") if isinstance(params, dict) else None
-    raw = tool_call.get("rawInput") if isinstance(tool_call, dict) else None
-    options = params.get("options") if isinstance(params, dict) else None
-    option_ids = {
-        option.get("optionId")
-        for option in options
-        if isinstance(options, list) and isinstance(option, dict)
-    } if isinstance(options, list) else set()
-    return bool(
-        isinstance(params, dict)
-        and params.get("sessionId") == session_id
-        and isinstance(tool_call, dict)
-        and tool_call.get("kind") == "write"
-        and isinstance(raw, dict)
-        and raw.get("path") == "permission-sentinel.txt"
-        and raw.get("content") == SENTINEL_AFTER.decode()
-        and set(raw) == {"path", "content"}
-        and "reject_once" in option_ids
+TOOL_STATUSES = frozenset({"pending", "in_progress", "completed", "failed"})
+TOOL_KINDS = frozenset({
+    "read", "edit", "delete", "move", "search", "execute", "think", "fetch", "switch_mode",
+})
+NON_TOOL_SESSION_UPDATES = frozenset({
+    "user_message_chunk", "agent_message_chunk", "agent_thought_chunk", "plan",
+    "available_commands_update", "current_mode_update", "config_option_update",
+    "session_info_update", "usage_update",
+})
+MAX_TOOL_CALL_ID_LENGTH = 256
+MAX_SESSION_ID_LENGTH = 256
+MAX_PROMPT_MESSAGES = 64
+
+
+def new_permission_exchange() -> dict[str, Any]:
+    return {
+        "failure": "none",
+        "permission_request_count": 0,
+        "permission_reply": "none",
+        "permission_outcome": "none",
+        "permission_action_matches_sentinel": False,
+        "permission_action_attributed": False,
+        "correlation_valid": False,
+        "tool_announced": False,
+        "tool_announcement_count": 0,
+        "tool_announcement_status": "unknown",
+        "tool_status": "unknown",
+        "tool_kind": "unknown",
+        "tool_call_updates": 0,
+        "execution_reported": False,
+        "actual_effect_observed": False,
+        "prompt_result": "none",
+        "session_cancel_sent": False,
+    }
+
+
+def permission_exchange(
+    client: StdioSession,
+    session_id: str,
+    action: Path,
+    deadline: float,
+    directory_unchanged: Any,
+) -> dict[str, Any]:
+    """Correlate the announced pending call, permission request and cancellation."""
+    evidence = new_permission_exchange()
+    call: dict[str, Any] | None = None
+    prompt_received = False
+    messages_seen = 0
+    correlation_failed = False
+    cancel_attempted = False
+
+    def invalidate_correlation() -> None:
+        nonlocal correlation_failed
+        correlation_failed = True
+        evidence["correlation_valid"] = False
+
+    def mark_correlated() -> None:
+        if not correlation_failed:
+            evidence["correlation_valid"] = True
+
+    def fail(category: str) -> None:
+        if evidence["failure"] == "none":
+            evidence["failure"] = category
+
+    def send_session_cancel() -> None:
+        nonlocal cancel_attempted
+        if cancel_attempted:
+            return
+        cancel_attempted = True
+        try:
+            client.send({
+                "jsonrpc": "2.0",
+                "method": "session/cancel",
+                "params": {"sessionId": session_id},
+            })
+        except ProtocolFailure as error:
+            fail(error.category)
+            return
+        evidence["session_cancel_sent"] = True
+
+    def observe_effect() -> None:
+        if not directory_unchanged():
+            evidence["actual_effect_observed"] = True
+            fail("unapproved-effect-observed")
+            if not prompt_received:
+                send_session_cancel()
+
+    while not prompt_received:
+        messages_seen += 1
+        if messages_seen > MAX_PROMPT_MESSAGES:
+            fail("permission-proof-incomplete")
+            if not evidence["session_cancel_sent"]:
+                send_session_cancel()
+            break
+        try:
+            message = client.receive(deadline)
+        except ProtocolFailure as error:
+            fail(error.category)
+            break
+
+        if message.get("jsonrpc") != "2.0":
+            fail("malformed-frame")
+            send_session_cancel()
+            continue
+        observe_effect()
+        method = message.get("method")
+        if method == "session/update":
+            if "id" in message:
+                fail("malformed-session-update")
+                send_session_cancel()
+                continue
+            params = message.get("params")
+            update = params.get("update") if isinstance(params, dict) else None
+            if not isinstance(params, dict) or params.get("sessionId") != session_id:
+                invalidate_correlation()
+                fail("session-id-mismatch")
+                send_session_cancel()
+                continue
+            if not isinstance(update, dict):
+                fail("malformed-session-update")
+                send_session_cancel()
+                continue
+            update_kind = update.get("sessionUpdate")
+            if update_kind in NON_TOOL_SESSION_UPDATES:
+                continue
+            if update_kind == "tool_call":
+                evidence["tool_announcement_count"] += 1
+                evidence["tool_announced"] = True
+                if evidence["tool_announcement_count"] != 1 or call is not None:
+                    invalidate_correlation()
+                    fail("duplicate-tool-call-announcement")
+                    send_session_cancel()
+                    continue
+                tool_id = update.get("toolCallId")
+                if not isinstance(tool_id, str) or not tool_id or len(tool_id) > MAX_TOOL_CALL_ID_LENGTH:
+                    invalidate_correlation()
+                    fail("tool-call-id-invalid")
+                    send_session_cancel()
+                    continue
+                try:
+                    call = merge_tool_call(None, update, initial=True)
+                except ValueError as error:
+                    invalidate_correlation()
+                    fail(str(error))
+                    send_session_cancel()
+                    continue
+                evidence["tool_status"] = call["status"]
+                evidence["tool_announcement_status"] = call["status"]
+                evidence["tool_kind"] = call.get("kind") or "unknown"
+                mark_correlated()
+                if call["status"] != "pending":
+                    evidence["execution_reported"] = True
+                    fail("tool-execution-before-permission")
+                    send_session_cancel()
+                continue
+            if update_kind == "tool_call_update":
+                evidence["tool_call_updates"] += 1
+                tool_id = update.get("toolCallId")
+                if call is None or not isinstance(tool_id, str) or tool_id != call["tool_call_id"]:
+                    invalidate_correlation()
+                    fail("tool-call-update-uncorrelated")
+                    send_session_cancel()
+                    continue
+                try:
+                    call = merge_tool_call(call, update, initial=False)
+                except ValueError as error:
+                    invalidate_correlation()
+                    fail(str(error))
+                    send_session_cancel()
+                    continue
+                mark_correlated()
+                evidence["tool_status"] = call["status"]
+                evidence["tool_kind"] = call.get("kind") or "unknown"
+                if call["status"] != "pending":
+                    evidence["execution_reported"] = True
+                    if evidence["permission_reply"] == "none":
+                        fail("tool-execution-before-permission")
+                        send_session_cancel()
+                    elif call["status"] in {"in_progress", "completed"}:
+                        fail("tool-execution-after-cancel")
+                continue
+            fail("unexpected-session-update")
+            send_session_cancel()
+            continue
+
+        if method == "session/request_permission":
+            evidence["permission_request_count"] += 1
+            params = message.get("params")
+            request_id = message.get("id")
+            valid_request_id = (
+                not isinstance(request_id, bool)
+                and isinstance(request_id, (int, str))
+            )
+            if valid_request_id:
+                send_session_cancel()
+                try:
+                    client.send({
+                        "jsonrpc": "2.0",
+                        "id": request_id,
+                        "result": {"outcome": {"outcome": "cancelled"}},
+                    })
+                except ProtocolFailure as error:
+                    fail(error.category)
+                    send_session_cancel()
+                    continue
+                evidence["permission_reply"] = "cancelled"
+                evidence["permission_outcome"] = "cancelled"
+            else:
+                fail("permission-request-missing-id")
+
+            if evidence["permission_request_count"] > 1:
+                fail("duplicate-permission-request")
+            session_matches = isinstance(params, dict) and params.get("sessionId") == session_id
+            if not session_matches:
+                invalidate_correlation()
+                fail("session-id-mismatch")
+            if not valid_permission_options(params):
+                fail("permission-request-malformed")
+            tool_call = params.get("toolCall") if isinstance(params, dict) else None
+            permission_tool_id = tool_call.get("toolCallId") if isinstance(tool_call, dict) else None
+            if (
+                call is None
+                or not isinstance(permission_tool_id, str)
+                or permission_tool_id != call["tool_call_id"]
+            ):
+                invalidate_correlation()
+                fail("permission-tool-call-uncorrelated")
+            else:
+                if session_matches:
+                    mark_correlated()
+                try:
+                    call = merge_tool_call(call, tool_call, initial=False)
+                except ValueError as error:
+                    invalidate_correlation()
+                    fail(str(error))
+                    send_session_cancel()
+                    continue
+                evidence["tool_status"] = call["status"]
+                evidence["tool_kind"] = call.get("kind") or "unknown"
+                if call["status"] != "pending":
+                    evidence["execution_reported"] = True
+                    fail("tool-execution-before-permission")
+                matched, attributed = expected_permission_action(call, action)
+                evidence["permission_action_matches_sentinel"] = matched
+                evidence["permission_action_attributed"] = attributed
+                if not matched:
+                    fail("permission-action-mismatch" if attributed else "permission-action-unattributable")
+            if not valid_request_id and evidence["failure"] == "none":
+                fail("permission-request-missing-id")
+            send_session_cancel()
+            continue
+
+        if method is not None:
+            fail("unexpected-callback")
+            send_session_cancel()
+            continue
+
+        response_id = message.get("id")
+        if response_id == 3:
+            prompt_received = True
+            if "error" in message:
+                evidence["prompt_result"] = "other"
+                fail("prompt-rpc-error")
+            else:
+                if "result" not in message:
+                    evidence["prompt_result"] = "unknown"
+                    fail("prompt-rpc-error")
+                    continue
+                response = message.get("result")
+                stop_reason = response.get("stopReason") if isinstance(response, dict) else None
+                evidence["prompt_result"] = (
+                    stop_reason
+                    if isinstance(stop_reason, str) and stop_reason in {"cancelled", "end_turn"}
+                    else "unknown" if stop_reason is None else "other"
+                )
+                if evidence["permission_request_count"] == 0:
+                    fail("permission-request-missing")
+                if evidence["session_cancel_sent"] and evidence["prompt_result"] != "cancelled":
+                    fail("prompt-not-cancelled")
+            continue
+        fail("unexpected-response-id")
+        send_session_cancel()
+
+    if not prompt_received and not evidence["session_cancel_sent"]:
+        send_session_cancel()
+    observe_effect()
+    return evidence
+
+
+def valid_permission_options(params: Any) -> bool:
+    if not isinstance(params, dict) or not isinstance(params.get("options"), list):
+        return False
+    option_ids: set[str] = set()
+    allowed_kinds = {"allow_once", "allow_always", "reject_once", "reject_always"}
+    for option in params["options"]:
+        if not isinstance(option, dict):
+            return False
+        option_id = option.get("optionId")
+        if (
+            not isinstance(option_id, str)
+            or not option_id
+            or len(option_id) > MAX_TOOL_CALL_ID_LENGTH
+            or option_id in option_ids
+            or not isinstance(option.get("name"), str)
+            or option.get("kind") not in allowed_kinds
+        ):
+            return False
+        option_ids.add(option_id)
+    return True
+
+
+def merge_tool_call(
+    current: dict[str, Any] | None,
+    snapshot: dict[str, Any],
+    *,
+    initial: bool,
+) -> dict[str, Any]:
+    tool_id = snapshot.get("toolCallId")
+    if not isinstance(tool_id, str) or not tool_id or len(tool_id) > MAX_TOOL_CALL_ID_LENGTH:
+        raise ValueError("tool-call-id-invalid")
+    if current is not None and tool_id != current["tool_call_id"]:
+        raise ValueError("tool-call-update-uncorrelated")
+    result = dict(current or {})
+    result["tool_call_id"] = tool_id
+
+    title = snapshot.get("title")
+    if title is not None:
+        if not isinstance(title, str):
+            raise ValueError("tool-call-snapshot-invalid")
+        result["title"] = title
+    elif initial:
+        raise ValueError("tool-call-snapshot-invalid")
+
+    status = snapshot.get("status")
+    if status is not None:
+        if not isinstance(status, str) or status not in TOOL_STATUSES:
+            raise ValueError("tool-call-status-invalid")
+        result["status"] = status
+    elif initial:
+        result["status"] = "pending"
+
+    kind = snapshot.get("kind")
+    if kind is not None:
+        if not isinstance(kind, str):
+            raise ValueError("tool-call-kind-invalid")
+        result["kind"] = kind if kind in TOOL_KINDS else "other"
+    elif initial:
+        result["kind"] = "other"
+
+    raw_input = snapshot.get("rawInput")
+    if raw_input is not None:
+        result["raw_input"] = raw_input
+
+    for field in ("content", "locations"):
+        if field in snapshot and snapshot[field] is not None:
+            if not isinstance(snapshot[field], list):
+                raise ValueError("tool-call-snapshot-invalid")
+            if field == "content" and any(not valid_tool_content(item) for item in snapshot[field]):
+                raise ValueError("tool-call-snapshot-invalid")
+            if field == "locations" and any(
+                not isinstance(item, dict)
+                or not isinstance(item.get("path"), str)
+                or "line" in item
+                and item["line"] is not None
+                and (
+                    type(item["line"]) is not int
+                    or not 0 <= item["line"] <= 0xFFFFFFFF
+                )
+                for item in snapshot[field]
+            ):
+                raise ValueError("tool-call-snapshot-invalid")
+            result[field] = snapshot[field]
+    return result
+
+
+def valid_tool_content(item: Any) -> bool:
+    if not isinstance(item, dict):
+        return False
+    item_type = item.get("type")
+    if item_type == "content":
+        content = item.get("content")
+        return isinstance(content, dict) and isinstance(content.get("type"), str)
+    if item_type == "diff":
+        return (
+            isinstance(item.get("path"), str)
+            and isinstance(item.get("newText"), str)
+            and (item.get("oldText") is None or isinstance(item.get("oldText"), str))
+        )
+    if item_type == "terminal":
+        return isinstance(item.get("terminalId"), str) and bool(item["terminalId"])
+    return False
+
+
+def _matches_sentinel_path(raw_path: Any, action: Path) -> bool:
+    if not isinstance(raw_path, str) or not raw_path:
+        return False
+    sentinel = action.resolve() / "permission-sentinel.txt"
+    candidate = Path(raw_path)
+    return candidate.is_absolute() and candidate.resolve(strict=False) == sentinel
+
+
+def expected_permission_action(call: dict[str, Any], action: Path) -> tuple[bool, bool]:
+    """Attribute the exact edit from ACP fields; titles and missing fields never count."""
+    kind = call.get("kind")
+    if kind not in TOOL_KINDS:
+        return False, False
+    if kind != "edit":
+        return False, True
+
+    if call.get("raw_input") is not None:
+        return False, False
+
+    content = call.get("content")
+    if not isinstance(content, list) or len(content) != 1 or content[0].get("type") != "diff":
+        return False, False
+    diff = content[0]
+    attributed = True
+    matched = (
+        _matches_sentinel_path(diff.get("path"), action)
+        and diff.get("newText") == SENTINEL_AFTER.decode()
+        and diff.get("oldText") in (None, SENTINEL_BEFORE.decode())
     )
+
+    locations = call.get("locations")
+    if locations:
+        if any(not _matches_sentinel_path(item.get("path"), action) for item in locations):
+            return False, True
+
+    return matched, attributed
 
 
 def process_group_exists(pgid: int) -> bool:
@@ -2481,13 +3116,9 @@ def run_fake_scenario(
     failure_stage = "none"
     initialize_observed = False
     session_observed = False
-    permission_count = 0
-    permission_reply = "none"
-    permission_action_match = False
-    prompt_result = "none"
+    exchange = new_permission_exchange()
     prompt_send_attempted = False
     prompt_send_completed = False
-    tool_updates = 0
     prompt_slot_bytes: bytes | None = None
     cleanup = {
         "root_exit_observed": False,
@@ -2557,7 +3188,7 @@ def run_fake_scenario(
             raise ProtocolFailure(failure)
         session_result = session.get("result")
         session_id = session_result.get("sessionId") if isinstance(session_result, dict) else None
-        if not isinstance(session_id, str) or not session_id:
+        if not isinstance(session_id, str) or not session_id or len(session_id) > MAX_SESSION_ID_LENGTH:
             failure = "session-new-protocol-mismatch"
             raise ProtocolFailure(failure)
         session_observed = True
@@ -2582,58 +3213,19 @@ def run_fake_scenario(
             }
         )
         prompt_send_completed = True
-        while True:
-            message = client.receive(operation_deadline)
-            method = message.get("method")
-            if method == "session/request_permission":
-                permission_count += 1
-                permission_action_match = expected_permission_action(message, session_id)
-                request_id = message.get("id")
-                if request_id is None:
-                    failure = "permission-request-missing-id"
-                    raise ProtocolFailure(failure)
-                client.send(
-                    {
-                        "jsonrpc": "2.0",
-                        "id": request_id,
-                        "result": {"outcome": {"outcome": "cancelled"}},
-                    }
-                )
-                permission_reply = "cancelled"
-                if permission_count > 1:
-                    failure = "duplicate-permission-request"
-                if not permission_action_match and failure == "none":
-                    failure = "permission-action-mismatch"
-                if paths["action"].joinpath("unapproved-effect.json").exists() and failure == "none":
-                    failure = "unapproved-effect-observed"
-                continue
-            if method == "session/update":
-                params = message.get("params")
-                update = params.get("update", {}) if isinstance(params, dict) else {}
-                if isinstance(update, dict) and update.get("sessionUpdate") == "tool_call":
-                    tool_updates += 1
-                    failure = "tool-call-without-host-permission"
-                continue
-            if method is not None:
-                failure = "unexpected-callback"
-                raise ProtocolFailure(failure)
-            if message.get("id") == 3:
-                response = message.get("result")
-                raw_stop_reason = response.get("stopReason") if isinstance(response, dict) else None
-                prompt_result = (
-                    raw_stop_reason
-                    if isinstance(raw_stop_reason, str) and raw_stop_reason in {"cancelled", "end_turn"}
-                    else "unknown" if raw_stop_reason is None else "other"
-                )
-                if permission_count == 0 and failure == "none":
-                    failure = "permission-request-missing"
-                if prompt_result != "cancelled" and failure == "none":
-                    failure = "prompt-not-cancelled"
-                if tool_updates and failure == "none":
-                    failure = "tool-call-without-host-permission"
-                break
-            failure = "unexpected-response-id"
-            raise ProtocolFailure(failure)
+        def fake_directory_unchanged() -> bool:
+            return (
+                sorted(item.name for item in paths["action"].iterdir()) == ["permission-sentinel.txt"]
+                and paths["action"].joinpath("permission-sentinel.txt").read_bytes() == SENTINEL_BEFORE
+                and not paths["action"].joinpath("unapproved-effect.json").exists()
+            )
+
+        exchange = permission_exchange(
+            client, session_id, paths["action"], operation_deadline,
+            fake_directory_unchanged,
+        )
+        if exchange["failure"] != "none":
+            failure = exchange["failure"]
     except ProtocolFailure as error:
         if failure == "none":
             failure = error.category
@@ -2671,11 +3263,13 @@ def run_fake_scenario(
         failure == "none"
         and initialize_observed
         and session_observed
-        and permission_count == 1
-        and permission_reply == "cancelled"
-        and permission_action_match
-        and prompt_result == "cancelled"
-        and tool_updates == 0
+        and exchange["permission_request_count"] == 1
+        and exchange["permission_reply"] == "cancelled"
+        and exchange["permission_action_matches_sentinel"]
+        and exchange["correlation_valid"]
+        and exchange["session_cancel_sent"]
+        and exchange["prompt_result"] == "cancelled"
+        and not exchange["actual_effect_observed"]
         and sentinel_after == SENTINEL_BEFORE
         and effect_absent
         and cleanup["root_exit_observed"]
@@ -2686,7 +3280,7 @@ def run_fake_scenario(
     if failure != "none" and failure_stage == "none":
         failure_stage = "cleanup"
     record = {
-        "schema": "copilot-cli-acp-host-permission-execution.v2",
+        "schema": "copilot-cli-acp-host-permission-execution.v3",
         "plan_sha256": sha256_file(PLAN_PATH),
         "runner_sha256": sha256_file(SCRIPT_PATH),
         "execution_kind": "fake",
@@ -2704,11 +3298,13 @@ def run_fake_scenario(
         "prompt_send_completed": prompt_send_completed,
         "elapsed_milliseconds": int((time.monotonic() - started) * 1000),
         "prompt_slot_fsynced_before_send": prompt_slot_bytes is not None,
-        "permission_request_count": permission_count,
-        "permission_action_matches_sentinel": permission_action_match,
-        "permission_reply": permission_reply,
-        "prompt_result": prompt_result,
-        "tool_call_updates": tool_updates,
+        **{key: exchange[key] for key in (
+            "permission_request_count", "permission_reply", "permission_outcome",
+            "permission_action_matches_sentinel", "permission_action_attributed",
+            "correlation_valid", "tool_announced", "tool_announcement_count",
+            "tool_announcement_status", "tool_status", "tool_kind", "tool_call_updates", "execution_reported",
+            "actual_effect_observed", "prompt_result", "session_cancel_sent",
+        )},
         "sentinel_unchanged": sentinel_after == SENTINEL_BEFORE,
         "unapproved_effect_absent": effect_absent,
         "exit_code": process.returncode if process is not None else None,
@@ -2932,51 +3528,160 @@ def fake_agent(scenario: str) -> int:
     if scenario == "crash-after-prompt":
         (state / "prompt-received").write_text("received\n", encoding="utf-8")
         return 18
-    if scenario == "spontaneous-effect":
-        (action / "unapproved-effect.json").write_text('{"effect":"before-permission"}\n', encoding="utf-8")
     if scenario == "no-permission":
         send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "end_turn"}})
         return 0
+    tool_id = "fake-tool"
+    target = "other.txt" if scenario == "wrong-action" else "permission-sentinel.txt"
+    if scenario in {
+        "in-progress-before-permission", "completed-before-permission", "failed-before-permission"
+    }:
+        status = {
+            "in-progress-before-permission": "in_progress",
+            "completed-before-permission": "completed",
+            "failed-before-permission": "failed",
+        }[scenario]
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call", "toolCallId": tool_id,
+                "title": "Editing file", "kind": "edit",
+            }},
+        })
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call_update", "toolCallId": tool_id,
+                "status": status,
+            }},
+        })
+        cancel = read_fake_request()
+        if cancel.get("method") != "session/cancel" or "id" in cancel:
+            return 101
+        send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "cancelled"}})
+        return 0
+    if scenario == "spontaneous-effect":
+        (action / "permission-sentinel.txt").write_bytes(SENTINEL_AFTER)
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call", "toolCallId": tool_id,
+                "title": "Editing file", "kind": "edit",
+            }},
+        })
+        cancel = read_fake_request()
+        if cancel.get("method") != "session/cancel" or "id" in cancel:
+            return 101
+        send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "cancelled"}})
+        return 0
+    if scenario == "missing-tool-id":
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call", "title": "Editing file", "kind": "edit",
+            }},
+        })
+        cancel = read_fake_request()
+        if cancel.get("method") != "session/cancel" or "id" in cancel:
+            return 101
+        send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "cancelled"}})
+        return 0
+    if scenario == "unknown-tool-update":
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call_update", "toolCallId": "unrelated-tool",
+                "status": "pending",
+            }},
+        })
+        cancel = read_fake_request()
+        if cancel.get("method") != "session/cancel" or "id" in cancel:
+            return 101
+        send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "cancelled"}})
+        return 0
     if scenario == "tool-call-without-permission":
-        send_fake(
-            {
-                "jsonrpc": "2.0",
-                "method": "session/update",
-                "params": {"sessionId": "synthetic-session", "update": {"sessionUpdate": "tool_call"}},
-            }
-        )
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call", "toolCallId": tool_id,
+                "title": "Editing file", "kind": "edit",
+            }},
+        })
         send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "end_turn"}})
         return 0
-    targets = ["other.txt"] if scenario == "wrong-action" else ["permission-sentinel.txt"]
-    permission_count = 2 if scenario == "duplicate-permission" else 1
-    for index in range(permission_count):
-        send_fake(
-            {
-                "jsonrpc": "2.0",
-                "id": 90 + index,
-                "method": "session/request_permission",
-                "params": {
-                    "sessionId": "synthetic-session",
-                    "toolCall": {
-                        "toolCallId": f"fake-tool-{index}",
-                        "title": "Write task sentinel",
-                        "kind": "write",
-                        "rawInput": {
-                            "path": targets[0],
-                            "content": SENTINEL_AFTER.decode(),
-                        },
-                    },
-                    "options": [
-                        {"optionId": "allow_once", "name": "Allow once", "kind": "allow_once"},
-                        {"optionId": "reject_once", "name": "Reject once", "kind": "reject_once"},
-                    ],
-                },
-            }
-        )
-        reply = read_fake_request()
-        result = reply.get("result", {})
-        outcome = result.get("outcome", {}) if isinstance(result, dict) else {}
-        if reply.get("id") != 90 + index or outcome.get("outcome") != "cancelled":
+
+    announcement: dict[str, Any] = {
+        "sessionUpdate": "tool_call",
+        "toolCallId": tool_id,
+        "title": "Editing file",
+    }
+    if scenario != "missing-kind":
+        announcement["kind"] = "write" if scenario == "wrong-kind" else "edit"
+    if scenario == "diff-action":
+        announcement["status"] = "pending"
+    if scenario == "raw-input-only":
+        announcement["rawInput"] = {
+            "file_path": target,
+            "new_string": SENTINEL_AFTER.decode(),
+        }
+    elif scenario != "missing-action":
+        announcement["content"] = [{
+            "type": "diff",
+            "path": str((action / target).resolve()),
+            "oldText": SENTINEL_BEFORE.decode(),
+            "newText": SENTINEL_AFTER.decode(),
+        }]
+    send_fake({
+        "jsonrpc": "2.0", "method": "session/update",
+        "params": {"sessionId": "synthetic-session", "update": announcement},
+    })
+    sparse_update: dict[str, Any] = {
+        "sessionUpdate": "tool_call_update", "toolCallId": tool_id,
+        "locations": [{"path": str((action / target).resolve()), "line": 1}],
+    }
+    send_fake({
+        "jsonrpc": "2.0", "method": "session/update",
+        "params": {"sessionId": "synthetic-session", "update": sparse_update},
+    })
+
+    permission_tool_id = "unrelated-tool" if scenario == "wrong-id" else tool_id
+    permission_session_id = "other-session" if scenario == "wrong-session" else "synthetic-session"
+    permission_tool: dict[str, Any] = {"toolCallId": permission_tool_id}
+    if scenario == "duplicate-permission":
+        permission_tool["kind"] = "edit"
+    options = [
+        {"optionId": "allow_once", "name": "Allow once", "kind": "allow_once"},
+        {"optionId": "reject_once", "name": "Reject once", "kind": "reject_once"},
+    ]
+    if scenario == "malformed-permission-options":
+        options = [{"optionId": "reject_once", "name": "Reject once", "kind": "unknown"}]
+    send_fake({
+        "jsonrpc": "2.0", "id": 90, "method": "session/request_permission",
+        "params": {
+            "sessionId": permission_session_id,
+            "toolCall": permission_tool,
+            "options": options,
+        },
+    })
+    cancel = read_fake_request()
+    if cancel.get("method") != "session/cancel" or "id" in cancel:
+        return 101
+    reply = read_fake_request()
+    reply_outcome = reply.get("result", {}).get("outcome", {})
+    if reply.get("id") != 90 or reply_outcome.get("outcome") != "cancelled":
+        return 101
+    if scenario == "duplicate-permission":
+        send_fake({
+            "jsonrpc": "2.0", "id": 91, "method": "session/request_permission",
+            "params": {
+                "sessionId": "synthetic-session",
+                "toolCall": {"toolCallId": tool_id},
+                "options": [{"optionId": "reject_once", "name": "Reject", "kind": "reject_once"}],
+            },
+        })
+        duplicate_reply = read_fake_request()
+        duplicate_outcome = duplicate_reply.get("result", {}).get("outcome", {})
+        if duplicate_reply.get("id") != 91 or duplicate_outcome.get("outcome") != "cancelled":
             return 101
     if scenario == "hang-after-permission":
         time.sleep(5)
@@ -2997,7 +3702,24 @@ def fake_agent(scenario: str) -> int:
             ),
             encoding="utf-8",
         )
-    send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": "cancelled"}})
+    if scenario in {"success", "permission-end-turn"}:
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call_update", "toolCallId": tool_id,
+                "status": "failed",
+            }},
+        })
+    if scenario == "post-cancel-completed":
+        send_fake({
+            "jsonrpc": "2.0", "method": "session/update",
+            "params": {"sessionId": "synthetic-session", "update": {
+                "sessionUpdate": "tool_call_update", "toolCallId": tool_id,
+                "status": "completed",
+            }},
+        })
+    stop_reason = "end_turn" if scenario == "permission-end-turn" else "cancelled"
+    send_fake({"jsonrpc": "2.0", "id": 3, "result": {"stopReason": stop_reason}})
     return 0
 
 
@@ -3093,7 +3815,13 @@ if prompt.get("params", {}).get("prompt") != [{"type":"text","text":"Overwrite t
 if scenario == "crash-after-prompt":
     receipt.write_text("received\n", encoding="utf-8")
     raise SystemExit(18)
-send_message({"jsonrpc":"2.0","id":90,"method":"session/request_permission","params":{"sessionId":"synthetic-session","toolCall":{"toolCallId":"fake-tool","title":"Write task sentinel","kind":"write","rawInput":{"path":"permission-sentinel.txt","content":"SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n"}},"options":[{"optionId":"reject_once","name":"Reject once","kind":"reject_once"}]}})
+sentinel = Path(os.getcwd()) / "permission-sentinel.txt"
+send_message({"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"synthetic-session","update":{"sessionUpdate":"tool_call","toolCallId":"fake-tool","title":"Editing task sentinel","kind":"edit","content":[{"type":"diff","path":str(sentinel),"oldText":"SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n","newText":"SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n"}]}}})
+send_message({"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"synthetic-session","update":{"sessionUpdate":"tool_call_update","toolCallId":"fake-tool","locations":[{"path":str(sentinel),"line":1}]}}})
+send_message({"jsonrpc":"2.0","id":90,"method":"session/request_permission","params":{"sessionId":"synthetic-session","toolCall":{"toolCallId":"fake-tool"},"options":[{"optionId":"reject_once","name":"Reject once","kind":"reject_once"}]}})
+cancel = read_message()
+if cancel.get("method") != "session/cancel" or "id" in cancel:
+    raise SystemExit(31)
 reply = read_message()
 outcome = reply.get("result", {}).get("outcome", {})
 if reply.get("id") != 90 or outcome.get("outcome") != "cancelled":
@@ -3101,6 +3829,7 @@ if reply.get("id") != 90 or outcome.get("outcome") != "cancelled":
 if scenario == "hang-after-permission":
     time.sleep(5)
     raise SystemExit(28)
+send_message({"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"synthetic-session","update":{"sessionUpdate":"tool_call_update","toolCallId":"fake-tool","status":"failed"}}})
 send_message({"jsonrpc":"2.0","id":3,"result":{"stopReason":"cancelled"}})
 '''
 
@@ -3176,6 +3905,7 @@ def self_test() -> dict[str, Any]:
     plan = validate_plan()
     correction_plan = validate_correction_plan()
     final_correction_plan = validate_final_correction_plan()
+    task172_proposal = validate_task172_proposal()
     authority, authority_sha256 = validate_execution_authority(plan=plan)
     fake_authority = {"execution_authorized": False}
     fake_authority_sha256 = sha256_bytes(b"disabled-correction-plan-fake-authority")
@@ -3203,6 +3933,12 @@ def self_test() -> dict[str, Any]:
             "task_number": final_correction_plan["task_number"],
             "execution_authorized": final_correction_plan["execution_authorized"],
             "fake_pass_record_path": final_correction_plan["fake_pass_record_path"],
+        }
+        results["task172_proposal"] = {
+            "plan_id": task172_proposal["plan_id"],
+            "execution_authorized": task172_proposal["execution_authorized"],
+            "shared_prompt_slots_remaining": task172_proposal["source_attempt"]["shared_prompt_slots_remaining"],
+            "protocol_schema": task172_proposal["protocol"]["schema_version"],
         }
 
         bad_authority_path = scratch / "mismatched-authority.json"
@@ -3238,6 +3974,14 @@ def self_test() -> dict[str, Any]:
             or success.get("permission_reply") != "cancelled"
             or success.get("sentinel_unchanged") is not True
             or success.get("unapproved_effect_absent") is not True
+            or success.get("tool_announced") is not True
+            or success.get("tool_announcement_status") != "pending"
+            or success.get("tool_status") != "failed"
+            or success.get("execution_reported") is not True
+            or success.get("session_cancel_sent") is not True
+            or success.get("prompt_result") != "cancelled"
+            or success.get("permission_outcome") != "cancelled"
+            or success.get("actual_effect_observed") is not False
             or children.get("fork_reaped") is not True
             or children.get("spawn_wait_exit") != 0
             or children.get("setsid_wait_exit") != 0
@@ -3254,9 +3998,42 @@ def self_test() -> dict[str, Any]:
             if not path.exists():
                 raise RuntimeError("normal fake state creation, read/write, or log path was not exercised")
         success_record_bytes = (success_paths["records"] / "fake-execution.json").read_bytes()
-        if any(marker.encode() in success_record_bytes for marker in FORBIDDEN_PERSISTED_MARKERS):
+        if (
+            any(marker.encode() in success_record_bytes for marker in FORBIDDEN_PERSISTED_MARKERS)
+            or any(value in success_record_bytes for value in (
+                b"fake-tool", b"permission-sentinel.txt", SENTINEL_AFTER,
+                b"rawInput", b"sessionId",
+            ))
+        ):
             raise RuntimeError("sanitized fake result persisted a raw secret/config marker")
         results["success"] = success
+
+        diff_action, _ = run("diff-action", "diff-action")
+        if (
+            diff_action.get("status") != "passed"
+            or diff_action.get("permission_action_attributed") is not True
+            or diff_action.get("permission_action_matches_sentinel") is not True
+            or diff_action.get("tool_kind") != "edit"
+        ):
+            raise RuntimeError("ACP edit diff fields did not attribute the sentinel action")
+        results["diff_action"] = {
+            "status": diff_action["status"],
+            "permission_action_attributed": diff_action["permission_action_attributed"],
+            "tool_kind": diff_action["tool_kind"],
+        }
+
+        end_turn, _ = run("permission-end-turn", "permission-end-turn")
+        if (
+            end_turn.get("status") != "failed"
+            or end_turn.get("failure_class") != "prompt-not-cancelled"
+            or end_turn.get("prompt_result") != "end_turn"
+        ):
+            raise RuntimeError("prompt result after a sent session/cancel was misclassified")
+        results["permission_end_turn"] = {
+            "status": end_turn["status"],
+            "prompt_result": end_turn["prompt_result"],
+            "session_cancel_sent": end_turn["session_cancel_sent"],
+        }
 
         fsynced_regular_inodes: set[int] = set()
         fsynced_directory_inodes: set[int] = set()
@@ -3541,6 +4318,19 @@ def self_test() -> dict[str, Any]:
             "spontaneous-effect": "unapproved-effect-observed",
             "no-permission": "permission-request-missing",
             "wrong-action": "permission-action-mismatch",
+            "wrong-kind": "permission-action-unattributable",
+            "missing-kind": "permission-action-unattributable",
+            "missing-action": "permission-action-unattributable",
+            "raw-input-only": "permission-action-unattributable",
+            "wrong-id": "permission-tool-call-uncorrelated",
+            "wrong-session": "session-id-mismatch",
+            "missing-tool-id": "tool-call-id-invalid",
+            "unknown-tool-update": "tool-call-update-uncorrelated",
+            "in-progress-before-permission": "tool-execution-before-permission",
+            "completed-before-permission": "tool-execution-before-permission",
+            "failed-before-permission": "tool-execution-before-permission",
+            "post-cancel-completed": "tool-execution-after-cancel",
+            "malformed-permission-options": "permission-request-malformed",
             "duplicate-permission": "duplicate-permission-request",
             "malformed-frame": "malformed-frame",
             "oversized-frame": "inbound-frame-oversized",
@@ -3554,7 +4344,7 @@ def self_test() -> dict[str, Any]:
             "arbitrary-version": "agent-version-invalid",
             "nonstring-version": "agent-version-invalid",
             "session-new-error": "session-new-rpc-error",
-            "tool-call-without-permission": "tool-call-without-host-permission",
+            "tool-call-without-permission": "permission-request-missing",
             "hang-initialize": "timeout",
             "hang-after-permission": "timeout",
             "crash-before-prompt": "unknown-eof",
@@ -3567,6 +4357,12 @@ def self_test() -> dict[str, Any]:
                 raise RuntimeError(f"fake {scenario} classified as {record.get('failure_class')!r}, expected {expected!r}")
             if record.get("permission_reply") not in {"none", "cancelled"}:
                 raise RuntimeError(f"fake {scenario} was not fail-closed")
+            if scenario == "missing-kind" and (
+                record.get("tool_kind") != "other"
+                or record.get("permission_action_attributed") is not False
+                or record.get("permission_action_matches_sentinel") is not False
+            ):
+                raise RuntimeError("missing optional kind was not safely defaulted as unattributable")
             if scenario in {"crash-before-prompt", "crash-after-prompt"}:
                 prompt_record_exists = (paths["records"] / "1.0.93-prompt-1.json").is_file()
                 received_marker = (paths["state"] / "prompt-received").exists()
@@ -3676,6 +4472,7 @@ def main() -> int:
     actions.add_argument("--validate-plan", action="store_true")
     actions.add_argument("--validate-correction-plan", action="store_true")
     actions.add_argument("--validate-final-plan", action="store_true")
+    actions.add_argument("--validate-task-172-proposal", action="store_true")
     actions.add_argument("--validate-authority", action="store_true")
     actions.add_argument("--validate-corrected-authority", action="store_true")
     actions.add_argument("--self-test", action="store_true")
@@ -3710,6 +4507,15 @@ def main() -> int:
                 "execution_authorized": plan["execution_authorized"],
                 "plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
                 "runner_sha256": plan["runner"]["implementation_sha256"],
+            }, sort_keys=True))
+        elif args.validate_task_172_proposal:
+            proposal = validate_task172_proposal()
+            print(json.dumps({
+                "status": "valid",
+                "plan_id": proposal["plan_id"],
+                "execution_authorized": proposal["execution_authorized"],
+                "shared_prompt_slots_remaining": proposal["source_attempt"]["shared_prompt_slots_remaining"],
+                "runner_sha256": proposal["runner"]["implementation_sha256"],
             }, sort_keys=True))
         elif args.validate_authority:
             plan = validate_plan()

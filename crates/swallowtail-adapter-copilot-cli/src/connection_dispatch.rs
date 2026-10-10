@@ -110,13 +110,12 @@ impl AcpConnection {
             .get("options")
             .and_then(Value::as_array)
             .ok_or_else(malformed)?;
-        if options.len() > 32
-            || params
-                .get("toolCall")
-                .and_then(|tool| tool.get("toolCallId"))
-                .and_then(Value::as_str)
-                .is_none()
-        {
+        let tool_call_id = params
+            .get("toolCall")
+            .and_then(|tool| tool.get("toolCallId"))
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)?;
+        if options.len() > 32 {
             return Err(malformed());
         }
         let turn = self
@@ -130,7 +129,7 @@ impl AcpConnection {
                     "Copilot CLI requested permission without an active turn",
                 )
             })?;
-        turn.observe_permission(&id)?;
+        turn.observe_permission(&id, tool_call_id)?;
         self.notify("session/cancel", json!({"sessionId": turn.session_id()}))
             .await?;
         self.write(

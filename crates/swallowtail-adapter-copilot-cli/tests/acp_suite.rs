@@ -1,3 +1,6 @@
+// This shared fixture module serves several integration targets; this target
+// intentionally uses only a subset of its scenarios and observations.
+#[allow(dead_code)]
 mod support;
 
 use futures_executor::block_on;

@@ -1,0 +1,28 @@
+{
+  "$id": "copilot-acp-private-original-binding.v1",
+  "additionalProperties": false,
+  "maxBytes": 8192,
+  "properties": {
+    "schema": { "const": "copilot-acp-private-original-binding.v1", "type": "string" },
+    "reviewed_head": { "maxLength": 40, "minLength": 40, "pattern": "^[a-fA-F0-9]{40}$", "type": "string" },
+    "plan_sha256": { "maxLength": 64, "minLength": 64, "pattern": "^[a-f0-9]{64}$", "type": "string" },
+    "enable_command": { "const": "effigy observe:copilot-acp-private-assessment <binding-payload.json>", "type": "string" },
+    "execution_host_id": { "maxLength": 128, "pattern": "^[A-Za-z0-9._-]+$", "type": "string" },
+    "executable_ref": { "format": "absolute-plain-path", "maxLength": 1024, "type": "string" },
+    "environment_ref": { "maxLength": 128, "pattern": "^[A-Za-z0-9._-]+$", "type": "string" },
+    "working_resource_ref": { "maxLength": 128, "pattern": "^[A-Za-z0-9._-]+$", "type": "string" },
+    "home_directory": { "format": "absolute-plain-path", "maxLength": 1024, "type": "string" }
+  },
+  "required": [
+    "schema",
+    "reviewed_head",
+    "plan_sha256",
+    "enable_command",
+    "execution_host_id",
+    "executable_ref",
+    "environment_ref",
+    "working_resource_ref",
+    "home_directory"
+  ],
+  "type": "object"
+}

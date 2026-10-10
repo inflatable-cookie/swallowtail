@@ -7,6 +7,8 @@
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
+// The test-only assessment result contains a deliberately complete evidence record.
+#![recursion_limit = "256"]
 
 mod access;
 mod acp_activity;
@@ -20,6 +22,23 @@ mod mcp;
 mod prepared;
 mod selection;
 mod turn;
+
+#[cfg(test)]
+mod assessment;
+#[cfg(test)]
+// Shared assessment fixtures also serve integration-test targets, so each
+// target intentionally uses only part of their surface.
+#[allow(dead_code)]
+#[path = "../tests/support/discovery.rs"]
+mod assessment_discovery_support;
+#[cfg(test)]
+#[allow(dead_code)]
+#[path = "../tests/support/mod.rs"]
+mod assessment_test_support;
+#[cfg(test)]
+mod assessment_tests;
+#[cfg(test)]
+extern crate self as swallowtail_adapter_copilot_cli;
 
 pub use access::{COPILOT_CLI_HOST_ACCOUNT_AUDIENCE, copilot_cli_host_account_access_profile};
 pub use driver::{CopilotCliAcpDriver, copilot_cli_acp_descriptor};

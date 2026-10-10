@@ -40,8 +40,36 @@ mod tests {
             "session-fixture".to_owned(),
         )
         .expect("turn opens");
-        turn.observe_permission(&json!(900))
+        turn.handle_update(&json!({
+            "sessionId": "session-fixture",
+            "update": {
+                "sessionUpdate": "tool_call",
+                "toolCallId": "sentinel-edit",
+                "title": "Edit sentinel",
+                "kind": "execute",
+                "status": "pending",
+                "content": []
+            }
+        }))
+        .expect("pending execute action is observed");
+        turn.observe_permission(&json!(900), "sentinel-edit")
             .expect("permission is observed");
+        turn.finish_prompt("cancelled");
+        assert!(matches!(
+            block_on(terminal).status(),
+            TerminalStatus::ProviderRequestObserved(_)
+        ));
+    }
+
+    #[test]
+    fn ordinary_permission_observation_does_not_require_assessment_action_correlation() {
+        let (turn, _events, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-ordinary-permission").expect("valid turn"),
+            "session-fixture".to_owned(),
+        )
+        .expect("turn opens");
+        turn.observe_permission(&json!(901), "provider-owned-call")
+            .expect("ordinary public permission behavior stays observation-only");
         turn.finish_prompt("cancelled");
         assert!(matches!(
             block_on(terminal).status(),

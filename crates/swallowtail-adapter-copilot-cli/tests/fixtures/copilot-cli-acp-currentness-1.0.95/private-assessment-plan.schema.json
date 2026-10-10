@@ -1,0 +1,70 @@
+{
+  "$id": "copilot-cli-private-assessment-plan.v1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action": {
+      "type": "object"
+    },
+    "artifacts": {
+      "type": "object"
+    },
+    "assessment_admission": {
+      "type": "object"
+    },
+    "attempt": {
+      "type": "object"
+    },
+    "lifecycle": {
+      "type": "object"
+    },
+    "original_enable_gate": {
+      "type": "object"
+    },
+    "original_execution_enabled": {
+      "type": "boolean"
+    },
+    "preparation_originals_run": {
+      "type": "integer"
+    },
+    "prepared_path_sources": {
+      "type": "object"
+    },
+    "production_route": {
+      "type": "object"
+    },
+    "qualification": {
+      "type": "object"
+    },
+    "records": {
+      "type": "object"
+    },
+    "runner": {
+      "type": "object"
+    },
+    "schema": {
+      "type": "string"
+    },
+    "task": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "task",
+    "qualification",
+    "artifacts",
+    "production_route",
+    "assessment_admission",
+    "action",
+    "lifecycle",
+    "attempt",
+    "records",
+    "original_enable_gate",
+    "original_execution_enabled",
+    "preparation_originals_run",
+    "runner",
+    "prepared_path_sources"
+  ],
+  "type": "object"
+}

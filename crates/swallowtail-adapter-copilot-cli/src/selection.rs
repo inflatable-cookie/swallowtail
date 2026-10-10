@@ -19,6 +19,27 @@ pub const COPILOT_CLI_ACP_MATURITY: &str = "public-preview";
 pub(crate) const COPILOT_CLI_ACP_BEHAVIOR: &str = "copilot-cli.acp.stdio-v1";
 const MAX_VERSION_BYTES: usize = 32;
 
+/// Compatibility path for the ordinary public route or a private exact-point assessment.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum CopilotCliPlanAdmission {
+    PublicQualified,
+    #[cfg(test)]
+    PrivateAssessment095,
+}
+
+impl CopilotCliPlanAdmission {
+    pub(crate) const fn version(self) -> &'static str {
+        match self {
+            Self::PublicQualified => COPILOT_CLI_PACKAGE_VERSION,
+            #[cfg(test)]
+            Self::PrivateAssessment095 => PRIVATE_ASSESSMENT_VERSION,
+        }
+    }
+}
+
+#[cfg(test)]
+pub(crate) const PRIVATE_ASSESSMENT_VERSION: &str = "1.0.95";
+
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct CopilotCliPlanSelection {
     version: InterfaceVersion,
@@ -45,7 +66,16 @@ pub(crate) fn parse_copilot_cli_version_output(output: &[u8]) -> Option<Interfac
 /// observed CLI output can never panic a caller.
 #[must_use]
 pub fn copilot_cli_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
-    if value != COPILOT_CLI_PACKAGE_VERSION
+    binding_for_exact(value, COPILOT_CLI_PACKAGE_VERSION)
+}
+
+#[cfg(test)]
+fn copilot_cli_assessment_binding(value: &str) -> Option<InterfaceVersionBinding> {
+    binding_for_exact(value, PRIVATE_ASSESSMENT_VERSION)
+}
+
+fn binding_for_exact(value: &str, expected: &str) -> Option<InterfaceVersionBinding> {
+    if value != expected
         || value.is_empty()
         || value.len() > MAX_VERSION_BYTES
         || value.trim() != value
@@ -63,6 +93,23 @@ pub fn copilot_cli_package_binding(value: &str) -> Option<InterfaceVersionBindin
 /// Returns the qualified-only exact Copilot CLI ACP protocol claim.
 #[must_use]
 pub fn copilot_cli_acp_claim() -> InterfaceCompatibilityClaim {
+    copilot_cli_acp_claim_for(CopilotCliPlanAdmission::PublicQualified)
+}
+
+pub(crate) fn copilot_cli_acp_claim_for(
+    admission: CopilotCliPlanAdmission,
+) -> InterfaceCompatibilityClaim {
+    let version = match admission {
+        CopilotCliPlanAdmission::PublicQualified => {
+            InterfaceVersion::new(COPILOT_CLI_PACKAGE_VERSION)
+                .expect("static Copilot CLI version is valid")
+        }
+        #[cfg(test)]
+        CopilotCliPlanAdmission::PrivateAssessment095 => {
+            InterfaceVersion::new(PRIVATE_ASSESSMENT_VERSION)
+                .expect("static Copilot CLI assessment version is valid")
+        }
+    };
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("copilot-cli.acp.package-window-1")
             .expect("static Copilot CLI claim id is valid"),
@@ -70,8 +117,7 @@ pub fn copilot_cli_acp_claim() -> InterfaceCompatibilityClaim {
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::QualifiedOnly,
         [InterfaceVersionSegment::exact(
-            InterfaceVersion::new(COPILOT_CLI_PACKAGE_VERSION)
-                .expect("static Copilot CLI version is valid"),
+            version,
             InterfaceBehaviorRevision::new(COPILOT_CLI_ACP_BEHAVIOR)
                 .expect("static Copilot CLI behavior is valid"),
             InterfaceSupportStatus::Maintained,
@@ -81,12 +127,14 @@ pub fn copilot_cli_acp_claim() -> InterfaceCompatibilityClaim {
     .expect("static Copilot CLI claim is valid")
 }
 
-pub(crate) fn select_copilot_cli_acp_plan(
+pub(crate) fn select_copilot_cli_acp_plan_for(
     plan: &PreflightPlan,
+    admission: CopilotCliPlanAdmission,
 ) -> Result<CopilotCliPlanSelection, RuntimeFailure> {
+    let claim = copilot_cli_acp_claim_for(admission);
     select_plan(
         plan,
-        &copilot_cli_acp_claim(),
+        &claim,
         COPILOT_CLI_ACP_BEHAVIOR,
         PlanSelectionCodes {
             missing: "swallowtail.copilot-cli.acp.version_missing",
@@ -97,6 +145,22 @@ pub(crate) fn select_copilot_cli_acp_plan(
             incompatible_message: "Copilot CLI package version is incompatible with the ACP driver",
         },
     )
+}
+
+pub(crate) fn parse_copilot_cli_version_output_for(
+    output: &[u8],
+    admission: CopilotCliPlanAdmission,
+) -> Option<InterfaceVersionBinding> {
+    match admission {
+        CopilotCliPlanAdmission::PublicQualified => parse_copilot_cli_version_output(output),
+        #[cfg(test)]
+        CopilotCliPlanAdmission::PrivateAssessment095 => {
+            let output = std::str::from_utf8(output).ok()?;
+            let exact = output.strip_suffix('\n').unwrap_or(output);
+            let exact = exact.strip_prefix("copilot ").unwrap_or(exact);
+            copilot_cli_assessment_binding(exact)
+        }
+    }
 }
 
 struct PlanSelectionCodes {

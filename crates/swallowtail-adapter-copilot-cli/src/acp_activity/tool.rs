@@ -25,6 +25,11 @@ impl AcpActivityProjection {
             if label.is_some() {
                 activity.label = label;
             }
+            activity.tool_kind = Some(call.kind.clone());
+            #[cfg(test)]
+            {
+                activity.assessment_diffs = super::assessment_diffs(&call.content);
+            }
             let status = reconcile_status(activity.status, status);
             let phase = if status.is_terminal() {
                 ActivityLifecyclePhase::Completed
@@ -51,6 +56,11 @@ impl AcpActivityProjection {
                 ActivityStatus::InProgress,
             )?;
             activity.label = label;
+            activity.tool_kind = Some(call.kind.clone());
+            #[cfg(test)]
+            {
+                activity.assessment_diffs = super::assessment_diffs(&call.content);
+            }
             let started = self.observation(
                 &activity,
                 ActivityLifecyclePhase::Started,
@@ -76,6 +86,11 @@ impl AcpActivityProjection {
             status,
         )?;
         activity.label = label;
+        activity.tool_kind = Some(call.kind.clone());
+        #[cfg(test)]
+        {
+            activity.assessment_diffs = super::assessment_diffs(&call.content);
+        }
         self.open.insert(key, activity.clone());
         Ok(vec![self.observation(
             &activity,
@@ -128,6 +143,9 @@ impl AcpActivityProjection {
                 ActivityStatus::InProgress,
             )?;
             activity.label = label;
+            if let Some(kind) = &update.kind {
+                activity.tool_kind = Some(kind.clone());
+            }
             let started = self.observation(
                 &activity,
                 ActivityLifecyclePhase::Started,
@@ -146,6 +164,13 @@ impl AcpActivityProjection {
         };
         if label.is_some() {
             activity.label = label;
+        }
+        if let Some(kind) = &update.kind {
+            activity.tool_kind = Some(kind.clone());
+        }
+        #[cfg(test)]
+        if let Some(content) = &update.content_replacement {
+            activity.assessment_diffs = super::assessment_diffs(content);
         }
         let status = update.status.map_or(activity.status, |status| {
             reconcile_status(activity.status, tool_status(status))

@@ -5,7 +5,7 @@ use swallowtail_runtime::{
     installed_probe_codes, probe_installed_executable_version,
 };
 
-use crate::{CopilotCliAcpDriver, copilot_cli_acp_claim};
+use crate::{CopilotCliAcpDriver, selection};
 
 const SWALLOWTAIL_COPILOT_CLI_PROBE_CODES: InstalledProbeCodes =
     installed_probe_codes!("swallowtail.copilot-cli");
@@ -29,11 +29,12 @@ impl DiscoveryDriver for CopilotCliAcpDriver {
         request: InstalledExecutableDiscoveryRequest,
         services: HostServices,
     ) -> BoxFuture<'_, Result<DiscoveryOutcome, RuntimeFailure>> {
+        let admission = self.admission();
         Box::pin(probe_installed_executable_version(
             request,
             services,
-            copilot_cli_acp_claim(),
-            crate::selection::parse_copilot_cli_version_output,
+            selection::copilot_cli_acp_claim_for(admission),
+            move |output| selection::parse_copilot_cli_version_output_for(output, admission),
             SWALLOWTAIL_COPILOT_CLI_PROBE_CODES,
             "Copilot CLI",
         ))

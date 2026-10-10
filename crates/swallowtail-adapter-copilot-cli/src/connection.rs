@@ -206,6 +206,10 @@ impl AcpConnection {
         let _ = self.process.request_stop().await;
     }
 
+    pub(crate) async fn force_stop_owned_process(&self) -> Result<(), RuntimeFailure> {
+        self.process.force_stop().await
+    }
+
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
         self.cancelled.store(true, Ordering::SeqCst);
         self.process.force_stop().await

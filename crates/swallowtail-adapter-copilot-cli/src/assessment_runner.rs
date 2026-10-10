@@ -371,34 +371,42 @@ fn run_with_local_host(mode: &str, total: Duration, cleanup: Duration) -> RunEvi
 
     drive_prepared_session(
         session,
-        &local,
-        RunScratch {
-            task: &scratch.task,
-            records: &scratch.records,
-            trace: Some(&scratch.trace),
-            protected_executable: Some(&scratch.protected_executable),
+        PreparedSessionRun {
+            local: &local,
+            scratch: RunScratch {
+                task: &scratch.task,
+                records: &scratch.records,
+                trace: Some(&scratch.trace),
+                protected_executable: Some(&scratch.protected_executable),
+            },
+            services,
+            timing: SessionRunTiming {
+                started,
+                action_window,
+                action_deadline,
+                total,
+            },
+            identity: SessionRunIdentity {
+                plan_sha256,
+                runner_sha256,
+                rust_runner_sha256,
+                authority_binding_sha256,
+                reviewed_head,
+                enable_command,
+                source_manifest_sha256,
+                binding,
+            },
+            accounting: SessionRunAccounting {
+                attempt_record_visible_before_version: consumed_record_visible_before_effect(
+                    &attempt_path,
+                    "invocation-consumed-before-prepared-open",
+                ),
+                attempt_path,
+                before_tree_sha256,
+                original_started: false,
+                execution_mode: "real-local-host-fake-child",
+            },
         },
-        services,
-        started,
-        action_window,
-        action_deadline,
-        total,
-        plan_sha256,
-        runner_sha256,
-        rust_runner_sha256,
-        authority_binding_sha256,
-        reviewed_head,
-        enable_command,
-        source_manifest_sha256,
-        binding,
-        consumed_record_visible_before_effect(
-            &attempt_path,
-            "invocation-consumed-before-prepared-open",
-        ),
-        attempt_path,
-        before_tree_sha256,
-        false,
-        "real-local-host-fake-child",
     )
 }
 
@@ -451,7 +459,7 @@ fn run_fake_original_branch_with_scratch(
         )
         .approve_working_resource(working.clone(), scratch.task.clone())
         .build_services(host.clone());
-    let plan = enabled_fake_plan(&scratch);
+    let plan = enabled_fake_plan(scratch);
     let plan_sha256 = sha256_reader(
         serde_json::to_vec(&plan)
             .expect("fake-bound plan serializes")
@@ -535,15 +543,14 @@ struct RunScratch<'a> {
     protected_executable: Option<&'a ProtectedExecutable>,
 }
 
-fn drive_prepared_session(
-    session: crate::prepared::CopilotCliPreparedSession,
-    local: &LocalHostServices,
-    scratch: RunScratch<'_>,
-    services: swallowtail_runtime::HostServices,
+struct SessionRunTiming {
     started: Instant,
     action_window: Duration,
     action_deadline: Deadline,
     total: Duration,
+}
+
+struct SessionRunIdentity {
     plan_sha256: String,
     runner_sha256: String,
     rust_runner_sha256: String,
@@ -552,12 +559,60 @@ fn drive_prepared_session(
     enable_command: Option<String>,
     source_manifest_sha256: String,
     binding: crate::assessment::CopilotCliAssessmentHostBinding,
+}
+
+struct SessionRunAccounting {
     attempt_record_visible_before_version: bool,
     attempt_path: PathBuf,
     before_tree_sha256: String,
     original_started: bool,
     execution_mode: &'static str,
+}
+
+struct PreparedSessionRun<'a> {
+    local: &'a LocalHostServices,
+    scratch: RunScratch<'a>,
+    services: swallowtail_runtime::HostServices,
+    timing: SessionRunTiming,
+    identity: SessionRunIdentity,
+    accounting: SessionRunAccounting,
+}
+
+fn drive_prepared_session(
+    session: crate::prepared::CopilotCliPreparedSession,
+    run: PreparedSessionRun<'_>,
 ) -> RunEvidence {
+    let PreparedSessionRun {
+        local,
+        scratch,
+        services,
+        timing,
+        identity,
+        accounting,
+    } = run;
+    let SessionRunTiming {
+        started,
+        action_window,
+        action_deadline,
+        total,
+    } = timing;
+    let SessionRunIdentity {
+        plan_sha256,
+        runner_sha256,
+        rust_runner_sha256,
+        authority_binding_sha256,
+        reviewed_head,
+        enable_command,
+        source_manifest_sha256,
+        binding,
+    } = identity;
+    let SessionRunAccounting {
+        attempt_record_visible_before_version,
+        attempt_path,
+        before_tree_sha256,
+        original_started,
+        execution_mode,
+    } = accounting;
     let mut status: &str;
     let mut terminal_label = "not-started";
     let mut cleanup_label: &str;
@@ -666,20 +721,14 @@ fn drive_prepared_session(
                         if let Some(started_turn) = started_turn {
                             match started_turn {
                                 Ok(mut turn) => {
-                                    if let Some(mut events) = turn.take_events() {
-                                        if let Some(time) = services.time() {
-                                            let mut wait =
-                                                Box::pin(time.wait_until(action_deadline));
-                                            loop {
-                                                match block_on(select(
-                                                    Box::pin(events.next()),
-                                                    wait,
-                                                )) {
-                                                    Either::Left((
-                                                        Some(Ok(event)),
-                                                        remaining_wait,
-                                                    )) => {
-                                                        match event.kind() {
+                                    if let Some(mut events) = turn.take_events()
+                                        && let Some(time) = services.time()
+                                    {
+                                        let mut wait = Box::pin(time.wait_until(action_deadline));
+                                        loop {
+                                            match block_on(select(Box::pin(events.next()), wait)) {
+                                                Either::Left((Some(Ok(event)), remaining_wait)) => {
+                                                    match event.kind() {
                                                         RuntimeEventKind::Activity(activity)
                                                             if activity.kind() == &ActivityKind::ProviderOwnedTool
                                                                 && activity.phase() == ActivityLifecyclePhase::Started
@@ -715,34 +764,30 @@ fn drive_prepared_session(
                                                         }
                                                         _ => {}
                                                     }
-                                                        wait = remaining_wait;
-                                                    }
-                                                    Either::Left((Some(Err(_)), _)) => {
-                                                        break;
-                                                    }
-                                                    Either::Left((None, _)) => break,
-                                                    Either::Right((
-                                                        _observation,
-                                                        _pending_events,
-                                                    )) => {
-                                                        timed_out = true;
-                                                        let remaining =
-                                                            total.saturating_sub(started.elapsed());
-                                                        let cancel_deadline =
-                                                            local.deadline_after(remaining);
-                                                        match block_on(select(
-                                                            turn.cancellation().request(),
-                                                            time.wait_until(cancel_deadline),
-                                                        )) {
-                                                            Either::Left((Ok(_), _)) => {
-                                                                cancel_request_sent = true;
-                                                            }
-                                                            _ => {
-                                                                cancellation_request_failed = true;
-                                                            }
+                                                    wait = remaining_wait;
+                                                }
+                                                Either::Left((Some(Err(_)), _)) => {
+                                                    break;
+                                                }
+                                                Either::Left((None, _)) => break,
+                                                Either::Right((_observation, _pending_events)) => {
+                                                    timed_out = true;
+                                                    let remaining =
+                                                        total.saturating_sub(started.elapsed());
+                                                    let cancel_deadline =
+                                                        local.deadline_after(remaining);
+                                                    match block_on(select(
+                                                        turn.cancellation().request(),
+                                                        time.wait_until(cancel_deadline),
+                                                    )) {
+                                                        Either::Left((Ok(_), _)) => {
+                                                            cancel_request_sent = true;
                                                         }
-                                                        break;
+                                                        _ => {
+                                                            cancellation_request_failed = true;
+                                                        }
                                                     }
+                                                    break;
                                                 }
                                             }
                                         }
@@ -1507,7 +1552,7 @@ fn dispatch_original_entry(
 }
 
 fn parse_original_entry_arguments(arguments: &[OsString]) -> Result<PathBuf, OriginalRunDenied> {
-    if arguments.len() != 2 || arguments[0] != OsString::from("--payload") {
+    if arguments.len() != 2 || arguments[0] != "--payload" {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
     let path = PathBuf::from(&arguments[1]);
@@ -1958,34 +2003,42 @@ fn run_original_task_with_budget(
     };
     Ok(drive_prepared_session(
         session,
-        local,
-        RunScratch {
-            task: task_directory,
-            records: records_directory,
-            trace,
-            protected_executable: Some(&protected_executable),
+        PreparedSessionRun {
+            local,
+            scratch: RunScratch {
+                task: task_directory,
+                records: records_directory,
+                trace,
+                protected_executable: Some(&protected_executable),
+            },
+            services,
+            timing: SessionRunTiming {
+                started,
+                action_window,
+                action_deadline,
+                total,
+            },
+            identity: SessionRunIdentity {
+                plan_sha256,
+                runner_sha256,
+                rust_runner_sha256,
+                authority_binding_sha256,
+                reviewed_head,
+                enable_command,
+                source_manifest_sha256,
+                binding: host_binding,
+            },
+            accounting: SessionRunAccounting {
+                attempt_record_visible_before_version: consumed_record_visible_before_effect(
+                    &attempt_path,
+                    "invocation-consumed-before-prepared-open",
+                ),
+                attempt_path,
+                before_tree_sha256,
+                original_started,
+                execution_mode,
+            },
         },
-        services,
-        started,
-        action_window,
-        action_deadline,
-        total,
-        plan_sha256,
-        runner_sha256,
-        rust_runner_sha256,
-        authority_binding_sha256,
-        reviewed_head,
-        enable_command,
-        source_manifest_sha256,
-        host_binding,
-        consumed_record_visible_before_effect(
-            &attempt_path,
-            "invocation-consumed-before-prepared-open",
-        ),
-        attempt_path,
-        before_tree_sha256,
-        original_started,
-        execution_mode,
     ))
 }
 

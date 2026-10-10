@@ -89,9 +89,9 @@ section = "Research Records"
   "python3 scripts/copilot-acp-private-assessment.py --self-test",
 ]
 "lint:current-copilot-cli-acp" = [
-  "cargo clippy --locked --all-features -p swallowtail-adapter-copilot-cli --lib -- -D warnings",
-  "cargo clippy --locked --no-default-features -p swallowtail-adapter-copilot-cli --lib -- -D warnings",
-  "cargo +1.95.0 clippy --locked --all-features -p swallowtail-adapter-copilot-cli --lib -- -D warnings",
+  "cargo clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
+  "cargo clippy --locked --all-targets --no-default-features -p swallowtail-adapter-copilot-cli -- -D warnings",
+  "cargo +1.95.0 clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
 ]
 "observe:copilot-acp-private-assessment" = "bash scripts/copilot-acp-original-entry.sh {args}"
 "check:copilot-acp-authenticated-proof" = [

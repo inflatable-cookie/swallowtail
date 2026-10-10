@@ -40,7 +40,19 @@ mod tests {
             "session-fixture".to_owned(),
         )
         .expect("turn opens");
-        turn.observe_permission(&json!(900))
+        turn.handle_update(&json!({
+            "sessionId": "session-fixture",
+            "update": {
+                "sessionUpdate": "tool_call",
+                "toolCallId": "sentinel-edit",
+                "title": "Edit sentinel",
+                "kind": "execute",
+                "status": "pending",
+                "content": []
+            }
+        }))
+        .expect("pending execute action is observed");
+        turn.observe_permission(&json!(900), "sentinel-edit")
             .expect("permission is observed");
         turn.finish_prompt("cancelled");
         assert!(matches!(

@@ -43,6 +43,9 @@ use swallowtail_runtime::{
     SessionCleanupRequest, TerminalStatus, TimeService, TurnRequest, WorkingResourceRef,
 };
 
+#[path = "assessment_runner.rs"]
+mod runner;
+
 const APPROVED_EXECUTABLE: &str = "/approved/copilot/1.0.95/copilot";
 const APPROVED_ENVIRONMENT: &str = "host-approved.copilot-cli.account";
 const SENTINEL_PATH: &str = "permission-sentinel.txt";
@@ -996,6 +999,30 @@ fn fresh_temp_dir(prefix: &str) -> PathBuf {
     );
     assert!(root.is_absolute(), "mktemp returns an absolute path");
     root
+}
+
+fn fresh_home_temp_dir(prefix: &str) -> PathBuf {
+    let home = std::env::var_os("HOME")
+        .map(PathBuf::from)
+        .expect("test runner HOME is present");
+    let template = home.join(format!(".{prefix}.XXXXXX"));
+    let output = Command::new("mktemp")
+        .arg("-d")
+        .arg(&template)
+        .output()
+        .expect("mktemp creates a fresh task-owned record directory");
+    assert!(
+        output.status.success(),
+        "mktemp failed: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let path = PathBuf::from(
+        String::from_utf8(output.stdout)
+            .expect("mktemp path is UTF-8")
+            .trim(),
+    );
+    assert!(path.is_absolute() && path.starts_with(&home));
+    path
 }
 
 fn sha256_file(path: &Path) -> String {

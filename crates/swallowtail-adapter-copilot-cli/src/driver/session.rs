@@ -17,6 +17,8 @@ struct CopilotCliSessionHandle {
     services: HostServices,
     resource: Option<ResourceLease>,
     active: ActiveSlot,
+    #[cfg(test)]
+    assessment_permission_action: Option<crate::assessment::CopilotCliAssessmentAction>,
 }
 
 impl InteractiveSessionHandle for CopilotCliSessionHandle {
@@ -58,8 +60,18 @@ impl InteractiveSessionHandle for CopilotCliSessionHandle {
                     "Copilot CLI session already has an active turn",
                 ));
             }
-            let (turn, events, terminal) =
-                ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone())?;
+            #[cfg(test)]
+            let turn_parts = match self.assessment_permission_action {
+                Some(action) => ActiveTurn::new_for_assessment(
+                    request.turn_id().clone(),
+                    self.provider_id.clone(),
+                    action,
+                ),
+                None => ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone()),
+            };
+            #[cfg(not(test))]
+            let turn_parts = ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone());
+            let (turn, events, terminal) = turn_parts?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             let connection = Arc::clone(&self.connection);
             let prompt_turn = Arc::clone(&turn);

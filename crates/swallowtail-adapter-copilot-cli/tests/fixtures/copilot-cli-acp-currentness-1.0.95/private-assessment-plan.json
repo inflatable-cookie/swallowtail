@@ -57,17 +57,18 @@
     "cleanup_budget_seconds": 3,
     "initialize_version": "1.0.95",
     "prompt_result": "cancelled",
+    "proof_runner_deadline": "absolute monotonic cutoff begins before prepared open; stop work at 57 seconds and reserve up to 3 seconds for cancellation and cleanup; public TurnRequest deadline rejection remains unchanged",
     "route_terminal_status": "ProviderRequestObserved (existing public permission-stop behavior)",
     "session_new": "success",
     "task_directory_bytes_unchanged": true,
-    "timeout_seconds_including_cleanup": 60,
-    "proof_runner_deadline": "absolute monotonic cutoff begins before prepared open; stop work at 57 seconds and reserve up to 3 seconds for cancellation and cleanup; public TurnRequest deadline rejection remains unchanged"
+    "timeout_seconds_including_cleanup": 60
   },
   "original_enable_gate": {
-    "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; hash approved executable bytes before discovery and re-hash that reference at the private prepared ProcessService boundary before forwarding the exact request; never read or serialize environment values; disclose the remaining check-to-open race",
-    "enforcement": "test-only prepared-path runner and one-shot ledger are implemented; this preparation plan hard-disables original effects and authorize_original_execution rejects every request",
+    "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; persist those safe identifiers and their hashes in private mode-0600 consumed records; hash approved executable bytes before discovery; freeze the bytes in a private mode-0700 directory and mode-0400 file with no planned writers; re-hash the approved path at the private prepared ProcessService boundary and forward the exact request; hash the original path and protected copy after cleanup; never read or serialize environment values; accept and disclose the trusted normal-host check-to-open path race",
+    "enable_command": "effigy validate:copilot-acp-private-assessment",
     "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-    "launch_side_persistence": "the same exclusive fsynced writer is exercised for attempt-4 and prompt-3 fake records in fresh scratch before prepared open and prompt; the disabled original branch writes no user-data record and starts no original",
+    "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied host services; Python only validates the disabled plan and cannot launch",
+    "launch_side_persistence": "the disabled Rust original branch writes no user-data record and starts no original; real local-process fake runs exercise the same exclusive fsynced attempt-4 and prompt-3 writers before prepared open and prompt",
     "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     "one_shot": "attempt-4 exclusive invocation record fsynced before prepared process start; prompt-3 exclusive prompt record fsynced before prepared turn; result follows cancellation, process stop, joins and release",
     "state": "disabled in this preparation turn"
@@ -77,16 +78,40 @@
   "prepared_path_sources": {
     "files": [
       {
+        "path": "Cargo.lock",
+        "sha256": "a4861a2fa31b732111dad056896056f835f796fcca7a93c02cf3db00b2044ca2"
+      },
+      {
         "path": "crates/swallowtail-adapter-copilot-cli/Cargo.toml",
-        "sha256": "6f14e8dfbe3bcfc3c1854f955ba03464ca2987e413acf6786a54451e369c6bc7"
+        "sha256": "014cf0c9a687d5f012bb7e1f5557c43b794782b877a95a416b26c1ce2fe370c3"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/acp_activity.rs",
+        "sha256": "be2e0be66a14dcbb8d73bee47e62e378356f0026aba1f8d984872a8c5bee8a6e"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/acp_activity/tool.rs",
+        "sha256": "d994211d4886bd72266b4356a2d21f993e383070f7c9069382a7249bb6a4ed15"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment.rs",
-        "sha256": "54ad1d894409025d2f8fb70990e3044165bf5c3adb2bd488080aac6b05eaf37e"
+        "sha256": "2cc35e1f9da9a35cef1d98376c1caac6ae96504a684899913eecd1a1aa1a04ac"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
+        "sha256": "8a909d4e756683e88caf611d2f0eee6a26743f52fb891bd79a8ed44c6d8217c7"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
-        "sha256": "c678c9d09a779c5dafb0686889ade6335befb90749b7f7149cc4233d42577c37"
+        "sha256": "65803f4e19cf141940c11c6e802091e2f8da5202b2ee0356308fe9f144b92ea6"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/connection.rs",
+        "sha256": "51fe7dacedf8a3e3ba5e1842a63516d48be35d5e5c2ba544a32f0a6c697d34e0"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/connection_dispatch.rs",
+        "sha256": "b4c87c41e8c8f8c71496b08f295820df54091b6061ad2bbcf74282547bf1bfc4"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/discovery.rs",
@@ -94,34 +119,54 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/driver.rs",
-        "sha256": "f90e1a80c3f3d035a3a6c2a4359581e97b893794983636146cafcba38d510167"
+        "sha256": "3548ec1bda9290c857ce788f2faf0bddfe2b5bfcd3f90d0d867bd5df77bfb629"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/driver/session.rs",
+        "sha256": "09566df323199b5abe8e15f02a6e39d99a8c7939cf228fd438f51b4046a26e55"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/lib.rs",
-        "sha256": "5944728bcbd487546f1852d9158eacee86319e6be971691f7d17494868638163"
+        "sha256": "aff1ef5333bb8f126e04a159375439026197082d85ba8cb9ccc0c0da602e3096"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/prepared.rs",
-        "sha256": "c6fc74c38955d1bb99bf3edae70babfa47143117c58dd140d16c78c3de9d139a"
+        "sha256": "b4c953c0dfc252e381772bec47bb289d21bcddc9bcb1869fa96275b7acaec2ec"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/prepared/session.rs",
-        "sha256": "004aeb824a1cf14340211b765c1acabf8fa31668e14d6e015f21475e8fa89d36"
+        "sha256": "5be327e0ea33ca152f0936d9ac9ee4dabe3fb1b3514d2ffc3e74a42b8ff87bcc"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/selection.rs",
         "sha256": "561b5cbc46c8cd2e86ef6c6f1f62e9e03ff297df5250d6512e69f1b6679012b9"
       },
       {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/turn.rs",
+        "sha256": "4bb70aae39a70ed18863779bfc43b614bbffb43357bf7e4d321362ebd7db4b64"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/src/turn_tests.rs",
+        "sha256": "5a3cc8e1ae73f5ac53510363c0364b073db90cc1dbd95873e38d24219096ac14"
+      },
+      {
+        "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.schema.json",
+        "sha256": "d4b93e3f0e3fb6cdc5d48aec8a0fcb6a3e6810a4e700ee464ac24f5c34828775"
+      },
+      {
         "path": "crates/swallowtail-adapter-copilot-cli/tests/support/agent.rs",
-        "sha256": "53f5805e758da5a801dead463152efcd1c30c7efadfb78b0957d4367c09311d7"
+        "sha256": "d54698688263d3df6832c34aa52595b8f9b0068c3ddcddbc0cbad83c55376e34"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/tests/support/mod.rs",
         "sha256": "75007757320b498dd5c96da188bd962b2f6e2a20cb62ff44a54df9ea4c6f25d4"
+      },
+      {
+        "path": "effigy.toml",
+        "sha256": "bab5a6c5a7aeb3eebd077ea72b4689f907e436a85e2fb84c37470398a682e418"
       }
     ],
-    "sha256": "027b84419a929648e8e5e922c64680faed3316debd7f0a35e2ff027c70ffa768"
+    "sha256": "5226939e91b53f701815ac0a30db6250ce62d5a05ea9f4779dd2aa56a4012762"
   },
   "production_route": {
     "argv": [
@@ -130,23 +175,24 @@
     ],
     "containment": "task scratch and joined owned process only; no arbitrary host or escaped-descendant containment claim",
     "environment_ref": {
-      "capture": "capture exact safe EnvironmentRef identifier and SHA-256 in private prepared binding before discovery; fake-only records bind its digest; never read or serialize environment values",
+      "capture": "capture the exact safe EnvironmentRef identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; never read or serialize environment values",
       "drift": "fail closed before process start",
       "forwarding": "pass unchanged through the prepared driver",
       "source": "approved host-owned EnvironmentRef"
     },
     "executable_ref": {
-      "capture": "capture exact safe ExecutableRef and SHA-256 in private prepared binding before discovery; re-hash that reference at the private prepared ProcessService boundary before forwarding the unchanged request",
+      "capture": "capture the exact safe ExecutableRef and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; re-hash the reference at the private prepared ProcessService boundary before forwarding the unchanged request",
       "drift": "fail closed before process start; the host still opens by path after the check, leaving a narrow disclosed check-to-open race",
       "sha256": "35d33e040e8aa0554a02385f02648396ba3b853f026ed1db17d30d051a764e4b",
       "source": "approved InstalledExecutableTarget",
       "target": "exact frozen native package/copilot bytes"
     },
     "execution_host_id": {
-      "capture": "capture exact safe identifier and SHA-256 in private prepared binding before discovery; fake-only records bind its digest",
+      "capture": "capture the exact safe identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects",
       "drift": "fail closed before process start",
       "source": "approved host input to the prepared facade"
     },
+    "launch_verification": "copy the captured exact executable bytes to a task-owned mode-0700 directory and mode-0400 file with no planned writers; verify approved identity and path bytes at the prepared ProcessService boundary, forward the unchanged request, and hash the approved path and protected copy after cleanup; accept and disclose the normal-host check-to-open path race",
     "login": "existing betterthanclay host-owned login; no credential or account-state read",
     "model_policy": "provider configured/default model; no model argument; record only if safely exposed",
     "working_resource": "fresh task-owned scratch containing only the permission sentinel"
@@ -174,17 +220,19 @@
     "public_qualified_point": "1.0.80"
   },
   "records": {
-    "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record",
+    "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record with exact safe host, executable, and environment identifiers and their hashes",
     "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, complete write and fsync file and parent before each effect",
     "execution_record": "1.0.95-execution.json; one final secret-free result record with artifact, runner, plan, and safe host-binding hashes",
     "failure_policy": "preserve consumed records; never delete, reset, replace or retry",
     "original_execution_enabled": false,
-    "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record",
+    "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record with the same exact safe identifiers and hashes",
     "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 119"
   },
   "runner": {
+    "implementation_path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
+    "implementation_sha256": "8a909d4e756683e88caf611d2f0eee6a26743f52fb891bd79a8ed44c6d8217c7",
     "path": "scripts/copilot-acp-private-assessment.py",
-    "sha256": "24e54b844b4fb40b63c7aad20ad6ab99c0c6abea59ecf60084dfb1d972c25b7f"
+    "sha256": "1360ea67a2c3499413c4b0dc0c351d18dd32bdf59bbe09dd0769cb3a4cf92b2c"
   },
   "schema": "copilot-cli-private-assessment-plan.v1",
   "task": {

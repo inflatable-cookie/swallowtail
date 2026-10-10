@@ -84,7 +84,7 @@ section = "Research Records"
   "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_cli_acp_identity --test prepared_facade --test activity_corpus --test acp_suite",
 ]
 "validate:copilot-acp-private-assessment" = [
-  "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::/)'",
+  "cargo nextest run --locked --profile ci --test-threads 1 -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::/)'",
   "python3 scripts/copilot-acp-private-assessment.py --self-test",
 ]
 "check:copilot-acp-authenticated-proof" = [

@@ -65,6 +65,21 @@ impl CopilotCliPreparationInput {
             access_evidence,
         }
     }
+
+    #[cfg(test)]
+    pub(crate) const fn execution_host_id(&self) -> &ExecutionHostId {
+        &self.execution_host_id
+    }
+
+    #[cfg(test)]
+    pub(crate) const fn target(&self) -> &InstalledExecutableTarget {
+        &self.target
+    }
+
+    #[cfg(test)]
+    pub(crate) const fn environment(&self) -> &EnvironmentRef {
+        &self.environment
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -273,6 +288,14 @@ pub(crate) async fn prepare_copilot_cli_acp_for_assessment_with_reader(
             "Private Copilot CLI assessment executable bytes do not match the pinned digest",
         ),
     })?;
+    let services = crate::assessment::guard_prepared_assessment_discovery(services, &binding)
+        .map_err(|_| {
+            failure(
+                PreparationStage::CompatibilityClassification,
+                "swallowtail.copilot-cli.acp.assessment.launch_binding_mismatch",
+                "Private Copilot CLI discovery does not match its captured host binding",
+            )
+        })?;
     let mut prepared =
         prepare_with_admission(input, probe, services, crate::assessment::admission()).await?;
     prepared.assessment_binding = Some(binding);

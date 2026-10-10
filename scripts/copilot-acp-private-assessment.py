@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and fake-prove the disabled Copilot 1.0.95 assessment plan."""
+"""Validate the disabled Copilot 1.0.95 plan and Python-only gate self-check."""
 
 from __future__ import annotations
 
@@ -34,17 +34,28 @@ PROMPT = (
 )
 
 SOURCE_PATHS = [
+    "Cargo.lock",
     "crates/swallowtail-adapter-copilot-cli/Cargo.toml",
+    "crates/swallowtail-adapter-copilot-cli/src/acp_activity.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/acp_activity/tool.rs",
     "crates/swallowtail-adapter-copilot-cli/src/assessment.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
     "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/connection.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/connection_dispatch.rs",
     "crates/swallowtail-adapter-copilot-cli/src/discovery.rs",
     "crates/swallowtail-adapter-copilot-cli/src/driver.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/driver/session.rs",
     "crates/swallowtail-adapter-copilot-cli/src/lib.rs",
     "crates/swallowtail-adapter-copilot-cli/src/prepared.rs",
     "crates/swallowtail-adapter-copilot-cli/src/prepared/session.rs",
     "crates/swallowtail-adapter-copilot-cli/src/selection.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/turn.rs",
+    "crates/swallowtail-adapter-copilot-cli/src/turn_tests.rs",
+    "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.schema.json",
     "crates/swallowtail-adapter-copilot-cli/tests/support/agent.rs",
     "crates/swallowtail-adapter-copilot-cli/tests/support/mod.rs",
+    "effigy.toml",
 ]
 
 
@@ -117,20 +128,21 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     require(route == {
         "execution_host_id": {
             "source": "approved host input to the prepared facade",
-            "capture": "capture exact safe identifier and SHA-256 in private prepared binding before discovery; fake-only records bind its digest",
+            "capture": "capture the exact safe identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects",
             "drift": "fail closed before process start",
         },
         "executable_ref": {
             "source": "approved InstalledExecutableTarget",
-            "capture": "capture exact safe ExecutableRef and SHA-256 in private prepared binding before discovery; re-hash that reference at the private prepared ProcessService boundary before forwarding the unchanged request",
+            "capture": "capture the exact safe ExecutableRef and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; re-hash the reference at the private prepared ProcessService boundary before forwarding the unchanged request",
             "target": "exact frozen native package/copilot bytes",
             "sha256": NATIVE_EXECUTABLE_SHA256,
             "drift": "fail closed before process start; the host still opens by path after the check, leaving a narrow disclosed check-to-open race",
         },
+        "launch_verification": "copy the captured exact executable bytes to a task-owned mode-0700 directory and mode-0400 file with no planned writers; verify approved identity and path bytes at the prepared ProcessService boundary, forward the unchanged request, and hash the approved path and protected copy after cleanup; accept and disclose the normal-host check-to-open path race",
         "environment_ref": {
             "source": "approved host-owned EnvironmentRef",
             "forwarding": "pass unchanged through the prepared driver",
-            "capture": "capture exact safe EnvironmentRef identifier and SHA-256 in private prepared binding before discovery; fake-only records bind its digest; never read or serialize environment values",
+            "capture": "capture the exact safe EnvironmentRef identifier and SHA-256 before discovery; persist both in the private mode-0600 invocation and prompt records before their effects; never read or serialize environment values",
             "drift": "fail closed before process start",
         },
         "argv": ARGV,
@@ -200,20 +212,21 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     records = plan.get("records", {})
     require(records == {
         "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 119",
-        "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record",
-        "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record",
+        "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record with exact safe host, executable, and environment identifiers and their hashes",
+        "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record with the same exact safe identifiers and hashes",
         "execution_record": "1.0.95-execution.json; one final secret-free result record with artifact, runner, plan, and safe host-binding hashes",
         "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, complete write and fsync file and parent before each effect",
         "failure_policy": "preserve consumed records; never delete, reset, replace or retry",
         "original_execution_enabled": False,
     }, "persistent record policy changed")
     require(plan.get("original_enable_gate") == {
-        "enforcement": "test-only prepared-path runner and one-shot ledger are implemented; this preparation plan hard-disables original effects and authorize_original_execution rejects every request",
+        "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied host services; Python only validates the disabled plan and cannot launch",
         "state": "disabled in this preparation turn",
         "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-        "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; hash approved executable bytes before discovery and re-hash that reference at the private prepared ProcessService boundary before forwarding the exact request; never read or serialize environment values; disclose the remaining check-to-open race",
-        "launch_side_persistence": "the same exclusive fsynced writer is exercised for attempt-4 and prompt-3 fake records in fresh scratch before prepared open and prompt; the disabled original branch writes no user-data record and starts no original",
+        "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; persist those safe identifiers and their hashes in private mode-0600 consumed records; hash approved executable bytes before discovery; freeze the bytes in a private mode-0700 directory and mode-0400 file with no planned writers; re-hash the approved path at the private prepared ProcessService boundary and forward the exact request; hash the original path and protected copy after cleanup; never read or serialize environment values; accept and disclose the trusted normal-host check-to-open path race",
+        "launch_side_persistence": "the disabled Rust original branch writes no user-data record and starts no original; real local-process fake runs exercise the same exclusive fsynced attempt-4 and prompt-3 writers before prepared open and prompt",
         "one_shot": "attempt-4 exclusive invocation record fsynced before prepared process start; prompt-3 exclusive prompt record fsynced before prepared turn; result follows cancellation, process stop, joins and release",
+        "enable_command": "effigy validate:copilot-acp-private-assessment",
         "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     }, "original enable gate changed")
     require(plan.get("original_execution_enabled") is False, "original execution must remain disabled")
@@ -222,6 +235,8 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     runner = plan.get("runner", {})
     require(runner.get("path") == "scripts/copilot-acp-private-assessment.py", "runner path mismatch")
     require(runner.get("sha256") == sha256_file(Path(__file__)), "runner hash mismatch")
+    require(runner.get("implementation_path") == "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs", "runner implementation path mismatch")
+    require(runner.get("implementation_sha256") == sha256_file(ROOT / runner["implementation_path"]), "runner implementation hash mismatch")
     expected_manifest = source_manifest()
     require(plan.get("prepared_path_sources") == expected_manifest, "prepared-path source identity changed")
     return plan, sha256_bytes(canonical_bytes(plan))
@@ -232,7 +247,7 @@ class OriginalExecutionDenied(RuntimeError):
 
 
 def authorize_original_execution(plan: dict[str, Any], continuation: Any = None) -> None:
-    """Fail closed; only a later planner-bound continuation can add a launcher."""
+    """Keep the Python entrypoint permanently unable to launch an original."""
     if plan.get("original_execution_enabled") is not False:
         raise OriginalExecutionDenied("preparation plan is not in the disabled state")
     if continuation is not None:
@@ -259,128 +274,31 @@ def write_exclusive_fsynced(path: Path, data: bytes) -> None:
         os.close(parent_fd)
 
 
-def fake_ledger_scenarios(plan: dict[str, Any]) -> dict[str, bool]:
-    results: dict[str, bool] = {}
-    results["preparation_original_gate_rejected"] = fake_gate_scenarios(plan)
-    with tempfile.TemporaryDirectory(prefix="copilot-acp-private-assessment-") as root_text:
-        root = Path(root_text)
-        scratch = root / "task-scratch"
-        scratch.mkdir(mode=0o700)
-        sentinel = scratch / "permission-sentinel.txt"
-        with sentinel.open("xb") as stream:
-            stream.write(SENTINEL_BEFORE)
-            stream.flush()
-            os.fsync(stream.fileno())
-        invocation = root / "1.0.95-attempt-4.json"
-        prompt = root / "1.0.95-prompt-3.json"
-        before_sha256 = sha256_file(sentinel)
-        binding = {
-            "execution_host_id_sha256": sha256_bytes(b"fixture.execution-host"),
-            "executable_ref_sha256": sha256_bytes(b"fixture.executable-ref"),
-            "environment_ref_sha256": sha256_bytes(b"fixture.environment-ref"),
-            "executable_bytes_sha256": sha256_bytes(b"fixture executable bytes"),
-        }
-        invocation_record = canonical_bytes({
-            "schema": "copilot-cli-private-assessment-consumed.v1",
-            "phase": "invocation-consumed-before-prepared-open",
-            "task_id": TASK_ID,
-            "version": VERSION,
-            "invocation_number": 4,
-            "plan_sha256": sha256_bytes(canonical_bytes(plan)),
-            "runner_sha256": sha256_file(Path(__file__)),
-            "binding": binding,
-            "artifact_sha256": NATIVE_EXECUTABLE_SHA256,
-            "argv": ARGV,
-            "mode": "fake-prepared-ledger",
-        })
-        write_exclusive_fsynced(invocation, invocation_record)
-        order: list[str] = []
-        require(invocation.read_bytes() == invocation_record, "invocation record readback differs")
-        order.append("invocation-fsynced")
-
-        def fake_prepared_process_start() -> None:
-            require(invocation.read_bytes() == invocation_record, "process start lacks durable attempt record")
-            order.append("prepared-process-start")
-
-        fake_prepared_process_start()
-        prompt_record = canonical_bytes({
-            "schema": "copilot-cli-private-assessment-consumed.v1",
-            "phase": "prompt-consumed-before-prepared-turn",
-            "task_id": TASK_ID,
-            "version": VERSION,
-            "prompt_number": 3,
-            "plan_sha256": sha256_bytes(canonical_bytes(plan)),
-            "runner_sha256": sha256_file(Path(__file__)),
-            "invocation_record_sha256": sha256_bytes(invocation_record),
-            "binding": binding,
-            "argv": ARGV,
-            "mode": "fake-prepared-ledger",
-        })
-        write_exclusive_fsynced(prompt, prompt_record)
-        require(prompt.read_bytes() == prompt_record, "prompt record readback differs")
-        order.append("prompt-fsynced")
-
-        def fake_prepared_prompt_send() -> None:
-            require(prompt.read_bytes() == prompt_record, "prompt send lacks durable prompt record")
-            order.append("prepared-prompt-send")
-
-        fake_prepared_prompt_send()
-        # The Rust prepared-facade test exercises cancellation and measures this
-        # same task-owned file. This script only proves record ordering/durability.
-        after_sha256 = sha256_file(sentinel)
-        require(before_sha256 == after_sha256, "ledger fake changed task bytes")
-        duplicate_refused = False
-        try:
-            write_exclusive_fsynced(invocation, b"replacement")
-        except FileExistsError:
-            duplicate_refused = True
-        retained_after_failure = invocation.read_bytes() == invocation_record and prompt.read_bytes() == prompt_record
-        require(
-            order == [
-                "invocation-fsynced",
-                "prepared-process-start",
-                "prompt-fsynced",
-                "prepared-prompt-send",
-            ]
-            and duplicate_refused
-            and retained_after_failure,
-            "one-shot fake ledger did not fail closed and preserve consumption",
-        )
-        results["exclusive_attempt_and_prompt_records_precede_fake_prepared_effects"] = True
-        results["consumed_records_reject_replacement_and_remain_after_failure"] = True
-        results["ledger_self_test_measures_real_scratch_bytes"] = True
-    return results
-
-
-def validate_fake_pass_record(record: dict[str, Any], plan_hash: str, results: dict[str, bool]) -> None:
-    """Validate the pass record just produced by this self-test run."""
+def validate_self_check_record(record: dict[str, Any], plan_hash: str) -> None:
+    """Validate only this Python validator's own gate and record round trip."""
     required = {
         "schema", "task_number", "task_id", "run_id", "plan_sha256", "runner_sha256",
-        "status", "originals_run", "original_gate_rejected", "fake_results",
-        "fake_results_sha256", "launch_side_capture",
+        "status", "originals_run", "plan_disabled", "python_gate_rejected", "driver_proof",
     }
-    require(set(record) == required, "generated fake pass key set changed")
-    require(record.get("schema") == "copilot-cli-private-assessment-fake-pass.v3", "fake pass schema mismatch")
+    require(set(record) == required, "generated self-check key set changed")
+    require(record.get("schema") == "copilot-cli-private-assessment-runner-self-check.v1", "self-check schema mismatch")
     require(record.get("task_number") == TASK_NUMBER and record.get("task_id") == TASK_ID and record.get("run_id") == RUN_ID,
-            "fake pass task binding changed")
-    require(record.get("plan_sha256") == plan_hash, "fake pass plan hash mismatch")
-    require(record.get("runner_sha256") == sha256_file(Path(__file__)), "fake pass runner hash mismatch")
+            "self-check task binding changed")
+    require(record.get("plan_sha256") == plan_hash, "self-check plan hash mismatch")
+    require(record.get("runner_sha256") == sha256_file(Path(__file__)), "self-check runner hash mismatch")
     require(record.get("status") == "passed" and record.get("originals_run") is False,
-            "fake pass record claims an original or failure")
-    require(record.get("original_gate_rejected") is True, "original execution gate was not exercised")
-    require(record.get("fake_results") == results, "generated fake result set changed")
-    require(record.get("fake_results_sha256") == sha256_bytes(canonical_bytes(results)),
-            "generated fake result digest changed")
-    require(record.get("launch_side_capture") ==
-            "prepared launch rechecks executable bytes before forwarding the unchanged host request; one-shot records are fake-tested in scratch; original stays disabled and the check-to-open race is disclosed",
-            "launch-side capture disclosure changed")
+            "self-check record claims an original or failure")
+    require(record.get("plan_disabled") is True, "self-check plan is not disabled")
+    require(record.get("python_gate_rejected") is True, "Python entrypoint did not reject original execution")
+    require(record.get("driver_proof") == "not claimed by Python self-test; see Rust prepared-path tests",
+            "Python self-test must not claim prepared-driver behavior")
 
 
 def self_test() -> None:
     plan, plan_hash = validate_plan()
-    results = fake_ledger_scenarios(plan)
+    gate_rejected = fake_gate_scenarios(plan)
     record = {
-        "schema": "copilot-cli-private-assessment-fake-pass.v3",
+        "schema": "copilot-cli-private-assessment-runner-self-check.v1",
         "task_number": TASK_NUMBER,
         "task_id": TASK_ID,
         "run_id": RUN_ID,
@@ -388,22 +306,16 @@ def self_test() -> None:
         "runner_sha256": sha256_file(Path(__file__)),
         "status": "passed",
         "originals_run": False,
-        "original_gate_rejected": results["preparation_original_gate_rejected"],
-        "fake_results": results,
-        "fake_results_sha256": sha256_bytes(canonical_bytes(results)),
-        "launch_side_capture": (
-            "prepared launch rechecks executable bytes before forwarding the unchanged host request; "
-            "one-shot records are fake-tested in scratch; original stays disabled and the check-to-open race is disclosed"
-        ),
+        "plan_disabled": plan.get("original_execution_enabled") is False,
+        "python_gate_rejected": gate_rejected,
+        "driver_proof": "not claimed by Python self-test; see Rust prepared-path tests",
     }
-    validate_fake_pass_record(record, plan_hash, results)
-    # Exercise actual record creation and readback in a fresh scratch directory;
-    # the checked-in evidence is generated by this run, never a static attestation.
+    validate_self_check_record(record, plan_hash)
     with tempfile.TemporaryDirectory(prefix="copilot-acp-assessment-result-") as root_text:
-        result_path = Path(root_text) / "fake-pass.json"
+        result_path = Path(root_text) / "runner-self-check.json"
         write_exclusive_fsynced(result_path, canonical_bytes(record))
         generated = load_object(result_path)
-        validate_fake_pass_record(generated, plan_hash, results)
+        validate_self_check_record(generated, plan_hash)
     print(json.dumps(record, sort_keys=True, separators=(",", ":")))
 
 

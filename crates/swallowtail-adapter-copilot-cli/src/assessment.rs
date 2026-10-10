@@ -16,10 +16,32 @@ pub(crate) const NATIVE_ARCHIVE_SHA256: &str =
 pub(crate) const NATIVE_EXECUTABLE_SHA256: &str =
     "35d33e040e8aa0554a02385f02648396ba3b853f026ed1db17d30d051a764e4b";
 
+#[cfg(test)]
+#[derive(Clone, Copy)]
+pub(crate) struct CopilotCliAssessmentAction {
+    pub(crate) tool_call_id: &'static str,
+    pub(crate) path: &'static str,
+    pub(crate) old_text: &'static str,
+    pub(crate) new_text: &'static str,
+}
+
+#[cfg(test)]
+impl CopilotCliAssessmentAction {
+    pub(crate) const fn sentinel_edit() -> Self {
+        Self {
+            tool_call_id: "sentinel-edit",
+            path: "permission-sentinel.txt",
+            old_text: "SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n",
+            new_text: "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n",
+        }
+    }
+}
+
 /// Safe, exact host inputs captured before the assessment's first process.
 ///
-/// Values are retained for binding checks but are never formatted or serialized
-/// by this module. The hashes are suitable for a secret-free execution record.
+/// Exact safe identifiers remain private for binding checks. The task runner
+/// writes those identifiers and their hashes only into mode-0600 consumed
+/// records; environment variable values are never read or serialized.
 #[derive(Clone, Eq, PartialEq)]
 pub(crate) struct CopilotCliAssessmentHostBinding {
     pub(crate) execution_host_id: String,
@@ -120,6 +142,24 @@ pub(crate) fn guard_prepared_assessment_launch(
     services: HostServices,
     binding: &CopilotCliAssessmentHostBinding,
 ) -> Result<HostServices, RuntimeFailure> {
+    guard_prepared_assessment_process(services, binding, ["--acp", "--stdio"])
+}
+
+/// Guards only the integrated executable-version discovery used by preparation.
+#[cfg(test)]
+pub(crate) fn guard_prepared_assessment_discovery(
+    services: HostServices,
+    binding: &CopilotCliAssessmentHostBinding,
+) -> Result<HostServices, RuntimeFailure> {
+    guard_prepared_assessment_process(services, binding, ["--version"])
+}
+
+#[cfg(test)]
+fn guard_prepared_assessment_process<const N: usize>(
+    services: HostServices,
+    binding: &CopilotCliAssessmentHostBinding,
+    arguments: [&'static str; N],
+) -> Result<HostServices, RuntimeFailure> {
     if services.execution_host_id().as_str() != binding.execution_host_id.as_str() {
         return Err(launch_identity_failure());
     }
@@ -132,6 +172,7 @@ pub(crate) fn guard_prepared_assessment_launch(
         executable_ref: binding.executable_ref.clone(),
         environment_ref: binding.environment_ref.clone(),
         executable_bytes_sha256: binding.executable_bytes_sha256.clone(),
+        arguments: arguments.map(str::to_owned).to_vec(),
     })))
 }
 
@@ -141,6 +182,7 @@ struct AssessmentLaunchGuard {
     executable_ref: String,
     environment_ref: String,
     executable_bytes_sha256: String,
+    arguments: Vec<String>,
 }
 
 #[cfg(test)]
@@ -156,9 +198,14 @@ impl ProcessService for AssessmentLaunchGuard {
                 .environment()
                 .map(|environment| environment.as_host_value())
                 .collect::<Vec<_>>();
+            let environment_matches = if self.arguments == ["--version"] {
+                environments.is_empty()
+            } else {
+                environments.as_slice() == [self.environment_ref.as_str()]
+            };
             if request.executable().as_host_value() != self.executable_ref
-                || arguments != ["--acp", "--stdio"]
-                || environments != [self.environment_ref.as_str()]
+                || arguments != self.arguments
+                || !environment_matches
             {
                 return Err(launch_identity_failure());
             }

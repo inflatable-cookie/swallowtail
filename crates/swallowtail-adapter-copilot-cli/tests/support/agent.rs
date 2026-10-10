@@ -252,24 +252,43 @@ impl SharedAgent {
                             }
                         }),
                     ),
-                    Scenario::Permission => Self::enqueue(
-                        &mut state,
-                        json!({
-                            "jsonrpc": "2.0",
-                            "id": 900,
-                            "method": "session/request_permission",
-                            "params": {
-                                "sessionId": "opaque-fixture-session",
-                                "toolCall": {"toolCallId": "tool-copilot", "status": "pending"},
-                                "options": [
-                                    {"optionId": "allow_always", "name": "allow_always", "kind": "allow_always"},
-                                    {"optionId": "allow_once", "name": "allow_once", "kind": "allow_once"},
-                                    {"optionId": "reject_once", "name": "reject_once", "kind": "reject_once"},
-                                    {"optionId": "reject_always", "name": "reject_always", "kind": "reject_always"}
-                                ]
-                            }
-                        }),
-                    ),
+                    Scenario::Permission => {
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "method": "session/update",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "update": {
+                                        "sessionUpdate": "tool_call",
+                                        "toolCallId": "tool-copilot",
+                                        "title": "Fixture execute action",
+                                        "kind": "execute",
+                                        "status": "pending"
+                                    }
+                                }
+                            }),
+                        );
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "id": 900,
+                                "method": "session/request_permission",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "toolCall": {"toolCallId": "tool-copilot", "status": "pending"},
+                                    "options": [
+                                        {"optionId": "allow_always", "name": "allow_always", "kind": "allow_always"},
+                                        {"optionId": "allow_once", "name": "allow_once", "kind": "allow_once"},
+                                        {"optionId": "reject_once", "name": "reject_once", "kind": "reject_once"},
+                                        {"optionId": "reject_always", "name": "reject_always", "kind": "reject_always"}
+                                    ]
+                                }
+                            }),
+                        );
+                    }
                     Scenario::AssessmentPermission
                     | Scenario::AssessmentPermissionMissingAction
                     | Scenario::AssessmentPermissionMismatchedAction => {

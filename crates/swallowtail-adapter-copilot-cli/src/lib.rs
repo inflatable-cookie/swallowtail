@@ -7,6 +7,8 @@
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
+// The test-only assessment result contains a deliberately complete evidence record.
+#![recursion_limit = "256"]
 
 mod access;
 mod acp_activity;

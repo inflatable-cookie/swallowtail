@@ -1,7 +1,9 @@
 use crate::failure::malformed;
 use std::collections::{BTreeMap, BTreeSet};
 use swallowtail_core::{ActivityContentStream, ActivityDisclosure, ProviderActivityRef};
-use swallowtail_protocol_acp::{AcpMessageChunk, AcpMessageRole, AcpSessionUpdate};
+#[cfg(test)]
+use swallowtail_protocol_acp::AcpToolCallContent;
+use swallowtail_protocol_acp::{AcpMessageChunk, AcpMessageRole, AcpSessionUpdate, AcpToolKind};
 use swallowtail_runtime::{
     ActivityAssistantPhase, ActivityContentChangeKind, ActivityContentUpdate, ActivityId,
     ActivityKind, ActivityLabel, ActivityLifecyclePhase, ActivityNamespace, ActivityObservation,
@@ -29,6 +31,36 @@ struct OpenActivity {
     disclosure: ActivityDisclosure,
     status: ActivityStatus,
     label: Option<ActivityLabel>,
+    tool_kind: Option<AcpToolKind>,
+    #[cfg(test)]
+    assessment_diffs: Vec<AssessmentToolDiff>,
+}
+
+#[cfg(test)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+struct AssessmentToolDiff {
+    path: String,
+    old_text: Option<String>,
+    new_text: String,
+}
+
+#[cfg(test)]
+fn assessment_diffs(content: &[AcpToolCallContent]) -> Vec<AssessmentToolDiff> {
+    content
+        .iter()
+        .filter_map(|item| match item {
+            AcpToolCallContent::Diff {
+                path,
+                old_text,
+                new_text,
+            } => Some(AssessmentToolDiff {
+                path: path.as_str().to_owned(),
+                old_text: old_text.as_ref().map(|text| text.as_str().to_owned()),
+                new_text: new_text.as_str().to_owned(),
+            }),
+            _ => None,
+        })
+        .collect()
 }
 
 impl AcpActivityProjection {
@@ -72,6 +104,41 @@ impl AcpActivityProjection {
                 self.observation(&activity, ActivityLifecyclePhase::Completed, status, None)
             })
             .collect()
+    }
+
+    pub(crate) fn is_pending_execute(&self, tool_call_id: &str) -> bool {
+        let key = format!("tool:{tool_call_id}");
+        self.open.get(&key).is_some_and(|activity| {
+            activity.tool_kind == Some(AcpToolKind::Execute)
+                && matches!(
+                    activity.status,
+                    ActivityStatus::Pending | ActivityStatus::InProgress
+                )
+        })
+    }
+
+    #[cfg(test)]
+    pub(crate) fn is_pending_execute_for_assessment(
+        &self,
+        tool_call_id: &str,
+        path: &str,
+        old_text: &str,
+        new_text: &str,
+    ) -> bool {
+        let key = format!("tool:{tool_call_id}");
+        self.open.get(&key).is_some_and(|activity| {
+            activity.tool_kind == Some(AcpToolKind::Execute)
+                && matches!(
+                    activity.status,
+                    ActivityStatus::Pending | ActivityStatus::InProgress
+                )
+                && activity.assessment_diffs.as_slice()
+                    == [AssessmentToolDiff {
+                        path: path.to_owned(),
+                        old_text: Some(old_text.to_owned()),
+                        new_text: new_text.to_owned(),
+                    }]
+        })
     }
 
     fn message(
@@ -135,6 +202,9 @@ impl AcpActivityProjection {
             disclosure: ActivityDisclosure::IdentityAndLifecycleOnly,
             status: ActivityStatus::Completed,
             label: None,
+            tool_kind: None,
+            #[cfg(test)]
+            assessment_diffs: Vec::new(),
         };
         Ok(vec![self.observation(
             &activity,
@@ -175,6 +245,9 @@ impl AcpActivityProjection {
             disclosure,
             status,
             label: None,
+            tool_kind: None,
+            #[cfg(test)]
+            assessment_diffs: Vec::new(),
         };
         self.open.insert(key.to_owned(), activity.clone());
         Ok(activity)

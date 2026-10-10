@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "copilot-cli-acp-host-permission-final-plan.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "plan_id",
+    "task_number",
+    "task_id",
+    "run_id",
+    "brief_sha256",
+    "operator_decision",
+    "source_proposal_sha256",
+    "preparation_plan_sha256",
+    "preparation_runner_sha256",
+    "preparation_execution_authorized",
+    "original_execution_enabled",
+    "execution_authorized",
+    "separate_original_authority_required",
+    "qualification_changed",
+    "source_attempt",
+    "artifact_inventory",
+    "artifacts",
+    "runner",
+    "pre_probes",
+    "invocation",
+    "action",
+    "attempt",
+    "ledger",
+    "normal_host_access",
+    "cleanup",
+    "fake_pass_record_path",
+    "authority_path"
+  ],
+  "properties": {
+    "schema": {
+      "const": "copilot-cli-acp-host-permission-final-plan.v1"
+    },
+    "plan_id": {
+      "const": "copilot-acp-normal-host-permission-1.0.93-task-171-v1"
+    },
+    "task_number": {
+      "const": 171
+    },
+    "task_id": {
+      "const": "251ff078-07d9-4b7d-8015-c9446788250c"
+    },
+    "run_id": {
+      "const": "27ec8859-5efc-4511-a9b3-56e3710f3097"
+    },
+    "brief_sha256": {
+      "const": "5b69971124d97b98f8d95ef4ca274465fa80e80a317e1732e4886897536978f0"
+    },
+    "operator_decision": {
+      "const": "acb7a075-390a-48b6-99b5-a6eea4d9920e"
+    },
+    "source_proposal_sha256": {
+      "const": "1e42dcf2188bedeeb8bd5b0e0505b4303c864a0063b2e1f47deb94c1b951717e"
+    },
+    "preparation_plan_sha256": {
+      "const": "469cacfe46125141c6142b7b8b9418805da00ae550fb6d9c672b994f439dd664"
+    },
+    "preparation_runner_sha256": {
+      "const": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc"
+    },
+    "preparation_execution_authorized": {
+      "const": false
+    },
+    "original_execution_enabled": {
+      "const": true
+    },
+    "execution_authorized": {
+      "const": true
+    },
+    "separate_original_authority_required": {
+      "const": true
+    },
+    "qualification_changed": {
+      "const": false
+    },
+    "source_attempt": {
+      "type": "object"
+    },
+    "artifact_inventory": {
+      "type": "object"
+    },
+    "artifacts": {
+      "type": "object"
+    },
+    "runner": {
+      "type": "object"
+    },
+    "pre_probes": {
+      "const": []
+    },
+    "invocation": {
+      "type": "object"
+    },
+    "action": {
+      "type": "object"
+    },
+    "attempt": {
+      "type": "object"
+    },
+    "ledger": {
+      "type": "object"
+    },
+    "normal_host_access": {
+      "type": "object"
+    },
+    "cleanup": {
+      "type": "object"
+    },
+    "fake_pass_record_path": {
+      "const": "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json"
+    },
+    "authority_path": {
+      "const": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-execution-authority.json"
+    }
+  }
+}

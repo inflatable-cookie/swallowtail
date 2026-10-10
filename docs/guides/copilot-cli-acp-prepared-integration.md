@@ -193,8 +193,16 @@ valid. The separate corrected-attempt proposal preserves the direct native
 version/distribution overrides, disables package updates for that child, and
 fails before session creation unless the reported version is exactly
 `1.0.93`. It is fake-tested and disabled pending separate original authority.
-It does not change the adapter guard, the `1.0.80` claim, or released
-contracts.
+Task 171 retained that proposal unchanged and bound a separate final plan and
+authority to one corrected original. The attempt matched `1.0.93`, initialized
+and created a session, then emitted a tool-call update without a permission
+request after its one prompt. The runner stopped; it observed no permission
+request or cancel result. The sentinel stayed unchanged and owned-process
+cleanup completed, while arbitrary vendor descendants remain unknown. The
+invocation and prompt slot are consumed; two of the three shared prompt slots
+remain. See [Research 437](../research/437-copilot-acp-corrected-normal-host-attempt.md).
+This is not qualification: the `1.0.80` claim, adapter guard and released
+contracts are unchanged.
 
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It

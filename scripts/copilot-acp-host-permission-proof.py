@@ -13,6 +13,7 @@ import platform
 import re
 import selectors
 import signal
+import stat
 import subprocess
 import sys
 import tarfile
@@ -31,9 +32,17 @@ PLAN_PATH = FIXTURE_DIR / "plan.json"
 SCHEMA_PATH = FIXTURE_DIR / "plan.schema.json"
 CORRECTION_PLAN_PATH = FIXTURE_DIR / "corrected-attempt-proposal.json"
 CORRECTION_SCHEMA_PATH = FIXTURE_DIR / "corrected-attempt-proposal.schema.json"
+FINAL_CORRECTION_PLAN_PATH = FIXTURE_DIR / "corrected-execution-plan.json"
+FINAL_CORRECTION_SCHEMA_PATH = FIXTURE_DIR / "corrected-execution-plan.schema.json"
 AUTHORITY_PATH = FIXTURE_DIR / "original-execution-authority.json"
 AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "original-execution-authority.schema.json"
+CORRECTED_AUTHORITY_PATH = FIXTURE_DIR / "corrected-execution-authority.json"
+CORRECTED_AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "corrected-execution-authority.schema.json"
 INVENTORY_PATH = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"
+CORRECTED_FAKE_PASS_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json"
+CORRECTED_ATTEMPT_EVIDENCE_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-attempt.json"
+CORRECTED_PROMPT_EVIDENCE_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-prompt-slot.json"
+CORRECTED_EXECUTION_EVIDENCE_PATH = ROOT / "docs/research/437-copilot-acp-corrected-normal-host-execution.json"
 ATTEMPT_EVIDENCE_NAME = "435-copilot-acp-normal-host-permission-attempt.json"
 PROMPT_EVIDENCE_NAME = "435-copilot-acp-normal-host-permission-prompt-slot.json"
 FRAME_LIMIT = 256 * 1024
@@ -77,10 +86,17 @@ FAKE_SCENARIOS = frozenset(
 )
 PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-v1"
 CORRECTION_PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-corrected-v1"
+FINAL_CORRECTION_PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-task-171-v1"
 PREPARATION_RUNNER_SHA256 = "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc"
+TASK170_CORRECTION_RUNNER_SHA256 = "838beb490b903aafb46580e4ccde74d614a3f2bd326a754755548431ecf4a316"
+CORRECTION_PROPOSAL_SHA256 = "1e42dcf2188bedeeb8bd5b0e0505b4303c864a0063b2e1f47deb94c1b951717e"
 ORIGINAL_AUTHORITY_RUNNER_SHA256 = "42b1cd5a09e6a8cf80674f972079cbdae618c7e882f9fcfea1d662744b56aa4b"
 HISTORICAL_AUTHORITY_SHA256 = "8df1d77fe399084345c0dd94c6b954428540d37e50380578542626fc0ad17eed"
 BRIEF_SHA256 = "bdc07153187bde4f603b10e3f3a55d2b7e3b17bca23fcf7e8c7dd5afe2654a29"
+CORRECTED_BRIEF_SHA256 = "5b69971124d97b98f8d95ef4ca274465fa80e80a317e1732e4886897536978f0"
+CORRECTED_TASK_ID = "251ff078-07d9-4b7d-8015-c9446788250c"
+CORRECTED_RUN_ID = "27ec8859-5efc-4511-a9b3-56e3710f3097"
+CORRECTED_OPERATOR_DECISION = "acb7a075-390a-48b6-99b5-a6eea4d9920e"
 EXPECTED_INVENTORY_SHA256 = "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
 EXPECTED_WRAPPER_ARCHIVE_SHA256 = "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"
 EXPECTED_NATIVE_ARCHIVE_SHA256 = "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb"
@@ -342,6 +358,8 @@ def plan_path_for(plan: dict[str, Any]) -> Path:
         return PLAN_PATH
     if plan.get("plan_id") == CORRECTION_PLAN_ID:
         return CORRECTION_PLAN_PATH
+    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        return FINAL_CORRECTION_PLAN_PATH
     raise ValueError("plan identity is outside the reviewed Copilot attempt set")
 
 
@@ -354,6 +372,12 @@ def expected_runner_sha256(plan: dict[str, Any], execution_kind: str) -> str:
         if runner_sha256 != ORIGINAL_AUTHORITY_RUNNER_SHA256:
             raise ValueError("historical authority runner identity changed")
         return runner_sha256
+    if plan.get("plan_id") == CORRECTION_PLAN_ID:
+        if plan.get("runner", {}).get("implementation_sha256") != TASK170_CORRECTION_RUNNER_SHA256:
+            raise ValueError("historical corrected proposal runner identity changed")
+        return TASK170_CORRECTION_RUNNER_SHA256
+    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        return plan.get("runner", {}).get("implementation_sha256", "")
     return sha256_file(SCRIPT_PATH)
 
 
@@ -647,7 +671,7 @@ def validate_correction_plan() -> dict[str, Any]:
         or plan.get("runner") != {
             "path": "scripts/copilot-acp-host-permission-proof.py",
             "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
-            "implementation_sha256": sha256_file(SCRIPT_PATH),
+            "implementation_sha256": TASK170_CORRECTION_RUNNER_SHA256,
         }
     ):
         raise ValueError("corrected proposal changed the frozen artifact or runner binding")
@@ -724,6 +748,216 @@ def validate_correction_plan() -> dict[str, Any]:
     ):
         raise ValueError("corrected proposal changed its one-shot, sentinel, host or cleanup boundary")
     return plan
+
+
+def validate_final_correction_plan() -> dict[str, Any]:
+    plan = load_object(FINAL_CORRECTION_PLAN_PATH)
+    schema = load_object(FINAL_CORRECTION_SCHEMA_PATH)
+    proposal = validate_correction_plan()
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-final-plan.v1"
+        or schema.get("additionalProperties") is not False
+        or set(plan) != set(schema.get("required", []))
+        or set(plan) != set(schema.get("properties", {}))
+        or plan.get("schema") != "copilot-cli-acp-host-permission-final-plan.v1"
+        or plan.get("plan_id") != FINAL_CORRECTION_PLAN_ID
+        or plan.get("task_number") != 171
+        or plan.get("task_id") != CORRECTED_TASK_ID
+        or plan.get("run_id") != CORRECTED_RUN_ID
+        or plan.get("brief_sha256") != CORRECTED_BRIEF_SHA256
+        or plan.get("operator_decision") != CORRECTED_OPERATOR_DECISION
+        or plan.get("source_proposal_sha256") != CORRECTION_PROPOSAL_SHA256
+        or sha256_file(CORRECTION_PLAN_PATH) != CORRECTION_PROPOSAL_SHA256
+        or plan.get("preparation_plan_sha256") != sha256_file(PLAN_PATH)
+        or plan.get("preparation_runner_sha256") != PREPARATION_RUNNER_SHA256
+        or plan.get("preparation_execution_authorized") is not False
+        or plan.get("original_execution_enabled") is not True
+        or plan.get("execution_authorized") is not True
+        or plan.get("separate_original_authority_required") is not True
+        or plan.get("qualification_changed") is not False
+        or plan.get("pre_probes") != []
+        or plan.get("fake_pass_record_path") != "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json"
+        or plan.get("authority_path") != "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-execution-authority.json"
+    ):
+        raise ValueError("final corrected plan is malformed or not bound to this one-shot task")
+
+    expected_runner = {
+        "path": "scripts/copilot-acp-host-permission-proof.py",
+        "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+        "implementation_sha256": sha256_file(SCRIPT_PATH),
+    }
+    if plan.get("runner") != expected_runner:
+        raise ValueError("final corrected plan does not bind this runner")
+
+    for key in (
+        "source_attempt", "artifact_inventory", "artifacts", "pre_probes",
+        "invocation", "action", "attempt", "normal_host_access", "cleanup",
+    ):
+        if plan.get(key) != proposal.get(key):
+            raise ValueError(f"final corrected plan changed the reviewed proposal field {key}")
+    expected_ledger = dict(proposal["ledger"])
+    expected_ledger["created_in_this_task"] = True
+    if plan.get("ledger") != expected_ledger:
+        raise ValueError("final corrected plan changed the reviewed Task 170 ledger paths")
+
+    serialized = json.dumps(plan, sort_keys=True)
+    for marker in FORBIDDEN_PERSISTED_MARKERS:
+        if marker in serialized:
+            raise ValueError("final corrected plan contains a secret or synthetic secret sentinel")
+    return plan
+
+
+def validate_fake_pass_record(path: Path = CORRECTED_FAKE_PASS_PATH) -> dict[str, Any]:
+    record = load_object(path)
+    expected_keys = {
+        "schema", "task_number", "task_id", "run_id", "operator_decision",
+        "source_proposal_sha256", "plan_sha256", "runner_sha256", "status",
+        "originals_run", "results",
+    }
+    plan = validate_final_correction_plan()
+    if (
+        set(record) != expected_keys
+        or record.get("schema") != "copilot-cli-acp-host-permission-fake-pass.v1"
+        or record.get("task_number") != 171
+        or record.get("task_id") != CORRECTED_TASK_ID
+        or record.get("run_id") != CORRECTED_RUN_ID
+        or record.get("operator_decision") != CORRECTED_OPERATOR_DECISION
+        or record.get("source_proposal_sha256") != CORRECTION_PROPOSAL_SHA256
+        or record.get("plan_sha256") != sha256_file(FINAL_CORRECTION_PLAN_PATH)
+        or record.get("runner_sha256") != sha256_file(SCRIPT_PATH)
+        or record.get("status") != "passed"
+        or record.get("originals_run") is not False
+        or not isinstance(record.get("results"), dict)
+        or record["results"].get("status") != "passed"
+        or record["results"].get("originals_run") is not False
+        or record["results"].get("qualification_changed") is not False
+        or record["results"].get("task_number") != 171
+        or record["results"].get("task_id") != CORRECTED_TASK_ID
+        or record["results"].get("run_id") != CORRECTED_RUN_ID
+        or record["results"].get("operator_decision") != CORRECTED_OPERATOR_DECISION
+        or record["results"].get("original_shaped_launch", {}).get("package_cache_cleanup") != "removed"
+        or record["results"].get("original_shaped_record_validation", {}).get("status") != "valid"
+        or record["results"].get("bounded_cleanup", {}).get("failure_class") != "timeout"
+        or record["results"].get("bounded_cleanup", {}).get("package_cache_cleanup") != "removed"
+        or record["results"].get("bounded_cleanup", {}).get("record_validation") != "valid"
+        or record["results"].get("package_cache_cleanup_error", {}).get("error_category") != "os-error"
+        or record["results"].get("package_cache_cleanup_error", {}).get("record_validation") != "valid"
+        or not all(record["results"].get("consumed_ledger_fsync", {}).values())
+        or record["results"].get("original_replay_refused", {}).get("attempt") is not True
+        or record["results"].get("original_replay_refused", {}).get("prompt") is not True
+        or any(marker in json.dumps(record, sort_keys=True) for marker in FORBIDDEN_PERSISTED_MARKERS)
+    ):
+        raise ValueError("corrected fake-pass record is malformed, stale, or contains unsafe data")
+    if plan["runner"]["implementation_sha256"] != record["runner_sha256"]:
+        raise ValueError("corrected fake-pass record does not bind the final runner")
+    return record
+
+
+def create_fake_pass_record(results: dict[str, Any]) -> dict[str, Any]:
+    plan = validate_final_correction_plan()
+    record = {
+        "schema": "copilot-cli-acp-host-permission-fake-pass.v1",
+        "task_number": 171,
+        "task_id": CORRECTED_TASK_ID,
+        "run_id": CORRECTED_RUN_ID,
+        "operator_decision": CORRECTED_OPERATOR_DECISION,
+        "source_proposal_sha256": CORRECTION_PROPOSAL_SHA256,
+        "plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
+        "runner_sha256": sha256_file(SCRIPT_PATH),
+        "status": "passed",
+        "originals_run": False,
+        "results": results,
+    }
+    if results.get("status") != "passed" or results.get("originals_run") is not False:
+        raise RuntimeError("fake-proof results cannot be retained as a passing record")
+    encoded = json.dumps(record, sort_keys=True, indent=2).encode() + b"\n"
+    parent = CORRECTED_FAKE_PASS_PATH.parent
+    if parent.is_symlink():
+        raise RuntimeError("fake-pass evidence path must not contain a symlink parent")
+    parent_fd = os.open(parent, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0))
+    try:
+        fd = os.open(
+            CORRECTED_FAKE_PASS_PATH.name,
+            os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
+            0o644,
+            dir_fd=parent_fd,
+        )
+        try:
+            offset = 0
+            while offset < len(encoded):
+                offset += os.write(fd, encoded[offset:])
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+        os.fsync(parent_fd)
+    finally:
+        os.close(parent_fd)
+    return record
+
+
+def validate_corrected_authority(
+    authority_path: Path = CORRECTED_AUTHORITY_PATH,
+    *,
+    plan: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any], str]:
+    bound_plan = plan if plan is not None else validate_final_correction_plan()
+    authority = load_object(authority_path)
+    schema = load_object(CORRECTED_AUTHORITY_SCHEMA_PATH)
+    fake_pass = validate_fake_pass_record(ROOT / bound_plan["fake_pass_record_path"])
+    fake_pass_sha256 = sha256_file(ROOT / bound_plan["fake_pass_record_path"])
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-corrected-execution-authority.v1"
+        or schema.get("additionalProperties") is not False
+        or set(authority) != set(schema.get("required", []))
+        or set(authority) != set(schema.get("properties", {}))
+    ):
+        raise ValueError("corrected execution authority schema does not describe the exact manifest")
+    expected = {
+        "schema": "copilot-cli-acp-host-permission-corrected-execution-authority.v1",
+        "task_number": 171,
+        "task_id": CORRECTED_TASK_ID,
+        "run_id": CORRECTED_RUN_ID,
+        "brief_sha256": CORRECTED_BRIEF_SHA256,
+        "operator_decision": CORRECTED_OPERATOR_DECISION,
+        "source_proposal_sha256": CORRECTION_PROPOSAL_SHA256,
+        "source_attempt_record_sha256": bound_plan["source_attempt"]["attempt_record_sha256"],
+        "source_observation_record_sha256": bound_plan["source_attempt"]["observation_record_sha256"],
+        "preparation_plan_sha256": sha256_file(PLAN_PATH),
+        "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+        "final_plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
+        "plan_id": FINAL_CORRECTION_PLAN_ID,
+        "final_runner_sha256": sha256_file(SCRIPT_PATH),
+        "fake_pass_record_path": bound_plan["fake_pass_record_path"],
+        "fake_pass_record_sha256": fake_pass_sha256,
+        "route": "copilot-cli.acp",
+        "target_version": "1.0.93",
+        "platform": "darwin-arm64",
+        "account_ref": "betterthanclay",
+        "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
+        "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
+        "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
+        "argv": ["--model", "auto", "--acp", "--stdio"],
+        "environment_policy": bound_plan["invocation"]["environment_policy"],
+        "execution_authorized": True,
+        "maximum_invocations": 1,
+        "maximum_prompts": 1,
+        "consumed_invocations_before": 1,
+        "shared_prompt_slots_consumed_before": 0,
+        "shared_prompt_slots_remaining_before": 3,
+        "maximum_seconds": 60,
+        "cleanup_seconds": 3,
+        "attempt_path": bound_plan["ledger"]["attempt_path"],
+        "prompt_path": bound_plan["ledger"]["prompt_path"],
+        "execution_record_path": bound_plan["ledger"]["execution_path"],
+        "qualification_changed": False,
+        "reviewer_original_attempts": 0,
+        "older_versions_started": [],
+    }
+    if authority != expected:
+        raise ValueError("corrected execution authority does not exactly bind this task, decision and fake proof")
+    if fake_pass.get("runner_sha256") != authority["final_runner_sha256"]:
+        raise ValueError("corrected execution authority and fake-pass runner identities differ")
+    return authority, sha256_file(authority_path)
 
 
 def validate_execution_authority(
@@ -1024,6 +1258,13 @@ def write_attempt_ledger(
         "invocation_consumed_before_launch": True,
         "created_at": utc_now(),
     }
+    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        value.update({
+            "task_number": plan["task_number"],
+            "task_id": plan["task_id"],
+            "run_id": plan["run_id"],
+            "operator_decision": plan["operator_decision"],
+        })
     if execution_kind == "original":
         value["execution_authority_sha256"] = authority_sha256
     return durable_create_once(path, value)
@@ -1056,6 +1297,13 @@ def validate_attempt_record(
     }
     if execution_kind == "original":
         expected["execution_authority_sha256"] = authority_sha256
+    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        expected.update({
+            "task_number": plan["task_number"],
+            "task_id": plan["task_id"],
+            "run_id": plan["run_id"],
+            "operator_decision": plan["operator_decision"],
+        })
     if (
         set(value) != set(expected) | {"created_at"}
         or not isinstance(value.get("created_at"), str)
@@ -1100,6 +1348,8 @@ def validate_original_execution_record(
     record: dict[str, Any],
     plan: dict[str, Any],
     authority_sha256: str,
+    *,
+    allow_fake_authority: bool = False,
 ) -> dict[str, Any]:
     legacy_fields = {
         "schema", "execution_kind", "original_execution", "plan_sha256",
@@ -1119,12 +1369,18 @@ def validate_original_execution_record(
         schema == "copilot-cli-acp-host-permission-original-execution.v1" and set(record) == legacy_fields
         or schema == "copilot-cli-acp-host-permission-original-execution.v2"
         and set(record) == legacy_fields | {"agent_version_reported"}
+        or schema == "copilot-cli-acp-host-permission-original-execution.v3"
+        and set(record) == legacy_fields | {
+            "agent_version_reported", "task_number", "task_id", "run_id",
+            "operator_decision", "package_cache_cleanup", "package_cache_cleanup_error",
+        }
     ):
         raise ValueError("original record fields differ from the reviewed safe vocabulary")
     if (
         schema not in {
             "copilot-cli-acp-host-permission-original-execution.v1",
             "copilot-cli-acp-host-permission-original-execution.v2",
+            "copilot-cli-acp-host-permission-original-execution.v3",
         }
         or record.get("execution_kind") != "original"
         or record.get("original_execution") is not True
@@ -1140,6 +1396,32 @@ def validate_original_execution_record(
         or record.get("descendant_cleanup") != "unknown-for-arbitrary-vendor-descendants"
     ):
         raise ValueError("original record does not bind the exact authorized execution")
+    if schema == "copilot-cli-acp-host-permission-original-execution.v3":
+        if plan.get("plan_id") != FINAL_CORRECTION_PLAN_ID or any(
+            record.get(name) != plan.get(name)
+            for name in ("task_number", "task_id", "run_id", "operator_decision")
+        ):
+            raise ValueError("corrected original record does not bind this task and decision")
+        if (
+            record.get("package_cache_cleanup") not in {"not-created", "removed", "failed"}
+            or record.get("package_cache_cleanup_error") not in {"none", "os-error", "cache-remains"}
+            or (record.get("package_cache_cleanup") == "removed")
+            != (record.get("package_cache_cleanup_error") == "none")
+            or record.get("package_cache_cleanup") == "not-created"
+            and record.get("package_cache_cleanup_error") != "none"
+            or record.get("package_cache_cleanup") == "failed"
+            and record.get("package_cache_cleanup_error") == "none"
+        ):
+            raise ValueError("corrected package-cache cleanup observation is invalid")
+        if record.get("failure_class") == "package-cache-cleanup-failed" and (
+            record.get("package_cache_cleanup") != "failed"
+            or record.get("failure_stage") != "cleanup"
+        ):
+            raise ValueError("package-cache cleanup failure classification is inconsistent")
+        if not allow_fake_authority:
+            _, expected_authority_sha256 = validate_corrected_authority()
+            if authority_sha256 != expected_authority_sha256:
+                raise ValueError("corrected original record does not bind the task authority")
     model = record.get("model_observation")
     if model != "unobserved" and (
         not isinstance(model, str)
@@ -1166,7 +1448,7 @@ def validate_original_execution_record(
             "unexpected-callback-before-response", "unrequested-tool-call-update",
             "malformed-frame", "inbound-frame-oversized", "outbound-frame-oversized",
             "unknown-eof", "timeout", "permission-proof-incomplete",
-            "sentinel-changed-after-prompt",
+            "sentinel-changed-after-prompt", "package-cache-cleanup-failed",
         }
         or record.get("failure_stage") not in {
             "none", "launch", "initialize", "session-new", "session-prompt", "cleanup"
@@ -1278,6 +1560,11 @@ def validate_original_execution_record(
         or cleanup.get("root_exit_observed") is not True
         or cleanup.get("process_group_empty_observed") is not True
         or cleanup.get("streams_joined") is not True
+        or schema == "copilot-cli-acp-host-permission-original-execution.v3"
+        and (
+            record.get("package_cache_cleanup") != "removed"
+            or record.get("package_cache_cleanup_error") != "none"
+        )
     ):
         raise ValueError("passing original record lacks the reviewed cancellation and cleanup evidence")
     if record.get("status") == "failed" and record.get("failure_class") == "none":
@@ -1291,9 +1578,13 @@ def validate_original_execution_evidence(
     prompt_path: Path,
     plan: dict[str, Any],
     authority_sha256: str,
+    *,
+    allow_fake_authority: bool = False,
 ) -> dict[str, Any]:
     record = load_object(record_path)
-    result = validate_original_execution_record(record, plan, authority_sha256)
+    result = validate_original_execution_record(
+        record, plan, authority_sha256, allow_fake_authority=allow_fake_authority
+    )
     if attempt_path.is_symlink() or not attempt_path.is_file():
         raise ValueError("original invocation ledger evidence is missing or linked")
     attempt_bytes = attempt_path.read_bytes()
@@ -1309,7 +1600,53 @@ def validate_original_execution_evidence(
     validate_original_ledger_bindings(
         record, attempt_bytes, prompt_bytes, plan, authority_sha256
     )
+    for path in (attempt_path, *([prompt_path] if prompt_bytes is not None else []), record_path):
+        metadata = path.lstat()
+        if (
+            not path.is_file()
+            or path.is_symlink()
+            or metadata.st_uid != os.getuid()
+            or metadata.st_mode & 0o777 != 0o600
+        ):
+            raise ValueError("original evidence record is not a private current-user file")
     return result
+
+
+def validate_corrected_original_evidence(public_record_path: Path) -> dict[str, Any]:
+    if public_record_path.resolve() != CORRECTED_EXECUTION_EVIDENCE_PATH.resolve():
+        raise ValueError("corrected original validation requires the allocated Research 437 record")
+    plan = validate_final_correction_plan()
+    _, authority_sha256 = validate_corrected_authority(plan=plan)
+    paths = original_ledger_paths(plan)
+    result = validate_original_execution_evidence(
+        paths["execution"], paths["attempt"], paths["prompt"], plan, authority_sha256
+    )
+    public_pairs = [
+        (CORRECTED_ATTEMPT_EVIDENCE_PATH, paths["attempt"]),
+        (CORRECTED_EXECUTION_EVIDENCE_PATH, paths["execution"]),
+    ]
+    private_prompt_present = paths["prompt"].exists() or paths["prompt"].is_symlink()
+    public_prompt_present = (
+        CORRECTED_PROMPT_EVIDENCE_PATH.exists()
+        or CORRECTED_PROMPT_EVIDENCE_PATH.is_symlink()
+    )
+    if private_prompt_present != public_prompt_present:
+        raise ValueError("public prompt-slot evidence does not match the consumed private ledger")
+    if private_prompt_present:
+        public_pairs.append((CORRECTED_PROMPT_EVIDENCE_PATH, paths["prompt"]))
+    for public_path, private_path in public_pairs:
+        if (
+            public_path.is_symlink()
+            or not public_path.is_file()
+            or public_path.read_bytes() != private_path.read_bytes()
+        ):
+            raise ValueError("Research 437 evidence copy differs from its durable private record")
+    return {
+        **result,
+        "invocations_consumed": 1,
+        "prompt_slots_consumed": 1 if private_prompt_present else 0,
+        "prompt_slots_remaining": 2 if private_prompt_present else 3,
+    }
 
 
 def validate_original_ledger_bindings(
@@ -1449,33 +1786,67 @@ def stage_reviewed_artifacts(root: Path, plan: dict[str, Any]) -> Path:
     native = validate_inventory_package(inventory, "@github/copilot-darwin-arm64", "1.0.93")
     stage_root = root / "staged-artifacts"
     stage_root.mkdir(mode=0o700)
-    wrapper_identity = plan["artifacts"]["wrapper"]
-    native_identity = plan["artifacts"]["native"]
+    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        wrapper_identity = {
+            "package": "@github/copilot",
+            "version": "1.0.93",
+            "archive_sha256": plan["artifacts"]["wrapper_archive_sha256"],
+            "package_manifest_sha256": EXPECTED_WRAPPER_MANIFEST_SHA256,
+            "archive_url": wrapper["dist"]["tarball"],
+            "archive_integrity": wrapper["dist"]["integrity"],
+        }
+        native_identity = {
+            "package": "@github/copilot-darwin-arm64",
+            "version": "1.0.93",
+            "archive_sha256": plan["artifacts"]["native_archive_sha256"],
+            "package_manifest_sha256": plan["artifacts"]["native_manifest_sha256"],
+            "executable_sha256": plan["artifacts"]["native_executable_sha256"],
+            "archive_url": native["dist"]["tarball"],
+            "archive_integrity": native["dist"]["integrity"],
+        }
+    else:
+        wrapper_identity = plan["artifacts"]["wrapper"]
+        native_identity = plan["artifacts"]["native"]
     wrapper_archive = download_official_archive(wrapper_identity, stage_root / "wrapper-1.0.93.tgz")
     validate_archive_payload(wrapper_archive, wrapper_identity, wrapper)
     native_archive = download_official_archive(native_identity, stage_root / "native-1.0.93.tgz")
     executable = stage_root / "native" / "package" / "copilot"
     validate_archive_payload(native_archive, native_identity, native, output_executable=executable)
-    if sha256_file(executable) != plan["artifact_staging"]["native_executable_sha256"]:
+    expected_executable_sha256 = (
+        plan["artifacts"]["native_executable_sha256"]
+        if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID
+        else plan["artifact_staging"]["native_executable_sha256"]
+    )
+    if sha256_file(executable) != expected_executable_sha256:
         raise ValueError("staged native executable differs from the frozen execution plan")
     return executable
 
 
 def original_ledger_paths(plan: dict[str, Any]) -> dict[str, Path]:
-    root = Path.home() / "Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168"
-    paths = {
-        "root": root,
-        "attempt": root / "1.0.93-attempt.json",
-        "prompt": root / "1.0.93-prompt-1.json",
-        "execution": root / "1.0.93-execution.json",
-    }
+    root_suffix = (
+        "Task 170" if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID else "Task 168"
+    )
+    root = Path.home() / "Library/Application Support/Swallowtail/Copilot ACP Permission Proof" / root_suffix
+    corrected = root_suffix == "Task 170"
+    names = (
+        ("1.0.93-corrected-attempt.json", "1.0.93-corrected-prompt-1.json", "1.0.93-corrected-execution.json")
+        if corrected
+        else ("1.0.93-attempt.json", "1.0.93-prompt-1.json", "1.0.93-execution.json")
+    )
+    paths = {"root": root, "attempt": root / names[0], "prompt": root / names[1], "execution": root / names[2]}
     expected = {
-        "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168",
-        "attempt": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-attempt.json",
-        "prompt": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-prompt-1.json",
-        "execution": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-execution.json",
+        "root": f"$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/{root_suffix}",
+        "attempt": f"$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/{root_suffix}/{names[0]}",
+        "prompt": f"$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/{root_suffix}/{names[1]}",
+        "execution": f"$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/{root_suffix}/{names[2]}",
     }
-    if plan["ledger"]["root"] != expected["root"] or plan["ledger"]["attempt_path"] != expected["attempt"] or plan["ledger"]["prompt_path"] != expected["prompt"]:
+    actual = {
+        "root": plan["ledger"]["root"],
+        "attempt": plan["ledger"]["attempt_path"],
+        "prompt": plan["ledger"]["prompt_path"],
+        "execution": plan["ledger"]["execution_path"],
+    }
+    if actual != expected:
         raise ValueError("reviewed durable ledger paths changed")
     return paths
 
@@ -1562,6 +1933,8 @@ def run_original_session(
     version_observation = "unknown"
     version_reported: str | None = None
     model_observation = "unobserved"
+    package_cache_cleanup = "not-created"
+    package_cache_cleanup_error = "none"
     stderr = BoundedDiagnostics()
     cleanup = {
         "root_exit_observed": False,
@@ -1573,10 +1946,11 @@ def run_original_session(
     }
     try:
         argv = [str(executable), *plan["invocation"]["argv"]]
-        if plan.get("plan_id") == CORRECTION_PLAN_ID:
+        if plan.get("plan_id") in {CORRECTION_PLAN_ID, FINAL_CORRECTION_PLAN_ID}:
             package_cache = tempfile.TemporaryDirectory(
                 prefix="copilot-acp-package-cache.", dir=action.parent
             )
+            package_cache_cleanup = "pending"
             child_environment = corrected_launch_environment(
                 os.environ if base_environment is None else base_environment,
                 Path(package_cache.name),
@@ -1758,7 +2132,27 @@ def run_original_session(
                     except OSError:
                         pass
         if package_cache is not None:
-            package_cache.cleanup()
+            cache_path = Path(package_cache.name)
+            try:
+                package_cache.cleanup()
+            except OSError:
+                package_cache_cleanup = "failed"
+                package_cache_cleanup_error = "os-error"
+            else:
+                try:
+                    cache_remains = cache_path.exists()
+                except OSError:
+                    cache_remains = True
+                    package_cache_cleanup_error = "os-error"
+                if cache_remains:
+                    package_cache_cleanup = "failed"
+                    if package_cache_cleanup_error == "none":
+                        package_cache_cleanup_error = "cache-remains"
+                else:
+                    package_cache_cleanup = "removed"
+            if package_cache_cleanup == "failed" and failure == "none":
+                failure = "package-cache-cleanup-failed"
+                failure_stage = "cleanup"
 
     sentinel_unchanged = original_directory_unchanged(action)
     action_directory_unchanged = sentinel_unchanged
@@ -1790,7 +2184,11 @@ def run_original_session(
         failure = "permission-proof-incomplete"
         failure_stage = "cleanup"
     record = {
-        "schema": "copilot-cli-acp-host-permission-original-execution.v2",
+        "schema": (
+            "copilot-cli-acp-host-permission-original-execution.v3"
+            if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID
+            else "copilot-cli-acp-host-permission-original-execution.v2"
+        ),
         "execution_kind": "original",
         "original_execution": True,
         "plan_sha256": sha256_file(plan_path_for(plan)),
@@ -1829,7 +2227,18 @@ def run_original_session(
         "raw_stderr_persisted": False,
         "completed_at": utc_now(),
     }
-    validate_original_execution_record(record, plan, authority_sha256)
+    if plan.get("plan_id") == FINAL_CORRECTION_PLAN_ID:
+        record.update({
+            "task_number": plan["task_number"],
+            "task_id": plan["task_id"],
+            "run_id": plan["run_id"],
+            "operator_decision": plan["operator_decision"],
+            "package_cache_cleanup": package_cache_cleanup,
+            "package_cache_cleanup_error": package_cache_cleanup_error,
+        })
+    validate_original_execution_record(
+        record, plan, authority_sha256, allow_fake_authority=fake_test
+    )
     validate_original_ledger_bindings(
         record, attempt_bytes, prompt_slot_bytes, plan, authority_sha256
     )
@@ -1858,6 +2267,30 @@ def execute_original(authority_path: Path = AUTHORITY_PATH) -> dict[str, Any]:
         executable = stage_reviewed_artifacts(root, plan)
         if sha256_file(executable) != authority["native_executable_sha256"]:
             raise ValueError("staged executable does not match the final execution authority")
+        action = prepare_action_directory(root)
+        return run_original_session(
+            executable, action, paths["attempt"], paths["prompt"], paths["execution"],
+            plan, authority, authority_sha256,
+        )
+
+
+def execute_corrected_original() -> dict[str, Any]:
+    plan = validate_final_correction_plan()
+    authority, authority_sha256 = validate_corrected_authority(plan=plan)
+    if authority["final_runner_sha256"] != sha256_file(SCRIPT_PATH):
+        raise RuntimeError("corrected authority is bound to an earlier runner; refusing launch")
+    if platform.system() != "Darwin" or platform.machine().lower() not in {"arm64", "aarch64"}:
+        raise RuntimeError("normal-host execution requires the reviewed Darwin arm64 platform")
+    paths = original_ledger_paths(plan)
+    if any(path.exists() or path.is_symlink() for path in (paths["attempt"], paths["prompt"], paths["execution"])):
+        raise RuntimeError("a corrected attempt, prompt slot or execution record already exists")
+    with tempfile.TemporaryDirectory(prefix="copilot-acp-normal-host-corrected-permission.") as temp_root:
+        root = Path(temp_root).resolve()
+        if root == ROOT or ROOT in root.parents:
+            raise RuntimeError("artifact staging root must be a fresh directory outside the checkout")
+        executable = stage_reviewed_artifacts(root, plan)
+        if sha256_file(executable) != authority["native_executable_sha256"]:
+            raise ValueError("staged executable does not match the corrected execution authority")
         action = prepare_action_directory(root)
         return run_original_session(
             executable, action, paths["attempt"], paths["prompt"], paths["execution"],
@@ -2724,6 +3157,7 @@ def run_fake_original(
 def self_test() -> dict[str, Any]:
     plan = validate_plan()
     correction_plan = validate_correction_plan()
+    final_correction_plan = validate_final_correction_plan()
     authority, authority_sha256 = validate_execution_authority(plan=plan)
     fake_authority = {"execution_authorized": False}
     fake_authority_sha256 = sha256_bytes(b"disabled-correction-plan-fake-authority")
@@ -2745,6 +3179,12 @@ def self_test() -> dict[str, Any]:
             "plan_sha256": sha256_file(CORRECTION_PLAN_PATH),
             "execution_authorized": correction_plan["execution_authorized"],
             "pre_probes": len(correction_plan["pre_probes"]),
+        }
+        results["final_corrected_plan"] = {
+            "plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
+            "task_number": final_correction_plan["task_number"],
+            "execution_authorized": final_correction_plan["execution_authorized"],
+            "fake_pass_record_path": final_correction_plan["fake_pass_record_path"],
         }
 
         bad_authority_path = scratch / "mismatched-authority.json"
@@ -2800,14 +3240,41 @@ def self_test() -> dict[str, Any]:
             raise RuntimeError("sanitized fake result persisted a raw secret/config marker")
         results["success"] = success
 
-        original_success, original_paths = run_fake_original(
-            scratch / "original-success", "success", correction_plan,
-            fake_authority, fake_authority_sha256,
-        )
-        validate_original_execution_evidence(
+        fsynced_regular_inodes: set[int] = set()
+        fsynced_directory_inodes: set[int] = set()
+        real_fsync = os.fsync
+
+        def record_fsync(descriptor: int) -> None:
+            metadata = os.fstat(descriptor)
+            if stat.S_ISREG(metadata.st_mode):
+                fsynced_regular_inodes.add(metadata.st_ino)
+            elif stat.S_ISDIR(metadata.st_mode):
+                fsynced_directory_inodes.add(metadata.st_ino)
+            real_fsync(descriptor)
+
+        os.fsync = record_fsync
+        try:
+            original_success, original_paths = run_fake_original(
+                scratch / "original-success", "success", final_correction_plan,
+                fake_authority, fake_authority_sha256,
+            )
+        finally:
+            os.fsync = real_fsync
+        original_validation = validate_original_execution_evidence(
             original_paths["execution"], original_paths["attempt"],
-            original_paths["prompt"], correction_plan, fake_authority_sha256,
+            original_paths["prompt"], final_correction_plan, fake_authority_sha256,
+            allow_fake_authority=True,
         )
+        results["original_shaped_record_validation"] = original_validation
+        ledger_parent_inode = original_paths["attempt"].parent.stat().st_ino
+        ledger_fsync = {
+            "attempt_file": original_paths["attempt"].stat().st_ino in fsynced_regular_inodes,
+            "prompt_file": original_paths["prompt"].stat().st_ino in fsynced_regular_inodes,
+            "parent_directory": ledger_parent_inode in fsynced_directory_inodes,
+        }
+        if not all(ledger_fsync.values()):
+            raise RuntimeError("original-shaped fake did not fsync both consumed ledgers and their parent")
+        results["consumed_ledger_fsync"] = ledger_fsync
         launch_observation = load_object(original_paths["launch_observation"])
         if (
             original_success["status"] != "passed"
@@ -2838,6 +3305,7 @@ def self_test() -> dict[str, Any]:
             )
         results["original_shaped_launch"] = {
             "status": original_success["status"],
+            "package_cache_cleanup": original_success["package_cache_cleanup"],
             "argv": "matched --model auto --acp --stdio",
             "environment": launch_observation,
             "private_package_cache_removed_after_cleanup": True,
@@ -2855,7 +3323,10 @@ def self_test() -> dict[str, Any]:
             tampered = dict(original_success)
             tampered.update(changes)
             try:
-                validate_original_execution_record(tampered, correction_plan, fake_authority_sha256)
+                validate_original_execution_record(
+                    tampered, final_correction_plan, fake_authority_sha256,
+                    allow_fake_authority=True,
+                )
             except ValueError:
                 original_record_tamper_rejections[name] = True
             else:
@@ -2875,7 +3346,10 @@ def self_test() -> dict[str, Any]:
             tampered = dict(original_success)
             tampered["agent_version_reported"] = reported
             try:
-                validate_original_execution_record(tampered, correction_plan, fake_authority_sha256)
+                validate_original_execution_record(
+                    tampered, final_correction_plan, fake_authority_sha256,
+                    allow_fake_authority=True,
+                )
             except ValueError:
                 version_record_tamper_rejections[name] = True
             else:
@@ -2895,7 +3369,7 @@ def self_test() -> dict[str, Any]:
         original_attempt_replay_refused = False
         try:
             write_attempt_ledger(
-                original_paths["attempt"], correction_plan, "original",
+                original_paths["attempt"], final_correction_plan, "original",
                 authority_sha256=fake_authority_sha256,
             )
         except FileExistsError:
@@ -2905,7 +3379,7 @@ def self_test() -> dict[str, Any]:
         original_prompt_bytes = original_paths["prompt"].read_bytes()
         original_prompt_replay_refused = False
         try:
-            write_prompt_slot(original_paths["prompt"], original_attempt_bytes, correction_plan)
+            write_prompt_slot(original_paths["prompt"], original_attempt_bytes, final_correction_plan)
         except FileExistsError:
             original_prompt_replay_refused = True
         if not original_prompt_replay_refused or original_paths["prompt"].read_bytes() != original_prompt_bytes:
@@ -2920,12 +3394,13 @@ def self_test() -> dict[str, Any]:
             ("crash-after-prompt", {"unknown-eof"}, True),
         ):
             record, paths = run_fake_original(
-                scratch / f"original-{scenario}", scenario, correction_plan,
+                scratch / f"original-{scenario}", scenario, final_correction_plan,
                 fake_authority, fake_authority_sha256,
             )
             validate_original_execution_evidence(
                 paths["execution"], paths["attempt"], paths["prompt"],
-                correction_plan, fake_authority_sha256,
+                final_correction_plan, fake_authority_sha256,
+                allow_fake_authority=True,
             )
             if (
                 record["failure_class"] not in expected_failure
@@ -2942,8 +3417,13 @@ def self_test() -> dict[str, Any]:
             }
 
         bounded, bounded_paths = run_fake_original(
-            scratch / "original-bounded-cleanup", "hang-after-permission", correction_plan,
+            scratch / "original-bounded-cleanup", "hang-after-permission", final_correction_plan,
             fake_authority, fake_authority_sha256, outer_seconds=0.8, cleanup_seconds=0.25,
+        )
+        bounded_validation = validate_original_execution_evidence(
+            bounded_paths["execution"], bounded_paths["attempt"],
+            bounded_paths["prompt"], final_correction_plan,
+            fake_authority_sha256, allow_fake_authority=True,
         )
         if (
             bounded["failure_class"] != "timeout"
@@ -2953,11 +3433,57 @@ def self_test() -> dict[str, Any]:
         ):
             raise RuntimeError("original-shaped fake exceeded bounded cleanup or left the owned root unobserved")
         results["bounded_cleanup"] = {
+            "record_validation": bounded_validation["status"],
             "failure_class": bounded["failure_class"],
             "elapsed_milliseconds": bounded["elapsed_milliseconds"],
             "root_exit_observed": bounded["cleanup"]["root_exit_observed"],
             "streams_joined": bounded["cleanup"]["streams_joined"],
             "descendant_cleanup": bounded["descendant_cleanup"],
+            "package_cache_cleanup": bounded["package_cache_cleanup"],
+        }
+
+        real_temporary_directory_cleanup = tempfile.TemporaryDirectory.cleanup
+
+        def fail_package_cache_cleanup(directory: tempfile.TemporaryDirectory) -> None:
+            if Path(directory.name).name.startswith("copilot-acp-package-cache."):
+                raise OSError(5, "synthetic cleanup failure")
+            real_temporary_directory_cleanup(directory)
+
+        tempfile.TemporaryDirectory.cleanup = fail_package_cache_cleanup
+        try:
+            cleanup_failed, cleanup_failed_paths = run_fake_original(
+                scratch / "original-package-cache-cleanup-error", "success",
+                final_correction_plan, fake_authority, fake_authority_sha256,
+            )
+        finally:
+            tempfile.TemporaryDirectory.cleanup = real_temporary_directory_cleanup
+        cleanup_failed_validation = validate_original_execution_evidence(
+            cleanup_failed_paths["execution"], cleanup_failed_paths["attempt"],
+            cleanup_failed_paths["prompt"], final_correction_plan,
+            fake_authority_sha256, allow_fake_authority=True,
+        )
+        if (
+            cleanup_failed.get("status") != "failed"
+            or cleanup_failed.get("failure_class") != "package-cache-cleanup-failed"
+            or cleanup_failed.get("package_cache_cleanup") != "failed"
+            or cleanup_failed.get("package_cache_cleanup_error") != "os-error"
+            or cleanup_failed.get("attempt_record_sha256") is None
+            or cleanup_failed.get("prompt_slot_record_sha256") is None
+            or not cleanup_failed_paths["attempt"].is_file()
+            or not cleanup_failed_paths["prompt"].is_file()
+            or not cleanup_failed_paths["execution"].is_file()
+            or cleanup_failed.get("permission_reply") != "cancelled"
+            or cleanup_failed.get("sentinel_unchanged") is not True
+        ):
+            raise RuntimeError("package-cache cleanup failure was swallowed or lost consumed evidence")
+        results["package_cache_cleanup_error"] = {
+            "record_validation": cleanup_failed_validation["status"],
+            "failure_class": cleanup_failed["failure_class"],
+            "cleanup": cleanup_failed["package_cache_cleanup"],
+            "error_category": cleanup_failed["package_cache_cleanup_error"],
+            "attempt_record_persisted": cleanup_failed_paths["attempt"].is_file(),
+            "prompt_slot_persisted": cleanup_failed_paths["prompt"].is_file(),
+            "execution_record_persisted": cleanup_failed_paths["execution"].is_file(),
         }
 
         tamper_rejections: dict[str, bool] = {}
@@ -3101,7 +3627,7 @@ def self_test() -> dict[str, Any]:
             raise RuntimeError("offline fake work changed the consumed Research 435 records")
         results["research_435_records_unchanged"] = True
     results["status"] = "passed"
-    results["execution_authorized"] = plan["original_execution_enabled"]
+    results["execution_authorized"] = final_correction_plan["execution_authorized"]
     results["historical_authority_validated_but_stale_for_current_runner"] = (
         authority["final_runner_sha256"] != sha256_file(SCRIPT_PATH)
     )
@@ -3110,6 +3636,10 @@ def self_test() -> dict[str, Any]:
     results["preparation_plan_sha256"] = sha256_file(PLAN_PATH)
     results["originals_run"] = False
     results["qualification_changed"] = False
+    results["task_number"] = final_correction_plan["task_number"]
+    results["task_id"] = final_correction_plan["task_id"]
+    results["run_id"] = final_correction_plan["run_id"]
+    results["operator_decision"] = final_correction_plan["operator_decision"]
     return results
 
 
@@ -3118,13 +3648,20 @@ def main() -> int:
     actions = parser.add_mutually_exclusive_group(required=True)
     actions.add_argument("--validate-plan", action="store_true")
     actions.add_argument("--validate-correction-plan", action="store_true")
+    actions.add_argument("--validate-final-plan", action="store_true")
     actions.add_argument("--validate-authority", action="store_true")
+    actions.add_argument("--validate-corrected-authority", action="store_true")
     actions.add_argument("--self-test", action="store_true")
     actions.add_argument("--validate-record", metavar="PATH")
     actions.add_argument("--validate-original-record", metavar="PATH")
+    actions.add_argument("--validate-corrected-original-record", metavar="PATH")
     actions.add_argument("--execute-original", action="store_true")
+    actions.add_argument("--execute-corrected-original", action="store_true")
+    parser.add_argument("--fake-pass-record", metavar="PATH")
     args = parser.parse_args()
     try:
+        if args.fake_pass_record and not args.self_test:
+            raise ValueError("fake-pass evidence can only be written by the fake self-test")
         if args.validate_plan:
             plan = validate_plan()
             print(json.dumps({"status": "valid", "plan_id": plan["plan_id"], "original_execution_enabled": False}))
@@ -3136,6 +3673,16 @@ def main() -> int:
                 "original_execution_enabled": plan["original_execution_enabled"],
                 "execution_authorized": plan["execution_authorized"],
                 "implementation_sha256": plan["runner"]["implementation_sha256"],
+            }, sort_keys=True))
+        elif args.validate_final_plan:
+            plan = validate_final_correction_plan()
+            print(json.dumps({
+                "status": "valid",
+                "plan_id": plan["plan_id"],
+                "task_number": plan["task_number"],
+                "execution_authorized": plan["execution_authorized"],
+                "plan_sha256": sha256_file(FINAL_CORRECTION_PLAN_PATH),
+                "runner_sha256": plan["runner"]["implementation_sha256"],
             }, sort_keys=True))
         elif args.validate_authority:
             plan = validate_plan()
@@ -3149,6 +3696,17 @@ def main() -> int:
                 "authority_sha256": authority_sha256,
                 "final_runner_sha256": authority["final_runner_sha256"],
                 "preparation_plan_sha256": authority["preparation_plan_sha256"],
+            }, sort_keys=True))
+        elif args.validate_corrected_authority:
+            plan = validate_final_correction_plan()
+            authority, authority_sha256 = validate_corrected_authority(plan=plan)
+            print(json.dumps({
+                "status": "valid",
+                "execution_authorized": authority["execution_authorized"],
+                "authority_sha256": authority_sha256,
+                "final_plan_sha256": authority["final_plan_sha256"],
+                "final_runner_sha256": authority["final_runner_sha256"],
+                "fake_pass_record_sha256": authority["fake_pass_record_sha256"],
             }, sort_keys=True))
         elif args.validate_record:
             plan = validate_plan()
@@ -3165,11 +3723,24 @@ def main() -> int:
                 plan,
                 authority_sha256,
             ), sort_keys=True))
+        elif args.validate_corrected_original_record:
+            print(json.dumps(validate_corrected_original_evidence(
+                Path(args.validate_corrected_original_record)
+            ), sort_keys=True))
         elif args.execute_original:
             record = execute_original()
             print(json.dumps(record, sort_keys=True))
+        elif args.execute_corrected_original:
+            record = execute_corrected_original()
+            print(json.dumps(record, sort_keys=True))
         else:
-            print(json.dumps(self_test(), sort_keys=True))
+            if args.fake_pass_record and Path(args.fake_pass_record).resolve() != CORRECTED_FAKE_PASS_PATH.resolve():
+                raise ValueError("fake-pass record must use the reviewed Research 437 path")
+            result = self_test()
+            if args.fake_pass_record:
+                create_fake_pass_record(result)
+                result["fake_pass_record_sha256"] = sha256_file(CORRECTED_FAKE_PASS_PATH)
+            print(json.dumps(result, sort_keys=True))
         return 0
     except (OSError, ValueError, RuntimeError, ProtocolFailure, subprocess.SubprocessError) as error:
         detail = str(error) if isinstance(error, (ValueError, RuntimeError, ProtocolFailure)) else type(error).__name__

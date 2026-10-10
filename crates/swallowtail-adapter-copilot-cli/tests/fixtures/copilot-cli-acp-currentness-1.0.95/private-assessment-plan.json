@@ -65,9 +65,10 @@
   },
   "original_enable_gate": {
     "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; persist those safe identifiers and their hashes in private mode-0600 consumed records; hash approved executable bytes before discovery; freeze the bytes in a private mode-0700 directory and mode-0400 file with no planned writers; re-hash the approved path at the private prepared ProcessService boundary and forward the exact request; hash the original path and protected copy after cleanup; never read or serialize environment values; accept and disclose the trusted normal-host check-to-open path race",
+    "command_dispatch": "the frozen Effigy selector runs assessment_tests including frozen_enable_command_dispatches_via_local_host_to_private_runner; that test drives the shared one-shot entry with real LocalProcessHost services and only a task-owned fake ACP child; the committed exact plan remains disabled and the test-only continuation cannot launch the vendor executable",
     "enable_command": "effigy validate:copilot-acp-private-assessment",
     "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
-    "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied host services; Python only validates the disabled plan and cannot launch",
+    "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied LocalHostServices; the frozen selector dispatches into this runner for fake proof, while the committed exact plan fails closed before original effects; Python only validates and cannot launch",
     "launch_side_persistence": "the disabled Rust original branch writes no user-data record and starts no original; real local-process fake runs exercise the same exclusive fsynced attempt-4 and prompt-3 writers before prepared open and prompt",
     "no_bypass": "no public flag, arbitrary version override, alternate transport, model argument, pre-probe, retry, resend or reviewer original",
     "one_shot": "attempt-4 exclusive invocation record fsynced before prepared process start; prompt-3 exclusive prompt record fsynced before prepared turn; result follows cancellation, process stop, joins and release",
@@ -87,7 +88,7 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/acp_activity.rs",
-        "sha256": "be2e0be66a14dcbb8d73bee47e62e378356f0026aba1f8d984872a8c5bee8a6e"
+        "sha256": "98c4db824eb8a35ae29784a034ef4afa105d4ba51a863962c93b957b80793fa4"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/acp_activity/tool.rs",
@@ -99,7 +100,7 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-        "sha256": "8a909d4e756683e88caf611d2f0eee6a26743f52fb891bd79a8ed44c6d8217c7"
+        "sha256": "55926520d1b4f99607b6cdd9f771a6f5ba7a376bddb9724af5434949efecf8ed"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
@@ -143,11 +144,11 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/turn.rs",
-        "sha256": "4bb70aae39a70ed18863779bfc43b614bbffb43357bf7e4d321362ebd7db4b64"
+        "sha256": "fe558ee059a7a104c9b15814aa11b93048d4b51893af2326c5756aba43e50432"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/turn_tests.rs",
-        "sha256": "5a3cc8e1ae73f5ac53510363c0364b073db90cc1dbd95873e38d24219096ac14"
+        "sha256": "39a70f377de8c39537a13dd1081699692c3d0fd95e66ac108c3de59ac3d23106"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.schema.json",
@@ -163,10 +164,10 @@
       },
       {
         "path": "effigy.toml",
-        "sha256": "bab5a6c5a7aeb3eebd077ea72b4689f907e436a85e2fb84c37470398a682e418"
+        "sha256": "898e8f85a76a4a4298ba566d11c705cae148c747d17836b5a751abb8d8a33d50"
       }
     ],
-    "sha256": "5226939e91b53f701815ac0a30db6250ce62d5a05ea9f4779dd2aa56a4012762"
+    "sha256": "a2d500827546b9f065094c0f1190c2afd18c1dfa26cfca7996d8037e8befe27a"
   },
   "production_route": {
     "argv": [
@@ -230,9 +231,9 @@
   },
   "runner": {
     "implementation_path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-    "implementation_sha256": "8a909d4e756683e88caf611d2f0eee6a26743f52fb891bd79a8ed44c6d8217c7",
+    "implementation_sha256": "55926520d1b4f99607b6cdd9f771a6f5ba7a376bddb9724af5434949efecf8ed",
     "path": "scripts/copilot-acp-private-assessment.py",
-    "sha256": "1360ea67a2c3499413c4b0dc0c351d18dd32bdf59bbe09dd0769cb3a4cf92b2c"
+    "sha256": "efc1afcb3cec2f61f7a047f958d9fbec50afc8b7f8a6432e8316b420846a24ce"
   },
   "schema": "copilot-cli-private-assessment-plan.v1",
   "task": {

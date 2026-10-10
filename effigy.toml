@@ -81,7 +81,7 @@ section = "Research Records"
 ]
 "validate:current-copilot-cli-acp" = [
   "python3 scripts/copilot-acp-currentness-ledger.py",
-  "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_cli_acp_identity --test prepared_facade --test activity_corpus --test acp_suite",
+  "cargo nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_cli_acp_identity --test prepared_facade --test activity_corpus --test acp_suite --lib -E 'binary(copilot_cli_acp_identity) | binary(prepared_facade) | binary(activity_corpus) | binary(acp_suite) | test(/turn::tests::/)'",
 ]
 "validate:copilot-acp-private-assessment" = [
   "cargo nextest run --locked --profile ci --test-threads 1 -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::/)'",

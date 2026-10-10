@@ -123,6 +123,20 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "platform": "darwin-arm64",
     }, "frozen Research 440 artifact identity changed")
     require(sha256_file(LEDGER_PATH) == LEDGER_SHA256, "Research 440 artifact ledger changed")
+    effigy = (ROOT / "effigy.toml").read_text(encoding="utf-8")
+    require(
+        '"validate:copilot-acp-private-assessment" = [' in effigy
+        and "--lib -E 'test(/assessment_tests::/)" in effigy,
+        "the frozen enable command no longer selects the private Rust runner tests",
+    )
+    runner_source = (ROOT / "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs").read_text(
+        encoding="utf-8"
+    )
+    require(
+        "fn frozen_enable_command_dispatches_via_local_host_to_private_runner()" in runner_source
+        and "run_original_task_once(" in runner_source,
+        "the frozen enable command no longer reaches the private one-shot runner entry",
+    )
 
     route = plan.get("production_route", {})
     require(route == {
@@ -220,7 +234,8 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "original_execution_enabled": False,
     }, "persistent record policy changed")
     require(plan.get("original_enable_gate") == {
-        "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied host services; Python only validates the disabled plan and cannot launch",
+        "enforcement": "private Rust runner binds the planner-reviewed head, exact plan and command before using supplied LocalHostServices; the frozen selector dispatches into this runner for fake proof, while the committed exact plan fails closed before original effects; Python only validates and cannot launch",
+        "command_dispatch": "the frozen Effigy selector runs assessment_tests including frozen_enable_command_dispatches_via_local_host_to_private_runner; that test drives the shared one-shot entry with real LocalProcessHost services and only a task-owned fake ACP child; the committed exact plan remains disabled and the test-only continuation cannot launch the vendor executable",
         "state": "disabled in this preparation turn",
         "enable_only_after": "independent exact-head preparation review and planner-bound retained continuation",
         "before_effect": "capture exact approved ExecutionHostId, ExecutableRef and EnvironmentRef safe identities before discovery; persist those safe identifiers and their hashes in private mode-0600 consumed records; hash approved executable bytes before discovery; freeze the bytes in a private mode-0700 directory and mode-0400 file with no planned writers; re-hash the approved path at the private prepared ProcessService boundary and forward the exact request; hash the original path and protected copy after cleanup; never read or serialize environment values; accept and disclose the trusted normal-host check-to-open path race",

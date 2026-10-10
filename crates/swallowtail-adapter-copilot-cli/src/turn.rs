@@ -105,29 +105,24 @@ impl ActiveTurn {
     pub(crate) fn observe_permission(
         &self,
         provider_request_id: &Value,
-        tool_call_id: &str,
+        _tool_call_id: &str,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
-        let activity = self.activity.lock().expect("turn activity lock poisoned");
         #[cfg(test)]
-        let action_is_pending = self.assessment_permission_action.map_or_else(
-            || activity.is_pending_execute(tool_call_id),
-            |action| {
-                tool_call_id == action.tool_call_id
-                    && activity.is_pending_execute_for_assessment(
-                        tool_call_id,
-                        action.path,
-                        action.old_text,
-                        action.new_text,
-                    )
-            },
-        );
-        #[cfg(not(test))]
-        let action_is_pending = activity.is_pending_execute(tool_call_id);
-        if !action_is_pending {
-            return Err(failure(
-                "swallowtail.copilot-cli.acp.permission_action_mismatch",
-                "Copilot CLI permission request does not match a pending execute action",
-            ));
+        if let Some(action) = self.assessment_permission_action {
+            let activity = self.activity.lock().expect("turn activity lock poisoned");
+            let action_is_pending = _tool_call_id == action.tool_call_id
+                && activity.is_pending_execute_for_assessment(
+                    _tool_call_id,
+                    action.path,
+                    action.old_text,
+                    action.new_text,
+                );
+            if !action_is_pending {
+                return Err(failure(
+                    "swallowtail.copilot-cli.acp.permission_action_mismatch",
+                    "Copilot CLI permission request does not match the assessment sentinel action",
+                ));
+            }
         }
         let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
         let callback_id = swallowtail_runtime::CallbackId::new(format!(

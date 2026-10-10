@@ -73,8 +73,13 @@ secret-free result. They reject missing or mismatched action metadata and
 measure an injected sentinel write as an effect. No continuation or host values
 are persisted by the tests, and the committed plan remains disabled.
 
-The later command is `effigy validate:copilot-acp-private-assessment`, after
-the planner binds the exact reviewed plan and supplies the selected host
-services and safe host inputs to the task-private Rust runner. The command and
-plan must still be rebound to the exact reviewed head before an original is
-available. The Python plan validator cannot enable or launch it.
+The frozen command is `effigy validate:copilot-acp-private-assessment`. Its
+Rust assessment tests include
+`frozen_enable_command_dispatches_via_local_host_to_private_runner`, which
+enters the shared one-shot runner through real `LocalHostServices` and
+`LocalProcessHost` using only the task-owned fake ACP child. The committed
+plan remains disabled, so this selector cannot launch the vendor executable.
+The later planner-bound continuation must supply the exact reviewed plan and
+selected host services/safe inputs to that same runner entry, and bind the
+command to the reviewed head. The Python plan validator cannot enable or
+launch it.

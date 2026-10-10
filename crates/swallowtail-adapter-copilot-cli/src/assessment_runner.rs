@@ -14,6 +14,7 @@ use swallowtail_runtime::{
 };
 
 const TASK_ID: &str = "7823a168-9b8f-4604-8fd7-201c2998722e";
+const FROZEN_ENABLE_COMMAND: &str = "effigy validate:copilot-acp-private-assessment";
 const SENTINEL_AFTER_TEXT: &str = "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n";
 const FAKE_PROTOCOL_SCRIPT: &str = r#"import atexit, json, os, signal, sys
 
@@ -464,7 +465,7 @@ fn run_fake_original_branch_with_scratch(
             .to_owned(),
     };
     let executable_sha256 = sha256_file(&scratch.executable);
-    run_original_task_with_budget(
+    run_original_task_once(
         &plan,
         Some(&continuation),
         preparation_input_with_executable(
@@ -481,11 +482,13 @@ fn run_fake_original_branch_with_scratch(
         &scratch.task,
         &scratch.records,
         Some(&scratch.trace),
-        total,
-        cleanup,
-        &executable_sha256,
-        false,
-        "fake-local-process-only",
+        OriginalRunPolicy {
+            total,
+            cleanup,
+            expected_executable_sha256: executable_sha256,
+            original_started: false,
+            execution_mode: "fake-local-process-only",
+        },
     )
 }
 
@@ -511,7 +514,7 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
     plan["original_enable_gate"]["reviewed_head"] =
         serde_json::Value::String("0123456789abcdef0123456789abcdef01234567".to_owned());
     plan["original_enable_gate"]["enable_command"] =
-        serde_json::Value::String("fake-only private runner test".to_owned());
+        serde_json::Value::String(FROZEN_ENABLE_COMMAND.to_owned());
     plan
 }
 
@@ -1355,8 +1358,9 @@ fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), Origina
 }
 
 /// Executes only after the plan contains the exact reviewed-head binding.
-/// This preparation revision has that gate disabled, so the function returns
-/// before reading host inputs, opening records, preparing, or launching.
+/// Test-owned policies exercise the same entry with a local fake child while
+/// the committed production plan remains disabled.
+#[allow(clippy::too_many_arguments)]
 fn run_original_task_once(
     plan: &serde_json::Value,
     continuation: Option<&PlannerBoundContinuation>,
@@ -1367,7 +1371,16 @@ fn run_original_task_once(
     local: &LocalHostServices,
     task_directory: &Path,
     records_directory: &Path,
+    trace: Option<&Path>,
+    policy: OriginalRunPolicy,
 ) -> Result<RunEvidence, OriginalRunDenied> {
+    let OriginalRunPolicy {
+        total,
+        cleanup,
+        expected_executable_sha256,
+        original_started,
+        execution_mode,
+    } = policy;
     run_original_task_with_budget(
         plan,
         continuation,
@@ -1378,13 +1391,21 @@ fn run_original_task_once(
         local,
         task_directory,
         records_directory,
-        None,
-        Duration::from_secs(60),
-        Duration::from_secs(3),
-        crate::assessment::NATIVE_EXECUTABLE_SHA256,
-        true,
-        "approved-local-process-host-original",
+        trace,
+        total,
+        cleanup,
+        &expected_executable_sha256,
+        original_started,
+        execution_mode,
     )
+}
+
+struct OriginalRunPolicy {
+    total: Duration,
+    cleanup: Duration,
+    expected_executable_sha256: String,
+    original_started: bool,
+    execution_mode: &'static str,
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -1661,6 +1682,8 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
         &local,
         &scratch.task,
         &scratch.records,
+        None,
+        disabled_original_policy(),
     );
     assert!(matches!(result, Err(OriginalRunDenied::Disabled)));
     assert_eq!(
@@ -1688,6 +1711,8 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
         &local,
         &scratch.task,
         &scratch.records,
+        None,
+        disabled_original_policy(),
     );
     assert!(matches!(denied, Err(OriginalRunDenied::Disabled)));
     assert_eq!(
@@ -1696,6 +1721,16 @@ fn original_ready_path_is_disabled_before_host_or_ledger_effects() {
             .count(),
         0
     );
+}
+
+fn disabled_original_policy() -> OriginalRunPolicy {
+    OriginalRunPolicy {
+        total: Duration::from_secs(60),
+        cleanup: Duration::from_secs(3),
+        expected_executable_sha256: crate::assessment::NATIVE_EXECUTABLE_SHA256.to_owned(),
+        original_started: true,
+        execution_mode: "approved-local-process-host-original",
+    }
 }
 
 #[test]
@@ -1810,7 +1845,17 @@ fn real_local_prepared_path_timeout_cancels_joins_and_records_cleanup() {
 }
 
 #[test]
-fn real_local_prepared_path_classifies_permission_and_action_negatives() {
+fn frozen_enable_command_dispatches_via_local_host_to_private_runner() {
+    let plan_path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
+    let plan: serde_json::Value =
+        serde_json::from_slice(&fs::read(plan_path).expect("plan fixture is readable"))
+            .expect("plan parses");
+    assert_eq!(
+        plan["original_enable_gate"]["enable_command"],
+        FROZEN_ENABLE_COMMAND
+    );
+
     let prepared = run_with_local_host(
         "permission",
         Duration::from_secs(3),
@@ -1849,6 +1894,12 @@ fn real_local_prepared_path_classifies_permission_and_action_negatives() {
     assert!(normal.attempt_visible_before_version);
     assert!(normal.prompt_visible_before_send);
     assert_eq!(normal.before_tree_sha256, normal.after_tree_sha256);
+    assert_eq!(normal.attempt_record["mode"], "fake-local-process-only");
+    assert_eq!(
+        normal.attempt_record["enable_command"],
+        FROZEN_ENABLE_COMMAND
+    );
+    assert_eq!(normal.attempt_record["original_started"], false);
     assert!(normal.record_files_private);
     assert!(normal.protected_executable_removed);
 

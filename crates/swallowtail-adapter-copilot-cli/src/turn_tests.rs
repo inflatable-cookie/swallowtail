@@ -60,4 +60,20 @@ mod tests {
             TerminalStatus::ProviderRequestObserved(_)
         ));
     }
+
+    #[test]
+    fn ordinary_permission_observation_does_not_require_assessment_action_correlation() {
+        let (turn, _events, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-ordinary-permission").expect("valid turn"),
+            "session-fixture".to_owned(),
+        )
+        .expect("turn opens");
+        turn.observe_permission(&json!(901), "provider-owned-call")
+            .expect("ordinary public permission behavior stays observation-only");
+        turn.finish_prompt("cancelled");
+        assert!(matches!(
+            block_on(terminal).status(),
+            TerminalStatus::ProviderRequestObserved(_)
+        ));
+    }
 }

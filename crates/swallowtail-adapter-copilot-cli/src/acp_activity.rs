@@ -106,17 +106,6 @@ impl AcpActivityProjection {
             .collect()
     }
 
-    pub(crate) fn is_pending_execute(&self, tool_call_id: &str) -> bool {
-        let key = format!("tool:{tool_call_id}");
-        self.open.get(&key).is_some_and(|activity| {
-            activity.tool_kind == Some(AcpToolKind::Execute)
-                && matches!(
-                    activity.status,
-                    ActivityStatus::Pending | ActivityStatus::InProgress
-                )
-        })
-    }
-
     #[cfg(test)]
     pub(crate) fn is_pending_execute_for_assessment(
         &self,

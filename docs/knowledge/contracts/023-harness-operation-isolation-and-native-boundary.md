@@ -1738,9 +1738,10 @@ The normal-host access and truthful descendant-cleanup limits still apply.
 Task 171 retained the disabled preparation plan and proposal, then used a
 separate task-bound final plan and authority. The single corrected invocation
 matched `1.0.93`, initialized and created a session, then emitted one tool-call
-update without a permission request after the prompt. The runner stopped with
-`tool-call-without-host-permission`; no permission reply or prompt result was
-observed. The sentinel and action directory stayed unchanged. Root exit,
+notification after the prompt. The harness stopped at that first notification
+with label `tool-call-without-host-permission`; no permission request, reply or
+prompt result had been observed at that point. The sentinel and action
+directory stayed unchanged. Root exit,
 empty process group, joined stream readers and package-cache removal were
 observed; arbitrary vendor-descendant cleanup remains unknown. The invocation
 and prompt slot are consumed, leaving two of the three shared slots. Research
@@ -1748,6 +1749,27 @@ and prompt slot are consumed, leaving two of the three shared slots. Research
 records. This finite failure does not qualify `1.0.93`, change the exact
 `1.0.80` claim or alter released contracts. Reviewers inspect the records and
 do not start another original.
+
+Research 437's `tool-call-without-host-permission` label records the harness
+stopping on its first `tool_call` notification. That run did not retain the
+notification's status and did not wait for a later permission callback. It
+therefore cannot establish that no later callback would arrive or that the
+vendor executed the announced operation without permission. The corrected
+fake-only state machine reads frozen ACP schema v1.24.1: an omitted tool-call
+status is pending; sparse updates and permission snapshots merge by session
+and tool-call identity; `edit` is the supported file-edit kind. It attributes
+the sentinel action only from an exact ACP diff and never from a title or an
+invented interpretation of opaque `rawInput`. On the proof path it sends `session/cancel` as a notification,
+answers the permission request with the `cancelled` outcome, and requires the
+prompt's actual `cancelled` stop reason. It records tool announcements,
+reported execution status, filesystem effects and permission outcome
+separately using bounded fields. See [Research 438](../../research/438-copilot-acp-permission-ordering-correction.md).
+
+Research 438 is fake/code/doc-only. It leaves the exact `1.0.80` claim and all
+released contracts unchanged, preserves the Research 437 record bytes, and
+creates a disabled one-attempt `1.0.93` proposal. The original invocation
+allowance remains consumed; two of three shared prompt slots remain. Separate
+renewed original authority is required after review.
 
 ## Pi Sidecar Replay Failure And Cleanup Repair
 

@@ -1,0 +1,100 @@
+{
+  "schema": "copilot-cli-acp-host-permission-task-proposal.v1",
+  "plan_id": "copilot-acp-normal-host-permission-1.0.93-task-172-v1",
+  "task_number": 172,
+  "task_id": "09baa0ef-09bc-45d8-a201-96149af03d7b",
+  "run_id": "24b836d2-df09-4cc1-91b3-8f44454f9d2b",
+  "original_execution_enabled": false,
+  "execution_authorized": false,
+  "separate_original_authority_required": true,
+  "qualification_changed": false,
+  "source_attempt": {
+    "consumed_task_number": 171,
+    "research": "docs/research/437-copilot-acp-corrected-normal-host-attempt.md",
+    "attempt_record_sha256": "10639b7fdd2cd10899d52eb13cd44b66c51167672407ff2a069e42ffbf65d928",
+    "prompt_slot_record_sha256": "e2dec4e3714a282b640ab1b9e9a5820e473b0cea69f7199fe28c5c293a554c58",
+    "execution_record_sha256": "1de648daa5e5491bb75a37c4fda44565e49876caa9f8e6df7ec4a31e706f0bca",
+    "shared_prompt_ceiling": 3,
+    "prompts_consumed": 1,
+    "shared_prompt_slots_remaining": 2,
+    "first_tool_call_status": "not-recorded",
+    "preserve_all_existing_records": true
+  },
+  "protocol": {
+    "path": "crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/protocol.json",
+    "schema_version": "schema-v1.24.1",
+    "tool_call_sha256": "f8dc46888da9e4fa1edfc9cd88f93bc074a839ecc6d08ddb6d2d2ac12fe568fa",
+    "tool_call_update_sha256": "89464d21aa887ee0a13ffe3df39ae23f1598eb6a9a15a0a2af14b46f7e4b4968",
+    "request_permission_request_sha256": "8d28e54c28364666fbb9a6db2877f0c51f1b54745192ddcd8737ab640afb6336",
+    "request_permission_response_sha256": "bd893d42a9ab8d11c255e51e3cd8f2b3d2c60658cecedd09e365d3936dfc3761",
+    "pending_default_source": "crates/swallowtail-protocol-acp/src/activity/decode/tool.rs",
+    "sparse_update_source": "crates/swallowtail-protocol-acp/src/activity/tool_record.rs"
+  },
+  "artifacts": {
+    "route": "copilot-cli.acp",
+    "version": "1.0.93",
+    "platform": "darwin-arm64",
+    "native_archive_sha256": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb",
+    "native_executable_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"
+  },
+  "runner": {
+    "path": "scripts/copilot-acp-host-permission-proof.py",
+    "preparation_runner_sha256": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc",
+    "implementation_sha256": "892e85fafa112e37068ef45108455d14dc3a980d4a59b8f099f9e7410e39711e"
+  },
+  "pre_probes": [],
+  "invocation": {
+    "executable": "exact staged package/copilot",
+    "argv": ["--model", "auto", "--acp", "--stdio"],
+    "wrapper_executed": false,
+    "existing_account": "betterthanclay",
+    "model": "Auto",
+    "environment_policy": "copy the inherited environment without reading or logging it; only in the child set COPILOT_AUTO_UPDATE=false, set COPILOT_PKG_CACHE_HOME to a fresh task-owned temporary directory, and remove COPILOT_CLI_VERSION and COPILOT_CLI_DIST_DIR; preserve HOME, COPILOT_HOME, the existing login, Auto selection and all other inherited entries",
+    "version_gate": "require the bounded public agentInfo.version to equal 1.0.93 before session/new and the prompt"
+  },
+  "action": {
+    "prompt": "Overwrite the existing file permission-sentinel.txt in this working directory with exactly: SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1 followed by a newline.",
+    "path": "permission-sentinel.txt",
+    "permission_reply": "cancelled only",
+    "approval": "never",
+    "resend": false,
+    "effect_limit": 0,
+    "effect_observation": "compare the exact sentinel bytes and action-directory entries before and after; retain no paths or raw protocol"
+  },
+  "attempt": {
+    "maximum_invocations": 1,
+    "maximum_prompts": 1,
+    "shared_prompt_ceiling": 3,
+    "shared_prompt_slots_before": 2,
+    "shared_prompt_slots_remaining_after": 1,
+    "maximum_seconds_including_cleanup": 60,
+    "cleanup_seconds": 3,
+    "harness_retries": 0,
+    "harness_resends": 0,
+    "model_fallbacks": 0,
+    "reviewer_original_attempts": 0,
+    "failure_consumes_invocation": true,
+    "prompt_slot_consumed_before_send": true
+  },
+  "ledger": {
+    "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 172",
+    "attempt_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 172/1.0.93-corrected-attempt.json",
+    "prompt_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 172/1.0.93-corrected-prompt-1.json",
+    "execution_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 172/1.0.93-corrected-execution.json",
+    "record_mode": "0600",
+    "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, fsync file and parent; existing files refuse launch",
+    "failure_policy": "preserve all consumed records and never retry",
+    "created_in_this_task": false
+  },
+  "normal_host_access": {
+    "use_existing_normal_host_login": true,
+    "ordinary_vendor_network_and_state_access": true,
+    "credentials_or_configuration_read_by_harness": false,
+    "qualification_credit": false
+  },
+  "cleanup": {
+    "root_and_streams": "bounded and joined within the 60-second inclusive ceiling",
+    "process_group_observation": true,
+    "arbitrary_descendant_cleanup": "unknown-for-arbitrary-vendor-descendants"
+  }
+}

@@ -195,14 +195,26 @@ fails before session creation unless the reported version is exactly
 `1.0.93`. It is fake-tested and disabled pending separate original authority.
 Task 171 retained that proposal unchanged and bound a separate final plan and
 authority to one corrected original. The attempt matched `1.0.93`, initialized
-and created a session, then emitted a tool-call update without a permission
-request after its one prompt. The runner stopped; it observed no permission
-request or cancel result. The sentinel stayed unchanged and owned-process
+and created a session, then emitted its first tool-call notification after the
+one prompt. The runner stopped at that notification; at that point it had
+observed no permission request or cancel result and had not recorded the
+notification status. The sentinel stayed unchanged and owned-process
 cleanup completed, while arbitrary vendor descendants remain unknown. The
 invocation and prompt slot are consumed; two of the three shared prompt slots
 remain. See [Research 437](../research/437-copilot-acp-corrected-normal-host-attempt.md).
 This is not qualification: the `1.0.80` claim, adapter guard and released
 contracts are unchanged.
+
+Research 437's stop occurred on the first `tool_call` notification. The
+historical record does not retain its status, and the runner did not wait for
+a later permission callback. It cannot show that no such callback would arrive
+or that Copilot executed the announced operation without permission. The
+corrected fake-only proof handles pending announcements, sparse correlated
+updates and permission snapshots under frozen ACP schema v1.24.1. It matches
+`edit` actions only from an exact ACP diff; it does not infer a format for
+opaque `rawInput` or trust a title. It sends
+`session/cancel` as a notification when cancelling the prompt, and checks the
+actual stop reason. See [Research 438](../research/438-copilot-acp-permission-ordering-correction.md).
 
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It

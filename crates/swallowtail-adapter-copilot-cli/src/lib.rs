@@ -24,9 +24,13 @@ mod turn;
 #[cfg(test)]
 mod assessment;
 #[cfg(test)]
+// Shared assessment fixtures also serve integration-test targets, so each
+// target intentionally uses only part of their surface.
+#[allow(dead_code)]
 #[path = "../tests/support/discovery.rs"]
 mod assessment_discovery_support;
 #[cfg(test)]
+#[allow(dead_code)]
 #[path = "../tests/support/mod.rs"]
 mod assessment_test_support;
 #[cfg(test)]

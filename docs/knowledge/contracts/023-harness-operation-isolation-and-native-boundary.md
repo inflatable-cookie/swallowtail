@@ -1735,6 +1735,20 @@ prompt slots may be consumed. No VM, new login, credential extraction, user
 settings changes, automatic qualification or release authority is included.
 The normal-host access and truthful descendant-cleanup limits still apply.
 
+Task 171 retained the disabled preparation plan and proposal, then used a
+separate task-bound final plan and authority. The single corrected invocation
+matched `1.0.93`, initialized and created a session, then emitted one tool-call
+update without a permission request after the prompt. The runner stopped with
+`tool-call-without-host-permission`; no permission reply or prompt result was
+observed. The sentinel and action directory stayed unchanged. Root exit,
+empty process group, joined stream readers and package-cache removal were
+observed; arbitrary vendor-descendant cleanup remains unknown. The invocation
+and prompt slot are consumed, leaving two of the three shared slots. Research
+437 retains the exact plan, authority, fake-pass and sanitized execution
+records. This finite failure does not qualify `1.0.93`, change the exact
+`1.0.80` claim or alter released contracts. Reviewers inspect the records and
+do not start another original.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

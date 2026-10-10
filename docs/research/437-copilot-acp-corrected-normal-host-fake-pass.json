@@ -1,0 +1,395 @@
+{
+  "operator_decision": "acb7a075-390a-48b6-99b5-a6eea4d9920e",
+  "originals_run": false,
+  "plan_sha256": "7b04154a4e86beeaf6049d4b9ed673d53aa6ce690e76a7a5553c0901688e9a9d",
+  "results": {
+    "arbitrary-version": {
+      "agent_version_observation": "invalid",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-invalid",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "authority": {
+      "execution_authority_sha256": "8df1d77fe399084345c0dd94c6b954428540d37e50380578542626fc0ad17eed",
+      "final_runner_sha256": "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040",
+      "preparation_plan_sha256": "469cacfe46125141c6142b7b8b9418805da00ae550fb6d9c672b994f439dd664",
+      "preparation_runner_sha256": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc"
+    },
+    "bounded_cleanup": {
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "elapsed_milliseconds": 703,
+      "failure_class": "timeout",
+      "package_cache_cleanup": "removed",
+      "record_validation": "valid",
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "consumed_authority_stale_runner_refused": true,
+    "consumed_ledger_fsync": {
+      "attempt_file": true,
+      "parent_directory": true,
+      "prompt_file": true
+    },
+    "corrected_proposal": {
+      "execution_authorized": false,
+      "plan_sha256": "1e42dcf2188bedeeb8bd5b0e0505b4303c864a0063b2e1f47deb94c1b951717e",
+      "pre_probes": 0
+    },
+    "crash-after-prompt": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "unknown-eof",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "crash-before-prompt": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "unknown-eof",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "duplicate-permission": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "duplicate-permission-request",
+      "permission_reply": "cancelled",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "early-eof": {
+      "agent_version_observation": "unknown",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "unknown-eof",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "execution_authority_sha256": "8df1d77fe399084345c0dd94c6b954428540d37e50380578542626fc0ad17eed",
+    "execution_authorized": true,
+    "final_corrected_plan": {
+      "execution_authorized": true,
+      "fake_pass_record_path": "docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json",
+      "plan_sha256": "7b04154a4e86beeaf6049d4b9ed673d53aa6ce690e76a7a5553c0901688e9a9d",
+      "task_number": 171
+    },
+    "hang-after-permission": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "timeout",
+      "permission_reply": "cancelled",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "hang-initialize": {
+      "agent_version_observation": "unknown",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "timeout",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "historical_authority_validated_but_stale_for_current_runner": true,
+    "identity_mismatch_before_effects": true,
+    "identity_queries": {
+      "failure": "failed",
+      "slow": "timeout",
+      "success": "passed"
+    },
+    "initialize-error": {
+      "agent_version_observation": "unknown",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "initialize-rpc-error",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "invalid-version": {
+      "agent_version_observation": "invalid",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-invalid",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "malformed-frame": {
+      "agent_version_observation": "unknown",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "malformed-frame",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "missing-version": {
+      "agent_version_observation": "unknown",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-unobserved",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "no-permission": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "permission-request-missing",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "nonstring-version": {
+      "agent_version_observation": "invalid",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-invalid",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "operator_decision": "acb7a075-390a-48b6-99b5-a6eea4d9920e",
+    "original-crash-after-prompt": {
+      "failure_class": "unknown-eof",
+      "fake_prompt_received": true,
+      "prompt_send_completed": true,
+      "prompt_slot_fsynced_before_send": true
+    },
+    "original-crash-before-prompt": {
+      "failure_class": "unknown-eof",
+      "fake_prompt_received": false,
+      "prompt_send_completed": true,
+      "prompt_slot_fsynced_before_send": true
+    },
+    "original_entrypoint_refused": true,
+    "original_record_tamper_rejections": {
+      "authority": true,
+      "permission": true,
+      "raw-field": true
+    },
+    "original_replay_refused": {
+      "attempt": true,
+      "prompt": true
+    },
+    "original_shaped_launch": {
+      "action_directory_unchanged": true,
+      "argv": "matched --model auto --acp --stdio",
+      "environment": {
+        "auto_update_disabled": true,
+        "cli_version_override_removed": true,
+        "distribution_override_removed": true,
+        "existing_copilot_home_preserved": true,
+        "existing_home_preserved": true,
+        "existing_login_preserved": true,
+        "model_default_preserved": true,
+        "package_cache_empty": true,
+        "private_package_cache": true
+      },
+      "package_cache_cleanup": "removed",
+      "permission_reply": "cancelled",
+      "private_package_cache_removed_after_cleanup": true,
+      "prompt_result": "cancelled",
+      "sentinel_unchanged": true,
+      "status": "passed"
+    },
+    "original_shaped_record_validation": {
+      "execution_kind": "original",
+      "observation": "passed",
+      "status": "valid"
+    },
+    "originals_run": false,
+    "oversized-frame": {
+      "agent_version_observation": "unknown",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "inbound-frame-oversized",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "oversized-version": {
+      "agent_version_observation": "invalid",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-invalid",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "package_cache_cleanup_error": {
+      "attempt_record_persisted": true,
+      "cleanup": "failed",
+      "error_category": "os-error",
+      "execution_record_persisted": true,
+      "failure_class": "package-cache-cleanup-failed",
+      "prompt_slot_persisted": true,
+      "record_validation": "valid"
+    },
+    "preparation_plan_sha256": "469cacfe46125141c6142b7b8b9418805da00ae550fb6d9c672b994f439dd664",
+    "prompt_replay_refused": true,
+    "prompt_slot_bytes": 386,
+    "qualification_changed": false,
+    "replay_refused": true,
+    "reported_version_tamper_rejections": {
+      "arbitrary-string": true,
+      "oversized": true,
+      "path": true,
+      "secret-like": true,
+      "valid-drift": true
+    },
+    "research_435_records_unchanged": true,
+    "run_id": "27ec8859-5efc-4511-a9b3-56e3710f3097",
+    "runner_sha256": "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040",
+    "secret-version": {
+      "agent_version_observation": "invalid",
+      "agent_version_reported": null,
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-invalid",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "session-new-error": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "session-new-rpc-error",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "spontaneous-effect": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "unapproved-effect-observed",
+      "permission_reply": "cancelled",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "status": "passed",
+    "success": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "cleanup": {
+        "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+        "process_group_empty_observed": true,
+        "root_exit_observed": true,
+        "stderr_reader_joined": true,
+        "stdout_reader_joined": true,
+        "streams_joined": true
+      },
+      "completed_at": "2026-10-10T09:35:27Z",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "elapsed_milliseconds": 354,
+      "execution_kind": "fake",
+      "exit_code": 0,
+      "failure_class": "none",
+      "failure_stage": "none",
+      "initialize_observed": true,
+      "launch_error": "none",
+      "original_execution": false,
+      "permission_action_matches_sentinel": true,
+      "permission_reply": "cancelled",
+      "permission_request_count": 1,
+      "plan_sha256": "469cacfe46125141c6142b7b8b9418805da00ae550fb6d9c672b994f439dd664",
+      "prompt_result": "cancelled",
+      "prompt_send_attempted": true,
+      "prompt_send_completed": true,
+      "prompt_slot_fsynced_before_send": true,
+      "raw_protocol_persisted": false,
+      "raw_stderr_persisted": false,
+      "runner_sha256": "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040",
+      "scenario": "success",
+      "schema": "copilot-cli-acp-host-permission-execution.v2",
+      "sentinel_unchanged": true,
+      "session_observed": true,
+      "status": "passed",
+      "stderr": {
+        "captured_bytes": 40,
+        "category": "nonempty-unclassified",
+        "count_limit_reached": false,
+        "raw_displayed": false,
+        "raw_persisted": false,
+        "total_bytes_capped": 40
+      },
+      "tool_call_updates": 0,
+      "unapproved_effect_absent": true
+    },
+    "tamper_rejections": {
+      "action": true,
+      "field": true,
+      "reported-version": true
+    },
+    "task_id": "251ff078-07d9-4b7d-8015-c9446788250c",
+    "task_number": 171,
+    "tool-call-without-permission": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "tool-call-without-host-permission",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "wrong-action": {
+      "agent_version_observation": "matched-1.0.93",
+      "agent_version_reported": "1.0.93",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "permission-action-mismatch",
+      "permission_reply": "cancelled",
+      "prompt_slot_fsynced_before_send": true,
+      "root_exit_observed": true,
+      "streams_joined": true
+    },
+    "wrong-version": {
+      "agent_version_observation": "mismatch",
+      "agent_version_reported": "1.0.92",
+      "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+      "failure_class": "agent-version-mismatch",
+      "permission_reply": "none",
+      "prompt_slot_fsynced_before_send": false,
+      "root_exit_observed": true,
+      "streams_joined": true
+    }
+  },
+  "run_id": "27ec8859-5efc-4511-a9b3-56e3710f3097",
+  "runner_sha256": "5d534c17d9e998636552f56c8aa3d0280bb6544ce55f63f71c2f057e17d58040",
+  "schema": "copilot-cli-acp-host-permission-fake-pass.v1",
+  "source_proposal_sha256": "1e42dcf2188bedeeb8bd5b0e0505b4303c864a0063b2e1f47deb94c1b951717e",
+  "status": "passed",
+  "task_id": "251ff078-07d9-4b7d-8015-c9446788250c",
+  "task_number": 171
+}

@@ -3162,9 +3162,11 @@ fn actual_prepared_runner_retains_bounded_preparation_causes_and_cleanup_evidenc
         "present"
     );
 
+    // Keep this persistence-fallback case from racing the total deadline on
+    // slower hosts; the assertion concerns record recovery, not open timeout.
     let record_fallback = run_fake_original_branch(
         "record-write-failure",
-        Duration::from_secs(3),
+        Duration::from_secs(15),
         Duration::from_millis(500),
     );
     assert_eq!(record_fallback.status, "permission-cancelled");

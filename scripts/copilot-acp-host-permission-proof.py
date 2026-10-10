@@ -4,16 +4,21 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
+import io
 import json
 import os
 import platform
+import re
 import selectors
 import signal
 import subprocess
 import sys
+import tarfile
 import tempfile
 import time
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -24,7 +29,11 @@ SCRIPT_PATH = Path(__file__).resolve()
 FIXTURE_DIR = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof"
 PLAN_PATH = FIXTURE_DIR / "plan.json"
 SCHEMA_PATH = FIXTURE_DIR / "plan.schema.json"
+AUTHORITY_PATH = FIXTURE_DIR / "original-execution-authority.json"
+AUTHORITY_SCHEMA_PATH = FIXTURE_DIR / "original-execution-authority.schema.json"
 INVENTORY_PATH = ROOT / "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"
+ATTEMPT_EVIDENCE_NAME = "435-copilot-acp-normal-host-permission-attempt.json"
+PROMPT_EVIDENCE_NAME = "435-copilot-acp-normal-host-permission-prompt-slot.json"
 FRAME_LIMIT = 256 * 1024
 STDERR_CAPTURE_LIMIT = 4096
 STDERR_COUNT_LIMIT = 64 * 1024
@@ -59,6 +68,8 @@ FAKE_SCENARIOS = frozenset(
     }
 )
 PLAN_ID = "copilot-acp-normal-host-permission-1.0.93-v1"
+PREPARATION_RUNNER_SHA256 = "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc"
+BRIEF_SHA256 = "bdc07153187bde4f603b10e3f3a55d2b7e3b17bca23fcf7e8c7dd5afe2654a29"
 EXPECTED_INVENTORY_SHA256 = "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f"
 EXPECTED_WRAPPER_ARCHIVE_SHA256 = "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"
 EXPECTED_NATIVE_ARCHIVE_SHA256 = "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb"
@@ -350,8 +361,8 @@ def validate_plan() -> dict[str, Any]:
         raise ValueError("normal-host plan scope changed")
     if plan.get("runner", {}).get("path") != "scripts/copilot-acp-host-permission-proof.py":
         raise ValueError("plan does not name this runner")
-    if plan["runner"].get("sha256") != sha256_file(SCRIPT_PATH):
-        raise ValueError("plan runner identity differs from this source")
+    if plan["runner"].get("sha256") != PREPARATION_RUNNER_SHA256:
+        raise ValueError("reviewed preparation runner identity changed")
     staging = plan.get("artifact_staging", {})
     if (
         staging.get("source") != "official npm registry tarballs only"
@@ -527,6 +538,61 @@ def validate_plan() -> dict[str, Any]:
     return plan
 
 
+def validate_execution_authority(
+    authority_path: Path = AUTHORITY_PATH,
+    *,
+    plan: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any], str]:
+    """Validate the separate one-shot authority before any original-path effects."""
+    bound_plan = plan if plan is not None else validate_plan()
+    authority = load_object(authority_path)
+    schema = load_object(AUTHORITY_SCHEMA_PATH)
+    if (
+        schema.get("$id") != "copilot-cli-acp-host-permission-execution-authority.v1"
+        or schema.get("additionalProperties") is not False
+        or set(authority) != set(schema.get("required", []))
+        or set(authority) != set(schema.get("properties", {}))
+    ):
+        raise ValueError("execution authority schema does not describe the exact manifest")
+    expected = {
+        "schema": "copilot-cli-acp-host-permission-execution-authority.v1",
+        "task_number": 169,
+        "task_id": "dcef61b4-fd5e-416a-9226-b8be170bf17c",
+        "run_id": "8f42c5b5-47f2-4c50-82f8-d606249820d0",
+        "brief_sha256": BRIEF_SHA256,
+        "operator_decision": "d6c0fdf0-5abe-4562-a59f-e79520b20dca",
+        "preparation_plan_sha256": sha256_file(PLAN_PATH),
+        "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+        "final_runner_sha256": sha256_file(SCRIPT_PATH),
+        "plan_id": PLAN_ID,
+        "route": "copilot-cli.acp",
+        "target_version": "1.0.93",
+        "platform": "darwin-arm64",
+        "account_ref": "betterthanclay",
+        "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
+        "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
+        "native_executable_sha256": EXPECTED_EXECUTABLE_SHA256,
+        "argv": ["--model", "auto", "--acp", "--stdio"],
+        "environment_policy": bound_plan["invocation"]["environment_policy"],
+        "execution_authorized": True,
+        "maximum_invocations": 1,
+        "maximum_prompts": 1,
+        "shared_prompt_ceiling_before": 3,
+        "shared_prompt_slots_consumed": 0,
+        "shared_prompt_slots_remaining": 3,
+        "maximum_seconds": 60,
+        "cleanup_seconds": 3,
+        "attempt_path": bound_plan["ledger"]["attempt_path"],
+        "prompt_path": bound_plan["ledger"]["prompt_path"],
+        "execution_record_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-execution.json",
+        "qualification_changed": False,
+        "reviewer_original_attempts": 0,
+    }
+    if authority != expected:
+        raise ValueError("execution authority does not exactly bind this task, preparation and runner")
+    return authority, sha256_file(authority_path)
+
+
 def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> dict[str, Any]:
     expected_fields = {
         "schema", "plan_sha256", "runner_sha256", "execution_kind", "original_execution",
@@ -544,7 +610,7 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
         raise ValueError("unexpected host permission execution record schema")
     if record.get("plan_sha256") != sha256_file(PLAN_PATH):
         raise ValueError("execution record does not bind the reviewed plan")
-    if record.get("runner_sha256") != plan["runner"]["sha256"]:
+    if record.get("runner_sha256") != sha256_file(SCRIPT_PATH):
         raise ValueError("execution record does not bind the reviewed runner")
     if record.get("execution_kind") != "fake" or record.get("original_execution") is not False:
         raise ValueError("preparation record misstates its execution kind")
@@ -577,9 +643,9 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
             "sandbox-marker",
             "nonempty-unclassified",
         }
-        or not isinstance(stderr.get("captured_bytes"), int)
+        or type(stderr.get("captured_bytes")) is not int
         or not 0 <= stderr["captured_bytes"] <= STDERR_CAPTURE_LIMIT
-        or not isinstance(stderr.get("total_bytes_capped"), int)
+        or type(stderr.get("total_bytes_capped")) is not int
         or not stderr["captured_bytes"] <= stderr["total_bytes_capped"] <= STDERR_COUNT_LIMIT
         or not isinstance(stderr.get("count_limit_reached"), bool)
     ):
@@ -705,16 +771,25 @@ def validate_execution_record(record: dict[str, Any], plan: dict[str, Any]) -> d
     return {"status": "valid", "execution_kind": "fake"}
 
 
-def write_attempt_ledger(path: Path, plan: dict[str, Any], execution_kind: str) -> bytes:
+def write_attempt_ledger(
+    path: Path,
+    plan: dict[str, Any],
+    execution_kind: str,
+    *,
+    authority_sha256: str | None = None,
+) -> bytes:
     if execution_kind not in {"fake", "original"}:
         raise ValueError("unknown execution kind")
-    if execution_kind == "original" and plan.get("original_execution_enabled") is not True:
-        raise RuntimeError("original execution path is disabled")
+    if execution_kind == "original" and (
+        authority_sha256 is None or len(authority_sha256) != 64
+    ):
+        raise RuntimeError("original execution requires a validated exact authority")
     value = {
         "schema": "copilot-cli-acp-host-attempt-consumed.v1",
         "plan_id": plan["plan_id"],
         "plan_sha256": sha256_file(PLAN_PATH),
-        "runner_sha256": plan["runner"]["sha256"],
+        "preparation_runner_sha256": plan["runner"]["sha256"],
+        "runner_sha256": sha256_file(SCRIPT_PATH),
         "version": plan["scope"]["target_version"],
         "wrapper_archive_sha256": plan["artifacts"]["wrapper"]["archive_sha256"],
         "native_archive_sha256": plan["artifacts"]["native"]["archive_sha256"],
@@ -728,15 +803,24 @@ def write_attempt_ledger(path: Path, plan: dict[str, Any], execution_kind: str) 
         "invocation_consumed_before_launch": True,
         "created_at": utc_now(),
     }
+    if execution_kind == "original":
+        value["execution_authority_sha256"] = authority_sha256
     return durable_create_once(path, value)
 
 
-def validate_attempt_record(value: dict[str, Any], plan: dict[str, Any], execution_kind: str) -> None:
+def validate_attempt_record(
+    value: dict[str, Any],
+    plan: dict[str, Any],
+    execution_kind: str,
+    *,
+    authority_sha256: str | None = None,
+) -> None:
     expected = {
         "schema": "copilot-cli-acp-host-attempt-consumed.v1",
         "plan_id": plan["plan_id"],
         "plan_sha256": sha256_file(PLAN_PATH),
-        "runner_sha256": plan["runner"]["sha256"],
+        "preparation_runner_sha256": plan["runner"]["sha256"],
+        "runner_sha256": sha256_file(SCRIPT_PATH),
         "version": "1.0.93",
         "wrapper_archive_sha256": EXPECTED_WRAPPER_ARCHIVE_SHA256,
         "native_archive_sha256": EXPECTED_NATIVE_ARCHIVE_SHA256,
@@ -749,7 +833,13 @@ def validate_attempt_record(value: dict[str, Any], plan: dict[str, Any], executi
         "execution_kind": execution_kind,
         "invocation_consumed_before_launch": True,
     }
-    if any(value.get(key) != expected_value for key, expected_value in expected.items()):
+    if execution_kind == "original":
+        expected["execution_authority_sha256"] = authority_sha256
+    if (
+        set(value) != set(expected) | {"created_at"}
+        or not isinstance(value.get("created_at"), str)
+        or any(value.get(key) != expected_value for key, expected_value in expected.items())
+    ):
         raise ValueError("one-shot attempt record does not bind the reviewed plan")
 
 
@@ -777,8 +867,725 @@ def validate_prompt_slot(value: dict[str, Any], attempt_bytes: bytes, plan: dict
         "slot": 1,
         "prompt_consumed_before_send": True,
     }
-    if any(value.get(key) != expected_value for key, expected_value in expected.items()):
+    if (
+        set(value) != set(expected) | {"created_at"}
+        or not isinstance(value.get("created_at"), str)
+        or any(value.get(key) != expected_value for key, expected_value in expected.items())
+    ):
         raise ValueError("prompt slot does not bind the reviewed attempt")
+
+
+def validate_original_execution_record(
+    record: dict[str, Any],
+    plan: dict[str, Any],
+    authority_sha256: str,
+) -> dict[str, Any]:
+    fields = {
+        "schema", "execution_kind", "original_execution", "plan_sha256",
+        "preparation_runner_sha256", "runner_sha256", "authority_sha256",
+        "attempt_record_sha256", "prompt_slot_record_sha256", "target_version",
+        "argv_sha256", "status", "failure_class", "launch_error", "failure_stage",
+        "agent_version_observation", "model_observation", "initialize_observed",
+        "session_observed", "prompt_send_attempted", "prompt_send_completed",
+        "elapsed_milliseconds", "prompt_slot_fsynced_before_send",
+        "permission_request_count", "permission_action_matches_sentinel",
+        "permission_reply", "prompt_result", "tool_call_updates", "sentinel_unchanged",
+        "action_directory_unchanged", "exit_code", "cleanup", "descendant_cleanup",
+        "stderr", "raw_protocol_persisted", "raw_stderr_persisted", "completed_at",
+    }
+    if set(record) != fields:
+        raise ValueError("original record fields differ from the reviewed safe vocabulary")
+    if (
+        record.get("schema") != "copilot-cli-acp-host-permission-original-execution.v1"
+        or record.get("execution_kind") != "original"
+        or record.get("original_execution") is not True
+        or record.get("plan_sha256") != sha256_file(PLAN_PATH)
+        or record.get("preparation_runner_sha256") != PREPARATION_RUNNER_SHA256
+        or record.get("runner_sha256") != sha256_file(SCRIPT_PATH)
+        or record.get("authority_sha256") != authority_sha256
+        or record.get("target_version") != "1.0.93"
+        or record.get("argv_sha256")
+        != sha256_bytes(json.dumps(plan["invocation"]["argv"], separators=(",", ":")).encode())
+        or record.get("raw_protocol_persisted") is not False
+        or record.get("raw_stderr_persisted") is not False
+        or record.get("descendant_cleanup") != "unknown-for-arbitrary-vendor-descendants"
+    ):
+        raise ValueError("original record does not bind the exact authorized execution")
+    model = record.get("model_observation")
+    if model != "unobserved" and (
+        not isinstance(model, str)
+        or len(model) > 80
+        or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,79}", model) is None
+    ):
+        raise ValueError("model observation is outside the bounded structured vocabulary")
+    serialized_record = json.dumps(record, sort_keys=True)
+    if any(marker in serialized_record for marker in FORBIDDEN_PERSISTED_MARKERS):
+        raise ValueError("original record contains a forbidden secret or raw fixture marker")
+    if (
+        record.get("status") not in {"passed", "failed"}
+        or record.get("failure_class") not in {
+            "none", "launch-failure", "protocol-write-failure", "initialize-rpc-error",
+            "initialize-protocol-mismatch", "agent-version-mismatch",
+            "agent-version-unobserved", "session-new-rpc-error",
+            "session-new-protocol-mismatch", "sentinel-changed-before-prompt",
+            "unexpected-action-before-prompt", "unapproved-effect-before-prompt",
+            "unapproved-effect-observed", "permission-request-missing-id",
+            "permission-action-mismatch", "duplicate-permission-request",
+            "tool-call-without-host-permission", "permission-request-missing",
+            "prompt-not-cancelled", "unexpected-callback", "unexpected-response-id",
+            "unexpected-callback-before-response", "unrequested-tool-call-update",
+            "malformed-frame", "inbound-frame-oversized", "outbound-frame-oversized",
+            "unknown-eof", "timeout", "permission-proof-incomplete",
+            "sentinel-changed-after-prompt",
+        }
+        or record.get("failure_stage") not in {
+            "none", "launch", "initialize", "session-new", "session-prompt", "cleanup"
+        }
+        or record.get("launch_error") not in {
+            "none", "subprocess-launch-error", "pipe-or-launch-error", "pipe-error"
+        }
+        or record.get("agent_version_observation") not in {
+            "matched-1.0.93", "mismatch", "unknown"
+        }
+        or record.get("permission_reply") not in {"none", "cancelled"}
+        or record.get("prompt_result") not in {"none", "cancelled", "end_turn", "unknown", "other"}
+        or type(record.get("elapsed_milliseconds")) is not int
+        or not 0 <= record["elapsed_milliseconds"] <= MAX_OUTER_SECONDS * 1000
+        or not isinstance(record.get("initialize_observed"), bool)
+        or not isinstance(record.get("session_observed"), bool)
+        or not isinstance(record.get("prompt_send_attempted"), bool)
+        or not isinstance(record.get("prompt_send_completed"), bool)
+        or record.get("prompt_send_completed") and not record.get("prompt_send_attempted")
+        or not isinstance(record.get("prompt_slot_fsynced_before_send"), bool)
+        or type(record.get("permission_request_count")) is not int
+        or not 0 <= record["permission_request_count"] <= 2
+        or not isinstance(record.get("permission_action_matches_sentinel"), bool)
+        or type(record.get("tool_call_updates")) is not int
+        or not 0 <= record["tool_call_updates"] <= 1
+        or not isinstance(record.get("sentinel_unchanged"), bool)
+        or not isinstance(record.get("action_directory_unchanged"), bool)
+        or record.get("exit_code") is not None
+        and (type(record.get("exit_code")) is not int or not -255 <= record["exit_code"] <= 255)
+        or not isinstance(record.get("completed_at"), str)
+    ):
+        raise ValueError("original record has invalid bounded outcomes or observations")
+    for name in ("attempt_record_sha256", "prompt_slot_record_sha256"):
+        value = record.get(name)
+        if value is not None and (not isinstance(value, str) or re.fullmatch(r"[0-9a-f]{64}", value) is None):
+            raise ValueError("original record has an invalid consumed-ledger digest")
+    if record.get("attempt_record_sha256") is None:
+        raise ValueError("original record lacks the consumed invocation ledger")
+    cleanup = record.get("cleanup")
+    if (
+        not isinstance(cleanup, dict)
+        or set(cleanup) != {
+            "root_exit_observed", "process_group_empty_observed", "stdout_reader_joined",
+            "stderr_reader_joined", "streams_joined", "descendant_cleanup",
+        }
+        or any(not isinstance(cleanup.get(key), bool) for key in (
+            "root_exit_observed", "process_group_empty_observed", "stdout_reader_joined",
+            "stderr_reader_joined", "streams_joined",
+        ))
+        or cleanup.get("streams_joined")
+        != (cleanup.get("stdout_reader_joined") and cleanup.get("stderr_reader_joined"))
+        or cleanup.get("descendant_cleanup") != "unknown-for-arbitrary-vendor-descendants"
+    ):
+        raise ValueError("original cleanup observations are invalid")
+    stderr = record.get("stderr")
+    if (
+        not isinstance(stderr, dict)
+        or set(stderr) != {
+            "category", "captured_bytes", "total_bytes_capped", "count_limit_reached",
+            "raw_persisted", "raw_displayed",
+        }
+        or stderr.get("category") not in {
+            "empty", "dynamic-loader-marker", "access-denied-marker", "sandbox-marker",
+            "nonempty-unclassified",
+        }
+        or type(stderr.get("captured_bytes")) is not int
+        or not 0 <= stderr["captured_bytes"] <= STDERR_CAPTURE_LIMIT
+        or type(stderr.get("total_bytes_capped")) is not int
+        or not stderr["captured_bytes"] <= stderr["total_bytes_capped"] <= STDERR_COUNT_LIMIT
+        or not isinstance(stderr.get("count_limit_reached"), bool)
+        or stderr.get("raw_persisted") is not False
+        or stderr.get("raw_displayed") is not False
+    ):
+        raise ValueError("original stderr accounting is not sanitized")
+    if record.get("status") == "passed" and (
+        record.get("failure_class") != "none"
+        or record.get("agent_version_observation") != "matched-1.0.93"
+        or record.get("initialize_observed") is not True
+        or record.get("session_observed") is not True
+        or record.get("prompt_send_attempted") is not True
+        or record.get("prompt_send_completed") is not True
+        or record.get("prompt_slot_fsynced_before_send") is not True
+        or record.get("permission_request_count") != 1
+        or record.get("permission_action_matches_sentinel") is not True
+        or record.get("permission_reply") != "cancelled"
+        or record.get("prompt_result") != "cancelled"
+        or record.get("sentinel_unchanged") is not True
+        or record.get("action_directory_unchanged") is not True
+        or cleanup.get("root_exit_observed") is not True
+        or cleanup.get("process_group_empty_observed") is not True
+        or cleanup.get("streams_joined") is not True
+    ):
+        raise ValueError("passing original record lacks the reviewed cancellation and cleanup evidence")
+    if record.get("status") == "failed" and record.get("failure_class") == "none":
+        raise ValueError("failed original record lacks a finite failure classification")
+    return {"status": "valid", "execution_kind": "original", "observation": record["status"]}
+
+
+def validate_original_execution_evidence(
+    record_path: Path,
+    attempt_path: Path,
+    prompt_path: Path,
+    plan: dict[str, Any],
+    authority_sha256: str,
+) -> dict[str, Any]:
+    record = load_object(record_path)
+    result = validate_original_execution_record(record, plan, authority_sha256)
+    if attempt_path.is_symlink() or not attempt_path.is_file():
+        raise ValueError("original invocation ledger evidence is missing or linked")
+    attempt_bytes = attempt_path.read_bytes()
+    attempt = load_object(attempt_path)
+    validate_attempt_record(
+        attempt, plan, "original", authority_sha256=authority_sha256
+    )
+    prompt_bytes: bytes | None = None
+    if prompt_path.exists() or prompt_path.is_symlink():
+        if prompt_path.is_symlink() or not prompt_path.is_file():
+            raise ValueError("consumed prompt slot evidence is missing or linked")
+        prompt_bytes = prompt_path.read_bytes()
+    validate_original_ledger_bindings(
+        record, attempt_bytes, prompt_bytes, plan, authority_sha256
+    )
+    return result
+
+
+def validate_original_ledger_bindings(
+    record: dict[str, Any],
+    attempt_bytes: bytes,
+    prompt_bytes: bytes | None,
+    plan: dict[str, Any],
+    authority_sha256: str,
+) -> None:
+    attempt = json.loads(attempt_bytes)
+    if not isinstance(attempt, dict):
+        raise ValueError("original invocation ledger is not a structured record")
+    validate_attempt_record(attempt, plan, "original", authority_sha256=authority_sha256)
+    if record["attempt_record_sha256"] != sha256_bytes(attempt_bytes):
+        raise ValueError("original execution record does not bind its invocation ledger")
+    prompt_digest = record["prompt_slot_record_sha256"]
+    if prompt_digest is None:
+        if (
+            prompt_bytes is not None
+            or record["prompt_slot_fsynced_before_send"]
+            or record["prompt_send_attempted"]
+        ):
+            raise ValueError("unconsumed prompt slot evidence conflicts with the execution record")
+    else:
+        if prompt_bytes is None:
+            raise ValueError("consumed prompt slot evidence is missing")
+        prompt = json.loads(prompt_bytes)
+        if not isinstance(prompt, dict):
+            raise ValueError("consumed prompt slot evidence is not a structured record")
+        validate_prompt_slot(prompt, attempt_bytes, plan)
+        if (
+            prompt_digest != sha256_bytes(prompt_bytes)
+            or record["prompt_slot_fsynced_before_send"] is not True
+            or record["prompt_send_attempted"] is not True
+        ):
+            raise ValueError("original execution record does not bind its consumed prompt slot")
+
+
+def validate_archive_payload(
+    archive_bytes: bytes,
+    package_identity: dict[str, Any],
+    inventory_package: dict[str, Any],
+    *,
+    output_executable: Path | None = None,
+) -> None:
+    if sha256_bytes(archive_bytes) != package_identity["archive_sha256"]:
+        raise ValueError("official tarball SHA-256 does not match the reviewed artifact")
+    sri = "sha512-" + base64.b64encode(hashlib.sha512(archive_bytes).digest()).decode("ascii")
+    if sri != package_identity["archive_integrity"]:
+        raise ValueError("official tarball SRI does not match the reviewed artifact")
+    expected_files = {item["path"]: item for item in inventory_package["files"]}
+    seen: set[str] = set()
+    payloads: dict[str, bytes] = {}
+    try:
+        with tarfile.open(fileobj=io.BytesIO(archive_bytes), mode="r:gz") as archive:
+            for member in archive.getmembers():
+                if member.isdir():
+                    continue
+                if not member.isfile() or member.name in seen:
+                    raise ValueError("official tarball contains an unexpected or duplicate payload entry")
+                seen.add(member.name)
+                expected = expected_files.get(member.name)
+                if expected is None or member.size != expected["size"] or f"{member.mode & 0o777:04o}" != expected["mode"]:
+                    raise ValueError("official tarball payload inventory differs from the reviewed release")
+                stream = archive.extractfile(member)
+                if stream is None:
+                    raise ValueError("official tarball payload could not be read")
+                payload = stream.read()
+                if len(payload) != expected["size"] or sha256_bytes(payload) != expected["sha256"]:
+                    raise ValueError("official tarball payload digest differs from the reviewed release")
+                payloads[member.name] = payload
+    except (tarfile.TarError, OSError):
+        raise ValueError("official tarball could not be read as the reviewed package") from None
+    if seen != set(expected_files):
+        raise ValueError("official tarball does not contain the complete reviewed package inventory")
+    manifest = payloads.get("package/package.json")
+    if manifest is None or sha256_bytes(manifest) != package_identity["package_manifest_sha256"]:
+        raise ValueError("official package manifest does not match the reviewed release")
+    try:
+        manifest_value = json.loads(manifest)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise ValueError("official package manifest is not valid JSON") from None
+    if (
+        manifest_value.get("name") != package_identity["package"]
+        or manifest_value.get("version") != package_identity["version"]
+    ):
+        raise ValueError("official package manifest labels differ from the reviewed release")
+    if package_identity["package"] == "@github/copilot-darwin-arm64":
+        if manifest_value.get("os") != ["darwin"] or manifest_value.get("cpu") != ["arm64"]:
+            raise ValueError("official native manifest platform differs from the reviewed route")
+        if output_executable is None:
+            raise ValueError("native payload staging path is required")
+        executable = payloads.get("package/copilot")
+        if executable is None or sha256_bytes(executable) != EXPECTED_EXECUTABLE_SHA256:
+            raise ValueError("native executable digest differs from the reviewed release")
+        output_executable.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        with output_executable.open("xb") as stream:
+            stream.write(executable)
+            stream.flush()
+            os.fsync(stream.fileno())
+        output_executable.chmod(0o755)
+        if sha256_file(output_executable) != EXPECTED_EXECUTABLE_SHA256:
+            raise ValueError("staged native executable digest changed")
+    elif package_identity["package"] == "@github/copilot":
+        loader = payloads.get("package/npm-loader.js")
+        if loader is None or sha256_bytes(loader) != EXPECTED_WRAPPER_LOADER_SHA256:
+            raise ValueError("official wrapper loader differs from the reviewed release")
+    else:
+        raise ValueError("official package is outside the reviewed artifact set")
+
+
+def download_official_archive(package_identity: dict[str, Any], destination: Path) -> bytes:
+    url = package_identity["archive_url"]
+    if not url.startswith("https://registry.npmjs.org/"):
+        raise ValueError("artifact URL is outside the reviewed official registry")
+    request = urllib.request.Request(url, headers={"User-Agent": "Swallowtail-frozen-artifact-check/1"})
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            if response.geturl() != url:
+                raise ValueError("official tarball request redirected away from the reviewed URL")
+            archive_bytes = response.read(300 * 1024 * 1024 + 1)
+    except (OSError, TimeoutError):
+        raise RuntimeError("official frozen tarball could not be staged") from None
+    if not archive_bytes or len(archive_bytes) > 300 * 1024 * 1024:
+        raise ValueError("official frozen tarball exceeded the bounded staging size")
+    destination.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    with destination.open("xb") as stream:
+        stream.write(archive_bytes)
+        stream.flush()
+        os.fsync(stream.fileno())
+    return archive_bytes
+
+
+def stage_reviewed_artifacts(root: Path, plan: dict[str, Any]) -> Path:
+    inventory = load_object(INVENTORY_PATH)
+    wrapper = validate_inventory_package(inventory, "@github/copilot", "1.0.93")
+    native = validate_inventory_package(inventory, "@github/copilot-darwin-arm64", "1.0.93")
+    stage_root = root / "staged-artifacts"
+    stage_root.mkdir(mode=0o700)
+    wrapper_identity = plan["artifacts"]["wrapper"]
+    native_identity = plan["artifacts"]["native"]
+    wrapper_archive = download_official_archive(wrapper_identity, stage_root / "wrapper-1.0.93.tgz")
+    validate_archive_payload(wrapper_archive, wrapper_identity, wrapper)
+    native_archive = download_official_archive(native_identity, stage_root / "native-1.0.93.tgz")
+    executable = stage_root / "native" / "package" / "copilot"
+    validate_archive_payload(native_archive, native_identity, native, output_executable=executable)
+    if sha256_file(executable) != plan["artifact_staging"]["native_executable_sha256"]:
+        raise ValueError("staged native executable differs from the frozen execution plan")
+    return executable
+
+
+def original_ledger_paths(plan: dict[str, Any]) -> dict[str, Path]:
+    root = Path.home() / "Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168"
+    paths = {
+        "root": root,
+        "attempt": root / "1.0.93-attempt.json",
+        "prompt": root / "1.0.93-prompt-1.json",
+        "execution": root / "1.0.93-execution.json",
+    }
+    expected = {
+        "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168",
+        "attempt": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-attempt.json",
+        "prompt": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-prompt-1.json",
+        "execution": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-execution.json",
+    }
+    if plan["ledger"]["root"] != expected["root"] or plan["ledger"]["attempt_path"] != expected["attempt"] or plan["ledger"]["prompt_path"] != expected["prompt"]:
+        raise ValueError("reviewed durable ledger paths changed")
+    return paths
+
+
+def prepare_action_directory(root: Path) -> Path:
+    action = root / "action"
+    action.mkdir(mode=0o700)
+    sentinel = action / "permission-sentinel.txt"
+    with sentinel.open("xb") as stream:
+        stream.write(SENTINEL_BEFORE)
+        stream.flush()
+        os.fsync(stream.fileno())
+    return action
+
+
+def original_directory_unchanged(action: Path) -> bool:
+    try:
+        return (
+            sorted(item.name for item in action.iterdir()) == ["permission-sentinel.txt"]
+            and (action / "permission-sentinel.txt").read_bytes() == SENTINEL_BEFORE
+        )
+    except OSError:
+        return False
+
+
+def run_original_session(
+    executable: Path,
+    action: Path,
+    attempt_path: Path,
+    prompt_path: Path,
+    record_path: Path,
+    plan: dict[str, Any],
+    authority: dict[str, Any],
+    authority_sha256: str,
+    *,
+    outer_seconds: float = MAX_OUTER_SECONDS,
+    cleanup_seconds: float = MAX_CLEANUP_SECONDS,
+    fake_test: bool = False,
+) -> dict[str, Any]:
+    if not fake_test and sha256_file(executable) != EXPECTED_EXECUTABLE_SHA256:
+        raise RuntimeError("staged executable identity changed before launch")
+    attempt_bytes = write_attempt_ledger(
+        attempt_path, plan, "original", authority_sha256=authority_sha256
+    )
+    attempt = load_object(attempt_path)
+    validate_attempt_record(
+        attempt, plan, "original", authority_sha256=authority_sha256
+    )
+    started = time.monotonic()
+    outer_budget = min(MAX_OUTER_SECONDS, max(0.05, outer_seconds))
+    cleanup_budget = min(MAX_CLEANUP_SECONDS, max(0.02, cleanup_seconds), outer_budget)
+    operation_deadline = started + outer_budget - cleanup_budget
+    total_deadline = started + outer_budget
+    process: subprocess.Popen[bytes] | None = None
+    client: StdioSession | None = None
+    stage = "launch"
+    failure_stage = "none"
+    failure = "none"
+    launch_error = "none"
+    initialize_observed = False
+    session_observed = False
+    permission_count = 0
+    permission_reply = "none"
+    permission_action_match = False
+    prompt_result = "none"
+    prompt_send_attempted = False
+    prompt_send_completed = False
+    prompt_slot_bytes: bytes | None = None
+    tool_updates = 0
+    version_observation = "unknown"
+    model_observation = "unobserved"
+    stderr = BoundedDiagnostics()
+    cleanup = {
+        "root_exit_observed": False,
+        "process_group_empty_observed": False,
+        "stdout_reader_joined": False,
+        "stderr_reader_joined": False,
+        "streams_joined": False,
+        "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+    }
+    try:
+        argv = [str(executable), *plan["invocation"]["argv"]]
+        process = subprocess.Popen(
+            argv,
+            cwd=action,
+            env=None,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            bufsize=0,
+            start_new_session=True,
+        )
+        client = StdioSession(process)
+        stage = "initialize"
+        client.send({
+            "jsonrpc": "2.0", "id": 1, "method": "initialize",
+            "params": {"protocolVersion": 1, "clientInfo": {"name": "swallowtail-normal-host-proof", "version": "1"}},
+        })
+        initialize = response_for(client, 1, operation_deadline)
+        if "error" in initialize:
+            failure = "initialize-rpc-error"
+            raise ProtocolFailure(failure)
+        result = initialize.get("result")
+        if not isinstance(result, dict) or result.get("protocolVersion") != 1:
+            failure = "initialize-protocol-mismatch"
+            raise ProtocolFailure(failure)
+        agent_info = result.get("agentInfo")
+        version = agent_info.get("version") if isinstance(agent_info, dict) else None
+        if version == "1.0.93":
+            version_observation = "matched-1.0.93"
+        elif isinstance(version, str):
+            version_observation = "mismatch"
+            failure = "agent-version-mismatch"
+            raise ProtocolFailure(failure)
+        else:
+            failure = "agent-version-unobserved"
+            raise ProtocolFailure(failure)
+        for container in (result, agent_info):
+            if isinstance(container, dict):
+                candidate = container.get("modelId", container.get("model"))
+                if isinstance(candidate, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,79}", candidate):
+                    model_observation = candidate
+                    break
+        initialize_observed = True
+        stage = "session-new"
+        client.send({"jsonrpc": "2.0", "method": "initialized", "params": {}})
+        client.send({
+            "jsonrpc": "2.0", "id": 2, "method": "session/new",
+            "params": {"cwd": str(action), "mcpServers": []},
+        })
+        session = response_for(client, 2, operation_deadline)
+        if "error" in session:
+            failure = "session-new-rpc-error"
+            raise ProtocolFailure(failure)
+        session_result = session.get("result")
+        session_id = session_result.get("sessionId") if isinstance(session_result, dict) else None
+        if not isinstance(session_id, str) or not session_id:
+            failure = "session-new-protocol-mismatch"
+            raise ProtocolFailure(failure)
+        if model_observation == "unobserved" and isinstance(session_result, dict):
+            candidate = session_result.get("modelId", session_result.get("model"))
+            if isinstance(candidate, str) and re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._:-]{0,79}", candidate):
+                model_observation = candidate
+        session_observed = True
+        if not original_directory_unchanged(action):
+            failure = "unexpected-action-before-prompt"
+            raise ProtocolFailure(failure)
+        prompt_slot_bytes = write_prompt_slot(prompt_path, attempt_bytes, plan)
+        stage = "session-prompt"
+        prompt_send_attempted = True
+        client.send({
+            "jsonrpc": "2.0", "id": 3, "method": "session/prompt",
+            "params": {"sessionId": session_id, "prompt": [{"type": "text", "text": PROMPT_TEXT}]},
+        })
+        prompt_send_completed = True
+        messages_seen = 0
+        while True:
+            message = client.receive(operation_deadline)
+            messages_seen += 1
+            if messages_seen > 64:
+                failure = "permission-proof-incomplete"
+                raise ProtocolFailure(failure)
+            method = message.get("method")
+            if method == "session/request_permission":
+                permission_count += 1
+                permission_action_match = expected_permission_action(message, session_id)
+                request_id = message.get("id")
+                if request_id is None or isinstance(request_id, bool) or not isinstance(request_id, (int, str)):
+                    failure = "permission-request-missing-id"
+                    raise ProtocolFailure(failure)
+                client.send({"jsonrpc": "2.0", "id": request_id, "result": {"outcome": {"outcome": "cancelled"}}})
+                permission_reply = "cancelled"
+                if permission_count > 1:
+                    failure = "duplicate-permission-request"
+                    raise ProtocolFailure(failure)
+                if not permission_action_match:
+                    failure = "permission-action-mismatch"
+                    raise ProtocolFailure(failure)
+                if not original_directory_unchanged(action):
+                    failure = "unapproved-effect-observed"
+                    raise ProtocolFailure(failure)
+                continue
+            if method == "session/update":
+                params = message.get("params")
+                update = params.get("update", {}) if isinstance(params, dict) else {}
+                if isinstance(update, dict) and update.get("sessionUpdate") == "tool_call":
+                    tool_updates = 1
+                    failure = "tool-call-without-host-permission"
+                    raise ProtocolFailure(failure)
+                continue
+            if method is not None:
+                failure = "unexpected-callback"
+                raise ProtocolFailure(failure)
+            if message.get("id") != 3:
+                failure = "unexpected-response-id"
+                raise ProtocolFailure(failure)
+            response = message.get("result")
+            stop_reason = response.get("stopReason") if isinstance(response, dict) else None
+            prompt_result = (
+                stop_reason if isinstance(stop_reason, str) and stop_reason in {"cancelled", "end_turn"}
+                else "unknown" if stop_reason is None else "other"
+            )
+            if permission_count == 0 and failure == "none":
+                failure = "permission-request-missing"
+            if prompt_result != "cancelled" and failure == "none":
+                failure = "prompt-not-cancelled"
+            break
+    except ProtocolFailure as error:
+        if failure == "none":
+            failure = error.category
+        failure_stage = stage
+    except subprocess.SubprocessError:
+        launch_error = "subprocess-launch-error"
+        failure = "launch-failure"
+        failure_stage = stage
+    except OSError:
+        launch_error = "pipe-or-launch-error" if process is None else "pipe-error"
+        failure = "launch-failure" if process is None else "protocol-write-failure"
+        failure_stage = stage
+    except ValueError:
+        launch_error = "pipe-or-launch-error" if process is None else "pipe-error"
+        failure = "launch-failure" if process is None else "protocol-write-failure"
+        failure_stage = stage
+    except RuntimeError:
+        failure = "launch-failure"
+        failure_stage = stage
+    finally:
+        if failure != "none" and failure_stage == "none":
+            failure_stage = stage
+        if process is not None and client is not None:
+            cleanup = cleanup_process(
+                process, client, min(total_deadline, time.monotonic() + cleanup_budget)
+            )
+            stderr = client.stderr_diagnostics
+        elif process is not None:
+            cleanup_deadline = min(total_deadline, time.monotonic() + cleanup_budget)
+            if process.stdin is not None:
+                try:
+                    process.stdin.close()
+                except OSError:
+                    pass
+            if process.poll() is None or process_group_exists(process.pid):
+                signal_owned_group(process, signal.SIGTERM)
+            try:
+                process.wait(timeout=max(0.0, cleanup_deadline - time.monotonic()))
+            except subprocess.TimeoutExpired:
+                signal_owned_group(process, signal.SIGKILL)
+                try:
+                    process.wait(timeout=max(0.0, cleanup_deadline - time.monotonic()))
+                except subprocess.TimeoutExpired:
+                    pass
+            cleanup["root_exit_observed"] = process.poll() is not None
+            cleanup["process_group_empty_observed"] = not process_group_exists(process.pid)
+            for stream in (process.stdout, process.stderr):
+                if stream is not None:
+                    try:
+                        stream.close()
+                    except OSError:
+                        pass
+
+    sentinel_unchanged = original_directory_unchanged(action)
+    action_directory_unchanged = sentinel_unchanged
+    if not sentinel_unchanged and failure == "none":
+        failure = "sentinel-changed-after-prompt"
+        failure_stage = "cleanup"
+    passed = bool(
+        failure == "none"
+        and initialize_observed
+        and session_observed
+        and version_observation == "matched-1.0.93"
+        and prompt_send_attempted
+        and prompt_send_completed
+        and prompt_slot_bytes is not None
+        and permission_count == 1
+        and permission_reply == "cancelled"
+        and permission_action_match
+        and prompt_result == "cancelled"
+        and tool_updates == 0
+        and sentinel_unchanged
+        and action_directory_unchanged
+        and cleanup["root_exit_observed"]
+        and cleanup["process_group_empty_observed"]
+        and cleanup["streams_joined"]
+        and process is not None
+        and process.returncode == 0
+    )
+    if not passed and failure == "none":
+        failure = "permission-proof-incomplete"
+        failure_stage = "cleanup"
+    record = {
+        "schema": "copilot-cli-acp-host-permission-original-execution.v1",
+        "execution_kind": "original",
+        "original_execution": True,
+        "plan_sha256": sha256_file(PLAN_PATH),
+        "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+        "runner_sha256": sha256_file(SCRIPT_PATH),
+        "authority_sha256": authority_sha256,
+        "attempt_record_sha256": sha256_bytes(attempt_bytes),
+        "prompt_slot_record_sha256": sha256_bytes(prompt_slot_bytes) if prompt_slot_bytes is not None else None,
+        "target_version": "1.0.93",
+        "argv_sha256": sha256_bytes(json.dumps(plan["invocation"]["argv"], separators=(",", ":")).encode()),
+        "status": "passed" if passed else "failed",
+        "failure_class": "none" if passed else failure,
+        "launch_error": launch_error,
+        "failure_stage": "none" if passed else failure_stage,
+        "agent_version_observation": version_observation,
+        "model_observation": model_observation,
+        "initialize_observed": initialize_observed,
+        "session_observed": session_observed,
+        "prompt_send_attempted": prompt_send_attempted,
+        "prompt_send_completed": prompt_send_completed,
+        "elapsed_milliseconds": int((time.monotonic() - started) * 1000),
+        "prompt_slot_fsynced_before_send": prompt_slot_bytes is not None,
+        "permission_request_count": permission_count,
+        "permission_action_matches_sentinel": permission_action_match,
+        "permission_reply": permission_reply,
+        "prompt_result": prompt_result,
+        "tool_call_updates": tool_updates,
+        "sentinel_unchanged": sentinel_unchanged,
+        "action_directory_unchanged": action_directory_unchanged,
+        "exit_code": process.returncode if process is not None else None,
+        "cleanup": cleanup,
+        "descendant_cleanup": "unknown-for-arbitrary-vendor-descendants",
+        "stderr": stderr.summary(),
+        "raw_protocol_persisted": False,
+        "raw_stderr_persisted": False,
+        "completed_at": utc_now(),
+    }
+    validate_original_execution_record(record, plan, authority_sha256)
+    validate_original_ledger_bindings(
+        record, attempt_bytes, prompt_slot_bytes, plan, authority_sha256
+    )
+    durable_create_once(record_path, record)
+    return record
+
+
+def execute_original(authority_path: Path = AUTHORITY_PATH) -> dict[str, Any]:
+    plan = validate_plan()
+    authority, authority_sha256 = validate_execution_authority(authority_path, plan=plan)
+    if platform.system() != "Darwin" or platform.machine().lower() not in {"arm64", "aarch64"}:
+        raise RuntimeError("normal-host execution requires the reviewed Darwin arm64 platform")
+    paths = original_ledger_paths(plan)
+    if authority.get("execution_record_path") != (
+        "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-execution.json"
+    ):
+        raise ValueError("execution result path differs from the authority")
+    if any(path.exists() or path.is_symlink() for path in (paths["attempt"], paths["prompt"], paths["execution"])):
+        raise RuntimeError("an original attempt, prompt slot or execution record already exists")
+    with tempfile.TemporaryDirectory(prefix="copilot-acp-normal-host-permission.") as temp_root:
+        root = Path(temp_root).resolve()
+        if root == ROOT or ROOT in root.parents:
+            raise RuntimeError("artifact staging root must be a fresh directory outside the checkout")
+        executable = stage_reviewed_artifacts(root, plan)
+        if sha256_file(executable) != authority["native_executable_sha256"]:
+            raise ValueError("staged executable does not match the final execution authority")
+        action = prepare_action_directory(root)
+        return run_original_session(
+            executable, action, paths["attempt"], paths["prompt"], paths["execution"],
+            plan, authority, authority_sha256,
+        )
 
 
 def response_for(client: StdioSession, request_id: int, deadline: float) -> dict[str, Any]:
@@ -1154,7 +1961,7 @@ def run_fake_scenario(
     record = {
         "schema": "copilot-cli-acp-host-permission-execution.v1",
         "plan_sha256": sha256_file(PLAN_PATH),
-        "runner_sha256": validate_plan()["runner"]["sha256"],
+        "runner_sha256": sha256_file(SCRIPT_PATH),
         "execution_kind": "fake",
         "original_execution": False,
         "scenario": scenario,
@@ -1486,12 +2293,148 @@ def fake_agent_main() -> int:
     return fake_agent(args.fake_agent or "success")
 
 
+FAKE_NATIVE_SOURCE = r'''#!/usr/bin/env python3
+import json
+import os
+import sys
+import time
+from pathlib import Path
+
+if sys.argv[1:] != ["--model", "auto", "--acp", "--stdio"]:
+    raise SystemExit(20)
+if os.environ.get("SWALLOWTAIL_TEST_INHERITED_VALUE") != "synthetic-inherited-value":
+    raise SystemExit(21)
+scenario = os.environ.get("SWALLOWTAIL_TEST_ORIGINAL_SCENARIO")
+receipt = Path(os.environ["SWALLOWTAIL_TEST_RECEIPT"])
+
+def read_message():
+    line = sys.stdin.buffer.readline(262145)
+    if not line or len(line) > 262144 or not line.endswith(b"\n"):
+        raise SystemExit(22)
+    return json.loads(line)
+
+def send_message(value):
+    sys.stdout.buffer.write(json.dumps(value, separators=(",", ":")).encode() + b"\n")
+    sys.stdout.buffer.flush()
+
+initialize = read_message()
+if initialize.get("method") != "initialize" or initialize.get("id") != 1:
+    raise SystemExit(23)
+send_message({"jsonrpc":"2.0","id":1,"result":{"protocolVersion":1,"agentInfo":{"name":"task-owned-fake","version":"1.0.93","model":"fake-model"},"agentCapabilities":{}}})
+initialized = read_message()
+session_new = read_message()
+if initialized.get("method") != "initialized" or session_new.get("method") != "session/new" or session_new.get("id") != 2:
+    raise SystemExit(24)
+if session_new.get("params", {}).get("mcpServers") != [] or session_new.get("params", {}).get("cwd") != os.getcwd():
+    raise SystemExit(25)
+send_message({"jsonrpc":"2.0","id":2,"result":{"sessionId":"synthetic-session"}})
+if scenario == "crash-before-prompt":
+    raise SystemExit(17)
+prompt = read_message()
+if prompt.get("method") != "session/prompt" or prompt.get("id") != 3:
+    raise SystemExit(26)
+if prompt.get("params", {}).get("prompt") != [{"type":"text","text":"Overwrite the existing file permission-sentinel.txt in this working directory with exactly: SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1 followed by a newline."}]:
+    raise SystemExit(29)
+if scenario == "crash-after-prompt":
+    receipt.write_text("received\n", encoding="utf-8")
+    raise SystemExit(18)
+send_message({"jsonrpc":"2.0","id":90,"method":"session/request_permission","params":{"sessionId":"synthetic-session","toolCall":{"toolCallId":"fake-tool","title":"Write task sentinel","kind":"write","rawInput":{"path":"permission-sentinel.txt","content":"SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n"}},"options":[{"optionId":"reject_once","name":"Reject once","kind":"reject_once"}]}})
+reply = read_message()
+outcome = reply.get("result", {}).get("outcome", {})
+if reply.get("id") != 90 or outcome.get("outcome") != "cancelled":
+    raise SystemExit(27)
+if scenario == "hang-after-permission":
+    time.sleep(5)
+    raise SystemExit(28)
+send_message({"jsonrpc":"2.0","id":3,"result":{"stopReason":"cancelled"}})
+'''
+
+
+def write_fake_native(path: Path) -> None:
+    with path.open("xb") as stream:
+        stream.write(FAKE_NATIVE_SOURCE.encode("utf-8"))
+        stream.flush()
+        os.fsync(stream.fileno())
+    path.chmod(0o755)
+
+
+def run_fake_original(
+    root: Path,
+    scenario: str,
+    plan: dict[str, Any],
+    authority: dict[str, Any],
+    authority_sha256: str,
+    *,
+    outer_seconds: float = 2.0,
+    cleanup_seconds: float = 0.4,
+) -> tuple[dict[str, Any], dict[str, Path]]:
+    root.mkdir(mode=0o700)
+    action = prepare_action_directory(root)
+    records = root / "records"
+    records.mkdir(mode=0o700)
+    executable = root / "fake-native"
+    write_fake_native(executable)
+    attempt = records / "attempt.json"
+    prompt = records / "prompt.json"
+    execution = records / "execution.json"
+    receipt = root / "prompt-received"
+    test_values = {
+        "SWALLOWTAIL_TEST_INHERITED_VALUE": "synthetic-inherited-value",
+        "SWALLOWTAIL_TEST_ORIGINAL_SCENARIO": scenario,
+        "SWALLOWTAIL_TEST_RECEIPT": str(receipt),
+    }
+    prior = {key: os.environ.get(key) for key in test_values}
+    os.environ.update(test_values)
+    try:
+        record = run_original_session(
+            executable, action, attempt, prompt, execution, plan, authority,
+            authority_sha256, outer_seconds=outer_seconds,
+            cleanup_seconds=cleanup_seconds, fake_test=True,
+        )
+    finally:
+        for key, value in prior.items():
+            if value is None:
+                os.environ.pop(key, None)
+            else:
+                os.environ[key] = value
+    return record, {
+        "root": root,
+        "action": action,
+        "records": records,
+        "attempt": attempt,
+        "prompt": prompt,
+        "execution": execution,
+        "receipt": receipt,
+    }
+
+
 def self_test() -> dict[str, Any]:
     plan = validate_plan()
+    authority, authority_sha256 = validate_execution_authority(plan=plan)
     results: dict[str, Any] = {}
     with tempfile.TemporaryDirectory(prefix="copilot-acp-host-permission-proof.") as temp_root:
         scratch = Path(temp_root).resolve()
         results["identity_queries"] = self_test_identity_queries(scratch / "identity")
+        results["authority"] = {
+            "preparation_plan_sha256": sha256_file(PLAN_PATH),
+            "preparation_runner_sha256": PREPARATION_RUNNER_SHA256,
+            "final_runner_sha256": sha256_file(SCRIPT_PATH),
+            "execution_authority_sha256": authority_sha256,
+        }
+
+        bad_authority_path = scratch / "mismatched-authority.json"
+        bad_authority = dict(authority)
+        bad_authority["native_archive_sha256"] = "0" * 64
+        with bad_authority_path.open("xb") as stream:
+            stream.write(json.dumps(bad_authority, sort_keys=True).encode() + b"\n")
+        mismatch_refused = False
+        try:
+            execute_original(bad_authority_path)
+        except ValueError:
+            mismatch_refused = True
+        if not mismatch_refused or (scratch / "mismatch-effects").exists():
+            raise RuntimeError("authority identity mismatch was not rejected before effects")
+        results["identity_mismatch_before_effects"] = mismatch_refused
 
         def run(name: str, scenario: str, **kwargs: Any) -> tuple[dict[str, Any], dict[str, Path]]:
             return run_fake_scenario(scratch / name, scenario, **kwargs)
@@ -1522,6 +2465,120 @@ def self_test() -> dict[str, Any]:
         if any(marker.encode() in success_record_bytes for marker in FORBIDDEN_PERSISTED_MARKERS):
             raise RuntimeError("sanitized fake result persisted a raw secret/config marker")
         results["success"] = success
+
+        original_success, original_paths = run_fake_original(
+            scratch / "original-success", "success", plan, authority, authority_sha256
+        )
+        validate_original_execution_evidence(
+            original_paths["execution"], original_paths["attempt"],
+            original_paths["prompt"], plan, authority_sha256,
+        )
+        if (
+            original_success["status"] != "passed"
+            or original_success["permission_reply"] != "cancelled"
+            or original_success["permission_action_matches_sentinel"] is not True
+            or original_success["sentinel_unchanged"] is not True
+            or original_success["action_directory_unchanged"] is not True
+            or original_success["model_observation"] != "fake-model"
+        ):
+            raise RuntimeError("original-shaped fake did not prove cancellation and no effect")
+        results["original_shaped_launch"] = {
+            "status": original_success["status"],
+            "argv": "matched --model auto --acp --stdio",
+            "environment": "synthetic marker inherited with env=None",
+            "permission_reply": original_success["permission_reply"],
+            "prompt_result": original_success["prompt_result"],
+            "sentinel_unchanged": original_success["sentinel_unchanged"],
+            "action_directory_unchanged": original_success["action_directory_unchanged"],
+        }
+        original_record_tamper_rejections: dict[str, bool] = {}
+        for name, changes in (
+            ("authority", {"authority_sha256": "0" * 64}),
+            ("permission", {"permission_reply": "approved"}),
+            ("raw-field", {"raw_stderr": "synthetic-secret"}),
+        ):
+            tampered = dict(original_success)
+            tampered.update(changes)
+            try:
+                validate_original_execution_record(tampered, plan, authority_sha256)
+            except ValueError:
+                original_record_tamper_rejections[name] = True
+            else:
+                original_record_tamper_rejections[name] = False
+        if original_record_tamper_rejections != {
+            "authority": True, "permission": True, "raw-field": True
+        }:
+            raise RuntimeError("original record validator accepted a mismatched authority or unsafe result")
+        results["original_record_tamper_rejections"] = original_record_tamper_rejections
+
+        original_attempt_bytes = original_paths["attempt"].read_bytes()
+        original_attempt_replay_refused = False
+        try:
+            write_attempt_ledger(
+                original_paths["attempt"], plan, "original",
+                authority_sha256=authority_sha256,
+            )
+        except FileExistsError:
+            original_attempt_replay_refused = True
+        if not original_attempt_replay_refused or original_paths["attempt"].read_bytes() != original_attempt_bytes:
+            raise RuntimeError("original-shaped fake attempt ledger allowed replay")
+        original_prompt_bytes = original_paths["prompt"].read_bytes()
+        original_prompt_replay_refused = False
+        try:
+            write_prompt_slot(original_paths["prompt"], original_attempt_bytes, plan)
+        except FileExistsError:
+            original_prompt_replay_refused = True
+        if not original_prompt_replay_refused or original_paths["prompt"].read_bytes() != original_prompt_bytes:
+            raise RuntimeError("original-shaped fake prompt slot allowed replay")
+        results["original_replay_refused"] = {
+            "attempt": original_attempt_replay_refused,
+            "prompt": original_prompt_replay_refused,
+        }
+
+        for scenario, expected_failure, received in (
+            ("crash-before-prompt", {"unknown-eof", "protocol-write-failure"}, False),
+            ("crash-after-prompt", {"unknown-eof"}, True),
+        ):
+            record, paths = run_fake_original(
+                scratch / f"original-{scenario}", scenario, plan, authority,
+                authority_sha256,
+            )
+            validate_original_execution_evidence(
+                paths["execution"], paths["attempt"], paths["prompt"],
+                plan, authority_sha256,
+            )
+            if (
+                record["failure_class"] not in expected_failure
+                or record["prompt_slot_fsynced_before_send"] is not True
+                or paths["receipt"].exists() is not received
+                or received and record["prompt_send_completed"] is not True
+            ):
+                raise RuntimeError(f"original-shaped fake lost {scenario} consumption evidence")
+            results[f"original-{scenario}"] = {
+                "failure_class": record["failure_class"],
+                "prompt_slot_fsynced_before_send": record["prompt_slot_fsynced_before_send"],
+                "prompt_send_completed": record["prompt_send_completed"],
+                "fake_prompt_received": paths["receipt"].exists(),
+            }
+
+        bounded, bounded_paths = run_fake_original(
+            scratch / "original-bounded-cleanup", "hang-after-permission", plan,
+            authority, authority_sha256, outer_seconds=0.8, cleanup_seconds=0.25,
+        )
+        if (
+            bounded["failure_class"] != "timeout"
+            or bounded["elapsed_milliseconds"] > 800
+            or bounded["cleanup"]["root_exit_observed"] is not True
+            or bounded["cleanup"]["streams_joined"] is not True
+        ):
+            raise RuntimeError("original-shaped fake exceeded bounded cleanup or left the owned root unobserved")
+        results["bounded_cleanup"] = {
+            "failure_class": bounded["failure_class"],
+            "elapsed_milliseconds": bounded["elapsed_milliseconds"],
+            "root_exit_observed": bounded["cleanup"]["root_exit_observed"],
+            "streams_joined": bounded["cleanup"]["streams_joined"],
+            "descendant_cleanup": bounded["descendant_cleanup"],
+        }
 
         tamper_rejections: dict[str, bool] = {}
         tampered_action = dict(success)
@@ -1620,6 +2677,10 @@ def self_test() -> dict[str, Any]:
         results["original_entrypoint_refused"] = original_refused
     results["status"] = "passed"
     results["execution_authorized"] = plan["original_execution_enabled"]
+    results["separate_execution_authority_validated"] = True
+    results["execution_authority_sha256"] = authority_sha256
+    results["runner_sha256"] = sha256_file(SCRIPT_PATH)
+    results["preparation_plan_sha256"] = sha256_file(PLAN_PATH)
     results["originals_run"] = False
     results["qualification_changed"] = False
     return results
@@ -1629,20 +2690,44 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_mutually_exclusive_group(required=True)
     actions.add_argument("--validate-plan", action="store_true")
+    actions.add_argument("--validate-authority", action="store_true")
     actions.add_argument("--self-test", action="store_true")
     actions.add_argument("--validate-record", metavar="PATH")
-    args, unknown = parser.parse_known_args()
-    if unknown:
-        print("unsupported arguments; original execution is not implemented", file=sys.stderr)
-        return 2
+    actions.add_argument("--validate-original-record", metavar="PATH")
+    actions.add_argument("--execute-original", action="store_true")
+    args = parser.parse_args()
     try:
         if args.validate_plan:
             plan = validate_plan()
             print(json.dumps({"status": "valid", "plan_id": plan["plan_id"], "original_execution_enabled": False}))
+        elif args.validate_authority:
+            plan = validate_plan()
+            authority, authority_sha256 = validate_execution_authority(plan=plan)
+            print(json.dumps({
+                "status": "valid",
+                "execution_authorized": authority["execution_authorized"],
+                "authority_sha256": authority_sha256,
+                "final_runner_sha256": authority["final_runner_sha256"],
+                "preparation_plan_sha256": authority["preparation_plan_sha256"],
+            }, sort_keys=True))
         elif args.validate_record:
             plan = validate_plan()
             record = load_object(Path(args.validate_record))
             print(json.dumps(validate_execution_record(record, plan)))
+        elif args.validate_original_record:
+            plan = validate_plan()
+            _, authority_sha256 = validate_execution_authority(plan=plan)
+            record_path = Path(args.validate_original_record)
+            print(json.dumps(validate_original_execution_evidence(
+                record_path,
+                record_path.with_name(ATTEMPT_EVIDENCE_NAME),
+                record_path.with_name(PROMPT_EVIDENCE_NAME),
+                plan,
+                authority_sha256,
+            ), sort_keys=True))
+        elif args.execute_original:
+            record = execute_original()
+            print(json.dumps(record, sort_keys=True))
         else:
             print(json.dumps(self_test(), sort_keys=True))
         return 0

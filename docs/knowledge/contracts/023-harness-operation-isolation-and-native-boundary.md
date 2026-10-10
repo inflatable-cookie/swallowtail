@@ -1859,6 +1859,28 @@ action attribution/no-effect or public authority/lifecycle cannot be aligned,
 return a concrete mapping ruling before implementing or spending outside
 scope. No additional prompts or release/tag authority are included.
 
+## Copilot Private Assessment Admission
+
+Tom answered “You don't need to keep asking, blanket approval given, get it
+done now” to decision `a559d358-7879-4451-902a-437f2a6fa432` on 2026-10-10.
+The planner may continue the necessary bounded preparation and runner fixes
+without repeated approval requests. This includes an adapter-private assessment
+admission for exact `1.0.95`, confined to the independently reviewed proof runner.
+Bind the frozen Research 440 wrapper, native archive and executable identities,
+approved execution host, executable and `EnvironmentRef`, and exact
+`--acp --stdio` arguments. Share the ordinary preparation and runtime paths;
+only the explicit assessment compatibility admission differs.
+
+Keep consumer support at exact `QualifiedOnly` `1.0.80` until all qualification
+gates pass. No exported caller bypass, arbitrary version admission or default
+change is included. Fake-prove identity and authority drift rejection, ordinary
+caller rejection, action correlation, cancellation, no effect, cleanup and the
+disabled original gate. Independent exact-head preparation review precedes the
+already approved single original invocation and prompt. Preserve its one remaining
+shared slot and every consumed record; this ruling adds no attempts. Normal
+host-owned login and model policy remain as approved. No credential extraction,
+auth/settings/host mutation or release/tag authority is included.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

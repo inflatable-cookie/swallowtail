@@ -102,7 +102,7 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-        "sha256": "55dcea79945566dacf4510b1722f7304aa5b013e91c0ee6ca363502c7eef1a17"
+        "sha256": "19317b3871173e0cc0c91abbd28c60f397c9b0a11f90c2549bac71c5b89c4de4"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
@@ -177,7 +177,7 @@
         "sha256": "3d756bd0a7d59cf1091ae2630a0aaa893b2857201efb14aac1709772c3c1af7e"
       }
     ],
-    "sha256": "45ed60d8ab22c6be831de726ba3427668f7745912321a9f3b7ab5c05387456aa"
+    "sha256": "81c1fa78ffbd2f35b9c74684f36f098c38c34ed463ef374db3da1832953c1f0f"
   },
   "production_route": {
     "argv": [
@@ -233,7 +233,7 @@
   "records": {
     "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record with exact safe host, executable, and environment identifiers and their hashes",
     "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, complete write and fsync file and parent before each effect",
-    "execution_record": "1.0.95-execution.json; one final secret-free result record with artifact, runner, plan, and safe host-binding hashes",
+    "execution_record": "1.0.95-execution.json; one exclusive final secret-free result record, using 1.0.95-execution-failure.json only when the primary result path cannot be written",
     "failure_policy": "preserve consumed records; never delete, reset, replace or retry",
     "original_execution_enabled": false,
     "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record with the same exact safe identifiers and hashes",
@@ -241,9 +241,9 @@
   },
   "runner": {
     "implementation_path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-    "implementation_sha256": "55dcea79945566dacf4510b1722f7304aa5b013e91c0ee6ca363502c7eef1a17",
+    "implementation_sha256": "19317b3871173e0cc0c91abbd28c60f397c9b0a11f90c2549bac71c5b89c4de4",
     "path": "scripts/copilot-acp-private-assessment.py",
-    "sha256": "807e90b159c4817e280814488e58e0f9023de6a39b5c32e1b21638b6f83e35a3"
+    "sha256": "3300a78bc1ecdfe45998de09e578529431f26868a4d26b8d2dabf8344c1dff9b"
   },
   "schema": "copilot-cli-private-assessment-plan.v1",
   "task": {

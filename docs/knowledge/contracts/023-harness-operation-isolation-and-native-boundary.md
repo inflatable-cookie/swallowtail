@@ -1881,6 +1881,28 @@ shared slot and every consumed record; this ruling adds no attempts. Normal
 host-owned login and model policy remain as approved. No credential extraction,
 auth/settings/host mutation or release/tag authority is included.
 
+### Copilot Prepared-Runner Failure Records
+
+The private runner records preparation, session-preparation and session-open
+failures with a bounded stage, an allowlisted failure class and an allowlisted
+diagnostic discriminant. It never retains provider messages, stderr, or debug
+formatting. The primary failure and cleanup failure remain separate. A cause
+replaced inside an existing host path is recorded as unknown; cleanup failure
+does not stand in for an inferred cause.
+
+Failure records include available approved-executable and sentinel-tree
+measurements before and after the attempt, protected-copy measurement before
+cleanup, and cleanup state after cleanup. Missing measurements use `null` or
+`unknown` and do not establish no effect. If the exclusive
+`1.0.95-execution.json` write is unavailable, the runner attempts the exclusive
+`1.0.95-execution-failure.json` path. It never replaces an existing record.
+If both writes fail, the in-memory result marks persistence unavailable.
+
+[Research 441](../../research/441-copilot-cli-acp-1-0-95-original-attempt-stop.md)
+remains the immutable record of the consumed 1.0.95 attempt. Its historical
+preparation cause and absent post-attempt measurements remain unknown; fake
+runner evidence cannot fill them.
+
 ### Copilot Normal Host Launch Scope
 
 Under Tom's blanket approval above, the planner resolves the proof's launch

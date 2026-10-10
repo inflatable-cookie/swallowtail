@@ -254,7 +254,7 @@ def validate_plan() -> tuple[dict[str, Any], str]:
         "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 119",
         "attempt_record": "1.0.95-attempt-4.json; one exclusive invocation-consumed record with exact safe host, executable, and environment identifiers and their hashes",
         "prompt_record": "1.0.95-prompt-3.json; one exclusive prompt-consumed record with the same exact safe identifiers and hashes",
-        "execution_record": "1.0.95-execution.json; one final secret-free result record with artifact, runner, plan, and safe host-binding hashes",
+        "execution_record": "1.0.95-execution.json; one exclusive final secret-free result record, using 1.0.95-execution-failure.json only when the primary result path cannot be written",
         "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, mode 0600, complete write and fsync file and parent before each effect",
         "failure_policy": "preserve consumed records; never delete, reset, replace or retry",
         "original_execution_enabled": False,

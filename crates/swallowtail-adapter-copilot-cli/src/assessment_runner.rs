@@ -467,16 +467,8 @@ fn run_with_local_host(mode: &str, total: Duration, cleanup: Duration) -> RunEvi
 
 fn run_fake_original_branch(mode: &str, total: Duration, cleanup: Duration) -> RunEvidence {
     let scratch = RealScratch::with_discovery_mode(mode);
-    match run_fake_original_branch_with_scratch(&scratch, mode, total, cleanup) {
-        Ok(evidence) => evidence,
-        Err(OriginalRunDenied::ContinuationMismatch) => {
-            let (stage, entry_index) = original_authorization_failure_stage();
-            panic!(
-                "test-only planner binding failed at {stage}; source manifest entry index: {entry_index:?}"
-            );
-        }
-        Err(_) => panic!("test-only planner binding was denied before fake execution"),
-    }
+    run_fake_original_branch_with_scratch(&scratch, mode, total, cleanup)
+        .expect("test-only planner binding runs only the fake child")
 }
 
 fn run_fake_original_branch_with_scratch(
@@ -614,6 +606,28 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
         .expect("fresh fake record directory is under HOME");
     plan["records"]["root"] =
         serde_json::Value::String(format!("$HOME/{}", relative_records.display()));
+    // Full-workspace nextest can run other packages' nested Cargo builds in
+    // parallel. The committed plan still binds Cargo.lock and the check
+    // selector validates that pin; this synthetic fake continuation omits the
+    // lockfile because the fake runner does not consume it and Cargo may
+    // rewrite it while parallel tests run.
+    let manifest_sha256 = {
+        let files = plan["prepared_path_sources"]["files"]
+            .as_array_mut()
+            .expect("prepared source manifest files are present");
+        let original_len = files.len();
+        files.retain(|entry| {
+            entry.get("path").and_then(serde_json::Value::as_str) != Some("Cargo.lock")
+        });
+        assert_eq!(
+            files.len() + 1,
+            original_len,
+            "fake plan omits one Cargo.lock entry"
+        );
+        let encoded = serde_json::to_vec(files).expect("fake source manifest serializes");
+        sha256_reader(encoded.as_slice()).expect("fake source manifest hashes")
+    };
+    plan["prepared_path_sources"]["sha256"] = serde_json::Value::String(manifest_sha256);
     plan["records"]["original_execution_enabled"] = serde_json::Value::Bool(true);
     plan["original_execution_enabled"] = serde_json::Value::Bool(true);
     plan["original_enable_gate"]["state"] =
@@ -1277,35 +1291,10 @@ enum OriginalRunDenied {
     RecordRootUnsafe,
 }
 
-#[cfg(test)]
-std::thread_local! {
-    static ORIGINAL_AUTHORIZATION_STAGE: std::cell::Cell<&'static str> = const { std::cell::Cell::new("not-started") };
-    static ORIGINAL_AUTHORIZATION_ENTRY_INDEX: std::cell::Cell<usize> = const { std::cell::Cell::new(usize::MAX) };
-}
-
-#[cfg(test)]
-fn set_original_authorization_stage(stage: &'static str) {
-    ORIGINAL_AUTHORIZATION_STAGE.with(|value| value.set(stage));
-}
-
-#[cfg(test)]
-fn set_original_authorization_entry_index(index: usize) {
-    ORIGINAL_AUTHORIZATION_ENTRY_INDEX.with(|value| value.set(index));
-}
-
-#[cfg(test)]
-fn original_authorization_failure_stage() -> (&'static str, Option<usize>) {
-    let stage = ORIGINAL_AUTHORIZATION_STAGE.with(std::cell::Cell::get);
-    let index = ORIGINAL_AUTHORIZATION_ENTRY_INDEX.with(std::cell::Cell::get);
-    (stage, (index != usize::MAX).then_some(index))
-}
-
 fn authorize_original_run(
     plan: &serde_json::Value,
     continuation: Option<&PlannerBoundContinuation>,
 ) -> Result<(String, String), OriginalRunDenied> {
-    set_original_authorization_stage("disabled gate");
-    set_original_authorization_entry_index(usize::MAX);
     if plan
         .get("original_execution_enabled")
         .and_then(serde_json::Value::as_bool)
@@ -1313,7 +1302,6 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::Disabled);
     }
-    set_original_authorization_stage("task identity");
     if plan
         .get("preparation_originals_run")
         .and_then(serde_json::Value::as_u64)
@@ -1346,7 +1334,6 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    set_original_authorization_stage("artifact identity");
     let artifacts = plan
         .get("artifacts")
         .ok_or(OriginalRunDenied::ContinuationMismatch)?;
@@ -1368,7 +1355,6 @@ fn authorize_original_run(
             return Err(OriginalRunDenied::ContinuationMismatch);
         }
     }
-    set_original_authorization_stage("production route identity");
     if plan
         .get("production_route")
         .and_then(|value| value.get("argv"))
@@ -1387,9 +1373,7 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    set_original_authorization_stage("prepared source manifest");
     validate_plan_source_manifest(plan)?;
-    set_original_authorization_stage("attempt and record limits");
     let attempt = plan
         .get("attempt")
         .and_then(serde_json::Value::as_object)
@@ -1432,7 +1416,6 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    set_original_authorization_stage("continuation shape");
     let continuation = continuation.ok_or(OriginalRunDenied::ContinuationMismatch)?;
     if continuation.reviewed_head.len() != 40
         || !continuation
@@ -1448,7 +1431,6 @@ fn authorize_original_run(
             .as_slice(),
     )
     .expect("serialized plan hashes");
-    set_original_authorization_stage("enable gate binding");
     let gate = plan
         .get("original_enable_gate")
         .and_then(serde_json::Value::as_object)
@@ -1472,7 +1454,6 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    set_original_authorization_stage("runner script identity");
     let runner = plan
         .get("runner")
         .and_then(serde_json::Value::as_object)
@@ -1487,7 +1468,6 @@ fn authorize_original_run(
     if runner.get("sha256").and_then(serde_json::Value::as_str) != Some(runner_sha256.as_str()) {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    set_original_authorization_stage("runner implementation identity");
     let rust_runner_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/assessment_runner.rs");
     let rust_runner_sha256 = sha256_file(&rust_runner_path);
     if runner
@@ -1501,7 +1481,6 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    set_original_authorization_stage("runner manifest entry");
     let source_file = plan
         .get("prepared_path_sources")
         .and_then(|value| value.get("files"))
@@ -1556,7 +1535,6 @@ fn plan_binding_metadata(
 }
 
 fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), OriginalRunDenied> {
-    set_original_authorization_stage("prepared source manifest shape");
     let manifest = plan
         .get("prepared_path_sources")
         .and_then(serde_json::Value::as_object)
@@ -1566,9 +1544,7 @@ fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), Origina
         .and_then(serde_json::Value::as_array)
         .ok_or(OriginalRunDenied::ContinuationMismatch)?;
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../");
-    for (index, entry) in files.iter().enumerate() {
-        set_original_authorization_stage("prepared source manifest entry");
-        set_original_authorization_entry_index(index);
+    for entry in files {
         let path = entry
             .get("path")
             .and_then(serde_json::Value::as_str)
@@ -1595,8 +1571,6 @@ fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), Origina
             return Err(OriginalRunDenied::ContinuationMismatch);
         }
     }
-    set_original_authorization_stage("prepared source manifest digest");
-    set_original_authorization_entry_index(usize::MAX);
     let encoded_files =
         serde_json::to_vec(files).map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
     let actual_manifest_sha256 = sha256_reader(encoded_files.as_slice())

@@ -10,8 +10,8 @@ use swallowtail_host_local::{
 };
 use swallowtail_runtime::{
     ActivityKind, ActivityLifecyclePhase, ActivityStatus, CancellationControl, CleanupOutcome,
-    DiscoveryCancellation, HostServices, PreparationFailure, PreparationStage,
-    ProviderObservation, RuntimeEventKind, RuntimeFailure, SessionCleanupRequest,
+    DiscoveryCancellation, HostServices, PreparationFailure, PreparationStage, ProviderObservation,
+    RuntimeEventKind, RuntimeFailure, SessionCleanupRequest,
 };
 
 const TASK_ID: &str = "7823a168-9b8f-4604-8fd7-201c2998722e";
@@ -1077,13 +1077,11 @@ fn drive_prepared_session(
             "unknown"
         };
     }
-    let host_confirmed_process_cleanup =
-        matches!(cleanup_label, "clean" | "driver-joined")
-            && (session_open_succeeded || process_started);
+    let host_confirmed_process_cleanup = matches!(cleanup_label, "clean" | "driver-joined")
+        && (session_open_succeeded || process_started);
     let process_stopped =
         process_trace.contains("process-stopped") || host_confirmed_process_cleanup;
-    let process_exited =
-        process_trace.contains("process-exited") || host_confirmed_process_cleanup;
+    let process_exited = process_trace.contains("process-exited") || host_confirmed_process_cleanup;
     let process_state = if process_started {
         if process_exited && process_stopped {
             "joined"

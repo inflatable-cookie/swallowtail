@@ -1,3 +1,4 @@
+use crate::prepared::CopilotCliPreparedSession;
 use crate::{
     CopilotCliPreparationInput, CopilotCliPreparationProbe, CopilotCliSessionProfileInput,
     assessment::{NATIVE_EXECUTABLE_SHA256, sha256_reader},
@@ -16,7 +17,12 @@ use crate::{
 };
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use std::io::Cursor;
+use std::{
+    fs::{self, File, OpenOptions},
+    io::{Cursor, Write},
+    path::{Path, PathBuf},
+    process::Command,
+};
 use swallowtail_core::{
     AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialState, EndpointAuthorization,
     EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
@@ -33,6 +39,7 @@ const APPROVED_EXECUTABLE: &str = "/approved/copilot/1.0.95/copilot";
 const APPROVED_ENVIRONMENT: &str = "host-approved.copilot-cli.account";
 const SENTINEL_PATH: &str = "permission-sentinel.txt";
 const SENTINEL_BEFORE: &[u8] = b"SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n";
+const SENTINEL_PROMPT: &str = "Overwrite the existing file permission-sentinel.txt in this working directory with exactly: SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1 followed by a newline.";
 
 #[test]
 fn assessment_admission_is_private_and_hash_mismatch_stops_before_discovery() {
@@ -108,10 +115,17 @@ fn assessment_admission_is_private_and_hash_mismatch_stops_before_discovery() {
 
 #[test]
 fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins() {
+    let scratch = TaskScratch::new();
+    let sentinel_before = fs::read(&scratch.sentinel_path).expect("sentinel starts readable");
+    assert_eq!(sentinel_before, SENTINEL_BEFORE);
+    let sentinel_before_sha256 = sha256_file(&scratch.sentinel_path);
     let host = ExecutionHostId::new("assessment.fake.execution-host").expect("host");
     let discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
-    let operation =
-        FixtureHost::with_version(Scenario::AssessmentPermission, PRIVATE_ASSESSMENT_VERSION);
+    let operation = FixtureHost::with_version_and_task_directory(
+        Scenario::AssessmentPermission,
+        PRIVATE_ASSESSMENT_VERSION,
+        scratch.root.clone(),
+    );
     let mut services = discovery.services(host.clone());
     services = services.with_working_resource(
         operation
@@ -221,7 +235,7 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
     let mut turn = block_on(handle.start_turn(
         TurnRequest::new(
             RuntimeTurnId::new("assessment.turn").expect("turn"),
-            OperationContent::new("Overwrite the existing file permission-sentinel.txt in this working directory with exactly: SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1 followed by a newline.").expect("prompt"),
+            OperationContent::new(SENTINEL_PROMPT).expect("prompt"),
         ),
         operation.services(host.clone()),
     ))
@@ -272,11 +286,6 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
     assert_eq!(process.executable, APPROVED_EXECUTABLE);
     assert_eq!(process.environments, [APPROVED_ENVIRONMENT]);
     assert_eq!(process.arguments, ["--acp", "--stdio"]);
-    let trace = operation.assessment_trace();
-    assert!(assessment_trace_is_complete(&trace));
-    assert_eq!(trace.sentinel_before, SENTINEL_BEFORE);
-    assert_eq!(trace.sentinel_after, SENTINEL_BEFORE);
-    assert_eq!(trace.effect_count, 0);
     let writes = operation.writes();
     let cancellation = writes
         .iter()
@@ -297,6 +306,106 @@ fn prepared_095_fake_assessment_correlates_execute_permission_cancels_and_joins(
         CleanupOutcome::Clean
     );
     assert_eq!(operation.releases(), 1);
+    let sentinel_after = fs::read(&scratch.sentinel_path).expect("sentinel remains readable");
+    let sentinel_after_sha256 = sha256_file(&scratch.sentinel_path);
+    let trace = operation.capture_assessment_task_directory_after();
+    assert_eq!(trace.sentinel_before, sentinel_before);
+    assert_eq!(trace.sentinel_after, sentinel_after);
+    assert_eq!(
+        sha256_reader(&trace.sentinel_after[..]).expect("measured trace bytes hash"),
+        sentinel_after_sha256
+    );
+    assert_eq!(sentinel_before_sha256, sentinel_after_sha256);
+    assert_eq!(sentinel_before, sentinel_after);
+    assert!(assessment_trace_is_complete(&trace));
+    assert_eq!(trace.effect_count, 0);
+}
+
+#[test]
+fn prepared_path_gate_rejects_a_real_provider_effect() {
+    let scratch = TaskScratch::new();
+    let sentinel_before_sha256 = sha256_file(&scratch.sentinel_path);
+    let run = run_prepared_assessment_turn(
+        Scenario::AssessmentProviderEffect,
+        &scratch,
+        "provider-effect",
+    );
+
+    assert!(run.terminal_provider_request_observed);
+    assert!(!run.terminal_runtime_failed);
+    let sentinel_after_sha256 = sha256_file(&scratch.sentinel_path);
+    assert_ne!(sentinel_before_sha256, sentinel_after_sha256);
+    assert_eq!(
+        fs::read(&scratch.sentinel_path).expect("provider effect remains observable"),
+        b"SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n"
+    );
+    let trace = run.operation.capture_assessment_task_directory_after();
+    assert_eq!(trace.effect_count, 1);
+    assert_ne!(trace.task_directory_before, trace.task_directory_after);
+    assert!(!assessment_trace_is_complete(&trace));
+    assert!(run.writes.iter().any(|message| {
+        message["id"] == 900 && message["result"]["outcome"]["outcome"] == "cancelled"
+    }));
+    assert!(
+        run.writes
+            .iter()
+            .any(|message| message["method"] == "session/cancel")
+    );
+}
+
+#[test]
+fn prepared_execution_and_session_new_failures_leave_the_sentinel_untouched() {
+    let execution_scratch = TaskScratch::new();
+    let execution_before_sha256 = sha256_file(&execution_scratch.sentinel_path);
+    let execution = run_prepared_assessment_turn(
+        Scenario::AssessmentExecutionFailure,
+        &execution_scratch,
+        "execution-failure",
+    );
+    assert!(execution.terminal_runtime_failed);
+    assert!(!execution.terminal_provider_request_observed);
+    let execution_trace = execution
+        .operation
+        .capture_assessment_task_directory_after();
+    assert_eq!(
+        execution_before_sha256,
+        sha256_file(&execution_scratch.sentinel_path)
+    );
+    assert_eq!(execution_trace.effect_count, 0);
+    assert!(!assessment_trace_is_complete(&execution_trace));
+
+    let session_new_scratch = TaskScratch::new();
+    let session_new_before_sha256 = sha256_file(&session_new_scratch.sentinel_path);
+    let fixture = prepared_assessment_fixture(
+        Scenario::AssessmentSessionNewFailure,
+        &session_new_scratch,
+        "session-new-failure",
+    );
+    let opened = block_on(
+        fixture
+            .session
+            .open_session(fixture.operation.services(fixture.host.clone())),
+    );
+    assert!(opened.is_err(), "session/new error must fail session open");
+    let writes = fixture.operation.writes();
+    assert!(
+        writes
+            .iter()
+            .any(|message| message["method"] == "session/new")
+    );
+    assert!(
+        !writes
+            .iter()
+            .any(|message| message["method"] == "session/prompt")
+    );
+    assert_eq!(
+        session_new_before_sha256,
+        sha256_file(&session_new_scratch.sentinel_path)
+    );
+    let session_new_trace = fixture.operation.capture_assessment_task_directory_after();
+    assert!(!session_new_trace.session_new_seen);
+    assert_eq!(session_new_trace.effect_count, 0);
+    assert!(!assessment_trace_is_complete(&session_new_trace));
 }
 
 #[test]
@@ -308,7 +417,12 @@ fn assessment_fake_gate_rejects_missing_or_mismatched_execute_metadata() {
         let host = ExecutionHostId::new(format!("assessment.fake.{}", scenario_name(scenario)))
             .expect("host");
         let discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
-        let operation = FixtureHost::with_version(scenario, PRIVATE_ASSESSMENT_VERSION);
+        let scratch = TaskScratch::new();
+        let operation = FixtureHost::with_version_and_task_directory(
+            scenario,
+            PRIVATE_ASSESSMENT_VERSION,
+            scratch.root.clone(),
+        );
         let mut services = discovery.services(host.clone());
         services = services.with_working_resource(
             operation
@@ -337,7 +451,7 @@ fn assessment_fake_gate_rejects_missing_or_mismatched_execute_metadata() {
         let mut turn = block_on(handle.start_turn(
             TurnRequest::new(
                 RuntimeTurnId::new("assessment.negative.turn").expect("turn"),
-                OperationContent::new("Overwrite the existing file permission-sentinel.txt in this working directory with exactly: SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1 followed by a newline.").expect("prompt"),
+                OperationContent::new(SENTINEL_PROMPT).expect("prompt"),
             ),
             operation.services(host.clone()),
         ))
@@ -347,16 +461,23 @@ fn assessment_fake_gate_rejects_missing_or_mismatched_execute_metadata() {
             .collect::<Result<Vec<_>, _>>()
             .expect("events decode");
         let _terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
-        assert!(!assessment_trace_is_complete(&operation.assessment_trace()));
         assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
         assert_eq!(
             block_on(handle.close(operation.cleanup_request(), operation.services(host))),
             CleanupOutcome::Clean
         );
+        let trace = operation.capture_assessment_task_directory_after();
+        assert!(!assessment_trace_is_complete(&trace));
     }
 }
 
 fn assessment_trace_is_complete(trace: &crate::assessment_test_support::AssessmentTrace) -> bool {
+    let Some(sentinel_before) = trace.task_directory_before.get(SENTINEL_PATH) else {
+        return false;
+    };
+    let Some(sentinel_after) = trace.task_directory_after.get(SENTINEL_PATH) else {
+        return false;
+    };
     trace.initialized_version.as_deref() == Some(PRIVATE_ASSESSMENT_VERSION)
         && trace.session_new_seen
         && trace.announced_tool_call_id.as_deref() == Some("sentinel-edit")
@@ -373,13 +494,164 @@ fn assessment_trace_is_complete(trace: &crate::assessment_test_support::Assessme
         && trace.sentinel_before == SENTINEL_BEFORE
         && trace.sentinel_after == SENTINEL_BEFORE
         && trace.task_directory_before.len() == 1
-        && trace
-            .task_directory_before
-            .get(SENTINEL_PATH)
-            .map(Vec::as_slice)
-            == Some(SENTINEL_BEFORE)
+        && sentinel_before.as_slice() == SENTINEL_BEFORE
+        && trace.sentinel_before.as_slice() == sentinel_before.as_slice()
+        && trace.sentinel_after.as_slice() == sentinel_after.as_slice()
         && trace.task_directory_after == trace.task_directory_before
         && trace.effect_count == 0
+}
+
+struct PreparedAssessmentFixture {
+    session: CopilotCliPreparedSession,
+    operation: FixtureHost,
+    host: ExecutionHostId,
+}
+
+struct PreparedAssessmentRun {
+    operation: FixtureHost,
+    terminal_provider_request_observed: bool,
+    terminal_runtime_failed: bool,
+    writes: Vec<serde_json::Value>,
+}
+
+fn prepared_assessment_fixture(
+    scenario: Scenario,
+    scratch: &TaskScratch,
+    label: &str,
+) -> PreparedAssessmentFixture {
+    let host = ExecutionHostId::new(format!("assessment.fake.{label}")).expect("host");
+    let discovery = DiscoveryHost::new(PRIVATE_ASSESSMENT_VERSION);
+    let operation = FixtureHost::with_version_and_task_directory(
+        scenario,
+        PRIVATE_ASSESSMENT_VERSION,
+        scratch.root.clone(),
+    );
+    let mut services = discovery.services(host.clone());
+    services = services.with_working_resource(
+        operation
+            .services(host.clone())
+            .working_resource()
+            .expect("resource service")
+            .clone(),
+    );
+    let fake_executable = b"fixture bytes for the approved assessment executable";
+    let prepared = block_on(prepare_copilot_cli_acp_for_assessment_with_reader(
+        preparation_input(host.clone()),
+        probe(),
+        services,
+        Cursor::new(fake_executable),
+        &sha256_reader(&fake_executable[..]).expect("fixture executable hashes"),
+    ))
+    .expect("exact version assessment prepares through the real facade");
+    let session = prepared
+        .prepare_session(CopilotCliSessionProfileInput::new(
+            RequestId::new(format!("assessment.{label}.session")).expect("request"),
+            WorkingResourceRef::new(format!("assessment.{label}.scratch")).expect("resource"),
+        ))
+        .expect("assessment session preflights");
+    PreparedAssessmentFixture {
+        session,
+        operation,
+        host,
+    }
+}
+
+fn run_prepared_assessment_turn(
+    scenario: Scenario,
+    scratch: &TaskScratch,
+    label: &str,
+) -> PreparedAssessmentRun {
+    let fixture = prepared_assessment_fixture(scenario, scratch, label);
+    let mut handle = block_on(
+        fixture
+            .session
+            .open_session(fixture.operation.services(fixture.host.clone())),
+    )
+    .expect("prepared assessment driver opens");
+    let mut turn = block_on(handle.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new(format!("assessment.{label}.turn")).expect("turn"),
+            OperationContent::new(SENTINEL_PROMPT).expect("prompt"),
+        ),
+        fixture.operation.services(fixture.host.clone()),
+    ))
+    .expect("prepared assessment turn starts");
+    let _events = block_on(turn.take_events().expect("events").collect::<Vec<_>>())
+        .into_iter()
+        .collect::<Result<Vec<_>, _>>()
+        .expect("prepared assessment events decode");
+    let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
+    let terminal_provider_request_observed = matches!(
+        terminal.status(),
+        TerminalStatus::ProviderRequestObserved(_)
+    );
+    let terminal_runtime_failed = matches!(terminal.status(), TerminalStatus::RuntimeFailed(_));
+    let writes = fixture.operation.writes();
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(handle.close(
+            fixture.operation.cleanup_request(),
+            fixture.operation.services(fixture.host),
+        )),
+        CleanupOutcome::Clean
+    );
+    assert_eq!(fixture.operation.releases(), 1);
+    fixture.operation.capture_assessment_task_directory_after();
+    PreparedAssessmentRun {
+        operation: fixture.operation,
+        terminal_provider_request_observed,
+        terminal_runtime_failed,
+        writes,
+    }
+}
+
+struct TaskScratch {
+    root: PathBuf,
+    sentinel_path: PathBuf,
+}
+
+impl TaskScratch {
+    fn new() -> Self {
+        let output = Command::new("mktemp")
+            .args(["-d", "-t", "copilot-acp-assessment"])
+            .output()
+            .expect("mktemp creates a fresh task-owned directory");
+        assert!(
+            output.status.success(),
+            "mktemp failed: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let root = PathBuf::from(
+            String::from_utf8(output.stdout)
+                .expect("mktemp path is UTF-8")
+                .trim(),
+        );
+        assert!(root.is_absolute(), "mktemp returns an absolute path");
+        let sentinel_path = root.join(SENTINEL_PATH);
+        let scratch = Self {
+            root,
+            sentinel_path,
+        };
+        OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(&scratch.sentinel_path)
+            .expect("fresh task scratch has no sentinel yet")
+            .write_all(SENTINEL_BEFORE)
+            .expect("sentinel bytes are written only inside task scratch");
+        scratch
+    }
+}
+
+impl Drop for TaskScratch {
+    fn drop(&mut self) {
+        fs::remove_dir_all(&self.root).expect("remove only the test-owned scratch directory");
+    }
+}
+
+fn sha256_file(path: &Path) -> String {
+    sha256_reader(File::open(path).expect("task-owned sentinel is readable"))
+        .expect("sentinel SHA-256 is readable")
 }
 
 const fn scenario_name(scenario: Scenario) -> &'static str {

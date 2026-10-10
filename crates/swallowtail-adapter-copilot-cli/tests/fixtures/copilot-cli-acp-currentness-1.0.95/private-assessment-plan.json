@@ -85,7 +85,7 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
-        "sha256": "6aa59c65faaabebc1673b25dbc1b1ce8cffb579acac25306336b31ba2dbf28f5"
+        "sha256": "dc0fae9b190a410a7d930ec9642c03da316b0e75f7879442d82b42bde8bbd936"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/discovery.rs",
@@ -113,14 +113,14 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/tests/support/agent.rs",
-        "sha256": "946f9586b714d73738e9c9be222bfbbff51b074fa1409f929f92243fd00cc07c"
+        "sha256": "ccb4fd8f868efc5a56c995adcc26d3c48d879ad05035e2a697d4a478bee3ce93"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/tests/support/mod.rs",
-        "sha256": "2e40bfabbafb318e17b679d7a2601dd0b4a02cca6cf0899c3b79bf47241fc0c3"
+        "sha256": "d67e87e72c5fe68e915a96107c6253f067f6cdbfe3176deb374b338a8562b806"
       }
     ],
-    "sha256": "4034b87bc86b9ac8d5880d6d11adccb1b6a518f832e9d72822f98fed6c756585"
+    "sha256": "2b8d92167615ecb73fa99932de359b1613c97e932a53b771b88e26c8b5b85959"
   },
   "production_route": {
     "argv": [

@@ -2,6 +2,8 @@ use futures_executor::block_on;
 use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, VecDeque},
+    fs,
+    path::{Path, PathBuf},
     sync::{
         Arc, Condvar, Mutex,
         atomic::{AtomicUsize, Ordering},
@@ -44,12 +46,44 @@ impl FixtureHost {
     }
 
     pub fn with_version(scenario: Scenario, version: &str) -> Self {
+        Self::with_task_directory(scenario, version, None)
+    }
+
+    pub fn with_version_and_task_directory(
+        scenario: Scenario,
+        version: &str,
+        task_directory: PathBuf,
+    ) -> Self {
+        Self::with_task_directory(scenario, version, Some(task_directory))
+    }
+
+    fn with_task_directory(
+        scenario: Scenario,
+        version: &str,
+        task_directory: Option<PathBuf>,
+    ) -> Self {
+        let task_directory_before = task_directory
+            .as_deref()
+            .map(snapshot_task_directory)
+            .unwrap_or_default();
+        let sentinel_before = task_directory_before
+            .get("permission-sentinel.txt")
+            .cloned()
+            .unwrap_or_default();
         Self {
             agent: Arc::new(SharedAgent {
-                state: Mutex::new(AgentState::default()),
+                state: Mutex::new(AgentState {
+                    assessment_trace: AssessmentTrace {
+                        sentinel_before,
+                        task_directory_before,
+                        ..AssessmentTrace::default()
+                    },
+                    ..AgentState::default()
+                }),
                 changed: Condvar::new(),
                 scenario,
                 version: version.to_owned(),
+                task_directory,
             }),
             process: Arc::new(Mutex::new(None)),
             releases: Arc::new(AtomicUsize::new(0)),
@@ -104,6 +138,68 @@ impl FixtureHost {
             .assessment_trace
             .clone()
     }
+
+    pub fn capture_assessment_task_directory_after(&self) -> AssessmentTrace {
+        let task_directory_after = self
+            .agent
+            .task_directory
+            .as_deref()
+            .map(snapshot_task_directory)
+            .unwrap_or_default();
+        let mut state = self
+            .agent
+            .state
+            .lock()
+            .expect("fixture agent lock poisoned");
+        let trace = &mut state.assessment_trace;
+        trace.sentinel_after = task_directory_after
+            .get("permission-sentinel.txt")
+            .cloned()
+            .unwrap_or_default();
+        trace.effect_count = trace
+            .task_directory_before
+            .iter()
+            .filter(|(path, before)| task_directory_after.get(*path) != Some(*before))
+            .count()
+            + task_directory_after
+                .keys()
+                .filter(|path| !trace.task_directory_before.contains_key(*path))
+                .count();
+        trace.task_directory_after = task_directory_after;
+        trace.clone()
+    }
+}
+
+fn snapshot_task_directory(root: &Path) -> BTreeMap<String, Vec<u8>> {
+    fn collect(root: &Path, current: &Path, files: &mut BTreeMap<String, Vec<u8>>) {
+        for entry in fs::read_dir(current).expect("task-owned scratch directory is readable") {
+            let entry = entry.expect("task-owned scratch entry is readable");
+            let path = entry.path();
+            let file_type = entry.file_type().expect("task-owned file type is readable");
+            if file_type.is_dir() {
+                collect(root, &path, files);
+            } else {
+                assert!(
+                    file_type.is_file(),
+                    "scratch contains no links or special files"
+                );
+                let relative = path
+                    .strip_prefix(root)
+                    .expect("scratch entry remains inside task-owned root")
+                    .to_str()
+                    .expect("task-owned scratch path is UTF-8")
+                    .replace(std::path::MAIN_SEPARATOR, "/");
+                files.insert(
+                    relative,
+                    fs::read(&path).expect("task-owned scratch file is readable"),
+                );
+            }
+        }
+    }
+
+    let mut files = BTreeMap::new();
+    collect(root, root, &mut files);
+    files
 }
 
 struct FixtureTime;
@@ -148,9 +244,15 @@ impl WorkingResourceService for FixtureHost {
         access: ResourceAccess,
         representation: ResourceRepresentation,
     ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        let path = self
+            .agent
+            .task_directory
+            .as_ref()
+            .map(|path| path.to_string_lossy().into_owned())
+            .unwrap_or_else(|| "/private/fixture".to_owned());
         let lease = ResourceLease::consumer_owned(scope, reference, access, representation)
             .with_filesystem(
-                swallowtail_runtime::MaterializedResourceRef::new("/private/fixture")
+                swallowtail_runtime::MaterializedResourceRef::new(path)
                     .expect("fixture path is valid"),
             );
         Box::pin(async move { Ok(lease) })

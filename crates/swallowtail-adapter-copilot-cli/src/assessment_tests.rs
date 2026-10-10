@@ -983,8 +983,10 @@ impl Drop for TaskScratch {
 }
 
 fn fresh_temp_dir(prefix: &str) -> PathBuf {
+    let template = std::env::temp_dir().join(format!("{prefix}.XXXXXX"));
     let output = Command::new("mktemp")
-        .args(["-d", "-t", prefix])
+        .arg("-d")
+        .arg(&template)
         .output()
         .expect("mktemp creates a fresh task-owned directory");
     assert!(

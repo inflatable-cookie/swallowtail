@@ -35,6 +35,13 @@ pub struct CopilotCliAcpDriver {
     admission: crate::selection::CopilotCliPlanAdmission,
 }
 
+struct SessionStartState {
+    scope: ScopeId,
+    resource: ResourceLease,
+    selected: crate::selection::CopilotCliPlanSelection,
+    deadlines: Option<(Deadline, Deadline)>,
+}
+
 impl CopilotCliAcpDriver {
     /// Binds the isolated launch environment. Credentials stay host-owned.
     #[must_use]
@@ -195,7 +202,17 @@ impl InteractiveSessionDriver for CopilotCliAcpDriver {
                 return Err(error);
             }
             let result = self
-                .start_session(&plan, &request, &services, scope, resource, selected, None)
+                .start_session(
+                    &plan,
+                    &request,
+                    &services,
+                    SessionStartState {
+                        scope,
+                        resource,
+                        selected,
+                        deadlines: None,
+                    },
+                )
                 .await;
             match result {
                 Ok(session) => Ok(Box::new(session) as Box<dyn InteractiveSessionHandle>),
@@ -290,10 +307,12 @@ impl CopilotCliAcpDriver {
                     &plan,
                     &request,
                     &services,
-                    scope,
-                    resource,
-                    selected,
-                    Some((action_deadline, cleanup_deadline)),
+                    SessionStartState {
+                        scope,
+                        resource,
+                        selected,
+                        deadlines: Some((action_deadline, cleanup_deadline)),
+                    },
                 )
                 .await;
             match result {
@@ -321,11 +340,14 @@ impl CopilotCliAcpDriver {
         plan: &PreflightPlan,
         request: &OpenSessionRequest,
         services: &HostServices,
-        scope: ScopeId,
-        resource: ResourceLease,
-        selected: crate::selection::CopilotCliPlanSelection,
-        deadlines: Option<(Deadline, Deadline)>,
+        state: SessionStartState,
     ) -> Result<CopilotCliSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
+        let SessionStartState {
+            scope,
+            resource,
+            selected,
+            deadlines,
+        } = state;
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -421,7 +443,7 @@ impl CopilotCliAcpDriver {
                     let process_cleanup = async {
                         let (stopped, exited) =
                             join_pair(stop_process.force_stop(), process.wait()).await;
-                        matches!(stopped, Ok(())) && matches!(exited, Ok(_))
+                        matches!(stopped, Ok(())) && exited.is_ok()
                     };
                     let process_clean = await_before(process_cleanup, cleanup_deadline, time).await;
                     if !matches!(process_clean, Ok(true)) {

@@ -1881,6 +1881,30 @@ shared slot and every consumed record; this ruling adds no attempts. Normal
 host-owned login and model policy remain as approved. No credential extraction,
 auth/settings/host mutation or release/tag authority is included.
 
+### Copilot Normal Host Launch Scope
+
+Under Tom's blanket approval above, the planner resolves the proof's launch
+implementation on 2026-10-10: use the existing normal-host path launch. Check
+the frozen executable hash and approved host, executable, environment and
+arguments immediately before forwarding the process request. Keep the artifact
+in task-owned protected scratch and allow no planned writes to it. Test drift
+rejection before forwarding; record the artifact hash again after the run.
+
+These checks do not bind an opened executable descriptor to the spawned process.
+The check-to-open race remains an accepted limitation of this bounded trusted
+normal-host observation. Do not claim protection against concurrent replacement
+by the same host principal, descriptor-pinned execution or arbitrary host
+containment. No new process-service API or replacement launcher is required.
+This disposition changes the proof acceptance, not consumer preparation or the
+released host contract. Identity drift observed before or after the run makes
+the evidence incomplete; it never triggers another original attempt.
+
+The real monotonic inclusive time bound, faithful prepared-path launch,
+consumed records, cancellation, unchanged task bytes and cleanup still require
+fake proof and independent exact-head readiness review before the already
+approved single original. Public compatibility remains unchanged until all
+qualification gates pass.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

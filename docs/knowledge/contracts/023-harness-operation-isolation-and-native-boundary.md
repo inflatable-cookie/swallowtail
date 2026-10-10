@@ -1797,6 +1797,19 @@ consumed record and use new exclusive ledgers. No automatic qualification,
 host settings or login changes are included; normal-host access and truthful
 descendant-cleanup limits remain unchanged.
 
+Research 439 records the one authorized `1.0.93` original. It matched the
+reported version, announced one correlated pending `execute` tool call, and
+received one permission request. The action was attributable but did not match
+the sentinel edit, so the finite result is `permission-action-mismatch`. The
+runner sent `session/cancel` and the cancelled permission reply; ACP returned
+`cancelled`, with no reported execution or file effect and the sentinel and
+directory unchanged. Root, process-group, reader and package-cache cleanup
+completed; arbitrary vendor descendants remain unknown. This consumed one of
+two remaining prompt slots, leaving one. The exact `1.0.80` route claim and
+released contracts are unchanged. Reviewers inspect the retained records and
+do not start another original; see [Research
+439](../../research/439-copilot-acp-pending-announcement-cancellation.md).
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

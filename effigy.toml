@@ -117,6 +117,14 @@ section = "Research Records"
 "execute:copilot-acp-host-permission-corrected-original" = "python3 scripts/copilot-acp-host-permission-proof.py --execute-corrected-original"
 "check:copilot-acp-host-permission-original-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-original-record docs/research/435-copilot-acp-normal-host-permission-observation.json"
 "check:copilot-acp-host-permission-corrected-original-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-corrected-original-record docs/research/437-copilot-acp-corrected-normal-host-execution.json"
+"check:copilot-acp-host-permission-task-173-binding" = [
+  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-host-permission-proof.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-authority.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-authority.schema.json\", \"docs/research/439-copilot-acp-pending-announcement-cancellation-fake-pass.json\")]'",
+  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-172-proposal",
+  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-plan",
+  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-authority",
+]
+"validate:copilot-acp-host-permission-task-173-binding" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-binding"
+"check:copilot-acp-host-permission-task-173-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-original-record docs/research/439-copilot-acp-pending-announcement-cancellation-execution.json"
 "validate:copilot-acp-authenticated-proof" = [
   "python3 scripts/copilot-acp-offline-proof.py --self-test",
   "cargo nextest run --locked --profile ci --no-fail-fast -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",

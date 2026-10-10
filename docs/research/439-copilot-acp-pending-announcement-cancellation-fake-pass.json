@@ -1,0 +1,24 @@
+{
+  "schema": "copilot-cli-acp-host-permission-task-173-binding-fake-pass.v1",
+  "task_number": 173,
+  "task_id": "4776be7a-f552-492f-ba62-cfb6b6b99cad",
+  "run_id": "2c9994e6-c963-4fe2-91ad-e2d69039e60e",
+  "operator_decision": "d7b9664a-98bc-441a-9f01-f91b9c236699",
+  "source_proposal_sha256": "fa0da4b9c73db7f099f1ccaaa18ef8d7fd16e74387ba94a94a2796494c3c4c0b",
+  "plan_sha256": "e6015b2c28a5189af4d00616dea9f86338e7fe923427ea276143838a7646f422",
+  "runner_sha256": "ac58c172c6dc8f5aac4ab7818edacf51b1bb162f6ac2cdd477626071ba84adcc",
+  "status": "passed",
+  "originals_run": false,
+  "invocations_consumed_before": 2,
+  "prompt_slots_consumed_before": 1,
+  "prompt_slots_remaining_before": 2,
+  "results": {
+    "task_172_proposal_remains_disabled": true,
+    "research_437_consumed_records_preserved": true,
+    "research_437_authority_was_consumed": true,
+    "task_171_authority_refused_before_effects": true,
+    "task_172_ledger_paths_bound": true,
+    "shared_pending_cancellation_state_machine_reused": true,
+    "raw_protocol_and_authentication_not_persisted": true
+  }
+}

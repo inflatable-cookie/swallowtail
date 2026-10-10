@@ -1810,6 +1810,27 @@ released contracts are unchanged. Reviewers inspect the retained records and
 do not start another original; see [Research
 439](../../research/439-copilot-acp-pending-announcement-cancellation.md).
 
+## Copilot Limited Execute Cancellation Evidence
+
+Tom answered “Accept limited cancellation evidence” to decision
+`4cf2c156-bfa0-445c-907f-be67b0f711c6` on 2026-10-10. Accept
+[Research 439](../../research/439-copilot-acp-pending-announcement-cancellation.md)
+as exact `1.0.93` evidence of a correlated `execute` permission request,
+honoured prompt/permission cancellation and no observed effect in the task
+directory. This satisfies only the existing reject-all/cancel permission gate.
+Preserve the failed exact-sentinel-edit classification; do not infer edit
+safety, arbitrary host containment, older/newer version behaviour or complete
+route qualification.
+
+The retained qualification worker may perform a provider-free assessment
+using this evidence and real prepared-driver fakes: establish exact launch
+and pinned-package alignment, per-hop and other lifecycle gates, and the
+current official target. No claim increases until all applicable gates close.
+Any remaining concrete adaptation or live-proof need returns separately.
+No new live attempt, approval callback, settings/auth/host changes or release
+authority is included. Preserve consumed records and the remaining shared
+prompt allowance.
+
 ## Pi Sidecar Replay Failure And Cleanup Repair
 
 Tom answered “Approve” on 2026-10-09 to decision

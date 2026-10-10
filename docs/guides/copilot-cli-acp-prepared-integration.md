@@ -158,6 +158,18 @@ supported versions. Fail-closed no-child policy may prevent vendor startup
 and is not a route narrowing. The exact `1.0.80` claim is unchanged. Parent
 119 stays blocked.
 
+The later normal-host proof direction supersedes the older VM and no-child
+preparation gates. Research 434 describes a fake-tested standalone ACP runner
+and exact disabled `1.0.93` plan. The plan trusts the existing host login,
+ordinary vendor state and networking; the scratch directory is not an OS
+containment boundary. Fakes cover normal state/log startup needs, one
+permission request followed by cancel, no sentinel effect, malformed or
+interrupted protocol, timeouts, and exact fake child joins. Arbitrary vendor
+descendant cleanup remains unknown. Preparation did not stage or execute the
+vendor artifact, access the login, send a provider request or consume an
+invocation/prompt allowance. The `1.0.80` claim and released consumers remain
+unchanged.
+
 Call `prepare_copilot_cli_acp` with `CopilotCliPreparationInput` and
 `CopilotCliPreparationProbe`. The probe classifies the approved target only. It
 does not send initialize, create a session, or prompt.

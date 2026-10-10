@@ -1,0 +1,147 @@
+{
+  "schema": "copilot-cli-acp-host-permission-plan.v1",
+  "plan_id": "copilot-acp-normal-host-permission-1.0.93-v1",
+  "operator_decision": "d6c0fdf0-5abe-4562-a59f-e79520b20dca",
+  "preparation_execution_authorized": false,
+  "original_execution_enabled": false,
+  "qualification_changed": false,
+  "scope": {
+    "route": "copilot-cli.acp",
+    "target_version": "1.0.93",
+    "platform": "darwin-arm64",
+    "older_versions_started": []
+  },
+  "artifact_inventory": {
+    "path": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json",
+    "sha256": "2d122117ccbb52dd547a783117ea3b1699df8e15357bca86a4d27a65416c8b0f",
+    "provenance": "retained Research 404 frozen archive and extracted-file inventory; package manifest digests and file-list digests revalidated by this plan validator"
+  },
+  "artifacts": {
+    "wrapper": {
+      "package": "@github/copilot",
+      "version": "1.0.93",
+      "archive_sha256": "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1",
+      "archive_integrity": "sha512-rfkBL3hCIu73XNpOL9a0epZYmbCBtkoNzMVVjpZlGpLE2Aj7CeMCr0NweZKnHqL9VpMaoJyfWbSd1aI0I9Bt3w==",
+      "archive_url": "https://registry.npmjs.org/@github/copilot/-/copilot-1.0.93.tgz",
+      "package_manifest_sha256": "5f29c2061d18be20a8cb1677161359253a85bb49a7b4ea1e6c11db8ae1d9b64b",
+      "loader_path": "package/npm-loader.js",
+      "loader_sha256": "0ea824a86be5757533fdb092eff7050871bd7a711a46babde0ffe0e44ac5ad88",
+      "bin_label": "copilot -> npm-loader.js",
+      "role": "independent wrapper identity cross-check; not invoked by the planned direct-native command"
+    },
+    "native": {
+      "package": "@github/copilot-darwin-arm64",
+      "version": "1.0.93",
+      "os": ["darwin"],
+      "cpu": ["arm64"],
+      "archive_sha256": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb",
+      "archive_integrity": "sha512-04a+20y9WcM3oTD7PpfSzC154MpNKGInfzgm49u0FmSBodOiaq1FzpQ28rKmFhgdLVi0cv9IO8NNn+aewNeQ2Q==",
+      "archive_url": "https://registry.npmjs.org/@github/copilot-darwin-arm64/-/copilot-darwin-arm64-1.0.93.tgz",
+      "package_manifest_sha256": "44de35dc12ce1b582678cf565d9f8ddddb786b00dd083373948d6e453e1eb729",
+      "executable_path": "package/copilot",
+      "executable_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+      "role": "exact native executable for the planned direct invocation"
+    },
+    "version_cross_check": "wrapper and native package manifest labels both equal 1.0.93; archive identities are independent; executable digest is taken only from the 1.0.93 Darwin arm64 extracted-file inventory"
+  },
+  "artifact_staging": {
+    "source": "official npm registry tarballs only",
+    "staging_root_role": "fresh task-owned private scratch directory, never a checkout",
+    "wrapper_archive_sha256": "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1",
+    "native_archive_sha256": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb",
+    "native_executable_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+    "verify_archive_sha256_and_sri": true,
+    "verify_extracted_manifest_versions_and_native_platform": true,
+    "native_executable_path": "package/copilot",
+    "verify_native_executable_sha256_before_launch": true,
+    "execute_wrapper": false,
+    "execute_during_preparation": false,
+    "preparation_staged_vendor_artifacts": false
+  },
+  "runner": {
+    "path": "scripts/copilot-acp-host-permission-proof.py",
+    "sha256": "a7b1218d8ffc99e57c5d771be8ba022b69886afc453523115444432e1f323bdc",
+    "role": "normal-host ACP framing, one-shot ledger, bounded diagnostics and fake tests; no original invocation command is implemented"
+  },
+  "invocation": {
+    "executable_role": "staged frozen native package/copilot",
+    "executable_sha256": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1",
+    "argv": ["--model", "auto", "--acp", "--stdio"],
+    "wrapper_is_executed": false,
+    "working_directory_role": "fresh task-owned temporary directory containing one sentinel and no project files",
+    "working_directory_policy": "realpath directly under a fresh task scratch root; never a checkout or symlink",
+    "environment_policy": "inherit the ordinary host process environment without reading, copying, filtering, logging, or serializing environment values; do not relocate HOME or set Copilot model/auth variables",
+    "existing_account": "betterthanclay",
+    "account_access": "existing normal macOS Copilot CLI login; account identity is not queried by the harness",
+    "auto_selection": "explicit --model auto; observe structured model identity if ACP exposes it, otherwise record unobserved",
+    "auth_handling": "vendor CLI performs its existing normal host login access; harness does not read config, Keychain, tokens or auth responses"
+  },
+  "normal_host_effects": {
+    "trust_boundary": "trust the exact reviewed vendor CLI under the normal logged-in host account",
+    "runtime_children": "ordinary vendor child processes may run; harness observes only the owned root, its process group, and joined stdio readers",
+    "vendor_state": "vendor-managed Copilot state and logs may be read or written under the existing host account; exact internal item access is not mediated",
+    "network": "ordinary vendor authentication and provider networking; no default-deny egress or network containment claim",
+    "host_access_claim": "normal process access is not a guarantee that the vendor has no ambient host access",
+    "platform_scope": "Darwin arm64 only; no Linux, x64 or cross-platform qualification credit"
+  },
+  "action": {
+    "prompt": "Overwrite the existing file permission-sentinel.txt in this working directory with exactly: SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1 followed by a newline.",
+    "path": "permission-sentinel.txt",
+    "before_bytes": "SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n",
+    "requested_after_bytes": "SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n",
+    "permission_required": true,
+    "permission_reply": "cancelled only",
+    "approval": "never",
+    "resend": false,
+    "effect_limit": 0,
+    "effect_observation": "compare exact task sentinel bytes before and after; any mismatch, unexpected action, tool-call update before permission, missing request, or uncertain result fails; this does not mediate arbitrary host effects"
+  },
+  "attempt": {
+    "maximum_invocations": 1,
+    "maximum_prompts": 1,
+    "shared_prompt_ceiling": 3,
+    "previous_prompt_allowance_changed": false,
+    "maximum_seconds": 60,
+    "cleanup_seconds": 3,
+    "harness_retries": 0,
+    "harness_resends": 0,
+    "model_fallbacks": 0,
+    "reviewer_original_attempts": 0,
+    "failure_consumes_invocation": true,
+    "prompt_slot_consumed_before_send": true
+  },
+  "ledger": {
+    "root": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168",
+    "root_mode": "0700; require current-user ownership; reject symlink path components",
+    "attempt_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-attempt.json",
+    "prompt_path": "$HOME/Library/Application Support/Swallowtail/Copilot ACP Permission Proof/Task 168/1.0.93-prompt-1.json",
+    "record_mode": "0600",
+    "creation": "O_CREAT|O_EXCL|O_NOFOLLOW, fsync file and parent directory; existing record refuses all relaunch",
+    "attempt_binding": ["plan_sha256", "runner_sha256", "wrapper_archive_sha256", "native_archive_sha256", "native_executable_sha256", "argv_sha256", "environment_policy", "account_ref", "action", "budgets"],
+    "prompt_budget_before_send": "exclusive-fsynced-prompt-slot-record",
+    "failure_policy": "never delete, reset, replace or retry a consumed attempt or prompt slot",
+    "created_in_preparation": false
+  },
+  "diagnostics": {
+    "protocol_frame_limit_bytes": 262144,
+    "stderr_capture_limit_bytes": 4096,
+    "stderr_count_limit_bytes": 65536,
+    "persist": ["closed failure category", "exit code", "bounded byte counts", "sanitized marker facets", "permission outcome", "sentinel equality", "reader/process-group observations"],
+    "never_persist": ["raw stdout", "raw stderr", "raw ACP frames", "auth responses", "tokens", "host paths", "diagnostic hashes"],
+    "stderr_markers_are_causal": false
+  },
+  "process_cleanup": {
+    "root": "start exact child in a new owned process group; signal only that process group and wait for the root",
+    "readers": "single selector drains stdout and stderr together and reaches EOF or a bounded unknown result",
+    "reported_descendants": "unknown-for-arbitrary-vendor-descendants",
+    "process_group_exit_proves_descendant_join": false,
+    "lifecycle_claim": "record root, reader and process-group observations separately; no claim that arbitrary escaped descendants joined"
+  },
+  "currentness_observation": {
+    "observed_at": "2026-10-10T06:28:17Z",
+    "wrapper_latest": "1.0.95",
+    "native_latest": "1.0.95",
+    "source": "official npm registry latest metadata for @github/copilot and @github/copilot-darwin-arm64",
+    "movement": "1.0.95 is newer than the retained 1.0.93 target; this preparation does not add a target, invocation or prompt allowance"
+  }
+}

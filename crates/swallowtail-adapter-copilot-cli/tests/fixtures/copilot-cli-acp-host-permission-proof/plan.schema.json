@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "copilot-cli-acp-host-permission-plan.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "plan_id",
+    "operator_decision",
+    "preparation_execution_authorized",
+    "original_execution_enabled",
+    "qualification_changed",
+    "scope",
+    "artifact_inventory",
+    "artifacts",
+    "artifact_staging",
+    "runner",
+    "invocation",
+    "normal_host_effects",
+    "action",
+    "attempt",
+    "ledger",
+    "diagnostics",
+    "process_cleanup",
+    "currentness_observation"
+  ],
+  "properties": {
+    "schema": {"const": "copilot-cli-acp-host-permission-plan.v1"},
+    "plan_id": {"const": "copilot-acp-normal-host-permission-1.0.93-v1"},
+    "operator_decision": {"type": "string", "format": "uuid"},
+    "preparation_execution_authorized": {"const": false},
+    "original_execution_enabled": {"const": false},
+    "qualification_changed": {"const": false},
+    "artifact_inventory": {
+      "type": "object",
+      "required": ["path", "sha256", "provenance"],
+      "properties": {
+        "path": {"const": "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/artifact-inventory.json"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "provenance": {"type": "string"}
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route", "target_version", "platform", "older_versions_started"],
+      "properties": {
+        "route": {"const": "copilot-cli.acp"},
+        "target_version": {"const": "1.0.93"},
+        "platform": {"const": "darwin-arm64"},
+        "older_versions_started": {"type": "array", "maxItems": 0}
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "required": ["wrapper", "native", "version_cross_check"],
+      "properties": {
+        "wrapper": {"type": "object"},
+        "native": {"type": "object"},
+        "version_cross_check": {"type": "string"}
+      }
+    },
+    "artifact_staging": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "staging_root_role", "wrapper_archive_sha256", "native_archive_sha256", "native_executable_sha256", "verify_archive_sha256_and_sri", "verify_extracted_manifest_versions_and_native_platform", "native_executable_path", "verify_native_executable_sha256_before_launch", "execute_wrapper", "execute_during_preparation", "preparation_staged_vendor_artifacts"],
+      "properties": {
+        "source": {"const": "official npm registry tarballs only"},
+        "staging_root_role": {"type": "string"},
+        "wrapper_archive_sha256": {"const": "a8e704fb6874364af1b268aed2170bb597e0ca8086f3182b8fe5cb86ca3e43e1"},
+        "native_archive_sha256": {"const": "f254651a3195e125b91d723c800e71e6541f8db3832d269854ae982254263eeb"},
+        "native_executable_sha256": {"const": "df347f272793e735629a91eea0285a736aeeb38821dd2b056234f7f47b58aef1"},
+        "verify_archive_sha256_and_sri": {"const": true},
+        "verify_extracted_manifest_versions_and_native_platform": {"const": true},
+        "native_executable_path": {"const": "package/copilot"},
+        "verify_native_executable_sha256_before_launch": {"const": true},
+        "execute_wrapper": {"const": false},
+        "execute_during_preparation": {"const": false},
+        "preparation_staged_vendor_artifacts": {"const": false}
+      }
+    },
+    "runner": {
+      "type": "object",
+      "required": ["path", "sha256", "role"],
+      "properties": {
+        "path": {"const": "scripts/copilot-acp-host-permission-proof.py"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "role": {"type": "string"}
+      }
+    },
+    "invocation": {
+      "type": "object",
+      "required": ["executable_role", "executable_sha256", "argv", "wrapper_is_executed", "environment_policy"],
+      "properties": {
+        "executable_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "argv": {"const": ["--model", "auto", "--acp", "--stdio"]},
+        "wrapper_is_executed": {"const": false},
+        "environment_policy": {"type": "string"}
+      }
+    },
+    "normal_host_effects": {
+      "type": "object",
+      "required": ["trust_boundary", "runtime_children", "vendor_state", "network", "host_access_claim", "platform_scope"],
+      "properties": {
+        "trust_boundary": {"type": "string"},
+        "runtime_children": {"type": "string"},
+        "vendor_state": {"type": "string"},
+        "network": {"type": "string"},
+        "host_access_claim": {"type": "string"},
+        "platform_scope": {"type": "string"}
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["prompt", "path", "permission_required", "permission_reply", "approval", "resend", "effect_limit"],
+      "properties": {
+        "path": {"const": "permission-sentinel.txt"},
+        "permission_required": {"const": true},
+        "permission_reply": {"const": "cancelled only"},
+        "approval": {"const": "never"},
+        "resend": {"const": false},
+        "effect_limit": {"const": 0}
+      }
+    },
+    "attempt": {
+      "type": "object",
+      "required": ["maximum_invocations", "maximum_prompts", "shared_prompt_ceiling", "maximum_seconds", "cleanup_seconds"],
+      "properties": {
+        "maximum_invocations": {"const": 1},
+        "maximum_prompts": {"const": 1},
+        "shared_prompt_ceiling": {"const": 3},
+        "maximum_seconds": {"const": 60},
+        "cleanup_seconds": {"const": 3}
+      }
+    },
+    "ledger": {
+      "type": "object",
+      "required": ["root", "attempt_path", "prompt_path", "creation", "prompt_budget_before_send", "created_in_preparation"],
+      "properties": {
+        "root": {"type": "string"},
+        "attempt_path": {"type": "string"},
+        "prompt_path": {"type": "string"},
+        "creation": {"type": "string"},
+        "prompt_budget_before_send": {"const": "exclusive-fsynced-prompt-slot-record"},
+        "created_in_preparation": {"const": false}
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "required": ["protocol_frame_limit_bytes", "stderr_capture_limit_bytes", "stderr_count_limit_bytes", "persist", "never_persist", "stderr_markers_are_causal"],
+      "properties": {
+        "protocol_frame_limit_bytes": {"const": 262144},
+        "stderr_capture_limit_bytes": {"const": 4096},
+        "stderr_count_limit_bytes": {"const": 65536},
+        "stderr_markers_are_causal": {"const": false}
+      }
+    },
+    "process_cleanup": {
+      "type": "object",
+      "required": ["root", "readers", "reported_descendants", "process_group_exit_proves_descendant_join", "lifecycle_claim"],
+      "properties": {
+        "reported_descendants": {"const": "unknown-for-arbitrary-vendor-descendants"},
+        "process_group_exit_proves_descendant_join": {"const": false}
+      }
+    },
+    "currentness_observation": {
+      "type": "object",
+      "required": ["observed_at", "wrapper_latest", "native_latest", "source", "movement"],
+      "properties": {
+        "wrapper_latest": {"type": "string"},
+        "native_latest": {"type": "string"}
+      }
+    }
+  }
+}

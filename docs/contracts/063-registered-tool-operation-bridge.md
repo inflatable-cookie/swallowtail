@@ -754,16 +754,28 @@ Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
 the altered listener behaviour and `check:sdk-courier-timeout` and
 `format:sdk-courier-timeout` for the compiled and formatted candidate.
 
-**Test budget and build isolation.** Each validation selector runs through
-`scripts/run-with-owned-cargo-target.sh`. The runner creates one fresh directory
-under the system temp root, marks it, and exports it as `CARGO_TARGET_DIR` for
-the outer test build and the nested courier build. The runner removes that
-directory when the selector finishes. The courier helper refuses any target that
-is not such a marked directory, including the worktree target. The outer build
-warms the run target before any test starts, so the courier build inside a test
-is warm. The idle regression spends 71 seconds in planned waits. Those waits
-stay under Nextest's termination guard, which is a failure guard, not a budget
-to raise.
+**Test budget and build isolation.** The courier validation selectors run
+through `scripts/run-with-owned-cargo-target.sh`. The runner creates one fresh
+directory under the system temp root, marks it, and exports it as
+`CARGO_TARGET_DIR` for the outer test build and the nested courier build. The
+runner removes that directory when the selector finishes. The outer build warms
+the run target before any test starts, so the courier build inside a test is
+warm.
+
+Ordinary entrypoints that set no run-owned `CARGO_TARGET_DIR` — `cargo test`,
+a plain `cargo nextest run`, the hosted process step, and MSRV — must also run
+these tests. The courier helper accepts the run-owned target only when it is a
+marked directory directly under the system temp root and outside the worktree.
+Anything else, including an unset variable, the worktree target, or any shared
+target, is not used: the helper creates its own task-owned target under the
+system temp root, marks it with a distinct task-owned marker, builds there, and
+removes it when the last courier handle drops. The worktree and any shared
+target are never built into or deleted, and the run-owned marker is never
+written for a directory this process did not create. `validate:sdk-courier-idle`
+proves the run-owned path; `validate:sdk-courier-ordinary` proves the fallback
+through the hosted `ci-process` entrypoint. The idle regression spends 71
+seconds in planned waits. Those waits stay under Nextest's termination guard,
+which is a failure guard, not a budget to raise.
 
 **Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
 carrier tool through `SdkScenario::RegisteredToolAdmission`. It performs the

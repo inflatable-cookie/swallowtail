@@ -705,9 +705,11 @@ Courier call waiting follows those call and lease deadlines, not the ten-second
 opening bound. A call held on host permission waits until its effective
 deadline; a settled call error returns once with its JSON-RPC id and the
 courier stays usable for later calls on the same lease. Contract 063's
-Mediated Courier Call-Wait Boundary has the full rules. A remaining
-authenticated-idle gap before SDK permission (Queue 49ce9bb1) is not closed by
-this behavior.
+Mediated Courier Call-Wait Boundary has the full rules. An authenticated courier
+that stays quiet before SDK permission keeps its lease: the listener has no
+idle transport timeout once a frame has authenticated (Contract 063, Idle,
+Frame Progress, And Call States). That is offline proof only; live Desktop
+proof remains separately authorized.
 
 Resume and listing refuse a bound selection. The Contract 061 projection was
 qualified on the exact accepted Card 318 live tuple (Research 301): SDK

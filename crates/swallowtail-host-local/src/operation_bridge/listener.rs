@@ -6,16 +6,24 @@
 
 use crate::output::failure;
 use std::collections::BTreeMap;
-use std::io::{Read, Write};
+use std::io::{ErrorKind, Read, Write};
 use std::net::{Shutdown, SocketAddr, TcpListener, TcpStream};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::thread::{self, JoinHandle};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use swallowtail_runtime::RuntimeFailure;
 use zeroize::Zeroizing;
 
+/// Transport stall bound. It covers progress inside one frame, the first
+/// frame of a connection that has not authenticated, and every write.
 const IO_TIMEOUT: Duration = Duration::from_secs(5);
+/// Whole-frame budget once the first byte of a frame has arrived. Each read
+/// is bounded by `IO_TIMEOUT` and by what remains of this budget.
+const FRAME_BUDGET: Duration = Duration::from_secs(10);
+/// How often an authenticated idle wait re-checks route revocation and close.
+/// Close also shuts the read side, so this only bounds revocation latency.
+const IDLE_POLL: Duration = Duration::from_millis(250);
 const HEADER_TERMINATOR: &[u8] = b"\r\n\r\n";
 const WATCHER_NAMESPACE: &str = "watcher";
 const REGISTERED_TOOL_NAMESPACE: &str = "registered-tool";
@@ -29,6 +37,21 @@ pub(crate) const fn namespace_watcher() -> &'static str {
 pub(crate) const fn namespace_registered_tool() -> &'static str {
     REGISTERED_TOOL_NAMESPACE
 }
+
+/// Transport timing for one listener. Production always uses
+/// `PRODUCTION_TIMING`; unit tests inject short boundaries to prove each branch.
+#[derive(Clone, Copy)]
+struct Timing {
+    io: Duration,
+    frame: Duration,
+    idle_poll: Duration,
+}
+
+const PRODUCTION_TIMING: Timing = Timing {
+    io: IO_TIMEOUT,
+    frame: FRAME_BUDGET,
+    idle_poll: IDLE_POLL,
+};
 
 /// One frame after the operation kernel has authenticated its route.
 pub(crate) struct OperationBridgeFrame {
@@ -105,8 +128,8 @@ impl Drop for OperationBridgeRoute {
 /// One accepted connection's join handle and its shutdown wake.
 ///
 /// The wake is a `try_clone` of the accepted stream. Shutting its read side
-/// down ends the connection loop's blocking read on an event instead of on
-/// `IO_TIMEOUT`; the write side stays open so a handler already in flight
+/// down ends the connection loop's blocking peek on an event instead of on
+/// the idle poll; the write side stays open so a handler already in flight
 /// still delivers its response before the loop exits. The entry lives only
 /// while the thread runs: the thread removes it on exit so the clone's file
 /// descriptor never outlives the connection and a peer's end-of-stream still
@@ -122,6 +145,7 @@ pub(crate) struct OperationBridgeListener {
     listener_addr: SocketAddr,
     bearer: Zeroizing<String>,
     listener: Mutex<Option<TcpListener>>,
+    timing: Timing,
     routes: Mutex<BTreeMap<String, Route>>,
     closed: AtomicBool,
     accept_thread: Mutex<Option<JoinHandle<()>>>,
@@ -133,6 +157,10 @@ impl OperationBridgeListener {
     /// Binds the operation listener exactly once and starts its sole accept
     /// loop. The private bearer is minted by this owner, not by a profile.
     pub(crate) fn bind() -> Result<Arc<Self>, RuntimeFailure> {
+        Self::bind_with_timing(PRODUCTION_TIMING)
+    }
+
+    fn bind_with_timing(timing: Timing) -> Result<Arc<Self>, RuntimeFailure> {
         let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, 0)).map_err(|_| {
             failure(
                 "swallowtail.operation_bridge.bind_failed",
@@ -155,6 +183,7 @@ impl OperationBridgeListener {
             listener_addr,
             bearer: super::secret::generate_operation_secret()?,
             listener: Mutex::new(Some(listener)),
+            timing,
             routes: Mutex::new(BTreeMap::new()),
             closed: AtomicBool::new(false),
             accept_thread: Mutex::new(None),
@@ -225,11 +254,11 @@ impl OperationBridgeListener {
             return;
         }
         // Wake every accepted connection's blocking read so the joins below
-        // wait for work, not for `IO_TIMEOUT`. Read-only shutdown keeps the
+        // wait for work, not for a timeout. Read-only shutdown keeps the
         // write side of each socket open, so a handler already in flight
-        // still writes its response before its loop exits. The read timeout
-        // remains the backstop for a peer that resists shutdown, and for a
-        // stream whose clone could not be taken.
+        // still writes its response before its loop exits. The idle poll and
+        // the write timeout remain the backstop for a peer that resists
+        // shutdown, and for a stream whose clone could not be taken.
         for wake in self
             .connections
             .lock()
@@ -330,14 +359,23 @@ impl OperationBridgeListener {
     }
 
     fn connection_loop(&self, mut stream: TcpStream, connection_id: u64) {
-        if configure_stream(&stream).is_err() {
+        if configure_stream(&stream, self.timing).is_err() {
             return;
         }
+        // An unauthenticated connection must send its first frame within the
+        // IO timeout of accept. Once one frame passes the bearer check, the
+        // connection's idle wait is bound to that frame's route instead.
+        let unauthenticated_deadline = Instant::now() + self.timing.io;
+        let mut authenticated_path: Option<String> = None;
         loop {
-            if self.closed.load(Ordering::Acquire) {
+            if !self.await_frame_start(
+                &stream,
+                authenticated_path.as_deref(),
+                unauthenticated_deadline,
+            ) {
                 break;
             }
-            let frame = match read_request(&mut stream) {
+            let frame = match read_request(&mut stream, self.timing) {
                 Ok(frame) => frame,
                 Err(reject) => {
                     let _ = write_response(&mut stream, reject.response());
@@ -391,6 +429,9 @@ impl OperationBridgeListener {
                 );
                 continue;
             }
+            if authenticated_path.is_none() {
+                authenticated_path = Some(frame.path.clone());
+            }
             if transport_generation.is_some_and(|expected| {
                 frame.transport_generation != Some(expected)
                     || frame.lease_generation != Some(generation)
@@ -414,6 +455,61 @@ impl OperationBridgeListener {
             if write_response(&mut stream, response).is_err() || !keep_alive {
                 let _ = stream.shutdown(Shutdown::Write);
                 break;
+            }
+        }
+    }
+
+    /// Waits until the next frame's first byte is available, without
+    /// consuming it. Returns `false` when the connection should end silently.
+    ///
+    /// Before authentication the wait is bounded by `unauthenticated_deadline`.
+    /// After authentication there is no transport timeout: the wait ends on the
+    /// next frame, peer end-of-stream, route revocation, or listener close. The
+    /// route and close checks run every `idle_poll`, so an idle reader wakes
+    /// promptly even if no shutdown wake reached it.
+    fn await_frame_start(
+        &self,
+        stream: &TcpStream,
+        authenticated_path: Option<&str>,
+        unauthenticated_deadline: Instant,
+    ) -> bool {
+        loop {
+            if self.closed.load(Ordering::Acquire) {
+                return false;
+            }
+            let wait = match authenticated_path {
+                Some(path) => {
+                    let revoked = !self
+                        .routes
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner)
+                        .contains_key(path);
+                    if revoked {
+                        return false;
+                    }
+                    self.timing.idle_poll
+                }
+                None => {
+                    let remaining =
+                        unauthenticated_deadline.saturating_duration_since(Instant::now());
+                    if remaining.is_zero() {
+                        return false;
+                    }
+                    remaining
+                }
+            };
+            if stream.set_read_timeout(Some(wait)).is_err() {
+                return false;
+            }
+            match stream.peek(&mut [0_u8; 1]) {
+                Ok(0) => return false,
+                Ok(_) => return true,
+                Err(error)
+                    if matches!(
+                        error.kind(),
+                        ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+                    ) => {}
+                Err(_) => return false,
             }
         }
     }
@@ -460,14 +556,33 @@ impl HttpReject {
     }
 }
 
-fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpReject> {
+/// Reads one chunk of the frame that has begun. Progress waits at most `io`,
+/// and the whole frame must finish by `deadline`.
+fn read_within(
+    stream: &mut TcpStream,
+    chunk: &mut [u8],
+    timing: Timing,
+    deadline: Instant,
+) -> Result<usize, HttpReject> {
+    let remaining = deadline.saturating_duration_since(Instant::now());
+    if remaining.is_zero() {
+        return Err(HttpReject::Malformed);
+    }
+    stream
+        .set_read_timeout(Some(remaining.min(timing.io)))
+        .map_err(|_| HttpReject::Malformed)?;
+    stream.read(chunk).map_err(|_| HttpReject::Malformed)
+}
+
+fn read_request(stream: &mut TcpStream, timing: Timing) -> Result<HttpRequest, HttpReject> {
+    let deadline = Instant::now() + timing.frame;
     let mut buffer = Vec::new();
     let mut chunk = [0_u8; 512];
     let header_end = loop {
         if buffer.len() > swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_BYTES {
             return Err(HttpReject::Oversized);
         }
-        let read = stream.read(&mut chunk).map_err(|_| HttpReject::Malformed)?;
+        let read = read_within(stream, &mut chunk, timing, deadline)?;
         if read == 0 {
             return Err(HttpReject::Malformed);
         }
@@ -537,7 +652,7 @@ fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpReject> {
         let drain_to = content_length
             .min(swallowtail_runtime::WATCHER_BRIDGE_MAX_BODY_BYTES.saturating_add(4096));
         while body.len() < drain_to {
-            let read = stream.read(&mut chunk).map_err(|_| HttpReject::Malformed)?;
+            let read = read_within(stream, &mut chunk, timing, deadline)?;
             if read == 0 {
                 break;
             }
@@ -546,7 +661,7 @@ fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpReject> {
         return Err(HttpReject::Oversized);
     }
     while body.len() < content_length {
-        let read = stream.read(&mut chunk).map_err(|_| HttpReject::Malformed)?;
+        let read = read_within(stream, &mut chunk, timing, deadline)?;
         if read == 0 {
             return Err(HttpReject::Malformed);
         }
@@ -563,13 +678,10 @@ fn read_request(stream: &mut TcpStream) -> Result<HttpRequest, HttpReject> {
     })
 }
 
-fn configure_stream(stream: &TcpStream) -> Result<(), RuntimeFailure> {
+fn configure_stream(stream: &TcpStream, timing: Timing) -> Result<(), RuntimeFailure> {
     stream.set_nodelay(true).map_err(|_| transport_failure())?;
     stream
-        .set_read_timeout(Some(IO_TIMEOUT))
-        .map_err(|_| transport_failure())?;
-    stream
-        .set_write_timeout(Some(IO_TIMEOUT))
+        .set_write_timeout(Some(timing.io))
         .map_err(|_| transport_failure())?;
     Ok(())
 }
@@ -635,4 +747,193 @@ fn transport_failure() -> RuntimeFailure {
         "swallowtail.operation_bridge.transport_failed",
         "Operation bridge transport failed",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::AtomicUsize;
+
+    const PATH: &str = "/courier";
+    const TIMING: Timing = Timing {
+        io: Duration::from_millis(200),
+        frame: Duration::from_millis(600),
+        idle_poll: Duration::from_millis(20),
+    };
+
+    struct Fixture {
+        listener: Arc<OperationBridgeListener>,
+        route: Option<OperationBridgeRoute>,
+        handled: Arc<AtomicUsize>,
+    }
+
+    fn fixture() -> Fixture {
+        let listener = OperationBridgeListener::bind_with_timing(TIMING).expect("listener binds");
+        let handled = Arc::new(AtomicUsize::new(0));
+        let counter = Arc::clone(&handled);
+        let route = listener
+            .register(
+                namespace_registered_tool(),
+                1,
+                OperationBridgeRouteSpec {
+                    path: PATH,
+                    transport_generation: None,
+                    server_name: None,
+                    handler: Arc::new(move |_frame| {
+                        counter.fetch_add(1, Ordering::SeqCst);
+                        OperationBridgeResponse::keep_alive(200, "OK", b"{}".to_vec())
+                    }),
+                },
+            )
+            .expect("route registers");
+        Fixture {
+            listener,
+            route: Some(route),
+            handled,
+        }
+    }
+
+    fn connect(listener: &OperationBridgeListener) -> TcpStream {
+        TcpStream::connect(listener.endpoint()).expect("loopback connect")
+    }
+
+    fn frame(bearer: &str, body: &[u8]) -> Vec<u8> {
+        let mut bytes = format!(
+            "POST {PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n\r\n",
+            body.len()
+        )
+        .into_bytes();
+        bytes.extend_from_slice(body);
+        bytes
+    }
+
+    /// Reads one response. `None` means the peer closed without a response.
+    fn read_status(stream: &mut TcpStream) -> Option<u16> {
+        stream.set_read_timeout(Some(Duration::from_secs(3))).ok()?;
+        let mut header = Vec::new();
+        let mut byte = [0_u8; 1];
+        loop {
+            if stream.read(&mut byte).ok()? == 0 {
+                return None;
+            }
+            header.push(byte[0]);
+            if header.ends_with(b"\r\n\r\n") {
+                break;
+            }
+        }
+        let text = String::from_utf8(header).ok()?;
+        let status = text.split_whitespace().nth(1)?.parse().ok()?;
+        let length: usize = text
+            .lines()
+            .find_map(|line| line.strip_prefix("Content-Length: "))
+            .and_then(|value| value.trim().parse().ok())?;
+        let mut body = vec![0_u8; length];
+        stream.read_exact(&mut body).ok()?;
+        Some(status)
+    }
+
+    #[test]
+    fn authenticated_connection_waits_past_the_io_timeout_for_its_next_frame() {
+        let fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let mut stream = connect(&fixture.listener);
+        stream
+            .write_all(&frame(&bearer, b"{}"))
+            .expect("first frame");
+        assert_eq!(read_status(&mut stream), Some(200));
+        // Idle for four IO timeouts with no frame in flight.
+        std::thread::sleep(TIMING.io * 4);
+        stream
+            .write_all(&frame(&bearer, b"{}"))
+            .expect("second frame");
+        assert_eq!(read_status(&mut stream), Some(200));
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 2);
+    }
+
+    #[test]
+    fn an_unauthenticated_connection_must_send_its_first_frame_within_the_io_timeout() {
+        let fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let mut stream = connect(&fixture.listener);
+        std::thread::sleep(TIMING.io * 4);
+        // The write may land in the socket buffer or fail after the server
+        // closed; either way no response may come back.
+        let _ = stream.write_all(&frame(&bearer, b"{}"));
+        assert_eq!(read_status(&mut stream), None);
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    fn a_partial_header_that_stalls_is_closed_by_the_io_timeout() {
+        let fixture = fixture();
+        let mut stream = connect(&fixture.listener);
+        stream
+            .write_all(format!("POST {PATH} HTTP/1.1\r\nContent-Length: 2\r\n").as_bytes())
+            .expect("partial header");
+        assert_eq!(read_status(&mut stream), Some(400));
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    fn a_trickling_frame_is_closed_by_the_whole_frame_budget() {
+        let fixture = fixture();
+        let mut stream = connect(&fixture.listener);
+        // Each byte arrives inside the progress timeout, so only the whole-frame
+        // budget can end this peer.
+        let started = Instant::now();
+        let mut write_failed = false;
+        for byte in b"POST /courier HTTP/1.1\r\nContent-Length: 2\r\n"
+            .iter()
+            .cycle()
+        {
+            if stream.write_all(&[*byte]).is_err() {
+                write_failed = true;
+                break;
+            }
+            std::thread::sleep(TIMING.io / 2);
+            if started.elapsed() > Duration::from_secs(3) {
+                break;
+            }
+        }
+        assert!(write_failed, "frame budget never closed the trickling peer");
+        assert!(started.elapsed() < Duration::from_secs(3));
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    fn revoking_the_route_wakes_an_idle_authenticated_connection() {
+        let mut fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let mut stream = connect(&fixture.listener);
+        stream
+            .write_all(&frame(&bearer, b"{}"))
+            .expect("first frame");
+        assert_eq!(read_status(&mut stream), Some(200));
+        let started = Instant::now();
+        drop(fixture.route.take());
+        stream
+            .set_read_timeout(Some(Duration::from_secs(2)))
+            .expect("bounded test read");
+        let mut sink = Vec::new();
+        stream
+            .read_to_end(&mut sink)
+            .expect("server closes the idle connection");
+        assert!(started.elapsed() < Duration::from_secs(1));
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn close_joins_an_idle_authenticated_connection_without_a_timeout() {
+        let fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let mut stream = connect(&fixture.listener);
+        stream
+            .write_all(&frame(&bearer, b"{}"))
+            .expect("first frame");
+        assert_eq!(read_status(&mut stream), Some(200));
+        let started = Instant::now();
+        fixture.listener.close();
+        assert!(started.elapsed() < Duration::from_secs(1));
+        assert_eq!(read_status(&mut stream), None);
+    }
 }

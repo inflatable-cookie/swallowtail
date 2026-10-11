@@ -431,6 +431,84 @@ fn real_courier_and_sdk_shaped_process_reach_the_kernel_dispatcher() {
     .expect("close joins listener and kernel");
 }
 
+/// Longer than the listener's 5s transport IO timeout. The SDK holds a
+/// permission decision here, with no frame in flight on the courier stream.
+const SDK_PERMISSION_IDLE_GAP: Duration = Duration::from_secs(6);
+
+#[test]
+fn real_courier_survives_idle_gaps_longer_than_the_io_timeout() {
+    // The lease outlives the three idle gaps, so this test measures idle
+    // alone rather than the operation deadline.
+    let calls = Arc::new(AtomicUsize::new(0));
+    let fixture = mount_raw_proxy_with_deadline(
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Duration::from_secs(10),
+        Arc::clone(&calls),
+        Duration::from_secs(120),
+    );
+    let mut sdk = FakeSdk::spawn(&fixture.local, &fixture.launch, Arc::clone(&calls));
+    let mut launch = fixture.launch;
+    launch
+        .wait_until_ready()
+        .expect("courier authenticates and completes the ready barrier");
+    let initialized = sdk.request(
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert!(initialized.contains("2025-11-25"));
+    sdk.notify(br#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#);
+    let listed = sdk.request(br#"{"jsonrpc":"2.0","id":2,"method":"tools/list"}"#);
+    assert!(listed.contains("swallowtail.conformance/reconcile"));
+
+    let immediate = sdk
+        .call_tool_with_id(
+            3,
+            "swallowtail.conformance/reconcile",
+            r#"{"path":"workspace/file"}"#,
+        )
+        .expect("immediate call is admitted");
+    assert!(immediate.contains("from-dispatcher"), "{immediate}");
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+
+    std::thread::sleep(SDK_PERMISSION_IDLE_GAP);
+    let after_gap = sdk
+        .call_tool_with_id(
+            4,
+            "swallowtail.conformance/reconcile",
+            r#"{"path":"workspace/second-file"}"#,
+        )
+        .expect("call after an idle gap reaches the same courier");
+    assert!(after_gap.contains("from-dispatcher"), "{after_gap}");
+    assert_eq!(calls.load(Ordering::SeqCst), 2);
+
+    std::thread::sleep(SDK_PERMISSION_IDLE_GAP);
+    let repeated_gap = sdk
+        .call_tool_with_id(
+            5,
+            "swallowtail.conformance/reconcile",
+            r#"{"path":"workspace/third-file"}"#,
+        )
+        .expect("a second idle gap does not end the lease");
+    assert!(repeated_gap.contains("from-dispatcher"), "{repeated_gap}");
+    assert_eq!(calls.load(Ordering::SeqCst), 3);
+
+    sdk.close();
+    block_on(
+        fixture
+            .local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                fixture.lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Completion,
+            ),
+    )
+    .expect("close joins the idle-tolerant listener and kernel");
+}
+
 /// The raw mounted fixture drives the same listener without a fixture-local
 /// response. It covers adverse wire cases that a provider SDK would hide.
 struct RawMountedProxy {
@@ -1003,6 +1081,54 @@ fn mounted_both_profiles_demux_through_one_listener_and_one_resource_owner() {
 }
 
 #[test]
+fn watcher_unauthenticated_idle_is_bounded_on_the_shared_listener() {
+    let fixture = mount_raw_proxy();
+    let turn = fixture.lease.turn().clone();
+    let watcher = block_on(
+        fixture
+            .local
+            .services()
+            .watcher_bridge()
+            .expect("watcher bridge")
+            .open(WatcherBridgeOpenRequest::new(
+                ScopeId::new("fixture.scope.watcher-idle").expect("scope"),
+                turn,
+            )),
+    )
+    .expect("watcher route registers on the shared listener");
+    let endpoint = watcher.endpoint().expose().to_owned();
+    let watcher_bearer = watcher.bearer().expose().to_owned();
+    let mut idle = connect_endpoint(&endpoint);
+    // Longer than the shared 5s IO timeout, with no first frame sent.
+    std::thread::sleep(SDK_PERMISSION_IDLE_GAP);
+    idle.set_read_timeout(Some(Duration::from_secs(2)))
+        .expect("bounded test read");
+    let mut sink = Vec::new();
+    idle.read_to_end(&mut sink)
+        .expect("shared listener closes the unauthenticated idle watcher connection");
+    assert!(sink.is_empty(), "no response for an idle peer");
+    // The registered-tool route on the same listener is unaffected.
+    assert_eq!(fixture.local.registered_tool_lease_count(), 1);
+    let mut fresh = connect_endpoint(&endpoint);
+    let initialized = watcher_post(
+        &mut fresh,
+        &watcher_bearer,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26"}}"#,
+    );
+    assert_eq!(initialized.0, 200);
+    drop(fresh);
+    let watcher_port = fixture
+        .local
+        .services()
+        .watcher_bridge()
+        .expect("watcher bridge")
+        .clone();
+    block_on(watcher_port.close(watcher, WatcherCleanupCause::Stopped))
+        .expect("watcher route teardown joins on the shared listener");
+    fixture.close();
+}
+
+#[test]
 fn mounted_proxy_drops_oversized_and_partial_transport_without_dispatch() {
     let fixture = mount_raw_proxy();
     let mut partial = connect_raw(&fixture.document);
@@ -1168,11 +1294,15 @@ impl FakeSdk {
     }
 
     fn call_tool(&mut self, name: &str, arguments: &str) -> Option<String> {
+        self.call_tool_with_id(3, name, arguments)
+    }
+
+    fn call_tool_with_id(&mut self, id: u64, name: &str, arguments: &str) -> Option<String> {
         if !self.can_use_tool(name) {
             return None;
         }
         let request = format!(
-            "{{\"jsonrpc\":\"2.0\",\"id\":3,\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
+            "{{\"jsonrpc\":\"2.0\",\"id\":{id},\"method\":\"tools/call\",\"params\":{{\"name\":{name:?},\"arguments\":{arguments}}}}}"
         );
         Some(self.request(request.as_bytes()))
     }

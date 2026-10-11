@@ -983,6 +983,80 @@ fn registered_session_lease_survives_open_deadline_and_pending_permission() {
     close_route(opened);
 }
 
+/// Session age before the approval the Desktop retained failure waited on,
+/// and the SDK-side approval wait itself. The SDK holds `canUseTool` here, so
+/// no `tools/call` reaches the courier during either span.
+const SESSION_AGE_BEFORE_APPROVAL: Duration = Duration::from_secs(45);
+const SDK_APPROVAL_WAIT: Duration = Duration::from_secs(20);
+
+#[test]
+fn registered_session_survives_idle_before_sdk_permission_gate() {
+    let host = host_id("claude-agent-sdk.fixture.registered-idle-permission");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(ScriptedAdmissionPort::current()),
+    );
+    opened.courier.handshake();
+    let name = tool_id().to_string();
+
+    let immediate =
+        opened
+            .courier
+            .call_tool_with_id(3, &name, r#"{"path":"workspace/first-directory"}"#);
+    assert!(
+        immediate.contains("from-dispatcher"),
+        "immediate: {immediate}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
+
+    // Real idle through the courier's stdin with no frame in flight. The
+    // session ages past the 45s point and the SDK then holds the permission
+    // decision for 20s before the approved call is sent to the courier.
+    let idle_started = Instant::now();
+    std::thread::sleep(SESSION_AGE_BEFORE_APPROVAL);
+    std::thread::sleep(SDK_APPROVAL_WAIT);
+    assert!(idle_started.elapsed() >= SESSION_AGE_BEFORE_APPROVAL + SDK_APPROVAL_WAIT);
+    opened
+        .fixture
+        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 65_000_000_000);
+
+    // A denied permission sends nothing to the courier and has no effect on
+    // the connected lease. The next approved directory read still succeeds.
+    let approved =
+        opened
+            .courier
+            .call_tool_with_id(4, &name, r#"{"path":"workspace/second-directory"}"#);
+    assert!(approved.contains("from-dispatcher"), "approved: {approved}");
+    assert_eq!(calls.load(Ordering::SeqCst), 2);
+
+    let second_read =
+        opened
+            .courier
+            .call_tool_with_id(5, &name, r#"{"path":"workspace/third-directory"}"#);
+    assert!(
+        second_read.contains("from-dispatcher"),
+        "second read: {second_read}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 3);
+
+    // A later turn after another idle gap reuses the same courier.
+    std::thread::sleep(Duration::from_secs(6));
+    let later_turn =
+        opened
+            .courier
+            .call_tool_with_id(6, &name, r#"{"path":"workspace/later-turn"}"#);
+    assert!(
+        later_turn.contains("from-dispatcher"),
+        "later turn: {later_turn}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 4);
+    close_route(opened);
+}
+
 #[test]
 fn expired_call_returns_one_correlated_error_then_the_courier_accepts_a_new_call() {
     let host = host_id("claude-agent-sdk.fixture.registered-call-expiry");

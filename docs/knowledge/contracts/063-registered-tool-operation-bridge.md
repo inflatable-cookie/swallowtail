@@ -763,11 +763,61 @@ reuse, denial without dispatch, cancellation, and joined close without changing
 SDK, native, Node, sidecar wire, or route qualification pins. Its selectors are
 `check:sdk-courier-timeout` and `validate:sdk-courier-timeout`.
 
-**Open gap (not resolved here): authenticated idle before SDK permission,
-Queue 49ce9bb1.** A registered session that goes authenticated-idle before the
-SDK requests permission is outside this correction. Desktop's failed live retry
-is therefore not resolved by this port. That defect needs its own fix and proof.
-
 This section authorizes no live provider work, credential use, consumer
 mutation, tag creation, or tag push. Those remain separately authorized at
 exact identity.
+
+## Idle, Frame Progress, And Call States — 2026-10-11
+
+Queue 49ce9bb1 found that the shared listener's 5-second transport timeout
+closed an authenticated courier that went quiet before the SDK requested
+permission. The retained Desktop failure was the same shape: one immediate
+call, a session age past 45 seconds, a 20-second SDK-side approval wait, then
+the next call on a closed connection. The listener now separates four states
+on one keep-alive connection. The shared listener serves every profile, so
+these rules apply to the watcher profile too.
+
+- **Unauthenticated.** A new connection must send its first frame within the
+  5-second IO timeout of accept. A peer that never authenticates is closed
+  without a response. The window is per connection and does not renew on
+  rejected frames.
+- **Authenticated, no frame in flight.** No transport timeout applies. The wait
+  ends on the next frame, peer end-of-stream, route revocation, or listener
+  close. Revocation is observed within a 250ms idle poll. Close shuts the read
+  side, so an idle join wakes on that event instead of on a timer. The
+  connection lives for its route's lifetime, which is the session or optional
+  lease lifetime. An explicit lease deadline still rejects late calls in the
+  kernel; it does not close the idle socket early.
+- **Frame progress.** Once a frame's first byte arrives, each read waits at
+  most 5 seconds, and the whole frame must finish within 10 seconds. Partial,
+  trickling, oversized, malformed, foreign, and stale frames fail closed before
+  dispatch.
+- **Active call.** While a handler runs, neither the idle wait nor the frame
+  timers apply. The call waits under the kernel's caller, per-call, and lease
+  deadlines. The courier's 65-second stall guard remains the transport backstop.
+
+Writes keep the 5-second write timeout. Opening readiness keeps the existing
+open-deadline bound. The change adds no reconnect, retry, replay, public API,
+wire field, pin, or release metadata. One bearer, one authenticated connection
+per lease, and the kernel's exact caller, per-call, and lease bounds stay as
+they were.
+
+**Offline evidence (provider-free, main source).** The defect reproduced on
+unmodified main with the real courier binary and host listener: an immediate
+call succeeded, a 6-second idle gap followed, and the next call failed with
+`Registered tool dispatch failed` after the courier exited on the listener's
+400-and-close response. The correction is proved by listener unit tests for
+unauthenticated, partial, trickling, idle, revocation, and close states; by the
+real-courier test with three idle gaps past the IO timeout; by a watcher
+connection idle past the timeout on the shared listener; and by a
+`claude-agent.sdk` regression that holds the SDK-side approval for 45 seconds
+of session age plus 20 seconds, then runs approved, denied, two directory
+reads, and a later-turn call through the real courier and the prepared facade
+with one dispatch each. Selector: `validate:sdk-courier-idle`, with
+`validate:sdk-courier-timeout` for the altered listener behaviour.
+
+**Residual gap.** The Rust fake sidecar does not drive `canUseTool` for
+registered tools. The 45-plus-20-second regression orders the permission gate in
+the test driver, before the courier call. The Node `fake-sdk.mjs` sidecar and the
+real Node sidecar were not exercised for this ordering. Live Desktop proof
+needs separate operator authority at exact identity.

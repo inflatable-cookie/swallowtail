@@ -701,6 +701,14 @@ continues to bound calls. Each call still has its own caller deadline and the
 declared maximum call duration. Other operation-scoped bridge users continue to
 apply their operation deadline to calls.
 
+Courier call waiting follows those call and lease deadlines, not the ten-second
+opening bound. A call held on host permission waits until its effective
+deadline; a settled call error returns once with its JSON-RPC id and the
+courier stays usable for later calls on the same lease. Contract 063's
+Mediated Courier Call-Wait Boundary has the full rules. A remaining
+authenticated-idle gap before SDK permission (Queue 49ce9bb1) is not closed by
+this behavior.
+
 Resume and listing refuse a bound selection. The Contract 061 projection was
 qualified on the exact accepted Card 318 live tuple (Research 301): SDK
 `0.3.259`, native `2.1.259`, Node `22.23.2`, the `0.4.4` sidecar source tag,

@@ -509,6 +509,132 @@ fn real_courier_survives_idle_gaps_longer_than_the_io_timeout() {
     .expect("close joins the idle-tolerant listener and kernel");
 }
 
+#[test]
+fn an_explicit_lease_deadline_expiring_during_idle_rejects_late_calls_without_dispatch() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let fixture = mount_raw_proxy_with_deadline(
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Duration::from_secs(10),
+        Arc::clone(&calls),
+        Duration::from_secs(3),
+    );
+    let mut sdk = FakeSdk::spawn(&fixture.local, &fixture.launch, Arc::clone(&calls));
+    let mut launch = fixture.launch;
+    launch
+        .wait_until_ready()
+        .expect("courier authenticates before the lease deadline");
+    let initialized = sdk.request(
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert!(initialized.contains("2025-11-25"));
+    sdk.notify(br#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#);
+    // The explicit lease deadline and the IO timeout both pass while idle.
+    std::thread::sleep(Duration::from_secs(4));
+    let late = sdk
+        .call_tool_with_id(
+            3,
+            "swallowtail.conformance/reconcile",
+            r#"{"path":"workspace/late"}"#,
+        )
+        .expect("the connected courier answers a late call");
+    assert!(
+        late.contains("\"id\":3") && late.contains("\"error\""),
+        "{late}"
+    );
+    assert!(!late.contains("from-dispatcher"), "{late}");
+    // The error was correlated, so the same courier stays usable for the next
+    // late call; it still never dispatches.
+    let again = sdk
+        .call_tool_with_id(
+            4,
+            "swallowtail.conformance/reconcile",
+            r#"{"path":"workspace/later"}"#,
+        )
+        .expect("the connected courier answers a second late call");
+    assert!(
+        again.contains("\"id\":4") && again.contains("\"error\""),
+        "{again}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+    sdk.close();
+    let started = std::time::Instant::now();
+    block_on(
+        fixture
+            .local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                fixture.lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Completion,
+            ),
+    )
+    .expect("an expired idle lease still joins its listener");
+    assert!(started.elapsed() < Duration::from_secs(2));
+    assert_eq!(fixture.local.operation_bridge_listener_count(), 0);
+}
+
+#[test]
+fn cancelling_a_registered_lease_during_idle_joins_the_listener_and_refuses_later_frames() {
+    let calls = Arc::new(AtomicUsize::new(0));
+    let fixture = mount_raw_proxy_with_deadline(
+        Arc::new(swallowtail_testkit::ScriptedAdmissionPort::current()),
+        Arc::new(Dispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Duration::from_secs(10),
+        Arc::clone(&calls),
+        Duration::from_secs(120),
+    );
+    let mut sdk = FakeSdk::spawn(&fixture.local, &fixture.launch, Arc::clone(&calls));
+    let mut launch = fixture.launch;
+    launch
+        .wait_until_ready()
+        .expect("courier authenticates and completes the ready barrier");
+    let initialized = sdk.request(
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    );
+    assert!(initialized.contains("2025-11-25"));
+    sdk.notify(br#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#);
+    // Cancellation lands while the courier waits on its idle connection.
+    std::thread::sleep(SDK_PERMISSION_IDLE_GAP);
+    let local = fixture.local.clone();
+    let started = std::time::Instant::now();
+    let cleanup = block_on(
+        local
+            .services()
+            .registered_tool_bridge()
+            .expect("registered bridge")
+            .close(
+                fixture.lease,
+                swallowtail_runtime::RegisteredToolCleanupCause::Cancellation,
+            ),
+    )
+    .expect("cancellation joins the idle lease");
+    assert_eq!(cleanup, swallowtail_runtime::CleanupOutcome::Clean);
+    assert!(
+        started.elapsed() < Duration::from_secs(2),
+        "idle cancellation waited on a timeout: {:?}",
+        started.elapsed()
+    );
+    assert_eq!(local.operation_bridge_listener_count(), 0);
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    // A frame after cancellation cannot reach the kernel: the courier's post
+    // fails on the closed transport and the courier exits without a result.
+    let mut late = br#"{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"name":"swallowtail.conformance/reconcile","arguments":{}}}"#.to_vec();
+    late.push(b'\n');
+    let _ = block_on(sdk.process.write_stdin(ProcessInputChunk::new(late)));
+    assert!(
+        !block_on(sdk.process.wait())
+            .expect("courier joins after its transport closed")
+            .success()
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 0);
+}
+
 /// The raw mounted fixture drives the same listener without a fixture-local
 /// response. It covers adverse wire cases that a provider SDK would hide.
 struct RawMountedProxy {

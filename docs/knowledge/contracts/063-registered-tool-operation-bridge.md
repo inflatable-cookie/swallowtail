@@ -806,18 +806,35 @@ they were.
 unmodified main with the real courier binary and host listener: an immediate
 call succeeded, a 6-second idle gap followed, and the next call failed with
 `Registered tool dispatch failed` after the courier exited on the listener's
-400-and-close response. The correction is proved by listener unit tests for
-unauthenticated, partial, trickling, idle, revocation, and close states; by the
-real-courier test with three idle gaps past the IO timeout; by a watcher
-connection idle past the timeout on the shared listener; and by a
-`claude-agent.sdk` regression that holds the SDK-side approval for 45 seconds
-of session age plus 20 seconds, then runs approved, denied, two directory
-reads, and a later-turn call through the real courier and the prepared facade
-with one dispatch each. Selector: `validate:sdk-courier-idle`, with
-`validate:sdk-courier-timeout` for the altered listener behaviour.
+400-and-close response. The correction is proved at four levels:
 
-**Residual gap.** The Rust fake sidecar does not drive `canUseTool` for
-registered tools. The 45-plus-20-second regression orders the permission gate in
-the test driver, before the courier call. The Node `fake-sdk.mjs` sidecar and the
-real Node sidecar were not exercised for this ordering. Live Desktop proof
-needs separate operator authority at exact identity.
+- listener unit tests with injected short boundaries: unauthenticated first
+  frame, partial header stall, trickling frame against the whole-frame budget,
+  authenticated idle past the IO timeout, route revocation while idle, and
+  close while idle;
+- real-courier tests: three idle gaps past the IO timeout with dispatch counts
+  checked after each; an explicit lease deadline that expires during idle, where
+  the courier gets one correlated error per late call and nothing dispatches,
+  and close joins promptly; cancellation during idle, where close is clean and
+  within two seconds, the listener is gone, and a later frame never dispatches;
+- a watcher connection idle past the timeout on the shared listener, which
+  closes without a response while the registered route stays connected;
+- `claude-agent.sdk` through the prepared facade with a real 45-second session
+  age: the immediate read dispatches once; turn A raises the SDK `canUseTool` for
+  the registered carrier tool, which stays pending for 20 seconds with zero
+  dispatches and is then approved; turn B is denied, dispatches nothing, and
+  leaves the lease listing its tool; turn C and turn D are approved after idle
+  gaps. Dispatches total four, one per approved read. A kernel revocation landing
+  during idle never reaches the dispatcher.
+
+Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
+the altered listener behaviour.
+
+**Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
+carrier tool through `SdkScenario::RegisteredToolAdmission` and ends each turn
+only after the host's `callback_response`. It does not block its own query on
+that answer, and it does not forward `tools/call` to the courier. The test
+driver sends the courier call after the facade answers allow, and sends none
+after deny. The Node `fake-sdk.mjs` sidecar and the real Node sidecar were not
+exercised for this ordering. Live Desktop proof needs separate operator
+authority at exact identity.

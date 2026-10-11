@@ -165,6 +165,20 @@ pub(super) fn respond(
         return Err(super::super::host::fixture_failure());
     };
     if kind == "callback_response" {
+        // The host answered the pending canUseTool. The fake SDK ends the turn
+        // that raised it, whatever the decision: the decision itself is checked
+        // on the wire by the caller, not interpreted here.
+        if scenario == SdkScenario::RegisteredToolAdmission {
+            let query_number = u64::try_from(
+                state
+                    .input
+                    .iter()
+                    .filter(|input| input["command"] == "query")
+                    .count(),
+            )
+            .expect("fixture query count fits u64");
+            push(state, turn_ended_record(false, query_number));
+        }
         return Ok(());
     }
     let id = command["id"].as_str().unwrap_or_default().to_owned();
@@ -307,7 +321,9 @@ fn open(scenario: SdkScenario, state: &mut ProcessState, id: &str, params: &Valu
             );
             return;
         }
-        SdkScenario::McpConnected | SdkScenario::McpAdmission => {
+        SdkScenario::McpConnected
+        | SdkScenario::McpAdmission
+        | SdkScenario::RegisteredToolAdmission => {
             data["mcpServerStatus"] = mcp_status_echo(params, "connected", None);
         }
         SdkScenario::McpOptionalFail => {
@@ -524,6 +540,14 @@ fn query(scenario: SdkScenario, state: &mut ProcessState, id: &str) {
                 state,
                 json!({"type": "callback", "id": "cb-1", "callback": "can_use_tool",
                        "toolName": "mcp__fixture__search"}),
+            );
+        }
+        SdkScenario::RegisteredToolAdmission => {
+            push(
+                state,
+                json!({"type": "callback", "id": format!("cb-{query_number}"),
+                       "callback": "can_use_tool",
+                       "toolName": "mcp__swallowtail-registered-tools__desktop_reconcile"}),
             );
         }
         SdkScenario::ToolAdmissionOverflow => {

@@ -365,8 +365,8 @@ section = "Research Records"
 ]
 "validate:sdk-courier-idle" = [
   "cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --lib -E 'test(/operation_bridge::listener::tests::/)'",
-  "cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy -E 'test(real_courier_survives_idle_gaps_longer_than_the_io_timeout) | test(watcher_unauthenticated_idle_is_bounded_on_the_shared_listener) | test(close_joins_an_idle_keep_alive_connection_without_paying_the_read_timeout) | test(mounted_both_profiles_demux_through_one_listener_and_one_resource_owner) | test(mounted_proxy_drops_oversized_and_partial_transport_without_dispatch)'",
-  "cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(registered_session_survives_idle_before_sdk_permission_gate)'",
+  "cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy -E 'test(real_courier_survives_idle_gaps_longer_than_the_io_timeout) | test(an_explicit_lease_deadline_expiring_during_idle_rejects_late_calls_without_dispatch) | test(cancelling_a_registered_lease_during_idle_joins_the_listener_and_refuses_later_frames) | test(watcher_unauthenticated_idle_is_bounded_on_the_shared_listener) | test(close_joins_an_idle_keep_alive_connection_without_paying_the_read_timeout) | test(mounted_both_profiles_demux_through_one_listener_and_one_resource_owner) | test(mounted_proxy_drops_oversized_and_partial_transport_without_dispatch)'",
+  "cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(registered_session_survives_idle_before_can_use_tool_approval) | test(a_lease_revoked_while_idle_never_reaches_the_dispatcher)'",
 ]
 "format:sdk-patch-backport" = "bash scripts/release/backports/sdk-v0.5.2/runner.sh format"
 "check:sdk-patch-backport" = "bash scripts/release/backports/sdk-v0.5.2/runner.sh check --packages swallowtail-runtime,swallowtail-host-local,swallowtail-adapter-claude-agent"

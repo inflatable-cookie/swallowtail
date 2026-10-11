@@ -8,6 +8,7 @@
 use crate::host_id;
 use crate::sdk_support::{SdkFixtureHost, SdkScenario, cleanup_request, prepared_session};
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use std::future::ready;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
@@ -40,6 +41,11 @@ use swallowtail_runtime::{
     RegisteredToolSnapshot, RegisteredToolSnapshotInput, RegisteredToolSource,
     RegisteredToolSourceId, RegisteredToolTransport, RegisteredToolTransportSupport,
     RuntimeFailure,
+};
+use swallowtail_runtime::{
+    CallbackExchange, CallbackPayload, CallbackRequest, CallbackRequestKind, CallbackResponse,
+    CallbackResult, Deadline, MonotonicInstant, OperationContent, RuntimeTurnId, TerminalStatus,
+    TurnHandle, TurnRequest,
 };
 use swallowtail_testkit::{ScriptedAdmissionPort, fixture_admission};
 
@@ -984,25 +990,110 @@ fn registered_session_lease_survives_open_deadline_and_pending_permission() {
 }
 
 /// Session age before the approval the Desktop retained failure waited on,
-/// and the SDK-side approval wait itself. The SDK holds `canUseTool` here, so
-/// no `tools/call` reaches the courier during either span.
+/// and the SDK-side approval wait itself.
 const SESSION_AGE_BEFORE_APPROVAL: Duration = Duration::from_secs(45);
 const SDK_APPROVAL_WAIT: Duration = Duration::from_secs(20);
+/// Turn deadlines sit far beyond the virtual clock this test advances to, so
+/// only the courier-side idle and approval waits are under test.
+const TURN_DEADLINE_TICKS: u64 = 1_000_000_000_000;
+/// The admitted carrier spelling the SDK raises `canUseTool` for.
+const REGISTERED_CARRIER_TOOL: &str = "mcp__swallowtail-registered-tools__desktop_reconcile";
+
+/// One turn whose `canUseTool` request is pending on the facade's callback
+/// exchange. The courier sees nothing for this turn until `decide` returns.
+struct PendingCanUseTool {
+    turn: Box<dyn TurnHandle>,
+    callbacks: CallbackExchange,
+    request: CallbackRequest,
+    turn_id: RuntimeTurnId,
+}
+
+impl PendingCanUseTool {
+    /// Answers the SDK's `canUseTool` through the facade and waits for the
+    /// turn it raised to end. The decision crosses the wire unchanged.
+    fn decide(mut self, allow: bool) {
+        let decision = if allow {
+            br#"{"decision":"allow"}"#.to_vec()
+        } else {
+            br#"{"decision":"deny"}"#.to_vec()
+        };
+        block_on(self.callbacks.responder().respond(CallbackResponse::new(
+            self.request.callback_id().clone(),
+            self.turn_id.clone(),
+            CallbackResult::Success(CallbackPayload::new(decision, 4096).expect("bounded")),
+        )))
+        .expect("host answer reaches the SDK sidecar");
+        let terminal = block_on(
+            self.turn
+                .take_terminal_outcome()
+                .expect("terminal outcome exists"),
+        );
+        assert_eq!(terminal.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(self.turn.close()), CleanupOutcome::NotApplicable);
+    }
+}
+
+/// Starts one real turn on the registered session and returns once the SDK's
+/// `canUseTool` request for the carrier tool is pending.
+fn start_turn_awaiting_can_use_tool(opened: &mut OpenedRoute, turn_id: &str) -> PendingCanUseTool {
+    let request = TurnRequest::new(
+        RuntimeTurnId::new(turn_id).expect("turn id"),
+        OperationContent::new("read the directory").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(
+        OPEN_DEADLINE_TICKS + TURN_DEADLINE_TICKS,
+    )));
+    let mut turn = block_on(opened.session.start_turn(request, opened.services.clone()))
+        .expect("registered session starts a turn");
+    let mut callbacks = turn.take_callbacks().expect("turn exposes tool admission");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("admission requests are available once");
+    let request = block_on(requests.next())
+        .expect("SDK raises canUseTool for the carrier tool")
+        .expect("admission request is healthy");
+    let CallbackRequestKind::Extension(extension) = request.kind() else {
+        panic!("canUseTool is a route-local extension callback");
+    };
+    let payload: serde_json::Value =
+        serde_json::from_slice(extension.payload()).expect("payload is JSON");
+    assert_eq!(
+        payload,
+        serde_json::json!({"toolName": REGISTERED_CARRIER_TOOL})
+    );
+    PendingCanUseTool {
+        turn,
+        callbacks,
+        request,
+        turn_id: RuntimeTurnId::new(turn_id).expect("turn id"),
+    }
+}
+
+/// The virtual tick that matches real elapsed time since the session opened,
+/// so kernel call deadlines track the waits the test really performs.
+fn virtual_ticks_since(session_started: Instant) -> u64 {
+    OPEN_DEADLINE_TICKS
+        + u64::try_from(session_started.elapsed().as_nanos()).expect("elapsed fits u64")
+}
 
 #[test]
-fn registered_session_survives_idle_before_sdk_permission_gate() {
+fn registered_session_survives_idle_before_can_use_tool_approval() {
     let host = host_id("claude-agent-sdk.fixture.registered-idle-permission");
     let calls = Arc::new(AtomicUsize::new(0));
-    let opened = open_route(
+    let session_started = Instant::now();
+    let mut opened = open_route_with_scenario(
         host,
         Arc::new(CountingDispatcher {
             calls: Arc::clone(&calls),
         }),
         Arc::new(ScriptedAdmissionPort::current()),
+        SdkScenario::RegisteredToolAdmission,
+        RegisteredToolLimits::ceiling(),
     );
     opened.courier.handshake();
     let name = tool_id().to_string();
 
+    // Immediate directory read on the connected courier, before any turn.
     let immediate =
         opened
             .courier
@@ -1013,19 +1104,26 @@ fn registered_session_survives_idle_before_sdk_permission_gate() {
     );
     assert_eq!(calls.load(Ordering::SeqCst), 1);
 
-    // Real idle through the courier's stdin with no frame in flight. The
-    // session ages past the 45s point and the SDK then holds the permission
-    // decision for 20s before the approved call is sent to the courier.
-    let idle_started = Instant::now();
-    std::thread::sleep(SESSION_AGE_BEFORE_APPROVAL);
+    // Turn A: canUseTool pends while the courier sits idle. The session ages
+    // past 45s, then the SDK-side approval waits 20s before any tools/call.
+    let approval = start_turn_awaiting_can_use_tool(&mut opened, "turn-a");
+    let age = session_started.elapsed();
+    if age < SESSION_AGE_BEFORE_APPROVAL {
+        std::thread::sleep(SESSION_AGE_BEFORE_APPROVAL - age);
+    }
+    let approval_started = Instant::now();
     std::thread::sleep(SDK_APPROVAL_WAIT);
-    assert!(idle_started.elapsed() >= SESSION_AGE_BEFORE_APPROVAL + SDK_APPROVAL_WAIT);
+    assert!(approval_started.elapsed() >= SDK_APPROVAL_WAIT);
+    assert!(session_started.elapsed() >= SESSION_AGE_BEFORE_APPROVAL + SDK_APPROVAL_WAIT);
+    assert_eq!(
+        calls.load(Ordering::SeqCst),
+        1,
+        "no tools/call reaches the courier while canUseTool is pending"
+    );
     opened
         .fixture
-        .advance_time_to_ticks(OPEN_DEADLINE_TICKS + 65_000_000_000);
-
-    // A denied permission sends nothing to the courier and has no effect on
-    // the connected lease. The next approved directory read still succeeds.
+        .advance_time_to_ticks(virtual_ticks_since(session_started));
+    approval.decide(true);
     let approved =
         opened
             .courier
@@ -1033,27 +1131,81 @@ fn registered_session_survives_idle_before_sdk_permission_gate() {
     assert!(approved.contains("from-dispatcher"), "approved: {approved}");
     assert_eq!(calls.load(Ordering::SeqCst), 2);
 
+    // Turn B: a denied canUseTool sends nothing to the courier and leaves the
+    // connected lease usable. A non-dispatching tools/list proves the lease.
+    let denied = start_turn_awaiting_can_use_tool(&mut opened, "turn-b");
+    denied.decide(false);
+    let listed = opened
+        .courier
+        .request(br#"{"jsonrpc":"2.0","id":5,"method":"tools/list"}"#);
+    assert!(
+        listed.contains(&name),
+        "lease still lists the tool: {listed}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), 2, "denial dispatches nothing");
+
+    // Turn C: another gated directory read after an idle gap on the courier.
+    let pending_c = start_turn_awaiting_can_use_tool(&mut opened, "turn-c");
+    std::thread::sleep(Duration::from_secs(6));
+    opened
+        .fixture
+        .advance_time_to_ticks(virtual_ticks_since(session_started));
+    pending_c.decide(true);
     let second_read =
         opened
             .courier
-            .call_tool_with_id(5, &name, r#"{"path":"workspace/third-directory"}"#);
+            .call_tool_with_id(6, &name, r#"{"path":"workspace/third-directory"}"#);
     assert!(
         second_read.contains("from-dispatcher"),
         "second read: {second_read}"
     );
     assert_eq!(calls.load(Ordering::SeqCst), 3);
 
-    // A later turn after another idle gap reuses the same courier.
+    // Turn D: a later turn after another idle gap reuses the same courier.
+    let pending_d = start_turn_awaiting_can_use_tool(&mut opened, "turn-d");
+    pending_d.decide(true);
     std::thread::sleep(Duration::from_secs(6));
+    opened
+        .fixture
+        .advance_time_to_ticks(virtual_ticks_since(session_started));
     let later_turn =
         opened
             .courier
-            .call_tool_with_id(6, &name, r#"{"path":"workspace/later-turn"}"#);
+            .call_tool_with_id(7, &name, r#"{"path":"workspace/later-turn"}"#);
     assert!(
         later_turn.contains("from-dispatcher"),
         "later turn: {later_turn}"
     );
     assert_eq!(calls.load(Ordering::SeqCst), 4);
+    close_route(opened);
+}
+
+#[test]
+fn a_lease_revoked_while_idle_never_reaches_the_dispatcher() {
+    let host = host_id("claude-agent-sdk.fixture.registered-idle-revoke");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let admission = Arc::new(ScriptedAdmissionPort::current());
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::clone(&admission),
+    );
+    opened.courier.handshake();
+    let name = tool_id().to_string();
+    let first = opened
+        .courier
+        .call_tool_with_id(3, &name, r#"{"path":"workspace/first"}"#);
+    assert!(first.contains("from-dispatcher"), "first: {first}");
+    // The connection is idle past the transport timeout when revocation lands.
+    std::thread::sleep(Duration::from_secs(6));
+    admission.revoke_now();
+    let revoked = opened
+        .courier
+        .call_tool_with_id(4, &name, r#"{"path":"workspace/second"}"#);
+    assert!(!revoked.contains("from-dispatcher"), "revoked: {revoked}");
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
     close_route(opened);
 }
 

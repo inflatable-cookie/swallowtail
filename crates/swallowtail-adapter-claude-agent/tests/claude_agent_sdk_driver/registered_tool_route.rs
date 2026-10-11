@@ -8,10 +8,11 @@
 use crate::host_id;
 use crate::sdk_support::{SdkFixtureHost, SdkScenario, cleanup_request, prepared_session};
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use std::future::ready;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex, Weak};
 use std::task::{Poll, Waker};
 use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::open_receipt::{
@@ -40,6 +41,11 @@ use swallowtail_runtime::{
     RegisteredToolSnapshot, RegisteredToolSnapshotInput, RegisteredToolSource,
     RegisteredToolSourceId, RegisteredToolTransport, RegisteredToolTransportSupport,
     RuntimeFailure,
+};
+use swallowtail_runtime::{
+    CallbackExchange, CallbackPayload, CallbackRequest, CallbackRequestKind, CallbackResponse,
+    CallbackResult, Deadline, MonotonicInstant, OperationContent, RuntimeTurnId, TerminalStatus,
+    TurnHandle, TurnRequest,
 };
 use swallowtail_testkit::{ScriptedAdmissionPort, fixture_admission};
 
@@ -211,52 +217,165 @@ impl CourierClient {
     }
 }
 
-pub(super) fn courier_binary() -> &'static Path {
-    static PATH: OnceLock<PathBuf> = OnceLock::new();
-    PATH.get_or_init(|| {
-        let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .expect("crate dir")
-            .parent()
-            .expect("workspace")
-            .to_path_buf();
-        // Nested cargo must not share the outer target lock or another task's
-        // fixture output. Give this test process a fresh scratch target.
-        let nested_target = fresh_courier_target();
-        let binary = nested_target
-            .join("debug")
-            .join("swallowtail-registered-tool-courier");
-        let bytes = acquire_built_courier(&workspace, &nested_target, &binary);
-        let published = publish_write_once(&bytes, &nested_target);
-        assert!(
-            is_executable(&published),
-            "courier binary at {published:?} is not executable, so every later spawn would fail"
-        );
-        published
-    })
+/// The resolved registered-tool courier binary, plus the task-owned build
+/// target that holds it when this process built one. The target is removed
+/// when the last handle drops, so an ordinary `cargo nextest` or `cargo test`
+/// entrypoint that sets no validated run-owned `CARGO_TARGET_DIR` still cleans
+/// up after itself.
+pub(super) struct CourierBinary {
+    inner: Arc<CourierInner>,
 }
 
-fn fresh_courier_target() -> PathBuf {
-    let parent = std::env::var_os("CARGO_TARGET_DIR")
-        .map(PathBuf::from)
-        .unwrap_or_else(std::env::temp_dir);
-    std::fs::create_dir_all(&parent).expect("the test target directory exists");
-    let template = parent.join("sdk-courier.XXXXXXXX");
-    let output = std::process::Command::new("mktemp")
-        .arg("-d")
-        .arg(template)
-        .output()
-        .expect("mktemp creates an isolated courier target");
+impl CourierBinary {
+    pub(super) fn path(&self) -> &Path {
+        &self.inner.path
+    }
+}
+
+struct CourierInner {
+    path: PathBuf,
+    /// Present only when this process created and owns the build target.
+    _task_target: Option<TaskOwnedTarget>,
+}
+
+/// One task-owned cargo target directly under the system temp root. Only the
+/// process that created it removes it, and only when its last courier handle
+/// drops.
+struct TaskOwnedTarget {
+    path: PathBuf,
+}
+
+impl Drop for TaskOwnedTarget {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.path);
+    }
+}
+
+/// Marker this test writes into a target it created for itself. It is
+/// deliberately distinct from the validation runner's run-owned marker.
+const TASK_OWNED_MARKER: &str = ".swallowtail-task-owned";
+/// Name prefix for a test-created task-owned target directory.
+const TASK_OWNED_PREFIX: &str = "swallowtail-sdk-courier-task.";
+/// Sequence for unique task-owned target names within one process.
+static NEXT_TASK_TARGET: AtomicU64 = AtomicU64::new(0);
+/// Current handle cache. A task-owned target lives only while a handle is
+/// alive, so this holds a weak reference and rebuilds after cleanup. The lock
+/// serialises concurrent tests in one process onto one build.
+static COURIER: Mutex<Option<Weak<CourierInner>>> = Mutex::new(None);
+
+/// Resolves the real registered-tool courier binary, building it when needed.
+///
+/// When the validation runner has exported a run-owned `CARGO_TARGET_DIR`, the
+/// nested build shares that warm target and the runner owns its cleanup.
+/// Otherwise (an ordinary `cargo nextest` or `cargo test` entrypoint) the build
+/// goes into a fresh task-owned target under the system temp root that this
+/// process removes when the last handle drops. The worktree and any shared
+/// target are never built into or deleted.
+pub(super) fn courier_binary() -> CourierBinary {
+    let mut cache = COURIER
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if let Some(inner) = cache.as_ref().and_then(Weak::upgrade) {
+        return CourierBinary { inner };
+    }
+    let inner = Arc::new(build_courier_binary());
+    *cache = Some(Arc::downgrade(&inner));
+    CourierBinary { inner }
+}
+
+fn build_courier_binary() -> CourierInner {
+    let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("crate dir")
+        .parent()
+        .expect("workspace")
+        .to_path_buf();
+    let (nested_target, task_target) = match run_owned_target(&workspace) {
+        Some(target) => (target, None),
+        None => {
+            let target = TaskOwnedTarget::create(&workspace);
+            let path = target.path.clone();
+            (path, Some(target))
+        }
+    };
+    let binary = nested_target
+        .join("debug")
+        .join("swallowtail-registered-tool-courier");
+    let bytes = acquire_built_courier(&workspace, &nested_target, &binary);
+    let published = publish_write_once(&bytes, &nested_target);
     assert!(
-        output.status.success(),
-        "mktemp courier target failed: {}",
-        String::from_utf8_lossy(&output.stderr)
+        is_executable(&published),
+        "courier binary at {published:?} is not executable, so every later spawn would fail"
     );
-    PathBuf::from(
-        String::from_utf8(output.stdout)
-            .expect("mktemp path is UTF-8")
-            .trim(),
-    )
+    CourierInner {
+        path: published,
+        _task_target: task_target,
+    }
+}
+
+impl TaskOwnedTarget {
+    fn create(workspace: &Path) -> Self {
+        let temp_root = std::env::temp_dir()
+            .canonicalize()
+            .expect("system temp root exists");
+        let workspace = workspace.canonicalize().expect("workspace exists");
+        assert!(
+            !temp_root.starts_with(&workspace),
+            "system temp root {temp_root:?} is inside the worktree"
+        );
+        loop {
+            let sequence = NEXT_TASK_TARGET.fetch_add(1, Ordering::Relaxed);
+            let path = temp_root.join(format!(
+                "{TASK_OWNED_PREFIX}{}-{sequence}",
+                std::process::id()
+            ));
+            match std::fs::create_dir(&path) {
+                Ok(()) => {
+                    std::fs::write(path.join(TASK_OWNED_MARKER), b"task-owned build target")
+                        .expect("task-owned target marker is written");
+                    return Self { path };
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+                Err(error) => panic!("task-owned courier target is created: {error}"),
+            }
+        }
+    }
+}
+
+/// Marker the validation runner writes into its run-owned target directory.
+const RUN_OWNED_MARKER: &str = ".swallowtail-run-owned";
+/// Name prefix the validation runner gives each run-owned target directory.
+const RUN_OWNED_PREFIX: &str = "swallowtail-sdk-courier.";
+
+/// Returns the validation-run-owned cargo target when `CARGO_TARGET_DIR`
+/// exactly matches the runner's contract. The runner
+/// (`scripts/run-with-owned-cargo-target.sh`) creates one fresh directory per
+/// selector invocation directly under the system temp root, marks it, and
+/// exports it; the outer build and this nested courier build share it.
+///
+/// Anything else returns `None`: unset, the worktree, any shared target, a
+/// directory without the marker, or one outside the temp root. The caller then
+/// builds in its own task-owned target instead of using or deleting a target it
+/// does not own.
+fn run_owned_target(workspace: &Path) -> Option<PathBuf> {
+    let target = PathBuf::from(std::env::var_os("CARGO_TARGET_DIR")?);
+    let target = target.canonicalize().ok()?;
+    let workspace = workspace.canonicalize().ok()?;
+    if target.starts_with(&workspace) {
+        return None;
+    }
+    let temp_root = std::env::temp_dir().canonicalize().ok()?;
+    if target.parent() != Some(temp_root.as_path()) {
+        return None;
+    }
+    let named = target
+        .file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.starts_with(RUN_OWNED_PREFIX));
+    if !named || !target.join(RUN_OWNED_MARKER).is_file() {
+        return None;
+    }
+    Some(target)
 }
 
 /// Builds the courier and reads the completed artifact, retrying the pair
@@ -634,6 +753,8 @@ struct OpenedRoute {
     local: LocalHostServices,
     services: HostServices,
     courier: CourierClient,
+    /// Keeps a task-owned courier build target alive for the route's lifetime.
+    _courier_binary: CourierBinary,
 }
 
 fn open_route(
@@ -663,8 +784,9 @@ fn open_route_with_scenario(
     let fixture = SdkFixtureHost::new(scenario);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let courier_binary = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable.clone(), courier_binary())
+        .approve_executable(executable.clone(), courier_binary.path())
         .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(dispatcher)
         .with_registered_tool_clock(Arc::new(fixture.clone()))
@@ -732,6 +854,7 @@ fn open_route_with_scenario(
         local,
         services,
         courier,
+        _courier_binary: courier_binary,
     }
 }
 
@@ -813,7 +936,11 @@ fn open_declares_the_reserved_courier_and_round_trips_one_mediated_call() {
     assert_eq!(servers[0]["name"], CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER);
     assert_eq!(
         servers[0]["command"].as_str().expect("declared command"),
-        courier_binary().to_str().expect("courier path is UTF-8"),
+        opened
+            ._courier_binary
+            .path()
+            .to_str()
+            .expect("courier path is UTF-8"),
         "SDK command is the resolved filesystem path, not an ExecutableRef host value"
     );
     assert_eq!(servers[0]["args"][0], REGISTERED_TOOL_PROXY_WIRE_TAG);
@@ -933,6 +1060,207 @@ fn registered_session_lease_survives_open_deadline_and_pending_permission() {
         "later-turn call: {later_turn}"
     );
     assert_eq!(calls.load(Ordering::SeqCst), 2);
+    close_route(opened);
+}
+
+/// Session age before the approval the Desktop retained failure waited on,
+/// and the SDK-side approval wait itself.
+const SESSION_AGE_BEFORE_APPROVAL: Duration = Duration::from_secs(45);
+const SDK_APPROVAL_WAIT: Duration = Duration::from_secs(20);
+/// Turn deadlines sit far beyond the virtual clock this test advances to, so
+/// only the courier-side idle and approval waits are under test.
+const TURN_DEADLINE_TICKS: u64 = 1_000_000_000_000;
+/// The admitted carrier spelling the SDK raises `canUseTool` for.
+const REGISTERED_CARRIER_TOOL: &str = "mcp__swallowtail-registered-tools__desktop_reconcile";
+
+/// One turn whose `canUseTool` request is pending on the facade's callback
+/// exchange. The courier sees nothing for this turn until `decide` returns.
+struct PendingCanUseTool {
+    turn: Box<dyn TurnHandle>,
+    callbacks: CallbackExchange,
+    request: CallbackRequest,
+    turn_id: RuntimeTurnId,
+}
+
+impl PendingCanUseTool {
+    /// Answers the SDK's `canUseTool` through the facade and waits for the
+    /// turn it raised to end. The decision crosses the wire unchanged.
+    fn decide(mut self, allow: bool) {
+        let decision = if allow {
+            br#"{"decision":"allow"}"#.to_vec()
+        } else {
+            br#"{"decision":"deny"}"#.to_vec()
+        };
+        block_on(self.callbacks.responder().respond(CallbackResponse::new(
+            self.request.callback_id().clone(),
+            self.turn_id.clone(),
+            CallbackResult::Success(CallbackPayload::new(decision, 4096).expect("bounded")),
+        )))
+        .expect("host answer reaches the SDK sidecar");
+        let terminal = block_on(
+            self.turn
+                .take_terminal_outcome()
+                .expect("terminal outcome exists"),
+        );
+        assert_eq!(terminal.status(), &TerminalStatus::Completed);
+        assert_eq!(block_on(self.turn.close()), CleanupOutcome::NotApplicable);
+    }
+}
+
+/// Starts one real turn on the registered session and returns once the SDK's
+/// `canUseTool` request for the carrier tool is pending.
+fn start_turn_awaiting_can_use_tool(opened: &mut OpenedRoute, turn_id: &str) -> PendingCanUseTool {
+    let request = TurnRequest::new(
+        RuntimeTurnId::new(turn_id).expect("turn id"),
+        OperationContent::new("read the directory").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(
+        OPEN_DEADLINE_TICKS + TURN_DEADLINE_TICKS,
+    )));
+    let mut turn = block_on(opened.session.start_turn(request, opened.services.clone()))
+        .expect("registered session starts a turn");
+    let mut callbacks = turn.take_callbacks().expect("turn exposes tool admission");
+    let mut requests = callbacks
+        .take_requests()
+        .expect("admission requests are available once");
+    let request = block_on(requests.next())
+        .expect("SDK raises canUseTool for the carrier tool")
+        .expect("admission request is healthy");
+    let CallbackRequestKind::Extension(extension) = request.kind() else {
+        panic!("canUseTool is a route-local extension callback");
+    };
+    let payload: serde_json::Value =
+        serde_json::from_slice(extension.payload()).expect("payload is JSON");
+    assert_eq!(
+        payload,
+        serde_json::json!({"toolName": REGISTERED_CARRIER_TOOL})
+    );
+    PendingCanUseTool {
+        turn,
+        callbacks,
+        request,
+        turn_id: RuntimeTurnId::new(turn_id).expect("turn id"),
+    }
+}
+
+/// The virtual tick that matches real elapsed time since the session opened,
+/// so kernel call deadlines track the waits the test really performs.
+fn virtual_ticks_since(opened_at: Instant) -> u64 {
+    OPEN_DEADLINE_TICKS + u64::try_from(opened_at.elapsed().as_nanos()).expect("elapsed fits u64")
+}
+
+fn sleep_until(instant: Instant) {
+    let now = Instant::now();
+    if instant > now {
+        std::thread::sleep(instant - now);
+    }
+}
+
+/// Every courier call in this test originates from the fake SDK's allowed
+/// canUseTool. The test checks what the courier answered for each one.
+fn assert_forwarded(opened: &OpenedRoute, calls: &AtomicUsize, expected: usize) {
+    let forwarded = opened.fixture.forwarded_registered_results();
+    assert_eq!(
+        forwarded.len(),
+        expected,
+        "forwarded courier calls: {forwarded:?}"
+    );
+    assert_eq!(calls.load(Ordering::SeqCst), expected);
+    let last = forwarded.last().expect("at least one forwarded call");
+    assert!(
+        last.contains("from-dispatcher"),
+        "last courier answer: {last}"
+    );
+}
+
+#[test]
+fn registered_session_survives_idle_before_can_use_tool_approval() {
+    let host = host_id("claude-agent-sdk.fixture.registered-idle-permission");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let mut opened = open_route_with_scenario(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::new(ScriptedAdmissionPort::current()),
+        SdkScenario::RegisteredToolAdmission,
+        RegisteredToolLimits::ceiling(),
+    );
+    // Session age is measured from the moment the open completed.
+    let opened_at = Instant::now();
+
+    // Turn 1: the immediate directory read is approved with no idle gap.
+    start_turn_awaiting_can_use_tool(&mut opened, "turn-1").decide(true);
+    assert_forwarded(&opened, &calls, 1);
+
+    // The session ages to 45s with no turn in flight and the courier idle.
+    sleep_until(opened_at + SESSION_AGE_BEFORE_APPROVAL);
+
+    // Turn 2: the SDK raises canUseTool at session age 45s. The approval waits
+    // 20s. Nothing reaches the courier while it is pending.
+    let approval = start_turn_awaiting_can_use_tool(&mut opened, "turn-2");
+    let raised_at = Instant::now();
+    assert!(opened_at.elapsed() >= SESSION_AGE_BEFORE_APPROVAL);
+    std::thread::sleep(SDK_APPROVAL_WAIT);
+    assert!(raised_at.elapsed() >= SDK_APPROVAL_WAIT);
+    assert_forwarded(&opened, &calls, 1);
+    opened
+        .fixture
+        .advance_time_to_ticks(virtual_ticks_since(opened_at));
+    approval.decide(true);
+    assert!(opened_at.elapsed() >= SESSION_AGE_BEFORE_APPROVAL + SDK_APPROVAL_WAIT);
+    assert_forwarded(&opened, &calls, 2);
+
+    // Turn 3: a denied canUseTool forwards nothing and leaves the connected
+    // lease usable for the next approved turn.
+    start_turn_awaiting_can_use_tool(&mut opened, "turn-3").decide(false);
+    assert_forwarded(&opened, &calls, 2);
+
+    // Turn 4: a second directory read after an idle gap on the courier.
+    let pending = start_turn_awaiting_can_use_tool(&mut opened, "turn-4");
+    std::thread::sleep(Duration::from_secs(6));
+    opened
+        .fixture
+        .advance_time_to_ticks(virtual_ticks_since(opened_at));
+    pending.decide(true);
+    assert_forwarded(&opened, &calls, 3);
+
+    // Turn 5: a later turn reuses the same courier on the connected lease.
+    let pending = start_turn_awaiting_can_use_tool(&mut opened, "turn-5");
+    opened
+        .fixture
+        .advance_time_to_ticks(virtual_ticks_since(opened_at));
+    pending.decide(true);
+    assert_forwarded(&opened, &calls, 4);
+    close_route(opened);
+}
+
+#[test]
+fn a_lease_revoked_while_idle_never_reaches_the_dispatcher() {
+    let host = host_id("claude-agent-sdk.fixture.registered-idle-revoke");
+    let calls = Arc::new(AtomicUsize::new(0));
+    let admission = Arc::new(ScriptedAdmissionPort::current());
+    let opened = open_route(
+        host,
+        Arc::new(CountingDispatcher {
+            calls: Arc::clone(&calls),
+        }),
+        Arc::clone(&admission),
+    );
+    opened.courier.handshake();
+    let name = tool_id().to_string();
+    let first = opened
+        .courier
+        .call_tool_with_id(3, &name, r#"{"path":"workspace/first"}"#);
+    assert!(first.contains("from-dispatcher"), "first: {first}");
+    // The connection is idle past the transport timeout when revocation lands.
+    std::thread::sleep(Duration::from_secs(6));
+    admission.revoke_now();
+    let revoked = opened
+        .courier
+        .call_tool_with_id(4, &name, r#"{"path":"workspace/second"}"#);
+    assert!(!revoked.contains("from-dispatcher"), "revoked: {revoked}");
+    assert_eq!(calls.load(Ordering::SeqCst), 1);
     close_route(opened);
 }
 
@@ -1138,7 +1466,7 @@ fn a_second_courier_cannot_reread_an_expired_rendezvous() {
         !Path::new(rendezvous).exists(),
         "ready unlinks the one-shot rendezvous: {rendezvous}"
     );
-    let status = std::process::Command::new(courier_binary())
+    let status = std::process::Command::new(opened._courier_binary.path())
         .args([REGISTERED_TOOL_PROXY_WIRE_TAG, rendezvous])
         .stderr(std::process::Stdio::null())
         .status()
@@ -1369,8 +1697,9 @@ fn the_card_132_registered_open_request_yields_a_typed_failed_open_receipt() {
     let fixture = SdkFixtureHost::new(SdkScenario::OpenRejected);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let courier = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable.clone(), courier_binary())
+        .approve_executable(executable.clone(), courier.path())
         .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(CountingDispatcher { calls }))
         .with_registered_tool_clock(Arc::new(fixture.clone()))

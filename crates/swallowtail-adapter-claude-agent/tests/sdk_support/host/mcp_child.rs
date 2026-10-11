@@ -11,6 +11,7 @@
 //! than a wall-clock hope.
 
 use super::super::host::Shared;
+use futures_util::FutureExt;
 use serde_json::Value;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::path::{Path, PathBuf};
@@ -25,6 +26,11 @@ use swallowtail_runtime::{
 };
 
 const REGISTERED_TOOL_SERVER: &str = CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER;
+
+/// The courier-side MCP name of the registered reconcile tool. The SDK
+/// forwards this name for the admitted carrier spelling it raised canUseTool
+/// for. It is the registered identity's `Display` form.
+const REGISTERED_COURIER_TOOL: &str = "desktop/reconcile";
 
 /// Bound on retained child stderr. Evidence must be useful without becoming
 /// an unbounded fixture buffer.
@@ -399,6 +405,88 @@ pub(super) fn spawn_registered_courier(shared: &Shared, params: &Value) -> Resul
         await_rendezvous_claim(&child, rendezvous.as_deref())?;
     }
     Ok(())
+}
+
+/// Runs the MCP `initialize` handshake the real SDK performs against its
+/// stdio child at session open, so a later forwarded call meets an initialized
+/// courier without the test writing to it.
+pub(super) fn handshake_registered_courier(shared: &Shared) -> Result<(), String> {
+    let child = registered_child(shared)?;
+    write_line(
+        &child,
+        br#"{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}"#,
+    )?;
+    let initialized = read_line(&child)?;
+    if !initialized.contains("2025-11-25") {
+        return Err(format!(
+            "courier MCP handshake did not negotiate: {initialized}"
+        ));
+    }
+    write_line(
+        &child,
+        br#"{"jsonrpc":"2.0","method":"notifications/initialized"}"#,
+    )
+}
+
+/// Forwards one allowed canUseTool to the courier as the SDK's MCP
+/// `tools/call`, and returns the courier's correlated response line. Only an
+/// allowed admission reaches this function, so a denied or still-pending
+/// canUseTool never produces a courier call.
+pub(super) fn forward_allowed_registered_call(
+    shared: &Shared,
+    sequence: u64,
+) -> Result<String, String> {
+    let child = registered_child(shared)?;
+    let request = format!(
+        r#"{{"jsonrpc":"2.0","id":{sequence},"method":"tools/call","params":{{"name":"{REGISTERED_COURIER_TOOL}","arguments":{{"path":"workspace/directory-{sequence}"}}}}}}"#
+    );
+    write_line(&child, request.as_bytes())?;
+    read_line(&child)
+}
+
+fn registered_child(shared: &Shared) -> Result<Arc<SpawnedMcpChild>, String> {
+    shared
+        .spawned_mcp
+        .lock()
+        .expect("spawned mcp lock")
+        .first()
+        .map(Arc::clone)
+        .ok_or_else(|| "registered courier was never spawned".to_owned())
+}
+
+fn write_line(child: &SpawnedMcpChild, body: &[u8]) -> Result<(), String> {
+    let mut bytes = body.to_vec();
+    bytes.push(b'\n');
+    settle(child.write_stdin(ProcessInputChunk::new(bytes)))
+        .map_err(|error| format!("courier stdin write failed: {}", error.diagnostic().code()))
+}
+
+/// The courier's stdio handle completes synchronously, so its future is settled
+/// in place. Nesting an executor here would panic inside the host's own
+/// `block_on` that drives the admission answer.
+fn settle<T>(
+    future: swallowtail_runtime::BoxFuture<'_, Result<T, swallowtail_runtime::RuntimeFailure>>,
+) -> Result<T, swallowtail_runtime::RuntimeFailure> {
+    future
+        .now_or_never()
+        .expect("courier stdio completes without suspending")
+}
+
+fn read_line(child: &SpawnedMcpChild) -> Result<String, String> {
+    let mut line = Vec::new();
+    loop {
+        let chunk = settle(child.read_output())
+            .map_err(|error| format!("courier output read failed: {}", error.diagnostic().code()))?
+            .ok_or_else(|| format!("courier closed its output: {}", child.evidence_snapshot()))?;
+        if chunk.stream() != ProcessOutputStream::Stdout {
+            continue;
+        }
+        line.extend_from_slice(chunk.bytes());
+        if let Some(end) = line.iter().position(|byte| *byte == b'\n') {
+            line.truncate(end);
+            return String::from_utf8(line).map_err(|_| "courier response is not UTF-8".to_owned());
+        }
+    }
 }
 
 /// Waits for the courier's own startup event: the one-shot rendezvous is

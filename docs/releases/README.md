@@ -6,7 +6,9 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.5.3](0.5.3.md) — source-only courier call-wait correction candidate over immutable `v0.5.2`; tag not authorized or created
+- [Swallowtail 0.5.4](0.5.4.md) — source-only authenticated-idle courier correction candidate over immutable `v0.5.3`; tag not authorized or created
+
+- [Swallowtail 0.5.3](0.5.3.md) — immutable source base `fa5ecfd8304030f58e447fd410382aee4056396b`; tag object `13862f5ffe0c9b75b9872865ee347c181dfc276e`; tree `0597c27bf9b86a7e1c6bcb3f4fafa22a462303da`
 
 - [Swallowtail 0.5.2](0.5.2.md) — immutable source base `b83db0bdca4292e0d21775b9c0dc8b80ec05d003`; tag object `4d54ed92ec2dcdf44ebce019463d124996267810`; tree `949d9ef1199cd21c188959dcb2c9e9bc5f2086ec`
 

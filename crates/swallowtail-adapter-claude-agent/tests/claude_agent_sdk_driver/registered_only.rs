@@ -1,6 +1,8 @@
 //! Provider-free proofs for the Claude Agent SDK registered-only session.
 
-use crate::claude_agent_sdk_driver::registered_tool_route::{courier_binary, preparation_for};
+use crate::claude_agent_sdk_driver::registered_tool_route::{
+    CourierBinary, courier_binary, preparation_for,
+};
 use crate::host_id;
 use crate::sdk_support::{
     SdkFixtureHost, SdkScenario, cleanup_request, preparation, prepared_session,
@@ -87,10 +89,13 @@ fn environment() -> EnvironmentRef {
     EnvironmentRef::new("fixture.registered-tool.environment").expect("env")
 }
 
-fn local_host(host: swallowtail_core::ExecutionHostId) -> LocalHostServices {
+fn local_host(
+    host: swallowtail_core::ExecutionHostId,
+    courier: &CourierBinary,
+) -> LocalHostServices {
     let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
     LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable(), courier_binary())
+        .approve_executable(executable(), courier.path())
         .approve_environment(environment(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
             calls: Arc::new(AtomicUsize::new(0)),
@@ -139,7 +144,8 @@ fn fixture_mcp_server() -> ClaudeAgentSdkMcpServer {
 fn registered_only_read_and_read_write_bind_the_explicit_lease() {
     for access in [ResourceAccess::Read, ResourceAccess::ReadWrite] {
         let host = host_id("claude-agent-sdk.fixture.registered-only-plan");
-        let local = local_host(host.clone());
+        let courier = courier_binary();
+        let local = local_host(host.clone(), &courier);
         let binding = ClaudeAgentSdkRegisteredOnlyBinding::new(
             registered_preparation(host.clone()),
             access,
@@ -196,7 +202,8 @@ fn an_extracted_registered_only_profile_cannot_prepare_without_its_binding() {
 #[test]
 fn consumer_mcp_cannot_share_a_registered_only_session() {
     let host = host_id("claude-agent-sdk.fixture.registered-only-mcp");
-    let local = local_host(host.clone());
+    let courier = courier_binary();
+    let local = local_host(host.clone(), &courier);
     let mcp = ClaudeAgentSdkSessionProfile::read_only()
         .with_mcp_servers([fixture_mcp_server()])
         .expect("consumer MCP binding is admissible");
@@ -219,7 +226,8 @@ fn consumer_mcp_cannot_share_a_registered_only_session() {
 #[test]
 fn additive_registered_tools_do_not_infer_write_access_from_mutating_effect() {
     let host = host_id("claude-agent-sdk.fixture.registered-additive-access");
-    let local = local_host(host.clone());
+    let courier = courier_binary();
+    let local = local_host(host.clone(), &courier);
     let prepared = prepare_claude_agent_sdk_session(
         preparation(host.clone())
             .with_registered_tools(registered_preparation(host), local)
@@ -246,8 +254,9 @@ fn additive_registered_tools_do_not_infer_write_access_from_mutating_effect() {
 fn registered_only_open_admits_only_carrier_spellings() {
     let host = host_id("claude-agent-sdk.fixture.registered-only-open");
     let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
+    let courier = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable(), courier_binary())
+        .approve_executable(executable(), courier.path())
         .approve_environment(environment(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
             calls: Arc::new(AtomicUsize::new(0)),
@@ -298,8 +307,9 @@ fn registered_only_open_admits_only_carrier_spellings() {
 fn a_registered_only_write_session_cannot_open_on_a_read_only_lease() {
     let host = host_id("claude-agent-sdk.fixture.registered-only-lease");
     let fixture = SdkFixtureHost::new(SdkScenario::McpConnected).granting_read_only_resource();
+    let courier = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable(), courier_binary())
+        .approve_executable(executable(), courier.path())
         .approve_environment(environment(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
             calls: Arc::new(AtomicUsize::new(0)),
@@ -342,8 +352,9 @@ fn a_registered_only_write_session_cannot_open_on_a_read_only_lease() {
 fn additive_open_still_prefixes_native_tools() {
     let host = host_id("claude-agent-sdk.fixture.registered-additive-open");
     let fixture = SdkFixtureHost::new(SdkScenario::McpConnected);
+    let courier = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable(), courier_binary())
+        .approve_executable(executable(), courier.path())
         .approve_environment(environment(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(CountingDispatcher {
             calls: Arc::new(AtomicUsize::new(0)),

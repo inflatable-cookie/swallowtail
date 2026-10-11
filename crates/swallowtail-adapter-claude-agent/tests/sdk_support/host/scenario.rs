@@ -163,6 +163,10 @@ pub enum SdkScenario {
     McpOptionalFail,
     /// One mediated MCP tool admission request during the turn.
     McpAdmission,
+    /// Every turn raises `canUseTool` for the reserved registered-tool courier
+    /// carrier tool. The turn ends only after the host answers that callback,
+    /// so approval and denial both pass through the facade's callback exchange.
+    RegisteredToolAdmission,
 }
 
 /// One host service that never answers, so a caller bound is the only thing

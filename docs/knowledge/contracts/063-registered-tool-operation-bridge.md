@@ -777,21 +777,31 @@ the next call on a closed connection. The listener now separates four states
 on one keep-alive connection. The shared listener serves every profile, so
 these rules apply to the watcher profile too.
 
-- **Unauthenticated.** A new connection must send its first frame within the
-  5-second IO timeout of accept. A peer that never authenticates is closed
-  without a response. The window is per connection and does not renew on
-  rejected frames.
+- **Unauthenticated, no first byte.** A new connection's first byte must arrive
+  within the 5-second IO timeout of accept. If none arrives, the connection
+  closes without a response. This is distinct from a partial frame below.
+- **Unauthenticated, complete frame.** A complete frame with a wrong bearer
+  gets `401 Unauthorized`. The connection stays open only until that same
+  5-second accept window ends. Every frame sent inside the window is bearer-
+  checked again, and the window never renews. A correct frame inside the window
+  authenticates the connection, which then follows the authenticated rules
+  below. A peer that never authenticates gets one window and no more.
 - **Authenticated, no frame in flight.** No transport timeout applies. The wait
   ends on the next frame, peer end-of-stream, route revocation, or listener
-  close. Revocation is observed within a 250ms idle poll. Close shuts the read
-  side, so an idle join wakes on that event instead of on a timer. The
-  connection lives for its route's lifetime, which is the session or optional
-  lease lifetime. An explicit lease deadline still rejects late calls in the
-  kernel; it does not close the idle socket early.
-- **Frame progress.** Once a frame's first byte arrives, each read waits at
-  most 5 seconds, and the whole frame must finish within 10 seconds. Partial,
-  trickling, oversized, malformed, foreign, and stale frames fail closed before
-  dispatch.
+  close. The wait is bound to the route registration the connection
+  authenticated on, not to its path. Revoking a registration wakes its idle
+  readers at once. A replacement registered at the same path does not inherit
+  the connection: the old connection ends, and a frame on it is never delivered
+  to the replacement. The 250ms idle poll is only a backstop. Close shuts the
+  read side, so an idle join wakes on that event. The connection lives for its
+  registration's lifetime, which is the session or optional lease lifetime. An
+  explicit lease deadline still rejects late calls in the kernel; it does not
+  close the idle socket early.
+- **Frame progress.** The frame budget starts when the first byte of a frame is
+  available. Each read waits at most 5 seconds, and the whole frame must finish
+  within 10 seconds of that first byte. A stalled, trickling or oversized partial
+  frame gets `400` or `413` and the connection closes. Partial, trickling,
+  oversized, malformed, foreign and stale frames fail closed before dispatch.
 - **Active call.** While a handler runs, neither the idle wait nor the frame
   timers apply. The call waits under the kernel's caller, per-call, and lease
   deadlines. The courier's 65-second stall guard remains the transport backstop.
@@ -816,8 +826,9 @@ call succeeded, a 6-second idle gap followed, and the next call failed with
 
 - listener unit tests with injected short boundaries: unauthenticated first
   frame, partial header stall, trickling frame against the whole-frame budget,
-  authenticated idle past the IO timeout, route revocation while idle, and
-  close while idle;
+  authenticated idle past the IO timeout, route revocation while idle, close
+  while idle, and a replacement registration at the same path ending the idle
+  connection that authenticated on the old one;
 - real-courier tests: three idle gaps past the IO timeout with dispatch counts
   checked after each; an explicit lease deadline that expires during idle, where
   the courier gets one correlated error per late call and nothing dispatches,

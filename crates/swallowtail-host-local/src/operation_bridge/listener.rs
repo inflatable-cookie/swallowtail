@@ -100,6 +100,9 @@ pub(crate) struct OperationBridgeRouteSpec {
 }
 
 struct Route {
+    /// Unique per registration on this listener. A replacement at the same
+    /// path gets a new id, so connections bound to the old one never match it.
+    id: u64,
     namespace: &'static str,
     generation: u64,
     transport_generation: Option<u64>,
@@ -113,15 +116,38 @@ struct Route {
 pub(crate) struct OperationBridgeRoute {
     owner: Arc<OperationBridgeListener>,
     path: String,
+    id: u64,
 }
 
 impl Drop for OperationBridgeRoute {
     fn drop(&mut self) {
-        self.owner
-            .routes
+        {
+            let mut routes = self
+                .owner
+                .routes
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            // Remove only this registration: a replacement at the same path stays.
+            if routes
+                .get(&self.path)
+                .is_some_and(|route| route.id == self.id)
+            {
+                routes.remove(&self.path);
+            }
+        }
+        // Wake the idle readers that authenticated on this registration, so they
+        // end now rather than on their next poll.
+        for connection in self
+            .owner
+            .connections
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .remove(&self.path);
+            .iter()
+        {
+            if connection.bound.load(Ordering::SeqCst) == self.id {
+                shutdown_wake(&connection.wake);
+            }
+        }
     }
 }
 
@@ -137,6 +163,8 @@ impl Drop for OperationBridgeRoute {
 struct AcceptedConnection {
     thread: JoinHandle<()>,
     wake: Arc<Mutex<Option<TcpStream>>>,
+    /// The id of the route registration this connection authenticated on, or 0.
+    bound: Arc<AtomicU64>,
 }
 
 /// Shuts the read side of one connection's wake, if the connection still holds it.
@@ -161,6 +189,7 @@ pub(crate) struct OperationBridgeListener {
     accept_thread: Mutex<Option<JoinHandle<()>>>,
     connections: Mutex<Vec<AcceptedConnection>>,
     next_connection_id: AtomicU64,
+    next_route_id: AtomicU64,
 }
 
 impl OperationBridgeListener {
@@ -199,6 +228,7 @@ impl OperationBridgeListener {
             accept_thread: Mutex::new(None),
             connections: Mutex::new(Vec::new()),
             next_connection_id: AtomicU64::new(1),
+            next_route_id: AtomicU64::new(1),
         });
         let accept_owner = Arc::clone(&owner);
         let thread = thread::Builder::new()
@@ -242,9 +272,11 @@ impl OperationBridgeListener {
                 "Operation bridge route is unavailable",
             ));
         }
+        let id = self.next_route_id.fetch_add(1, Ordering::Relaxed);
         routes.insert(
             spec.path.to_owned(),
             Route {
+                id,
                 namespace,
                 generation,
                 transport_generation: spec.transport_generation,
@@ -255,6 +287,7 @@ impl OperationBridgeListener {
         Ok(OperationBridgeRoute {
             owner: Arc::clone(self),
             path: spec.path.to_owned(),
+            id,
         })
     }
 
@@ -355,10 +388,12 @@ impl OperationBridgeListener {
                     let connection_id = self.next_connection_id.fetch_add(1, Ordering::Relaxed);
                     let wake = Arc::new(Mutex::new(stream.try_clone().ok()));
                     let thread_wake = Arc::clone(&wake);
+                    let bound = Arc::new(AtomicU64::new(0));
+                    let thread_bound = Arc::clone(&bound);
                     if let Ok(thread) = thread::Builder::new()
                         .name("swallowtail-operation-bridge-conn".to_owned())
                         .spawn(move || {
-                            connection_owner.connection_loop(stream, connection_id);
+                            connection_owner.connection_loop(stream, connection_id, thread_bound);
                             // Release the wake clone's descriptor with the
                             // connection. The join handle stays with the listener.
                             thread_wake
@@ -367,7 +402,11 @@ impl OperationBridgeListener {
                                 .take();
                         })
                     {
-                        connections.push(AcceptedConnection { thread, wake });
+                        connections.push(AcceptedConnection {
+                            thread,
+                            wake,
+                            bound,
+                        });
                     }
                 }
                 Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
@@ -376,21 +415,20 @@ impl OperationBridgeListener {
         }
     }
 
-    fn connection_loop(&self, mut stream: TcpStream, connection_id: u64) {
+    fn connection_loop(&self, mut stream: TcpStream, connection_id: u64, bound: Arc<AtomicU64>) {
         if configure_stream(&stream, self.timing).is_err() {
             return;
         }
-        // An unauthenticated connection must send its first frame within the
-        // IO timeout of accept. Once one frame passes the bearer check, the
-        // connection's idle wait is bound to that frame's route instead.
+        // A connection whose first byte does not arrive within the IO timeout of
+        // accept closes silently. Once one frame passes the bearer check, the
+        // idle wait is bound to that frame's route registration, not its path.
         let unauthenticated_deadline = Instant::now() + self.timing.io;
-        let mut authenticated_path: Option<String> = None;
+        let mut authenticated: Option<(String, u64)> = None;
         loop {
-            if !self.await_frame_start(
-                &stream,
-                authenticated_path.as_deref(),
-                unauthenticated_deadline,
-            ) {
+            let waiting_on = authenticated
+                .as_ref()
+                .map(|(path, route_id)| (path.as_str(), *route_id));
+            if !self.await_frame_start(&stream, waiting_on, unauthenticated_deadline) {
                 break;
             }
             let frame = match read_request(&mut stream, self.timing) {
@@ -407,6 +445,7 @@ impl OperationBridgeListener {
                 .get(&frame.path)
                 .map(|route| {
                     (
+                        route.id,
                         route.namespace,
                         route.generation,
                         route.transport_generation,
@@ -414,7 +453,14 @@ impl OperationBridgeListener {
                         Arc::clone(&route.handler),
                     )
                 });
-            let Some((_namespace, generation, transport_generation, server_name, handler)) = route
+            let Some((
+                route_id,
+                _namespace,
+                generation,
+                transport_generation,
+                server_name,
+                handler,
+            )) = route
             else {
                 let _ = write_response(
                     &mut stream,
@@ -426,6 +472,22 @@ impl OperationBridgeListener {
                 );
                 break;
             };
+            // A connection that authenticated on one registration never delivers
+            // a frame to a replacement at the same path.
+            if authenticated
+                .as_ref()
+                .is_some_and(|(_, bound_id)| *bound_id != route_id)
+            {
+                let _ = write_response(
+                    &mut stream,
+                    OperationBridgeResponse::close(
+                        404,
+                        "Not Found",
+                        json_error("Operation bridge route was not found"),
+                    ),
+                );
+                break;
+            }
             // This is the sole bearer admission point. The route's live
             // registration is the generation/lease admission point. No
             // profile handler sees a frame until both checks have passed.
@@ -447,8 +509,9 @@ impl OperationBridgeListener {
                 );
                 continue;
             }
-            if authenticated_path.is_none() {
-                authenticated_path = Some(frame.path.clone());
+            if authenticated.is_none() {
+                authenticated = Some((frame.path.clone(), route_id));
+                bound.store(route_id, Ordering::SeqCst);
             }
             if transport_generation.is_some_and(|expected| {
                 frame.transport_generation != Some(expected)
@@ -488,21 +551,23 @@ impl OperationBridgeListener {
     fn await_frame_start(
         &self,
         stream: &TcpStream,
-        authenticated_path: Option<&str>,
+        authenticated: Option<(&str, u64)>,
         unauthenticated_deadline: Instant,
     ) -> bool {
         loop {
             if self.closed.load(Ordering::Acquire) {
                 return false;
             }
-            let wait = match authenticated_path {
-                Some(path) => {
-                    let revoked = !self
+            let wait = match authenticated {
+                Some((path, route_id)) => {
+                    // Revoked, or replaced by another registration at the same path.
+                    let current = self
                         .routes
                         .lock()
                         .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .contains_key(path);
-                    if revoked {
+                        .get(path)
+                        .map(|route| route.id);
+                    if current != Some(route_id) {
                         return false;
                     }
                     self.timing.idle_poll
@@ -882,6 +947,28 @@ mod tests {
     }
 
     #[test]
+    fn a_wrong_bearer_gets_401_and_a_peer_that_never_authenticates_closes_after_the_window() {
+        let fixture = fixture();
+        let mut stream = connect(&fixture.listener);
+        stream
+            .write_all(&frame("not-the-bearer", b"{}"))
+            .expect("wrong-bearer frame");
+        assert_eq!(read_status(&mut stream), Some(401));
+        // Inside the accept window every frame is bearer-checked again.
+        stream
+            .write_all(&frame("still-not-the-bearer", b"{}"))
+            .expect("second wrong-bearer frame");
+        assert_eq!(read_status(&mut stream), Some(401));
+        // The window never renews. Past the IO timeout of accept, a peer that has
+        // never authenticated gets no response, even with a correct frame.
+        let bearer = fixture.listener.bearer();
+        std::thread::sleep(TIMING.io * 3);
+        let _ = stream.write_all(&frame(&bearer, b"{}"));
+        assert_eq!(read_status(&mut stream), None);
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
     fn a_partial_header_that_stalls_is_closed_by_the_io_timeout() {
         let fixture = fixture();
         let mut stream = connect(&fixture.listener);
@@ -946,6 +1033,59 @@ mod tests {
             1,
             "close joined the connection thread"
         );
+    }
+
+    #[test]
+    fn a_replacement_at_the_same_path_ends_the_idle_connection_that_authenticated_on_the_old_route()
+    {
+        let mut fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let mut stream = connect(&fixture.listener);
+        stream
+            .write_all(&frame(&bearer, b"{}"))
+            .expect("first frame");
+        assert_eq!(read_status(&mut stream), Some(200));
+        // Revoke the first registration, then register a replacement at the same
+        // path while the connection sits idle on the old one.
+        drop(fixture.route.take());
+        let replacement_calls = Arc::new(AtomicUsize::new(0));
+        let counter = Arc::clone(&replacement_calls);
+        let replacement = fixture
+            .listener
+            .register(
+                namespace_registered_tool(),
+                2,
+                OperationBridgeRouteSpec {
+                    path: PATH,
+                    transport_generation: None,
+                    server_name: None,
+                    handler: Arc::new(move |_frame| {
+                        counter.fetch_add(1, Ordering::SeqCst);
+                        OperationBridgeResponse::keep_alive(200, "OK", b"{}".to_vec())
+                    }),
+                },
+            )
+            .expect("replacement registers at the same path");
+        // The old connection ends without any frame from the peer. A bounded read
+        // returns end-of-stream, or fails if the connection survived.
+        stream
+            .set_read_timeout(Some(Duration::from_secs(2)))
+            .expect("bounded test read");
+        let mut sink = Vec::new();
+        stream
+            .read_to_end(&mut sink)
+            .expect("the replaced connection closes");
+        assert!(sink.is_empty(), "no response for the replaced connection");
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 1);
+        assert_eq!(replacement_calls.load(Ordering::SeqCst), 0);
+        // The replacement serves a fresh connection.
+        let mut fresh = connect(&fixture.listener);
+        fresh
+            .write_all(&frame(&bearer, b"{}"))
+            .expect("fresh frame");
+        assert_eq!(read_status(&mut fresh), Some(200));
+        assert_eq!(replacement_calls.load(Ordering::SeqCst), 1);
+        drop(replacement);
     }
 
     #[test]

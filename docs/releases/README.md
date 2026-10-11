@@ -39,6 +39,12 @@ sidecar, installer, or model artifact.
   provider-free patch recipe against immutable `v0.5.1`; not a release
   candidate or new route qualification
 
+## Preparatory Compatibility Assessment
+
+- [Currentness minor source and compatibility ledger](currentness-minor-compatibility.md)
+  — planning-`main` inclusion, compatibility, unresolved gates, and
+  deferrals versus released `v0.5.4`; not a candidate, tag, or claim change
+
 ## Consumer Handoffs
 
 These records preserve bounded adoption evidence. They supplement the current

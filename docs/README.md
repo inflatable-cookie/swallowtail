@@ -37,6 +37,8 @@ vision. Specs and research stay provisional until promoted.
 - Consumer guides and matrices: [guides/](guides/README.md)
 - Retained research evidence: [research/](research/README.md)
 - Release notes: [releases/](releases/README.md)
+- Currentness minor source/compatibility ledger (preparatory, not a
+  candidate): [releases/currentness-minor-compatibility.md](releases/currentness-minor-compatibility.md)
 
 ## What's next
 

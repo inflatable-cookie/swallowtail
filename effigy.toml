@@ -144,6 +144,7 @@ allowlist_file = "docs/policy/vision-next-task-verbs.txt"
 "format:sdk-courier-timeout" = "bash scripts/release/sdk-courier-timeout.sh format"
 "check:sdk-courier-timeout" = "bash scripts/release/sdk-courier-timeout.sh check"
 "validate:sdk-courier-timeout" = "bash scripts/release/sdk-courier-timeout.sh validate"
+"validate:sdk-courier-idle" = "bash scripts/release/sdk-courier-timeout.sh idle"
 "package:check" = [
   { task = "package:metadata" },
   { task = "package:api" },

@@ -660,3 +660,117 @@ and the matching source sidecar with a fake SDK producer. It holds approval for
 more than twenty elapsed seconds, then proves correlated expiry, later-turn
 reuse, denial without dispatch, and joined close without changing SDK, native,
 Node, sidecar wire, or route qualification pins.
+
+## Idle, Frame Progress, And Call States — 2026-10-11
+
+Queue 49ce9bb1 found that the shared listener's 5-second transport timeout
+closed an authenticated courier that went quiet before the SDK requested
+permission. The retained Desktop failure was the same shape: one immediate
+call, a session age past 45 seconds, a 20-second SDK-side approval wait, then
+the next call on a closed connection. The listener now separates four states
+on one keep-alive connection. The shared listener serves every profile, so
+these rules apply to the watcher profile too.
+
+- **Unauthenticated, frame start.** Until a connection authenticates, the first
+  byte of each frame must arrive within the 5-second accept window that began
+  when the connection was accepted. The window gates only the start of a frame.
+  If the next frame does not start inside it, the connection closes without a
+  response. This is distinct from a stalled frame below.
+- **Unauthenticated, frame completion.** Once a frame's first byte has arrived
+  inside the window, the frame is read under its own 10-second progress budget,
+  separate from the window. A complete frame may finish, and may authenticate the
+  connection, after the window has ended. The window never renews. After a
+  rejected complete frame, the next frame must still start before the original
+  window ends.
+- **Unauthenticated, rejection.** The listener checks the route before the bearer.
+  A frame for an unknown path gets `404 Not Found` and the connection closes,
+  whatever bearer it carries. A frame for a registered path with a wrong bearer
+  gets `401 Unauthorized`, and the connection stays open for the next frame in
+  the same window. A malformed or oversized frame gets `400` or `413` and the
+  connection closes. A correct frame in the window authenticates the connection,
+  which then follows the authenticated rules below.
+- **Authenticated, no frame in flight.** No transport timeout applies. The wait
+  ends on the next frame, peer end-of-stream, route revocation, or listener
+  close. The wait is bound to the route registration the connection
+  authenticated on, not to its path. Revoking a registration wakes its idle
+  readers at once. A replacement registered at the same path does not inherit
+  the connection: the old connection ends, and a frame on it is never delivered
+  to the replacement. The 250ms idle poll is only a backstop. Close shuts the
+  read side, so an idle join wakes on that event. The connection lives for its
+  registration's lifetime, which is the session or optional lease lifetime. An
+  explicit lease deadline still rejects late calls in the kernel; it does not
+  close the idle socket early.
+- **Frame progress.** The frame budget starts when the first byte of a frame is
+  available. Each read waits at most 5 seconds, and the whole frame must finish
+  within 10 seconds of that first byte. A stalled, trickling or oversized partial
+  frame gets `400` or `413` and the connection closes. Partial, trickling,
+  oversized, malformed, foreign and stale frames fail closed before dispatch.
+- **Active call.** While a handler runs, neither the idle wait nor the frame
+  timers apply. The call waits under the kernel's caller, per-call, and lease
+  deadlines. The courier's 65-second stall guard remains the transport backstop.
+
+Every accepted connection thread stays owned by the listener until it is joined.
+Route revocation and close wake an idle reader, which exits and is joined; close
+returns only after every connection thread has exited. Finished threads are
+joined as later connections arrive, so a long-lived listener does not accumulate
+handles or wake descriptors. A connection thread never removes its own entry.
+
+Writes keep the 5-second write timeout. Opening readiness keeps the existing
+open-deadline bound. The change adds no reconnect, retry, replay, public API,
+wire field, pin, or release metadata. One bearer, one authenticated connection
+per lease, and the kernel's exact caller, per-call, and lease bounds stay as
+they were.
+
+**Offline evidence (provider-free, released line).** The defect reproduced with
+the real courier binary and host listener: an immediate call succeeded, a
+6-second idle gap followed, and the next call failed with
+`Registered tool dispatch failed` after the courier exited on the listener's
+400-and-close response. The correction is proved at four levels:
+
+- listener unit tests with injected short boundaries: unauthenticated first
+  frame, partial header stall, trickling frame against the whole-frame budget,
+  authenticated idle past the IO timeout, route revocation while idle, close
+  while idle, and a replacement registration at the same path ending the idle
+  connection that authenticated on the old one;
+- real-courier tests: three idle gaps past the IO timeout with dispatch counts
+  checked after each; an explicit lease deadline that expires during idle, where
+  the courier gets one correlated error per late call and nothing dispatches,
+  and close joins promptly; cancellation during idle, where close is clean and
+  within two seconds, the listener is gone, and a later frame never dispatches;
+- a watcher connection idle past the timeout on the shared listener, which
+  closes without a response while the registered route stays connected;
+- `claude-agent.sdk` through the prepared facade with a real 45-second session
+  age, measured from open completion: turn 1 is the immediate read. Turn 2
+  raises the SDK `canUseTool` for the registered carrier tool at session age
+  45s, and the approval stays pending for 20s with nothing forwarded. The fake
+  SDK then sends the courier `tools/call` only because the host answered allow.
+  Turn 3 is denied and forwards nothing, and the next turn still succeeds on the
+  connected lease. Turn 4 is approved after an idle gap, and turn 5 is a later
+  turn on the same connected lease. The courier answers four forwarded calls,
+  one per approved turn. A kernel revocation
+  landing during idle never reaches the dispatcher.
+
+Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
+the altered listener behaviour and `check:sdk-courier-timeout` and
+`format:sdk-courier-timeout` for the compiled and formatted candidate.
+
+**Test budget and build isolation.** Each validation selector runs through
+`scripts/run-with-owned-cargo-target.sh`. The runner creates one fresh directory
+under the system temp root, marks it, and exports it as `CARGO_TARGET_DIR` for
+the outer test build and the nested courier build. The runner removes that
+directory when the selector finishes. The courier helper refuses any target that
+is not such a marked directory, including the worktree target. The outer build
+warms the run target before any test starts, so the courier build inside a test
+is warm. The idle regression spends 71 seconds in planned waits. Those waits
+stay under Nextest's termination guard, which is a failure guard, not a budget
+to raise.
+
+**Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
+carrier tool through `SdkScenario::RegisteredToolAdmission`. It performs the
+MCP handshake with its spawned courier at open. It forwards `tools/call` to
+that courier synchronously inside the host's allow answer, and forwards nothing
+on deny. Its own query does not block on the answer: it ends each turn after the
+callback response. The forwarded call's arguments are fixed, and the forwarded
+name is the courier-side `desktop/reconcile`. The Node `fake-sdk.mjs` sidecar and
+the real Node sidecar were not exercised for this ordering. Live Desktop proof
+needs separate operator authority at exact identity.

@@ -777,15 +777,24 @@ the next call on a closed connection. The listener now separates four states
 on one keep-alive connection. The shared listener serves every profile, so
 these rules apply to the watcher profile too.
 
-- **Unauthenticated, no first byte.** A new connection's first byte must arrive
-  within the 5-second IO timeout of accept. If none arrives, the connection
-  closes without a response. This is distinct from a partial frame below.
-- **Unauthenticated, complete frame.** A complete frame with a wrong bearer
-  gets `401 Unauthorized`. The connection stays open only until that same
-  5-second accept window ends. Every frame sent inside the window is bearer-
-  checked again, and the window never renews. A correct frame inside the window
-  authenticates the connection, which then follows the authenticated rules
-  below. A peer that never authenticates gets one window and no more.
+- **Unauthenticated, frame start.** Until a connection authenticates, the first
+  byte of each frame must arrive within the 5-second accept window that began
+  when the connection was accepted. The window gates only the start of a frame.
+  If the next frame does not start inside it, the connection closes without a
+  response. This is distinct from a stalled frame below.
+- **Unauthenticated, frame completion.** Once a frame's first byte has arrived
+  inside the window, the frame is read under its own 10-second progress budget,
+  separate from the window. A complete frame may finish, and may authenticate the
+  connection, after the window has ended. The window never renews. After a
+  rejected complete frame, the next frame must still start before the original
+  window ends.
+- **Unauthenticated, rejection.** The listener checks the route before the bearer.
+  A frame for an unknown path gets `404 Not Found` and the connection closes,
+  whatever bearer it carries. A frame for a registered path with a wrong bearer
+  gets `401 Unauthorized`, and the connection stays open for the next frame in
+  the same window. A malformed or oversized frame gets `400` or `413` and the
+  connection closes. A correct frame in the window authenticates the connection,
+  which then follows the authenticated rules below.
 - **Authenticated, no frame in flight.** No transport timeout applies. The wait
   ends on the next frame, peer end-of-stream, route revocation, or listener
   close. The wait is bound to the route registration the connection

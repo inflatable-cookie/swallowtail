@@ -6,7 +6,7 @@ architecture or contracts; sequencing belongs in Queue lanes.
 ## Active Specs
 
 - [014 Shared Harness Capability And Producer Boundary](014-shared-harness-capability-and-producer-boundary.md) — draft; operator-confirmed direction awaiting independent review and contract promotion
-- [015 Bounded Finite Exact Opaque Compatibility Claims](015-bounded-finite-exact-opaque-compatibility-claims.md) — draft; proposed Contract 029 core representation. Implemented Opaque claims stay one exact point until a separately reviewed implementation of this spec lands
+- [015 Bounded Finite Exact Opaque Compatibility Claims](015-bounded-finite-exact-opaque-compatibility-claims.md) — reviewed design for bounded exact opaque member sets; [Contract 029](../contracts/029-interface-version-qualification-and-compatibility.md) defines the implemented representation and per-point evidence limits
 
 ## Promoted Specs
 

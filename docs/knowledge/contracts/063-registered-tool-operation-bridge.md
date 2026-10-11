@@ -839,10 +839,16 @@ call succeeded, a 6-second idle gap followed, and the next call failed with
 Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
 the altered listener behaviour.
 
-**Test budget.** The courier binary is built once per test process into the
-workspace target, which the outer build has already warmed. The idle regression
-spends 71 seconds in planned waits. Those waits stay under Nextest's 120-second
-termination, which is a failure guard, not a budget to raise.
+**Test budget and build isolation.** Each validation selector runs through
+`scripts/run-with-owned-cargo-target.sh`. The runner creates one fresh directory
+under the system temp root, marks it, and exports it as `CARGO_TARGET_DIR` for
+the outer test build and the nested courier build. The runner removes that
+directory when the selector finishes. The courier helper refuses any target that
+is not such a marked directory, including the worktree target. The outer build
+warms the run target before any test starts, so the courier build inside a test
+is warm. The idle regression spends 71 seconds in planned waits. Those waits
+stay under Nextest's 120-second termination, which is a failure guard, not a
+budget to raise.
 
 **Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
 carrier tool through `SdkScenario::RegisteredToolAdmission`. It performs the

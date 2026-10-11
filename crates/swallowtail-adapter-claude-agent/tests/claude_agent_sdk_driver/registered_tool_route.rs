@@ -226,11 +226,9 @@ pub(super) fn courier_binary() -> &'static Path {
             .parent()
             .expect("workspace")
             .to_path_buf();
-        // The nested build reuses the workspace target that the outer build has
-        // already warmed. A fresh scratch target rebuilt every dependency inside
-        // each test process, which pushed parallel courier-backed tests past
-        // their per-test budget.
-        let nested_target = courier_target(&workspace);
+        // The nested build shares the run-owned target that the outer build
+        // warmed, so no dependency compiles inside a test's own budget.
+        let nested_target = run_owned_target(&workspace);
         let binary = nested_target
             .join("debug")
             .join("swallowtail-registered-tool-courier");
@@ -244,12 +242,48 @@ pub(super) fn courier_binary() -> &'static Path {
     })
 }
 
-/// The cargo target the outer test build uses: `CARGO_TARGET_DIR` when set,
-/// otherwise this worktree's own `target` directory.
-fn courier_target(workspace: &Path) -> PathBuf {
-    std::env::var_os("CARGO_TARGET_DIR")
+/// Marker the validation runner writes into its run-owned target directory.
+const RUN_OWNED_MARKER: &str = ".swallowtail-run-owned";
+/// Name prefix the validation runner gives each run-owned target directory.
+const RUN_OWNED_PREFIX: &str = "swallowtail-sdk-courier.";
+
+/// Returns the cargo target this validation run owns. The validation runner
+/// (`scripts/run-with-owned-cargo-target.sh`) creates one fresh directory per
+/// selector invocation directly under the system temp root, marks it, and
+/// exports it as `CARGO_TARGET_DIR`. The outer test build and this nested
+/// courier build both use it. The test refuses to run without it, and refuses
+/// the worktree target, a directory without the marker, and any directory
+/// outside the temp root.
+fn run_owned_target(workspace: &Path) -> PathBuf {
+    let target = std::env::var_os("CARGO_TARGET_DIR")
         .map(PathBuf::from)
-        .unwrap_or_else(|| workspace.join("target"))
+        .expect("registered courier tests run through the validation selector, which sets a run-owned CARGO_TARGET_DIR");
+    let target = target
+        .canonicalize()
+        .unwrap_or_else(|error| panic!("run-owned target {target:?} does not exist: {error}"));
+    let workspace = workspace.canonicalize().expect("workspace exists");
+    assert!(
+        !target.starts_with(&workspace),
+        "CARGO_TARGET_DIR {target:?} is inside the worktree, so it is not run-owned"
+    );
+    let temp_root = std::env::temp_dir()
+        .canonicalize()
+        .expect("system temp root exists");
+    assert_eq!(
+        target.parent(),
+        Some(temp_root.as_path()),
+        "run-owned target {target:?} is not directly under the system temp root"
+    );
+    let named = target
+        .file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.starts_with(RUN_OWNED_PREFIX));
+    assert!(named, "{target:?} is not a validation run directory");
+    assert!(
+        target.join(RUN_OWNED_MARKER).is_file(),
+        "{target:?} has no run-owned marker, so another run may own it"
+    );
+    target
 }
 
 /// Builds the courier and reads the completed artifact, retrying the pair

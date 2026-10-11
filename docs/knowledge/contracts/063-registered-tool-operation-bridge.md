@@ -859,3 +859,18 @@ callback response. The forwarded call's arguments are fixed, and the forwarded
 name is the courier-side `desktop/reconcile`. The Node `fake-sdk.mjs` sidecar and
 the real Node sidecar were not exercised for this ordering. Live Desktop proof
 needs separate operator authority at exact identity.
+
+## Hosted Courier Proof Target — 2026-10-11
+
+Tom answered “Approve” to decision `7a998da6-df4a-4034-a196-3188fc038bda`.
+This explicitly approves the PR 496 change to `.github/workflows/ci.yml` at
+`69f79b7d63952651800bb017d63251aa885fec33`: the process-spawning test step
+runs its existing locked nextest command through
+`scripts/run-with-owned-cargo-target.sh`. The outer test build and nested
+courier build share one fresh step-owned target, which is removed afterward.
+Packages, features, profile, failure propagation and the twenty-minute timeout
+remain unchanged; no test is skipped.
+
+The approval includes one final independent review despite the exhausted
+revision budget. It grants no live provider, credential, consumer mutation or
+release/tag authority.

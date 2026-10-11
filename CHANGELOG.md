@@ -5,6 +5,14 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.5.4] - 2026-10-11
+
+### Fixed
+- keep an authenticated registered-tool courier idle past the transport timeout
+  before SDK permission, bind its wait to the route registration it
+  authenticated on, and join every accepted connection thread before close
+  returns
+
 ## [0.5.3] - 2026-10-08
 
 ### Fixed

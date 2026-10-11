@@ -6,8 +6,8 @@ candidate_repo_root=$(cd "$candidate_script_dir/../../.." && pwd)
 candidate_manifest="$candidate_script_dir/manifest.json"
 candidate_identity="$candidate_script_dir/check_identity.py"
 candidate_consumer="$candidate_script_dir/consumer"
-candidate_version=0.5.3
-candidate_base=b83db0bdca4292e0d21775b9c0dc8b80ec05d003
+candidate_version=0.5.4
+candidate_base=fa5ecfd8304030f58e447fd410382aee4056396b
 candidate_active_scratch=
 
 candidate_cleanup() {
@@ -54,14 +54,14 @@ from pathlib import Path
 
 with open(sys.argv[1], encoding="utf-8") as stream:
     manifest = json.load(stream)
-if manifest.get("schema_version") != 1 or manifest.get("candidate_version") != "0.5.3":
+if manifest.get("schema_version") != 1 or manifest.get("candidate_version") != "0.5.4":
     raise SystemExit("candidate manifest version or schema is unsupported")
-if manifest.get("base_commit") != "b83db0bdca4292e0d21775b9c0dc8b80ec05d003":
-    raise SystemExit("candidate manifest does not name the exact immutable v0.5.2 base")
-if manifest.get("base_tag_object") != "4d54ed92ec2dcdf44ebce019463d124996267810":
-    raise SystemExit("candidate manifest does not name the immutable v0.5.2 tag object")
-if manifest.get("base_tree") != "949d9ef1199cd21c188959dcb2c9e9bc5f2086ec":
-    raise SystemExit("candidate manifest does not name the immutable v0.5.2 tree")
+if manifest.get("base_commit") != "fa5ecfd8304030f58e447fd410382aee4056396b":
+    raise SystemExit("candidate manifest does not name the exact immutable v0.5.3 base")
+if manifest.get("base_tag_object") != "13862f5ffe0c9b75b9872865ee347c181dfc276e":
+    raise SystemExit("candidate manifest does not name the immutable v0.5.3 tag object")
+if manifest.get("base_tree") != "0597c27bf9b86a7e1c6bcb3f4fafa22a462303da":
+    raise SystemExit("candidate manifest does not name the immutable v0.5.3 tree")
 for key in ("intermediate_commit", "intermediate_tree"):
     if not re.fullmatch(r"[0-9a-f]{40}", manifest.get(key, "")):
         raise SystemExit(f"candidate manifest has an invalid {key}")
@@ -85,17 +85,17 @@ candidate_check_clean_head() {
     candidate_die "candidate checkout must be clean before its release proof"
   head=$(git -C "$candidate_repo_root" rev-parse HEAD)
   merge_base=$(git -C "$candidate_repo_root" merge-base "$head" "$candidate_base") ||
-    candidate_die "candidate does not descend from immutable v0.5.2"
+    candidate_die "candidate does not descend from immutable v0.5.3"
   [[ $merge_base == "$candidate_base" ]] ||
-    candidate_die "candidate base is not the exact immutable v0.5.2 commit"
+    candidate_die "candidate base is not the exact immutable v0.5.3 commit"
   [[ $(git -C "$candidate_repo_root" rev-parse "$candidate_base^{tree}") == \
     "$(candidate_manifest_value base_tree)" ]] ||
-    candidate_die "immutable v0.5.2 tree differs from the candidate manifest"
+    candidate_die "immutable v0.5.3 tree differs from the candidate manifest"
   [[ $(git -C "$candidate_repo_root" rev-parse "$(candidate_manifest_value base_tag_object)^{commit}") == \
     "$candidate_base" ]] ||
-    candidate_die "immutable v0.5.2 tag object does not name the candidate base"
+    candidate_die "immutable v0.5.3 tag object does not name the candidate base"
   merges=$(git -C "$candidate_repo_root" rev-list --merges "$candidate_base..$head")
-  [[ -z $merges ]] || candidate_die "candidate contains a merge commit after v0.5.2"
+  [[ -z $merges ]] || candidate_die "candidate contains a merge commit after v0.5.3"
   candidate_check_intermediate "$head"
   printf '%s\n' "$head"
 }
@@ -110,9 +110,9 @@ candidate_check_intermediate() {
   git -C "$candidate_repo_root" merge-base --is-ancestor "$intermediate" "$head" ||
     candidate_die "reviewed source patch is not an ancestor of the candidate"
   merge_base=$(git -C "$candidate_repo_root" merge-base "$intermediate" "$candidate_base") ||
-    candidate_die "reviewed source patch does not descend from immutable v0.5.2"
+    candidate_die "reviewed source patch does not descend from immutable v0.5.3"
   [[ $merge_base == "$candidate_base" ]] ||
-    candidate_die "reviewed source patch base is not immutable v0.5.2"
+    candidate_die "reviewed source patch base is not immutable v0.5.3"
   merges=$(git -C "$candidate_repo_root" rev-list --merges "$candidate_base..$intermediate")
   [[ -z $merges ]] || candidate_die "reviewed source patch contains a merge commit"
   expected_files=$(candidate_manifest_value patch_files | LC_ALL=C sort)
@@ -155,12 +155,12 @@ from pathlib import Path
 
 root, manifest_path = Path(sys.argv[1]), Path(sys.argv[2])
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-previous = root / "release-baselines/public-api-0.5.2"
+previous = root / "release-baselines/public-api-0.5.3"
 candidate = root / f"release-baselines/public-api-{manifest['candidate_version']}"
 packages = (previous / "packages.txt").read_text(encoding="utf-8").splitlines()
 candidate_packages = (candidate / "packages.txt").read_text(encoding="utf-8").splitlines()
 if candidate_packages != packages:
-    raise SystemExit("candidate package inventory differs from immutable v0.5.2")
+    raise SystemExit("candidate package inventory differs from immutable v0.5.3")
 expected_files = {"packages.txt", *(f"{name}.txt" for name in packages)}
 actual_files = {path.name for path in candidate.iterdir() if path.is_file()}
 if actual_files != expected_files:
@@ -184,13 +184,13 @@ for package in packages:
             f"unexpected {package} baseline additions: missing {missing}; unexpected {unexpected}"
         )
 
-old_routes = (root / "release-baselines/production-routes-0.5.2.txt").read_bytes()
+old_routes = (root / "release-baselines/production-routes-0.5.3.txt").read_bytes()
 new_routes = (root / f"release-baselines/production-routes-{manifest['candidate_version']}.txt").read_bytes()
 if old_routes != new_routes:
-    raise SystemExit("candidate route inventory differs from immutable v0.5.2")
-old_edges = (root / "release-baselines/internal-dependencies-0.5.2.tsv").read_text(encoding="utf-8")
+    raise SystemExit("candidate route inventory differs from immutable v0.5.3")
+old_edges = (root / "release-baselines/internal-dependencies-0.5.3.tsv").read_text(encoding="utf-8")
 new_edges = (root / f"release-baselines/internal-dependencies-{manifest['candidate_version']}.tsv").read_text(encoding="utf-8")
-if old_edges.replace("^0.5.2", "^0.5.3") != new_edges:
+if old_edges.replace("^0.5.3", "^0.5.4") != new_edges:
     raise SystemExit("candidate internal dependency inventory differs beyond coordinated version")
 print("candidate inventories passed: zero API additions or removals, unchanged routes and coordinated internal edges")
 PY
@@ -251,9 +251,9 @@ candidate_prepare_baselines() {
     candidate_die "required public API tool is $tool_version"
   rustup run "$toolchain" rustc --version >/dev/null 2>&1 ||
     candidate_die "required public API Rust toolchain is unavailable: $toolchain"
-  previous="$candidate_repo_root/release-baselines/public-api-0.5.2"
+  previous="$candidate_repo_root/release-baselines/public-api-0.5.3"
   current="$candidate_repo_root/release-baselines/public-api-$candidate_version"
-  [[ -d $previous ]] || candidate_die "immutable v0.5.2 API baseline is missing"
+  [[ -d $previous ]] || candidate_die "immutable v0.5.3 API baseline is missing"
   if [[ -e $current ]]; then
     [[ -d $current ]] || candidate_die "candidate API baseline path is not a directory"
     candidate_check_api_baselines
@@ -306,23 +306,23 @@ PY
     cp "$output_root/$package.txt" "$current/$package.txt"
   done < <(candidate_manifest_value api_packages)
   if [[ ! -e "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt" ]]; then
-    cp "$candidate_repo_root/release-baselines/production-routes-0.5.2.txt" \
+    cp "$candidate_repo_root/release-baselines/production-routes-0.5.3.txt" \
       "$candidate_repo_root/release-baselines/production-routes-$candidate_version.txt"
   fi
   if [[ ! -e "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" ]]; then
-    python3 - "$candidate_repo_root/release-baselines/internal-dependencies-0.5.2.tsv" \
+    python3 - "$candidate_repo_root/release-baselines/internal-dependencies-0.5.3.tsv" \
       "$candidate_repo_root/release-baselines/internal-dependencies-$candidate_version.tsv" <<'PY'
 from pathlib import Path
 import sys
 
 source, destination = map(Path, sys.argv[1:3])
 contents = source.read_text(encoding="utf-8")
-if "^0.5.2" not in contents:
-    raise SystemExit("v0.5.2 internal dependency inventory has no coordinated requirements")
-destination.write_text(contents.replace("^0.5.2", "^0.5.3"), encoding="utf-8")
+if "^0.5.3" not in contents:
+    raise SystemExit("v0.5.3 internal dependency inventory has no coordinated requirements")
+destination.write_text(contents.replace("^0.5.3", "^0.5.4"), encoding="utf-8")
 PY
   fi
-  printf 'prepared v0.5.3 package, route, dependency, and API baselines from the actual candidate; v0.5.2 files were not changed\n'
+  printf 'prepared v0.5.4 package, route, dependency, and API baselines from the actual candidate; v0.5.3 files were not changed\n'
   printf 'API baseline generation used only the three affected packages; temporary output was removed\n'
   rm -rf "$scratch"
   candidate_active_scratch=

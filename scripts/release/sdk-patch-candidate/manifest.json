@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "candidate_version": "0.5.3",
-  "base_tag_object": "4d54ed92ec2dcdf44ebce019463d124996267810",
-  "base_commit": "b83db0bdca4292e0d21775b9c0dc8b80ec05d003",
-  "base_tree": "949d9ef1199cd21c188959dcb2c9e9bc5f2086ec",
-  "intermediate_commit": "f4663f46ef491d38e13ab06c81c1878b4957ffee",
-  "intermediate_tree": "00f88b664e4408cc00b48400506f2164b772909b",
-  "patch_sha256": "adba05447ba644450bfc7c596867046bb21baa62a2062dcc7223bb3f6a06cb6c",
+  "candidate_version": "0.5.4",
+  "base_tag_object": "13862f5ffe0c9b75b9872865ee347c181dfc276e",
+  "base_commit": "fa5ecfd8304030f58e447fd410382aee4056396b",
+  "base_tree": "0597c27bf9b86a7e1c6bcb3f4fafa22a462303da",
+  "intermediate_commit": "78f761c1032b7096bfa464af0adcde048f64d85b",
+  "intermediate_tree": "b739df554fd660c6cf729886d679bbd9ae2677f2",
+  "patch_sha256": "42e479a77efc7128167ad08129fb50750d6b9aa296eb35d4864a2629e8da85a0",
   "sidecar_source_sha256": "4bdf23f838f367ba04ff925411f90dc19a5f86f6de94127adcb07d85629d04dd",
   "consumer_fixture": {
-    "cargo_lock_template_sha256": "e35e989b82f6f60b44bb678a29a264a68c188e137387c3680330fb250217be12",
+    "cargo_lock_template_sha256": "572a9a1bc72d2478a860c6a98fd2752d352914f7645d678b3d1b42b184275067",
     "cargo_manifest_template_sha256": "969e406e63d556d62d3c8f809a76d552c309d219cc3456d5d5dfa36357dc65eb",
     "main_rs_sha256": "b6dfdcf8bfacdc745ba51aec7c518747a0e38f91454b6b365dffb781d37359c7"
   },
@@ -23,7 +23,16 @@
   "api_additions": [],
   "patch_files": [
     "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_driver/registered_tool_route.rs",
-    "crates/swallowtail-host-local/src/bin/registered_tool_courier.rs",
-    "docs/contracts/063-registered-tool-operation-bridge.md"
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/mcp_child.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/process.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/scenario.rs",
+    "crates/swallowtail-adapter-claude-agent/tests/sdk_support/host/script.rs",
+    "crates/swallowtail-host-local/src/operation_bridge/listener.rs",
+    "crates/swallowtail-host-local/tests/registered_tool_proxy.rs",
+    "docs/contracts/063-registered-tool-operation-bridge.md",
+    "effigy.toml",
+    "scripts/release/sdk-courier-timeout.sh",
+    "scripts/run-with-owned-cargo-target.sh"
   ]
 }

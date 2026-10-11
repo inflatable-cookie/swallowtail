@@ -25,6 +25,7 @@ WRAPPER_ARCHIVE_SHA256 = "838be5537db8bd0f7c7c2e555063770ab559249cf2c3ff3c23b2ef
 NATIVE_ARCHIVE_SHA256 = "95d49e3023921f0bf694e75e17591b68f8b1e59942c2606e1bc1379828d72b2f"
 NATIVE_EXECUTABLE_SHA256 = "35d33e040e8aa0554a02385f02648396ba3b853f026ed1db17d30d051a764e4b"
 LEDGER_SHA256 = "66aaa0480237235fc7ee526ece213b800f2f57724e26da836956841d1d97c4e6"
+FROZEN_EFFIGY_SHA256 = "0a77fceec04fd5559e139ca69889a66f325078e0bd79db301b2794de29b4e54a"
 ARGV = ["--acp", "--stdio"]
 SENTINEL_BEFORE = b"SWALLOWTAIL_PERMISSION_SENTINEL_BEFORE_V1\n"
 SENTINEL_AFTER = b"SWALLOWTAIL_PERMISSION_SENTINEL_AFTER_V1\n"
@@ -56,7 +57,6 @@ SOURCE_PATHS = [
     "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.schema.json",
     "crates/swallowtail-adapter-copilot-cli/tests/support/agent.rs",
     "crates/swallowtail-adapter-copilot-cli/tests/support/mod.rs",
-    "effigy.toml",
     "scripts/copilot-acp-original-entry.sh",
 ]
 
@@ -74,6 +74,8 @@ def canonical_bytes(value: Any) -> bytes:
 
 
 def source_manifest() -> dict[str, Any]:
+    # Selector structure is checked below. Hashing the whole Effigy manifest
+    # here would bind this Copilot plan to unrelated task additions.
     entries = [{"path": path, "sha256": sha256_file(ROOT / path)} for path in SOURCE_PATHS]
     return {"files": entries, "sha256": sha256_bytes(canonical_bytes(entries))}
 
@@ -281,7 +283,19 @@ def validate_plan() -> tuple[dict[str, Any], str]:
     require(runner.get("implementation_path") == "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs", "runner implementation path mismatch")
     require(runner.get("implementation_sha256") == sha256_file(ROOT / runner["implementation_path"]), "runner implementation hash mismatch")
     expected_manifest = source_manifest()
-    require(plan.get("prepared_path_sources") == expected_manifest, "prepared-path source identity changed")
+    prepared_sources = plan.get("prepared_path_sources", {})
+    source_files = prepared_sources.get("files", [])
+    selected_sources = [entry for entry in source_files if entry.get("path") != "effigy.toml"]
+    effigy_sources = [entry for entry in source_files if entry.get("path") == "effigy.toml"]
+    require(selected_sources == expected_manifest["files"], "prepared-path selected source identity changed")
+    require(
+        len(effigy_sources) == 1 and effigy_sources[0].get("sha256") == FROZEN_EFFIGY_SHA256,
+        "frozen Effigy source binding changed",
+    )
+    require(
+        prepared_sources.get("sha256") == sha256_bytes(canonical_bytes(source_files)),
+        "prepared-path source manifest digest mismatch",
+    )
     return plan, sha256_bytes(canonical_bytes(plan))
 
 

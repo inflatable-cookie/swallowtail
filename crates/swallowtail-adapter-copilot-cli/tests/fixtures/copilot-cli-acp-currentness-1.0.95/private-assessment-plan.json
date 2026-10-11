@@ -102,7 +102,7 @@
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-        "sha256": "158f8210367c23cabda679ef44bddfd24a0a8a5202eed795906e6e09fe517f72"
+        "sha256": "212da35887d6081ea0f1e7cdcc1fb9187a64ee2e888e7c10bbb0fe36dcd12162"
       },
       {
         "path": "crates/swallowtail-adapter-copilot-cli/src/assessment_tests.rs",
@@ -177,7 +177,7 @@
         "sha256": "3d756bd0a7d59cf1091ae2630a0aaa893b2857201efb14aac1709772c3c1af7e"
       }
     ],
-    "sha256": "7d05dc3f57a40626152022e27ef34b1d29925a39672a441cc760fb684084ca8c"
+    "sha256": "15682aa7a0b8be28cf901d59fd90250fc9cfb91c0e1228c38527e9f614363c2d"
   },
   "production_route": {
     "argv": [
@@ -241,9 +241,9 @@
   },
   "runner": {
     "implementation_path": "crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs",
-    "implementation_sha256": "158f8210367c23cabda679ef44bddfd24a0a8a5202eed795906e6e09fe517f72",
+    "implementation_sha256": "212da35887d6081ea0f1e7cdcc1fb9187a64ee2e888e7c10bbb0fe36dcd12162",
     "path": "scripts/copilot-acp-private-assessment.py",
-    "sha256": "3300a78bc1ecdfe45998de09e578529431f26868a4d26b8d2dabf8344c1dff9b"
+    "sha256": "c2750183c8a51f0052dd7a2a05f7f7f3dbe66fb62862d550022a49d309a57965"
   },
   "schema": "copilot-cli-private-assessment-plan.v1",
   "task": {

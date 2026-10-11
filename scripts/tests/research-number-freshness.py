@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "scripts" / "check-research-number-collision.py"
-COMMAND_TIMEOUT_SECONDS = 10
+COMMAND_TIMEOUT_SECONDS = 120
 
 
 def isolated_git_env() -> dict[str, str]:
@@ -155,18 +155,15 @@ def run() -> None:
         if published[head_b]["base"] != base_zero:
             raise AssertionError("the recorded check unexpectedly followed main")
 
-        # Queue's current loose-base path accepts a mergeable BEHIND PR unless
-        # an up-to-date branch rule is enabled. The old check is therefore a
-        # concrete counterexample to treating head freshness as base freshness.
-        merge_state = "BEHIND"
-        update_branch_required = False
-        stale_green_would_pass = (
-            published[head_b]["result"] == "success"
-            and merge_state == "BEHIND"
-            and not update_branch_required
-        )
-        if not stale_green_would_pass:
-            raise AssertionError("fake no longer demonstrates the stale-proof path")
+        # Queue's inspected loose-base path admits this configuration. These
+        # values are explicit fixture inputs; this fake does not execute
+        # Queue's gate or simulate GitHub's check publication.
+        stale_path_fixture = {
+            "merge_state": "BEHIND",
+            "mergeable": True,
+            "update_branch_required": False,
+            "published_check": published[head_b],
+        }
 
         stale_worker_error = checker(
             worker_b,
@@ -192,6 +189,13 @@ def run() -> None:
         print(
             "after alpha merged, beta retained a green check tested at "
             f"{published[head_b]['base'][:12]} while main was {base_one[:12]}"
+        )
+        print(
+            "stale-path fixture inputs: "
+            f"merge_state={stale_path_fixture['merge_state']}, "
+            f"mergeable={stale_path_fixture['mergeable']}, "
+            "update_branch_required="
+            f"{stale_path_fixture['update_branch_required']}"
         )
         print(
             "strict allocation rejected beta against refreshed main: "

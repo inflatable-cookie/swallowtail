@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-09
+Updated: 2026-10-11
 
 ## Purpose
 
@@ -284,6 +284,14 @@ hosted API facades, embedded SDK pins, and shared ACP schema. Preview,
 nightly, alpha, and development channels do not change stable truth. A hosted
 "latest model" is not an interface axis. Packaging, desktop About, and
 unofficial launchers do not substitute for the named compatibility axis.
+
+For ACP schema identity, keep annotated tag-object signature status separate
+from source-commit verification. `schema-v1.24.1` has an unsigned tag object;
+GitHub verifies source commit
+`1761180eeddf0828d4ecc367106a632c61be06d9` separately, with key
+`B5690EEEBB952194` attached to that commit verification. See the
+[Research 406 correction](../../research/406-shared-acp-schema-v1-24-1-identity.md#correction-2026-10-11-task-180)
+and [identity fixture](../../../crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/identity.json).
 
 Cadence is operator-triggered: after a consumer defect on an unverified-newer
 point, after a cluster of stables move, or when the operator asks. It is not

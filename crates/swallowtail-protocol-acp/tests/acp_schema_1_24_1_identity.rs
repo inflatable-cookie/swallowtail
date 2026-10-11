@@ -31,9 +31,22 @@ fn stable_identity_freezes_compatible_segment_and_preserves_old_artifacts() {
         identity["official_latest"]["source_commit"],
         "1761180eeddf0828d4ecc367106a632c61be06d9"
     );
+    let official_latest = &identity["official_latest"];
     assert_eq!(
-        identity["official_latest"]["tag_signature"]["verified"],
-        true
+        official_latest["tag_object_signature"],
+        json!({"status": "unsigned"})
+    );
+    assert_eq!(
+        official_latest["source_commit_verification"],
+        json!({
+            "verified": true,
+            "verified_by": "GitHub",
+            "key_id": "B5690EEEBB952194"
+        })
+    );
+    assert!(
+        official_latest.get("tag_signature").is_none(),
+        "commit verification must not be labeled as tag verification"
     );
     assert_eq!(
         identity["published_hops_after_ceiling"],

@@ -453,8 +453,20 @@ tag afterwards and does not hold the tag.
 No manifest version, passing gate, changelog, clean commit, or generated
 candidate grants authority to mutate external state.
 
+Tom authorized exact `v0.5.4` annotated-tag creation and push on 2026-10-11:
+“Go for it”, in reply to the exact-SHA request. Tagged identity is `v0.5.4`
+on `release/v0.5` at `bb53587a3f6fe28d00e9d07fa3c8ba3f179e1451`, tree
+`ebc1aa913b26ddcc9d1edcbd999113803341dfb5`, tag object
+`3c0363430726febaffbc32726a56a7c4016da2db`. The tag carries the reviewed
+authenticated courier idle correction with unchanged SDK/native/Node, API,
+route and wire pins. Hosted workflow-dispatch run `38166089424` and Queue
+milestone QA `b3a5f95e-3eed-4fcc-b43f-48128735c5ed` passed on the identical-tree
+reviewed candidate. Remote tag and peeled source identity were verified.
+No registry publication or GitHub Release is included. Consumer adoption and
+live proof remain separately gated.
+
 Tom authorized exact `v0.5.3` annotated-tag creation and push on 2026-10-09:
-“Release approved” (decision `fa46cc92-0466-4984-843f-aa5cefbbcda8`). Current
+“Release approved” (decision `fa46cc92-0466-4984-843f-aa5cefbbcda8`). Immutable
 tagged identity is `v0.5.3` on `release/v0.5` at
 `fa5ecfd8304030f58e447fd410382aee4056396b`, tree
 `0597c27bf9b86a7e1c6bcb3f4fafa22a462303da`, tag object

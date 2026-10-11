@@ -6,6 +6,8 @@ mutations.
 
 ## Current Release
 
+- [Swallowtail 0.5.4](0.5.4.md) — tagged `v0.5.4` at `bb53587a`; tag object `3c036343`; tagged 2026-10-11; source-only authenticated courier idle correction, preserving released SDK/native/Node and wire pins
+
 - [Swallowtail 0.5.3](0.5.3.md) — tagged `v0.5.3` at `fa5ecfd8`; tag object `13862f5f`; tagged 2026-10-09; source-only courier approval-wait correction over immutable `v0.5.2`, preserving released SDK/native/Node and wire pins
 
 - [Swallowtail 0.5.2](0.5.2.md) — tagged `v0.5.2` at `b83db0bd`; tag object `4d54ed92`; tagged 2026-10-08; source-only SDK lease and per-turn usage correction patch over immutable `v0.5.1`, preserving released provider pins

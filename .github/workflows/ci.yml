@@ -77,8 +77,12 @@ jobs:
         with:
           node-version: 22.23.2
       - name: Process-spawning tests
+        # The courier-backed tests build the registered-tool courier inside the
+        # test process and refuse any target the validation runner does not own.
+        # The wrapper gives the outer test build and that nested build one fresh
+        # target for this step, then removes it.
         run: |
-          cargo nextest run \
+          bash scripts/run-with-owned-cargo-target.sh cargo nextest run \
             -p swallowtail-adapter-claude-agent \
             -p swallowtail-adapter-pi \
             -p swallowtail-host-local \

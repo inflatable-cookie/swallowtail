@@ -831,12 +831,18 @@ call succeeded, a 6-second idle gap followed, and the next call failed with
   45s, and the approval stays pending for 20s with nothing forwarded. The fake
   SDK then sends the courier `tools/call` only because the host answered allow.
   Turn 3 is denied and forwards nothing, and the next turn still succeeds on the
-  connected lease. Turns 4 and 5 are approved after idle gaps. The courier
-  answers four forwarded calls, one per approved turn. A kernel revocation
+  connected lease. Turn 4 is approved after an idle gap, and turn 5 is a later
+  turn on the same connected lease. The courier answers four forwarded calls,
+  one per approved turn. A kernel revocation
   landing during idle never reaches the dispatcher.
 
 Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
 the altered listener behaviour.
+
+**Test budget.** The courier binary is built once per test process into the
+workspace target, which the outer build has already warmed. The idle regression
+spends 71 seconds in planned waits. Those waits stay under Nextest's 120-second
+termination, which is a failure guard, not a budget to raise.
 
 **Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
 carrier tool through `SdkScenario::RegisteredToolAdmission`. It performs the

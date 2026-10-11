@@ -226,9 +226,11 @@ pub(super) fn courier_binary() -> &'static Path {
             .parent()
             .expect("workspace")
             .to_path_buf();
-        // Nested cargo must not share the outer target lock or another task's
-        // fixture output. Give this test process a fresh scratch target.
-        let nested_target = fresh_courier_target();
+        // The nested build reuses the workspace target that the outer build has
+        // already warmed. A fresh scratch target rebuilt every dependency inside
+        // each test process, which pushed parallel courier-backed tests past
+        // their per-test budget.
+        let nested_target = courier_target(&workspace);
         let binary = nested_target
             .join("debug")
             .join("swallowtail-registered-tool-courier");
@@ -242,27 +244,12 @@ pub(super) fn courier_binary() -> &'static Path {
     })
 }
 
-fn fresh_courier_target() -> PathBuf {
-    let parent = std::env::var_os("CARGO_TARGET_DIR")
+/// The cargo target the outer test build uses: `CARGO_TARGET_DIR` when set,
+/// otherwise this worktree's own `target` directory.
+fn courier_target(workspace: &Path) -> PathBuf {
+    std::env::var_os("CARGO_TARGET_DIR")
         .map(PathBuf::from)
-        .unwrap_or_else(std::env::temp_dir);
-    std::fs::create_dir_all(&parent).expect("the test target directory exists");
-    let template = parent.join("sdk-courier.XXXXXXXX");
-    let output = std::process::Command::new("mktemp")
-        .arg("-d")
-        .arg(template)
-        .output()
-        .expect("mktemp creates an isolated courier target");
-    assert!(
-        output.status.success(),
-        "mktemp courier target failed: {}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    PathBuf::from(
-        String::from_utf8(output.stdout)
-            .expect("mktemp path is UTF-8")
-            .trim(),
-    )
+        .unwrap_or_else(|| workspace.join("target"))
 }
 
 /// Builds the courier and reads the completed artifact, retrying the pair
@@ -1151,9 +1138,8 @@ fn registered_session_survives_idle_before_can_use_tool_approval() {
     pending.decide(true);
     assert_forwarded(&opened, &calls, 3);
 
-    // Turn 5: a later turn after another idle gap reuses the same courier.
+    // Turn 5: a later turn reuses the same courier on the connected lease.
     let pending = start_turn_awaiting_can_use_tool(&mut opened, "turn-5");
-    std::thread::sleep(Duration::from_secs(6));
     opened
         .fixture
         .advance_time_to_ticks(virtual_ticks_since(opened_at));

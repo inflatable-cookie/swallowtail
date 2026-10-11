@@ -75,6 +75,17 @@ secret-free result. They reject missing or mismatched action metadata and
 measure an injected sentinel write as an effect. No continuation or host values
 are persisted by the tests, and the committed plan remains disabled.
 
+Synthetic fake plans bind the current selected source files when each test
+constructs its plan, omitting only `Cargo.lock` because other package builds
+can rewrite it. The checked-in plan retains its frozen whole-file `effigy.toml`
+digest for original authorization. The private validator checks that pin's
+manifest integrity and separately checks the exact Copilot validation and
+observe selectors, so unrelated selector additions do not stale fake-only CI.
+An isolated scratch test adds an unrelated selector and confirms the synthetic
+binding still authorizes the fake path. The frozen plan still fails closed on
+source drift, and missing or changed selected files fail before prepared
+effects.
+
 The frozen command template is
 `effigy observe:copilot-acp-private-assessment <binding-payload.json>`. The
 payload is a private mode-0600 JSON file no larger than 8 KiB with exactly the

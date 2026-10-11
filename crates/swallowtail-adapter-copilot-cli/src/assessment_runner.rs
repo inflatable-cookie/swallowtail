@@ -523,7 +523,7 @@ fn run_fake_original_branch_with_scratch(
         builder.approve_working_resource(working.clone(), scratch.task.clone())
     };
     let local = builder.build_services(host.clone());
-    let plan = enabled_fake_plan(scratch);
+    let plan = enabled_fake_plan(scratch, &copilot_repository_root());
     let plan_sha256 = sha256_reader(
         serde_json::to_vec(&plan)
             .expect("fake-bound plan serializes")
@@ -593,9 +593,10 @@ fn services_without_working_resource(services: &HostServices) -> HostServices {
         )
 }
 
-fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
-    let plan_path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json");
+fn enabled_fake_plan(scratch: &RealScratch, source_root: &Path) -> serde_json::Value {
+    let plan_path = copilot_repository_root().join(
+        "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json",
+    );
     let mut plan: serde_json::Value =
         serde_json::from_slice(&fs::read(plan_path).expect("disabled exact plan is readable"))
             .expect("disabled exact plan parses");
@@ -612,7 +613,10 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
     // parallel. The committed plan still binds Cargo.lock and the check
     // selector validates that pin; this synthetic fake continuation omits the
     // lockfile because the fake runner does not consume it and Cargo may
-    // rewrite it while parallel tests run.
+    // rewrite it while parallel tests run. Rebind the remaining selected
+    // sources at test construction so unrelated selector edits cannot stale
+    // the fake continuation. The committed disabled plan keeps its frozen
+    // source binding.
     let manifest_sha256 = {
         let files = plan["prepared_path_sources"]["files"]
             .as_array_mut()
@@ -626,10 +630,30 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
             original_len,
             "fake plan omits one Cargo.lock entry"
         );
+        for entry in files.iter_mut() {
+            let relative = entry
+                .get("path")
+                .and_then(serde_json::Value::as_str)
+                .expect("prepared source path is present")
+                .to_owned();
+            entry["sha256"] = serde_json::Value::String(sha256_file(&source_root.join(relative)));
+        }
         let encoded = serde_json::to_vec(files).expect("fake source manifest serializes");
         sha256_reader(encoded.as_slice()).expect("fake source manifest hashes")
     };
     plan["prepared_path_sources"]["sha256"] = serde_json::Value::String(manifest_sha256);
+    let runner_path = plan["runner"]["path"]
+        .as_str()
+        .expect("fake runner path exists")
+        .to_owned();
+    plan["runner"]["sha256"] =
+        serde_json::Value::String(sha256_file(&source_root.join(runner_path)));
+    let implementation_path = plan["runner"]["implementation_path"]
+        .as_str()
+        .expect("fake runner implementation path exists")
+        .to_owned();
+    plan["runner"]["implementation_sha256"] =
+        serde_json::Value::String(sha256_file(&source_root.join(implementation_path)));
     plan["records"]["original_execution_enabled"] = serde_json::Value::Bool(true);
     plan["original_execution_enabled"] = serde_json::Value::Bool(true);
     plan["original_enable_gate"]["state"] =
@@ -640,6 +664,28 @@ fn enabled_fake_plan(scratch: &RealScratch) -> serde_json::Value {
         serde_json::Value::String(FROZEN_ENABLE_COMMAND.to_owned());
     plan["original_enable_gate"]["binding_sha256"] = serde_json::Value::String("0".repeat(64));
     plan
+}
+
+fn copilot_repository_root() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../../")
+}
+
+struct IsolatedSourceTree {
+    root: PathBuf,
+}
+
+impl IsolatedSourceTree {
+    fn new() -> Self {
+        Self {
+            root: fresh_temp_dir("copilot-acp-assessment-source"),
+        }
+    }
+}
+
+impl Drop for IsolatedSourceTree {
+    fn drop(&mut self) {
+        fs::remove_dir_all(&self.root).expect("remove only the isolated source fixture tree");
+    }
 }
 
 struct RunScratch<'a> {
@@ -1297,6 +1343,14 @@ fn authorize_original_run(
     plan: &serde_json::Value,
     continuation: Option<&PlannerBoundContinuation>,
 ) -> Result<(String, String), OriginalRunDenied> {
+    authorize_original_run_at(plan, continuation, &copilot_repository_root())
+}
+
+fn authorize_original_run_at(
+    plan: &serde_json::Value,
+    continuation: Option<&PlannerBoundContinuation>,
+    source_root: &Path,
+) -> Result<(String, String), OriginalRunDenied> {
     if plan
         .get("original_execution_enabled")
         .and_then(serde_json::Value::as_bool)
@@ -1375,7 +1429,7 @@ fn authorize_original_run(
     {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    validate_plan_source_manifest(plan)?;
+    validate_plan_source_manifest_at(plan, source_root)?;
     let attempt = plan
         .get("attempt")
         .and_then(serde_json::Value::as_object)
@@ -1460,7 +1514,7 @@ fn authorize_original_run(
         .get("runner")
         .and_then(serde_json::Value::as_object)
         .ok_or(OriginalRunDenied::ContinuationMismatch)?;
-    let runner_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../").join(
+    let runner_path = source_root.join(
         runner
             .get("path")
             .and_then(serde_json::Value::as_str)
@@ -1470,7 +1524,8 @@ fn authorize_original_run(
     if runner.get("sha256").and_then(serde_json::Value::as_str) != Some(runner_sha256.as_str()) {
         return Err(OriginalRunDenied::ContinuationMismatch);
     }
-    let rust_runner_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("src/assessment_runner.rs");
+    let rust_runner_path =
+        source_root.join("crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs");
     let rust_runner_sha256 = sha256_file(&rust_runner_path);
     if runner
         .get("implementation_path")
@@ -1536,7 +1591,10 @@ fn plan_binding_metadata(
     )
 }
 
-fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), OriginalRunDenied> {
+fn validate_plan_source_manifest_at(
+    plan: &serde_json::Value,
+    source_root: &Path,
+) -> Result<(), OriginalRunDenied> {
     let manifest = plan
         .get("prepared_path_sources")
         .and_then(serde_json::Value::as_object)
@@ -1545,7 +1603,6 @@ fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), Origina
         .get("files")
         .and_then(serde_json::Value::as_array)
         .ok_or(OriginalRunDenied::ContinuationMismatch)?;
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../");
     for entry in files {
         let path = entry
             .get("path")
@@ -1563,7 +1620,7 @@ fn validate_plan_source_manifest(plan: &serde_json::Value) -> Result<(), Origina
             .get("sha256")
             .and_then(serde_json::Value::as_str)
             .ok_or(OriginalRunDenied::ContinuationMismatch)?;
-        let source = root.join(relative);
+        let source = source_root.join(relative);
         let metadata =
             fs::symlink_metadata(&source).map_err(|_| OriginalRunDenied::ContinuationMismatch)?;
         if !metadata.is_file() || metadata.file_type().is_symlink() {
@@ -2776,7 +2833,7 @@ fn prepared_path_fake_permission_and_action_correlation_are_preserved() {
 #[test]
 fn frozen_enable_entry_dispatches_payload_through_the_one_shot_runner() {
     let scratch = RealScratch::new();
-    let mut plan = enabled_fake_plan(&scratch);
+    let mut plan = enabled_fake_plan(&scratch, &copilot_repository_root());
     let home = std::env::var("HOME").expect("test process has an approved home directory");
     let mut payload = serde_json::json!({
         "schema": ORIGINAL_ENTRY_PAYLOAD_SCHEMA,
@@ -3269,7 +3326,7 @@ fn existing_invocation_record_fails_closed_before_any_prepared_process() {
 #[test]
 fn enabled_runner_requires_the_exact_planner_head_plan_and_command_binding() {
     let scratch = RealScratch::new();
-    let plan = enabled_fake_plan(&scratch);
+    let plan = enabled_fake_plan(&scratch, &copilot_repository_root());
     let continuation = PlannerBoundContinuation {
         reviewed_head: plan["original_enable_gate"]["reviewed_head"]
             .as_str()
@@ -3345,6 +3402,142 @@ fn enabled_runner_requires_the_exact_planner_head_plan_and_command_binding() {
             .count(),
         0
     );
+    assert!(fs::read_to_string(&scratch.trace).is_err());
+}
+
+#[test]
+fn fake_source_binding_tracks_effigy_edits_and_original_drift_fails_closed() {
+    let scratch = RealScratch::new();
+    let repository_root = copilot_repository_root();
+    let original_plan_path = repository_root.join(
+        "crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-currentness-1.0.95/private-assessment-plan.json",
+    );
+    let original_plan = read_json_object(&original_plan_path).expect("disabled plan is readable");
+    let source_tree = IsolatedSourceTree::new();
+    let files = original_plan["prepared_path_sources"]["files"]
+        .as_array()
+        .expect("frozen source manifest exists");
+    let mut source_paths: Vec<String> = files
+        .iter()
+        .filter_map(|entry| entry.get("path")?.as_str().map(str::to_owned))
+        .filter(|path| path != "Cargo.lock")
+        .collect();
+    source_paths.push(
+        original_plan["runner"]["path"]
+            .as_str()
+            .expect("runner path exists")
+            .to_owned(),
+    );
+    source_paths.push(
+        original_plan["runner"]["implementation_path"]
+            .as_str()
+            .expect("runner implementation path exists")
+            .to_owned(),
+    );
+    for relative in source_paths {
+        let source = repository_root.join(&relative);
+        let destination = source_tree.root.join(&relative);
+        fs::create_dir_all(destination.parent().expect("source file has a parent"))
+            .expect("isolated source parents are created");
+        fs::copy(source, destination).expect("selected source is copied into scratch");
+    }
+
+    let effigy_path = source_tree.root.join("effigy.toml");
+    let mut effigy =
+        fs::read_to_string(&effigy_path).expect("isolated Effigy manifest is readable");
+    let task_table = "[tasks]\n";
+    let task_table_end = effigy
+        .find(task_table)
+        .expect("isolated Effigy manifest has a task table")
+        + task_table.len();
+    effigy.insert_str(
+        task_table_end,
+        "\"check:synthetic-unrelated-ci-selector\" = \"python3 -c 'pass'\"\n",
+    );
+    fs::write(&effigy_path, effigy).expect("synthetic selector edit stays in isolated scratch");
+
+    let plan = enabled_fake_plan(&scratch, &source_tree.root);
+    let continuation = PlannerBoundContinuation {
+        reviewed_head: plan["original_enable_gate"]["reviewed_head"]
+            .as_str()
+            .expect("synthetic reviewed head exists")
+            .to_owned(),
+        plan_sha256: sha256_reader(
+            serde_json::to_vec(&plan)
+                .expect("synthetic plan serializes")
+                .as_slice(),
+        )
+        .expect("synthetic plan hashes"),
+        binding_sha256: plan["original_enable_gate"]["binding_sha256"]
+            .as_str()
+            .expect("synthetic host binding exists")
+            .to_owned(),
+        enable_command: plan["original_enable_gate"]["enable_command"]
+            .as_str()
+            .expect("synthetic command exists")
+            .to_owned(),
+    };
+    assert!(authorize_original_run_at(&plan, Some(&continuation), &source_tree.root).is_ok());
+
+    let frozen_effigy_sha256 = original_plan["prepared_path_sources"]["files"]
+        .as_array()
+        .expect("frozen source manifest exists")
+        .iter()
+        .find(|entry| entry["path"] == "effigy.toml")
+        .and_then(|entry| entry["sha256"].as_str())
+        .expect("frozen Effigy digest exists")
+        .to_owned();
+    let mut drifted_plan = plan.clone();
+    let drifted_files = drifted_plan["prepared_path_sources"]["files"]
+        .as_array_mut()
+        .expect("synthetic source manifest exists");
+    let effigy_entry = drifted_files
+        .iter_mut()
+        .find(|entry| entry["path"] == "effigy.toml")
+        .expect("synthetic Effigy source entry exists");
+    effigy_entry["sha256"] = serde_json::Value::String(frozen_effigy_sha256);
+    let drifted_manifest_sha256 = sha256_reader(
+        serde_json::to_vec(drifted_files)
+            .expect("drifted source manifest serializes")
+            .as_slice(),
+    )
+    .expect("drifted source manifest hashes");
+    drifted_plan["prepared_path_sources"]["sha256"] =
+        serde_json::Value::String(drifted_manifest_sha256);
+    let drifted_continuation = PlannerBoundContinuation {
+        plan_sha256: sha256_reader(
+            serde_json::to_vec(&drifted_plan)
+                .expect("drifted plan serializes")
+                .as_slice(),
+        )
+        .expect("drifted plan hashes"),
+        ..continuation.clone()
+    };
+    assert!(matches!(
+        authorize_original_run_at(
+            &drifted_plan,
+            Some(&drifted_continuation),
+            &source_tree.root
+        ),
+        Err(OriginalRunDenied::ContinuationMismatch)
+    ));
+
+    let runner_source = source_tree
+        .root
+        .join("crates/swallowtail-adapter-copilot-cli/src/assessment_runner.rs");
+    let mut changed_source = fs::read(&runner_source).expect("isolated runner source is readable");
+    changed_source.extend_from_slice(b"\n// changed after synthetic binding\n");
+    fs::write(&runner_source, changed_source).expect("changed source stays in isolated scratch");
+    assert!(matches!(
+        authorize_original_run_at(&plan, Some(&continuation), &source_tree.root),
+        Err(OriginalRunDenied::ContinuationMismatch)
+    ));
+    fs::remove_file(&runner_source).expect("remove only isolated runner source");
+    assert!(matches!(
+        authorize_original_run_at(&plan, Some(&continuation), &source_tree.root),
+        Err(OriginalRunDenied::ContinuationMismatch)
+    ));
+    assert_eq!(fs::read_dir(&scratch.records).unwrap().count(), 0);
     assert!(fs::read_to_string(&scratch.trace).is_err());
 }
 

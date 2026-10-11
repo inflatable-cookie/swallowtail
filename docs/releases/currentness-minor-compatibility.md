@@ -203,7 +203,7 @@ existing Queue lead. Do not duplicate these tasks.
 
 | Gate | Next bounded work | Existing lead |
 | --- | --- | --- |
-| Antigravity headless past `1.2.11` (resource/RPC/permission, retry-budget, approved-environment auth; child Unknown already adapted) | Close non-Windows resource and retry evidence gaps; keep `1.3.2` UnverifiedNewer | `eca55612-015c-46ed-a38b-52a85b30f15e` |
+| Antigravity headless past `1.2.11` (Mac resource/RPC/permission, retry-budget, approved-environment auth, and Linux x64 selected control flow; child Unknown already adapted) | Close those non-Windows evidence gaps, including the unmapped Linux x64 selected control-flow proof (Research 424 remaining gate 5). Keep exact `1.2.11` until that evidence supports movement; `1.3.2` UnverifiedNewer. Windows stays on the later sweep. | `eca55612-015c-46ed-a38b-52a85b30f15e` |
 | Antigravity `1.1.18..=1.2.10` per-point pin backfill | Not now | `2ad46d4a` |
 | Grok Build catalogue default-not-in-list header | Same-contract mapping or ruling before moving exact `1.0.30` | `8d166e76` |
 | ZCode runtime hops and selected app-server behavior after identity `0.16.9` | Prove hops; missing `3.14.4` source tag remains a hole | `b5f780ff` |
@@ -227,7 +227,8 @@ abandonment (Contract 029 No Terminal Stop).
 ## Explicit Deferrals
 
 - Windows, including Antigravity Windows ARM64 sandbox proof (Research 414)
-  and Linux unproved Antigravity paths (Research 424).
+  and the later whole-codebase sweep (`17518642`). Linux x64 Antigravity
+  selected control-flow proof is not deferred; it stays on `eca55612`.
 - Designs in PR 476, 478, and 479: designs, not implementation approval.
 - Copilot exact `1.0.80` until current claims and complete qualification
   evidence establish otherwise.
@@ -310,7 +311,8 @@ Queue-owned; this list is a recommendation, not a repository status mirror.
    Q-006 cell once Tom answers). Prefer a candidate-prep docs pass over a
    separate currentness family.
 3. Parallel family adaptations on existing leads: Antigravity non-Windows
-   (`eca55612`), Grok catalogue (`8d166e76`), ZCode (`b5f780ff`), Kimi ACP
+   including Linux x64 selected control flow (`eca55612`), Grok catalogue
+   (`8d166e76`), ZCode (`b5f780ff`), Kimi ACP
    design (`e21bdd6e`), Kiro reachability (`2ec033e3`). Copilot later-than-
    `1.0.80` needs a planner brief; do not spawn a duplicate from this task.
 4. Product rulings 1–7 only if the planner wants those inclusions.

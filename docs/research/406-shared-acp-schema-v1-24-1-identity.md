@@ -101,3 +101,15 @@ the owning architecture and provider route matrix.
 - [ACP `schema-v1.24.1` release](https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.24.1)
 - [ACP release configuration for the stable v1 schema artifact](https://github.com/agentclientprotocol/agent-client-protocol/blob/main/.release-plz.toml)
 - [Swallowtail ACP schema identity fixture](../../crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/identity.json)
+
+## Correction (2026-10-11, task 180)
+
+The earlier statement that the `schema-v1.24.1` tag is signed misattributes
+the commit's verification to the tag. The annotated tag object is unsigned;
+GitHub verifies source commit `1761180eeddf0828d4ecc367106a632c61be06d9`
+separately, and key `B5690EEEBB952194` belongs to that commit verification.
+The release, tag and commit identities, asset digests, payload inventories,
+and qualification claims above are unchanged. The
+[identity fixture](../../crates/swallowtail-protocol-acp/tests/fixtures/acp-schema-v1.24.1/identity.json)
+and [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+record the corrected provenance.

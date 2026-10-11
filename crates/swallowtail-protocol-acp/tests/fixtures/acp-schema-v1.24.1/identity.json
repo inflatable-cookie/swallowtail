@@ -26,8 +26,12 @@
     "published_at": "2026-09-30T15:53:45Z",
     "source_commit": "1761180eeddf0828d4ecc367106a632c61be06d9",
     "release_url": "https://github.com/agentclientprotocol/agent-client-protocol/releases/tag/schema-v1.24.1",
-    "tag_signature": {
+    "tag_object_signature": {
+      "status": "unsigned"
+    },
+    "source_commit_verification": {
       "verified": true,
+      "verified_by": "GitHub",
       "key_id": "B5690EEEBB952194"
     },
     "stable_asset_sha256": {

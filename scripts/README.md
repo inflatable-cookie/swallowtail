@@ -30,7 +30,10 @@ Normal validation scripts:
   user-repo destination ref, tags, or `FETCH_HEAD`). A number already assigned
   to a slug on that commit cannot appear with another slug. Behind
   `effigy qa:docs:research:numbers` and CI `research-numbers`. Hermetic
-  mutation tests: `effigy qa:docs:research:numbers:test`
+  mutation tests: `effigy qa:docs:research:numbers:test`. A pass is a
+  point-in-time proof; it does not reserve a number or bind the result to a
+  later merge base. Research 442 records the merge-freshness evidence and the
+  bounded fake: `effigy qa:docs:research:freshness:test`
 - `check-docs-links.py` — front-door Markdown links plus `docs/knowledge`,
   `docs/guides` and `docs/research` bodies behind
   `effigy qa:docs:links`

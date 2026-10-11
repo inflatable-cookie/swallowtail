@@ -796,6 +796,12 @@ these rules apply to the watcher profile too.
   timers apply. The call waits under the kernel's caller, per-call, and lease
   deadlines. The courier's 65-second stall guard remains the transport backstop.
 
+Every accepted connection thread stays owned by the listener until it is joined.
+Route revocation and close wake an idle reader, which exits and is joined; close
+returns only after every connection thread has exited. Finished threads are
+joined as later connections arrive, so a long-lived listener does not accumulate
+handles or wake descriptors. A connection thread never removes its own entry.
+
 Writes keep the 5-second write timeout. Opening readiness keeps the existing
 open-deadline bound. The change adds no reconnect, retry, replay, public API,
 wire field, pin, or release metadata. One bearer, one authenticated connection

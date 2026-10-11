@@ -130,14 +130,24 @@ impl Drop for OperationBridgeRoute {
 /// The wake is a `try_clone` of the accepted stream. Shutting its read side
 /// down ends the connection loop's blocking peek on an event instead of on
 /// the idle poll; the write side stays open so a handler already in flight
-/// still delivers its response before the loop exits. The entry lives only
-/// while the thread runs: the thread removes it on exit so the clone's file
-/// descriptor never outlives the connection and a peer's end-of-stream still
-/// lands exactly when the connection loop returns.
+/// still delivers its response before the loop exits. The connection thread
+/// drops the wake on exit, so the clone's descriptor never outlives the
+/// connection. The join handle never leaves this entry: `close` joins every
+/// entry, and the accept loop joins entries whose threads have finished.
 struct AcceptedConnection {
-    connection_id: u64,
     thread: JoinHandle<()>,
-    wake: Option<TcpStream>,
+    wake: Arc<Mutex<Option<TcpStream>>>,
+}
+
+/// Shuts the read side of one connection's wake, if the connection still holds it.
+fn shutdown_wake(wake: &Mutex<Option<TcpStream>>) {
+    if let Some(stream) = wake
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .as_ref()
+    {
+        let _ = stream.shutdown(Shutdown::Read);
+    }
 }
 
 /// One listener and one accept loop for one operation.
@@ -259,14 +269,13 @@ impl OperationBridgeListener {
         // still writes its response before its loop exits. The idle poll and
         // the write timeout remain the backstop for a peer that resists
         // shutdown, and for a stream whose clone could not be taken.
-        for wake in self
+        for connection in self
             .connections
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .iter()
-            .filter_map(|connection| connection.wake.as_ref())
         {
-            let _ = wake.shutdown(Shutdown::Read);
+            shutdown_wake(&connection.wake);
         }
         wake_accept(self.listener_addr);
         if let Some(thread) = self
@@ -289,11 +298,18 @@ impl OperationBridgeListener {
                 .unwrap_or_else(std::sync::PoisonError::into_inner),
         );
         for connection in connections {
-            if let Some(wake) = connection.wake.as_ref() {
-                let _ = wake.shutdown(Shutdown::Read);
-            }
+            shutdown_wake(&connection.wake);
             let _ = connection.thread.join();
         }
+    }
+
+    /// Returns how many accepted connections the listener still tracks.
+    #[cfg(test)]
+    fn tracked_connection_count(&self) -> usize {
+        self.connections
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .len()
     }
 
     fn accept_loop(self: Arc<Self>) {
@@ -325,31 +341,33 @@ impl OperationBridgeListener {
                         drop(stream);
                         break;
                     }
+                    // Join connections whose threads have already finished, so
+                    // their descriptors and handles do not accumulate. Joining
+                    // a finished thread never waits on a live connection.
+                    let (finished, live): (Vec<_>, Vec<_>) = std::mem::take(&mut *connections)
+                        .into_iter()
+                        .partition(|connection| connection.thread.is_finished());
+                    *connections = live;
+                    for connection in finished {
+                        let _ = connection.thread.join();
+                    }
                     let connection_owner = Arc::clone(&self);
                     let connection_id = self.next_connection_id.fetch_add(1, Ordering::Relaxed);
-                    let wake = stream.try_clone().ok();
-                    let exit_owner = Arc::clone(&self);
+                    let wake = Arc::new(Mutex::new(stream.try_clone().ok()));
+                    let thread_wake = Arc::clone(&wake);
                     if let Ok(thread) = thread::Builder::new()
                         .name("swallowtail-operation-bridge-conn".to_owned())
                         .spawn(move || {
                             connection_owner.connection_loop(stream, connection_id);
-                            // Retire this entry so the wake clone's descriptor
-                            // closes with the connection instead of pinning
-                            // the socket open until close().
-                            let mut connections = exit_owner
-                                .connections
+                            // Release the wake clone's descriptor with the
+                            // connection. The join handle stays with the listener.
+                            thread_wake
                                 .lock()
-                                .unwrap_or_else(std::sync::PoisonError::into_inner);
-                            connections
-                                .retain(|connection| connection.connection_id != connection_id);
+                                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                                .take();
                         })
                     {
-                        connections.retain(|connection| !connection.thread.is_finished());
-                        connections.push(AcceptedConnection {
-                            connection_id,
-                            thread,
-                            wake,
-                        });
+                        connections.push(AcceptedConnection { thread, wake });
                     }
                 }
                 Err(error) if error.kind() == std::io::ErrorKind::Interrupted => continue,
@@ -920,20 +938,58 @@ mod tests {
             .expect("server closes the idle connection");
         assert!(started.elapsed() < Duration::from_secs(1));
         assert_eq!(fixture.handled.load(Ordering::SeqCst), 1);
+        // The reader ended on its own, but its thread is still owned by the
+        // listener until close joins it.
+        fixture.listener.close();
+        assert_eq!(
+            Arc::strong_count(&fixture.listener),
+            1,
+            "close joined the connection thread"
+        );
     }
 
     #[test]
     fn close_joins_an_idle_authenticated_connection_without_a_timeout() {
-        let fixture = fixture();
+        let mut fixture = fixture();
         let bearer = fixture.listener.bearer();
         let mut stream = connect(&fixture.listener);
         stream
             .write_all(&frame(&bearer, b"{}"))
             .expect("first frame");
         assert_eq!(read_status(&mut stream), Some(200));
+        drop(fixture.route.take());
         let started = Instant::now();
         fixture.listener.close();
         assert!(started.elapsed() < Duration::from_secs(1));
         assert_eq!(read_status(&mut stream), None);
+        // Every thread that held the listener has exited and been joined, so
+        // only this handle remains.
+        assert_eq!(
+            Arc::strong_count(&fixture.listener),
+            1,
+            "close joined every thread"
+        );
+        assert_eq!(fixture.listener.tracked_connection_count(), 0);
+    }
+
+    #[test]
+    fn finished_connections_are_joined_as_later_connections_arrive() {
+        let fixture = fixture();
+        // Peers that connect and leave end their connection threads at once.
+        for _ in 0..3 {
+            drop(connect(&fixture.listener));
+        }
+        std::thread::sleep(TIMING.io);
+        let bearer = fixture.listener.bearer();
+        let mut live = connect(&fixture.listener);
+        live.write_all(&frame(&bearer, b"{}")).expect("live frame");
+        assert_eq!(read_status(&mut live), Some(200));
+        // The finished entries were joined when the live connection was accepted,
+        // so only the live entry remains tracked.
+        assert!(
+            fixture.listener.tracked_connection_count() <= 2,
+            "finished connections were not joined: {}",
+            fixture.listener.tracked_connection_count()
+        );
     }
 }

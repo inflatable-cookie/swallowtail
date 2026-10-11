@@ -88,6 +88,14 @@ impl ProcessHandle for SdkFixtureProcess {
                             super::mcp_child::record_evidence(&self.shared, &reason);
                             super::super::host::courier_startup_failure(&reason)
                         })?;
+                    if self.scenario == super::super::host::SdkScenario::RegisteredToolAdmission {
+                        super::mcp_child::handshake_registered_courier(&self.shared).map_err(
+                            |reason| {
+                                super::mcp_child::record_evidence(&self.shared, &reason);
+                                super::super::host::courier_startup_failure(&reason)
+                            },
+                        )?;
+                    }
                 }
                 let mut state = self
                     .shared
@@ -96,6 +104,36 @@ impl ProcessHandle for SdkFixtureProcess {
                     .expect("SDK fixture state lock poisoned");
                 respond(self.scenario, &value, &mut state)?;
                 drop(state);
+                // An allowed canUseTool is what the SDK turns into the MCP
+                // tools/call. The fixture forwards it here, after the host's
+                // answer has been recorded, so the courier sees only admitted calls.
+                if value["type"] == "callback_response"
+                    && value["decision"] == "allow"
+                    && self.scenario == super::super::host::SdkScenario::RegisteredToolAdmission
+                {
+                    let sequence = u64::try_from(
+                        self.shared
+                            .process
+                            .lock()
+                            .expect("SDK fixture state lock poisoned")
+                            .registered_results
+                            .len(),
+                    )
+                    .expect("forward count fits u64")
+                        + 1;
+                    let result =
+                        super::mcp_child::forward_allowed_registered_call(&self.shared, sequence)
+                            .map_err(|reason| {
+                            super::mcp_child::record_evidence(&self.shared, &reason);
+                            fixture_failure()
+                        })?;
+                    self.shared
+                        .process
+                        .lock()
+                        .expect("SDK fixture state lock poisoned")
+                        .registered_results
+                        .push(result);
+                }
                 if command == "close" {
                     // The real SDK tears its stdio MCP children down with the
                     // session, so the fixture does too, and the child's exit is

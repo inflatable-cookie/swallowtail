@@ -85,6 +85,8 @@ pub(super) struct ProcessState {
     pub(super) holding_pump: bool,
     pub(super) process_hold_released: bool,
     pub(super) open_effort: Option<String>,
+    /// Courier responses the fake SDK received for each allowed canUseTool.
+    pub(super) registered_results: Vec<String>,
 }
 
 impl SdkFixtureHost {
@@ -233,6 +235,17 @@ impl SdkFixtureHost {
             .expect("SDK fixture state lock poisoned")
             .process_hold_released = true;
         self.shared.changed.notify_all();
+    }
+
+    /// Returns the courier's response for every canUseTool the host allowed.
+    /// A denied or still-pending admission contributes nothing.
+    pub fn forwarded_registered_results(&self) -> Vec<String> {
+        self.shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned")
+            .registered_results
+            .clone()
     }
 
     /// Returns the courier the fake SDK spawned from the declared stdio config.

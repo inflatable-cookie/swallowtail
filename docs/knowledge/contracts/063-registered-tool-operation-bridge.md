@@ -820,21 +820,24 @@ call succeeded, a 6-second idle gap followed, and the next call failed with
 - a watcher connection idle past the timeout on the shared listener, which
   closes without a response while the registered route stays connected;
 - `claude-agent.sdk` through the prepared facade with a real 45-second session
-  age: the immediate read dispatches once; turn A raises the SDK `canUseTool` for
-  the registered carrier tool, which stays pending for 20 seconds with zero
-  dispatches and is then approved; turn B is denied, dispatches nothing, and
-  leaves the lease listing its tool; turn C and turn D are approved after idle
-  gaps. Dispatches total four, one per approved read. A kernel revocation landing
-  during idle never reaches the dispatcher.
+  age, measured from open completion: turn 1 is the immediate read. Turn 2
+  raises the SDK `canUseTool` for the registered carrier tool at session age
+  45s, and the approval stays pending for 20s with nothing forwarded. The fake
+  SDK then sends the courier `tools/call` only because the host answered allow.
+  Turn 3 is denied and forwards nothing, and the next turn still succeeds on the
+  connected lease. Turns 4 and 5 are approved after idle gaps. The courier
+  answers four forwarded calls, one per approved turn. A kernel revocation
+  landing during idle never reaches the dispatcher.
 
 Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
 the altered listener behaviour.
 
 **Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
-carrier tool through `SdkScenario::RegisteredToolAdmission` and ends each turn
-only after the host's `callback_response`. It does not block its own query on
-that answer, and it does not forward `tools/call` to the courier. The test
-driver sends the courier call after the facade answers allow, and sends none
-after deny. The Node `fake-sdk.mjs` sidecar and the real Node sidecar were not
-exercised for this ordering. Live Desktop proof needs separate operator
-authority at exact identity.
+carrier tool through `SdkScenario::RegisteredToolAdmission`. It performs the
+MCP handshake with its spawned courier at open. It forwards `tools/call` to
+that courier synchronously inside the host's allow answer, and forwards nothing
+on deny. Its own query does not block on the answer: it ends each turn after the
+callback response. The forwarded call's arguments are fixed, and the forwarded
+name is the courier-side `desktop/reconcile`. The Node `fake-sdk.mjs` sidecar and
+the real Node sidecar were not exercised for this ordering. Live Desktop proof
+needs separate operator authority at exact identity.

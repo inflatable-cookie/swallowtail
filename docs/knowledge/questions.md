@@ -148,3 +148,28 @@ The brief named archive `98640ca0…`; the executed pairing is executable
 `df347f…` with archive `f254651a…`. The stop-rule breach is not erased.
 Future identity mismatches still stop. Initialize was not reached; startup
 cause unknown. Parent 119 and the exact `1.0.80` claim are unchanged.
+
+<a id="q-008"></a>
+## Q-008 — How should the frozen Copilot host-permission runner meet the Python format check?
+
+Status: open
+Asked: 2026-10-11
+Gate owner: Tom (operator)
+
+`ruff format --check` at the pinned `0.14.1` would reformat
+`scripts/copilot-acp-host-permission-proof.py`. The change is formatting only:
+the AST is identical (31,302 nodes). But the frozen task-173 plan, authority
+and fake-pass records bind the runner's live sha256. Reformatting therefore
+fails `check:copilot-acp-host-permission-task-173-binding`, and fixing that
+means rewriting frozen evidence, which this lane does not do.
+
+Options for the operator:
+
+- Authorise a successor binding: a new plan and authority for the formatted
+  runner, with historical records left unchanged. This may need new
+  original-execution authority.
+- Record the runner as an exempt frozen file in the Python format check, and
+  leave it unformatted until its frozen chain closes.
+
+Until answered, `check:copilot-acp-host-permission-format` fails on the
+unformatted runner. Fixture detection and the other scripts are unaffected.

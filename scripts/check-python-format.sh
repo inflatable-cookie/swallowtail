@@ -2,6 +2,9 @@
 set -euo pipefail
 
 # Check-only: never rewrites files, so frozen proof runners keep their bytes.
+# The formatter is pinned so every checkout judges the same bytes the same way.
+format_ruff_version="0.14.1"
+
 if (( $# < 1 )); then
   printf 'python format check requires one or more file paths\n' >&2
   exit 2
@@ -20,9 +23,12 @@ for format_candidate in "$@"; do
   fi
 done
 
-if ! command -v ruff > /dev/null 2>&1; then
-  printf 'python format check needs ruff on PATH; none was found.\n' >&2
-  printf 'Adding ruff is a dependency change and needs operator approval.\n' >&2
+format_ruff_found=$(ruff --version 2> /dev/null || true)
+if [[ "$format_ruff_found" != "ruff $format_ruff_version" ]]; then
+  printf 'python format check needs ruff %s on PATH; found: %s\n' \
+    "$format_ruff_version" "${format_ruff_found:-none}" >&2
+  printf 'Install the pinned formatter in a task-owned venv and prefix PATH.\n' >&2
+  printf 'See docs/guides/validation-tiers.md (Python format prerequisite).\n' >&2
   exit 127
 fi
 

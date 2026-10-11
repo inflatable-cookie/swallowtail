@@ -372,6 +372,7 @@ section = "Research Records"
   "bash -n scripts/tests/format-selectors.sh",
 ]
 "validate:format-selectors:test" = "bash scripts/tests/format-selectors.sh"
+"check:python-format" = "bash scripts/check-python-format.sh {args}"
 "check:copilot-acp-host-permission-format" = "bash scripts/check-python-format.sh scripts/copilot-acp-host-permission-proof.py"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"
 "probe:gemini-installed" = "cargo test -p swallowtail-adapter-gemini --features live-probes --test live_installed_probe -- --ignored --exact gemini_cli_is_installed_when_live_probe_is_enabled"

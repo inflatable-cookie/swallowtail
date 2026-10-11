@@ -109,6 +109,10 @@ fi
 # Fake ruff detects a scratch fixture by marker; the proof runner must never run.
 cat >"$format_shim/ruff" <<EOF
 #!/usr/bin/env bash
+if [[ "\$1" == --version ]]; then
+  printf 'ruff 0.14.1\n'
+  exit 0
+fi
 printf '[%s]' "\$@" >>"$format_work/ruff.log"
 printf '\n' >>"$format_work/ruff.log"
 for format_arg in "\$@"; do
@@ -159,9 +163,21 @@ if PATH=/usr/bin:/bin command -v ruff > /dev/null 2>&1; then
   exit 1
 fi
 format_expect_failure \
-  "needs ruff on PATH" \
+  "needs ruff 0.14.1 on PATH; found: none" \
   env PATH=/usr/bin:/bin "$format_real_bash" scripts/check-python-format.sh \
     "$format_scratch/formatted.py"
+
+# A ruff of the wrong version is refused, so the verdict stays pinned.
+mkdir -p "$format_work/wrong-ruff"
+cat >"$format_work/wrong-ruff/ruff" <<'EOF'
+#!/usr/bin/env bash
+printf 'ruff 0.9.0\n'
+EOF
+chmod +x "$format_work/wrong-ruff/ruff"
+format_expect_failure \
+  "found: ruff 0.9.0" \
+  env PATH="$format_work/wrong-ruff:/usr/bin:/bin" "$format_real_bash" \
+    scripts/check-python-format.sh "$format_scratch/formatted.py"
 format_expect_failure \
   "unsupported option" \
   env PATH="$format_shim:$PATH" bash scripts/check-python-format.sh --fix \

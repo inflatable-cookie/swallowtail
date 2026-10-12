@@ -61,7 +61,18 @@ Run only the relevant static truth:
 
 - `effigy qa:docs` for docs
 - `effigy qa:routes` for route, lifecycle, feature, or activity matrices
-- `effigy format:check` for Rust formatting
+- `effigy format:check` for Rust formatting across the workspace
+- `effigy format:package <pkg>...` for Rust formatting of one to four exact
+  workspace packages; runs `cargo fmt` then a check pass for that scope only
+- `effigy check:copilot-acp-host-permission-format` for the Python formatting
+  of the host-permission proof runner; check-only, needs the pinned Ruff on
+  `PATH` (see [Python Format Prerequisite](#python-format-prerequisite)).
+  Expected negative baseline: it exits nonzero and names
+  `scripts/copilot-acp-host-permission-proof.py`, because the frozen runner
+  carries historical formatting debt. The runner is not reformatted, exempted
+  or suppressed. Its hash bindings stay intact. The selector is not part of
+  mandatory QA. Open question Q-008 records the unmade operator decision.
+- `effigy check:python-format <file>...` for any other Python file, same rules
 - `effigy package:api` for public Rust declarations
 - `effigy package:metadata` for package topology
 
@@ -69,6 +80,24 @@ Use `effigy check:examples` when public examples or their linked guides
 change. Use `effigy qa:docs` for guide indexes and links. Use
 `effigy qa:routes` whenever a route, feature, activity, lifecycle, or coverage
 map changes.
+
+## Python Format Prerequisite
+
+`effigy check:python-format` and `effigy check:copilot-acp-host-permission-format`
+need Ruff `0.14.1` on `PATH`. The check refuses any other version. It never
+rewrites files. Install the pinned formatter in a task-owned environment, not
+globally:
+
+```sh
+python3 -m venv "$HOME/.local/share/swallowtail/ruff-0.14.1"
+"$HOME/.local/share/swallowtail/ruff-0.14.1/bin/pip" install ruff==0.14.1
+PATH="$HOME/.local/share/swallowtail/ruff-0.14.1/bin:$PATH" \
+  effigy check:copilot-acp-host-permission-format
+```
+
+Prefix `PATH` on the one validation invocation only. Do not edit shell startup
+files. `pipx install ruff==0.14.1` or `uv tool install ruff==0.14.1` also
+work. No workflow or manifest installs Ruff.
 
 ## Milestone And Release Gates
 

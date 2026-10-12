@@ -367,6 +367,15 @@ section = "Research Records"
 "validate:focused" = "bash scripts/validate-focused-packages.sh {args}"
 "validate:card116-mediated-stdio" = "cargo test -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy"
 "validate:selectors:test" = "bash scripts/tests/validation-selectors.sh"
+"format:package" = "bash scripts/format-packages.sh {args}"
+"check:format-selectors" = [
+  "bash -n scripts/format-packages.sh",
+  "bash -n scripts/check-python-format.sh",
+  "bash -n scripts/tests/format-selectors.sh",
+]
+"validate:format-selectors:test" = "bash scripts/tests/format-selectors.sh"
+"check:python-format" = "bash scripts/check-python-format.sh {args}"
+"check:copilot-acp-host-permission-format" = "bash scripts/check-python-format.sh scripts/copilot-acp-host-permission-proof.py"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"
 "probe:gemini-installed" = "cargo test -p swallowtail-adapter-gemini --features live-probes --test live_installed_probe -- --ignored --exact gemini_cli_is_installed_when_live_probe_is_enabled"
 "probe:grok-installed" = "SWALLOWTAIL_LIVE_GROK=1 cargo test -p swallowtail-adapter-grok --features live-probes --test live_installed_probe -- --ignored --exact installed_grok_build_is_exactly_classified"

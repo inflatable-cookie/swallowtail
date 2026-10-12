@@ -148,3 +148,46 @@ The brief named archive `98640ca0…`; the executed pairing is executable
 `df347f…` with archive `f254651a…`. The stop-rule breach is not erased.
 Future identity mismatches still stop. Initialize was not reached; startup
 cause unknown. Parent 119 and the exact `1.0.80` claim are unchanged.
+
+<a id="q-008"></a>
+## Q-008 — How should the frozen Copilot host-permission runner meet the Python format check?
+
+Status: open
+Asked: 2026-10-11
+Gate owner: Tom (operator)
+
+`ruff format --check` at the pinned `0.14.1` would reformat
+`scripts/copilot-acp-host-permission-proof.py`. The change is formatting only:
+the AST is identical (31,302 nodes). But the frozen task-173 plan, authority
+and fake-pass records bind the runner's live sha256. Reformatting therefore
+fails `check:copilot-acp-host-permission-task-173-binding`, and fixing that
+means rewriting frozen evidence, which this lane does not do.
+
+Options for the operator:
+
+- Authorise a successor binding: a new plan and authority for the formatted
+  runner, with historical records left unchanged. This may need new
+  original-execution authority.
+- Record the runner as an exempt frozen file in the Python format check, and
+  leave it unformatted until its frozen chain closes.
+
+Until answered, `check:copilot-acp-host-permission-format` fails on the
+unformatted runner. Fixture detection and the other scripts are unaffected.
+
+Planner scope clarification (2026-10-12, under Tom's existing "Go fo rit"
+approval; not a new Tom ruling):
+
+- The selector task closes on selector capability only. It does not choose
+  option A (successor binding) or option B (exemption). Neither is authorised
+  here.
+- `scripts/copilot-acp-host-permission-proof.py` stays byte-for-byte as at
+  its pre-task base (git blob `adaebe553883a464b831c2e8453811d5ed9811d9`).
+  Every historical plan, authority, fake-pass, original record and consumed
+  guard stays unchanged.
+- `check:copilot-acp-host-permission-format` is an expected negative baseline.
+  It must keep exiting nonzero and naming the runner. It is not in mandatory
+  QA. No suppressed diagnostic or exclusion is added.
+- No original invocation, successor execution binding or provider action is
+  needed or permitted by this clarification.
+- Choosing A or B, or leaving the runner as the permanent baseline, remains
+  with Tom. This question stays open for that decision.

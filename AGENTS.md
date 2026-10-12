@@ -37,6 +37,8 @@ effigy test --plan
   one to four exact workspace packages; milestone proof, not a task default
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
+- `effigy format:package <pkg>...` — exact-package `cargo fmt` plus check for
+  one to four workspace packages; never the whole workspace
 - `effigy qa:docs` — docs, link, index and guide checks
 - `effigy skill run northstar/retired-concepts` — retired-concept check;
   kept out of repository QA, so run it before pushing docs changes

@@ -47,10 +47,12 @@ breaking-if-shipped:
 | Claude Agent SDK default pair moves from released exact `0.3.259`/`2.1.259` to `0.3.293`/`2.1.293`; maintained window is `0.3.284..=0.3.295` | 036, 037, 029 | shrinking the released pin out of the production window is a guaranteed-range shrink for upgraders; additive pair enum is source-compatible for new callers | Research 416, 420; Contract 037; `ClaudeAgentSdkPackageNativePair::DEFAULT` |
 | Temporary mutation of version-labelled `public-api-0.5.1` dumps after the `v0.5.1` tag | 036 | candidate must restore tagged bytes then generate a new baseline | Contract 036 Public API And Documentation; Contract 037 pair-selection exception |
 | Seven `v0.5.2`/`v0.5.4` public lease methods are `pub(crate)` or `#[doc(hidden)]` on this `main` | 036 | removal versus `v0.5.4` unless restored as public before the candidate | tagged `public-api-0.5.4/swallowtail-runtime.txt` vs current source |
+| Gemini ACP exact `0.63.0` permission and read-boundary restrictions (`.gemini` writes and redirection ASK_USER reject-and-cancel, real-path reads, protected `.env.*` except example/sample/template/dist, 64 KiB tool-output cap) | 036, 029 | consumer-visible restriction; pre-1.0 minor. Exact `0.62.0` tool-update mapping stays additive. HTTP MCP live honouring stays exact `0.61.0` | Research 415; behavior `gemini-cli.acp.v0.63.0-restricted-files` |
+| Codex app-server `0.159.0..=0.161.0` read-only protection for an existing top-level `.aws` directory inside the approved writable root | 036, 023 | consumer-visible workspace-write narrowing; pre-1.0 minor. Contract 023 accepted the limitation; this ledger classifies the 036 consequence. Earlier app-server segments stay their prior revisions | Research 388; Contract 023 Codex App-Server Protected AWS Directory; behavior `codex.app-server.v2.protected-aws-workspace-roots` |
 
 Additive qualifications, extra route `opencode.acp`, and additive public items
 are patch-shaped on their own. They ride the same coordinated minor because
-the breaking items already force it.
+the breaking items and consumer-visible restrictions already force it.
 
 Urgent consumer adoption of `v0.5.2`–`v0.5.4` stays on the released line. This
 assessment does not move those tags.
@@ -122,7 +124,7 @@ on `v0.5.4` keep that tag's pins.
 | `llama-cpp.attached` | exact Opaque set `b9910` and `b11429`; `v0.2.0`–`v0.5.0` gaps; semantic `v0.6.0` is source evidence for `b11429` | additive Opaque membership | Research 421 |
 | `llama-cpp.owned` | exact Opaque `b10069` / `178a6c449` | unchanged; `v0.6.0`/`b11429` unqualified | Research 407 |
 | `ollama.attached` | preserved through `0.35.1`; maintained `0.40.0..=0.40.1` on `ollama.native-text-v1.manifest-list-runner` | additive private milestone; fail-closed identity drift | Research 418 |
-| `gemini-cli.acp` | `0.51.0..=0.61.0` plus exact `0.62.0` and `0.63.0` private milestones; HTTP MCP live exact `0.61.0` | additive; live honouring stays exact | Research 415, 362 |
+| `gemini-cli.acp` | `0.51.0..=0.61.0` plus exact `0.62.0` (`v0.62.0-tool-updates`) and exact `0.63.0` (`v0.63.0-restricted-files`); HTTP MCP live exact `0.61.0` | `0.63.0` permission/read restrictions are minor; `0.62.0` is additive; live honouring stays exact `0.61.0` | Research 415, 362 |
 | `gemini-cli.headless` | ceiling `0.61.0`; `0.62.0`/`0.63.0` UnverifiedNewer | stop, not inclusion | Research 417 |
 | `deepseek-harness.local-server` | axis `deepseek-harness.web`; exact RCs `0.1.0-rc.6` through `0.1.1-rc.2`; `--no-open` from `0.1.0-rc.8` | additive exact RCs | Research 411 |
 | `deepseek-harness.jsonrpc` | exact `0.1.0rc6` | unchanged | Research 412 (study only) |
@@ -139,7 +141,7 @@ on `v0.5.4` keep that tag's pins.
 | `cline.headless` | `3.0.55`–`3.0.70` excluding `3.0.59` | additive | Research 390 |
 | `goose.acp` | exact `1.50.1`\|`1.51.0`\|`1.52.0`\|`1.53.0` | additive | Research 392 |
 | `codex.exec` | through `0.161.0` | additive | Research 410 |
-| `codex.app-server` | through `0.161.0` | additive | Research 388 |
+| `codex.app-server` | through `0.161.0`; maintained `0.159.0..=0.161.0` on `codex.app-server.v2.protected-aws-workspace-roots` | `0.159.0..=0.161.0` `.aws` write narrowing is minor; earlier post-`0.155.1` segments stay their accepted revisions | Research 388; Contract 023 |
 | `cursor-agent.{catalogue,acp,headless}` | through `2026.10.01-14929f9` | additive | Research 393, 395, 399 |
 | `pi.rpc` | through `1.1.0` | additive | Research 383 |
 | `pi.sdk-sidecar` | exact package points through `1.1.0`; Node `22.23.2..=22.23.3` | additive | Research 400, 396 |
@@ -285,10 +287,12 @@ Finite proposed content for the planner, still not a candidate:
 **Include** current `main` currentness qualifications listed above that
 already have claim plus research evidence; courier idle already on `main`;
 Opaque constructor narrowing; Antigravity Unknown child projection;
-Command Code `1.73.0` model-selection guarantee; additive public API;
-additive route `opencode.acp`; Node `22.23.3`; ACP schema through
-`v1.24.1`; restore `v0.5.4` public lease methods; restore tagged `0.5.1`
-baselines then generate the new minor inventories.
+Command Code `1.73.0` model-selection guarantee; Gemini ACP `0.63.0`
+restricted-files behavior; Codex app-server `0.159.0..=0.161.0` protected-`.aws`
+write narrowing; additive public API; additive route `opencode.acp`; Node
+`22.23.3`; ACP schema through `v1.24.1`; restore `v0.5.4` public lease
+methods; restore tagged `0.5.1` baselines then generate the new minor
+inventories.
 
 **Exclude from claim movement** Copilot later than `1.0.80`; Kimi ACP past
 `0.38.0`; Kiro past `2.21.4`; Grok catalogue past `1.0.30`; ZCode / Muse

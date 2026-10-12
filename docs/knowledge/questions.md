@@ -173,3 +173,21 @@ Options for the operator:
 
 Until answered, `check:copilot-acp-host-permission-format` fails on the
 unformatted runner. Fixture detection and the other scripts are unaffected.
+
+Planner scope clarification (2026-10-12, under Tom's existing "Go fo rit"
+approval; not a new Tom ruling):
+
+- The selector task closes on selector capability only. It does not choose
+  option A (successor binding) or option B (exemption). Neither is authorised
+  here.
+- `scripts/copilot-acp-host-permission-proof.py` stays byte-for-byte as at
+  its pre-task base (git blob `adaebe553883a464b831c2e8453811d5ed9811d9`).
+  Every historical plan, authority, fake-pass, original record and consumed
+  guard stays unchanged.
+- `check:copilot-acp-host-permission-format` is an expected negative baseline.
+  It must keep exiting nonzero and naming the runner. It is not in mandatory
+  QA. No suppressed diagnostic or exclusion is added.
+- No original invocation, successor execution binding or provider action is
+  needed or permitted by this clarification.
+- Choosing A or B, or leaving the runner as the permanent baseline, remains
+  with Tom. This question stays open for that decision.

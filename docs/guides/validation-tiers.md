@@ -66,8 +66,12 @@ Run only the relevant static truth:
   workspace packages; runs `cargo fmt` then a check pass for that scope only
 - `effigy check:copilot-acp-host-permission-format` for the Python formatting
   of the host-permission proof runner; check-only, needs the pinned Ruff on
-  `PATH` (see [Python Format Prerequisite](#python-format-prerequisite)). It
-  fails on the unformatted frozen runner until open question Q-008 is answered.
+  `PATH` (see [Python Format Prerequisite](#python-format-prerequisite)).
+  Expected negative baseline: it exits nonzero and names
+  `scripts/copilot-acp-host-permission-proof.py`, because the frozen runner
+  carries historical formatting debt. The runner is not reformatted, exempted
+  or suppressed. Its hash bindings stay intact. The selector is not part of
+  mandatory QA. Open question Q-008 records the unmade operator decision.
 - `effigy check:python-format <file>...` for any other Python file, same rules
 - `effigy package:api` for public Rust declarations
 - `effigy package:metadata` for package topology

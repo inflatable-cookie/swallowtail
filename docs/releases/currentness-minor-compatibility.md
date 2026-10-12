@@ -124,7 +124,7 @@ on `v0.5.4` keep that tag's pins.
 | `ollama.attached` | preserved through `0.35.1`; maintained `0.40.0..=0.40.1` on `ollama.native-text-v1.manifest-list-runner` | additive private milestone; fail-closed identity drift | Research 418 |
 | `gemini-cli.acp` | `0.51.0..=0.61.0` plus exact `0.62.0` and `0.63.0` private milestones; HTTP MCP live exact `0.61.0` | additive; live honouring stays exact | Research 415, 362 |
 | `gemini-cli.headless` | ceiling `0.61.0`; `0.62.0`/`0.63.0` UnverifiedNewer | stop, not inclusion | Research 417 |
-| `deepseek-harness.web` | exact RCs `0.1.0-rc.6` through `0.1.1-rc.2`; `--no-open` from `0.1.0-rc.8` | additive exact RCs | Research 411 |
+| `deepseek-harness.local-server` | axis `deepseek-harness.web`; exact RCs `0.1.0-rc.6` through `0.1.1-rc.2`; `--no-open` from `0.1.0-rc.8` | additive exact RCs | Research 411 |
 | `deepseek-harness.jsonrpc` | exact `0.1.0rc6` | unchanged | Research 412 (study only) |
 | `copilot-cli.acp` | exact QualifiedOnly `1.0.80` | unchanged; later stables remain unqualified | Research 440, 441 |
 | `kimi-code.acp` | QualifiedOnly through `0.38.0` | stop, not inclusion | Research 403 |
@@ -210,7 +210,7 @@ existing Queue lead. Do not duplicate these tasks.
 | Kimi ACP local-spawn process authority through official `2.1.1` | Review host-mediated process design; ceiling stays `0.38.0` | `e21bdd6e` |
 | Kiro ACP owner-sweep reachability after `2.21.4` | Startup reachability in the isolated owner-state harness | `2ec033e3` |
 | Gemini headless Plan Mode `exit_plan_mode` → YOLO at `0.63.0` | Separate enforcement design and authority ruling; PR 478 is a design | no implementation lead; Research 417 |
-| DeepSeek Web past `0.1.1-rc.2` / `0.2.0-rc.2` browser auth | Browser-session design (PR 479 / Research 427) then implementation | no implementation lead |
+| `deepseek-harness.local-server` past `0.1.1-rc.2` / `0.2.0-rc.2` browser auth | Browser-session design (PR 479 / Research 427) then implementation | no implementation lead |
 | DeepSeek SDK JSON-RPC profile | Design (PR 476 / Research 412 / Contract 023); new route, not a milestone on `0.1.0rc6` | no implementation lead |
 | llama.cpp owned past `b10069` | Claim-model and owned-runtime selection adaptation | Research 407; no separate open currentness lead beyond the candidate |
 | Muse signed payload `1.4.4-R5419.1` | Qualification after public hop/source identity exists | Research 409 |
@@ -292,8 +292,9 @@ baselines then generate the new minor inventories.
 
 **Exclude from claim movement** Copilot later than `1.0.80`; Kimi ACP past
 `0.38.0`; Kiro past `2.21.4`; Grok catalogue past `1.0.30`; ZCode / Muse
-identity-only targets; Gemini headless past `0.61.0`; DeepSeek Web past
-`0.1.1-rc.2` and JSON-RPC past `0.1.0rc6`; llama.cpp owned past `b10069`;
+identity-only targets; Gemini headless past `0.61.0`;
+`deepseek-harness.local-server` past `0.1.1-rc.2` and JSON-RPC past
+`0.1.0rc6`; llama.cpp owned past `b10069`;
 Antigravity headless past exact `1.2.11` except the already-adapted Unknown
 projection; Windows; PR 476/478/479 implementations; further HTTP MCP live
 attempts; Q-006 mapping.

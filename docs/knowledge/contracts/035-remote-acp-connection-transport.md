@@ -67,6 +67,10 @@ Contract 014 supplies one scoped `NetworkGrant`. The transport uses its exact
 host-approved endpoint and cannot alter scheme, authority, base path, proxy,
 TLS policy, or host placement.
 
+Certificate verification is the locked rustls stack's. Its trust set and
+distrust checks follow the approved emSign distrust in Contract 023; no
+transport option adds, removes, or bypasses trust.
+
 The endpoint scheme selects one transport:
 
 - `http` or `https`: HTTP/2 Streamable HTTP with SSE response streams

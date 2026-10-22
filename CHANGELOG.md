@@ -6,13 +6,29 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Security
-- patch the locked `rustls` from `0.23.45` to `0.23.46` to clear
-  RUSTSEC-2026-0346 and RUSTSEC-2026-0347. The lock delta is `rustls` only;
-  no manifest, provider, SDK, TLS root or verification policy changed. Swallowtail
-  has no direct `rustls` use and enables no ECH on its reverse paths
-  (`reqwest`, `hyper-rustls`, `async-tungstenite`, `tungstenite`, AWS HTTP
-  client), and static review found no path to either advisory. Released tags
-  are not repaired by this entry.
+- patch the locked TLS stack for RUSTSEC-2026-0346, -0347, -0381, -0382 and
+  -0383. The lock moves `rustls` `0.23.45` to `0.23.46`, `rustls-webpki`
+  `0.103.15` to `0.103.16`, and `webpki-root-certs` and `webpki-roots` `1.0.9`
+  to `1.0.10`. No manifest, provider, SDK, native, Node or wire pin, public API
+  or MSRV changed.
+- intentional trust tightening, approved under Contract 023 (Rust TLS emSign
+  distrust): `emSign ECC Root CA - G3` is removed from the bundled
+  `webpki-roots` set, and `rustls-webpki` rejects chains containing the listed
+  distrusted emSign intermediate public keys. Affected chains now fail
+  verification with a generic certificate error. Consumers whose endpoints
+  chain through emSign G3 or these intermediates lose that trust. No endpoint
+  or live compatibility is claimed. Unrelated roots, hostname and certificate
+  verification, and host authority are unchanged.
+- exposure: the bundled-root set applies to `async-tungstenite` WebSocket
+  connections in `swallowtail-transport-acp-remote`. The distrust check applies to every
+  `rustls-webpki` verifier path (`aws-smithy-http-client`, the
+  `tungstenite` native-roots adapters, `reqwest` on non-Apple, non-Windows
+  unix). `reqwest` on Apple and Windows verifies through the OS platform
+  verifier, so this lock does not change that path. `webpki-root-certs` is
+  compiled only for `wasm32`.
+- no `rustls` advisory path is established in Swallowtail: no direct `rustls`
+  use, and no reverse path enables ECH. Released tags are not repaired by this
+  entry.
 
 ### Notes
 - close the bounded `antigravity.headless` evidence task without claiming a

@@ -5,6 +5,15 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Security
+- patch the locked `rustls` from `0.23.45` to `0.23.46` to clear
+  RUSTSEC-2026-0346 and RUSTSEC-2026-0347. The lock delta is `rustls` only;
+  no manifest, provider, SDK, TLS root or verification policy changed. Swallowtail
+  has no direct `rustls` use and enables no ECH on its reverse paths
+  (`reqwest`, `hyper-rustls`, `async-tungstenite`, `tungstenite`, AWS HTTP
+  client), and static review found no path to either advisory. Released tags
+  are not repaired by this entry.
+
 ### Notes
 - close the bounded `antigravity.headless` evidence task without claiming a
   newer point. The exact `1.2.11` ceiling, baseline `1.1.9`, deprecated

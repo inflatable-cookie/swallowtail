@@ -62,6 +62,7 @@ section = "Research Records"
 ]
 "check:opaque-set-claim" = "cargo check --locked --all-targets -p swallowtail-core -p swallowtail-runtime"
 "validate:opaque-set-claim" = "cargo nextest run --locked --profile ci -p swallowtail-core -p swallowtail-runtime --lib -E 'test(/interface_version::tests::/) | test(/installed_executable::tests::/) | test(/connection_lifecycle::tests::/) | test(/connection_lifecycle::update_tests::/) | test(/prepared_operation::tests::(opaque_set|prepared_opaque_set)/)'"
+"validate:rustls-security" = "cargo nextest run --locked --profile ci -p swallowtail-transport-acp-remote --lib -E 'test(remote_transport_lifecycles_run_sequentially) | test(cleanup_failure_is_explicit_and_redacted) | test(stable_errors_never_include_raw_transport_material) | test(maintained_server_matches_raw_http_boundary_cases)'"
 "format:copilot-acp-offline-proof" = [
   "cargo fmt -p swallowtail-adapter-copilot-cli",
   "cargo fmt -p swallowtail-adapter-copilot-cli -- --check",

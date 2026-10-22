@@ -1951,3 +1951,25 @@ versions, compatibility claims, public API, permissions and lifecycle
 promises unchanged. Any required change to those boundaries returns for a
 separate ruling. No vendor execution, live provider work, credentials,
 installation, host mutation or release authority is included.
+
+## Rust TLS emSign Distrust Security Maintenance
+
+Tom answered “Approve” on 2026-10-22 to decision
+`d6254c0d-3306-4e66-81fb-d8f842715eb9`, accepting the upstream emSign distrust
+fixes as bounded security maintenance: `rustls-webpki` `0.103.15` to
+`0.103.16`, `webpki-root-certs` `1.0.9` to `1.0.10`, and `webpki-roots`
+`1.0.9` to `1.0.10`.
+
+The approved change removes `emSign ECC Root CA - G3` from the bundled roots
+and rejects paths containing distrusted emSign intermediate public keys.
+Connections relying on that trust may fail. The two root packages contain
+separate payloads; updating only one does not establish that both are fixed.
+The upstream boundaries are [RUSTSEC-2026-0382](https://rustsec.org/advisories/RUSTSEC-2026-0382.html),
+[RUSTSEC-2026-0383](https://rustsec.org/advisories/RUSTSEC-2026-0383.html), and
+[RUSTSEC-2026-0381](https://rustsec.org/advisories/RUSTSEC-2026-0381.html).
+
+Preserve unrelated roots, provider/SDK/native/Node/wire pins, public API,
+MSRV and host, authentication and permission authority. Verify the exact
+dependency and trust delta, covering checks and consumer compatibility notes
+before independent review. No advisory ignore, trust fallback, new live
+attempt, released-branch change or release authority follows from this ruling.

@@ -55,6 +55,13 @@ packages then compile through one shared temporary target against local
 unpublished Swallowtail dependencies. The temporary subset lock is generated
 offline. The repository lock is unchanged.
 
+Extracted packages keep the `crates/<package>` position, so a test that embeds
+workspace evidence through `../../../` resolves against that temporary root;
+the run copies only the read-only workspace lock and retained research records
+there, never into a package. A test that embeds a sibling package's fixtures
+(`../swallowtail-<package>/tests/...`) needs that sibling in the same group,
+because the extracted tree contains only the selected packages.
+
 ## Static Gates
 
 Run only the relevant static truth:

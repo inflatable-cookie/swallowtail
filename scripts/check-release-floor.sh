@@ -11,10 +11,12 @@ if ! rustup toolchain list | rg -q "^${SWALLOWTAIL_MSRV}(-|$)"; then
   exit 1
 fi
 
-nice -n 5 rustup run "$SWALLOWTAIL_MSRV" cargo clippy \
+RUSTUP_TOOLCHAIN=$SWALLOWTAIL_MSRV nice -n 5 \
+  bash "$release_repo_root/scripts/oxide-rust.sh" clippy \
   --workspace \
   --all-targets --all-features --locked -- -D warnings
-nice -n 5 rustup run "$SWALLOWTAIL_MSRV" cargo test \
+RUSTUP_TOOLCHAIN=$SWALLOWTAIL_MSRV nice -n 5 \
+  bash "$release_repo_root/scripts/oxide-rust.sh" test \
   --workspace \
   --all-features --locked
 

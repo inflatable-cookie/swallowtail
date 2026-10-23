@@ -23,7 +23,7 @@ initial-tag-current-version = true
 # then, invoke the local-heavy profile below only when no qualifying hosted
 # run exists.
 [release.gates]
-fmt = "cargo fmt --all -- --check"
+fmt = "bash scripts/oxide-rust.sh fmt --all -- --check"
 qa = "effigy qa:docs && effigy qa:routes"
 docs = "effigy package:docs"
 metadata = "effigy package:metadata"
@@ -37,7 +37,7 @@ source = "effigy package:source-consumer"
 # when no qualifying hosted run exists. Heavy Rust lanes stay at reduced
 # scheduling priority so the developer machine remains usable.
 #
-# lint = "nice -n 5 cargo clippy --workspace --all-targets --all-features --locked -- -D warnings"
-# "lint:no-features" = "nice -n 5 cargo clippy --workspace --all-targets --no-default-features --locked -- -D warnings"
-# test = "nice -n 5 cargo nextest run --workspace --all-features --locked"
+# lint = "nice -n 5 bash scripts/oxide-rust.sh clippy --workspace --all-targets --all-features --locked -- -D warnings"
+# "lint:no-features" = "nice -n 5 bash scripts/oxide-rust.sh clippy --workspace --all-targets --no-default-features --locked -- -D warnings"
+# test = "nice -n 5 bash scripts/oxide-rust.sh nextest run --workspace --all-features --locked"
 # floor = "effigy package:release-floor"

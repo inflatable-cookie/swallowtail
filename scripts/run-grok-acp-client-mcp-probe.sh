@@ -19,10 +19,18 @@ set -euo pipefail
 #       --version 1.0.5 \
 #       --grok-executable /path/to/grok \
 #       --output /path/to/capsule.json
+#
+# Routing: this script runs Cargo itself, so it re-executes through the shared
+# helper's host-tool mode as one supported lease, and its example build and run
+# inherit Oxide's storage placement. `GITHUB_ACTIONS=true` or
+# SWALLOWTAIL_RUST_RUNNER=cargo keeps the plain-Cargo branch, and a missing
+# Oxide fails with the escape named. Live spawn still needs the authority guard
+# above; routing changes no probe behaviour.
 
 probe_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$probe_repo_root"
 
+probe_original_args=("$@")
 probe_version=""
 probe_grok_executable=""
 probe_output_path=""
@@ -66,6 +74,15 @@ fi
 if [[ "${SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE:-}" != "1" ]]; then
   printf '%s: refusing live Grok path; Desktop sets SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1\n' "$0" >&2
   exit 2
+fi
+
+# One supported lease for this Cargo-running tool. The guard stops a re-exec
+# loop; the child inherits the lease's storage environment. The shared helper
+# owns the CI/plain branch, the explicit escape and the missing-Oxide refusal.
+if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != "1" ]]; then
+  SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$probe_repo_root/scripts/oxide-rust.sh" \
+    --host-tool "$probe_repo_root/scripts/run-grok-acp-client-mcp-probe.sh" \
+    "${probe_original_args[@]}"
 fi
 
 probe_cleanup() {

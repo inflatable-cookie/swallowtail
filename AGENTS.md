@@ -37,8 +37,8 @@ effigy test --plan
   one to four exact workspace packages; milestone proof, not a task default
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
-- `effigy format:package <pkg>...` — exact-package `cargo fmt` plus check for
-  one to four workspace packages; never the whole workspace
+- `effigy format:package <pkg>...` — exact-package fmt plus check for one to
+  four workspace packages; never the whole workspace
 - `effigy qa:docs` — docs, link, index and guide checks
 - `effigy skill run northstar/retired-concepts` — retired-concept check;
   kept out of repository QA, so run it before pushing docs changes
@@ -47,10 +47,13 @@ effigy test --plan
   Oxide/plain-Cargo routing tests; run it when selectors or the helper change
 - `effigy qa` — the full board
 
-Ordinary build, check, clippy, test and nextest selectors run through Oxide.
-Every one keeps a `<selector>:cargo` sibling that runs the same arguments on
-plain Cargo, and `GITHUB_ACTIONS=true` selects that plain branch. Use the
-sibling when Oxide itself is broken; exceptions and their reasons live in the
+Ordinary build, check, clippy, test and nextest selectors run through Oxide,
+as do fmt, metadata and deny routes and the doc gate. Every switched selector
+keeps a `<selector>:cargo` sibling that runs the same arguments on plain Cargo,
+and `GITHUB_ACTIONS=true` selects that plain branch. Use the sibling when Oxide
+itself is broken. Routes with a private target or temporary workspace are
+pending qualified Oxide one-use support, and the remaining genuine exceptions,
+with their reasons, live in the
 [validation tiers](docs/guides/validation-tiers.md#oxide-adoption-boundary).
 
 Prefer `effigy <task>` over raw commands. `effigy doctor` is orientation, not

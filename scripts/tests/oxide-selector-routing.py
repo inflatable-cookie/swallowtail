@@ -1,29 +1,33 @@
 #!/usr/bin/env python3
-"""Inventory and routing guard for Swallowtail's Effigy selectors.
+"""Inventory and routing guard for Swallowtail's maintained Rust routes.
 
 Run: `effigy validate:oxide-routing`.
 
-Every maintained selector whose route spells a Cargo command is classified
-here as one of two kinds:
+The expanded Oxide adoption boundary (docs/guides/validation-tiers.md) makes
+every maintained route without a genuine Cargo requirement use Oxide. This
+guard classifies each maintained selector and script that reaches Cargo:
 
-* switched - the selector runs `bash scripts/oxide-rust.sh <cargo args>` and
-  keeps a `<selector>:cargo` sibling whose command is the same Cargo arguments
-  with no Oxide anywhere on the route;
-* exception - the selector stays on plain Cargo for a stated reason.
+* switched - the selector runs `bash scripts/oxide-rust.sh <same arguments>`
+  and keeps a `<selector>:cargo` sibling with no Oxide anywhere on its route;
+  or the selector runs a maintained script that routes through that helper and
+  keeps a sibling that forces the helper's plain-Cargo branch;
+* pending - the route needs a private `CARGO_TARGET_DIR` or a temporary
+  workspace, which waits for qualified Oxide one-use workspace support;
+* genuine - hosted CI, a route whose subject is the pinned original
+  invocation, or a review/test of a Cargo invocation itself;
+* query - a shared scope precheck that keeps pending routes wholly off Oxide.
 
-A selector that spells Cargo and fits neither is a routing defect, and so is a
-switched selector with a missing, extra or reordered sibling. The script also
-checks the release include, the first-conversion ignore rule and the generated
-Oxide agent block. It reads only maintained files plus the release include, so
-it is a static inventory: it proves wiring, not that every moved selector was
-executed.
+Anything else that spells Cargo is a routing defect, as is a switched selector
+with a missing, changed, reordered or Oxide-tainted sibling, a stale entry, a
+script that disagrees with its classification, or a changed release include,
+target ignore rule or agent block. It reads maintained files only, so it
+proves wiring and classification, not that every switched route was executed.
 
 Usage:
-  oxide-selector-routing.py            check the inventory (exits nonzero on
-                                       any defect, prints the receipt)
-  oxide-selector-routing.py --inventory
-                                       also print one row per classified
-                                       selector
+  oxide-selector-routing.py             check (nonzero on a defect), print the
+                                        receipt
+  oxide-selector-routing.py --inventory also print one row per classified
+                                        selector or script
 """
 
 from pathlib import Path
@@ -38,149 +42,138 @@ GITIGNORE = ROOT / ".gitignore"
 AGENTS = ROOT / "AGENTS.md"
 
 RUNNER = "bash scripts/oxide-rust.sh "
-ALLOWED_VERBS = ("check", "clippy", "nextest", "test", "build")
+PLAIN_ESCAPE = "SWALLOWTAIL_RUST_RUNNER=cargo "
+ALLOWED_VERBS = (
+    "check",
+    "clippy",
+    "nextest",
+    "test",
+    "build",
+    "fmt",
+    "deny",
+    "doc",
+    "metadata",
+    "public-api",
+)
 ENV_ASSIGNMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 
-# Selectors that stay on plain Cargo, with the reason that keeps them there.
-# `format:` and `probe:` are matched by prefix (see PREFIX_EXCEPTIONS); every
-# other exception is named exactly so a retired one fails this check.
-EXCEPTIONS = {
+# Routes that wait for qualified Oxide one-use workspace support: they own a
+# private CARGO_TARGET_DIR or a temporary consumer/package workspace, or their
+# tests build such a target themselves.
+PENDING = {
     "test:rust": (
-        "whole-workspace nextest keeps the milestone shape, and it runs the "
-        "courier and Grok registered-tool test binaries, which build a nested "
-        "Cargo target of their own"
+        "the whole-workspace suite includes courier and Grok registered-tool "
+        "tests that build a nested Cargo target of their own"
+    ),
+    "validate:focused": (
+        "whole-package suites include those nested-Cargo tests and the route is "
+        "the milestone package proof"
     ),
     "validate:sdk-registered-lifetime": (
-        "selects claude_agent_sdk_driver registered-tool tests, whose nested "
-        "courier build requires the run-owned private target"
+        "selects Claude SDK registered-tool tests whose nested courier build "
+        "requires the run-owned private target"
     ),
     "validate:sdk-unsolicited-close": (
-        "selects claude_agent_sdk_driver registered-tool tests, whose nested "
-        "courier build requires the run-owned private target"
+        "selects Claude SDK registered-tool tests whose nested courier build "
+        "requires the run-owned private target"
     ),
     "validate:current-grok-build-acp": (
-        "selects acp_suite registered-tool tests, which build the courier into "
-        "their own nested Cargo target and would inherit Oxide's slot build "
-        "directory"
-    ),
-    "lint:current-pi-sdk-sidecar": (
-        "one step selects a toolchain with a leading `cargo +1.95.0`; Oxide "
-        "refuses a leading +toolchain and the MSRV proof keeps its exact pin"
-    ),
-    "lint:current-copilot-cli-acp": (
-        "one step selects a toolchain with a leading `cargo +1.95.0`; Oxide "
-        "refuses a leading +toolchain and the MSRV proof keeps its exact pin"
-    ),
-    "security:dependencies": (
-        "`cargo deny` is a supply-chain metadata tool, not a build route"
-    ),
-    "package:docs": (
-        "RUSTDOCFLAGS missing-docs gate on the release and CI route"
-    ),
-    "check:copilot-acp-offline-proof": (
-        "static proof cluster mixing Python validation steps with one Cargo "
-        "compile step; not an ordinary local build entry point"
-    ),
-    "validate:copilot-acp-offline-proof": (
-        "static proof cluster mixing Python validation steps with one Cargo "
-        "test step; not an ordinary local test entry point"
-    ),
-    "check:current-copilot-cli-acp": (
-        "static proof cluster mixing Python ledger checks with one Cargo "
-        "compile step; not an ordinary local build entry point"
-    ),
-    "validate:current-copilot-cli-acp": (
-        "static proof cluster mixing a Python ledger check with one Cargo "
-        "test step; not an ordinary local test entry point"
-    ),
-    "validate:copilot-acp-private-assessment": (
-        "static proof cluster mixing a Cargo test step with a Python "
-        "self-test; not an ordinary local test entry point"
-    ),
-    "check:copilot-acp-authenticated-proof": (
-        "static proof cluster mixing Python plan validation with one Cargo "
-        "compile step; not an ordinary local build entry point"
-    ),
-    "validate:copilot-acp-authenticated-proof": (
-        "static proof cluster mixing a Python self-test with one Cargo test "
-        "step; not an ordinary local test entry point"
-    ),
-}
-
-PREFIX_EXCEPTIONS = {
-    "format:": (
-        "formatting only; `cargo fmt` is plain passthrough in Oxide and "
-        "writes no build output"
-    ),
-    "probe:": (
-        "live provider probe; it needs explicit operator authority and is not "
-        "an ordinary local build route"
-    ),
-}
-
-
-# Selectors that reach Cargo through a maintained script instead of spelling a
-# Cargo command word themselves. Each stays on plain Cargo for the stated
-# reason, and this table is the inventory that keeps them visible: a script
-# wrapper must not acquire the Oxide route by accident.
-SCRIPT_WRAPPED = {
-    "validate:focused": (
-        "scripts/validate-focused-packages.sh",
-        "whole-package milestone proof includes the nested-Cargo courier tests",
-    ),
-    "format:package": (
-        "scripts/format-packages.sh",
-        "formatting only; package-scoped cargo fmt and its check pass",
-    ),
-    "check:sdk-patch-backport": (
-        "scripts/release/backports/sdk-v0.5.2/runner.sh",
-        "release backport runner owns its private targets and pinned toolchains",
-    ),
-    "validate:sdk-patch-backport": (
-        "scripts/release/backports/sdk-v0.5.2/runner.sh",
-        "release backport runner owns its private targets and pinned toolchains",
-    ),
-    "format:sdk-patch-backport": (
-        "scripts/release/backports/sdk-v0.5.2/runner.sh",
-        "release backport runner owns its private targets and pinned toolchains",
+        "selects Grok registered-tool tests that build a courier into their own "
+        "nested target"
     ),
     "check:sdk-courier-timeout": (
-        "scripts/run-with-owned-cargo-target.sh",
-        "private run-owned target plus cleanup; Oxide owns storage placement",
+        "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
+        "and its cleanup"
     ),
     "validate:sdk-courier-timeout": (
-        "scripts/run-with-owned-cargo-target.sh",
-        "private run-owned target plus cleanup; Oxide owns storage placement",
+        "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
+        "and its cleanup"
     ),
     "validate:sdk-courier-idle": (
-        "scripts/run-with-owned-cargo-target.sh",
-        "private run-owned target plus cleanup; Oxide owns storage placement",
-    ),
-    "package:metadata": (
-        "scripts/check-package-metadata.sh",
-        "cargo metadata topology gate on the release and CI route",
-    ),
-    "package:api": (
-        "scripts/check-public-api.sh",
-        "cargo-public-api baseline gate; a metadata tool, not a build route",
-    ),
-    "package:msrv": (
-        "scripts/check-msrv.sh",
-        "pinned-toolchain cargo check through rustup run",
-    ),
-    "package:release-floor": (
-        "scripts/check-release-floor.sh",
-        "pinned-MSRV cargo clippy and test through rustup run",
+        "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
+        "and its cleanup"
     ),
     "package:source-consumer": (
-        "scripts/verify-source-consumer.sh",
-        "external source consumer with its own generated lock and target",
+        "generates a temporary consumer workspace and lock outside this "
+        "checkout and builds it there"
     ),
     "package:verify-affected": (
-        "scripts/verify-affected-packages.sh",
-        "package archive assembly and a private compile target",
+        "assembles package archives and compiles extracted packages in a "
+        "private temporary target"
+    ),
+    "check:sdk-patch-backport": (
+        "the backport runner stages a private candidate and consumer clone with "
+        "its own targets and pinned toolchains"
+    ),
+    "validate:sdk-patch-backport": (
+        "the backport runner stages a private candidate and consumer clone with "
+        "its own targets and pinned toolchains"
+    ),
+    "format:sdk-patch-backport": (
+        "the backport runner formats inside a private candidate clone"
     ),
 }
+
+# Genuine Cargo exceptions: hosted CI keeps its unchanged raw-Cargo workflows,
+# and this route's subject is the pinned original invocation, which it needs
+# original authority to review. Genuine exceptions are otherwise script-level
+# (see SCRIPT_CLASSES).
+GENUINE = {
+    "observe:copilot-acp-private-assessment": (
+        "scripts/copilot-acp-original-entry.sh",
+        "reviewed original-entry live assessment; its subject is the pinned "
+        "original invocation and it needs original authority",
+    ),
+}
+
+# Selectors whose maintained script routes through the helper. The selector
+# text itself stays the script call; its sibling forces the plain branch.
+SCRIPT_ROUTES = {
+    "format:package": "scripts/format-packages.sh",
+    "package:metadata": "scripts/check-package-metadata.sh",
+    "package:api": "scripts/check-public-api.sh",
+    "package:msrv": "scripts/check-msrv.sh",
+    "package:release-floor": "scripts/check-release-floor.sh",
+}
+
+# Maintained scripts that reach Cargo, with the class each must keep.
+SCRIPT_CLASSES = {
+    "scripts/check-msrv.sh": "switched",
+    "scripts/check-package-metadata.sh": "switched",
+    "scripts/check-release-floor.sh": "switched",
+    "scripts/format-packages.sh": "switched",
+    "scripts/generate-public-api-baseline.sh": "switched",
+    "scripts/run-grok-acp-client-mcp-probe.sh": "host-tool",
+    "scripts/oxide-rust.sh": "helper",
+    "scripts/tests/oxide-rust-routing.sh": "fake-proof",
+    "scripts/tests/format-selectors.sh": "genuine",
+    "scripts/copilot-acp-original-entry.sh": "genuine",
+    "scripts/validate-focused-packages.sh": "pending",
+    "scripts/verify-affected-packages.sh": "pending",
+    "scripts/verify-source-consumer.sh": "pending",
+    "scripts/release/backports/sdk-v0.5.2/runner.sh": "pending",
+    "scripts/run-with-owned-cargo-target.sh": "pending",
+    "scripts/validation/package-scope.sh": "query",
+}
+
+SCRIPT_REASONS = {
+    "switched": "routes its Cargo command through scripts/oxide-rust.sh",
+    "host-tool": (
+        "Cargo-running host tool: one `oxide exec --` lease, plain-Cargo branch "
+        "for CI and the escape"
+    ),
+    "helper": "the shared routing helper",
+    "fake-proof": "hermetic proof of the helper with fake tools only",
+    "genuine": (
+        "its subject is the Cargo invocation or a pinned original entry, so it "
+        "keeps plain Cargo"
+    ),
+    "pending": "private target or temporary workspace; pending one-use support",
+    "query": "scope precheck shared with pending routes; keeps them off Oxide",
+}
+
+CARGO_WORD = "cargo"
+SAFE_PRECEDING = {"nice", "env", "time", "timeout", "exec", "sudo"}
 
 
 class RoutingDefect(Exception):
@@ -302,102 +295,189 @@ def command_word(command):
     return None
 
 
-def runner_arguments(command):
-    if not command.startswith(RUNNER):
-        fail("switched command does not use %s: %r" % (RUNNER.strip(), command))
-    return command[len(RUNNER) :]
+def spells_cargo(command):
+    return command_word(command) == "cargo"
 
 
-def exception_reason(name):
-    if name in EXCEPTIONS:
-        return EXCEPTIONS[name]
-    for prefix, reason in PREFIX_EXCEPTIONS.items():
-        if name.startswith(prefix):
-            return reason
-    return None
+def helper_tail(command):
+    """Return the arguments after the helper invocation, or None."""
+    words = shlex.split(command)
+    position = 0
+    while position < len(words):
+        word = words[position]
+        if ENV_ASSIGNMENT.match(word):
+            position += 1
+            continue
+        break
+    if position + 2 >= len(words):
+        return None
+    if words[position] != "bash" or words[position + 1] != "scripts/oxide-rust.sh":
+        return None
+    return words[position + 2 :], words[:position]
 
 
-def classify(tasks):
+HELPER_INVOCATION = re.compile(r"(?<![A-Za-z0-9_./-])bash scripts/oxide-rust\.sh ")
+ENV_TOKENS = re.compile(
+    r"""[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|[^\s]+)"""
+)
+
+
+def plain_twin(command):
+    """The plain-Cargo twin of one switched selector command.
+
+    Only the runner word and the RUSTUP_TOOLCHAIN mapping change; every other
+    byte, including quotes and spacing inside arguments, is preserved.
+    """
+    match = HELPER_INVOCATION.search(command)
+    if match is None:
+        return command
+    prefix = command[: match.start()]
+    tail = command[match.end() :]
+    residue = ENV_TOKENS.sub("", prefix).strip()
+    if residue:
+        fail("unsupported prefix before the helper: %r" % command)
+    toolchain = None
+    kept = []
+    for assignment in ENV_TOKENS.findall(prefix):
+        if assignment.startswith("RUSTUP_TOOLCHAIN="):
+            toolchain = assignment.split("=", 1)[1].strip("\"'")
+        else:
+            kept.append(assignment)
+    verb = tail.split(" ", 1)[0]
+    if verb not in ALLOWED_VERBS:
+        fail("switched command routes an unsupported verb: %r" % command)
+    plain = " ".join(kept + ["cargo"])
+    if toolchain is not None:
+        plain += " +" + toolchain
+    return plain + " " + tail
+
+
+def script_cargo_lines(path):
+    """Lines in a shell script that run `cargo` as a command word."""
+    found = []
+    for number, line in enumerate(path.read_text().splitlines(), 1):
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        try:
+            words = shlex.split(stripped, comments=True)
+        except ValueError:
+            words = stripped.split()
+        for position, word in enumerate(words):
+            if word != CARGO_WORD:
+                continue
+            preceding = words[:position]
+            if all(
+                item in SAFE_PRECEDING
+                or item.isdigit()
+                or item.startswith("-")
+                or (ENV_ASSIGNMENT.match(item) and not item.startswith("="))
+                for item in preceding
+            ):
+                found.append((number, " ".join(words[position : position + 3])))
+            break
+    return found
+
+
+def classify_selectors(tasks):
     switched = {}
     observed = {}
     for name, commands in tasks.items():
         strings = [command for command in commands if command is not None]
-        cargo = [command for command in strings if command_word(command) == "cargo"]
-        runner = [command for command in strings if command.startswith(RUNNER)]
-        reason = exception_reason(name)
+        helpers = [command for command in strings if HELPER_INVOCATION.search(command)]
+        cargo = [command for command in strings if spells_cargo(command)]
+        reason = PENDING.get(name)
 
         if name.endswith(":cargo"):
+            parent = name[: -len(":cargo")]
+            if parent in SCRIPT_ROUTES:
+                wanted = [
+                    PLAIN_ESCAPE + command
+                    for command in tasks[parent]
+                    if command is not None
+                ]
+                if strings != wanted:
+                    fail("sibling %s does not force the plain branch" % name)
+                if "oxide" in " ".join(strings):
+                    fail("sibling %s puts Oxide back on the plain route" % name)
+                observed[name] = ("sibling", "plain-Cargo twin of a script route")
+                continue
             if not cargo:
                 fail("sibling %s no longer spells a Cargo command" % name)
-            if runner:
+            if helpers:
                 fail("sibling %s puts Oxide back on the plain route" % name)
-            observed[name] = ("sibling", "plain Cargo twin of a switched selector")
+            observed[name] = ("sibling", "plain-Cargo twin of a switched selector")
             continue
 
-        if name in SCRIPT_WRAPPED:
-            script, reason = SCRIPT_WRAPPED[name]
-            if runner:
-                fail("script-wrapped selector %s acquired the Oxide route" % name)
-            path = ROOT / script
-            if not path.is_file():
-                fail("script-wrapped selector %s names a missing script" % name)
-            text = path.read_text()
-            if "oxide-rust.sh" in text:
-                fail("%s routes through the Oxide helper" % script)
-            if "cargo " not in text:
-                fail("%s no longer runs a Cargo command" % script)
-            if cargo:
-                fail("%s both wraps a script and spells Cargo" % name)
-            observed[name] = ("script", reason)
-            continue
-
-        if reason is not None and name not in EXCEPTIONS:
-            # A prefix rule only covers selectors that actually spell Cargo.
-            if not cargo:
-                if runner:
-                    fail("switched selector %s matches a prefix exception" % name)
-                continue
-        if reason is not None:
-            if not cargo:
-                fail("exception %s no longer spells a Cargo command" % name)
-            if runner:
-                fail("exception %s must stay on plain Cargo" % name)
+        if name in GENUINE:
+            script, genuine_reason = GENUINE[name]
+            words = shlex.split(strings[0]) if strings else []
+            if len(strings) != 1 or words[:2] != ["bash", script]:
+                fail("genuine route %s no longer runs %s" % (name, script))
+            if cargo or helpers:
+                fail("genuine route %s must stay on plain Cargo" % name)
             if name + ":cargo" in tasks:
-                fail("exception %s needs no :cargo sibling" % name)
-            observed[name] = ("exception", reason)
+                fail("genuine route %s needs no :cargo sibling" % name)
+            observed[name] = ("genuine", genuine_reason)
             continue
 
-        if runner:
-            if len(runner) != len(strings):
+        if reason is not None:
+            if helpers:
+                fail("pending route %s must stay on plain Cargo" % name)
+            if name + ":cargo" in tasks:
+                fail("pending route %s needs no :cargo sibling" % name)
+            if not cargo:
+                script_paths = []
+                for command in strings:
+                    words = shlex.split(command)
+                    if len(words) < 2 or words[0] != "bash":
+                        fail("pending route %s reaches Cargo unexpectedly" % name)
+                    script_paths.append(words[1])
+                if not script_paths:
+                    fail("pending route %s no longer reaches Cargo" % name)
+                for script in script_paths:
+                    if SCRIPT_CLASSES.get(script) != "pending":
+                        fail(
+                            "pending route %s runs %s, which is not classified "
+                            "pending" % (name, script)
+                        )
+            observed[name] = ("pending", reason)
+            continue
+
+        if name in SCRIPT_ROUTES:
+            if helpers:
+                fail("script route %s also calls the helper directly" % name)
+            script = SCRIPT_ROUTES[name]
+            expected = (name + ":cargo") in tasks
+            if not expected:
+                fail("script route %s has no :cargo sibling" % name)
+            sibling = [command for command in tasks[name + ":cargo"] if command is not None]
+            wanted = [PLAIN_ESCAPE + command for command in strings]
+            if sibling != wanted:
                 fail(
-                    "switched selector %s mixes Oxide routing with another "
-                    "command: %r" % (name, strings)
+                    "sibling %s:cargo does not force the plain branch:\n"
+                    "  actual:   %r\n  expected: %r" % (name, sibling, wanted)
                 )
+            for command in sibling:
+                if "oxide" in command:
+                    fail("sibling %s:cargo puts Oxide back on the plain route" % name)
+            observed[name] = ("script", "maintained script routes through the helper")
+            switched[name] = {"script": script, "cargo": sibling}
+            continue
+
+        if helpers:
             if cargo:
                 fail("switched selector %s keeps a bare cargo command" % name)
-            arguments = []
-            for command in runner:
-                rest = runner_arguments(command)
-                verb = command_word(rest)
-                if verb not in ALLOWED_VERBS:
-                    fail(
-                        "switched selector %s routes an unsupported verb %r"
-                        % (name, verb)
-                    )
-                arguments.append(rest)
-            switcher = {
-                "name": name,
-                "cargo": ["cargo " + rest for rest in arguments],
-                "reason": "ordinary local build/check/clippy/test route",
-            }
-            switched[name] = switcher
-            observed[name] = ("switched", switcher["reason"])
+            for command in helpers:
+                helper_tail(command)
+            switched[name] = {"script": None, "cargo": [plain_twin(c) for c in strings]}
+            observed[name] = ("switched", "ordinary local Rust route")
             continue
 
         if cargo:
             fail(
-                "selector %s spells a Cargo command but is neither switched "
-                "nor a documented exception" % name
+                "selector %s spells a Cargo command but is neither switched nor "
+                "a documented pending or genuine exception" % name
             )
 
     return switched, observed
@@ -406,45 +486,102 @@ def classify(tasks):
 def check_siblings(tasks, switched):
     for name, switcher in switched.items():
         sibling = name + ":cargo"
-        if sibling not in tasks:
-            fail("switched selector %s has no %s sibling" % (name, sibling))
         commands = [command for command in tasks[sibling] if command is not None]
-        if commands != switcher["cargo"]:
+        expected = switcher["cargo"]
+        if commands != expected:
             fail(
                 "sibling %s does not repeat the plain Cargo arguments:\n"
-                "  actual:   %r\n  expected: %r"
-                % (sibling, commands, switcher["cargo"])
+                "  actual:   %r\n  expected: %r" % (sibling, commands, expected)
             )
-        for command in commands:
-            if "oxide" in command:
-                fail("sibling %s puts Oxide back on the plain route" % sibling)
-            if command_word(command) != "cargo":
-                fail("sibling %s is not a plain Cargo command: %r" % (sibling, command))
-        if sibling in switched:
-            fail("sibling %s is itself switched" % sibling)
-        if exception_reason(sibling) is not None:
-            fail("sibling %s is also classified as an exception" % sibling)
+        if "oxide" in " ".join(commands):
+            fail("sibling %s puts Oxide back on the plain route" % sibling)
+        if switcher["script"] is None and not any(
+            spells_cargo(command) for command in commands
+        ):
+            fail("sibling %s carries no plain Cargo command" % sibling)
 
     for name in tasks:
         if name.endswith(":cargo") and name[: -len(":cargo")] not in switched:
             fail("%s is an orphan :cargo sibling" % name)
 
 
-def check_exception_entries(tasks):
-    for name in EXCEPTIONS:
+def check_entry_table(tasks, table, label):
+    for name in table:
         if name not in tasks:
-            fail("stale exception entry: %s no longer exists" % name)
-    for name in SCRIPT_WRAPPED:
-        if name not in tasks:
-            fail("stale script-wrapped entry: %s no longer exists" % name)
+            fail("stale %s entry: %s no longer exists" % (label, name))
+
+
+def check_scripts(referenced_scripts):
+    observed = {}
+    for path in sorted((ROOT / "scripts").rglob("*.sh")):
+        relative = str(path.relative_to(ROOT))
+        text = path.read_text()
+        has_helper = "oxide-rust.sh" in text
+        has_exec = "oxide exec --" in text
+        cargo_lines = script_cargo_lines(path)
+        if not has_helper and not has_exec and not cargo_lines:
+            continue
+        expected = SCRIPT_CLASSES.get(relative)
+        if expected is None:
+            fail("maintained script reaches Cargo without a classification: %s" % relative)
+        observed[relative] = (expected, SCRIPT_REASONS[expected])
+        if expected == "helper":
+            continue
+        if expected == "switched":
+            if not has_helper:
+                fail("%s is classified switched but never calls the helper" % relative)
+            if cargo_lines:
+                fail("%s still runs plain Cargo: %r" % (relative, cargo_lines))
+            continue
+        if expected == "host-tool":
+            if not has_helper or "--host-tool" not in text:
+                fail(
+                    "%s must use the helper's --host-tool mode for one lease"
+                    % relative
+                )
+            if "oxide exec --" in text:
+                fail("%s bypasses the shared host-tool routing" % relative)
+            continue
+        if expected == "genuine":
+            if has_helper:
+                fail("%s must keep plain Cargo" % relative)
+            continue
+        if expected == "pending":
+            if has_helper or has_exec:
+                fail("%s must keep its private target on plain Cargo" % relative)
+            if not cargo_lines:
+                fail("%s no longer runs Cargo" % relative)
+            continue
+        if expected == "query":
+            if has_helper or has_exec:
+                fail("%s must stay a plain query" % relative)
+            if not cargo_lines:
+                fail("%s no longer runs Cargo" % relative)
+            continue
+        if expected == "fake-proof":
+            if cargo_lines:
+                fail("%s invokes real Cargo instead of fake tools" % relative)
+            continue
+        fail("unknown script class %s for %s" % (expected, relative))
+    for relative in SCRIPT_CLASSES:
+        if relative in observed:
+            continue
+        if relative in referenced_scripts:
+            observed[relative] = (
+                SCRIPT_CLASSES[relative],
+                SCRIPT_REASONS[SCRIPT_CLASSES[relative]],
+            )
+            continue
+        fail("stale script classification: %s is neither reached nor classified" % relative)
+    return observed
 
 
 def check_release_include():
     text = RELEASE_INCLUDE.read_text()
-    if "oxide" in text:
-        fail("release include must keep its plain-Cargo gates")
-    if '"cargo fmt --all -- --check"' not in text:
-        fail("release include lost its plain-Cargo format gate")
+    if "cargo" in text:
+        fail("release include must route Cargo through the helper")
+    if 'fmt = "bash scripts/oxide-rust.sh fmt --all -- --check"' not in text:
+        fail("release include lost its routed format gate")
     if 'metadata = "effigy package:metadata"' not in text:
         fail("release include lost its accepted gate shape")
 
@@ -485,46 +622,47 @@ def main(argv):
         fail("unknown argument: %s" % " ".join(unknown))
 
     tasks = parse_tasks(MANIFEST)
-    switched, observed = classify(tasks)
+    referenced_scripts = set()
+    for commands in tasks.values():
+        for command in commands:
+            if command is None:
+                continue
+            for word in shlex.split(command):
+                if word.startswith("scripts/") and word.endswith(".sh"):
+                    referenced_scripts.add(word)
+    switched, observed = classify_selectors(tasks)
     check_siblings(tasks, switched)
-    check_exception_entries(tasks)
+    check_entry_table(tasks, PENDING, "pending")
+    check_entry_table(tasks, GENUINE, "genuine")
+    check_entry_table(tasks, SCRIPT_ROUTES, "script route")
+    scripts = check_scripts(referenced_scripts)
     check_release_include()
     check_gitignore()
     check_agent_block()
 
-    prefix_counts = {}
-    kind_counts = {"exception": 0, "script": 0, "sibling": 0, "switched": 0}
-    for name, (kind, _reason) in observed.items():
-        kind_counts[kind] += 1
-        if kind != "exception":
-            continue
-        label = "exact"
-        for prefix in PREFIX_EXCEPTIONS:
-            if name.startswith(prefix):
-                label = prefix.rstrip(":")
-        prefix_counts[label] = prefix_counts.get(label, 0) + 1
+    counts = {"switched": 0, "script": 0, "sibling": 0, "pending": 0, "genuine": 0}
+    for kind, _reason in observed.values():
+        counts[kind] += 1
+    other = len(tasks) - sum(counts.values())
 
     if inventory:
-        for name in sorted(tasks):
-            if name not in observed:
-                continue
+        for name in sorted(observed):
             kind, reason = observed[name]
-            printf_row = "%-12s %-55s %s" % (kind, name, reason)
-            print(printf_row)
+            print("%-9s %-58s %s" % (kind, name, reason))
+        for relative in sorted(scripts):
+            kind, reason = scripts[relative]
+            print("script    %-58s %s" % (relative, reason))
 
-    print("selector inventory:")
+    print("route inventory:")
     print("  selectors=%d" % len(tasks))
-    print("  switched=%d" % kind_counts["switched"])
-    print("  cargo_siblings=%d" % kind_counts["sibling"])
-    print("  exceptions=%d" % kind_counts["exception"])
-    print("  script_wrapped=%d" % kind_counts["script"])
-    print(
-        "  other=%d"
-        % (len(tasks) - sum(kind_counts[key] for key in kind_counts))
-    )
-    for label in sorted(prefix_counts):
-        print("  exception:%s=%d" % (label, prefix_counts[label]))
-    print("  release_include=plain-cargo")
+    print("  switched=%d" % counts["switched"])
+    print("  script_routes=%d" % counts["script"])
+    print("  cargo_siblings=%d" % counts["sibling"])
+    print("  pending=%d" % counts["pending"])
+    print("  genuine=%d" % counts["genuine"])
+    print("  other=%d" % other)
+    print("  maintained_scripts=%d" % len(scripts))
+    print("  release_include=routed")
     print("  target_ignore=/target")
     print("  agent_block=generated")
     print("oxide selector routing passed")

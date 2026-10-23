@@ -46,7 +46,8 @@ fi
 printf '%s\n' "$release_packages" > "$release_output_dir/packages.txt"
 
 while IFS= read -r release_package; do
-  cargo +"$release_toolchain" public-api \
+  RUSTUP_TOOLCHAIN=$release_toolchain \
+    bash "$release_repo_root/scripts/oxide-rust.sh" public-api \
     --package "$release_package" \
     --all-features \
     --simplified --simplified --simplified \

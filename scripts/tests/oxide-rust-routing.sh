@@ -43,6 +43,7 @@ routing_write_fake() {
   printf '\n'
 } >>"$routing_scratch/$routing_name.log"
 printf 'ppid=%s\n' "\$PPID" >>"$routing_scratch/$routing_name.log"
+printf 'env:RUSTUP_TOOLCHAIN=%s\n' "\${RUSTUP_TOOLCHAIN:-unset}" >>"$routing_scratch/$routing_name.log"
 printf '%s stdout\n' '$routing_name'
 printf '%s stderr\n' '$routing_name' >&2
 exit "\${FAKE_EXIT_CODE:-0}"
@@ -53,6 +54,18 @@ FAKE
 routing_write_fake "$routing_fake_bin/oxide" oxide
 routing_write_fake "$routing_fake_bin/cargo" cargo
 routing_write_fake "$routing_cargo_only_bin/cargo" cargo
+cat >"$routing_scratch/host-tool" <<FAKE
+#!/usr/bin/env bash
+{
+  printf 'host-tool'
+  for routing_arg in "\$@"; do
+    printf ' [%s]' "\$routing_arg"
+  done
+  printf '\n'
+} >>"$routing_scratch/tool.log"
+exit "\${FAKE_EXIT_CODE:-0}"
+FAKE
+chmod +x "$routing_scratch/host-tool"
 cat >"$routing_signal_bin/oxide" <<'FAKE'
 #!/usr/bin/env bash
 kill -TERM "$$"
@@ -61,7 +74,8 @@ FAKE
 chmod +x "$routing_signal_bin/oxide"
 
 routing_reset() {
-  rm -f "$routing_scratch/oxide.log" "$routing_scratch/cargo.log"
+  rm -f "$routing_scratch/oxide.log" "$routing_scratch/cargo.log" \
+    "$routing_scratch/tool.log"
 }
 
 routing_log() {
@@ -213,5 +227,94 @@ PATH="$routing_fake_bin:$PATH" bash "$routing_helper" \
   -- -D warnings >/dev/null 2>&1
 routing_expect_line oxide \
   'oxide [clippy] [--locked] [--all-features] [-p] [swallowtail-adapter-pi] [--test] [integration] [--] [-D] [warnings]'
+
+# 13. Non-building and formatting routes keep their arguments too.
+routing_reset
+PATH="$routing_fake_bin:$PATH" bash "$routing_helper" \
+  fmt -p swallowtail-core -- --check >/dev/null 2>&1
+routing_expect_line oxide 'oxide [fmt] [-p] [swallowtail-core] [--] [--check]'
+routing_reset
+PATH="$routing_fake_bin:$PATH" bash "$routing_helper" \
+  deny check advisories licenses sources >/dev/null 2>&1
+routing_expect_line oxide 'oxide [deny] [check] [advisories] [licenses] [sources]'
+routing_reset
+PATH="$routing_fake_bin:$PATH" RUSTDOCFLAGS='-D missing_docs' bash "$routing_helper" \
+  doc --workspace --all-features --no-deps --locked >/dev/null 2>&1
+routing_expect_line oxide \
+  'oxide [doc] [--workspace] [--all-features] [--no-deps] [--locked]'
+
+# 14. The toolchain pin travels as RUSTUP_TOOLCHAIN, never as `+name`.
+routing_reset
+PATH="$routing_fake_bin:$PATH" RUSTUP_TOOLCHAIN=1.95.0 bash "$routing_helper" \
+  clippy --locked -p swallowtail-adapter-pi -- -D warnings >/dev/null 2>&1
+routing_expect_line oxide \
+  'oxide [clippy] [--locked] [-p] [swallowtail-adapter-pi] [--] [-D] [warnings]'
+routing_toolchain=$(sed -n 's/^env:RUSTUP_TOOLCHAIN=//p' "$routing_scratch/oxide.log")
+[[ "$routing_toolchain" == "1.95.0" ]] ||
+  routing_failure "toolchain pin did not reach Oxide: $routing_toolchain"
+if grep -q '\[+1.95.0\]' "$routing_scratch/oxide.log"; then
+  routing_failure "toolchain pin was rewritten into a leading +toolchain"
+fi
+
+# 15. Host-tool mode takes one lease: `oxide exec -- <tool> <argv>`.
+routing_reset
+PATH="$routing_fake_bin:$PATH" bash "$routing_helper" --host-tool \
+  "$routing_scratch/host-tool" 'a b' '' --flag >/dev/null 2>&1
+routing_expect_line oxide \
+  "oxide [exec] [--] [$routing_scratch/host-tool] [a b] [] [--flag]"
+routing_expect_absent tool
+
+# 16. The host tool's own exit status survives its lease.
+routing_reset
+routing_status=0
+PATH="$routing_fake_bin:$PATH" FAKE_EXIT_CODE=9 bash "$routing_helper" --host-tool \
+  "$routing_scratch/host-tool" run >/dev/null 2>&1 || routing_status=$?
+[[ $routing_status -eq 9 ]] || routing_failure "host-tool status $routing_status is not 9"
+
+# 17. Host-tool CI and escape branches run the tool directly, never Oxide.
+routing_reset
+PATH="$routing_fake_bin:$PATH" GITHUB_ACTIONS=true bash "$routing_helper" --host-tool \
+  "$routing_scratch/host-tool" check >/dev/null 2>&1
+routing_expect_line tool 'host-tool [check]'
+routing_expect_absent oxide
+routing_reset
+PATH="$routing_fake_bin:$PATH" SWALLOWTAIL_RUST_RUNNER=cargo bash "$routing_helper" \
+  --host-tool "$routing_scratch/host-tool" check >/dev/null 2>&1
+routing_expect_line tool 'host-tool [check]'
+routing_expect_absent oxide
+
+# 18. A missing Oxide refuses a host-tool route before the tool runs.
+routing_reset
+routing_status=0
+routing_message=$(
+  PATH="$routing_cargo_only_bin:/usr/bin:/bin" bash "$routing_helper" --host-tool \
+    "$routing_scratch/host-tool" check 2>&1 >/dev/null
+) || routing_status=$?
+[[ $routing_status -eq 127 ]] || routing_failure "host-tool missing Oxide exited $routing_status"
+[[ "$routing_message" == *"SWALLOWTAIL_RUST_RUNNER=cargo"* ]] ||
+  routing_failure "host-tool missing Oxide message: $routing_message"
+routing_expect_absent tool
+
+# 19. The Grok MCP probe (a script that runs Cargo itself) takes one host-tool
+#     lease and keeps its exact argv; the fake Oxide ends the route there.
+routing_reset
+PATH="$routing_fake_bin:$PATH" SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1 \
+  bash "$routing_root/scripts/run-grok-acp-client-mcp-probe.sh" \
+  --version 1.0.5 --grok-executable /bin/false \
+  --output "$routing_scratch/capsule.json" >/dev/null 2>&1
+routing_expect_line oxide \
+  "oxide [exec] [--] [$routing_root/scripts/run-grok-acp-client-mcp-probe.sh] [--version] [1.0.5] [--grok-executable] [/bin/false] [--output] [$routing_scratch/capsule.json]"
+routing_expect_absent cargo
+
+# 20. Under GITHUB_ACTIONS the same probe runs its Cargo calls directly.
+routing_reset
+PATH="$routing_fake_bin:$PATH" GITHUB_ACTIONS=true \
+  SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1 \
+  bash "$routing_root/scripts/run-grok-acp-client-mcp-probe.sh" \
+  --version 1.0.5 --grok-executable /bin/false \
+  --output "$routing_scratch/capsule.json" >/dev/null 2>&1 || true
+routing_expect_absent oxide
+routing_expect_line cargo \
+  'cargo [build] [--offline] [--locked] [-p] [swallowtail-testkit] [--example] [grok-acp-echo-mcp]'
 
 printf '%s\n' "oxide-rust routing passed"

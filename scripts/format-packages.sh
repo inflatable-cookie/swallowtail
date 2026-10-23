@@ -16,7 +16,9 @@ if [[ "$validation_plan" == true ]]; then
   exit 0
 fi
 
-cargo fmt "${validation_cargo_package_args[@]}"
-cargo fmt "${validation_cargo_package_args[@]}" -- --check
+bash "$format_repo_root/scripts/oxide-rust.sh" \
+  fmt "${validation_cargo_package_args[@]}"
+bash "$format_repo_root/scripts/oxide-rust.sh" \
+  fmt "${validation_cargo_package_args[@]}" -- --check
 
 printf 'package formatting passed for %s package(s)\n' "${#validation_packages[@]}"

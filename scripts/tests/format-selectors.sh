@@ -71,6 +71,11 @@ format_expect_failure \
   "unsupported option" \
   bash scripts/format-packages.sh --manifest-path Cargo.toml
 
+# This test's subject is the exact `cargo fmt` argument list, so it forces the
+# plain-Cargo branch of the routed formatter; the routed branch is proved by
+# scripts/tests/oxide-rust-routing.sh.
+export SWALLOWTAIL_RUST_RUNNER=cargo
+
 # A fake cargo records every fmt invocation with explicit argument brackets.
 # Metadata still comes from the real cargo so package names are real.
 cat >"$format_shim/cargo" <<EOF

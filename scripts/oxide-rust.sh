@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Route one ordinary Rust build, check, clippy, test or nextest command through
-# Oxide, per the supported switching pattern in Oxide's workflow contract. The
-# caller passes Cargo's arguments unchanged; Oxide receives exactly those
-# arguments after its own command word.
+# Route one maintained Rust command through Oxide.
 #
 #   scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-core
-#   scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-core
+#   scripts/oxide-rust.sh fmt -p swallowtail-core -- --check
+#   scripts/oxide-rust.sh deny check advisories licenses sources
+#   scripts/oxide-rust.sh --host-tool <tool> [args...]
+#
+# The arguments after the mode are passed to Oxide unchanged: Oxide receives
+# them as a Cargo argument list, or after `oxide exec --` when a host tool runs
+# Cargo itself. The helper replaces itself with the tool, so argv, exit status,
+# signals, stdout and stderr are the tool's own.
 #
 # Escapes, all plain Cargo with no Oxide on the route:
 #   effigy <selector>:cargo                 the selector's sibling in effigy.toml
@@ -15,12 +19,20 @@ set -euo pipefail
 #   GITHUB_ACTIONS=true                     hosted CI has no Oxide installed
 #
 # A missing Oxide fails loudly and names the escapes; it never falls back to
-# Cargo silently. `cargo fmt`, probes, packaging, pinned-toolchain, private
-# target and nested-Cargo routes do not use this helper at all; they are the
-# documented Class2 exceptions in docs/guides/validation-tiers.md.
+# Cargo silently. Toolchain pins travel as `RUSTUP_TOOLCHAIN=<name>`, the
+# supported mapping for `cargo +<name>`; the plain branch passes it to Cargo
+# unchanged. Private-target, one-use-workspace, packaging-clone and CI routes
+# do not use this helper; they are the documented exceptions in
+# docs/guides/validation-tiers.md.
+
+oxide_host_tool=false
+if [[ ${1:-} == "--host-tool" ]]; then
+  oxide_host_tool=true
+  shift
+fi
 
 if (($# == 0)); then
-  printf 'usage: %s <cargo command> [args...]\n' "$0" >&2
+  printf 'usage: %s [--host-tool] <cargo command|host tool> [args...]\n' "$0" >&2
   exit 2
 fi
 
@@ -40,12 +52,15 @@ if [[ ${GITHUB_ACTIONS:-} == "true" ]]; then
 fi
 
 if [[ $runner == "cargo" ]]; then
+  if [[ $oxide_host_tool == true ]]; then
+    exec "$@"
+  fi
   exec cargo "$@"
 fi
 
 if ! command -v oxide >/dev/null 2>&1; then
   cat >&2 <<'MESSAGE'
-oxide-rust: oxide is not on PATH, and this selector does not fall back to Cargo.
+oxide-rust: oxide is not on PATH, and this route does not fall back to Cargo.
 Run the matching plain-Cargo selector instead (effigy <selector>:cargo, for
 example `effigy test:rust:cargo`), or set SWALLOWTAIL_RUST_RUNNER=cargo for one
 run. See docs/guides/validation-tiers.md, Oxide Adoption Boundary.
@@ -53,4 +68,7 @@ MESSAGE
   exit 127
 fi
 
+if [[ $oxide_host_tool == true ]]; then
+  exec oxide exec -- "$@"
+fi
 exec oxide "$@"

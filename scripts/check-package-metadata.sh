@@ -31,7 +31,8 @@ release_expected_edges=$(mktemp)
 release_order_names=$(mktemp)
 trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_tag_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
 
-cargo metadata --no-deps --format-version 1 > "$release_metadata"
+bash "$release_repo_root/scripts/oxide-rust.sh" \
+  metadata --no-deps --format-version 1 > "$release_metadata"
 release_version=$(jq -r '.packages[0].version' "$release_metadata")
 if [[ $release_version != "$release_current_version" ]]; then
   printf 'cargo metadata version %s does not match workspace.package.version %s\n' \

@@ -67,6 +67,8 @@ def selected_packages(command):
             packages.add(word.split("=", 1)[1])
         index += 1
     return packages
+
+
 ALLOWED_VERBS = (
     "check",
     "clippy",
@@ -353,9 +355,7 @@ def helper_tail(command):
 
 
 HELPER_INVOCATION = re.compile(r"(?<![A-Za-z0-9_./-])bash scripts/oxide-rust\.sh ")
-ENV_TOKENS = re.compile(
-    r"""[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|[^\s]+)"""
-)
+ENV_TOKENS = re.compile(r"""[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|[^\s]+)""")
 
 
 def plain_twin(command):
@@ -487,7 +487,9 @@ def classify_selectors(tasks):
             expected = (name + ":cargo") in tasks
             if not expected:
                 fail("script route %s has no :cargo sibling" % name)
-            sibling = [command for command in tasks[name + ":cargo"] if command is not None]
+            sibling = [
+                command for command in tasks[name + ":cargo"] if command is not None
+            ]
             wanted = [PLAIN_ESCAPE + command for command in strings]
             if sibling != wanted:
                 fail(
@@ -573,7 +575,10 @@ def check_scripts(referenced_scripts):
             continue
         expected = SCRIPT_CLASSES.get(relative)
         if expected is None:
-            fail("maintained script reaches Cargo without a classification: %s" % relative)
+            fail(
+                "maintained script reaches Cargo without a classification: %s"
+                % relative
+            )
         observed[relative] = (expected, SCRIPT_REASONS[expected])
         if expected == "helper":
             continue
@@ -591,8 +596,7 @@ def check_scripts(referenced_scripts):
         if expected == "host-tool":
             if not has_helper or "--host-tool" not in text:
                 fail(
-                    "%s must use the helper's --host-tool mode for one lease"
-                    % relative
+                    "%s must use the helper's --host-tool mode for one lease" % relative
                 )
             if "oxide exec --" in text:
                 fail("%s bypasses the shared host-tool routing" % relative)
@@ -627,7 +631,10 @@ def check_scripts(referenced_scripts):
                 SCRIPT_REASONS[SCRIPT_CLASSES[relative]],
             )
             continue
-        fail("stale script classification: %s is neither reached nor classified" % relative)
+        fail(
+            "stale script classification: %s is neither reached nor classified"
+            % relative
+        )
     return observed
 
 

@@ -135,3 +135,24 @@ from the [integration guide map](integration-guide-map.md). Adapter maintainers
 also run the targeted checks their task brief names. Release
 operators run the milestone and release gates only when the accepting brief
 requires them.
+
+## Oxide Adoption Boundary
+
+Tom's 2026-10-23 standing approval covers supported Oxide adoption in Rust
+projects with Paseo workspaces (decisions `3b041cf4-df3d-4e17-9886-5af51428ecf3`
+and `e1c1d3b5-9ff2-4f42-81b6-7e2a3f6e3a14`). The
+[Oxide workflow contract](https://github.com/inflatable-cookie/oxide/blob/main/docs/knowledge/contracts/workflow.md#switching-an-existing-project)
+owns switching semantics. Effigy still owns task routing and host admission.
+
+Ordinary local build/check/test entry points may switch after their command,
+profile and output assumptions are inventoried. Preserve explicit Cargo
+escapes and CI's plain-Cargo route until formal Effigy v0.15. Private-target,
+container, metadata, deny and packaging routes remain on Cargo. In particular,
+`run-with-owned-cargo-target.sh` owns its target and cleanup; Grok's MCP probe
+discovers a sibling example binary. Neither is an automatic switch candidate.
+
+Adoption permits the agent-document block and supported selector changes, not
+global configuration changes, live provider probes or output cleanup. A target
+symlink needs an exact non-directory ignore rule such as `/target`; `/target/`
+does not suffice. Build-slot placement on Builds is separate from final-output
+profile links and does not prove that those links are implemented.

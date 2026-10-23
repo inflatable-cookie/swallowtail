@@ -156,3 +156,69 @@ global configuration changes, live provider probes or output cleanup. A target
 symlink needs an exact non-directory ignore rule such as `/target`; `/target/`
 does not suffice. Build-slot placement on Builds is separate from final-output
 profile links and does not prove that those links are implemented.
+
+### Switched selectors and their plain-Cargo escapes
+
+A switched selector runs `bash scripts/oxide-rust.sh <cargo arguments>`. The
+helper passes those arguments to Oxide unchanged and replaces itself with the
+tool, so argv, exit status, signals, stdout and stderr are the tool's own. Every
+switched selector keeps a `<selector>:cargo` sibling whose command is the same
+arguments with plain `cargo` and no Oxide anywhere on its route. Use the
+sibling when Oxide itself is broken.
+
+- **Hosted CI.** `GITHUB_ACTIONS=true` selects the plain-Cargo branch, because
+  hosted runners have no `oxide`. Workflow files do not change.
+- **Missing Oxide.** Locally, an absent `oxide` exits 127 and names both
+  escapes. It never falls back to Cargo silently.
+- **One-run escape.** `SWALLOWTAIL_RUST_RUNNER=cargo` runs a single selector on
+  plain Cargo without changing its definition.
+- **Guard.** `effigy validate:oxide-routing` owns the inventory. It fails on a
+  selector that spells a Cargo command without being switched or listed here,
+  on a missing, edited, reordered or Oxide-tainted `:cargo` sibling, on a stale
+  exception, on a script wrapper that acquired the helper, and on a changed
+  release include, target ignore rule or agent block.
+  `effigy check:oxide-routing` is its syntax and compile companion.
+
+These routes stay on plain Cargo, and their reasons are durable:
+
+- **Formatting (`format:*`).** `cargo fmt` is plain passthrough in Oxide, so
+  routing it adds a process, not storage. `cargo fmt` is not a build route.
+- **Live provider probes (`probe:*`).** They need explicit operator authority
+  and spend, which an ordinary local build route must not carry.
+- **Nested Cargo and private targets.** `run-with-owned-cargo-target.sh` owns
+  its private `CARGO_TARGET_DIR` and cleanup, and Oxide replaces an inherited
+  target with `<workspace>/target`: `check:sdk-courier-timeout`,
+  `validate:sdk-courier-timeout`, `validate:sdk-courier-idle`.
+  `validate:sdk-registered-lifetime` and `validate:sdk-unsolicited-close` select
+  Claude SDK registered-tool tests whose nested courier build requires that
+  run-owned target. `validate:current-grok-build-acp` selects Grok registered
+  tool tests that build a courier into their own target and would inherit
+  Oxide's slot build directory.
+- **Whole-workspace and whole-package proof.** `test:rust` and
+  `validate:focused` cover those same nested-Cargo test binaries, so they keep
+  the milestone shape on Cargo.
+- **Pinned toolchains.** `lint:current-pi-sdk-sidecar` and
+  `lint:current-copilot-cli-acp` select a compiler with a leading
+  `cargo +1.95.0`. Oxide refuses a leading `+toolchain`, and the MSRV proof
+  keeps its exact pin.
+- **Metadata, deny, docs and packaging.** `security:dependencies`,
+  `package:docs`, `package:metadata`, `package:api`, `package:msrv`,
+  `package:release-floor`, `package:source-consumer`,
+  `package:verify-affected`, `format:package` and the
+  `scripts/release/backports/...` runner keep plain Cargo: they are release or
+  CI gates, metadata tools or archive builders, not ordinary build routes.
+  `config/release.toml` gates stay plain Cargo for the same reason.
+- **Mixed static proof clusters.** `check:copilot-acp-offline-proof`,
+  `validate:copilot-acp-offline-proof`, `check:current-copilot-cli-acp`,
+  `validate:current-copilot-cli-acp`, `validate:copilot-acp-private-assessment`,
+  `check:copilot-acp-authenticated-proof` and
+  `validate:copilot-acp-authenticated-proof` interleave Python validation with
+  one Cargo step and are not ordinary local build entry points.
+- **Sibling-example discovery.** Grok's MCP probe test finds a sibling example
+  binary from `current_exe()` and no selector runs it, so it stays a Cargo-only
+  test route; it is not an automatic switch candidate.
+
+A route that changes a test result stays on Cargo and is reported as a
+dogfood finding for Oxide, never hidden by changing runtime or test semantics.
+The switch is qualified against the installed binary receipt and hash for that
+run; the repository records no installation pin of its own.

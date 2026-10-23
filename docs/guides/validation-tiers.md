@@ -222,8 +222,8 @@ These routes stay on plain Cargo, and their reasons are durable:
   (`validate:current-claude-agent-sdk-node`), the whole-workspace test lane
   (`test:rust`, `package:release-floor`, the commented local-heavy release
   `test` recipe), whole-package
-  `validate:focused`, `package:source-consumer`, `package:verify-affected`,
-  and the `sdk-v0.5.2` backport runner selectors.
+  `validate:focused`, `package:source-consumer`, `check:lease-api-fixture`,
+  `package:verify-affected`, and the `sdk-v0.5.2` backport runner selectors.
 - **Genuine exceptions.** Hosted CI keeps its unchanged raw-Cargo workflows.
   `observe:copilot-acp-private-assessment` reviews the pinned original entry
   invocation, and its subject is that invocation. Tests whose subject is the

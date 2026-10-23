@@ -616,6 +616,7 @@ section = "Research Records"
   "bash -n scripts/tests/format-selectors.sh",
 ]
 "validate:format-selectors:test" = "bash scripts/tests/format-selectors.sh"
+"check:lease-api-fixture" = "bash scripts/verify-lease-api-fixture.sh"
 "check:oxide-routing" = [
   "bash -n scripts/oxide-rust.sh",
   "bash -n scripts/tests/oxide-rust-routing.sh",

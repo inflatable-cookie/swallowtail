@@ -145,9 +145,10 @@ and `e1c1d3b5-9ff2-4f42-81b6-7e2a3f6e3a14`). The
 owns switching semantics. Effigy still owns task routing and host admission.
 
 Ordinary local build/check/test entry points may switch after their command,
-profile and output assumptions are inventoried. Preserve explicit Cargo
-escapes and CI's plain-Cargo route until formal Effigy v0.15. Private-target,
-container, metadata, deny and packaging routes remain on Cargo. In particular,
+profile and output assumptions are inventoried. Keep explicit `:cargo`
+fallbacks at least until formal Effigy v0.15. CI, private-target, container,
+metadata, deny and packaging routes remain on Cargo unless separately
+qualified and scoped for switching, regardless of Effigy's version. In particular,
 `run-with-owned-cargo-target.sh` owns its target and cleanup; Grok's MCP probe
 discovers a sibling example binary. Neither is an automatic switch candidate.
 

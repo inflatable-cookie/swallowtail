@@ -520,6 +520,29 @@ separate mutations unless one approval names both. Branch push, workflow
 edit, crates.io publication, GitHub Release creation, consumer edits, and
 provider work remain separate. Do not move or recreate an existing tag.
 
+## Approved v0.6.0 Source Preparation
+
+Tom answered “Approve bounded v0.6.0 preparation” on 2026-10-23 to decision
+`bd708df6-5420-421e-9e8f-cb5aeec60ddd`. This authorizes preparing a separately
+reviewed source candidate from the finite inclusion scope in the
+[currentness minor compatibility ledger](../../releases/currentness-minor-compatibility.md),
+including the approved TLS security fixes. It does not authorize a tag.
+
+Restore the ordinary public lease APIs released in `v0.5.4` and every older
+version-labelled baseline from its own immutable tag before generating the
+`0.6.0` inventories and consumer upgrade notes. Keep the current qualified
+SDK package `0.3.284..=0.3.295` / native `2.1.284..=2.1.295` window and
+default `.293`; consumers needing the old `.259` pair stay on `v0.5.4`.
+Do not infer that its live registered-tool proof transfers to newer pairs.
+
+Unqualified newer provider points and design-only implementations retain
+their existing limits and separate scopes. Windows stays deferred. No claim
+increase, new live work, credentials or consumer repin follows from this
+preparation approval. Public compatibility, package/source-consumer evidence,
+independent exact-head review, planner candidate QA and qualifying hosted
+release/MSRV proof remain gates before candidate merge. Tag creation,
+publication and release authority still require a separate exact-SHA ruling.
+
 ## Acceptance
 
 - all 40 `v0.3.3` packages are separately consumable from one exact source

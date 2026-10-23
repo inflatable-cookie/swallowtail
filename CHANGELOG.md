@@ -46,6 +46,13 @@ annotated Git tags from the canonical repository.
 - no `rustls` advisory path is established in Swallowtail: no direct `rustls`
   use, and no reverse path enables ECH. Released tags are not repaired by this
   entry.
+- move the locked transitive `ctutils` from `0.4.2` to `0.4.5` for
+  RUSTSEC-2026-0385 (non-constant-time mask generation and `u128`
+  comparisons on 32-bit targets). The path reaches the adapter through
+  `digest`/`hmac`/`aws-sigv4` and the Bedrock SDK packages. The bump stays
+  inside the existing compatible requirement, keeps the Rust `1.95` floor,
+  and changes no manifest, provider, SDK, native, Node or wire pin. No
+  advisory is ignored.
 
 ### Notes
 - close the bounded `antigravity.headless` evidence task without claiming a

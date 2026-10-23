@@ -89,7 +89,8 @@ fi
 # name: the workspace lock and the retained research records. Nothing is
 # copied into a package, and the archive content audit has already run.
 cp "$validation_repo_root/Cargo.lock" "$validation_tmp/Cargo.lock"
-cp -R "$validation_repo_root/docs" "$validation_tmp/docs"
+mkdir -p "$validation_tmp/docs"
+cp -R "$validation_repo_root/docs/research" "$validation_tmp/docs/research"
 
 for validation_package in "${validation_packages[@]}"; do
   validation_package_root="$validation_tmp/extracted/$validation_package"

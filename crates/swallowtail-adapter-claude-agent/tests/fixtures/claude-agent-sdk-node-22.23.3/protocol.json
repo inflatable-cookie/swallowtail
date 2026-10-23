@@ -49,7 +49,7 @@
     "node_runtime": "22.23.3",
     "sdk_package": "@anthropic-ai/claude-agent-sdk",
     "sdk_version": "0.3.284",
-    "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.5.1",
+    "sidecar_source_tag": "swallowtail-claude-agent-sdk-sidecar@0.6.0",
     "wire": "swallowtail-claude-agent-sdk-jsonl-v1"
   },
   "unmapped_runtime_deltas": {

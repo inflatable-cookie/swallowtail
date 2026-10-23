@@ -6,6 +6,8 @@ mutations.
 
 ## Current Release
 
+- [Swallowtail 0.6.0](0.6.0.md) — source-only currentness minor candidate over immutable `v0.5.4`; 40 packages, 51 production routes, restored public lease API; tag not authorized or created
+
 - [Swallowtail 0.5.4](0.5.4.md) — tagged `v0.5.4` at `bb53587a`; tag object `3c036343`; tagged 2026-10-11; source-only authenticated courier idle correction, preserving released SDK/native/Node and wire pins
 
 - [Swallowtail 0.5.3](0.5.3.md) — tagged `v0.5.3` at `fa5ecfd8`; tag object `13862f5f`; tagged 2026-10-09; source-only courier approval-wait correction over immutable `v0.5.2`, preserving released SDK/native/Node and wire pins
@@ -42,8 +44,9 @@ sidecar, installer, or model artifact.
 ## Preparatory Compatibility Assessment
 
 - [Currentness minor source and compatibility ledger](currentness-minor-compatibility.md)
-  — planning-`main` inclusion, compatibility, unresolved gates, and
-  deferrals versus released `v0.5.4`; not a candidate, tag, or claim change
+  — reviewed `main` inclusion, compatibility, unresolved gates, and deferrals
+  versus released `v0.5.4`, plus the prepared `0.6.0` candidate record; not a
+  tag or claim change
 
 ## Consumer Handoffs
 

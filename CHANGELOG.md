@@ -5,6 +5,23 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-10-23
+
+### Compatibility
+- coordinated pre-1.0 minor over immutable `v0.5.4`. No public item is
+  removed: the semantic API is additive, and `swallowtail-runtime` matches
+  `v0.5.4` once the seven released registered-tool lease methods are restored
+  to ordinary public API. The minor is required by consumer-visible guarantee
+  changes: Opaque construction refuses more than 32 raw exclusion yields and
+  text over 256 UTF-8 bytes, an Antigravity child with identity and no child
+  status projects `SubagentStatus::Unknown`, the Claude Agent SDK implicit
+  default pair moves from `0.3.259`/`2.1.259` to `0.3.293`/`2.1.293`, Command
+  Code applies model-selection precedence from `1.73.0`, Gemini ACP exact
+  `0.63.0` narrows permission and read boundaries, and Codex app-server
+  `0.159.0..=0.161.0` protects an existing top-level `.aws` directory. Adds
+  the `opencode.acp` production route. See the
+  [0.6.0 release notes](docs/releases/0.6.0.md) for upgrade and rollback.
+
 ### Security
 - patch the locked TLS stack for RUSTSEC-2026-0346, -0347, -0381, -0382 and
   -0383. The lock moves `rustls` `0.23.45` to `0.23.46`, `rustls-webpki`

@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-11
+Updated: 2026-10-23
 
 ## Purpose
 
@@ -156,11 +156,13 @@ Tom's 2026-10-09 “Approve the two.” answers decision
 implementation of independently reviewed Spec 015. This includes the reviewed
 `has_version_interval` query, raw 32-yield member/exclusion iterator bounds,
 exact equality membership, preflight-before-effects, stale-plan and prepared
-assessment proof, preserving singleton and ordered-scheme behaviour. Only
-core's temporary current-source `0.5.1` API inventory may record the reviewed
-additive query, under Contract 036's mandatory tagged-byte restoration before
-the next minor baseline. No other baseline, route claim or version movement
-is included. Newly refused over-limit inputs receive truthful minor
+assessment proof, preserving singleton and ordered-scheme behaviour. That
+temporary current-source exception is closed. `0.5.1` no longer carries the
+additive query: every version-labelled baseline was restored byte-for-byte
+from its own tag before the `0.6.0` candidate generated its baselines, as
+Contract 036 requires, so `has_version_interval` now appears only in the
+`0.6.0` inventory. No route claim or version movement follows from this
+correction. Newly refused over-limit inputs receive truthful minor
 compatibility classification; additional consumer or authority changes return
 separately. Independently reviewed implementation precedes the retained
 route's own qualification proof.

@@ -215,17 +215,15 @@ prepared facade and shipped sidecar, including rejection of mismatched,
 missing and unreadable identities before SDK construction.
 
 `ClaudeAgentSdkPackageNativePair` and `with_package_native_pair` are additive
-current-source APIs. Existing preparation calls remain source-compatible and
-continue to select `.293` by default. The only temporary API-inventory update
-for this source check is
-`release-baselines/public-api-0.5.1/swallowtail-adapter-claude-agent.txt`;
-the generated semantic delta records the 17 original approved pair-selection
-entries plus the `.294` and `.295` exact-pair choices,
-with no removals, unrelated additions, or compiler-generated entries, and
-does not describe the tagged `0.5.1` source.
-Before the next minor candidate, restore all older version-labelled API
-baselines byte-for-byte from their tags before generating its baseline, as
-required by [Contract 036](../knowledge/contracts/036-crate-release-and-compatibility-boundary.md).
+APIs of the `0.6.0` candidate. Existing preparation calls remain
+source-compatible and continue to select `.293` by default. The additive
+pair-selection entries, including the `.294` and `.295` exact-pair choices,
+appear only in
+`release-baselines/public-api-0.6.0/swallowtail-adapter-claude-agent.txt`;
+`public-api-0.5.1` and every other older version-labelled baseline again record
+their own tagged source byte-for-byte, as
+[Contract 036](../knowledge/contracts/036-crate-release-and-compatibility-boundary.md)
+requires.
 
 The point moved three times already: `0.3.258` was qualified first, Research 280
 rebound both coupled axes to `0.3.259` after a full package-tree inventory,

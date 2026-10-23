@@ -241,7 +241,7 @@ fn official_node22_channel_and_signed_runtime_artifacts_are_frozen() {
     );
     assert_eq!(
         identity["selected_tuple"]["sidecar_source_tag"],
-        "swallowtail-claude-agent-sdk-sidecar@0.5.1"
+        "swallowtail-claude-agent-sdk-sidecar@0.6.0"
     );
     assert_eq!(
         identity["selected_tuple"]["behavior_revision"],
@@ -555,7 +555,7 @@ fn source_hop_classifies_selected_loader_and_keeps_other_runtime_deltas_bounded(
     assert_eq!(protocol["tuple"]["native_version"], "2.1.284");
     assert_eq!(
         protocol["tuple"]["sidecar_source_tag"],
-        "swallowtail-claude-agent-sdk-sidecar@0.5.1"
+        "swallowtail-claude-agent-sdk-sidecar@0.6.0"
     );
     assert_eq!(
         protocol["tuple"]["wire"],

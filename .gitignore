@@ -1,4 +1,4 @@
-/target/
+/target
 /node_modules/
 .DS_Store
 *.swp
@@ -6,3 +6,4 @@
 .effigy
 .release-prepared.json
 .agents.local.env
+/.oxide-outputs/

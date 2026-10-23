@@ -399,33 +399,64 @@ fn echo_helper_liveness_self_check_distinguishes_healthy_from_dead() {
     )));
 }
 
+/// Resolves the `grok-acp-echo-mcp` example binary.
+///
+/// Plain Cargo puts the example beside the test executable's profile
+/// directory, which is the sibling candidate. A build-directory user such as
+/// Oxide keeps test executables in its build slot but uplifts final example
+/// binaries to `<CARGO_TARGET_DIR>/<profile>/examples`, so when that variable
+/// is exported the target-relative candidate is consulted too. An example
+/// target exposes no `CARGO_BIN_EXE_<name>` variable, so none is assumed.
+/// A missing example is still built once, and the first candidate that exists
+/// afterwards wins; plain Cargo reaches exactly the sibling it always did.
 fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
-    let mut path = std::env::current_exe().expect("test executable");
-    path.pop();
-    if path.ends_with("deps") {
+    let profile_dir = {
+        let mut path = std::env::current_exe().expect("test executable");
         path.pop();
-    }
-    path.push("examples");
-    path.push("grok-acp-echo-mcp");
-    if !path.is_file() {
-        let status = std::process::Command::new(env!("CARGO"))
-            .args([
-                "build",
-                "--offline",
-                "--locked",
-                "-p",
-                "swallowtail-testkit",
-                "--example",
-                "grok-acp-echo-mcp",
-            ])
-            .status()
-            .expect("build grok-acp-echo-mcp example");
-        assert!(
-            status.success(),
-            "cargo build --example grok-acp-echo-mcp failed"
+        if path.ends_with("deps") {
+            path.pop();
+        }
+        path
+    };
+    let profile = profile_dir
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("debug")
+        .to_owned();
+    let sibling = profile_dir.join("examples").join("grok-acp-echo-mcp");
+    let mut candidates = Vec::new();
+    if let Some(target) = std::env::var_os("CARGO_TARGET_DIR") {
+        candidates.push(
+            std::path::PathBuf::from(target)
+                .join(&profile)
+                .join("examples")
+                .join("grok-acp-echo-mcp"),
         );
     }
-    path
+    candidates.push(sibling.clone());
+    if let Some(found) = candidates.iter().find(|candidate| candidate.is_file()) {
+        return found.clone();
+    }
+    let status = std::process::Command::new(env!("CARGO"))
+        .args([
+            "build",
+            "--offline",
+            "--locked",
+            "-p",
+            "swallowtail-testkit",
+            "--example",
+            "grok-acp-echo-mcp",
+        ])
+        .status()
+        .expect("build grok-acp-echo-mcp example");
+    assert!(
+        status.success(),
+        "cargo build --example grok-acp-echo-mcp failed"
+    );
+    candidates
+        .into_iter()
+        .find(|candidate| candidate.is_file())
+        .unwrap_or(sibling)
 }
 
 fn assert_no_credentials_or_paths(value: &Value) {

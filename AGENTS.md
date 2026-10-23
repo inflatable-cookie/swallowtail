@@ -37,13 +37,24 @@ effigy test --plan
   one to four exact workspace packages; milestone proof, not a task default
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
-- `effigy format:package <pkg>...` — exact-package `cargo fmt` plus check for
-  one to four workspace packages; never the whole workspace
+- `effigy format:package <pkg>...` — exact-package fmt plus check for one to
+  four workspace packages; never the whole workspace
 - `effigy qa:docs` — docs, link, index and guide checks
 - `effigy skill run northstar/retired-concepts` — retired-concept check;
   kept out of repository QA, so run it before pushing docs changes
 - `effigy qa:routes` — route, feature and activity matrix checks
+- `effigy validate:oxide-routing` — selector routing inventory and hermetic
+  Oxide/plain-Cargo routing tests; run it when selectors or the helper change
 - `effigy qa` — the full board
+
+Ordinary build, check, clippy, test and nextest selectors run through Oxide,
+as do fmt, metadata and deny routes and the doc gate. Every switched selector
+keeps a `<selector>:cargo` sibling that runs the same arguments on plain Cargo,
+and `GITHUB_ACTIONS=true` selects that plain branch. Use the sibling when Oxide
+itself is broken. Routes with a private target or temporary workspace are
+pending qualified Oxide one-use support, and the remaining genuine exceptions,
+with their reasons, live in the
+[validation tiers](docs/guides/validation-tiers.md#oxide-adoption-boundary).
 
 Prefer `effigy <task>` over raw commands. `effigy doctor` is orientation, not
 validation. Do not add package scripts that merely re-export Effigy tasks.
@@ -163,3 +174,15 @@ assume a universal MSRV. Re-enter at task start and coherent batch closeout.
 Preserve unrelated work. A quality audit, no-slop pass, or audit-and-fix request
 is explicit audit intent; never route it through everyday authoring.
 <!-- northstar:rust-quality:end -->
+
+<!-- oxide:begin -->
+## Rust commands: use `oxide`
+
+- Write `oxide` wherever you would write `cargo`: `oxide check`, `oxide test`, `oxide run -- <args>`, `oxide add <crate>`.
+- Profiles: `quick` (default), `--profile debug` for a debugger, `--release`. Oxide places build output, so it refuses `--target-dir`.
+- A tool that runs Cargo itself (Tauri CLI, npm or bun scripts): `oxide exec -- <command>`.
+- A `waiting for …` line means another build holds a slot; let it wait. `oxide status` shows the pool, slots and waits.
+- Use `oxide clean`, not `cargo clean`.
+
+Managed by `oxide init`; edits between these markers are replaced.
+<!-- oxide:end -->

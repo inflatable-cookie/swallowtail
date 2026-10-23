@@ -16,10 +16,12 @@ do
   fi
 done
 
-rustup run "$SWALLOWTAIL_MSRV" cargo check \
+RUSTUP_TOOLCHAIN=$SWALLOWTAIL_MSRV \
+  bash "$release_repo_root/scripts/oxide-rust.sh" check \
   --workspace --all-targets --locked
 
-rustup run "$SWALLOWTAIL_CURRENT_STABLE" cargo check \
+RUSTUP_TOOLCHAIN=$SWALLOWTAIL_CURRENT_STABLE \
+  bash "$release_repo_root/scripts/oxide-rust.sh" check \
   --workspace --all-targets --locked
 
 printf 'unified MSRV and current-stable checks passed\n'

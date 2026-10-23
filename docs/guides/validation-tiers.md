@@ -144,16 +144,34 @@ and `e1c1d3b5-9ff2-4f42-81b6-7e2a3f6e3a14`). The
 [Oxide workflow contract](https://github.com/inflatable-cookie/oxide/blob/main/docs/knowledge/contracts/workflow.md#switching-an-existing-project)
 owns switching semantics. Effigy still owns task routing and host admission.
 
-Ordinary local build/check/test entry points may switch after their command,
-profile and output assumptions are inventoried. Keep explicit `:cargo`
-fallbacks at least until formal Effigy v0.15. CI, private-target, container,
-metadata, deny and packaging routes remain on Cargo unless separately
-qualified and scoped for switching, regardless of Effigy's version. In particular,
-`run-with-owned-cargo-target.sh` owns its target and cleanup; Grok's MCP probe
-discovers a sibling example binary. Neither is an automatic switch candidate.
+Tom expanded this approval on 2026-10-23: “Yes to both - let’s get all
+those "no" rows transitioned”, relayed by the Oxide owner through Supervisor
+`73f7c3b4-8e0e-4b67-a1d0-7a09f1f6b364`. Every entry point without a genuine
+Cargo requirement moves through scoped implementation and independent review:
 
-Adoption permits the agent-document block and supported selector changes, not
-global configuration changes, live provider probes or output cleanup. A target
-symlink needs an exact non-directory ignore rule such as `/target`; `/target/`
-does not suffice. Build-slot placement on Builds is separate from final-output
-profile links and does not prove that those links are implemented.
+- Ordinary builds, checks and tests use Oxide. Metadata, locate-project,
+  fetch, update, install, package, publish, tree, fmt, deny and audit retain
+  their arguments through Oxide. Textual switching grants no authority to
+  execute network, installation, publication or secret-bearing operations.
+- Preserve toolchain pins with `RUSTUP_TOOLCHAIN=<same> oxide ...` or a
+  suitable rust-toolchain file. Cargo-running host tools use supported
+  `oxide exec -- <tool>` after project qualification. External commands
+  currently take a brief slot lease; that is existing behaviour.
+- Repair sibling-binary discovery with `CARGO_BIN_EXE_<name>` where
+  applicable and prove unchanged test semantics before switching. An example
+  target must not be assumed to expose a binary-target environment variable.
+- Private `CARGO_TARGET_DIR` and temporary-workspace one-shot builds remain
+  **pending Oxide one-use workspace support**. This includes release/consumer
+  clones and private probes such as `run-with-owned-cargo-target.sh`. Do not
+  switch them or drop their target ownership before qualified support ships.
+- CI, container/VM guest builds, Tarpaulin with its own target, and tests
+  whose subject is Cargo remain genuine Cargo exceptions. Preserve explicit
+  `:cargo` fallbacks at least until formal Effigy v0.15; remove them only
+  through owned work afterward. Other exceptions do not expire with v0.15.
+
+Adoption permits the generated agent-document block and supported routing
+changes, not global configuration changes, live provider probes or output
+cleanup. Nucleus and consumer repositories are outside this project's scope.
+A target symlink needs an exact non-directory ignore rule such as `/target`;
+`/target/` does not suffice. Build-slot placement on Builds is separate from
+final-output profile links. Profile links and one-use seeding are not shipped.

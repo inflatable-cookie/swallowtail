@@ -758,6 +758,12 @@ fn a_session_lease_ignores_its_elapsed_open_deadline() {
     )
     .expect("session lease opens");
     clock.set(501);
+    let call_deadline = lease.next_call_deadline();
+    assert_eq!(
+        call_deadline.instant().ticks(),
+        501 + u64::try_from(REGISTERED_TOOL_MAX_CALL_DURATION.as_nanos()).expect("bounded"),
+        "an unbounded session lease still gives each call its maximum lifetime"
+    );
 
     let outcome = block(lease.call(call_request("after-open-deadline")))
         .expect("the open deadline does not expire a session-scoped lease");
@@ -767,6 +773,7 @@ fn a_session_lease_ignores_its_elapsed_open_deadline() {
         RegisteredToolExecutionDisposition::Executed
     );
     assert_eq!(lease.deadline().instant().ticks(), 500);
+    assert_eq!(lease.lease_deadline(), None);
     assert_eq!(kernel.outstanding_calls(), 0);
 }
 

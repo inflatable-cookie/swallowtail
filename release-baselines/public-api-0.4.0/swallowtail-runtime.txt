@@ -181,16 +181,6 @@ pub swallowtail_runtime::ConfiguredProviderInstanceSelectionReadiness::Ready
 pub enum swallowtail_runtime::ConfiguredProviderModelCatalogueState
 pub swallowtail_runtime::ConfiguredProviderModelCatalogueState::Available
 pub swallowtail_runtime::ConfiguredProviderModelCatalogueState::Unavailable
-pub enum swallowtail_runtime::ConsumerRouteAcknowledgementState
-pub swallowtail_runtime::ConsumerRouteAcknowledgementState::Absent
-pub swallowtail_runtime::ConsumerRouteAcknowledgementState::Effective(swallowtail_runtime::ConsumerRouteEnumerableValue)
-pub swallowtail_runtime::ConsumerRouteAcknowledgementState::Rejected(swallowtail_runtime::ConsumerRouteEnumerableValue)
-pub swallowtail_runtime::ConsumerRouteAcknowledgementState::RequestedNotDispatched
-impl swallowtail_runtime::ConsumerRouteAcknowledgementState
-pub const fn swallowtail_runtime::ConsumerRouteAcknowledgementState::absent() -> Self
-pub fn swallowtail_runtime::ConsumerRouteAcknowledgementState::effective(swallowtail_runtime::ConsumerRouteEnumerableValue) -> Self
-pub fn swallowtail_runtime::ConsumerRouteAcknowledgementState::rejected(swallowtail_runtime::ConsumerRouteEnumerableValue) -> Self
-pub const fn swallowtail_runtime::ConsumerRouteAcknowledgementState::requested_not_dispatched() -> Self
 pub enum swallowtail_runtime::ConsumerRouteActorPosture
 pub swallowtail_runtime::ConsumerRouteActorPosture::ConsumerSelectable
 pub swallowtail_runtime::ConsumerRouteActorPosture::HostControlled
@@ -233,7 +223,6 @@ pub swallowtail_runtime::ConsumerRouteControlId::SessionReconciliation
 pub swallowtail_runtime::ConsumerRouteControlId::ToolDeclarations
 pub swallowtail_runtime::ConsumerRouteControlId::UserInputExchange
 pub enum swallowtail_runtime::ConsumerRouteEvidenceStrength
-pub swallowtail_runtime::ConsumerRouteEvidenceStrength::CompletedProviderOperation
 pub swallowtail_runtime::ConsumerRouteEvidenceStrength::PreparedOperation
 pub swallowtail_runtime::ConsumerRouteEvidenceStrength::RouteValidation
 pub swallowtail_runtime::ConsumerRouteEvidenceStrength::RuntimeType
@@ -273,7 +262,6 @@ pub enum swallowtail_runtime::ConsumerRouteLifecycle
 pub swallowtail_runtime::ConsumerRouteLifecycle::BetweenTurnNegotiable
 pub swallowtail_runtime::ConsumerRouteLifecycle::PerTurn
 pub swallowtail_runtime::ConsumerRouteLifecycle::PostOpenObservationOnly
-pub swallowtail_runtime::ConsumerRouteLifecycle::PostOperationObservationOnly
 pub swallowtail_runtime::ConsumerRouteLifecycle::QualifiedMidTurnNegotiable
 pub swallowtail_runtime::ConsumerRouteLifecycle::SelectionSummary
 pub swallowtail_runtime::ConsumerRouteLifecycle::SessionStartOnly
@@ -299,7 +287,6 @@ pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::DuplicateSource
 pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::IdentityInvalid
 pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::LimitExceeded
 pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::MutationAuthorityAbsent
-pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::ProviderOperationObservationInvalid
 pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::SafeReasonLimitExceeded
 pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::SnapshotIdentityDisagreement
 pub swallowtail_runtime::ConsumerRouteProjectionFailureKind::ValueDomainInvalid
@@ -308,10 +295,6 @@ pub swallowtail_runtime::ConsumerRouteProjectionSourceKind::ActiveSessionObserva
 pub swallowtail_runtime::ConsumerRouteProjectionSourceKind::AdapterContribution
 pub swallowtail_runtime::ConsumerRouteProjectionSourceKind::ConfiguredInstance
 pub swallowtail_runtime::ConsumerRouteProjectionSourceKind::PreparedOperation
-pub swallowtail_runtime::ConsumerRouteProjectionSourceKind::ProviderOperationObservation
-pub enum swallowtail_runtime::ConsumerRouteProviderOperationOutcome<'a>
-pub swallowtail_runtime::ConsumerRouteProviderOperationOutcome::ProviderSessionCatalogue(&'a swallowtail_runtime::ProviderSessionCatalogueOutcome)
-pub swallowtail_runtime::ConsumerRouteProviderOperationOutcome::ProviderSessionHistory(&'a swallowtail_runtime::ProviderSessionHistoryPage)
 pub enum swallowtail_runtime::ConsumerRouteRowIdentity
 pub swallowtail_runtime::ConsumerRouteRowIdentity::Control(swallowtail_runtime::ConsumerRouteControlId)
 pub swallowtail_runtime::ConsumerRouteRowIdentity::Feature(swallowtail_runtime::ConsumerRouteFeatureId)
@@ -323,7 +306,6 @@ pub swallowtail_runtime::ConsumerRouteSourceClass::CapabilityProfile
 pub swallowtail_runtime::ConsumerRouteSourceClass::ConfiguredInstanceRecord
 pub swallowtail_runtime::ConsumerRouteSourceClass::ModelCatalogueObservation
 pub swallowtail_runtime::ConsumerRouteSourceClass::PreparedOperationRecord
-pub swallowtail_runtime::ConsumerRouteSourceClass::ProviderOperationOutcome
 pub swallowtail_runtime::ConsumerRouteSourceClass::RouteAcknowledgementEvidence
 pub swallowtail_runtime::ConsumerRouteSourceClass::RuntimeRequestType
 pub enum swallowtail_runtime::ConsumerRouteSupportPosture
@@ -1109,11 +1091,6 @@ pub const fn swallowtail_runtime::ConsumerRouteApplicability::protocol_facade_id
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::resource_access(&self) -> core::option::Option<swallowtail_core::session_access::ResourceAccess>
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::runtime_readiness(&self) -> swallowtail_core::access::RuntimeReadiness
 pub const fn swallowtail_runtime::ConsumerRouteApplicability::support_authority(&self) -> swallowtail_core::access::SupportAuthority
-pub struct swallowtail_runtime::ConsumerRouteCompoundAcknowledgement
-impl swallowtail_runtime::ConsumerRouteCompoundAcknowledgement
-pub fn swallowtail_runtime::ConsumerRouteCompoundAcknowledgement::new(swallowtail_runtime::ConsumerRouteAcknowledgementState, swallowtail_runtime::ConsumerRouteAcknowledgementState) -> core::result::Result<Self, swallowtail_runtime::ConsumerRouteProjectionFailure>
-pub const fn swallowtail_runtime::ConsumerRouteCompoundAcknowledgement::plan(&self) -> &swallowtail_runtime::ConsumerRouteAcknowledgementState
-pub const fn swallowtail_runtime::ConsumerRouteCompoundAcknowledgement::reasoning(&self) -> &swallowtail_runtime::ConsumerRouteAcknowledgementState
 pub struct swallowtail_runtime::ConsumerRouteControlValue
 impl swallowtail_runtime::ConsumerRouteControlValue
 pub const fn swallowtail_runtime::ConsumerRouteControlValue::domain(&self) -> &swallowtail_runtime::ConsumerRouteValueDomain
@@ -1144,7 +1121,6 @@ pub struct swallowtail_runtime::ConsumerRouteProjection
 impl swallowtail_runtime::ConsumerRouteProjection
 pub const fn swallowtail_runtime::ConsumerRouteProjection::active_session_state(&self) -> &swallowtail_runtime::ConsumerRouteActiveSessionState
 pub const fn swallowtail_runtime::ConsumerRouteProjection::identity(&self) -> &swallowtail_runtime::ConsumerRouteProjectionIdentity
-pub const fn swallowtail_runtime::ConsumerRouteProjection::provider_operation_state(&self) -> &swallowtail_runtime::ConsumerRouteProviderOperationState
 pub const fn swallowtail_runtime::ConsumerRouteProjection::selection_summary(&self) -> &swallowtail_runtime::ConsumerRouteSelectionSummary
 pub const fn swallowtail_runtime::ConsumerRouteProjection::session_start_controls(&self) -> &swallowtail_runtime::ConsumerRouteSessionStartControls
 pub fn swallowtail_runtime::ConsumerRouteProjection::sources(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_runtime::ConsumerRouteProjectionSourceIdentity>
@@ -1174,13 +1150,11 @@ pub const fn swallowtail_runtime::ConsumerRouteProjectionInput<'a>::evidence(&se
 pub const fn swallowtail_runtime::ConsumerRouteProjectionInput<'a>::new(&'a swallowtail_runtime::ConfiguredProviderInstanceRecord, swallowtail_runtime::ConsumerRouteProjectionSourceIdentity, &'a swallowtail_runtime::PreparedOperationEvidence, swallowtail_runtime::ConsumerRouteProjectionSourceIdentity) -> Self
 pub const fn swallowtail_runtime::ConsumerRouteProjectionInput<'a>::record(&self) -> &'a swallowtail_runtime::ConfiguredProviderInstanceRecord
 pub fn swallowtail_runtime::ConsumerRouteProjectionInput<'a>::with_contributions(self, impl core::iter::traits::collect::IntoIterator<Item = &'a swallowtail_runtime::ConsumerRouteProjectionContribution>) -> Self
-pub fn swallowtail_runtime::ConsumerRouteProjectionInput<'a>::with_provider_operation_observations(self, impl core::iter::traits::collect::IntoIterator<Item = &'a swallowtail_runtime::ConsumerRouteProviderOperationObservation>) -> Self
 pub struct swallowtail_runtime::ConsumerRouteProjectionRow
 impl swallowtail_runtime::ConsumerRouteProjectionRow
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::actor_posture(&self) -> swallowtail_runtime::ConsumerRouteActorPosture
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::applicability(&self) -> &swallowtail_runtime::ConsumerRouteApplicability
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::availability(&self) -> swallowtail_runtime::ConsumerRouteAvailability
-pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::compound_acknowledgement(&self) -> core::option::Option<&swallowtail_runtime::ConsumerRouteCompoundAcknowledgement>
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::control_value(&self) -> core::option::Option<&swallowtail_runtime::ConsumerRouteControlValue>
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::evidence_strength(&self) -> swallowtail_runtime::ConsumerRouteEvidenceStrength
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::identity(&self) -> &swallowtail_runtime::ConsumerRouteRowIdentity
@@ -1194,7 +1168,6 @@ pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::state_support(&sel
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::support(&self) -> swallowtail_runtime::ConsumerRouteSupportPosture
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::with_actor_posture(self, swallowtail_runtime::ConsumerRouteActorPosture) -> Self
 pub const fn swallowtail_runtime::ConsumerRouteProjectionRow::with_availability(self, swallowtail_runtime::ConsumerRouteAvailability) -> Self
-pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_compound_acknowledgement(self, swallowtail_runtime::ConsumerRouteCompoundAcknowledgement) -> Self
 pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_control_value(self, swallowtail_runtime::ConsumerRouteControlValue) -> Self
 pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_mutation_authority(self, swallowtail_runtime::ConsumerRouteMutationAuthority) -> Self
 pub fn swallowtail_runtime::ConsumerRouteProjectionRow::with_safe_reason(self, swallowtail_runtime::ConsumerRouteSafeReason) -> Self
@@ -1211,15 +1184,6 @@ impl swallowtail_runtime::ConsumerRouteProjectionSourceIdentity
 pub const fn swallowtail_runtime::ConsumerRouteProjectionSourceIdentity::id(&self) -> &swallowtail_runtime::ConsumerRouteProjectionSourceId
 pub const fn swallowtail_runtime::ConsumerRouteProjectionSourceIdentity::kind(&self) -> swallowtail_runtime::ConsumerRouteProjectionSourceKind
 pub const fn swallowtail_runtime::ConsumerRouteProjectionSourceIdentity::new(swallowtail_runtime::ConsumerRouteProjectionSourceId, swallowtail_runtime::ConsumerRouteProjectionSourceKind) -> Self
-pub struct swallowtail_runtime::ConsumerRouteProviderOperationObservation
-impl swallowtail_runtime::ConsumerRouteProviderOperationObservation
-pub const fn swallowtail_runtime::ConsumerRouteProviderOperationObservation::applicability(&self) -> &swallowtail_runtime::ConsumerRouteApplicability
-pub fn swallowtail_runtime::ConsumerRouteProviderOperationObservation::new(&swallowtail_runtime::PreparedOperationEvidence, swallowtail_runtime::ConsumerRouteProviderOperationOutcome<'_>, swallowtail_runtime::ConsumerRouteProjectionSourceIdentity, impl core::iter::traits::collect::IntoIterator<Item = swallowtail_runtime::ConsumerRouteProjectionRow>) -> core::result::Result<Self, swallowtail_runtime::ConsumerRouteProjectionFailure>
-pub fn swallowtail_runtime::ConsumerRouteProviderOperationObservation::rows(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_runtime::ConsumerRouteProjectionRow>
-pub const fn swallowtail_runtime::ConsumerRouteProviderOperationObservation::source(&self) -> &swallowtail_runtime::ConsumerRouteProjectionSourceIdentity
-pub struct swallowtail_runtime::ConsumerRouteProviderOperationState
-impl swallowtail_runtime::ConsumerRouteProviderOperationState
-pub fn swallowtail_runtime::ConsumerRouteProviderOperationState::rows(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &swallowtail_runtime::ConsumerRouteProjectionRow>
 pub struct swallowtail_runtime::ConsumerRouteSafeReason
 impl swallowtail_runtime::ConsumerRouteSafeReason
 pub const fn swallowtail_runtime::ConsumerRouteSafeReason::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
@@ -2269,11 +2233,6 @@ pub fn swallowtail_runtime::ProviderSessionCatalogueOutcome::candidates(&self) -
 pub const fn swallowtail_runtime::ProviderSessionCatalogueOutcome::cleanup(&self) -> &swallowtail_runtime::CleanupOutcome
 pub fn swallowtail_runtime::ProviderSessionCatalogueOutcome::new(&swallowtail_runtime::ProviderSessionCataloguePlan, &swallowtail_runtime::ProviderSessionCatalogueRequest, alloc::vec::Vec<swallowtail_runtime::ProviderSessionCandidate>, core::option::Option<alloc::string::String>, swallowtail_runtime::CleanupOutcome) -> core::result::Result<Self, swallowtail_runtime::ProviderSessionOperationFailure>
 pub const fn swallowtail_runtime::ProviderSessionCatalogueOutcome::next_cursor(&self) -> core::option::Option<&swallowtail_runtime::ProviderSessionCursor>
-impl core::cmp::Eq for swallowtail_runtime::ProviderSessionCatalogueOutcome
-impl core::cmp::PartialEq for swallowtail_runtime::ProviderSessionCatalogueOutcome
-pub fn swallowtail_runtime::ProviderSessionCatalogueOutcome::eq(&self, &Self) -> bool
-impl core::fmt::Debug for swallowtail_runtime::ProviderSessionCatalogueOutcome
-pub fn swallowtail_runtime::ProviderSessionCatalogueOutcome::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::ProviderSessionCataloguePlan
 impl swallowtail_runtime::ProviderSessionCataloguePlan
 pub const fn swallowtail_runtime::ProviderSessionCataloguePlan::agreement(&self) -> &swallowtail_runtime::ProviderSessionCatalogueAgreement
@@ -2341,11 +2300,6 @@ pub fn swallowtail_runtime::ProviderSessionHistoryPage::items(&self) -> impl cor
 pub fn swallowtail_runtime::ProviderSessionHistoryPage::new(&swallowtail_runtime::ProviderSessionHistoryPlan, &swallowtail_runtime::ProviderSessionHistoryRequest, swallowtail_runtime::ProviderSessionHistoryWindow, swallowtail_runtime::CleanupOutcome) -> core::result::Result<Self, swallowtail_runtime::RuntimeFailure>
 pub const fn swallowtail_runtime::ProviderSessionHistoryPage::older_cursor(&self) -> core::option::Option<&swallowtail_runtime::ProviderSessionHistoryCursor>
 pub const fn swallowtail_runtime::ProviderSessionHistoryPage::total(&self) -> swallowtail_runtime::ProviderSessionHistoryTotal
-impl core::cmp::Eq for swallowtail_runtime::ProviderSessionHistoryPage
-impl core::cmp::PartialEq for swallowtail_runtime::ProviderSessionHistoryPage
-pub fn swallowtail_runtime::ProviderSessionHistoryPage::eq(&self, &Self) -> bool
-impl core::fmt::Debug for swallowtail_runtime::ProviderSessionHistoryPage
-pub fn swallowtail_runtime::ProviderSessionHistoryPage::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::ProviderSessionHistoryPlan
 impl swallowtail_runtime::ProviderSessionHistoryPlan
 pub const fn swallowtail_runtime::ProviderSessionHistoryPlan::agreement(&self) -> &swallowtail_runtime::ProviderSessionHistoryAgreement
@@ -3154,7 +3108,6 @@ pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_ENUMERABLE_VALUES: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_ENUMERABLE_VALUE_BYTES: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_EXTENSION_TEXT_BYTES: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_NAMESPACED_EXTENSIONS: usize
-pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_PROVIDER_OPERATION_ROWS: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_SAFE_REASON_BYTES: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_SELECTION_SUMMARY_ROWS: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_SESSION_START_ROWS: usize

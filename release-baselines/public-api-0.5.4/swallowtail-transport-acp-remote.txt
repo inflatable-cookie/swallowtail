@@ -1,0 +1,34 @@
+pub mod swallowtail_transport_acp_remote
+pub enum swallowtail_transport_acp_remote::RemoteAcpErrorKind
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::BindingRejected
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::Cancelled
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::CapacityExceeded
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::CleanupFailed
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::DeadlineExceeded
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::EndpointRejected
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::HostServiceMissing
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::ProtocolRejected
+pub swallowtail_transport_acp_remote::RemoteAcpErrorKind::TransportFailed
+pub struct swallowtail_transport_acp_remote::RemoteAcpClient
+impl swallowtail_transport_acp_remote::RemoteAcpClient
+pub fn swallowtail_transport_acp_remote::RemoteAcpClient::connect<'a>(&'a self, &'a swallowtail_core::preflight::PreflightPlan, swallowtail_transport_acp_remote::RemoteAcpConnectRequest, swallowtail_runtime::network::NetworkGrant, swallowtail_runtime::host_registry::HostServices) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<swallowtail_transport_acp_remote::RemoteAcpConnection, swallowtail_transport_acp_remote::RemoteAcpError>> + core::marker::Send + 'a)>>
+pub struct swallowtail_transport_acp_remote::RemoteAcpConnectRequest
+impl swallowtail_transport_acp_remote::RemoteAcpConnectRequest
+pub const fn swallowtail_transport_acp_remote::RemoteAcpConnectRequest::deadline(&self) -> core::option::Option<swallowtail_runtime::time::Deadline>
+pub const fn swallowtail_transport_acp_remote::RemoteAcpConnectRequest::endpoint(&self) -> &swallowtail_runtime::host_reference::EndpointRef
+pub const fn swallowtail_transport_acp_remote::RemoteAcpConnectRequest::new(swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::EndpointRef) -> Self
+pub const fn swallowtail_transport_acp_remote::RemoteAcpConnectRequest::scope(&self) -> &swallowtail_runtime::identity::ScopeId
+pub const fn swallowtail_transport_acp_remote::RemoteAcpConnectRequest::with_deadline(self, swallowtail_runtime::time::Deadline) -> Self
+pub struct swallowtail_transport_acp_remote::RemoteAcpConnection
+impl swallowtail_transport_acp_remote::RemoteAcpConnection
+pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::cancel(&mut self) -> core::result::Result<(), swallowtail_transport_acp_remote::RemoteAcpError>
+pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::close(self) -> swallowtail_runtime::outcome::CleanupOutcome
+pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::next_event(&mut self) -> core::option::Option<core::result::Result<swallowtail_protocol_acp::Message, swallowtail_transport_acp_remote::RemoteAcpError>>
+pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::send(&mut self, swallowtail_protocol_acp::Message) -> core::result::Result<(), swallowtail_transport_acp_remote::RemoteAcpError>
+pub struct swallowtail_transport_acp_remote::RemoteAcpError
+impl swallowtail_transport_acp_remote::RemoteAcpError
+pub const fn swallowtail_transport_acp_remote::RemoteAcpError::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
+pub const fn swallowtail_transport_acp_remote::RemoteAcpError::kind(&self) -> swallowtail_transport_acp_remote::RemoteAcpErrorKind
+impl core::error::Error for swallowtail_transport_acp_remote::RemoteAcpError
+impl core::fmt::Display for swallowtail_transport_acp_remote::RemoteAcpError
+pub fn swallowtail_transport_acp_remote::RemoteAcpError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result

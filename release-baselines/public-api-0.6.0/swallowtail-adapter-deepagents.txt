@@ -1,0 +1,50 @@
+pub mod swallowtail_adapter_deepagents
+pub struct swallowtail_adapter_deepagents::DeepAgentsAcpDriver
+impl swallowtail_adapter_deepagents::DeepAgentsAcpDriver
+pub const fn swallowtail_adapter_deepagents::DeepAgentsAcpDriver::new(swallowtail_runtime::host_reference::EnvironmentRef) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_deepagents::DeepAgentsAcpDriver
+pub fn swallowtail_adapter_deepagents::DeepAgentsAcpDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_deepagents::DeepAgentsAcpDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::InteractiveSessionDriver for swallowtail_adapter_deepagents::DeepAgentsAcpDriver
+pub fn swallowtail_adapter_deepagents::DeepAgentsAcpDriver::open_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::OpenSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_deepagents::DeepAgentsAcpDriver::resume_session(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::ResumeSessionRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_deepagents::DeepAgentsPreparationInput
+impl swallowtail_adapter_deepagents::DeepAgentsPreparationInput
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_deepagents::DeepAgentsPreparationProbe
+impl swallowtail_adapter_deepagents::DeepAgentsPreparationProbe
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration
+impl swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::low_level_driver(&self) -> swallowtail_adapter_deepagents::DeepAgentsAcpDriver
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration::prepare_session(&self, swallowtail_adapter_deepagents::DeepAgentsSessionProfileInput) -> core::result::Result<swallowtail_adapter_deepagents::DeepAgentsPreparedSession, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_deepagents::DeepAgentsPreparedSession
+impl swallowtail_adapter_deepagents::DeepAgentsPreparedSession
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedSession::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_deepagents::DeepAgentsPreparedSession
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedSession::evidence(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedSession::open_session(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::InteractiveSessionHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedSession::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub fn swallowtail_adapter_deepagents::DeepAgentsPreparedSession::prepare_working_state_restoration(&self, swallowtail_runtime::identity::RuntimeTurnId) -> swallowtail_runtime::working_state_restoration::PreparedWorkingStateRestoration
+pub const fn swallowtail_adapter_deepagents::DeepAgentsPreparedSession::request(&self) -> &swallowtail_runtime::roles::OpenSessionRequest
+pub struct swallowtail_adapter_deepagents::DeepAgentsSessionProfileInput
+impl swallowtail_adapter_deepagents::DeepAgentsSessionProfileInput
+pub const fn swallowtail_adapter_deepagents::DeepAgentsSessionProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::host_reference::WorkingResourceRef) -> Self
+pub const swallowtail_adapter_deepagents::DEEPAGENTS_ACP_EXECUTABLE_NAME: &str
+pub const swallowtail_adapter_deepagents::DEEPAGENTS_ACP_PACKAGE_AXIS: &str
+pub const swallowtail_adapter_deepagents::DEEPAGENTS_ACP_PACKAGE_VERSION: &str
+pub const swallowtail_adapter_deepagents::DEEPAGENTS_PROVIDER_API_KEY_AUDIENCE: &str
+pub fn swallowtail_adapter_deepagents::deepagents_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_deepagents::deepagents_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_deepagents::deepagents_acp_package_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
+pub fn swallowtail_adapter_deepagents::deepagents_provider_api_key_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub async fn swallowtail_adapter_deepagents::prepare_deepagents_acp(swallowtail_adapter_deepagents::DeepAgentsPreparationInput, swallowtail_adapter_deepagents::DeepAgentsPreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_deepagents::DeepAgentsPreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>

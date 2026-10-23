@@ -69,9 +69,10 @@ unverified-newer point:
 - `pi.sdk-sidecar.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=22.19.0` requirement; Research 396)
 - `pi.sdk-sidecar.wire`: exact `swallowtail-pi-sdk-jsonl-v1` (opaque)
-- `pi.sdk-sidecar.sidecar`: the unchanged exact source tag
-  `swallowtail-pi-sdk-sidecar@0.5.1`; Research 400 freezes the shipped
-  sidecar asset's content hash
+- `pi.sdk-sidecar.sidecar`: the exact source tag that derives from the
+  coordinated package version, `swallowtail-pi-sdk-sidecar@0.6.0` for the
+  `0.6.0` candidate; Research 400 freezes the shipped sidecar asset's content
+  hash
 
 Unlisted package points, including unpublished gaps and prereleases, do not
 prepare. No package range is inferred between exact points. The claim does not

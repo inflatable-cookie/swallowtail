@@ -11,8 +11,8 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::future::ready;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use std::sync::{Arc, Mutex, OnceLock};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex, Weak};
 use std::task::{Poll, Waker};
 use std::time::{Duration, Instant};
 use swallowtail_adapter_claude_agent::sdk::open_receipt::{
@@ -217,29 +217,129 @@ impl CourierClient {
     }
 }
 
-pub(super) fn courier_binary() -> &'static Path {
-    static PATH: OnceLock<PathBuf> = OnceLock::new();
-    PATH.get_or_init(|| {
-        let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .parent()
-            .expect("crate dir")
-            .parent()
-            .expect("workspace")
-            .to_path_buf();
-        // The nested build shares the run-owned target that the outer build
-        // warmed, so no dependency compiles inside a test's own budget.
-        let nested_target = run_owned_target(&workspace);
-        let binary = nested_target
-            .join("debug")
-            .join("swallowtail-registered-tool-courier");
-        let bytes = acquire_built_courier(&workspace, &nested_target, &binary);
-        let published = publish_write_once(&bytes, &nested_target);
+/// The resolved registered-tool courier binary, plus the task-owned build
+/// target that holds it when this process built one. The target is removed
+/// when the last handle drops, so an ordinary `cargo nextest` or `cargo test`
+/// entrypoint that sets no validated run-owned `CARGO_TARGET_DIR` still cleans
+/// up after itself.
+pub(super) struct CourierBinary {
+    inner: Arc<CourierInner>,
+}
+
+impl CourierBinary {
+    pub(super) fn path(&self) -> &Path {
+        &self.inner.path
+    }
+}
+
+struct CourierInner {
+    path: PathBuf,
+    /// Present only when this process created and owns the build target.
+    _task_target: Option<TaskOwnedTarget>,
+}
+
+/// One task-owned cargo target directly under the system temp root. Only the
+/// process that created it removes it, and only when its last courier handle
+/// drops.
+struct TaskOwnedTarget {
+    path: PathBuf,
+}
+
+impl Drop for TaskOwnedTarget {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.path);
+    }
+}
+
+/// Marker this test writes into a target it created for itself. It is
+/// deliberately distinct from the validation runner's run-owned marker.
+const TASK_OWNED_MARKER: &str = ".swallowtail-task-owned";
+/// Name prefix for a test-created task-owned target directory.
+const TASK_OWNED_PREFIX: &str = "swallowtail-sdk-courier-task.";
+/// Sequence for unique task-owned target names within one process.
+static NEXT_TASK_TARGET: AtomicU64 = AtomicU64::new(0);
+/// Current handle cache. A task-owned target lives only while a handle is
+/// alive, so this holds a weak reference and rebuilds after cleanup. The lock
+/// serialises concurrent tests in one process onto one build.
+static COURIER: Mutex<Option<Weak<CourierInner>>> = Mutex::new(None);
+
+/// Resolves the real registered-tool courier binary, building it when needed.
+///
+/// When the validation runner has exported a run-owned `CARGO_TARGET_DIR`, the
+/// nested build shares that warm target and the runner owns its cleanup.
+/// Otherwise (an ordinary `cargo nextest` or `cargo test` entrypoint) the build
+/// goes into a fresh task-owned target under the system temp root that this
+/// process removes when the last handle drops. The worktree and any shared
+/// target are never built into or deleted.
+pub(super) fn courier_binary() -> CourierBinary {
+    let mut cache = COURIER
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if let Some(inner) = cache.as_ref().and_then(Weak::upgrade) {
+        return CourierBinary { inner };
+    }
+    let inner = Arc::new(build_courier_binary());
+    *cache = Some(Arc::downgrade(&inner));
+    CourierBinary { inner }
+}
+
+fn build_courier_binary() -> CourierInner {
+    let workspace = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("crate dir")
+        .parent()
+        .expect("workspace")
+        .to_path_buf();
+    let (nested_target, task_target) = match run_owned_target(&workspace) {
+        Some(target) => (target, None),
+        None => {
+            let target = TaskOwnedTarget::create(&workspace);
+            let path = target.path.clone();
+            (path, Some(target))
+        }
+    };
+    let binary = nested_target
+        .join("debug")
+        .join("swallowtail-registered-tool-courier");
+    let bytes = acquire_built_courier(&workspace, &nested_target, &binary);
+    let published = publish_write_once(&bytes, &nested_target);
+    assert!(
+        is_executable(&published),
+        "courier binary at {published:?} is not executable, so every later spawn would fail"
+    );
+    CourierInner {
+        path: published,
+        _task_target: task_target,
+    }
+}
+
+impl TaskOwnedTarget {
+    fn create(workspace: &Path) -> Self {
+        let temp_root = std::env::temp_dir()
+            .canonicalize()
+            .expect("system temp root exists");
+        let workspace = workspace.canonicalize().expect("workspace exists");
         assert!(
-            is_executable(&published),
-            "courier binary at {published:?} is not executable, so every later spawn would fail"
+            !temp_root.starts_with(&workspace),
+            "system temp root {temp_root:?} is inside the worktree"
         );
-        published
-    })
+        loop {
+            let sequence = NEXT_TASK_TARGET.fetch_add(1, Ordering::Relaxed);
+            let path = temp_root.join(format!(
+                "{TASK_OWNED_PREFIX}{}-{sequence}",
+                std::process::id()
+            ));
+            match std::fs::create_dir(&path) {
+                Ok(()) => {
+                    std::fs::write(path.join(TASK_OWNED_MARKER), b"task-owned build target")
+                        .expect("task-owned target marker is written");
+                    return Self { path };
+                }
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => continue,
+                Err(error) => panic!("task-owned courier target is created: {error}"),
+            }
+        }
+    }
 }
 
 /// Marker the validation runner writes into its run-owned target directory.
@@ -247,43 +347,35 @@ const RUN_OWNED_MARKER: &str = ".swallowtail-run-owned";
 /// Name prefix the validation runner gives each run-owned target directory.
 const RUN_OWNED_PREFIX: &str = "swallowtail-sdk-courier.";
 
-/// Returns the cargo target this validation run owns. The validation runner
+/// Returns the validation-run-owned cargo target when `CARGO_TARGET_DIR`
+/// exactly matches the runner's contract. The runner
 /// (`scripts/run-with-owned-cargo-target.sh`) creates one fresh directory per
 /// selector invocation directly under the system temp root, marks it, and
-/// exports it as `CARGO_TARGET_DIR`. The outer test build and this nested
-/// courier build both use it. The test refuses to run without it, and refuses
-/// the worktree target, a directory without the marker, and any directory
-/// outside the temp root.
-fn run_owned_target(workspace: &Path) -> PathBuf {
-    let target = std::env::var_os("CARGO_TARGET_DIR")
-        .map(PathBuf::from)
-        .expect("registered courier tests run through the validation selector, which sets a run-owned CARGO_TARGET_DIR");
-    let target = target
-        .canonicalize()
-        .unwrap_or_else(|error| panic!("run-owned target {target:?} does not exist: {error}"));
-    let workspace = workspace.canonicalize().expect("workspace exists");
-    assert!(
-        !target.starts_with(&workspace),
-        "CARGO_TARGET_DIR {target:?} is inside the worktree, so it is not run-owned"
-    );
-    let temp_root = std::env::temp_dir()
-        .canonicalize()
-        .expect("system temp root exists");
-    assert_eq!(
-        target.parent(),
-        Some(temp_root.as_path()),
-        "run-owned target {target:?} is not directly under the system temp root"
-    );
+/// exports it; the outer build and this nested courier build share it.
+///
+/// Anything else returns `None`: unset, the worktree, any shared target, a
+/// directory without the marker, or one outside the temp root. The caller then
+/// builds in its own task-owned target instead of using or deleting a target it
+/// does not own.
+fn run_owned_target(workspace: &Path) -> Option<PathBuf> {
+    let target = PathBuf::from(std::env::var_os("CARGO_TARGET_DIR")?);
+    let target = target.canonicalize().ok()?;
+    let workspace = workspace.canonicalize().ok()?;
+    if target.starts_with(&workspace) {
+        return None;
+    }
+    let temp_root = std::env::temp_dir().canonicalize().ok()?;
+    if target.parent() != Some(temp_root.as_path()) {
+        return None;
+    }
     let named = target
         .file_name()
         .and_then(|name| name.to_str())
         .is_some_and(|name| name.starts_with(RUN_OWNED_PREFIX));
-    assert!(named, "{target:?} is not a validation run directory");
-    assert!(
-        target.join(RUN_OWNED_MARKER).is_file(),
-        "{target:?} has no run-owned marker, so another run may own it"
-    );
-    target
+    if !named || !target.join(RUN_OWNED_MARKER).is_file() {
+        return None;
+    }
+    Some(target)
 }
 
 /// Builds the courier and reads the completed artifact, retrying the pair
@@ -661,6 +753,8 @@ struct OpenedRoute {
     local: LocalHostServices,
     services: HostServices,
     courier: CourierClient,
+    /// Keeps a task-owned courier target alive for the route's lifetime.
+    _courier_binary: CourierBinary,
 }
 
 fn open_route(
@@ -690,8 +784,9 @@ fn open_route_with_scenario(
     let fixture = SdkFixtureHost::new(scenario);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let courier_binary = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable.clone(), courier_binary())
+        .approve_executable(executable.clone(), courier_binary.path())
         .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(dispatcher)
         .with_registered_tool_clock(Arc::new(fixture.clone()))
@@ -759,6 +854,7 @@ fn open_route_with_scenario(
         local,
         services,
         courier,
+        _courier_binary: courier_binary,
     }
 }
 
@@ -842,7 +938,11 @@ fn open_declares_the_reserved_courier_and_round_trips_one_mediated_call() {
     assert_eq!(servers[0]["name"], CLAUDE_AGENT_SDK_REGISTERED_TOOL_SERVER);
     assert_eq!(
         servers[0]["command"].as_str().expect("declared command"),
-        courier_binary().to_str().expect("courier path is UTF-8"),
+        opened
+            ._courier_binary
+            .path()
+            .to_str()
+            .expect("courier path is UTF-8"),
         "SDK command is the resolved filesystem path, not an ExecutableRef host value"
     );
     assert_eq!(servers[0]["args"][0], REGISTERED_TOOL_PROXY_WIRE_TAG);
@@ -1413,7 +1513,7 @@ fn a_second_courier_cannot_reread_an_expired_rendezvous() {
         !Path::new(rendezvous).exists(),
         "ready unlinks the one-shot rendezvous: {rendezvous}"
     );
-    let status = std::process::Command::new(courier_binary())
+    let status = std::process::Command::new(opened._courier_binary.path())
         .args([REGISTERED_TOOL_PROXY_WIRE_TAG, rendezvous])
         .stderr(std::process::Stdio::null())
         .status()
@@ -1644,8 +1744,9 @@ fn the_card_132_registered_open_request_yields_a_typed_failed_open_receipt() {
     let fixture = SdkFixtureHost::new(SdkScenario::OpenRejected);
     let executable = ExecutableRef::new("fixture.registered-tool.courier").expect("executable");
     let environment = EnvironmentRef::new("fixture.registered-tool.environment").expect("env");
+    let courier = courier_binary();
     let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable(executable.clone(), courier_binary())
+        .approve_executable(executable.clone(), courier.path())
         .approve_environment(environment.clone(), [("PATH".into(), "/usr/bin".into())])
         .with_registered_tool_dispatcher(Arc::new(CountingDispatcher { calls }))
         .with_registered_tool_clock(Arc::new(fixture.clone()))

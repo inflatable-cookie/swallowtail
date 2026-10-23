@@ -43,6 +43,10 @@ Normal validation scripts:
 - `verify-affected-packages.sh` — independently assemble and inspect one to
   four explicit package archives, then compile them through one shared
   extracted target
+- `verify-lease-api-fixture.sh` — compile the seven registered-tool lease
+  methods released in `v0.5.4` from one temporary external consumer workspace,
+  then require each released signature in the generated current-version
+  semantic API dump
 - `copilot-acp-no-child-original-diagnostic.py` — original-profile fake proof
   and one authorized Copilot `1.0.93` initialize under the reviewed no-child
   isolation; does not reopen the 432 preparation entrypoint

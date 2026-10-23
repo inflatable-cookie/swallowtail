@@ -318,7 +318,6 @@ impl RegisteredToolOperationKernel {
     /// the lease deadline and maximum duration at its serialized admission
     /// point.
     #[must_use]
-    #[doc(hidden)]
     pub fn next_call_deadline(&self) -> Deadline {
         let now = self.time.now();
         let bounded = self.maximum_call_deadline(now);

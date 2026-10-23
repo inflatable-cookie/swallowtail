@@ -139,6 +139,10 @@ PENDING = {
         "assembles package archives and compiles extracted packages in a "
         "private temporary target"
     ),
+    "check:lease-api-fixture": (
+        "builds one temporary external consumer workspace outside this "
+        "checkout with its own lock and target"
+    ),
     "check:sdk-patch-backport": (
         "the backport runner stages a private candidate and consumer clone with "
         "its own targets and pinned toolchains"
@@ -188,6 +192,7 @@ SCRIPT_CLASSES = {
     "scripts/validate-focused-packages.sh": "pending",
     "scripts/verify-affected-packages.sh": "pending",
     "scripts/verify-source-consumer.sh": "pending",
+    "scripts/verify-lease-api-fixture.sh": "pending",
     "scripts/release/backports/sdk-v0.5.2/runner.sh": "pending",
     "scripts/run-with-owned-cargo-target.sh": "pending",
     "scripts/validation/package-scope.sh": "query",

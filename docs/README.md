@@ -2,8 +2,10 @@
 
 Swallowtail is a pre-1.0 Rust library for driving AI model providers and agent
 harnesses through exact, testable routes. The current source tag is `v0.5.4`
-(40 packages, 50 released production routes); ongoing `main` includes 51 routes.
-For the tagged package and route inventory, see [releases](releases/README.md).
+(40 packages, 50 released production routes). The coordinated source-only
+candidate is `0.6.0` (40 packages, 51 production routes); its tag needs separate
+exact-SHA authority. For the tagged package and route inventory, see
+[releases](releases/README.md).
 
 What is true now:
 
@@ -37,8 +39,8 @@ vision. Specs and research stay provisional until promoted.
 - Consumer guides and matrices: [guides/](guides/README.md)
 - Retained research evidence: [research/](research/README.md)
 - Release notes: [releases/](releases/README.md)
-- Currentness minor source/compatibility ledger (preparatory, not a
-  candidate): [releases/currentness-minor-compatibility.md](releases/currentness-minor-compatibility.md)
+- Currentness minor source/compatibility ledger and candidate record:
+  [releases/currentness-minor-compatibility.md](releases/currentness-minor-compatibility.md)
 
 ## What's next
 

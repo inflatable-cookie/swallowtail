@@ -1,18 +1,53 @@
 # Currentness Minor Source And Compatibility Ledger
 
-Status: preparatory source and compatibility assessment at planning `main`;
-not a candidate, tag, claim change, or version bump.
+Status: reviewed source and compatibility assessment at planning `main`,
+followed by one prepared source-only `0.6.0` candidate under merge hold. It is
+not a tag, claim change, publication, or release authorization.
 
 Assessment head: `b5e4760c9c330da1e0b33cb769218e20ca7ed239`. Released line:
 annotated tag `v0.5.4`, peeled commit `bb53587a3f6fe28d00e9d07fa3c8ba3f179e1451`,
-tag object `3c0363430726febaffbc32726a56a7c4016da2db`. Workspace version on
-this head remains `0.5.1`. `v0.6.0` is the Contract 036 planning target, not a
-prepared version.
+tag object `3c0363430726febaffbc32726a56a7c4016da2db`. The assessment head
+carried workspace version `0.5.1`; the candidate below carries the coordinated
+`0.6.0` version and appears in [its own release note](0.6.0.md).
 
 This ledger classifies what current `main` already contains against Contract
 036 patch-versus-minor and Contract 029 qualification evidence. Queue owns
 task sequencing. It does not authorize a release, rewrite matrices, or expand
 provider authority.
+
+## Candidate Preparation Record
+
+The prepared candidate implements this ledger's finite scope. It is a source
+candidate only: merge stays on hold until planner milestone QA and a
+qualifying hosted release and MSRV run cover the exact reviewed head, and tag
+creation and push need separate operator authority naming the exact SHA.
+
+- **Baselines.** Every version-labelled baseline was restored byte-for-byte
+  from the tag that owns it, and the `release/v0.5` baselines absent from
+  `main` were added from `v0.5.2`, `v0.5.3` and `v0.5.4`, so the newest tagged
+  baseline older than the candidate is `v0.5.4`. All 572 version-labelled
+  files then matched the earliest tag containing their path. The `0.6.0`
+  public-API, production-route and internal-dependency inventories were
+  generated from the candidate afterwards.
+- **Lease API.** All seven `v0.5.2`/`v0.5.4` lease methods are ordinary public
+  API again with their released signatures, docs and released test
+  assertions; runtime policy and lifecycle are unchanged. The
+  `swallowtail-runtime` public API is identical to `v0.5.4`, and its source
+  still differs from that tag only in `prepared_operation/tests.rs`,
+  `prepared_operation/tests/support.rs` and `session_cleanup.rs`, which come
+  from main-line work after the tag.
+- **Security delta.** The candidate carries the approved `rustls` lock
+  movement for RUSTSEC-2026-0346, -0347, -0381, -0382 and -0383 and the exact
+  emSign distrust patches approved under Contract 023. They arrive after this
+  assessment was written, change no public API, provider pin or MSRV, and do
+  not move a qualification claim. Released tags keep their published trust
+  state; no advisory is ignored.
+- **Courier corrections.** The already-forward-ported authenticated courier
+  idle and approval-wait corrections stay included; no second port exists.
+- **Compatibility.** The candidate's semantic API is additive against
+  `v0.5.4` with no removals, and the route inventory is the tagged 50 plus
+  additive `opencode.acp`. The minor is forced by the consumer-visible
+  guarantee changes this ledger classifies, not by an API removal.
 
 ## Frozen Comparison
 
@@ -26,9 +61,11 @@ released-line patches are not a linear hop.
 
 Current `main` already carries the courier idle correction as a forward-port,
 plus the currentness sweep, Opaque constructor narrowing, additive public API,
-and one extra production route (`opencode.acp`). Working
-`release-baselines/production-routes-0.5.1.txt` lists 51 routes; tagged
-`v0.5.1` and `v0.5.4` inventories list 50.
+and one extra production route (`opencode.acp`). Before the candidate restored
+tagged bytes, the working `release-baselines/production-routes-0.5.1.txt` on
+the assessment head listed 51 routes while tagged `v0.5.1` and `v0.5.4`
+inventories list 50. That temporary drift is now corrected: `0.5.1` records
+its tagged 50 routes and the `0.6.0` candidate baseline holds 51.
 
 ## Why The Next Coordinated Release Is A Minor
 
@@ -45,8 +82,8 @@ breaking-if-shipped:
 | Antigravity child projection `SubagentStatus::Unknown` when the stream has identity and no child status | 036, 023, 045 | breaking lifecycle if shipped; inferred `Completed` no longer applies | Research 424; Contract 023 Antigravity Headless Denial And Child Status |
 | Command Code plan-mode model selection from `1.73.0` (`featureModels.planning` may precede `-m`) | 036, 029 | guaranteed-behavior change; private observation only | Research 402; CHANGELOG Unreleased |
 | Claude Agent SDK default pair moves from released exact `0.3.259`/`2.1.259` to `0.3.293`/`2.1.293`; maintained window is `0.3.284..=0.3.295` | 036, 037, 029 | shrinking the released pin out of the production window is a guaranteed-range shrink for upgraders; additive pair enum is source-compatible for new callers | Research 416, 420; Contract 037; `ClaudeAgentSdkPackageNativePair::DEFAULT` |
-| Temporary mutation of version-labelled `public-api-0.5.1` dumps after the `v0.5.1` tag | 036 | candidate must restore tagged bytes then generate a new baseline | Contract 036 Public API And Documentation; Contract 037 pair-selection exception |
-| Seven `v0.5.2`/`v0.5.4` public lease methods are `pub(crate)` or `#[doc(hidden)]` on this `main` | 036 | removal versus `v0.5.4` unless restored as public before the candidate | tagged `public-api-0.5.4/swallowtail-runtime.txt` vs current source |
+| Temporary mutation of version-labelled `public-api-0.5.1` dumps after the `v0.5.1` tag | 036 | candidate restored tagged bytes then generated the `0.6.0` baseline (resolved) | Contract 036 Public API And Documentation; Contract 037 pair-selection exception |
+| Seven `v0.5.2`/`v0.5.4` public lease methods were `pub(crate)` or `#[doc(hidden)]` on the assessment head | 036 | removal versus `v0.5.4`; the candidate restores all seven as ordinary public API (resolved) | tagged `public-api-0.5.4/swallowtail-runtime.txt`; `check:lease-api-fixture` |
 | Gemini ACP exact `0.63.0` permission and read-boundary restrictions (`.gemini` writes and redirection ASK_USER reject-and-cancel, real-path reads, protected `.env.*` except example/sample/template/dist, 64 KiB tool-output cap) | 036, 029 | consumer-visible restriction; pre-1.0 minor. Exact `0.62.0` tool-update mapping stays additive. HTTP MCP live honouring stays exact `0.61.0` | Research 415; behavior `gemini-cli.acp.v0.63.0-restricted-files` |
 | Codex app-server `0.159.0..=0.161.0` read-only protection for an existing top-level `.aws` directory inside the approved writable root | 036, 023 | consumer-visible workspace-write narrowing; pre-1.0 minor. Contract 023 accepted the limitation; this ledger classifies the 036 consequence. Earlier app-server segments stay their prior revisions | Research 388; Contract 023 Codex App-Server Protected AWS Directory; behavior `codex.app-server.v2.protected-aws-workspace-roots` |
 
@@ -57,13 +94,13 @@ the breaking items and consumer-visible restrictions already force it.
 Urgent consumer adoption of `v0.5.2`–`v0.5.4` stays on the released line. This
 assessment does not move those tags.
 
-## Restore Obligations Before Candidate Preparation
+## Restore Obligations And Their Resolution
 
 Contract 036 and Spec 015 require the candidate to restore every older
 version-labelled baseline byte-for-byte from its tag, prove that restoration,
-then generate the new version's inventories. Current
-`release-baselines/public-api-0.5.1/` is a temporary current-source inventory.
-Nine dumps differ from tagged `v0.5.1`:
+then generate the new version's inventories. Before the candidate, the
+assessment head carried a temporary current-source `public-api-0.5.1`
+inventory, and these nine dumps differed from tagged `v0.5.1`:
 
 - `swallowtail-core.txt` — additive `InterfaceCompatibilityClaim::has_version_interval`
 - `swallowtail-adapter-claude-agent.txt` — 12-pair `ClaudeAgentSdkPackageNativePair` (`0.3.284`–`0.3.295`), `DEFAULT` `.293`, `with_package_native_pair`
@@ -73,8 +110,8 @@ Nine dumps differ from tagged `v0.5.1`:
 - `swallowtail-adapter-copilot-cli.txt`, `swallowtail-adapter-goose.txt`, `swallowtail-adapter-kiro.txt` — HTTP MCP placement types
 - `swallowtail-testkit.txt` — consumer-route ledger helpers
 
-`swallowtail-runtime.txt` on this `main` matches tagged `v0.5.1` (no lease
-methods). Tagged `v0.5.4` adds seven public methods:
+`swallowtail-runtime.txt` on the assessment head matched tagged `v0.5.1` (no
+lease methods). Tagged `v0.5.4` adds seven public methods:
 
 - `PreparedRegisteredToolBinding::lease_deadline`
 - `RegisteredToolBridgeLease::{lease_deadline,next_call_deadline}`
@@ -82,13 +119,18 @@ methods). Tagged `v0.5.4` adds seven public methods:
 - `RegisteredToolOperationKernel::next_call_deadline`
 - `RegisteredToolPreparation::prepare_with_lease_deadline`
 
-On this `main`, `prepare_with_lease_deadline` is `#[doc(hidden)] pub`;
-`lease_deadline` / `with_lease_deadline` on the open-request and prepared
-binding are `pub(crate)`. A minor cut from this tree without restoring those
-as ordinary public API is a breaking removal for `v0.5.4` consumers.
+On the assessment head, `prepare_with_lease_deadline` was `#[doc(hidden)]
+pub`, and `lease_deadline` / `with_lease_deadline` on the open-request and
+prepared binding were `pub(crate)`; a minor cut from that tree would have been
+a breaking removal for `v0.5.4` consumers.
 
-Candidate prep (existing lead `4cec9385-9380-4f2a-a98d-207009357dec`) owns
-that restore-then-regenerate step. This ledger does not rewrite baselines.
+Both obligations are resolved. The restored `0.5.1` dumps again record tagged
+bytes, and the additive entries above appear only in `public-api-0.6.0`. All
+seven lease methods are ordinary public API again with their released test
+assertions, the `swallowtail-runtime` public API is identical to `v0.5.4`, and
+`check:lease-api-fixture` proves the released signatures from one external
+consumer plus their presence in the generated `0.6.0` dump. This ledger still
+does not rewrite tagged evidence.
 
 ## Included At Planning Main
 
@@ -103,7 +145,7 @@ new qualification.
 | Bounded finite Opaque construction: 1..=32 exact members, 256-byte text bounds, equality classify, `has_version_interval` | minor constructor narrowing plus additive introspection | Spec 015; Contract 029 Finite Exact Opaque-Set; `claim.rs` |
 | First production multi-member Opaque set: `llama-cpp.attached` exact `b9910-f5525f7e7` and `b11429-d81235049`, QualifiedOnly | Contract 029 qualification on the implemented Opaque set | Research 421; route matrix |
 | Courier idle after authenticate (Contract 063 listener) | patch-compatible; already tagged `v0.5.4` and forward-ported | [0.5.4 notes](0.5.4.md); CHANGELOG |
-| SDK registered-tool lease split and per-turn usage | patch-compatible on the released line (`v0.5.2`); main currently hides the public lease methods | [0.5.2 notes](0.5.2.md); [SDK backport proof](sdk-v0.5.2-backport.md) |
+| SDK registered-tool lease split and per-turn usage | patch-compatible on the released line (`v0.5.2`); the candidate restores the seven public lease methods main had hidden | [0.5.2 notes](0.5.2.md); [SDK backport proof](sdk-v0.5.2-backport.md) |
 | Antigravity identity-only child as `SubagentStatus::Unknown` | breaking lifecycle if shipped | Research 424; Contract 023 |
 | Command Code private model-selection observation from `1.73.0` | minor guarantee; no public `model_request_start` activity | Research 402 |
 | Shared ACP schema `schema-v1.20.0` through `schema-v1.24.1`; wire `protocolVersion` remains `1` | additive qualification | Research 406 |
@@ -180,8 +222,8 @@ rewrite `v0.5.4`.
 
 Required for an upgrade from `v0.5.4` onto the minor:
 
-1. Restore the seven lease methods as ordinary public API, or accept a
-   documented breaking removal. Silent hide is not compatible.
+1. The seven lease methods are restored as ordinary public API; a silent
+   hide would have been a breaking removal.
 2. Name the SDK default change: callers who previously got implicit
    `0.3.259`/`2.1.259` get `0.3.293`/`2.1.293`. The maintained enum has no
    `.259` variant. Research 301 live evidence stays bound to `.259` and does
@@ -221,7 +263,6 @@ existing Queue lead. Do not duplicate these tasks.
 | Further Gemini HTTP MCP live attempts | Not now | `d84c5632` |
 | Cline ACP `session/load` (Q-006) | Operator picks `provider_limitation` or `producer_gap` from frozen Research 397 | Q-006; no duplicate task |
 | Windows | Whole-codebase sweep when Tom selects timing | `17518642` |
-| Candidate assembly after this ledger | Restore baselines, restore lease API, generate minor inventories, write candidate notes | `4cec9385` |
 
 Named incompatibilities stay named. Do not relabel them as terminal
 abandonment (Contract 029 No Terminal Stop).
@@ -245,21 +286,20 @@ abandonment (Contract 029 No Terminal Stop).
 
 ## Consumer Cells And Matrix Hygiene
 
-This assessment does not edit matrices. Candidate prep should reconcile:
+The candidate reconciled the two hygiene cells and left claim truth alone:
 
-| Cell | Current truth | Issue |
+| Cell | Candidate state | Note |
 | --- | --- | --- |
-| `cline.acp` version | Route matrix `3.0.55..=3.0.70` except `3.0.59` (Research 397); feature-matrix version column still `Exact 3.0.55` | stale version column versus the claim |
-| `cline.acp load_session` | Feature matrix `No` with reason `provider_limitation`; Q-006 remains open and requires `evidence_pending` until Tom picks the tree | expose; do not silently reclassify |
+| `cline.acp` version | Feature-matrix version column reads `Published 3.0.55-3.0.70 excluding 3.0.59`, matching the route matrix and Research 397 | stale metadata corrected; no claim change |
+| `cline.acp load_session` | Feature matrix `No` with cross kind `evidence_pending` citing open Q-006 | exposed, not silently reclassified; the cell awaits the operator's provider-limitation or producer-gap choice |
 | `copilot-cli.acp client_mcp_servers` | `producer_gap` | emission is not honouring; live gate Not now (`f908ce90`) |
 | `goose.acp client_mcp_servers` | `producer_gap` | same |
 | `kiro.acp client_mcp_servers` | `producer_gap` | same; HTTP MCP live remains exact `2.21.4` unproven |
-| `claude-agent.sdk` pair selection | DEFAULT `.293`; live registered-tool `.259` | document in candidate notes; do not imply live proof transferred |
+| `claude-agent.sdk` pair selection | DEFAULT `.293`; live registered-tool `.259` | documented in the candidate notes; live proof does not transfer |
 | HTTP MCP honouring | exact points only; later window members do not inherit | Contract 063 placement vs live gate |
 
-No `evidence_pending` string currently appears in
-`docs/guides/provider-solution-feature-matrix.csv`. Q-006 still describes
-that state as required while the question is open.
+Q-006 remains open and still owns the `cline.acp load_session` decision tree;
+the candidate only makes the pending state visible.
 
 ## Product, Security, And Consumer Rulings Exposed
 
@@ -274,15 +314,15 @@ Complete independent assessment without selecting these:
 4. **Grok catalogue default-not-in-list** if `ModelCatalog` cannot represent
    it without narrowing (`8d166e76`).
 5. **Q-006** Cline `load_session` classification.
-6. **Public lease methods** restored versus documented removal versus
-   `v0.5.4`.
+6. **Public lease methods.** Settled for this candidate: restored as ordinary
+   public API rather than a documented removal versus `v0.5.4`.
 7. **Antigravity `SubagentStatus::Unknown`** already in source; shipping it
    is the breaking lifecycle that forces the minor. Withholding it is a
    candidate-content choice, not a silent revert in this ledger.
 
-## Proposed Candidate Scope
+## Candidate Scope
 
-Finite proposed content for the planner, still not a candidate:
+Finite content this prepared candidate realises; it is still not a tag:
 
 **Include** current `main` currentness qualifications listed above that
 already have claim plus research evidence; courier idle already on `main`;
@@ -321,12 +361,13 @@ Queue-owned; this list is a recommendation, not a repository status mirror.
    design (`e21bdd6e`), Kiro reachability (`2ec033e3`). Copilot later-than-
    `1.0.80` needs a planner brief; do not spawn a duplicate from this task.
 4. Product rulings 1–7 only if the planner wants those inclusions.
-5. Candidate preparation (`4cec9385`): restore baselines and public lease
-   API, generate minor inventories, write candidate notes. No tag in that
-   lead until Tom names a SHA.
+5. Candidate preparation: restore baselines and public lease API, generate
+   minor inventories, write candidate notes. Complete as one prepared
+   candidate; no tag until the operator names a SHA.
 
 ## Validation For This Document
 
-Docs-only. Covering checks: `effigy qa:docs` and
-`effigy skill run northstar/retired-concepts`. `qa:routes` is omitted because
-this assessment does not change matrix truth.
+The assessment alone was docs-only. The candidate changes matrix truth in two
+reconciled cells, so covering checks are `effigy qa:docs`,
+`effigy qa:routes`, and
+`effigy skill run northstar/retired-concepts`.

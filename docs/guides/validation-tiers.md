@@ -55,6 +55,13 @@ packages then compile through one shared temporary target against local
 unpublished Swallowtail dependencies. The temporary subset lock is generated
 offline. The repository lock is unchanged.
 
+Extracted packages keep the `crates/<package>` position, so a test that embeds
+workspace evidence through `../../../` resolves against that temporary root;
+the run copies only the read-only workspace lock and retained research records
+there, never into a package. A test that embeds a sibling package's fixtures
+(`../swallowtail-<package>/tests/...`) needs that sibling in the same group,
+because the extracted tree contains only the selected packages.
+
 ## Static Gates
 
 Run only the relevant static truth:
@@ -222,8 +229,8 @@ These routes stay on plain Cargo, and their reasons are durable:
   (`validate:current-claude-agent-sdk-node`), the whole-workspace test lane
   (`test:rust`, `package:release-floor`, the commented local-heavy release
   `test` recipe), whole-package
-  `validate:focused`, `package:source-consumer`, `package:verify-affected`,
-  and the `sdk-v0.5.2` backport runner selectors.
+  `validate:focused`, `package:source-consumer`, `check:lease-api-fixture`,
+  `package:verify-affected`, and the `sdk-v0.5.2` backport runner selectors.
 - **Genuine exceptions.** Hosted CI keeps its unchanged raw-Cargo workflows.
   `observe:copilot-acp-private-assessment` reviews the pinned original entry
   invocation, and its subject is that invocation. Tests whose subject is the

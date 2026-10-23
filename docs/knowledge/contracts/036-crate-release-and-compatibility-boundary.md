@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-09
+Updated: 2026-10-23
 
 ## Purpose
 
@@ -413,8 +413,8 @@ compatibility assessment, normal consumer evidence, dependency/security
 review, Queue-owned milestone QA and qualifying hosted CI. This direction
 authorizes candidate preparation, not a tag, publication, consumer repin or
 live proof. Tag creation and push still require Tom to name the final SHA.
-The minor version is determined by its reviewed change; `v0.6.0` is a planning
-target, not a prepared or authorized tag.
+The minor version is determined by its reviewed change; `v0.6.0` is the
+prepared candidate version, not an authorized tag.
 
 ## Hosted Gate Delegation
 

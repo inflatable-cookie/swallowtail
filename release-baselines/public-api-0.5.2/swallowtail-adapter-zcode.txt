@@ -1,0 +1,75 @@
+pub mod swallowtail_adapter_zcode
+pub struct swallowtail_adapter_zcode::ZcodeAppServerDriver
+impl swallowtail_adapter_zcode::ZcodeAppServerDriver
+pub const fn swallowtail_adapter_zcode::ZcodeAppServerDriver::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_zcode::ZcodeAppServerDriver::mode(&self) -> &swallowtail_adapter_zcode::ZcodeAppServerMode
+pub const fn swallowtail_adapter_zcode::ZcodeAppServerDriver::new(swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_adapter_zcode::ZcodeAppServerMode) -> Self
+impl swallowtail_runtime::roles::DiscoveryDriver for swallowtail_adapter_zcode::ZcodeAppServerDriver
+pub fn swallowtail_adapter_zcode::ZcodeAppServerDriver::discover(&self, swallowtail_runtime::roles::DiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::vec::Vec<swallowtail_core::registration::discovery::DiscoveryOutcome>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_adapter_zcode::ZcodeAppServerDriver::discover_installed_executable(&self, swallowtail_runtime::installed_executable::InstalledExecutableDiscoveryRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_core::registration::discovery::DiscoveryOutcome, swallowtail_runtime::failure::RuntimeFailure>>
+impl swallowtail_runtime::roles::StructuredRunDriver for swallowtail_adapter_zcode::ZcodeAppServerDriver
+pub fn swallowtail_adapter_zcode::ZcodeAppServerDriver::start_run(&self, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_zcode::ZcodeAppServerMode(_)
+impl swallowtail_adapter_zcode::ZcodeAppServerMode
+pub fn swallowtail_adapter_zcode::ZcodeAppServerMode::as_str(&self) -> &str
+pub fn swallowtail_adapter_zcode::ZcodeAppServerMode::build() -> Self
+pub fn swallowtail_adapter_zcode::ZcodeAppServerMode::new(&str) -> core::option::Option<Self>
+pub fn swallowtail_adapter_zcode::ZcodeAppServerMode::plan() -> Self
+pub struct swallowtail_adapter_zcode::ZcodeModelSelection
+impl swallowtail_adapter_zcode::ZcodeModelSelection
+pub const fn swallowtail_adapter_zcode::ZcodeModelSelection::new(swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ProviderId, swallowtail_core::model::ModelId) -> Self
+pub struct swallowtail_adapter_zcode::ZcodePreparationInput
+impl swallowtail_adapter_zcode::ZcodePreparationInput
+pub const fn swallowtail_adapter_zcode::ZcodePreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::host_reference::ExecutableRef, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub struct swallowtail_adapter_zcode::ZcodePreparationProbe
+impl swallowtail_adapter_zcode::ZcodePreparationProbe
+pub const fn swallowtail_adapter_zcode::ZcodePreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
+pub struct swallowtail_adapter_zcode::ZcodePreparedEvidence
+impl swallowtail_adapter_zcode::ZcodePreparedEvidence
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::access(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::interpreter(&self) -> &swallowtail_runtime::host_reference::ExecutableRef
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::mode(&self) -> &swallowtail_adapter_zcode::ZcodeAppServerMode
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::observable_activity(&self) -> &swallowtail_core::observable_activity::route_profile::ObservableActivityProfile
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::operation(&self) -> &swallowtail_runtime::prepared_operation::PreparedOperationEvidence
+pub const fn swallowtail_adapter_zcode::ZcodePreparedEvidence::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub struct swallowtail_adapter_zcode::ZcodePreparedIntegration
+impl swallowtail_adapter_zcode::ZcodePreparedIntegration
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::access_evidence(&self) -> &swallowtail_runtime::prepared_access::PreparedAccessEvidence
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::access_profile(&self) -> &swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_zcode::ZcodePreparedIntegration::available_host_services(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = swallowtail_core::runtime_identity::HostServiceKind> + '_
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::environment(&self) -> &swallowtail_runtime::host_reference::EnvironmentRef
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::instance(&self) -> &swallowtail_core::instance::ConfiguredInstance
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::interpreter(&self) -> &swallowtail_runtime::host_reference::ExecutableRef
+pub fn swallowtail_adapter_zcode::ZcodePreparedIntegration::low_level_driver(&self, swallowtail_adapter_zcode::ZcodeAppServerMode) -> swallowtail_adapter_zcode::ZcodeAppServerDriver
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::observation(&self) -> &swallowtail_core::installed_executable::InstalledExecutableObservation
+pub const fn swallowtail_adapter_zcode::ZcodePreparedIntegration::target(&self) -> &swallowtail_runtime::installed_executable::InstalledExecutableTarget
+pub fn swallowtail_adapter_zcode::ZcodePreparedIntegration::validate_execution_binding(&self, &swallowtail_core::runtime_identity::ExecutionHostId, &swallowtail_runtime::installed_executable::InstalledExecutableTarget) -> core::result::Result<(), swallowtail_runtime::preparation::PreparationFailure>
+impl swallowtail_adapter_zcode::ZcodePreparedIntegration
+pub fn swallowtail_adapter_zcode::ZcodePreparedIntegration::prepare_run(&self, swallowtail_adapter_zcode::ZcodeRunProfileInput) -> core::result::Result<swallowtail_adapter_zcode::ZcodePreparedRun, swallowtail_runtime::preparation::PreparationFailure>
+pub struct swallowtail_adapter_zcode::ZcodePreparedRun
+impl swallowtail_adapter_zcode::ZcodePreparedRun
+pub fn swallowtail_adapter_zcode::ZcodePreparedRun::consumer_route_projection_contribution(&self, swallowtail_runtime::consumer_route_projection::identity::ConsumerRouteProjectionSourceId) -> core::result::Result<swallowtail_runtime::consumer_route_projection::contribution::ConsumerRouteProjectionContribution, swallowtail_runtime::consumer_route_projection::failure::ConsumerRouteProjectionFailure>
+impl swallowtail_adapter_zcode::ZcodePreparedRun
+pub const fn swallowtail_adapter_zcode::ZcodePreparedRun::evidence(&self) -> &swallowtail_adapter_zcode::ZcodePreparedEvidence
+pub fn swallowtail_adapter_zcode::ZcodePreparedRun::into_parts(self) -> (swallowtail_adapter_zcode::ZcodePreparedEvidence, swallowtail_core::preflight::PreflightPlan, swallowtail_runtime::roles::StructuredRunRequest)
+pub fn swallowtail_adapter_zcode::ZcodePreparedRun::low_level_driver(&self) -> swallowtail_adapter_zcode::ZcodeAppServerDriver
+pub const fn swallowtail_adapter_zcode::ZcodePreparedRun::mode(&self) -> &swallowtail_adapter_zcode::ZcodeAppServerMode
+pub const fn swallowtail_adapter_zcode::ZcodePreparedRun::plan(&self) -> &swallowtail_core::preflight::PreflightPlan
+pub const fn swallowtail_adapter_zcode::ZcodePreparedRun::request(&self) -> &swallowtail_runtime::roles::StructuredRunRequest
+pub fn swallowtail_adapter_zcode::ZcodePreparedRun::start_run(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::RunHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_adapter_zcode::ZcodeRunProfileInput
+impl swallowtail_adapter_zcode::ZcodeRunProfileInput
+pub const fn swallowtail_adapter_zcode::ZcodeRunProfileInput::new(swallowtail_runtime::identity::RequestId, swallowtail_adapter_zcode::ZcodeModelSelection, swallowtail_adapter_zcode::ZcodeAppServerMode, swallowtail_runtime::content::OperationContent, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::time::Deadline) -> Self
+pub const swallowtail_adapter_zcode::ZCODE_CONFIG_AUDIENCE: &str
+pub const swallowtail_adapter_zcode::ZCODE_EXECUTABLE_BASENAME: &str
+pub const swallowtail_adapter_zcode::ZCODE_LAUNCHER_SHA256: &str
+pub const swallowtail_adapter_zcode::ZCODE_PAYLOAD_SHA256: &str
+pub const swallowtail_adapter_zcode::ZCODE_RELEASE_AXIS: &str
+pub const swallowtail_adapter_zcode::ZCODE_RELEASE_VERSION: &str
+pub async fn swallowtail_adapter_zcode::prepare_zcode_app_server(swallowtail_adapter_zcode::ZcodePreparationInput, swallowtail_adapter_zcode::ZcodePreparationProbe, swallowtail_runtime::host_registry::HostServices) -> core::result::Result<swallowtail_adapter_zcode::ZcodePreparedIntegration, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_zcode::zcode_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
+pub fn swallowtail_adapter_zcode::zcode_app_server_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
+pub fn swallowtail_adapter_zcode::zcode_app_server_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_zcode::zcode_release_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>

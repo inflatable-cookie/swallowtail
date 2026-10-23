@@ -43,6 +43,9 @@ AGENTS = ROOT / "AGENTS.md"
 
 RUNNER = "bash scripts/oxide-rust.sh "
 PLAIN_ESCAPE = "SWALLOWTAIL_RUST_RUNNER=cargo "
+RELEASE_PENDING_TEST = (
+    '# test = "nice -n 5 cargo nextest run --workspace --all-features --locked"'
+)
 # (package, test binary) pairs whose binary contains tests that build their own
 # nested Cargo target. Selecting the whole binary from a switched route would
 # run those tests outside the run-owned private target, so such a route stays
@@ -640,8 +643,17 @@ def check_scripts(referenced_scripts):
 
 def check_release_include():
     text = RELEASE_INCLUDE.read_text()
-    if "cargo" in text:
-        fail("release include must route Cargo through the helper")
+    # The commented whole-workspace test recipe runs the private-target
+    # courier tests, so it stays on plain Cargo pending one-use support.
+    if RELEASE_PENDING_TEST not in text:
+        fail("release include lost its pending plain-Cargo workspace test recipe")
+    if "cargo" in text.replace(RELEASE_PENDING_TEST, ""):
+        fail("release include must route other Cargo commands through the helper")
+    if re.search(r"oxide-rust\.sh\s+(nextest|test)\b.*--workspace", text):
+        fail(
+            "release include routes a whole-workspace test lane, which includes "
+            "private-target tests; keep it pending"
+        )
     if 'fmt = "bash scripts/oxide-rust.sh fmt --all -- --check"' not in text:
         fail("release include lost its routed format gate")
     if 'metadata = "effigy package:metadata"' not in text:
@@ -724,7 +736,7 @@ def main(argv):
     print("  genuine=%d" % counts["genuine"])
     print("  other=%d" % other)
     print("  maintained_scripts=%d" % len(scripts))
-    print("  release_include=routed")
+    print("  release_include=routed, workspace test recipe pending")
     print("  target_ignore=/target")
     print("  agent_block=generated")
     print("oxide selector routing passed")

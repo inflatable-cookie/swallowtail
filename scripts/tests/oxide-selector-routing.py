@@ -50,21 +50,6 @@ EXCEPTIONS = {
         "courier and Grok registered-tool test binaries, which build a nested "
         "Cargo target of their own"
     ),
-    "check:sdk-courier-timeout": (
-        "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
-        "and its cleanup; Oxide replaces an inherited CARGO_TARGET_DIR with "
-        "<workspace>/target"
-    ),
-    "validate:sdk-courier-timeout": (
-        "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
-        "and its cleanup; Oxide replaces an inherited CARGO_TARGET_DIR with "
-        "<workspace>/target"
-    ),
-    "validate:sdk-courier-idle": (
-        "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
-        "and its cleanup; Oxide replaces an inherited CARGO_TARGET_DIR with "
-        "<workspace>/target"
-    ),
     "validate:sdk-registered-lifetime": (
         "selects claude_agent_sdk_driver registered-tool tests, whose nested "
         "courier build requires the run-owned private target"
@@ -91,10 +76,6 @@ EXCEPTIONS = {
     ),
     "package:docs": (
         "RUSTDOCFLAGS missing-docs gate on the release and CI route"
-    ),
-    "validate:focused": (
-        "whole-package milestone proof (nextest plus clippy) includes the "
-        "nested-Cargo courier tests"
     ),
     "check:copilot-acp-offline-proof": (
         "static proof cluster mixing Python validation steps with one Cargo "
@@ -353,22 +334,6 @@ def classify(tasks):
             observed[name] = ("sibling", "plain Cargo twin of a switched selector")
             continue
 
-        if reason is not None and name not in EXCEPTIONS:
-            # A prefix rule only covers selectors that actually spell Cargo.
-            if not cargo:
-                if runner:
-                    fail("switched selector %s matches a prefix exception" % name)
-                continue
-        if reason is not None:
-            if not cargo and name not in SCRIPT_WRAPPED:
-                fail("exception %s no longer spells a Cargo command" % name)
-            if runner:
-                fail("exception %s must stay on plain Cargo" % name)
-            if name + ":cargo" in tasks:
-                fail("exception %s needs no :cargo sibling" % name)
-            observed[name] = ("exception", reason)
-            continue
-
         if name in SCRIPT_WRAPPED:
             script, reason = SCRIPT_WRAPPED[name]
             if runner:
@@ -384,6 +349,22 @@ def classify(tasks):
             if cargo:
                 fail("%s both wraps a script and spells Cargo" % name)
             observed[name] = ("script", reason)
+            continue
+
+        if reason is not None and name not in EXCEPTIONS:
+            # A prefix rule only covers selectors that actually spell Cargo.
+            if not cargo:
+                if runner:
+                    fail("switched selector %s matches a prefix exception" % name)
+                continue
+        if reason is not None:
+            if not cargo:
+                fail("exception %s no longer spells a Cargo command" % name)
+            if runner:
+                fail("exception %s must stay on plain Cargo" % name)
+            if name + ":cargo" in tasks:
+                fail("exception %s needs no :cargo sibling" % name)
+            observed[name] = ("exception", reason)
             continue
 
         if runner:
@@ -512,7 +493,9 @@ def main(argv):
     check_agent_block()
 
     prefix_counts = {}
+    kind_counts = {"exception": 0, "script": 0, "sibling": 0, "switched": 0}
     for name, (kind, _reason) in observed.items():
+        kind_counts[kind] += 1
         if kind != "exception":
             continue
         label = "exact"
@@ -531,9 +514,14 @@ def main(argv):
 
     print("selector inventory:")
     print("  selectors=%d" % len(tasks))
-    print("  switched=%d" % len(switched))
-    print("  script_wrapped=%d" % len(SCRIPT_WRAPPED))
-    print("  exceptions=%d" % (len(observed) - len(switched)))
+    print("  switched=%d" % kind_counts["switched"])
+    print("  cargo_siblings=%d" % kind_counts["sibling"])
+    print("  exceptions=%d" % kind_counts["exception"])
+    print("  script_wrapped=%d" % kind_counts["script"])
+    print(
+        "  other=%d"
+        % (len(tasks) - sum(kind_counts[key] for key in kind_counts))
+    )
     for label in sorted(prefix_counts):
         print("  exception:%s=%d" % (label, prefix_counts[label]))
     print("  release_include=plain-cargo")

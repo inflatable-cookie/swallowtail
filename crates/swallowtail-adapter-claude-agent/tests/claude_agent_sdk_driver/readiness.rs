@@ -117,8 +117,9 @@ fn wrapper_death_preserves_partial_capture_journal() {
     }
 
     // Resolve the shared courier before starting the five-second capture
-    // window. Its first use can run a nested Cargo build into a cold target.
-    let _ = super::registered_tool_route::courier_binary();
+    // window. Its first use can run a nested Cargo build into a cold target;
+    // the handle keeps that target alive for the whole capture.
+    let _courier = super::registered_tool_route::courier_binary();
 
     let sequence = NEXT_CAPTURE_JOURNAL.fetch_add(1, Ordering::Relaxed);
     let path = std::env::temp_dir().join(format!(

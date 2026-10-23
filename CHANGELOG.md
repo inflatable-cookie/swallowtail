@@ -1256,6 +1256,15 @@ annotated Git tags from the canonical repository.
   visible `UnverifiedNewer`. Baselines, claim ids, `AllowUnverified`, watcher
   exact `2.1.251`, and every feature-specific exact-version set stay.
   Research 307, g05.058.
+- let ordinary test entrypoints resolve the registered-tool courier without a
+  validation run-owned target. The helper keeps the runner contract for its
+  `CARGO_TARGET_DIR` and otherwise builds into one marked task-owned target
+  under the system temp root that the last courier handle removes; the
+  resolved courier is a handle so that target outlives the test using it.
+  `validate:sdk-registered-lifetime` runs under the shared run-owned target.
+  No timeout, runtime behavior, public API or authority changed; this port
+  restores the `v0.5.4` correction that plain `cargo test`, the MSRV floor
+  test lane, and hosted CI need.
 
 ## [0.5.1] - 2026-09-13
 

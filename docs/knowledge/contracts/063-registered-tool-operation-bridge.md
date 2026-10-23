@@ -859,16 +859,29 @@ call succeeded, a 6-second idle gap followed, and the next call failed with
 Selector: `validate:sdk-courier-idle`, with `validate:sdk-courier-timeout` for
 the altered listener behaviour.
 
-**Test budget and build isolation.** Each validation selector runs through
-`scripts/run-with-owned-cargo-target.sh`. The runner creates one fresh directory
-under the system temp root, marks it, and exports it as `CARGO_TARGET_DIR` for
-the outer test build and the nested courier build. The runner removes that
-directory when the selector finishes. The courier helper refuses any target that
-is not such a marked directory, including the worktree target. The outer build
+**Test budget and build isolation.** Validation selectors that build the
+courier run through `scripts/run-with-owned-cargo-target.sh`. The runner
+creates one fresh directory under the system temp root, marks it, and exports
+it as `CARGO_TARGET_DIR` for the outer test build and the nested courier build.
+The runner removes that directory when the selector finishes. The outer build
 warms the run target before any test starts, so the courier build inside a test
 is warm. The idle regression spends 71 seconds in planned waits. Those waits
 stay under Nextest's 120-second termination, which is a failure guard, not a
 budget to raise.
+
+**Ordinary entrypoint fallback.** An entrypoint that supplies no run-owned
+target — plain `cargo test`, the MSRV floor test lane, or a nextest profile
+started without the runner — must still be runnable. The courier helper accepts
+`CARGO_TARGET_DIR` only when it exactly matches the runner contract: a marked
+directory directly under the system temp root and outside the worktree.
+Anything else, including an unset variable, the worktree, or a shared target,
+is not used. In that case the helper creates its own marked task-owned target
+directly under the system temp root, builds there, and removes it when the last
+courier handle drops. It never builds into or deletes the worktree or a shared
+target, never writes the run-owned marker for a directory it did not create,
+and never skips a test. The warmed target therefore outlives the test that
+resolved it, which is why the resolved courier is a handle rather than a bare
+path.
 
 **Residual gap.** The Rust fake sidecar raises `canUseTool` for the registered
 carrier tool through `SdkScenario::RegisteredToolAdmission`. It performs the

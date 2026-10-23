@@ -43,6 +43,30 @@ AGENTS = ROOT / "AGENTS.md"
 
 RUNNER = "bash scripts/oxide-rust.sh "
 PLAIN_ESCAPE = "SWALLOWTAIL_RUST_RUNNER=cargo "
+# (package, test binary) pairs whose binary contains tests that build their own
+# nested Cargo target. Selecting the whole binary from a switched route would
+# run those tests outside the run-owned private target, so such a route stays
+# pending. Other packages' binaries with the same name are unaffected.
+PRIVATE_TARGET_TEST_BINARIES = {
+    ("swallowtail-adapter-claude-agent", "claude_agent_sdk_driver"),
+    ("swallowtail-adapter-grok", "acp_suite"),
+}
+
+
+def selected_packages(command):
+    words = shlex.split(command)
+    packages = set()
+    index = 0
+    while index < len(words):
+        word = words[index]
+        if word in ("-p", "--package") and index + 1 < len(words):
+            packages.add(words[index + 1])
+            index += 2
+            continue
+        if word.startswith("--package="):
+            packages.add(word.split("=", 1)[1])
+        index += 1
+    return packages
 ALLOWED_VERBS = (
     "check",
     "clippy",
@@ -80,6 +104,15 @@ PENDING = {
     "validate:current-grok-build-acp": (
         "selects Grok registered-tool tests that build a courier into their own "
         "nested target"
+    ),
+    "validate:current-claude-agent-sdk-node": (
+        "its nextest filter selects the whole claude_agent_sdk_driver binary, "
+        "which includes registered-tool courier tests that require the "
+        "run-owned private target"
+    ),
+    "package:release-floor": (
+        "runs the whole workspace test suite, including those private-target "
+        "courier tests"
     ),
     "check:sdk-courier-timeout": (
         "run-with-owned-cargo-target.sh owns a fresh private CARGO_TARGET_DIR "
@@ -133,14 +166,13 @@ SCRIPT_ROUTES = {
     "package:metadata": "scripts/check-package-metadata.sh",
     "package:api": "scripts/check-public-api.sh",
     "package:msrv": "scripts/check-msrv.sh",
-    "package:release-floor": "scripts/check-release-floor.sh",
 }
 
 # Maintained scripts that reach Cargo, with the class each must keep.
 SCRIPT_CLASSES = {
     "scripts/check-msrv.sh": "switched",
     "scripts/check-package-metadata.sh": "switched",
-    "scripts/check-release-floor.sh": "switched",
+    "scripts/check-release-floor.sh": "pending",
     "scripts/format-packages.sh": "switched",
     "scripts/generate-public-api-baseline.sh": "switched",
     "scripts/run-grok-acp-client-mcp-probe.sh": "host-tool",
@@ -173,6 +205,10 @@ SCRIPT_REASONS = {
 }
 
 CARGO_WORD = "cargo"
+ROUTED_TEST_LANE = re.compile(
+    r'oxide-rust\.sh"?\s*(?:\\\s*\n\s*)?(?:--host-tool\s+\S+\s*)?'
+    r"\b(?:test|nextest)\b"
+)
 SAFE_PRECEDING = {"nice", "env", "time", "timeout", "exec", "sudo"}
 
 
@@ -470,6 +506,19 @@ def classify_selectors(tasks):
                 fail("switched selector %s keeps a bare cargo command" % name)
             for command in helpers:
                 helper_tail(command)
+                packages = selected_packages(command)
+                for package, binary in sorted(PRIVATE_TARGET_TEST_BINARIES):
+                    if not re.search(
+                        r"binary\(\s*%s\s*\)" % re.escape(binary), command
+                    ):
+                        continue
+                    if packages and package not in packages:
+                        continue
+                    fail(
+                        "switched selector %s selects the whole %s test binary "
+                        "of %s, which contains private-target tests; keep it "
+                        "pending one-use support" % (name, binary, package)
+                    )
             switched[name] = {"script": None, "cargo": [plain_twin(c) for c in strings]}
             observed[name] = ("switched", "ordinary local Rust route")
             continue
@@ -517,6 +566,7 @@ def check_scripts(referenced_scripts):
         relative = str(path.relative_to(ROOT))
         text = path.read_text()
         has_helper = "oxide-rust.sh" in text
+        helper_text = text
         has_exec = "oxide exec --" in text
         cargo_lines = script_cargo_lines(path)
         if not has_helper and not has_exec and not cargo_lines:
@@ -532,6 +582,11 @@ def check_scripts(referenced_scripts):
                 fail("%s is classified switched but never calls the helper" % relative)
             if cargo_lines:
                 fail("%s still runs plain Cargo: %r" % (relative, cargo_lines))
+            if "--workspace" in helper_text and ROUTED_TEST_LANE.search(helper_text):
+                fail(
+                    "%s routes a whole-workspace test lane, which includes "
+                    "private-target tests; keep it pending" % relative
+                )
             continue
         if expected == "host-tool":
             if not has_helper or "--host-tool" not in text:

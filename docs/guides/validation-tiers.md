@@ -202,7 +202,9 @@ sibling puts Oxide anywhere on its route.
 - **Guard.** `effigy validate:oxide-routing` owns the inventory. It fails on a
   selector that spells a Cargo command without being switched or listed here,
   on a missing, changed, reordered or Oxide-tainted `:cargo` sibling, on a stale
-  entry, on a maintained script that disagrees with its classification, and on
+  entry, on a switched route that selects a whole test binary containing
+  private-target tests, on a switched script that runs a workspace-wide test
+  lane, on a maintained script that disagrees with its classification, and on
   a changed release include, target ignore rule or agent block.
   `effigy check:oxide-routing` is its syntax and compile companion.
 
@@ -215,9 +217,12 @@ These routes stay on plain Cargo, and their reasons are durable:
   `validate:sdk-courier-idle`), the Claude SDK and Grok registered-tool tests
   that build a courier target of their own
   (`validate:sdk-registered-lifetime`, `validate:sdk-unsolicited-close`,
-  `validate:current-grok-build-acp`), whole-workspace `test:rust`,
-  whole-package `validate:focused`, `package:source-consumer`,
-  `package:verify-affected`, and the `sdk-v0.5.2` backport runner selectors.
+  `validate:current-grok-build-acp`), the node SDK route whose filter selects
+  the whole `claude_agent_sdk_driver` binary
+  (`validate:current-claude-agent-sdk-node`), the whole-workspace test lane
+  (`test:rust`, `package:release-floor`), whole-package
+  `validate:focused`, `package:source-consumer`, `package:verify-affected`,
+  and the `sdk-v0.5.2` backport runner selectors.
 - **Genuine exceptions.** Hosted CI keeps its unchanged raw-Cargo workflows.
   `observe:copilot-acp-private-assessment` reviews the pinned original entry
   invocation, and its subject is that invocation. Tests whose subject is the

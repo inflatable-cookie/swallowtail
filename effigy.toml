@@ -566,8 +566,7 @@ section = "Research Records"
 "check:current-deepseek-harness-local-server:cargo" = "cargo check --locked -p swallowtail-adapter-deepseek-harness --test deepseek_harness_web_identity_stop"
 "check:current-claude-agent-sdk-node" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-adapter-claude-agent"
 "check:current-claude-agent-sdk-node:cargo" = "cargo check --locked --all-targets -p swallowtail-adapter-claude-agent"
-"validate:current-claude-agent-sdk-node" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --lib --test integration --test claude_agent_sdk_node_22_23_3_identity --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset -E 'binary(claude_agent_sdk_node_22_23_3_identity) | binary(claude_agent_sdk_driver) | binary(claude_agent_sdk_sidecar_asset) | test(/claude_agent_sdk_identity::/) | test(/sdk::selection::selection_tests::native_and_node_axes_stay_separate_from_the_wrapper_axis/)'"
-"validate:current-claude-agent-sdk-node:cargo" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --lib --test integration --test claude_agent_sdk_node_22_23_3_identity --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset -E 'binary(claude_agent_sdk_node_22_23_3_identity) | binary(claude_agent_sdk_driver) | binary(claude_agent_sdk_sidecar_asset) | test(/claude_agent_sdk_identity::/) | test(/sdk::selection::selection_tests::native_and_node_axes_stay_separate_from_the_wrapper_axis/)'"
+"validate:current-claude-agent-sdk-node" = "cargo nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --lib --test integration --test claude_agent_sdk_node_22_23_3_identity --test claude_agent_sdk_driver --test claude_agent_sdk_sidecar_asset -E 'binary(claude_agent_sdk_node_22_23_3_identity) | binary(claude_agent_sdk_driver) | binary(claude_agent_sdk_sidecar_asset) | test(/claude_agent_sdk_identity::/) | test(/sdk::selection::selection_tests::native_and_node_axes_stay_separate_from_the_wrapper_axis/)'"
 "format:sdk-registered-lifetime" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- --check",
@@ -694,7 +693,6 @@ section = "Research Records"
 "package:msrv" = "bash scripts/check-msrv.sh"
 "package:msrv:cargo" = "SWALLOWTAIL_RUST_RUNNER=cargo bash scripts/check-msrv.sh"
 "package:release-floor" = "bash scripts/check-release-floor.sh"
-"package:release-floor:cargo" = "SWALLOWTAIL_RUST_RUNNER=cargo bash scripts/check-release-floor.sh"
 "package:source-consumer" = "bash scripts/verify-source-consumer.sh"
 "package:check" = [
   { task = "package:metadata" },

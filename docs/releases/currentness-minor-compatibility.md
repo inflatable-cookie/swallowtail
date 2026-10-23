@@ -30,9 +30,12 @@ creation and push need separate operator authority naming the exact SHA.
   public-API, production-route and internal-dependency inventories were
   generated from the candidate afterwards.
 - **Lease API.** All seven `v0.5.2`/`v0.5.4` lease methods are ordinary public
-  API again with their released signatures and docs; runtime policy and
-  lifecycle are unchanged, and `swallowtail-runtime` matches `v0.5.4` apart
-  from the coordinated version.
+  API again with their released signatures, docs and released test
+  assertions; runtime policy and lifecycle are unchanged. The
+  `swallowtail-runtime` public API is identical to `v0.5.4`, and its source
+  still differs from that tag only in `prepared_operation/tests.rs`,
+  `prepared_operation/tests/support.rs` and `session_cleanup.rs`, which come
+  from main-line work after the tag.
 - **Security delta.** The candidate carries the approved `rustls` lock
   movement for RUSTSEC-2026-0346, -0347, -0381, -0382 and -0383 and the exact
   emSign distrust patches approved under Contract 023. They arrive after this
@@ -123,10 +126,11 @@ a breaking removal for `v0.5.4` consumers.
 
 Both obligations are resolved. The restored `0.5.1` dumps again record tagged
 bytes, and the additive entries above appear only in `public-api-0.6.0`. All
-seven lease methods are ordinary public API again, `swallowtail-runtime`
-matches `v0.5.4`, and `check:lease-api-fixture` proves the released signatures
-from one external consumer plus their presence in the generated `0.6.0` dump.
-This ledger still does not rewrite tagged evidence.
+seven lease methods are ordinary public API again with their released test
+assertions, the `swallowtail-runtime` public API is identical to `v0.5.4`, and
+`check:lease-api-fixture` proves the released signatures from one external
+consumer plus their presence in the generated `0.6.0` dump. This ledger still
+does not rewrite tagged evidence.
 
 ## Included At Planning Main
 

@@ -9,9 +9,10 @@ annotated Git tags from the canonical repository.
 
 ### Compatibility
 - coordinated pre-1.0 minor over immutable `v0.5.4`. No public item is
-  removed: the semantic API is additive, and `swallowtail-runtime` matches
-  `v0.5.4` once the seven released registered-tool lease methods are restored
-  to ordinary public API. The minor is required by consumer-visible guarantee
+  removed: the semantic API is additive, and the `swallowtail-runtime` public
+  API is identical to `v0.5.4` once the seven released registered-tool lease
+  methods are restored to ordinary public API with their released test
+  assertions. The minor is required by consumer-visible guarantee
   changes: Opaque construction refuses more than 32 raw exclusion yields and
   text over 256 UTF-8 bytes, an Antigravity child with identity and no child
   status projects `SubagentStatus::Unknown`, the Claude Agent SDK implicit

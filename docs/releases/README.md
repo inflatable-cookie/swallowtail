@@ -6,7 +6,7 @@ mutations.
 
 ## Current Release
 
-- [Swallowtail 0.6.0](0.6.0.md) — source-only currentness minor candidate over immutable `v0.5.4`; 40 packages, 51 production routes, restored public lease API; tag not authorized or created
+- [Swallowtail 0.6.0](0.6.0.md) — tagged `v0.6.0` at `8fe3bcbd`; tag object `0fcda93c`; tagged 2026-10-23; source-only currentness minor over immutable `v0.5.4`, 40 packages, 51 production routes and restored public lease API
 
 - [Swallowtail 0.5.4](0.5.4.md) — tagged `v0.5.4` at `bb53587a`; tag object `3c036343`; tagged 2026-10-11; source-only authenticated courier idle correction, preserving released SDK/native/Node and wire pins
 

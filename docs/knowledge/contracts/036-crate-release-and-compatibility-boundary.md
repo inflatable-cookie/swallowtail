@@ -543,6 +543,17 @@ independent exact-head review, planner candidate QA and qualifying hosted
 release/MSRV proof remain gates before candidate merge. Tag creation,
 publication and release authority still require a separate exact-SHA ruling.
 
+## Approved v0.6.0 Tag Authority
+
+Tom answered “Approve exact-SHA tag and push” on 2026-10-23 in decision
+`a3423b67-4adc-487c-8efd-fc1a47a068a4`. Authority covers local annotated
+`v0.6.0` tag creation and its push to canonical origin at exactly
+`8fe3bcbd90419debd075068f1dddfeac4626ba0f`. It does not cover registry
+publication, a GitHub Release object, consumer repins, new provider claims
+or live work. Candidate QA, independent review, manual release/MSRV CI and
+canonical merged-source CI passed; the immutable source identities and
+receipts are in the [release note](../../releases/0.6.0.md).
+
 ## Acceptance
 
 - all 40 `v0.3.3` packages are separately consumable from one exact source

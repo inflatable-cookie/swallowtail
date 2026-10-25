@@ -5,6 +5,22 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Security
+- move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,
+  where the safe `AsyncFd::new`, `AsyncFd::with_interest`, `AsyncFd::try_new`
+  and `AsyncFd::try_with_interest` constructors break I/O safety and can leave
+  the I/O driver with a freed registration. `1.53.3` is the minimum fix inside
+  the current minor; the advisory also patches `1.51.6`. The lock entry is the
+  only change: the published crates.io checksum matches the downloaded crate,
+  the dependency set of `1.53.3` is identical to `1.53.1`, and no manifest,
+  feature, MSRV, provider, SDK, native, Node or wire pin moves. Tokio reaches
+  `swallowtail-transport-acp-remote`, `swallowtail-adapter-claude-agent` and
+  `swallowtail-adapter-bedrock` directly and the rest of the graph through
+  `async-tungstenite`, `tokio-rustls`, `hyper`, `reqwest` and the AWS smithy
+  packages. No Swallowtail source uses `AsyncFd`, so the deprecation of those
+  four constructors changes no call site and no public API. No advisory is
+  ignored.
+
 ## [0.6.0] - 2026-10-23
 
 ### Compatibility

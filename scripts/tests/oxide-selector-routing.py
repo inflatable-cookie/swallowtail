@@ -630,6 +630,24 @@ def check_scripts(referenced_scripts):
                             "of using this project's target or slot"
                             % (relative, required)
                         )
+            if expected in ("private-build", "foreign-workspace"):
+                # The installed `oxide exec` replaces an inherited
+                # CARGO_TARGET_DIR with `<workspace>/target` before the tool
+                # starts, so a private target only counts when the tool assigns
+                # it after its own lease: an assignment before the re-exec guard
+                # would be overwritten, and an assignment that never happens
+                # leaves the checkout target in place.
+                code = "\n".join(executable_lines(text))
+                lease_at = code.find("SWALLOWTAIL_OXIDE_EXEC_CHILD")
+                for variable in ("CARGO_TARGET_DIR=", "CARGO_BUILD_BUILD_DIR="):
+                    assign_at = code.find(variable)
+                    if assign_at == -1 or assign_at < lease_at:
+                        fail(
+                            "%s must assign its own %s inside the executed "
+                            "route, after its re-exec guard: `oxide exec` "
+                            "overwrites an inherited target before the tool "
+                            "starts" % (relative, variable.rstrip("="))
+                        )
             elif "CARGO_BUILD_BUILD_DIR" in text:
                 fail(
                     "%s runs this checkout's own builds, so it keeps the held "

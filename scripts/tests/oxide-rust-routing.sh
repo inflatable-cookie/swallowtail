@@ -11,7 +11,11 @@ set -euo pipefail
 # and the fact that the helper replaces itself with the tool instead of adding a
 # wrapper process. Two self-routing Cargo-running tools are covered too: the
 # Grok MCP probe and the private-target courier driver, each of which must take
-# exactly one `oxide exec --` lease and keep its own scratch custody.
+# exactly one `oxide exec --` lease and keep its own scratch custody. The leased
+# fake models the installed `oxide exec` storage step: it overwrites an
+# inherited CARGO_TARGET_DIR with `<workspace>/target` and sets its own build
+# directory before starting the tool, so a driver that assigned its private
+# target before the lease is caught rather than accidentally passing.
 
 routing_root=$(cd "$(dirname "$0")/../.." && pwd)
 routing_helper="$routing_root/scripts/oxide-rust.sh"
@@ -78,9 +82,20 @@ sleep 5
 FAKE
 chmod +x "$routing_signal_bin/oxide"
 
-# A leased fake: it records itself like the plain fake, then hands the recorded
-# argv of `oxide exec -- <tool> ...` to that tool, so a self-routing driver's own
-# behaviour runs inside this proof.
+# The values the leased fake injects, and the caller's sentinels that must die.
+# `<workspace>/target` is the destination the installed `oxide exec` applies; the
+# slot build directory stands in for the held slot's build directory.
+routing_exec_workspace_target="$routing_root/target"
+routing_exec_slot_build="$routing_scratch/slot-build"
+routing_sentinel_target="$routing_scratch/SENTINEL-TARGET-SHOULD-NOT-SURVIVE"
+routing_sentinel_build="$routing_scratch/SENTINEL-BUILD-SHOULD-NOT-SURVIVE"
+
+# A leased fake: it records itself like the plain fake, records the caller's
+# inherited storage variables, then behaves like `oxide exec`: it overwrites
+# them (`CARGO_TARGET_DIR` becomes `<workspace>/target`, the build directory
+# becomes the held slot's) and only then hands the recorded argv to the tool, so
+# a self-routing driver's own behaviour runs inside this proof. A driver that
+# assigned its private target before the lease therefore cannot pass.
 cat >"$routing_exec_bin/oxide" <<FAKE
 #!/usr/bin/env bash
 {
@@ -89,15 +104,35 @@ cat >"$routing_exec_bin/oxide" <<FAKE
     printf ' [%s]' "\$routing_arg"
   done
   printf '\n'
+  printf 'inherited:CARGO_TARGET_DIR=%s\n' "\${CARGO_TARGET_DIR:-unset}"
+  printf 'inherited:CARGO_BUILD_BUILD_DIR=%s\n' "\${CARGO_BUILD_BUILD_DIR:-unset}"
 } >>"$routing_scratch/oxide.log"
 if [[ \${1:-} != exec || \${2:-} != -- ]]; then
   printf 'fake oxide: unexpected argv\n' >&2
   exit 90
 fi
 shift 2
+export CARGO_TARGET_DIR="$routing_exec_workspace_target"
+export CARGO_BUILD_BUILD_DIR="$routing_exec_slot_build"
 exec "\$@"
 FAKE
 chmod +x "$routing_exec_bin/oxide"
+
+# A tool that only reports the storage environment it was started with.
+cat >"$routing_scratch/env-tool" <<FAKE
+#!/usr/bin/env bash
+{
+  printf 'env-tool'
+  for routing_arg in "\$@"; do
+    printf ' [%s]' "\$routing_arg"
+  done
+  printf '\n'
+  printf 'CARGO_TARGET_DIR=%s\n' "\${CARGO_TARGET_DIR:-unset}"
+  printf 'CARGO_BUILD_BUILD_DIR=%s\n' "\${CARGO_BUILD_BUILD_DIR:-unset}"
+} >>"$routing_scratch/tool.log"
+exit 0
+FAKE
+chmod +x "$routing_scratch/env-tool"
 cat >"$routing_exec_bin/cargo" <<FAKE
 #!/usr/bin/env bash
 {
@@ -369,17 +404,67 @@ routing_expect_absent oxide
 routing_expect_line cargo \
   'cargo [build] [--offline] [--locked] [-p] [swallowtail-testkit] [--example] [grok-acp-echo-mcp]'
 
-# 22. The private-target courier driver takes exactly one lease for the whole
+# 22. The leased fake really overwrites an inherited target, as `oxide exec`
+#     does: a tool started through the helper's host-tool route sees
+#     `<workspace>/target` and the injected build directory, never the caller's
+#     sentinels. This is the mutation-sensitive half of test 23: moving a
+#     driver's assignment before its lease cannot pass there.
+routing_reset
+PATH="$routing_exec_bin:$PATH" \
+  CARGO_TARGET_DIR="$routing_sentinel_target" \
+  CARGO_BUILD_BUILD_DIR="$routing_sentinel_build" \
+  bash "$routing_helper" --host-tool "$routing_scratch/env-tool" check \
+  >/dev/null 2>&1 || routing_failure "leased env-tool route failed"
+grep -qx "CARGO_TARGET_DIR=$routing_exec_workspace_target" \
+  "$routing_scratch/tool.log" ||
+  routing_failure "the leased fake did not overwrite the inherited target:
+$(cat "$routing_scratch/tool.log")"
+grep -qx "CARGO_BUILD_BUILD_DIR=$routing_exec_slot_build" \
+  "$routing_scratch/tool.log" ||
+  routing_failure "the leased fake did not overwrite the inherited build directory:
+$(cat "$routing_scratch/tool.log")"
+if grep -q 'SENTINEL' "$routing_scratch/tool.log"; then
+  routing_failure "the caller's storage sentinels survived the lease:
+$(cat "$routing_scratch/tool.log")"
+fi
+
+# 23. The private-target courier driver takes exactly one lease for the whole
 #     run: the fake Oxide leases it and hands its argv to the driver, whose own
 #     `cargo` calls run inside a freshly created, marked run-owned target that
-#     is gone afterwards.
+#     is gone afterwards. The caller's inherited sentinels are overwritten by the
+#     lease, so only the driver's own in-route assignment can produce the
+#     observed target and build directory.
 routing_reset
 routing_courier_log="$routing_scratch/courier.log"
 routing_courier_args=(cargo check -p swallowtail-core --then cargo metadata --no-deps)
-PATH="$routing_exec_bin:$PATH" bash \
-  "$routing_root/scripts/run-with-owned-cargo-target.sh" \
+PATH="$routing_exec_bin:$PATH" \
+  CARGO_TARGET_DIR="$routing_sentinel_target" \
+  CARGO_BUILD_BUILD_DIR="$routing_sentinel_build" \
+  bash "$routing_root/scripts/run-with-owned-cargo-target.sh" \
   "${routing_courier_args[@]}" \
   >"$routing_courier_log" 2>&1 || routing_failure "courier driver failed: $(cat "$routing_courier_log")"
+sed -n 's/^inherited:CARGO_TARGET_DIR=//p' "$routing_scratch/oxide.log" |
+  grep -qx "$routing_sentinel_target" ||
+  routing_failure "the leased fake did not see the caller's target sentinel:
+$(cat "$routing_scratch/oxide.log")"
+sed -n 's/^inherited:CARGO_BUILD_BUILD_DIR=//p' "$routing_scratch/oxide.log" |
+  grep -qx "$routing_sentinel_build" ||
+  routing_failure "the leased fake did not see the caller's build sentinel:
+$(cat "$routing_scratch/oxide.log")"
+if grep -Eq 'SENTINEL' "$routing_scratch/cargo.log"; then
+  routing_failure "the driver's cargo calls inherited a caller sentinel:
+$(cat "$routing_scratch/cargo.log")"
+fi
+if grep -qx "env:CARGO_TARGET_DIR=$routing_exec_workspace_target" \
+  "$routing_scratch/cargo.log"; then
+  routing_failure "the driver's cargo calls used the lease's checkout target:
+$(cat "$routing_scratch/cargo.log")"
+fi
+if grep -qx "env:CARGO_BUILD_BUILD_DIR=$routing_exec_slot_build" \
+  "$routing_scratch/cargo.log"; then
+  routing_failure "the driver's cargo calls used the lease's slot build directory:
+$(cat "$routing_scratch/cargo.log")"
+fi
 routing_expect_line oxide \
   "oxide [exec] [--] [bash] [$routing_root/scripts/run-with-owned-cargo-target.sh] [cargo] [check] [-p] [swallowtail-core] [--then] [cargo] [metadata] [--no-deps]"
 [[ $(grep -c '^oxide ' "$routing_scratch/oxide.log") -eq 1 ]] ||
@@ -430,15 +515,30 @@ grep -qx 'cargo \[metadata\] \[--no-deps\]' "$routing_scratch/cargo.log" ||
   routing_failure "the driver's --then group changed:
 $(cat "$routing_scratch/cargo.log")"
 
-# 23. Under GITHUB_ACTIONS the same driver runs its groups directly, with no
-#     Oxide anywhere on the route.
+# 24. Under GITHUB_ACTIONS the same driver runs its groups directly, with no
+#     Oxide anywhere on the route, and its in-route assignment still replaces an
+#     inherited target.
 routing_reset
 routing_courier_ci_args=(cargo check -p swallowtail-core)
-PATH="$routing_exec_bin:$PATH" GITHUB_ACTIONS=true bash \
-  "$routing_root/scripts/run-with-owned-cargo-target.sh" \
+PATH="$routing_exec_bin:$PATH" GITHUB_ACTIONS=true \
+  CARGO_TARGET_DIR="$routing_sentinel_target" \
+  bash "$routing_root/scripts/run-with-owned-cargo-target.sh" \
   "${routing_courier_ci_args[@]}" >/dev/null 2>&1 ||
   routing_failure "courier driver CI route failed"
 routing_expect_absent oxide
 routing_expect_line cargo 'cargo [check] [-p] [swallowtail-core]'
+routing_ci_target=$(sed -n 's/^env:CARGO_TARGET_DIR=//p' "$routing_scratch/cargo.log")
+routing_ci_normalised=$(printf '%s' "$routing_ci_target" | sed 's|//*|/|g')
+case "$routing_ci_normalised" in
+  "$routing_temp_root"/swallowtail-sdk-courier.*) ;;
+  *)
+    routing_failure \
+      "the CI route did not use its own run-owned target: $routing_ci_target"
+    ;;
+esac
+if grep -q 'SENTINEL' "$routing_scratch/cargo.log"; then
+  routing_failure "the CI route inherited the caller's target sentinel:
+$(cat "$routing_scratch/cargo.log")"
+fi
 
 printf '%s\n' "oxide-rust routing passed"

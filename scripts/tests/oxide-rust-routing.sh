@@ -354,7 +354,7 @@ PATH="$routing_fake_bin:$PATH" SWALLOWTAIL_DESKTOP_GROK_ACP_CLIENT_MCP_PROBE=1 \
   --version 1.0.5 --grok-executable /bin/false \
   --output "$routing_scratch/capsule.json" >/dev/null 2>&1
 routing_expect_line oxide \
-  "oxide [exec] [--] [$routing_root/scripts/run-grok-acp-client-mcp-probe.sh] [--version] [1.0.5] [--grok-executable] [/bin/false] [--output] [$routing_scratch/capsule.json]"
+  "oxide [exec] [--] [bash] [$routing_root/scripts/run-grok-acp-client-mcp-probe.sh] [--version] [1.0.5] [--grok-executable] [/bin/false] [--output] [$routing_scratch/capsule.json]"
 routing_expect_absent cargo
 
 # 21. Under GITHUB_ACTIONS the same probe runs its Cargo calls directly.
@@ -380,7 +380,7 @@ PATH="$routing_exec_bin:$PATH" bash \
   "${routing_courier_args[@]}" \
   >"$routing_courier_log" 2>&1 || routing_failure "courier driver failed: $(cat "$routing_courier_log")"
 routing_expect_line oxide \
-  "oxide [exec] [--] [$routing_root/scripts/run-with-owned-cargo-target.sh] [cargo] [check] [-p] [swallowtail-core] [--then] [cargo] [metadata] [--no-deps]"
+  "oxide [exec] [--] [bash] [$routing_root/scripts/run-with-owned-cargo-target.sh] [cargo] [check] [-p] [swallowtail-core] [--then] [cargo] [metadata] [--no-deps]"
 [[ $(grep -c '^oxide ' "$routing_scratch/oxide.log") -eq 1 ]] ||
   routing_failure "courier driver took more than one lease:
 $(cat "$routing_scratch/oxide.log")"

@@ -81,7 +81,7 @@ fi
 # owns the CI branch, Effigy's escape and the missing-Oxide refusal.
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != "1" ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$probe_repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$probe_repo_root/scripts/run-grok-acp-client-mcp-probe.sh" \
+    --host-tool bash "$probe_repo_root/scripts/run-grok-acp-client-mcp-probe.sh" \
     "${probe_original_args[@]}"
 fi
 

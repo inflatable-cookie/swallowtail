@@ -32,7 +32,7 @@ route_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 # loop; the child inherits the lease's storage environment.
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != "1" ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$route_repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$route_repo_root/scripts/run-with-owned-cargo-target.sh" "$@"
+    --host-tool bash "$route_repo_root/scripts/run-with-owned-cargo-target.sh" "$@"
 fi
 
 target="$(mktemp -d "${TMPDIR:-/tmp}/swallowtail-sdk-courier.XXXXXXXX")"

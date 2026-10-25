@@ -30,7 +30,7 @@ validation_started=$SECONDS
 # shared slot, and the run-owned root below is the only directory cleaned up.
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$validation_repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$validation_repo_root/scripts/verify-affected-packages.sh" "$@"
+    --host-tool bash "$validation_repo_root/scripts/verify-affected-packages.sh" "$@"
 fi
 
 validation_tmp=$(mktemp -d)

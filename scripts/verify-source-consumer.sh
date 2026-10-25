@@ -13,7 +13,7 @@ source release-baselines/rust-toolchains-0.2.0.env
 # the run-owned root below is the only directory cleaned up.
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$release_repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$release_repo_root/scripts/verify-source-consumer.sh" "$@"
+    --host-tool bash "$release_repo_root/scripts/verify-source-consumer.sh" "$@"
 fi
 
 release_tmp=$(mktemp -d)

@@ -15,7 +15,7 @@ patch_file="$backport_dir/0001-sdk-correction.patch"
 # root.
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$backport_dir/runner.sh" "$@"
+    --host-tool bash "$backport_dir/runner.sh" "$@"
 fi
 
 manifest_value() {

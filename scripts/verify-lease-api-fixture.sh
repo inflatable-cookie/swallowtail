@@ -25,7 +25,7 @@ release_load_version_identity
 
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$fixture_repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$fixture_repo_root/scripts/verify-lease-api-fixture.sh" "$@"
+    --host-tool bash "$fixture_repo_root/scripts/verify-lease-api-fixture.sh" "$@"
 fi
 
 fixture_root=$(mktemp -d)

@@ -22,8 +22,20 @@ if [[ "$validation_plan" == true ]]; then
 fi
 
 validation_started=$SECONDS
+
+# Private-target and temporary-workspace proof: this driver enters once through
+# the shared helper's host-tool mode, one `oxide exec --` lease. Everything it
+# builds is a workspace copied outside this checkout, so it also keeps its own
+# build directory: another checkout's intermediates never enter this project's
+# shared slot, and the run-owned root below is the only directory cleaned up.
+if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
+  SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$validation_repo_root/scripts/oxide-rust.sh" \
+    --host-tool "$validation_repo_root/scripts/verify-affected-packages.sh" "$@"
+fi
+
 validation_tmp=$(mktemp -d)
 trap 'rm -rf "$validation_tmp"' EXIT
+export CARGO_BUILD_BUILD_DIR="$validation_tmp/build"
 
 validation_patch_args=()
 for validation_internal_package in \

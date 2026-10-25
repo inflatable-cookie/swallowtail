@@ -12,10 +12,27 @@ set -euo pipefail
 # belongs to this invocation alone: never the worktree target, never a
 # directory another run owns. The directory is created directly under the
 # system temp root and marked, so the test helper can refuse anything else.
+#
+# Routing: this is a private-target driver, so it enters once through the
+# shared helper's host-tool mode, one `oxide exec --` lease. The commands below
+# stay plain `cargo` on purpose: they are the tool's own calls, and routing them
+# again would take a second lease. Oxide's storage environment reaches them, so
+# the private directory keeps every final output for this run while the
+# intermediates go to the held slot; cleanup below removes only the directory
+# this invocation created, never a slot, the worktree target or another run's
+# directory.
 
 if [[ $# -eq 0 ]]; then
   echo "usage: $0 command [args...] [--then command [args...]]..." >&2
   exit 2
+fi
+
+route_repo_root=$(cd "$(dirname "$0")/.." && pwd)
+# One supported lease for this Cargo-running driver. The guard stops a re-exec
+# loop; the child inherits the lease's storage environment.
+if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != "1" ]]; then
+  SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$route_repo_root/scripts/oxide-rust.sh" \
+    --host-tool "$route_repo_root/scripts/run-with-owned-cargo-target.sh" "$@"
 fi
 
 target="$(mktemp -d "${TMPDIR:-/tmp}/swallowtail-sdk-courier.XXXXXXXX")"

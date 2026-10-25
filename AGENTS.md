@@ -48,12 +48,12 @@ effigy test --plan
 - `effigy qa` — the full board
 
 Ordinary build, check, clippy, test and nextest selectors run through Oxide,
-as do fmt, metadata and deny routes and the doc gate. Every switched selector
-keeps a `<selector>:cargo` sibling that runs the same arguments on plain Cargo,
-and `GITHUB_ACTIONS=true` selects that plain branch. Use the sibling when Oxide
-itself is broken. Routes with a private target or temporary workspace are
-pending qualified Oxide one-use support, and the remaining genuine exceptions,
-with their reasons, live in the
+as do fmt, metadata and deny routes and the doc gate. Cargo-running tools and
+private-target or temporary-workspace drivers take one `oxide exec --` lease
+through the same helper. There are no per-selector plain-Cargo escape
+selectors: `GITHUB_ACTIONS=true` selects the plain branch on hosted runners,
+and Effigy's one-run `EFFIGY_OXIDE_ESCAPE=cargo` or running Cargo by hand is
+the only local escape. The genuine exceptions, with their reasons, live in the
 [validation tiers](docs/guides/validation-tiers.md#oxide-adoption-boundary).
 
 Prefer `effigy <task>` over raw commands. `effigy doctor` is orientation, not
@@ -176,7 +176,10 @@ is explicit audit intent; never route it through everyday authoring.
 <!-- northstar:rust-quality:end -->
 
 <!-- oxide:begin -->
+<!-- oxide:workspaces: . -->
 ## Rust commands: use `oxide`
+
+Covers Cargo workspaces `.`, relative to this file's folder.
 
 - Write `oxide` wherever you would write `cargo`: `oxide check`, `oxide test`, `oxide run -- <args>`, `oxide add <crate>`.
 - Profiles: `quick` (default), `--profile debug` for a debugger, `--release`. Oxide places build output, so it refuses `--target-dir`.

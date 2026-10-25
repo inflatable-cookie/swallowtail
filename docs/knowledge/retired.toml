@@ -45,3 +45,15 @@ replacement = "The plan is Queue lanes, lane documents and plan order; leads are
 owner = "docs/knowledge/README.md"
 paths = ["docs/plan.md", "docs/triage/"]
 allow = ["CHANGELOG.md", "docs/knowledge/retired.toml"]
+
+[[retired]]
+id = "per-selector-cargo-escape"
+retired = "2026-10-25"
+replacement = "Effigy's one-run EFFIGY_OXIDE_ESCAPE=cargo, or running Cargo by hand. Every maintained route uses Oxide; scripts/oxide-rust.sh is the only place that spells plain Cargo, and the guard fails on either removed form coming back."
+owner = "docs/guides/validation-tiers.md"
+terms = ["SWALLOWTAIL_RUST_RUNNER"]
+# The per-selector plain-Cargo sibling form is not a term here: a bare
+# `:cargo` also matches `env:CARGO_TARGET_DIR`. The routing guard rejects that
+# sibling form by name. The guard names this escape so it can reject it, and
+# the guide records the ruling.
+allow = ["CHANGELOG.md", "docs/knowledge/retired.toml", "docs/guides/validation-tiers.md", "scripts/tests/oxide-selector-routing.py"]

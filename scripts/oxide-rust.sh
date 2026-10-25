@@ -9,21 +9,22 @@ set -euo pipefail
 #   scripts/oxide-rust.sh --host-tool <tool> [args...]
 #
 # The arguments after the mode are passed to Oxide unchanged: Oxide receives
-# them as a Cargo argument list, or after `oxide exec --` when a host tool runs
+# them as a Cargo argument list, or after `oxide exec --` when a tool runs
 # Cargo itself. The helper replaces itself with the tool, so argv, exit status,
 # signals, stdout and stderr are the tool's own.
 #
-# Escapes, all plain Cargo with no Oxide on the route:
-#   effigy <selector>:cargo                 the selector's sibling in effigy.toml
-#   SWALLOWTAIL_RUST_RUNNER=cargo effigy    plain Cargo for one selector run
-#   GITHUB_ACTIONS=true                     hosted CI has no Oxide installed
+# This is the only place that spells a plain Cargo command. Escapes, both plain
+# Cargo with no Oxide on the route:
+#   EFFIGY_OXIDE_ESCAPE=cargo   Effigy's escape: one run on plain Cargo
+#   GITHUB_ACTIONS=true         hosted CI has no Oxide installed
+# There is no project escape variable and no per-selector plain-Cargo sibling.
 #
-# A missing Oxide fails loudly and names the escapes; it never falls back to
+# A missing Oxide fails loudly and names the escape; it never falls back to
 # Cargo silently. Toolchain pins travel as `RUSTUP_TOOLCHAIN=<name>`, the
 # supported mapping for `cargo +<name>`; the plain branch passes it to Cargo
-# unchanged. Private-target, one-use-workspace, packaging-clone and CI routes
-# do not use this helper; they are the documented exceptions in
-# docs/guides/validation-tiers.md.
+# unchanged. Cargo-running tools and private-target or temporary-workspace
+# drivers enter once through `--host-tool`, which is one `oxide exec --` lease;
+# docs/guides/validation-tiers.md owns their custody rules.
 
 oxide_host_tool=false
 if [[ ${1:-} == "--host-tool" ]]; then
@@ -36,11 +37,11 @@ if (($# == 0)); then
   exit 2
 fi
 
-runner=${SWALLOWTAIL_RUST_RUNNER:-oxide}
-case $runner in
+tool=${EFFIGY_OXIDE_ESCAPE:-oxide}
+case $tool in
   oxide | cargo) ;;
   *)
-    printf 'oxide-rust: SWALLOWTAIL_RUST_RUNNER must be oxide or cargo, not %q\n' "$runner" >&2
+    printf 'oxide-rust: EFFIGY_OXIDE_ESCAPE must be oxide or cargo, not %q\n' "$tool" >&2
     exit 2
     ;;
 esac
@@ -48,10 +49,10 @@ esac
 # Hosted runners have no Oxide, so CI keeps its plain-Cargo route. Workflow
 # files stay unchanged; this branch is the only CI-specific step.
 if [[ ${GITHUB_ACTIONS:-} == "true" ]]; then
-  runner=cargo
+  tool=cargo
 fi
 
-if [[ $runner == "cargo" ]]; then
+if [[ $tool == "cargo" ]]; then
   if [[ $oxide_host_tool == true ]]; then
     exec "$@"
   fi
@@ -61,9 +62,8 @@ fi
 if ! command -v oxide >/dev/null 2>&1; then
   cat >&2 <<'MESSAGE'
 oxide-rust: oxide is not on PATH, and this route does not fall back to Cargo.
-Run the matching plain-Cargo selector instead (effigy <selector>:cargo, for
-example `effigy test:rust:cargo`), or set SWALLOWTAIL_RUST_RUNNER=cargo for one
-run. See docs/guides/validation-tiers.md, Oxide Adoption Boundary.
+Install Oxide, or set EFFIGY_OXIDE_ESCAPE=cargo for one plain-Cargo run. See
+docs/guides/validation-tiers.md, Oxide Adoption Boundary.
 MESSAGE
   exit 127
 fi

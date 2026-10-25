@@ -47,6 +47,16 @@ trap cleanup EXIT
 
 printf '%s\n' "$$" > "$target/.swallowtail-run-owned"
 export CARGO_TARGET_DIR="$target"
+# A per-run private target cannot be honoured from a shared build directory:
+# Cargo keeps the compiled test binary in the build directory, so a
+# `CARGO_BIN_EXE_*` value baked by an earlier run's target path survives the
+# rebuild check and the courier spawn fails with `executable_not_found`
+# (measured 2026-10-25: three of seven registered_tool_proxy tests, with the
+# slot's `.d` file naming the previous run's directory). This proof therefore
+# builds without any shared intermediate state: its build directory lives
+# inside the run-owned target and leaves with it. Named proof exception in
+# docs/guides/validation-tiers.md.
+export CARGO_BUILD_BUILD_DIR="$target/build"
 
 group=()
 run_group() {

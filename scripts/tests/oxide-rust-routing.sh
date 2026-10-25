@@ -108,6 +108,7 @@ cat >"$routing_exec_bin/cargo" <<FAKE
   printf '\n'
 } >>"$routing_scratch/cargo.log"
 printf 'env:CARGO_TARGET_DIR=%s\n' "\${CARGO_TARGET_DIR:-unset}" >>"$routing_scratch/cargo.log"
+printf 'env:CARGO_BUILD_BUILD_DIR=%s\n' "\${CARGO_BUILD_BUILD_DIR:-unset}" >>"$routing_scratch/cargo.log"
 if [[ -n \${CARGO_TARGET_DIR:-} && -d \$CARGO_TARGET_DIR ]]; then
   if [[ -f \$CARGO_TARGET_DIR/.swallowtail-run-owned ]]; then
     printf 'marker=present\n' >>"$routing_scratch/cargo.log"
@@ -403,15 +404,29 @@ esac
 grep -qx 'marker=present' "$routing_scratch/cargo.log" ||
   routing_failure "run-owned target carried no ownership marker:
 $(cat "$routing_scratch/cargo.log")"
+routing_courier_builds=$(sed -n 's/^env:CARGO_BUILD_BUILD_DIR=//p' "$routing_scratch/cargo.log")
+while IFS= read -r routing_build_dir; do
+  case "$routing_build_dir" in
+    "$routing_first_target"/*) ;;
+    *)
+      routing_failure \
+        "the courier driver built outside its run-owned target: $routing_build_dir"
+      ;;
+  esac
+done <<<"$routing_courier_builds"
 if [[ -e $routing_first_target ]]; then
   routing_failure "courier driver left its run-owned target behind: $routing_first_target"
 fi
 case "$routing_first_target" in
   "$routing_root"/*) routing_failure "run-owned target is inside the worktree: $routing_first_target" ;;
 esac
-[[ "$(sed -n '1p' "$routing_scratch/cargo.log")" == 'cargo [check] [-p] [swallowtail-core]' ]] ||
-  routing_failure "the driver's first cargo group changed: $(sed -n '1p' "$routing_scratch/cargo.log")"
-[[ "$(sed -n '4p' "$routing_scratch/cargo.log")" == 'cargo [metadata] [--no-deps]' ]] ||
+[[ "$(grep -c '^cargo ' "$routing_scratch/cargo.log")" -eq 2 ]] ||
+  routing_failure "the driver ran an unexpected number of cargo groups:
+$(cat "$routing_scratch/cargo.log")"
+grep -qx 'cargo \[check\] \[-p\] \[swallowtail-core\]' "$routing_scratch/cargo.log" ||
+  routing_failure "the driver's first cargo group changed:
+$(cat "$routing_scratch/cargo.log")"
+grep -qx 'cargo \[metadata\] \[--no-deps\]' "$routing_scratch/cargo.log" ||
   routing_failure "the driver's --then group changed:
 $(cat "$routing_scratch/cargo.log")"
 

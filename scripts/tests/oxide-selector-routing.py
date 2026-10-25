@@ -115,7 +115,7 @@ SCRIPT_CLASSES = {
     "scripts/validation/package-scope.sh": "switched",
     "scripts/check-public-api.sh": "delegated",
     "scripts/run-grok-acp-client-mcp-probe.sh": "host-tool",
-    "scripts/run-with-owned-cargo-target.sh": "host-tool",
+    "scripts/run-with-owned-cargo-target.sh": "private-build",
     "scripts/release/backports/sdk-v0.5.2/runner.sh": "foreign-workspace",
     "scripts/verify-affected-packages.sh": "foreign-workspace",
     "scripts/verify-lease-api-fixture.sh": "foreign-workspace",
@@ -140,6 +140,11 @@ SCRIPT_REASONS = {
         "private-target or temporary-workspace proof: one `oxide exec --` "
         "lease, its own target and its own build directory for workspaces "
         "outside this checkout"
+    ),
+    "private-build": (
+        "private run-owned target and build directory: a shared build "
+        "directory keeps a stale compiled `CARGO_BIN_EXE_*` path from an "
+        "earlier run's target (Oxide dogfood finding)"
     ),
     "genuine": (
         "its subject is the Cargo invocation or a pinned original entry, so it "
@@ -584,7 +589,7 @@ def check_scripts(referenced_scripts):
                 fail("%s no longer runs a routed script" % relative)
             continue
 
-        if expected in ("host-tool", "foreign-workspace"):
+        if expected in ("host-tool", "private-build", "foreign-workspace"):
             if not has_helper or "--host-tool" not in text:
                 fail(
                     "%s must re-execute itself through the helper's --host-tool "
@@ -608,7 +613,15 @@ def check_scripts(referenced_scripts):
                     "%s neither removes its own scratch root nor reports it as "
                     "retained evidence" % relative
                 )
-            if expected == "foreign-workspace":
+            if expected == "private-build":
+                for required in ("CARGO_TARGET_DIR", "CARGO_BUILD_BUILD_DIR"):
+                    if required not in text:
+                        fail(
+                            "%s needs its own %s: a per-run private target "
+                            "cannot be honoured from a shared build directory"
+                            % (relative, required)
+                        )
+            elif expected == "foreign-workspace":
                 for required in ("CARGO_TARGET_DIR", "CARGO_BUILD_BUILD_DIR"):
                     if required not in text:
                         fail(

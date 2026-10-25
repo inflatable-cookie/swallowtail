@@ -212,19 +212,12 @@ through the same helper.
   release include, workflow, target ignore rule or agent block.
   `effigy check:oxide-routing` is its syntax and compile companion.
 
-### Tools, private targets and temporary workspaces
+### Tools and ordinary script routes
 
 A maintained script that runs Cargo itself re-executes once through the
 helper's `--host-tool` mode, which is one `oxide exec --` lease. Its own
 `cargo` words are the tool's, so no route takes two leases:
 
-- `run-with-owned-cargo-target.sh` runs the courier and SDK validation groups
-  under one fresh run-owned `CARGO_TARGET_DIR`. The outer build and the nested
-  courier build share that warm target, which this invocation alone owns; the
-  directory is created under the system temp root, marked
-  `.swallowtail-run-owned`, and removed on exit. `CARGO_TARGET_DIR` keeps every
-  final output for the run private while the intermediates go to the held slot,
-  which is this checkout's own intermediate state.
 - `run-grok-acp-client-mcp-probe.sh` builds and runs its echo example inside the
   lease; final outputs stay in `<checkout>/target/debug/`.
 - `validate-focused-packages.sh`, `check-release-floor.sh`, `check-msrv.sh`,
@@ -235,14 +228,27 @@ helper's `--host-tool` mode, which is one `oxide exec --` lease. Its own
   task-owned target the test helper creates when `CARGO_TARGET_DIR` is the
   checkout's own target.
 
-### Named proof exceptions: foreign workspaces
+### Named proof exceptions
 
-These proofs build a workspace that is not this checkout, so each one keeps
-both its own target directory and its own build directory inside its run-owned
-scratch root. Another workspace's finals and intermediates therefore never
-enter this checkout's `target` or this project's shared slot, and the run
-removes only the directory it created:
+A proof that must build outside the shared project state keeps both its own
+target directory and its own build directory inside its run-owned scratch root.
+Its finals and intermediates therefore never enter this checkout's `target` or
+this project's shared slot, and the run removes only the directory it created:
 
+- `run-with-owned-cargo-target.sh` (`check:sdk-courier-timeout`,
+  `validate:sdk-courier-timeout`, `validate:sdk-courier-idle`,
+  `validate:sdk-registered-lifetime`) runs the courier and SDK validation groups
+  under one fresh run-owned `CARGO_TARGET_DIR` plus a build directory inside it.
+  The outer build and the nested courier build share that target, which this
+  invocation alone owns; the directory is created under the system temp root,
+  marked `.swallowtail-run-owned`, and removed on exit. The build directory is
+  inside it for a measured reason: Cargo keeps the compiled test binary in the
+  build directory, so a shared build directory keeps a `CARGO_BIN_EXE_*` value
+  baked from an earlier run's target path, and three of seven
+  `registered_tool_proxy` tests then fail with `executable_not_found` on a
+  second run. This is an Oxide dogfood finding (build-directory invalidation of
+  an environment-baked binary path); the route keeps Oxide's lease and
+  admission while the fixture builds privately.
 - `verify-affected-packages.sh` (`package:verify-affected`) archives packages
   and compiles the extracted subset in a temporary root;
 - `verify-source-consumer.sh` (`package:source-consumer`) generates a consumer
@@ -256,7 +262,7 @@ removes only the directory it created:
 
 Each still takes exactly one `oxide exec --` lease, so the route, admission and
 refusal wording are Oxide's; the private build directory is the contract's
-named exception for a proof that must build outside the shared project state.
+named exception for a proof that must build without shared project state.
 
 ### Genuine Cargo exceptions
 

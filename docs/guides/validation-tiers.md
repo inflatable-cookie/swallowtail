@@ -145,6 +145,26 @@ requires them.
 
 ## Oxide Adoption Boundary
 
+### Superseding 2026-10-25 ruling
+
+Tom's Oxide Supervisor `d5260e79-e0f9-47d6-b854-123a59e0b1d3` relayed Tom's
+2026-10-25 ruling: every ordinary local Rust route uses `oxide <cmd>` or
+`oxide exec -- <tool>` when a host tool runs Cargo or needs its own target.
+This supersedes the earlier one-use deferral and per-selector escape retention
+rules below. Remove `:cargo` selector siblings and the project-specific
+`SWALLOWTAIL_RUST_RUNNER` escape; the only explicit local escapes are Effigy's
+`EFFIGY_OXIDE_ESCAPE=cargo` or running Cargo by hand. Missing Oxide must never
+silently select Cargo.
+
+Run `oxide init` for the managed guidance. Preserve private-target ownership,
+cleanup, toolchain pins, filters and test semantics while qualifying the
+`oxide exec` wrapper. This grants no authority to change target custody,
+remove outputs, install tools or run release/provider commands. `.github` CI
+and product code or fixtures intentionally exercising Cargo retain their
+recipes. The installed Oxide workflow contract governs supported storage and
+process behaviour; a wrapper is not proof of cache reuse or containment.
+
+
 Tom's 2026-10-23 standing approval covers supported Oxide adoption in Rust
 projects with Paseo workspaces (decisions `3b041cf4-df3d-4e17-9886-5af51428ecf3`
 and `e1c1d3b5-9ff2-4f42-81b6-7e2a3f6e3a14`). The

@@ -76,9 +76,7 @@ ALLOWED_VERBS = (
 )
 # Environment assignments a selector may put before its route. `nice` similarly
 # runs the whole route at reduced priority.
-SELECTOR_ENV = re.compile(
-    r"""^[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|[^\s]+)$"""
-)
+SELECTOR_ENV = re.compile(r"""^[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|[^\s]+)$""")
 SELECTOR_ENV_NAMES = ("RUSTUP_TOOLCHAIN", "SWALLOWTAIL_LIVE_", "RUSTDOCFLAGS")
 
 # Selectors whose subject is the pinned original invocation, or which a review
@@ -179,9 +177,7 @@ FROZEN_ROUTES = {
 CARGO_WORD = "cargo"
 SAFE_PRECEDING = {"nice", "env", "time", "timeout", "exec", "sudo"}
 ENV_ASSIGNMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
-HELPER_INVOCATION = re.compile(
-    r"(?<![A-Za-z0-9_./-])bash scripts/oxide-rust\.sh "
-)
+HELPER_INVOCATION = re.compile(r"(?<![A-Za-z0-9_./-])bash scripts/oxide-rust\.sh ")
 ENV_TOKENS = re.compile(r"""[A-Za-z_][A-Za-z0-9_]*=(?:"[^"]*"|'[^']*'|[^\s]+)""")
 SCRIPT_REFERENCE = re.compile(r"(?<![A-Za-z0-9_./-])(scripts/[A-Za-z0-9_./-]+\.sh)")
 
@@ -509,9 +505,7 @@ def classify_selectors(tasks):
                 observed[name] = (
                     "script",
                     "maintained script owns the route: "
-                    + ", ".join(
-                        path for path, kind in routed if kind != "proof"
-                    ),
+                    + ", ".join(path for path, kind in routed if kind != "proof"),
                 )
                 continue
         # Any other selector runs no maintained Cargo route.
@@ -577,9 +571,7 @@ def check_scripts(referenced_scripts):
 
         if expected == "delegated":
             if has_helper or has_exec or cargo_lines:
-                fail(
-                    "%s is classified delegated but reaches Cargo itself" % relative
-                )
+                fail("%s is classified delegated but reaches Cargo itself" % relative)
             delegated = [
                 referenced
                 for referenced in SCRIPT_REFERENCE.findall(text)
@@ -700,7 +692,9 @@ def check_scripts(referenced_scripts):
 def check_syntax_selector(tasks):
     """The routing syntax selector must compile every maintained script."""
     commands = [
-        command for command in tasks.get("check:oxide-routing", []) if command is not None
+        command
+        for command in tasks.get("check:oxide-routing", [])
+        if command is not None
     ]
     if not commands:
         fail("check:oxide-routing no longer exists")

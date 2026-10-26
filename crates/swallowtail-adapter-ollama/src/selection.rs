@@ -12,17 +12,17 @@ pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 ///
 /// Prior `ollama.native-text-v1` segments `0.14.0..=0.34.4` and
 /// `0.35.0..=0.35.1` stay qualified as Deprecated. Maintained
-/// `0.40.0..=0.40.1` uses `ollama.native-text-v1.manifest-list-runner`.
+/// `0.40.0..=0.40.11` uses `ollama.native-text-v1.manifest-list-runner`.
 /// Unpublished `0.34.5` and `0.35.2` through `0.39.x` stay interior gaps.
-/// `0.41.0` is the first visible `UnverifiedNewer` point.
-pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.40.1";
+/// `0.40.12` is the first visible `UnverifiedNewer` point.
+pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.40.11";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
 pub const OLLAMA_NATIVE_FACADE: &str = "ollama.native-api.text-v1";
 /// Adapter-private text mapping used through the last pre-migration window.
 pub(crate) const OLLAMA_NATIVE_TEXT_BEHAVIOR: &str = "ollama.native-text-v1";
-/// Adapter-private milestone for `0.40.0..=0.40.1` manifest-list catalogue
+/// Adapter-private milestone for `0.40.0..=0.40.11` manifest-list catalogue
 /// rows and `ggml`/`llamacpp` runner pinning on show/chat.
 ///
 /// Public operation shape stays the existing catalogue, structured-run, and
@@ -171,7 +171,10 @@ mod tests {
                 OLLAMA_NATIVE_TEXT_BEHAVIOR
             );
         }
-        for version in ["0.40.0", "0.40.1"] {
+        for version in [
+            "0.40.0", "0.40.1", "0.40.2", "0.40.3", "0.40.4", "0.40.5", "0.40.6", "0.40.7",
+            "0.40.8", "0.40.9", "0.40.10", "0.40.11",
+        ] {
             let matched = descriptor
                 .classify_interface_version(
                     &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
@@ -198,12 +201,14 @@ mod tests {
                 &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
             ));
         }
-        assert!(matches!(
-            descriptor.assess_interface_version(
-                &ollama_runtime_binding("0.41.0").expect("fixture Ollama version is valid"),
-            ),
-            swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        for version in ["0.40.12", "0.41.0"] {
+            assert!(matches!(
+                descriptor.assess_interface_version(
+                    &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
+                ),
+                swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ));
+        }
     }
 
     #[test]
@@ -221,7 +226,10 @@ mod tests {
                 OLLAMA_NATIVE_TEXT_BEHAVIOR
             );
         }
-        for version in ["0.40.0", "0.40.1"] {
+        for version in [
+            "0.40.0", "0.40.1", "0.40.2", "0.40.3", "0.40.4", "0.40.5", "0.40.6", "0.40.7",
+            "0.40.8", "0.40.9", "0.40.10", "0.40.11",
+        ] {
             let swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched) =
                 claim.assess(&InterfaceVersion::new(version).unwrap())
             else {
@@ -236,14 +244,16 @@ mod tests {
         for version in ["0.32.2", "0.32.10", "0.34.5", "0.35.2", "0.39.0"] {
             assert!(!claim.permits(&InterfaceVersion::new(version).unwrap()));
         }
-        let swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&InterfaceVersion::new("0.41.0").unwrap())
-        else {
-            panic!("0.41.0 must be unverified newer");
-        };
-        assert_eq!(
-            newer.behavior_revision().as_str(),
-            OLLAMA_NATIVE_TEXT_MANIFEST_LIST_RUNNER_BEHAVIOR
-        );
+        for version in ["0.40.12", "0.41.0"] {
+            let swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+                claim.assess(&InterfaceVersion::new(version).unwrap())
+            else {
+                panic!("{version} must be unverified newer");
+            };
+            assert_eq!(
+                newer.behavior_revision().as_str(),
+                OLLAMA_NATIVE_TEXT_MANIFEST_LIST_RUNNER_BEHAVIOR
+            );
+        }
     }
 }

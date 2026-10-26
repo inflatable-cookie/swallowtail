@@ -20,6 +20,14 @@ annotated Git tags from the canonical repository.
   read-only never armed the monitor. Optional turn and thread fields stay
   unmapped. Unpublished gaps, including `0.155.2`, stay incompatible.
   `0.165.0-alpha.1` is ignored. See Research 452.
+- raise the `ollama.attached` maintained ceiling from `0.40.1` to official
+  GitHub stable `0.40.11` on the existing
+  `ollama.native-text-v1.manifest-list-runner` revision. The ten published
+  patch hops stay on the same claim, baseline, exclusions, and
+  `AllowUnverified` posture. From `0.40.2`, `/api/tags` lists only the
+  preferred manifest-list child; from `0.40.3`, the compatibility-migration
+  call is commented out. Synthetic `0.40.12` is the first `UnverifiedNewer`
+  point. See Research 448.
 - freeze `antigravity.catalogue` identity through official stable `1.4.7`
   without extending qualification. The claim stays one maintained segment
   `1.1.9..=1.3.1` on `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`,

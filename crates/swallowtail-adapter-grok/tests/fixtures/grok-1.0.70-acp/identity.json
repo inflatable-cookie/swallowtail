@@ -44,14 +44,16 @@
     "posture": "allow_unverified"
   },
   "decision": {
-    "shape": "compatible-extension",
-    "raise_latest_qualified_to": "1.0.70",
+    "shape": "stop",
+    "keep_latest_qualified": "1.0.46",
+    "stop_reason": "selected handler xref function bodies differ from 1.0.46 on every hop and both platforms; interned dispatch tables and serde layouts are unchanged; presence evidence cannot distinguish LTO re-layout from a behaviour change",
     "reuse_behavior_revision": "grok-build.acp-v1.cached-token-model-4-6-v3",
     "preserve_claim_id": "grok-build.acp.executable-window-2",
     "preserve_posture": "AllowUnverified",
     "preserve_baseline": "0.2.114",
     "preserve_0_2_segments": true,
     "preserve_1_0_4_floor": true,
+    "official_stable_classification": "unverified_newer",
     "synthetic_unverified_newer": "1.0.71",
     "new_milestone": false,
     "flatten_with_catalogue": false,

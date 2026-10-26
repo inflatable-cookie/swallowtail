@@ -1,7 +1,7 @@
 # Grok Build ACP 1.0.70 Identity
 
-Qualifies `grok-build.acp` from its `1.0.46` ceiling through official npm
-`latest` `1.0.70`.
+Freezes official npm `latest` `1.0.70` identity for `grok-build.acp` and
+stops the ceiling at `1.0.46`.
 
 ## Channel and hops
 
@@ -28,7 +28,7 @@ executable SHA-256 and brotli SHA-256, and the banner `1.0.46 (2765805b9442)`.
 Wrapper and Darwin arm64 file inventories, and the Darwin runtime SHA-256,
 match the Research 443 frozen inventory on every hop `1.0.46` through `1.0.70`.
 Linux x64 is outside that catalogue inventory. The match is hash reproduction
-of official artifacts. This ACP qualification does not adopt the catalogue
+of official artifacts. This ACP identity freeze does not adopt the catalogue
 formatter mapping, and it does not move `grok-build.catalogue`.
 
 The complete package-tree ledger is in
@@ -157,9 +157,18 @@ Hops after `1.0.46` add extra interned packs that insert already-present
 unmapped methods (`session/set_config_option`, `session/list`,
 `session/resume`, `session/close`) beside the selected stdio table. Those
 packs are classified `already-present-unmapped`. The selected 7-tuple itself
-is never replaced. Instruction-level function body hashes move under LTO —
-function counts grow from 128006 to 230887 on Darwin and from 125134 on
-Linux `1.0.46` — and are recorded; they are not the compatibility predicate.
+is never replaced.
+
+Selected handler xref function bodies match `1.0.46` on none of the 48
+post-baseline platform-hops. Linux `session/update` stays 1872 bytes from
+`1.0.50` through `1.0.70` with 21 distinct body digests.
+`session/request_permission` stays 3648 bytes across those 21 hops with 21
+distinct digests. Darwin `1.0.70` merges `session/prompt`, `session/cancel`,
+and `session/set_model` into one 78624-byte function. Function counts grow
+from 128006 to 230887 on Darwin and from 125134 on Linux `1.0.46`. Those
+body changes are the stop: interned tables and serde layouts do not prove
+the handlers are equivalent.
+
 Every hop, including the twenty with no ACP module-path delta, has this
 per-hop decode on both platforms.
 
@@ -169,19 +178,24 @@ the adapter does not send those client callbacks.
 
 ## Decision
 
-Compatible extension. Keep baseline `0.2.114`, the deprecated `0.2.114..=0.2.117`
-segments, maintained floor `1.0.4`, claim id
-`grok-build.acp.executable-window-2`, behavior revision
-`grok-build.acp-v1.cached-token-model-4-6-v3`, and `AllowUnverified`. The
-maintained window now ends at `1.0.70`. Discovery pins the embedded build id
-for each newly qualified point so a wrong banner fails closed. `1.0.71` stays
+Stop. Keep baseline `0.2.114`, the deprecated `0.2.114..=0.2.117` segments,
+maintained floor `1.0.4`, claim id `grok-build.acp.executable-window-2`,
+behavior revision `grok-build.acp-v1.cached-token-model-4-6-v3`, and
+`AllowUnverified`. The maintained window stays `1.0.4..=1.0.46`. Official
+`1.0.47` through `1.0.70` stay `UnverifiedNewer`. Discovery keeps pinning
+embedded build ids through the qualified ceiling only. `1.0.71` stays
 unpinned and `UnverifiedNewer`.
 
 `grok-build.catalogue` stays `QualifiedOnly` on `1.0.30..=1.0.70` with its
 existing behavior revisions. Registered-tool evidence stays exact to `1.0.4`
-and `1.0.5`. HTTP MCP evidence stays at its existing exact pin. Both claims
-may name `1.0.70` while remaining separate: different claim ids, different
-postures, and different behavior revisions.
+and `1.0.5`. HTTP MCP evidence stays at its existing exact pin. The shared
+`1.0.70` official point is not a flattening: catalogue qualifies it, ACP
+does not.
+
+Next adaptation: a decode that can distinguish LTO re-layout from a selected
+handler behaviour change on the frozen binaries, or an owner-authorized live
+probe of the selected ACP mapping. This record is the identity freeze for
+that task.
 
 The host `grok` command was not on `PATH` and was not installed. Public npm
 tarballs were statically inspected. No vendor binary was executed. No

@@ -63,30 +63,6 @@ const QUALIFIED_RUNTIME_BUILD_IDS: &[(&str, &str)] = &[
     ("1.0.44", "5b807183dd79"),
     ("1.0.45", "c33bff361a6f"),
     ("1.0.46", "2765805b9442"),
-    ("1.0.47", "678ef9062185"),
-    ("1.0.48", "b94d5072c95f"),
-    ("1.0.49", "8e66fdf1fd8e"),
-    ("1.0.50", "c58f321264ba"),
-    ("1.0.51", "fd4725c707c0"),
-    ("1.0.52", "0920c8169e27"),
-    ("1.0.53", "2d9cf6bf2918"),
-    ("1.0.54", "4e18c5517b4e"),
-    ("1.0.55", "d005d21a9180"),
-    ("1.0.56", "66d435e189ab"),
-    ("1.0.57", "8fd0d42f282f"),
-    ("1.0.58", "26283d10dd58"),
-    ("1.0.59", "908a62f6d922"),
-    ("1.0.60", "01a8e1c591c0"),
-    ("1.0.61", "73e2ba154bb3"),
-    ("1.0.62", "1474f9cbdd91"),
-    ("1.0.63", "c6c4520cedc1"),
-    ("1.0.64", "f13216a37229"),
-    ("1.0.65", "a2a8f87f4d74"),
-    ("1.0.66", "858cb4f88f75"),
-    ("1.0.67", "2fe064390d07"),
-    ("1.0.68", "33c1c9648781"),
-    ("1.0.69", "689b3eb60496"),
-    ("1.0.70", "f50904eaee6c"),
 ];
 
 // Vendor source: https://docs.x.ai/build/overview (frozen 2026-09-06).
@@ -446,6 +422,8 @@ mod tests {
         // classification is the claim's job, not the version scanner's.
         for (output, version) in [
             ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
+            ("grok 1.0.47 (04b7ffed98c6) [stable]\n", "1.0.47"),
+            ("grok 1.0.70 (f50904eaee6c) [stable]\n", "1.0.70"),
             ("grok 1.0.71 (04b7ffed98c6) [stable]\n", "1.0.71"),
             ("grok 1.1.0 (04b7ffed98c6) [stable]\n", "1.1.0"),
         ] {
@@ -474,8 +452,6 @@ mod tests {
             b"grok 1.0.44 (04b7ffed98c6) [stable]\n".as_slice(),
             b"grok 1.0.45 (04b7ffed98c6) [stable]\n".as_slice(),
             b"grok 1.0.46 (04b7ffed98c6) [stable]\n".as_slice(),
-            b"grok 1.0.47 (04b7ffed98c6) [stable]\n".as_slice(),
-            b"grok 1.0.70 (2765805b9442) [stable]\n".as_slice(),
             b"grok 0.2.114 (0c785038798) [alpha]\n".as_slice(),
             b"grok 0.2.114 (0c785038798)\n".as_slice(),
             b"0.2.114\n".as_slice(),

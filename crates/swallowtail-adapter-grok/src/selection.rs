@@ -14,7 +14,7 @@ pub const GROK_BUILD_ACP_AXIS: &str = "grok-build.executable";
 /// Oldest qualified Grok Build version.
 pub const GROK_BUILD_ACP_BASELINE_VERSION: &str = "0.2.114";
 /// Most recent qualified Grok Build version.
-pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.70";
+pub const GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION: &str = "1.0.46";
 /// Stable identifier for Grok Build delegated subscription access.
 pub const GROK_BUILD_SUBSCRIPTION_ACCESS_PROFILE_ID: &str =
     "grok-build.subscription.delegated-oauth";
@@ -327,13 +327,12 @@ mod tests {
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn segments_cover_0_2_windows_and_1_0_4_through_1_0_70() {
+    fn segments_cover_0_2_windows_and_1_0_4_through_1_0_46() {
         let claim = grok_build_acp_claim();
         for candidate in [
             "0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5", "1.0.6", "1.0.11",
             "1.0.17", "1.0.24", "1.0.25", "1.0.29", "1.0.30", "1.0.31", "1.0.40", "1.0.41",
-            "1.0.42", "1.0.43", "1.0.44", "1.0.45", "1.0.46", "1.0.47", "1.0.50", "1.0.56",
-            "1.0.62", "1.0.70",
+            "1.0.42", "1.0.43", "1.0.44", "1.0.45", "1.0.46",
         ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
@@ -354,8 +353,6 @@ mod tests {
             ("1.0.44", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
             ("1.0.45", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
             ("1.0.46", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
-            ("1.0.47", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
-            ("1.0.70", GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR),
         ] {
             assert_eq!(
                 claim
@@ -382,13 +379,13 @@ mod tests {
                 "unexpected permit {rejected}"
             );
         }
-        for later in ["1.0.71", "1.1.0"] {
+        for later in ["1.0.47", "1.0.70", "1.0.71", "1.1.0"] {
             let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
                 claim.assess(&version(later))
             else {
                 panic!("{later} is a later stable release and stays unverified");
             };
-            assert_eq!(newer.latest_qualified().as_str(), "1.0.70");
+            assert_eq!(newer.latest_qualified().as_str(), "1.0.46");
             assert_eq!(
                 newer.behavior_revision().as_str(),
                 GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR

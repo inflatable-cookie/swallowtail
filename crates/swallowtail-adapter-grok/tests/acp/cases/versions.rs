@@ -17,8 +17,6 @@ fn qualified_behavior_segments_execute() {
         "1.0.44",
         "1.0.45",
         "1.0.46",
-        "1.0.47",
-        "1.0.70",
     ] {
         let version = swallowtail_core::InterfaceVersion::new(candidate).expect("version");
         assert!(claim.supports(&version));
@@ -36,20 +34,26 @@ fn qualified_behavior_segments_execute() {
 #[test]
 fn unverified_newer_executes_without_becoming_guaranteed_support() {
     let claim = swallowtail_adapter_grok::grok_build_acp_claim();
-    let version = swallowtail_core::InterfaceVersion::new("1.0.71").expect("version");
-    assert!(!claim.supports(&version));
-    assert!(claim.permits(&version));
-    assert!(matches!(
-        claim.assess(&version),
-        swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
-    let host = FixtureHost::with_version(Scenario::Success, "1.0.71");
-    let host_id = ExecutionHostId::new("fixture.host.grok.unverified").expect("host");
-    let mut run = start_run(host_id, &host, "1.0.71", Some(run_deadline()));
-    let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
-    assert_eq!(outcome.status(), &TerminalStatus::Completed);
-    assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
-    assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    for candidate in ["1.0.47", "1.0.70", "1.0.71"] {
+        let version = swallowtail_core::InterfaceVersion::new(candidate).expect("version");
+        assert!(!claim.supports(&version), "{candidate}");
+        assert!(claim.permits(&version), "{candidate}");
+        assert!(
+            matches!(
+                claim.assess(&version),
+                swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ),
+            "{candidate}"
+        );
+        let host = FixtureHost::with_version(Scenario::Success, candidate);
+        let host_id = ExecutionHostId::new(format!("fixture.host.grok.unverified.{candidate}"))
+            .expect("host");
+        let mut run = start_run(host_id, &host, candidate, Some(run_deadline()));
+        let outcome = block_on(run.take_terminal_outcome().expect("terminal"));
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+        assert_eq!(outcome.cleanup(), &CleanupOutcome::Clean);
+        assert_eq!(block_on(run.close()), CleanupOutcome::Clean);
+    }
 }
 
 #[test]

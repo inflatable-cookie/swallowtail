@@ -1,7 +1,7 @@
 //! Live production claim state checked against the frozen 1.0.41 identity.
 //!
 //! The historical 1.0.41 artifact remains qualified while the ACP executable
-//! window extends through official `1.0.70` on the existing behavior revision.
+//! window stays at official `1.0.46` on the existing behavior revision.
 //! The exact catalogue claim and the
 //! registered-tool courier bounded to the accepted live capsules stay
 //! independent of the ACP window.
@@ -17,7 +17,7 @@ use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus}
 #[test]
 fn production_claim_keeps_the_frozen_1_0_41_hop_maintained() {
     let claim = grok_build_acp_claim();
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.70");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
     for (point, behavior, status) in [
         (
             "0.2.114",
@@ -75,13 +75,13 @@ fn production_claim_keeps_the_frozen_1_0_41_hop_maintained() {
         claim.assess(&version("1.0.46")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    for later in ["1.0.71", "1.1.0"] {
+    for later in ["1.0.47", "1.0.70", "1.0.71", "1.1.0"] {
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
             claim.assess(&version(later))
         else {
             panic!("{later} must stay unverified newer");
         };
-        assert_eq!(unverified.latest_qualified().as_str(), "1.0.70");
+        assert_eq!(unverified.latest_qualified().as_str(), "1.0.46");
         assert_eq!(
             unverified.behavior_revision().as_str(),
             "grok-build.acp-v1.cached-token-model-4-6-v3"

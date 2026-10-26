@@ -696,12 +696,11 @@ def document() -> dict[str, Any]:
         "selected_permission_kinds": list(PERMISSION_KINDS),
         "swallowtail_process_lifecycle": SWALLOWTAIL_PROCESS_LIFECYCLE,
         "compatibility_predicate": (
-            "A hop stays on the existing behavior revision when both platforms keep "
-            "the selected stdio 7-tuple, client 8-tuple, permission 4-tuple, initialize "
-            "and prompt serde element counts, and the frozen 1.0.46 selected-literal "
-            "presence digest. Extra interned packs may only add methods already present "
-            "and unmapped at 1.0.46. Instruction-level function body hashes are recorded "
-            "and may move under LTO; they are not the compatibility predicate."
+            "Interned stdio, client, and permission tables plus serde layouts and the "
+            "frozen 1.0.46 selected-literal presence digest are recorded observations. "
+            "They do not qualify a hop. Selected handler xref function bodies must match "
+            "1.0.46 on both platforms to raise the ACP ceiling; they differ on every hop "
+            "1.0.47 through 1.0.70, so those points stay UnverifiedNewer."
         ),
         "hops": {},
     }

@@ -33,10 +33,10 @@ additions and removals are listed and classified as provider-internal.
 tables: interned stdio, client, and permission concatenations, serde element
 counts, and Darwin `ADRP` / Linux `LEA` xrefs onto compact-unwind /
 `.eh_frame_hdr` function ranges. Recreate it with
-`scripts/analyze-grok-acp-selected-control-flow.py`. Instruction-level
-function bodies move under LTO; the compatibility predicate is the interned
-tables and serde layouts. Join, drain, and release stay Swallowtail
-`begin_close` (`close_stdin` plus `request_stop`).
+`scripts/analyze-grok-acp-selected-control-flow.py`. Interned tables match
+`1.0.46`. Selected handler xref bodies do not, so those hops stay
+`UnverifiedNewer`. Join, drain, and release stay Swallowtail `begin_close`
+(`close_stdin` plus `request_stop`).
 
 Artifacts were fetched from the public npm registry and inspected without
 executing vendor binaries. Brotli decompression was used only to hash and scan

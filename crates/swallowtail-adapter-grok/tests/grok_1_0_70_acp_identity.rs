@@ -1,4 +1,7 @@
-//! Frozen package, runtime, mapped-surface, and claim identity for Grok Build ACP 1.0.70.
+//! Frozen package, runtime, and selected-surface identity for Grok Build ACP 1.0.70.
+//!
+//! Official `1.0.47` through `1.0.70` stay `UnverifiedNewer`. Interned dispatch
+//! tables match `1.0.46`; selected handler xref bodies do not.
 
 use std::collections::BTreeSet;
 
@@ -142,10 +145,14 @@ fn official_latest_and_every_selected_stable_hop_are_frozen() {
     );
     assert_eq!(identity["host_observation"]["grok_on_path"], false);
     assert_eq!(identity["host_observation"]["version_probed"], false);
-    assert_eq!(identity["decision"]["shape"], "compatible-extension");
-    assert_eq!(identity["decision"]["raise_latest_qualified_to"], "1.0.70");
+    assert_eq!(identity["decision"]["shape"], "stop");
+    assert_eq!(identity["decision"]["keep_latest_qualified"], "1.0.46");
     assert_eq!(identity["decision"]["flatten_with_catalogue"], false);
     assert_eq!(identity["decision"]["new_milestone"], false);
+    assert_eq!(
+        identity["decision"]["official_stable_classification"],
+        "unverified_newer"
+    );
     assert_eq!(
         identity["catalogue_hash_reproduction"]["darwin_runtime_and_inventory_match_every_hop"],
         true
@@ -350,13 +357,35 @@ fn selected_surface_and_acp_paths_stay_inside_the_prior_mapping() {
     assert_eq!(paths.len(), 96);
 }
 
+fn xref_bodies(record: &Value, table: &str, name: &str) -> Vec<(u64, String)> {
+    let mut bodies: Vec<(u64, String)> = record["xref"][table][name]["functions"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|function| {
+            (
+                function["size"].as_u64().unwrap(),
+                function["body_sha256"].as_str().unwrap().to_owned(),
+            )
+        })
+        .collect();
+    bodies.sort();
+    bodies
+}
+
 #[test]
-fn selected_acp_control_flow_stays_on_the_1_0_46_dispatch_tables() {
+fn selected_acp_interned_tables_match_and_handler_bodies_differ() {
     let flow = json(CONTROL_FLOW);
     let identity = json(IDENTITY);
     assert_eq!(flow["baseline"], "1.0.46");
     assert_eq!(flow["official_stable"], "1.0.70");
     assert_eq!(flow["no_execution"], true);
+    assert!(
+        flow["compatibility_predicate"]
+            .as_str()
+            .unwrap()
+            .contains("do not qualify")
+    );
     assert_eq!(
         flow["selected_stdio_methods"],
         serde_json::json!([
@@ -397,13 +426,15 @@ fn selected_acp_control_flow_stays_on_the_1_0_46_dispatch_tables() {
     let baseline_linux = &hops["1.0.46"]["linux_x64"];
     let baseline_darwin = &hops["1.0.46"]["darwin_arm64"];
     let selected_xrefs = [
-        "initialize",
-        "session/new",
-        "session/prompt",
-        "session/cancel",
-        "session/request_permission",
-        "session/update",
+        ("stdio", "initialize"),
+        ("stdio", "session/new"),
+        ("stdio", "session/prompt"),
+        ("stdio", "session/cancel"),
+        ("client", "session/request_permission"),
+        ("client", "session/update"),
     ];
+    let mut linux_update_1872 = BTreeSet::new();
+    let mut linux_permission_3648 = BTreeSet::new();
     for version in strings(&json(PROTOCOL)["compared"]) {
         for (platform, baseline, digest) in [
             ("linux_x64", baseline_linux, LINUX_LITERAL_DIGEST),
@@ -447,22 +478,42 @@ fn selected_acp_control_flow_stays_on_the_1_0_46_dispatch_tables() {
                     extra["methods"]
                 );
             }
-            for name in selected_xrefs {
-                let table = if name == "session/request_permission" || name == "session/update" {
-                    "client"
-                } else {
-                    "stdio"
-                };
+            for (table, name) in selected_xrefs {
+                let bodies = xref_bodies(record, table, name);
                 assert!(
-                    !record["xref"][table][name]["functions"]
-                        .as_array()
-                        .unwrap()
-                        .is_empty(),
+                    !bodies.is_empty(),
                     "{version} {platform} missing xref for {name}"
                 );
+                if version != "1.0.46" {
+                    assert_ne!(
+                        bodies,
+                        xref_bodies(baseline, table, name),
+                        "{version} {platform} {name} xref bodies match 1.0.46"
+                    );
+                }
+            }
+            if platform == "linux_x64" {
+                for (size, body) in xref_bodies(record, "client", "session/update") {
+                    if size == 1872 {
+                        linux_update_1872.insert(body);
+                    }
+                }
+                for (size, body) in xref_bodies(record, "client", "session/request_permission") {
+                    if size == 3648 {
+                        linux_permission_3648.insert(body);
+                    }
+                }
             }
         }
     }
+    assert_eq!(linux_update_1872.len(), 21);
+    assert_eq!(linux_permission_3648.len(), 21);
+    let darwin70 = &hops["1.0.70"]["darwin_arm64"];
+    let prompt = xref_bodies(darwin70, "stdio", "session/prompt");
+    assert_eq!(prompt, xref_bodies(darwin70, "stdio", "session/cancel"));
+    assert_eq!(prompt, xref_bodies(darwin70, "stdio", "session/set_model"));
+    assert_eq!(prompt.len(), 1);
+    assert_eq!(prompt[0].0, 78624);
     let hop70 = identity["hops"]
         .as_array()
         .unwrap()
@@ -480,9 +531,9 @@ fn selected_acp_control_flow_stays_on_the_1_0_46_dispatch_tables() {
 }
 
 #[test]
-fn production_claim_extends_through_1_0_70_without_widening_other_routes() {
+fn production_claim_keeps_1_0_46_while_catalogue_names_1_0_70() {
     let claim = grok_build_acp_claim();
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.70");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
     assert_eq!(claim.id().as_str(), "grok-build.acp.executable-window-2");
     assert_eq!(claim.axis().as_str(), "grok-build.executable");
     assert_eq!(claim.scheme(), InterfaceVersionScheme::Semantic);
@@ -491,7 +542,7 @@ fn production_claim_extends_through_1_0_70_without_widening_other_routes() {
         InterfaceNewerVersionPosture::AllowUnverified
     );
     assert_eq!(claim.baseline().as_str(), "0.2.114");
-    assert_eq!(claim.latest_qualified().as_str(), "1.0.70");
+    assert_eq!(claim.latest_qualified().as_str(), "1.0.46");
     let milestones: Vec<_> = claim.milestones().collect();
     assert_eq!(
         (
@@ -499,26 +550,23 @@ fn production_claim_extends_through_1_0_70_without_widening_other_routes() {
             milestones[2].maximum().as_str(),
             milestones[2].support_status(),
         ),
-        ("1.0.4", "1.0.70", InterfaceSupportStatus::Maintained,)
+        ("1.0.4", "1.0.46", InterfaceSupportStatus::Maintained,)
     );
-    for candidate in ["1.0.46", "1.0.47", "1.0.50", "1.0.70"] {
-        let InterfaceCompatibilityAssessment::Qualified(matched) =
-            claim.assess(&version(candidate))
-        else {
-            panic!("{candidate} joins the maintained window");
-        };
-        assert_eq!(
-            matched.behavior_revision().as_str(),
-            "grok-build.acp-v1.cached-token-model-4-6-v3"
-        );
-    }
-    for candidate in ["1.0.71", "1.1.0"] {
+    let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.46"))
+    else {
+        panic!("1.0.46 stays in the maintained window");
+    };
+    assert_eq!(
+        matched.behavior_revision().as_str(),
+        "grok-build.acp-v1.cached-token-model-4-6-v3"
+    );
+    for candidate in ["1.0.47", "1.0.50", "1.0.70", "1.0.71", "1.1.0"] {
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
             claim.assess(&version(candidate))
         else {
             panic!("{candidate} stays unverified");
         };
-        assert_eq!(newer.latest_qualified().as_str(), "1.0.70");
+        assert_eq!(newer.latest_qualified().as_str(), "1.0.46");
     }
     for candidate in ["0.2.118", "1.0.0", "1.0.3"] {
         assert_eq!(

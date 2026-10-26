@@ -17,8 +17,14 @@ use swallowtail_runtime::RegisteredToolRouteQualification;
 const IDENTITY: &str = include_str!("fixtures/grok-1.0.70-acp/identity.json");
 const INVENTORY: &str = include_str!("fixtures/grok-1.0.70-acp/dist-inventory.json");
 const PROTOCOL: &str = include_str!("fixtures/grok-1.0.70-acp/protocol.json");
+const CONTROL_FLOW: &str = include_str!("fixtures/grok-1.0.70-acp/control-flow.json");
 const PRIOR_IDENTITY: &str = include_str!("fixtures/grok-1.0.46/identity.json");
 const PRIOR_PROTOCOL: &str = include_str!("fixtures/grok-1.0.46/protocol.json");
+
+const LINUX_LITERAL_DIGEST: &str =
+    "4cceb3e6fc7893dd2e26e8487b5e7266c4040d2fd189ac38ea4569365a10b311";
+const DARWIN_LITERAL_DIGEST: &str =
+    "4a548e4dc7687941e640dc410146a0ed99dc8b95724871317ffe37a14fe3dfb3";
 
 fn json(source: &str) -> Value {
     serde_json::from_str(source).expect("identity fixture is valid JSON")
@@ -169,19 +175,48 @@ fn package_trees_change_only_the_named_files() {
         }
     }
     let mut previous = "1.0.46";
-    for delta in inventory["hop_deltas"].as_array().unwrap() {
-        assert_eq!(delta["from"], previous);
-        let version = delta["to"].as_str().unwrap();
-        let changed = delta["changed_files"].as_object().unwrap();
+    for hop in inventory["hops"].as_array().unwrap() {
+        assert_eq!(hop["from"], previous);
+        let version = hop["to"].as_str().unwrap();
+        for side in ["wrapper", "linux_x64", "darwin_arm64"] {
+            assert_eq!(
+                hop[side]["added"],
+                serde_json::json!([]),
+                "{version} {side}"
+            );
+            assert_eq!(
+                hop[side]["removed"],
+                serde_json::json!([]),
+                "{version} {side}"
+            );
+            assert_eq!(
+                inventory["package_file_counts"][previous][side],
+                trees[previous][side].as_object().unwrap().len()
+            );
+            assert_eq!(
+                hop[side]["changed"].as_array().unwrap().len()
+                    + hop[side]["identical"].as_array().unwrap().len(),
+                trees[previous][side].as_object().unwrap().len(),
+                "{version} {side} changed+identical"
+            );
+        }
         assert_eq!(
-            strings(&changed["linux_x64"]),
+            strings(&hop["linux_x64"]["changed"]),
             ["bin/grok.br", "package.json"]
         );
         assert_eq!(
-            strings(&changed["darwin_arm64"]),
+            strings(&hop["darwin_arm64"]["changed"]),
             ["bin/grok.br", "package.json"]
         );
-        let wrapper = strings(&changed["wrapper"]);
+        assert_eq!(
+            strings(&hop["linux_x64"]["identical"]),
+            ["README.md", "THIRD_PARTY_NOTICES.md"]
+        );
+        assert_eq!(
+            strings(&hop["darwin_arm64"]["identical"]),
+            ["README.md", "THIRD_PARTY_NOTICES.md"]
+        );
+        let wrapper = strings(&hop["wrapper"]["changed"]);
         if version == "1.0.56" {
             assert_eq!(wrapper, ["README.md", "package.json"]);
         } else {
@@ -191,6 +226,12 @@ fn package_trees_change_only_the_named_files() {
     }
     assert_eq!(previous, "1.0.70");
     assert_eq!(inventory["readme_change"]["acp_wire"], false);
+    assert_eq!(inventory["package_file_counts"]["1.0.70"]["wrapper"], 5);
+    assert_eq!(inventory["package_file_counts"]["1.0.70"]["linux_x64"], 4);
+    assert_eq!(
+        inventory["package_file_counts"]["1.0.70"]["darwin_arm64"],
+        4
+    );
 }
 
 #[test]
@@ -284,17 +325,21 @@ fn selected_surface_and_acp_paths_stay_inside_the_prior_mapping() {
             sha256_lines(&owned)
         );
         assert_eq!(
-            per_hop[version]["linux_selected_literal_presence_equals_1_0_46"],
-            true
+            per_hop[version]["linux_selected_literal_presence_digest"],
+            LINUX_LITERAL_DIGEST
         );
         assert_eq!(
-            per_hop[version]["darwin_selected_literal_presence_equals_1_0_46"],
-            true
+            per_hop[version]["darwin_selected_literal_presence_digest"],
+            DARWIN_LITERAL_DIGEST
         );
         assert_eq!(per_hop[version]["model_document_sha256"], models["sha256"]);
         assert_eq!(
-            per_hop[version]["public_operation_substring_set_unchanged_from_1_0_46"],
-            true
+            per_hop[version]["linux_public_operation_substring_digest"],
+            per_hop["1.0.46"]["linux_public_operation_substring_digest"]
+        );
+        assert_eq!(
+            per_hop[version]["darwin_public_operation_substring_digest"],
+            per_hop["1.0.46"]["darwin_public_operation_substring_digest"]
         );
         cursor = version;
     }
@@ -303,6 +348,135 @@ fn selected_surface_and_acp_paths_stay_inside_the_prior_mapping() {
         strings(&protocol["acp_module_paths_at_1_0_70"])
     );
     assert_eq!(paths.len(), 96);
+}
+
+#[test]
+fn selected_acp_control_flow_stays_on_the_1_0_46_dispatch_tables() {
+    let flow = json(CONTROL_FLOW);
+    let identity = json(IDENTITY);
+    assert_eq!(flow["baseline"], "1.0.46");
+    assert_eq!(flow["official_stable"], "1.0.70");
+    assert_eq!(flow["no_execution"], true);
+    assert_eq!(
+        flow["selected_stdio_methods"],
+        serde_json::json!([
+            "initialize",
+            "authenticate",
+            "session/new",
+            "session/load",
+            "session/prompt",
+            "session/cancel",
+            "session/set_model"
+        ])
+    );
+    assert_eq!(
+        flow["selected_client_callbacks"],
+        serde_json::json!([
+            "session/request_permission",
+            "session/update",
+            "fs/write_text_file",
+            "fs/read_text_file",
+            "terminal/create",
+            "terminal/output",
+            "terminal/wait_for_exit",
+            "terminal/kill"
+        ])
+    );
+    assert_eq!(
+        flow["selected_permission_kinds"],
+        serde_json::json!(["allow_once", "allow_always", "reject_once", "reject_always"])
+    );
+    assert!(
+        flow["swallowtail_process_lifecycle"]["join_drain_release"]
+            .as_str()
+            .unwrap()
+            .contains("close_stdin")
+    );
+    let hops = flow["hops"].as_object().unwrap();
+    assert_eq!(hops.len(), 25);
+    let baseline_linux = &hops["1.0.46"]["linux_x64"];
+    let baseline_darwin = &hops["1.0.46"]["darwin_arm64"];
+    let selected_xrefs = [
+        "initialize",
+        "session/new",
+        "session/prompt",
+        "session/cancel",
+        "session/request_permission",
+        "session/update",
+    ];
+    for version in strings(&json(PROTOCOL)["compared"]) {
+        for (platform, baseline, digest) in [
+            ("linux_x64", baseline_linux, LINUX_LITERAL_DIGEST),
+            ("darwin_arm64", baseline_darwin, DARWIN_LITERAL_DIGEST),
+        ] {
+            let record = &hops[version][platform];
+            assert_eq!(
+                record["stdio_pack"], baseline["stdio_pack"],
+                "{version} {platform} stdio pack"
+            );
+            assert_eq!(
+                record["client_pack"], baseline["client_pack"],
+                "{version} {platform} client pack"
+            );
+            assert_eq!(
+                record["permission_pack"], baseline["permission_pack"],
+                "{version} {platform} permission pack"
+            );
+            assert_eq!(
+                record["serde_element_counts"], baseline["serde_element_counts"],
+                "{version} {platform} serde"
+            );
+            for field in record["field_packs_present"].as_object().unwrap().values() {
+                assert_eq!(field, true, "{version} {platform} field pack");
+            }
+            for variant in record["stop_reason_variants_present"]
+                .as_object()
+                .unwrap()
+                .values()
+            {
+                assert_eq!(variant, true, "{version} {platform} stopReason");
+            }
+            assert_eq!(
+                record["selected_literal_presence_digest"], digest,
+                "{version} {platform} literal digest"
+            );
+            for extra in record["extra_method_packs"].as_array().unwrap() {
+                assert_ne!(
+                    extra["classification"], "new-or-unknown",
+                    "{version} {platform} extra pack {:?}",
+                    extra["methods"]
+                );
+            }
+            for name in selected_xrefs {
+                let table = if name == "session/request_permission" || name == "session/update" {
+                    "client"
+                } else {
+                    "stdio"
+                };
+                assert!(
+                    !record["xref"][table][name]["functions"]
+                        .as_array()
+                        .unwrap()
+                        .is_empty(),
+                    "{version} {platform} missing xref for {name}"
+                );
+            }
+        }
+    }
+    let hop70 = identity["hops"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|hop| hop["version"] == "1.0.70")
+        .unwrap();
+    assert_eq!(
+        hops["1.0.70"]["linux_x64"]["executable_sha256"],
+        hop70["linux_x64"]["executable_sha256"]
+    );
+    assert_eq!(
+        hops["1.0.70"]["darwin_arm64"]["executable_sha256"],
+        hop70["darwin_arm64"]["executable_sha256"]
+    );
 }
 
 #[test]

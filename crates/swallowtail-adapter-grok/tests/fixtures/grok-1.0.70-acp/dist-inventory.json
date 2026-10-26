@@ -34,413 +34,1115 @@
     "change": "macOS row moves from 'Apple Silicon (arm64)' to 'arm64, x86_64'",
     "acp_wire": false
   },
-  "hop_deltas": [
+  "package_file_counts": {
+    "1.0.46": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.47": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.48": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.49": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.50": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.51": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.52": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.53": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.54": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.55": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.56": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.57": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.58": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.59": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.60": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.61": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.62": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.63": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.64": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.65": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.66": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.67": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.68": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.69": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    },
+    "1.0.70": {
+      "wrapper": 5,
+      "linux_x64": 4,
+      "darwin_arm64": 4
+    }
+  },
+  "hops": [
     {
       "from": "1.0.46",
       "to": "1.0.47",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.47",
       "to": "1.0.48",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.48",
       "to": "1.0.49",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.49",
       "to": "1.0.50",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.50",
       "to": "1.0.51",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.51",
       "to": "1.0.52",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.52",
       "to": "1.0.53",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.53",
       "to": "1.0.54",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.54",
       "to": "1.0.55",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.55",
       "to": "1.0.56",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "README.md",
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.56",
       "to": "1.0.57",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.57",
       "to": "1.0.58",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.58",
       "to": "1.0.59",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.59",
       "to": "1.0.60",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.60",
       "to": "1.0.61",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.61",
       "to": "1.0.62",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.62",
       "to": "1.0.63",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.63",
       "to": "1.0.64",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.64",
       "to": "1.0.65",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.65",
       "to": "1.0.66",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.66",
       "to": "1.0.67",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.67",
       "to": "1.0.68",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.68",
       "to": "1.0.69",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     },
     {
       "from": "1.0.69",
       "to": "1.0.70",
-      "changed_files": {
-        "wrapper": [
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "package.json"
         ],
-        "linux_x64": [
+        "identical": [
+          "README.md",
+          "bin/grok",
+          "bin/grok-bootstrap.js",
+          "bin/postinstall.js"
+        ]
+      },
+      "linux_x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
         ],
-        "darwin_arm64": [
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
+        ]
+      },
+      "darwin_arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
           "bin/grok.br",
           "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "THIRD_PARTY_NOTICES.md"
         ]
       }
     }

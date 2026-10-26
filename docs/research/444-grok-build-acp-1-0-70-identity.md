@@ -34,21 +34,23 @@ formatter mapping, and it does not move `grok-build.catalogue`.
 The complete package-tree ledger is in
 [dist-inventory.json](../../crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.70-acp/dist-inventory.json).
 Each wrapper contains five files. Each Linux x64 and Darwin arm64 package
-contains four. No file names were added or removed. On every hop after
-`1.0.46`, wrapper `package.json` changes, and each platform package's
-`package.json` and `bin/grok.br` change. Platform README and third-party
-notices stay byte-identical. Wrapper `README.md` changes only at `1.0.56`:
-the macOS row moves from `Apple Silicon (arm64)` to `arm64, x86_64`. That
-README then stays byte-identical through `1.0.70`. The README change is a
-platform table. It is not an ACP wire change.
+contains four. The hop ledger records added, removed, changed, and identical
+paths plus `package_file_counts` for every side. No file names were added or
+removed. On every hop after `1.0.46`, wrapper `package.json` changes, and
+each platform package's `package.json` and `bin/grok.br` change. Platform
+README and third-party notices stay byte-identical. Wrapper `README.md`
+changes only at `1.0.56`: the macOS row moves from `Apple Silicon (arm64)`
+to `arm64, x86_64`. That README then stays byte-identical through `1.0.70`.
+The README change is a platform table. It is not an ACP wire change.
 
 ## Mapped behavior
 
 [protocol.json](../../crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.70-acp/protocol.json)
 compares the selected 92-key literal map with the frozen Research 385 corpus.
-Linux x64 presence and Darwin arm64 presence are equal to those frozen maps at
-every hop `1.0.46` through `1.0.70`. Linux digest
-`4cceb3e6fc7893dd2e26e8487b5e7266c4040d2fd189ac38ea4569365a10b311`.
+Each hop stores the measured Linux and Darwin presence digests, not a
+self-authored equality boolean. Linux x64 presence and Darwin arm64 presence
+are equal to those frozen maps at every hop `1.0.46` through `1.0.70`. Linux
+digest `4cceb3e6fc7893dd2e26e8487b5e7266c4040d2fd189ac38ea4569365a10b311`.
 Darwin digest
 `4a548e4dc7687941e640dc410146a0ed99dc8b95724871317ffe37a14fe3dfb3`.
 `agentVersion` stays present on Darwin and absent on Linux.
@@ -112,6 +114,58 @@ not qualify continuation recovery. The subagent path stays with the existing
 unmapped subagent handoff. Removing `acp_types.rs` does not remove a selected
 literal. These path edits do not flatten `grok-build.acp` onto the catalogue
 claim or any other family.
+
+## Selected control flow
+
+[control-flow.json](../../crates/swallowtail-adapter-grok/tests/fixtures/grok-1.0.70-acp/control-flow.json)
+is the attributable decode of the selected ACP handlers. Recreate it from
+official decompressed runtimes with
+`scripts/analyze-grok-acp-selected-control-flow.py`. The script hashes each
+file, locates interned concatenated JSON-RPC method tables and serde
+element-count strings, then maps Darwin compact-unwind ranges through
+`ADRP`/`ADD` literal xrefs and Linux `.eh_frame_hdr` ranges through
+RIP-relative `LEA` xrefs. No vendor binary is executed.
+
+The selected Swallowtail mapping is `initialize`, `session/new`,
+`session/prompt`, `session/update` / `usage_update`,
+`session/request_permission` with `allow_once` / `reject_once`, and
+`session/cancel`. Join, drain, and release are Swallowtail process lifecycle:
+`begin_close` is `close_stdin` plus `request_stop`. Vendor `session/close`
+stays unmapped.
+
+On every hop and both platforms the interned stdio 7-tuple
+(`initialize`, `authenticate`, `session/new`, `session/load`,
+`session/prompt`, `session/cancel`, `session/set_model`), the client 8-tuple
+(`session/request_permission`, `session/update`, `fs/write_text_file`,
+`fs/read_text_file`, `terminal/create`, `terminal/output`,
+`terminal/wait_for_exit`, `terminal/kill`), and the permission 4-tuple
+(`allow_once`, `allow_always`, `reject_once`, `reject_always`) stay
+byte-identical concatenations. Serde element counts stay
+`InitializeRequest` 4, `InitializeResponse` 5, `NewSessionRequest` 4,
+`PromptRequest` / `PromptResponse` / `UsageUpdate` 4,
+`RequestPermissionRequest` 4, `RequestPermissionResponse` 2,
+`SessionModelState` 3, `AgentCapabilities` 8. Field-name packs for
+`protocolVersion`/`clientCapabilities`/`clientInfo`,
+`agentCapabilities`/`authMethods`/`agentInfo`,
+`loadSession`/`promptCapabilities`/`mcpCapabilities`/`sessionCapabilities`,
+and `currentModelId`/`availableModels` stay present. StopReason variants
+`end_turn`, `cancelled`, `refusal`, `max_tokens`, and `max_turn_requests`
+stay present; the intern packing of those variants moved after `1.0.46` and
+is not a membership change.
+
+Hops after `1.0.46` add extra interned packs that insert already-present
+unmapped methods (`session/set_config_option`, `session/list`,
+`session/resume`, `session/close`) beside the selected stdio table. Those
+packs are classified `already-present-unmapped`. The selected 7-tuple itself
+is never replaced. Instruction-level function body hashes move under LTO —
+function counts grow from 128006 to 230887 on Darwin and from 125134 on
+Linux `1.0.46` — and are recorded; they are not the compatibility predicate.
+Every hop, including the twenty with no ACP module-path delta, has this
+per-hop decode on both platforms.
+
+`fs/write_text_file` and the terminal methods remain interned in the client
+pack and stay unmapped. They have no ADRP/LEA xref to the interior slice;
+the adapter does not send those client callbacks.
 
 ## Decision
 

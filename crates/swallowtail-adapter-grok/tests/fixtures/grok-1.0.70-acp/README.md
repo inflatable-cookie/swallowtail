@@ -19,14 +19,24 @@ hashes plus the Darwin runtime SHA-256 match the Research 443 inventory. That
 match is artifact reproduction. It does not import the catalogue mapping.
 
 `dist-inventory.json` freezes every file in the wrapper, Linux x64, and Darwin
-arm64 package trees for `1.0.46` through `1.0.70`, with each hop's changed
-files. No file names were added or removed. Wrapper `README.md` changes only
-at `1.0.56`, in the platform table.
+arm64 package trees for `1.0.46` through `1.0.70`, with each hop's added,
+removed, changed, and identical paths plus `package_file_counts`. No file
+names were added or removed. Wrapper `README.md` changes only at `1.0.56`, in
+the platform table.
 
-`protocol.json` records that the selected literal maps, the curated public
-operation substrings, and the embedded model document stay equal to the frozen
-`1.0.46` ACP corpus on every hop. ACP source-path additions and removals are
-listed and classified as provider-internal.
+`protocol.json` records measured selected-literal presence digests, the
+curated public operation substrings, and the embedded model document. Those
+stay equal to the frozen `1.0.46` ACP corpus on every hop. ACP source-path
+additions and removals are listed and classified as provider-internal.
+
+`control-flow.json` is the attributable decode of the selected ACP dispatch
+tables: interned stdio, client, and permission concatenations, serde element
+counts, and Darwin `ADRP` / Linux `LEA` xrefs onto compact-unwind /
+`.eh_frame_hdr` function ranges. Recreate it with
+`scripts/analyze-grok-acp-selected-control-flow.py`. Instruction-level
+function bodies move under LTO; the compatibility predicate is the interned
+tables and serde layouts. Join, drain, and release stay Swallowtail
+`begin_close` (`close_stdin` plus `request_stop`).
 
 Artifacts were fetched from the public npm registry and inspected without
 executing vendor binaries. Brotli decompression was used only to hash and scan

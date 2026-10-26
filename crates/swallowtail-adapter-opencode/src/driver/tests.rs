@@ -52,7 +52,10 @@ mod tests {
         assert!(!descriptor.supports_interface_version(
             &opencode_server_binding("1.15.8").expect("gap version is safe")
         ));
-        let newer = opencode_server_binding("1.18.36").expect("newer version is safe");
+        let gap = opencode_server_binding("1.18.36").expect("gap version is safe");
+        assert!(!descriptor.supports_interface_version(&gap));
+        assert!(!descriptor.permits_interface_version(&gap));
+        let newer = opencode_server_binding("1.19.5").expect("newer version is safe");
         assert!(!descriptor.supports_interface_version(&newer));
         assert!(descriptor.permits_interface_version(&newer));
         assert!(matches!(

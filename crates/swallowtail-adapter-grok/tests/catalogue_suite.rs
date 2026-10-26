@@ -139,7 +139,7 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         Some("grok-4.6")
     );
     // The ACP window keeps its own 1.0.46 ceiling while the catalogue window
-    // now reaches 1.0.70: the two claims stay independent, and neither ceiling
+    // reaches 1.0.70: the two claims stay independent, and neither ceiling
     // borrows the other's evidence.
     let catalogue = grok_build_catalogue_claim();
     assert!(matches!(
@@ -151,6 +151,10 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
     assert_eq!(grok_build_acp_claim().latest_qualified().as_str(), "1.0.46");
+    assert!(matches!(
+        grok_build_acp_claim().assess(&version("1.0.70")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     for rejected in ["1.0.25", "1.0.29", "1.0.71"] {
         assert_eq!(
             catalogue.assess(&version(rejected)),
@@ -320,11 +324,11 @@ fn catalogue_prepares_on_the_deprecated_1_0_45_segment() {
 #[test]
 fn catalogue_maps_the_default_not_in_list_header_on_1_0_70() {
     let header = "You are logged in with Example Account.\n\nDefault model: grok-4.7 (not in the list below)\n\nAvailable models:\n  - grok-4.6\n  - grok-4.5\n";
-    // The vendor publishes no source revision at 1.0.70, so discovery only
-    // checks the build-id shape there; the catalogue claim owns the version.
+    // Catalogue owns 1.0.70. ACP discovery does not pin this banner; any
+    // 7..=40 hex build id still parses, and the catalogue claim classifies it.
     let prepared = prepared_integration(
         "catalogue.unlisted",
-        "grok 1.0.70 (123456789abc) [stable]\n",
+        "grok 1.0.70 (f50904eaee6c) [stable]\n",
     );
     let catalogue = prepared
         .prepare_catalogue(catalogue_input(request_id("catalogue.unlisted")))
@@ -719,8 +723,8 @@ fn real_local_host_runs_the_bounded_catalogue_command() {
 
 /// Reads the statically carved self-reported build id for one frozen hop.
 ///
-/// Discovery pins this exact revision through `1.0.46`; the facade sweep below
-/// therefore also proves the corpus and the pinned identity table agree.
+/// Catalogue identity freezes this revision through `1.0.70`. ACP discovery
+/// pins exact banners only through the ACP ceiling `1.0.46`.
 fn frozen_runtime_build_id(version: &str) -> String {
     let identity: serde_json::Value =
         serde_json::from_str(CATALOGUE_IDENTITY).expect("catalogue identity fixture");

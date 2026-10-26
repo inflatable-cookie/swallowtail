@@ -1,7 +1,7 @@
 //! Live production claim state checked against the frozen 1.0.41 identity.
 //!
 //! The historical 1.0.41 artifact remains qualified while the ACP executable
-//! window extends through official `1.0.46` on the existing behavior revision.
+//! window stays at official `1.0.46` on the existing behavior revision.
 //! The exact catalogue claim and the
 //! registered-tool courier bounded to the accepted live capsules stay
 //! independent of the ACP window.
@@ -75,7 +75,7 @@ fn production_claim_keeps_the_frozen_1_0_41_hop_maintained() {
         claim.assess(&version("1.0.46")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    for later in ["1.0.47", "1.0.48", "1.0.49", "1.1.0"] {
+    for later in ["1.0.47", "1.0.70", "1.0.71", "1.1.0"] {
         let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
             claim.assess(&version(later))
         else {
@@ -135,7 +135,7 @@ fn the_registered_tool_courier_stays_on_the_accepted_live_capsules() {
     }
     for later in [
         "1.0.6", "1.0.17", "1.0.30", "1.0.40", "1.0.41", "1.0.42", "1.0.43", "1.0.44", "1.0.45",
-        "1.0.46",
+        "1.0.46", "1.0.47", "1.0.70", "1.0.71",
     ] {
         assert_eq!(
             registered_tool::grok_build_acp_registered_tool_qualification(&version(later)),

@@ -160,7 +160,7 @@ on `v0.5.4` keep that tag's pins.
 | Family | Current claim on `main` | Classification vs `v0.5.4` | Evidence |
 | --- | --- | --- | --- |
 | `claude-agent.sdk` | QualifiedOnly package `0.3.284..=0.3.295` coupled to native `2.1.284..=2.1.295`; default pair `.293`; live registered-tool remains exact `.259` | minor: default and window leave released `.259`; additive pair selector is source-compatible for new callers | Research 420, 416, 301; Contract 037 |
-| `claude-agent.acp` | `0.53.0`–`0.87.0` excluding `0.58.0`; HTTP MCP live honouring exact `0.79.0` and `0.81.2` | additive qualification; live honouring does not transfer | Research 373, 361, 364 |
+| `claude-agent.acp` | `0.53.0`–`0.96.0` excluding `0.58.0`; HTTP MCP live honouring exact `0.79.0` and `0.81.2` | additive qualification; live honouring does not transfer | Research 446, 373, 361, 364 |
 | `claude-code.headless` | Deprecated v1 through `2.1.286`; maintained v2 `2.1.287..=2.1.294`; `2.1.295` UnverifiedNewer | additive private milestone | Research 423 |
 | `claude-code.response-only` | v3 maintained `2.1.282..=2.1.293` | additive private milestone | Research 378 |
 | `llama-cpp.attached` | exact Opaque set `b9910` and `b11429`; `v0.2.0`–`v0.5.0` gaps; semantic `v0.6.0` is source evidence for `b11429` | additive Opaque membership | Research 421 |
@@ -181,7 +181,7 @@ on `v0.5.4` keep that tag's pins.
 | `kiro.acp` | exact `2.21.4`; HTTP MCP live honouring exact that point | stop for later stables | Research 419, 394 |
 | `cline.acp` | route table `3.0.55..=3.0.70` except unpublished `3.0.59`; `session/load` unmapped | additive qualification; Q-006 still open | Research 397 |
 | `cline.headless` | `3.0.55`–`3.0.70` excluding `3.0.59` | additive | Research 390 |
-| `goose.acp` | exact `1.50.1`\|`1.51.0`\|`1.52.0`\|`1.53.0` | additive | Research 392 |
+| `goose.acp` | exact `1.50.1`\|`1.51.0`\|`1.52.0`\|`1.53.0`\|`1.54.0`\|`1.55.0`\|`1.56.0` | additive | Research 392, 456 |
 | `codex.exec` | through `0.161.0` | additive | Research 410 |
 | `codex.app-server` | through `0.161.0`; maintained `0.159.0..=0.161.0` on `codex.app-server.v2.protected-aws-workspace-roots` | `0.159.0..=0.161.0` `.aws` write narrowing is minor; earlier post-`0.155.1` segments stay their accepted revisions | Research 388; Contract 023 |
 | `cursor-agent.{catalogue,acp,headless}` | through `2026.10.01-14929f9` | additive | Research 393, 395, 399 |

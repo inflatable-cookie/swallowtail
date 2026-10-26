@@ -49,13 +49,11 @@ or fall back to an API key. ACP activation uses only the advertised
 
 Versions `0.2.114..=0.2.117` remain permitted as deprecated segments on
 `grok-build.executable`. `1.0.4` through `1.0.46` are the maintained ACP window
-and bind `grok-4.6`. Official npm `latest` has since moved to `1.0.70`; this
-acp claim carries `1.0.47` through `1.0.70` only as `UnverifiedNewer` until a
-separate ACP hop review qualifies them (Research 443 refreshes the channel for
-the catalogue route and does not move this claim). The `alpha` tag is the same
-`1.0.70` release. Exact `0.2.117` keeps its private task-control behavior
-revision. Mid-gap `0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3`
-are incompatible.
+and bind `grok-4.6` (Research 385). Official npm `latest` and `alpha` are
+`1.0.70`. Research 444 freezes those hops and leaves `1.0.47` through
+`1.0.70` `UnverifiedNewer`. Unpublished `1.0.71` stays `UnverifiedNewer`.
+Exact `0.2.117` keeps its private task-control behavior revision. Mid-gap
+`0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3` are incompatible.
 
 ## Prepare The Installation
 

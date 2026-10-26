@@ -196,8 +196,8 @@ that evidence authoritative.
 
 ### Claude Agent ACP
 
-The qualified Claude Agent ACP `0.53.0..=0.87.0` range advertises independent
-close and delete capabilities at every supported point (Research 373). Exact
+The qualified Claude Agent ACP `0.53.0..=0.96.0` range advertises independent
+close and delete capabilities at every supported point (Research 373, 446). Exact
 tagged handler, test, ACP SDK, and Agent SDK evidence qualifies:
 
 - native close for one active session; it preserves persistent history
@@ -205,12 +205,22 @@ tagged handler, test, ACP SDK, and Agent SDK evidence qualifies:
 - `ProviderDataDeleted` for the harness-owned primary session transcript
 - `ProviderDefinedDescendants` for the recursively removed sibling session
   directory
-- provider rejection for missing and repeated close or delete
+- through `0.88.0`, provider rejection for a missing or repeated close or delete
+- from `0.89.0`, an empty success for `closeSession` of a session that is not
+  loaded
+- through `0.90.0`, delete of an absent transcript still calls Agent SDK
+  `deleteSession` and throws for the selected non-AIR client
+- from `0.91.0`, `deleteSessionIfStored` returns an empty success for an
+  absent transcript on the selected non-AIR client
+
+Live close of a session in memory and delete of a stored transcript still
+return an empty object. The empty close or unstored-delete success is not
+`ProviderHardDeleted`.
 
 This classification does not claim secure erasure or deletion of Anthropic API
 service data, account analytics, logs, or backups. It is not
 `ProviderHardDeleted`. Exact `0.62.0` retains the prior behavior, while exact
-`0.63.0` through `0.87.0` add no stronger lifecycle authority. Later stable
+`0.63.0` through `0.96.0` add no stronger lifecycle authority. Later stable
 versions remain visible and unverified.
 
 ### OpenCode HTTP/SSE

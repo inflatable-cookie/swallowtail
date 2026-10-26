@@ -45,10 +45,12 @@ Neither posture is a sandbox or host-containment claim.
 
 ## Version Posture
 
-The guaranteed server window is `1.14.48` through `1.18.35` across the
-qualified release segments and exact exclusions. A later exact stable release
-may proceed as visibly unverified through the latest qualified behavior. It
-does not expand guaranteed support.
+The guaranteed server window is `1.14.48` through `1.19.4` across the
+qualified release segments and exact exclusions. Maintained
+`opencode.http-sse.surface-19` covers `1.18.11..=1.18.35` and
+`1.19.0..=1.19.4`. Unpublished `1.18.36` stays incompatible. A later exact
+stable release, starting at `1.19.5`, may proceed as visibly unverified
+through the latest qualified behavior. It does not expand guaranteed support.
 
 Catalogue and session operations repeat the health check and require the exact
 prepared version. Session creation must report that same release. Endpoint or
@@ -131,8 +133,9 @@ revision, root, archive, and idle-status checks before issuing a normal
 `load_session` to receive bounded replay or `resume_session` to continue
 without replay.
 
-Import support is guaranteed only for qualified `1.14.48..=1.18.35` server
-revisions. Visible unverified-newer servers do not inherit it. Child, active,
+Import support is guaranteed only for the qualified published segments from
+`1.14.48` through `1.19.4`. Visible unverified-newer servers do not inherit
+it. Unpublished `1.18.36` is incompatible. Child, active,
 archived, incompatible, missing-status, changed, or missing sessions issue no
 binding.
 

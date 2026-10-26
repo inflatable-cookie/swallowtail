@@ -72,7 +72,19 @@ extracted from that exact official npm tarball. Each
 changed, and byte-identical path sets. The identity test recomputes those
 path sets from the inventories. The source snapshots preserve the eleven
 mapped files plus the SSH workspace store, its test, and
-`approval-mode-value.ts` for `0.25.0` through `0.26.1`.
+`approval-mode-value.ts` for `0.25.0` through `0.26.1`. The 0.26.0/0.26.1
+safety-boundary sources are frozen as reviewed keys:
+`loop-protection.ts` (new at 0.26.0,
+`2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20`, 4,108
+bytes, identical through 0.26.1), `loopDetectionService.ts` (0.25.3
+`811d52a765c24a3121b8de1a918e771b3a7c8643cea36b121cf0b3673bba0aae`, 71,274
+bytes; 0.26.0 and 0.26.1
+`35ef3dc21c371547ae64c76d36bfdedb29196a30579abdff049db036a7d15569`, 82,674
+bytes), `sdk-human-input.ts` (new at 0.26.0,
+`defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688`, 1,331
+bytes, identical through 0.26.1), and `interactive-mode.ts` (new at 0.26.1,
+`9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597`, 375
+bytes).
 
 | Hop | Added | Removed | Changed | Identical | Changed selected source files |
 | --- | ---: | ---: | ---: | ---: | --- |
@@ -152,9 +164,10 @@ qualified.
 ## Deterministic Mapping Proof
 
 `qwen_code_0_26_1_identity` freezes the identity document, the six
-inventories, and the five hop diffs. It checks the production claim through
-`0.26.1`, rejects unpublished `0.25.4` and the preview and nightly tags, and
-leaves `0.26.2` `UnverifiedNewer`. `current_qwen_headless` runs the `0.26.1`
+inventories, the five hop diffs, and the reviewed safety-boundary sources.
+It checks the production claim through `0.26.1`, rejects unpublished
+`0.25.4` and the preview and nightly tags, and leaves `0.26.2`
+`UnverifiedNewer`. `current_qwen_headless` runs the `0.26.1`
 claim on a deterministic fake process and keeps the selected argv, delegated
 environment reference, and reserved SSH-path rejection before process start.
 No provider prompt, live catalogue, credential use, installation, host

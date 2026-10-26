@@ -10,11 +10,11 @@ const SELECTED_SOURCES: &str =
     include_str!("fixtures/qwen-code-0.26.1/selected-source-identities.json");
 const REVIEWED_SOURCES: &str =
     include_str!("fixtures/qwen-code-0.26.1/reviewed-source-identities.json");
-const IDENTITY_SHA256: &str = "6d78677f0afd81a936cfce8b32f1c8cc3b783816e49bf038dceb7d269d167c9f";
+const IDENTITY_SHA256: &str = "e039bbe894ce6dae033a377d7e617f852450d1cf8d93b7a7fb4ec22119b6af77";
 const SELECTED_SOURCES_SHA256: &str =
     "ccfffe2ade51be51099871e306bde25dff3e657593e11bb5a5760551035d18c5";
 const REVIEWED_SOURCES_SHA256: &str =
-    "b38e96679844fd7e8ba3672196bcf2e7349ab4595a13945e7e1905de223150d7";
+    "f92718e090d69d89bd792c8042b4ff23c143c671ce90e8abc8b159758d3f038e";
 
 const VERSIONS: [&str; 6] = ["0.25.0", "0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"];
 const MAPPED_SOURCE_KEYS: [&str; 11] = [
@@ -345,18 +345,35 @@ fn ssh_selection_and_approval_helper_sources_are_frozen_with_exact_coverage() {
         keys.as_slice(),
         [
             "approval_mode_value",
+            "interactive_mode",
+            "loop_detection_service",
+            "loop_protection",
+            "sdk_human_input",
             "ssh_workspace_store",
             "ssh_workspace_store_test"
         ]
     );
 
-    let versions = ["0.25.0", "0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"];
+    let expected_versions = [
+        (
+            "approval_mode_value",
+            vec!["0.25.0", "0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"],
+        ),
+        ("interactive_mode", vec!["0.26.1"]),
+        ("loop_detection_service", vec!["0.25.3", "0.26.0", "0.26.1"]),
+        ("loop_protection", vec!["0.26.0", "0.26.1"]),
+        ("sdk_human_input", vec!["0.26.0", "0.26.1"]),
+        (
+            "ssh_workspace_store",
+            vec!["0.25.0", "0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"],
+        ),
+        (
+            "ssh_workspace_store_test",
+            vec!["0.25.0", "0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"],
+        ),
+    ];
     let root = Path::new(env!("CARGO_MANIFEST_DIR"));
-    for key in [
-        "approval_mode_value",
-        "ssh_workspace_store",
-        "ssh_workspace_store_test",
-    ] {
+    for (key, versions) in expected_versions {
         let records = reviewed[key].as_object().unwrap();
         let mut actual_versions = records.keys().map(String::as_str).collect::<Vec<_>>();
         actual_versions.sort_unstable();

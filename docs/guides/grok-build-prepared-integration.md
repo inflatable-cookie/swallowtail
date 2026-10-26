@@ -13,8 +13,9 @@ consumer registered tools through the Swallowtail-owned courier.
 Reject it when the application needs hosted xAI inference, usage, or public
 provider-session management.
 The separate `grok-build.catalogue` route (`GrokCatalogueDriver`,
-`swallowtail.grok-build.catalogue`) lists installed models on exact `1.0.30`
-only; see Model Catalogue below. It never opens ACP or sends a prompt.
+`swallowtail.grok-build.catalogue`) lists installed models across the qualified
+window `1.0.30..=1.0.70`; see Model Catalogue below. It never opens ACP or
+sends a prompt.
 
 ## Route And Operation Shapes
 
@@ -47,10 +48,12 @@ or fall back to an API key. ACP activation uses only the advertised
 `cached_token` mechanism after initialization.
 
 Versions `0.2.114..=0.2.117` remain permitted as deprecated segments on
-`grok-build.executable`. `1.0.4` through `1.0.46` are the maintained window
-and bind `grok-4.6`. Official npm `latest` is `1.0.46`; published
-`1.0.47` through `1.0.49` have no selected-channel tag and remain
-`UnverifiedNewer`. The `alpha` tag at `1.0.50` is excluded. Exact `0.2.117` keeps its private task-control behavior
+`grok-build.executable`. `1.0.4` through `1.0.46` are the maintained ACP window
+and bind `grok-4.6`. Official npm `latest` has since moved to `1.0.70`; this
+acp claim carries `1.0.47` through `1.0.70` only as `UnverifiedNewer` until a
+separate ACP hop review qualifies them (Research 443 refreshes the channel for
+the catalogue route and does not move this claim). The `alpha` tag is the same
+`1.0.70` release. Exact `0.2.117` keeps its private task-control behavior
 revision. Mid-gap `0.2.118..=0.2.121` and unprobed `1.0.0..=1.0.3`
 are incompatible.
 
@@ -87,17 +90,25 @@ success, failure, timeout, and cleanup failure. It never retries, updates the
 CLI, opens ACP, sends a prompt, opens a model session, dispatches a tool, or
 falls back to an execution default.
 
-Preparation admits only exact installed `1.0.30` under the `QualifiedOnly`
-claim `grok-build.catalogue.executable-1-0-30`
-(`grok-build.catalogue.models-text-v1`); every older or newer point fails
-closed before any process starts. Preparation also requires the same delegated
-subscription access readiness as the ACP operations.
+Preparation admits installed `1.0.30` through `1.0.70` under the
+`QualifiedOnly` claim `grok-build.catalogue.executable-window-1`. Two ordered
+segments carry the decode: `1.0.30..=1.0.45` keep
+`grok-build.catalogue.models-text-v1` as a deprecated segment, and
+`1.0.46..=1.0.70` use `grok-build.catalogue.models-text-v2`. Every older or
+newer point fails closed before any process starts. Preparation also requires
+the same delegated subscription access readiness as the ACP operations.
 
-Research 405 freezes the current official `1.0.46` identity and records a new
-default-not-in-list header that this mapping rejects. The catalogue claim
-therefore remains exact `1.0.30`; no newer point is admitted until a
-same-contract mapping is proved or an operator rules on any required contract
-change.
+Research 443 decodes the shipped formatter for the whole window. The
+`1.0.46` header adds a marker after an interpolated default id, so the emitted
+line is `Default model: <id> (not in the list below)` and the id is never
+replaced or invented. The marker, its later `1.0.62` piece and argument
+relayout, and the listed form `Default model: <id>` all decode to the same
+result: the listed rows in provider order, with `is_default` set only for the
+single row whose id the header names as listed. When the header names a
+default outside the rows, or reports no default id at all, every entry is
+non-default; no listed row is promoted and no unlisted id is claimed. The
+frozen `1.0.30` mapping still rejects the marker form, and a marked row that
+disagrees with the header, two headers, or a non-exact marker fails closed.
 
 The catalogue is an authenticated, non-inference metadata operation under
 `HarnessConfigurationPosture::Ambient`: it binds the prepared ambient
@@ -114,13 +125,14 @@ traffic are permitted.
 counts plus their SHA-256 digests. Raw bytes stay host-private and never enter
 records or diagnostics.
 
-Rows preserve provider order and exact opaque ids. The shipped exact-`1.0.30`
-output carries an authentication preamble and `  * <id> (default)` / `
-  - <id>` bullet rows; the parser requires that grammar. The top-level default
-from the `models` document marks `is_default`; a missing, repeated, or
-disagreeing marker fails the operation instead of guessing. Display name,
+Rows preserve provider order and exact opaque ids. The shipped output carries
+an authentication preamble and `  * <id> (default)` / `  - <id>` bullet rows;
+the parser requires that grammar. A listed header default marks exactly one
+row `is_default`; a default the source reports outside the list, or no default
+id at all, leaves every row unmarked. A missing, repeated, or disagreeing
+marker fails the operation instead of guessing. Display name,
 description, input token limit, and reasoning modes come only from the frozen
-exact-`1.0.30` default-model document by exact id equality (`grok-4.5` has no
+`1.0.30` default-model document by exact id equality (`grok-4.5` has no
 description, so it stays unknown there); unknown future ids pass through with
 empty metadata and no provider id is ever attached. Malformed, duplicate,
 empty, and over-limit documents fail closed, exit status is reported without
@@ -130,9 +142,10 @@ bullet grammar, and embedded default-model document identical at every
 published stable from the previous `1.0.25` point through `1.0.30`, and freezes
 the accepted live capsule; Research 306 keeps the corrected boundary and the
 historical `1.0.25` capsule, and Research 305 keeps the static command/output
-evidence with a correction note. Research 405 preserves the later static hop
-ledger and its `1.0.46` default-not-in-list stop; it includes no live catalogue
-observation.
+evidence with a correction note. Research 405 preserves the `1.0.46` identity
+stop and its frozen corpus; Research 443 refreshes the selected channel to
+`1.0.70`, decodes the marker formatter, and qualifies the window. None of them
+includes a live catalogue observation beyond the exact `1.0.30` capsule.
 
 ## Structured Run
 

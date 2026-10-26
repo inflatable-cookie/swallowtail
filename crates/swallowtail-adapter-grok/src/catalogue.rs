@@ -13,6 +13,8 @@ use swallowtail_runtime::{
     ScopeId,
 };
 
+use crate::selection::GrokCatalogueMapping;
+
 const MAXIMUM_MODELS: usize = 64;
 const MAXIMUM_OUTPUT_BYTES: usize = 64 * 1024;
 const MAXIMUM_STDERR_BYTES: usize = 64 * 1024;
@@ -24,7 +26,8 @@ const MAXIMUM_PRESENTATION_BYTES: usize = 1_024;
 ///
 /// Research 316 freezes the provenance: the embedded document is identical at
 /// every hop from `1.0.25` through `1.0.30`, with two byte-identical copies per
-/// executable. The balanced-brace JSON document (2323 bytes) hashes to
+/// executable; Research 443 reproduces that document byte-for-byte at every
+/// selected stable through `1.0.70`. The balanced-brace JSON document (2323 bytes) hashes to
 /// `9d6924ec760a94f91902f60adb8bcf2cd9d3ab86891a1c83e8c01a092e56490a`, and
 /// the embedded slice including its trailing newline (2324 bytes) hashes to
 /// `c7b26d2f4a4fc6f479b4ffa6c880eaec5eca1721701faa6d970d1cb4a51d5b7a`, which
@@ -146,7 +149,7 @@ impl GrokCatalogueDriver {
         request: &ModelCatalogRequest,
         services: &HostServices,
     ) -> Result<GrokCatalogueListing, RuntimeFailure> {
-        validate(plan, request, services)?;
+        let mapping = validate(plan, request, services)?;
         let scope = ScopeId::new(format!(
             "grok-build:catalogue:{}",
             request.request_id().as_str()
@@ -194,7 +197,7 @@ impl GrokCatalogueDriver {
             ));
         }
         let evidence = capture.evidence();
-        let entries = parse_catalogue(&capture.stdout)
+        let entries = parse_catalogue(&capture.stdout, mapping)
             .map_err(|error| annotate_with_evidence(error, &evidence))?;
         Ok(GrokCatalogueListing { entries, evidence })
     }
@@ -303,13 +306,16 @@ async fn fail_with_cleanup<T>(
     }
 }
 
-pub(crate) fn parse_catalogue(bytes: &[u8]) -> Result<Vec<ModelCatalogEntry>, RuntimeFailure> {
+pub(crate) fn parse_catalogue(
+    bytes: &[u8],
+    mapping: GrokCatalogueMapping,
+) -> Result<Vec<ModelCatalogEntry>, RuntimeFailure> {
     if bytes.is_empty() || bytes.len() > MAXIMUM_OUTPUT_BYTES {
         return Err(protocol_failure());
     }
     let text = std::str::from_utf8(bytes).map_err(|_| protocol_failure())?;
     let lines: Vec<&str> = text.lines().collect();
-    let default = parse_default_header(&lines)?;
+    let default = parse_default_header(&lines, mapping)?;
     let rows = parse_rows(&lines, &default)?;
     let known = FrozenModels::parse()?;
     let mut models = Vec::with_capacity(rows.len());
@@ -322,24 +328,94 @@ pub(crate) fn parse_catalogue(bytes: &[u8]) -> Result<Vec<ModelCatalogEntry>, Ru
     Ok(models)
 }
 
-struct DefaultHeader {
-    header_index: usize,
-    model_id: String,
+/// Exact shipped marker for a default model that is not one of the listed rows.
+///
+/// Research 405 saw the marker as a static literal at `1.0.46`; Research 443
+/// decodes the shipped formatter and proves the marker follows an interpolated
+/// default model id instead of replacing it.
+const DEFAULT_NOT_IN_LIST_MARKER: &str = " (not in the list below)";
+
+enum DefaultHeader {
+    /// A header id that must match the single marked default row.
+    Listed {
+        header_index: usize,
+        model_id: String,
+    },
+    /// A header id explicitly marked as absent from the rows below it.
+    Unlisted {
+        header_index: usize,
+        model_id: String,
+    },
+    /// No usable default id; no row may carry the default marker.
+    Absent { header_index: usize },
 }
 
-fn parse_default_header(lines: &[&str]) -> Result<DefaultHeader, RuntimeFailure> {
+impl DefaultHeader {
+    const fn header_index(&self) -> usize {
+        match self {
+            Self::Listed { header_index, .. }
+            | Self::Unlisted { header_index, .. }
+            | Self::Absent { header_index } => *header_index,
+        }
+    }
+}
+
+fn parse_default_header(
+    lines: &[&str],
+    mapping: GrokCatalogueMapping,
+) -> Result<DefaultHeader, RuntimeFailure> {
     let mut found: Option<DefaultHeader> = None;
     for (index, line) in lines.iter().enumerate() {
-        let Some(id) = line.strip_prefix("Default model: ") else {
+        let Some(rest) = line.strip_prefix("Default model: ") else {
             continue;
         };
-        if !valid_model_id(id) || found.is_some() {
+        if found.is_some() {
             return Err(protocol_failure());
         }
-        found = Some(DefaultHeader {
-            header_index: index,
-            model_id: id.to_owned(),
-        });
+        let header = match mapping {
+            // The original mapping decodes only a listed default id. Research
+            // 316 froze that form and Research 443 keeps its regressions.
+            GrokCatalogueMapping::ListedDefaultOnly => {
+                if !valid_model_id(rest) {
+                    return Err(protocol_failure());
+                }
+                DefaultHeader::Listed {
+                    header_index: index,
+                    model_id: rest.to_owned(),
+                }
+            }
+            GrokCatalogueMapping::DefaultNotInList => {
+                if let Some(id) = rest.strip_suffix(DEFAULT_NOT_IN_LIST_MARKER) {
+                    if id.is_empty() {
+                        // The shipped formatter interpolates the current model
+                        // id unconditionally, so an elided id means the source
+                        // reported none.
+                        DefaultHeader::Absent {
+                            header_index: index,
+                        }
+                    } else if valid_model_id(id) {
+                        DefaultHeader::Unlisted {
+                            header_index: index,
+                            model_id: id.to_owned(),
+                        }
+                    } else {
+                        return Err(protocol_failure());
+                    }
+                } else if rest.is_empty() {
+                    DefaultHeader::Absent {
+                        header_index: index,
+                    }
+                } else if valid_model_id(rest) {
+                    DefaultHeader::Listed {
+                        header_index: index,
+                        model_id: rest.to_owned(),
+                    }
+                } else {
+                    return Err(protocol_failure());
+                }
+            }
+        };
+        found = Some(header);
     }
     found.ok_or_else(protocol_failure)
 }
@@ -350,16 +426,17 @@ struct ModelRow {
 }
 
 fn parse_rows(lines: &[&str], header: &DefaultHeader) -> Result<Vec<ModelRow>, RuntimeFailure> {
+    let header_index = header.header_index();
     let Some(available) = lines
         .iter()
         .enumerate()
-        .skip(header.header_index + 1)
+        .skip(header_index + 1)
         .find(|(_, line)| **line == "Available models:")
         .map(|(index, _)| index)
     else {
         return Err(protocol_failure());
     };
-    if lines[..header.header_index].contains(&"Available models:") {
+    if lines[..header_index].contains(&"Available models:") {
         return Err(protocol_failure());
     }
     let mut rows = Vec::new();
@@ -373,12 +450,12 @@ fn parse_rows(lines: &[&str], header: &DefaultHeader) -> Result<Vec<ModelRow>, R
             return Err(protocol_failure());
         }
         let row = line.trim_start_matches([' ', '\t']);
-        // Exact `1.0.30` (and every stable through it) renders each row with a
-        // bullet: `* ` marks the source default and `- ` marks every other
-        // model. Research 306 froze the shipped `xai-grok-pager/src/models.rs`
-        // format pieces (`"  - "`, `"  * "`, `" (default)\n"`); Research 316
-        // proves those pieces and their counts are identical at every hop from
-        // `1.0.25` through `1.0.30`.
+        // Every qualified point renders each row with a bullet: `* ` marks the
+        // source default and `- ` marks every other model. Research 306 froze
+        // the shipped `xai-grok-pager/src/models.rs` format pieces (`"  - "`,
+        // `"  * "`, `" (default)\n"`); Research 316 proves those pieces and
+        // their counts identical from `1.0.25` through `1.0.30`, and Research
+        // 443 proves the same emitted rows through `1.0.70`.
         let (row, bullet_default) = match row.strip_prefix("* ") {
             Some(rest) => (rest, true),
             None => match row.strip_prefix("- ") {
@@ -409,10 +486,24 @@ fn parse_rows(lines: &[&str], header: &DefaultHeader) -> Result<Vec<ModelRow>, R
             marked_default,
         });
     }
-    if marked.as_deref() != Some(header.model_id.as_str()) {
+    if marked_rows_disagree_with_header(header, marked.as_deref(), &identities) {
         return Err(ambiguous_default());
     }
     Ok(rows)
+}
+
+fn marked_rows_disagree_with_header(
+    header: &DefaultHeader,
+    marked: Option<&str>,
+    identities: &BTreeSet<String>,
+) -> bool {
+    match header {
+        DefaultHeader::Listed { model_id, .. } => marked != Some(model_id.as_str()),
+        DefaultHeader::Unlisted { model_id, .. } => {
+            marked.is_some() || identities.contains(model_id)
+        }
+        DefaultHeader::Absent { .. } => marked.is_some(),
+    }
 }
 
 fn project_row(row: &ModelRow, known: &FrozenModels) -> Result<ModelCatalogEntry, RuntimeFailure> {
@@ -631,9 +722,9 @@ fn validate(
     plan: &PreflightPlan,
     request: &ModelCatalogRequest,
     services: &HostServices,
-) -> Result<(), RuntimeFailure> {
+) -> Result<GrokCatalogueMapping, RuntimeFailure> {
     services.require_execution_host(plan.execution_host_id())?;
-    crate::selection::validate_grok_catalogue_plan(plan)?;
+    let mapping = crate::selection::grok_catalogue_mapping_for_plan(plan)?;
     let requirements = plan.requirements();
     if plan.driver_identity().id().as_str() != crate::GROK_BUILD_CATALOGUE_DRIVER_ID
         || requirements.driver_role() != DriverRole::ModelCatalog
@@ -670,7 +761,7 @@ fn validate(
             "Grok Build model catalogue deadline elapsed before startup",
         ));
     }
-    Ok(())
+    Ok(mapping)
 }
 
 /// Keeps the exact parse diagnostic code and appends the redacted capture
@@ -716,42 +807,61 @@ fn cleanup_failure() -> RuntimeFailure {
 
 #[cfg(test)]
 mod tests {
-    use super::parse_catalogue;
+    use super::{GrokCatalogueMapping, parse_catalogue};
 
     const ACCEPTED: &str = "You are logged in with Example Account.\nDefault model: grok-4.6\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n";
+    /// The shipped output carries one blank line after the header. Research 443
+    /// decodes the formatter that emits it; the frozen 1.0.30 capsule proves the
+    /// same shape on a live run.
+    const ACCEPTED_SHIPPED_SHAPE: &str = "You are logged in with Example Account.\n\nDefault model: grok-4.6\n\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n";
+    const UNLISTED: &str = "You are logged in with Example Account.\n\nDefault model: grok-4.7 (not in the list below)\n\nAvailable models:\n  - grok-4.6\n  - grok-4.5\n";
+
+    fn parse(
+        bytes: &str,
+        mapping: GrokCatalogueMapping,
+    ) -> Result<Vec<swallowtail_core::ModelCatalogEntry>, swallowtail_runtime::RuntimeFailure> {
+        parse_catalogue(bytes.as_bytes(), mapping)
+    }
 
     #[test]
     fn accepted_document_preserves_order_default_and_aligned_metadata() {
-        let models = parse_catalogue(ACCEPTED.as_bytes()).expect("catalogue parses");
-        assert_eq!(models.len(), 2);
-        assert_eq!(models[0].id().as_str(), "grok-4.6");
-        assert!(models[0].metadata().is_default());
-        assert_eq!(models[0].metadata().display_name(), Some("Grok 4.6"));
-        assert_eq!(
-            models[0].metadata().description(),
-            Some("SpaceXAI's latest frontier model")
-        );
-        assert_eq!(
-            models[0]
-                .metadata()
-                .token_limits()
-                .expect("context window maps")
-                .maximum_input_tokens(),
-            Some(500_000)
-        );
-        let reasoning = models[0].metadata().reasoning().expect("reasoning maps");
-        assert_eq!(reasoning.supported_modes().len(), 4);
-        assert_eq!(
-            reasoning
-                .default_mode()
-                .map(swallowtail_core::ReasoningMode::as_str),
-            Some("high")
-        );
-        assert_eq!(models[1].id().as_str(), "grok-4.5");
-        assert!(!models[1].metadata().is_default());
-        assert_eq!(models[1].metadata().display_name(), Some("Grok 4.5"));
-        assert_eq!(models[1].metadata().description(), None);
-        assert!(models.iter().all(|model| model.provider_id().is_none()));
+        for mapping in [
+            GrokCatalogueMapping::ListedDefaultOnly,
+            GrokCatalogueMapping::DefaultNotInList,
+        ] {
+            for corpus in [ACCEPTED, ACCEPTED_SHIPPED_SHAPE] {
+                let models = parse(corpus, mapping).expect("catalogue parses");
+                assert_eq!(models.len(), 2);
+                assert_eq!(models[0].id().as_str(), "grok-4.6");
+                assert!(models[0].metadata().is_default());
+                assert_eq!(models[0].metadata().display_name(), Some("Grok 4.6"));
+                assert_eq!(
+                    models[0].metadata().description(),
+                    Some("SpaceXAI's latest frontier model")
+                );
+                assert_eq!(
+                    models[0]
+                        .metadata()
+                        .token_limits()
+                        .expect("context window maps")
+                        .maximum_input_tokens(),
+                    Some(500_000)
+                );
+                let reasoning = models[0].metadata().reasoning().expect("reasoning maps");
+                assert_eq!(reasoning.supported_modes().len(), 4);
+                assert_eq!(
+                    reasoning
+                        .default_mode()
+                        .map(swallowtail_core::ReasoningMode::as_str),
+                    Some("high")
+                );
+                assert_eq!(models[1].id().as_str(), "grok-4.5");
+                assert!(!models[1].metadata().is_default());
+                assert_eq!(models[1].metadata().display_name(), Some("Grok 4.5"));
+                assert_eq!(models[1].metadata().description(), None);
+                assert!(models.iter().all(|model| model.provider_id().is_none()));
+            }
+        }
     }
 
     #[test]
@@ -775,14 +885,84 @@ mod tests {
             // A `-` row cannot also carry the `(default)` marker.
             "Default model: grok-4.6\nAvailable models:\n  - grok-4.6 (default)\n",
         ] {
-            assert!(parse_catalogue(corpus.as_bytes()).is_err(), "{corpus:?}");
+            for mapping in [
+                GrokCatalogueMapping::ListedDefaultOnly,
+                GrokCatalogueMapping::DefaultNotInList,
+            ] {
+                assert!(parse(corpus, mapping).is_err(), "{corpus:?} {mapping:?}");
+            }
         }
-        assert!(parse_catalogue(b"\xff\xfe invalid utf-8").is_err());
+        for mapping in [
+            GrokCatalogueMapping::ListedDefaultOnly,
+            GrokCatalogueMapping::DefaultNotInList,
+        ] {
+            assert!(parse_catalogue(b"\xff\xfe invalid utf-8", mapping).is_err());
+        }
     }
 
     #[test]
     fn default_not_in_available_models_variant_fails_closed() {
         let corpus = "Default model:  (not in the list below)\nAvailable models:\n  - grok-4.5\n";
-        assert!(parse_catalogue(corpus.as_bytes()).is_err());
+        assert!(parse(corpus, GrokCatalogueMapping::ListedDefaultOnly).is_err());
+        assert!(
+            parse(
+                "Default model: grok-4.7 (not in the list below)\nAvailable models:\n  - grok-4.5\n",
+                GrokCatalogueMapping::ListedDefaultOnly
+            )
+            .is_err()
+        );
+    }
+
+    #[test]
+    fn note_marker_keeps_the_default_id_and_leaves_no_row_marked() {
+        let models = parse(UNLISTED, GrokCatalogueMapping::DefaultNotInList)
+            .expect("the note-bearing header maps");
+        assert_eq!(models.len(), 2);
+        assert_eq!(models[0].id().as_str(), "grok-4.6");
+        assert_eq!(models[1].id().as_str(), "grok-4.5");
+        assert!(models.iter().all(|model| !model.metadata().is_default()));
+    }
+
+    #[test]
+    fn absent_default_forms_leave_every_row_unmarked() {
+        for header in [
+            "Default model: \n",
+            "Default model:  (not in the list below)\n",
+        ] {
+            let corpus = format!("{header}Available models:\n  - grok-4.6\n  - grok-4.5\n");
+            let models = parse(&corpus, GrokCatalogueMapping::DefaultNotInList)
+                .expect("an elided default maps without claiming one");
+            assert_eq!(models.len(), 2);
+            assert!(models.iter().all(|model| !model.metadata().is_default()));
+            assert!(parse(&corpus, GrokCatalogueMapping::ListedDefaultOnly).is_err());
+        }
+    }
+
+    #[test]
+    fn inconsistent_note_and_marker_combinations_fail_closed() {
+        for corpus in [
+            // The note says the id is absent from the list, but a row marks it.
+            "Default model: grok-4.6 (not in the list below)\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n",
+            // The note names a listed row.
+            "Default model: grok-4.6 (not in the list below)\nAvailable models:\n  - grok-4.6\n  - grok-4.5\n",
+            // A different row is marked.
+            "Default model: grok-4.7 (not in the list below)\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n",
+            // An elided default cannot own a marked row.
+            "Default model: \nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n",
+            "Default model:  (not in the list below)\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n",
+            // A listable header id without the marker still owes its marked row.
+            "Default model: grok-4.7\nAvailable models:\n  - grok-4.6\n  - grok-4.5\n",
+            // The marker is exact: no truncation, padding, or second header.
+            "Default model: grok-4.7 (not in the list)\nAvailable models:\n  - grok-4.6\n",
+            "Default model: grok-4.7 (not in the list below) \nAvailable models:\n  - grok-4.6\n",
+            "Default model: grok-4.7 (not in the list below)\nDefault model: grok-4.6\nAvailable models:\n  - grok-4.6\n",
+            // An invalid id before the marker is not a model id.
+            "Default model: grok/4.7 (not in the list below)\nAvailable models:\n  - grok-4.6\n",
+        ] {
+            assert!(
+                parse(corpus, GrokCatalogueMapping::DefaultNotInList).is_err(),
+                "{corpus:?}"
+            );
+        }
     }
 }

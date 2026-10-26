@@ -24,7 +24,7 @@ impl GrokCatalogueProfileInput {
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
-/// Prepared Grok Build model catalogue bound to exact installed `1.0.30`.
+/// Prepared Grok Build model catalogue bound to one qualified installed point.
 ///
 /// This is an authenticated non-inference metadata operation: it lists models
 /// through one bounded `--no-auto-update models` process that may refresh
@@ -104,14 +104,14 @@ impl GrokPreparedCatalogue {
 impl GrokPreparedIntegration {
     /// Prepares a model catalogue from the admitted integration.
     ///
-    /// Only an exact `1.0.30` observation prepares: every other executable
-    /// version fails closed here, before any process starts. Access readiness
-    /// was already proved while preparing the integration.
+    /// Every point inside the `QualifiedOnly` catalogue claim prepares; every
+    /// other executable version fails closed here, before any process starts.
+    /// Access readiness was already proved while preparing the integration.
     pub fn prepare_catalogue(
         &self,
         input: GrokCatalogueProfileInput,
     ) -> Result<GrokPreparedCatalogue, PreparationFailure> {
-        require_exact_catalogue_version(self)?;
+        require_qualified_catalogue_version(self)?;
         let capabilities = CapabilityProfile::new([CapabilityRequirement::new(
             swallowtail_core::Capability::ModelCatalog,
             [],
@@ -134,23 +134,17 @@ impl GrokPreparedIntegration {
     }
 }
 
-fn require_exact_catalogue_version(
+fn require_qualified_catalogue_version(
     prepared: &GrokPreparedIntegration,
 ) -> Result<(), PreparationFailure> {
-    let assessment =
-        crate::grok_build_catalogue_claim().assess(prepared.observation().version().version());
-    let qualified = matches!(
-        assessment,
-        swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
-    ) && assessment.behavior_revision().is_some_and(|revision| {
-        revision.as_str() == crate::selection::GROK_BUILD_CATALOGUE_BEHAVIOR
-    });
-    if !qualified {
+    if crate::selection::grok_build_catalogue_mapping(prepared.observation().version().version())
+        .is_none()
+    {
         return Err(PreparationFailure::new(
             swallowtail_runtime::PreparationStage::CompatibilityClassification,
             swallowtail_core::Diagnostic::new(swallowtail_core::SafeDiagnostic::new(
                 "swallowtail.grok.preparation.catalogue_version_incompatible",
-                "Grok Build catalogue requires exact installed version 1.0.30",
+                "Grok Build catalogue requires a qualified installed executable version",
             )),
         ));
     }

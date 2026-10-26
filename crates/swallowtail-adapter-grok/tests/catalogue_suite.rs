@@ -29,6 +29,7 @@ use swallowtail_runtime::{
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
 
 const MODELS: &str = include_str!("fixtures/grok-1.0.30-catalogue/models.txt");
+const CATALOGUE_IDENTITY: &str = include_str!("fixtures/grok-1.0.70-catalogue/identity.json");
 const UNKNOWN_IDS: &str = include_str!("fixtures/grok-1.0.30-catalogue/unknown-ids.txt");
 const VERSION_OUTPUT: &str = "grok 1.0.30 (04b7ffed98c6) [stable]\n";
 
@@ -50,21 +51,68 @@ fn temporary_root(prefix: &str) -> PathBuf {
 }
 
 #[test]
-fn catalogue_claim_admits_only_exact_1_0_30() {
+fn catalogue_claim_keeps_1_0_30_and_admits_every_hop_through_1_0_70() {
     assert_eq!(GROK_BUILD_CATALOGUE_VERSION, "1.0.30");
     let claim = grok_build_catalogue_claim();
-    let qualified = claim.assess(&version("1.0.30"));
-    assert!(matches!(
-        qualified,
-        InterfaceCompatibilityAssessment::Qualified(_)
-    ));
     assert_eq!(
-        qualified
-            .behavior_revision()
-            .map(|revision| revision.as_str()),
-        Some("grok-build.catalogue.models-text-v1")
+        claim.id().as_str(),
+        "grok-build.catalogue.executable-window-1"
     );
-    for candidate in ["0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29"] {
+    assert_eq!(claim.baseline().as_str(), "1.0.30");
+    assert_eq!(claim.latest_qualified().as_str(), "1.0.70");
+    let milestones = claim
+        .milestones()
+        .map(|segment| {
+            (
+                segment.minimum().as_str().to_owned(),
+                segment.maximum().as_str().to_owned(),
+                segment.behavior_revision().as_str().to_owned(),
+                segment.support_status(),
+            )
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(
+        milestones,
+        [
+            (
+                "1.0.30".to_owned(),
+                "1.0.45".to_owned(),
+                "grok-build.catalogue.models-text-v1".to_owned(),
+                swallowtail_core::InterfaceSupportStatus::Deprecated,
+            ),
+            (
+                "1.0.46".to_owned(),
+                "1.0.70".to_owned(),
+                "grok-build.catalogue.models-text-v2".to_owned(),
+                swallowtail_core::InterfaceSupportStatus::Maintained,
+            ),
+        ]
+    );
+    for (minor, expected) in (30..=70).map(|minor| {
+        let revision = if minor <= 45 {
+            "grok-build.catalogue.models-text-v1"
+        } else {
+            "grok-build.catalogue.models-text-v2"
+        };
+        (minor, revision)
+    }) {
+        let candidate = format!("1.0.{minor}");
+        let assessment = claim.assess(&version(&candidate));
+        assert!(
+            matches!(assessment, InterfaceCompatibilityAssessment::Qualified(_)),
+            "{candidate} must be qualified"
+        );
+        assert_eq!(
+            assessment
+                .behavior_revision()
+                .map(|revision| revision.as_str()),
+            Some(expected),
+            "{candidate} mapping"
+        );
+    }
+    for candidate in [
+        "0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.71", "1.1.0",
+    ] {
         assert_eq!(
             claim.assess(&version(candidate)),
             InterfaceCompatibilityAssessment::Incompatible,
@@ -90,19 +138,24 @@ fn catalogue_claim_stays_independent_of_the_acp_execution_window() {
         grok_build_model_for_version(&version("1.0.4")),
         Some("grok-4.6")
     );
-    // The ACP window carries 1.0.46, but the catalogue operation still only
-    // admits its own exact qualified point and rejects every other point,
-    // including the previous exact 1.0.25 and later ACP-qualified 1.0.31.
+    // The ACP window keeps its own 1.0.46 ceiling while the catalogue window
+    // now reaches 1.0.70: the two claims stay independent, and neither ceiling
+    // borrows the other's evidence.
     let catalogue = grok_build_catalogue_claim();
     assert!(matches!(
         catalogue.assess(&version("1.0.30")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    for rejected in ["1.0.25", "1.0.31"] {
+    assert!(matches!(
+        catalogue.assess(&version("1.0.70")),
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ));
+    assert_eq!(grok_build_acp_claim().latest_qualified().as_str(), "1.0.46");
+    for rejected in ["1.0.25", "1.0.29", "1.0.71"] {
         assert_eq!(
             catalogue.assess(&version(rejected)),
             InterfaceCompatibilityAssessment::Incompatible,
-            "{rejected} stays outside the exact catalogue point"
+            "{rejected} stays outside the catalogue window"
         );
     }
     assert_ne!(
@@ -196,20 +249,106 @@ fn catalogue_prepares_on_exact_1_0_30_and_lists_the_accepted_document() {
 }
 
 #[test]
-fn catalogue_preparation_rejects_non_1_0_30_observation() {
-    let prepared =
-        prepared_integration("catalogue.reject", "grok 1.0.25 (f7e67d6988e2) [stable]\n");
-    let error = prepared
-        .prepare_catalogue(catalogue_input(request_id("catalogue.reject")))
-        .expect_err("1.0.25 cannot prepare a catalogue");
+fn catalogue_preparation_rejects_points_outside_the_claim() {
+    for (prefix, version_output) in [
+        (
+            "catalogue.reject.old",
+            "grok 1.0.25 (f7e67d6988e2) [stable]\n",
+        ),
+        (
+            "catalogue.reject.gap",
+            "grok 1.0.29 (4c83f16c3e10) [stable]\n",
+        ),
+        (
+            "catalogue.reject.new",
+            "grok 1.0.71 (123456789abc) [stable]\n",
+        ),
+    ] {
+        let prepared = prepared_integration(prefix, version_output);
+        let error = prepared
+            .prepare_catalogue(catalogue_input(request_id(prefix)))
+            .expect_err("outside the catalogue window cannot prepare");
+        assert_eq!(
+            error.diagnostic().safe().code(),
+            "swallowtail.grok.preparation.catalogue_version_incompatible"
+        );
+        assert_eq!(
+            error.stage(),
+            swallowtail_runtime::PreparationStage::CompatibilityClassification
+        );
+    }
+}
+
+#[test]
+fn catalogue_prepares_on_the_deprecated_1_0_45_segment() {
+    let prepared = prepared_integration(
+        "catalogue.deprecated",
+        "grok 1.0.45 (c33bff361a6f) [stable]\n",
+    );
+    let catalogue = prepared
+        .prepare_catalogue(catalogue_input(request_id("catalogue.deprecated")))
+        .expect("1.0.45 stays admitted as a deprecated segment");
+    assert_eq!(catalogue.plan().interface_versions().count(), 1);
+    let assessment = catalogue.plan().assess_interface_version(
+        catalogue
+            .plan()
+            .interface_versions()
+            .next()
+            .expect("binding"),
+    );
+    let InterfaceCompatibilityAssessment::Qualified(matched) = assessment else {
+        panic!("the prepared 1.0.45 binding stays qualified")
+    };
     assert_eq!(
-        error.diagnostic().safe().code(),
-        "swallowtail.grok.preparation.catalogue_version_incompatible"
+        matched.support_status(),
+        swallowtail_core::InterfaceSupportStatus::Deprecated
     );
     assert_eq!(
-        error.stage(),
-        swallowtail_runtime::PreparationStage::CompatibilityClassification
+        matched.behavior_revision().as_str(),
+        "grok-build.catalogue.models-text-v1"
     );
+    let (process, _) = FakeProcessService::completed(MODELS);
+    let models = block_on(catalogue.list_models(services(
+        ExecutionHostId::new("catalogue.deprecated.host").expect("host"),
+        process,
+    )))
+    .expect("the listed-default document still maps");
+    assert_eq!(models.len(), 2);
+    assert!(models[0].metadata().is_default());
+}
+
+#[test]
+fn catalogue_maps_the_default_not_in_list_header_on_1_0_70() {
+    let header = "You are logged in with Example Account.\n\nDefault model: grok-4.7 (not in the list below)\n\nAvailable models:\n  - grok-4.6\n  - grok-4.5\n";
+    // The vendor publishes no source revision at 1.0.70, so discovery only
+    // checks the build-id shape there; the catalogue claim owns the version.
+    let prepared = prepared_integration(
+        "catalogue.unlisted",
+        "grok 1.0.70 (123456789abc) [stable]\n",
+    );
+    let catalogue = prepared
+        .prepare_catalogue(catalogue_input(request_id("catalogue.unlisted")))
+        .expect("1.0.70 prepares");
+    let (process, state) = FakeProcessService::completed(header);
+    let listing = block_on(catalogue.list_models_recorded(services(
+        ExecutionHostId::new("catalogue.unlisted.host").expect("host"),
+        process,
+    )))
+    .expect("the note-bearing header maps");
+    let models = listing.entries();
+    assert_eq!(models.len(), 2);
+    assert_eq!(models[0].id().as_str(), "grok-4.6");
+    assert_eq!(models[1].id().as_str(), "grok-4.5");
+    assert!(models.iter().all(|model| !model.metadata().is_default()));
+    assert_eq!(
+        models[0].metadata().display_name(),
+        Some("Grok 4.6"),
+        "the frozen supplemental document still aligns by exact id"
+    );
+    assert_eq!(listing.evidence().stdout_bytes(), header.len());
+    assert_eq!(state.request().arguments, ["--no-auto-update", "models"]);
+    assert!(state.stdin_closed());
+    assert!(state.waited());
 }
 
 #[test]
@@ -576,6 +715,69 @@ fn real_local_host_runs_the_bounded_catalogue_command() {
     assert_eq!(listing.entries()[1].id().as_str(), "grok-4.5");
     assert_eq!(listing.evidence().stderr_bytes(), 0);
     let _ = std::fs::remove_dir_all(&root);
+}
+
+/// Reads the statically carved self-reported build id for one frozen hop.
+///
+/// Discovery pins this exact revision through `1.0.46`; the facade sweep below
+/// therefore also proves the corpus and the pinned identity table agree.
+fn frozen_runtime_build_id(version: &str) -> String {
+    let identity: serde_json::Value =
+        serde_json::from_str(CATALOGUE_IDENTITY).expect("catalogue identity fixture");
+    identity["hops"]
+        .as_array()
+        .expect("hops")
+        .iter()
+        .find(|hop| hop["version"] == version)
+        .and_then(|hop| hop["darwin_arm64"]["runtime_build_id"].as_str())
+        .unwrap_or_else(|| panic!("{version} has a frozen build id"))
+        .to_owned()
+}
+
+#[test]
+fn prepared_facade_admits_every_claimed_point() {
+    for minor in 30..=70 {
+        let version = format!("1.0.{minor}");
+        let prefix = format!("catalogue.sweep.{minor}");
+        let prepared = prepared_integration(
+            &prefix,
+            &format!(
+                "grok {version} ({}) [stable]\n",
+                frozen_runtime_build_id(&version)
+            ),
+        );
+        let catalogue = prepared
+            .prepare_catalogue(catalogue_input(request_id(&format!("{prefix}.models"))))
+            .unwrap_or_else(|error| panic!("{version} prepares: {error:?}"));
+        let binding = catalogue
+            .plan()
+            .interface_versions()
+            .next()
+            .expect("the plan binds its executable version");
+        let assessment = catalogue.plan().assess_interface_version(binding);
+        let InterfaceCompatibilityAssessment::Qualified(matched) = assessment else {
+            panic!("{version} plan is catalogue-qualified")
+        };
+        let expected = if minor <= 45 {
+            "grok-build.catalogue.models-text-v1"
+        } else {
+            "grok-build.catalogue.models-text-v2"
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            expected,
+            "{version} decode mapping"
+        );
+        assert_eq!(
+            matched.support_status(),
+            if minor <= 45 {
+                swallowtail_core::InterfaceSupportStatus::Deprecated
+            } else {
+                swallowtail_core::InterfaceSupportStatus::Maintained
+            },
+            "{version} support status"
+        );
+    }
 }
 
 fn prepared_integration(

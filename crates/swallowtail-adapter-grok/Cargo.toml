@@ -64,6 +64,10 @@ name = "grok_1_0_46_catalogue_identity"
 path = "tests/grok_1_0_46_catalogue_identity.rs"
 
 [[test]]
+name = "grok_1_0_70_catalogue_identity"
+path = "tests/grok_1_0_70_catalogue_identity.rs"
+
+[[test]]
 name = "grok_1_0_40_identity"
 path = "tests/grok_1_0_40_identity.rs"
 

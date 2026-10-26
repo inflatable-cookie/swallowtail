@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify only `cline.acp` from its `3.0.70` ceiling through official npm
+  `latest` `3.0.74`, keeping the `3.0.55` baseline and unpublished `3.0.59`
+  exclusion. Research 457 freezes hops `3.0.71` through `3.0.74`, wrapper and
+  Darwin ARM64 trees, six-platform SLSA identities, and the selected ACP source
+  deltas. Mode stays `plan`/`act`, the model option stays `id=model`, and
+  reasoning stays off without `--thinking`. At `3.0.74` platform packages embed
+  hub and plugin assets into `bin/cline`. Preserve `cline.acp.stdio-v1` and the
+  Q-006 `load_session` gate. `cline.headless` stays `QualifiedOnly` through
+  `3.0.70`. No artifact was executed and no provider prompt, live session,
+  credential, installation, or host update occurred.
 - stop `mistral-vibe.headless` at the `2.26.0` ceiling. Official PyPI and
   GitHub stable are `3.0.2`. Research 458 freezes hops `2.26.1`, `3.0.0`,
   `3.0.1`, and `3.0.2`. `2.26.1` removes the mapped turn-limit stderr and

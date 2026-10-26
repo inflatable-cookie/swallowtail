@@ -146,7 +146,18 @@ const TREES: [(&str, u64, u64, u64, u64, &str, &str); 6] = [
     ),
 ];
 
-const HOPS: [(&str, u64, u64, u64, u64, &str, &str, &str); 5] = [
+type Hop = (
+    &'static str,
+    u64,
+    u64,
+    u64,
+    u64,
+    &'static str,
+    &'static str,
+    &'static str,
+);
+
+const HOPS: [Hop; 5] = [
     (
         "1.18.35_to_1.19.0",
         6,
@@ -292,7 +303,10 @@ fn official_channels_and_artifact_identities_cover_every_hop() {
         &["1.19.0", "1.19.1", "1.19.2", "1.19.3", "1.19.4"],
     );
     assert_exact_strings(&identity["unpublished_or_withdrawn_hops"], &[]);
-    assert_eq!(identity["identity_decision"]["shape"], "compatible-extension");
+    assert_eq!(
+        identity["identity_decision"]["shape"],
+        "compatible-extension"
+    );
     assert_eq!(
         identity["identity_decision"]["raise_http_latest_qualified_to"],
         "1.19.4"
@@ -361,7 +375,10 @@ fn official_channels_and_artifact_identities_cover_every_hop() {
             "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
         );
         let package_json = files["package.json"].as_str().unwrap().to_owned();
-        assert_ne!(Some(package_json.as_str()), previous_package_json.as_deref());
+        assert_ne!(
+            Some(package_json.as_str()),
+            previous_package_json.as_deref()
+        );
         previous_package_json = Some(package_json);
 
         let linux = release["npm_linux_x64"]["files"].as_object().unwrap();
@@ -387,7 +404,10 @@ fn repository_hops_and_selected_http_files_stay_classified() {
     let inventory = json(INVENTORY);
     let protocol = json(PROTOCOL);
     assert_exact_strings(&inventory["compared"], &VERSIONS);
-    assert_eq!(protocol["selected_openapi_path_objects_byte_identical"], true);
+    assert_eq!(
+        protocol["selected_openapi_path_objects_byte_identical"],
+        true
+    );
     assert_eq!(
         protocol["selected_route_declaration_and_handler_files_byte_identical"],
         true

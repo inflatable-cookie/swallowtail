@@ -13,7 +13,18 @@ const PROTOCOL: &str = include_str!("fixtures/opencode-acp-1.19.4/protocol.json"
 
 const VERSIONS: [&str; 6] = ["1.18.35", "1.19.0", "1.19.1", "1.19.2", "1.19.3", "1.19.4"];
 
-const HOPS: [(&str, u64, u64, u64, u64, &str, &str, &str); 5] = [
+type Hop = (
+    &'static str,
+    u64,
+    u64,
+    u64,
+    u64,
+    &'static str,
+    &'static str,
+    &'static str,
+);
+
+const HOPS: [Hop; 5] = [
     (
         "1.18.35_to_1.19.0",
         6,
@@ -75,7 +86,10 @@ fn acp_identity_keeps_a_separate_v2_extension() {
     let window = &identity["qualification_window"];
     assert_eq!(identity["family"], "opencode.acp");
     assert_eq!(identity["research"], 453);
-    assert_eq!(identity["official_channels"]["npm_dist_tag_latest"], "1.19.4");
+    assert_eq!(
+        identity["official_channels"]["npm_dist_tag_latest"],
+        "1.19.4"
+    );
     assert_eq!(
         identity["official_channels"]["github_latest_stable_tag"],
         "v1.19.4"
@@ -95,7 +109,10 @@ fn acp_identity_keeps_a_separate_v2_extension() {
     );
     assert_eq!(identity["host"]["present"], false);
     assert_eq!(identity["host"]["on_path"], false);
-    assert_eq!(identity["identity_decision"]["shape"], "compatible-extension");
+    assert_eq!(
+        identity["identity_decision"]["shape"],
+        "compatible-extension"
+    );
     assert_eq!(
         identity["identity_decision"]["behavior"],
         "opencode.acp-v1.client-mcp-servers-v2"

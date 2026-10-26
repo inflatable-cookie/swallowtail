@@ -12,10 +12,10 @@ const PROTOCOL: &str = include_str!("fixtures/oh-my-pi-18.12.6/protocol.json");
 const INVENTORY: &str = include_str!("fixtures/oh-my-pi-18.12.6/complete-tree-inventory.json");
 const HOPS: &str = include_str!("fixtures/oh-my-pi-18.12.6/hop-ledger.json");
 
-const IDENTITY_SHA256: &str = "0de09b5f76e57689bc64137006a05ee6e6a0fbebd171b13beba49168fd8cc459";
-const PROTOCOL_SHA256: &str = "2eb53cd07f42a6a007c2bdeba6e077906c18d34735df2010cfe0534c2be86ad3";
+const IDENTITY_SHA256: &str = "7a09006056ba3944bd65e8b00c161697ee8bbb648d18dbe3b3691e94a5bdc3e1";
+const PROTOCOL_SHA256: &str = "2bb2d0989f7ecc27ffa88a1ca196f2e19526f131c7e35d0aa72405d7035c4531";
 const INVENTORY_SHA256: &str = "4fcb81150e9b48cfdc38a9093b51a623ea2be68964fa4e11e9f6a95142d91a1c";
-const HOPS_SHA256: &str = "8db565735f622edcd92216bf2dc953f00eeee1a5beb9b9f6dfac2b6210cc6a04";
+const HOPS_SHA256: &str = "910b9e8ff982770b5d6d7804c8faaafe5593678ddd143cb25f27bb90b7fb1f3c";
 
 #[test]
 fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
@@ -149,6 +149,10 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
         false
     );
     assert_eq!(
+        identity["identity_decision"]["provider_internal_read_resource_extension"],
+        "mr:// joins the existing ambient read tool as an immutable remote GitLab diff resource; process principal runs ambient glab; credentials GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN plus glab config.yml; GitLab network egress; tool-effect exec of glab under a host-trust gate; default read tier; no write operation; cfg:// still redacts credentials; ssh stays exec"
+    );
+    assert_eq!(
         identity["claim_at_observation"]["posture"],
         "allow_unverified"
     );
@@ -169,7 +173,7 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
     assert_eq!(protocol["source_verification"]["source_hash_mismatches"], 0);
     assert_eq!(
         protocol["source_verification"]["verified_version_path_pairs"],
-        189
+        194
     );
     assert_eq!(
         protocol["source_verification"]["selected_command_cases_unchanged"],
@@ -266,6 +270,34 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
     assert_eq!(boundary["cfg_read"], "credential values are redacted");
     assert_eq!(boundary["read_tier"], "read by default; ssh remains exec");
     assert_eq!(
+        boundary["mr_principal"],
+        "ambient glab subprocess (process principal)"
+    );
+    assert_eq!(
+        boundary["mr_resource"],
+        "remote GitLab merge-request diffs (immutable, selectors=lines)"
+    );
+    assert_eq!(
+        boundary["mr_credential"],
+        "GITLAB_TOKEN, GITLAB_ACCESS_TOKEN, OAUTH_TOKEN, and glab config.yml"
+    );
+    assert_eq!(
+        boundary["mr_network"],
+        "GitLab HTTPS egress after host-trust gate (gitlab.com, GITLAB_HOST/GITLAB_URI/GL_HOST, glab config hosts, checkout GitLab remotes)"
+    );
+    assert_eq!(
+        boundary["mr_tool_effect"],
+        "exec of ambient glab via runForgeCli; default read tier; no write handler"
+    );
+    assert_eq!(
+        boundary["mr_read"],
+        "immutable remote GitLab merge-request diffs via ambient glab; process principal; credentials GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN plus glab config.yml; GitLab network egress under a host-trust gate; tool-effect exec of glab; default read tier; no write handler"
+    );
+    assert_eq!(
+        protocol["unmapped_boundary"]["mcp_reconnect"],
+        "MCP manager is passed into runRpcMode. Prompt-text builtin dispatch can run /mcp reauth (browser OAuth plus credential persistence) and reconnectMcpServer. --no-extensions disables extension discovery only and does not disable MCP. Swallowtail maps none of /mcp, reconnect, or OAuth. The reconnect verb stays TUI-only. 18.8.3 rejected reauth as TUI-only."
+    );
+    assert_eq!(
         boundary["target_18_12_6_schemes"],
         json!([
             "agent",
@@ -344,7 +376,7 @@ fn assert_inventory_and_hops(identity: &Value, protocol: &Value, inventory: &Val
     assert_eq!(hops["from"], "18.8.3");
     assert_eq!(hops["to"], "18.12.6");
     assert_eq!(hops["hop_count"], 25);
-    assert_eq!(hops["source_snapshot_version_path_count"], 189);
+    assert_eq!(hops["source_snapshot_version_path_count"], 194);
 
     let version_order = string_array(&inventory["version_order"]);
     assert_eq!(version_order, string_array(&hops["version_order"]));
@@ -471,8 +503,8 @@ fn assert_inventory_and_hops(identity: &Value, protocol: &Value, inventory: &Val
         listed_published_hops,
         string_array(&identity["published_stable_hops"])
     );
-    assert_eq!(classified_change_count, 189);
-    assert_eq!(expected_source_paths.len(), 54);
+    assert_eq!(classified_change_count, 194);
+    assert_eq!(expected_source_paths.len(), 59);
     assert_eq!(
         expected_source_paths,
         string_array(&protocol["selected_source_file_union"])

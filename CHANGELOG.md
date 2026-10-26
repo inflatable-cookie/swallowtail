@@ -14,7 +14,10 @@ annotated Git tags from the canonical repository.
   and `18.6.2`, incompatible `17.4.3`/`17.4.4`, and the frozen `17.2.9`
   decoder corpus stay. `18.12.7` is `UnverifiedNewer`. Selected commands,
   tool schemas, frame caps, and startup fields are unchanged. `mr://` is an
-  added read-tier resource inside the existing ambient `read` tool.
+  added read-tier resource inside the existing ambient `read` tool: ambient
+  `glab` process principal, host GitLab tokens plus `glab` config, GitLab
+  network egress, exec tool-effect. Prompt-text `/mcp reauth` is reachable
+  under `--no-extensions` and stays unmapped.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

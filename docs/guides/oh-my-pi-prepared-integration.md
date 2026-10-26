@@ -48,8 +48,12 @@ maintained. GitHub-only stable tags `18.0.2`, `18.1.7`, `18.4.7`, and
 Research 447 freezes the exact `18.12.6` npm artifact and all 25 published
 hops after the Research 382 ceiling. Provider-internal `proc://`, `cfg://`,
 `attachment://`, `conflict://`, and `mr://` resources stay inside the existing
-ambient `read` tool. `cfg://` redacts credentials, `ssh` stays exec, and
-writes remain outside the selected tool set.
+ambient `read` tool. `mr://` resolve runs ambient `glab` as the process
+principal, uses `GITLAB_TOKEN`/`GITLAB_ACCESS_TOKEN`/`OAUTH_TOKEN` plus
+`glab` `config.yml`, performs GitLab network egress, and execs `glab`.
+`cfg://` redacts credentials, `ssh` stays exec, and writes remain outside
+the selected tool set. Prompt-text `/mcp reauth` is reachable under
+`--no-extensions` and stays unmapped.
 
 ## Prepare The Installation
 

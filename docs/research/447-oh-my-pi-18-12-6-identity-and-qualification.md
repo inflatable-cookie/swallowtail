@@ -50,8 +50,8 @@ window. The older GitHub-only tags `18.0.2`, `18.1.7`, `18.4.7`, and
 
 The inventory holds 26 complete path-to-SHA-256 trees. `18.8.3` has 3,179
 files; `18.12.6` has 3,342. The hop ledger recomputes every added, removed,
-and changed path and classifies 189 selected-source records across 54
-paths. Those 189 version/path pairs match the npm tree digests. The unique
+and changed path and classifies 194 selected-source records across 59
+paths. Those 194 version/path pairs match the npm tree digests. The unique
 `case "..."` set in `src/modes/rpc/rpc-mode.ts` stays the same 67 names on
 every hop. Selected command spec blocks and the `read` / `grep` / `glob` /
 `todo` / `ask` input schemas are byte-identical across the window.
@@ -90,9 +90,9 @@ Fixtures:
 | `18.12.0→18.12.1` | compatible package hop | Package metadata and the bundled executable change. No selected source file changes. |
 | `18.12.1→18.12.2` | compatible session internal | URL filesystem and session internals change. Selected commands, schemes, and tool schemas stay. |
 | `18.12.2→18.12.3` | compatible tool internal | Glob, grep, path, and read internals change, with model and `proc://` routing. Tool input keys and the read tier stay. |
-| `18.12.3→18.12.4` | additive `mr` read resource | Adds `mr://`, an immutable remote GitLab merge-request diff reader at the default read tier, with no write path. Unselected `set_todos` records a custom entry. |
+| `18.12.3→18.12.4` | additive `mr` read resource | Adds `mr://`, an immutable remote GitLab merge-request diff reader. Resolve runs ambient `glab` as the process principal, forwards `GITLAB_TOKEN`/`GITLAB_ACCESS_TOKEN`/`OAUTH_TOKEN` under a host-trust gate, reads `glab` `config.yml`, and performs GitLab network egress at the default read tier; tool-effect is exec of `glab`. No write path. Unselected `set_todos` records a custom entry. |
 | `18.12.4→18.12.5` | compatible read internal | Read-tool implementation changes. The read input schema stays required `path`. |
-| `18.12.5→18.12.6` | compatible abort cleanup | `abort` still calls `session.abort` and returns success. It also aborts unselected builtin commands. Optional MCP reconnect stays behind `--no-extensions`. |
+| `18.12.5→18.12.6` | compatible abort cleanup | `abort` still calls `session.abort` and returns success. It also aborts unselected builtin commands. MCP manager is wired into RPC; prompt-text `/mcp reauth` (browser OAuth plus credential persistence) and `reconnectMcpServer` are reachable. `--no-extensions` disables extension discovery only and does not disable MCP. Swallowtail maps none of `/mcp`, reconnect, or OAuth; reconnect stays TUI-only. RPC steer and deferred extension loading stay inert under the selected launch. |
 
 `--approval-mode` gains accepted value `always-ask-cached` and still accepts
 `always-ask`, `write`, and `yolo`. The selected launch value stays
@@ -121,9 +121,21 @@ stays assistant `message_end` with `stopReason: error`. Usage stays
 wait`, `autoCompactionEnabled: false`, and `queuedMessageCount: 0`.
 
 `mr://` is `{ backing: "remote", selectors: "lines", immutable: true }` with
-the default read tier, resolve-only, no write, and no credential store. It
-is the same class as the earlier additive read resources. Swallowtail adds
-no URI-specific operation.
+the default read tier, resolve-only, and no write. Resolve runs ambient
+`glab` as the process principal, forwards `GITLAB_TOKEN` /
+`GITLAB_ACCESS_TOKEN` / `OAUTH_TOKEN` under a host-trust gate, reads `glab`
+`config.yml`, and performs GitLab network egress; tool-effect is exec of
+`glab`. That is the same class as the earlier `gh`-based `pr://` /
+`issue://` resources. Swallowtail adds no URI-specific operation.
+
+`--no-extensions` disables extension discovery only. MCP stays enabled on
+the selected `--tools read,grep,glob,todo,ask` launch (`enableMCP` is gated
+by `--no-tools`, not `--no-extensions`). `18.12.6` passes `mcpManager` into
+`runRpcMode` and wires `/mcp reauth` plus `reconnectMcpServer` into
+prompt-text builtin dispatch. Reauth opens a browser OAuth flow and
+persists credentials through `runtime.session.modelRegistry.authStorage`.
+The `reconnect` verb stays TUI-only. `18.8.3` rejected reauth as TUI-only.
+Swallowtail maps none of `/mcp`, reconnect, or OAuth.
 
 Extend `oh-my-pi.rpc.package-window-2` as a compatible extension: maintained
 `18.0.0..=18.12.6` on `oh-my-pi.rpc-v2-v18.0.0`. Keep deprecated

@@ -1349,6 +1349,20 @@
   },
   "qualification": {
     "shape": "identity-stop",
+    "owning_adaptation": {
+      "id": "antigravity.catalogue.artifact-authority-through-current-official",
+      "lane": "version-currentness",
+      "route": "antigravity.catalogue",
+      "owns_then_current_official": true,
+      "required_proof": "per-hop attributable static selected agy models control-flow on Linux x64 and Mac ARM64 covering dispatch, slug/display/default rendering, config/account/env/auth/model acquisition, errors/exit, and process/lifecycle/cleanup, with changed internals bounded by reachability",
+      "keeps_claim": "1.1.9..=1.3.1 excluding 1.2.18",
+      "keeps_headless": "1.2.11",
+      "interior_unpublished_must_not_become_maintained": [
+        "1.3.7",
+        "1.3.8",
+        "1.3.9"
+      ]
+    },
     "kept_ceiling": "1.3.1",
     "qualify": [],
     "qualified_segments": [

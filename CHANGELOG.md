@@ -12,8 +12,10 @@ annotated Git tags from the canonical repository.
   claim `antigravity.catalogue.release-window-1`, and `AllowUnverified`.
   Unpublished `1.2.18` stays excluded. Published hops `1.3.2` through
   `1.4.7` and unpublished `1.3.7`/`1.3.8`/`1.3.9` stay `UnverifiedNewer`
-  (Q-005; Contract 029 Artifact Authority). `antigravity.headless` stays
-  at exact `1.2.11`. See Research 449.
+  (Q-005; Contract 029 Artifact Authority). Owning adaptation
+  `antigravity.catalogue.artifact-authority-through-current-official` on
+  the `version-currentness` lane owns qualifying the then-current official
+  stable. `antigravity.headless` stays at exact `1.2.11`. See Research 449.
 - qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).
   The maintained segment is `0.66.0..=0.96.0`. Baseline `0.53.0`, claim id

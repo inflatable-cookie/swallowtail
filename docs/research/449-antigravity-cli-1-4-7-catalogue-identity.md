@@ -41,6 +41,19 @@ dispatch, slug/display/default rendering, config/account/env/auth/model
 acquisition, errors/exit, and process/lifecycle/cleanup, with changed
 binary/runtime internals bounded by reachability.
 
+## Finite follow-up
+
+Owning adaptation:
+`antigravity.catalogue.artifact-authority-through-current-official` on the
+`version-currentness` Queue lane. This record is the identity freeze for
+that task. The adaptation owns qualifying the then-current official
+`antigravity.catalogue` stable. It must not invent support from notes,
+writer-stride identity, or metadata-only platform rows (Q-005; Contract 029
+Artifact Authority). Interior unpublished `1.3.7`/`1.3.8`/`1.3.9` must not
+become Maintained without published artifacts. Preserve exact headless
+`1.2.11` and the catalogue bound `1.1.9..=1.3.1` excluding `1.2.18` until
+that proof lands. `AllowUnverified` stays while the adaptation is open.
+
 ## Identity and method
 
 Re-probed the documented official GitHub Releases channel on 2026-10-26.
@@ -99,8 +112,9 @@ The decoder corpus stays the frozen `1.1.9` slug lines.
 The catalogue claim stays one maintained segment on the existing behavior
 revision: `1.1.9..=1.3.1` (unpublished `1.2.18` stays excluded). Official
 stable hops `1.3.2` through `1.4.7` remain identity-frozen and
-`UnverifiedNewer` until per-hop dual-platform artifact-authority proof
-lands. `1.3.7`, `1.3.8`, and `1.3.9` had neither a release nor a tag on
+`UnverifiedNewer` while owning adaptation
+`antigravity.catalogue.artifact-authority-through-current-official` is
+open. `1.3.7`, `1.3.8`, and `1.3.9` had neither a release nor a tag on
 2026-10-26; they sit after the kept ceiling and assess `UnverifiedNewer`.
 `1.4.8` and `1.4.9` were also absent; `1.4.8` is the first unpublished later
 point (`UnverifiedNewer`). Published release metadata for `1.4.8` is absent

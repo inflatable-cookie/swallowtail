@@ -11,8 +11,10 @@ set and changed runtime files against the selected agy models behavior.
 Only antigravity.catalogue is in scope. Unpublished 1.2.18 stays excluded.
 The maintained window stays 1.1.9..=1.3.1. Official hops 1.3.2 through 1.4.7
 are identity-frozen and UnverifiedNewer (Q-005; Contract 029 Artifact
-Authority). Unpublished 1.3.7, 1.3.8, and 1.3.9 sit after that ceiling and
-are UnverifiedNewer, not a Maintained interior hole. The headless ceiling
-and its unqualified gaps are unchanged.
+Authority) while owning adaptation
+antigravity.catalogue.artifact-authority-through-current-official on the
+version-currentness lane is open. Unpublished 1.3.7, 1.3.8, and 1.3.9 sit
+after that ceiling and are UnverifiedNewer, not a Maintained interior hole.
+The headless ceiling and its unqualified gaps are unchanged.
 No downloaded binary was executed; no provider prompt, live catalogue,
 credential, install, or host update was used.

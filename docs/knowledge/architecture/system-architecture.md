@@ -527,6 +527,10 @@ OpenHands adds a package without a production route.
   the claim: Q-005 keeps the 2026-09-15 notes ruling scoped to hops through
   `1.2.2`, and Contract 029 artifact authority for selected `agy models`
   behavior on those hops is unproven, so they remain `UnverifiedNewer`.
+  Owning adaptation
+  `antigravity.catalogue.artifact-authority-through-current-official` on
+  the `version-currentness` lane owns qualifying the then-current official
+  stable.
   Research 353
   records the extension through `1.2.11` and raises the headless Contract 023
   acceptance options to the operator. Research 359

@@ -340,6 +340,7 @@ fn every_published_hop_classifies_the_exact_changed_file_set_per_route() {
     let dist = json(DIST);
     assert_eq!(protocol["scope"], "antigravity.catalogue only");
     assert_eq!(protocol["result"]["classification"], "identity-stop");
+    assert_owning_adaptation(&protocol["result"]["owning_adaptation"]);
     assert_eq!(
         protocol["result"]["catalogue_changed_hops"],
         serde_json::json!([])
@@ -467,6 +468,7 @@ fn catalogue_identity_freezes_1_4_7_and_keeps_claim_at_1_3_1() {
         serde_json::json!(["1.1.9..=1.3.1"])
     );
     assert_eq!(identity["qualification"]["shape"], "identity-stop");
+    assert_owning_adaptation(&identity["qualification"]["owning_adaptation"]);
     assert_eq!(identity["qualification"]["kept_ceiling"], "1.3.1");
     assert_eq!(identity["qualification"]["qualify"], serde_json::json!([]));
 
@@ -548,4 +550,40 @@ fn assert_exact_string_array(value: &Value, expected: &[&str]) {
         .map(|entry| entry.as_str().expect("array entry is text"))
         .collect::<Vec<_>>();
     assert_eq!(actual, expected);
+}
+
+fn assert_owning_adaptation(value: &Value) {
+    assert_exact_keys(
+        value,
+        &[
+            "id",
+            "lane",
+            "route",
+            "owns_then_current_official",
+            "required_proof",
+            "keeps_claim",
+            "keeps_headless",
+            "interior_unpublished_must_not_become_maintained",
+        ],
+    );
+    assert_eq!(
+        value["id"],
+        "antigravity.catalogue.artifact-authority-through-current-official"
+    );
+    assert_eq!(value["lane"], "version-currentness");
+    assert_eq!(value["route"], "antigravity.catalogue");
+    assert_eq!(value["owns_then_current_official"], true);
+    assert_eq!(value["keeps_claim"], "1.1.9..=1.3.1 excluding 1.2.18");
+    assert_eq!(value["keeps_headless"], "1.2.11");
+    assert_exact_string_array(
+        &value["interior_unpublished_must_not_become_maintained"],
+        &["1.3.7", "1.3.8", "1.3.9"],
+    );
+    let required = value["required_proof"]
+        .as_str()
+        .expect("required_proof is text");
+    assert!(
+        required.contains("Linux x64") && required.contains("Mac ARM64"),
+        "required proof must name both selected platforms: {required}"
+    );
 }

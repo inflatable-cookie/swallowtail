@@ -7,7 +7,7 @@
   "downloaded_artifacts_executed": false,
   "provider_prompt_sent": false,
   "credentials_used": false,
-  "inspection": "static extraction of selected argv/dispatch/wire/result/permission/cancel/auth/replay/cleanup literals from retained official Darwin ARM64 and Linux x64 archives at every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f; archives were not executed",
+  "inspection": "static extraction of selected argv/dispatch/wire/result/permission/cancel/auth/replay literals from retained official Darwin ARM64 and Linux x64 archives at every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f; archives were not executed. Host-owned cleanup is unchanged and has no vendor cleanup literal",
   "acp": {
     "command": "acp",
     "transport": "ACP v1 over stdio",
@@ -62,6 +62,7 @@
     "session_new_auth_gate": "async newSession(e){if(!this.isAuthenticated)throw ... methodId 'cursor_login'.`; minifier identifier for the login helper is p.mf at 2026.10.01-14929f9 and g.mf on later hops; selected message and methodId are unchanged",
     "cancel": "async cancel(e){const t=this.sessions.get(e.sessionId)?.session;t?.pendingPromptCancel?.()}",
     "cancel_sha256": "f5811db1ffd2791d8902b8dcfbd62b4a41252fd08b1bb7c7d05cec4016ff4979",
+    "cleanup": "host-owned process, task, and working-resource join-or-kill; no vendor cleanup literal is selected",
     "load_session_posture": "advertised-without-proven-replay",
     "continuation_recovery": "blocked",
     "replay_control_flow": "async replayConversationHistory remains present; ACP loadSession history replay failed to load conversation remains the failure log; Swallowtail still does not qualify replay",
@@ -176,6 +177,7 @@
     "index.js gains an internal git worktree --force refusal at 2026.10.22 on both platforms: git worktree remove is refused without --force; git worktree add is refused unless --no-checkout follows add. Swallowtail does not send --force.",
     "Worker, plugin, cloud, SEA, native, and other unselected chunks are enumerated in the hop ledgers.",
     "task_notification system events already exist at the 2026.10.01 ceiling and stay outside the selected headless init event.",
-    "Minifier identifiers in auth-method construction (I.fY vs S.fY, p.mf vs g.mf) and writer session/usage bindings change; selected field names, option ids, and wire keys do not."
+    "Minifier identifiers in auth-method construction (I.fY vs S.fY, p.mf vs g.mf) and writer session/usage bindings change; selected field names, option ids, and wire keys do not.",
+    "Session cleanup is host-owned process/task/resource join-or-kill. No vendor cleanup literal was extracted or hashed."
   ]
 }

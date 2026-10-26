@@ -14,13 +14,15 @@ build per calendar date, so `2026-10-14` is bound to `941492e` and
 `identity.json` freezes registry commits, archive URLs, sizes, and SHA-256
 digests for Darwin ARM64 and Linux x64, plus selected ACP, SDK, headless
 writer, runtime index, launcher, package, and Node digests. `dist-inventory.json`
-freezes complete extracted file sets and every hop's added, removed, changed,
-and identical paths. `protocol.json` records the selected ACP and headless
-control-flow extracted from those retained archives on both platforms at every
-hop: initialize/auth/permission/cancel/replay literals, SDK `0.14.1` / Zod
-packaging, and headless argv/mode/writer result fields, with SHA-256 of the
-byte-identical cores. Writer-chunk hashes remain artifact identity. Archives
-were not executed.
+freezes complete extracted path sets and every hop's added, removed, changed,
+and identical paths, with selected-file digests and path-set digests. It does
+not freeze a digest for every archive member. `protocol.json` records the
+selected ACP and headless control-flow extracted from those retained archives
+on both platforms at every hop: initialize/auth/permission/cancel/replay
+literals, SDK `0.14.1` / Zod packaging, and headless argv/mode/writer result
+fields, with SHA-256 of the byte-identical cores. Session cleanup is host-owned
+and has no vendor literal. Writer-chunk hashes remain artifact identity.
+Archives were not executed.
 
 The `cursor.com/install` script agreed on `2026.10.22-27dcf5f`. No archive
 was executed. No provider prompt, credential, authenticated catalogue, or

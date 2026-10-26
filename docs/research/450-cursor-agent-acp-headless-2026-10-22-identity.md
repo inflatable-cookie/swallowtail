@@ -91,8 +91,8 @@ bundled Node binary changes only at `2026.10.22`.
 Linux file deltas from the ceiling: `0f9edde` changes 69 files; `941492e`
 changes 17 and adds or removes none, with an identical ACP SDK chunk; later
 hops change 47, 42, 19, then 98 files. Darwin deltas are larger because chunk
-names move. Full path lists, per-file digests, and path-set digests are frozen
-in
+names move. Full path lists, selected-file digests, and path-set digests are
+frozen in
 [`cursor-agent-acp-headless-2026.10.22/identity.json`](../../crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-acp-headless-2026.10.22/identity.json)
 and
 [`dist-inventory.json`](../../crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-acp-headless-2026.10.22/dist-inventory.json).
@@ -104,8 +104,10 @@ ACP command, SDK, runtime index, and headless writer chunks were extracted
 from the retained official Darwin ARM64 and Linux x64 archives at every hop
 from `2026.10.01-14929f9` through `2026.10.22-27dcf5f`, including the five
 Linux intermediate hops. Archives were not executed. Selected
-argv/dispatch/wire/result/permission/cancel/auth/replay/cleanup literals were
-hashed; `protocol.json` freezes those strings and SHA-256 values.
+argv/dispatch/wire/result/permission/cancel/auth/replay literals were hashed;
+`protocol.json` freezes those strings and SHA-256 values. Session cleanup is
+host-owned process, task, and working-resource join-or-kill; no vendor cleanup
+literal was extracted or hashed.
 
 The selected initialize core is byte-identical on both platforms at every hop:
 `loadSession:!0,mcpCapabilities:{http:!0,sse:!0},promptCapabilities:{audio:!1,embeddedContext:!1,image:!0}`

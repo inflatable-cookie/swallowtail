@@ -202,6 +202,19 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         protocol["acp"]["permission_options_sha256"]
     );
     assert_eq!(
+        protocol["acp"]["cleanup"],
+        "host-owned process, task, and working-resource join-or-kill; no vendor cleanup literal is selected"
+    );
+    assert_eq!(
+        sha256(
+            protocol["acp"]["initialize_literal_byte_identical"]["caps"]
+                .as_str()
+                .expect("initialize caps")
+                .as_bytes()
+        ),
+        protocol["acp"]["initialize_literal_byte_identical"]["caps_sha256"]
+    );
+    assert_eq!(
         protocol["acp"]["load_session_posture"],
         "advertised-without-proven-replay"
     );

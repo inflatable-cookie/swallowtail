@@ -107,7 +107,7 @@ fn task_control_behavior_changes_only_at_0_2_117_without_new_authority() {
 
 #[test]
 fn production_claim_matches_the_frozen_segments() {
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.70");
     let claim = grok_build_acp_claim();
     for candidate in [
         "0.2.114", "0.2.115", "0.2.116", "0.2.117", "1.0.4", "1.0.5", "1.0.6", "1.0.17", "1.0.24",
@@ -122,7 +122,7 @@ fn production_claim_matches_the_frozen_segments() {
     ));
     for maintained in [
         "1.0.4", "1.0.5", "1.0.30", "1.0.40", "1.0.41", "1.0.42", "1.0.43", "1.0.44", "1.0.45",
-        "1.0.46",
+        "1.0.46", "1.0.47", "1.0.70",
     ] {
         assert!(matches!(
             claim.assess(&version(maintained)),
@@ -130,7 +130,7 @@ fn production_claim_matches_the_frozen_segments() {
                 if matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
-    for later in ["1.0.47", "1.0.48", "1.0.49", "1.1.0"] {
+    for later in ["1.0.71", "1.1.0"] {
         assert!(matches!(
             claim.assess(&version(later)),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
@@ -192,7 +192,7 @@ fn identity_and_handshake_qualify_1_0_4_as_same_axis_milestone() {
     assert_eq!(handshake["provider_prompt_sent"], false);
     assert_eq!(handshake["session_resume_qualified"], false);
 
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.70");
     let claim = grok_build_acp_claim();
     assert!(matches!(
         claim.assess(&version("1.0.4")),
@@ -269,7 +269,7 @@ fn identity_and_handshake_qualify_1_0_5_as_compatible_extension() {
     assert_eq!(handshake["provider_prompt_sent"], false);
     assert_eq!(handshake["session_resume_qualified"], false);
 
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.70");
     let claim = grok_build_acp_claim();
     assert!(matches!(
         claim.assess(&version("1.0.5")),

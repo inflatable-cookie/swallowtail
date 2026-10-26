@@ -274,7 +274,7 @@ fn selected_wire_keys_models_and_acp_path_changes_are_exact() {
 #[test]
 fn production_claim_extends_the_existing_milestone_without_widening_other_routes() {
     let claim = grok_build_acp_claim();
-    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
+    assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.70");
     assert_eq!(claim.id().as_str(), "grok-build.acp.executable-window-2");
     assert_eq!(claim.axis().as_str(), "grok-build.executable");
     assert_eq!(claim.scheme(), InterfaceVersionScheme::Semantic);
@@ -283,7 +283,7 @@ fn production_claim_extends_the_existing_milestone_without_widening_other_routes
         InterfaceNewerVersionPosture::AllowUnverified
     );
     assert_eq!(claim.baseline().as_str(), "0.2.114");
-    assert_eq!(claim.latest_qualified().as_str(), "1.0.46");
+    assert_eq!(claim.latest_qualified().as_str(), "1.0.70");
     let milestones: Vec<_> = claim.milestones().collect();
     assert_eq!(milestones.len(), 3);
     assert_eq!(
@@ -313,7 +313,7 @@ fn production_claim_extends_the_existing_milestone_without_widening_other_routes
             milestones[2].minimum().as_str(),
             milestones[2].maximum().as_str()
         ),
-        ("1.0.4", "1.0.46")
+        ("1.0.4", "1.0.70")
     );
     assert_eq!(
         milestones[2].support_status(),
@@ -326,13 +326,11 @@ fn production_claim_extends_the_existing_milestone_without_widening_other_routes
             InterfaceCompatibilityAssessment::Incompatible
         );
     }
-    for candidate in ["1.0.47", "1.0.48", "1.0.49"] {
-        assert!(
-            matches!(
-                claim.assess(&InterfaceVersion::new(candidate).unwrap()),
-                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-            ),
-            "{candidate} stays outside the qualified window"
-        );
-    }
+    assert!(
+        matches!(
+            claim.assess(&InterfaceVersion::new("1.0.71").unwrap()),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ),
+        "1.0.71 stays outside the qualified window"
+    );
 }

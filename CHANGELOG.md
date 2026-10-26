@@ -16,8 +16,14 @@ annotated Git tags from the canonical repository.
   leaves every row non-default, and no unlisted id is promoted. The claim id
   moves to `grok-build.catalogue.executable-window-1`; the route, operation,
   argv, configuration posture and `QualifiedOnly` policy are unchanged, and
-  every older or newer point still fails closed. The ACP ceiling stays
-  `1.0.46`. See Research 443.
+  every older or newer point still fails closed. See Research 443. At that
+  catalogue qualification the ACP ceiling was still `1.0.46`.
+- qualify `grok-build.acp` through official stable `1.0.70` as a compatible
+  extension of `grok-build.acp-v1.cached-token-model-4-6-v3`. The claim id,
+  `AllowUnverified` posture, baseline `0.2.114`, deprecated `0.2` segments,
+  and maintained floor `1.0.4` stay. Unpublished `1.0.71` remains
+  `UnverifiedNewer`. The catalogue claim, the registered-tool capsules, and
+  the HTTP MCP pin stay on their existing bounds. See Research 444.
 
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,

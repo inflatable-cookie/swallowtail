@@ -1,0 +1,1689 @@
+{
+  "compared": [
+    "2.1.293",
+    "2.1.294",
+    "2.1.295",
+    "2.1.296",
+    "2.1.299",
+    "2.1.300",
+    "2.1.301",
+    "2.1.302",
+    "2.1.303",
+    "2.1.304",
+    "2.1.305",
+    "2.1.306",
+    "2.1.307",
+    "2.1.308",
+    "2.1.309",
+    "2.1.310"
+  ],
+  "unpublished_between": [
+    "2.1.297",
+    "2.1.298"
+  ],
+  "package_file_counts": {
+    "claude-code": {
+      "2.1.293": 7,
+      "2.1.294": 7,
+      "2.1.295": 7,
+      "2.1.296": 7,
+      "2.1.299": 7,
+      "2.1.300": 7,
+      "2.1.301": 7,
+      "2.1.302": 7,
+      "2.1.303": 7,
+      "2.1.304": 7,
+      "2.1.305": 7,
+      "2.1.306": 7,
+      "2.1.307": 7,
+      "2.1.308": 7,
+      "2.1.309": 7,
+      "2.1.310": 7
+    },
+    "claude-code-darwin-arm64": {
+      "2.1.293": 4,
+      "2.1.294": 4,
+      "2.1.295": 4,
+      "2.1.296": 4,
+      "2.1.299": 4,
+      "2.1.300": 4,
+      "2.1.301": 4,
+      "2.1.302": 4,
+      "2.1.303": 4,
+      "2.1.304": 4,
+      "2.1.305": 4,
+      "2.1.306": 4,
+      "2.1.307": 4,
+      "2.1.308": 4,
+      "2.1.309": 4,
+      "2.1.310": 4
+    },
+    "claude-code-linux-x64": {
+      "2.1.293": 4,
+      "2.1.294": 4,
+      "2.1.295": 4,
+      "2.1.296": 4,
+      "2.1.299": 4,
+      "2.1.300": 4,
+      "2.1.301": 4,
+      "2.1.302": 4,
+      "2.1.303": 4,
+      "2.1.304": 4,
+      "2.1.305": 4,
+      "2.1.306": 4,
+      "2.1.307": 4,
+      "2.1.308": 4,
+      "2.1.309": 4,
+      "2.1.310": 4
+    }
+  },
+  "packages": {
+    "claude-code": {
+      "2.1.293": {
+        "published_at": "2026-10-07T17:18:04.464Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.293.tgz",
+        "tarball_integrity": "sha512-PfPSvsd0zH1R1NhLKLebYdEXg/KcGCXc7LBntE186EWuZtBXa7sMnBqs0/uW/BvzkBEfHKqww/WbK/kMAk0TXg==",
+        "tarball_sha256": "a96c76dfce0fd4b0449201ac16e6ac4f6517330a9a046b0f53197088f9a1dff4",
+        "unpacked_size_bytes": 188525,
+        "files": {
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "package.json": "52369506e614707e0749f17ece61c10c32160d57cd1f0d4f1bbd640dad81ca60",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024"
+        },
+        "file_sizes_bytes": {
+          "bin/claude.exe": 500,
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "LICENSE.md": 147,
+          "package.json": 1476,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 170993
+        }
+      },
+      "2.1.294": {
+        "published_at": "2026-10-08T03:42:57.084Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.294.tgz",
+        "tarball_integrity": "sha512-n5JvkRu2cd8zc4bINO5myqVaEKid3ttD8BVh+LT4W6Jmwww5TyKBLH8RzLhk/hS/cpEtwF8onh8XunjCZYerUg==",
+        "tarball_sha256": "a6292c46ed942bfa6b151ad4da5938484ce826aee16423edf36b93f48f6ec099",
+        "unpacked_size_bytes": 188525,
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "package.json": "e1607276a979d6d08901f1a48eb4b0f487f1920c7ae48cc0a7689b51d86d9f22",
+          "sdk-tools.d.ts": "d850d83ecd9e5f92be6e1d98b54b228e68ce0cc32767391f6e20573a4870e024"
+        },
+        "file_sizes_bytes": {
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "bin/claude.exe": 500,
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "package.json": 1476,
+          "sdk-tools.d.ts": 170993
+        }
+      },
+      "2.1.295": {
+        "published_at": "2026-10-08T18:22:58.621Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.295.tgz",
+        "tarball_integrity": "sha512-PTdE5NdqwwyCmtbX/0WAuosyip8DkwC6M5mAJv+b9KGuxMFnkTJbc2b3EY6FYdo5ZTWkm6MN8reA9YWWMrLR+g==",
+        "tarball_sha256": "fe0d5efb8136f23e7292e227d14a1fc04f3fb05981dd9d0585d03be7bd8d863a",
+        "unpacked_size_bytes": 188657,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "cf0d01dd905d0c977fac1fc7cb35f779ff5ef9ee177b8a3dddf31b64ad6e2881",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "749e6f013c480ef06598396334512e14c1659d897b815c057385e8dd84bf3d22"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171125
+        }
+      },
+      "2.1.296": {
+        "published_at": "2026-10-09T16:58:10.924Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.296.tgz",
+        "tarball_integrity": "sha512-OX/k/rpcthMqnFKOWcpNcbiLsMKtAjLOpQNJHlYiDCFUznWCIwdRTyl/p9SdHVrsrzZuPMCNqZjnpakIni6upw==",
+        "tarball_sha256": "f6c375d51d4c22a7a850e185a0d7ddda85173f89dbbeb3262aa7971e3bd670b5",
+        "unpacked_size_bytes": 188981,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "c82bfa35b198f8e4ad0cb44c03faa8d125fa4a99370d5034b6439dd52167e7fd",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "63e378f4585427786c6cd0e876f094c8ade8d284d86554ef44f83a5cdf396cfb"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171449
+        }
+      },
+      "2.1.299": {
+        "published_at": "2026-10-14T00:23:19.588Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.299.tgz",
+        "tarball_integrity": "sha512-7pI5Pi+q0GHtX429SHGT0+IZgQ/2VlgcwRAHeDcH0vsumkF3tCHFp2vzKxp0uh8aytskZWHhmJ3kBi7ZfabywQ==",
+        "tarball_sha256": "af955f68d925dc7f94fb397fa34465b5c0610cec59c75314ca9c06fef65bae7d",
+        "unpacked_size_bytes": 189328,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "854491166e4db775ddc71f3685abe2b356d0c401a41edac8a0c827d835da17f9",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "446a7642c53423d239768cdf0e8e427df0e629d43e848632fbcd57cdfc93dad7"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171796
+        }
+      },
+      "2.1.300": {
+        "published_at": "2026-10-14T14:27:26.554Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.300.tgz",
+        "tarball_integrity": "sha512-EOOmbzTxKxiukfV8T7K2+uDIxt8kR1vn+hgLB464HdjH1fZWS+qAc/nY6GYThcbe4kTqQOCFnyOcFKMXOxl+PQ==",
+        "tarball_sha256": "207cd21460a57b5d370a5452a0b9216b5b0583271f148f24f69b3352624ad680",
+        "unpacked_size_bytes": 189328,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "e45430de9c1488d15464aa506ae0d18cbf883f6fd2d533a6b2089aef8a96dd99",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "446a7642c53423d239768cdf0e8e427df0e629d43e848632fbcd57cdfc93dad7"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171796
+        }
+      },
+      "2.1.301": {
+        "published_at": "2026-10-15T14:34:23.330Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.301.tgz",
+        "tarball_integrity": "sha512-sEqs0D9IIc6GwbdMvss5GHOjLjhaoqbrZWdickLRlG6v4kT946t4pq3zFAmQdUpRgdv1CvtSLyRrrdp+hDS9ww==",
+        "tarball_sha256": "a6c33587bc5cab060f7eb6a9aa1dab1030f9fe5dd1bd73ffdfac4a6c71987e67",
+        "unpacked_size_bytes": 189328,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "e2c5eab93f177f3f3df1ce2757c66245a054bee6f89373c5400b6f8a0fe2962b",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "446a7642c53423d239768cdf0e8e427df0e629d43e848632fbcd57cdfc93dad7"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171796
+        }
+      },
+      "2.1.302": {
+        "published_at": "2026-10-16T16:48:28.057Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.302.tgz",
+        "tarball_integrity": "sha512-+5GARMH0vX8a+o8xGrmx67KH+aDI5aYVO2qFustRhUJrSMdxzb4LtUmF2rL+PyaxCpHfXYZz38vfIuT2irg/Cg==",
+        "tarball_sha256": "ac1a6a3364c467392bc40a8a405490e821575e3e858d3013b11258862c01dfc8",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "7aefd02c45ca3d00fc7ac15bcb378ac3d30f37c1709dbed1190b3f4fa914ea50",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.303": {
+        "published_at": "2026-10-18T21:15:23.178Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.303.tgz",
+        "tarball_integrity": "sha512-vGwsxL/bjxl7crYg2/BLBs75ErQ22x9L3LKqZqwqZ9vwp6A41sVCDdBXsPftM19V5LAwK6/s/sAxIVjX6F4O6Q==",
+        "tarball_sha256": "5308f26857d9a47957defeae8aaf91c886edb3ec1953eb53340416afda86446e",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "88fafae87117a9c18c19b1265ae1f55df06ea7c3345f180ace56d18101b23439",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.304": {
+        "published_at": "2026-10-19T19:47:15.337Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.304.tgz",
+        "tarball_integrity": "sha512-oAD2KLEUdAbsAMxQMWYHq/AHCUlkYuZ80ovkL0mVSy07z+EeDhIo19/XpRA2NVI+9/LZCC+NXCJm+/hIvhNWWQ==",
+        "tarball_sha256": "94dcc84341b99d0b5f76d6c6ca24feb4109250a2bdba728fa2163aeb7fba00ac",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "8c299b43f8bed05ab56a3bce404df409d1bfa77723355445c4a6b5ce167ea22a",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.305": {
+        "published_at": "2026-10-20T19:29:36.816Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.305.tgz",
+        "tarball_integrity": "sha512-c47oVI7/52vfjmm/s6kcw7NpfTW9Jzm+I5WTsdnC7/vMjbxrKUslpi9/+WZ96Z3am1vhLgyCMPA9Q2Qficii+g==",
+        "tarball_sha256": "f2194f47ec9b83627ed234b3bc7d9d5a4928f4d8ee4e5d578637866add5faacb",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "b69625c6dd971f0c827e44da2be1d9a3fa8f80e2155b8dea5f6f367560b3e312",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.306": {
+        "published_at": "2026-10-21T02:28:47.495Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.306.tgz",
+        "tarball_integrity": "sha512-7biQtEqwnigGbezCgmpkGfcleiRddNy7Z9FXLCxmaizBnC11Qk9dxnr6mPBMX5eTRbnoMGHHIsL5M5el1vWhlw==",
+        "tarball_sha256": "632c949f968412f220d0a51a4252bae2a8be0eba42559effa92c0b02557ca8a7",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "f615e4b5abedb970d832e9062789cca3c1d4297f7e97e71f4f92d61dccffdc04",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.307": {
+        "published_at": "2026-10-21T20:47:18.383Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.307.tgz",
+        "tarball_integrity": "sha512-/G+XTieqaNEpug8R7iQSgEvWYO7nRsxs3Hm7f0bSHboVn1KYr5rBgUFwXnAqmbFEtVek+qbl5n/xdX5eezKNGA==",
+        "tarball_sha256": "68267ff08af0e2bcc3dc43e1960bd2c560e712776d135b9f92bee479b0b475f2",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "fe1636509fad954f0c7d1f3a30c307d40ef25d8d68465125008e7088ed170cd6",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.308": {
+        "published_at": "2026-10-22T04:19:48.902Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.308.tgz",
+        "tarball_integrity": "sha512-b2HnszgyN73wRTFP+IYPDJNn9ADXnG6jr26ibL+w03HSKqfb6GqE8Jnfr4mz37Zv4AT/NP+B5/3c1F89WTdWSA==",
+        "tarball_sha256": "eb31cce76caf05f2b6b054b23cdb5681055a9b4d8ef7e50f23a86762f622ffc8",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "659a222101a84b6005002069b669a2a90d197fffb1d4b1b2281fd27f3cbbdbf2",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.309": {
+        "published_at": "2026-10-22T20:34:13.713Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.309.tgz",
+        "tarball_integrity": "sha512-+lBYZRuXOJpiKJcRv/CK7gF+5UFNWyJE7hSxkgGUKDZOWgANl9MAabfTkrJk183Tp3B0Nv4xF/DU1t0BaKXOPw==",
+        "tarball_sha256": "507309e76aa5e13e5f95a8964dcbaad1ff447eb004f6d6ecd67e4c55e937e03e",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "5545f1628144a1abca535bfb04fb0fa55f5749c87a4b64615e9be48569fb983d",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      },
+      "2.1.310": {
+        "published_at": "2026-10-23T21:20:46.540Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-2.1.310.tgz",
+        "tarball_integrity": "sha512-EySpBwaocdU1nc9r7JH+GOlnMsbXc764d3HX7NL8fr7qqdxz2MiXI9hqf/rzeE/XgU23HHFltIqhb+Fq6G1CVw==",
+        "tarball_sha256": "d696314076114df499ba88e117000a24a9d7ab4f502dcaefba52c83fd22acfbd",
+        "unpacked_size_bytes": 189395,
+        "files": {
+          "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+          "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "package.json": "9bc112ff7aafc9fda80d9ef72fb7f067ed4f00976c719d036802a6fea98d9d28",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "sdk-tools.d.ts": "25fa8caa18dacde752ebede11d55dccfc5f8c6ff011478cf92da49420e2690dc"
+        },
+        "file_sizes_bytes": {
+          "cli-wrapper.cjs": 4997,
+          "install.cjs": 8375,
+          "bin/claude.exe": 500,
+          "package.json": 1476,
+          "LICENSE.md": 147,
+          "README.md": 2037,
+          "sdk-tools.d.ts": 171863
+        }
+      }
+    },
+    "claude-code-darwin-arm64": {
+      "2.1.293": {
+        "published_at": "2026-10-07T17:25:40.224Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.293.tgz",
+        "tarball_integrity": "sha512-NevSLSNuN9duHsTTmVI6/DIb5kQG9Nj2nZftakmBrjfLu/om5eCOtb/zv2QFXuW8oA17fze6l7v7wI9wzjRsPw==",
+        "tarball_sha256": "0c7bbfb7c571161caa5283a61056bc6e4414222c9488e01beed77f59c9210966",
+        "unpacked_size_bytes": 236331185,
+        "files": {
+          "claude": "4e21122a227857da1178aca3299700c1fd7f2b77c93f12e73c2c76db796a105e",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "package.json": "ec3cb4d7768cba4ee26258182fefee17af5d8ae964a8c00c97d750a05b4e7c6d",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 236330608,
+          "LICENSE.md": 147,
+          "package.json": 277,
+          "README.md": 153
+        }
+      },
+      "2.1.294": {
+        "published_at": "2026-10-08T03:42:02.637Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.294.tgz",
+        "tarball_integrity": "sha512-frtT/oUDIYgiFRRNIDcPQuteofIs+zQgV5ibO2F9pJiHiiIQ2b9iERj7Fyw7NpEJh2TjkmBfhOGNvFjTkNYm1g==",
+        "tarball_sha256": "846fa18ec1924e0c0fc0948dc5d4c31c667986f7f5c84b30eeca1f1056c90ae2",
+        "unpacked_size_bytes": 236331185,
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c",
+          "claude": "def0d15e64dd7d89621f88d28214f885b1c38b0ddd69762fb8593e34915d6d53",
+          "package.json": "5b697db0af4cceebd60a33cfc0e7417ad654dce526b6b98ac1239f75b6d69027"
+        },
+        "file_sizes_bytes": {
+          "LICENSE.md": 147,
+          "README.md": 153,
+          "claude": 236330608,
+          "package.json": 277
+        }
+      },
+      "2.1.295": {
+        "published_at": "2026-10-08T18:22:19.734Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.295.tgz",
+        "tarball_integrity": "sha512-qGetxxeqaqHR7Ev5AfTFfYuze0S99d27DV2IuFfjXigY9CKkLUy2jf3cCXjt8y4BAlGyNrqwKmIdrCjwtjAe8g==",
+        "tarball_sha256": "625059f3bf932f119bb9280b6823d869f426c56ac2efc56554718173270e5341",
+        "unpacked_size_bytes": 239696465,
+        "files": {
+          "claude": "0116ee2e0a513900b633d9951367f18747686478e2b462805b8c31609f047f70",
+          "package.json": "90d80f75ae0d03fd82bc9c52fbaa2e59427251a0bc8055e4857136dbf4c645f9",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 239695888,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.296": {
+        "published_at": "2026-10-09T16:59:59.924Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.296.tgz",
+        "tarball_integrity": "sha512-vqtx3kS3r1hNLMk+N8JMG5J4kcLHIbI3t/NSIdcFQZrRVCFA6NtcxJyn/B+Sf3GxJaFJOCEfoBQXsFo10+Oj9A==",
+        "tarball_sha256": "50fbf594d6526c9aae7d66b8b45a08d89ae6b863e2bc9777bfb277d6521a7458",
+        "unpacked_size_bytes": 240665009,
+        "files": {
+          "claude": "c9b5341637becbd423ddffc5b254afb645682a3868cb708bbc6cc0e7bb419937",
+          "package.json": "ab872cbd5d2ab92292e3797a9cdc4f8e8082d05eda7d255f75d22acb14772e1d",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 240664432,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.299": {
+        "published_at": "2026-10-14T00:22:24.619Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.299.tgz",
+        "tarball_integrity": "sha512-BYtS0vwnPcAr0nL7vpFhxs7cb4p+3sDv87xHbxtK+C5C7pa+LExNWP97taK/d0UHg2F3EfPJHqVcFSddtl2J4Q==",
+        "tarball_sha256": "86b621e84c7a553063a289da90c99a1167064c2033c755066f4d50eaf1e84744",
+        "unpacked_size_bytes": 247932273,
+        "files": {
+          "claude": "ba5ab7b8c195fa03ab8d5bf3915c76153b576a2c40e79a5c46e265e7ed9744b3",
+          "package.json": "3600d293623d7dec18d21416bc551f020e4fdbd468123905e65aa8cefdac6eaf",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 247931696,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.300": {
+        "published_at": "2026-10-14T14:26:21.116Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.300.tgz",
+        "tarball_integrity": "sha512-voMU27sitARLTfblwmsPZvqVLkuhnJknwVJpAcYq9iSioC42Sxff4jv/QkjDThsx9p/NoF+T1XaKrWa4Qtn7Xg==",
+        "tarball_sha256": "3d66175a994f7c884a940bc29353127920b7ab293e9573050ad5602042647a1f",
+        "unpacked_size_bytes": 249557457,
+        "files": {
+          "claude": "475517caa611e3318a2f298fa071287ec98955538df78c58f709ecc01e5ae2d3",
+          "package.json": "17d5c1afa189137922ce52ede0996721eedb670abd3ce881e9e606a4ad94c371",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 249556880,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.301": {
+        "published_at": "2026-10-15T14:33:47.677Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.301.tgz",
+        "tarball_integrity": "sha512-A4OcibtminZ9KlXX4ce/yhPVdPKWnJ6nK5vNGBdP1uPMp68KryG++C/J12EUeW9FvEhvwnHKX86eG9TkJkPcpg==",
+        "tarball_sha256": "c67bc3391e1ef3a341c6712987e11663425a431137dde946d178867c5b682f37",
+        "unpacked_size_bytes": 250542417,
+        "files": {
+          "claude": "1f04c69e1c24e4d0a716a863af0aad8fc64d49a499334c29701f073700276b99",
+          "package.json": "29b5a88831183697c830c3076544a64c23d73c8f6bf0979e4c609b630761387f",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 250541840,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.302": {
+        "published_at": "2026-10-16T16:47:35.304Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.302.tgz",
+        "tarball_integrity": "sha512-h0MlQtldJnHXdPB6KGQ6rYQocvNTEXBI+NW4791OD2mIZcq6fHrV4PsM+XK297OL0+wVENlDHtlBj1BL/3S52A==",
+        "tarball_sha256": "fb216fa683cb2e4c0d65bfb3393a5c0d47a942efb3e0ddc9b1c4c660b3b86554",
+        "unpacked_size_bytes": 267957297,
+        "files": {
+          "claude": "5262ce9de86243fed0d21edc39b271555d56780d0112e2b194439fe1c6662d37",
+          "package.json": "5afe8faf5039f2bad80f2f9c314a76ac3e8a4fd6301493833c7928652985746c",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 267956720,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.303": {
+        "published_at": "2026-10-18T21:13:05.484Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.303.tgz",
+        "tarball_integrity": "sha512-eUDjBfaeWdlUaMca+PAnG1+IGnT4qEPk9F3CNfkZHsHyFygSt4WDxL+lxCmZ7PziQGraZ4MSuaIuT3fPx4AdYA==",
+        "tarball_sha256": "867b9248895bc9ae5740dd228e6c9bd2deaefd2dd3b8f72dc40bbe1a90037e1b",
+        "unpacked_size_bytes": 267973713,
+        "files": {
+          "claude": "d2da3b003dc08b88b7230469014fe3e1dc6fe94bc8f648e89b34175d30269370",
+          "package.json": "b164e1def13a592118dcf538d4fc9aa91616d31859430ae200e75e05ba32bb25",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 267973136,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.304": {
+        "published_at": "2026-10-19T19:46:03.422Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.304.tgz",
+        "tarball_integrity": "sha512-io7hBh98nUB3wTzg+XKoh2pN4j71w155wj2jAoF9bwWrnT7u6gcm9vTh0geArjABGNSh2+GaApa+lYREWOOwxw==",
+        "tarball_sha256": "ae0b63c8dd8057d404f89f2b24e70b5a4d7555162df1c29f075536e5925963f9",
+        "unpacked_size_bytes": 271161873,
+        "files": {
+          "claude": "b9ac5374839f14abf3f1f45610637c332b5daee5ce0d1634726cef87aab78e6a",
+          "package.json": "7b9f53f036a37c2f0fe096c7762de6c4d10634c54888850a7d896ddd47ae3c4e",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 271161296,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.305": {
+        "published_at": "2026-10-20T19:27:38.984Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.305.tgz",
+        "tarball_integrity": "sha512-sP2WMFZ7LJgrPYKCDa2M1Dfy6cDuwrKPRkVPmDiSRhaqd3qBfQc3a8eZov5oYyqk+lSo7HsTGXxr57cbeVqcpA==",
+        "tarball_sha256": "c53676323f3b4e150e10507b26d914264fd6e11fdb7240b47b36e3601e887b42",
+        "unpacked_size_bytes": 272984753,
+        "files": {
+          "claude": "ea3ea3c08d2a9634a4651e687fcf900d410c489bce2b00f22bd7352b91ba704f",
+          "package.json": "df0721ed6f666260ac7f49ef67cf350cd88d94e4a7a2ad00a9bb223ad7a0497e",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 272984176,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.306": {
+        "published_at": "2026-10-21T02:27:06.984Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.306.tgz",
+        "tarball_integrity": "sha512-rX3L0TI2pZdl/SLmqRucVutnPgByT2ZTwU1+/N19okhd/5Grj7np5xhXNycqpEq9JhNX4/DOujb1TxhHii0agA==",
+        "tarball_sha256": "1ac6eca43e4717e7bb863679436a722b8640f20cb11b3e3a7cfc8746d1f86472",
+        "unpacked_size_bytes": 272984753,
+        "files": {
+          "claude": "b5d795b7760032d79954b55a9cd1876dcf3a8dc9608fd6bb9f618593f69fd44b",
+          "package.json": "8c27d14c59a1104f7fb5c715ed98e8b6fe2531feda5e994191e935dbed0663ca",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 272984176,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.307": {
+        "published_at": "2026-10-21T20:44:39.801Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.307.tgz",
+        "tarball_integrity": "sha512-bBNAygs3y8j4jkwmBoq9PyYNHaYj4KsJ5Ca2dtj8CGeUAiFsTCOzzwNMbXHhMAhAkg7m0jXUo2S1YDQmYh1gUw==",
+        "tarball_sha256": "e6d59f0de94c571d1430cf30124534cf85766cabbd10a362594803d9ea5cf113",
+        "unpacked_size_bytes": 274429361,
+        "files": {
+          "claude": "5b113a7752119470f1da419cb0e608af3361cae25b614216b13022093958fb2a",
+          "package.json": "635cf0ee0cdc1d87816d342fed68ff7566eb242ce00dd0006cb1811b20419cda",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 274428784,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.308": {
+        "published_at": "2026-10-22T04:16:32.942Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.308.tgz",
+        "tarball_integrity": "sha512-fdIEbsrjlOiB8XLD3HWMi7fFGNrRzz7vPUmstgL/7qf4DLWzoWpgpCYaovrX8fp2wRsexiNok/9WZea938jJUw==",
+        "tarball_sha256": "643eef6426295ad0a669237c52baa87a3d9591b2f7d64e4bb1c98d80ea095797",
+        "unpacked_size_bytes": 274676257,
+        "files": {
+          "claude": "ca923c86ac84b30574a82331a05b6e066c27477a926ceaffe46a845a33e4dd37",
+          "package.json": "4ae64f4236824bcd50839c9cf477a966b568a003c0139b9626f123e79f0f6922",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 274675680,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.309": {
+        "published_at": "2026-10-22T20:33:09.454Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.309.tgz",
+        "tarball_integrity": "sha512-7ZVUH/WyxWpFfkV90tJBUSnFTQo8wwRxHNOLNj+q8eYp5DNoCU8KOVC3OiNDmo832BrfQImH0XmpWjGqKPulDg==",
+        "tarball_sha256": "0e8ce1ddb8566129661bb7698db69db89d904e23b464afc6e85d5bd8879b9a51",
+        "unpacked_size_bytes": 275923873,
+        "files": {
+          "claude": "5eadc0009cdcdbc0d06e58110d7b2baf88ced6088b1c33a60a21217fe410619c",
+          "package.json": "92b0209acd7fad9c6ac54c3208cf4607d49a85fade35f05a82b9ed57154fbd96",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 275923296,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      },
+      "2.1.310": {
+        "published_at": "2026-10-23T21:21:40.889Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-2.1.310.tgz",
+        "tarball_integrity": "sha512-1HkmRv3tvMTjTrsW5J17S3NtjFjEDC8nnhduNT0klPStHes8/FRX1YFv7UwnfC6fuwd31kFuzWLyNn2IN07JtQ==",
+        "tarball_sha256": "e0247bef8f1273adc47fb4b2e5bd0da2e8867a430c9347a1c62d9b01174172eb",
+        "unpacked_size_bytes": 274068801,
+        "files": {
+          "claude": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd",
+          "package.json": "e4993bec0737e3959f66dff547476102e7635b338d1082616ce9619d351f5114",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c"
+        },
+        "file_sizes_bytes": {
+          "claude": 274068224,
+          "package.json": 277,
+          "LICENSE.md": 147,
+          "README.md": 153
+        }
+      }
+    },
+    "claude-code-linux-x64": {
+      "2.1.293": {
+        "published_at": "2026-10-07T17:31:16.948Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.293.tgz",
+        "tarball_integrity": "sha512-tYTbeVuhqD0TW2WJs90Tq+JaKLLnrX5JuxYTLG3pxf4Vr3QMonqsMLu4hZkgVSfEDPZhneFuDDgULQ3/FZzAIw==",
+        "tarball_sha256": "7b6d6842a9e9de1fa0f5dfc18967696b91883b9d82be333a05b35bcf21f7d70f",
+        "unpacked_size_bytes": 252755714,
+        "files": {
+          "claude": "8968405e26db478af44eabc4635ab5ca557057b702a54460a59c13e1b253e978",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "package.json": "53ef74230f1d2b4898abf4f916f5f5b166ed2968de597fa27ecf5b3236d1143d",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 252755128,
+          "LICENSE.md": 147,
+          "package.json": 289,
+          "README.md": 150
+        }
+      },
+      "2.1.294": {
+        "published_at": "2026-10-08T03:47:18.560Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.294.tgz",
+        "tarball_integrity": "sha512-PGRIYkEyXxDMcosvkidWA815Y3dnEmZUrTdydabU7OPsh0Cbxnj+ej87sHFmaWOLzlpQTmi2AMUsdEHfsh3Adg==",
+        "tarball_sha256": "0955a56fc80a587dd2709ab7caa25b10a9b453def5fda6cf92754de0c6d9046d",
+        "unpacked_size_bytes": 252755714,
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5",
+          "claude": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+          "package.json": "2a102dfa34beb3f43a7022da0da9f76fd7e8a55f9d93be641ece4c6e28d0a0c9"
+        },
+        "file_sizes_bytes": {
+          "LICENSE.md": 147,
+          "README.md": 150,
+          "claude": 252755128,
+          "package.json": 289
+        }
+      },
+      "2.1.295": {
+        "published_at": "2026-10-08T18:24:53.097Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.295.tgz",
+        "tarball_integrity": "sha512-nC9RZ6ZArEavyAiFdEtGK6/XPhjfE79tP2tCh+PjmRUxSO/6W3IuXv/rmo8c6u2UzHyvgKodRj1z6UcBGlbnyA==",
+        "tarball_sha256": "d45a2fa14a7ea0b8ab4f56e502de5893c2b816078c71c4d8ab2e4142148f3d95",
+        "unpacked_size_bytes": 256114434,
+        "files": {
+          "claude": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+          "package.json": "60bc9c69acb667baacec15611fe71a17bd7a34080079e88ddf0043d0caceb187",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 256113848,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.296": {
+        "published_at": "2026-10-09T16:59:32.360Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.296.tgz",
+        "tarball_integrity": "sha512-+m01urgelnI+VJxPaKPEK0wixgq42uZ8PeCaUk5tX/8YoDBvSmC/REVQG2jQfJAr8dxunpjJ600FvLrcj1WWTw==",
+        "tarball_sha256": "eef5a2e2b09a5e7d2ce784d1b3ba335ae7fc6c7f6256c802a0ebf2c21e4fd0e1",
+        "unpacked_size_bytes": 257068802,
+        "files": {
+          "claude": "24972e3bc859fab2b46ed4c1e51f7d6130f06d3bd550811a114640de3370d0de",
+          "package.json": "280b121abecad6a48e873e841906615b284b8900127877b36853482bb2251297",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 257068216,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.299": {
+        "published_at": "2026-10-14T00:24:12.079Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.299.tgz",
+        "tarball_integrity": "sha512-FnUWMvkaML+gSH7tK7KuWjCQfgbXX0kzEIzZabb3b73jeQESlNXEgmEgR1mvZRsyCb5O6hYUUTVqVQFY24wzhA==",
+        "tarball_sha256": "adffa78fbe087e2276df4862bd976745f3201d215b4985442e624bd7d2d87270",
+        "unpacked_size_bytes": 265342722,
+        "files": {
+          "claude": "2d894a4b1bfaaa9aab72aeff7803e3c73bc2510f279a171f6b8f59f72d17d077",
+          "package.json": "06c3382d36b29227762a13133a79f053d9e0adafdc44dd57f74ada0b1c293539",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 265342136,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.300": {
+        "published_at": "2026-10-14T14:31:22.920Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.300.tgz",
+        "tarball_integrity": "sha512-oW4/i4gBd0Y7vqKToK+RaO/fZm4oZWAA81CJ1s0afg+bP+OH9QJdOXKDDwQ9eizcV78a44mQAbce5WYsN18CAw==",
+        "tarball_sha256": "e1455416b5a12a77271b7b1dc101867fd45e93dc8818d554c8fb72c59ed65804",
+        "unpacked_size_bytes": 266972930,
+        "files": {
+          "claude": "674deba0bba9aee479f4503c438b49303b6fdd304b9a471b14977aaec5215453",
+          "package.json": "a745782f703c8641caaf5db51d3105e03dcc0d2c66a35e889585003e0dcecf8f",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 266972344,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.301": {
+        "published_at": "2026-10-15T14:37:15.820Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.301.tgz",
+        "tarball_integrity": "sha512-JNe0VzIuXdaBrtlh+fY2SX5AQLDf8BDfIKrylOWK528AZ/aAq2bJt4SBkPikZ0CvecUbL0YN22Xe7eltAWCJGg==",
+        "tarball_sha256": "a7ffd61e7784e6dda864a31e934cececc050f106015201cb3db4abb59c781c57",
+        "unpacked_size_bytes": 267955970,
+        "files": {
+          "claude": "bc1aad9982c7b59c7d889ff92595d61cf46e0a6eae074cb551d932a989bcd222",
+          "package.json": "b64d3c594a6d382cdbe86e5940ec586851d68b53484e646ad6372052d93377b1",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 267955384,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.302": {
+        "published_at": "2026-10-16T16:49:21.801Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.302.tgz",
+        "tarball_integrity": "sha512-+d4RUq3E3K+3/J4MysB3z4QXA4rkDNt70VYpTLE6kJCnUe/Z6SB8VJsVJG/NV4bECrvkxkLHjXk+vrgBstfZkw==",
+        "tarball_sha256": "3bc5817207175089cbe0a02a989bdf35b228497f8f76d3c3ba13d568dc8f25e2",
+        "unpacked_size_bytes": 285794114,
+        "files": {
+          "claude": "60d7eb7f12fbb28a52533fe8be5884097403562aa02dc73991a021c7067e29a5",
+          "package.json": "04a0bd5fe3d4f13537230250194ebbac149fa1fe3595d4c3d12f3741497adc09",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 285793528,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.303": {
+        "published_at": "2026-10-18T21:14:48.137Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.303.tgz",
+        "tarball_integrity": "sha512-yUbFvO0As5DKZfeu102GLBtrGz0ghkFteHyW4rbkKVXZCwSWisXqtbm4Nolt9AlKSCAggQoyqCEG7EEF0wXciQ==",
+        "tarball_sha256": "2b073f9f6c68882f94a31dbd1b625fa5b8df078715e487aa68e3b0530d0b43f3",
+        "unpacked_size_bytes": 285810498,
+        "files": {
+          "claude": "375988f457756524234695cf2d8f64ace99c5f68682e47ea24862a843c191450",
+          "package.json": "8d0d672e14a1b94505318a043ded0587ff13a23b5635e62fcb4f07baf93a16fe",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 285809912,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.304": {
+        "published_at": "2026-10-19T19:47:21.862Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.304.tgz",
+        "tarball_integrity": "sha512-yZ/zZk3y7e0zbkMs740y9Z+bs40MmWApwM9qHQ8Adis01SycQlyaZnHYhB/+UOeFJcL+hzbiIGCIyuTKyL2U7Q==",
+        "tarball_sha256": "1eda4ee54631c2e313df7bd9c2b7d3ca22815e09c6145774309214f06a8acd15",
+        "unpacked_size_bytes": 288731066,
+        "files": {
+          "claude": "ea0f135784631619a7a409d07322ecec964f9cc4fd377508ed1ba3f141f27912",
+          "package.json": "dd71e33f1ee656992f24d652b29187160a858d6d63c51077e0b680ed92581ff0",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 288730480,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.305": {
+        "published_at": "2026-10-20T19:31:28.293Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.305.tgz",
+        "tarball_integrity": "sha512-gG/5OXycV1ItO1cHGo3IzVWb2XR5EE/0j4vzMv8iEbXWc5NWAlK2mxr1tIrfRBOoFFaZZIj76IpQk4x0NdsqCA==",
+        "tarball_sha256": "6d123d2953b9623e5f3e399f9984dd137dcad992aab2f810c0eac0040cae894a",
+        "unpacked_size_bytes": 290533306,
+        "files": {
+          "claude": "86cb722ab68348877dba7971e4d0c659919e05e6228c05e006e83da320e656ef",
+          "package.json": "91682998d5aef80a84eb960957d60b34a292a1154645a95296b31689d6bffeea",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 290532720,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.306": {
+        "published_at": "2026-10-21T02:30:34.487Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.306.tgz",
+        "tarball_integrity": "sha512-4gsb0IQhxzi1NhoUETXkNZb1t6wJ9tnfAYBKmb0+NmsAwOG37Dacq7bLqsooEkusaT0PyQRFUMt0SgWxx9LEEA==",
+        "tarball_sha256": "20d4bced0c1cab2b608d5431188cbd0c141cf7074dafb49afbdac8c13006bb75",
+        "unpacked_size_bytes": 290533306,
+        "files": {
+          "claude": "520bc6c1f40af466bd03a278b5ae1af1a2938bc7de5b9e5cb15526da20d71cfe",
+          "package.json": "f3bff82ffb15a23e1b933ab079e7e0cbf51fba53698655c9f138aa0776c67b9d",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 290532720,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.307": {
+        "published_at": "2026-10-21T20:49:51.727Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.307.tgz",
+        "tarball_integrity": "sha512-5KroAXOTbVYtrV86imf8ktsfVY2UgUrC6ws/FMblu+ny14kjFLxDBi2nHweJtUwSajA8yiLfOlNkwaKNbici8A==",
+        "tarball_sha256": "1763b430ae482eb177bd1bd907bb9f0037ee75b835c3d75556fae1eafb3f6d61",
+        "unpacked_size_bytes": 291975098,
+        "files": {
+          "claude": "6021eb72d20d0682b720bdc63acd2a5cd2270895d1f10d9ca2a88cbfa7b9dd0e",
+          "package.json": "a6b2291501a6de2b316d0c7a4d194673f0d7c8bd135334a48c1b84c533ba2856",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 291974512,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.308": {
+        "published_at": "2026-10-22T04:19:38.645Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.308.tgz",
+        "tarball_integrity": "sha512-ffUryevpH7POStPJ/xpUI5R1ozYbH9o/Dbh/xPSmyVJehELnRMZmRnejdQmq0TejOW/SbNnJFhCGMgwIsOqFTQ==",
+        "tarball_sha256": "f329748feb169a1bcddb578f0195af810a1a5287ebf629728464821490b04333",
+        "unpacked_size_bytes": 292233146,
+        "files": {
+          "claude": "356733f185fa988e6bf3aa9a555269fdd167982a2e2a80d3c8a78037bb92ad58",
+          "package.json": "b864674653779ce5d73d3546cbad0f2f338fdd988262689f0086745873e76df8",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 292232560,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.309": {
+        "published_at": "2026-10-22T20:35:22.061Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.309.tgz",
+        "tarball_integrity": "sha512-36D6kMC0fWdWLwBA8XYaJTSTXEWvw0Kc3WQYqterieKDtplIfUsE5jurZAYilhzOeF+uNL9SNn4DkwhQmUrRMg==",
+        "tarball_sha256": "e960c4437f6f99648437784db43e04ad5f12711aecd710864f96876f94c2fc1a",
+        "unpacked_size_bytes": 293470138,
+        "files": {
+          "claude": "4d704a8aecbe038affa3000f498ae17c1b4f753add8facb8764120affc99b658",
+          "package.json": "9ff1b359ce302c37451697170139e90918831f6a101863696bc868f31496e2a1",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 293469552,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      },
+      "2.1.310": {
+        "published_at": "2026-10-23T21:22:11.751Z",
+        "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-code-linux-x64/-/claude-code-linux-x64-2.1.310.tgz",
+        "tarball_integrity": "sha512-CuzpJrMBbqaR3+1SiLrBtPV3w/cFvcqBfhe9kNskzZ2Fm6KXa7v0l7tM+Ln6l5QLb79WoU0CcacXnYtsygbe6A==",
+        "tarball_sha256": "8c90b0170d08fdb370db282c61d74897b834fc2569dd14c35eb1e491212dc6de",
+        "unpacked_size_bytes": 291639226,
+        "files": {
+          "claude": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56",
+          "package.json": "a8e8a6d6663db797da5349e82341b3070d84289cc28fc58d73c9cbc40983c016",
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5"
+        },
+        "file_sizes_bytes": {
+          "claude": 291638640,
+          "package.json": 289,
+          "LICENSE.md": 147,
+          "README.md": 150
+        }
+      }
+    }
+  },
+  "file_delta": {
+    "claude-code": {
+      "2.1.293_to_2.1.294": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.294_to_2.1.295": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "sdk-tools.d.ts"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs"
+        ]
+      },
+      "2.1.295_to_2.1.296": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "sdk-tools.d.ts"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs"
+        ]
+      },
+      "2.1.296_to_2.1.299": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "sdk-tools.d.ts"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs"
+        ]
+      },
+      "2.1.299_to_2.1.300": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.300_to_2.1.301": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.301_to_2.1.302": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "sdk-tools.d.ts"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs"
+        ]
+      },
+      "2.1.302_to_2.1.303": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.303_to_2.1.304": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.304_to_2.1.305": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.305_to_2.1.306": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.306_to_2.1.307": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.307_to_2.1.308": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.308_to_2.1.309": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      },
+      "2.1.309_to_2.1.310": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      }
+    },
+    "claude-code-darwin-arm64": {
+      "2.1.293_to_2.1.294": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.294_to_2.1.295": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.295_to_2.1.296": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.296_to_2.1.299": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.299_to_2.1.300": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.300_to_2.1.301": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.301_to_2.1.302": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.302_to_2.1.303": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.303_to_2.1.304": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.304_to_2.1.305": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.305_to_2.1.306": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.306_to_2.1.307": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.307_to_2.1.308": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.308_to_2.1.309": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.309_to_2.1.310": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      }
+    },
+    "claude-code-linux-x64": {
+      "2.1.293_to_2.1.294": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.294_to_2.1.295": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.295_to_2.1.296": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.296_to_2.1.299": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.299_to_2.1.300": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.300_to_2.1.301": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.301_to_2.1.302": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.302_to_2.1.303": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.303_to_2.1.304": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.304_to_2.1.305": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.305_to_2.1.306": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.306_to_2.1.307": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.307_to_2.1.308": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.308_to_2.1.309": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.309_to_2.1.310": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      }
+    }
+  }
+}

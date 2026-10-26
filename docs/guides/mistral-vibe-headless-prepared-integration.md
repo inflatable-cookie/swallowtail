@@ -35,6 +35,13 @@ The claim retains the same headless behavior revision across the maintained
 window. Unpublished holes remain incompatible; later stable releases are
 permitted only as visible `UnverifiedNewer` observations.
 
+[Research 458](../research/458-mistral-vibe-headless-3-0-2-identity-stop.md)
+stops qualification at official `3.0.2`. `2.26.1` drops the mapped
+turn-limit stderr and exits 3. `3.0.0` removes `--legacy-harness`, the
+builtin `plan` agent, and the Python programmatic serializer; `vibe`
+always execs the Rust CLI. The qualified ceiling stays `2.25.4..=2.26.0`.
+Later stables, including `3.0.2`, stay visible as `UnverifiedNewer`.
+
 Swallowtail does not install Vibe, search `PATH`, read provider config, or
 select a model. Host-owned local config stays outside the prepared plan. There
 is no model catalogue, caller-supplied model route, ACP session, or

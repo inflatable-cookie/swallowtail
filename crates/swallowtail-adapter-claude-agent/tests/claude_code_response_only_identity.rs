@@ -78,13 +78,13 @@ fn response_only_qualifies_2_1_251_as_compatible_extension() {
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.293"
+        "2.1.310"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279",
+            "2.1.279", "2.1.297", "2.1.298",
         ]
     );
     assert_eq!(
@@ -223,7 +223,7 @@ fn current_response_only_identity_freezes_v3_and_every_published_hop() {
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.293"
+        "2.1.310"
     );
 
     let versions = (281..=293)
@@ -522,8 +522,22 @@ fn current_response_only_identity_freezes_v3_and_every_published_hop() {
     }
     assert!(matches!(
         claim.assess(&version("2.1.294")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v3"
+                && matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version("2.1.310")),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v3"
+                && matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        claim.assess(&version("2.1.311")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
+    assert!(!claim.permits(&version("2.1.297")));
+    assert!(!claim.permits(&version("2.1.298")));
     assert!(!claim.permits(&version("2.1.244")));
     assert!(!claim.permits(&version("2.1.249")));
     assert!(!claim.permits(&version("2.1.253")));

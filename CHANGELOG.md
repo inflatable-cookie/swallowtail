@@ -6,6 +6,98 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.26.1` on the existing `qwen-code.headless.package-window-2` claim and
+  `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
+  segment is `0.22.0..=0.26.1`, excluding unpublished `0.22.4`, `0.23.5`,
+  and `0.25.4`. Baseline `0.19.11`, the deprecated segments, exact
+  `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
+  stay put. `0.26.2` remains `UnverifiedNewer`. See Research 454.
+- freeze `antigravity.catalogue` identity through official stable `1.4.7`
+  without extending qualification. The claim stays one maintained segment
+  `1.1.9..=1.3.1` on `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`,
+  claim `antigravity.catalogue.release-window-1`, and `AllowUnverified`.
+  Unpublished `1.2.18` stays excluded. Published hops `1.3.2` through
+  `1.4.7` and unpublished `1.3.7`/`1.3.8`/`1.3.9` stay `UnverifiedNewer`
+  (Q-005; Contract 029 Artifact Authority). Owning adaptation
+  `antigravity.catalogue.artifact-authority-through-current-official` on
+  the `version-currentness` lane owns qualifying the then-current official
+  stable. `antigravity.headless` stays at exact `1.2.11`. See Research 449.
+- qualify `claude-code.headless` and, separately, `claude-code.response-only`
+  through official stable `2.1.310`. Headless keeps deprecated
+  `stream-json.v1` on `2.1.220..=2.1.286` and maintained `stream-json.v2` on
+  `2.1.287..=2.1.310`. Response-only keeps its three segments and extends
+  maintained `stream-json.v3` from `2.1.293` through `2.1.310`. Both stay
+  `AllowUnverified`, keep their baselines and claim ids, and now exclude
+  unpublished `2.1.297` and `2.1.298`. `2.1.311` is `UnverifiedNewer`. The
+  optional maximum-turn gate stays on the Research 226 set. See Research 445.
+- qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
+  extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).
+  The maintained segment is `0.66.0..=0.96.0`. Baseline `0.53.0`, claim id
+  `claude-agent.acp.window-2`, the seven milestones, exclusions `0.52.0` and
+  `0.58.0`, and `AllowUnverified` stay. Published `0.97.0` remains
+  `UnverifiedNewer`. A protocolVersion 1 client still gets the v1 agent. HTTP
+  MCP live honouring stays exact `0.79.0` and `0.81.2`. The repo-local pin
+  stays `0.81.2`. Claude Code and `claude-agent.sdk` claims stay on their
+  existing bounds.
+- qualify only `cursor-agent.catalogue` through official ACP registry stable
+  `2026.10.22-27dcf5f`, after every published registry hop following
+  `2026.10.01-14929f9`. Research 451 freezes the Darwin ARM64 and Linux x64
+  archives, complete package trees, and the selected `models` modules.
+  Keep the baseline, claim, behavior revision, prior points, and gaps. Add
+  `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
+  `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. The superseded same-date
+  build `2026.10.14-0f9edde` stays rejected. The `models` command, account
+  options, row mapping, failure boundary, and process lifecycle are unchanged.
+  No archive execution, authenticated catalogue, provider prompt, credential
+  use, installation, or host update occurred.
+- retain `cursor-agent.acp` and `cursor-agent.headless` through
+  `2026.10.01-14929f9`. Research 450 retains newer artifact identity evidence,
+  but help/options, wire summaries, and SDK versions do not close the selected
+  handler, permission, cancellation, validation, and runtime impact gates.
+  Qualification through `2026.10.22-27dcf5f` needs the route-specific proof
+  described there. Baselines, claim ids, behavior revisions, historical gaps,
+  and `AllowUnverified` stay. Catalogue remains independently qualified through
+  `2026.10.22-27dcf5f` (Research 451); its exact-build gate still rejects
+  superseded `2026.10.14-0f9edde`.
+- qualify `opencode.http` and `opencode.acp` through official stable `1.19.4`
+  (Research 453). Both claims stay `AllowUnverified` and unflattened.
+  `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and adds
+  `1.19.0..=1.19.4`. `opencode.acp-v1.client-mcp-servers-v2` keeps
+  `1.18.31..=1.18.35` and adds `1.19.0..=1.19.4`. Deprecated ACP
+  `1.18.18..=1.18.30` stays. Unpublished `1.18.36` is incompatible.
+  `1.19.5` is `UnverifiedNewer`. HTTP MCP live honouring stays exact
+  `1.18.18`.
+- qualify only `cline.acp` from its `3.0.70` ceiling through official npm
+  `latest` `3.0.74`, keeping the `3.0.55` baseline and unpublished `3.0.59`
+  exclusion. Research 457 freezes hops `3.0.71` through `3.0.74`, wrapper and
+  Darwin ARM64 trees, six-platform SLSA identities, and the selected ACP source
+  deltas. Mode stays `plan`/`act`, the model option stays `id=model`, and
+  reasoning stays off without `--thinking`. At `3.0.74` platform packages embed
+  hub and plugin assets into `bin/cline`. Preserve `cline.acp.stdio-v1` and the
+  Q-006 `load_session` gate. `cline.headless` stays `QualifiedOnly` through
+  `3.0.70`. No artifact was executed and no provider prompt, live session,
+  credential, installation, or host update occurred.
+- stop `mistral-vibe.headless` at the `2.26.0` ceiling. Official PyPI and
+  GitHub stable are `3.0.2`. Research 458 freezes hops `2.26.1`, `3.0.0`,
+  `3.0.1`, and `3.0.2`. `2.26.1` removes the mapped turn-limit stderr and
+  exits 3. `3.0.0` removes `--legacy-harness`, the builtin `plan` agent,
+  and the Python streaming serializer, and `vibe` always execs the Rust
+  CLI. `~/.vibe` / `VIBE_HOME` does not move. The claim, behavior revision,
+  and `AllowUnverified` posture stay. No artifact was executed.
+- qualify `oh-my-pi.rpc` through official stable `18.12.6` on the existing
+  `oh-my-pi.rpc-v2-v18.0.0` revision (Research 447). npm `latest` and GitHub
+  latest stable agree. Maintained `18.0.0..=18.12.6` keeps claim id
+  `oh-my-pi.rpc.package-window-2` and `AllowUnverified`. The retained
+  `17.2.9..=17.4.2` segment, unpublished gaps `18.0.2`, `18.1.7`, `18.4.7`,
+  and `18.6.2`, incompatible `17.4.3`/`17.4.4`, and the frozen `17.2.9`
+  decoder corpus stay. `18.12.7` is `UnverifiedNewer`. Selected commands,
+  tool schemas, frame caps, and startup fields are unchanged. `mr://` is an
+  added read-tier resource inside the existing ambient `read` tool: ambient
+  `glab` process principal, host GitLab tokens plus `glab` config, GitLab
+  network egress (host-trust gate constrains env-token forwarding only),
+  exec tool-effect. Prompt-text `/mcp reauth` is reachable under
+  `--no-extensions` and stays unmapped.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new
@@ -16,15 +108,36 @@ annotated Git tags from the canonical repository.
   leaves every row non-default, and no unlisted id is promoted. The claim id
   moves to `grok-build.catalogue.executable-window-1`; the route, operation,
   argv, configuration posture and `QualifiedOnly` policy are unchanged, and
-  every older or newer point still fails closed. The ACP ceiling stays
-  `1.0.46`. See Research 443.
-- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
-  `0.26.1` on the existing `qwen-code.headless.package-window-2` claim and
-  `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
-  segment is `0.22.0..=0.26.1`, excluding unpublished `0.22.4`, `0.23.5`,
-  and `0.25.4`. Baseline `0.19.11`, the deprecated segments, exact
-  `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
-  stay put. `0.26.2` remains `UnverifiedNewer`. See Research 454.
+  every older or newer point still fails closed. See Research 443. At that
+  catalogue qualification the ACP ceiling was still `1.0.46`.
+- freeze official `grok-build.acp` identity for every published hop
+  `1.0.47` through `1.0.70` on Linux x64 and Darwin arm64 (Research 444).
+  Interned stdio, client, and permission dispatch tables and selected serde
+  layouts match `1.0.46`. Selected handler xref function bodies match
+  `1.0.46` on none of those 48 platform-hops, including Darwin `1.0.70`
+  merging `session/prompt`, `session/cancel`, and `session/set_model` into
+  one function. The ACP ceiling stays `1.0.46`; official `1.0.47` through
+  `1.0.70` remain `UnverifiedNewer`. Claim id, `AllowUnverified` posture,
+  baseline `0.2.114`, deprecated `0.2` segments, and maintained floor
+  `1.0.4` stay. Unpublished `1.0.71` stays `UnverifiedNewer`. The catalogue
+  claim, the registered-tool capsules, and the HTTP MCP pin stay on their
+  existing bounds.
+- qualify `goose.acp` from its `1.53.0` ceiling through official GitHub stable
+  `1.56.0`. Research 456 freezes the three published successor hops, complete
+  tag trees, and Darwin ARM64 asset identities. The claim keeps baseline
+  `1.50.1`, claim id `goose.acp.release-window-1`, behavior revision
+  `goose.acp.stdio-v2.auth-required`, and `AllowUnverified`. Exact points are
+  `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0`.
+  Unpublished interstitial points stay incompatible. `1.56.1` is the first
+  `UnverifiedNewer` fixture.
+- qualify `pi.rpc` through official npm `latest` and GitHub latest stable
+  `1.4.0` on the existing `pi.rpc.strict-lf-v1.1.0-aborted-settled` revision.
+  Research 455 freezes published hops `1.2.0` and `1.3.0` after the `1.1.0`
+  ceiling. `dist/modes/rpc` is byte-identical, including the 33-command table,
+  dispositions, and `agent_settled.aborted`. Exact `1.1.0`, `1.2.0`, `1.3.0`,
+  and `1.4.0` stay Maintained on that newest revision. Unpublished `1.1.1+`,
+  `1.2.1+`, and `1.3.1+` stay incompatible. `pi.sdk-sidecar` and
+  `oh-my-pi.rpc` are unchanged.
 
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,

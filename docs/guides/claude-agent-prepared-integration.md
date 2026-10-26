@@ -268,17 +268,21 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
 capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on deprecated
-`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.294` on maintained
+`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.310` on maintained
 private milestone `claude-code.headless.stream-json.v2`.
 Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
-`2.1.256`, `2.1.262`, `2.1.264`, and `2.1.279`. Later stable versions remain
-visible `UnverifiedNewer`; official `2.1.295` remains unverified after the
-frozen `2.1.294` identity. Headless does not pass `--safe-mode` and already
-admits ambient project instructions. The exact 2.1.294 npm wrapper, Darwin
-arm64, and Linux x64 trees and every published hop after `2.1.281` remain
-frozen in Research 422. Research 423 records exact-artifact hook-safety
+`2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`, `2.1.297`, and `2.1.298`. Later
+stable versions remain visible `UnverifiedNewer`; the first unpublished point
+after the qualified ceiling is `2.1.311`. Headless does not pass `--safe-mode`
+and already admits ambient project instructions. The exact 2.1.294 npm wrapper,
+Darwin arm64, and Linux x64 trees and every published hop after `2.1.281`
+remain frozen in Research 422. Research 423 records exact-artifact hook-safety
 analysis and provider-free adapter fixtures for the forked stream and denied
-action cases.
+action cases. Research 445 extends the same v2 segment through official stable
+`2.1.310`. From `2.1.299` a plugin hook that cannot be handed an action or
+cannot return refuses the call, and from `2.1.300` a rewritten `updatedInput`
+drops unknown keys and denies rejected input. Both tighten the existing v2
+rules. They do not add a behavior revision.
 
 The 2.1.287 stream may carry forked assistant frames with a
 `parent_tool_use_id` and nullable `message.stop_reason`. A null reason is
@@ -295,11 +299,10 @@ add a permission bypass. Research 423 records the static source review and
 synthetic fake-process coverage; the fixtures are adapter tests, not captured
 provider transcripts.
 
-At the identity commit, npm `latest` and GitHub latest stable agreed on
-`2.1.294`. GitHub stable `2.1.295` was published after that frozen identity;
-the currentness ruling leaves `2.1.295` visible as `UnverifiedNewer` without
-reopening this claim. SDK, ACP, response-only, and public lifecycle claims are
-unchanged.
+At the Research 445 identity commit, npm `latest` and GitHub latest stable
+agreed on `2.1.310`. npm `stable` remains the delayed channel, then at
+`2.1.308`. `2.1.311` is unpublished and stays `UnverifiedNewer`. SDK and ACP
+claims are unchanged. Response-only is a separate claim in the same record.
 
 ### Maximum Agentic Turns
 
@@ -326,15 +329,16 @@ selectable here.
 
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set remains narrower than the route's qualified window. This task's
-qualification through `2.1.294` does not extend the optional maximum-turn
-feature; exact `2.1.282..=2.1.294` route points are not max-turn eligible under
+qualification through `2.1.310` does not extend the optional maximum-turn
+feature; exact `2.1.282..=2.1.310` route points are not max-turn eligible under
 Research 226. The feature still requires an exact probed version:
 
 - published qualified points `2.1.242..=2.1.281` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
   `2.1.279` were never probed for this feature
-- the newly qualified `2.1.282..=2.1.294` points are not admitted by this
-  exact-version feature gate; later stable points remain `UnverifiedNewer`
+- published `2.1.282..=2.1.310` points are not admitted by this exact-version
+  feature gate; unpublished `2.1.297` and `2.1.298` stay denied; later stable
+  points remain `UnverifiedNewer`
 - no maximum-turn artifact was probed for any of those later points
 - the claim's segment is a semantic range that contains `2.1.230`, which was
   never published to npm, so no artifact for it exists either
@@ -402,15 +406,16 @@ claim id `claude-code.response-only.window-1`:
 - `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
   under the narrowed built-in-hook guarantee and remain supported as
   `Deprecated`.
-- `2.1.282` through `2.1.293` use `claude-code.response-only.stream-json.v3`
+- `2.1.282` through `2.1.310` use `claude-code.response-only.stream-json.v3`
   with the version-specific linked-instruction read limit; this is the
   maintained segment.
 
 Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
-`2.1.264`, and `2.1.279` are denied. Later stable releases run provisionally as
-`UnverifiedNewer` on the v3 behavior. The baseline, claim id, denied points,
-and earlier supported segments stay in force. This is a distinct route. It
-does not weaken or replace `claude-code.headless`.
+`2.1.264`, `2.1.279`, `2.1.297`, and `2.1.298` are denied. Later stable
+releases run provisionally as `UnverifiedNewer` on the v3 behavior. The first
+unpublished point after the ceiling is `2.1.311`. The baseline, claim id,
+denied points, and earlier supported segments stay in force. This is a distinct
+route. It does not weaken or replace `claude-code.headless`.
 
 `ClaudeCodeResponseProfileInput::new` accepts only request identity, an exact
 caller-selected model route, one prompt, and a deadline. Optional qualified
@@ -451,9 +456,9 @@ Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
 qualification. The v1 segment ends at `2.1.278`, the v2 segment ends at
-`2.1.281`, and v3 currently ends at `2.1.293`. The static deny-list is
+`2.1.281`, and v3 currently ends at `2.1.310`. The static deny-list is
 unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
-`2.1.264`, and `2.1.279`.
+`2.1.264`, `2.1.279`, `2.1.297`, and `2.1.298`.
 
 From `2.1.280`, `--safe-mode` still loads the provider's nine `@builtin`
 plugins. Swallowtail guarantees what its arguments control: empty tools, empty
@@ -490,7 +495,11 @@ and `AGENTS.md` outside working directories under its named read policies.
 The v3 route does not guarantee that every symlink-linked instruction reaches
 `prompt.context`. No adapter operation restores those reads or broadens
 filesystem authority. The published runtime is opaque and no internal
-resolver function is claimed (Research 378).
+resolver function is claimed (Research 378). The official `2.1.309` release
+note reports that an oversized nested `CLAUDE.md` loads only its start. The
+embedded changelog string first observed in the `2.1.310` artifacts does not
+date that implementation. The reported size prefix stays inside v3 and does
+not add containment (Research 445).
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools
@@ -514,8 +523,8 @@ See the compile-tested
 ## Repo-Local ACP Sidecar
 
 The root `package.json` keeps `@agentclientprotocol/claude-agent-acp` pinned to
-exact `0.81.2` for development and live probes. Research 373 separately
-qualifies the wrapper claim through `0.87.0`; the local dependency pin is not
+exact `0.81.2` for development and live probes. Research 446 separately
+qualifies the wrapper claim through `0.96.0`; the local dependency pin is not
 currentness or live MCP evidence and remains unchanged. Development and live
 probes use:
 
@@ -538,7 +547,7 @@ integration.
 ## ACP Version Posture
 
 Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.87.0`, excluding unpublished `0.58.0` (Research 373).
+wrappers are `0.53.0..=0.96.0`, excluding unpublished `0.58.0` (Research 446).
 Those milestones remain guaranteed. A newer stable release is admitted as
 unverified, remains inspectable in evidence, and must identify itself as that
 same exact version during ACP initialization. Excluded and older versions do

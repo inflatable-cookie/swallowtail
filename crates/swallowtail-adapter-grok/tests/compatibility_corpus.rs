@@ -130,7 +130,7 @@ fn production_claim_matches_the_frozen_segments() {
                 if matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
-    for later in ["1.0.47", "1.0.48", "1.0.49", "1.1.0"] {
+    for later in ["1.0.47", "1.0.70", "1.0.71", "1.1.0"] {
         assert!(matches!(
             claim.assess(&version(later)),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)

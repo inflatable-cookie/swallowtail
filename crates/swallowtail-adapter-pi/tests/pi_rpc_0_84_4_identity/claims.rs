@@ -30,7 +30,7 @@ fn identity_and_claim_qualify_0_84_4_as_compatible_extension() {
         "unverified_newer"
     );
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.4.0");
 
     let claim = pi_rpc_claim();
     assert!(matches!(

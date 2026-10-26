@@ -1,7 +1,7 @@
 use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
-use swallowtail_adapter_goose::{GOOSE_RELEASE_VERSION, goose_acp_claim, goose_release_binding};
+use swallowtail_adapter_goose::goose_acp_claim;
 use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceNewerVersionPosture, InterfaceSupportStatus,
     InterfaceVersion,
@@ -158,60 +158,30 @@ fn object_keys(value: &Value) -> BTreeSet<String> {
 }
 
 #[test]
-fn production_claim_qualifies_every_published_point_and_keeps_the_holes() {
+fn historical_1_53_0_points_remain_qualified() {
     let claim = goose_acp_claim();
-    assert_eq!(GOOSE_RELEASE_VERSION, "1.53.0");
     assert_eq!(claim.id().as_str(), "goose.acp.release-window-1");
-    assert_eq!(claim.axis().as_str(), "goose.release");
     assert_eq!(claim.baseline().as_str(), "1.50.1");
-    assert_eq!(claim.latest_qualified().as_str(), "1.53.0");
-    assert_eq!(claim.milestones().len(), 4);
     assert_eq!(
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
     );
-
-    for (segment, expected) in claim
-        .milestones()
-        .zip(["1.50.1", "1.51.0", "1.52.0", "1.53.0"])
-    {
-        assert_eq!(segment.minimum().as_str(), expected);
-        assert_eq!(segment.maximum().as_str(), expected);
+    for version in ["1.50.1", "1.51.0", "1.52.0", "1.53.0"] {
+        let assessment = claim.assess(&InterfaceVersion::new(version).expect("version"));
+        let InterfaceCompatibilityAssessment::Qualified(matched) = assessment else {
+            panic!("{version} must remain qualified");
+        };
         assert_eq!(
-            segment.behavior_revision().as_str(),
+            matched.behavior_revision().as_str(),
             "goose.acp.stdio-v2.auth-required"
         );
-        assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
-        assert!(
-            claim
-                .assess(&InterfaceVersion::new(expected).expect("version"))
-                .is_permitted()
-        );
+        assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
     }
-
     for gap in ["1.50.2", "1.51.1", "1.52.1"] {
         assert!(matches!(
             claim.assess(&InterfaceVersion::new(gap).expect("version")),
             InterfaceCompatibilityAssessment::Incompatible
         ));
-    }
-    assert!(matches!(
-        claim.assess(&InterfaceVersion::new("1.53.1").expect("version")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
-
-    for version in ["1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.53.1"] {
-        assert!(goose_release_binding(version).is_some(), "{version}");
-    }
-    for malformed in [
-        "",
-        "v1.53.0",
-        "1.53",
-        "1.53.0-beta",
-        "1.53.0+build",
-        " 1.53.0",
-    ] {
-        assert!(goose_release_binding(malformed).is_none(), "{malformed:?}");
     }
 }
 

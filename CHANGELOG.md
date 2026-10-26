@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-code.headless` and, separately, `claude-code.response-only`
+  through official stable `2.1.310`. Headless keeps deprecated
+  `stream-json.v1` on `2.1.220..=2.1.286` and maintained `stream-json.v2` on
+  `2.1.287..=2.1.310`. Response-only keeps its three segments and extends
+  maintained `stream-json.v3` from `2.1.293` through `2.1.310`. Both stay
+  `AllowUnverified`, keep their baselines and claim ids, and now exclude
+  unpublished `2.1.297` and `2.1.298`. `2.1.311` is `UnverifiedNewer`. The
+  optional maximum-turn gate stays on the Research 226 set. See Research 445.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

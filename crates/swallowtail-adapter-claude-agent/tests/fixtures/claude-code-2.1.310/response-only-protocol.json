@@ -1,0 +1,402 @@
+{
+  "axis": "claude-code.response-only-stream-json",
+  "behavior_revision": "claude-code.response-only.stream-json.v3",
+  "decision": "compatible-extension",
+  "selected_command": {
+    "arguments": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--model",
+      "<caller-selected-model>",
+      "--tools",
+      "",
+      "--safe-mode",
+      "--disable-slash-commands",
+      "--no-chrome",
+      "--prompt-suggestions",
+      "false",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ]
+  },
+  "selected_behavior_boundary": {
+    "input_format": "text",
+    "output_format": "stream-json",
+    "permission_mode_expected_on_init": "default",
+    "tools": "empty",
+    "safe_mode": true,
+    "slash_commands_disabled": true,
+    "chrome": false,
+    "prompt_suggestions": false,
+    "strict_mcp_config": true,
+    "session_persistence": false,
+    "one_text_turn": true,
+    "parent_tool_use_id_rejected": true
+  },
+  "v3_rules_retained": [
+    "init must match the prepared version, empty tools, empty mcp_servers, and permissionMode default",
+    "one text-only assistant message and one success result with num_turns 1",
+    "unknown event types other than rate_limit_event and thinking_tokens fail closed",
+    "symlink-linked instruction reads may be omitted; no filesystem containment is claimed",
+    "from 2.1.309 an oversized nested CLAUDE.md loads only its start"
+  ],
+  "safe_mode_help_still_disables_customizations": true,
+  "per_hop_classification": [
+    {
+      "hop": "2.1.293_to_2.1.294",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "instruction-form prompt and agent hooks",
+          "classification": "outside-safe-mode-custom-hooks",
+          "reason": "Research 422 stopped headless because user, project, and local settings stay enabled. Response-only passes --safe-mode. The 2.1.310 binary still describes --safe-mode as disabling customizations, including CLAUDE.md, skills, installed plugins, hooks, MCP, and custom commands. Builtin plugin markers from Research 378 remain present on later binaries. The 2.1.294 settings-hook change is not the response-only custom-hook path."
+        },
+        {
+          "surface": "Stop and SubagentStop prompt hooks",
+          "classification": "outside-safe-mode-custom-hooks",
+          "reason": "Same safe-mode boundary. Response-only does not select Stop hook stream events; unknown event types still fail closed, and the route does not pass --include-hook-events."
+        },
+        {
+          "surface": "fork skill stream-json",
+          "classification": "unselected",
+          "reason": "Research 378 already excludes context:fork slash-skill streaming because --disable-slash-commands is set. That flag remains in the binary."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.294_to_2.1.295",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "onFailure block",
+          "classification": "unmapped-opt-in",
+          "reason": "Release notes add onFailure block for command and HTTP hooks. The routes do not set it. Marker onFailure remains present. Default hook decisions are not described as changed."
+        },
+        {
+          "surface": "claude -p text output",
+          "classification": "unselected",
+          "reason": "The fix is text output. Both routes select stream-json. The stream-json help lines stay byte-identical."
+        },
+        {
+          "surface": "--tools late registration",
+          "classification": "already-mapped-flag-fix",
+          "reason": "Built-in tools that register after launch now honor --tools. Headless already sends Read,Glob,Grep. Response-only already sends an empty tool list. Help text still says an empty list disables all tools."
+        },
+        {
+          "surface": "multi-line hook JSON",
+          "classification": "provider-hook-parser-fix",
+          "reason": "Async hook JSON printed over several lines is now applied. This does not change stream-json required fields or the v2 rules that a deny blocks, a rewrite is rechecked, and Stop reentry uses stop_hook_active."
+        },
+        {
+          "surface": "skill allowed-tools in -p",
+          "classification": "bounded-by-tool-set",
+          "reason": "Restoring a skill allowed-tools list does not add Bash outside the selected tool set."
+        },
+        {
+          "surface": "mods, MCP, Bash permission, VS Code, cloud",
+          "classification": "unselected",
+          "reason": "Those notes are outside the fixed tool set, the strict empty MCP config, and the local subscription command."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.295_to_2.1.296",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "managed-settings PreToolUse continue false",
+          "classification": "managed-policy",
+          "reason": "The note is limited to managed-settings hooks. --setting-sources help still names only user, project, and local. Managed policy stays provider surface, as response-only already records for sec-default."
+        },
+        {
+          "surface": "PostToolUse updatedMCPToolOutput",
+          "classification": "unselected",
+          "reason": "Both routes pass a strict empty MCP config."
+        },
+        {
+          "surface": "hook output resembling a plugin hint",
+          "classification": "provider-hook-parser-fix",
+          "reason": "Hook stdout sanitization. Not a stream-json field change."
+        },
+        {
+          "surface": "Esc during UserPromptSubmit in headless",
+          "classification": "unselected-interactive-interrupt",
+          "reason": "The note is an interactive Esc or interrupt during a hook. Route cancellation is process force_stop, not Esc."
+        },
+        {
+          "surface": "SessionStart and /clear in headless",
+          "classification": "unselected",
+          "reason": "The routes are one-shot -p runs and do not send /clear."
+        },
+        {
+          "surface": "Bash BASH_ARGV0 permission",
+          "classification": "unselected",
+          "reason": "Bash is outside Read,Glob,Grep and outside the empty response-only tool list."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.296_to_2.1.299",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "plan mode write allowed by PreToolUse",
+          "classification": "already-mapped-flag-fix",
+          "reason": "Plan mode no longer runs a write that a PreToolUse or tool.check hook allowed. Headless already claims read-only plan mode. Response-only does not pass plan mode and has no write tools."
+        },
+        {
+          "surface": "plugin hook delivery failure",
+          "classification": "fail-closed-tightening",
+          "reason": "A plugin hook that cannot be handed its action, or cannot return an answer, now refuses the action instead of letting it through. A tool that already ran has its result withheld. This does not reverse v2 deny, rewrite, or Stop rules and does not add a stream field."
+        },
+        {
+          "surface": "UserPromptSubmit before slash expansion",
+          "classification": "headless-ordering",
+          "reason": "Headless does not disable slash commands, so a blocking UserPromptSubmit now also stops a slash command's embedded shell. The block outcome is unchanged. Response-only passes --disable-slash-commands, whose help still disables skills and, from 2.1.304, commands."
+        },
+        {
+          "surface": "stream-json input content blocks",
+          "classification": "unselected",
+          "reason": "Both routes use --input-format text, not stream-json input."
+        },
+        {
+          "surface": "--safe-mode background wake",
+          "classification": "unselected",
+          "reason": "The note is a background session leaving safe mode on wake or restart. Response-only disables session persistence and is one shot. Headless does not pass --safe-mode."
+        },
+        {
+          "surface": "--await-initialize",
+          "classification": "unmapped-opt-in",
+          "reason": "The flag is present from 2.1.295 onward. Neither route passes it. Input format help still offers text or stream-json."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.299_to_2.1.300",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "PreToolUse updatedInput validation",
+          "classification": "fail-closed-tightening",
+          "reason": "updatedInput from PreToolUse and PermissionRequest now drops unknown keys, and input the tool rejects denies the call. Headless keeps the v2 rule that a rewrite is rechecked and a deny blocks. Response-only has an empty tool list, so model tool calls are not selected. Stream-json required fields are unchanged."
+        },
+        {
+          "surface": "SessionEnd, WorktreeCreate, prompt.edit, agent hook model",
+          "classification": "unselected",
+          "reason": "Those notes are session exit, worktrees, keybindings, or agent-hook model aliases. The routes do not select them."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.300_to_2.1.301",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "artifact PreToolUse and mod fork",
+          "classification": "unselected",
+          "reason": "Artifact publish and mod $.model.fork are outside the selected tool set and the routes do not register mods."
+        },
+        {
+          "surface": "selected stream, permission, and init fields",
+          "classification": "no-selected-change-identified",
+          "reason": "No release note changes init permissionMode, stream-json help, plan mode, the tool list, safe mode, or slash-command disablement."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.301_to_2.1.302",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "default permission mode when unset",
+          "classification": "already-mapped-flag-fix",
+          "reason": "claude -p with no permission mode starts in default on third-party providers, with telemetry off, or on a fresh install. Headless passes --permission-mode plan. Response-only already requires init permissionMode default."
+        },
+        {
+          "surface": "fork subagents default in -p",
+          "classification": "bounded-by-tool-set",
+          "reason": "subagent_type fork is on by default in claude -p unless CLAUDE_CODE_FORK_SUBAGENT=0. Headless v2 already accepts non-final parent_tool_use_id frames. The Agent tool is not in Read,Glob,Grep. Response-only rejects a non-null parent_tool_use_id and passes an empty tool list plus --disable-slash-commands, so the model cannot start that subagent or a slash fork skill."
+        },
+        {
+          "surface": "prompt and agent hook concurrency",
+          "classification": "scheduling-cap",
+          "reason": "At most 12 prompt or agent hooks of one event run at once. Decision rules are unchanged: ok false still blocks."
+        },
+        {
+          "surface": "subagent foreground default",
+          "classification": "bounded-by-tool-set",
+          "reason": "The note changes Agent-tool child calls. That tool is outside both selected tool sets."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.302_to_2.1.303",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "release notes",
+          "classification": "no-selected-change-identified",
+          "reason": "The GitHub release says only bug fixes and reliability improvements. The platform executable digest changed. Wrapper changes are package.json only. Selected help lines and hook markers remain."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.303_to_2.1.304",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "--tools and --disable-slash-commands help",
+          "classification": "help-text-alignment",
+          "reason": "Help text was corrected to match existing behavior. Stream-json input and output help lines stay byte-identical. --tools still says an empty list disables all tools. --disable-slash-commands now says it disables skills and commands. Response-only already passes that flag. Headless does not."
+        },
+        {
+          "surface": "SDK callback hook timeout replacing a deny reason",
+          "classification": "unselected",
+          "reason": "The note is an Agent SDK callback hook. That route is a separate claim."
+        },
+        {
+          "surface": "skill hook registration caps",
+          "classification": "unmapped-limit",
+          "reason": "A per-source cap of 1024 hooks is not a selected stream or permission field."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.304_to_2.1.305",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "ToolSearch omitted from --tools",
+          "classification": "already-mapped-flag-fix",
+          "reason": "A 2.1.304 regression failed requests on Vertex, Bedrock, and gateways that reject tool search when ToolSearch is left out of --tools. 2.1.305 retries without it. Both routes omit ToolSearch. No new stream field is named."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.305_to_2.1.306",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "cloud -p login and MCP prompt-too-long",
+          "classification": "unselected",
+          "reason": "Cloud session environment and sessions with many MCP tools are outside the local subscription command and the strict empty MCP config."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.306_to_2.1.307",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "subagent transcript stop_reason",
+          "classification": "unselected",
+          "reason": "The note is subagent transcript placeholders. The headless and response-only decoders read the main stream-json result, not a subagent transcript."
+        },
+        {
+          "surface": "fork subagent launch identity",
+          "classification": "bounded-by-tool-set",
+          "reason": "The note tells concurrent fork subagents which launch is theirs. The Agent tool remains outside both tool sets."
+        },
+        {
+          "surface": "OpenTelemetry safety_event",
+          "classification": "unmapped",
+          "reason": "A new telemetry event is not a selected stream-json field. Response-only still fails closed on unknown event types other than the mapped set, and the note does not add a stream-json type."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.307_to_2.1.308",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "release notes",
+          "classification": "no-selected-change-identified",
+          "reason": "The GitHub release says only bug fixes and reliability improvements. Selected markers and help lines remain. The executable digest changed."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.308_to_2.1.309",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "nested CLAUDE.md size limit",
+          "classification": "instruction-size-bound",
+          "reason": "A nested CLAUDE.md over the size limit now loads only its start. Response-only v3 already does not promise every instruction byte, and this adds a size prefix rather than a new adapter operation or stream field. Headless admits ambient project instructions and does not promise full instruction text. Session persistence stays disabled, so the compaction loop in the note is outside both routes."
+        },
+        {
+          "surface": "Windows PowerShell hook exit 2",
+          "classification": "windows-shell-only",
+          "reason": "The fail-open fix is PowerShell and Git for Windows. Frozen runtime evidence is Darwin arm64 and Linux x64. No Windows package was qualified."
+        },
+        {
+          "surface": "disabled MCP reconnect and teammate --tools",
+          "classification": "unselected",
+          "reason": "Strict empty MCP and the one-prompt tool list exclude those paths."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.309_to_2.1.310",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "Windows quoted-hook fail-open",
+          "classification": "windows-shell-only",
+          "reason": "PreToolUse and PermissionRequest fail-open when Git Bash is missing and the hook command is only quoted strings. Not a Darwin or Linux stream change."
+        },
+        {
+          "surface": "symlink read permission prompt",
+          "classification": "unselected",
+          "reason": "Interactive file-read prompts. Headless is plan mode. Response-only has no Read tool."
+        },
+        {
+          "surface": "-p compaction memory and MCP elicitation timeout",
+          "classification": "unselected",
+          "reason": "Compaction memory and unanswered MCP elicitation sit outside disabled session persistence and the empty MCP config."
+        },
+        {
+          "surface": "--forward-subagent-text",
+          "classification": "unmapped-opt-in",
+          "reason": "The flag is present at 2.1.310. Neither route passes it."
+        }
+      ]
+    }
+  ]
+}

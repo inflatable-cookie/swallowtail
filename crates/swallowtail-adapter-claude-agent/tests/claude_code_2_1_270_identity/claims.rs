@@ -89,7 +89,7 @@ fn unpublished_gaps_and_later_2_1_271_stay_classified() {
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279",
+            "2.1.279", "2.1.297", "2.1.298",
         ]
     );
     let headless = claude_code_headless_claim();
@@ -140,11 +140,11 @@ fn identity_and_claim_qualify_2_1_270_as_compatible_extension() {
         "2.1.257"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.294");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.310");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.293"
+        "2.1.310"
     );
 
     let headless = claude_code_headless_claim();

@@ -3,7 +3,7 @@
   "facade": "codex-app-server-v2",
   "claim": "codex.app-server.lifecycle-window-1",
   "qualified_range": "0.80.0..=0.164.0",
-  "evidence_checked_at": "2026-10-08",
+  "evidence_checked_at": "2026-10-26",
   "upstream_repository": "https://github.com/openai/codex",
   "schema_generation_command": "cargo run --manifest-path codex-rs/Cargo.toml -p codex-app-server-protocol --bin export -- --out <output-dir>",
   "aggregate_schema_order": ["ClientNotification.json", "ClientRequest.json", "ServerNotification.json", "ServerRequest.json"],

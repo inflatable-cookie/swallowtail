@@ -1,6 +1,6 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-10-08",
+  "evidence_checked": "2026-10-26",
   "claim_id": "codex.app-server.session-continuity-window-1",
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",

@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `opencode.http` and `opencode.acp` through official stable `1.19.4`
+  (Research 453). Both claims stay `AllowUnverified` and unflattened.
+  `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and adds
+  `1.19.0..=1.19.4`. `opencode.acp-v1.client-mcp-servers-v2` keeps
+  `1.18.31..=1.18.35` and adds `1.19.0..=1.19.4`. Deprecated ACP
+  `1.18.18..=1.18.30` stays. Unpublished `1.18.36` is incompatible.
+  `1.19.5` is `UnverifiedNewer`. HTTP MCP live honouring stays exact
+  `1.18.18`.
 - qualify only `cline.acp` from its `3.0.70` ceiling through official npm
   `latest` `3.0.74`, keeping the `3.0.55` baseline and unpublished `3.0.59`
   exclusion. Research 457 freezes hops `3.0.71` through `3.0.74`, wrapper and

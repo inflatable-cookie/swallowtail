@@ -99,6 +99,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         "1.17.21",
         "1.18.4-rc.1",
         "1.18.11-rc.1",
+        "1.18.36",
     ] {
         let binding = opencode_server_binding(rejected).expect("rejection is safe");
         assert!(!claim.supports(binding.version()), "{rejected} passed");
@@ -106,7 +107,8 @@ fn claim_preserves_unpublished_and_outer_gaps() {
     }
     for qualified in [
         "1.18.21", "1.18.22", "1.18.23", "1.18.24", "1.18.25", "1.18.26", "1.18.27", "1.18.28",
-        "1.18.29", "1.18.30", "1.18.31", "1.18.32", "1.18.33", "1.18.34", "1.18.35",
+        "1.18.29", "1.18.30", "1.18.31", "1.18.32", "1.18.33", "1.18.34", "1.18.35", "1.19.0",
+        "1.19.1", "1.19.2", "1.19.3", "1.19.4",
     ] {
         let binding = opencode_server_binding(qualified).expect("qualified version is safe");
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(binding.version())
@@ -118,7 +120,7 @@ fn claim_preserves_unpublished_and_outer_gaps() {
             "opencode.http-sse.surface-19"
         );
     }
-    let newer = opencode_server_binding("1.18.36").expect("newer version is safe");
+    let newer = opencode_server_binding("1.19.5").expect("newer version is safe");
     assert!(!claim.supports(newer.version()));
     assert!(claim.permits(newer.version()));
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
@@ -127,7 +129,10 @@ fn claim_preserves_unpublished_and_outer_gaps() {
         panic!("newer stable version must remain unverified");
     };
     assert_eq!(unverified.version(), newer.version());
-    assert_eq!(unverified.latest_qualified().as_str(), "1.18.35");
+    assert_eq!(
+        unverified.latest_qualified().as_str(),
+        OPENCODE_LATEST_QUALIFIED_VERSION
+    );
     assert_eq!(
         unverified.behavior_revision().as_str(),
         "opencode.http-sse.surface-19"
@@ -142,18 +147,28 @@ fn claim_preserves_unpublished_and_outer_gaps() {
 fn candidate_segments_match_the_recursively_closed_manifest() {
     let fixture: serde_json::Value = serde_json::from_str(CORPUS).expect("corpus parses");
     let claim = opencode_http_claim();
-    let expected = fixture["segments"].as_array().expect("segment array");
-    assert_eq!(claim.milestones().len(), expected.len());
-    for (index, (actual, expected)) in claim.milestones().zip(expected).enumerate() {
-        assert_eq!(actual.minimum().as_str(), expected["minimum"]);
-        let expected_maximum = if index + 1 == claim.milestones().len() {
-            OPENCODE_LATEST_QUALIFIED_VERSION
+    let segments = fixture["segments"].as_array().expect("segment array");
+    let milestones: Vec<_> = claim.milestones().collect();
+    assert_eq!(milestones.len(), segments.len() + 1);
+    for (index, segment) in segments.iter().enumerate() {
+        let actual = milestones[index];
+        assert_eq!(actual.minimum().as_str(), segment["minimum"]);
+        let expected_maximum = if index + 1 == segments.len() {
+            "1.18.35"
         } else {
-            expected["maximum"].as_str().expect("maximum is a string")
+            segment["maximum"].as_str().expect("maximum is a string")
         };
         assert_eq!(actual.maximum().as_str(), expected_maximum);
-        assert_eq!(actual.behavior_revision().as_str(), expected["behavior"]);
+        assert_eq!(actual.behavior_revision().as_str(), segment["behavior"]);
     }
+    let added = milestones.last().expect("1.19 segment");
+    assert_eq!(added.minimum().as_str(), "1.19.0");
+    assert_eq!(added.maximum().as_str(), OPENCODE_LATEST_QUALIFIED_VERSION);
+    assert_eq!(
+        added.behavior_revision().as_str(),
+        "opencode.http-sse.surface-19"
+    );
+    assert_eq!(added.support_status(), InterfaceSupportStatus::Maintained);
     assert_eq!(
         fixture["surface_revisions"]
             .as_array()

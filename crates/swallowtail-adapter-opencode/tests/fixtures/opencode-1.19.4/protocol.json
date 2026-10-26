@@ -1,0 +1,292 @@
+{
+  "selected_routes": [
+    "global.health",
+    "provider.list",
+    "session.create",
+    "session.prompt_async",
+    "event.subscribe",
+    "session.abort",
+    "session.delete",
+    "session.list",
+    "session.status",
+    "session.get",
+    "session.messages"
+  ],
+  "selected_openapi_paths": [
+    "/event",
+    "/global/event",
+    "/global/health",
+    "/provider",
+    "/session",
+    "/session/status",
+    "/session/{sessionID}",
+    "/session/{sessionID}/abort",
+    "/session/{sessionID}/message",
+    "/session/{sessionID}/prompt_async"
+  ],
+  "selected_openapi_path_objects_byte_identical": true,
+  "selected_route_declaration_and_handler_files_byte_identical": true,
+  "mapped_stable_files": [
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts",
+    "packages/opencode/src/session/compaction.ts",
+    "packages/opencode/src/session/message-v2.ts",
+    "packages/opencode/src/session/session.ts",
+    "packages/opencode/src/session/status.ts",
+    "packages/sdk/openapi.json"
+  ],
+  "openapi_sha256": {
+    "1.18.35": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+    "1.19.0": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+    "1.19.1": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+    "1.19.2": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+    "1.19.3": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+    "1.19.4": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+  },
+  "classified_mapped_deltas": [
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/sdk/openapi.json",
+      "classification": "Selected path objects are byte-identical. The only schema edit is the Config.autoupdate description. Swallowtail does not read that setting."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/server/routes/instance/httpapi/server.ts",
+      "classification": "Removes the ShareNext layer from the HTTP server composition. Selected route handler files stay byte-identical, and share/unshare are not selected operations."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/share/session.ts",
+      "classification": "SessionShare.create returns Session.create and no longer forks auto-share. Selected POST /session still returns that session info. Swallowtail decodes id and version, does not set share=auto, and does not call share or unshare."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/core/src/v1/config/provider.ts",
+      "classification": "Adds optional model reasoning_options used to build catalogue variants. Swallowtail does not write OpenCode provider config. Absent options keep the previous variant path, and the GET /provider response schema is unchanged."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/opencode/src/provider/provider.ts",
+      "classification": "Configured reasoning_options replace catalog variants when present; configured variant overrides still merge on top. With the field absent, the previous catalog path remains. Swallowtail uses only the variant keys GET /provider returns."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/opencode/src/provider/transform.ts",
+      "classification": "reasoningVariants accepts a model value that carries reasoning_options. The function body is unchanged, so variant objects keep their existing shape."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/sdk/openapi.json",
+      "classification": "Selected path objects stay byte-identical. ProviderConfig gains optional reasoning_options. That field is operator config, not the catalogue response schema Swallowtail decodes."
+    }
+  ],
+  "classified_unmapped_deltas": [
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/core/package.json",
+      "classification": "Package version metadata only. No dependency change on this hop."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/core/src/github-copilot/chat/convert-to-openai-compatible-chat-messages.ts",
+      "classification": "Copilot chat replay keeps the latest reasoningOpaque and concatenates interleaved reasoning text. This is provider-output conversion for GitHub Copilot, not an OpenCode HTTP or ACP wire schema."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/core/src/github-copilot/chat/openai-compatible-chat-language-model.ts",
+      "classification": "Copilot streaming keeps the latest reasoning_opaque instead of rejecting a second one. Provider-internal Copilot replay, outside the selected HTTP routes and ACP methods."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/core/src/v1/config/config.ts",
+      "classification": "Config.autoupdate description now says checks do not install updates. The schema union is unchanged. Swallowtail does not read or write this CLI setting."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version metadata only. The @agentclientprotocol/sdk pin stays 0.21.0."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/src/cli/cmd/tui.ts",
+      "classification": "TUI update notices and explicit /update installs, including an OpenCode 2 major offer. CLI only; not the attached HTTP server or ACP stdio entrypoint."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/src/cli/cmd/upgrade.ts",
+      "classification": "Adds opencode upgrade --major for a separate OpenCode 2 install. The selected routes do not invoke the upgrade command."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/src/cli/tui/worker.ts",
+      "classification": "TUI worker returns the upgrade check instead of discarding it. CLI process only."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/src/cli/upgrade.ts",
+      "classification": "Upgrade checks report availability and no longer install a patch automatically. CLI update behavior, not selected session or ACP lifecycle."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/src/installation/index.ts",
+      "classification": "Adds an explicit upgradeMajor installer for the separate @opencode/cli OpenCode 2 package. Selected HTTP and ACP entrypoints do not call it."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/opencode/src/server/routes/instance/httpapi/handlers/pty.ts",
+      "classification": "PTY connect checks origin before ticket consumption. The PTY websocket is not a selected HTTP or ACP operation."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package version metadata only. Selected OpenAPI path objects are unchanged."
+    },
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "file": "packages/sdk/js/src/v2/gen/types.gen.ts",
+      "classification": "Generated SDK types follow the Config.autoupdate description edit. Swallowtail does not use this generated client."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/core/package.json",
+      "classification": "Package version metadata only. No dependency change on this hop."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version metadata only. The @agentclientprotocol/sdk pin stays 0.21.0."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/cli/cmd/github.handler.ts",
+      "classification": "GitHub action comments stop creating share links. CLI automation, not the selected HTTP session routes or ACP methods."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/cli/cmd/import.ts",
+      "classification": "Removes share-URL import helpers. Swallowtail session import uses the provider-session catalogue, not opncd.ai share URLs."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/cli/cmd/pr.ts",
+      "classification": "Stops importing a share URL found in a pull request body before launching the CLI. Unselected command."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/cli/cmd/run.ts",
+      "classification": "The run command's share flag is hidden and prints that sharing was discontinued. CLI only."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/effect/app-runtime.ts",
+      "classification": "Drops the ShareNext layer from the app runtime. Selected route handler files are unchanged."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/effect/bootstrap-runtime.ts",
+      "classification": "Drops ShareNext from bootstrap service grouping. Not a selected route or ACP method."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/project/bootstrap.ts",
+      "classification": "Project bootstrap no longer initializes ShareNext. Selected session operations do not call it."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/opencode/src/share/share-next.ts",
+      "classification": "Removes the share-service client. Selected session, catalogue, event, and ACP sources do not reference it."
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package version metadata only. Selected OpenAPI path objects are unchanged."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/core/package.json",
+      "classification": "Package version metadata only. No dependency change on this hop."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version metadata only. The @agentclientprotocol/sdk pin stays 0.21.0."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/opencode/src/cli/cmd/tui.ts",
+      "classification": "A failed TUI update check leaves latest unset. CLI update UI only."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/opencode/src/cli/cmd/upgrade.ts",
+      "classification": "opencode upgrade reports a failed update check instead of throwing. CLI only."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/opencode/src/cli/upgrade.ts",
+      "classification": "Update notices use Installation.isUpdate so a 2.x latest is not offered as a 1.x update. CLI only."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/opencode/src/installation/index.ts",
+      "classification": "1.x update discovery uses the npm opencode-ai dist-tag and refuses a newer major as a normal update. Selected routes do not perform update checks."
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package version metadata only. Selected OpenAPI path objects are unchanged."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/core/package.json",
+      "classification": "Package version metadata only. No dependency change on this hop."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version metadata only. The @agentclientprotocol/sdk pin stays 0.21.0."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package version metadata only. Selected OpenAPI path objects are unchanged."
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "file": "packages/sdk/js/src/v2/gen/types.gen.ts",
+      "classification": "Generated SDK types follow the new ProviderConfig reasoning_options field. Swallowtail does not use this generated client."
+    },
+    {
+      "hop": "1.19.3_to_1.19.4",
+      "file": "packages/core/package.json",
+      "classification": "Package version metadata, plus @ff-labs/fff-bun 0.9.4 to 0.10.5 for the bundled Bun 1.4.4 runtime. Selected route sources are unchanged."
+    },
+    {
+      "hop": "1.19.3_to_1.19.4",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version metadata, plus @ff-labs/fff-bun 0.9.4 to 0.10.5. The @agentclientprotocol/sdk pin stays 0.21.0 and ACP sources are byte-identical."
+    },
+    {
+      "hop": "1.19.3_to_1.19.4",
+      "file": "packages/sdk/js/package.json",
+      "classification": "SDK package version metadata only. Selected OpenAPI path objects are unchanged."
+    }
+  ],
+  "bounded_unmapped_delta_categories": [
+    "cli-update-and-opencode-2-upgrade",
+    "pty-connect-origin-check",
+    "github-copilot-reasoning-opaque-replay",
+    "session-share-discontinuation",
+    "config-description-and-generated-sdk-types",
+    "bundled-bun-runtime"
+  ],
+  "provider_prompt_sent": false,
+  "live_server_started": false,
+  "downloaded_artifact_executed": false,
+  "host_install_changed": false
+}

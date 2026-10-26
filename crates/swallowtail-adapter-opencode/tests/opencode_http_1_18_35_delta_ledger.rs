@@ -1,9 +1,7 @@
 use std::collections::BTreeSet;
 
 use serde_json::{Map, Value};
-use swallowtail_adapter_opencode::{
-    OPENCODE_LATEST_QUALIFIED_VERSION, opencode_http_claim, opencode_server_binding,
-};
+use swallowtail_adapter_opencode::{opencode_http_claim, opencode_server_binding};
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
 const IDENTITY: &str = include_str!("fixtures/opencode-1.18.35/identity.json");
@@ -635,16 +633,13 @@ fn selected_route_files_and_each_changed_implementation_are_classified() {
 }
 
 #[test]
-fn admitted_claim_qualifies_all_four_hops_and_keeps_the_next_patch_unverified() {
+fn admitted_claim_keeps_the_frozen_hops_qualified() {
     let fixture = json(CLAIM);
     let claim = opencode_http_claim();
-    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.18.35");
+    assert_eq!(fixture["latest_qualified"], "1.18.35");
+    assert_eq!(fixture["unverified_newer"], "1.18.36");
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.baseline().as_str(), fixture["baseline"]);
-    assert_eq!(
-        claim.latest_qualified().as_str(),
-        fixture["latest_qualified"]
-    );
     assert_eq!(fixture["behavior_revision"], "opencode.http-sse.surface-19");
     assert_eq!(fixture["newer_version_posture"], "allow_unverified");
     assert_exact_strings(
@@ -669,11 +664,6 @@ fn admitted_claim_qualifies_all_four_hops_and_keeps_the_next_patch_unverified() 
             fixture["behavior_revision"]
         );
     }
-    let later = opencode_server_binding(fixture["unverified_newer"].as_str().unwrap()).unwrap();
-    assert!(matches!(
-        claim.assess(later.version()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
 }
 
 fn json(input: &str) -> Value {

@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `opencode.http` and `opencode.acp` through official stable `1.19.4`
+  (Research 453). Both claims stay `AllowUnverified` and unflattened.
+  `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and adds
+  `1.19.0..=1.19.4`. `opencode.acp-v1.client-mcp-servers-v2` keeps
+  `1.18.31..=1.18.35` and adds `1.19.0..=1.19.4`. Deprecated ACP
+  `1.18.18..=1.18.30` stays. Unpublished `1.18.36` is incompatible.
+  `1.19.5` is `UnverifiedNewer`. HTTP MCP live honouring stays exact
+  `1.18.18`.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

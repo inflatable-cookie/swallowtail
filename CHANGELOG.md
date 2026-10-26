@@ -18,6 +18,13 @@ annotated Git tags from the canonical repository.
   argv, configuration posture and `QualifiedOnly` policy are unchanged, and
   every older or newer point still fails closed. The ACP ceiling stays
   `1.0.46`. See Research 443.
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.26.1` on the existing `qwen-code.headless.package-window-2` claim and
+  `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
+  segment is `0.22.0..=0.26.1`, excluding unpublished `0.22.4`, `0.23.5`,
+  and `0.25.4`. Baseline `0.19.11`, the deprecated segments, exact
+  `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
+  stay put. `0.26.2` remains `UnverifiedNewer`. See Research 454.
 
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,

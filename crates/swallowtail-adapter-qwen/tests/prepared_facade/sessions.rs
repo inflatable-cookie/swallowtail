@@ -1,7 +1,7 @@
 #[test]
 fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
     let host_id = ExecutionHostId::new("fixture.qwen.interactive").expect("valid host");
-    let (discovery_process, _) = FakeProcessService::completed("0.25.0\n");
+    let (discovery_process, _) = FakeProcessService::completed("0.26.1\n");
     let (discovery_services, _) = host_services_for(
         host_id.clone(),
         discovery_process,
@@ -40,11 +40,11 @@ fn prepared_session_uses_only_the_exact_private_resume_id_on_later_turns() {
     );
 
     let first_turn = include_str!("../fixtures/qwen-code-v0.19.11/interactive-first-turn.jsonl")
-        .replace("\"qwen_code_version\":\"0.19.11\"", "\"qwen_code_version\":\"0.25.0\"");
+        .replace("\"qwen_code_version\":\"0.19.11\"", "\"qwen_code_version\":\"0.26.1\"");
     let continued_turn = include_str!(
         "../fixtures/qwen-code-v0.19.11/interactive-continued-turn.jsonl"
     )
-    .replace("\"qwen_code_version\":\"0.19.11\"", "\"qwen_code_version\":\"0.25.0\"");
+    .replace("\"qwen_code_version\":\"0.19.11\"", "\"qwen_code_version\":\"0.26.1\"");
     let (process, states) =
         ScriptedProcessService::completed(&[&first_turn, &continued_turn]);
     let (services, _) = host_services_for(host_id, process, Arc::new(PendingTimeService));

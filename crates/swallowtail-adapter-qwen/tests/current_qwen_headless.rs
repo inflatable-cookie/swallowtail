@@ -71,7 +71,7 @@ fn reserved_workspace(root: &Path) -> PathBuf {
 fn invoke_with_resource(path: &Path) -> Invocation {
     let transcript = include_str!("fixtures/qwen-code-v0.19.11/success.jsonl").replace(
         "\"qwen_code_version\":\"0.19.11\"",
-        "\"qwen_code_version\":\"0.25.0\"",
+        "\"qwen_code_version\":\"0.26.1\"",
     );
     let (process, process_state) = FakeProcessService::completed(&transcript);
     let resource_service = FakeWorkingResourceService::new(path.to_string_lossy().into_owned());
@@ -87,7 +87,7 @@ fn invoke_with_resource(path: &Path) -> Invocation {
         EnvironmentRef::new("qwen-saved-environment").expect("valid environment"),
     );
     let start = block_on(driver.start_run(
-        plan_at_package_version("0.25.0"),
+        plan_at_package_version("0.26.1"),
         request_for(
             "current-qwen-headless",
             WorkingResourceRef::new("workspace.current").expect("valid resource"),

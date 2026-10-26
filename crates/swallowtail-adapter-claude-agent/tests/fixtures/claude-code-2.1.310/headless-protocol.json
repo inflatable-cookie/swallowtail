@@ -264,6 +264,12 @@
       "applies_to": "claude-code.headless",
       "release_note_review": [
         {
+          "surface": "plugin subagent continuation after Stop or ended input",
+          "classification": "provider-lifecycle-tightening",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.304",
+          "reason": "The official 2.1.304 note fixes a plugin spawning subagents or rerunning a finished one to continue past Stop, ended input, or --max-turns. Settings-enabled headless can load plugin hooks; absence of Agent alone does not exclude that path. This provider lifecycle tightening preserves the v2 Stop/reentry rules and process force_stop cancellation, adds no adapter operation or subagent-tree completion guarantee, and does not extend the separate Research 226 maximum-turn set."
+        },
+        {
           "surface": "--tools and --disable-slash-commands help",
           "classification": "help-text-alignment",
           "reason": "Help text was corrected to match existing behavior. Stream-json input and output help lines stay byte-identical. --tools still says an empty list disables all tools. --disable-slash-commands now says it disables skills and commands. Response-only already passes that flag. Headless does not."

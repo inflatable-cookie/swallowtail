@@ -44,7 +44,7 @@
     "one text-only assistant message and one success result with num_turns 1",
     "unknown event types other than rate_limit_event and thinking_tokens fail closed",
     "symlink-linked instruction reads may be omitted; no filesystem containment is claimed",
-    "v3 does not promise every instruction byte; the 2.1.310 changelog string about a nested CLAUDE.md size prefix is not selected-path JS and does not add containment"
+    "v3 does not promise every instruction byte; the official 2.1.309 note reports a nested CLAUDE.md size prefix, and the lagged embedded changelog string does not date the implementation or add containment"
   ],
   "isolation_evidence": "response-only-isolation.json",
   "per_hop_classification": [
@@ -269,6 +269,12 @@
       "applies_to": "claude-code.response-only",
       "release_note_review": [
         {
+          "surface": "plugin subagent continuation after Stop or ended input",
+          "classification": "outside-safe-mode-custom-hooks",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.304",
+          "reason": "The official 2.1.304 note fixes plugin subagent continuation past Stop, ended input, or --max-turns in headless runs. Response-only independently passes --safe-mode: response-only-isolation.json binds the builtin-only plugin filter and empty tools to each artifact. Installed plugins and custom hooks are excluded, slash commands are disabled, and non-null parent_tool_use_id fails closed. This route does not rely on the headless lifecycle classification or gain maximum-turn support."
+        },
+        {
           "surface": "--tools and --disable-slash-commands help",
           "classification": "help-text-alignment",
           "reason": "Help text was corrected to match existing behavior. Stream-json input and output help lines stay byte-identical. --tools still says an empty list disables all tools. --disable-slash-commands now says it disables skills and commands. Response-only already passes that flag. Headless does not."
@@ -355,8 +361,9 @@
       "release_note_review": [
         {
           "surface": "nested CLAUDE.md size limit",
-          "classification": "unselected-changelog-string",
-          "reason": "The GitHub 2.1.309 note is not selected-path JS. The changelog string is in the 2.1.310 natives and absent from 2.1.309. Isolation is the frozen --safe-mode option, builtin-only plugin filter, empty tools, empty mcp_servers, and init permissionMode default in response-only-isolation.json. v3 still does not claim containment."
+          "classification": "instruction-read-limit-within-v3",
+          "reason": "The official 2.1.309 release note reports that an oversized nested CLAUDE.md loads only its start. The embedded changelog string is in the 2.1.310 natives and absent from 2.1.309; this measures the embedded note, not the implementation date. Independent isolation evidence is the frozen --safe-mode option, builtin-only plugin filter, empty tools, empty mcp_servers, and init permissionMode default in response-only-isolation.json. v3 does not promise every instruction byte or claim containment.",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.309"
         },
         {
           "surface": "Windows PowerShell hook exit 2",

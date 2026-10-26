@@ -86,6 +86,17 @@ VS Code stay off the selected commands. Fork-subagent defaults in `-p` stay
 bounded by the tool sets: headless does not admit `Agent`, and response-only
 rejects a non-null `parent_tool_use_id`.
 
+The official `2.1.304` note also fixes plugins spawning or rerunning
+subagents to continue a headless run after Stop, ended input, or
+`--max-turns`. Settings-enabled headless can load plugin hooks, so absence of
+the `Agent` tool alone does not exclude this lifecycle path. This is a
+provider lifecycle tightening of termination, not a new adapter operation:
+the v2 Stop/reentry rules remain, cancellation is still process `force_stop`,
+and no subagent-tree completion is claimed. The note does not qualify newer
+maximum-turn points. Response-only separately excludes installed plugins and
+custom hooks through its measured safe-mode filter and rejects subagent
+frames; it cannot borrow the headless classification.
+
 ## Headless decision
 
 Compatible extension. Keep claim id `claude-code.headless.window-1`, baseline
@@ -121,10 +132,13 @@ Empty tools and empty MCP leave that chart path unselected.
 `--disable-slash-commands` still excludes the `2.1.287` fork-skill stream.
 Unknown event types still fail closed.
 
-The GitHub `2.1.309` nested `CLAUDE.md` size-prefix note is not selected-path
-JS. That changelog string is in the `2.1.310` natives and absent from
-`2.1.309`. v3 already does not promise every instruction byte and does not
-gain a containment guarantee.
+The official GitHub `2.1.309` release note reports the nested `CLAUDE.md`
+size-prefix change. The embedded changelog string is present in the
+`2.1.310` natives and absent from `2.1.309`; that byte search dates the
+embedded note, not the implementation. It is not selected-path JS evidence.
+The independent isolation evidence remains `response-only-isolation.json`.
+v3 already does not promise every instruction byte and does not gain a
+containment guarantee.
 
 The selected command stays `-p`, text, stream-json, verbose, no session
 persistence, model, `--tools ""`, `--safe-mode`, `--disable-slash-commands`,
@@ -137,6 +151,8 @@ the prepared version. One text turn, `num_turns` 1.
 - [Fixture `claude-code-2.1.310`](../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.310/)
 - [npm `@anthropic-ai/claude-code`](https://www.npmjs.com/package/@anthropic-ai/claude-code)
 - [GitHub `v2.1.310`](https://github.com/anthropics/claude-code/releases/tag/v2.1.310)
+- [GitHub `v2.1.309`](https://github.com/anthropics/claude-code/releases/tag/v2.1.309)
+- [GitHub `v2.1.304`](https://github.com/anthropics/claude-code/releases/tag/v2.1.304)
 - [Research 423](./423-claude-code-headless-2-1-294-stream-hook-safety-adaptation.md)
 - [Research 422](./422-claude-code-2-1-294-headless-currentness-stop.md)
 - [Research 378](./378-claude-code-response-only-2-1-293-identity-and-qualification.md)

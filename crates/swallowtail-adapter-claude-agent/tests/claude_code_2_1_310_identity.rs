@@ -354,6 +354,28 @@ fn hook_and_stream_markers_hold_and_no_hop_is_a_selected_change() {
     for hop in response_hops {
         assert_eq!(hop["selected_mapped_change"], false);
     }
+    for (hops, classification) in [
+        (headless_hops, "provider-lifecycle-tightening"),
+        (response_hops, "outside-safe-mode-custom-hooks"),
+    ] {
+        let hop = hops
+            .iter()
+            .find(|hop| hop["hop"] == "2.1.303_to_2.1.304")
+            .expect("the 2.1.304 hop is reviewed for each route");
+        let note = hop["release_note_review"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|note| {
+                note["surface"] == "plugin subagent continuation after Stop or ended input"
+            })
+            .expect("the lifecycle fix has its own route classification");
+        assert_eq!(note["classification"], classification);
+        assert_eq!(
+            note["source"],
+            "https://github.com/anthropics/claude-code/releases/tag/v2.1.304"
+        );
+    }
 }
 
 #[test]
@@ -484,15 +506,23 @@ fn selected_v2_control_flow_is_bound_to_exact_runtime_hashes() {
         );
     }
     assert_eq!(
-        flow["nested_claude_md_prefix"]["present_as_selected_path_js"],
+        flow["nested_claude_md_prefix"]["official_release_note_version"],
+        "2.1.309"
+    );
+    assert_eq!(
+        flow["nested_claude_md_prefix"]["official_release_note_url"],
+        "https://github.com/anthropics/claude-code/releases/tag/v2.1.309"
+    );
+    assert_eq!(
+        flow["nested_claude_md_prefix"]["embedded_release_note_is_selected_path_js"],
         false
     );
     assert_eq!(
-        flow["nested_claude_md_prefix"]["present_as_release_note_string_at_2_1_309"],
+        flow["nested_claude_md_prefix"]["present_as_embedded_release_note_string_at_2_1_309"],
         false
     );
     assert_eq!(
-        flow["nested_claude_md_prefix"]["present_as_release_note_string_at_2_1_310"],
+        flow["nested_claude_md_prefix"]["present_as_embedded_release_note_string_at_2_1_310"],
         true
     );
 }

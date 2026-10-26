@@ -63,10 +63,13 @@
     "claude-code-linux-x64": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Ig(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Wme(e,r)} returned updatedInput with a key starting with \"${gzt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Gme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${aqe}`):{...S,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run.`"
   },
   "nested_claude_md_prefix": {
-    "release_note_string": "a nested CLAUDE.md over the size limit now loads only its start",
-    "present_as_selected_path_js": false,
-    "present_as_release_note_string_at_2_1_309": false,
-    "present_as_release_note_string_at_2_1_310": true,
+    "official_release_note_version": "2.1.309",
+    "official_release_note_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.309",
+    "embedded_release_note_string": "a nested CLAUDE.md over the size limit now loads only its start",
+    "embedded_release_note_is_selected_path_js": false,
+    "present_as_embedded_release_note_string_at_2_1_309": false,
+    "present_as_embedded_release_note_string_at_2_1_310": true,
+    "observation_scope": "The byte search dates the embedded changelog string, not the implementation. The official release note attributes the change to 2.1.309; selected-path isolation evidence is independent.",
     "selected_path_does_not_depend_on_this_string": true
   },
   "hop_comparison": {

@@ -495,9 +495,11 @@ and `AGENTS.md` outside working directories under its named read policies.
 The v3 route does not guarantee that every symlink-linked instruction reaches
 `prompt.context`. No adapter operation restores those reads or broadens
 filesystem authority. The published runtime is opaque and no internal
-resolver function is claimed (Research 378). From `2.1.310`, an oversized
-nested `CLAUDE.md` loads only its start. That size prefix stays inside v3 and
-does not add containment (Research 445).
+resolver function is claimed (Research 378). The official `2.1.309` release
+note reports that an oversized nested `CLAUDE.md` loads only its start. The
+embedded changelog string first observed in the `2.1.310` artifacts does not
+date that implementation. The reported size prefix stays inside v3 and does
+not add containment (Research 445).
 
 The prepared plan records `ProviderSuppressed` harness configuration and
 `AmbientHost` isolation. The first says exact provider flags suppress tools

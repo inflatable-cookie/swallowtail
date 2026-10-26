@@ -104,21 +104,39 @@ fn catalogue_acp_and_headless_qualify_their_exact_published_hops() {
     for release in historical {
         assert!(acp.supports(&version(release)), "{release}");
     }
-    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
+    for release in [
+        "2026-09-26",
+        "2026-09-28",
+        "2026-10-01",
+        "2026-10-14",
+        "2026-10-16",
+        "2026-10-18",
+        "2026-10-19",
+        "2026-10-22",
+    ] {
         assert!(acp.supports(&version(release)), "{release}");
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(acp_newer) =
-        acp.assess(&version("2026-10-02"))
+        acp.assess(&version("2026-10-23"))
     else {
         panic!("later ACP dates remain visibly unverified");
     };
-    assert_eq!(acp_newer.latest_qualified().as_str(), "2026-10-01");
+    assert_eq!(acp_newer.latest_qualified().as_str(), "2026-10-22");
 
     let headless = cursor_headless_claim();
     for release in historical {
         assert!(headless.supports(&version(release)), "{release}");
     }
-    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
+    for release in [
+        "2026-09-26",
+        "2026-09-28",
+        "2026-10-01",
+        "2026-10-14",
+        "2026-10-16",
+        "2026-10-18",
+        "2026-10-19",
+        "2026-10-22",
+    ] {
         assert!(
             headless.supports(&version(release)),
             "headless qualifies {release}"
@@ -137,11 +155,15 @@ fn catalogue_acp_and_headless_qualify_their_exact_published_hops() {
         }
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(headless_newer) =
-        headless.assess(&version("2026-10-02"))
+        headless.assess(&version("2026-10-23"))
     else {
         panic!("later Headless dates remain visibly unverified");
     };
-    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-10-01");
+    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-10-22");
+    for gap in ["2026-10-02", "2026-10-15", "2026-10-21"] {
+        assert!(!acp.permits(&version(gap)), "{gap}");
+        assert!(!headless.permits(&version(gap)), "{gap}");
+    }
 }
 
 #[test]
@@ -159,9 +181,15 @@ fn every_qualified_date_requires_its_exact_build_revision() {
         "2026.09.26-dd393fe",
         "2026.09.28-64d2043",
         "2026.10.01-14929f9",
+        "2026.10.14-941492e",
+        "2026.10.16-e3cb207",
+        "2026.10.18-ea085cb",
+        "2026.10.19-6bbf2c4",
+        "2026.10.22-27dcf5f",
     ] {
         assert!(cursor_agent_release_binding(accepted).is_some());
     }
+    assert!(cursor_agent_release_binding("2026.10.14-0f9edde").is_none());
     for rejected in [
         "2026.07.01-deadbee",
         "2026.07.23-deadbee",

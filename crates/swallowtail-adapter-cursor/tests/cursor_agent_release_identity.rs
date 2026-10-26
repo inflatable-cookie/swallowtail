@@ -100,10 +100,10 @@ fn identity_adds_exact_august_milestones_without_inferring_the_gap() {
                 if matched.support_status() == InterfaceSupportStatus::Maintained
         ));
         assert!(!claim.permits(&version("2026-08-05")));
-        assert!(matches!(
-            claim.assess(&version("2026-08-12")),
-            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-        ));
+        assert!(
+            !claim.permits(&version("2026-08-12")),
+            "2026-08-12 stays a gap between exact points"
+        );
     }
     assert_eq!(
         cursor_agent_release_binding("2026.08.11-e8db854")

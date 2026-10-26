@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `cursor-agent.acp` and `cursor-agent.headless` through official ACP
+  registry stable `2026.10.22-27dcf5f` (Research 450). Both keep their claim
+  ids, behavior revisions, baseline `2026.07.01-41b2de7`, prior exact points,
+  gaps, and `AllowUnverified` posture. The added exact points are
+  `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
+  `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. Same-date registry build
+  `2026.10.14-0f9edde` stays rejected. `cursor-agent.catalogue` stays at
+  `2026.10.01-14929f9`.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

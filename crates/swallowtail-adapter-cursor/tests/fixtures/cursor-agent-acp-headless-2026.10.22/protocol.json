@@ -1,0 +1,93 @@
+{
+  "selected_routes": [
+    "cursor-agent.acp",
+    "cursor-agent.headless"
+  ],
+  "catalogue_or_cross_route_transfer": false,
+  "downloaded_artifacts_executed": false,
+  "provider_prompt_sent": false,
+  "credentials_used": false,
+  "inspection": "static inspection of exact official package trees; downloaded archives were not executed",
+  "acp": {
+    "command": "acp",
+    "transport": "ACP v1 over stdio",
+    "initialize_literal_byte_identical_across_hops": true,
+    "initialize_shape": {
+      "protocol_version_constant": 1,
+      "auth_methods": [
+        "cursor_login"
+      ],
+      "agent_info": null,
+      "load_session": true,
+      "mcp_capabilities": {
+        "http": true,
+        "sse": true
+      },
+      "prompt_capabilities": {
+        "audio": false,
+        "embeddedContext": false,
+        "image": true
+      },
+      "session_capabilities": {
+        "list": {}
+      },
+      "subagents": "client-negotiated; default off; not requested"
+    },
+    "client_capabilities_schema": "fs.readTextFile and fs.writeTextFile stay optional booleans defaulting false; terminal stays optional boolean defaulting false; protocolVersion stays the constant 1. Zod packaging moves from 3.25.76 to 4.6.5 at 2026.10.16; the selected field set does not.",
+    "session_new": "requires authenticated cursor_login before session creation on every hop",
+    "load_session_posture": "advertised-without-proven-replay",
+    "continuation_recovery": "blocked",
+    "permission_mapping": "requestWebPermission still maps one-shot allow/reject and provider cancellation; allow-always is not a durable grant",
+    "sdk_package": "0.14.1 on every hop"
+  },
+  "headless": {
+    "argv": [
+      "--print",
+      "--output-format",
+      "stream-json",
+      "--model",
+      "--trust"
+    ],
+    "mode_choices": [
+      "plan",
+      "ask"
+    ],
+    "mode_choices_unchanged": true,
+    "unselected_flags": [
+      "--force",
+      "--yolo",
+      "--sandbox",
+      "--auto-review",
+      "--stream-partial-output"
+    ],
+    "wire": {
+      "framing": "JSON event per line, each serialized event terminated by LF.",
+      "system_init_fields": [
+        "type=system",
+        "subtype=init",
+        "session_id",
+        "model",
+        "permissionMode=default"
+      ],
+      "assistant": "message.content text blocks",
+      "thinking": "subtype delta text and completed",
+      "tool_call": "subtype started and completed; call_id; tool_call payload private",
+      "result": "subtype success, is_error false, duration_ms, duration_api_ms, result, session_id, request_id, optional usage",
+      "usage_fields": [
+        "inputTokens",
+        "outputTokens",
+        "cacheReadTokens",
+        "cacheWriteTokens"
+      ]
+    },
+    "selected_wire_shape_unchanged": true
+  },
+  "bounded_unmapped": [
+    "2026.10.14-0f9edde is a superseded same-date registry build. Selected surfaces match. Binding keeps 2026.10.14-941492e and rejects the earlier build.",
+    "Zod 3.25.76 to 4.6.5 at 2026.10.16 renames validator helpers. Selected initialize schema fields stay the same.",
+    "package.json gains a dependency declaration at 2026.10.16. The launcher stays byte-identical. Node changes only at 2026.10.22 and is not a selected wire file.",
+    "index.js gains an internal git worktree --force refusal at 2026.10.22. Swallowtail does not send --force.",
+    "Worker, plugin, cloud, SEA, native, and other unselected chunks are enumerated in the hop ledgers.",
+    "task_notification system events already exist at the 2026.10.01 ceiling and stay outside the selected headless init event."
+  ]
+}

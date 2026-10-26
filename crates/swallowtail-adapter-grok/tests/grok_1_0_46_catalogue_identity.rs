@@ -158,18 +158,34 @@ fn official_latest_identity_and_hop_ledgers_freeze_the_stop() {
 }
 
 #[test]
-fn exact_catalogue_claim_stays_at_1_0_30_and_fails_closed_after_it() {
+fn exact_catalogue_point_stays_1_0_30_under_the_original_mapping() {
     assert_eq!(GROK_BUILD_CATALOGUE_VERSION, "1.0.30");
     let claim = grok_build_catalogue_claim();
+    let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.30"))
+    else {
+        panic!("exact 1.0.30 remains catalogue-qualified");
+    };
+    assert_eq!(
+        matched.behavior_revision().as_str(),
+        "grok-build.catalogue.models-text-v1"
+    );
+    // Research 443 extends the same claim with a note-bearing segment from
+    // 1.0.46; the frozen corpus in this file stays the stop evidence for the
+    // original mapping and is never rewritten.
     assert!(matches!(
-        claim.assess(&version("1.0.30")),
+        claim.assess(&version("1.0.31")),
         InterfaceCompatibilityAssessment::Qualified(_)
     ));
-    for rejected in ["1.0.31", "1.0.46"] {
-        assert_eq!(
-            claim.assess(&version(rejected)),
-            InterfaceCompatibilityAssessment::Incompatible,
-            "{rejected} remains outside the exact catalogue claim"
-        );
-    }
+    let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.46"))
+    else {
+        panic!("1.0.46 joins the note-bearing catalogue segment");
+    };
+    assert_eq!(
+        matched.behavior_revision().as_str(),
+        "grok-build.catalogue.models-text-v2"
+    );
+    assert_eq!(
+        claim.assess(&version("1.0.71")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
 }

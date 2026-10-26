@@ -98,7 +98,7 @@ fn production_claim_keeps_the_frozen_1_0_41_hop_maintained() {
 }
 
 #[test]
-fn the_exact_catalogue_claim_does_not_move_with_the_acp_window() {
+fn the_catalogue_window_does_not_borrow_the_acp_ceiling() {
     let catalogue = grok_build_catalogue_claim();
     let InterfaceCompatibilityAssessment::Qualified(matched) = catalogue.assess(&version("1.0.30"))
     else {
@@ -108,11 +108,15 @@ fn the_exact_catalogue_claim_does_not_move_with_the_acp_window() {
         matched.behavior_revision().as_str(),
         "grok-build.catalogue.models-text-v1"
     );
-    for rejected in ["1.0.4", "1.0.25", "1.0.29", "1.0.31", "1.0.40", "1.0.41"] {
+    assert!(matches!(
+        catalogue.assess(&version("1.0.70")),
+        InterfaceCompatibilityAssessment::Qualified(_)
+    ));
+    for rejected in ["1.0.4", "1.0.25", "1.0.29", "1.0.71"] {
         assert_eq!(
             catalogue.assess(&version(rejected)),
             InterfaceCompatibilityAssessment::Incompatible,
-            "{rejected} stays outside the exact catalogue point"
+            "{rejected} stays outside the catalogue window"
         );
     }
 }

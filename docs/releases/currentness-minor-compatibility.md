@@ -174,8 +174,8 @@ on `v0.5.4` keep that tag's pins.
 | `kimi-code.acp` | QualifiedOnly through `0.38.0` | stop, not inclusion | Research 403 |
 | `kimi-code.headless` | v2 through `2.1.1` excluding exact `2.1.0` | additive; Q-004 does not apply to this family | Research 413 |
 | `kimi-code.local-server` | through `2.1.1` under AmbientHost (Q-004 B) | additive | Research 357; Q-004 |
-| `grok-build.acp` | through `1.0.46`; `1.0.47`–`1.0.49` UnverifiedNewer | additive | Research 385 |
-| `grok-build.catalogue` | exact `1.0.30` | stop, not inclusion | Research 405 |
+| `grok-build.acp` | through `1.0.46`; `1.0.47`–`1.0.70` UnverifiedNewer | additive; ceiling unchanged | Research 385, 443 |
+| `grok-build.catalogue` | `QualifiedOnly` window `1.0.30..=1.0.70`: deprecated `1.0.30..=1.0.45` on `models-text-v1`, maintained `1.0.46..=1.0.70` on `models-text-v2` | additive qualification with a new private behavior milestone; `1.0.30` stays admitted and keeps its revision | Research 443, 405 |
 | `zcode.app-server` | existing identity; runtime `0.16.9` inside ZCode `3.14.4` is discovery only | stop | Research 408 |
 | `muse-code.headless` | signed payload pin remains `0.2.1-R1215.1`; `1.4.4-R5419.1` is identity only | stop | Research 409 |
 | `kiro.acp` | exact `2.21.4`; HTTP MCP live honouring exact that point | stop for later stables | Research 419, 394 |
@@ -243,13 +243,15 @@ is required.
 ## Unresolved Qualification Gates
 
 Each row names a finite next proof, design, or implementation and the
-existing Queue lead. Do not duplicate these tasks.
+existing Queue lead. Do not duplicate these tasks. The Grok Build catalogue
+default-not-in-list header gate closed in Research 443 with a same-contract
+private mapping and a two-segment window claim.
 
 | Gate | Next bounded work | Existing lead |
 | --- | --- | --- |
 | Antigravity headless past `1.2.11` (Mac resource/RPC/permission, retry-budget, approved-environment auth, and Linux x64 selected control flow; child Unknown already adapted) | Close those non-Windows evidence gaps, including the unmapped Linux x64 selected control-flow proof (Research 424 remaining gate 5). Keep exact `1.2.11` until that evidence supports movement; `1.3.2` UnverifiedNewer. Windows stays on the later sweep. | `eca55612-015c-46ed-a38b-52a85b30f15e` |
 | Antigravity `1.1.18..=1.2.10` per-point pin backfill | Not now | `2ad46d4a` |
-| Grok Build catalogue default-not-in-list header | Same-contract mapping or ruling before moving exact `1.0.30` | `8d166e76` |
+| Grok Build ACP past `1.0.46` | Separate per-hop selected-surface sweep to official `1.0.70`; the ACP ceiling stays `1.0.46` and only gains unverified-newer reach (Research 443) | Queue dispatch; no ACP qualification lead yet |
 | ZCode runtime hops and selected app-server behavior after identity `0.16.9` | Prove hops; missing `3.14.4` source tag remains a hole | `b5f780ff` |
 | Kimi ACP local-spawn process authority through official `2.1.1` | Review host-mediated process design; ceiling stays `0.38.0` | `e21bdd6e` |
 | Kiro ACP owner-sweep reachability after `2.21.4` | Startup reachability in the isolated owner-state harness | `2ec033e3` |

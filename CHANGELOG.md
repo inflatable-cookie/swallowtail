@@ -5,6 +5,20 @@ annotated Git tags from the canonical repository.
 
 ## [Unreleased]
 
+### Compatibility
+- qualify `grok-build.catalogue` across the official stable window
+  `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
+  `grok-build.catalogue.models-text-v1` as a deprecated segment; the new
+  `1.0.46..=1.0.70` segment uses `grok-build.catalogue.models-text-v2`, which
+  decodes the shipped `Default model: <id> (not in the list below)` header the
+  old mapping rejected. Entries stay the listed rows in provider order; a
+  default the source reports outside the list, or no reported default at all,
+  leaves every row non-default, and no unlisted id is promoted. The claim id
+  moves to `grok-build.catalogue.executable-window-1`; the route, operation,
+  argv, configuration posture and `QualifiedOnly` policy are unchanged, and
+  every older or newer point still fails closed. The ACP ceiling stays
+  `1.0.46`. See Research 443.
+
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,
   where the safe `AsyncFd::new`, `AsyncFd::with_interest`, `AsyncFd::try_new`

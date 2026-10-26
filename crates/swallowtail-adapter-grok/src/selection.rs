@@ -28,9 +28,22 @@ pub(crate) const GROK_BUILD_ACP_MODEL_4_6_BEHAVIOR: &str =
     "grok-build.acp-v1.cached-token-model-4-6-v3";
 pub(crate) const GROK_BUILD_MODEL_4_5: &str = "grok-4.5";
 pub(crate) const GROK_BUILD_MODEL_4_6: &str = "grok-4.6";
-/// Exact installed Grok Build version admitted by the model catalogue seam.
+/// Baseline installed Grok Build version of the model catalogue window.
+///
+/// The first qualified catalogue point stays exact `1.0.30` under the
+/// deprecated `models-text-v1` mapping. Later points extend the same claim
+/// through the note-bearing mapping; this constant never names a ceiling.
 pub const GROK_BUILD_CATALOGUE_VERSION: &str = "1.0.30";
-pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR: &str = "grok-build.catalogue.models-text-v1";
+/// Oldest point that only ever renders a listed default model id.
+pub(crate) const GROK_BUILD_CATALOGUE_V1_BASELINE_VERSION: &str = "1.0.30";
+/// Newest point of the old, listed-default-only catalogue mapping.
+pub(crate) const GROK_BUILD_CATALOGUE_V1_LATEST_VERSION: &str = "1.0.45";
+/// First point whose executable can render the default-not-in-list marker.
+pub(crate) const GROK_BUILD_CATALOGUE_V2_BASELINE_VERSION: &str = "1.0.46";
+/// Newest qualified Grok Build catalogue point.
+pub(crate) const GROK_BUILD_CATALOGUE_LATEST_VERSION: &str = "1.0.70";
+pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR_V1: &str = "grok-build.catalogue.models-text-v1";
+pub(crate) const GROK_BUILD_CATALOGUE_BEHAVIOR: &str = "grok-build.catalogue.models-text-v2";
 const MAX_VERSION_BYTES: usize = 64;
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -184,28 +197,80 @@ pub(crate) fn select_grok_acp_plan(
     })
 }
 
-/// Returns the exact-version compatibility claim for the Grok Build catalogue.
+/// Private decode and projection mapping used for one catalogue segment.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum GrokCatalogueMapping {
+    /// `models-text-v1`: the header always names a listed default model id.
+    ListedDefaultOnly,
+    /// `models-text-v2`: the header may name a default that is not listed.
+    DefaultNotInList,
+}
+
+impl GrokCatalogueMapping {
+    pub(crate) fn from_behavior_revision(value: &str) -> Option<Self> {
+        match value {
+            GROK_BUILD_CATALOGUE_BEHAVIOR_V1 => Some(Self::ListedDefaultOnly),
+            GROK_BUILD_CATALOGUE_BEHAVIOR => Some(Self::DefaultNotInList),
+            _ => None,
+        }
+    }
+}
+
+/// Returns the qualified compatibility claim for the Grok Build catalogue.
 ///
-/// Unlike the ACP execution claim, this claim is `QualifiedOnly`: only exact
-/// `1.0.30` assesses `Qualified`, and every older or newer point fails closed.
+/// Like the ACP claim this claim stays `QualifiedOnly`, but it carries two
+/// ordered segments: exact `1.0.30` through `1.0.45` keep the original
+/// listed-default-only mapping, and `1.0.46` through `1.0.70` add the
+/// default-not-in-list header mapping. Every older or newer point fails
+/// closed.
 pub fn grok_build_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
-        InterfaceCompatibilityClaimId::new("grok-build.catalogue.executable-1-0-30")
+        InterfaceCompatibilityClaimId::new("grok-build.catalogue.executable-window-1")
             .expect("static Grok catalogue claim id is valid"),
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::QualifiedOnly,
-        [InterfaceVersionSegment::exact(
-            version(GROK_BUILD_CATALOGUE_VERSION).expect("static Grok version is valid"),
-            behavior(GROK_BUILD_CATALOGUE_BEHAVIOR),
-            InterfaceSupportStatus::Maintained,
-        )],
+        [
+            InterfaceVersionSegment::new(
+                version(GROK_BUILD_CATALOGUE_V1_BASELINE_VERSION)
+                    .expect("static Grok version is valid"),
+                version(GROK_BUILD_CATALOGUE_V1_LATEST_VERSION)
+                    .expect("static Grok version is valid"),
+                behavior(GROK_BUILD_CATALOGUE_BEHAVIOR_V1),
+                InterfaceSupportStatus::Deprecated,
+            ),
+            InterfaceVersionSegment::new(
+                version(GROK_BUILD_CATALOGUE_V2_BASELINE_VERSION)
+                    .expect("static Grok version is valid"),
+                version(GROK_BUILD_CATALOGUE_LATEST_VERSION).expect("static Grok version is valid"),
+                behavior(GROK_BUILD_CATALOGUE_BEHAVIOR),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         [],
     )
     .expect("static Grok catalogue compatibility claim is valid")
 }
 
-pub(crate) fn validate_grok_catalogue_plan(plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+/// Returns the private catalogue mapping qualified for one exact version.
+pub(crate) fn grok_build_catalogue_mapping(
+    value: &InterfaceVersion,
+) -> Option<GrokCatalogueMapping> {
+    let assessment = grok_build_catalogue_claim().assess(value);
+    if !matches!(
+        assessment,
+        swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
+    ) {
+        return None;
+    }
+    assessment
+        .behavior_revision()
+        .and_then(|revision| GrokCatalogueMapping::from_behavior_revision(revision.as_str()))
+}
+
+pub(crate) fn grok_catalogue_mapping_for_plan(
+    plan: &PreflightPlan,
+) -> Result<GrokCatalogueMapping, RuntimeFailure> {
     let claim = grok_build_catalogue_claim();
     let mut bindings = plan
         .interface_versions()
@@ -223,20 +288,21 @@ pub(crate) fn validate_grok_catalogue_plan(plan: &PreflightPlan) -> Result<(), R
         ));
     }
     let assessment = claim.assess(binding.version());
+    let mapping = assessment
+        .behavior_revision()
+        .and_then(|revision| GrokCatalogueMapping::from_behavior_revision(revision.as_str()));
     let qualified = matches!(
         assessment,
         swallowtail_core::InterfaceCompatibilityAssessment::Qualified(_)
     ) && assessment == plan.assess_interface_version(binding)
-        && assessment
-            .behavior_revision()
-            .is_some_and(|revision| revision.as_str() == GROK_BUILD_CATALOGUE_BEHAVIOR);
+        && mapping.is_some();
     if !qualified {
         return Err(failure(
             "swallowtail.grok.catalogue.version_incompatible",
             "Grok Build executable version is incompatible with the catalogue driver",
         ));
     }
-    Ok(())
+    Ok(mapping.expect("qualified catalogue assessment maps its behavior revision"))
 }
 
 fn axis() -> InterfaceVersionAxis {
@@ -381,26 +447,74 @@ mod tests {
     }
 
     #[test]
-    fn catalogue_claim_is_exact_1_0_30_qualified_only() {
-        use super::{GROK_BUILD_CATALOGUE_BEHAVIOR, grok_build_catalogue_claim};
+    fn catalogue_claim_keeps_1_0_30_and_admits_the_note_window() {
+        use super::{
+            GROK_BUILD_CATALOGUE_BEHAVIOR, GROK_BUILD_CATALOGUE_BEHAVIOR_V1, GrokCatalogueMapping,
+            grok_build_catalogue_claim, grok_build_catalogue_mapping,
+        };
 
         let claim = grok_build_catalogue_claim();
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&version("1.0.30"))
         else {
-            panic!("exact 1.0.30 is qualified");
+            panic!("exact 1.0.30 stays qualified")
         };
         assert_eq!(
             matched.behavior_revision().as_str(),
-            GROK_BUILD_CATALOGUE_BEHAVIOR
+            GROK_BUILD_CATALOGUE_BEHAVIOR_V1
         );
+        assert_eq!(
+            matched.support_status(),
+            super::InterfaceSupportStatus::Deprecated
+        );
+        for point in ["1.0.31", "1.0.45"] {
+            let InterfaceCompatibilityAssessment::Qualified(matched) =
+                claim.assess(&version(point))
+            else {
+                panic!("{point} joins the listed-default segment")
+            };
+            assert_eq!(
+                matched.behavior_revision().as_str(),
+                GROK_BUILD_CATALOGUE_BEHAVIOR_V1
+            );
+        }
+        for point in ["1.0.46", "1.0.61", "1.0.62", "1.0.70"] {
+            let InterfaceCompatibilityAssessment::Qualified(matched) =
+                claim.assess(&version(point))
+            else {
+                panic!("{point} is inside the note-bearing segment")
+            };
+            assert_eq!(
+                matched.behavior_revision().as_str(),
+                GROK_BUILD_CATALOGUE_BEHAVIOR
+            );
+            assert_eq!(
+                matched.support_status(),
+                super::InterfaceSupportStatus::Maintained
+            );
+        }
         assert_eq!(claim.axis().as_str(), GROK_BUILD_ACP_AXIS);
-        for rejected in ["0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.31"] {
+        assert_eq!(
+            claim.newer_version_posture(),
+            super::InterfaceNewerVersionPosture::QualifiedOnly
+        );
+        for rejected in [
+            "0.2.117", "1.0.4", "1.0.5", "1.0.25", "1.0.29", "1.0.71", "1.1.0",
+        ] {
             assert_eq!(
                 claim.assess(&version(rejected)),
                 InterfaceCompatibilityAssessment::Incompatible,
                 "unexpected permit {rejected}"
             );
         }
+        assert_eq!(
+            grok_build_catalogue_mapping(&version("1.0.45")),
+            Some(GrokCatalogueMapping::ListedDefaultOnly)
+        );
+        assert_eq!(
+            grok_build_catalogue_mapping(&version("1.0.46")),
+            Some(GrokCatalogueMapping::DefaultNotInList)
+        );
+        assert_eq!(grok_build_catalogue_mapping(&version("1.0.71")), None);
     }
 
     fn version(value: &str) -> InterfaceVersion {

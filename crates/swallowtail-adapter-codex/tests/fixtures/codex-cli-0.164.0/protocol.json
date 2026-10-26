@@ -76,6 +76,24 @@
       "hop": "0.161.0->0.164.0",
       "class": "additive-optional",
       "reason": "optional model and reasoningEffort on SubAgentActivity, then an imageGeneration payload reshape the adapter treats as an unknown item"
+    },
+    {
+      "path": "codex-rs/app-server/src/message_processor.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "bounded-new-dispatch",
+      "reason": "JSON-RPC dispatcher for selected initialize, config, model/list, thread/start, turn/start, archive, delete, and unarchive. 0.162.0 adds ThreadAttachmentOwnerList. 0.163.0 adds ThreadReadStateUpdate and ThreadItemsRead, pending_unloads HashSet to HashMap (pairs with teardown reorder), and plugin_install Box::pin. 0.164.0 adds ThreadSample, ThreadSampleCancel, and FeedbackSave plus constructor args for cloud_skill_provider, startup_cwd, sample_responses, and model_catalog. Every selected method arm remains and still calls thread_processor for archive/delete/unarchive. Adapter does not send the new methods."
+    },
+    {
+      "path": "codex-rs/linux-sandbox/src/bwrap.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "selected-linux-sandbox-mount-protection-preserved",
+      "reason": "Linux backend for selected exec --sandbox read-only and app-server workspace-write. 0.164.0 removes ProtectedCreateTarget collection. 0.163.0 tests already required that list empty because missing .git/.agents/.codex/.aws are mount-protected before exec via synthetic empty RO tmpfs (555 + remount-ro) and existing paths stay --ro-bind. append_metadata_path_masks_for_writable_root remains. Selected exec read-only has no workspace writable roots, so the create-monitor was never armed. Selected app-server workspace-write keeps existing .aws read-only and missing protected metadata overlayed RO. .aws remains in PROTECTED_METADATA_PATH_NAMES."
+    },
+    {
+      "path": "codex-rs/linux-sandbox/src/linux_run_main.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "selected-linux-sandbox-mount-protection-preserved",
+      "reason": "0.164.0 drops ProtectedCreateMonitor/Watcher that consumed bwrap ProtectedCreateTarget. SyntheticMountTarget cleanup remains. Selected exec read-only never armed the monitor. Workspace-write missing-metadata protection stays on the bwrap mount path."
     }
   ],
   "contentSha256": {
@@ -102,10 +120,10 @@
     },
     "codex-rs/app-server/src/message_processor.rs": {
       "0.161.0": "f9cf285fc6a3c7037510f507e225e80305c21eefd0d85267d44075e7f7ba5511",
-      "0.164.0": "e8e5fcccc04e699c0f9394d4586e25e9560b3f1a4a1ee066692adf93139443c2",
-      "0.162.0": "f9cf285fc6a3c7037510f507e225e80305c21eefd0d85267d44075e7f7ba5511",
-      "0.162.1": "f9cf285fc6a3c7037510f507e225e80305c21eefd0d85267d44075e7f7ba5511",
-      "0.163.0": "f9cf285fc6a3c7037510f507e225e80305c21eefd0d85267d44075e7f7ba5511"
+      "0.162.0": "5e17343f7c7129dc09a77300771dcd93119192c5cb39a3f4d1e29a547fec34ed",
+      "0.162.1": "5e17343f7c7129dc09a77300771dcd93119192c5cb39a3f4d1e29a547fec34ed",
+      "0.163.0": "96d57b0cb554802211460637993c2e57e27440b1052ca5f12ac79e1bbaf54449",
+      "0.164.0": "e8e5fcccc04e699c0f9394d4586e25e9560b3f1a4a1ee066692adf93139443c2"
     },
     "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": {
       "0.161.0": "ee738dfe716fbbd61eb97006714d2c6bf31d6c7dae425ca6d6e60b648b701c6f",
@@ -137,9 +155,9 @@
     },
     "codex-rs/app-server-protocol/src/protocol/v2/model.rs": {
       "0.161.0": "1cdd2d3e0d4840dd58974d3960485b6f77e649b226e0656d84890b29a92c1a81",
+      "0.162.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
+      "0.162.1": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
       "0.163.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
-      "0.162.0": "1cdd2d3e0d4840dd58974d3960485b6f77e649b226e0656d84890b29a92c1a81",
-      "0.162.1": "1cdd2d3e0d4840dd58974d3960485b6f77e649b226e0656d84890b29a92c1a81",
       "0.164.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
     },
     "codex-rs/exec/src/lib.rs": {
@@ -162,9 +180,18 @@
       "0.164.0": "1ab6c27e34a93fe3857281e11e388eb3ae4b786819fbe15883ad7e1fb8b5473f"
     },
     "codex-rs/linux-sandbox/src/bwrap.rs": {
+      "0.161.0": "1d3dfe853f9b5f1cafd7283cf760e38ff739eb7c1ac54650ae2ed510b92b870a",
+      "0.162.0": "a6b97db5acaec475066f3a5338776f875f7f2033f008ee2532907a1e5e50ffc0",
       "0.162.1": "a6b97db5acaec475066f3a5338776f875f7f2033f008ee2532907a1e5e50ffc0",
       "0.163.0": "4249718b4b50fa385ce27c539961d68c46a59f63fce4428a6380e43aa02c7b89",
-      "0.164.0": "4249718b4b50fa385ce27c539961d68c46a59f63fce4428a6380e43aa02c7b89"
+      "0.164.0": "69a23ea16d525de5938c1fd47561c90d6047eb58f9864ca47749d696e5d9fa76"
+    },
+    "codex-rs/linux-sandbox/src/linux_run_main.rs": {
+      "0.161.0": "0dd784f70ff95b16c97dd9e8420c30db2ff39002a57e357c6da686c353464270",
+      "0.162.0": "3109246473ef2f8132c2d6555bec5b8116612ce58f28927608f322ac5c3fd8b1",
+      "0.162.1": "3109246473ef2f8132c2d6555bec5b8116612ce58f28927608f322ac5c3fd8b1",
+      "0.163.0": "3b61d600a7f518187e3a5b521622c7a52101415d486ef1d45e67a3f48dd27919",
+      "0.164.0": "2c8cdf628b8b8467cccf38227cada5295f5cb6a04888b860ea1b882fe2d19d53"
     },
     "codex-rs/app-server-protocol/src/protocol/v2/application.rs": {
       "0.163.0": "4fd1e2cc586fc5f566de2abe943ff5203ad5a100376e3f5de9e048e5e57cb17b",
@@ -215,6 +242,26 @@
       },
       "selectedSandboxBackend": "exec --sandbox read-only on the CLI path; exec-server bubblewrap and mxc are unselected",
       "cliRipgrepLookup": "find_pre_sandbox_executable_in_path(rg)",
+      "awsProtectionRemains": true
+    },
+    "linuxSandboxHelper": {
+      "crate": "codex-rs/linux-sandbox",
+      "bwrapFile": "codex-rs/linux-sandbox/src/bwrap.rs",
+      "runMainFile": "codex-rs/linux-sandbox/src/linux_run_main.rs",
+      "selectedExecBackend": "linux-sandbox bwrap for --sandbox read-only on Linux; exec-server bubblewrap and mxc stay unselected",
+      "selectedExecReadOnlyWritableRoots": "none on the workspace; empty-writable-roots fallback requires has_full_disk_write_access which read-only does not",
+      "protectedCreateMonitorArmedOnSelectedExecReadOnly": false,
+      "selectedAppServerWorkspaceWriteBackend": "linux-sandbox bwrap on Linux",
+      "protectedMetadataNames": [
+        ".git",
+        ".agents",
+        ".codex",
+        ".aws"
+      ],
+      "existingMetadataEnforcement": "--ro-bind of existing protected metadata paths via append_metadata_path_masks_for_writable_root",
+      "missingMetadataEnforcement": "synthetic empty RO tmpfs (555 + remount-ro) via append_missing_read_only_subpath_args; SyntheticMountTarget cleanup remains",
+      "protectedCreateMonitorRemovedAt": "0.164.0",
+      "protectedCreateMonitorUsedOnSelectedMissingMetadataAt0_163_0": false,
       "awsProtectionRemains": true
     }
   },
@@ -294,6 +341,34 @@
         "0.163.0",
         "0.164.0"
       ]
+    },
+    "messageProcessorDispatch": {
+      "file": "codex-rs/app-server/src/message_processor.rs",
+      "selectedMethodArmsRemain": [
+        "Initialize",
+        "ConfigRead",
+        "ModelList",
+        "ThreadStart",
+        "TurnStart",
+        "ThreadArchive",
+        "ThreadDelete",
+        "ThreadUnarchive"
+      ],
+      "archiveDeleteUnarchiveStillCall": "thread_processor",
+      "newUnmappedArms": {
+        "0.162.0": [
+          "ThreadAttachmentOwnerList"
+        ],
+        "0.163.0": [
+          "ThreadReadStateUpdate",
+          "ThreadItemsRead"
+        ],
+        "0.164.0": [
+          "ThreadSample",
+          "ThreadSampleCancel",
+          "FeedbackSave"
+        ]
+      }
     }
   }
 }

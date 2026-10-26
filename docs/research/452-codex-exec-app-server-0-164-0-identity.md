@@ -87,6 +87,12 @@ Exec deny-glob / sandbox:
 - Only caller is `exec-server/src/sandbox_integrity/bubblewrap.rs:119` after linux-sandbox `expand_unreadable_globs_in_environment`.
 - `exec/src/lib.rs` has zero exec-server refs. The json_mode-gated bwrap warning at line 1179 is skipped because selected uses `--json`.
 - Selected sandbox is `exec --sandbox read-only`. exec-server bubblewrap/mxc stay unselected. `.aws` protection remains.
+- Linux helper is `linux-sandbox` bwrap, used by selected exec `--sandbox read-only` and app-server workspace-write. Selected exec read-only has no workspace writable roots; the empty-writable-roots fallback requires `has_full_disk_write_access`, which read-only does not. The `0.164.0` removal of `ProtectedCreateTarget` / `ProtectedCreateMonitor` is unused-path cleanup: `0.163.0` tests already required that list empty because missing `.git` / `.agents` / `.codex` / `.aws` are mount-protected before exec via synthetic empty RO tmpfs. Existing protected metadata stays `--ro-bind`. `.aws` remains in `PROTECTED_METADATA_PATH_NAMES`.
+
+App-server dispatch:
+
+- `message_processor.rs` is the JSON-RPC dispatcher. Selected initialize, config, model/list, thread/start, turn/start, archive, delete, and unarchive arms remain and still call `thread_processor` for archive/delete/unarchive.
+- New unmapped arms: `ThreadAttachmentOwnerList` at `0.162.0`; `ThreadReadStateUpdate` and `ThreadItemsRead` at `0.163.0`; `ThreadSample`, `ThreadSampleCancel`, and `FeedbackSave` at `0.164.0`. Adapter does not send them.
 
 Additive and unselected:
 

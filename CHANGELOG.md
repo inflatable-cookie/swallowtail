@@ -12,9 +12,14 @@ annotated Git tags from the canonical repository.
   the selected argv, JSONL events, sandbox policy, initialize, catalogue,
   and archive/delete shapes. Native `darwin-arm64` and `linux-x64` tarballs
   were hashed and inventoried; archive/unarchive/delete handlers were traced
-  in `thread_processor.rs`. Optional turn and thread fields stay unmapped.
-  Unpublished gaps, including `0.155.2`, stay incompatible. `0.165.0-alpha.1`
-  is ignored. See Research 452.
+  in `thread_processor.rs`. Per-tag source digests bind `message_processor.rs`,
+  `v2/model.rs`, and `linux-sandbox` bwrap/`linux_run_main`. Dispatch adds
+  only unmapped methods; selected arms remain. The `0.164.0` Linux
+  `ProtectedCreateMonitor` removal is unused-path cleanup: missing `.aws`
+  and sibling metadata stay synthetic empty RO mounts, and selected exec
+  read-only never armed the monitor. Optional turn and thread fields stay
+  unmapped. Unpublished gaps, including `0.155.2`, stay incompatible.
+  `0.165.0-alpha.1` is ignored. See Research 452.
 - freeze `antigravity.catalogue` identity through official stable `1.4.7`
   without extending qualification. The claim stays one maintained segment
   `1.1.9..=1.3.1` on `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`,

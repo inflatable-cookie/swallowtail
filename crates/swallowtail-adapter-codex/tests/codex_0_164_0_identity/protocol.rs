@@ -28,14 +28,21 @@ fn selected_mapped_files_stay_byte_identical() {
 fn classified_deltas_include_thread_processor_and_every_digest() {
     let protocol = json(PROTOCOL);
     let deltas = protocol["classifiedDeltas"].as_array().expect("deltas");
-    assert_eq!(deltas.len(), 10);
+    assert_eq!(deltas.len(), 13);
     let mut saw_thread_processor = false;
+    let mut saw_message_processor = false;
+    let mut saw_bwrap = false;
+    let mut saw_linux_run_main = false;
     for delta in deltas {
         let class = delta["class"].as_str().expect("class");
         assert!(
             matches!(
                 class,
-                "unselected" | "additive-optional" | "selected-lifecycle-internal-hardening"
+                "unselected"
+                    | "additive-optional"
+                    | "selected-lifecycle-internal-hardening"
+                    | "bounded-new-dispatch"
+                    | "selected-linux-sandbox-mount-protection-preserved"
             ),
             "{class}"
         );
@@ -57,6 +64,30 @@ fn classified_deltas_include_thread_processor_and_every_digest() {
                     .contains("wait_for_thread_shutdown")
             );
         }
+        if path == "codex-rs/app-server/src/message_processor.rs" {
+            saw_message_processor = true;
+            assert_eq!(class, "bounded-new-dispatch");
+            assert!(
+                delta["reason"]
+                    .as_str()
+                    .unwrap()
+                    .contains("Every selected method arm remains")
+            );
+        }
+        if path == "codex-rs/linux-sandbox/src/bwrap.rs" {
+            saw_bwrap = true;
+            assert_eq!(class, "selected-linux-sandbox-mount-protection-preserved");
+            assert!(
+                delta["reason"]
+                    .as_str()
+                    .unwrap()
+                    .contains("create-monitor was never armed")
+            );
+        }
+        if path == "codex-rs/linux-sandbox/src/linux_run_main.rs" {
+            saw_linux_run_main = true;
+            assert_eq!(class, "selected-linux-sandbox-mount-protection-preserved");
+        }
         let sha = &protocol["contentSha256"][path];
         let hop = delta["hop"].as_str().expect("hop");
         let (from, to) = hop.split_once("->").expect("hop range");
@@ -72,6 +103,15 @@ fn classified_deltas_include_thread_processor_and_every_digest() {
         saw_thread_processor,
         "thread_processor.rs must be classified"
     );
+    assert!(
+        saw_message_processor,
+        "message_processor.rs must be classified on the dispatch path"
+    );
+    assert!(saw_bwrap, "linux-sandbox bwrap.rs must be classified");
+    assert!(
+        saw_linux_run_main,
+        "linux-sandbox linux_run_main.rs must be classified"
+    );
     assert_eq!(
         protocol["contentSha256"]["codex-rs/app-server/src/request_processors/thread_processor.rs"]
             ["0.161.0"],
@@ -82,6 +122,69 @@ fn classified_deltas_include_thread_processor_and_every_digest() {
             ["0.164.0"],
         "0c806ff3aaf348f7373032171d55ff110dfd30bcbb5cfabded89330b5b4375b6"
     );
+}
+
+#[test]
+fn per_tag_source_digests_bind_fetched_hops() {
+    let sha = &json(PROTOCOL)["contentSha256"];
+    let message_processor = &sha["codex-rs/app-server/src/message_processor.rs"];
+    assert_eq!(
+        message_processor["0.161.0"],
+        "f9cf285fc6a3c7037510f507e225e80305c21eefd0d85267d44075e7f7ba5511"
+    );
+    assert_eq!(
+        message_processor["0.162.0"],
+        "5e17343f7c7129dc09a77300771dcd93119192c5cb39a3f4d1e29a547fec34ed"
+    );
+    assert_eq!(
+        message_processor["0.162.1"],
+        "5e17343f7c7129dc09a77300771dcd93119192c5cb39a3f4d1e29a547fec34ed"
+    );
+    assert_eq!(
+        message_processor["0.163.0"],
+        "96d57b0cb554802211460637993c2e57e27440b1052ca5f12ac79e1bbaf54449"
+    );
+    assert_eq!(
+        message_processor["0.164.0"],
+        "e8e5fcccc04e699c0f9394d4586e25e9560b3f1a4a1ee066692adf93139443c2"
+    );
+
+    let model = &sha["codex-rs/app-server-protocol/src/protocol/v2/model.rs"];
+    assert_eq!(
+        model["0.161.0"],
+        "1cdd2d3e0d4840dd58974d3960485b6f77e649b226e0656d84890b29a92c1a81"
+    );
+    assert_eq!(
+        model["0.162.0"],
+        "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
+    );
+    assert_eq!(
+        model["0.162.1"],
+        "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
+    );
+    assert_eq!(
+        model["0.163.0"],
+        "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
+    );
+    assert_eq!(
+        model["0.164.0"],
+        "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
+    );
+
+    let bwrap = &sha["codex-rs/linux-sandbox/src/bwrap.rs"];
+    assert_eq!(
+        bwrap["0.161.0"],
+        "1d3dfe853f9b5f1cafd7283cf760e38ff739eb7c1ac54650ae2ed510b92b870a"
+    );
+    assert_eq!(
+        bwrap["0.163.0"],
+        "4249718b4b50fa385ce27c539961d68c46a59f63fce4428a6380e43aa02c7b89"
+    );
+    assert_eq!(
+        bwrap["0.164.0"],
+        "69a23ea16d525de5938c1fd47561c90d6047eb58f9864ca47749d696e5d9fa76"
+    );
+    assert_ne!(bwrap["0.163.0"], bwrap["0.164.0"]);
 }
 
 #[test]
@@ -116,6 +219,39 @@ fn exec_deny_globs_are_traced_off_the_selected_route() {
     assert_eq!(deny["jsonModeBwrapWarning"]["reachedOnSelected"], false);
     assert_eq!(deny["jsonModeBwrapWarning"]["selectedJsonMode"], true);
     assert_eq!(deny["awsProtectionRemains"], true);
+
+    let linux = &reach["linuxSandboxHelper"];
+    assert_eq!(linux["bwrapFile"], "codex-rs/linux-sandbox/src/bwrap.rs");
+    assert_eq!(
+        linux["runMainFile"],
+        "codex-rs/linux-sandbox/src/linux_run_main.rs"
+    );
+    assert_eq!(
+        linux["protectedCreateMonitorArmedOnSelectedExecReadOnly"],
+        false
+    );
+    assert_eq!(
+        linux["protectedCreateMonitorUsedOnSelectedMissingMetadataAt0_163_0"],
+        false
+    );
+    assert_eq!(linux["protectedCreateMonitorRemovedAt"], "0.164.0");
+    assert_eq!(
+        linux["protectedMetadataNames"],
+        serde_json::json!([".git", ".agents", ".codex", ".aws"])
+    );
+    assert_eq!(linux["awsProtectionRemains"], true);
+    assert!(
+        linux["selectedExecReadOnlyWritableRoots"]
+            .as_str()
+            .unwrap()
+            .contains("none on the workspace")
+    );
+    assert!(
+        linux["missingMetadataEnforcement"]
+            .as_str()
+            .unwrap()
+            .contains("synthetic empty RO tmpfs")
+    );
 }
 
 #[test]
@@ -188,5 +324,46 @@ fn archive_delete_unarchive_traces_use_handler_paths() {
     assert_eq!(
         eviction["file"],
         "codex-rs/app-server/src/request_processors/thread_lifecycle.rs"
+    );
+
+    let dispatch = &traces["messageProcessorDispatch"];
+    assert_eq!(
+        dispatch["file"],
+        "codex-rs/app-server/src/message_processor.rs"
+    );
+    assert_eq!(
+        dispatch["archiveDeleteUnarchiveStillCall"],
+        "thread_processor"
+    );
+    for method in [
+        "Initialize",
+        "ConfigRead",
+        "ModelList",
+        "ThreadStart",
+        "TurnStart",
+        "ThreadArchive",
+        "ThreadDelete",
+        "ThreadUnarchive",
+    ] {
+        assert!(
+            dispatch["selectedMethodArmsRemain"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|arm| arm.as_str() == Some(method)),
+            "{method}"
+        );
+    }
+    assert_eq!(
+        dispatch["newUnmappedArms"]["0.162.0"],
+        serde_json::json!(["ThreadAttachmentOwnerList"])
+    );
+    assert_eq!(
+        dispatch["newUnmappedArms"]["0.163.0"],
+        serde_json::json!(["ThreadReadStateUpdate", "ThreadItemsRead"])
+    );
+    assert_eq!(
+        dispatch["newUnmappedArms"]["0.164.0"],
+        serde_json::json!(["ThreadSample", "ThreadSampleCancel", "FeedbackSave"])
     );
 }

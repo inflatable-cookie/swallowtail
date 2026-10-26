@@ -11,4 +11,5 @@ Native packages are parent-package variant versions
 (`npm:@openai/codex@VER-darwin-arm64`), not separate registry names.
 `0.161.0` native identities reuse Research 370. Complete per-file artifact
 inventories live in `artifact-inventory/`. Complete source hop deltas live
-in `source-name-status.tsv`.
+in `source-name-status.tsv`. `protocol.json` `contentSha256` values are
+per-tag file hashes, not carry-forwards from an earlier hop.

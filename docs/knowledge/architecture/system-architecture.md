@@ -1244,16 +1244,19 @@ shape. Swallowtail does not expose direct bash or extensions, and retry
 evidence still fails under the disabled-retry policy. Research 383 qualifies
 published hops `0.87.0` through `1.1.0`: `0.87.0..=0.87.1` retain
 message-update behavior; `0.99.0..=0.99.2` and `1.0.0..=1.0.4` add private
-command-disposition milestones; maintained `1.1.0` adds the private
-`agent_settled.aborted` milestone. The claim remains
+command-disposition milestones; `1.1.0` adds the private
+`agent_settled.aborted` milestone. Research 455 keeps that revision through
+exact deprecated `1.2.0` and `1.3.0` and maintained `1.4.0`. `dist/modes/rpc`
+is byte-identical across those points. The claim remains
 `pi.rpc.package-window-2`; strict-LF framing, selected commands, public
 lifecycle operations, permission posture and exclusions are unchanged. The
 adapter fails a prompt marked `handled` because Pi starts no run, and rejects
 handled steering or follow-up because Pi consumed the message without queuing
-it. At `1.1.0`, `aborted=true` maps to existing terminal cancellation while
-`false` keeps the existing completion and usage checks. Older qualified points
-keep the field optional. Unpublished and unqualified holes remain incompatible,
-and later stable points stay visible unverified. One restrictive policy binds
+it. From `1.1.0` through `1.4.0`, `aborted=true` maps to existing terminal
+cancellation while `false` keeps the existing completion and usage checks.
+Older qualified points keep the field optional. Unpublished and unqualified
+holes remain incompatible, including `1.1.1+`, `1.2.1+`, and `1.3.1+`, and
+stable points after `1.4.0` stay visible unverified. One restrictive policy binds
 one active operation, two completed prompts, one pending steering message, one
 pending follow-up, no ambient customization, no update, telemetry, package, or
 automatic-retry action, and explicit `AmbientHost` read intent without a

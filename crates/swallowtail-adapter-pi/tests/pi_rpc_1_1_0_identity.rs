@@ -711,7 +711,7 @@ fn selected_rpc_hops_and_claim_preserve_segments_and_exclusions() {
     }
 
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.4.0");
     let claim = pi_rpc_claim();
     assert_eq!(claim.id().as_str(), "pi.rpc.package-window-2");
     for (version, behavior, status) in [
@@ -733,7 +733,7 @@ fn selected_rpc_hops_and_claim_preserve_segments_and_exclusions() {
         (
             "1.1.0",
             "pi.rpc.strict-lf-v1.1.0-aborted-settled",
-            InterfaceSupportStatus::Maintained,
+            InterfaceSupportStatus::Deprecated,
         ),
     ] {
         assert!(matches!(
@@ -744,7 +744,7 @@ fn selected_rpc_hops_and_claim_preserve_segments_and_exclusions() {
         ));
     }
     for gap in [
-        "0.83.1", "0.84.5", "0.85.2", "0.86.2", "0.87.2", "0.98.9", "0.99.3", "1.0.5",
+        "0.83.1", "0.84.5", "0.85.2", "0.86.2", "0.87.2", "0.98.9", "0.99.3", "1.0.5", "1.1.1",
     ] {
         assert!(
             matches!(
@@ -755,7 +755,7 @@ fn selected_rpc_hops_and_claim_preserve_segments_and_exclusions() {
         );
     }
     assert!(matches!(
-        claim.assess(&version_value("1.1.1")),
+        claim.assess(&version_value("1.4.1")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

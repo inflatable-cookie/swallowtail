@@ -20,6 +20,13 @@ annotated Git tags from the canonical repository.
   read-only never armed the monitor. Optional turn and thread fields stay
   unmapped. Unpublished gaps, including `0.155.2`, stay incompatible.
   `0.165.0-alpha.1` is ignored. See Research 452.
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.26.1` on the existing `qwen-code.headless.package-window-2` claim and
+  `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
+  segment is `0.22.0..=0.26.1`, excluding unpublished `0.22.4`, `0.23.5`,
+  and `0.25.4`. Baseline `0.19.11`, the deprecated segments, exact
+  `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
+  stay put. `0.26.2` remains `UnverifiedNewer`. See Research 454.
 - raise the `ollama.attached` maintained ceiling from `0.40.1` to official
   GitHub stable `0.40.11` on the existing
   `ollama.native-text-v1.manifest-list-runner` revision. The ten published

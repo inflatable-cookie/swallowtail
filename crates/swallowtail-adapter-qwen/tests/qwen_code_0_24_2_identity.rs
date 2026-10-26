@@ -112,18 +112,25 @@ fn production_claim_excludes_the_documented_unpublished_interior_gaps() {
             "unpublished interior {gap} stays incompatible"
         );
     }
-    for point in ["0.24.3", "0.24.4", "0.24.5", "0.24.6", "0.24.7", "0.25.0"] {
+    for point in [
+        "0.24.3", "0.24.4", "0.24.5", "0.24.6", "0.24.7", "0.25.0", "0.25.1", "0.25.2", "0.25.3",
+        "0.26.0", "0.26.1",
+    ] {
         assert!(
             claim.supports(&version(point)),
             "the current qualification extends the historical 0.24.2 ceiling through {point}"
         );
     }
     assert_eq!(
+        claim.assess(&version("0.25.4")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+    assert_eq!(
         claim.assess(&version("0.25.1-preview.0")),
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.25.1")),
+        claim.assess(&version("0.26.2")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

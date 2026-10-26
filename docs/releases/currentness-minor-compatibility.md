@@ -193,7 +193,7 @@ on `v0.5.4` keep that tag's pins.
 | `antigravity.headless` | deprecated `1.1.9..=1.1.17` plus exact `1.2.11` with `AGY_CLI_MODEL_API_MAX_RETRIES=0` and required effort; `1.1.18..=1.2.10` hole | included at `1.2.11`; later points stopped | Research 359, 424; Q-003 |
 | `bedrock.runtime` | SDK through `1.148.0` | additive | Research 381 |
 | `bedrock.catalogue` | SDK through `1.161.0` | additive | Research 386 |
-| `qwen.headless` | through `0.25.0` | additive | Research 375 |
+| `qwen.headless` | through `0.26.1`; `0.26.2` UnverifiedNewer | additive | Research 375, 454 |
 | `qoder.headless` | through `1.1.65` | additive | Research 389 |
 | `mistral-vibe.headless` | through `2.26.0` | additive | Research 384 |
 | `deepagents.acp` | `0.1.30..=0.1.34` | additive | Research 391 |

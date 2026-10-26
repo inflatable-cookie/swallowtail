@@ -13,6 +13,19 @@ annotated Git tags from the canonical repository.
   and the Python streaming serializer, and `vibe` always execs the Rust
   CLI. `~/.vibe` / `VIBE_HOME` does not move. The claim, behavior revision,
   and `AllowUnverified` posture stay. No artifact was executed.
+- qualify `oh-my-pi.rpc` through official stable `18.12.6` on the existing
+  `oh-my-pi.rpc-v2-v18.0.0` revision (Research 447). npm `latest` and GitHub
+  latest stable agree. Maintained `18.0.0..=18.12.6` keeps claim id
+  `oh-my-pi.rpc.package-window-2` and `AllowUnverified`. The retained
+  `17.2.9..=17.4.2` segment, unpublished gaps `18.0.2`, `18.1.7`, `18.4.7`,
+  and `18.6.2`, incompatible `17.4.3`/`17.4.4`, and the frozen `17.2.9`
+  decoder corpus stay. `18.12.7` is `UnverifiedNewer`. Selected commands,
+  tool schemas, frame caps, and startup fields are unchanged. `mr://` is an
+  added read-tier resource inside the existing ambient `read` tool: ambient
+  `glab` process principal, host GitLab tokens plus `glab` config, GitLab
+  network egress (host-trust gate constrains env-token forwarding only),
+  exec tool-effect. Prompt-text `/mcp reauth` is reachable under
+  `--no-extensions` and stays unmapped.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

@@ -268,7 +268,7 @@ OpenHands adds a package without a production route.
   Headless Plan is provider behavior, not isolation; omission keeps the current
   argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
 - `swallowtail-adapter-goose` implements Goose GitHub ACP at maintained exact
-  points `1.50.1`, `1.51.0`, `1.52.0`, and `1.53.0` on
+  points `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0` on
   `goose acp`, with typed provider-authentication failures bound by the
   `goose.acp.stdio-v2.auth-required` behavior revision. Credentials stay
   host-owned local config.
@@ -717,7 +717,7 @@ Crate status:
   for headless), local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-goose` — realized for GitHub ACP exact points `1.50.1`,
-  `1.51.0`, `1.52.0`, and `1.53.0` with maintained claim, typed auth-failure
+  `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0` with maintained claim, typed auth-failure
   binding, local-config access,
   and no credential lease.
   The package remains an unreleased additive candidate after `v0.3.2`.

@@ -487,9 +487,13 @@ OpenHands adds a package without a production route.
   the ACP and headless routes. Research 395 separately qualifies ACP through
   `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and `2026.10.01-14929f9`.
   Headless retains its earlier points and adds those same exact builds with
-  Research 399. Research 393 qualifies only
+  Research 399. Research 393 qualifies
   `cursor-agent.catalogue` at the exact `2026.09.26-dd393fe`,
-  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points. Each route keeps its
+  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points. Research 451 extends
+  that catalogue claim with `2026.10.14-941492e`, `2026.10.16-e3cb207`,
+  `2026.10.18-ea085cb`, `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`, and
+  rejects superseded `2026.10.14-0f9edde`. ACP and headless remain at
+  `2026.10.01-14929f9`. Each route keeps its
   own claim and exact points; calendar gaps are not inferred. The three routes are:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The

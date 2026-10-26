@@ -1,0 +1,141 @@
+{
+  "axis": "codex.cli",
+  "package": "@openai/codex",
+  "routes": ["codex.exec", "codex.app-server"],
+  "probedAt": "2026-10-26",
+  "previousCeiling": "0.161.0",
+  "officialLatest": "0.164.0",
+  "channelsAgree": true,
+  "prereleaseIgnored": "0.165.0-alpha.1",
+  "prereleasePublishedAt": "2026-10-23T14:22:16.936Z",
+  "hostObservation": null,
+  "downloadedArtifactsExecuted": false,
+  "platformBinariesDownloaded": false,
+  "behaviorAuthority": "public-source-tags",
+  "syntheticUnverifiedNewer": "0.164.1",
+  "keptGaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1", "0.155.2"],
+  "sourceFileCounts": {
+    "0.161.0": 8899,
+    "0.162.0": 9017,
+    "0.162.1": 9018,
+    "0.163.0": 9176,
+    "0.164.0": 9438
+  },
+  "hops": [
+    {
+      "version": "0.161.0",
+      "role": "previous-ceiling",
+      "npmPublishedAt": "2026-10-07T16:04:02.844Z",
+      "githubTag": "rust-v0.161.0",
+      "githubPublishedAt": "2026-10-07T15:58:45Z",
+      "tagObject": "7e21416b38834816c224ea0dfd135c3de94b2f15",
+      "commit": "979011409de0a60b52f179721948e65531d26144",
+      "wrapper": {
+        "bytes": 4902,
+        "sha256": "4e472c1098f1162e1b46d4935e5f2264f7076182949b95bb47d839b35108c5f0",
+        "shasum": "4bc843cf5946904d75032d56d310340220fb6385",
+        "integrity": "sha512-+ZnJFGBbQBwYnjUTs+PoacgYVxmNyxMLiadIz6eSJ0AzQW0mRVxuuOQizSbz2qeNAJia9Syxag6j2uGf7guD2Q==",
+        "unpackedSize": 13206
+      }
+    },
+    {
+      "version": "0.162.0",
+      "role": "published-stable",
+      "npmPublishedAt": "2026-10-08T19:01:18.070Z",
+      "githubTag": "rust-v0.162.0",
+      "githubPublishedAt": "2026-10-08T18:55:59Z",
+      "tagObject": "1f3f93473394b620b35580859b7e6864f7a9f948",
+      "commit": "c1382380de69521303b416720a52f42d51af6248",
+      "wrapper": {
+        "bytes": 4901,
+        "sha256": "6cb67d6e7631af84f27580d8fe228ac437c34181d370dc5c5a5819e014c8c860",
+        "shasum": "0425c2b86f68b03302fcbc05a53e8c8f5432193e",
+        "integrity": "sha512-qWWckMfknyVym1lD5y2rTwPJA2sgHkzePF2l/Uevss4hVpqbt23rMIHKNTrqECdnv82denylHWEzrAmDnCYNIw==",
+        "unpackedSize": 13206
+      }
+    },
+    {
+      "version": "0.162.1",
+      "role": "published-stable",
+      "npmPublishedAt": "2026-10-09T19:50:30.512Z",
+      "githubTag": "rust-v0.162.1",
+      "githubPublishedAt": "2026-10-09T19:44:51Z",
+      "tagObject": "7a078f6bb4ce0dc2a81408b334ce52979d92c603",
+      "commit": "092d3acd6bec3e3a14bdc7e7a2810ab628ab759d",
+      "wrapper": {
+        "bytes": 4904,
+        "sha256": "0b4b2e33a65883e4f69c903484d8dd7770b3cb8b324f520068b6fd85d42b65ea",
+        "shasum": "7ff2553e71795a314e75a24a56607149d754d487",
+        "integrity": "sha512-NWZdi/kxyjv/8EUGFupziGU38YyleugZRM4JXgY5XFH7FUmaFA33NZS2Bmq0HPazf7S3jJQQWsZ/jAK9jsrV3Q==",
+        "unpackedSize": 13206
+      }
+    },
+    {
+      "version": "0.163.0",
+      "role": "published-stable",
+      "npmPublishedAt": "2026-10-15T21:37:11.083Z",
+      "githubTag": "rust-v0.163.0",
+      "githubPublishedAt": "2026-10-15T21:30:38Z",
+      "tagObject": "129b8ec7ee6f4511557a4856279f529025c25af4",
+      "commit": "83086188ae0614bd882818ff1aa23f3194962012",
+      "wrapper": {
+        "bytes": 4902,
+        "sha256": "1a71db36560bb446d2c2e63ae675c4a3018c38ace38ca533f8d1b25d3e6555b4",
+        "shasum": "31d62f44cde7c24ac700178c99d3a84530a141f6",
+        "integrity": "sha512-HNd7vR9oTK6M2ikxFnvNDCdYUgAsyo9VVnd5KnEd2ON0GYI++7MiX9XNPUkhtdgGKFPsWS+CEppQ1UU63uVhUw==",
+        "unpackedSize": 13206
+      }
+    },
+    {
+      "version": "0.164.0",
+      "role": "official-latest",
+      "npmPublishedAt": "2026-10-23T04:52:29.240Z",
+      "githubTag": "rust-v0.164.0",
+      "githubPublishedAt": "2026-10-23T04:48:10Z",
+      "tagObject": "fe3b29455488c2e189e43ad5526a107900c5e1b7",
+      "commit": "6aaac694803004a63c6f393d153c96d22521a6b9",
+      "wrapper": {
+        "bytes": 4902,
+        "sha256": "afb117ec0d382744583dd13154ba0ca6b0f1980f8ed6a23bffb3aaadb6226e30",
+        "shasum": "82693f5ef4b08b724dc1370f1622bc752e5d1bf4",
+        "integrity": "sha512-TWj7UGyPRe3Pj/A3ddNAxs1te3a/W/xAd+J0LHrrFTmsSfahGMOLF/vn88D3QCIgAT3B1rm1y/Z3NYE0rx6cZQ==",
+        "unpackedSize": 13206
+      }
+    }
+  ],
+  "claimAtObservation": {
+    "posture": "AllowUnverified",
+    "exec": {
+      "id": "codex.exec.cli-window-2",
+      "latest": "0.161.0",
+      "behavior": "codex.exec.jsonl-v1"
+    },
+    "appServer": {
+      "id": "codex.app-server.cli-window-2",
+      "latest": "0.161.0",
+      "behavior": "codex.app-server.v2.protected-aws-workspace-roots"
+    },
+    "lifecycle": {
+      "id": "codex.app-server.lifecycle-window-1",
+      "latest": "0.161.0",
+      "behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
+    }
+  },
+  "identityDecision": {
+    "shape": "compatible-extension",
+    "raiseLatestQualifiedTo": "0.164.0",
+    "keepClaimIds": true,
+    "keepBaselines": true,
+    "keepOlderSegments": true,
+    "newMilestone": false,
+    "newPublicOperation": false,
+    "flattenClaims": false,
+    "execBehavior": "codex.exec.jsonl-v1",
+    "appServerBehavior": "codex.app-server.v2.protected-aws-workspace-roots",
+    "lifecycleBehavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "execSegment": "0.156.0..=0.164.0",
+    "appServerSegment": "0.159.0..=0.164.0",
+    "lifecycleSegment": "0.140.0..=0.164.0",
+    "laterUnverified": "0.164.1"
+  }
+}

@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `codex.exec` and `codex.app-server` through official stable
+  `0.164.0` on the existing JSONL and protected-aws behavior revisions.
+  The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep
+  the selected argv, JSONL events, sandbox policy, initialize, catalogue,
+  and archive/delete shapes. Optional turn and thread fields stay unmapped.
+  Unpublished gaps, including `0.155.2`, stay incompatible. `0.165.0-alpha.1`
+  is ignored. See Research 452.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

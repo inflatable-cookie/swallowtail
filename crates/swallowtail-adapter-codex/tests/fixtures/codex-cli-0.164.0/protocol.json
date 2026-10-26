@@ -1,0 +1,88 @@
+{
+  "selectedMappedSubsetUnchanged": true,
+  "noPrompt": true,
+  "noLiveSession": true,
+  "noHostMutation": true,
+  "byteIdenticalThroughAllHops": {
+    "codex-rs/exec/src/cli.rs": "66643e8b3d5964b70cb8f231fb309312376272fb3ea87bcb6849f44cf112f8f6",
+    "codex-rs/exec/src/event_processor_with_jsonl_output.rs": "bc296541b385f9b4ca2c28cc638e25a8d6b1332b2cd67f5a03eaa97a3d612b19",
+    "codex-rs/exec/src/exec_events.rs": "dafa872d7e86a099e56e28a329dcb9c03db90ed768c3b88cca8c91d46dc1d0e5",
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+    "codex-rs/app-server-protocol/src/protocol/v2/permissions.rs": "fb60ae2f9babce22ca326b457c22b41e6fa24f71ad05429a8921074cc0ca5598",
+    "codex-rs/app-server-protocol/src/protocol/v1.rs": "e0642bd1bc7dbe5e24d508420471d705d5688efe8df3a8b40e3af22be55d7754",
+    "codex-rs/app-server-protocol/src/protocol/v2/shared.rs": "8b2b9ce4aedcd8e692f05dc8c1c878c179631460bb10561281bd1104c9088e40",
+    "codex-rs/config/src/loader/application.rs": "2ba93ecbbfbc777ea004a135a2241a4df0ec68c1a7946cb16b51fc853a810da3",
+    "codex-rs/app-server/src/application_network.rs": "901e9ed497146dc95c0ad1f61b0461d335ebc63183b526a9ac06941bf899f785"
+  },
+  "classifiedDeltas": [
+    {
+      "path": "codex-rs/protocol/src/permissions.rs",
+      "hop": "0.162.1->0.163.0",
+      "class": "unselected",
+      "reason": "adds with_expanded_deny_globs for exec-server bubblewrap and mxc sandbox backends; SandboxPolicy and AskForApproval stay in the byte-identical app-server protocol files; .aws protection remains"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/model.rs",
+      "hop": "0.161.0->0.162.0",
+      "class": "unselected",
+      "reason": "drops namespace_tools from ModelProviderCapabilitiesReadResponse; the adapter calls model/list"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/application.rs",
+      "hop": "0.163.0->0.164.0",
+      "class": "unselected",
+      "reason": "optional ApplicationStorageRequirements for Desktop workspace parents; the adapter sends no managed application requirements"
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors/thread_lifecycle.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "unselected",
+      "reason": "listener, unload, and v2-child eviction internals; thread/archive, thread/delete, and thread/unarchive request processors stay on the unchanged thread_delete path and unchanged request structs"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/thread.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "optional excludedThreadIds, read state, thread/fork prediction, and thread/items/read; archive, delete, and unarchive params stay threadId with empty archive and delete responses"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/turn.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "optional parentTurnId, rootTurnId, and responses metadata on turn/start; TurnStatus and turn/interrupt stay threadId plus turnId"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/thread_data.rs",
+      "hop": "0.161.0->0.162.0",
+      "class": "additive-optional",
+      "reason": "optional rootTurnId on Turn and reviewTarget on misalignment details; catalogue fields the adapter reads stay"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/item.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "optional model and reasoningEffort on SubAgentActivity, then an imageGeneration payload reshape the adapter treats as an unknown item"
+    }
+  ],
+  "contentSha256": {
+    "codex-rs/protocol/src/permissions.rs": {
+      "0.161.0": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54",
+      "0.162.0": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54",
+      "0.162.1": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54",
+      "0.163.0": "ba815705a004571cb1772d9ae97c30075fc6e3ed16c1a1b151ad64c0d459e0dd",
+      "0.164.0": "ba815705a004571cb1772d9ae97c30075fc6e3ed16c1a1b151ad64c0d459e0dd"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": {
+      "0.161.0": "1cdd2d3e0d4840dd58974d3960485b6f77e649b226e0656d84890b29a92c1a81",
+      "0.162.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
+      "0.164.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
+    },
+    "codex-rs/app-server/src/request_processors/thread_lifecycle.rs": {
+      "0.161.0": "204a9b470a4ee86fbc7cdbc6737291a8dea678c562220153df4ccd57f4545ea4",
+      "0.162.0": "967cbda6493c971232d5434af690e0c86a318589492d3c14344ee249a7267457",
+      "0.162.1": "967cbda6493c971232d5434af690e0c86a318589492d3c14344ee249a7267457",
+      "0.163.0": "9878fc3f652ad2d916891de8c4c377c8290510e19a178b1951e1c520d77270eb",
+      "0.164.0": "0c32665d1d988756517051df3e587eebce27d1ba962f1940b9c9d074520f1e7d"
+    }
+  }
+}

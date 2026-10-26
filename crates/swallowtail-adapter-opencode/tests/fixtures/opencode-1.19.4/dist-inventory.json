@@ -1,0 +1,870 @@
+{
+  "compared": [
+    "1.18.35",
+    "1.19.0",
+    "1.19.1",
+    "1.19.2",
+    "1.19.3",
+    "1.19.4"
+  ],
+  "complete_repository_tree_inventory": {
+    "canonicalization": "sort all relative paths bytewise; serialize each as path<TAB>sha256:<file-sha256> or path<TAB>symlink:<link-target>, followed by LF; SHA-256 the UTF-8 serialization",
+    "per_version": {
+      "1.18.35": {
+        "entries": 6628,
+        "files": 6568,
+        "symlinks": 60,
+        "opencode_src_files": 409,
+        "canonical_sha256": "616f4afe54525f9d0a7cdcbf0818f1f00c6cba722daaa7f1b4f9c2deef1216b2",
+        "source_archive_sha256": "3092a7b9f55d80c42a9c1bb2e2cc0a9961316673faf92b741577257a1576dd59"
+      },
+      "1.19.0": {
+        "entries": 6634,
+        "files": 6574,
+        "symlinks": 60,
+        "opencode_src_files": 409,
+        "canonical_sha256": "82ca5e56310fd21977a588911f6708ecba8396f1bb52b9cf5d7e8ed0eb2f0cda",
+        "source_archive_sha256": "5dfcfffdf1df64d4a2e8e0e034b5128eb2376cab6d6d34ed808108aac4ce0d78"
+      },
+      "1.19.1": {
+        "entries": 6632,
+        "files": 6572,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "989fa05f7347be8aacdb6bb4c2725116f55ae8e29b02d75cd71314511be83148",
+        "source_archive_sha256": "d96b32749ab8e96fa553086d9d03c0356022a3af312911ed065bd69f22c261be"
+      },
+      "1.19.2": {
+        "entries": 6634,
+        "files": 6574,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "942e41509a9cf958a79089ff3072838ead3b1a6ab6a8ab8866a4520c4f986d57",
+        "source_archive_sha256": "d55e90544ff8392149903c33a7b059e0c748851c67043b8323915bfe1848af87"
+      },
+      "1.19.3": {
+        "entries": 6634,
+        "files": 6574,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "0fcdf1dfa5dec44ad05a2f14e264fe0dd37cbea395d04ae217c84b071e2f7aca",
+        "source_archive_sha256": "8395f12e26df2d16610760ae224daf87da1d253a9883bf230be2c53984fe99ea"
+      },
+      "1.19.4": {
+        "entries": 6636,
+        "files": 6576,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "ae0d6884639fda9deb79082e5b27483c9b6a6f45fb8868dadd89714722cbf287",
+        "source_archive_sha256": "2e553ed005b2df4a7efb9edd26db8fc3caafb1b4dfc3c5c3869192334584d8bb"
+      }
+    }
+  },
+  "npm_package_file_inventories": {
+    "1.18.35": {
+      "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "package.json": "sha256:f3dde440fda02ba64505d1e33beb857c916a29801ba9dd2de592c847c7ae0a41",
+      "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    },
+    "1.19.0": {
+      "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "package.json": "sha256:3d8d4cdc137d50237711b9da187bd190e5b273cfac25adfad31be5f0ef691bfd",
+      "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    },
+    "1.19.1": {
+      "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "package.json": "sha256:67418b9010508ec2b4d79d3dc697b663da98f112bd2cdc15a0f43acf69d74aed",
+      "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    },
+    "1.19.2": {
+      "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "package.json": "sha256:ea7370b06785b8d5661cc51eb0e629659c8d654e358d5a6da86b36b7c52674d7",
+      "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    },
+    "1.19.3": {
+      "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "package.json": "sha256:5be8a944b51ab4d2b457885d278765595e1f7e8d68ba070c30649775f5814d53",
+      "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    },
+    "1.19.4": {
+      "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+      "package.json": "sha256:96a86bbaad6c6fce496e8e2504758a1c6a630aca18b82c4009e2d272ea23a7d6",
+      "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+    }
+  },
+  "mapped_stable_file_sha256": {
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts": {
+      "1.18.35": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.0": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.1": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.2": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.3": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.4": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts": {
+      "1.18.35": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.0": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.1": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.2": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.3": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.4": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts": {
+      "1.18.35": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.0": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.1": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.2": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.3": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.4": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts": {
+      "1.18.35": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.0": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.1": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.2": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.3": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.4": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts": {
+      "1.18.35": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.0": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.1": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.2": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.3": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.4": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts": {
+      "1.18.35": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.0": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.1": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.2": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.3": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.4": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts": {
+      "1.18.35": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.0": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.1": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.2": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.3": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.4": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb"
+    },
+    "packages/opencode/src/session/compaction.ts": {
+      "1.18.35": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.0": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.1": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.2": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.3": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.4": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a"
+    },
+    "packages/opencode/src/session/message-v2.ts": {
+      "1.18.35": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.0": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.1": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.2": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.3": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.4": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a"
+    },
+    "packages/opencode/src/session/session.ts": {
+      "1.18.35": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.0": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.1": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.2": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.3": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.4": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2"
+    },
+    "packages/opencode/src/session/status.ts": {
+      "1.18.35": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.0": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.1": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.2": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.3": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.4": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42"
+    },
+    "packages/sdk/openapi.json": {
+      "1.18.35": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+      "1.19.0": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+      "1.19.1": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+      "1.19.2": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+      "1.19.3": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+      "1.19.4": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+    }
+  },
+  "openapi_sha256": {
+    "1.18.35": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+    "1.19.0": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+    "1.19.1": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+    "1.19.2": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+    "1.19.3": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+    "1.19.4": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+  },
+  "hops": [
+    {
+      "hop": "1.18.35_to_1.19.0",
+      "repository_delta_counts": {
+        "added": 6,
+        "removed": 0,
+        "changed": 132,
+        "identical": 6496
+      },
+      "repository_path_sha256": {
+        "added": "6e2952483d2a3ea4c0c42a35a49d97ec8cad5f8ddbac313e7cb5501ed3c24912",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "changed": "f8e4b4bcc49d049e9ca902922c6849fa14a06cc4f194d68865d94be76f16312d"
+      },
+      "repository_added": [
+        "packages/console/app/src/lib/inference-spend.ts",
+        "packages/opencode/test/cli/upgrade.test.ts",
+        "packages/opencode/test/provider/openai.test.ts",
+        "packages/tui/src/component/dialog-update.tsx",
+        "packages/tui/src/context/update-notification.tsx",
+        "packages/tui/test/component/dialog-update.test.ts"
+      ],
+      "repository_removed": [],
+      "repository_changed": [
+        ".github/workflows/deploy.yml",
+        ".github/workflows/generate.yml",
+        ".github/workflows/nix-eval.yml",
+        ".github/workflows/nix-hashes.yml",
+        ".github/workflows/publish.yml",
+        ".github/workflows/test.yml",
+        ".github/workflows/typecheck.yml",
+        "bun.lock",
+        "nix/hashes.json",
+        "packages/app/package.json",
+        "packages/cli/package.json",
+        "packages/codemode/package.json",
+        "packages/console/app/package.json",
+        "packages/console/app/src/component/go-models.ts",
+        "packages/console/app/src/component/icon.tsx",
+        "packages/console/app/src/i18n/ar.ts",
+        "packages/console/app/src/i18n/br.ts",
+        "packages/console/app/src/i18n/da.ts",
+        "packages/console/app/src/i18n/de.ts",
+        "packages/console/app/src/i18n/en.ts",
+        "packages/console/app/src/i18n/es.ts",
+        "packages/console/app/src/i18n/fr.ts",
+        "packages/console/app/src/i18n/it.ts",
+        "packages/console/app/src/i18n/ja.ts",
+        "packages/console/app/src/i18n/ko.ts",
+        "packages/console/app/src/i18n/no.ts",
+        "packages/console/app/src/i18n/pl.ts",
+        "packages/console/app/src/i18n/ru.ts",
+        "packages/console/app/src/i18n/th.ts",
+        "packages/console/app/src/i18n/tr.ts",
+        "packages/console/app/src/i18n/uk.ts",
+        "packages/console/app/src/i18n/zh.ts",
+        "packages/console/app/src/i18n/zht.ts",
+        "packages/console/app/src/lib/inference-proxy.ts",
+        "packages/console/app/src/lib/salesforce.ts",
+        "packages/console/app/src/routes/api/enterprise.ts",
+        "packages/console/app/src/routes/enterprise/index.css",
+        "packages/console/app/src/routes/enterprise/index.tsx",
+        "packages/console/app/src/routes/go/index.css",
+        "packages/console/app/src/routes/go/index.tsx",
+        "packages/console/app/src/routes/workspace/[id]/go/lite-section.tsx",
+        "packages/console/app/src/routes/zen/util/handler.ts",
+        "packages/console/core/package.json",
+        "packages/console/function/package.json",
+        "packages/console/mail/package.json",
+        "packages/console/support/package.json",
+        "packages/core/package.json",
+        "packages/core/src/github-copilot/chat/convert-to-openai-compatible-chat-messages.ts",
+        "packages/core/src/github-copilot/chat/openai-compatible-chat-language-model.ts",
+        "packages/core/src/v1/config/config.ts",
+        "packages/core/test/github-copilot/convert-to-copilot-messages.test.ts",
+        "packages/core/test/github-copilot/copilot-chat-model.test.ts",
+        "packages/desktop/package.json",
+        "packages/effect-drizzle-sqlite/package.json",
+        "packages/effect-sqlite-node/package.json",
+        "packages/enterprise/package.json",
+        "packages/function/package.json",
+        "packages/http-recorder/package.json",
+        "packages/llm/package.json",
+        "packages/opencode/package.json",
+        "packages/opencode/src/cli/cmd/tui.ts",
+        "packages/opencode/src/cli/cmd/upgrade.ts",
+        "packages/opencode/src/cli/tui/worker.ts",
+        "packages/opencode/src/cli/upgrade.ts",
+        "packages/opencode/src/installation/index.ts",
+        "packages/opencode/src/server/routes/instance/httpapi/handlers/pty.ts",
+        "packages/opencode/test/cli/help/__snapshots__/help-snapshots.test.ts.snap",
+        "packages/opencode/test/installation/installation.test.ts",
+        "packages/plugin/package.json",
+        "packages/sdk/js/package.json",
+        "packages/sdk/js/src/v2/gen/types.gen.ts",
+        "packages/sdk/openapi.json",
+        "packages/server/package.json",
+        "packages/server/src/handlers/pty.ts",
+        "packages/session-ui/package.json",
+        "packages/slack/package.json",
+        "packages/stats/app/package.json",
+        "packages/stats/core/package.json",
+        "packages/stats/core/src/domain/inference.test.ts",
+        "packages/stats/core/src/domain/model-normalization.ts",
+        "packages/stats/server/package.json",
+        "packages/tui/package.json",
+        "packages/tui/src/app.tsx",
+        "packages/tui/src/index.tsx",
+        "packages/tui/src/routes/home.tsx",
+        "packages/tui/src/util/filetype.ts",
+        "packages/ui/package.json",
+        "packages/web/package.json",
+        "packages/web/src/content/docs/ar/go.mdx",
+        "packages/web/src/content/docs/ar/zen.mdx",
+        "packages/web/src/content/docs/bs/go.mdx",
+        "packages/web/src/content/docs/bs/zen.mdx",
+        "packages/web/src/content/docs/cli.mdx",
+        "packages/web/src/content/docs/config.mdx",
+        "packages/web/src/content/docs/da/go.mdx",
+        "packages/web/src/content/docs/da/zen.mdx",
+        "packages/web/src/content/docs/de/go.mdx",
+        "packages/web/src/content/docs/de/zen.mdx",
+        "packages/web/src/content/docs/es/go.mdx",
+        "packages/web/src/content/docs/es/zen.mdx",
+        "packages/web/src/content/docs/fr/go.mdx",
+        "packages/web/src/content/docs/fr/zen.mdx",
+        "packages/web/src/content/docs/go.mdx",
+        "packages/web/src/content/docs/it/go.mdx",
+        "packages/web/src/content/docs/it/zen.mdx",
+        "packages/web/src/content/docs/ja/go.mdx",
+        "packages/web/src/content/docs/ja/zen.mdx",
+        "packages/web/src/content/docs/ko/go.mdx",
+        "packages/web/src/content/docs/ko/zen.mdx",
+        "packages/web/src/content/docs/nb/go.mdx",
+        "packages/web/src/content/docs/nb/zen.mdx",
+        "packages/web/src/content/docs/pl/go.mdx",
+        "packages/web/src/content/docs/pl/zen.mdx",
+        "packages/web/src/content/docs/pt-br/go.mdx",
+        "packages/web/src/content/docs/pt-br/zen.mdx",
+        "packages/web/src/content/docs/ru/go.mdx",
+        "packages/web/src/content/docs/ru/zen.mdx",
+        "packages/web/src/content/docs/th/go.mdx",
+        "packages/web/src/content/docs/th/zen.mdx",
+        "packages/web/src/content/docs/tr/go.mdx",
+        "packages/web/src/content/docs/tr/zen.mdx",
+        "packages/web/src/content/docs/tui.mdx",
+        "packages/web/src/content/docs/zen.mdx",
+        "packages/web/src/content/docs/zh-cn/go.mdx",
+        "packages/web/src/content/docs/zh-cn/zen.mdx",
+        "packages/web/src/content/docs/zh-tw/go.mdx",
+        "packages/web/src/content/docs/zh-tw/zen.mdx",
+        "patches/@ai-sdk%2Fopenai@3.0.88.patch",
+        "script/publish.ts",
+        "script/release",
+        "sdks/vscode/package.json",
+        "sst.config.ts"
+      ],
+      "implementation_file_deltas": {
+        "packages/core/package.json": {
+          "change": "changed",
+          "before_sha256": "d2237dedb791e4afafa504cae7fdf38ac6d24725cfb9641d6e9fecb7040d2560",
+          "after_sha256": "18af2336156d67acaede552a175a7ae2e44a780c7e5ca3ba2dd63bfc8c7dfa58"
+        },
+        "packages/core/src/github-copilot/chat/convert-to-openai-compatible-chat-messages.ts": {
+          "change": "changed",
+          "before_sha256": "6b03726aa982be5bfbede5882e58ea7b65de24259971e3fe9342184ce11d7878",
+          "after_sha256": "f6a5c4a2a7da1998447b493d9ad0fab98fac64ff47a9bf65cd6a50c0a96823d4"
+        },
+        "packages/core/src/github-copilot/chat/openai-compatible-chat-language-model.ts": {
+          "change": "changed",
+          "before_sha256": "375c0bca4fb26709b007300219bb9ba9701deeede09caa3458e029915ac7d7ea",
+          "after_sha256": "ecce3ca27d17ed6ff4f9ddaba0e96ca1fd934d816b8f44c7b25d4f859b9715af"
+        },
+        "packages/core/src/v1/config/config.ts": {
+          "change": "changed",
+          "before_sha256": "b99bcbd98df6da79e59cda482363f759cea9d4b9792c6c8e83b6a8d686138d30",
+          "after_sha256": "9f7f0a80128153537e2eb4bf5163e45cbf68e3ed03c1efd1c39f39ea4cc18067"
+        },
+        "packages/opencode/package.json": {
+          "change": "changed",
+          "before_sha256": "ef0e849f7c5ea99b89934f53ce439d4dbc74ed55b8be4a8ce9112864d7d23073",
+          "after_sha256": "dd03234cf489d0bdf1c5e8760140af44bb0a5249dc745a192dd8d343d7f876f7"
+        },
+        "packages/opencode/src/cli/cmd/tui.ts": {
+          "change": "changed",
+          "before_sha256": "09c6591126d56aa7faf3f5607c4a8e9e847de556a7eb52892dd222d1b99d2a34",
+          "after_sha256": "5a134bb419af3496451ba429c2194b37ea1b48b23a09e2fa2a0a97bef448ea27"
+        },
+        "packages/opencode/src/cli/cmd/upgrade.ts": {
+          "change": "changed",
+          "before_sha256": "75b7eab3fe79aa81287cd0ebd24b94891f11eb07e52cce9ec8f33a06317e527c",
+          "after_sha256": "688995794382603fc95ee418f60cab241bc3c8d8b32719b93eb6c8f38ec038c3"
+        },
+        "packages/opencode/src/cli/tui/worker.ts": {
+          "change": "changed",
+          "before_sha256": "573aa14b1e25ae9540421330811e8b824c399a92a2add019d9eceb5b0cc60e02",
+          "after_sha256": "e465f72b912ad05f67775db494e89a6ab5607a1c3c93676fce5f3cc3009b88d9"
+        },
+        "packages/opencode/src/cli/upgrade.ts": {
+          "change": "changed",
+          "before_sha256": "4819069725ef38dfd57846c92fd3ef4f29580e3ca1268794019c3c5c30c0925d",
+          "after_sha256": "d3a1d64897d05cc4a9d2933cbd59d01a4015a9dc81f9edddbe06af119b4e1839"
+        },
+        "packages/opencode/src/installation/index.ts": {
+          "change": "changed",
+          "before_sha256": "113efe8f8233189ff49736472d6bcbf3a8eaf617b382b01c80619b219806c61f",
+          "after_sha256": "928acca554f3e527553d74ac6300ea75f51b9ac5a563089f374a2c0e80459032"
+        },
+        "packages/opencode/src/server/routes/instance/httpapi/handlers/pty.ts": {
+          "change": "changed",
+          "before_sha256": "530b18ff5f01bf3df145e1f3ca30fb4f883801dde5dfa3d54b13b5a02aa7d5a5",
+          "after_sha256": "f4e89edac0b4e825b14f69ff98117f0800103ce3079d02b13bc378cae1c93455"
+        },
+        "packages/sdk/js/package.json": {
+          "change": "changed",
+          "before_sha256": "cb028adc3c0315968196ab051b917be3966d8e28f5548d384211749fc23b8530",
+          "after_sha256": "3dbed95dacce65c8e0f0f03a997e4b2956594321441af6c915e0765f6e0550d5"
+        },
+        "packages/sdk/js/src/v2/gen/types.gen.ts": {
+          "change": "changed",
+          "before_sha256": "11eaca265a1f3362a077f8eef683d78a2be9a6eedcf1953d1d17f3525a94b8ee",
+          "after_sha256": "2bc7bd322c0a508b467bb18286cc80ede434893e9866078f2e480e5458f3ccc1"
+        },
+        "packages/sdk/openapi.json": {
+          "change": "changed",
+          "before_sha256": "00502bd13e9c86f3ca9e765e99a57e06fa9f434ca16f2a714766d1444f8d37f3",
+          "after_sha256": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2"
+        }
+      }
+    },
+    {
+      "hop": "1.19.0_to_1.19.1",
+      "repository_delta_counts": {
+        "added": 0,
+        "removed": 2,
+        "changed": 66,
+        "identical": 6566
+      },
+      "repository_path_sha256": {
+        "added": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "removed": "48ac85681e814d6834baf01b23e3a7468c20a28e32c371d04d0992aceb71ffaf",
+        "changed": "dbda759d04dfe29ed66ce8a705bf0167d91e0d821e7666a4e7a9f534ad88a461"
+      },
+      "repository_added": [],
+      "repository_removed": [
+        "packages/opencode/src/share/share-next.ts",
+        "packages/opencode/test/share/share-next.test.ts"
+      ],
+      "repository_changed": [
+        "bun.lock",
+        "github/action.yml",
+        "packages/app/package.json",
+        "packages/app/src/pages/session/timeline/message-timeline.tsx",
+        "packages/app/src/pages/session/use-session-commands.tsx",
+        "packages/cli/package.json",
+        "packages/codemode/package.json",
+        "packages/console/app/package.json",
+        "packages/console/core/package.json",
+        "packages/console/function/package.json",
+        "packages/console/mail/package.json",
+        "packages/console/support/package.json",
+        "packages/core/package.json",
+        "packages/desktop/package.json",
+        "packages/effect-drizzle-sqlite/package.json",
+        "packages/effect-sqlite-node/package.json",
+        "packages/enterprise/package.json",
+        "packages/function/package.json",
+        "packages/http-recorder/package.json",
+        "packages/llm/package.json",
+        "packages/opencode/package.json",
+        "packages/opencode/src/cli/cmd/github.handler.ts",
+        "packages/opencode/src/cli/cmd/import.ts",
+        "packages/opencode/src/cli/cmd/pr.ts",
+        "packages/opencode/src/cli/cmd/run.ts",
+        "packages/opencode/src/effect/app-runtime.ts",
+        "packages/opencode/src/effect/bootstrap-runtime.ts",
+        "packages/opencode/src/project/bootstrap.ts",
+        "packages/opencode/src/server/routes/instance/httpapi/server.ts",
+        "packages/opencode/src/share/session.ts",
+        "packages/opencode/test/cli/help/__snapshots__/help-snapshots.test.ts.snap",
+        "packages/opencode/test/cli/import.test.ts",
+        "packages/opencode/test/server/httpapi-exercise/index.ts",
+        "packages/plugin/package.json",
+        "packages/sdk/js/package.json",
+        "packages/server/package.json",
+        "packages/session-ui/package.json",
+        "packages/slack/package.json",
+        "packages/stats/app/package.json",
+        "packages/stats/core/package.json",
+        "packages/stats/server/package.json",
+        "packages/tui/package.json",
+        "packages/tui/src/feature-plugins/home/tips-view.tsx",
+        "packages/tui/src/routes/session/index.tsx",
+        "packages/tui/src/routes/session/sidebar.tsx",
+        "packages/ui/package.json",
+        "packages/web/package.json",
+        "packages/web/src/content/docs/ar/zen.mdx",
+        "packages/web/src/content/docs/bs/zen.mdx",
+        "packages/web/src/content/docs/da/zen.mdx",
+        "packages/web/src/content/docs/de/zen.mdx",
+        "packages/web/src/content/docs/es/zen.mdx",
+        "packages/web/src/content/docs/fr/zen.mdx",
+        "packages/web/src/content/docs/it/zen.mdx",
+        "packages/web/src/content/docs/ja/zen.mdx",
+        "packages/web/src/content/docs/ko/zen.mdx",
+        "packages/web/src/content/docs/nb/zen.mdx",
+        "packages/web/src/content/docs/pl/zen.mdx",
+        "packages/web/src/content/docs/pt-br/zen.mdx",
+        "packages/web/src/content/docs/ru/zen.mdx",
+        "packages/web/src/content/docs/th/zen.mdx",
+        "packages/web/src/content/docs/tr/zen.mdx",
+        "packages/web/src/content/docs/zen.mdx",
+        "packages/web/src/content/docs/zh-cn/zen.mdx",
+        "packages/web/src/content/docs/zh-tw/zen.mdx",
+        "sdks/vscode/package.json"
+      ],
+      "implementation_file_deltas": {
+        "packages/core/package.json": {
+          "change": "changed",
+          "before_sha256": "18af2336156d67acaede552a175a7ae2e44a780c7e5ca3ba2dd63bfc8c7dfa58",
+          "after_sha256": "d6dc3b8629c776a553619b9defcba572f1afa33244505151bd902f8f318a7980"
+        },
+        "packages/opencode/package.json": {
+          "change": "changed",
+          "before_sha256": "dd03234cf489d0bdf1c5e8760140af44bb0a5249dc745a192dd8d343d7f876f7",
+          "after_sha256": "a949beb0fbe161e4296b8a46f11f2bc1ca1d26c854a2a49f7b4c17718dbb97e1"
+        },
+        "packages/opencode/src/cli/cmd/github.handler.ts": {
+          "change": "changed",
+          "before_sha256": "724687d1e7ed0ad0f1c197499192c163fd5fb94a973be488bd0792728533d11b",
+          "after_sha256": "d83951ce00399bfd6e99621ab95c6912eb34a45cb8c253e9326000a8a713b3ef"
+        },
+        "packages/opencode/src/cli/cmd/import.ts": {
+          "change": "changed",
+          "before_sha256": "79037908c195ab95e423dfc9a66f2102702b73d583fc9c2b0fd844d548b8220d",
+          "after_sha256": "95b8a623d21fc5cdd17cdb4ce6c6966c952a5ee0db6ed5d7d91b4272258a0de2"
+        },
+        "packages/opencode/src/cli/cmd/pr.ts": {
+          "change": "changed",
+          "before_sha256": "d2228a30af72a3a6643231b42c024c33a9a87e5fcc56f0eaaaf1a2346272d591",
+          "after_sha256": "9b76cc94114fcf75a4598c05f6c60cf198ac42808c8638f9246d290422f23a2d"
+        },
+        "packages/opencode/src/cli/cmd/run.ts": {
+          "change": "changed",
+          "before_sha256": "bde848ca17f30834beb4ef0dfecb3b819730746ec2023c1ac55ecef7ca25dd37",
+          "after_sha256": "e040e90d4c81cdd59b9568ee90a53c0209cd9ddf1b8b207d1a8685b2e26d57d0"
+        },
+        "packages/opencode/src/effect/app-runtime.ts": {
+          "change": "changed",
+          "before_sha256": "94618c116d203f8eb373dbf3238761e969089034f84f7da43688bae1f21c1857",
+          "after_sha256": "6b060fe37a9fc6c1b34a9c9e22f3ad18822b55cf8192c623ec837f5d6b7cadc5"
+        },
+        "packages/opencode/src/effect/bootstrap-runtime.ts": {
+          "change": "changed",
+          "before_sha256": "1d54ef689e0a865273e2da0df2fded6abe6dace5002cb7477cfd3f24ba224222",
+          "after_sha256": "53a20b9dc49d4fa5dae9983f226115eee22003c6d3814aba7452c058e4483669"
+        },
+        "packages/opencode/src/project/bootstrap.ts": {
+          "change": "changed",
+          "before_sha256": "615a574a2901b2f79d9533bcd4261b978eada2d02759d105911129eb58654079",
+          "after_sha256": "a17e74df9674a9d61173a09d1ac59d1f4ca7bcf95f5745856e2940cdb5530f0c"
+        },
+        "packages/opencode/src/server/routes/instance/httpapi/server.ts": {
+          "change": "changed",
+          "before_sha256": "8cd7786d0eeda08836e71207784f1c63080caa653126e8a70732b13aba79f5f8",
+          "after_sha256": "3cf1aab1c39967dde7a03d37af95370da13427105ffa28822a029e964723b583"
+        },
+        "packages/opencode/src/share/session.ts": {
+          "change": "changed",
+          "before_sha256": "26d1545ce8d4cfe2c78f8af7bf5c997a60f856a06f159be64b4e656c2022470d",
+          "after_sha256": "b0ac9be13e0dada9a41c84db507f5c39bf8a24add66a8cada1621e21b13334b5"
+        },
+        "packages/opencode/src/share/share-next.ts": {
+          "change": "removed",
+          "before_sha256": "d4cc90fcf80aa0adfd100eecf41676d095aeff5d8006ad540d46058aaa830710"
+        },
+        "packages/sdk/js/package.json": {
+          "change": "changed",
+          "before_sha256": "3dbed95dacce65c8e0f0f03a997e4b2956594321441af6c915e0765f6e0550d5",
+          "after_sha256": "d834d78aa5c1e01396857128ff5f081b4bbcb7750181d1b1753997039c8df645"
+        }
+      }
+    },
+    {
+      "hop": "1.19.1_to_1.19.2",
+      "repository_delta_counts": {
+        "added": 2,
+        "removed": 0,
+        "changed": 41,
+        "identical": 6591
+      },
+      "repository_path_sha256": {
+        "added": "98ffaff23d851bdaf783266b51c93d3ecf2477202c93e21b033c9b653066b82e",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "changed": "1a62c90b489ccd1b2f5dcb11898572c8113656d8dc19912f74b993fcdf2ba542"
+      },
+      "repository_added": [
+        "script/install.test.ts",
+        "script/raw-changelog.test.ts"
+      ],
+      "repository_removed": [],
+      "repository_changed": [
+        "bun.lock",
+        "install",
+        "packages/app/package.json",
+        "packages/cli/package.json",
+        "packages/codemode/package.json",
+        "packages/console/app/package.json",
+        "packages/console/core/package.json",
+        "packages/console/function/package.json",
+        "packages/console/mail/package.json",
+        "packages/console/support/package.json",
+        "packages/core/package.json",
+        "packages/desktop/package.json",
+        "packages/effect-drizzle-sqlite/package.json",
+        "packages/effect-sqlite-node/package.json",
+        "packages/enterprise/package.json",
+        "packages/function/package.json",
+        "packages/http-recorder/package.json",
+        "packages/llm/package.json",
+        "packages/opencode/package.json",
+        "packages/opencode/src/cli/cmd/tui.ts",
+        "packages/opencode/src/cli/cmd/upgrade.ts",
+        "packages/opencode/src/cli/upgrade.ts",
+        "packages/opencode/src/installation/index.ts",
+        "packages/opencode/test/cli/upgrade.test.ts",
+        "packages/opencode/test/installation/installation.test.ts",
+        "packages/plugin/package.json",
+        "packages/sdk/js/package.json",
+        "packages/server/package.json",
+        "packages/session-ui/package.json",
+        "packages/slack/package.json",
+        "packages/stats/app/package.json",
+        "packages/stats/core/package.json",
+        "packages/stats/server/package.json",
+        "packages/tui/package.json",
+        "packages/tui/src/component/dialog-update.tsx",
+        "packages/tui/test/component/dialog-update.test.ts",
+        "packages/ui/package.json",
+        "packages/web/package.json",
+        "script/publish.ts",
+        "script/raw-changelog.ts",
+        "sdks/vscode/package.json"
+      ],
+      "implementation_file_deltas": {
+        "packages/core/package.json": {
+          "change": "changed",
+          "before_sha256": "d6dc3b8629c776a553619b9defcba572f1afa33244505151bd902f8f318a7980",
+          "after_sha256": "e4515448989fad85edd8cf983070380140a3e25011e199a4549f9515b42af857"
+        },
+        "packages/opencode/package.json": {
+          "change": "changed",
+          "before_sha256": "a949beb0fbe161e4296b8a46f11f2bc1ca1d26c854a2a49f7b4c17718dbb97e1",
+          "after_sha256": "2dd56773daaf67c2f30269b069a9e3b47df041bee1d3afaa9f5fd59dfdd441cf"
+        },
+        "packages/opencode/src/cli/cmd/tui.ts": {
+          "change": "changed",
+          "before_sha256": "5a134bb419af3496451ba429c2194b37ea1b48b23a09e2fa2a0a97bef448ea27",
+          "after_sha256": "41ffba0c213b48473dc57fd656fd49fd88ce602f29abba7fa22cd73305e52e1c"
+        },
+        "packages/opencode/src/cli/cmd/upgrade.ts": {
+          "change": "changed",
+          "before_sha256": "688995794382603fc95ee418f60cab241bc3c8d8b32719b93eb6c8f38ec038c3",
+          "after_sha256": "6d8056b42e07fbf38e26331f509e4ea52e370364c9d6c637cf958ff037280ecc"
+        },
+        "packages/opencode/src/cli/upgrade.ts": {
+          "change": "changed",
+          "before_sha256": "d3a1d64897d05cc4a9d2933cbd59d01a4015a9dc81f9edddbe06af119b4e1839",
+          "after_sha256": "cc49cb89fde0fcb7e0363803d3b3536b46ae9a3579936e68819f342c0c37b280"
+        },
+        "packages/opencode/src/installation/index.ts": {
+          "change": "changed",
+          "before_sha256": "928acca554f3e527553d74ac6300ea75f51b9ac5a563089f374a2c0e80459032",
+          "after_sha256": "de147cd4eba1cfdaaefaaeede15565ebda4372f0049eba5b7abb1edaf2ab889e"
+        },
+        "packages/sdk/js/package.json": {
+          "change": "changed",
+          "before_sha256": "d834d78aa5c1e01396857128ff5f081b4bbcb7750181d1b1753997039c8df645",
+          "after_sha256": "b000cdca3ffd4654eb62675fbf0febb2a356c38b99db45d9cb85557f77f51eef"
+        }
+      }
+    },
+    {
+      "hop": "1.19.2_to_1.19.3",
+      "repository_delta_counts": {
+        "added": 0,
+        "removed": 0,
+        "changed": 36,
+        "identical": 6598
+      },
+      "repository_path_sha256": {
+        "added": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "changed": "0bfa26392c13bbec41d0f8ae6eeeff75d855ec60b6744bc8cf77c39ef0844816"
+      },
+      "repository_added": [],
+      "repository_removed": [],
+      "repository_changed": [
+        "bun.lock",
+        "packages/app/package.json",
+        "packages/cli/package.json",
+        "packages/codemode/package.json",
+        "packages/console/app/package.json",
+        "packages/console/core/package.json",
+        "packages/console/function/package.json",
+        "packages/console/mail/package.json",
+        "packages/console/support/package.json",
+        "packages/core/package.json",
+        "packages/core/src/v1/config/provider.ts",
+        "packages/desktop/package.json",
+        "packages/effect-drizzle-sqlite/package.json",
+        "packages/effect-sqlite-node/package.json",
+        "packages/enterprise/package.json",
+        "packages/function/package.json",
+        "packages/http-recorder/package.json",
+        "packages/llm/package.json",
+        "packages/opencode/package.json",
+        "packages/opencode/src/provider/provider.ts",
+        "packages/opencode/src/provider/transform.ts",
+        "packages/opencode/test/provider/provider.test.ts",
+        "packages/plugin/package.json",
+        "packages/sdk/js/package.json",
+        "packages/sdk/js/src/v2/gen/types.gen.ts",
+        "packages/sdk/openapi.json",
+        "packages/server/package.json",
+        "packages/session-ui/package.json",
+        "packages/slack/package.json",
+        "packages/stats/app/package.json",
+        "packages/stats/core/package.json",
+        "packages/stats/server/package.json",
+        "packages/tui/package.json",
+        "packages/ui/package.json",
+        "packages/web/package.json",
+        "sdks/vscode/package.json"
+      ],
+      "implementation_file_deltas": {
+        "packages/core/package.json": {
+          "change": "changed",
+          "before_sha256": "e4515448989fad85edd8cf983070380140a3e25011e199a4549f9515b42af857",
+          "after_sha256": "e18c4f710f040157274f674102a3c7d507aefe82553fb2b9feb3e0f24ff6ea43"
+        },
+        "packages/core/src/v1/config/provider.ts": {
+          "change": "changed",
+          "before_sha256": "c496dea619e8e9d2d09b7a2353f2e62bff6a2276471c161c3988059a1b6ac303",
+          "after_sha256": "45fe8953a698ff8b2cd83150c7617d3a06a4869abf709cd948f408537ee9aae7"
+        },
+        "packages/opencode/package.json": {
+          "change": "changed",
+          "before_sha256": "2dd56773daaf67c2f30269b069a9e3b47df041bee1d3afaa9f5fd59dfdd441cf",
+          "after_sha256": "f26b884353a34f771ed960e4042363f7843d0fb0a822feca84adce37d18aab22"
+        },
+        "packages/opencode/src/provider/provider.ts": {
+          "change": "changed",
+          "before_sha256": "9fb8958a521bbc5a70e5e6d4ecb130149115fe891fb78bca0ae73a966b9f547a",
+          "after_sha256": "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d"
+        },
+        "packages/opencode/src/provider/transform.ts": {
+          "change": "changed",
+          "before_sha256": "ddfea009d85f61172d056216addeeabd920cd368d4d27b2f652629f7e3bcb0d2",
+          "after_sha256": "4fb803445f0e72a84fb3edf2b1721084437204d3e35582dab53e156f92f54007"
+        },
+        "packages/sdk/js/package.json": {
+          "change": "changed",
+          "before_sha256": "b000cdca3ffd4654eb62675fbf0febb2a356c38b99db45d9cb85557f77f51eef",
+          "after_sha256": "db85882dd00ff3e18db1b32e647b2d5ee43e0f1f732a6acb2a97d85204c7ec2c"
+        },
+        "packages/sdk/js/src/v2/gen/types.gen.ts": {
+          "change": "changed",
+          "before_sha256": "2bc7bd322c0a508b467bb18286cc80ede434893e9866078f2e480e5458f3ccc1",
+          "after_sha256": "35500909f40e7db47684fd2e76ee9d764c0244d82867bb948627dfca6e4b5441"
+        },
+        "packages/sdk/openapi.json": {
+          "change": "changed",
+          "before_sha256": "3e27efb6e2bcfee9030df64c7be486c32f250866d6a84b88970dd83d5d9788f2",
+          "after_sha256": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+        }
+      }
+    },
+    {
+      "hop": "1.19.3_to_1.19.4",
+      "repository_delta_counts": {
+        "added": 2,
+        "removed": 0,
+        "changed": 46,
+        "identical": 6588
+      },
+      "repository_path_sha256": {
+        "added": "139e7cec0a30bd65dbdf806a803ba7462672317eae3522470c09411c21130023",
+        "removed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "changed": "4d2fd9cf80c08b925f2a0878a9b843f060f3f84740104e2e64985f132db584a0"
+      },
+      "repository_added": [
+        "packages/ui/bunfig.toml",
+        "packages/ui/test/solid-jsx.ts"
+      ],
+      "repository_removed": [],
+      "repository_changed": [
+        ".github/actions/setup-bun/action.yml",
+        ".github/workflows/nix-eval.yml",
+        ".github/workflows/nix-hashes.yml",
+        "bun.lock",
+        "bunfig.toml",
+        "flake.lock",
+        "flake.nix",
+        "nix/hashes.json",
+        "nix/node_modules.nix",
+        "package.json",
+        "packages/app/package.json",
+        "packages/cli/package.json",
+        "packages/cli/script/build.ts",
+        "packages/codemode/package.json",
+        "packages/console/app/package.json",
+        "packages/console/core/package.json",
+        "packages/console/function/package.json",
+        "packages/console/mail/package.json",
+        "packages/console/support/package.json",
+        "packages/containers/bun-node/Dockerfile",
+        "packages/core/package.json",
+        "packages/desktop/package.json",
+        "packages/effect-drizzle-sqlite/package.json",
+        "packages/effect-sqlite-node/package.json",
+        "packages/enterprise/package.json",
+        "packages/function/package.json",
+        "packages/http-recorder/package.json",
+        "packages/llm/package.json",
+        "packages/opencode/package.json",
+        "packages/opencode/script/build.ts",
+        "packages/opencode/test/plugin/openai-ws.test.ts",
+        "packages/plugin/package.json",
+        "packages/sdk/js/package.json",
+        "packages/server/package.json",
+        "packages/session-ui/package.json",
+        "packages/session-ui/src/components/timeline-playground.stories.tsx",
+        "packages/slack/package.json",
+        "packages/stats/app/package.json",
+        "packages/stats/core/package.json",
+        "packages/stats/server/Dockerfile",
+        "packages/stats/server/package.json",
+        "packages/tui/package.json",
+        "packages/ui/package.json",
+        "packages/web/package.json",
+        "patches/@silvia-odwyer%2Fphoton-node@0.3.4.patch",
+        "sdks/vscode/package.json"
+      ],
+      "implementation_file_deltas": {
+        "packages/core/package.json": {
+          "change": "changed",
+          "before_sha256": "e18c4f710f040157274f674102a3c7d507aefe82553fb2b9feb3e0f24ff6ea43",
+          "after_sha256": "8122449bb90b82ac24a7ad562e5a03f5672bf66f26ba8ad66b1f23fef374dd54"
+        },
+        "packages/opencode/package.json": {
+          "change": "changed",
+          "before_sha256": "f26b884353a34f771ed960e4042363f7843d0fb0a822feca84adce37d18aab22",
+          "after_sha256": "9825647d55cdbc693e2965048e448b21540a1d290023b31a3af8b1d5da0fede5"
+        },
+        "packages/sdk/js/package.json": {
+          "change": "changed",
+          "before_sha256": "db85882dd00ff3e18db1b32e647b2d5ee43e0f1f732a6acb2a97d85204c7ec2c",
+          "after_sha256": "bf4c658c19660c7a944a31edb3c3067b3198d6cd7bd725eec4b6fb1bf18cf47a"
+        }
+      }
+    }
+  ]
+}

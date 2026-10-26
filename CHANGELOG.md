@@ -14,6 +14,36 @@ annotated Git tags from the canonical repository.
   `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. Same-date registry build
   `2026.10.14-0f9edde` stays rejected. `cursor-agent.catalogue` stays at
   `2026.10.01-14929f9`.
+- qualify only `cline.acp` from its `3.0.70` ceiling through official npm
+  `latest` `3.0.74`, keeping the `3.0.55` baseline and unpublished `3.0.59`
+  exclusion. Research 457 freezes hops `3.0.71` through `3.0.74`, wrapper and
+  Darwin ARM64 trees, six-platform SLSA identities, and the selected ACP source
+  deltas. Mode stays `plan`/`act`, the model option stays `id=model`, and
+  reasoning stays off without `--thinking`. At `3.0.74` platform packages embed
+  hub and plugin assets into `bin/cline`. Preserve `cline.acp.stdio-v1` and the
+  Q-006 `load_session` gate. `cline.headless` stays `QualifiedOnly` through
+  `3.0.70`. No artifact was executed and no provider prompt, live session,
+  credential, installation, or host update occurred.
+- stop `mistral-vibe.headless` at the `2.26.0` ceiling. Official PyPI and
+  GitHub stable are `3.0.2`. Research 458 freezes hops `2.26.1`, `3.0.0`,
+  `3.0.1`, and `3.0.2`. `2.26.1` removes the mapped turn-limit stderr and
+  exits 3. `3.0.0` removes `--legacy-harness`, the builtin `plan` agent,
+  and the Python streaming serializer, and `vibe` always execs the Rust
+  CLI. `~/.vibe` / `VIBE_HOME` does not move. The claim, behavior revision,
+  and `AllowUnverified` posture stay. No artifact was executed.
+- qualify `oh-my-pi.rpc` through official stable `18.12.6` on the existing
+  `oh-my-pi.rpc-v2-v18.0.0` revision (Research 447). npm `latest` and GitHub
+  latest stable agree. Maintained `18.0.0..=18.12.6` keeps claim id
+  `oh-my-pi.rpc.package-window-2` and `AllowUnverified`. The retained
+  `17.2.9..=17.4.2` segment, unpublished gaps `18.0.2`, `18.1.7`, `18.4.7`,
+  and `18.6.2`, incompatible `17.4.3`/`17.4.4`, and the frozen `17.2.9`
+  decoder corpus stay. `18.12.7` is `UnverifiedNewer`. Selected commands,
+  tool schemas, frame caps, and startup fields are unchanged. `mr://` is an
+  added read-tier resource inside the existing ambient `read` tool: ambient
+  `glab` process principal, host GitLab tokens plus `glab` config, GitLab
+  network egress (host-trust gate constrains env-token forwarding only),
+  exec tool-effect. Prompt-text `/mcp reauth` is reachable under
+  `--no-extensions` and stays unmapped.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new
@@ -38,6 +68,22 @@ annotated Git tags from the canonical repository.
   `1.0.4` stay. Unpublished `1.0.71` stays `UnverifiedNewer`. The catalogue
   claim, the registered-tool capsules, and the HTTP MCP pin stay on their
   existing bounds.
+- qualify `goose.acp` from its `1.53.0` ceiling through official GitHub stable
+  `1.56.0`. Research 456 freezes the three published successor hops, complete
+  tag trees, and Darwin ARM64 asset identities. The claim keeps baseline
+  `1.50.1`, claim id `goose.acp.release-window-1`, behavior revision
+  `goose.acp.stdio-v2.auth-required`, and `AllowUnverified`. Exact points are
+  `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0`.
+  Unpublished interstitial points stay incompatible. `1.56.1` is the first
+  `UnverifiedNewer` fixture.
+- qualify `pi.rpc` through official npm `latest` and GitHub latest stable
+  `1.4.0` on the existing `pi.rpc.strict-lf-v1.1.0-aborted-settled` revision.
+  Research 455 freezes published hops `1.2.0` and `1.3.0` after the `1.1.0`
+  ceiling. `dist/modes/rpc` is byte-identical, including the 33-command table,
+  dispositions, and `agent_settled.aborted`. Exact `1.1.0`, `1.2.0`, `1.3.0`,
+  and `1.4.0` stay Maintained on that newest revision. Unpublished `1.1.1+`,
+  `1.2.1+`, and `1.3.1+` stay incompatible. `pi.sdk-sidecar` and
+  `oh-my-pi.rpc` are unchanged.
 
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,

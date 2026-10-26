@@ -62,22 +62,26 @@ segments are retained as Deprecated: `0.80.10`, `0.81.0`, `0.81.1`,
 `0.82.0..=0.82.1`, `0.83.0`, `0.84.0..=0.84.4`, `0.85.0..=0.85.1`,
 `0.86.0..=0.86.1`, and `0.87.0..=0.87.1`. The command-disposition mapping is
 qualified as Deprecated on `0.99.0..=0.99.2` and `1.0.0..=1.0.4`. The
-maintained `1.1.0` point adds the `agent_settled.aborted` mapping while keeping
-the existing public operations and lifecycle contract.
+`agent_settled.aborted` mapping starts at `1.1.0` and stays on that behavior
+revision through `1.4.0`. Exact `1.1.0`, `1.2.0`, `1.3.0`, and `1.4.0` are
+Maintained throughout that newest revision. Public operations and the lifecycle
+contract are unchanged.
 
 The exact stable hops after `0.86.1` are `0.87.0`, `0.87.1`, `0.99.0`,
-`0.99.1`, `0.99.2`, `1.0.0`, `1.0.1`, `1.0.2`, `1.0.3`, `1.0.4`, and
-`1.1.0`. Unpublished or unqualified holes remain incompatible, including
-`0.83.1`, `0.84.5`, `0.85.2`, `0.86.2`, `0.87.2` through `0.98.x`, `0.99.3`
-and later `0.99.x`, and `1.0.5` and later `1.0.x`. Stable releases after
-`1.1.0` remain visible as unverified; older points and prereleases do not
-prepare. Discovery records the exact installed version.
+`0.99.1`, `0.99.2`, `1.0.0`, `1.0.1`, `1.0.2`, `1.0.3`, `1.0.4`, `1.1.0`,
+`1.2.0`, `1.3.0`, and `1.4.0`. Unpublished or unqualified holes remain
+incompatible, including `0.83.1`, `0.84.5`, `0.85.2`, `0.86.2`, `0.87.2`
+through `0.98.x`, `0.99.3` and later `0.99.x`, `1.0.5` and later `1.0.x`,
+`1.1.1` and later `1.1.x`, `1.2.1` and later `1.2.x`, and `1.3.1` and later
+`1.3.x`. Stable releases after `1.4.0` remain visible as unverified; older
+points and prereleases do not prepare. Discovery records the exact installed
+version.
 
 For `0.99.0` and later qualified points, the adapter checks prompt success
 dispositions (`handled`, `queued`, or `started`) and steering/follow-up
 dispositions (`handled` or `queued`) before awaiting lifecycle events. A
 `handled` prompt starts no run; a `handled` steering or follow-up message is
-consumed without being queued. On `1.1.0`, `agent_settled.aborted` is required:
+consumed without being queued. On `1.1.0` through `1.4.0`, `agent_settled.aborted` is required:
 `true` maps to the existing terminal cancellation, while `false` uses existing
 completion and usage checks. Older qualified points retain the optional field.
 

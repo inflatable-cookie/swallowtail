@@ -1,0 +1,404 @@
+{
+  "axis": "qwen-code.package",
+  "observed_at": "2026-10-26",
+  "official_source": "npm dist-tag latest for @qwen-code/qwen-code",
+  "npm_package": "@qwen-code/qwen-code",
+  "npm_latest": "0.26.1",
+  "npm_other_dist_tags": {
+    "preview": "0.25.4-preview.1",
+    "nightly": "0.26.1-nightly.20261025.8e28d5380c"
+  },
+  "published_stable_hops_after_previous_ceiling": [
+    "0.25.1",
+    "0.25.2",
+    "0.25.3",
+    "0.26.0",
+    "0.26.1"
+  ],
+  "previous_ceiling": "0.25.0",
+  "unpublished_interior_stable": "0.25.4",
+  "first_unpublished_later_stable": "0.26.2",
+  "not_the_selected_product": "GitHub TypeScript SDK releases/tags are a separate product and do not establish npm CLI identity",
+  "runtime_context": {
+    "node": "22.23.4",
+    "installed_global_qwen": null,
+    "official_package_installed_globally": false,
+    "qualification_uses": "exact npm artifacts and official source tags only"
+  },
+  "versions": [
+    {
+      "published_at": "2026-10-05T09:55:55.980Z",
+      "integrity": "sha512-XlqtxN7UKEkXLpuKioorDTBoIR/rWMdNHMtO/aPuQb7HDsTswMPqkEMYsVY56wuF3xSaI9PKgh9Q2NU/CSTkAQ==",
+      "shasum": "759806b6028175c794afabe10713e2f05f1026cd",
+      "tarball_sha256": "afeab0c85d682f201101319ce05decf3302d7ed7fb6319baa6a592051ea1a1ba",
+      "source_commit": "6788c035698a0ada471c958d1e789e96c6cddd9b",
+      "npm_git_head": null,
+      "npm_version": "0.25.0",
+      "npm_dist_file_count": 1358,
+      "npm_dist_unpacked_size": 116286799,
+      "inventory_file": "dist-inventory-0.25.0.json",
+      "inventory_sha256": "d04c0285438dc25e308647a6c35d6484c7e2767ec3fb552f16a15786a934c1b6",
+      "inventory_entries": 1358,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-11T10:29:32.140Z",
+      "integrity": "sha512-6cEbtfx4Ugl1d3FdFLa8fcsG6knHuUUHqvDseLxGY06Xan8p7Fcd7+g5KlX694zX4mo/+Vh56AHxT/4R15zpYA==",
+      "shasum": "5eb56cf0240abde4d7ac55cad83005883e43dcbb",
+      "tarball_sha256": "674b31eada2d2ffce10c5085eafef15a0a5ac556e597729d28c56d02b5c6302f",
+      "tarball_sha512": "e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960",
+      "source_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+      "slsa_git_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+      "npm_git_head": null,
+      "npm_version": "0.25.1",
+      "npm_dist_file_count": 1375,
+      "npm_dist_unpacked_size": 118602898,
+      "inventory_file": "dist-inventory-0.25.1.json",
+      "inventory_sha256": "460611447278765777092c40f59bcc1967c5f6f3874d1cad64bed34b7158025e",
+      "inventory_entries": 1375,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-15T15:46:50.127Z",
+      "integrity": "sha512-Why8rpC3RY20L07sqwsFph/BMjzCDxF0HMmqyIl4mfhCVLCHWnD/swVIwSN/iUugqEWnm2G5Zrl+qwndprN9kQ==",
+      "shasum": "8a391f83d9ab4db18b2bde024ad67afd890b40cc",
+      "tarball_sha256": "4ff46c2e249b41cf342b14d83b31cae24b0ddd57f77bcbabfeb396241738cf25",
+      "tarball_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+      "source_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+      "slsa_git_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+      "npm_git_head": null,
+      "npm_version": "0.25.2",
+      "npm_dist_file_count": 1700,
+      "npm_dist_unpacked_size": 142504046,
+      "inventory_file": "dist-inventory-0.25.2.json",
+      "inventory_sha256": "62c007f5908f518149054f935d91bb12e80dea52fffddcb6a98d38c74125853f",
+      "inventory_entries": 1700,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-19T06:14:11.135Z",
+      "integrity": "sha512-oEQlxLRQHqIMO/zgE9CVqesZpJA6FrpiJMDLC8tl4c5ARicyYP4A5EfOK/F/6c6NXuVhLLNirloIGA+ivqZpiw==",
+      "shasum": "77c5db396d69f0849f66c96c003e5f0e52c82d64",
+      "tarball_sha256": "e6e5d1b7ffd7442d16f6c0e3954bd5a69dbf81b0ae224f7fb6f3558d93be2742",
+      "tarball_sha512": "a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b",
+      "source_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+      "slsa_git_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+      "npm_git_head": null,
+      "npm_version": "0.25.3",
+      "npm_dist_file_count": 1434,
+      "npm_dist_unpacked_size": 135789515,
+      "inventory_file": "dist-inventory-0.25.3.json",
+      "inventory_sha256": "4e054af5f15bd5c376ab5f7643d498f8ff176109d9bc0da96b012124ce213a5b",
+      "inventory_entries": 1434,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-21T23:25:58.355Z",
+      "integrity": "sha512-JFO+gXpc3AVB+sR+ybQUb20DFfBMgB3p+F+rbru6xWeooYTixqOhCa3tOj0gCrDfkRxZFIziIH+zL05JgA2xVw==",
+      "shasum": "637eb60389f651650d555c51444053574dfa9592",
+      "tarball_sha256": "16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1",
+      "tarball_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+      "source_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+      "slsa_git_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+      "npm_git_head": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+      "npm_version": "0.26.0",
+      "npm_dist_file_count": 1333,
+      "npm_dist_unpacked_size": 124749218,
+      "inventory_file": "dist-inventory-0.26.0.json",
+      "inventory_sha256": "56fd976968492b11e53b0d0f23fe24c90b7e95b135a25c3e1c03a1d37ee6f6a3",
+      "inventory_entries": 1333,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-24T15:52:45.694Z",
+      "integrity": "sha512-4kpIzrlrgmawivim0yCZjr1AP5cfHTanyL7eL1g2R8WYU6QDBq7j9fiAye7REXL4EEXkRIq45D7+ngTw5n3GqQ==",
+      "shasum": "8cc9023bc4c085b35345351e77dea413ead9284e",
+      "tarball_sha256": "9198d276e8583b789ee42a9c38b521d57818b94682d155b2b47741534c90fb73",
+      "tarball_sha512": "e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9",
+      "source_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+      "slsa_git_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+      "npm_git_head": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+      "npm_version": "0.26.1",
+      "npm_dist_file_count": 1372,
+      "npm_dist_unpacked_size": 152751572,
+      "inventory_file": "dist-inventory-0.26.1.json",
+      "inventory_sha256": "606ae19f4569f70057b4d18e259ae465c534a038cf55f3f2d025309e821eeda4",
+      "inventory_entries": 1372,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    }
+  ],
+  "hops": [
+    {
+      "from": "0.25.0",
+      "to": "0.25.1",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.25.0-to-0.25.1.json",
+      "dist_diff_sha256": "615fc5ac731df8d773d195f625e229f4b59e06c8a9610f40f5e3389e21339e08",
+      "added": 459,
+      "removed": 442,
+      "changed": 24,
+      "identical": 892,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "0406213ab82a46ee9f05e751bf7f1d7c88bc4b63007c26adac52e5a0aedc1fae",
+          "after_sha256": "a5ccbbefc4daaa7c0f4542b0d25552e7cbfc0548a835b6d19e0434f4013a46ab"
+        },
+        {
+          "key": "permission_flow",
+          "path": "packages/core/src/core/permissionFlow.ts",
+          "before_sha256": "8a03b52c3d3d81b57da4f72c63ee04594887bc96c4c5f2836f777f0e2a5f80a0",
+          "after_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916"
+        },
+        {
+          "key": "session",
+          "path": "packages/cli/src/nonInteractive/session.ts",
+          "before_sha256": "878f18242aef80dd2a7798e40a9bd606a207a20e31f9f4ff20d32d69d4b1155d",
+          "after_sha256": "126c44880e970268b4bc15975b0e8c89bd3871d51ee413c9b0b5b3289ebdaaa0"
+        }
+      ]
+    },
+    {
+      "from": "0.25.1",
+      "to": "0.25.2",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.25.1-to-0.25.2.json",
+      "dist_diff_sha256": "d20c8fd98af97007a8f8743d988c1de290c171b9f234ba8e8c40000007c59a12",
+      "added": 709,
+      "removed": 384,
+      "changed": 21,
+      "identical": 970,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "a5ccbbefc4daaa7c0f4542b0d25552e7cbfc0548a835b6d19e0434f4013a46ab",
+          "after_sha256": "59592a938903ce03c863a2b635f71edcc4f1e5753ebb64bfe1a7935946e5e07e"
+        },
+        {
+          "key": "dashscope",
+          "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "before_sha256": "94a4c8ebecf24852b70e7bdc32509cc6a7dfbe23d71b4a859a109cc0be1044c0",
+          "after_sha256": "e9786c41856b3d3223954d49f0cdce26637696f077d3905e6ecf14fd11069878"
+        },
+        {
+          "key": "session",
+          "path": "packages/cli/src/nonInteractive/session.ts",
+          "before_sha256": "126c44880e970268b4bc15975b0e8c89bd3871d51ee413c9b0b5b3289ebdaaa0",
+          "after_sha256": "b138a925d311d1536f07fb90ac46ca637c59ff04f72223feca2bad460436c1bc"
+        },
+        {
+          "key": "top_level_options",
+          "path": "packages/cli/src/config/top-level-options.ts",
+          "before_sha256": "2dc7219ef7cb417b4d2093ed7aa99d36d151256ee08fdce96821367dccc3277b",
+          "after_sha256": "bd8c7c0f700d0a95f0bebe3a383b1a68ca59c0c4cf07d51c2f73c99a0615ccee"
+        }
+      ]
+    },
+    {
+      "from": "0.25.2",
+      "to": "0.25.3",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.25.2-to-0.25.3.json",
+      "dist_diff_sha256": "5c8867e3917da4d25d619352608967ae0a491420c2b6beb43f966a9ea81047e8",
+      "added": 384,
+      "removed": 650,
+      "changed": 36,
+      "identical": 1014,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "59592a938903ce03c863a2b635f71edcc4f1e5753ebb64bfe1a7935946e5e07e",
+          "after_sha256": "afdc09f3a1b82319f77c6825f713104093b856f43010488db45d1908496bfb9c"
+        },
+        {
+          "key": "dashscope",
+          "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "before_sha256": "e9786c41856b3d3223954d49f0cdce26637696f077d3905e6ecf14fd11069878",
+          "after_sha256": "391370244e8bb270e62eef469a40f24ab7dbc01e408580d1fae879c8b277994b"
+        },
+        {
+          "key": "session",
+          "path": "packages/cli/src/nonInteractive/session.ts",
+          "before_sha256": "b138a925d311d1536f07fb90ac46ca637c59ff04f72223feca2bad460436c1bc",
+          "after_sha256": "1bdf8bb522601ebb6808c42b390b219df6788688f1d94740533a4233aae310a2"
+        }
+      ]
+    },
+    {
+      "from": "0.25.3",
+      "to": "0.26.0",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.25.3-to-0.26.0.json",
+      "dist_diff_sha256": "057fbb1769ce59f301adde024859a03362438ba12b7bde4deba8cbd6679f2454",
+      "added": 390,
+      "removed": 491,
+      "changed": 31,
+      "identical": 912,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "afdc09f3a1b82319f77c6825f713104093b856f43010488db45d1908496bfb9c",
+          "after_sha256": "ee0a344d4c7c3084a1ad4af258c2a28dbcd8fbdaa11e26ca7df80646394ad074"
+        },
+        {
+          "key": "dashscope",
+          "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "before_sha256": "391370244e8bb270e62eef469a40f24ab7dbc01e408580d1fae879c8b277994b",
+          "after_sha256": "fdec18ba705cd92fc8d476280a59a761ab66ac9d1e300f0226807d81beaf43f3"
+        },
+        {
+          "key": "session",
+          "path": "packages/cli/src/nonInteractive/session.ts",
+          "before_sha256": "1bdf8bb522601ebb6808c42b390b219df6788688f1d94740533a4233aae310a2",
+          "after_sha256": "75ee4883618a8d7034ec9339b40f768cf2add14d6963e54e1ec97d163551990f"
+        },
+        {
+          "key": "stream_types",
+          "path": "packages/cli/src/nonInteractive/types.ts",
+          "before_sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487",
+          "after_sha256": "d4a62180b709d6e306de7f634b0bda65a724dc3881c7b5075121070242d8c3a6"
+        }
+      ]
+    },
+    {
+      "from": "0.26.0",
+      "to": "0.26.1",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.26.0-to-0.26.1.json",
+      "dist_diff_sha256": "a93ca31ccafb1d687e2a52e05d9534948b688454e97cf04953ec9e23cff93060",
+      "added": 449,
+      "removed": 410,
+      "changed": 48,
+      "identical": 875,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "ee0a344d4c7c3084a1ad4af258c2a28dbcd8fbdaa11e26ca7df80646394ad074",
+          "after_sha256": "c1ed6b3340d02bd3a1d2e699d71c10df9674c5a400f2e50384ea1f11a067c200"
+        },
+        {
+          "key": "dashscope",
+          "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "before_sha256": "fdec18ba705cd92fc8d476280a59a761ab66ac9d1e300f0226807d81beaf43f3",
+          "after_sha256": "3dddb030f78d88ffd4d30ec738b446054947b882b9fbf85bec6153c2abba25be"
+        }
+      ]
+    }
+  ],
+  "channel_reprobe": {
+    "command": "npm view @qwen-code/qwen-code dist-tags --json",
+    "result": "latest=0.26.1; preview=0.25.4-preview.1; nightly=0.26.1-nightly.20261025.8e28d5380c",
+    "stable_current": true
+  },
+  "evidence_limits": {
+    "tarballs_executed": false,
+    "tarballs_retained_in_repository": false,
+    "complete_package_tree_manifests": true,
+    "complete_per_hop_path_diffs": true,
+    "selected_source_snapshots": true,
+    "source_maps_in_npm_package": false,
+    "slsa_provenance_binds_tarball_sha512_to_git_commit": true,
+    "selected_sources_byte_identical_at_slsa_commit_and_tag": true,
+    "provider_turns": false,
+    "credentials_read": false,
+    "host_installed_or_updated": false
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "qwen-code.headless.v0.21.15-reasoning-control",
+    "raise_latest_qualified_to": "0.26.1",
+    "extend_same_revision_segment": "0.22.0..=0.26.1",
+    "exclude_unpublished_0_25_4": true,
+    "keep_0_22_4_incompatible": true,
+    "keep_0_23_5_incompatible": true,
+    "keep_exact_0_21_15": true,
+    "extend_plan_exact_list": false,
+    "extend_reasoning_beyond_0_21_15": false,
+    "extend_budgets_beyond_0_21_15": false,
+    "new_public_mapped_operation": false,
+    "provider_prompt_sent": false
+  },
+  "selected_source_identities_file": "selected-source-identities.json",
+  "selected_source_identities_sha256": "ccfffe2ade51be51099871e306bde25dff3e657593e11bb5a5760551035d18c5",
+  "reviewed_source_identities_file": "reviewed-source-identities.json",
+  "reviewed_source_identities_sha256": "f92718e090d69d89bd792c8042b4ff23c143c671ce90e8abc8b159758d3f038e",
+  "source_to_shipped_file": "source-to-shipped.json",
+  "source_to_shipped_sha256": "22d49c0703d6f6b54a2b83c867ed6c817a88ebd63410b7db8bad00c73504d9c1"
+}

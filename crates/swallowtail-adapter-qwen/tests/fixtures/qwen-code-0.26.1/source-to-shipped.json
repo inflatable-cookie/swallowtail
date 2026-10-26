@@ -1,0 +1,1245 @@
+{
+  "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity",
+  "measured_at": "2026-10-26",
+  "npm_package": "@qwen-code/qwen-code",
+  "authority": "npm SLSA provenance v1 binds the exact published tarball SHA-512 to resolvedDependencies.gitCommit; every selected mapped TypeScript file at that commit is byte-identical to the frozen GitHub tag snapshot. The shipped package has no source maps. Tag/SLSA tree deltas are workspace package.json version bumps only.",
+  "not_used": [
+    "npm gitHead as shipped parity with the same-version Git tag",
+    "published source maps or sourcesContent",
+    "vendor rebuild, install, or execution",
+    "matching help text, symbols, or generated booleans as selected-behavior proof"
+  ],
+  "historical_0_25_0": "Research 375 remains the 0.25.0 identity record and is not rewritten",
+  "versions": [
+    {
+      "npm_version": "0.25.1",
+      "npm_git_head": null,
+      "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+      "slsa_git_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+      "tag_commit_equals_slsa_git_commit": false,
+      "artifact_tarball": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.1.tgz",
+      "artifact_sha256": "674b31eada2d2ffce10c5085eafef15a0a5ac556e597729d28c56d02b5c6302f",
+      "artifact_sha512": "e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960",
+      "npm_integrity": "sha512-6cEbtfx4Ugl1d3FdFLa8fcsG6knHuUUHqvDseLxGY06Xan8p7Fcd7+g5KlX694zX4mo/+Vh56AHxT/4R15zpYA==",
+      "source_maps_in_package": 0,
+      "source_map_paths": [],
+      "slsa": {
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "attestation_url": "https://registry.npmjs.org/-/npm/v1/attestations/@qwen-code%2fqwen-code@0.25.1",
+        "payload_sha256": "ccdc491bdc3c3f822f30309ff1c2f1f3f6036f45e3fd485e64bfd345665f6e82",
+        "subject_name": "pkg:npm/%40qwen-code/qwen-code@0.25.1",
+        "subject_sha512": "e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960",
+        "subject_sha512_equals_tarball_sha512": true,
+        "repository": "https://github.com/QwenLM/qwen-code",
+        "workflow": ".github/workflows/release.yml",
+        "workflow_ref": "refs/heads/main",
+        "event_name": "workflow_dispatch",
+        "builder_id": "https://github.com/actions/runner/github-hosted",
+        "invocation_id": "https://github.com/QwenLM/qwen-code/actions/runs/38120196623/attempts/1",
+        "resolved_dependency_uri": "git+https://github.com/QwenLM/qwen-code@refs/heads/main"
+      },
+      "tag_to_slsa_changed_paths": [
+        "integrations/external-context-mem0/package.json",
+        "integrations/external-context-mem0/qwen-extension.json",
+        "integrations/external-context/package.json",
+        "package.json",
+        "packages/acp-bridge/package.json",
+        "packages/audio-capture/package.json",
+        "packages/browser-use/package.json",
+        "packages/channels/base/package.json",
+        "packages/channels/dingtalk/package.json",
+        "packages/channels/dws/package.json",
+        "packages/channels/email/package.json",
+        "packages/channels/feishu/package.json",
+        "packages/channels/github/package.json",
+        "packages/channels/gitlab/package.json",
+        "packages/channels/plugin-example/package.json",
+        "packages/channels/qqbot/package.json",
+        "packages/channels/telegram/package.json",
+        "packages/channels/wecom/package.json",
+        "packages/channels/weixin/package.json",
+        "packages/chrome-extension/package.json",
+        "packages/cli/package.json",
+        "packages/core/package.json",
+        "packages/vscode-ide-companion/package.json",
+        "packages/web-shell/package.json",
+        "packages/web-templates/package.json"
+      ],
+      "tag_to_slsa_selected_source_changes": [],
+      "selected_files": [
+        {
+          "key": "approval_mode",
+          "source_path": "packages/core/src/config/approval-mode.ts",
+          "source_sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12",
+          "source_bytes": 331,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "config",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "a5ccbbefc4daaa7c0f4542b0d25552e7cbfc0548a835b6d19e0434f4013a46ab",
+          "source_bytes": 122366,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "dashscope",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "94a4c8ebecf24852b70e7bdc32509cc6a7dfbe23d71b4a859a109cc0be1044c0",
+          "source_bytes": 39584,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "exit_plan_mode",
+          "source_path": "packages/core/src/tools/exitPlanMode.ts",
+          "source_sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e",
+          "source_bytes": 15813,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "permission_flow",
+          "source_path": "packages/core/src/core/permissionFlow.ts",
+          "source_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916",
+          "source_bytes": 8159,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "plan_mode_shell_policy",
+          "source_path": "packages/core/src/core/plan-mode-shell-policy.ts",
+          "source_sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe",
+          "source_bytes": 10319,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "reasoning_effort",
+          "source_path": "packages/core/src/core/reasoning-effort.ts",
+          "source_sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc",
+          "source_bytes": 11046,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "session",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "126c44880e970268b4bc15975b0e8c89bd3871d51ee413c9b0b5b3289ebdaaa0",
+          "source_bytes": 37784,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "stream_types",
+          "source_path": "packages/cli/src/nonInteractive/types.ts",
+          "source_sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487",
+          "source_bytes": 14183,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "system_controller",
+          "source_path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+          "source_sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87",
+          "source_bytes": 20580,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "top_level_options",
+          "source_path": "packages/cli/src/config/top-level-options.ts",
+          "source_sha256": "2dc7219ef7cb417b4d2093ed7aa99d36d151256ee08fdce96821367dccc3277b",
+          "source_bytes": 17123,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        }
+      ],
+      "reviewed_files": [
+        {
+          "key": "approval_mode_value",
+          "source_path": "packages/cli/src/config/approval-mode-value.ts",
+          "source_sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467",
+          "source_bytes": 1170,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.ts",
+          "source_sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55",
+          "source_bytes": 4449,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store_test",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+          "source_sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85",
+          "source_bytes": 4585,
+          "tag_commit": "c1a8218f38203e272e6e965778ed6a2795cfeed7",
+          "slsa_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "tag_and_slsa_byte_identical": true
+        }
+      ]
+    },
+    {
+      "npm_version": "0.25.2",
+      "npm_git_head": null,
+      "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+      "slsa_git_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+      "tag_commit_equals_slsa_git_commit": false,
+      "artifact_tarball": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.2.tgz",
+      "artifact_sha256": "4ff46c2e249b41cf342b14d83b31cae24b0ddd57f77bcbabfeb396241738cf25",
+      "artifact_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+      "npm_integrity": "sha512-Why8rpC3RY20L07sqwsFph/BMjzCDxF0HMmqyIl4mfhCVLCHWnD/swVIwSN/iUugqEWnm2G5Zrl+qwndprN9kQ==",
+      "source_maps_in_package": 0,
+      "source_map_paths": [],
+      "slsa": {
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "attestation_url": "https://registry.npmjs.org/-/npm/v1/attestations/@qwen-code%2fqwen-code@0.25.2",
+        "payload_sha256": "1f12ca177b11cb38bfac87170e7aef439e1b16186373e8eb9e24f69088fdb312",
+        "subject_name": "pkg:npm/%40qwen-code/qwen-code@0.25.2",
+        "subject_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+        "subject_sha512_equals_tarball_sha512": true,
+        "repository": "https://github.com/QwenLM/qwen-code",
+        "workflow": ".github/workflows/release.yml",
+        "workflow_ref": "refs/heads/main",
+        "event_name": "workflow_dispatch",
+        "builder_id": "https://github.com/actions/runner/github-hosted",
+        "invocation_id": "https://github.com/QwenLM/qwen-code/actions/runs/38741868593/attempts/1",
+        "resolved_dependency_uri": "git+https://github.com/QwenLM/qwen-code@refs/heads/main"
+      },
+      "tag_to_slsa_changed_paths": [
+        "integrations/external-context-mem0/package.json",
+        "integrations/external-context-mem0/qwen-extension.json",
+        "integrations/external-context/package.json",
+        "integrations/test-failure-explorer/package.json",
+        "package.json",
+        "packages/acp-bridge/package.json",
+        "packages/audio-capture/package.json",
+        "packages/browser-use/package.json",
+        "packages/channels/base/package.json",
+        "packages/channels/dingtalk/package.json",
+        "packages/channels/dws/package.json",
+        "packages/channels/email/package.json",
+        "packages/channels/feishu/package.json",
+        "packages/channels/github/package.json",
+        "packages/channels/gitlab/package.json",
+        "packages/channels/plugin-example/package.json",
+        "packages/channels/qqbot/package.json",
+        "packages/channels/telegram/package.json",
+        "packages/channels/wecom/package.json",
+        "packages/channels/weixin/package.json",
+        "packages/chrome-extension/package.json",
+        "packages/cli/package.json",
+        "packages/core/package.json",
+        "packages/vscode-ide-companion/package.json",
+        "packages/web-shell/package.json",
+        "packages/web-templates/package.json"
+      ],
+      "tag_to_slsa_selected_source_changes": [],
+      "selected_files": [
+        {
+          "key": "approval_mode",
+          "source_path": "packages/core/src/config/approval-mode.ts",
+          "source_sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12",
+          "source_bytes": 331,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "config",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "59592a938903ce03c863a2b635f71edcc4f1e5753ebb64bfe1a7935946e5e07e",
+          "source_bytes": 123703,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "dashscope",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "e9786c41856b3d3223954d49f0cdce26637696f077d3905e6ecf14fd11069878",
+          "source_bytes": 38994,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "exit_plan_mode",
+          "source_path": "packages/core/src/tools/exitPlanMode.ts",
+          "source_sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e",
+          "source_bytes": 15813,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "permission_flow",
+          "source_path": "packages/core/src/core/permissionFlow.ts",
+          "source_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916",
+          "source_bytes": 8159,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "plan_mode_shell_policy",
+          "source_path": "packages/core/src/core/plan-mode-shell-policy.ts",
+          "source_sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe",
+          "source_bytes": 10319,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "reasoning_effort",
+          "source_path": "packages/core/src/core/reasoning-effort.ts",
+          "source_sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc",
+          "source_bytes": 11046,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "session",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "b138a925d311d1536f07fb90ac46ca637c59ff04f72223feca2bad460436c1bc",
+          "source_bytes": 38085,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "stream_types",
+          "source_path": "packages/cli/src/nonInteractive/types.ts",
+          "source_sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487",
+          "source_bytes": 14183,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "system_controller",
+          "source_path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+          "source_sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87",
+          "source_bytes": 20580,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "top_level_options",
+          "source_path": "packages/cli/src/config/top-level-options.ts",
+          "source_sha256": "bd8c7c0f700d0a95f0bebe3a383b1a68ca59c0c4cf07d51c2f73c99a0615ccee",
+          "source_bytes": 17250,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        }
+      ],
+      "reviewed_files": [
+        {
+          "key": "approval_mode_value",
+          "source_path": "packages/cli/src/config/approval-mode-value.ts",
+          "source_sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467",
+          "source_bytes": 1170,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.ts",
+          "source_sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55",
+          "source_bytes": 4449,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store_test",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+          "source_sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85",
+          "source_bytes": 4585,
+          "tag_commit": "8a415cb628db88844e0196bdfdcce83b4f88d812",
+          "slsa_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "tag_and_slsa_byte_identical": true
+        }
+      ]
+    },
+    {
+      "npm_version": "0.25.3",
+      "npm_git_head": null,
+      "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+      "slsa_git_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+      "tag_commit_equals_slsa_git_commit": false,
+      "artifact_tarball": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.3.tgz",
+      "artifact_sha256": "e6e5d1b7ffd7442d16f6c0e3954bd5a69dbf81b0ae224f7fb6f3558d93be2742",
+      "artifact_sha512": "a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b",
+      "npm_integrity": "sha512-oEQlxLRQHqIMO/zgE9CVqesZpJA6FrpiJMDLC8tl4c5ARicyYP4A5EfOK/F/6c6NXuVhLLNirloIGA+ivqZpiw==",
+      "source_maps_in_package": 0,
+      "source_map_paths": [],
+      "slsa": {
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "attestation_url": "https://registry.npmjs.org/-/npm/v1/attestations/@qwen-code%2fqwen-code@0.25.3",
+        "payload_sha256": "a71d1f936ae6aab588804dc897aa0c247e61c33fa632bbe8b2bb237219c1c870",
+        "subject_name": "pkg:npm/%40qwen-code/qwen-code@0.25.3",
+        "subject_sha512": "a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b",
+        "subject_sha512_equals_tarball_sha512": true,
+        "repository": "https://github.com/QwenLM/qwen-code",
+        "workflow": ".github/workflows/release.yml",
+        "workflow_ref": "refs/heads/main",
+        "event_name": "workflow_dispatch",
+        "builder_id": "https://github.com/actions/runner/github-hosted",
+        "invocation_id": "https://github.com/QwenLM/qwen-code/actions/runs/39192115354/attempts/3",
+        "resolved_dependency_uri": "git+https://github.com/QwenLM/qwen-code@refs/heads/main"
+      },
+      "tag_to_slsa_changed_paths": [
+        "integrations/external-context-mem0/package.json",
+        "integrations/external-context-mem0/qwen-extension.json",
+        "integrations/external-context/package.json",
+        "integrations/test-failure-explorer/package.json",
+        "package.json",
+        "packages/acp-bridge/package.json",
+        "packages/audio-capture/package.json",
+        "packages/browser-use/package.json",
+        "packages/channels/base/package.json",
+        "packages/channels/dingtalk/package.json",
+        "packages/channels/dws/package.json",
+        "packages/channels/email/package.json",
+        "packages/channels/feishu/package.json",
+        "packages/channels/github/package.json",
+        "packages/channels/gitlab/package.json",
+        "packages/channels/plugin-example/package.json",
+        "packages/channels/qqbot/package.json",
+        "packages/channels/telegram/package.json",
+        "packages/channels/wecom/package.json",
+        "packages/channels/weixin/package.json",
+        "packages/chrome-extension/package.json",
+        "packages/cli/package.json",
+        "packages/core/package.json",
+        "packages/vscode-ide-companion/package.json",
+        "packages/web-shell/package.json",
+        "packages/web-templates/package.json"
+      ],
+      "tag_to_slsa_selected_source_changes": [],
+      "selected_files": [
+        {
+          "key": "approval_mode",
+          "source_path": "packages/core/src/config/approval-mode.ts",
+          "source_sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12",
+          "source_bytes": 331,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "config",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "afdc09f3a1b82319f77c6825f713104093b856f43010488db45d1908496bfb9c",
+          "source_bytes": 124010,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "dashscope",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "391370244e8bb270e62eef469a40f24ab7dbc01e408580d1fae879c8b277994b",
+          "source_bytes": 39721,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "exit_plan_mode",
+          "source_path": "packages/core/src/tools/exitPlanMode.ts",
+          "source_sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e",
+          "source_bytes": 15813,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "permission_flow",
+          "source_path": "packages/core/src/core/permissionFlow.ts",
+          "source_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916",
+          "source_bytes": 8159,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "plan_mode_shell_policy",
+          "source_path": "packages/core/src/core/plan-mode-shell-policy.ts",
+          "source_sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe",
+          "source_bytes": 10319,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "reasoning_effort",
+          "source_path": "packages/core/src/core/reasoning-effort.ts",
+          "source_sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc",
+          "source_bytes": 11046,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "session",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "1bdf8bb522601ebb6808c42b390b219df6788688f1d94740533a4233aae310a2",
+          "source_bytes": 38095,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "stream_types",
+          "source_path": "packages/cli/src/nonInteractive/types.ts",
+          "source_sha256": "4670f2ec4dbb9af8ce1133b9e7639d88736ad201e37d567e7bbee9f4a691d487",
+          "source_bytes": 14183,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "system_controller",
+          "source_path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+          "source_sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87",
+          "source_bytes": 20580,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "top_level_options",
+          "source_path": "packages/cli/src/config/top-level-options.ts",
+          "source_sha256": "bd8c7c0f700d0a95f0bebe3a383b1a68ca59c0c4cf07d51c2f73c99a0615ccee",
+          "source_bytes": 17250,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        }
+      ],
+      "reviewed_files": [
+        {
+          "key": "approval_mode_value",
+          "source_path": "packages/cli/src/config/approval-mode-value.ts",
+          "source_sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467",
+          "source_bytes": 1170,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.ts",
+          "source_sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55",
+          "source_bytes": 4449,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store_test",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+          "source_sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85",
+          "source_bytes": 4585,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "loop_detection_service",
+          "source_path": "packages/core/src/services/loopDetectionService.ts",
+          "source_sha256": "811d52a765c24a3121b8de1a918e771b3a7c8643cea36b121cf0b3673bba0aae",
+          "source_bytes": 71274,
+          "tag_commit": "b28b0d948fa28b89750ac5f1525b95e1746f47ab",
+          "slsa_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "tag_and_slsa_byte_identical": true
+        }
+      ]
+    },
+    {
+      "npm_version": "0.26.0",
+      "npm_git_head": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+      "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+      "slsa_git_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+      "tag_commit_equals_slsa_git_commit": false,
+      "artifact_tarball": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.0.tgz",
+      "artifact_sha256": "16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1",
+      "artifact_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+      "npm_integrity": "sha512-JFO+gXpc3AVB+sR+ybQUb20DFfBMgB3p+F+rbru6xWeooYTixqOhCa3tOj0gCrDfkRxZFIziIH+zL05JgA2xVw==",
+      "source_maps_in_package": 0,
+      "source_map_paths": [],
+      "slsa": {
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "attestation_url": "https://registry.npmjs.org/-/npm/v1/attestations/@qwen-code%2fqwen-code@0.26.0",
+        "payload_sha256": "6060c84b2b6b6a324170be7661d6761b6882861cac65b954456f2c5690d2e45a",
+        "subject_name": "pkg:npm/%40qwen-code/qwen-code@0.26.0",
+        "subject_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+        "subject_sha512_equals_tarball_sha512": true,
+        "repository": "https://github.com/QwenLM/qwen-code",
+        "workflow": ".github/workflows/release.yml",
+        "workflow_ref": "refs/heads/main",
+        "event_name": "workflow_dispatch",
+        "builder_id": "https://github.com/actions/runner/github-hosted",
+        "invocation_id": "https://github.com/QwenLM/qwen-code/actions/runs/39621619809/attempts/3",
+        "resolved_dependency_uri": "git+https://github.com/QwenLM/qwen-code@refs/heads/main"
+      },
+      "tag_to_slsa_changed_paths": [
+        "integrations/external-context-mem0/package.json",
+        "integrations/external-context-mem0/qwen-extension.json",
+        "integrations/external-context/package.json",
+        "integrations/generated-ui/package.json",
+        "integrations/test-failure-explorer/package.json",
+        "package.json",
+        "packages/acp-bridge/package.json",
+        "packages/audio-capture/package.json",
+        "packages/channels/base/package.json",
+        "packages/channels/dingtalk/package.json",
+        "packages/channels/dws/package.json",
+        "packages/channels/email/package.json",
+        "packages/channels/feishu/package.json",
+        "packages/channels/github/package.json",
+        "packages/channels/gitlab/package.json",
+        "packages/channels/plugin-example/package.json",
+        "packages/channels/qqbot/package.json",
+        "packages/channels/telegram/package.json",
+        "packages/channels/wecom/package.json",
+        "packages/channels/weixin/package.json",
+        "packages/chrome-extension/package.json",
+        "packages/cli/package.json",
+        "packages/core/package.json",
+        "packages/vscode-ide-companion/package.json",
+        "packages/web-shell/package.json",
+        "packages/web-templates/package.json"
+      ],
+      "tag_to_slsa_selected_source_changes": [],
+      "selected_files": [
+        {
+          "key": "approval_mode",
+          "source_path": "packages/core/src/config/approval-mode.ts",
+          "source_sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12",
+          "source_bytes": 331,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "config",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "ee0a344d4c7c3084a1ad4af258c2a28dbcd8fbdaa11e26ca7df80646394ad074",
+          "source_bytes": 126064,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "dashscope",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "fdec18ba705cd92fc8d476280a59a761ab66ac9d1e300f0226807d81beaf43f3",
+          "source_bytes": 40221,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "exit_plan_mode",
+          "source_path": "packages/core/src/tools/exitPlanMode.ts",
+          "source_sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e",
+          "source_bytes": 15813,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "permission_flow",
+          "source_path": "packages/core/src/core/permissionFlow.ts",
+          "source_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916",
+          "source_bytes": 8159,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "plan_mode_shell_policy",
+          "source_path": "packages/core/src/core/plan-mode-shell-policy.ts",
+          "source_sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe",
+          "source_bytes": 10319,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "reasoning_effort",
+          "source_path": "packages/core/src/core/reasoning-effort.ts",
+          "source_sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc",
+          "source_bytes": 11046,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "session",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "75ee4883618a8d7034ec9339b40f768cf2add14d6963e54e1ec97d163551990f",
+          "source_bytes": 38353,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "stream_types",
+          "source_path": "packages/cli/src/nonInteractive/types.ts",
+          "source_sha256": "d4a62180b709d6e306de7f634b0bda65a724dc3881c7b5075121070242d8c3a6",
+          "source_bytes": 14213,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "system_controller",
+          "source_path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+          "source_sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87",
+          "source_bytes": 20580,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "top_level_options",
+          "source_path": "packages/cli/src/config/top-level-options.ts",
+          "source_sha256": "bd8c7c0f700d0a95f0bebe3a383b1a68ca59c0c4cf07d51c2f73c99a0615ccee",
+          "source_bytes": 17250,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        }
+      ],
+      "reviewed_files": [
+        {
+          "key": "approval_mode_value",
+          "source_path": "packages/cli/src/config/approval-mode-value.ts",
+          "source_sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467",
+          "source_bytes": 1170,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.ts",
+          "source_sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55",
+          "source_bytes": 4449,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store_test",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+          "source_sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85",
+          "source_bytes": 4585,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "loop_protection",
+          "source_path": "packages/core/src/services/loop-protection.ts",
+          "source_sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20",
+          "source_bytes": 4108,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "loop_detection_service",
+          "source_path": "packages/core/src/services/loopDetectionService.ts",
+          "source_sha256": "35ef3dc21c371547ae64c76d36bfdedb29196a30579abdff049db036a7d15569",
+          "source_bytes": 82674,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "sdk_human_input",
+          "source_path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+          "source_sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688",
+          "source_bytes": 1331,
+          "tag_commit": "ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9",
+          "slsa_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "tag_and_slsa_byte_identical": true
+        }
+      ]
+    },
+    {
+      "npm_version": "0.26.1",
+      "npm_git_head": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+      "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+      "slsa_git_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+      "tag_commit_equals_slsa_git_commit": false,
+      "artifact_tarball": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.1.tgz",
+      "artifact_sha256": "9198d276e8583b789ee42a9c38b521d57818b94682d155b2b47741534c90fb73",
+      "artifact_sha512": "e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9",
+      "npm_integrity": "sha512-4kpIzrlrgmawivim0yCZjr1AP5cfHTanyL7eL1g2R8WYU6QDBq7j9fiAye7REXL4EEXkRIq45D7+ngTw5n3GqQ==",
+      "source_maps_in_package": 0,
+      "source_map_paths": [],
+      "slsa": {
+        "predicate_type": "https://slsa.dev/provenance/v1",
+        "attestation_url": "https://registry.npmjs.org/-/npm/v1/attestations/@qwen-code%2fqwen-code@0.26.1",
+        "payload_sha256": "15b1197c3171bfa453d9095620e1f863cfea278d7c478522fbc748c3355770ed",
+        "subject_name": "pkg:npm/%40qwen-code/qwen-code@0.26.1",
+        "subject_sha512": "e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9",
+        "subject_sha512_equals_tarball_sha512": true,
+        "repository": "https://github.com/QwenLM/qwen-code",
+        "workflow": ".github/workflows/release.yml",
+        "workflow_ref": "refs/heads/main",
+        "event_name": "workflow_dispatch",
+        "builder_id": "https://github.com/actions/runner/github-hosted",
+        "invocation_id": "https://github.com/QwenLM/qwen-code/actions/runs/40100919416/attempts/1",
+        "resolved_dependency_uri": "git+https://github.com/QwenLM/qwen-code@refs/heads/main"
+      },
+      "tag_to_slsa_changed_paths": [
+        "integrations/external-context-mem0/package.json",
+        "integrations/external-context-mem0/qwen-extension.json",
+        "integrations/external-context/package.json",
+        "integrations/generated-ui/package.json",
+        "integrations/test-failure-explorer/package.json",
+        "package.json",
+        "packages/acp-bridge/package.json",
+        "packages/audio-capture/package.json",
+        "packages/channels/base/package.json",
+        "packages/channels/dingtalk/package.json",
+        "packages/channels/dws/package.json",
+        "packages/channels/email/package.json",
+        "packages/channels/feishu/package.json",
+        "packages/channels/github/package.json",
+        "packages/channels/gitlab/package.json",
+        "packages/channels/plugin-example/package.json",
+        "packages/channels/qqbot/package.json",
+        "packages/channels/telegram/package.json",
+        "packages/channels/wecom/package.json",
+        "packages/channels/weixin/package.json",
+        "packages/chrome-extension/package.json",
+        "packages/cli/package.json",
+        "packages/core/package.json",
+        "packages/vscode-ide-companion/package.json",
+        "packages/web-shell/package.json",
+        "packages/web-templates/package.json"
+      ],
+      "tag_to_slsa_selected_source_changes": [],
+      "selected_files": [
+        {
+          "key": "approval_mode",
+          "source_path": "packages/core/src/config/approval-mode.ts",
+          "source_sha256": "2381186f3bef00970939ea431a693990566c8759822ebf518f50b77b5951eb12",
+          "source_bytes": 331,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "config",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "c1ed6b3340d02bd3a1d2e699d71c10df9674c5a400f2e50384ea1f11a067c200",
+          "source_bytes": 125500,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "dashscope",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "3dddb030f78d88ffd4d30ec738b446054947b882b9fbf85bec6153c2abba25be",
+          "source_bytes": 41423,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "exit_plan_mode",
+          "source_path": "packages/core/src/tools/exitPlanMode.ts",
+          "source_sha256": "7705b0e17e524e83675fdefda0a423ee711d61b2213125a9fa9500a7fcc7114e",
+          "source_bytes": 15813,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "permission_flow",
+          "source_path": "packages/core/src/core/permissionFlow.ts",
+          "source_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916",
+          "source_bytes": 8159,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "plan_mode_shell_policy",
+          "source_path": "packages/core/src/core/plan-mode-shell-policy.ts",
+          "source_sha256": "38bd739aed391450475c7a5bdfc56c93444576561cd91fae1e9e78f807e6ebbe",
+          "source_bytes": 10319,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "reasoning_effort",
+          "source_path": "packages/core/src/core/reasoning-effort.ts",
+          "source_sha256": "229731bab8e405e43aaf8584be051d1975e90fccd7a3343b74c1d75338427cdc",
+          "source_bytes": 11046,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "session",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "75ee4883618a8d7034ec9339b40f768cf2add14d6963e54e1ec97d163551990f",
+          "source_bytes": 38353,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "stream_types",
+          "source_path": "packages/cli/src/nonInteractive/types.ts",
+          "source_sha256": "d4a62180b709d6e306de7f634b0bda65a724dc3881c7b5075121070242d8c3a6",
+          "source_bytes": 14213,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "system_controller",
+          "source_path": "packages/cli/src/nonInteractive/control/controllers/systemController.ts",
+          "source_sha256": "c0e6c8bf6bcdcc7951aed0562d96e7e09fe91e0a9656baafb2dfdf1ac265da87",
+          "source_bytes": 20580,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "top_level_options",
+          "source_path": "packages/cli/src/config/top-level-options.ts",
+          "source_sha256": "bd8c7c0f700d0a95f0bebe3a383b1a68ca59c0c4cf07d51c2f73c99a0615ccee",
+          "source_bytes": 17250,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        }
+      ],
+      "reviewed_files": [
+        {
+          "key": "approval_mode_value",
+          "source_path": "packages/cli/src/config/approval-mode-value.ts",
+          "source_sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467",
+          "source_bytes": 1170,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.ts",
+          "source_sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55",
+          "source_bytes": 4449,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "ssh_workspace_store_test",
+          "source_path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+          "source_sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85",
+          "source_bytes": 4585,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "loop_protection",
+          "source_path": "packages/core/src/services/loop-protection.ts",
+          "source_sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20",
+          "source_bytes": 4108,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "loop_detection_service",
+          "source_path": "packages/core/src/services/loopDetectionService.ts",
+          "source_sha256": "35ef3dc21c371547ae64c76d36bfdedb29196a30579abdff049db036a7d15569",
+          "source_bytes": 82674,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "sdk_human_input",
+          "source_path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+          "source_sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688",
+          "source_bytes": 1331,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        },
+        {
+          "key": "interactive_mode",
+          "source_path": "packages/cli/src/utils/interactive-mode.ts",
+          "source_sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597",
+          "source_bytes": 375,
+          "tag_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+          "slsa_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "tag_and_slsa_byte_identical": true
+        }
+      ]
+    }
+  ],
+  "hops": [
+    {
+      "from": "0.25.0",
+      "to": "0.25.1",
+      "affected_selected_boundaries": [
+        {
+          "key": "config",
+          "from": "0.25.0",
+          "to": "0.25.1",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.1.tgz",
+          "artifact_sha256": "674b31eada2d2ffce10c5085eafef15a0a5ac556e597729d28c56d02b5c6302f",
+          "artifact_sha512": "e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960",
+          "source_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "a5ccbbefc4daaa7c0f4542b0d25552e7cbfc0548a835b6d19e0434f4013a46ab",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "permission_flow",
+          "from": "0.25.0",
+          "to": "0.25.1",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.1.tgz",
+          "artifact_sha256": "674b31eada2d2ffce10c5085eafef15a0a5ac556e597729d28c56d02b5c6302f",
+          "artifact_sha512": "e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960",
+          "source_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "source_path": "packages/core/src/core/permissionFlow.ts",
+          "source_sha256": "1ddfe124441a43850f209a8e96d77a54726ecd1152d4c7c2c5bf99fb1373b916",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "session",
+          "from": "0.25.0",
+          "to": "0.25.1",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.1.tgz",
+          "artifact_sha256": "674b31eada2d2ffce10c5085eafef15a0a5ac556e597729d28c56d02b5c6302f",
+          "artifact_sha512": "e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960",
+          "source_commit": "d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "126c44880e970268b4bc15975b0e8c89bd3871d51ee413c9b0b5b3289ebdaaa0",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        }
+      ]
+    },
+    {
+      "from": "0.25.1",
+      "to": "0.25.2",
+      "affected_selected_boundaries": [
+        {
+          "key": "config",
+          "from": "0.25.1",
+          "to": "0.25.2",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.2.tgz",
+          "artifact_sha256": "4ff46c2e249b41cf342b14d83b31cae24b0ddd57f77bcbabfeb396241738cf25",
+          "artifact_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+          "source_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "59592a938903ce03c863a2b635f71edcc4f1e5753ebb64bfe1a7935946e5e07e",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "dashscope",
+          "from": "0.25.1",
+          "to": "0.25.2",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.2.tgz",
+          "artifact_sha256": "4ff46c2e249b41cf342b14d83b31cae24b0ddd57f77bcbabfeb396241738cf25",
+          "artifact_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+          "source_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "e9786c41856b3d3223954d49f0cdce26637696f077d3905e6ecf14fd11069878",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "session",
+          "from": "0.25.1",
+          "to": "0.25.2",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.2.tgz",
+          "artifact_sha256": "4ff46c2e249b41cf342b14d83b31cae24b0ddd57f77bcbabfeb396241738cf25",
+          "artifact_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+          "source_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "b138a925d311d1536f07fb90ac46ca637c59ff04f72223feca2bad460436c1bc",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "top_level_options",
+          "from": "0.25.1",
+          "to": "0.25.2",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.2.tgz",
+          "artifact_sha256": "4ff46c2e249b41cf342b14d83b31cae24b0ddd57f77bcbabfeb396241738cf25",
+          "artifact_sha512": "5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91",
+          "source_commit": "e612bbf23cea82fd28fe1f51e5e63845b3642ed0",
+          "source_path": "packages/cli/src/config/top-level-options.ts",
+          "source_sha256": "bd8c7c0f700d0a95f0bebe3a383b1a68ca59c0c4cf07d51c2f73c99a0615ccee",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        }
+      ]
+    },
+    {
+      "from": "0.25.2",
+      "to": "0.25.3",
+      "affected_selected_boundaries": [
+        {
+          "key": "config",
+          "from": "0.25.2",
+          "to": "0.25.3",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.3.tgz",
+          "artifact_sha256": "e6e5d1b7ffd7442d16f6c0e3954bd5a69dbf81b0ae224f7fb6f3558d93be2742",
+          "artifact_sha512": "a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b",
+          "source_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "afdc09f3a1b82319f77c6825f713104093b856f43010488db45d1908496bfb9c",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "dashscope",
+          "from": "0.25.2",
+          "to": "0.25.3",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.3.tgz",
+          "artifact_sha256": "e6e5d1b7ffd7442d16f6c0e3954bd5a69dbf81b0ae224f7fb6f3558d93be2742",
+          "artifact_sha512": "a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b",
+          "source_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "391370244e8bb270e62eef469a40f24ab7dbc01e408580d1fae879c8b277994b",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "session",
+          "from": "0.25.2",
+          "to": "0.25.3",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.25.3.tgz",
+          "artifact_sha256": "e6e5d1b7ffd7442d16f6c0e3954bd5a69dbf81b0ae224f7fb6f3558d93be2742",
+          "artifact_sha512": "a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b",
+          "source_commit": "c4e8831dffd3a336c13e88c301727f1fc9f57eea",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "1bdf8bb522601ebb6808c42b390b219df6788688f1d94740533a4233aae310a2",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        }
+      ]
+    },
+    {
+      "from": "0.25.3",
+      "to": "0.26.0",
+      "affected_selected_boundaries": [
+        {
+          "key": "config",
+          "from": "0.25.3",
+          "to": "0.26.0",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.0.tgz",
+          "artifact_sha256": "16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1",
+          "artifact_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+          "source_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "ee0a344d4c7c3084a1ad4af258c2a28dbcd8fbdaa11e26ca7df80646394ad074",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "dashscope",
+          "from": "0.25.3",
+          "to": "0.26.0",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.0.tgz",
+          "artifact_sha256": "16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1",
+          "artifact_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+          "source_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "fdec18ba705cd92fc8d476280a59a761ab66ac9d1e300f0226807d81beaf43f3",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "session",
+          "from": "0.25.3",
+          "to": "0.26.0",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.0.tgz",
+          "artifact_sha256": "16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1",
+          "artifact_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+          "source_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "source_path": "packages/cli/src/nonInteractive/session.ts",
+          "source_sha256": "75ee4883618a8d7034ec9339b40f768cf2add14d6963e54e1ec97d163551990f",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "stream_types",
+          "from": "0.25.3",
+          "to": "0.26.0",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.0.tgz",
+          "artifact_sha256": "16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1",
+          "artifact_sha512": "2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157",
+          "source_commit": "f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f",
+          "source_path": "packages/cli/src/nonInteractive/types.ts",
+          "source_sha256": "d4a62180b709d6e306de7f634b0bda65a724dc3881c7b5075121070242d8c3a6",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        }
+      ]
+    },
+    {
+      "from": "0.26.0",
+      "to": "0.26.1",
+      "affected_selected_boundaries": [
+        {
+          "key": "config",
+          "from": "0.26.0",
+          "to": "0.26.1",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.1.tgz",
+          "artifact_sha256": "9198d276e8583b789ee42a9c38b521d57818b94682d155b2b47741534c90fb73",
+          "artifact_sha512": "e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9",
+          "source_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "source_path": "packages/cli/src/config/config.ts",
+          "source_sha256": "c1ed6b3340d02bd3a1d2e699d71c10df9674c5a400f2e50384ea1f11a067c200",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        },
+        {
+          "key": "dashscope",
+          "from": "0.26.0",
+          "to": "0.26.1",
+          "artifact_path": "https://registry.npmjs.org/@qwen-code/qwen-code/-/qwen-code-0.26.1.tgz",
+          "artifact_sha256": "9198d276e8583b789ee42a9c38b521d57818b94682d155b2b47741534c90fb73",
+          "artifact_sha512": "e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9",
+          "source_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+          "source_path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "source_sha256": "3dddb030f78d88ffd4d30ec738b446054947b882b9fbf85bec6153c2abba25be",
+          "method": "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+        }
+      ]
+    }
+  ]
+}

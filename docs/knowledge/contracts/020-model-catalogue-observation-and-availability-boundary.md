@@ -253,6 +253,26 @@ prove:
 - pagination, page count, response size, model count, and field projection
   remain bounded
 
+## Approved Grok Build Default-Header Work
+
+Tom answered “Approve bounded Grok catalogue task” on 2026-10-26 in decision
+`0b5679fd-4b02-4174-8aae-56a291ac2743`. This authorizes the one-family,
+provider-free default-header mapping work described by checked lead
+`8d166e76-e55e-4090-89ce-7ccaf8977898` version 2.
+
+Reuse frozen evidence and refresh exact official published hops. An existing-
+contract private mapping and qualification may proceed only when exact
+formatter/control-flow evidence and every per-hop prepared-path gate support
+it. Preserve the exact `1.0.30` catalogue point, independently qualified ACP
+points and all holes until those gates pass. An embedded default-model file
+or a static literal alone does not establish the effective emitted default;
+never invent a listed row to make an unlisted default fit.
+
+A new public `ModelCatalog`, API, lifecycle or authority requirement returns
+for a separate ruling before implementation. This approval includes no
+downloaded vendor execution, credentials, provider turn, installation,
+consumer mutation, upstream posting or tag authority.
+
 ## Acceptance
 
 - catalogue evidence retains its exact source and observation scope

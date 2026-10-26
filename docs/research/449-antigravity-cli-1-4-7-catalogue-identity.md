@@ -14,10 +14,11 @@ to official stable `1.4.7`. Keep baseline `1.1.9`, claim
 `antigravity.catalogue.release-window-1`, behavior
 `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`, and `AllowUnverified`.
 Keep the existing `1.1.8` incompatibility and the unpublished `1.2.18`
-exclusion. Exclude unpublished `1.3.7`, the skipped patch between published
-`1.3.6` and `1.4.0`. `1.3.8` and `1.3.9` were absent and are not excluded,
-matching the `1.2.19` precedent. `1.4.8` is the first unpublished later point
-and stays `UnverifiedNewer`. Headless remains at exact pinned `1.2.11`.
+exclusion. Represent the unpublished interior as two maintained segments
+`1.1.9..=1.3.6` and `1.4.0..=1.4.7`, so `1.3.7`, `1.3.8`, `1.3.9`, and any
+other unqualified `1.3.x` point between those segments assess Incompatible.
+`1.4.8` is the first unpublished later point and stays `UnverifiedNewer`.
+Headless remains at exact pinned `1.2.11`.
 
 The qualification is a compatible extension. No release note names a changed
 `agy models` list output, decoder, or process lifecycle. The new `1.4` minor
@@ -83,13 +84,14 @@ The decoder corpus stays the frozen `1.1.9` slug lines.
 
 ## Claim and boundaries
 
-The supported catalogue segment remains one maintained behavior segment from
-`1.1.9` through `1.4.7`, with exact exclusions `1.2.18` and `1.3.7`. Official
-stable hops `1.3.2` through `1.3.6` and `1.4.0` through `1.4.7` qualify on
-the existing behavior revision. `1.3.7`, `1.3.8`, `1.3.9`, `1.4.8`, and
-`1.4.9` had neither a release nor a tag on 2026-10-26. Only `1.3.7` is the
-new exclusion. Published release metadata for `1.4.8` is absent at
-observation.
+The catalogue claim is two maintained segments on the existing behavior
+revision: `1.1.9..=1.3.6` (unpublished `1.2.18` stays excluded) and
+`1.4.0..=1.4.7`. Official stable hops `1.3.2` through `1.3.6` and `1.4.0`
+through `1.4.7` qualify. `1.3.7`, `1.3.8`, and `1.3.9` had neither a release
+nor a tag on 2026-10-26; they sit in the interior gap and are Incompatible
+without being enumerated exclusions. `1.4.8` and `1.4.9` were also absent;
+`1.4.8` is the first unpublished later point (`UnverifiedNewer`). Published
+release metadata for `1.4.8` is absent at observation.
 
 No `agy` command, installation, provider prompt, live catalogue, credential,
 or host mutation occurred. Headless interior releases stay deferred and are

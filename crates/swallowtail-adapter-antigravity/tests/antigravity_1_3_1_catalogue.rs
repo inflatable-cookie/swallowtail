@@ -423,19 +423,26 @@ fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
     );
-    assert_eq!(claim.milestones().len(), 1);
-    let segment = claim.milestones().next().expect("maintained segment");
-    assert_eq!(segment.behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
-    assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
+    assert_eq!(claim.milestones().len(), 2);
+    let segments: Vec<_> = claim.milestones().collect();
+    assert_eq!(segments[0].minimum().as_str(), "1.1.9");
+    assert_eq!(segments[0].maximum().as_str(), "1.3.6");
+    assert_eq!(segments[1].minimum().as_str(), "1.4.0");
+    assert_eq!(segments[1].maximum().as_str(), "1.4.7");
+    for segment in &segments {
+        assert_eq!(segment.behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
+        assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
+    }
     let exclusions: Vec<&str> = claim.exclusions().map(InterfaceVersion::as_str).collect();
-    assert_eq!(exclusions, ["1.2.18", "1.3.7"]);
+    assert_eq!(exclusions, ["1.2.18"]);
     assert_eq!(
         identity["qualification"]["exclude_exact"],
         serde_json::json!(["1.2.18"])
     );
 
     for version in [
-        "1.1.9", "1.1.27", "1.2.11", "1.2.12", "1.2.17", "1.3.0", "1.3.1", "1.4.7",
+        "1.1.9", "1.1.27", "1.2.11", "1.2.12", "1.2.17", "1.3.0", "1.3.1", "1.3.6", "1.4.0",
+        "1.4.7",
     ] {
         assert!(
             matches!(
@@ -447,13 +454,13 @@ fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
             "{version} keeps the catalogue behavior"
         );
     }
-    for excluded in ["1.1.8", "1.2.18", "1.3.7"] {
+    for excluded in ["1.1.8", "1.2.18", "1.3.7", "1.3.8", "1.3.9"] {
         assert!(
             matches!(
                 claim.assess(&version_value(excluded)),
                 InterfaceCompatibilityAssessment::Incompatible
             ),
-            "{excluded} remains excluded"
+            "{excluded} remains incompatible"
         );
     }
     assert!(matches!(

@@ -13,9 +13,12 @@
     "baseline": "1.1.9",
     "previous_ceiling": "1.3.1",
     "new_ceiling": "1.4.7",
+    "qualified_segments": [
+      "1.1.9..=1.3.6",
+      "1.4.0..=1.4.7"
+    ],
     "exact_unpublished_exclusions": [
-      "1.2.18",
-      "1.3.7"
+      "1.2.18"
     ],
     "first_unpublished_later": "1.4.8"
   },
@@ -631,7 +634,7 @@
     "selected_writer": "1.3.4 grows the source-model stack copy by 32 bytes. The 32-byte two-string element stride, the models map key, and the headless.Write argument block in func2 stay the same through 1.4.7.",
     "minor_line": "1.4.0 opens a new minor line. The selected writer observation does not change at that hop, so the minor line is not an identity stop.",
     "docs_sample": "The unversioned Antigravity headless docs show a padded two-column agy models sample. The 1.3.1 writer already stores a 32-byte two-string element, and that stride is unchanged through 1.4.7, so the sample is not a hop delta after the qualified ceiling. The decoder corpus stays the frozen 1.1.9 slug lines.",
-    "deferred": "No antigravity.headless claim, deferred headless interior point, ACP registry, exact hosted alias, or launcher is qualified here. 1.3.8 and 1.3.9 were absent and are not excluded."
+    "deferred": "No antigravity.headless claim, deferred headless interior point, ACP registry, exact hosted alias, or launcher is qualified here. Unpublished 1.3.7, 1.3.8, and 1.3.9 sit in the interior gap between 1.1.9..=1.3.6 and 1.4.0..=1.4.7 and assess Incompatible."
   },
   "result": {
     "classification": "compatible-extension",

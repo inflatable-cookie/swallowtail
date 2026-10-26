@@ -6,13 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
-- qualify `antigravity.catalogue` through official stable `1.4.7`. The
-  maintained segment stays `1.1.9..=1.4.7` on
+- qualify `antigravity.catalogue` through official stable `1.4.7`. Two
+  maintained segments `1.1.9..=1.3.6` and `1.4.0..=1.4.7` stay on
   `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`, claim
   `antigravity.catalogue.release-window-1`, and `AllowUnverified`. Unpublished
-  `1.2.18` stays excluded; unpublished `1.3.7`, the skipped patch between
-  `1.3.6` and `1.4.0`, is excluded; `1.4.8` stays `UnverifiedNewer`.
-  `antigravity.headless` stays at exact `1.2.11`. See Research 449.
+  `1.2.18` stays excluded. The interior `1.3.7`/`1.3.8`/`1.3.9` gap is
+  Incompatible. `1.4.8` stays `UnverifiedNewer`. `antigravity.headless` stays
+  at exact `1.2.11`. See Research 449.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

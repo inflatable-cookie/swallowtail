@@ -61,6 +61,12 @@ pub fn antigravity_release_binding(value: &str) -> Option<InterfaceVersionBindin
 
 #[must_use]
 /// Returns the catalogue release compatibility claim.
+///
+/// Two maintained segments on the same behaviour revision:
+/// `1.1.9..=1.3.6` (unpublished `1.2.18` stays excluded) and
+/// `1.4.0..=1.4.7`. The interior gap, including unpublished `1.3.7`,
+/// `1.3.8`, `1.3.9`, and any other unqualified `1.3.x` point, is
+/// Incompatible. Research 449.
 pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("antigravity.catalogue.release-window-1")
@@ -68,18 +74,24 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [InterfaceVersionSegment::new(
-            version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
-            version(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION)
-                .expect("static Antigravity release is valid"),
-            InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
-                .expect("static Antigravity behavior is valid"),
-            InterfaceSupportStatus::Maintained,
-        )],
         [
-            version("1.2.18").expect("unpublished Antigravity point is valid"),
-            version("1.3.7").expect("unpublished Antigravity point is valid"),
+            InterfaceVersionSegment::new(
+                version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
+                version("1.3.6").expect("static Antigravity release is valid"),
+                InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
+                    .expect("static Antigravity behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::new(
+                version("1.4.0").expect("static Antigravity release is valid"),
+                version(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION)
+                    .expect("static Antigravity release is valid"),
+                InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
+                    .expect("static Antigravity behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
+        [version("1.2.18").expect("unpublished Antigravity point is valid")],
     )
     .expect("static Antigravity compatibility claim is valid")
 }
@@ -263,13 +275,13 @@ mod tests {
         assert!(claim.supports(&version("1.4.0")));
         assert!(claim.supports(&version("1.4.7")));
         assert!(!claim.permits(&version("1.1.8")));
-        for excluded in ["1.2.18", "1.3.7"] {
+        for excluded in ["1.2.18", "1.3.7", "1.3.8", "1.3.9", "1.3.10"] {
             assert!(
                 matches!(
                     claim.assess(&version(excluded)),
                     InterfaceCompatibilityAssessment::Incompatible
                 ),
-                "{excluded} stays excluded"
+                "{excluded} stays incompatible"
             );
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =

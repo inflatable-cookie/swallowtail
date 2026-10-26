@@ -620,7 +620,7 @@ fn per_claim_segments_split_catalogue_from_the_headless_stop() {
         ));
     }
     assert!(!catalogue.permits(&version("1.1.8")));
-    for excluded in ["1.2.18", "1.3.7"] {
+    for excluded in ["1.2.18", "1.3.7", "1.3.8", "1.3.9"] {
         assert!(matches!(
             catalogue.assess(&version(excluded)),
             InterfaceCompatibilityAssessment::Incompatible

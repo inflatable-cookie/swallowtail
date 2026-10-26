@@ -334,7 +334,7 @@ fn every_published_hop_classifies_the_exact_changed_file_set_per_route() {
     assert_eq!(protocol["selected_mapping"]["new_ceiling"], "1.4.7");
     assert_eq!(
         protocol["selected_mapping"]["exact_unpublished_exclusions"],
-        serde_json::json!(["1.2.18", "1.3.7"])
+        serde_json::json!(["1.2.18"])
     );
     assert!(
         protocol["bounded_changes"]["selected_writer"]
@@ -400,6 +400,8 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
     assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.4.7");
     assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.2.11");
+    let identity = json(IDENTITY);
+    let protocol = json(PROTOCOL);
     let claim = antigravity_catalogue_claim();
     assert_eq!(
         claim.id().as_str(),
@@ -411,11 +413,34 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
     );
-    let segment = claim.milestones().next().expect("maintained segment");
-    assert_eq!(segment.behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
-    assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
+    let segments: Vec<_> = claim.milestones().collect();
+    assert_eq!(segments.len(), 2);
+    assert_eq!(segments[0].minimum().as_str(), "1.1.9");
+    assert_eq!(segments[0].maximum().as_str(), "1.3.6");
+    assert_eq!(segments[1].minimum().as_str(), "1.4.0");
+    assert_eq!(segments[1].maximum().as_str(), "1.4.7");
+    for segment in &segments {
+        assert_eq!(segment.behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
+        assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
+    }
     let exclusions: Vec<&str> = claim.exclusions().map(InterfaceVersion::as_str).collect();
-    assert_eq!(exclusions, ["1.2.18", "1.3.7"]);
+    assert_eq!(exclusions, ["1.2.18"]);
+    assert_eq!(
+        protocol["selected_mapping"]["exact_unpublished_exclusions"],
+        serde_json::json!(["1.2.18"])
+    );
+    assert_eq!(
+        protocol["selected_mapping"]["qualified_segments"],
+        serde_json::json!(["1.1.9..=1.3.6", "1.4.0..=1.4.7"])
+    );
+    assert_eq!(
+        identity["qualification"]["exclude_exact"],
+        serde_json::json!(["1.2.18"])
+    );
+    assert_eq!(
+        identity["qualification"]["qualified_segments"],
+        serde_json::json!(["1.1.9..=1.3.6", "1.4.0..=1.4.7"])
+    );
 
     for version in [
         "1.1.9", "1.2.11", "1.3.1", "1.3.2", "1.3.6", "1.4.0", "1.4.7",
@@ -429,22 +454,18 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
             "{version} keeps the catalogue behavior"
         );
     }
-    for excluded in ["1.1.8", "1.2.18", "1.3.7"] {
+    for excluded in ["1.1.8", "1.2.18", "1.3.7", "1.3.8", "1.3.9", "1.3.10"] {
         assert!(
             matches!(
                 claim.assess(&version_value(excluded)),
                 InterfaceCompatibilityAssessment::Incompatible
             ),
-            "{excluded} remains excluded"
+            "{excluded} remains incompatible"
         );
     }
     assert!(matches!(
         claim.assess(&version_value("1.4.8")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
-    assert!(matches!(
-        claim.assess(&version_value("1.3.8")),
-        InterfaceCompatibilityAssessment::Qualified(_)
     ));
 
     let headless = antigravity_headless_claim();

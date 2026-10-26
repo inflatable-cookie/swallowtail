@@ -71,11 +71,14 @@ discovery only; exact tag trees and selected source changes bound the claim.
   honouring stays unqualified.
 - **`1.55.0` → `1.56.0`:** The separate `goose-acp` binary loads the online
   model catalog before the same server entry. Swallowtail spawns `goose acp`,
-  not that binary. Tool-call update metadata is renamed inside the same ACP
-  v1 tool update this adapter already decodes. A compaction notice is emitted
-  only when goose custom notifications are enabled, which this route does not
-  advertise. Provider-safe MCP tool names and subagent controls stay inside
-  the unselected tool loop.
+  not that binary. `tool_calls/conversion.rs` emits
+  `_meta.goose.subagentSessionId` on selected `tool_call_update` notifications,
+  and `message_meta.rs` adds `inference` and `operationLogs` on selected
+  message-chunk `_meta`. Swallowtail's ACP decoder ignores `_meta` on those
+  notifications, so mapped tool and message fields stay ACP v1. A compaction
+  notice is emitted only when goose custom notifications are enabled, which
+  this route does not advertise. Provider-safe MCP tool names and subagent
+  spawn/control stay inside the unselected tool loop.
 
 `crates/goose/src/acp/mod.rs`, `prompts.rs`, `transport/auth.rs`, and
 `tool_confirmation.rs` are byte-identical from `1.53.0` through `1.56.0`, so

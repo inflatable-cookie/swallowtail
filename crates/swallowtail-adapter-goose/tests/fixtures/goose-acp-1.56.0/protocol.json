@@ -51,10 +51,12 @@
     "crates/goose/src/acp/server/fork_session.rs",
     "crates/goose/src/acp/server/load_session.rs",
     "crates/goose/src/acp/server/manage_sessions.rs",
+    "crates/goose/src/acp/server/message_meta.rs",
     "crates/goose/src/acp/server/new_session.rs",
     "crates/goose/src/acp/server/prompts.rs",
     "crates/goose/src/acp/server/providers.rs",
     "crates/goose/src/acp/server/schedule.rs",
+    "crates/goose/src/acp/server/tool_calls/conversion.rs",
     "crates/goose/src/acp/server/tools.rs",
     "crates/goose/src/acp/server_factory.rs",
     "crates/goose/src/acp/transport/auth.rs",
@@ -850,7 +852,7 @@
         "crates/goose-provider-types/src/conversation/message.rs": {
           "inventory_change": "changed",
           "classification": "unsent_message_metadata",
-          "evidence": "Message metadata gains operation_logs, which Goose documents as never sent to providers. This route sends text prompt blocks and does not decode that field."
+          "evidence": "Message metadata stores operation_logs, which Goose documents as never sent to providers. message_meta.rs now also emits inference and operationLogs on selected message-chunk _meta; Swallowtail's ACP decoder ignores _meta. This route sends text prompt blocks."
         },
         "crates/goose/src/acp/provider.rs": {
           "inventory_change": "changed",
@@ -860,12 +862,17 @@
         "crates/goose/src/acp/server.rs": {
           "inventory_change": "changed",
           "classification": "selected_stdio_contract_unchanged",
-          "evidence": "The tool-call update meta helper is renamed. Selected tool_call and tool_call_update notifications stay ACP v1 fields this adapter already decodes. A HistoryReplaced compaction notice is sent only when goose custom notifications are enabled, which this route does not advertise. session/cancel and prompt_stop_reason are unchanged."
+          "evidence": "The tool-call update meta helper call is renamed from trusted_update_meta to tool_response_meta. Extra _meta keys are classified on tool_calls/conversion.rs and message_meta.rs. Selected tool_call and tool_call_update ACP v1 fields this adapter already decodes stay. A HistoryReplaced compaction notice is sent only when goose custom notifications are enabled, which this route does not advertise. session/cancel and prompt_stop_reason are unchanged."
         },
         "crates/goose/src/acp/server/load_session.rs": {
           "inventory_change": "changed",
           "classification": "unselected_acp_method",
           "evidence": "The diff is on session load, list, fork, provider management, schedule, ACP tool methods, or their dispatch. This route does not call those methods."
+        },
+        "crates/goose/src/acp/server/message_meta.rs": {
+          "inventory_change": "changed",
+          "classification": "ignored_message_chunk_meta",
+          "evidence": "Selected agent_message_chunk _meta.goose now includes inference (provider, requestedModel, resolvedModel; no provider session id) and operationLogs. Swallowtail's ACP decoder reads messageId and content only, and ignores _meta."
         },
         "crates/goose/src/acp/server/providers.rs": {
           "inventory_change": "changed",
@@ -876,6 +883,11 @@
           "inventory_change": "changed",
           "classification": "unselected_acp_method",
           "evidence": "The diff is on session load, list, fork, provider management, schedule, ACP tool methods, or their dispatch. This route does not call those methods."
+        },
+        "crates/goose/src/acp/server/tool_calls/conversion.rs": {
+          "inventory_change": "changed",
+          "classification": "ignored_tool_call_update_meta",
+          "evidence": "tool_response_meta replaces trusted_update_meta and copies result meta subagent_session_id onto selected tool_call_update as _meta.goose.subagentSessionId. Swallowtail's ACP decoder reads toolCallId, title, kind, status, content, and locations only, and ignores _meta. Subagent spawn and control stay in the unselected tool loop."
         },
         "crates/goose/src/agents/agent.rs": {
           "inventory_change": "changed",
@@ -950,8 +962,6 @@
           "crates/goose/src/providers/toolshim.rs"
         ],
         "adjacent_acp_api": [
-          "crates/goose/src/acp/server/message_meta.rs",
-          "crates/goose/src/acp/server/tool_calls/conversion.rs",
           "ui/goose-acp-client/package.json",
           "ui/goose-acp/package.json"
         ],

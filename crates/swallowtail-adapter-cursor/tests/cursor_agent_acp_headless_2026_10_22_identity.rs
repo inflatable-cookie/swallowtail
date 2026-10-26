@@ -5,10 +5,8 @@ use swallowtail_adapter_cursor::{
 };
 use swallowtail_core::InterfaceCompatibilityAssessment;
 
-const IDENTITY: &str =
-    include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/identity.json");
-const PROTOCOL: &str =
-    include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/protocol.json");
+const IDENTITY: &str = include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/identity.json");
+const PROTOCOL: &str = include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/protocol.json");
 const DIST_INVENTORY: &str =
     include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/dist-inventory.json");
 
@@ -115,10 +113,65 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         protocol["acp"]["initialize_shape"]["auth_methods"],
         serde_json::json!(["cursor_login"])
     );
-    assert_eq!(protocol["acp"]["load_session_posture"], "advertised-without-proven-replay");
+    assert_eq!(
+        protocol["acp"]["selected_surface_comparison"]["darwin_arm64"],
+        "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f"
+    );
+    assert_eq!(
+        protocol["acp"]["selected_surface_comparison"]["linux_x64"],
+        "ceiling 2026.10.01-14929f9 and target 2026.10.22-27dcf5f only"
+    );
+    assert_eq!(
+        protocol["acp"]["selected_surface_comparison"]["linux_x64_intermediate_hops_unmeasured"],
+        serde_json::json!([
+            "2026.10.14-0f9edde",
+            "2026.10.14-941492e",
+            "2026.10.16-e3cb207",
+            "2026.10.18-ea085cb",
+            "2026.10.19-6bbf2c4"
+        ])
+    );
+    assert_eq!(
+        protocol["acp"]["initialize_literal_byte_identical"]["darwin_arm64_every_hop"],
+        true
+    );
+    assert_eq!(
+        protocol["acp"]["initialize_literal_byte_identical"]["linux_x64_ceiling_and_target"],
+        true
+    );
+    assert_eq!(
+        protocol["acp"]["initialize_literal_byte_identical"]["linux_x64_intermediate"],
+        "unmeasured"
+    );
+    assert_eq!(
+        protocol["acp"]["session_new"],
+        "requires authenticated cursor_login before session creation on Darwin every hop and on Linux ceiling and target; Linux intermediate hops are unmeasured"
+    );
+    assert_eq!(
+        protocol["acp"]["sdk_package"],
+        "0.14.1 on Darwin every hop and on Linux ceiling and target; Linux intermediate hops are unmeasured"
+    );
+    assert_eq!(
+        protocol["acp"]["load_session_posture"],
+        "advertised-without-proven-replay"
+    );
     assert_eq!(protocol["acp"]["continuation_recovery"], "blocked");
-    assert_eq!(protocol["headless"]["mode_choices"], serde_json::json!(["plan", "ask"]));
-    assert_eq!(protocol["headless"]["selected_wire_shape_unchanged"], true);
+    assert_eq!(
+        protocol["headless"]["mode_choices"],
+        serde_json::json!(["plan", "ask"])
+    );
+    assert_eq!(
+        protocol["headless"]["selected_wire_shape_comparison"]["recorded_argv_mode_and_wire_fields"],
+        true
+    );
+    assert_eq!(
+        protocol["headless"]["selected_wire_shape_comparison"]["darwin_arm64_per_hop_selected_surface"],
+        "unmeasured"
+    );
+    assert_eq!(
+        protocol["headless"]["selected_wire_shape_comparison"]["linux_x64_per_hop_selected_surface"],
+        "unmeasured"
+    );
     assert_eq!(protocol["catalogue_or_cross_route_transfer"], false);
     assert_eq!(protocol["downloaded_artifacts_executed"], false);
 
@@ -183,8 +236,14 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
             "2026.10.22-27dcf5f"
         ])
     );
-    assert_eq!(inventory["package_file_counts"]["darwin-arm64"]["2026.10.01-14929f9"], 449);
-    assert_eq!(inventory["package_file_counts"]["linux-x64"]["2026.10.22-27dcf5f"], 445);
+    assert_eq!(
+        inventory["package_file_counts"]["darwin-arm64"]["2026.10.01-14929f9"],
+        449
+    );
+    assert_eq!(
+        inventory["package_file_counts"]["linux-x64"]["2026.10.22-27dcf5f"],
+        445
+    );
     assert_eq!(inventory["not_a_complete_semantic_changelog"], true);
 
     for platform in ["darwin-arm64", "linux-x64"] {
@@ -194,16 +253,17 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
         assert_eq!(hops.len(), 6, "{platform}");
         for (name, hop) in hops {
             for category in ["added", "removed", "changed", "identical"] {
-                let paths = hop[category]["paths"]
-                    .as_array()
-                    .expect("path set");
+                let paths = hop[category]["paths"].as_array().expect("path set");
                 assert_eq!(
                     paths.len(),
-                    usize::try_from(hop[category]["count"].as_u64().expect("count")).expect("count"),
+                    usize::try_from(hop[category]["count"].as_u64().expect("count"))
+                        .expect("count"),
                     "{platform} {name} {category}"
                 );
                 assert!(
-                    paths.windows(2).all(|pair| pair[0].as_str().unwrap() < pair[1].as_str().unwrap()),
+                    paths
+                        .windows(2)
+                        .all(|pair| pair[0].as_str().unwrap() < pair[1].as_str().unwrap()),
                     "{platform} {name} {category} sorted"
                 );
                 assert_eq!(
@@ -220,7 +280,13 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     let catalogue = cursor_catalogue_claim();
     assert_ne!(acp.id(), headless.id());
     assert_ne!(acp.id(), catalogue.id());
-    for release in ["2026-10-14", "2026-10-16", "2026-10-18", "2026-10-19", "2026-10-22"] {
+    for release in [
+        "2026-10-14",
+        "2026-10-16",
+        "2026-10-18",
+        "2026-10-19",
+        "2026-10-22",
+    ] {
         assert!(acp.supports(&version(release)), "{release}");
         assert!(headless.supports(&version(release)), "{release}");
         assert!(!catalogue.supports(&version(release)), "{release}");
@@ -232,7 +298,8 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
         assert!(!acp.permits(&version(gap)), "{gap}");
         assert!(!headless.permits(&version(gap)), "{gap}");
     }
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) = acp.assess(&version("2026-10-23"))
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+        acp.assess(&version("2026-10-23"))
     else {
         panic!("2026-10-23 stays unverified newer");
     };

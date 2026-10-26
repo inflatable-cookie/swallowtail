@@ -101,23 +101,32 @@ The ledger is not a semantic changelog.
 ## Selected surfaces
 
 ACP command chunks were compared on both platforms at the ceiling and the
-target, and on Darwin at every hop. The selected initialize literal stays
-byte-identical: protocol version constant `1`, auth method `cursor_login`,
+target, and on Darwin at every hop. Linux intermediate hops
+`2026.10.14-0f9edde`, `2026.10.14-941492e`, `2026.10.16-e3cb207`,
+`2026.10.18-ea085cb`, and `2026.10.19-6bbf2c4` have no selected ACP surface
+comparison. The selected initialize literal stays byte-identical on the
+compared hops: protocol version constant `1`, auth method `cursor_login`,
 `loadSession: true`, MCP `http` and `sse`, prompt `audio: false`,
 `embeddedContext: false`, `image: true`, and `sessionCapabilities.list`.
 `agentInfo` stays absent. `session/new` still requires `cursor_login` before
-create. `requestWebPermission` stays one-shot allow/reject. Subagents stay
-client-negotiated and default off. `loadSession` stays advertised without a
-replay corpus, so continuation recovery stays blocked. The bundled SDK package
-stays `0.14.1`. Zod packaging moves from `3.25.76` to `4.6.5` at `2026.10.16`;
-the selected field set does not.
+create on those compared hops. `requestWebPermission` stays one-shot
+allow/reject. Subagents stay client-negotiated and default off. `loadSession`
+stays advertised without a replay corpus, so continuation recovery stays
+blocked. The bundled SDK package stays `0.14.1` on the compared hops. Zod
+packaging moves from `3.25.76` to `4.6.5` at `2026.10.16`; the selected field
+set does not.
 
-Headless argv stays `--print`, `--output-format stream-json`, `--model`, and
-`--trust`. `--mode` choices stay `plan` and `ask`. The writer still emits
-NDJSON: system/init with `session_id`, `model`, and `permissionMode: default`;
-assistant text; thinking delta and completed; tool_call started and completed
-with `call_id`; result success with `is_error: false`, durations, `result`,
-`session_id`, `request_id`, and optional usage
+Headless argv, mode choices, and NDJSON writer fields are recorded from static
+inspection. This record does not include a per-platform per-hop selected
+argv/writer/result comparison for the new memberships. Writer-chunk hashes in
+`identity.json` are artifact identity, not selected-wire comparison. The
+recorded selected argv is `--print`, `--output-format stream-json`, `--model`,
+and `--trust`. `--mode` choices stay `plan` and `ask`. The recorded writer
+shape is NDJSON: system/init with `session_id`, `model`, and
+`permissionMode: default`; assistant text; thinking delta and completed;
+tool_call started and completed with `call_id`; result success with
+`is_error: false`, durations, `result`, `session_id`, `request_id`, and
+optional usage
 `inputTokens` / `outputTokens` / `cacheReadTokens` / `cacheWriteTokens`.
 `--force`, `--yolo`, `--sandbox`, `--auto-review`, and
 `--stream-partial-output` stay unselected. At `2026.10.22`, `index.js` adds an

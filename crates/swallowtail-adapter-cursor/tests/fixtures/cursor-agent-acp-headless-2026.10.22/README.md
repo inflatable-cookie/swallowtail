@@ -16,7 +16,11 @@ digests for Darwin ARM64 and Linux x64, plus selected ACP, SDK, headless
 writer, runtime index, launcher, package, and Node digests. `dist-inventory.json`
 freezes complete extracted file sets and every hop's added, removed, changed,
 and identical paths. `protocol.json` records the selected ACP and headless
-surfaces.
+surfaces and their comparison scope: ACP selected surfaces were compared on
+Darwin at every hop and on Linux at ceiling and target only; Linux
+intermediate ACP hops and headless selected argv/writer/result surfaces have
+no per-hop selected-surface comparison. Writer-chunk hashes are artifact
+identity.
 
 The `cursor.com/install` script agreed on `2026.10.22-27dcf5f`. No archive
 was executed. No provider prompt, credential, authenticated catalogue, or

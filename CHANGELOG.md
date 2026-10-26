@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- raise the `ollama.attached` maintained ceiling from `0.40.1` to official
+  GitHub stable `0.40.11` on the existing
+  `ollama.native-text-v1.manifest-list-runner` revision. The ten published
+  patch hops stay on the same claim, baseline, exclusions, and
+  `AllowUnverified` posture. From `0.40.2`, `/api/tags` lists only the
+  preferred manifest-list child; from `0.40.3`, the compatibility-migration
+  call is commented out. Synthetic `0.40.12` is the first `UnverifiedNewer`
+  point. See Research 448.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

@@ -50,6 +50,7 @@
         "apps/cli/package.json",
         "apps/cli/src/acp/acpAgent.ts",
         "apps/cli/src/acp/index.ts",
+        "apps/cli/src/main.ts",
         "bun.lock",
         "sdk/packages/agents/package.json",
         "sdk/packages/core/package.json",
@@ -113,7 +114,8 @@
         "sdk/packages/llms/src/providers/ai-sdk.ts": "Portable reasoning is reconciled once against native provider options. The no-flag ACP path still sets thinking false. Swallowtail selects no reasoning tier.",
         "sdk/packages/llms/src/providers/builtins.ts": "Private provider catalogue default model ids change. Swallowtail selects no model and exposes no catalogue.",
         "sdk/packages/shared/package.json": "Workspace runtime package dependency metadata; exact source commit and Bun lock are frozen.",
-        "sdk/packages/shared/src/agent.ts": "Private tool context gains cwd and emitEvent for plugin tools. Swallowtail maps no plugin tool or client MCP server."
+        "sdk/packages/shared/src/agent.ts": "Private tool context gains cwd and emitEvent for plugin tools. Swallowtail maps no plugin tool or client MCP server.",
+        "apps/cli/src/main.ts": "Selected CLI entry gate adds explicit-only ACP reasoning resolution before returning: resolveCliReasoning receives thinking, thinkingExplicitlySet, and reasoningEffort without persisted provider settings. Auto-approve still requires an explicit override. The private Cline model-default edits occur after the ACP early return and do not execute on cline --acp."
       }
     },
     {
@@ -125,6 +127,7 @@
       "removed": [],
       "changed": [
         "apps/cli/package.json",
+        "apps/cli/src/main.ts",
         "bun.lock",
         "sdk/packages/agents/package.json",
         "sdk/packages/agents/src/agent-runtime.ts",
@@ -187,7 +190,8 @@
         "sdk/packages/llms/package.json": "Workspace runtime package dependency metadata; exact source commit and Bun lock are frozen.",
         "sdk/packages/llms/src/providers/ai-sdk.ts": "Provider-internal request-start and stream retry budgets, plus request-id annotation on provider errors. Cline retry stays inside the provider call. ACP failure mapping is unchanged.",
         "sdk/packages/llms/src/providers/error-classification.ts": "Comment-only clarification that stream error parts are not whole-turn retried. No new failure class reaches the ACP prompt error path.",
-        "sdk/packages/shared/package.json": "Workspace runtime package dependency metadata; exact source commit and Bun lock are frozen."
+        "sdk/packages/shared/package.json": "Workspace runtime package dependency metadata; exact source commit and Bun lock are frozen.",
+        "apps/cli/src/main.ts": "CLI activation telemetry is skipped only when cliArgs[0] is hub. The selected --acp path still captures activation as before; its explicit-only reasoning gate, early return, auto-approve override, and launch behavior are unchanged."
       }
     },
     {
@@ -222,6 +226,7 @@
         "apps/cli/src/acp/session-updates.test.ts",
         "apps/cli/src/acp/session-updates.ts",
         "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/main.ts",
         "apps/cli/src/runtime/prompt.ts",
         "apps/cli/src/session/session.ts",
         "apps/cli/src/utils/cline-client-identity.ts",
@@ -303,6 +308,7 @@
         "apps/cli/src/acp/session-updates.test.ts",
         "apps/cli/src/acp/session-updates.ts",
         "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/main.ts",
         "apps/cli/src/runtime/prompt.ts",
         "apps/cli/src/session/session.ts",
         "apps/cli/src/utils/cline-client-identity.ts",

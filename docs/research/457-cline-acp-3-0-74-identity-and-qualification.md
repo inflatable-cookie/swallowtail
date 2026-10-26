@@ -30,6 +30,14 @@ the same source commit as the wrapper.
 `apps/cli/package.json` declares `@agentclientprotocol/sdk` `^0.16.1`, and
 `bun.lock` resolves `0.16.1` at every hop in this window.
 
+The selected-source inventory also freezes `apps/cli/src/main.ts` at each
+bound commit. It changes at `3.0.71` to resolve explicit ACP reasoning before
+the early return, then at `3.0.72` to skip activation telemetry only for
+`hub`. The ACP gate is unchanged by that second edit, and the entire file is
+byte-identical from `3.0.72` through `3.0.74`. The identity fixture names the
+before/after blobs for the reasoning introduction; the ledger pins all five
+versions and recomputes their source-tree and hop manifests.
+
 No downloaded artifact was executed or installed. No host Cline binary,
 credential, account, provider model catalogue, prompt, or ACP session was
 inspected or used.

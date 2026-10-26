@@ -451,6 +451,11 @@
       "reason": "Private MCP client gains MCP apps capabilities and resources/read. Swallowtail sends mcpServers: [] and exposes no client MCP mapping."
     },
     "reasoning_argv": {
+      "path": "apps/cli/src/main.ts",
+      "from_version": "3.0.70",
+      "to_version": "3.0.71",
+      "from_git_blob_sha1": "0e52e53617a257ecb2699f350168ce4892406299",
+      "to_git_blob_sha1": "b6a0e6138df439c5cbc8cddffc39e34c1afd9775",
       "reason": "main.ts ACP early-return calls resolveCliReasoning without persisted provider settings. Only explicit --thinking enables reasoning. Swallowtail passes no --thinking, and the agent then keeps thinking false."
     }
   },

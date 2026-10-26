@@ -16,6 +16,14 @@ const PROTOCOL: &str = include_str!("fixtures/cline-acp-3.0.74/protocol.json");
 const PRIOR_DIST: &str = include_str!("fixtures/cline-acp-3.0.70/dist-inventory.json");
 
 const VERSIONS: &[&str] = &["3.0.70", "3.0.71", "3.0.72", "3.0.73", "3.0.74"];
+const MAIN_PATH: &str = "apps/cli/src/main.ts";
+const MAIN_BLOBS: &[&str] = &[
+    "0e52e53617a257ecb2699f350168ce4892406299",
+    "b6a0e6138df439c5cbc8cddffc39e34c1afd9775",
+    "5b8fddd8154f5b9f872a5f7bf189f74cb2e9f006",
+    "5b8fddd8154f5b9f872a5f7bf189f74cb2e9f006",
+    "5b8fddd8154f5b9f872a5f7bf189f74cb2e9f006",
+];
 const EARLIER_QUALIFIED: &[&str] = &[
     "3.0.55", "3.0.56", "3.0.57", "3.0.58", "3.0.60", "3.0.61", "3.0.62", "3.0.63", "3.0.64",
     "3.0.65", "3.0.66", "3.0.67", "3.0.68", "3.0.69",
@@ -34,7 +42,7 @@ const DIST_PACKAGES: &[&str] = &["cline", "@cline/cli-darwin-arm64"];
 fn official_latest_extends_only_the_existing_acp_window() {
     assert_eq!(
         sha256(IDENTITY),
-        "fe8e53dde3957f1b2ff76dda8b21fbd2d1cccd912d910a24cacc493720e51c4e"
+        "aede1b5b80c13f2c9d8f420b6c2fefa8818fcf2788482141f2c33caf47a854a4"
     );
     assert_eq!(
         sha256(DIST),
@@ -46,11 +54,11 @@ fn official_latest_extends_only_the_existing_acp_window() {
     );
     assert_eq!(
         sha256(SOURCE_TREE),
-        "cb97b02ff3a3fb504d74a3f2b8e5b35829258f0bd5b06367ae25113f7ba7b387"
+        "e9ef884f6d0b2ef5dc7292a7e9d86ba848ad4ac78ad9f1b6c1f64ff406742767"
     );
     assert_eq!(
         sha256(PROTOCOL),
-        "5f4db0fd045dae7a7705d5c987e095f11ef5045f8898c6545b2bfe63cb40e750"
+        "194e133480ec864bcbcb9557a8bbedd7eac44ebc86a4358b99c9bc7c219b673c"
     );
 
     let identity = json(IDENTITY);
@@ -356,6 +364,19 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
         identity["bounded_unmapped"]["mcp_client"]["to_git_blob_sha1"],
         "76f82111bb5f8356dabda10a07d2fd8970f7454c"
     );
+    let reasoning = &identity["bounded_unmapped"]["reasoning_argv"];
+    assert_eq!(reasoning["path"], MAIN_PATH);
+    assert_eq!(reasoning["from_version"], VERSIONS[0]);
+    assert_eq!(reasoning["to_version"], VERSIONS[1]);
+    assert_eq!(reasoning["from_git_blob_sha1"], MAIN_BLOBS[0]);
+    assert_eq!(reasoning["to_git_blob_sha1"], MAIN_BLOBS[1]);
+    assert_eq!(MAIN_BLOBS.len(), VERSIONS.len());
+    for (version, expected_blob) in VERSIONS.iter().zip(MAIN_BLOBS) {
+        assert_eq!(
+            source["files_by_version"][*version][MAIN_PATH]["git_blob_sha1"], *expected_blob,
+            "{version} freezes the selected CLI entry gate"
+        );
+    }
 
     let mut source_trees = BTreeMap::<&str, BTreeMap<String, String>>::new();
     for version in VERSIONS {
@@ -366,6 +387,7 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
             "apps/cli/package.json",
             "apps/cli/src/acp/acpAgent.ts",
             "apps/cli/src/acp/permissions.ts",
+            MAIN_PATH,
             "bun.lock",
         ] {
             assert!(
@@ -395,8 +417,8 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
             source["source_commits"][*version]
         );
     }
-    assert_eq!(source_trees["3.0.70"].len(), 49);
-    assert_eq!(source_trees["3.0.74"].len(), 52);
+    assert_eq!(source_trees["3.0.70"].len(), 50);
+    assert_eq!(source_trees["3.0.74"].len(), 53);
     assert!(!source_trees["3.0.70"].contains_key("apps/cli/src/acp/config-options.ts"));
     assert!(source_trees["3.0.74"].contains_key("apps/cli/src/acp/config-options.ts"));
     assert!(source_trees["3.0.71"].contains_key("apps/cli/src/acp/reasoning.test.ts"));

@@ -25,7 +25,7 @@ fn sha256_hex(source: &str) -> String {
 fn identity_freezes_official_hops_and_the_catalogue_only_claim() {
     assert_eq!(
         sha256_hex(IDENTITY),
-        "36331e781c6bef4574fdc479254dc4da8f01bc148803254d2ecde4fe3218a246"
+        "64ae823da25c95d96782d38e6a5221eb8ce91db08ad4e77b83d887a65628448c"
     );
     let identity = json(IDENTITY);
     assert_eq!(identity["axis"], "cursor-agent.release-date");
@@ -209,7 +209,7 @@ fn selected_catalogue_path_keeps_its_existing_adapter_boundary() {
 fn inventory_freezes_every_file_and_each_hop_classification() {
     assert_eq!(
         sha256_hex(DIST_INVENTORY),
-        "af2b8a0dd332a637f237d299b208499107e0389566619949546d530c6fe32b64"
+        "3e32e1c1cbe61a062286249aebb531ee488a62ff9350206beb669984f068dd6b"
     );
     let inventory = json(DIST_INVENTORY);
     assert_eq!(
@@ -373,4 +373,25 @@ fn inventory_freezes_every_file_and_each_hop_classification() {
         darwin_selected["model_utils_module_sha256"],
         "e8e83b2baaab5a9474ad7dbc333146d9ed53c7608d11a35fd1f579de3226d9d9"
     );
+
+    for version in inventory["versions"]
+        .as_array()
+        .expect("versions are an array")
+    {
+        let version = version.as_str().expect("version is text");
+        for platform in ["darwin-arm64", "linux-x64"] {
+            let selected = &inventory["selected_modules"][version][platform];
+            let models_file = selected["models_module_file"]
+                .as_str()
+                .expect("models file");
+            assert_eq!(
+                selected["model_service_module_file"], models_file,
+                "{platform} {version} model-service must be the loaded models chunk"
+            );
+            assert_eq!(
+                selected["model_utils_module_file"], models_file,
+                "{platform} {version} model-utils must be the loaded models chunk"
+            );
+        }
+    }
 }

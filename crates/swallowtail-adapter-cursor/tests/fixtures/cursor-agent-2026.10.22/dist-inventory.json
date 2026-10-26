@@ -38022,10 +38022,10 @@
       "darwin-arm64": {
         "models_module_file": "dist-package/9663.index.js",
         "models_module_sha256": "4179320b5472b06a7e8708fa0a63f7a07a237e13c3f90b62714efacf5cdc35b8",
-        "model_service_module_file": "dist-package/1591.index.js",
-        "model_service_module_sha256": "edf35f8bb555a6b143b4e97721973d920c1f64545c625bce6bcaaac232faee80",
-        "model_utils_module_file": "dist-package/1591.index.js",
-        "model_utils_module_sha256": "26c83b5214d4013147033aebbbec50899c6101465a897b63a0d4938f38b2da83",
+        "model_service_module_file": "dist-package/9663.index.js",
+        "model_service_module_sha256": "94e9ed6c2c9087b2b9a01ac5c563afa28f0a80d6bfba5b35bf097975699b96e3",
+        "model_utils_module_file": "dist-package/9663.index.js",
+        "model_utils_module_sha256": "1f3a6d4d0b2ccdfdb3b93761825ecf84d1460b5e959117b9f09d455e08e84ed3",
         "registration_sha256": "5d5629ccf4375c06e83f902297ac8e1cb8876775a774274375798d75aa57ae47",
         "index_js": {
           "sha256": "335ce100d5f0aa60833e0ff773542dd7042afa0dacde61f01265cfa4f750e6ea",
@@ -38151,10 +38151,10 @@
       "linux-x64": {
         "models_module_file": "dist-package/6436.index.js",
         "models_module_sha256": "229d9f124165a8239cef87e9c442bb32477d517205d0a9aed213fa9219e9b38b",
-        "model_service_module_file": "dist-package/1623.index.js",
-        "model_service_module_sha256": "edf35f8bb555a6b143b4e97721973d920c1f64545c625bce6bcaaac232faee80",
-        "model_utils_module_file": "dist-package/1623.index.js",
-        "model_utils_module_sha256": "26c83b5214d4013147033aebbbec50899c6101465a897b63a0d4938f38b2da83",
+        "model_service_module_file": "dist-package/6436.index.js",
+        "model_service_module_sha256": "f3355cdb791069ade2515a76df737339b80ba9630960a1f24c2bf1fa185d7d0b",
+        "model_utils_module_file": "dist-package/6436.index.js",
+        "model_utils_module_sha256": "7c6b12ff47819e72d71cba0d7270a768148d39b5035cc4588c49cf0b6b3f6297",
         "registration_sha256": "daea4835803808cb26f905ee2e87ecbe5102d832e737510efa4515a6867acb01",
         "index_js": {
           "sha256": "d8e53146370532fce1069aff55efb0df0fa290ce8d53f5f84d1eac1147f8cc29",
@@ -38178,10 +38178,10 @@
       "darwin-arm64": {
         "models_module_file": "dist-package/7689.index.js",
         "models_module_sha256": "c2a7f692506528ec43c2430521f02d2e5fbcd618a3be3ab884688682d4e58ff2",
-        "model_service_module_file": "dist-package/8942.index.js",
-        "model_service_module_sha256": "edf35f8bb555a6b143b4e97721973d920c1f64545c625bce6bcaaac232faee80",
-        "model_utils_module_file": "dist-package/8942.index.js",
-        "model_utils_module_sha256": "26c83b5214d4013147033aebbbec50899c6101465a897b63a0d4938f38b2da83",
+        "model_service_module_file": "dist-package/7689.index.js",
+        "model_service_module_sha256": "94e9ed6c2c9087b2b9a01ac5c563afa28f0a80d6bfba5b35bf097975699b96e3",
+        "model_utils_module_file": "dist-package/7689.index.js",
+        "model_utils_module_sha256": "1f3a6d4d0b2ccdfdb3b93761825ecf84d1460b5e959117b9f09d455e08e84ed3",
         "registration_sha256": "467e3c784ec9d7972b38e3bd86f40c223c624a64b730b2f348bd71bbdb3ceae7",
         "index_js": {
           "sha256": "db27791d8fd79998f50d19eee516bd5284bd520c4dd8f81386051941afad2ce4",

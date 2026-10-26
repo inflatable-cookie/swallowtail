@@ -14,6 +14,11 @@ What is true now:
   `0.38.0` while official stable `2.1.1` retains the local-spawn process-
   authority stop (Research 403); a host-terminal API design awaits separate
   review.
+- Cursor Agent ACP and headless remain qualified through
+  `2026.10.01-14929f9`. Newer identities are retained, but selected handler,
+  callback/cancel/validation, and executing-runtime impact proof is incomplete
+  ([Research 450](research/450-cursor-agent-acp-headless-2026-10-22-identity.md#finite-stop-and-follow-up-proof)).
+  Catalogue independently qualifies through `2026.10.22-27dcf5f`.
 - DeepSeek Harness Web now includes exact selected RCs through `0.1.1-rc.2`;
   npm `latest`/`next` `0.2.0-rc.2` remains unqualified pending the browser-auth
   adaptation in Research 411.

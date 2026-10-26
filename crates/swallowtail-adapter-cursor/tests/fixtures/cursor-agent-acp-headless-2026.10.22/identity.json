@@ -32,13 +32,7 @@
     "2026.10.19-6bbf2c4",
     "2026.10.22-27dcf5f"
   ],
-  "qualified_exact_builds_added": [
-    "2026.10.14-941492e",
-    "2026.10.16-e3cb207",
-    "2026.10.18-ea085cb",
-    "2026.10.19-6bbf2c4",
-    "2026.10.22-27dcf5f"
-  ],
+  "qualified_exact_builds_added": [],
   "superseded_same_date_build_rejected": {
     "version": "2026.10.14-0f9edde",
     "reason": "The release-date claim accepts one opaque build per calendar date. 2026-10-14 stays bound to the later registry build 2026.10.14-941492e. The earlier registry build remains rejected at binding. Its selected ACP and headless surfaces match the qualified build."
@@ -308,7 +302,7 @@
     }
   ],
   "identity_decision": {
-    "shape": "compatible-extension",
+    "shape": "stop",
     "routes": [
       "cursor-agent.acp",
       "cursor-agent.headless"
@@ -319,8 +313,6 @@
     "keep_headless_behavior_revision": "cursor-agent.stream-json.structured-v1",
     "keep_baseline": "2026.07.01-41b2de7",
     "keep_allow_unverified": true,
-    "raise_acp_ceiling_to": "2026.10.22-27dcf5f",
-    "raise_headless_ceiling_to": "2026.10.22-27dcf5f",
     "catalogue_claim_changed": false,
     "catalogue_ceiling_unchanged": "2026.10.22-27dcf5f",
     "catalogue_qualification_source": "Research 451; independent catalogue evidence",
@@ -333,6 +325,18 @@
     "downloaded_artifacts_executed": false,
     "host_install_changed": false,
     "authenticated_catalogue_or_session_called": false,
-    "synthetic_unverified_newer": "2026-10-23"
-  }
+    "synthetic_unverified_newer": "2026-10-02",
+    "keep_acp_ceiling_at": "2026.10.01-14929f9",
+    "keep_headless_ceiling_at": "2026.10.01-14929f9",
+    "target_pending_proof": "2026.10.22-27dcf5f",
+    "stop_reason": "Selected handler, permission/cancellation/validation, and executing runtime/native impact evidence is incomplete; declarations, summaries and inventories do not qualify these routes",
+    "proof_requirements": "Research 450: Finite stop and follow-up proof; runtime-impact.json"
+  },
+  "candidate_exact_builds": [
+    "2026.10.14-941492e",
+    "2026.10.16-e3cb207",
+    "2026.10.18-ea085cb",
+    "2026.10.19-6bbf2c4",
+    "2026.10.22-27dcf5f"
+  ]
 }

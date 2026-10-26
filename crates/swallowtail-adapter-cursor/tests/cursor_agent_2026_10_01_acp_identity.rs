@@ -378,10 +378,12 @@ fn production_claims_qualify_selected_hops_independently() {
         assert!(!acp.permits(&version(gap)), "unqualified Cursor date {gap}");
     }
 
-    assert!(
-        !acp.permits(&version("2026-10-02")),
-        "2026-10-02 is an interior gap once later exact points are qualified"
-    );
+    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+        acp.assess(&version("2026-10-02"))
+    else {
+        panic!("stable after the frozen current point stays unverified newer");
+    };
+    assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
 }
 
 fn version(value: &str) -> InterfaceVersion {

@@ -118,39 +118,21 @@ fn catalogue_acp_and_headless_qualify_their_exact_published_hops() {
     for release in historical {
         assert!(acp.supports(&version(release)), "{release}");
     }
-    for release in [
-        "2026-09-26",
-        "2026-09-28",
-        "2026-10-01",
-        "2026-10-14",
-        "2026-10-16",
-        "2026-10-18",
-        "2026-10-19",
-        "2026-10-22",
-    ] {
+    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
         assert!(acp.supports(&version(release)), "{release}");
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(acp_newer) =
-        acp.assess(&version("2026-10-23"))
+        acp.assess(&version("2026-10-02"))
     else {
         panic!("later ACP dates remain visibly unverified");
     };
-    assert_eq!(acp_newer.latest_qualified().as_str(), "2026-10-22");
+    assert_eq!(acp_newer.latest_qualified().as_str(), "2026-10-01");
 
     let headless = cursor_headless_claim();
     for release in historical {
         assert!(headless.supports(&version(release)), "{release}");
     }
-    for release in [
-        "2026-09-26",
-        "2026-09-28",
-        "2026-10-01",
-        "2026-10-14",
-        "2026-10-16",
-        "2026-10-18",
-        "2026-10-19",
-        "2026-10-22",
-    ] {
+    for release in ["2026-09-26", "2026-09-28", "2026-10-01"] {
         assert!(
             headless.supports(&version(release)),
             "headless qualifies {release}"
@@ -169,15 +151,11 @@ fn catalogue_acp_and_headless_qualify_their_exact_published_hops() {
         }
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(headless_newer) =
-        headless.assess(&version("2026-10-23"))
+        headless.assess(&version("2026-10-02"))
     else {
         panic!("later Headless dates remain visibly unverified");
     };
-    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-10-22");
-    for gap in ["2026-10-02", "2026-10-15", "2026-10-21"] {
-        assert!(!acp.permits(&version(gap)), "{gap}");
-        assert!(!headless.permits(&version(gap)), "{gap}");
-    }
+    assert_eq!(headless_newer.latest_qualified().as_str(), "2026-10-01");
 }
 
 #[test]

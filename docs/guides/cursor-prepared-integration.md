@@ -29,8 +29,7 @@ Swallowtail does not install Cursor, perform login, read its credential store,
 or search PATH. Local subscription state crosses the boundary only as safe
 readiness evidence; no credential reference enters the prepared plan.
 
-Catalogue, ACP, and headless each independently qualify the same seventeen
-exact calendar/build pairs:
+The catalogue qualifies seventeen exact calendar/build pairs:
 
 - `2026.07.01-41b2de7`
 - `2026.07.23-e383d2b`
@@ -50,12 +49,20 @@ exact calendar/build pairs:
 - `2026.10.19-6bbf2c4`
 - `2026.10.22-27dcf5f`
 
-Research 393 and 451 qualify catalogue through `2026.10.22-27dcf5f`. Research
-395 and 450 qualify ACP, and Research 399 and 450 qualify headless, through
-the same exact builds. The earlier same-date registry build
-`2026.10.14-0f9edde` is rejected. Calendar gaps are not inferred, and a
-qualified date with a different opaque build is rejected. Later dates remain
-visibly unverified newer on each route.
+ACP and headless qualify the twelve exact points through
+`2026.10.01-14929f9`. Research 395 qualifies ACP and Research 399 qualifies
+headless at `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and
+`2026.10.01-14929f9`. Research 393 qualified catalogue through that same
+point. Research 451 adds the five later catalogue points through
+`2026.10.22-27dcf5f`. The superseded same-date registry build
+`2026.10.14-0f9edde` is not a catalogue milestone. Calendar gaps are not
+inferred, and a qualified date with a different opaque build is rejected.
+Later dates remain visibly unverified newer on each route.
+
+Research 450 retains newer ACP/headless artifact identities but stops their
+qualification at `2026.10.01-14929f9` pending selected handler, callback/cancel,
+validation, and executing-runtime evidence. See its
+[follow-up proof requirements](../research/450-cursor-agent-acp-headless-2026-10-22-identity.md#finite-stop-and-follow-up-proof).
 
 ## Prepare The Installation
 

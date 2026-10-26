@@ -9,6 +9,8 @@ const IDENTITY: &str = include_str!("fixtures/cursor-agent-acp-headless-2026.10.
 const PROTOCOL: &str = include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/protocol.json");
 const DIST_INVENTORY: &str =
     include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/dist-inventory.json");
+const RUNTIME_IMPACT: &str =
+    include_str!("fixtures/cursor-agent-acp-headless-2026.10.22/runtime-impact.json");
 
 fn json(source: &str) -> Value {
     serde_json::from_str(source).expect("Cursor 2026.10.22 fixture is valid JSON")
@@ -50,7 +52,7 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         ])
     );
     assert_eq!(
-        identity["qualified_exact_builds_added"],
+        identity["candidate_exact_builds"],
         serde_json::json!([
             "2026.10.14-941492e",
             "2026.10.16-e3cb207",
@@ -58,6 +60,10 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
             "2026.10.19-6bbf2c4",
             "2026.10.22-27dcf5f"
         ])
+    );
+    assert_eq!(
+        identity["qualified_exact_builds_added"],
+        serde_json::json!([])
     );
     assert_eq!(
         identity["superseded_same_date_build_rejected"]["version"],
@@ -75,7 +81,7 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
     assert_eq!(identity["host_observation"]["installation_changed"], false);
 
     let decision = &identity["identity_decision"];
-    assert_eq!(decision["shape"], "compatible-extension");
+    assert_eq!(decision["shape"], "stop");
     assert_eq!(
         decision["keep_acp_claim_id"],
         "cursor-agent.acp.release-window-3"
@@ -92,8 +98,9 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         decision["keep_headless_behavior_revision"],
         "cursor-agent.stream-json.structured-v1"
     );
-    assert_eq!(decision["raise_acp_ceiling_to"], "2026.10.22-27dcf5f");
-    assert_eq!(decision["raise_headless_ceiling_to"], "2026.10.22-27dcf5f");
+    assert_eq!(decision["keep_acp_ceiling_at"], "2026.10.01-14929f9");
+    assert_eq!(decision["keep_headless_ceiling_at"], "2026.10.01-14929f9");
+    assert_eq!(decision["target_pending_proof"], "2026.10.22-27dcf5f");
     assert_eq!(decision["catalogue_claim_changed"], false);
     assert_eq!(
         decision["catalogue_ceiling_unchanged"],
@@ -107,7 +114,11 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
     assert_eq!(decision["new_public_operation"], false);
     assert_eq!(decision["provider_prompt_sent"], false);
     assert_eq!(decision["downloaded_artifacts_executed"], false);
-    assert_eq!(decision["synthetic_unverified_newer"], "2026-10-23");
+    assert_eq!(decision["synthetic_unverified_newer"], "2026-10-02");
+    assert_eq!(
+        protocol["qualification_status"],
+        "evidence-incomplete; ACP and headless remain qualified through 2026.10.01-14929f9"
+    );
 
     assert_eq!(
         protocol["acp"]["initialize_shape"]["protocol_version_constant"],
@@ -378,8 +389,17 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
         "2026-10-19",
         "2026-10-22",
     ] {
-        assert!(acp.supports(&version(release)), "{release}");
-        assert!(headless.supports(&version(release)), "{release}");
+        for claim in [&acp, &headless] {
+            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+                claim.assess(&version(release))
+            else {
+                panic!(
+                    "{release} must remain unverified newer on {}",
+                    claim.id().as_str()
+                );
+            };
+            assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
+        }
         assert!(
             catalogue.supports(&version(release)),
             "catalogue independently qualifies {release}"
@@ -388,21 +408,75 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     assert!(cursor_agent_release_binding("2026.10.22-27dcf5f").is_some());
     assert!(cursor_agent_release_binding("2026.10.14-941492e").is_some());
     assert!(cursor_agent_release_binding("2026.10.14-0f9edde").is_none());
+    for gap in ["2026-08-25", "2026-09-08", "2026-09-30"] {
+        for claim in [&acp, &headless, &catalogue] {
+            assert!(!claim.permits(&version(gap)), "{gap}");
+        }
+    }
+    for date in ["2026-10-02", "2026-10-15", "2026-10-21", "2026-10-23"] {
+        for claim in [&acp, &headless] {
+            let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
+                claim.assess(&version(date))
+            else {
+                panic!("{date} stays unverified newer on {}", claim.id().as_str());
+            };
+            assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
+        }
+    }
+    assert!(acp.supports(&version("2026-10-01")));
+    assert!(headless.supports(&version("2026-10-01")));
     for gap in ["2026-10-02", "2026-10-15", "2026-10-21"] {
-        assert!(!acp.permits(&version(gap)), "{gap}");
-        assert!(!headless.permits(&version(gap)), "{gap}");
         assert!(!catalogue.permits(&version(gap)), "{gap}");
     }
-    let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        acp.assess(&version("2026-10-23"))
-    else {
-        panic!("2026-10-23 stays unverified newer");
-    };
-    assert_eq!(newer.latest_qualified().as_str(), "2026-10-22");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
         catalogue.assess(&version("2026-10-23"))
     else {
         panic!("later catalogue dates stay unverified newer");
     };
     assert_eq!(newer.latest_qualified().as_str(), "2026-10-22");
+}
+
+#[test]
+fn runtime_identity_records_do_not_qualify_unresolved_execution_impacts() {
+    let identity = json(IDENTITY);
+    let impact = json(RUNTIME_IMPACT);
+    let observations = impact["node_observations"]
+        .as_array()
+        .expect("Node identities");
+    assert_eq!(observations.len(), 14);
+    for (hop_index, hop) in identity["hops"]
+        .as_array()
+        .expect("hops")
+        .iter()
+        .enumerate()
+    {
+        for (platform_index, (platform, digest_key, before, target)) in [
+            (
+                "darwin-arm64",
+                "node_sha256_darwin_arm64",
+                "v26.8.1",
+                "v26.12.1",
+            ),
+            ("linux-x64", "node_sha256_linux_x64", "v24.5.0", "v24.22.1"),
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let observation = &observations[hop_index * 2 + platform_index];
+            assert_eq!(observation["build"], hop["version"]);
+            assert_eq!(observation["platform"], platform);
+            assert_eq!(observation["sha256"], hop[digest_key]);
+            assert_eq!(observation["executed"], false);
+            let expected = if hop_index == 6 { target } else { before };
+            assert_eq!(observation["embedded_version"], expected);
+            assert_eq!(
+                observation["version_evidence"]["literal"],
+                format!("https://nodejs.org/download/release/{expected}/node-{expected}.tar.gz")
+            );
+        }
+    }
+    assert_eq!(
+        impact["selected_impact_assessment"]["disposition"],
+        "unresolved; embedded build metadata and digest equality do not prove these selected runtime semantics"
+    );
 }

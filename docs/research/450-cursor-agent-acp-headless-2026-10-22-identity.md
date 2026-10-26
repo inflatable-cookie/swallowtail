@@ -2,19 +2,20 @@
 
 ## Decision
 
-Qualify `cursor-agent.acp` and `cursor-agent.headless` through official stable
-`2026.10.22-27dcf5f`. Keep both baselines at `2026.07.01-41b2de7`, claim ids
+Stop the proposed `cursor-agent.acp` and `cursor-agent.headless` extension to
+`2026.10.22-27dcf5f`. Retain their twelve qualified points through
+`2026.10.01-14929f9`, both baselines at `2026.07.01-41b2de7`, claim ids
 `cursor-agent.acp.release-window-3` and
 `cursor-agent.headless.release-window-3`, behavior revisions
 `cursor-agent.acp-v1.interactive-v1` and
 `cursor-agent.stream-json.structured-v1`, prior exact points, gaps, and
-`AllowUnverified`. Add the exact points `2026.10.14-941492e`,
+`AllowUnverified`. The candidate points `2026.10.14-941492e`,
 `2026.10.16-e3cb207`, `2026.10.18-ea085cb`, `2026.10.19-6bbf2c4`, and
-`2026.10.22-27dcf5f`.
+`2026.10.22-27dcf5f` remain unverified newer on these two routes.
 
-This is a compatible extension of the existing ACP and headless wires. It
-adds no public operation, capability, authority, or behavior revision. The
-routes stay separate. `cursor-agent.catalogue` is independently qualified
+The identity inventory and declaration/literal comparisons below do not
+establish a compatible extension. No public operation, capability, authority,
+or behavior revision changes. `cursor-agent.catalogue` is independently qualified
 through `2026.10.22-27dcf5f` by
 [Research 451](451-cursor-agent-2026-10-22-catalogue-identity.md); this
 ACP/headless evidence does not extend that claim.
@@ -40,23 +41,23 @@ Published registry file hops after the `2026.10.01-14929f9` ceiling:
 | --- | --- | --- | --- |
 | `2026.10.01-14929f9` | `310074e4c18c5ff39ec178e84d0f461f8ff73fe0` | 2026-10-02 | previous ceiling |
 | `2026.10.14-0f9edde` | `8d7d20369fcaa4ac943df97d1e5502b78681a003` | 2026-10-14 | rejected same-date build |
-| `2026.10.14-941492e` | `4d1729af836732b46840080920912dac7d5a2935` | 2026-10-16 | qualified `2026-10-14` |
-| `2026.10.16-e3cb207` | `d043ba62f22f4036d7cdc95e5870b3ac70cc01ed` | 2026-10-17 | qualified |
-| `2026.10.18-ea085cb` | `6e20ddf94b078f0385b56c90aba40107edad2748` | 2026-10-19 | qualified |
-| `2026.10.19-6bbf2c4` | `a83f6b7f0c60c3b87f45dff3b12603b4cae19dd0` | 2026-10-20 | qualified |
-| `2026.10.22-27dcf5f` | `61a3cb3f49a35c40ce8ac4222192a7b7c8be5998` | 2026-10-23 | official stable |
+| `2026.10.14-941492e` | `4d1729af836732b46840080920912dac7d5a2935` | 2026-10-16 | candidate; unverified newer |
+| `2026.10.16-e3cb207` | `d043ba62f22f4036d7cdc95e5870b3ac70cc01ed` | 2026-10-17 | candidate; unverified newer |
+| `2026.10.18-ea085cb` | `6e20ddf94b078f0385b56c90aba40107edad2748` | 2026-10-19 | candidate; unverified newer |
+| `2026.10.19-6bbf2c4` | `a83f6b7f0c60c3b87f45dff3b12603b4cae19dd0` | 2026-10-20 | candidate; unverified newer |
+| `2026.10.22-27dcf5f` | `61a3cb3f49a35c40ce8ac4222192a7b7c8be5998` | 2026-10-23 | official stable; unverified newer |
 
 Commit `8d7d203` still names `2026.10.01-e373342` in its message body. The
 merged `cursor/agent.json` content is `2026.10.14-0f9edde`. File content is
 the hop. `e373342` did not land as a registry file.
 
-The release-date claim accepts one opaque build per calendar date. `2026-10-14`
-binds `941492e` and rejects `0f9edde` even though that earlier archive's
-selected ACP and headless surfaces match. Dates between published points stay
-gaps, including `2026-10-02`, `2026-10-13`, `2026-10-15`, `2026-10-17`,
-`2026-10-20`, and `2026-10-21`. `2026-10-23` is the synthetic unverified-newer
-probe. The independent catalogue claim retains the same exact dates and
-gaps under Research 451; no route inherits another route's qualification.
+The release binding retains one opaque build per qualified catalogue date:
+`2026-10-14` binds `941492e` and rejects `0f9edde`. ACP/headless retain their
+older gaps through `2026-10-01`; `2026-10-02` is their first synthetic
+unverified-newer point. Dates above that ceiling remain unverified newer,
+including the candidate points, without gaining qualified status. Catalogue
+retains its independent seventeen points and intervening gaps under Research
+451. No route inherits another route's qualification.
 
 ## Artifact identity
 
@@ -106,12 +107,13 @@ ACP command, SDK, runtime index, and headless writer chunks were extracted
 from the retained official Darwin ARM64 and Linux x64 archives at every hop
 from `2026.10.01-14929f9` through `2026.10.22-27dcf5f`, including the five
 Linux intermediate hops. Archives were not executed. Selected
-argv/dispatch/wire/result/permission/cancel/auth/replay literals were hashed;
-`protocol.json` freezes those strings and SHA-256 values. Session cleanup is
+initialize/cancel/options/help declaration literals were hashed;
+`protocol.json` retains those strings and elided wire-field summaries. These
+are partial observations, not complete selected handler traces. Session cleanup is
 host-owned process, task, and working-resource join-or-kill; no vendor cleanup
 literal was extracted or hashed.
 
-The selected initialize core is byte-identical on both platforms at every hop:
+The extracted initialize core is byte-identical on both platforms at every hop:
 `loadSession:!0,mcpCapabilities:{http:!0,sse:!0},promptCapabilities:{audio:!1,embeddedContext:!1,image:!0}`
 (SHA-256 `bcd62de052a72a733ec1ddb1d928a95ded1bfca71a3efd440f0d597e91195170`).
 The initialize return is `return{protocolVersion:o.WP,agentCapabilities:a,authMethods:s}`
@@ -140,13 +142,63 @@ durations, `result`, `session_id`, `request_id`, and optional usage
 `inputTokens` / `outputTokens` / `cacheReadTokens` / `cacheWriteTokens`.
 Usage-spread minifier identifier is `oe` at the ceiling and `ae` later.
 Writer-chunk hashes in `identity.json` remain artifact identity; the selected
-field strings in `protocol.json` are the wire comparison. `--force`, `--yolo`,
+field descriptions in `protocol.json` do not prove dispatch or failure handling. `--force`, `--yolo`,
 `--sandbox`, `--auto-review`, and `--stream-partial-output` stay unselected.
 At `2026.10.22`, both platforms add an internal git-worktree `--force`
 refusal. Swallowtail does not send `--force`. `task_notification` system
 events already exist at the `2026.10.01` ceiling and stay outside the selected
-init event. The launcher stays byte-identical. Bundled Node changes only at
-`2026.10.22` and is not a selected wire file.
+init event. The launcher stays byte-identical. Bundled Node executes the
+selected runtime and changes at `2026.10.22`; its impact is unresolved.
+
+## Finite stop and follow-up proof
+
+The owner's 2026-10-26 correction requires preservation of the pre-extension
+ACP/headless bounds when retained static evidence cannot close the selected
+paths. This record adopts that stop. Catalogue remains independently qualified.
+The stop is missing qualification evidence, not demonstrated incompatibility.
+It is not a terminal unsupported disposition.
+
+1. **Headless dispatch and effects.** Help text, `.choices`/`.option`
+   declarations, field summaries, and fake-host tests do not prove selected
+   effects. Required: trace parsed `--print`, `stream-json`, model, trust, and
+   omitted/plan/ask mode through the actual shipped handler, mode selection,
+   permission/tool execution, stream dispatch, and success/failure emission.
+   Include tool/subagent/unknown-event/worktree guards. Record exact module
+   digests, byte offsets, branch conditions, and measured minifier-normalized
+   deltas at every changed hop on Darwin ARM64 and Linux x64.
+2. **ACP callbacks, actions, and cancellation.** Initialize/cancel/options
+   literals and SDK `0.14.1` do not establish the complete selected path.
+   Required: trace `requestWebPermission` callers, client outcome validation,
+   result-to-action consumption, pending requests, cancellation/abort,
+   background work and cleanup. Compare selected Zod `3.25.76` to `4.6.5`
+   schemas, defaults, unions, result/error handling, and callers at each hop
+   on both platforms. Preserve observational callbacks and blocked replay;
+   do not infer a new permission or lifecycle capability.
+3. **Executing runtime and feeding code.**
+   [`runtime-impact.json`](../../crates/swallowtail-adapter-cursor/tests/fixtures/cursor-agent-acp-headless-2026.10.22/runtime-impact.json)
+   binds fourteen bundled Node observations to the existing hop digests.
+   Embedded build metadata identifies Darwin `v26.8.1` to `v26.12.1` and
+   Linux `v24.5.0` to `v24.22.1`; these are static metadata, not executed
+   version observations or source parity. Node executes the selected code;
+   event-loop/abort ordering, stdio flushing, signals/process cleanup,
+   filesystem and native-addon impacts require assessment. The target Linux
+   `4060.index.js` imports `../file-service/index.js` and loads
+   `file_service.linux-x64-gnu.node` with `process.dlopen`. The retained package
+   supplies the binding and changed native binary without implementation
+   source correlation. The dependency observation is not a complete
+   entrypoint-to-effect proof. Required: close that boundary and the selected
+   call/import/guard paths through changed worker/plugin/cloud/SEA/native
+   chunks; enumeration alone does not establish unreachability. Recover
+   attributable static source or specify a separately authorized, bounded
+   provider-free artifact proof where static evidence cannot settle it.
+
+The `version-currentness` planner owns the follow-up adaptation/proof brief
+to qualify the current official stable. Reuse these exact identities and
+retained artifacts; do not repeat completed inventories. Qualification needs
+independent ACP and headless evidence satisfying all three gates. No original
+probe, vendor execution, live/auth work, or new product authority is authorized
+by this stop. Prepared fakes continue to test adapter mapping at the twelve
+qualified points, not vendor behavior at newer candidates.
 
 ## Claim limits
 

@@ -475,6 +475,10 @@ fn claim_admits_every_proposed_point_and_rejects_outside_bounds() {
     // The ACP window keeps its own, independently reviewed ceiling.
     assert_eq!(GROK_BUILD_ACP_LATEST_QUALIFIED_VERSION, "1.0.46");
     assert_eq!(grok_build_acp_claim().latest_qualified().as_str(), "1.0.46");
+    assert!(matches!(
+        grok_build_acp_claim().assess(&version("1.0.70")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
     assert_ne!(
         grok_build_acp_claim().id(),
         grok_build_catalogue_claim().id()

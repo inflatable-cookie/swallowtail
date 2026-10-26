@@ -66,11 +66,13 @@ mode.
 `0.89.0` adds the AIR `sessionIndex` surface and custom instructions that
 travel only in AIR meta. Swallowtail does not advertise either. The same hop
 makes `closeSession` of a session that is not in memory return `{}`. Through
-`0.88.0` that call threw. Delete of an absent transcript still calls Agent SDK
-`deleteSession` and throws through `0.90.0` for this non-AIR client. Live close
-of a session in memory and delete of a stored transcript still return `{}`.
-Swallowtail does not expose missing-close rejection as a consumer operation,
-and the empty close success is not a stronger deletion claim.
+`0.88.0` that call threw. Selected non-AIR `session/delete` already routes
+through the added `dist/session-index/connection.js` to Agent SDK
+`deleteSession` and throws through `0.90.0`. `service.js` is not selected on
+that hop. Live close of a session in memory and delete of a stored transcript
+still return `{}`. Swallowtail does not expose missing-close rejection as a
+consumer operation, and the empty close success is not a stronger deletion
+claim.
 
 `0.90.0` closes open tool calls before a cancel reports `cancelled`. The stop
 reason stays `cancelled`. Swallowtail already decodes `pending`,
@@ -109,7 +111,8 @@ This is a compatible extension of `claude-agent.acp.initialize-meta-extensions-v
 Extend the maintained segment `0.66.0..=0.87.0` through `0.96.0`.
 Keep baseline `0.53.0`, claim id `claude-agent.acp.window-2`, the seven
 behavior milestones, exclusions `0.52.0` and `0.58.0`, and `AllowUnverified`.
-The next synthetic stable point is `0.97.0`; it remains `UnverifiedNewer`.
+Published `0.97.0` arrived after this identity record and remains
+`UnverifiedNewer`. This run does not investigate that hop.
 Prerelease points remain incompatible without their own exact segment.
 
 No new public mapped operation was added. HTTP MCP live honouring remains

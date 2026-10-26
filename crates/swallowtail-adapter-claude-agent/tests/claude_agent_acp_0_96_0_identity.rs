@@ -20,7 +20,7 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
 
     assert_eq!(fingerprint(IDENTITY), 0x8534_21db_4a48_71f7);
     assert_eq!(fingerprint(PROTOCOL), 0x73a5_7e6f_b50b_1b6b);
-    assert_eq!(fingerprint(DIST_INVENTORY), 0x21df_e7b1_f8df_472b);
+    assert_eq!(fingerprint(DIST_INVENTORY), 0x0e04_ea1f_af81_94ab);
     assert_keys(
         &identity,
         &[
@@ -289,7 +289,7 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
 
     let expected_hops = [
         ("0.87.0", "0.88.0", 0, 0, 16, 14, 2),
-        ("0.88.0", "0.89.0", 42, 0, 34, 18, 58),
+        ("0.88.0", "0.89.0", 42, 0, 34, 19, 57),
         ("0.89.0", "0.89.1", 0, 0, 16, 1, 15),
         ("0.89.1", "0.90.0", 6, 0, 51, 17, 40),
         ("0.90.0", "0.91.0", 3, 0, 44, 17, 30),

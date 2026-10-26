@@ -3314,8 +3314,8 @@
         {
           "path": "dist/session-index/connection.js",
           "sha256": "fdf8f844ec41fbef7b00ebfa794a23784fb7e0e569edd53f24290fdadf637ab6",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. Selected delete calls Agent SDK deleteSession through this connection, so an absent transcript throws through 0.90.0. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/dir-listing.d.ts",

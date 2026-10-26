@@ -14,7 +14,7 @@ pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest catalogue release in the current maintained qualification window.
-pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.4.7";
+pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.3.1";
 /// Latest headless release in the current maintained qualification window.
 /// Exact `1.2.11` qualifies on the retry-disabled behaviour revision under
 /// Research 359; `1.1.18..=1.2.10` stay unqualified (no pin evidence).
@@ -62,11 +62,11 @@ pub fn antigravity_release_binding(value: &str) -> Option<InterfaceVersionBindin
 #[must_use]
 /// Returns the catalogue release compatibility claim.
 ///
-/// Two maintained segments on the same behaviour revision:
-/// `1.1.9..=1.3.6` (unpublished `1.2.18` stays excluded) and
-/// `1.4.0..=1.4.7`. The interior gap, including unpublished `1.3.7`,
-/// `1.3.8`, `1.3.9`, and any other unqualified `1.3.x` point, is
-/// Incompatible. Research 449.
+/// One maintained segment `1.1.9..=1.3.1` on the existing behaviour
+/// revision, excluding unpublished `1.2.18`. Research 449 freezes identity
+/// through official `1.4.7` but does not extend this claim: Q-005 keeps
+/// the 2026-09-15 notes ruling scoped to hops through `1.2.2`, and
+/// Contract 029 artifact authority for `1.3.2..=1.4.7` is unproven.
 pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("antigravity.catalogue.release-window-1")
@@ -74,23 +74,14 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
         axis(),
         InterfaceVersionScheme::Semantic,
         InterfaceNewerVersionPosture::AllowUnverified,
-        [
-            InterfaceVersionSegment::new(
-                version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
-                version("1.3.6").expect("static Antigravity release is valid"),
-                InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
-                    .expect("static Antigravity behavior is valid"),
-                InterfaceSupportStatus::Maintained,
-            ),
-            InterfaceVersionSegment::new(
-                version("1.4.0").expect("static Antigravity release is valid"),
-                version(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION)
-                    .expect("static Antigravity release is valid"),
-                InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
-                    .expect("static Antigravity behavior is valid"),
-                InterfaceSupportStatus::Maintained,
-            ),
-        ],
+        [InterfaceVersionSegment::new(
+            version(ANTIGRAVITY_BASELINE_VERSION).expect("static Antigravity release is valid"),
+            version(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION)
+                .expect("static Antigravity release is valid"),
+            InterfaceBehaviorRevision::new(ANTIGRAVITY_CATALOGUE_BEHAVIOR)
+                .expect("static Antigravity behavior is valid"),
+            InterfaceSupportStatus::Maintained,
+        )],
         [version("1.2.18").expect("unpublished Antigravity point is valid")],
     )
     .expect("static Antigravity compatibility claim is valid")
@@ -270,22 +261,13 @@ mod tests {
         assert!(claim.supports(&version("1.2.17")));
         assert!(claim.supports(&version("1.3.0")));
         assert!(claim.supports(&version("1.3.1")));
-        assert!(claim.supports(&version("1.3.2")));
-        assert!(claim.supports(&version("1.3.6")));
-        assert!(claim.supports(&version("1.4.0")));
-        assert!(claim.supports(&version("1.4.7")));
         assert!(!claim.permits(&version("1.1.8")));
-        for excluded in ["1.2.18", "1.3.7", "1.3.8", "1.3.9", "1.3.10"] {
-            assert!(
-                matches!(
-                    claim.assess(&version(excluded)),
-                    InterfaceCompatibilityAssessment::Incompatible
-                ),
-                "{excluded} stays incompatible"
-            );
-        }
+        assert!(matches!(
+            claim.assess(&version("1.2.18")),
+            InterfaceCompatibilityAssessment::Incompatible
+        ));
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.4.8"))
+            claim.assess(&version("1.3.2"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };

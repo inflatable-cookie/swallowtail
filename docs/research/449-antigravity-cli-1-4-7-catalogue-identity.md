@@ -9,26 +9,37 @@ Package: `swallowtail-adapter-antigravity`
 
 ## Outcome
 
-Extend only the maintained Antigravity catalogue qualification from `1.3.1`
-to official stable `1.4.7`. Keep baseline `1.1.9`, claim
+Freeze identity of every published official stable hop after the qualified
+`1.3.1` ceiling through `1.4.7`. Keep catalogue qualification at the
+pre-PR baseline: one maintained segment `1.1.9..=1.3.1` on claim
 `antigravity.catalogue.release-window-1`, behavior
 `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`, and `AllowUnverified`.
 Keep the existing `1.1.8` incompatibility and the unpublished `1.2.18`
-exclusion. Represent the unpublished interior as two maintained segments
-`1.1.9..=1.3.6` and `1.4.0..=1.4.7`, so `1.3.7`, `1.3.8`, `1.3.9`, and any
-other unqualified `1.3.x` point between those segments assess Incompatible.
-`1.4.8` is the first unpublished later point and stays `UnverifiedNewer`.
-Headless remains at exact pinned `1.2.11`.
+exclusion. Published hops `1.3.2` through `1.4.7` stay `UnverifiedNewer`.
+Unpublished `1.3.7`, `1.3.8`, and `1.3.9` sit after that ceiling and are
+also `UnverifiedNewer`; they are not a Maintained interior hole. `1.4.8` is
+the first unpublished later point and stays `UnverifiedNewer`. Headless
+remains at exact pinned `1.2.11`.
 
-The qualification is a compatible extension. No release note names a changed
-`agy models` list output, decoder, or process lifecycle. The new `1.4` minor
-line is not an identity stop. This conclusion uses the existing operator
-ruling that official release notes are behavioral authority, plus a bounded
-static look at the Linux catalogue writer. Notes that mention `/model`,
-`--model`, model-request retry, content-safety retry, the status-line retry
-countdown, or headless `-p` stay on the invocation or print-mode side of that
-boundary. That boundary is an inference from the official notes and the
-writer observation, not a live catalogue run.
+This is an identity-stop, not a compatible extension. Q-005 (answered
+2026-09-28 NO) keeps the 2026-09-15 notes ruling scoped to the five hops
+through `1.2.2`. Contract 029 Artifact Authority Without Public Source
+governs later points: the shipped artifact tree and digest are support
+authority; changelog and notes are discovery only. The bounded Linux x64
+writer observation (`entrypoints.modelsRun.run.func2` → `modelsReport` →
+`headless.Write`, 32-byte two-string stride, `models` key) does not prove
+selected `agy models` dispatch, slug/display/default rendering,
+config/account/env/auth/model acquisition, errors/exit, or
+process/lifecycle/cleanup. No retained Linux x64 or Mac ARM64 binary remains
+for a reachable call graph on both selected platforms. Metadata-only
+platform rows grant no behavior credit. Research 353 is historical and does
+not override Q-005.
+
+Missing proof for a later qualification: per-hop attributable static
+selected `agy models` control-flow on both Linux x64 and Mac ARM64 covering
+dispatch, slug/display/default rendering, config/account/env/auth/model
+acquisition, errors/exit, and process/lifecycle/cleanup, with changed
+binary/runtime internals bounded by reachability.
 
 ## Identity and method
 
@@ -55,25 +66,26 @@ structurally identical from `1.3.1` through `1.4.7` and calls
 `entrypoints.modelsReport` then `headless.Write`. `modelsReport` keeps a
 32-byte two-string element stride and the six-byte map key `models`. At
 `1.3.4` the source-model stack copy grows by 32 bytes; the element stride
-and the `Write` argument block do not. No binary was executed. The fixture
+and the `Write` argument block do not. That writer observation is
+insufficient for qualification. No binary was executed. The fixture
 is
 [`tests/fixtures/antigravity-cli-1.4.7/`](../../crates/swallowtail-adapter-antigravity/tests/fixtures/antigravity-cli-1.4.7/).
 
-| Hop | Published | Tag commit | Release-note areas | `agy models` classification |
+| Hop | Published | Tag commit | Release-note areas (discovery only) | `agy models` classification |
 | --- | --- | --- | --- | --- |
-| `1.3.1→1.3.2` | 2026-10-08 | `8c1310b2179d1d4d952c54bd0e4424bd53e904f6` | plugin marketplace and install | unchanged |
-| `1.3.2→1.3.3` | 2026-10-10 | `800852ea61796e9fe53077a2f945e74daacb4be6` | prompt header, MCP always-load, quota reported immediately | unchanged; quota note is request-path |
-| `1.3.3→1.3.4` | 2026-10-13 | `9eebbedf051ffd75adb15e468f48b7b75be4b15b` | `--model` default effort, `/model` picker, 30-second retry cap, unknown `--agent` on `-p` | unchanged; invocation and headless, not the list command |
-| `1.3.4→1.3.5` | 2026-10-14 | `89081f72e10a98c3689f34b1af7261f43136ab5d` | Auto mode, `/compact`, `/diff` | unchanged |
-| `1.3.5→1.3.6` | 2026-10-15 | `680e58585fa49c266ab38bd986816f40455895cf` | ADC Claude models in `/model`, stalled-connection retry | unchanged; picker and request path |
-| `1.3.6→1.4.0` | 2026-10-16 | `e8a400403c82b7eb27a333784dc3c37985aa622e` | OSC 7501, plugin validate, new 1.4 minor | unchanged; minor line is not a stop |
-| `1.4.0→1.4.1` | 2026-10-17 | `4433f3a6dabf04ce0a5eef5b08d8e3e4067b2d8f` | plugin validate skills and agents | unchanged |
-| `1.4.1→1.4.2` | 2026-10-18 | `86a5bdda81a063d707ac4ab87fb72f7dfe30ab67` | Remote Control history | unchanged |
-| `1.4.2→1.4.3` | 2026-10-20 | `fdfd4becaee2439086d71e34ee06d326e06f7346` | Gemini 4 Argon in `/model` and `--model` for `GEMINI_API_KEY` | unchanged; picker and invocation |
-| `1.4.3→1.4.4` | 2026-10-21 | `99b8981632ddf117c4eab7b1f82b615d4f683f01` | Auto mode on Windows, `/diff`, MCP conversation id | unchanged |
-| `1.4.4→1.4.5` | 2026-10-22 | `902d212319e365583596a014c152745cdf36c49a` | thought rendering, content-safety silent retry | unchanged; retry is request-path |
-| `1.4.5→1.4.6` | 2026-10-23 | `fd851f1da40e4347f1d05d211dcb45f94aede4c4` | status line shows model retry countdown | unchanged; status line, not list output |
-| `1.4.6→1.4.7` | 2026-10-24 | `bf1e6e6d4a05803d21dbe9af5ffba04d8b4fc0ff` | hooks, seasonal theme, headless `-p` CPU | unchanged; `-p` is print mode |
+| `1.3.1→1.3.2` | 2026-10-08 | `8c1310b2179d1d4d952c54bd0e4424bd53e904f6` | plugin marketplace and install | unproven-selected-behavior |
+| `1.3.2→1.3.3` | 2026-10-10 | `800852ea61796e9fe53077a2f945e74daacb4be6` | prompt header, MCP always-load, quota reported immediately | unproven-selected-behavior |
+| `1.3.3→1.3.4` | 2026-10-13 | `9eebbedf051ffd75adb15e468f48b7b75be4b15b` | `--model` default effort, `/model` picker, 30-second retry cap, unknown `--agent` on `-p` | unproven-selected-behavior |
+| `1.3.4→1.3.5` | 2026-10-14 | `89081f72e10a98c3689f34b1af7261f43136ab5d` | Auto mode, `/compact`, `/diff` | unproven-selected-behavior |
+| `1.3.5→1.3.6` | 2026-10-15 | `680e58585fa49c266ab38bd986816f40455895cf` | ADC Claude models in `/model`, stalled-connection retry | unproven-selected-behavior |
+| `1.3.6→1.4.0` | 2026-10-16 | `e8a400403c82b7eb27a333784dc3c37985aa622e` | OSC 7501, plugin validate, new 1.4 minor | unproven-selected-behavior |
+| `1.4.0→1.4.1` | 2026-10-17 | `4433f3a6dabf04ce0a5eef5b08d8e3e4067b2d8f` | plugin validate skills and agents | unproven-selected-behavior |
+| `1.4.1→1.4.2` | 2026-10-18 | `86a5bdda81a063d707ac4ab87fb72f7dfe30ab67` | Remote Control history | unproven-selected-behavior |
+| `1.4.2→1.4.3` | 2026-10-20 | `fdfd4becaee2439086d71e34ee06d326e06f7346` | Gemini 4 Argon in `/model` and `--model` for `GEMINI_API_KEY` | unproven-selected-behavior |
+| `1.4.3→1.4.4` | 2026-10-21 | `99b8981632ddf117c4eab7b1f82b615d4f683f01` | Auto mode on Windows, `/diff`, MCP conversation id | unproven-selected-behavior |
+| `1.4.4→1.4.5` | 2026-10-22 | `902d212319e365583596a014c152745cdf36c49a` | thought rendering, content-safety silent retry | unproven-selected-behavior |
+| `1.4.5→1.4.6` | 2026-10-23 | `fd851f1da40e4347f1d05d211dcb45f94aede4c4` | status line shows model retry countdown | unproven-selected-behavior |
+| `1.4.6→1.4.7` | 2026-10-24 | `bf1e6e6d4a05803d21dbe9af5ffba04d8b4fc0ff` | hooks, seasonal theme, headless `-p` CPU | unproven-selected-behavior |
 
 All thirteen changed source-path sets are exactly `{CHANGELOG.md}`. Official
 docs separately describe `agy models` as listing model slugs. The current
@@ -84,14 +96,15 @@ The decoder corpus stays the frozen `1.1.9` slug lines.
 
 ## Claim and boundaries
 
-The catalogue claim is two maintained segments on the existing behavior
-revision: `1.1.9..=1.3.6` (unpublished `1.2.18` stays excluded) and
-`1.4.0..=1.4.7`. Official stable hops `1.3.2` through `1.3.6` and `1.4.0`
-through `1.4.7` qualify. `1.3.7`, `1.3.8`, and `1.3.9` had neither a release
-nor a tag on 2026-10-26; they sit in the interior gap and are Incompatible
-without being enumerated exclusions. `1.4.8` and `1.4.9` were also absent;
-`1.4.8` is the first unpublished later point (`UnverifiedNewer`). Published
-release metadata for `1.4.8` is absent at observation.
+The catalogue claim stays one maintained segment on the existing behavior
+revision: `1.1.9..=1.3.1` (unpublished `1.2.18` stays excluded). Official
+stable hops `1.3.2` through `1.4.7` remain identity-frozen and
+`UnverifiedNewer` until per-hop dual-platform artifact-authority proof
+lands. `1.3.7`, `1.3.8`, and `1.3.9` had neither a release nor a tag on
+2026-10-26; they sit after the kept ceiling and assess `UnverifiedNewer`.
+`1.4.8` and `1.4.9` were also absent; `1.4.8` is the first unpublished later
+point (`UnverifiedNewer`). Published release metadata for `1.4.8` is absent
+at observation.
 
 No `agy` command, installation, provider prompt, live catalogue, credential,
 or host mutation occurred. Headless interior releases stay deferred and are
@@ -103,6 +116,7 @@ not inspected as a route claim here.
 - [Official CLI changelog](https://github.com/google-antigravity/antigravity-cli/blob/1.4.7/CHANGELOG.md)
 - [Official Antigravity CLI headless guide](https://antigravity.google/docs/cli/headless), which documents `agy models` separately as the model-slug listing command
 - [Research 380](./380-antigravity-cli-1-3-1-catalogue-identity.md) for the frozen `1.3.1` boundary
-- [Research 353](./353-antigravity-headless-adaptation-to-current-official.md) for the release-notes behavioral-authority ruling
-- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)
+- [Q-005](../knowledge/questions.md) (2026-09-28 NO): the 2026-09-15 notes ruling stays scoped to hops through `1.2.2`
+- [Research 353](./353-antigravity-headless-adaptation-to-current-official.md) is historical for hops through `1.2.2` and does not override Q-005
+- [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md) Artifact Authority Without Public Source
 - [`selection.rs`](../../crates/swallowtail-adapter-antigravity/src/selection.rs) and the frozen `antigravity-cli-1.1.9` decoder corpus

@@ -1291,21 +1291,21 @@
       "release_present": false,
       "tag_present": false,
       "probed_at": "2026-10-26",
-      "classification": "unpublished interior gap between 1.1.9..=1.3.6 and 1.4.0..=1.4.7; Incompatible without enumerated exclusion"
+      "classification": "unpublished after the kept 1.3.1 catalogue ceiling; UnverifiedNewer under AllowUnverified; not an interior qualified hole"
     },
     {
       "version": "1.3.8",
       "release_present": false,
       "tag_present": false,
       "probed_at": "2026-10-26",
-      "classification": "unpublished interior gap between 1.1.9..=1.3.6 and 1.4.0..=1.4.7; Incompatible without enumerated exclusion"
+      "classification": "unpublished after the kept 1.3.1 catalogue ceiling; UnverifiedNewer under AllowUnverified; not an interior qualified hole"
     },
     {
       "version": "1.3.9",
       "release_present": false,
       "tag_present": false,
       "probed_at": "2026-10-26",
-      "classification": "unpublished interior gap between 1.1.9..=1.3.6 and 1.4.0..=1.4.7; Incompatible without enumerated exclusion"
+      "classification": "unpublished after the kept 1.3.1 catalogue ceiling; UnverifiedNewer under AllowUnverified; not an interior qualified hole"
     },
     {
       "version": "1.4.8",
@@ -1330,10 +1330,11 @@
       "present": false,
       "version_command_run": false
     },
-    "behavioral_authority": "official release notes under the existing 2026-09-15 operator ruling",
+    "behavioral_authority": "Q-005 (2026-09-28 NO) scopes the 2026-09-15 notes ruling to five hops through 1.2.2. Contract 029 Artifact Authority Without Public Source governs 1.3.2..=1.4.7; changelog and notes are discovery only and cannot prove shipped selected behavior.",
     "selected_writer": {
       "platform": "linux_x64",
       "method": "Go pclntab on the re-verified 1.3.1 binary and every later downloaded Linux x64 binary; runtime.text is the ELF .text address plus 0x80; no binary executed",
+      "insufficient_for_qualification": true,
       "func2_normalized_identical_from_1_3_1_through_1_4_7": true,
       "func2_calls": [
         "entrypoints.modelsReport",
@@ -1347,25 +1348,11 @@
     }
   },
   "qualification": {
-    "shape": "compatible-extension",
-    "qualify": [
-      "1.3.2",
-      "1.3.3",
-      "1.3.4",
-      "1.3.5",
-      "1.3.6",
-      "1.4.0",
-      "1.4.1",
-      "1.4.2",
-      "1.4.3",
-      "1.4.4",
-      "1.4.5",
-      "1.4.6",
-      "1.4.7"
-    ],
+    "shape": "identity-stop",
+    "kept_ceiling": "1.3.1",
+    "qualify": [],
     "qualified_segments": [
-      "1.1.9..=1.3.6",
-      "1.4.0..=1.4.7"
+      "1.1.9..=1.3.1"
     ],
     "exclude_exact": [
       "1.2.18"

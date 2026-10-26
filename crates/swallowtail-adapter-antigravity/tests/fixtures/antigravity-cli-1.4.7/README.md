@@ -9,8 +9,10 @@ downloaded archive. protocol.json classifies every hop's exact source path
 set and changed runtime files against the selected agy models behavior.
 
 Only antigravity.catalogue is in scope. Unpublished 1.2.18 stays excluded.
-The maintained window is two segments, 1.1.9..=1.3.6 and 1.4.0..=1.4.7, so
-unpublished 1.3.7, 1.3.8, and 1.3.9 sit in the interior gap and are
-Incompatible. The headless ceiling and its unqualified gaps are unchanged.
+The maintained window stays 1.1.9..=1.3.1. Official hops 1.3.2 through 1.4.7
+are identity-frozen and UnverifiedNewer (Q-005; Contract 029 Artifact
+Authority). Unpublished 1.3.7, 1.3.8, and 1.3.9 sit after that ceiling and
+are UnverifiedNewer, not a Maintained interior hole. The headless ceiling
+and its unqualified gaps are unchanged.
 No downloaded binary was executed; no provider prompt, live catalogue,
 credential, install, or host update was used.

@@ -271,6 +271,15 @@ fn identity_freezes_each_stable_hop_and_complete_published_asset_manifest() {
         writer["host_executable_static_observation"]["present"],
         false
     );
+    assert!(
+        writer["behavioral_authority"]
+            .as_str()
+            .is_some_and(|note| note.contains("Q-005") && note.contains("Artifact Authority"))
+    );
+    assert_eq!(
+        writer["selected_writer"]["insufficient_for_qualification"],
+        true
+    );
     assert_eq!(
         writer["selected_writer"]["func2_normalized_identical_from_1_3_1_through_1_4_7"],
         true
@@ -312,6 +321,11 @@ fn identity_freezes_each_stable_hop_and_complete_published_asset_manifest() {
     assert_eq!(gaps[1]["version"], "1.3.7");
     assert_eq!(gaps[1]["release_present"], false);
     assert_eq!(gaps[1]["tag_present"], false);
+    assert!(
+        gaps[1]["classification"]
+            .as_str()
+            .is_some_and(|note| note.contains("unpublished") && !note.contains("Maintained"))
+    );
     assert_eq!(gaps[2]["version"], "1.3.8");
     assert_eq!(gaps[3]["version"], "1.3.9");
     assert_eq!(gaps[4]["version"], "1.4.8");
@@ -325,31 +339,40 @@ fn every_published_hop_classifies_the_exact_changed_file_set_per_route() {
     let protocol = json(PROTOCOL);
     let dist = json(DIST);
     assert_eq!(protocol["scope"], "antigravity.catalogue only");
-    assert_eq!(protocol["result"]["classification"], "compatible-extension");
+    assert_eq!(protocol["result"]["classification"], "identity-stop");
     assert_eq!(
         protocol["result"]["catalogue_changed_hops"],
         serde_json::json!([])
     );
     assert_eq!(protocol["result"]["headless_changed"], false);
-    assert_eq!(protocol["selected_mapping"]["new_ceiling"], "1.4.7");
+    assert_eq!(protocol["selected_mapping"]["previous_ceiling"], "1.3.1");
+    assert_eq!(protocol["selected_mapping"]["kept_ceiling"], "1.3.1");
+    assert_eq!(
+        protocol["selected_mapping"]["observed_official_latest"],
+        "1.4.7"
+    );
     assert_eq!(
         protocol["selected_mapping"]["exact_unpublished_exclusions"],
         serde_json::json!(["1.2.18"])
     );
+    assert_eq!(
+        protocol["selected_mapping"]["qualified_segments"],
+        serde_json::json!(["1.1.9..=1.3.1"])
+    );
+    assert!(
+        protocol["authority"]
+            .as_str()
+            .is_some_and(|note| note.contains("Q-005") && note.contains("Artifact Authority"))
+    );
     assert!(
         protocol["bounded_changes"]["selected_writer"]
             .as_str()
-            .is_some_and(|note| note.contains("32-byte") && note.contains("1.4.7"))
+            .is_some_and(|note| note.contains("32-byte") && note.contains("insufficient"))
     );
     assert!(
-        protocol["bounded_changes"]["model_picker_and_retry_notes"]
+        protocol["bounded_changes"]["missing_selected_static_proof"]
             .as_str()
-            .is_some_and(|note| note.contains("inference"))
-    );
-    assert!(
-        protocol["bounded_changes"]["minor_line"]
-            .as_str()
-            .is_some_and(|note| note.contains("1.4.0"))
+            .is_some_and(|note| note.contains("Linux x64") && note.contains("Mac ARM64"))
     );
 
     let hops = protocol["hops"].as_array().expect("protocol hops");
@@ -363,7 +386,10 @@ fn every_published_hop_classifies_the_exact_changed_file_set_per_route() {
         assert_eq!(hop["source_compare"]["total_commits"], 1);
         assert_exact_string_array(&hop["source_compare"]["changed_paths"], &["CHANGELOG.md"]);
         assert_eq!(hop["changed_source_files"][0]["path"], "CHANGELOG.md");
-        assert_eq!(hop["catalogue_classification"], "unchanged");
+        assert_eq!(
+            hop["catalogue_classification"],
+            "unproven-selected-behavior"
+        );
         assert_eq!(hop["headless_claim_touched"], false);
         assert!(
             hop["release_note_change_classes"]
@@ -396,9 +422,9 @@ fn every_published_hop_classifies_the_exact_changed_file_set_per_route() {
 }
 
 #[test]
-fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
+fn catalogue_identity_freezes_1_4_7_and_keeps_claim_at_1_3_1() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.4.7");
+    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.3.1");
     assert_eq!(ANTIGRAVITY_HEADLESS_LATEST_QUALIFIED_VERSION, "1.2.11");
     let identity = json(IDENTITY);
     let protocol = json(PROTOCOL);
@@ -408,21 +434,20 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
         "antigravity.catalogue.release-window-1"
     );
     assert_eq!(claim.baseline().as_str(), "1.1.9");
-    assert_eq!(claim.latest_qualified().as_str(), "1.4.7");
+    assert_eq!(claim.latest_qualified().as_str(), "1.3.1");
     assert_eq!(
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
     );
     let segments: Vec<_> = claim.milestones().collect();
-    assert_eq!(segments.len(), 2);
+    assert_eq!(segments.len(), 1);
     assert_eq!(segments[0].minimum().as_str(), "1.1.9");
-    assert_eq!(segments[0].maximum().as_str(), "1.3.6");
-    assert_eq!(segments[1].minimum().as_str(), "1.4.0");
-    assert_eq!(segments[1].maximum().as_str(), "1.4.7");
-    for segment in &segments {
-        assert_eq!(segment.behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
-        assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
-    }
+    assert_eq!(segments[0].maximum().as_str(), "1.3.1");
+    assert_eq!(segments[0].behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
+    assert_eq!(
+        segments[0].support_status(),
+        InterfaceSupportStatus::Maintained
+    );
     let exclusions: Vec<&str> = claim.exclusions().map(InterfaceVersion::as_str).collect();
     assert_eq!(exclusions, ["1.2.18"]);
     assert_eq!(
@@ -431,7 +456,7 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
     );
     assert_eq!(
         protocol["selected_mapping"]["qualified_segments"],
-        serde_json::json!(["1.1.9..=1.3.6", "1.4.0..=1.4.7"])
+        serde_json::json!(["1.1.9..=1.3.1"])
     );
     assert_eq!(
         identity["qualification"]["exclude_exact"],
@@ -439,12 +464,13 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
     );
     assert_eq!(
         identity["qualification"]["qualified_segments"],
-        serde_json::json!(["1.1.9..=1.3.6", "1.4.0..=1.4.7"])
+        serde_json::json!(["1.1.9..=1.3.1"])
     );
+    assert_eq!(identity["qualification"]["shape"], "identity-stop");
+    assert_eq!(identity["qualification"]["kept_ceiling"], "1.3.1");
+    assert_eq!(identity["qualification"]["qualify"], serde_json::json!([]));
 
-    for version in [
-        "1.1.9", "1.2.11", "1.3.1", "1.3.2", "1.3.6", "1.4.0", "1.4.7",
-    ] {
+    for version in ["1.1.9", "1.2.11", "1.3.1"] {
         assert!(
             matches!(
                 claim.assess(&version_value(version)),
@@ -454,7 +480,7 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
             "{version} keeps the catalogue behavior"
         );
     }
-    for excluded in ["1.1.8", "1.2.18", "1.3.7", "1.3.8", "1.3.9", "1.3.10"] {
+    for excluded in ["1.1.8", "1.2.18"] {
         assert!(
             matches!(
                 claim.assess(&version_value(excluded)),
@@ -463,10 +489,17 @@ fn catalogue_claim_extends_through_1_4_7_and_keeps_headless_exact() {
             "{excluded} remains incompatible"
         );
     }
-    assert!(matches!(
-        claim.assess(&version_value("1.4.8")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    for newer in [
+        "1.3.2", "1.3.6", "1.3.7", "1.3.8", "1.3.9", "1.4.0", "1.4.7", "1.4.8",
+    ] {
+        assert!(
+            matches!(
+                claim.assess(&version_value(newer)),
+                InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+            ),
+            "{newer} stays UnverifiedNewer until artifact-authority proof lands"
+        );
+    }
 
     let headless = antigravity_headless_claim();
     assert_eq!(headless.latest_qualified().as_str(), "1.2.11");

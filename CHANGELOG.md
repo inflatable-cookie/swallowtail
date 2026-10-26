@@ -6,12 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
-- qualify `antigravity.catalogue` through official stable `1.4.7`. Two
-  maintained segments `1.1.9..=1.3.6` and `1.4.0..=1.4.7` stay on
-  `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`, claim
-  `antigravity.catalogue.release-window-1`, and `AllowUnverified`. Unpublished
-  `1.2.18` stays excluded. The interior `1.3.7`/`1.3.8`/`1.3.9` gap is
-  Incompatible. `1.4.8` stays `UnverifiedNewer`. `antigravity.headless` stays
+- freeze `antigravity.catalogue` identity through official stable `1.4.7`
+  without extending qualification. The claim stays one maintained segment
+  `1.1.9..=1.3.1` on `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`,
+  claim `antigravity.catalogue.release-window-1`, and `AllowUnverified`.
+  Unpublished `1.2.18` stays excluded. Published hops `1.3.2` through
+  `1.4.7` and unpublished `1.3.7`/`1.3.8`/`1.3.9` stay `UnverifiedNewer`
+  (Q-005; Contract 029 Artifact Authority). `antigravity.headless` stays
   at exact `1.2.11`. See Research 449.
 - qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).

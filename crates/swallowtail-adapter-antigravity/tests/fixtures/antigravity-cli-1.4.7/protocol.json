@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "record": "docs/research/449-antigravity-cli-1-4-7-catalogue-identity.md",
-  "authority": "Contract 029 and official release notes as behavioral authority under Tom's 2026-09-15 ruling",
+  "authority": "Q-005 (2026-09-28 NO) scopes the 2026-09-15 notes ruling to five hops through 1.2.2. Contract 029 Artifact Authority Without Public Source governs 1.3.2..=1.4.7; changelog and notes are discovery only and cannot prove shipped selected behavior.",
   "scope": "antigravity.catalogue only",
   "selected_mapping": {
     "command": "agy models",
@@ -12,10 +12,10 @@
     "behavior_revision": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
     "baseline": "1.1.9",
     "previous_ceiling": "1.3.1",
-    "new_ceiling": "1.4.7",
+    "kept_ceiling": "1.3.1",
+    "observed_official_latest": "1.4.7",
     "qualified_segments": [
-      "1.1.9..=1.3.6",
-      "1.4.0..=1.4.7"
+      "1.1.9..=1.3.1"
     ],
     "exact_unpublished_exclusions": [
       "1.2.18"
@@ -48,8 +48,8 @@
         "plugin author manifest, data, and bin layout",
         "plugin install cleanup"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "Plugin install and marketplace notes do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "Plugin install and marketplace notes do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.3.2",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -58,14 +58,14 @@
           "path": "antigravity",
           "from_sha256": "ce1bdaed3201bb84f35d69d2773caec4f18af52af00e8c25f6cace07e4359615",
           "to_sha256": "32f9478e47d1d456e090f7ed0a297fcde2fa45ec10839904f03ea1ba00645e49",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "88db8b4d21ece4999fa58e0b54cea77154e47b319ee178d086c446262317f3fa",
           "to_sha256": "07ca8348fa9724e988c7236f2dbecf6b089684a6f18be5f7dd61f97e8fd4561a",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -95,8 +95,8 @@
         "macOS sandbox credential directory",
         "quota reported immediately instead of retried"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The quota note is a request-path retry change. It does not name the model-list command. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The quota note is a request-path retry change. It does not name the model-list command. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.3.3",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -105,14 +105,14 @@
           "path": "antigravity",
           "from_sha256": "32f9478e47d1d456e090f7ed0a297fcde2fa45ec10839904f03ea1ba00645e49",
           "to_sha256": "d97edcf90eda1799cd6cedc92616ef402f23c9752a723e8b8ae3e8f062ce458b",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "07ca8348fa9724e988c7236f2dbecf6b089684a6f18be5f7dd61f97e8fd4561a",
           "to_sha256": "96dd362d5583c60485f5277fa64e43dd64c3ff02a2bf109fd683b99777da370d",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -143,8 +143,8 @@
         "model-request retry wait capped at 30 seconds",
         "unknown --agent exits 1 on headless -p"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The effort default, /model picker, retry cap, and --agent exit are invocation or headless print-mode notes. They do not name agy models stdout. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The effort default, /model picker, retry cap, and --agent exit are invocation or headless print-mode notes. They do not name agy models stdout. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.3.4",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -153,14 +153,14 @@
           "path": "antigravity",
           "from_sha256": "d97edcf90eda1799cd6cedc92616ef402f23c9752a723e8b8ae3e8f062ce458b",
           "to_sha256": "5b93565c5f04ea4f7b79d49d5c3237449bf6ce47b6779e8cf46c1fae97957c98",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "96dd362d5583c60485f5277fa64e43dd64c3ff02a2bf109fd683b99777da370d",
           "to_sha256": "9da414c0624c27aa2969a86030a070b5341c0657700512eba70b21725ce253f5",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -189,8 +189,8 @@
         "/compact",
         "/diff syntax highlighting"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "Conversation and diff notes do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "Conversation and diff notes do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.3.5",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -199,14 +199,14 @@
           "path": "antigravity",
           "from_sha256": "5b93565c5f04ea4f7b79d49d5c3237449bf6ce47b6779e8cf46c1fae97957c98",
           "to_sha256": "b5385638174a5e720e904f3a2678752534fb8414d10c2c302fa16daf56cbcfc9",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "9da414c0624c27aa2969a86030a070b5341c0657700512eba70b21725ce253f5",
           "to_sha256": "ebd71c4db14f79fca3fd0160332a38d9037146737422dcfc1f1d21ba01a13fff",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -235,8 +235,8 @@
         "/model shows Claude models only when the Cloud project can use them",
         "stalled model connection cancel and retry"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The ADC model list is the /model picker, not agy models. The stall note is a request retry. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The ADC model list is the /model picker, not agy models. The stall note is a request retry. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.3.6",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -245,14 +245,14 @@
           "path": "antigravity",
           "from_sha256": "b5385638174a5e720e904f3a2678752534fb8414d10c2c302fa16daf56cbcfc9",
           "to_sha256": "e14253aa79d4e910cbf8bcb40b68e80f9e85476725e130ed085122c98face92b",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "ebd71c4db14f79fca3fd0160332a38d9037146737422dcfc1f1d21ba01a13fff",
           "to_sha256": "827ba22b4aa33557614a57aac2cc13f386e17db6b802febd3932226906ac05ab",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -282,8 +282,8 @@
         "agy plugin validate",
         "new 1.4 minor line"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The new 1.4 minor line does not by itself change the selected catalogue surface. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The new 1.4 minor line does not by itself change the selected catalogue surface. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.0",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -292,14 +292,14 @@
           "path": "antigravity",
           "from_sha256": "e14253aa79d4e910cbf8bcb40b68e80f9e85476725e130ed085122c98face92b",
           "to_sha256": "60e72242f07c131f75afcd9a9e425d6ee097a1a1b3190ea98ae78fa4180bbfa8",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "827ba22b4aa33557614a57aac2cc13f386e17db6b802febd3932226906ac05ab",
           "to_sha256": "a4502aaf310b2fd6eb657fcfec2fcc31a690fbbd0c2d14c8eefbb556409024ce",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -327,8 +327,8 @@
         "agy plugin validate skills, subagents, and rules",
         "inline diff preview"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "Plugin validation and diff preview do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "Plugin validation and diff preview do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.1",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -337,14 +337,14 @@
           "path": "antigravity",
           "from_sha256": "60e72242f07c131f75afcd9a9e425d6ee097a1a1b3190ea98ae78fa4180bbfa8",
           "to_sha256": "16e228cb243fa098eeb27b3b2aca963caec84e4a8ac49e3821b00c56f99f7508",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "a4502aaf310b2fd6eb657fcfec2fcc31a690fbbd0c2d14c8eefbb556409024ce",
           "to_sha256": "da7e0766b076e411343542db4c09380bf4656df24da47168c0fa0f7986813e11",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -371,8 +371,8 @@
       "release_note_change_classes": [
         "Remote Control conversation history in daemon mode"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The Remote Control note does not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The Remote Control note does not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.2",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -381,14 +381,14 @@
           "path": "antigravity",
           "from_sha256": "16e228cb243fa098eeb27b3b2aca963caec84e4a8ac49e3821b00c56f99f7508",
           "to_sha256": "085f43e0d0628a8a8dabe1e547067818fa2c0adc86cfac98a3c4492918f455ef",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "da7e0766b076e411343542db4c09380bf4656df24da47168c0fa0f7986813e11",
           "to_sha256": "74935642426b5bb1fcf07a5555f847c478f4517dd002c72b9c98159cb773b932",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -417,8 +417,8 @@
         "agy plugin validate hooks and sidecars",
         "Gemini 4 Argon visibility in /model and --model for GEMINI_API_KEY"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "Gemini 4 Argon visibility is the /model picker and --model invocation, not the agy models list. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "Gemini 4 Argon visibility is the /model picker and --model invocation, not the agy models list. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.3",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -427,14 +427,14 @@
           "path": "antigravity",
           "from_sha256": "085f43e0d0628a8a8dabe1e547067818fa2c0adc86cfac98a3c4492918f455ef",
           "to_sha256": "d003c9d47e12f689d3448cad0f614289ccde5fb4c58bf8b4b543a9b514c097bc",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "74935642426b5bb1fcf07a5555f847c478f4517dd002c72b9c98159cb773b932",
           "to_sha256": "836c446f6118140e86679ec6966a785eeedbf56b3711a8eb1f41947483e9802a",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -463,8 +463,8 @@
         "/diff folding",
         "MCP root conversation id"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "Auto mode, diff, and MCP notes do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "Auto mode, diff, and MCP notes do not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.4",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -473,14 +473,14 @@
           "path": "antigravity",
           "from_sha256": "d003c9d47e12f689d3448cad0f614289ccde5fb4c58bf8b4b543a9b514c097bc",
           "to_sha256": "337dcde668441a2828968644d7982829c2d2a5e0c4144f346e1f3fc6abb3cdc7",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "836c446f6118140e86679ec6966a785eeedbf56b3711a8eb1f41947483e9802a",
           "to_sha256": "9abb478686dc08d48699ba1604c14d15819ef6a2542d5d32173acbd5f02d712d",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -510,8 +510,8 @@
         "cron schedule offset",
         "content-safety filter silent retry"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The content-safety note is a request-path retry. It does not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The content-safety note is a request-path retry. It does not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.5",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -520,14 +520,14 @@
           "path": "antigravity",
           "from_sha256": "337dcde668441a2828968644d7982829c2d2a5e0c4144f346e1f3fc6abb3cdc7",
           "to_sha256": "8af8e7a2a68f72fa7164e00bb59b8902c018fa43e528fc401ad7db8c2972583c",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "9abb478686dc08d48699ba1604c14d15819ef6a2542d5d32173acbd5f02d712d",
           "to_sha256": "b89677b741d8d9d38cf0a6911ab468fac629158194039904cbfd645fdb897554",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -557,8 +557,8 @@
         "compaction keeps attachments",
         "status line shows model retry countdown"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The status-line countdown reports an in-progress model retry. It is not agy models stdout. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The status-line countdown reports an in-progress model retry. It is not agy models stdout. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.6",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -567,14 +567,14 @@
           "path": "antigravity",
           "from_sha256": "8af8e7a2a68f72fa7164e00bb59b8902c018fa43e528fc401ad7db8c2972583c",
           "to_sha256": "128780f5776959ba6a991bde1f0a8b699eee37a59ed30deb9926147fedfa56c4",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "b89677b741d8d9d38cf0a6911ab468fac629158194039904cbfd645fdb897554",
           "to_sha256": "cab004f3c5c6cb7dc8b8712d3bc30431bd4480b17ff38a07eb1865abeffd2f27",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     },
@@ -605,8 +605,8 @@
         "headless -p CPU",
         "rendering and on-demand MCP result size"
       ],
-      "catalogue_classification": "unchanged",
-      "catalogue_classification_reason": "The headless -p CPU note is print mode. It does not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle.",
+      "catalogue_classification": "unproven-selected-behavior",
+      "catalogue_classification_reason": "The headless -p CPU note is print mode. It does not name agy models. No note names the agy models command, its list output, decoding, or its process lifecycle. Notes are discovery only under Q-005 and Contract 029 Artifact Authority; selected shipped agy models behavior is unproven.",
       "runtime_tree_inventory": "dist-inventory.json#1.4.7",
       "headless_claim_touched": false,
       "changed_runtime_files": [
@@ -615,14 +615,14 @@
           "path": "antigravity",
           "from_sha256": "128780f5776959ba6a991bde1f0a8b699eee37a59ed30deb9926147fedfa56c4",
           "to_sha256": "40349135371a8ed1f1af1e9f8b741de99174ae9fce6380b96c2d1f543480af7a",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         },
         {
           "platform": "mac_arm64",
           "path": "antigravity",
           "from_sha256": "cab004f3c5c6cb7dc8b8712d3bc30431bd4480b17ff38a07eb1865abeffd2f27",
           "to_sha256": "b7a13e53c9f49921692676ef8edc2e60ceb67064c00bc732d9a364ec3ad75b32",
-          "classification": "release-note-bounded executable change; no selected catalogue behavior change named"
+          "classification": "downloaded selected executable digest changed; selected catalogue behavior unproven under Q-005 / Contract 029 Artifact Authority"
         }
       ]
     }
@@ -630,14 +630,15 @@
   "bounded_changes": {
     "binary_scope": "Each downloaded official Linux x64 and Mac ARM64 archive contains exactly one regular file named antigravity; its size and digest are frozen in dist-inventory.json. The public source compare for each tag exposes only CHANGELOG.md. No downloaded binary was executed.",
     "unmapped": "Release-note changes to conversation UI, headless -p, /model, --model, settings, authentication, tools, permissions, usage, files, plugins, remote control, and other commands remain outside the selected catalogue mapping unless a hop says otherwise.",
-    "model_picker_and_retry_notes": "Notes that mention /model, --model, model-request retry, content-safety retry, the status-line retry countdown, or headless -p are bounded to invocation or print mode. Treating them as outside agy models is an inference from the official release notes and the bounded Linux writer observation, not a live catalogue run.",
-    "selected_writer": "1.3.4 grows the source-model stack copy by 32 bytes. The 32-byte two-string element stride, the models map key, and the headless.Write argument block in func2 stay the same through 1.4.7.",
-    "minor_line": "1.4.0 opens a new minor line. The selected writer observation does not change at that hop, so the minor line is not an identity stop.",
+    "model_picker_and_retry_notes": "Notes that mention /model, --model, model-request retry, content-safety retry, the status-line retry countdown, or headless -p are discovery only. Treating them as outside agy models is an inference and does not qualify selected shipped behavior under Q-005 / Contract 029 Artifact Authority.",
+    "selected_writer": "1.3.4 grows the source-model stack copy by 32 bytes. The 32-byte two-string element stride, the models map key, and the headless.Write argument block in func2 stay the same through 1.4.7. That writer observation is insufficient for qualification: it does not prove selected agy models dispatch, slug/display/default rendering, config/account/env/auth/model acquisition, errors/exit, or process/lifecycle/cleanup.",
+    "missing_selected_static_proof": "No retained Linux x64 or Mac ARM64 binary remains for a reachable agy models call graph covering dispatch, slug/display/default rendering, config/account/env/auth/model acquisition, errors/exit, and process/lifecycle/cleanup on both selected platforms. Metadata-only platform rows grant no behavior credit.",
+    "minor_line": "1.4.0 opens a new minor line. Writer-stride identity does not qualify the hop; the catalogue claim stays at 1.3.1 as an identity-stop.",
     "docs_sample": "The unversioned Antigravity headless docs show a padded two-column agy models sample. The 1.3.1 writer already stores a 32-byte two-string element, and that stride is unchanged through 1.4.7, so the sample is not a hop delta after the qualified ceiling. The decoder corpus stays the frozen 1.1.9 slug lines.",
-    "deferred": "No antigravity.headless claim, deferred headless interior point, ACP registry, exact hosted alias, or launcher is qualified here. Unpublished 1.3.7, 1.3.8, and 1.3.9 sit in the interior gap between 1.1.9..=1.3.6 and 1.4.0..=1.4.7 and assess Incompatible."
+    "deferred": "No antigravity.headless claim, deferred headless interior point, ACP registry, exact hosted alias, or launcher is qualified here. Unpublished 1.3.7, 1.3.8, and 1.3.9 sit after the kept 1.3.1 ceiling and assess UnverifiedNewer under AllowUnverified; they are not an interior qualified hole."
   },
   "result": {
-    "classification": "compatible-extension",
+    "classification": "identity-stop",
     "catalogue_changed_hops": [],
     "headless_changed": false,
     "new_operation": false,

@@ -520,13 +520,14 @@ OpenHands adds a package without a production route.
   entries preserve only opaque model identity and do not imply entitlement or
   invocability. The official `1.1.8` documentation tag and installed `1.1.9`
   tag share one source commit; `1.1.8` is not independently qualified.
-  Catalogue support extends through official `1.4.7` with the same
-  catalogue revision on two maintained segments `1.1.9..=1.3.6` and
-  `1.4.0..=1.4.7`; Research 449 freezes all thirteen published hops after
-  `1.3.1`, keeps unpublished `1.2.18` excluded, leaves unpublished `1.3.7`,
-  `1.3.8`, and `1.3.9` Incompatible in the interior gap, and classifies no
-  published note as changing the selected `agy models` path.
-  Research 380 records the earlier extension through `1.3.1`. Research 353
+  Catalogue support extends through official `1.3.1` with the same
+  catalogue revision; Research 380 freezes all eight published hops after
+  `1.2.11` and excludes unpublished `1.2.18`. Research 449 freezes identity
+  of the thirteen published hops `1.3.2` through `1.4.7` without extending
+  the claim: Q-005 keeps the 2026-09-15 notes ruling scoped to hops through
+  `1.2.2`, and Contract 029 artifact authority for selected `agy models`
+  behavior on those hops is unproven, so they remain `UnverifiedNewer`.
+  Research 353
   records the extension through `1.2.11` and raises the headless Contract 023
   acceptance options to the operator. Research 359
   then proves the `1.2.11` artifact honours `AGY_CLI_MODEL_API_MAX_RETRIES`

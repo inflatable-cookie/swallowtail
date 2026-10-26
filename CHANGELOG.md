@@ -45,6 +45,14 @@ annotated Git tags from the canonical repository.
   `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0`.
   Unpublished interstitial points stay incompatible. `1.56.1` is the first
   `UnverifiedNewer` fixture.
+- qualify `pi.rpc` through official npm `latest` and GitHub latest stable
+  `1.4.0` on the existing `pi.rpc.strict-lf-v1.1.0-aborted-settled` revision.
+  Research 455 freezes published hops `1.2.0` and `1.3.0` after the `1.1.0`
+  ceiling. `dist/modes/rpc` is byte-identical, including the 33-command table,
+  dispositions, and `agent_settled.aborted`. Exact `1.1.0`, `1.2.0`, `1.3.0`,
+  and `1.4.0` stay Maintained on that newest revision. Unpublished `1.1.1+`,
+  `1.2.1+`, and `1.3.1+` stay incompatible. `pi.sdk-sidecar` and
+  `oh-my-pi.rpc` are unchanged.
 
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,

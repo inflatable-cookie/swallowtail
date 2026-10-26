@@ -1,0 +1,757 @@
+{
+  "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. Hashes match dist-inventory.json. No downloaded executable was run.",
+  "downloaded_artifacts_executed": false,
+  "ceiling_artifacts": {
+    "claude-code-darwin-arm64": {
+      "version": "2.1.310",
+      "artifact_sha256": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd"
+    },
+    "claude-code-linux-x64": {
+      "version": "2.1.310",
+      "artifact_sha256": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56"
+    }
+  },
+  "safe_mode_option_at_2_1_310": {
+    "claude-code-darwin-arm64": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+    "claude-code-linux-x64": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+    "platforms_byte_identical": true
+  },
+  "safe_mode_filter_at_2_1_310": {
+    "claude-code-darwin-arm64": "function Djn(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>wf(n.source))}",
+    "claude-code-linux-x64": "function i1n(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>vp(n.source))}"
+  },
+  "builtin_predicate_at_2_1_310": {
+    "claude-code-darwin-arm64": {
+      "constant": "Ns=\"builtin\"",
+      "predicate": "function wf(e){return e.endsWith(`@${Ns}`)}"
+    },
+    "claude-code-linux-x64": {
+      "constant": "Ns=\"builtin\"",
+      "predicate": "function vp(e){return e.endsWith(`@${Ns}`)}"
+    }
+  },
+  "init_fields_at_2_1_310": {
+    "claude-code-darwin-arm64": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>fXt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Hdt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+    "claude-code-linux-x64": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>tXt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Idt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)"
+  },
+  "cc_plugin_ids_through_2_1_301": [
+    "agents-md",
+    "claude-test",
+    "diff",
+    "mermaid",
+    "mods-guide",
+    "plugin-authoring",
+    "responsive-mode",
+    "sec-default",
+    "telemetry",
+    "tips",
+    "you-should-know"
+  ],
+  "cc_plugin_ids_from_2_1_302": [
+    "agents-md",
+    "claude-test",
+    "diff",
+    "easel",
+    "mermaid",
+    "mods-guide",
+    "plugin-authoring",
+    "responsive-mode",
+    "sec-default",
+    "telemetry",
+    "tips",
+    "you-should-know"
+  ],
+  "easel_first_present": "2.1.302",
+  "research_378_nine_remain": [
+    "sec-default",
+    "agents-md",
+    "telemetry",
+    "plugin-authoring",
+    "tips",
+    "mermaid",
+    "responsive-mode",
+    "diff",
+    "claude-test"
+  ],
+  "empty_tools_and_mcp_leave_easel_autocharts_unselected": true,
+  "per_version": {
+    "2.1.294": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "def0d15e64dd7d89621f88d28214f885b1c38b0ddd69762fb8593e34915d6d53",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.295": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "0116ee2e0a513900b633d9951367f18747686478e2b462805b8c31609f047f70",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.296": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "c9b5341637becbd423ddffc5b254afb645682a3868cb708bbc6cc0e7bb419937",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "24972e3bc859fab2b46ed4c1e51f7d6130f06d3bd550811a114640de3370d0de",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.299": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "ba5ab7b8c195fa03ab8d5bf3915c76153b576a2c40e79a5c46e265e7ed9744b3",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "2d894a4b1bfaaa9aab72aeff7803e3c73bc2510f279a171f6b8f59f72d17d077",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.300": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "475517caa611e3318a2f298fa071287ec98955538df78c58f709ecc01e5ae2d3",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "674deba0bba9aee479f4503c438b49303b6fdd304b9a471b14977aaec5215453",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.301": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "1f04c69e1c24e4d0a716a863af0aad8fc64d49a499334c29701f073700276b99",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "bc1aad9982c7b59c7d889ff92595d61cf46e0a6eae074cb551d932a989bcd222",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.302": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "5262ce9de86243fed0d21edc39b271555d56780d0112e2b194439fe1c6662d37",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "60d7eb7f12fbb28a52533fe8be5884097403562aa02dc73991a021c7067e29a5",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.303": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "d2da3b003dc08b88b7230469014fe3e1dc6fe94bc8f648e89b34175d30269370",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "375988f457756524234695cf2d8f64ace99c5f68682e47ea24862a843c191450",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.304": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "b9ac5374839f14abf3f1f45610637c332b5daee5ce0d1634726cef87aab78e6a",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "ea0f135784631619a7a409d07322ecec964f9cc4fd377508ed1ba3f141f27912",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.305": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "ea3ea3c08d2a9634a4651e687fcf900d410c489bce2b00f22bd7352b91ba704f",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "86cb722ab68348877dba7971e4d0c659919e05e6228c05e006e83da320e656ef",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.306": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "b5d795b7760032d79954b55a9cd1876dcf3a8dc9608fd6bb9f618593f69fd44b",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "520bc6c1f40af466bd03a278b5ae1af1a2938bc7de5b9e5cb15526da20d71cfe",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.307": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "5b113a7752119470f1da419cb0e608af3361cae25b614216b13022093958fb2a",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "6021eb72d20d0682b720bdc63acd2a5cd2270895d1f10d9ca2a88cbfa7b9dd0e",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.308": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "ca923c86ac84b30574a82331a05b6e066c27477a926ceaffe46a845a33e4dd37",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "356733f185fa988e6bf3aa9a555269fdd167982a2e2a80d3c8a78037bb92ad58",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.309": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "5eadc0009cdcdbc0d06e58110d7b2baf88ced6088b1c33a60a21217fe410619c",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "4d704a8aecbe038affa3000f498ae17c1b4f753add8facb8764120affc99b658",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    },
+    "2.1.310": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option_present": true,
+        "safe_mode_filter_log_present": true,
+        "init_subtype_present": true,
+        "permissionMode_default_literal_present": true
+      }
+    }
+  }
+}

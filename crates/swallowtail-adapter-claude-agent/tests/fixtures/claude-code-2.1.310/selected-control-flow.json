@@ -1,0 +1,658 @@
+{
+  "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. Hashes match dist-inventory.json. No downloaded executable was run.",
+  "downloaded_artifacts_executed": false,
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "release_notes_are_not_compatibility_proof": true,
+  "ceiling_artifacts": {
+    "claude-code-darwin-arm64": {
+      "version": "2.1.310",
+      "artifact_file": "claude",
+      "artifact_sha256": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd"
+    },
+    "claude-code-linux-x64": {
+      "version": "2.1.310",
+      "artifact_file": "claude",
+      "artifact_sha256": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56"
+    }
+  },
+  "identifier_stable_literals": {
+    "prompt_ok_false_log": "Hooks: Prompt hook condition was not met:",
+    "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1",
+    "pretooluse_deny_before_dispatch": "Execution stopped by PreToolUse hook",
+    "rewrite_ask_rule": "ask rule on hook-rewritten input",
+    "rewrite_push": "hookRewrites.push",
+    "stop_cap_default_8": "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8",
+    "stop_hook_active_true": "stopHookActive:!0",
+    "plugin_hook_input_undeliverable": "this tool input could not be given to a hook that checks it, so the tool was not run",
+    "plugin_hook_result_undeliverable": "a hook that checks this result could not hand back its answer",
+    "plugin_hook_result_withheld": "its result withheld",
+    "updatedinput_reserved_key": "returned updatedInput with a key starting with",
+    "updatedinput_tool_not_run": "The tool was not run."
+  },
+  "v2_selected_path_at_2_1_310": {
+    "claude-code-darwin-arm64": {
+      "prompt_ok_false_blocks": "if(!gt.data.ok){if(gt.data.impossible===!0&&K)return t(`Hooks: Prompt hook condition judged impossible: ${gt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:gt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:q,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${gt.data.reason}`);let At=uBr(b,`[${e.prompt}]:`)?kl(e.prompt,dBr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${At}]: ${gt.data.reason}`,command:At,..._Z(r,{reason:gt.data.reason})},preventContinuation:!K&&e.continueOnBlock!==!0,stopReason:gt.data.reason}}",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1",
+      "pretooluse_deny_before_dispatch": "if(fn&&!Yr)Yr=`Execution stopped by PreToolUse hook${Vn?`: ${Vn}`:\"\"}`;if(Oo.decisionReason?.type===\"hook\")Yr+=mpn(e.name,At,s.options.tools,ae(s),Uzn(s));let ma=Yr,cr=[{type:\"tool_result\",content:ma,is_error:!0,tool_use_id:n}]",
+      "rewrite_recheck_push": "pr.updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:Oo.has(pr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:pr.updatedInput})",
+      "stop_block_cap_default_8": "let he=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(he>0&&be>he){a(\"tengu_stop_hook_block_count\",{count:be,is_subagent:dZ(M.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:oe});let ee=`A hook blocked the turn from ending ${be} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.\";"
+    },
+    "claude-code-linux-x64": {
+      "prompt_ok_false_blocks": "if(!mt.data.ok){if(mt.data.impossible===!0&&V)return t(`Hooks: Prompt hook condition judged impossible: ${mt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:mt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:K,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${mt.data.reason}`);let Ct=BBr(S,`[${e.prompt}]:`)?kl(e.prompt,FBr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${Ct}]: ${mt.data.reason}`,command:Ct,...cZ(r,{reason:mt.data.reason})},preventContinuation:!V&&e.continueOnBlock!==!0,stopReason:mt.data.reason}}",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1",
+      "pretooluse_deny_before_dispatch": "if(fn&&!Yr)Yr=`Execution stopped by PreToolUse hook${Kn?`: ${Kn}`:\"\"}`;if(Oo.decisionReason?.type===\"hook\")Yr+=Yfn(e.name,Ct,s.options.tools,ae(s),b2n(s));let ga=Yr,dr=[{type:\"tool_result\",content:ga,is_error:!0,tool_use_id:n}]",
+      "rewrite_recheck_push": "fr.updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:Oo.has(fr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:fr.updatedInput})",
+      "stop_block_cap_default_8": "let Se=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(Se>0&&ke>Se){a(\"tengu_stop_hook_block_count\",{count:ke,is_subagent:tZ(M.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:ne});let te=`A hook blocked the turn from ending ${ke} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.\";"
+    }
+  },
+  "hop_2_1_299_fail_closed_at_2_1_310": {
+    "claude-code-darwin-arm64": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!_Et(t)?void 0:qDe[e];return Object.hasOwn(qDe,e)?f?.(s?L:Z):o[e]}var pyn=\"a hook that checks this result could not hand back its answer\";",
+    "claude-code-linux-x64": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!uvt(t)?void 0:jLe[e];return Object.hasOwn(jLe,e)?f?.(s?L:Z):o[e]}var Yhn=\"a hook that checks this result could not hand back its answer\";"
+  },
+  "hop_2_1_300_reserved_key_at_2_1_310": {
+    "claude-code-darwin-arm64": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Ig(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Wme(e,r)} returned updatedInput with a key starting with \"${mzt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Gme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${uqe}`):{...b,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run.`",
+    "claude-code-linux-x64": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Ig(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Wme(e,r)} returned updatedInput with a key starting with \"${gzt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Gme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${aqe}`):{...S,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run.`"
+  },
+  "nested_claude_md_prefix": {
+    "release_note_string": "a nested CLAUDE.md over the size limit now loads only its start",
+    "present_as_selected_path_js": false,
+    "present_as_release_note_string_at_2_1_309": false,
+    "present_as_release_note_string_at_2_1_310": true,
+    "selected_path_does_not_depend_on_this_string": true
+  },
+  "hop_comparison": {
+    "compared_versions": [
+      "2.1.294",
+      "2.1.295",
+      "2.1.296",
+      "2.1.299",
+      "2.1.300",
+      "2.1.301",
+      "2.1.302",
+      "2.1.303",
+      "2.1.304",
+      "2.1.305",
+      "2.1.306",
+      "2.1.307",
+      "2.1.308",
+      "2.1.309",
+      "2.1.310"
+    ],
+    "v2_literals_present_on_every_compared_binary": true,
+    "plugin_fail_closed_first_present": "2.1.299",
+    "reserved_key_first_present": "2.1.300",
+    "per_version": {
+      "2.1.294": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "def0d15e64dd7d89621f88d28214f885b1c38b0ddd69762fb8593e34915d6d53",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": false,
+          "reserved_key_literals_present": false
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "27122ca7b624f537546fbef35b80c66370d974ff258f3d9b10ac50bb8771f262",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": false,
+          "reserved_key_literals_present": false
+        }
+      },
+      "2.1.295": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "0116ee2e0a513900b633d9951367f18747686478e2b462805b8c31609f047f70",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": false,
+          "reserved_key_literals_present": false
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "4503bfe11a6c7fcc1e0b39b5e0d347c04248f750b03b0977b3ad6b531fe6f358",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": false,
+          "reserved_key_literals_present": false
+        }
+      },
+      "2.1.296": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "c9b5341637becbd423ddffc5b254afb645682a3868cb708bbc6cc0e7bb419937",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": false,
+          "reserved_key_literals_present": false
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "24972e3bc859fab2b46ed4c1e51f7d6130f06d3bd550811a114640de3370d0de",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": false,
+          "reserved_key_literals_present": false
+        }
+      },
+      "2.1.299": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "ba5ab7b8c195fa03ab8d5bf3915c76153b576a2c40e79a5c46e265e7ed9744b3",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": false
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "2d894a4b1bfaaa9aab72aeff7803e3c73bc2510f279a171f6b8f59f72d17d077",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": false
+        }
+      },
+      "2.1.300": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "475517caa611e3318a2f298fa071287ec98955538df78c58f709ecc01e5ae2d3",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "674deba0bba9aee479f4503c438b49303b6fdd304b9a471b14977aaec5215453",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.301": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "1f04c69e1c24e4d0a716a863af0aad8fc64d49a499334c29701f073700276b99",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "bc1aad9982c7b59c7d889ff92595d61cf46e0a6eae074cb551d932a989bcd222",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.302": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "5262ce9de86243fed0d21edc39b271555d56780d0112e2b194439fe1c6662d37",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "60d7eb7f12fbb28a52533fe8be5884097403562aa02dc73991a021c7067e29a5",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.303": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "d2da3b003dc08b88b7230469014fe3e1dc6fe94bc8f648e89b34175d30269370",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "375988f457756524234695cf2d8f64ace99c5f68682e47ea24862a843c191450",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.304": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "b9ac5374839f14abf3f1f45610637c332b5daee5ce0d1634726cef87aab78e6a",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "ea0f135784631619a7a409d07322ecec964f9cc4fd377508ed1ba3f141f27912",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.305": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "ea3ea3c08d2a9634a4651e687fcf900d410c489bce2b00f22bd7352b91ba704f",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "86cb722ab68348877dba7971e4d0c659919e05e6228c05e006e83da320e656ef",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.306": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "b5d795b7760032d79954b55a9cd1876dcf3a8dc9608fd6bb9f618593f69fd44b",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "520bc6c1f40af466bd03a278b5ae1af1a2938bc7de5b9e5cb15526da20d71cfe",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.307": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "5b113a7752119470f1da419cb0e608af3361cae25b614216b13022093958fb2a",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "6021eb72d20d0682b720bdc63acd2a5cd2270895d1f10d9ca2a88cbfa7b9dd0e",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.308": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "ca923c86ac84b30574a82331a05b6e066c27477a926ceaffe46a845a33e4dd37",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "356733f185fa988e6bf3aa9a555269fdd167982a2e2a80d3c8a78037bb92ad58",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.309": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "5eadc0009cdcdbc0d06e58110d7b2baf88ced6088b1c33a60a21217fe410619c",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "4d704a8aecbe038affa3000f498ae17c1b4f753add8facb8764120affc99b658",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      },
+      "2.1.310": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56",
+          "v2_literals_present": {
+            "prompt_ok_false_log": true,
+            "prompt_schema_required_ok": true,
+            "pretooluse_deny_before_dispatch": true,
+            "rewrite_ask_rule": true,
+            "rewrite_push": true,
+            "stop_cap_default_8": true,
+            "stop_hook_active_true": true,
+            "stop_hook_active_wire": true,
+            "parent_tool_use_id": true,
+            "outcome_blocking": true
+          },
+          "plugin_fail_closed_literals_present": true,
+          "reserved_key_literals_present": true
+        }
+      }
+    }
+  }
+}

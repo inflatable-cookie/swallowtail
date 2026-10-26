@@ -336,9 +336,9 @@ Research 226. The feature still requires an exact probed version:
 - published qualified points `2.1.242..=2.1.281` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
   `2.1.279` were never probed for this feature
-- the qualified `2.1.282..=2.1.310` points, including unpublished `2.1.297` and
-  `2.1.298` which stay denied, are not admitted by this exact-version feature
-  gate; later stable points remain `UnverifiedNewer`
+- published `2.1.282..=2.1.310` points are not admitted by this exact-version
+  feature gate; unpublished `2.1.297` and `2.1.298` stay denied; later stable
+  points remain `UnverifiedNewer`
 - no maximum-turn artifact was probed for any of those later points
 - the claim's segment is a semantic range that contains `2.1.230`, which was
   never published to npm, so no artifact for it exists either

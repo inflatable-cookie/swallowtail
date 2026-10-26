@@ -53,6 +53,7 @@
     "hooks_disabled": false,
     "include_hook_events": false
   },
+  "selected_control_flow": "selected-control-flow.json",
   "v2_rules_retained": [
     "forked assistant frames with parent_tool_use_id and a null stop_reason stay non-final",
     "instruction-form prompt hook ok false blocks",
@@ -155,7 +156,7 @@
         {
           "surface": "plugin hook delivery failure",
           "classification": "fail-closed-tightening",
-          "reason": "A plugin hook that cannot be handed its action, or cannot return an answer, now refuses the action instead of letting it through. A tool that already ran has its result withheld. This does not reverse v2 deny, rewrite, or Stop rules and does not add a stream field."
+          "reason": "Measured JS, not the GitHub note: from 2.1.299 both natives contain classic.PreToolUse deny mapping to 'this tool input could not be given to a hook that checks it, so the tool was not run' and the result-withheld strings. Absent on 2.1.294 through 2.1.296. selected-control-flow.json binds the 2.1.310 functions and the hop table to the inventory hashes. This does not reverse v2 deny, rewrite, or Stop rules and does not add a stream field."
         },
         {
           "surface": "UserPromptSubmit before slash expansion",
@@ -188,7 +189,7 @@
         {
           "surface": "PreToolUse updatedInput validation",
           "classification": "fail-closed-tightening",
-          "reason": "updatedInput from PreToolUse and PermissionRequest now drops unknown keys, and input the tool rejects denies the call. Headless keeps the v2 rule that a rewrite is rechecked and a deny blocks. Response-only has an empty tool list, so model tool calls are not selected. Stream-json required fields are unchanged."
+          "reason": "Measured JS, not the GitHub note: from 2.1.300 both natives return ok:false / deny when updatedInput has a reserved key ('returned updatedInput with a key starting with' and 'The tool was not run.'). Absent through 2.1.299. selected-control-flow.json binds the 2.1.310 reserved-key path and the hop table to the inventory hashes. Headless keeps the v2 rewrite-recheck. Stream-json required fields are unchanged."
         },
         {
           "surface": "SessionEnd, WorktreeCreate, prompt.edit, agent hook model",
@@ -349,8 +350,8 @@
       "release_note_review": [
         {
           "surface": "nested CLAUDE.md size limit",
-          "classification": "instruction-size-bound",
-          "reason": "A nested CLAUDE.md over the size limit now loads only its start. Response-only v3 already does not promise every instruction byte, and this adds a size prefix rather than a new adapter operation or stream field. Headless admits ambient project instructions and does not promise full instruction text. Session persistence stays disabled, so the compaction loop in the note is outside both routes."
+          "classification": "unselected-changelog-string",
+          "reason": "The GitHub 2.1.309 note is not selected-path JS. The changelog string 'a nested CLAUDE.md over the size limit now loads only its start' is present in the 2.1.310 natives and absent from 2.1.309. Headless admits ambient project instructions and does not promise full instruction text. Session persistence stays disabled."
         },
         {
           "surface": "Windows PowerShell hook exit 2",

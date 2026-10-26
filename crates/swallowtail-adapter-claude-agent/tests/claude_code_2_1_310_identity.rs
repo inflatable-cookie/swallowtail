@@ -13,6 +13,8 @@ const RESPONSE_IDENTITY: &str =
     include_str!("fixtures/claude-code-2.1.310/response-only-identity.json");
 const INVENTORY: &str = include_str!("fixtures/claude-code-2.1.310/dist-inventory.json");
 const MARKERS: &str = include_str!("fixtures/claude-code-2.1.310/marker-ledger.json");
+const CONTROL_FLOW: &str = include_str!("fixtures/claude-code-2.1.310/selected-control-flow.json");
+const ISOLATION: &str = include_str!("fixtures/claude-code-2.1.310/response-only-isolation.json");
 const HEADLESS_PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.310/headless-protocol.json");
 const RESPONSE_PROTOCOL: &str =
     include_str!("fixtures/claude-code-2.1.310/response-only-protocol.json");
@@ -270,11 +272,60 @@ fn hook_and_stream_markers_hold_and_no_hop_is_a_selected_change() {
     assert_eq!(headless["selected_behavior_boundary"]["safe_mode"], false);
     let scanned = published_after(294);
     assert_eq!(markers["versions_scanned"], json!(scanned));
+    assert_eq!(
+        markers["markers"],
+        json!([
+            "--input-format",
+            "--output-format",
+            "--permission-mode",
+            "--setting-sources",
+            "--strict-mcp-config",
+            "--no-session-persistence",
+            "--disable-slash-commands",
+            "--safe-mode",
+            "--mcp-config",
+            "--include-hook-events",
+            "--no-chrome",
+            "--prompt-suggestions",
+            "--tools",
+            "stream-json",
+            "permissionDecision",
+            "stop_hook_active",
+            "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP",
+            "parent_tool_use_id",
+            "PreToolUse",
+            "SubagentStop",
+            "onFailure",
+            "prompt.context",
+            "session.start",
+            "fs.ancestors",
+            "instructionFiles",
+            "AGENTS_NAMES",
+            "CLAUDE_NAMES",
+            "projectDirOf",
+            "registerPlugin",
+            "UserPromptSubmit",
+            "updatedInput"
+        ])
+    );
+    assert_eq!(
+        markers["help_lines"],
+        json!([
+            "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+            "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+        ])
+    );
     for version in &scanned {
         for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
             let row = &markers["versions"][version][package];
-            assert_eq!(row["all_markers_present"], true, "{package} {version}");
-            assert_eq!(row["help_lines_present"], true, "{package} {version}");
+            assert_eq!(
+                row["static_markers_observed"], markers["markers"],
+                "{package} {version}"
+            );
+            assert_eq!(
+                row["help_lines_observed"], markers["help_lines"],
+                "{package} {version}"
+            );
             assert_eq!(
                 row["artifact_sha256"],
                 inventory["packages"][package][version]["files"]["claude"]
@@ -302,5 +353,241 @@ fn hook_and_stream_markers_hold_and_no_hop_is_a_selected_change() {
     }
     for hop in response_hops {
         assert_eq!(hop["selected_mapped_change"], false);
+    }
+}
+
+#[test]
+fn selected_v2_control_flow_is_bound_to_exact_runtime_hashes() {
+    let inventory = fixture(INVENTORY);
+    let flow = fixture(CONTROL_FLOW);
+    let headless = fixture(HEADLESS_PROTOCOL);
+    assert_eq!(
+        headless["selected_control_flow"],
+        "selected-control-flow.json"
+    );
+    assert_eq!(flow["downloaded_artifacts_executed"], false);
+    assert_eq!(flow["release_notes_are_not_compatibility_proof"], true);
+    for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+        assert_eq!(
+            flow["ceiling_artifacts"][package]["artifact_sha256"],
+            inventory["packages"][package]["2.1.310"]["files"]["claude"]
+        );
+    }
+    let darwin = &flow["v2_selected_path_at_2_1_310"]["claude-code-darwin-arm64"];
+    let linux = &flow["v2_selected_path_at_2_1_310"]["claude-code-linux-x64"];
+    assert!(
+        darwin["prompt_ok_false_blocks"]
+            .as_str()
+            .unwrap()
+            .starts_with("if(!gt.data.ok){")
+    );
+    assert!(
+        linux["prompt_ok_false_blocks"]
+            .as_str()
+            .unwrap()
+            .starts_with("if(!mt.data.ok){")
+    );
+    for platform in [darwin, linux] {
+        assert!(
+            platform["prompt_ok_false_blocks"]
+                .as_str()
+                .unwrap()
+                .contains("outcome:\"blocking\"")
+        );
+        assert!(
+            platform["prompt_ok_false_blocks"]
+                .as_str()
+                .unwrap()
+                .contains("continueOnBlock!==!0")
+        );
+        assert_eq!(
+            platform["prompt_schema_required_ok"],
+            "required:[\"ok\"],additionalProperties:!1"
+        );
+        assert!(
+            platform["pretooluse_deny_before_dispatch"]
+                .as_str()
+                .unwrap()
+                .contains("Execution stopped by PreToolUse hook")
+        );
+        assert!(
+            platform["pretooluse_deny_before_dispatch"]
+                .as_str()
+                .unwrap()
+                .contains("is_error:!0")
+        );
+        assert!(
+            platform["rewrite_recheck_push"]
+                .as_str()
+                .unwrap()
+                .contains("hookRewrites.push")
+        );
+        assert!(
+            platform["stop_block_cap_default_8"]
+                .as_str()
+                .unwrap()
+                .contains("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8")
+        );
+        assert!(
+            platform["stop_block_cap_default_8"]
+                .as_str()
+                .unwrap()
+                .contains("check stop_hook_active")
+        );
+    }
+    assert_eq!(
+        flow["nested_claude_md_prefix"]["present_as_selected_path_js"],
+        false
+    );
+    assert_eq!(
+        flow["nested_claude_md_prefix"]["present_as_release_note_string_at_2_1_309"],
+        false
+    );
+    assert_eq!(
+        flow["nested_claude_md_prefix"]["present_as_release_note_string_at_2_1_310"],
+        true
+    );
+}
+
+#[test]
+fn hop_comparison_records_299_and_300_fail_closed_js() {
+    let inventory = fixture(INVENTORY);
+    let flow = fixture(CONTROL_FLOW);
+    let hops = &flow["hop_comparison"];
+    assert_eq!(hops["plugin_fail_closed_first_present"], "2.1.299");
+    assert_eq!(hops["reserved_key_first_present"], "2.1.300");
+    assert_eq!(hops["v2_literals_present_on_every_compared_binary"], true);
+    let compared = hops["compared_versions"].as_array().unwrap();
+    assert_eq!(compared.first().unwrap(), "2.1.294");
+    assert_eq!(compared.last().unwrap(), "2.1.310");
+    for version in compared {
+        let version = version.as_str().unwrap();
+        for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+            let row = &hops["per_version"][version][package];
+            assert_eq!(
+                row["artifact_sha256"], inventory["packages"][package][version]["files"]["claude"],
+                "{package} {version}"
+            );
+            let patch: u32 = version.split('.').nth(2).unwrap().parse().unwrap();
+            assert_eq!(
+                row["plugin_fail_closed_literals_present"],
+                patch >= 299,
+                "{package} {version}"
+            );
+            assert_eq!(
+                row["reserved_key_literals_present"],
+                patch >= 300,
+                "{package} {version}"
+            );
+            for (key, present) in row["v2_literals_present"].as_object().unwrap() {
+                assert_eq!(present, true, "{package} {version} {key}");
+            }
+        }
+    }
+    for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+        let fail_closed = flow["hop_2_1_299_fail_closed_at_2_1_310"][package]
+            .as_str()
+            .unwrap();
+        assert!(fail_closed.contains("classic.PreToolUse"));
+        assert!(fail_closed.contains(
+            "this tool input could not be given to a hook that checks it, so the tool was not run"
+        ));
+        let reserved = flow["hop_2_1_300_reserved_key_at_2_1_310"][package]
+            .as_str()
+            .unwrap();
+        assert!(reserved.contains("refusedBy:\"reserved_key\""));
+        assert!(reserved.contains("The tool was not run."));
+        assert!(reserved.contains("return{ok:!1,deny:"));
+    }
+}
+
+#[test]
+fn response_only_isolation_is_frozen_per_binary() {
+    let inventory = fixture(INVENTORY);
+    let isolation = fixture(ISOLATION);
+    let response = fixture(RESPONSE_PROTOCOL);
+    assert_eq!(
+        response["isolation_evidence"],
+        "response-only-isolation.json"
+    );
+    assert_eq!(isolation["downloaded_artifacts_executed"], false);
+    assert_eq!(isolation["easel_first_present"], "2.1.302");
+    let help = isolation["safe_mode_option_at_2_1_310"]["claude-code-darwin-arm64"]
+        .as_str()
+        .unwrap();
+    assert_eq!(
+        isolation["safe_mode_option_at_2_1_310"]["claude-code-linux-x64"],
+        help
+    );
+    assert!(help.contains(".option(\"--safe-mode\""));
+    assert!(help.contains("installed plugins, hooks, MCP servers"));
+    assert!(help.contains("built-in tools and plugins, and permissions work normally"));
+    assert!(help.contains("Sets CLAUDE_CODE_SAFE_MODE=1."));
+    assert_eq!(
+        isolation["safe_mode_filter_at_2_1_310"]["claude-code-darwin-arm64"],
+        "function Djn(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>wf(n.source))}"
+    );
+    assert_eq!(
+        isolation["safe_mode_filter_at_2_1_310"]["claude-code-linux-x64"],
+        "function i1n(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>vp(n.source))}"
+    );
+    assert_eq!(
+        isolation["builtin_predicate_at_2_1_310"]["claude-code-darwin-arm64"],
+        json!({
+            "constant": "Ns=\"builtin\"",
+            "predicate": "function wf(e){return e.endsWith(`@${Ns}`)}"
+        })
+    );
+    assert_eq!(
+        isolation["builtin_predicate_at_2_1_310"]["claude-code-linux-x64"],
+        json!({
+            "constant": "Ns=\"builtin\"",
+            "predicate": "function vp(e){return e.endsWith(`@${Ns}`)}"
+        })
+    );
+    for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+        let init = isolation["init_fields_at_2_1_310"][package]
+            .as_str()
+            .unwrap();
+        assert!(init.contains("subtype:\"init\""));
+        assert!(init.contains("tools:e.tools.map"));
+        assert!(init.contains("mcp_servers:e.mcpClients.map"));
+        assert!(init.contains("permissionMode:ql(e.permissionMode)"));
+        assert_eq!(
+            isolation["ceiling_artifacts"][package]["artifact_sha256"],
+            inventory["packages"][package]["2.1.310"]["files"]["claude"]
+        );
+    }
+    let nine = isolation["research_378_nine_remain"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|name| name.as_str().unwrap())
+        .collect::<Vec<_>>();
+    for (version_name, packages) in isolation["per_version"].as_object().unwrap() {
+        let patch: u32 = version_name.split('.').nth(2).unwrap().parse().unwrap();
+        let expected = if patch >= 302 {
+            &isolation["cc_plugin_ids_from_2_1_302"]
+        } else {
+            &isolation["cc_plugin_ids_through_2_1_301"]
+        };
+        for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+            let row = &packages[package];
+            assert_eq!(row["cc_plugin_ids"], *expected, "{package} {version_name}");
+            for name in &nine {
+                assert!(
+                    row["cc_plugin_ids"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .any(|plugin| plugin == name),
+                    "{package} {version_name} missing {name}"
+                );
+            }
+            assert_eq!(
+                row["artifact_sha256"],
+                inventory["packages"][package][version_name]["files"]["claude"]
+            );
+        }
     }
 }

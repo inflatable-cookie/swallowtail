@@ -58,14 +58,14 @@ deny blocks before dispatch, a rewritten input is rechecked, and
 `stop_hook_active` true is reentry success under the provider block cap.
 
 Those surfaces were reviewed again on each published hop from the previous
-ceiling to `2.1.310`. Selected stream-json help lines stay byte-identical.
-Darwin arm64 and Linux x64 binaries through `2.1.310` still carry the v2
-markers (`ok: false` blocking, `permissionDecision`, `stop_hook_active`,
-`CLAUDE_CODE_STOP_HOOK_BLOCK_CAP`, `parent_tool_use_id`) and the response-only
-markers (`permissionMode` default, empty tools, `--safe-mode`,
-`--disable-slash-commands`, `parent_tool_use_id`). The hop ledger is
-`headless-protocol.json` and `response-only-protocol.json` in the fixture.
-Every hop has `selected_mapped_change` false.
+ceiling to `2.1.310`. `selected-control-flow.json` binds the v2 prompt
+`ok:false` blocking path, PreToolUse deny-before-dispatch, rewrite
+`hookRewrites.push`, and Stop cap default 8 at `2.1.310` to the Darwin arm64
+and Linux x64 executable hashes, and records that those identifier-stable
+literals are present on every compared binary from `2.1.294` through
+`2.1.310`. Selected stream-json help lines stay byte-identical. The hop ledger
+is `headless-protocol.json` and `response-only-protocol.json`. Every hop has
+`selected_mapped_change` false.
 
 Adjacent package deltas add and remove no files. Platform packages change
 `claude` and `package.json` on every hop. The wrapper changes `package.json`
@@ -74,10 +74,9 @@ on every hop and `sdk-tools.d.ts` only on `2.1.294→2.1.295`,
 `bin/claude.exe`, `cli-wrapper.cjs`, `install.cjs`, `LICENSE.md`, and
 `README.md` stay byte-identical from `2.1.294` through `2.1.310`.
 
-Release notes that touch hooks are tightenings or unselected paths:
-`2.1.299` refuses a plugin hook that cannot be handed an action or cannot
-return; `2.1.300` drops unknown `updatedInput` keys and denies rejected
-input. Both keep the v2 deny and recheck rules. `--await-initialize`,
+The `2.1.299` plugin fail-closed path and the `2.1.300` reserved-key
+`updatedInput` refuse are measured JS in those natives (absent before those
+hops) and keep the v2 deny and recheck rules. `--await-initialize`,
 `--forward-subagent-text`, `onFailure`, managed-settings-only policy,
 Windows shell fail-open, SDK callback hooks, MCP, Bash, mods, cloud, and
 VS Code stay off the selected commands. Fork-subagent defaults in `-p` stay
@@ -109,15 +108,19 @@ and maintained v3 on `2.1.282..=2.1.310`. Add the same unpublished gaps.
 
 `2.1.294` qualifies on existing v3. The headless stop at that point was
 settings-enabled instruction-form and Stop hooks. Response-only passes
-`--safe-mode`. The `2.1.310` binary still describes that flag as disabling
-customizations, including `CLAUDE.md`, skills, installed plugins, hooks, MCP,
-and custom commands. Research 378's nine `@builtin` plugins remain a disclosed
-provider surface. `--disable-slash-commands` still excludes the `2.1.287`
-fork-skill stream. Unknown event types still fail closed.
+`--safe-mode`. `response-only-isolation.json` freezes the exact `--safe-mode`
+option text, the builtin-only plugin filter, and the init object that still
+emits `tools`, `mcp_servers`, and `permissionMode`. Research 378's nine
+`@builtin` plugins remain. `mods-guide` and `you-should-know` are already
+present at `2.1.294`; `easel` (`cc-plugin-easel`) is present from `2.1.302`.
+Empty tools and empty MCP leave that chart path unselected.
+`--disable-slash-commands` still excludes the `2.1.287` fork-skill stream.
+Unknown event types still fail closed.
 
-From `2.1.309`, an oversized nested `CLAUDE.md` loads only its start. That
-size prefix stays inside v3. It does not add a containment guarantee or a new
-behavior revision.
+The GitHub `2.1.309` nested `CLAUDE.md` size-prefix note is not selected-path
+JS. That changelog string is in the `2.1.310` natives and absent from
+`2.1.309`. v3 already does not promise every instruction byte and does not
+gain a containment guarantee.
 
 The selected command stays `-p`, text, stream-json, verbose, no session
 persistence, model, `--tools ""`, `--safe-mode`, `--disable-slash-commands`,

@@ -165,7 +165,7 @@ FROZEN_ROUTES = {
     "package:verify-affected": "7bf8687e2b046979607f0f126b3d9b18a811ed4d4db0fd9cdbefde747a890d27",
     "test:rust": "2e3dff1832737681769bbb4efc952ddfcc49db54b33ce5de2b116f17633b242b",
     "validate:current-claude-agent-sdk-node": "e6fe50168218c42873a09b99cca8e42246220ae13284874fbcc69ba200b43ecf",
-    "validate:current-grok-build-acp": "73c2d8f0d4733a909d93001397a0aa56dbb9de44360dd79d38cbc4b302ecab9a",
+    "validate:current-grok-build-acp": "d845b915a54aa23bae9f7581511d127c3256701da627e908cae599cc9dc8fa2b",
     "validate:focused": "c14780de9a78c0e78c9badd6ff76fee8910471c2067691a5fd51c27ac5d7571b",
     "validate:sdk-courier-idle": "3407911648ad02cb060b4c391cf44ac3fe7daafed946fd8f036ac4f5c0c50154",
     "validate:sdk-courier-timeout": "a8ad8d435a62eb1fb33fe7bd1b44deca4fb4681b12b9314f98d5f38f6d939be8",

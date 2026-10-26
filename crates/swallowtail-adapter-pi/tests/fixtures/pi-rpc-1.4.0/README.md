@@ -24,9 +24,10 @@ Maintained on that revision.
 The selected invocation still passes `--mode rpc`, `--no-session`, a plain
 `--tools read,grep,find,ls` allowlist, and `--no-extensions` with no extension
 paths, and sets steering, follow-up, compaction, and retry over RPC before any
-prompt. `1.4.0` grep adds `--no-config`. Share destinations, resumed-session
-tool restoration, overflow recovery under disabled auto-compaction, and
-codemode or MCP edits stay off that path.
+prompt. `1.4.0` grep adds `--no-config`. Constructor tool restoration is skipped
+because that allowlist makes `usesDefaultTools` false, not because of
+`--no-session`. Share destinations, overflow recovery under disabled
+auto-compaction, and codemode or MCP edits stay off that path.
 
 No official artifact was executed. No provider prompt, live catalogue or RPC
 session, credential use, installation, or host update occurred. Pi was not on

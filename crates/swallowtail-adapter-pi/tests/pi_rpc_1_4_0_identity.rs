@@ -187,6 +187,8 @@ const SELECTED_CORE_PATHS: &[&str] = &[
     "dist/core/agent-session.js.map",
     "dist/core/auth-storage.js",
     "dist/core/auth-storage.js.map",
+    "dist/core/client-identity.js",
+    "dist/core/client-identity.js.map",
     "dist/core/compaction/compaction.js",
     "dist/core/compaction/compaction.js.map",
     "dist/core/compaction/utils.js",
@@ -195,10 +197,16 @@ const SELECTED_CORE_PATHS: &[&str] = &[
     "dist/core/mcp-servers.js.map",
     "dist/core/model-config.js",
     "dist/core/model-config.js.map",
+    "dist/core/model-resolver.js",
+    "dist/core/model-resolver.js.map",
     "dist/core/model-runtime.js",
     "dist/core/model-runtime.js.map",
+    "dist/core/provider-attribution.js",
+    "dist/core/provider-attribution.js.map",
     "dist/core/resource-loader.js",
     "dist/core/resource-loader.js.map",
+    "dist/core/sdk.js",
+    "dist/core/sdk.js.map",
     "dist/core/settings-defaults.js",
     "dist/core/settings-defaults.js.map",
     "dist/core/settings-manager.js",
@@ -718,6 +726,16 @@ fn selected_rpc_hops_extend_the_aborted_settled_revision() {
                     "dist/core/settings-schema.js",
                     "/share is not a selected RPC operation",
                 );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/agent-session.js",
+                    "plain --tools",
+                );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/model-resolver.js",
+                    "--provider/--model",
+                );
             }
             "1.3.0->1.4.0" => {
                 assert_classification_contains(recorded, "dist/core/tools/grep.js", "--no-config");
@@ -725,6 +743,27 @@ fn selected_rpc_hops_extend_the_aborted_settled_revision() {
                     recorded,
                     "dist/core/agent-session.js",
                     "set_auto_compaction enabled:false",
+                );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/agent-session.js",
+                    "plain --tools",
+                );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/model-resolver.js",
+                    "--provider/--model",
+                );
+                assert_classification_contains(recorded, "dist/core/sdk.js", "usesDefaultTools");
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/client-identity.js",
+                    "request-identity",
+                );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/provider-attribution.js",
+                    "Removed",
                 );
             }
             other => panic!("unexpected hop {other}"),

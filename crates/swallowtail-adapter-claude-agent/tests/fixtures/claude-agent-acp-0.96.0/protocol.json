@@ -1,0 +1,142 @@
+{
+  "selected_routes": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel",
+    "session/load",
+    "session/resume",
+    "session/close",
+    "session/delete",
+    "session/request_permission",
+    "elicitation/create",
+    "session/set_config_option",
+    "session/set_mode"
+  ],
+  "selected_protocol_version": 1,
+  "swallowtail_initialize_request": {
+    "protocolVersion": 1,
+    "fs_readTextFile": true,
+    "fs_writeTextFile": false,
+    "elicitation_form": true,
+    "advertises_air": false,
+    "advertises_goal": false,
+    "advertises_async_tasks": false,
+    "advertises_session_notices": false,
+    "advertises_native_subagent_sessions": false,
+    "advertises_context_compaction": false,
+    "advertises_session_index": false
+  },
+  "official_current_runtime": {
+    "node_engine": ">=22",
+    "bin": "dist/index.js",
+    "default_protocol_for_v1_client": 1,
+    "unset_CLAUDE_AGENT_ACP_PROTOCOL_serves_auto": true,
+    "auto_routes_protocol_version_1_to_v1": true,
+    "experimental_v2_default_changed_at": "0.95.0",
+    "removed_env": "CLAUDE_AGENT_ACP_EXPERIMENTAL_V2",
+    "swallowtail_sets_protocol_env": false,
+    "swallowtail_requests_v2": false
+  },
+  "stable_schema_and_lifecycle": {
+    "protocol_version_stays_1": true,
+    "acp_sdk_major_at_0_94_0_is_import_path_not_wire_reset": true,
+    "selected_v1_methods_unchanged": [
+      "session/new",
+      "session/resume",
+      "session/close",
+      "session/delete",
+      "session/set_mode"
+    ],
+    "live_close_and_stored_delete_still_return_empty_object": true,
+    "missing_close_and_unstored_delete_return_empty_success_from": "0.89.0",
+    "missing_target_success_is_not_a_new_consumer_operation": true,
+    "no_stronger_deletion_claim": true,
+    "cancel_closes_open_tool_calls_from": "0.90.0",
+    "cancel_stop_reason_stays_cancelled": true,
+    "no_public_lifecycle_break": true
+  },
+  "tool_exchange": {
+    "session_update_kind_set_unchanged_for_selected_client": true,
+    "unknown_session_update_decodes_as_unknown_and_is_ignored": true,
+    "tool_call_update_fields_are_optional_and_replacements_when_present": [
+      "status",
+      "title",
+      "kind",
+      "content",
+      "locations"
+    ],
+    "swallowtail_decoder_accepts_partial_updates": true,
+    "tool_statuses_already_decoded": [
+      "pending",
+      "in_progress",
+      "completed",
+      "failed"
+    ],
+    "raw_input_and_raw_output_excluded_by_swallowtail": true,
+    "tool_ids_remain_opaque_strings": true
+  },
+  "permissions_and_elicitation": {
+    "permission_choice_kinds_unchanged": [
+      "allow_once",
+      "allow_always",
+      "reject_once"
+    ],
+    "swallowtail_one_shot_allow_or_reject_subset_unchanged": true,
+    "elicitation_question_keys_unchanged": [
+      "question_<n>",
+      "question_<n>_custom"
+    ],
+    "no_persistent_permission_grant_added": true
+  },
+  "configuration_and_usage": {
+    "model_option_id_stays": "model",
+    "effort_option_id_stays": "effort",
+    "mode_option_id_stays": "mode",
+    "gateway_model_narrowing_requires_providers_set_from": "0.91.0",
+    "swallowtail_does_not_use_providers_set": true,
+    "usage_fields_unchanged": [
+      "inputTokens",
+      "outputTokens",
+      "cachedReadTokens",
+      "cachedWriteTokens",
+      "totalTokens"
+    ],
+    "usage_markdown_recommendations_are_not_prompt_usage_json": true,
+    "selected_stop_reason_domain_unchanged": [
+      "end_turn",
+      "cancelled",
+      "max_tokens",
+      "max_turn_requests",
+      "refusal"
+    ],
+    "unknown_stop_reason_fails_closed": true
+  },
+  "bounded_unmapped": {
+    "session_index_and_custom_instructions_from": "0.89.0",
+    "autonomous_turn_requires_async_tasks_from": "0.95.0",
+    "prompt_suggestions_meta_from": "0.92.0",
+    "native_subagents_and_linked_messages_unrequested": true,
+    "experimental_v2_unqualified": true
+  },
+  "separate_live_gate": {
+    "http_mcp_mapping_claimed_at_exact_points_only": [
+      "0.79.0",
+      "0.81.2"
+    ],
+    "newer_http_mcp_live_evidence": false
+  },
+  "selected_compatible_because": [
+    "stable v1 remains the protocol a protocolVersion 1 client negotiates",
+    "unset CLAUDE_AGENT_ACP_PROTOCOL still serves that v1 client the v1 agent",
+    "ACP SDK 2.0.0 at 0.94.0 moves imports and does not reset the v1 wire",
+    "live close and stored delete response shapes stay empty objects",
+    "missing close and unstored delete become silent success without a new Swallowtail operation",
+    "cancel still ends cancelled and already-decoded tool statuses absorb closed tool calls",
+    "permission, elicitation, config ids, usage fields, and stop reasons stay inside the existing mapping",
+    "provider-only or capability-gated additions are not promoted to Swallowtail operations",
+    "HTTP MCP live honouring stays exact to 0.79.0 and 0.81.2"
+  ],
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false
+}

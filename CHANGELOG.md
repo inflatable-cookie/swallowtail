@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
+  extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).
+  The maintained segment is `0.66.0..=0.96.0`. Baseline `0.53.0`, claim id
+  `claude-agent.acp.window-2`, the seven milestones, exclusions `0.52.0` and
+  `0.58.0`, and `AllowUnverified` stay. Synthetic `0.97.0` is `UnverifiedNewer`.
+  A protocolVersion 1 client still gets the v1 agent. HTTP MCP live honouring
+  stays exact `0.79.0` and `0.81.2`. The repo-local pin stays `0.81.2`. Claude
+  Code and `claude-agent.sdk` claims stay on their existing bounds.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

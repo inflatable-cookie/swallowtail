@@ -60,7 +60,7 @@
       "revision": "host-steering-option-and-form-marker-display"
     },
     {
-      "range": "0.66.0..=0.87.0",
+      "range": "0.66.0..=0.96.0",
       "introduced_by": "0.66.0",
       "tag_commit": "59a7e9367b3931a50178de4783cf6074b20060cd",
       "acp_sdk": "1.3.0",
@@ -245,7 +245,7 @@
       "tag_commit": "18de37624071b48e95aed9ec5382823e2d72cd39",
       "source_sha256": "f6592f34d2bb0c247695049ce02daf6153b6faaf62e31adfd9bea91478a1da1b",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "partial-tool-call-update-fields-supported-by-existing-decoder"
     },
     {
@@ -254,7 +254,7 @@
       "tag_commit": "691328a9190d8729387149afad9bdb012450028b",
       "source_sha256": "118db0410ec19acd855155da1c71e1a3cdf4926a0df7ddc82058d05c580015bc",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "selected-acp-v1-activity-contract-unchanged"
     },
     {
@@ -263,7 +263,7 @@
       "tag_commit": "bdb50ad984336e62dde1d41339f04071f6617085",
       "source_sha256": "118db0410ec19acd855155da1c71e1a3cdf4926a0df7ddc82058d05c580015bc",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "selected-acp-v1-activity-contract-unchanged"
     },
     {
@@ -272,7 +272,7 @@
       "tag_commit": "c84845272fe3c55c1f97759f00ee48a1356fccae",
       "source_sha256": "d5ef615bbfabf27397e24e22d45dacde98aa2f11f07ccb68d228c8e7a893a068",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "selected-acp-v1-activity-contract-unchanged"
     },
     {
@@ -281,7 +281,7 @@
       "tag_commit": "686c0c99b3b89217b74d1f5de8272e7c9ef1aab4",
       "source_sha256": "644daa80157fcdfe7b806cbd23b56f75be4fed146a890aa5e219204e689aca13",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "cancel-handler-rework-keeps-selected-method"
     },
     {
@@ -290,7 +290,7 @@
       "tag_commit": "7b5c61a4ed55c03028ac60e1768bc57d92df24a4",
       "source_sha256": "fc5b393d5b5f5b17dc796275581dd00eef60dd6b660c4892f067c19ac4565141",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "load-replay-rework-keeps-selected-response"
     },
     {
@@ -299,8 +299,98 @@
       "tag_commit": "b2dbc8f5a1b84f48cc1512d06f50a9d85d6e757b",
       "source_sha256": "7d0d20d1c558c68fafeaf81f4d6f92f86ececb7c28b4679d0873b1b29b4ac8e5",
       "classification": "qualified",
-      "profile": "0.87.0-guarantee",
+      "profile": "0.96.0-guarantee",
       "activity_delta": "failed-tool-call-update-maps-to-existing-status"
+    },
+    {
+      "version": "0.88.0",
+      "published_at": "2026-10-08T12:19:49.210Z",
+      "tag_commit": "d43fec3fa3118e88ff8a8ed99b85d2a5f444e538",
+      "source_sha256": "790992f7c7387d78a5324fcfcbf9eb79a811ebd68eb3d6161a93de34b28327a0",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "agent-sdk-bump-keeps-selected-activity-contract"
+    },
+    {
+      "version": "0.89.0",
+      "published_at": "2026-10-09T22:06:29.180Z",
+      "tag_commit": "96b6b4f478c5276b727c0a1d3cc3717da2d9e9ae",
+      "source_sha256": "f00fea811d7144360a6e70bc87e38e36d00a807d15825a8179e2458520b71784",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "air-session-index-unmapped-missing-close-empty-success"
+    },
+    {
+      "version": "0.89.1",
+      "published_at": "2026-10-10T09:11:59.285Z",
+      "tag_commit": "4e1fc1e8df2b9af3b1b2d6880ba90c5862283ba8",
+      "source_sha256": "f00fea811d7144360a6e70bc87e38e36d00a807d15825a8179e2458520b71784",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "selected-acp-v1-activity-contract-unchanged"
+    },
+    {
+      "version": "0.90.0",
+      "published_at": "2026-10-13T16:57:17.025Z",
+      "tag_commit": "7f7a1404a15024a45e62b699ced4de3fb7a814a2",
+      "source_sha256": "e3bbdc3399a2d702839d6e350b5b798fbe6e61d9ef916d38ccc1bc3abab15e3e",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "cancel-closes-open-tool-calls-keeps-cancelled"
+    },
+    {
+      "version": "0.91.0",
+      "published_at": "2026-10-15T12:25:22.910Z",
+      "tag_commit": "c0af592d252e6bd072b53407f618a9dd4cd02797",
+      "source_sha256": "2801cde1baea8dd2e69e0d9903cfeee1097750b00d52147cfc48368f504935ee",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "unstored-delete-empty-success-and-gateway-narrowing-unmapped"
+    },
+    {
+      "version": "0.92.0",
+      "published_at": "2026-10-16T12:42:02.948Z",
+      "tag_commit": "af3d7f9335dfe8fc2ea5320649f72b34d3cbf410",
+      "source_sha256": "8e2fca3efc966c4ff78047c3aa49189ea5628b95412917a566a2e2ce62257276",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "prompt-suggestions-meta-unmapped"
+    },
+    {
+      "version": "0.93.0",
+      "published_at": "2026-10-16T19:21:32.910Z",
+      "tag_commit": "dbf386d8d35d2bc30f17f11f15d1a4305c9d391f",
+      "source_sha256": "cc9c6a29633a0219077228733480d15f4c79ce9946b546c66752874a28069a15",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "remote-control-command-unmapped"
+    },
+    {
+      "version": "0.94.0",
+      "published_at": "2026-10-19T21:31:04.558Z",
+      "tag_commit": "7bcbfc7a5ca7ab9c7eece4f0749ccaf49c7ba7e1",
+      "source_sha256": "4fc4f4902ad4859666620635963abec6eb87263cf78b9fd4adb11708620745a4",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "acp-sdk-2-import-path-keeps-v1-wire"
+    },
+    {
+      "version": "0.95.0",
+      "published_at": "2026-10-23T20:00:57.929Z",
+      "tag_commit": "ebfbfbdaa9c2a6a8bd9eb0a4965b521009152350",
+      "source_sha256": "be0ebf68bb422a7c0867db8092e99e601eca0390d22f33f385f76b123e296243",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "v1-client-stays-v1-async-tasks-capability-gated"
+    },
+    {
+      "version": "0.96.0",
+      "published_at": "2026-10-26T09:53:45.910Z",
+      "tag_commit": "f6958db1ee8d3e9ead6767a3a294f98b9a21adb9",
+      "source_sha256": "a748438ac05553478285a1bb1bfe47c6adea1d47b97b93b4a55a411ea69bbeaa",
+      "classification": "qualified",
+      "profile": "0.96.0-guarantee",
+      "activity_delta": "native-subagent-model-reports-unmapped"
     }
   ],
   "emitted_updates": [

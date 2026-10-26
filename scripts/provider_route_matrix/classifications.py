@@ -278,9 +278,7 @@ residual_interface_not_runtime_ordered = {
 }
 residual_exact_release_only = {
     ("unverified_newer_allowed", "muse-code.headless"),
-    ("unverified_newer_allowed", "cline.acp"),
     ("unverified_newer_allowed", "cline.headless"),
-    ("unverified_newer_allowed", "mistral-vibe.headless"),
     ("unverified_newer_allowed", "qoder.headless"),
     ("unverified_newer_allowed", "copilot-cli.acp"),
     ("unverified_newer_allowed", "kiro.acp"),

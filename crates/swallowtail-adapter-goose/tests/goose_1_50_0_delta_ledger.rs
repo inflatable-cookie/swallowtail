@@ -9,7 +9,7 @@
 //! mutation-sensitive: they fail if the tagged source trees, the per-hop
 //! module ledger, the selected-surface classification, or the preserved
 //! historical currentness finding drifts. The current production claim is
-//! checked by the 1.53.0 qualification test.
+//! checked by the 1.56.0 qualification test.
 
 use serde_json::Value;
 use swallowtail_adapter_goose::{GOOSE_RELEASE_VERSION, goose_acp_claim, goose_release_binding};
@@ -23,7 +23,7 @@ const CURRENTNESS: &str = include_str!("fixtures/goose-acp-1.50.1/currentness.js
 const BASELINE: &str = "1.46.0";
 const HISTORICAL_OFFICIAL: &str = "1.50.0";
 const OFFICIAL: &str = "1.50.1";
-const CURRENT: &str = "1.53.0";
+const CURRENT: &str = "1.56.0";
 
 fn fixture(body: &str, name: &str) -> Value {
     serde_json::from_str(body).unwrap_or_else(|error| panic!("{name}: {error}"))
@@ -251,7 +251,7 @@ fn protocol_freezes_the_stop_boundary_and_the_stable_surface() {
 }
 
 #[test]
-fn production_claim_preserves_1_50_1_and_qualifies_current_1_53_0() {
+fn production_claim_preserves_1_50_1_and_qualifies_current_1_56_0() {
     assert_eq!(GOOSE_RELEASE_VERSION, CURRENT);
     let claim = goose_acp_claim();
     let baseline = InterfaceVersion::new(BASELINE).expect("baseline");

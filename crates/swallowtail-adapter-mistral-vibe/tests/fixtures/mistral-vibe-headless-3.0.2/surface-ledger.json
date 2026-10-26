@@ -1,0 +1,31 @@
+{
+  "authority": "official PyPI sdists and the linux x86_64 wheel, checked against the GitHub tag tarball for selected files; artifacts were not executed",
+  "ceiling": "2.26.0",
+  "official": "3.0.2",
+  "hops": [
+    {
+      "id": "2.26.0..2.26.1",
+      "kind": "turn-limit-failure",
+      "selected_break": true,
+      "classification": "The selected Python path still accepts --legacy-harness and --agent plan, and the launcher can still reach the Python CLI. Programmatic mode no longer raises ProgrammaticLimitError. The stderr phrase is absent from every Python file in the linux wheel. TurnStop.LIMIT maps to RunOutcome.TURN_LIMIT and exit 3. The config home stays ~/.vibe."
+    },
+    {
+      "id": "2.26.1..3.0.0",
+      "kind": "major-line-reset",
+      "selected_break": true,
+      "classification": "vibe/cli/launcher.py always execs the bundled Rust CLI and no longer reads VIBE_CLI. The Python programmatic serializer, entrypoint, and --legacy-harness flag are gone from the wheel. The builtin plan agent is removed and a removed-builtin map sends a config named plan to ask. PLANS_DIR leaves the path module. Message and reasoning entries gain outcome. requires_python becomes >=3.14."
+    },
+    {
+      "id": "3.0.0..3.0.1",
+      "kind": "reset-persists",
+      "selected_break": false,
+      "classification": "The 3.0 launcher, plan removal, and missing legacy flag stay byte-identical. Streaming remains a CLI output value. requires_python returns to >=3.12. Further model and export edits do not restore the 2.26.0 argv or the turn-limit stderr."
+    },
+    {
+      "id": "3.0.1..3.0.2",
+      "kind": "reset-persists",
+      "selected_break": false,
+      "classification": "The launcher, plan map, and headless_output.rs stay byte-identical with 3.0.1. cli.rs adds Cli::prompt_given and main.rs skips stdin when a prompt is already given; that is unmapped stdin-skip logic and does not restore the 2.26.0 argv. _vibe_home.py adds MANAGED_CONFIG_CACHE_FILE under ~/.vibe. The config home stays ~/.vibe. The 3.0 reset is unchanged at the official stable."
+    }
+  ]
+}

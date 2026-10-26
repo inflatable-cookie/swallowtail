@@ -39,18 +39,22 @@ optional attachment services. They use no credential service. Provider-
 suppressed tools and ambient execution are not host sandboxing.
 
 Package `17.2.9..=17.4.2` is qualified and retained on the
-`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.8.3` is
+`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.12.6` is
 qualified on the distinct `oh-my-pi.rpc-v2-v18.0.0` behavior revision. The
 `17.x` segment reports `Deprecated` while remaining executable; `18.x` is
 maintained. GitHub-only stable tags `18.0.2`, `18.1.7`, `18.4.7`, and
-`18.6.2` are excluded. The `17.4.3` and `17.4.4` tags remain incompatible,
-and later stable versions remain visible unverified newer. A final
-re-probe found official stable `18.8.4` after the identity freeze; it remains
-`UnverifiedNewer` pending a separate currentness qualification. Research 382
-freezes the exact `18.8.3` npm artifact, all 32 published hops, and the
-complete tree ledger. The provider adds `proc://`, `cfg://`, `attachment://`, and
-`conflict://` resources inside its existing ambient `read` tool; `cfg://`
-redacts credentials, while writes remain outside the selected tool set.
+`18.6.2` are excluded. The `17.4.3` and `17.4.4` tags remain incompatible.
+`18.12.7` is the synthetic later stable and stays `UnverifiedNewer`.
+Research 447 freezes the exact `18.12.6` npm artifact and all 25 published
+hops after the Research 382 ceiling. Provider-internal `proc://`, `cfg://`,
+`attachment://`, `conflict://`, and `mr://` resources stay inside the existing
+ambient `read` tool. `mr://` resolve runs ambient `glab` as the process
+principal, uses `GITLAB_TOKEN`/`GITLAB_ACCESS_TOKEN`/`OAUTH_TOKEN` plus
+`glab` `config.yml`, performs GitLab network egress (host-trust gate
+constrains env-token forwarding only), and execs `glab`.
+`cfg://` redacts credentials, `ssh` stays exec, and writes remain outside
+the selected tool set. Prompt-text `/mcp reauth` is reachable under
+`--no-extensions` and stays unmapped.
 
 ## Prepare The Installation
 

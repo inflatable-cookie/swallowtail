@@ -181,7 +181,7 @@ on `v0.5.4` keep that tag's pins.
 | `kiro.acp` | exact `2.21.4`; HTTP MCP live honouring exact that point | stop for later stables | Research 419, 394 |
 | `cline.acp` | route table `3.0.55..=3.0.70` except unpublished `3.0.59`; `session/load` unmapped | additive qualification; Q-006 still open | Research 397 |
 | `cline.headless` | `3.0.55`–`3.0.70` excluding `3.0.59` | additive | Research 390 |
-| `goose.acp` | exact `1.50.1`\|`1.51.0`\|`1.52.0`\|`1.53.0` | additive | Research 392 |
+| `goose.acp` | exact `1.50.1`\|`1.51.0`\|`1.52.0`\|`1.53.0`\|`1.54.0`\|`1.55.0`\|`1.56.0` | additive | Research 392, 456 |
 | `codex.exec` | through `0.161.0` | additive | Research 410 |
 | `codex.app-server` | through `0.161.0`; maintained `0.159.0..=0.161.0` on `codex.app-server.v2.protected-aws-workspace-roots` | `0.159.0..=0.161.0` `.aws` write narrowing is minor; earlier post-`0.155.1` segments stay their accepted revisions | Research 388; Contract 023 |
 | `cursor-agent.{catalogue,acp,headless}` | through `2026.10.01-14929f9` | additive | Research 393, 395, 399 |

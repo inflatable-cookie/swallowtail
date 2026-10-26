@@ -90,7 +90,7 @@ fn corpus_keeps_unselected_commands_and_extensions_outside_authority() {
 
 #[test]
 fn production_claim_keeps_the_frozen_corpus_inside_the_raised_window() {
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.4.0");
     let claim = pi_rpc_claim();
     for candidate in [
         "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.2", "0.84.3", "0.84.4",

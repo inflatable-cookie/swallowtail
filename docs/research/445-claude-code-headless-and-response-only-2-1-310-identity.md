@@ -81,10 +81,26 @@ The `2.1.299` plugin fail-closed path and the `2.1.300` reserved-key
 `updatedInput` refuse are measured JS in those natives (absent before those
 hops) and keep the v2 deny and recheck rules. `--await-initialize`,
 `--forward-subagent-text`, `onFailure`, managed-settings-only policy,
-Windows shell fail-open, SDK callback hooks, MCP, Bash, mods, cloud, and
+Windows shell fail-open, SDK callback hooks, MCP, Bash, cloud, and
 VS Code stay off the selected commands. Fork-subagent defaults in `-p` stay
 bounded by the tool sets: headless does not admit `Agent`, and response-only
 rejects a non-null `parent_tool_use_id`.
+
+Mods are not an unselected category for settings-enabled headless. The
+official `2.1.295` note fixes silently shortened, deeply nested tool input
+sent to a mod hook: a guard could otherwise approve content it had not
+received. This is a reachable permission-input fix within the existing v2
+deny-before-dispatch and rewrite-recheck mapping, not a new tool or bypass.
+The official `2.1.299` note fixes mods submitting another prompt after each
+turn to keep headless execution alive past turn or budget limits,
+interruption, or the end of the host conversation. One-shot input and the
+absence of `Agent` do not exclude mod prompt submission. This termination
+fix does not add adapter continuation or budget operations, change process
+`force_stop` cancellation, or widen the Research 226 maximum-turn set.
+The ledgers classify both notes separately for headless and response-only;
+response-only excludes installed mods and custom hooks through its measured
+safe-mode filter. Release-note classification is distinct from the measured
+`2.1.299` plugin hook delivery refusal in `selected-control-flow.json`.
 
 The official `2.1.304` note also fixes plugins spawning or rerunning
 subagents to continue a headless run after Stop, ended input, or
@@ -153,6 +169,8 @@ the prepared version. One text turn, `num_turns` 1.
 - [GitHub `v2.1.310`](https://github.com/anthropics/claude-code/releases/tag/v2.1.310)
 - [GitHub `v2.1.309`](https://github.com/anthropics/claude-code/releases/tag/v2.1.309)
 - [GitHub `v2.1.304`](https://github.com/anthropics/claude-code/releases/tag/v2.1.304)
+- [GitHub `v2.1.299`](https://github.com/anthropics/claude-code/releases/tag/v2.1.299)
+- [GitHub `v2.1.295`](https://github.com/anthropics/claude-code/releases/tag/v2.1.295)
 - [Research 423](./423-claude-code-headless-2-1-294-stream-hook-safety-adaptation.md)
 - [Research 422](./422-claude-code-2-1-294-headless-currentness-stop.md)
 - [Research 378](./378-claude-code-response-only-2-1-293-identity-and-qualification.md)

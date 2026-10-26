@@ -73,6 +73,12 @@
       "applies_to": "claude-code.headless",
       "release_note_review": [
         {
+          "surface": "mod hook silently truncated tool input",
+          "classification": "provider-hook-input-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.295",
+          "reason": "The official 2.1.295 note fixes silent truncation of deeply nested tool input delivered to a mod hook, which could let a guard approve unseen content. Headless keeps user, project, and local settings and custom hooks enabled, so this permission-input path is selected; the mods catch-all cannot exclude it. Correcting delivery to the existing guard preserves the v2 deny-before-dispatch and rewrite-recheck mapping; it adds no tool, bypass, or adapter operation. The release note identifies this fix, while selected-control-flow.json independently records the measured mapped decisions."
+        },
+        {
           "surface": "onFailure block",
           "classification": "unmapped-opt-in",
           "reason": "Release notes add onFailure block for command and HTTP hooks. The routes do not set it. Marker onFailure remains present. Default hook decisions are not described as changed."
@@ -98,7 +104,7 @@
           "reason": "Restoring a skill allowed-tools list does not add Bash outside the selected tool set."
         },
         {
-          "surface": "mods, MCP, Bash permission, VS Code, cloud",
+          "surface": "MCP, Bash permission, VS Code, cloud",
           "classification": "unselected",
           "reason": "Those notes are outside the fixed tool set, the strict empty MCP config, and the local subscription command."
         }
@@ -148,6 +154,12 @@
       "decision": "compatible-extension",
       "applies_to": "claude-code.headless",
       "release_note_review": [
+        {
+          "surface": "mod prompt.submit continuation after headless termination",
+          "classification": "provider-lifecycle-tightening",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.299",
+          "reason": "The official 2.1.299 note fixes mods submitting prompts after each turn and thereby continuing headless execution after --max-turns, --max-budget-usd, interruption, or the end of the host conversation. Settings-enabled headless can load those mods; one-shot text input and absence of Agent do not exclude plugin prompt submission. This provider lifecycle fix enforces existing termination rather than adding an adapter continuation operation. Stop/reentry mapping and process force_stop cancellation stay unchanged, no host-conversation or budget API is added, and the separate Research 226 maximum-turn set is not widened. This note is distinct from the measured 2.1.299 plugin hook delivery refusal below."
+        },
         {
           "surface": "plan mode write allowed by PreToolUse",
           "classification": "already-mapped-flag-fix",

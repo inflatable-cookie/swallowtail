@@ -354,27 +354,49 @@ fn hook_and_stream_markers_hold_and_no_hop_is_a_selected_change() {
     for hop in response_hops {
         assert_eq!(hop["selected_mapped_change"], false);
     }
-    for (hops, classification) in [
-        (headless_hops, "provider-lifecycle-tightening"),
-        (response_hops, "outside-safe-mode-custom-hooks"),
+    for (hop_id, surface, version, headless_classification) in [
+        (
+            "2.1.294_to_2.1.295",
+            "mod hook silently truncated tool input",
+            "2.1.295",
+            "provider-hook-input-fix",
+        ),
+        (
+            "2.1.296_to_2.1.299",
+            "mod prompt.submit continuation after headless termination",
+            "2.1.299",
+            "provider-lifecycle-tightening",
+        ),
+        (
+            "2.1.303_to_2.1.304",
+            "plugin subagent continuation after Stop or ended input",
+            "2.1.304",
+            "provider-lifecycle-tightening",
+        ),
     ] {
-        let hop = hops
-            .iter()
-            .find(|hop| hop["hop"] == "2.1.303_to_2.1.304")
-            .expect("the 2.1.304 hop is reviewed for each route");
-        let note = hop["release_note_review"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .find(|note| {
-                note["surface"] == "plugin subagent continuation after Stop or ended input"
-            })
-            .expect("the lifecycle fix has its own route classification");
-        assert_eq!(note["classification"], classification);
-        assert_eq!(
-            note["source"],
-            "https://github.com/anthropics/claude-code/releases/tag/v2.1.304"
-        );
+        for (hops, classification) in [
+            (headless_hops, headless_classification),
+            (response_hops, "outside-safe-mode-custom-hooks"),
+        ] {
+            let hop = hops
+                .iter()
+                .find(|hop| hop["hop"] == hop_id)
+                .expect("the published hop is reviewed for each route");
+            let notes = hop["release_note_review"].as_array().unwrap();
+            let note = notes
+                .iter()
+                .find(|note| note["surface"] == surface)
+                .expect("the hook or lifecycle fix has its own route classification");
+            assert_eq!(note["classification"], classification);
+            assert_eq!(
+                note["source"],
+                format!("https://github.com/anthropics/claude-code/releases/tag/v{version}")
+            );
+            assert!(!notes.iter().any(|note| {
+                note["classification"] == "unselected"
+                    && note["surface"].as_str().unwrap().contains("mods")
+            }));
+        }
     }
 }
 

@@ -119,16 +119,18 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
     );
     assert_eq!(
         protocol["acp"]["selected_surface_comparison"]["linux_x64"],
-        "ceiling 2026.10.01-14929f9 and target 2026.10.22-27dcf5f only"
+        "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f"
     );
     assert_eq!(
-        protocol["acp"]["selected_surface_comparison"]["linux_x64_intermediate_hops_unmeasured"],
+        protocol["acp"]["selected_surface_comparison"]["hops_compared"],
         serde_json::json!([
+            "2026.10.01-14929f9",
             "2026.10.14-0f9edde",
             "2026.10.14-941492e",
             "2026.10.16-e3cb207",
             "2026.10.18-ea085cb",
-            "2026.10.19-6bbf2c4"
+            "2026.10.19-6bbf2c4",
+            "2026.10.22-27dcf5f"
         ])
     );
     assert_eq!(
@@ -136,20 +138,68 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         true
     );
     assert_eq!(
-        protocol["acp"]["initialize_literal_byte_identical"]["linux_x64_ceiling_and_target"],
+        protocol["acp"]["initialize_literal_byte_identical"]["linux_x64_every_hop"],
         true
     );
     assert_eq!(
-        protocol["acp"]["initialize_literal_byte_identical"]["linux_x64_intermediate"],
-        "unmeasured"
+        protocol["acp"]["initialize_literal_byte_identical"]["core_sha256"],
+        "bcd62de052a72a733ec1ddb1d928a95ded1bfca71a3efd440f0d597e91195170"
+    );
+    assert_eq!(
+        protocol["acp"]["initialize_literal_byte_identical"]["return_sha256"],
+        "01885698b5cfa8e51978bd96fc399eb91ea14ea4c6b521e55d2c2b6bc05a331f"
+    );
+    assert_eq!(
+        sha256(
+            protocol["acp"]["initialize_literal_byte_identical"]["core"]
+                .as_str()
+                .expect("initialize core")
+                .as_bytes()
+        ),
+        protocol["acp"]["initialize_literal_byte_identical"]["core_sha256"]
+    );
+    assert_eq!(
+        sha256(
+            protocol["acp"]["initialize_literal_byte_identical"]["return"]
+                .as_str()
+                .expect("initialize return")
+                .as_bytes()
+        ),
+        protocol["acp"]["initialize_literal_byte_identical"]["return_sha256"]
     );
     assert_eq!(
         protocol["acp"]["session_new"],
-        "requires authenticated cursor_login before session creation on Darwin every hop and on Linux ceiling and target; Linux intermediate hops are unmeasured"
+        "requires authenticated cursor_login before session creation on Darwin ARM64 and Linux x64 at every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f"
     );
     assert_eq!(
         protocol["acp"]["sdk_package"],
-        "0.14.1 on Darwin every hop and on Linux ceiling and target; Linux intermediate hops are unmeasured"
+        "0.14.1 on Darwin ARM64 and Linux x64 at every hop; Zod packaging is 3.25.76 through 2026.10.14-941492e and 4.6.5 from 2026.10.16-e3cb207"
+    );
+    assert_eq!(
+        protocol["acp"]["cancel_sha256"],
+        "f5811db1ffd2791d8902b8dcfbd62b4a41252fd08b1bb7c7d05cec4016ff4979"
+    );
+    assert_eq!(
+        sha256(
+            protocol["acp"]["cancel"]
+                .as_str()
+                .expect("cancel control-flow")
+                .as_bytes()
+        ),
+        protocol["acp"]["cancel_sha256"]
+    );
+    assert_eq!(
+        protocol["acp"]["permission_options_sha256"],
+        "9763792510b67f62d8d2183a7a9daf9ded6e4a5930f4d27d30621b9cbf49f077"
+    );
+    assert_eq!(
+        sha256(
+            protocol["acp"]["permission_options"]
+                .as_str()
+                .expect("permission options")
+                .as_bytes()
+        ),
+        protocol["acp"]["permission_options_sha256"]
     );
     assert_eq!(
         protocol["acp"]["load_session_posture"],
@@ -160,18 +210,31 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         protocol["headless"]["mode_choices"],
         serde_json::json!(["plan", "ask"])
     );
-    assert_eq!(
-        protocol["headless"]["selected_wire_shape_comparison"]["recorded_argv_mode_and_wire_fields"],
-        true
-    );
+    assert_eq!(protocol["headless"]["mode_choices_unchanged"], true);
     assert_eq!(
         protocol["headless"]["selected_wire_shape_comparison"]["darwin_arm64_per_hop_selected_surface"],
-        "unmeasured"
+        "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f"
     );
     assert_eq!(
         protocol["headless"]["selected_wire_shape_comparison"]["linux_x64_per_hop_selected_surface"],
-        "unmeasured"
+        "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f"
     );
+    let headless_flow = &protocol["headless"]["selected_control_flow"];
+    for field in [
+        "print_help",
+        "output_format",
+        "mode_choices_literal",
+        "mode_help",
+        "trust_option",
+        "force_option",
+        "yolo_option",
+    ] {
+        let value = headless_flow[field].as_str().expect(field);
+        let digest = headless_flow[format!("{field}_sha256")]
+            .as_str()
+            .expect(field);
+        assert_eq!(sha256(value.as_bytes()), digest, "{field}");
+    }
     assert_eq!(protocol["catalogue_or_cross_route_transfer"], false);
     assert_eq!(protocol["downloaded_artifacts_executed"], false);
 

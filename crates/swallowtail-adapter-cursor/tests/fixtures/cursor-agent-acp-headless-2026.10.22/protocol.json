@@ -7,28 +7,37 @@
   "downloaded_artifacts_executed": false,
   "provider_prompt_sent": false,
   "credentials_used": false,
-  "inspection": "static inspection of exact official package trees; downloaded archives were not executed",
+  "inspection": "static extraction of selected argv/dispatch/wire/result/permission/cancel/auth/replay/cleanup literals from retained official Darwin ARM64 and Linux x64 archives at every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f; archives were not executed",
   "acp": {
     "command": "acp",
     "transport": "ACP v1 over stdio",
     "selected_surface_comparison": {
+      "method": "static extraction from retained official archives; not executed",
       "darwin_arm64": "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f",
-      "linux_x64": "ceiling 2026.10.01-14929f9 and target 2026.10.22-27dcf5f only",
-      "linux_x64_intermediate_hops_unmeasured": [
+      "linux_x64": "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f",
+      "hops_compared": [
+        "2026.10.01-14929f9",
         "2026.10.14-0f9edde",
         "2026.10.14-941492e",
         "2026.10.16-e3cb207",
         "2026.10.18-ea085cb",
-        "2026.10.19-6bbf2c4"
+        "2026.10.19-6bbf2c4",
+        "2026.10.22-27dcf5f"
       ]
     },
     "initialize_literal_byte_identical": {
       "darwin_arm64_every_hop": true,
-      "linux_x64_ceiling_and_target": true,
-      "linux_x64_intermediate": "unmeasured"
+      "linux_x64_every_hop": true,
+      "core_sha256": "bcd62de052a72a733ec1ddb1d928a95ded1bfca71a3efd440f0d597e91195170",
+      "core": "loadSession:!0,mcpCapabilities:{http:!0,sse:!0},promptCapabilities:{audio:!1,embeddedContext:!1,image:!0}",
+      "return_sha256": "01885698b5cfa8e51978bd96fc399eb91ea14ea4c6b521e55d2c2b6bc05a331f",
+      "return": "return{protocolVersion:o.WP,agentCapabilities:a,authMethods:s}",
+      "caps_sha256": "9e724be7fa272d1ebe91a3726c61c572ae261456f9cb92784cc7b507bd8c7cb3",
+      "caps": "a={loadSession:!0,mcpCapabilities:{http:!0,sse:!0},promptCapabilities:{audio:!1,embeddedContext:!1,image:!0},sessionCapabilities:{list:{},...this.subagentsEnabled?{subagents:{}}"
     },
     "initialize_shape": {
       "protocol_version_constant": 1,
+      "protocol_version_export": "WP",
       "auth_methods": [
         "cursor_login"
       ],
@@ -48,12 +57,21 @@
       },
       "subagents": "client-negotiated; default off; not requested"
     },
-    "client_capabilities_schema": "fs.readTextFile and fs.writeTextFile stay optional booleans defaulting false; terminal stays optional boolean defaulting false; protocolVersion stays the constant 1. Zod packaging moves from 3.25.76 to 4.6.5 at 2026.10.16; the selected field set does not.",
-    "session_new": "requires authenticated cursor_login before session creation on Darwin every hop and on Linux ceiling and target; Linux intermediate hops are unmeasured",
+    "client_capabilities_schema": "fs.readTextFile and fs.writeTextFile stay optional booleans defaulting false; terminal stays optional boolean defaulting false; protocolVersion stays the constant 1 exported as WP. Zod packaging moves from 3.25.76 to 4.6.5 at 2026.10.16; the selected field set does not.",
+    "session_new": "requires authenticated cursor_login before session creation on Darwin ARM64 and Linux x64 at every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f",
+    "session_new_auth_gate": "async newSession(e){if(!this.isAuthenticated)throw ... methodId 'cursor_login'.`; minifier identifier for the login helper is p.mf at 2026.10.01-14929f9 and g.mf on later hops; selected message and methodId are unchanged",
+    "cancel": "async cancel(e){const t=this.sessions.get(e.sessionId)?.session;t?.pendingPromptCancel?.()}",
+    "cancel_sha256": "f5811db1ffd2791d8902b8dcfbd62b4a41252fd08b1bb7c7d05cec4016ff4979",
     "load_session_posture": "advertised-without-proven-replay",
     "continuation_recovery": "blocked",
-    "permission_mapping": "requestWebPermission still maps one-shot allow/reject and provider cancellation; allow-always is not a durable grant",
-    "sdk_package": "0.14.1 on Darwin every hop and on Linux ceiling and target; Linux intermediate hops are unmeasured"
+    "replay_control_flow": "async replayConversationHistory remains present; ACP loadSession history replay failed to load conversation remains the failure log; Swallowtail still does not qualify replay",
+    "permission_mapping": "requestWebPermission still maps one-shot allow/reject and provider cancellation; allow-always is advertised as an option and is not a durable grant",
+    "permission_options": "options:[{optionId:\"allow-once\",name:\"Allow once\",kind:\"allow_once\"},{optionId:\"allow-always\",name:\"Allow always\",kind:\"allow_always\"},{optionId:\"reject-once\",name:\"Reject\",kind:\"reject_once\"}]",
+    "permission_options_sha256": "9763792510b67f62d8d2183a7a9daf9ded6e4a5930f4d27d30621b9cbf49f077",
+    "sdk_package": "0.14.1 on Darwin ARM64 and Linux x64 at every hop; Zod packaging is 3.25.76 through 2026.10.14-941492e and 4.6.5 from 2026.10.16-e3cb207",
+    "sdk_package_pin_through_2026.10.14": "@agentclientprotocol+sdk@0.14.1_zod@3.25.76",
+    "sdk_package_pin_from_2026.10.16": "@agentclientprotocol+sdk@0.14.1_zod@4.6.5",
+    "protocol_version_constant_export": "WP:()=>r at 2026.10.01-14929f9 and WP:()=>i on later hops; the bound identifier is const r=1 or const i=1"
   },
   "headless": {
     "argv": [
@@ -96,18 +114,68 @@
       ]
     },
     "selected_wire_shape_comparison": {
-      "recorded_argv_mode_and_wire_fields": true,
-      "darwin_arm64_per_hop_selected_surface": "unmeasured",
-      "linux_x64_per_hop_selected_surface": "unmeasured",
-      "writer_chunk_hashes": "identity.json records writer-chunk path and SHA-256 for every hop on both platforms; that is artifact identity, not selected-wire comparison"
+      "method": "static extraction from retained official archives; not executed",
+      "darwin_arm64_per_hop_selected_surface": "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f",
+      "linux_x64_per_hop_selected_surface": "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f",
+      "hops_compared": [
+        "2026.10.01-14929f9",
+        "2026.10.14-0f9edde",
+        "2026.10.14-941492e",
+        "2026.10.16-e3cb207",
+        "2026.10.18-ea085cb",
+        "2026.10.19-6bbf2c4",
+        "2026.10.22-27dcf5f"
+      ],
+      "writer_chunk_hashes": "identity.json records writer-chunk path and SHA-256 for every hop on both platforms; that is artifact identity. Selected wire fields below are the control-flow comparison."
+    },
+    "selected_control_flow": {
+      "print_help": "\"Print responses to console (for scripts or non-interactive use). Has access to all tools, including write and shell.\"",
+      "print_help_sha256": "e367c6a46deef70de0ce0628e98570c8163e89fdc51e63d74053930148407edb",
+      "output_format": "Output format (only works with --print): text | json | stream-json",
+      "output_format_sha256": "4d1a325c65402214c5e9c57221e3f85123ad860dc7654ca71ba4016aa31d6583",
+      "mode_choices_literal": ".choices([\"plan\",\"ask\"])",
+      "mode_choices_literal_sha256": "40fa47baa108e5a191e6c5f3f5cb53def04c6ff5758bf0c620f1feca6415f516",
+      "mode_help": "Start in the given execution mode. plan: read-only/planning (analyze, propose plans, no edits). ask: Q&A style for explanations and questions (read-only).",
+      "mode_help_sha256": "07c2215e06a317737219fb46e429412784f68eb040813d576ecd728a5c51fe98",
+      "trust_option": ".option(\"--trust\",\"Trust the current workspace without prompting\",!1)",
+      "trust_option_sha256": "b4d6087b146da6602ab49b7f2490b4bc57f033f2ee65a071b711a18785a18f65",
+      "model_option_prefix": ".option(\"--model <model>\"",
+      "force_option": ".option(\"-f, --force\",\"Force allow commands unless explicitly denied\",!1)",
+      "force_option_sha256": "64825f3c5a402a3c50afe73c854ea02d4dcb710fefabb6b3d16aba7c2a1c6f9e",
+      "yolo_option": ".option(\"--yolo\",\"Alias for --force (Run Everything)\",!1)",
+      "yolo_option_sha256": "cb85c65f0776206feaa36b5c83931751f2a0c17fa932f7b9ed5e143b4089af19",
+      "system_init": "type:\"system\",subtype:\"init\" ... session_id ... model:<id>.displayName,permissionMode:\"default\"",
+      "system_init_fields_sha256": "7bb3ccfadcccae6b1686125c4c5b2a0cde16410a634d123e8f729c27e9c17bcf",
+      "result_success": "type:\"result\",subtype:\"success\",is_error:!1,duration_ms: ... duration_api_ms: ... result ... session_id ... request_id ... optional usage",
+      "result_success_fields_sha256": "4d2359f309b4b9be9840d92792b24ee990b50accc65555022d2903bd8ecdf7c5",
+      "usage_spread": "...<id>?{usage:<id>}:{} with identifier oe at 2026.10.01-14929f9 and ae on later hops; selected usage fields unchanged",
+      "minifier_only_variants": "session object and usage identifiers in the writer chunk change per hop; selected field names and values do not"
     }
   },
+  "feeding_files": {
+    "selected": [
+      "acp_command_chunk",
+      "acp_sdk_chunk",
+      "headless_writer_chunk",
+      "runtime_index"
+    ],
+    "byte_identical_through_all_hops": [
+      "launcher"
+    ],
+    "package_json": "stub through 2026.10.14-941492e; gains dependency declaration at 2026.10.16-e3cb207; SHA-256 332fb765c02e98088e55626cdb185b0fd289723d191e5be77087305a9e613dc3 from that hop through 2026.10.22-27dcf5f",
+    "node": "byte-identical through 2026.10.19-6bbf2c4; changes only at 2026.10.22-27dcf5f; not a selected wire file",
+    "linux_sdk_byte_identical_hops": [
+      "2026.10.14-0f9edde to 2026.10.14-941492e",
+      "2026.10.18-ea085cb to 2026.10.19-6bbf2c4"
+    ]
+  },
   "bounded_unmapped": [
-    "2026.10.14-0f9edde is a superseded same-date registry build. Selected surfaces match. Binding keeps 2026.10.14-941492e and rejects the earlier build.",
-    "Zod 3.25.76 to 4.6.5 at 2026.10.16 renames validator helpers. Selected initialize schema fields stay the same.",
-    "package.json gains a dependency declaration at 2026.10.16. The launcher stays byte-identical. Node changes only at 2026.10.22 and is not a selected wire file.",
-    "index.js gains an internal git worktree --force refusal at 2026.10.22. Swallowtail does not send --force.",
+    "2026.10.14-0f9edde is a superseded same-date registry build. Selected surfaces match 2026.10.14-941492e. Binding keeps 2026.10.14-941492e and rejects the earlier build.",
+    "Zod 3.25.76 to 4.6.5 at 2026.10.16 renames validator helpers. Selected initialize schema fields and fs.readTextFile:!1,writeTextFile:!1 defaults stay the same. SDK package stays 0.14.1. Bundled Node is not on the selected wire; it changes only at 2026.10.22.",
+    "package.json gains a dependency declaration at 2026.10.16 (better-sqlite3, bindings, tree-sitter, piscina, @jsquash/webp). The launcher stays byte-identical.",
+    "index.js gains an internal git worktree --force refusal at 2026.10.22 on both platforms: git worktree remove is refused without --force; git worktree add is refused unless --no-checkout follows add. Swallowtail does not send --force.",
     "Worker, plugin, cloud, SEA, native, and other unselected chunks are enumerated in the hop ledgers.",
-    "task_notification system events already exist at the 2026.10.01 ceiling and stay outside the selected headless init event."
+    "task_notification system events already exist at the 2026.10.01 ceiling and stay outside the selected headless init event.",
+    "Minifier identifiers in auth-method construction (I.fY vs S.fY, p.mf vs g.mf) and writer session/usage bindings change; selected field names, option ids, and wire keys do not."
   ]
 }

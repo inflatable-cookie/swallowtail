@@ -100,39 +100,49 @@ The ledger is not a semantic changelog.
 
 ## Selected surfaces
 
-ACP command chunks were compared on both platforms at the ceiling and the
-target, and on Darwin at every hop. Linux intermediate hops
-`2026.10.14-0f9edde`, `2026.10.14-941492e`, `2026.10.16-e3cb207`,
-`2026.10.18-ea085cb`, and `2026.10.19-6bbf2c4` have no selected ACP surface
-comparison. The selected initialize literal stays byte-identical on the
-compared hops: protocol version constant `1`, auth method `cursor_login`,
-`loadSession: true`, MCP `http` and `sse`, prompt `audio: false`,
-`embeddedContext: false`, `image: true`, and `sessionCapabilities.list`.
-`agentInfo` stays absent. `session/new` still requires `cursor_login` before
-create on those compared hops. `requestWebPermission` stays one-shot
-allow/reject. Subagents stay client-negotiated and default off. `loadSession`
-stays advertised without a replay corpus, so continuation recovery stays
-blocked. The bundled SDK package stays `0.14.1` on the compared hops. Zod
-packaging moves from `3.25.76` to `4.6.5` at `2026.10.16`; the selected field
-set does not.
+ACP command, SDK, runtime index, and headless writer chunks were extracted
+from the retained official Darwin ARM64 and Linux x64 archives at every hop
+from `2026.10.01-14929f9` through `2026.10.22-27dcf5f`, including the five
+Linux intermediate hops. Archives were not executed. Selected
+argv/dispatch/wire/result/permission/cancel/auth/replay/cleanup literals were
+hashed; `protocol.json` freezes those strings and SHA-256 values.
 
-Headless argv, mode choices, and NDJSON writer fields are recorded from static
-inspection. This record does not include a per-platform per-hop selected
-argv/writer/result comparison for the new memberships. Writer-chunk hashes in
-`identity.json` are artifact identity, not selected-wire comparison. The
-recorded selected argv is `--print`, `--output-format stream-json`, `--model`,
-and `--trust`. `--mode` choices stay `plan` and `ask`. The recorded writer
-shape is NDJSON: system/init with `session_id`, `model`, and
-`permissionMode: default`; assistant text; thinking delta and completed;
-tool_call started and completed with `call_id`; result success with
-`is_error: false`, durations, `result`, `session_id`, `request_id`, and
-optional usage
+The selected initialize core is byte-identical on both platforms at every hop:
+`loadSession:!0,mcpCapabilities:{http:!0,sse:!0},promptCapabilities:{audio:!1,embeddedContext:!1,image:!0}`
+(SHA-256 `bcd62de052a72a733ec1ddb1d928a95ded1bfca71a3efd440f0d597e91195170`).
+The initialize return is `return{protocolVersion:o.WP,agentCapabilities:a,authMethods:s}`
+(`01885698b5cfa8e51978bd96fc399eb91ea14ea4c6b521e55d2c2b6bc05a331f`). SDK
+export `WP` binds `const r=1` at the ceiling and `const i=1` on later hops.
+Auth method `cursor_login`, `sessionCapabilities.list`, and client-negotiated
+subagents default-off stay. `agentInfo` stays absent. `session/new` still
+requires `cursor_login` before create; the login-helper minifier identifier
+is `p.mf` at the ceiling and `g.mf` later. `async cancel` is
+`t?.pendingPromptCancel?.()`
+(`f5811db1ffd2791d8902b8dcfbd62b4a41252fd08b1bb7c7d05cec4016ff4979`).
+`requestWebPermission` still advertises allow-once / allow-always / reject-once
+(`9763792510b67f62d8d2183a7a9daf9ded6e4a5930f4d27d30621b9cbf49f077`);
+allow-always is not a durable grant. `loadSession` stays advertised; replay
+still logs `ACP loadSession history replay failed to load conversation`, so
+continuation recovery stays blocked. The bundled SDK package stays `0.14.1`.
+Zod packaging moves from `3.25.76` to `4.6.5` at `2026.10.16`; selected
+`readTextFile:!1,writeTextFile:!1` defaults stay.
+
+Headless selected argv, mode, and writer fields were compared on both
+platforms at every hop. `--print`, `--output-format stream-json`, `--model`,
+`--trust`, and `--mode` `.choices(["plan","ask"])` are byte-identical in
+`index.js`. Writer system/init still emits `session_id`, `model`, and
+`permissionMode: default`. Result success still emits `is_error: false`,
+durations, `result`, `session_id`, `request_id`, and optional usage
 `inputTokens` / `outputTokens` / `cacheReadTokens` / `cacheWriteTokens`.
-`--force`, `--yolo`, `--sandbox`, `--auto-review`, and
-`--stream-partial-output` stay unselected. At `2026.10.22`, `index.js` adds an
-internal git-worktree `--force` refusal. Swallowtail does not send `--force`.
-`task_notification` system events already exist at the `2026.10.01` ceiling
-and stay outside the selected init event.
+Usage-spread minifier identifier is `oe` at the ceiling and `ae` later.
+Writer-chunk hashes in `identity.json` remain artifact identity; the selected
+field strings in `protocol.json` are the wire comparison. `--force`, `--yolo`,
+`--sandbox`, `--auto-review`, and `--stream-partial-output` stay unselected.
+At `2026.10.22`, both platforms add an internal git-worktree `--force`
+refusal. Swallowtail does not send `--force`. `task_notification` system
+events already exist at the `2026.10.01` ceiling and stay outside the selected
+init event. The launcher stays byte-identical. Bundled Node changes only at
+`2026.10.22` and is not a selected wire file.
 
 ## Claim limits
 

@@ -1245,8 +1245,8 @@ evidence still fails under the disabled-retry policy. Research 383 qualifies
 published hops `0.87.0` through `1.1.0`: `0.87.0..=0.87.1` retain
 message-update behavior; `0.99.0..=0.99.2` and `1.0.0..=1.0.4` add private
 command-disposition milestones; `1.1.0` adds the private
-`agent_settled.aborted` milestone. Research 455 keeps that revision through
-exact deprecated `1.2.0` and `1.3.0` and maintained `1.4.0`. `dist/modes/rpc`
+`agent_settled.aborted` milestone. Research 455 keeps that newest revision
+Maintained throughout exact `1.1.0`, `1.2.0`, `1.3.0`, and `1.4.0`. `dist/modes/rpc`
 is byte-identical across those points. The claim remains
 `pi.rpc.package-window-2`; strict-LF framing, selected commands, public
 lifecycle operations, permission posture and exclusions are unchanged. The

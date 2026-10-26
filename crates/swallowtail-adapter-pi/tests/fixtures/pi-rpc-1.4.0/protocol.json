@@ -116,6 +116,7 @@
       "unchanged_through": "1.4.0",
       "shape": "agent_settled.aborted remains a required boolean; RPC forwarding is byte-identical"
     },
+    "executed_rpc_mode": "the selected pi --mode rpc path executes the bundled CLI chunk; runRpcMode is inlined there. dist/modes/rpc is the unbundled copy. The executed-wire proof is rpc-mode.ts sourcesContent matching each GitHub tag.",
     "rpc_tree_byte_identical": {
       "versions": [
         "1.1.0",
@@ -170,12 +171,52 @@
         {
           "path": "dist/core/agent-session.js",
           "change": "changed",
-          "classification": "Prompt startup splits into prepare and start so extension-triggered custom messages share before_agent_start, and an abort requested during that startup calls agent.abort() when agent_start fires. The selected invocation passes --no-extensions, so those handlers are not loaded. PromptDisposition stays handled, queued, or started; steering and follow-up stay handled or queued; agent_settled.aborted stays a required boolean. dist/modes/rpc is byte-identical, so forwarded RPC event and response shapes do not change."
+          "classification": "Prompt startup splits into prepare and start. _startRun sets _isAgentRunActive before _prepareRun, and _handleAgentEvent calls agent.abort() on agent_start when _agentRunAbortRequested is set. The selected adapter sends abort while waiting for the prompt response; prompt success is only emitted after prep, so a consumer cancel can land inside preparation. The selected startup window includes prompt-image normalization for the selected single PNG and tool-loadout preparation. This is a fix that makes the already-mapped abort apply during that window: 1.1.0 dropped an abort requested during prep; 1.2.0+ aborts at agent_start and settles aborted. PromptDisposition stays handled, queued, or started; steering and follow-up stay handled or queued; agent_settled.aborted stays a required boolean. dist/modes/rpc is byte-identical. --no-extensions still skips extension-triggered custom-message handlers; those handlers are not the selected abort path."
         },
         {
           "path": "dist/core/agent-session.js.map",
           "change": "changed",
           "classification": "source map for the agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/auth-storage.js",
+          "change": "changed",
+          "classification": "Credential storage internals. The selected route uses maintainer-supported delegated harness auth and does not inspect Pi login state, billing, or endpoint selection. No selected RPC command, permission, or launch-tuple change."
+        },
+        {
+          "path": "dist/core/auth-storage.js.map",
+          "change": "changed",
+          "classification": "source map for credential storage; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/compaction/utils.js",
+          "change": "changed",
+          "classification": "Compaction helper internals. The selected invocation sets set_auto_compaction enabled:false at startup before any prompt, so compaction.enabled returns early and this file is not on the selected execution path."
+        },
+        {
+          "path": "dist/core/compaction/utils.js.map",
+          "change": "changed",
+          "classification": "source map for compaction helpers; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-config.js",
+          "change": "changed",
+          "classification": "Provider/model catalogue internals feeding --provider/--model resolution. The selected invocation binds exact provider and model argv; get_state then checks they match. Catalogue extras stay unmapped."
+        },
+        {
+          "path": "dist/core/model-config.js.map",
+          "change": "changed",
+          "classification": "source map for model catalogue resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-runtime.js",
+          "change": "changed",
+          "classification": "Provider runtime internals for the bound --provider/--model. Selected launch tuple and get_state match stay the same. No selected RPC command change."
+        },
+        {
+          "path": "dist/core/model-runtime.js.map",
+          "change": "changed",
+          "classification": "source map for provider runtime; use with adjacent JavaScript source"
         },
         {
           "path": "dist/core/resource-loader.js",
@@ -188,14 +229,34 @@
           "classification": "source map for resource loading; use with adjacent JavaScript source"
         },
         {
+          "path": "dist/core/settings-defaults.js",
+          "change": "added",
+          "classification": "Defines SETTINGS_DEFAULTS. Mapped literals stay steeringMode and followUpMode one-at-a-time, compaction.enabled true with reserveTokens 16384, retry.enabled true with maxRetries 3 and baseDelayMs 2000. The selected invocation still sets steering, follow-up, compaction, and retry over RPC before any prompt."
+        },
+        {
+          "path": "dist/core/settings-defaults.js.map",
+          "change": "added",
+          "classification": "source map for settings defaults; use with adjacent JavaScript source"
+        },
+        {
           "path": "dist/core/settings-manager.js",
           "change": "changed",
-          "classification": "Settings types move to settings-schema and literal defaults move to SETTINGS_DEFAULTS. Mapped defaults stay steeringMode and followUpMode one-at-a-time, compaction enabled, retry enabled with maxRetries 3, baseDelayMs 2000, and reserveTokens 16384. The selected invocation still passes a plain --tools allowlist and sets steering, follow-up, compaction, and retry through RPC. dist/cli/args.js is byte-identical."
+          "classification": "Settings types move to settings-schema and literal defaults move to SETTINGS_DEFAULTS. Mapped defaults stay steeringMode and followUpMode one-at-a-time, compaction enabled, retry enabled with maxRetries 3, baseDelayMs 2000, and reserveTokens 16384. The selected invocation still passes a plain --tools allowlist and sets steering, follow-up, compaction, and retry through RPC before any prompt. dist/cli/args.js is byte-identical."
         },
         {
           "path": "dist/core/settings-manager.js.map",
           "change": "changed",
           "classification": "source map for settings and tool-default resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-schema.js",
+          "change": "added",
+          "classification": "Defines allowed settings literals including steeringMode/followUpMode one-at-a-time|all. Mapped selected literals are unchanged. The selected invocation overwrites those four settings over RPC before any prompt."
+        },
+        {
+          "path": "dist/core/settings-schema.js.map",
+          "change": "added",
+          "classification": "source map for settings schema; use with adjacent JavaScript source"
         },
         {
           "path": "dist/extensions/codemode/execute.d.ts.map",
@@ -389,7 +450,8 @@
             "--model": true,
             "--tools": true,
             "--no-extensions": true,
-            "--no-context-files": true
+            "--no-context-files": true,
+            "--no-config": false
           },
           "mcp_option_present": true,
           "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
@@ -409,7 +471,8 @@
             "--model": true,
             "--tools": true,
             "--no-extensions": true,
-            "--no-context-files": true
+            "--no-context-files": true,
+            "--no-config": false
           },
           "mcp_option_present": true,
           "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
@@ -445,6 +508,16 @@
           "classification": "source map for the agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
         },
         {
+          "path": "dist/core/settings-defaults.js",
+          "change": "changed",
+          "classification": "Adds sessionShareDestination default auto. Mapped steeringMode, followUpMode, compaction, and retry literals are unchanged. /share is not a selected command. The selected invocation still sets the four mapped settings over RPC before any prompt."
+        },
+        {
+          "path": "dist/core/settings-defaults.js.map",
+          "change": "changed",
+          "classification": "source map for settings defaults; use with adjacent JavaScript source"
+        },
+        {
           "path": "dist/core/settings-manager.js",
           "change": "changed",
           "classification": "Adds sessionShareDestination get and set for /share uploads. That command is not a selected RPC operation. Tool defaults and the plain --tools allowlist path are unchanged."
@@ -453,6 +526,16 @@
           "path": "dist/core/settings-manager.js.map",
           "change": "changed",
           "classification": "source map for settings and tool-default resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-schema.js",
+          "change": "changed",
+          "classification": "Adds sessionShareDestination literals auto|gist|radius for /share. Mapped steering/follow-up/compaction/retry literals are unchanged. /share is not a selected RPC operation."
+        },
+        {
+          "path": "dist/core/settings-schema.js.map",
+          "change": "changed",
+          "classification": "source map for settings schema; use with adjacent JavaScript source"
         },
         {
           "path": "dist/extensions/codemode/execute.d.ts.map",
@@ -486,7 +569,8 @@
             "--model": true,
             "--tools": true,
             "--no-extensions": true,
-            "--no-context-files": true
+            "--no-context-files": true,
+            "--no-config": false
           },
           "mcp_option_present": true,
           "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
@@ -506,7 +590,8 @@
             "--model": true,
             "--tools": true,
             "--no-extensions": true,
-            "--no-context-files": true
+            "--no-context-files": true,
+            "--no-config": false
           },
           "mcp_option_present": true,
           "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
@@ -534,12 +619,52 @@
         {
           "path": "dist/core/agent-session.js",
           "change": "changed",
-          "classification": "Overflow recovery finds a failed attempt's tool results in the projected context instead of caching them at turn_end, and resumed loadouts walk every system message on the branch. Compaction still emits the same compaction_end fields. The selected route passes --no-session, so resumed loadout restoration is not selected. Dispositions and agent_settled.aborted are unchanged, and dist/modes/rpc is byte-identical."
+          "classification": "Overflow recovery finds a failed attempt's tool results in the projected context instead of caching them at turn_end, and resumed loadouts walk every system message on the branch. Compaction still emits the same compaction_end fields. The selected invocation sets set_auto_compaction enabled:false at startup before any prompt, so settings.enabled returns early and overflow recovery is not on the selected path. --no-session separately keeps resumed loadout restoration off the selected path. Dispositions and agent_settled.aborted are unchanged, and dist/modes/rpc is byte-identical."
         },
         {
           "path": "dist/core/agent-session.js.map",
           "change": "changed",
           "classification": "source map for the agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/compaction/compaction.js",
+          "change": "changed",
+          "classification": "Compaction implementation. The selected invocation sets set_auto_compaction enabled:false at startup before any prompt, so settings.enabled returns early and this file is not on the selected execution path."
+        },
+        {
+          "path": "dist/core/compaction/compaction.js.map",
+          "change": "changed",
+          "classification": "source map for compaction; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-config.js",
+          "change": "changed",
+          "classification": "Provider/model catalogue internals feeding --provider/--model resolution. The selected invocation binds exact provider and model argv; get_state then checks they match. Catalogue extras stay unmapped."
+        },
+        {
+          "path": "dist/core/model-config.js.map",
+          "change": "changed",
+          "classification": "source map for model catalogue resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-runtime.js",
+          "change": "changed",
+          "classification": "Provider runtime internals for the bound --provider/--model. Selected launch tuple and get_state match stay the same. No selected RPC command change."
+        },
+        {
+          "path": "dist/core/model-runtime.js.map",
+          "change": "changed",
+          "classification": "source map for provider runtime; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/tools/grep.js",
+          "change": "changed",
+          "classification": "Selected grep tool (allowlist read,grep,find,ls) adds --no-config to the ripgrep argv so ambient RIPGREP_CONFIG_PATH and ripgrep config files no longer affect grep results. Tool name, schema, and RPC mapping are unchanged. Swallowtail does not map ripgrep config as a selected surface. This is host-isolation of the already-selected grep tool, not a new public operation or wire change. The 1.4.0 bundled chunk contains --no-config; 1.1.0-1.3.0 chunks do not. grep.ts sourcesContent SHA-256 88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b at 1.1.0-1.3.0 and 37a906d99672bd043d6f729e0dc09589f46ffc87bdf3d2944fc24331c0ebc2a0 at 1.4.0, both tag-matched."
+        },
+        {
+          "path": "dist/core/tools/grep.js.map",
+          "change": "changed",
+          "classification": "source map for the selected grep tool; use with adjacent JavaScript source"
         },
         {
           "path": "dist/extensions/codemode/execute.d.ts.map",
@@ -588,7 +713,8 @@
             "--model": true,
             "--tools": true,
             "--no-extensions": true,
-            "--no-context-files": true
+            "--no-context-files": true,
+            "--no-config": false
           },
           "mcp_option_present": true,
           "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
@@ -608,7 +734,8 @@
             "--model": true,
             "--tools": true,
             "--no-extensions": true,
-            "--no-context-files": true
+            "--no-context-files": true,
+            "--no-config": true
           },
           "mcp_option_present": true,
           "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
@@ -619,7 +746,7 @@
   ],
   "unmapped_change_boundary": {
     "complete_file_evidence": "All package paths and exact file digests at 1.1.0, 1.2.0, 1.3.0, and 1.4.0 are retained in dist-inventory.json; release notes are discovery only.",
-    "classifications": "Provider catalogues, TUI rendering, published settings schemas, share destinations, classifier models, codemode and MCP implementations, and bundle chunk renames are outside the selected RPC route unless an exact selected-file row records a mapped effect. Reviewed selected changes do not add a host permission, change a selected RPC command, or change the strict-LF response and event shapes.",
+    "classifications": "Provider catalogues, TUI rendering, share destinations, classifier models, codemode and MCP implementations, and bundle chunk renames are outside the selected RPC route unless an exact selected-file row records a mapped effect. settings-defaults and settings-schema are in the per-hop selected set because they define mapped literals. grep.js is in the 1.3.0 to 1.4.0 selected set because grep is in the selected tool allowlist. auth-storage, model-config, model-runtime, compaction/utils, and compaction.js are classified by selected reachability: delegated harness auth, exact --provider/--model argv plus get_state match, and set_auto_compaction enabled:false at startup. Reviewed selected changes do not add a host permission, change a selected RPC command, or change the strict-LF response and event shapes.",
     "no_live_proof": "No artifact execution, provider prompt, model catalogue or session, credential use, install, or host update was performed."
   }
 }

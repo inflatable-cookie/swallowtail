@@ -733,7 +733,7 @@ fn selected_rpc_hops_and_claim_preserve_segments_and_exclusions() {
         (
             "1.1.0",
             "pi.rpc.strict-lf-v1.1.0-aborted-settled",
-            InterfaceSupportStatus::Deprecated,
+            InterfaceSupportStatus::Maintained,
         ),
     ] {
         assert!(matches!(

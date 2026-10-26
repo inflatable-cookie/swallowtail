@@ -114,19 +114,19 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
                 "1.1.0",
                 "1.1.0",
                 ABORTED_SETTLED_BEHAVIOR,
-                InterfaceSupportStatus::Deprecated,
+                InterfaceSupportStatus::Maintained,
             ),
             segment(
                 "1.2.0",
                 "1.2.0",
                 ABORTED_SETTLED_BEHAVIOR,
-                InterfaceSupportStatus::Deprecated,
+                InterfaceSupportStatus::Maintained,
             ),
             segment(
                 "1.3.0",
                 "1.3.0",
                 ABORTED_SETTLED_BEHAVIOR,
-                InterfaceSupportStatus::Deprecated,
+                InterfaceSupportStatus::Maintained,
             ),
             segment(
                 "1.4.0",

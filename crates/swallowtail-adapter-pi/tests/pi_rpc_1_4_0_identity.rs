@@ -70,6 +70,151 @@ const HOP_COUNTS: [(&str, usize, usize, usize, usize); 3] = [
     ("1.3.0->1.4.0", 59, 56, 95, 1125),
 ];
 
+const SOURCE_RPC_MODE: &str = "packages/coding-agent/src/modes/rpc/rpc-mode.ts";
+const SOURCE_AGENT_SESSION: &str = "packages/coding-agent/src/core/agent-session.ts";
+const SOURCE_SETTINGS_MANAGER: &str = "packages/coding-agent/src/core/settings-manager.ts";
+const SOURCE_RESOURCE_LOADER: &str = "packages/coding-agent/src/core/resource-loader.ts";
+const SOURCE_ARGS: &str = "packages/coding-agent/src/cli/args.ts";
+const SOURCE_GREP: &str = "packages/coding-agent/src/core/tools/grep.ts";
+const SOURCE_SETTINGS_DEFAULTS: &str = "packages/coding-agent/src/core/settings-defaults.ts";
+const SOURCE_SETTINGS_SCHEMA: &str = "packages/coding-agent/src/core/settings-schema.ts";
+
+const RPC_MODE_SHA256: &str = "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b";
+const ARGS_SHA256: &str = "ef7b54f02939d2ebc8ec2defcf4c2d9be90fe979c2c74675d970a4dd14aadad3";
+const GREP_SHA256_THROUGH_1_3_0: &str =
+    "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b";
+const GREP_SHA256_1_4_0: &str = "37a906d99672bd043d6f729e0dc09589f46ffc87bdf3d2944fc24331c0ebc2a0";
+const SETTINGS_DEFAULTS_SHA256_1_2_0: &str =
+    "6faa340bfdd818d3ec779cbd3be4626b0cbad976d39a11eb3f549a0af63b9a44";
+const SETTINGS_DEFAULTS_SHA256_1_3_0: &str =
+    "6fb94031cfd462e357723a35aab328e9a1ed5109c2aa59549d8291345875d5a9";
+const SETTINGS_SCHEMA_SHA256_1_2_0: &str =
+    "7c7c19e791b16c5bf47d08b1a919a4e15c56a54c47a55a09f29f9be0c9e5ebe7";
+const SETTINGS_SCHEMA_SHA256_1_3_0: &str =
+    "1679b3f28b4ad7941e7b891f9c8d6a9db8e3a5c8902f8bc9eea86b00f9622ca9";
+
+const HOP_SOURCE_DIGESTS: [(&str, &[(&str, &str)]); 4] = [
+    (
+        "1.1.0",
+        &[
+            (SOURCE_RPC_MODE, RPC_MODE_SHA256),
+            (
+                SOURCE_AGENT_SESSION,
+                "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+            ),
+            (
+                SOURCE_SETTINGS_MANAGER,
+                "d916365ae21bce0f9a4f3ad15690e290ceca0aad958013e3280779b0cde0b074",
+            ),
+            (
+                SOURCE_RESOURCE_LOADER,
+                "dbe87c11983b8dac949377904f4cf0511155771498ba88d2fefb0cd0d5dd9e28",
+            ),
+            (SOURCE_ARGS, ARGS_SHA256),
+            (SOURCE_GREP, GREP_SHA256_THROUGH_1_3_0),
+        ],
+    ),
+    (
+        "1.2.0",
+        &[
+            (SOURCE_RPC_MODE, RPC_MODE_SHA256),
+            (
+                SOURCE_AGENT_SESSION,
+                "e2bbf746779fbed5a8c36f023842bf271252d1fd6f17f5a32f70a0d1c63f0b65",
+            ),
+            (
+                SOURCE_SETTINGS_MANAGER,
+                "754fc0ee6289fda207136f9b5a389cab6ef4de2e35cc69c8010967ca9d371624",
+            ),
+            (
+                SOURCE_RESOURCE_LOADER,
+                "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+            ),
+            (SOURCE_ARGS, ARGS_SHA256),
+            (SOURCE_GREP, GREP_SHA256_THROUGH_1_3_0),
+            (SOURCE_SETTINGS_DEFAULTS, SETTINGS_DEFAULTS_SHA256_1_2_0),
+            (SOURCE_SETTINGS_SCHEMA, SETTINGS_SCHEMA_SHA256_1_2_0),
+        ],
+    ),
+    (
+        "1.3.0",
+        &[
+            (SOURCE_RPC_MODE, RPC_MODE_SHA256),
+            (
+                SOURCE_AGENT_SESSION,
+                "e0fa206e8c49a98c024708068df39c0e4944f4251633425fc083b2fbb5ec0ac6",
+            ),
+            (
+                SOURCE_SETTINGS_MANAGER,
+                "aef8fea51000f291c1c51d81fd9b30f7a2bdd0e68370ad84b969e5fd15667e98",
+            ),
+            (
+                SOURCE_RESOURCE_LOADER,
+                "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+            ),
+            (SOURCE_ARGS, ARGS_SHA256),
+            (SOURCE_GREP, GREP_SHA256_THROUGH_1_3_0),
+            (SOURCE_SETTINGS_DEFAULTS, SETTINGS_DEFAULTS_SHA256_1_3_0),
+            (SOURCE_SETTINGS_SCHEMA, SETTINGS_SCHEMA_SHA256_1_3_0),
+        ],
+    ),
+    (
+        "1.4.0",
+        &[
+            (SOURCE_RPC_MODE, RPC_MODE_SHA256),
+            (
+                SOURCE_AGENT_SESSION,
+                "e0a6e3e7b662afff9763a6297e0bb600da75e8eff4df443912f2e215bdc6a8e2",
+            ),
+            (
+                SOURCE_SETTINGS_MANAGER,
+                "aef8fea51000f291c1c51d81fd9b30f7a2bdd0e68370ad84b969e5fd15667e98",
+            ),
+            (
+                SOURCE_RESOURCE_LOADER,
+                "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+            ),
+            (SOURCE_ARGS, ARGS_SHA256),
+            (SOURCE_GREP, GREP_SHA256_1_4_0),
+            (SOURCE_SETTINGS_DEFAULTS, SETTINGS_DEFAULTS_SHA256_1_3_0),
+            (SOURCE_SETTINGS_SCHEMA, SETTINGS_SCHEMA_SHA256_1_3_0),
+        ],
+    ),
+];
+
+const SELECTED_CORE_PATHS: &[&str] = &[
+    "dist/core/agent-session.js",
+    "dist/core/agent-session.js.map",
+    "dist/core/auth-storage.js",
+    "dist/core/auth-storage.js.map",
+    "dist/core/compaction/compaction.js",
+    "dist/core/compaction/compaction.js.map",
+    "dist/core/compaction/utils.js",
+    "dist/core/compaction/utils.js.map",
+    "dist/core/mcp-servers.js",
+    "dist/core/mcp-servers.js.map",
+    "dist/core/model-config.js",
+    "dist/core/model-config.js.map",
+    "dist/core/model-runtime.js",
+    "dist/core/model-runtime.js.map",
+    "dist/core/resource-loader.js",
+    "dist/core/resource-loader.js.map",
+    "dist/core/settings-defaults.js",
+    "dist/core/settings-defaults.js.map",
+    "dist/core/settings-manager.js",
+    "dist/core/settings-manager.js.map",
+    "dist/core/settings-schema.js",
+    "dist/core/settings-schema.js.map",
+    "dist/core/tools/grep.js",
+    "dist/core/tools/grep.js.map",
+    "dist/cli/args.js",
+    "dist/cli/args.js.map",
+    "dist/cli/setup.js",
+    "dist/cli/setup.js.map",
+    "dist/extensions/index.js",
+    "dist/extensions/index.js.map",
+];
+
 const RELEASE_IDENTITIES: [(&str, &str, &str, &str, u64); 4] = [
     (
         "1.1.0",
@@ -191,45 +336,36 @@ fn official_identity_preserves_exact_channels_and_artifact_digests() {
     let checks = identity["latest_source_correlation"]["checks"]
         .as_array()
         .expect("latest tagged source checks");
-    assert_eq!(
-        checks[0]["source"],
-        "packages/coding-agent/src/modes/rpc/rpc-mode.ts"
-    );
-    assert_eq!(
-        checks[0]["sha256"],
-        "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b"
-    );
-    assert_eq!(
-        checks[1]["source"],
-        "packages/coding-agent/src/core/agent-session.ts"
-    );
-    assert_eq!(
-        checks[1]["sha256"],
-        "e0a6e3e7b662afff9763a6297e0bb600da75e8eff4df443912f2e215bdc6a8e2"
-    );
-    assert_eq!(checks[0]["matches_tag"], "v1.4.0");
-    assert_eq!(checks[1]["matches_tag"], "v1.4.0");
+    let (_, latest_expected) = HOP_SOURCE_DIGESTS[3];
+    assert_eq!(checks.len(), latest_expected.len());
+    for (check, (source, digest)) in checks.iter().zip(latest_expected) {
+        assert_eq!(check["source"], *source);
+        assert_eq!(check["sha256"], *digest);
+        assert_eq!(check["matches_tag"], "v1.4.0");
+    }
     assert_eq!(
         identity["latest_source_correlation"]["npm_sourcemap_sources_content_matches_tagged_source"],
         true
     );
+    assert!(
+        identity["latest_source_correlation"]["executed_rpc_mode"]
+            .as_str()
+            .is_some_and(|value| value.contains("bundled CLI chunk")
+                && value.contains("rpc-mode.ts sourcesContent"))
+    );
     let hops = identity["latest_source_correlation"]["every_hop"]
         .as_array()
         .expect("per-hop source correlation");
-    assert_eq!(hops.len(), VERSIONS.len());
-    for (hop, version) in hops.iter().zip(VERSIONS) {
+    assert_eq!(hops.len(), HOP_SOURCE_DIGESTS.len());
+    for (hop, (version, expected)) in hops.iter().zip(HOP_SOURCE_DIGESTS) {
         assert_eq!(hop["version"], version);
         let hop_checks = hop["checks"].as_array().expect("hop source checks");
-        assert!(hop_checks.iter().all(|check| {
-            check["matches_tag"] == format!("v{version}")
-                && check["sha256"]
-                    .as_str()
-                    .is_some_and(|value| value.len() == 64)
-        }));
-        assert_eq!(
-            hop_checks[0]["sha256"],
-            "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b"
-        );
+        assert_eq!(hop_checks.len(), expected.len(), "{version} source checks");
+        for (check, (source, digest)) in hop_checks.iter().zip(expected.iter()) {
+            assert_eq!(check["source"], *source, "{version} source path");
+            assert_eq!(check["sha256"], *digest, "{version} {source}");
+            assert_eq!(check["matches_tag"], format!("v{version}"));
+        }
     }
 }
 
@@ -442,7 +578,15 @@ fn selected_rpc_hops_extend_the_aborted_settled_revision() {
         "compatible-extension"
     );
     assert_eq!(identity["identity_decision"]["latest_qualified"], "1.4.0");
-    assert_eq!(identity["identity_decision"]["maintained_point"], "1.4.0");
+    assert_eq!(
+        strings(&identity["identity_decision"]["maintained_points"]),
+        ["1.1.0", "1.2.0", "1.3.0", "1.4.0"]
+    );
+    assert_eq!(
+        identity["identity_decision"]["same_revision_segments_maintained"],
+        true
+    );
+    assert!(identity["identity_decision"]["demote_1_1_0_to_deprecated"].is_null());
     assert_eq!(
         identity["identity_decision"]["new_behavior_revision"],
         false
@@ -508,6 +652,11 @@ fn selected_rpc_hops_extend_the_aborted_settled_revision() {
                     "{version} {marker}"
                 );
             }
+            assert_eq!(
+                runtime["selected_markers"]["--no-config"],
+                version == "1.4.0",
+                "{version} --no-config"
+            );
         }
 
         let recorded = hop["selected_source_files"]
@@ -545,6 +694,41 @@ fn selected_rpc_hops_extend_the_aborted_settled_revision() {
                 .as_str()
                 .is_some_and(|value| !value.is_empty())
         }));
+        match expected_name {
+            "1.1.0->1.2.0" => {
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/agent-session.js",
+                    "consumer cancel can land inside preparation",
+                );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/settings-defaults.js",
+                    "sets steering, follow-up, compaction, and retry over RPC before any prompt",
+                );
+            }
+            "1.2.0->1.3.0" => {
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/settings-defaults.js",
+                    "sessionShareDestination default auto",
+                );
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/settings-schema.js",
+                    "/share is not a selected RPC operation",
+                );
+            }
+            "1.3.0->1.4.0" => {
+                assert_classification_contains(recorded, "dist/core/tools/grep.js", "--no-config");
+                assert_classification_contains(
+                    recorded,
+                    "dist/core/agent-session.js",
+                    "set_auto_compaction enabled:false",
+                );
+            }
+            other => panic!("unexpected hop {other}"),
+        }
     }
 
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
@@ -552,9 +736,9 @@ fn selected_rpc_hops_extend_the_aborted_settled_revision() {
     let claim = pi_rpc_claim();
     assert_eq!(claim.id().as_str(), "pi.rpc.package-window-2");
     for (version, status) in [
-        ("1.1.0", InterfaceSupportStatus::Deprecated),
-        ("1.2.0", InterfaceSupportStatus::Deprecated),
-        ("1.3.0", InterfaceSupportStatus::Deprecated),
+        ("1.1.0", InterfaceSupportStatus::Maintained),
+        ("1.2.0", InterfaceSupportStatus::Maintained),
+        ("1.3.0", InterfaceSupportStatus::Maintained),
         ("1.4.0", InterfaceSupportStatus::Maintained),
     ] {
         assert!(matches!(
@@ -633,26 +817,22 @@ fn assert_exact_keys(value: &Value, expected: &[&str]) {
 
 fn selected_source_path(path: &str) -> bool {
     path.starts_with("dist/modes/rpc/")
-        || [
-            "dist/core/agent-session.js",
-            "dist/core/agent-session.js.map",
-            "dist/core/settings-manager.js",
-            "dist/core/settings-manager.js.map",
-            "dist/core/resource-loader.js",
-            "dist/core/resource-loader.js.map",
-            "dist/core/mcp-servers.js",
-            "dist/core/mcp-servers.js.map",
-            "dist/cli/args.js",
-            "dist/cli/args.js.map",
-            "dist/cli/setup.js",
-            "dist/cli/setup.js.map",
-            "dist/extensions/index.js",
-            "dist/extensions/index.js.map",
-        ]
-        .contains(&path)
+        || SELECTED_CORE_PATHS.contains(&path)
         || path.starts_with("dist/extensions/mcp/")
         || path.starts_with("dist/extensions/codemode/")
         || path.starts_with("dist/extensions/tool-search/")
+}
+
+fn assert_classification_contains(recorded: &[Value], path: &str, needle: &str) {
+    let classification = recorded
+        .iter()
+        .find(|entry| entry["path"] == path)
+        .and_then(|entry| entry["classification"].as_str())
+        .unwrap_or_else(|| panic!("missing selected classification for {path}"));
+    assert!(
+        classification.contains(needle),
+        "{path} classification missing {needle:?}: {classification}"
+    );
 }
 
 fn version_value(value: &str) -> InterfaceVersion {

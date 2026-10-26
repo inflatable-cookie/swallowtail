@@ -63,8 +63,9 @@ segments are retained as Deprecated: `0.80.10`, `0.81.0`, `0.81.1`,
 `0.86.0..=0.86.1`, and `0.87.0..=0.87.1`. The command-disposition mapping is
 qualified as Deprecated on `0.99.0..=0.99.2` and `1.0.0..=1.0.4`. The
 `agent_settled.aborted` mapping starts at `1.1.0` and stays on that behavior
-revision through maintained `1.4.0`. Exact `1.1.0`, `1.2.0`, and `1.3.0` are
-Deprecated. Public operations and the lifecycle contract are unchanged.
+revision through `1.4.0`. Exact `1.1.0`, `1.2.0`, `1.3.0`, and `1.4.0` are
+Maintained throughout that newest revision. Public operations and the lifecycle
+contract are unchanged.
 
 The exact stable hops after `0.86.1` are `0.87.0`, `0.87.1`, `0.99.0`,
 `0.99.1`, `0.99.2`, `1.0.0`, `1.0.1`, `1.0.2`, `1.0.3`, `1.0.4`, `1.1.0`,

@@ -145,56 +145,31 @@ requires them.
 
 ## Oxide Adoption Boundary
 
-### Superseding 2026-10-25 ruling
+### Tom's 2026-10-25 ruling
 
 Tom's Oxide Supervisor `d5260e79-e0f9-47d6-b854-123a59e0b1d3` relayed Tom's
 2026-10-25 ruling: every ordinary local Rust route uses `oxide <cmd>` or
-`oxide exec -- <tool>` when a host tool runs Cargo or needs its own target.
-This supersedes the earlier one-use deferral and per-selector escape retention
-rules below. Remove `:cargo` selector siblings and the project-specific
-`SWALLOWTAIL_RUST_RUNNER` escape; the only explicit local escapes are Effigy's
-`EFFIGY_OXIDE_ESCAPE=cargo` or running Cargo by hand. Missing Oxide must never
-silently select Cargo.
+`oxide exec -- <tool>` when a tool runs Cargo itself or needs its own target.
+It supersedes the earlier one-use deferral and per-selector escape retention:
+there are no `<selector>:cargo` sibling selectors and no project escape
+variable. The only local escapes are Effigy's `EFFIGY_OXIDE_ESCAPE=cargo` for
+one run and running Cargo by hand. Missing Oxide never silently selects Cargo.
 
-Run `oxide init` for the managed guidance. Preserve private-target ownership,
-cleanup, toolchain pins, filters and test semantics while qualifying the
-`oxide exec` wrapper. This grants no authority to change target custody,
-remove outputs, install tools or run release/provider commands. `.github` CI
-and product code or fixtures intentionally exercising Cargo retain their
-recipes. The installed Oxide workflow contract governs supported storage and
-process behaviour; a wrapper is not proof of cache reuse or containment.
-
+Run `oxide init` for the managed guidance. The switch preserved private-target
+ownership, cleanup, toolchain pins, filters, profiles and test semantics. It
+grants no authority to change target custody, remove outputs, install tools or
+run release or provider commands. `.github` CI and product code or fixtures
+whose subject is Cargo retain their recipes. The installed Oxide workflow
+contract owns supported storage and process behaviour; a routed wrapper is not
+proof of cache reuse or containment, and this repository claims no
+fingerprint-equivalence or saving from routing.
 
 Tom's 2026-10-23 standing approval covers supported Oxide adoption in Rust
-projects with Paseo workspaces (decisions `3b041cf4-df3d-4e17-9886-5af51428ecf3`
-and `e1c1d3b5-9ff2-4f42-81b6-7e2a3f6e3a14`). The
+projects with Paseo workspaces (decisions
+`3b041cf4-df3d-4e17-9886-5af51428ecf3` and
+`e1c1d3b5-9ff2-4f42-81b6-7e2a3f6e3a14`). The
 [Oxide workflow contract](https://github.com/inflatable-cookie/oxide/blob/main/docs/knowledge/contracts/workflow.md#switching-an-existing-project)
 owns switching semantics. Effigy still owns task routing and host admission.
-
-Tom expanded this approval on 2026-10-23: “Yes to both - let’s get all
-those "no" rows transitioned”, relayed by the Oxide owner through Supervisor
-`73f7c3b4-8e0e-4b67-a1d0-7a09f1f6b364`. Every entry point without a genuine
-Cargo requirement moves through scoped implementation and independent review:
-
-- Ordinary builds, checks and tests use Oxide. Metadata, locate-project,
-  fetch, update, install, package, publish, tree, fmt, deny and audit retain
-  their arguments through Oxide. Textual switching grants no authority to
-  execute network, installation, publication or secret-bearing operations.
-- Preserve toolchain pins with `RUSTUP_TOOLCHAIN=<same> oxide ...` or a
-  suitable rust-toolchain file. Cargo-running host tools use supported
-  `oxide exec -- <tool>` after project qualification. External commands
-  currently take a brief slot lease; that is existing behaviour.
-- Repair sibling-binary discovery with `CARGO_BIN_EXE_<name>` where
-  applicable and prove unchanged test semantics before switching. An example
-  target must not be assumed to expose a binary-target environment variable.
-- Private `CARGO_TARGET_DIR` and temporary-workspace one-shot builds remain
-  **pending Oxide one-use workspace support**. This includes release/consumer
-  clones and private probes such as `run-with-owned-cargo-target.sh`. Do not
-  switch them or drop their target ownership before qualified support ships.
-- CI, container/VM guest builds, Tarpaulin with its own target, and tests
-  whose subject is Cargo remain genuine Cargo exceptions. Preserve explicit
-  `:cargo` fallbacks at least until formal Effigy v0.15; remove them only
-  through owned work afterward. Other exceptions do not expire with v0.15.
 
 Adoption permits the generated agent-document block and supported routing
 changes, not global configuration changes, live provider probes or output
@@ -203,69 +178,115 @@ A target symlink needs an exact non-directory ignore rule such as `/target`;
 `/target/` does not suffice. Build-slot placement on Builds is separate from
 final-output profile links. Profile links and one-use seeding are not shipped.
 
-### Switched routes and their plain-Cargo escapes
+### Routes and their single escape
 
-A switched route runs `bash scripts/oxide-rust.sh <same arguments>`. The helper
-passes those arguments to Oxide unchanged and replaces itself with the tool, so
-argv, exit status, signals, stdout and stderr are the tool's own. That covers
-ordinary builds, checks, clippy, tests and nextest, and the non-building
-metadata, fmt, deny, doc and public-api routes. A route whose tool runs Cargo
-itself uses the helper's `--host-tool` mode for one `oxide exec --` lease.
-
-Every switched selector keeps a `<selector>:cargo` sibling. For a direct route
-the sibling is the same arguments on plain `cargo`; for a maintained-script
-route it runs the same script with `SWALLOWTAIL_RUST_RUNNER=cargo`. Neither
-sibling puts Oxide anywhere on its route.
+`scripts/oxide-rust.sh` is the one place that spells a plain Cargo command. A
+route runs `bash scripts/oxide-rust.sh <cargo command> <same arguments>`; the
+helper passes those arguments to Oxide unchanged and replaces itself with the
+tool, so argv, exit status, signals, stdout and stderr are the tool's own. That
+covers ordinary builds, checks, clippy, tests and nextest, and the
+non-building metadata, fmt, deny, doc and public-api routes. The maintained
+scripts that own a validation or release proof route their Cargo commands
+through the same helper.
 
 - **Hosted CI.** `GITHUB_ACTIONS=true` selects the plain-Cargo branch, because
-  hosted runners have no `oxide`. Workflow files do not change.
-- **Missing Oxide.** Locally, an absent `oxide` exits 127 and names both
-  escapes. It never falls back to Cargo silently.
-- **One-run escape.** `SWALLOWTAIL_RUST_RUNNER=cargo` runs a single route on
-  plain Cargo without changing its definition.
+  hosted runners have no `oxide`. `.github/workflows` stays byte-identical and
+  keeps its raw Cargo commands; the helper branch is the only CI-specific step.
+- **One-run escape.** `EFFIGY_OXIDE_ESCAPE=cargo effigy <selector>` is Effigy's
+  escape, honoured by the helper for that run and never persisted in the
+  manifest or the environment. Any other value refuses before a tool starts.
+  Running `cargo` by hand is the only other plain route.
+- **Missing Oxide.** Locally, an absent `oxide` exits 127 and names the escape.
+  It never falls back to Cargo silently.
 - **Toolchain pins.** `cargo +<name>` becomes `RUSTUP_TOOLCHAIN=<name> oxide …`.
   The pin, compiler, features, filters, nextest profile and package scope are
   unchanged; the plain branch passes the same variable to Cargo.
 - **Guard.** `effigy validate:oxide-routing` owns the inventory. It fails on a
-  selector that spells a Cargo command without being switched or listed here,
-  on a missing, changed, reordered or Oxide-tainted `:cargo` sibling, on a stale
-  entry, on a switched route that selects a whole test binary containing
-  private-target tests, on a switched script that runs a workspace-wide test
-  lane, on a maintained script that disagrees with its classification, and on
-  a changed release include, target ignore rule or agent block.
+  `:cargo` escape selector, on the retired project escape variable, on a
+  selector that spells a Cargo command without being routed or listed here, on
+  a selector that takes `--host-tool` itself instead of letting the tool own its
+  lease, on a leading `+toolchain` argument, on a changed command list for the
+  routes this guide transitioned, on a maintained script that disagrees with its
+  classification, on a private target without its marker and cleanup, on a
+  foreign-workspace driver without its own build directory, and on a changed
+  release include, workflow, target ignore rule or agent block.
   `effigy check:oxide-routing` is its syntax and compile companion.
 
-These routes stay on plain Cargo, and their reasons are durable:
+### Tools and ordinary script routes
 
-- **Pending one-use workspace support.** A route that owns a private
-  `CARGO_TARGET_DIR` or a temporary workspace keeps it until qualified Oxide
-  one-use support ships: `run-with-owned-cargo-target.sh`
-  (`check:sdk-courier-timeout`, `validate:sdk-courier-timeout`,
-  `validate:sdk-courier-idle`), the Claude SDK and Grok registered-tool tests
-  that build a courier target of their own
-  (`validate:sdk-registered-lifetime`, `validate:sdk-unsolicited-close`,
-  `validate:current-grok-build-acp`), the node SDK route whose filter selects
-  the whole `claude_agent_sdk_driver` binary
-  (`validate:current-claude-agent-sdk-node`), the whole-workspace test lane
-  (`test:rust`, `package:release-floor`, the commented local-heavy release
-  `test` recipe), whole-package
-  `validate:focused`, `package:source-consumer`, `check:lease-api-fixture`,
-  `package:verify-affected`, and the `sdk-v0.5.2` backport runner selectors.
-- **Genuine exceptions.** Hosted CI keeps its unchanged raw-Cargo workflows.
-  `observe:copilot-acp-private-assessment` reviews the pinned original entry
-  invocation, and its subject is that invocation. Tests whose subject is the
-  Cargo invocation force the helper's plain branch:
-  `validate:format-selectors:test` asserts the exact `cargo fmt` argv.
-  Container/VM guest builds and Tarpaulin with its own target are named
+A maintained script that runs Cargo itself re-executes once through the
+helper's `--host-tool` mode, which is one `oxide exec --` lease. Its own
+`cargo` words are the tool's, so no route takes two leases:
+
+- `run-grok-acp-client-mcp-probe.sh` builds and runs its echo example inside the
+  lease; final outputs stay in `<checkout>/target/debug/`.
+- `validate-focused-packages.sh`, `check-release-floor.sh`, `check-msrv.sh`,
+  `check-package-metadata.sh`, `generate-public-api-baseline.sh`,
+  `format-packages.sh` and `scripts/validation/package-scope.sh` are ordinary
+  routes: they call the helper, and the whole-workspace and package lanes keep
+  their own scope, filters and pins. Their nested courier builds take the
+  task-owned target the test helper creates when `CARGO_TARGET_DIR` is the
+  checkout's own target.
+
+### Named proof exceptions
+
+A proof that must build outside the shared project state keeps both its own
+target directory and its own build directory inside its run-owned scratch root.
+Its finals and intermediates therefore never enter this checkout's `target` or
+this project's shared slot, and the run removes only the directory it created:
+
+- `run-with-owned-cargo-target.sh` (`check:sdk-courier-timeout`,
+  `validate:sdk-courier-timeout`, `validate:sdk-courier-idle`,
+  `validate:sdk-registered-lifetime`) runs the courier and SDK validation groups
+  under one fresh run-owned `CARGO_TARGET_DIR` plus a build directory inside it.
+  The outer build and the nested courier build share that target, which this
+  invocation alone owns; the directory is created under the system temp root,
+  marked `.swallowtail-run-owned`, and removed on exit. The build directory is
+  inside it for a measured reason: Cargo keeps the compiled test binary in the
+  build directory, so a shared build directory keeps a `CARGO_BIN_EXE_*` value
+  baked from an earlier run's target path, and three of seven
+  `registered_tool_proxy` tests then fail with `executable_not_found` on a
+  second run. This is an Oxide dogfood finding (build-directory invalidation of
+  an environment-baked binary path); the route keeps Oxide's lease and
+  admission while the fixture builds privately.
+- `verify-affected-packages.sh` (`package:verify-affected`) archives packages
+  and compiles the extracted subset in a temporary root;
+- `verify-source-consumer.sh` (`package:source-consumer`) generates a consumer
+  workspace and lock outside this checkout;
+- `verify-lease-api-fixture.sh` (`check:lease-api-fixture`) compiles the
+  released lease API from a temporary external consumer;
+- the `sdk-v0.5.2` backport runner (`format:sdk-patch-backport`,
+  `check:sdk-patch-backport`, `validate:sdk-patch-backport`) stages a private
+  candidate and consumer clone with their own targets, build directories and
+  pinned toolchains.
+
+Each still takes exactly one `oxide exec --` lease, so the route, admission and
+refusal wording are Oxide's; the private build directory is the contract's
+named exception for a proof that must build without shared project state.
+
+### Genuine Cargo exceptions
+
+These stay on plain Cargo, and their reasons are durable:
+
+- **Hosted CI.** `.github/workflows` keeps its raw-Cargo commands; hosted
+  runners have no `oxide`. The release gates that hosted CI calls stay on
+  Effigy selectors, which route as described above.
+- **The pinned original invocation.**
+  `observe:copilot-acp-private-assessment` reviews
+  `scripts/copilot-acp-original-entry.sh`, whose subject is that exact
+  invocation and which needs original authority.
+- **A test whose subject is the Cargo invocation.**
+  `validate:format-selectors:test` asserts the exact `cargo fmt` argv of
+  `format:package`, so it takes Effigy's one-run escape.
+- **Product code and fixtures whose subject is Cargo.** Crate test fixtures
+  that run Cargo as their behaviour, and historical research transcripts, keep
+  their literal recipes. They are evidence, not entry points.
+- **Container/VM guest builds and Tarpaulin with its own target** are named
   exceptions, and this repository has neither.
-- **Query precheck.** `scripts/validation/package-scope.sh` reads workspace
-  metadata for the scope of pending routes and stays a plain query so those
-  routes remain wholly off Oxide.
 - **Historical evidence.** `release-candidates/0.1.0/` scripts and
-  `docs/research/` command transcripts are frozen evidence, not maintained
-  entry points.
+  `docs/research/` transcripts are frozen, not maintained entry points.
 
-A route that changes a test result stays on Cargo and is reported as a
-dogfood finding for Oxide, never hidden by changing runtime or test semantics.
-The switch is qualified against the installed binary receipt and hash for that
-run; the repository records no installation pin of its own.
+A route that changes a test result stays on Cargo and is reported as a dogfood
+finding for Oxide, never hidden by changing runtime or test semantics. The
+switch is qualified against the installed binary receipt and hash for that run;
+the repository records no installation pin of its own.

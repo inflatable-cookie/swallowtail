@@ -6,8 +6,20 @@ cd "$release_repo_root"
 
 source release-baselines/rust-toolchains-0.2.0.env
 
+# Temporary-workspace proof: this driver enters once through the shared
+# helper's host-tool mode, one `oxide exec --` lease. The consumer workspace it
+# generates is not this checkout, so it also keeps its own build directory:
+# another workspace's intermediates never enter this project's shared slot, and
+# the run-owned root below is the only directory cleaned up.
+if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
+  SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$release_repo_root/scripts/oxide-rust.sh" \
+    --host-tool bash "$release_repo_root/scripts/verify-source-consumer.sh" "$@"
+fi
+
 release_tmp=$(mktemp -d)
 trap 'rm -rf "$release_tmp"' EXIT
+export CARGO_TARGET_DIR="$release_tmp/target"
+export CARGO_BUILD_BUILD_DIR="$release_tmp/build"
 
 release_consumer_root="$release_tmp/consumer"
 mkdir -p "$release_consumer_root/src"

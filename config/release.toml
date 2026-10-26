@@ -39,7 +39,7 @@ source = "effigy package:source-consumer"
 #
 # lint = "nice -n 5 bash scripts/oxide-rust.sh clippy --workspace --all-targets --all-features --locked -- -D warnings"
 # "lint:no-features" = "nice -n 5 bash scripts/oxide-rust.sh clippy --workspace --all-targets --no-default-features --locked -- -D warnings"
-# The workspace test recipe stays on plain Cargo, pending Oxide one-use
-# workspace support: it runs the private-target courier tests.
-# test = "nice -n 5 cargo nextest run --workspace --all-features --locked"
+# The workspace test recipe runs the private-target courier tests, which the
+# own-target driver handles under one Oxide lease.
+# test = "nice -n 5 bash scripts/oxide-rust.sh nextest run --workspace --all-features --locked"
 # floor = "effigy package:release-floor"

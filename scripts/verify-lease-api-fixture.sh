@@ -9,8 +9,11 @@
 # current-version semantic API dump is then checked for those same seven
 # entries, so an item that only compiles by accident cannot pass.
 #
-# The consumer is a temporary workspace with its own lock and target, so it
-# keeps plain Cargo while qualified Oxide one-use workspace support is pending.
+# The consumer is a temporary workspace outside this checkout, so this driver
+# enters once through the shared helper's host-tool mode: one `oxide exec --`
+# lease, and its own build directory, so another workspace's intermediates never
+# enter this project's shared slot. The run-owned root below is the only
+# directory cleaned up.
 set -euo pipefail
 
 fixture_repo_root=$(cd "$(dirname "$0")/.." && pwd)
@@ -20,8 +23,15 @@ cd "$fixture_repo_root"
 source "$fixture_repo_root/scripts/release-version-identity.sh"
 release_load_version_identity
 
+if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
+  SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$fixture_repo_root/scripts/oxide-rust.sh" \
+    --host-tool bash "$fixture_repo_root/scripts/verify-lease-api-fixture.sh" "$@"
+fi
+
 fixture_root=$(mktemp -d)
 trap 'rm -rf "$fixture_root"' EXIT
+export CARGO_TARGET_DIR="$fixture_root/target"
+export CARGO_BUILD_BUILD_DIR="$fixture_root/build"
 fixture_consumer="$fixture_root/lease-api-consumer"
 mkdir -p "$fixture_consumer/src"
 

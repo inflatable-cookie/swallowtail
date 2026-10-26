@@ -18,10 +18,10 @@ if [[ "$validation_plan" == true ]]; then
 fi
 
 validation_started=$SECONDS
-cargo nextest run \
+bash "$validation_repo_root/scripts/oxide-rust.sh" nextest run \
   --locked \
   "${validation_cargo_package_args[@]}"
-cargo clippy \
+bash "$validation_repo_root/scripts/oxide-rust.sh" clippy \
   --locked \
   "${validation_cargo_package_args[@]}" \
   --all-targets \

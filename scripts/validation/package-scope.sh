@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Shared package-scope precheck for the validation selectors. Its metadata read
+# is a non-building Cargo query, so it takes the same Oxide route as every other
+# ordinary local Rust command: `oxide metadata` is exact passthrough and leases
+# no slot. These selectors all route their builds through the shared helper.
+validation_scope_repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
+
 validation_parse_package_scope() {
   validation_plan=false
   if [[ "${1:-}" == "--plan" ]]; then
@@ -13,7 +19,8 @@ validation_parse_package_scope() {
   fi
 
   validation_workspace_metadata=$(
-    cargo metadata --no-deps --format-version 1
+    bash "$validation_scope_repo_root/scripts/oxide-rust.sh" \
+      metadata --no-deps --format-version 1
   )
   validation_packages=()
   validation_package_count=0

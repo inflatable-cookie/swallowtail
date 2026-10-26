@@ -23,7 +23,7 @@ set -euo pipefail
 # Routing: this script runs Cargo itself, so it re-executes through the shared
 # helper's host-tool mode as one supported lease, and its example build and run
 # inherit Oxide's storage placement. `GITHUB_ACTIONS=true` or
-# SWALLOWTAIL_RUST_RUNNER=cargo keeps the plain-Cargo branch, and a missing
+# `EFFIGY_OXIDE_ESCAPE=cargo` keeps the plain-Cargo branch, and a missing
 # Oxide fails with the escape named. Live spawn still needs the authority guard
 # above; routing changes no probe behaviour.
 
@@ -78,10 +78,10 @@ fi
 
 # One supported lease for this Cargo-running tool. The guard stops a re-exec
 # loop; the child inherits the lease's storage environment. The shared helper
-# owns the CI/plain branch, the explicit escape and the missing-Oxide refusal.
+# owns the CI branch, Effigy's escape and the missing-Oxide refusal.
 if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != "1" ]]; then
   SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$probe_repo_root/scripts/oxide-rust.sh" \
-    --host-tool "$probe_repo_root/scripts/run-grok-acp-client-mcp-probe.sh" \
+    --host-tool bash "$probe_repo_root/scripts/run-grok-acp-client-mcp-probe.sh" \
     "${probe_original_args[@]}"
 fi
 

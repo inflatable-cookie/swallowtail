@@ -6,6 +6,18 @@ repo_root=$(cd "$backport_dir/../../../.." && pwd)
 manifest="$backport_dir/manifest.json"
 patch_file="$backport_dir/0001-sdk-correction.patch"
 
+# This driver stages private candidate and consumer clones outside this
+# checkout, so it enters once through the shared helper's host-tool mode: one
+# `oxide exec --` lease. Every nested Cargo call below builds a staged clone or
+# consumer, never this checkout, so each mode also gives its own build
+# directory beside its own target directory: staged intermediates never enter
+# this project's shared slot. The exit traps remove only the run-owned scratch
+# root.
+if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
+  SWALLOWTAIL_OXIDE_EXEC_CHILD=1 exec bash "$repo_root/scripts/oxide-rust.sh" \
+    --host-tool bash "$backport_dir/runner.sh" "$@"
+fi
+
 manifest_value() {
   python3 - "$manifest" "$1" <<'PY'
 import json
@@ -283,6 +295,8 @@ run_format() {
   scratch=$(new_scratch_root)
   export TMPDIR="$scratch"
   candidate=$(candidate_workspace "$scratch")
+  export CARGO_TARGET_DIR="$scratch/target-format"
+  export CARGO_BUILD_BUILD_DIR="$scratch/build-format"
   (cd "$candidate" && cargo fmt -p swallowtail-runtime -p swallowtail-host-local \
     -p swallowtail-adapter-claude-agent -- --check)
   consumer="$scratch/consumer-format"
@@ -313,6 +327,7 @@ run_check() {
   baseline="$scratch/baseline"
   checkout_base "$baseline"
   export CARGO_TARGET_DIR="$scratch/target-check"
+  export CARGO_BUILD_BUILD_DIR="$scratch/build-check"
   cargo check --locked --manifest-path "$candidate/Cargo.toml" --all-targets "${package_args[@]}"
   run_public_api_inventory "$baseline" "$candidate" "$scratch/api"
   consumer="$scratch/consumer"
@@ -323,6 +338,7 @@ run_check() {
 
 run_public_api_inventory() {
   local baseline=$1 candidate=$2 output_root=$3 package base_output candidate_output
+  local base_build="$output_root/build-baseline" candidate_build="$output_root/build-candidate"
   [[ $(cargo-public-api --version) == "$api_tool_version" ]] ||
     die "required public API tool is $api_tool_version"
   rustup run "$api_toolchain" rustc --version >/dev/null ||
@@ -335,12 +351,14 @@ run_public_api_inventory() {
     (
       cd "$baseline"
       CARGO_TARGET_DIR="$output_root/target-baseline" \
+        CARGO_BUILD_BUILD_DIR="$base_build" \
         cargo +"$api_toolchain" public-api --package "$package" --all-features \
           --simplified --simplified --simplified --color never
     ) | LC_ALL=C sort > "$base_output"
     (
       cd "$candidate"
       CARGO_TARGET_DIR="$output_root/target-candidate" \
+        CARGO_BUILD_BUILD_DIR="$candidate_build" \
         cargo +"$api_toolchain" public-api --package "$package" --all-features \
           --simplified --simplified --simplified --color never
     ) | LC_ALL=C sort > "$candidate_output"
@@ -366,6 +384,7 @@ PY
 
 run_external_consumer() {
   local source=$1 consumer=$2 target=$3 source_commit source_url expected_commit
+  local build_dir="${target}-build"
   mkdir -p "$consumer/src"
   git -C "$source" -c user.name='Swallowtail backport proof' \
     -c user.email='backport-proof@invalid' add -A
@@ -401,8 +420,10 @@ if "__SWALLOWTAIL_BACKPORT_" in manifest or "__SWALLOWTAIL_BACKPORT_" in lock:
 source_main = templates / "src/main.rs"
 (destination / "src/main.rs").write_bytes(source_main.read_bytes())
 PY
-  CARGO_TARGET_DIR="$target" cargo run --locked --manifest-path "$consumer/Cargo.toml"
-  CARGO_TARGET_DIR="$target" cargo metadata --manifest-path "$consumer/Cargo.toml" \
+  CARGO_TARGET_DIR="$target" CARGO_BUILD_BUILD_DIR="$build_dir" \
+    cargo run --locked --manifest-path "$consumer/Cargo.toml"
+  CARGO_TARGET_DIR="$target" CARGO_BUILD_BUILD_DIR="$build_dir" \
+    cargo metadata --manifest-path "$consumer/Cargo.toml" \
     --format-version 1 --locked > "$consumer/metadata.json"
   jq -e --arg commit "$source_commit" '
     [ .packages[] | select(.name | startswith("swallowtail-"))
@@ -423,6 +444,7 @@ run_validate() {
   export TMPDIR="$scratch"
   candidate=$(candidate_workspace "$scratch")
   export CARGO_TARGET_DIR="$scratch/target-validate"
+  export CARGO_BUILD_BUILD_DIR="$scratch/build-validate"
   (
     cd "$candidate"
     cargo nextest run --locked --profile sdk-patch-backport \

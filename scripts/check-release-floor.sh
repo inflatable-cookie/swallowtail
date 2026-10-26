@@ -11,10 +11,15 @@ if ! rustup toolchain list | rg -q "^${SWALLOWTAIL_MSRV}(-|$)"; then
   exit 1
 fi
 
-nice -n 5 rustup run "$SWALLOWTAIL_MSRV" cargo clippy \
+# Both commands run through the shared helper, so the floor is one ordinary
+# local Rust route; the pin travels as RUSTUP_TOOLCHAIN, the supported mapping
+# for `cargo +<name>`. Reduced priority is kept: `nice` only lowers this run.
+nice -n 5 env RUSTUP_TOOLCHAIN="$SWALLOWTAIL_MSRV" \
+  bash "$release_repo_root/scripts/oxide-rust.sh" clippy \
   --workspace \
   --all-targets --all-features --locked -- -D warnings
-nice -n 5 rustup run "$SWALLOWTAIL_MSRV" cargo test \
+nice -n 5 env RUSTUP_TOOLCHAIN="$SWALLOWTAIL_MSRV" \
+  bash "$release_repo_root/scripts/oxide-rust.sh" test \
   --workspace \
   --all-features --locked
 

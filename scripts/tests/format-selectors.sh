@@ -71,10 +71,10 @@ format_expect_failure \
   "unsupported option" \
   bash scripts/format-packages.sh --manifest-path Cargo.toml
 
-# This test's subject is the exact `cargo fmt` argument list, so it forces the
-# plain-Cargo branch of the routed formatter; the routed branch is proved by
-# scripts/tests/oxide-rust-routing.sh.
-export SWALLOWTAIL_RUST_RUNNER=cargo
+# This test's subject is the exact `cargo fmt` argument list, so it takes
+# Effigy's documented escape and runs the routed formatter on plain Cargo; the
+# routed branch is proved by scripts/tests/oxide-rust-routing.sh.
+export EFFIGY_OXIDE_ESCAPE=cargo
 
 # A fake cargo records every fmt invocation with explicit argument brackets.
 # Metadata still comes from the real cargo so package names are real.

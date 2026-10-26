@@ -116,12 +116,14 @@ artifact identity. If selection cannot be preserved, or public API, consumer
 opt-in or further authority is needed, return for a separate ruling.
 
 Preserve older qualified runtime points. Those points stay on Deprecated
-`ollama.native-text-v1`. Exact `0.40.0` and `0.40.1` use Maintained
+`ollama.native-text-v1`. Maintained `0.40.0..=0.40.11` uses
 `ollama.native-text-v1.manifest-list-runner`. Public operation shape is
 unchanged. No live model-store mutation is authorized by this provider-free
 proof. Contract 036 release compatibility is a separate gate. Qualification
 of exact `0.40.0` and `0.40.1` is the adapter adaptation that follows this
-ruling, not the ruling text itself.
+ruling, not the ruling text itself. Research 448 extends that same revision
+through official stable `0.40.11`. From `0.40.3` the scheduler call that
+starts migration is commented out; the binding and fail-closed rules stay.
 
 ## Native Streaming
 

@@ -165,7 +165,7 @@ on `v0.5.4` keep that tag's pins.
 | `claude-code.response-only` | v3 maintained `2.1.282..=2.1.293` | additive private milestone | Research 378 |
 | `llama-cpp.attached` | exact Opaque set `b9910` and `b11429`; `v0.2.0`–`v0.5.0` gaps; semantic `v0.6.0` is source evidence for `b11429` | additive Opaque membership | Research 421 |
 | `llama-cpp.owned` | exact Opaque `b10069` / `178a6c449` | unchanged; `v0.6.0`/`b11429` unqualified | Research 407 |
-| `ollama.attached` | preserved through `0.35.1`; maintained `0.40.0..=0.40.1` on `ollama.native-text-v1.manifest-list-runner` | additive private milestone; fail-closed identity drift | Research 418 |
+| `ollama.attached` | preserved through `0.35.1`; maintained `0.40.0..=0.40.11` on `ollama.native-text-v1.manifest-list-runner` | additive private milestone; fail-closed identity drift | Research 418, 448 |
 | `gemini-cli.acp` | `0.51.0..=0.61.0` plus exact `0.62.0` (`v0.62.0-tool-updates`) and exact `0.63.0` (`v0.63.0-restricted-files`); HTTP MCP live exact `0.61.0` | `0.63.0` permission/read restrictions are minor; `0.62.0` is additive; live honouring stays exact `0.61.0` | Research 415, 362 |
 | `gemini-cli.headless` | ceiling `0.61.0`; `0.62.0`/`0.63.0` UnverifiedNewer | stop, not inclusion | Research 417 |
 | `deepseek-harness.local-server` | axis `deepseek-harness.web`; exact RCs `0.1.0-rc.6` through `0.1.1-rc.2`; `--no-open` from `0.1.0-rc.8` | additive exact RCs | Research 411 |

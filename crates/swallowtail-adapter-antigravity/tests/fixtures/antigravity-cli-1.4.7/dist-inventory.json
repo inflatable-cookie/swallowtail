@@ -1,0 +1,498 @@
+{
+  "schema": 1,
+  "method": "For each selected Linux x64 and Mac ARM64 release tarball, verify the downloaded SHA-256 against the GitHub-published digest, list every archive member, and hash the sole regular member without executing it. Member inventories are path-sorted and complete for each inspected archive. The 1.3.1 boundary was re-downloaded and matches the frozen Research 380 digests.",
+  "baseline_1_3_1": {
+    "published_at": "2026-10-07T03:22:02Z",
+    "tag_commit": "968f1170bd0e002e9d0914730975bc8a2cc65861",
+    "linux_x64": {
+      "name": "agy_cli_linux_x64.tar.gz",
+      "published_digest": "0e313b309ea58c71431ce86bb820936a3700e17e44eabce7bf2264617dc822db",
+      "download_sha256": "0e313b309ea58c71431ce86bb820936a3700e17e44eabce7bf2264617dc822db",
+      "size": 61780683,
+      "published_digest_matched": true,
+      "archive_file_count": 1,
+      "archive_members": [
+        {
+          "path": "antigravity",
+          "kind": "regular_file",
+          "size": 211026152,
+          "sha256": "ce1bdaed3201bb84f35d69d2773caec4f18af52af00e8c25f6cace07e4359615"
+        }
+      ]
+    },
+    "mac_arm64": {
+      "name": "agy_cli_mac_arm64.tar.gz",
+      "published_digest": "ef5e385b32afda4cf1612368bb4bf155d3f8f4c55d51488649f508baefe77c86",
+      "download_sha256": "ef5e385b32afda4cf1612368bb4bf155d3f8f4c55d51488649f508baefe77c86",
+      "size": 54461807,
+      "published_digest_matched": true,
+      "archive_file_count": 1,
+      "archive_members": [
+        {
+          "path": "antigravity",
+          "kind": "regular_file",
+          "size": 178107536,
+          "sha256": "88db8b4d21ece4999fa58e0b54cea77154e47b319ee178d086c446262317f3fa"
+        }
+      ]
+    },
+    "identity_source": "re-downloaded in this task; archive and member digests match the frozen Research 380 fixture"
+  },
+  "versions": {
+    "1.3.2": {
+      "tag_commit": "8c1310b2179d1d4d952c54bd0e4424bd53e904f6",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "bf8504c72097c97de77d271b160bdb10b956031cf79cf95d96cb948df161c25f",
+        "download_sha256": "bf8504c72097c97de77d271b160bdb10b956031cf79cf95d96cb948df161c25f",
+        "size": 61986443,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 211841256,
+            "sha256": "32f9478e47d1d456e090f7ed0a297fcde2fa45ec10839904f03ea1ba00645e49"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "133d497faa7ddd3aa7754d25fa1ba17afa9175eee6c2baa9e3a92ca9b345a50f",
+        "download_sha256": "133d497faa7ddd3aa7754d25fa1ba17afa9175eee6c2baa9e3a92ca9b345a50f",
+        "size": 54604140,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 178602608,
+            "sha256": "07ca8348fa9724e988c7236f2dbecf6b089684a6f18be5f7dd61f97e8fd4561a"
+          }
+        ]
+      }
+    },
+    "1.3.3": {
+      "tag_commit": "800852ea61796e9fe53077a2f945e74daacb4be6",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "8ee3ca32574c431285efbf4d4732f7f8d53e959370bc4a61646e4fa496f7f2b6",
+        "download_sha256": "8ee3ca32574c431285efbf4d4732f7f8d53e959370bc4a61646e4fa496f7f2b6",
+        "size": 62565999,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 214237392,
+            "sha256": "d97edcf90eda1799cd6cedc92616ef402f23c9752a723e8b8ae3e8f062ce458b"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "c39926f3312e87eaa56d750658cf442669d0a716f49319d06369be7fa80520eb",
+        "download_sha256": "c39926f3312e87eaa56d750658cf442669d0a716f49319d06369be7fa80520eb",
+        "size": 55093804,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 180718224,
+            "sha256": "96dd362d5583c60485f5277fa64e43dd64c3ff02a2bf109fd683b99777da370d"
+          }
+        ]
+      }
+    },
+    "1.3.4": {
+      "tag_commit": "9eebbedf051ffd75adb15e468f48b7b75be4b15b",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "db5e81e8dee72d282cb1fb5fcd98dc5a43680730d71e3d637a67c874ec077ad3",
+        "download_sha256": "db5e81e8dee72d282cb1fb5fcd98dc5a43680730d71e3d637a67c874ec077ad3",
+        "size": 62750975,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 214745296,
+            "sha256": "5b93565c5f04ea4f7b79d49d5c3237449bf6ce47b6779e8cf46c1fae97957c98"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "ede28149c568c69f549b796a6142ba592b44294111acf8b79cdbffae74e72147",
+        "download_sha256": "ede28149c568c69f549b796a6142ba592b44294111acf8b79cdbffae74e72147",
+        "size": 55262209,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 181130800,
+            "sha256": "9da414c0624c27aa2969a86030a070b5341c0657700512eba70b21725ce253f5"
+          }
+        ]
+      }
+    },
+    "1.3.5": {
+      "tag_commit": "89081f72e10a98c3689f34b1af7261f43136ab5d",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "007a5a44dbaf1caea464c3d9848c63b2f69945b01a8bf8852c56c477a64374cf",
+        "download_sha256": "007a5a44dbaf1caea464c3d9848c63b2f69945b01a8bf8852c56c477a64374cf",
+        "size": 62830042,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 215060688,
+            "sha256": "b5385638174a5e720e904f3a2678752534fb8414d10c2c302fa16daf56cbcfc9"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "60b46713d0e7217b796560ffc1c3c569f4e0b3357076ee6b60d464832d6d4105",
+        "download_sha256": "60b46713d0e7217b796560ffc1c3c569f4e0b3357076ee6b60d464832d6d4105",
+        "size": 55069121,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 180917280,
+            "sha256": "ebd71c4db14f79fca3fd0160332a38d9037146737422dcfc1f1d21ba01a13fff"
+          }
+        ]
+      }
+    },
+    "1.3.6": {
+      "tag_commit": "680e58585fa49c266ab38bd986816f40455895cf",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "e88ed835cbc4af504f64dfe20175f5572dc2a425dbfa2fcf55c0358bb444d80c",
+        "download_sha256": "e88ed835cbc4af504f64dfe20175f5572dc2a425dbfa2fcf55c0358bb444d80c",
+        "size": 63275514,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 217768144,
+            "sha256": "e14253aa79d4e910cbf8bcb40b68e80f9e85476725e130ed085122c98face92b"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "44e2c5a5982f67994599c533625d81b7ed56f568452ec132388bd30c42ed7465",
+        "download_sha256": "44e2c5a5982f67994599c533625d81b7ed56f568452ec132388bd30c42ed7465",
+        "size": 55467795,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 183407440,
+            "sha256": "827ba22b4aa33557614a57aac2cc13f386e17db6b802febd3932226906ac05ab"
+          }
+        ]
+      }
+    },
+    "1.4.0": {
+      "tag_commit": "e8a400403c82b7eb27a333784dc3c37985aa622e",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "fd96967583c1eed94733c039638fa59b71ddbd823c75ebc8dd0e677463565aad",
+        "download_sha256": "fd96967583c1eed94733c039638fa59b71ddbd823c75ebc8dd0e677463565aad",
+        "size": 63650174,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 220553472,
+            "sha256": "60e72242f07c131f75afcd9a9e425d6ee097a1a1b3190ea98ae78fa4180bbfa8"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "92b4bfb5b51e7b44ff3dcdb1a3179cb2c31b798a79185e19df3a51ae9ff121c7",
+        "download_sha256": "92b4bfb5b51e7b44ff3dcdb1a3179cb2c31b798a79185e19df3a51ae9ff121c7",
+        "size": 55787631,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 185665248,
+            "sha256": "a4502aaf310b2fd6eb657fcfec2fcc31a690fbbd0c2d14c8eefbb556409024ce"
+          }
+        ]
+      }
+    },
+    "1.4.1": {
+      "tag_commit": "4433f3a6dabf04ce0a5eef5b08d8e3e4067b2d8f",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "e165aa7bccbd1c43e3db4a89f499b6bcf32598ce59b1de6184188cdec4418dab",
+        "download_sha256": "e165aa7bccbd1c43e3db4a89f499b6bcf32598ce59b1de6184188cdec4418dab",
+        "size": 63931688,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 221278464,
+            "sha256": "16e228cb243fa098eeb27b3b2aca963caec84e4a8ac49e3821b00c56f99f7508"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "603c83664ba6c92e3f53b634d522341c415c9dd6a6ddeb5cfe0546f0c4353900",
+        "download_sha256": "603c83664ba6c92e3f53b634d522341c415c9dd6a6ddeb5cfe0546f0c4353900",
+        "size": 56100081,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 186590112,
+            "sha256": "da7e0766b076e411343542db4c09380bf4656df24da47168c0fa0f7986813e11"
+          }
+        ]
+      }
+    },
+    "1.4.2": {
+      "tag_commit": "86a5bdda81a063d707ac4ab87fb72f7dfe30ab67",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "6395837ac0e193dd3fe50f1228e1c4aea345ca99636d54404ab7e74397d4091c",
+        "download_sha256": "6395837ac0e193dd3fe50f1228e1c4aea345ca99636d54404ab7e74397d4091c",
+        "size": 63937290,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 221286656,
+            "sha256": "085f43e0d0628a8a8dabe1e547067818fa2c0adc86cfac98a3c4492918f455ef"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "4fed2474da314f109cf505f1325eb84307afcd586242e6b691f074fd1a73e6aa",
+        "download_sha256": "4fed2474da314f109cf505f1325eb84307afcd586242e6b691f074fd1a73e6aa",
+        "size": 56104322,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 186590176,
+            "sha256": "74935642426b5bb1fcf07a5555f847c478f4517dd002c72b9c98159cb773b932"
+          }
+        ]
+      }
+    },
+    "1.4.3": {
+      "tag_commit": "fdfd4becaee2439086d71e34ee06d326e06f7346",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "319b2cb3240d244930bd077033b466941fd7ba6f0881d783eee801dbd2fb9371",
+        "download_sha256": "319b2cb3240d244930bd077033b466941fd7ba6f0881d783eee801dbd2fb9371",
+        "size": 64263791,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 222322944,
+            "sha256": "d003c9d47e12f689d3448cad0f614289ccde5fb4c58bf8b4b543a9b514c097bc"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "be7a40acd87ff43e453ae216e57843919c77dc7c0278ba2d97e21591fc3b27cb",
+        "download_sha256": "be7a40acd87ff43e453ae216e57843919c77dc7c0278ba2d97e21591fc3b27cb",
+        "size": 56391234,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 187498464,
+            "sha256": "836c446f6118140e86679ec6966a785eeedbf56b3711a8eb1f41947483e9802a"
+          }
+        ]
+      }
+    },
+    "1.4.4": {
+      "tag_commit": "99b8981632ddf117c4eab7b1f82b615d4f683f01",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "9ae4f7f0667a2868e15bb9ad93819ff7527c7187f12d12e3b5191137c726287b",
+        "download_sha256": "9ae4f7f0667a2868e15bb9ad93819ff7527c7187f12d12e3b5191137c726287b",
+        "size": 64706544,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 223494376,
+            "sha256": "337dcde668441a2828968644d7982829c2d2a5e0c4144f346e1f3fc6abb3cdc7"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "85482aa8969300183f71c9653d9f581248fba7f506342a8eb087f3d2503203bd",
+        "download_sha256": "85482aa8969300183f71c9653d9f581248fba7f506342a8eb087f3d2503203bd",
+        "size": 56766448,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 188274624,
+            "sha256": "9abb478686dc08d48699ba1604c14d15819ef6a2542d5d32173acbd5f02d712d"
+          }
+        ]
+      }
+    },
+    "1.4.5": {
+      "tag_commit": "902d212319e365583596a014c152745cdf36c49a",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "90cc1894b6862510869ad4cf1a6f4c043b7ae7c095bad8d5c355788a0ca935c7",
+        "download_sha256": "90cc1894b6862510869ad4cf1a6f4c043b7ae7c095bad8d5c355788a0ca935c7",
+        "size": 64814607,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 223736040,
+            "sha256": "8af8e7a2a68f72fa7164e00bb59b8902c018fa43e528fc401ad7db8c2972583c"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "6d628d7d25dfa188ef676564e39714667c4899b52bea6b5639d6591bc22b8696",
+        "download_sha256": "6d628d7d25dfa188ef676564e39714667c4899b52bea6b5639d6591bc22b8696",
+        "size": 56863254,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 188472992,
+            "sha256": "b89677b741d8d9d38cf0a6911ab468fac629158194039904cbfd645fdb897554"
+          }
+        ]
+      }
+    },
+    "1.4.6": {
+      "tag_commit": "fd851f1da40e4347f1d05d211dcb45f94aede4c4",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "513c74ad3e70323839a65d8dccc6f9977b0903e5facd914cbb06be283c2bb640",
+        "download_sha256": "513c74ad3e70323839a65d8dccc6f9977b0903e5facd914cbb06be283c2bb640",
+        "size": 65067865,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 224628968,
+            "sha256": "128780f5776959ba6a991bde1f0a8b699eee37a59ed30deb9926147fedfa56c4"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "8854514fc3f577c8b4271e735a7605562ecd353aae270c323c3ee6876e892296",
+        "download_sha256": "8854514fc3f577c8b4271e735a7605562ecd353aae270c323c3ee6876e892296",
+        "size": 57117933,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 189329424,
+            "sha256": "cab004f3c5c6cb7dc8b8712d3bc30431bd4480b17ff38a07eb1865abeffd2f27"
+          }
+        ]
+      }
+    },
+    "1.4.7": {
+      "tag_commit": "bf1e6e6d4a05803d21dbe9af5ffba04d8b4fc0ff",
+      "linux_x64": {
+        "name": "agy_cli_linux_x64.tar.gz",
+        "published_digest": "67fd4e70be739b1f8b18f90b511da8cd2a7aef24e888e5837402e025bf7fdbfc",
+        "download_sha256": "67fd4e70be739b1f8b18f90b511da8cd2a7aef24e888e5837402e025bf7fdbfc",
+        "size": 65681429,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 227840232,
+            "sha256": "40349135371a8ed1f1af1e9f8b741de99174ae9fce6380b96c2d1f543480af7a"
+          }
+        ]
+      },
+      "mac_arm64": {
+        "name": "agy_cli_mac_arm64.tar.gz",
+        "published_digest": "9fed7bfe90cb158ac00b5b2da64dd54af732f7c062259e68ebd060b827fd0d88",
+        "download_sha256": "9fed7bfe90cb158ac00b5b2da64dd54af732f7c062259e68ebd060b827fd0d88",
+        "size": 57672438,
+        "published_digest_matched": true,
+        "archive_file_count": 1,
+        "archive_members": [
+          {
+            "path": "antigravity",
+            "kind": "regular_file",
+            "size": 192171376,
+            "sha256": "b7a13e53c9f49921692676ef8edc2e60ceb67064c00bc732d9a364ec3ad75b32"
+          }
+        ]
+      }
+    }
+  }
+}

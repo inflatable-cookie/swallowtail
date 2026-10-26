@@ -524,10 +524,18 @@ OpenHands adds a package without a production route.
   tag share one source commit; `1.1.8` is not independently qualified.
   Catalogue support extends through official `1.3.1` with the same
   catalogue revision; Research 380 freezes all eight published hops after
-  `1.2.11`, excludes unpublished `1.2.18`, and classifies no published note
-  as changing the selected `agy models` path. Research 353 records the earlier
-  catalogue extension and raises the headless Contract 023 acceptance options
-  to the operator. Research 359
+  `1.2.11` and excludes unpublished `1.2.18`. Research 449 freezes identity
+  of the thirteen published hops `1.3.2` through `1.4.7` without extending
+  the claim: Q-005 keeps the 2026-09-15 notes ruling scoped to hops through
+  `1.2.2`, and Contract 029 artifact authority for selected `agy models`
+  behavior on those hops is unproven, so they remain `UnverifiedNewer`.
+  Owning adaptation
+  `antigravity.catalogue.artifact-authority-through-current-official` on
+  the `version-currentness` lane owns qualifying the then-current official
+  stable.
+  Research 353
+  records the extension through `1.2.11` and raises the headless Contract 023
+  acceptance options to the operator. Research 359
   then proves the `1.2.11` artifact honours `AGY_CLI_MODEL_API_MAX_RETRIES`
   (`0` disables provider-managed model-request retry, finite `N` allows
   `N+1` attempts), so exact `1.2.11` headless qualifies on a

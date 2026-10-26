@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- freeze `antigravity.catalogue` identity through official stable `1.4.7`
+  without extending qualification. The claim stays one maintained segment
+  `1.1.9..=1.3.1` on `antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1`,
+  claim `antigravity.catalogue.release-window-1`, and `AllowUnverified`.
+  Unpublished `1.2.18` stays excluded. Published hops `1.3.2` through
+  `1.4.7` and unpublished `1.3.7`/`1.3.8`/`1.3.9` stay `UnverifiedNewer`
+  (Q-005; Contract 029 Artifact Authority). Owning adaptation
+  `antigravity.catalogue.artifact-authority-through-current-official` on
+  the `version-currentness` lane owns qualifying the then-current official
+  stable. `antigravity.headless` stays at exact `1.2.11`. See Research 449.
 - qualify `claude-code.headless` and, separately, `claude-code.response-only`
   through official stable `2.1.310`. Headless keeps deprecated
   `stream-json.v1` on `2.1.220..=2.1.286` and maintained `stream-json.v2` on

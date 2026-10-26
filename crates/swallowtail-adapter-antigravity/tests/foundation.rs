@@ -46,7 +46,7 @@ fn exact_and_newer_releases_probe_only_the_host_approved_target() {
         ("fixture.antigravity.local", "1.1.9", true),
         ("fixture.antigravity.latest", "1.1.17", true),
         ("fixture.antigravity.catalogue-latest", "1.3.1", true),
-        ("fixture.antigravity.remote", "1.3.2", false),
+        ("fixture.antigravity.remote", "1.4.8", false),
     ] {
         let host_id = ExecutionHostId::new(host_value).expect("valid host id");
         let host = support::FixtureHost::completed([stdout(&format!("{release}\n"))]);

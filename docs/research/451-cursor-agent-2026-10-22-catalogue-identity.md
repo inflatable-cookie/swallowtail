@@ -93,8 +93,11 @@ independently unqualified published gaps `2026.08.25-3e8eec8` and
 `2026.09.08-6caf4ff`. Add `2026.10.14-941492e`, `2026.10.16-e3cb207`,
 `2026.10.18-ea085cb`, `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`.
 Reject superseded `2026.10.14-0f9edde` with the existing exact build gate.
-No new public operation, consumer-visible narrowing, behavior revision, or
-authority is introduced. ACP and headless remain at `2026.10.01-14929f9`.
+That published build previously classified as unverified newer and now fails
+binding; the rejection is the required exact-build narrowing. Selected
+catalogue stdout, argv, and mapped fields do not narrow. No new public
+operation, behavior revision, or authority is introduced. ACP and headless
+remain at `2026.10.01-14929f9`.
 The first unpublished later date is `2026-10-23`.
 
 Archives were hashed and inspected statically, not executed. No authenticated

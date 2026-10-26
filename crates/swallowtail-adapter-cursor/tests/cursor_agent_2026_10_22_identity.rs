@@ -25,7 +25,7 @@ fn sha256_hex(source: &str) -> String {
 fn identity_freezes_official_hops_and_the_catalogue_only_claim() {
     assert_eq!(
         sha256_hex(IDENTITY),
-        "a00e22cdf0896030381df94c0e1c3367fde6f6ab8e240a113dca9e94d34bf470"
+        "36331e781c6bef4574fdc479254dc4da8f01bc148803254d2ecde4fe3218a246"
     );
     let identity = json(IDENTITY);
     assert_eq!(identity["axis"], "cursor-agent.release-date");
@@ -98,6 +98,14 @@ fn identity_freezes_official_hops_and_the_catalogue_only_claim() {
     assert_eq!(
         hops[5]["linux_x64_models_module_sha256"],
         "07734c6735548e2995d44b7bea7a0b2190316f9569db9ae30c08f983a56e452c"
+    );
+    assert_eq!(
+        hops[5]["darwin_arm64_model_service_module_sha256"],
+        "94e9ed6c2c9087b2b9a01ac5c563afa28f0a80d6bfba5b35bf097975699b96e3"
+    );
+    assert_eq!(
+        hops[5]["darwin_arm64_model_utils_module_sha256"],
+        "e8e83b2baaab5a9474ad7dbc333146d9ed53c7608d11a35fd1f579de3226d9d9"
     );
     assert_ne!(
         hops[5]["linux_x64_node_runtime_sha256"],
@@ -201,7 +209,7 @@ fn selected_catalogue_path_keeps_its_existing_adapter_boundary() {
 fn inventory_freezes_every_file_and_each_hop_classification() {
     assert_eq!(
         sha256_hex(DIST_INVENTORY),
-        "1e6a0fea8978f891d96050749eaa541b983c5106d10a6839b8c9fae8e395f411"
+        "af2b8a0dd332a637f237d299b208499107e0389566619949546d530c6fe32b64"
     );
     let inventory = json(DIST_INVENTORY);
     assert_eq!(
@@ -343,5 +351,26 @@ fn inventory_freezes_every_file_and_each_hop_classification() {
     assert_eq!(
         inventory["selected_modules"]["2026.10.22-27dcf5f"]["linux-x64"]["models_module_sha256"],
         "07734c6735548e2995d44b7bea7a0b2190316f9569db9ae30c08f983a56e452c"
+    );
+    let darwin_selected = &inventory["selected_modules"]["2026.10.22-27dcf5f"]["darwin-arm64"];
+    assert_eq!(
+        darwin_selected["models_module_file"],
+        "dist-package/1700.index.js"
+    );
+    assert_eq!(
+        darwin_selected["model_service_module_file"],
+        "dist-package/1700.index.js"
+    );
+    assert_eq!(
+        darwin_selected["model_utils_module_file"],
+        "dist-package/1700.index.js"
+    );
+    assert_eq!(
+        darwin_selected["model_service_module_sha256"],
+        "94e9ed6c2c9087b2b9a01ac5c563afa28f0a80d6bfba5b35bf097975699b96e3"
+    );
+    assert_eq!(
+        darwin_selected["model_utils_module_sha256"],
+        "e8e83b2baaab5a9474ad7dbc333146d9ed53c7608d11a35fd1f579de3226d9d9"
     );
 }

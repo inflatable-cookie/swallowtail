@@ -1,0 +1,211 @@
+{
+  "scope": "Partial static runtime identity observations; no new route qualification",
+  "offset_convention": "zero-based byte offsets in the exact shipped file; no decoding or minifier normalization",
+  "node_observations": [
+    {
+      "build": "2026.10.01-14929f9",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 145803984,
+      "sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "embedded_version": "v26.8.1",
+      "version_evidence": {
+        "byte_offset": 46879821,
+        "literal": "https://nodejs.org/download/release/v26.8.1/node-v26.8.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.01-14929f9",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 129074464,
+      "sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "embedded_version": "v24.5.0",
+      "version_evidence": {
+        "byte_offset": 68682263,
+        "literal": "https://nodejs.org/download/release/v24.5.0/node-v24.5.0.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.14-0f9edde",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 145803984,
+      "sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "embedded_version": "v26.8.1",
+      "version_evidence": {
+        "byte_offset": 46879821,
+        "literal": "https://nodejs.org/download/release/v26.8.1/node-v26.8.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.14-0f9edde",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 129074464,
+      "sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "embedded_version": "v24.5.0",
+      "version_evidence": {
+        "byte_offset": 68682263,
+        "literal": "https://nodejs.org/download/release/v24.5.0/node-v24.5.0.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.14-941492e",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 145803984,
+      "sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "embedded_version": "v26.8.1",
+      "version_evidence": {
+        "byte_offset": 46879821,
+        "literal": "https://nodejs.org/download/release/v26.8.1/node-v26.8.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.14-941492e",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 129074464,
+      "sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "embedded_version": "v24.5.0",
+      "version_evidence": {
+        "byte_offset": 68682263,
+        "literal": "https://nodejs.org/download/release/v24.5.0/node-v24.5.0.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.16-e3cb207",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 145803984,
+      "sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "embedded_version": "v26.8.1",
+      "version_evidence": {
+        "byte_offset": 46879821,
+        "literal": "https://nodejs.org/download/release/v26.8.1/node-v26.8.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.16-e3cb207",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 129074464,
+      "sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "embedded_version": "v24.5.0",
+      "version_evidence": {
+        "byte_offset": 68682263,
+        "literal": "https://nodejs.org/download/release/v24.5.0/node-v24.5.0.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.18-ea085cb",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 145803984,
+      "sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "embedded_version": "v26.8.1",
+      "version_evidence": {
+        "byte_offset": 46879821,
+        "literal": "https://nodejs.org/download/release/v26.8.1/node-v26.8.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.18-ea085cb",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 129074464,
+      "sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "embedded_version": "v24.5.0",
+      "version_evidence": {
+        "byte_offset": 68682263,
+        "literal": "https://nodejs.org/download/release/v24.5.0/node-v24.5.0.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.19-6bbf2c4",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 145803984,
+      "sha256": "ebd2d552c7bebde593dd0390530963ad28de56bccde6ce387cdbe55fb0b6fb8e",
+      "embedded_version": "v26.8.1",
+      "version_evidence": {
+        "byte_offset": 46879821,
+        "literal": "https://nodejs.org/download/release/v26.8.1/node-v26.8.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.19-6bbf2c4",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 129074464,
+      "sha256": "e0e46d3a1c0667117303412647cafcbcefb1be7612493015ec8fd6b7440162a4",
+      "embedded_version": "v24.5.0",
+      "version_evidence": {
+        "byte_offset": 68682263,
+        "literal": "https://nodejs.org/download/release/v24.5.0/node-v24.5.0.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.22-27dcf5f",
+      "platform": "darwin-arm64",
+      "path": "dist-package/node",
+      "bytes": 147346352,
+      "sha256": "06eb3f5762c2b6890e99d03f931bf01d9b20fd341dec1a8c1ef5c1809e66102b",
+      "embedded_version": "v26.12.1",
+      "version_evidence": {
+        "byte_offset": 44485802,
+        "literal": "https://nodejs.org/download/release/v26.12.1/node-v26.12.1.tar.gz"
+      },
+      "executed": false
+    },
+    {
+      "build": "2026.10.22-27dcf5f",
+      "platform": "linux-x64",
+      "path": "dist-package/node",
+      "bytes": 126879696,
+      "sha256": "e32e2d16081cf644f88392934288086e7662529d0d43277c34f7aad2207cfafb",
+      "embedded_version": "v24.22.1",
+      "version_evidence": {
+        "byte_offset": 48606752,
+        "literal": "https://nodejs.org/download/release/v24.22.1/node-v24.22.1.tar.gz"
+      },
+      "executed": false
+    }
+  ],
+  "selected_impact_assessment": {
+    "execution": "The launcher execs the bundled node with index.js; Node therefore executes selected ACP and headless code",
+    "affected_boundaries": [
+      "stdio framing and flushing",
+      "event loop and promise/abort ordering",
+      "signals and child-process termination",
+      "filesystem operations and native addon ABI"
+    ],
+    "disposition": "unresolved; embedded build metadata and digest equality do not prove these selected runtime semantics",
+    "required_proof": "Correlate the exact shipped Node builds and relevant changes to selected boundaries, with platform-specific evidence; do not infer behavior from a version or a launcher hash"
+  },
+  "native_boundary": {
+    "example_platform": "linux-x64",
+    "example_build": "2026.10.22-27dcf5f",
+    "module_path": "dist-package/4060.index.js",
+    "module_sha256": "9eac42a5bb59f700cc8dec233756e3cdc1fd4aa775f44bcdd5a13dfc7cdc82d6",
+    "loader_literal": "process.dlopen(e,r(\"path\").join(__dirname,r.p,\"file_service.linux-x64-gnu.node\"))",
+    "loader_byte_offset": 129,
+    "dependency_literal": "x=r(\"../file-service/index.js\")",
+    "dependency_byte_offset": 4901,
+    "implementation_source_correlation": "not retained for file_service native implementation; the package contains the native binary and JavaScript binding",
+    "disposition": "Unresolved selected reachability and behavior; this is a dependency/loading observation, not a complete selected-entrypoint proof and not an unreachable classification"
+  }
+}

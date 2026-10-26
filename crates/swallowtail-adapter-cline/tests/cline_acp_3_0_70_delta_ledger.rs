@@ -93,10 +93,8 @@ fn official_latest_extends_only_the_existing_acp_window() {
 
     let claim = cline_acp_claim();
     assert_eq!(claim.baseline().as_str(), CLINE_PACKAGE_VERSION);
-    assert_eq!(
-        claim.latest_qualified().as_str(),
-        channel["latest"].as_str().unwrap()
-    );
+    assert_eq!(channel["latest"].as_str(), Some("3.0.70"));
+    assert_eq!(claim.latest_qualified().as_str(), "3.0.74");
     assert_eq!(claim.id().as_str(), "cline.acp.package-window-1");
     for version in VERSIONS {
         let version = InterfaceVersion::new(*version).expect("published stable version");
@@ -108,7 +106,9 @@ fn official_latest_extends_only_the_existing_acp_window() {
     }
     let excluded = InterfaceVersion::new("3.0.59").expect("unpublished stable version");
     assert!(!claim.assess(&excluded).is_permitted());
-    let unverified = InterfaceVersion::new("3.0.71").expect("next stable version");
+    let extended = InterfaceVersion::new("3.0.74").expect("extended stable version");
+    assert!(claim.assess(&extended).is_permitted());
+    let unverified = InterfaceVersion::new("3.0.75").expect("next stable version");
     assert!(matches!(
         claim.assess(&unverified),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)

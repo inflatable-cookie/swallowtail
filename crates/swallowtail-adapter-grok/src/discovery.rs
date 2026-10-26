@@ -423,6 +423,8 @@ mod tests {
         for (output, version) in [
             ("grok 0.2.118 (123456789abc) [stable]\n", "0.2.118"),
             ("grok 1.0.47 (04b7ffed98c6) [stable]\n", "1.0.47"),
+            ("grok 1.0.70 (f50904eaee6c) [stable]\n", "1.0.70"),
+            ("grok 1.0.71 (04b7ffed98c6) [stable]\n", "1.0.71"),
             ("grok 1.1.0 (04b7ffed98c6) [stable]\n", "1.1.0"),
         ] {
             assert_eq!(

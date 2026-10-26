@@ -1,0 +1,374 @@
+{
+  "axis": "pi.package",
+  "claim_at_observation": {
+    "classification_of_1_4_0": "unverified_newer",
+    "claim_id": "pi.rpc.package-window-2",
+    "latest_qualified": "1.1.0",
+    "newer_posture": "AllowUnverified",
+    "behavior_revision": "pi.rpc.strict-lf-v1.1.0-aborted-settled"
+  },
+  "execution_limits": {
+    "credentials_used": false,
+    "host_mutation": false,
+    "live_rpc_session": false,
+    "package_installation": false,
+    "provider_prompt_sent": false
+  },
+  "host_observation": {
+    "node_version": "v22.23.4",
+    "official_artifact_executed": false,
+    "pi_on_path": false,
+    "paths_recorded": false
+  },
+  "identity_decision": {
+    "baseline": "0.80.10",
+    "claim_id": "pi.rpc.package-window-2",
+    "consumer_visible_narrowing": false,
+    "exact_published_points": [
+      "1.1.0",
+      "1.2.0",
+      "1.3.0",
+      "1.4.0"
+    ],
+    "latest_qualified": "1.4.0",
+    "maintained_points": [
+      "1.1.0",
+      "1.2.0",
+      "1.3.0",
+      "1.4.0"
+    ],
+    "same_revision_segments_maintained": true,
+    "new_behavior_revision": false,
+    "new_public_operations": false,
+    "next_unpublished_point": "1.4.1",
+    "preserve_behavior_revision": "pi.rpc.strict-lf-v1.1.0-aborted-settled",
+    "preserve_existing_behavior_revisions": true,
+    "public_lifecycle_contract_changed": false,
+    "sdk_sidecar_or_oh_my_pi_qualification_changed": false,
+    "shape": "compatible-extension",
+    "unpublished_holes_preserved": [
+      "0.83.1",
+      "0.84.5",
+      "0.85.2",
+      "0.86.2",
+      "0.87.2 through 0.98.x",
+      "0.99.3 and later 0.99.x",
+      "1.0.5 and later 1.0.x",
+      "1.1.1 and later 1.1.x",
+      "1.2.1 and later 1.2.x",
+      "1.3.1 and later 1.3.x"
+    ]
+  },
+  "latest_source_correlation": {
+    "checks": [
+      {
+        "sha256": "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b",
+        "source": "packages/coding-agent/src/modes/rpc/rpc-mode.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "e0a6e3e7b662afff9763a6297e0bb600da75e8eff4df443912f2e215bdc6a8e2",
+        "source": "packages/coding-agent/src/core/agent-session.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "aef8fea51000f291c1c51d81fd9b30f7a2bdd0e68370ad84b969e5fd15667e98",
+        "source": "packages/coding-agent/src/core/settings-manager.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+        "source": "packages/coding-agent/src/core/resource-loader.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "ef7b54f02939d2ebc8ec2defcf4c2d9be90fe979c2c74675d970a4dd14aadad3",
+        "source": "packages/coding-agent/src/cli/args.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "37a906d99672bd043d6f729e0dc09589f46ffc87bdf3d2944fc24331c0ebc2a0",
+        "source": "packages/coding-agent/src/core/tools/grep.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "6fb94031cfd462e357723a35aab328e9a1ed5109c2aa59549d8291345875d5a9",
+        "source": "packages/coding-agent/src/core/settings-defaults.ts",
+        "matches_tag": "v1.4.0"
+      },
+      {
+        "sha256": "1679b3f28b4ad7941e7b891f9c8d6a9db8e3a5c8902f8bc9eea86b00f9622ca9",
+        "source": "packages/coding-agent/src/core/settings-schema.ts",
+        "matches_tag": "v1.4.0"
+      }
+    ],
+    "npm_git_head_is_null": true,
+    "npm_sourcemap_sources_content_matches_tagged_source": true,
+    "executed_rpc_mode": "the selected pi --mode rpc path executes the bundled CLI chunk; runRpcMode is inlined there. dist/modes/rpc is the unbundled copy. The executed-wire proof is rpc-mode.ts sourcesContent matching each GitHub tag.",
+    "note": "Every compared package has a null npm gitHead. Embedded sourcemap sourcesContent for rpc-mode.ts, agent-session.ts, settings-manager.ts, resource-loader.ts, args.ts, grep.ts, settings-defaults.ts, and settings-schema.ts matches the same path at each GitHub tag that ships that file (v1.1.0 through v1.4.0; settings-defaults.ts and settings-schema.ts start at v1.2.0).",
+    "every_hop": [
+      {
+        "version": "1.1.0",
+        "checks": [
+          {
+            "sha256": "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b",
+            "source": "packages/coding-agent/src/modes/rpc/rpc-mode.ts",
+            "matches_tag": "v1.1.0"
+          },
+          {
+            "sha256": "19186bf8a79876131a296fe17333c6276a671f8f48401df238c9814eeba0f5df",
+            "source": "packages/coding-agent/src/core/agent-session.ts",
+            "matches_tag": "v1.1.0"
+          },
+          {
+            "sha256": "d916365ae21bce0f9a4f3ad15690e290ceca0aad958013e3280779b0cde0b074",
+            "source": "packages/coding-agent/src/core/settings-manager.ts",
+            "matches_tag": "v1.1.0"
+          },
+          {
+            "sha256": "dbe87c11983b8dac949377904f4cf0511155771498ba88d2fefb0cd0d5dd9e28",
+            "source": "packages/coding-agent/src/core/resource-loader.ts",
+            "matches_tag": "v1.1.0"
+          },
+          {
+            "sha256": "ef7b54f02939d2ebc8ec2defcf4c2d9be90fe979c2c74675d970a4dd14aadad3",
+            "source": "packages/coding-agent/src/cli/args.ts",
+            "matches_tag": "v1.1.0"
+          },
+          {
+            "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b",
+            "source": "packages/coding-agent/src/core/tools/grep.ts",
+            "matches_tag": "v1.1.0"
+          }
+        ]
+      },
+      {
+        "version": "1.2.0",
+        "checks": [
+          {
+            "sha256": "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b",
+            "source": "packages/coding-agent/src/modes/rpc/rpc-mode.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "e2bbf746779fbed5a8c36f023842bf271252d1fd6f17f5a32f70a0d1c63f0b65",
+            "source": "packages/coding-agent/src/core/agent-session.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "754fc0ee6289fda207136f9b5a389cab6ef4de2e35cc69c8010967ca9d371624",
+            "source": "packages/coding-agent/src/core/settings-manager.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+            "source": "packages/coding-agent/src/core/resource-loader.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "ef7b54f02939d2ebc8ec2defcf4c2d9be90fe979c2c74675d970a4dd14aadad3",
+            "source": "packages/coding-agent/src/cli/args.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b",
+            "source": "packages/coding-agent/src/core/tools/grep.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "6faa340bfdd818d3ec779cbd3be4626b0cbad976d39a11eb3f549a0af63b9a44",
+            "source": "packages/coding-agent/src/core/settings-defaults.ts",
+            "matches_tag": "v1.2.0"
+          },
+          {
+            "sha256": "7c7c19e791b16c5bf47d08b1a919a4e15c56a54c47a55a09f29f9be0c9e5ebe7",
+            "source": "packages/coding-agent/src/core/settings-schema.ts",
+            "matches_tag": "v1.2.0"
+          }
+        ]
+      },
+      {
+        "version": "1.3.0",
+        "checks": [
+          {
+            "sha256": "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b",
+            "source": "packages/coding-agent/src/modes/rpc/rpc-mode.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "e0fa206e8c49a98c024708068df39c0e4944f4251633425fc083b2fbb5ec0ac6",
+            "source": "packages/coding-agent/src/core/agent-session.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "aef8fea51000f291c1c51d81fd9b30f7a2bdd0e68370ad84b969e5fd15667e98",
+            "source": "packages/coding-agent/src/core/settings-manager.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+            "source": "packages/coding-agent/src/core/resource-loader.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "ef7b54f02939d2ebc8ec2defcf4c2d9be90fe979c2c74675d970a4dd14aadad3",
+            "source": "packages/coding-agent/src/cli/args.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b",
+            "source": "packages/coding-agent/src/core/tools/grep.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "6fb94031cfd462e357723a35aab328e9a1ed5109c2aa59549d8291345875d5a9",
+            "source": "packages/coding-agent/src/core/settings-defaults.ts",
+            "matches_tag": "v1.3.0"
+          },
+          {
+            "sha256": "1679b3f28b4ad7941e7b891f9c8d6a9db8e3a5c8902f8bc9eea86b00f9622ca9",
+            "source": "packages/coding-agent/src/core/settings-schema.ts",
+            "matches_tag": "v1.3.0"
+          }
+        ]
+      },
+      {
+        "version": "1.4.0",
+        "checks": [
+          {
+            "sha256": "d534e0fa1484844a097963d5f4fb4df9397c5a1b5e29e42aed7575ab6f67989b",
+            "source": "packages/coding-agent/src/modes/rpc/rpc-mode.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "e0a6e3e7b662afff9763a6297e0bb600da75e8eff4df443912f2e215bdc6a8e2",
+            "source": "packages/coding-agent/src/core/agent-session.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "aef8fea51000f291c1c51d81fd9b30f7a2bdd0e68370ad84b969e5fd15667e98",
+            "source": "packages/coding-agent/src/core/settings-manager.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "ccc798224d070e7a18c918f74be48c15eacc67f76aaa66b9809c015327b555d4",
+            "source": "packages/coding-agent/src/core/resource-loader.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "ef7b54f02939d2ebc8ec2defcf4c2d9be90fe979c2c74675d970a4dd14aadad3",
+            "source": "packages/coding-agent/src/cli/args.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "37a906d99672bd043d6f729e0dc09589f46ffc87bdf3d2944fc24331c0ebc2a0",
+            "source": "packages/coding-agent/src/core/tools/grep.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "6fb94031cfd462e357723a35aab328e9a1ed5109c2aa59549d8291345875d5a9",
+            "source": "packages/coding-agent/src/core/settings-defaults.ts",
+            "matches_tag": "v1.4.0"
+          },
+          {
+            "sha256": "1679b3f28b4ad7941e7b891f9c8d6a9db8e3a5c8902f8bc9eea86b00f9622ca9",
+            "source": "packages/coding-agent/src/core/settings-schema.ts",
+            "matches_tag": "v1.4.0"
+          }
+        ]
+      }
+    ]
+  },
+  "npm_package": "@earendil-works/pi-coding-agent",
+  "observed_at": "2026-10-26",
+  "official_artifacts": [
+    {
+      "complete_tree_sha256": "62fb9de5c48a64d72f8f8fb2ad7a1f7aae15ca389dc52348b7d973cc9bdf82c8",
+      "github_release_id": 406210577,
+      "github_release_published_at": "2026-10-07T22:26:31Z",
+      "github_tag": "v1.1.0",
+      "github_tag_commit": "abe508e1b89912adde45528136c3221eb69acdd7",
+      "npm_files": 1254,
+      "npm_git_head": null,
+      "npm_git_head_matches_tag": null,
+      "npm_integrity": "sha512-SeEi/4hdcHNgA9UWlefZl7ZZpm3dzi2OoxNjDHsBJ9o298LNOtbL4DGKgitlEj6uCTccvtw6f2hlCkTPVJ2RXg==",
+      "npm_published_at": "2026-10-07T22:16:26.802Z",
+      "npm_shasum": "0ebd064bf1342f812f9676dde85b2f0b3e02b7e6",
+      "npm_tarball_sha256": "09cd8a0a43dbb1d81a67346b09400b439ce71d818caba4e963ea958846a1aed4",
+      "version": "1.1.0"
+    },
+    {
+      "complete_tree_sha256": "7748aa457a31ebd6183bf445e0b1a8e78f41bc03f7becb49ebd22fd8ee64622e",
+      "github_release_id": 411055414,
+      "github_release_published_at": "2026-10-12T23:03:53Z",
+      "github_tag": "v1.2.0",
+      "github_tag_commit": "06a466935536f8c9bcacb2d5efc0fc021be1bdff",
+      "npm_files": 1275,
+      "npm_git_head": null,
+      "npm_git_head_matches_tag": null,
+      "npm_integrity": "sha512-h/4WaVWv1VlCaY8x8qEN5U+7jbF/e7+Ck6moPeEOFn5juMTWwNAXjwgYM7gRgbBYh8Zppwt6qWvJDzNTf4GNEQ==",
+      "npm_published_at": "2026-10-12T23:03:25.459Z",
+      "npm_shasum": "896fb3ad2b050190ac0f0f8acce7fb648487cda1",
+      "npm_tarball_sha256": "1dfed308f46a69aec06bf9dc20700ddc6fe2370b1898f01334b7898397541e66",
+      "version": "1.2.0"
+    },
+    {
+      "complete_tree_sha256": "c12dbb0f8483e29f4e1f418fcfc1a3139d076cbae05d49d26867abbf7a9b7e6e",
+      "github_release_id": 414165830,
+      "github_release_published_at": "2026-10-15T19:17:33Z",
+      "github_tag": "v1.3.0",
+      "github_tag_commit": "71023aec1546d6d677a65669c5665c0927ce0dd0",
+      "npm_files": 1276,
+      "npm_git_head": null,
+      "npm_git_head_matches_tag": null,
+      "npm_integrity": "sha512-V/WoCjA2hQSe3QLWIUB24cTRdtEdeLiIzkDqU5RMXV6VWuD+KGZnzVBMhglwdnQTySkehZsjt8a3g6Jd2g4nnw==",
+      "npm_published_at": "2026-10-15T19:13:30.662Z",
+      "npm_shasum": "a52ed0ef8ba4fd03de221ec52b0996855bf5bf4d",
+      "npm_tarball_sha256": "ae2785e870b81a8c8e1d44510a57b5ee0bfc9e974679ac2faaada4aabee3d3c0",
+      "version": "1.3.0"
+    },
+    {
+      "complete_tree_sha256": "fb51c1573be247d23c53a214ec773bb0669236b67d9be055a94d697fd5ffe13f",
+      "github_release_id": 420119608,
+      "github_release_published_at": "2026-10-21T22:49:48Z",
+      "github_tag": "v1.4.0",
+      "github_tag_commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+      "npm_files": 1279,
+      "npm_git_head": null,
+      "npm_git_head_matches_tag": null,
+      "npm_integrity": "sha512-Z41LpZ3yYHSC/UUps6Mr39UMFPwH8elhJBG9DY1P7kuzsE5qSK/6eMj2EHzO5evJRQWLbKSqUMw+4nCNtIyiQg==",
+      "npm_published_at": "2026-10-21T22:48:58.431Z",
+      "npm_shasum": "7f5dd2a4f7fa46ed252465ac4d341831896b1fc2",
+      "npm_tarball_sha256": "d155c16ef6fa00960fbf58b2911536e80b05f33700e0b14fbd08967ede0c7428",
+      "version": "1.4.0"
+    }
+  ],
+  "official_channels": {
+    "github_latest_commit": "4a080252f06caf63a525d7873c5d94d3c23887e0",
+    "github_latest_draft": false,
+    "github_latest_prerelease": false,
+    "github_latest_published_at": "2026-10-21T22:49:48Z",
+    "github_latest_tag": "v1.4.0",
+    "github_repository": "earendil-works/pi",
+    "latest_channels_agree": true,
+    "npm_latest": "1.4.0",
+    "npm_registry": "https://registry.npmjs.org/",
+    "published_stables_after_previous_ceiling": [
+      "1.2.0",
+      "1.3.0",
+      "1.4.0"
+    ]
+  },
+  "previous_qualification": {
+    "claim_id": "pi.rpc.package-window-2",
+    "latest_qualified": "1.1.0",
+    "research": 383
+  },
+  "runtime_identity": {
+    "host_installed_or_updated": false,
+    "host_pi_on_path": false,
+    "npm_engine_requirement": ">=22.19.0",
+    "official_artifact_executed": false
+  },
+  "selected_route": "pi.rpc"
+}

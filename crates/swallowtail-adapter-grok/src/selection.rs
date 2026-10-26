@@ -379,7 +379,7 @@ mod tests {
                 "unexpected permit {rejected}"
             );
         }
-        for later in ["1.0.47", "1.0.48", "1.0.49", "1.1.0"] {
+        for later in ["1.0.47", "1.0.70", "1.0.71", "1.1.0"] {
             let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
                 claim.assess(&version(later))
             else {
@@ -431,7 +431,7 @@ mod tests {
         assert!(grok_build_acp_binding("1.0.30").is_some());
         assert!(grok_build_acp_binding("1.0.40").is_some());
         assert!(grok_build_acp_binding("1.0.41").is_some());
-        for current in ["1.0.42", "1.0.43", "1.0.44", "1.0.45", "1.0.46"] {
+        for current in ["1.0.42", "1.0.43", "1.0.44", "1.0.45", "1.0.46", "1.0.70"] {
             assert!(grok_build_acp_binding(current).is_some());
         }
         for rejected in [

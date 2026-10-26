@@ -61,6 +61,15 @@ pub fn antigravity_release_binding(value: &str) -> Option<InterfaceVersionBindin
 
 #[must_use]
 /// Returns the catalogue release compatibility claim.
+///
+/// One maintained segment `1.1.9..=1.3.1` on the existing behaviour
+/// revision, excluding unpublished `1.2.18`. Research 449 freezes identity
+/// through official `1.4.7` but does not extend this claim: Q-005 keeps
+/// the 2026-09-15 notes ruling scoped to hops through `1.2.2`, and
+/// Contract 029 artifact authority for `1.3.2..=1.4.7` is unproven.
+/// Owning adaptation `antigravity.catalogue.artifact-authority-through-current-official`
+/// on the `version-currentness` lane owns qualifying the then-current
+/// official stable; `AllowUnverified` stays while that task is open.
 pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new("antigravity.catalogue.release-window-1")

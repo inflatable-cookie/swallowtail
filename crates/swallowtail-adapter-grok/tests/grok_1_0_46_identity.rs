@@ -326,7 +326,7 @@ fn production_claim_extends_the_existing_milestone_without_widening_other_routes
             InterfaceCompatibilityAssessment::Incompatible
         );
     }
-    for candidate in ["1.0.47", "1.0.48", "1.0.49"] {
+    for candidate in ["1.0.47", "1.0.48", "1.0.49", "1.0.70", "1.0.71"] {
         assert!(
             matches!(
                 claim.assess(&InterfaceVersion::new(candidate).unwrap()),

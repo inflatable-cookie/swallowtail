@@ -39,6 +39,11 @@ with subscription allowance and no credential reference.
 
 Qualified catalogue versions are `1.1.9..=1.3.1` on
 `antigravity-cli.release`, excluding unpublished `1.2.18` (Research 380).
+Research 449 freezes official stables `1.3.2` through `1.4.7` as identity
+only; those hops stay `UnverifiedNewer` until the owning
+`version-currentness` adaptation
+`antigravity.catalogue.artifact-authority-through-current-official` lands
+Contract 029 artifact-authority proof (Q-005).
 The catalogue retains its existing claim and behavior revision. Qualified
 headless versions are deprecated
 `1.1.9..=1.1.17` on `antigravity.stream-json.cli-1.1.8-artifact-1.1.9-v1`

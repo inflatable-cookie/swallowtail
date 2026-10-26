@@ -21,6 +21,8 @@ mod antigravity_1_2_7_notes_ledger;
 mod antigravity_1_3_1_catalogue;
 #[path = "antigravity_1_3_1_headless_currentness.rs"]
 mod antigravity_1_3_1_headless_currentness;
+#[path = "antigravity_1_4_7_catalogue.rs"]
+mod antigravity_1_4_7_catalogue;
 
 const IDENTITY: &str = include_str!("fixtures/antigravity-cli-1.1.14/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/antigravity-cli-1.1.14/protocol.json");

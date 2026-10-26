@@ -12,7 +12,7 @@ pub const PI_PACKAGE_AXIS: &str = "pi.package";
 /// Oldest Pi package version qualified for the RPC route.
 pub const PI_PACKAGE_BASELINE_VERSION: &str = "0.80.10";
 /// Newest Pi package version behaviorally qualified for the RPC route.
-pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "1.1.0";
+pub const PI_PACKAGE_LATEST_QUALIFIED_VERSION: &str = "1.4.0";
 
 const BASELINE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.80.10";
 const THINKING_USAGE_BEHAVIOR: &str = "pi.rpc.strict-lf-v0.81.0-thinking-usage";
@@ -116,6 +116,24 @@ pub fn pi_rpc_claim() -> InterfaceCompatibilityClaim {
                 ABORTED_SETTLED_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
+            segment(
+                "1.2.0",
+                "1.2.0",
+                ABORTED_SETTLED_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "1.3.0",
+                "1.3.0",
+                ABORTED_SETTLED_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "1.4.0",
+                "1.4.0",
+                ABORTED_SETTLED_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
         [],
     )
@@ -209,7 +227,7 @@ mod tests {
             "0.80.10", "0.81.0", "0.81.1", "0.82.0", "0.82.1", "0.83.0", "0.84.0", "0.84.1",
             "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1", "0.87.0",
             "0.87.1", "0.99.0", "0.99.1", "0.99.2", "1.0.0", "1.0.1", "1.0.2", "1.0.3", "1.0.4",
-            "1.1.0",
+            "1.1.0", "1.2.0", "1.3.0", "1.4.0",
         ] {
             assert!(claim.supports(&version(candidate)), "missing {candidate}");
         }
@@ -235,6 +253,9 @@ mod tests {
             ("1.0.0", "pi.rpc.strict-lf-v0.99.0-command-disposition"),
             ("1.0.4", "pi.rpc.strict-lf-v0.99.0-command-disposition"),
             ("1.1.0", "pi.rpc.strict-lf-v1.1.0-aborted-settled"),
+            ("1.2.0", "pi.rpc.strict-lf-v1.1.0-aborted-settled"),
+            ("1.3.0", "pi.rpc.strict-lf-v1.1.0-aborted-settled"),
+            ("1.4.0", "pi.rpc.strict-lf-v1.1.0-aborted-settled"),
         ] {
             assert_eq!(
                 claim
@@ -247,12 +268,12 @@ mod tests {
         }
         for unsupported in [
             "0.80.11", "0.81.2", "0.82.2", "0.83.1", "0.84.5", "0.85.2", "0.86.2", "0.87.2",
-            "0.98.9", "0.99.3", "1.0.5",
+            "0.98.9", "0.99.3", "1.0.5", "1.1.1", "1.2.1", "1.3.1",
         ] {
             assert!(!claim.permits(&version(unsupported)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.1.1"))
+            claim.assess(&version("1.4.1"))
         else {
             panic!("later stable Pi remains unverified");
         };
@@ -260,7 +281,7 @@ mod tests {
             newer.behavior_revision().as_str(),
             "pi.rpc.strict-lf-v1.1.0-aborted-settled"
         );
-        assert!(!claim.permits(&version("1.1.1-rc.1")));
+        assert!(!claim.permits(&version("1.4.1-rc.1")));
     }
 
     #[test]
@@ -275,6 +296,7 @@ mod tests {
         assert!(pi_package_binding("0.86.0").is_some());
         assert!(pi_package_binding("0.86.1").is_some());
         assert!(pi_package_binding("1.1.0").is_some());
+        assert!(pi_package_binding("1.4.0").is_some());
         for value in ["", " 0.80.10", "pi 0.80.10", "latest"] {
             assert!(pi_package_binding(value).is_none());
         }

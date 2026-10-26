@@ -2,7 +2,10 @@ mod support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;
-use std::sync::Arc;
+use serde_json::{Value, json};
+use std::collections::VecDeque;
+use std::sync::{Arc, Condvar, Mutex};
+use std::thread::JoinHandle;
 use swallowtail_adapter_cursor::{
     CURSOR_AGENT_RELEASE_AXIS, CursorAcpSessionProfileInput, CursorCatalogueProfileInput,
     CursorHeadlessContext, CursorHeadlessFast, CursorHeadlessModelSelection,
@@ -17,11 +20,13 @@ use swallowtail_core::{
     SupportAuthority,
 };
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    HostServices, InstalledExecutableTarget, MaterializedResourceRef, MonotonicInstant,
-    OperationContent, PreparationFailure, PreparedAccessEvidence, ProcessOutputChunk,
-    ProcessOutputStream, RequestId, ResourceLease, RuntimeFailure, RuntimeTurnId, ScopeId,
-    SessionResumeBinding, TerminalStatus, WorkingResourceIoService, WorkingResourceReadRequest,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DiscoveryCancellation,
+    EnvironmentRef, ExecutableRef, HostServices, InstalledExecutableTarget, JoinedTask,
+    MaterializedResourceRef, MonotonicInstant, OperationContent, PreparationFailure,
+    PreparedAccessEvidence, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
+    ProcessOutputStream, ProcessRequest, ProcessService, RequestId, ResourceLease, RuntimeFailure,
+    RuntimeTurnId, ScopeId, ScopedTaskService, SessionCleanupRequest, SessionResumeBinding,
+    TerminalStatus, TimeService, WorkingResourceIoService, WorkingResourceReadRequest,
     WorkingResourceRef, WorkingResourceService, WorkingResourceText, WorkingResourceWriteRequest,
     WorkingStateRestorationMethod,
 };
@@ -45,7 +50,7 @@ const QUALIFIED_RELEASES: [&str; 12] = [
     "2026.09.28-64d2043",
     "2026.10.01-14929f9",
 ];
-const QUALIFIED_CATALOGUE_RELEASES: [&str; 12] = [
+const QUALIFIED_CATALOGUE_RELEASES: [&str; 17] = [
     "2026.07.01-41b2de7",
     "2026.07.23-e383d2b",
     "2026.08.04-aaa8809",
@@ -58,6 +63,11 @@ const QUALIFIED_CATALOGUE_RELEASES: [&str; 12] = [
     "2026.09.26-dd393fe",
     "2026.09.28-64d2043",
     "2026.10.01-14929f9",
+    "2026.10.14-941492e",
+    "2026.10.16-e3cb207",
+    "2026.10.18-ea085cb",
+    "2026.10.19-6bbf2c4",
+    "2026.10.22-27dcf5f",
 ];
 
 include!("prepared_suite/plans.rs");

@@ -33,10 +33,10 @@ fn official_hops_and_claim_stop_are_explicit() {
         identity["claim_at_observation"]["response_only_latest_qualified"],
         "2.1.278"
     );
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.294");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.310");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.293"
+        "2.1.310"
     );
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
@@ -53,6 +53,11 @@ fn official_hops_and_claim_stop_are_explicit() {
     ));
     assert!(matches!(
         headless.assess(&InterfaceVersion::new("2.1.295").unwrap()),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
+    ));
+    assert!(matches!(
+        headless.assess(&InterfaceVersion::new("2.1.311").unwrap()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
             if newer.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));

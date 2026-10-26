@@ -1061,11 +1061,12 @@ provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
 `0.87.0` add private behavior revisions without changing deletion truth.
 Research 446 carries the same consumer close and stored-delete results through
-`0.96.0`. From `0.89.0`, a missing live close and a delete with no stored
-transcript return an empty success. Live close of a session in memory and
-delete of a stored transcript still return an empty object. The empty success
-adds no stronger deletion claim. Later stable versions remain visible and
-unverified.
+`0.96.0`. From `0.89.0`, `closeSession` of a session that is not loaded returns
+an empty success. Delete of an absent transcript still calls Agent SDK
+`deleteSession` and throws for the selected non-AIR client, on `0.88.0` and
+`0.89.0` alike. Live close of a session in memory and delete of a stored
+transcript still return an empty object. The empty close success adds no
+stronger deletion claim. Later stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
 requires independently advertised close and delete capabilities before session

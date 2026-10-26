@@ -206,11 +206,13 @@ tagged handler, test, ACP SDK, and Agent SDK evidence qualifies:
 - `ProviderDefinedDescendants` for the recursively removed sibling session
   directory
 - through `0.88.0`, provider rejection for a missing or repeated close or delete
-- from `0.89.0`, an empty success for a missing live close and for a delete
-  whose transcript is absent
+- from `0.89.0`, an empty success for `closeSession` of a session that is not
+  loaded
+- delete of an absent transcript still calls Agent SDK `deleteSession` and
+  throws for the selected non-AIR client, on `0.88.0` and `0.89.0` alike
 
 Live close of a session in memory and delete of a stored transcript still
-return an empty object. The empty success is not `ProviderHardDeleted`.
+return an empty object. The empty close success is not `ProviderHardDeleted`.
 
 This classification does not claim secure erasure or deletion of Anthropic API
 service data, account analytics, logs, or backups. It is not

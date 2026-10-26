@@ -19,8 +19,8 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
     let inventory: Value = serde_json::from_str(DIST_INVENTORY).expect("inventory is valid JSON");
 
     assert_eq!(fingerprint(IDENTITY), 0x8534_21db_4a48_71f7);
-    assert_eq!(fingerprint(PROTOCOL), 0x001c_ce3b_ec0c_20bc);
-    assert_eq!(fingerprint(DIST_INVENTORY), 0x2ec2_3797_f6bb_05fe);
+    assert_eq!(fingerprint(PROTOCOL), 0x04af_ed50_c200_15fe);
+    assert_eq!(fingerprint(DIST_INVENTORY), 0x0233_10da_6b92_6b88);
     assert_keys(
         &identity,
         &[
@@ -200,8 +200,12 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
         true
     );
     assert_eq!(
-        protocol["stable_schema_and_lifecycle"]["missing_close_and_unstored_delete_return_empty_success_from"],
+        protocol["stable_schema_and_lifecycle"]["missing_close_returns_empty_success_from"],
         "0.89.0"
+    );
+    assert_eq!(
+        protocol["stable_schema_and_lifecycle"]["unstored_delete_still_throws_via_agent_sdk_deleteSession"],
+        true
     );
     assert_eq!(
         protocol["stable_schema_and_lifecycle"]["no_public_lifecycle_break"],

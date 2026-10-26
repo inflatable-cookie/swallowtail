@@ -17,8 +17,9 @@ were no provider prompts, credentials, live ACP sessions, or host changes.
 The source of truth for the route's mapped behavior remains the ACP v1 wire
 Swallowtail sends and decodes. A v1 initialize still selects the v1 agent when
 `CLAUDE_AGENT_ACP_PROTOCOL` is unset. ACP SDK 2.0.0 is an import move, not a
-v1 wire reset. Missing close and unstored delete return an empty success from
-`0.89.0`; live close and stored delete success shapes stay empty objects, and
+v1 wire reset. Missing close returns an empty success from `0.89.0`; live
+close and stored delete success shapes stay empty objects. Unstored delete
+still throws via Agent SDK `deleteSession` for this non-AIR client.
 Swallowtail does not gain a consumer operation or a stronger deletion claim.
 
 This qualification does not extend the separate HTTP MCP live gate. Its

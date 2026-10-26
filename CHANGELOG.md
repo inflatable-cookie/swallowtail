@@ -10,7 +10,9 @@ annotated Git tags from the canonical repository.
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep
   the selected argv, JSONL events, sandbox policy, initialize, catalogue,
-  and archive/delete shapes. Optional turn and thread fields stay unmapped.
+  and archive/delete shapes. Native `darwin-arm64` and `linux-x64` tarballs
+  were hashed and inventoried; archive/unarchive/delete handlers were traced
+  in `thread_processor.rs`. Optional turn and thread fields stay unmapped.
   Unpublished gaps, including `0.155.2`, stay incompatible. `0.165.0-alpha.1`
   is ignored. See Research 452.
 - freeze `antigravity.catalogue` identity through official stable `1.4.7`

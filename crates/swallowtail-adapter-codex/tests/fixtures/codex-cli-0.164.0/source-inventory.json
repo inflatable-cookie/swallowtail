@@ -1,0 +1,75 @@
+{
+  "inventoryDigests": {
+    "0.161.0": {
+      "digest": "c2b373a72c6635fa3de9484e812b67eab9fa52b1027ca3c61fa780e3df3a38f9",
+      "fileCount": 8899
+    },
+    "0.162.0": {
+      "digest": "558767aea1737612d65455a2778ee0e16e47e4f8b5f8f9fedb5690d6c44f89b1",
+      "fileCount": 9017
+    },
+    "0.162.1": {
+      "digest": "f94abf708cc1fd70e3bc877f5fce1c94d6611f8d004ae6ace514cdf3a5fd1e63",
+      "fileCount": 9018
+    },
+    "0.163.0": {
+      "digest": "67df9d79168efe090f6713f994f57b6a7dab53324b6d22666ee8d4adfd959b45",
+      "fileCount": 9176
+    },
+    "0.164.0": {
+      "digest": "02b1e9b3c637008eddbd903b6a9ee9441705fef44732cf5a80ed5c63622b3030",
+      "fileCount": 9438
+    }
+  },
+  "hopCounts": {
+    "0.161.0->0.162.0": {
+      "added": 188,
+      "removed": 70,
+      "changed": 1400,
+      "identical": 7429
+    },
+    "0.162.0->0.162.1": {
+      "added": 1,
+      "removed": 0,
+      "changed": 9,
+      "identical": 9008
+    },
+    "0.162.1->0.163.0": {
+      "added": 193,
+      "removed": 35,
+      "changed": 1080,
+      "identical": 7903
+    },
+    "0.163.0->0.164.0": {
+      "added": 299,
+      "removed": 37,
+      "changed": 1591,
+      "identical": 7548
+    }
+  },
+  "completeDeltaAuthority": "source-name-status.tsv",
+  "digestAlgorithm": "sha256 of sorted path\\tmode\\tgit-blob lines",
+  "selectedBlobs": {
+    "codex-rs/exec/src/cli.rs": {
+      "0.161.0": "6a268da298380344c22ea12620606c3e6713f5fa",
+      "0.162.0": "6a268da298380344c22ea12620606c3e6713f5fa",
+      "0.162.1": "6a268da298380344c22ea12620606c3e6713f5fa",
+      "0.163.0": "6a268da298380344c22ea12620606c3e6713f5fa",
+      "0.164.0": "6a268da298380344c22ea12620606c3e6713f5fa"
+    },
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": {
+      "0.161.0": "e36ca147e7413df74afb55057551c42706661fab",
+      "0.162.0": "8bdf6bbed3ee667905a9b1428fb4b0ffcac08f02",
+      "0.162.1": "8bdf6bbed3ee667905a9b1428fb4b0ffcac08f02",
+      "0.163.0": "9563a250cc43bf5691537ed009199112265a5548",
+      "0.164.0": "4d104e2d5e3818577d3725c801cc06c5c44d053a"
+    },
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": {
+      "0.161.0": "7b014daa21f2f899420150fefd3235114644c563",
+      "0.162.0": "7b014daa21f2f899420150fefd3235114644c563",
+      "0.162.1": "7b014daa21f2f899420150fefd3235114644c563",
+      "0.163.0": "7b014daa21f2f899420150fefd3235114644c563",
+      "0.164.0": "7b014daa21f2f899420150fefd3235114644c563"
+    }
+  }
+}

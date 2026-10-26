@@ -14,8 +14,10 @@ Qualify `cursor-agent.acp` and `cursor-agent.headless` through official stable
 
 This is a compatible extension of the existing ACP and headless wires. It
 adds no public operation, capability, authority, or behavior revision. The
-routes stay separate. `cursor-agent.catalogue` stays at
-`2026.10.01-14929f9`.
+routes stay separate. `cursor-agent.catalogue` is independently qualified
+through `2026.10.22-27dcf5f` by
+[Research 451](451-cursor-agent-2026-10-22-catalogue-identity.md); this
+ACP/headless evidence does not extend that claim.
 
 Canonical main already qualified both routes through `2026.10.01-14929f9`
 (Research 395 and 399). The dispatch brief named the older `2026-09-18`
@@ -53,8 +55,8 @@ binds `941492e` and rejects `0f9edde` even though that earlier archive's
 selected ACP and headless surfaces match. Dates between published points stay
 gaps, including `2026-10-02`, `2026-10-13`, `2026-10-15`, `2026-10-17`,
 `2026-10-20`, and `2026-10-21`. `2026-10-23` is the synthetic unverified-newer
-probe. Catalogue still treats every date after `2026-10-01` as unverified
-newer, not as an ACP/headless gap.
+probe. The independent catalogue claim retains the same exact dates and
+gaps under Research 451; no route inherits another route's qualification.
 
 ## Artifact identity
 

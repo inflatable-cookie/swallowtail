@@ -146,9 +146,7 @@
       "yolo_option": ".option(\"--yolo\",\"Alias for --force (Run Everything)\",!1)",
       "yolo_option_sha256": "cb85c65f0776206feaa36b5c83931751f2a0c17fa932f7b9ed5e143b4089af19",
       "system_init": "type:\"system\",subtype:\"init\" ... session_id ... model:<id>.displayName,permissionMode:\"default\"",
-      "system_init_fields_sha256": "7bb3ccfadcccae6b1686125c4c5b2a0cde16410a634d123e8f729c27e9c17bcf",
       "result_success": "type:\"result\",subtype:\"success\",is_error:!1,duration_ms: ... duration_api_ms: ... result ... session_id ... request_id ... optional usage",
-      "result_success_fields_sha256": "4d2359f309b4b9be9840d92792b24ee990b50accc65555022d2903bd8ecdf7c5",
       "usage_spread": "...<id>?{usage:<id>}:{} with identifier oe at 2026.10.01-14929f9 and ae on later hops; selected usage fields unchanged",
       "minifier_only_variants": "session object and usage identifiers in the writer chunk change per hop; selected field names and values do not"
     }

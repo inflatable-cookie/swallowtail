@@ -1,18 +1,15 @@
 use serde_json::Value;
 use swallowtail_adapter_cursor::{
     CURSOR_AGENT_AUGUST_04_BUILD_REVISION, CURSOR_AGENT_AUGUST_04_VERSION,
-    CURSOR_AGENT_BASELINE_VERSION, CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION,
-    CURSOR_AGENT_LATEST_QUALIFIED_VERSION, CURSOR_AGENT_RELEASE_AXIS, cursor_acp_claim,
+    CURSOR_AGENT_BASELINE_VERSION, CURSOR_AGENT_RELEASE_AXIS, cursor_acp_claim,
     cursor_agent_release_binding, cursor_catalogue_claim, cursor_headless_claim,
 };
 use swallowtail_core::{
     InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
 };
 
-const IDENTITY: &str =
-    include_str!("fixtures/cursor-agent-2026.08.04-2026.08.11/identity.json");
-const PROTOCOL: &str =
-    include_str!("fixtures/cursor-agent-2026.08.04-2026.08.11/protocol.json");
+const IDENTITY: &str = include_str!("fixtures/cursor-agent-2026.08.04-2026.08.11/identity.json");
+const PROTOCOL: &str = include_str!("fixtures/cursor-agent-2026.08.04-2026.08.11/protocol.json");
 
 #[test]
 fn identity_adds_exact_august_milestones_without_inferring_the_gap() {
@@ -24,19 +21,16 @@ fn identity_adds_exact_august_milestones_without_inferring_the_gap() {
     assert_eq!(identity["axis"], CURSOR_AGENT_RELEASE_AXIS);
     assert_eq!(identity["host"]["version"], "2026.08.04-aaa8809");
     assert_eq!(identity["official"]["version"], "2026.08.11-e8db854");
-    assert_eq!(identity["host"]["release_date"], CURSOR_AGENT_AUGUST_04_VERSION);
+    assert_eq!(
+        identity["host"]["release_date"],
+        CURSOR_AGENT_AUGUST_04_VERSION
+    );
     assert_eq!(
         identity["host"]["build_revision"],
         CURSOR_AGENT_AUGUST_04_BUILD_REVISION
     );
-    assert_eq!(
-        identity["official"]["release_date"],
-        CURSOR_AGENT_LATEST_QUALIFIED_VERSION
-    );
-    assert_eq!(
-        identity["official"]["build_revision"],
-        CURSOR_AGENT_LATEST_QUALIFIED_BUILD_REVISION
-    );
+    assert_eq!(identity["official"]["release_date"], "2026-08-11");
+    assert_eq!(identity["official"]["build_revision"], "e8db854");
     assert!(is_sha256(
         identity["host"]["runtime_index_sha256"]
             .as_str()

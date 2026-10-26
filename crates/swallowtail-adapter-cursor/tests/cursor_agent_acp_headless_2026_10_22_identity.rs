@@ -97,7 +97,11 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
     assert_eq!(decision["catalogue_claim_changed"], false);
     assert_eq!(
         decision["catalogue_ceiling_unchanged"],
-        "2026.10.01-14929f9"
+        "2026.10.22-27dcf5f"
+    );
+    assert_eq!(
+        decision["catalogue_qualification_source"],
+        "Research 451; independent catalogue evidence"
     );
     assert_eq!(decision["flatten_routes"], false);
     assert_eq!(decision["new_public_operation"], false);
@@ -233,6 +237,17 @@ fn identity_freezes_registry_hops_and_keeps_the_routes_separate() {
         "every hop from 2026.10.01-14929f9 through 2026.10.22-27dcf5f"
     );
     let headless_flow = &protocol["headless"]["selected_control_flow"];
+    // These elided summaries describe fields, rather than byte-identical literals.
+    assert_eq!(
+        headless_flow["system_init"],
+        "type:\"system\",subtype:\"init\" ... session_id ... model:<id>.displayName,permissionMode:\"default\""
+    );
+    assert_eq!(
+        headless_flow["result_success"],
+        "type:\"result\",subtype:\"success\",is_error:!1,duration_ms: ... duration_api_ms: ... result ... session_id ... request_id ... optional usage"
+    );
+    assert!(headless_flow.get("system_init_fields_sha256").is_none());
+    assert!(headless_flow.get("result_success_fields_sha256").is_none());
     for field in [
         "print_help",
         "output_format",

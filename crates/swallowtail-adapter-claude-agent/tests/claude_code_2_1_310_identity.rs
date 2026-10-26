@@ -592,7 +592,10 @@ fn hop_comparison_records_299_and_300_fail_closed_js() {
             let patch: u32 = version.split('.').nth(2).unwrap().parse().unwrap();
             if patch >= 299 {
                 let fail_closed = js["plugin_fail_closed"].as_str().unwrap();
-                assert!(fail_closed.contains("classic.PreToolUse"), "{package} {version}");
+                assert!(
+                    fail_closed.contains("classic.PreToolUse"),
+                    "{package} {version}"
+                );
                 assert!(
                     fail_closed.contains(
                         "this tool input could not be given to a hook that checks it, so the tool was not run"
@@ -608,8 +611,14 @@ fn hop_comparison_records_299_and_300_fail_closed_js() {
                     reserved.contains("refusedBy:\"reserved_key\""),
                     "{package} {version}"
                 );
-                assert!(reserved.contains("The tool was not run."), "{package} {version}");
-                assert!(reserved.contains("return{ok:!1,deny:"), "{package} {version}");
+                assert!(
+                    reserved.contains("The tool was not run."),
+                    "{package} {version}"
+                );
+                assert!(
+                    reserved.contains("return{ok:!1,deny:"),
+                    "{package} {version}"
+                );
             } else {
                 assert!(js["reserved_key_deny"].is_null(), "{package} {version}");
             }
@@ -695,8 +704,7 @@ fn response_only_isolation_is_frozen_per_binary() {
         "function Xx(e){return fh(e)??\"default\"}"
     );
     assert_eq!(
-        isolation["permission_mode_treats_undefined_as_default_at_2_1_310"]
-            ["claude-code-darwin-arm64"],
+        isolation["permission_mode_treats_undefined_as_default_at_2_1_310"]["claude-code-darwin-arm64"],
         "function Ldi(e){return e===\"default\"||e===void 0}"
     );
     assert_eq!(
@@ -784,8 +792,14 @@ fn response_only_isolation_is_frozen_per_binary() {
                 "{package} {version_name}"
             );
             let init = row["init_fields"].as_str().unwrap();
-            assert!(init.contains("subtype:\"init\""), "{package} {version_name}");
-            assert!(init.contains("tools:e.tools.map"), "{package} {version_name}");
+            assert!(
+                init.contains("subtype:\"init\""),
+                "{package} {version_name}"
+            );
+            assert!(
+                init.contains("tools:e.tools.map"),
+                "{package} {version_name}"
+            );
             assert!(
                 init.contains("mcp_servers:e.mcpClients.map"),
                 "{package} {version_name}"

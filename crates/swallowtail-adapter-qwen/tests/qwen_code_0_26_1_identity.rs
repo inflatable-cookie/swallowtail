@@ -10,11 +10,14 @@ const SELECTED_SOURCES: &str =
     include_str!("fixtures/qwen-code-0.26.1/selected-source-identities.json");
 const REVIEWED_SOURCES: &str =
     include_str!("fixtures/qwen-code-0.26.1/reviewed-source-identities.json");
-const IDENTITY_SHA256: &str = "e039bbe894ce6dae033a377d7e617f852450d1cf8d93b7a7fb4ec22119b6af77";
+const SOURCE_TO_SHIPPED: &str = include_str!("fixtures/qwen-code-0.26.1/source-to-shipped.json");
+const IDENTITY_SHA256: &str = "b7f5c72bdf37bfdac5cffd00a5563436fa5b14e90d490a05376e8ab39eeb6adf";
 const SELECTED_SOURCES_SHA256: &str =
     "ccfffe2ade51be51099871e306bde25dff3e657593e11bb5a5760551035d18c5";
 const REVIEWED_SOURCES_SHA256: &str =
     "f92718e090d69d89bd792c8042b4ff23c143c671ce90e8abc8b159758d3f038e";
+const SOURCE_TO_SHIPPED_SHA256: &str =
+    "22d49c0703d6f6b54a2b83c867ed6c817a88ebd63410b7db8bad00c73504d9c1";
 
 const VERSIONS: [&str; 6] = ["0.25.0", "0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"];
 const MAPPED_SOURCE_KEYS: [&str; 11] = [
@@ -81,6 +84,9 @@ fn file(relative: &str) -> &'static str {
         "dist-diff-0.26.0-to-0.26.1.json" => {
             include_str!("fixtures/qwen-code-0.26.1/dist-diff-0.26.0-to-0.26.1.json")
         }
+        "source-to-shipped.json" => {
+            include_str!("fixtures/qwen-code-0.26.1/source-to-shipped.json")
+        }
         other => panic!("unexpected Qwen evidence file {other}"),
     }
 }
@@ -139,6 +145,23 @@ fn official_identity_freezes_npm_latest_and_preserves_the_claim_shape() {
     );
     assert_eq!(
         identity["identity_decision"]["exclude_unpublished_0_25_4"],
+        true
+    );
+    assert_eq!(identity["source_to_shipped_file"], "source-to-shipped.json");
+    assert_eq!(
+        identity["source_to_shipped_sha256"],
+        SOURCE_TO_SHIPPED_SHA256
+    );
+    assert_eq!(
+        identity["evidence_limits"]["source_maps_in_npm_package"],
+        false
+    );
+    assert_eq!(
+        identity["evidence_limits"]["slsa_provenance_binds_tarball_sha512_to_git_commit"],
+        true
+    );
+    assert_eq!(
+        identity["evidence_limits"]["selected_sources_byte_identical_at_slsa_commit_and_tag"],
         true
     );
 
@@ -398,6 +421,167 @@ fn ssh_selection_and_approval_helper_sources_are_frozen_with_exact_coverage() {
                 sha256(&bytes),
                 record["sha256"],
                 "reviewed source {key} at {version}"
+            );
+        }
+    }
+}
+
+#[test]
+fn slsa_provenance_binds_each_githead_null_hop_tarball_to_selected_tag_sources() {
+    let identity = json(IDENTITY);
+    let selected = json(SELECTED_SOURCES);
+    let reviewed = json(REVIEWED_SOURCES);
+    let shipped = json(SOURCE_TO_SHIPPED);
+    assert_eq!(
+        sha256(SOURCE_TO_SHIPPED.as_bytes()),
+        SOURCE_TO_SHIPPED_SHA256
+    );
+    assert_eq!(
+        sha256(SOURCE_TO_SHIPPED.as_bytes()),
+        identity["source_to_shipped_sha256"]
+    );
+    assert_eq!(
+        shipped["method"],
+        "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
+    );
+    assert_eq!(
+        shipped["historical_0_25_0"],
+        "Research 375 remains the 0.25.0 identity record and is not rewritten"
+    );
+
+    let versions = shipped["versions"]
+        .as_array()
+        .expect("source-to-shipped versions");
+    assert_eq!(
+        versions
+            .iter()
+            .map(|record| record["npm_version"].as_str().unwrap())
+            .collect::<Vec<_>>(),
+        ["0.25.1", "0.25.2", "0.25.3", "0.26.0", "0.26.1"]
+    );
+
+    let identity_versions = identity["versions"].as_array().unwrap();
+    for record in versions {
+        let version = record["npm_version"].as_str().unwrap();
+        let identity_record = identity_versions
+            .iter()
+            .find(|item| item["npm_version"] == version)
+            .unwrap();
+        assert_eq!(record["artifact_sha256"], identity_record["tarball_sha256"]);
+        assert_eq!(record["artifact_sha512"], identity_record["tarball_sha512"]);
+        assert_eq!(record["tag_commit"], identity_record["source_commit"]);
+        assert_eq!(
+            record["slsa_git_commit"],
+            identity_record["slsa_git_commit"]
+        );
+        assert_eq!(record["npm_git_head"], identity_record["npm_git_head"]);
+        assert_eq!(record["tag_commit_equals_slsa_git_commit"], false);
+        assert_eq!(record["source_maps_in_package"], 0);
+        assert_eq!(record["source_map_paths"], serde_json::json!([]));
+        assert_eq!(record["slsa"]["subject_sha512"], record["artifact_sha512"]);
+        assert_eq!(record["slsa"]["subject_sha512_equals_tarball_sha512"], true);
+        assert_eq!(
+            record["slsa"]["predicate_type"],
+            "https://slsa.dev/provenance/v1"
+        );
+        assert_eq!(
+            record["slsa"]["repository"],
+            "https://github.com/QwenLM/qwen-code"
+        );
+        assert_eq!(record["slsa"]["workflow"], ".github/workflows/release.yml");
+        assert_eq!(record["slsa"]["workflow_ref"], "refs/heads/main");
+        assert_eq!(record["slsa"]["event_name"], "workflow_dispatch");
+        assert_eq!(record["slsa"]["payload_sha256"].as_str().unwrap().len(), 64);
+        assert_eq!(
+            record["slsa"]["subject_sha512"].as_str().unwrap().len(),
+            128
+        );
+        assert_eq!(record["slsa_git_commit"].as_str().unwrap().len(), 40);
+        assert_ne!(record["slsa_git_commit"], record["tag_commit"]);
+
+        if matches!(version, "0.25.1" | "0.25.2" | "0.25.3") {
+            assert!(record["npm_git_head"].is_null());
+        } else {
+            assert_eq!(record["npm_git_head"], record["tag_commit"]);
+        }
+
+        let inventory = inventory(version);
+        for path in inventory.as_object().unwrap().keys() {
+            assert!(
+                !path.ends_with(".map"),
+                "{version} shipped tree includes source map {path}"
+            );
+        }
+
+        let changed = record["tag_to_slsa_changed_paths"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|path| path.as_str().unwrap())
+            .collect::<Vec<_>>();
+        assert!(!changed.is_empty());
+        for path in &changed {
+            assert!(
+                path.ends_with("package.json") || path.ends_with("qwen-extension.json"),
+                "tag-to-slsa delta stays workspace version metadata: {path}"
+            );
+            assert!(
+                !path.contains("/src/"),
+                "tag-to-slsa delta must not touch selected source {path}"
+            );
+        }
+        assert_eq!(
+            record["tag_to_slsa_selected_source_changes"],
+            serde_json::json!([])
+        );
+
+        let selected_files = record["selected_files"].as_array().unwrap();
+        assert_eq!(selected_files.len(), MAPPED_SOURCE_KEYS.len());
+        for source in selected_files {
+            let key = source["key"].as_str().unwrap();
+            assert_eq!(source["source_path"], selected[version][key]["path"]);
+            assert_eq!(source["source_sha256"], selected[version][key]["sha256"]);
+            assert_eq!(source["source_bytes"], selected[version][key]["bytes"]);
+            assert_eq!(source["tag_commit"], record["tag_commit"]);
+            assert_eq!(source["slsa_commit"], record["slsa_git_commit"]);
+            assert_eq!(source["tag_and_slsa_byte_identical"], true);
+        }
+
+        for reviewed_file in record["reviewed_files"].as_array().unwrap() {
+            let key = reviewed_file["key"].as_str().unwrap();
+            assert_eq!(
+                reviewed_file["source_sha256"],
+                reviewed[key][version]["sha256"]
+            );
+            assert_eq!(reviewed_file["tag_and_slsa_byte_identical"], true);
+        }
+    }
+
+    let hops = shipped["hops"].as_array().unwrap();
+    assert_eq!(hops.len(), SELECTED_SOURCE_HOPS.len());
+    for (index, hop) in hops.iter().enumerate() {
+        let to = hop["to"].as_str().unwrap();
+        let expected_keys = SELECTED_SOURCE_HOPS[index];
+        let boundaries = hop["affected_selected_boundaries"].as_array().unwrap();
+        let actual_keys = boundaries
+            .iter()
+            .map(|boundary| boundary["key"].as_str().unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(actual_keys, expected_keys);
+        let version = versions
+            .iter()
+            .find(|record| record["npm_version"] == to)
+            .unwrap();
+        for boundary in boundaries {
+            let key = boundary["key"].as_str().unwrap();
+            assert_eq!(boundary["artifact_sha256"], version["artifact_sha256"]);
+            assert_eq!(boundary["artifact_sha512"], version["artifact_sha512"]);
+            assert_eq!(boundary["source_commit"], version["slsa_git_commit"]);
+            assert_eq!(boundary["source_path"], selected[to][key]["path"]);
+            assert_eq!(boundary["source_sha256"], selected[to][key]["sha256"]);
+            assert_eq!(
+                boundary["method"],
+                "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
             );
         }
     }

@@ -43,7 +43,20 @@ The selected channel is npm `dist-tags.latest` for
 The GitHub TypeScript SDK is a separate product and does not identify this
 CLI package. GitHub tags `v0.25.0` through `v0.26.1` identify the source
 snapshots. npm `gitHead` is absent from the published metadata at `0.25.0`
-through `0.25.3` and equals the tag commit at `0.26.0` and `0.26.1`.
+through `0.25.3` and equals the tag commit at `0.26.0` and `0.26.1`. Null
+`gitHead` is not treated as tag-to-shipped parity. Each hop from `0.25.1`
+through `0.26.1` is bound by npm SLSA provenance v1: the attestation subject
+SHA-512 equals the retained tarball SHA-512, and
+`resolvedDependencies.gitCommit` is the GitHub Actions checkout of
+`.github/workflows/release.yml` on `refs/heads/main`. That SLSA commit
+differs from the version tag. Selected mapped TypeScript files at the SLSA
+commit are byte-identical to the frozen tag snapshots. The tag-to-SLSA tree
+delta is workspace `package.json` / `qwen-extension.json` version bumps
+only. The shipped package contains no `.map` files and no `sourcesContent`.
+Exact artifact SHA-256/SHA-512, SLSA payload digest, source commit, selected
+path, and selected SHA-256 are frozen in
+`source-to-shipped.json`. Research 375 remains the `0.25.0` identity
+record.
 
 The downloaded npm tarballs were inspected offline and never executed. The
 regenerated `0.25.0` inventory matches the frozen Research 375 digest
@@ -63,6 +76,18 @@ unpacked size, inventory digest, and source identity are frozen in
 | `0.25.3` | 2026-10-19 06:14:11.135 | 1,434 | `77c5db396d69f0849f66c96c003e5f0e52c82d64` | `e6e5d1b7ffd7442d16f6c0e3954bd5a69dbf81b0ae224f7fb6f3558d93be2742` | [`v0.25.3`](https://github.com/QwenLM/qwen-code/tree/v0.25.3) `b28b0d948fa28b89750ac5f1525b95e1746f47ab` |
 | `0.26.0` | 2026-10-21 23:25:58.355 | 1,333 | `637eb60389f651650d555c51444053574dfa9592` | `16dccd12a9ba433d0e7aa9a18637d2e340bf1a2a4ad01f0f3ca1eb5a69e5f2e1` | [`v0.26.0`](https://github.com/QwenLM/qwen-code/tree/v0.26.0) `ac97ce7a70d9b2ea5d62b357e3d9b0851423afc9` |
 | `0.26.1` | 2026-10-24 15:52:45.694 | 1,372 | `8cc9023bc4c085b35345351e77dea413ead9284e` | `9198d276e8583b789ee42a9c38b521d57818b94682d155b2b47741534c90fb73` | [`v0.26.1`](https://github.com/QwenLM/qwen-code/tree/v0.26.1) `b475278c4a300acebe6cfc990a9e1b1d18819bfc` |
+
+SLSA `resolvedDependencies.gitCommit` for the hops that needed source-to-shipped
+proof (npm `gitHead` null at `0.25.1`–`0.25.3`; recorded for `0.26.0`/`0.26.1`
+as well because that checkout also differs from the tag):
+
+| npm version | SLSA gitCommit | Tarball SHA-512 (attestation subject) | Tag-to-SLSA selected-source delta |
+| --- | --- | --- | --- |
+| `0.25.1` | `d9c6f8c0fe73ed4076e16e0feb750aba4a89c54a` | `e9c11bb5fc7852097577715d14b6bc7dcb06ea49c7b94507aaf0ec78bc46634e976a7f29ec571defe8392a55faf78cd7e26a3ff95879e801f14ffe11d79ce960` | none |
+| `0.25.2` | `e612bbf23cea82fd28fe1f51e5e63845b3642ed0` | `5a1cbcae90b7458db42f4eecab0b05a61fc1323cc20f11741cc9aac8897899f84254b0875a70ffb30548c1237f894ba0a845a79b61b966b97eab09dda6b37d91` | none |
+| `0.25.3` | `c4e8831dffd3a336c13e88c301727f1fc9f57eea` | `a04425c4b4501ea20c3bfce013d095a9eb19a4903a16ba6224c0cb0bcb65e1ce4046273260fe00e447ce2bf17fe9ce8d5ee5612cb362ae5a08180fa2bea6698b` | none |
+| `0.26.0` | `f036ab2360f30c694c58bb7c30ce4c1b9fe94c4f` | `2453be817a5cdc0541fac47ec9b4146f6d0315f04c801de9f85fab6ebbbac567a8a184e2c6a3a109aded3a3d200ab0df911c59148ce2207fb32f4e49800db157` | none |
+| `0.26.1` | `5122ec938d714bf57775fd06c786257520b8d19e` | `e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9` | none |
 
 ## Complete Published-Hop Ledger
 
@@ -164,7 +189,8 @@ qualified.
 ## Deterministic Mapping Proof
 
 `qwen_code_0_26_1_identity` freezes the identity document, the six
-inventories, the five hop diffs, and the reviewed safety-boundary sources.
+inventories, the five hop diffs, the reviewed safety-boundary sources, and
+the SLSA source-to-shipped ledger.
 It checks the production claim through `0.26.1`, rejects unpublished
 `0.25.4` and the preview and nightly tags, and leaves `0.26.2`
 `UnverifiedNewer`. `current_qwen_headless` runs the `0.26.1`

@@ -91,7 +91,8 @@ fn official_latest_extends_only_the_existing_acp_window() {
     );
     for version in VERSIONS {
         assert_eq!(
-            dependency_lock["resolved_version_by_published_hop"][*version], "0.16.1"
+            dependency_lock["resolved_version_by_published_hop"][*version],
+            "0.16.1"
         );
     }
 
@@ -202,7 +203,10 @@ fn every_selected_npm_tree_and_hop_set_is_reproducible() {
     }
 
     let darwin = &inventory["packages"]["@cline/cli-darwin-arm64"];
-    assert_eq!(darwin["versions"]["3.0.73"]["file_count"].as_u64(), Some(142));
+    assert_eq!(
+        darwin["versions"]["3.0.73"]["file_count"].as_u64(),
+        Some(142)
+    );
     assert_eq!(darwin["versions"]["3.0.74"]["file_count"].as_u64(), Some(2));
     assert_exact_strings(
         &darwin["hops"]["3.0.73_to_3.0.74"]["changed"],
@@ -216,7 +220,11 @@ fn every_selected_npm_tree_and_hop_set_is_reproducible() {
     );
     let removed = strings(&darwin["hops"]["3.0.73_to_3.0.74"]["removed"]);
     assert_eq!(removed.len(), 140);
-    assert!(removed.iter().any(|path| path == "extensions/plugin-sandbox-bootstrap.js"));
+    assert!(
+        removed
+            .iter()
+            .any(|path| path == "extensions/plugin-sandbox-bootstrap.js")
+    );
     assert!(removed.iter().any(|path| path.starts_with("cline-hub/")));
     assert_exact_strings(
         &inventory["packages"]["cline"]["hops"]["3.0.73_to_3.0.74"]["changed"],
@@ -276,7 +284,10 @@ fn platform_file_counts_and_provenance_share_each_wrapper_source_commit() {
             identity["source_identity"]["cli_tags"][*version]["tag"],
             format!("cli-v{version}")
         );
-        assert_eq!(wrapper["slsa"][0]["repository"], "https://github.com/cline/cline");
+        assert_eq!(
+            wrapper["slsa"][0]["repository"],
+            "https://github.com/cline/cline"
+        );
         assert_eq!(
             wrapper["slsa"][0]["workflow"],
             ".github/workflows/cli-publish.yml"
@@ -357,7 +368,10 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
             "apps/cli/src/acp/permissions.ts",
             "bun.lock",
         ] {
-            assert!(files.contains_key(required), "{version} contains {required}");
+            assert!(
+                files.contains_key(required),
+                "{version} contains {required}"
+            );
         }
         let mut tree = BTreeMap::new();
         for (path, metadata) in files {
@@ -388,7 +402,9 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
     assert!(source_trees["3.0.71"].contains_key("apps/cli/src/acp/reasoning.test.ts"));
 
     let source_hops = source["hops"].as_array().expect("source hop ledger");
-    let protocol_hops = protocol["published_hops"].as_array().expect("classified hops");
+    let protocol_hops = protocol["published_hops"]
+        .as_array()
+        .expect("classified hops");
     assert_eq!(source_hops.len(), VERSIONS.len() - 1);
     assert_eq!(protocol_hops.len(), source_hops.len());
     for (index, (source_hop, protocol_hop)) in source_hops.iter().zip(protocol_hops).enumerate() {
@@ -430,7 +446,11 @@ fn selected_source_hops_and_route_classifications_match_exact_file_sets() {
             delta_paths
         );
         for classification in classifications.values() {
-            assert!(classification.as_str().is_some_and(|value| !value.is_empty()));
+            assert!(
+                classification
+                    .as_str()
+                    .is_some_and(|value| !value.is_empty())
+            );
         }
     }
 }

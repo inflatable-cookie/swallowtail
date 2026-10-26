@@ -58,6 +58,10 @@ name = "consumer_route_projection"
 path = "tests/consumer_route_projection.rs"
 
 [[test]]
+name = "cursor_agent_release_identity"
+path = "tests/cursor_agent_release_identity.rs"
+
+[[test]]
 name = "cursor_agent_2026_09_10_identity"
 path = "tests/cursor_agent_2026_09_10_identity.rs"
 
@@ -80,3 +84,7 @@ path = "tests/cursor_agent_2026_10_01_acp_identity.rs"
 [[test]]
 name = "cursor_agent_headless_2026_10_01_identity"
 path = "tests/cursor_agent_headless_2026_10_01_identity.rs"
+
+[[test]]
+name = "cursor_agent_acp_headless_2026_10_22_identity"
+path = "tests/cursor_agent_acp_headless_2026_10_22_identity.rs"

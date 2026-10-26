@@ -45,8 +45,9 @@ binary/runtime internals bounded by reachability.
 
 Owning adaptation:
 `antigravity.catalogue.artifact-authority-through-current-official` on the
-`version-currentness` Queue lane. This record is the identity freeze for
-that task. The adaptation owns qualifying the then-current official
+`version-currentness` Queue lane, Queue lead
+`d2a4396e-b8eb-4d4f-9658-ac59e4123de1`. This record is the identity freeze
+for that task. The adaptation owns qualifying the then-current official
 `antigravity.catalogue` stable. It must not invent support from notes,
 writer-stride identity, or metadata-only platform rows (Q-005; Contract 029
 Artifact Authority). Interior unpublished `1.3.7`/`1.3.8`/`1.3.9` must not

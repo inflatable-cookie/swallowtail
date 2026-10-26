@@ -12,11 +12,11 @@ pub const CLAUDE_CODE_HEADLESS_AXIS: &str = "claude-code.headless-stream-json";
 /// Oldest qualified native Claude Code headless version.
 pub const CLAUDE_CODE_HEADLESS_BASELINE_VERSION: &str = "2.1.220";
 /// Most recent qualified native Claude Code headless version.
-pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.294";
+pub const CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "2.1.310";
 /// Unpublished stables inside the semantic headless window.
 const HEADLESS_UNPUBLISHED_GAPS: &[&str] = &[
     "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-    "2.1.279",
+    "2.1.279", "2.1.297", "2.1.298",
 ];
 
 const HEADLESS_BEHAVIOR_V1: &str = "claude-code.headless.stream-json.v1";
@@ -186,6 +186,8 @@ mod tests {
         }
         for published in [
             "2.1.287", "2.1.288", "2.1.289", "2.1.290", "2.1.291", "2.1.292", "2.1.293", "2.1.294",
+            "2.1.295", "2.1.296", "2.1.299", "2.1.300", "2.1.301", "2.1.302", "2.1.303", "2.1.304",
+            "2.1.305", "2.1.306", "2.1.307", "2.1.308", "2.1.309", "2.1.310",
         ] {
             assert!(claim.supports(&version(published)), "{published}");
         }
@@ -199,8 +201,10 @@ mod tests {
         assert!(!claim.permits(&version("2.1.262")));
         assert!(!claim.permits(&version("2.1.264")));
         assert!(!claim.permits(&version("2.1.279")));
+        assert!(!claim.permits(&version("2.1.297")));
+        assert!(!claim.permits(&version("2.1.298")));
         assert!(matches!(
-            claim.assess(&version("2.1.295")),
+            claim.assess(&version("2.1.311")),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
         let InterfaceCompatibilityAssessment::Qualified(v1) = claim.assess(&version("2.1.286"))
@@ -209,9 +213,9 @@ mod tests {
         };
         assert_eq!(v1.support_status(), InterfaceSupportStatus::Deprecated);
         assert_eq!(v1.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V1);
-        let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("2.1.294"))
+        let InterfaceCompatibilityAssessment::Qualified(v2) = claim.assess(&version("2.1.310"))
         else {
-            panic!("2.1.294 must remain qualified");
+            panic!("2.1.310 must remain qualified");
         };
         assert_eq!(v2.support_status(), InterfaceSupportStatus::Maintained);
         assert_eq!(v2.behavior_revision().as_str(), HEADLESS_BEHAVIOR_V2);

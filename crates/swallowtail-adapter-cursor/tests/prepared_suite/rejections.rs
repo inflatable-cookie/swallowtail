@@ -74,28 +74,37 @@ fn ask_selection_rejects_read_write_authority_at_input_construction() {
 
 #[test]
 fn ask_selection_rejects_unqualified_releases_at_preparation() {
-    let CursorPreparedIntegration::Headless(headless) = prepare_release(
-        CursorPreparedDriver::Headless,
-        host_id(),
+    for release in [
         "2026.10.02-a1b2c3d\n",
-    )
-    .expect("newer unverified release still prepares the route") else {
-        panic!("headless route remains explicit");
-    };
-
-    headless
-        .prepare_run(headless_input(ResourceAccess::Read))
-        .expect("default read run still prepares on a newer release");
-
-    let failure = headless
-        .prepare_run(
-            headless_input(ResourceAccess::Read)
-                .with_read_mode(CursorHeadlessReadMode::Ask)
-                .expect("ask selection is admitted for read authority"),
+        "2026.10.14-941492e\n",
+        "2026.10.16-e3cb207\n",
+        "2026.10.18-ea085cb\n",
+        "2026.10.19-6bbf2c4\n",
+        "2026.10.22-27dcf5f\n",
+    ] {
+        let CursorPreparedIntegration::Headless(headless) = prepare_release(
+            CursorPreparedDriver::Headless,
+            host_id(),
+            release,
         )
-        .expect_err("ask rejects a newer unverified release");
-    assert_eq!(
-        failure.diagnostic().safe().code(),
-        "swallowtail.cursor.headless.ask_mode_unqualified"
-    );
+        .expect("newer unverified release still prepares the route") else {
+            panic!("headless route remains explicit");
+        };
+
+        headless
+            .prepare_run(headless_input(ResourceAccess::Read))
+            .expect("default read run still prepares on a newer release");
+
+        let failure = headless
+            .prepare_run(
+                headless_input(ResourceAccess::Read)
+                    .with_read_mode(CursorHeadlessReadMode::Ask)
+                    .expect("ask selection is admitted for read authority"),
+            )
+            .expect_err("ask rejects a newer unverified release");
+        assert_eq!(
+            failure.diagnostic().safe().code(),
+            "swallowtail.cursor.headless.ask_mode_unqualified"
+        );
+    }
 }

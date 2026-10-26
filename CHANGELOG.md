@@ -16,6 +16,14 @@ annotated Git tags from the canonical repository.
   `antigravity.catalogue.artifact-authority-through-current-official` on
   the `version-currentness` lane owns qualifying the then-current official
   stable. `antigravity.headless` stays at exact `1.2.11`. See Research 449.
+- qualify `claude-code.headless` and, separately, `claude-code.response-only`
+  through official stable `2.1.310`. Headless keeps deprecated
+  `stream-json.v1` on `2.1.220..=2.1.286` and maintained `stream-json.v2` on
+  `2.1.287..=2.1.310`. Response-only keeps its three segments and extends
+  maintained `stream-json.v3` from `2.1.293` through `2.1.310`. Both stay
+  `AllowUnverified`, keep their baselines and claim ids, and now exclude
+  unpublished `2.1.297` and `2.1.298`. `2.1.311` is `UnverifiedNewer`. The
+  optional maximum-turn gate stays on the Research 226 set. See Research 445.
 - qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).
   The maintained segment is `0.66.0..=0.96.0`. Baseline `0.53.0`, claim id
@@ -32,11 +40,19 @@ annotated Git tags from the canonical repository.
   Keep the baseline, claim, behavior revision, prior points, and gaps. Add
   `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
   `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. The superseded same-date
-  build `2026.10.14-0f9edde` stays rejected. ACP and headless remain at
-  `2026.10.01-14929f9`. The `models` command, account options, row mapping,
-  failure boundary, and process lifecycle are unchanged. No archive
-  execution, authenticated catalogue, provider prompt, credential use,
-  installation, or host update occurred.
+  build `2026.10.14-0f9edde` stays rejected. The `models` command, account
+  options, row mapping, failure boundary, and process lifecycle are unchanged.
+  No archive execution, authenticated catalogue, provider prompt, credential
+  use, installation, or host update occurred.
+- retain `cursor-agent.acp` and `cursor-agent.headless` through
+  `2026.10.01-14929f9`. Research 450 retains newer artifact identity evidence,
+  but help/options, wire summaries, and SDK versions do not close the selected
+  handler, permission, cancellation, validation, and runtime impact gates.
+  Qualification through `2026.10.22-27dcf5f` needs the route-specific proof
+  described there. Baselines, claim ids, behavior revisions, historical gaps,
+  and `AllowUnverified` stay. Catalogue remains independently qualified through
+  `2026.10.22-27dcf5f` (Research 451); its exact-build gate still rejects
+  superseded `2026.10.14-0f9edde`.
 - qualify `opencode.http` and `opencode.acp` through official stable `1.19.4`
   (Research 453). Both claims stay `AllowUnverified` and unflattened.
   `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and adds

@@ -1,0 +1,90 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_0_40_1_and_0_40_11": true,
+  "prior_research_418_corpus_preserved": true,
+  "compatible_points": [
+    "0.40.0",
+    "0.40.1",
+    "0.40.2",
+    "0.40.3",
+    "0.40.4",
+    "0.40.5",
+    "0.40.6",
+    "0.40.7",
+    "0.40.8",
+    "0.40.9",
+    "0.40.10",
+    "0.40.11"
+  ],
+  "unverified_newer_synthetic": "0.40.12",
+  "later_unverified_synthetic_still_above_ceiling": "0.41.0",
+  "selected_request_shapes": {
+    "show": ["model"],
+    "show_with_runner": ["model", "runner"],
+    "chat": ["model", "messages", "options", "stream"],
+    "runner_selector_sent_when_matching_row_has_runner": true,
+    "runner_selector_omitted_when_row_has_no_runner": true,
+    "all_manifests_sent": false
+  },
+  "selected_struct_text_identical_0_40_1_through_0_40_11": [
+    "ChatRequest",
+    "ChatResponse",
+    "Message",
+    "ShowRequest",
+    "ListResponse",
+    "ListModelResponse",
+    "GenerateRequest",
+    "ModelDetails"
+  ],
+  "show_response_additive_fields": {
+    "0.40.7": ["template_source"],
+    "0.40.11": ["voices"]
+  },
+  "tags_preferred_child_from": "0.40.2",
+  "migration_call_commented_from": "0.40.3",
+  "migration_source_byte_identical": true,
+  "classification_ledger_sha256": "11e5948c6e040db9d3c75354874b4f782e6c8e32c0bcd5441677c01069c74eff",
+  "byte_identical_selected_files": {
+    "compatmigrate/migrate.go": "d6a5ce939218e4f6092b30322cb39b1fc9dad35e",
+    "manifest/paths.go": "cf3bfa2569bf1a3fbc69ef12455566e259515a2d"
+  },
+  "selected_path_blobs": {
+    "api/types.go": {
+      "v0.40.1": "e19de536fdaf350af615f24b52a2af9fedf44e54",
+      "v0.40.11": "1aa71342a372fc2a0902cc55f43afe91c3a55d06"
+    },
+    "server/model_list.go": {
+      "v0.40.1": "9976b4b6688c8a6261f154746cc5abb34fc61d48",
+      "v0.40.2_through_v0.40.11": "6be2862816f5ba2d6101812a1a03ee98fc079b8d"
+    },
+    "server/routes.go": {
+      "v0.40.1": "addc6c189b2455554a00b1a08f906a04945b4551",
+      "v0.40.11": "fdf7a18f954ab7c249bb0e95a859b399105c7289"
+    }
+  },
+  "selected_hop_classification": {
+    "0.40.1_to_0.40.2": "model_list.go lists only the locally preferred manifest-list child and skips the downgrade-guard tag. Row fields stay. routes.go, types.go, and migrate.go stay byte-identical.",
+    "0.40.2_to_0.40.3": "routes.go comments out StartLocalCompatibilityMigration. Native handlers otherwise stay. migrate.go stays byte-identical.",
+    "0.40.3_to_0.40.4": "Chat schedules an already resolved runner-pinned model. Message assembly and harmony parser selection keep the same wire. System One types and routes are unselected. Store verification changes do not rename catalogue fields.",
+    "0.40.4_to_0.40.5": "routes.go only wraps unselected /v1/systemone. Selected structs stay byte-identical.",
+    "0.40.5_to_0.40.6": "No selected api, server route, list, image, schedule, or manifest file changes.",
+    "0.40.6_to_0.40.7": "Show gains omitempty template_source plus renderer and parser copies. The adapter ignores them. Chat NDJSON is unchanged.",
+    "0.40.7_to_0.40.8": "Flint model-family files only. Selected route files stay byte-identical.",
+    "0.40.8_to_0.40.9": "Speech capability, /v1/audio/speech, and ps context length 0 for speech models are unselected. Native chat rejection is unchanged apart from a log level.",
+    "0.40.9_to_0.40.10": "Safetensors show and Gemma renderer edits stay off the GGUF text fields the adapter reads.",
+    "0.40.10_to_0.40.11": "Show gains omitempty voices only for speech models. Chat, list, and version structs stay the same."
+  },
+  "behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+  "prior_behavior_revision": "ollama.native-text-v1",
+  "manifest_list_and_runner_mapping_unchanged": true,
+  "new_public_swallowtail_operation": false,
+  "new_public_swallowtail_capability": false,
+  "provider_prompt_sent": false,
+  "attached_server_started": false
+}

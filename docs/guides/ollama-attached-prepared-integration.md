@@ -86,23 +86,28 @@ observations, selected detail, route selection, configured instance, access
 provenance, and low-level driver escape hatch.
 
 Deprecated `ollama.native-text-v1` points are `0.14.0..=0.34.4` and
-`0.35.0..=0.35.1`. Maintained `0.40.0..=0.40.1` uses
+`0.35.0..=0.35.1`. Maintained `0.40.0..=0.40.11` uses
 `ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
 stay excluded; unpublished `0.34.5` and `0.35.2` through `0.39.x` remain
-interior incompatibilities. Semantic prereleases fail. Synthetic `0.41.0` is
+interior incompatibilities. Semantic prereleases fail. Synthetic `0.40.12` is
 the first visible `UnverifiedNewer` point under `AllowUnverified`.
 
-From `0.40.0`, chat scheduling can start provider-owned background local
-compatibility migration for supported legacy GGUF models. Later `/api/tags`
-responses can return one row per child runner for the same display name. The
-adapter binds the preflight tag and digest, pins `ggml` or `llamacpp` from the
-matching row, and treats extra same-tag rows as sibling observations. It skips
-unmapped non-gguf, empty-family, and unknown-runner rows rather than failing
-the catalogue. Empty family fails only for the selected tag and digest. It does
-not treat a new runner row as the old artifact. Preparation still performs no
-inference or model-store write. See Contract 031 for the ruling and
-Research 418 for the adaptation; Research 379 remains the historical
-`0.40.0` stop.
+From `0.40.0` through `0.40.2`, chat scheduling can start provider-owned
+background local compatibility migration for supported legacy GGUF models.
+From `0.40.3` through `0.40.11` that call is commented out.
+`compatmigrate/migrate.go` stays byte-identical and is not invoked. At
+`0.40.0` and `0.40.1`, `/api/tags` can return one row per child runner for the
+same display name. From `0.40.2`, a manifest list contributes only the locally
+preferred child, and the llamacpp downgrade-guard tag is omitted. The row
+schema is unchanged. The adapter binds the preflight tag and digest, pins
+`ggml` or `llamacpp` from the matching row, and treats extra same-tag rows as
+sibling observations. It skips unmapped non-gguf, empty-family, and
+unknown-runner rows rather than failing the catalogue. Empty family fails only
+for the selected tag and digest. It does not treat a new runner row as the old
+artifact. Preparation still performs no inference or model-store write. See
+Contract 031 for the ruling, Research 418 for the `0.40.1` adaptation, and
+Research 448 for the extension through `0.40.11`. Research 379 remains the
+historical `0.40.0` stop.
 
 ## Observe Inventory
 

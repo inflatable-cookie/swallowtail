@@ -6,14 +6,34 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
+  extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).
+  The maintained segment is `0.66.0..=0.96.0`. Baseline `0.53.0`, claim id
+  `claude-agent.acp.window-2`, the seven milestones, exclusions `0.52.0` and
+  `0.58.0`, and `AllowUnverified` stay. Published `0.97.0` remains
+  `UnverifiedNewer`. A protocolVersion 1 client still gets the v1 agent. HTTP
+  MCP live honouring stays exact `0.79.0` and `0.81.2`. The repo-local pin
+  stays `0.81.2`. Claude Code and `claude-agent.sdk` claims stay on their
+  existing bounds.
+- qualify only `cursor-agent.catalogue` through official ACP registry stable
+  `2026.10.22-27dcf5f`, after every published registry hop following
+  `2026.10.01-14929f9`. Research 451 freezes the Darwin ARM64 and Linux x64
+  archives, complete package trees, and the selected `models` modules.
+  Keep the baseline, claim, behavior revision, prior points, and gaps. Add
+  `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
+  `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. The superseded same-date
+  build `2026.10.14-0f9edde` stays rejected. The `models` command, account
+  options, row mapping, failure boundary, and process lifecycle are unchanged.
+  No archive execution, authenticated catalogue, provider prompt, credential
+  use, installation, or host update occurred.
 - qualify `cursor-agent.acp` and `cursor-agent.headless` through official ACP
   registry stable `2026.10.22-27dcf5f` (Research 450). Both keep their claim
   ids, behavior revisions, baseline `2026.07.01-41b2de7`, prior exact points,
   gaps, and `AllowUnverified` posture. The added exact points are
   `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
   `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. Same-date registry build
-  `2026.10.14-0f9edde` stays rejected. `cursor-agent.catalogue` stays at
-  `2026.10.01-14929f9`.
+  `2026.10.14-0f9edde` stays rejected. Catalogue is a separate claim
+  (Research 451).
 - qualify `opencode.http` and `opencode.acp` through official stable `1.19.4`
   (Research 453). Both claims stay `AllowUnverified` and unflattened.
   `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and adds

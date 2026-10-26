@@ -29,7 +29,8 @@ Swallowtail does not install Cursor, perform login, read its credential store,
 or search PATH. Local subscription state crosses the boundary only as safe
 readiness evidence; no credential reference enters the prepared plan.
 
-The catalogue qualifies twelve exact calendar/build pairs:
+Catalogue, ACP, and headless each independently qualify the same seventeen
+exact calendar/build pairs:
 
 - `2026.07.01-41b2de7`
 - `2026.07.23-e383d2b`
@@ -43,19 +44,18 @@ The catalogue qualifies twelve exact calendar/build pairs:
 - `2026.09.26-dd393fe`
 - `2026.09.28-64d2043`
 - `2026.10.01-14929f9`
-
-Catalogue stays at those twelve points (Research 393). ACP and headless keep
-the same twelve and add five exact registry builds (Research 450):
-
 - `2026.10.14-941492e`
 - `2026.10.16-e3cb207`
 - `2026.10.18-ea085cb`
 - `2026.10.19-6bbf2c4`
 - `2026.10.22-27dcf5f`
 
-The earlier same-date registry build `2026.10.14-0f9edde` is rejected.
-Calendar gaps are not inferred, and a qualified date with a different opaque
-build is rejected. Later dates remain visibly unverified newer on each route.
+Research 393 and 451 qualify catalogue through `2026.10.22-27dcf5f`. Research
+395 and 450 qualify ACP, and Research 399 and 450 qualify headless, through
+the same exact builds. The earlier same-date registry build
+`2026.10.14-0f9edde` is rejected. Calendar gaps are not inferred, and a
+qualified date with a different opaque build is rejected. Later dates remain
+visibly unverified newer on each route.
 
 ## Prepare The Installation
 

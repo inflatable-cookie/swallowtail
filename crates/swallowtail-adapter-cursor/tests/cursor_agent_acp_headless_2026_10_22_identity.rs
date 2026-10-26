@@ -365,7 +365,10 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     ] {
         assert!(acp.supports(&version(release)), "{release}");
         assert!(headless.supports(&version(release)), "{release}");
-        assert!(!catalogue.supports(&version(release)), "{release}");
+        assert!(
+            catalogue.supports(&version(release)),
+            "catalogue independently qualifies {release}"
+        );
     }
     assert!(cursor_agent_release_binding("2026.10.22-27dcf5f").is_some());
     assert!(cursor_agent_release_binding("2026.10.14-941492e").is_some());
@@ -373,6 +376,7 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     for gap in ["2026-10-02", "2026-10-15", "2026-10-21"] {
         assert!(!acp.permits(&version(gap)), "{gap}");
         assert!(!headless.permits(&version(gap)), "{gap}");
+        assert!(!catalogue.permits(&version(gap)), "{gap}");
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
         acp.assess(&version("2026-10-23"))
@@ -381,9 +385,9 @@ fn hop_ledgers_are_mutation_sensitive_and_claims_follow_the_decision() {
     };
     assert_eq!(newer.latest_qualified().as_str(), "2026-10-22");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        catalogue.assess(&version("2026-10-22"))
+        catalogue.assess(&version("2026-10-23"))
     else {
-        panic!("catalogue stays unverified newer above 2026-10-01");
+        panic!("later catalogue dates stay unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "2026-10-01");
+    assert_eq!(newer.latest_qualified().as_str(), "2026-10-22");
 }

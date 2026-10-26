@@ -195,8 +195,8 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.87.0`, excluding `0.58.0`, over
-  ACP v1 stdio (Research 373); stable newer versions remain visible and
+  sessions for Claude Agent ACP `0.53.0..=0.96.0`, excluding `0.58.0`, over
+  ACP v1 stdio (Research 446); stable newer versions remain visible and
   unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
@@ -481,12 +481,13 @@ OpenHands adds a package without a production route.
   private task-control behavior revision without adding public task-control
   authority, and maintained `1.0.4..=1.0.41` bind `grok-4.6`
 - `swallowtail-adapter-cursor` keeps separate catalogue, ACP, and headless
-  claims. Catalogue stays at its twelve exact points through
-  `2026.10.01-14929f9` (Research 393). ACP and headless keep those twelve and
-  add `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
-  `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f` (Research 450). The earlier
-  same-date registry build `2026.10.14-0f9edde` stays rejected. Each route
-  keeps its own claim and exact points; calendar gaps are not inferred. The three routes are:
+  claims. Catalogue, ACP, and headless each independently qualify the exact
+  points through `2026.10.22-27dcf5f` (Research 393 and 451 for catalogue;
+  Research 395 and 450 for ACP; Research 399 and 450 for headless), including
+  `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
+  `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. The earlier same-date
+  registry build `2026.10.14-0f9edde` stays rejected. Each route keeps its own
+  claim and exact points; calendar gaps are not inferred. The three routes are:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
   headless route binds an explicit model and workspace authority, accepts typed
@@ -1060,7 +1061,18 @@ session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
 `0.87.0` add private behavior revisions without changing deletion truth.
-Later stable versions remain visible and unverified.
+Research 446 carries the same consumer close and stored-delete results through
+`0.96.0`. From `0.89.0`, `closeSession` of a session that is not loaded returns
+an empty success. The same hop already routes selected non-AIR
+`session/delete` through added `dist/session-index/connection.js` to Agent SDK
+`deleteSession`; `service.js` is not selected then. Through `0.90.0`, delete of
+an absent transcript still throws for that client. From `0.91.0`,
+`dist/session-index/connection.js` calls `deleteSessionIfStored` and
+`service.js` swallows the SDK not-found, so `session/delete` of an absent
+transcript returns an empty success through `0.96.0`. Live close of a session
+in memory and delete of a stored transcript still return an empty object. The
+empty close or unstored-delete success adds no stronger deletion claim. Later
+stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
 requires independently advertised close and delete capabilities before session

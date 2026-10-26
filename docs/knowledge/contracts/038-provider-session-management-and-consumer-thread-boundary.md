@@ -208,11 +208,14 @@ tagged handler, test, ACP SDK, and Agent SDK evidence qualifies:
 - through `0.88.0`, provider rejection for a missing or repeated close or delete
 - from `0.89.0`, an empty success for `closeSession` of a session that is not
   loaded
-- delete of an absent transcript still calls Agent SDK `deleteSession` and
-  throws for the selected non-AIR client, on `0.88.0` and `0.89.0` alike
+- through `0.90.0`, delete of an absent transcript still calls Agent SDK
+  `deleteSession` and throws for the selected non-AIR client
+- from `0.91.0`, `deleteSessionIfStored` returns an empty success for an
+  absent transcript on the selected non-AIR client
 
 Live close of a session in memory and delete of a stored transcript still
-return an empty object. The empty close success is not `ProviderHardDeleted`.
+return an empty object. The empty close or unstored-delete success is not
+`ProviderHardDeleted`.
 
 This classification does not claim secure erasure or deletion of Anthropic API
 service data, account analytics, logs, or backups. It is not

@@ -345,7 +345,7 @@
       "source_sha256": "2801cde1baea8dd2e69e0d9903cfeee1097750b00d52147cfc48368f504935ee",
       "classification": "qualified",
       "profile": "0.96.0-guarantee",
-      "activity_delta": "gateway-narrowing-unmapped"
+      "activity_delta": "unstored-delete-empty-success-and-gateway-narrowing-unmapped"
     },
     {
       "version": "0.92.0",

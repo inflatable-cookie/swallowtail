@@ -19,8 +19,8 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
     let inventory: Value = serde_json::from_str(DIST_INVENTORY).expect("inventory is valid JSON");
 
     assert_eq!(fingerprint(IDENTITY), 0x8534_21db_4a48_71f7);
-    assert_eq!(fingerprint(PROTOCOL), 0x04af_ed50_c200_15fe);
-    assert_eq!(fingerprint(DIST_INVENTORY), 0x0233_10da_6b92_6b88);
+    assert_eq!(fingerprint(PROTOCOL), 0x73a5_7e6f_b50b_1b6b);
+    assert_eq!(fingerprint(DIST_INVENTORY), 0x21df_e7b1_f8df_472b);
     assert_keys(
         &identity,
         &[
@@ -204,8 +204,12 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
         "0.89.0"
     );
     assert_eq!(
-        protocol["stable_schema_and_lifecycle"]["unstored_delete_still_throws_via_agent_sdk_deleteSession"],
-        true
+        protocol["stable_schema_and_lifecycle"]["unstored_delete_throws_via_agent_sdk_deleteSession_through"],
+        "0.90.0"
+    );
+    assert_eq!(
+        protocol["stable_schema_and_lifecycle"]["unstored_delete_returns_empty_success_via_deleteSessionIfStored_from"],
+        "0.91.0"
     );
     assert_eq!(
         protocol["stable_schema_and_lifecycle"]["no_public_lifecycle_break"],
@@ -288,11 +292,11 @@ fn identity_and_claim_qualify_current_0_96_0_with_exact_hop_evidence() {
         ("0.88.0", "0.89.0", 42, 0, 34, 18, 58),
         ("0.89.0", "0.89.1", 0, 0, 16, 1, 15),
         ("0.89.1", "0.90.0", 6, 0, 51, 17, 40),
-        ("0.90.0", "0.91.0", 3, 0, 44, 15, 32),
+        ("0.90.0", "0.91.0", 3, 0, 44, 17, 30),
         ("0.91.0", "0.92.0", 6, 0, 32, 10, 28),
-        ("0.92.0", "0.93.0", 0, 0, 15, 4, 11),
-        ("0.93.0", "0.94.0", 0, 0, 129, 56, 73),
-        ("0.94.0", "0.95.0", 6, 0, 53, 16, 43),
+        ("0.92.0", "0.93.0", 0, 0, 15, 6, 9),
+        ("0.93.0", "0.94.0", 0, 0, 129, 58, 71),
+        ("0.94.0", "0.95.0", 6, 0, 53, 17, 42),
         ("0.95.0", "0.96.0", 0, 0, 15, 7, 8),
     ];
     for (delta, (from, to, added, removed, changed, mapped, internal)) in inventory["file_deltas"]

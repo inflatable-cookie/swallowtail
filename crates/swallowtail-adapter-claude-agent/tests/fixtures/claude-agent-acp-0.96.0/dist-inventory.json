@@ -3149,21 +3149,21 @@
           "before_sha256": "40a6adc739b1306a5fef28cf9431e4133400e03dfecec9540a61a446ee5fac76",
           "after_sha256": "996de52ab68b45d8ce7c6ff0a516d6d2e12ea6146bff05055a30abff27906120",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "7dc7659c003f0a7282c3127cef1cd42693e5164b82349656ec206ad005d02a47",
           "after_sha256": "8d17889af68cd2090a0c8bc1a59841a8ce4edb6fba919f0ea0d28090cd719d3d",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "7d0d20d1c558c68fafeaf81f4d6f92f86ececb7c28b4679d0873b1b29b4ac8e5",
           "after_sha256": "790992f7c7387d78a5324fcfcbf9eb79a811ebd68eb3d6161a93de34b28327a0",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/async-tasks.d.ts.map",
@@ -3523,21 +3523,21 @@
           "before_sha256": "996de52ab68b45d8ce7c6ff0a516d6d2e12ea6146bff05055a30abff27906120",
           "after_sha256": "0c2f5985fb8a67fabe63883548c3dc207974ac871456fa4ae61793ae9356aacf",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "8d17889af68cd2090a0c8bc1a59841a8ce4edb6fba919f0ea0d28090cd719d3d",
           "after_sha256": "d4108c7f3a879efbf5a5894b1119f5dc5f5485ba30675064fc5d1234dfbc6cbe",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "790992f7c7387d78a5324fcfcbf9eb79a811ebd68eb3d6161a93de34b28327a0",
           "after_sha256": "f00fea811d7144360a6e70bc87e38e36d00a807d15825a8179e2458520b71784",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/air-extension.d.ts",
@@ -3935,21 +3935,21 @@
           "before_sha256": "0c2f5985fb8a67fabe63883548c3dc207974ac871456fa4ae61793ae9356aacf",
           "after_sha256": "0fbbec91d4aada67322f08c7eb2fdf0361dae4d0801e9555e963202fa48ff2df",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "d4108c7f3a879efbf5a5894b1119f5dc5f5485ba30675064fc5d1234dfbc6cbe",
           "after_sha256": "bf7843a9eae2b72efd22f5dfc1add4f14988aa3563d1d5dbf46ba9d1ef405d3f",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "f00fea811d7144360a6e70bc87e38e36d00a807d15825a8179e2458520b71784",
           "after_sha256": "e3bbdc3399a2d702839d6e350b5b798fbe6e61d9ef916d38ccc1bc3abab15e3e",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-subagents.d.ts",
@@ -4320,21 +4320,21 @@
           "before_sha256": "0fbbec91d4aada67322f08c7eb2fdf0361dae4d0801e9555e963202fa48ff2df",
           "after_sha256": "a5a42e96a592a20885b39e9528821664fe3ad47f42062f4597c5d1c4010560f6",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "bf7843a9eae2b72efd22f5dfc1add4f14988aa3563d1d5dbf46ba9d1ef405d3f",
           "after_sha256": "4183684417b2c1fb2d1d15a69b75dc967b4a016a789306c6fb36174b20ef352c",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "e3bbdc3399a2d702839d6e350b5b798fbe6e61d9ef916d38ccc1bc3abab15e3e",
           "after_sha256": "2801cde1baea8dd2e69e0d9903cfeee1097750b00d52147cfc48368f504935ee",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/air-extension.d.ts",
@@ -4396,8 +4396,8 @@
           "path": "dist/session-index/connection.js",
           "before_sha256": "fdf8f844ec41fbef7b00ebfa794a23784fb7e0e569edd53f24290fdadf637ab6",
           "after_sha256": "379e8aa5484376f050f857359c0e0f4cd83d5d06669ae6fc212cc6917b24b56d",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/list-subscriptions.d.ts.map",
@@ -4431,8 +4431,8 @@
           "path": "dist/session-index/service.js",
           "before_sha256": "5e95f39d64b29744a71ea94ffd203d33e3eacd61ac2e85fddcb6e7b665fec034",
           "after_sha256": "946b843b2814da5365361f07b2709ab07759fb53994e4c753a14af91ebb070f0",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/session-index.d.ts",
@@ -4667,21 +4667,21 @@
           "before_sha256": "a5a42e96a592a20885b39e9528821664fe3ad47f42062f4597c5d1c4010560f6",
           "after_sha256": "af41d53a5f6c6d8d621a824b978d804787cc452099281a483ba8971b17f83367",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "4183684417b2c1fb2d1d15a69b75dc967b4a016a789306c6fb36174b20ef352c",
           "after_sha256": "49769656e3681e56418f42100799067fc562e725e5deac31819b84bcea3553f8",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "2801cde1baea8dd2e69e0d9903cfeee1097750b00d52147cfc48368f504935ee",
           "after_sha256": "8e2fca3efc966c4ff78047c3aa49189ea5628b95412917a566a2e2ce62257276",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/air-extension.d.ts",
@@ -4900,21 +4900,21 @@
           "before_sha256": "af41d53a5f6c6d8d621a824b978d804787cc452099281a483ba8971b17f83367",
           "after_sha256": "5d243dc69b80852f894adf05d240437c75337a64e5bc59a2804cff735aee358b",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "49769656e3681e56418f42100799067fc562e725e5deac31819b84bcea3553f8",
           "after_sha256": "14a7854e173aade92a2824e495b85b876b2628499c45feba6c151262d2637930",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "8e2fca3efc966c4ff78047c3aa49189ea5628b95412917a566a2e2ce62257276",
           "after_sha256": "cc9c6a29633a0219077228733480d15f4c79ce9946b546c66752874a28069a15",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/connection.d.ts",
@@ -4934,8 +4934,8 @@
           "path": "dist/session-index/connection.js",
           "before_sha256": "379e8aa5484376f050f857359c0e0f4cd83d5d06669ae6fc212cc6917b24b56d",
           "after_sha256": "59306513e61eae0e049bd260500f57ba17c6d0d1b3cf0379516b51f8dbc866f6",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/list-subscriptions.d.ts",
@@ -4976,8 +4976,8 @@
           "path": "dist/session-index/service.js",
           "before_sha256": "946b843b2814da5365361f07b2709ab07759fb53994e4c753a14af91ebb070f0",
           "after_sha256": "100ca75ed89bd7b099f944ac503a706099a671c855299fbd4346f5b16f3e7f59",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/v2/agent.d.ts.map",
@@ -5014,21 +5014,21 @@
           "before_sha256": "5d243dc69b80852f894adf05d240437c75337a64e5bc59a2804cff735aee358b",
           "after_sha256": "471e0afe135aadc0853841ac99880a182242e359cbe514927eff5eaccdd85051",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "14a7854e173aade92a2824e495b85b876b2628499c45feba6c151262d2637930",
           "after_sha256": "51fb0333943932c5d997fac987b46f32ad930821b539e6b23250c2355a7e3f73",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "cc9c6a29633a0219077228733480d15f4c79ce9946b546c66752874a28069a15",
           "after_sha256": "4fc4f4902ad4859666620635963abec6eb87263cf78b9fd4adb11708620745a4",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-subagents.d.ts",
@@ -5440,8 +5440,8 @@
           "path": "dist/session-index/connection.js",
           "before_sha256": "59306513e61eae0e049bd260500f57ba17c6d0d1b3cf0379516b51f8dbc866f6",
           "after_sha256": "e011037ba86b639c4efbd4a0f45be6d7279045ee9a2896ebc4d5d8f426fb3d01",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/list-subscriptions.d.ts",
@@ -5482,8 +5482,8 @@
           "path": "dist/session-index/service.js",
           "before_sha256": "100ca75ed89bd7b099f944ac503a706099a671c855299fbd4346f5b16f3e7f59",
           "after_sha256": "f5921526d67f9c9f95a69de21d479b51e1f65bc05bdfa7fbc3f453cbe180d600",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/session-info.d.ts",
@@ -5970,21 +5970,21 @@
           "before_sha256": "471e0afe135aadc0853841ac99880a182242e359cbe514927eff5eaccdd85051",
           "after_sha256": "0a91660e1a2c8c4e54e0e77f03f4f2313eaec8894ae3975178113519a8667c48",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "51fb0333943932c5d997fac987b46f32ad930821b539e6b23250c2355a7e3f73",
           "after_sha256": "1d56801de4a52e898f0d02b5bbbcd1a3f3fac49e3b1185057a8b5e70410d847b",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "4fc4f4902ad4859666620635963abec6eb87263cf78b9fd4adb11708620745a4",
           "after_sha256": "be0ebf68bb422a7c0867db8092e99e601eca0390d22f33f385f76b123e296243",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-subagents.d.ts",
@@ -6193,8 +6193,8 @@
           "path": "dist/session-index/service.js",
           "before_sha256": "f5921526d67f9c9f95a69de21d479b51e1f65bc05bdfa7fbc3f453cbe180d600",
           "after_sha256": "d0619eefc74504d1c9a4a109455abd9f5db95135044a3fbe4fecf4d4820adcc0",
-          "classification": "provider_internal",
-          "reason": "AIR sessionIndex helper. Swallowtail does not advertise sessionIndex, so list, rename, archive, and index delete stay unrequested."
+          "classification": "mapped_adjacent",
+          "reason": "Feeds selected session/delete for this non-AIR client. From 0.91.0 connection.js calls deleteSessionIfStored and service.js swallows SDK not-found, so an absent transcript returns empty success. Not a new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/session-index/session-index.d.ts",
@@ -6343,21 +6343,21 @@
           "before_sha256": "0a91660e1a2c8c4e54e0e77f03f4f2313eaec8894ae3975178113519a8667c48",
           "after_sha256": "43b923910ca06596d9dd3a4bb1b301a47cbe47fba80a5981e9335c6cb06e112c",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.d.ts.map",
           "before_sha256": "1d56801de4a52e898f0d02b5bbbcd1a3f3fac49e3b1185057a8b5e70410d847b",
           "after_sha256": "09cdd85466c349af23605e83808a9cec8a97af3feb52cab946f9139c4d2a7ef3",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/acp-agent.js",
           "before_sha256": "be0ebf68bb422a7c0867db8092e99e601eca0390d22f33f385f76b123e296243",
           "after_sha256": "a748438ac05553478285a1bb1bfe47c6adea1d47b97b93b4a55a411ea69bbeaa",
           "classification": "mapped_adjacent",
-          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete still throws via Agent SDK deleteSession for this non-AIR client. No new consumer operation or stronger deletion claim."
+          "reason": "Feeds selected session lifecycle, prompt, cancel, load, and usage. Live close and stored delete still return an empty object. From 0.89.0 a missing live close returns empty success. Unstored delete throws via Agent SDK deleteSession through 0.90.0; from 0.91.0 deleteSessionIfStored returns empty success for this non-AIR client. No new consumer operation or stronger deletion claim."
         },
         {
           "path": "dist/native-subagents.d.ts",

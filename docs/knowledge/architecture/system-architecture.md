@@ -1062,11 +1062,14 @@ claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
 `0.87.0` add private behavior revisions without changing deletion truth.
 Research 446 carries the same consumer close and stored-delete results through
 `0.96.0`. From `0.89.0`, `closeSession` of a session that is not loaded returns
-an empty success. Delete of an absent transcript still calls Agent SDK
-`deleteSession` and throws for the selected non-AIR client, on `0.88.0` and
-`0.89.0` alike. Live close of a session in memory and delete of a stored
-transcript still return an empty object. The empty close success adds no
-stronger deletion claim. Later stable versions remain visible and unverified.
+an empty success. Through `0.90.0`, delete of an absent transcript still calls
+Agent SDK `deleteSession` and throws for the selected non-AIR client. From
+`0.91.0`, `dist/session-index/connection.js` calls `deleteSessionIfStored` and
+`service.js` swallows the SDK not-found, so `session/delete` of an absent
+transcript returns an empty success through `0.96.0`. Live close of a session
+in memory and delete of a stored transcript still return an empty object. The
+empty close or unstored-delete success adds no stronger deletion claim. Later
+stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
 requires independently advertised close and delete capabilities before session

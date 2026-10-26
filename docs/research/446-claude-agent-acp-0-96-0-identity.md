@@ -67,11 +67,10 @@ mode.
 travel only in AIR meta. Swallowtail does not advertise either. The same hop
 makes `closeSession` of a session that is not in memory return `{}`. Through
 `0.88.0` that call threw. Delete of an absent transcript still calls Agent SDK
-`0.3.293` `deleteSession` and throws, on `0.88.0` and `0.89.0` alike, for this
-non-AIR client. Live close of a session in memory and delete of a stored
-transcript still return `{}`. Swallowtail does not expose missing-close
-rejection as a consumer operation, and the empty close success is not a
-stronger deletion claim.
+`deleteSession` and throws through `0.90.0` for this non-AIR client. Live close
+of a session in memory and delete of a stored transcript still return `{}`.
+Swallowtail does not expose missing-close rejection as a consumer operation,
+and the empty close success is not a stronger deletion claim.
 
 `0.90.0` closes open tool calls before a cancel reports `cancelled`. The stop
 reason stays `cancelled`. Swallowtail already decodes `pending`,
@@ -80,7 +79,11 @@ cancel stays inside the existing cancel contract.
 
 `0.91.0` narrows models to a `providers/set` gateway list only when that
 gateway lists models. Swallowtail does not use `providers/set`. The model
-config id stays `model`.
+config id stays `model`. The same hop puts selected `session/delete` on
+`dist/session-index/connection.js` `deleteSessionIfStored`; `service.js`
+swallows the Agent SDK not-found. From `0.91.0` through `0.96.0`, delete of an
+absent transcript returns `{}` for this non-AIR client. That empty success is
+not a stronger deletion claim.
 
 `0.92.0` publishes predicted follow-up prompts as prompt-suggestion meta.
 Those suggestions are not prompt-response usage JSON. `0.94.0` moves the ACP

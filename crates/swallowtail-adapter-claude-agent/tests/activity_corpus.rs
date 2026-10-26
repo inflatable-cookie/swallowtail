@@ -330,7 +330,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
             "2026-10-15T12:25:22.910Z",
             "c0af592d252e6bd072b53407f618a9dd4cd02797",
             "2801cde1baea8dd2e69e0d9903cfeee1097750b00d52147cfc48368f504935ee",
-            "gateway-narrowing-unmapped",
+            "unstored-delete-empty-success-and-gateway-narrowing-unmapped",
         ),
         (
             "0.92.0",

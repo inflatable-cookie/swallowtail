@@ -1,6 +1,6 @@
 use serde_json::Value;
 use swallowtail_adapter_opencode::{
-    OPENCODE_BASELINE_VERSION, OPENCODE_LATEST_QUALIFIED_VERSION, OPENCODE_SERVER_AXIS,
+    OPENCODE_BASELINE_VERSION, OPENCODE_SERVER_AXIS,
     opencode_http_claim, opencode_server_binding,
 };
 use swallowtail_core::{
@@ -78,25 +78,23 @@ fn identity_and_claim_qualify_1_18_20_as_compatible_extension() {
     assert_eq!(protocol["attached_server_started"], false);
 
     assert_eq!(OPENCODE_BASELINE_VERSION, "1.14.48");
-    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.18.20");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "1.18.18"
     );
 
     let claim = opencode_http_claim();
-    assert!(claim.supports(&version("1.18.18")));
-    assert!(claim.supports(&version("1.18.19")));
-    assert!(matches!(
-        claim.assess(&version("1.18.20")),
-        InterfaceCompatibilityAssessment::Qualified(matched)
-            if matched.support_status() == InterfaceSupportStatus::Maintained
-                && matched.behavior_revision().as_str() == "opencode.http-sse.surface-19"
-    ));
-    assert!(matches!(
-        claim.assess(&version("1.18.21")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    for qualified in ["1.18.18", "1.18.19", "1.18.20", "1.18.21"] {
+        assert!(
+            matches!(
+                claim.assess(&version(qualified)),
+                InterfaceCompatibilityAssessment::Qualified(matched)
+                    if matched.support_status() == InterfaceSupportStatus::Maintained
+                        && matched.behavior_revision().as_str() == "opencode.http-sse.surface-19"
+            ),
+            "{qualified} left the surface-19 window"
+        );
+    }
     assert!(!claim.permits(&version("1.15.8")));
     assert_eq!(
         opencode_server_binding("1.18.20")

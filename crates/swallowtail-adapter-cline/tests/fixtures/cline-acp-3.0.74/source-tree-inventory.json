@@ -1,0 +1,1064 @@
+{
+  "repository": "https://github.com/cline/cline",
+  "source_identity": "NPM SLSA provenance resolved dependency gitCommit",
+  "versions": [
+    "3.0.70",
+    "3.0.71",
+    "3.0.72",
+    "3.0.73",
+    "3.0.74"
+  ],
+  "source_commits": {
+    "3.0.70": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+    "3.0.71": "1a5c3f84e0933268a9dba14a55a6383a6578414d",
+    "3.0.72": "d9deb814e8a7fe5d97cd6217dcb431cc06952e4a",
+    "3.0.73": "c718573538d76310f464541617ab665108a6c999",
+    "3.0.74": "071e1b25b48f9ef5dff7fc32085e6a16f02bf02e"
+  },
+  "inventory_scope": "Complete apps/cli/src/acp source files, the selected apps/cli/src/main.ts ACP entry gate, plus the reviewed adjacent support set carried from the 3.0.70 corpus: output, failure/completion, request identity, session startup, provider model metadata, usage, lifecycle, and direct runtime provider selection, plus app and shared-package manifests and the Bun lockfile. Each exact file is identified by GitHub Git blob SHA-1 within the bound source commit.",
+  "tree_manifest_sha256": {
+    "3.0.70": "e179602e930792fecc9eb52e1d76f59c9d7f6e3f06f345350bade08089b342c4",
+    "3.0.71": "20966d5a98f9e171e2dd6646a1ea9006b3dfe2b11cb868da4aa4c36016b84682",
+    "3.0.72": "6dd52f456428b80d0f8de095be35832126e69336746edd70cc7b52166bb3d2cc",
+    "3.0.73": "35bd5df0d7113ae4f3e2873e2239a8fdd21736e454aab314dd488ee1a0a7c897",
+    "3.0.74": "c8703a1ba60d183c05b7c383b0f26b6ccaf2a8e39c168f3e1aa180552a099d1e"
+  },
+  "files_by_version": {
+    "3.0.70": {
+      "apps/cli/package.json": {
+        "git_blob_sha1": "9d4d847a032cdabf69e57e3a8914dc30a1b00f1b"
+      },
+      "apps/cli/src/acp/acpAgent.ts": {
+        "git_blob_sha1": "ad1f03263291334a545f2edd39032c1bd8603a06"
+      },
+      "apps/cli/src/acp/auth.ts": {
+        "git_blob_sha1": "cb735a4cd69f6c4b0f49ef40341200e07adddf19"
+      },
+      "apps/cli/src/acp/auto-approve.test.ts": {
+        "git_blob_sha1": "a5ee08ffc2dc9624332ee4089d234077bf86f398"
+      },
+      "apps/cli/src/acp/auto-approve.ts": {
+        "git_blob_sha1": "cc7a36eea3005dbf4c30e1f61c153a1159f602cf"
+      },
+      "apps/cli/src/acp/index.test.ts": {
+        "git_blob_sha1": "77e781862f4bb43ce1871cac6605ded033ac3223"
+      },
+      "apps/cli/src/acp/index.ts": {
+        "git_blob_sha1": "76b47386abba7f1f66a5ef8df308c18b0c0d91c6"
+      },
+      "apps/cli/src/acp/organizations.test.ts": {
+        "git_blob_sha1": "41ca89ab7feb049c6acf571800017db899905cd8"
+      },
+      "apps/cli/src/acp/organizations.ts": {
+        "git_blob_sha1": "3b8a1e48bc26aae39857fd1a65884b17a9e5f6a8"
+      },
+      "apps/cli/src/acp/permissions.ts": {
+        "git_blob_sha1": "b1e109ab0cb04928196c13c5a8d0cf172756248e"
+      },
+      "apps/cli/src/acp/session-load.test.ts": {
+        "git_blob_sha1": "50cf6d78195e9ad3f9bf0d996288853308cd4937"
+      },
+      "apps/cli/src/acp/session-load.ts": {
+        "git_blob_sha1": "400acd36e2de8a7d5a81891035a7e81e85c9d070"
+      },
+      "apps/cli/src/acp/session-updates.test.ts": {
+        "git_blob_sha1": "75d4c27a48a714f1b8d90de847f24f399e554855"
+      },
+      "apps/cli/src/acp/session-updates.ts": {
+        "git_blob_sha1": "43f0b01b295aeee4e5f34e2e017852fd30390a2d"
+      },
+      "apps/cli/src/acp/tool-utils.ts": {
+        "git_blob_sha1": "eb40a790496fc0ca61a6bb7e8296f9b7af1524db"
+      },
+      "apps/cli/src/main.ts": {
+        "git_blob_sha1": "0e52e53617a257ecb2699f350168ce4892406299"
+      },
+      "apps/cli/src/runtime/prompt.ts": {
+        "git_blob_sha1": "2e0fce1c37c0f7eb4e663a07d148fb24e627d361"
+      },
+      "apps/cli/src/session/session.ts": {
+        "git_blob_sha1": "3f04c2c49d151bfb67aa252d769f66d13800b0a8"
+      },
+      "apps/cli/src/utils/cline-client-identity.ts": {
+        "git_blob_sha1": "0d9c9a51243997d65b5aa6bc3687fe23f75aeb95"
+      },
+      "apps/cli/src/utils/cline-pass-errors.ts": {
+        "git_blob_sha1": "4d55d3a9404ed0f31a71d0141c4b301425956c1b"
+      },
+      "apps/cli/src/utils/generated-media.ts": {
+        "git_blob_sha1": "39f9f70935d025c31796890ded8693ab60a7dbfa"
+      },
+      "bun.lock": {
+        "git_blob_sha1": "70e15b8c185c1ca909272460c9b2d25e8731f4ae"
+      },
+      "sdk/packages/agents/package.json": {
+        "git_blob_sha1": "7a73bd50eb96204c3b3c94fc539dc264e16e8356"
+      },
+      "sdk/packages/agents/src/agent-runtime.ts": {
+        "git_blob_sha1": "57e96692b51df9efb5577fcf4a00f195a3f59617"
+      },
+      "sdk/packages/core/package.json": {
+        "git_blob_sha1": "57fc53c694593f43e6ce2f02e062a4b806e02e30"
+      },
+      "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts": {
+        "git_blob_sha1": "4b623ba759b24b2c24fdee83fba66350357b98e5"
+      },
+      "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts": {
+        "git_blob_sha1": "099c182cd854f549a032ee309066f66dff0ece45"
+      },
+      "sdk/packages/core/src/services/llms/cline-recommended-models.ts": {
+        "git_blob_sha1": "e75af5ce3b921629e1c59954b528319d1d0fe917"
+      },
+      "sdk/packages/core/src/services/llms/handler-factory.ts": {
+        "git_blob_sha1": "9a79626fb166385c52b5b04ff82a3c27086bbbb8"
+      },
+      "sdk/packages/core/src/services/llms/provider-defaults.ts": {
+        "git_blob_sha1": "402c3d39c8a40f7db84628849f19618a8b06dc27"
+      },
+      "sdk/packages/core/src/services/providers/local-provider-service.ts": {
+        "git_blob_sha1": "d4fbc63ae83b277230fa3bbb35d9205f973104cd"
+      },
+      "sdk/packages/llms/package.json": {
+        "git_blob_sha1": "2e473c6f09fbd5eb5a6471b7b2c8314830d8da98"
+      },
+      "sdk/packages/llms/src/providers/ai-sdk.ts": {
+        "git_blob_sha1": "19b9589f6b3932387e9336be5f648b85ccc5757a"
+      },
+      "sdk/packages/llms/src/providers/builtins.ts": {
+        "git_blob_sha1": "27c9c16d1017390b5188f437b167fd56c5165582"
+      },
+      "sdk/packages/llms/src/providers/cline-client-headers.ts": {
+        "git_blob_sha1": "8c4ff7b707cb4d34015225d87679b2e58ae3489c"
+      },
+      "sdk/packages/llms/src/providers/compat.ts": {
+        "git_blob_sha1": "de13ae273a9ec9078ac2bb5869825749375ef096"
+      },
+      "sdk/packages/llms/src/providers/error-classification.ts": {
+        "git_blob_sha1": "025e0564db1fc712f24dcee765f9de48de21d679"
+      },
+      "sdk/packages/llms/src/providers/gateway.ts": {
+        "git_blob_sha1": "ffc97eb32246ede13207c557eb80662cb9c0e625"
+      },
+      "sdk/packages/llms/src/providers/model-capabilities.ts": {
+        "git_blob_sha1": "2108be06e766e15549e33ea1acf3d1612c383c1b"
+      },
+      "sdk/packages/llms/src/providers/model-registry.ts": {
+        "git_blob_sha1": "638a450c3d055b47ba5b8123ff670b67fbe214ed"
+      },
+      "sdk/packages/llms/src/providers/model-tools.ts": {
+        "git_blob_sha1": "fe1aa33db8b74a2edc5419513f168811e8b753d1"
+      },
+      "sdk/packages/llms/src/providers/request-headers.ts": {
+        "git_blob_sha1": "75722b681f2ac49014feb50c6b2a6daf67923260"
+      },
+      "sdk/packages/llms/src/providers/stream.ts": {
+        "git_blob_sha1": "f74ea905c8bb86559f9bd3a89a070f541837ca8c"
+      },
+      "sdk/packages/llms/src/providers/types.ts": {
+        "git_blob_sha1": "268c99b3421b1ddf5624a00749ddbd26101db7c5"
+      },
+      "sdk/packages/llms/src/providers/vendors/cline.ts": {
+        "git_blob_sha1": "6404d084fc6c4c885ef3795ee52e2d3545920086"
+      },
+      "sdk/packages/shared/package.json": {
+        "git_blob_sha1": "b9a2fc6cfbbfac9dcd1ba8177f4fb7a4131ede28"
+      },
+      "sdk/packages/shared/src/agent.ts": {
+        "git_blob_sha1": "9d897e854d18adc23fa43aee622d2b90f5b97c6f"
+      },
+      "sdk/packages/shared/src/llms/media.ts": {
+        "git_blob_sha1": "57bcb79c46505bc656d4d286c67f9554ebff9446"
+      },
+      "sdk/packages/shared/src/prompt/cline.ts": {
+        "git_blob_sha1": "90f34c174744a8aa6d2238d034ac52ff67cbb746"
+      },
+      "sdk/packages/shared/src/runtime/cline-client-identity.ts": {
+        "git_blob_sha1": "f7e97ec6e83ce32f66f7c5d224625e149efddb9a"
+      }
+    },
+    "3.0.71": {
+      "apps/cli/package.json": {
+        "git_blob_sha1": "19858fe73a2c17ca97bd626ea6aad2512c816b17"
+      },
+      "apps/cli/src/acp/acpAgent.ts": {
+        "git_blob_sha1": "6f041e17a24def6672197d57123ac553c7f4fb07"
+      },
+      "apps/cli/src/acp/auth.ts": {
+        "git_blob_sha1": "cb735a4cd69f6c4b0f49ef40341200e07adddf19"
+      },
+      "apps/cli/src/acp/auto-approve.test.ts": {
+        "git_blob_sha1": "a5ee08ffc2dc9624332ee4089d234077bf86f398"
+      },
+      "apps/cli/src/acp/auto-approve.ts": {
+        "git_blob_sha1": "cc7a36eea3005dbf4c30e1f61c153a1159f602cf"
+      },
+      "apps/cli/src/acp/index.test.ts": {
+        "git_blob_sha1": "77e781862f4bb43ce1871cac6605ded033ac3223"
+      },
+      "apps/cli/src/acp/index.ts": {
+        "git_blob_sha1": "4aabec2d27808326b87c176adb9e54dc7ffa45ac"
+      },
+      "apps/cli/src/acp/organizations.test.ts": {
+        "git_blob_sha1": "41ca89ab7feb049c6acf571800017db899905cd8"
+      },
+      "apps/cli/src/acp/organizations.ts": {
+        "git_blob_sha1": "3b8a1e48bc26aae39857fd1a65884b17a9e5f6a8"
+      },
+      "apps/cli/src/acp/permissions.ts": {
+        "git_blob_sha1": "b1e109ab0cb04928196c13c5a8d0cf172756248e"
+      },
+      "apps/cli/src/acp/reasoning.test.ts": {
+        "git_blob_sha1": "062b9d6f835546d5a9497b4dca3a6756baccaf12"
+      },
+      "apps/cli/src/acp/session-load.test.ts": {
+        "git_blob_sha1": "50cf6d78195e9ad3f9bf0d996288853308cd4937"
+      },
+      "apps/cli/src/acp/session-load.ts": {
+        "git_blob_sha1": "400acd36e2de8a7d5a81891035a7e81e85c9d070"
+      },
+      "apps/cli/src/acp/session-updates.test.ts": {
+        "git_blob_sha1": "75d4c27a48a714f1b8d90de847f24f399e554855"
+      },
+      "apps/cli/src/acp/session-updates.ts": {
+        "git_blob_sha1": "43f0b01b295aeee4e5f34e2e017852fd30390a2d"
+      },
+      "apps/cli/src/acp/tool-utils.ts": {
+        "git_blob_sha1": "eb40a790496fc0ca61a6bb7e8296f9b7af1524db"
+      },
+      "apps/cli/src/main.ts": {
+        "git_blob_sha1": "b6a0e6138df439c5cbc8cddffc39e34c1afd9775"
+      },
+      "apps/cli/src/runtime/prompt.ts": {
+        "git_blob_sha1": "2e0fce1c37c0f7eb4e663a07d148fb24e627d361"
+      },
+      "apps/cli/src/session/session.ts": {
+        "git_blob_sha1": "3f04c2c49d151bfb67aa252d769f66d13800b0a8"
+      },
+      "apps/cli/src/utils/cline-client-identity.ts": {
+        "git_blob_sha1": "0d9c9a51243997d65b5aa6bc3687fe23f75aeb95"
+      },
+      "apps/cli/src/utils/cline-pass-errors.ts": {
+        "git_blob_sha1": "4d55d3a9404ed0f31a71d0141c4b301425956c1b"
+      },
+      "apps/cli/src/utils/generated-media.ts": {
+        "git_blob_sha1": "39f9f70935d025c31796890ded8693ab60a7dbfa"
+      },
+      "bun.lock": {
+        "git_blob_sha1": "a3b64e5bb2d65e3e181d30c1a985f6550001491e"
+      },
+      "sdk/packages/agents/package.json": {
+        "git_blob_sha1": "84ab3e5adefe7522726da7b8f25f99da22ffd6fe"
+      },
+      "sdk/packages/agents/src/agent-runtime.ts": {
+        "git_blob_sha1": "57e96692b51df9efb5577fcf4a00f195a3f59617"
+      },
+      "sdk/packages/core/package.json": {
+        "git_blob_sha1": "d6499f5983c632cc9a9740a3a25a0bba2f7c8d25"
+      },
+      "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts": {
+        "git_blob_sha1": "4b623ba759b24b2c24fdee83fba66350357b98e5"
+      },
+      "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts": {
+        "git_blob_sha1": "30a7e3d4fc08ac3b943a3e85663e85c9f0c28c3d"
+      },
+      "sdk/packages/core/src/services/llms/cline-recommended-models.ts": {
+        "git_blob_sha1": "e75af5ce3b921629e1c59954b528319d1d0fe917"
+      },
+      "sdk/packages/core/src/services/llms/handler-factory.ts": {
+        "git_blob_sha1": "9a79626fb166385c52b5b04ff82a3c27086bbbb8"
+      },
+      "sdk/packages/core/src/services/llms/provider-defaults.ts": {
+        "git_blob_sha1": "402c3d39c8a40f7db84628849f19618a8b06dc27"
+      },
+      "sdk/packages/core/src/services/providers/local-provider-service.ts": {
+        "git_blob_sha1": "d4fbc63ae83b277230fa3bbb35d9205f973104cd"
+      },
+      "sdk/packages/llms/package.json": {
+        "git_blob_sha1": "d1f3377f31ff28a66a5530f8e7e7d6a55673b935"
+      },
+      "sdk/packages/llms/src/providers/ai-sdk.ts": {
+        "git_blob_sha1": "b4dfa9e9bc908acad493d81336e371dc51cb928d"
+      },
+      "sdk/packages/llms/src/providers/builtins.ts": {
+        "git_blob_sha1": "cfdbf54659819a166eda489f1498e878850b8319"
+      },
+      "sdk/packages/llms/src/providers/cline-client-headers.ts": {
+        "git_blob_sha1": "8c4ff7b707cb4d34015225d87679b2e58ae3489c"
+      },
+      "sdk/packages/llms/src/providers/compat.ts": {
+        "git_blob_sha1": "de13ae273a9ec9078ac2bb5869825749375ef096"
+      },
+      "sdk/packages/llms/src/providers/error-classification.ts": {
+        "git_blob_sha1": "025e0564db1fc712f24dcee765f9de48de21d679"
+      },
+      "sdk/packages/llms/src/providers/gateway.ts": {
+        "git_blob_sha1": "ffc97eb32246ede13207c557eb80662cb9c0e625"
+      },
+      "sdk/packages/llms/src/providers/model-capabilities.ts": {
+        "git_blob_sha1": "2108be06e766e15549e33ea1acf3d1612c383c1b"
+      },
+      "sdk/packages/llms/src/providers/model-registry.ts": {
+        "git_blob_sha1": "638a450c3d055b47ba5b8123ff670b67fbe214ed"
+      },
+      "sdk/packages/llms/src/providers/model-tools.ts": {
+        "git_blob_sha1": "fe1aa33db8b74a2edc5419513f168811e8b753d1"
+      },
+      "sdk/packages/llms/src/providers/request-headers.ts": {
+        "git_blob_sha1": "75722b681f2ac49014feb50c6b2a6daf67923260"
+      },
+      "sdk/packages/llms/src/providers/stream.ts": {
+        "git_blob_sha1": "f74ea905c8bb86559f9bd3a89a070f541837ca8c"
+      },
+      "sdk/packages/llms/src/providers/types.ts": {
+        "git_blob_sha1": "268c99b3421b1ddf5624a00749ddbd26101db7c5"
+      },
+      "sdk/packages/llms/src/providers/vendors/cline.ts": {
+        "git_blob_sha1": "6404d084fc6c4c885ef3795ee52e2d3545920086"
+      },
+      "sdk/packages/shared/package.json": {
+        "git_blob_sha1": "41226d4f42e290aae14e26081e7147fd5d62d920"
+      },
+      "sdk/packages/shared/src/agent.ts": {
+        "git_blob_sha1": "b280ee2d48fbda83d545c8d9819b5da6ba99eeef"
+      },
+      "sdk/packages/shared/src/llms/media.ts": {
+        "git_blob_sha1": "57bcb79c46505bc656d4d286c67f9554ebff9446"
+      },
+      "sdk/packages/shared/src/prompt/cline.ts": {
+        "git_blob_sha1": "90f34c174744a8aa6d2238d034ac52ff67cbb746"
+      },
+      "sdk/packages/shared/src/runtime/cline-client-identity.ts": {
+        "git_blob_sha1": "f7e97ec6e83ce32f66f7c5d224625e149efddb9a"
+      }
+    },
+    "3.0.72": {
+      "apps/cli/package.json": {
+        "git_blob_sha1": "490c623c4f2c11e170e58a34886b1bc1fe569465"
+      },
+      "apps/cli/src/acp/acpAgent.ts": {
+        "git_blob_sha1": "6f041e17a24def6672197d57123ac553c7f4fb07"
+      },
+      "apps/cli/src/acp/auth.ts": {
+        "git_blob_sha1": "cb735a4cd69f6c4b0f49ef40341200e07adddf19"
+      },
+      "apps/cli/src/acp/auto-approve.test.ts": {
+        "git_blob_sha1": "a5ee08ffc2dc9624332ee4089d234077bf86f398"
+      },
+      "apps/cli/src/acp/auto-approve.ts": {
+        "git_blob_sha1": "cc7a36eea3005dbf4c30e1f61c153a1159f602cf"
+      },
+      "apps/cli/src/acp/index.test.ts": {
+        "git_blob_sha1": "77e781862f4bb43ce1871cac6605ded033ac3223"
+      },
+      "apps/cli/src/acp/index.ts": {
+        "git_blob_sha1": "4aabec2d27808326b87c176adb9e54dc7ffa45ac"
+      },
+      "apps/cli/src/acp/organizations.test.ts": {
+        "git_blob_sha1": "41ca89ab7feb049c6acf571800017db899905cd8"
+      },
+      "apps/cli/src/acp/organizations.ts": {
+        "git_blob_sha1": "3b8a1e48bc26aae39857fd1a65884b17a9e5f6a8"
+      },
+      "apps/cli/src/acp/permissions.ts": {
+        "git_blob_sha1": "b1e109ab0cb04928196c13c5a8d0cf172756248e"
+      },
+      "apps/cli/src/acp/reasoning.test.ts": {
+        "git_blob_sha1": "062b9d6f835546d5a9497b4dca3a6756baccaf12"
+      },
+      "apps/cli/src/acp/session-load.test.ts": {
+        "git_blob_sha1": "50cf6d78195e9ad3f9bf0d996288853308cd4937"
+      },
+      "apps/cli/src/acp/session-load.ts": {
+        "git_blob_sha1": "400acd36e2de8a7d5a81891035a7e81e85c9d070"
+      },
+      "apps/cli/src/acp/session-updates.test.ts": {
+        "git_blob_sha1": "75d4c27a48a714f1b8d90de847f24f399e554855"
+      },
+      "apps/cli/src/acp/session-updates.ts": {
+        "git_blob_sha1": "43f0b01b295aeee4e5f34e2e017852fd30390a2d"
+      },
+      "apps/cli/src/acp/tool-utils.ts": {
+        "git_blob_sha1": "eb40a790496fc0ca61a6bb7e8296f9b7af1524db"
+      },
+      "apps/cli/src/main.ts": {
+        "git_blob_sha1": "5b8fddd8154f5b9f872a5f7bf189f74cb2e9f006"
+      },
+      "apps/cli/src/runtime/prompt.ts": {
+        "git_blob_sha1": "2e0fce1c37c0f7eb4e663a07d148fb24e627d361"
+      },
+      "apps/cli/src/session/session.ts": {
+        "git_blob_sha1": "3f04c2c49d151bfb67aa252d769f66d13800b0a8"
+      },
+      "apps/cli/src/utils/cline-client-identity.ts": {
+        "git_blob_sha1": "0d9c9a51243997d65b5aa6bc3687fe23f75aeb95"
+      },
+      "apps/cli/src/utils/cline-pass-errors.ts": {
+        "git_blob_sha1": "4d55d3a9404ed0f31a71d0141c4b301425956c1b"
+      },
+      "apps/cli/src/utils/generated-media.ts": {
+        "git_blob_sha1": "39f9f70935d025c31796890ded8693ab60a7dbfa"
+      },
+      "bun.lock": {
+        "git_blob_sha1": "fa684903b7ddc44710341a2980256af37df17800"
+      },
+      "sdk/packages/agents/package.json": {
+        "git_blob_sha1": "aa966f2dfe380d3555e492348029af3f4c53db5b"
+      },
+      "sdk/packages/agents/src/agent-runtime.ts": {
+        "git_blob_sha1": "d29f0fce82668f4989e886fe6258c9fcb7cbe19f"
+      },
+      "sdk/packages/core/package.json": {
+        "git_blob_sha1": "f5f2007a3e5817cbf3192602549976875c40ca24"
+      },
+      "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts": {
+        "git_blob_sha1": "4b623ba759b24b2c24fdee83fba66350357b98e5"
+      },
+      "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts": {
+        "git_blob_sha1": "30a7e3d4fc08ac3b943a3e85663e85c9f0c28c3d"
+      },
+      "sdk/packages/core/src/services/llms/cline-recommended-models.ts": {
+        "git_blob_sha1": "e75af5ce3b921629e1c59954b528319d1d0fe917"
+      },
+      "sdk/packages/core/src/services/llms/handler-factory.ts": {
+        "git_blob_sha1": "9a79626fb166385c52b5b04ff82a3c27086bbbb8"
+      },
+      "sdk/packages/core/src/services/llms/provider-defaults.ts": {
+        "git_blob_sha1": "402c3d39c8a40f7db84628849f19618a8b06dc27"
+      },
+      "sdk/packages/core/src/services/providers/local-provider-service.ts": {
+        "git_blob_sha1": "d4fbc63ae83b277230fa3bbb35d9205f973104cd"
+      },
+      "sdk/packages/llms/package.json": {
+        "git_blob_sha1": "993e14adcef4a21fcb15a1778c20de0508b47cc8"
+      },
+      "sdk/packages/llms/src/providers/ai-sdk.ts": {
+        "git_blob_sha1": "ec03af4322b21a12fa083ef88704fd8b7f0f2b5a"
+      },
+      "sdk/packages/llms/src/providers/builtins.ts": {
+        "git_blob_sha1": "cfdbf54659819a166eda489f1498e878850b8319"
+      },
+      "sdk/packages/llms/src/providers/cline-client-headers.ts": {
+        "git_blob_sha1": "8c4ff7b707cb4d34015225d87679b2e58ae3489c"
+      },
+      "sdk/packages/llms/src/providers/compat.ts": {
+        "git_blob_sha1": "de13ae273a9ec9078ac2bb5869825749375ef096"
+      },
+      "sdk/packages/llms/src/providers/error-classification.ts": {
+        "git_blob_sha1": "32c932536d319885c194d6bfcb1b6e98b73dba5b"
+      },
+      "sdk/packages/llms/src/providers/gateway.ts": {
+        "git_blob_sha1": "ffc97eb32246ede13207c557eb80662cb9c0e625"
+      },
+      "sdk/packages/llms/src/providers/model-capabilities.ts": {
+        "git_blob_sha1": "2108be06e766e15549e33ea1acf3d1612c383c1b"
+      },
+      "sdk/packages/llms/src/providers/model-registry.ts": {
+        "git_blob_sha1": "638a450c3d055b47ba5b8123ff670b67fbe214ed"
+      },
+      "sdk/packages/llms/src/providers/model-tools.ts": {
+        "git_blob_sha1": "fe1aa33db8b74a2edc5419513f168811e8b753d1"
+      },
+      "sdk/packages/llms/src/providers/request-headers.ts": {
+        "git_blob_sha1": "75722b681f2ac49014feb50c6b2a6daf67923260"
+      },
+      "sdk/packages/llms/src/providers/stream.ts": {
+        "git_blob_sha1": "f74ea905c8bb86559f9bd3a89a070f541837ca8c"
+      },
+      "sdk/packages/llms/src/providers/types.ts": {
+        "git_blob_sha1": "268c99b3421b1ddf5624a00749ddbd26101db7c5"
+      },
+      "sdk/packages/llms/src/providers/vendors/cline.ts": {
+        "git_blob_sha1": "6404d084fc6c4c885ef3795ee52e2d3545920086"
+      },
+      "sdk/packages/shared/package.json": {
+        "git_blob_sha1": "053d9b3803ea50a48db742d3d6676fc58106e9d9"
+      },
+      "sdk/packages/shared/src/agent.ts": {
+        "git_blob_sha1": "b280ee2d48fbda83d545c8d9819b5da6ba99eeef"
+      },
+      "sdk/packages/shared/src/llms/media.ts": {
+        "git_blob_sha1": "57bcb79c46505bc656d4d286c67f9554ebff9446"
+      },
+      "sdk/packages/shared/src/prompt/cline.ts": {
+        "git_blob_sha1": "90f34c174744a8aa6d2238d034ac52ff67cbb746"
+      },
+      "sdk/packages/shared/src/runtime/cline-client-identity.ts": {
+        "git_blob_sha1": "f7e97ec6e83ce32f66f7c5d224625e149efddb9a"
+      }
+    },
+    "3.0.73": {
+      "apps/cli/package.json": {
+        "git_blob_sha1": "8944d30ba4a6ec34cd7639887473ae2c472dc230"
+      },
+      "apps/cli/src/acp/acpAgent.ts": {
+        "git_blob_sha1": "6f041e17a24def6672197d57123ac553c7f4fb07"
+      },
+      "apps/cli/src/acp/auth.ts": {
+        "git_blob_sha1": "cb735a4cd69f6c4b0f49ef40341200e07adddf19"
+      },
+      "apps/cli/src/acp/auto-approve.test.ts": {
+        "git_blob_sha1": "a5ee08ffc2dc9624332ee4089d234077bf86f398"
+      },
+      "apps/cli/src/acp/auto-approve.ts": {
+        "git_blob_sha1": "cc7a36eea3005dbf4c30e1f61c153a1159f602cf"
+      },
+      "apps/cli/src/acp/index.test.ts": {
+        "git_blob_sha1": "77e781862f4bb43ce1871cac6605ded033ac3223"
+      },
+      "apps/cli/src/acp/index.ts": {
+        "git_blob_sha1": "4aabec2d27808326b87c176adb9e54dc7ffa45ac"
+      },
+      "apps/cli/src/acp/organizations.test.ts": {
+        "git_blob_sha1": "41ca89ab7feb049c6acf571800017db899905cd8"
+      },
+      "apps/cli/src/acp/organizations.ts": {
+        "git_blob_sha1": "3b8a1e48bc26aae39857fd1a65884b17a9e5f6a8"
+      },
+      "apps/cli/src/acp/permissions.ts": {
+        "git_blob_sha1": "b1e109ab0cb04928196c13c5a8d0cf172756248e"
+      },
+      "apps/cli/src/acp/reasoning.test.ts": {
+        "git_blob_sha1": "062b9d6f835546d5a9497b4dca3a6756baccaf12"
+      },
+      "apps/cli/src/acp/session-load.test.ts": {
+        "git_blob_sha1": "50cf6d78195e9ad3f9bf0d996288853308cd4937"
+      },
+      "apps/cli/src/acp/session-load.ts": {
+        "git_blob_sha1": "400acd36e2de8a7d5a81891035a7e81e85c9d070"
+      },
+      "apps/cli/src/acp/session-updates.test.ts": {
+        "git_blob_sha1": "75d4c27a48a714f1b8d90de847f24f399e554855"
+      },
+      "apps/cli/src/acp/session-updates.ts": {
+        "git_blob_sha1": "43f0b01b295aeee4e5f34e2e017852fd30390a2d"
+      },
+      "apps/cli/src/acp/tool-utils.ts": {
+        "git_blob_sha1": "eb40a790496fc0ca61a6bb7e8296f9b7af1524db"
+      },
+      "apps/cli/src/main.ts": {
+        "git_blob_sha1": "5b8fddd8154f5b9f872a5f7bf189f74cb2e9f006"
+      },
+      "apps/cli/src/runtime/prompt.ts": {
+        "git_blob_sha1": "2e0fce1c37c0f7eb4e663a07d148fb24e627d361"
+      },
+      "apps/cli/src/session/session.ts": {
+        "git_blob_sha1": "3f04c2c49d151bfb67aa252d769f66d13800b0a8"
+      },
+      "apps/cli/src/utils/cline-client-identity.ts": {
+        "git_blob_sha1": "0d9c9a51243997d65b5aa6bc3687fe23f75aeb95"
+      },
+      "apps/cli/src/utils/cline-pass-errors.ts": {
+        "git_blob_sha1": "4d55d3a9404ed0f31a71d0141c4b301425956c1b"
+      },
+      "apps/cli/src/utils/generated-media.ts": {
+        "git_blob_sha1": "39f9f70935d025c31796890ded8693ab60a7dbfa"
+      },
+      "bun.lock": {
+        "git_blob_sha1": "c58294815c3c43f1675ca43a9210c858f686af08"
+      },
+      "sdk/packages/agents/package.json": {
+        "git_blob_sha1": "ef983eb622b7b7b32686ec16965447e534f5ee99"
+      },
+      "sdk/packages/agents/src/agent-runtime.ts": {
+        "git_blob_sha1": "d29f0fce82668f4989e886fe6258c9fcb7cbe19f"
+      },
+      "sdk/packages/core/package.json": {
+        "git_blob_sha1": "fb34374a87043aa5f6dc435d105d0d7951744526"
+      },
+      "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts": {
+        "git_blob_sha1": "4b623ba759b24b2c24fdee83fba66350357b98e5"
+      },
+      "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts": {
+        "git_blob_sha1": "30a7e3d4fc08ac3b943a3e85663e85c9f0c28c3d"
+      },
+      "sdk/packages/core/src/services/llms/cline-recommended-models.ts": {
+        "git_blob_sha1": "e75af5ce3b921629e1c59954b528319d1d0fe917"
+      },
+      "sdk/packages/core/src/services/llms/handler-factory.ts": {
+        "git_blob_sha1": "9a79626fb166385c52b5b04ff82a3c27086bbbb8"
+      },
+      "sdk/packages/core/src/services/llms/provider-defaults.ts": {
+        "git_blob_sha1": "402c3d39c8a40f7db84628849f19618a8b06dc27"
+      },
+      "sdk/packages/core/src/services/providers/local-provider-service.ts": {
+        "git_blob_sha1": "d4fbc63ae83b277230fa3bbb35d9205f973104cd"
+      },
+      "sdk/packages/llms/package.json": {
+        "git_blob_sha1": "654288bc3a535b1a026070da5dfe530c42a84472"
+      },
+      "sdk/packages/llms/src/providers/ai-sdk.ts": {
+        "git_blob_sha1": "ec03af4322b21a12fa083ef88704fd8b7f0f2b5a"
+      },
+      "sdk/packages/llms/src/providers/builtins.ts": {
+        "git_blob_sha1": "5da4681bca7bbd4fe0f7394f12d95520034f6960"
+      },
+      "sdk/packages/llms/src/providers/cline-client-headers.ts": {
+        "git_blob_sha1": "8c4ff7b707cb4d34015225d87679b2e58ae3489c"
+      },
+      "sdk/packages/llms/src/providers/compat.ts": {
+        "git_blob_sha1": "de13ae273a9ec9078ac2bb5869825749375ef096"
+      },
+      "sdk/packages/llms/src/providers/error-classification.ts": {
+        "git_blob_sha1": "32c932536d319885c194d6bfcb1b6e98b73dba5b"
+      },
+      "sdk/packages/llms/src/providers/gateway.ts": {
+        "git_blob_sha1": "ffc97eb32246ede13207c557eb80662cb9c0e625"
+      },
+      "sdk/packages/llms/src/providers/model-capabilities.ts": {
+        "git_blob_sha1": "2108be06e766e15549e33ea1acf3d1612c383c1b"
+      },
+      "sdk/packages/llms/src/providers/model-registry.ts": {
+        "git_blob_sha1": "638a450c3d055b47ba5b8123ff670b67fbe214ed"
+      },
+      "sdk/packages/llms/src/providers/model-tools.ts": {
+        "git_blob_sha1": "fe1aa33db8b74a2edc5419513f168811e8b753d1"
+      },
+      "sdk/packages/llms/src/providers/request-headers.ts": {
+        "git_blob_sha1": "75722b681f2ac49014feb50c6b2a6daf67923260"
+      },
+      "sdk/packages/llms/src/providers/stream.ts": {
+        "git_blob_sha1": "f74ea905c8bb86559f9bd3a89a070f541837ca8c"
+      },
+      "sdk/packages/llms/src/providers/types.ts": {
+        "git_blob_sha1": "268c99b3421b1ddf5624a00749ddbd26101db7c5"
+      },
+      "sdk/packages/llms/src/providers/vendors/cline.ts": {
+        "git_blob_sha1": "6404d084fc6c4c885ef3795ee52e2d3545920086"
+      },
+      "sdk/packages/shared/package.json": {
+        "git_blob_sha1": "9ec37ff7896b20e72b8f0eafb9cfef651ea6be3f"
+      },
+      "sdk/packages/shared/src/agent.ts": {
+        "git_blob_sha1": "b280ee2d48fbda83d545c8d9819b5da6ba99eeef"
+      },
+      "sdk/packages/shared/src/llms/media.ts": {
+        "git_blob_sha1": "57bcb79c46505bc656d4d286c67f9554ebff9446"
+      },
+      "sdk/packages/shared/src/prompt/cline.ts": {
+        "git_blob_sha1": "90f34c174744a8aa6d2238d034ac52ff67cbb746"
+      },
+      "sdk/packages/shared/src/runtime/cline-client-identity.ts": {
+        "git_blob_sha1": "f7e97ec6e83ce32f66f7c5d224625e149efddb9a"
+      }
+    },
+    "3.0.74": {
+      "apps/cli/package.json": {
+        "git_blob_sha1": "6503b4b5509662b7116d2bfc1a14f0671b3a6035"
+      },
+      "apps/cli/src/acp/acpAgent.ts": {
+        "git_blob_sha1": "1469f2c9cc0501518b9006f1a52de765bd2c907a"
+      },
+      "apps/cli/src/acp/auth.ts": {
+        "git_blob_sha1": "cb735a4cd69f6c4b0f49ef40341200e07adddf19"
+      },
+      "apps/cli/src/acp/auto-approve.test.ts": {
+        "git_blob_sha1": "a5ee08ffc2dc9624332ee4089d234077bf86f398"
+      },
+      "apps/cli/src/acp/auto-approve.ts": {
+        "git_blob_sha1": "cc7a36eea3005dbf4c30e1f61c153a1159f602cf"
+      },
+      "apps/cli/src/acp/config-options.test.ts": {
+        "git_blob_sha1": "0d3ebe794e82cf7320966004acf594bff1d2b94b"
+      },
+      "apps/cli/src/acp/config-options.ts": {
+        "git_blob_sha1": "f44eba30f7f98d96e1eb49fbb712895eb414d1cf"
+      },
+      "apps/cli/src/acp/index.test.ts": {
+        "git_blob_sha1": "77e781862f4bb43ce1871cac6605ded033ac3223"
+      },
+      "apps/cli/src/acp/index.ts": {
+        "git_blob_sha1": "4aabec2d27808326b87c176adb9e54dc7ffa45ac"
+      },
+      "apps/cli/src/acp/organizations.test.ts": {
+        "git_blob_sha1": "40c648cc40bde42ff8cbe2bf90bd4172dfb561e8"
+      },
+      "apps/cli/src/acp/organizations.ts": {
+        "git_blob_sha1": "68b3d7d4ff70cff4cb27696a887ec0c49a51a0cc"
+      },
+      "apps/cli/src/acp/permissions.ts": {
+        "git_blob_sha1": "b1e109ab0cb04928196c13c5a8d0cf172756248e"
+      },
+      "apps/cli/src/acp/reasoning.test.ts": {
+        "git_blob_sha1": "062b9d6f835546d5a9497b4dca3a6756baccaf12"
+      },
+      "apps/cli/src/acp/session-load.test.ts": {
+        "git_blob_sha1": "50cf6d78195e9ad3f9bf0d996288853308cd4937"
+      },
+      "apps/cli/src/acp/session-load.ts": {
+        "git_blob_sha1": "400acd36e2de8a7d5a81891035a7e81e85c9d070"
+      },
+      "apps/cli/src/acp/session-updates.test.ts": {
+        "git_blob_sha1": "75d4c27a48a714f1b8d90de847f24f399e554855"
+      },
+      "apps/cli/src/acp/session-updates.ts": {
+        "git_blob_sha1": "43f0b01b295aeee4e5f34e2e017852fd30390a2d"
+      },
+      "apps/cli/src/acp/tool-utils.ts": {
+        "git_blob_sha1": "eb40a790496fc0ca61a6bb7e8296f9b7af1524db"
+      },
+      "apps/cli/src/main.ts": {
+        "git_blob_sha1": "5b8fddd8154f5b9f872a5f7bf189f74cb2e9f006"
+      },
+      "apps/cli/src/runtime/prompt.ts": {
+        "git_blob_sha1": "2e0fce1c37c0f7eb4e663a07d148fb24e627d361"
+      },
+      "apps/cli/src/session/session.ts": {
+        "git_blob_sha1": "3f04c2c49d151bfb67aa252d769f66d13800b0a8"
+      },
+      "apps/cli/src/utils/cline-client-identity.ts": {
+        "git_blob_sha1": "0d9c9a51243997d65b5aa6bc3687fe23f75aeb95"
+      },
+      "apps/cli/src/utils/cline-pass-errors.ts": {
+        "git_blob_sha1": "4d55d3a9404ed0f31a71d0141c4b301425956c1b"
+      },
+      "apps/cli/src/utils/generated-media.ts": {
+        "git_blob_sha1": "39f9f70935d025c31796890ded8693ab60a7dbfa"
+      },
+      "bun.lock": {
+        "git_blob_sha1": "8fed3d85f5a534f60feaf06c16f9301c253113d9"
+      },
+      "sdk/packages/agents/package.json": {
+        "git_blob_sha1": "69af19834c1f51d4976de73c90ec6a5c8227cfb7"
+      },
+      "sdk/packages/agents/src/agent-runtime.ts": {
+        "git_blob_sha1": "fde79d627a4c79aa61eb310b81ae00b9c9b9bd1d"
+      },
+      "sdk/packages/core/package.json": {
+        "git_blob_sha1": "8fa443c9365c964ca603e582073a296f92ca6fb1"
+      },
+      "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts": {
+        "git_blob_sha1": "93d1cdc5ae727a10d231f15bfea44e5310281e80"
+      },
+      "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts": {
+        "git_blob_sha1": "5ca52fb26ec27e42f5c0853a6b38b0de9ac39731"
+      },
+      "sdk/packages/core/src/services/llms/cline-recommended-models.ts": {
+        "git_blob_sha1": "f99726c4039840c5f0ba27c9729129686242b2b8"
+      },
+      "sdk/packages/core/src/services/llms/handler-factory.ts": {
+        "git_blob_sha1": "9a79626fb166385c52b5b04ff82a3c27086bbbb8"
+      },
+      "sdk/packages/core/src/services/llms/provider-defaults.ts": {
+        "git_blob_sha1": "402c3d39c8a40f7db84628849f19618a8b06dc27"
+      },
+      "sdk/packages/core/src/services/providers/local-provider-service.ts": {
+        "git_blob_sha1": "d4fbc63ae83b277230fa3bbb35d9205f973104cd"
+      },
+      "sdk/packages/llms/package.json": {
+        "git_blob_sha1": "fca3a773c863fe7c99fe348c874780c304f71e48"
+      },
+      "sdk/packages/llms/src/providers/ai-sdk.ts": {
+        "git_blob_sha1": "1376a9414745620e6af15665b7461668a4bc0f8a"
+      },
+      "sdk/packages/llms/src/providers/builtins.ts": {
+        "git_blob_sha1": "cf5e6ac424c222fd4c6d60c6e4a17dd3edea95c6"
+      },
+      "sdk/packages/llms/src/providers/cline-client-headers.ts": {
+        "git_blob_sha1": "8c4ff7b707cb4d34015225d87679b2e58ae3489c"
+      },
+      "sdk/packages/llms/src/providers/compat.ts": {
+        "git_blob_sha1": "de13ae273a9ec9078ac2bb5869825749375ef096"
+      },
+      "sdk/packages/llms/src/providers/error-classification.ts": {
+        "git_blob_sha1": "32c932536d319885c194d6bfcb1b6e98b73dba5b"
+      },
+      "sdk/packages/llms/src/providers/gateway.ts": {
+        "git_blob_sha1": "ffc97eb32246ede13207c557eb80662cb9c0e625"
+      },
+      "sdk/packages/llms/src/providers/model-capabilities.ts": {
+        "git_blob_sha1": "2108be06e766e15549e33ea1acf3d1612c383c1b"
+      },
+      "sdk/packages/llms/src/providers/model-registry.ts": {
+        "git_blob_sha1": "638a450c3d055b47ba5b8123ff670b67fbe214ed"
+      },
+      "sdk/packages/llms/src/providers/model-tools.ts": {
+        "git_blob_sha1": "fe1aa33db8b74a2edc5419513f168811e8b753d1"
+      },
+      "sdk/packages/llms/src/providers/request-headers.ts": {
+        "git_blob_sha1": "75722b681f2ac49014feb50c6b2a6daf67923260"
+      },
+      "sdk/packages/llms/src/providers/stream.ts": {
+        "git_blob_sha1": "f74ea905c8bb86559f9bd3a89a070f541837ca8c"
+      },
+      "sdk/packages/llms/src/providers/types.ts": {
+        "git_blob_sha1": "268c99b3421b1ddf5624a00749ddbd26101db7c5"
+      },
+      "sdk/packages/llms/src/providers/vendors/cline.ts": {
+        "git_blob_sha1": "6404d084fc6c4c885ef3795ee52e2d3545920086"
+      },
+      "sdk/packages/shared/package.json": {
+        "git_blob_sha1": "5880cf9671613fc7ee3a2269a41fdda4b852d383"
+      },
+      "sdk/packages/shared/src/agent.ts": {
+        "git_blob_sha1": "c5cdbef08e93ae9d0f3b44dffed5a0509979265d"
+      },
+      "sdk/packages/shared/src/llms/media.ts": {
+        "git_blob_sha1": "57bcb79c46505bc656d4d286c67f9554ebff9446"
+      },
+      "sdk/packages/shared/src/prompt/cline.ts": {
+        "git_blob_sha1": "90f34c174744a8aa6d2238d034ac52ff67cbb746"
+      },
+      "sdk/packages/shared/src/runtime/cline-client-identity.ts": {
+        "git_blob_sha1": "f7e97ec6e83ce32f66f7c5d224625e149efddb9a"
+      }
+    }
+  },
+  "hops": [
+    {
+      "from": "3.0.70",
+      "to": "3.0.71",
+      "from_source_commit": "0322bc5d510000a33ef5eadc3b4c84df7fcef285",
+      "to_source_commit": "1a5c3f84e0933268a9dba14a55a6383a6578414d",
+      "added": [
+        "apps/cli/src/acp/reasoning.test.ts"
+      ],
+      "removed": [],
+      "changed": [
+        "apps/cli/package.json",
+        "apps/cli/src/acp/acpAgent.ts",
+        "apps/cli/src/acp/index.ts",
+        "apps/cli/src/main.ts",
+        "bun.lock",
+        "sdk/packages/agents/package.json",
+        "sdk/packages/core/package.json",
+        "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts",
+        "sdk/packages/llms/package.json",
+        "sdk/packages/llms/src/providers/ai-sdk.ts",
+        "sdk/packages/llms/src/providers/builtins.ts",
+        "sdk/packages/shared/package.json",
+        "sdk/packages/shared/src/agent.ts"
+      ],
+      "identical": [
+        "apps/cli/src/acp/auth.ts",
+        "apps/cli/src/acp/auto-approve.test.ts",
+        "apps/cli/src/acp/auto-approve.ts",
+        "apps/cli/src/acp/index.test.ts",
+        "apps/cli/src/acp/organizations.test.ts",
+        "apps/cli/src/acp/organizations.ts",
+        "apps/cli/src/acp/permissions.ts",
+        "apps/cli/src/acp/session-load.test.ts",
+        "apps/cli/src/acp/session-load.ts",
+        "apps/cli/src/acp/session-updates.test.ts",
+        "apps/cli/src/acp/session-updates.ts",
+        "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/runtime/prompt.ts",
+        "apps/cli/src/session/session.ts",
+        "apps/cli/src/utils/cline-client-identity.ts",
+        "apps/cli/src/utils/cline-pass-errors.ts",
+        "apps/cli/src/utils/generated-media.ts",
+        "sdk/packages/agents/src/agent-runtime.ts",
+        "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts",
+        "sdk/packages/core/src/services/llms/cline-recommended-models.ts",
+        "sdk/packages/core/src/services/llms/handler-factory.ts",
+        "sdk/packages/core/src/services/llms/provider-defaults.ts",
+        "sdk/packages/core/src/services/providers/local-provider-service.ts",
+        "sdk/packages/llms/src/providers/cline-client-headers.ts",
+        "sdk/packages/llms/src/providers/compat.ts",
+        "sdk/packages/llms/src/providers/error-classification.ts",
+        "sdk/packages/llms/src/providers/gateway.ts",
+        "sdk/packages/llms/src/providers/model-capabilities.ts",
+        "sdk/packages/llms/src/providers/model-registry.ts",
+        "sdk/packages/llms/src/providers/model-tools.ts",
+        "sdk/packages/llms/src/providers/request-headers.ts",
+        "sdk/packages/llms/src/providers/stream.ts",
+        "sdk/packages/llms/src/providers/types.ts",
+        "sdk/packages/llms/src/providers/vendors/cline.ts",
+        "sdk/packages/shared/src/llms/media.ts",
+        "sdk/packages/shared/src/prompt/cline.ts",
+        "sdk/packages/shared/src/runtime/cline-client-identity.ts"
+      ]
+    },
+    {
+      "from": "3.0.71",
+      "to": "3.0.72",
+      "from_source_commit": "1a5c3f84e0933268a9dba14a55a6383a6578414d",
+      "to_source_commit": "d9deb814e8a7fe5d97cd6217dcb431cc06952e4a",
+      "added": [],
+      "removed": [],
+      "changed": [
+        "apps/cli/package.json",
+        "apps/cli/src/main.ts",
+        "bun.lock",
+        "sdk/packages/agents/package.json",
+        "sdk/packages/agents/src/agent-runtime.ts",
+        "sdk/packages/core/package.json",
+        "sdk/packages/llms/package.json",
+        "sdk/packages/llms/src/providers/ai-sdk.ts",
+        "sdk/packages/llms/src/providers/error-classification.ts",
+        "sdk/packages/shared/package.json"
+      ],
+      "identical": [
+        "apps/cli/src/acp/acpAgent.ts",
+        "apps/cli/src/acp/auth.ts",
+        "apps/cli/src/acp/auto-approve.test.ts",
+        "apps/cli/src/acp/auto-approve.ts",
+        "apps/cli/src/acp/index.test.ts",
+        "apps/cli/src/acp/index.ts",
+        "apps/cli/src/acp/organizations.test.ts",
+        "apps/cli/src/acp/organizations.ts",
+        "apps/cli/src/acp/permissions.ts",
+        "apps/cli/src/acp/reasoning.test.ts",
+        "apps/cli/src/acp/session-load.test.ts",
+        "apps/cli/src/acp/session-load.ts",
+        "apps/cli/src/acp/session-updates.test.ts",
+        "apps/cli/src/acp/session-updates.ts",
+        "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/runtime/prompt.ts",
+        "apps/cli/src/session/session.ts",
+        "apps/cli/src/utils/cline-client-identity.ts",
+        "apps/cli/src/utils/cline-pass-errors.ts",
+        "apps/cli/src/utils/generated-media.ts",
+        "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts",
+        "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts",
+        "sdk/packages/core/src/services/llms/cline-recommended-models.ts",
+        "sdk/packages/core/src/services/llms/handler-factory.ts",
+        "sdk/packages/core/src/services/llms/provider-defaults.ts",
+        "sdk/packages/core/src/services/providers/local-provider-service.ts",
+        "sdk/packages/llms/src/providers/builtins.ts",
+        "sdk/packages/llms/src/providers/cline-client-headers.ts",
+        "sdk/packages/llms/src/providers/compat.ts",
+        "sdk/packages/llms/src/providers/gateway.ts",
+        "sdk/packages/llms/src/providers/model-capabilities.ts",
+        "sdk/packages/llms/src/providers/model-registry.ts",
+        "sdk/packages/llms/src/providers/model-tools.ts",
+        "sdk/packages/llms/src/providers/request-headers.ts",
+        "sdk/packages/llms/src/providers/stream.ts",
+        "sdk/packages/llms/src/providers/types.ts",
+        "sdk/packages/llms/src/providers/vendors/cline.ts",
+        "sdk/packages/shared/src/agent.ts",
+        "sdk/packages/shared/src/llms/media.ts",
+        "sdk/packages/shared/src/prompt/cline.ts",
+        "sdk/packages/shared/src/runtime/cline-client-identity.ts"
+      ]
+    },
+    {
+      "from": "3.0.72",
+      "to": "3.0.73",
+      "from_source_commit": "d9deb814e8a7fe5d97cd6217dcb431cc06952e4a",
+      "to_source_commit": "c718573538d76310f464541617ab665108a6c999",
+      "added": [],
+      "removed": [],
+      "changed": [
+        "apps/cli/package.json",
+        "bun.lock",
+        "sdk/packages/agents/package.json",
+        "sdk/packages/core/package.json",
+        "sdk/packages/llms/package.json",
+        "sdk/packages/llms/src/providers/builtins.ts",
+        "sdk/packages/shared/package.json"
+      ],
+      "identical": [
+        "apps/cli/src/acp/acpAgent.ts",
+        "apps/cli/src/acp/auth.ts",
+        "apps/cli/src/acp/auto-approve.test.ts",
+        "apps/cli/src/acp/auto-approve.ts",
+        "apps/cli/src/acp/index.test.ts",
+        "apps/cli/src/acp/index.ts",
+        "apps/cli/src/acp/organizations.test.ts",
+        "apps/cli/src/acp/organizations.ts",
+        "apps/cli/src/acp/permissions.ts",
+        "apps/cli/src/acp/reasoning.test.ts",
+        "apps/cli/src/acp/session-load.test.ts",
+        "apps/cli/src/acp/session-load.ts",
+        "apps/cli/src/acp/session-updates.test.ts",
+        "apps/cli/src/acp/session-updates.ts",
+        "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/main.ts",
+        "apps/cli/src/runtime/prompt.ts",
+        "apps/cli/src/session/session.ts",
+        "apps/cli/src/utils/cline-client-identity.ts",
+        "apps/cli/src/utils/cline-pass-errors.ts",
+        "apps/cli/src/utils/generated-media.ts",
+        "sdk/packages/agents/src/agent-runtime.ts",
+        "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts",
+        "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts",
+        "sdk/packages/core/src/services/llms/cline-recommended-models.ts",
+        "sdk/packages/core/src/services/llms/handler-factory.ts",
+        "sdk/packages/core/src/services/llms/provider-defaults.ts",
+        "sdk/packages/core/src/services/providers/local-provider-service.ts",
+        "sdk/packages/llms/src/providers/ai-sdk.ts",
+        "sdk/packages/llms/src/providers/cline-client-headers.ts",
+        "sdk/packages/llms/src/providers/compat.ts",
+        "sdk/packages/llms/src/providers/error-classification.ts",
+        "sdk/packages/llms/src/providers/gateway.ts",
+        "sdk/packages/llms/src/providers/model-capabilities.ts",
+        "sdk/packages/llms/src/providers/model-registry.ts",
+        "sdk/packages/llms/src/providers/model-tools.ts",
+        "sdk/packages/llms/src/providers/request-headers.ts",
+        "sdk/packages/llms/src/providers/stream.ts",
+        "sdk/packages/llms/src/providers/types.ts",
+        "sdk/packages/llms/src/providers/vendors/cline.ts",
+        "sdk/packages/shared/src/agent.ts",
+        "sdk/packages/shared/src/llms/media.ts",
+        "sdk/packages/shared/src/prompt/cline.ts",
+        "sdk/packages/shared/src/runtime/cline-client-identity.ts"
+      ]
+    },
+    {
+      "from": "3.0.73",
+      "to": "3.0.74",
+      "from_source_commit": "c718573538d76310f464541617ab665108a6c999",
+      "to_source_commit": "071e1b25b48f9ef5dff7fc32085e6a16f02bf02e",
+      "added": [
+        "apps/cli/src/acp/config-options.test.ts",
+        "apps/cli/src/acp/config-options.ts"
+      ],
+      "removed": [],
+      "changed": [
+        "apps/cli/package.json",
+        "apps/cli/src/acp/acpAgent.ts",
+        "apps/cli/src/acp/organizations.test.ts",
+        "apps/cli/src/acp/organizations.ts",
+        "bun.lock",
+        "sdk/packages/agents/package.json",
+        "sdk/packages/agents/src/agent-runtime.ts",
+        "sdk/packages/core/package.json",
+        "sdk/packages/core/src/runtime/orchestration/runtime-event-adapter.ts",
+        "sdk/packages/core/src/runtime/orchestration/session-runtime-orchestrator.ts",
+        "sdk/packages/core/src/services/llms/cline-recommended-models.ts",
+        "sdk/packages/llms/package.json",
+        "sdk/packages/llms/src/providers/ai-sdk.ts",
+        "sdk/packages/llms/src/providers/builtins.ts",
+        "sdk/packages/shared/package.json",
+        "sdk/packages/shared/src/agent.ts"
+      ],
+      "identical": [
+        "apps/cli/src/acp/auth.ts",
+        "apps/cli/src/acp/auto-approve.test.ts",
+        "apps/cli/src/acp/auto-approve.ts",
+        "apps/cli/src/acp/index.test.ts",
+        "apps/cli/src/acp/index.ts",
+        "apps/cli/src/acp/permissions.ts",
+        "apps/cli/src/acp/reasoning.test.ts",
+        "apps/cli/src/acp/session-load.test.ts",
+        "apps/cli/src/acp/session-load.ts",
+        "apps/cli/src/acp/session-updates.test.ts",
+        "apps/cli/src/acp/session-updates.ts",
+        "apps/cli/src/acp/tool-utils.ts",
+        "apps/cli/src/main.ts",
+        "apps/cli/src/runtime/prompt.ts",
+        "apps/cli/src/session/session.ts",
+        "apps/cli/src/utils/cline-client-identity.ts",
+        "apps/cli/src/utils/cline-pass-errors.ts",
+        "apps/cli/src/utils/generated-media.ts",
+        "sdk/packages/core/src/services/llms/handler-factory.ts",
+        "sdk/packages/core/src/services/llms/provider-defaults.ts",
+        "sdk/packages/core/src/services/providers/local-provider-service.ts",
+        "sdk/packages/llms/src/providers/cline-client-headers.ts",
+        "sdk/packages/llms/src/providers/compat.ts",
+        "sdk/packages/llms/src/providers/error-classification.ts",
+        "sdk/packages/llms/src/providers/gateway.ts",
+        "sdk/packages/llms/src/providers/model-capabilities.ts",
+        "sdk/packages/llms/src/providers/model-registry.ts",
+        "sdk/packages/llms/src/providers/model-tools.ts",
+        "sdk/packages/llms/src/providers/request-headers.ts",
+        "sdk/packages/llms/src/providers/stream.ts",
+        "sdk/packages/llms/src/providers/types.ts",
+        "sdk/packages/llms/src/providers/vendors/cline.ts",
+        "sdk/packages/shared/src/llms/media.ts",
+        "sdk/packages/shared/src/prompt/cline.ts",
+        "sdk/packages/shared/src/runtime/cline-client-identity.ts"
+      ]
+    }
+  ]
+}

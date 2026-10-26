@@ -195,8 +195,8 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.87.0`, excluding `0.58.0`, over
-  ACP v1 stdio (Research 373); stable newer versions remain visible and
+  sessions for Claude Agent ACP `0.53.0..=0.96.0`, excluding `0.58.0`, over
+  ACP v1 stdio (Research 446); stable newer versions remain visible and
   unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
@@ -255,20 +255,22 @@ OpenHands adds a package without a production route.
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
 - `swallowtail-adapter-cline` implements maintained ACP v1 stdio from npm
-  `3.0.55..=3.0.70` except unpublished `3.0.59` on `cline --acp` (Research
-  397). Its separate maintained headless envelope-NDJSON window covers the
-  same package points on
+  `3.0.55..=3.0.74` except unpublished `3.0.59` on `cline --acp` (Research
+  397, Research 457). Its separate maintained headless envelope-NDJSON window
+  covers `3.0.55..=3.0.70` except unpublished `3.0.59` on
   `cline --json --auto-approve false` with optional portable
   `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
   flattening one family onto the other stay out. Neither route exposes portable
-  reasoning selection: ACP parses then discards `--thinking` and hard-codes
-  thinking off, while headless resolves and may normalize the value against an
-  unselected provider/model and emits no selected-argv acknowledgement.
+  reasoning selection: from `3.0.71` ACP applies explicit `--thinking`, and
+  Swallowtail's selected argv remains `cline --acp` with no extra flag so
+  thinking stays off, while headless resolves and may normalize the value
+  against an unselected provider/model and emits no selected-argv
+  acknowledgement.
   Headless Plan is provider behavior, not isolation; omission keeps the current
   argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
 - `swallowtail-adapter-goose` implements Goose GitHub ACP at maintained exact
-  points `1.50.1`, `1.51.0`, `1.52.0`, and `1.53.0` on
+  points `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0` on
   `goose acp`, with typed provider-authentication failures bound by the
   `goose.acp.stdio-v2.auth-required` behavior revision. Credentials stay
   host-owned local config.
@@ -321,7 +323,7 @@ OpenHands adds a package without a production route.
   `--workspace` / `--model`, `session/load`, and field `content` stay
   out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.18.35` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.19.4` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
   guaranteed support; a separate 61-release deletion corpus freezes two
@@ -330,9 +332,10 @@ OpenHands adds a package without a production route.
   uncertainty without yet advertising production deletion. The same crate
   implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
   stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
-  and maintained `1.18.31..=1.18.35`, ProviderSupported host-owned login
-  without a credential lease, one admitted stdio MCP name, and URL-plus-header
-  MCP modelled behind the contract gate. The HTTP and ACP axes stay unflattened.
+  and maintained `1.18.31..=1.18.35` and `1.19.0..=1.19.4`, ProviderSupported
+  host-owned login without a credential lease, one admitted stdio MCP name,
+  and URL-plus-header MCP modelled behind the contract gate. The HTTP and ACP
+  axes stay unflattened.
 - `swallowtail-adapter-anthropic` implements provider-supported `2023-06-01`
   Models catalogue and Messages direct inference over host-approved HTTP/SSE,
   including exact `claude-opus-4-7` `low` / `medium` / `high` / `xhigh` / `max`
@@ -417,15 +420,15 @@ OpenHands adds a package without a production route.
   persistent new, load-with-replay, and replay-free resume gated on the exact
   host-leased cwd
 - `swallowtail-adapter-oh-my-pi` implements the distinct OMP `17.2.9..=17.4.2`
-  (retained, deprecated) and `18.0.0..=18.8.3` (maintained) package segments
+  (retained, deprecated) and `18.0.0..=18.12.6` (maintained) package segments
   and `omp` executable over negotiated RPC v2 JSONL stdio. The two segments
   carry separate adapter-private behavior revisions. It uses OMP local
   auth without a Swallowtail credential lease, binds exact provider, model,
   and optional reasoning selection, and owns bounded physical/logical frame
   decoding. Its first catalogue, run, and session subset omits write tools,
   permission exchange, session switching, host-tool injection, and subagent
-  authority. Official stable `18.8.4` appeared after identity freeze and
-  remains `UnverifiedNewer` without widening the `18.x` claim (Research 382).
+  authority. Official stable `18.12.6` extends the same `18.x` behavior
+  (Research 447). `18.12.7` stays `UnverifiedNewer`.
 - `swallowtail-adapter-muse` implements exact signed Muse Code payload
   `0.2.1-R1215.1` as one read-only `muse-code.headless` structured-run route.
   Its prepared facade binds provider-owned local Meta account state without a
@@ -484,9 +487,13 @@ OpenHands adds a package without a production route.
   the ACP and headless routes. Research 395 separately qualifies ACP through
   `2026.09.26-dd393fe`, `2026.09.28-64d2043`, and `2026.10.01-14929f9`.
   Headless retains its earlier points and adds those same exact builds with
-  Research 399. Research 393 qualifies only
+  Research 399. Research 393 qualifies
   `cursor-agent.catalogue` at the exact `2026.09.26-dd393fe`,
-  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points. Each route keeps its
+  `2026.09.28-64d2043`, and `2026.10.01-14929f9` points. Research 451 extends
+  that catalogue claim with `2026.10.14-941492e`, `2026.10.16-e3cb207`,
+  `2026.10.18-ea085cb`, `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`, and
+  rejects superseded `2026.10.14-0f9edde`. ACP and headless remain at
+  `2026.10.01-14929f9`. Each route keeps its
   own claim and exact points; calendar gaps are not inferred. The three routes are:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The
@@ -711,13 +718,14 @@ Crate status:
   `build`, bounded stream parsing, namespaced unknown observations,
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-cline` — realized for separate maintained ACP and
-  headless windows `3.0.55..=3.0.70`, excluding unpublished `3.0.59`, with
+- `swallowtail-adapter-cline` — realized for a maintained ACP window
+  `3.0.55..=3.0.74` and a separate maintained headless window
+  `3.0.55..=3.0.70`, excluding unpublished `3.0.59` from both, with
   separate constructors and claims (`AllowUnverified` for ACP, `QualifiedOnly`
   for headless), local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.
 - `swallowtail-adapter-goose` — realized for GitHub ACP exact points `1.50.1`,
-  `1.51.0`, `1.52.0`, and `1.53.0` with maintained claim, typed auth-failure
+  `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0` with maintained claim, typed auth-failure
   binding, local-config access,
   and no credential lease.
   The package remains an unreleased additive candidate after `v0.3.2`.
@@ -1060,7 +1068,18 @@ session directory. That evidence supports provider-data deletion with
 provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
 `0.87.0` add private behavior revisions without changing deletion truth.
-Later stable versions remain visible and unverified.
+Research 446 carries the same consumer close and stored-delete results through
+`0.96.0`. From `0.89.0`, `closeSession` of a session that is not loaded returns
+an empty success. The same hop already routes selected non-AIR
+`session/delete` through added `dist/session-index/connection.js` to Agent SDK
+`deleteSession`; `service.js` is not selected then. Through `0.90.0`, delete of
+an absent transcript still throws for that client. From `0.91.0`,
+`dist/session-index/connection.js` calls `deleteSessionIfStored` and
+`service.js` swallows the SDK not-found, so `session/delete` of an absent
+transcript returns an empty success through `0.96.0`. Live close of a session
+in memory and delete of a stored transcript still return an empty object. The
+empty close or unstored-delete success adds no stronger deletion claim. Later
+stable versions remain visible and unverified.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
 requires independently advertised close and delete capabilities before session
@@ -1175,13 +1194,13 @@ follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI and artifact-tree evidence for 76 stable releases from `1.14.48`
-through `1.18.35` closes six selected operations through every transitive local schema
-reference. Nineteen closed surfaces map to 21 contiguous segments so
+Tagged OpenAPI and artifact-tree evidence for 81 stable releases from `1.14.48`
+through `1.19.4` closes six selected operations through every transitive local schema
+reference. Nineteen closed surfaces map to 22 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.18.35` may execute as unverified through
+release. Stable exact releases above `1.19.4` may execute as unverified through
 surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.
@@ -1244,16 +1263,19 @@ shape. Swallowtail does not expose direct bash or extensions, and retry
 evidence still fails under the disabled-retry policy. Research 383 qualifies
 published hops `0.87.0` through `1.1.0`: `0.87.0..=0.87.1` retain
 message-update behavior; `0.99.0..=0.99.2` and `1.0.0..=1.0.4` add private
-command-disposition milestones; maintained `1.1.0` adds the private
-`agent_settled.aborted` milestone. The claim remains
+command-disposition milestones; `1.1.0` adds the private
+`agent_settled.aborted` milestone. Research 455 keeps that newest revision
+Maintained throughout exact `1.1.0`, `1.2.0`, `1.3.0`, and `1.4.0`. `dist/modes/rpc`
+is byte-identical across those points. The claim remains
 `pi.rpc.package-window-2`; strict-LF framing, selected commands, public
 lifecycle operations, permission posture and exclusions are unchanged. The
 adapter fails a prompt marked `handled` because Pi starts no run, and rejects
 handled steering or follow-up because Pi consumed the message without queuing
-it. At `1.1.0`, `aborted=true` maps to existing terminal cancellation while
-`false` keeps the existing completion and usage checks. Older qualified points
-keep the field optional. Unpublished and unqualified holes remain incompatible,
-and later stable points stay visible unverified. One restrictive policy binds
+it. From `1.1.0` through `1.4.0`, `aborted=true` maps to existing terminal
+cancellation while `false` keeps the existing completion and usage checks.
+Older qualified points keep the field optional. Unpublished and unqualified
+holes remain incompatible, including `1.1.1+`, `1.2.1+`, and `1.3.1+`, and
+stable points after `1.4.0` stay visible unverified. One restrictive policy binds
 one active operation, two completed prompts, one pending steering message, one
 pending follow-up, no ambient customization, no update, telemetry, package, or
 automatic-retry action, and explicit `AmbientHost` read intent without a

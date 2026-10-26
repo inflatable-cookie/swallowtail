@@ -82,11 +82,8 @@ fn current_point_extends_only_the_existing_acp_v2_segment() {
     let claim_fixture = &identity["claim"];
     let claim = opencode_acp_claim();
 
-    assert_eq!(
-        OPENCODE_ACP_LATEST_QUALIFIED_VERSION,
-        window["new_ceiling"].as_str().unwrap()
-    );
     assert_eq!(window["previous_ceiling"], "1.18.32");
+    assert_eq!(window["new_ceiling"], "1.18.35");
     assert_eq!(window["baseline"], "1.18.18");
     assert_eq!(window["v1_segment"], "1.18.18..=1.18.30");
     assert_eq!(window["v2_segment"], "1.18.31..=1.18.35");
@@ -115,11 +112,6 @@ fn current_point_extends_only_the_existing_acp_v2_segment() {
             InterfaceCompatibilityAssessment::Qualified(_)
         ));
     }
-    let next = opencode_acp_binding("1.18.36").expect("next synthetic stable version");
-    assert!(matches!(
-        claim.assess(next.version()),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
 }
 
 #[test]

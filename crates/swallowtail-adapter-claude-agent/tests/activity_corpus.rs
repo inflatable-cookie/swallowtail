@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.87.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.96.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -297,6 +297,76 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
             "7d0d20d1c558c68fafeaf81f4d6f92f86ececb7c28b4679d0873b1b29b4ac8e5",
             "failed-tool-call-update-maps-to-existing-status",
         ),
+        (
+            "0.88.0",
+            "2026-10-08T12:19:49.210Z",
+            "d43fec3fa3118e88ff8a8ed99b85d2a5f444e538",
+            "790992f7c7387d78a5324fcfcbf9eb79a811ebd68eb3d6161a93de34b28327a0",
+            "agent-sdk-bump-keeps-selected-activity-contract",
+        ),
+        (
+            "0.89.0",
+            "2026-10-09T22:06:29.180Z",
+            "96b6b4f478c5276b727c0a1d3cc3717da2d9e9ae",
+            "f00fea811d7144360a6e70bc87e38e36d00a807d15825a8179e2458520b71784",
+            "air-session-index-unmapped-missing-close-empty-success",
+        ),
+        (
+            "0.89.1",
+            "2026-10-10T09:11:59.285Z",
+            "4e1fc1e8df2b9af3b1b2d6880ba90c5862283ba8",
+            "f00fea811d7144360a6e70bc87e38e36d00a807d15825a8179e2458520b71784",
+            "selected-acp-v1-activity-contract-unchanged",
+        ),
+        (
+            "0.90.0",
+            "2026-10-13T16:57:17.025Z",
+            "7f7a1404a15024a45e62b699ced4de3fb7a814a2",
+            "e3bbdc3399a2d702839d6e350b5b798fbe6e61d9ef916d38ccc1bc3abab15e3e",
+            "cancel-closes-open-tool-calls-keeps-cancelled",
+        ),
+        (
+            "0.91.0",
+            "2026-10-15T12:25:22.910Z",
+            "c0af592d252e6bd072b53407f618a9dd4cd02797",
+            "2801cde1baea8dd2e69e0d9903cfeee1097750b00d52147cfc48368f504935ee",
+            "unstored-delete-empty-success-and-gateway-narrowing-unmapped",
+        ),
+        (
+            "0.92.0",
+            "2026-10-16T12:42:02.948Z",
+            "af3d7f9335dfe8fc2ea5320649f72b34d3cbf410",
+            "8e2fca3efc966c4ff78047c3aa49189ea5628b95412917a566a2e2ce62257276",
+            "prompt-suggestions-meta-unmapped",
+        ),
+        (
+            "0.93.0",
+            "2026-10-16T19:21:32.910Z",
+            "dbf386d8d35d2bc30f17f11f15d1a4305c9d391f",
+            "cc9c6a29633a0219077228733480d15f4c79ce9946b546c66752874a28069a15",
+            "remote-control-command-unmapped",
+        ),
+        (
+            "0.94.0",
+            "2026-10-19T21:31:04.558Z",
+            "7bcbfc7a5ca7ab9c7eece4f0749ccaf49c7ba7e1",
+            "4fc4f4902ad4859666620635963abec6eb87263cf78b9fd4adb11708620745a4",
+            "acp-sdk-2-import-path-keeps-v1-wire",
+        ),
+        (
+            "0.95.0",
+            "2026-10-23T20:00:57.929Z",
+            "ebfbfbdaa9c2a6a8bd9eb0a4965b521009152350",
+            "be0ebf68bb422a7c0867db8092e99e601eca0390d22f33f385f76b123e296243",
+            "v1-client-stays-v1-async-tasks-capability-gated",
+        ),
+        (
+            "0.96.0",
+            "2026-10-26T09:53:45.910Z",
+            "f6958db1ee8d3e9ead6767a3a294f98b9a21adb9",
+            "a748438ac05553478285a1bb1bfe47c6adea1d47b97b93b4a55a411ea69bbeaa",
+            "native-subagent-model-reports-unmapped",
+        ),
     ];
     let releases = range["current_external_releases"]
         .as_array()
@@ -310,7 +380,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_eq!(release["tag_commit"], tag_commit);
         assert_eq!(release["source_sha256"], source_sha256);
         assert_eq!(release["classification"], "qualified");
-        assert_eq!(release["profile"], "0.87.0-guarantee");
+        assert_eq!(release["profile"], "0.96.0-guarantee");
         assert_eq!(release["activity_delta"], activity_delta);
         assert_sha(release, "tag_commit", 40);
         assert_sha(release, "source_sha256", 64);

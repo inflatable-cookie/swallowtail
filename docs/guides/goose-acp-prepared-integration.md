@@ -22,17 +22,17 @@ Preparation requires all of the following:
 
 - exact release axis `goose.release`
 - one of the qualified exact GitHub releases `1.50.1`, `1.51.0`, `1.52.0`,
-  or `1.53.0`
+  `1.53.0`, `1.54.0`, `1.55.0`, or `1.56.0`
 - host-approved `goose` executable and isolated environment
 - `goose_local_config_access_profile` with no credential reference
 - working resource, plus host services for task, process, and working-resource
   ownership
 
-The maintained claim preserves baseline `1.50.1` and qualifies four exact
-published points: `1.50.1`, `1.51.0`, `1.52.0`, and `1.53.0`, all on
-`goose.acp.stdio-v2.auth-required`. Unpublished interstitial points remain
-incompatible. Later stable releases may be classified as `UnverifiedNewer`;
-that status does not make them qualified.
+The maintained claim preserves baseline `1.50.1` and qualifies seven exact
+published points: `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`,
+and `1.56.0`, all on `goose.acp.stdio-v2.auth-required`. Unpublished
+interstitial points remain incompatible. Later stable releases may be
+classified as `UnverifiedNewer`; that status does not make them qualified.
 
 Swallowtail does not install Goose, search `PATH`, run `goose configure`, bind
 `GOOSE_PROVIDER` / `GOOSE_MODEL` as Swallowtail selection, or default

@@ -6,6 +6,16 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify only `cline.acp` from its `3.0.70` ceiling through official npm
+  `latest` `3.0.74`, keeping the `3.0.55` baseline and unpublished `3.0.59`
+  exclusion. Research 457 freezes hops `3.0.71` through `3.0.74`, wrapper and
+  Darwin ARM64 trees, six-platform SLSA identities, and the selected ACP source
+  deltas. Mode stays `plan`/`act`, the model option stays `id=model`, and
+  reasoning stays off without `--thinking`. At `3.0.74` platform packages embed
+  hub and plugin assets into `bin/cline`. Preserve `cline.acp.stdio-v1` and the
+  Q-006 `load_session` gate. `cline.headless` stays `QualifiedOnly` through
+  `3.0.70`. No artifact was executed and no provider prompt, live session,
+  credential, installation, or host update occurred.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

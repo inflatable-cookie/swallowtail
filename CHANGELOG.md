@@ -30,6 +30,14 @@ annotated Git tags from the canonical repository.
   `1.0.4` stay. Unpublished `1.0.71` stays `UnverifiedNewer`. The catalogue
   claim, the registered-tool capsules, and the HTTP MCP pin stay on their
   existing bounds.
+- qualify `goose.acp` from its `1.53.0` ceiling through official GitHub stable
+  `1.56.0`. Research 456 freezes the three published successor hops, complete
+  tag trees, and Darwin ARM64 asset identities. The claim keeps baseline
+  `1.50.1`, claim id `goose.acp.release-window-1`, behavior revision
+  `goose.acp.stdio-v2.auth-required`, and `AllowUnverified`. Exact points are
+  `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`, and `1.56.0`.
+  Unpublished interstitial points stay incompatible. `1.56.1` is the first
+  `UnverifiedNewer` fixture.
 
 ### Security
 - move the locked `tokio` from `1.53.1` to `1.53.3` for RUSTSEC-2026-0386,

@@ -493,7 +493,9 @@ OpenHands adds a package without a production route.
   that catalogue claim with `2026.10.14-941492e`, `2026.10.16-e3cb207`,
   `2026.10.18-ea085cb`, `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`, and
   rejects superseded `2026.10.14-0f9edde`. ACP and headless remain at
-  `2026.10.01-14929f9`. Each route keeps its
+  `2026.10.01-14929f9`; Research 450 records the newer selected-handler,
+  callback/cancellation/validation, and executing-runtime proof stop and
+  follow-up requirement. Each route keeps its
   own claim and exact points; calendar gaps are not inferred. The three routes are:
   authenticated catalogue,
   ACP v1 interactive sessions, and headless stream-JSON structured runs. The

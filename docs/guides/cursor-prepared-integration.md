@@ -59,6 +59,11 @@ point. Research 451 adds the five later catalogue points through
 inferred, and a qualified date with a different opaque build is rejected.
 Later dates remain visibly unverified newer on each route.
 
+Research 450 retains newer ACP/headless artifact identities but stops their
+qualification at `2026.10.01-14929f9` pending selected handler, callback/cancel,
+validation, and executing-runtime evidence. See its
+[follow-up proof requirements](../research/450-cursor-agent-acp-headless-2026-10-22-identity.md#finite-stop-and-follow-up-proof).
+
 ## Prepare The Installation
 
 Create `CursorPreparationInput` with one selected driver and exact instance,

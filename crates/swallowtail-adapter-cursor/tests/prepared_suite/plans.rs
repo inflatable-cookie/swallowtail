@@ -131,6 +131,57 @@ fn catalogue_operation_runs_at_every_exact_qualified_release() {
 }
 
 #[test]
+fn acp_session_prepares_and_opens_at_every_exact_qualified_release() {
+    for release in QUALIFIED_RELEASES {
+        let host_id = host_id();
+        let integration = prepare_release(
+            CursorPreparedDriver::Acp,
+            host_id.clone(),
+            &format!("{release}\n"),
+        )
+        .unwrap_or_else(|_| panic!("ACP prepares at {release}"));
+        let CursorPreparedIntegration::Acp(acp) = integration else {
+            panic!("ACP route remains explicit at {release}");
+        };
+        let prepared = acp
+            .prepare_session(CursorAcpSessionProfileInput::new(
+                request_id("acp-currentness"),
+                working_resource(),
+            ))
+            .unwrap_or_else(|_| panic!("ACP session prepares at {release}"));
+        assert_eq!(
+            prepared
+                .evidence()
+                .binding()
+                .driver_identity()
+                .id()
+                .as_str(),
+            "swallowtail.cursor-agent.acp",
+            "{release}"
+        );
+        assert_eq!(
+            prepared.request().access_policy(),
+            &swallowtail_core::SessionAccessPolicy::ambient_harness(ResourceAccess::ReadWrite),
+            "{release}"
+        );
+
+        let handshake = AcpHandshakeHost::new();
+        let services = handshake.services(host_id);
+        let session = block_on(prepared.open_session(services.clone()))
+            .unwrap_or_else(|error| panic!("prepared ACP session opens at {release}: {error:?}"));
+        assert_eq!(handshake.arguments(), ["acp"], "{release}");
+        assert_eq!(
+            block_on(session.close(
+                SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(10_000))),
+                services,
+            )),
+            CleanupOutcome::Clean,
+            "{release}"
+        );
+    }
+}
+
+#[test]
 fn headless_preparation_keeps_read_and_write_authority_distinct() {
     for access in [ResourceAccess::Read, ResourceAccess::ReadWrite] {
         let prepared = prepare(CursorPreparedDriver::Headless, host_id()).expect("prepares");

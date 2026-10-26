@@ -145,27 +145,35 @@ fn ask_selection_rejects_read_write_authority_before_process_work() {
 
 #[test]
 fn ask_selection_rejects_unqualified_releases_before_process_work() {
-    let release = "2026.10.02-a1b2c3d";
-    let host_id = local_host();
-    let host = FixtureHost::completed([stdout(&fixture())]);
-    let failure = block_on(ask_driver().start_run(
-        plan::headless_plan_with_release(
-            host_id.clone(),
-            "cursor.fixture.executable",
-            ResourceAccess::Read,
-            release,
-        ),
-        request("ask-unqualified"),
-        host.services(host_id),
-    ))
-    .err()
-    .unwrap_or_else(|| panic!("ask rejects {release}"));
-    assert_eq!(
-        failure.diagnostic().code(),
-        "swallowtail.cursor.headless.ask_mode_unqualified",
-        "{release}"
-    );
-    assert!(!host.started(), "{release}");
+    for release in [
+        "2026.10.02-a1b2c3d",
+        "2026.10.14-941492e",
+        "2026.10.16-e3cb207",
+        "2026.10.18-ea085cb",
+        "2026.10.19-6bbf2c4",
+        "2026.10.22-27dcf5f",
+    ] {
+        let host_id = local_host();
+        let host = FixtureHost::completed([stdout(&fixture())]);
+        let failure = block_on(ask_driver().start_run(
+            plan::headless_plan_with_release(
+                host_id.clone(),
+                "cursor.fixture.executable",
+                ResourceAccess::Read,
+                release,
+            ),
+            request("ask-unqualified"),
+            host.services(host_id),
+        ))
+        .err()
+        .unwrap_or_else(|| panic!("ask rejects {release}"));
+        assert_eq!(
+            failure.diagnostic().code(),
+            "swallowtail.cursor.headless.ask_mode_unqualified",
+            "{release}"
+        );
+        assert!(!host.started(), "{release}");
+    }
 }
 
 /// Proves argv composition only. The shared success fixture is bound to

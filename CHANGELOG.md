@@ -22,11 +22,19 @@ annotated Git tags from the canonical repository.
   Keep the baseline, claim, behavior revision, prior points, and gaps. Add
   `2026.10.14-941492e`, `2026.10.16-e3cb207`, `2026.10.18-ea085cb`,
   `2026.10.19-6bbf2c4`, and `2026.10.22-27dcf5f`. The superseded same-date
-  build `2026.10.14-0f9edde` stays rejected. ACP and headless remain at
-  `2026.10.01-14929f9`. The `models` command, account options, row mapping,
-  failure boundary, and process lifecycle are unchanged. No archive
-  execution, authenticated catalogue, provider prompt, credential use,
-  installation, or host update occurred.
+  build `2026.10.14-0f9edde` stays rejected. The `models` command, account
+  options, row mapping, failure boundary, and process lifecycle are unchanged.
+  No archive execution, authenticated catalogue, provider prompt, credential
+  use, installation, or host update occurred.
+- retain `cursor-agent.acp` and `cursor-agent.headless` through
+  `2026.10.01-14929f9`. Research 450 retains newer artifact identity evidence,
+  but help/options, wire summaries, and SDK versions do not close the selected
+  handler, permission, cancellation, validation, and runtime impact gates.
+  Qualification through `2026.10.22-27dcf5f` needs the route-specific proof
+  described there. Baselines, claim ids, behavior revisions, historical gaps,
+  and `AllowUnverified` stay. Catalogue remains independently qualified through
+  `2026.10.22-27dcf5f` (Research 451); its exact-build gate still rejects
+  superseded `2026.10.14-0f9edde`.
 - qualify `opencode.http` and `opencode.acp` through official stable `1.19.4`
   (Research 453). Both claims stay `AllowUnverified` and unflattened.
   `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and adds

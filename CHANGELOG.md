@@ -6,6 +6,13 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- stop `mistral-vibe.headless` at the `2.26.0` ceiling. Official PyPI and
+  GitHub stable are `3.0.2`. Research 458 freezes hops `2.26.1`, `3.0.0`,
+  `3.0.1`, and `3.0.2`. `2.26.1` removes the mapped turn-limit stderr and
+  exits 3. `3.0.0` removes `--legacy-harness`, the builtin `plan` agent,
+  and the Python streaming serializer, and `vibe` always execs the Rust
+  CLI. `~/.vibe` / `VIBE_HOME` does not move. The claim, behavior revision,
+  and `AllowUnverified` posture stay. No artifact was executed.
 - qualify `oh-my-pi.rpc` through official stable `18.12.6` on the existing
   `oh-my-pi.rpc-v2-v18.0.0` revision (Research 447). npm `latest` and GitHub
   latest stable agree. Maintained `18.0.0..=18.12.6` keeps claim id

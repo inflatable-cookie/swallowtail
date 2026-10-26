@@ -1,0 +1,802 @@
+{
+  "scope": "pi.rpc only; no Pi SDK sidecar, Oh My Pi, provider API or public operation claim",
+  "previous_qualified_ceiling": "1.1.0",
+  "current_official_stable": "1.4.0",
+  "official_channels": {
+    "npm_latest": "1.4.0",
+    "github_latest_tag": "v1.4.0",
+    "channels_agree": true
+  },
+  "exact_published_channel_hops": [
+    "1.1.0",
+    "1.2.0",
+    "1.3.0",
+    "1.4.0"
+  ],
+  "runtime_identity": {
+    "host_installed_or_updated": false,
+    "host_pi_on_path": false,
+    "npm_engine_requirement": ">=22.19.0",
+    "official_artifact_executed": false
+  },
+  "complete_tree_inventory": "dist-inventory.json",
+  "selected_invocation": {
+    "session": "fresh-only; --no-session",
+    "catalogue": "--no-tools and --no-session",
+    "extension_paths": [],
+    "selected_mode": "rpc",
+    "upstream_rpc_command_count": 33,
+    "upstream_rpc_commands": [
+      "prompt",
+      "steer",
+      "follow_up",
+      "abort",
+      "clear_queue",
+      "new_session",
+      "get_state",
+      "set_model",
+      "cycle_model",
+      "get_available_models",
+      "set_thinking_level",
+      "cycle_thinking_level",
+      "get_available_thinking_levels",
+      "set_steering_mode",
+      "set_follow_up_mode",
+      "compact",
+      "set_auto_compaction",
+      "set_auto_retry",
+      "abort_retry",
+      "bash",
+      "abort_bash",
+      "get_session_stats",
+      "export_html",
+      "switch_session",
+      "fork",
+      "clone",
+      "get_fork_messages",
+      "get_entries",
+      "get_tree",
+      "get_last_assistant_text",
+      "set_session_name",
+      "get_messages",
+      "get_commands"
+    ],
+    "adapter_selected_rpc_commands": [
+      "prompt",
+      "steer",
+      "follow_up",
+      "abort",
+      "get_state",
+      "get_available_models",
+      "set_auto_compaction",
+      "set_auto_retry",
+      "set_steering_mode",
+      "set_follow_up_mode"
+    ],
+    "adapter_selected_rpc_absences": [
+      "bash",
+      "switch_session",
+      "fork",
+      "clone",
+      "extensions",
+      "clear_queue",
+      "compact"
+    ],
+    "flags_stable_across_hops": [
+      "--mode",
+      "--no-session",
+      "--offline",
+      "--provider",
+      "--model",
+      "--tools",
+      "--no-extensions",
+      "--no-skills",
+      "--no-prompt-templates",
+      "--no-themes",
+      "--no-context-files"
+    ],
+    "tool_allowlist": "read,grep,find,ls"
+  },
+  "mapped_behavior": {
+    "command_dispositions": {
+      "introduced": "0.99.0",
+      "unchanged_through": "1.4.0",
+      "prompt_success_values": [
+        "handled",
+        "queued",
+        "started"
+      ],
+      "steer_and_follow_up_success_values": [
+        "handled",
+        "queued"
+      ]
+    },
+    "agent_settled_aborted": {
+      "introduced": "1.1.0",
+      "unchanged_through": "1.4.0",
+      "shape": "agent_settled.aborted remains a required boolean; RPC forwarding is byte-identical"
+    },
+    "executed_rpc_mode": "the selected pi --mode rpc path executes the bundled CLI chunk; runRpcMode is inlined there. dist/modes/rpc is the unbundled copy. The executed-wire proof is rpc-mode.ts sourcesContent matching each GitHub tag.",
+    "rpc_tree_byte_identical": {
+      "versions": [
+        "1.1.0",
+        "1.2.0",
+        "1.3.0",
+        "1.4.0"
+      ],
+      "files": {
+        "dist/modes/rpc/jsonl.d.ts": "21733fb8506c4b88ce392352521260608a904a5c54dadfa7fd181be25712e4fe",
+        "dist/modes/rpc/jsonl.d.ts.map": "bdcbd16ea3627f690c946588b716a2cdff695c530abeb619e06ef78a81d3e550",
+        "dist/modes/rpc/jsonl.js": "049a9f8ca4242c79f1911ed977949e8d8906b4561f424c2729687f426fabaacf",
+        "dist/modes/rpc/jsonl.js.map": "0fc89bf8693980693b1e91a6b1245addc03ce3655bbf4ce993efb131ea387658",
+        "dist/modes/rpc/rpc-client.d.ts": "85ec53b3f019e0176bdbb8f843a213d8ae8aa0bba937dce40291e1315b762b1b",
+        "dist/modes/rpc/rpc-client.d.ts.map": "e21b059a4b594cd9287cdff8cb54de39d95a5292ed6e45bbc93673b6111cfd6d",
+        "dist/modes/rpc/rpc-client.js": "6cbb7d183db13468af61af733013a97ee6f5547ccd44edb1f85647f8bd6f218c",
+        "dist/modes/rpc/rpc-client.js.map": "966f80c1cbffcdc0ff3b53e81ecb1d7e152c6363aa35038da2b94377fc6c9387",
+        "dist/modes/rpc/rpc-mode.d.ts": "6c6799bca7017657b3e38e55638bf7233c157082aeb176b90b71343bda3482c4",
+        "dist/modes/rpc/rpc-mode.d.ts.map": "bb8cc8153f6aded375147a8706d78d0267539468cc32694763503e5de162e176",
+        "dist/modes/rpc/rpc-mode.js": "631697cd35928fc827f4a423538c43ff227b8cbf63c2a2f11060616f55eba6db",
+        "dist/modes/rpc/rpc-mode.js.map": "7d6dd3489ba0a6ac2c32141b19127724f7983edb525501dcbc395156cc2b38bf",
+        "dist/modes/rpc/rpc-types.d.ts": "68b6dc2e47a3969c09c961a40d0462473407b6786f3bd02715fa035e816e2af1",
+        "dist/modes/rpc/rpc-types.d.ts.map": "303f6efc19c328471673504a0a71e9c4281b775faa9b6ed3ba3833df227245f4",
+        "dist/modes/rpc/rpc-types.js": "bda239004694b7a087b3d9984e417d1cb4decf0da4483f1604881385240ff374",
+        "dist/modes/rpc/rpc-types.js.map": "bd333166b84415461456511a71406fedc234f6534f46a6f27c4915386f16c11b"
+      }
+    },
+    "unchanged": {
+      "rpc_command_names": "33 command table unchanged from 1.1.0 through 1.4.0",
+      "strict_lf_jsonl": "dist/modes/rpc/jsonl.js is byte-identical across the compared points",
+      "args_parser": "dist/cli/args.js and args.ts are byte-identical across the compared points",
+      "public_operations": "No new or removed selected RPC command"
+    }
+  },
+  "per_hop_classifications": [
+    {
+      "from": "1.1.0",
+      "to": "1.2.0",
+      "npm_published_at": "2026-10-12T23:03:25.459Z",
+      "complete_tree_counts": {
+        "added": 62,
+        "removed": 41,
+        "changed": 153,
+        "identical": 1060
+      },
+      "path_set_sha256": {
+        "added": "e5b4a727abc0fd3aa309dccd898cad1cdc71d0bcab8562c7070c01b4b1480155",
+        "removed": "185065bf3f39e17f199585c870d23d3b08829f31c5b189380118a04a2bde6aac",
+        "changed": "8367c6eb9e3173565c477486be4d439ff952d2ab686cb3553a733751cb9502d6",
+        "identical": "6ffc8cdaa1f6eff4ac06a4bf74e4a7deed6c3a2fd70dbfabba1c39f9a4d33dd1"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "Prompt startup splits into prepare and start. _startRun sets _isAgentRunActive before _prepareRun, and _handleAgentEvent calls agent.abort() on agent_start when _agentRunAbortRequested is set. The selected adapter sends abort while waiting for the prompt response; prompt success is only emitted after prep, so a consumer cancel can land inside preparation. The selected startup window includes prompt-image normalization for the selected single PNG and tool-loadout preparation. This is a fix that makes the already-mapped abort apply during that window: 1.1.0 dropped an abort requested during prep; 1.2.0+ aborts at agent_start and settles aborted. PromptDisposition stays handled, queued, or started; steering and follow-up stay handled or queued; agent_settled.aborted stays a required boolean. dist/modes/rpc is byte-identical. --no-extensions still skips extension-triggered custom-message handlers; those handlers are not the selected abort path."
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for the agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/auth-storage.js",
+          "change": "changed",
+          "classification": "Credential storage internals. The selected route uses maintainer-supported delegated harness auth and does not inspect Pi login state, billing, or endpoint selection. No selected RPC command, permission, or launch-tuple change."
+        },
+        {
+          "path": "dist/core/auth-storage.js.map",
+          "change": "changed",
+          "classification": "source map for credential storage; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/compaction/utils.js",
+          "change": "changed",
+          "classification": "Compaction helper internals. The selected invocation sets set_auto_compaction enabled:false at startup before any prompt, so compaction.enabled returns early and this file is not on the selected execution path."
+        },
+        {
+          "path": "dist/core/compaction/utils.js.map",
+          "change": "changed",
+          "classification": "source map for compaction helpers; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-config.js",
+          "change": "changed",
+          "classification": "Provider/model catalogue internals feeding --provider/--model resolution. The selected invocation binds exact provider and model argv; get_state then checks they match. Catalogue extras stay unmapped."
+        },
+        {
+          "path": "dist/core/model-config.js.map",
+          "change": "changed",
+          "classification": "source map for model catalogue resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-runtime.js",
+          "change": "changed",
+          "classification": "Provider runtime internals for the bound --provider/--model. Selected launch tuple and get_state match stay the same. No selected RPC command change."
+        },
+        {
+          "path": "dist/core/model-runtime.js.map",
+          "change": "changed",
+          "classification": "source map for provider runtime; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/resource-loader.js",
+          "change": "changed",
+          "classification": "Ancestor context-file shadowing compares the directory real path plus basename instead of the file canonical path. The selected invocation passes --no-context-files, and loadProjectContextFiles is skipped when that flag is set."
+        },
+        {
+          "path": "dist/core/resource-loader.js.map",
+          "change": "changed",
+          "classification": "source map for resource loading; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-defaults.js",
+          "change": "added",
+          "classification": "Defines SETTINGS_DEFAULTS. Mapped literals stay steeringMode and followUpMode one-at-a-time, compaction.enabled true with reserveTokens 16384, retry.enabled true with maxRetries 3 and baseDelayMs 2000. The selected invocation still sets steering, follow-up, compaction, and retry over RPC before any prompt."
+        },
+        {
+          "path": "dist/core/settings-defaults.js.map",
+          "change": "added",
+          "classification": "source map for settings defaults; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-manager.js",
+          "change": "changed",
+          "classification": "Settings types move to settings-schema and literal defaults move to SETTINGS_DEFAULTS. Mapped defaults stay steeringMode and followUpMode one-at-a-time, compaction enabled, retry enabled with maxRetries 3, baseDelayMs 2000, and reserveTokens 16384. The selected invocation still passes a plain --tools allowlist and sets steering, follow-up, compaction, and retry through RPC before any prompt. dist/cli/args.js is byte-identical."
+        },
+        {
+          "path": "dist/core/settings-manager.js.map",
+          "change": "changed",
+          "classification": "source map for settings and tool-default resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-schema.js",
+          "change": "added",
+          "classification": "Defines allowed settings literals including steeringMode/followUpMode one-at-a-time|all. Mapped selected literals are unchanged. The selected invocation overwrites those four settings over RPC before any prompt."
+        },
+        {
+          "path": "dist/core/settings-schema.js.map",
+          "change": "added",
+          "classification": "source map for settings schema; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/renderer.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/cli.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/index.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/resources.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/runtime.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/tools.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.d.ts",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/tool-search/tool.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.1.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "c30fd8f7f1a50fdf4860b87613fc6e906d04cc1d4646360826e001abbd1f2152",
+          "main_chunk": "dist/bundle/chunks/chunk-OIM2DMFI.js",
+          "main_chunk_sha256": "463db439b55a9c580d4c153492dcdd4e215fe4709ee71a876d4edff1074cdb8f",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true,
+            "--no-config": false
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.2.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "0a7ba07c94a89733a5ace8eac6bced09c20ed099d153b02cfaa878202b74878f",
+          "main_chunk": "dist/bundle/chunks/chunk-TJXZSVTD.js",
+          "main_chunk_sha256": "3aced1320c6c7a36ff53be75b539099310971e9b54b15df5b1efba3d2be75c10",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true,
+            "--no-config": false
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.2.0",
+      "to": "1.3.0",
+      "npm_published_at": "2026-10-15T19:13:30.662Z",
+      "complete_tree_counts": {
+        "added": 19,
+        "removed": 18,
+        "changed": 88,
+        "identical": 1169
+      },
+      "path_set_sha256": {
+        "added": "db76bdadcfbee5382271ef98c61b8a7bd050ee2247965f80e2d689ee722b08c0",
+        "removed": "841f5a7b815edd0e7ab007e736145d8cc06d38c35238679440cb5b294c8d0f4a",
+        "changed": "2856829b4363ee8d5fdcca7b2450c39134893bfa08472704c210b0e70b803799",
+        "identical": "e65d1204c9709f156d3f645bd40aeae14c1f141a8e298f37099283cc2ebda3e1"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "Constructor calls _restoreToolsFromTranscript on a fresh session when usesDefaultTools is true. usesDefaultTools is false here because the selected invocation passes a plain --tools read,grep,find,ls allowlist in sdk.js, not because of --no-session. Dispositions and agent_settled.aborted are unchanged, and dist/modes/rpc is byte-identical."
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for the agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/model-resolver.js",
+          "change": "changed",
+          "classification": "Rewrites --provider/--model lookup into resolveModelReference and moves CLI lookup out of findInitialModel. The executed main chunk still calls resolveCliModel for the selected exact --provider/--model argv; get_state then checks they match. Default-catalogue ids and fuzzy/scope matching stay unmapped."
+        },
+        {
+          "path": "dist/core/model-resolver.js.map",
+          "change": "changed",
+          "classification": "source map for --provider/--model resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-defaults.js",
+          "change": "changed",
+          "classification": "Adds sessionShareDestination default auto. Mapped steeringMode, followUpMode, compaction, and retry literals are unchanged. /share is not a selected command. The selected invocation still sets the four mapped settings over RPC before any prompt."
+        },
+        {
+          "path": "dist/core/settings-defaults.js.map",
+          "change": "changed",
+          "classification": "source map for settings defaults; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-manager.js",
+          "change": "changed",
+          "classification": "Adds sessionShareDestination get and set for /share uploads. That command is not a selected RPC operation. Tool defaults and the plain --tools allowlist path are unchanged."
+        },
+        {
+          "path": "dist/core/settings-manager.js.map",
+          "change": "changed",
+          "classification": "source map for settings and tool-default resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/settings-schema.js",
+          "change": "changed",
+          "classification": "Adds sessionShareDestination literals auto|gist|radius for /share. Mapped steering/follow-up/compaction/retry literals are unchanged. /share is not a selected RPC operation."
+        },
+        {
+          "path": "dist/core/settings-schema.js.map",
+          "change": "changed",
+          "classification": "source map for settings schema; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.2.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "0a7ba07c94a89733a5ace8eac6bced09c20ed099d153b02cfaa878202b74878f",
+          "main_chunk": "dist/bundle/chunks/chunk-TJXZSVTD.js",
+          "main_chunk_sha256": "3aced1320c6c7a36ff53be75b539099310971e9b54b15df5b1efba3d2be75c10",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true,
+            "--no-config": false
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.3.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "f9811fa28c52accb8e2433499a85e857b714a002956005b7859ad00e5e35f380",
+          "main_chunk": "dist/bundle/chunks/chunk-66G7ITPS.js",
+          "main_chunk_sha256": "0426becd43ff630d8c9129f5606b23d0a43d5c115334884c77aa6595035c8690",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true,
+            "--no-config": false
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    },
+    {
+      "from": "1.3.0",
+      "to": "1.4.0",
+      "npm_published_at": "2026-10-21T22:48:58.431Z",
+      "complete_tree_counts": {
+        "added": 59,
+        "removed": 56,
+        "changed": 95,
+        "identical": 1125
+      },
+      "path_set_sha256": {
+        "added": "a4273d090934cecfd50d03689ee6ea93b8b0ff9205ee8bb7d3f52f2c4992e8bc",
+        "removed": "77bfeacd395240a8863c21686371340d7c7ec3dea1702437f92c9308daee049b",
+        "changed": "ab695d54ca1d20828b88b3af202688147e2deb42812557c5cf05c4d14059127b",
+        "identical": "72d41a31e67f49445d19209c5cc5dd062e0d9527bb58b2d19b572874456a2c19"
+      },
+      "selected_source_files": [
+        {
+          "path": "dist/core/agent-session.js",
+          "change": "changed",
+          "classification": "Overflow recovery finds a failed attempt's tool results in the projected context instead of caching them at turn_end, and resumed loadouts walk every system message on the branch. Compaction still emits the same compaction_end fields. The selected invocation sets set_auto_compaction enabled:false at startup before any prompt, so settings.enabled returns early and overflow recovery is not on the selected path. Constructor restore is skipped because usesDefaultTools is false (plain --tools read,grep,find,ls allowlist in sdk.js), not because of --no-session. Dispositions and agent_settled.aborted are unchanged, and dist/modes/rpc is byte-identical."
+        },
+        {
+          "path": "dist/core/agent-session.js.map",
+          "change": "changed",
+          "classification": "source map for the agent lifecycle producer; use with adjacent JavaScript source, not runtime behavior by itself"
+        },
+        {
+          "path": "dist/core/compaction/compaction.js",
+          "change": "changed",
+          "classification": "Compaction implementation. The selected invocation sets set_auto_compaction enabled:false at startup before any prompt, so settings.enabled returns early and this file is not on the selected execution path."
+        },
+        {
+          "path": "dist/core/compaction/compaction.js.map",
+          "change": "changed",
+          "classification": "source map for compaction; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-config.js",
+          "change": "changed",
+          "classification": "Provider/model catalogue internals feeding --provider/--model resolution. The selected invocation binds exact provider and model argv; get_state then checks they match. Catalogue extras stay unmapped."
+        },
+        {
+          "path": "dist/core/model-config.js.map",
+          "change": "changed",
+          "classification": "source map for model catalogue resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-runtime.js",
+          "change": "changed",
+          "classification": "Provider runtime internals for the bound --provider/--model. Selected launch tuple and get_state match stay the same. No selected RPC command change."
+        },
+        {
+          "path": "dist/core/model-runtime.js.map",
+          "change": "changed",
+          "classification": "source map for provider runtime; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/model-resolver.js",
+          "change": "changed",
+          "classification": "Updates defaultModelPerProvider catalogue ids. The executed main chunk still calls resolveCliModel for the selected exact --provider/--model argv; get_state then checks they match. Catalogue extras stay unmapped."
+        },
+        {
+          "path": "dist/core/model-resolver.js.map",
+          "change": "changed",
+          "classification": "source map for --provider/--model resolution; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/sdk.js",
+          "change": "changed",
+          "classification": "createAgentSession still sets usesDefaultTools from (tools === undefined || toolModifiers !== undefined) && !noTools. The selected invocation passes a plain --tools read,grep,find,ls allowlist, so usesDefaultTools is false and constructor restore is skipped. Request identity moves from provider-attribution to getClientIdentity. Launch tuple, RPC commands, and get_state match stay the same."
+        },
+        {
+          "path": "dist/core/sdk.js.map",
+          "change": "changed",
+          "classification": "source map for session construction and request identity; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/client-identity.js",
+          "change": "added",
+          "classification": "Added request-identity helper used by sdk.js buildRequestOptions. Replaces provider-attribution. The selected route does not map client identity as a public operation, permission, or credential surface."
+        },
+        {
+          "path": "dist/core/client-identity.js.map",
+          "change": "added",
+          "classification": "source map for request identity; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/provider-attribution.js",
+          "change": "removed",
+          "classification": "Removed; request identity moved to client-identity.js. Not a selected RPC command, permission, or launch-tuple change."
+        },
+        {
+          "path": "dist/core/provider-attribution.js.map",
+          "change": "removed",
+          "classification": "source map for the removed request-identity helper; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/core/tools/grep.js",
+          "change": "changed",
+          "classification": "Selected grep tool (allowlist read,grep,find,ls) adds --no-config to the ripgrep argv so ambient RIPGREP_CONFIG_PATH and ripgrep config files no longer affect grep results. Tool name, schema, and RPC mapping are unchanged. Swallowtail does not map ripgrep config as a selected surface. This is host-isolation of the already-selected grep tool, not a new public operation or wire change. The 1.4.0 bundled chunk contains --no-config; 1.1.0-1.3.0 chunks do not. grep.ts sourcesContent SHA-256 88be3d00217d1a1caf8a9e7bb2b8d2e6d96edfa4b790c2cf76c746ab36b8841b at 1.1.0-1.3.0 and 37a906d99672bd043d6f729e0dc09589f46ffc87bdf3d2944fc24331c0ebc2a0 at 1.4.0, both tag-matched."
+        },
+        {
+          "path": "dist/core/tools/grep.js.map",
+          "change": "changed",
+          "classification": "source map for the selected grep tool; use with adjacent JavaScript source"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/codemode/execute.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.d.ts.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        },
+        {
+          "path": "dist/extensions/mcp/config.js.map",
+          "change": "changed",
+          "classification": "optional extension/MCP surface; selected invocation passes --no-extensions and no extension paths, so this code is not loaded"
+        }
+      ],
+      "compiled_runtime_transition": {
+        "from": {
+          "version": "1.3.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "f9811fa28c52accb8e2433499a85e857b714a002956005b7859ad00e5e35f380",
+          "main_chunk": "dist/bundle/chunks/chunk-66G7ITPS.js",
+          "main_chunk_sha256": "0426becd43ff630d8c9129f5606b23d0a43d5c115334884c77aa6595035c8690",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true,
+            "--no-config": false
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "to": {
+          "version": "1.4.0",
+          "launcher_sha256": "e79626f2dd6f94aa45d30f3fa63cd84319a6eefcd150b353cfaf274366926774",
+          "runtime_import_sha256": "754132d2cbb31c33fac5672366f948a7b90ba07b542dbddd20b13adcc62719bd",
+          "main_chunk": "dist/bundle/chunks/chunk-MM3LKT73.js",
+          "main_chunk_sha256": "aa4c8b091657bda611f6fd58343561fa44cda1070ae4cd5dbd09ffe1d9a34aab",
+          "selected_markers": {
+            "agent_settled": true,
+            "--mode": true,
+            "--no-session": true,
+            "--offline": true,
+            "--provider": true,
+            "--model": true,
+            "--tools": true,
+            "--no-extensions": true,
+            "--no-context-files": true,
+            "--no-config": true
+          },
+          "mcp_option_present": true,
+          "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+        },
+        "classification": "Compiled CLI launcher, runtime import, and main chunk for the selected RPC invocation; exact hashes and invocation markers are checked. Mapped semantics are classified in selected_source_files; other provider-internal implementation details are not claimed."
+      }
+    }
+  ],
+  "unmapped_change_boundary": {
+    "complete_file_evidence": "All package paths and exact file digests at 1.1.0, 1.2.0, 1.3.0, and 1.4.0 are retained in dist-inventory.json; release notes are discovery only.",
+    "classifications": "Provider catalogues, TUI rendering, share destinations, classifier models, codemode and MCP implementations, and bundle chunk renames are outside the selected RPC route unless an exact selected-file row records a mapped effect. settings-defaults and settings-schema are in the per-hop selected set because they define mapped literals. grep.js is in the 1.3.0 to 1.4.0 selected set because grep is in the selected tool allowlist. model-resolver is in the 1.2.0 to 1.3.0 and 1.3.0 to 1.4.0 selected sets because the executed main chunk resolves --provider/--model there. sdk.js, client-identity.js, and provider-attribution.js are in the 1.3.0 to 1.4.0 selected set because they own usesDefaultTools and request identity on that path. auth-storage, model-config, model-runtime, compaction/utils, and compaction.js are classified by selected reachability: delegated harness auth, exact --provider/--model argv plus get_state match, and set_auto_compaction enabled:false at startup. Reviewed selected changes do not add a host permission, change a selected RPC command, or change the strict-LF response and event shapes.",
+    "no_live_proof": "No artifact execution, provider prompt, model catalogue or session, credential use, install, or host update was performed."
+  }
+}

@@ -96,7 +96,7 @@ fn identity_and_claim_qualify_0_84_3_as_compatible_extension() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.4.0");
     assert_eq!(
         identity["claim_at_observation"]["latest_qualified"],
         "0.84.2"

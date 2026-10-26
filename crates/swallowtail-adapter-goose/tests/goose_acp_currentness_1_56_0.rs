@@ -54,7 +54,6 @@ const EXPECTED_SELECTED_SOURCE_PATHS: &[&str] = &[
     "crates/goose/src/acp/transport/auth.rs",
     "crates/goose/src/acp/transport/mod.rs",
     "crates/goose/src/agents/agent.rs",
-    "crates/goose/src/agents/extension_manager.rs",
     "crates/goose/src/agents/extension_manager/mod.rs",
     "crates/goose/src/agents/extension_manager/stdio.rs",
     "crates/goose/src/agents/extension_manager/streamable_http.rs",

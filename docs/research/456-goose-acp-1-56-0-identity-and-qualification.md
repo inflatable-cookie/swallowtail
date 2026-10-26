@@ -59,16 +59,27 @@ discovery only; exact tag trees and selected source changes bound the claim.
   The HTTP/SSE converter is byte-identical, including the SSE rejection.
   Unstable Nostr session share is removed. `session/cancel` still cancels the
   active-run token.
-- **`1.54.0` → `1.55.0`:** Prompt meta no longer selects the legacy agent loop.
-  This route sends no prompt meta, and `reply()` is the state-machine path
-  that was already the default. `on_cancel` still cancels the active-run
-  token, and `prompt_stop_reason` still returns `StopReason::Cancelled`.
-  Missing `GOOSE_MODE` still resolves to Auto; an invalid value fails closed.
-  This route does not set that variable. Login-shell PATH meta is removed;
-  its previous default was false. Optional W3C trace context is read from
+- **`1.54.0` → `1.55.0`:** v1.53.0 and v1.54.0 default
+  `state_machine::enabled()` to false (`GOOSE_STATE_MACHINE`; this route does
+  not set it). Prompt meta `goose.unrolledAgentLoop` can opt in; this route
+  sends no prompt meta, so `reply()` ran `reply_internal` (legacy loop).
+  v1.55.0 removes `reply_internal`, `use_state_machine_from_meta`, and
+  `enabled()`, and `reply()` always calls `reply_with_state_machine`. That is
+  a selected prompt-engine replacement. Mapped ACP methods stay initialize
+  v1, `session/new` cwd+mcpServers, `session/prompt` text, and
+  `session/cancel`. `on_cancel` still cancels the active-run token;
+  `prompt_stop_reason` still returns `StopReason::Cancelled`. Cancelled-prompt
+  stream handling moves from break+drop+`cancel_foreground_subagents` to
+  draining remaining events without forwarding and without an explicit
+  subagent cancel. Subagent spawn/control stay unselected. Missing
+  `GOOSE_MODE` still resolves to Auto; an invalid value fails closed. This
+  route does not set that variable. Login-shell PATH meta is removed; its
+  previous default was false. Optional W3C trace context is read from
   prompt meta this route does not send. HTTP MCP servers are stored through
   `update_enabled_extensions`; the converter is unchanged. Live remote MCP
-  honouring stays unqualified.
+  honouring stays unqualified. The selected-source list no longer names
+  `crates/goose/src/agents/extension_manager.rs`; that path exists in none of
+  the four compared trees (the directory form does).
 - **`1.55.0` → `1.56.0`:** The separate `goose-acp` binary loads the online
   model catalog before the same server entry. Swallowtail spawns `goose acp`,
   not that binary. `tool_calls/conversion.rs` emits
@@ -93,7 +104,10 @@ was narrowed.
 - Maintain seven exact points: `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`,
   `1.54.0`, `1.55.0`, and `1.56.0`.
 - Keep baseline `1.50.1`, claim id `goose.acp.release-window-1`, behavior
-  revision `goose.acp.stdio-v2.auth-required`, and `AllowUnverified`.
+  revision `goose.acp.stdio-v2.auth-required`, and `AllowUnverified`. The
+  1.55.0 selected prompt-engine replacement stays on that revision because
+  mapped ACP methods, `auth_required`, Auto default, `session/cancel` stop
+  reason `Cancelled`, and joined cleanup are unchanged.
 - Keep unpublished interstitial versions `1.50.2`, `1.51.1`, `1.52.1`,
   `1.53.1`, `1.54.1`, and `1.55.1` outside all segments. The first later
   stable, `1.56.1`, may be classified `UnverifiedNewer`; it is not qualified

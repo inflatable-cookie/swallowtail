@@ -62,7 +62,6 @@
     "crates/goose/src/acp/transport/auth.rs",
     "crates/goose/src/acp/transport/mod.rs",
     "crates/goose/src/agents/agent.rs",
-    "crates/goose/src/agents/extension_manager.rs",
     "crates/goose/src/agents/extension_manager/mod.rs",
     "crates/goose/src/agents/extension_manager/stdio.rs",
     "crates/goose/src/agents/extension_manager/streamable_http.rs",
@@ -95,7 +94,6 @@
     "crates/goose/src/acp/server/prompts.rs",
     "crates/goose/src/acp/transport/auth.rs",
     "crates/goose/src/acp/transport/mod.rs",
-    "crates/goose/src/agents/extension_manager.rs",
     "crates/goose/src/agents/extension_manager/stdio.rs",
     "crates/goose/src/agents/state_machine/tool_confirmation.rs",
     "crates/goose/src/agents/state_machine/usage.rs",
@@ -374,8 +372,8 @@
         },
         "crates/goose/src/acp/server.rs": {
           "inventory_change": "changed",
-          "classification": "selected_stdio_contract_unchanged",
-          "evidence": "Prompt meta no longer selects the legacy agent loop. This route sends no prompt meta, and reply() is the state-machine path that was already the default. on_cancel still cancels the active-run token, and prompt_stop_reason still returns StopReason::Cancelled. Login-shell PATH meta is removed; its previous default was false. HTTP MCP servers are stored through update_enabled_extensions; the HTTP and SSE converter is byte-identical. Optional W3C trace context is read from prompt meta this route does not send."
+          "classification": "selected_prompt_engine_replaced",
+          "evidence": "v1.53.0 and v1.54.0 use_state_machine_from_meta reads goose.unrolledAgentLoop, else state_machine::enabled() which defaults false on GOOSE_STATE_MACHINE. This route sends no prompt meta and does not set that variable, so on_prompt called reply() with the legacy loop. v1.55.0 removes that gate; on_prompt calls agent.reply() with no engine flag. Cancelled forward_agent_stream in 1.54 breaks, drops the stream, and cancel_foreground_subagents; 1.55 drains remaining events without forwarding and without that subagent cancel. on_cancel still cancels the active-run token, and prompt_stop_reason still returns StopReason::Cancelled. Login-shell PATH meta is removed; its previous default was false. HTTP MCP servers are stored through update_enabled_extensions; the HTTP and SSE converter is byte-identical. Optional W3C trace context is read from prompt meta this route does not send."
         },
         "crates/goose/src/acp/server/dispatch.rs": {
           "inventory_change": "changed",
@@ -419,8 +417,8 @@
         },
         "crates/goose/src/agents/agent.rs": {
           "inventory_change": "changed",
-          "classification": "agent_session_internal",
-          "evidence": "The change is inside the provider-owned agent, extension lease, tool loop, or session store. Selected argv, ACP method set, auth_required mapping, and session/cancel stop reason are unchanged. Usage stays unprojected."
+          "classification": "legacy_reply_loop_removed",
+          "evidence": "v1.54.0 reply() takes use_state_machine and still has reply_internal plus cancel_foreground_subagents. v1.55.0 drops the flag, reply_internal, and that subagent helper; reply_impl always calls reply_with_state_machine. Mapped ACP methods, auth_required, and session/cancel stop reason stay. Subagent spawn/control stay unselected. Usage stays unprojected."
         },
         "crates/goose/src/agents/extension_manager/mod.rs": {
           "inventory_change": "changed",
@@ -439,8 +437,8 @@
         },
         "crates/goose/src/agents/state_machine/mod.rs": {
           "inventory_change": "changed",
-          "classification": "agent_session_internal",
-          "evidence": "The change is inside the provider-owned agent, extension lease, tool loop, or session store. Selected argv, ACP method set, auth_required mapping, and session/cancel stop reason are unchanged. Usage stays unprojected."
+          "classification": "state_machine_env_gate_removed",
+          "evidence": "v1.54.0 exports enabled() as GOOSE_STATE_MACHINE, default false. v1.55.0 removes that gate because reply() always uses the state machine. This route does not set the variable. Selected ACP methods reach this module only through Agent::reply."
         },
         "crates/goose/src/agents/state_machine/ops_tool_approval.rs": {
           "inventory_change": "changed",

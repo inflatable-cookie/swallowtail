@@ -423,6 +423,54 @@ fn selected_v2_control_flow_is_bound_to_exact_runtime_hashes() {
                 .contains("hookRewrites.push")
         );
         assert!(
+            platform["rewrite_recheck_ask_to_deny"]
+                .as_str()
+                .unwrap()
+                .contains("hookUpdatedInput:")
+        );
+        assert!(
+            platform["rewrite_recheck_ask_to_deny"]
+                .as_str()
+                .unwrap()
+                .contains("behavior:\"ask\"?{behavior:\"deny\"")
+        );
+        assert!(
+            platform["rewrite_ask_rule_const"]
+                .as_str()
+                .unwrap()
+                .contains("ask rule on hook-rewritten input")
+        );
+        assert!(
+            platform["rewrite_ask_rule_const"]
+                .as_str()
+                .unwrap()
+                .contains("type:\"asyncAgent\"")
+        );
+        assert!(
+            platform["stop_hook_active_input"]
+                .as_str()
+                .unwrap()
+                .contains("hook_event_name:\"SubagentStop\",stop_hook_active:s")
+        );
+        assert!(
+            platform["stop_hook_active_input"]
+                .as_str()
+                .unwrap()
+                .contains("hook_event_name:\"Stop\",stop_hook_active:s")
+        );
+        assert!(
+            platform["stop_hook_active_reentry"]
+                .as_str()
+                .unwrap()
+                .contains("stopHookActive:!0")
+        );
+        assert!(
+            platform["stop_hook_active_reentry"]
+                .as_str()
+                .unwrap()
+                .contains("transition:{reason:\"stop_hook_blocking\"}")
+        );
+        assert!(
             platform["stop_block_cap_default_8"]
                 .as_str()
                 .unwrap()
@@ -456,7 +504,21 @@ fn hop_comparison_records_299_and_300_fail_closed_js() {
     let hops = &flow["hop_comparison"];
     assert_eq!(hops["plugin_fail_closed_first_present"], "2.1.299");
     assert_eq!(hops["reserved_key_first_present"], "2.1.300");
-    assert_eq!(hops["v2_literals_present_on_every_compared_binary"], true);
+    assert_eq!(
+        hops["selected_js_keys"],
+        json!([
+            "prompt_ok_false_blocks",
+            "pretooluse_deny_before_dispatch",
+            "rewrite_recheck_push",
+            "rewrite_recheck_ask_to_deny",
+            "rewrite_ask_rule_const",
+            "stop_hook_active_input",
+            "stop_hook_active_reentry",
+            "stop_block_cap_default_8",
+            "plugin_fail_closed",
+            "reserved_key_deny"
+        ])
+    );
     let compared = hops["compared_versions"].as_array().unwrap();
     assert_eq!(compared.first().unwrap(), "2.1.294");
     assert_eq!(compared.last().unwrap(), "2.1.310");
@@ -468,23 +530,102 @@ fn hop_comparison_records_299_and_300_fail_closed_js() {
                 row["artifact_sha256"], inventory["packages"][package][version]["files"]["claude"],
                 "{package} {version}"
             );
+            let js = &row["selected_js"];
+            let prompt = js["prompt_ok_false_blocks"].as_str().unwrap();
+            assert!(
+                prompt.contains("outcome:\"blocking\""),
+                "{package} {version}"
+            );
+            assert!(
+                prompt.contains("continueOnBlock!==!0"),
+                "{package} {version}"
+            );
+            assert!(
+                js["pretooluse_deny_before_dispatch"]
+                    .as_str()
+                    .unwrap()
+                    .contains("Execution stopped by PreToolUse hook"),
+                "{package} {version}"
+            );
+            assert!(
+                js["rewrite_recheck_push"]
+                    .as_str()
+                    .unwrap()
+                    .contains("hookRewrites.push"),
+                "{package} {version}"
+            );
+            let rewrite = js["rewrite_recheck_ask_to_deny"].as_str().unwrap();
+            assert!(rewrite.contains("hookUpdatedInput:"), "{package} {version}");
+            assert!(
+                rewrite.contains("behavior:\"ask\"?{behavior:\"deny\""),
+                "{package} {version}"
+            );
+            assert!(
+                js["rewrite_ask_rule_const"]
+                    .as_str()
+                    .unwrap()
+                    .contains("ask rule on hook-rewritten input"),
+                "{package} {version}"
+            );
+            let stop_input = js["stop_hook_active_input"].as_str().unwrap();
+            assert!(
+                stop_input.contains("hook_event_name:\"SubagentStop\",stop_hook_active:s"),
+                "{package} {version}"
+            );
+            assert!(
+                stop_input.contains("hook_event_name:\"Stop\",stop_hook_active:s"),
+                "{package} {version}"
+            );
+            let reentry = js["stop_hook_active_reentry"].as_str().unwrap();
+            assert!(reentry.contains("stopHookActive:!0"), "{package} {version}");
+            assert!(
+                reentry.contains("transition:{reason:\"stop_hook_blocking\"}"),
+                "{package} {version}"
+            );
+            assert!(
+                js["stop_block_cap_default_8"]
+                    .as_str()
+                    .unwrap()
+                    .contains("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8"),
+                "{package} {version}"
+            );
             let patch: u32 = version.split('.').nth(2).unwrap().parse().unwrap();
-            assert_eq!(
-                row["plugin_fail_closed_literals_present"],
-                patch >= 299,
-                "{package} {version}"
-            );
-            assert_eq!(
-                row["reserved_key_literals_present"],
-                patch >= 300,
-                "{package} {version}"
-            );
-            for (key, present) in row["v2_literals_present"].as_object().unwrap() {
-                assert_eq!(present, true, "{package} {version} {key}");
+            if patch >= 299 {
+                let fail_closed = js["plugin_fail_closed"].as_str().unwrap();
+                assert!(fail_closed.contains("classic.PreToolUse"), "{package} {version}");
+                assert!(
+                    fail_closed.contains(
+                        "this tool input could not be given to a hook that checks it, so the tool was not run"
+                    ),
+                    "{package} {version}"
+                );
+            } else {
+                assert!(js["plugin_fail_closed"].is_null(), "{package} {version}");
+            }
+            if patch >= 300 {
+                let reserved = js["reserved_key_deny"].as_str().unwrap();
+                assert!(
+                    reserved.contains("refusedBy:\"reserved_key\""),
+                    "{package} {version}"
+                );
+                assert!(reserved.contains("The tool was not run."), "{package} {version}");
+                assert!(reserved.contains("return{ok:!1,deny:"), "{package} {version}");
+            } else {
+                assert!(js["reserved_key_deny"].is_null(), "{package} {version}");
             }
         }
     }
     for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+        let ceiling = &flow["v2_selected_path_at_2_1_310"][package];
+        let hop = &hops["per_version"]["2.1.310"][package]["selected_js"];
+        for key in [
+            "rewrite_recheck_ask_to_deny",
+            "rewrite_ask_rule_const",
+            "stop_hook_active_input",
+            "stop_hook_active_reentry",
+        ] {
+            assert_eq!(ceiling[key], hop[key], "{package} {key}");
+        }
         let fail_closed = flow["hop_2_1_299_fail_closed_at_2_1_310"][package]
             .as_str()
             .unwrap();
@@ -545,6 +686,23 @@ fn response_only_isolation_is_frozen_per_binary() {
             "predicate": "function vp(e){return e.endsWith(`@${Ns}`)}"
         })
     );
+    assert_eq!(
+        isolation["permission_mode_default_mapper_at_2_1_310"]["claude-code-darwin-arm64"],
+        "function Qx(e){return ph(e)??\"default\"}"
+    );
+    assert_eq!(
+        isolation["permission_mode_default_mapper_at_2_1_310"]["claude-code-linux-x64"],
+        "function Xx(e){return fh(e)??\"default\"}"
+    );
+    assert_eq!(
+        isolation["permission_mode_treats_undefined_as_default_at_2_1_310"]
+            ["claude-code-darwin-arm64"],
+        "function Ldi(e){return e===\"default\"||e===void 0}"
+    );
+    assert_eq!(
+        isolation["permission_mode_treats_undefined_as_default_at_2_1_310"]["claude-code-linux-x64"],
+        "function Zli(e){return e===\"default\"||e===void 0}"
+    );
     for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
         let init = isolation["init_fields_at_2_1_310"][package]
             .as_str()
@@ -564,7 +722,15 @@ fn response_only_isolation_is_frozen_per_binary() {
         .iter()
         .map(|name| name.as_str().unwrap())
         .collect::<Vec<_>>();
-    for (version_name, packages) in isolation["per_version"].as_object().unwrap() {
+    let compared = isolation["compared_versions"].as_array().unwrap();
+    assert_eq!(compared.first().unwrap(), "2.1.293");
+    assert_eq!(compared.last().unwrap(), "2.1.310");
+    assert_eq!(
+        compared.len(),
+        isolation["per_version"].as_object().unwrap().len()
+    );
+    for version in compared {
+        let version_name = version.as_str().unwrap();
         let patch: u32 = version_name.split('.').nth(2).unwrap().parse().unwrap();
         let expected = if patch >= 302 {
             &isolation["cc_plugin_ids_from_2_1_302"]
@@ -572,7 +738,7 @@ fn response_only_isolation_is_frozen_per_binary() {
             &isolation["cc_plugin_ids_through_2_1_301"]
         };
         for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
-            let row = &packages[package];
+            let row = &isolation["per_version"][version_name][package];
             assert_eq!(row["cc_plugin_ids"], *expected, "{package} {version_name}");
             for name in &nine {
                 assert!(
@@ -586,8 +752,111 @@ fn response_only_isolation_is_frozen_per_binary() {
             }
             assert_eq!(
                 row["artifact_sha256"],
-                inventory["packages"][package][version_name]["files"]["claude"]
+                inventory["packages"][package][version_name]["files"]["claude"],
+                "{package} {version_name}"
             );
+            assert!(
+                row["safe_mode_option"]
+                    .as_str()
+                    .unwrap()
+                    .contains(".option(\"--safe-mode\""),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["safe_mode_option"]
+                    .as_str()
+                    .unwrap()
+                    .contains("Sets CLAUDE_CODE_SAFE_MODE=1."),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["safe_mode_filter"]
+                    .as_str()
+                    .unwrap()
+                    .contains("Safe mode: installed plugins are disabled"),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["safe_mode_filter"]
+                    .as_str()
+                    .unwrap()
+                    .contains("e.filter((n)=>"),
+                "{package} {version_name}"
+            );
+            let init = row["init_fields"].as_str().unwrap();
+            assert!(init.contains("subtype:\"init\""), "{package} {version_name}");
+            assert!(init.contains("tools:e.tools.map"), "{package} {version_name}");
+            assert!(
+                init.contains("mcp_servers:e.mcpClients.map"),
+                "{package} {version_name}"
+            );
+            assert!(
+                init.contains("permissionMode:") && init.contains("(e.permissionMode)"),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["permission_mode_default_mapper"]
+                    .as_str()
+                    .unwrap()
+                    .contains("??\"default\""),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["permission_mode_treats_undefined_as_default"]
+                    .as_str()
+                    .unwrap()
+                    .contains("e===\"default\"||e===void 0"),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["builtin_constant"]
+                    .as_str()
+                    .unwrap()
+                    .ends_with("=\"builtin\""),
+                "{package} {version_name}"
+            );
+            assert!(
+                row["builtin_predicate"]
+                    .as_str()
+                    .unwrap()
+                    .contains("return e.endsWith(`@${"),
+                "{package} {version_name}"
+            );
+            assert!(row.get("safe_mode_option_present").is_none());
+            assert!(row.get("safe_mode_filter_log_present").is_none());
+            assert!(row.get("init_subtype_present").is_none());
+            assert!(row.get("permissionMode_default_literal_present").is_none());
         }
+    }
+    for package in ["claude-code-darwin-arm64", "claude-code-linux-x64"] {
+        let hop = &isolation["per_version"]["2.1.310"][package];
+        assert_eq!(
+            hop["safe_mode_option"],
+            isolation["safe_mode_option_at_2_1_310"][package]
+        );
+        assert_eq!(
+            hop["safe_mode_filter"],
+            isolation["safe_mode_filter_at_2_1_310"][package]
+        );
+        assert_eq!(
+            hop["init_fields"],
+            isolation["init_fields_at_2_1_310"][package]
+        );
+        assert_eq!(
+            hop["permission_mode_default_mapper"],
+            isolation["permission_mode_default_mapper_at_2_1_310"][package]
+        );
+        assert_eq!(
+            hop["permission_mode_treats_undefined_as_default"],
+            isolation["permission_mode_treats_undefined_as_default_at_2_1_310"][package]
+        );
+        assert_eq!(
+            hop["builtin_constant"],
+            isolation["builtin_predicate_at_2_1_310"][package]["constant"]
+        );
+        assert_eq!(
+            hop["builtin_predicate"],
+            isolation["builtin_predicate_at_2_1_310"][package]["predicate"]
+        );
     }
 }

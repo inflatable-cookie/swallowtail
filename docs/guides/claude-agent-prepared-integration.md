@@ -495,7 +495,7 @@ and `AGENTS.md` outside working directories under its named read policies.
 The v3 route does not guarantee that every symlink-linked instruction reaches
 `prompt.context`. No adapter operation restores those reads or broadens
 filesystem authority. The published runtime is opaque and no internal
-resolver function is claimed (Research 378). From `2.1.309`, an oversized
+resolver function is claimed (Research 378). From `2.1.310`, an oversized
 nested `CLAUDE.md` loads only its start. That size prefix stays inside v3 and
 does not add containment (Research 445).
 

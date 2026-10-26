@@ -75,6 +75,56 @@
   ],
   "empty_tools_and_mcp_leave_easel_autocharts_unselected": true,
   "per_version": {
+    "2.1.293": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "4e21122a227857da1178aca3299700c1fd7f2b77c93f12e73c2c76db796a105e",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Krr(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>rv(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>UDt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:_8e(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:dc(e.permissionMode)",
+        "permission_mode_default_mapper": "function EA(e){return Xm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Y_s(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Oi=\"builtin\"",
+        "builtin_predicate": "function rv(e){return e.endsWith(`@${Oi}`)}"
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "8968405e26db478af44eabc4635ab5ca557057b702a54460a59c13e1b253e978",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Msr(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>tE(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>R0t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:m8e(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:dc(e.permissionMode)",
+        "permission_mode_default_mapper": "function wA(e){return Xm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function E_s(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ii=\"builtin\"",
+        "builtin_predicate": "function tE(e){return e.endsWith(`@${Ii}`)}"
+      }
+    },
     "2.1.294": {
       "claude-code-darwin-arm64": {
         "artifact_file": "claude",
@@ -92,10 +142,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Vrr(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>rv(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>UDt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:_8e(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:dc(e.permissionMode)",
+        "permission_mode_default_mapper": "function EA(e){return Xm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Y_s(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Oi=\"builtin\"",
+        "builtin_predicate": "function rv(e){return e.endsWith(`@${Oi}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -113,10 +166,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Isr(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>tE(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>R0t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:m8e(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:dc(e.permissionMode)",
+        "permission_mode_default_mapper": "function wA(e){return Xm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function E_s(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ii=\"builtin\"",
+        "builtin_predicate": "function tE(e){return e.endsWith(`@${Ii}`)}"
       }
     },
     "2.1.295": {
@@ -136,10 +192,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function $5o(e){if(!Or())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>eh(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>k$t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:i7e(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:bc(e.permissionMode)",
+        "permission_mode_default_mapper": "function lT(e){return Dm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Pxs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "xi=\"builtin\"",
+        "builtin_predicate": "function eh(e){return e.endsWith(`@${xi}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -157,10 +216,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function P6o(e){if(!Or())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Qg(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>sFt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:nJe(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Sc(e.permissionMode)",
+        "permission_mode_default_mapper": "function iC(e){return Dm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function VRs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "xi=\"builtin\"",
+        "builtin_predicate": "function Qg(e){return e.endsWith(`@${xi}`)}"
       }
     },
     "2.1.296": {
@@ -180,10 +242,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Mtr(e){if(!Tr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>th(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>vUt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:F7e(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:vc(e.permissionMode)",
+        "permission_mode_default_mapper": "function mT(e){return $m(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function cPs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Pi=\"builtin\"",
+        "builtin_predicate": "function th(e){return e.endsWith(`@${Pi}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -201,10 +266,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function xdr(e){if(!Cr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Zg(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>oUt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:HJe(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ec(e.permissionMode)",
+        "permission_mode_default_mapper": "function pC(e){return Fm(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Txs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Pi=\"builtin\"",
+        "builtin_predicate": "function Zg(e){return e.endsWith(`@${Pi}`)}"
       }
     },
     "2.1.299": {
@@ -224,10 +292,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function $Pr(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Xm(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>dWt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:OZe(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ld(e.permissionMode)",
+        "permission_mode_default_mapper": "function IC(e){return rg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function FNs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "i=\"builtin\"",
+        "builtin_predicate": "function Xm(e){return e.endsWith(`@${$i}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -245,10 +316,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function aPr(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Xm(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>sWt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:RZe(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ld(e.permissionMode)",
+        "permission_mode_default_mapper": "function xC(e){return rg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function eNs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Fi=\"builtin\"",
+        "builtin_predicate": "function Xm(e){return e.endsWith(`@${Fi}`)}"
       }
     },
     "2.1.300": {
@@ -268,10 +342,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function E_n(e){if(!Ir())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Rf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>HGt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:btt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:xd(e.permissionMode)",
+        "permission_mode_default_mapper": "function iR(e){return ag(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function ZBs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "mi=\"builtin\"",
+        "builtin_predicate": "function Rf(e){return e.endsWith(`@${mi}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -289,10 +366,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function v_n(e){if(!Ir())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Rf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>SGt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:htt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:xd(e.permissionMode)",
+        "permission_mode_default_mapper": "function oR(e){return ag(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function g1s(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "mi=\"builtin\"",
+        "builtin_predicate": "function Rf(e){return e.endsWith(`@${mi}`)}"
       }
     },
     "2.1.301": {
@@ -312,10 +392,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function ySn(e){if(!Ir())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>If(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>Zzt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:vnt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ul(e.permissionMode)",
+        "permission_mode_default_mapper": "function yR(e){return mg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Azs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "i=\"builtin\"",
+        "builtin_predicate": "function If(e){return e.endsWith(`@${_i}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -333,10 +416,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function hSn(e){if(!Pr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>If(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>N2t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:bnt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Fl(e.permissionMode)",
+        "permission_mode_default_mapper": "function gR(e){return mg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function jGs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "i=\"builtin\"",
+        "builtin_predicate": "function If(e){return e.endsWith(`@${_i}`)}"
       }
     },
     "2.1.302": {
@@ -357,10 +443,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Gbn(e){if(!vr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Df(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>tVt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:prt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Wl(e.permissionMode)",
+        "permission_mode_default_mapper": "function CR(e){return Sg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function IKs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "si=\"builtin\"",
+        "builtin_predicate": "function Df(e){return e.endsWith(`@${si}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -379,10 +468,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Wbn(e){if(!vr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Df(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>YVt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:lrt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:jl(e.permissionMode)",
+        "permission_mode_default_mapper": "function ER(e){return bg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function KKs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "oi=\"builtin\"",
+        "builtin_predicate": "function Df(e){return e.endsWith(`@${oi}`)}"
       }
     },
     "2.1.303": {
@@ -403,10 +495,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Gbn(e){if(!vr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Df(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>tVt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:prt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Wl(e.permissionMode)",
+        "permission_mode_default_mapper": "function CR(e){return Sg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function IKs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "si=\"builtin\"",
+        "builtin_predicate": "function Df(e){return e.endsWith(`@${si}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -425,10 +520,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Wbn(e){if(!vr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Df(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>YVt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:lrt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:jl(e.permissionMode)",
+        "permission_mode_default_mapper": "function ER(e){return bg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function KKs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "oi=\"builtin\"",
+        "builtin_predicate": "function Df(e){return e.endsWith(`@${oi}`)}"
       }
     },
     "2.1.304": {
@@ -449,10 +547,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function $Bn(e){if(!Cr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>qf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>Pqt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Fot(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+        "permission_mode_default_mapper": "function YR(e){return Ig(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function DYs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "si=\"builtin\"",
+        "builtin_predicate": "function qf(e){return e.endsWith(`@${si}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -471,10 +572,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function tWn(e){if(!Tr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>qf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>y4t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Hot(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+        "permission_mode_default_mapper": "function VR(e){return Ig(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function J8s(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "oi=\"builtin\"",
+        "builtin_predicate": "function qf(e){return e.endsWith(`@${oi}`)}"
       }
     },
     "2.1.305": {
@@ -495,10 +599,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function pHn(e){if(!Tr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Zf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>U3t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Ast(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:od(e.permissionMode)",
+        "permission_mode_default_mapper": "function ax(e){return Bg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function xJs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "zs=\"builtin\"",
+        "builtin_predicate": "function Zf(e){return e.endsWith(`@${zs}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -517,10 +624,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function MHn(e){if(!Ar())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Zp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>CYt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Est(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:sd(e.permissionMode)",
+        "permission_mode_default_mapper": "function sx(e){return Bg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function zJs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Gs=\"builtin\"",
+        "builtin_predicate": "function Zp(e){return e.endsWith(`@${Gs}`)}"
       }
     },
     "2.1.306": {
@@ -541,10 +651,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function mHn(e){if(!Tr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Zf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>U3t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Ast(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:od(e.permissionMode)",
+        "permission_mode_default_mapper": "function ax(e){return Bg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function xJs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "zs=\"builtin\"",
+        "builtin_predicate": "function Zf(e){return e.endsWith(`@${zs}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -563,10 +676,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function OHn(e){if(!Ar())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Zp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>CYt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Est(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:sd(e.permissionMode)",
+        "permission_mode_default_mapper": "function sx(e){return Bg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function zJs(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Gs=\"builtin\"",
+        "builtin_predicate": "function Zp(e){return e.endsWith(`@${Gs}`)}"
       }
     },
     "2.1.307": {
@@ -587,10 +703,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function J0n(e){if(!xr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Sf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>L5t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Vit(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ll(e.permissionMode)",
+        "permission_mode_default_mapper": "function Cx(e){return zg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function jni(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ps=\"builtin\"",
+        "builtin_predicate": "function Sf(e){return e.endsWith(`@${Ps}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -609,10 +728,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function aHn(e){if(!xr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>bp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>T5t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Wit(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ll(e.permissionMode)",
+        "permission_mode_default_mapper": "function Ex(e){return zg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function sni(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "xs=\"builtin\"",
+        "builtin_predicate": "function bp(e){return e.endsWith(`@${xs}`)}"
       }
     },
     "2.1.308": {
@@ -633,10 +755,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function J0n(e){if(!xr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Sf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>L5t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Vit(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ll(e.permissionMode)",
+        "permission_mode_default_mapper": "function Cx(e){return zg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function jni(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ps=\"builtin\"",
+        "builtin_predicate": "function Sf(e){return e.endsWith(`@${Ps}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -655,10 +780,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function aHn(e){if(!xr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>bp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>T5t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Wit(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:Ll(e.permissionMode)",
+        "permission_mode_default_mapper": "function Ex(e){return zg(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function sni(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "xs=\"builtin\"",
+        "builtin_predicate": "function bp(e){return e.endsWith(`@${xs}`)}"
       }
     },
     "2.1.309": {
@@ -679,10 +807,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function G1n(e){if(!Ar())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>ff(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>R8t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:blt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:jl(e.permissionMode)",
+        "permission_mode_default_mapper": "function Lx(e){return th(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function sii(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ls=\"builtin\"",
+        "builtin_predicate": "function ff(e){return e.endsWith(`@${Ls}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -701,10 +832,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function lqn(e){if(!Cr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>mp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>g8t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:ylt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:jl(e.permissionMode)",
+        "permission_mode_default_mapper": "function Hx(e){return th(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Asi(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ls=\"builtin\"",
+        "builtin_predicate": "function mp(e){return e.endsWith(`@${Ls}`)}"
       }
     },
     "2.1.310": {
@@ -725,10 +859,13 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Djn(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>wf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>fXt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Hdt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+        "permission_mode_default_mapper": "function Qx(e){return ph(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Ldi(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ns=\"builtin\"",
+        "builtin_predicate": "function wf(e){return e.endsWith(`@${Ns}`)}"
       },
       "claude-code-linux-x64": {
         "artifact_file": "claude",
@@ -747,11 +884,40 @@
           "tips",
           "you-should-know"
         ],
-        "safe_mode_option_present": true,
-        "safe_mode_filter_log_present": true,
-        "init_subtype_present": true,
-        "permissionMode_default_literal_present": true
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function i1n(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>vp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>tXt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Idt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+        "permission_mode_default_mapper": "function Xx(e){return fh(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Zli(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ns=\"builtin\"",
+        "builtin_predicate": "function vp(e){return e.endsWith(`@${Ns}`)}"
       }
     }
-  }
+  },
+  "permission_mode_default_mapper_at_2_1_310": {
+    "claude-code-darwin-arm64": "function Qx(e){return ph(e)??\"default\"}",
+    "claude-code-linux-x64": "function Xx(e){return fh(e)??\"default\"}"
+  },
+  "permission_mode_treats_undefined_as_default_at_2_1_310": {
+    "claude-code-darwin-arm64": "function Ldi(e){return e===\"default\"||e===void 0}",
+    "claude-code-linux-x64": "function Zli(e){return e===\"default\"||e===void 0}"
+  },
+  "compared_versions": [
+    "2.1.293",
+    "2.1.294",
+    "2.1.295",
+    "2.1.296",
+    "2.1.299",
+    "2.1.300",
+    "2.1.301",
+    "2.1.302",
+    "2.1.303",
+    "2.1.304",
+    "2.1.305",
+    "2.1.306",
+    "2.1.307",
+    "2.1.308",
+    "2.1.309",
+    "2.1.310"
+  ]
 }

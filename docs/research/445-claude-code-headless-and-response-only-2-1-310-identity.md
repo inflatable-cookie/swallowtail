@@ -58,14 +58,17 @@ deny blocks before dispatch, a rewritten input is rechecked, and
 `stop_hook_active` true is reentry success under the provider block cap.
 
 Those surfaces were reviewed again on each published hop from the previous
-ceiling to `2.1.310`. `selected-control-flow.json` binds the v2 prompt
-`ok:false` blocking path, PreToolUse deny-before-dispatch, rewrite
-`hookRewrites.push`, and Stop cap default 8 at `2.1.310` to the Darwin arm64
-and Linux x64 executable hashes, and records that those identifier-stable
-literals are present on every compared binary from `2.1.294` through
-`2.1.310`. Selected stream-json help lines stay byte-identical. The hop ledger
-is `headless-protocol.json` and `response-only-protocol.json`. Every hop has
-`selected_mapped_change` false.
+ceiling to `2.1.310`. `selected-control-flow.json` binds measured selected JS
+on every published hop from `2.1.294` through `2.1.310` to the Darwin arm64
+and Linux x64 executable hashes: prompt `ok:false` blocking, PreToolUse
+deny-before-dispatch, rewrite `hookRewrites.push`, the PreToolUse rewrite
+recheck that turns `ask` into `deny` on `hookUpdatedInput`, the Stop and
+SubagentStop `stop_hook_active` input and `stopHookActive:!0` reentry, and
+the Stop cap default 8. Identifier remangling changes the exact snippets
+across hops and platforms; the decision tokens stay. Selected stream-json
+help lines stay byte-identical. The hop ledger is `headless-protocol.json`
+and `response-only-protocol.json`. Every hop has `selected_mapped_change`
+false.
 
 Adjacent package deltas add and remove no files. Platform packages change
 `claude` and `package.json` on every hop. The wrapper changes `package.json`
@@ -109,10 +112,11 @@ and maintained v3 on `2.1.282..=2.1.310`. Add the same unpublished gaps.
 `2.1.294` qualifies on existing v3. The headless stop at that point was
 settings-enabled instruction-form and Stop hooks. Response-only passes
 `--safe-mode`. `response-only-isolation.json` freezes the exact `--safe-mode`
-option text, the builtin-only plugin filter, and the init object that still
-emits `tools`, `mcp_servers`, and `permissionMode`. Research 378's nine
+option text, builtin-only plugin filter, init object, permissionMode default
+mapper, undefined-as-default predicate, and builtin predicate as measured JS
+on every published hop from `2.1.293` through `2.1.310`. Research 378's nine
 `@builtin` plugins remain. `mods-guide` and `you-should-know` are already
-present at `2.1.294`; `easel` (`cc-plugin-easel`) is present from `2.1.302`.
+present at `2.1.293`; `easel` (`cc-plugin-easel`) is present from `2.1.302`.
 Empty tools and empty MCP leave that chart path unselected.
 `--disable-slash-commands` still excludes the `2.1.287` fork-skill stream.
 Unknown event types still fail closed.

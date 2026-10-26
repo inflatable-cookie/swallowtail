@@ -11,7 +11,7 @@ pub const OPENCODE_SERVER_AXIS: &str = "opencode.server";
 /// Oldest OpenCode server release qualified by the HTTP facade.
 pub const OPENCODE_BASELINE_VERSION: &str = "1.14.48";
 /// Newest OpenCode server release behaviorally qualified by the HTTP facade.
-pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.18.35";
+pub const OPENCODE_LATEST_QUALIFIED_VERSION: &str = "1.19.4";
 const MAX_SERVER_VERSION_BYTES: usize = 64;
 
 /// Parses one exact OpenCode server semantic-version binding.
@@ -59,7 +59,8 @@ pub fn opencode_http_claim() -> InterfaceCompatibilityClaim {
         ("1.17.11", "1.17.11", "surface-17"),
         ("1.17.12", "1.17.20", "surface-18"),
         ("1.18.0", "1.18.10", "surface-18"),
-        ("1.18.11", OPENCODE_LATEST_QUALIFIED_VERSION, "surface-19"),
+        ("1.18.11", "1.18.35", "surface-19"),
+        ("1.19.0", OPENCODE_LATEST_QUALIFIED_VERSION, "surface-19"),
     ]
     .into_iter()
     .map(|(minimum, maximum, surface)| segment(minimum, maximum, surface));

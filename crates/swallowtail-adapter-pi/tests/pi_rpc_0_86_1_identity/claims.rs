@@ -33,7 +33,7 @@ fn identity_names_compatible_extension_before_the_claim_edit() {
         "unverified_newer"
     );
     assert_eq!(PI_PACKAGE_BASELINE_VERSION, "0.80.10");
-    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.1.0");
+    assert_eq!(PI_PACKAGE_LATEST_QUALIFIED_VERSION, "1.4.0");
 
     let claim = pi_rpc_claim();
     assert!(matches!(

@@ -1,0 +1,924 @@
+{
+  "schema": "swallowtail.mistral-vibe.headless.identity-stop.v1",
+  "observed_at": "2026-10-26",
+  "axis": "mistral-vibe.release",
+  "route": "mistral-vibe.headless",
+  "pypi_project": "mistral-vibe",
+  "github_repository": "https://github.com/mistralai/mistral-vibe",
+  "claim_at_observation": {
+    "claim_id": "mistral-vibe.headless.release-window-1",
+    "behavior_revision": "mistral-vibe.headless.stdio-streaming-v1",
+    "baseline": "2.25.4",
+    "latest_qualified": "2.26.0",
+    "newer_version_posture": "AllowUnverified",
+    "excluded_unpublished_stables": [
+      "2.25.6",
+      "2.25.9"
+    ]
+  },
+  "official": {
+    "version": "3.0.2",
+    "pypi_latest_stable": "3.0.2",
+    "github_latest_stable_release": "v3.0.2",
+    "channels_agree": true,
+    "prerelease": false,
+    "yanked": false
+  },
+  "published_hops_after_ceiling": [
+    "2.26.1",
+    "3.0.0",
+    "3.0.1",
+    "3.0.2"
+  ],
+  "compared": [
+    "2.26.0",
+    "2.26.1",
+    "3.0.0",
+    "3.0.1",
+    "3.0.2"
+  ],
+  "host": {
+    "present": false,
+    "vibe_command_found": false,
+    "platform": "Linux x86_64",
+    "artifact_execution": false
+  },
+  "identity_decision": {
+    "shape": "identity-stop",
+    "latest_qualified_unchanged": "2.26.0",
+    "claim_id_change": "none",
+    "behavior_revision_change": "none",
+    "first_selected_break": "2.26.1",
+    "major_line_reset": "3.0.0",
+    "extend_ceiling": false,
+    "downloaded_artifact_executed": false,
+    "provider_prompt_sent": false,
+    "live_prompt_run": false,
+    "host_install_changed": false,
+    "selected_argv_unchanged": false,
+    "config_home_unchanged": true
+  },
+  "provenance": {
+    "publisher": "GitHub mistralai/mistral-vibe workflow release.yml",
+    "publish_statement_carries_source_commit": false,
+    "selected_sdist_files_match_github_tag": true
+  },
+  "tree_inventory": "dist-inventory.json",
+  "versions": [
+    {
+      "version": "2.26.0",
+      "github_tag": "v2.26.0",
+      "github_tag_commit": "376f6a33413a3eec9b3795b0c0e004066c47b5c1",
+      "github_published_at": "2026-10-06T10:11:18Z",
+      "pypi_sdist": {
+        "filename": "mistral_vibe-2.26.0.tar.gz",
+        "sha256": "86ee13da13f9ca6b2f023cc5ca254a81bd99eeb5d2caa7b9e791421531bb2f5c",
+        "size": 2993316,
+        "published_at": "2026-10-06T13:19:11.511628Z",
+        "file_count": 1480,
+        "locally_verified": true
+      },
+      "requires_python": ">=3.12",
+      "pypi_wheels": [
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-macosx_11_0_arm64.whl",
+          "sha256": "bc8d3ec765d844be7b51ec0247296042113784b8b6925aac5e445cec69409a27",
+          "size": 36646958,
+          "published_at": "2026-10-06T13:18:51.554568Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-macosx_11_0_x86_64.whl",
+          "sha256": "6c61e33781ddbd54e3cacf098589e49234df45c6f2498858c3e0d3bb8181c454",
+          "size": 37782373,
+          "published_at": "2026-10-06T13:18:55.550647Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "91087d3507924f44823be8567d8d051da7669b1ad2b60e549e75e91ede282a4e",
+          "size": 61572242,
+          "published_at": "2026-10-06T13:18:58.928434Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "d8230b8abd7c39a8e90d60884b1f5ee8c95ffb459c62c21f3ea0e3041117a114",
+          "size": 66340569,
+          "published_at": "2026-10-06T13:19:05.340467Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": true
+        },
+        {
+          "filename": "mistral_vibe-2.26.0-cp312-abi3-win_amd64.whl",
+          "sha256": "e3807c3670f0a74357f63e82aa77648076a12ab97abc10c579d002950e082955",
+          "size": 34879932,
+          "published_at": "2026-10-06T13:19:08.742987Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        }
+      ],
+      "linux_x86_64_wheel": {
+        "filename": "mistral_vibe-2.26.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "d8230b8abd7c39a8e90d60884b1f5ee8c95ffb459c62c21f3ea0e3041117a114",
+        "size": 66340569,
+        "file_count": 755,
+        "launcher_sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+        "programmatic_present": true,
+        "programmatic_sha256": "1dbfd951bba336721cd31aee97a672d219933144e7cde357b485d01908a0a214",
+        "vibe_rs_sha256": "a70f1a340d1692cd9190ad84f0a5d6507eff09b3082b933d4b1c057667ecf7cc",
+        "vibe_rs_size": 148888208,
+        "vibe_rs_phrase_counts": {
+          "--legacy-harness": 0,
+          "The configured conversation limit was reached": 1,
+          "--agent": 0,
+          "streaming": 13,
+          "VIBE_CLI": 2,
+          "Agent '": 0,
+          ".vibe": 4
+        },
+        "python_limit_phrase_files": [
+          "vibe/cli/programmatic.py"
+        ],
+        "python_legacy_harness_files": [
+          "vibe/_experimental_harness.py",
+          "vibe/acp/entrypoint.py",
+          "vibe/app_server/_runtime.py",
+          "vibe/app_server/stdio.py",
+          "vibe/cli/_rust.py",
+          "vibe/cli/entrypoint.py",
+          "vibe/cli/textual_ui/app.py",
+          "vibe/core/skills/builtins/vibe.py"
+        ]
+      },
+      "selected_files": {
+        "vibe/cli/launcher.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+          "matches_github_tag": true
+        },
+        "vibe/cli/programmatic.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "1dbfd951bba336721cd31aee97a672d219933144e7cde357b485d01908a0a214",
+          "matches_github_tag": true
+        },
+        "vibe/cli/entrypoint.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "f343aaa95389528037512ae13ba57f005a60bb202d98136dfbe165ef98cc7331",
+          "matches_github_tag": true
+        },
+        "vibe/cli/cli.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "6e186997b0e6003486f10cefd38b01e5dc8e5178b7f996b4d7064f71d740d20a",
+          "matches_github_tag": true
+        },
+        "vibe/core/agents/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "28015a29ad37b759c67b89d75e1cd38985ef50b3351f546dc801184debd65b68",
+          "matches_github_tag": true
+        },
+        "vibe/utils/vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+          "matches_github_tag": true
+        },
+        "vibe/core/paths/_vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "a8d5db21a6b12c5266e574da2b514a5fc07c8c7bfef47f8903d1823b1339b4e7",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/cli.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "00138109403583a7d426de4d959240a2e24c199c672f64d16a87790771b54e68",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/headless_output.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "b2fae96dfc27d5f3e8a597e9ed3b35b8c286883ef51a440667dcb89ca32f6e17",
+          "matches_github_tag": true
+        },
+        "vibe/app_server/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "d5a18de804ffcc17bba5b8428d7b5d998064535a614453e611dd16bd7afac07e",
+          "matches_github_tag": true
+        }
+      },
+      "launcher_source": {
+        "sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+        "mentions_vibe_cli": true,
+        "always_execs_rust": false,
+        "can_reach_python_entrypoint": true
+      },
+      "plan_agent": {
+        "builtin_plan_member": true,
+        "removed_builtin_maps_plan_to_ask": false
+      },
+      "config_home": {
+        "vibe_home_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+        "default_is_dot_vibe": true,
+        "honors_vibe_home_env": true,
+        "plans_dir_constant": true
+      },
+      "turn_limit": {
+        "programmatic_py_present": true,
+        "stderr_phrase_in_programmatic": true,
+        "programmatic_limit_error_exits_1": true,
+        "run_outcome_turn_limit_exit_3": false,
+        "python_entrypoint_has_legacy_harness": true
+      },
+      "rust_cli": {
+        "has_legacy_harness_flag": false,
+        "has_output_streaming_variant": true,
+        "has_max_turns": true,
+        "has_agent_flag": true,
+        "has_trust_flag": true,
+        "has_workdir_flag": true
+      }
+    },
+    {
+      "version": "2.26.1",
+      "github_tag": "v2.26.1",
+      "github_tag_commit": "4ae5c5955da8e761318916bdb1a7f46f0b50c7d0",
+      "github_published_at": "2026-10-09T14:56:56Z",
+      "pypi_sdist": {
+        "filename": "mistral_vibe-2.26.1.tar.gz",
+        "sha256": "e92402b2a1705c66463cad9d1f33d549ea2d8fc1bb608ec228c7acaf49ef4332",
+        "size": 3194290,
+        "published_at": "2026-10-09T15:18:13.726650Z",
+        "file_count": 1583,
+        "locally_verified": true
+      },
+      "requires_python": ">=3.12",
+      "pypi_wheels": [
+        {
+          "filename": "mistral_vibe-2.26.1-cp312-abi3-macosx_11_0_arm64.whl",
+          "sha256": "515d8b5b10a5a2b10eb4628294d30ca90a27e9314f4d8aaea7514b733179ee36",
+          "size": 36982034,
+          "published_at": "2026-10-09T15:17:50.709140Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.1-cp312-abi3-macosx_11_0_x86_64.whl",
+          "sha256": "0d2c181bf162ac57f0b6a7a9d43c8b0714873099eaf0be2d23bd5cc809350103",
+          "size": 38120873,
+          "published_at": "2026-10-09T15:17:55.104590Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.1-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "896a432651b922b7e16f01e26b4fce55b4ebd7a5ca122cf82c1e9d6a8a849821",
+          "size": 62310279,
+          "published_at": "2026-10-09T15:18:00.387441Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-2.26.1-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "1ceb43e38a2e82cb8c54e1032b011874f8422e998cf87b4a3fdf58704133de55",
+          "size": 67124844,
+          "published_at": "2026-10-09T15:18:06.144750Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": true
+        },
+        {
+          "filename": "mistral_vibe-2.26.1-cp312-abi3-win_amd64.whl",
+          "sha256": "30c6b973d73aff8784b918b5b1d14dc0aade16d15d4ce1dffc868a6f35beb14d",
+          "size": 35219558,
+          "published_at": "2026-10-09T15:18:10.827621Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        }
+      ],
+      "linux_x86_64_wheel": {
+        "filename": "mistral_vibe-2.26.1-cp312-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "1ceb43e38a2e82cb8c54e1032b011874f8422e998cf87b4a3fdf58704133de55",
+        "size": 67124844,
+        "file_count": 779,
+        "launcher_sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+        "programmatic_present": true,
+        "programmatic_sha256": "a938d2440ff5599fa1c48f131c8d6d1ac336aec8cd496c1f8a7caa85c92bbbc1",
+        "vibe_rs_sha256": "18b0620bec1dd9b1e3917258c7ecf54b831d58e3e58e9d6526195e8eb1b2bddc",
+        "vibe_rs_size": 151765032,
+        "vibe_rs_phrase_counts": {
+          "--legacy-harness": 0,
+          "The configured conversation limit was reached": 1,
+          "--agent": 0,
+          "streaming": 13,
+          "VIBE_CLI": 2,
+          "Agent '": 0,
+          ".vibe": 5
+        },
+        "python_limit_phrase_files": [],
+        "python_legacy_harness_files": [
+          "vibe/_experimental_harness.py",
+          "vibe/acp/entrypoint.py",
+          "vibe/app_server/_runtime.py",
+          "vibe/app_server/stdio.py",
+          "vibe/cli/_rust.py",
+          "vibe/cli/entrypoint.py",
+          "vibe/cli/textual_ui/app.py",
+          "vibe/core/skills/builtins/vibe.py"
+        ]
+      },
+      "selected_files": {
+        "vibe/cli/launcher.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+          "matches_github_tag": true
+        },
+        "vibe/cli/programmatic.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "a938d2440ff5599fa1c48f131c8d6d1ac336aec8cd496c1f8a7caa85c92bbbc1",
+          "matches_github_tag": true
+        },
+        "vibe/cli/entrypoint.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "fbb033ec73433bc575211680308f287f4bc26a3857f1100f55988de79bad0bb1",
+          "matches_github_tag": true
+        },
+        "vibe/cli/cli.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "f53bd1000145ab6b033845321691b95f7eae7a4f03c3816561524cac588464e6",
+          "matches_github_tag": true
+        },
+        "vibe/core/agents/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "28015a29ad37b759c67b89d75e1cd38985ef50b3351f546dc801184debd65b68",
+          "matches_github_tag": true
+        },
+        "vibe/utils/vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+          "matches_github_tag": true
+        },
+        "vibe/core/paths/_vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "0741c093d593910666215840d86629fb9a5353b3f8313fc632942c52904d9eea",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/cli.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "00138109403583a7d426de4d959240a2e24c199c672f64d16a87790771b54e68",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/headless_output.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "b2fae96dfc27d5f3e8a597e9ed3b35b8c286883ef51a440667dcb89ca32f6e17",
+          "matches_github_tag": true
+        },
+        "vibe/app_server/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "8cdfa65293b0cae02f7fedc1e215fc63c7680b15251ef63f4dd11362215ac384",
+          "matches_github_tag": true
+        }
+      },
+      "launcher_source": {
+        "sha256": "db6a00e04258fd74c25665dbe959f84325e6cb06bbb808f18525d68aab295ccd",
+        "mentions_vibe_cli": true,
+        "always_execs_rust": false,
+        "can_reach_python_entrypoint": true
+      },
+      "plan_agent": {
+        "builtin_plan_member": true,
+        "removed_builtin_maps_plan_to_ask": false
+      },
+      "config_home": {
+        "vibe_home_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+        "default_is_dot_vibe": true,
+        "honors_vibe_home_env": true,
+        "plans_dir_constant": true
+      },
+      "turn_limit": {
+        "programmatic_py_present": true,
+        "stderr_phrase_in_programmatic": false,
+        "programmatic_limit_error_exits_1": false,
+        "run_outcome_turn_limit_exit_3": true,
+        "python_entrypoint_has_legacy_harness": true
+      },
+      "rust_cli": {
+        "has_legacy_harness_flag": false,
+        "has_output_streaming_variant": true,
+        "has_max_turns": true,
+        "has_agent_flag": true,
+        "has_trust_flag": true,
+        "has_workdir_flag": true
+      }
+    },
+    {
+      "version": "3.0.0",
+      "github_tag": "v3.0.0",
+      "github_tag_commit": "a0c78d0a3f3f822c275f1dec7054e40d1050f966",
+      "github_published_at": "2026-10-19T16:01:14Z",
+      "pypi_sdist": {
+        "filename": "mistral_vibe-3.0.0.tar.gz",
+        "sha256": "49d90b1bce61ae2a2835e19bb24237958fa1323f9a2f12ce1968b9333bb3fee7",
+        "size": 3003149,
+        "published_at": "2026-10-19T16:16:54.035264Z",
+        "file_count": 1533,
+        "locally_verified": true
+      },
+      "requires_python": ">=3.14",
+      "pypi_wheels": [
+        {
+          "filename": "mistral_vibe-3.0.0-cp312-abi3-macosx_11_0_arm64.whl",
+          "sha256": "33260b2092cfff07940a9c645beb1933890292246cda299ad1aa9279b3d8d01e",
+          "size": 36979164,
+          "published_at": "2026-10-19T16:16:31.591920Z",
+          "requires_python": ">=3.14",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.0-cp312-abi3-macosx_11_0_x86_64.whl",
+          "sha256": "aab82252ef60df734fd5601681aa93cbaf3770feefd8bf53322237ecfa333ec9",
+          "size": 38141729,
+          "published_at": "2026-10-19T16:16:35.188637Z",
+          "requires_python": ">=3.14",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.0-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "e3db250a130bd85b67c33221e977bcd71fcc574df47bbc6f8ad723710d318d4d",
+          "size": 63060377,
+          "published_at": "2026-10-19T16:16:38.834877Z",
+          "requires_python": ">=3.14",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "b45de79af6f496257583c8817a785bbc8578955331b69c4c36d4b80990ca8a2b",
+          "size": 67917476,
+          "published_at": "2026-10-19T16:16:42.838827Z",
+          "requires_python": ">=3.14",
+          "yanked": false,
+          "locally_verified": true
+        },
+        {
+          "filename": "mistral_vibe-3.0.0-cp312-abi3-win_amd64.whl",
+          "sha256": "efad72d655ad47370692e2a751b3886fb555573acf521248210ad6bf403c3a5b",
+          "size": 35270460,
+          "published_at": "2026-10-19T16:16:46.600312Z",
+          "requires_python": ">=3.14",
+          "yanked": false,
+          "locally_verified": false
+        }
+      ],
+      "linux_x86_64_wheel": {
+        "filename": "mistral_vibe-3.0.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "b45de79af6f496257583c8817a785bbc8578955331b69c4c36d4b80990ca8a2b",
+        "size": 67917476,
+        "file_count": 614,
+        "launcher_sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+        "programmatic_present": false,
+        "programmatic_sha256": null,
+        "vibe_rs_sha256": "e9c202c64fb933daabfe23f6f5d5a89924d06e71144724a4fb6ad20c759e5c1a",
+        "vibe_rs_size": 156163552,
+        "vibe_rs_phrase_counts": {
+          "--legacy-harness": 0,
+          "The configured conversation limit was reached": 0,
+          "--agent": 4,
+          "streaming": 13,
+          "VIBE_CLI": 0,
+          "Agent '": 0,
+          ".vibe": 3
+        },
+        "python_limit_phrase_files": [],
+        "python_legacy_harness_files": []
+      },
+      "selected_files": {
+        "vibe/cli/launcher.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+          "matches_github_tag": true
+        },
+        "vibe/cli/programmatic.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/cli/entrypoint.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/cli/cli.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/core/agents/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "3e240ce910b557c7553be16e4d86031023ce5d94bc9ad601dd9953dab6eaf063",
+          "matches_github_tag": true
+        },
+        "vibe/utils/vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+          "matches_github_tag": true
+        },
+        "vibe/core/paths/_vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "5d3368bc95f73d9082cdb01af5bae6e10493cf3711c260e285a6f1dee795bab1",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/cli.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "544c7ac52b4e84de068369874428276b745f8ca3923b7458fd7f09b03b26e86a",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/headless_output.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "7b5b1d3675b9a328d7248de76195f8fc9a86ba1a92753d55e1d8c88f280d39d1",
+          "matches_github_tag": true
+        },
+        "vibe/app_server/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "af12d1c5abf7afaa3343ad53d4d89c7926b45b08ab85927789b7498f4ab78d63",
+          "matches_github_tag": true
+        }
+      },
+      "launcher_source": {
+        "sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+        "mentions_vibe_cli": false,
+        "always_execs_rust": true,
+        "can_reach_python_entrypoint": false
+      },
+      "plan_agent": {
+        "builtin_plan_member": false,
+        "removed_builtin_maps_plan_to_ask": true
+      },
+      "config_home": {
+        "vibe_home_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+        "default_is_dot_vibe": true,
+        "honors_vibe_home_env": true,
+        "plans_dir_constant": false
+      },
+      "turn_limit": {
+        "programmatic_py_present": false,
+        "stderr_phrase_in_programmatic": false,
+        "programmatic_limit_error_exits_1": false,
+        "run_outcome_turn_limit_exit_3": true,
+        "python_entrypoint_has_legacy_harness": false
+      },
+      "rust_cli": {
+        "has_legacy_harness_flag": false,
+        "has_output_streaming_variant": true,
+        "has_max_turns": true,
+        "has_agent_flag": true,
+        "has_trust_flag": true,
+        "has_workdir_flag": true
+      }
+    },
+    {
+      "version": "3.0.1",
+      "github_tag": "v3.0.1",
+      "github_tag_commit": "dd2c04ce717c417731ab89c333cd0a72541e33ba",
+      "github_published_at": "2026-10-20T13:55:39Z",
+      "pypi_sdist": {
+        "filename": "mistral_vibe-3.0.1.tar.gz",
+        "sha256": "b4d1ab55d6ccfc65c658fb19b09b46734e3bf14fd70ca90a5b227a5c640c5882",
+        "size": 3166935,
+        "published_at": "2026-10-20T14:17:08.777328Z",
+        "file_count": 1596,
+        "locally_verified": true
+      },
+      "requires_python": ">=3.12",
+      "pypi_wheels": [
+        {
+          "filename": "mistral_vibe-3.0.1-cp312-abi3-macosx_11_0_arm64.whl",
+          "sha256": "4639e0551f484e40d410017ce54e6d074cd1094403ca1983f88c039939abed56",
+          "size": 37525827,
+          "published_at": "2026-10-20T14:16:50.156084Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.1-cp312-abi3-macosx_11_0_x86_64.whl",
+          "sha256": "6847f991183b9bce86ee60a7292c2e85ccec780a47ee114c27e940e6bf19e318",
+          "size": 38707852,
+          "published_at": "2026-10-20T14:16:54.328469Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.1-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "aa4f42b44911b198555699e148f8e42c33703eee7f7af40f09d8e1f749486041",
+          "size": 64494235,
+          "published_at": "2026-10-20T14:16:58.105438Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.1-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "3016ea464719ac99a62f6c5ff4ffa013f3ac0c5ddf03c3def486133ebdc7094f",
+          "size": 69485024,
+          "published_at": "2026-10-20T14:17:02.421248Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": true
+        },
+        {
+          "filename": "mistral_vibe-3.0.1-cp312-abi3-win_amd64.whl",
+          "sha256": "20fbd27cf912b92490e55efbd17745b5187757e9e714f42548579efde14315b4",
+          "size": 35840278,
+          "published_at": "2026-10-20T14:17:06.017928Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        }
+      ],
+      "linux_x86_64_wheel": {
+        "filename": "mistral_vibe-3.0.1-cp312-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "3016ea464719ac99a62f6c5ff4ffa013f3ac0c5ddf03c3def486133ebdc7094f",
+        "size": 69485024,
+        "file_count": 615,
+        "launcher_sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+        "programmatic_present": false,
+        "programmatic_sha256": null,
+        "vibe_rs_sha256": "21c59a93184a406bd71a90ef8386c84566729699ff9d3a818d087ce657b82eca",
+        "vibe_rs_size": 162319864,
+        "vibe_rs_phrase_counts": {
+          "--legacy-harness": 0,
+          "The configured conversation limit was reached": 0,
+          "--agent": 4,
+          "streaming": 13,
+          "VIBE_CLI": 0,
+          "Agent '": 0,
+          ".vibe": 5
+        },
+        "python_limit_phrase_files": [],
+        "python_legacy_harness_files": []
+      },
+      "selected_files": {
+        "vibe/cli/launcher.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+          "matches_github_tag": true
+        },
+        "vibe/cli/programmatic.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/cli/entrypoint.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/cli/cli.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/core/agents/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "3e240ce910b557c7553be16e4d86031023ce5d94bc9ad601dd9953dab6eaf063",
+          "matches_github_tag": true
+        },
+        "vibe/utils/vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+          "matches_github_tag": true
+        },
+        "vibe/core/paths/_vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "5d3368bc95f73d9082cdb01af5bae6e10493cf3711c260e285a6f1dee795bab1",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/cli.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "c6ab3ae2b5fe12348aaf08299c103f3e40506dad3d73538d7d5bd08cc34dce76",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/headless_output.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "989951ea8eac7ac5c9949061547f8650faa0858430169b20221b28d977f8f7aa",
+          "matches_github_tag": true
+        },
+        "vibe/app_server/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "180257cbfc7ccb18de366f42100abe01fddbc95273ac7183ea5bf2816cf9365a",
+          "matches_github_tag": true
+        }
+      },
+      "launcher_source": {
+        "sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+        "mentions_vibe_cli": false,
+        "always_execs_rust": true,
+        "can_reach_python_entrypoint": false
+      },
+      "plan_agent": {
+        "builtin_plan_member": false,
+        "removed_builtin_maps_plan_to_ask": true
+      },
+      "config_home": {
+        "vibe_home_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+        "default_is_dot_vibe": true,
+        "honors_vibe_home_env": true,
+        "plans_dir_constant": false
+      },
+      "turn_limit": {
+        "programmatic_py_present": false,
+        "stderr_phrase_in_programmatic": false,
+        "programmatic_limit_error_exits_1": false,
+        "run_outcome_turn_limit_exit_3": true,
+        "python_entrypoint_has_legacy_harness": false
+      },
+      "rust_cli": {
+        "has_legacy_harness_flag": false,
+        "has_output_streaming_variant": true,
+        "has_max_turns": true,
+        "has_agent_flag": true,
+        "has_trust_flag": true,
+        "has_workdir_flag": true
+      }
+    },
+    {
+      "version": "3.0.2",
+      "github_tag": "v3.0.2",
+      "github_tag_commit": "36f7b3a4e10440e90f98080492530b8f4d46960d",
+      "github_published_at": "2026-10-22T15:34:08Z",
+      "pypi_sdist": {
+        "filename": "mistral_vibe-3.0.2.tar.gz",
+        "sha256": "cb62be5743194f84a63d3e955afeeedd3e3741442fd19b118ec43ec532ddacd3",
+        "size": 3220310,
+        "published_at": "2026-10-22T16:03:11.939000Z",
+        "file_count": 1617,
+        "locally_verified": true
+      },
+      "requires_python": ">=3.12",
+      "pypi_wheels": [
+        {
+          "filename": "mistral_vibe-3.0.2-cp312-abi3-macosx_11_0_arm64.whl",
+          "sha256": "9a1e3bca002505bc8b5e30679ef3976c602e06666901afbf41fdacd4baa2e5b0",
+          "size": 37586880,
+          "published_at": "2026-10-22T16:02:50.150040Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.2-cp312-abi3-macosx_11_0_x86_64.whl",
+          "sha256": "e2713fb1d16ba7506a08e2c5e75cd267e1de9296726323a4a5423fd1681c2855",
+          "size": 38745484,
+          "published_at": "2026-10-22T16:02:54.418731Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.2-cp312-abi3-manylinux_2_28_aarch64.whl",
+          "sha256": "84488e07c14646a087044644282c9df74c82d00187014a288682158eff744e54",
+          "size": 64606792,
+          "published_at": "2026-10-22T16:02:59.367918Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        },
+        {
+          "filename": "mistral_vibe-3.0.2-cp312-abi3-manylinux_2_28_x86_64.whl",
+          "sha256": "9dae259db0651a3978653bed1a87005ded40532942f3c143e2d8228fce0f7563",
+          "size": 69553575,
+          "published_at": "2026-10-22T16:03:05.060566Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": true
+        },
+        {
+          "filename": "mistral_vibe-3.0.2-cp312-abi3-win_amd64.whl",
+          "sha256": "da09a8a218a152e86ce7b853083b97e99b31f211cdd090c18f504542ff265c77",
+          "size": 35909939,
+          "published_at": "2026-10-22T16:03:09.146477Z",
+          "requires_python": ">=3.12",
+          "yanked": false,
+          "locally_verified": false
+        }
+      ],
+      "linux_x86_64_wheel": {
+        "filename": "mistral_vibe-3.0.2-cp312-abi3-manylinux_2_28_x86_64.whl",
+        "sha256": "9dae259db0651a3978653bed1a87005ded40532942f3c143e2d8228fce0f7563",
+        "size": 69553575,
+        "file_count": 622,
+        "launcher_sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+        "programmatic_present": false,
+        "programmatic_sha256": null,
+        "vibe_rs_sha256": "fed77ae5e39ee741d0ee7ac03d847698ee3ff1bc4150f79547fa1dd16844537e",
+        "vibe_rs_size": 162419000,
+        "vibe_rs_phrase_counts": {
+          "--legacy-harness": 0,
+          "The configured conversation limit was reached": 0,
+          "--agent": 4,
+          "streaming": 13,
+          "VIBE_CLI": 0,
+          "Agent '": 0,
+          ".vibe": 5
+        },
+        "python_limit_phrase_files": [],
+        "python_legacy_harness_files": []
+      },
+      "selected_files": {
+        "vibe/cli/launcher.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+          "matches_github_tag": true
+        },
+        "vibe/cli/programmatic.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/cli/entrypoint.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/cli/cli.py": {
+          "present_in_sdist": false,
+          "sdist_sha256": null,
+          "matches_github_tag": false
+        },
+        "vibe/core/agents/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "3e240ce910b557c7553be16e4d86031023ce5d94bc9ad601dd9953dab6eaf063",
+          "matches_github_tag": true
+        },
+        "vibe/utils/vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+          "matches_github_tag": true
+        },
+        "vibe/core/paths/_vibe_home.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "301a88993f4f7e11da2b938c18df031dd2b4746df0af208e92d72f03c4f37785",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/cli.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "510b8fd6b663b934ffc52a5eb7c5a597cf70280908ac8002229f02b4bebfa6d6",
+          "matches_github_tag": true
+        },
+        "vibe/cli-rust/src/headless_output.rs": {
+          "present_in_sdist": true,
+          "sdist_sha256": "989951ea8eac7ac5c9949061547f8650faa0858430169b20221b28d977f8f7aa",
+          "matches_github_tag": true
+        },
+        "vibe/app_server/models.py": {
+          "present_in_sdist": true,
+          "sdist_sha256": "180257cbfc7ccb18de366f42100abe01fddbc95273ac7183ea5bf2816cf9365a",
+          "matches_github_tag": true
+        }
+      },
+      "launcher_source": {
+        "sha256": "8903c0fc8749ae8b4724a016ab6e2d258446b389915b8a62de96ef07bb21fac7",
+        "mentions_vibe_cli": false,
+        "always_execs_rust": true,
+        "can_reach_python_entrypoint": false
+      },
+      "plan_agent": {
+        "builtin_plan_member": false,
+        "removed_builtin_maps_plan_to_ask": true
+      },
+      "config_home": {
+        "vibe_home_sha256": "df7191d3ea02bf2e7db1de8263c0f17016482338705622f07ef4384b35f423df",
+        "default_is_dot_vibe": true,
+        "honors_vibe_home_env": true,
+        "plans_dir_constant": false
+      },
+      "turn_limit": {
+        "programmatic_py_present": false,
+        "stderr_phrase_in_programmatic": false,
+        "programmatic_limit_error_exits_1": false,
+        "run_outcome_turn_limit_exit_3": true,
+        "python_entrypoint_has_legacy_harness": false
+      },
+      "rust_cli": {
+        "has_legacy_harness_flag": false,
+        "has_output_streaming_variant": true,
+        "has_max_turns": true,
+        "has_agent_flag": true,
+        "has_trust_flag": true,
+        "has_workdir_flag": true
+      }
+    }
+  ]
+}

@@ -18,7 +18,7 @@ const CLINE_HEADLESS_LATEST_QUALIFIED_VERSION: &str = "3.0.70";
 pub(crate) const CLINE_ACP_BEHAVIOR: &str = "cline.acp.stdio-v1";
 pub(crate) const CLINE_HEADLESS_BEHAVIOR: &str = "cline.headless.stdio-json-v1";
 const MAX_VERSION_BYTES: usize = 32;
-const CLINE_ACP_LATEST_QUALIFIED_VERSION: &str = "3.0.70";
+const CLINE_ACP_LATEST_QUALIFIED_VERSION: &str = "3.0.74";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) struct ClinePlanSelection {
@@ -234,7 +234,7 @@ mod tests {
         let acp = cline_acp_claim();
         assert_eq!(acp.id().as_str(), "cline.acp.package-window-1");
         assert_eq!(acp.baseline().as_str(), "3.0.55");
-        assert_eq!(acp.latest_qualified().as_str(), "3.0.70");
+        assert_eq!(acp.latest_qualified().as_str(), "3.0.74");
         assert_eq!(
             acp.newer_version_posture(),
             InterfaceNewerVersionPosture::AllowUnverified
@@ -245,7 +245,7 @@ mod tests {
                 .collect::<Vec<_>>(),
             ["3.0.59"]
         );
-        for qualified in ["3.0.55", "3.0.56", "3.0.58", "3.0.60", "3.0.70"] {
+        for qualified in ["3.0.55", "3.0.56", "3.0.58", "3.0.60", "3.0.70", "3.0.74"] {
             let version = InterfaceVersion::new(qualified).expect("qualified version");
             assert!(
                 acp.assess(&version).is_permitted(),
@@ -255,7 +255,7 @@ mod tests {
         }
         let hole = InterfaceVersion::new("3.0.59").expect("excluded version");
         assert!(!acp.assess(&hole).is_permitted());
-        let next = InterfaceVersion::new("3.0.71").expect("next stable version");
+        let next = InterfaceVersion::new("3.0.75").expect("next stable version");
         assert!(matches!(
             acp.assess(&next),
             swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
@@ -268,6 +268,7 @@ mod tests {
         assert_eq!(headless.latest_qualified().as_str(), "3.0.70");
         assert!(headless.permits(&InterfaceVersion::new("3.0.70").expect("latest headless")));
         assert!(!headless.permits(&hole));
+        assert!(!headless.permits(&InterfaceVersion::new("3.0.74").expect("acp-only extension")));
         assert!(!headless.permits(&next));
         assert_ne!(acp.id().as_str(), headless.id().as_str());
     }
@@ -282,11 +283,11 @@ mod tests {
             "3.0.55"
         );
         assert_eq!(
-            parse_cline_acp_version_output(b"3.0.70\n")
+            parse_cline_acp_version_output(b"3.0.74\n")
                 .expect("newest qualified version parses")
                 .version()
                 .as_str(),
-            "3.0.70"
+            "3.0.74"
         );
         let hole = parse_cline_acp_version_output(b"3.0.59\n").expect("stable version parses");
         assert!(!cline_acp_claim().assess(hole.version()).is_permitted());

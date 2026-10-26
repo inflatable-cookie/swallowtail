@@ -143,7 +143,12 @@ fn deletion_segments_preserve_gaps_and_unverified_newer_posture() {
     }
 
     assert_eq!(deletion["unverified_newer_example"], "1.18.21");
-    let newer = "1.18.36";
+    let gap = opencode_server_binding("1.18.36").expect("gap example is safe");
+    assert!(matches!(
+        opencode_http_claim().assess(gap.version()),
+        InterfaceCompatibilityAssessment::Incompatible
+    ));
+    let newer = "1.19.5";
     let binding = opencode_server_binding(newer).expect("newer example is safe");
     assert!(matches!(
         opencode_http_claim().assess(binding.version()),

@@ -1,0 +1,86 @@
+{
+  "selected_route": "cursor-agent.catalogue",
+  "selected_cli_command": "models",
+  "selected_cli_description": "List available models for this account",
+  "selected_cli_command_present_at_every_hop": true,
+  "selected_request_path": {
+    "command": "models",
+    "handler": "handleModelsList",
+    "account_options": [
+      "endpoint",
+      "apiKey",
+      "authToken",
+      "insecure"
+    ],
+    "availability_request": [
+      "useModelParameters=true",
+      "doNotUseMarkdown=true",
+      "additionalModelNames from the existing enabled custom-model configuration"
+    ],
+    "default_and_usable_lookup": [
+      "getUsableModels({customModelIds})",
+      "getDefaultModelForCli({})",
+      "availableModels(...)"
+    ],
+    "catalogue_parser_mapping": "plain-text rows; model identity and visible display are mapped; default is extracted only from the exact combined (current, default) suffix; no separate current field, model invocability or parameter support is claimed"
+  },
+  "selected_catalogue_fields": {
+    "model_id": "displayModelId || modelId",
+    "display_name": "displayName || displayNameShort",
+    "default_marker": "the adapter extracts default status only from the exact rendered (current, default) suffix",
+    "empty_result": "No models available for this account.",
+    "format": "Available models header followed by id - display name rows and current/default markers",
+    "provider_rendered_current_marker": "modelId equals currentModelId; no separate current field is exposed by the adapter"
+  },
+  "compatible_surface_review": {
+    "command_path_unchanged": true,
+    "account_options_unchanged": true,
+    "models_request_literals_unchanged": true,
+    "mapped_fields_unchanged": true,
+    "failure_boundary_unchanged": true,
+    "adapter_lifecycle_unchanged": true,
+    "no_new_operation_or_authority": true,
+    "linux_models_module_byte_identical_through": "2026.10.19-6bbf2c4",
+    "october_22_models_module": "stderr failure text now passes the message through unknown-guards before String; renderer literals, marker order, and process.exit codes stay",
+    "october_22_registration": "the registration stops wrapping insecure and authless in Boolean; handleModelsList still applies Boolean to insecure, and the adapter sends no flags",
+    "october_22_model_utils": "the internal clone helper constructs a protobuf message with the same printed fields",
+    "october_22_node_runtime": "embedded Node executable identity changes on both architectures; the shell launcher stays byte-identical and was not executed",
+    "package_json_from_2026_10_16": "metadata gains private native dependency versions; the package name stays @anysphere/agent-cli-runtime and is not the npm cursor-agent axis",
+    "required_options_removed_at_2026_10_22": [
+      "--repo <url>"
+    ],
+    "models_command_options": [],
+    "tip_text": "Upstream Tip wording stays ignored by the adapter.",
+    "unselected_additions": [
+      "local provider models branch",
+      "team and worker commands",
+      "interactive model-picker and parameter controls",
+      "package metadata dependency list",
+      "embedded Node runtime replacement at 2026.10.22",
+      "provider-internal bundle changes"
+    ]
+  },
+  "sibling_axes": {
+    "acp_claim_changed": false,
+    "acp_qualified_ceiling": "2026.10.01-14929f9",
+    "headless_claim_changed": false,
+    "headless_qualified_ceiling": "2026.10.01-14929f9",
+    "evidence_transferred": false
+  },
+  "safety": {
+    "archive_executed": false,
+    "authenticated_catalogue_called": false,
+    "credentials_used": false,
+    "host_install_or_update": false,
+    "provider_prompt_sent": false
+  },
+  "adapter_failure_and_lifecycle": {
+    "argv": [
+      "models"
+    ],
+    "stdin": "closed before reading output",
+    "stdout": "bounded and parsed using the existing plain-text decoder",
+    "exit": "nonzero exit fails as catalogue_exit_failed",
+    "cleanup": "existing process wait/cleanup path retained"
+  }
+}

@@ -432,7 +432,7 @@ fn selected_v2_control_flow_is_bound_to_exact_runtime_hashes() {
             platform["rewrite_recheck_ask_to_deny"]
                 .as_str()
                 .unwrap()
-                .contains("behavior:\"ask\"?{behavior:\"deny\"")
+                .contains("behavior===\"ask\"?{behavior:\"deny\"")
         );
         assert!(
             platform["rewrite_ask_rule_const"]
@@ -557,7 +557,7 @@ fn hop_comparison_records_299_and_300_fail_closed_js() {
             let rewrite = js["rewrite_recheck_ask_to_deny"].as_str().unwrap();
             assert!(rewrite.contains("hookUpdatedInput:"), "{package} {version}");
             assert!(
-                rewrite.contains("behavior:\"ask\"?{behavior:\"deny\""),
+                rewrite.contains("behavior===\"ask\"?{behavior:\"deny\""),
                 "{package} {version}"
             );
             assert!(

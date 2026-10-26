@@ -410,7 +410,7 @@ fn every_published_hop_classifies_the_exact_changed_file_set_per_route() {
 #[test]
 fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
     assert_eq!(ANTIGRAVITY_BASELINE_VERSION, "1.1.9");
-    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.3.1");
+    assert_eq!(ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION, "1.4.7");
     let identity = json(IDENTITY);
     let claim = antigravity_catalogue_claim();
     assert_eq!(
@@ -418,7 +418,7 @@ fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
         "antigravity.catalogue.release-window-1"
     );
     assert_eq!(claim.baseline().as_str(), "1.1.9");
-    assert_eq!(claim.latest_qualified().as_str(), "1.3.1");
+    assert_eq!(claim.latest_qualified().as_str(), "1.4.7");
     assert_eq!(
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
@@ -428,14 +428,14 @@ fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
     assert_eq!(segment.behavior_revision().as_str(), CATALOGUE_BEHAVIOR);
     assert_eq!(segment.support_status(), InterfaceSupportStatus::Maintained);
     let exclusions: Vec<&str> = claim.exclusions().map(InterfaceVersion::as_str).collect();
-    assert_eq!(exclusions, ["1.2.18"]);
+    assert_eq!(exclusions, ["1.2.18", "1.3.7"]);
     assert_eq!(
         identity["qualification"]["exclude_exact"],
         serde_json::json!(["1.2.18"])
     );
 
     for version in [
-        "1.1.9", "1.1.27", "1.2.11", "1.2.12", "1.2.17", "1.3.0", "1.3.1",
+        "1.1.9", "1.1.27", "1.2.11", "1.2.12", "1.2.17", "1.3.0", "1.3.1", "1.4.7",
     ] {
         assert!(
             matches!(
@@ -447,7 +447,7 @@ fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
             "{version} keeps the catalogue behavior"
         );
     }
-    for excluded in ["1.1.8", "1.2.18"] {
+    for excluded in ["1.1.8", "1.2.18", "1.3.7"] {
         assert!(
             matches!(
                 claim.assess(&version_value(excluded)),
@@ -457,7 +457,7 @@ fn catalogue_claim_extends_while_preserving_baseline_behavior_and_holes() {
         );
     }
     assert!(matches!(
-        claim.assess(&version_value("1.3.2")),
+        claim.assess(&version_value("1.4.8")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

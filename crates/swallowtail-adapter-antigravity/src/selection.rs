@@ -14,7 +14,7 @@ pub const ANTIGRAVITY_RELEASE_AXIS: &str = "antigravity-cli.release";
 /// Oldest release in the current maintained qualification window.
 pub const ANTIGRAVITY_BASELINE_VERSION: &str = "1.1.9";
 /// Latest catalogue release in the current maintained qualification window.
-pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.3.1";
+pub const ANTIGRAVITY_CATALOGUE_LATEST_QUALIFIED_VERSION: &str = "1.4.7";
 /// Latest headless release in the current maintained qualification window.
 /// Exact `1.2.11` qualifies on the retry-disabled behaviour revision under
 /// Research 359; `1.1.18..=1.2.10` stay unqualified (no pin evidence).
@@ -76,7 +76,10 @@ pub fn antigravity_catalogue_claim() -> InterfaceCompatibilityClaim {
                 .expect("static Antigravity behavior is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [version("1.2.18").expect("unpublished Antigravity point is valid")],
+        [
+            version("1.2.18").expect("unpublished Antigravity point is valid"),
+            version("1.3.7").expect("unpublished Antigravity point is valid"),
+        ],
     )
     .expect("static Antigravity compatibility claim is valid")
 }
@@ -255,13 +258,22 @@ mod tests {
         assert!(claim.supports(&version("1.2.17")));
         assert!(claim.supports(&version("1.3.0")));
         assert!(claim.supports(&version("1.3.1")));
+        assert!(claim.supports(&version("1.3.2")));
+        assert!(claim.supports(&version("1.3.6")));
+        assert!(claim.supports(&version("1.4.0")));
+        assert!(claim.supports(&version("1.4.7")));
         assert!(!claim.permits(&version("1.1.8")));
-        assert!(matches!(
-            claim.assess(&version("1.2.18")),
-            InterfaceCompatibilityAssessment::Incompatible
-        ));
+        for excluded in ["1.2.18", "1.3.7"] {
+            assert!(
+                matches!(
+                    claim.assess(&version(excluded)),
+                    InterfaceCompatibilityAssessment::Incompatible
+                ),
+                "{excluded} stays excluded"
+            );
+        }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("1.3.2"))
+            claim.assess(&version("1.4.8"))
         else {
             panic!("later Antigravity release remains visibly unverified");
         };

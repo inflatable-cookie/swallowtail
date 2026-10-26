@@ -1,0 +1,1382 @@
+{
+  "schema": 1,
+  "axis": "antigravity-cli.release",
+  "observed_at": "2026-10-26",
+  "official_channel": {
+    "kind": "GitHub stable releases",
+    "repository": "google-antigravity/antigravity-cli",
+    "latest_tag": "1.4.7",
+    "latest_tag_commit": "bf1e6e6d4a05803d21dbe9af5ffba04d8b4fc0ff",
+    "latest_published_at": "2026-10-24T02:47:49Z",
+    "latest_release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.7",
+    "version_command_run": false,
+    "stable_hops_after_current_ceiling": [
+      "1.3.2",
+      "1.3.3",
+      "1.3.4",
+      "1.3.5",
+      "1.3.6",
+      "1.4.0",
+      "1.4.1",
+      "1.4.2",
+      "1.4.3",
+      "1.4.4",
+      "1.4.5",
+      "1.4.6",
+      "1.4.7"
+    ]
+  },
+  "family_scope": {
+    "route": "antigravity.catalogue",
+    "package": "swallowtail-adapter-antigravity",
+    "selected_command": "agy models",
+    "decoder_corpus": "antigravity-cli-1.1.9",
+    "other_product_excluded": [
+      "antigravity.headless",
+      "antigravity-acp",
+      "gemini-cli"
+    ]
+  },
+  "previous_qualification": {
+    "baseline": "1.1.9",
+    "catalogue_ceiling": "1.3.1",
+    "catalogue_claim_id": "antigravity.catalogue.release-window-1",
+    "catalogue_behavior_revision": "antigravity.catalogue.cli-1.1.8-artifact-1.1.9-v1",
+    "catalogue_status": "Maintained",
+    "newer_posture": "AllowUnverified",
+    "existing_unsupported_documentation_tag": "1.1.8",
+    "existing_exact_exclusion": "1.2.18",
+    "headless_ceiling_kept_unchanged": "1.2.11"
+  },
+  "baseline_artifact_1_3_1": {
+    "published_at": "2026-10-07T03:22:02Z",
+    "tag_commit": "968f1170bd0e002e9d0914730975bc8a2cc65861",
+    "linux_x64": {
+      "archive_name": "agy_cli_linux_x64.tar.gz",
+      "archive_size": 61780683,
+      "archive_sha256": "0e313b309ea58c71431ce86bb820936a3700e17e44eabce7bf2264617dc822db",
+      "archive_members": [
+        {
+          "path": "antigravity",
+          "kind": "regular_file",
+          "size": 211026152,
+          "sha256": "ce1bdaed3201bb84f35d69d2773caec4f18af52af00e8c25f6cace07e4359615"
+        }
+      ]
+    },
+    "mac_arm64": {
+      "archive_name": "agy_cli_mac_arm64.tar.gz",
+      "archive_size": 54461807,
+      "archive_sha256": "ef5e385b32afda4cf1612368bb4bf155d3f8f4c55d51488649f508baefe77c86",
+      "archive_members": [
+        {
+          "path": "antigravity",
+          "kind": "regular_file",
+          "size": 178107536,
+          "sha256": "88db8b4d21ece4999fa58e0b54cea77154e47b319ee178d086c446262317f3fa"
+        }
+      ]
+    },
+    "identity_source": "re-downloaded in this task; archive and member digests match the frozen Research 380 fixture"
+  },
+  "artifacts": {
+    "1.3.2": {
+      "published_at": "2026-10-08T22:39:48Z",
+      "tag_commit": "8c1310b2179d1d4d952c54bd0e4424bd53e904f6",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.2",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 58485091,
+          "sha256": "f904ce9ca50ee7d2010bd8063a864ce37c31585c710af451bab66be6e4b59a74"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 56458017,
+          "sha256": "3f15a1e53e94942b41ca82fed56ed770e290286586c7b709104aee2bbf4e367f"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 61986443,
+          "sha256": "bf8504c72097c97de77d271b160bdb10b956031cf79cf95d96cb948df161c25f"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 62043812,
+          "sha256": "56bfcf53fa2808d20078fe6f6434aaa29471537b44d05ec26206b196a20c3a0d"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 54604140,
+          "sha256": "133d497faa7ddd3aa7754d25fa1ba17afa9175eee6c2baa9e3a92ca9b345a50f"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 59522842,
+          "sha256": "fb15938bb1b8791c45839b5626f443bf533624ebdc466251cf37cc69a74477af"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 53584773,
+          "sha256": "d7d751abc156efd9a1add7618664b086eb90a8f9673443ac26d803399faf90e9"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 58306064,
+          "sha256": "76b9e114ccf7af15309bbe3a07ff6d0f5aaf6e998a2efc49e88f2324f51aed1b"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "bf8504c72097c97de77d271b160bdb10b956031cf79cf95d96cb948df161c25f",
+          "download_sha256": "bf8504c72097c97de77d271b160bdb10b956031cf79cf95d96cb948df161c25f",
+          "size": 61986443,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 211841256,
+              "sha256": "32f9478e47d1d456e090f7ed0a297fcde2fa45ec10839904f03ea1ba00645e49"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "133d497faa7ddd3aa7754d25fa1ba17afa9175eee6c2baa9e3a92ca9b345a50f",
+          "download_sha256": "133d497faa7ddd3aa7754d25fa1ba17afa9175eee6c2baa9e3a92ca9b345a50f",
+          "size": 54604140,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 178602608,
+              "sha256": "07ca8348fa9724e988c7236f2dbecf6b089684a6f18be5f7dd61f97e8fd4561a"
+            }
+          ]
+        }
+      }
+    },
+    "1.3.3": {
+      "published_at": "2026-10-10T03:06:26Z",
+      "tag_commit": "800852ea61796e9fe53077a2f945e74daacb4be6",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.3",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 59008033,
+          "sha256": "a9d23fe1d7e5c8471881ab37723571a8d3f24e6ecace8fe082f8c0c8d90f41ca"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 57041350,
+          "sha256": "36e59c992adfca49f834b993896338636e41e14b50202bb99c732a1e8594e956"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 62565999,
+          "sha256": "8ee3ca32574c431285efbf4d4732f7f8d53e959370bc4a61646e4fa496f7f2b6"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 62703331,
+          "sha256": "db8d000171e52d125a7bf2f4dbdbb60dd5ed095ab6edaab12cddf4e168e03dda"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 55093804,
+          "sha256": "c39926f3312e87eaa56d750658cf442669d0a716f49319d06369be7fa80520eb"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 60079035,
+          "sha256": "78547d90bfd1559a87ba63e941f9332a0d1889d2de415da337dedec8dc9aa239"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 54089347,
+          "sha256": "7ee9e8fe35a221b5d5a65637affbcf2a153c2975277fc49dcc7ae7f7c130a722"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 58862798,
+          "sha256": "877b270b9151c5758e7a8c0ef4e407024f21003e04f00d8c45c2e6be230423e6"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "8ee3ca32574c431285efbf4d4732f7f8d53e959370bc4a61646e4fa496f7f2b6",
+          "download_sha256": "8ee3ca32574c431285efbf4d4732f7f8d53e959370bc4a61646e4fa496f7f2b6",
+          "size": 62565999,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 214237392,
+              "sha256": "d97edcf90eda1799cd6cedc92616ef402f23c9752a723e8b8ae3e8f062ce458b"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "c39926f3312e87eaa56d750658cf442669d0a716f49319d06369be7fa80520eb",
+          "download_sha256": "c39926f3312e87eaa56d750658cf442669d0a716f49319d06369be7fa80520eb",
+          "size": 55093804,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 180718224,
+              "sha256": "96dd362d5583c60485f5277fa64e43dd64c3ff02a2bf109fd683b99777da370d"
+            }
+          ]
+        }
+      }
+    },
+    "1.3.4": {
+      "published_at": "2026-10-13T05:09:33Z",
+      "tag_commit": "9eebbedf051ffd75adb15e468f48b7b75be4b15b",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.4",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 59186788,
+          "sha256": "56161a1849eff501fead19bc7c477ee80f26776bf470fda01c119cc345a1818c"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 57206598,
+          "sha256": "cfea96c7f6a295c2386056ef3e3582c48da9d9006b08c88dcaf6b6553f4e05cf"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 62750975,
+          "sha256": "db5e81e8dee72d282cb1fb5fcd98dc5a43680730d71e3d637a67c874ec077ad3"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 62875337,
+          "sha256": "1c3f6fcfdf2c8becd1eb5b8d3ab31eba3994de1b5f96c2d14e695ca8702ffd5b"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 55262209,
+          "sha256": "ede28149c568c69f549b796a6142ba592b44294111acf8b79cdbffae74e72147"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 60260659,
+          "sha256": "f4e5bc649cbbdc903516f5918194ffc74dc78014806dda6a6c6403df5382b4a2"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 54253423,
+          "sha256": "3c43eeee99e5bc2f515a7c6c5a7652d05333cb30e0291b22ae9402b0eddcd995"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 59043621,
+          "sha256": "051a928f45ce91daae0029de904ba03d4eb64ef9c4909ac6c2feef6d3ad65886"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "db5e81e8dee72d282cb1fb5fcd98dc5a43680730d71e3d637a67c874ec077ad3",
+          "download_sha256": "db5e81e8dee72d282cb1fb5fcd98dc5a43680730d71e3d637a67c874ec077ad3",
+          "size": 62750975,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 214745296,
+              "sha256": "5b93565c5f04ea4f7b79d49d5c3237449bf6ce47b6779e8cf46c1fae97957c98"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "ede28149c568c69f549b796a6142ba592b44294111acf8b79cdbffae74e72147",
+          "download_sha256": "ede28149c568c69f549b796a6142ba592b44294111acf8b79cdbffae74e72147",
+          "size": 55262209,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 181130800,
+              "sha256": "9da414c0624c27aa2969a86030a070b5341c0657700512eba70b21725ce253f5"
+            }
+          ]
+        }
+      }
+    },
+    "1.3.5": {
+      "published_at": "2026-10-14T03:16:53Z",
+      "tag_commit": "89081f72e10a98c3689f34b1af7261f43136ab5d",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.5",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 59259554,
+          "sha256": "065505ab4686ec7113b7ccd87fce87795a8fd4b7776f771da4d53940206e34cc"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 57283541,
+          "sha256": "21c959b28d4cd6d6719db71d34173481cb4b9bed9075656e74df6c65af93cd5a"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 62830042,
+          "sha256": "007a5a44dbaf1caea464c3d9848c63b2f69945b01a8bf8852c56c477a64374cf"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 62961258,
+          "sha256": "535ce7a9ca3091e22e65b4a6ffa56570a6e2f394a2b6a44f40d4c90ec1fe13b8"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 55069121,
+          "sha256": "60b46713d0e7217b796560ffc1c3c569f4e0b3357076ee6b60d464832d6d4105"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 60014412,
+          "sha256": "c867ca21c9d90a4e67ce8200bd4471ad3df3df2f9481005804263732da991bbc"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 54318337,
+          "sha256": "20fe43f4197a006fd5fe4ffa79fcc0327f1aa5eed1e1f1647bf2662d15df7ddc"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 59109488,
+          "sha256": "7ab23ad46bb11dd0eed1eff41e6b53ec9161a09d519f07e315f188f3dcbc8f7e"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "007a5a44dbaf1caea464c3d9848c63b2f69945b01a8bf8852c56c477a64374cf",
+          "download_sha256": "007a5a44dbaf1caea464c3d9848c63b2f69945b01a8bf8852c56c477a64374cf",
+          "size": 62830042,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 215060688,
+              "sha256": "b5385638174a5e720e904f3a2678752534fb8414d10c2c302fa16daf56cbcfc9"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "60b46713d0e7217b796560ffc1c3c569f4e0b3357076ee6b60d464832d6d4105",
+          "download_sha256": "60b46713d0e7217b796560ffc1c3c569f4e0b3357076ee6b60d464832d6d4105",
+          "size": 55069121,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 180917280,
+              "sha256": "ebd71c4db14f79fca3fd0160332a38d9037146737422dcfc1f1d21ba01a13fff"
+            }
+          ]
+        }
+      }
+    },
+    "1.3.6": {
+      "published_at": "2026-10-15T17:51:16Z",
+      "tag_commit": "680e58585fa49c266ab38bd986816f40455895cf",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.3.6",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 59683640,
+          "sha256": "0e11472f376e2943c6f812280dea49b204acc3be15794c6604a46972c5995b12"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 57667189,
+          "sha256": "9d9ba12b7056f20361d673b756a50857a2a62dacc18a0384a4ab658f5fc00d54"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 63275514,
+          "sha256": "e88ed835cbc4af504f64dfe20175f5572dc2a425dbfa2fcf55c0358bb444d80c"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 63375313,
+          "sha256": "67ce3b3ba2f783e7b0055cf2d392d196fc1f2c4eee511e0a9f37da07f5da8a39"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 55467795,
+          "sha256": "44e2c5a5982f67994599c533625d81b7ed56f568452ec132388bd30c42ed7465"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 60446514,
+          "sha256": "488297e19a45cdcdefbe1f7af9a369431c11cbfc6a19455b61d610ee308b6fd7"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 54837167,
+          "sha256": "266d130637a37d046547af27bac99a42cf3ad50cb3047e82ec926bd3983d98bc"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 59685198,
+          "sha256": "c9383bae8c377a9a12e9543d45904ac46cc234ec85caa4c61c57ed9405ff7634"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "e88ed835cbc4af504f64dfe20175f5572dc2a425dbfa2fcf55c0358bb444d80c",
+          "download_sha256": "e88ed835cbc4af504f64dfe20175f5572dc2a425dbfa2fcf55c0358bb444d80c",
+          "size": 63275514,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 217768144,
+              "sha256": "e14253aa79d4e910cbf8bcb40b68e80f9e85476725e130ed085122c98face92b"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "44e2c5a5982f67994599c533625d81b7ed56f568452ec132388bd30c42ed7465",
+          "download_sha256": "44e2c5a5982f67994599c533625d81b7ed56f568452ec132388bd30c42ed7465",
+          "size": 55467795,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 183407440,
+              "sha256": "827ba22b4aa33557614a57aac2cc13f386e17db6b802febd3932226906ac05ab"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.0": {
+      "published_at": "2026-10-16T05:24:39Z",
+      "tag_commit": "e8a400403c82b7eb27a333784dc3c37985aa622e",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.0",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 60033969,
+          "sha256": "cf953adcc69f87d00d71f97c3f35dc723a8669a350accf9a199df781f0523f56"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 57983449,
+          "sha256": "8293e8408c980612c56039e738e408375aeb15177f2b0f6297e355dad806bbf7"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 63650174,
+          "sha256": "fd96967583c1eed94733c039638fa59b71ddbd823c75ebc8dd0e677463565aad"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 63739150,
+          "sha256": "c4193262df94b795af51370a83381cd4b025c06cb1c7002b5ef5edbd5817a289"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 55787631,
+          "sha256": "92b4bfb5b51e7b44ff3dcdb1a3179cb2c31b798a79185e19df3a51ae9ff121c7"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 60832674,
+          "sha256": "60f187b7272cb67852d0cf2143d7331116257f86247a92ecbdcff6a47e99d490"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 55171366,
+          "sha256": "074f63dc81749334c55d3c6ed50fe024b91be3c029b3cc5cce2416b5178abb80"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 60055647,
+          "sha256": "bcb0af25a19da704f9b70f1fd84a983e49e81b70534d32c4bf14328e4f2ead9b"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "fd96967583c1eed94733c039638fa59b71ddbd823c75ebc8dd0e677463565aad",
+          "download_sha256": "fd96967583c1eed94733c039638fa59b71ddbd823c75ebc8dd0e677463565aad",
+          "size": 63650174,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 220553472,
+              "sha256": "60e72242f07c131f75afcd9a9e425d6ee097a1a1b3190ea98ae78fa4180bbfa8"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "92b4bfb5b51e7b44ff3dcdb1a3179cb2c31b798a79185e19df3a51ae9ff121c7",
+          "download_sha256": "92b4bfb5b51e7b44ff3dcdb1a3179cb2c31b798a79185e19df3a51ae9ff121c7",
+          "size": 55787631,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 185665248,
+              "sha256": "a4502aaf310b2fd6eb657fcfec2fcc31a690fbbd0c2d14c8eefbb556409024ce"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.1": {
+      "published_at": "2026-10-17T20:43:34Z",
+      "tag_commit": "4433f3a6dabf04ce0a5eef5b08d8e3e4067b2d8f",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.1",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 60355868,
+          "sha256": "e7a4b05f52c5bd6072d83521317d746db72136e84f7ece03a7b2432020ef8503"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 58295264,
+          "sha256": "727aa156e751596d07e6f32aa748203b4f86659a67d74b7fe87725cb6bca7530"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 63931688,
+          "sha256": "e165aa7bccbd1c43e3db4a89f499b6bcf32598ce59b1de6184188cdec4418dab"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 64020692,
+          "sha256": "d74d326a6d5ccb3284de7b788ecdff954c8723eb16f9073d20dbf3affa905c81"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 56100081,
+          "sha256": "603c83664ba6c92e3f53b634d522341c415c9dd6a6ddeb5cfe0546f0c4353900"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 61174995,
+          "sha256": "f6482f1938a44558242e9854674c55a98c9fe4a5566c6c87a2e126905230be01"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 55497594,
+          "sha256": "3966a5e43a82148503b90edc988b14cadc189c8c1e8ef1c270d54a1e0dc455a9"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 60413546,
+          "sha256": "332ac243e15401249a713828ca19f3b7d6a2cd996d62904f957964339084e13f"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "e165aa7bccbd1c43e3db4a89f499b6bcf32598ce59b1de6184188cdec4418dab",
+          "download_sha256": "e165aa7bccbd1c43e3db4a89f499b6bcf32598ce59b1de6184188cdec4418dab",
+          "size": 63931688,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 221278464,
+              "sha256": "16e228cb243fa098eeb27b3b2aca963caec84e4a8ac49e3821b00c56f99f7508"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "603c83664ba6c92e3f53b634d522341c415c9dd6a6ddeb5cfe0546f0c4353900",
+          "download_sha256": "603c83664ba6c92e3f53b634d522341c415c9dd6a6ddeb5cfe0546f0c4353900",
+          "size": 56100081,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 186590112,
+              "sha256": "da7e0766b076e411343542db4c09380bf4656df24da47168c0fa0f7986813e11"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.2": {
+      "published_at": "2026-10-18T00:36:59Z",
+      "tag_commit": "86a5bdda81a063d707ac4ab87fb72f7dfe30ab67",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.2",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 60360307,
+          "sha256": "08dd4a2ca52d531fef1dfae4ec2fbafcd56342bfa694c8193a60da2b26fb1898"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 58302660,
+          "sha256": "70aa576ba7307f54e34943e8045ebb3ab5a754d11d094392dcca1a81d4e32021"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 63937290,
+          "sha256": "6395837ac0e193dd3fe50f1228e1c4aea345ca99636d54404ab7e74397d4091c"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 64024897,
+          "sha256": "22cec618fcf53d30db6346e3c08aab3a3257c5bd7aebc2c733caa6b934143e7a"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 56104322,
+          "sha256": "4fed2474da314f109cf505f1325eb84307afcd586242e6b691f074fd1a73e6aa"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 61177777,
+          "sha256": "a81f6a49d3fe1c07919ed332f2363f95109549fdd0195cbe8344d226edafd4e3"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 55500333,
+          "sha256": "52138d295bcf35d1f1c029756cc3fa468cccfb6a72d425708a98c16fc722ab3a"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 60414726,
+          "sha256": "133bbb975c2376a8c297c301ce357377bf748dcb2fc3a42889a8a5397bc0594b"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "6395837ac0e193dd3fe50f1228e1c4aea345ca99636d54404ab7e74397d4091c",
+          "download_sha256": "6395837ac0e193dd3fe50f1228e1c4aea345ca99636d54404ab7e74397d4091c",
+          "size": 63937290,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 221286656,
+              "sha256": "085f43e0d0628a8a8dabe1e547067818fa2c0adc86cfac98a3c4492918f455ef"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "4fed2474da314f109cf505f1325eb84307afcd586242e6b691f074fd1a73e6aa",
+          "download_sha256": "4fed2474da314f109cf505f1325eb84307afcd586242e6b691f074fd1a73e6aa",
+          "size": 56104322,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 186590176,
+              "sha256": "74935642426b5bb1fcf07a5555f847c478f4517dd002c72b9c98159cb773b932"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.3": {
+      "published_at": "2026-10-20T04:28:40Z",
+      "tag_commit": "fdfd4becaee2439086d71e34ee06d326e06f7346",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.3",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 60663479,
+          "sha256": "045aa7112f574ef97f8320a65d30a555c4ce9bdd5e3d56d40fce7e262ca98cda"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 58585410,
+          "sha256": "e280f3ba3bc5074cfc2384c45d55901eaa510f46fa757bfcfbca5f2a72d9f4b6"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 64263791,
+          "sha256": "319b2cb3240d244930bd077033b466941fd7ba6f0881d783eee801dbd2fb9371"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 64328274,
+          "sha256": "d019ce1efd82e83ff6ee667ffd6f889dbad97cf380287c74059a16fa82e7c0ae"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 56391234,
+          "sha256": "be7a40acd87ff43e453ae216e57843919c77dc7c0278ba2d97e21591fc3b27cb"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 61479759,
+          "sha256": "3d8e79da604d9532915dc2fb4e4c770d7cc12254563414413987cbcae40fa0b8"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 55797371,
+          "sha256": "c5d5630f04275d3bad098cac4caf92c1df12082d8fcd79e3916c620f417447fe"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 60745959,
+          "sha256": "2511cccd814d55ed799d0f1c598af063532c06ebd810390bd0467bc18c469cfe"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "319b2cb3240d244930bd077033b466941fd7ba6f0881d783eee801dbd2fb9371",
+          "download_sha256": "319b2cb3240d244930bd077033b466941fd7ba6f0881d783eee801dbd2fb9371",
+          "size": 64263791,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 222322944,
+              "sha256": "d003c9d47e12f689d3448cad0f614289ccde5fb4c58bf8b4b543a9b514c097bc"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "be7a40acd87ff43e453ae216e57843919c77dc7c0278ba2d97e21591fc3b27cb",
+          "download_sha256": "be7a40acd87ff43e453ae216e57843919c77dc7c0278ba2d97e21591fc3b27cb",
+          "size": 56391234,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 187498464,
+              "sha256": "836c446f6118140e86679ec6966a785eeedbf56b3711a8eb1f41947483e9802a"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.4": {
+      "published_at": "2026-10-21T06:38:01Z",
+      "tag_commit": "99b8981632ddf117c4eab7b1f82b615d4f683f01",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.4",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 61132669,
+          "sha256": "57a96abbc94745a5faf4f24e878766a1882b9aa4c4b83ba567717d8206745f5a"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 58986085,
+          "sha256": "4900f50954ad6fb3747c2d80fe29b5986ae861d0f8ea04c2a5bd9cb1781507dc"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 64706544,
+          "sha256": "9ae4f7f0667a2868e15bb9ad93819ff7527c7187f12d12e3b5191137c726287b"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 64750229,
+          "sha256": "f85f39bf74b6ff5f7f45da768ba52b39318a7e528811df65f394995959cbcc2c"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 56766448,
+          "sha256": "85482aa8969300183f71c9653d9f581248fba7f506342a8eb087f3d2503203bd"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 61907903,
+          "sha256": "12c96c065ac50d36e087c1fda1bba8d6fb4fa7af232d1ef2a44499c2481a52bf"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 56198015,
+          "sha256": "9f72580d72200d1e4f886e9ac23acac046c1eda3c846d063db6f0870f06efb68"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 61179260,
+          "sha256": "ba3f7542e45f5e58cb964574d6ace04e5f347949ad804d9d8b3b91149f13bd3b"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "9ae4f7f0667a2868e15bb9ad93819ff7527c7187f12d12e3b5191137c726287b",
+          "download_sha256": "9ae4f7f0667a2868e15bb9ad93819ff7527c7187f12d12e3b5191137c726287b",
+          "size": 64706544,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 223494376,
+              "sha256": "337dcde668441a2828968644d7982829c2d2a5e0c4144f346e1f3fc6abb3cdc7"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "85482aa8969300183f71c9653d9f581248fba7f506342a8eb087f3d2503203bd",
+          "download_sha256": "85482aa8969300183f71c9653d9f581248fba7f506342a8eb087f3d2503203bd",
+          "size": 56766448,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 188274624,
+              "sha256": "9abb478686dc08d48699ba1604c14d15819ef6a2542d5d32173acbd5f02d712d"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.5": {
+      "published_at": "2026-10-22T05:01:38Z",
+      "tag_commit": "902d212319e365583596a014c152745cdf36c49a",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.5",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 61235635,
+          "sha256": "8826b80c4b013f087734f24c5eadcc38600e74a1af411272d42a840d52ed3ee7"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 59082230,
+          "sha256": "c8ec2559ac36dbdd71832ab4f745432d69ff7894e5cdd944e1bd15ae0b16015d"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 64814607,
+          "sha256": "90cc1894b6862510869ad4cf1a6f4c043b7ae7c095bad8d5c355788a0ca935c7"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 64853964,
+          "sha256": "e89b9b57700f4fba552c296099543f50690e7b0d55d64ec55f8ff0ddcf3ff3c0"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 56863254,
+          "sha256": "6d628d7d25dfa188ef676564e39714667c4899b52bea6b5639d6591bc22b8696"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 62005296,
+          "sha256": "9de5ffcc23bc04db78bf8e3fe48d72576c4578b94b625888ce94d2900f304d0a"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 56296324,
+          "sha256": "f97bf03beeecf3adc90e904b744cdc34cdf819a0f09ad5fb7c38c74c216a40c0"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 61286646,
+          "sha256": "31140366fe8aab6a35102242725cef66d1818968f8d73ea8310a5b6e8487d612"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "90cc1894b6862510869ad4cf1a6f4c043b7ae7c095bad8d5c355788a0ca935c7",
+          "download_sha256": "90cc1894b6862510869ad4cf1a6f4c043b7ae7c095bad8d5c355788a0ca935c7",
+          "size": 64814607,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 223736040,
+              "sha256": "8af8e7a2a68f72fa7164e00bb59b8902c018fa43e528fc401ad7db8c2972583c"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "6d628d7d25dfa188ef676564e39714667c4899b52bea6b5639d6591bc22b8696",
+          "download_sha256": "6d628d7d25dfa188ef676564e39714667c4899b52bea6b5639d6591bc22b8696",
+          "size": 56863254,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 188472992,
+              "sha256": "b89677b741d8d9d38cf0a6911ab468fac629158194039904cbfd645fdb897554"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.6": {
+      "published_at": "2026-10-23T04:18:36Z",
+      "tag_commit": "fd851f1da40e4347f1d05d211dcb45f94aede4c4",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.6",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 61475945,
+          "sha256": "ef88c996178b55a3c5416f2c8b67a9c343ac0a62c900e7b7158ee2ff1135ad96"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 59322846,
+          "sha256": "72428a556549d8f5921d81829366f9f3485158f510ac0dfaafc777f658320505"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 65067865,
+          "sha256": "513c74ad3e70323839a65d8dccc6f9977b0903e5facd914cbb06be283c2bb640"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 65106545,
+          "sha256": "18767ae05b3377d6279cfd97547c19b86c657cd396ee18b621744427375f0add"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 57117933,
+          "sha256": "8854514fc3f577c8b4271e735a7605562ecd353aae270c323c3ee6876e892296"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 62269988,
+          "sha256": "b49a4d98e3592c692e20941de2da96d1eaf9234dec9356747e69227ece7e52a2"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 56541007,
+          "sha256": "c60cd93c81ebf8ff66fa5884f43d5be3f225f0965af8eede68b4b4dad66c08f7"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 61540045,
+          "sha256": "e192f8cb448d3f8601c91a877a244d93b31d790c14f986b35f0338f0d003a386"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "513c74ad3e70323839a65d8dccc6f9977b0903e5facd914cbb06be283c2bb640",
+          "download_sha256": "513c74ad3e70323839a65d8dccc6f9977b0903e5facd914cbb06be283c2bb640",
+          "size": 65067865,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 224628968,
+              "sha256": "128780f5776959ba6a991bde1f0a8b699eee37a59ed30deb9926147fedfa56c4"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "8854514fc3f577c8b4271e735a7605562ecd353aae270c323c3ee6876e892296",
+          "download_sha256": "8854514fc3f577c8b4271e735a7605562ecd353aae270c323c3ee6876e892296",
+          "size": 57117933,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 189329424,
+              "sha256": "cab004f3c5c6cb7dc8b8712d3bc30431bd4480b17ff38a07eb1865abeffd2f27"
+            }
+          ]
+        }
+      }
+    },
+    "1.4.7": {
+      "published_at": "2026-10-24T02:47:49Z",
+      "tag_commit": "bf1e6e6d4a05803d21dbe9af5ffba04d8b4fc0ff",
+      "release_url": "https://github.com/google-antigravity/antigravity-cli/releases/tag/1.4.7",
+      "complete_published_asset_manifest": [
+        {
+          "name": "agy_cli_linux_arm64.tar.gz",
+          "size": 62081211,
+          "sha256": "b273c791b7647f680598fa1dbdf9c8086bdc42374b2276fa70e900bf8120e1d5"
+        },
+        {
+          "name": "agy_cli_linux_arm64_musl.tar.gz",
+          "size": 59874715,
+          "sha256": "7d35cda0cb6a620894740ddaf9b55c3d9484b992a564e15ea348bd6cdd9c3c3f"
+        },
+        {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "size": 65681429,
+          "sha256": "67fd4e70be739b1f8b18f90b511da8cd2a7aef24e888e5837402e025bf7fdbfc"
+        },
+        {
+          "name": "agy_cli_linux_x64_musl.tar.gz",
+          "size": 65686432,
+          "sha256": "bdb527a0f7370c524f5e07b694c290c8acbd68b6b3ed61550ca9fb2fca8a5327"
+        },
+        {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "size": 57672438,
+          "sha256": "9fed7bfe90cb158ac00b5b2da64dd54af732f7c062259e68ebd060b827fd0d88"
+        },
+        {
+          "name": "agy_cli_mac_x64.tar.gz",
+          "size": 62874134,
+          "sha256": "0ac94431f774659e71928019c26c649e5711179629b86968e96cb9193e2ec557"
+        },
+        {
+          "name": "agy_cli_windows_arm64.zip",
+          "size": 57088739,
+          "sha256": "79b692a42fa7328f33ff89919af828f9c013f2b9e5f46f5f0d66ea811f8a24da"
+        },
+        {
+          "name": "agy_cli_windows_x64.zip",
+          "size": 62127694,
+          "sha256": "b82fc615941c1ef1c0692186510e4f620004ee08017c9e94ec1ac61046b9cc66"
+        }
+      ],
+      "downloaded_and_verified_platforms": {
+        "linux_x64": {
+          "name": "agy_cli_linux_x64.tar.gz",
+          "published_digest": "67fd4e70be739b1f8b18f90b511da8cd2a7aef24e888e5837402e025bf7fdbfc",
+          "download_sha256": "67fd4e70be739b1f8b18f90b511da8cd2a7aef24e888e5837402e025bf7fdbfc",
+          "size": 65681429,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 227840232,
+              "sha256": "40349135371a8ed1f1af1e9f8b741de99174ae9fce6380b96c2d1f543480af7a"
+            }
+          ]
+        },
+        "mac_arm64": {
+          "name": "agy_cli_mac_arm64.tar.gz",
+          "published_digest": "9fed7bfe90cb158ac00b5b2da64dd54af732f7c062259e68ebd060b827fd0d88",
+          "download_sha256": "9fed7bfe90cb158ac00b5b2da64dd54af732f7c062259e68ebd060b827fd0d88",
+          "size": 57672438,
+          "published_digest_matched": true,
+          "archive_file_count": 1,
+          "archive_members": [
+            {
+              "path": "antigravity",
+              "kind": "regular_file",
+              "size": 192171376,
+              "sha256": "b7a13e53c9f49921692676ef8edc2e60ceb67064c00bc732d9a364ec3ad75b32"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "public_git_hops": [
+    {
+      "from": "1.3.1",
+      "to": "1.3.2",
+      "commit": "8c1310b2179d1d4d952c54bd0e4424bd53e904f6",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.3.2",
+      "to": "1.3.3",
+      "commit": "800852ea61796e9fe53077a2f945e74daacb4be6",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.3.3",
+      "to": "1.3.4",
+      "commit": "9eebbedf051ffd75adb15e468f48b7b75be4b15b",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.3.4",
+      "to": "1.3.5",
+      "commit": "89081f72e10a98c3689f34b1af7261f43136ab5d",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.3.5",
+      "to": "1.3.6",
+      "commit": "680e58585fa49c266ab38bd986816f40455895cf",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.3.6",
+      "to": "1.4.0",
+      "commit": "e8a400403c82b7eb27a333784dc3c37985aa622e",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.0",
+      "to": "1.4.1",
+      "commit": "4433f3a6dabf04ce0a5eef5b08d8e3e4067b2d8f",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.1",
+      "to": "1.4.2",
+      "commit": "86a5bdda81a063d707ac4ab87fb72f7dfe30ab67",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.2",
+      "to": "1.4.3",
+      "commit": "fdfd4becaee2439086d71e34ee06d326e06f7346",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.3",
+      "to": "1.4.4",
+      "commit": "99b8981632ddf117c4eab7b1f82b615d4f683f01",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.4",
+      "to": "1.4.5",
+      "commit": "902d212319e365583596a014c152745cdf36c49a",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.5",
+      "to": "1.4.6",
+      "commit": "fd851f1da40e4347f1d05d211dcb45f94aede4c4",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    },
+    {
+      "from": "1.4.6",
+      "to": "1.4.7",
+      "commit": "bf1e6e6d4a05803d21dbe9af5ffba04d8b4fc0ff",
+      "ahead_by": 1,
+      "behind_by": 0,
+      "total_commits": 1,
+      "changed_source_paths": [
+        "CHANGELOG.md"
+      ]
+    }
+  ],
+  "unpublished_points": [
+    {
+      "version": "1.2.18",
+      "release_present": false,
+      "tag_present": false,
+      "classification": "carried exact exclusion from Research 380; not re-probed"
+    },
+    {
+      "version": "1.3.7",
+      "release_present": false,
+      "tag_present": false,
+      "probed_at": "2026-10-26",
+      "classification": "excluded exact point inside the semver interval; skipped patch between published 1.3.6 and 1.4.0"
+    },
+    {
+      "version": "1.3.8",
+      "release_present": false,
+      "tag_present": false,
+      "probed_at": "2026-10-26",
+      "classification": "probed absent; not excluded, matching the 1.2.19 precedent"
+    },
+    {
+      "version": "1.3.9",
+      "release_present": false,
+      "tag_present": false,
+      "probed_at": "2026-10-26",
+      "classification": "probed absent; not excluded, matching the 1.2.19 precedent"
+    },
+    {
+      "version": "1.4.8",
+      "release_present": false,
+      "tag_present": false,
+      "probed_at": "2026-10-26",
+      "classification": "first unpublished point after the official latest"
+    },
+    {
+      "version": "1.4.9",
+      "release_present": false,
+      "tag_present": false,
+      "probed_at": "2026-10-26",
+      "classification": "also absent at observation; not a separate exclusion"
+    }
+  ],
+  "bounded_binary_observations": {
+    "exhaustive_binary_forensics": false,
+    "downloaded_artifacts_executed": false,
+    "host_agy_version_probe_run": false,
+    "host_executable_static_observation": {
+      "present": false,
+      "version_command_run": false
+    },
+    "behavioral_authority": "official release notes under the existing 2026-09-15 operator ruling",
+    "selected_writer": {
+      "platform": "linux_x64",
+      "method": "Go pclntab on the re-verified 1.3.1 binary and every later downloaded Linux x64 binary; runtime.text is the ELF .text address plus 0x80; no binary executed",
+      "func2_normalized_identical_from_1_3_1_through_1_4_7": true,
+      "func2_calls": [
+        "entrypoints.modelsReport",
+        "headless.Write"
+      ],
+      "models_report_element_stride_bytes": 32,
+      "models_report_map_key": "models",
+      "models_report_map_key_len": 6,
+      "source_model_copy_grew_at": "1.3.4",
+      "source_model_copy_note": "1.3.4 grows the source-model stack copy by 32 bytes. The 32-byte two-string element stride, the models map key, and the headless.Write argument block in func2 stay the same through 1.4.7."
+    }
+  },
+  "qualification": {
+    "shape": "compatible-extension",
+    "qualify": [
+      "1.3.2",
+      "1.3.3",
+      "1.3.4",
+      "1.3.5",
+      "1.3.6",
+      "1.4.0",
+      "1.4.1",
+      "1.4.2",
+      "1.4.3",
+      "1.4.4",
+      "1.4.5",
+      "1.4.6",
+      "1.4.7"
+    ],
+    "exclude_exact": [
+      "1.2.18",
+      "1.3.7"
+    ],
+    "first_unpublished_later": "1.4.8",
+    "catalogue_claim_id_unchanged": true,
+    "catalogue_behavior_revision_unchanged": true,
+    "baseline_unchanged": true,
+    "headless_ceiling_unchanged": true,
+    "new_public_operation": false,
+    "provider_prompt_sent": false,
+    "live_catalogue": false,
+    "host_install_changed": false,
+    "workflow_changed": false,
+    "release_or_tag_action": false
+  }
+}

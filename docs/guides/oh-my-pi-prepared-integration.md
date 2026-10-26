@@ -50,7 +50,8 @@ hops after the Research 382 ceiling. Provider-internal `proc://`, `cfg://`,
 `attachment://`, `conflict://`, and `mr://` resources stay inside the existing
 ambient `read` tool. `mr://` resolve runs ambient `glab` as the process
 principal, uses `GITLAB_TOKEN`/`GITLAB_ACCESS_TOKEN`/`OAUTH_TOKEN` plus
-`glab` `config.yml`, performs GitLab network egress, and execs `glab`.
+`glab` `config.yml`, performs GitLab network egress (host-trust gate
+constrains env-token forwarding only), and execs `glab`.
 `cfg://` redacts credentials, `ssh` stays exec, and writes remain outside
 the selected tool set. Prompt-text `/mcp reauth` is reachable under
 `--no-extensions` and stays unmapped.

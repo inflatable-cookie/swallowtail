@@ -16,8 +16,9 @@ annotated Git tags from the canonical repository.
   tool schemas, frame caps, and startup fields are unchanged. `mr://` is an
   added read-tier resource inside the existing ambient `read` tool: ambient
   `glab` process principal, host GitLab tokens plus `glab` config, GitLab
-  network egress, exec tool-effect. Prompt-text `/mcp reauth` is reachable
-  under `--no-extensions` and stays unmapped.
+  network egress (host-trust gate constrains env-token forwarding only),
+  exec tool-effect. Prompt-text `/mcp reauth` is reachable under
+  `--no-extensions` and stays unmapped.
 - qualify `grok-build.catalogue` across the official stable window
   `1.0.30..=1.0.70`. The preserved exact `1.0.30` point keeps
   `grok-build.catalogue.models-text-v1` as a deprecated segment; the new

@@ -12,10 +12,10 @@ const PROTOCOL: &str = include_str!("fixtures/oh-my-pi-18.12.6/protocol.json");
 const INVENTORY: &str = include_str!("fixtures/oh-my-pi-18.12.6/complete-tree-inventory.json");
 const HOPS: &str = include_str!("fixtures/oh-my-pi-18.12.6/hop-ledger.json");
 
-const IDENTITY_SHA256: &str = "7a09006056ba3944bd65e8b00c161697ee8bbb648d18dbe3b3691e94a5bdc3e1";
-const PROTOCOL_SHA256: &str = "2bb2d0989f7ecc27ffa88a1ca196f2e19526f131c7e35d0aa72405d7035c4531";
+const IDENTITY_SHA256: &str = "d9af45a2d323ce37274894cdd7d240194e8ab59a52f4b6b038d884701ba038bd";
+const PROTOCOL_SHA256: &str = "3dfcedb1fa9aa5b6015972fceb0c26df14af6141eee3075efae4884d781bb294";
 const INVENTORY_SHA256: &str = "4fcb81150e9b48cfdc38a9093b51a623ea2be68964fa4e11e9f6a95142d91a1c";
-const HOPS_SHA256: &str = "910b9e8ff982770b5d6d7804c8faaafe5593678ddd143cb25f27bb90b7fb1f3c";
+const HOPS_SHA256: &str = "f208bec48a25d3f087ba458a892789218184e44f8099849624489f38c3408da0";
 
 #[test]
 fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
@@ -150,7 +150,7 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
     );
     assert_eq!(
         identity["identity_decision"]["provider_internal_read_resource_extension"],
-        "mr:// joins the existing ambient read tool as an immutable remote GitLab diff resource; process principal runs ambient glab; credentials GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN plus glab config.yml; GitLab network egress; tool-effect exec of glab under a host-trust gate; default read tier; no write operation; cfg:// still redacts credentials; ssh stays exec"
+        "mr:// joins the existing ambient read tool as an immutable remote GitLab diff resource; process principal runs ambient glab; credentials GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN plus glab config.yml; GitLab network egress (host-trust gate constrains env-token forwarding only); tool-effect exec of glab; default read tier; no write operation; cfg:// still redacts credentials; ssh stays exec"
     );
     assert_eq!(
         identity["claim_at_observation"]["posture"],
@@ -283,7 +283,7 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
     );
     assert_eq!(
         boundary["mr_network"],
-        "GitLab HTTPS egress after host-trust gate (gitlab.com, GITLAB_HOST/GITLAB_URI/GL_HOST, glab config hosts, checkout GitLab remotes)"
+        "GitLab HTTPS egress via ambient glab. Host-trust check (gitlab.com, GITLAB_HOST/GITLAB_URI/GL_HOST, glab config hosts, checkout GitLab remotes) runs only when GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN is set; without those env tokens, a model/prompt-chosen mr:// host is contacted with no trust check."
     );
     assert_eq!(
         boundary["mr_tool_effect"],
@@ -291,11 +291,11 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
     );
     assert_eq!(
         boundary["mr_read"],
-        "immutable remote GitLab merge-request diffs via ambient glab; process principal; credentials GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN plus glab config.yml; GitLab network egress under a host-trust gate; tool-effect exec of glab; default read tier; no write handler"
+        "immutable remote GitLab merge-request diffs via ambient glab; process principal; credentials GITLAB_TOKEN/GITLAB_ACCESS_TOKEN/OAUTH_TOKEN plus glab config.yml; GitLab network egress (host-trust gate constrains env-token forwarding only); tool-effect exec of glab; default read tier; no write handler"
     );
     assert_eq!(
         protocol["unmapped_boundary"]["mcp_reconnect"],
-        "MCP manager is passed into runRpcMode. Prompt-text builtin dispatch can run /mcp reauth (browser OAuth plus credential persistence) and reconnectMcpServer. --no-extensions disables extension discovery only and does not disable MCP. Swallowtail maps none of /mcp, reconnect, or OAuth. The reconnect verb stays TUI-only. 18.8.3 rejected reauth as TUI-only."
+        "MCP manager is passed into runRpcMode. Prompt-text builtin dispatch can run /mcp reauth (browser OAuth plus credential persistence) and reconnectMcpServer. --no-extensions disables extension discovery only and does not disable MCP. enableMCP is !restrictToolNames && (options.enableMCP ?? true); the root RPC launch never sets restrictToolNames or enableMCP, and --no-tools only sets toolNames=[]. Swallowtail maps none of /mcp, reconnect, or OAuth. The reconnect verb stays TUI-only. 18.8.3 rejected reauth as TUI-only."
     );
     assert_eq!(
         boundary["target_18_12_6_schemes"],

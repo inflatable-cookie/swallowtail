@@ -255,16 +255,18 @@ OpenHands adds a package without a production route.
   cancellation. It does not qualify OpenCode HTTP, hosted GLM / Z.AI
   official, `--print`, ACP, or native `session/stop`.
 - `swallowtail-adapter-cline` implements maintained ACP v1 stdio from npm
-  `3.0.55..=3.0.70` except unpublished `3.0.59` on `cline --acp` (Research
-  397). Its separate maintained headless envelope-NDJSON window covers the
-  same package points on
+  `3.0.55..=3.0.74` except unpublished `3.0.59` on `cline --acp` (Research
+  397, Research 457). Its separate maintained headless envelope-NDJSON window
+  covers `3.0.55..=3.0.70` except unpublished `3.0.59` on
   `cline --json --auto-approve false` with optional portable
   `HarnessMode::Plan` as canonical `--plan`. Credentials stay host-owned
   `LocalUnauthenticated`. `--auto-approve true`, `--id`, hub/TUI, and
   flattening one family onto the other stay out. Neither route exposes portable
-  reasoning selection: ACP parses then discards `--thinking` and hard-codes
-  thinking off, while headless resolves and may normalize the value against an
-  unselected provider/model and emits no selected-argv acknowledgement.
+  reasoning selection: from `3.0.71` ACP applies explicit `--thinking`, and
+  Swallowtail's selected argv remains `cline --acp` with no extra flag so
+  thinking stays off, while headless resolves and may normalize the value
+  against an unselected provider/model and emits no selected-argv
+  acknowledgement.
   Headless Plan is provider behavior, not isolation; omission keeps the current
   argv and is not implicit Plan. `act`, `yolo`, and `zen` stay unselected.
 - `swallowtail-adapter-goose` implements Goose GitHub ACP at maintained exact
@@ -711,8 +713,9 @@ Crate status:
   `build`, bounded stream parsing, namespaced unknown observations,
   process-kill cancellation, and joined cleanup. The package remains an
   unreleased additive candidate after `v0.3.2`.
-- `swallowtail-adapter-cline` — realized for separate maintained ACP and
-  headless windows `3.0.55..=3.0.70`, excluding unpublished `3.0.59`, with
+- `swallowtail-adapter-cline` — realized for a maintained ACP window
+  `3.0.55..=3.0.74` and a separate maintained headless window
+  `3.0.55..=3.0.70`, excluding unpublished `3.0.59` from both, with
   separate constructors and claims (`AllowUnverified` for ACP, `QualifiedOnly`
   for headless), local-account access, and no credential lease. The package
   remains an unreleased additive candidate after `v0.3.2`.

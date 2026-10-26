@@ -1,0 +1,644 @@
+{
+  "compared": [
+    "0.161.0",
+    "0.162.0",
+    "0.162.1",
+    "0.163.0",
+    "0.164.0"
+  ],
+  "notACompleteSemanticChangelog": true,
+  "packageFileCounts": {
+    "0.161.0": {
+      "wrapper": 3,
+      "darwin-arm64": 44,
+      "linux-x64": 46
+    },
+    "0.162.0": {
+      "wrapper": 3,
+      "darwin-arm64": 44,
+      "linux-x64": 46
+    },
+    "0.162.1": {
+      "wrapper": 3,
+      "darwin-arm64": 44,
+      "linux-x64": 46
+    },
+    "0.163.0": {
+      "wrapper": 3,
+      "darwin-arm64": 43,
+      "linux-x64": 45
+    },
+    "0.164.0": {
+      "wrapper": 3,
+      "darwin-arm64": 43,
+      "linux-x64": 45
+    }
+  },
+  "tarballSha256": {
+    "0.161.0": {
+      "wrapper": "4e472c1098f1162e1b46d4935e5f2264f7076182949b95bb47d839b35108c5f0",
+      "darwin-arm64": "21c99b848b25ed91b92afadabe3751cc33878d2684f3e2d01cc1782e6d0abc7a",
+      "linux-x64": "d50e02c2755be551b576527b2b13c6b6a4af3340149afdf792d5491e5d899978"
+    },
+    "0.162.0": {
+      "wrapper": "6cb67d6e7631af84f27580d8fe228ac437c34181d370dc5c5a5819e014c8c860",
+      "darwin-arm64": "e627d6403ce31bda57d57629a0086a565d5f6b57b154aba92e1c9db2463874eb",
+      "linux-x64": "dbd342e7ad896d53dbb505e926f1b82314b79a9d33e209b0b7616ced6b06c983"
+    },
+    "0.162.1": {
+      "wrapper": "0b4b2e33a65883e4f69c903484d8dd7770b3cb8b324f520068b6fd85d42b65ea",
+      "darwin-arm64": "fe0370027a05237adc0152b482ad8502321f6f9aff1baca3bfa56588923ba9ad",
+      "linux-x64": "7417711678b464eee70664126e39e88bb3c84c2928da0e71f14b56e04ff5c09f"
+    },
+    "0.163.0": {
+      "wrapper": "1a71db36560bb446d2c2e63ae675c4a3018c38ace38ca533f8d1b25d3e6555b4",
+      "darwin-arm64": "1193ff4ce72387a5d6c34820b54a9dc57d007c67a958e8acb4715924facd3c31",
+      "linux-x64": "30efc97738b975940d78b59a9bea115fa34040b732807d54ec35ae6b7528de94"
+    },
+    "0.164.0": {
+      "wrapper": "afb117ec0d382744583dd13154ba0ca6b0f1980f8ed6a23bffb3aaadb6226e30",
+      "darwin-arm64": "9b5a35be1975ceb332eaf274032f375b017ab644ff0165737ead03277fae77cd",
+      "linux-x64": "62659fefd9a8efa21a496402fde3c11c025bbeee735a582968f8ffd14cb5f79c"
+    }
+  },
+  "integrity": {
+    "0.161.0": {
+      "wrapper": "sha512-+ZnJFGBbQBwYnjUTs+PoacgYVxmNyxMLiadIz6eSJ0AzQW0mRVxuuOQizSbz2qeNAJia9Syxag6j2uGf7guD2Q==",
+      "darwin-arm64": "sha512-arxKLYB3uKjewwOpGFo5/MGe8+4JzNB17KIYBmGfF4k3QU+QC4ieXVUwqHmQX2nXrB1BzNMN0gtAgm1AGBTg8w==",
+      "linux-x64": "sha512-AVkNzeJWyCHHPyg5vxD8UE6aFsYaOwq0/x6mtmkOKy6LdjvsyxLr7Q7UULlk+Ma3+PnrN8uIxG2/XGPQ936hgA=="
+    },
+    "0.162.0": {
+      "wrapper": "sha512-qWWckMfknyVym1lD5y2rTwPJA2sgHkzePF2l/Uevss4hVpqbt23rMIHKNTrqECdnv82denylHWEzrAmDnCYNIw==",
+      "darwin-arm64": "sha512-hyiGlMCbZog7IY2TcSWzXbsmtUnynT93QA4utqGlVmFlmz8TurADk3LV28zqUIdgh9GLOzumDIdHQbYieo9Nqw==",
+      "linux-x64": "sha512-qHWp6oKpf456PqjberGN8avs8zChv2oS+UuDiqVFYAuDOhq6vBc1drh8jEsnR7dBX+zcw03PN5VLtePGlMcC3w=="
+    },
+    "0.162.1": {
+      "wrapper": "sha512-NWZdi/kxyjv/8EUGFupziGU38YyleugZRM4JXgY5XFH7FUmaFA33NZS2Bmq0HPazf7S3jJQQWsZ/jAK9jsrV3Q==",
+      "darwin-arm64": "sha512-YVXpg57itBuQxjofay3KDF5UbnZF4Y1ZmNFzUCz0ZQiQN+DndxOjN5V87rnXvPaC4qCPO2El74DzewoBP8JyPQ==",
+      "linux-x64": "sha512-cjK2mdHIfEepZ1lQ1MX3aTQC+8ncIsvnacl/6vI2dIIcfP8/MrhTQ2+qRlkXFNDzJSj1d36quIszP+3/4CUJWQ=="
+    },
+    "0.163.0": {
+      "wrapper": "sha512-HNd7vR9oTK6M2ikxFnvNDCdYUgAsyo9VVnd5KnEd2ON0GYI++7MiX9XNPUkhtdgGKFPsWS+CEppQ1UU63uVhUw==",
+      "darwin-arm64": "sha512-i7Dzk2a5aGmuGM9aNZgaUVTojZ/4bc5lRfosz++Y7X2BGhDkz+cySgbD+NYS1pOxfm0VEbLi9PZ3pAulI4kchw==",
+      "linux-x64": "sha512-uwRaOsrYogLQhcxAM/GoeWrw0QIWEMRo7c9gM8sKAviVkZQHlu9kRLJ5PkufbV+ABGjyZgIwiFdJ0LCJ0N6e8w=="
+    },
+    "0.164.0": {
+      "wrapper": "sha512-TWj7UGyPRe3Pj/A3ddNAxs1te3a/W/xAd+J0LHrrFTmsSfahGMOLF/vn88D3QCIgAT3B1rm1y/Z3NYE0rx6cZQ==",
+      "darwin-arm64": "sha512-pDizgOUAtq3/k3AbUFHbaU19WpYKCja+oFpNSTLKrDQj4lTUNSDuTPJip4uQVn2/1EipQdpQrGMOQBVuI1znAA==",
+      "linux-x64": "sha512-XLAoaWsGOT2khzl+P4FYDPTkzAr9W0VFXFaVkqlFdkM0soa1gH/4S0wSD57Ek3HHwkirAEGz2/Mwehseh+l5Mg=="
+    }
+  },
+  "cliSha256": {
+    "0.161.0": {
+      "darwin-arm64": "12ac11d2c7eee27cfae34393986d7b7c9ed0dea537cb749831cdd7033893e6de",
+      "linux-x64": "9a820c17865fa825d04db416818679a9d63bd72e50835c396f496e5684626c9c"
+    },
+    "0.162.0": {
+      "darwin-arm64": "8238273076041e55beded03ba1d51e034f997b7d100b0642d36daf036620fe57",
+      "linux-x64": "50ed828f357c655a3c82054d346cab8434f24901f14ec19b8267571bdd008b38"
+    },
+    "0.162.1": {
+      "darwin-arm64": "74c6a6d263f40d65f99c27a815275f5b4ed0bcc2baecc396b4cf3255498bdfc0",
+      "linux-x64": "628e35487d888a28f0427fc37501da529dd3d81fcbad7a2c3421c1e8670d92e1"
+    },
+    "0.163.0": {
+      "darwin-arm64": "8813367285524ac798dd96d1b071aea30d58708c7226fd236cd275cf1cfdee31",
+      "linux-x64": "399ff69c431c066e40de318fba45c2b07f45a76b19939d247ee4828fc70c4215"
+    },
+    "0.164.0": {
+      "darwin-arm64": "d8990e3ee7acfbc26f91265b12a1a83f0fee40d0e0f8f1f40a37d4ec21f499cf",
+      "linux-x64": "b93f6811d3f653f0fb83be4050d857fb9abbb111dfa2ce160563327daff7f306"
+    }
+  },
+  "wrapperCodexJsSha256": "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70",
+  "artifactHops": {
+    "0.161.0->0.162.0": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/codex.js"
+        ]
+      },
+      "darwin-arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "vendor/aarch64-apple-darwin/bin/codex",
+          "vendor/aarch64-apple-darwin/bin/codex-code-mode-host",
+          "vendor/aarch64-apple-darwin/codex-package.json",
+          "vendor/aarch64-apple-darwin/codex-path/rg",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/bin/codex-voice-host",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libffi.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgio-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libglib-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgmodule-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgobject-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstapp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstaudio-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstbase-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstnet-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstpbutils-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstreamer-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstrtp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgsttag-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstvideo-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libintl.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libopus.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libpcre2-8.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libz.1.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/manifest.json",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstapp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioconvert.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioresample.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstcoreelements.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstopus.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtpmanager.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/runtime.json",
+          "vendor/aarch64-apple-darwin/codex-resources/zsh/bin/zsh"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/NOTICE.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/Opus.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/libffi.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/sljit.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/zlib.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/sources.json"
+        ]
+      },
+      "linux-x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "vendor/x86_64-unknown-linux-musl/bin/codex",
+          "vendor/x86_64-unknown-linux-musl/bin/codex-code-mode-host",
+          "vendor/x86_64-unknown-linux-musl/codex-package.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/bwrap",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/bin/codex-voice-host",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstapp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioconvert.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioresample.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstcoreelements.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstopus.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtpmanager.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgio-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libglib-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgmodule-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgobject-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstallocators-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstapp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstaudio-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstbase-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstnet-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstpbutils-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstreamer-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstrtp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgsttag-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstvideo-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libopus.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/manifest.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/runtime.json"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/x86_64-unknown-linux-musl/codex-path/rg",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/NOTICE.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libffi.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libintl.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libpcre2-8.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libz.so.1",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/Opus.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/libffi.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/sljit.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/zlib.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/sources.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/zsh/bin/zsh"
+        ]
+      }
+    },
+    "0.162.0->0.162.1": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/codex.js"
+        ]
+      },
+      "darwin-arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "vendor/aarch64-apple-darwin/bin/codex",
+          "vendor/aarch64-apple-darwin/bin/codex-code-mode-host",
+          "vendor/aarch64-apple-darwin/codex-package.json",
+          "vendor/aarch64-apple-darwin/codex-path/rg",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/bin/codex-voice-host",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libffi.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgio-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libglib-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgmodule-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgobject-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstapp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstaudio-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstbase-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstnet-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstpbutils-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstreamer-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstrtp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgsttag-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstvideo-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libintl.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libopus.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libpcre2-8.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libz.1.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/manifest.json",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstapp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioconvert.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioresample.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstcoreelements.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstopus.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtpmanager.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/runtime.json",
+          "vendor/aarch64-apple-darwin/codex-resources/zsh/bin/zsh"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/NOTICE.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/Opus.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/libffi.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/sljit.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/zlib.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/sources.json"
+        ]
+      },
+      "linux-x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "vendor/x86_64-unknown-linux-musl/bin/codex",
+          "vendor/x86_64-unknown-linux-musl/bin/codex-code-mode-host",
+          "vendor/x86_64-unknown-linux-musl/codex-package.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/bwrap",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/bin/codex-voice-host",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstapp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioconvert.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioresample.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstcoreelements.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstopus.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtpmanager.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgio-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libglib-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgmodule-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgobject-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstallocators-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstapp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstaudio-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstbase-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstnet-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstpbutils-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstreamer-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstrtp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgsttag-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstvideo-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libopus.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/manifest.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/runtime.json"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/x86_64-unknown-linux-musl/codex-path/rg",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/NOTICE.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libffi.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libintl.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libpcre2-8.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libz.so.1",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/Opus.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/libffi.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/sljit.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/zlib.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/sources.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/zsh/bin/zsh"
+        ]
+      }
+    },
+    "0.162.1->0.163.0": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/codex.js"
+        ]
+      },
+      "darwin-arm64": {
+        "added": [],
+        "removed": [
+          "vendor/aarch64-apple-darwin/codex-resources/zsh/bin/zsh"
+        ],
+        "changed": [
+          "package.json",
+          "vendor/aarch64-apple-darwin/bin/codex",
+          "vendor/aarch64-apple-darwin/bin/codex-code-mode-host",
+          "vendor/aarch64-apple-darwin/codex-package.json",
+          "vendor/aarch64-apple-darwin/codex-path/rg",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/bin/codex-voice-host",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libffi.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgio-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libglib-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgmodule-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgobject-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstapp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstaudio-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstbase-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstnet-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstpbutils-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstreamer-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstrtp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgsttag-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstvideo-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libintl.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libopus.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libpcre2-8.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libz.1.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/manifest.json",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstapp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioconvert.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioresample.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstcoreelements.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstopus.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtpmanager.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/runtime.json"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/NOTICE.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/Opus.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/libffi.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/sljit.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/zlib.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/sources.json"
+        ]
+      },
+      "linux-x64": {
+        "added": [],
+        "removed": [
+          "vendor/x86_64-unknown-linux-musl/codex-resources/zsh/bin/zsh"
+        ],
+        "changed": [
+          "package.json",
+          "vendor/x86_64-unknown-linux-musl/bin/codex",
+          "vendor/x86_64-unknown-linux-musl/bin/codex-code-mode-host",
+          "vendor/x86_64-unknown-linux-musl/codex-package.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/bwrap",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/bin/codex-voice-host",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstapp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioconvert.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioresample.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstcoreelements.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstopus.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtpmanager.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libffi.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgio-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libglib-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgmodule-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgobject-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstallocators-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstapp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstaudio-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstbase-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstnet-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstpbutils-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstreamer-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstrtp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgsttag-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstvideo-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libintl.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libopus.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/manifest.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/runtime.json"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/x86_64-unknown-linux-musl/codex-path/rg",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/NOTICE.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libpcre2-8.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libz.so.1",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/Opus.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/libffi.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/sljit.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/zlib.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/sources.json"
+        ]
+      }
+    },
+    "0.163.0->0.164.0": {
+      "wrapper": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "README.md",
+          "bin/codex.js"
+        ]
+      },
+      "darwin-arm64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "vendor/aarch64-apple-darwin/bin/codex",
+          "vendor/aarch64-apple-darwin/bin/codex-code-mode-host",
+          "vendor/aarch64-apple-darwin/codex-package.json",
+          "vendor/aarch64-apple-darwin/codex-path/rg",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/bin/codex-voice-host",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libffi.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgio-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libglib-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgmodule-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgobject-2.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstapp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstaudio-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstbase-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstnet-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstpbutils-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstreamer-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstrtp-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgsttag-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libgstvideo-1.0.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libintl.8.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libopus.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libpcre2-8.0.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/lib/libz.1.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/manifest.json",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstapp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioconvert.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstaudioresample.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstcoreelements.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstopus.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtp.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/plugins/libgstrtpmanager.dylib",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/runtime.json"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/NOTICE.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/Opus.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/libffi.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/sljit.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/licenses/zlib.txt",
+          "vendor/aarch64-apple-darwin/codex-resources/voice/sources.json"
+        ]
+      },
+      "linux-x64": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "vendor/x86_64-unknown-linux-musl/bin/codex",
+          "vendor/x86_64-unknown-linux-musl/bin/codex-code-mode-host",
+          "vendor/x86_64-unknown-linux-musl/codex-package.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/bwrap",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/bin/codex-voice-host",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstapp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioconvert.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstaudioresample.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstcoreelements.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstopus.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtp.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/gstreamer-1.0/libgstrtpmanager.so",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgio-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libglib-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgmodule-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgobject-2.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstallocators-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstapp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstaudio-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstbase-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstnet-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstpbutils-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstreamer-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstrtp-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgsttag-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libgstvideo-1.0.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libopus.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/manifest.json",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/runtime.json"
+        ],
+        "identical": [
+          "README.md",
+          "vendor/x86_64-unknown-linux-musl/codex-path/rg",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/NOTICE.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libffi.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libintl.so.8",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libpcre2-8.so.0",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/lib/libz.so.1",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/LGPL-2.1.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/Opus.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/PCRE2.md",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/libffi.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/proxy-libintl.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/sljit.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/licenses/zlib.txt",
+          "vendor/x86_64-unknown-linux-musl/codex-resources/voice/sources.json"
+        ]
+      }
+    }
+  },
+  "githubSourceHopCounts": {
+    "0.161.0->0.162.0": {
+      "added": 188,
+      "removed": 70,
+      "changed": 1400,
+      "identical": 7429
+    },
+    "0.162.0->0.162.1": {
+      "added": 1,
+      "removed": 0,
+      "changed": 9,
+      "identical": 9008
+    },
+    "0.162.1->0.163.0": {
+      "added": 193,
+      "removed": 35,
+      "changed": 1080,
+      "identical": 7903
+    },
+    "0.163.0->0.164.0": {
+      "added": 299,
+      "removed": 37,
+      "changed": 1591,
+      "identical": 7548
+    }
+  },
+  "githubTags": {
+    "rust-v0.161.0": {
+      "commit": "979011409de0a60b52f179721948e65531d26144",
+      "tagObject": "7e21416b38834816c224ea0dfd135c3de94b2f15"
+    },
+    "rust-v0.162.0": {
+      "commit": "c1382380de69521303b416720a52f42d51af6248",
+      "tagObject": "1f3f93473394b620b35580859b7e6864f7a9f948"
+    },
+    "rust-v0.162.1": {
+      "commit": "092d3acd6bec3e3a14bdc7e7a2810ab628ab759d",
+      "tagObject": "7a078f6bb4ce0dc2a81408b334ce52979d92c603"
+    },
+    "rust-v0.163.0": {
+      "commit": "83086188ae0614bd882818ff1aa23f3194962012",
+      "tagObject": "129b8ec7ee6f4511557a4856279f529025c25af4"
+    },
+    "rust-v0.164.0": {
+      "commit": "6aaac694803004a63c6f393d153c96d22521a6b9",
+      "tagObject": "fe3b29455488c2e189e43ad5526a107900c5e1b7"
+    }
+  },
+  "downloadedBinariesExecuted": false,
+  "nativeProvenance": "hashed-unexecuted-tarball",
+  "sourceNameStatusTsv": "source-name-status.tsv",
+  "artifactInventoryDir": "artifact-inventory"
+}

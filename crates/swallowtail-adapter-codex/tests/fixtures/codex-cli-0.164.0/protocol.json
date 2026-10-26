@@ -1,0 +1,374 @@
+{
+  "selectedMappedSubsetUnchanged": true,
+  "noPrompt": true,
+  "noLiveSession": true,
+  "noHostMutation": true,
+  "downloadedBinariesExecuted": false,
+  "platformBinariesHashed": true,
+  "byteIdenticalThroughAllHops": {
+    "codex-rs/exec/src/cli.rs": "66643e8b3d5964b70cb8f231fb309312376272fb3ea87bcb6849f44cf112f8f6",
+    "codex-rs/exec/src/event_processor_with_jsonl_output.rs": "bc296541b385f9b4ca2c28cc638e25a8d6b1332b2cd67f5a03eaa97a3d612b19",
+    "codex-rs/exec/src/exec_events.rs": "dafa872d7e86a099e56e28a329dcb9c03db90ed768c3b88cca8c91d46dc1d0e5",
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+    "codex-rs/app-server-protocol/src/protocol/v2/permissions.rs": "fb60ae2f9babce22ca326b457c22b41e6fa24f71ad05429a8921074cc0ca5598",
+    "codex-rs/app-server-protocol/src/protocol/v1.rs": "e0642bd1bc7dbe5e24d508420471d705d5688efe8df3a8b40e3af22be55d7754",
+    "codex-rs/app-server-protocol/src/protocol/v2/shared.rs": "8b2b9ce4aedcd8e692f05dc8c1c878c179631460bb10561281bd1104c9088e40",
+    "codex-rs/config/src/loader/application.rs": "2ba93ecbbfbc777ea004a135a2241a4df0ec68c1a7946cb16b51fc853a810da3",
+    "codex-rs/app-server/src/application_network.rs": "901e9ed497146dc95c0ad1f61b0461d335ebc63183b526a9ac06941bf899f785"
+  },
+  "classifiedDeltas": [
+    {
+      "path": "codex-rs/app-server/src/request_processors/thread_processor.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "selected-lifecycle-internal-hardening",
+      "reason": "archive, unarchive, and delete RPC handlers live here; prepare_thread_for_delete/archive call prepare_thread_for_removal then wait_for_thread_shutdown then finalize_thread_teardown. Selected descendant-before-root persist, empty responses, and ThreadDeleted/ThreadArchived/ThreadUnarchived notifications stay. finalize_thread_teardown reorders cancel before pending_unloads.remove at 0.163.0 as pending idle-unload race hardening."
+    },
+    {
+      "path": "codex-rs/protocol/src/permissions.rs",
+      "hop": "0.162.1->0.163.0",
+      "class": "unselected",
+      "reason": "defines with_expanded_deny_globs at line 1843; only caller is exec-server sandbox_integrity/bubblewrap.rs:119 after linux-sandbox expand_unreadable_globs_in_environment. Selected exec argv is exec --json --sandbox read-only; exec/src/lib.rs has zero exec-server refs. json_mode-gated bwrap warning at exec/src/lib.rs:1179 is skipped because selected uses --json. SandboxPolicy and AskForApproval stay byte-identical in app-server protocol files. .aws protection remains."
+    },
+    {
+      "path": "codex-rs/exec/src/lib.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "adds parent_turn_id/root_turn_id/responsesapi_client_metadata_patch and MCP elicitation auto-cancel metadata. Selected JSONL writer, event types, and argv stay in the byte-identical files. json_mode-gated bwrap warning is not reached on selected --json. Zero exec-server references."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/model.rs",
+      "hop": "0.161.0->0.162.0",
+      "class": "unselected",
+      "reason": "drops namespace_tools from ModelProviderCapabilitiesReadResponse; the adapter calls model/list"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/application.rs",
+      "hop": "0.163.0->0.164.0",
+      "class": "unselected",
+      "reason": "optional ApplicationStorageRequirements for Desktop workspace parents; the adapter sends no managed application requirements. Decoder ignores unknown optional fields; no default side effect on selected initialize."
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors/thread_lifecycle.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "unselected",
+      "reason": "listener_task_context, idle unload, and try_evict_v2_thread live on the idle-unload path only. Explicit thread/archive and thread/delete RPCs do not call try_evict_v2_thread; they go through thread_processor.rs prepare_thread_for_removal. 0.164.0 drops thread_unload_delay from listener_task_context versus 0.163.0."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/thread.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "optional excludedThreadIds, read state, thread/fork prediction, and thread/items/read; archive, delete, and unarchive params stay threadId with empty archive and delete responses. Adapter omits the new optionals; decoder does not apply them as defaults."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/turn.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "optional parentTurnId, rootTurnId, and responses metadata on turn/start; TurnStatus and turn/interrupt stay threadId plus turnId. Adapter omits the new optionals."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/thread_data.rs",
+      "hop": "0.161.0->0.162.0",
+      "class": "additive-optional",
+      "reason": "optional rootTurnId on Turn and reviewTarget on misalignment details; catalogue fields the adapter reads stay"
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/item.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "additive-optional",
+      "reason": "optional model and reasoningEffort on SubAgentActivity, then an imageGeneration payload reshape the adapter treats as an unknown item"
+    },
+    {
+      "path": "codex-rs/app-server/src/message_processor.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "bounded-new-dispatch",
+      "reason": "JSON-RPC dispatcher for selected initialize, config, model/list, thread/start, turn/start, archive, delete, and unarchive. 0.162.0 adds ThreadAttachmentOwnerList. 0.163.0 adds ThreadReadStateUpdate and ThreadItemsRead, pending_unloads HashSet to HashMap (pairs with teardown reorder), and plugin_install Box::pin. 0.164.0 adds ThreadSample, ThreadSampleCancel, and FeedbackSave plus constructor args for cloud_skill_provider, startup_cwd, sample_responses, and model_catalog. Every selected method arm remains and still calls thread_processor for archive/delete/unarchive. Adapter does not send the new methods."
+    },
+    {
+      "path": "codex-rs/linux-sandbox/src/bwrap.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "selected-linux-sandbox-mount-protection-preserved",
+      "reason": "Linux backend for selected exec --sandbox read-only and app-server workspace-write. 0.164.0 removes ProtectedCreateTarget collection. 0.163.0 tests already required that list empty because missing .git/.agents/.codex/.aws are mount-protected before exec via synthetic empty RO tmpfs (555 + remount-ro) and existing paths stay --ro-bind. append_metadata_path_masks_for_writable_root remains. Selected exec read-only has no workspace writable roots, so the create-monitor was never armed. Selected app-server workspace-write keeps existing .aws read-only and missing protected metadata overlayed RO. .aws remains in PROTECTED_METADATA_PATH_NAMES."
+    },
+    {
+      "path": "codex-rs/linux-sandbox/src/linux_run_main.rs",
+      "hop": "0.161.0->0.164.0",
+      "class": "selected-linux-sandbox-mount-protection-preserved",
+      "reason": "0.164.0 drops ProtectedCreateMonitor/Watcher that consumed bwrap ProtectedCreateTarget. SyntheticMountTarget cleanup remains. Selected exec read-only never armed the monitor. Workspace-write missing-metadata protection stays on the bwrap mount path."
+    }
+  ],
+  "contentSha256": {
+    "codex-rs/protocol/src/permissions.rs": {
+      "0.161.0": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54",
+      "0.162.0": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54",
+      "0.163.0": "ba815705a004571cb1772d9ae97c30075fc6e3ed16c1a1b151ad64c0d459e0dd",
+      "0.164.0": "ba815705a004571cb1772d9ae97c30075fc6e3ed16c1a1b151ad64c0d459e0dd",
+      "0.162.1": "78a1c80b9b5cda29c563538d90003005d26c411eea533bd00db54a185a6aed54"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/item.rs": {
+      "0.161.0": "cf58812aafce8d213090d430b62585477351738b5a90354ed07be338cf9ad06d",
+      "0.162.0": "e3ca6b9b880d815a16ff956b701beb9690abc222fb70a5b7e697e1c0ff91e099",
+      "0.163.0": "e3ca6b9b880d815a16ff956b701beb9690abc222fb70a5b7e697e1c0ff91e099",
+      "0.164.0": "7a1bcd40f31a301897c300e9245c7d84447dc07c0e755d0fd095aff394a0264a",
+      "0.162.1": "e3ca6b9b880d815a16ff956b701beb9690abc222fb70a5b7e697e1c0ff91e099"
+    },
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": {
+      "0.161.0": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "0.162.0": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "0.163.0": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "0.164.0": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "0.162.1": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751"
+    },
+    "codex-rs/app-server/src/message_processor.rs": {
+      "0.161.0": "f9cf285fc6a3c7037510f507e225e80305c21eefd0d85267d44075e7f7ba5511",
+      "0.162.0": "5e17343f7c7129dc09a77300771dcd93119192c5cb39a3f4d1e29a547fec34ed",
+      "0.162.1": "5e17343f7c7129dc09a77300771dcd93119192c5cb39a3f4d1e29a547fec34ed",
+      "0.163.0": "96d57b0cb554802211460637993c2e57e27440b1052ca5f12ac79e1bbaf54449",
+      "0.164.0": "e8e5fcccc04e699c0f9394d4586e25e9560b3f1a4a1ee066692adf93139443c2"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": {
+      "0.161.0": "ee738dfe716fbbd61eb97006714d2c6bf31d6c7dae425ca6d6e60b648b701c6f",
+      "0.162.0": "553d99d01eed0c7a9073f481938f7dd68ef633879be0e1ffd8373778c937b158",
+      "0.163.0": "8c10510bb88990aa0f0105e7a85c0bb7859db7232be29f84a6c66693600ef502",
+      "0.164.0": "8fe95c7e0d8d6d26ac9e8f5af3256a755c57c5c6c4a217310b0dd51fc7de05fc",
+      "0.162.1": "553d99d01eed0c7a9073f481938f7dd68ef633879be0e1ffd8373778c937b158"
+    },
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": {
+      "0.161.0": "2c4786cb9b9fc2a4401d4bdd6f4af53fb18c8481cdb0277ba26c719d5f0a91e4",
+      "0.162.0": "2c40a6db590c9823a6775b28c2e125544583246318ce038166d28fb57a10ab29",
+      "0.163.0": "f98fdad7df37ad720e63b75488ffab99ae88f7de4578b280ab957a09f0a98153",
+      "0.164.0": "0c806ff3aaf348f7373032171d55ff110dfd30bcbb5cfabded89330b5b4375b6",
+      "0.162.1": "2c40a6db590c9823a6775b28c2e125544583246318ce038166d28fb57a10ab29"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/thread_data.rs": {
+      "0.161.0": "9a8efb37ada6e50008e42cca74e71679a7d9e9a98b2f5c59be0504f8bf37a8db",
+      "0.162.0": "293359f14a1a11da8d54acce7bc69b5756c1d30b5a59e8768f5ce6b4e02edeb1",
+      "0.162.1": "293359f14a1a11da8d54acce7bc69b5756c1d30b5a59e8768f5ce6b4e02edeb1",
+      "0.163.0": "293359f14a1a11da8d54acce7bc69b5756c1d30b5a59e8768f5ce6b4e02edeb1",
+      "0.164.0": "293359f14a1a11da8d54acce7bc69b5756c1d30b5a59e8768f5ce6b4e02edeb1"
+    },
+    "codex-rs/app-server/src/request_processors/thread_lifecycle.rs": {
+      "0.161.0": "204a9b470a4ee86fbc7cdbc6737291a8dea678c562220153df4ccd57f4545ea4",
+      "0.162.0": "967cbda6493c971232d5434af690e0c86a318589492d3c14344ee249a7267457",
+      "0.163.0": "9878fc3f652ad2d916891de8c4c377c8290510e19a178b1951e1c520d77270eb",
+      "0.164.0": "0c32665d1d988756517051df3e587eebce27d1ba962f1940b9c9d074520f1e7d",
+      "0.162.1": "967cbda6493c971232d5434af690e0c86a318589492d3c14344ee249a7267457"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": {
+      "0.161.0": "1cdd2d3e0d4840dd58974d3960485b6f77e649b226e0656d84890b29a92c1a81",
+      "0.162.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
+      "0.162.1": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
+      "0.163.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
+      "0.164.0": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9"
+    },
+    "codex-rs/exec/src/lib.rs": {
+      "0.161.0": "c996d341713123734aa7a28f1371be45fafcbec23aa654ffb0cda2c5a84214a5",
+      "0.162.0": "51b62cef4893c6d07b51753fc2716fc05985cdc9de6673f2fa2d974779454d4b",
+      "0.163.0": "8228767ba1fa4872ca4c18bcb4eeefadf9cde91d70b79d0b3179cb3cadeace44",
+      "0.164.0": "cb9a1eb6239ece15d0f761fbf64369013469ccf7850408c40b54b9cf0b576eba",
+      "0.162.1": "51b62cef4893c6d07b51753fc2716fc05985cdc9de6673f2fa2d974779454d4b"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": {
+      "0.161.0": "e8be3b56bbf7b4313501f2bbb9b01aa1e211b8c3eb7fd3143373e23e5780b4aa",
+      "0.162.0": "eb1a99cc72a65af84f933073881bfc0440288fb629de7ec92b7c1b50d3530779",
+      "0.163.0": "aec7d7bdaa1ffed0d78a3a26688b09663667238fc63687a93ebf289894350e1a",
+      "0.164.0": "f002e06cb8c505d737dd208ad3deab6fb837bc963d8462d24e98c010c242e9e0",
+      "0.162.1": "eb1a99cc72a65af84f933073881bfc0440288fb629de7ec92b7c1b50d3530779"
+    },
+    "codex-rs/core/src/tools/sandboxing.rs": {
+      "0.162.1": "eacb70e5c7b746834d16b11eca6f37aecd5655ef3dfbb38440e1013c59da987a",
+      "0.163.0": "1ab6c27e34a93fe3857281e11e388eb3ae4b786819fbe15883ad7e1fb8b5473f",
+      "0.164.0": "1ab6c27e34a93fe3857281e11e388eb3ae4b786819fbe15883ad7e1fb8b5473f"
+    },
+    "codex-rs/linux-sandbox/src/bwrap.rs": {
+      "0.161.0": "1d3dfe853f9b5f1cafd7283cf760e38ff739eb7c1ac54650ae2ed510b92b870a",
+      "0.162.0": "a6b97db5acaec475066f3a5338776f875f7f2033f008ee2532907a1e5e50ffc0",
+      "0.162.1": "a6b97db5acaec475066f3a5338776f875f7f2033f008ee2532907a1e5e50ffc0",
+      "0.163.0": "4249718b4b50fa385ce27c539961d68c46a59f63fce4428a6380e43aa02c7b89",
+      "0.164.0": "69a23ea16d525de5938c1fd47561c90d6047eb58f9864ca47749d696e5d9fa76"
+    },
+    "codex-rs/linux-sandbox/src/linux_run_main.rs": {
+      "0.161.0": "0dd784f70ff95b16c97dd9e8420c30db2ff39002a57e357c6da686c353464270",
+      "0.162.0": "3109246473ef2f8132c2d6555bec5b8116612ce58f28927608f322ac5c3fd8b1",
+      "0.162.1": "3109246473ef2f8132c2d6555bec5b8116612ce58f28927608f322ac5c3fd8b1",
+      "0.163.0": "3b61d600a7f518187e3a5b521622c7a52101415d486ef1d45e67a3f48dd27919",
+      "0.164.0": "2c8cdf628b8b8467cccf38227cada5295f5cb6a04888b860ea1b882fe2d19d53"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/application.rs": {
+      "0.163.0": "4fd1e2cc586fc5f566de2abe943ff5203ad5a100376e3f5de9e048e5e57cb17b",
+      "0.164.0": "7f8ad2257f9aa0546adcdfef7b2f03f877a7af4e79472130bf717ea322e15866"
+    },
+    "codex-rs/exec-server/src/sandbox_integrity/bubblewrap.rs": {
+      "0.163.0": "0887a29ee8d66983b83c6533b64e4c58423a984e63ae88382cb0a72dcecfc680",
+      "0.164.0": "0887a29ee8d66983b83c6533b64e4c58423a984e63ae88382cb0a72dcecfc680"
+    },
+    "codex-rs/thread-store/src/local/unarchive_thread.rs": {
+      "0.163.0": "9c2eb01bf1407139377266b711618d6553140467d88975b914065bf587f3721f",
+      "0.164.0": "62b6ceb66ee5b7b6c5372cea95b2adb1ac277c981e65c45e0ecb1b5080addaf6"
+    },
+    "codex-rs/exec-server/src/sandbox_integrity/mxc.rs": {
+      "0.163.0": "e7f057f93e8eaacfc843f0706e46ef67e31d2340049337bf1a98156dab049dc0",
+      "0.164.0": "e7f057f93e8eaacfc843f0706e46ef67e31d2340049337bf1a98156dab049dc0"
+    }
+  },
+  "execReachability": {
+    "selectedArgv": [
+      "exec",
+      "--json",
+      "--sandbox",
+      "read-only"
+    ],
+    "selectedArgvFilesByteIdentical": true,
+    "withExpandedDenyGlobs": {
+      "definedAt": "codex-rs/protocol/src/permissions.rs:1843",
+      "introducedHop": "0.162.1->0.163.0",
+      "callers": [
+        {
+          "path": "codex-rs/exec-server/src/sandbox_integrity/bubblewrap.rs",
+          "line": 119,
+          "firstHop": "0.163.0",
+          "note": "linux-sandbox expand_unreadable_globs_in_environment then with_expanded_deny_globs; exec-server bubblewrap backend only"
+        }
+      ],
+      "mxcFile": "codex-rs/exec-server/src/sandbox_integrity/mxc.rs",
+      "mxcFirstHop": "0.163.0",
+      "selectedExecCallers": [],
+      "execLibExecServerRefs": 0,
+      "jsonModeBwrapWarning": {
+        "path": "codex-rs/exec/src/lib.rs",
+        "line": 1179,
+        "gatedBy": "json_mode",
+        "selectedJsonMode": true,
+        "reachedOnSelected": false
+      },
+      "selectedSandboxBackend": "exec --sandbox read-only on the CLI path; exec-server bubblewrap and mxc are unselected",
+      "cliRipgrepLookup": "find_pre_sandbox_executable_in_path(rg)",
+      "awsProtectionRemains": true
+    },
+    "linuxSandboxHelper": {
+      "crate": "codex-rs/linux-sandbox",
+      "bwrapFile": "codex-rs/linux-sandbox/src/bwrap.rs",
+      "runMainFile": "codex-rs/linux-sandbox/src/linux_run_main.rs",
+      "selectedExecBackend": "linux-sandbox bwrap for --sandbox read-only on Linux; exec-server bubblewrap and mxc stay unselected",
+      "selectedExecReadOnlyWritableRoots": "none on the workspace; empty-writable-roots fallback requires has_full_disk_write_access which read-only does not",
+      "protectedCreateMonitorArmedOnSelectedExecReadOnly": false,
+      "selectedAppServerWorkspaceWriteBackend": "linux-sandbox bwrap on Linux",
+      "protectedMetadataNames": [
+        ".git",
+        ".agents",
+        ".codex",
+        ".aws"
+      ],
+      "existingMetadataEnforcement": "--ro-bind of existing protected metadata paths via append_metadata_path_masks_for_writable_root",
+      "missingMetadataEnforcement": "synthetic empty RO tmpfs (555 + remount-ro) via append_missing_read_only_subpath_args; SyntheticMountTarget cleanup remains",
+      "protectedCreateMonitorRemovedAt": "0.164.0",
+      "protectedCreateMonitorUsedOnSelectedMissingMetadataAt0_163_0": false,
+      "awsProtectionRemains": true
+    }
+  },
+  "handlerTraces": {
+    "threadDelete": {
+      "file": "codex-rs/app-server/src/request_processors/thread_delete.rs",
+      "contentSha256": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "byteIdenticalThroughAllHops": true,
+      "path": [
+        "enumerate spawn subtree",
+        "prepare_thread_for_delete",
+        "descendants-then-root delete_threads",
+        "empty ThreadDeleteResponse plus ThreadDeleted notifications"
+      ],
+      "prepareThreadForDelete": [
+        "prepare_thread_for_removal",
+        "log_db.flush"
+      ],
+      "prepareThreadForRemoval": [
+        "remove_thread_for_client",
+        "wait_for_thread_shutdown",
+        "finalize_thread_teardown"
+      ]
+    },
+    "threadArchive": {
+      "file": "codex-rs/app-server/src/request_processors/thread_processor.rs",
+      "hopsChanged": [
+        "0.161.0->0.162.0",
+        "0.162.1->0.163.0",
+        "0.163.0->0.164.0"
+      ],
+      "path": [
+        "send ThreadArchiveResponse then ThreadArchived notifications",
+        "subtree ids, persist non-ephemeral loaded thread, collect unarchived ids",
+        "reverse descendants, prepare_thread_for_archive root then descendants-rev",
+        "archive_threads"
+      ],
+      "prepareThreadForArchive": [
+        "same removal helper as delete with archive label",
+        "wait_for_thread_shutdown",
+        "finalize_thread_teardown"
+      ]
+    },
+    "threadUnarchive": {
+      "file": "codex-rs/app-server/src/request_processors/thread_processor.rs",
+      "path": [
+        "unarchive_thread(StoreArchiveThreadParams)",
+        "ThreadUnarchiveResponse plus ThreadUnarchived notifications"
+      ]
+    },
+    "finalizeThreadTeardown": {
+      "0.161.0": [
+        "pending_unloads.remove",
+        "cancel",
+        "remove_thread_state/watch"
+      ],
+      "0.163.0": [
+        "cancel",
+        "remove_thread_state/watch",
+        "pending_unloads.remove"
+      ],
+      "0.164.0": [
+        "cancel",
+        "remove_thread_state/watch",
+        "pending_unloads.remove"
+      ],
+      "classification": "selected-lifecycle-internal-hardening",
+      "selectedSuccessPathPreserved": true,
+      "joinCancelPersistPreserved": true,
+      "note": "teardown reorder is pending idle-unload race hardening; wait_for_thread_shutdown join and descendant-before-root persist stay"
+    },
+    "tryEvictV2Thread": {
+      "file": "codex-rs/app-server/src/request_processors/thread_lifecycle.rs",
+      "path": "idle-unload only",
+      "onExplicitArchiveDeleteRpc": false,
+      "hopsPresent": [
+        "0.163.0",
+        "0.164.0"
+      ]
+    },
+    "messageProcessorDispatch": {
+      "file": "codex-rs/app-server/src/message_processor.rs",
+      "selectedMethodArmsRemain": [
+        "Initialize",
+        "ConfigRead",
+        "ModelList",
+        "ThreadStart",
+        "TurnStart",
+        "ThreadArchive",
+        "ThreadDelete",
+        "ThreadUnarchive"
+      ],
+      "archiveDeleteUnarchiveStillCall": "thread_processor",
+      "newUnmappedArms": {
+        "0.162.0": [
+          "ThreadAttachmentOwnerList"
+        ],
+        "0.163.0": [
+          "ThreadReadStateUpdate",
+          "ThreadItemsRead"
+        ],
+        "0.164.0": [
+          "ThreadSample",
+          "ThreadSampleCancel",
+          "FeedbackSave"
+        ]
+      }
+    }
+  }
+}

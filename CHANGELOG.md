@@ -6,6 +6,20 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `codex.exec` and `codex.app-server` through official stable
+  `0.164.0` on the existing JSONL and protected-aws behavior revisions.
+  The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep
+  the selected argv, JSONL events, sandbox policy, initialize, catalogue,
+  and archive/delete shapes. Native `darwin-arm64` and `linux-x64` tarballs
+  were hashed and inventoried; archive/unarchive/delete handlers were traced
+  in `thread_processor.rs`. Per-tag source digests bind `message_processor.rs`,
+  `v2/model.rs`, and `linux-sandbox` bwrap/`linux_run_main`. Dispatch adds
+  only unmapped methods; selected arms remain. The `0.164.0` Linux
+  `ProtectedCreateMonitor` removal is unused-path cleanup: missing `.aws`
+  and sibling metadata stay synthetic empty RO mounts, and selected exec
+  read-only never armed the monitor. Optional turn and thread fields stay
+  unmapped. Unpublished gaps, including `0.155.2`, stay incompatible.
+  `0.165.0-alpha.1` is ignored. See Research 452.
 - qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
   `0.26.1` on the existing `qwen-code.headless.package-window-2` claim and
   `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained

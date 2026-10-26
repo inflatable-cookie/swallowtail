@@ -29,7 +29,9 @@ freezes the ceiling sdist and every published stable hop after it: `2.26.1`,
 downloaded and hashed. The other platform wheel digests are registry rows,
 marked not locally verified. Selected sdist files were compared byte-for-byte
 with the GitHub tag tarball. Linux-wheel Python copies of those files match
-the sdist. The [surface ledger](../../crates/swallowtail-adapter-mistral-vibe/tests/fixtures/mistral-vibe-headless-3.0.2/surface-ledger.json)
+the sdist. The [complete hop inventory](../../crates/swallowtail-adapter-mistral-vibe/tests/fixtures/mistral-vibe-headless-3.0.2/dist-inventory.json)
+records every regular file in those sdists and linux wheels and the
+added/removed/changed path sets at each hop. The [surface ledger](../../crates/swallowtail-adapter-mistral-vibe/tests/fixtures/mistral-vibe-headless-3.0.2/surface-ledger.json)
 classifies each hop.
 
 PyPI provenance names publisher GitHub `mistralai/mistral-vibe` workflow
@@ -104,7 +106,13 @@ The Rust CLI still has `--prompt`, `--output` `streaming`, `--max-turns`,
 `--legacy-harness` pin. `3.0.0` adds unmapped `--time-limit`,
 `--prompt-file`, `--output-dir`, and `--agent-socket`. `3.0.1` adds
 unmapped `--max-runs` and `--runs-per-app-server`. The `3.0.1` to `3.0.2`
-`cli.rs` delta is a comment on prompt-file versus stdin.
+`cli.rs` delta adds `Cli::prompt_given`, which is true when `-p TEXT` or a
+non-empty `--prompt-file` already supplies the prompt. `main.rs` then skips
+the stdin read in that case so a caller can hold stdin open without EOF.
+That is unmapped stdin-skip logic. It does not restore `--legacy-harness`,
+the builtin `plan` agent, or the `2.26.0` turn-limit stderr. TUI
+mouse-capture and file-index timing also move; those stay outside the
+selected headless path.
 
 The builtin `plan` agent is removed. `REMOVED_BUILTIN_AGENTS` maps `plan`
 to `ask`. `_replace_removed_default_agent` rewrites the name only when it
@@ -154,6 +162,7 @@ The independent `mistral-vibe.acp` route stays outside this stop.
 - [GitHub `v3.0.2`](https://github.com/mistralai/mistral-vibe/releases/tag/v3.0.2),
   plus tags `v2.26.0`, `v2.26.1`, `v3.0.0`, and `v3.0.1`
 - Downloaded PyPI sdists and Linux x86_64 wheels named in `identity.json`
+- Complete sdist and linux-wheel trees in `dist-inventory.json`
 - Research 384 for the qualified `2.26.0` ceiling
 - Decoder `LIMIT_STDERR` in `src/driver/events.rs` and `LEGACY_HARNESS_PIN`
   in `src/command.rs`

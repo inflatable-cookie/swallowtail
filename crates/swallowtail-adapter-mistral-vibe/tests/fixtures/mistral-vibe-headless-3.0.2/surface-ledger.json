@@ -25,7 +25,7 @@
       "id": "3.0.1..3.0.2",
       "kind": "reset-persists",
       "selected_break": false,
-      "classification": "The launcher, plan map, and headless_output.rs stay byte-identical with 3.0.1. The config home stays ~/.vibe. The 3.0 reset is unchanged at the official stable."
+      "classification": "The launcher, plan map, and headless_output.rs stay byte-identical with 3.0.1. cli.rs adds Cli::prompt_given and main.rs skips stdin when a prompt is already given; that is unmapped stdin-skip logic and does not restore the 2.26.0 argv. _vibe_home.py adds MANAGED_CONFIG_CACHE_FILE under ~/.vibe. The config home stays ~/.vibe. The 3.0 reset is unchanged at the official stable."
     }
   ]
 }

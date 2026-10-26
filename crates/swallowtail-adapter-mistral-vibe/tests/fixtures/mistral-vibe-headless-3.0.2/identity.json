@@ -63,6 +63,7 @@
     "publish_statement_carries_source_commit": false,
     "selected_sdist_files_match_github_tag": true
   },
+  "tree_inventory": "dist-inventory.json",
   "versions": [
     {
       "version": "2.26.0",

@@ -12,17 +12,17 @@ pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 ///
 /// Prior `ollama.native-text-v1` segments `0.14.0..=0.34.4` and
 /// `0.35.0..=0.35.1` stay qualified as Deprecated. Maintained
-/// `0.40.0..=0.40.11` uses `ollama.native-text-v1.manifest-list-runner`.
+/// `0.40.0..=0.40.12` uses `ollama.native-text-v1.manifest-list-runner`.
 /// Unpublished `0.34.5` and `0.35.2` through `0.39.x` stay interior gaps.
-/// `0.40.12` is the first visible `UnverifiedNewer` point.
-pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.40.11";
+/// `0.40.13` is the first visible `UnverifiedNewer` point.
+pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.40.12";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";
 /// Exact text-only native API facade selected by this adapter.
 pub const OLLAMA_NATIVE_FACADE: &str = "ollama.native-api.text-v1";
 /// Adapter-private text mapping used through the last pre-migration window.
 pub(crate) const OLLAMA_NATIVE_TEXT_BEHAVIOR: &str = "ollama.native-text-v1";
-/// Adapter-private milestone for `0.40.0..=0.40.11` manifest-list catalogue
+/// Adapter-private milestone for `0.40.0..=0.40.12` manifest-list catalogue
 /// rows and `ggml`/`llamacpp` runner pinning on show/chat.
 ///
 /// Public operation shape stays the existing catalogue, structured-run, and
@@ -173,7 +173,7 @@ mod tests {
         }
         for version in [
             "0.40.0", "0.40.1", "0.40.2", "0.40.3", "0.40.4", "0.40.5", "0.40.6", "0.40.7",
-            "0.40.8", "0.40.9", "0.40.10", "0.40.11",
+            "0.40.8", "0.40.9", "0.40.10", "0.40.11", "0.40.12",
         ] {
             let matched = descriptor
                 .classify_interface_version(
@@ -201,7 +201,7 @@ mod tests {
                 &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
             ));
         }
-        for version in ["0.40.12", "0.41.0"] {
+        for version in ["0.40.13", "0.41.0"] {
             assert!(matches!(
                 descriptor.assess_interface_version(
                     &ollama_runtime_binding(version).expect("fixture Ollama version is valid"),
@@ -228,7 +228,7 @@ mod tests {
         }
         for version in [
             "0.40.0", "0.40.1", "0.40.2", "0.40.3", "0.40.4", "0.40.5", "0.40.6", "0.40.7",
-            "0.40.8", "0.40.9", "0.40.10", "0.40.11",
+            "0.40.8", "0.40.9", "0.40.10", "0.40.11", "0.40.12",
         ] {
             let swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched) =
                 claim.assess(&InterfaceVersion::new(version).unwrap())
@@ -244,7 +244,7 @@ mod tests {
         for version in ["0.32.2", "0.32.10", "0.34.5", "0.35.2", "0.39.0"] {
             assert!(!claim.permits(&InterfaceVersion::new(version).unwrap()));
         }
-        for version in ["0.40.12", "0.41.0"] {
+        for version in ["0.40.13", "0.41.0"] {
             let swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
                 claim.assess(&InterfaceVersion::new(version).unwrap())
             else {

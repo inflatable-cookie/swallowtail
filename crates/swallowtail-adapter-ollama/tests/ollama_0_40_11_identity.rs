@@ -15,7 +15,7 @@ const HISTORICAL: &str = include_str!("fixtures/ollama-0.40.1/identity.json");
 
 const MAINTAINED: &[&str] = &[
     "0.40.0", "0.40.1", "0.40.2", "0.40.3", "0.40.4", "0.40.5", "0.40.6", "0.40.7", "0.40.8",
-    "0.40.9", "0.40.10", "0.40.11",
+    "0.40.9", "0.40.10", "0.40.11", "0.40.12",
 ];
 
 #[test]
@@ -301,7 +301,7 @@ fn identity_freezes_official_hops_from_the_0401_ceiling_through_04011() {
 #[test]
 fn claim_extends_manifest_list_runner_through_04011() {
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.11");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.12");
     let claim = ollama_runtime_claim();
     assert_eq!(claim.id().as_str(), "ollama.native-runtime-window-2");
     for version in ["0.14.0", "0.34.4", "0.35.0", "0.35.1"] {
@@ -334,7 +334,7 @@ fn claim_extends_manifest_list_runner_through_04011() {
     ] {
         assert!(!claim.permits(&InterfaceVersion::new(version).unwrap()));
     }
-    for version in ["0.40.12", "0.41.0"] {
+    for version in ["0.40.13", "0.41.0"] {
         assert!(
             matches!(
                 claim.assess(&InterfaceVersion::new(version).unwrap()),

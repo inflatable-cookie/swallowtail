@@ -1,0 +1,101 @@
+{
+  "selected_routes": [
+    "GET /api/version",
+    "GET /api/tags",
+    "GET /api/ps",
+    "POST /api/show",
+    "POST /api/chat"
+  ],
+  "selected_routes_registered_at_0_40_11_and_0_40_12": true,
+  "prior_research_448_corpus_preserved": true,
+  "compatible_points": [
+    "0.40.0",
+    "0.40.1",
+    "0.40.2",
+    "0.40.3",
+    "0.40.4",
+    "0.40.5",
+    "0.40.6",
+    "0.40.7",
+    "0.40.8",
+    "0.40.9",
+    "0.40.10",
+    "0.40.11",
+    "0.40.12"
+  ],
+  "unverified_newer_synthetic": "0.40.13",
+  "later_unverified_synthetic_still_above_ceiling": "0.41.0",
+  "selected_request_shapes": {
+    "show": ["model"],
+    "show_with_runner": ["model", "runner"],
+    "chat": ["model", "messages", "options", "stream"],
+    "runner_selector_sent_when_matching_row_has_runner": true,
+    "runner_selector_omitted_when_row_has_no_runner": true,
+    "all_manifests_sent": false
+  },
+  "selected_struct_text_identical_0_40_11_through_0_40_12": [
+    "ChatRequest",
+    "ChatResponse",
+    "Message",
+    "ShowRequest",
+    "ShowResponse",
+    "ListResponse",
+    "ListModelResponse",
+    "GenerateRequest",
+    "ModelDetails"
+  ],
+  "api_types_go_byte_identical": true,
+  "model_list_byte_identical": true,
+  "migration_source_byte_identical": true,
+  "migration_call_still_commented_out": true,
+  "tags_preferred_child_unchanged_from_0_40_2": true,
+  "show_response_additive_fields_already_present": {
+    "0.40.7": ["template_source"],
+    "0.40.11": ["voices"]
+  },
+  "show_voices_still_only_for_speech": true,
+  "adapter_ignores_voices_template_source_and_model_info": true,
+  "adapter_rejects_unknown_capability_strings": true,
+  "adapter_does_not_read_ps_context_length": true,
+  "classification_ledger_sha256": "da2dd985f6f03d7be3b4c97c1b1906b8f50ea9d0436b17ef9b28c16da30a2e24",
+  "byte_identical_selected_files": {
+    "api/types.go": "1aa71342a372fc2a0902cc55f43afe91c3a55d06",
+    "compatmigrate/migrate.go": "d6a5ce939218e4f6092b30322cb39b1fc9dad35e",
+    "manifest/manifest.go": "93766ad2600da4db1de2674911a8e1823ce9e568",
+    "manifest/paths.go": "cf3bfa2569bf1a3fbc69ef12455566e259515a2d",
+    "server/model_list.go": "6be2862816f5ba2d6101812a1a03ee98fc079b8d",
+    "server/sched.go": "2c8d818d1907d73a13db1174bb568718be87f3b6",
+    "server/show_safetensors.go": "baba4cb92cd011ae27a4b418dfac92850dfb822b"
+  },
+  "selected_path_blobs": {
+    "api/types.go": {
+      "v0.40.11": "1aa71342a372fc2a0902cc55f43afe91c3a55d06",
+      "v0.40.12": "1aa71342a372fc2a0902cc55f43afe91c3a55d06"
+    },
+    "server/model_list.go": {
+      "v0.40.11_and_v0.40.12": "6be2862816f5ba2d6101812a1a03ee98fc079b8d"
+    },
+    "server/routes.go": {
+      "v0.40.11": "fdf7a18f954ab7c249bb0e95a859b399105c7289",
+      "v0.40.12": "082dd1121fb999e92fc1be6bd3bede8e9e38ab38"
+    },
+    "server/images.go": {
+      "v0.40.11": "87950edd50f67934000adb64b531fb3e09c31c2b",
+      "v0.40.12": "7c8d650a17ef5756044ae2ba47b3b3788754c738"
+    }
+  },
+  "selected_hop_classification": {
+    "0.40.11_to_0.40.12": "api/types.go, model_list.go, sched.go, migrate.go, and paths.go stay byte-identical. routes.go keeps the five native handlers. Show still fills ignored voices only for speech models and copies unread safetensors lengths. Ps context length stays unread. Decision audio, OpenAI transcription and translation, LFM3, d1, MLX, and CLI launch stay unselected."
+  },
+  "unselected_new_operations": [
+    "POST /v1/audio/transcriptions",
+    "POST /v1/audio/translations"
+  ],
+  "behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+  "prior_behavior_revision": "ollama.native-text-v1",
+  "manifest_list_and_runner_mapping_unchanged": true,
+  "new_public_swallowtail_operation": false,
+  "new_public_swallowtail_capability": false,
+  "provider_prompt_sent": false,
+  "attached_server_started": false
+}

@@ -456,7 +456,7 @@ OpenHands adds a package without a production route.
 - `swallowtail-adapter-ollama` implements attach-only native Ollama API
   catalogue and text structured runs across qualified stable releases
   `0.14.0..=0.34.4` and `0.35.0..=0.35.1` on Deprecated `ollama.native-text-v1`,
-  plus Maintained `0.40.0..=0.40.11` on `ollama.native-text-v1.manifest-list-runner`;
+  plus Maintained `0.40.0..=0.40.12` on `ollama.native-text-v1.manifest-list-runner`;
   exact runtime, installed and
   running model observations, NDJSON output, and inference-caused residency
   remain distinct, with optional adapter-local `options.num_ctx` dispatch on
@@ -1810,15 +1810,15 @@ inference or model mutation. Prepared inventory and one-attempt inference stay
 separate. Inference declares runtime-managed residency but grants no pull,
 unload, restoration, process, or server authority. Exact endpoint and runtime
 drift fail before operation effects. Deprecated `0.14.0..=0.34.4` and
-`0.35.0..=0.35.1` stay on `ollama.native-text-v1`. Maintained `0.40.0..=0.40.11`
+`0.35.0..=0.35.1` stay on `ollama.native-text-v1`. Maintained `0.40.0..=0.40.12`
 uses `ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
 exclusions, unpublished gaps, and prerelease closure remain explicit. From
 `0.40.0` through `0.40.2`, chat may start provider-owned background local
 compatibility migration; from `0.40.3` that call is commented out. The adapter
 binds the selected tag and digest, observes sibling manifest-list rows, and
 does not treat a new runner row as the old identity (Contract 031; Research
-418; Research 448). Synthetic `0.40.12` is the first visible `UnverifiedNewer`
-point.
+418; Research 448; Research 462). Synthetic `0.40.13` is the first visible
+`UnverifiedNewer` point.
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

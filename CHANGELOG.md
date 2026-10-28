@@ -6,6 +6,14 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- raise the `ollama.attached` maintained ceiling from `0.40.11` to official
+  GitHub stable `0.40.12` on the existing
+  `ollama.native-text-v1.manifest-list-runner` revision. The one published
+  hop keeps the same claim, baseline, exclusions, and `AllowUnverified`
+  posture. Native version, tags, ps, show, and chat structs stay
+  byte-identical. OpenAI audio transcription and translation, LFM3, and d1
+  stay unselected. Synthetic `0.40.13` is the first `UnverifiedNewer`
+  point. See Research 462.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep

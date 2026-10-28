@@ -27,7 +27,7 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
         gap.diagnostic().code(),
         "swallowtail.ollama.version_unsupported"
     );
-    let current = parse_version(&response(200, br#"{"version":"0.40.11"}"#))
+    let current = parse_version(&response(200, br#"{"version":"0.40.12"}"#))
         .expect("current official stable is qualified");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(current.version()),
@@ -36,7 +36,7 @@ fn exact_version_codec_separates_qualified_unverified_and_incompatible_points() 
                 && matched.behavior_revision().as_str()
                     == crate::selection::OLLAMA_NATIVE_TEXT_MANIFEST_LIST_RUNNER_BEHAVIOR
     ));
-    let above = parse_version(&response(200, br#"{"version":"0.40.12"}"#))
+    let above = parse_version(&response(200, br#"{"version":"0.40.13"}"#))
         .expect("the next unpublished stable is preserved for an unverified attempt");
     assert!(matches!(
         crate::selection::ollama_runtime_claim().assess(above.version()),

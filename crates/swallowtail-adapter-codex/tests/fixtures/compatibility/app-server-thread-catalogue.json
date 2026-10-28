@@ -1,13 +1,13 @@
 {
   "fixture_schema": 1,
-  "evidence_checked": "2026-10-28",
+  "evidence_checked": "2026-10-26",
   "claim_id": "codex.app-server.thread-catalogue-window-1",
   "claim_status": "evidence-only",
   "axis": "codex.cli",
   "facade": "codex-app-server-v2",
   "qualified_range": {
     "baseline": "0.80.0",
-    "latest": "0.165.0",
+    "latest": "0.164.0",
     "excluded_gaps": ["0.82.0", "0.83.0", "0.108.0", "0.109.0", "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1", "0.155.2"],
     "newer_posture": "allow_unverified"
   },
@@ -69,7 +69,7 @@
       "behavior_revision": "codex.app-server.thread-catalogue.v1.workspace-roots"
     },
     {
-      "range": "0.156.0..=0.165.0",
+      "range": "0.156.0..=0.164.0",
       "catalogue_import": true,
       "behavior_revision": "codex.app-server.thread-catalogue.v1.workspace-roots"
     }
@@ -154,7 +154,7 @@
     "current_documentation_role": "corroboration-only"
   },
   "unverified_newer": {
-    "version": "0.165.1",
+    "version": "0.164.1",
     "execution": "permitted-with-explicit-unverified-status",
     "guaranteed": false,
     "evidence": "synthetic-later-stable-classification"

@@ -11,18 +11,17 @@ stable `0.165.0` without a new behavior revision?
 
 ## Decision
 
-Compatible extension. Raise both ceilings to `0.165.0`. Keep the claim ids,
-baselines, older segments, exclusions, and the separate exec and app-server
-behavior revisions. The lifecycle claim follows the app-server ceiling on
-`codex.app-server.lifecycle.v1.strict-descendant-hard-delete`. No new public
-operation.
+Stop. Keep the 0.164.0 ceilings and existing claim shapes. Two gates remain:
 
-`thread/delete` now calls `ensure_no_attached_threads` before
-`prepare_thread_for_delete`. That rejects only when an experimental attached
-child exists. Swallowtail does not send `thread/fork` or `attachToSource`, so
-threads it creates have no attached child. The ordinary success path stays:
-`prepare_thread_for_delete`, descendants-then-root delete, empty
-`ThreadDeleteResponse` plus `ThreadDeleted`.
+- Linux shipped bwrap bytes differ without a demonstrated build cause or
+  behavior identity. Qualify the shipped helper and selected sandbox path.
+- An externally forked or imported parent can have an attached child. The
+  ordinary adapter list hides that child, and the new guard refuses deletion
+  before effect. Qualify or adapt this lifecycle behavior before raising the
+  app-server and lifecycle bounds.
+
+These are planner-owned adaptation follow-ups under Contract 029. No new
+public operation or authority is granted.
 
 ## Method
 
@@ -36,7 +35,7 @@ Hashed the wrapper tarball and the native `optionalDependencies` aliases
 Built complete per-file SHA-256 inventories. Did not execute any downloaded
 vendor binary. `0.164.0` natives reuse Research 452. Compared recursive
 public-tag source trees (SHA-256 over sorted path/mode/git-blob) and
-classified every changed feeding file. Handler traces follow selected call
+classified selected feeding files, including the attached-child guard closure. Handler traces follow selected call
 paths, not request struct identity. No host `codex` binary was required. No
 prompt, login, or live session.
 
@@ -92,27 +91,35 @@ Exec deny-glob / sandbox:
 
 - `with_expanded_deny_globs` stays at `protocol/src/permissions.rs:1843`. The only caller remains unselected exec-server bubblewrap. Selected exec has zero exec-server refs.
 - `exec/src/lib.rs` sets `attached_to_thread_id: None` only inside `resolve_resume_thread_id`. Selected one-shot exec does not call it. The json_mode-gated bwrap warning stays skipped because selected uses `--json`.
-- Linux sandbox source is byte-identical. Shipped `codex-resources/bwrap` is a rebuild: `3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb` at `0.164.0` and `755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36` at `0.165.0`. Linux `codex-path/rg` stays byte-identical. `.aws` remains in `PROTECTED_METADATA_PATH_NAMES`. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots.
+- Linux sandbox source is byte-identical. Shipped `codex-resources/bwrap` has an unproven byte difference: `3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb` at `0.164.0` and `755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36` at `0.165.0`. Linux `codex-path/rg` stays byte-identical. `.aws` remains in `PROTECTED_METADATA_PATH_NAMES`. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots.
 
 App-server dispatch:
 
 - `message_processor.rs` adds experimental `ThreadMemoryRead`. Selected initialize, config, model/list, thread/start, turn/start, archive, delete, and unarchive arms remain and still call `thread_processor` for archive/delete/unarchive.
 - `protocol/common.rs` declares `thread/memory/read`. The adapter does not send it.
-- `thread/fork` gains optional `attachToSource`, default false. True skips `ThreadStarted`. `thread/list` gains optional `attachedToThreadId`; omitting it keeps ordinary lists and hides attached threads. Archive, unarchive, and delete handler bodies are not in that diff. The adapter sends none of the new fields.
+- `thread/fork` gains optional `attachToSource`, default false. True skips `ThreadStarted`. `thread/list` gains optional `attachedToThreadId`; omitting it keeps ordinary lists and hides attached threads. Archive, unarchive, and delete handler bodies are not in that diff. The adapter sends none of the new fields, but externally created or imported parents may still have attached children. The guard fails before effect while ordinary adapter listings hide those children.
 - `finalize_thread_teardown` stays cancel, remove_thread_state/watch, pending_unloads.remove. The listener skip of in-process `PrivateSessionEvent` is unselected. `PrivateSessionEvent` is `serde(skip)` and is not a JSONL variant.
 - `map_network_requirements_to_api` copies `review_domains`. The adapter sends no managed application requirements. Model and turn schemas stay byte-identical.
 
 Unpublished interior patches, including the former synthetic `0.164.1`, stay
 inside the inclusive range and are not new exclusions. Kept gaps stay:
 `0.82.0`, `0.83.0`, `0.108.0`, `0.109.0`, `0.149.2`, `0.150.2`, `0.151.1`,
-`0.152.2`, `0.154.1`, and `0.155.2`. `0.165.1` is the synthetic
-`UnverifiedNewer` point.
+`0.152.2`, `0.154.1`, and `0.155.2`. `0.165.0` and `0.165.1` remain `UnverifiedNewer`.
 
 ## Claim shape
 
-- `codex.exec.cli-window-2` maintained `0.156.0..=0.165.0` on `codex.exec.jsonl-v1`
-- `codex.app-server.cli-window-2` maintained `0.159.0..=0.165.0` on `codex.app-server.v2.protected-aws-workspace-roots`
-- lifecycle maintained `0.140.0..=0.165.0` on the existing hard-delete revision
+All three ceilings remain `0.164.0`; `0.165.0` is `UnverifiedNewer`.
+The existing baselines, behavior revisions, exclusions, and claim ids remain.
+`0.165.1` is also unverified.
+
+The bwrap crate, vendored C, build action, toolchain, release profile and
+lock dependencies are identical across tags; that does not explain the shipped
+byte change or establish behavior identity. The `rust-release.yml` change is
+Python-wheel only. The attached-child guard closure includes
+`thread-store/src/local/delete_thread.rs`, `rollout/src/rollout_reference_index.rs`,
+`thread-store/src/store.rs`, `thread-store/src/local/list_threads.rs`, and
+`state/migrations/0062_threads_attached_parent.sql`. The reference index checks
+active and archived rollouts. A guard error maps to `failed_before_effect`.
 
 ## Sources
 

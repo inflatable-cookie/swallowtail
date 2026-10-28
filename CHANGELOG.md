@@ -7,18 +7,6 @@ annotated Git tags from the canonical repository.
 
 ### Compatibility
 - qualify `codex.exec` and `codex.app-server` through official stable
-  `0.165.0` on the existing JSONL and protected-aws behavior revisions.
-  One published hop after `0.164.0`. Selected argv, JSONL events, sandbox
-  policy, initialize, and archive/delete success paths stay.
-  `thread/delete` rejects only when an experimental attached thread exists;
-  the adapter does not send `thread/fork` or `attachToSource`.
-  `thread/memory/read` stays unmapped. Native `darwin-arm64` and
-  `linux-x64` tarballs were hashed and not executed. Wrapper `bin/codex.js`
-  stays byte-identical. Shipped `codex-resources/bwrap` is a rebuild while
-  linux-sandbox source stays identical. Unpublished gaps, including
-  `0.155.2`, stay incompatible. `0.165.1` is the synthetic
-  `UnverifiedNewer` point. `0.166.0-alpha.5` is ignored. See Research 463.
-- qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep
   the selected argv, JSONL events, sandbox policy, initialize, catalogue,

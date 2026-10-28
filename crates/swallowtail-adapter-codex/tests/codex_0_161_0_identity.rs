@@ -287,7 +287,7 @@ fn exact_exec_claim_extends_as_a_compatible_behavior_preserving_extension() {
             ),
             (
                 "0.156.0",
-                "0.165.0",
+                "0.164.0",
                 "codex.exec.jsonl-v1",
                 InterfaceSupportStatus::Maintained
             ),
@@ -340,11 +340,11 @@ fn exact_exec_claim_extends_as_a_compatible_behavior_preserving_extension() {
         );
     }
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        claim.assess(&version("0.165.1"))
+        claim.assess(&version("0.164.1"))
     else {
         panic!("newer exec releases remain permitted as unverified");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
 }
 
 #[test]

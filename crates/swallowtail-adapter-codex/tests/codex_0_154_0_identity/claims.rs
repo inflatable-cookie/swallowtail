@@ -9,7 +9,6 @@ fn production_exec_claim_preserves_prior_points_and_qualifies_current_stable() {
         "0.150.1", "0.152.1", "0.153.0", "0.153.1", "0.153.2", "0.153.3", "0.153.4", "0.154.0",
         "0.156.0", "0.156.1", "0.157.0", "0.157.1", "0.158.0", "0.159.0", "0.159.1", "0.159.2",
         "0.159.3", "0.160.0", "0.160.1", "0.161.0", "0.162.0", "0.162.1", "0.163.0", "0.164.0",
-        "0.165.0",
     ] {
         let qualified = exec.assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = qualified else {
@@ -24,11 +23,11 @@ fn production_exec_claim_preserves_prior_points_and_qualifies_current_stable() {
         "unpublished 0.155.2 remains a gap"
     );
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) =
-        exec.assess(&version("0.165.1"))
+        exec.assess(&version("0.164.1"))
     else {
-        panic!("0.165.1 remains visible as UnverifiedNewer");
+        panic!("0.164.1 remains visible as UnverifiedNewer");
     };
-    assert_eq!(unverified.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(unverified.latest_qualified().as_str(), "0.164.0");
     for gap in [
         "0.149.2", "0.150.2", "0.151.1", "0.152.2", "0.154.1", "0.108.0", "0.109.0",
     ] {

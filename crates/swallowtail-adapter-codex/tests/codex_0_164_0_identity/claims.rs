@@ -33,7 +33,7 @@ fn decision_extends_both_claims_without_flattening() {
         "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
     );
 
-    for point in ["0.162.0", "0.162.1", "0.163.0", "0.164.0", "0.165.0"] {
+    for point in ["0.162.0", "0.162.1", "0.163.0", "0.164.0"] {
         let exec = codex_exec_claim().assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = exec else {
             panic!("{point} must be qualified exec");
@@ -69,21 +69,21 @@ fn decision_extends_both_claims_without_flattening() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        codex_exec_claim().assess(&version("0.165.1"))
+        codex_exec_claim().assess(&version("0.164.1"))
     else {
-        panic!("0.165.1 stays unverified newer");
+        panic!("0.164.1 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        codex_app_server_claim().assess(&version("0.165.1"))
+        codex_app_server_claim().assess(&version("0.164.1"))
     else {
-        panic!("app-server 0.165.1 stays unverified newer");
+        panic!("app-server 0.164.1 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        codex_app_server_lifecycle_claim().assess(&version("0.165.1"))
+        codex_app_server_lifecycle_claim().assess(&version("0.164.1"))
     else {
-        panic!("lifecycle 0.165.1 stays unverified newer");
+        panic!("lifecycle 0.164.1 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
 }

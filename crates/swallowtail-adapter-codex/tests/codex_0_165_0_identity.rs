@@ -4,7 +4,9 @@ use serde_json::Value;
 use swallowtail_adapter_codex::{
     codex_app_server_claim, codex_app_server_lifecycle_claim, codex_exec_claim,
 };
-use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion};
+use swallowtail_core::{
+    InterfaceCompatibilityAssessment, InterfaceSupportStatus, InterfaceVersion,
+};
 
 const IDENTITY: &str = include_str!("fixtures/codex-cli-0.165.0/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/codex-cli-0.165.0/protocol.json");
@@ -31,7 +33,10 @@ fn channels_agree_on_0_165_0_and_ignore_alpha() {
     let identity = json(IDENTITY);
     assert_eq!(identity["axis"], "codex.cli");
     assert_eq!(identity["package"], "@openai/codex");
-    assert_eq!(identity["routes"], serde_json::json!(["codex.exec", "codex.app-server"]));
+    assert_eq!(
+        identity["routes"],
+        serde_json::json!(["codex.exec", "codex.app-server"])
+    );
     assert_eq!(identity["previousCeiling"], "0.164.0");
     assert_eq!(identity["officialLatest"], "0.165.0");
     assert_eq!(identity["channelsAgree"], true);
@@ -47,11 +52,17 @@ fn channels_agree_on_0_165_0_and_ignore_alpha() {
     assert_eq!(hops.len(), 2);
     assert_eq!(hops[0]["version"], "0.164.0");
     assert_eq!(hops[0]["role"], "previous-ceiling");
-    assert_eq!(hops[0]["commit"], "6aaac694803004a63c6f393d153c96d22521a6b9");
+    assert_eq!(
+        hops[0]["commit"],
+        "6aaac694803004a63c6f393d153c96d22521a6b9"
+    );
     assert_eq!(hops[1]["version"], "0.165.0");
     assert_eq!(hops[1]["role"], "official-latest");
     assert_eq!(hops[1]["githubTag"], "rust-v0.165.0");
-    assert_eq!(hops[1]["commit"], "360319d8dee62d87e2d59fc0c21805d79519cfed");
+    assert_eq!(
+        hops[1]["commit"],
+        "360319d8dee62d87e2d59fc0c21805d79519cfed"
+    );
     assert_eq!(
         hops[1]["tagObject"],
         "e374836b2728d9b7aa981c2902649e640a2edaa8"
@@ -85,11 +96,14 @@ fn channels_agree_on_0_165_0_and_ignore_alpha() {
         hops[1]["darwinArm64"]["provenance"],
         "hashed-unexecuted-tarball"
     );
-    assert_eq!(hops[1]["linuxX64"]["provenance"], "hashed-unexecuted-tarball");
+    assert_eq!(
+        hops[1]["linuxX64"]["provenance"],
+        "hashed-unexecuted-tarball"
+    );
 }
 
 #[test]
-fn decision_extends_both_claims_without_flattening_or_a_new_operation() {
+fn decision_retains_previous_claims_until_gaps_close() {
     let identity = json(IDENTITY);
     let before = &identity["claimAtObservation"];
     assert_eq!(before["exec"]["latest"], "0.164.0");
@@ -98,8 +112,8 @@ fn decision_extends_both_claims_without_flattening_or_a_new_operation() {
     assert_ne!(before["exec"]["behavior"], before["appServer"]["behavior"]);
 
     let decision = &identity["identityDecision"];
-    assert_eq!(decision["shape"], "compatible-extension");
-    assert_eq!(decision["raiseLatestQualifiedTo"], "0.165.0");
+    assert_eq!(decision["shape"], "stop");
+    assert_eq!(decision["raiseLatestQualifiedTo"], Value::Null);
     assert_eq!(decision["flattenClaims"], false);
     assert_eq!(decision["newMilestone"], false);
     assert_eq!(decision["newPublicOperation"], false);
@@ -114,7 +128,8 @@ fn decision_extends_both_claims_without_flattening_or_a_new_operation() {
         "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
     );
 
-    for point in ["0.164.0", "0.165.0"] {
+    {
+        let point = "0.164.0";
         let exec = codex_exec_claim().assess(&version(point));
         let InterfaceCompatibilityAssessment::Qualified(matched) = exec else {
             panic!("{point} must be qualified exec");
@@ -146,29 +161,29 @@ fn decision_extends_both_claims_without_flattening_or_a_new_operation() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        codex_exec_claim().assess(&version("0.165.1"))
+        codex_exec_claim().assess(&version("0.165.0"))
     else {
-        panic!("0.165.1 stays unverified newer");
+        panic!("0.165.0 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        codex_app_server_claim().assess(&version("0.165.1"))
+        codex_app_server_claim().assess(&version("0.165.0"))
     else {
-        panic!("app-server 0.165.1 stays unverified newer");
+        panic!("app-server 0.165.0 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-        codex_app_server_lifecycle_claim().assess(&version("0.165.1"))
+        codex_app_server_lifecycle_claim().assess(&version("0.165.0"))
     else {
-        panic!("lifecycle 0.165.1 stays unverified newer");
+        panic!("lifecycle 0.165.0 stays unverified newer");
     };
-    assert_eq!(newer.latest_qualified().as_str(), "0.165.0");
+    assert_eq!(newer.latest_qualified().as_str(), "0.164.0");
 }
 
 #[test]
 fn selected_files_and_dispatch_are_classified() {
     let protocol = json(PROTOCOL);
-    assert_eq!(protocol["selectedMappedSubsetUnchanged"], true);
+    assert_eq!(protocol["selectedMappedSubsetUnchanged"], false);
     assert_eq!(protocol["noPrompt"], true);
     assert_eq!(protocol["noLiveSession"], true);
     assert_eq!(protocol["downloadedBinariesExecuted"], false);
@@ -211,11 +226,25 @@ fn selected_files_and_dispatch_are_classified() {
         classes["codex-rs/app-server-protocol/src/protocol/v2/thread.rs"],
         "additive-optional"
     );
-    assert_eq!(classes["codex-rs/linux-sandbox/src/bwrap.rs"], "byte-identical");
-    assert_eq!(deltas.len(), 13);
+    assert_eq!(
+        classes["codex-rs/linux-sandbox/src/bwrap.rs"],
+        "byte-identical"
+    );
+    assert_eq!(deltas.len(), 18);
+    for path in [
+        "codex-rs/thread-store/src/local/delete_thread.rs",
+        "codex-rs/rollout/src/rollout_reference_index.rs",
+        "codex-rs/thread-store/src/store.rs",
+        "codex-rs/thread-store/src/local/list_threads.rs",
+        "codex-rs/state/migrations/0062_threads_attached_parent.sql",
+    ] {
+        assert_eq!(classes[path], "selected-lifecycle-attached-child");
+    }
+    assert!(protocol["handlerTraces"]["threadDelete"]["externalParentLimitation"].is_string());
+    assert!(protocol["execReachability"]["linuxSandboxHelper"]["provenanceGap"].is_string());
 
-    let delete = &protocol["contentSha256"]
-        ["codex-rs/app-server/src/request_processors/thread_delete.rs"];
+    let delete =
+        &protocol["contentSha256"]["codex-rs/app-server/src/request_processors/thread_delete.rs"];
     assert_eq!(
         delete["0.164.0"],
         "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751"
@@ -310,10 +339,16 @@ fn source_and_artifact_ledgers_are_mutation_sensitive() {
     ));
 
     let dist = json(DIST);
-    assert_eq!(dist["wrapperCodexJsSha256"], "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70");
+    assert_eq!(
+        dist["wrapperCodexJsSha256"],
+        "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70"
+    );
     assert_eq!(dist["downloadedBinariesExecuted"], false);
     let hop = &dist["artifactHops"]["0.164.0->0.165.0"];
-    assert_eq!(hop["wrapper"]["changed"], serde_json::json!(["package.json"]));
+    assert_eq!(
+        hop["wrapper"]["changed"],
+        serde_json::json!(["package.json"])
+    );
     assert_eq!(hop["wrapper"]["added"], serde_json::json!([]));
     assert_eq!(hop["wrapper"]["removed"], serde_json::json!([]));
     assert!(
@@ -323,13 +358,9 @@ fn source_and_artifact_ledgers_are_mutation_sensitive() {
             .iter()
             .any(|path| path.as_str() == Some("bin/codex.js"))
     );
-    assert!(
-        hop["linux-x64"]["changed"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .any(|path| path.as_str() == Some("vendor/x86_64-unknown-linux-musl/codex-resources/bwrap"))
-    );
+    assert!(hop["linux-x64"]["changed"].as_array().unwrap().iter().any(
+        |path| path.as_str() == Some("vendor/x86_64-unknown-linux-musl/codex-resources/bwrap")
+    ));
     assert!(
         hop["linux-x64"]["identical"]
             .as_array()

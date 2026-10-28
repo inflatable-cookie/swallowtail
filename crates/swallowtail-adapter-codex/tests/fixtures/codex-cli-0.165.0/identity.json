@@ -150,8 +150,8 @@
     }
   },
   "identityDecision": {
-    "shape": "compatible-extension",
-    "raiseLatestQualifiedTo": "0.165.0",
+    "shape": "stop",
+    "raiseLatestQualifiedTo": null,
     "keepClaimIds": true,
     "keepBaselines": true,
     "keepOlderSegments": true,
@@ -161,10 +161,10 @@
     "execBehavior": "codex.exec.jsonl-v1",
     "appServerBehavior": "codex.app-server.v2.protected-aws-workspace-roots",
     "lifecycleBehavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
-    "execSegment": "0.156.0..=0.165.0",
-    "appServerSegment": "0.159.0..=0.165.0",
-    "lifecycleSegment": "0.140.0..=0.165.0",
-    "laterUnverified": "0.165.1"
+    "execSegment": "0.156.0..=0.164.0",
+    "appServerSegment": "0.159.0..=0.164.0",
+    "lifecycleSegment": "0.140.0..=0.164.0",
+    "laterUnverified": "0.165.0"
   },
   "nativeSelection": {
     "wrapper": "@openai/codex",

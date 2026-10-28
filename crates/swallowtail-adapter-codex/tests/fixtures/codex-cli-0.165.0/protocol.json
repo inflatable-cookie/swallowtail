@@ -1,5 +1,5 @@
 {
-  "selectedMappedSubsetUnchanged": true,
+  "selectedMappedSubsetUnchanged": false,
   "noPrompt": true,
   "noLiveSession": true,
   "noHostMutation": true,
@@ -39,7 +39,7 @@
       "path": "codex-rs/app-server/src/request_processors/thread_delete.rs",
       "hop": "0.164.0->0.165.0",
       "class": "selected-lifecycle-guard-for-unmapped-attached-threads",
-      "reason": "before prepare_thread_for_delete, LocalThreadStore::ensure_no_attached_threads rejects deletion when an experimental attached child exists. No attached child returns Ok and the existing path stays: prepare_thread_for_delete, descendants-then-root delete_threads, empty ThreadDeleteResponse plus ThreadDeleted. The adapter does not send thread/fork or attachToSource, so threads it creates have no attached child."
+      "reason": "before prepare_thread_for_delete, LocalThreadStore::ensure_no_attached_threads rejects deletion when an experimental attached child exists. No attached child returns Ok and the existing path stays: prepare_thread_for_delete, descendants-then-root delete_threads, empty ThreadDeleteResponse plus ThreadDeleted. The adapter does not send thread/fork or attachToSource, so threads it creates have no attached child. External or imported parents can have attached children; the adapter list hides them and delete fails before effect."
     },
     {
       "path": "codex-rs/app-server/src/request_processors/thread_processor.rs",
@@ -99,7 +99,37 @@
       "path": "codex-rs/linux-sandbox/src/bwrap.rs",
       "hop": "0.164.0->0.165.0",
       "class": "byte-identical",
-      "reason": "selected Linux sandbox source stays. Shipped codex-resources/bwrap is a rebuild: 3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb at 0.164.0 and 755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36 at 0.165.0. .aws remains in PROTECTED_METADATA_PATH_NAMES. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots."
+      "reason": "selected Linux sandbox source stays. Shipped codex-resources/bwrap changed for an unproven reason: 3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb at 0.164.0 and 755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36 at 0.165.0. .aws remains in PROTECTED_METADATA_PATH_NAMES. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots."
+    },
+    {
+      "path": "codex-rs/thread-store/src/local/delete_thread.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "selected-lifecycle-attached-child",
+      "reason": "Local store rejects deletion when the reference index finds an attached child."
+    },
+    {
+      "path": "codex-rs/rollout/src/rollout_reference_index.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "selected-lifecycle-attached-child",
+      "reason": "Attached-child predicate examines active and archived rollouts."
+    },
+    {
+      "path": "codex-rs/thread-store/src/store.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "selected-lifecycle-attached-child",
+      "reason": "Adds the store interface used by the attached-child guard."
+    },
+    {
+      "path": "codex-rs/thread-store/src/local/list_threads.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "selected-lifecycle-attached-child",
+      "reason": "Listing filters attached children unless selected by attached parent."
+    },
+    {
+      "path": "codex-rs/state/migrations/0062_threads_attached_parent.sql",
+      "hop": "0.164.0->0.165.0",
+      "class": "selected-lifecycle-attached-child",
+      "reason": "Adds persisted attached-parent indexing for thread state."
     }
   ],
   "contentSha256": {
@@ -176,7 +206,8 @@
         ".codex",
         ".aws"
       ],
-      "awsProtectionRemains": true
+      "awsProtectionRemains": true,
+      "provenanceGap": "Shipped bwrap bytes differ; identical crate, vendored C, build action, toolchain, release profile and lock dependencies do not explain the difference or prove behavior identity."
     }
   },
   "handlerTraces": {
@@ -190,7 +221,8 @@
         "empty ThreadDeleteResponse plus ThreadDeleted notifications"
       ],
       "newFailure": "InvalidRequest when an experimental attached thread exists",
-      "adapterSendsAttachToSource": false
+      "adapterSendsAttachToSource": false,
+      "externalParentLimitation": "Externally forked or imported parents can have attached children hidden from ordinary thread/list; delete fails before effect."
     },
     "finalizeThreadTeardown": {
       "0.165.0": [

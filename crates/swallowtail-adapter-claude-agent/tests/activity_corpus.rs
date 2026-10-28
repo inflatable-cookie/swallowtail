@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.96.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.98.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -367,6 +367,20 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
             "a748438ac05553478285a1bb1bfe47c6adea1d47b97b93b4a55a411ea69bbeaa",
             "native-subagent-model-reports-unmapped",
         ),
+        (
+            "0.97.0",
+            "2026-10-26T12:48:22.882Z",
+            "d52c7c64d8e4b3e5bb988658fed4cd487b9f935c",
+            "c569a914b2b9c75127193139a69bca3ca4ae6b2ebd6728de0330a16689fdc268",
+            "ultracode-option-unmapped-advisor-tool-result-existing-shape",
+        ),
+        (
+            "0.98.0",
+            "2026-10-27T18:53:50.104Z",
+            "c90f856c11b959d40328f86accc48f3a537aae96",
+            "12c05702b3295d80a838135ee15802dd25739f8871a19eae6e664efcf3e2ed0f",
+            "air-batch-get-unmapped-sandbox-network-settles-existing-status",
+        ),
     ];
     let releases = range["current_external_releases"]
         .as_array()
@@ -380,7 +394,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_eq!(release["tag_commit"], tag_commit);
         assert_eq!(release["source_sha256"], source_sha256);
         assert_eq!(release["classification"], "qualified");
-        assert_eq!(release["profile"], "0.96.0-guarantee");
+        assert_eq!(release["profile"], "0.98.0-guarantee");
         assert_eq!(release["activity_delta"], activity_delta);
         assert_sha(release, "tag_commit", 40);
         assert_sha(release, "source_sha256", 64);

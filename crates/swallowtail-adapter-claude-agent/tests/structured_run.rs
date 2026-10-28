@@ -45,6 +45,7 @@ fn one_prompt_run_preserves_version_topology_retention_and_native_close() {
             "0.77.0", "0.78.0", "0.79.0", "0.80.0", "0.81.0", "0.81.1", "0.81.2", "0.82.0",
             "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0", "0.88.0", "0.89.0",
             "0.89.1", "0.90.0", "0.91.0", "0.92.0", "0.93.0", "0.94.0", "0.95.0", "0.96.0",
+            "0.97.0", "0.98.0",
         ] {
             let host_id = ExecutionHostId::new(host_name).expect("host id");
             let selected = run_selection(host_id.clone(), version);

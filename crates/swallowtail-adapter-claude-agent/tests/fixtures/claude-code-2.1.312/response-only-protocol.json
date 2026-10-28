@@ -75,7 +75,7 @@
         {
           "surface": "builtin cc-plugin-claude-platform",
           "classification": "gated-builtin-unselected",
-          "reason": "Registered from 2.1.311 on the existing e path, then kept off unless tengu_peppy_crescent is explicitly true and the tst predicate holds. Response-only still requires empty mcp_servers and fail-closes a connected server. The skill stays behind its own gate. Empty tools leave it unselected."
+          "reason": "Both routes pass -p, so isInteractive is false regardless of the dynamic flag. The builtin availability filter skips the plugin before adding its MCP server; mayConnectMcpServer also requires isAvailable. Response-only safe mode independently blocks mcpAutoDiscovered and rejects nonempty init MCP."
         },
         {
           "surface": "easel builtin also registers for remote_cowork",

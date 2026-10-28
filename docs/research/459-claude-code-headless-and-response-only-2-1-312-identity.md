@@ -75,14 +75,19 @@ and commands`.
 
 From `2.1.311` the builtin registrar adds `cc-plugin-claude-platform` on the
 existing `e` path (`CLAUDE_CODE_ENTRYPOINT` is not `local-agent`, and the
-cowork predicate is false). `isAvailable` requires feature flag
-`tengu_peppy_crescent` with default argument false, a `tst` predicate, no
-`--agent-id`, and not `mcpAutoDiscovered`. The docs MCP URL
-`https://platform.claude.com/docs/mcp` is behind `mayConnectMcpServer`, which
-requires that availability. The skill stays behind
-`CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL` and the `claude-api` skill gate.
-Headless still passes strict empty MCP. Response-only still requires empty
-`mcp_servers` and fail-closes otherwise. The plugin is
+cowork predicate is false). The dynamic flag `tengu_peppy_crescent` defaults
+false, but settings or environment may enable it. The shipped `isAvailable`
+also requires `isInteractive()`: on both routes `-p` makes the launch
+interactivity detector true for non-interactive mode, and the setter stores
+its negation. The builtin availability filter skips the plugin before adding
+its MCP server to the enabled set. `mayConnectMcpServer` independently calls
+`isAvailable` before allowing `https://platform.claude.com/docs/mcp`.
+Response-only `--safe-mode` also blocks `mcpAutoDiscovered`, another
+availability requirement. The skill has separate `claude-api` and disable
+setting gates. The four platform/hop snippets in `response-only-isolation.json`
+freeze this path and bind it to the shipped hashes. Headless passes strict
+empty MCP; response-only requires empty `mcp_servers` and fail-closes otherwise.
+Those checks are not the plugin availability gate. The plugin is
 `gated-builtin-unselected`.
 
 Easel's registration changes from `if(e)` to `if(e)` or a `remote_cowork`

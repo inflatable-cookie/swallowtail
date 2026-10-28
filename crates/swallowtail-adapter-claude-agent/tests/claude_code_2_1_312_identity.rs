@@ -416,6 +416,75 @@ fn response_only_isolation_keeps_safe_mode_and_records_the_gated_builtin() {
             } else {
                 assert_eq!(&row["cc_plugin_ids"], ids_later);
                 let module = row["claude_platform_module"].as_str().unwrap();
+                let (getter, setter, detector, availability, safe_gate) = match (point, package) {
+                    ("2.1.311", "claude-code-darwin-arm64") => ("qd", "F5e", "dlt", "pot", "cr"),
+                    ("2.1.311", _) => ("qd", "I6e", "olt", "aot", "dr"),
+                    ("2.1.312", "claude-code-darwin-arm64") => ("Xd", "J5e", "Alt", "Aot", "or"),
+                    _ => ("Xd", "G6e", "vlt", "vot", "or"),
+                };
+                assert!(module.contains(&format!("return {getter}()&&")));
+                assert!(module.contains(&format!("!{safe_gate}(\"mcpAutoDiscovered\")")));
+                assert!(module.contains("return t()&&e===!0"));
+                assert!(
+                    row["interactive_getter"]
+                        .as_str()
+                        .unwrap()
+                        .starts_with(&format!("function {getter}()"))
+                );
+                assert!(
+                    row["interactive_getter"]
+                        .as_str()
+                        .unwrap()
+                        .contains("launchOptions.isInteractive()")
+                );
+                assert!(
+                    row["interactive_setter"]
+                        .as_str()
+                        .unwrap()
+                        .contains("launchOptions.replaceIsInteractive(e)")
+                );
+                let launch = row["launch_interactivity"].as_str().unwrap();
+                assert!(launch.contains(&format!("||{detector}(e)")));
+                assert!(launch.contains(&format!("{setter}(!h)")));
+                let detection = row["print_detection"].as_str().unwrap();
+                assert!(detection.contains("\"-p\",e)"));
+                assert!(detection.contains("return n||t||o||!process.stdout.isTTY"));
+                assert!(
+                    row["availability_dispatch"]
+                        .as_str()
+                        .unwrap()
+                        .contains("return t.isAvailable()")
+                );
+                assert!(
+                    row["builtin_availability_skip"]
+                        .as_str()
+                        .unwrap()
+                        .starts_with(&format!("if(!{availability}(r))continue;"))
+                );
+                assert!(
+                    row["builtin_availability_skip"]
+                        .as_str()
+                        .unwrap()
+                        .contains("mcpServers:n.mcpServers")
+                );
+                assert!(
+                    row["safe_mode_detector"]
+                        .as_str()
+                        .unwrap()
+                        .contains("\"--safe-mode\"")
+                );
+                assert!(
+                    row["safe_mode_mcp_gate"]
+                        .as_str()
+                        .unwrap()
+                        .contains("&&!l[e])return!0")
+                );
+                assert!(
+                    row["safe_mode_mcp_policy"]
+                        .as_str()
+                        .unwrap()
+                        .contains("mcpAutoDiscovered:!1")
+                );
                 assert!(module.contains("return\"tengu_peppy_crescent\""));
                 assert!(module.contains(",!1)===!0"));
                 assert!(module.contains("===\"tst\""));

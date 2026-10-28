@@ -281,9 +281,9 @@ analysis and provider-free adapter fixtures for the forked stream and denied
 action cases. Research 445 extends the same v2 segment through official stable
 `2.1.310`. Research 459 extends it through official stable `2.1.312`.
 From `2.1.311` the provider registers `cc-plugin-claude-platform` on the
-existing local builtin path. Its availability flag `tengu_peppy_crescent`
-defaults off, and headless still passes strict empty MCP, so the plugin is
-not a selected tool or a mapped server. From `2.1.299` a plugin hook that
+existing local builtin path. Both routes pass `-p`, which makes the required `isInteractive()` false even
+when the dynamic availability flag is enabled. The builtin filter skips the
+plugin before adding its MCP server (Research 459). From `2.1.299` a plugin hook that
 cannot be handed an action or cannot return refuses the call, and from
 `2.1.300` a rewritten `updatedInput`
 drops unknown keys and denies rejected input. Both tighten the existing v2
@@ -485,12 +485,12 @@ provider surface, disclosed here:
 | `claude-test` | Command/skill hooks that can launch test assets | `--disable-slash-commands` blocks invocation |
 
 From `2.1.311` the provider also registers `cc-plugin-claude-platform` on the
-same local builtin path that already loads `claude-test`. Availability
-requires `tengu_peppy_crescent` with a default of false, plus a `tst`
-predicate, no `--agent-id`, and no auto-discovered MCP. The platform docs MCP
-URL stays behind that availability check. Response-only still requires empty
-`mcp_servers` and fail-closes otherwise. The plugin is not a selected tool or
-a mapped MCP server (Research 459). Easel's extra `remote_cowork` registration
+same local builtin path that already loads `claude-test`. Print mode makes
+its required `isInteractive()` false, regardless of the dynamic flag. Safe
+mode also blocks auto-discovered MCP. The builtin filter skips the unavailable
+plugin before adding its docs MCP server; `mayConnectMcpServer` also requires
+availability. Response-only requires empty `mcp_servers` and fail-closes
+otherwise (Research 459). Easel's extra `remote_cowork` registration
 from the same hop is outside this route; empty tools leave easel unselected.
 
 Project instruction discovery starts from the launch directory. A consumer

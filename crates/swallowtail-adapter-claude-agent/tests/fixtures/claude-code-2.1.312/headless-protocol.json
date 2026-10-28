@@ -102,7 +102,7 @@
         {
           "surface": "builtin cc-plugin-claude-platform",
           "classification": "gated-builtin-unselected",
-          "reason": "Registered from 2.1.311 on the existing e path. isAvailable requires tengu_peppy_crescent with default false, a tst predicate, no --agent-id, and not mcpAutoDiscovered. The platform docs MCP URL stays behind mayConnectMcpServer. Headless still passes strict empty MCP and does not select the skill."
+          "reason": "Both routes pass -p, so isInteractive is false regardless of the dynamic flag. The builtin availability filter skips the plugin before adding its MCP server; mayConnectMcpServer also requires isAvailable. Response-only safe mode independently blocks mcpAutoDiscovered and rejects nonempty init MCP."
         },
         {
           "surface": "easel builtin also registers for remote_cowork",

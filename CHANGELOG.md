@@ -56,7 +56,7 @@ annotated Git tags from the canonical repository.
   behavior revisions. `2.1.313` is `UnverifiedNewer`. The optional
   maximum-turn gate stays on the Research 226 set. Research 459 extends
   Research 445. `cc-plugin-claude-platform`, registered from `2.1.311`, stays
-  unselected: its availability flag defaults off. Claude Agent ACP and the
+  unselected: print mode fails its interactive availability gate. Claude Agent ACP and the
   Claude Agent SDK stay on their own claims.
 - qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).

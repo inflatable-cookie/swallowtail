@@ -2,16 +2,14 @@
   "claim_id": "opencode.http.server-window-1",
   "axis": "opencode.server",
   "baseline": "1.14.48",
-  "latest_qualified": "1.19.5",
+  "latest_qualified": "1.19.4",
   "behavior_revision": "opencode.http-sse.surface-19",
   "preserved_segment": "1.18.11..=1.18.35",
-  "extended_segment": "1.19.0..=1.19.5",
-  "newly_qualified": [
-    "1.19.5"
-  ],
+  "extended_segment": "1.19.0..=1.19.4",
+  "newly_qualified": [],
   "unpublished_gap": "1.18.36",
   "newer_version_posture": "allow_unverified",
-  "unverified_newer": "1.19.6",
+  "unverified_newer": "1.19.5",
   "historical_gaps_preserved": [
     "1.14.52",
     "1.15.8",

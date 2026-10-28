@@ -14,7 +14,7 @@
   },
   "qualification_window": {
     "previous_ceiling": "1.19.4",
-    "new_ceiling": "1.19.5",
+    "new_ceiling": "1.19.4",
     "published_stable_hops": [
       "1.19.5"
     ],
@@ -24,9 +24,9 @@
     "v1_segment": "1.18.18..=1.18.30",
     "v2_segments": [
       "1.18.31..=1.18.35",
-      "1.19.0..=1.19.5"
+      "1.19.0..=1.19.4"
     ],
-    "next_stable_posture": "1.19.6 is AllowUnverified / UnverifiedNewer"
+    "next_stable_posture": "1.19.5 is AllowUnverified / UnverifiedNewer"
   },
   "github_tag_sources": {
     "1.19.4": {
@@ -100,8 +100,11 @@
     "http_mcp_live_honouring_exact_version": "1.18.18"
   },
   "identity_decision": {
-    "shape": "compatible-extension",
+    "shape": "stop",
     "behavior": "opencode.acp-v1.client-mcp-servers-v2",
     "flatten_onto_opencode_http": false
-  }
+  },
+  "native_payload_correlated_to_tag": false,
+  "native_inventory_scope": "linux-x64 only; wrapper selects 12 native packages",
+  "attestation_observed": false
 }

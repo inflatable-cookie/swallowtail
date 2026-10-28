@@ -15,6 +15,11 @@ npm `opencode-ai` `latest` is `1.19.5`. This record does not qualify `2.2.0`.
 HTTP MCP live honouring stays exact `1.18.18` and does not transfer.
 `opencode.http` stays a separate axis.
 
-Decision: compatible extension of `opencode.acp-v1.client-mcp-servers-v2`.
-Keep `1.18.31..=1.18.35`. Extend `1.19.0..=1.19.4` to `1.19.0..=1.19.5`.
-Leave unpublished `1.18.36` incompatible and synthetic `1.19.6` unverified.
+Decision: stop. The qualified ceiling remains `1.19.4`; `1.19.5` is
+`UnverifiedNewer`. The byte comparisons describe tag trees only. The native
+payload has not been correlated to the tag: npm `gitHead` is absent, the
+release target is a branch, and no attestation was observed. Only Linux x64
+native contents were inventoried; the wrapper selects twelve native packages.
+The shared GitLab dependency effects remain a qualification gate. See
+Research 464 and the owning adaptation lead `5b445586-3c98-47c5-aa88-7950aace016b`.
+No downloaded artifact was executed and no provider was contacted.

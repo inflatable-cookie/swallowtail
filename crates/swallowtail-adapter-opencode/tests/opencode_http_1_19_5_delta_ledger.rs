@@ -41,17 +41,14 @@ fn official_channels_agree_on_one_patch_and_leave_opencode_2_aside() {
     assert_eq!(registry["npm_opencode_ai_has_2_x"], false);
     assert_eq!(registry["distinct_from_opencode_ai_latest"], true);
     assert_eq!(registry["qualified_from_this_entry"], false);
-    assert_eq!(
-        identity["identity_decision"]["shape"],
-        "compatible-extension"
-    );
+    assert_eq!(identity["identity_decision"]["shape"], "stop");
     assert_eq!(
         identity["identity_decision"]["raise_http_latest_qualified_to"],
-        "1.19.5"
+        "1.19.4"
     );
     assert_eq!(
         identity["identity_decision"]["raise_acp_latest_qualified_to"],
-        "1.19.5"
+        "1.19.4"
     );
     assert_eq!(
         identity["identity_decision"]["keep_claims_unflattened"],
@@ -66,6 +63,12 @@ fn official_channels_agree_on_one_patch_and_leave_opencode_2_aside() {
     assert_eq!(identity["host"]["on_path"], false);
     assert_eq!(identity["host"]["installed_or_updated"], false);
 
+    assert_eq!(identity["native_payload_correlated_to_tag"], false);
+    assert_eq!(identity["attestation_observed"], false);
+    assert_eq!(
+        identity["native_inventory_scope"],
+        "linux-x64 only; wrapper selects 12 native packages"
+    );
     let releases = identity["release_artifacts"].as_array().expect("releases");
     assert_eq!(releases.len(), 2);
     let previous = &releases[0];
@@ -287,8 +290,27 @@ fn repository_hop_classifies_every_changed_path_without_moving_selected_files() 
     assert!(!delta_paths.contains("packages/opencode/src/acp/agent.ts"));
     assert!(!delta_paths.contains("packages/opencode/src/cli/cmd/acp.ts"));
 
+    let lock = &protocol["lock_coordinate_delta"];
+    let expected = [
+        ("gitlab-ai-provider", "6.19.0", "6.23.1"),
+        ("proper-lockfile_dependency", "absent", "^4.1.2"),
+        ("signal-exit", "4.1.0", "3.0.7"),
+        ("proper-lockfile/signal-exit", "3.0.7", "absent"),
+        ("execa/signal-exit", "absent", "4.1.0"),
+        ("foreground-child/signal-exit", "absent", "4.1.0"),
+        ("write-file-atomic/signal-exit", "absent", "4.1.0"),
+    ];
+    assert_exact_object_keys(
+        lock.as_object().unwrap(),
+        &expected.iter().map(|(key, _, _)| *key).collect::<Vec<_>>(),
+    );
+    for (key, before, after) in expected {
+        assert_eq!(lock[key][0], before);
+        assert_eq!(lock[key][1], after);
+        assert_eq!(lock[key].as_array().unwrap().len(), 2);
+    }
     let mut classified_protocol = BTreeSet::new();
-    for item in protocol["classified_unmapped_deltas"].as_array().unwrap() {
+    for item in protocol["classified_source_deltas"].as_array().unwrap() {
         let text = item["classification"].as_str().unwrap();
         assert!(text.len() > 40, "{}", item["file"]);
         assert_eq!(item["hop"], "1.19.4_to_1.19.5");
@@ -307,30 +329,31 @@ fn repository_hop_classifies_every_changed_path_without_moving_selected_files() 
 }
 
 #[test]
-fn admitted_claim_extends_surface_19_through_1_19_5() {
+fn claim_retains_surface_19_and_leaves_1_19_5_unverified() {
     let fixture = json(CLAIM);
     let claim = opencode_http_claim();
     let acp = opencode_acp_claim();
-    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.19.5");
-    assert_eq!(claim.latest_qualified().as_str(), "1.19.5");
+    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.19.4");
+    assert_eq!(claim.latest_qualified().as_str(), "1.19.4");
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.id().as_str(), "opencode.http.server-window-1");
     assert_eq!(claim.axis().as_str(), "opencode.server");
     assert_ne!(claim.axis().as_str(), acp.axis().as_str());
     assert_ne!(claim.id().as_str(), acp.id().as_str());
     assert_eq!(fixture["preserved_segment"], "1.18.11..=1.18.35");
-    assert_eq!(fixture["extended_segment"], "1.19.0..=1.19.5");
+    assert_eq!(fixture["extended_segment"], "1.19.0..=1.19.4");
     assert_eq!(fixture["behavior_revision"], "opencode.http-sse.surface-19");
     assert_eq!(fixture["unpublished_gap"], "1.18.36");
-    assert_eq!(fixture["unverified_newer"], "1.19.6");
-    assert_exact_strings(&fixture["newly_qualified"], &["1.19.5"]);
+    assert_eq!(fixture["unverified_newer"], "1.19.5");
+    assert_exact_strings(&fixture["newly_qualified"], &[]);
     assert_exact_strings(
         &fixture["historical_gaps_preserved"],
         &[
             "1.14.52", "1.15.8", "1.15.14", "1.16.1", "1.16.3", "1.17.21",
         ],
     );
-    for version in ["1.19.4", "1.19.5"] {
+    {
+        let version = "1.19.4";
         let binding = opencode_server_binding(version).unwrap();
         let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(binding.version())
         else {
@@ -347,7 +370,7 @@ fn admitted_claim_extends_surface_19_through_1_19_5() {
         claim.assess(gap.version()),
         InterfaceCompatibilityAssessment::Incompatible
     ));
-    let later = opencode_server_binding("1.19.6").unwrap();
+    let later = opencode_server_binding("1.19.5").unwrap();
     assert!(matches!(
         claim.assess(later.version()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)

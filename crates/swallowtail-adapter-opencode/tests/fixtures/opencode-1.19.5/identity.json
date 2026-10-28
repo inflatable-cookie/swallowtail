@@ -133,17 +133,18 @@
     "platform": "linux-x86_64"
   },
   "identity_decision": {
-    "shape": "compatible-extension",
-    "raise_http_latest_qualified_to": "1.19.5",
-    "raise_acp_latest_qualified_to": "1.19.5",
+    "shape": "stop",
+    "raise_http_latest_qualified_to": "1.19.4",
+    "raise_acp_latest_qualified_to": "1.19.4",
     "keep_surface_19": true,
     "keep_acp_v2": true,
     "keep_claims_unflattened": true,
     "keep_baseline_and_historical_segments_and_gaps": true,
-    "extended_segment": "1.19.0..=1.19.5",
+    "extended_segment": "1.19.0..=1.19.4",
     "new_public_operation": false,
-    "security_or_authority_change": false,
-    "consumer_visible_narrowing": false,
     "claim_changed_in_identity_card": false
-  }
+  },
+  "native_payload_correlated_to_tag": false,
+  "native_inventory_scope": "linux-x64 only; wrapper selects 12 native packages",
+  "attestation_observed": false
 }

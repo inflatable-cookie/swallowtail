@@ -22,11 +22,11 @@ byte-identical: 162 paths, `info.version` `1.0.0`. The source edits are a TUI
 worker error reply, a PTY connect route match, unused-import and dead-file
 removal, and the `gitlab-ai-provider` pin `6.19.0` to `6.23.1`.
 
-Decision: compatible extension of `opencode.http-sse.surface-19`. Keep
-`1.18.11..=1.18.35`. Extend `1.19.0..=1.19.4` to `1.19.0..=1.19.5`. Leave
-unpublished `1.18.36` incompatible and synthetic `1.19.6` unverified.
-`opencode.acp` stays a separate claim. This identity record does not by itself
-mutate production selection.
-
-No prompt, login, live server, catalogue, session, installation, or provider
-contact occurred.
+Decision: stop. The qualified ceiling remains `1.19.4`; `1.19.5` is
+`UnverifiedNewer`. The byte comparisons describe tag trees only. The native
+payload has not been correlated to the tag: npm `gitHead` is absent, the
+release target is a branch, and no attestation was observed. Only Linux x64
+native contents were inventoried; the wrapper selects twelve native packages.
+The shared GitLab dependency effects remain a qualification gate. See
+Research 464 and the owning adaptation lead `5b445586-3c98-47c5-aa88-7950aace016b`.
+No downloaded artifact was executed and no provider was contacted.

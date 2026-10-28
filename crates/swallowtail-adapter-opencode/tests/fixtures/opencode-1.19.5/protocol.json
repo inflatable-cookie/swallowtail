@@ -50,11 +50,52 @@
   "acp_sdk_pin": "0.21.0",
   "bundled_bun": "1.4.4",
   "classified_mapped_deltas": [],
-  "classified_unmapped_deltas": [
+  "bounded_unmapped_groups": {
+    "ci": "GitHub workflow and action edits, including nix-hash bot scripts. Not the attached server or ACP entrypoint.",
+    "nix": "nix/hashes.json only. Packaging input, not a selected wire schema.",
+    "workspace_package_version": "package.json files other than packages/opencode and packages/core change only their version to 1.19.5. packages/sdk/js/package.json is in this group. packages/sdk/openapi.json is byte-identical.",
+    "release_scripts": "Publish tooling: Homebrew tap deploy key, skipping legacy Tauri latest.json without its signing key, and creating the GitHub release without --target. Not runtime protocol.",
+    "test_import_cleanup": "OpenCode tests drop unused imports. No assertion text changes."
+  },
+  "provider_prompt_sent": false,
+  "live_server_started": false,
+  "downloaded_artifact_executed": false,
+  "host_install_changed": false,
+  "lock_coordinate_delta": {
+    "gitlab-ai-provider": [
+      "6.19.0",
+      "6.23.1"
+    ],
+    "proper-lockfile_dependency": [
+      "absent",
+      "^4.1.2"
+    ],
+    "signal-exit": [
+      "4.1.0",
+      "3.0.7"
+    ],
+    "proper-lockfile/signal-exit": [
+      "3.0.7",
+      "absent"
+    ],
+    "execa/signal-exit": [
+      "absent",
+      "4.1.0"
+    ],
+    "foreground-child/signal-exit": [
+      "absent",
+      "4.1.0"
+    ],
+    "write-file-atomic/signal-exit": [
+      "absent",
+      "4.1.0"
+    ]
+  },
+  "classified_source_deltas": [
     {
       "hop": "1.19.4_to_1.19.5",
       "file": "bun.lock",
-      "classification": "Lockfile moves workspace package versions from 1.19.4 to 1.19.5 and gitlab-ai-provider from 6.19.0 to 6.23.1. No other package coordinate changes."
+      "classification": "Workspace versions move to 1.19.5; gitlab-ai-provider moves from 6.19.0 to 6.23.1 and adds proper-lockfile ^4.1.2 as a dependency. signal-exit 3.0.7 is hoisted and 4.1.0 moves to nested coordinates."
     },
     {
       "hop": "1.19.4_to_1.19.5",
@@ -222,15 +263,6 @@
       "classification": "The shared server PTY connect ticket bypass now matches the Effect route path plus the ticket query. Credential checks for every other route are unchanged."
     }
   ],
-  "bounded_unmapped_groups": {
-    "ci": "GitHub workflow and action edits, including nix-hash bot scripts. Not the attached server or ACP entrypoint.",
-    "nix": "nix/hashes.json only. Packaging input, not a selected wire schema.",
-    "workspace_package_version": "package.json files other than packages/opencode and packages/core change only their version to 1.19.5. packages/sdk/js/package.json is in this group. packages/sdk/openapi.json is byte-identical.",
-    "release_scripts": "Publish tooling: Homebrew tap deploy key, skipping legacy Tauri latest.json without its signing key, and creating the GitHub release without --target. Not runtime protocol.",
-    "test_import_cleanup": "OpenCode tests drop unused imports. No assertion text changes."
-  },
-  "provider_prompt_sent": false,
-  "live_server_started": false,
-  "downloaded_artifact_executed": false,
-  "host_install_changed": false
+  "tag_tree_scope": "Source tag trees only; no correlation to shipped native payload established",
+  "dependency_effects": "Unqualified: dependency and native provenance gates remain open"
 }

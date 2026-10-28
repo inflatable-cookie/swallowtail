@@ -12,7 +12,7 @@ const INVENTORY: &str = include_str!("fixtures/opencode-acp-1.19.5/dist-inventor
 const PROTOCOL: &str = include_str!("fixtures/opencode-acp-1.19.5/protocol.json");
 
 #[test]
-fn acp_identity_extends_v2_without_using_the_registry_2_line() {
+fn acp_identity_retains_v2_without_using_the_registry_2_line() {
     let identity = json(IDENTITY);
     let protocol = json(PROTOCOL);
     let claim = opencode_acp_claim();
@@ -42,12 +42,18 @@ fn acp_identity_extends_v2_without_using_the_registry_2_line() {
         false
     );
     assert_eq!(window["previous_ceiling"], "1.19.4");
-    assert_eq!(window["new_ceiling"], "1.19.5");
+    assert_eq!(window["new_ceiling"], "1.19.4");
     assert_eq!(window["unpublished_gap"], "1.18.36");
     assert_eq!(window["v1_segment"], "1.18.18..=1.18.30");
     assert_exact_strings(
         &window["v2_segments"],
-        &["1.18.31..=1.18.35", "1.19.0..=1.19.5"],
+        &["1.18.31..=1.18.35", "1.19.0..=1.19.4"],
+    );
+    assert_eq!(identity["native_payload_correlated_to_tag"], false);
+    assert_eq!(identity["attestation_observed"], false);
+    assert_eq!(
+        identity["native_inventory_scope"],
+        "linux-x64 only; wrapper selects 12 native packages"
     );
     assert_eq!(identity["host"]["present"], false);
     assert_eq!(identity["host"]["on_path"], false);
@@ -63,10 +69,7 @@ fn acp_identity_extends_v2_without_using_the_registry_2_line() {
         identity["github_tag_sources"]["1.19.5"]["canonical_tree_sha256"],
         "98d156015c7d31198a689d93fbe18bdc9a11c833228473e8334ee36c9973a56b"
     );
-    assert_eq!(
-        identity["identity_decision"]["shape"],
-        "compatible-extension"
-    );
+    assert_eq!(identity["identity_decision"]["shape"], "stop");
     assert_eq!(
         identity["identity_decision"]["behavior"],
         "opencode.acp-v1.client-mcp-servers-v2"
@@ -91,12 +94,12 @@ fn acp_identity_extends_v2_without_using_the_registry_2_line() {
     );
     assert_eq!(protocol["provider_prompt_sent"], false);
     assert_eq!(protocol["downloaded_artifact_executed"], false);
-    assert_eq!(OPENCODE_ACP_LATEST_QUALIFIED_VERSION, "1.19.5");
+    assert_eq!(OPENCODE_ACP_LATEST_QUALIFIED_VERSION, "1.19.4");
     assert_eq!(claim.id().as_str(), "opencode.acp.executable-window-1");
     assert_eq!(claim.axis().as_str(), "opencode.executable");
     assert_ne!(claim.axis().as_str(), http.axis().as_str());
     assert_ne!(claim.id().as_str(), http.id().as_str());
-    assert_eq!(claim.latest_qualified().as_str(), "1.19.5");
+    assert_eq!(claim.latest_qualified().as_str(), "1.19.4");
 
     let milestones: Vec<_> = claim.milestones().collect();
     assert_eq!(milestones.len(), 3);
@@ -109,7 +112,7 @@ fn acp_identity_extends_v2_without_using_the_registry_2_line() {
     assert_eq!(milestones[1].minimum().as_str(), "1.18.31");
     assert_eq!(milestones[1].maximum().as_str(), "1.18.35");
     assert_eq!(milestones[2].minimum().as_str(), "1.19.0");
-    assert_eq!(milestones[2].maximum().as_str(), "1.19.5");
+    assert_eq!(milestones[2].maximum().as_str(), "1.19.4");
     assert_eq!(
         milestones[1].behavior_revision().as_str(),
         milestones[2].behavior_revision().as_str()
@@ -119,7 +122,8 @@ fn acp_identity_extends_v2_without_using_the_registry_2_line() {
         InterfaceSupportStatus::Maintained
     );
 
-    for version in ["1.19.4", "1.19.5"] {
+    {
+        let version = "1.19.4";
         let binding = opencode_acp_binding(version).unwrap();
         assert!(matches!(
             claim.assess(binding.version()),
@@ -131,7 +135,7 @@ fn acp_identity_extends_v2_without_using_the_registry_2_line() {
         claim.assess(gap.version()),
         InterfaceCompatibilityAssessment::Incompatible
     ));
-    let later = opencode_acp_binding("1.19.6").unwrap();
+    let later = opencode_acp_binding("1.19.5").unwrap();
     assert!(matches!(
         claim.assess(later.version()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)

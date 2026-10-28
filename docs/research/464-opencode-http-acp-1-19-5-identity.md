@@ -4,8 +4,8 @@ Status: promoted
 Date: 2026-10-28
 
 Official npm `opencode-ai` `latest` and GitHub stable `v1.19.5` agree.
-`opencode.http` and `opencode.acp` both extend through `1.19.5` on their
-existing behavior revisions. The claims stay unflattened. ACP registry
+`opencode.http` and `opencode.acp` remain qualified through `1.19.4`.
+`1.19.5` is unverified on both separate axes. ACP registry
 `opencode` `2.2.0` is the OpenCode 2 line and is not this axis.
 
 ## Question
@@ -17,8 +17,8 @@ selected ACP behavior, or does the hop change identity?
 
 | Surface | Host | Official | Boundary at observation | Result |
 | --- | --- | --- | --- | --- |
-| `opencode.http` / `opencode.server` | absent | npm and GitHub `1.19.5` | `1.19.4`, AllowUnverified | compatible extension |
-| `opencode.acp` / `opencode.executable` | absent | same package and tag | `1.19.4`, AllowUnverified | compatible extension |
+| `opencode.http` / `opencode.server` | absent | npm and GitHub `1.19.5` | `1.19.4`, AllowUnverified | stop |
+| `opencode.acp` / `opencode.executable` | absent | same package and tag | `1.19.4`, AllowUnverified | stop |
 
 `opencode` was not on `PATH`. No binary was executed. Missing host is not a
 gap. HTTP MCP live honouring stays exact `1.18.18` and does not transfer.
@@ -46,7 +46,15 @@ qualify it.
 Downloaded npm `opencode-ai` and `opencode-linux-x64` tarballs and the
 standard GitHub tag archives `archive/refs/tags/vX.tar.gz` for `1.19.4` and
 `1.19.5`. npm has no `gitHead`. The `1.19.5` release `target_commitish` is
-the branch name `dev`, not a commit, so source evidence is the tag archive.
+the branch name `dev`, not a commit. No attestation was observed. The tag
+archive is evidence about the tag tree only: no available proof correlates
+the native payload to that tag. Only Linux x64 native contents were inventoried;
+the wrapper selects twelve native packages, leaving the other targets unproved:
+`opencode-linux-x64`, `opencode-darwin-x64`, `opencode-linux-arm64`,
+`opencode-windows-x64`, `opencode-darwin-arm64`, `opencode-windows-arm64`,
+`opencode-linux-x64-musl`, `opencode-linux-arm64-musl`,
+`opencode-linux-x64-baseline`, `opencode-darwin-x64-baseline`,
+`opencode-windows-x64-baseline`, and `opencode-linux-x64-baseline-musl`.
 Linux x64 release-asset digests are the GitHub release API digests; those
 binaries were not downloaded. The re-downloaded `1.19.4` archive SHA-256
 `2e553ed005b2df4a7efb9edd26db8fc3caafb1b4dfc3c5c3869192334584d8bb` and
@@ -113,41 +121,66 @@ including the image resizer, session instruction, LLM request, and overflow
 helpers. Function bodies on those files stay.
 
 `gitlab-ai-provider` moves from `6.19.0` to `6.23.1` in `bun.lock` and in
-the `packages/opencode` and `packages/core` manifests. In-repo
-`packages/core/src/plugin/provider/gitlab.ts`,
-`packages/opencode/src/provider/provider.ts`, and
-`packages/opencode/src/provider/transform.ts` are byte-identical. Swallowtail
-decodes the OpenCode catalogue and session envelopes, not the GitLab client.
+the `packages/opencode` and `packages/core` manifests. The unchanged in-repo
+wrapper does not establish dependency behavior. Static comparison of npm
+packages and their embedded source maps gives these bounded observations:
 
-The remaining paths are CI workflows, `nix/hashes.json`, workspace
-`package.json` version bumps (including `packages/sdk/js`), release scripts,
-and test files that only drop unused imports.
+- `createGitLab` chooses `instanceUrl` from options, then
+  `GITLAB_INSTANCE_URL`, then `https://gitlab.com`; key lookup prioritizes an
+  explicit key, OpenCode auth, then `GITLAB_TOKEN`. Direct access posts to the
+  instance endpoint and uses the returned token and headers for the gateway.
+  These paths are present in both packages; the audience and complete effects
+  through the selected environment remain unproved.
+- The 6.23.1 provider adds workflow defaults merged with defined per-call
+  overrides; namespace resolution uses an explicit value or, for self-managed
+  instances, detected project namespace, including reconnect. Model mappings add
+  Haiku 5.5 chat and workflow and Gemini 4 Argon workflow entries. Whether those
+  changes reach selected catalogue or prompt envelopes remains unproved.
+- Direct-access caching gains an optional private POSIX shared directory from
+  `directAccessCacheDir` or `GITLAB_DIRECT_ACCESS_CACHE_DIR`; empty disables it.
+  Without a directory the in-memory cache remains. Scope includes endpoint,
+  gateway URL, headers and feature flags. A lock can wait approximately 60
+  seconds and refresh times out after 30 seconds. The direct-access 401 path
+  refreshes credentials once; Anthropic retries token errors once, and stream
+  retry is limited to before emitted content. EnvironmentRef boundaries and
+  interactions with these paths remain unproved.
+- Anthropic adds `skipCache` (default false), scoped provider options and finish
+  mappings for `pause_turn`, `model_context_window_exceeded` and `refusal`;
+  OpenAI Responses defaults omitted tool `strict` to false. These are potential
+  prompt and session effects, not evidence of compatibility.
 
-None of this adds a selected public operation or narrows the mapped HTTP or
-ACP contract.
+The package tarball SHA-256 values are `0ddd9d12e4d1b832c2ae7da10fab41d5d6a5c1454e5e1323c2fad10ca6cdbdbd`
+for 6.19.0 and `37f7145ae868eff1104172277bcd380167ec6605cc9073908a6f90c27195e038`
+for 6.23.1. Their `dist/index.mjs.map` SHA-256 values are
+`774bba8b53a3efe3aeb3c5388e143498d370dd59f01e25ae96e1ec1b577b6c89` and
+`1285dfdc89efa5b6bb518027bcba9fa0174a9ce014f4db8c5925c36ceba2c1f6`.
+These static observations do not establish the bundled dependency or its
+complete transitive behavior.
+
+The lock adds `proper-lockfile` `^4.1.2` to the GitLab dependency. It re-hoists
+`signal-exit` 3.0.7 from `proper-lockfile/signal-exit` to the root and places
+4.1.0 under `execa`, `foreground-child` and `write-file-atomic`. The fixture
+records each coordinate transition.
+
+The remaining paths include CI workflows, `nix/hashes.json`, workspace
+version bumps, release scripts, and tests. Byte equality in this section is
+limited to the compared tag trees, not the shipped executable.
 
 ## Decision
 
-Compatible extension. Not an identity stop.
-
-- `opencode.http.server-window-1` stays `AllowUnverified` on
-  `opencode.server`. Keep `1.18.11..=1.18.35` at
-  `opencode.http-sse.surface-19`. Extend `1.19.0..=1.19.4` to
-  `1.19.0..=1.19.5` on the same behavior, both Maintained.
-- `opencode.acp.executable-window-1` stays `AllowUnverified` on
-  `opencode.executable`. Deprecated `1.18.18..=1.18.30` stays. Maintained
-  `opencode.acp-v1.client-mcp-servers-v2` stays `1.18.31..=1.18.35` and
-  extends `1.19.0..=1.19.4` to `1.19.0..=1.19.5`.
-- `1.18.36` is incompatible. `1.19.6` is `UnverifiedNewer`.
-- Historical gaps `1.14.52`, `1.15.8`, `1.15.14`, `1.16.1`, `1.16.3`, and
-  `1.17.21` stay.
-- The two axes are not flattened. HTTP MCP live honouring stays exact
-  `1.18.18`. OpenCode 2 and the ACP registry `2.2.0` entries stay off both
-  axes.
+Stop. Both existing qualified ceilings and behavior revisions remain at
+`1.19.4`; `1.19.5` is `UnverifiedNewer`. Preserve the historical segments,
+holes, hard-delete contract and HTTP MCP live exact `1.18.18` pin. OpenCode 2
+remains separate. Owning adaptation lead
+`5b445586-3c98-47c5-aa88-7950aace016b`
+(`opencode.http-acp.shipped-native-and-dependency-proof`) must close native
+provenance and selected-target inventories and qualify the dependency effects,
+or propose a separately reviewed contract-compatible evidence design.
 
 ## Sources
 
 - npm registry `opencode-ai` and `opencode-linux-x64`, dist-tag `latest`
+- npm `gitlab-ai-provider` tarballs `6.19.0` and `6.23.1`, embedded source maps
 - GitHub `anomalyco/opencode` stable releases and tag archives
 - ACP registry `https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json`, discovery only
 - Frozen fixtures named above

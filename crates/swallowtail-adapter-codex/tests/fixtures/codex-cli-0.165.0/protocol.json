@@ -1,0 +1,231 @@
+{
+  "selectedMappedSubsetUnchanged": true,
+  "noPrompt": true,
+  "noLiveSession": true,
+  "noHostMutation": true,
+  "downloadedBinariesExecuted": false,
+  "platformBinariesHashed": true,
+  "byteIdenticalThroughHop": {
+    "codex-rs/exec/src/cli.rs": "66643e8b3d5964b70cb8f231fb309312376272fb3ea87bcb6849f44cf112f8f6",
+    "codex-rs/exec/src/event_processor_with_jsonl_output.rs": "bc296541b385f9b4ca2c28cc638e25a8d6b1332b2cd67f5a03eaa97a3d612b19",
+    "codex-rs/exec/src/exec_events.rs": "dafa872d7e86a099e56e28a329dcb9c03db90ed768c3b88cca8c91d46dc1d0e5",
+    "codex-rs/app-server-protocol/src/protocol/v2/permissions.rs": "fb60ae2f9babce22ca326b457c22b41e6fa24f71ad05429a8921074cc0ca5598",
+    "codex-rs/app-server-protocol/src/protocol/v1.rs": "e0642bd1bc7dbe5e24d508420471d705d5688efe8df3a8b40e3af22be55d7754",
+    "codex-rs/app-server-protocol/src/protocol/v2/turn.rs": "f002e06cb8c505d737dd208ad3deab6fb837bc963d8462d24e98c010c242e9e0",
+    "codex-rs/app-server-protocol/src/protocol/v2/thread_data.rs": "293359f14a1a11da8d54acce7bc69b5756c1d30b5a59e8768f5ce6b4e02edeb1",
+    "codex-rs/app-server-protocol/src/protocol/v2/item.rs": "7a1bcd40f31a301897c300e9245c7d84447dc07c0e755d0fd095aff394a0264a",
+    "codex-rs/app-server-protocol/src/protocol/v2/model.rs": "a25e1cf1aaf5350b593ebc0ecc811e4f24fa5da3f73abb29ce380336bff599d9",
+    "codex-rs/app-server-protocol/src/protocol/v2/application.rs": "7f8ad2257f9aa0546adcdfef7b2f03f877a7af4e79472130bf717ea322e15866",
+    "codex-rs/config/src/loader/application.rs": "2ba93ecbbfbc777ea004a135a2241a4df0ec68c1a7946cb16b51fc853a810da3",
+    "codex-rs/app-server/src/application_network.rs": "901e9ed497146dc95c0ad1f61b0461d335ebc63183b526a9ac06941bf899f785",
+    "codex-rs/protocol/src/permissions.rs": "ba815705a004571cb1772d9ae97c30075fc6e3ed16c1a1b151ad64c0d459e0dd",
+    "codex-rs/linux-sandbox/src/bwrap.rs": "69a23ea16d525de5938c1fd47561c90d6047eb58f9864ca47749d696e5d9fa76",
+    "codex-rs/linux-sandbox/src/linux_run_main.rs": "2c8cdf628b8b8467cccf38227cada5295f5cb6a04888b860ea1b882fe2d19d53"
+  },
+  "classifiedDeltas": [
+    {
+      "path": "codex-rs/exec/src/cli.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "byte-identical",
+      "reason": "selected exec argv definitions stay, including exec --json --sandbox read-only"
+    },
+    {
+      "path": "codex-rs/exec/src/lib.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "unselected",
+      "reason": "resume thread-list construction sets attached_to_thread_id to None. Selected one-shot exec does not call resolve_resume_thread_id. JSONL writer and event types stay in the byte-identical files."
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors/thread_delete.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "selected-lifecycle-guard-for-unmapped-attached-threads",
+      "reason": "before prepare_thread_for_delete, LocalThreadStore::ensure_no_attached_threads rejects deletion when an experimental attached child exists. No attached child returns Ok and the existing path stays: prepare_thread_for_delete, descendants-then-root delete_threads, empty ThreadDeleteResponse plus ThreadDeleted. The adapter does not send thread/fork or attachToSource, so threads it creates have no attached child."
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors/thread_processor.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "unmapped-attached-fork-and-resume-cache",
+      "reason": "thread/fork gains optional attachToSource default false. True marks the fork attached, skips ThreadStarted, and is incompatible with ephemeral or deferGoalContinuation. thread/list gains optional attachedToThreadId; omitting it keeps ordinary listings and hides attached threads. Paginated resume may reuse a current model-context revision. Archive, unarchive, and delete handler bodies are not in this diff. The adapter sends none of the new fields."
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors/thread_lifecycle.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "unselected",
+      "reason": "the listener skips in-process PrivateSessionEvent when raw events are disabled. finalize_thread_teardown stays cancel, remove_thread_state/watch, pending_unloads.remove. Explicit archive and delete still go through prepare_thread_for_removal."
+    },
+    {
+      "path": "codex-rs/app-server/src/message_processor.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "bounded-new-dispatch",
+      "reason": "adds experimental ThreadMemoryRead, which calls thread_processor.thread_memory_read. Selected initialize, config, model/list, thread/start, turn/start, archive, delete, and unarchive arms remain and archive/delete/unarchive still call thread_processor. The adapter does not send thread/memory/read."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/common.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "bounded-new-dispatch",
+      "reason": "declares experimental client request thread/memory/read. Selected request definitions are untouched."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/thread.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "additive-optional",
+      "reason": "ThreadForkParams.attachToSource and ThreadListParams.attachedToThreadId are optional and default off. Archive, delete, and unarchive params stay threadId. ThreadDeleteResponse and ThreadArchiveResponse schemas are byte-identical. The adapter omits the new fields."
+    },
+    {
+      "path": "codex-rs/app-server-protocol/src/protocol/v2/shared.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "additive-optional",
+      "reason": "CodexErrorInfo gains ModelNotFound. Success responses for thread/start, turn/start, and thread/unarchive add only that error-enum variant. SandboxPolicy and AskForApproval stay in the byte-identical permissions file. The adapter does not match this enum."
+    },
+    {
+      "path": "codex-rs/protocol/src/protocol.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "unselected",
+      "reason": "PrivateSessionEvent is serde-skipped and is not a JSONL variant. SessionMeta.attached_thread defaults false and is skipped when false. CodexErrorInfo gains ModelNotFound. Exec event types stay in the byte-identical exec_events file."
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors/config_processor.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "unselected",
+      "reason": "map_network_requirements_to_api copies review_domains. The adapter sends no managed application requirements. application loader and application_network.rs stay byte-identical."
+    },
+    {
+      "path": "codex-rs/app-server/src/request_processors.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "unselected",
+      "reason": "adds mod thread_memory for the unmapped experimental read. Selected processor modules stay."
+    },
+    {
+      "path": "codex-rs/linux-sandbox/src/bwrap.rs",
+      "hop": "0.164.0->0.165.0",
+      "class": "byte-identical",
+      "reason": "selected Linux sandbox source stays. Shipped codex-resources/bwrap is a rebuild: 3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb at 0.164.0 and 755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36 at 0.165.0. .aws remains in PROTECTED_METADATA_PATH_NAMES. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots."
+    }
+  ],
+  "contentSha256": {
+    "codex-rs/exec/src/lib.rs": {
+      "0.164.0": "cb9a1eb6239ece15d0f761fbf64369013469ccf7850408c40b54b9cf0b576eba",
+      "0.165.0": "4229c67ec7a4d9aa21f26c500f1206660f7ccb3a6c047843a3fa7295938a0848"
+    },
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": {
+      "0.164.0": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "0.165.0": "5090073a863a47189dba2ff697b3a0cfd39de9d1797cd3a6e1b84039753b1275"
+    },
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": {
+      "0.164.0": "0c806ff3aaf348f7373032171d55ff110dfd30bcbb5cfabded89330b5b4375b6",
+      "0.165.0": "37ff0875e2b6d3def2fc727fd065574bd243cea2aa836021ebb218ac83b898e7"
+    },
+    "codex-rs/app-server/src/request_processors/thread_lifecycle.rs": {
+      "0.164.0": "0c32665d1d988756517051df3e587eebce27d1ba962f1940b9c9d074520f1e7d",
+      "0.165.0": "eed1cc9bf38608be6ff2aa7a812b988fa9ecdcd5802944feda6839fe9361656e"
+    },
+    "codex-rs/app-server/src/message_processor.rs": {
+      "0.164.0": "e8e5fcccc04e699c0f9394d4586e25e9560b3f1a4a1ee066692adf93139443c2",
+      "0.165.0": "aadaf2f4a99db6a4844a2e44c97ed8ba2718dfab4e460609a1408558875b8a74"
+    },
+    "codex-rs/app-server/src/request_processors.rs": {
+      "0.164.0": "8281529988e610fe799dcbe394d36fe8770517aa3e3f4aaf75a3508e3b80bea5",
+      "0.165.0": "9437e44e5336524ced5509c750ab11fce338ff50bc33f50bdfe7d0c60bdcb51c"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/shared.rs": {
+      "0.164.0": "8b2b9ce4aedcd8e692f05dc8c1c878c179631460bb10561281bd1104c9088e40",
+      "0.165.0": "66432840a47f7d1c05116d6ffa7b83853e9e516c954e2c1b4ebb3c97cff660a3"
+    },
+    "codex-rs/app-server-protocol/src/protocol/v2/thread.rs": {
+      "0.164.0": "8fe95c7e0d8d6d26ac9e8f5af3256a755c57c5c6c4a217310b0dd51fc7de05fc",
+      "0.165.0": "3532f87c9e55c9e539ed3c48c74701a14f4b9e401564b5cbafe624941302755c"
+    },
+    "codex-rs/app-server-protocol/src/protocol/common.rs": {
+      "0.164.0": "bbc1bfee01178986dd4a7b59047ddb85bf4081c60fc36905da8fad61b79b472d",
+      "0.165.0": "b9fff3f4317b0e976e8ddd3e4bf0dcb40a1c09e19a8cc54e42144d468e7f08da"
+    },
+    "codex-rs/app-server/src/request_processors/config_processor.rs": {
+      "0.164.0": "5791853ba32b88967f0d5f43d24cabbf34b1876ffd9ccf4967fd28018b244170",
+      "0.165.0": "61fd6eb7809f6d72ff1bd64b63df131fa4df08cb768c423deb0f7769c34e7349"
+    },
+    "codex-rs/protocol/src/protocol.rs": {
+      "0.164.0": "9dc4ca7be855139716a72f1d291b5829affc07a19394647d1d9bbb09d4091941",
+      "0.165.0": "7b896ec457c55d6d8edb959cc08cc7e903fbc73b643cbe98cccec66c2325b1e4"
+    }
+  },
+  "execReachability": {
+    "selectedArgv": [
+      "exec",
+      "--json",
+      "--sandbox",
+      "read-only"
+    ],
+    "selectedArgvFilesByteIdentical": true,
+    "withExpandedDenyGlobs": {
+      "definedAt": "codex-rs/protocol/src/permissions.rs:1843",
+      "permissionsFileByteIdentical": true,
+      "selectedExecCallers": [],
+      "awsProtectionRemains": true
+    },
+    "linuxSandboxHelper": {
+      "bwrapSourceByteIdentical": true,
+      "runMainSourceByteIdentical": true,
+      "shippedBwrapSha256": {
+        "0.164.0": "3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb",
+        "0.165.0": "755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36"
+      },
+      "shippedLinuxRgByteIdentical": true,
+      "protectedMetadataNames": [
+        ".git",
+        ".agents",
+        ".codex",
+        ".aws"
+      ],
+      "awsProtectionRemains": true
+    }
+  },
+  "handlerTraces": {
+    "threadDelete": {
+      "file": "codex-rs/app-server/src/request_processors/thread_delete.rs",
+      "byteIdentical": false,
+      "successPath": [
+        "ensure_no_attached_threads returns Ok when no attached child",
+        "prepare_thread_for_delete",
+        "descendants-then-root delete_threads",
+        "empty ThreadDeleteResponse plus ThreadDeleted notifications"
+      ],
+      "newFailure": "InvalidRequest when an experimental attached thread exists",
+      "adapterSendsAttachToSource": false
+    },
+    "finalizeThreadTeardown": {
+      "0.165.0": [
+        "cancel",
+        "remove_thread_state/watch",
+        "pending_unloads.remove"
+      ],
+      "selectedSuccessPathPreserved": true
+    },
+    "messageProcessorDispatch": {
+      "selectedMethodArmsRemain": [
+        "Initialize",
+        "ConfigRead",
+        "ModelList",
+        "ThreadStart",
+        "TurnStart",
+        "ThreadArchive",
+        "ThreadDelete",
+        "ThreadUnarchive"
+      ],
+      "archiveDeleteUnarchiveStillCall": "thread_processor",
+      "newUnmappedArms": {
+        "0.165.0": [
+          "ThreadMemoryRead"
+        ]
+      }
+    }
+  },
+  "schemaBoundaries": {
+    "threadDeleteResponseByteIdentical": true,
+    "threadArchiveResponseByteIdentical": true,
+    "modelNotFoundAddedTo": [
+      "ThreadStartResponse",
+      "TurnStartResponse",
+      "ThreadUnarchiveResponse"
+    ]
+  }
+}

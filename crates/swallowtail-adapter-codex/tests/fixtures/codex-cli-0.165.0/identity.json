@@ -1,0 +1,175 @@
+{
+  "axis": "codex.cli",
+  "package": "@openai/codex",
+  "routes": [
+    "codex.exec",
+    "codex.app-server"
+  ],
+  "probedAt": "2026-10-28",
+  "previousCeiling": "0.164.0",
+  "officialLatest": "0.165.0",
+  "channelsAgree": true,
+  "prereleaseIgnored": "0.166.0-alpha.5",
+  "prereleasePublishedAt": "2026-10-28T04:43:10Z",
+  "hostObservation": null,
+  "downloadedArtifactsExecuted": false,
+  "platformBinariesDownloaded": true,
+  "behaviorAuthority": "public-source-tags-and-hashed-native-artifacts",
+  "syntheticUnverifiedNewer": "0.165.1",
+  "keptGaps": [
+    "0.82.0",
+    "0.83.0",
+    "0.108.0",
+    "0.109.0",
+    "0.149.2",
+    "0.150.2",
+    "0.151.1",
+    "0.152.2",
+    "0.154.1",
+    "0.155.2"
+  ],
+  "sourceFileCounts": {
+    "0.164.0": 9438,
+    "0.165.0": 9507
+  },
+  "hops": [
+    {
+      "version": "0.164.0",
+      "role": "previous-ceiling",
+      "npmPublishedAt": "2026-10-23T04:52:29.240Z",
+      "githubTag": "rust-v0.164.0",
+      "githubPublishedAt": "2026-10-23T04:48:10Z",
+      "tagObject": "fe3b29455488c2e189e43ad5526a107900c5e1b7",
+      "commit": "6aaac694803004a63c6f393d153c96d22521a6b9",
+      "wrapper": {
+        "bytes": 4902,
+        "sha256": "afb117ec0d382744583dd13154ba0ca6b0f1980f8ed6a23bffb3aaadb6226e30",
+        "shasum": "82693f5ef4b08b724dc1370f1622bc752e5d1bf4",
+        "integrity": "sha512-TWj7UGyPRe3Pj/A3ddNAxs1te3a/W/xAd+J0LHrrFTmsSfahGMOLF/vn88D3QCIgAT3B1rm1y/Z3NYE0rx6cZQ==",
+        "unpackedSize": 13206
+      },
+      "darwinArm64": {
+        "package": "@openai/codex",
+        "packageVersion": "0.164.0-darwin-arm64",
+        "npmAlias": "npm:@openai/codex@0.164.0-darwin-arm64",
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.164.0-darwin-arm64.tgz",
+        "bytes": 140709294,
+        "sha256": "9b5a35be1975ceb332eaf274032f375b017ab644ff0165737ead03277fae77cd",
+        "shasum": "562b9360ceda915e70d57864ebe845e0406f5b70",
+        "integrity": "sha512-pDizgOUAtq3/k3AbUFHbaU19WpYKCja+oFpNSTLKrDQj4lTUNSDuTPJip4uQVn2/1EipQdpQrGMOQBVuI1znAA==",
+        "unpackedSize": 354454270,
+        "files": 43,
+        "cliSha256": "d8990e3ee7acfbc26f91265b12a1a83f0fee40d0e0f8f1f40a37d4ec21f499cf",
+        "cliSize": 260293200,
+        "cliPath": "vendor/aarch64-apple-darwin/bin/codex",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "package": "@openai/codex",
+        "packageVersion": "0.164.0-linux-x64",
+        "npmAlias": "npm:@openai/codex@0.164.0-linux-x64",
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.164.0-linux-x64.tgz",
+        "bytes": 165142849,
+        "sha256": "62659fefd9a8efa21a496402fde3c11c025bbeee735a582968f8ffd14cb5f79c",
+        "shasum": "d214ca9043434a4aa54cefb372af950f15654368",
+        "integrity": "sha512-XLAoaWsGOT2khzl+P4FYDPTkzAr9W0VFXFaVkqlFdkM0soa1gH/4S0wSD57Ek3HHwkirAEGz2/Mwehseh+l5Mg==",
+        "unpackedSize": 444349626,
+        "files": 45,
+        "cliSha256": "b93f6811d3f653f0fb83be4050d857fb9abbb111dfa2ce160563327daff7f306",
+        "cliSize": 308139304,
+        "cliPath": "vendor/x86_64-unknown-linux-musl/bin/codex",
+        "provenance": "hashed-unexecuted-tarball"
+      }
+    },
+    {
+      "version": "0.165.0",
+      "role": "official-latest",
+      "npmPublishedAt": "2026-10-27T20:14:25.378Z",
+      "githubTag": "rust-v0.165.0",
+      "githubPublishedAt": "2026-10-27T20:09:38Z",
+      "tagObject": "e374836b2728d9b7aa981c2902649e640a2edaa8",
+      "commit": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+      "wrapper": {
+        "bytes": 4902,
+        "sha256": "cb890818146db2401af6962bd1c2b4cb72a1b2b5df99f10ff2b36ae3d1c37f45",
+        "shasum": "8463a6db435cfb137af964db91a120fe72260b35",
+        "integrity": "sha512-aiwtQVp2KBhJld966CuU5bVfQ46VNB4mNTl6giX3WGZdt4euI3tv2RUqJpnupPNA8DXHg2z+RoQ0Zfw87dy8Lw==",
+        "unpackedSize": 13206,
+        "files": 3
+      },
+      "darwinArm64": {
+        "package": "@openai/codex",
+        "packageVersion": "0.165.0-darwin-arm64",
+        "npmAlias": "npm:@openai/codex@0.165.0-darwin-arm64",
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.165.0-darwin-arm64.tgz",
+        "bytes": 141326129,
+        "sha256": "a991b0abcb6b6d2ae4d0221b55dd74afe8b87847044483ec68d290908a5a0f97",
+        "shasum": "5fee4aaf6a36a326561d5155668a981f55422731",
+        "integrity": "sha512-MQ/Z0Xw9v08DHunnzodi9NwA844MI3+RO72IM8o0Lr/UemnlEoBMCxpojstxX6mf5ZQwUrIg0yekDd9cFZ29hg==",
+        "unpackedSize": 355995806,
+        "files": 43,
+        "cliSha256": "a45099154d7fb4a5ed8a56f40966a95deb938e508bab23e6985035c709e9a85a",
+        "cliSize": 261834624,
+        "cliPath": "vendor/aarch64-apple-darwin/bin/codex",
+        "provenance": "hashed-unexecuted-tarball"
+      },
+      "linuxX64": {
+        "package": "@openai/codex",
+        "packageVersion": "0.165.0-linux-x64",
+        "npmAlias": "npm:@openai/codex@0.165.0-linux-x64",
+        "tarball": "https://registry.npmjs.org/@openai/codex/-/codex-0.165.0-linux-x64.tgz",
+        "bytes": 166008118,
+        "sha256": "f997cd6ef5987126e19cd3c82e847a4a6461270f32f97340c5e99a65fb6f9b8a",
+        "shasum": "3c0cd2b99b9279d0610ff8412648c42f70aafc07",
+        "integrity": "sha512-FotDc7bVHwaommtsdDP8PPrH0a5IwC/t8H/LhdEcH4EBqgeYFRCtptiHcuwgvNRCLbTbOyFE/Ur6GzYCljgaSQ==",
+        "unpackedSize": 445947042,
+        "files": 45,
+        "cliSha256": "c06a67fd8ac76508dc78bd99ce20c9f317b8d568beda59485f3f4134df9962d5",
+        "cliSize": 309732776,
+        "cliPath": "vendor/x86_64-unknown-linux-musl/bin/codex",
+        "provenance": "hashed-unexecuted-tarball"
+      }
+    }
+  ],
+  "claimAtObservation": {
+    "posture": "AllowUnverified",
+    "exec": {
+      "id": "codex.exec.cli-window-2",
+      "latest": "0.164.0",
+      "behavior": "codex.exec.jsonl-v1"
+    },
+    "appServer": {
+      "id": "codex.app-server.cli-window-2",
+      "latest": "0.164.0",
+      "behavior": "codex.app-server.v2.protected-aws-workspace-roots"
+    },
+    "lifecycle": {
+      "id": "codex.app-server.lifecycle-window-1",
+      "latest": "0.164.0",
+      "behavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete"
+    }
+  },
+  "identityDecision": {
+    "shape": "compatible-extension",
+    "raiseLatestQualifiedTo": "0.165.0",
+    "keepClaimIds": true,
+    "keepBaselines": true,
+    "keepOlderSegments": true,
+    "newMilestone": false,
+    "newPublicOperation": false,
+    "flattenClaims": false,
+    "execBehavior": "codex.exec.jsonl-v1",
+    "appServerBehavior": "codex.app-server.v2.protected-aws-workspace-roots",
+    "lifecycleBehavior": "codex.app-server.lifecycle.v1.strict-descendant-hard-delete",
+    "execSegment": "0.156.0..=0.165.0",
+    "appServerSegment": "0.159.0..=0.165.0",
+    "lifecycleSegment": "0.140.0..=0.165.0",
+    "laterUnverified": "0.165.1"
+  },
+  "nativeSelection": {
+    "wrapper": "@openai/codex",
+    "darwinArm64": "optionalDependencies alias npm:@openai/codex@VER-darwin-arm64",
+    "linuxX64": "optionalDependencies alias npm:@openai/codex@VER-linux-x64",
+    "registryPackages": "parent-package variant versions, not @openai/codex-darwin-arm64"
+  }
+}

@@ -98,7 +98,7 @@ fn app_server_corpus_keeps_stable_experimental_and_milestones_separate() {
             "not-a-version",
         ])
     );
-    assert_unverified_newer(&corpus, "0.164.1");
+    assert_unverified_newer(&corpus, "0.165.1");
 }
 
 #[test]

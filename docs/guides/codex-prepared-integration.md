@@ -65,19 +65,19 @@ profiles.
 Swallowtail does not install Codex, search `PATH`, log in, choose a model,
 select billing, read an auth store, or infer a writable workspace. Exec admits
 `0.80.0..=0.81.0`, `0.84.0..=0.107.0`, `0.110.0..=0.155.1`, and
-`0.156.0..=0.164.0`; support is deprecated through `0.121.0` and maintained
+`0.156.0..=0.165.0`; support is deprecated through `0.121.0` and maintained
 from `0.122.0`. App-server admits
 `0.80.0..=0.81.0`, `0.84.0..=0.107.0`, `0.110.0..=0.130.0`,
 `0.131.0..=0.155.1`, `0.156.0..=0.156.1`, `0.157.0..=0.157.1`, `0.158.0`,
-and `0.159.0..=0.164.0`; `0.131.0..=0.155.1` retains its maintained status,
-`0.156.0..=0.158.0` is deprecated, and `0.159.0..=0.164.0` is maintained.
+and `0.159.0..=0.165.0`; `0.131.0..=0.155.1` retains its maintained status,
+`0.156.0..=0.158.0` is deprecated, and `0.159.0..=0.165.0` is maintained.
 Earlier supported statuses remain unchanged. Exact feature milestones remain
 narrower.
 Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, `0.154.1`, and
 `0.155.2` stay incompatible. Later stable versions may remain visible
 `UnverifiedNewer` without gaining capabilities.
 
-Exec is qualified through current official stable `0.164.0` on the existing
+Exec is qualified through current official stable `0.165.0` on the existing
 `codex.exec.jsonl-v1` behavior revision. The projectless trust change is
 accepted: upstream may skip automatic persisted project trust, and Swallowtail
 does not recreate it. System and macOS MDM `application.network` allowlists
@@ -86,12 +86,17 @@ does not set `ignore_managed_requirements` or weaken those rules. The 0.156.0
 additive search results remain ignored while query progress is preserved. The
 unpublished `0.155.2` point stays a gap. Research 452 walks `0.162.0`,
 `0.162.1`, `0.163.0`, and `0.164.0` and keeps the exec and app-server claims
-separate. Research 410 remains the `0.161.0` policy record.
+separate. Research 463 walks the single hop `0.165.0`: selected argv, JSONL,
+sandbox policy, initialize, and archive/delete success paths stay;
+`thread/delete` rejects only when an experimental attached thread exists; the
+adapter does not send `thread/fork` or `attachToSource`; `thread/memory/read`
+stays unmapped; `0.165.1` is synthetic `UnverifiedNewer`; `0.166.0-alpha.5`
+is ignored. Research 410 remains the `0.161.0` policy record.
 
-The app-server claim independently qualifies official stable `0.164.0` on
-`codex.app-server.v2.protected-aws-workspace-roots`. Research 388 remains the
-`0.161.0` inventory. The claim ID, older behavior revisions, feature bounds,
-and exclusions stay independent of the exec qualification.
+The app-server claim independently qualifies official stable `0.165.0` on
+`codex.app-server.v2.protected-aws-workspace-roots` (Research 463). Research
+388 remains the `0.161.0` inventory. The claim ID, older behavior revisions,
+feature bounds, and exclusions stay independent of the exec qualification.
 
 The app-server sends one host-approved writable root, keeps read-only defaults,
 and sends no trust, config, permission, proxy, Windows sandbox, or

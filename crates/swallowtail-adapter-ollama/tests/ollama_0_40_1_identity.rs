@@ -327,7 +327,7 @@ fn identity_freezes_official_hops_from_the_0351_ceiling_through_0401() {
 #[test]
 fn claim_qualifies_0400_and_0401_and_keeps_interior_gaps() {
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.12");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.11");
     let identity: Value = serde_json::from_str(IDENTITY).expect("identity corpus parses");
     assert_eq!(
         identity["decision"]["milestone_behavior_revision"],

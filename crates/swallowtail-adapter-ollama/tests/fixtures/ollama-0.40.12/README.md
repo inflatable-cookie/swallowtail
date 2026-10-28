@@ -21,8 +21,10 @@ string.
 `voices` only for speech models. The adapter does not read `voices`,
 `template_source`, or model info, and it does not read ps context length.
 
-OpenAI `/v1/audio/transcriptions` and new `/v1/audio/translations`, decision
-audio, LFM3, d1, MLX, and `ollama launch` stay unselected.
+OpenAI audio routes and `ollama launch` stay off the native facade. The GGUF
+runner selects the changed llama.cpp pin, and renderers can be selected
+independently of parsers. Their effects remain qualification gaps; the claim
+ceiling stays at 0.40.11. See Research 462.
 
 No local runtime was installed or started. No provider prompt, inference,
 model download, or model-store write occurred.

@@ -3,9 +3,9 @@
 **Task:** `ollama.attached` only, `swallowtail-adapter-ollama`  
 **Observed:** 2026-10-28  
 **Previous qualified ceiling:** `0.40.11` (`AllowUnverified`)  
-**Result:** compatible extension through official GitHub stable `0.40.12` on
-the existing adapter-private revision
-`ollama.native-text-v1.manifest-list-runner`.
+**Result:** stop. The maintained ceiling remains `0.40.11`; official stable
+`0.40.12` is `UnverifiedNewer`. Selected dependency and renderer effects need
+the finite adaptation below before qualification.
 
 ## Channel and artifact identity
 
@@ -31,7 +31,7 @@ The hop ledger is in
 `v0.40.11` has 1513 files and 1708 tree entries. `v0.40.12` has 1577 files
 and 1776 tree entries. The hop adds 66 files, removes 2, and changes 70.
 The classification ledger SHA-256 is
-`da2dd985f6f03d7be3b4c97c1b1906b8f50ea9d0436b17ef9b28c16da30a2e24`.
+`452ad16d14e2be87e814d996579437aaddfcb5f7710a001516c49ef7b5fa31aa` (reclassified after selected-path review).
 
 The host had no `ollama` executable on `PATH`. No runtime was reachable. No
 local runtime, model, credential, or host state was changed.
@@ -64,22 +64,48 @@ fail closed.
 
 OpenAI `/v1/audio/transcriptions` no longer wraps `ChatHandler`, and
 `/v1/audio/translations` is new. Both stay off the native facade. The empty
-tool-call content fix is in the OpenAI converter. LFM3, d1, Gemma audio
-prompts, MLX, llama.cpp pins, and `ollama launch` stay unselected. No public
-Swallowtail operation was added.
+tool-call content fix is in the OpenAI converter. `ollama launch` stays off the native facade. No public Swallowtail operation
+was added. Renderer and model internals are not bounded by identical HTTP
+structs; their selected reachability remains an open qualification gap.
+
+## Selected-path stop and adaptation
+
+`server/sched.go` selects `llm.NewLlamaServer`; `llm/server.go` sends GGUF
+models to `NewLlamaServerRunner`. `llama/server/CMakeLists.txt` reads
+`LLAMA_CPP_VERSION` and fetches that tag by default; an explicit source override
+is also possible. The frozen pins are `b11845` at 0.40.11 and `b11901` at
+0.40.12. The dependency tag identities, intervening selected source changes,
+and their native text effects have not been traced. The pin is selected, not
+an unselected build detail.
+
+`server/prompt.go` dispatches a nonempty `Config.Renderer` independently of
+`Config.Parser`. `server/routes.go` separately considers renderer, parser,
+Harmony and Go-template predicates. `OLLAMA_GO_TEMPLATE` defaults true when
+applicable; an attached runtime controls its environment. Registration includes
+`lfm3`, `lfm3-omni`, and `lfm3-audio`, and the Gemma renderer changed. The
+parser capability rejection does not establish that each renderer is unreachable
+for an admitted GGUF completion model. Text effects and the exact admitted-model
+and environment boundaries remain open.
+
+The planner-owned adaptation must resolve both llama.cpp tags to immutable
+commits, inventory and classify their selected GGUF text-path delta and effects,
+then trace each changed renderer and parser through model capability, config,
+template and approved environment boundaries. Freeze mutation-sensitive source
+identities and effects; qualify 0.40.12 only after those gates close. This is
+static source work unless a separate authority grants live evidence. Existing
+identity and the previous 0.40.11 claim remain useful and intact.
 
 ## Adapter mapping
 
 Claim id `ollama.native-runtime-window-2`, baseline `0.14.0`, exclusions
 `0.32.2` and `0.32.10`, and `AllowUnverified` stay. Deprecated
 `0.14.0..=0.34.4` and `0.35.0..=0.35.1` stay on `ollama.native-text-v1`.
-Maintained `0.40.0..=0.40.12` stays on
+Maintained `0.40.0..=0.40.11` stays on
 `ollama.native-text-v1.manifest-list-runner`. The adapter still binds the
 preflight tag and digest, pins `ggml` or `llamacpp` from the matching row,
 observes extra same-tag rows when the server sends them, and fails closed on
 `remote_model` / `remote_host` and on identity drift. Unpublished `0.34.5`
-and `0.35.2` through `0.39.x` stay interior gaps. Synthetic `0.40.13` is the
-first visible `UnverifiedNewer` point. `0.41.0` remains above the ceiling.
+and `0.35.2` through `0.39.x` stay interior gaps. Official stable `0.40.12` is `UnverifiedNewer`. `0.41.0` remains above the ceiling.
 
 ## Verification boundary
 

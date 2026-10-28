@@ -15,7 +15,7 @@ const HISTORICAL: &str = include_str!("fixtures/ollama-0.40.11/identity.json");
 
 const MAINTAINED: &[&str] = &[
     "0.40.0", "0.40.1", "0.40.2", "0.40.3", "0.40.4", "0.40.5", "0.40.6", "0.40.7", "0.40.8",
-    "0.40.9", "0.40.10", "0.40.11", "0.40.12",
+    "0.40.9", "0.40.10", "0.40.11",
 ];
 
 #[test]
@@ -86,15 +86,15 @@ fn identity_freezes_the_04012_hop_from_the_04011_ceiling() {
     );
     assert_eq!(
         identity["decision"]["shape"],
-        "compatible-extension-through-0.40.12"
+        "stop-selected-dependency-and-renderer-gap"
     );
     assert_eq!(
         identity["decision"]["latest_qualified_after_change"],
-        "0.40.12"
+        "0.40.11"
     );
     assert_eq!(
         identity["decision"]["synthetic_unverified_newer"],
-        "0.40.13"
+        "0.40.12"
     );
     assert_eq!(identity["decision"]["new_public_operation"], false);
     assert_eq!(identity["decision"]["provider_prompt_sent"], false);
@@ -231,11 +231,11 @@ fn identity_freezes_the_04012_hop_from_the_04011_ceiling() {
     }
     assert_eq!(
         sha256_hex(ledger.as_bytes()),
-        "da2dd985f6f03d7be3b4c97c1b1906b8f50ea9d0436b17ef9b28c16da30a2e24"
+        "452ad16d14e2be87e814d996579437aaddfcb5f7710a001516c49ef7b5fa31aa"
     );
     assert_eq!(
         protocol["classification_ledger_sha256"],
-        "da2dd985f6f03d7be3b4c97c1b1906b8f50ea9d0436b17ef9b28c16da30a2e24"
+        "452ad16d14e2be87e814d996579437aaddfcb5f7710a001516c49ef7b5fa31aa"
     );
     assert_eq!(
         inventory["classification_ledger_sha256"],
@@ -278,6 +278,36 @@ fn identity_freezes_the_04012_hop_from_the_04011_ceiling() {
             .map(String::as_str),
         Some("selected-show-additive-voices")
     );
+    assert_eq!(changed_class.get("LLAMA_CPP_VERSION").map(String::as_str), Some("selected-gguf-dependency-gap"));
+    assert_eq!(changed_class.get("model/renderers/renderer.go").map(String::as_str), Some("renderer-parser-reachability-gap"));
+    let gap = &protocol["selected_dependency_and_renderer_gap"];
+    assert_eq!(gap["pin_before"], "b11845");
+    assert_eq!(gap["pin_after"], "b11901");
+    assert_eq!(gap["default_go_template"], true);
+    assert_eq!(gap["paths"], serde_json::json!(["server/sched.go", "llm/server.go", "llama/server/CMakeLists.txt", "server/prompt.go", "server/routes.go", "envconfig/config.go", "model/renderers/renderer.go"]));
+    for (version, path, blob) in [
+        ("0.40.11", "envconfig/config.go", "0379a2aec2a9573d542deb840766a93694f63ffe"),
+        ("0.40.11", "llama/server/CMakeLists.txt", "9153c9bf019548f7015305b773a9fed2a61f3fcc"),
+        ("0.40.11", "llm/server.go", "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe"),
+        ("0.40.11", "model/renderers/renderer.go", "df7fb9674fafbe934efc9a3a32eb902155a392d2"),
+        ("0.40.11", "server/prompt.go", "17b50efc652865d9098801d0ab27570be7060cc0"),
+        ("0.40.11", "server/routes.go", "fdf7a18f954ab7c249bb0e95a859b399105c7289"),
+        ("0.40.11", "server/sched.go", "2c8d818d1907d73a13db1174bb568718be87f3b6"),
+        ("0.40.12", "envconfig/config.go", "0379a2aec2a9573d542deb840766a93694f63ffe"),
+        ("0.40.12", "llama/server/CMakeLists.txt", "9153c9bf019548f7015305b773a9fed2a61f3fcc"),
+        ("0.40.12", "llm/server.go", "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe"),
+        ("0.40.12", "model/renderers/renderer.go", "672df033c583b964d0a87b0241a0e2683e377111"),
+        ("0.40.12", "server/prompt.go", "17b50efc652865d9098801d0ab27570be7060cc0"),
+        ("0.40.12", "server/routes.go", "082dd1121fb999e92fc1be6bd3bede8e9e38ab38"),
+        ("0.40.12", "server/sched.go", "2c8d818d1907d73a13db1174bb568718be87f3b6"),
+    ] {
+        assert_eq!(gap["path_blobs"][version][path], blob);
+        assert_eq!(blob_map(&inventory, version)[path], blob);
+    }
+    assert_eq!(gap["path_blobs"]["0.40.11"].as_object().unwrap().len(), 7);
+    assert_eq!(gap["path_blobs"]["0.40.12"].as_object().unwrap().len(), 7);
+    assert_eq!(before["LLAMA_CPP_VERSION"], "80291d7f1423525ef37228948f78fb69f5407aa2");
+    assert_eq!(after["LLAMA_CPP_VERSION"], "98bc1f1660e3264d1df83952b9e8a452e22a6088");
     assert!(!changed_class.contains_key("api/types.go"));
     assert!(!changed_class.contains_key("server/model_list.go"));
     assert!(!changed_class.contains_key("compatmigrate/migrate.go"));
@@ -321,9 +351,9 @@ fn identity_freezes_the_04012_hop_from_the_04011_ceiling() {
 }
 
 #[test]
-fn claim_extends_manifest_list_runner_through_04012() {
+fn claim_retains_manifest_list_runner_ceiling_at_04011() {
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.12");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.11");
     let claim = ollama_runtime_claim();
     assert_eq!(claim.id().as_str(), "ollama.native-runtime-window-2");
     for version in ["0.14.0", "0.34.4", "0.35.0", "0.35.1"] {
@@ -361,7 +391,7 @@ fn claim_extends_manifest_list_runner_through_04012() {
             "{version} must stay unqualified"
         );
     }
-    for version in ["0.40.13", "0.41.0"] {
+    for version in ["0.40.12", "0.40.13", "0.41.0"] {
         assert!(
             matches!(
                 claim.assess(&InterfaceVersion::new(version).unwrap()),

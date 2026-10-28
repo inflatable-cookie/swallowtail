@@ -191,7 +191,7 @@ fn identity_freezes_0_34_3_and_0_34_4_and_names_compatible_extension() {
     }
 
     assert_eq!(OLLAMA_BASELINE_VERSION, "0.14.0");
-    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.12");
+    assert_eq!(OLLAMA_LATEST_QUALIFIED_VERSION, "0.40.11");
     let claim = ollama_runtime_claim();
     for version in ["0.14.0", "0.34.2", "0.34.3", "0.34.4"] {
         assert!(matches!(

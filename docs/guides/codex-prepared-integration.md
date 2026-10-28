@@ -77,7 +77,7 @@ Unpublished `0.149.2`, `0.150.2`, `0.151.1`, `0.152.2`, `0.154.1`, and
 `0.155.2` stay incompatible. Later stable versions may remain visible
 `UnverifiedNewer` without gaining capabilities.
 
-Exec is qualified through current official stable `0.164.0` on the existing
+Exec is qualified through `0.164.0` on the existing
 `codex.exec.jsonl-v1` behavior revision. The projectless trust change is
 accepted: upstream may skip automatic persisted project trust, and Swallowtail
 does not recreate it. System and macOS MDM `application.network` allowlists
@@ -86,9 +86,9 @@ does not set `ignore_managed_requirements` or weaken those rules. The 0.156.0
 additive search results remain ignored while query progress is preserved. The
 unpublished `0.155.2` point stays a gap. Research 452 walks `0.162.0`,
 `0.162.1`, `0.163.0`, and `0.164.0` and keeps the exec and app-server claims
-separate. Research 410 remains the `0.161.0` policy record.
+separate. Official stable `0.165.0` remains `UnverifiedNewer`; Research 463 records the qualification stop. Research 410 remains the `0.161.0` policy record.
 
-The app-server claim independently qualifies official stable `0.164.0` on
+The app-server claim independently qualifies `0.164.0` on
 `codex.app-server.v2.protected-aws-workspace-roots`. Research 388 remains the
 `0.161.0` inventory. The claim ID, older behavior revisions, feature bounds,
 and exclusions stay independent of the exec qualification.

@@ -266,11 +266,12 @@ fn identity_and_claim_qualify_current_0_87_0_with_exact_hop_evidence() {
     }
 
     assert_eq!(CLAUDE_AGENT_ACP_BASELINE_VERSION, "0.53.0");
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.96.0");
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.98.0");
     let claim = claude_agent_acp_claim();
     assert_eq!(claim.id().as_str(), "claude-agent.acp.window-2");
     for version in [
-        "0.82.0", "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0", "0.96.0",
+        "0.82.0", "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0", "0.96.0", "0.97.0",
+        "0.98.0",
     ] {
         assert!(matches!(
             claim.assess(&version_value(version)),
@@ -284,7 +285,7 @@ fn identity_and_claim_qualify_current_0_87_0_with_exact_hop_evidence() {
         assert!(!claim.permits(&version_value(excluded)));
     }
     assert!(matches!(
-        claim.assess(&version_value("0.97.0")),
+        claim.assess(&version_value("0.99.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

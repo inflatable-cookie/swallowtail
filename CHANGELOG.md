@@ -6,6 +6,10 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- retain Codex exec, app-server and lifecycle qualification through `0.164.0`.
+  Official stable `0.165.0` remains `UnverifiedNewer` pending Linux shipped
+  bwrap provenance and selected attached-child delete and paginated resume
+  qualification. Research 463 retains the identity and concrete gates.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep
@@ -58,15 +62,14 @@ annotated Git tags from the canonical repository.
   Research 445. `cc-plugin-claude-platform`, registered from `2.1.311`, stays
   unselected: print mode fails its interactive availability gate. Claude Agent ACP and the
   Claude Agent SDK stay on their own claims.
-- qualify `claude-agent.acp` through official stable `0.96.0` as a compatible
-  extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 446).
-  The maintained segment is `0.66.0..=0.96.0`. Baseline `0.53.0`, claim id
+- qualify `claude-agent.acp` through official stable `0.98.0` as a compatible
+  extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 460).
+  The maintained segment is `0.66.0..=0.98.0`. Baseline `0.53.0`, claim id
   `claude-agent.acp.window-2`, the seven milestones, exclusions `0.52.0` and
-  `0.58.0`, and `AllowUnverified` stay. Published `0.97.0` remains
-  `UnverifiedNewer`. A protocolVersion 1 client still gets the v1 agent. HTTP
-  MCP live honouring stays exact `0.79.0` and `0.81.2`. The repo-local pin
-  stays `0.81.2`. Claude Code and `claude-agent.sdk` claims stay on their
-  existing bounds.
+  `0.58.0`, and `AllowUnverified` stay. `0.99.0` is `UnverifiedNewer`. A
+  protocolVersion 1 client still gets the v1 agent. HTTP MCP live honouring
+  stays exact `0.79.0` and `0.81.2`. The repo-local pin stays `0.81.2`.
+  Claude Code and `claude-agent.sdk` claims stay on their existing bounds.
 - qualify only `cursor-agent.catalogue` through official ACP registry stable
   `2026.10.22-27dcf5f`, after every published registry hop following
   `2026.10.01-14929f9`. Research 451 freezes the Darwin ARM64 and Linux x64

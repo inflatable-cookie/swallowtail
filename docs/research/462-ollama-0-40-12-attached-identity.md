@@ -79,13 +79,25 @@ and their native text effects have not been traced. The pin is selected, not
 an unselected build detail.
 
 `server/prompt.go` dispatches a nonempty `Config.Renderer` independently of
-`Config.Parser`. `server/routes.go` separately considers renderer, parser,
-Harmony and Go-template predicates. `OLLAMA_GO_TEMPLATE` defaults true when
-applicable; an attached runtime controls its environment. Registration includes
-`lfm3`, `lfm3-omni`, and `lfm3-audio`, and the Gemma renderer changed. The
+`Config.Parser`. `server/routes.go`'s `usesOllamaRenderedChat` combines
+renderer, parser, Harmony and Go-template predicates, and its
+`shouldUseGoTemplate` calls `goTemplateEnvSet` in `server/images.go` and
+`envconfig.GoTemplate` in `envconfig/config.go`. `server/images.go` uses the
+predicate for template selection and capability handling;
+`server/model_thinking.go` also uses it. The environment setting defaults true
+when applicable; an attached runtime controls its environment. Registration
+includes `lfm3`, `lfm3-omni`, and `lfm3-audio`, and the Gemma renderer changed. The
 parser capability rejection does not establish that each renderer is unreachable
 for an admitted GGUF completion model. Text effects and the exact admitted-model
 and environment boundaries remain open.
+
+Research 448 classified llama.cpp and build files outside the attached native
+facade and described its 0.40.9 to 0.40.10 Gemma renderer edits as outside the
+GGUF text fields read by the adapter. Those classifications do not establish
+that the runner and renderer effects are unselected. This record corrects that
+reasoning for the 0.40.11 to 0.40.12 hop; it does not silently requalify or
+revoke the existing 0.40.11 claim. The adaptation must also assess the earlier
+selected dependency and renderer classifications in Research 448.
 
 The planner-owned adaptation must resolve both llama.cpp tags to immutable
 commits, inventory and classify their selected GGUF text-path delta and effects,

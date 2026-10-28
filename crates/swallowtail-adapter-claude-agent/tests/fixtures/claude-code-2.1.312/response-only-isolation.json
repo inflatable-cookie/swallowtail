@@ -1,0 +1,292 @@
+{
+  "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. Hashes match dist-inventory.json. No downloaded executable was run.",
+  "downloaded_artifacts_executed": false,
+  "ceiling_artifacts": {
+    "claude-code-darwin-arm64": {
+      "version": "2.1.312",
+      "artifact_sha256": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620"
+    },
+    "claude-code-linux-x64": {
+      "version": "2.1.312",
+      "artifact_sha256": "4f4178ce41d83e23341ebfbaecdbcf8ea6bf7baea0690025abe49eeec3a5d01d"
+    }
+  },
+  "safe_mode_option_at_2_1_312": {
+    "claude-code-darwin-arm64": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+    "claude-code-linux-x64": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+    "platforms_byte_identical": true,
+    "byte_identical_from_2_1_310": true
+  },
+  "safe_mode_filter_at_2_1_312": {
+    "claude-code-darwin-arm64": "function HHn(e){if(!Ur())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>pu(n.source))}",
+    "claude-code-linux-x64": "function NHn(e){if(!Ur())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>uu(n.source))}"
+  },
+  "builtin_predicate_at_2_1_312": {
+    "claude-code-darwin-arm64": {
+      "constant": "$s=\"builtin\"",
+      "predicate": "function pu(e){return e.endsWith(`@${$s}`)}"
+    },
+    "claude-code-linux-x64": {
+      "constant": "$s=\"builtin\"",
+      "predicate": "function uu(e){return e.endsWith(`@${$s}`)}"
+    }
+  },
+  "init_fields_at_2_1_312": {
+    "claude-code-darwin-arm64": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>jQt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:spt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:nd(e.permissionMode)",
+    "claude-code-linux-x64": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>P7t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:rft(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:nd(e.permissionMode)"
+  },
+  "permission_mode_default_mapper_at_2_1_312": {
+    "claude-code-darwin-arm64": "function OP(e){return Th(e)??\"default\"}",
+    "claude-code-linux-x64": "function PP(e){return Ah(e)??\"default\"}"
+  },
+  "permission_mode_treats_undefined_as_default_at_2_1_312": {
+    "claude-code-darwin-arm64": "function o_i(e){return e===\"default\"||e===void 0}",
+    "claude-code-linux-x64": "function wyi(e){return e===\"default\"||e===void 0}"
+  },
+  "cc_plugin_ids_at_2_1_310": [
+    "agents-md",
+    "claude-test",
+    "diff",
+    "easel",
+    "mermaid",
+    "mods-guide",
+    "plugin-authoring",
+    "responsive-mode",
+    "sec-default",
+    "telemetry",
+    "tips",
+    "you-should-know"
+  ],
+  "cc_plugin_ids_from_2_1_311": [
+    "agents-md",
+    "claude-platform",
+    "claude-test",
+    "diff",
+    "easel",
+    "mermaid",
+    "mods-guide",
+    "plugin-authoring",
+    "responsive-mode",
+    "sec-default",
+    "telemetry",
+    "tips",
+    "you-should-know"
+  ],
+  "easel_still_present": true,
+  "research_378_nine_remain": [
+    "sec-default",
+    "agents-md",
+    "telemetry",
+    "plugin-authoring",
+    "tips",
+    "mermaid",
+    "responsive-mode",
+    "diff",
+    "claude-test"
+  ],
+  "empty_tools_and_mcp_leave_easel_autocharts_unselected": true,
+  "claude_platform": {
+    "present_at_2_1_310": false,
+    "registered_from": "2.1.311",
+    "registration_predicate": "e, where e is CLAUDE_CODE_ENTRYPOINT!==\"local-agent\" && !coworkPredicate()",
+    "availability_flag": "tengu_peppy_crescent",
+    "availability_flag_default_argument": false,
+    "availability_requires_flag_true": true,
+    "availability_requires_tst_predicate": true,
+    "mcp_url": "https://platform.claude.com/docs/mcp",
+    "may_connect_requires_availability": true,
+    "skill_gate": "CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL and the claude-api skill predicate",
+    "classification": "gated-builtin-unselected",
+    "selected_mapped_change": false,
+    "reason": "The plugin registers on the same e path that already loads claude-test, diff, and easel. isAvailable stays false unless tengu_peppy_crescent is explicitly true and a tst predicate holds, with no --agent-id and without mcpAutoDiscovered. The docs MCP server is behind mayConnectMcpServer. Headless still passes strict empty MCP. Response-only still requires empty mcp_servers and fail-closes otherwise."
+  },
+  "easel_registration": {
+    "at_2_1_310": "if(e)",
+    "from_2_1_311": "if(e||predicate()===\"remote_cowork\")",
+    "selected_routes_are_remote_cowork": false,
+    "local_e_path_unchanged": true,
+    "classification": "unselected",
+    "selected_mapped_change": false
+  },
+  "disable_slash_commands_help": "Disable all skills and commands",
+  "disable_slash_commands_help_byte_identical_from_2_1_310": true,
+  "compared_versions": [
+    "2.1.310",
+    "2.1.311",
+    "2.1.312"
+  ],
+  "per_version": {
+    "2.1.310": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function Djn(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>wf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>fXt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Hdt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+        "permission_mode_default_mapper": "function Qx(e){return ph(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Ldi(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ns=\"builtin\"",
+        "builtin_predicate": "function wf(e){return e.endsWith(`@${Ns}`)}",
+        "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!Abe();if(e||ay()===\"remote\")D_e(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-m0pz7bz5.js\"));if(e)D_e(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-0zg15rdd.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")D_e(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-wdd9ds4z.js\"));if(e)D_e(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-3f0r8wvy.js\"));if(e)D_e(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-frgrmerx.js\"))}",
+        "claude_platform_module": null
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function i1n(e){if(!Mr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>vp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>tXt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Idt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:ql(e.permissionMode)",
+        "permission_mode_default_mapper": "function Xx(e){return fh(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Zli(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ns=\"builtin\"",
+        "builtin_predicate": "function vp(e){return e.endsWith(`@${Ns}`)}",
+        "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!SSe();if(e||iy()===\"remote\")R_e(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-zb93n78m.js\"));if(e)R_e(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-f2sw2f56.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")R_e(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-k9eem9n9.js\"));if(e)R_e(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-7kf2m8dc.js\"));if(e)R_e(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-pmkym69z.js\"))}",
+        "claude_platform_module": null
+      }
+    },
+    "2.1.311": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "85d8c08707fcfd1e78ffa0204eefbc6ec9e4fe22f375fb2767ef85d957ed3161",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-platform",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function b0n(e){if(!Fr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>dp(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>kQt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:jut(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:td(e.permissionMode)",
+        "permission_mode_default_mapper": "function CP(e){return Ch(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function Vyi(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Ls=\"builtin\"",
+        "builtin_predicate": "function dp(e){return e.endsWith(`@${Ls}`)}",
+        "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!oEe();if(e||xg()===\"remote\")$pe(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-0vtjee6b.js\"));if(e)$pe(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-m38azpx4.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")$pe(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-mf7ejead.js\"));if(e||xg()===\"remote_cowork\")$pe(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-t19n1d2x.js\"));if(e)$pe(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-j1r347qy.js\")),$pe(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-xefytz7v.js\"))}",
+        "claude_platform_module": "function o(){return\"tengu_peppy_crescent\"}function t(){return qd()&&!Ft()&&cS(\"--agent-id\")===void 0&&!_r()&&!cr(\"mcpAutoDiscovered\")&&ese()===\"tst\"&&!St()&&hRe()&&Cc(ft().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&x$e()&&!m$()&&!Kbn()&&qI().length===0&&kn(o(),!1)===!0}function n(){let{value:e,source:r}=Sn(o(),!1);return t()&&e===!0&&FR(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-wdve9mb6.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!gr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;S_({name:l,description:m,version:a,isAvailable:t,get skills(){return pot(l)&&!h5(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}"
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "86dc1fcc69498159eaf15f446613e847010f9036bfbbdffd4c49350be8489ada",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-platform",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function _0n(e){if(!$r())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>cf(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>f7t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Uut(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:td(e.permissionMode)",
+        "permission_mode_default_mapper": "function EP(e){return Th(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function dyi(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "Hs=\"builtin\"",
+        "builtin_predicate": "function cf(e){return e.endsWith(`@${Hs}`)}",
+        "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!Jwe();if(e||xg()===\"remote\")Ofe(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-pzj58444.js\"));if(e)Ofe(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-brgwafzt.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")Ofe(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-6rmz5j8r.js\"));if(e||xg()===\"remote_cowork\")Ofe(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-efgx8kwt.js\"));if(e)Ofe(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-qghf2224.js\")),Ofe(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-07dder46.js\"))}",
+        "claude_platform_module": "function o(){return\"tengu_peppy_crescent\"}function t(){return qd()&&!$t()&&db(\"--agent-id\")===void 0&&!Sr()&&!dr(\"mcpAutoDiscovered\")&&Voe()===\"tst\"&&!bt()&&dRe()&&Tc(pt().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&EFe()&&!uF()&&!xSn()&&GI().length===0&&kn(o(),!1)===!0}function n(){let{value:e,source:r}=bn(o(),!1);return t()&&e===!0&&HR(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-8krkx0ev.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!gr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;y_({name:l,description:m,version:a,isAvailable:t,get skills(){return aot(l)&&!s6(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}"
+      }
+    },
+    "2.1.312": {
+      "claude-code-darwin-arm64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-platform",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function HHn(e){if(!Ur())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>pu(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>jQt(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:spt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:nd(e.permissionMode)",
+        "permission_mode_default_mapper": "function OP(e){return Th(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function o_i(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "$s=\"builtin\"",
+        "builtin_predicate": "function pu(e){return e.endsWith(`@${$s}`)}",
+        "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!pEe();if(e||Og()===\"remote\")Qpe(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-535bwx0f.js\"));if(e)Qpe(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-0r4xre1y.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")Qpe(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-30fq8er8.js\"));if(e||Og()===\"remote_cowork\")Qpe(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-33sjm5fc.js\"));if(e)Qpe(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-c8qqaa9s.js\")),Qpe(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-89h0c3gq.js\"))}",
+        "claude_platform_module": "function o(){return\"tengu_peppy_crescent\"}function t(){return Xd()&&!Ft()&&hS(\"--agent-id\")===void 0&&!yr()&&!or(\"mcpAutoDiscovered\")&&dse()===\"tst\"&&!St()&&vRe()&&_c(pt().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&$$e()&&!r0()&&!Qbn()&&sO().length===0&&An(o(),!1)===!0}function n(){let{value:e,source:r}=yn(o(),!1);return t()&&e===!0&&VR(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-gqs5gaz6.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!gr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;k_({name:l,description:m,version:a,isAvailable:t,get skills(){return Aot(l)&&!Zpe(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}"
+      },
+      "claude-code-linux-x64": {
+        "artifact_file": "claude",
+        "artifact_sha256": "4f4178ce41d83e23341ebfbaecdbcf8ea6bf7baea0690025abe49eeec3a5d01d",
+        "cc_plugin_ids": [
+          "agents-md",
+          "claude-platform",
+          "claude-test",
+          "diff",
+          "easel",
+          "mermaid",
+          "mods-guide",
+          "plugin-authoring",
+          "responsive-mode",
+          "sec-default",
+          "telemetry",
+          "tips",
+          "you-should-know"
+        ],
+        "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\"",
+        "safe_mode_filter": "function NHn(e){if(!Ur())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>uu(n.source))}",
+        "init_fields": "type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>P7t(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:rft(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:nd(e.permissionMode)",
+        "permission_mode_default_mapper": "function PP(e){return Ah(e)??\"default\"}",
+        "permission_mode_treats_undefined_as_default": "function wyi(e){return e===\"default\"||e===void 0}",
+        "builtin_constant": "$s=\"builtin\"",
+        "builtin_predicate": "function uu(e){return e.endsWith(`@${$s}`)}",
+        "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!sve();if(e||Og()===\"remote\")zfe(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-bjb2bwk9.js\"));if(e)zfe(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-vfvj8d5n.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")zfe(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-g5q3xeba.js\"));if(e||Og()===\"remote_cowork\")zfe(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-x783r282.js\"));if(e)zfe(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-bfc3sbn5.js\")),zfe(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-a0tc5k1h.js\"))}",
+        "claude_platform_module": "function o(){return\"tengu_peppy_crescent\"}function t(){return Xd()&&!$t()&&gb(\"--agent-id\")===void 0&&!Sr()&&!or(\"mcpAutoDiscovered\")&&nse()===\"tst\"&&!bt()&&hRe()&&_c(ft().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&MFe()&&!JM()&&!DSn()&&tO().length===0&&Cn(o(),!1)===!0}function n(){let{value:e,source:r}=yn(o(),!1);return t()&&e===!0&&WR(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-9f329315.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!gr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;v_({name:l,description:m,version:a,isAvailable:t,get skills(){return vot(l)&&!Kfe(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}"
+      }
+    }
+  }
+}

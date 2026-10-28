@@ -28,6 +28,7 @@ fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_sha
             "0.77.0", "0.78.0", "0.79.0", "0.80.0", "0.81.0", "0.81.1", "0.81.2", "0.82.0",
             "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0", "0.88.0", "0.89.0",
             "0.89.1", "0.90.0", "0.91.0", "0.92.0", "0.93.0", "0.94.0", "0.95.0", "0.96.0",
+            "0.97.0", "0.98.0",
         ] {
             let host_id = ExecutionHostId::new(host_name).expect("valid host");
             let selected = selection(host_id.clone(), version);
@@ -120,7 +121,7 @@ fn qualified_versions_load_ordered_replay_and_resume_without_replay() {
         "0.74.0", "0.75.0", "0.75.1", "0.76.0", "0.77.0", "0.78.0", "0.79.0", "0.80.0", "0.81.0",
         "0.81.1", "0.81.2", "0.82.0", "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0",
         "0.88.0", "0.89.0", "0.89.1", "0.90.0", "0.91.0", "0.92.0", "0.93.0", "0.94.0", "0.95.0",
-        "0.96.0",
+        "0.96.0", "0.97.0", "0.98.0",
     ] {
         let host_id =
             ExecutionHostId::new(format!("fixture.host.continuity-{version}")).expect("valid host");

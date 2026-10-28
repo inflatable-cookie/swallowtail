@@ -1,0 +1,140 @@
+{
+  "selected_routes": [
+    "initialize",
+    "session/new",
+    "session/prompt",
+    "session/cancel",
+    "session/load",
+    "session/resume",
+    "session/close",
+    "session/delete",
+    "session/request_permission",
+    "elicitation/create",
+    "session/set_config_option",
+    "session/set_mode"
+  ],
+  "selected_protocol_version": 1,
+  "swallowtail_initialize_request": {
+    "protocolVersion": 1,
+    "fs_readTextFile": true,
+    "fs_writeTextFile": false,
+    "elicitation_form": true,
+    "advertises_air": false,
+    "advertises_goal": false,
+    "advertises_async_tasks": false,
+    "advertises_session_notices": false,
+    "advertises_native_subagent_sessions": false,
+    "advertises_context_compaction": false,
+    "advertises_session_index": false,
+    "advertises_boolean_config_options": false
+  },
+  "official_current_runtime": {
+    "node_engine": ">=22",
+    "bin": "dist/index.js",
+    "default_protocol_for_v1_client": 1,
+    "unset_CLAUDE_AGENT_ACP_PROTOCOL_serves_auto": true,
+    "auto_routes_protocol_version_1_to_v1": true,
+    "index_js_sha256_unchanged_from_0_96_0": "dac87af861bedf6ee1444e99832274d6f517f5e83006f3905094cfc4479b3b00",
+    "serve_js_byte_identical_from_0_96_0": true,
+    "swallowtail_sets_protocol_env": false,
+    "swallowtail_requests_v2": false
+  },
+  "byte_identical_selected_files_0_96_0_through_0_98_0": [
+    "dist/index.js",
+    "dist/serve.js",
+    "dist/tools.js",
+    "dist/session-mode.js"
+  ],
+  "delete_session_if_stored_sha256_unchanged": "04d2a707e8dfa8bee63b9fbca30138ce212180688ccd92d447a3efbb7342cc44",
+  "stable_schema_and_lifecycle": {
+    "protocol_version_stays_1": true,
+    "selected_v1_methods_unchanged": [
+      "session/new",
+      "session/resume",
+      "session/close",
+      "session/delete",
+      "session/set_mode"
+    ],
+    "live_close_and_stored_delete_still_return_empty_object": true,
+    "unstored_delete_returns_empty_success_via_deleteSessionIfStored_from": "0.91.0",
+    "deleteSessionIfStored_body_unchanged_through": "0.98.0",
+    "missing_target_success_is_not_a_new_consumer_operation": true,
+    "no_stronger_deletion_claim": true,
+    "cancel_stop_reason_stays_cancelled": true,
+    "no_public_lifecycle_break": true
+  },
+  "tool_exchange": {
+    "session_update_kind_set_unchanged_for_selected_client": true,
+    "unknown_session_update_decodes_as_unknown_and_is_ignored": true,
+    "advisor_tool_result_emits_existing_tool_result_from": "0.97.0",
+    "sandbox_network_access_settles_with_completed_or_failed_from": "0.98.0",
+    "v1_permission_subject_status_stays_pending": true,
+    "tool_statuses_already_decoded": [
+      "pending",
+      "in_progress",
+      "completed",
+      "failed"
+    ],
+    "tool_ids_remain_opaque_strings": true
+  },
+  "permissions_and_elicitation": {
+    "permission_choice_kinds_unchanged": [
+      "allow_once",
+      "allow_always",
+      "reject_once"
+    ],
+    "swallowtail_one_shot_allow_or_reject_subset_unchanged": true,
+    "no_persistent_permission_grant_added": true
+  },
+  "configuration_and_usage": {
+    "model_option_id_stays": "model",
+    "effort_option_id_stays": "effort",
+    "mode_option_id_stays": "mode",
+    "ultracode_option_id_from": "0.97.0",
+    "ultracode_option_id": "ultracode",
+    "swallowtail_does_not_select_ultracode": true,
+    "duplicate_model_display_names_disambiguated_from": "0.97.0",
+    "swallowtail_selects_model_value": true,
+    "usage_fields_unchanged": [
+      "inputTokens",
+      "outputTokens",
+      "cachedReadTokens",
+      "cachedWriteTokens",
+      "totalTokens"
+    ],
+    "selected_stop_reason_domain_unchanged": [
+      "end_turn",
+      "cancelled",
+      "max_tokens",
+      "max_turn_requests",
+      "refusal"
+    ],
+    "usage_limit_after_compaction_still_settles_end_turn": true,
+    "unknown_stop_reason_fails_closed": true
+  },
+  "bounded_unmapped": {
+    "ultracode_config_option_from": "0.97.0",
+    "session_batch_get_requires_session_index_from": "0.98.0",
+    "async_task_monitors_require_async_tasks_from": "0.98.0",
+    "experimental_v2_unqualified": true
+  },
+  "separate_live_gate": {
+    "http_mcp_mapping_claimed_at_exact_points_only": [
+      "0.79.0",
+      "0.81.2"
+    ],
+    "newer_http_mcp_live_evidence": false
+  },
+  "selected_compatible_because": [
+    "dist/index.js and dist/serve.js stay byte-identical, so an unset CLAUDE_AGENT_ACP_PROTOCOL still serves a protocolVersion 1 client the v1 agent",
+    "model, effort, and mode ids stay model, effort, and mode",
+    "ultracode is an extra config id Swallowtail does not select, and the config decoder already accepts that select or boolean shape",
+    "deleteSessionIfStored is byte-identical, so live close and stored or unstored delete response shapes stay empty objects for this non-AIR client",
+    "permission kinds, usage fields, and stop reasons stay inside the existing mapping",
+    "advisor results and SandboxNetworkAccess settlement use already-decoded tool statuses",
+    "AIR batch get and async-task monitors stay behind capabilities Swallowtail does not advertise",
+    "HTTP MCP live honouring stays exact to 0.79.0 and 0.81.2"
+  ],
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false
+}

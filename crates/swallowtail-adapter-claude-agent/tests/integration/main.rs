@@ -49,6 +49,8 @@ mod claude_agent_acp_0_81_2_identity;
 mod claude_agent_acp_0_87_0_identity;
 #[path = "../claude_agent_acp_0_96_0_identity.rs"]
 mod claude_agent_acp_0_96_0_identity;
+#[path = "../claude_agent_acp_0_98_0_identity.rs"]
+mod claude_agent_acp_0_98_0_identity;
 #[path = "../claude_agent_acp_identity.rs"]
 mod claude_agent_acp_identity;
 #[path = "../claude_agent_sdk_0_3_259_identity.rs"]

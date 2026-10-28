@@ -182,7 +182,7 @@ fn historical_0_81_2_identity_remains_qualified_after_0_87_0() {
     assert_eq!(protocol["provider_prompt_sent"], false);
 
     assert_eq!(CLAUDE_AGENT_ACP_BASELINE_VERSION, "0.53.0");
-    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.96.0");
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.98.0");
     assert_ne!(
         CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.79.0",
         "raising the qualified ceiling must not reuse the Research 361 honouring pin"
@@ -205,7 +205,7 @@ fn historical_0_81_2_identity_remains_qualified_after_0_87_0() {
     for version in [
         "0.66.0", "0.69.0", "0.70.0", "0.71.0", "0.72.0", "0.73.0", "0.74.0", "0.75.0", "0.75.1",
         "0.76.0", "0.77.0", "0.78.0", "0.79.0", "0.80.0", "0.81.0", "0.81.1", "0.81.2", "0.82.0",
-        "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0", "0.96.0",
+        "0.83.0", "0.84.0", "0.85.0", "0.85.1", "0.86.0", "0.87.0", "0.96.0", "0.97.0", "0.98.0",
     ] {
         assert!(matches!(
             claim.assess(&version_value(version)),
@@ -217,7 +217,7 @@ fn historical_0_81_2_identity_remains_qualified_after_0_87_0() {
     }
     assert!(!claim.permits(&version_value("0.58.0")));
     assert!(matches!(
-        claim.assess(&version_value("0.97.0")),
+        claim.assess(&version_value("0.99.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert_eq!(

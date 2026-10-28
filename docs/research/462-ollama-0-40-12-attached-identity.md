@@ -1,4 +1,4 @@
-# Ollama 0.40.12 Attached Identity and Qualification
+# Ollama 0.40.12 Attached Identity and Stop
 
 **Task:** `ollama.attached` only, `swallowtail-adapter-ollama`  
 **Observed:** 2026-10-28  

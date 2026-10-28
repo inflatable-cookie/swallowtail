@@ -50,13 +50,18 @@ annotated Git tags from the canonical repository.
   the `version-currentness` lane owns qualifying the then-current official
   stable. `antigravity.headless` stays at exact `1.2.11`. See Research 449.
 - qualify `claude-code.headless` and, separately, `claude-code.response-only`
-  through official stable `2.1.310`. Headless keeps deprecated
+  through official stable `2.1.312`. Headless keeps deprecated
   `stream-json.v1` on `2.1.220..=2.1.286` and maintained `stream-json.v2` on
-  `2.1.287..=2.1.310`. Response-only keeps its three segments and extends
-  maintained `stream-json.v3` from `2.1.293` through `2.1.310`. Both stay
-  `AllowUnverified`, keep their baselines and claim ids, and now exclude
-  unpublished `2.1.297` and `2.1.298`. `2.1.311` is `UnverifiedNewer`. The
-  optional maximum-turn gate stays on the Research 226 set. See Research 445.
+  `2.1.287..=2.1.312`. Response-only keeps its three segments and extends
+  maintained `stream-json.v3` through `2.1.312`. Both stay `AllowUnverified`,
+  keep their baselines and claim ids, and exclude unpublished `2.1.244`,
+  `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`,
+  `2.1.297`, and `2.1.298`. `2.1.311` and `2.1.312` qualify on the existing
+  behavior revisions. `2.1.313` is `UnverifiedNewer`. The optional
+  maximum-turn gate stays on the Research 226 set. Research 459 extends
+  Research 445. `cc-plugin-claude-platform`, registered from `2.1.311`, stays
+  unselected: print mode fails its interactive availability gate. Claude Agent ACP and the
+  Claude Agent SDK stay on their own claims.
 - qualify `claude-agent.acp` through official stable `0.98.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 460).
   The maintained segment is `0.66.0..=0.98.0`. Baseline `0.53.0`, claim id

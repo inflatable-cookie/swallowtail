@@ -1,0 +1,187 @@
+{
+  "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. Hashes match dist-inventory.json. No downloaded executable was run.",
+  "downloaded_artifacts_executed": false,
+  "provider_prompt_sent": false,
+  "live_session": false,
+  "release_notes_are_not_compatibility_proof": true,
+  "ceiling_artifacts": {
+    "claude-code-darwin-arm64": {
+      "version": "2.1.312",
+      "artifact_file": "claude",
+      "artifact_sha256": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620"
+    },
+    "claude-code-linux-x64": {
+      "version": "2.1.312",
+      "artifact_file": "claude",
+      "artifact_sha256": "4f4178ce41d83e23341ebfbaecdbcf8ea6bf7baea0690025abe49eeec3a5d01d"
+    }
+  },
+  "identifier_stable_literals": {
+    "prompt_ok_false_log": "Hooks: Prompt hook condition was not met:",
+    "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1",
+    "pretooluse_deny_before_dispatch": "Execution stopped by PreToolUse hook",
+    "rewrite_ask_rule": "ask rule on hook-rewritten input",
+    "rewrite_push": "hookRewrites.push",
+    "stop_cap_default_8": "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8",
+    "stop_hook_active_true": "stopHookActive:!0",
+    "plugin_hook_input_undeliverable": "this tool input could not be given to a hook that checks it, so the tool was not run",
+    "updatedinput_reserved_key": "returned updatedInput with a key starting with",
+    "updatedinput_tool_not_run": "The tool was not run."
+  },
+  "v2_selected_path_at_2_1_312": {
+    "claude-code-darwin-arm64": {
+      "prompt_ok_false_blocks": "if(!mt.data.ok){if(mt.data.impossible===!0&&q)return t(`Hooks: Prompt hook condition judged impossible: ${mt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:mt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${mt.data.reason}`);let It=SEr(b,`[${e.prompt}]:`)?kl(e.prompt,kEr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${It}]: ${mt.data.reason}`,command:It,...Bee(r,{reason:mt.data.reason})},preventContinuation:!q&&e.continueOnBlock!==!0,stopReason:mt.data.reason}}",
+      "pretooluse_deny_before_dispatch": "if(cn&&!as)as=`Execution stopped by PreToolUse hook${uo?`: ${uo}`:\"\"}`;if(No.decisionReason?.type===\"hook\")as+=jnn(e.name,qt,s.options.tools,ie(s),h3n(s));let Ls=as,Mi=[{type:\"tool_result\",content:Ls,is_error:!0,tool_use_id:n}]",
+      "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:Ss.has(ls.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:ls.updatedInput})",
+      "stop_block_cap_default_8": "let ze=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(ze>0&&Ce>ze){a(\"tengu_stop_hook_block_count\",{count:Ce,is_subagent:Mee(v.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:me});let oe=`A hook blocked the turn from ending ${Ce} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+      "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||eQ(n)){let ke=cyt(await sA(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(ke)return ke.behavior===\"ask\"?{behavior:\"deny\",message:ke.message,decisionReason:ke.decisionReason??NQr}:ke}",
+      "rewrite_ask_rule_const": "var LQr=\"ask rule on hook-rewritten input\",pAn={type:\"asyncAgent\",reason:LQr}",
+      "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:X()?\"\":pm(h),agent_type:w??Te.agent_type??\"\",last_assistant_message:be,...we}:{...Te,hook_event_name:\"Stop\",stop_hook_active:s",
+      "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:Ce,turnCount:te},messages:[...G,...ae,...de,...ge.blockingErrors],toolUseContext:v,compactTracking:ht,transition:{reason:\"stop_hook_blocking\"}",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1"
+    },
+    "claude-code-linux-x64": {
+      "prompt_ok_false_blocks": "if(!mt.data.ok){if(mt.data.impossible===!0&&q)return t(`Hooks: Prompt hook condition judged impossible: ${mt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:mt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${mt.data.reason}`);let It=yEr(S,`[${e.prompt}]:`)?kl(e.prompt,hEr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${It}]: ${mt.data.reason}`,command:It,...Mee(r,{reason:mt.data.reason})},preventContinuation:!q&&e.continueOnBlock!==!0,stopReason:mt.data.reason}}",
+      "pretooluse_deny_before_dispatch": "if(cn&&!as)as=`Execution stopped by PreToolUse hook${uo?`: ${uo}`:\"\"}`;if($o.decisionReason?.type===\"hook\")as+=Hnn(e.name,qt,s.options.tools,ae(s),X4n(s));let js=as,Mi=[{type:\"tool_result\",content:js,is_error:!0,tool_use_id:n}]",
+      "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:_s.has(ls.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:ls.updatedInput})",
+      "stop_block_cap_default_8": "let tt=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(tt>0&&Me>tt){a(\"tengu_stop_hook_block_count\",{count:Me,is_subagent:Tee(A.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:fe});let ne=`A hook blocked the turn from ending ${Me} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+      "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||KQ(n)){let ke=oyt(await nC(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(ke)return ke.behavior===\"ask\"?{behavior:\"deny\",message:ke.message,decisionReason:ke.decisionReason??p7r}:ke}",
+      "rewrite_ask_rule_const": "var f7r=\"ask rule on hook-rewritten input\",YAn={type:\"asyncAgent\",reason:f7r}",
+      "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:X()?\"\":fm(h),agent_type:w??ve.agent_type??\"\",last_assistant_message:Se,...we}:{...ve,hook_event_name:\"Stop\",stop_hook_active:s",
+      "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:Me,turnCount:oe},messages:[...H,...de,...ce,...he.blockingErrors],toolUseContext:A,compactTracking:St,transition:{reason:\"stop_hook_blocking\"}",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1"
+    }
+  },
+  "structure_identical_across_2_1_310_through_2_1_312": true,
+  "identifier_remangling_only": true,
+  "embedded_changelog_lag": {
+    "compact_and_continue_note": "Claude Code now compacts the conversation and continues",
+    "stream_json_escape_note": "DEL, C1 control and Unicode format characters",
+    "present_in_2_1_311_js": false,
+    "present_in_2_1_312_embedded_changelog": true,
+    "observation_scope": "The byte search dates the embedded changelog string, not the implementation. Selected-path evidence is the measured JS."
+  },
+  "hop_comparison": {
+    "compared_versions": [
+      "2.1.310",
+      "2.1.311",
+      "2.1.312"
+    ],
+    "selected_js_keys": [
+      "prompt_ok_false_blocks",
+      "pretooluse_deny_before_dispatch",
+      "rewrite_recheck_push",
+      "rewrite_recheck_ask_to_deny",
+      "rewrite_ask_rule_const",
+      "stop_hook_active_input",
+      "stop_hook_active_reentry",
+      "stop_block_cap_default_8",
+      "plugin_fail_closed",
+      "reserved_key_deny"
+    ],
+    "per_version": {
+      "2.1.310": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd",
+          "selected_js": {
+            "prompt_ok_false_blocks": "if(!gt.data.ok){if(gt.data.impossible===!0&&K)return t(`Hooks: Prompt hook condition judged impossible: ${gt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:gt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:q,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${gt.data.reason}`);let At=uBr(b,`[${e.prompt}]:`)?kl(e.prompt,dBr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${At}]: ${gt.data.reason}`,command:At,..._Z(r,{reason:gt.data.reason})},preventContinuation:!K&&e.continueOnBlock!==!0,stopReason:gt.data.reason}}",
+            "pretooluse_deny_before_dispatch": "if(fn&&!Yr)Yr=`Execution stopped by PreToolUse hook${Vn?`: ${Vn}`:\"\"}`;if(Oo.decisionReason?.type===\"hook\")Yr+=mpn(e.name,At,s.options.tools,ae(s),Uzn(s));let ma=Yr,cr=[{type:\"tool_result\",content:ma,is_error:!0,tool_use_id:n}]",
+            "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:Oo.has(pr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:pr.updatedInput})",
+            "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||dne(n)){let Se=Mmt(await BT(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(Se)return Se.behavior===\"ask\"?{behavior:\"deny\",message:Se.message,decisionReason:Se.decisionReason??S9r}:Se}",
+            "rewrite_ask_rule_const": "var _9r=\"ask rule on hook-rewritten input\",XEn={type:\"asyncAgent\",reason:_9r}",
+            "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:J()?\"\":Fm(h),agent_type:w??ve.agent_type??\"\",last_assistant_message:be,...we}:{...ve,hook_event_name:\"Stop\",stop_hook_active:s",
+            "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:be,turnCount:Z},messages:[...j,...ne,...me,...le.blockingErrors],toolUseContext:M,compactTracking:pt,transition:{reason:\"stop_hook_blocking\"}",
+            "stop_block_cap_default_8": "let he=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(he>0&&be>he){a(\"tengu_stop_hook_block_count\",{count:be,is_subagent:dZ(M.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:oe});let ee=`A hook blocked the turn from ending ${be} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+            "plugin_fail_closed": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!_Et(t)?void 0:qDe[e];return Object.hasOwn(qDe,e)?f?.(s?L:Z):o[e]}var pyn=\"a hook that checks this result could not hand back its answer\"",
+            "reserved_key_deny": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Ig(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Wme(e,r)} returned updatedInput with a key starting with \"${mzt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Gme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${uqe}`):{...b,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run."
+          }
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56",
+          "selected_js": {
+            "prompt_ok_false_blocks": "if(!mt.data.ok){if(mt.data.impossible===!0&&V)return t(`Hooks: Prompt hook condition judged impossible: ${mt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:mt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:K,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${mt.data.reason}`);let Ct=BBr(S,`[${e.prompt}]:`)?kl(e.prompt,FBr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${Ct}]: ${mt.data.reason}`,command:Ct,...cZ(r,{reason:mt.data.reason})},preventContinuation:!V&&e.continueOnBlock!==!0,stopReason:mt.data.reason}}",
+            "pretooluse_deny_before_dispatch": "if(fn&&!Yr)Yr=`Execution stopped by PreToolUse hook${Kn?`: ${Kn}`:\"\"}`;if(Oo.decisionReason?.type===\"hook\")Yr+=Yfn(e.name,Ct,s.options.tools,ae(s),b2n(s));let ga=Yr,dr=[{type:\"tool_result\",content:ga,is_error:!0,tool_use_id:n}]",
+            "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:Oo.has(fr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:fr.updatedInput})",
+            "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||ene(n)){let Se=Amt(await $A(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(Se)return Se.behavior===\"ask\"?{behavior:\"deny\",message:Se.message,decisionReason:Se.decisionReason??Y6r}:Se}",
+            "rewrite_ask_rule_const": "var q6r=\"ask rule on hook-rewritten input\",Dvn={type:\"asyncAgent\",reason:q6r}",
+            "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:J()?\"\":$m(h),agent_type:w??Te.agent_type??\"\",last_assistant_message:be,...we}:{...Te,hook_event_name:\"Stop\",stop_hook_active:s",
+            "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:ke,turnCount:ee},messages:[...Q,...se,...fe,...de.blockingErrors],toolUseContext:M,compactTracking:ft,transition:{reason:\"stop_hook_blocking\"}",
+            "stop_block_cap_default_8": "let Se=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(Se>0&&ke>Se){a(\"tengu_stop_hook_block_count\",{count:ke,is_subagent:tZ(M.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:ne});let te=`A hook blocked the turn from ending ${ke} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+            "plugin_fail_closed": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!uvt(t)?void 0:jLe[e];return Object.hasOwn(jLe,e)?f?.(s?L:Z):o[e]}var Yhn=\"a hook that checks this result could not hand back its answer\"",
+            "reserved_key_deny": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Ig(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Wme(e,r)} returned updatedInput with a key starting with \"${gzt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Gme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${aqe}`):{...S,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run."
+          }
+        }
+      },
+      "2.1.311": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "85d8c08707fcfd1e78ffa0204eefbc6ec9e4fe22f375fb2767ef85d957ed3161",
+          "selected_js": {
+            "prompt_ok_false_blocks": "if(!pt.data.ok){if(pt.data.impossible===!0&&V)return t(`Hooks: Prompt hook condition judged impossible: ${pt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:pt.data.reason,message:tn({type:\"hook_success\",hookName:n,toolUseID:q,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${pt.data.reason}`);let Pt=yTr(b,`[${e.prompt}]:`)?Tl(e.prompt,hTr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${Pt}]: ${pt.data.reason}`,command:Pt,...xee(r,{reason:pt.data.reason})},preventContinuation:!V&&e.continueOnBlock!==!0,stopReason:pt.data.reason}}",
+            "pretooluse_deny_before_dispatch": "if(ln&&!Cs)Cs=`Execution stopped by PreToolUse hook${qn?`: ${qn}`:\"\"}`;if(rr.decisionReason?.type===\"hook\")Cs+=Htn(e.name,Kt,s.options.tools,ae(s),i3n(s));let $s=Cs,ii=[{type:\"tool_result\",content:$s,is_error:!0,tool_use_id:n}]",
+            "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:xr.has(tr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:tr.updatedInput})",
+            "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||vre(n)){let be=Yht(await nA(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(be)return be.behavior===\"ask\"?{behavior:\"deny\",message:be.message,decisionReason:be.decisionReason??dQr}:be}",
+            "rewrite_ask_rule_const": "var lQr=\"ask rule on hook-rewritten input\",rAn={type:\"asyncAgent\",reason:lQr}",
+            "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:Y()?\"\":am(h),agent_type:w??ve.agent_type??\"\",last_assistant_message:we,...Te}:{...ve,hook_event_name:\"Stop\",stop_hook_active:s",
+            "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:Te,turnCount:te},messages:[...G,...se,...le,...pe.blockingErrors],toolUseContext:v,compactTracking:yt,transition:{reason:\"stop_hook_blocking\"}",
+            "stop_block_cap_default_8": "let Ye=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(Ye>0&&Te>Ye){a(\"tengu_stop_hook_block_count\",{count:Te,is_subagent:bee(v.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:ce});let oe=`A hook blocked the turn from ending ${Te} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+            "plugin_fail_closed": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!Bkt(t)?void 0:VNe[e];return Object.hasOwn(VNe,e)?f?.(s?L:Z):o[e]}var nwn=\"a hook that checks this result could not hand back its answer\"",
+            "reserved_key_deny": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Bg(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Ime(e,r)} returned updatedInput with a key starting with \"${djt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Dme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${aWe}`):{...b,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run."
+          }
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "86dc1fcc69498159eaf15f446613e847010f9036bfbbdffd4c49350be8489ada",
+          "selected_js": {
+            "prompt_ok_false_blocks": "if(!ft.data.ok){if(ft.data.impossible===!0&&q)return t(`Hooks: Prompt hook condition judged impossible: ${ft.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:ft.data.reason,message:tn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${ft.data.reason}`);let Pt=cTr(S,`[${e.prompt}]:`)?Al(e.prompt,uTr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${Pt}]: ${ft.data.reason}`,command:Pt,...wee(r,{reason:ft.data.reason})},preventContinuation:!q&&e.continueOnBlock!==!0,stopReason:ft.data.reason}}",
+            "pretooluse_deny_before_dispatch": "if(ln&&!xs)xs=`Execution stopped by PreToolUse hook${qn?`: ${qn}`:\"\"}`;if(rr.decisionReason?.type===\"hook\")xs+=Ntn(e.name,Kt,s.options.tools,ae(s),U4n(s));let js=xs,di=[{type:\"tool_result\",content:js,is_error:!0,tool_use_id:n}]",
+            "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:xr.has(tr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:tr.updatedInput})",
+            "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||gre(n)){let Se=Wht(await ZA(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(Se)return Se.behavior===\"ask\"?{behavior:\"deny\",message:Se.message,decisionReason:Se.decisionReason??FQr}:Se}",
+            "rewrite_ask_rule_const": "var $Qr=\"ask rule on hook-rewritten input\",UAn={type:\"asyncAgent\",reason:$Qr}",
+            "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:Y()?\"\":am(h),agent_type:w??Ee.agent_type??\"\",last_assistant_message:we,...ve}:{...Ee,hook_event_name:\"Stop\",stop_hook_active:s",
+            "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:Te,turnCount:oe},messages:[...H,...ie,...ce,...me.blockingErrors],toolUseContext:E,compactTracking:_t,transition:{reason:\"stop_hook_blocking\"}",
+            "stop_block_cap_default_8": "let tt=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(tt>0&&Te>tt){a(\"tengu_stop_hook_block_count\",{count:Te,is_subagent:fee(E.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:pe});let ne=`A hook blocked the turn from ending ${Te} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+            "plugin_fail_closed": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!Hkt(t)?void 0:UNe[e];return Object.hasOwn(UNe,e)?f?.(s?L:Z):o[e]}var $Sn=\"a hook that checks this result could not hand back its answer\"",
+            "reserved_key_deny": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${Bg(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${Lme(e,r)} returned updatedInput with a key starting with \"${RWt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?Nme(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${wWe}`):{...S,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run."
+          }
+        }
+      },
+      "2.1.312": {
+        "claude-code-darwin-arm64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620",
+          "selected_js": {
+            "prompt_ok_false_blocks": "if(!mt.data.ok){if(mt.data.impossible===!0&&q)return t(`Hooks: Prompt hook condition judged impossible: ${mt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:mt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${mt.data.reason}`);let It=SEr(b,`[${e.prompt}]:`)?kl(e.prompt,kEr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${It}]: ${mt.data.reason}`,command:It,...Bee(r,{reason:mt.data.reason})},preventContinuation:!q&&e.continueOnBlock!==!0,stopReason:mt.data.reason}}",
+            "pretooluse_deny_before_dispatch": "if(cn&&!as)as=`Execution stopped by PreToolUse hook${uo?`: ${uo}`:\"\"}`;if(No.decisionReason?.type===\"hook\")as+=jnn(e.name,qt,s.options.tools,ie(s),h3n(s));let Ls=as,Mi=[{type:\"tool_result\",content:Ls,is_error:!0,tool_use_id:n}]",
+            "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:Ss.has(ls.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:ls.updatedInput})",
+            "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||eQ(n)){let ke=cyt(await sA(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(ke)return ke.behavior===\"ask\"?{behavior:\"deny\",message:ke.message,decisionReason:ke.decisionReason??NQr}:ke}",
+            "rewrite_ask_rule_const": "var LQr=\"ask rule on hook-rewritten input\",pAn={type:\"asyncAgent\",reason:LQr}",
+            "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:X()?\"\":pm(h),agent_type:w??Te.agent_type??\"\",last_assistant_message:be,...we}:{...Te,hook_event_name:\"Stop\",stop_hook_active:s",
+            "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:Ce,turnCount:te},messages:[...G,...ae,...de,...ge.blockingErrors],toolUseContext:v,compactTracking:ht,transition:{reason:\"stop_hook_blocking\"}",
+            "stop_block_cap_default_8": "let ze=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(ze>0&&Ce>ze){a(\"tengu_stop_hook_block_count\",{count:Ce,is_subagent:Mee(v.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:me});let oe=`A hook blocked the turn from ending ${Ce} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+            "plugin_fail_closed": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!lCt(t)?void 0:rFe[e];return Object.hasOwn(rFe,e)?f?.(s?L:Z):o[e]}var awn=\"a hook that checks this result could not hand back its answer\"",
+            "reserved_key_deny": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${ph(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${oge(e,r)} returned updatedInput with a key starting with \"${uWt}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?rge(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${MWe}`):{...b,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run."
+          }
+        },
+        "claude-code-linux-x64": {
+          "artifact_file": "claude",
+          "artifact_sha256": "4f4178ce41d83e23341ebfbaecdbcf8ea6bf7baea0690025abe49eeec3a5d01d",
+          "selected_js": {
+            "prompt_ok_false_blocks": "if(!mt.data.ok){if(mt.data.impossible===!0&&q)return t(`Hooks: Prompt hook condition judged impossible: ${mt.data.reason}`),{hook:e,outcome:\"success\",impossible:!0,stopReason:mt.data.reason,message:nn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${mt.data.reason}`);let It=yEr(S,`[${e.prompt}]:`)?kl(e.prompt,hEr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${It}]: ${mt.data.reason}`,command:It,...Mee(r,{reason:mt.data.reason})},preventContinuation:!q&&e.continueOnBlock!==!0,stopReason:mt.data.reason}}",
+            "pretooluse_deny_before_dispatch": "if(cn&&!as)as=`Execution stopped by PreToolUse hook${uo?`: ${uo}`:\"\"}`;if($o.decisionReason?.type===\"hook\")as+=Hnn(e.name,qt,s.options.tools,ae(s),X4n(s));let js=as,Mi=[{type:\"tool_result\",content:js,is_error:!0,tool_use_id:n}]",
+            "rewrite_recheck_push": "updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:_s.has(ls.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:ls.updatedInput})",
+            "rewrite_recheck_ask_to_deny": "if(n.requiresUserInteraction?.()||KQ(n)){let ke=oyt(await nC(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(ke)return ke.behavior===\"ask\"?{behavior:\"deny\",message:ke.message,decisionReason:ke.decisionReason??p7r}:ke}",
+            "rewrite_ask_rule_const": "var f7r=\"ask rule on hook-rewritten input\",YAn={type:\"asyncAgent\",reason:f7r}",
+            "stop_hook_active_input": "hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:X()?\"\":fm(h),agent_type:w??ve.agent_type??\"\",last_assistant_message:Se,...we}:{...ve,hook_event_name:\"Stop\",stop_hook_active:s",
+            "stop_hook_active_reentry": "stopHookActive:!0,stopHookBlockingCount:Me,turnCount:oe},messages:[...H,...de,...ce,...he.blockingErrors],toolUseContext:A,compactTracking:St,transition:{reason:\"stop_hook_blocking\"}",
+            "stop_block_cap_default_8": "let tt=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(tt>0&&Me>tt){a(\"tengu_stop_hook_block_count\",{count:Me,is_subagent:Tee(A.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:fe});let ne=`A hook blocked the turn from ending ${Me} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.",
+            "plugin_fail_closed": "var L=\"this tool input could not be given to a hook that checks it, so the tool was not run\";function ee(e,t){let o={\"classic.PreToolUse\":{deny:L},\"classic.PermissionRequest\":{decision:{behavior:\"deny\",message:L}}},s=e===\"tool.call\"||e===\"tool.check\",f=e===\"session.compact\"||((p)=>e===\"session.append\")(t)&&!nTt(t)?void 0:JNe[e];return Object.hasOwn(JNe,e)?f?.(s?L:Z):o[e]}var WSn=\"a hook that checks this result could not hand back its answer\"",
+            "reserved_key_deny": "refusedBy:\"reserved_key\"}),t(`${r.event} hook's updatedInput for ${fh(e)} was refused for a reserved key`,{level:\"warn\"});let Q=`${nge(e,r)} returned updatedInput with a key starting with \"${N1t}\" (in any letter case)`;return{ok:!1,deny:r.event===\"PermissionRequest\"?oge(e,r,`${Q} that Claude Code did not set, or did not set to that value. Only Claude Code sets such keys: send one back unchanged, and add none. The tool was not run.\n${t1e}`):{...S,message:`${Q}. Only Claude Code sets such keys. Remove the key from updatedInput. The tool was not run."
+          }
+        }
+      }
+    }
+  }
+}

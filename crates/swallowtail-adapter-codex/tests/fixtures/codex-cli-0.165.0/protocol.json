@@ -24,12 +24,6 @@
   },
   "classifiedDeltas": [
     {
-      "path": "codex-rs/exec/src/cli.rs",
-      "hop": "0.164.0->0.165.0",
-      "class": "byte-identical",
-      "reason": "selected exec argv definitions stay, including exec --json --sandbox read-only"
-    },
-    {
       "path": "codex-rs/exec/src/lib.rs",
       "hop": "0.164.0->0.165.0",
       "class": "unselected",
@@ -44,8 +38,8 @@
     {
       "path": "codex-rs/app-server/src/request_processors/thread_processor.rs",
       "hop": "0.164.0->0.165.0",
-      "class": "unmapped-attached-fork-and-resume-cache",
-      "reason": "thread/fork gains optional attachToSource default false. True marks the fork attached, skips ThreadStarted, and is incompatible with ephemeral or deferGoalContinuation. thread/list gains optional attachedToThreadId; omitting it keeps ordinary listings and hides attached threads. Paginated resume may reuse a current model-context revision. Archive, unarchive, and delete handler bodies are not in this diff. The adapter sends none of the new fields."
+      "class": "selected-paginated-resume-and-unmapped-attached-fork",
+      "reason": "Selected thread/resume can use paginated local history. After releasing locks for config loading, 0.165.0 retains the prepared model context, rechecks the stored thread, and reuses it only if thread id, rollout path and history revision match and is_model_context_current returns true. A missing revision, mismatch, false or error reloads latest model context. Explicit request history and non-paginated history do not use this cache. The adapter also omits attachToSource and attachedToThreadId; external attached children remain reachable."
     },
     {
       "path": "codex-rs/app-server/src/request_processors/thread_lifecycle.rs",
@@ -94,12 +88,6 @@
       "hop": "0.164.0->0.165.0",
       "class": "unselected",
       "reason": "adds mod thread_memory for the unmapped experimental read. Selected processor modules stay."
-    },
-    {
-      "path": "codex-rs/linux-sandbox/src/bwrap.rs",
-      "hop": "0.164.0->0.165.0",
-      "class": "byte-identical",
-      "reason": "selected Linux sandbox source stays. Shipped codex-resources/bwrap changed for an unproven reason: 3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb at 0.164.0 and 755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36 at 0.165.0. .aws remains in PROTECTED_METADATA_PATH_NAMES. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots."
     },
     {
       "path": "codex-rs/thread-store/src/local/delete_thread.rs",
@@ -176,6 +164,26 @@
     "codex-rs/protocol/src/protocol.rs": {
       "0.164.0": "9dc4ca7be855139716a72f1d291b5829affc07a19394647d1d9bbb09d4091941",
       "0.165.0": "7b896ec457c55d6d8edb959cc08cc7e903fbc73b643cbe98cccec66c2325b1e4"
+    },
+    "codex-rs/thread-store/src/local/delete_thread.rs": {
+      "0.164.0": "c42ee0cef1780ec3e2928dee280f6b28f51cf89431301405512e353e9bb4ba5a",
+      "0.165.0": "f4e6406f1703d2ca29ae400e7ebefdfe3ac3c688386a8bb558a1e0b8c01afeda"
+    },
+    "codex-rs/rollout/src/rollout_reference_index.rs": {
+      "0.164.0": "133d782e30f9f8b646194a1311d5ea8c3f8e21fd00108a77ad63b63515f908a6",
+      "0.165.0": "0400f418a8a472cfbda3f65308fb18924582a8a497f917413ff84cdbe5b3a45f"
+    },
+    "codex-rs/thread-store/src/store.rs": {
+      "0.164.0": "1447b7e353974d3cadadbb57dfb3374cdf747040f36aabb8ede33245a714ad29",
+      "0.165.0": "2cd69d8fc5747db363c28423b94edceef6c9d4adc8b650d44315f309d873ccb8"
+    },
+    "codex-rs/thread-store/src/local/list_threads.rs": {
+      "0.164.0": "4f2fe5d6823d85b2b0983e35e791a0aa23d5bdc26d8e04aa3fcde9fe79a147f9",
+      "0.165.0": "6c0e51b81c12a68f965b03633df6911cf90edf7b09ca8533db35e4d39c5afade"
+    },
+    "codex-rs/state/migrations/0062_threads_attached_parent.sql": {
+      "0.164.0": null,
+      "0.165.0": "d0ea9bbff023692fb2076bd9b3ba9f750f6382161a01a4b51a19bd84b65358bd"
     }
   },
   "execReachability": {
@@ -190,7 +198,11 @@
       "definedAt": "codex-rs/protocol/src/permissions.rs:1843",
       "permissionsFileByteIdentical": true,
       "selectedExecCallers": [],
-      "awsProtectionRemains": true
+      "awsProtectionRemains": true,
+      "callers": [
+        "codex-rs/exec-server/src/bubblewrap.rs",
+        "codex-rs/mxc-sandbox/src/lib.rs"
+      ]
     },
     "linuxSandboxHelper": {
       "bwrapSourceByteIdentical": true,
@@ -249,6 +261,19 @@
           "ThreadMemoryRead"
         ]
       }
+    },
+    "paginatedResume": {
+      "selected": true,
+      "preparedContext": "Retained across config loading and lock release, then the thread and history are rechecked.",
+      "reuseConditions": [
+        "paginated stored thread",
+        "matching conversation id",
+        "matching rollout path",
+        "revision present",
+        "is_model_context_current returns true"
+      ],
+      "fallback": "Missing or mismatched context or revision, false, or error reloads latest model context; non-paginated path reads full history.",
+      "qualification": "Reachable change; impact on selected restoration and concurrent history requires follow-up."
     }
   },
   "schemaBoundaries": {

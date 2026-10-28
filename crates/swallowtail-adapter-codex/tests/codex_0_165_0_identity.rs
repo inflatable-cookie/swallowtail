@@ -227,10 +227,10 @@ fn selected_files_and_dispatch_are_classified() {
         "additive-optional"
     );
     assert_eq!(
-        classes["codex-rs/linux-sandbox/src/bwrap.rs"],
-        "byte-identical"
+        classes["codex-rs/app-server/src/request_processors/thread_processor.rs"],
+        "selected-paginated-resume-and-unmapped-attached-fork"
     );
-    assert_eq!(deltas.len(), 18);
+    assert_eq!(deltas.len(), 16);
     for path in [
         "codex-rs/thread-store/src/local/delete_thread.rs",
         "codex-rs/rollout/src/rollout_reference_index.rs",
@@ -242,6 +242,52 @@ fn selected_files_and_dispatch_are_classified() {
     }
     assert!(protocol["handlerTraces"]["threadDelete"]["externalParentLimitation"].is_string());
     assert!(protocol["execReachability"]["linuxSandboxHelper"]["provenanceGap"].is_string());
+
+    let guard_hashes = &protocol["contentSha256"];
+    assert_eq!(
+        guard_hashes["codex-rs/thread-store/src/local/delete_thread.rs"]["0.164.0"],
+        serde_json::json!("c42ee0cef1780ec3e2928dee280f6b28f51cf89431301405512e353e9bb4ba5a")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/thread-store/src/local/delete_thread.rs"]["0.165.0"],
+        serde_json::json!("f4e6406f1703d2ca29ae400e7ebefdfe3ac3c688386a8bb558a1e0b8c01afeda")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/rollout/src/rollout_reference_index.rs"]["0.164.0"],
+        serde_json::json!("133d782e30f9f8b646194a1311d5ea8c3f8e21fd00108a77ad63b63515f908a6")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/rollout/src/rollout_reference_index.rs"]["0.165.0"],
+        serde_json::json!("0400f418a8a472cfbda3f65308fb18924582a8a497f917413ff84cdbe5b3a45f")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/thread-store/src/store.rs"]["0.164.0"],
+        serde_json::json!("1447b7e353974d3cadadbb57dfb3374cdf747040f36aabb8ede33245a714ad29")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/thread-store/src/store.rs"]["0.165.0"],
+        serde_json::json!("2cd69d8fc5747db363c28423b94edceef6c9d4adc8b650d44315f309d873ccb8")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/thread-store/src/local/list_threads.rs"]["0.164.0"],
+        serde_json::json!("4f2fe5d6823d85b2b0983e35e791a0aa23d5bdc26d8e04aa3fcde9fe79a147f9")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/thread-store/src/local/list_threads.rs"]["0.165.0"],
+        serde_json::json!("6c0e51b81c12a68f965b03633df6911cf90edf7b09ca8533db35e4d39c5afade")
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/state/migrations/0062_threads_attached_parent.sql"]["0.164.0"],
+        Value::Null
+    );
+    assert_eq!(
+        guard_hashes["codex-rs/state/migrations/0062_threads_attached_parent.sql"]["0.165.0"],
+        serde_json::json!("d0ea9bbff023692fb2076bd9b3ba9f750f6382161a01a4b51a19bd84b65358bd")
+    );
+    assert_eq!(
+        protocol["handlerTraces"]["paginatedResume"]["selected"],
+        true
+    );
 
     let delete =
         &protocol["contentSha256"]["codex-rs/app-server/src/request_processors/thread_delete.rs"];

@@ -89,7 +89,7 @@ Byte-identical from `0.164.0` through `0.165.0`:
 
 Exec deny-glob / sandbox:
 
-- `with_expanded_deny_globs` stays at `protocol/src/permissions.rs:1843`. The only caller remains unselected exec-server bubblewrap. Selected exec has zero exec-server refs.
+- `with_expanded_deny_globs` stays at `protocol/src/permissions.rs:1843`. Callers are exec-server bubblewrap and mxc-sandbox; both are outside selected exec, which has zero exec-server refs.
 - `exec/src/lib.rs` sets `attached_to_thread_id: None` only inside `resolve_resume_thread_id`. Selected one-shot exec does not call it. The json_mode-gated bwrap warning stays skipped because selected uses `--json`.
 - Linux sandbox source is byte-identical. Shipped `codex-resources/bwrap` has an unproven byte difference: `3a81c19ad10a70436529c58e77898e2a447abe80167f813fc20ec34bd9eafdeb` at `0.164.0` and `755c8d6a9b893905a4aabab058bd6c02c453e5e8653adb84fc08e570607f3f36` at `0.165.0`. Linux `codex-path/rg` stays byte-identical. `.aws` remains in `PROTECTED_METADATA_PATH_NAMES`. The create-monitor stays removed. Selected exec read-only still has no workspace writable roots.
 
@@ -105,6 +105,18 @@ Unpublished interior patches, including the former synthetic `0.164.1`, stay
 inside the inclusive range and are not new exclusions. Kept gaps stay:
 `0.82.0`, `0.83.0`, `0.108.0`, `0.109.0`, `0.149.2`, `0.150.2`, `0.151.1`,
 `0.152.2`, `0.154.1`, and `0.155.2`. `0.165.0` and `0.165.1` remain `UnverifiedNewer`.
+
+Selected `thread/resume` also reaches the paginated history path for ordinary
+non-ephemeral local threads. In `thread_processor.rs`, after config loading
+releases the locks, 0.165.0 retains `PreparedResumeConfig.model_context` and
+rechecks the thread. `load_resume_initial_history_from_stored_thread` reuses
+it only for a paginated stored thread with matching conversation id and rollout
+path, a revision, and `is_model_context_current` returning true. A mismatch,
+missing revision, false or error reloads the latest model context. Explicit
+request history bypasses this stored-history path; non-paginated history reads
+the full history. The adapter sends `thread/resume`, so this is selected, not
+an unmapped cache. Its effect on restoration and concurrent history remains a
+qualification follow-up alongside the delete guard; no equivalence is claimed.
 
 ## Claim shape
 

@@ -6,6 +6,10 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- retain Codex exec, app-server and lifecycle qualification through `0.164.0`.
+  Official stable `0.165.0` remains `UnverifiedNewer` pending Linux shipped
+  bwrap provenance and selected attached-child delete and paginated resume
+  qualification. Research 463 retains the identity and concrete gates.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep

@@ -1,0 +1,61 @@
+{
+  "family": "opencode.acp",
+  "compared_versions": [
+    "1.19.4",
+    "1.19.5"
+  ],
+  "acp_sdk_pin": "0.21.0",
+  "protocol_version_constant": 1,
+  "source_slice": {
+    "selected_behavior_files": [
+      "packages/core/src/config/mcp.ts",
+      "packages/core/src/v1/config/mcp.ts",
+      "packages/opencode/src/acp/agent.ts",
+      "packages/opencode/src/acp/config-option.ts",
+      "packages/opencode/src/acp/content.ts",
+      "packages/opencode/src/acp/directory.ts",
+      "packages/opencode/src/acp/error.ts",
+      "packages/opencode/src/acp/event.ts",
+      "packages/opencode/src/acp/permission.ts",
+      "packages/opencode/src/acp/profile.ts",
+      "packages/opencode/src/acp/service.ts",
+      "packages/opencode/src/acp/session.ts",
+      "packages/opencode/src/acp/tool.ts",
+      "packages/opencode/src/acp/usage.ts",
+      "packages/opencode/src/cli/cmd/acp.ts",
+      "packages/opencode/src/mcp/index.ts",
+      "packages/opencode/src/server/routes/instance/httpapi/groups/mcp.ts",
+      "packages/opencode/src/server/routes/instance/httpapi/handlers/mcp.ts",
+      "packages/opencode/package.json"
+    ],
+    "route_behavior_files": [
+      "packages/core/src/config/mcp.ts",
+      "packages/core/src/v1/config/mcp.ts",
+      "packages/opencode/src/acp/agent.ts",
+      "packages/opencode/src/acp/config-option.ts",
+      "packages/opencode/src/acp/content.ts",
+      "packages/opencode/src/acp/directory.ts",
+      "packages/opencode/src/acp/error.ts",
+      "packages/opencode/src/acp/event.ts",
+      "packages/opencode/src/acp/permission.ts",
+      "packages/opencode/src/acp/profile.ts",
+      "packages/opencode/src/acp/service.ts",
+      "packages/opencode/src/acp/session.ts",
+      "packages/opencode/src/acp/tool.ts",
+      "packages/opencode/src/acp/usage.ts",
+      "packages/opencode/src/cli/cmd/acp.ts",
+      "packages/opencode/src/mcp/index.ts",
+      "packages/opencode/src/server/routes/instance/httpapi/groups/mcp.ts",
+      "packages/opencode/src/server/routes/instance/httpapi/handlers/mcp.ts"
+    ],
+    "package_manifest_file": "packages/opencode/package.json",
+    "route_behavior_files_byte_identical": true
+  },
+  "http_mcp_live_evidence": {
+    "qualified_exact_version": "1.18.18",
+    "transfer_to_1_19_5": false
+  },
+  "provider_prompt_sent": false,
+  "downloaded_artifact_executed": false,
+  "host_install_changed": false
+}

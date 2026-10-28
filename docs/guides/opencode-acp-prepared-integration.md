@@ -19,7 +19,7 @@ Preparation requires all of the following:
 
 - executable axis `opencode.executable`
 - a permitted OpenCode package in deprecated `1.18.18..=1.18.30`, maintained
-  `1.18.31..=1.18.35`, or maintained `1.19.0..=1.19.4`, or a later stable
+  `1.18.31..=1.18.35`, or maintained `1.19.0..=1.19.5`, or a later stable
   visible as `UnverifiedNewer`
 - host-approved `opencode` executable and isolated environment
 - `opencode_acp_host_account_access_profile` with no credential reference
@@ -30,8 +30,8 @@ The claim is `opencode.acp.executable-window-1`. Behavior
 `opencode.acp-v1.client-mcp-servers-v1` covers accepted-but-older
 `1.18.18..=1.18.30`. Compiled behavior
 `opencode.acp-v1.client-mcp-servers-v2` covers `1.18.31..=1.18.35` and
-`1.19.0..=1.19.4`. Unpublished `1.18.36` is incompatible. Later stables,
-starting at `1.19.5`, may run as visibly unverified without extending
+`1.19.0..=1.19.5`. Unpublished `1.18.36` is incompatible. Later stables,
+starting at `1.19.6`, may run as visibly unverified without extending
 guaranteed support.
 
 OpenCode answers `protocolVersion` `1` regardless of the requested revision.

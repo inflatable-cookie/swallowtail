@@ -62,14 +62,14 @@ fn current_qualified_server_health_is_accepted() {
 fn later_stable_server_health_is_visibly_unverified() {
     let assessment = classify_health(&serde_json::json!({
         "healthy": true,
-        "version": "1.19.5"
+        "version": "1.19.6"
     }))
     .expect("later stable health is permitted");
     let InterfaceCompatibilityAssessment::UnverifiedNewer(unverified) = assessment else {
         panic!("later stable server must remain visibly unverified");
     };
-    assert_eq!(unverified.version().as_str(), "1.19.5");
-    assert_eq!(unverified.latest_qualified().as_str(), "1.19.4");
+    assert_eq!(unverified.version().as_str(), "1.19.6");
+    assert_eq!(unverified.latest_qualified().as_str(), "1.19.5");
 }
 
 #[test]

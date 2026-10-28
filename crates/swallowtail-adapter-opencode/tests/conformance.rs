@@ -64,6 +64,7 @@ fn provider_neutral_closed_window_assertion_covers_opencode_range() {
         version("1.18.35"),
         version("1.19.0"),
         version("1.19.4"),
+        version("1.19.5"),
     ])
     .with_rejected([
         version("1.14.47"),
@@ -75,7 +76,7 @@ fn provider_neutral_closed_window_assertion_covers_opencode_range() {
         version("1.18.36"),
     ]);
     assert_closed_semantic_compatibility_window(&opencode_http_claim(), &case);
-    assert_unverified_newer_execution(&opencode_http_claim(), &version("1.19.5"));
+    assert_unverified_newer_execution(&opencode_http_claim(), &version("1.19.6"));
 }
 
 #[test]

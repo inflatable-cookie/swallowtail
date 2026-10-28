@@ -6,6 +6,15 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `opencode.http` and `opencode.acp` through official stable `1.19.5`
+  (Research 464). Both claims stay `AllowUnverified` and unflattened.
+  `opencode.http-sse.surface-19` keeps `1.18.11..=1.18.35` and extends
+  `1.19.0..=1.19.5`. `opencode.acp-v1.client-mcp-servers-v2` keeps
+  `1.18.31..=1.18.35` and extends `1.19.0..=1.19.5`. Deprecated ACP
+  `1.18.18..=1.18.30` stays. Unpublished `1.18.36` is incompatible.
+  `1.19.6` is `UnverifiedNewer`. HTTP MCP live honouring stays exact
+  `1.18.18`. ACP registry `opencode` `2.2.0` is the OpenCode 2 line and
+  is not this axis.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep

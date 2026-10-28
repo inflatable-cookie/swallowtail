@@ -148,7 +148,7 @@ fn deletion_segments_preserve_gaps_and_unverified_newer_posture() {
         opencode_http_claim().assess(gap.version()),
         InterfaceCompatibilityAssessment::Incompatible
     ));
-    let newer = "1.19.5";
+    let newer = "1.19.6";
     let binding = opencode_server_binding(newer).expect("newer example is safe");
     assert!(matches!(
         opencode_http_claim().assess(binding.version()),

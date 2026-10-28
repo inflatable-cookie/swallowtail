@@ -520,8 +520,10 @@ fn admitted_claim_extends_surface_19_without_flattening_or_covering_the_gap() {
     let fixture = json(CLAIM);
     let claim = opencode_http_claim();
     let acp = opencode_acp_claim();
-    assert_eq!(OPENCODE_LATEST_QUALIFIED_VERSION, "1.19.4");
-    assert_eq!(claim.latest_qualified().as_str(), "1.19.4");
+    assert_eq!(
+        claim.latest_qualified().as_str(),
+        OPENCODE_LATEST_QUALIFIED_VERSION
+    );
     assert_eq!(claim.id().as_str(), fixture["claim_id"]);
     assert_eq!(claim.id().as_str(), "opencode.http.server-window-1");
     assert_eq!(claim.axis().as_str(), "opencode.server");
@@ -555,7 +557,7 @@ fn admitted_claim_extends_surface_19_without_flattening_or_covering_the_gap() {
         claim.assess(gap.version()),
         InterfaceCompatibilityAssessment::Incompatible
     ));
-    let later = opencode_server_binding("1.19.5").unwrap();
+    let later = opencode_server_binding("1.19.6").unwrap();
     assert!(matches!(
         claim.assess(later.version()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)

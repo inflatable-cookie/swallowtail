@@ -136,12 +136,14 @@ fn acp_identity_keeps_a_separate_v2_extension() {
     );
     assert_eq!(protocol["provider_prompt_sent"], false);
     assert_eq!(protocol["downloaded_artifact_executed"], false);
-    assert_eq!(OPENCODE_ACP_LATEST_QUALIFIED_VERSION, "1.19.4");
     assert_eq!(claim.id().as_str(), "opencode.acp.executable-window-1");
     assert_eq!(claim.axis().as_str(), "opencode.executable");
     assert_ne!(claim.axis().as_str(), http.axis().as_str());
     assert_ne!(claim.id().as_str(), http.id().as_str());
-    assert_eq!(claim.latest_qualified().as_str(), "1.19.4");
+    assert_eq!(
+        claim.latest_qualified().as_str(),
+        OPENCODE_ACP_LATEST_QUALIFIED_VERSION
+    );
 
     let milestones: Vec<_> = claim.milestones().collect();
     assert_eq!(milestones.len(), 3);
@@ -154,7 +156,10 @@ fn acp_identity_keeps_a_separate_v2_extension() {
     assert_eq!(milestones[1].minimum().as_str(), "1.18.31");
     assert_eq!(milestones[1].maximum().as_str(), "1.18.35");
     assert_eq!(milestones[2].minimum().as_str(), "1.19.0");
-    assert_eq!(milestones[2].maximum().as_str(), "1.19.4");
+    assert_eq!(
+        milestones[2].maximum().as_str(),
+        OPENCODE_ACP_LATEST_QUALIFIED_VERSION
+    );
     assert_eq!(
         milestones[1].behavior_revision().as_str(),
         milestones[2].behavior_revision().as_str()
@@ -180,7 +185,7 @@ fn acp_identity_keeps_a_separate_v2_extension() {
         claim.assess(gap.version()),
         InterfaceCompatibilityAssessment::Incompatible
     ));
-    let later = opencode_acp_binding("1.19.5").unwrap();
+    let later = opencode_acp_binding("1.19.6").unwrap();
     assert!(matches!(
         claim.assess(later.version()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)

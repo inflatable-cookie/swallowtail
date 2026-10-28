@@ -1,0 +1,236 @@
+{
+  "selected_routes": [
+    "global.health",
+    "provider.list",
+    "session.create",
+    "session.prompt_async",
+    "event.subscribe",
+    "session.abort",
+    "session.delete",
+    "session.list",
+    "session.status",
+    "session.get",
+    "session.messages"
+  ],
+  "selected_openapi_paths": [
+    "/event",
+    "/global/event",
+    "/global/health",
+    "/provider",
+    "/session",
+    "/session/status",
+    "/session/{sessionID}",
+    "/session/{sessionID}/abort",
+    "/session/{sessionID}/message",
+    "/session/{sessionID}/prompt_async"
+  ],
+  "selected_openapi_path_objects_byte_identical": true,
+  "selected_route_declaration_and_handler_files_byte_identical": true,
+  "openapi_info_version": "1.0.0",
+  "openapi_path_count": 162,
+  "mapped_stable_files": [
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts",
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts",
+    "packages/opencode/src/session/compaction.ts",
+    "packages/opencode/src/session/message-v2.ts",
+    "packages/opencode/src/session/session.ts",
+    "packages/opencode/src/session/status.ts",
+    "packages/sdk/openapi.json"
+  ],
+  "gitlab_provider_source_byte_identical": [
+    "packages/core/src/plugin/provider/gitlab.ts",
+    "packages/opencode/src/provider/provider.ts",
+    "packages/opencode/src/provider/transform.ts"
+  ],
+  "acp_sdk_pin": "0.21.0",
+  "bundled_bun": "1.4.4",
+  "classified_mapped_deltas": [],
+  "classified_unmapped_deltas": [
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "bun.lock",
+      "classification": "Lockfile moves workspace package versions from 1.19.4 to 1.19.5 and gitlab-ai-provider from 6.19.0 to 6.23.1. No other package coordinate changes."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/core/package.json",
+      "classification": "Package version becomes 1.19.5 and gitlab-ai-provider moves from 6.19.0 to 6.23.1. In-repo GitLab provider source is unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/package.json",
+      "classification": "Package version becomes 1.19.5 and gitlab-ai-provider moves from 6.19.0 to 6.23.1. The @agentclientprotocol/sdk pin stays 0.21.0."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/account/account.ts",
+      "classification": "Drops an unused FetchHttpClient import. Account request handling is otherwise unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/cli/cmd/debug/agent.handler.ts",
+      "classification": "Drops an unused MessageV2 type import. The debug agent command body is unchanged and is not a selected route."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/cli/network.ts",
+      "classification": "Drops an unused Config type import. CLI network options are unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/config/config.ts",
+      "classification": "Drops an unused FetchHttpClient import. Config loading is otherwise unchanged. Swallowtail does not write OpenCode config."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/config/markdown.ts",
+      "classification": "Removes the unused fallbackSanitization re-export. parse() is unchanged. This is agent frontmatter, not an HTTP or ACP schema."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/control-plane/workspace.ts",
+      "classification": "Drops an unused FetchHttpClient import. Workspace control-plane behavior is otherwise unchanged and is not a selected route."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/effect/bootstrap-runtime.ts",
+      "classification": "Removed. The 1.19.4 tree has no importer. Selected HTTP handlers and ACP sources do not reference it."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/image/image.ts",
+      "classification": "Drops an unused MessageV2 type import. The PNG resize body is unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/installation/index.ts",
+      "classification": "Removes unused getReleaseType and isPreview helpers. CLI install metadata only. Server health does not read these functions."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/lsp/client.ts",
+      "classification": "Drops an unused Effect value import. The LSP client body is unchanged and is not a selected route."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/server/routes/instance/httpapi/groups/pty.ts",
+      "classification": "The PTY connect path now uses the shared PTY_CONNECT_PATH constant. PTY is not a selected operation."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/server/routes/instance/httpapi/middleware/authorization.ts",
+      "classification": "The PTY connect ticket bypass now matches the Effect route path plus the ticket query. Credential checks for every other route are unchanged. Swallowtail does not call PTY."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/server/shared/pty-ticket.ts",
+      "classification": "Replaces the PTY connect URL regex helpers with the route-path constant PTY_CONNECT_PATH. PTY is not a selected operation."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/server/shared/ui.ts",
+      "classification": "Removes the unused DEFAULT_CSP export. The CSP builder used by the server UI is unchanged. Swallowtail does not serve that UI."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/session/instruction.ts",
+      "classification": "Drops unused FetchHttpClient and MessageV2 imports. Instruction assembly is otherwise unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/session/llm.ts",
+      "classification": "Drops an unused MessageV2 type import. The LLM call body is unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/session/llm/request.ts",
+      "classification": "Drops an unused MessageV2 type import. Request construction is otherwise unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/session/overflow.ts",
+      "classification": "Drops unused Config and MessageV2 imports. The compaction buffer check is otherwise unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/session/prompt/copilot-gpt-5.txt",
+      "classification": "Removed. The 1.19.4 tree has no reference to this prompt file. It is not a selected HTTP or ACP payload."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/session/prompt/plan-reminder-anthropic.txt",
+      "classification": "Removed. The 1.19.4 tree has no reference to this prompt file. It is not a selected HTTP or ACP payload."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/skill/discovery.ts",
+      "classification": "Drops an unused FetchHttpClient import. Skill discovery is otherwise unchanged and is not a selected route."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/storage/schema.ts",
+      "classification": "Removed. The 1.19.4 tree has no importer. Selected session handlers do not reference this re-export barrel."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/sync/schema.ts",
+      "classification": "Removed. The 1.19.4 tree has no importer. Selected session handlers do not reference it."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/tool/plan-enter.txt",
+      "classification": "Removed. The 1.19.4 tree has no reference to this tool prompt. It is not a selected HTTP or ACP payload."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/util/defer.ts",
+      "classification": "Removed. The 1.19.4 tree has no importer. Selected routes do not reference it."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/util/filesystem.ts",
+      "classification": "Removes unused readArrayBuffer. The remaining read helpers are unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/util/repository.ts",
+      "classification": "Removes unused isRepositoryError. Repository URL parsing is otherwise unchanged and is not a selected route."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/util/rpc.ts",
+      "classification": "A thrown TUI worker request now posts rpc.result with an error string, and call rejects it. The only importers are cli/cmd/tui.ts and cli/tui/worker.ts, both byte-identical. This is not the HTTP server or the ACP stdio entrypoint."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/opencode/src/util/signal.ts",
+      "classification": "Removed. The 1.19.4 tree has no importer. TUI files that mention signal import packages/tui/src/util/signal, a different file."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/protocol/src/groups/pty.ts",
+      "classification": "The PTY connect endpoint path is now the shared PTY_CONNECT_PATH constant. PTY is not a selected operation. Selected OpenAPI paths are unchanged."
+    },
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "file": "packages/server/src/middleware/authorization.ts",
+      "classification": "The shared server PTY connect ticket bypass now matches the Effect route path plus the ticket query. Credential checks for every other route are unchanged."
+    }
+  ],
+  "bounded_unmapped_groups": {
+    "ci": "GitHub workflow and action edits, including nix-hash bot scripts. Not the attached server or ACP entrypoint.",
+    "nix": "nix/hashes.json only. Packaging input, not a selected wire schema.",
+    "workspace_package_version": "package.json files other than packages/opencode and packages/core change only their version to 1.19.5. packages/sdk/js/package.json is in this group. packages/sdk/openapi.json is byte-identical.",
+    "release_scripts": "Publish tooling: Homebrew tap deploy key, skipping legacy Tauri latest.json without its signing key, and creating the GitHub release without --target. Not runtime protocol.",
+    "test_import_cleanup": "OpenCode tests drop unused imports. No assertion text changes."
+  },
+  "provider_prompt_sent": false,
+  "live_server_started": false,
+  "downloaded_artifact_executed": false,
+  "host_install_changed": false
+}

@@ -323,7 +323,7 @@ OpenHands adds a package without a production route.
   `--workspace` / `--model`, `session/load`, and field `content` stay
   out. `deepagents.acp` is a production route.
 - `swallowtail-adapter-opencode` implements version-bound OpenCode
-  `1.14.48..=1.19.4` model discovery and ambient-host interactive sessions with
+  `1.14.48..=1.19.5` model discovery and ambient-host interactive sessions with
   read-only tool permissions over host-approved HTTP and bounded SSE; exact
   stable newer releases may run as visibly unverified without extending
   guaranteed support; a separate 61-release deletion corpus freezes two
@@ -332,7 +332,7 @@ OpenHands adds a package without a production route.
   uncertainty without yet advertising production deletion. The same crate
   implements a separate `opencode.acp` family on `opencode.executable`: ACP v1
   stdio on host-approved `opencode acp --pure`, deprecated `1.18.18..=1.18.30`
-  and maintained `1.18.31..=1.18.35` and `1.19.0..=1.19.4`, ProviderSupported
+  and maintained `1.18.31..=1.18.35` and `1.19.0..=1.19.5`, ProviderSupported
   host-owned login without a credential lease, one admitted stdio MCP name,
   and URL-plus-header MCP modelled behind the contract gate. The HTTP and ACP
   axes stay unflattened.
@@ -1204,13 +1204,13 @@ follows the Upgrade Workflow. The operator runbook is the
 version-currentness checkpoint guide.
 
 The OpenCode HTTP adapter has a closed qualified server-version boundary.
-Tagged OpenAPI and artifact-tree evidence for 81 stable releases from `1.14.48`
-through `1.19.4` closes six selected operations through every transitive local schema
+Tagged OpenAPI and artifact-tree evidence for 82 stable releases from `1.14.48`
+through `1.19.5` closes six selected operations through every transitive local schema
 reference. Nineteen closed surfaces map to 22 contiguous segments so
 unpublished patches and cross-minor synthetic versions remain unsupported.
 The production descriptor publishes the `opencode.server` claim. Configured
 instances, requirements, and immutable plans must bind one matching exact
-release. Stable exact releases above `1.19.4` may execute as unverified through
+release. Stable exact releases above `1.19.5` may execute as unverified through
 surface 19 without widening the qualified range. `GET /global/health` produces
 only that safe binding and three-way assessment; no endpoint, credential, raw
 payload, configured instance, or execution authority enters the observation.

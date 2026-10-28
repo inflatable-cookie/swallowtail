@@ -14,7 +14,7 @@ pub const OPENCODE_ACP_AXIS: &str = "opencode.executable";
 /// Oldest accepted OpenCode ACP executable.
 pub const OPENCODE_ACP_BASELINE_VERSION: &str = "1.18.18";
 /// Newest compiled OpenCode ACP executable.
-pub const OPENCODE_ACP_LATEST_QUALIFIED_VERSION: &str = "1.19.4";
+pub const OPENCODE_ACP_LATEST_QUALIFIED_VERSION: &str = "1.19.5";
 /// Last version of the accepted-but-older `v1` behavior.
 pub const OPENCODE_ACP_V1_MAXIMUM_VERSION: &str = "1.18.30";
 /// First version of the compiled `v2` behavior.
@@ -190,8 +190,8 @@ mod tests {
         let preserved = InterfaceVersion::new("1.18.35").expect("preserved patch ceiling");
         let gap = InterfaceVersion::new("1.18.36").expect("unpublished gap");
         let next_minor = InterfaceVersion::new("1.19.0").expect("new minor");
-        let latest = InterfaceVersion::new("1.19.4").expect("latest");
-        let newer = InterfaceVersion::new("1.19.5").expect("unverified");
+        let latest = InterfaceVersion::new("1.19.5").expect("latest");
+        let newer = InterfaceVersion::new("1.19.6").expect("unverified");
         assert_eq!(
             claim
                 .assess(&v1)
@@ -236,7 +236,7 @@ mod tests {
         );
         for published in [
             "1.18.32", "1.18.33", "1.18.34", "1.18.35", "1.19.0", "1.19.1", "1.19.2", "1.19.3",
-            "1.19.4",
+            "1.19.4", "1.19.5",
         ] {
             let published = InterfaceVersion::new(published).expect("published stable");
             assert!(matches!(

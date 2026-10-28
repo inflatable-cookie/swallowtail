@@ -1,8 +1,8 @@
 # Ollama 0.40.12 Attached Identity and Stop
 
-**Task:** `ollama.attached` only, `swallowtail-adapter-ollama`  
-**Observed:** 2026-10-28  
-**Previous qualified ceiling:** `0.40.11` (`AllowUnverified`)  
+**Task:** `ollama.attached` only, `swallowtail-adapter-ollama`
+**Observed:** 2026-10-28
+**Previous qualified ceiling:** `0.40.11` (`AllowUnverified`)
 **Result:** stop. The maintained ceiling remains `0.40.11`; official stable
 `0.40.12` is `UnverifiedNewer`. Selected dependency and renderer effects need
 the finite adaptation below before qualification.

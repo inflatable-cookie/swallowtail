@@ -278,36 +278,117 @@ fn identity_freezes_the_04012_hop_from_the_04011_ceiling() {
             .map(String::as_str),
         Some("selected-show-additive-voices")
     );
-    assert_eq!(changed_class.get("LLAMA_CPP_VERSION").map(String::as_str), Some("selected-gguf-dependency-gap"));
-    assert_eq!(changed_class.get("model/renderers/renderer.go").map(String::as_str), Some("renderer-parser-reachability-gap"));
+    assert_eq!(
+        changed_class.get("LLAMA_CPP_VERSION").map(String::as_str),
+        Some("selected-gguf-dependency-gap")
+    );
+    assert_eq!(
+        changed_class
+            .get("model/renderers/renderer.go")
+            .map(String::as_str),
+        Some("renderer-parser-reachability-gap")
+    );
     let gap = &protocol["selected_dependency_and_renderer_gap"];
     assert_eq!(gap["pin_before"], "b11845");
     assert_eq!(gap["pin_after"], "b11901");
     assert_eq!(gap["default_go_template"], true);
-    assert_eq!(gap["paths"], serde_json::json!(["server/sched.go", "llm/server.go", "llama/server/CMakeLists.txt", "server/prompt.go", "server/routes.go", "envconfig/config.go", "model/renderers/renderer.go"]));
+    assert_eq!(
+        gap["paths"],
+        serde_json::json!([
+            "server/sched.go",
+            "llm/server.go",
+            "llama/server/CMakeLists.txt",
+            "server/prompt.go",
+            "server/routes.go",
+            "envconfig/config.go",
+            "model/renderers/renderer.go"
+        ])
+    );
     for (version, path, blob) in [
-        ("0.40.11", "envconfig/config.go", "0379a2aec2a9573d542deb840766a93694f63ffe"),
-        ("0.40.11", "llama/server/CMakeLists.txt", "9153c9bf019548f7015305b773a9fed2a61f3fcc"),
-        ("0.40.11", "llm/server.go", "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe"),
-        ("0.40.11", "model/renderers/renderer.go", "df7fb9674fafbe934efc9a3a32eb902155a392d2"),
-        ("0.40.11", "server/prompt.go", "17b50efc652865d9098801d0ab27570be7060cc0"),
-        ("0.40.11", "server/routes.go", "fdf7a18f954ab7c249bb0e95a859b399105c7289"),
-        ("0.40.11", "server/sched.go", "2c8d818d1907d73a13db1174bb568718be87f3b6"),
-        ("0.40.12", "envconfig/config.go", "0379a2aec2a9573d542deb840766a93694f63ffe"),
-        ("0.40.12", "llama/server/CMakeLists.txt", "9153c9bf019548f7015305b773a9fed2a61f3fcc"),
-        ("0.40.12", "llm/server.go", "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe"),
-        ("0.40.12", "model/renderers/renderer.go", "672df033c583b964d0a87b0241a0e2683e377111"),
-        ("0.40.12", "server/prompt.go", "17b50efc652865d9098801d0ab27570be7060cc0"),
-        ("0.40.12", "server/routes.go", "082dd1121fb999e92fc1be6bd3bede8e9e38ab38"),
-        ("0.40.12", "server/sched.go", "2c8d818d1907d73a13db1174bb568718be87f3b6"),
+        (
+            "0.40.11",
+            "envconfig/config.go",
+            "0379a2aec2a9573d542deb840766a93694f63ffe",
+        ),
+        (
+            "0.40.11",
+            "llama/server/CMakeLists.txt",
+            "9153c9bf019548f7015305b773a9fed2a61f3fcc",
+        ),
+        (
+            "0.40.11",
+            "llm/server.go",
+            "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe",
+        ),
+        (
+            "0.40.11",
+            "model/renderers/renderer.go",
+            "df7fb9674fafbe934efc9a3a32eb902155a392d2",
+        ),
+        (
+            "0.40.11",
+            "server/prompt.go",
+            "17b50efc652865d9098801d0ab27570be7060cc0",
+        ),
+        (
+            "0.40.11",
+            "server/routes.go",
+            "fdf7a18f954ab7c249bb0e95a859b399105c7289",
+        ),
+        (
+            "0.40.11",
+            "server/sched.go",
+            "2c8d818d1907d73a13db1174bb568718be87f3b6",
+        ),
+        (
+            "0.40.12",
+            "envconfig/config.go",
+            "0379a2aec2a9573d542deb840766a93694f63ffe",
+        ),
+        (
+            "0.40.12",
+            "llama/server/CMakeLists.txt",
+            "9153c9bf019548f7015305b773a9fed2a61f3fcc",
+        ),
+        (
+            "0.40.12",
+            "llm/server.go",
+            "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe",
+        ),
+        (
+            "0.40.12",
+            "model/renderers/renderer.go",
+            "672df033c583b964d0a87b0241a0e2683e377111",
+        ),
+        (
+            "0.40.12",
+            "server/prompt.go",
+            "17b50efc652865d9098801d0ab27570be7060cc0",
+        ),
+        (
+            "0.40.12",
+            "server/routes.go",
+            "082dd1121fb999e92fc1be6bd3bede8e9e38ab38",
+        ),
+        (
+            "0.40.12",
+            "server/sched.go",
+            "2c8d818d1907d73a13db1174bb568718be87f3b6",
+        ),
     ] {
         assert_eq!(gap["path_blobs"][version][path], blob);
         assert_eq!(blob_map(&inventory, version)[path], blob);
     }
     assert_eq!(gap["path_blobs"]["0.40.11"].as_object().unwrap().len(), 7);
     assert_eq!(gap["path_blobs"]["0.40.12"].as_object().unwrap().len(), 7);
-    assert_eq!(before["LLAMA_CPP_VERSION"], "80291d7f1423525ef37228948f78fb69f5407aa2");
-    assert_eq!(after["LLAMA_CPP_VERSION"], "98bc1f1660e3264d1df83952b9e8a452e22a6088");
+    assert_eq!(
+        before["LLAMA_CPP_VERSION"],
+        "80291d7f1423525ef37228948f78fb69f5407aa2"
+    );
+    assert_eq!(
+        after["LLAMA_CPP_VERSION"],
+        "98bc1f1660e3264d1df83952b9e8a452e22a6088"
+    );
     assert!(!changed_class.contains_key("api/types.go"));
     assert!(!changed_class.contains_key("server/model_list.go"));
     assert!(!changed_class.contains_key("compatmigrate/migrate.go"));

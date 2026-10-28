@@ -12,8 +12,10 @@ annotated Git tags from the canonical repository.
   segment is `0.22.0..=0.26.2`, excluding unpublished `0.22.4`, `0.23.5`,
   and `0.25.4`. The `0.26.1` to `0.26.2` hop keeps selected argv, stream-json
   result subtypes, permission flow, approval mode, and the SSH workspace
-  guard. The experimental unified agent loop stays default-off. `autofix_pr`
-  stays unmapped. Baseline `0.19.11`, the deprecated segments, exact
+  guard. The experimental unified agent loop defaults off but ambient settings
+  or environment can enable it. The reachable `autofix_pr` tool permits status
+  and attended; acting commands ask and headless asks are denied. It stays
+  unmapped and the exclusion set stays unchanged. Baseline `0.19.11`, the deprecated segments, exact
   `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
   stay put. `0.26.3` is `UnverifiedNewer`. See Research 465.
 - qualify `codex.exec` and `codex.app-server` through official stable

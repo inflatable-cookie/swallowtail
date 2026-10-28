@@ -8,7 +8,7 @@ The 2026-10-28 probe of `npm view @qwen-code/qwen-code dist-tags --json`
 returned `latest=0.26.2`, `preview=0.26.3-preview.0`, and
 `nightly=0.26.1-nightly.20261026.34769f9d41`. ACP registry agent `qwen-code`
 also reports `0.26.2`. That registry row is discovery metadata, not a claim.
-No stable newer than `0.26.2` was published. Preview, nightly, and the
+At that probe no stable newer than `0.26.2` was published. Preview, nightly, and the
 published prereleases `0.26.2-preview.0`, `0.26.2-preview.1`, and
 `0.26.3-preview.0` are not stable releases. There is no interior stable
 between `0.26.1` and `0.26.2`.
@@ -23,8 +23,8 @@ Raise the `qwen-code.package` AllowUnverified ceiling from `0.26.1` to
 and `0.21.0..=0.21.14`; exact `0.21.15` remains maintained. Exclude
 unpublished `0.20.2`, `0.21.16`, `0.22.4`, `0.23.5`, and `0.25.4`. Plan
 remains exact through `0.22.3`. Reasoning and budget selections remain exact
-at `0.21.15`. `0.26.3` is the first unpublished later stable and stays
-`UnverifiedNewer`.
+at `0.21.15`. A later probe, after the identity commit, found npm latest
+`0.26.3`; it stays `UnverifiedNewer`.
 
 The hop is a compatible extension. Selected CLI argv, stream-json result
 subtypes, permission flow, approval mode, and the SSH workspace guard are
@@ -116,7 +116,8 @@ Their frozen hashes are in `selected-source-identities.json`.
   excludes `web_fetch` and does not set the search host list.
   `experimental.unifiedAgentLoop` defaults false. The settings schema also
   documents `QWEN_CODE_ENABLE_UNIFIED_AGENT_LOOP=1` as an opt-in. This route
-  sets neither. The `sessionIdGenerated` comment now covers hosted-store
+  sets neither, but the delegated environment or existing settings can opt
+  in. The `sessionIdGenerated` comment now covers hosted-store
   IDs with chat recording disabled. This route does not pass `--session-id`.
   The `--safe-mode` path still ignores `--core-tools` and still denies
   non-interactive shell, monitor, edit, and write-file tools unless
@@ -144,10 +145,19 @@ Their frozen hashes are in `selected-source-identities.json`.
   keeps the existing loop. `types.ts` is byte-identical, so stream-json
   result subtypes are unchanged. Retry stderr may append
   `[kind=..., reason=..., transportCode=..., statusCode=...]`. That text is
-  not a mapped result subtype. `AutofixPrTool` is registered on the general
-  tool registry. The adapter exclude list does not name it, and this route
-  does not select the `autofix-pr` command. The tool stays unmapped. The
-  route does not claim a closed provider tool set. Managed-session and web
+  not a mapped result subtype. The new `AutofixPrTool` is registered in the
+  general tool registry even under safe mode, which ignores the core-tools
+  allowlist. The frozen exclude list does not name `autofix_pr`, so the
+  model can reach it independently of the similarly named CLI command.
+  Its [implementation](https://github.com/QwenLM/qwen-code/blob/402911146f6b2a80cb97423309faf1956f6defe4/packages/core/src/tools/autofix-pr.ts)
+  permits `status` to launch the status helper, which reads watch state, and
+  `attended` to revoke an unattended grant without launching a helper. Acting
+  commands default to ask; in the selected headless text-input route an ask
+  is automatically denied. Plan mode also refuses acting helpers. Existing
+  permission rules can change decisions, so this is not a host containment
+  claim. Keep the frozen exclusion set: these bounded effects do not require
+  a new adapter operation or a changed argv contract. The tool is not mapped
+  as a Swallowtail operation. Managed-session and web
   shell changes are a different product surface. The published breaking
   note for managed-agent Web Shell cwd submissions is outside this route.
 

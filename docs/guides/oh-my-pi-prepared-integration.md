@@ -39,14 +39,15 @@ optional attachment services. They use no credential service. Provider-
 suppressed tools and ambient execution are not host sandboxing.
 
 Package `17.2.9..=17.4.2` is qualified and retained on the
-`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.12.6` is
+`oh-my-pi.rpc-v2-v17.2.9` behavior revision, and `18.0.0..=18.13.2` is
 qualified on the distinct `oh-my-pi.rpc-v2-v18.0.0` behavior revision. The
 `17.x` segment reports `Deprecated` while remaining executable; `18.x` is
 maintained. GitHub-only stable tags `18.0.2`, `18.1.7`, `18.4.7`, and
 `18.6.2` are excluded. The `17.4.3` and `17.4.4` tags remain incompatible.
-`18.12.7` is the synthetic later stable and stays `UnverifiedNewer`.
-Research 447 freezes the exact `18.12.6` npm artifact and all 25 published
-hops after the Research 382 ceiling. Provider-internal `proc://`, `cfg://`,
+`18.13.3` is the synthetic later stable and stays `UnverifiedNewer`.
+Research 461 freezes the exact `18.13.2` npm artifact and the published
+hops `18.13.0`, `18.13.1`, and `18.13.2` after the Research 447 ceiling.
+Research 447 remains the `18.12.6` identity. Provider-internal `proc://`, `cfg://`,
 `attachment://`, `conflict://`, and `mr://` resources stay inside the existing
 ambient `read` tool. `mr://` resolve runs ambient `glab` as the process
 principal, uses `GITLAB_TOKEN`/`GITLAB_ACCESS_TOKEN`/`OAUTH_TOKEN` plus

@@ -6,6 +6,18 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `oh-my-pi.rpc` through official stable `18.13.2` on the existing
+  `oh-my-pi.rpc-v2-v18.0.0` revision (Research 461). npm `latest` and GitHub
+  latest stable agree. Maintained `18.0.0..=18.13.2` keeps claim id
+  `oh-my-pi.rpc.package-window-2` and `AllowUnverified`. The retained
+  `17.2.9..=17.4.2` segment, unpublished gaps `18.0.2`, `18.1.7`, `18.4.7`,
+  and `18.6.2`, incompatible `17.4.3`/`17.4.4`, and the frozen `17.2.9`
+  decoder corpus stay. `18.13.3` is `UnverifiedNewer`. The selected 14
+  commands, tool schemas, frame caps, schemes, and startup fields stay.
+  `18.13.2` adds unselected `abort_branch_summary`, `dictation_start`,
+  `dictation_stop`, `navigate_tree`, and `set_label`. Optional `input.secret`
+  and `PromptError.code` `cost_cap` stay unmapped. `pi.rpc` and
+  `pi.sdk-sidecar` are untouched.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep

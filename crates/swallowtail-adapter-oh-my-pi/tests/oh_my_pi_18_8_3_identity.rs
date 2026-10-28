@@ -383,7 +383,7 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
         json!(["write", "edit", "bash", "task"])
     );
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.12.6");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.13.2");
     let claim = oh_my_pi_rpc_claim();
     for version in [
         "18.0.0", "18.2.7", "18.2.8", "18.2.9", "18.8.2", "18.8.3", "18.8.4",
@@ -397,7 +397,7 @@ fn official_18_8_3_identity_and_every_published_hop_are_frozen() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version_binding("18.12.7")),
+        claim.assess(&version_binding("18.13.3")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version_binding("18.8.4-rc.1")));

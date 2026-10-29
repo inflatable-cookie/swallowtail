@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "task": "ollama.attached version-currentness",
+  "research": 462,
+  "axis": "ollama.runtime",
+  "package": "swallowtail-adapter-ollama",
+  "observation_date": "2026-10-28",
+  "github_repository": "ollama/ollama",
+  "selected_channel": {
+    "name": "official GitHub non-prerelease releases",
+    "latest_endpoint": "https://api.github.com/repos/ollama/ollama/releases/latest",
+    "latest_version": "0.40.12",
+    "latest_release_url": "https://github.com/ollama/ollama/releases/tag/v0.40.12",
+    "release_id": 424898500,
+    "draft": false,
+    "prerelease": false,
+    "published_at": "2026-10-27T00:07:12Z",
+    "tag_commit": "f067033f9126993b6172bdfffa71a74ad693fda4",
+    "tree": "5b73640f43d4a4b0a5a03be5752693e654c0f4b8",
+    "source_archive_sha256": "b625d6dd6b4650366872b2d0263167993411b734838d9b773a22076a8cf7f3fc",
+    "pre_push_reprobe_at": "2026-10-28T09:38:37Z",
+    "pre_push_reprobe_version": "0.40.12",
+    "pre_push_reprobe_release_id": 424898500,
+    "pre_push_reprobe_tag_commit": "f067033f9126993b6172bdfffa71a74ad693fda4"
+  },
+  "host_observation": {
+    "client_on_path": false,
+    "no_runtime_reachable": true,
+    "host_not_mutated": true,
+    "note": "The ollama executable was not on PATH. No local server was started."
+  },
+  "previous_ceiling": "0.40.11",
+  "historical_qualification_corpus": "ollama-0.40.11",
+  "published_stables_after_previous_ceiling": [
+    {
+      "version": "0.40.12",
+      "release_id": 424898500,
+      "published_at": "2026-10-27T00:07:12Z",
+      "draft": false,
+      "prerelease": false,
+      "commit": "f067033f9126993b6172bdfffa71a74ad693fda4",
+      "tree": "5b73640f43d4a4b0a5a03be5752693e654c0f4b8",
+      "source_archive_sha256": "b625d6dd6b4650366872b2d0263167993411b734838d9b773a22076a8cf7f3fc"
+    }
+  ],
+  "absent_stable_tag_patterns_checked": [
+    "v0.40.13",
+    "v0.41.*"
+  ],
+  "ignored_prerelease_tags_present": [
+    {
+      "tag": "v0.40.12-rc0",
+      "commit": "6c15b26ba0d053eecbf63b5fc5a6cbf262b1014c",
+      "note": "Different commit from the stable. Stays a prerelease."
+    },
+    {
+      "tag": "v0.40.12-rc1",
+      "commit": "f067033f9126993b6172bdfffa71a74ad693fda4",
+      "note": "Same commit as stable v0.40.12. The prerelease version string stays unqualified."
+    }
+  ],
+  "previous_ceiling_reproduced": {
+    "version": "0.40.11",
+    "release_id": 422414238,
+    "commit": "675150d6ad2747df1e218ef59de9194bc4a7e538",
+    "tree": "1dd0e013eeb9ff6acc9deaa37f965bb7a98e62fc",
+    "source_archive_sha256": "9733d6230d8c8a75ccdf368c53132d90ee49009ce677776d897e96b50cc1c654",
+    "matches_research_448": true
+  },
+  "current_claim_at_observation": {
+    "baseline": "0.14.0",
+    "latest_qualified": "0.40.11",
+    "claim_id": "ollama.native-runtime-window-2",
+    "behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+    "posture": "AllowUnverified",
+    "known_exclusions": [
+      "0.32.2",
+      "0.32.10"
+    ]
+  },
+  "decision": {
+    "shape": "stop-selected-dependency-and-renderer-gap",
+    "qualified_hops": [],
+    "latest_qualified_after_change": "0.40.11",
+    "unverified_current_official_stable": "0.40.12",
+    "synthetic_unverified_newer": "0.40.12",
+    "milestone_behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+    "retain_prior_behavior_revision": "ollama.native-text-v1",
+    "keep_baseline": "0.14.0",
+    "keep_claim_id": "ollama.native-runtime-window-2",
+    "keep_exclusions": [
+      "0.32.2",
+      "0.32.10"
+    ],
+    "keep_allow_unverified": true,
+    "preserve_unqualified_gaps": [
+      "0.34.5",
+      "0.35.2",
+      "0.36.0..0.39.x"
+    ],
+    "new_public_operation": false,
+    "consumer_visible_contract_change": false,
+    "provider_prompt_sent": false,
+    "attached_server_started": false,
+    "host_install_changed": false,
+    "model_downloaded": false,
+    "live_inference_performed": false,
+    "model_store_mutated": false
+  }
+}

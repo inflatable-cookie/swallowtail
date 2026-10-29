@@ -1,0 +1,173 @@
+{
+  "axis": "qwen-code.package",
+  "observed_at": "2026-10-28",
+  "official_source": "npm dist-tag latest for @qwen-code/qwen-code",
+  "npm_package": "@qwen-code/qwen-code",
+  "npm_latest": "0.26.2",
+  "npm_other_dist_tags": {
+    "preview": "0.26.3-preview.0",
+    "nightly": "0.26.1-nightly.20261026.34769f9d41"
+  },
+  "acp_registry_discovery": {
+    "url": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+    "agent_id": "qwen-code",
+    "version": "0.26.2",
+    "role": "discovery metadata, not a Swallowtail claim"
+  },
+  "published_stable_hops_after_previous_ceiling": [
+    "0.26.2"
+  ],
+  "previous_ceiling": "0.26.1",
+  "first_unpublished_later_stable": "0.26.3",
+  "ignored_prereleases": [
+    "0.26.2-preview.0",
+    "0.26.2-preview.1",
+    "0.26.3-preview.0"
+  ],
+  "not_the_selected_product": "GitHub TypeScript SDK releases/tags are a separate product and do not establish npm CLI identity",
+  "runtime_context": {
+    "node": "22.23.4",
+    "installed_global_qwen": null,
+    "official_package_installed_globally": false,
+    "qualification_uses": "exact npm artifacts and official source tags only"
+  },
+  "versions": [
+    {
+      "published_at": "2026-10-24T15:52:45.694Z",
+      "integrity": "sha512-4kpIzrlrgmawivim0yCZjr1AP5cfHTanyL7eL1g2R8WYU6QDBq7j9fiAye7REXL4EEXkRIq45D7+ngTw5n3GqQ==",
+      "shasum": "8cc9023bc4c085b35345351e77dea413ead9284e",
+      "tarball_sha256": "9198d276e8583b789ee42a9c38b521d57818b94682d155b2b47741534c90fb73",
+      "tarball_sha512": "e24a48ceb96b8266b08af8a6d320998ebd403f971f1d36a7c8bede2f583647c59853a40306aee3f5f880c9eed11172f81045e4448ab8e43efe9e04f0e67dc6a9",
+      "source_commit": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+      "slsa_git_commit": "5122ec938d714bf57775fd06c786257520b8d19e",
+      "npm_git_head": "b475278c4a300acebe6cfc990a9e1b1d18819bfc",
+      "npm_version": "0.26.1",
+      "npm_dist_file_count": 1372,
+      "npm_dist_unpacked_size": 152751572,
+      "inventory_file": "dist-inventory-0.26.1.json",
+      "inventory_sha256": "606ae19f4569f70057b4d18e259ae465c534a038cf55f3f2d025309e821eeda4",
+      "inventory_entries": 1372,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    },
+    {
+      "published_at": "2026-10-27T15:41:46.241Z",
+      "integrity": "sha512-0kLvwIx/CmU+bU2t5X4YD43RxNCcv1OQCaZEEMi4ZIMST/bOSFmhM+V/6oiZSWEbCB/ukA4y/DSVwun7A8/4NA==",
+      "shasum": "308409e71b1e57a1e27c709023f16a4ed73a5211",
+      "tarball_sha256": "01020fa2c701a1eb385c2f5405686bf25c5aa0b8e5cd8893e075cf0ad4d77e8f",
+      "tarball_sha512": "d242efc08c7f0a653e6d4dade57e180f8dd1c4d09cbf539009a64410c8b86483124ff6ce4859a133e57fea889949611b081fee900e32fc3495c2e9fb03cff834",
+      "source_commit": "402911146f6b2a80cb97423309faf1956f6defe4",
+      "slsa_git_commit": "dee6ace9d8f84d98084abf292f2b0a5ffd3dfa22",
+      "npm_git_head": "402911146f6b2a80cb97423309faf1956f6defe4",
+      "npm_version": "0.26.2",
+      "npm_dist_file_count": 1378,
+      "npm_dist_unpacked_size": 153682968,
+      "inventory_file": "dist-inventory-0.26.2.json",
+      "inventory_sha256": "2273e881655939d35bd5e2a71cb1f6307a0d44063e5231e1e70d6e517db9bed6",
+      "inventory_entries": 1378,
+      "mapped_source_keys": [
+        "approval_mode",
+        "config",
+        "dashscope",
+        "exit_plan_mode",
+        "permission_flow",
+        "plan_mode_shell_policy",
+        "reasoning_effort",
+        "session",
+        "stream_types",
+        "system_controller",
+        "top_level_options"
+      ]
+    }
+  ],
+  "hops": [
+    {
+      "from": "0.26.1",
+      "to": "0.26.2",
+      "published_stable_hop": true,
+      "dist_diff_file": "dist-diff-0.26.1-to-0.26.2.json",
+      "dist_diff_sha256": "9d71c5a14e70f16ddd16e2410d83273fcf92ef17b9b724ec1e024cd0f2d5ba35",
+      "added": 466,
+      "removed": 460,
+      "changed": 25,
+      "identical": 887,
+      "selected_source_changes": [
+        {
+          "key": "config",
+          "path": "packages/cli/src/config/config.ts",
+          "before_sha256": "c1ed6b3340d02bd3a1d2e699d71c10df9674c5a400f2e50384ea1f11a067c200",
+          "after_sha256": "13ea7da4d891c457494a4557d24510375b8eda9b7b918d307624551aea2a9021"
+        },
+        {
+          "key": "dashscope",
+          "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts",
+          "before_sha256": "3dddb030f78d88ffd4d30ec738b446054947b882b9fbf85bec6153c2abba25be",
+          "after_sha256": "807bc75d30d60a42a4466cc3462ecb9224e622276cf7900ec3fc1155b5f8d3e1"
+        },
+        {
+          "key": "session",
+          "path": "packages/cli/src/nonInteractive/session.ts",
+          "before_sha256": "75ee4883618a8d7034ec9339b40f768cf2add14d6963e54e1ec97d163551990f",
+          "after_sha256": "6981038e43dcc37588eed877c51c685003f2eb3904a9d5f90f2d73f6b4ad496b"
+        }
+      ]
+    }
+  ],
+  "channel_reprobe": {
+    "command": "npm view @qwen-code/qwen-code dist-tags --json",
+    "result": "latest=0.26.2; preview=0.26.3-preview.0; nightly=0.26.1-nightly.20261026.34769f9d41",
+    "stable_current": true
+  },
+  "evidence_limits": {
+    "tarballs_executed": false,
+    "tarballs_retained_in_repository": false,
+    "complete_package_tree_manifests": true,
+    "complete_per_hop_path_diffs": true,
+    "selected_source_snapshots": true,
+    "source_maps_in_npm_package": false,
+    "slsa_provenance_binds_tarball_sha512_to_git_commit": true,
+    "selected_sources_byte_identical_at_slsa_commit_and_tag": true,
+    "provider_turns": false,
+    "credentials_read": false,
+    "host_installed_or_updated": false
+  },
+  "identity_decision": {
+    "shape": "compatible-extension",
+    "reuse_behavior_revision": "qwen-code.headless.v0.21.15-reasoning-control",
+    "raise_latest_qualified_to": "0.26.2",
+    "extend_same_revision_segment": "0.22.0..=0.26.2",
+    "keep_0_22_4_incompatible": true,
+    "keep_0_23_5_incompatible": true,
+    "keep_0_25_4_incompatible": true,
+    "keep_exact_0_21_15": true,
+    "extend_plan_exact_list": false,
+    "extend_reasoning_beyond_0_21_15": false,
+    "extend_budgets_beyond_0_21_15": false,
+    "new_public_mapped_operation": false,
+    "unified_agent_loop_default": false,
+    "provider_prompt_sent": false
+  },
+  "claim_at_observation": {
+    "latest_qualified": "0.26.1",
+    "behavior_revision": "qwen-code.headless.v0.21.15-reasoning-control",
+    "maintained_segment": "0.22.0..=0.26.1",
+    "posture": "AllowUnverified"
+  },
+  "selected_source_identities_file": "selected-source-identities.json",
+  "selected_source_identities_sha256": "dcf5ecdc06c07e26eb731dd77d3fe29571f4d98ce7c4d66fc55410a01eeb939a",
+  "reviewed_source_identities_file": "reviewed-source-identities.json",
+  "reviewed_source_identities_sha256": "c529274d4667c03ae53d300a94fa32313a5ac6e39882038c8d018de3e3fc0472",
+  "source_to_shipped_file": "source-to-shipped.json",
+  "source_to_shipped_sha256": "8844ba97ccfb55c54d2554189da30fed392f22ba42478f88e6bde052075e99d7"
+}

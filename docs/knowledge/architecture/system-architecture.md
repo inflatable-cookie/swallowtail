@@ -195,8 +195,8 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.96.0`, excluding `0.58.0`, over
-  ACP v1 stdio (Research 446); stable newer versions remain visible and
+  sessions for Claude Agent ACP `0.53.0..=0.98.0`, excluding `0.58.0`, over
+  ACP v1 stdio (Research 460); stable newer versions remain visible and
   unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
@@ -571,7 +571,7 @@ OpenHands adds a package without a production route.
   reports key-visible entries without inferring background or Realtime support
 - `swallowtail-adapter-qwen` implements qualified Qwen Code
   `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact `0.21.15`, and
-  `0.22.0..=0.26.1` excluding unpublished `0.22.4`, `0.23.5`, and `0.25.4` headless
+  `0.22.0..=0.26.2` excluding unpublished `0.22.4`, `0.23.5`, and `0.25.4` headless
   behavior segments with
   exact read-only argv, text stdin, bounded
   stream JSON, typed usage, explicit native budgets, durable local retention,
@@ -1079,14 +1079,16 @@ provider-defined descendants, but no hard-erasure or Anthropic API service-data
 claim. Exact `0.62.0` retains the `0.61.0` behavior; exact `0.63.0` through
 `0.87.0` add private behavior revisions without changing deletion truth.
 Research 446 carries the same consumer close and stored-delete results through
-`0.96.0`. From `0.89.0`, `closeSession` of a session that is not loaded returns
+`0.96.0`. Research 460 carries those same empty-object results through
+`0.98.0`. `deleteSessionIfStored` is unchanged on both hops. From `0.89.0`,
+`closeSession` of a session that is not loaded returns
 an empty success. The same hop already routes selected non-AIR
 `session/delete` through added `dist/session-index/connection.js` to Agent SDK
 `deleteSession`; `service.js` is not selected then. Through `0.90.0`, delete of
 an absent transcript still throws for that client. From `0.91.0`,
 `dist/session-index/connection.js` calls `deleteSessionIfStored` and
 `service.js` swallows the SDK not-found, so `session/delete` of an absent
-transcript returns an empty success through `0.96.0`. Live close of a session
+transcript returns an empty success through `0.98.0`. Live close of a session
 in memory and delete of a stored transcript still return an empty object. The
 empty close or unstored-delete success adds no stronger deletion claim. Later
 stable versions remain visible and unverified.

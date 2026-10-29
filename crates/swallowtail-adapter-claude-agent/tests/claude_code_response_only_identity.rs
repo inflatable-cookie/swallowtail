@@ -78,7 +78,7 @@ fn response_only_qualifies_2_1_251_as_compatible_extension() {
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.310"
+        "2.1.312"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -223,7 +223,7 @@ fn current_response_only_identity_freezes_v3_and_every_published_hop() {
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.310"
+        "2.1.312"
     );
 
     let versions = (281..=293)
@@ -533,7 +533,7 @@ fn current_response_only_identity_freezes_v3_and_every_published_hop() {
                 && matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(matches!(
-        claim.assess(&version("2.1.311")),
+        claim.assess(&version("2.1.313")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version("2.1.297")));

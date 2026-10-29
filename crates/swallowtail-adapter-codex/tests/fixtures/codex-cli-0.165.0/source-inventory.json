@@ -1,0 +1,45 @@
+{
+  "inventoryDigests": {
+    "0.164.0": {
+      "digest": "02b1e9b3c637008eddbd903b6a9ee9441705fef44732cf5a80ed5c63622b3030",
+      "fileCount": 9438
+    },
+    "0.165.0": {
+      "digest": "c39481bcf4c96bb514d1fe54047c78e451a66067d0e833874287f6b07f8a3eb0",
+      "fileCount": 9507
+    }
+  },
+  "hopCounts": {
+    "0.164.0->0.165.0": {
+      "added": 80,
+      "removed": 11,
+      "changed": 594,
+      "identical": 8833
+    }
+  },
+  "completeDeltaAuthority": "source-name-status.tsv",
+  "digestAlgorithm": "sha256 of sorted path\\tmode\\tgit-blob lines",
+  "renameDetection": "disabled; seven content-identical snapshot renames are delete-plus-add path pairs",
+  "selectedBlobs": {
+    "codex-rs/exec/src/cli.rs": {
+      "0.164.0": "6a268da298380344c22ea12620606c3e6713f5fa",
+      "0.165.0": "6a268da298380344c22ea12620606c3e6713f5fa"
+    },
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": {
+      "0.164.0": "7b014daa21f2f899420150fefd3235114644c563",
+      "0.165.0": "7fd33e0997e1aae7479f33cc78bf7b6a38d9d4bf"
+    },
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": {
+      "0.164.0": "4d104e2d5e3818577d3725c801cc06c5c44d053a",
+      "0.165.0": "941e32e5c0fd0c0dc15b9ca51ebbadcd0faf7fd2"
+    },
+    "codex-rs/app-server/src/message_processor.rs": {
+      "0.164.0": "e1e5a7a9482ecc40ec3c0240042fa738f277a8a7",
+      "0.165.0": "a1b1133119be4f6e8aa967dd891a84d25fb639ae"
+    },
+    "codex-rs/linux-sandbox/src/bwrap.rs": {
+      "0.164.0": "92ef9dd54b775a6dc729c77a0ca79c962abf70f3",
+      "0.165.0": "92ef9dd54b775a6dc729c77a0ca79c962abf70f3"
+    }
+  }
+}

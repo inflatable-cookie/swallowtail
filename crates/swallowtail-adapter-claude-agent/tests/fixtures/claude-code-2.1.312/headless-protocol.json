@@ -1,0 +1,168 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "behavior_revision": "claude-code.headless.stream-json.v2",
+  "decision": "compatible-extension",
+  "selected_command": {
+    "arguments": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--model",
+      "<caller-selected-model>",
+      "--permission-mode",
+      "plan",
+      "--tools",
+      "Read,Glob,Grep",
+      "--setting-sources",
+      "user,project,local",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ]
+  },
+  "selected_behavior_boundary": {
+    "input_format": "text",
+    "output_format": "stream-json",
+    "permission_mode": "plan",
+    "tool_names": [
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "setting_sources": [
+      "user",
+      "project",
+      "local"
+    ],
+    "strict_mcp_config": true,
+    "session_persistence": false,
+    "slash_commands_disabled": false,
+    "safe_mode": false,
+    "hooks_disabled": false
+  },
+  "selected_control_flow": "selected-control-flow.json",
+  "v2_rules_retained": [
+    "instruction-form prompt hook ok false blocks",
+    "PreToolUse deny blocks before tool dispatch",
+    "a PreToolUse rewrite is rechecked and a resulting deny blocks",
+    "Stop and SubagentStop treat stop_hook_active true as reentry success and keep the provider block cap"
+  ],
+  "help_lines_byte_identical_on_every_scanned_binary": [
+    "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+    "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+  ],
+  "maximum_turns_extended": false,
+  "per_hop_classification": [
+    {
+      "hop": "2.1.310_to_2.1.311",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.headless",
+      "release_note_review": [
+        {
+          "surface": "CLAUDE.md very long list item startup freeze",
+          "classification": "provider-instruction-load-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The official 2.1.311 note fixes a freeze while reading a CLAUDE.md that holds a very long list item. Headless still reads user, project, and local instructions. The fix does not change stream-json fields, the v2 hook rules, or the tool set."
+        },
+        {
+          "surface": "interrupt while an MCP resource read or skill download is outstanding",
+          "classification": "unselected-interactive-interrupt",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The note is an in-process interrupt. Headless passes a strict empty MCP config. Route cancellation remains process force_stop."
+        },
+        {
+          "surface": "standard-context request over 200K tokens compacts and continues",
+          "classification": "provider-context-continuation",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The official note says a standard-context request over 200K tokens compacts and continues instead of stopping with the 1M-context credit error. The credit-error function stays structurally identical. Headless does not select a context budget or compaction operation. Init still requires permissionMode plan. An unrecognized event type stays activity. The embedded changelog string is absent from the 2.1.311 binary and present in 2.1.312."
+        },
+        {
+          "surface": "stream-json string escaping of DEL, C1, and Unicode format characters",
+          "classification": "json-string-encoding",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The note says parsed values are unchanged. Both routes decode stream-json with serde_json. Help lines stay byte-identical. No field is added. The embedded note string is absent from the 2.1.311 binary and present in 2.1.312."
+        },
+        {
+          "surface": "claude -p transcript message order",
+          "classification": "unselected-session-persistence",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The selected command passes --no-session-persistence and does not resume a transcript."
+        },
+        {
+          "surface": "SubagentStop hook cadence",
+          "classification": "provider-hook-scheduling-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The note stops SubagentStop hooks from running on a timer. The measured Stop and SubagentStop stop_hook_active reentry and the cap default 8 stay. Headless does not admit Agent."
+        },
+        {
+          "surface": "builtin cc-plugin-claude-platform",
+          "classification": "gated-builtin-unselected",
+          "reason": "Both routes pass -p, so isInteractive is false regardless of the dynamic flag. The builtin availability filter skips the plugin before adding its MCP server; mayConnectMcpServer also requires isAvailable. Response-only safe mode independently blocks mcpAutoDiscovered and rejects nonempty init MCP."
+        },
+        {
+          "surface": "easel builtin also registers for remote_cowork",
+          "classification": "unselected",
+          "reason": "From 2.1.311 the easel registration is if(e) or a remote_cowork predicate. These routes are not remote_cowork. The local e path is unchanged. Empty tools are not this route; headless tools stay Read, Glob, and Grep."
+        },
+        {
+          "surface": "--hold-idle-file and --max-hold-min",
+          "classification": "unmapped-opt-in",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "The flags belong to self-hosted-runner. The selected command does not pass them."
+        },
+        {
+          "surface": "VS Code, cloud, Remote Control, Cowork, Bash, MCP, IDE, and model-catalog notes",
+          "classification": "unselected",
+          "reason": "Those notes sit outside the fixed Read,Glob,Grep tool set, the strict empty MCP config, the local subscription command, and the stream-json field set."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.311_to_2.1.312",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.headless",
+      "release_note_review": [
+        {
+          "surface": "invalid command name leaving claude -p with no output",
+          "classification": "already-mapped-output-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "Headless does not pass --disable-slash-commands, so command loading is on the selected path. The note restores output when one command name is invalid. It adds no command and does not change stream-json fields."
+        },
+        {
+          "surface": "prompt and agent hook concurrency cap",
+          "classification": "provider-hook-scheduler-bound",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "The note caps prompt and agent hooks at 24 at a time, plus at most 12 that waited past their timeout, and treats a timeout under 1 second as 1 second. The measured block, deny, rewrite recheck, and Stop reentry decisions stay. This is a scheduler bound, not a new hook decision."
+        },
+        {
+          "surface": "Write refusing to overwrite a large CLAUDE.md from a prefix",
+          "classification": "unselected",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "The note is the Write tool. Headless tools stay Read, Glob, and Grep."
+        },
+        {
+          "surface": "subagent autoCompactWindow",
+          "classification": "unselected-subagent-window",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "The note changes a subagent autoCompactWindow so it can only lower CLAUDE_CODE_AUTO_COMPACT_WINDOW. Headless does not admit Agent and does not select that window."
+        },
+        {
+          "surface": "sdk-tools.d.ts ask-user unanswered field",
+          "classification": "unmapped-sdk-declaration",
+          "reason": "The wrapper adds an SDK declaration field. Headless does not import sdk-tools.d.ts. This does not flatten the route onto claude-agent.sdk."
+        },
+        {
+          "surface": "Bedrock, Vertex, Foundry, cloud sessions, VS Code, and Claude Tag notes",
+          "classification": "unselected",
+          "reason": "Those notes are outside the local subscription stream-json command."
+        }
+      ]
+    }
+  ]
+}

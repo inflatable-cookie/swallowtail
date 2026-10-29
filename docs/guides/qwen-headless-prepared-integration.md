@@ -35,7 +35,7 @@ The delegated credential is an opaque scoped lease. Ambient harness
 configuration and `--safe-mode` do not prove host containment.
 
 Qualified versions are `0.19.11..=0.20.1`, `0.21.0..=0.21.14`, exact
-`0.21.15`, and `0.22.0..=0.26.1` excluding unpublished `0.22.4`,
+`0.21.15`, and `0.22.0..=0.26.2` excluding unpublished `0.22.4`,
 `0.23.5`, and `0.25.4`; the 0.21+ segments have the image-only catalogue
 filter. Later stable releases may remain visible `UnverifiedNewer` under
 the latest qualified behavior. The unpublished `0.20.2`, `0.21.16`,

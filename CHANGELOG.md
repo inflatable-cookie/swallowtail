@@ -6,6 +6,18 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.26.2` on the existing `qwen-code.headless.package-window-2` claim and
+  `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
+  segment is `0.22.0..=0.26.2`, excluding unpublished `0.22.4`, `0.23.5`,
+  and `0.25.4`. The `0.26.1` to `0.26.2` hop keeps selected argv, stream-json
+  result subtypes, permission flow, approval mode, and the SSH workspace
+  guard. The experimental unified agent loop defaults off but ambient settings
+  or environment can enable it. The reachable `autofix_pr` tool permits status
+  and attended; acting commands ask and headless asks are denied. It stays
+  unmapped and the exclusion set stays unchanged. Baseline `0.19.11`, the deprecated segments, exact
+  `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
+  stay put. `0.26.3` is `UnverifiedNewer`. See Research 465.
 - retain Codex exec, app-server and lifecycle qualification through `0.164.0`.
   Official stable `0.165.0` remains `UnverifiedNewer` pending Linux shipped
   bwrap provenance and selected attached-child delete and paginated resume
@@ -30,7 +42,7 @@ annotated Git tags from the canonical repository.
   segment is `0.22.0..=0.26.1`, excluding unpublished `0.22.4`, `0.23.5`,
   and `0.25.4`. Baseline `0.19.11`, the deprecated segments, exact
   `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
-  stay put. `0.26.2` remains `UnverifiedNewer`. See Research 454.
+  stay put. See Research 454.
 - raise the `ollama.attached` maintained ceiling from `0.40.1` to official
   GitHub stable `0.40.11` on the existing
   `ollama.native-text-v1.manifest-list-runner` revision. The ten published

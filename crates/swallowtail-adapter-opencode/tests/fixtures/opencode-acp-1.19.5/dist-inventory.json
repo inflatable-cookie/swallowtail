@@ -1,0 +1,129 @@
+{
+  "compared": [
+    "1.19.4",
+    "1.19.5"
+  ],
+  "selected_file_sha256": {
+    "packages/core/src/config/mcp.ts": {
+      "1.19.4": "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633",
+      "1.19.5": "5e5c1ed7d3d1a786edd6acc9774f5b4c91d6487279a34a8409c4090c42f95633"
+    },
+    "packages/core/src/v1/config/mcp.ts": {
+      "1.19.4": "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9",
+      "1.19.5": "7993ec591f75a42fc2763e5d22de20c7b216d73cb944e03c6729ecfa331072a9"
+    },
+    "packages/opencode/src/acp/agent.ts": {
+      "1.19.4": "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57",
+      "1.19.5": "3bf7c0a31bbf8c3dd5b3d06ddf38eff0c988858e5df6bb46d3abecc906f15a57"
+    },
+    "packages/opencode/src/acp/config-option.ts": {
+      "1.19.4": "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1",
+      "1.19.5": "4545cf9639b12b4a9a0bd28d9a5f61b3d8e7e6706558f04c66454773813ed1a1"
+    },
+    "packages/opencode/src/acp/content.ts": {
+      "1.19.4": "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3",
+      "1.19.5": "8b3c0bc40893eb18a2a4b8f8709a2188ffe5aa11e4d93232b4bd80989ba2bbc3"
+    },
+    "packages/opencode/src/acp/directory.ts": {
+      "1.19.4": "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4",
+      "1.19.5": "c4f0f38ef433713afdd50f89d7ecf2ce8130f5104dc7606a2ff3f090726109b4"
+    },
+    "packages/opencode/src/acp/error.ts": {
+      "1.19.4": "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b",
+      "1.19.5": "60657818576b13275c4d3e665e6c586f686d98cc5ef30ac2ef4c0402c2c8080b"
+    },
+    "packages/opencode/src/acp/event.ts": {
+      "1.19.4": "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca",
+      "1.19.5": "bbbfe1e210ba7ddf7b76a8d7d829e6f7e44d4d714c79dce832681ced9314d9ca"
+    },
+    "packages/opencode/src/acp/permission.ts": {
+      "1.19.4": "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743",
+      "1.19.5": "b83f1b30015f92f432e56a444a7304e131b1824b06870e7842c70db6bd969743"
+    },
+    "packages/opencode/src/acp/profile.ts": {
+      "1.19.4": "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a",
+      "1.19.5": "e18bc3b08f5a26506394434436333fddc88ac15dcc9fbfbc0eb09944486e3c3a"
+    },
+    "packages/opencode/src/acp/service.ts": {
+      "1.19.4": "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de",
+      "1.19.5": "238750d52e220080db7b7f4992432fbfc7fb7ec5a15a6175460f8f0832a2c8de"
+    },
+    "packages/opencode/src/acp/session.ts": {
+      "1.19.4": "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e",
+      "1.19.5": "cc73f70f7d7071fd6bf808871c65bcb87d9f737f9e292be5e279ee51f5c9507e"
+    },
+    "packages/opencode/src/acp/tool.ts": {
+      "1.19.4": "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e",
+      "1.19.5": "decfa2d51b4edcf5a2259b754e1d6528b4d42aeff1309981c5ec19ff09d45e3e"
+    },
+    "packages/opencode/src/acp/usage.ts": {
+      "1.19.4": "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b",
+      "1.19.5": "09b2c0ec9a31a78cf85d5810d8bc7aa8d9b0fa460b16f4d0008d7d5b4d3fc38b"
+    },
+    "packages/opencode/src/cli/cmd/acp.ts": {
+      "1.19.4": "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23",
+      "1.19.5": "104d1dfe498154fca38c5971deec8330be4793cedf122e36c5a38589089e1b23"
+    },
+    "packages/opencode/src/mcp/index.ts": {
+      "1.19.4": "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026",
+      "1.19.5": "82c459309dfd005d25daecfabc1007d807d4bee23f6078434974277938a1c026"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/mcp.ts": {
+      "1.19.4": "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7",
+      "1.19.5": "06fb822ef79a07981a0342e03e418685efdab9e931a4fc7bded1c868a8d63eb7"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/mcp.ts": {
+      "1.19.4": "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799",
+      "1.19.5": "0f800a0abb57d9af0ace7340de0a041997e91f70e368d00d88d0563009ed5799"
+    },
+    "packages/opencode/package.json": {
+      "1.19.4": "9825647d55cdbc693e2965048e448b21540a1d290023b31a3af8b1d5da0fede5",
+      "1.19.5": "65ec3d533de3c7b1d78572955863a87e25f17895bc0f4bcc1571fcc07abec99f"
+    }
+  },
+  "repository_hops": [
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "repository_delta_counts": {
+        "added": 4,
+        "removed": 13,
+        "changed": 83,
+        "identical": 6540
+      },
+      "repository_path_sha256": {
+        "added": "afe3f85b786e88bbf1d92505f987bdf05d09b9f7add5ce67a7d96ad6c2c6968a",
+        "removed": "11a9113311a6949ed859e968a95b19fa93e9c0209147a37e4aa364e5f98d9adc",
+        "changed": "4491c152d5e7302a381c25b020e351a15ae651133c37b5647469d76d0bc9f97f"
+      },
+      "changed_selected_files": [
+        "packages/opencode/package.json"
+      ]
+    }
+  ],
+  "npm_file_sha256": {
+    "opencode-ai": {
+      "1.19.4": {
+        "LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+        "bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+        "package.json": "96a86bbaad6c6fce496e8e2504758a1c6a630aca18b82c4009e2d272ea23a7d6",
+        "postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+      },
+      "1.19.5": {
+        "LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+        "bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+        "package.json": "b611692992fefe03641adf42bd26d1d3affc2ed7848122d6347879aa7890afc7",
+        "postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+      }
+    },
+    "opencode-linux-x64": {
+      "1.19.4": {
+        "bin/opencode": "538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7",
+        "package.json": "4ecaa3280873d0c7b2b1727b8eb20e83b0a5350437a37f779d47c7a1ff887875"
+      },
+      "1.19.5": {
+        "bin/opencode": "7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c",
+        "package.json": "2312290f8379ee64f4521a913cca3cbdb69eaf1c61ac63b46cdbd921465a3a5a"
+      }
+    }
+  }
+}

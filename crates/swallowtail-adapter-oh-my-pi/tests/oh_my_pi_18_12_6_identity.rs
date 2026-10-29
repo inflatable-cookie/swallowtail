@@ -327,7 +327,7 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
         json!(["path"])
     );
 
-    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.12.6");
+    assert_eq!(OH_MY_PI_PACKAGE_LATEST_QUALIFIED_VERSION, "18.13.2");
     let claim = oh_my_pi_rpc_claim();
     for version in string_array(&identity["compared_versions"]) {
         assert!(
@@ -342,7 +342,7 @@ fn official_18_12_6_identity_and_every_published_hop_are_frozen() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version_binding("18.12.7")),
+        claim.assess(&version_binding("18.13.3")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(!claim.permits(&version_binding("18.12.7-rc.1")));

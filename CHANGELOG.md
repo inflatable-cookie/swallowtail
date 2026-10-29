@@ -18,6 +18,22 @@ annotated Git tags from the canonical repository.
   `dictation_stop`, `navigate_tree`, and `set_label`. Optional `input.secret`
   and `PromptError.code` `cost_cap` stay unmapped. `pi.rpc` and
   `pi.sdk-sidecar` are untouched.
+- qualify `qwen.headless` through official stable `@qwen-code/qwen-code`
+  `0.26.2` on the existing `qwen-code.headless.package-window-2` claim and
+  `qwen-code.headless.v0.21.15-reasoning-control` behavior. The maintained
+  segment is `0.22.0..=0.26.2`, excluding unpublished `0.22.4`, `0.23.5`,
+  and `0.25.4`. The `0.26.1` to `0.26.2` hop keeps selected argv, stream-json
+  result subtypes, permission flow, approval mode, and the SSH workspace
+  guard. The experimental unified agent loop defaults off but ambient settings
+  or environment can enable it. The reachable `autofix_pr` tool permits status
+  and attended; acting commands ask and headless asks are denied. It stays
+  unmapped and the exclusion set stays unchanged. Baseline `0.19.11`, the deprecated segments, exact
+  `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
+  stay put. `0.26.3` is `UnverifiedNewer`. See Research 465.
+- retain Codex exec, app-server and lifecycle qualification through `0.164.0`.
+  Official stable `0.165.0` remains `UnverifiedNewer` pending Linux shipped
+  bwrap provenance and selected attached-child delete and paginated resume
+  qualification. Research 463 retains the identity and concrete gates.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep
@@ -38,7 +54,7 @@ annotated Git tags from the canonical repository.
   segment is `0.22.0..=0.26.1`, excluding unpublished `0.22.4`, `0.23.5`,
   and `0.25.4`. Baseline `0.19.11`, the deprecated segments, exact
   `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
-  stay put. `0.26.2` remains `UnverifiedNewer`. See Research 454.
+  stay put. See Research 454.
 - raise the `ollama.attached` maintained ceiling from `0.40.1` to official
   GitHub stable `0.40.11` on the existing
   `ollama.native-text-v1.manifest-list-runner` revision. The ten published
@@ -58,13 +74,18 @@ annotated Git tags from the canonical repository.
   the `version-currentness` lane owns qualifying the then-current official
   stable. `antigravity.headless` stays at exact `1.2.11`. See Research 449.
 - qualify `claude-code.headless` and, separately, `claude-code.response-only`
-  through official stable `2.1.310`. Headless keeps deprecated
+  through official stable `2.1.312`. Headless keeps deprecated
   `stream-json.v1` on `2.1.220..=2.1.286` and maintained `stream-json.v2` on
-  `2.1.287..=2.1.310`. Response-only keeps its three segments and extends
-  maintained `stream-json.v3` from `2.1.293` through `2.1.310`. Both stay
-  `AllowUnverified`, keep their baselines and claim ids, and now exclude
-  unpublished `2.1.297` and `2.1.298`. `2.1.311` is `UnverifiedNewer`. The
-  optional maximum-turn gate stays on the Research 226 set. See Research 445.
+  `2.1.287..=2.1.312`. Response-only keeps its three segments and extends
+  maintained `stream-json.v3` through `2.1.312`. Both stay `AllowUnverified`,
+  keep their baselines and claim ids, and exclude unpublished `2.1.244`,
+  `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`,
+  `2.1.297`, and `2.1.298`. `2.1.311` and `2.1.312` qualify on the existing
+  behavior revisions. `2.1.313` is `UnverifiedNewer`. The optional
+  maximum-turn gate stays on the Research 226 set. Research 459 extends
+  Research 445. `cc-plugin-claude-platform`, registered from `2.1.311`, stays
+  unselected: print mode fails its interactive availability gate. Claude Agent ACP and the
+  Claude Agent SDK stay on their own claims.
 - qualify `claude-agent.acp` through official stable `0.98.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 460).
   The maintained segment is `0.66.0..=0.98.0`. Baseline `0.53.0`, claim id

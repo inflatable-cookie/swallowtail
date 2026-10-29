@@ -1,0 +1,521 @@
+{
+  "compared": [
+    "1.19.4",
+    "1.19.5"
+  ],
+  "complete_repository_tree_inventory": {
+    "canonicalization": "sort all relative paths bytewise; serialize each as path<TAB>sha256:<file-sha256> or path<TAB>symlink:<link-target>, followed by LF; SHA-256 the UTF-8 serialization",
+    "per_version": {
+      "1.19.4": {
+        "entries": 6636,
+        "files": 6576,
+        "symlinks": 60,
+        "opencode_src_files": 408,
+        "canonical_sha256": "ae0d6884639fda9deb79082e5b27483c9b6a6f45fb8868dadd89714722cbf287",
+        "source_archive_sha256": "2e553ed005b2df4a7efb9edd26db8fc3caafb1b4dfc3c5c3869192334584d8bb"
+      },
+      "1.19.5": {
+        "entries": 6627,
+        "files": 6567,
+        "symlinks": 60,
+        "opencode_src_files": 400,
+        "canonical_sha256": "98d156015c7d31198a689d93fbe18bdc9a11c833228473e8334ee36c9973a56b",
+        "source_archive_sha256": "7d2ac43b5083a3a4687fe23b79ab153b8d93a6fb186fa07209ed28d4731e5c7a"
+      }
+    }
+  },
+  "npm_package_file_inventories": {
+    "opencode-ai": {
+      "1.19.4": {
+        "LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+        "bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+        "package.json": "96a86bbaad6c6fce496e8e2504758a1c6a630aca18b82c4009e2d272ea23a7d6",
+        "postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+      },
+      "1.19.5": {
+        "LICENSE": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+        "bin/opencode.exe": "21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+        "package.json": "b611692992fefe03641adf42bd26d1d3affc2ed7848122d6347879aa7890afc7",
+        "postinstall.mjs": "5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+      }
+    },
+    "opencode-linux-x64": {
+      "1.19.4": {
+        "bin/opencode": "538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7",
+        "package.json": "4ecaa3280873d0c7b2b1727b8eb20e83b0a5350437a37f779d47c7a1ff887875"
+      },
+      "1.19.5": {
+        "bin/opencode": "7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c",
+        "package.json": "2312290f8379ee64f4521a913cca3cbdb69eaf1c61ac63b46cdbd921465a3a5a"
+      }
+    }
+  },
+  "mapped_stable_file_sha256": {
+    "packages/opencode/src/server/routes/instance/httpapi/groups/event.ts": {
+      "1.19.4": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513",
+      "1.19.5": "fd1ba9befff410ef6e0ac3f4fd1c2427ca721c95c31aaad174c9db6e30bdd513"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/provider.ts": {
+      "1.19.4": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246",
+      "1.19.5": "9e9c382d2d7b69dda7a5bab87ed999e400534a268d3f29f7e95d5cd95032d246"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/groups/session.ts": {
+      "1.19.4": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc",
+      "1.19.5": "3fd2ae22b6bbc211adc45011243a42fa869862355ad08c086c591792d8fa91dc"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/event.ts": {
+      "1.19.4": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6",
+      "1.19.5": "64985bf2d4d5e1002bdef7b3f64217cdd830c8b0dadfe3faf84ad0dffc5c5ba6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/provider.ts": {
+      "1.19.4": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077",
+      "1.19.5": "0a42588ae88dea589963f41f8a65c354a05e82c0a864b31896e1e50439fee077"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/handlers/session.ts": {
+      "1.19.4": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6",
+      "1.19.5": "3ce829f386267181da442d499d841463a9e532db827f75a6f41d501de6f71cf6"
+    },
+    "packages/opencode/src/server/routes/instance/httpapi/lifecycle.ts": {
+      "1.19.4": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb",
+      "1.19.5": "88618adc27b27bebbc596207c7cf4324c112b7b49b696972e22050f8d5ca4adb"
+    },
+    "packages/opencode/src/session/compaction.ts": {
+      "1.19.4": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a",
+      "1.19.5": "8d478570a7e4ad32b746030d4f86a1c673949b1e2259bd716b3885d99283289a"
+    },
+    "packages/opencode/src/session/message-v2.ts": {
+      "1.19.4": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a",
+      "1.19.5": "b55648c31423ace5c730ca085ef5429a966486fcd7bf84ab25e59453a1a9417a"
+    },
+    "packages/opencode/src/session/session.ts": {
+      "1.19.4": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2",
+      "1.19.5": "0c56ae3535e29cae0de51156eaba2842c0896309f1d6b12525566b4a8ba4c7f2"
+    },
+    "packages/opencode/src/session/status.ts": {
+      "1.19.4": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42",
+      "1.19.5": "dbbbdee83c292379c1665a1d482b810a13754b6ae2143169b24c75ced5841b42"
+    },
+    "packages/sdk/openapi.json": {
+      "1.19.4": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+      "1.19.5": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+    }
+  },
+  "gitlab_provider_source_sha256": {
+    "packages/core/src/plugin/provider/gitlab.ts": {
+      "1.19.4": "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8",
+      "1.19.5": "d914ac478608b950c5e19c62d53773bc90693e78ba43726ab125e3721af579f8"
+    },
+    "packages/opencode/src/provider/provider.ts": {
+      "1.19.4": "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d",
+      "1.19.5": "8d31296a58bc7955a1adb8b6d60da53a34ab7540d85644bab212a8ee27b8b69d"
+    },
+    "packages/opencode/src/provider/transform.ts": {
+      "1.19.4": "4fb803445f0e72a84fb3edf2b1721084437204d3e35582dab53e156f92f54007",
+      "1.19.5": "4fb803445f0e72a84fb3edf2b1721084437204d3e35582dab53e156f92f54007"
+    }
+  },
+  "openapi_sha256": {
+    "1.19.4": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26",
+    "1.19.5": "d224c1a7506ae981c8d4fc1a8d1f58ac185e27324f94d4daf1b8f84fc2552d26"
+  },
+  "hops": [
+    {
+      "hop": "1.19.4_to_1.19.5",
+      "repository_delta_counts": {
+        "added": 4,
+        "removed": 13,
+        "changed": 83,
+        "identical": 6540
+      },
+      "repository_path_sha256": {
+        "added": "afe3f85b786e88bbf1d92505f987bdf05d09b9f7add5ce67a7d96ad6c2c6968a",
+        "removed": "11a9113311a6949ed859e968a95b19fa93e9c0209147a37e4aa364e5f98d9adc",
+        "changed": "4491c152d5e7302a381c25b020e351a15ae651133c37b5647469d76d0bc9f97f"
+      },
+      "repository_added": [
+        ".github/nix-hashes/publish.sh",
+        ".github/nix-hashes/validate.sh",
+        ".github/workflows/bot-nix-hashes.yml",
+        ".github/workflows/check-bot-scope.yml"
+      ],
+      "repository_removed": [
+        ".github/actions/setup-git-committer/action.yml",
+        ".github/workflows/docs-locale-sync.yml",
+        ".github/workflows/generate.yml",
+        ".github/workflows/models-snapshot.yml",
+        ".github/workflows/nix-hashes.yml",
+        "packages/opencode/src/effect/bootstrap-runtime.ts",
+        "packages/opencode/src/session/prompt/copilot-gpt-5.txt",
+        "packages/opencode/src/session/prompt/plan-reminder-anthropic.txt",
+        "packages/opencode/src/storage/schema.ts",
+        "packages/opencode/src/sync/schema.ts",
+        "packages/opencode/src/tool/plan-enter.txt",
+        "packages/opencode/src/util/defer.ts",
+        "packages/opencode/src/util/signal.ts"
+      ],
+      "repository_changed": [
+        ".github/workflows/containers.yml",
+        ".github/workflows/publish-github-action.yml",
+        ".github/workflows/publish-vscode.yml",
+        ".github/workflows/publish.yml",
+        ".github/workflows/typecheck.yml",
+        ".github/workflows/unlock.yml",
+        "bun.lock",
+        "nix/hashes.json",
+        "packages/app/package.json",
+        "packages/cli/package.json",
+        "packages/codemode/package.json",
+        "packages/console/app/package.json",
+        "packages/console/core/package.json",
+        "packages/console/function/package.json",
+        "packages/console/mail/package.json",
+        "packages/console/support/package.json",
+        "packages/core/package.json",
+        "packages/desktop/package.json",
+        "packages/effect-drizzle-sqlite/package.json",
+        "packages/effect-sqlite-node/package.json",
+        "packages/enterprise/package.json",
+        "packages/function/package.json",
+        "packages/http-recorder/package.json",
+        "packages/llm/package.json",
+        "packages/opencode/package.json",
+        "packages/opencode/script/publish.ts",
+        "packages/opencode/src/account/account.ts",
+        "packages/opencode/src/cli/cmd/debug/agent.handler.ts",
+        "packages/opencode/src/cli/network.ts",
+        "packages/opencode/src/config/config.ts",
+        "packages/opencode/src/config/markdown.ts",
+        "packages/opencode/src/control-plane/workspace.ts",
+        "packages/opencode/src/image/image.ts",
+        "packages/opencode/src/installation/index.ts",
+        "packages/opencode/src/lsp/client.ts",
+        "packages/opencode/src/server/routes/instance/httpapi/groups/pty.ts",
+        "packages/opencode/src/server/routes/instance/httpapi/middleware/authorization.ts",
+        "packages/opencode/src/server/shared/pty-ticket.ts",
+        "packages/opencode/src/server/shared/ui.ts",
+        "packages/opencode/src/session/instruction.ts",
+        "packages/opencode/src/session/llm.ts",
+        "packages/opencode/src/session/llm/request.ts",
+        "packages/opencode/src/session/overflow.ts",
+        "packages/opencode/src/skill/discovery.ts",
+        "packages/opencode/src/util/filesystem.ts",
+        "packages/opencode/src/util/repository.ts",
+        "packages/opencode/src/util/rpc.ts",
+        "packages/opencode/test/agent/agent.test.ts",
+        "packages/opencode/test/cli/github-action.test.ts",
+        "packages/opencode/test/fixture/fixture.ts",
+        "packages/opencode/test/lib/effect.ts",
+        "packages/opencode/test/provider/provider.test.ts",
+        "packages/opencode/test/server/global-session-list.test.ts",
+        "packages/opencode/test/server/httpapi-event.test.ts",
+        "packages/opencode/test/server/httpapi-exercise/runner.ts",
+        "packages/opencode/test/server/httpapi-exercise/types.ts",
+        "packages/opencode/test/server/httpapi-sdk.test.ts",
+        "packages/opencode/test/session/instruction.test.ts",
+        "packages/opencode/test/tool/apply_patch.test.ts",
+        "packages/opencode/test/tool/edit.test.ts",
+        "packages/opencode/test/tool/external-directory.test.ts",
+        "packages/opencode/test/tool/glob.test.ts",
+        "packages/opencode/test/tool/grep.test.ts",
+        "packages/opencode/test/tool/shell.test.ts",
+        "packages/opencode/test/tool/skill.test.ts",
+        "packages/opencode/test/tool/task.test.ts",
+        "packages/opencode/test/tool/write.test.ts",
+        "packages/plugin/package.json",
+        "packages/protocol/src/groups/pty.ts",
+        "packages/sdk/js/package.json",
+        "packages/server/package.json",
+        "packages/server/src/middleware/authorization.ts",
+        "packages/session-ui/package.json",
+        "packages/slack/package.json",
+        "packages/stats/app/package.json",
+        "packages/stats/core/package.json",
+        "packages/stats/server/package.json",
+        "packages/tui/package.json",
+        "packages/ui/package.json",
+        "packages/web/package.json",
+        "script/publish.ts",
+        "script/version.ts",
+        "sdks/vscode/package.json"
+      ],
+      "implementation_file_deltas": {
+        "bun.lock": {
+          "change": "changed",
+          "before_sha256": "70cf5a7f721531cbd98916ffdfb39b3ab2d919442a53e80b10d2a58c470083dd",
+          "after_sha256": "f65cf6d303cf0634b8e09bb545b99de33c6be31d4314008f4b5e7a4a85bb9327"
+        },
+        "packages/core/package.json": {
+          "change": "changed",
+          "before_sha256": "8122449bb90b82ac24a7ad562e5a03f5672bf66f26ba8ad66b1f23fef374dd54",
+          "after_sha256": "ec367e16b9528957d07e3889478d449c9eead3df2a8f0082e35c20b3d2243022"
+        },
+        "packages/opencode/package.json": {
+          "change": "changed",
+          "before_sha256": "9825647d55cdbc693e2965048e448b21540a1d290023b31a3af8b1d5da0fede5",
+          "after_sha256": "65ec3d533de3c7b1d78572955863a87e25f17895bc0f4bcc1571fcc07abec99f"
+        },
+        "packages/opencode/src/account/account.ts": {
+          "change": "changed",
+          "before_sha256": "34c5a27ddc00998756b33ed5bbebfa7dcce1ab506413bc702c259f30ac3361d0",
+          "after_sha256": "af50c8e51c97e69962cff49ad4e19ef8ae44ee6ba51b8763417233b47d048bbb"
+        },
+        "packages/opencode/src/cli/cmd/debug/agent.handler.ts": {
+          "change": "changed",
+          "before_sha256": "cf0aaa2190a395f689ba7f7fb2b7efe05d99e0293538ba9e78184095f8a72fb4",
+          "after_sha256": "521eee8b1a60e15e8387be1d4afddc0e91f11ae7530c3697fbf87433ad64941a"
+        },
+        "packages/opencode/src/cli/network.ts": {
+          "change": "changed",
+          "before_sha256": "5dd002beaee3285dd4a2d064c5b571b5e4f3300f349499dc194420d0c4266cc1",
+          "after_sha256": "f774e441ee0e89c866bc0636d315754be8e3ca1b4c4203c2aa549c67957e4843"
+        },
+        "packages/opencode/src/config/config.ts": {
+          "change": "changed",
+          "before_sha256": "87a9071af1ddb04d65947dba49be3fb4c94ecf63e120f17ce46ee81ff25dd45a",
+          "after_sha256": "839c934f014c29a40f06cafd8bf2da1f0b2976ecd9e3e0f71b859792837ab14d"
+        },
+        "packages/opencode/src/config/markdown.ts": {
+          "change": "changed",
+          "before_sha256": "bcb87009e9ffc760e0e2f0878543f582b5ca7ecc67bebb2087de2467ae28cbfe",
+          "after_sha256": "699563cb415587d5c75f7e7362c5efb1de2285ce4efc09a99a1b3592a9d5e38f"
+        },
+        "packages/opencode/src/control-plane/workspace.ts": {
+          "change": "changed",
+          "before_sha256": "087058224b0833b7df8382dd9f5ff0800303090fb4b7df8b07dacb12d63e243c",
+          "after_sha256": "7aae52ddd9ab5aadf3468fad6f5be8e1a30d21e6d76299bb5d66534ffc785c86"
+        },
+        "packages/opencode/src/effect/bootstrap-runtime.ts": {
+          "change": "removed",
+          "before_sha256": "53a20b9dc49d4fa5dae9983f226115eee22003c6d3814aba7452c058e4483669"
+        },
+        "packages/opencode/src/image/image.ts": {
+          "change": "changed",
+          "before_sha256": "03e71a0e935353d61a036005ebeeece1887094d9b5154f1317e027f94f2323f7",
+          "after_sha256": "a636ac3d464d9a5c72cc237ff87f4a2595d4f4ef817c4814cb576019de121381"
+        },
+        "packages/opencode/src/installation/index.ts": {
+          "change": "changed",
+          "before_sha256": "de147cd4eba1cfdaaefaaeede15565ebda4372f0049eba5b7abb1edaf2ab889e",
+          "after_sha256": "04680805c10164c642fa837de3737ee48e69738c8532627db76654f5fa4bd2d5"
+        },
+        "packages/opencode/src/lsp/client.ts": {
+          "change": "changed",
+          "before_sha256": "81a3c66617083715cdbfeabc7b12ae7f059da064ef3aba462738ca7b992b6b5a",
+          "after_sha256": "082ad81082582145076e10026344f117f9ed92c043b48d6a3447d338bb6fc21f"
+        },
+        "packages/opencode/src/server/routes/instance/httpapi/groups/pty.ts": {
+          "change": "changed",
+          "before_sha256": "685c16df022fe44333d77f59c1a91574aaad47f759ee8a0d0b6904897f85aa1b",
+          "after_sha256": "802756cd5763a7517131d9cb7879058c24f7d5ccf912ed72b98e1b8e8fb8b7ab"
+        },
+        "packages/opencode/src/server/routes/instance/httpapi/middleware/authorization.ts": {
+          "change": "changed",
+          "before_sha256": "687b7beb1a2cb1f8b74fa6b0d449e4f4e8b4f0a14aa1ffa3cf88ef61ea68d8a9",
+          "after_sha256": "c4537aaef9b252a4b60d5321e579f6692ef172c38cd4f520f50c4f4efe92696f"
+        },
+        "packages/opencode/src/server/shared/pty-ticket.ts": {
+          "change": "changed",
+          "before_sha256": "0c1abc88e103ed96d982f413214ea1b1e2b5af8ba55febe2f109fd63db012c11",
+          "after_sha256": "0dc00f91244ef271f9d9b89cf69881f8d92abcc2d9f03f25e88db2afc299f7b0"
+        },
+        "packages/opencode/src/server/shared/ui.ts": {
+          "change": "changed",
+          "before_sha256": "27664aed71baa98997f9a708bf2831a6d1d038e84f83ef4d72638b236c9236d4",
+          "after_sha256": "e02916624b233201605b4556194c57b632a0faec7b637fb166d7038a3ec00026"
+        },
+        "packages/opencode/src/session/instruction.ts": {
+          "change": "changed",
+          "before_sha256": "fee79c023eae44f720d4d600f334a987ad5f7615c4a008a20c89131a92684a8f",
+          "after_sha256": "5b10b4f6c68c18be47e2f609e829485c1889c7abaae81087460d9cdc26542c95"
+        },
+        "packages/opencode/src/session/llm.ts": {
+          "change": "changed",
+          "before_sha256": "5f1dcfb734853e39760e4dd05470f0c7d8752fc5dcc64e118c065149602e402d",
+          "after_sha256": "6bc3c459b3004fa5bf3cd4d6465d16bacb194285694be0fa5fc3fa12eba28f4e"
+        },
+        "packages/opencode/src/session/llm/request.ts": {
+          "change": "changed",
+          "before_sha256": "90077551a9a46e11a37f44279c584832918d722c0ba0407ff8cad8d3437dd0de",
+          "after_sha256": "fb03673ee5ddfb0658ec5f1b9f50ac0f0355446af0de6a6796c20df367598687"
+        },
+        "packages/opencode/src/session/overflow.ts": {
+          "change": "changed",
+          "before_sha256": "fa0d52e8a59b737e8129d6473f9f6416567cd765c6068f854e4ea0dd3d351d10",
+          "after_sha256": "47dfe71e6f96737518c494744561611fffe955594ceb10220dd7c751c3ec139c"
+        },
+        "packages/opencode/src/session/prompt/copilot-gpt-5.txt": {
+          "change": "removed",
+          "before_sha256": "0ef5261daf7a4ae72b3e874cabc7b06cf34d991376d1dcfa1874734b13031828"
+        },
+        "packages/opencode/src/session/prompt/plan-reminder-anthropic.txt": {
+          "change": "removed",
+          "before_sha256": "8c4517ba847f753b2e25f7056ddc393f6728074fa6444d4070d121e75b1f91b5"
+        },
+        "packages/opencode/src/skill/discovery.ts": {
+          "change": "changed",
+          "before_sha256": "6bb6706bc9451f4a70582a5cd76396820aab2c7440e3974ad7ffceba200880ed",
+          "after_sha256": "31298e40aa5682620b27289e86e58b8e30435a7aa9b9e02b00ad258eb04aba50"
+        },
+        "packages/opencode/src/storage/schema.ts": {
+          "change": "removed",
+          "before_sha256": "00e3555f66a806d4cedfeef6b3475d770b219a48b2037582dae2d27a47127b91"
+        },
+        "packages/opencode/src/sync/schema.ts": {
+          "change": "removed",
+          "before_sha256": "4c3366bb2b30e0e1f7868c3d0237293d1f8bbbc60d168916f7383014f0695e14"
+        },
+        "packages/opencode/src/tool/plan-enter.txt": {
+          "change": "removed",
+          "before_sha256": "c03e1829d0e049c3c02ea4a04b9cad414194d75953dce9dc2167e3f2afc1abcb"
+        },
+        "packages/opencode/src/util/defer.ts": {
+          "change": "removed",
+          "before_sha256": "3c0190dfa0bcb5da858eb10b31896924f6234ee19edbd31c2641833de47a8299"
+        },
+        "packages/opencode/src/util/filesystem.ts": {
+          "change": "changed",
+          "before_sha256": "2cdf37849db0bff495f9f217fcec33295a159c782eaf06e2460b3b86398c204f",
+          "after_sha256": "ec2aab5b5b5bedcc5d1c68a16f476193d3ce08d2e203b5e57b4a5f3106f1090f"
+        },
+        "packages/opencode/src/util/repository.ts": {
+          "change": "changed",
+          "before_sha256": "07e27e908df80ef30f108a404003617c71a941102aae62cf8a92112cc5ac5e70",
+          "after_sha256": "41fac37b80546d12ea34a45a38627ac70c4557d5e1794015e36276d52aec37b3"
+        },
+        "packages/opencode/src/util/rpc.ts": {
+          "change": "changed",
+          "before_sha256": "fb59a60b238b1791e58f71aa79e30469d7887892c850daa0fad978b766ae814a",
+          "after_sha256": "f99318c6acbd2393e6bb2e48f0f351e6af9852b1796d86859647d28d249f8278"
+        },
+        "packages/opencode/src/util/signal.ts": {
+          "change": "removed",
+          "before_sha256": "0810fa544f4191a6a08b600dfdf1d4366f0f0eb45e84d44e56728faf80e36f0b"
+        },
+        "packages/protocol/src/groups/pty.ts": {
+          "change": "changed",
+          "before_sha256": "2f24e1b28288ef4907a0efd11b6be5d3f6b96df265a3a466c430ca723c4159bc",
+          "after_sha256": "d5f27a9318eb1e0196c4739886be2d38f18dcfdb534d85c232f8750dcd453ec7"
+        },
+        "packages/server/src/middleware/authorization.ts": {
+          "change": "changed",
+          "before_sha256": "8bd497bbee551316de38f26e1b31590a6702e7d7431b523c02e92188c88381cc",
+          "after_sha256": "faff33142ec49b1eaf76dc7cb194fcdaef9d2adc1914942fda362cf525c903e6"
+        }
+      },
+      "path_partition": {
+        "classified": [
+          "bun.lock",
+          "packages/core/package.json",
+          "packages/opencode/package.json",
+          "packages/opencode/src/account/account.ts",
+          "packages/opencode/src/cli/cmd/debug/agent.handler.ts",
+          "packages/opencode/src/cli/network.ts",
+          "packages/opencode/src/config/config.ts",
+          "packages/opencode/src/config/markdown.ts",
+          "packages/opencode/src/control-plane/workspace.ts",
+          "packages/opencode/src/effect/bootstrap-runtime.ts",
+          "packages/opencode/src/image/image.ts",
+          "packages/opencode/src/installation/index.ts",
+          "packages/opencode/src/lsp/client.ts",
+          "packages/opencode/src/server/routes/instance/httpapi/groups/pty.ts",
+          "packages/opencode/src/server/routes/instance/httpapi/middleware/authorization.ts",
+          "packages/opencode/src/server/shared/pty-ticket.ts",
+          "packages/opencode/src/server/shared/ui.ts",
+          "packages/opencode/src/session/instruction.ts",
+          "packages/opencode/src/session/llm.ts",
+          "packages/opencode/src/session/llm/request.ts",
+          "packages/opencode/src/session/overflow.ts",
+          "packages/opencode/src/session/prompt/copilot-gpt-5.txt",
+          "packages/opencode/src/session/prompt/plan-reminder-anthropic.txt",
+          "packages/opencode/src/skill/discovery.ts",
+          "packages/opencode/src/storage/schema.ts",
+          "packages/opencode/src/sync/schema.ts",
+          "packages/opencode/src/tool/plan-enter.txt",
+          "packages/opencode/src/util/defer.ts",
+          "packages/opencode/src/util/filesystem.ts",
+          "packages/opencode/src/util/repository.ts",
+          "packages/opencode/src/util/rpc.ts",
+          "packages/opencode/src/util/signal.ts",
+          "packages/protocol/src/groups/pty.ts",
+          "packages/server/src/middleware/authorization.ts"
+        ],
+        "ci": [
+          ".github/actions/setup-git-committer/action.yml",
+          ".github/nix-hashes/publish.sh",
+          ".github/nix-hashes/validate.sh",
+          ".github/workflows/bot-nix-hashes.yml",
+          ".github/workflows/check-bot-scope.yml",
+          ".github/workflows/containers.yml",
+          ".github/workflows/docs-locale-sync.yml",
+          ".github/workflows/generate.yml",
+          ".github/workflows/models-snapshot.yml",
+          ".github/workflows/nix-hashes.yml",
+          ".github/workflows/publish-github-action.yml",
+          ".github/workflows/publish-vscode.yml",
+          ".github/workflows/publish.yml",
+          ".github/workflows/typecheck.yml",
+          ".github/workflows/unlock.yml"
+        ],
+        "nix": [
+          "nix/hashes.json"
+        ],
+        "workspace_package_version": [
+          "packages/app/package.json",
+          "packages/cli/package.json",
+          "packages/codemode/package.json",
+          "packages/console/app/package.json",
+          "packages/console/core/package.json",
+          "packages/console/function/package.json",
+          "packages/console/mail/package.json",
+          "packages/console/support/package.json",
+          "packages/desktop/package.json",
+          "packages/effect-drizzle-sqlite/package.json",
+          "packages/effect-sqlite-node/package.json",
+          "packages/enterprise/package.json",
+          "packages/function/package.json",
+          "packages/http-recorder/package.json",
+          "packages/llm/package.json",
+          "packages/plugin/package.json",
+          "packages/sdk/js/package.json",
+          "packages/server/package.json",
+          "packages/session-ui/package.json",
+          "packages/slack/package.json",
+          "packages/stats/app/package.json",
+          "packages/stats/core/package.json",
+          "packages/stats/server/package.json",
+          "packages/tui/package.json",
+          "packages/ui/package.json",
+          "packages/web/package.json",
+          "sdks/vscode/package.json"
+        ],
+        "release_scripts": [
+          "packages/opencode/script/publish.ts",
+          "script/publish.ts",
+          "script/version.ts"
+        ],
+        "test_import_cleanup": [
+          "packages/opencode/test/agent/agent.test.ts",
+          "packages/opencode/test/cli/github-action.test.ts",
+          "packages/opencode/test/fixture/fixture.ts",
+          "packages/opencode/test/lib/effect.ts",
+          "packages/opencode/test/provider/provider.test.ts",
+          "packages/opencode/test/server/global-session-list.test.ts",
+          "packages/opencode/test/server/httpapi-event.test.ts",
+          "packages/opencode/test/server/httpapi-exercise/runner.ts",
+          "packages/opencode/test/server/httpapi-exercise/types.ts",
+          "packages/opencode/test/server/httpapi-sdk.test.ts",
+          "packages/opencode/test/session/instruction.test.ts",
+          "packages/opencode/test/tool/apply_patch.test.ts",
+          "packages/opencode/test/tool/edit.test.ts",
+          "packages/opencode/test/tool/external-directory.test.ts",
+          "packages/opencode/test/tool/glob.test.ts",
+          "packages/opencode/test/tool/grep.test.ts",
+          "packages/opencode/test/tool/shell.test.ts",
+          "packages/opencode/test/tool/skill.test.ts",
+          "packages/opencode/test/tool/task.test.ts",
+          "packages/opencode/test/tool/write.test.ts"
+        ]
+      }
+    }
+  ]
+}

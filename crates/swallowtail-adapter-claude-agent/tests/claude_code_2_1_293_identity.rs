@@ -94,8 +94,8 @@ fn official_identity_stops_without_changing_the_headless_claim() {
     assert_eq!(source_tags, expected_tags);
 
     let claim = claude_code_headless_claim();
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.310");
-    assert_eq!(claim.latest_qualified().as_str(), "2.1.310");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.312");
+    assert_eq!(claim.latest_qualified().as_str(), "2.1.312");
     assert!(claim.supports(&InterfaceVersion::new("2.1.281").unwrap()));
     assert!(matches!(
         claim.assess(&InterfaceVersion::new("2.1.294").unwrap()),
@@ -108,7 +108,7 @@ fn official_identity_stops_without_changing_the_headless_claim() {
             if matched.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));
     assert!(matches!(
-        claim.assess(&InterfaceVersion::new("2.1.311").unwrap()),
+        claim.assess(&InterfaceVersion::new("2.1.313").unwrap()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
             if newer.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));

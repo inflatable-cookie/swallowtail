@@ -268,19 +268,24 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
 capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on deprecated
-`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.310` on maintained
+`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.312` on maintained
 private milestone `claude-code.headless.stream-json.v2`.
 Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`, `2.1.297`, and `2.1.298`. Later
 stable versions remain visible `UnverifiedNewer`; the first unpublished point
-after the qualified ceiling is `2.1.311`. Headless does not pass `--safe-mode`
+after the qualified ceiling is `2.1.313`. Headless does not pass `--safe-mode`
 and already admits ambient project instructions. The exact 2.1.294 npm wrapper,
 Darwin arm64, and Linux x64 trees and every published hop after `2.1.281`
 remain frozen in Research 422. Research 423 records exact-artifact hook-safety
 analysis and provider-free adapter fixtures for the forked stream and denied
 action cases. Research 445 extends the same v2 segment through official stable
-`2.1.310`. From `2.1.299` a plugin hook that cannot be handed an action or
-cannot return refuses the call, and from `2.1.300` a rewritten `updatedInput`
+`2.1.310`. Research 459 extends it through official stable `2.1.312`.
+From `2.1.311` the provider registers `cc-plugin-claude-platform` on the
+existing local builtin path. Both routes pass `-p`, which makes the required `isInteractive()` false even
+when the dynamic availability flag is enabled. The builtin filter skips the
+plugin before adding its MCP server (Research 459). From `2.1.299` a plugin hook that
+cannot be handed an action or cannot return refuses the call, and from
+`2.1.300` a rewritten `updatedInput`
 drops unknown keys and denies rejected input. Both tighten the existing v2
 rules. They do not add a behavior revision.
 
@@ -299,10 +304,11 @@ add a permission bypass. Research 423 records the static source review and
 synthetic fake-process coverage; the fixtures are adapter tests, not captured
 provider transcripts.
 
-At the Research 445 identity commit, npm `latest` and GitHub latest stable
-agreed on `2.1.310`. npm `stable` remains the delayed channel, then at
-`2.1.308`. `2.1.311` is unpublished and stays `UnverifiedNewer`. SDK and ACP
-claims are unchanged. Response-only is a separate claim in the same record.
+At the Research 459 identity commit, npm `latest` and GitHub latest stable
+agreed on `2.1.312`. npm `stable` remains the delayed channel at `2.1.308`.
+npm `next` is also `2.1.312`. `2.1.313` is unpublished and stays
+`UnverifiedNewer`. SDK and ACP claims are unchanged. Response-only is a
+separate claim in the same record.
 
 ### Maximum Agentic Turns
 
@@ -329,14 +335,14 @@ selectable here.
 
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set remains narrower than the route's qualified window. This task's
-qualification through `2.1.310` does not extend the optional maximum-turn
-feature; exact `2.1.282..=2.1.310` route points are not max-turn eligible under
+qualification through `2.1.312` does not extend the optional maximum-turn
+feature; exact `2.1.282..=2.1.312` route points are not max-turn eligible under
 Research 226. The feature still requires an exact probed version:
 
 - published qualified points `2.1.242..=2.1.281` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
   `2.1.279` were never probed for this feature
-- published `2.1.282..=2.1.310` points are not admitted by this exact-version
+- published `2.1.282..=2.1.312` points are not admitted by this exact-version
   feature gate; unpublished `2.1.297` and `2.1.298` stay denied; later stable
   points remain `UnverifiedNewer`
 - no maximum-turn artifact was probed for any of those later points
@@ -406,14 +412,14 @@ claim id `claude-code.response-only.window-1`:
 - `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
   under the narrowed built-in-hook guarantee and remain supported as
   `Deprecated`.
-- `2.1.282` through `2.1.310` use `claude-code.response-only.stream-json.v3`
+- `2.1.282` through `2.1.312` use `claude-code.response-only.stream-json.v3`
   with the version-specific linked-instruction read limit; this is the
   maintained segment.
 
 Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, `2.1.279`, `2.1.297`, and `2.1.298` are denied. Later stable
 releases run provisionally as `UnverifiedNewer` on the v3 behavior. The first
-unpublished point after the ceiling is `2.1.311`. The baseline, claim id,
+unpublished point after the ceiling is `2.1.313`. The baseline, claim id,
 denied points, and earlier supported segments stay in force. This is a distinct
 route. It does not weaken or replace `claude-code.headless`.
 
@@ -456,7 +462,7 @@ Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
 qualification. The v1 segment ends at `2.1.278`, the v2 segment ends at
-`2.1.281`, and v3 currently ends at `2.1.310`. The static deny-list is
+`2.1.281`, and v3 currently ends at `2.1.312`. The static deny-list is
 unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, `2.1.279`, `2.1.297`, and `2.1.298`.
 
@@ -477,6 +483,15 @@ provider surface, disclosed here:
 | `responsive-mode` | Rollout-gated prompt section/submit mutation | none; can change a turn when the provider gate is on |
 | `diff` | Interactive diff UI, command, and git-state hooks | `--disable-slash-commands` and empty tools block command/tool paths |
 | `claude-test` | Command/skill hooks that can launch test assets | `--disable-slash-commands` blocks invocation |
+
+From `2.1.311` the provider also registers `cc-plugin-claude-platform` on the
+same local builtin path that already loads `claude-test`. Print mode makes
+its required `isInteractive()` false, regardless of the dynamic flag. Safe
+mode also blocks auto-discovered MCP. The builtin filter skips the unavailable
+plugin before adding its docs MCP server; `mayConnectMcpServer` also requires
+availability. Response-only requires empty `mcp_servers` and fail-closes
+otherwise (Research 459). Easel's extra `remote_cowork` registration
+from the same hop is outside this route; empty tools leave easel unselected.
 
 Project instruction discovery starts from the launch directory. A consumer
 `Read` working resource supplies that child directory, so `AGENTS.md` joins

@@ -1,0 +1,129 @@
+{
+  "axis": "claude-code.response-only-stream-json",
+  "behavior_revision": "claude-code.response-only.stream-json.v3",
+  "decision": "compatible-extension",
+  "isolation_evidence": "response-only-isolation.json",
+  "selected_command": {
+    "arguments": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--model",
+      "<caller-selected-model>",
+      "--tools",
+      "",
+      "--safe-mode",
+      "--disable-slash-commands",
+      "--no-chrome",
+      "--prompt-suggestions",
+      "false",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ]
+  },
+  "selected_behavior_boundary": {
+    "input_format": "text",
+    "output_format": "stream-json",
+    "permission_mode_expected_on_init": "default",
+    "tools_empty": true,
+    "mcp_servers_empty": true,
+    "safe_mode": true,
+    "slash_commands_disabled": true,
+    "session_persistence": false,
+    "num_turns": 1
+  },
+  "help_lines_byte_identical_on_every_scanned_binary": [
+    "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+    "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+  ],
+  "per_hop_classification": [
+    {
+      "hop": "2.1.310_to_2.1.311",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "CLAUDE.md very long list item startup freeze",
+          "classification": "provider-instruction-load-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "Response-only v3 already records reduced symlink-linked instruction reads and does not gain containment. The freeze fix does not change init fields, empty tools, or the text-only contract."
+        },
+        {
+          "surface": "standard-context request over 200K tokens compacts and continues",
+          "classification": "provider-context-continuation",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "Response-only does not select a context budget. It still requires one init, one text turn, and one result, and still fail-closes an unknown event type. A compact event on that edge would fail closed rather than widen the text contract. The measured init object is unchanged."
+        },
+        {
+          "surface": "stream-json string escaping of DEL, C1, and Unicode format characters",
+          "classification": "json-string-encoding",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "Parsed values are unchanged. The response-only decoder uses serde_json. Help lines and init fields stay."
+        },
+        {
+          "surface": "mods, plugins, custom hooks, and SubagentStop cadence",
+          "classification": "outside-safe-mode-custom-hooks",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.311",
+          "reason": "Response-only passes --safe-mode. The measured filter still drops installed plugins and keeps only @builtin plugins. Custom hooks and mods stay outside that filter."
+        },
+        {
+          "surface": "builtin cc-plugin-claude-platform",
+          "classification": "gated-builtin-unselected",
+          "reason": "Both routes pass -p, so isInteractive is false regardless of the dynamic flag. The builtin availability filter skips the plugin before adding its MCP server; mayConnectMcpServer also requires isAvailable. Response-only safe mode independently blocks mcpAutoDiscovered and rejects nonempty init MCP."
+        },
+        {
+          "surface": "easel builtin also registers for remote_cowork",
+          "classification": "unselected",
+          "reason": "The extra remote_cowork registration is outside this route. The local e path is unchanged. Empty tools and empty MCP leave easel unselected."
+        },
+        {
+          "surface": "--hold-idle-file and --max-hold-min",
+          "classification": "unmapped-opt-in",
+          "reason": "The selected command does not pass the self-hosted-runner flags."
+        },
+        {
+          "surface": "VS Code, cloud, Remote Control, Cowork, Bash, MCP, and IDE notes",
+          "classification": "unselected",
+          "reason": "Empty tools, empty strict MCP, disabled slash commands, and one text turn leave those notes outside the route."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.311_to_2.1.312",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "invalid command name leaving claude -p with no output",
+          "classification": "outside-disabled-commands",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "--disable-slash-commands help stays byte-identical: Disable all skills and commands. Command loading is outside that filter. The text-only contract does not change."
+        },
+        {
+          "surface": "prompt and agent hook concurrency cap",
+          "classification": "outside-safe-mode-custom-hooks",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "The scheduler cap applies to prompt and agent hooks. Safe mode still disables installed plugins and custom hooks. The measured filter is structurally unchanged."
+        },
+        {
+          "surface": "Write, Bash skill discovery, and subagent autoCompactWindow",
+          "classification": "unselected",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.312",
+          "reason": "Response-only sends an empty tool list, rejects a non-null parent_tool_use_id, and does not select Write, Bash, or a subagent window."
+        },
+        {
+          "surface": "sdk-tools.d.ts ask-user unanswered field",
+          "classification": "unmapped-sdk-declaration",
+          "reason": "The declaration is the Claude Agent SDK surface. Response-only does not decode it and does not flatten onto claude-agent.sdk."
+        }
+      ]
+    }
+  ]
+}

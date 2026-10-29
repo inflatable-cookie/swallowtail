@@ -1,0 +1,150 @@
+{
+  "axis": "opencode.server",
+  "selected_route_family": "opencode.http",
+  "companion_route_family": "opencode.acp",
+  "version": "1.19.5",
+  "observed_at": "2026-10-28",
+  "research": 464,
+  "npm_package": "opencode-ai",
+  "npm_latest": "1.19.5",
+  "github_latest_tag": "v1.19.5",
+  "official_channels_agree": true,
+  "previous_qualified_ceiling": "1.19.4",
+  "official_stable_hops_from_previous_qualified_ceiling": [
+    "1.19.5"
+  ],
+  "unpublished_or_withdrawn_hops": [],
+  "unpublished_gap_preserved": "1.18.36",
+  "first_unpublished_later_stable": "1.19.6",
+  "prereleases_ignored": true,
+  "non_latest_dist_tags_ignored": true,
+  "acp_registry_not_the_axis": {
+    "registry": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+    "opencode_version": "2.2.0",
+    "opencode_v2_version": "2.2.0",
+    "github_release": "v2.2.0",
+    "github_release_published_at": "2026-10-27T09:04:44Z",
+    "github_tag_commit": "1097e2668b1e08ad63bdf0b1c4860b9bc01e420c",
+    "npm_opencode_ai_has_2_x": false,
+    "distinct_from_opencode_ai_latest": true,
+    "qualified_from_this_entry": false
+  },
+  "release_artifacts": [
+    {
+      "version": "1.19.4",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": false,
+        "published_at": "2026-10-22T13:03:43.704Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.19.4.tgz",
+        "tarball_sha256": "2ceca45c7e0bbd50ddd3f4d6d651ed43645647d74279d656e7c7747a4b6a9137",
+        "integrity": "sha512-O3rTc9OCd6CeeJohCAjFYD3MX5U0weKzKnySfsJ9sw9uAbNZZK4meIcjd+7k3inmZB5G2qONSen3yA45yECiFA==",
+        "shasum": "20d2a9916eb87ca1a70090089e67eca1b92a6b85",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:96a86bbaad6c6fce496e8e2504758a1c6a630aca18b82c4009e2d272ea23a7d6",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "npm_linux_x64": {
+        "package": "opencode-linux-x64",
+        "latest_at_observation": false,
+        "published_at": "2026-10-22T13:08:54.454Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-linux-x64/-/opencode-linux-x64-1.19.4.tgz",
+        "tarball_sha256": "dca7b06bbb4e4a1ab3681b799cd328057b356d9399e8e47336cf53b7ae658d0d",
+        "integrity": "sha512-rQ/l3jmJoxf8ZYnBargg9alURlz6buEilysGODtzkcmcYtcZ91LOgF034oUUHHQl8/y1hbRTDvg6ujqUjQsMXw==",
+        "shasum": "32515749bf5fb12fd21ee48e817968a503f581f7",
+        "gitHead": null,
+        "files": {
+          "bin/opencode": "sha256:538fcb1b6408c8d4608822acee19f7ff5b3a3eb3383c0633c4f06170857312a7",
+          "package.json": "sha256:4ecaa3280873d0c7b2b1727b8eb20e83b0a5350437a37f779d47c7a1ff887875"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.19.4",
+        "published_at": "2026-10-22T13:03:41Z",
+        "tag": "v1.19.4",
+        "tag_commit": "148842ef7cb1bc34192b3fff57d0f9721ab9c801",
+        "release_target_commit": "c0c7bae726798d02592f8d3305891ba2f0cd880a",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.19.4.tar.gz",
+        "source_archive_sha256": "2e553ed005b2df4a7efb9edd26db8fc3caafb1b4dfc3c5c3869192334584d8bb",
+        "linux_x64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.19.4/opencode-linux-x64.tar.gz",
+        "linux_x64_asset_sha256": "849bd6b3d959a1d2ef200ed1634a51c79a45ca236aa26665d75debd694805cce",
+        "linux_x64_asset_size": 79667571,
+        "linux_x64_asset_digest_source": "github-release-api"
+      }
+    },
+    {
+      "version": "1.19.5",
+      "npm": {
+        "package": "opencode-ai",
+        "latest_at_observation": true,
+        "published_at": "2026-10-28T06:17:11.100Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-ai/-/opencode-ai-1.19.5.tgz",
+        "tarball_sha256": "1f97e49381f8a42a629482eff8be98aa96d62e2e94410a8ec98e738f9c787680",
+        "integrity": "sha512-tEqMvQahfhdDj8vceYpXtoIrvjPXm5XRfetWnPN5YISueU7adNx9JcUA3zZ+2GKuDVgDpGdQe1ZLtCZDjqodvA==",
+        "shasum": "4fb49717dfc8ca5fa97ab9823dadf4be3e244e82",
+        "gitHead": null,
+        "files": {
+          "LICENSE": "sha256:625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+          "bin/opencode.exe": "sha256:21c366f53283d5b5e1cdbbec2aafc98286b4c1075a4c3d5afd5ce1f5c9bf46dd",
+          "package.json": "sha256:b611692992fefe03641adf42bd26d1d3affc2ed7848122d6347879aa7890afc7",
+          "postinstall.mjs": "sha256:5a7c990fe552e76b16422cdba3f4b0550590c7a487f7932c773362f74317c87b"
+        }
+      },
+      "npm_linux_x64": {
+        "package": "opencode-linux-x64",
+        "latest_at_observation": true,
+        "published_at": "2026-10-28T06:19:32.769Z",
+        "tarball_url": "https://registry.npmjs.org/opencode-linux-x64/-/opencode-linux-x64-1.19.5.tgz",
+        "tarball_sha256": "2d7cfc303decc6cbbcdb22ff1be258b03ce2b5eae57583545afc8f12c01dd5e0",
+        "integrity": "sha512-i1qh7VooLGML9xX6ud93y0JA8j/1aPeDYRKjsmYXrJX1TjIWHgBBMkEbEJPZthpWbsJg//XfBgR6Kb7+NPaJiQ==",
+        "shasum": "f72482d72266ae10728f55c81faea723c9899635",
+        "gitHead": null,
+        "files": {
+          "bin/opencode": "sha256:7df4e4136301f16589b0f30bf91a61380fca5f8ef22dd36570f5ebe1d4ec802c",
+          "package.json": "sha256:2312290f8379ee64f4521a913cca3cbdb69eaf1c61ac63b46cdbd921465a3a5a"
+        }
+      },
+      "github": {
+        "release_url": "https://github.com/anomalyco/opencode/releases/tag/v1.19.5",
+        "published_at": "2026-10-28T06:17:49Z",
+        "tag": "v1.19.5",
+        "tag_commit": "810c0eba1a7348036f8bdf61e6632d0c36c6876c",
+        "release_target_commitish": "dev",
+        "release_target_commitish_kind": "branch",
+        "source_archive_url": "https://github.com/anomalyco/opencode/archive/refs/tags/v1.19.5.tar.gz",
+        "source_archive_sha256": "7d2ac43b5083a3a4687fe23b79ab153b8d93a6fb186fa07209ed28d4731e5c7a",
+        "linux_x64_asset_url": "https://github.com/anomalyco/opencode/releases/download/v1.19.5/opencode-linux-x64.tar.gz",
+        "linux_x64_asset_sha256": "588310a336fa3b9df36b3f0225b26f679d453efaad0cf3d66c3651ef3ec1647a",
+        "linux_x64_asset_size": 79651896,
+        "linux_x64_asset_digest_source": "github-release-api"
+      }
+    }
+  ],
+  "host": {
+    "present": false,
+    "on_path": false,
+    "observation_only": true,
+    "installed_or_updated": false,
+    "invoked_beyond_version": false,
+    "platform": "linux-x86_64"
+  },
+  "identity_decision": {
+    "shape": "stop",
+    "raise_http_latest_qualified_to": "1.19.4",
+    "raise_acp_latest_qualified_to": "1.19.4",
+    "keep_surface_19": true,
+    "keep_acp_v2": true,
+    "keep_claims_unflattened": true,
+    "keep_baseline_and_historical_segments_and_gaps": true,
+    "extended_segment": "1.19.0..=1.19.4",
+    "new_public_operation": false,
+    "claim_changed_in_identity_card": false
+  },
+  "native_payload_correlated_to_tag": false,
+  "native_inventory_scope": "linux-x64 only; wrapper selects 12 native packages",
+  "attestation_observed": false
+}

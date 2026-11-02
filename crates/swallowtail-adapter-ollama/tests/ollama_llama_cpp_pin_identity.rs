@@ -280,14 +280,15 @@ fn delta_ledger_classifies_every_pin_delta_file() {
     assert_eq!(identity["delta_file_counts"], delta["file_counts"]);
 
     for ((status, class), expected) in [
-        (("modified", "selected-ggml-backend"), 78),
+        (("modified", "selected-ggml-backend"), 77),
         (("modified", "selected-llama-core"), 24),
-        (("modified", "selected-mtmd-media"), 18),
+        (("modified", "selected-mtmd-media"), 17),
         (("modified", "selected-server-surface"), 9),
         (("modified", "selected-common-jinja"), 6),
         (("modified", "selected-common-grammar"), 5),
         (("modified", "selected-common"), 3),
         (("modified", "selected-common-chat"), 3),
+        (("modified", "selected-build-graph"), 3),
         (("modified", "selected-server-docs"), 2),
         (("modified", "unselected-ui"), 52),
         (("modified", "unselected-tests"), 15),
@@ -295,7 +296,6 @@ fn delta_ledger_classifies_every_pin_delta_file() {
         (("modified", "unselected-download-cache"), 4),
         (("modified", "unselected-python"), 6),
         (("modified", "unselected-quantize"), 3),
-        (("modified", "unselected-build"), 1),
         (("modified", "unselected-tools"), 2),
         (("modified", "selected-server-test"), 1),
         (("added", "selected-mtmd-media"), 1),
@@ -342,11 +342,25 @@ fn delta_ledger_classifies_every_pin_delta_file() {
         "selected-common-grammar"
     );
     assert_eq!(class_of("common/arg.cpp"), "selected-common");
+    assert_eq!(class_of("common/CMakeLists.txt"), "selected-build-graph");
+    assert_eq!(
+        class_of("tools/mtmd/CMakeLists.txt"),
+        "selected-build-graph"
+    );
+    assert_eq!(
+        class_of("ggml/src/ggml-opencl/CMakeLists.txt"),
+        "selected-build-graph"
+    );
     assert_eq!(class_of("tools/mtmd/clip.cpp"), "selected-mtmd-media");
     assert_eq!(class_of("common/download.cpp"), "unselected-download-cache");
     assert_eq!(class_of("tools/ui/src/app.css"), "unselected-ui");
     assert_eq!(class_of("src/llama-quant.cpp"), "unselected-quantize");
     assert_eq!(class_of("tests/test-chat.cpp"), "unselected-tests");
+    assert_eq!(class_of("tools/server/README.md"), "selected-server-docs");
+    assert_eq!(
+        class_of("tools/server/tests/utils.py"),
+        "selected-server-test"
+    );
 }
 
 #[test]
@@ -366,15 +380,13 @@ fn claim_ceiling_stays_04011_and_04012_stays_unverified() {
     assert_eq!(identity["decision"]["new_public_operation"], false);
 
     let claim = ollama_runtime_claim();
-    for version in ["0.40.11"] {
-        assert!(matches!(
-            claim.assess(&InterfaceVersion::new(version).unwrap()),
-            InterfaceCompatibilityAssessment::Qualified(point)
-                if point.support_status() == InterfaceSupportStatus::Maintained
-                    && point.behavior_revision().as_str()
-                        == "ollama.native-text-v1.manifest-list-runner"
-        ));
-    }
+    assert!(matches!(
+        claim.assess(&InterfaceVersion::new("0.40.11").unwrap()),
+        InterfaceCompatibilityAssessment::Qualified(point)
+            if point.support_status() == InterfaceSupportStatus::Maintained
+                && point.behavior_revision().as_str()
+                    == "ollama.native-text-v1.manifest-list-runner"
+    ));
     for version in ["0.40.12", "0.40.13"] {
         assert!(
             matches!(

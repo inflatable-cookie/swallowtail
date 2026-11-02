@@ -22,17 +22,17 @@
   "total": 263
  },
  "classification_counts": {
+  "selected-build-graph": 3,
   "selected-common": 3,
   "selected-common-chat": 3,
   "selected-common-grammar": 5,
   "selected-common-jinja": 6,
-  "selected-ggml-backend": 86,
+  "selected-ggml-backend": 85,
   "selected-llama-core": 25,
-  "selected-mtmd-media": 19,
+  "selected-mtmd-media": 18,
   "selected-server-docs": 2,
   "selected-server-surface": 9,
   "selected-server-test": 1,
-  "unselected-build": 1,
   "unselected-ci-contrib": 10,
   "unselected-download-cache": 6,
   "unselected-python": 8,
@@ -41,7 +41,7 @@
   "unselected-tools": 2,
   "unselected-ui": 58
  },
- "classification_ledger_sha256": "fe35dbf0dae1f9befcd8fcf481854c93ebf1c039a88b50c6d0d1805fedcd0ba1",
+ "classification_ledger_sha256": "36ca2887be600043645811d063a0e0a62e13409bb2b84b6f605cd2f0daf89764",
  "rows": [
   {
    "path": ".github/workflows/build-apple.yml",
@@ -110,8 +110,8 @@
   {
    "path": "common/CMakeLists.txt",
    "status": "modified",
-   "classification": "unselected-build",
-   "reason": "Build graph wiring for the download and file-lock sources; no serving behavior.",
+   "classification": "selected-build-graph",
+   "reason": "Build-graph wiring only: adds the file-lock sources to llama-common, which llama-server links through the common target; the added sources stay on the remote-download path the driver never reaches.",
    "before_blob": "2b307c59d32dce12cebfd181879ba59897b4b533",
    "after_blob": "8e3c88dac9dc748bd440ba9e83b767fd53265378"
   },
@@ -694,8 +694,8 @@
   {
    "path": "ggml/src/ggml-opencl/CMakeLists.txt",
    "status": "modified",
-   "classification": "selected-ggml-backend",
-   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "classification": "selected-build-graph",
+   "reason": "Build-graph wiring only for the OpenCL backend kernel target; no runtime behavior of its own.",
    "before_blob": "1c6edc036e2a69fb3d9884f96dbfd15b37cb0919",
    "after_blob": "57620e560e044744f673e3c011b3d7f50a3c485f"
   },
@@ -1430,8 +1430,8 @@
   {
    "path": "tools/mtmd/CMakeLists.txt",
    "status": "modified",
-   "classification": "selected-mtmd-media",
-   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "classification": "selected-build-graph",
+   "reason": "Build-graph wiring only for the mtmd target llama-server links; no runtime behavior of its own.",
    "before_blob": "bd7fb735665e440ec297eee8de8cf10264919b45",
    "after_blob": "8ca4ae3a4adaf87c0ab8777a67f74e416fdd696e"
   },

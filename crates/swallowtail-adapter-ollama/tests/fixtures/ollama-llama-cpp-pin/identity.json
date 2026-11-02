@@ -81,7 +81,7 @@
   "llama/compat": "461267684d054bac7066f11ed98d7e2b86be8be5",
   "llama/server": "197a2991c4a12874c8dfcfb8773cdbc5a54fcf03"
  },
- "delta_ledger_sha256": "fe35dbf0dae1f9befcd8fcf481854c93ebf1c039a88b50c6d0d1805fedcd0ba1",
+ "delta_ledger_sha256": "36ca2887be600043645811d063a0e0a62e13409bb2b84b6f605cd2f0daf89764",
  "delta_file_counts": {
   "added": 20,
   "removed": 1,

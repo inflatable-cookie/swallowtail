@@ -31,7 +31,7 @@ The pins span 56 upstream commits and a 263-file delta (20 added, 1 removed,
 242 modified). The frozen corpus is
 [ollama-llama-cpp-pin](../../crates/swallowtail-adapter-ollama/tests/fixtures/ollama-llama-cpp-pin/README.md):
 `identity.json` freezes the pin identities, the delta ledger SHA-256 is
-`fe35dbf0dae1f9befcd8fcf481854c93ebf1c039a88b50c6d0d1805fedcd0ba1`, and
+`36ca2887be600043645811d063a0e0a62e13409bb2b84b6f605cd2f0daf89764`, and
 `llama-server-cmake.txt` freezes the pin consumer.
 
 ## Selected runner path
@@ -62,19 +62,22 @@ stays a build-time concern for source builds; it is not a claim element.
 
 The full ledger is
 [delta-inventory.json](../../crates/swallowtail-adapter-ollama/tests/fixtures/ollama-llama-cpp-pin/delta-inventory.json).
-Selected classes total 159 files; unselected classes total 104.
+Selected classes total 160 files; unselected classes total 103.
 
 | Class | Files | Effect on the selected native text path |
 | --- | ---: | --- |
-| `selected-ggml-backend` | 86 | Compute kernels and core ggml ops (CUDA, Metal, Vulkan, HIP, SYCL, OpenCL, WebGPU, hexagon; `MUL_MAT_ID` skip, fused rope/GLU): numeric and performance effects on every generated token; no wire-shape change |
+| `selected-ggml-backend` | 85 | Compute kernels and core ggml ops (CUDA, Metal, Vulkan, HIP, SYCL, OpenCL, WebGPU, hexagon; `MUL_MAT_ID` skip, fused rope/GLU): numeric and performance effects on every generated token; no wire-shape change |
 | `selected-llama-core` | 25 | Tokenizer (`llama-vocab`), sampler (dry sequence breaker fix), KV-cache `no_alloc` handling, graph, context, model load, arch registry, and the new DeepSeek V4.1 graph builder |
-| `selected-mtmd-media` | 19 | Projector path only, reachable when a projector is loaded; the driver text path never triggers it for text-only GGUF rows |
+| `selected-mtmd-media` | 18 | Projector path only, reachable when a projector is loaded; the driver text path never triggers it for text-only GGUF rows |
 | `selected-server-surface` | 9 | llama-server entrypoint refactor (#31113) and shared helpers behind `/completion`, `/v1/chat/completions`, `/tokenize`, `/detokenize`, and the schema endpoint; `/models` and decision endpoints stay uncalled by the driver |
 | `selected-common-jinja` | 6 | Minja engine: parser recursion limit, `select`/`selectattr` argument fix, value handling — applied to GGUF chat templates in native chat mode |
 | `selected-common-grammar` | 5 | JSON-schema and PEG/grammar recursion depth limits behind provider-native JSON Schema structured runs |
 | `selected-common-chat` | 3 | OpenAI-compatible message parsing on the native chat path: extra-key pass-through, a 128-level JSON nesting guard, DeepSeek V4.1 render handling |
 | `selected-common` | 3 | Startup argument parsing for the driver's flag set, common init |
-| `unselected-*` | 104 | Web UI (`--no-webui`, disabled build), llama.cpp tests, Python conversion, CI/contrib, HF download cache (the driver passes local blob paths and launches `--offline`), quantize tool path, tools that Ollama's install scope never installs |
+| `selected-build-graph` | 3 | CMake wiring only, for targets llama-server links (`common`, `mtmd`, `ggml-opencl`); `common/CMakeLists.txt` adds the file-lock sources to `llama-common`, while those sources stay on the unreachable remote-download path |
+| `selected-server-docs` | 2 | Server documentation inside `tools/server`; no serving behavior |
+| `selected-server-test` | 1 | Python server test harness; not part of the shipped runner |
+| `unselected-*` | 103 | Web UI (`--no-webui`, disabled build), llama.cpp tests, Python conversion, CI/contrib, HF download cache (the driver passes local blob paths and launches `--offline`), quantize tool path, tools that Ollama's install scope never installs |
 
 Native text effects are real but bounded: tokenization, sampling, cache
 behavior, native-template application, and schema-constrained decoding all
@@ -139,15 +142,20 @@ Driver-issued mutation stays what Contract 031 rules: inference may load the
 selected model, refresh its timer, or evict another model; the commented-out
 compatibility-migration call stays commented out at both points. The compat
 shim's `translate_metadata` mutates the runner's in-memory GGUF view at load
-only; serving issues no model-store write. Separately, `server/model_show_cache.go`
-(blob `f829e477497da4d23e2dd8496951ea61b96a00ed`, byte-identical across the
-hop) keeps a process-local `/api/show` response cache keyed by canonical name,
-runner, verbose flag, and manifest digest, with stale-while-revalidate for
-cloud entries. A show observation can therefore be preexisting runtime-derived
-metadata assembled at an earlier time, not a fresh computation per request;
-its freshness boundary is the manifest digest, entries are cloned at read and
-write boundaries, and nothing is written to `~/.ollama/cache/show`. The
-adapter's show observations remain source-scoped observations under
+only; serving issues no model-store write. Separately,
+`server/model_show_cache.go` (blob
+`f829e477497da4d23e2dd8496951ea61b96a00ed`, byte-identical across the
+hop) keeps a process-local `/api/show` response cache. Local entries are
+keyed by canonical model name, runner, and verbose flag, and each entry
+records the manifest digest as its freshness boundary: a content change
+replaces the previous response instead of accumulating under an old
+digest. Cloud entries are keyed by normalized cloud base model name and
+verbose flag with stale-while-revalidate. A show observation can
+therefore be preexisting runtime-derived metadata assembled at an
+earlier time, not a fresh computation per request; its freshness
+boundary is the recorded manifest digest, entries are cloned at read
+and write boundaries, and nothing is written to `~/.ollama/cache/show`.
+The adapter's show observations remain source-scoped observations under
 Contracts 007 and 020; this cache is provider-internal state, not a
 Swallowtail effect and not a host mutation.
 

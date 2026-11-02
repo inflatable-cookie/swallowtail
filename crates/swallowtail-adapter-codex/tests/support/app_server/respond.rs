@@ -138,7 +138,9 @@ fn respond(&self, message: &serde_json::Value) {
                 } else {
                     message["params"]["threadId"].clone()
                 };
-                let turns = if message["params"]["excludeTurns"] == true {
+                let turns = if message["params"]["excludeTurns"] == true
+                    || matches!(self.mode, AppServerMode::LoadWithoutTurns)
+                {
                     serde_json::Value::Null
                 } else {
                     serde_json::json!([
@@ -167,6 +169,18 @@ fn respond(&self, message: &serde_json::Value) {
                     return;
                 }
                 if matches!(self.mode, AppServerMode::LifecycleHold) {
+                    return;
+                }
+                if matches!(self.mode, AppServerMode::AttachedChildDeleteRefusal)
+                    && method == "thread/delete"
+                {
+                    self.state.push(serde_json::json!({
+                        "id": id,
+                        "error": {
+                            "code": -32602,
+                            "message": "cannot delete thread while attached thread thread-provider-attached exists; delete the attached thread first"
+                        }
+                    }));
                     return;
                 }
                 if matches!(self.mode, AppServerMode::LifecycleReject) {
@@ -257,7 +271,9 @@ fn respond(&self, message: &serde_json::Value) {
                     | AppServerMode::RejectTurnStart
                     | AppServerMode::MismatchedTurnSession
                     | AppServerMode::SubstituteResume
+                    | AppServerMode::LoadWithoutTurns
                     | AppServerMode::LifecycleSuccess
+                    | AppServerMode::AttachedChildDeleteRefusal
                     | AppServerMode::LifecycleReject
                     | AppServerMode::LifecycleDisconnect
                     | AppServerMode::LifecycleHold

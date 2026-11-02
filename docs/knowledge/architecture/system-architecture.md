@@ -1819,8 +1819,10 @@ exclusions, unpublished gaps, and prerelease closure remain explicit. From
 compatibility migration; from `0.40.3` that call is commented out. The adapter
 binds the selected tag and digest, observes sibling manifest-list rows, and
 does not treat a new runner row as the old identity (Contract 031; Research
-418; Research 448). Synthetic `0.40.12` is the first visible `UnverifiedNewer`
-point.
+418; Research 448). Official stable `0.40.12` is the visible `UnverifiedNewer`
+point; Research 462 froze that hop and stopped on selected dependency and
+renderer effects, and Research 466 closes those gates at source level with the
+ceiling unchanged.
 
 llama.cpp completes the local-runtime family with deliberately separate
 prepared types. `prepare_llama_cpp_attached` binds one host-approved external

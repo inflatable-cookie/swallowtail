@@ -1,0 +1,112 @@
+{
+ "schema": 1,
+ "task": "ollama.attached selected llama.cpp pin qualification",
+ "research": 466,
+ "axis": "ollama.runtime",
+ "package": "swallowtail-adapter-ollama",
+ "observation_date": "2026-11-02",
+ "purpose": "Closes the selected dependency and renderer gates that Research 462 recorded as the 0.40.12 stop. Static source work only; the claim ceiling stays 0.40.11.",
+ "github_repositories": {
+  "ollama": "ollama/ollama",
+  "llama_cpp": "ggml-org/llama.cpp"
+ },
+ "pins": {
+  "b11845": {
+   "tag": "b11845",
+   "tag_object_type": "commit",
+   "commit": "9ff0d7e90f0faaa7c16017e6dcf9cf91c50a100e",
+   "tree": "60bf42018da47404b7260ee2bebd108b6c1b511f",
+   "selected_at": "ollama 0.40.11"
+  },
+  "b11901": {
+   "tag": "b11901",
+   "tag_object_type": "commit",
+   "commit": "5320c87ff0d994845b44ce7976f10055ec697447",
+   "tree": "3e71dcf38c6806ff99c75d3b1879f6501cb0834f",
+   "selected_at": "ollama 0.40.12"
+  }
+ },
+ "pin_resolution_method": "Shallow git fetch of the exact tags from https://github.com/ggml-org/llama.cpp.git; both lightweight tag refs cross-checked against the GitHub git/ref API; both commits and trees recorded from the fetched objects.",
+ "ollama_version_file": {
+  "path": "LLAMA_CPP_VERSION",
+  "blob_at_0_40_11": "80291d7f1423525ef37228948f78fb69f5407aa2",
+  "blob_at_0_40_12": "98bc1f1660e3264d1df83952b9e8a452e22a6088",
+  "content_at_0_40_11": "b11845",
+  "content_at_0_40_12": "b11901"
+ },
+ "pin_consumer": {
+  "path": "llama/server/CMakeLists.txt",
+  "blob": "9153c9bf019548f7015305b773a9fed2a61f3fcc",
+  "blob_identical_across_hop": true,
+  "fixture_content_blob_sha1": "9153c9bf019548f7015305b773a9fed2a61f3fcc",
+  "fetchcontent_git_repository": "https://github.com/ggml-org/llama.cpp.git",
+  "git_shallow": true,
+  "source_override_env": "OLLAMA_LLAMA_CPP_SOURCE",
+  "source_override_fetchcontent_var": "FETCHCONTENT_SOURCE_DIR_LLAMA_CPP",
+  "skip_compat_patch_option": "OLLAMA_LLAMA_CPP_SKIP_COMPAT_PATCH",
+  "compat_runtime_disable_env": "OLLAMA_LLAMA_CPP_COMPAT",
+  "fixture_content_sha256": "59734d4dd425f9c36ca3fdf081a3233a1edc33fa285350b2f601890ff289560f"
+ },
+ "compat_layer": {
+  "tree": "461267684d054bac7066f11ed98d7e2b86be8be5",
+  "tree_identical_across_hop": true,
+  "hook_patch": {
+   "path": "llama/compat/001-llama-cpp-hooks.patch",
+   "blob": "6610052094be088cc8f2452b4dc7960be7e1f42f",
+   "blob_identical_across_hop": true,
+   "hunks": 10,
+   "patched_files": [
+    "src/llama-model-loader.cpp",
+    "tools/mtmd/clip.cpp"
+   ]
+  },
+  "compat_sources": {
+   "cpp": "3e1cbddd4bada30ada5f6ecb1b6de57c365be11f",
+   "cmake": "af48d9db4b2862b199a9ec97667fb3e95a3d267a"
+  },
+  "anchor_context_check": "All 10 hook-patch hunks retain their distinctive context lines in the b11901 blobs; applicability stays a build-time concern for source builds, not a claim element."
+ },
+ "selected_go_surface_byte_identical_across_hop": {
+  "server/sched.go": "2c8d818d1907d73a13db1174bb568718be87f3b6",
+  "llm/server.go": "d0b90396fcd79186aa320a8c6173b08ed5e5d0fe",
+  "llm/llama_server.go": "5805edd64d99f17dc979cc17f480f87509db926d",
+  "server/prompt.go": "17b50efc652865d9098801d0ab27570be7060cc0",
+  "server/renderer_resolution.go": "53f87355a7689a5627a23c8e0696f2945a49852f",
+  "server/model_thinking.go": "88d1347a226b00d579ee490068c4f9caa6d12f87",
+  "server/model_show_cache.go": "f829e477497da4d23e2dd8496951ea61b96a00ed",
+  "envconfig/config.go": "0379a2aec2a9573d542deb840766a93694f63ffe"
+ },
+ "llama_tree_identical_across_hop": {
+  "llama": "80f61a2e8dbebf291381aa4a60d181519837d3f4",
+  "llama/compat": "461267684d054bac7066f11ed98d7e2b86be8be5",
+  "llama/server": "197a2991c4a12874c8dfcfb8773cdbc5a54fcf03"
+ },
+ "delta_ledger_sha256": "fe35dbf0dae1f9befcd8fcf481854c93ebf1c039a88b50c6d0d1805fedcd0ba1",
+ "delta_file_counts": {
+  "added": 20,
+  "removed": 1,
+  "modified": 242,
+  "total": 263
+ },
+ "host_observation": {
+  "client_on_path": false,
+  "no_runtime_reachable": true,
+  "vendor_executed": false,
+  "host_not_mutated": true,
+  "model_downloaded": false,
+  "live_inference_performed": false,
+  "note": "No Ollama or llama.cpp runtime was started. Proof is source identity plus existing provider-free HTTP fixtures."
+ },
+ "decision": {
+  "shape": "selected-dependency-and-renderer-gates-closed-at-source",
+  "latest_qualified_after_change": "0.40.12-unqualified",
+  "claim_ceiling": "0.40.11",
+  "claim_id": "ollama.native-runtime-window-2",
+  "behavior_revision": "ollama.native-text-v1.manifest-list-runner",
+  "claim_changed": false,
+  "new_public_operation": false,
+  "provider_prompt_sent": false,
+  "attached_server_started": false,
+  "follow_up": "Extending the maintained window to 0.40.12 is a separate Contract 029 upgrade-workflow task with its own reviewed claim edit; this record grants no execution authority."
+ }
+}

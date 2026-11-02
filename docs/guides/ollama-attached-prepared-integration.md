@@ -89,8 +89,8 @@ Deprecated `ollama.native-text-v1` points are `0.14.0..=0.34.4` and
 `0.35.0..=0.35.1`. Maintained `0.40.0..=0.40.11` uses
 `ollama.native-text-v1.manifest-list-runner`. Exact `0.32.2` and `0.32.10`
 stay excluded; unpublished `0.34.5` and `0.35.2` through `0.39.x` remain
-interior incompatibilities. Semantic prereleases fail. Synthetic `0.40.12` is
-the first visible `UnverifiedNewer` point under `AllowUnverified`.
+interior incompatibilities. Semantic prereleases fail. Official stable `0.40.12`
+is the visible `UnverifiedNewer` point under `AllowUnverified`.
 
 From `0.40.0` through `0.40.2`, chat scheduling can start provider-owned
 background local compatibility migration for supported legacy GGUF models.
@@ -107,7 +107,10 @@ for the selected tag and digest. It does not treat a new runner row as the old
 artifact. Preparation still performs no inference or model-store write. See
 Contract 031 for the ruling, Research 418 for the `0.40.1` adaptation, and
 Research 448 for the extension through `0.40.11`. Research 379 remains the
-historical `0.40.0` stop.
+historical `0.40.0` stop. Research 462 froze the `0.40.12` hop and stopped on
+selected dependency and renderer effects; Research 466 resolves the selected
+llama.cpp pins (`b11845`, `b11901`), classifies the runner and rendered-chat
+effects at source level, and leaves the maintained ceiling at `0.40.11`.
 
 ## Observe Inventory
 

@@ -31,9 +31,25 @@ annotated Git tags from the canonical repository.
   `0.21.15`, plan through `0.22.3`, and reasoning and budget selections
   stay put. `0.26.3` is `UnverifiedNewer`. See Research 465.
 - retain Codex exec, app-server and lifecycle qualification through `0.164.0`.
-  Official stable `0.165.0` remains `UnverifiedNewer` pending Linux shipped
-  bwrap provenance and selected attached-child delete and paginated resume
-  qualification. Research 463 retains the identity and concrete gates.
+  Official stable `0.165.0` remains `UnverifiedNewer` pending the Linux shipped
+  bwrap provenance gate. Research 463 retains the identity and the gate;
+  Research 467 qualifies the selected attached-child delete and paginated
+  resume behaviour without moving a ceiling.
+- qualify the selected Codex attached-child lifecycle and paginated resume
+  against the frozen `0.165.0` tag sources (Research 467). The new guard refuses
+  `thread/delete` before effect when any candidate root or descendant has an
+  attached child — including externally forked, imported, restored, or archived
+  ones — and repeats the check under writer ownership. The adapter keeps
+  reporting `failed_before_effect`, sends no deletion notification, and confirms
+  no deletion strength; the applied path still deletes exactly the computed
+  strict descendant subtree. Ordinary listing hides attached children and the
+  adapter never widens it, so a hidden child makes deletion terminally refuse
+  through this route; removing that needs a separately ruled consumer-visible
+  change. Paginated `thread/resume` reuse is admitted only for an unchanged
+  rollout revision rechecked at the config recheck and again under writer
+  ownership, so the selected request restores the same model context as the
+  `0.164.0` reload. No capability, diagnostic, behavior revision, or range
+  claim changes.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep

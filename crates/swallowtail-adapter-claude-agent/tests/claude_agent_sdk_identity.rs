@@ -1237,12 +1237,11 @@ fn extension_ledger_binds_every_published_hop_from_0_3_295_to_0_3_317() {
             .map(str::to_owned)
             .collect()
     );
-    assert_eq!(
+    assert!(
         protocol["selected_flag_ledger"]["classification"]
             .as_str()
             .unwrap()
-            .contains("never emitted by this route"),
-        true
+            .contains("never emitted by this route")
     );
 }
 

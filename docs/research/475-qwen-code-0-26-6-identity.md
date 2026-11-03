@@ -1,4 +1,4 @@
-# Research 473: Qwen Code 0.26.6 Identity And Headless Qualification (0.26.3–0.26.6 Hops)
+# Research 475: Qwen Code 0.26.6 Identity And Headless Qualification (0.26.3–0.26.6 Hops)
 
 Observed 2026-11-03. This record qualifies only `qwen.headless` on the npm
 package `@qwen-code/qwen-code`. It follows Research 465's `0.26.2` ceiling

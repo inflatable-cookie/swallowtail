@@ -93,7 +93,7 @@ pub fn qwen_headless_claim() -> InterfaceCompatibilityClaim {
         // Unpublished interior stables stay incompatible inside the raised
         // window. Research 334 records `0.22.4` and `0.23.5`. Research 454
         // records `0.25.4`. Research 465 raises the maintained end to
-        // `0.26.2`; Research 473 walks the published `0.26.3`–`0.26.6`
+        // `0.26.2`; Research 475 walks the published `0.26.3`–`0.26.6`
         // hops to the same behavior revision.
         [
             version("0.22.4").expect("static Qwen unpublished gap is valid"),

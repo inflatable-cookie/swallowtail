@@ -19,7 +19,7 @@ const CLAUDE_CODE_RESPONSE_ONLY_V2_BASELINE_VERSION: &str = "2.1.280";
 /// First Claude Code version on the linked-instruction read-limit milestone.
 const CLAUDE_CODE_RESPONSE_ONLY_V3_BASELINE_VERSION: &str = "2.1.282";
 /// Most recent Claude Code version with qualified response-only evidence.
-pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.316";
+pub const CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str = "2.1.317";
 /// Most recent Claude Code version with qualified response-only evidence.
 pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
     CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION;
@@ -235,6 +235,7 @@ mod tests {
             "2.1.290", "2.1.291", "2.1.292", "2.1.293", "2.1.294", "2.1.295", "2.1.296", "2.1.299",
             "2.1.300", "2.1.301", "2.1.302", "2.1.303", "2.1.304", "2.1.305", "2.1.306", "2.1.307",
             "2.1.308", "2.1.309", "2.1.310", "2.1.311", "2.1.312", "2.1.314", "2.1.315", "2.1.316",
+            "2.1.317",
         ] {
             assert!(
                 matches!(
@@ -260,7 +261,7 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("2.1.298").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.313").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.317").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.318").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
                 if newer.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V3
         ));
@@ -283,6 +284,9 @@ mod tests {
         ));
         assert!(version_uses_narrowed_builtin_hooks(
             &InterfaceVersion::new("2.1.316").unwrap()
+        ));
+        assert!(version_uses_narrowed_builtin_hooks(
+            &InterfaceVersion::new("2.1.317").unwrap()
         ));
         assert!(!version_uses_narrowed_builtin_hooks(
             &InterfaceVersion::new("2.1.278").unwrap()

@@ -165,15 +165,25 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
     // The SDK wrapper and the native binary it delivers are coupled but never
     // equal, and neither is the Claude Code axis.
     assert_ne!(CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION);
+    assert_eq!(CLAUDE_AGENT_SDK_NATIVE_VERSION, "2.1.317");
+    assert_eq!(CLAUDE_AGENT_SDK_VERSION, "0.3.317");
     assert_eq!(
         swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
-        "2.1.316",
-        "the Claude Code window is observed separately and does not transfer"
+        "2.1.317",
+        "the Claude Code window is observed separately from the SDK pin"
     );
+    // Both families may sit on the same version string by their own evidence;
+    // the SDK stays QualifiedOnly on exact package/native pairs while the
+    // Claude Code claims stay AllowUnverified, so no qualification transfers.
     assert_ne!(
-        swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
-        CLAUDE_AGENT_SDK_NATIVE_VERSION,
-        "raising the Claude Code ceiling must not rebind the SDK native pin"
+        descriptor
+            .interface_compatibility(
+                &swallowtail_core::InterfaceVersionAxis::new("claude-code.headless-stream-json")
+                    .expect("valid axis")
+            )
+            .map(swallowtail_core::InterfaceCompatibilityClaim::newer_version_posture),
+        Some(swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly),
+        "the headless claim must not inherit the SDK QualifiedOnly posture"
     );
 }
 

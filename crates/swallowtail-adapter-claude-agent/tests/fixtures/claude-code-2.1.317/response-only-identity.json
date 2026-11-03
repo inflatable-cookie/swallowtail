@@ -1,0 +1,112 @@
+{
+ "observed_at_utc": "2026-11-03T13:45:22Z",
+ "previous_ceiling": "2.1.316",
+ "official_latest_at_observation": "2.1.317",
+ "npm": {
+  "package": "@anthropic-ai/claude-code",
+  "dist_tags": {
+   "stable": "2.1.311",
+   "next": "2.1.317",
+   "latest": "2.1.317"
+  },
+  "stable_dist_tag_is_delayed_channel": true,
+  "published": {
+   "2.1.316": "2026-10-31T00:42:05.743Z",
+   "2.1.317": "2026-11-02T23:57:53.069Z"
+  },
+  "registry": "https://registry.npmjs.org/@anthropic-ai%2Fclaude-code",
+  "wrapper_tarball_sha256": {
+   "2.1.316": "0b23c8ff73a58c263e88aa740bd8647723141f70dad089df63061858e019c4c3",
+   "2.1.317": "bf8543506740f8ba36bbec24a5e02937dd8b514237fc951db69d9de394965c74"
+  }
+ },
+ "github": {
+  "repository": "https://github.com/anthropics/claude-code",
+  "latest_non_prerelease": "v2.1.317",
+  "latest_non_prerelease_published_at": "2026-11-03T01:25:46Z",
+  "latest_release_url": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+  "tag_commits": {
+   "2.1.316": "80c6959d28c4c30ecd14fc1cdf172f19d9adad81",
+   "2.1.317": "964d69565952a176ac1975ed218362991db71433"
+  },
+  "release_published_at": {
+   "2.1.316": "2026-10-31T01:01:35Z",
+   "2.1.317": "2026-11-03T01:25:46Z"
+  },
+  "tags_or_releases_absent": [],
+  "earlier_gap_note": "2.1.313 has no tag or release anywhere and npm published 2.1.315 without a public tag; both stay inside the Research 466 hop set and this hop adds no new untagged point."
+ },
+ "published_hops_after_previous_ceiling": [
+  "2.1.317"
+ ],
+ "unpublished_between": [],
+ "first_unpublished_after_latest": "2.1.318",
+ "npm_2_1_318_http_status": 404,
+ "github_tag_v2_1_318_present": false,
+ "host": {
+  "present": true,
+  "version": "2.1.314",
+  "artifact_sha256": "21d6e7b9a6f07b4cfcb7df13760b3b72aa25e084e13a5354413382987ba832ed",
+  "owned_by": "claude-code-darwin-arm64@2.1.314",
+  "observation": "host --version printed 2.1.314 (Claude Code) and the linked executable digest equals the official Darwin arm64 2.1.314 package artifact",
+  "version_probe_only": true,
+  "provider_work_executed": false
+ },
+ "runtime_artifacts_compared": [
+  "@anthropic-ai/claude-code",
+  "@anthropic-ai/claude-code-darwin-arm64",
+  "@anthropic-ai/claude-code-linux-x64"
+ ],
+ "identity_decision": "compatible-extension",
+ "segment_shape": "compatible-extension",
+ "source_runtime_correlation": "Public tags identify commits. No source-to-npm-runtime provenance is asserted. Published compiled executables are the runtime identity.",
+ "downloaded_artifacts_executed": false,
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "host_install_changed": false,
+ "channels_agree_on_official_stable": true,
+ "axis": "claude-code.response-only-stream-json",
+ "claim_at_observation": {
+  "claim_id": "claude-code.response-only.window-1",
+  "baseline": "2.1.227",
+  "latest_qualified": "2.1.316",
+  "maintained_segment": "2.1.282..=2.1.316",
+  "maintained_behavior_revision": "claude-code.response-only.stream-json.v3",
+  "newer_version_posture": "AllowUnverified",
+  "denied_versions": [
+   "2.1.244",
+   "2.1.249",
+   "2.1.253",
+   "2.1.254",
+   "2.1.255",
+   "2.1.256",
+   "2.1.262",
+   "2.1.264",
+   "2.1.279",
+   "2.1.297",
+   "2.1.298",
+   "2.1.313"
+  ]
+ },
+ "after_claim": {
+  "latest_qualified": "2.1.317",
+  "maintained_segment": "2.1.282..=2.1.317",
+  "maintained_behavior_revision": "claude-code.response-only.stream-json.v3",
+  "earlier_segments_unchanged": true,
+  "denied_versions": [
+   "2.1.244",
+   "2.1.249",
+   "2.1.253",
+   "2.1.254",
+   "2.1.255",
+   "2.1.256",
+   "2.1.262",
+   "2.1.264",
+   "2.1.279",
+   "2.1.297",
+   "2.1.298",
+   "2.1.313"
+  ],
+  "first_unverified_newer": "2.1.318"
+ }
+}

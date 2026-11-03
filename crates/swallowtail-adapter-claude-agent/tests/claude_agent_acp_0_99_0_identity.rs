@@ -20,10 +20,7 @@ fn identity_0_99_0_freezes_the_first_hop_and_the_claim_qualifies_it() {
         identity["official_channel_observation"]["npm_latest"],
         "0.100.0"
     );
-    assert_eq!(
-        identity["official_current"]["version"],
-        "0.100.0"
-    );
+    assert_eq!(identity["official_current"]["version"], "0.100.0");
     assert_eq!(
         identity["official_current"]["github_commit"],
         "981bf9a28ac3afef26e7877a2a638814c34f1679"
@@ -46,7 +43,7 @@ fn identity_0_99_0_freezes_the_first_hop_and_the_claim_qualifies_it() {
         "0.100.1"
     );
     assert_eq!(
-        identity["inspection_boundary"]["host_binary"],
+        identity["official_channel_observation"]["host_binary"],
         "not-on-path-in-this-observation-environment"
     );
 
@@ -61,7 +58,12 @@ fn identity_0_99_0_freezes_the_first_hop_and_the_claim_qualifies_it() {
     assert_eq!(hop["unchanged_file_count"], 248);
     let mut mapped_adjacent = 0;
     let mut provider_internal = 0;
-    for file in hop["added"].as_array().unwrap().iter().chain(hop["changed"].as_array().unwrap()) {
+    for file in hop["added"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .chain(hop["changed"].as_array().unwrap())
+    {
         assert_keys(
             file,
             if file["before_sha256"].is_null() {
@@ -82,15 +84,21 @@ fn identity_0_99_0_freezes_the_first_hop_and_the_claim_qualifies_it() {
             other => panic!("unexpected file classification: {other}"),
         }
     }
-    assert_eq!((mapped_adjacent, provider_internal), (23, 17));
+    assert_eq!((mapped_adjacent, provider_internal), (26, 14));
     let acp_agent = hop["changed"]
         .as_array()
         .unwrap()
         .iter()
         .find(|f| f["path"] == "dist/acp-agent.js")
         .expect("acp-agent.js changed");
-    assert_eq!(acp_agent["before_sha256"], "12c05702b3295d80a838135ee15802dd25739f8871a19eae6e664efcf3e2ed0f");
-    assert_eq!(acp_agent["after_sha256"], "278e5980431a47057f7405d9a4b1889739bc8a31e1b2d138a922b4bffc865864");
+    assert_eq!(
+        acp_agent["before_sha256"],
+        "12c05702b3295d80a838135ee15802dd25739f8871a19eae6e664efcf3e2ed0f"
+    );
+    assert_eq!(
+        acp_agent["after_sha256"],
+        "278e5980431a47057f7405d9a4b1889739bc8a31e1b2d138a922b4bffc865864"
+    );
     let ultracode = hop["changed"]
         .as_array()
         .unwrap()
@@ -146,7 +154,10 @@ fn assert_keys(value: &Value, expected: &[&str]) {
         .keys()
         .map(String::as_str)
         .collect::<std::collections::BTreeSet<_>>();
-    let expected = expected.iter().copied().collect::<std::collections::BTreeSet<_>>();
+    let expected = expected
+        .iter()
+        .copied()
+        .collect::<std::collections::BTreeSet<_>>();
     assert_eq!(actual, expected);
 }
 

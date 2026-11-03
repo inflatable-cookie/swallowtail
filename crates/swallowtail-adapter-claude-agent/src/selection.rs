@@ -242,7 +242,7 @@ mod tests {
     fn claim_preserves_seven_milestones_exclusions_and_visible_newer_execution() {
         let claim = claude_agent_acp_claim();
         assert_eq!(claim.baseline().as_str(), "0.53.0");
-        assert_eq!(claim.latest_qualified().as_str(), "0.98.0");
+        assert_eq!(claim.latest_qualified().as_str(), "0.100.0");
         assert_eq!(claim.milestones().len(), 7);
         for qualified in [
             "0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
@@ -250,7 +250,8 @@ mod tests {
             "0.74.0", "0.75.0", "0.75.1", "0.76.0", "0.77.0", "0.78.0", "0.79.0", "0.80.0",
             "0.81.0", "0.81.1", "0.81.2", "0.82.0", "0.83.0", "0.84.0", "0.85.0", "0.85.1",
             "0.86.0", "0.87.0", "0.88.0", "0.89.0", "0.89.1", "0.90.0", "0.91.0", "0.92.0",
-            "0.93.0", "0.94.0", "0.95.0", "0.96.0", "0.97.0", "0.98.0",
+            "0.93.0", "0.94.0", "0.95.0", "0.96.0", "0.97.0", "0.98.0", "0.99.0", "0.99.1",
+            "0.100.0",
         ] {
             assert!(claim.supports(&version(qualified)));
         }
@@ -264,7 +265,7 @@ mod tests {
             assert!(!claim.permits(&version(incompatible)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.99.0"))
+            claim.assess(&version("0.100.1"))
         else {
             panic!("newer stable version remains unverified");
         };

@@ -313,10 +313,10 @@ provider transcripts.
 At the Research 466 identity commit, npm `latest` and GitHub latest stable
 agreed on `2.1.316`. npm `stable` remains the delayed channel at `2.1.309`.
 npm `next` advanced to `2.1.317` during the run; that point is published but
-is not the official stable and stays `UnverifiedNewer`. `2.1.313` and `2.1.315`
-have no public tag, and `2.1.318` is the first unpublished point after the
-ceiling. SDK and ACP claims are unchanged. Response-only is a
-separate claim in the same record.
+is not the official stable and stays `UnverifiedNewer`. `2.1.313` is
+unpublished, `2.1.315` has no public tag, and `2.1.318` is the first
+unpublished point after the ceiling. SDK and ACP claims are unchanged.
+Response-only is a separate claim in the same record.
 
 ### Maximum Agentic Turns
 

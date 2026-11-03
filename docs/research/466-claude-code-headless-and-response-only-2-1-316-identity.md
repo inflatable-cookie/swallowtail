@@ -69,7 +69,9 @@ observation only; it is not a claim input and performed no provider work.
 
 `selected-control-flow.json` binds measured selected JS on `2.1.312`,
 `2.1.314`, `2.1.315`, and `2.1.316` to the Darwin arm64 and Linux x64
-executable hashes. Prompt `ok:false` blocking, PreToolUse deny-before-dispatch,
+executable hashes. These are the same surfaces Research 374 stopped on and
+Research 422/423 adapted at the `2.1.294` settings-hook stop, and the brief
+names them for re-checking. Prompt `ok:false` blocking, PreToolUse deny-before-dispatch,
 rewrite `hookRewrites.push`, the rewrite recheck that turns `ask` into `deny`
 on `hookUpdatedInput`, Stop and SubagentStop `stop_hook_active` reentry, and the
 Stop cap default 8 stay. Identifier remangling changes the snippets. The
@@ -169,5 +171,8 @@ closed.
 - [npm `@anthropic-ai/claude-code`](https://www.npmjs.com/package/@anthropic-ai/claude-code)
 - [GitHub `v2.1.316`](https://github.com/anthropics/claude-code/releases/tag/v2.1.316)
 - [GitHub `v2.1.314`](https://github.com/anthropics/claude-code/releases/tag/v2.1.314)
+- [Research 374](./374-claude-code-2-1-293-headless-currentness-stop.md)
+- [Research 422](./422-claude-code-2-1-294-headless-currentness-stop.md)
+- [Research 423](./423-claude-code-headless-2-1-294-stream-hook-safety-adaptation.md)
 - [Research 459](./459-claude-code-headless-and-response-only-2-1-312-identity.md)
 - [Contract 029](../knowledge/contracts/029-interface-version-qualification-and-compatibility.md)

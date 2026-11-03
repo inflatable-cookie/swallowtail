@@ -1,0 +1,2151 @@
+{
+ "schema": 1,
+ "task": "ollama.attached selected llama.cpp pin qualification",
+ "research": 468,
+ "from": {
+  "tag": "b11845",
+  "commit": "9ff0d7e90f0faaa7c16017e6dcf9cf91c50a100e",
+  "tree": "60bf42018da47404b7260ee2bebd108b6c1b511f",
+  "repository": "ggml-org/llama.cpp"
+ },
+ "to": {
+  "tag": "b11901",
+  "commit": "5320c87ff0d994845b44ce7976f10055ec697447",
+  "tree": "3e71dcf38c6806ff99c75d3b1879f6501cb0834f",
+  "repository": "ggml-org/llama.cpp"
+ },
+ "commit_span": 56,
+ "file_counts": {
+  "added": 20,
+  "removed": 1,
+  "modified": 242,
+  "total": 263
+ },
+ "classification_counts": {
+  "selected-build-graph": 3,
+  "selected-common": 3,
+  "selected-common-chat": 3,
+  "selected-common-grammar": 5,
+  "selected-common-jinja": 6,
+  "selected-ggml-backend": 85,
+  "selected-llama-core": 25,
+  "selected-mtmd-media": 18,
+  "selected-server-docs": 2,
+  "selected-server-surface": 9,
+  "selected-server-test": 1,
+  "unselected-ci-contrib": 10,
+  "unselected-download-cache": 6,
+  "unselected-python": 8,
+  "unselected-quantize": 3,
+  "unselected-tests": 16,
+  "unselected-tools": 2,
+  "unselected-ui": 58
+ },
+ "classification_ledger_sha256": "36ca2887be600043645811d063a0e0a62e13409bb2b84b6f605cd2f0daf89764",
+ "rows": [
+  {
+   "path": ".github/workflows/build-apple.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "70aefd5c8081349401a69e4d449581b516be0934",
+   "after_blob": "9832d800b03d68a77a3b1c4449b3ade6166f10db"
+  },
+  {
+   "path": ".github/workflows/build-cmake-pkg.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "e5be1dae1c8da0ded2d935d05007e87150b47e72",
+   "after_blob": "4e351ecb77dbc4c87e88ca52893e36786baf8404"
+  },
+  {
+   "path": ".github/workflows/build-sanitize.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "3a78c4d092a069e4347b663a4b61935b5e227b1a",
+   "after_blob": "ed75a2dc1ceee14bcd8be12e16938db92275bbc8"
+  },
+  {
+   "path": ".github/workflows/ci-self-hosted-cpu.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "eb40baa88e6b68acbb1e896e57cef232f3424460",
+   "after_blob": "7152c4de8725602df3ed8f1f8bd345cdd1e6932c"
+  },
+  {
+   "path": ".github/workflows/ci-self-hosted-metal.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "5eb20096a484f42f5ad6913c73a2478dd93285c8",
+   "after_blob": "226bc8f6dd55e9ba133e9f8257bf1b00dd51af76"
+  },
+  {
+   "path": ".github/workflows/ci-self-hosted-vulkan.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "e651f2d1db5639e37079ee9b818d291ac53d7fcf",
+   "after_blob": "1ce68bfe0a0baddce73dc17e43a118b8babd5818"
+  },
+  {
+   "path": ".github/workflows/ci-self-hosted-webgpu.yml",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "316ed33b91c761aab89a01f4ebd68345db60b624",
+   "after_blob": "f94689006dbee2a75e64aab8e42701663a116cb9"
+  },
+  {
+   "path": "ci/run.sh",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "e3ffdb8af76880c2a14fcc49e25873d9f859e85a",
+   "after_blob": "30a6bf329147bc06c8ba7296fb6cb8d859ec2bbc"
+  },
+  {
+   "path": "common/CMakeLists.txt",
+   "status": "modified",
+   "classification": "selected-build-graph",
+   "reason": "Build-graph wiring only: adds the file-lock sources to llama-common, which llama-server links through the common target; the added sources stay on the remote-download path the driver never reaches.",
+   "before_blob": "2b307c59d32dce12cebfd181879ba59897b4b533",
+   "after_blob": "8e3c88dac9dc748bd440ba9e83b767fd53265378"
+  },
+  {
+   "path": "common/arg.cpp",
+   "status": "modified",
+   "classification": "selected-common",
+   "reason": "Startup argument parsing for the flag set the driver passes, including context-shift and keep handling.",
+   "before_blob": "267b84874912508f5ce205916a1abaaf6fd878b8",
+   "after_blob": "9706b3ac58d5c30bdbf06c17b61151070421a64a"
+  },
+  {
+   "path": "common/chat.cpp",
+   "status": "modified",
+   "classification": "selected-common-chat",
+   "reason": "OpenAI-compatible chat message parsing on the native /v1/chat/completions path: message extra-key pass-through, a 128-level JSON nesting guard, and DeepSeek V4.1 render handling.",
+   "before_blob": "99ed74faf7a9f0c6ec14ef3cd5471b271aa2f151",
+   "after_blob": "22762176134ce93ef602629328f797f6ec783b47"
+  },
+  {
+   "path": "common/chat.h",
+   "status": "modified",
+   "classification": "selected-common-chat",
+   "reason": "OpenAI-compatible chat message parsing on the native /v1/chat/completions path: message extra-key pass-through, a 128-level JSON nesting guard, and DeepSeek V4.1 render handling.",
+   "before_blob": "dcff9491981927492e99841fa5d86b01f15d983f",
+   "after_blob": "29aaf8b6847d92d1c80476b4a9e22205e1122b5f"
+  },
+  {
+   "path": "common/common.cpp",
+   "status": "modified",
+   "classification": "selected-common",
+   "reason": "Common init and chat-template helpers linked into llama-server.",
+   "before_blob": "6ef3b785e0e84176468577154817329ab207c952",
+   "after_blob": "a4b4feaee3c066dbc2a4e72d6089dfcd8e0e159a"
+  },
+  {
+   "path": "common/common.h",
+   "status": "modified",
+   "classification": "selected-common",
+   "reason": "Common init and chat-template helpers linked into llama-server.",
+   "before_blob": "70d6a671f51245c3c93a54ea7e2a864a16a622ad",
+   "after_blob": "8e3fe2c8971b2b20289bab2cd010653cd9cbb795"
+  },
+  {
+   "path": "common/download.cpp",
+   "status": "modified",
+   "classification": "unselected-download-cache",
+   "reason": "Remote-model resolution, download, and cross-process locking; the driver passes local blob paths and launches llama-server offline.",
+   "before_blob": "38f26e1b497a2ddc7eebe81b4be54bb65fcaa059",
+   "after_blob": "6d4b5e506d31dba148f3c088874ad7864fa4a88f"
+  },
+  {
+   "path": "common/download.h",
+   "status": "modified",
+   "classification": "unselected-download-cache",
+   "reason": "Remote-model resolution, download, and cross-process locking; the driver passes local blob paths and launches llama-server offline.",
+   "before_blob": "4dfd0c9831ed967f9dd1aec2b82fdb3fff1100d6",
+   "after_blob": "dd09d68eeff99719dce4f1506335df7b150da6b4"
+  },
+  {
+   "path": "common/file-lock.cpp",
+   "status": "added",
+   "classification": "unselected-download-cache",
+   "reason": "Remote-model resolution, download, and cross-process locking; the driver passes local blob paths and launches llama-server offline.",
+   "before_blob": null,
+   "after_blob": "553a06687f9e19b86af741f7caeda0fd7bec1674"
+  },
+  {
+   "path": "common/file-lock.h",
+   "status": "added",
+   "classification": "unselected-download-cache",
+   "reason": "Remote-model resolution, download, and cross-process locking; the driver passes local blob paths and launches llama-server offline.",
+   "before_blob": null,
+   "after_blob": "6f9443ff81a0cde4d9b7c349caebd69ccd2da898"
+  },
+  {
+   "path": "common/hf-cache.cpp",
+   "status": "modified",
+   "classification": "unselected-download-cache",
+   "reason": "Remote-model resolution, download, and cross-process locking; the driver passes local blob paths and launches llama-server offline.",
+   "before_blob": "4241d005af27cd5d29a85642a4e4ca588129204c",
+   "after_blob": "f0c501b622391bef789c3a88e9994f85abd263f7"
+  },
+  {
+   "path": "common/hf-cache.h",
+   "status": "modified",
+   "classification": "unselected-download-cache",
+   "reason": "Remote-model resolution, download, and cross-process locking; the driver passes local blob paths and launches llama-server offline.",
+   "before_blob": "41842db788cb4f03601a081339c26e9a646280b3",
+   "after_blob": "c03e5718260efe0204837c068ac93971379f363e"
+  },
+  {
+   "path": "common/jinja/parser.cpp",
+   "status": "modified",
+   "classification": "selected-common-jinja",
+   "reason": "Minja template engine changes applied to GGUF chat templates in native chat mode: parser recursion limit, select/selectattr argument fix, value handling.",
+   "before_blob": "67dcafe17feda2e503684435b82378dc2cb55bce",
+   "after_blob": "7e99a1ac8fd06de2ba949e74d4c529badd07e61d"
+  },
+  {
+   "path": "common/jinja/runtime.cpp",
+   "status": "modified",
+   "classification": "selected-common-jinja",
+   "reason": "Minja template engine changes applied to GGUF chat templates in native chat mode: parser recursion limit, select/selectattr argument fix, value handling.",
+   "before_blob": "a53acf84c4de66bd9d7c3d2983e2d5e0d2fc741b",
+   "after_blob": "7ec6606d7105bdd87a23c5ee6c41d07676643910"
+  },
+  {
+   "path": "common/jinja/runtime.h",
+   "status": "modified",
+   "classification": "selected-common-jinja",
+   "reason": "Minja template engine changes applied to GGUF chat templates in native chat mode: parser recursion limit, select/selectattr argument fix, value handling.",
+   "before_blob": "c01902a1a038765fc8aa7b7ab1275ae527a78b3b",
+   "after_blob": "101e927c4b7f40ae5b02c3e1f3ad47161e2e3d31"
+  },
+  {
+   "path": "common/jinja/utils.h",
+   "status": "modified",
+   "classification": "selected-common-jinja",
+   "reason": "Minja template engine changes applied to GGUF chat templates in native chat mode: parser recursion limit, select/selectattr argument fix, value handling.",
+   "before_blob": "de6947fc28f3423dc3beab7cc468096b6b3d06c6",
+   "after_blob": "da3757a4aae628e482577d850d2afcd42562935f"
+  },
+  {
+   "path": "common/jinja/value.cpp",
+   "status": "modified",
+   "classification": "selected-common-jinja",
+   "reason": "Minja template engine changes applied to GGUF chat templates in native chat mode: parser recursion limit, select/selectattr argument fix, value handling.",
+   "before_blob": "0840e05b8285188d49c475c93134880b43e857ec",
+   "after_blob": "3aceca1e0177934fb1953778bfdaaf40102a3a33"
+  },
+  {
+   "path": "common/jinja/value.h",
+   "status": "modified",
+   "classification": "selected-common-jinja",
+   "reason": "Minja template engine changes applied to GGUF chat templates in native chat mode: parser recursion limit, select/selectattr argument fix, value handling.",
+   "before_blob": "142943dfd79f3effd96b1c7ebb13b0fde712ac2f",
+   "after_blob": "9bb1a87bd0182eb510f9e831b0e8d98fec577218"
+  },
+  {
+   "path": "common/json-schema-to-grammar.cpp",
+   "status": "modified",
+   "classification": "selected-common-grammar",
+   "reason": "Schema-to-grammar conversion gains a recursive depth limit; used by structured runs with a provider-native JSON Schema.",
+   "before_blob": "3349ae4fe0cccb20b9d0da6916ae6509ec77f684",
+   "after_blob": "6f3ecc992113dcfcce7cb48d22da8e8eafdabcde"
+  },
+  {
+   "path": "common/json-schema-to-grammar.h",
+   "status": "modified",
+   "classification": "selected-common-grammar",
+   "reason": "Schema-to-grammar conversion gains a recursive depth limit; used by structured runs with a provider-native JSON Schema.",
+   "before_blob": "b928c250bbefabd20aa677ba857d84b47750f6c2",
+   "after_blob": "b948743997ff4ef6f12d885a8ed684536fe3c974"
+  },
+  {
+   "path": "common/json-schema.cpp",
+   "status": "modified",
+   "classification": "selected-common-grammar",
+   "reason": "JSON schema normalization behind grammar-constrained structured runs.",
+   "before_blob": "6898840e7d1f791fed78abc8609a89ffaa0429ae",
+   "after_blob": "eb57a524a6050b8220cf42690c016cacf406e371"
+  },
+  {
+   "path": "common/parsers/deepseek.cpp",
+   "status": "modified",
+   "classification": "selected-common-chat",
+   "reason": "Server-side DeepSeek parser used in native chat mode for those families.",
+   "before_blob": "7ee38ce6df74e093f56a8a546ea530359c87df92",
+   "after_blob": "dac180715a524968bc2acf05f569484074510746"
+  },
+  {
+   "path": "common/peg-parser.cpp",
+   "status": "modified",
+   "classification": "selected-common-grammar",
+   "reason": "PEG parser depth guard for server-side parsers.",
+   "before_blob": "8033f7e815308ba755e909a52c6c2d1e25ca6ab6",
+   "after_blob": "167a889e329525fd80b90a1557099b33787b3303"
+  },
+  {
+   "path": "common/peg-parser.h",
+   "status": "modified",
+   "classification": "selected-common-grammar",
+   "reason": "PEG parser depth guard for server-side parsers.",
+   "before_blob": "9255d6eb975fd63831a498a913b2236837fe3375",
+   "after_blob": "6b348fab0132739220398d531c138a29f07ec874"
+  },
+  {
+   "path": "conversion/__init__.py",
+   "status": "modified",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": "5f252b490d98ed2727ccc0f650af7debda0fb487",
+   "after_blob": "de3e9786373bf309fd28a2bc800185eac7bad1de"
+  },
+  {
+   "path": "conversion/deepseek.py",
+   "status": "modified",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": "946de53476ea957bece57b221c27693f619d4a0d",
+   "after_blob": "0f8e2ffeeb2c493141712818e6867dbf896a7f1f"
+  },
+  {
+   "path": "conversion/deepseek41.py",
+   "status": "added",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": null,
+   "after_blob": "53980c1d041f5770833b8094e2c663f45ad78ad8"
+  },
+  {
+   "path": "conversion/qwen4exp.py",
+   "status": "modified",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": "7ca26c2a3399a7423b023e38796e3da375351be5",
+   "after_blob": "8a55d678d74ae4e40559caf8638443c85d827516"
+  },
+  {
+   "path": "conversion/soprano.py",
+   "status": "added",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": null,
+   "after_blob": "cf4c959c6ba00048b50acfe39c3ca3b7c081acb0"
+  },
+  {
+   "path": "convert_hf_to_gguf.py",
+   "status": "modified",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": "e09616b190cf124e818d8a740468d4e84086015c",
+   "after_blob": "5e263fd16fa7101c6acce13683e7a8cf70005abc"
+  },
+  {
+   "path": "ggml/include/ggml.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "3c2e6734b7488ed243d0aa83d38ed45033236a06",
+   "after_blob": "d62a631043a3745882dba3333004cb92cb75a7c6"
+  },
+  {
+   "path": "ggml/src/ggml-backend-meta.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "17f871c897fe095e5b7cb86151604b8f5a50bfe0",
+   "after_blob": "fb35be352aed3f1cd330b92bd5c48de0def7ca37"
+  },
+  {
+   "path": "ggml/src/ggml-cpu/arch/arm/quants.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "cfbbf66178cfcbb220f4fe7bdd30e0badbe6b343",
+   "after_blob": "f16505b2c986d70575b69a6b58816440572242d7"
+  },
+  {
+   "path": "ggml/src/ggml-cpu/ggml-cpu.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "4c33369eefa325f499d04fcebea653205e003178",
+   "after_blob": "53d39d2491edca865a149b250c96c7970e0feeb0"
+  },
+  {
+   "path": "ggml/src/ggml-cpu/ops.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "02d5efffaca74da56399c8e30f6bb11ade52045a",
+   "after_blob": "5735f96f8e8b992c7fd66b2e63b3611a791c4920"
+  },
+  {
+   "path": "ggml/src/ggml-cpu/repack.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "2632ae3a063c40c81438c7e8ab992e5903481d86",
+   "after_blob": "9282ca299b60a93ab60840fad2823bc6a47396ea"
+  },
+  {
+   "path": "ggml/src/ggml-cpu/spacemit/ime.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "81e86b9dd6664e622ff322e707823e1cdfb2e35d",
+   "after_blob": "7b801275554e829fa72f71a691084975a6629d85"
+  },
+  {
+   "path": "ggml/src/ggml-cpu/unary-ops.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "1d8344436f022cb028418d5d46b56093411083d2",
+   "after_blob": "f5d57d6f941a62439f8690f254aa764eead3f130"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/ggml-cuda.cu",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "454d17d789fbe2480639634d7fa660b512fd0331",
+   "after_blob": "b795951b2f7b4ef2b76c840a388bec24841198c5"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/mma.cuh",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "1cec98b06ef9de7194cb48fb9c4b844d83d04f0f",
+   "after_blob": "c72f12131e83b9c7c20684de27994faa7bb48638"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/mmq-load-tiles.cuh",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "b37d88c16b512c98e0a21039110d940e0a82f6a8",
+   "after_blob": "4951db72ebfc9a795a8602cac911bf181f132ddf"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/mmq.cu",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "46efdfe0f73e54a8426fd9f8d26ebe8b04be5416",
+   "after_blob": "27558ec77289deb05c67e215ee01c6d8e7dbc4be"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/mmq.cuh",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "e008a34c08a01b3c06f821021121217cedc728c0",
+   "after_blob": "565ed1481f8ff44629002690bd6cccdf7c975f0f"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/rope.cu",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "b4fca778fa69f257ca41539fc27085ad21eb9809",
+   "after_blob": "45e81340659796e744f9c4ba3d7f0efbfc534be2"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/topk-moe.cu",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "81d6ec3f7cdc9f2225ca011f0b872a91b9be4acc",
+   "after_blob": "158b736f0c124201d8b5763158d3032cda5c5be7"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/unary.cu",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "af839acd7456285391761e5a8319c7cbe9bd766b",
+   "after_blob": "b3b6aa48d3aca345f209a4fb0958fdd67052246f"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/unary.cuh",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "04f3af6443a74283a9994dfcd3be3e45eb95c685",
+   "after_blob": "c6ffdb9d63e774d6421ded74de860a0cc208e551"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/vecdotq.cuh",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "c7acdacaf7a1bb13817dc57821afbc5205ae0472",
+   "after_blob": "d5ff93b9124135f0c4cfec194b640b374816a8be"
+  },
+  {
+   "path": "ggml/src/ggml-cuda/vendors/hip.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "da7e3da0b9cae37c4280955748c522ded7f05bfd",
+   "after_blob": "8e8f5a4ee9dc5bb8c2fc326cd748e560775df4c9"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/ggml-hexagon.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "0821bce16bf0ca76ad2cca21b2726afbed693f66",
+   "after_blob": "45e6ae902ab669087c2e84cfc6151e9edf467d94"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp-common.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "71a690a168ab766ca9395d85ea4d8bf495586415",
+   "after_blob": "e51340d8a27897741b4c87d5294dcfd80056c870"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp-fusion.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "65aacf73f61fba864e780ef7afa804597e0a470a",
+   "after_blob": "ba2dd64106c9290231f2d1470fc91f397ca0146f"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp-kparams.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "71040945d47c6e331f5792f37837d6c927d3546b",
+   "after_blob": "b8d1aee3d0e374d675d96110d8007a5453959780"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp-kparams.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "0871209e7c994f8a23c104a679177eb5885e5b77",
+   "after_blob": "0bde658dcb2c298bda5906d51515dd93929a77f0"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/flash-attn-ops.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "fc5664185053623f68cf69a99e16896fcaba8447",
+   "after_blob": "ee258172b1ace4774b24a08c8fbc2d9ba42c26dc"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/flash-attn-ops.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "a3d380501645e0247d4aceea3a744e5d9e625b67",
+   "after_blob": "f2654f0a83dce8bddd1f7e55dcfa767bba27ff5c"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/htp-ops.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "50addf41494d76774aec477f370d199b656aae3a",
+   "after_blob": "f3b2d6b737a3edfdffb33801fbb65f24f1db9ddc"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/hvx-arith.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "60da71feffeee2ffa73a8aeb40221ddfd569cd5f",
+   "after_blob": "ec0de8e1967847038cf97b2dd614a435a75449f1"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/hvx-base.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "20e0d6e665cf4e486222cf7820d4003607b1d8b6",
+   "after_blob": "e87a30d14e7c4598aee06e5d2f4b825a83ac9c6e"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/main.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "b22c3c9441eaca17d57cf4b4e7bf25f0725a64f3",
+   "after_blob": "d1a4afcd67b08ef4ce2ae7d36fcba68dd3dfa791"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/matmul-ops.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "e290835fcecbb2b0077fc894538447c4f8ad4c4a",
+   "after_blob": "784bb37b9aa32d57d077cdcb9d095b072eb8fc6d"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/matmul-ops.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "474c2dbc01bc375de4c950394f0b93ee0d0c9c37",
+   "after_blob": "4971ed958b751717b42afcd381f54635bd366273"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/unary-ops.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "3a69337df304f6e98a3524e97ba3f3a1beadc2f0",
+   "after_blob": "3b63ac674d730efa78f5c7a0ca3ed0aecc7754d6"
+  },
+  {
+   "path": "ggml/src/ggml-hexagon/htp/unary-ops.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "93b9e0e75e31c424bbbfe9b876e73b8d38149899",
+   "after_blob": "713e40d50b757c99521dbbc1012692e37763bd40"
+  },
+  {
+   "path": "ggml/src/ggml-metal/ggml-metal-device.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "65611314adb158917a4e7d1a416db3b23bca10df",
+   "after_blob": "f3f5d4d77dd771927bbb0b63259bdb70171858f2"
+  },
+  {
+   "path": "ggml/src/ggml-metal/ggml-metal-device.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "5ccaec6a34f2218cdb7b659b0c90b482f7916b34",
+   "after_blob": "6d77c57ffe0b9c1ffc5caf4e79c8fad493041117"
+  },
+  {
+   "path": "ggml/src/ggml-metal/ggml-metal-impl.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "46b56c9d9cd405b5923cf770b6c5afe4c24b45eb",
+   "after_blob": "9db266f442316c2bb7e9fa39fd0d50c9bd2b63b9"
+  },
+  {
+   "path": "ggml/src/ggml-metal/ggml-metal-ops.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "fc856b5b24afdf870537ffba231c8e997d636421",
+   "after_blob": "0cebbe5d6e1f21d6be508cf1e7d054ead099eb53"
+  },
+  {
+   "path": "ggml/src/ggml-metal/ggml-metal-ops.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "b8296bf2b481a2f84b45dee68396cd01e34efa0e",
+   "after_blob": "e14a2dd5f732a064257a4747864c13e8c010949b"
+  },
+  {
+   "path": "ggml/src/ggml-metal/ggml-metal.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "074a9d8e69dda1b5c7d8356d96492e362312a3c2",
+   "after_blob": "d0771eb493f18a74784111149446679b28c051ec"
+  },
+  {
+   "path": "ggml/src/ggml-metal/kernels/binbcast.metal",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "7c7ab9b5eb9496c8e2d84192f355165a2196221e",
+   "after_blob": "b367b3ea17f410c2fae32b25299a07c820e567bd"
+  },
+  {
+   "path": "ggml/src/ggml-metal/kernels/mul_mm.metal",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "c313cb8e218811010042e92815704d41d2475fba",
+   "after_blob": "edcc061d516ec1d8e9a42010090d20f4ab3205f4"
+  },
+  {
+   "path": "ggml/src/ggml-metal/kernels/mul_mv.metal",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "0d1069f2c88a1e8211034946856142d80c803a8c",
+   "after_blob": "7ad07a29c727ebd05159828ee3e3c95840853123"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/CMakeLists.txt",
+   "status": "modified",
+   "classification": "selected-build-graph",
+   "reason": "Build-graph wiring only for the OpenCL backend kernel target; no runtime behavior of its own.",
+   "before_blob": "1c6edc036e2a69fb3d9884f96dbfd15b37cb0919",
+   "after_blob": "57620e560e044744f673e3c011b3d7f50a3c485f"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/ggml-opencl.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "1fafe8e337a6c69d995cf4ebe88bc2ee4106c9cd",
+   "after_blob": "65a5e66214249a33372570c1ebff8005b0fb854e"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/add_id.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "e9c6d55e6a2fdc2dc67574595d62f3e3295c3c82",
+   "after_blob": "e9aa5a150f351b077e1ed436f2cf2781a77db56d"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/cvt.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "acc8f980763f4e662f13e3b4b0b3e81b172d2fb1",
+   "after_blob": "f3309a298950ffefac5822aa5e38977510f09c8c"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemm_noshuffle_q2_k_f32.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "2749e1c145560b37074899a2673dcf63151e816e"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemm_noshuffle_q2_k_q8_1_dp4a.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "7db7e6d71f744705d06d419f62f293c8f0f19b9e"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_mxfp4_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "ee8b94f446c5a409b9e83be3bb494db2a67e541f",
+   "after_blob": "3f21c3523ee1dc2cede109a1c8e51f2085e1f39b"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q4_0_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "2d28db63ec57d04f4919108de430a64524e62434",
+   "after_blob": "f90970b21b27c6bb0faccbacb8f30bc1b3cbce2c"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q4_1_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "b98bdc0f12e0bf25eaa49900da10729a9a973f1b",
+   "after_blob": "44bc15ff94970938047c6ac8fb5b56dfa0b24ac8"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q4_k_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "d3a3c7db8798e54570ad4b1ec171736e7dae0c67",
+   "after_blob": "290a315933aa5a3c224dcf235ca1879dfe95c5f3"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q5_0_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "b43613638a850450e5523af40c152e8a4302d5a0",
+   "after_blob": "83b186b44c24bb788e391540f242f2a3fe52201d"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q5_1_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "7a666006e68b8612ffe5b0390f6458fbfa6251c4",
+   "after_blob": "2eba34e6855774549480e86dba24d1b880f4046a"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q5_k_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "7d868d7abd92c9dea05350dd24e4a4f8962744ea",
+   "after_blob": "a959f72c397ef7705d9c8d3f8386f933e8eb054f"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_moe_q6_k_f32_ns.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "c166bad5ba527e3f4f534837b7d4540dd6ee4ce4",
+   "after_blob": "dcd34fbc2ab362d569b2d4a0352d8910164fb04d"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/gemv_noshuffle_q2_k_f32.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "efcc310775e3f35d4312f4f4c9a39ce83c3bb401"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/lightning_indexer.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "efd2f11652fd3a54ead9e950d5e8a9ffa9930feb"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/moe_sort_by_expert.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "d0f9e8c8772c80bc2dc6fac31423d506df316332",
+   "after_blob": "5ea31afb8e161ec59ced9134536d65b7557ed73e"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mm_q2_k_f32_l4_lm.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "e192bdefb6899f6beed60c6b310bbeaa378f2b40"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_id_mxfp4_f32.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "d50bd1fc4285d8e3e6e7071889b9328361c90549",
+   "after_blob": "4c0755e14f2b3c5cb3f732afe426594e996332b6"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_id_mxfp4_f32_flat.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "f65e86ed6a242adcdb81c927b83a218fcbf3a6c4",
+   "after_blob": "962ddd76da26d649035454977ededc1a4108fd80"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_id_q4_0_f32_8x_flat.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "7ccf41efbe91831d4240ce711370a8a904220ac9",
+   "after_blob": "13314689fa5f6b68c0a04addec5d5f9ee016738c"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_id_q8_0_f32.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "f37e83ee8aa4452ff886c7ce65d1b4f353d09e07",
+   "after_blob": "2c40a43f1ea3a7eba1b4f5027a4f141295c53ae9"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_id_q8_0_f32_flat.cl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "fd3a0710f5cc93217061dc7cf8f65eee90f734b3",
+   "after_blob": "3b1b39b62430a5bb660daeef1c3f72ef2b766272"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_q2_k_f32.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "7f5328136d56f7b13fc00cd0057c5fead6d57d7a"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/mul_mv_q2_k_f32_flat.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "c993abebedf56954545a8ae30a4053dcaa7959ab"
+  },
+  {
+   "path": "ggml/src/ggml-opencl/kernels/top_k.cl",
+   "status": "added",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": null,
+   "after_blob": "6b5126e0d9a26690386bd046ed3b139667e8bace"
+  },
+  {
+   "path": "ggml/src/ggml-openvino/openvino/op/add_id.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "79bdbe87731e03c23bfd0b6bcf9a526fca8965cf",
+   "after_blob": "04b1d3ff256b5a496d3d7b0b8b6e74aab117e01b"
+  },
+  {
+   "path": "ggml/src/ggml-rpc/transport.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "22b38e00f5083297f42c2daab37d26630a41d840",
+   "after_blob": "d5670f34d904d0793bd064741edc47b316baad6a"
+  },
+  {
+   "path": "ggml/src/ggml-sycl/add-id.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "e0adc4fe42301796d40c62b74ec02f46f370243a",
+   "after_blob": "a7901859a7c2b62e8bd995b6be78eeb19117e373"
+  },
+  {
+   "path": "ggml/src/ggml-sycl/ggml-sycl.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "ed0b27280655ea5a0f49fdcf119d53c0c065d3f6",
+   "after_blob": "a0447011698575de56d208d59253c68f87be1d4e"
+  },
+  {
+   "path": "ggml/src/ggml-sycl/mmvq.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "13c6677a873d67b014136e7e0b4aac4fa8be0b19",
+   "after_blob": "97ce165c6268b246ab0690c927b3134ff833bcbc"
+  },
+  {
+   "path": "ggml/src/ggml-vulkan/ggml-vulkan-push-constants.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "fdce443a147ec6e7d9b806540cb8e3426637acad",
+   "after_blob": "219c477c617034d30073a441ce305a127b9ad161"
+  },
+  {
+   "path": "ggml/src/ggml-vulkan/ggml-vulkan-types.h",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "00d20e843b78535219a06097f8dd6c8a8d0209db",
+   "after_blob": "5cf46c89085fcd533d75af9101c70af6e5db1aa1"
+  },
+  {
+   "path": "ggml/src/ggml-vulkan/ggml-vulkan.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "e603cbcb11a233f3af51365a2bb5a66afda5cb53",
+   "after_blob": "33936acae8cda3dce408c76d172dcaa17b658ec3"
+  },
+  {
+   "path": "ggml/src/ggml-vulkan/vulkan-shaders/add_id.comp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "495249d5f6cc0b2264183f3e3cddccaad76124a7",
+   "after_blob": "bf62067048273f657dc4e465af15d96abb8036a3"
+  },
+  {
+   "path": "ggml/src/ggml-vulkan/vulkan-shaders/count_experts.comp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "e7e295115df490329daf4371fa1b577e89e1ccc7",
+   "after_blob": "a46a06193c577bc50022f8548f52bc90a0bba345"
+  },
+  {
+   "path": "ggml/src/ggml-vulkan/vulkan-shaders/mul_mat_vec_base.glsl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "4aeda68c7f2dbc21755ecd9be5f7d7b150861e45",
+   "after_blob": "12d9cbf6b7cdffd35b83f9ec43f407d4bda184d6"
+  },
+  {
+   "path": "ggml/src/ggml-webgpu/ggml-webgpu.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "71d9ae2b92c3a472944d69b281b6f4e7b5b8d597",
+   "after_blob": "65d6d456a8a0d0ca1978d6d3e2bd96bc9dc1dfb5"
+  },
+  {
+   "path": "ggml/src/ggml-webgpu/wgsl-shaders/add_id.wgsl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "2573926cb893977c57bdd16db6fb590b9b34c878",
+   "after_blob": "1e377bff568f0576ab797de3d3ab95850d9e6fd9"
+  },
+  {
+   "path": "ggml/src/ggml-webgpu/wgsl-shaders/mul_mat_id_gather.wgsl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "1439a12d01025cae0dd82607d16a27572623b7bb",
+   "after_blob": "11fcc6ba864ca638bdda15a5f0ea79ebbaf69c00"
+  },
+  {
+   "path": "ggml/src/ggml-webgpu/wgsl-shaders/mul_mat_id_vec.wgsl",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "cb95783bc548699e4329bfabecbbc1deaa0ab94c",
+   "after_blob": "e87cc6b2d0670c47961e4526d92acfc6d5197ff8"
+  },
+  {
+   "path": "ggml/src/ggml-zendnn/ggml-zendnn.cpp",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "ec7ce233145a491c3e28dec3cd2c0f4a49caba3f",
+   "after_blob": "357cfcd99a2c31339e0f331d9d1aff94afef75f6"
+  },
+  {
+   "path": "ggml/src/ggml.c",
+   "status": "modified",
+   "classification": "selected-ggml-backend",
+   "reason": "Compute backend and core ggml op changes; numeric and performance effects on every generated token, no wire-shape change.",
+   "before_blob": "0b2adf6e4cfa7b15c750161d24d805875162fe48",
+   "after_blob": "ed8554b14173c6141261d79e7d3353e37e5af963"
+  },
+  {
+   "path": "gguf-py/gguf/constants.py",
+   "status": "modified",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": "b8cfa3a85e7b32c2038a385556f023af1202c2c6",
+   "after_blob": "babc8bba4c6d8ed93955ebb227da70ba2b1c4151"
+  },
+  {
+   "path": "gguf-py/gguf/gguf_writer.py",
+   "status": "modified",
+   "classification": "unselected-python",
+   "reason": "Python conversion tooling outside the compiled runner.",
+   "before_blob": "9e49a1514025f4144622972c0182f654526d6346",
+   "after_blob": "60501361010a5aff294645f9748ca419bece67a2"
+  },
+  {
+   "path": "include/llama.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Public header surface consumed by the llama-server build.",
+   "before_blob": "3af6e22233efe53bff96ee5857af26fb886c9a04",
+   "after_blob": "ae54e661bea6b305c0d3684670bc444c53d795bd"
+  },
+  {
+   "path": "scripts/snapdragon/ggml-hexagon-profile.py",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "4ac227678dcb548923c3b75846f4eac8449ce7ee",
+   "after_blob": "7c95ec8cba9b12db98c03fd1dfe1811516f5e880"
+  },
+  {
+   "path": "skills/code-review/SKILL.md",
+   "status": "modified",
+   "classification": "unselected-ci-contrib",
+   "reason": "CI, workflows, and contributor tooling outside the compiled runner.",
+   "before_blob": "2b15d18c4e33c6d07a8635b3a1ec1dce55e2234b",
+   "after_blob": "b282a916462bd8676e24fc4684673fe15c1951f6"
+  },
+  {
+   "path": "src/llama-arch.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "a364174c1b47345aff86c37077a5ae013bbd7945",
+   "after_blob": "06fc56bb27c4cd4e9d7a878cc39eb479a5fc1392"
+  },
+  {
+   "path": "src/llama-arch.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "cdf978fb833c933769565ffc1e04165f2c78bf29",
+   "after_blob": "7996bdc309b772908473c1a12e27c9eee9bb56f6"
+  },
+  {
+   "path": "src/llama-context.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "ca84fc405bcec3cafbc250a58fbe72f9f16d9c60",
+   "after_blob": "d5a66a49990b6ea12bbfb887e19399ad8944c4c4"
+  },
+  {
+   "path": "src/llama-ext.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Public header surface consumed by the llama-server build.",
+   "before_blob": "933cb801342efab93f34f3b837de36ae9dc31de8",
+   "after_blob": "fcd91e912b1e4b5c099a5d21086f5b1c165791c7"
+  },
+  {
+   "path": "src/llama-grammar.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "0a8a61e7e8306d82ec3be0bfddf20d6b7272d74f",
+   "after_blob": "4e096a3684c63786fba76ed90b9b54a937677ee0"
+  },
+  {
+   "path": "src/llama-grammar.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "b5a0e588e903be1f3277026ebfbc81cb966216f2",
+   "after_blob": "2885f770597f0102b330a7db658f50aa3c4ca2d0"
+  },
+  {
+   "path": "src/llama-graph.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "7e8b80a3a070b46ed0939cdadd7006eb52896042",
+   "after_blob": "a22dfba9657b7805557482a02f012823e54f659d"
+  },
+  {
+   "path": "src/llama-hparams.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "719d7081dd219de295a72650d2489cdbb6dbea76",
+   "after_blob": "760bb8ac67d159ff6f8e840bc10986c737e23c41"
+  },
+  {
+   "path": "src/llama-kv-cache-dsv4.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "f8caae9d6be595afb8b8feebbfb3285005516c05",
+   "after_blob": "6186f9d34e1327a614bdf6ce9c8943f8c4cc2ce8"
+  },
+  {
+   "path": "src/llama-kv-cache-dsv4.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "ce39867c03427575930c3bdfdbca89523c0514a3",
+   "after_blob": "bfc52947fd1aed0519423cc16cc901919e8c6467"
+  },
+  {
+   "path": "src/llama-kv-cache.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "6f0e3f7f796f8705317d219a2555d727d6c3a1c6",
+   "after_blob": "4ab280a6196c9dbac0716475eafb53cbbeb35ce4"
+  },
+  {
+   "path": "src/llama-memory-recurrent.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "2893d819e5079de63e7ab39b45afc90fc6dd9165",
+   "after_blob": "d00630d4c5c3737b64816cf31cd1aa59b75a0b26"
+  },
+  {
+   "path": "src/llama-model-loader.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "066e69e91b725987a4142b20213d30d6ca7a07ab",
+   "after_blob": "a963f24801214f9a2d8de3e48ac7af27b6aa4a12"
+  },
+  {
+   "path": "src/llama-model-saver.cpp",
+   "status": "modified",
+   "classification": "unselected-quantize",
+   "reason": "Quantize tool path; llama-quantize installs beside the runner but the serving driver never invokes it.",
+   "before_blob": "2135b82b159a608c8047d156c0b4ce32bc2c9ee2",
+   "after_blob": "1160e88a2d03039b70fa222b9fe277e46d4e0cb5"
+  },
+  {
+   "path": "src/llama-model-saver.h",
+   "status": "modified",
+   "classification": "unselected-quantize",
+   "reason": "Quantize tool path; llama-quantize installs beside the runner but the serving driver never invokes it.",
+   "before_blob": "95e19e666e7f3adf52567b96b038b03492f7c111",
+   "after_blob": "5829abac654997b7f9301677d8afed57f57975be"
+  },
+  {
+   "path": "src/llama-model.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "65c42f85fcc999c8c0b072daa2edad67ec9b3429",
+   "after_blob": "1de65c728df25b2bce2b051ae48fec78282eb0ce"
+  },
+  {
+   "path": "src/llama-model.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "cdf060db29655f8297ab81bdd5a3073ebf5a0036",
+   "after_blob": "ccc2602e5fb3e1de46e6b443bb6fd0040b7d6967"
+  },
+  {
+   "path": "src/llama-quant.cpp",
+   "status": "modified",
+   "classification": "unselected-quantize",
+   "reason": "Quantize tool path; llama-quantize installs beside the runner but the serving driver never invokes it.",
+   "before_blob": "b8f96bcef30fc94e147fd3dfc04a8f9af25a3488",
+   "after_blob": "bdc4f653f004a12fe1bded592dcc4b578ad10e9f"
+  },
+  {
+   "path": "src/llama-sampler.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "521c5718e1307a0cfee288c01c7145d05e23a24e",
+   "after_blob": "9004efa20df704e17e92f96df6c6b27fda4b8f2f"
+  },
+  {
+   "path": "src/llama-vocab.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "f72fbd2215cbca0bc587554334ab5cc71f8e34dc",
+   "after_blob": "65b569762a2ad291a94f7d4a8928bd21d217d2c8"
+  },
+  {
+   "path": "src/llama-vocab.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Core inference delta on the GGUF text path: tokenizer, sampler, KV cache, graph, context, model load, arch registry, or grammar changes.",
+   "before_blob": "c6f3ac06dc638ae913f14061c0386ac0d0540d22",
+   "after_blob": "14a90fbdb69f62ba62dfc09df9d863647f0ad058"
+  },
+  {
+   "path": "src/models/deepseek4.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Architecture-specific graph and tensor fixes; selected only for those model families.",
+   "before_blob": "11699909ff7fe68be0f0dfc55f1923998e657922",
+   "after_blob": "13f6a5accbc1f723c20b8179dea7cc8e0865d97c"
+  },
+  {
+   "path": "src/models/deepseek41.cpp",
+   "status": "added",
+   "classification": "selected-llama-core",
+   "reason": "New DeepSeek V4.1 architecture graph builder; selected only when such a model is loaded.",
+   "before_blob": null,
+   "after_blob": "6a9003d42b69b1643d53ee9d8dc566169c40b9b5"
+  },
+  {
+   "path": "src/models/dflash.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Architecture-specific graph and tensor fixes; selected only for those model families.",
+   "before_blob": "e15af6afdc74548bd5bdb4c94aca7241f78797ab",
+   "after_blob": "6bbb534f08f29c2e3a3493de255f2f1ce2153e55"
+  },
+  {
+   "path": "src/models/minimax-m3.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Architecture-specific graph and tensor fixes; selected only for those model families.",
+   "before_blob": "35e7b1a815c7bd16a8601c8d31c6ec482a79a258",
+   "after_blob": "73d145daeff39e3d59a2f35aaf5e24978b0e7665"
+  },
+  {
+   "path": "src/models/models.h",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Architecture-specific graph and tensor fixes; selected only for those model families.",
+   "before_blob": "bdcc1a4faef9e6808010aad6b2d7cbfbaf9d1556",
+   "after_blob": "37dbacdb916290ee263dcf05d298ad7039b4e3b8"
+  },
+  {
+   "path": "src/models/qwen4exp.cpp",
+   "status": "modified",
+   "classification": "selected-llama-core",
+   "reason": "Architecture-specific graph and tensor fixes; selected only for those model families.",
+   "before_blob": "97e71d3d21cd946ab1b8276556b686dd1fd00b20",
+   "after_blob": "1f3b1cdefd1b9be6ddc01cc640a129d049fc9d4c"
+  },
+  {
+   "path": "tests/CMakeLists.txt",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "763154972c61a13154b374fe0280f16034300364",
+   "after_blob": "2e768cb38550839b9099719909fdf06042b4ebe8"
+  },
+  {
+   "path": "tests/fusion/MTL.csv",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "56044b350e457f5c2c0fe5d3d7d77a46cc4e220e",
+   "after_blob": "2c57c2a14a909746942fd8d3e0b7fa96ced2e779"
+  },
+  {
+   "path": "tests/peg-parser/test-json-parser.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "ec7c2e668ff1ee7ceb409c0070fc029bf09f4750",
+   "after_blob": "9752da461fbe8e773c551fa1a85d1ed6de45ea73"
+  },
+  {
+   "path": "tests/snapshots/deepseek-v3.1.schema",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "0e9dfd6ed4a7e5c4b1af6f37af10d22f9bcda96a",
+   "after_blob": "117a76833f4fac3988d83800c78d65e142951681"
+  },
+  {
+   "path": "tests/test-backend-ops.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "5716a2b01072408a7bc761d68768927c9ab91a6b",
+   "after_blob": "9a4ddaa29a3558d2bf98e4c71352c8da37d6facd"
+  },
+  {
+   "path": "tests/test-chat.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "49519eecab1de927cc2ed8aa8865affd6de43aee",
+   "after_blob": "10a477fa459fb3e69218eb252b98e06a60d3118a"
+  },
+  {
+   "path": "tests/test-grammar-integration.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "2af96f8b47976f4575f3e77655a8a0ba58cb93c0",
+   "after_blob": "75bfca645f005da5ac5eaab112202412597b5267"
+  },
+  {
+   "path": "tests/test-grammar-parser.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "2ddf25bb694a840c312b3ec9854c5eb974c2b618",
+   "after_blob": "a6a99520c01363d548b1a96185ccf2962044332c"
+  },
+  {
+   "path": "tests/test-jinja.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "99552a8f78817edb3a186f4705f45aeea97a48eb",
+   "after_blob": "2a01172840718353056ee421376aa9980eec430e"
+  },
+  {
+   "path": "tests/test-json-schema-to-grammar.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "d5873c19d03e3e4a1ed72d7ed7ec2b2ac193d45f",
+   "after_blob": "c7d971b29dd0005bf12b28ec62e1a026aa6e7f7a"
+  },
+  {
+   "path": "tests/test-llama-archs.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "1e0b755112415ed7cdda94be2554f29c8803e547",
+   "after_blob": "8b8ab6e5d4479a0f72f23aff4cfaeb13f6d362e6"
+  },
+  {
+   "path": "tests/test-llama-context.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "4ba700d53f9c23fddf233e16393a82dde32d9341",
+   "after_blob": "cacc9acb8e7447fc4cdc1b2817adec658b9ce6a1"
+  },
+  {
+   "path": "tests/test-model-resolution.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "eb7b30936e294c0d5af5b1eed13c199db3aeb4d1",
+   "after_blob": "705fd65fa9505b615aaa35988a68d0c80c538c73"
+  },
+  {
+   "path": "tests/test-mtmd-impl.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "6ad60213e68119148502e6343051411de05938e0",
+   "after_blob": "536dfaa8087f5cb9f774e75e3b9ca1cc274db2b2"
+  },
+  {
+   "path": "tests/test-server-component.cpp",
+   "status": "modified",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": "18e0cdc2fe0eca394c1605843d05ab9f202cd8fd",
+   "after_blob": "642d3f9250a871f3e8dadb76e2936363426a4c3d"
+  },
+  {
+   "path": "tests/test-speculative-rejection-sampling.cpp",
+   "status": "added",
+   "classification": "unselected-tests",
+   "reason": "llama.cpp tests; LLAMA_BUILD_TESTS is OFF and tests do not ship with the runner.",
+   "before_blob": null,
+   "after_blob": "52343602886fdb593146972c8d3a681b009c6d49"
+  },
+  {
+   "path": "tools/gguf-split/gguf-split.cpp",
+   "status": "modified",
+   "classification": "unselected-tools",
+   "reason": "Not installed into lib/ollama by the llama/server CMake install scope.",
+   "before_blob": "17345593880f38b4bd6a82eaf3ca1d11b7112bab",
+   "after_blob": "73587b9fcbdfea45267152c49fea37fbf535faee"
+  },
+  {
+   "path": "tools/mtmd/CMakeLists.txt",
+   "status": "modified",
+   "classification": "selected-build-graph",
+   "reason": "Build-graph wiring only for the mtmd target llama-server links; no runtime behavior of its own.",
+   "before_blob": "bd7fb735665e440ec297eee8de8cf10264919b45",
+   "after_blob": "8ca4ae3a4adaf87c0ab8777a67f74e416fdd696e"
+  },
+  {
+   "path": "tools/mtmd/clip-graph.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "33e546b7d2532e5ccbe5c40af1746548099b9356",
+   "after_blob": "a0669d1a0c40faeb6b31c9373d0a7c93340cd3e8"
+  },
+  {
+   "path": "tools/mtmd/clip-impl.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "5583a7c574a721d805edba3206eb2a3a02b7f5d5",
+   "after_blob": "661f0c646822079703a45d405895fc0fc52205b8"
+  },
+  {
+   "path": "tools/mtmd/clip-model.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "5caa93b42117175da014d712c2a32b294156f963",
+   "after_blob": "1f319843b0f02c1c6ff5ad3eff4bd9d003254613"
+  },
+  {
+   "path": "tools/mtmd/clip.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Projector loader carrying the Ollama compat clip hook call sites; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "5737400df25988f16b7cb9c2ab337d9c2f56e4af",
+   "after_blob": "204b16f3e16693f042386234e10c0e227967c8fa"
+  },
+  {
+   "path": "tools/mtmd/models/deepseek4v.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "ffe8f59d99977c0b556edb5908427dcbae9cf290",
+   "after_blob": "06005d52c8b890ddbee693c0e12c8b580fec7a8a"
+  },
+  {
+   "path": "tools/mtmd/models/ling3vl.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "ef8eb3a8391c1843b620ad0b5349b68b0622375b",
+   "after_blob": "fb9eb7c7493cbac38cc300171227cfede846c5e8"
+  },
+  {
+   "path": "tools/mtmd/models/models.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "55e525cdc0f5f2eac599edff0b7d66ca1dfb8abe",
+   "after_blob": "3b34548c464214c8d393ded96570ba3ab378e7af"
+  },
+  {
+   "path": "tools/mtmd/models/qwen2vl.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "4998d95bc64670bd279034c51aa39c1c22a4f95e",
+   "after_blob": "7516aa23a9863f2f71b0dfa723f7edab07f03c6d"
+  },
+  {
+   "path": "tools/mtmd/models/qwen3vl.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "48626b221fbb01d02376bd1d87566437a60027c4",
+   "after_blob": "2e49dcd019b770bcda180d503dae72efd38d3268"
+  },
+  {
+   "path": "tools/mtmd/models/soprano.cpp",
+   "status": "added",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": null,
+   "after_blob": "bd16c69124be4feccbb448d6f329707fed9a2c18"
+  },
+  {
+   "path": "tools/mtmd/mtmd-cli.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "1d7d65ef8691c5162353f9d067f259bcb3b7b7a3",
+   "after_blob": "faabd48406bd5db0331e0cb5573cbb885acfcb7a"
+  },
+  {
+   "path": "tools/mtmd/mtmd-helper-gen.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "d8299ba442df0962074563c2860285414e9f493d",
+   "after_blob": "44bee60bd4c390a7a6667ec35be9622fe9ecd11c"
+  },
+  {
+   "path": "tools/mtmd/mtmd-helper.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "eba034f79ed14bb044a8c6f1db1eaeb6dcb90d08",
+   "after_blob": "d06af8f0266e0ea377fedcdcf9a689ebce5ec13e"
+  },
+  {
+   "path": "tools/mtmd/mtmd-helper.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "acbfefcbaee191bea86eae7b169966c0e1fb4390",
+   "after_blob": "e46b5d36a485b0db01bae0a7377d35814a70f21c"
+  },
+  {
+   "path": "tools/mtmd/mtmd-image.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "ab6067b97e0443832c7b377894bf1b0b7b2901b7",
+   "after_blob": "551ea0c6014dbe5088523b508397feb436bd87ba"
+  },
+  {
+   "path": "tools/mtmd/mtmd-image.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "bc90a76c62be26ed16c4776d3e09c59ea1b792a7",
+   "after_blob": "40d5b59ccbeb70522fca31e2ce04a479ef22586d"
+  },
+  {
+   "path": "tools/mtmd/mtmd.cpp",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "7c825c0dc4187f55424724d9fbf4a2edefe3897e",
+   "after_blob": "df32b8f369894b6cc659b5ff7867dde3aa884506"
+  },
+  {
+   "path": "tools/mtmd/mtmd.h",
+   "status": "modified",
+   "classification": "selected-mtmd-media",
+   "reason": "Multimodal projector changes; reachable only when a projector is loaded, which the driver text path never triggers for text-only GGUF rows.",
+   "before_blob": "5af73a0f40f5e11e25eb489a774969270e27aaa2",
+   "after_blob": "0a6bf4c4c4de583381b72e86671797c8e511864a"
+  },
+  {
+   "path": "tools/server/README-dev.md",
+   "status": "modified",
+   "classification": "selected-server-docs",
+   "reason": "Server documentation inside tools/server; no serving behavior.",
+   "before_blob": "ea84b9f659c9090c750ebab869d41bcdff147880",
+   "after_blob": "17b39f0aaaba3df5d562cf8c416cf3394453a88d"
+  },
+  {
+   "path": "tools/server/README.md",
+   "status": "modified",
+   "classification": "selected-server-docs",
+   "reason": "Server documentation inside tools/server; no serving behavior.",
+   "before_blob": "56d1ea5fe885c240e88981a4b0db6e289c6e5123",
+   "after_blob": "8e27e37b8d4aa623006e413e7c8c4062a542e079"
+  },
+  {
+   "path": "tools/server/server-common.cpp",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Shared llama-server helpers behind the selected completion, chat, tokenize, detokenize, and health endpoints.",
+   "before_blob": "10e04d370af6e6ab4c28dc986fa861d35090a2fa",
+   "after_blob": "80a9f2d7270d072967c9ad243864147cbd1e175e"
+  },
+  {
+   "path": "tools/server/server-common.h",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Shared llama-server helpers behind the selected completion, chat, tokenize, detokenize, and health endpoints.",
+   "before_blob": "09ffa9a56f6f71abc71f9d3f1e8630001d58b144",
+   "after_blob": "0925c508efecc04a9b90971d2d5688d549b2b775"
+  },
+  {
+   "path": "tools/server/server-context.cpp",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Server request context shared by the selected completion and chat endpoints.",
+   "before_blob": "a5cba1d71d46c1c87ca868ac4a6a8b4c8902ca45",
+   "after_blob": "9043fa2c02905495f55045d8d0fc978b1f94e027"
+  },
+  {
+   "path": "tools/server/server-context.h",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Server request context shared by the selected completion and chat endpoints.",
+   "before_blob": "4a8e327fcdee80ea4ea0d65f0401d01af3529005",
+   "after_blob": "614ffad99fb5e76eec89318ec719d0fec3b3fde7"
+  },
+  {
+   "path": "tools/server/server-decision.cpp",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Decision endpoints for decision models; the adapter rejects decision rows because they omit completion.",
+   "before_blob": "ce4cb4d0910d4a28e58edf191ce479eaacea551f",
+   "after_blob": "5fd7585ff6c35fc1e6bcaa6d7d01cac91749ab9c"
+  },
+  {
+   "path": "tools/server/server-models.cpp",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Serves llama-server /models, which the Ollama driver does not call; it stays inside the same selected binary.",
+   "before_blob": "d38549db5f0b0277eab25c1a0ad808430bc9673f",
+   "after_blob": "5751401328682cfaae705b57536778566885e7ce"
+  },
+  {
+   "path": "tools/server/server-models.h",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Serves llama-server /models, which the Ollama driver does not call; it stays inside the same selected binary.",
+   "before_blob": "500ce9fb32562f77d277c6ba89f19de00cd135b1",
+   "after_blob": "bfaefaf3fde0c9f61721b80db5aee6aafe6fe7d8"
+  },
+  {
+   "path": "tools/server/server-schema.cpp",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "Grammar/schema serving behind response_format json_schema structured runs.",
+   "before_blob": "1e2dce8886dcfe86d209ad75c2539d1c1153e413",
+   "after_blob": "0a14a9620961ff627348952112b4a9a6a0513c43"
+  },
+  {
+   "path": "tools/server/server.cpp",
+   "status": "modified",
+   "classification": "selected-server-surface",
+   "reason": "llama-server entrypoint and endpoint refactor (#31113) across the /completion and /v1/chat/completions endpoints the Ollama driver calls.",
+   "before_blob": "ce44405b868ed7e764e2539088971227348d7109",
+   "after_blob": "b6ebf7523364109181ff3447a8bdf4843a3947cb"
+  },
+  {
+   "path": "tools/server/tests/utils.py",
+   "status": "modified",
+   "classification": "selected-server-test",
+   "reason": "Python server test harness; not part of the shipped runner.",
+   "before_blob": "2884528080934de67a0394990131d50acb6cd265",
+   "after_blob": "a712ca9eedfe408ff5a74bb891a0c79a9ec8f703"
+  },
+  {
+   "path": "tools/tts/README.md",
+   "status": "modified",
+   "classification": "unselected-tools",
+   "reason": "Not installed into lib/ollama by the llama/server CMake install scope.",
+   "before_blob": "55b99932c627cc4a9fa55b81efd3bfb2c4524518",
+   "after_blob": "41397b82ea2cd63fe7adf55d8e46c4c4c644842a"
+  },
+  {
+   "path": "tools/ui/src/app.css",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "ccf13fbec3fc3667f4db1674ab9b75c8657ea566",
+   "after_blob": "53464de8cff6e66d97e8264dcb42db2c39663b54"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatForm/ChatForm.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "397ddc322b1a9fdc37980f16c71bc11a3c4a60f3",
+   "after_blob": "91edac1d8b881ffaaadc375be783b923bb9e3df9"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatForm/ChatFormContextGauge/ContextGaugePopup.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "de3d2f4ea8be51f4d5530c285687c8f0c9db3f0d",
+   "after_blob": "1fdd26d8b2581e7957f8357c3fbcbe052eb2f990"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatMessages/ChatMessage/ChatMessageAssistant/ChatMessageAssistant.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "dac55caff074163fc3b34a950ed0087dd306d5f7",
+   "after_blob": "15683c3c32d3cb0ace270f3bb207e911a3a21ec7"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatMessages/ChatMessage/ChatMessageToolCall/ChatMessageToolCallBlockSearchResults.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "5a1681ebe98b236ff579b2b6937414bd62e47f79",
+   "after_blob": "1f6f8df6876e206d637fdb042d84607f717a6286"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatMessages/ChatMessages.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "0078225c08bcc613d9c269ede04ec7170cd732cd",
+   "after_blob": "e7acb9cc6fa6f23a3964fcabd20a8f6da764c87e"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatMessages/LazyChatMessage.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "f9667bbbbef22eb218042b39bf5d70c12133762b",
+   "after_blob": "4bcc66da3613b101e220a5e763805a705c3487e3"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatScreen/ChatScreen.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "6cea95d0d09aa7832c900257ce023263bca2f8ff",
+   "after_blob": "542493ff0d2b05b53dbb52817088ef7a3b0d6de2"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatScreen/ChatScreenGreeting.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "5af00ebb479b9423a33ff137ead60829a1b6d393",
+   "after_blob": "4174eec2cc6743b24eab0cbd3c62d78125d82a26"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatTabs/ChatTabs.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "423a746e493434ec2be22cc5a89f60d795f22f13",
+   "after_blob": "6a47029b1c47ac317ee220f79f0f00cd045481ec"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/chat/ChatTabs/ChatTabsItem.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "ba223c4ad0e1091c22d96442e5993cb2d6005d8b",
+   "after_blob": "30a0af9313ef655019a2020ca05545326275a0a2"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/dialogs/DialogDiscoverModels.svelte",
+   "status": "added",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": null,
+   "after_blob": "ed3d651d26da352b5a08b9d013ee6276ab5391e1"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/dialogs/DialogManageModels.svelte",
+   "status": "removed",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "fbe711c25cd07ca2775f37d48f4db288af0170a8",
+   "after_blob": null
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/dialogs/index.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "45cc9b2e6b988865c48168c35399ee7221c5c86e",
+   "after_blob": "5c6a56f00e79f67a120fabe153094a5d642fed35"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManager.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "9853bafe51a057985de1a09518102cec065f5356",
+   "after_blob": "002b283fb50dbf081c42e62baad4b521590bd3ed"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerFilters.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "8b4c3bf37e625b6b33b76e34225b825d96c8db9d",
+   "after_blob": "99fe920725ffe4baf7d5abc39e6e54ce68acda87"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerModelConfiguration/ModelsManagerModelConfiguration.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "40a7565ed2720e6d63385101aa093b527902371c",
+   "after_blob": "0bf3ed49140d383dd52b5b6abd603167cf184a4b"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerModelConfiguration/ModelsManagerModelConfigurationActions.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "affab34219e0225b3344560e3e36dd821c19b809",
+   "after_blob": "30b3becdf78d7f37c93084854dd100e693d81d56"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerModelConfiguration/ModelsManagerModelConfigurationHeader.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "d2cc2d5b8822baa0dba1dd8bdccc6dfd4bc1e206",
+   "after_blob": "5cb3bad9138d826e13c9310adf6de5b3582788a7"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerModelRow.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "204d746d8cc0e94c644668b949ca15ba71da5069",
+   "after_blob": "8383d418ab4d44ce2849576732f58d544c1d77e2"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerModelsTable.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "7883cfa7d50985f22bcad5d6cbd8e4a84a3c1322",
+   "after_blob": "e19d5c0ab7147f8b7250652c8bf92affcea2b7a4"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerQuantRow.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "6d76251cdedd9984f11a11a98ca7df16b38c6a13",
+   "after_blob": "6838a85da73d01da324a0cd0129789ca7022bc27"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/ModelsManagerTableToolbar.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "fef282fcc18b19139d5f20236072fd6cc390de14",
+   "after_blob": "b2b10f58e7441bc4ca47e613e050f80ffff2ea9c"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/row-actions.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "3407634ec6f121670768cba5bc889fe608c9d93f",
+   "after_blob": "f3c4363c7c6d4260b3c625fd4bb4d30e03af12be"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsManager/utils.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "435700a103940941c43bd7f4a40491f57e89ce47",
+   "after_blob": "ccbe226c05d6d86c31636c45ee69449ee4c2c73c"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/models/ModelsSelector/ModelsSelectorDropdown.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "750e5f6a77ac2819b526894a8ced13d28d145eb3",
+   "after_blob": "d9e6be298302e26614a754beef0da164b26a4602"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/navigation/SidebarNavigation/SidebarNavigation.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "2ce4824cf9305eea5f40e0a5a4d35863326e4ff5",
+   "after_blob": "9fb45136189a46dbd97591703fdc45d9136fc262"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/navigation/SidebarNavigation/SidebarNavigationActions.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "95efa5372cfedd8f480594dabfe5a1f9b65129de",
+   "after_blob": "d048bbce86e23444fa875fd64249373664f58a2f"
+  },
+  {
+   "path": "tools/ui/src/lib/components/app/navigation/SidebarNavigation/SidebarNavigationConversationItem.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "f89753b3b88ada296bf96b17246a6c397116ccb6",
+   "after_blob": "3cdd40e906be8f4019b6d05fd407aff2d9a48953"
+  },
+  {
+   "path": "tools/ui/src/lib/components/ui/hover-card/hover-card-content.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "cf1d1b80689a9af54d48c25f65781ebbd04e1afd",
+   "after_blob": "d742bd836ecc57b5b09029fa3835419773dc8a87"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/auto-scroll.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "67c5f930108d5630f590a06e9c06059dd29d411b",
+   "after_blob": "7e5948aecb0df48c28a7efa67be3838f93b62601"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/chat-form.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "9fb786f927605ea76706d65dfa78a614f0a735a4",
+   "after_blob": "fcdaf17e74ff474a2d7d1483273e2646c075c3c4"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/chat-tabs.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "1c0bb051a07438b321fccd82e651f3495f1e8d21",
+   "after_blob": "cc3f97b830790387a8b024c28e72c1061b07ba8d"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/css-classes.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "045dce6ac1d643f13cb85afdfe93a17165ddc779",
+   "after_blob": "d90ca2a5ff63f5705096f25be22893f776bd07bd"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/routes.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "1f518a7586207c9b4a60ea122712aa316e851a31",
+   "after_blob": "9a475a1188caa8bd9adfeccb44059c153b0c7439"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/storage.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "637a1e0e8874c0a7c60daea93d25cbe796e67892",
+   "after_blob": "8b3fcd8dadf2e9fb97fc5338b46839052ed3ab67"
+  },
+  {
+   "path": "tools/ui/src/lib/constants/ui.constants.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "946793978b0b08fd6f7fbf868ad8caad9918a38e",
+   "after_blob": "414168aadb54cfe443794b5dc254617e9e6361e7"
+  },
+  {
+   "path": "tools/ui/src/lib/enums/index.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "9ab0be32e809b4d6b902ca438d8bc199c1f92756",
+   "after_blob": "142962826d9e8e6c12db19696c20a262b7d70372"
+  },
+  {
+   "path": "tools/ui/src/lib/enums/keyboard.enums.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "3fde816f6d89775c07798e35709d88a53f796920",
+   "after_blob": "8bfb7441f2ef216750d0e6cd3967f981c6a33ad8"
+  },
+  {
+   "path": "tools/ui/src/lib/enums/ui.enums.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "599fc2128bebad88f63f80dd20e68f38e8a57802",
+   "after_blob": "20cfe47ffacae676235cb13a4a5d765e2324aa3e"
+  },
+  {
+   "path": "tools/ui/src/lib/hooks/use-auto-scroll.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "d55574efef8c83a0af85860388d256ef1f18a1f3",
+   "after_blob": "319ea22ed0bfa4d56b446e7abc81c965aa59a4ee"
+  },
+  {
+   "path": "tools/ui/src/lib/hooks/use-chat-screen-scroll.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "004db9bcc06d17dac44e1f2b55a8f7d72f775832",
+   "after_blob": "faf06bb8a83be8fcf24b76209df78a0ed915c03a"
+  },
+  {
+   "path": "tools/ui/src/lib/hooks/use-keyboard-shortcuts.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "eef1bc3322d3e986541017ad13445b78a2b01e50",
+   "after_blob": "915badae957088ad9109cadfb15007e5f433b341"
+  },
+  {
+   "path": "tools/ui/src/lib/hooks/use-models-selector.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "35a85dcd876c59330d5f24a855ea7c9d6d46d31b",
+   "after_blob": "844a7d4fbfb844ad95779513cf9b90090f857daf"
+  },
+  {
+   "path": "tools/ui/src/lib/stores/conversations/index.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "c4fea2e4eee1e5cbb6f8ce7b864ed8642aba8344",
+   "after_blob": "86f7e341293111cad6c5a31ceb7ed921a161ef25"
+  },
+  {
+   "path": "tools/ui/src/lib/stores/init.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "37ea87b17c3b6b73bc3629273ddc137b413bd3e2",
+   "after_blob": "ce2dcfbd0c5fadfabeb76915d8ad2265d43f6947"
+  },
+  {
+   "path": "tools/ui/src/lib/stores/tabs.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "04b476cb60d4770f39737ed64a542720a54d2a51",
+   "after_blob": "f21f84cc23ff3e2eab4cb0f4984a56a2db144d4d"
+  },
+  {
+   "path": "tools/ui/src/lib/stores/ui.svelte.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "bd9e40323763b4f0039a3f70835a993ff0aca072",
+   "after_blob": "354b31744f606257dddfb9a83e7bb00c2048cf1d"
+  },
+  {
+   "path": "tools/ui/src/lib/utils/chat-tabs.ts",
+   "status": "added",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": null,
+   "after_blob": "7bb13af471b155d0494b0a47f34b909894e5d340"
+  },
+  {
+   "path": "tools/ui/src/lib/utils/index.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "a5f2af55f1fa63b0a3c758024b05db027ca74719",
+   "after_blob": "c6f77d6a3323c7f0f19d372ff37264a2d7537a8c"
+  },
+  {
+   "path": "tools/ui/src/routes/(chat)/+layout.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "5be56dd5601a2aa389c0cc5231092a3939d98485",
+   "after_blob": "84cdfeefef427edde946d34392e83fa0c8404ae0"
+  },
+  {
+   "path": "tools/ui/src/routes/(chat)/+page.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "0c46aaa8abb23923d02360ac88adbfbf85f23915",
+   "after_blob": "3be3d5a9567b9d5dd8f19aec5966442b067324bd"
+  },
+  {
+   "path": "tools/ui/src/routes/(chat)/chat/[id]/+page.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "0c46aaa8abb23923d02360ac88adbfbf85f23915",
+   "after_blob": "3be3d5a9567b9d5dd8f19aec5966442b067324bd"
+  },
+  {
+   "path": "tools/ui/src/routes/+layout.svelte",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "5de4f82c1cbe5b276023727ea016fcc871713bdd",
+   "after_blob": "2bec18b6cf145e691c522ca2f69bda8a51fbeaf3"
+  },
+  {
+   "path": "tools/ui/src/routes/models/+page.svelte",
+   "status": "added",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": null,
+   "after_blob": "eb65c75dc02a8c4d079739bd8716e53b231a85a3"
+  },
+  {
+   "path": "tools/ui/src/routes/models/+page.ts",
+   "status": "added",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": null,
+   "after_blob": "3be3d5a9567b9d5dd8f19aec5966442b067324bd"
+  },
+  {
+   "path": "tools/ui/tests/client/chat-tabs-store.svelte.test.ts",
+   "status": "added",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": null,
+   "after_blob": "19f7e4436cfef56f0b65f1a98e61753739d93537"
+  },
+  {
+   "path": "tools/ui/tests/client/models-manager-sort-filter.svelte.test.ts",
+   "status": "modified",
+   "classification": "unselected-ui",
+   "reason": "Web UI sources; llama-server launches with --no-webui and the Ollama build disables the UI.",
+   "before_blob": "9e9e0c2468b46304ebdf7d12175cbe838fed1cc2",
+   "after_blob": "65c8c7812c92b5b83948fd5a53efcc236c28e06a"
+  }
+ ]
+}

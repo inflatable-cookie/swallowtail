@@ -6,6 +6,31 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `qwen.headless` through official npm `latest` `0.26.6`, walking the
+  four published stable hops `0.26.3` through `0.26.6` after Research 465's
+  `0.26.2` ceiling, on the existing `qwen-code.headless.package-window-2`
+  claim and `qwen-code.headless.v0.21.15-reasoning-control` behavior. The
+  maintained segment is `0.22.0..=0.26.6`; there are no interior gaps in the
+  window, and unpublished `0.20.2`, `0.21.16`, `0.22.4`, `0.23.5`, and
+  `0.25.4` stay excluded. Every hop keeps selected argv, stream-json result
+  subtypes, permission flow, approval mode, and the SSH workspace guard; npm
+  SLSA provenance binds each tarball to the release checkout and the
+  tag-to-SLSA delta stays version metadata only. The `0.26.3` workflow-mode
+  option, control subtypes, and capability booleans stay unselected, and the
+  initialize dispatch changes do not touch the route's single per-child
+  handshake. This record bounds the experimental unified agent loop when a
+  delegated environment or existing settings opts in (`0.26.6` source: same
+  stream-json adapter, same abort routing, same permission scheduler, and
+  frozen `--max-tool-calls`/`--max-session-turns` bytes), freezes the
+  `dashscope-source-config.ts` feeding-file identity byte-identical since
+  `0.26.2`, and preserves the reviewed `autofix_pr` status/attended/acting
+  boundaries — the `0.26.6` `in_place` watches refuse unattended grants —
+  with the exclusion-set decision unchanged. Baseline `0.19.11`, the
+  deprecated segments, exact `0.21.15`, plan through `0.22.3`, and reasoning
+  and budget selections stay put. No stable newer than `0.26.6` was
+  published at the 2026-11-03 observation. Research 465's frozen
+  observation-time fields are date-qualified, not rewritten. See Research
+  473.
 - qualify `claude-agent.sdk` through npm `latest`/`next` `0.3.317` and its exact
   embedded native `2.1.317` as a compatible extension of the retained coupled
   `0.3.284`/`2.1.284` baseline (Research 472). The package claim stays baseline

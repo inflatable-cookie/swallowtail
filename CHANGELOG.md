@@ -21,10 +21,14 @@ annotated Git tags from the canonical repository.
   handshake. This record bounds the experimental unified agent loop when a
   delegated environment or existing settings opts in (`0.26.6` source: same
   stream-json adapter, same abort routing, same permission scheduler, and
-  frozen `--max-tool-calls`/`--max-session-turns` bytes), freezes the
+  frozen `--max-tool-calls`/`--max-session-turns` bytes) on frozen
+  reviewed-file identity — core `config.ts`, `nonInteractiveCli.ts`, and
+  `settingsSchema.ts` with mutation-checked opt-in, cancel, permission, and
+  budget snippets — freezes the
   `dashscope-source-config.ts` feeding-file identity byte-identical since
   `0.26.2`, and preserves the reviewed `autofix_pr` status/attended/acting
-  boundaries — the `0.26.6` `in_place` watches refuse unattended grants —
+  boundaries on a frozen `autofix-pr.ts` — the `0.26.5`+ `in_place` watches
+  refuse unattended grants —
   with the exclusion-set decision unchanged. Baseline `0.19.11`, the
   deprecated segments, exact `0.21.15`, plan through `0.22.3`, and reasoning
   and budget selections stay put. No stable newer than `0.26.6` was

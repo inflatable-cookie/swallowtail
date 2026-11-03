@@ -12,13 +12,13 @@ const REVIEWED_SOURCES: &str =
     include_str!("fixtures/qwen-code-0.26.6/reviewed-source-identities.json");
 const SOURCE_TO_SHIPPED: &str = include_str!("fixtures/qwen-code-0.26.6/source-to-shipped.json");
 const FROZEN_0_26_2_IDENTITY: &str = include_str!("fixtures/qwen-code-0.26.2/identity.json");
-const IDENTITY_SHA256: &str = "0aefa7f26b7835dab2b50d6f70792382f4e48fe51c6e9ef64fc43c02e09b1828";
+const IDENTITY_SHA256: &str = "edeb9dd9c4349734f0905a26f987d30da731153c5f25fa09dde9698aa9fe8ba2";
 const SELECTED_SOURCES_SHA256: &str =
     "86847a0d6a6642403b124bca9b16bb8aa408de5ecf085a6b37433681194f685a";
 const REVIEWED_SOURCES_SHA256: &str =
-    "1476dbd049dbfa206d970e24a64707325093c7f9d8b886e55a95f4dbe3925823";
+    "defbae1823b3c82866f0cb1619f59db981e64a8d7645fa7f36a9fd75a68262c4";
 const SOURCE_TO_SHIPPED_SHA256: &str =
-    "6f4aaa4b38fc17381173ccb6275863d85f23352a2b7837a3bf00205b67547dab";
+    "d58b452339f6345355d4bde5cc5771a01477c8dbe94c1a1a03c8c376040721ef";
 
 const VERSIONS: [&str; 5] = ["0.26.2", "0.26.3", "0.26.4", "0.26.5", "0.26.6"];
 const MAPPED_SOURCE_KEYS: [&str; 11] = [
@@ -46,8 +46,9 @@ const SELECTED_SOURCE_HOPS: [&[&str]; 4] = [
     &["config", "dashscope"],
     &["session"],
 ];
-const REVIEWED_KEYS: [&str; 8] = [
+const REVIEWED_KEYS: [&str; 12] = [
     "approval_mode_value",
+    "autofix_pr_tool",
     "dashscope_source_config",
     "interactive_mode",
     "loop_detection_service",
@@ -55,6 +56,9 @@ const REVIEWED_KEYS: [&str; 8] = [
     "sdk_human_input",
     "ssh_workspace_store",
     "ssh_workspace_store_test",
+    "unified_loop_core_config",
+    "unified_loop_non_interactive_cli",
+    "unified_loop_settings_schema",
 ];
 
 fn json(source: &str) -> Value {
@@ -683,6 +687,99 @@ fn slsa_provenance_binds_every_recorded_tarball_to_selected_tag_sources() {
                 boundary["method"],
                 "npm-slsa-provenance-v1-tarball-subject-plus-selected-source-identity"
             );
+        }
+    }
+}
+
+#[test]
+fn unified_loop_opt_in_and_autofix_bounds_are_frozen_and_mutation_checked() {
+    // The brief requires the opted-in unified-loop bounds to stand on frozen
+    // feeding-file identity, not on default-off inference. The env opt-in
+    // lives in core config.ts, the settings opt-in in settingsSchema.ts and
+    // the shared-loop wiring in nonInteractiveCli.ts; every bound snippet
+    // below must survive in every recorded version or the test fails and
+    // forces a fresh selected-behavior review.
+    let reviewed = json(REVIEWED_SOURCES);
+    let root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let snapshot = |key: &str, version: &str| -> String {
+        let record = &reviewed[key][version];
+        let path = root.join(fixture(&format!(
+            "source/{version}/{}",
+            record["path"].as_str().unwrap()
+        )));
+        std::fs::read_to_string(&path)
+            .unwrap_or_else(|error| panic!("read {key} at {version}: {error}"))
+    };
+
+    let core_config_snippets = [
+        "QWEN_CODE_ENABLE_UNIFIED_AGENT_LOOP'] === '1'",
+        "isUnifiedAgentLoopEnabled(): boolean {",
+        "private readonly unifiedAgentLoopEnabled: boolean = false;",
+    ];
+    let non_interactive_cli_snippets = [
+        "const sharedAgentLoop = config.isUnifiedAgentLoopEnabled?.() === true;",
+        "scope.onAbort?.();",
+        "beforeToolLaunch: (request, settled) => {",
+        "--max-tool-calls=N stops at",
+        "case 'max_session_turns':",
+        "case 'cancelled':",
+        "options.controlService.permission.getToolCallUpdateCallback()",
+        "InputFormat.STREAM_JSON && options.controlService",
+        "adapter.processEvent(event);",
+    ];
+    let settings_schema_snippets = [
+        "unifiedAgentLoop: {",
+        "QWEN_CODE_ENABLE_UNIFIED_AGENT_LOOP=1 environment variable.",
+    ];
+    let autofix_command_snippets = ["  'status',", "  'attended',", "  'unattended',"];
+    let autofix_in_place_snippets = ["watch.inPlace === true", "always attended"];
+    for version in VERSIONS {
+        let core_config = snapshot("unified_loop_core_config", version);
+        for snippet in core_config_snippets {
+            assert!(
+                core_config.contains(snippet),
+                "core config.ts at {version} lost unified-loop opt-in snippet {snippet}"
+            );
+        }
+        let non_interactive_cli = snapshot("unified_loop_non_interactive_cli", version);
+        for snippet in non_interactive_cli_snippets {
+            assert!(
+                non_interactive_cli.contains(snippet),
+                "nonInteractiveCli.ts at {version} lost shared-loop bound snippet {snippet}"
+            );
+        }
+        let settings_schema = snapshot("unified_loop_settings_schema", version);
+        for snippet in settings_schema_snippets {
+            assert!(
+                settings_schema.contains(snippet),
+                "settingsSchema.ts at {version} lost settings opt-in snippet {snippet}"
+            );
+        }
+        let autofix = snapshot("autofix_pr_tool", version);
+        for snippet in autofix_command_snippets {
+            assert!(
+                autofix.contains(snippet),
+                "autofix-pr.ts at {version} lost command-bound snippet {snippet}"
+            );
+        }
+        // The in_place prepare variant is always attended: the unattended
+        // grant check refuses in-place watches. It arrived with the
+        // `in_place` option at 0.26.5, so the refusal is mutation-checked
+        // exactly on the versions that carry it.
+        if version == "0.26.5" || version == "0.26.6" {
+            for snippet in autofix_in_place_snippets {
+                assert!(
+                    autofix.contains(snippet),
+                    "autofix-pr.ts at {version} lost in-place attended snippet {snippet}"
+                );
+            }
+        } else {
+            for snippet in autofix_in_place_snippets {
+                assert!(
+                    !autofix.contains(snippet),
+                    "autofix-pr.ts at {version} unexpectedly gained in-place snippets"
+                );
+            }
         }
     }
 }

@@ -128,7 +128,19 @@ store with its test stay put. `dashscope-source-config.ts` is byte-identical
 (`d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056`,
 3,828 bytes) from its `0.26.2` introduction through `0.26.6`; this record
 freezes that feeding-file identity so the DashScope header behavior reviewed
-in Research 465 is now hash-bound.
+in Research 465 is now hash-bound. The unified-loop bound files and the
+autofix tool are frozen the same way: core `config.ts`
+(`c6d83da6ee3fa3596fd9bb10e3b0056833bcebd978203df15a730b7a0b46de35` 520,072 bytes at `0.26.2` →
+`f2d1cda0a9ba10d5362a04a684dfe05a708d366336d1693401a0ece6c84660d4` 530,385 bytes
+at `0.26.6`), `nonInteractiveCli.ts` (`8e86d142495e60f02815efd923847ff7c5d17ddde365d16d331a1512cc7c4726`
+163,603 bytes → `1fca9b12c0ee5bca2121c4eeaa77cfc03c69c7cc5db78dc8f644c25364d02590`
+166,411 bytes), `settingsSchema.ts` (`7023360b8a65e990eff5345888c4602746fb3df4d56cce86fc56283bbd1d34da`
+243,503 bytes → `dde857f3b609301494d6c45b2fef272bfc6eacb81d030af395917bdc7d1e35b6` 243,865
+bytes at `0.26.5`), and `autofix-pr.ts` (`08e85f7b7dc508df2dbf81ea69a465a5790645ae320667e429f25d49a95f0947`
+52,769 bytes → `5efe669e1372b417943832eddb01fd3a32e1a5b19f4e523dc84bc006b9b53c2f` 53,837
+bytes at `0.26.5`, where the `in_place` variant arrives). The identity test
+mutation-checks the bound snippets listed below inside those frozen
+snapshots at every recorded version.
 
 | Hop | Added | Removed | Changed | Identical | Changed selected source files |
 | --- | ---: | ---: | ---: | ---: | --- |
@@ -194,34 +206,47 @@ stay byte-identical across the remaining hops. Their frozen hashes are in
   registered in the general tool registry independent of `--core-tools`,
   safe mode still ignores the allowlist, and the frozen exclude list still
   does not name `autofix_pr`, so the model can reach it independently of
-  the CLI command — the reviewed Research 465 boundary stands. `0.26.6`
-  adds an `in_place` prepare option whose watches run in the user's own
-  checkout and refuse unattended grants
-  (`checkUnattendedWatch` refuses when `watch.inPlace === true`), so the
-  new variant is strictly more attended. `status` still launches the
-  status helper only, `attended` still revokes a grant without launching a
-  helper, every acting command still defaults to ask, the headless
-  text-input route still auto-denies asks, and Plan mode still refuses
-  acting helpers. Existing permission rules can change decisions, so this
-  is not a host containment claim. The explicit Research 465 decision to
-  keep the frozen exclusion set is preserved: these bounded effects do not
-  require a new adapter operation or a changed argv contract, and the tool
-  is not mapped as a Swallowtail operation.
+  the CLI command — the reviewed Research 465 boundary stands. The tool
+  implementation is now frozen as reviewed key `autofix_pr_tool`
+  (`08e85f7b7dc5…` 52,769 bytes at `0.26.2`–`0.26.4`;
+  `5efe669e1372…` 53,837 bytes at `0.26.5`–`0.26.6`), and the identity test
+  mutation-checks the `status` / `attended` / `unattended` command set at
+  every recorded version. `0.26.5` adds an `in_place` prepare option whose
+  watches run in the user's own checkout and refuse unattended grants —
+  the frozen `0.26.5`/`0.26.6` snapshots contain the
+  `watch.inPlace === true` refusal with its `always attended` message, and
+  the test fails if any earlier snapshot gains those snippets. `status`
+  still launches the status helper only, `attended` still revokes a grant
+  without launching a helper, every acting command still defaults to ask,
+  the headless text-input route still auto-denies asks, and Plan mode
+  still refuses acting helpers. Existing permission rules can change
+  decisions, so this is not a host containment claim. The explicit
+  Research 465 decision to keep the frozen exclusion set is preserved:
+  these bounded effects do not require a new adapter operation or a
+  changed argv contract, and the tool is not mapped as a Swallowtail
+  operation.
 
 ### Unified Agent Loop Opt-In Bounds
 
 Research 465 recorded that the delegated environment or existing settings
 can opt into `experimental.unifiedAgentLoop`; this record bounds the
-opted-in path from the exact `0.26.6` source instead of inferring safety
-from the default. Opt-in is real: core `isUnifiedAgentLoopEnabled()`
-returns true when `QWEN_CODE_ENABLE_UNIFIED_AGENT_LOOP=1` is present in
-the child environment — which the adapter passes through unchanged — or
-when the settings file enables `experimental.unifiedAgentLoop` (default
-false, `requiresRestart`). The setting's own description covers headless
-`-p` and stream-json sessions, which is this route's shape. The enabled
-non-interactive loop runs `runAgentLoop` (`agent-loop.ts`) with
-round-scoped scope objects; the disabled branch keeps the existing loop,
-and both branches sit in the same `nonInteractiveCli.ts` turn driver.
+opted-in path from the exact `0.26.6` source, with the bound-bearing files
+frozen and mutation-checked instead of inferred from the default. Opt-in is
+real and hash-bound: core `config.ts` — frozen as reviewed key
+`unified_loop_core_config` — implements `isUnifiedAgentLoopEnabled()`,
+which returns true when `QWEN_CODE_ENABLE_UNIFIED_AGENT_LOOP'] === '1'`
+holds in the child environment — which the adapter passes through unchanged
+— and otherwise reads the settings-derived field whose assignment in CLI
+`config.ts` (`unifiedAgentLoopEnabled: settings.experimental?.unifiedAgentLoop
+?? false`) is already frozen in the mapped set. `settingsSchema.ts` —
+frozen as `unified_loop_settings_schema` — declares the
+`experimental.unifiedAgentLoop` entry with `default: false` and documents
+the same environment opt-in. The enabled non-interactive loop runs
+`runAgentLoop` (`agent-loop.ts`) with round-scoped scope objects; the
+wiring — frozen as `unified_loop_non_interactive_cli` — selects it with
+`const sharedAgentLoop = config.isUnifiedAgentLoopEnabled?.() === true;`,
+and the disabled branch keeps the existing loop in the same
+`nonInteractiveCli.ts` turn driver.
 
 - **Behavior:** both branches feed the same stream-json adapter —
   `adapter.processEvent(event)` per model event, the same
@@ -232,26 +257,31 @@ and both branches sit in the same `nonInteractiveCli.ts` turn driver.
   loop-detected result, `cancelled` to the shared abort routing, and
   `max_session_turns` to the same max-turns error handler. `types.ts` is
   byte-identical from `0.26.3` on, so the wire schema does not move with
-  the opt-in.
+  the opt-in. All of these snippets are mutation-checked inside the frozen
+  `nonInteractiveCli.ts` snapshots at every recorded version.
 - **Cancellation:** both branches poll the same `abortController.signal`;
   the shared loop finalizes the in-flight assistant message before
-  `routeAbort()`, the same pairing the legacy branch performs. Adapter-side
+  `routeAbort()` (`scope.onAbort?.();` precedes it in the frozen wiring),
+  the same pairing the legacy branch performs. Adapter-side
   deadline and cancellation still stop and join the child, which the
   deterministic fake-process suite exercises independently of the CLI's
   internal loop choice.
 - **Permissions:** both branches execute tools through the same
   `executeToolCall` scheduler. The control-service tool-call update
-  callback attaches under the same condition in both branches — stream-json
-  input plus a control service — so the `0.21.15` reasoning handshake sees
-  the same updates on either loop. Non-interactive text-input asks remain
-  auto-denied, `--exclude-tools` deny rules still apply, and safe mode
-  still ignores the core-tools allowlist.
+  callback attaches under the same condition in both branches —
+  `InputFormat.STREAM_JSON && options.controlService` gating
+  `options.controlService.permission.getToolCallUpdateCallback()` — so the
+  `0.21.15` reasoning handshake sees the same updates on either loop.
+  Non-interactive text-input asks remain auto-denied, `--exclude-tools`
+  deny rules still apply, and safe mode still ignores the core-tools
+  allowlist.
 - **Budgets:** the shared loop ticks `budgetEnforcer.tickToolCall()` in
-  `beforeToolLaunch` before each launch (the `structured_output` exemption
-  applies only under `--json-schema`, which this route does not set), and
-  the session turn limit surfaces as the `max_session_turns` reason into
-  the same error handler. The adapter's frozen budget bytes therefore
-  remain effective when a delegated environment opts in.
+  `beforeToolLaunch` before each launch — the frozen comment states
+  `--max-tool-calls=N stops at exactly N` and the `structured_output`
+  exemption applies only under `--json-schema`, which this route does not
+  set — and the session turn limit surfaces as the `max_session_turns`
+  reason into the same error handler. The adapter's frozen budget bytes
+  therefore remain effective when a delegated environment opts in.
 
 The opt-in is a bounded provider-internal loop choice inside the mapped
 non-interactive surface. It adds no public operation, no argv change, and
@@ -267,14 +297,19 @@ feature, remote host, or new permission is qualified.
 ## Deterministic Mapping Proof
 
 `qwen_code_0_26_6_identity` freezes the identity document, the five
-inventories, the four hop diffs, the reviewed safety-boundary and
-feeding-file sources, and the SLSA source-to-shipped ledger. It checks the
+inventories, the four hop diffs, the reviewed safety-boundary,
+feeding-file, unified-loop bound, and autofix tool sources, and the SLSA
+source-to-shipped ledger. It checks the
 production claim through `0.26.6`, rejects the unpublished interior points
 and the preview and nightly tags, and leaves a synthetic `0.26.7`
 `UnverifiedNewer`. It cross-checks the recorded `0.26.2` artifact identity
 against the frozen `qwen-code-0.26.2` fixture and proves
 `dashscope-source-config.ts` is hash-frozen and byte-identical at all five
-versions. `current_qwen_headless` runs the `0.26.6` claim on a
+versions. It also mutation-checks the unified-loop opt-in, cancel,
+permission, and budget snippets inside the frozen core `config.ts`,
+`nonInteractiveCli.ts`, and `settingsSchema.ts` snapshots, and the
+`autofix-pr.ts` command set plus the `0.26.5`+ in-place always-attended
+refusal, at every recorded version. `current_qwen_headless` runs the `0.26.6` claim on a
 deterministic fake process and keeps the selected argv, delegated
 environment reference, and reserved SSH-path rejection before process
 start. No provider prompt, live catalogue, credential use, installation,

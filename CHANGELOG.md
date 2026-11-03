@@ -6,6 +6,23 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-agent.acp` through official stable `0.100.0` as a compatible
+  extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 469,
+  470, and 471). The maintained segment is `0.66.0..=0.100.0`. Baseline
+  `0.53.0`, claim id `claude-agent.acp.window-2`, the seven milestones,
+  exclusions `0.52.0` and `0.58.0`, and `AllowUnverified` stay. The published
+  stable hops after `0.98.0` are `0.99.0`, `0.99.1`, and `0.100.0`; `0.100.1`
+  is `UnverifiedNewer`. Failure codes move to protocol error codes the adapter
+  already maps to one rejected-request class; the model config option always
+  lists `currentValue`; prompt content-type validation, config value-type
+  checks, per-session config serialization, MCP-server-failure transcript
+  text, a clear-context `usage_update` site, and a command-name filter all sit
+  inside already-decoded classes and kinds. A protocolVersion 1 client still
+  gets the v1 agent; background work and paused statuses stay v2-only.
+  `session-ultracode` is reclassified mapped-adjacent because it reaches
+  `configOptions`. HTTP MCP live honouring stays exact `0.79.0` and `0.81.2`.
+  The repo-local pin stays `0.81.2`. Claude Code and `claude-agent.sdk` claims
+  stay on their existing bounds.
 - qualify `claude-code.headless` and, separately,
   `claude-code.response-only` through official stable `2.1.316` on their
   existing revisions. Headless extends maintained `2.1.287..=2.1.316` on

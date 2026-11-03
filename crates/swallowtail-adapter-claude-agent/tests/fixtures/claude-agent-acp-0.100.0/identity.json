@@ -1,0 +1,107 @@
+{
+ "axis": "claude-agent.acp-adapter",
+ "npm_package": "@agentclientprotocol/claude-agent-acp",
+ "not_claude_code": true,
+ "not_claude_agent_sdk": true,
+ "observed_at": "2026-11-03",
+ "official_channel_observation": {
+  "npm_latest": "0.100.0",
+  "npm_preview": "0.100.1-preview.1",
+  "acp_registry_id": "claude-acp",
+  "acp_registry_version": "0.100.0",
+  "github_repository": "https://github.com/agentclientprotocol/claude-agent-acp",
+  "github_repository_note": "The canonical repository is agentclientprotocol/claude-agent-acp, the same repository Research 460 used. The zed-industries/claude-agent-acp name used by the dispatch resolves to it as a redirect.",
+  "github_latest_stable_tag": "v0.100.0",
+  "host_binary": "not-on-path-in-this-observation-environment",
+  "host_binary_note": "The PATH observation belongs to the environment that took it. It is not a claim of universal absence.",
+  "channels_agree": true
+ },
+ "official_current": {
+  "version": "0.100.0",
+  "published_at": "2026-11-02T14:38:37.938Z",
+  "npm_tarball": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.100.0.tgz",
+  "npm_integrity": "sha512-X+f2M5RiehzSzWRJjDSf0Sbzoc8JK66l85YnYW5TAdHJX53CLQV00v2M72bfCKJ4IZ11qt+WQ/Yg9NVKcuDAhQ==",
+  "tarball_sha256": "bb1de8a11cb585a4e8da2fd1a0252aa613ac9cd2cdc47a23247c9847c6d132b8",
+  "github_tag": "v0.100.0",
+  "github_commit": "981bf9a28ac3afef26e7877a2a638814c34f1679",
+  "npm_gitHead": "981bf9a28ac3afef26e7877a2a638814c34f1679",
+  "gitHead_matches_tag": true,
+  "acp_registry_version": "0.100.0",
+  "acp_sdk": "2.4.0",
+  "agent_sdk": "0.3.316",
+  "node_engine": ">=22",
+  "bin": "dist/index.js"
+ },
+ "previous_ceiling": "0.98.0",
+ "previous_ceiling_tarball_sha256": "94cdee902d7d4ddb0360b330c0be9f728aae3370b3028b7d835856ab33e20c8b",
+ "published_stable_hops_from_previous_ceiling": [
+  "0.99.0",
+  "0.99.1",
+  "0.100.0"
+ ],
+ "published_stable_hops_note": "The dispatch named hops 0.99.0 and 0.100.0. npm also published stable 0.99.1 on 2026-10-29, between them, so the run walks all three published stables; leaving 0.99.1 unrecorded would put an unqualified interior point inside the extended segment.",
+ "preview_only_patch_lines": [
+  "0.98.1",
+  "0.99.2"
+ ],
+ "ignored_preview_tag": "0.100.1-preview.1",
+ "stable_holes_preserved": [
+  "0.52.0",
+  "0.58.0"
+ ],
+ "claim_at_observation": {
+  "claim_id": "claude-agent.acp.window-2",
+  "baseline": "0.53.0",
+  "latest_qualified": "0.98.0",
+  "posture": "allow_unverified",
+  "excluded": [
+   "0.52.0",
+   "0.58.0"
+  ]
+ },
+ "identity_decision": {
+  "shape": "compatible-extension",
+  "extend_behavior": "claude-agent.acp.initialize-meta-extensions-v7",
+  "extend_v7": "0.66.0..=0.100.0",
+  "raise_latest_qualified_to": "0.100.0",
+  "keep_baseline": "0.53.0",
+  "keep_claim_id": "claude-agent.acp.window-2",
+  "keep_exclusions": [
+   "0.52.0",
+   "0.58.0"
+  ],
+  "keep_allow_unverified": true,
+  "qualify_published_hops": [
+   "0.99.0",
+   "0.99.1",
+   "0.100.0"
+  ],
+  "later_stable_unverified": "0.100.1",
+  "prerelease_points_unqualified": true,
+  "new_milestone": false,
+  "consumer_visible_narrowing": false,
+  "new_public_mapped_operation": false
+ },
+ "separate_gates": {
+  "http_mcp_honouring_exact_points": [
+   "0.79.0",
+   "0.81.2"
+  ],
+  "http_mcp_honouring_extended": false,
+  "repo_local_npm_dependency_pin": "0.81.2",
+  "dependency_pin_changed": false,
+  "claude_code_claims_unchanged": true,
+  "claude_agent_sdk_claim_unchanged": true
+ },
+ "inspection_boundary": {
+  "official_binary_executed": false,
+  "provider_prompt_sent": false,
+  "live_acp_initialize": false,
+  "credentials_used": false,
+  "package_installed": false,
+  "host_installed_or_updated": false,
+  "tarball_integrity_verified": true,
+  "source_review_static_only": true,
+  "tree_inventory": "dist-inventory.json"
+ }
+}

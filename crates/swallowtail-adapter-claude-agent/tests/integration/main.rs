@@ -31,6 +31,8 @@ mod acp_driver;
 mod activity_corpus;
 #[path = "../addable_route.rs"]
 mod addable_route;
+#[path = "../claude_agent_acp_0_100_0_identity.rs"]
+mod claude_agent_acp_0_100_0_identity;
 #[path = "../claude_agent_acp_0_70_identity.rs"]
 mod claude_agent_acp_0_70_identity;
 #[path = "../claude_agent_acp_0_73_delta_ledger.rs"]
@@ -51,6 +53,10 @@ mod claude_agent_acp_0_87_0_identity;
 mod claude_agent_acp_0_96_0_identity;
 #[path = "../claude_agent_acp_0_98_0_identity.rs"]
 mod claude_agent_acp_0_98_0_identity;
+#[path = "../claude_agent_acp_0_99_0_identity.rs"]
+mod claude_agent_acp_0_99_0_identity;
+#[path = "../claude_agent_acp_0_99_1_identity.rs"]
+mod claude_agent_acp_0_99_1_identity;
 #[path = "../claude_agent_acp_identity.rs"]
 mod claude_agent_acp_identity;
 #[path = "../claude_agent_sdk_0_3_259_identity.rs"]

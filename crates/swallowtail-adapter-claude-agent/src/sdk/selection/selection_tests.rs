@@ -41,15 +41,23 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
             CLAUDE_AGENT_SDK_BEHAVIOR
         );
     }
-    // The window claim spans its segment arithmetically; the unpublished
-    // gap points inside it (0.3.297, 0.3.298, 0.3.313) are kept out by the
-    // finite maintained pair map, not by this claim.
-    for rejected in ["0.3.283", "0.3.318", "0.3.259-rc.1"] {
+    // The window claim keeps its unpublished interior points incompatible
+    // through explicit claim exclusions; the finite maintained pair map adds
+    // the artifact-backed pair check on top.
+    for rejected in [
+        "0.3.283",
+        "0.3.318",
+        "0.3.259-rc.1",
+        "0.3.297",
+        "0.3.298",
+        "0.3.313",
+    ] {
         assert!(
             !claim.permits(&version(rejected)),
             "unqualified point {rejected} must be rejected"
         );
     }
+    assert_eq!(claim.exclusions().count(), 3);
     assert!(claude_agent_sdk_package_binding(CLAUDE_AGENT_SDK_VERSION).is_some());
     for value in ["", " 0.3.270", "latest", "0.3.270 "] {
         assert!(claude_agent_sdk_package_binding(value).is_none());
@@ -82,9 +90,12 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
     }
     // The Claude Code routes sit on the same native version family. Their
     // qualification never transfers here and this one never transfers back.
-    for rejected in ["2.1.283", "2.1.318", "0.3.293"] {
+    for rejected in [
+        "2.1.283", "2.1.318", "2.1.297", "2.1.298", "2.1.313", "0.3.293",
+    ] {
         assert!(!native.permits(&version(rejected)));
     }
+    assert_eq!(native.exclusions().count(), 3);
     assert!(claude_agent_sdk_native_binding(CLAUDE_AGENT_SDK_NATIVE_VERSION).is_some());
     assert!(claude_agent_sdk_native_binding("2.1").is_none());
 
@@ -132,9 +143,9 @@ fn package_and_native_points_keep_the_published_coupling() {
             native.strip_prefix("2.1.").expect("native prefix")
         );
     }
-    // The unpublished gap points are not maintained pairs even though the
-    // window claim spans them arithmetically and their patch numbers would
-    // satisfy the coupling predicate.
+    // The unpublished gap points are not maintained pairs and are explicit
+    // claim exclusions, even though their patch numbers would satisfy the
+    // coupling predicate.
     for patch in [297, 298, 313] {
         let package = format!("0.3.{patch}");
         let native = format!("2.1.{patch}");

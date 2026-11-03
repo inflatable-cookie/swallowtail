@@ -116,7 +116,15 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
         );
         assert_eq!(claim.milestones().len(), 1, "each axis has one segment");
         let point = swallowtail_core::InterfaceVersion::new(point).expect("valid version");
-        assert_eq!(claim.exclusions().len(), 0);
+        let expected_exclusions = match axis.as_str() {
+            "claude-agent.sdk.package" | "claude-agent.sdk.native" => 3,
+            _ => 0,
+        };
+        assert_eq!(
+            claim.exclusions().count(),
+            expected_exclusions,
+            "unpublished interior gaps are explicit claim exclusions"
+        );
         if axis.as_str() == "claude-agent.sdk.package" {
             assert_eq!(
                 claim.baseline(),
@@ -212,8 +220,34 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
             &swallowtail_core::InterfaceVersion::new(baseline).unwrap()
         );
         assert_eq!(claim.latest_qualified(), &point);
-        assert_eq!(claim.exclusions().len(), 0);
+        let expected_exclusions = if id == "claude-agent.sdk.package-window-1"
+            || id == "claude-agent.sdk.native-window-1"
+        {
+            3
+        } else {
+            0
+        };
+        assert_eq!(claim.exclusions().count(), expected_exclusions);
         assert!(claim.permits(&point));
+    }
+
+    // The six unpublished interior points are incompatible on the claims
+    // themselves, not only outside the finite maintained pair map.
+    let version =
+        |value: &str| swallowtail_core::InterfaceVersion::new(value).expect("valid version");
+    let package = claude_agent_sdk_package_claim();
+    let native = claude_agent_sdk_native_claim();
+    for gap in ["0.3.297", "0.3.298", "0.3.313"] {
+        assert!(
+            !package.permits(&version(gap)),
+            "unpublished {gap} must be an exclusion"
+        );
+    }
+    for gap in ["2.1.297", "2.1.298", "2.1.313"] {
+        assert!(
+            !native.permits(&version(gap)),
+            "unpublished {gap} must be an exclusion"
+        );
     }
 
     let node = claude_agent_sdk_node_claim();
@@ -236,10 +270,6 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
         );
     }
 
-    let version =
-        |value: &str| swallowtail_core::InterfaceVersion::new(value).expect("valid version");
-    let package = claude_agent_sdk_package_claim();
-    let native = claude_agent_sdk_native_claim();
     for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
         assert!(package.permits(&version(pair.package_version())));
         assert!(native.permits(&version(pair.native_version())));
@@ -1170,14 +1200,26 @@ fn extension_ledger_binds_every_published_hop_from_0_3_295_to_0_3_317() {
             hop.hop
         );
     }
-    // The finite maintained pair map carries exactly the published points and
-    // keeps the unpublished gaps out.
+    // The finite maintained pair map carries exactly the published points,
+    // keeps the unpublished gaps out, and the claims exclude them too.
     assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
     for patch in [297, 298, 313] {
         assert!(
             !ClaudeAgentSdkPackageNativePair::MAINTAINED
                 .iter()
                 .any(|pair| pair.package_version() == format!("0.3.{patch}"))
+        );
+        assert!(
+            !claude_agent_sdk_package_claim().permits(
+                &swallowtail_core::InterfaceVersion::new(format!("0.3.{patch}"))
+                    .expect("valid gap version")
+            )
+        );
+        assert!(
+            !claude_agent_sdk_native_claim().permits(
+                &swallowtail_core::InterfaceVersion::new(format!("2.1.{patch}"))
+                    .expect("valid gap version")
+            )
         );
     }
     let protocol_flags = &protocol["selected_flag_ledger"]["added_non_builder_flag_strings"];

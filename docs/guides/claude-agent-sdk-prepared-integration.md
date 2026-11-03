@@ -148,9 +148,11 @@ exact one-point claims. The open path has one narrow observation-only exception
 for a newer Node runtime that passes the sidecar floor:
 
 - `claude-agent.sdk.package`: `@anthropic-ai/claude-agent-sdk`
-  `0.3.284..=0.3.317` (Research 472)
+  `0.3.284..=0.3.317`, excluding the unpublished `0.3.297`, `0.3.298`, and
+  `0.3.313` points (Research 472)
 - `claude-agent.sdk.native`: `2.1.284..=2.1.317`, coupled point-for-point to
-  the package version by each shipped `manifest.json` (Research 472)
+  the package version by each shipped `manifest.json` and excluding the
+  unpublished `2.1.297`, `2.1.298`, and `2.1.313` points (Research 472)
 - `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
@@ -161,9 +163,8 @@ for a newer Node runtime that passes the sidecar floor:
 The `2026-11-03T08:45:56Z` npm re-probe found `latest` and `next` at package
 `0.3.317`,
 whose embedded manifest identifies native `2.1.317`. Research 472 records the
-exact artifacts for every published hop `0.3.296` through `0.3.317` (the
-unpublished `0.3.297`, `0.3.298`, and `0.3.313` stay outside the maintained
-pair set) and classifies each adjacent selected-surface hop: the option
+exact artifacts for every published hop `0.3.296` through `0.3.317` and
+classifies each adjacent selected-surface hop: the option
 defaulting, the selected `Query` method bodies, the argv builders, and the
 `SIGTERM`/`SIGKILL` cleanup bodies are identical at every hop after tokenizing
 the minified output, and the exact per-hop string ledger adds no route flag.

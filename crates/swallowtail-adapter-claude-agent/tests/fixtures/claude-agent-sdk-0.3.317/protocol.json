@@ -131,7 +131,7 @@
       "native_version": "2.1.317"
     }
   ],
-  "claim": "qualified-only maintained segment; same baseline, claim ids, behavior revision and exclusions; unpublished 0.3.297, 0.3.298 and 0.3.313 stay outside the finite maintained pair map",
+  "claim": "qualified-only maintained segment; same baseline, claim ids, behavior revision and exclusions; the unpublished 0.3.297, 0.3.298 and 0.3.313 points (and native 2.1.297, 2.1.298, 2.1.313) are explicit claim exclusions on both window claims and stay outside the finite maintained pair map",
   "selected_entry": "@anthropic-ai/claude-agent-sdk . export -> sdk.mjs",
   "selected_flags": [],
   "sdk_invocation_change": "none inside 0.3.296..=0.3.317: the option-defaulting block, the selected Query method bodies, the argv builders around --model/--permission-mode/--mcp-config/--setting-sources/--effort, and the SIGTERM/SIGKILL cleanup bodies are identical at every hop after tokenizing the minified output and masking minified identifiers and string interiors; the exact unmasked string-set ledger confirms no selected literal (message types, control names, permission modes, MCP prefixes, route flags) was removed or changed",

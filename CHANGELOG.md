@@ -13,8 +13,10 @@ annotated Git tags from the canonical repository.
   posture, behavior revision `claude-agent.sdk-v1`, and no exclusions; the
   native claim mirrors it to `2.1.317`. Every published hop `0.3.296` through
   `0.3.317` is qualified point-for-point; the unpublished `0.3.297`, `0.3.298`,
-  and `0.3.313` points stay outside the finite maintained pair map, and nothing
-  is published after `0.3.317`. The default pair stays `0.3.293`/`2.1.293`, the
+  and `0.3.313` points and their native mirrors are explicit claim exclusions
+  (so they assess incompatible on the claims themselves) and stay outside the
+  finite maintained pair map, and nothing is published after `0.3.317`. The
+  default pair stays `0.3.293`/`2.1.293`, the
   registered-tool live point stays exact `0.3.259`/`2.1.259`, and the Node
   `22.23.2..=22.23.3`, wire, and sidecar source axes are unchanged. Identity
   tokenized each published `sdk.mjs` bundle with an exact per-hop string

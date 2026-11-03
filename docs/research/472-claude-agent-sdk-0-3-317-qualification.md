@@ -11,11 +11,14 @@ Compatible extension. Qualify every published package/native pair from the
 retained `0.3.295`/`2.1.295` ceiling through official npm `latest`/`next`
 `0.3.317`/`2.1.317`. Preserve the package and native baselines `0.3.284` and
 `2.1.284`, claim IDs, `QualifiedOnly` posture, behavior revision
-`claude-agent.sdk-v1`, exclusions, the `0.3.293`/`2.1.293` default pair, the
+`claude-agent.sdk-v1`, the `0.3.293`/`2.1.293` default pair, the
 exact `0.3.259`/`2.1.259` registered-tool live point, and all prior pairs. The
-unpublished `0.3.297`, `0.3.298`, and `0.3.313` points stay outside the finite
-maintained pair map even though the window spans them arithmetically; nothing
-is published above `0.3.317` at observation time. The Node `22.23.2..=22.23.3`
+unpublished `0.3.297`, `0.3.298`, and `0.3.313` points (and native
+`2.1.297`, `2.1.298`, `2.1.313`) are explicit exclusions on the package and
+native window claims, so they assess incompatible on the claims themselves;
+they also stay outside the finite maintained pair map even though the window
+spans them arithmetically. Nothing is published above `0.3.317` at observation
+time. The Node `22.23.2..=22.23.3`
 segment (Research 387), the exact wire, and the sidecar source tag are
 unchanged. No Claude Code claim changes: the coupled native `2.1.317` pairing
 rebinds only the `claude-agent.sdk.native` axis, and the separate
@@ -134,10 +137,14 @@ context-usage, nor sdk-tools APIs.
 The SDK package claim stays baseline `0.3.284`, latest qualified `0.3.317`;
 the native claim stays baseline `2.1.284`, latest qualified `2.1.317`. Both
 retain their claim IDs, `QualifiedOnly`, behavior revision
-`claude-agent.sdk-v1`, and point-for-point pairing. The default is still
+`claude-agent.sdk-v1`, and point-for-point pairing, and each carries three
+explicit exclusions (`0.3.297`/`0.3.298`/`0.3.313` on the package claim,
+`2.1.297`/`2.1.298`/`2.1.313` on the native claim) so the unpublished
+interiors assess incompatible on the claims, following the
+`claude-code.headless` unpublished-gap precedent. The default is still
 `0.3.293`/`2.1.293`; the sidecar accepts only the finite maintained pair map,
-which now carries 31 exact pairs and keeps the unpublished `0.3.297`,
-`0.3.298`, and `0.3.313` points (and every synthetic later point such as
+which now carries 31 exact pairs and keeps the unpublished gap points (and
+every synthetic later point such as
 `0.3.318`) out. The separate Node `22.23.2..=22.23.3` segment (Research 387),
 exact wire, sidecar source tag, public operations, permissions, credential
 handling, environment allowlist, tool set, usage projection, lifecycle, and

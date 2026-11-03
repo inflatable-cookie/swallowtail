@@ -4,11 +4,12 @@
 //! manifest, the approved Node runtime, the private sidecar wire, and the
 //! source-tagged sidecar revision. The package/native axes retain their
 //! baselines and claim IDs while extending across every published hop through
-//! `0.3.317` (the unpublished `0.3.297`, `0.3.298`, and `0.3.313` stay outside
-//! the maintained pair set); the independent Node axis is maintained through
-//! `22.23.3` (Research 387). Wire and sidecar source stay exact. Package/native
-//! versions are checked together; no Claude Code or ACP qualification
-//! transfers here.
+//! `0.3.317`; the unpublished `0.3.297`, `0.3.298`, and `0.3.313` points (and
+//! their native mirrors) are explicit claim exclusions, so they assess
+//! incompatible on the claims themselves. The independent Node axis is
+//! maintained through `22.23.3` (Research 387). Wire and sidecar source stay
+//! exact. Package/native versions are checked together; no Claude Code or ACP
+//! qualification transfers here.
 
 use super::{
     CLAUDE_AGENT_SDK_BASELINE_VERSION, CLAUDE_AGENT_SDK_BEHAVIOR,
@@ -225,6 +226,18 @@ impl ClaudeAgentSdkPackageNativePair {
 
 const CLAUDE_AGENT_SDK_NODE_BASELINE: &str = "22.23.2";
 
+/// Unpublished stables inside the coupled package window (Research 472).
+const SDK_PACKAGE_UNPUBLISHED_GAPS: &[&str] = &["0.3.297", "0.3.298", "0.3.313"];
+/// Unpublished stables inside the coupled native window (Research 472).
+const SDK_NATIVE_UNPUBLISHED_GAPS: &[&str] = &["2.1.297", "2.1.298", "2.1.313"];
+
+/// Parses one static unpublished-gap version for claim construction. The
+/// indirection keeps `InterfaceVersion::new` calls literal at their other
+/// use sites.
+fn sdk_gap_version(value: &str) -> Option<InterfaceVersion> {
+    InterfaceVersion::new(value).ok()
+}
+
 /// Parses one exact SDK wrapper package semantic-version binding.
 #[must_use]
 pub fn claude_agent_sdk_package_binding(value: &str) -> Option<InterfaceVersionBinding> {
@@ -281,7 +294,9 @@ pub fn claude_agent_sdk_sidecar_binding(value: &str) -> Option<InterfaceVersionB
     ))
 }
 
-/// Returns the qualified-only maintained SDK wrapper package segment.
+/// Returns the qualified-only maintained SDK wrapper package segment. The
+/// unpublished interior points are explicit claim exclusions, so they assess
+/// incompatible even though the segment spans them arithmetically.
 #[must_use]
 pub fn claude_agent_sdk_package_claim() -> InterfaceCompatibilityClaim {
     window_claim(
@@ -292,10 +307,15 @@ pub fn claude_agent_sdk_package_claim() -> InterfaceCompatibilityClaim {
             .expect("static SDK baseline is valid"),
         InterfaceVersion::new(CLAUDE_AGENT_SDK_VERSION)
             .expect("static SDK sidecar version is valid"),
+        SDK_PACKAGE_UNPUBLISHED_GAPS
+            .iter()
+            .map(|gap| sdk_gap_version(gap).expect("static SDK gap is valid")),
     )
 }
 
-/// Returns the qualified-only maintained native binary segment.
+/// Returns the qualified-only maintained native binary segment. The
+/// unpublished interior points are explicit claim exclusions, so they assess
+/// incompatible even though the segment spans them arithmetically.
 #[must_use]
 pub fn claude_agent_sdk_native_claim() -> InterfaceCompatibilityClaim {
     window_claim(
@@ -306,6 +326,9 @@ pub fn claude_agent_sdk_native_claim() -> InterfaceCompatibilityClaim {
             .expect("static SDK baseline is valid"),
         InterfaceVersion::new(CLAUDE_AGENT_SDK_NATIVE_VERSION)
             .expect("static SDK sidecar version is valid"),
+        SDK_NATIVE_UNPUBLISHED_GAPS
+            .iter()
+            .map(|gap| sdk_gap_version(gap).expect("static SDK gap is valid")),
     )
 }
 
@@ -462,13 +485,15 @@ fn window_claim(
     axis: InterfaceVersionAxis,
     baseline: InterfaceVersion,
     current: InterfaceVersion,
+    exclusions: impl IntoIterator<Item = InterfaceVersion>,
 ) -> InterfaceCompatibilityClaim {
-    window_claim_versions(
+    window_claim_versions_with_exclusions(
         id,
         axis,
         InterfaceVersionScheme::Semantic,
         baseline,
         current,
+        exclusions,
     )
 }
 
@@ -478,6 +503,17 @@ fn window_claim_versions(
     scheme: InterfaceVersionScheme,
     baseline: InterfaceVersion,
     current: InterfaceVersion,
+) -> InterfaceCompatibilityClaim {
+    window_claim_versions_with_exclusions(id, axis, scheme, baseline, current, [])
+}
+
+fn window_claim_versions_with_exclusions(
+    id: &str,
+    axis: InterfaceVersionAxis,
+    scheme: InterfaceVersionScheme,
+    baseline: InterfaceVersion,
+    current: InterfaceVersion,
+    exclusions: impl IntoIterator<Item = InterfaceVersion>,
 ) -> InterfaceCompatibilityClaim {
     InterfaceCompatibilityClaim::new(
         InterfaceCompatibilityClaimId::new(id).expect("static SDK sidecar claim id is valid"),
@@ -491,7 +527,7 @@ fn window_claim_versions(
                 .expect("static SDK sidecar behavior revision is valid"),
             InterfaceSupportStatus::Maintained,
         )],
-        [],
+        exclusions,
     )
     .expect("static SDK sidecar compatibility claim is valid")
 }

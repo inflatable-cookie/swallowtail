@@ -159,7 +159,7 @@ on `v0.5.4` keep that tag's pins.
 
 | Family | Current claim on `main` | Classification vs `v0.5.4` | Evidence |
 | --- | --- | --- | --- |
-| `claude-agent.sdk` | QualifiedOnly package `0.3.284..=0.3.317` coupled to native `2.1.284..=2.1.317` over every published hop with `0.3.297`/`0.3.298`/`0.3.313` kept outside the maintained pair map; default pair `.293`; live registered-tool remains exact `.259` | minor: default and window leave released `.259`; additive pair selector is source-compatible for new callers | Research 472, 420, 416, 301; Contract 037 |
+| `claude-agent.sdk` | QualifiedOnly package `0.3.284..=0.3.317` coupled to native `2.1.284..=2.1.317` over every published hop with the unpublished interior points excluded on the claims and absent from the maintained pair map; default pair `.293`; live registered-tool remains exact `.259` | minor: default and window leave released `.259`; additive pair selector is source-compatible for new callers | Research 472, 420, 416, 301; Contract 037 |
 | `claude-agent.acp` | `0.53.0`–`0.98.0` excluding `0.58.0`; HTTP MCP live honouring exact `0.79.0` and `0.81.2` | additive qualification; live honouring does not transfer | Research 460, 446, 373, 361, 364 |
 | `claude-code.headless` | Deprecated v1 through `2.1.286`; maintained v2 `2.1.287..=2.1.294`; `2.1.295` UnverifiedNewer | additive private milestone | Research 423 |
 | `claude-code.response-only` | v3 maintained `2.1.282..=2.1.293` | additive private milestone | Research 378 |

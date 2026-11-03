@@ -401,10 +401,82 @@ fn attached_child_trace_is_frozen_and_mutation_sensitive() {
         .as_array()
         .expect("reuse conditions are frozen");
     assert_eq!(conditions.len(), 5);
-    assert!(
-        resume["fallback"]
-            .as_str()
-            .is_some_and(|text| text.contains("load_latest_model_context"))
-    );
     assert_eq!(resume["noNewClaim"], serde_json::Value::Bool(true));
+
+    let fallback = &resume["staleFallback"];
+    assert_eq!(fallback["evidenceClass"], "source-level-only");
+    assert_eq!(fallback["runtimeClaim"], serde_json::Value::Bool(false));
+    assert_eq!(
+        fallback["triggers"]
+            .as_array()
+            .expect("fallback triggers are frozen")
+            .len(),
+        6
+    );
+    assert_eq!(
+        fallback["action"],
+        "call load_latest_model_context and rebuild ResumedHistory"
+    );
+    assert_eq!(
+        fallback["concurrentHistory"]["rechecks"]
+            .as_array()
+            .expect("concurrent-history rechecks are frozen")
+            .len(),
+        2
+    );
+    assert!(
+        fallback["proofLimit"]
+            .as_str()
+            .is_some_and(|text| text.contains("not the provider's internal reuse decision"))
+    );
+}
+
+#[test]
+fn attached_child_guard_scope_is_the_local_store_only() {
+    let trace = trace();
+    let guard = &trace["attachedChildGuard"];
+    assert!(
+        guard["guardAppliesTo"]
+            .as_str()
+            .is_some_and(|text| text.contains("LocalThreadStore only"))
+    );
+    let selection = &guard["storeSelection"];
+    assert_eq!(selection["symbol"], "thread_store_from_config");
+    assert_eq!(selection["default"], "Local");
+    assert_eq!(selection["tomlKey"], "experimental_thread_store");
+    assert_eq!(
+        selection["adapterSelectsStore"],
+        serde_json::Value::Bool(false)
+    );
+    assert_eq!(
+        selection["attachedChildCreationRequiresLocalStore"],
+        serde_json::Value::Bool(true)
+    );
+    assert!(
+        selection["attachedChildCreationGuard"]
+            .as_str()
+            .is_some_and(|text| text.contains("unsupported_thread_store_operation"))
+    );
+    assert!(
+        selection["inMemoryAttachedListing"]
+            .as_str()
+            .is_some_and(|text| text.contains("Unsupported"))
+    );
+    assert!(
+        selection["residual"]
+            .as_str()
+            .is_some_and(|text| text.contains("unclaimed"))
+    );
+    for path in [
+        "codex-rs/core/src/thread_manager.rs",
+        "codex-rs/core/src/config/mod.rs",
+        "codex-rs/config/src/config_toml.rs",
+        "codex-rs/thread-store/src/in_memory.rs",
+        "codex-rs/app-server/src/message_processor.rs",
+    ] {
+        assert_ne!(
+            trace["contentSha256"][path]["0.164.0"], trace["contentSha256"][path]["0.165.0"],
+            "{path} changes across the frozen hop"
+        );
+    }
 }

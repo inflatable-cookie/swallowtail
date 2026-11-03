@@ -26,19 +26,21 @@ code, behavior revision, or range claim changes.
 
 - Delete: the guarantee holds unchanged. `0.165.0` refuses the delete before
   any effect when any delete candidate has an attached child, both in the
-  app-server precheck and again under writer ownership in the store. The
-  refusal is a JSON-RPC `invalid_request`, which the adapter already maps to
-  `failed_before_effect` with no `ThreadDeleted` notification. Contract 038
-  already separates a refused attempt from an applied one, so
-  `ProviderDefinedDescendants` describes only the successful path and stays
-  accurate.
+  app-server precheck and again under writer ownership in the store. That
+  guard belongs to the provider's local thread store, which is the default
+  store (see "Guard scope: the local store" below) and the only store that can
+  create attached children. The refusal is a JSON-RPC `invalid_request`, which
+  the adapter already maps to `failed_before_effect` with no `ThreadDeleted`
+  notification. Contract 038 already separates a refused attempt from an
+  applied one, so `ProviderDefinedDescendants` describes only the successful
+  path and stays accurate.
 - A real consumer-visible limitation is now recorded rather than fixed: while
   any candidate (root or descendant) has an attached child, delete is
-  terminally refused through this route, and the adapter's ordinary listing
-  cannot surface that child for a follow-up delete. Removing the limitation
-  needs either a new `attachedToThreadId` listing scope or a distinct stable
-  refusal diagnostic; both are consumer-visible additions under Contracts
-  038/046/061 and need a separately recorded ruling.
+  terminally refused through this route on the local store, and the adapter's
+  ordinary listing cannot surface that child for a follow-up delete. Removing
+  the limitation needs either a new `attachedToThreadId` listing scope or a
+  distinct stable refusal diagnostic; both are consumer-visible additions
+  under Contracts 038/046/061 and need a separately recorded ruling.
 - Resume: `0.165.0` retains the prepared model context only across the config
   recheck loop and reuses it only when the stored thread is paginated, the
   conversation id, rollout path, and revision still match, and
@@ -47,19 +49,23 @@ code, behavior revision, or range claim changes.
   revision again under writer ownership. The selected request never supplies
   history or a path, so the model-visible context equals the `0.164.0`
   unconditional reload. No new claim, no behavior revision, no equivalence
-  beyond the selected path.
+  beyond the selected path. The reuse conditions, stale fallback, and
+  concurrent-history effects are frozen from source only; the runtime cases
+  below prove the adapter's request shape and its visible failure behaviour,
+  not the provider's internal reuse decision.
 - `0.165.0` stays `UnverifiedNewer` and both `0.164.0` ceilings stay. The
   shipped Linux `bwrap` provenance gate from Research 463 is untouched and
   still open.
 
 ## Method
 
-Re-fetched every cited file from the exact frozen tag commits by path and
-byte-verified each against the per-file SHA-256 set Research 463 already froze
-(`docs/research/463-...`, `contentSha256`). No downloaded vendor binary was
-executed, no prompt was sent, no login or live session was used, and nothing on
-the host was mutated. The per-file hashes, the frozen control-flow orders, and
-the adapter expectations live in
+Re-fetched every cited file from the exact frozen tag commits by path. The files
+Research 463 already froze were byte-verified against its per-file SHA-256 set
+(`docs/research/463-...`, `contentSha256`); the additional store-selection files
+this record needed were hashed from the same two tag commits and frozen here. No
+downloaded vendor binary was executed, no prompt was sent, no login or live
+session was used, and nothing on the host was mutated. The per-file hashes, the
+frozen control-flow orders, and the adapter expectations live in
 `crates/swallowtail-adapter-codex/tests/fixtures/codex-attached-child-lifecycle/trace.json`.
 
 The new proof drives the real prepared Codex adapter against the scripted
@@ -145,6 +151,39 @@ exactly the listed rows with no implicit cascade. The guard precedes all of it,
 so either the whole computed subtree is deleted, or the attempt refuses before
 effect.
 
+## Guard scope: the local store
+
+The attached-child refusal is local-store behaviour, not a property of every
+thread store. `thread_delete.rs` calls `ensure_no_attached_threads` only after
+`downcast_ref::<LocalThreadStore>()`, and `check_attached_children` lives in
+`codex-rs/thread-store/src/local/delete_thread.rs`, so a different store
+implementation never reaches either check.
+
+The selected route still gets the refusal wherever an attached child can
+exist:
+
+- `thread_store_from_config` (`codex-rs/core/src/thread_manager.rs`) maps
+  `experimental_thread_store` (`codex-rs/config/src/config_toml.rs`) to either
+  `Local` or `InMemory`. `Local` is the default and the mapping's fallback when
+  the key is absent; `InMemory` is tagged `snake_case`, marked "Experimental /
+  do not use", and skipped by the schema generator.
+- Attached children can only be created on the local store. `thread/fork`
+  rejects `attachToSource` with `unsupported_thread_store_operation("attached
+  threads")` unless a state database exists and the store is
+  `LocalThreadStore`.
+- The in-memory store has no attached-child delete check and rejects
+  `ThreadRelationFilter::AttachedThreadsOf` listing as `Unsupported`.
+
+The adapter does not select a store: it starts the approved executable in the
+caller's environment and sets no Codex configuration, so the provider's own
+ambient configuration decides. Two consequences are recorded rather than
+claimed. First, the refusal guarantee is stated for the local store, which is
+both the default and the only store that can create the children it protects.
+Second, a provider configuration change from the local store to the in-memory
+store between runs would leave previously created local attached children
+outside the guarded delete path; that case is unselected, unexercised, and
+unclaimed here.
+
 ## Paginated resume
 
 `0.164.0` and `0.165.0` both reach `thread/resume` for a stored thread, and the
@@ -191,6 +230,22 @@ them through the adapter replay projection; a response without them fails as
 before the failure returns. `resume_session` sends `excludeTurns: true`, gets
 no turns, and continues through the adapter's own history role.
 
+### Proof scope for the resume half
+
+The reuse conditions, the stale fallback, the revision identity, and the
+concurrent-history rechecks above are **source-level evidence only**. They are
+frozen from the `0.165.0` tag, which is what the brief's "trace actual selected
+control-flow" asks for; no runtime claim is made for them. Swallowtail cannot
+observe or force the provider's internal reuse decision without executing a
+vendor build, which this record does not do. The stale fallback is therefore
+recorded as a frozen source path and asserted structurally in the fixture, not
+as a fake-driven behaviour: the cases below prove the adapter's own request
+shape, its before-effect and unconfirmed outcomes, its catalogue scope, and
+the visible failure it reports when restored turns are missing. They cannot
+trigger or observe a revision mismatch inside the provider, and the fixture
+labels that limit explicitly (`staleFallback.evidenceClass =
+"source-level-only"`, `runtimeClaim = false`).
+
 ## Contract reconciliation
 
 - Contract 038: the delete plan promises hard deletion with
@@ -223,6 +278,7 @@ Real prepared-driver fake cases, all run in
 | `ordinary_catalogue_hides_attached_child_without_widening_scope` | a page that omits the attached child projects only the visible candidate, ends the traversal, and the recorded `thread/list` carries no relation filter, `attachedToThreadId`, `parentThreadId`, or `ancestorThreadId`, with `archived: false` |
 | `load_requires_provider_history_and_resume_excludes_turns` | a load whose provider returns no turns fails as `replay_malformed` with the process joined; resume sends `excludeTurns: true` and none of the unmapped fields |
 | `attached_child_trace_is_frozen_and_mutation_sensitive` | the frozen hashes and both control-flow orders are asserted, including guard-before-effect and revision files byte-identical across the hop |
+| `attached_child_guard_scope_is_the_local_store_only` | the guard's local-store scope, the default and experimental store selection, the local-store requirement for creating attached children, and the unclaimed store-switch residual are frozen alongside the changed store-selection files |
 
 ## Claim shape
 

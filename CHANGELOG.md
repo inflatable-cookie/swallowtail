@@ -39,7 +39,10 @@ annotated Git tags from the canonical repository.
   against the frozen `0.165.0` tag sources (Research 467). The new guard refuses
   `thread/delete` before effect when any candidate root or descendant has an
   attached child — including externally forked, imported, restored, or archived
-  ones — and repeats the check under writer ownership. The adapter keeps
+  ones — and repeats the check under writer ownership. The guard belongs to the
+  provider's local thread store, which is the default and the only store that can
+  create attached children; the adapter selects no store and sets no Codex
+  configuration. The adapter keeps
   reporting `failed_before_effect`, sends no deletion notification, and confirms
   no deletion strength; the applied path still deletes exactly the computed
   strict descendant subtree. Ordinary listing hides attached children and the
@@ -48,8 +51,9 @@ annotated Git tags from the canonical repository.
   change. Paginated `thread/resume` reuse is admitted only for an unchanged
   rollout revision rechecked at the config recheck and again under writer
   ownership, so the selected request restores the same model context as the
-  `0.164.0` reload. No capability, diagnostic, behavior revision, or range
-  claim changes.
+  `0.164.0` reload. Those reuse, stale-fallback, and concurrent-history effects
+  are frozen from source only and carry no runtime claim. No capability,
+  diagnostic, behavior revision, or range claim changes.
 - qualify `codex.exec` and `codex.app-server` through official stable
   `0.164.0` on the existing JSONL and protected-aws behavior revisions.
   The published hops `0.162.0`, `0.162.1`, `0.163.0`, and `0.164.0` keep

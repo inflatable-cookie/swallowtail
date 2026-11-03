@@ -335,10 +335,12 @@ separate diagnostics.
 From `0.165.0` the provider also refuses `thread/delete` before effect while
 any delete candidate — the target or one of its descendants — has an attached
 child, including one left by another client, an import, a restore, or an
-earlier interactive run. The provider's ordinary `thread/list` hides attached
-children and the adapter never widens that listing, so a hidden child makes
-deletion refuse terminally through this route until another Codex client
-removes it. The refusal carries `swallowtail.codex.app_server.request_failed`
+earlier interactive run. The guard belongs to the provider's local thread store
+— the default store, and the only one that can create attached children; the
+adapter starts one approved executable and sets no Codex configuration. The
+provider's ordinary `thread/list` hides attached children and the adapter never
+widens that listing, so a hidden child makes deletion refuse terminally through
+this route until another Codex client removes it. The refusal carries `swallowtail.codex.app_server.request_failed`
 and fails before effect: nothing is deleted, no notification is sent, and no
 deletion strength is confirmed. The successful path still deletes exactly the
 provider's computed strict descendant subtree. See Research 467.

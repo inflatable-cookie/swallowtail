@@ -13,7 +13,7 @@ pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 /// Oldest qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
 /// Most recent qualified Claude Agent ACP version.
-pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.98.0";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.100.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
@@ -135,7 +135,7 @@ pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
             ),
             segment(
                 "0.66.0",
-                "0.98.0",
+                "0.100.0",
                 INITIALIZE_META_EXTENSIONS_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),

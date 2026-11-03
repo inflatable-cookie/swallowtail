@@ -37,7 +37,7 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_sha(segment, "tag_commit", 40);
         assert_sha(segment, "source_sha256", 64);
     }
-    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.98.0");
+    assert_eq!(range["qualified_segments"][6]["range"], "0.66.0..=0.100.0");
     assert_eq!(range["current_external_releases"][2]["version"], "0.64.0");
     assert_eq!(
         range["current_external_releases"][2]["classification"],
@@ -381,6 +381,27 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
             "12c05702b3295d80a838135ee15802dd25739f8871a19eae6e664efcf3e2ed0f",
             "air-batch-get-unmapped-sandbox-network-settles-existing-status",
         ),
+        (
+            "0.99.0",
+            "2026-10-28T14:27:15.462Z",
+            "106e3031e393daebc7170c3fe9ed46d0e0ee6c40",
+            "278e5980431a47057f7405d9a4b1889739bc8a31e1b2d138a922b4bffc865864",
+            "mcp-server-failure-transcript-existing-shape-error-codes-one-failure-class",
+        ),
+        (
+            "0.99.1",
+            "2026-10-29T19:37:04.161Z",
+            "0f78dbbdd089e5c64fc908173e8656aa9cc757fb",
+            "aa41834c24f2c09a39af0b10731cc10fb882968f75a12c3735e50a9d080b20c4",
+            "air-gated-skill-files-and-plan-ids-no-v1-update-delta",
+        ),
+        (
+            "0.100.0",
+            "2026-11-02T14:38:37.938Z",
+            "981bf9a28ac3afef26e7877a2a638814c34f1679",
+            "2170737a5531b0c08e5cc8b3190491fcf01d7e4e58b6d670e1049c6e5c27a09f",
+            "clear-context-usage-update-existing-kind-command-name-filter",
+        ),
     ];
     let releases = range["current_external_releases"]
         .as_array()
@@ -394,7 +415,13 @@ fn every_qualified_claude_segment_has_exact_activity_provenance() {
         assert_eq!(release["tag_commit"], tag_commit);
         assert_eq!(release["source_sha256"], source_sha256);
         assert_eq!(release["classification"], "qualified");
-        assert_eq!(release["profile"], "0.98.0-guarantee");
+        let expected_profile = if version == "0.100.0" || version == "0.99.0" || version == "0.99.1"
+        {
+            "0.100.0-guarantee"
+        } else {
+            "0.98.0-guarantee"
+        };
+        assert_eq!(release["profile"], expected_profile);
         assert_eq!(release["activity_delta"], activity_delta);
         assert_sha(release, "tag_commit", 40);
         assert_sha(release, "source_sha256", 64);

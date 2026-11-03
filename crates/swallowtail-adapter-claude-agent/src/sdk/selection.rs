@@ -3,10 +3,12 @@
 //! Five axes bind the SDK wrapper, the native binary declared by its shipped
 //! manifest, the approved Node runtime, the private sidecar wire, and the
 //! source-tagged sidecar revision. The package/native axes retain their
-//! baselines and claim IDs while extending across published hops `0.3.285`–
-//! `0.3.295`; the independent Node axis is maintained through `22.23.3` (Research
-//! 387). Wire and sidecar source stay exact. Package/native versions are checked
-//! together; no Claude Code or ACP qualification transfers here.
+//! baselines and claim IDs while extending across every published hop through
+//! `0.3.317` (the unpublished `0.3.297`, `0.3.298`, and `0.3.313` stay outside
+//! the maintained pair set); the independent Node axis is maintained through
+//! `22.23.3` (Research 387). Wire and sidecar source stay exact. Package/native
+//! versions are checked together; no Claude Code or ACP qualification
+//! transfers here.
 
 use super::{
     CLAUDE_AGENT_SDK_BASELINE_VERSION, CLAUDE_AGENT_SDK_BEHAVIOR,
@@ -64,14 +66,53 @@ pub enum ClaudeAgentSdkPackageNativePair {
     V0_3_294Native2_1_294,
     /// SDK package `0.3.295` with native `2.1.295`.
     V0_3_295Native2_1_295,
+    /// SDK package `0.3.296` with native `2.1.296`.
+    V0_3_296Native2_1_296,
+    /// SDK package `0.3.299` with native `2.1.299`.
+    V0_3_299Native2_1_299,
+    /// SDK package `0.3.300` with native `2.1.300`.
+    V0_3_300Native2_1_300,
+    /// SDK package `0.3.301` with native `2.1.301`.
+    V0_3_301Native2_1_301,
+    /// SDK package `0.3.302` with native `2.1.302`.
+    V0_3_302Native2_1_302,
+    /// SDK package `0.3.303` with native `2.1.303`.
+    V0_3_303Native2_1_303,
+    /// SDK package `0.3.304` with native `2.1.304`.
+    V0_3_304Native2_1_304,
+    /// SDK package `0.3.305` with native `2.1.305`.
+    V0_3_305Native2_1_305,
+    /// SDK package `0.3.306` with native `2.1.306`.
+    V0_3_306Native2_1_306,
+    /// SDK package `0.3.307` with native `2.1.307`.
+    V0_3_307Native2_1_307,
+    /// SDK package `0.3.308` with native `2.1.308`.
+    V0_3_308Native2_1_308,
+    /// SDK package `0.3.309` with native `2.1.309`.
+    V0_3_309Native2_1_309,
+    /// SDK package `0.3.310` with native `2.1.310`.
+    V0_3_310Native2_1_310,
+    /// SDK package `0.3.311` with native `2.1.311`.
+    V0_3_311Native2_1_311,
+    /// SDK package `0.3.312` with native `2.1.312`.
+    V0_3_312Native2_1_312,
+    /// SDK package `0.3.314` with native `2.1.314`.
+    V0_3_314Native2_1_314,
+    /// SDK package `0.3.315` with native `2.1.315`.
+    V0_3_315Native2_1_315,
+    /// SDK package `0.3.316` with native `2.1.316`.
+    V0_3_316Native2_1_316,
+    /// SDK package `0.3.317` with native `2.1.317`.
+    V0_3_317Native2_1_317,
 }
 
 impl ClaudeAgentSdkPackageNativePair {
     /// The unchanged default selected by [`ClaudeAgentSdkSessionPreparation`](crate::sdk::ClaudeAgentSdkSessionPreparation).
     pub const DEFAULT: Self = Self::V0_3_293Native2_1_293;
 
-    /// Every maintained coupled pair, ordered by publication.
-    pub const MAINTAINED: [Self; 12] = [
+    /// Every maintained coupled pair, ordered by publication. The
+    /// unpublished `0.3.297`, `0.3.298` and `0.3.313` points are absent.
+    pub const MAINTAINED: [Self; 31] = [
         Self::V0_3_284Native2_1_284,
         Self::V0_3_285Native2_1_285,
         Self::V0_3_286Native2_1_286,
@@ -84,6 +125,25 @@ impl ClaudeAgentSdkPackageNativePair {
         Self::V0_3_293Native2_1_293,
         Self::V0_3_294Native2_1_294,
         Self::V0_3_295Native2_1_295,
+        Self::V0_3_296Native2_1_296,
+        Self::V0_3_299Native2_1_299,
+        Self::V0_3_300Native2_1_300,
+        Self::V0_3_301Native2_1_301,
+        Self::V0_3_302Native2_1_302,
+        Self::V0_3_303Native2_1_303,
+        Self::V0_3_304Native2_1_304,
+        Self::V0_3_305Native2_1_305,
+        Self::V0_3_306Native2_1_306,
+        Self::V0_3_307Native2_1_307,
+        Self::V0_3_308Native2_1_308,
+        Self::V0_3_309Native2_1_309,
+        Self::V0_3_310Native2_1_310,
+        Self::V0_3_311Native2_1_311,
+        Self::V0_3_312Native2_1_312,
+        Self::V0_3_314Native2_1_314,
+        Self::V0_3_315Native2_1_315,
+        Self::V0_3_316Native2_1_316,
+        Self::V0_3_317Native2_1_317,
     ];
 
     /// Returns the exact SDK wrapper package version.
@@ -102,6 +162,25 @@ impl ClaudeAgentSdkPackageNativePair {
             Self::V0_3_293Native2_1_293 => "0.3.293",
             Self::V0_3_294Native2_1_294 => "0.3.294",
             Self::V0_3_295Native2_1_295 => "0.3.295",
+            Self::V0_3_296Native2_1_296 => "0.3.296",
+            Self::V0_3_299Native2_1_299 => "0.3.299",
+            Self::V0_3_300Native2_1_300 => "0.3.300",
+            Self::V0_3_301Native2_1_301 => "0.3.301",
+            Self::V0_3_302Native2_1_302 => "0.3.302",
+            Self::V0_3_303Native2_1_303 => "0.3.303",
+            Self::V0_3_304Native2_1_304 => "0.3.304",
+            Self::V0_3_305Native2_1_305 => "0.3.305",
+            Self::V0_3_306Native2_1_306 => "0.3.306",
+            Self::V0_3_307Native2_1_307 => "0.3.307",
+            Self::V0_3_308Native2_1_308 => "0.3.308",
+            Self::V0_3_309Native2_1_309 => "0.3.309",
+            Self::V0_3_310Native2_1_310 => "0.3.310",
+            Self::V0_3_311Native2_1_311 => "0.3.311",
+            Self::V0_3_312Native2_1_312 => "0.3.312",
+            Self::V0_3_314Native2_1_314 => "0.3.314",
+            Self::V0_3_315Native2_1_315 => "0.3.315",
+            Self::V0_3_316Native2_1_316 => "0.3.316",
+            Self::V0_3_317Native2_1_317 => "0.3.317",
         }
     }
 
@@ -121,6 +200,25 @@ impl ClaudeAgentSdkPackageNativePair {
             Self::V0_3_293Native2_1_293 => "2.1.293",
             Self::V0_3_294Native2_1_294 => "2.1.294",
             Self::V0_3_295Native2_1_295 => "2.1.295",
+            Self::V0_3_296Native2_1_296 => "2.1.296",
+            Self::V0_3_299Native2_1_299 => "2.1.299",
+            Self::V0_3_300Native2_1_300 => "2.1.300",
+            Self::V0_3_301Native2_1_301 => "2.1.301",
+            Self::V0_3_302Native2_1_302 => "2.1.302",
+            Self::V0_3_303Native2_1_303 => "2.1.303",
+            Self::V0_3_304Native2_1_304 => "2.1.304",
+            Self::V0_3_305Native2_1_305 => "2.1.305",
+            Self::V0_3_306Native2_1_306 => "2.1.306",
+            Self::V0_3_307Native2_1_307 => "2.1.307",
+            Self::V0_3_308Native2_1_308 => "2.1.308",
+            Self::V0_3_309Native2_1_309 => "2.1.309",
+            Self::V0_3_310Native2_1_310 => "2.1.310",
+            Self::V0_3_311Native2_1_311 => "2.1.311",
+            Self::V0_3_312Native2_1_312 => "2.1.312",
+            Self::V0_3_314Native2_1_314 => "2.1.314",
+            Self::V0_3_315Native2_1_315 => "2.1.315",
+            Self::V0_3_316Native2_1_316 => "2.1.316",
+            Self::V0_3_317Native2_1_317 => "2.1.317",
         }
     }
 }

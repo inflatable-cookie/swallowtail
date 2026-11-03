@@ -1,0 +1,5 @@
+# Claude Agent SDK 0.3.317 evidence fixture
+
+This fixture contains artifact identity and a complete wrapper file-hash ledger for the nineteen published 0.3.295 -> 0.3.317 hops (0.3.296, 0.3.299-0.3.312, 0.3.314-0.3.317; 0.3.297, 0.3.298 and 0.3.313 are unpublished gaps). The `0.3.295` base bytes were reacquired only after their SHA-256 matched Research 420 and every retained per-file hash reproduced. Every hop tarball was fetched from the official npm registry and checked against npm SHA-1 and integrity metadata before inspection. No vendor package, native binary or provider interaction was executed.
+
+`dist-inventory.json` records every path, per-version hash, complete tree digest and exact adjacent added/removed/changed/identical sets. `identity.json` binds npm and embedded native manifests per hop plus the tokenized selected-surface classification. `protocol.json` records the qualified pair set and preserved boundaries. Full source/control-flow reasoning is in [Research 472](../../../../../docs/research/472-claude-agent-sdk-0-3-317-qualification.md).

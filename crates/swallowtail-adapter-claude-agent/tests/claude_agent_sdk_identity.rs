@@ -10,7 +10,8 @@ use swallowtail_adapter_claude_agent::sdk::{
     CLAUDE_AGENT_SDK_ADDABLE_ROUTE_ID, CLAUDE_AGENT_SDK_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_VERSION,
     CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_PACKAGE, CLAUDE_AGENT_SDK_SIDECAR_ENTRY_FILE,
     CLAUDE_AGENT_SDK_SIDECAR_SOURCE, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION,
-    CLAUDE_AGENT_SDK_WIRE, claude_agent_sdk_addable_route_descriptor, claude_agent_sdk_descriptor,
+    CLAUDE_AGENT_SDK_WIRE, ClaudeAgentSdkPackageNativePair,
+    claude_agent_sdk_addable_route_descriptor, claude_agent_sdk_descriptor,
     claude_agent_sdk_native_claim, claude_agent_sdk_node_claim, claude_agent_sdk_package_claim,
     claude_agent_sdk_sidecar_claim, claude_agent_sdk_tool_admission_namespace,
     claude_agent_sdk_wire_claim,
@@ -23,10 +24,10 @@ const CURRENT_IDENTITY: &str = include_str!("fixtures/claude-agent-sdk-0.3.293/i
 const CURRENT_PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-0.3.293/protocol.json");
 const CURRENT_INVENTORY: &str =
     include_str!("fixtures/claude-agent-sdk-0.3.293/dist-inventory.json");
-const LATEST_IDENTITY: &str = include_str!("fixtures/claude-agent-sdk-0.3.295/identity.json");
-const LATEST_PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-0.3.295/protocol.json");
+const LATEST_IDENTITY: &str = include_str!("fixtures/claude-agent-sdk-0.3.317/identity.json");
+const LATEST_PROTOCOL: &str = include_str!("fixtures/claude-agent-sdk-0.3.317/protocol.json");
 const LATEST_INVENTORY: &str =
-    include_str!("fixtures/claude-agent-sdk-0.3.295/dist-inventory.json");
+    include_str!("fixtures/claude-agent-sdk-0.3.317/dist-inventory.json");
 
 /// Reports whether one line names an option key, ignoring a longer key that
 /// merely contains it: `disallowedTools` is not `allowedTools`.
@@ -239,14 +240,15 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
         |value: &str| swallowtail_core::InterfaceVersion::new(value).expect("valid version");
     let package = claude_agent_sdk_package_claim();
     let native = claude_agent_sdk_native_claim();
-    for patch in 284..=295 {
-        assert!(package.permits(&version(&format!("0.3.{patch}"))));
-        assert!(native.permits(&version(&format!("2.1.{patch}"))));
+    for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
+        assert!(package.permits(&version(pair.package_version())));
+        assert!(native.permits(&version(pair.native_version())));
     }
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
     assert!(!package.permits(&version("0.3.283")));
-    assert!(!package.permits(&version("0.3.296")));
+    assert!(!package.permits(&version("0.3.318")));
     assert!(!native.permits(&version("2.1.283")));
-    assert!(!native.permits(&version("2.1.296")));
+    assert!(!native.permits(&version("2.1.318")));
     // Older native inventory points stay outside the selected segment.
     assert!(!package.permits(&version("0.3.260")));
     assert!(!native.permits(&version("2.1.258")));
@@ -675,39 +677,570 @@ fn the_shipped_asset_matches_the_frozen_identity() {
     assert!(CLAUDE_AGENT_SDK_SIDECAR_SOURCE.contains(CLAUDE_AGENT_SDK_NATIVE_VERSION));
 }
 
+/// One classified adjacent hop inside the retained 0.3.295 -> 0.3.317
+/// extension, in publication order.
+struct ExtensionHop {
+    hop: &'static str,
+    added: &'static [&'static str],
+    removed: &'static [&'static str],
+    changed: &'static [&'static str],
+}
+
+const EXTENSION_HOPS: &[ExtensionHop] = &[
+    ExtensionHop {
+        hop: "295->296",
+        added: &["core-2haqfy07.mjs", "core-a92dt75k.mjs"],
+        removed: &["core-reghh1vn.mjs", "core-tm6xdb2r.mjs"],
+        changed: &[
+            "bridge.d.ts",
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "296->299",
+        added: &["core-x6a2shyd.mjs", "core-xcjrj654.mjs"],
+        removed: &["core-2haqfy07.mjs", "core-a92dt75k.mjs"],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "299->300",
+        added: &["core-3fs8zete.mjs", "core-5kpyasem.mjs"],
+        removed: &["core-x6a2shyd.mjs", "core-xcjrj654.mjs"],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "300->301",
+        added: &["core-6z7brxfa.mjs", "core-x118ntbh.mjs"],
+        removed: &["core-3fs8zete.mjs", "core-5kpyasem.mjs"],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.d.ts",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "301->302",
+        added: &["core-1t4c883z.mjs", "core-vf1qkp6x.mjs"],
+        removed: &["core-6z7brxfa.mjs", "core-x118ntbh.mjs"],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "302->303",
+        added: &["core-dmg5st5c.mjs", "core-gvw0a6et.mjs"],
+        removed: &["core-1t4c883z.mjs", "core-vf1qkp6x.mjs"],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "303->304",
+        added: &["core-2hp8y6j3.mjs", "core-kjmgdn1p.mjs"],
+        removed: &["core-dmg5st5c.mjs", "core-gvw0a6et.mjs"],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.d.ts",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "304->305",
+        added: &[
+            "core-3z5ypevg.mjs",
+            "core-be3nes5v.mjs",
+            "core-cpeswmq9.mjs",
+            "core-thy7v25j.mjs",
+        ],
+        removed: &["core-2hp8y6j3.mjs", "core-kjmgdn1p.mjs"],
+        changed: &[
+            "README.md",
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "305->306",
+        added: &[
+            "core-50f20fv8.mjs",
+            "core-mh5qmqqf.mjs",
+            "core-p79weg14.mjs",
+            "core-x5tcx9zy.mjs",
+        ],
+        removed: &[
+            "core-3z5ypevg.mjs",
+            "core-be3nes5v.mjs",
+            "core-cpeswmq9.mjs",
+            "core-thy7v25j.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "306->307",
+        added: &[
+            "core-3qt252mw.mjs",
+            "core-dk3ky68t.mjs",
+            "core-magja67b.mjs",
+            "core-s632fyaa.mjs",
+        ],
+        removed: &[
+            "core-50f20fv8.mjs",
+            "core-mh5qmqqf.mjs",
+            "core-p79weg14.mjs",
+            "core-x5tcx9zy.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.d.ts",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "307->308",
+        added: &[
+            "core-36zyfan5.mjs",
+            "core-5682eevd.mjs",
+            "core-nne0e2ds.mjs",
+            "core-xpxe8nzb.mjs",
+        ],
+        removed: &[
+            "core-3qt252mw.mjs",
+            "core-dk3ky68t.mjs",
+            "core-magja67b.mjs",
+            "core-s632fyaa.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "308->309",
+        added: &[
+            "core-1qw7dszx.mjs",
+            "core-cz9sh4ze.mjs",
+            "core-nmrdrt5c.mjs",
+            "core-nxm5bcfb.mjs",
+        ],
+        removed: &[
+            "core-36zyfan5.mjs",
+            "core-5682eevd.mjs",
+            "core-nne0e2ds.mjs",
+            "core-xpxe8nzb.mjs",
+        ],
+        changed: &[
+            "bridge.d.ts",
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "extractFromBunfs.js",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "309->310",
+        added: &[
+            "core-4pv47a2z.mjs",
+            "core-bz5kkzv0.mjs",
+            "core-c86d180z.mjs",
+            "core-pzfwbvz7.mjs",
+        ],
+        removed: &[
+            "core-1qw7dszx.mjs",
+            "core-cz9sh4ze.mjs",
+            "core-nmrdrt5c.mjs",
+            "core-nxm5bcfb.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "310->311",
+        added: &[
+            "core-0bjz4v5z.mjs",
+            "core-ptjgnrch.mjs",
+            "core-rbkmqzx3.mjs",
+            "core-zbftdwza.mjs",
+        ],
+        removed: &[
+            "core-4pv47a2z.mjs",
+            "core-bz5kkzv0.mjs",
+            "core-c86d180z.mjs",
+            "core-pzfwbvz7.mjs",
+        ],
+        changed: &[
+            "README.md",
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "311->312",
+        added: &[
+            "core-azmey26z.mjs",
+            "core-jhgm58v5.mjs",
+            "core-qw4t51gr.mjs",
+            "core-x7q9bdvq.mjs",
+        ],
+        removed: &[
+            "core-0bjz4v5z.mjs",
+            "core-ptjgnrch.mjs",
+            "core-rbkmqzx3.mjs",
+            "core-zbftdwza.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "312->314",
+        added: &[
+            "core-a9vq6p1m.mjs",
+            "core-bb8r6h44.mjs",
+            "core-kzw924e6.mjs",
+            "core-t4mxrz5y.mjs",
+        ],
+        removed: &[
+            "core-azmey26z.mjs",
+            "core-jhgm58v5.mjs",
+            "core-qw4t51gr.mjs",
+            "core-x7q9bdvq.mjs",
+        ],
+        changed: &[
+            "README.md",
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.d.ts",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "314->315",
+        added: &[
+            "core-39qh0swp.mjs",
+            "core-d4nhj2hh.mjs",
+            "core-p0gry34p.mjs",
+            "core-q6qw5xwf.mjs",
+        ],
+        removed: &[
+            "core-a9vq6p1m.mjs",
+            "core-bb8r6h44.mjs",
+            "core-kzw924e6.mjs",
+            "core-t4mxrz5y.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "315->316",
+        added: &[
+            "core-07pvccxf.mjs",
+            "core-0rjxgk9e.mjs",
+            "core-fpeb751h.mjs",
+            "core-jf0rbr11.mjs",
+        ],
+        removed: &[
+            "core-39qh0swp.mjs",
+            "core-d4nhj2hh.mjs",
+            "core-p0gry34p.mjs",
+            "core-q6qw5xwf.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk.mjs",
+        ],
+    },
+    ExtensionHop {
+        hop: "316->317",
+        added: &[
+            "core-b5t19jrj.mjs",
+            "core-j104cwjy.mjs",
+            "core-kpjpwfwz.mjs",
+            "core-q7fanba0.mjs",
+        ],
+        removed: &[
+            "core-07pvccxf.mjs",
+            "core-0rjxgk9e.mjs",
+            "core-fpeb751h.mjs",
+            "core-jf0rbr11.mjs",
+        ],
+        changed: &[
+            "bridge.mjs",
+            "browser-sdk.js",
+            "core.mjs",
+            "manifest.json",
+            "manifest.zst.json",
+            "package.json",
+            "sdk-tools.d.ts",
+            "sdk.d.ts",
+            "sdk.mjs",
+        ],
+    },
+];
+
+#[test]
+fn extension_ledger_binds_every_published_hop_from_0_3_295_to_0_3_317() {
+    let identity: serde_json::Value = serde_json::from_str(LATEST_IDENTITY).unwrap();
+    let inventory: serde_json::Value = serde_json::from_str(LATEST_INVENTORY).unwrap();
+    let protocol: serde_json::Value = serde_json::from_str(LATEST_PROTOCOL).unwrap();
+
+    let published: Vec<&str> = identity["published_hops"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|hop| hop["version"].as_str().unwrap())
+        .collect();
+    assert_eq!(
+        published,
+        [
+            "0.3.296", "0.3.299", "0.3.300", "0.3.301", "0.3.302", "0.3.303", "0.3.304", "0.3.305",
+            "0.3.306", "0.3.307", "0.3.308", "0.3.309", "0.3.310", "0.3.311", "0.3.312", "0.3.314",
+            "0.3.315", "0.3.316", "0.3.317"
+        ]
+    );
+    // Every published hop keeps the exact coupled native point, manifest
+    // schema and eight-platform binding.
+    for hop in identity["published_hops"].as_array().unwrap() {
+        let version = hop["version"].as_str().unwrap();
+        let patch = version.strip_prefix("0.3.").unwrap();
+        assert_eq!(hop["native_version"], format!("2.1.{patch}"), "{version}");
+        assert_eq!(hop["harness_schema"], 1, "{version}");
+        assert_eq!(hop["manifest_signature_enforcement"], "flag", "{version}");
+        assert_eq!(hop["file_count"], if version < "0.3.305" { 19 } else { 21 });
+        let platforms = hop["platforms"].as_object().unwrap();
+        assert_eq!(platforms.len(), 8, "{version}");
+        let deps = hop["optional_dependencies"].as_object().unwrap();
+        assert_eq!(deps.len(), 8, "{version}");
+        for (name, pinned) in deps {
+            assert_eq!(pinned.as_str().unwrap(), version, "{name} at {version}");
+        }
+        assert_eq!(
+            inventory["tree_sha256"][version], hop["tree_sha256"],
+            "identity and inventory bind the same tree digest for {version}"
+        );
+    }
+    // Exact adjacent path classifications for the whole extension.
+    let set = |items: &[&str]| {
+        items
+            .iter()
+            .map(|item| (*item).to_owned())
+            .collect::<BTreeSet<_>>()
+    };
+    for hop in EXTENSION_HOPS {
+        let record = &inventory["adjacent_hops"][hop.hop];
+        assert_eq!(
+            string_set(&record["added"]),
+            set(hop.added),
+            "added paths in {}",
+            hop.hop
+        );
+        assert_eq!(
+            string_set(&record["removed"]),
+            set(hop.removed),
+            "removed paths in {}",
+            hop.hop
+        );
+        assert_eq!(
+            string_set(&record["changed"]),
+            set(hop.changed),
+            "changed paths in {}",
+            hop.hop
+        );
+    }
+    // The finite maintained pair map carries exactly the published points and
+    // keeps the unpublished gaps out.
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
+    for patch in [297, 298, 313] {
+        assert!(
+            !ClaudeAgentSdkPackageNativePair::MAINTAINED
+                .iter()
+                .any(|pair| pair.package_version() == format!("0.3.{patch}"))
+        );
+    }
+    let protocol_flags = &protocol["selected_flag_ledger"]["added_non_builder_flag_strings"];
+    assert_eq!(
+        string_set(&serde_json::Value::Array(
+            protocol_flags
+                .as_object()
+                .unwrap()
+                .keys()
+                .map(|key| serde_json::Value::String(key.clone()))
+                .collect()
+        )),
+        ["0.3.299", "0.3.300", "0.3.307", "0.3.317"]
+            .into_iter()
+            .map(str::to_owned)
+            .collect()
+    );
+    assert_eq!(
+        protocol["selected_flag_ledger"]["classification"]
+            .as_str()
+            .unwrap()
+            .contains("never emitted by this route"),
+        true
+    );
+}
+
 #[test]
 fn latest_artifact_ledger_binds_the_published_hops_and_selected_pair() {
     let identity: serde_json::Value = serde_json::from_str(LATEST_IDENTITY).unwrap();
     let inventory: serde_json::Value = serde_json::from_str(LATEST_INVENTORY).unwrap();
     let protocol: serde_json::Value = serde_json::from_str(LATEST_PROTOCOL).unwrap();
-    assert_eq!(identity["official_channel"]["latest"], "0.3.295");
-    assert_eq!(identity["official_channel"]["next"], "0.3.295");
-    assert_eq!(identity["published_hops"].as_array().unwrap().len(), 2);
-    assert_eq!(identity["published_hops"][0]["version"], "0.3.294");
-    assert_eq!(identity["published_hops"][0]["native_version"], "2.1.294");
-    assert_eq!(identity["published_hops"][1]["version"], "0.3.295");
-    assert_eq!(identity["published_hops"][1]["native_version"], "2.1.295");
+    assert_eq!(identity["official_channel"]["latest"], "0.3.317");
+    assert_eq!(identity["official_channel"]["next"], "0.3.317");
+    assert_eq!(identity["published_hops"].as_array().unwrap().len(), 19);
+    assert_eq!(identity["published_hops"][0]["version"], "0.3.296");
+    assert_eq!(identity["published_hops"][0]["native_version"], "2.1.296");
+    assert_eq!(identity["published_hops"][18]["version"], "0.3.317");
+    assert_eq!(identity["published_hops"][18]["native_version"], "2.1.317");
     assert_eq!(
-        identity["published_hops"][1]["tarball_sha256"],
-        "704b1228401f951e1cdb3a1782b97893d3caee64afe162a4f7fbda8106273c7b"
+        identity["published_hops"][18]["tarball_sha256"],
+        "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f"
     );
     assert_eq!(
-        inventory["tree_sha256"]["0.3.295"],
-        "9c113fe7393277787cd4964869b4c0a932055578b2538b4944f3af64b49c6c99"
+        identity["official_channel"]["unpublished_gaps_in_extension"],
+        serde_json::json!(["0.3.297", "0.3.298", "0.3.313"])
     );
     assert_eq!(
-        inventory["adjacent_hops"]["294->295"]["added"]
+        inventory["tree_sha256"]["0.3.317"],
+        "a374a2e4ba725610430e45d488aa7126bcd7007f76544fed59be12bae70ab388"
+    );
+    assert_eq!(
+        inventory["adjacent_hops"]["316->317"]["added"]
             .as_array()
             .unwrap()
             .len(),
-        2
+        4
     );
     assert_eq!(
-        inventory["adjacent_hops"]["294->295"]["removed"]
+        inventory["adjacent_hops"]["316->317"]["removed"]
             .as_array()
             .unwrap()
             .len(),
-        2
+        4
     );
     assert_eq!(protocol["default_pair"], "0.3.293 / 2.1.293 (unchanged)");
     assert_eq!(protocol["wire"], "swallowtail-claude-agent-sdk-jsonl-v1");

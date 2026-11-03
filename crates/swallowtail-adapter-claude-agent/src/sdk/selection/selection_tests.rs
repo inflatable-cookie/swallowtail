@@ -28,8 +28,12 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
     );
     assert_eq!(claim.latest_qualified(), &version(CLAUDE_AGENT_SDK_VERSION));
     assert_eq!(claim.milestones().len(), 1);
-    for patch in 284..=295 {
-        let point = version(&format!("0.3.{patch}"));
+    for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
+        let patch = pair
+            .package_version()
+            .strip_prefix("0.3.")
+            .expect("maintained package version");
+        let point = version(pair.package_version());
         let assessment = claim.assess(&point);
         assert!(assessment.is_permitted(), "published package patch {patch}");
         assert_eq!(
@@ -37,7 +41,10 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
             CLAUDE_AGENT_SDK_BEHAVIOR
         );
     }
-    for rejected in ["0.3.283", "0.3.296", "0.3.259-rc.1"] {
+    // The window claim spans its segment arithmetically; the unpublished
+    // gap points inside it (0.3.297, 0.3.298, 0.3.313) are kept out by the
+    // finite maintained pair map, not by this claim.
+    for rejected in ["0.3.283", "0.3.318", "0.3.259-rc.1"] {
         assert!(
             !claim.permits(&version(rejected)),
             "unqualified point {rejected} must be rejected"
@@ -62,12 +69,20 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
         &version(CLAUDE_AGENT_SDK_NATIVE_VERSION)
     );
     assert_eq!(native.milestones().len(), 1);
-    for patch in 284..=295 {
+    for patch in ClaudeAgentSdkPackageNativePair::MAINTAINED
+        .iter()
+        .map(|pair| {
+            pair.native_version()
+                .strip_prefix("2.1.")
+                .expect("maintained native version")
+                .to_owned()
+        })
+    {
         assert!(native.permits(&version(&format!("2.1.{patch}"))));
     }
     // The Claude Code routes sit on the same native version family. Their
     // qualification never transfers here and this one never transfers back.
-    for rejected in ["2.1.283", "2.1.296", "0.3.293"] {
+    for rejected in ["2.1.283", "2.1.318", "0.3.293"] {
         assert!(!native.permits(&version(rejected)));
     }
     assert!(claude_agent_sdk_native_binding(CLAUDE_AGENT_SDK_NATIVE_VERSION).is_some());
@@ -108,14 +123,36 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
 
 #[test]
 fn package_and_native_points_keep_the_published_coupling() {
-    for patch in 284..=295 {
+    for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
+        let package = pair.package_version();
+        let native = pair.native_version();
+        assert!(super::package_native_pair_matches(package, native));
+        assert_eq!(
+            package.strip_prefix("0.3.").expect("package prefix"),
+            native.strip_prefix("2.1.").expect("native prefix")
+        );
+    }
+    // The unpublished gap points are not maintained pairs even though the
+    // window claim spans them arithmetically and their patch numbers would
+    // satisfy the coupling predicate.
+    for patch in [297, 298, 313] {
         let package = format!("0.3.{patch}");
         let native = format!("2.1.{patch}");
         assert!(super::package_native_pair_matches(&package, &native));
+        assert!(
+            !ClaudeAgentSdkPackageNativePair::MAINTAINED
+                .iter()
+                .any(|pair| pair.package_version() == package)
+        );
+        assert!(
+            !ClaudeAgentSdkPackageNativePair::MAINTAINED
+                .iter()
+                .any(|pair| pair.native_version() == native)
+        );
     }
     assert!(!super::package_native_pair_matches("0.3.292", "2.1.293"));
     assert!(!super::package_native_pair_matches("0.3.293", "2.1.292"));
-    assert!(!super::package_native_pair_matches("0.3.294", "2.1.295"));
+    assert!(!super::package_native_pair_matches("0.3.316", "2.1.317"));
 }
 
 #[test]

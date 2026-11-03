@@ -148,9 +148,9 @@ exact one-point claims. The open path has one narrow observation-only exception
 for a newer Node runtime that passes the sidecar floor:
 
 - `claude-agent.sdk.package`: `@anthropic-ai/claude-agent-sdk`
-  `0.3.284..=0.3.295` (Research 420)
-- `claude-agent.sdk.native`: `2.1.284..=2.1.295`, coupled point-for-point to
-  the package version by each shipped `manifest.json` (Research 420)
+  `0.3.284..=0.3.317` (Research 472)
+- `claude-agent.sdk.native`: `2.1.284..=2.1.317`, coupled point-for-point to
+  the package version by each shipped `manifest.json` (Research 472)
 - `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
@@ -158,22 +158,30 @@ for a newer Node runtime that passes the sidecar floor:
 - `claude-agent.sdk.sidecar`: the exact source-tagged sidecar revision
   (opaque)
 
-The `2026-10-09T00:14:21Z` npm re-probe found `latest` and `next` at package
-`0.3.295`,
-whose embedded manifest identifies native `2.1.295`. Research 420 records the
-exact `.294` and `.295` artifacts and classifies both adjacent selected-surface
-hops. In `.295`, the SDK serializes named CLI options as `--flag=value`; the
-selected flag names and values do not change. Sidecar configuration and the
+The `2026-11-03T08:45:56Z` npm re-probe found `latest` and `next` at package
+`0.3.317`,
+whose embedded manifest identifies native `2.1.317`. Research 472 records the
+exact artifacts for every published hop `0.3.296` through `0.3.317` (the
+unpublished `0.3.297`, `0.3.298`, and `0.3.313` stay outside the maintained
+pair set) and classifies each adjacent selected-surface hop: the option
+defaulting, the selected `Query` method bodies, the argv builders, and the
+`SIGTERM`/`SIGKILL` cleanup bodies are identical at every hop after tokenizing
+the minified output, and the exact per-hop string ledger adds no route flag.
+Sidecar configuration and the
 public route mapping remain compatible, so the package and native claims now
-qualify every published point through `.295` on the existing behavior revision.
+qualify every published point through `.317` on the existing behavior revision.
 The Node, wire, and sidecar source axes remain separate and unchanged. Research
-416 remains the historical `.294` stop record.
+416 remains the historical `.294` stop record and Research 420 the `.294`/`.295`
+qualification.
 
-The `.295` declaration adds overage observations, pasted-content bounds, and
-hook failure policy, while the SDK also changes optional MCP tool-search
-description handling. This route projects only the four bounded per-turn usage
+The extension's declarations add settings rows, capability strings, hook
+failure policy gates (`onFailure` with `hook_on_failure_supported`/`hooks_applied`),
+new message variants, cache-creation usage splits, and SDK-internal git and
+MCP name-parsing constants, while the SDK also adds a nested-session argv
+detection predicate (`--sdk-url`). This route projects only the four bounded per-turn usage
 counters and account-presence labels; it sends no pasted-content field, sets
-`hooks: {}`, and uses only explicitly declared stdio MCP servers. Required MCP
+`hooks: {}`, and uses only explicitly declared stdio MCP servers. Unknown
+message variants project as unknown and are dropped. Required MCP
 servers request loading, optional servers may use tool search, and every tool
 call remains subject to the existing per-call mediation. These SDK changes add
 no route capability, permission, setting source, or lifecycle operation.
@@ -181,12 +189,14 @@ no route capability, permission, setting source, or lifecycle operation.
 Two evidence limits belong to this family and must not be papered over. The
 npm tarball digest is the sole package identity: npm carries no `gitHead`,
 the tarball is staged from a private monorepo, and the public GitHub
-repository holds no SDK source. Research 420 therefore compares the exact
-published tarballs and their selected source bytes; the upstream changelog is
+repository holds no SDK source. Research 420 compared the exact
+published tarballs and their selected source bytes; Research 472 tokenizes each
+published bundle and freezes an exact per-hop string ledger. The upstream changelog is
 context, not a shipped-behavior oracle. The embedded native source for the
 private build commits is also unavailable in the public repository. The exact
-native package manifests and downloaded Darwin arm64 binaries bind the point;
-static inspection is not runtime evidence. Shipped declarations alone are
+native package manifests bind the point; per Research 367 no platform binary
+is downloaded for hop walks. Static inspection is not runtime evidence.
+Shipped declarations alone are
 not runtime evidence either — the manifest's tested-wrapper list is stale.
 Only runtime `capabilities` observed from first-turn `system/init` may be
 treated as behavior.
@@ -196,7 +206,8 @@ module path and the shipped native manifest from the host-supplied manifest
 path. Preparation selects an exact coupled package/native point with
 `ClaudeAgentSdkSessionPreparation::with_package_native_pair`; the finite
 `ClaudeAgentSdkPackageNativePair` choices cover `0.3.284`/`2.1.284` through
-`0.3.295`/`2.1.295`. Existing callers retain the `.293` pair by default. The
+`0.3.317`/`2.1.317` over every published point (the unpublished `0.3.297`,
+`0.3.298`, and `0.3.313` are absent). Existing callers retain the `.293` pair by default. The
 driver takes both expected versions from the prepared plan and passes them in
 its private launch messages. Before constructing the SDK query, the sidecar
 checks that the selected pair is maintained, the loaded package metadata has
@@ -525,7 +536,7 @@ value is in that open-time list, so an unsupported model is rejected before
 `Query.setModel` is called.
 
 `set_model` reports the exact model returned by the sidecar only when the SDK
-supplies that value. The qualified SDK declaration through `0.3.295` exposes
+supplies that value. The qualified SDK declaration through `0.3.317` exposes
 `Query.setModel` without a returned model value, so its normal outcome is the
 typed `swallowtail.claude-agent.sdk.model_change_unconfirmed` failure. In that
 outcome the previously confirmed model remains effective. No requested value
@@ -542,7 +553,7 @@ scope.
 
 ## Resume And Session Listing
 
-The qualified SDK declaration through `0.3.295` exposes `persistSession`, `resume`, and
+The qualified SDK declaration through `0.3.317` exposes `persistSession`, `resume`, and
 `resumeSessionAt` on `Options`, plus the bounded `listSessions` function. The
 prepared profile keeps persistence disabled by default. Calling
 `with_persist_session(true)` opts into provider-owned retention, adds the
@@ -578,7 +589,7 @@ transcript content.
 
 ## Client MCP Servers
 
-The qualified SDK declaration through `0.3.295` exposes `Options.mcpServers`, `strictMcpConfig`, and
+The qualified SDK declaration through `0.3.317` exposes `Options.mcpServers`, `strictMcpConfig`, and
 `Query.mcpServerStatus()`. This route maps only consumer-declared **stdio**
 servers. SSE and HTTP configs carry URLs and optional headers; in-process
 `sdk` servers execute callbacks inside the sidecar. Neither shape is
@@ -717,7 +728,7 @@ carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`,
 and Research 367 rebound them to `0.3.284`/`2.1.284`. Research 416 extended
 the package/native segment through `0.3.293`/`2.1.293`; Research 420 extends
-it through `0.3.295`/`2.1.295` without extending that live evidence, so the
+it through `0.3.317`/`2.1.317` without extending that live evidence, so the
 compiled tuple projects the
 unqualified truth with the reason `live_tuple_not_compiled` until a separately
 authorized live requalification runs on the new tuple. The qualification

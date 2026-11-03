@@ -1,0 +1,1917 @@
+{
+  "route": "claude-agent.sdk",
+  "scope": "adjacent selected-surface continuation from retained 0.3.295 through official current stable 0.3.317",
+  "official_channel": {
+    "registry": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk",
+    "selected": "dist-tags.latest",
+    "observed_at": "2026-11-03T08:45:56Z (registry packument pull; re-probed immediately before push)",
+    "latest": "0.3.317",
+    "next": "0.3.317",
+    "previous_latest": "0.3.295 (Research 420)",
+    "unpublished_gaps_in_extension": [
+      "0.3.297",
+      "0.3.298",
+      "0.3.313"
+    ],
+    "nothing_published_after": "0.3.317"
+  },
+  "accepted_base": {
+    "package_version": "0.3.295",
+    "native_version": "2.1.295",
+    "tarball_sha256": "704b1228401f951e1cdb3a1782b97893d3caee64afe162a4f7fbda8106273c7b",
+    "tree_sha256": "9c113fe7393277787cd4964869b4c0a932055578b2538b4944f3af64b49c6c99",
+    "source": "Research 420; the exact package was reacquired and every retained per-file hash reproduced before comparison."
+  },
+  "published_hops": [
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.296",
+      "published": "2026-10-09T16:59:17.523Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.296.tgz",
+      "tarball_sha256": "e966be99b6f047d56165e2ec03822f17a49beebd48ac8efb91dab1e48bcf69a7",
+      "tarball_sha1": "255c4d284de2262fa8447a94a06d2541c0f5d20c",
+      "npm_integrity": "sha512-Y+cZ2BT8X94mQ9GJOVyIqhjC/nWGvwozUVLjdkzX7aSt+zuo5tgk7Hdv9V7tEUQ9fKnEuiL6moYNWDeHqCD4Lw==",
+      "file_count": 19,
+      "tree_sha256": "11dd626df9ad64d819c9cc243e63e864cd6d30fdfffd0c058acec77f08fc805b",
+      "native_version": "2.1.296",
+      "native_manifest_sha256": "e50e872d91f3b7da2fb3d8d38505d709e0a90f48da1951dd51176930c8da8270",
+      "native_manifest_zst_sha256": "e1d8af9d6a6b18a4a6ca3061c72647db0adbd16e79a1b57b33d0721e48202ab9",
+      "native_commit": "fdb6c17a97b6e0e3cf15e3566663fca58e7c43a9",
+      "build_date": "2026-10-09T14:46:35Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "c9b5341637becbd423ddffc5b254afb645682a3868cb708bbc6cc0e7bb419937",
+          "size": 240664432
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "a6bf4f30be241053a923f3820ad23c5991d2f5ac2935b3a8dd64da218d9cc603",
+          "size": 249194752
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "f1f6e96e0d8342b9dbf41d7e88255397a6a52ce3d8736ad6a4c6b59c9b62fefa",
+          "size": 256434168
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "24972e3bc859fab2b46ed4c1e51f7d6130f06d3bd550811a114640de3370d0de",
+          "size": 257068216
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "b0bbc936a82930933d7d5645081050d5f827a946cf6abc6575383b777a0feec0",
+          "size": 248788800
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "94a1ccc6ffc9b0889c6b2b80e202885c8a575766775377398daa4db5fd89417f",
+          "size": 250818648
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "76de74f7694a5bdc03378a5f837c9e132827bf004c98c276bc4e9094ff06769a",
+          "size": 260489376
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "a652a17f5a324d2d9ad9995cc047145f8176b9a4b4f28bbd3aa0708a22679e3b",
+          "size": 248013984
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.296",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.296"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.261",
+        "0.3.263",
+        "0.3.265",
+        "0.3.266",
+        "0.3.267",
+        "0.3.268",
+        "0.3.269",
+        "0.3.270",
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.285"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.299",
+      "published": "2026-10-14T00:23:46.839Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.299.tgz",
+      "tarball_sha256": "f0beb43b8a11cfe7eddc2441cdfa3fd9075a620f5157b9cf4de4dfd7fb20bb6b",
+      "tarball_sha1": "cf5d379e65366cfaed577cb496f7108b5515a62a",
+      "npm_integrity": "sha512-E3JzXZ/xza/FW/13MfLYyW1z4l/kut1WY4GXFoLkqJlLm5ilK9cey/dA9SwjNy1B1N206gDlPAzXSM9AUBErbQ==",
+      "file_count": 19,
+      "tree_sha256": "f9aeed24db8c7e7a8414b3c8bf751baab678a11a20b528eb73942f50fe1835bd",
+      "native_version": "2.1.299",
+      "native_manifest_sha256": "5052df4b25f669eb175a888bf9a43b9d3b9745e91f23f845d5ce48a230c43262",
+      "native_manifest_zst_sha256": "938310368c0096d584bcf9b25d1e3be23b4e404444950d8e0bd83c87a3ffbcbc",
+      "native_commit": "c416f56ec7eca27e49747c35af51d5c92c856ba1",
+      "build_date": "2026-10-13T22:05:00Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "ba5ab7b8c195fa03ab8d5bf3915c76153b576a2c40e79a5c46e265e7ed9744b3",
+          "size": 247931696
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "099dcc53dabbbefabed8926dab25b0318775c175a7c87bb6ba6c54fde9f8ece2",
+          "size": 257765072
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "4cd5ab006b49dc12a247fed4dbc42a925ad1aea1e711d9aa24587d285ee87c2f",
+          "size": 264626168
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "2d894a4b1bfaaa9aab72aeff7803e3c73bc2510f279a171f6b8f59f72d17d077",
+          "size": 265342136
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "3e90af8f81cf7db932bbda3ab2ba57facb1e2a19a43f911b70536bf627472757",
+          "size": 256784472
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "af9b922a7a018c69eb6de3a9d401b32b6cdfba3c01bf75a5edb6b477ef17f117",
+          "size": 258953576
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "295b49ec092f31a7de9c6ff286d9d8f120a4f029b9ad9a5ac0b12c35cbf4df2b",
+          "size": 269231264
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "a34fe98210ae38e55543e094036fea698db93bb4bba458c63d560b19ed2a56a2",
+          "size": 255381152
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.299",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.299"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.266",
+        "0.3.267",
+        "0.3.268",
+        "0.3.269",
+        "0.3.270",
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.300",
+      "published": "2026-10-14T14:28:12.929Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.300.tgz",
+      "tarball_sha256": "2eebd96411c12dfa3b9294b632c02665113003ad85645d4cfbb9cf5a8a161baa",
+      "tarball_sha1": "dba226e363aa2ac9d5d34f6f52caaa67cf2bb069",
+      "npm_integrity": "sha512-3NGPEUj+VTMQAQ0vaUUQtrce6rNb9a4XhY8QKIOLUp9mDkdbwrrjjD9oMKcDpcLhFKqZdTc02RBUo55GrbY9CA==",
+      "file_count": 19,
+      "tree_sha256": "7ce2b67d4cfb29b101fbd0a7f3bfe1b8b9b055c7eca39e132291578e870534ef",
+      "native_version": "2.1.300",
+      "native_manifest_sha256": "fb62dae2893ff954bbf8caa9f4b9345737b98a210e3a6085bf9feec9ddf5d9ca",
+      "native_manifest_zst_sha256": "ecafe7d9e42f0bd62c1b544a30fd8d272abec941e07536e7e2ab5c2f44ea3a9e",
+      "native_commit": "c6733ae1276880507ca0c5b053ae18fb0df090d6",
+      "build_date": "2026-10-14T13:29:53Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "475517caa611e3318a2f298fa071287ec98955538df78c58f709ecc01e5ae2d3",
+          "size": 249556880
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "5824fc36863e70bbd070491bb9359e217d3f17b38c45697c085b31a3a67356b3",
+          "size": 259416272
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "ae2295ae2da156936bf5831ab01971ce924d0c9a0af174e28d96fffa8d5fa0a6",
+          "size": 266264568
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "674deba0bba9aee479f4503c438b49303b6fdd304b9a471b14977aaec5215453",
+          "size": 266972344
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "267fecafb9df3dc1ef93f01ea936742455151d38b9bceebc4c12b531df827a2c",
+          "size": 258422872
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "426e7b0a3726d656babc943a92392eb3653377587658a240ab442d19e4eef3c9",
+          "size": 260587880
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "56810a111c01dcd218b42727c23fd8763be42320038b1adcac93cf599fac2de2",
+          "size": 270863520
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "fef0df9c7f72b2d7d0c26b1702f4646113be2c45a5b40eb5bbb7c93f5cbd5f8b",
+          "size": 257010848
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.300",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.300"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.267",
+        "0.3.268",
+        "0.3.269",
+        "0.3.270",
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.301",
+      "published": "2026-10-15T14:35:13.629Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.301.tgz",
+      "tarball_sha256": "1cf0f6a61294cb7edd3ef2682828139ba999f7dd263e46d75d4135ddd3a55b05",
+      "tarball_sha1": "10f6650c9d421d971f28dd681c0376bd63cb73bf",
+      "npm_integrity": "sha512-mAe4zIFRL9BejcFHQVc+D0gxrMR/7mDt5GgdekfWB2DNWZebHoeGhgP2R3rZ/BcEZnW10nSGV2IwWyywwZw83Q==",
+      "file_count": 19,
+      "tree_sha256": "d88ef28b991db5343a534da64f29e4ac72da1d611bde25e86be343b632a52658",
+      "native_version": "2.1.301",
+      "native_manifest_sha256": "8517444f8515ccb572272d6dd666999aa7115fd14ae4207631edaa25d4dfce40",
+      "native_manifest_zst_sha256": "6eee8adc599bbd06fc314a2b387ad499ac37c956fde62627ab17dcf6051b4c0e",
+      "native_commit": "12a1baed117fbcc7e0695ab8aa6d2a4c6bd00cbb",
+      "build_date": "2026-10-15T14:01:03Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "1f04c69e1c24e4d0a716a863af0aad8fc64d49a499334c29701f073700276b99",
+          "size": 250541840
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "3439427bfce962fddcf557c5a058ca914fa63e06fee894f8e12a3f10e04d1871",
+          "size": 260406992
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "1e119036a802d359ba5f9886428e031586e8796f7a858d5a8ee179ac7b8604f0",
+          "size": 267247608
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "bc1aad9982c7b59c7d889ff92595d61cf46e0a6eae074cb551d932a989bcd222",
+          "size": 267955384
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "d0a6b24d157d061cd5c406eb4b8f3d4016b646c8802b47babd3625c636e4433d",
+          "size": 259405912
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "081a7219cf075e5c5d2a39796517ae2fa06610d99f3498e7ee5c577f0da687fa",
+          "size": 261566824
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "84d61feeb1a07e5a5b3354d68432591cac18a5d38a419a30d86d0f3ad8cba397",
+          "size": 271840416
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "20ec11897e18c156de0be6b35a54b709c503d0b61070c98ec34dd9102423a4a2",
+          "size": 257987744
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.301",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.301"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.267",
+        "0.3.268",
+        "0.3.269",
+        "0.3.270",
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.302",
+      "published": "2026-10-16T16:47:53.067Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.302.tgz",
+      "tarball_sha256": "c7d7d61d6b0b7b7bb05cc053f229c5df88f151550ead0624c7393939d0d8e1f1",
+      "tarball_sha1": "a9ee19863be63b08f73d5e3adb94b75d8bdb534e",
+      "npm_integrity": "sha512-VUxgraOIxnu4COhS9IkP3AF21kh9KOOF8oyU7pc6q0PfzMPlarbnhXvuhCNIPPYddhIev+17LLq1nZ700GdLBg==",
+      "file_count": 19,
+      "tree_sha256": "a2ade0409300747aad061e502b165bcdc7015a1562edda04ac3dcb85e8745cfe",
+      "native_version": "2.1.302",
+      "native_manifest_sha256": "d7d4f193bfebb48733027b0dc43d6996d99f5335d152961a729730e55bbd5aa1",
+      "native_manifest_zst_sha256": "0836a8575298b148e79dc1461d68f6a3959ff197216de0bc375beb0eb8b25abe",
+      "native_commit": "2ef144e6f98c1c99d082b735e4b38f50e3391e55",
+      "build_date": "2026-10-16T16:13:51Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "5262ce9de86243fed0d21edc39b271555d56780d0112e2b194439fe1c6662d37",
+          "size": 267956720
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "b9a913114f42870ec8e38848c88c855d73f73187871ec2e1ad05bbe54029d9ac",
+          "size": 279242736
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "2bd4f4e5ed5cb09955b490098f745321cb5491e7ea8c752ba1e3bb010cdadb10",
+          "size": 285335616
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "60d7eb7f12fbb28a52533fe8be5884097403562aa02dc73991a021c7067e29a5",
+          "size": 285793528
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "58dd401b704351f4b70a0bb6faecbc1eb1405057b4dd4cf48a7beae93b4ca143",
+          "size": 277560568
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "39395c4d6fef3e38bf59d75890593a5474181c8e96534b54562312503685f787",
+          "size": 279426576
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "3ab075f78998efef8b87f491c2e4a39c309dddf44e51d0103eba4f3713d2a0ae",
+          "size": 290211488
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "e2c445a4fa8a8c92b64f29bf56dc7addd1770764214ed18023bab8f544f584ed",
+          "size": 274492064
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.302",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.302"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.269",
+        "0.3.270",
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.303",
+      "published": "2026-10-18T21:15:49.275Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.303.tgz",
+      "tarball_sha256": "86dc29477a33792a85088236c2d64a58881daca14fc98afbefa44c73799371fc",
+      "tarball_sha1": "92b7de63e7124a5ff71c332c5ff6fd1e39116275",
+      "npm_integrity": "sha512-XBql04V40xr+fmGJh8AmIpqRZKFNrs99BzXzzSVlx+uE5NjFCzKmkNKTdMD0DQtDvFJlijOLoh1siaH+au9Psw==",
+      "file_count": 19,
+      "tree_sha256": "b478a04654f52e81e7dcf736eb7ff8504e7a1ffe31f79a522247f4053737612e",
+      "native_version": "2.1.303",
+      "native_manifest_sha256": "54d00d789ff0b78557f3b58ae12e012af12dbe0a07388f52d1d239c024aa166a",
+      "native_manifest_zst_sha256": "e2da49a4f426ce80e876dc14fa5941b1f289eda6573a572be900ce5a9e277dac",
+      "native_commit": "07df2aedd2d01d2f60907b8404acbda187b04072",
+      "build_date": "2026-10-18T20:40:12Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "d2da3b003dc08b88b7230469014fe3e1dc6fe94bc8f648e89b34175d30269370",
+          "size": 267973136
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "6c5d63b43568c5d60963d40f05b0087cb03ba44a90740d27adc505f4157806db",
+          "size": 279275760
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "f384f49826336d4ac0484ac6ac9d8d16f64d244d186ce227cbd7cc088c03315d",
+          "size": 285335616
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "375988f457756524234695cf2d8f64ace99c5f68682e47ea24862a843c191450",
+          "size": 285809912
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "a0d9d4dcb99a1782cdfc332fed8510467e99efc7ff2f3d7443fea27d9af55e7e",
+          "size": 277560568
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "8dfd02ad4590c6f4c419ec73af4f5462223a07f64495e2c2fce45990faf1ede6",
+          "size": 279442960
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "1787c60619bad78543c67e4d9d8a868869c35a904f2a85eb9ea46c4808af196b",
+          "size": 290228384
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "a5d5b594a639dab03da1ea0e1a1aedc1885284cc42e14cb65b7527250bc7ea90",
+          "size": 274508960
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.303",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.303"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.270",
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.304",
+      "published": "2026-10-19T19:48:33.616Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.304.tgz",
+      "tarball_sha256": "e2c92532d3fa5cd76b18266de39f3f7ee6914a2fe608b873f6f1160c081fb3ad",
+      "tarball_sha1": "2f89b45da4833c76f36a286ea11263bb1f2ad36c",
+      "npm_integrity": "sha512-Ivkt7/UAkATibzvqT31eY71lAp7YdPzfbKDpmbHN9+AQWFh/Ac6tYkL2J1sipJ7tU4IK48w0YxuRW9aI//veFA==",
+      "file_count": 19,
+      "tree_sha256": "4439343ca7d3a6f2f5207812e2a5fccf7fe90b544e735e18e57221833e423fe3",
+      "native_version": "2.1.304",
+      "native_manifest_sha256": "af58db0cba5068ca3a3541e0b168d048531f039a76eede77d8f3b58d8d2fd9ba",
+      "native_manifest_zst_sha256": "6d145c58c274f1d8817189ff63675dc9e8f95342246cfc11fe31c2dc6a129b8f",
+      "native_commit": "17ab70404e5b632fe060207effb0b440788363ba",
+      "build_date": "2026-10-19T18:30:38Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "b9ac5374839f14abf3f1f45610637c332b5daee5ce0d1634726cef87aab78e6a",
+          "size": 271161296
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "f2ae409b46b1bdc1dec7afa12c6a094ff64e7d4ca272ca09f69dd0080c846703",
+          "size": 282334128
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "c487117526509ab6d2ee6013e14f181faf68d6d6afe6bb0d4b2b4a9feca5ecb3",
+          "size": 288612536
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "ea0f135784631619a7a409d07322ecec964f9cc4fd377508ed1ba3f141f27912",
+          "size": 288730480
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "d15758462f08940f6d2736cd422e291258b9bcaf09c013b63dcfca6cc69a5316",
+          "size": 280772600
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "e11074c51f730bd91d0cd9568471d828d6552796b5dbcde10e7aaca19f1650c8",
+          "size": 282384648
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "019e5174d5d954585edb1a946fe280e44a973050b4897034adf0e16306f85fdd",
+          "size": 293227168
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "ac37b04c19f09bea6638d1b3ca40131566266fc7b599a405efd76cd04df9e9a7",
+          "size": 277572256
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.304",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.304"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.271",
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.305",
+      "published": "2026-10-20T19:29:33.719Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.305.tgz",
+      "tarball_sha256": "cc6bc714e69298a1bd0fd2f962a5f093b989b1bb7e7895611a9ead93d93f25a4",
+      "tarball_sha1": "6c3aab7cb4e69718076362d894a5007cd3f882a2",
+      "npm_integrity": "sha512-trQdV76nXgJpvcYBQ9TI2e1OAWRVoEIgnuC2x1KEw4MAtyrJsb7UXkU/lNXuy40g5jiaFEf43iAepgOzcNep8A==",
+      "file_count": 21,
+      "tree_sha256": "73361164416c3fb9ebd277c21c9c08b6f2e6a4830acbfe8eb7937d1277c9b1b1",
+      "native_version": "2.1.305",
+      "native_manifest_sha256": "6a9678036996a4722f696703864aa1849b77d962401d48303bab4ba5b6088cae",
+      "native_manifest_zst_sha256": "a7cac1d6651384c3d4fe7e0b420f17e565aafedf627624e908467ce75a37ed01",
+      "native_commit": "6e723756d1226ddc2a4fefe5586e02bcc6a0501f",
+      "build_date": "2026-10-20T18:24:45Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "ea3ea3c08d2a9634a4651e687fcf900d410c489bce2b00f22bd7352b91ba704f",
+          "size": 272984176
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "af7ad8d6d8b1e49059988f6657d91bb8b9feac127bf8bec005c4c27d0093f153",
+          "size": 284167840
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "5265a60217e667b75e126e887b49ac0f168ad8bb13c605c3e3df528519876dc0",
+          "size": 290447544
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "86cb722ab68348877dba7971e4d0c659919e05e6228c05e006e83da320e656ef",
+          "size": 290532720
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "7fc83af6edf609219dd6412ae2c9a592a1903b912baf61779adc5b41159af333",
+          "size": 282608984
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "9c517d738c8bd608c0ea97f12ad20655a5f28470c99181d626cba370c1dbddba",
+          "size": 284192368
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "0ce7a3942cdd0c89b3e32173362b713aea9e8c24e1219976bad3984e8efadfd1",
+          "size": 295628448
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "16f5e4ece22ab453298403d38f065b6eb83c465ed07ae8e6fa7a2025e0e4fbe2",
+          "size": 279823008
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.305",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.305"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.272",
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.306",
+      "published": "2026-10-21T02:29:36.007Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.306.tgz",
+      "tarball_sha256": "d5515e70cefb2d56845e9eb140911e84aa274ba405b6b883acaeb19b7f590f40",
+      "tarball_sha1": "4474d809b6d7bb1a1c6ffbfb5f4542aa9c302435",
+      "npm_integrity": "sha512-kmxcd+4WNhqhqnzODRPM5aOKb1EH2EdlRsf7ZeMx8uQsC1tHAHgHftQGFXGT8yMaYaYlDP9BGYJy1/aYv7IhkQ==",
+      "file_count": 21,
+      "tree_sha256": "7bfe67770c918a4afd68b3b155841f4f49875c6e1ad596efd565a22914bb3ac4",
+      "native_version": "2.1.306",
+      "native_manifest_sha256": "2c2e75d5231f4169ca23e4a14f62608bd862bca4e21d7eb64456e8a9140f7896",
+      "native_manifest_zst_sha256": "17fc468385bcd53194f0709e70a6ccdee07940514f24e4edc5324db44531ddfe",
+      "native_commit": "01ae8327ca9931db91a0802d6e8e377419dd44e6",
+      "build_date": "2026-10-21T01:32:56Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "b5d795b7760032d79954b55a9cd1876dcf3a8dc9608fd6bb9f618593f69fd44b",
+          "size": 272984176
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "fc273f4caaeb11189bfed82251496728cf1e650563cb9b5f70d91ec6bec42c17",
+          "size": 284167840
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "77d257d5e8b8730ec61d5a4992a8eb65550aaf9589f464988aa1a9684338d801",
+          "size": 290447544
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "520bc6c1f40af466bd03a278b5ae1af1a2938bc7de5b9e5cb15526da20d71cfe",
+          "size": 290532720
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "cfd2e1ee88ed3d5653dffedccb6bdd3c9c1ec8718b7f9f9e1a4fcbcd2ab72e1f",
+          "size": 282608984
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "a0d3de9061d31ce3d4bea75fbe52a99764ef2eb7a68feaf6f5438d3f3a2091d9",
+          "size": 284192368
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "f6bc9de38f507c36c9a3bb0085a59a27e32156e2208252bf1707c4e3ef309114",
+          "size": 295628960
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "4f0c6c80521987a4c649a31e9e51e40ea5736f5dc5089a7b0e5a375aadfcb16e",
+          "size": 279824032
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.306",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.306"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.307",
+      "published": "2026-10-21T20:46:42.070Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.307.tgz",
+      "tarball_sha256": "ee3f44f72bee95824d3e5908007d5a679e615274ef1dca46014c43d906a0774a",
+      "tarball_sha1": "6ef745beaf61d3406991de56ae455ef6f3941cb8",
+      "npm_integrity": "sha512-INrD+qTiU5OV62hdlSdPLNgkmD/qSHPLFM4Yx5XldRqfhJcWYRwSgpDU0u5VDoJXAt5WRxpmiQPG4cXfHkYbRw==",
+      "file_count": 21,
+      "tree_sha256": "3f9da77ed96a4fcd6e101808546df10a899e68e5200d86f242b183fd592a667c",
+      "native_version": "2.1.307",
+      "native_manifest_sha256": "678586f208acba347f0a82c0bcf161f41b48f8c29ff409334ee62596b90a9768",
+      "native_manifest_zst_sha256": "7467dd2bc7919e71f86c554f6fe961ca917a92ec7a4916544e7bfcfb2bc057ec",
+      "native_commit": "b208bbbc9ae5dc87a1a0a7f964be47e27a0543ab",
+      "build_date": "2026-10-21T20:07:02Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "5b113a7752119470f1da419cb0e608af3361cae25b614216b13022093958fb2a",
+          "size": 274428784
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "f569c691f072acf92d3e11ca46c8de34a267157f3c80f3a3e6b5267478f52dfe",
+          "size": 285620896
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "1c67968ab8410c9644e2f4867167a0dab1a8c6c9de9cc83fe78449e5ae8a3633",
+          "size": 291889336
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "6021eb72d20d0682b720bdc63acd2a5cd2270895d1f10d9ca2a88cbfa7b9dd0e",
+          "size": 291974512
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "31324c33dca077a5edb54a5eb8dec711d34c18c59966c52311489a6d71649907",
+          "size": 284050776
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "cb89e2aad16a971a0ee7367cbb1810083b67428598fdb76e8e4b460b7ee7a1bf",
+          "size": 285630064
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "9537b37daacedc5a21f0f35e04d4fa6759c0bd969ddf2e56052810f63b27c918",
+          "size": 297079456
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "75293206f795325fbef0ead9d6cfd97e50b19cac9b7af75696d8a9619171e3ea",
+          "size": 281273504
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.307",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.307"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.273",
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.308",
+      "published": "2026-10-22T04:19:14.775Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.308.tgz",
+      "tarball_sha256": "bcff3ead267f10f5c9ed4bf9234174311129381ab337dae2e6b2309a090043df",
+      "tarball_sha1": "3911217332e17834066bf0010d96373e12a04a1e",
+      "npm_integrity": "sha512-oda1EZ4wjculEQWjakYSEM12qiB4hU2jgMEhg9bvNhW++tvp8CKZ9ad6gVAl3psADktEg6C8MYGlfNpvnO47Ug==",
+      "file_count": 21,
+      "tree_sha256": "8bde69e39ad899a78b11148e1342457a1f42d50ed66ba368a234317beb2d9336",
+      "native_version": "2.1.308",
+      "native_manifest_sha256": "9a01bbf1996be52f13508ef9e47ef3fcf544ac39037ca91b4c87f2b4efc425fb",
+      "native_manifest_zst_sha256": "ff6ec2d1ef90d799ac2ff724fcb662d3dd2359966a295002dac54a93a17e0924",
+      "native_commit": "320f66eb8f834be58a10c98283ebef19e3640c37",
+      "build_date": "2026-10-22T03:48:37Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "ca923c86ac84b30574a82331a05b6e066c27477a926ceaffe46a845a33e4dd37",
+          "size": 274675680
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "9a0bc140f5fb06e6366624d770371ef290e6731d1e84c4def5daf4df946d1b59",
+          "size": 285902384
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "fdd22e6cbb734d580f5664c48df4294eeec850218ff07f186f9af30426396ee1",
+          "size": 292085944
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "356733f185fa988e6bf3aa9a555269fdd167982a2e2a80d3c8a78037bb92ad58",
+          "size": 292232560
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "b820bec20177aa09875515cf5ffadb445ecf814ec7c8ed51ba2f86c3090a692d",
+          "size": 284313472
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "45cc10091e10ca658daa691e879058ba1d4752218c63577d1c7d54b0c7dc9a68",
+          "size": 285896848
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "c9796ba22a9221586b36371b36f5b66198d66eb4badf6a4cf4a5f7b07becea53",
+          "size": 297376928
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "35b5af5dde46a775ccd5a4d15760913c6088cf7292e1b15f0b09b1fd3f93bfd2",
+          "size": 281453216
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.308",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.308"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.274",
+        "0.3.275",
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.309",
+      "published": "2026-10-22T20:35:53.699Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.309.tgz",
+      "tarball_sha256": "15b3bc4222e0e80abfba9ee22fe3f8771e446ac6badc684a60cc29190938f3a4",
+      "tarball_sha1": "8806fb5d1de8b375e4aea80d806def7570863ce6",
+      "npm_integrity": "sha512-Tou0fXBkxKJDcgT09v3Iv/Jd7bNgapgfAiHxGPctAADPFQhidfhZbcv7at1cVL0Lon5sbs+OzP/pEOigw2TI0A==",
+      "file_count": 21,
+      "tree_sha256": "9ab39840239e1b2401f3498a0e0cfc78f14b6fae7bc52b852d598f6679856b1a",
+      "native_version": "2.1.309",
+      "native_manifest_sha256": "8504633c7837099cefd2a995a433502717c360c155287b1ba92e6ec4d230093b",
+      "native_manifest_zst_sha256": "dca4fcedd997cb7e914184a4b9756b28cc3d88c5ea7cd13200b0c7e57f59f6fa",
+      "native_commit": "1ce7e4ff2da8d4b0f5c15b291e4a9b54716970c2",
+      "build_date": "2026-10-22T19:32:59Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "5eadc0009cdcdbc0d06e58110d7b2baf88ced6088b1c33a60a21217fe410619c",
+          "size": 275923296
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "200e0d775ae55c040db3bb8db8de3e22efcddbd7e0abff5ab50dd10f6853425d",
+          "size": 287157296
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "9796dd26899337f687739a0b39a7353b639f062a3436a7b941fcf19a1b757a9b",
+          "size": 293331128
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "4d704a8aecbe038affa3000f498ae17c1b4f753add8facb8764120affc99b658",
+          "size": 293469552
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "028ad6b4c0ed304a116eb1efa6f1d752630f6691aa70004a79406026a023b332",
+          "size": 285493120
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "0e35f4f665be93de03b383e22294e0e15860ae6f17e34be4851dfe7af732ceae",
+          "size": 287137936
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "5441781f2b6bbd07354b4a74560ee88c68c9bf05d6db3c7e24c452c91673dc53",
+          "size": 298624160
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "063f45f61dca573b76e378f06728dc4e8f1b8600905dbd19be6d210f8c882501",
+          "size": 282697888
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.309",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.309"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.276",
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.310",
+      "published": "2026-10-23T21:21:54.828Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.310.tgz",
+      "tarball_sha256": "110e2584420b1feff99694efafc58fdb2f35d7a0c5230abe152c1d82fee0384c",
+      "tarball_sha1": "1ba6a1c2a4eea8c31fa561a71763eaaead167e27",
+      "npm_integrity": "sha512-fo+sr+9Ks73P001f6XKRQlyzfIBAJMgXArLUkH5Tu98NikRDZeGtFQVj23d5/hj2ijpFgzffrr4fHywY9qUkoQ==",
+      "file_count": 21,
+      "tree_sha256": "48b4a291a3398ac97ce32069239459906d318d9535c579b0d6fe8febcf74f413",
+      "native_version": "2.1.310",
+      "native_manifest_sha256": "895e85ce24c3df3fdb77ac1006bdb2b66f1c42dd557000e65ced1e4aad847e74",
+      "native_manifest_zst_sha256": "61268401260e7d7c21ebdb7d2a8688cc9c666adec9b47bae9716b6e0cd3c6574",
+      "native_commit": "0d2056ecf42d9452a8cd8e054600024e7c557add",
+      "build_date": "2026-10-23T20:13:54Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "ffb64331bc0ee1b69efb7c2c428bd3ab516bc31b75bf60886b356c97c1c25ffd",
+          "size": 274068224
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "28fdbed5a84ef7d4205b5751c7f021e79151c4e319c4a401e48fe6aae86bbb39",
+          "size": 285291472
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "9c64d9a7442436b65fcd7cc02c1aa0051bb5a7041e7788576ed3b5f29c447d54",
+          "size": 291496120
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "b73676430af12f97316a798b8371f81d640f90a58bdcb8f3ce56a835bb47df56",
+          "size": 291638640
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "adfd1f0ef12a3bcafa66e33491fc3e4204e41aeb4a7305ffc311c16c26793825",
+          "size": 283658112
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "2ceb05e0a97b09be4c14717464a2156e8d087dea9867a399dd75d3b898ca4824",
+          "size": 285302928
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "f9a3920634ae3b961ee92c2eb58d0051f5f8852b120983d0a4f57b6a5efeba61",
+          "size": 296791712
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "91da8a2247a8806162319bcdf3e70c6ffeeb58b568481a9827fbff167a694edb",
+          "size": 280850592
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.310",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.310"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.277",
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.311",
+      "published": "2026-10-26T19:49:59.951Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.311.tgz",
+      "tarball_sha256": "c2683013d4b9031be6714fb532d507cc7ab55b1ea5f76c08e14916587b7d4ee7",
+      "tarball_sha1": "6a055e91f0ad2905a5452df9ea61380689d1f46f",
+      "npm_integrity": "sha512-8aKYcHGB3LsYP79e2EHNdwbpIvRJkMLd19qSx4u9+J9yDDAK7w9uy1GyvFUz8xa1A+xIEtTW1k/r419uE/Kbsw==",
+      "file_count": 21,
+      "tree_sha256": "567bdb55b32ff11eaa0f9ffd9bb47051e72cf469a43a4b0fb7cbc1b72a9228a0",
+      "native_version": "2.1.311",
+      "native_manifest_sha256": "d456e7293d621e6e09dd73b1d2a112bef62dae08d1ee44c1065356e64da65c0d",
+      "native_manifest_zst_sha256": "8961a7b6b5779299bb5788708e469117f1696c0ecb00f717f7ed37008c8a70fe",
+      "native_commit": "e7d3b8365a0ffbe2f5dd032feb28e9fd9c7de025",
+      "build_date": "2026-10-26T19:03:46Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "85d8c08707fcfd1e78ffa0204eefbc6ec9e4fe22f375fb2767ef85d957ed3161",
+          "size": 276185504
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "d34e1cb82015b050471a97574aa6ea6f698ecf3a97a61c980961f43ad9f838f5",
+          "size": 287420928
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "2e2496c9a8065df93acb0fca2d341f59a6b8777649b2e025ab8c9bcd5eef61f3",
+          "size": 293658808
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "86dc1fcc69498159eaf15f446613e847010f9036bfbbdffd4c49350be8489ada",
+          "size": 293776752
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "172150e3f9ea07e8e2e2e29862d7d9a25f5c234d8e909e4063df237665bf09b9",
+          "size": 285822152
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "cd40dd327145ee47aa0deacd571801c1d782388f709d71242eee6b91de8ed11f",
+          "size": 287442392
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "966f4b2ce962298f5dee6a942e8c47c8f97392e69e728e622319a98b259c0680",
+          "size": 298870432
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "951b5d94bf2a5296db2c442784e68d18fa04dec2d7d2e805aa50e75d618aad5e",
+          "size": 282933920
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.311",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.311"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.278",
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.312",
+      "published": "2026-10-27T18:37:18.402Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.312.tgz",
+      "tarball_sha256": "98a6c27b00b273fa0598b80540aa152d9fb58b6a1ac885b5993381e98469926d",
+      "tarball_sha1": "51d7cb6a5ddab35b70b005de59a160622d8334bb",
+      "npm_integrity": "sha512-Ilj5Agx3ak/Z0UPZNLS7+CTnYMa+Ijf8+FKelh9MKGRwHVYyfvmJgL0fsmooI78SdkZwqjI5a4CwOAsJurdjJA==",
+      "file_count": 21,
+      "tree_sha256": "957aba8aaf21e9d01bd1e5a434eb364f873bbb09a1f500763b9ec6b625c0fe37",
+      "native_version": "2.1.312",
+      "native_manifest_sha256": "f9bc2d099665e498cbc4123f81f2220852c3a75ee118c0081ef83f42f165aec9",
+      "native_manifest_zst_sha256": "a164f7e6198b2d41773254c6c36982345f31d2e3aebdafea8840470c889f9f0a",
+      "native_commit": "f375cd85d4f70920de17ce3a4ad646e18834e833",
+      "build_date": "2026-10-27T17:16:03Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "6b5ec691195e551b02c41df9f7d723f4ea61eaa03c2df90acefe3736f1aeb620",
+          "size": 275988512
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "9534770e162cfd6e39301d9ab775affce214df032a68484085bdbab966a7f8cf",
+          "size": 287239296
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "dc4af28917455e009d26704b82a438353a06149e825b6cdf782908b2d28661f5",
+          "size": 293462200
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "4f4178ce41d83e23341ebfbaecdbcf8ea6bf7baea0690025abe49eeec3a5d01d",
+          "size": 293592432
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "62555d1d87e4fff49298b70f306ef851fa167fc58b179958680f7c4d407a8c5c",
+          "size": 285625544
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "78adef63924b762580b039c9ff0dd2ae44eb06171d467db62fd9040442505f76",
+          "size": 287258072
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "6099672ebe5dcb518b67d1d32dde1e3360bc6bee1dae7f8d28a69c49acc7c865",
+          "size": 298690208
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "2bde7020ff94a52b59fa4c0c14f81558d3c5180848b2d85069b6efcad0415a4f",
+          "size": 282754208
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.312",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.312"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.280",
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.314",
+      "published": "2026-10-30T00:14:37.766Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.314.tgz",
+      "tarball_sha256": "603716a11e4f9c5ca76ed69d2da61e321f54ffcf0265a3eec7351cff19782e04",
+      "tarball_sha1": "4fe53c29d3c51af0b474fdbc377275e704c1edf6",
+      "npm_integrity": "sha512-NxKq4U+/UlPO1muxcYo1iTftjacLdo2SUcrNLitsi9WBARRejvM0biCwUpNrZVbRDPY4Gj59NsB+cH/YuR5EsQ==",
+      "file_count": 21,
+      "tree_sha256": "e8cd1ea742528e90c32fb0c37d512a4c8fe6b5f17ae5f2622e4765f2186e9b44",
+      "native_version": "2.1.314",
+      "native_manifest_sha256": "ded1c9a0a47ae65dc03165b0fab7b0bbd4aadd55de20b53c9f994308552d623d",
+      "native_manifest_zst_sha256": "d8b6a249620feecf292d6b35daa026ea8ea0eee58acca55fa3138986373d8906",
+      "native_commit": "5c99a5b6399766569a32979c715862fdb61c7efa",
+      "build_date": "2026-10-29T23:00:10Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "21d6e7b9a6f07b4cfcb7df13760b3b72aa25e084e13a5354413382987ba832ed",
+          "size": 278848096
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "404779a308a358ecec8b25c8bccf0ce79a94cf261d12cb74065518d189c174f8",
+          "size": 290710016
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "a66c0a8f5d0c87a439953d797985192bbcbaefbce2e0d7b2eaa8df30ef0f3ef2",
+          "size": 297067016
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "4487042b4c4f5d88d4568f68ae98aae0b1ffae58864cf57fb868641bc5f84594",
+          "size": 298229464
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "95b14da22c20a6b4c5b24c8ff08993ac44663a0f52dd262086482ec1a3352d38",
+          "size": 287595856
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "b7a970a6e1fde58d8032723f0f4ebdc9dd9aa66150534344e5d01d32c1f5813f",
+          "size": 289338976
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "66e00df32e6981f686a91f67287fcc86e6e1b80ba4973a7b7c4aa43c59986cfa",
+          "size": 301388448
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "7bb0bc6be25e71e7aa3be2dfa537fd4c9c06d4565eb4446b6b748a74ea0d3a28",
+          "size": 285591200
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.314",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.314"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.281",
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.315",
+      "published": "2026-10-30T21:04:20.825Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.315.tgz",
+      "tarball_sha256": "901fdc4fb347006ab9f322f19f5f57452e85cf77706f29446d78761b4f737976",
+      "tarball_sha1": "7655f0c12afcf8b0ae697209c7b119879e40ea91",
+      "npm_integrity": "sha512-ZmUiZMB7uIKGWlFBrSR5+ARpe4uL3VNjyHj0vPbLByRFROZWhH/Qd3AT+IQvD0UxpVqigQJRspWZPhtdbk2oEg==",
+      "file_count": 21,
+      "tree_sha256": "9eeb3ec86f213a756f6034acb03e162c5129b861fefe5401d307219e5dc3eb03",
+      "native_version": "2.1.315",
+      "native_manifest_sha256": "7abee26292714236414ec4a4296686cd65951594ccec8cbd20dcfd8960ff6794",
+      "native_manifest_zst_sha256": "d86129a8548fdc339a7c2a696543bdcbb237d76afa995a9043cccee188fb8939",
+      "native_commit": "4f69bb04c32a761bb81e3d764a864c028de92f09",
+      "build_date": "2026-10-30T20:04:40Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "ac4a9b309f0a0728cdd0fe1b0959cef3db77d4bcf6ce8bdc5d9f626006fcf58e",
+          "size": 310114176
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "ae49db877bf46017355b1174816c2d1bac6cac3313980127573512cd17fd55ca",
+          "size": 324381312
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "4b9c71d1e79644a52b49110289ef3a0782ca79eba1bbaa228c8bff1d3d159c49",
+          "size": 328459544
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "a3b9d66caf61b40d6aad99ed4de80f48f17e0e024ddf1b6e4289efade06105df",
+          "size": 328262000
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "8546880189b8be2c8c70a2de0177885145443477a364e47031ded46a65efe608",
+          "size": 311914480
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "f71cdba37cd88983b0359057b3daaf1999d5c8c1523f1a437e80441f6c9da459",
+          "size": 314779944
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "df57be6478a5bd6d5f5a0aa352729804aabff655339a3fa991b1ad8aae00b1e1",
+          "size": 335468192
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "6800b9a5ca4327875ea677abea65e8133d87f8fb69bf854584b283e0b4615597",
+          "size": 315963552
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.315",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.315"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.282",
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.316",
+      "published": "2026-10-31T00:39:30.106Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.316.tgz",
+      "tarball_sha256": "d0e613aeaa8d861dcaecfee281baa8998cb05a1a87407d080ccce941cbddca92",
+      "tarball_sha1": "f901da212e53640522c0ca38a55d0f60ef8fd69c",
+      "npm_integrity": "sha512-mCMr0que5kIy80JslJub6WFDB2+GYRGWNeVgSZaBpkBwXrr4wnRMnnGHitkA2BEJ5QP5xWyc6YH/6do/edxCWg==",
+      "file_count": 21,
+      "tree_sha256": "b06fe72c5c745ce9a37c5cfbec7ac90178ec74a12e5ceb68a33028340eb304c9",
+      "native_version": "2.1.316",
+      "native_manifest_sha256": "ac9d8bb6a65febbccf9e65bde2e3e4298b8d6974e96f559fbf1d740891a747db",
+      "native_manifest_zst_sha256": "248933f68e793d3ff882d9cf0caf7666eb2b38d0d22e3e38131f2b53a6962907",
+      "native_commit": "cd7ceb459c6864567b16a11f60101b24421475c1",
+      "build_date": "2026-10-30T23:47:48Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "64c327e92b2c5e0f78c0a980c5a518121e1f0d140ca771ca5dd4488d1a2dcb3f",
+          "size": 310114176
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "203d22fbafdab9f6b0cda962ec573e32ab970894c63b1dfb0409378f28b9c344",
+          "size": 324381312
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "55cdb8e162d190432696ea54010e0fca2e18d06fa7a7127fd563b9ffd4f22624",
+          "size": 328459544
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "fd13c70000fec3f2116dfbcbb6121210b4a29328bf0e46210a59dd594a67d824",
+          "size": 328262000
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "d774cb39055cff62af476af32702f1fc4f888a7e395a37434a95d6f5a98818a0",
+          "size": 311914480
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "8bc3d015479b8b87dfde3f69f9bdb96c658758a8eb31892fd8fbece8d8a08bcf",
+          "size": 314779944
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "e896a9d8da519353a49bf69ca4a695ba7e09067752687c675b3969041e632d52",
+          "size": 335469216
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "a44168f2360bf21709855321b25f1eeb021de8a8d4be5d25a8b397dcbf9043f8",
+          "size": 315967648
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.316",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.316"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.283",
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    },
+    {
+      "package": "@anthropic-ai/claude-agent-sdk",
+      "version": "0.3.317",
+      "published": "2026-11-03T00:02:04.005Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.317.tgz",
+      "tarball_sha256": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f",
+      "tarball_sha1": "38fa617efff452beb6a800ca3ba2ec8860a31a8f",
+      "npm_integrity": "sha512-qoRB5svuBNXm5N5miBj3RS2JyA7daGcdOCopQIdJXMxaYREIvR7P1FFiFhSLwIjh61D9ir8f/8OFm5LyDJspEA==",
+      "file_count": 21,
+      "tree_sha256": "a374a2e4ba725610430e45d488aa7126bcd7007f76544fed59be12bae70ab388",
+      "native_version": "2.1.317",
+      "native_manifest_sha256": "2337b6f8d99d893d2c9f12761b124bf64e80823a566464d44767e4ca595ee2b7",
+      "native_manifest_zst_sha256": "249225bdb0d68436139a15d53fa5fc9366f15f68d1f6f607dac2884943ad9e4b",
+      "native_commit": "3d3e7cb16b5577dccaee9520c8dc1189d02d61b7",
+      "build_date": "2026-11-02T22:39:48Z",
+      "manifest_signature_enforcement": "flag",
+      "harness_schema": 1,
+      "manifest_keys": "buildDate,commit,manifestSignatureEnforcement,platforms,sdkCompat,version",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "checksum": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+          "size": 312806400
+        },
+        "darwin-x64": {
+          "binary": "claude",
+          "checksum": "01c714bc7febdb008f28e3f6facb1dc37e46a4d8fa8db58df2e281ee51cb333c",
+          "size": 327105808
+        },
+        "linux-arm64": {
+          "binary": "claude",
+          "checksum": "563a0d60ad0c223d9415768210997acb0f7134ea51dc3c238e88bc2e18ddeefa",
+          "size": 331212056
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "checksum": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+          "size": 331362672
+        },
+        "linux-arm64-musl": {
+          "binary": "claude",
+          "checksum": "dc8c59cf937e60e9cc93afe226ef437474ded56ba813743d09106d24a08c83bd",
+          "size": 314667040
+        },
+        "linux-x64-musl": {
+          "binary": "claude",
+          "checksum": "bcc2be9105875dc31a44825ede92e46c4f98225eeb3ad617340daa217100339b",
+          "size": 317499744
+        },
+        "win32-x64": {
+          "binary": "claude.exe",
+          "checksum": "26b01ec22df2c17ac7f5703aa547d36706e8d58412136ced0344a8ced4d86038",
+          "size": 338187936
+        },
+        "win32-arm64": {
+          "binary": "claude.exe",
+          "checksum": "085bb0c34803276156b44dc529a0ad55bf74e2d2c5baaade620194b72cb27f16",
+          "size": 318687392
+        }
+      },
+      "optional_dependencies": {
+        "@anthropic-ai/claude-agent-sdk-linux-x64": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-linux-x64-musl": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-linux-arm64-musl": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-darwin-x64": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-darwin-arm64": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-win32-x64": "0.3.317",
+        "@anthropic-ai/claude-agent-sdk-win32-arm64": "0.3.317"
+      },
+      "sdk_compat_tested_wrapper_versions": [
+        "0.3.284",
+        "0.3.285",
+        "0.3.286",
+        "0.3.287",
+        "0.3.288",
+        "0.3.289",
+        "0.3.290",
+        "0.3.291",
+        "0.3.292",
+        "0.3.293",
+        "0.3.294",
+        "0.3.295",
+        "0.3.296",
+        "0.3.299",
+        "0.3.300",
+        "0.3.301",
+        "0.3.302",
+        "0.3.303",
+        "0.3.304",
+        "0.3.305",
+        "0.3.306"
+      ]
+    }
+  ],
+  "selection": {
+    "sdk_entry": "package export . -> sdk.mjs",
+    "native_identity": "package.json claudeCodeVersion and manifest.json version must equal the exact pair selected by preparation",
+    "node_axis": "unchanged, independently qualified by Research 387",
+    "wire": "swallowtail-claude-agent-sdk-jsonl-v1 (unchanged)",
+    "sidecar_behavior": "claude-agent.sdk-v1 (unchanged)",
+    "default_pair": "0.3.293 / 2.1.293 (unchanged)",
+    "registered_tool_live_point": "0.3.259 / 2.1.259 only; no transfer"
+  },
+  "selected_surface_extension": {
+    "method": "tokenized bundle comparison per published hop on sdk.mjs, the only file this route loads: structure diff with minified identifiers and string interiors masked, plus an exact unmasked string-set ledger per hop",
+    "flag_string_set": "exact unmasked string-set ledger: no route flag literal added, removed or changed at any hop; non-builder additions classified in protocol.json selected_flag_ledger",
+    "option_defaulting_block": "identical at every hop except the embedded CLAUDE_AGENT_SDK_VERSION stamp",
+    "selected_query_method_bodies": "initializationResult, supportedModels, accountInfo, mcpServerStatus, setPermissionMode, setModel, interrupt are byte-identical after tokenization at every hop",
+    "argv_builders": "the enclosing builders around --model, --permission-mode and --mcp-config are identical at every hop",
+    "close_cleanup": "the SIGTERM/SIGKILL delayed-cleanup bodies are identical at every hop",
+    "spawn_dispatch": "options.spawnClaudeCodeProcess branch identical at every hop; only minifier symbol names rotate; 0.3.304 adds the internal codeRunningMcpTools key to an SDK-internal config object this route never sets",
+    "unselected_files": "core.mjs, core-*.mjs chunks, bridge.mjs, browser-sdk.js and extractFromBunfs.js are not loaded by the root entry and are tree-hash bound only",
+    "declarations": "sdk.d.ts and sdk-tools.d.ts changes are classified in protocol.json; declarations are not runtime evidence",
+    "method_bodies_note": "selected Query method bodies, argv builders and cleanup bodies are identical at every hop in the masked structure diff; exact string content is separately proven unchanged by the string ledger"
+  },
+  "no_execution": true,
+  "no_live_provider_work": true
+}

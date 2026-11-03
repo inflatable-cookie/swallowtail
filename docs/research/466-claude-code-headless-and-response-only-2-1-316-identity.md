@@ -69,14 +69,37 @@ observation only; it is not a claim input and performed no provider work.
 
 `selected-control-flow.json` binds measured selected JS on `2.1.312`,
 `2.1.314`, `2.1.315`, and `2.1.316` to the Darwin arm64 and Linux x64
-executable hashes. These are the same surfaces Research 374 stopped on and
-Research 422/423 adapted at the `2.1.294` settings-hook stop, and the brief
-names them for re-checking. Prompt `ok:false` blocking, PreToolUse deny-before-dispatch,
-rewrite `hookRewrites.push`, the rewrite recheck that turns `ask` into `deny`
-on `hookUpdatedInput`, Stop and SubagentStop `stop_hook_active` reentry, and the
-Stop cap default 8 stay. Identifier remangling changes the snippets. The
-decision tokens do not. Selected stream-json help lines stay byte-identical.
-Every hop has `selected_mapped_change` false on each route.
+executable hashes. The stop records own different surfaces. Research 374
+stopped on the `2.1.287` `context: fork` stream change and the `2.1.290`
+permission recheck after a `PreToolUse` rewrite. Research 422 and its
+adaptation record 423 cover the `2.1.294` settings-hook surfaces. The brief
+names both records, and this record re-checks both.
+
+The `2.1.290` rewrite surface is the `hookRewrites.push` row and the recheck
+that turns `ask` into `deny` on `hookUpdatedInput`. The settings-hook
+surfaces are prompt `ok:false` blocking, PreToolUse deny-before-dispatch,
+Stop and SubagentStop `stop_hook_active` reentry, and the Stop cap default 8.
+All of them stay. Identifier remangling changes the snippets. The decision
+tokens do not. Selected stream-json help lines stay byte-identical. Every hop
+has `selected_mapped_change` false on each route.
+
+The `2.1.287` forked-stream surface has its own file,
+`forked-stream-surface.json`. It re-extracts the provider's assistant-frame
+schema description on every hop: the CLI emits one assistant message per
+completed content block, consecutive messages may share `message.id`,
+`message.stop_reason` is null and usage is not final on those frames, the
+turn's stop reason and total usage arrive on the result message, and
+`parent_tool_use_id` is non-null inside a subagent. That description is
+byte-identical from `2.1.312` through `2.1.316` on both platforms. The
+nullable `parent_tool_use_id` schema field stays, and the `context:"fork"`
+command definitions stay. On the adapter side, a null `message.stop_reason` on
+a parented assistant frame is projected as provider-unspecified activity, not a
+final answer, and `claude_code_activity::tests::forked_assistant_frame_accepts_null_stop_reason_without_final_activity`
+re-runs in `validate:current-claude-code-headless`. `--forward-subagent-text`
+exists but neither route passes it, so it cannot create forked text on these
+routes; forked frames come only from `context: fork` prompt commands, which
+headless leaves reachable. The forked-stream surface is unchanged across all
+three hops.
 
 Package trees add and remove no files. Both platform packages change `claude`
 and `package.json` on every hop. The wrapper changes `package.json` on every

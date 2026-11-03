@@ -299,6 +299,11 @@ The 2.1.287 stream may carry forked assistant frames with a
 `parent_tool_use_id` and nullable `message.stop_reason`. A null reason is
 projected as provider-unspecified activity, not a final answer; the bounded
 output stream continues, and total usage is emitted from the terminal result.
+Research 466 re-checks that surface on every hop through `2.1.316`: the
+per-block assistant-frame description, the nullable `parent_tool_use_id`
+schema field, and the `context:"fork"` command definitions are unchanged, and
+the named activity test still covers the null-reason projection.
+`--forward-subagent-text` is an opt-in neither route passes.
 Static inspection of both exact 2.1.294 platform executables shows that an
 instruction-form prompt hook result of `ok: false` blocks, a rewritten
 `PreToolUse` input passes through another safety and permission decision, and

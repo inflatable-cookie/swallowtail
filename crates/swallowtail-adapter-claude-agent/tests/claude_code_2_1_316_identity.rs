@@ -18,6 +18,8 @@ const ISOLATION: &str = include_str!("fixtures/claude-code-2.1.316/response-only
 const HEADLESS_PROTOCOL: &str = include_str!("fixtures/claude-code-2.1.316/headless-protocol.json");
 const RESPONSE_PROTOCOL: &str =
     include_str!("fixtures/claude-code-2.1.316/response-only-protocol.json");
+const FORKED_SURFACE: &str =
+    include_str!("fixtures/claude-code-2.1.316/forked-stream-surface.json");
 
 const VERSIONS: [&str; 4] = ["2.1.312", "2.1.314", "2.1.315", "2.1.316"];
 const PLATFORMS: [&str; 2] = ["claude-code-darwin-arm64", "claude-code-linux-x64"];
@@ -679,6 +681,102 @@ fn response_only_isolation_keeps_safe_mode_and_the_gated_builtin() {
                 assert_eq!(row["interactivity_decided_bookkeeping"], 0);
             } else {
                 assert_eq!(row["interactivity_decided_bookkeeping"], 4);
+            }
+        }
+    }
+}
+
+#[test]
+fn forked_stream_surface_stopped_on_by_research_374_is_rechecked_on_every_hop() {
+    let inventory = fixture(INVENTORY);
+    let forked = fixture(FORKED_SURFACE);
+    assert_eq!(forked["stopped_by"], "Research 374");
+    assert_eq!(
+        forked["stop_rows"],
+        json!([
+            "2.1.286_to_2.1.287: --output-format stream-json turn streaming for a context:fork skill invoked as the prompt",
+            "2.1.289_to_2.1.290: permission and safety checks after a PreToolUse hook rewrites tool input"
+        ])
+    );
+    assert_eq!(forked["downloaded_artifacts_executed"], false);
+    assert_eq!(forked["provider_prompt_sent"], false);
+    assert_eq!(forked["live_session"], false);
+    assert_eq!(forked["selected_mapped_change"], false);
+    assert_eq!(
+        forked["assistant_frame_description_byte_identical_from_2_1_312"],
+        true
+    );
+    assert_eq!(
+        forked["nullable_parent_tool_use_id_schema_field"],
+        "parent_tool_use_id:o().nullable()"
+    );
+    assert_eq!(forked["nullable_parent_tool_use_id_schema_field_count"], 4);
+    assert_eq!(
+        forked["forked_context_definition_tokens"],
+        json!([
+            "context:\"fork\"",
+            "userInvocable:!1",
+            "agent:\"claude-test:author\""
+        ])
+    );
+    let description = forked["assistant_frame_description"]
+        .as_str()
+        .expect("description");
+    for clause in forked["assistant_frame_description_required_clauses"]
+        .as_array()
+        .expect("clauses")
+    {
+        assert!(
+            description.contains(clause.as_str().expect("clause")),
+            "{clause}"
+        );
+    }
+    let forward = &forked["forward_subagent_text_option"];
+    assert_eq!(forward["option"], "--forward-subagent-text");
+    assert_eq!(
+        forward["description"],
+        "Forward subagent text and thinking blocks as assistant/user messages with parent_tool_use_id set (only works with --print and --output-format=stream-json)"
+    );
+    assert_eq!(forward["classification"], "unmapped-opt-in");
+    assert_eq!(forward["passed_by_claude_code_headless"], false);
+    assert_eq!(forward["passed_by_claude_code_response_only"], false);
+    assert_eq!(
+        forked["adapter_projection"]["test"],
+        "claude_code_activity::tests::forked_assistant_frame_accepts_null_stop_reason_without_final_activity"
+    );
+    assert_eq!(
+        forked["adapter_projection"]["included_in_validate_selector"],
+        "validate:current-claude-code-headless"
+    );
+    for hop in [
+        "2.1.312_to_2.1.314",
+        "2.1.314_to_2.1.315",
+        "2.1.315_to_2.1.316",
+    ] {
+        assert_eq!(forked["hop_classification"][hop], false, "{hop}");
+    }
+    for version in VERSIONS {
+        for package in PLATFORMS {
+            let row = &forked["per_version"][version][package];
+            assert_eq!(
+                row["artifact_sha256"],
+                inventory["packages"][package][version]["files"]["claude"]
+            );
+            assert_eq!(row["assistant_frame_description"], description);
+            assert_eq!(row["nullable_parent_tool_use_id_count"], 4);
+            assert_eq!(row["context_fork_occurrences"], 2);
+            let definitions = row["forked_context_definition"]
+                .as_str()
+                .expect("definition window");
+            assert_eq!(definitions.matches("context:\"fork\"").count(), 2);
+            for token in forked["forked_context_definition_tokens"]
+                .as_array()
+                .expect("tokens")
+            {
+                assert!(
+                    definitions.contains(token.as_str().expect("token")),
+                    "{version} {package} {token}"
+                );
             }
         }
     }

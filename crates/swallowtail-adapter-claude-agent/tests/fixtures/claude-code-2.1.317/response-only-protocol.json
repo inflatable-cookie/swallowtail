@@ -1,0 +1,98 @@
+{
+ "axis": "claude-code.response-only-stream-json",
+ "behavior_revision": "claude-code.response-only.stream-json.v3",
+ "decision": "compatible-extension",
+ "isolation_evidence": "response-only-isolation.json",
+ "selected_command": {
+  "arguments": [
+   "-p",
+   "--input-format",
+   "text",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--no-session-persistence",
+   "--model",
+   "<caller-selected-model>",
+   "--tools",
+   "",
+   "--safe-mode",
+   "--disable-slash-commands",
+   "--no-chrome",
+   "--prompt-suggestions",
+   "false",
+   "--mcp-config",
+   "{\"mcpServers\":{}}",
+   "--strict-mcp-config"
+  ]
+ },
+ "selected_behavior_boundary": {
+  "input_format": "text",
+  "output_format": "stream-json",
+  "permission_mode_expected_on_init": "default",
+  "tools_empty": true,
+  "mcp_servers_empty": true,
+  "safe_mode": true,
+  "slash_commands_disabled": true,
+  "session_persistence": false,
+  "num_turns": 1
+ },
+ "help_lines_byte_identical_on_every_scanned_binary": [
+  "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+  "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+ ],
+ "skipped_unpublished": [],
+ "skipped_unpublished_note": "No unpublished point sits between the 2.1.316 ceiling and the 2.1.317 official stable. Earlier gaps stay on the explicit deny-list.",
+ "per_hop_classification": [
+  {
+   "hop": "2.1.316_to_2.1.317",
+   "selected_mapped_change": false,
+   "decision": "compatible-extension",
+   "applies_to": "claude-code.response-only",
+   "release_note_review": [
+    {
+     "surface": "claude -p exiting 0 when a full disk or quota lost its transcript or ~/.claude.json writes",
+     "classification": "selected-failure-reporting-fix",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Response-only requires an init frame, one text turn, and one matching result, and fails closed without them. The provider now reports the write loss and exits 1 instead of exiting 0 silently. No init field changes."
+    },
+    {
+     "surface": "cc-plugin-privacy builtin plugin",
+     "classification": "builtin-loaded-under-safe-mode-unselected",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The plugin joins the builtins that load regardless under --safe-mode. Its tool.check hooks cover web and shell tools and response-only runs with empty tools, so the ask path is unreachable. It contributes no MCP server, and safe-mode independently blocks auto-discovered MCP."
+    },
+    {
+     "surface": "onFailure block for Agent SDK hook callbacks",
+     "classification": "sdk-callback-api",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The SDK callback API is not a CLI route surface; the literal is absent from both shipped executables."
+    },
+    {
+     "surface": "nested claude -p session identity fixes and CLAUDE_CODE_DISABLE_NESTED_SESSION_ID",
+     "classification": "unselected-nested-session-identity",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Response-only spawns the CLI with --no-session-persistence from an adapter-owned empty directory and never inside a provider session."
+    },
+    {
+     "surface": "Read stub removal and Grep/Glob time-limit completeness",
+     "classification": "tool-payload-text",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Payload-level tool-result text; unreachable because response-only runs with zero tools. The strict empty-tools init contract is unchanged."
+    },
+    {
+     "surface": "transcript cleanup on --setting-sources runs",
+     "classification": "provider-internal-transcript-hygiene",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Provider disk hygiene; response-only disables session persistence and maps no transcript store."
+    },
+    {
+     "surface": "interactive, hosted, gateway, desktop, and unselected rows",
+     "classification": "outside-both-routes",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Neither route authenticates or runs interactively, and safe-mode already drops installed settings, plugins, and custom hooks."
+    }
+   ]
+  }
+ ]
+}

@@ -268,7 +268,7 @@ stream-JSON output and usage, supports `default`, `low`, `medium`, `high`,
 assistant model to match the caller selection. Its fixed `HarnessMode::Plan`
 posture is present in both operation policy and immutable preflight
 capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on deprecated
-`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.316` on maintained
+`claude-code.headless.stream-json.v1` and `2.1.287..=2.1.317` on maintained
 private milestone `claude-code.headless.stream-json.v2`.
 Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and
@@ -286,6 +286,11 @@ Research 466 extends it through official stable `2.1.316`. The `2.1.314`,
 decisions, init construction, and strict empty MCP. `2.1.313` was never
 published and stays a gap; `2.1.315` shipped without a public tag or release,
 so its identity rests on npm metadata and the artifact tree.
+Research 473 extends it through official stable `2.1.317`: the single hop
+keeps every selected decision token with only identifier remangling, chunk
+hashes, and the version banner changing, adds no CLI option, and the
+extraction tooling reproduces every frozen `2.1.316` window byte-for-byte
+before reading `2.1.317`.
 From `2.1.311` the provider registers `cc-plugin-claude-platform` on the
 existing local builtin path. Both routes pass `-p`, which makes the required `isInteractive()` false even
 when the dynamic availability flag is enabled. The builtin filter skips the
@@ -299,7 +304,8 @@ The 2.1.287 stream may carry forked assistant frames with a
 `parent_tool_use_id` and nullable `message.stop_reason`. A null reason is
 projected as provider-unspecified activity, not a final answer; the bounded
 output stream continues, and total usage is emitted from the terminal result.
-Research 466 re-checks that surface on every hop through `2.1.316`: the
+Research 466 re-checks that surface on every hop through `2.1.316`, and
+Research 473 re-checks it again on the `2.1.317` hop: the
 per-block assistant-frame description, the nullable `parent_tool_use_id`
 schema field, and the `context:"fork"` command definitions are unchanged, and
 the named activity test still covers the null-reason projection.
@@ -315,13 +321,13 @@ add a permission bypass. Research 423 records the static source review and
 synthetic fake-process coverage; the fixtures are adapter tests, not captured
 provider transcripts.
 
-At the Research 466 identity commit, npm `latest` and GitHub latest stable
-agreed on `2.1.316`. npm `stable` remains the delayed channel at `2.1.309`.
-npm `next` advanced to `2.1.317` during the run; that point is published but
-is not the official stable and stays `UnverifiedNewer`. `2.1.313` is
-unpublished, `2.1.315` has no public tag, and `2.1.318` is the first
-unpublished point after the ceiling. SDK and ACP claims are unchanged.
-Response-only is a separate claim in the same record.
+At the Research 473 identity commit, npm `latest`, npm `next`, and GitHub
+latest stable all agree on `2.1.317`. npm `stable` is the delayed channel,
+now at `2.1.311`. `2.1.318` is the first unpublished point after the ceiling.
+SDK and ACP claims are unchanged. Response-only is a separate claim in the
+same record. The `2.1.317` release adds the `cc-plugin-privacy` builtin: it
+attaches `tool.check` hooks to web and shell tools that this route's fixed
+`Read,Glob,Grep` set never selects, and contributes no MCP server.
 
 ### Maximum Agentic Turns
 
@@ -348,14 +354,14 @@ selectable here.
 
 A selection requires one of the exact Claude Code versions Research 226 probed.
 That set remains narrower than the route's qualified window. This task's
-qualification through `2.1.316` does not extend the optional maximum-turn
-feature; exact `2.1.282..=2.1.316` route points are not max-turn eligible under
+qualification through `2.1.317` does not extend the optional maximum-turn
+feature; exact `2.1.282..=2.1.317` route points are not max-turn eligible under
 Research 226. The feature still requires an exact probed version:
 
 - published qualified points `2.1.242..=2.1.281` excluding unpublished
   `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`, `2.1.264`, and
   `2.1.279` were never probed for this feature
-- published `2.1.282..=2.1.316` points are not admitted by this exact-version
+- published `2.1.282..=2.1.317` points are not admitted by this exact-version
   feature gate; unpublished `2.1.297`, `2.1.298`, and `2.1.313` stay denied;
   later stable points remain `UnverifiedNewer`
 - no maximum-turn artifact was probed for any of those later points
@@ -425,7 +431,7 @@ claim id `claude-code.response-only.window-1`:
 - `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
   under the narrowed built-in-hook guarantee and remain supported as
   `Deprecated`.
-- `2.1.282` through `2.1.316` use `claude-code.response-only.stream-json.v3`
+- `2.1.282` through `2.1.317` use `claude-code.response-only.stream-json.v3`
   with the version-specific linked-instruction read limit; this is the
   maintained segment.
 
@@ -475,11 +481,11 @@ Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
 qualification. The v1 segment ends at `2.1.278`, the v2 segment ends at
-`2.1.281`, and v3 currently ends at `2.1.316`. The static deny-list is
+`2.1.281`, and v3 currently ends at `2.1.317`. The static deny-list is
 unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and `2.1.313`.
 
-From `2.1.280`, `--safe-mode` still loads the provider's nine `@builtin`
+From `2.1.280`, `--safe-mode` still loads the provider's `@builtin`
 plugins. Swallowtail guarantees what its arguments control: empty tools, empty
 strict MCP, disabled slash commands and Chrome, no prompt suggestions, no
 session persistence, one text-only turn. Provider built-in behaviour is
@@ -488,6 +494,7 @@ provider surface, disclosed here:
 | Built-in | What it can do | What Swallowtail arguments block |
 | --- | --- | --- |
 | `sec-default` | Policy-only hooks can preserve managed instructions, tool policy, and settings | none; organization-seated policy is provider surface |
+| `privacy` | From `2.1.317`, `tool.check` hooks on web and shell tools ask before a call carries the account email off the machine (Research 473) | empty `--tools` removes every covered tool, so the ask path is unreachable; contributes no MCP server |
 | `agents-md` | Reads ancestor `AGENTS.md` into `prompt.context`; `Read` can add nested instructions. Default off at `2.1.280`, on at `2.1.281`; from `2.1.282`, some symlink-linked project instructions may be omitted or require approval | empty `--tools` blocks the `Read` hook; `prompt.context` still runs, with the v3 read limit described below |
 | `telemetry` | Session and engine analytics; can send first-party network requests under provider settings | none on the selected surface; `DISABLE_TELEMETRY`, `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`, and `DO_NOT_TRACK` are proven in the frozen module but the approved environment is opaque |
 | `plugin-authoring` | Invocable skill; no hook event | `--disable-slash-commands` and empty tools |

@@ -1,0 +1,138 @@
+{
+ "axis": "claude-code.headless-stream-json",
+ "behavior_revision": "claude-code.headless.stream-json.v2",
+ "decision": "compatible-extension",
+ "selected_command": {
+  "arguments": [
+   "-p",
+   "--input-format",
+   "text",
+   "--output-format",
+   "stream-json",
+   "--verbose",
+   "--no-session-persistence",
+   "--model",
+   "<caller-selected-model>",
+   "--permission-mode",
+   "plan",
+   "--tools",
+   "Read,Glob,Grep",
+   "--setting-sources",
+   "user,project,local",
+   "--mcp-config",
+   "{\"mcpServers\":{}}",
+   "--strict-mcp-config"
+  ]
+ },
+ "selected_behavior_boundary": {
+  "input_format": "text",
+  "output_format": "stream-json",
+  "permission_mode": "plan",
+  "tool_names": [
+   "Read",
+   "Glob",
+   "Grep"
+  ],
+  "setting_sources": [
+   "user",
+   "project",
+   "local"
+  ],
+  "strict_mcp_config": true,
+  "session_persistence": false,
+  "slash_commands_disabled": false,
+  "safe_mode": false,
+  "hooks_disabled": false
+ },
+ "selected_control_flow": "selected-control-flow.json",
+ "v2_rules_retained": [
+  "instruction-form prompt hook ok false blocks",
+  "PreToolUse deny blocks before tool dispatch",
+  "a PreToolUse rewrite is rechecked and a resulting deny blocks",
+  "Stop and SubagentStop treat stop_hook_active true as reentry success and keep the provider block cap",
+  "a plugin hook that cannot receive or return an action refuses the tool call"
+ ],
+ "help_lines_byte_identical_on_every_scanned_binary": [
+  "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+  "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+ ],
+ "maximum_turns_extended": false,
+ "skipped_unpublished": [],
+ "skipped_unpublished_note": "No unpublished point sits between the 2.1.316 ceiling and the 2.1.317 official stable. Earlier gaps stay recorded in the claim exclusions.",
+ "per_hop_classification": [
+  {
+   "hop": "2.1.316_to_2.1.317",
+   "selected_mapped_change": false,
+   "decision": "compatible-extension",
+   "applies_to": "claude-code.headless",
+   "release_note_review": [
+    {
+     "surface": "claude -p exiting 0 when a full disk or quota lost its transcript or ~/.claude.json writes",
+     "classification": "selected-failure-reporting-fix",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The headless route requires a terminal result frame and fails closed without one. A previously silent exit 0 now reports and exits 1, so the provider reports the failure the adapter already treats as fatal. No stream field or lifecycle step changes."
+    },
+    {
+     "surface": "cc-plugin-privacy asks before a web or shell tool call sends the account email to the network",
+     "classification": "unselected-tool-set",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The new builtin plugin attaches tool.check hooks to WebBrowser, WebFetch, WebSearch, Bash, Monitor, PowerShell, and Tmux. The headless route selects Read,Glob,Grep, so no covered tool call can occur. It contributes no MCP server and hook events reach the stream only through --include-hook-events, which the route does not pass."
+    },
+    {
+     "surface": "CLAUDE_CODE_DISABLE_NESTED_SESSION_ID and the claude -p nested-session identity fixes",
+     "classification": "unselected-nested-session-identity",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The fixes change which session identity and transcript a claude -p child attaches to when it runs inside another Claude session. The headless route spawns the CLI with a controlled environment and --no-session-persistence, never inside a provider session, and never resumes."
+    },
+    {
+     "surface": "old transcripts not being cleaned up on runs that skip cleanup, such as runs using --setting-sources",
+     "classification": "provider-internal-transcript-hygiene",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Provider disk hygiene for its own transcript store. The route passes --setting-sources user,project,local and disables session persistence; no mapped stream field, init field, or lifecycle step changes."
+    },
+    {
+     "surface": "Removed the Read tool's file-unchanged stub; reading an unchanged file again returns its content",
+     "classification": "tool-payload-text",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Tool result payload text is provider content inside tool_result frames, not a mapped stream-json field. The sdk-tools.d.ts file_unchanged declaration is removed with it. Stream envelope, init fields, and the result frame are unchanged."
+    },
+    {
+     "surface": "Claude treating partial Grep and Glob results as complete when a search hit its time limit",
+     "classification": "tool-payload-correctness",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Search payload completeness inside tool_result frames; the SDK declaration adds timedOut. No stream-json subtype, event type, or lifecycle step changes."
+    },
+    {
+     "surface": "onFailure block for Agent SDK hook callbacks",
+     "classification": "sdk-callback-api",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The SDK callback API is not a CLI route surface; the onFailure:\"block\" literal is absent from both shipped executables."
+    },
+    {
+     "surface": "stdio MCP servers receiving an empty AWS_BEARER_TOKEN_BEDROCK",
+     "classification": "unselected-strict-empty-mcp",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "The headless route passes strict empty MCP configuration, so no stdio MCP server is declared and the env-passing path never runs."
+    },
+    {
+     "surface": "child processes of a stopped shell command sometimes receiving SIGTERM twice",
+     "classification": "unselected-shell-tool",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Neither route selects a shell tool."
+    },
+    {
+     "surface": "high memory use and slow startup in headless sessions with many plugins",
+     "classification": "provider-internal-performance",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Provider resource use, not a mapped protocol or lifecycle surface."
+    },
+    {
+     "surface": "auto mode, effortLevel, auth status, --from-pr, permission prompt UI, connectors, OTel exports, gateway and admin APIs, cloud sessions, self-hosted runners, Remote Control, VS Code, and Claude Tag rows",
+     "classification": "outside-both-routes",
+     "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.317",
+     "reason": "Interactive, hosted, desktop, gateway, or unselected surfaces. Neither route authenticates, connects to a gateway, or runs interactively."
+    }
+   ]
+  }
+ ]
+}

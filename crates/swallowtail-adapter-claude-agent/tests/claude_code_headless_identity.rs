@@ -94,7 +94,7 @@ fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
     );
 
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.316");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         identity["claim_at_observation"]["headless_latest_qualified"],
         "2.1.241"
@@ -159,7 +159,7 @@ fn identity_and_claim_qualify_2_1_251_as_compatible_extension() {
         ));
     }
     assert!(matches!(
-        claim.assess(&version("2.1.317")),
+        claim.assess(&version("2.1.318")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
             if newer.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));

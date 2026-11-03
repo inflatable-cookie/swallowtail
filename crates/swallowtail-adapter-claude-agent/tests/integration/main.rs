@@ -93,6 +93,8 @@ mod claude_code_2_1_310_identity;
 mod claude_code_2_1_312_identity;
 #[path = "../claude_code_2_1_316_identity.rs"]
 mod claude_code_2_1_316_identity;
+#[path = "../claude_code_2_1_317_identity.rs"]
+mod claude_code_2_1_317_identity;
 #[path = "../claude_code_headless_autocompaction_identity.rs"]
 mod claude_code_headless_autocompaction_identity;
 #[path = "../claude_code_headless_identity.rs"]

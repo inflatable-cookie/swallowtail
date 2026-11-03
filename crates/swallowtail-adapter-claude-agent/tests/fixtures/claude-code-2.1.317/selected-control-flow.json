@@ -1,0 +1,170 @@
+{
+ "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. Hashes match dist-inventory.json. No downloaded executable was run.",
+ "downloaded_artifacts_executed": false,
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "release_notes_are_not_compatibility_proof": true,
+ "ceiling_artifacts": {
+  "claude-code-darwin-arm64": {
+   "version": "2.1.317",
+   "artifact_file": "claude",
+   "artifact_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9"
+  },
+  "claude-code-linux-x64": {
+   "version": "2.1.317",
+   "artifact_file": "claude",
+   "artifact_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0"
+  }
+ },
+ "identifier_stable_literals": {
+  "prompt_ok_false_log": "Hooks: Prompt hook condition was not met:",
+  "prompt_blocking_outcome": "outcome:\"blocking\"",
+  "prompt_continue_on_block": "continueOnBlock!==!0",
+  "pretooluse_deny_before_dispatch": "Execution stopped by PreToolUse hook",
+  "pretooluse_deny_tool_error": "is_error:!0",
+  "rewrite_push": "hookRewrites.push",
+  "rewrite_ask_rule": "ask rule on hook-rewritten input",
+  "rewrite_ask_to_deny": "behavior===\"ask\"?{behavior:\"deny\"",
+  "stop_cap_default_8": "CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8",
+  "stop_hook_active_true": "stopHookActive:!0",
+  "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1",
+  "plugin_hook_input_undeliverable": "this tool input could not be given to a hook that checks it, so the tool was not run",
+  "updatedinput_reserved_key": "returned updatedInput with a key starting with",
+  "updatedinput_tool_not_run": "The tool was not run."
+ },
+ "identifier_stable_literal_counts": {
+  "2.1.316": {
+   "claude-code-darwin-arm64": {
+    "prompt_ok_false_log": 2,
+    "prompt_blocking_outcome": 20,
+    "prompt_continue_on_block": 1,
+    "pretooluse_deny_before_dispatch": 2,
+    "pretooluse_deny_tool_error": 68,
+    "rewrite_push": 1,
+    "rewrite_ask_rule": 2,
+    "rewrite_ask_to_deny": 3,
+    "stop_cap_default_8": 1,
+    "stop_hook_active_true": 2,
+    "prompt_schema_required_ok": 1,
+    "plugin_hook_input_undeliverable": 2,
+    "updatedinput_reserved_key": 2,
+    "updatedinput_tool_not_run": 4
+   },
+   "claude-code-linux-x64": {
+    "prompt_ok_false_log": 2,
+    "prompt_blocking_outcome": 20,
+    "prompt_continue_on_block": 1,
+    "pretooluse_deny_before_dispatch": 2,
+    "pretooluse_deny_tool_error": 68,
+    "rewrite_push": 1,
+    "rewrite_ask_rule": 2,
+    "rewrite_ask_to_deny": 3,
+    "stop_cap_default_8": 1,
+    "stop_hook_active_true": 2,
+    "prompt_schema_required_ok": 1,
+    "plugin_hook_input_undeliverable": 2,
+    "updatedinput_reserved_key": 2,
+    "updatedinput_tool_not_run": 4
+   }
+  },
+  "2.1.317": {
+   "claude-code-darwin-arm64": {
+    "prompt_ok_false_log": 2,
+    "prompt_blocking_outcome": 20,
+    "prompt_continue_on_block": 1,
+    "pretooluse_deny_before_dispatch": 2,
+    "pretooluse_deny_tool_error": 69,
+    "rewrite_push": 1,
+    "rewrite_ask_rule": 2,
+    "rewrite_ask_to_deny": 3,
+    "stop_cap_default_8": 1,
+    "stop_hook_active_true": 2,
+    "prompt_schema_required_ok": 1,
+    "plugin_hook_input_undeliverable": 2,
+    "updatedinput_reserved_key": 2,
+    "updatedinput_tool_not_run": 4
+   },
+   "claude-code-linux-x64": {
+    "prompt_ok_false_log": 2,
+    "prompt_blocking_outcome": 20,
+    "prompt_continue_on_block": 1,
+    "pretooluse_deny_before_dispatch": 2,
+    "pretooluse_deny_tool_error": 69,
+    "rewrite_push": 1,
+    "rewrite_ask_rule": 2,
+    "rewrite_ask_to_deny": 3,
+    "stop_cap_default_8": 1,
+    "stop_hook_active_true": 2,
+    "prompt_schema_required_ok": 1,
+    "plugin_hook_input_undeliverable": 2,
+    "updatedinput_reserved_key": 2,
+    "updatedinput_tool_not_run": 4
+   }
+  }
+ },
+ "hop_comparison": {
+  "structure_identical_across_2_1_316_through_2_1_317": true,
+  "structure_note": "Every selected window holds the same decision tokens on both platforms and both versions. Differences are minified identifier remangling, per-build chunk file names, and the version banner; three surfaces are byte-identical across the hop. The extractor was calibrated to reproduce every frozen claude-code-2.1.316 window byte-for-byte before reading 2.1.317.",
+  "per_version": {
+   "2.1.316": {
+    "claude-code-darwin-arm64": {
+     "artifact_sha256": "64c327e92b2c5e0f78c0a980c5a518121e1f0d140ca771ca5dd4488d1a2dcb3f",
+     "selected_js": {
+      "prompt_ok_false_blocks": "stopReason:Et.data.reason,message:sn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${Et.data.reason}`);let Ot=nMr(b,`[${e.prompt}]:`)?Ml(e.prompt,tMr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${Ot}]: ${Et.data.reason}`,command:Ot,...Ane(r,{reason:Et.data.reason})},preventContinuation:!Y&&e.continueOnBlock!==!0,stopReason:Et.data.reason}}return t(`Hooks: Prompt hook condition was met: ${Et.data.reason}`),{hook:e,outcome:\"success\",stopReason:Et.data.reason,message:sn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})}}catch(lt){if(ze(),We.aborted){let Je=!y.abortController.signal.aborted;if(Je){let nt=Date.now()-Oe,ft=Math.min(Ie,D??1/0);t(`Hooks: prompt hook (${r}) timed out after ${nt}ms (limit ${ft}ms)`,{level:\"warn\"}),a(\"tengu_hook_prompt_timeout\",{hookEvent:c(r),timeoutMs:ft,durationMs:nt})}return{hook:e,outcome:\"cancelled\",timedOut:Je}}throw lt}}catch(Z){let ke=d(Z);return t",
+      "pretooluse_deny_before_dispatch": "ked:bo?.behavior===\"ask\"}),Li=Kr??Vo.message;if(fo&&!Li)Li=`Execution stopped by PreToolUse hook${Co?`: ${Co}`:\"\"}`;if(Vo.decisionReason?.type===\"hook\")Li+=Din(e.name,Zt,s.options.tools,ae(s),i7n(s));let Qs=Li,Hi=[{type:\"tool_result\",content:Qs,...Kr===void 0&&{is_error:!0},tool_use_id:n}],Xa=Vo.behavior===\"ask\"?Vo.contentBlocks:void 0;if(Xa?.length)Hi.push(...Xa);let ta;if(Xa?.length){let Is=F(Xa,(Aa)=>Aa.type===\"image\");if(Is>0)ta=S$n(Is)}if(qt.push({message:Me({content:Hi,imagePasteIds:ta,toolUseResult:Kr===void 0?`Error: ${Qs}`:Qs,toolDenialKind:Xbt(Vo),toolDenialEndsTu",
+      "rewrite_recheck_push": "sionRequestResult=void 0}if(fzr(nr,`Hook ${nt} (${KM(nr.hook)})`,n,w),nr.updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:_r.has(nr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:nr.updatedInput});if(nr.permissionBehavior)switch(t(`Hook ${nt} (${KM(nr.hook)}) returned permissionDecision: ${nr.permissionBehavio",
+      "rewrite_recheck_ask_to_deny": "tion bkn(e,n,r,s,h,y,b,w){if(e.kind===\"strict\"){if(!gLe(s.updatedInput,r))return qze(n.name,h);if(n.requiresUserInteraction?.()||aq(n)){let ke=gwt(await zA(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(ke)return ke.behavior===\"ask\"?{behavior:\"deny\",message:ke.message,decisionReason:ke.decisionReason??plo}:ke}let{lostTightenings:Z}=Rjt(e,s.upda",
+      "stop_block_cap_default_8": "\"max_turns\",turnCount:ee};let De=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(De>0&&Le>De){a(\"tengu_stop_hook_block_count\",{count:Le,is_subagent:Ene(R.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:pe});let be=`A hook blocked the turn from ending ${Le} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and retur",
+      "stop_hook_active_reentry": "SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.\";if(yield Nt(be,\"warning\"),R.agentContext.agentType!==\"teammate\"&&!Ene(R.agentContext))yd(be);return yield*ro(R,[...j,...de,...ce],{stopHookActive:Ho}),{reason:\"completed\",goalPass:fe.goalPass}}return Y={guards:{...Ot,...Gr,malformedToolUseRetryCount:0,stopHookActive:!0,stopHookBlockingCount:Le,turnCount:ee},messages:[...j,...de,...ce,...fe.blockingErrors],toolUseContext:R,compactTracking:yt,transition:{reason:\"stop_hook_blocking\"},pendingToolUseSummary:H?.pendingToolUseSummary,prevToolDurations:H?.prevToolDurations},xo}return{reason:\"completed\",goalPass:fe.goalPass}}let ve=C;Hg(\"quer",
+      "stop_hook_active_input": ",session_crons:Exn()},Te=bp(y.session,oh(),e,y),Ee=h?{...Te,hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:X()?\"\":pm(h),agent_type:w??Te.agent_type??\"\",last_assistant_message:be,...we}:{...Te,hook_event_name:\"Stop\",stop_hook_active:s,last_assistant_message:be,...w",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1},asyn"
+     }
+    },
+    "claude-code-linux-x64": {
+     "artifact_sha256": "fd13c70000fec3f2116dfbcbb6121210b4a29328bf0e46210a59dd594a67d824",
+     "selected_js": {
+      "prompt_ok_false_blocks": "stopReason:At.data.reason,message:sn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${At.data.reason}`);let It=iMr(S,`[${e.prompt}]:`)?Ml(e.prompt,sMr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${It}]: ${At.data.reason}`,command:It,...bne(r,{reason:At.data.reason})},preventContinuation:!q&&e.continueOnBlock!==!0,stopReason:At.data.reason}}return t(`Hooks: Prompt hook condition was met: ${At.data.reason}`),{hook:e,outcome:\"success\",stopReason:At.data.reason,message:sn({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})}}catch(lt){if(ze(),We.aborted){let Je=!y.abortController.signal.aborted;if(Je){let nt=Date.now()-Me,pt=Math.min(Ie,L??1/0);t(`Hooks: prompt hook (${r}) timed out after ${nt}ms (limit ${pt}ms)`,{level:\"warn\"}),a(\"tengu_hook_prompt_timeout\",{hookEvent:c(r),timeoutMs:pt,durationMs:nt})}return{hook:e,outcome:\"cancelled\",timedOut:Je}}throw lt}}catch(Z){let Se=d(Z);return t",
+      "pretooluse_deny_before_dispatch": "ked:bo?.behavior===\"ask\"}),Li=Kr??zo.message;if(fo&&!Li)Li=`Execution stopped by PreToolUse hook${To?`: ${To}`:\"\"}`;if(zo.decisionReason?.type===\"hook\")Li+=Min(e.name,Zt,s.options.tools,ae(s),UXn(s));let Qs=Li,Hi=[{type:\"tool_result\",content:Qs,...Kr===void 0&&{is_error:!0},tool_use_id:n}],Xa=zo.behavior===\"ask\"?zo.contentBlocks:void 0;if(Xa?.length)Hi.push(...Xa);let ta;if(Xa?.length){let Bs=F(Xa,(Ca)=>Ca.type===\"image\");if(Bs>0)ta=B$n(Bs)}if(qt.push({message:De({content:Hi,imagePasteIds:ta,toolUseResult:Kr===void 0?`Error: ${Qs}`:Qs,toolDenialKind:GSt(zo),toolDenialEndsTu",
+      "rewrite_recheck_push": "sionRequestResult=void 0}if(Vzr(nr,`Hook ${nt} (${WM(nr.hook)})`,n,w),nr.updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:_r.has(nr.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:nr.updatedInput});if(nr.permissionBehavior)switch(t(`Hook ${nt} (${WM(nr.hook)}) returned permissionDecision: ${nr.permissionBehavio",
+      "rewrite_recheck_ask_to_deny": "tion Lkn(e,n,r,s,h,y,S,w){if(e.kind===\"strict\"){if(!d0e(s.updatedInput,r))return U2e(n.name,h);if(n.requiresUserInteraction?.()||Yq(n)){let Se=dwt(await jC(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(Se)return Se.behavior===\"ask\"?{behavior:\"deny\",message:Se.message,decisionReason:Se.decisionReason??jao}:Se}let{lostTightenings:Z}=hjt(e,s.upda",
+      "stop_block_cap_default_8": "\"max_turns\",turnCount:te};let Ne=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(Ne>0&&qe>Ne){a(\"tengu_stop_hook_block_count\",{count:qe,is_subagent:mne(E.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:me});let ke=`A hook blocked the turn from ending ${qe} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and retur",
+      "stop_hook_active_reentry": "SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.\";if(yield Nt(ke,\"warning\"),E.agentContext.agentType!==\"teammate\"&&!mne(E.agentContext))xd(ke);return yield*io(E,[...q,...ce,...pe],{stopHookActive:Qo}),{reason:\"completed\",goalPass:he.goalPass}}return J={guards:{...qt,...Qr,malformedToolUseRetryCount:0,stopHookActive:!0,stopHookBlockingCount:qe,turnCount:te},messages:[...q,...ce,...pe,...he.blockingErrors],toolUseContext:E,compactTracking:_t,transition:{reason:\"stop_hook_blocking\"},pendingToolUseSummary:j?.pendingToolUseSummary,prevToolDurations:j?.prevToolDurations},Oo}return{reason:\"completed\",goalPass:he.goalPass}}let ve=k;Dg(\"quer",
+      "stop_hook_active_input": ",session_crons:Rxn()},Ee=wf(y.session,oh(),e,y),Ae=h?{...Ee,hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:X()?\"\":fm(h),agent_type:w??Ee.agent_type??\"\",last_assistant_message:ke,...we}:{...Ee,hook_event_name:\"Stop\",stop_hook_active:s,last_assistant_message:ke,...w",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1},asyn"
+     }
+    }
+   },
+   "2.1.317": {
+    "claude-code-darwin-arm64": {
+     "artifact_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+     "selected_js": {
+      "prompt_ok_false_blocks": "stopReason:bt.data.reason,message:an({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${bt.data.reason}`);let xt=OLr(b,`[${e.prompt}]:`)?Nl(e.prompt,MLr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${xt}]: ${bt.data.reason}`,command:xt,...fQ(r,{reason:bt.data.reason})},preventContinuation:!Y&&e.continueOnBlock!==!0,stopReason:bt.data.reason}}return t(`Hooks: Prompt hook condition was met: ${bt.data.reason}`),{hook:e,outcome:\"success\",stopReason:bt.data.reason,message:an({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})}}catch(tt){if(Ve(),Ge.aborted){let dt=!y.abortController.signal.aborted;if(dt){let Xe=Date.now()-Ee,ht=Math.min(He,L??1/0);t(`Hooks: prompt hook (${r}) timed out after ${Xe}ms (limit ${ht}ms)`,{level:\"warn\"}),a(\"tengu_hook_prompt_timeout\",{hookEvent:p(r),timeoutMs:ht,durationMs:Xe})}return{hook:e,outcome:\"cancelled\",timedOut:dt}}throw tt}}catch(ke){let Z=d(ke);return t",
+      "pretooluse_deny_before_dispatch": "ked:Eo?.behavior===\"ask\"}),ua=fs??Do.message;if(vo&&!ua)ua=`Execution stopped by PreToolUse hook${xo?`: ${xo}`:\"\"}`;if(Do.decisionReason?.type===\"hook\")ua+=ldn(e.name,tn,s.options.tools,ae(s),Ver(s));let Ai=ua,Ks=[{type:\"tool_result\",content:Ai,...fs===void 0&&{is_error:!0},tool_use_id:n}],Mi=Do.behavior===\"ask\"?Do.contentBlocks:void 0;if(Mi?.length)Ks.push(...Mi);let sl;if(Mi?.length){let Ui=B(Mi,(il)=>il.type===\"image\");if(Ui>0)sl=uUn(Ui)}if(on.push({message:De({content:Ks,imagePasteIds:sl,toolUseResult:fs===void 0?`Error: ${Ai}`:Ai,toolDenialKind:Rvt(Do),toolDenialEndsTu",
+      "rewrite_recheck_push": "Es.permissionRequestResult=void 0}if(s4r(Es,`Hook ${Xe} (${ka})`,n,w),Es.updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:nr.has(Es.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:Es.updatedInput});if(Es.permissionBehavior)switch(t(`Hook ${Xe} (${ka}) returned permissionDecision: ${Es.permissionBehavior}${Es.ho",
+      "rewrite_recheck_ask_to_deny": "unction Swn(e,n,r,s,h,y,b,w){if(e.kind===\"strict\"){if(!UNe(s.updatedInput,r))return HVe(n.name,h);if(n.requiresUserInteraction?.()||Dq(n)){let Z=qvt(await rR(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(Z)return Z.behavior===\"ask\"?{behavior:\"deny\",message:Z.message,decisionReason:Z.decisionReason??Pmo}:Z}let{lostTightenings:ke}=AGt(e,s.update",
+      "stop_block_cap_default_8": "\"max_turns\",turnCount:ee};let Ue=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(Ue>0&&Be>Ue){a(\"tengu_stop_hook_block_count\",{count:Be,is_subagent:pre(R.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:pe});let ke=`A hook blocked the turn from ending ${Be} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and retur",
+      "stop_hook_active_reentry": "SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.\";if(yield Nt(ke,\"warning\"),R.agentContext.agentType!==\"teammate\"&&!pre(R.agentContext))kd(ke);return yield*oo(R,[...j,...le,...ce],{stopHookActive:$o}),{reason:\"completed\",goalPass:ye.goalPass}}return Y={guards:{...vt,...Wr,malformedToolUseRetryCount:0,stopHookActive:!0,stopHookBlockingCount:Be,turnCount:ee},messages:[...j,...le,...ce,...ye.blockingErrors],toolUseContext:R,compactTracking:ft,transition:{reason:\"stop_hook_blocking\"},pendingToolUseSummary:H?.pendingToolUseSummary,prevToolDurations:H?.prevToolDurations},Eo}return{reason:\"completed\",goalPass:ye.goalPass}}let xe=C;Qh(\"quer",
+      "stop_hook_active_input": ",session_crons:KMn()},Te=Ap(y.session,Sg(),e,y),Me=h?{...Te,hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:q()?\"\":vm(h),agent_type:w??Te.agent_type??\"\",last_assistant_message:be,...we}:{...Te,hook_event_name:\"Stop\",stop_hook_active:s,last_assistant_message:be,...w",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1},asyn"
+     }
+    },
+    "claude-code-linux-x64": {
+     "artifact_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+     "selected_js": {
+      "prompt_ok_false_blocks": "stopReason:bt.data.reason,message:an({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})};t(`Hooks: Prompt hook condition was not met: ${bt.data.reason}`);let xt=qLr(S,`[${e.prompt}]:`)?Nl(e.prompt,zLr):e.prompt;return{hook:e,outcome:\"blocking\",blockingError:{blockingError:`[${xt}]: ${bt.data.reason}`,command:xt,...rQ(r,{reason:bt.data.reason})},preventContinuation:!Y&&e.continueOnBlock!==!0,stopReason:bt.data.reason}}return t(`Hooks: Prompt hook condition was met: ${bt.data.reason}`),{hook:e,outcome:\"success\",stopReason:bt.data.reason,message:an({type:\"hook_success\",hookName:n,toolUseID:G,hookEvent:r,content:\"\"})}}catch(tt){if(Ke(),Ge.aborted){let dt=!y.abortController.signal.aborted;if(dt){let Xe=Date.now()-Ae,gt=Math.min(De,H??1/0);t(`Hooks: prompt hook (${r}) timed out after ${Xe}ms (limit ${gt}ms)`,{level:\"warn\"}),a(\"tengu_hook_prompt_timeout\",{hookEvent:f(r),timeoutMs:gt,durationMs:Xe})}return{hook:e,outcome:\"cancelled\",timedOut:dt}}throw tt}}catch(ke){let Z=d(ke);return t",
+      "pretooluse_deny_before_dispatch": "ked:To?.behavior===\"ask\"}),ua=ps??Lo.message;if(Eo&&!ua)ua=`Execution stopped by PreToolUse hook${xo?`: ${xo}`:\"\"}`;if(Lo.decisionReason?.type===\"hook\")ua+=sdn(e.name,tn,s.options.tools,ae(s),Ter(s));let Ci=ua,Vs=[{type:\"tool_result\",content:Ci,...ps===void 0&&{is_error:!0},tool_use_id:n}],Mi=Lo.behavior===\"ask\"?Lo.contentBlocks:void 0;if(Mi?.length)Vs.push(...Mi);let sl;if(Mi?.length){let Ui=B(Mi,(il)=>il.type===\"image\");if(Ui>0)sl=uUn(Ui)}if(on.push({message:Le({content:Vs,imagePasteIds:sl,toolUseResult:ps===void 0?`Error: ${Ci}`:Ci,toolDenialKind:Evt(Lo),toolDenialEndsTu",
+      "rewrite_recheck_push": "Ts.permissionRequestResult=void 0}if(FYr(Ts,`Hook ${Xe} (${ka})`,n,w),Ts.updatedInput!==void 0)w?.remoteCall?.hookRewrites.push({byOwnHook:nr.has(Ts.hook),handed:\"tool_input\"in n?n.tool_input:void 0,proposed:Ts.updatedInput});if(Ts.permissionBehavior)switch(t(`Hook ${Xe} (${ka}) returned permissionDecision: ${Ts.permissionBehavior}${Ts.ho",
+      "rewrite_recheck_ask_to_deny": "unction mwn(e,n,r,s,h,y,S,w){if(e.kind===\"strict\"){if(!DNe(s.updatedInput,r))return AVe(n.name,h);if(n.requiresUserInteraction?.()||v4(n)){let Z=jvt(await eR(n,r,{...y,toolUseId:h},{hookUpdatedInput:void 0}),n.name);if(Z)return Z.behavior===\"ask\"?{behavior:\"deny\",message:Z.message,decisionReason:Z.decisionReason??imo}:Z}let{lostTightenings:ke}=gzt(e,s.update",
+      "stop_block_cap_default_8": "\"max_turns\",turnCount:te};let qe=i.CLAUDE_CODE_STOP_HOOK_BLOCK_CAP??8;if(qe>0&&je>qe){a(\"tengu_stop_hook_block_count\",{count:je,is_subagent:rre(E.agentContext),hit_max_turns:!1,hit_cap:!0,goal_active:me});let Ee=`A hook blocked the turn from ending ${je} consecutive times \\u2014 overriding and ending turn. `+\"For Stop/SubagentStop hooks, check stop_hook_active in the input and retur",
+      "stop_hook_active_reentry": "SubagentStop hooks, check stop_hook_active in the input and return success while it's true. Set CLAUDE_CODE_STOP_HOOK_BLOCK_CAP to raise this limit.\";if(yield Nt(Ee,\"warning\"),E.agentContext.agentType!==\"teammate\"&&!rre(E.agentContext))Ud(Ee);return yield*so(E,[...H,...ce,...pe],{stopHookActive:Yo}),{reason:\"completed\",goalPass:Se.goalPass}}return J={guards:{...xt,...$r,malformedToolUseRetryCount:0,stopHookActive:!0,stopHookBlockingCount:je,turnCount:te},messages:[...H,...ce,...pe,...Se.blockingErrors],toolUseContext:E,compactTracking:yt,transition:{reason:\"stop_hook_blocking\"},pendingToolUseSummary:G?.pendingToolUseSummary,prevToolDurations:G?.prevToolDurations},Ao}return{reason:\"completed\",goalPass:Se.goalPass}}let Pe=k;Qg(\"quer",
+      "stop_hook_active_input": ",session_crons:eOn()},Ee=Rf(y.session,bh(),e,y),Me=h?{...Ee,hook_event_name:\"SubagentStop\",stop_hook_active:s,agent_id:h,agent_transcript_path:q()?\"\":vm(h),agent_type:w??Ee.agent_type??\"\",last_assistant_message:Se,...we}:{...Ee,hook_event_name:\"Stop\",stop_hook_active:s,last_assistant_message:Se,...w",
+      "prompt_schema_required_ok": "required:[\"ok\"],additionalProperties:!1},asyn"
+     }
+    }
+   }
+  }
+ },
+ "selected_mapped_change_by_hop": {
+  "2.1.316_to_2.1.317": false
+ }
+}

@@ -6,6 +6,25 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-code.headless` and, separately,
+  `claude-code.response-only` through official stable `2.1.317` on their
+  existing revisions (Research 473). Headless extends maintained
+  `2.1.287..=2.1.317` on private `claude-code.headless.stream-json.v2`;
+  response-only extends maintained `2.1.282..=2.1.317` on
+  `claude-code.response-only.stream-json.v3`. Claim ids, baselines, deprecated
+  segments, `AllowUnverified`, and the maximum-turn exact-version set stay.
+  npm `latest`, npm `next`, and GitHub latest stable agree; npm `stable` is
+  the delayed `2.1.311` channel. The single published hop from `2.1.316` adds
+  no CLI option, changes no selected surface: the settings-hook decisions,
+  safe-mode isolation, init fields, strict empty MCP, and forked-stream
+  description keep every decision token, with only identifier remangling,
+  chunk hashes, and the version banner differing, and three surfaces
+  byte-identical. The extraction tooling reproduces every frozen `2.1.316`
+  window byte-for-byte before reading `2.1.317`. `2.1.317` adds the
+  flag-gated `cc-plugin-privacy` builtin whose `tool.check` hooks cover web
+  and shell tools neither route selects; it contributes no MCP server.
+  `2.1.318` is `UnverifiedNewer`, and the two routes stay separate from
+  `claude-agent.acp` and `claude-agent.sdk`.
 - qualify `claude-agent.sdk` through npm `latest`/`next` `0.3.317` and its exact
   embedded native `2.1.317` as a compatible extension of the retained coupled
   `0.3.284`/`2.1.284` baseline (Research 472). The package claim stays baseline

@@ -1,5 +1,6 @@
 use super::*;
 
+mod attached_child_lifecycle;
 mod consumer_route_exec_projection;
 mod consumer_route_projection;
 mod exec_activity;

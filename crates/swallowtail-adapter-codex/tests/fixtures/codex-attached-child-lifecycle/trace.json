@@ -1,0 +1,321 @@
+{
+  "record": "Research 467",
+  "subject": "codex.app-server attached-child lifecycle and selected paginated thread/resume",
+  "frozenIdentity": {
+    "0.164.0": {
+      "tag": "rust-v0.164.0",
+      "commit": "6aaac694803004a63c6f393d153c96d22521a6b9"
+    },
+    "0.165.0": {
+      "tag": "rust-v0.165.0",
+      "commit": "360319d8dee62d87e2d59fc0c21805d79519cfed",
+      "annotatedTag": "e374836b2728d9b7aa981c2902649e640a2edaa8"
+    }
+  },
+  "downloads": {
+    "downloadedBinariesExecuted": false,
+    "noPrompt": true,
+    "noLiveSession": true,
+    "noHostMutation": true,
+    "sourceFetchedByRawTagPath": true
+  },
+  "contentSha256": {
+    "codex-rs/app-server/src/request_processors/thread_delete.rs": {
+      "0.164.0": "44391901784847c1b62463739df39fdac408d78e300c0a58f39c2f7804400751",
+      "0.165.0": "5090073a863a47189dba2ff697b3a0cfd39de9d1797cd3a6e1b84039753b1275"
+    },
+    "codex-rs/app-server/src/request_processors/thread_processor.rs": {
+      "0.164.0": "0c806ff3aaf348f7373032171d55ff110dfd30bcbb5cfabded89330b5b4375b6",
+      "0.165.0": "37ff0875e2b6d3def2fc727fd065574bd243cea2aa836021ebb218ac83b898e7"
+    },
+    "codex-rs/rollout/src/rollout_reference_index.rs": {
+      "0.164.0": "133d782e30f9f8b646194a1311d5ea8c3f8e21fd00108a77ad63b63515f908a6",
+      "0.165.0": "0400f418a8a472cfbda3f65308fb18924582a8a497f917413ff84cdbe5b3a45f"
+    },
+    "codex-rs/state/migrations/0062_threads_attached_parent.sql": {
+      "0.164.0": null,
+      "0.165.0": "d0ea9bbff023692fb2076bd9b3ba9f750f6382161a01a4b51a19bd84b65358bd"
+    },
+    "codex-rs/state/src/runtime/threads.rs": {
+      "0.164.0": "5694b17e3da88032df83a2df5ff19d694d9a8a86b52f78a7f9d24c6f3425a555",
+      "0.165.0": "8e77ea07bacd75dd430f315a7f26fdc74692e778fe62f44c1f074661c8592191"
+    },
+    "codex-rs/thread-store/src/local/delete_thread.rs": {
+      "0.164.0": "c42ee0cef1780ec3e2928dee280f6b28f51cf89431301405512e353e9bb4ba5a",
+      "0.165.0": "f4e6406f1703d2ca29ae400e7ebefdfe3ac3c688386a8bb558a1e0b8c01afeda"
+    },
+    "codex-rs/thread-store/src/local/history_revision.rs": {
+      "0.164.0": "78bcb769bc390342580d27f01a2e557468f43ed94fa0f26f39ddbd873e01be00",
+      "0.165.0": "78bcb769bc390342580d27f01a2e557468f43ed94fa0f26f39ddbd873e01be00"
+    },
+    "codex-rs/thread-store/src/local/list_threads.rs": {
+      "0.164.0": "4f2fe5d6823d85b2b0983e35e791a0aa23d5bdc26d8e04aa3fcde9fe79a147f9",
+      "0.165.0": "6c0e51b81c12a68f965b03633df6911cf90edf7b09ca8533db35e4d39c5afade"
+    },
+    "codex-rs/thread-store/src/local/live_writer.rs": {
+      "0.164.0": "1cac078fbc0113c721043b1f545d68dec100063cc8daf25f1f9807723ca04ce1",
+      "0.165.0": "1e11169c69e9126de9708d8dc1506f04783c56628a43237b7fea1de8aa5480b9"
+    },
+    "codex-rs/thread-store/src/local/mod.rs": {
+      "0.164.0": "ab21cf2f24abd6096077446f61dc616069fc478e58531e4bc317c2cf556e10e5",
+      "0.165.0": "b1c8064b79f945e9dfe1741793af7dd3fab438ddedadea36e7cb2c1544ebf658"
+    },
+    "codex-rs/thread-store/src/local/model_context.rs": {
+      "0.164.0": "ab28084e50a6414a47995ded08d16aa2592c3b5fadc1c447967fcaedb2415f91",
+      "0.165.0": "ab28084e50a6414a47995ded08d16aa2592c3b5fadc1c447967fcaedb2415f91"
+    },
+    "codex-rs/thread-store/src/store.rs": {
+      "0.164.0": "1447b7e353974d3cadadbb57dfb3374cdf747040f36aabb8ede33245a714ad29",
+      "0.165.0": "2cd69d8fc5747db363c28423b94edceef6c9d4adc8b650d44315f309d873ccb8"
+    },
+    "codex-rs/core/src/thread_manager.rs": {
+      "0.164.0": "a54d4e76595401b0b6bf5673f11ef8428807cfcf72a6ed6041c33caeec8717c3",
+      "0.165.0": "f882b0c4a0a8967ef3887a7fa21c2572754ccaa18bc1b6054aa9f6eec486e2c5"
+    },
+    "codex-rs/core/src/config/mod.rs": {
+      "0.164.0": "b9786bf33ed36546b100578ce26f6884033c404d11c72ed1e234c1b519605c04",
+      "0.165.0": "e7bcb5c92c73308d7170da9d0c811fc1082973b9b074e52687dad5c3d38f77cc"
+    },
+    "codex-rs/config/src/config_toml.rs": {
+      "0.164.0": "52b56c820904559a79f515e444c4bd4dd5c2729531600fcf0edff81496b66f83",
+      "0.165.0": "fa08e70e2d546b90338d13ac556d6ce53ec4929921745aa205c9c5e7fbab248c"
+    },
+    "codex-rs/thread-store/src/in_memory.rs": {
+      "0.164.0": "9da776d6c4e6b5571591bb199e622b25ef162af4621e93a084eaf691e4269280",
+      "0.165.0": "a772351abb388e704be3f803a5827cc857a503e1ee6fcd3f1cf285846f7e04ef"
+    },
+    "codex-rs/app-server/src/message_processor.rs": {
+      "0.164.0": "e8e5fcccc04e699c0f9394d4586e25e9560b3f1a4a1ee066692adf93139443c2",
+      "0.165.0": "aadaf2f4a99db6a4844a2e44c97ed8ba2718dfab4e460609a1408558875b8a74"
+    }
+  },
+  "attachedChildGuard": {
+    "precheckFile": "codex-rs/app-server/src/request_processors/thread_delete.rs",
+    "precheckSymbol": "ThreadRequestProcessor::thread_delete_response",
+    "precheckOrder0_165_0": [
+      "acquire_thread_list_state_permit",
+      "state_db_spawn_subtree_thread_ids",
+      "validate_root_thread_delete",
+      "local_store_ensure_no_attached_threads",
+      "prepare_thread_for_delete_per_candidate",
+      "descendants_reversed_then_root_delete_order",
+      "thread_store_delete_threads",
+      "empty_response_plus_thread_deleted_notifications"
+    ],
+    "precheckScope": "the guard runs over every candidate id: root plus its strict spawn-edge subtree",
+    "precheckCoversNonLocalStore": false,
+    "precheckCoversNonLocalStoreNote": "the guard is invoked only after downcasting the thread store to LocalThreadStore",
+    "storeCheckFile": "codex-rs/thread-store/src/local/delete_thread.rs",
+    "storeCheckSymbol": "LocalThreadStore::ensure_no_attached_threads",
+    "storeCheckBody": [
+      "scan_reference_index",
+      "RolloutReferenceIndex::attached_child",
+      "ThreadStoreError::InvalidRequest"
+    ],
+    "writerRecheck": {
+      "singleDeleteOrder0_164_0": [
+        "lock_lifecycle",
+        "lock_live_writer",
+        "scan_reference_index",
+        "thread_rollouts_from_index",
+        "ensure_no_external_references",
+        "acquire_writer_locks",
+        "thread_data_cleanup",
+        "delete_rollout_and_state_rows"
+      ],
+      "singleDeleteOrder0_165_0": [
+        "lock_lifecycle",
+        "lock_live_writer",
+        "acquire_writer_locks",
+        "scan_reference_index",
+        "thread_rollouts_from_index",
+        "check_attached_children",
+        "ensure_no_external_references",
+        "thread_data_cleanup",
+        "delete_rollout_and_state_rows"
+      ],
+      "batchDeleteOrder0_165_0": [
+        "lock_lifecycle_all_sorted_ids",
+        "lock_live_writer_all_sorted_ids",
+        "acquire_writer_locks",
+        "scan_reference_index",
+        "thread_rollouts_from_index",
+        "check_attached_children",
+        "ensure_no_external_references",
+        "thread_data_cleanup",
+        "delete_each_rollout",
+        "delete_state_rows"
+      ],
+      "coveredWindow": "0.165.0 moves writer-lock acquisition ahead of the scan and repeats the attached-child check under writer ownership",
+      "releaseBeforeEffect": true
+    },
+    "referenceIndex": {
+      "file": "codex-rs/rollout/src/rollout_reference_index.rs",
+      "scannedRoots": [
+        "archived_sessions",
+        "sessions"
+      ],
+      "archivedChildBlocksDelete": true,
+      "attachedParentSource": "session metadata forked_from_id, retained only when attached_thread is true",
+      "unarchivedScansArePartial": true,
+      "unarchivedScansCannotAuthorizeDeletion": true
+    },
+    "listFilter": {
+      "file": "codex-rs/state/src/runtime/threads.rs",
+      "constant": "EXCLUDE_ATTACHED_THREADS",
+      "predicate": "threads.attached_thread_parent_id IS NULL",
+      "ordinaryListingHidesAttachedThreads": true,
+      "exception": "ThreadRelationFilter::AttachedThreadsOf",
+      "relationFilterWireField": "thread/list attachedToThreadId (experimental)",
+      "adapterSendsRelationFilter": false,
+      "adapterSendsAttachToSource": false
+    },
+    "migration": {
+      "path": "codex-rs/state/migrations/0062_threads_attached_parent.sql",
+      "introducedIn": "0.165.0",
+      "content": [
+        "ALTER TABLE threads ADD COLUMN attached_thread_parent_id TEXT",
+        "CREATE INDEX idx_threads_attached_parent ON threads(attached_thread_parent_id) WHERE attached_thread_parent_id IS NOT NULL"
+      ]
+    },
+    "strictDescendants": {
+      "subtreeSource": "state_db_spawn_subtree_thread_ids",
+      "deleteOrder": "descendants reversed then root",
+      "stateRowDelete": "delete_threads_strict deletes exactly the listed ids and no implicit cascade",
+      "claimedScope": "ProviderDefinedDescendants",
+      "guardPrecedesEveryEffect": true
+    },
+    "errorMapping": {
+      "storeError": "ThreadStoreError::InvalidRequest",
+      "jsonRpcError": "-32602 invalid_request",
+      "adapterDiagnostic": "swallowtail.codex.app_server.request_failed",
+      "adapterEffect": "failed_before_effect",
+      "notification": "ThreadDeleted is not sent on the refusal path"
+    },
+    "reachableParents": [
+      "preexisting local parent",
+      "restored parent",
+      "imported parent",
+      "externally forked parent",
+      "parent whose child is archived",
+      "parent whose descendant holds the child"
+    ],
+    "adapterCreatesAttachedChildren": false,
+    "adapterCannotCreateAttachedChildrenThereforeSafe": false,
+    "adapterCannotCreateAttachedChildrenThereforeSafeNote": "an external client, import, restore, or a prior interactive run can leave an attached child; the adapter must not assume absence",
+    "guardAppliesTo": "LocalThreadStore only: thread_delete.rs calls ensure_no_attached_threads after downcast_ref::<LocalThreadStore>()",
+    "storeSelection": {
+      "file": "codex-rs/core/src/thread_manager.rs",
+      "symbol": "thread_store_from_config",
+      "configFile": "codex-rs/core/src/config/mod.rs",
+      "configTomlFile": "codex-rs/config/src/config_toml.rs",
+      "default": "Local",
+      "tomlKey": "experimental_thread_store",
+      "tomlTag": {
+        "local": "0.165.0",
+        "in_memory": "test and debug configurations; marked experimental / do not use; #[schemars(skip)]"
+      },
+      "inMemoryInstall": "codex-rs/thread-store/src/in_memory.rs",
+      "adapterSelectsStore": false,
+      "adapterSelectsStoreNote": "the adapter starts the approved executable in the caller's environment and sets no Codex config; the provider's own config decides the store",
+      "attachedChildCreationRequiresLocalStore": true,
+      "attachedChildCreationGuard": "thread/fork attachToSource returns unsupported_thread_store_operation(\"attached threads\") unless a state database exists and the store is LocalThreadStore",
+      "inMemoryAttachedListing": "ThreadRelationFilter::AttachedThreadsOf returns ThreadStoreError::Unsupported on the in-memory store",
+      "inMemoryDelete": "the in-memory store delete path performs no attached-child check",
+      "residual": "a provider config switch from the local store to the in-memory store between runs would leave previously created local attached children outside the guarded delete path; unselected, unexercised, and unclaimed"
+    }
+  },
+  "paginatedResume": {
+    "file": "codex-rs/app-server/src/request_processors/thread_processor.rs",
+    "selectedBySwallowtail": true,
+    "selectedReason": "load_session and resume_session both send thread/resume for a stored thread; the stored thread's history mode decides whether the paginated path runs",
+    "adapterRequestFields": [
+      "threadId",
+      "model",
+      "access policy fields",
+      "excludeTurns (resume only, from 0.129.0)"
+    ],
+    "adapterFieldsNeverSent": [
+      "history",
+      "path",
+      "initialTurnsPage",
+      "attachedToThreadId",
+      "attachToSource"
+    ],
+    "reuseConditions": [
+      "stored thread history mode is paginated",
+      "retained conversation id equals the rechecked stored thread id",
+      "retained rollout path equals the rechecked stored rollout path",
+      "retained history revision is present",
+      "is_model_context_current returns true"
+    ],
+    "fallback": "a missing or mismatched conversation, rollout path or revision, a false, or an error reloads the latest model context through load_latest_model_context",
+    "explicitHistoryBypass": "a request-supplied history replaces the stored-history path entirely; Swallowtail never sends one",
+    "nonPaginatedPath": "reads the full stored history through stored_thread_to_initial_history",
+    "recheckLoop": "config loading releases the thread list and goal locks and returns ControlFlow::Continue; the retained context is consumed on the second pass",
+    "revisionIdentity": {
+      "file": "codex-rs/thread-store/src/local/history_revision.rs",
+      "fields": [
+        "canonical path",
+        "device",
+        "inode",
+        "ctime seconds",
+        "ctime nanoseconds",
+        "length",
+        "mtime",
+        "created"
+      ]
+    },
+    "concurrentAppend": "any append or replacement changes the revision identity, so the retained context is refused",
+    "writerOwnedRerecheck": {
+      "file": "codex-rs/thread-store/src/local/live_writer.rs",
+      "symbol": "resume_thread",
+      "behaviour": "after acquiring the writer lock the store compares the supplied revision with a fresh revision read; a mismatch reloads from the rollout"
+    },
+    "versionDelta": {
+      "0.164.0": "paginated resume always calls load_latest_model_context",
+      "0.165.0": "retains the prepared model context across the config-load recheck and reuses it only under the listed conditions"
+    },
+    "restoration": {
+      "load": "thread.resume returns thread.turns; Swallowtail projects them through project_thread_history",
+      "resume": "excludeTurns is true, so no turns return and Swallowtail replays through its own history role",
+      "missingTurns": "load rejects the response as a malformed replay instead of reporting an empty restoration"
+    },
+    "selectedEquivalence": "the selected request never supplies history or a path; reuse is admitted only for an unchanged rollout identity, so the model-visible context equals the 0.164.0 reload",
+    "noNewClaim": true,
+    "staleFallback": {
+      "evidenceClass": "source-level-only",
+      "runtimeClaim": false,
+      "triggers": [
+        "stored thread is not paginated",
+        "conversation id mismatch",
+        "rollout path mismatch",
+        "history revision absent",
+        "is_model_context_current returns false",
+        "is_model_context_current returns an error"
+      ],
+      "action": "call load_latest_model_context and rebuild ResumedHistory",
+      "concurrentHistory": {
+        "signal": "any append or replacement changes the revision identity",
+        "rechecks": [
+          "config recheck before reuse",
+          "writer ownership inside live_writer::resume_thread"
+        ],
+        "action": "reload from the rollout on mismatch"
+      },
+      "proofLimit": "the frozen flow is read from source; the fake cases prove the adapter request shape and visible restoration failures, not the provider's internal reuse decision"
+    }
+  },
+  "adapterProof": {
+    "caseIds": [
+      "attached_child_delete_refusal_is_failed_before_effect",
+      "unverified_newer_attached_child_refusal_keeps_before_effect_truth",
+      "delete_after_dispatch_cancellation_joins_and_stays_unconfirmed",
+      "ordinary_catalogue_hides_attached_child_without_widening_scope",
+      "load_requires_provider_history_and_resume_excludes_turns",
+      "paginated_resume_request_shape_is_frozen",
+      "attached_child_guard_scope_is_the_local_store_only"
+    ],
+    "fakeDriver": "swallowtail-adapter-codex scripted app-server process fixture"
+  }
+}

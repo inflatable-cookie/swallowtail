@@ -26,7 +26,23 @@ impl ScriptedAppServerHandle {
         } else {
             requested_cwd
         };
-        let (data, next_cursor) = if cursor.is_none() {
+        let (data, next_cursor) = if matches!(
+            self.mode,
+            AppServerMode::ThreadCatalogue(ThreadCatalogueMode::AttachedChildHidden)
+        ) {
+            (
+                serde_json::json!([{
+                    "id": "thread-provider-import",
+                    "name": "Imported parent thread",
+                    "preview": "Ordinary listing hides attached children",
+                    "updatedAt": 1775000000_u64,
+                    "status": {"type": "notLoaded"},
+                    "cwd": cwd,
+                    "source": "cli"
+                }]),
+                serde_json::Value::Null,
+            )
+        } else if cursor.is_none() {
             (
                 serde_json::json!([
                     {

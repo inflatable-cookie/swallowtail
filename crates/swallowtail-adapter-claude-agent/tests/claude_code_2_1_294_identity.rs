@@ -92,8 +92,8 @@ fn historical_stop_is_preserved_and_current_claim_is_adapted() {
         prior_identity["claim_at_observation"]
     );
     let claim = claude_code_headless_claim();
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.316");
-    assert_eq!(claim.latest_qualified().as_str(), "2.1.316");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
+    assert_eq!(claim.latest_qualified().as_str(), "2.1.317");
     assert!(matches!(
         claim.assess(&InterfaceVersion::new("2.1.294").unwrap()),
         InterfaceCompatibilityAssessment::Qualified(matched)
@@ -105,7 +105,7 @@ fn historical_stop_is_preserved_and_current_claim_is_adapted() {
             if matched.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));
     assert!(matches!(
-        claim.assess(&InterfaceVersion::new("2.1.317").unwrap()),
+        claim.assess(&InterfaceVersion::new("2.1.318").unwrap()),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
             if newer.behavior_revision().as_str() == "claude-code.headless.stream-json.v2"
     ));

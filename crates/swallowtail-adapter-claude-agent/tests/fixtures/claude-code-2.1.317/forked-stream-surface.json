@@ -1,0 +1,90 @@
+{
+ "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. No downloaded executable was run.",
+ "downloaded_artifacts_executed": false,
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "stopped_by": "Research 374",
+ "stop_rows": [
+  "2.1.286_to_2.1.287: --output-format stream-json turn streaming for a context:fork skill invoked as the prompt",
+  "2.1.289_to_2.1.290: permission and safety checks after a PreToolUse hook rewrites tool input"
+ ],
+ "why_this_surface": "Research 374 stopped on the 2.1.287 forked stream and the 2.1.290 PreToolUse rewrite recheck; Research 422/423 adapted the 2.1.294 settings-hook surfaces. This file re-checks the 2.1.287 forked-stream surface on the 2.1.316-to-2.1.317 hop. The 2.1.290 rewrite surface is covered by the prompt/rewrite rows in selected-control-flow.json.",
+ "assistant_frame_description": "An assistant message. While a response streams the CLI emits one assistant message per completed content block, so several consecutive assistant messages can share message.id and each carries just that block in message.content; on those, message.stop_reason is null and message.usage is not final \\u2014 the turn's stop reason and total usage arrive on the result message. parent_tool_use_id is non-null when the message was produced inside a subagent started by that tool_use.\"",
+ "assistant_frame_description_sha256": "d242c378c742de584ebc4d4b48452f57dd4944cc61c06fb4f3e0d4848ba5185d",
+ "assistant_frame_description_byte_identical_from_2_1_312": true,
+ "assistant_frame_description_byte_identity_chain": "The frozen claude-code-2.1.316 fixture proves 2.1.312..=2.1.316 identity; this run hashes the same description again on 2.1.316 and 2.1.317 and all four digests equal the frozen value.",
+ "assistant_frame_description_required_clauses": [
+  "emits one assistant message per completed content block",
+  "several consecutive assistant messages can share message.id",
+  "message.stop_reason is null and message.usage is not final",
+  "the turn's stop reason and total usage arrive on the result message",
+  "parent_tool_use_id is non-null when the message was produced inside a subagent started by that tool_use."
+ ],
+ "nullable_parent_tool_use_id_schema_field": "parent_tool_use_id:o().nullable()",
+ "nullable_parent_tool_use_id_schema_field_count": 4,
+ "forked_context_definition_tokens": [
+  "context:\"fork\"",
+  "userInvocable:!1",
+  "agent:\"claude-test:author\""
+ ],
+ "forward_subagent_text_option": {
+  "option": "--forward-subagent-text",
+  "description": "Forward subagent text and thinking blocks as assistant/user messages with parent_tool_use_id set (only works with --print and --output-format=stream-json)",
+  "classification": "unmapped-opt-in",
+  "passed_by_claude_code_headless": false,
+  "passed_by_claude_code_response_only": false,
+  "literal_occurrences_per_binary": 2
+ },
+ "adapter_projection": {
+  "test": "claude_code_activity::tests::forked_assistant_frame_accepts_null_stop_reason_without_final_activity",
+  "behavior": "A null message.stop_reason on a parented assistant frame is projected as provider-unspecified activity, not a final answer.",
+  "included_in_validate_selector": "validate:current-claude-code-headless",
+  "source": "crates/swallowtail-adapter-claude-agent/src/claude_code_activity.rs"
+ },
+ "compared_versions": [
+  "2.1.316",
+  "2.1.317"
+ ],
+ "per_version": {
+  "2.1.316": {
+   "claude-code-darwin-arm64": {
+    "artifact_sha256": "64c327e92b2c5e0f78c0a980c5a518121e1f0d140ca771ca5dd4488d1a2dcb3f",
+    "assistant_frame_description": "An assistant message. While a response streams the CLI emits one assistant message per completed content block, so several consecutive assistant messages can share message.id and each carries just that block in message.content; on those, message.stop_reason is null and message.usage is not final \\u2014 the turn's stop reason and total usage arrive on the result message. parent_tool_use_id is non-null when the message was produced inside a subagent started by that tool_use.\"",
+    "assistant_frame_description_sha256": "d242c378c742de584ebc4d4b48452f57dd4944cc61c06fb4f3e0d4848ba5185d",
+    "nullable_parent_tool_use_id_count": 4,
+    "context_fork_occurrences": 2,
+    "forked_context_definition": "||zt(r)?Xr:zr}if(e===\"run\")return;if(n)return dt;if(!h.hasStartedServer)return Fe;switch(h.mayRun?.()){case\"yes\":break;case\"login_changed\":return ct;case\"not_offered\":return ut;default:return Me}return s?void 0:qr}var Zo=[Qt(\"run\",{...Vo,userInvocable:!0,getArgumentCompletions:Mo}),Qt(\"execute\",{...Bo,userInvocable:!1,context:\"fork\",agent:Fet}),Qt(\"draft\",{...Uo,userInvocable:!1,context:\"fork\",agent:\"claude-test:author\"})];function Nc(){h.filesReady=Gr,h.report=Fo,h.reportRuns=Do,h.mayRun=mt.mayRun,h.watchLogin=mt.start,h.takeOut=mt.takeOut,h.isPaneOn=()=>VFt(pTo),h.seatOwn"
+   },
+   "claude-code-linux-x64": {
+    "artifact_sha256": "fd13c70000fec3f2116dfbcbb6121210b4a29328bf0e46210a59dd594a67d824",
+    "assistant_frame_description": "An assistant message. While a response streams the CLI emits one assistant message per completed content block, so several consecutive assistant messages can share message.id and each carries just that block in message.content; on those, message.stop_reason is null and message.usage is not final \\u2014 the turn's stop reason and total usage arrive on the result message. parent_tool_use_id is non-null when the message was produced inside a subagent started by that tool_use.\"",
+    "assistant_frame_description_sha256": "d242c378c742de584ebc4d4b48452f57dd4944cc61c06fb4f3e0d4848ba5185d",
+    "nullable_parent_tool_use_id_count": 4,
+    "context_fork_occurrences": 2,
+    "forked_context_definition": "||Xt(r)?Xr:zr}if(e===\"run\")return;if(n)return dt;if(!h.hasStartedServer)return Fe;switch(h.mayRun?.()){case\"yes\":break;case\"login_changed\":return ct;case\"not_offered\":return ut;default:return Me}return s?void 0:qr}var Zo=[Qt(\"run\",{...Vo,userInvocable:!0,getArgumentCompletions:jo}),Qt(\"execute\",{...$o,userInvocable:!1,context:\"fork\",agent:Oet}),Qt(\"draft\",{...Bo,userInvocable:!1,context:\"fork\",agent:\"claude-test:author\"})];function Nc(){h.filesReady=Gr,h.report=Ho,h.reportRuns=Mo,h.mayRun=mt.mayRun,h.watchLogin=mt.start,h.takeOut=mt.takeOut,h.isPaneOn=()=>F$t(YTo),h.seatOwn"
+   }
+  },
+  "2.1.317": {
+   "claude-code-darwin-arm64": {
+    "artifact_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+    "assistant_frame_description": "An assistant message. While a response streams the CLI emits one assistant message per completed content block, so several consecutive assistant messages can share message.id and each carries just that block in message.content; on those, message.stop_reason is null and message.usage is not final \\u2014 the turn's stop reason and total usage arrive on the result message. parent_tool_use_id is non-null when the message was produced inside a subagent started by that tool_use.\"",
+    "assistant_frame_description_sha256": "d242c378c742de584ebc4d4b48452f57dd4944cc61c06fb4f3e0d4848ba5185d",
+    "nullable_parent_tool_use_id_count": 4,
+    "context_fork_occurrences": 2,
+    "forked_context_definition": "||Kt(r)?Xr:zr}if(e===\"run\")return;if(n)return dt;if(!h.hasStartedServer)return Fe;switch(h.mayRun?.()){case\"yes\":break;case\"login_changed\":return ct;case\"not_offered\":return ut;default:return Me}return s?void 0:qr}var Zo=[Qt(\"run\",{...$o,userInvocable:!0,getArgumentCompletions:Ho}),Qt(\"execute\",{...Bo,userInvocable:!1,context:\"fork\",agent:Xnt}),Qt(\"draft\",{...Uo,userInvocable:!1,context:\"fork\",agent:\"claude-test:author\"})];function Ic(){h.filesReady=Gr,h.report=Mo,h.reportRuns=Fo,h.mayRun=mt.mayRun,h.watchLogin=mt.start,h.takeOut=mt.takeOut,h.isPaneOn=()=>j1t(IIo),h.seatOwn"
+   },
+   "claude-code-linux-x64": {
+    "artifact_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+    "assistant_frame_description": "An assistant message. While a response streams the CLI emits one assistant message per completed content block, so several consecutive assistant messages can share message.id and each carries just that block in message.content; on those, message.stop_reason is null and message.usage is not final \\u2014 the turn's stop reason and total usage arrive on the result message. parent_tool_use_id is non-null when the message was produced inside a subagent started by that tool_use.\"",
+    "assistant_frame_description_sha256": "d242c378c742de584ebc4d4b48452f57dd4944cc61c06fb4f3e0d4848ba5185d",
+    "nullable_parent_tool_use_id_count": 4,
+    "context_fork_occurrences": 2,
+    "forked_context_definition": "||zt(r)?Xr:zr}if(e===\"run\")return;if(n)return dt;if(!h.hasStartedServer)return Fe;switch(h.mayRun?.()){case\"yes\":break;case\"login_changed\":return ct;case\"not_offered\":return ut;default:return Me}return s?void 0:qr}var Zo=[Qt(\"run\",{...$o,userInvocable:!0,getArgumentCompletions:Ho}),Qt(\"execute\",{...Bo,userInvocable:!1,context:\"fork\",agent:Gnt}),Qt(\"draft\",{...Uo,userInvocable:!1,context:\"fork\",agent:\"claude-test:author\"})];function Ic(){h.filesReady=Gr,h.report=Mo,h.reportRuns=Fo,h.mayRun=mt.mayRun,h.watchLogin=mt.start,h.takeOut=mt.takeOut,h.isPaneOn=()=>LBt(gOo),h.seatOwn"
+   }
+  }
+ },
+ "hop_classification": {
+  "2.1.316_to_2.1.317": false
+ },
+ "selected_mapped_change": false
+}

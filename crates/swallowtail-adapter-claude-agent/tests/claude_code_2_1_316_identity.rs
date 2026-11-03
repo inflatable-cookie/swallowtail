@@ -164,10 +164,10 @@ fn official_stable_is_2_1_316_and_the_two_claims_stay_separate() {
 
 #[test]
 fn both_claims_qualify_every_published_hop_through_2_1_316_on_the_existing_revisions() {
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.316");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.316"
+        "2.1.317"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -179,8 +179,8 @@ fn both_claims_qualify_every_published_hop_through_2_1_316_on_the_existing_revis
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
     assert_ne!(headless.axis(), response.axis());
-    assert_eq!(headless.latest_qualified().as_str(), "2.1.316");
-    assert_eq!(response.latest_qualified().as_str(), "2.1.316");
+    assert_eq!(headless.latest_qualified().as_str(), "2.1.317");
+    assert_eq!(response.latest_qualified().as_str(), "2.1.317");
     for point in ["2.1.312", "2.1.314", "2.1.315", "2.1.316"] {
         assert!(
             matches!(
@@ -219,7 +219,7 @@ fn both_claims_qualify_every_published_hop_through_2_1_316_on_the_existing_revis
             if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v1"
                 && matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
-    for newer_point in ["2.1.317", "2.1.318"] {
+    for newer_point in ["2.1.318", "2.1.319"] {
         assert!(
             matches!(
                 headless.assess(&version(newer_point)),

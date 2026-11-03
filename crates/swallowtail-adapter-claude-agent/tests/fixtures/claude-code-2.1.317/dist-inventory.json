@@ -1,0 +1,184 @@
+{
+ "compared": [
+  "2.1.316",
+  "2.1.317"
+ ],
+ "previous_ceiling": "2.1.316",
+ "official_latest": "2.1.317",
+ "unpublished_after_latest": [
+  "2.1.318"
+ ],
+ "unpublished_between_previous_ceiling_and_latest": [],
+ "ceiling_2_1_316_matches_research_466": true,
+ "method": "npm wrapper, Darwin arm64, and Linux x64 tarballs downloaded from the registry, checked against current npm SHA-512 integrity, extracted, and hashed per file. No downloaded executable was run.",
+ "package_file_counts": {
+  "claude-code": {
+   "2.1.316": 7,
+   "2.1.317": 7
+  },
+  "claude-code-darwin-arm64": {
+   "2.1.316": 4,
+   "2.1.317": 4
+  },
+  "claude-code-linux-x64": {
+   "2.1.316": 4,
+   "2.1.317": 4
+  }
+ },
+ "packages": {
+  "claude-code": {
+   "2.1.316": {
+    "tarball_sha256": "0b23c8ff73a58c263e88aa740bd8647723141f70dad089df63061858e019c4c3",
+    "files": {
+     "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+     "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+     "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+     "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+     "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+     "package.json": "806caed48c083261f7bdc57a974417da29e713c7e7e395a4fa6c3bb03858b4e1",
+     "sdk-tools.d.ts": "e36072cc125f5215f3b02f1eb5977262bb418b9cdf005001a3ccafe6caaaac27"
+    }
+   },
+   "2.1.317": {
+    "tarball_sha256": "bf8543506740f8ba36bbec24a5e02937dd8b514237fc951db69d9de394965c74",
+    "files": {
+     "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+     "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+     "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+     "cli-wrapper.cjs": "61ad63033d9c8155d5e60a29f45dc4665afa07631c0b108e62cc83bf45ba490e",
+     "install.cjs": "32a7b2429d7447c5aa043e383bcf9a72e0b233dff66336ea4b5b32531da981ad",
+     "package.json": "1a048f74c4c343fe69f373965f474fad78a3195c258c3f5607abb8d014ed90a5",
+     "sdk-tools.d.ts": "df50d2fe6ec56152f04a490df463b4be90bb00fe44674203cc0ffe70293f646b"
+    }
+   }
+  },
+  "claude-code-darwin-arm64": {
+   "2.1.316": {
+    "tarball_sha256": "3515788bc9db6c52ef8edb776228ce647de1af710efab85d289782a872147baa",
+    "files": {
+     "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+     "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c",
+     "claude": "64c327e92b2c5e0f78c0a980c5a518121e1f0d140ca771ca5dd4488d1a2dcb3f",
+     "package.json": "914b47e9acdc28e060fd26723e72ee9a81f2a8f0f0f712716b4c35b620b17a72"
+    }
+   },
+   "2.1.317": {
+    "tarball_sha256": "d572e006fecf09f14c544f2995906d332272647470472f2c8b7158686d90b4f7",
+    "files": {
+     "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+     "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c",
+     "claude": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+     "package.json": "e7c3df4e5f5d186a2a282ff69277e63a7f6f43a2440430091496cf581f42c437"
+    }
+   }
+  },
+  "claude-code-linux-x64": {
+   "2.1.316": {
+    "tarball_sha256": "745e1b196eb475161a185a00f5e1144d7324ec6094e21149eae719fa42481000",
+    "files": {
+     "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+     "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5",
+     "claude": "fd13c70000fec3f2116dfbcbb6121210b4a29328bf0e46210a59dd594a67d824",
+     "package.json": "4d71daa7ee253bc8ebb07c791a22216d845efdbd877f2b354c3b830e3e6e0682"
+    }
+   },
+   "2.1.317": {
+    "tarball_sha256": "c33bff413c33274e404cd57378300c6a389558a4e757f9af64539326d1c53fb2",
+    "files": {
+     "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+     "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5",
+     "claude": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+     "package.json": "025de1feb189030e34bdc3ad8fab253ff17b7a03fff3c3ec84d452c5f374e36f"
+    }
+   }
+  }
+ },
+ "platform_tarball_integrity_note": "Both platform tarball digests equal the Research 466 records for 2.1.316; the 2.1.316 per-file tree re-downloaded in this run matches the frozen fixture exactly.",
+ "file_delta": {
+  "claude-code": {
+   "2.1.316_to_2.1.317": {
+    "added": [],
+    "removed": [],
+    "changed": [
+     "package.json",
+     "sdk-tools.d.ts"
+    ]
+   }
+  },
+  "claude-code-darwin-arm64": {
+   "2.1.316_to_2.1.317": {
+    "added": [],
+    "removed": [],
+    "changed": [
+     "claude",
+     "package.json"
+    ]
+   }
+  },
+  "claude-code-linux-x64": {
+   "2.1.316_to_2.1.317": {
+    "added": [],
+    "removed": [],
+    "changed": [
+     "claude",
+     "package.json"
+    ]
+   }
+  }
+ },
+ "executable_size_delta_bytes": {
+  "claude-code-darwin-arm64": 2692224,
+  "claude-code-linux-x64": 3100672
+ },
+ "cli_option_inventory": {
+  "method": "Static extraction of quoted long-option literals passed as the first argument to a CLI option constructor, across both platform executables.",
+  "added": {
+   "2.1.316_to_2.1.317": []
+  },
+  "removed": {
+   "2.1.316_to_2.1.317": []
+  },
+  "option_count": {
+   "2.1.316": 182,
+   "2.1.317": 182
+  },
+  "classification": [],
+  "selected_option_texts_byte_identical": [
+   "--safe-mode description",
+   "--tools description",
+   "--disable-slash-commands help",
+   "--input-format help",
+   "--output-format help"
+  ]
+ },
+ "embedded_runtime_growth": {
+  "observation": "The 2.1.317 executables grow by about 2.6 MiB (Darwin arm64) and 3.0 MiB (Linux x64). Whole-binary identity is not claimed.",
+  "selected_surface_effect": false,
+  "reason": "The selected CLI option texts, stream-json help lines, selected markers, hook decision literals, init construction, and safe-mode isolation stay present and structurally unchanged on both platforms, and no stream-json subtype or event type was added or removed."
+ },
+ "sdk_tools_declaration_delta": {
+  "2.1.316_to_2.1.317": [
+   "removed the file_unchanged shared-file result variant and its seeded source marker",
+   "added page_token and next_page_token artifact-listing pagination declarations",
+   "added timedOut on search results so a time-limited search can report partial coverage",
+   "added an optional task result description saved from the corrected call"
+  ],
+  "selected_by_claude_code_headless": false,
+  "selected_by_claude_code_response_only": false,
+  "reason": "sdk-tools.d.ts declares the Claude Agent SDK tool surface. Neither CLI route imports the declarations, and the file_unchanged removal matches the Read-tool stub removal disclosed in the 2.1.317 notes."
+ },
+ "builtin_plugin_delta": {
+  "plugin": "cc-plugin-privacy",
+  "added_in": "2.1.317",
+  "registration_site": "unconditional builtin initializer, registered next to cc-plugin-sec-default, cc-plugin-agents-md, and cc-plugin-telemetry before the CLAUDE_CODE_ENTRYPOINT gate",
+  "availability_flag": "tengu_wise_newt",
+  "availability_default": true,
+  "enabled_from_trusted_settings_only": true,
+  "default_enabled": true,
+  "description": "Privacy: asks before a shell or web tool runs with the signed-in account's email address in a call that may leave the machine",
+  "hook_surface": "tool.check over WebBrowser, WebFetch, WebSearch, Bash, Monitor, PowerShell, and Tmux; decision ask when the call input carries the account email",
+  "selected_by_claude_code_headless": false,
+  "selected_by_claude_code_response_only": false,
+  "reason": "Headless selects Read,Glob,Grep and response-only runs with empty tools, so no web or shell tool call can occur on either route. The plugin contributes no MCP server. Hook events reach the stream only through --include-hook-events, which neither route passes."
+ }
+}

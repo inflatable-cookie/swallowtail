@@ -148,11 +148,11 @@ fn identity_names_compatible_extension_without_changing_production() {
         "unverified_newer"
     );
     assert_eq!(CLAUDE_CODE_HEADLESS_BASELINE_VERSION, "2.1.220");
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.316");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.316"
+        "2.1.317"
     );
 
     let headless = claude_code_headless_claim();

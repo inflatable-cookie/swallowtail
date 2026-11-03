@@ -1,0 +1,306 @@
+{
+ "method": "Static inspection of official Darwin arm64 and Linux x64 package/claude files. Hashes match dist-inventory.json. No downloaded executable was run.",
+ "downloaded_artifacts_executed": false,
+ "provider_prompt_sent": false,
+ "live_session": false,
+ "compared_versions": [
+  "2.1.316",
+  "2.1.317"
+ ],
+ "ceiling_artifacts": {
+  "claude-code-darwin-arm64": {
+   "version": "2.1.317",
+   "artifact_file": "claude",
+   "artifact_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9"
+  },
+  "claude-code-linux-x64": {
+   "version": "2.1.317",
+   "artifact_file": "claude",
+   "artifact_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0"
+  }
+ },
+ "safe_mode_option_description_parts": [
+  "Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled ",
+  "\\u2014 useful for troubleshooting a broken configuration. ",
+  "Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1."
+ ],
+ "safe_mode_option_description_byte_identical_from_2_1_312": true,
+ "safe_mode_option_description_byte_identity_chain": "The frozen claude-code-2.1.316 fixture proves 2.1.312..=2.1.316 byte identity; this run reproduces that 2.1.316 text exactly and the 2.1.317 description text is byte-identical to it again.",
+ "disable_slash_commands_help": "Disable all skills and commands",
+ "disable_slash_commands_help_byte_identical_from_2_1_312": true,
+ "tools_option_description_byte_identical_from_2_1_312": true,
+ "tools_option_window_byte_identical_across_hop": true,
+ "cc_plugin_ids_2_1_316": [
+  "agents-md",
+  "claude-platform",
+  "claude-test",
+  "diff",
+  "easel",
+  "mermaid",
+  "mods-guide",
+  "plugin-authoring",
+  "responsive-mode",
+  "sec-default",
+  "telemetry",
+  "tips",
+  "you-should-know"
+ ],
+ "cc_plugin_ids_2_1_317": [
+  "agents-md",
+  "claude-platform",
+  "claude-test",
+  "diff",
+  "easel",
+  "mermaid",
+  "mods-guide",
+  "plugin-authoring",
+  "privacy",
+  "responsive-mode",
+  "sec-default",
+  "telemetry",
+  "tips",
+  "you-should-know"
+ ],
+ "cc_plugin_ids_note": "2.1.317 adds cc-plugin-privacy to the unconditional builtin initializer; the other thirteen ids are unchanged. Per-version rows carry their own id list.",
+ "privacy_plugin": {
+  "plugin": "cc-plugin-privacy",
+  "added_in": "2.1.317",
+  "registration_site": "unconditional builtin initializer, registered next to cc-plugin-sec-default, cc-plugin-agents-md, and cc-plugin-telemetry before the CLAUDE_CODE_ENTRYPOINT gate",
+  "availability_flag": "tengu_wise_newt",
+  "availability_default": true,
+  "enabled_from_trusted_settings_only": true,
+  "default_enabled": true,
+  "description": "Privacy: asks before a shell or web tool runs with the signed-in account's email address in a call that may leave the machine",
+  "hook_surface": "tool.check over WebBrowser, WebFetch, WebSearch, Bash, Monitor, PowerShell, and Tmux; decision ask when the call input carries the account email",
+  "selected_by_claude_code_headless": false,
+  "selected_by_claude_code_response_only": false,
+  "reason": "Headless selects Read,Glob,Grep and response-only runs with empty tools, so no web or shell tool call can occur on either route. The plugin contributes no MCP server. Hook events reach the stream only through --include-hook-events, which neither route passes."
+ },
+ "research_378_nine_remain": [
+  "sec-default",
+  "agents-md",
+  "telemetry",
+  "plugin-authoring",
+  "tips",
+  "mermaid",
+  "responsive-mode",
+  "diff",
+  "claude-test"
+ ],
+ "easel_still_present": true,
+ "empty_tools_and_mcp_leave_easel_autocharts_unselected": true,
+ "claude_platform": {
+  "present_at_2_1_312": true,
+  "present_at_2_1_317": true,
+  "registered_from": "2.1.311",
+  "availability_flag": "tengu_peppy_crescent",
+  "availability_requires_flag_true": true,
+  "availability_requires_interactive": true,
+  "selected_mapped_change": false,
+  "classification": "gated-builtin-unselected",
+  "mcp_url": "https://platform.claude.com/docs/mcp"
+ },
+ "easel_registration": {
+  "selected_routes_are_remote_cowork": false
+ },
+ "interactivity_bookkeeping": {
+  "present_from": "2.1.314",
+  "counts": {
+   "2.1.316": 4,
+   "2.1.317": 4
+  },
+  "selected_mapped_change": false
+ },
+ "per_version": {
+  "2.1.316": {
+   "claude-code-darwin-arm64": {
+    "artifact_sha256": "64c327e92b2c5e0f78c0a980c5a518121e1f0d140ca771ca5dd4488d1a2dcb3f",
+    "cc_plugin_ids": [
+     "agents-md",
+     "claude-platform",
+     "claude-test",
+     "diff",
+     "easel",
+     "mermaid",
+     "mods-guide",
+     "plugin-authoring",
+     "responsive-mode",
+     "sec-default",
+     "telemetry",
+     "tips",
+     "you-should-know"
+    ],
+    "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\",()=>!0).addOption(new bs(\"--init\",\"Run Setup hooks with init trigger, then continue\").hideHelp()).addOption(new bs(\"--init-only\",\"Run Setup and SessionStart:startup hooks, then exit\").hideHelp()).addOption",
+    "safe_mode_filter": "it; an organization's and built-in plugins load regardless`);return n}function BWn(e){if(!Gr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Tu(n.source))}function UWn(e,n){let r={PreToolUse:[],PostToolUse:[],PostToolUseFailure:[],Po",
+    "safe_mode_detector": "ction wr(){return He(process.env.CLAUDE_CODE_SIMPLE)||i(\"--bare\")}function Gr(){return He(process.env.CLAUDE_CODE_SAFE_MODE)||i(\"--safe-mode\")}function Jde(){return He(process.env.CLAUDE_CODE_RESTRICTED)}function N(e){re",
+    "safe_mode_mcp_gate": "ors:!1,themes:!1,hljsLanguages:!1,hooks:!1,statusLine:!0,fileSuggestion:!0,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!1,agents:!1,outputStyles:!1,lspServers:!1,keybindings:!0};function ar(e,s){if(a[e]&&X())return!0;if(Gr()&&!l[e])return!0;if(wr()&&!s?.explicitlyRequested)return t[e];return!1}function Tx(){return Boolean(i.CLAUDE_CODE_DISABLE_CLAUDE_MDS||ar(\"claudeMd\",{explicitlyRequested:Al().length>0}))}\nexport{ar,Tx};\n\u0000// @bun @bytecode\n// ",
+    "safe_mode_mcp_policy": "k-w6wfv61c.js\";import{wr,Gr}from\"/$bunfs/root/chunk-1f42yg8c.js\";import{i}from\"/$bunfs/root/chunk-7g9tmxvm.js\";var t={claudeMd:!0,skills:!0,workflows:!1,plugins:!0,pluginMonitors:!1,themes:!1,hljsLanguages:!0,hooks:!0,statusLine:!1,fileSuggestion:!1,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!0,agents:!0,outputStyles:!1,lspServers:!0,keybindings:!1},l={claudeMd:!1,skills:!1,workflows:!1,plugins:!1,pluginMonitors:!1,themes:!1,hljsLanguages:!1,hooks:!0,statusLine:!0,fileSuggestion:!0,mcpAutoDis",
+    "init_fields": "minalOriented===!0).map((t)=>t.name),n={type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>won(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:qgt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:yd(e.permissionMode),slash_commands:e.commands.filter((t)=>t.userInvocable!==!1).map((t)=>t.name),...s.length>0&&{terminal_slash_commands:s},apiKeySource:e.apiKeySource,betas:e.betas,claude_code_version:{ISSUES_EXPLAINER:\"report the issue at h",
+    "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!uke();if(e||wm()===\"remote\")rge(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-rzn7bhp2.js\"));if(e)rge(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-cfxpctp5.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")rge(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-b0bmqnts.js\"));if(e||wm()===\"remote_cowork\")rge(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-2z7wq06b.js\"));if(e)rge(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-72z00y2x.js\")),rge(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-sewvnax6.js\"))}\nexport{Vye};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.316\nimport{B,_e,X}from\"/$bunfs/root/chunk-w6wfv61c.js\";import{N}from\"/$bunfs/root/chunk-hyyf2dgs.js\";import{W}from\"/$bunfs/root/chunk-hxpqvcff.js\";import{Ky,Ul}from\"/$bunfs/root/chunk-fbth6v0w.js\";import{t}from\"/$bunfs/root/chunk-3cfs0sm8.js\";import{Ne}from\"/$bunfs/root/chunk-1f42yg8c.js\";import{Ze,lC}from\"/$bunfs/root/chunk-petjn8qw.js\";import{St,l}from\"/$bunfs/root/chunk-x0zwmjej.js\";import{Cn}from\"/$bunfs/root/chunk-n7g89d20.js\";import{je}from\"/$bunfs/root/chunk-34zeeq57.js\";import{MS,pv,KUe,fJ,Pe,ue}from\"/$bu",
+    "claude_platform_module": "root/chunk-vgx6wnr6.js\";import{Tr}from\"/$bunfs/root/chunk-593ajhw2.js\";import\"/$bunfs/root/chunk-z96jrzty.js\";var f={};Tr(f,{MCP_SERVERS:()=>s,PLUGIN_DESCRIPTION:()=>m,PLUGIN_NAME:()=>l,PLUGIN_VERSION:()=>a,availabilityFlag:()=>o,default:()=>f,isAvailable:()=>t,mayUseServer:()=>n,registerPlugin:()=>A,skills:()=>p});function o(){return\"tengu_peppy_crescent\"}function t(){return Kd()&&!$t()&&BS(\"--agent-id\")===void 0&&!wr()&&!ar(\"mcpAutoDiscovered\")&&oae()===\"tst\"&&!St()&&Ste()&&Zd(pt().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&oIt()&&!lA()&&!_at()&&VI().length===0&&Sn(o(),!1)===!0}function n(){let{value:e,source:r}=wn(o(),!1);return t()&&e===!0&&nA(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-a6azhfv4.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!br().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;eS({name:l,description:m,version:a,isAvailable:t,get skills(){return jat(l)&&!oge(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}export{s as MCP_SERVERS,m as PLUGIN_DESCRIPTION,l as PLUGIN_NAME,a as PLUGIN_VERSION,o as availabilityFlag,f as default,t as isAvailable,n as mayUseServer,A as registerPlugin,p as skills};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.316\nimport{HM,Mze,bet,p9n,f9n,jFo,K_e,YNi,WFo,af,X9n,cse,Xue,tfn,HBr,nfn,VAe,v8n,$Z,yLe,Kjt,Net,qjt,Fet,DBr,LBr,f5,rpe,wgn,s6e,vS}from\"/$bunfs/root/chunk-qd604jgh.js\";import\"/$bunfs/root/chunk-ggrzmna4.js\";import\"/$bunfs/root/chunk-d64bwqse.js\";import{B,z,ve,go,_p,cC,Kd,X,In}from\"/$bunfs/root/chunk-w6wfv61c.js\";import\"/$bunfs/root/chunk-zxk8f495.js\";import\"/$bunfs/root/chunk-vj04ppjk.js\";import{Ye,N,d,v}from\"/$bunfs/root/chunk-hyyf2dgs.js\";import{Ae}from\"/$bunfs/root/chunk-fhpxevn4.js\";import{hl}from\"/$bunfs/root/chunk-kezk8a6f.js\";import{W}from\"/$bunfs/root/chunk-hxpqvcff.js\";import",
+    "launch_interactivity": "ude-desktop-3p\"]);function Fn(){xn(),Pn(),FUr()}function Ln({interactivity:n}){let e=process.argv.slice(2),y=n.kind===\"non-interactive\"||opt(e);if(y)YN();if(UYe(!y),R0i(y),bn(),tbi(),ZHn(Wwr(e)),Avr(),!He(i.CLAUDE_CODE_REMOTE)){if(i.CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR||i.CLAUDE_BG_AUTH_SNAPSHOT_PATH&&!wr()&&!i.CLAUDE_CODE_OAUTH_TOKEN)Cv();if(i.CLAUDE_CODE_GATEWAY_TOKEN_FILE",
+    "availability_dispatch": "let r=br().builtinPluginFailures;if(r.has(e))return;r.set(e,{name:e,phase:o,message:d(t)}),l(N(t)),m(\"plugin_bundled_register\",o)}function jat(e){let o=br(),t=o.builtinPlugins.get(e);if(t===void 0||o.builtinPluginFailures.has(e))return!1;if(t.isAvailable===void 0)return!0;try{return t.isAvailable()}catch(r){return jo(e,\"is_available\",r),!1}}function eS(e){br().builtinPlugins.set(e.name,e);let o=e.hooksModule;if(o===void 0)return;let t=lt(e.name);if(\"scan\"in o)oto.registerScan(t,o.scan);else if(\"shipped\"in o)oto.register(t,o.",
+    "builtin_availability_skip": "(e){return br().builtinPlugins.get(e)}function AV(){let e=pr(),o=[],t=[];for(let[r,n]of br().builtinPlugins){if(!jat(r))continue;let s=`${r}@${qs}`,p=tM(s).length>0,i=n.enabledFromPolicyOnly?Nn(s):n.enabledFromTrustedSettingsOnly?Dfr(s):!p?e?.enabledPlugins?.[s]:CAn(s),a=i!==void 0?i===!0:n.defaultEnabled??!0,f={name:r,manifest:{name:r,description:n.description,version:n.version,...n.defaultEnabled===void 0?{}:{defaultEnabled:n.defaultEnabled},...n.userConfig===void 0?{}:{userConfig:n.userConfig}},path:qs,source:s,repository:s,enabled:a,isBuiltin:!0,hooksConfig:n.hooks,mcpServers:n.mcpServers,...n.hooksModule===void 0?{}:Kj(r,n.hooksModule)};if(a)o.push(f);else t.push(f)}return{enabled:o,disabled:t}}function bfr(){return vn().filt",
+    "tools_option": ".option(\"--tools <tools...>\",'Specify the list of available tools from the built-in set. Use \"\" to disable all tools, \"default\" to use the default set, or specify tool names (e.g. \"Bash,Edit,Read\").').option(\"--restricted\",\"Restricted mode: removes the built-in tools that run commands or code (Bash, PowerShell and the other code",
+    "disable_slash_commands_help_snippet": "ion only (repeatable: --plugin-url A --plugin-url B)\u001f\u0000\u0000\ufffd\u01fe+\u0000Disable all skills and commands\u0000#\u0000\u0000\ufffd\u077ed\u0000Enable Claude in Chr",
+    "interactive_getter": "function Kd(){return t().host.launchOptions.isInteractive()}",
+    "interactive_setter": "function UYe(e){let n=t(),o=n.host.launchOptions.isInteractive()!==e;if(n.host.launchOptions.replaceIsInteractive(e),o)TEr.of(n.host).invalidateAll()}",
+    "print_detection": "function opt(e=process.argv.slice(2)){let n=hw(\"-p\",e)||hw(\"--print\",e),t=hw(\"--init-only\",e),o=c0t((s)=>s.startsWith(\"--sdk-url\"),e)!==-1;return n||t||o||!process.stdout.isTTY}",
+    "permission_mode_default_mapper": "function bO(e){return Pg(e)??\"default\"}",
+    "permission_mode_treats_undefined_as_default": "function DPi(e){return e===\"default\"||e===void 0}",
+    "builtin_predicate": "function Tu(e){return e.endsWith(`@${qs}`)}",
+    "interactivity_decided_bookkeeping": 4,
+    "stop_hook_event_types": {
+     "hook_started": 11,
+     "hook_response": 38
+    },
+    "stream_json_event_types": {
+     "subtype:\"init\"": 1,
+     "type:\"result\"": 12
+    }
+   },
+   "claude-code-linux-x64": {
+    "artifact_sha256": "fd13c70000fec3f2116dfbcbb6121210b4a29328bf0e46210a59dd594a67d824",
+    "cc_plugin_ids": [
+     "agents-md",
+     "claude-platform",
+     "claude-test",
+     "diff",
+     "easel",
+     "mermaid",
+     "mods-guide",
+     "plugin-authoring",
+     "responsive-mode",
+     "sec-default",
+     "telemetry",
+     "tips",
+     "you-should-know"
+    ],
+    "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\",()=>!0).addOption(new _s(\"--init\",\"Run Setup hooks with init trigger, then continue\").hideHelp()).addOption(new _s(\"--init-only\",\"Run Setup and SessionStart:startup hooks, then exit\").hideHelp()).addOption",
+    "safe_mode_filter": "it; an organization's and built-in plugins load regardless`);return n}function FWn(e){if(!Gr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Tu(n.source))}function $Wn(e,n){let r={PreToolUse:[],PostToolUse:[],PostToolUseFailure:[],Po",
+    "safe_mode_detector": "ction vr(){return Oe(process.env.CLAUDE_CODE_SIMPLE)||i(\"--bare\")}function Gr(){return Oe(process.env.CLAUDE_CODE_SAFE_MODE)||i(\"--safe-mode\")}function Wde(){return Oe(process.env.CLAUDE_CODE_RESTRICTED)}function N(e){re",
+    "safe_mode_mcp_gate": "ors:!1,themes:!1,hljsLanguages:!1,hooks:!1,statusLine:!0,fileSuggestion:!0,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!1,agents:!1,outputStyles:!1,lspServers:!1,keybindings:!0};function ar(e,s){if(a[e]&&X())return!0;if(Gr()&&!l[e])return!0;if(vr()&&!s?.explicitlyRequested)return t[e];return!1}function Ex(){return Boolean(i.CLAUDE_CODE_DISABLE_CLAUDE_MDS||ar(\"claudeMd\",{explicitlyRequested:Cl().length>0}))}\nexport{ar,Ex};\n\u0000// @bun @bytecode\n// ",
+    "safe_mode_mcp_policy": "k-ndmse9kj.js\";import{vr,Gr}from\"/$bunfs/root/chunk-cgcrer2m.js\";import{i}from\"/$bunfs/root/chunk-jhrww53q.js\";var t={claudeMd:!0,skills:!0,workflows:!1,plugins:!0,pluginMonitors:!1,themes:!1,hljsLanguages:!0,hooks:!0,statusLine:!1,fileSuggestion:!1,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!0,agents:!0,outputStyles:!1,lspServers:!0,keybindings:!1},l={claudeMd:!1,skills:!1,workflows:!1,plugins:!1,pluginMonitors:!1,themes:!1,hljsLanguages:!1,hooks:!0,statusLine:!0,fileSuggestion:!0,mcpAutoDis",
+    "init_fields": "minalOriented===!0).map((t)=>t.name),n={type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>fon(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:Kgt(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:yd(e.permissionMode),slash_commands:e.commands.filter((t)=>t.userInvocable!==!1).map((t)=>t.name),...s.length>0&&{terminal_slash_commands:s},apiKeySource:e.apiKeySource,betas:e.betas,claude_code_version:{ISSUES_EXPLAINER:\"report the issue at h",
+    "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!oke();if(e||wm()===\"remote\")Xme(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-jr1te1aj.js\"));if(e)Xme(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-wyqg6m3h.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")Xme(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-bss4k1z9.js\"));if(e||wm()===\"remote_cowork\")Xme(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-shznzb37.js\"));if(e)Xme(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-ad0qz7kc.js\")),Xme(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-ae5g0zb5.js\"))}\nexport{$ye};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.316\nimport{B,_e,X}from\"/$bunfs/root/chunk-ndmse9kj.js\";import{N}from\"/$bunfs/root/chunk-2g090z7k.js\";import{W}from\"/$bunfs/root/chunk-x7vma94a.js\";import{Vy,Ul}from\"/$bunfs/root/chunk-bwbq4xvm.js\";import{t}from\"/$bunfs/root/chunk-cgr0tezp.js\";import{$e}from\"/$bunfs/root/chunk-cgcrer2m.js\";import{Ze,aT}from\"/$bunfs/root/chunk-m41h77x8.js\";import{_t,l}from\"/$bunfs/root/chunk-bbtre4r8.js\";import{Rn}from\"/$bunfs/root/chunk-7kr2r08r.js\";import{je}from\"/$bunfs/root/chunk-3g8vhh6f.js\";import{Ob,uv,BUe,sQ,Pe,ue}from\"/$bu",
+    "claude_platform_module": "root/chunk-58wc6nbw.js\";import\"/$bunfs/root/chunk-xvx41pwz.js\";import{Ar}from\"/$bunfs/root/chunk-rshven70.js\";var f={};Ar(f,{MCP_SERVERS:()=>s,PLUGIN_DESCRIPTION:()=>m,PLUGIN_NAME:()=>l,PLUGIN_VERSION:()=>a,availabilityFlag:()=>o,default:()=>f,isAvailable:()=>t,mayUseServer:()=>n,registerPlugin:()=>A,skills:()=>p});function o(){return\"tengu_peppy_crescent\"}function t(){return Vd()&&!Ft()&&Ub(\"--agent-id\")===void 0&&!vr()&&!ar(\"mcpAutoDiscovered\")&&Jie()===\"tst\"&&!_t()&&ute()&&Zd(ft().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&JIt()&&!sC()&&!pat()&&WO().length===0&&bn(o(),!1)===!0}function n(){let{value:e,source:r}=wn(o(),!1);return t()&&e===!0&&eC(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-7dsm65bp.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!Sr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;Q_({name:l,description:m,version:a,isAvailable:t,get skills(){return Nat(l)&&!Jme(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}export{s as MCP_SERVERS,m as PLUGIN_DESCRIPTION,l as PLUGIN_NAME,a as PLUGIN_VERSION,o as availabilityFlag,f as default,t as isAvailable,n as mayUseServer,A as registerPlugin,p as skills};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.316\nimport\"/$bunfs/root/chunk-kcjh5jnz.js\";import\"/$bunfs/root/chunk-0777tkjc.js\";import{B}from\"/$bunfs/root/chunk-ndmse9kj.js\";import\"/$bunfs/root/chunk-vk5xfx8n.js\";import\"/$bunfs/root/chunk-0wqny7vr.js\";import{Ye,N}from\"/$bunfs/root/chunk-2g090z7k.js\";import\"/$bunfs/root/chunk-eabawhjj.js\";import\"/$bunfs/root/chunk-aat7wt0p.js\";import\"/$bunfs/root/chunk-x7vma94a.js\";import{B$t,j$t,W$t,Aht}from\"/$bunfs/root/chunk-s8af6efx.js\";import{t}from\"/$bunfs/root/chunk-cgr0tezp.js\";import\"/$bunfs/root/chunk-cmr2yp8m.js\";import\"/$bunfs/root/chunk-cgcrer2m.js\";import\"/$bunfs/root/chunk-j3nx1xyn",
+    "launch_interactivity": "ude-desktop-3p\"]);function Fn(){xn(),Pn(),_Ur()}function Ln({interactivity:n}){let e=process.argv.slice(2),S=n.kind===\"non-interactive\"||Zut(e);if(S)GN();if(M9e(!S),VMi(S),bn(),ybi(),HLn(Twr(e)),dvr(),!Oe(i.CLAUDE_CODE_REMOTE)){if(i.CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR||i.CLAUDE_BG_AUTH_SNAPSHOT_PATH&&!vr()&&!i.CLAUDE_CODE_OAUTH_TOKEN)kv();if(i.CLAUDE_CODE_GATEWAY_TOKEN_FILE",
+    "availability_dispatch": "let r=Sr().builtinPluginFailures;if(r.has(e))return;r.set(e,{name:e,phase:o,message:d(t)}),l(N(t)),m(\"plugin_bundled_register\",o)}function Nat(e){let o=Sr(),t=o.builtinPlugins.get(e);if(t===void 0||o.builtinPluginFailures.has(e))return!1;if(t.isAvailable===void 0)return!0;try{return t.isAvailable()}catch(r){return Eo(e,\"is_available\",r),!1}}function Q_(e){Sr().builtinPlugins.set(e.name,e);let o=e.hooksModule;if(o===void 0)return;let t=lt(e.name);if(\"scan\"in o)Neo.registerScan(t,o.scan);else if(\"shipped\"in o)Neo.register(t,o.",
+    "builtin_availability_skip": "(e){return Sr().builtinPlugins.get(e)}function yK(){let e=ur(),o=[],t=[];for(let[r,n]of Sr().builtinPlugins){if(!Nat(r))continue;let s=`${r}@${qs}`,p=JO(s).length>0,i=n.enabledFromPolicyOnly?Nn(s):n.enabledFromTrustedSettingsOnly?gpr(s):!p?e?.enabledPlugins?.[s]:aCn(s),a=i!==void 0?i===!0:n.defaultEnabled??!0,f={name:r,manifest:{name:r,description:n.description,version:n.version,...n.defaultEnabled===void 0?{}:{defaultEnabled:n.defaultEnabled},...n.userConfig===void 0?{}:{userConfig:n.userConfig}},path:qs,source:s,repository:s,enabled:a,isBuiltin:!0,hooksConfig:n.hooks,mcpServers:n.mcpServers,...n.hooksModule===void 0?{}:qj(r,n.hooksModule)};if(a)o.push(f);else t.push(f)}return{enabled:o,disabled:t}}function epr(){return vn().filt",
+    "tools_option": ".option(\"--tools <tools...>\",'Specify the list of available tools from the built-in set. Use \"\" to disable all tools, \"default\" to use the default set, or specify tool names (e.g. \"Bash,Edit,Read\").').option(\"--restricted\",\"Restricted mode: removes the built-in tools that run commands or code (Bash, PowerShell and the other code",
+    "disable_slash_commands_help_snippet": "ion only (repeatable: --plugin-url A --plugin-url B)\u001f\u0000\u0000\ufffd\u01fe+\u0000Disable all skills and commands\u0000#\u0000\u0000\ufffd\u077ed\u0000Enable Claude in Chr",
+    "interactive_getter": "function Vd(){return t().host.launchOptions.isInteractive()}",
+    "interactive_setter": "function M9e(e){let n=t(),o=n.host.launchOptions.isInteractive()!==e;if(n.host.launchOptions.replaceIsInteractive(e),o)lEr.of(n.host).invalidateAll()}",
+    "print_detection": "function Zut(e=process.argv.slice(2)){let n=gw(\"-p\",e)||gw(\"--print\",e),t=gw(\"--init-only\",e),o=nDt((s)=>s.startsWith(\"--sdk-url\"),e)!==-1;return n||t||o||!process.stdout.isTTY}",
+    "permission_mode_default_mapper": "function yI(e){return Pg(e)??\"default\"}",
+    "permission_mode_treats_undefined_as_default": "function Qxi(e){return e===\"default\"||e===void 0}",
+    "builtin_predicate": "function Tu(e){return e.endsWith(`@${qs}`)}",
+    "interactivity_decided_bookkeeping": 4,
+    "stop_hook_event_types": {
+     "hook_started": 11,
+     "hook_response": 38
+    },
+    "stream_json_event_types": {
+     "subtype:\"init\"": 1,
+     "type:\"result\"": 12
+    }
+   }
+  },
+  "2.1.317": {
+   "claude-code-darwin-arm64": {
+    "artifact_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+    "cc_plugin_ids": [
+     "agents-md",
+     "claude-platform",
+     "claude-test",
+     "diff",
+     "easel",
+     "mermaid",
+     "mods-guide",
+     "plugin-authoring",
+     "privacy",
+     "responsive-mode",
+     "sec-default",
+     "telemetry",
+     "tips",
+     "you-should-know"
+    ],
+    "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\",()=>!0).addOption(new Es(\"--init\",\"Run Setup hooks with init trigger, then continue\").hideHelp()).addOption(new Es(\"--init-only\",\"Run Setup and SessionStart:startup hooks, then exit\").hideHelp()).addOption",
+    "safe_mode_filter": "it; an organization's and built-in plugins load regardless`);return n}function nqn(e){if(!Gr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Nu(n.source))}function oqn(e,n){let r={PreToolUse:[],PostToolUse:[],PostToolUseFailure:[],Po",
+    "safe_mode_detector": "ction Cr(){return Oe(process.env.CLAUDE_CODE_SIMPLE)||i(\"--bare\")}function Gr(){return Oe(process.env.CLAUDE_CODE_SAFE_MODE)||i(\"--safe-mode\")}function nue(){return Oe(process.env.CLAUDE_CODE_RESTRICTED)}function N(e){re",
+    "safe_mode_mcp_gate": "ors:!1,themes:!1,hljsLanguages:!1,hooks:!1,statusLine:!0,fileSuggestion:!0,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!1,agents:!1,outputStyles:!1,lspServers:!1,keybindings:!0};function lr(e,s){if(a[e]&&q())return!0;if(Gr()&&!l[e])return!0;if(Cr()&&!s?.explicitlyRequested)return t[e];return!1}function Lx(){return Boolean(i.CLAUDE_CODE_DISABLE_CLAUDE_MDS||lr(\"claudeMd\",{explicitlyRequested:Ol().length>0}))}\nexport{lr,Lx};\n\u0000// @bun @bytecode\n// ",
+    "safe_mode_mcp_policy": "k-9qaqcm7d.js\";import{Cr,Gr}from\"/$bunfs/root/chunk-ekzva62s.js\";import{i}from\"/$bunfs/root/chunk-g2k864jc.js\";var t={claudeMd:!0,skills:!0,workflows:!1,plugins:!0,pluginMonitors:!1,themes:!1,hljsLanguages:!0,hooks:!0,statusLine:!1,fileSuggestion:!1,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!0,agents:!0,outputStyles:!1,lspServers:!0,keybindings:!1},l={claudeMd:!1,skills:!1,workflows:!1,plugins:!1,pluginMonitors:!1,themes:!1,hljsLanguages:!1,hooks:!0,statusLine:!0,fileSuggestion:!0,mcpAutoDis",
+    "init_fields": "minalOriented===!0).map((t)=>t.name),n={type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>Gan(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:w_t(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:md(e.permissionMode),slash_commands:e.commands.filter((t)=>t.userInvocable!==!1).map((t)=>t.name),...s.length>0&&{terminal_slash_commands:s},apiKeySource:e.apiKeySource,betas:e.betas,claude_code_version:{ISSUES_EXPLAINER:\"report the issue at h",
+    "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!pCe();if(e||cp()===\"remote\")Yle(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-510b337p.js\"));if(e)Yle(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-n59zmnwm.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")Yle(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-s3pp36d7.js\"));if(e||cp()===\"remote_cowork\")Yle(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-ac5wqzkb.js\"));if(e)Yle(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-89my322f.js\")),Yle(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-2zt6r9zk.js\"))}\nexport{$_e};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.317\nimport{F,ge,q}from\"/$bunfs/root/chunk-9qaqcm7d.js\";import{N}from\"/$bunfs/root/chunk-7fawza1z.js\";import{W}from\"/$bunfs/root/chunk-d0h24k2f.js\";import{a_,Gl}from\"/$bunfs/root/chunk-djayrv3w.js\";import{t}from\"/$bunfs/root/chunk-3zne3bbr.js\";import{$e}from\"/$bunfs/root/chunk-ekzva62s.js\";import{et,kC}from\"/$bunfs/root/chunk-gj2m0bd4.js\";import{St,l}from\"/$bunfs/root/chunk-3jrdyh4e.js\";import{kn}from\"/$bunfs/root/chunk-a9k1rp2q.js\";import{je}from\"/$bunfs/root/chunk-zr0bb072.js\";import{zS,Av,wBe,ZJ,Pe,ue}from\"/$bu",
+    "claude_platform_module": "root/chunk-wtp60t3w.js\";import{Sr}from\"/$bunfs/root/chunk-y9nzb1pj.js\";import\"/$bunfs/root/chunk-zy1103m4.js\";var f={};Sr(f,{MCP_SERVERS:()=>s,PLUGIN_DESCRIPTION:()=>m,PLUGIN_NAME:()=>l,PLUGIN_VERSION:()=>a,availabilityFlag:()=>o,default:()=>f,isAvailable:()=>t,mayUseServer:()=>n,registerPlugin:()=>A,skills:()=>p});function o(){return\"tengu_peppy_crescent\"}function t(){return Zd()&&!Ut()&&ZS(\"--agent-id\")===void 0&&!Cr()&&!lr(\"mcpAutoDiscovered\")&&dle()===\"tst\"&&!St()&&cJ()&&oc(pt().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&X0t()&&!bA()&&!Udt()&&gM().length===0&&un(o(),!1)===!0}function n(){let{value:e,source:r}=wn(o(),!1);return t()&&e===!0&&lC(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-3xtc9paj.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!vr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;Ry({name:l,description:m,version:a,isAvailable:t,get skills(){return lct(l)&&!tge(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}export{s as MCP_SERVERS,m as PLUGIN_DESCRIPTION,l as PLUGIN_NAME,a as PLUGIN_VERSION,o as availabilityFlag,f as default,t as isAvailable,n as mayUseServer,A as registerPlugin,p as skills};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.317\nimport\"/$bunfs/root/chunk-fke2j374.js\";import\"/$bunfs/root/chunk-tew41kn4.js\";import{F}from\"/$bunfs/root/chunk-9qaqcm7d.js\";import\"/$bunfs/root/chunk-yt1005dj.js\";import\"/$bunfs/root/chunk-8besfnbm.js\";import{Ye,N}from\"/$bunfs/root/chunk-7fawza1z.js\";import\"/$bunfs/root/chunk-y4tcj3pd.js\";import\"/$bunfs/root/chunk-e96k52qj.js\";import\"/$bunfs/root/chunk-d0h24k2f.js\";import{G1t,z1t,V1t,tSt}from\"/$bunfs/root/chunk-b6s98qsb.js\";import{t}from\"/$bunfs/root/chunk-3zne3bbr.js\";import\"/$bunfs/root/chunk-497g12b5.js\";import\"/$bunfs/root/chunk-ekzva62s.js\";import\"/$bunfs/root/chunk-gqbme43f.",
+    "launch_interactivity": "ude-desktop-3p\"]);function Pn(){kn(),Dn(),hGr()}function Mn({interactivity:n}){let e=process.argv.slice(2),h=n.kind===\"non-interactive\"||Amt(e);if(h)SF();if(j7e(!h),Sji(h),Rn(),Nxi(),E$n(lAr(e)),KRr(),!Oe(i.CLAUDE_CODE_REMOTE)){if(i.CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR||i.CLAUDE_BG_AUTH_SNAPSHOT_PATH&&!Cr()&&!i.CLAUDE_CODE_OAUTH_TOKEN)Bv();if(i.CLAUDE_CODE_GATEWAY_TOKEN_FILE",
+    "availability_dispatch": "let r=vr().builtinPluginFailures;if(r.has(e))return;r.set(e,{name:e,phase:o,message:d(t)}),l(N(t)),m(\"plugin_bundled_register\",o)}function lct(e){let o=vr(),t=o.builtinPlugins.get(e);if(t===void 0||o.builtinPluginFailures.has(e))return!1;if(t.isAvailable===void 0)return!0;try{return t.isAvailable()}catch(r){return jo(e,\"is_available\",r),!1}}function Ry(e){vr().builtinPlugins.set(e.name,e);let o=e.hooksModule;if(o===void 0)return;let t=dt(e.name);if(\"scan\"in o)hao.registerScan(t,o.scan);else if(\"shipped\"in o)hao.register(t,o.",
+    "builtin_availability_skip": "(e){return vr().builtinPlugins.get(e)}function oV(){let e=mr(),o=[],t=[];for(let[r,n]of vr().builtinPlugins){if(!lct(r))continue;let s=`${r}@${Xs}`,p=CM(s).length>0,i=n.enabledFromPolicyOnly?Tn(s):n.enabledFromTrustedSettingsOnly?V_r(s):!p?e?.enabledPlugins?.[s]:jOn(s),a=i!==void 0?i===!0:n.defaultEnabled??!0,f={name:r,manifest:{name:r,description:n.description,version:n.version,...n.defaultEnabled===void 0?{}:{defaultEnabled:n.defaultEnabled},...n.userConfig===void 0?{}:{userConfig:n.userConfig}},path:Xs,source:s,repository:s,enabled:a,isBuiltin:!0,hooksConfig:n.hooks,mcpServers:n.mcpServers,...n.hooksModule===void 0?{}:Yj(r,n.hooksModule)};if(a)o.push(f);else t.push(f)}return{enabled:o,disabled:t}}function H_r(){return Nn().filt",
+    "tools_option": ".option(\"--tools <tools...>\",'Specify the list of available tools from the built-in set. Use \"\" to disable all tools, \"default\" to use the default set, or specify tool names (e.g. \"Bash,Edit,Read\").').option(\"--restricted\",\"Restricted mode: removes the built-in tools that run commands or code (Bash, PowerShell and the other code",
+    "disable_slash_commands_help_snippet": "ion only (repeatable: --plugin-url A --plugin-url B)\u001f\u0000\u0000\ufffd\u01fe+\u0000Disable all skills and commands\u0000#\u0000\u0000\ufffd\u077ed\u0000Enable Claude in Chr",
+    "interactive_getter": "function Zd(){return t().host.launchOptions.isInteractive()}",
+    "interactive_setter": "function j7e(e){let n=t(),o=n.host.launchOptions.isInteractive()!==e;if(n.host.launchOptions.replaceIsInteractive(e),o)qAr.of(n.host).invalidateAll()}",
+    "print_detection": "function Amt(e=process.argv.slice(2)){let n=Aw(\"-p\",e)||Aw(\"--print\",e),t=Aw(\"--init-only\",e),o=tLt((s)=>s.startsWith(\"--sdk-url\"),e)!==-1;return n||t||o||!process.stdout.isTTY}",
+    "permission_mode_default_mapper": "function DO(e){return zh(e)??\"default\"}",
+    "permission_mode_treats_undefined_as_default": "function h$i(e){return e===\"default\"||e===void 0}",
+    "builtin_predicate": "function Nu(e){return e.endsWith(`@${Xs}`)}",
+    "interactivity_decided_bookkeeping": 4,
+    "stop_hook_event_types": {
+     "hook_started": 11,
+     "hook_response": 38
+    },
+    "stream_json_event_types": {
+     "subtype:\"init\"": 1,
+     "type:\"result\"": 12
+    }
+   },
+   "claude-code-linux-x64": {
+    "artifact_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+    "cc_plugin_ids": [
+     "agents-md",
+     "claude-platform",
+     "claude-test",
+     "diff",
+     "easel",
+     "mermaid",
+     "mods-guide",
+     "plugin-authoring",
+     "privacy",
+     "responsive-mode",
+     "sec-default",
+     "telemetry",
+     "tips",
+     "you-should-know"
+    ],
+    "safe_mode_option": ".option(\"--safe-mode\",\"Start with all customizations (CLAUDE.md, skills, installed plugins, hooks, MCP servers, custom commands and agents, output styles, workflows, custom themes, keybindings, and more) disabled \"+\"\\u2014 useful for troubleshooting a broken configuration. \"+\"Admin-managed (policy) settings still apply. Auth, model selection, built-in tools and plugins, and permissions work normally. Sets CLAUDE_CODE_SAFE_MODE=1.\",()=>!0).addOption(new ws(\"--init\",\"Run Setup hooks with init trigger, then continue\").hideHelp()).addOption(new ws(\"--init-only\",\"Run Setup and SessionStart:startup hooks, then exit\").hideHelp()).addOption",
+    "safe_mode_filter": "it; an organization's and built-in plugins load regardless`);return n}function Jzn(e){if(!Gr())return[...e];return t(\"Safe mode: installed plugins are disabled, none of their hooks or hooks modules load; built-in plugins load regardless\"),e.filter((n)=>Hu(n.source))}function Zzn(e,n){let r={PreToolUse:[],PostToolUse:[],PostToolUseFailure:[],Po",
+    "safe_mode_detector": "ction Ar(){return Ie(process.env.CLAUDE_CODE_SIMPLE)||i(\"--bare\")}function Gr(){return Ie(process.env.CLAUDE_CODE_SAFE_MODE)||i(\"--safe-mode\")}function qce(){return Ie(process.env.CLAUDE_CODE_RESTRICTED)}function N(e){re",
+    "safe_mode_mcp_gate": "ors:!1,themes:!1,hljsLanguages:!1,hooks:!1,statusLine:!0,fileSuggestion:!0,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!1,agents:!1,outputStyles:!1,lspServers:!1,keybindings:!0};function lr(e,s){if(a[e]&&q())return!0;if(Gr()&&!l[e])return!0;if(Ar()&&!s?.explicitlyRequested)return t[e];return!1}function Ox(){return Boolean(i.CLAUDE_CODE_DISABLE_CLAUDE_MDS||lr(\"claudeMd\",{explicitlyRequested:Il().length>0}))}\nexport{lr,Ox};\n\u0000// @bun @bytecode\n// ",
+    "safe_mode_mcp_policy": "k-wxyh2ndv.js\";import{Ar,Gr}from\"/$bunfs/root/chunk-v1dhx02j.js\";import{i}from\"/$bunfs/root/chunk-jdmxbspc.js\";var t={claudeMd:!0,skills:!0,workflows:!1,plugins:!0,pluginMonitors:!1,themes:!1,hljsLanguages:!0,hooks:!0,statusLine:!1,fileSuggestion:!1,mcpAutoDiscovered:!1,mcpClaudeAi:!1,mcpAgentFrontmatter:!0,agents:!0,outputStyles:!1,lspServers:!0,keybindings:!1},l={claudeMd:!1,skills:!1,workflows:!1,plugins:!1,pluginMonitors:!1,themes:!1,hljsLanguages:!1,hooks:!0,statusLine:!0,fileSuggestion:!0,mcpAutoDis",
+    "init_fields": "minalOriented===!0).map((t)=>t.name),n={type:\"system\",subtype:\"init\",cwd:e.cwd,session_id:e.sessionId,tools:e.tools.map((t)=>Oan(t.name)),mcp_servers:e.mcpClients.map((t)=>({name:t.name,status:b_t(t.type),...t.source!==void 0&&{source:t.source}})),model:e.model,permissionMode:md(e.permissionMode),slash_commands:e.commands.filter((t)=>t.userInvocable!==!1).map((t)=>t.name),...s.length>0&&{terminal_slash_commands:s},apiKeySource:e.apiKeySource,betas:e.betas,claude_code_version:{ISSUES_EXPLAINER:\"report the issue at h",
+    "builtin_registration_tail": "let e=i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\"&&!iTe();if(e||cf()===\"remote\")jle(\"cc-plugin-responsive-mode\",()=>import.meta.require(\"/$bunfs/root/chunk-dmyvfxta.js\"));if(e)jle(\"cc-plugin-diff\",()=>import.meta.require(\"/$bunfs/root/chunk-qtv4c2r3.js\"));if(i.CLAUDE_CODE_ENTRYPOINT!==\"local-agent\")jle(\"cc-plugin-you-should-know\",()=>import.meta.require(\"/$bunfs/root/chunk-v6pd0m70.js\"));if(e||cf()===\"remote_cowork\")jle(\"cc-plugin-easel\",()=>import.meta.require(\"/$bunfs/root/chunk-z5dzy6j9.js\"));if(e)jle(\"cc-plugin-claude-platform\",()=>import.meta.require(\"/$bunfs/root/chunk-v1trhy7p.js\")),jle(\"cc-plugin-claude-test\",()=>import.meta.require(\"/$bunfs/root/chunk-zfh08qyf.js\"))}\nexport{O_e};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.317\nimport{U,he,q}from\"/$bunfs/root/chunk-wxyh2ndv.js\";import{N}from\"/$bunfs/root/chunk-5x4vp4dg.js\";import{W}from\"/$bunfs/root/chunk-agahg8zh.js\";import{a_,Gl}from\"/$bunfs/root/chunk-aqhsn9c5.js\";import{t}from\"/$bunfs/root/chunk-qx8w2w8f.js\";import{Fe}from\"/$bunfs/root/chunk-v1dhx02j.js\";import{et,vT}from\"/$bunfs/root/chunk-sctdt2my.js\";import{_t,l}from\"/$bunfs/root/chunk-xkb87seb.js\";import{Cn}from\"/$bunfs/root/chunk-1mheqz38.js\";import{je}from\"/$bunfs/root/chunk-m2dj5b5f.js\";import{Gb,Av,g1e,G7,Pe,ue}from\"/$bu",
+    "claude_platform_module": "root/chunk-df4s59en.js\";import\"/$bunfs/root/chunk-mmesch9q.js\";import{br}from\"/$bunfs/root/chunk-dbgyrqyp.js\";var f={};br(f,{MCP_SERVERS:()=>s,PLUGIN_DESCRIPTION:()=>m,PLUGIN_NAME:()=>l,PLUGIN_VERSION:()=>a,availabilityFlag:()=>o,default:()=>f,isAvailable:()=>t,mayUseServer:()=>n,registerPlugin:()=>A,skills:()=>p});function o(){return\"tengu_peppy_crescent\"}function t(){return Zd()&&!Ut()&&Qb(\"--agent-id\")===void 0&&!Ar()&&!lr(\"mcpAutoDiscovered\")&&tle()===\"tst\"&&!_t()&&n7()&&oc(ft().env?.ANTHROPIC_BASE_URL||\"https://api.anthropic.com\")&&WDt()&&!yC()&&!Ldt()&&fM().length===0&&un(o(),!1)===!0}function n(){let{value:e,source:r}=wn(o(),!1);return t()&&e===!0&&aT(r)}var s={docs:{type:\"http\",url:\"https://platform.claude.com/docs/mcp\"}};var m=\"Connects Claude to the Claude Platform developer docs (platform.claude.com) so it can search and read them while building with the Claude API (/claude-api)\";var l=\"cc-plugin-claude-platform\";var a=\"0.1.0\";function p(){let{claudeApiSkillDefinition:e}=import.meta.require(\"/$bunfs/root/chunk-ywcpjj44.js\"),r=i.CLAUDE_CODE_DISABLE_CLAUDE_API_SKILL===!0,d=e({disabled:r});return[{...d,isEnabled:()=>!r&&!vr().bundledSkills.some((u)=>u.name===d.name)}]}function A(){let e;Ry({name:l,description:m,version:a,isAvailable:t,get skills(){return rct(l)&&!qge(\"claude-api\")?e??=p():void 0},mcpServers:s,mayConnectMcpServer:n})}export{s as MCP_SERVERS,m as PLUGIN_DESCRIPTION,l as PLUGIN_NAME,a as PLUGIN_VERSION,o as availabilityFlag,f as default,t as isAvailable,n as mayUseServer,A as registerPlugin,p as skills};\n\u0000// @bun @bytecode\n// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://code.claude.com/docs/en/legal-and-compliance.\n\n// Version: 2.1.317\nimport{iD,cVe,Tnt,RJn,xJn,zWo,Lbe,c2i,KWo,pp,p7n,Yse,Gfe,Ahn,J2r,Chn,XRe,U7n,gee,HNe,Mzt,Wnt,Dzt,Gnt,Q2r,Z2r,R6,Xfe,tbn,Dqe,Mb}from\"/$bunfs/root/chunk-thp9mgjc.js\";import\"/$bunfs/root/chunk-y9ysdmh2.js\";import\"/$bunfs/root/chunk-ft5hc2h0.js\";import{U,K,ve,Co,Ru,kT,Zd,q,In}from\"/$bunfs/root/chunk-wxyh2ndv.js\";import\"/$bunfs/root/chunk-tpv9n38f.js\";import\"/$bunfs/root/chunk-hd335g9m.js\";import{Ye,N,d,k}from\"/$bunfs/root/chunk-5x4vp4dg.js\";import{Ce}from\"/$bunfs/root/chunk-k4p8c4ay.js\";import{_l}from\"/$bunfs/root/chunk-q0j77z7t.js\";import{W}from\"/$bunfs/root/chunk-agahg8zh.js\";import",
+    "launch_interactivity": "ude-desktop-3p\"]);function Pn(){Dn(),An(),YGr()}function Mn({interactivity:n}){let e=process.argv.slice(2),h=n.kind===\"non-interactive\"||Emt(e);if(h)h$();if(LJe(!h),$1i(h),vn(),ZRi(),sFn(WAr(e)),xRr(),!Ie(i.CLAUDE_CODE_REMOTE)){if(i.CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR||i.CLAUDE_BG_AUTH_SNAPSHOT_PATH&&!Ar()&&!i.CLAUDE_CODE_OAUTH_TOKEN)Uv();if(i.CLAUDE_CODE_GATEWAY_TOKEN_FILE",
+    "availability_dispatch": "let r=vr().builtinPluginFailures;if(r.has(e))return;r.set(e,{name:e,phase:o,message:d(t)}),l(N(t)),m(\"plugin_bundled_register\",o)}function rct(e){let o=vr(),t=o.builtinPlugins.get(e);if(t===void 0||o.builtinPluginFailures.has(e))return!1;if(t.isAvailable===void 0)return!0;try{return t.isAvailable()}catch(r){return Eo(e,\"is_available\",r),!1}}function Ry(e){vr().builtinPlugins.set(e.name,e);let o=e.hooksModule;if(o===void 0)return;let t=dt(e.name);if(\"scan\"in o)qio.registerScan(t,o.scan);else if(\"shipped\"in o)qio.register(t,o.",
+    "builtin_availability_skip": "(e){return vr().builtinPlugins.get(e)}function qK(){let e=mr(),o=[],t=[];for(let[r,n]of vr().builtinPlugins){if(!rct(r))continue;let s=`${r}@${Xs}`,p=SM(s).length>0,i=n.enabledFromPolicyOnly?Tn(s):n.enabledFromTrustedSettingsOnly?T_r(s):!p?e?.enabledPlugins?.[s]:kIn(s),a=i!==void 0?i===!0:n.defaultEnabled??!0,f={name:r,manifest:{name:r,description:n.description,version:n.version,...n.defaultEnabled===void 0?{}:{defaultEnabled:n.defaultEnabled},...n.userConfig===void 0?{}:{userConfig:n.userConfig}},path:Xs,source:s,repository:s,enabled:a,isBuiltin:!0,hooksConfig:n.hooks,mcpServers:n.mcpServers,...n.hooksModule===void 0?{}:Jj(r,n.hooksModule)};if(a)o.push(f);else t.push(f)}return{enabled:o,disabled:t}}function p_r(){return Nn().filt",
+    "tools_option": ".option(\"--tools <tools...>\",'Specify the list of available tools from the built-in set. Use \"\" to disable all tools, \"default\" to use the default set, or specify tool names (e.g. \"Bash,Edit,Read\").').option(\"--restricted\",\"Restricted mode: removes the built-in tools that run commands or code (Bash, PowerShell and the other code",
+    "disable_slash_commands_help_snippet": "ion only (repeatable: --plugin-url A --plugin-url B)\u001f\u0000\u0000\ufffd\u01fe+\u0000Disable all skills and commands\u0000#\u0000\u0000\ufffd\u077ed\u0000Enable Claude in Chr",
+    "interactive_getter": "function Zd(){return t().host.launchOptions.isInteractive()}",
+    "interactive_setter": "function LJe(e){let n=t(),o=n.host.launchOptions.isInteractive()!==e;if(n.host.launchOptions.replaceIsInteractive(e),o)xCr.of(n.host).invalidateAll()}",
+    "print_detection": "function Emt(e=process.argv.slice(2)){let n=Aw(\"-p\",e)||Aw(\"--print\",e),t=Aw(\"--init-only\",e),o=VHt((s)=>s.startsWith(\"--sdk-url\"),e)!==-1;return n||t||o||!process.stdout.isTTY}",
+    "permission_mode_default_mapper": "function II(e){return zg(e)??\"default\"}",
+    "permission_mode_treats_undefined_as_default": "function O$i(e){return e===\"default\"||e===void 0}",
+    "builtin_predicate": "function Hu(e){return e.endsWith(`@${Xs}`)}",
+    "interactivity_decided_bookkeeping": 4,
+    "stop_hook_event_types": {
+     "hook_started": 11,
+     "hook_response": 38
+    },
+    "stream_json_event_types": {
+     "subtype:\"init\"": 1,
+     "type:\"result\"": 12
+    }
+   }
+  }
+ }
+}

@@ -104,22 +104,22 @@ fn official_stable_is_2_1_310_and_the_two_claims_stay_separate() {
 
 #[test]
 fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
-    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.312");
+    assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.316");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.312"
+        "2.1.316"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279", "2.1.297", "2.1.298",
+            "2.1.279", "2.1.297", "2.1.298", "2.1.313",
         ]
     );
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
-    assert_eq!(headless.latest_qualified().as_str(), "2.1.312");
-    assert_eq!(response.latest_qualified().as_str(), "2.1.312");
+    assert_eq!(headless.latest_qualified().as_str(), "2.1.316");
+    assert_eq!(response.latest_qualified().as_str(), "2.1.316");
     assert_ne!(headless.axis(), response.axis());
     for patch in 295..=310 {
         let version = InterfaceVersion::new(format!("2.1.{patch}")).expect("version");
@@ -149,7 +149,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
             "2.1.{patch}"
         );
     }
-    let newer = InterfaceVersion::new("2.1.313").expect("version");
+    let newer = InterfaceVersion::new("2.1.317").expect("version");
     assert!(matches!(
         headless.assess(&newer),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)

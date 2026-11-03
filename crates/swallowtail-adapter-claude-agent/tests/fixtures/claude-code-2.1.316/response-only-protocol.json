@@ -1,0 +1,159 @@
+{
+  "axis": "claude-code.response-only-stream-json",
+  "behavior_revision": "claude-code.response-only.stream-json.v3",
+  "decision": "compatible-extension",
+  "isolation_evidence": "response-only-isolation.json",
+  "selected_command": {
+    "arguments": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--model",
+      "<caller-selected-model>",
+      "--tools",
+      "",
+      "--safe-mode",
+      "--disable-slash-commands",
+      "--no-chrome",
+      "--prompt-suggestions",
+      "false",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ]
+  },
+  "selected_behavior_boundary": {
+    "input_format": "text",
+    "output_format": "stream-json",
+    "permission_mode_expected_on_init": "default",
+    "tools_empty": true,
+    "mcp_servers_empty": true,
+    "safe_mode": true,
+    "slash_commands_disabled": true,
+    "session_persistence": false,
+    "num_turns": 1
+  },
+  "help_lines_byte_identical_on_every_scanned_binary": [
+    "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+    "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+  ],
+  "skipped_unpublished": [
+    "2.1.313"
+  ],
+  "per_hop_classification": [
+    {
+      "hop": "2.1.312_to_2.1.314",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "claude -p exiting 0 with no output when startup failed",
+          "classification": "selected-failure-reporting-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Response-only requires an init frame, one text turn, and one matching result. A silent exit 0 already fails closed; the provider now reports the error and exits 1. No init field changes."
+        },
+        {
+          "surface": "prompts containing tags such as bash-stdout or local-command-stdout",
+          "classification": "selected-stream-json-input-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "The fix restores acknowledgement on the same text stream-json input. Init fields, empty tools, and the one-text-turn contract stay."
+        },
+        {
+          "surface": "a settings file excluded with --setting-sources still supplying some settings",
+          "classification": "outside-safe-mode-surface",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Response-only passes --safe-mode, which already drops installed settings, plugins, and custom hooks. The fix makes the flag apply as documented and adds nothing to the route."
+        },
+        {
+          "surface": "PreCompact hook output cap",
+          "classification": "outside-safe-mode-custom-hooks",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Safe mode disables installed plugin hooks and custom hooks; the measured filter is structurally unchanged."
+        },
+        {
+          "surface": "hooks matching Bash on Monitor-started commands, and shell/MCP tool fixes",
+          "classification": "unselected",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Response-only sends an empty tool list and rejects any tool or user event."
+        },
+        {
+          "surface": "permissions.blockWritesOutsideWorkingDirectories and subagent memory",
+          "classification": "unselected",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "No write tool, no subagent, and no MCP server is selected."
+        },
+        {
+          "surface": "TLS, MCP sign-in, gateway, cloud, Remote Control, VS Code, and model-catalogue notes",
+          "classification": "unselected",
+          "reason": "Empty tools, empty strict MCP, disabled slash commands, disabled Chrome, no suggestions, and one text turn leave those notes outside the route."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.314_to_2.1.315",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "npm 2.1.315 with no public tag or release",
+          "classification": "identity-only-hop",
+          "source": "https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.315",
+          "reason": "No provider note exists. Identity rests on npm metadata, the integrity-checked tarballs, the per-file tree delta, and the selected static surfaces."
+        },
+        {
+          "surface": "CLI option inventory",
+          "classification": "unmapped-auth-path",
+          "reason": "The hop adds only --gateway-json for `claude auth login`. Neither route authenticates."
+        },
+        {
+          "surface": "embedded non-CLI runtime text",
+          "classification": "provider-internal",
+          "reason": "The selected CLI option texts, stream-json help, safe-mode filter and gates, init construction, and plugin gating are unchanged."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.315_to_2.1.316",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.response-only",
+      "release_note_review": [
+        {
+          "surface": "CLAUDE_CODE_DISABLE_ULTRATHINK",
+          "classification": "unmapped-opt-in",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "A new environment switch for prompt keywords. Swallowtail does not set it and the route's text contract is unchanged."
+        },
+        {
+          "surface": "Grep and Glob hang on a killed search process",
+          "classification": "unselected-tool-set",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "Response-only sends an empty tool list; any tool event still fails closed."
+        },
+        {
+          "surface": "shell commands left running on self-exit; PowerShell and Bash hook fixes",
+          "classification": "outside-safe-mode-custom-hooks",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "Safe mode keeps installed plugin hooks and custom hooks off, no shell tool is selected, and the route's own cleanup contract does not change."
+        },
+        {
+          "surface": "claude -p text output not naming why auto mode stopped a turn",
+          "classification": "unselected-auto-mode",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "Response-only never selects auto mode or a background agent."
+        },
+        {
+          "surface": "CLAUDE_CODE_SUBAGENT_EFFORT, fast mode, gateway, cloud, and VS Code notes",
+          "classification": "unselected",
+          "reason": "Empty tools, one text turn, and the local subscription command leave those notes outside the route."
+        }
+      ]
+    }
+  ]
+}

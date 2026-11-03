@@ -27,8 +27,8 @@ const CARD126_SELECTED_SKILL: &str =
 
 #[test]
 fn all_maintained_pairs_flow_from_prepared_plan_into_the_shipped_sidecar() {
-    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 12);
-    for (index, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED[..10]
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
+    for (index, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED[..12]
         .iter()
         .copied()
         .enumerate()
@@ -136,10 +136,12 @@ fn all_maintained_pairs_flow_from_prepared_plan_into_the_shipped_sidecar() {
 
 #[test]
 fn new_qualified_pairs_bind_through_the_prepared_facade_and_sidecar() {
-    for pair in [
-        ClaudeAgentSdkPackageNativePair::V0_3_294Native2_1_294,
-        ClaudeAgentSdkPackageNativePair::V0_3_295Native2_1_295,
-    ] {
+    // Research 472 adds every published hop 0.3.296..=0.3.317 (keeping the
+    // unpublished gaps out); the retained pairs are exercised above.
+    for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED[12..]
+        .iter()
+        .copied()
+    {
         let host_id = swallowtail_core::ExecutionHostId::new(format!(
             "claude-agent-sdk.fixture.new-pair-{}",
             pair.package_version()
@@ -243,10 +245,24 @@ fn wrong_unsupported_and_unreadable_package_native_identities_fail_before_sdk_co
             "native_version_mismatch",
         ),
         (
-            "0.3.296",
-            "2.1.296",
-            "0.3.296",
-            "2.1.296",
+            "0.3.318",
+            "2.1.318",
+            "0.3.318",
+            "2.1.318",
+            "sdk_version_mismatch",
+        ),
+        (
+            "0.3.297",
+            "2.1.297",
+            "0.3.297",
+            "2.1.297",
+            "sdk_version_mismatch",
+        ),
+        (
+            "0.3.313",
+            "2.1.313",
+            "0.3.313",
+            "2.1.313",
             "sdk_version_mismatch",
         ),
         (

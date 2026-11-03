@@ -6,6 +6,27 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-agent.sdk` through npm `latest`/`next` `0.3.317` and its exact
+  embedded native `2.1.317` as a compatible extension of the retained coupled
+  `0.3.284`/`2.1.284` baseline (Research 472). The package claim stays baseline
+  `0.3.284` with claim id `claude-agent.sdk.package-window-1`, QualifiedOnly
+  posture, behavior revision `claude-agent.sdk-v1`, and no exclusions; the
+  native claim mirrors it to `2.1.317`. Every published hop `0.3.296` through
+  `0.3.317` is qualified point-for-point; the unpublished `0.3.297`, `0.3.298`,
+  and `0.3.313` points and their native mirrors are explicit claim exclusions
+  (so they assess incompatible on the claims themselves) and stay outside the
+  finite maintained pair map, and nothing is published after `0.3.317`. The
+  default pair stays `0.3.293`/`2.1.293`, the
+  registered-tool live point stays exact `0.3.259`/`2.1.259`, and the Node
+  `22.23.2..=22.23.3`, wire, and sidecar source axes are unchanged. Identity
+  tokenized each published `sdk.mjs` bundle with an exact per-hop string
+  ledger: the option defaulting, selected `Query` method bodies, argv builders,
+  and `SIGTERM`/`SIGKILL` cleanup bodies are identical at every hop, no route
+  flag literal was added, removed, or changed, and the added non-builder
+  `--` strings are SDK-internal git/cache constants plus a nested-session argv
+  detection predicate. New declarations (hook `onFailure` gates, new message
+  variants, cache-creation usage splits, settings rows) sit outside the
+  sidecar's configuration and projection. See Research 472.
 - qualify `claude-agent.acp` through official stable `0.100.0` as a compatible
   extension of `claude-agent.acp.initialize-meta-extensions-v7` (Research 469,
   470, and 471). The maintained segment is `0.66.0..=0.100.0`. Baseline

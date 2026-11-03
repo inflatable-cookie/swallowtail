@@ -745,11 +745,11 @@ fn the_newer_compiled_tuple_holds_the_live_evidence_without_inheriting_it() {
     // tuple; that does not qualify the newer SDK/native tuple for live use.
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_VERSION,
-        "0.3.295"
+        "0.3.317"
     );
     assert_eq!(
         swallowtail_adapter_claude_agent::sdk::CLAUDE_AGENT_SDK_NATIVE_VERSION,
-        "2.1.295"
+        "2.1.317"
     );
     assert_eq!(NODE_VERSION, "22.23.2");
     assert!(

@@ -108,7 +108,7 @@ artifact. Preparation still performs no inference or model-store write. See
 Contract 031 for the ruling, Research 418 for the `0.40.1` adaptation, and
 Research 448 for the extension through `0.40.11`. Research 379 remains the
 historical `0.40.0` stop. Research 462 froze the `0.40.12` hop and stopped on
-selected dependency and renderer effects; Research 466 resolves the selected
+selected dependency and renderer effects; Research 468 resolves the selected
 llama.cpp pins (`b11845`, `b11901`), classifies the runner and rendered-chat
 effects at source level, and leaves the maintained ceiling at `0.40.11`.
 

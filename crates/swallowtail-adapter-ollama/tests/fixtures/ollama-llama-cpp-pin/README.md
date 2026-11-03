@@ -20,7 +20,7 @@ layer, the byte-identical Go selected surface, and the host observation.
 the selected GGUF text path and its unselected neighbors.
 
 The claim ceiling stays `0.40.11`; nothing here changes a claim. See
-Research 466.
+Research 468.
 
 No local runtime was installed or started. No vendor process ran. No
 provider prompt, inference, model download, or model-store write occurred.

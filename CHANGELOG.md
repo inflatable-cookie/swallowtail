@@ -6,6 +6,21 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `claude-code.headless` and, separately,
+  `claude-code.response-only` through official stable `2.1.316` on their
+  existing revisions. Headless extends maintained `2.1.287..=2.1.316` on
+  private `claude-code.headless.stream-json.v2`; response-only extends
+  maintained `2.1.282..=2.1.316` on `claude-code.response-only.stream-json.v3`.
+  Claim ids, baselines, deprecated segments, `AllowUnverified`, and the
+  maximum-turn exact-version set stay. npm `latest` and GitHub latest stable
+  agree; npm `stable` is the delayed `2.1.309` channel. The published hops are
+  `2.1.314`, `2.1.315`, and `2.1.316`; `2.1.313` was never published and joins
+  the exclusion list, and `2.1.315` has no public tag or release. The selected
+  argv, stream-json help lines, v2 hook decisions, init fields, strict empty
+  MCP, and safe-mode plugin filter are unchanged, and the two routes stay
+  separate from `claude-agent.acp` and `claude-agent.sdk`. npm `next` advanced
+  to `2.1.317` during the run; it is not the official stable and stays
+  `UnverifiedNewer`. See Research 466.
 - qualify `oh-my-pi.rpc` through official stable `18.13.2` on the existing
   `oh-my-pi.rpc-v2-v18.0.0` revision (Research 461). npm `latest` and GitHub
   latest stable agree. Maintained `18.0.0..=18.13.2` keeps claim id

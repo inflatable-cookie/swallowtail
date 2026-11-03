@@ -47,7 +47,7 @@ fn identity_freezes_both_llama_cpp_pins_as_immutable_commits() {
         identity["task"],
         "ollama.attached selected llama.cpp pin qualification"
     );
-    assert_eq!(identity["research"], 466);
+    assert_eq!(identity["research"], 468);
     assert_eq!(identity["axis"], "ollama.runtime");
     assert_eq!(
         identity["github_repositories"]["llama_cpp"],
@@ -214,7 +214,7 @@ fn delta_ledger_classifies_every_pin_delta_file() {
     let delta: Value = serde_json::from_str(DELTA).expect("delta corpus parses");
 
     assert_eq!(delta["schema"], 1);
-    assert_eq!(delta["research"], 466);
+    assert_eq!(delta["research"], 468);
     assert_eq!(delta["commit_span"], 56);
     assert_eq!(
         delta["from"]["commit"],

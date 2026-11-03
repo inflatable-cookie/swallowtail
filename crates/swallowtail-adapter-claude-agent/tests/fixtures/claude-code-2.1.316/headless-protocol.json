@@ -1,0 +1,193 @@
+{
+  "axis": "claude-code.headless-stream-json",
+  "behavior_revision": "claude-code.headless.stream-json.v2",
+  "decision": "compatible-extension",
+  "selected_command": {
+    "arguments": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--model",
+      "<caller-selected-model>",
+      "--permission-mode",
+      "plan",
+      "--tools",
+      "Read,Glob,Grep",
+      "--setting-sources",
+      "user,project,local",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ]
+  },
+  "selected_behavior_boundary": {
+    "input_format": "text",
+    "output_format": "stream-json",
+    "permission_mode": "plan",
+    "tool_names": [
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "setting_sources": [
+      "user",
+      "project",
+      "local"
+    ],
+    "strict_mcp_config": true,
+    "session_persistence": false,
+    "slash_commands_disabled": false,
+    "safe_mode": false,
+    "hooks_disabled": false
+  },
+  "selected_control_flow": "selected-control-flow.json",
+  "v2_rules_retained": [
+    "instruction-form prompt hook ok false blocks",
+    "PreToolUse deny blocks before tool dispatch",
+    "a PreToolUse rewrite is rechecked and a resulting deny blocks",
+    "Stop and SubagentStop treat stop_hook_active true as reentry success and keep the provider block cap",
+    "a plugin hook that cannot receive or return an action refuses the tool call"
+  ],
+  "help_lines_byte_identical_on_every_scanned_binary": [
+    "Output format (only works with --print): \"text\" (default), \"json\" (single result), or \"stream-json\" (realtime streaming)",
+    "Input format (only works with --print): \"text\" (default), or \"stream-json\" (realtime streaming input)"
+  ],
+  "maximum_turns_extended": false,
+  "skipped_unpublished": [
+    "2.1.313"
+  ],
+  "per_hop_classification": [
+    {
+      "hop": "2.1.312_to_2.1.314",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.headless",
+      "release_note_review": [
+        {
+          "surface": "permissions.blockWritesOutsideWorkingDirectories",
+          "classification": "unselected-read-only-route",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "A new permission setting for Write, Edit, and NotebookEdit. Headless selects --permission-mode plan with Read, Glob, and Grep and has no write tool."
+        },
+        {
+          "surface": "claude -p exiting 0 with no output when startup failed",
+          "classification": "selected-failure-reporting-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "The note makes a startup failure print its error and exit 1 instead of exiting 0 silently. The adapter already requires a terminal result frame and fails closed without one, so this makes the provider failure explicit without adding a stream field or a mapped operation."
+        },
+        {
+          "surface": "prompts containing tags such as bash-stdout or local-command-stdout not acknowledged to a local stream-json host",
+          "classification": "selected-stream-json-input-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Headless sends text input over stream-json. The fix restores the existing acknowledgement for prompts carrying those tags. It adds no event type and no field."
+        },
+        {
+          "surface": "a settings file excluded with --setting-sources still supplying some settings",
+          "classification": "selected-flag-application-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Headless passes --setting-sources user,project,local. The note makes the already-mapped exclusion actually apply to auto mode rules and saved consents. A fix that makes an already-mapped flag apply is a compatible extension, not a behavior revision. The selected permission mode stays plan."
+        },
+        {
+          "surface": "PreCompact hook output cap",
+          "classification": "provider-hook-output-bound",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Headless does not select compaction. The measured PreToolUse, prompt-hook, rewrite, and Stop decisions are unchanged; this bounds hook output size."
+        },
+        {
+          "surface": "hooks matching Bash on Monitor-started commands; Bash and shell fixes",
+          "classification": "unselected-tool-set",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Headless tools stay Read, Glob, and Grep; no Bash or Monitor call is admitted."
+        },
+        {
+          "surface": "memory use in long headless and SDK turns that run many subagents",
+          "classification": "provider-memory-bound",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.314",
+          "reason": "Headless does not admit the Agent tool, so no subagent tool result is retained on this route. No selected field or lifecycle step changes."
+        },
+        {
+          "surface": "TLS, MCP sign-in, gateway, cloud session, Remote Control, VS Code, and model-catalogue notes",
+          "classification": "unselected",
+          "reason": "Those notes sit outside the fixed read-only tool set, the strict empty MCP config, the local subscription command, and the stream-json field set."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.314_to_2.1.315",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.headless",
+      "release_note_review": [
+        {
+          "surface": "npm 2.1.315 with no public tag or release",
+          "classification": "identity-only-hop",
+          "source": "https://www.npmjs.com/package/@anthropic-ai/claude-code/v/2.1.315",
+          "reason": "The public repository has no v2.1.315 tag or release, so no provider note exists to review. Identity rests on current npm metadata, the integrity-checked tarballs, the per-file tree delta, and the selected static surfaces."
+        },
+        {
+          "surface": "CLI option inventory",
+          "classification": "unmapped-opt-in",
+          "reason": "The hop adds only --gateway-json, an auth-login presentation flag. Neither route passes it and neither authenticates."
+        },
+        {
+          "surface": "embedded non-CLI runtime text",
+          "classification": "provider-internal",
+          "reason": "The executables grow by about 30 MiB of embedded tool-runner text. The selected CLI option texts, stream-json help, markers, decision literals, init construction, and safe-mode isolation are unchanged, and no stream-json subtype is added."
+        }
+      ]
+    },
+    {
+      "hop": "2.1.315_to_2.1.316",
+      "selected_mapped_change": false,
+      "decision": "compatible-extension",
+      "applies_to": "claude-code.headless",
+      "release_note_review": [
+        {
+          "surface": "CLAUDE_CODE_DISABLE_ULTRATHINK",
+          "classification": "unmapped-opt-in",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "A new environment switch that turns the ultrathink keyword off. Swallowtail does not set it and keywords are prompt text, not a mapped stream field."
+        },
+        {
+          "surface": "Grep and Glob hang when the search process does not exit after its timeout",
+          "classification": "selected-tool-timeout-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "Grep and Glob are in the headless tool set. The note stops a hung search from never returning. It changes neither the tool result shape nor the stream-json fields; route cancellation stays process force_stop."
+        },
+        {
+          "surface": "shell commands left running when Claude Code exits by itself",
+          "classification": "provider-process-cleanup-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "Headless admits no shell tool and cancellation remains process force_stop. The provider now reaps its own shell children on self-exit; the adapter's cleanup contract is unchanged."
+        },
+        {
+          "surface": "PowerShell hooks not blocking on exit code 2, and other hook execution fixes",
+          "classification": "provider-hook-execution-fix",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "The measured PreToolUse deny, prompt-hook block, rewrite recheck, and Stop reentry decisions stay. A hook that previously failed to block now blocks, which applies the already-mapped rule rather than adding a new one."
+        },
+        {
+          "surface": "claude -p text output not naming why auto mode stopped a turn",
+          "classification": "unselected-auto-mode",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "Headless selects --permission-mode plan, not auto mode, and admits no background agent."
+        },
+        {
+          "surface": "CLAUDE_CODE_SUBAGENT_EFFORT and subagent model inheritance",
+          "classification": "unselected",
+          "source": "https://github.com/anthropics/claude-code/releases/tag/v2.1.316",
+          "reason": "No Agent tool is admitted and no subagent effort is selected."
+        },
+        {
+          "surface": "fast-mode deprecation, gateway budgets, cloud, Claude Tag, and VS Code notes",
+          "classification": "unselected",
+          "reason": "Those notes sit outside the local subscription stream-json command and the selected tool set."
+        }
+      ]
+    }
+  ]
+}

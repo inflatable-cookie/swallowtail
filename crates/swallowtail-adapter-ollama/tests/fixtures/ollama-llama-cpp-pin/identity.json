@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "task": "ollama.attached selected llama.cpp pin qualification",
- "research": 466,
+ "research": 468,
  "axis": "ollama.runtime",
  "package": "swallowtail-adapter-ollama",
  "observation_date": "2026-11-02",

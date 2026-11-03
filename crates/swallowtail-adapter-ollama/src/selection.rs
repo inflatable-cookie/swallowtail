@@ -15,7 +15,7 @@ pub const OLLAMA_BASELINE_VERSION: &str = "0.14.0";
 /// `0.40.0..=0.40.11` uses `ollama.native-text-v1.manifest-list-runner`.
 /// Unpublished `0.34.5` and `0.35.2` through `0.39.x` stay interior gaps.
 /// Official stable `0.40.12` is the visible `UnverifiedNewer` point; its
-/// selected dependency and renderer adaptation is Research 466.
+/// selected dependency and renderer adaptation is Research 468.
 pub const OLLAMA_LATEST_QUALIFIED_VERSION: &str = "0.40.11";
 pub(crate) const OLLAMA_RUNTIME_AXIS: &str = "ollama.runtime";
 pub(crate) const OLLAMA_DRIVER_ID: &str = "swallowtail.ollama.native-attached";

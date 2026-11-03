@@ -126,7 +126,7 @@ through official stable `0.40.11`. From `0.40.3` the scheduler call that
 starts migration is commented out; the binding and fail-closed rules stay.
 Research 462 froze the official `0.40.11` to `0.40.12` source hop and stopped
 qualification on the selected GGUF runner dependency and renderer effects;
-Research 466 resolves the selected llama.cpp pins to immutable commits,
+Research 468 resolves the selected llama.cpp pins to immutable commits,
 classifies their delta along the selected text path, traces the rendered-chat
 changes, and closes those gates at source level. The maintained window stays
 `0.40.0..=0.40.11` until a separate reviewed claim task extends it under the

@@ -332,6 +332,19 @@ post-dispatch cancellation or deadline, or a malformed success response
 returns unconfirmed effect truth. Cleanup and notification disagreement remain
 separate diagnostics.
 
+From `0.165.0` the provider also refuses `thread/delete` before effect while
+any delete candidate — the target or one of its descendants — has an attached
+child, including one left by another client, an import, a restore, or an
+earlier interactive run. The guard belongs to the provider's local thread store
+— the default store, and the only one that can create attached children; the
+adapter starts one approved executable and sets no Codex configuration. The
+provider's ordinary `thread/list` hides attached children and the adapter never
+widens that listing, so a hidden child makes deletion refuse terminally through
+this route until another Codex client removes it. The refusal carries `swallowtail.codex.app_server.request_failed`
+and fails before effect: nothing is deleted, no notification is sent, and no
+deletion strength is confirmed. The successful path still deletes exactly the
+provider's computed strict descendant subtree. See Research 467.
+
 These methods clone the immutable plan and explicit request, construct the
 matching Codex low-level driver from the prepared environment reference, and
 delegate execution. They do not change preflight, host validation,
@@ -348,6 +361,16 @@ normal path.
 Persist an app-server `SessionResumeBinding` only through its opaque export
 under the same prepared plan. On ordinary attachment, `load_session` returns
 bounded ordered replay and `resume_session` returns no replay.
+
+`load_session` needs the provider's turns: a resumption that returns none
+fails as `swallowtail.codex.app_server.replay_malformed` instead of reporting
+an empty restoration. `resume_session` asks the provider to exclude turns and
+continues through the adapter's own history role. On a paginated stored thread
+the provider may reuse a model context it already read, but only while the
+rollout revision is unchanged — rechecked after config loading and again under
+writer ownership — and it reloads otherwise. The adapter sends no history,
+path, or page fields, so a resumed thread restores the same model context it
+would have read fresh. See Research 467.
 
 For UI scroll-back without treating browse as load readiness, prepare
 `CodexSessionHistoryInput` from the exact binding and page bounds, then call

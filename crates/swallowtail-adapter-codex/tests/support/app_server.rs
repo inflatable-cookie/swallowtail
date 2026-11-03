@@ -28,6 +28,7 @@ pub enum AppServerMode {
     DisconnectTurn,
     MismatchedTurnSession,
     SubstituteResume,
+    LoadWithoutTurns,
     LifecycleSuccess,
     LifecycleReject,
     LifecycleDisconnect,
@@ -35,12 +36,14 @@ pub enum AppServerMode {
     LifecycleMalformed,
     LifecycleCleanupFailure,
     LifecycleWrongNotification,
+    AttachedChildDeleteRefusal,
     ThreadCatalogue(ThreadCatalogueMode),
 }
 
 #[derive(Clone, Copy)]
 pub enum ThreadCatalogueMode {
     Available,
+    AttachedChildHidden,
     EmptyHistory,
     WrongResource,
     Missing,

@@ -150,6 +150,7 @@ fn preparation_admits_each_qualified_release_and_rejects_unverified_newer() {
         ("fixture.prepared.qualified.1_54_0", "1.54.0"),
         ("fixture.prepared.qualified.1_55_0", "1.55.0"),
         ("fixture.prepared.qualified.1_56_0", "1.56.0"),
+        ("fixture.prepared.qualified.1_57_0", "1.57.0"),
     ] {
         let host_id = ExecutionHostId::new(host_name).expect("host");
         let discovery = DiscoveryHost::new(version);
@@ -171,7 +172,7 @@ fn preparation_admits_each_qualified_release_and_rejects_unverified_newer() {
     }
 
     let host_id = ExecutionHostId::new("fixture.prepared.unverified-newer").expect("host");
-    let discovery = DiscoveryHost::new("1.56.1");
+    let discovery = DiscoveryHost::new("1.57.1");
     let error = block_on(prepare_goose_acp(
         preparation_input(host_id.clone()),
         probe(),

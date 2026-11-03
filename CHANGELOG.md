@@ -6,6 +6,30 @@ annotated Git tags from the canonical repository.
 ## [Unreleased]
 
 ### Compatibility
+- qualify `goose.acp` through official GitHub stable `1.57.0` as a compatible
+  extension (Research 474). The claim preserves baseline `1.50.1`, claim id
+  `goose.acp.release-window-1`, behavior revision
+  `goose.acp.stdio-v2.auth-required`, and `AllowUnverified`, and now maintains
+  eight exact published points `1.50.1` through `1.57.0`; the unpublished
+  interstitial points through `1.56.1` stay incompatible and synthetic
+  `1.57.1` stays `UnverifiedNewer`. Identity freezes the single
+  `1.56.0` → `1.57.0` hop with exact Darwin ARM64 asset identity and complete
+  recursive tag trees whose four earlier manifests reproduce Research 456 byte
+  for byte. Typed `auth_required` failures keep their code and message and
+  gain only an error `data` payload the ACP decoder drops; prompt error
+  detection moves post-stream; the reverse-direction client fs/terminal tool
+  bridge is removed; and ACP-aware tool-update suppression reverts to the
+  1.55.0 field shape. Generic provider errors and system-prompt render
+  failures now fail the `session/prompt` RPC through the post-stream mapping
+  instead of ending with streamed error content or the fallback prompt, and
+  compaction failures emit error-kind messages the same mapping surfaces;
+  the adapter reports all of them through its existing bounded failure
+  classes. The selected closure adds `crates/goose/src/model_config.rs`
+  because `session/new` provider and model resolution moved there with the
+  same host-config default path, plus five prompt-lifecycle files on the
+  reply pipeline classified per hop back through 1.53.0. Prerelease
+  `v2` tags exist on the provider repository without a `v2` stable release and
+  stay outside the stable channel. See Research 474.
 - qualify `claude-code.headless` and, separately,
   `claude-code.response-only` through official stable `2.1.317` on their
   existing revisions (Research 473). Headless extends maintained

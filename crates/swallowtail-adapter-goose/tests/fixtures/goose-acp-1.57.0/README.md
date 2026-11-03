@@ -15,7 +15,11 @@ path sets for every published hop after `1.53.0`, including the single
 boundary, every changed selected-source file classification, and exact
 residual file categories. The selected closure adds
 `crates/goose/src/model_config.rs` because the session/new provider and model
-resolution moved into that file. The route test recomputes the complete hop
+resolution moved into that file, and five prompt-lifecycle files on the
+session/prompt reply pipeline (prompt_manager, reply_parts,
+state_machine/inference_preparation, state_machine/ops_compaction, and
+state_machine/ops_exit_on_error), each classified on every hop that touched
+it back through 1.53.0. The route test recomputes the complete hop
 sets and manifest digests and rejects added, missing, or reclassified paths.
 
 The v1.53.0 through v1.56.0 Darwin ARM64 digests and byte counts reproduce the

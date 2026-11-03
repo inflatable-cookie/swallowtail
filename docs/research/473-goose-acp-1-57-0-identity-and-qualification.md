@@ -57,9 +57,15 @@ The `protocol.json` ledger names the selected-source closure and classifies
 every changed path inside it for each hop. The closure adds
 `crates/goose/src/model_config.rs` this hop because the `session/new`
 provider and model resolution moved into that file; it is identical through
-`1.56.0`, so the earlier hop classifications carry over unchanged. Changelogs
-served as discovery only; exact tag trees and selected source changes bound
-the claim.
+`1.56.0`, so the earlier hop classifications carry over unchanged. The
+closure also adds five prompt-lifecycle files on the session/prompt reply
+pipeline — `agents/prompt_manager.rs`, `agents/reply_parts.rs`,
+`state_machine/inference_preparation.rs`, `state_machine/ops_compaction.rs`,
+and `state_machine/ops_exit_on_error.rs` — each classified on every hop that
+touched it back through `1.53.0`, so the prompt lifecycle inside the
+provider-owned reply pipeline is recorded rather than lumped into a residual
+category. Changelogs served as discovery only; exact tag trees and selected
+source changes bound the claim.
 
 ## Selected-surface classification
 
@@ -87,10 +93,20 @@ the claim.
   code and message and now attaches `data {"reason": "turn_failed"}`;
   Swallowtail's `RpcError` decoder carries only code and message and drops
   `data`, and the adapter still matches the `auth_required` message string.
-  A new catch-all maps other `MessageContent::Error` content to internal
-  error `-32603` with the same `data`, and detection moves from mid-stream to
-  after the stream via `last_message_was_error` plus a persisted-session
-  `turn_failure` lookup. Mapped initialize, `session/new`, message chunks,
+- **Two prompt-path failure outcomes change.** First, generic provider
+  errors: a new catch-all maps other `MessageContent::Error` content to
+  internal error `-32603` with the same `data`, and detection moves from
+  mid-stream to after the stream via `last_message_was_error` plus a
+  persisted-session `turn_failure` lookup, so a turn ending in a generic
+  error now fails the `session/prompt` RPC instead of ending with error
+  content in the message stream; the adapter reports such failures through
+  its existing rejected-request class. Second, system-prompt render
+  failures: the prompt builder returns a `Result` and the silent
+  general-purpose fallback prompt is removed, so a render failure propagates
+  into the turn and surfaces through that same post-stream mapping instead
+  of proceeding on the fallback. A compaction failure now emits an
+  error-kind (or `CreditsExhausted`) message that the same lookup can
+  surface. Mapped initialize, `session/new`, message chunks,
   `session/cancel`, and cleanup contracts are unchanged.
 - **Byte-identical selected files.** `crates/goose/src/acp/mod.rs`, byte
   identical from `1.53.0` through `1.56.0`, changes this hop only to remove
@@ -116,7 +132,9 @@ adapter operation was added, and no existing route capability was narrowed.
   auth detection contract — message match on `session/new` and
   `session/prompt` responses — is unchanged, and mapped methods, Auto
   default, `session/cancel` stop reason `Cancelled`, and joined cleanup are
-  unchanged.
+  unchanged. The generic-error and render-failure outcome changes alter when
+  the route reports a failed request and through which bounded failure code,
+  not the mapped method set, wire shape, or auth contract.
 - Keep unpublished interstitial versions `1.50.2`, `1.51.1`, `1.52.1`,
   `1.53.1`, `1.54.1`, `1.55.1`, and `1.56.1` outside all segments. The first
   later stable, `1.57.1`, may be classified `UnverifiedNewer`; it is not

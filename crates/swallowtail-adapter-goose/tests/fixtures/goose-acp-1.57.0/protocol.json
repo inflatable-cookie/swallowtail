@@ -66,8 +66,13 @@
     "crates/goose/src/agents/extension_manager/stdio.rs",
     "crates/goose/src/agents/extension_manager/streamable_http.rs",
     "crates/goose/src/agents/platform_extensions/mod.rs",
+    "crates/goose/src/agents/prompt_manager.rs",
+    "crates/goose/src/agents/reply_parts.rs",
     "crates/goose/src/agents/state_machine/effects.rs",
+    "crates/goose/src/agents/state_machine/inference_preparation.rs",
     "crates/goose/src/agents/state_machine/mod.rs",
+    "crates/goose/src/agents/state_machine/ops_compaction.rs",
+    "crates/goose/src/agents/state_machine/ops_exit_on_error.rs",
     "crates/goose/src/agents/state_machine/ops_tool_approval.rs",
     "crates/goose/src/agents/state_machine/ops_toolcalling.rs",
     "crates/goose/src/agents/state_machine/session.rs",
@@ -188,6 +193,26 @@
           "inventory_change": "changed",
           "classification": "extension_config_internal",
           "evidence": "Extension configuration bookkeeping changed. This route does not pass --with-builtin and does not select extension management methods."
+        },
+        "crates/goose/src/agents/prompt_manager.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_prompt_composition",
+          "evidence": "Platform-extension instructions are collected per session asynchronously into the system prompt. Prompt composition is provider-internal; mapped ACP methods, message chunks, and the auth mapping are unchanged."
+        },
+        "crates/goose/src/agents/reply_parts.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_inference_preparation",
+          "evidence": "prepare_tools_and_prompt now returns a session snapshot with an extension lease, pushes the final-output tool, and reads code-mode enablement from the lease. Inside the provider-owned reply pipeline; selected ACP wire fields are unchanged."
+        },
+        "crates/goose/src/agents/state_machine/inference_preparation.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_inference_preparation",
+          "evidence": "prepare_session captures the extension-lease snapshot for the inference and code-mode enablement reads the lease. Provider-internal preparation; selected ACP wire fields are unchanged."
+        },
+        "crates/goose/src/agents/state_machine/ops_compaction.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_compaction_scheduling",
+          "evidence": "awaits_tool_responses relocates to state_machine::mod and the final-output helper renames. Compaction scheduling is provider-internal; mapped ACP methods are unchanged."
         }
       },
       "residual_changes": {
@@ -232,10 +257,6 @@
           "crates/goose/src/agents/platform_extensions/summon.rs",
           "crates/goose/src/agents/platform_extensions/todo.rs",
           "crates/goose/src/agents/platform_extensions/tom.rs",
-          "crates/goose/src/agents/prompt_manager.rs",
-          "crates/goose/src/agents/reply_parts.rs",
-          "crates/goose/src/agents/state_machine/inference_preparation.rs",
-          "crates/goose/src/agents/state_machine/ops_compaction.rs",
           "crates/goose/src/agents/state_machine/ops_foreground_subagent.rs",
           "crates/goose/src/agents/state_machine/ops_recipe.rs",
           "crates/goose/src/agents/state_machine/ops_skills.rs",
@@ -470,6 +491,26 @@
           "inventory_change": "changed",
           "classification": "agent_session_internal",
           "evidence": "The change is inside the provider-owned agent, extension lease, tool loop, or session store. Selected argv, ACP method set, auth_required mapping, and session/cancel stop reason are unchanged. Usage stays unprojected."
+        },
+        "crates/goose/src/agents/prompt_manager.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_prompt_composition",
+          "evidence": "System-prompt override and extras move from manager state onto a with_session builder and the subdirectory-hint tracker is removed. Prompt composition is provider-internal; mapped ACP wire fields are unchanged."
+        },
+        "crates/goose/src/agents/reply_parts.rs": {
+          "inventory_change": "changed",
+          "classification": "reply_pipeline_relocation",
+          "evidence": "The reply pipeline consolidation moves prepare_tools_and_prompt, categorize_tool_requests, and update_session_metrics into this file alongside the state-machine reply replacement recorded on agent.rs. Mapped ACP methods, message chunks, and cancellation are unchanged."
+        },
+        "crates/goose/src/agents/state_machine/ops_compaction.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_compaction_scheduling",
+          "evidence": "Slash-command operations go synchronous, auto-compact gating narrows to an assistant tail, and the threshold notice switches from percent to k-tokens. Provider-internal; mapped ACP methods are unchanged."
+        },
+        "crates/goose/src/agents/state_machine/inference_preparation.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_inference_preparation",
+          "evidence": "The inference reads goose_mode and the prompt builder from session state instead of shared mutexes and the lease capture drops the awaits_tool_responses gate, matching the session-bound prompt-builder refactor recorded on prompt_manager.rs. Provider-internal preparation; selected ACP wire fields are unchanged."
         }
       },
       "residual_changes": {
@@ -550,14 +591,10 @@
           "crates/goose/src/agents/platform_extensions/summarize.rs",
           "crates/goose/src/agents/platform_extensions/summon.rs",
           "crates/goose/src/agents/platform_extensions/todo.rs",
-          "crates/goose/src/agents/prompt_manager.rs",
           "crates/goose/src/agents/provider_manager.rs",
-          "crates/goose/src/agents/reply_parts.rs",
           "crates/goose/src/agents/retry.rs",
           "crates/goose/src/agents/snapshots/goose__agents__prompt_manager__tests__all_platform_extensions.snap",
-          "crates/goose/src/agents/state_machine/inference_preparation.rs",
           "crates/goose/src/agents/state_machine/ops_bang_shell.rs",
-          "crates/goose/src/agents/state_machine/ops_compaction.rs",
           "crates/goose/src/agents/state_machine/ops_doctor.rs",
           "crates/goose/src/agents/state_machine/ops_empty_response.rs",
           "crates/goose/src/agents/state_machine/ops_entry_hook.rs",
@@ -922,6 +959,21 @@
           "inventory_change": "changed",
           "classification": "agent_session_internal",
           "evidence": "The change is inside the provider-owned agent, extension lease, tool loop, or session store. Selected argv, ACP method set, auth_required mapping, and session/cancel stop reason are unchanged. Usage stays unprojected."
+        },
+        "crates/goose/src/agents/prompt_manager.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_prompt_composition",
+          "evidence": "The enable-subagents builder flag and its field are removed. Prompt composition is provider-internal; mapped ACP wire fields are unchanged."
+        },
+        "crates/goose/src/agents/reply_parts.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_inference_tool_list",
+          "evidence": "The code-mode tool disclosure styles collapse to one retain of first-class and resource tools for the inference tool list. Inside the unselected tool loop; selected ACP wire fields are unchanged."
+        },
+        "crates/goose/src/agents/state_machine/ops_compaction.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_prompt_composition",
+          "evidence": "The compaction-preview prompt part and moim_parts are removed. Provider-internal prompt composition; mapped ACP methods are unchanged."
         }
       },
       "residual_changes": {
@@ -955,14 +1007,11 @@
           "crates/goose/src/agents/platform_extensions/code_execution.rs",
           "crates/goose/src/agents/platform_extensions/javascript.rs",
           "crates/goose/src/agents/platform_extensions/summon.rs",
-          "crates/goose/src/agents/prompt_manager.rs",
-          "crates/goose/src/agents/reply_parts.rs",
           "crates/goose/src/agents/snapshots/goose__agents__prompt_manager__tests__all_platform_extensions.snap",
           "crates/goose/src/agents/snapshots/goose__agents__prompt_manager__tests__basic.snap",
           "crates/goose/src/agents/snapshots/goose__agents__prompt_manager__tests__one_extension.snap",
           "crates/goose/src/agents/snapshots/goose__agents__prompt_manager__tests__typical_setup.snap",
           "crates/goose/src/agents/state_machine/ops_auto_effort.rs",
-          "crates/goose/src/agents/state_machine/ops_compaction.rs",
           "crates/goose/src/agents/state_machine/ops_recipe.rs",
           "crates/goose/src/agents/state_machine/ops_subagent.rs",
           "crates/goose/src/agents/state_machine/tests/agent_reply.rs",
@@ -1181,6 +1230,31 @@
           "inventory_change": "changed",
           "classification": "caller_session_id_added",
           "evidence": "create_session_with_id, SessionCreationError::AlreadyExists, and caller-supplied ID validation are added for desktop session id propagation. The default create_session binds None and keeps generated IDs; session/new on this route sends no session id meta, and GooseMode default resolution is untouched."
+        },
+        "crates/goose/src/agents/prompt_manager.rs": {
+          "inventory_change": "changed",
+          "classification": "render_failure_now_fails_the_turn",
+          "evidence": "System-prompt builder build() returns anyhow::Result instead of String and the silent general-purpose fallback prompt is replaced by a Could not render system prompt error, which inference_preparation propagates into the turn. On session/prompt this surfaces through the new post-stream failure mapping instead of a fallback-prompt turn; no mapped ACP field moves."
+        },
+        "crates/goose/src/agents/reply_parts.rs": {
+          "inventory_change": "changed",
+          "classification": "internal_inference_tool_list",
+          "evidence": "prepare_inference_tools also keeps an ownerless final-output tool in the inference tool list. Inside the unselected tool loop; selected ACP wire fields are unchanged."
+        },
+        "crates/goose/src/agents/state_machine/inference_preparation.rs": {
+          "inventory_change": "changed",
+          "classification": "render_failure_now_fails_the_turn",
+          "evidence": "build_system_prompt now propagates its error with a question mark, so a system-prompt render failure fails the turn through the new post-stream failure mapping instead of the 1.56.0 fallback prompt."
+        },
+        "crates/goose/src/agents/state_machine/ops_compaction.rs": {
+          "inventory_change": "changed",
+          "classification": "compaction_failure_becomes_error_message",
+          "evidence": "A compaction failure now emits an error-kind message, or a CreditsExhausted provider-error message that keeps the top-up URL, instead of plain assistant text. With the new post-stream turn-failure mapping such a tail can fail session/prompt with internal_error -32603 or the credits-exhausted prompt error."
+        },
+        "crates/goose/src/agents/state_machine/ops_exit_on_error.rs": {
+          "inventory_change": "changed",
+          "classification": "turn_failure_helper_relocated",
+          "evidence": "The trailing_error helper renames to turn_failure, moves here, and is re-exported for the server post-stream failure check on the selected prompt path."
         }
       },
       "residual_changes": {
@@ -1227,11 +1301,6 @@
           "crates/goose/src/agents/platform_extensions/developer/mod.rs",
           "crates/goose/src/agents/platform_extensions/developer/shell.rs",
           "crates/goose/src/agents/platform_extensions/developer/shell_process.rs",
-          "crates/goose/src/agents/prompt_manager.rs",
-          "crates/goose/src/agents/reply_parts.rs",
-          "crates/goose/src/agents/state_machine/inference_preparation.rs",
-          "crates/goose/src/agents/state_machine/ops_compaction.rs",
-          "crates/goose/src/agents/state_machine/ops_exit_on_error.rs",
           "crates/goose/src/agents/state_machine/tests/compaction_lifecycle.rs",
           "crates/goose/src/agents/state_machine/tests/dummy_api.rs",
           "crates/goose/src/agents/state_machine/tests/pipeline.rs",

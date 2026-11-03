@@ -19,9 +19,15 @@ annotated Git tags from the canonical repository.
   gain only an error `data` payload the ACP decoder drops; prompt error
   detection moves post-stream; the reverse-direction client fs/terminal tool
   bridge is removed; and ACP-aware tool-update suppression reverts to the
-  1.55.0 field shape. The selected closure adds
-  `crates/goose/src/model_config.rs` because `session/new` provider and model
-  resolution moved there with the same host-config default path. Prerelease
+  1.55.0 field shape. Generic provider errors and system-prompt render
+  failures now fail the `session/prompt` RPC through the post-stream mapping
+  instead of ending with streamed error content or the fallback prompt, and
+  compaction failures emit error-kind messages the same mapping surfaces;
+  the adapter reports all of them through its existing bounded failure
+  classes. The selected closure adds `crates/goose/src/model_config.rs`
+  because `session/new` provider and model resolution moved there with the
+  same host-config default path, plus five prompt-lifecycle files on the
+  reply pipeline classified per hop back through 1.53.0. Prerelease
   `v2` tags exist on the provider repository without a `v2` stable release and
   stay outside the stable channel. See Research 474.
 - qualify `claude-code.headless` and, separately,

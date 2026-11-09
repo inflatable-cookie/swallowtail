@@ -4,12 +4,13 @@ use aws_sdk_bedrock::operation::list_foundation_models::{
     ListFoundationModelsInput, ListFoundationModelsOutput,
 };
 use aws_sdk_bedrock::types::{FoundationModelSummary, ModelModality};
+use aws_smithy_http_client::test_util::capture_request;
 use serde_json::{Value, json};
 use swallowtail_adapter_bedrock::{
     CATALOGUE_SDK_CRATE, CATALOGUE_SDK_VERSION, CATALOGUE_SERVICE_API,
 };
 
-const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.161.0/protocol.json");
+const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.166.0/protocol.json");
 const HISTORICAL_PROTOCOL: &str =
     include_str!("fixtures/bedrock-control-plane-1.148.0/protocol.json");
 
@@ -103,4 +104,51 @@ fn previous_exact_catalogue_sdk_fixture_remains_preserved() {
     assert_eq!(historical["sdk_crate"], CATALOGUE_SDK_CRATE);
     assert_eq!(historical["sdk_version"], "1.148.0");
     assert_eq!(historical["service_api"], CATALOGUE_SERVICE_API);
+}
+
+#[tokio::test]
+async fn frozen_list_foundation_models_request_is_serialized_by_the_qualified_sdk() {
+    let fixture: Value = serde_json::from_str(PROTOCOL).expect("protocol fixture is valid JSON");
+    let request_fixture = &fixture["request"];
+    let (capture_client, captured_request) = capture_request(None);
+    let config = aws_sdk_bedrock::Config::builder()
+        .behavior_version(aws_sdk_bedrock::config::BehaviorVersion::latest())
+        .region(Region::new("eu-west-2"))
+        .endpoint_url("https://bedrock.eu-west-2.amazonaws.com")
+        .credentials_provider(Credentials::new(
+            "test-access-key",
+            "test-secret-key",
+            None,
+            None,
+            "swallowtail-test",
+        ))
+        .retry_config(RetryConfig::standard().with_max_attempts(1))
+        .http_client(capture_client)
+        .build();
+    let client = aws_sdk_bedrock::Client::from_conf(config);
+
+    // Unfiltered selection: the adapter applies its own single-entry bound,
+    // so the generated request must carry no filters and no query members.
+    let _ = client.list_foundation_models().send().await;
+
+    let request = captured_request.expect_request();
+    assert_eq!(
+        request.method(),
+        request_fixture["method"]
+            .as_str()
+            .expect("fixture method is text")
+    );
+    let expected_path = request_fixture["path"]
+        .as_str()
+        .expect("fixture path is text");
+    assert!(
+        request.uri().ends_with(expected_path),
+        "captured URI did not end in the frozen path"
+    );
+    // The selected operation is an unfiltered GET: every generated filter
+    // member would serialize as a query parameter on this request.
+    assert!(
+        !request.uri().contains('?'),
+        "the selected unfiltered request must carry no query parameters"
+    );
 }

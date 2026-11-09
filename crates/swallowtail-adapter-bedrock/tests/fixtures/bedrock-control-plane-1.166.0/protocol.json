@@ -1,0 +1,236 @@
+{
+  "absent_optional_policy": "unknown",
+  "artifact_execution": false,
+  "authentication": {
+    "default_chain_allowed": false,
+    "mechanism": "cloud_provider_identity",
+    "secret_exposed_by_runtime_lease": false,
+    "source": "host_authorized_delegated_sdk_provider"
+  },
+  "authorization": {
+    "iam_action": "bedrock:ListFoundationModels",
+    "marketplace_side_effect_allowed": false,
+    "resource": "*",
+    "runtime_inference_implied": false
+  },
+  "catalogue_presence_implies": [],
+  "client_configuration": {
+    "automatic_retry": false,
+    "credentials": "explicit delegated provider",
+    "default_chain_loading": false,
+    "endpoint": "explicit host-approved control-plane endpoint",
+    "input_telemetry_capture": false,
+    "region": "explicit configured instance region",
+    "retry_max_attempts": 1
+  },
+  "crate_semver_is_not_service_model_date": true,
+  "credentials_used": false,
+  "endpoint_audience": "bedrock",
+  "endpoint_source": "host_approved_grant",
+  "excluded": [
+    "ambient_aws_environment",
+    "shared_aws_config_files",
+    "instance_or_container_metadata",
+    "bedrock_runtime_endpoint_grant",
+    "model_route_creation",
+    "runtime_capability_widening",
+    "model_invocation",
+    "marketplace_subscription",
+    "provider_onboarding",
+    "bedrock_mantle_models",
+    "automatic_retry",
+    "live_authentication_in_default_qa"
+  ],
+  "failure": {
+    "automatic_retry": false,
+    "provider_messages_retained": false,
+    "selected_sdk_errors": [
+      "AccessDeniedException",
+      "InternalServerException",
+      "ThrottlingException",
+      "ValidationException",
+      "Unhandled"
+    ]
+  },
+  "fixture_schema": 1,
+  "host_updated": false,
+  "observations": [
+    "model_id",
+    "model_name",
+    "provider_display_name",
+    "input_modalities",
+    "output_modalities",
+    "response_streaming_supported",
+    "inference_types",
+    "customization_types",
+    "model_lifecycle"
+  ],
+  "provider_calls": false,
+  "provider_resource_arn": "adapter_private",
+  "published_hop_review": [
+    {
+      "changed_selected_files": [
+        "src/protocol_serde.rs"
+      ],
+      "from": "1.161.0",
+      "reason": "Generated re-exports add the guardrail contextual-grounding tier shape; the selected ListFoundationModels operation, response parser, and output types are unchanged, and the adapter maps no guardrail type.",
+      "selected_behavior_unchanged": true,
+      "to": "1.162.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.162.0",
+      "reason": "Only package metadata changes; the selected operation and response source files are unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.163.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.163.0",
+      "reason": "Only package metadata changes; the selected operation and response source files are unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.164.0"
+    },
+    {
+      "changed_selected_files": [],
+      "from": "1.164.0",
+      "reason": "Only package metadata changes; the selected operation and response source files are unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.165.0"
+    },
+    {
+      "changed_selected_files": [
+        "src/config/endpoint.rs"
+      ],
+      "from": "1.165.0",
+      "reason": "Endpoint rule-set builders inside the crate's own #[cfg(test)] module switch to build_without_validators; the generated resolver rules, the adapter's explicit endpoint configuration, and the selected operation are unchanged.",
+      "selected_behavior_unchanged": true,
+      "to": "1.166.0"
+    }
+  ],
+  "region_source": "configured_instance_exact",
+  "request": {
+    "filters": [],
+    "maximum_entries": 1024,
+    "maximum_provider_requests": 1,
+    "maximum_sdk_attempts": 1,
+    "method": "GET",
+    "operation": "ListFoundationModels",
+    "pagination": "none",
+    "path": "/foundation-models",
+    "query_parameters": []
+  },
+  "sdk_crate": "aws-sdk-bedrock",
+  "sdk_version": "1.166.0",
+  "selected_file_hashes": "dist-inventory.json:selected_file_hashes_by_version",
+  "selected_source_files": [
+    "src/operation/list_foundation_models.rs",
+    "src/protocol_serde/shape_list_foundation_models.rs",
+    "src/protocol_serde/shape_foundation_model_summary_list.rs",
+    "src/protocol_serde/shape_foundation_model_summary.rs",
+    "src/protocol_serde/shape_foundation_model_lifecycle.rs",
+    "src/protocol_serde/shape_model_modality_list.rs",
+    "src/protocol_serde/shape_inference_type_list.rs",
+    "src/protocol_serde/shape_model_customization_list.rs",
+    "src/types/_foundation_model_summary.rs",
+    "src/types/_foundation_model_lifecycle.rs",
+    "src/types/_model_modality.rs",
+    "src/types/_inference_type.rs",
+    "src/types/_model_customization.rs",
+    "src/types/error.rs",
+    "src/types/error/_access_denied_exception.rs",
+    "src/types/error/_internal_server_exception.rs",
+    "src/types/error/_throttling_exception.rs",
+    "src/types/error/_validation_exception.rs",
+    "src/types/error/builders.rs",
+    "src/client.rs",
+    "src/config.rs",
+    "src/config/endpoint.rs",
+    "src/config/retry.rs",
+    "src/operation.rs",
+    "src/protocol_serde.rs"
+  ],
+  "service_api": "Amazon Bedrock ListFoundationModels",
+  "service_api_revision": "bedrock-list-foundation-models",
+  "source": {
+    "commit": "44d6380d22c14bd5c89c59ceafcda7bc4da5b6f7",
+    "path": "sdk/bedrock",
+    "repository": "https://github.com/awslabs/aws-sdk-rust",
+    "crate_sha256": "6a2046512ecd16913d858634bfa07fe2769b794f852989940f2d5fcab7877968",
+    "runtime_dependency_requirements": {
+      "arc-swap": "1",
+      "aws-credential-types": "1.3.1",
+      "aws-runtime": "1.10.2",
+      "aws-smithy-async": "1.3.1",
+      "aws-smithy-http": "0.64.3",
+      "aws-smithy-json": "0.65.1",
+      "aws-smithy-observability": "0.3.0",
+      "aws-smithy-runtime": "1.16.2",
+      "aws-smithy-runtime-api": "1.19.2",
+      "aws-smithy-schema": "1.1.2",
+      "aws-smithy-types": "1.9.1",
+      "aws-types": "1.7.0",
+      "bytes": "1.4.0",
+      "fastrand": "2.0.0",
+      "http-1x": "1",
+      "regex-lite": "0.1.5",
+      "tracing": "0.1"
+    },
+    "smithy_codegen_version": "e181b22c1588cb6abd3c5840b3236dacaabb1d38"
+  },
+  "transport": "in_process_rust_sdk_control_plane_rest_json",
+  "unknown_enum_policy": "bounded_namespaced_observation",
+  "unmapped_sdk_export_hops": [
+    {
+      "from": "1.161.0",
+      "path": "src/lib.rs",
+      "reason": "Version documentation and generated module exports; no operation the adapter calls is added.",
+      "to": "1.162.0"
+    },
+    {
+      "from": "1.162.0",
+      "path": "src/lib.rs",
+      "reason": "Version documentation and generated module exports; no operation the adapter calls is added.",
+      "to": "1.163.0"
+    },
+    {
+      "from": "1.163.0",
+      "path": "src/lib.rs",
+      "reason": "Version documentation and generated module exports; no operation the adapter calls is added.",
+      "to": "1.164.0"
+    },
+    {
+      "from": "1.164.0",
+      "path": "src/lib.rs",
+      "reason": "Version documentation and generated module exports; no operation the adapter calls is added.",
+      "to": "1.165.0"
+    },
+    {
+      "from": "1.165.0",
+      "path": "src/lib.rs",
+      "reason": "Version documentation and generated module exports; no operation the adapter calls is added.",
+      "to": "1.166.0"
+    }
+  ],
+  "unmapped_surface_boundary": "Other generated operations, types, and their serializers remain vendor SDK surfaces outside the one unfiltered ListFoundationModels call; this adapter does not expose them.",
+  "version_boundaries": {
+    "qualified_semantic_segments": [
+      [
+        "1.150.0",
+        "1.155.0"
+      ],
+      [
+        "1.157.0",
+        "1.161.0"
+      ]
+    ],
+    "retained_exact_point": "1.148.0",
+    "synthetic_unpublished_later_stable": "1.162.0",
+    "unqualified_published_gaps": [
+      "1.149.0"
+    ],
+    "yanked_exclusions": [
+      "1.156.0"
+    ]
+  }
+}

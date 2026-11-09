@@ -260,8 +260,8 @@ compatibility with the solution transport beside them.
 
 | Route | Crate and driver | Role and transport | Explicit target and access | Version axis | Prepared path | Low-level escape hatch |
 | --- | --- | --- | --- | --- | --- | --- |
-| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | semantic SDK points `1.136.0` and `1.139.0..=1.148.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
-| `bedrock.catalogue` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.catalogue` | model catalogue; Rust SDK control plane | approved regional control-plane target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | semantic SDK points `1.148.0`, `1.150.0..=1.155.0`, and `1.157.0..=1.161.0` under `AllowUnverified`, excluding unqualified `1.149.0` and yanked `1.156.0`; exact control-plane service revision | `prepare_bedrock` → `catalogue` → `prepare_catalogue` → `list_models` | `BedrockCatalogueDriver`; `ModelCatalogDriver` |
+| `bedrock.runtime` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.direct` | structured run; Rust SDK EventStream | approved regional Runtime target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | semantic SDK points `1.136.0` and `1.139.0..=1.153.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision | `prepare_bedrock` → `runtime` → `prepare_inference_attempt` → `start_run` | `BedrockDirectDriver`; `StructuredRunDriver` |
+| `bedrock.catalogue` | `swallowtail-adapter-bedrock`; `swallowtail.amazon-bedrock.catalogue` | model catalogue; Rust SDK control plane | approved regional control-plane target and explicit `BedrockCloudClientConfig`; delegated cloud-provider identity | semantic SDK points `1.148.0`, `1.150.0..=1.155.0`, and `1.157.0..=1.166.0` under `AllowUnverified`, excluding unqualified `1.149.0` and yanked `1.156.0`; exact control-plane service revision | `prepare_bedrock` → `catalogue` → `prepare_catalogue` → `list_models` | `BedrockCatalogueDriver`; `ModelCatalogDriver` |
 
 `prepare_bedrock` binds only the shared execution host, region, and explicit
 credential provider. Its typed `runtime` and `catalogue` branches still require
@@ -339,8 +339,8 @@ delete.
 | `xai.responses-websocket` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `xai.responses-websocket-facade` revision; continuation is connection-local | connection and response cleanup only |
 | `openai.realtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `openai.realtime-facade` revision; media session is connection-scoped | response and connection cleanup only |
 | `gemini.live` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `gemini.live-facade` revision; media session is connection-scoped | provider rollover and connection cleanup only |
-| `bedrock.runtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | semantic SDK points `1.136.0` and `1.139.0..=1.148.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision; inference attempt has no provider session | request and EventStream cleanup only |
-| `bedrock.catalogue` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | semantic SDK points `1.148.0`, `1.150.0..=1.155.0`, and `1.157.0..=1.161.0` under `AllowUnverified`, excluding unqualified `1.149.0` and yanked `1.156.0`; exact control-plane service revision; catalogue has no provider session | request cleanup only |
+| `bedrock.runtime` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | semantic SDK points `1.136.0` and `1.139.0..=1.153.0` under `AllowUnverified`, excluding `1.137.0`, `1.138.0`, and yanked `1.144.0`; exact Runtime service revision; inference attempt has no provider session | request and EventStream cleanup only |
+| `bedrock.catalogue` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | semantic SDK points `1.148.0`, `1.150.0..=1.155.0`, and `1.157.0..=1.166.0` under `AllowUnverified`, excluding unqualified `1.149.0` and yanked `1.156.0`; exact control-plane service revision; catalogue has no provider session | request cleanup only |
 | `ollama.attached` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | accepted `ollama.runtime` segments; attached inference has no provider session; `0.40.0` through `0.40.2` chat may disclose provider-owned local compatibility migration without changing selected tag/digest identity; `0.40.3` through `0.40.11` leave that call commented out | request cleanup only; for qualified points the external runtime is preserved; provider-owned migration is a disclosed inference side effect, not Swallowtail store ownership |
 | `llama-cpp.attached` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque `b9910-f5525f7e7` and `b11429-d81235049` members; published stable `v0.2.0` through `v0.5.0` remain unqualified gaps; attached inference has no provider session | request cleanup only; the external server is preserved |
 | `llama-cpp.owned` | `not-applicable` | `no` | `not-applicable` | `not-applicable` | `not-applicable` | `not-applicable` | exact opaque b10069/178a6c449 revision; serving lifecycle is not session management | stops and joins the owned server; model and provider state are not managed |
@@ -413,15 +413,19 @@ ranges or unverified-newer points, per Contract 029. The Bedrock catalogue
 SDK now has an evidence-backed semantic claim after its approved reopening in
 [Research 386](../research/386-bedrock-catalogue-sdk-1-161-0-identity.md).
 The Bedrock Runtime SDK axis has a separate semantic claim backed by
-[Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md); it
-preserves `1.136.0`, adds `1.139.0..=1.148.0`, and permits later stable points
+[Research 381](../research/381-bedrock-runtime-sdk-1-148-0-identity.md) and
+[Research 476](../research/476-bedrock-runtime-sdk-1-153-0-and-catalogue-1-166-0-identity.md); it
+preserves `1.136.0`, adds `1.139.0..=1.153.0`, and permits later stable points
 as unverified.
 
 - bedrock Runtime service, catalogue service, and llama-cpp attached/owned
   prepare and classify against their exact opaque revisions
 - the catalogue SDK preserves exact `1.148.0`, qualifies
-  `1.150.0..=1.155.0` and `1.157.0..=1.161.0`, and keeps `1.149.0` and
+  `1.150.0..=1.155.0` and `1.157.0..=1.166.0`, and keeps `1.149.0` and
   yanked `1.156.0` incompatible
+- both Bedrock SDK axes resolve the corrected Smithy graph that drops
+  `pin-utils` from the workspace lock; the resolved closure and removal
+  proof are frozen in Research 476
 - the route and feature matrices keep the catalogue SDK, catalogue service,
   Runtime SDK, and Runtime service axes distinct
 - ordered compatibility for another exact-only axis still requires a

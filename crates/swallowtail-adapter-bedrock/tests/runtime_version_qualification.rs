@@ -27,14 +27,14 @@ fn runtime_sdk_claim_preserves_the_old_point_gaps_and_yanked_hole() {
     );
     assert_eq!(sdk.baseline().as_str(), "1.136.0");
     assert_eq!(sdk.latest_qualified().as_str(), SDK_VERSION);
-    assert_eq!(sdk.latest_qualified().as_str(), "1.148.0");
+    assert_eq!(sdk.latest_qualified().as_str(), "1.153.0");
 
     let segments = sdk.milestones().collect::<Vec<_>>();
     assert_eq!(segments.len(), 2);
     assert_eq!(segments[0].minimum().as_str(), "1.136.0");
     assert_eq!(segments[0].maximum().as_str(), "1.136.0");
     assert_eq!(segments[1].minimum().as_str(), "1.139.0");
-    assert_eq!(segments[1].maximum().as_str(), "1.148.0");
+    assert_eq!(segments[1].maximum().as_str(), "1.153.0");
     assert!(segments.iter().all(|segment| {
         segment.behavior_revision().as_str() == "amazon-bedrock.runtime-sdk-1"
             && segment.support_status() == InterfaceSupportStatus::Maintained
@@ -58,7 +58,7 @@ fn runtime_sdk_claim_preserves_the_old_point_gaps_and_yanked_hole() {
     }
     for stable in [
         "1.139.0", "1.140.0", "1.141.0", "1.142.0", "1.143.0", "1.145.0", "1.146.0", "1.147.0",
-        "1.148.0",
+        "1.148.0", "1.149.0", "1.150.0", "1.151.0", "1.152.0", "1.153.0",
     ] {
         assert!(matches!(
             sdk.assess(&version(stable)),
@@ -66,9 +66,9 @@ fn runtime_sdk_claim_preserves_the_old_point_gaps_and_yanked_hole() {
         ));
     }
     assert!(matches!(
-        sdk.assess(&version("1.149.0")),
+        sdk.assess(&version("1.154.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
-            if newer.latest_qualified().as_str() == "1.148.0"
+            if newer.latest_qualified().as_str() == "1.153.0"
     ));
 
     assert_eq!(
@@ -106,7 +106,7 @@ fn catalogue_claim_preserves_old_point_gaps_and_yanked_hole() {
         InterfaceNewerVersionPosture::AllowUnverified
     );
     assert_eq!(catalogue_sdk.baseline().as_str(), "1.148.0");
-    assert_eq!(catalogue_sdk.latest_qualified().as_str(), "1.161.0");
+    assert_eq!(catalogue_sdk.latest_qualified().as_str(), "1.166.0");
     assert_eq!(
         catalogue_sdk.latest_qualified().as_str(),
         CATALOGUE_SDK_VERSION
@@ -118,7 +118,7 @@ fn catalogue_claim_preserves_old_point_gaps_and_yanked_hole() {
     assert_eq!(segments[1].minimum().as_str(), "1.150.0");
     assert_eq!(segments[1].maximum().as_str(), "1.155.0");
     assert_eq!(segments[2].minimum().as_str(), "1.157.0");
-    assert_eq!(segments[2].maximum().as_str(), "1.161.0");
+    assert_eq!(segments[2].maximum().as_str(), "1.166.0");
     assert!(segments.iter().all(|segment| {
         segment.behavior_revision().as_str() == "amazon-bedrock.catalogue-sdk-1"
             && segment.support_status() == InterfaceSupportStatus::Maintained
@@ -132,7 +132,8 @@ fn catalogue_claim_preserves_old_point_gaps_and_yanked_hole() {
     );
     for stable in [
         "1.148.0", "1.150.0", "1.151.0", "1.152.0", "1.153.0", "1.154.0", "1.155.0", "1.157.0",
-        "1.158.0", "1.159.0", "1.160.0", "1.161.0",
+        "1.158.0", "1.159.0", "1.160.0", "1.161.0", "1.162.0", "1.163.0", "1.164.0", "1.165.0",
+        "1.166.0",
     ] {
         assert!(matches!(
             catalogue_sdk.assess(&version(stable)),
@@ -146,9 +147,9 @@ fn catalogue_claim_preserves_old_point_gaps_and_yanked_hole() {
         );
     }
     assert!(matches!(
-        catalogue_sdk.assess(&version("1.162.0")),
+        catalogue_sdk.assess(&version("1.167.0")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
-            if newer.latest_qualified().as_str() == "1.161.0"
+            if newer.latest_qualified().as_str() == "1.166.0"
     ));
 
     assert_eq!(

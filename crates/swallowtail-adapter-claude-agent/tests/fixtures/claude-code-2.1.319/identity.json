@@ -1,0 +1,40 @@
+{
+  "npm_package": "@anthropic-ai/claude-code",
+  "channel_at_observation": {
+    "stable": "2.1.311",
+    "latest": "2.1.319",
+    "next": "2.1.319"
+  },
+  "official_stable": "2.1.319",
+  "first_unpublished_after_latest": "2.1.320",
+  "checked_unpublished": {
+    "2.1.320": {
+      "npm_http_status": 404,
+      "github_tag_present": false
+    }
+  },
+  "versions": {
+    "2.1.317": {
+      "npm_published": "2026-11-02T23:57:53.069Z",
+      "npm_tarball_sha256": "bf8543506740f8ba36bbec24a5e02937dd8b514237fc951db69d9de394965c74",
+      "github_tag": "v2.1.317",
+      "github_release_published": "2026-11-03T01:25:46Z",
+      "github_commit": "964d69565952a176ac1975ed218362991db71433"
+    },
+    "2.1.318": {
+      "npm_published": "2026-11-03T21:55:17.247Z",
+      "npm_tarball_sha256": "d86c0189406af48b393f658ea1c0ba9a8fd10dc3c461e0ad50887b465a18b83c",
+      "github_tag": "v2.1.318",
+      "github_release_published": "2026-11-04T00:01:03Z",
+      "github_commit": "646b74189c735abbccf78ef5cb7ddd38a07a36eb"
+    },
+    "2.1.319": {
+      "npm_published": "2026-11-06T00:58:56.366Z",
+      "npm_tarball_sha256": "733a926c19df1c84f35a8e4285a637edce7bf2de13672cfe13a1397efd0bf823",
+      "github_tag": "v2.1.319",
+      "github_release_published": "2026-11-06T17:04:01Z",
+      "github_commit": "0ed94698aa0aeee471465fc9c867c2e8434c4d68"
+    }
+  },
+  "identity_method": "npm tarball SHA-256 and dist.integrity; GitHub official release tags and commit ids; no executable was run."
+}

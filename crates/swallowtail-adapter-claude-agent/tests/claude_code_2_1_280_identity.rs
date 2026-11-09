@@ -254,7 +254,7 @@ fn identity_stop_is_frozen_and_headless_qualifies_through_2_1_281() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.317"
+        "2.1.319"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,

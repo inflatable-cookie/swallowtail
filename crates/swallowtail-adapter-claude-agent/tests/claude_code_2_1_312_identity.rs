@@ -101,7 +101,7 @@ fn both_claims_qualify_2_1_311_and_2_1_312_on_the_existing_revisions() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.317"
+        "2.1.319"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -145,7 +145,7 @@ fn both_claims_qualify_2_1_311_and_2_1_312_on_the_existing_revisions() {
     ));
     assert!(matches!(
         response.assess(&version("2.1.318")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+        InterfaceCompatibilityAssessment::Qualified(newer)
             if newer.behavior_revision().as_str()
                 == "claude-code.response-only.stream-json.v3"
     ));

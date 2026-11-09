@@ -107,7 +107,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.317"
+        "2.1.319"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -119,7 +119,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
     assert_eq!(headless.latest_qualified().as_str(), "2.1.317");
-    assert_eq!(response.latest_qualified().as_str(), "2.1.317");
+    assert_eq!(response.latest_qualified().as_str(), "2.1.319");
     assert_ne!(headless.axis(), response.axis());
     for patch in 295..=310 {
         let version = InterfaceVersion::new(format!("2.1.{patch}")).expect("version");
@@ -156,6 +156,13 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
     ));
     assert!(matches!(
         response.assess(&newer),
+        InterfaceCompatibilityAssessment::Qualified(matched)
+            if matched.behavior_revision().as_str()
+                == "claude-code.response-only.stream-json.v3"
+                && matched.support_status() == InterfaceSupportStatus::Maintained
+    ));
+    assert!(matches!(
+        response.assess(&InterfaceVersion::new("2.1.320").expect("version")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(response.supports(&InterfaceVersion::new("2.1.294").expect("version")));

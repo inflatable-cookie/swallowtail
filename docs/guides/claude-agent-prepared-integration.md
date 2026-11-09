@@ -272,9 +272,11 @@ capabilities. It qualifies Claude Code `2.1.220..=2.1.286` on deprecated
 private milestone `claude-code.headless.stream-json.v2`.
 Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and
-`2.1.313`. Later stable versions remain visible `UnverifiedNewer`; the first
-unpublished point after the qualified ceiling is `2.1.318`. Headless does not
-pass `--safe-mode` and already admits ambient project instructions. The exact
+`2.1.313`. The published `2.1.318` and `2.1.319` points remain visible as
+`UnverifiedNewer`; Research 477 stops this claim at `2.1.317` because the new
+`permissions.denyInsteadOfPrompting` setting changes the selected permission
+flow. `2.1.320` is the first unpublished point after official stable. Headless
+does not pass `--safe-mode` and admits ambient project instructions. The exact
 2.1.294 npm wrapper, Darwin arm64, and Linux x64 trees and every published hop
 after `2.1.281` remain frozen in Research 422. Research 423 records
 exact-artifact hook-safety analysis and provider-free adapter fixtures for the
@@ -321,11 +323,12 @@ add a permission bypass. Research 423 records the static source review and
 synthetic fake-process coverage; the fixtures are adapter tests, not captured
 provider transcripts.
 
-At the Research 473 identity commit, npm `latest`, npm `next`, and GitHub
-latest stable all agree on `2.1.317`. npm `stable` is the delayed channel,
-now at `2.1.311`. `2.1.318` is the first unpublished point after the ceiling.
-SDK and ACP claims are unchanged. Response-only is a separate claim in the
-same record. The `2.1.317` release adds the `cc-plugin-privacy` builtin: it
+Research 477 records npm `latest`, npm `next`, and GitHub latest stable at
+`2.1.319`; npm `stable` remains the delayed channel at `2.1.311`. The headless
+claim stays at `2.1.317` pending a decision on the new permission setting.
+Response-only is a separate claim and extends through `2.1.319` on v3 because
+it selects no tools. SDK and ACP claims are unchanged. The `2.1.317` release
+adds the `cc-plugin-privacy` builtin: it
 attaches `tool.check` hooks to web and shell tools that this route's fixed
 `Read,Glob,Grep` set never selects, and contributes no MCP server.
 
@@ -431,14 +434,15 @@ claim id `claude-code.response-only.window-1`:
 - `2.1.280` through `2.1.281` use `claude-code.response-only.stream-json.v2`
   under the narrowed built-in-hook guarantee and remain supported as
   `Deprecated`.
-- `2.1.282` through `2.1.317` use `claude-code.response-only.stream-json.v3`
+- `2.1.282` through `2.1.319` use `claude-code.response-only.stream-json.v3`
   with the version-specific linked-instruction read limit; this is the
   maintained segment.
 
 Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and `2.1.313` are denied. Later
 stable releases run provisionally as `UnverifiedNewer` on the v3 behavior. The
-first unpublished point after the ceiling is `2.1.318`. The baseline, claim id,
+first unpublished point after the ceiling is `2.1.320`. Research 477 records
+that `2.1.318` and `2.1.319` keep the selected tool-free response surface. The baseline, claim id,
 denied points, and earlier supported segments stay in force. This is a distinct
 route. It does not weaken or replace `claude-code.headless`.
 
@@ -481,7 +485,7 @@ Preparation and run-start debug observations expose the exact executable
 version and its `Qualified` or `UnverifiedNewer` posture. Prepared evidence
 also remains version-bound. There is no patch range that silently confers
 qualification. The v1 segment ends at `2.1.278`, the v2 segment ends at
-`2.1.281`, and v3 currently ends at `2.1.317`. The static deny-list is
+`2.1.281`, and v3 currently ends at `2.1.319`. The static deny-list is
 unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and `2.1.313`.
 

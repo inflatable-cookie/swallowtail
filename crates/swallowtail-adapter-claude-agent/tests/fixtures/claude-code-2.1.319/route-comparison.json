@@ -1,0 +1,80 @@
+{
+  "headless": {
+    "axis": "claude-code.headless-stream-json",
+    "behavior_revision": "claude-code.headless.stream-json.v2",
+    "previous_ceiling": "2.1.317",
+    "hops": {
+      "2.1.318": "compatible-extension",
+      "2.1.319": "stop-selected-permission-flow"
+    },
+    "selected_command": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--permission-mode",
+      "plan",
+      "--tools",
+      "Read,Glob,Grep",
+      "--setting-sources",
+      "user,project,local",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ],
+    "mapped_stream_fields_unchanged": [
+      "init",
+      "assistant",
+      "content_block_delta",
+      "result",
+      "is_error",
+      "permissionDecision",
+      "parent_tool_use_id"
+    ],
+    "decision_needed": "Choose whether 2.1.319 should preserve its new ask-to-deny setting in headless, suppress or pin it to retain the current permission contract, or receive a distinct adapter behavior revision."
+  },
+  "response_only": {
+    "axis": "claude-code.response-only-stream-json",
+    "behavior_revision": "claude-code.response-only.stream-json.v3",
+    "previous_ceiling": "2.1.317",
+    "hops": {
+      "2.1.318": "compatible-extension",
+      "2.1.319": "compatible-extension"
+    },
+    "qualified_ceiling": "2.1.319",
+    "selected_command": [
+      "-p",
+      "--input-format",
+      "text",
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--no-session-persistence",
+      "--tools",
+      "",
+      "--safe-mode",
+      "--disable-slash-commands",
+      "--no-chrome",
+      "--prompt-suggestions",
+      "false",
+      "--mcp-config",
+      "{\"mcpServers\":{}}",
+      "--strict-mcp-config"
+    ],
+    "mapped_stream_fields_unchanged": [
+      "init",
+      "assistant",
+      "content_block_delta",
+      "result",
+      "is_error",
+      "permissionMode",
+      "tools",
+      "mcp_servers",
+      "num_turns"
+    ],
+    "decision": "The new ask-to-deny permission setting has no tool call to affect under empty tools and safe mode. The text-only response and init validation remain unchanged."
+  }
+}

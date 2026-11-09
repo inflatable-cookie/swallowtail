@@ -197,13 +197,12 @@ fn crates_io_freezes_every_published_catalogue_sdk_artifact_after_1_161_0() {
     assert!(pin_utils_note.contains("0.64.3"));
     assert!(pin_utils_note.contains("1.16.2"));
     assert!(pin_utils_note.contains("1.9.3"));
-    assert_eq!(
-        identity["identity_decision"]["smithy_dependency_transition"]
+    assert!(
+        !identity["identity_decision"]["smithy_dependency_transition"]
             ["dependency_maps_are_declared_minimums"]
             .as_str()
             .unwrap()
-            .is_empty(),
-        false
+            .is_empty()
     );
     assert_eq!(identity["evidence"]["artifact_execution"], false);
     assert_eq!(identity["evidence"]["provider_calls"], false);
@@ -355,11 +354,26 @@ fn workspace_lock_freezes_the_corrected_sdk_runtime_dependency_identity() {
         );
     }
     for name in [
-        "aws-smithy-schema",
-        "aws-smithy-json",
+        "aws-credential-types",
+        "aws-lc-rs",
+        "aws-lc-sys",
+        "aws-runtime",
+        "aws-sdk-bedrock",
+        "aws-sdk-bedrockruntime",
+        "aws-sigv4",
+        "aws-smithy-async",
+        "aws-smithy-eventstream",
         "aws-smithy-http",
+        "aws-smithy-http-client",
+        "aws-smithy-json",
+        "aws-smithy-observability",
+        "aws-smithy-protocol-test",
         "aws-smithy-runtime",
+        "aws-smithy-runtime-api",
+        "aws-smithy-runtime-api-macros",
+        "aws-smithy-schema",
         "aws-smithy-types",
+        "aws-types",
     ] {
         let blocks = WORKSPACE_LOCK
             .matches(&format!("name = \"{name}\""))
@@ -535,10 +549,6 @@ fn workspace_lock_freezes_the_corrected_sdk_runtime_dependency_identity() {
         );
         assert_eq!(lock_field(package, "checksum"), checksum);
     }
-    assert!(
-        lock_package("aws-smithy-schema", "1.2.0").contains("aws-smithy-schema"),
-        "the workspace resolves exactly one aws-smithy-schema package on the 1.x line"
-    );
 }
 
 #[test]

@@ -9,7 +9,7 @@ use swallowtail_adapter_bedrock::{
     CATALOGUE_SDK_CRATE, CATALOGUE_SDK_VERSION, CATALOGUE_SERVICE_API,
 };
 
-const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.161.0/protocol.json");
+const PROTOCOL: &str = include_str!("fixtures/bedrock-control-plane-1.166.0/protocol.json");
 const HISTORICAL_PROTOCOL: &str =
     include_str!("fixtures/bedrock-control-plane-1.148.0/protocol.json");
 

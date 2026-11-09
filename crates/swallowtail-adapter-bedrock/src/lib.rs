@@ -48,12 +48,12 @@ pub use stream::{
 /// AWS SDK crate used for Bedrock Runtime inference.
 pub const SDK_CRATE: &str = "aws-sdk-bedrockruntime";
 /// AWS SDK version bound to Bedrock Runtime requests.
-pub const SDK_VERSION: &str = "1.148.0";
+pub const SDK_VERSION: &str = "1.153.0";
 /// Bedrock Runtime service operation implemented by this adapter.
 pub const SERVICE_API: &str = "Amazon Bedrock Runtime ConverseStream";
 /// AWS SDK crate used for Bedrock control-plane catalogue discovery.
 pub const CATALOGUE_SDK_CRATE: &str = "aws-sdk-bedrock";
 /// AWS SDK version bound to Bedrock control-plane catalogue requests.
-pub const CATALOGUE_SDK_VERSION: &str = "1.161.0";
+pub const CATALOGUE_SDK_VERSION: &str = "1.166.0";
 /// Bedrock control-plane service operation implemented by this adapter.
 pub const CATALOGUE_SERVICE_API: &str = "Amazon Bedrock ListFoundationModels";

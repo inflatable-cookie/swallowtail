@@ -14,7 +14,7 @@ use swallowtail_adapter_bedrock::{
     StreamDecoder, StreamUpdate, TokenUsage, classify_converse_failure,
 };
 
-const PROTOCOL: &str = include_str!("fixtures/bedrock-runtime-1.148.0/protocol.json");
+const PROTOCOL: &str = include_str!("fixtures/bedrock-runtime-1.153.0/protocol.json");
 
 #[test]
 fn manifest_binds_sdk_access_attempt_and_exclusions() {

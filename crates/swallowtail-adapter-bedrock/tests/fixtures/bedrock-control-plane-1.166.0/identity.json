@@ -1,0 +1,286 @@
+{
+  "axis": "amazon-bedrock.control-plane-rust-sdk",
+  "channel": {
+    "observations": [
+      {
+        "crate_sha256": "6a2046512ecd16913d858634bfa07fe2769b794f852989940f2d5fcab7877968",
+        "observed_at": "2026-11-09T16:56:21Z",
+        "official_latest_stable": "1.166.0",
+        "yanked": false
+      }
+    ],
+    "official_channel": "crates.io stable releases, maximum non-yanked semver for aws-sdk-bedrock",
+    "other_absent_successors": [
+      "1.1661"
+    ],
+    "selection_rule": "Use the maximum stable non-yanked crate version; do not use service-model dates or a latest-only metadata label.",
+    "synthetic_unpublished_later_stable": "1.167.0",
+    "synthetic_unpublished_later_stable_absent": true
+  },
+  "claim_at_observation": {
+    "adapter_sdk_version_constant": "1.161.0",
+    "behavior_revision": "amazon-bedrock.catalogue-sdk-1",
+    "claim_id": "amazon-bedrock.catalogue-sdk-window-1",
+    "newer_version_posture": "AllowUnverified",
+    "qualified_points": [
+      "1.148.0",
+      "1.150.0..=1.155.0",
+      "1.157.0..=1.161.0"
+    ],
+    "scheme": "Semantic",
+    "workspace_cargo_pin": "1.161.0"
+  },
+  "evidence": {
+    "artifact_digests_match_crates_io_checksums": true,
+    "artifact_execution": false,
+    "changed_file_hop_classification_count": 39,
+    "complete_tree_inventory": "dist-inventory.json",
+    "credentials_or_host_changes": false,
+    "fixture_protocol": "protocol.json",
+    "provider_calls": false,
+    "selected_source_hashes": "dist-inventory.json:selected_file_hashes_by_version",
+    "tree_file_count_per_release": 1475,
+    "tree_hop_count": 5
+  },
+  "identity_decision": {
+    "extended_qualified_segment": {
+      "behavior_revision": "amazon-bedrock.catalogue-sdk-1",
+      "maximum": "1.166.0",
+      "minimum": "1.157.0",
+      "previously_qualified_through": "1.161.0"
+    },
+    "newer_stable_posture": "AllowUnverified",
+    "no_catalogue_filtering_pagination_or_model-invocation_authority_added": true,
+    "public_operation_or_driver_added": false,
+    "segment_shape": "compatible-extension",
+    "selected_behavior_changed": false,
+    "service_api_revision_unchanged": "bedrock-list-foundation-models",
+    "smithy_dependency_transition": {
+      "aws_smithy_schema_line": "0.2.x leaves the resolved workspace graph; the corrected SDK closure resolves aws-smithy-schema 1.1.2",
+      "pin_utils": "aws-smithy-http 0.64.3, aws-smithy-runtime 1.16.2, and aws-smithy-types 1.9.1 no longer depend on pin-utils; the workspace lock drops the package"
+    },
+    "unqualified_published_gaps": [
+      "1.149.0"
+    ],
+    "yanked_exclusions": [
+      "1.156.0"
+    ]
+  },
+  "fixture_schema": 1,
+  "package": "aws-sdk-bedrock",
+  "preserved_unqualified_published_points": [
+    {
+      "crate_sha256": "fa59af1ad47597402d3feb45b1ad99d4c93da3d2ed52ab349a3fa97972ce2a40",
+      "published_at": "2026-07-21T19:09:55.195929Z",
+      "reason": "The catalogue baseline exact point is 1.148.0 and Research 386 preserved this published hole; it remains independently unqualified.",
+      "version": "1.149.0",
+      "yanked": false
+    }
+  ],
+  "published_stables_from_current_workspace_pin_through_official_latest": [
+    {
+      "crate_sha256": "254169f7bd61c2189a0142067000ed89ab15a032b8b8cebf426fabeb425ad611",
+      "crate_size_bytes": 1241467,
+      "download_url": "https://crates.io/api/v1/crates/aws-sdk-bedrock/1.161.0/download",
+      "edition": "2021",
+      "published_at": "2026-10-01T19:13:56.717166Z",
+      "runtime_dependency_requirements": {
+        "arc-swap": "1",
+        "aws-credential-types": "1.3.0",
+        "aws-runtime": "1.10.0",
+        "aws-smithy-async": "1.3.0",
+        "aws-smithy-http": "0.64.1",
+        "aws-smithy-json": "0.63.1",
+        "aws-smithy-observability": "0.3.0",
+        "aws-smithy-runtime": "1.16.0",
+        "aws-smithy-runtime-api": "1.19.0",
+        "aws-smithy-schema": "0.2.1",
+        "aws-smithy-types": "1.8.1",
+        "aws-types": "1.6.0",
+        "bytes": "1.4.0",
+        "fastrand": "2.0.0",
+        "http-1x": "1",
+        "regex-lite": "0.1.5",
+        "tracing": "0.1"
+      },
+      "rust_version": "1.94.1",
+      "smithy_codegen_version": "45458fe16965b637108b2e6725ab74276429b1f0",
+      "smithy_protocol": "aws.protocols#restJson1",
+      "source_commit": "7101aefb7632e44cce586886a1df595151409b5f",
+      "source_path": "sdk/bedrock",
+      "source_repository": "https://github.com/awslabs/aws-sdk-rust",
+      "version": "1.161.0",
+      "yanked": false
+    },
+    {
+      "crate_sha256": "b0d44e3919d31d8d1b12798c304df84e93fa2490341e32e5fb1f33d58d5763d7",
+      "crate_size_bytes": 1242641,
+      "download_url": "https://crates.io/api/v1/crates/aws-sdk-bedrock/1.162.0/download",
+      "edition": "2021",
+      "published_at": "2026-10-20T19:13:58.483431Z",
+      "runtime_dependency_requirements": {
+        "arc-swap": "1",
+        "aws-credential-types": "1.3.1",
+        "aws-runtime": "1.10.2",
+        "aws-smithy-async": "1.3.1",
+        "aws-smithy-http": "0.64.2",
+        "aws-smithy-json": "0.65.0",
+        "aws-smithy-observability": "0.3.0",
+        "aws-smithy-runtime": "1.16.1",
+        "aws-smithy-runtime-api": "1.19.1",
+        "aws-smithy-schema": "1.0.0",
+        "aws-smithy-types": "1.9.0",
+        "aws-types": "1.7.0",
+        "bytes": "1.4.0",
+        "fastrand": "2.0.0",
+        "http-1x": "1",
+        "regex-lite": "0.1.5",
+        "tracing": "0.1"
+      },
+      "rust_version": "1.94.1",
+      "smithy_codegen_version": "9267f0e25399c7fbd45c86d61bcbd1f5a3e6d54a",
+      "smithy_protocol": "aws.protocols#restJson1",
+      "source_commit": "b964fc77de60b0a492ff788c40bb66524fd26a44",
+      "source_path": "sdk/bedrock",
+      "source_repository": "https://github.com/awslabs/aws-sdk-rust",
+      "version": "1.162.0",
+      "yanked": false
+    },
+    {
+      "crate_sha256": "ec6a0e49550d3bbcdcc51538a4e776a61f0cb1958dde09c7630cb396bfed7956",
+      "crate_size_bytes": 1242647,
+      "download_url": "https://crates.io/api/v1/crates/aws-sdk-bedrock/1.163.0/download",
+      "edition": "2021",
+      "published_at": "2026-10-21T19:00:49.063082Z",
+      "runtime_dependency_requirements": {
+        "arc-swap": "1",
+        "aws-credential-types": "1.3.1",
+        "aws-runtime": "1.10.2",
+        "aws-smithy-async": "1.3.1",
+        "aws-smithy-http": "0.64.2",
+        "aws-smithy-json": "0.65.0",
+        "aws-smithy-observability": "0.3.0",
+        "aws-smithy-runtime": "1.16.1",
+        "aws-smithy-runtime-api": "1.19.1",
+        "aws-smithy-schema": "1.0.0",
+        "aws-smithy-types": "1.9.0",
+        "aws-types": "1.7.0",
+        "bytes": "1.4.0",
+        "fastrand": "2.0.0",
+        "http-1x": "1",
+        "regex-lite": "0.1.5",
+        "tracing": "0.1"
+      },
+      "rust_version": "1.94.1",
+      "smithy_codegen_version": "76e27a2dbdea001f9a09652652f80ce60edbd5c9",
+      "smithy_protocol": "aws.protocols#restJson1",
+      "source_commit": "133c93f9af3783be5d41163784163cc80068ae1a",
+      "source_path": "sdk/bedrock",
+      "source_repository": "https://github.com/awslabs/aws-sdk-rust",
+      "version": "1.163.0",
+      "yanked": false
+    },
+    {
+      "crate_sha256": "1dc81814f1abbb184e1da290cc982aaffefb5c1be145cb761668b5f5fc0255c4",
+      "crate_size_bytes": 1242637,
+      "download_url": "https://crates.io/api/v1/crates/aws-sdk-bedrock/1.164.0/download",
+      "edition": "2021",
+      "published_at": "2026-10-22T19:05:57.277690Z",
+      "runtime_dependency_requirements": {
+        "arc-swap": "1",
+        "aws-credential-types": "1.3.1",
+        "aws-runtime": "1.10.2",
+        "aws-smithy-async": "1.3.1",
+        "aws-smithy-http": "0.64.2",
+        "aws-smithy-json": "0.65.0",
+        "aws-smithy-observability": "0.3.0",
+        "aws-smithy-runtime": "1.16.1",
+        "aws-smithy-runtime-api": "1.19.1",
+        "aws-smithy-schema": "1.1.0",
+        "aws-smithy-types": "1.9.0",
+        "aws-types": "1.7.0",
+        "bytes": "1.4.0",
+        "fastrand": "2.0.0",
+        "http-1x": "1",
+        "regex-lite": "0.1.5",
+        "tracing": "0.1"
+      },
+      "rust_version": "1.94.1",
+      "smithy_codegen_version": "05b51124ec26a1bc5ad4330ac2803b46b8a4b337",
+      "smithy_protocol": "aws.protocols#restJson1",
+      "source_commit": "3a3f39bd932690cab6d2321b677e97a24b687753",
+      "source_path": "sdk/bedrock",
+      "source_repository": "https://github.com/awslabs/aws-sdk-rust",
+      "version": "1.164.0",
+      "yanked": false
+    },
+    {
+      "crate_sha256": "086d90d6919e0d36b1ed5d83b3773e15a98f8cfa6d30b264936b0f7f1215dec6",
+      "crate_size_bytes": 1242658,
+      "download_url": "https://crates.io/api/v1/crates/aws-sdk-bedrock/1.165.0/download",
+      "edition": "2021",
+      "published_at": "2026-10-28T01:13:12.868197Z",
+      "runtime_dependency_requirements": {
+        "arc-swap": "1",
+        "aws-credential-types": "1.3.1",
+        "aws-runtime": "1.10.2",
+        "aws-smithy-async": "1.3.1",
+        "aws-smithy-http": "0.64.3",
+        "aws-smithy-json": "0.65.1",
+        "aws-smithy-observability": "0.3.0",
+        "aws-smithy-runtime": "1.16.2",
+        "aws-smithy-runtime-api": "1.19.2",
+        "aws-smithy-schema": "1.1.0",
+        "aws-smithy-types": "1.9.1",
+        "aws-types": "1.7.0",
+        "bytes": "1.4.0",
+        "fastrand": "2.0.0",
+        "http-1x": "1",
+        "regex-lite": "0.1.5",
+        "tracing": "0.1"
+      },
+      "rust_version": "1.94.1",
+      "smithy_codegen_version": "77cd8e531e2e18c9430ef78f727b7bfead4ef9c6",
+      "smithy_protocol": "aws.protocols#restJson1",
+      "source_commit": "c42d314c972a95e7cfd9583eef5113a2e1d6dccb",
+      "source_path": "sdk/bedrock",
+      "source_repository": "https://github.com/awslabs/aws-sdk-rust",
+      "version": "1.165.0",
+      "yanked": false
+    },
+    {
+      "crate_sha256": "6a2046512ecd16913d858634bfa07fe2769b794f852989940f2d5fcab7877968",
+      "crate_size_bytes": 1242754,
+      "download_url": "https://crates.io/api/v1/crates/aws-sdk-bedrock/1.166.0/download",
+      "edition": "2021",
+      "published_at": "2026-10-30T19:02:13.057658Z",
+      "runtime_dependency_requirements": {
+        "arc-swap": "1",
+        "aws-credential-types": "1.3.1",
+        "aws-runtime": "1.10.2",
+        "aws-smithy-async": "1.3.1",
+        "aws-smithy-http": "0.64.3",
+        "aws-smithy-json": "0.65.1",
+        "aws-smithy-observability": "0.3.0",
+        "aws-smithy-runtime": "1.16.2",
+        "aws-smithy-runtime-api": "1.19.2",
+        "aws-smithy-schema": "1.1.2",
+        "aws-smithy-types": "1.9.1",
+        "aws-types": "1.7.0",
+        "bytes": "1.4.0",
+        "fastrand": "2.0.0",
+        "http-1x": "1",
+        "regex-lite": "0.1.5",
+        "tracing": "0.1"
+      },
+      "rust_version": "1.94.1",
+      "smithy_codegen_version": "e181b22c1588cb6abd3c5840b3236dacaabb1d38",
+      "smithy_protocol": "aws.protocols#restJson1",
+      "source_commit": "44d6380d22c14bd5c89c59ceafcda7bc4da5b6f7",
+      "source_path": "sdk/bedrock",
+      "source_repository": "https://github.com/awslabs/aws-sdk-rust",
+      "version": "1.166.0",
+      "yanked": false
+    }
+  ]
+}

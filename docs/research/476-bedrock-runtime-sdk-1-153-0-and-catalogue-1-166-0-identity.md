@@ -101,7 +101,9 @@ per-version hashes of the 25 selected source files, and the five added-file
 digests. The selected ListFoundationModels operation, response parser,
 FoundationModelSummary/lifecycle/modality/inference/customization types,
 error set, client, config, retry, and operation modules are byte-identical
-across every hop. `1.162.0` adds GuardrailContextualGrounding tier types with
+across every hop, and the fake-transport suite drives the real qualified
+`1.166.0` SDK through a captured HTTP request to prove the frozen request
+boundary (`GET /foundation-models`, no query parameters, one SDK attempt). `1.162.0` adds GuardrailContextualGrounding tier types with
 re-exports in `src/protocol_serde.rs`, `src/types.rs`,
 `src/types/builders.rs`, and `src/serde_util.rs`; guardrails are not part of
 the selected surface and the adapter maps no guardrail type, so the selected
@@ -132,7 +134,9 @@ minimal necessary manifest changes; `aws-credential-types = "1.3.0"` still
 resolves because the corrected graph declares `^1.3.1` inside the same
 caret window.
 
-The re-resolved workspace lock carries exactly one Smithy closure and drops
+The re-resolved workspace lock carries exactly one Smithy closure — exactly
+one package for each of `aws-smithy-schema`, `aws-smithy-json`,
+`aws-smithy-http`, `aws-smithy-runtime`, and `aws-smithy-types` — and drops
 `pin-utils 0.1.0` entirely:
 
 | Package | Resolved | Registry crate SHA-256 |
@@ -157,9 +161,20 @@ No old dependency path retains `pin-utils`: the only three dependents were the
 three Smithy crates above, both target SDK crates now declare the corrected
 line (schema `^1.1.2`, json `^0.65.1`, incompatible with the old `0.2.x`/`0.63.x`
 packages), and no other workspace crate depends on any `aws-smithy-*` package.
-The new catalogue identity test fails the build if `"pin-utils"` reappears in
-`Cargo.lock`, and `effigy security:dependencies` passes with `deny.toml`
-advisory ignores unchanged (`ignore = []`).
+The catalogue identity test enforces this against the shipped lock: it fails
+if the quoted `"pin-utils"` token reappears anywhere in `Cargo.lock` (as a
+dependency edge or a package header), if any of the three former carriers at
+their resolved versions lists `pin-utils` again, or if any of the five
+closure crates above resolves as more than one package. Both identity
+fixtures record the resolved closure explicitly (`resolved_aws_smithy_schema`
+`1.2.0`, `resolved_aws_smithy_types` `1.9.3`, and the rest of the table),
+name their per-release dependency maps as declared minimums rather than the
+resolved closure, and the catalogue identity test cross-checks every
+recorded resolved version against `Cargo.lock`. The catalogue fake-transport
+suite also drives the real qualified `1.166.0` SDK through a captured HTTP
+request and asserts the unfiltered `GET /foundation-models` carries no query
+parameters, mirroring the Runtime wire proof. `effigy security:dependencies`
+passes with `deny.toml` advisory ignores unchanged (`ignore = []`).
 
 ## Claim decision
 

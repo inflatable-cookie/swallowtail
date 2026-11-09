@@ -8,7 +8,7 @@ const DIST_INVENTORY: &str =
     include_str!("fixtures/bedrock-control-plane-1.166.0/dist-inventory.json");
 const ADAPTER_MANIFEST: &str = include_str!("../Cargo.toml");
 const WORKSPACE_LOCK: &str = include_str!("../../../Cargo.lock");
-const IDENTITY_SHA256: &str = "831eeaecca79bd3c4c5abc5bad1dc7b53399e1aa13d48d3c686a9627c4f31fd2";
+const IDENTITY_SHA256: &str = "52ccd688937d4a3f2094ef114ada3bd04f46266b5daf4c303c04686b1feb5702";
 const PROTOCOL_SHA256: &str = "76a05f3ffa304b03af5dc5e78328b60e55a6ae2195ba4426c5c664673e34067f";
 const DIST_INVENTORY_SHA256: &str =
     "526f38c1793f5f3a27736c2255e712170046bcec2fa939b8f6f68648d36b9278";
@@ -190,12 +190,20 @@ fn crates_io_freezes_every_published_catalogue_sdk_artifact_after_1_161_0() {
         identity["identity_decision"]["yanked_exclusions"],
         json(r#"["1.156.0"]"#)
     );
+    let pin_utils_note = identity["identity_decision"]["smithy_dependency_transition"]["pin_utils"]
+        .as_str()
+        .unwrap();
+    assert!(pin_utils_note.contains("pin-utils"));
+    assert!(pin_utils_note.contains("0.64.3"));
+    assert!(pin_utils_note.contains("1.16.2"));
+    assert!(pin_utils_note.contains("1.9.3"));
     assert_eq!(
-        identity["identity_decision"]["smithy_dependency_transition"]["pin_utils"]
+        identity["identity_decision"]["smithy_dependency_transition"]
+            ["dependency_maps_are_declared_minimums"]
             .as_str()
             .unwrap()
-            .contains("pin-utils"),
-        true
+            .is_empty(),
+        false
     );
     assert_eq!(identity["evidence"]["artifact_execution"], false);
     assert_eq!(identity["evidence"]["provider_calls"], false);
@@ -328,13 +336,69 @@ fn workspace_lock_freezes_the_corrected_sdk_runtime_dependency_identity() {
         line.trim()
             == "aws-smithy-http-client = { version = \"=1.5.2\", features = [\"test-util\"] }"
     }));
-    assert_eq!(
-        WORKSPACE_LOCK
-            .lines()
-            .any(|line| line.trim() == "\"pin-utils\""),
-        false,
-        "the corrected workspace graph must not retain pin-utils"
+    // Every dependency entry and package header spells the name as a quoted
+    // token, so any re-addition of pin-utils — as an edge or as a package —
+    // makes this token appear in the lock and this assertion fire.
+    assert!(
+        !WORKSPACE_LOCK.contains("\"pin-utils\""),
+        "the corrected workspace graph must not retain pin-utils anywhere in Cargo.lock"
     );
+    for (name, version) in [
+        ("aws-smithy-http", "0.64.3"),
+        ("aws-smithy-runtime", "1.16.2"),
+        ("aws-smithy-types", "1.9.3"),
+    ] {
+        let dependencies = lock_dependencies(lock_package(name, version));
+        assert!(
+            !dependencies.contains("pin-utils"),
+            "corrected {name} {version} must not depend on pin-utils"
+        );
+    }
+    for name in [
+        "aws-smithy-schema",
+        "aws-smithy-json",
+        "aws-smithy-http",
+        "aws-smithy-runtime",
+        "aws-smithy-types",
+    ] {
+        let blocks = WORKSPACE_LOCK
+            .matches(&format!("name = \"{name}\""))
+            .count();
+        assert_eq!(
+            blocks, 1,
+            "the corrected workspace must resolve exactly one {name} package"
+        );
+    }
+
+    let identity = json(IDENTITY);
+    let transition = &identity["identity_decision"]["smithy_dependency_transition"];
+    for name in [
+        "aws-credential-types",
+        "aws-runtime",
+        "aws-smithy-async",
+        "aws-smithy-http",
+        "aws-smithy-http-client",
+        "aws-smithy-json",
+        "aws-smithy-runtime",
+        "aws-smithy-runtime-api",
+        "aws-smithy-schema",
+        "aws-smithy-types",
+        "aws-types",
+    ] {
+        let field = format!("resolved_{}", name.replace('-', "_"));
+        let version = transition[&field]
+            .as_str()
+            .unwrap_or_else(|| panic!("identity records the resolved {name} version"));
+        let package = lock_package(name, version);
+        assert_eq!(
+            lock_field(package, "source"),
+            "registry+https://github.com/rust-lang/crates.io-index",
+            "identity-recorded resolved {name} {version} must exist in Cargo.lock"
+        );
+    }
+    assert_eq!(transition["resolved_aws_smithy_schema"], "1.2.0");
+    assert_eq!(transition["resolved_aws_smithy_types"], "1.9.3");
+    assert_eq!(transition["resolved_aws_smithy_json"], "0.65.1");
 
     let sdk = lock_package("aws-sdk-bedrock", "1.166.0");
     assert_eq!(

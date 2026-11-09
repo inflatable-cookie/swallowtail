@@ -5,7 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 const IDENTITY: &str = include_str!("fixtures/bedrock-runtime-1.153.0/identity.json");
 const PROTOCOL: &str = include_str!("fixtures/bedrock-runtime-1.153.0/protocol.json");
 const DIST_INVENTORY: &str = include_str!("fixtures/bedrock-runtime-1.153.0/dist-inventory.json");
-const IDENTITY_SHA256: &str = "d32ad2663971faebe5ce2ee2e4e7b54876b7ec3b359e50a079c1de7470b68f96";
+const IDENTITY_SHA256: &str = "33d004c5ec748b56f573ae5219fa4941a04e5da949265cf21eabe7b4db33ae34";
 const PROTOCOL_SHA256: &str = "a8a9284bc92d4bb22f29af17182fd591fdb4e89f791e7ef9a925333309e63231";
 const DIST_INVENTORY_SHA256: &str =
     "ff35cb6ee2752c35af7dc65dad0996b952138b0e52a1adefe18f190df10e0191";
@@ -139,12 +139,27 @@ fn crates_io_freezes_each_published_runtime_sdk_hop_after_1_148_0() {
         identity["decision"]["yanked_exclusions"],
         json(r#"["1.144.0"]"#)
     );
+    let pin_utils_note = identity["decision"]["smithy_dependency_transition"]["pin_utils"]
+        .as_str()
+        .unwrap();
+    assert!(pin_utils_note.contains("pin-utils"));
+    assert!(pin_utils_note.contains("0.64.3"));
+    assert!(pin_utils_note.contains("1.16.2"));
+    assert!(pin_utils_note.contains("1.9.3"));
+    // The resolved workspace closure this qualification ships with; the
+    // catalogue identity test cross-checks these against Cargo.lock itself.
+    let transition = &identity["decision"]["smithy_dependency_transition"];
+    assert_eq!(transition["resolved_aws_smithy_schema"], "1.2.0");
+    assert_eq!(transition["resolved_aws_smithy_types"], "1.9.3");
+    assert_eq!(transition["resolved_aws_smithy_json"], "0.65.1");
+    assert_eq!(transition["resolved_aws_smithy_runtime_api"], "1.20.0");
+    assert_eq!(transition["resolved_aws_smithy_http_client"], "1.5.2");
     assert_eq!(
-        identity["decision"]["smithy_dependency_transition"]["pin_utils"]
+        transition["dependency_maps_are_declared_minimums"]
             .as_str()
             .unwrap()
-            .contains("pin-utils"),
-        true
+            .is_empty(),
+        false
     );
     assert_eq!(identity["evidence"]["artifact_execution"], false);
     assert_eq!(identity["evidence"]["provider_calls"], false);

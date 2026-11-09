@@ -273,7 +273,7 @@ private milestone `claude-code.headless.stream-json.v2`.
 Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.256`, `2.1.262`, `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and
 `2.1.313`. The published `2.1.318` and `2.1.319` points remain visible as
-`UnverifiedNewer`; Research 476 stops this claim at `2.1.317` because the new
+`UnverifiedNewer`; Research 477 stops this claim at `2.1.317` because the new
 `permissions.denyInsteadOfPrompting` setting changes the selected permission
 flow. `2.1.320` is the first unpublished point after official stable. Headless
 does not pass `--safe-mode` and admits ambient project instructions. The exact
@@ -323,7 +323,7 @@ add a permission bypass. Research 423 records the static source review and
 synthetic fake-process coverage; the fixtures are adapter tests, not captured
 provider transcripts.
 
-Research 476 records npm `latest`, npm `next`, and GitHub latest stable at
+Research 477 records npm `latest`, npm `next`, and GitHub latest stable at
 `2.1.319`; npm `stable` remains the delayed channel at `2.1.311`. The headless
 claim stays at `2.1.317` pending a decision on the new permission setting.
 Response-only is a separate claim and extends through `2.1.319` on v3 because
@@ -441,7 +441,7 @@ claim id `claude-code.response-only.window-1`:
 Unpublished `2.1.244`, `2.1.249`, `2.1.253` through `2.1.256`, `2.1.262`,
 `2.1.264`, `2.1.279`, `2.1.297`, `2.1.298`, and `2.1.313` are denied. Later
 stable releases run provisionally as `UnverifiedNewer` on the v3 behavior. The
-first unpublished point after the ceiling is `2.1.320`. Research 476 records
+first unpublished point after the ceiling is `2.1.320`. Research 477 records
 that `2.1.318` and `2.1.319` keep the selected tool-free response surface. The baseline, claim id,
 denied points, and earlier supported segments stay in force. This is a distinct
 route. It does not weaken or replace `claude-code.headless`.

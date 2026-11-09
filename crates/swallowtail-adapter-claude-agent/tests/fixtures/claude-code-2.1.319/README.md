@@ -4,4 +4,4 @@ This corpus records npm package identity and selected surface evidence for the t
 
 The `permissions.denyInsteadOfPrompting` setting first appears in 2.1.319. The headless route preserves user, project, and local settings and can select Read, Glob, and Grep, so an opted-in setting changes its permission flow. Qualification stops at 2.1.317 pending the decision recorded in `route-comparison.json`. Response-only passes an empty tool set and qualifies through 2.1.319 on its independent v3 claim.
 
-Research 476 records the outcome.
+Research 477 records the outcome.

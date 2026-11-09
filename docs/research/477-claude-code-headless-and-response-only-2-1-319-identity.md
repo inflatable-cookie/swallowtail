@@ -1,4 +1,4 @@
-# Research 476: Claude Code headless and response-only 2.1.319 identity
+# Research 477: Claude Code headless and response-only 2.1.319 identity
 
 Status: response-only extends through npm official stable `2.1.319` on its
 existing `stream-json.v3` claim. Headless remains qualified through `2.1.317`;

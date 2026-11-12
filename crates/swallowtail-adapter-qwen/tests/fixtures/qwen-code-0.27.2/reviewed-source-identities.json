@@ -1,0 +1,483 @@
+{
+ "approval_mode_value": {
+  "0.26.6": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  },
+  "0.26.7": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  },
+  "0.26.8": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  },
+  "0.26.9": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  },
+  "0.27.0": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  },
+  "0.27.1": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  },
+  "0.27.2": {
+   "bytes": 1170,
+   "path": "packages/cli/src/config/approval-mode-value.ts",
+   "sha256": "b70d51f6ffdddfc066e1dc75a04601a5d6dbcf71e8920a2f3f46eea25f3c5467"
+  }
+ },
+ "autofix_pr_tool": {
+  "0.26.6": {
+   "bytes": 53837,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "5efe669e1372b417943832eddb01fd3a32e1a5b19f4e523dc84bc006b9b53c2f"
+  },
+  "0.26.7": {
+   "bytes": 53837,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "5efe669e1372b417943832eddb01fd3a32e1a5b19f4e523dc84bc006b9b53c2f"
+  },
+  "0.26.8": {
+   "bytes": 53837,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "5efe669e1372b417943832eddb01fd3a32e1a5b19f4e523dc84bc006b9b53c2f"
+  },
+  "0.26.9": {
+   "bytes": 56383,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "aa99dd2ed5b1ee8f98b7a7bd83d8b5fbf398893c6db8d43291669cc9c7b4dfa2"
+  },
+  "0.27.0": {
+   "bytes": 56383,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "aa99dd2ed5b1ee8f98b7a7bd83d8b5fbf398893c6db8d43291669cc9c7b4dfa2"
+  },
+  "0.27.1": {
+   "bytes": 56383,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "aa99dd2ed5b1ee8f98b7a7bd83d8b5fbf398893c6db8d43291669cc9c7b4dfa2"
+  },
+  "0.27.2": {
+   "bytes": 56383,
+   "path": "packages/core/src/tools/autofix-pr.ts",
+   "sha256": "aa99dd2ed5b1ee8f98b7a7bd83d8b5fbf398893c6db8d43291669cc9c7b4dfa2"
+  }
+ },
+ "dashscope_source_config": {
+  "0.26.6": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  },
+  "0.26.7": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  },
+  "0.26.8": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  },
+  "0.26.9": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  },
+  "0.27.0": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  },
+  "0.27.1": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  },
+  "0.27.2": {
+   "bytes": 3828,
+   "path": "packages/core/src/core/dashscope-source-config.ts",
+   "sha256": "d5f505aa36a09fdbfae565d42be538ce8e30ff1cd239008011350fdcc2766056"
+  }
+ },
+ "interactive_mode": {
+  "0.26.6": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  },
+  "0.26.7": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  },
+  "0.26.8": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  },
+  "0.26.9": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  },
+  "0.27.0": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  },
+  "0.27.1": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  },
+  "0.27.2": {
+   "bytes": 375,
+   "path": "packages/cli/src/utils/interactive-mode.ts",
+   "sha256": "9581159b04035fe8243519f328308fb75949610d1860d6dbcc6ffc14c9ec3597"
+  }
+ },
+ "loop_detection_service": {
+  "0.26.6": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  },
+  "0.26.7": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  },
+  "0.26.8": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  },
+  "0.26.9": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  },
+  "0.27.0": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  },
+  "0.27.1": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  },
+  "0.27.2": {
+   "bytes": 85687,
+   "path": "packages/core/src/services/loopDetectionService.ts",
+   "sha256": "f60175b3d4c45ca6bdfeb83bf4090932d5f5a7de45863929d2f909426ad8d80e"
+  }
+ },
+ "loop_protection": {
+  "0.26.6": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  },
+  "0.26.7": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  },
+  "0.26.8": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  },
+  "0.26.9": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  },
+  "0.27.0": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  },
+  "0.27.1": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  },
+  "0.27.2": {
+   "bytes": 4108,
+   "path": "packages/core/src/services/loop-protection.ts",
+   "sha256": "2d42af7d23675e422fea8285e12bccfb0b3a9d291fef7d2bdb83535d4fb9fc20"
+  }
+ },
+ "mod_session": {
+  "0.26.6": {
+   "bytes": 39482,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "5cc2a5b059ba0dd5629cc1f852e4229a4b79590f72aaf21964e69c44d3ed3ee8"
+  },
+  "0.26.7": {
+   "bytes": 39729,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "92a4b91c0ed5878abb3ad1a1204d2a71ac43deb3d998a68143ae162881236d54"
+  },
+  "0.26.8": {
+   "bytes": 44551,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "3d27cac0c31a5a737eaf9bd1b59fd7fed7039cc33ee235873c71f6a3eef8763b"
+  },
+  "0.26.9": {
+   "bytes": 44551,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "3d27cac0c31a5a737eaf9bd1b59fd7fed7039cc33ee235873c71f6a3eef8763b"
+  },
+  "0.27.0": {
+   "bytes": 44551,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "3d27cac0c31a5a737eaf9bd1b59fd7fed7039cc33ee235873c71f6a3eef8763b"
+  },
+  "0.27.1": {
+   "bytes": 44551,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "3d27cac0c31a5a737eaf9bd1b59fd7fed7039cc33ee235873c71f6a3eef8763b"
+  },
+  "0.27.2": {
+   "bytes": 47760,
+   "path": "packages/cli/src/services/mod-session.ts",
+   "sha256": "45829ec6bb1961bac30180e85c06f01f6d4e65220ffa307338eccdefff0075df"
+  }
+ },
+ "sdk_human_input": {
+  "0.26.6": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  },
+  "0.26.7": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  },
+  "0.26.8": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  },
+  "0.26.9": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  },
+  "0.27.0": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  },
+  "0.27.1": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  },
+  "0.27.2": {
+   "bytes": 1331,
+   "path": "packages/cli/src/nonInteractive/sdk-human-input.ts",
+   "sha256": "defb6d31cd058cad88ce51c2d16379efd3bf06232ad67e825c9fc402eb2de688"
+  }
+ },
+ "ssh_workspace_store": {
+  "0.26.6": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  },
+  "0.26.7": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  },
+  "0.26.8": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  },
+  "0.26.9": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  },
+  "0.27.0": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  },
+  "0.27.1": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  },
+  "0.27.2": {
+   "bytes": 4449,
+   "path": "packages/cli/src/serve/ssh-workspace-store.ts",
+   "sha256": "737d3fa0e3ecac680f8ec77f1896dbf4c0f1cf1aa3c56af01f566f795a8ded55"
+  }
+ },
+ "ssh_workspace_store_test": {
+  "0.26.6": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  },
+  "0.26.7": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  },
+  "0.26.8": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  },
+  "0.26.9": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  },
+  "0.27.0": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  },
+  "0.27.1": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  },
+  "0.27.2": {
+   "bytes": 4585,
+   "path": "packages/cli/src/serve/ssh-workspace-store.test.ts",
+   "sha256": "d9328a425831f27015cca278c235ed293bace5db735270541732fd2a8e669a85"
+  }
+ },
+ "unified_loop_core_config": {
+  "0.26.6": {
+   "bytes": 530385,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "f2d1cda0a9ba10d5362a04a684dfe05a708d366336d1693401a0ece6c84660d4"
+  },
+  "0.26.7": {
+   "bytes": 531888,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "f65246015c6a14f21fb08720682cb99bb9cf6a31c5ee8dfd5b8a7467d42803e3"
+  },
+  "0.26.8": {
+   "bytes": 545615,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "3bcf5239fba61c7d2f8b54ab027980f4edbccf3a5acec5cb292648c512250fe2"
+  },
+  "0.26.9": {
+   "bytes": 546877,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "27f13b26b2ee844d112a0b7bbdff5d1d87acfdb0e5a9596bb4e4fe087b8910d4"
+  },
+  "0.27.0": {
+   "bytes": 546877,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "27f13b26b2ee844d112a0b7bbdff5d1d87acfdb0e5a9596bb4e4fe087b8910d4"
+  },
+  "0.27.1": {
+   "bytes": 547539,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "9a1b0868e1119a64d9467fbebb22d8b7b8f3f8d67280c68ced8f2c49a48d4558"
+  },
+  "0.27.2": {
+   "bytes": 546659,
+   "path": "packages/core/src/config/config.ts",
+   "sha256": "de9952731953cf7ccf9a13def82de23908fcb96d00a46877ffa1ea456edf91ac"
+  }
+ },
+ "unified_loop_non_interactive_cli": {
+  "0.26.6": {
+   "bytes": 166411,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "1fca9b12c0ee5bca2121c4eeaa77cfc03c69c7cc5db78dc8f644c25364d02590"
+  },
+  "0.26.7": {
+   "bytes": 166411,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "1fca9b12c0ee5bca2121c4eeaa77cfc03c69c7cc5db78dc8f644c25364d02590"
+  },
+  "0.26.8": {
+   "bytes": 172631,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "1faa18bbfe7dcaefb743dae4c036978b1c305e23133b3b25e9fec5da2dc4f0e1"
+  },
+  "0.26.9": {
+   "bytes": 172631,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "1faa18bbfe7dcaefb743dae4c036978b1c305e23133b3b25e9fec5da2dc4f0e1"
+  },
+  "0.27.0": {
+   "bytes": 172987,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "c13cd38c5369004df441727b846013992bfa840c86cd4481f2b23172fc605407"
+  },
+  "0.27.1": {
+   "bytes": 175984,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "7ceeb61c639bb5edee97b87390909536735a9e2fc1e5cb48c57b3b54e88a1ab3"
+  },
+  "0.27.2": {
+   "bytes": 175984,
+   "path": "packages/cli/src/nonInteractiveCli.ts",
+   "sha256": "7ceeb61c639bb5edee97b87390909536735a9e2fc1e5cb48c57b3b54e88a1ab3"
+  }
+ },
+ "unified_loop_settings_schema": {
+  "0.26.6": {
+   "bytes": 243865,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "dde857f3b609301494d6c45b2fef272bfc6eacb81d030af395917bdc7d1e35b6"
+  },
+  "0.26.7": {
+   "bytes": 244658,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "cc6474f5b6c39f01937ede0d242b8938ce3eddc2b42180bb876fc43993f6ace6"
+  },
+  "0.26.8": {
+   "bytes": 244750,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "40a6beeb4cd2b60d7fde302b2db2cddd5a9d35e0f78b21c12208417ce2bc3616"
+  },
+  "0.26.9": {
+   "bytes": 245158,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "f0b15e6701e8e58a47a1e96fcf10de8b0b7009f5c3be0f8d45583da5b9997f14"
+  },
+  "0.27.0": {
+   "bytes": 245158,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "f0b15e6701e8e58a47a1e96fcf10de8b0b7009f5c3be0f8d45583da5b9997f14"
+  },
+  "0.27.1": {
+   "bytes": 246832,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "849c61150f26985bb29894f13240a45960538e992ec9ef5dd877a9dd71255b7c"
+  },
+  "0.27.2": {
+   "bytes": 246830,
+   "path": "packages/cli/src/config/settingsSchema.ts",
+   "sha256": "55df45076f7d868a96ec94bb6e13f57fc527847c8c6bf1a328f6d525d8ab986a"
+  }
+ }
+}

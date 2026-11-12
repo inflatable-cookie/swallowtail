@@ -311,8 +311,9 @@ section = "Research Records"
 "check:current-kimi-code-headless" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-adapter-kimi"
 "validate:adapt-gemini-headless-authority" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-gemini --test gemini_cli_0_63_0_headless_authority_stop --test gemini_cli_0_63_0_delta_ledger --test headless_structured_run -E 'binary(gemini_cli_0_63_0_headless_authority_stop) | binary(gemini_cli_0_63_0_delta_ledger) | test(production_route_preserves_cli_and_host_truth_in_both_topologies)'"
 "check:adapt-gemini-headless-authority" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-adapter-gemini"
-"validate:current-qwen-headless" = "bash scripts/oxide-rust.sh nextest run --locked --all-features --profile ci -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test conformance --test current_qwen_headless --test driver --test interactive_session_corpus --test prepared_facade --test protocol_fixtures --test qwen_code_0_23_3_identity --test qwen_code_0_24_2_identity --test qwen_code_0_25_0_identity --test qwen_code_0_26_1_identity --test qwen_code_0_26_2_identity --test qwen_code_0_26_6_identity --test qwen_headless_identity"
+"validate:current-qwen-headless" = "bash scripts/oxide-rust.sh nextest run --locked --all-features --profile ci -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test conformance --test current_qwen_headless --test driver --test interactive_session_corpus --test prepared_facade --test protocol_fixtures --test qwen_code_0_23_3_identity --test qwen_code_0_24_2_identity --test qwen_code_0_25_0_identity --test qwen_code_0_26_1_identity --test qwen_code_0_26_2_identity --test qwen_code_0_26_6_identity --test qwen_code_0_27_2_identity --test qwen_headless_identity"
 "check:current-qwen-headless" = "bash scripts/oxide-rust.sh check --locked --all-features -p swallowtail-adapter-qwen --all-targets"
+"lint:current-qwen-headless" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test current_qwen_headless --test driver --test prepared_facade --test qwen_code_0_24_2_identity --test qwen_code_0_25_0_identity --test qwen_code_0_26_1_identity --test qwen_code_0_26_2_identity --test qwen_code_0_26_6_identity --test qwen_code_0_27_2_identity --test qwen_headless_identity -- -D warnings"
 "format:current-qwen-headless" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-qwen",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-qwen -- --check",
@@ -401,7 +402,7 @@ section = "Research Records"
   "bash scripts/tests/oxide-rust-routing.sh",
   "python3 scripts/tests/oxide-selector-routing.py",
 ]
-"validate:grok-mcp-probe-helper-path" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-testkit --test grok_acp_client_mcp_probe -E 'test(echo_helper_liveness_self_check_distinguishes_healthy_from_dead)'"
+"validate:grok-mcp-probe-helper-path" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-testkit --test grok_acp_client_mcp_probe"
 "check:python-format" = "bash scripts/check-python-format.sh {args}"
 "check:copilot-acp-host-permission-format" = "bash scripts/check-python-format.sh scripts/copilot-acp-host-permission-proof.py"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"

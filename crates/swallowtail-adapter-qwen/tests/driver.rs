@@ -113,6 +113,54 @@ fn host_deadline_force_stops_waits_and_reports_timeout() {
 }
 
 #[test]
+fn a_delivered_result_does_not_make_a_still_running_child_finish_cleanly() {
+    // Qwen Code 0.27.1+ writes its terminal result envelope and may then keep
+    // the process alive while it drains its own post-result memory work. A
+    // delivered envelope must never let the adapter treat such a child as
+    // finished: cancellation still force-stops and joins it.
+    let (process, state) = FakeProcessService::result_then_held_open(&fixture("success.jsonl"));
+    let mut handle = block_on(driver().start_run(
+        plan(),
+        request("result-then-hold"),
+        host_services(process, Arc::new(PendingTimeService)),
+    ))
+    .expect("run starts");
+    let mut events = handle.take_events().expect("event stream is available");
+    let mut delivered_usage = false;
+    for _ in 0..64 {
+        let event = block_on(events.next())
+            .expect("event stream stays open")
+            .expect("event is valid");
+        if matches!(
+            event.kind(),
+            RuntimeEventKind::ProviderObservation(ProviderObservation::Usage(usage))
+                if usage.input_tokens() == Some(12) && usage.output_tokens() == Some(2)
+        ) {
+            delivered_usage = true;
+            break;
+        }
+    }
+    assert!(
+        delivered_usage,
+        "the child's result envelope reached the run before cancellation"
+    );
+
+    assert_eq!(
+        block_on(handle.cancellation().request()).expect("cancellation succeeds"),
+        CancellationAcknowledgement::Requested
+    );
+    let terminal = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
+    assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
+    assert!(state.force_stopped());
+    assert!(state.waited());
+}
+
+#[test]
 fn invalid_lifecycle_and_isolation_fail_before_process_start() {
     let cases = [
         request("missing-deadline").without_deadline_for_test(),

@@ -275,7 +275,7 @@ Both segments exclude unpublished `2.1.244`, `2.1.249`, `2.1.253` through
 `2.1.313`. The published `2.1.318`, `2.1.319`, `2.1.321`, and `2.1.322`
 points remain `UnverifiedNewer`; Research 477 stops this claim at `2.1.317` because the new
 `permissions.denyInsteadOfPrompting` setting changes the selected permission
-flow. Research 478 confirms the later hops do not change that decision.
+flow. Research 478 records changed native binaries and does not settle settings reachability in later hops.
 `2.1.320` is unpublished. Headless
 does not pass `--safe-mode` and admits ambient project instructions. The exact
 2.1.294 npm wrapper, Darwin arm64, and Linux x64 trees and every published hop

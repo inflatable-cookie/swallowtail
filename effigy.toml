@@ -91,6 +91,9 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh nextest run --locked --profile ci --test-threads 1 -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::/)'",
   "python3 scripts/copilot-acp-private-assessment.py --self-test",
 ]
+"validate:copilot-acp-prepared-open-cleanup" = [
+  "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --lib -E 'test(/assessment_tests::runner::real_local_prepared_open_failure_stops_and_joins_child_before_return/) | test(/assessment_tests::runner::settled_preparation_reaches_session_open_failure_after_slow_discovery/)'",
+]
 "lint:current-copilot-cli-acp" = [
   "bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
   "bash scripts/oxide-rust.sh clippy --locked --all-targets --no-default-features -p swallowtail-adapter-copilot-cli -- -D warnings",

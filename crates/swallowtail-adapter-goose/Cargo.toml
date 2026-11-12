@@ -67,3 +67,7 @@ path = "tests/goose_acp_currentness_1_56_0.rs"
 [[test]]
 name = "goose_acp_currentness_1_57_0"
 path = "tests/goose_acp_currentness_1_57_0.rs"
+
+[[test]]
+name = "goose_acp_currentness_1_59_0"
+path = "tests/goose_acp_currentness_1_59_0.rs"

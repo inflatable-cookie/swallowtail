@@ -1,0 +1,11 @@
+# Goose ACP 1.59.0 Identity and Qualification Evidence
+
+`identity.json` freezes the official stable release, tag, source commit, recursive tree, and Darwin ARM64 release asset identities from the previous qualified ceiling `1.57.0` through stable `1.59.0`. The published hops are `1.58.0`, `1.58.1`, and `1.59.0`; unpublished interstitials `1.57.1` and `1.58.2` remain outside the qualified points. The earlier `1.53.0` through `1.57.0` source manifests are copied byte for byte from the accepted `goose-acp-1.57.0` fixture.
+
+`dist-inventory.json` records complete sorted path, mode, and Git blob SHA inventories and exact per-hop added, removed, changed, and identical path sets. `protocol.json` extends the previous selected closure into Goose's `StateMachineServices`, `goose-agent`, and the built-in compaction prompt rendered by the selected compaction pipeline. It classifies every changed selected path and every residual path.
+
+The selected interrupted-run result is unchanged: Goose `1.57.0` emits an interruption error response for each unanswered unique tool request. In `1.59.0`, request IDs are deduplicated and each unanswered request remains open, so it receives the same error response. The selected adapter does not grant a permission option: it observes an active permission request, sends `session/cancel`, replies with outcome `cancelled` and no option id, then reports the existing provider-request outcome. The prepared ACP fake exercises that order, the interrupted tool update, cancelled prompt result, and cleanup. Research 479 therefore qualifies the same maintained claim through `1.59.0`, preserving its earlier points, gaps, and boundaries.
+
+The changed `compaction.md` input is now part of the selected closure. It rewords the built-in structured-summary instructions while keeping the summary schema, input placeholder, and compaction pipeline. This can alter provider-internal summary phrasing but does not add or change an ACP method, update, terminal result, error mapping, or cleanup outcome.
+
+Asset digests are GitHub release asset metadata. Source tags and recursive tree identities corroborate each source point; no binary was downloaded or executed. No provider prompt, live session, credential, installation, or host configuration was used. HTTP MCP remains emission-only.

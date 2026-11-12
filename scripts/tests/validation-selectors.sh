@@ -205,10 +205,17 @@ EOF
 cat >"$validation_driver_bin/mktemp" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
-if (($# == 0)); then
-  # Simulate BSD mktemp's default location without touching host temp.
-  printf 'unqualified\n' >>"${VALIDATION_DRIVER_LOG:?}/mktemp.log"
-  exec /usr/bin/mktemp -d "${VALIDATION_HOST_TEMP:?}/bsd-default.XXXXXXXX"
+validation_mktemp_has_template=false
+for validation_mktemp_arg in "$@"; do
+  if [[ "$validation_mktemp_arg" != -* ]]; then
+    validation_mktemp_has_template=true
+    break
+  fi
+done
+if [[ "$validation_mktemp_has_template" == false ]]; then
+  # Simulate BSD mktemp's system-temp default without touching host temp.
+  printf 'options-only: %s\n' "$*" >>"${VALIDATION_DRIVER_LOG:?}/mktemp.log"
+  exec /usr/bin/mktemp "$@" "${VALIDATION_HOST_TEMP:?}/bsd-default.XXXXXXXX"
 fi
 printf '%s\n' "$*" >>"${VALIDATION_DRIVER_LOG:?}/mktemp.log"
 exec /usr/bin/mktemp "$@"
@@ -229,6 +236,37 @@ exec /usr/bin/tar "$@"
 EOF
 chmod +x "$validation_driver_bin/oxide" "$validation_driver_bin/cargo" \
   "$validation_driver_bin/mktemp" "$validation_driver_bin/tar"
+
+# An invalid TMPDIR must fail closed even when TMP and TEMP point at usable
+# locations. The fake BSD mktemp would keep any accidental fallback confined
+# to validation_host_temp, where this check also proves none was allocated.
+validation_invalid_log="$validation_driver_fixture/log-invalid-root"
+mkdir -p "$validation_invalid_log"
+validation_invalid_root="$validation_driver_fixture/missing scratch root"
+if env VALIDATION_DRIVER_FAIL_CHECK=0 \
+  VALIDATION_DRIVER_LOG="$validation_invalid_log" \
+  VALIDATION_HOST_TEMP="$validation_host_temp" \
+  TMPDIR="$validation_invalid_root" TMP="$validation_driver_fixture" \
+  TEMP="$validation_driver_fixture" PATH="$validation_driver_bin:$PATH" \
+  bash scripts/verify-affected-packages.sh swallowtail-adapter-pi \
+    >"$validation_invalid_log/stdout" 2>"$validation_invalid_log/stderr"
+then
+  printf 'affected-package driver accepted a missing supplied TMPDIR\n' >&2
+  exit 1
+fi
+if ! rg -q 'scratch root is not an available writable directory' \
+  "$validation_invalid_log/stderr"; then
+  printf 'affected-package driver did not explain the invalid scratch root\n' >&2
+  cat "$validation_invalid_log/stderr" >&2
+  exit 1
+fi
+[[ $(wc -l <"$validation_invalid_log/oxide.log" | tr -d ' ') == 1 ]]
+[[ ! -e "$validation_invalid_log/mktemp.log" ]]
+[[ ! -e "$validation_invalid_log/extract.log" ]]
+if find "$validation_host_temp" -mindepth 1 -print -quit | rg -q .; then
+  printf 'invalid TMPDIR fell back to the simulated host temp\n' >&2
+  exit 1
+fi
 
 for validation_driver_outcome in success failure; do
   validation_driver_root="$validation_driver_fixture/run scratch $validation_driver_outcome"
@@ -268,8 +306,8 @@ for validation_driver_outcome in success failure; do
   [[ ! -e "$validation_driver_root/$(basename "${validation_extract_root%/extracted}")" ]]
   [[ -f "$validation_driver_root/PARENT-SENTINEL" ]]
   [[ -f "$validation_driver_root/SIBLING-SENTINEL" ]]
-  if rg -q '^unqualified$' "$validation_driver_log/mktemp.log"; then
-    printf 'affected-package driver used BSD unqualified mktemp\n' >&2
+  if rg -q '^options-only:' "$validation_driver_log/mktemp.log"; then
+    printf 'affected-package driver used BSD options-only mktemp\n' >&2
     exit 1
   fi
   if ! rg -q 'swallowtail-affected\.XXXXXXXX' "$validation_driver_log/mktemp.log"; then

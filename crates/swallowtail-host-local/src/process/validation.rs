@@ -4,6 +4,7 @@ use crate::executable_launch::{
 };
 use crate::host::LocalProcessHost;
 use crate::output::failure;
+use std::ffi::OsStr;
 use std::io::Read;
 use std::path::Path;
 use swallowtail_runtime::{ProcessRequest, RuntimeFailure};
@@ -68,8 +69,35 @@ impl LocalProcessHost {
                 "Local process bootstrap environment exceeded host-approved limits",
             ));
         }
+        if launch.rejects_node_startup_environment() {
+            let unsafe_bootstrap = launch
+                .bootstrap_environment()
+                .iter()
+                .any(|(name, _)| unsafe_node_environment(name));
+            let mut unsafe_request = false;
+            for reference in request.environment() {
+                let values = self.approvals.environments.get(reference).ok_or_else(|| {
+                    failure(
+                        "swallowtail.local_process.environment_not_approved",
+                        "Local environment reference is not approved",
+                    )
+                })?;
+                unsafe_request |= values.iter().any(|(name, _)| unsafe_node_environment(name));
+            }
+            if unsafe_bootstrap || unsafe_request {
+                return Err(failure(
+                    "swallowtail.local_process.unsafe_node_startup_environment",
+                    "Node startup environment is not permitted for this launch",
+                ));
+            }
+        }
         Ok(())
     }
+}
+
+fn unsafe_node_environment(name: &OsStr) -> bool {
+    let name = name.to_string_lossy().to_ascii_uppercase();
+    name.starts_with("NODE_") || name.starts_with("LD_") || name.starts_with("DYLD_")
 }
 
 const MAXIMUM_SHEBANG_BYTES: u64 = 256;

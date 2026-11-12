@@ -4,3 +4,5 @@
 - Record the supported idle-suppression ruling and its qualification gate.
 
 - Prototype fake-only idle suppression; production qualification remains pending.
+
+- Add an opt-in host filter for Node and dynamic-loader startup environment bindings.

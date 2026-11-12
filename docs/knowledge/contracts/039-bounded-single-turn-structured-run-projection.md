@@ -229,6 +229,23 @@ cleanup if compaction has already fired. The ruling grants no autonomous idle
 turn or permission to discard inherited settings. The existing 0.100.0 ceiling
 stays until the exact control and native behavior are proved.
 
+Tom's 2026-11-12 decision `33e074b8-eeac-4095-aa12-78871f3ff203`,
+version 2, selects a separately identified Swallowtail-owned suppression
+launch. It vetoes idle work even when inherited idle settings enable it,
+while retaining inherited permission security settings. Earlier stock launches
+and claims stay unchanged. Selection does not establish artifact identity or
+authorize executing original artifacts.
+
+The guarded launch must bind a host-established opaque identity to the exact
+Node runtime, fixed startup flags, guard, selected entry and module closure,
+and launch-policy revision. Admission must reject unverifiable or mismatched
+bindings before process start, including unsafe interpreter startup controls
+from every effective environment source. Verified bytes must be the bytes
+actually loaded. No unchecked fallback to stock launch is allowed. Fake
+coverage is not artifact qualification; selected native behavior and each
+hop's caller and module closure need independent proof before extending the
+claim. Paths and environment values stay host-private.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`

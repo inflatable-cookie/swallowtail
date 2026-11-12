@@ -319,6 +319,62 @@ fn explicit_request_environment_overrides_bounded_bootstrap_environment() {
 }
 
 #[test]
+fn node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before_spawn() {
+    let executable = executable_ref();
+    let environment = environment_ref();
+    for name in [
+        "NODE_OPTIONS",
+        "node_path",
+        "LD_PRELOAD",
+        "DYLD_INSERT_LIBRARIES",
+    ] {
+        let launch =
+            LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))
+                .with_prefix_arguments(fixture_arguments().map(OsString::from))
+                .with_node_startup_environment_filter();
+        let host = LocalProcessHost::builder(LocalProcessLimits::default())
+            .approve_executable_launch(executable.clone(), launch)
+            .approve_environment(
+                environment.clone(),
+                [(OsString::from(name), OsString::from("unsafe"))],
+            )
+            .build();
+        assert_failure_code(
+            start(
+                &host,
+                ProcessRequest::new(executable.clone()).with_environment([environment.clone()]),
+            ),
+            "swallowtail.local_process.unsafe_node_startup_environment",
+        );
+    }
+    let launch = LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))
+        .with_bootstrap_environment([(
+            OsString::from("NODE_OPTIONS"),
+            OsString::from("--require=unsafe"),
+        )])
+        .with_node_startup_environment_filter();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(executable.clone(), launch)
+        .build();
+    assert_failure_code(
+        start(&host, ProcessRequest::new(executable.clone())),
+        "swallowtail.local_process.unsafe_node_startup_environment",
+    );
+
+    let launch = LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))
+        .with_prefix_arguments(fixture_arguments().map(OsString::from))
+        .with_bootstrap_environment(fixture_environment("version"))
+        .with_node_startup_environment_filter();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(executable.clone(), launch)
+        .build();
+    let process = start(&host, ProcessRequest::new(executable)).expect("safe fixture starts");
+    let (stdout, _) = collect_output(process.as_ref()).expect("bounded output");
+    assert!(String::from_utf8_lossy(&stdout).contains("fixture-harness 1.2.0"));
+    assert!(block_on(process.wait()).expect("fixture joins").success());
+}
+
+#[test]
 fn bounded_stdio_round_trip_keeps_payloads_out_of_formatting() {
     let resource_directory = temporary_resource();
     std::fs::write(resource_directory.join("fixture-marker"), b"marker")

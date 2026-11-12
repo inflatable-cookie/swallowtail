@@ -101,13 +101,13 @@ fn both_claims_qualify_2_1_311_and_2_1_312_on_the_existing_revisions() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.319"
+        "2.1.322"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+            "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
         ]
     );
     let headless = claude_code_headless_claim();

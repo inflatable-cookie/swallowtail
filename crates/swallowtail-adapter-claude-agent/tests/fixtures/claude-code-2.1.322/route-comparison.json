@@ -1,0 +1,51 @@
+{
+  "axis": "claude-code.response-only-stream-json",
+  "behavior_revision": "claude-code.response-only.stream-json.v3",
+  "previous_ceiling": "2.1.319",
+  "hops": {
+    "2.1.321": "compatible-extension",
+    "2.1.322": "compatible-extension"
+  },
+  "selected_command": [
+    "-p",
+    "--input-format",
+    "text",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--no-session-persistence",
+    "--tools",
+    "",
+    "--safe-mode",
+    "--disable-slash-commands",
+    "--no-chrome",
+    "--prompt-suggestions",
+    "false",
+    "--mcp-config",
+    "{\"mcpServers\":{}}",
+    "--strict-mcp-config"
+  ],
+  "selected_fields": [
+    "init",
+    "assistant",
+    "content_block_delta",
+    "result",
+    "is_error",
+    "permissionMode",
+    "tools",
+    "mcp_servers",
+    "num_turns"
+  ],
+  "unchanged": [
+    "tool-free behavior",
+    "safe-mode behavior",
+    "strict empty MCP",
+    "init validation",
+    "typed response and failure mapping",
+    "cancellation and joined process cleanup"
+  ],
+  "qualified_ceiling": "2.1.322",
+  "preserved_gap": "2.1.320",
+  "first_unpublished_after_latest": "2.1.323",
+  "decision": "Compatible extension through official stable 2.1.322 on the existing v3 segment. No public lifecycle, authority, or mapped stream-json frame change; response-only remains independent of headless, ACP, and SDK claims."
+}

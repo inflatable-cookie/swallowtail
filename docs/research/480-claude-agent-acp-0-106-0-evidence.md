@@ -153,3 +153,39 @@ resolved. A follow-up can prove a route-owned suppression control across
 settings precedence and teardown races, or propose a distinct lifecycle with
 explicit idle-work authority. Neither follows from the permission ruling. No
 provider process or model was executed in this inspection.
+
+## Proposed supported-control and probe prerequisite
+
+Tom's decision `e7fdb750-688e-4326-a197-5ce89a8e300d` version 2 requires
+supported idle suppression; it does not authorize an autonomous idle-work
+lifecycle or overriding managed settings. The missing prerequisite is an
+upstream-supported, per-session control that prevents idle compaction before
+it can start while retaining user and managed permission inheritance. It must
+be effective for new, load and resume, including settings reload, and provide
+a way to stop and join work already fired during prompt, cancel or close races.
+A control that reports success while a higher-precedence setting enables idle
+work does not satisfy this boundary.
+
+The affected published ACP hops are 0.101.0, 0.101.1, 0.102.0, 0.103.0,
+0.104.0, 0.104.1, 0.105.0 and 0.106.0. Their exact tarball and per-file
+hashes, pinned SDK versions and native manifests are in this record's fixture.
+ACP 0.101.0's inline SDK settings do not feed its timer; host environment
+flags can be shadowed by `settings.env`. ACP 0.106.0 considers inline
+settings, but managed values take precedence. The 0.101.0 and 0.106.0 timer
+sources differ only in a comment; the inventory binds the intervening shipped
+files. This is a static control-path finding, not evidence that a hypothetical
+control works at any hop or platform.
+
+A bounded follow-up should first prove the harness with controlled clocks and
+fake peers for new/load/resume, settings precedence, permission-before-effects,
+ordered activity, and the pending and already-fired timer races. Next, inspect
+or exercise each exact artifact and selected native platform independently,
+matching its frozen digest. Acceptance requires no autonomous query or spend
+under conflicting user, project, local and managed settings; an explicit
+failure if the control cannot be honoured; and cancellation plus joined
+cleanup when a timer is already firing. Verify the distinct permission revision
+with and without a provider callback without changing earlier points. Use an
+isolated home and workspace, no ambient credentials and network disabled by
+default. Any vendor execution, live network, credentials or paid provider work
+needs separate authority before the corresponding step. This is a proposal for
+planner review, not an upstream message or permission to run the probe.

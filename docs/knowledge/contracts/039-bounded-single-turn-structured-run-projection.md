@@ -220,6 +220,15 @@ requires and selects the provider's `acceptEdits` mode before the prompt.
 Neither the working directory nor that provider mode creates a bounded
 filesystem-containment claim under `AmbientHost`.
 
+Tom's 2026-11-12 ruling (decision `e7fdb750-688e-4326-a197-5ce89a8e300d`,
+version 2) requires a supported idle-compaction suppression control before
+newer Claude Agent ACP points can be qualified. It must preserve
+consumer-owned turn and spend authority across new, load and resume, resist
+inherited and managed settings precedence, and cover cancellation and joined
+cleanup if compaction has already fired. The ruling grants no autonomous idle
+turn or permission to discard inherited settings. The existing 0.100.0 ceiling
+stays until the exact control and native behavior are proved.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`

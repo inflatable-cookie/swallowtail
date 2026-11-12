@@ -43,6 +43,18 @@ impl Default for Fixture {
     }
 }
 
+/// Everything the native-proof harness hands the shipped sidecar, including the
+/// environment allowlist it must launch with.
+pub struct NativeProofLaunch<'a> {
+    pub directory: &'a Path,
+    pub sdk_module: &'a Path,
+    pub native_binary: &'a Path,
+    pub native_manifest: &'a Path,
+    pub scenario: &'a str,
+    pub native_lifetime_ms: &'a str,
+    pub environment: &'a [(String, String)],
+}
+
 pub struct SidecarProcess {
     child: Child,
     stdin: ChildStdin,
@@ -161,13 +173,95 @@ impl SidecarProcess {
             }
             Some(mode) => panic!("unknown native manifest fixture mode: {mode}"),
             None => std::fs::write(
-                native_manifest,
+                native_manifest.clone(),
                 json!({"version": fixture.native_version.as_deref().unwrap_or("2.1.293")})
                     .to_string(),
             )
             .expect("fake manifest is written"),
         }
 
+        // The historical fixture intentionally exposes provider-shaped names so
+        // the sidecar's environment handling is observable. The native-proof
+        // launcher supplies its own allowlist instead.
+        let environment = vec![
+            ("PATH".to_owned(), std::env::var("PATH").unwrap_or_default()),
+            ("HOME".to_owned(), "/fixture/home".to_owned()),
+            ("TMPDIR".to_owned(), "/fixture/tmp".to_owned()),
+            ("LANG".to_owned(), "en_US.UTF-8".to_owned()),
+            ("LC_ALL".to_owned(), "en_US.UTF-8".to_owned()),
+            ("LC_CTYPE".to_owned(), "en_US.UTF-8".to_owned()),
+            ("USER".to_owned(), "fixture-user".to_owned()),
+            ("SHELL".to_owned(), "/bin/sh".to_owned()),
+            ("TERM".to_owned(), "xterm-256color".to_owned()),
+            ("COLORTERM".to_owned(), "truecolor".to_owned()),
+            ("__CF_USER_TEXT_ENCODING".to_owned(), "0x0:0:0".to_owned()),
+            ("XPC_FLAGS".to_owned(), "0x0".to_owned()),
+            ("XPC_SERVICE_NAME".to_owned(), "fixture.service".to_owned()),
+            ("MallocNanoZone".to_owned(), "0".to_owned()),
+            ("COMMAND_MODE".to_owned(), "unix2003".to_owned()),
+            ("ANTHROPIC_API_KEY".to_owned(), "fixture-secret".to_owned()),
+            ("CLAUDE_CONFIG_DIR".to_owned(), "/fixture/claude".to_owned()),
+            ("CLAUDE_CODE_USE_BEDROCK".to_owned(), "1".to_owned()),
+            ("OPENAI_API_KEY".to_owned(), "fixture-secret".to_owned()),
+            ("AWS_ACCESS_KEY_ID".to_owned(), "fixture-secret".to_owned()),
+            (
+                "AWS_SECRET_ACCESS_KEY".to_owned(),
+                "fixture-secret".to_owned(),
+            ),
+            ("GOOGLE_API_KEY".to_owned(), "fixture-secret".to_owned()),
+            ("RANDOM_UNRELATED".to_owned(), "fixture-value".to_owned()),
+        ];
+        let historical_native = directory.join("claude");
+        Self::launch(
+            directory,
+            entry,
+            sdk_module,
+            historical_native,
+            native_manifest,
+            scenario,
+            lifetime_ms,
+            fixture.model_evidence_value.clone(),
+            &environment,
+        )
+    }
+
+    /// Starts the shipped sidecar against an explicit fake-SDK module, fake
+    /// native and environment. Used by the native-proof harness, which owns the
+    /// fixture tree and the credential-free allowlist.
+    pub fn start_native_proof(launch: &NativeProofLaunch) -> Self {
+        let directory = launch.directory.to_path_buf();
+        let entry = directory.join("claude-agent-sdk-sidecar.mjs");
+        std::fs::write(&entry, CLAUDE_AGENT_SDK_SIDECAR_SOURCE).expect("asset is written");
+        Self::launch(
+            directory,
+            entry,
+            launch.sdk_module.to_path_buf(),
+            launch.native_binary.to_path_buf(),
+            launch.native_manifest.to_path_buf(),
+            launch.scenario,
+            launch.native_lifetime_ms,
+            None,
+            launch.environment,
+        )
+    }
+
+    /// The fixture directory this process was launched in.
+    pub fn fixture_directory(&self) -> &Path {
+        &self.directory
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn launch(
+        directory: PathBuf,
+        entry: PathBuf,
+        sdk_module: PathBuf,
+        native_binary: PathBuf,
+        native_manifest: PathBuf,
+        scenario: &str,
+        lifetime_ms: &str,
+        model_evidence_value: Option<String>,
+        environment: &[(String, String)],
+    ) -> Self {
         let node = std::env::var("SWALLOWTAIL_CLAUDE_AGENT_SDK_NODE")
             .unwrap_or_else(|_| "node".to_owned());
         let version = Command::new(&node)
@@ -187,47 +281,20 @@ impl SidecarProcess {
             .strip_prefix('v')
             .expect("Node --version uses the v-prefixed semantic version")
             .to_owned();
-        let mut child = Command::new(&node)
-            .arg(&entry)
-            .env_clear()
-            .env("PATH", std::env::var("PATH").unwrap_or_default())
-            .env("HOME", "/fixture/home")
-            .env("TMPDIR", "/fixture/tmp")
-            .env("LANG", "en_US.UTF-8")
-            .env("LC_ALL", "en_US.UTF-8")
-            .env("LC_CTYPE", "en_US.UTF-8")
-            .env("USER", "fixture-user")
-            .env("SHELL", "/bin/sh")
-            .env("TERM", "xterm-256color")
-            .env("COLORTERM", "truecolor")
-            .env("__CF_USER_TEXT_ENCODING", "0x0:0:0")
-            .env("XPC_FLAGS", "0x0")
-            .env("XPC_SERVICE_NAME", "fixture.service")
-            .env("MallocNanoZone", "0")
-            .env("COMMAND_MODE", "unix2003")
-            .env("ANTHROPIC_API_KEY", "fixture-secret")
-            .env("CLAUDE_CONFIG_DIR", "/fixture/claude")
-            .env("CLAUDE_CODE_USE_BEDROCK", "1")
-            .env("OPENAI_API_KEY", "fixture-secret")
-            .env("AWS_ACCESS_KEY_ID", "fixture-secret")
-            .env("AWS_SECRET_ACCESS_KEY", "fixture-secret")
-            .env("GOOGLE_API_KEY", "fixture-secret")
-            .env("RANDOM_UNRELATED", "fixture-value")
-            .env("CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE", sdk_module)
-            .env(
-                "CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY",
-                directory.join("claude"),
-            )
-            .env(
-                "CLAUDE_AGENT_SDK_SIDECAR_MANIFEST",
-                directory.join("manifest.json"),
-            )
+        let mut command = Command::new(&node);
+        command.arg(&entry).env_clear();
+        for (name, value) in environment {
+            command.env(name, value);
+        }
+        let mut child = command
+            .env("CLAUDE_AGENT_SDK_SIDECAR_SDK_MODULE", &sdk_module)
+            .env("CLAUDE_AGENT_SDK_SIDECAR_NATIVE_BINARY", &native_binary)
+            .env("CLAUDE_AGENT_SDK_SIDECAR_MANIFEST", &native_manifest)
             .env("FAKE_SDK_OBSERVATIONS", directory.join("observations.json"))
             .env("FAKE_SDK_NATIVE_LIFETIME_MS", lifetime_ms)
             .env("FAKE_SDK_SCENARIO", scenario)
             .envs(
-                fixture
-                    .model_evidence_value
+                model_evidence_value
                     .iter()
                     .map(|value| ("FAKE_SDK_MODEL_EVIDENCE_VALUE", value)),
             )
@@ -569,6 +636,42 @@ impl SidecarProcess {
         let line = format!("{record}\n");
         self.stdin.write_all(line.as_bytes()).expect("wire write");
         self.stdin.flush().expect("wire flush");
+    }
+
+    /// Writes one record without waiting for a reply. Used where the reply may
+    /// never arrive because the peer already died.
+    pub fn send_without_reply(&mut self, record: Value) {
+        self.write(record);
+    }
+
+    /// Reads the next record within `timeout`, reporting a closed wire, a
+    /// timeout, or an unreadable line as `None`.
+    pub fn next_record_within(&mut self, timeout: Duration) -> Option<Value> {
+        if let Some(record) = self.held.first().cloned() {
+            self.held.remove(0);
+            return Some(record);
+        }
+        match self.lines.recv_timeout(timeout) {
+            Ok(line) => Some(serde_json::from_str(&line).unwrap_or_else(|error| {
+                panic!("sidecar wrote a non-record line {line:?}: {error}")
+            })),
+            Err(_) => None,
+        }
+    }
+
+    /// Reads the next record, reporting a closed or unreadable wire as `None`
+    /// instead of panicking. Used where a peer's termination is the observation.
+    pub fn next_record_or_closed(&mut self) -> Option<Value> {
+        if let Some(record) = self.held.first().cloned() {
+            self.held.remove(0);
+            return Some(record);
+        }
+        match self.lines.recv_timeout(SIDECAR_DEATH_GUARD) {
+            Ok(line) => Some(serde_json::from_str(&line).unwrap_or_else(|error| {
+                panic!("sidecar wrote a non-record line {line:?}: {error}")
+            })),
+            Err(_) => None,
+        }
     }
 
     fn next_record(&mut self) -> Value {

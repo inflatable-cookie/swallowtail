@@ -220,3 +220,32 @@ Decision tree:
 
 Cells covered: `claude-agent.sdk` package and native rows in the route matrix
 and the prepared-integration guide, from `0.3.318` through `0.3.322`.
+
+Stage evidence (2026-11-12, Research 481):
+
+- Item 3 is closed. The three residuals are classified from exact bytes:
+  `promptHold` is unchanged and unselected (`hooks: {}` cannot arm it),
+  `initializeWritten` is unchanged, and the new `0.3.321` numeric-key
+  telemetry gate on the shared key sanitizer sits on the tag and
+  custom-title writes, not the turn path. `0.3.321 -> 0.3.322` moves no
+  selected surface. Every selected surface digest across `0.3.317`,
+  `0.3.318`, `0.3.319`, `0.3.321` and `0.3.322` is in
+  `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/selected-flow.json`.
+- Item 2 now has its source-proven half. `permissions.denyInsteadOfPrompting`
+  is an administrator-tier managed-policy key; `settingSources` selects only
+  the user, project and local tiers, so `settingSources: []` does not exclude
+  it; the SDK's parent tier comes only from `Options.managedSettings`, which
+  the sidecar never sets, so `--managed-settings` is not emitted; the native's
+  own administrator-tier discovery is opaque binary behavior. What remains is
+  the product choice between preserving the managed denial under a distinct
+  SDK behavior revision and refusing an affected pair.
+- Item 1 has its harness, not its proof.
+  `probe-plan.json` fixes the artifacts, digests, argv, isolation, bounds and
+  cleanup for both selected platforms, and the fake-backed harness proves the
+  pipeline and its observation points on the accepted pair. Both the prepared
+  driver and the sidecar admit only the maintained pair map, so every planned
+  hop above `0.3.317` is refused before the SDK loads; an authorised original
+  run needs an explicit probe admission for those exact pairs. That admission
+  and the permission ruling are the open gates, and neither is granted by this
+  evidence.
+

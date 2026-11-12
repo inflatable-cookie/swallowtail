@@ -1,0 +1,3381 @@
+{
+  "classification": {
+    "query.armRunEndCeiling": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.318": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.318": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "note": "run-end ceiling",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "ceiling is armed for every turn",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.endRun": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.318": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.318": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "note": "run-end settlement",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "run-end settlement is observed by the driver",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.initializeWritten.gate": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "0.3.318": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "0.3.319": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "0.3.321": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "0.3.322": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "0.3.318": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "0.3.319": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "0.3.321": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "0.3.322": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ]
+      },
+      "note": "the initialize-written promise and its resolver",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "streamInput awaits it before the first write; resolved by the first initialize",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.processControlRequest.can_use_tool": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "0.3.318": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "0.3.319": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "0.3.321": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "0.3.322": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "0.3.318": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "0.3.319": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "0.3.321": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "0.3.322": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ]
+      },
+      "note": "the native permission request the callback answers",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "canUseTool is set, so the SDK answers a native can_use_tool request here",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.promptHold.assignment": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "0.3.318": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "0.3.319": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "0.3.321": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "0.3.322": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "0.3.318": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "0.3.319": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "0.3.321": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "0.3.322": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ]
+      },
+      "note": "the only assignment site of promptHold",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "assigned only under hasHookSetToBlock(), which hooks:{} cannot satisfy",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.streamInput": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "0.3.318": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "0.3.319": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "0.3.321": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "0.3.322": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "0.3.318": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "0.3.319": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "0.3.321": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "0.3.322": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ]
+      },
+      "note": "the selected input path for this route",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "iterable prompt is written through streamInput",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.writeBehindPromptHold": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "0.3.318": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "0.3.319": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "0.3.321": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "0.3.322": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "0.3.318": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "0.3.319": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "0.3.321": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "0.3.322": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ]
+      },
+      "note": "the hold barrier every prompt-hold branch funnels through",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "every call site is gated on promptHold being defined",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "query.writePrompt": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [
+        "0.3.319->0.3.321"
+      ],
+      "changed_spans": [
+        {
+          "added_bytes": 0,
+          "added_offset": 1296572,
+          "added_preview": "",
+          "hop": "0.3.317->0.3.318",
+          "previews_truncated": false,
+          "removed_bytes": 0,
+          "removed_offset": 1291531,
+          "removed_preview": "",
+          "status": "identical"
+        },
+        {
+          "added_bytes": 0,
+          "added_offset": 1306875,
+          "added_preview": "",
+          "hop": "0.3.318->0.3.319",
+          "previews_truncated": false,
+          "removed_bytes": 0,
+          "removed_offset": 1296572,
+          "removed_preview": "",
+          "status": "identical"
+        },
+        {
+          "added_bytes": 163,
+          "added_offset": 1323955,
+          "added_preview": "!==void 0)return this.writeBehindPromptHold(this.promptHold,()=>this.writeStreamMessage(e)).then(()=>{});return this.afterInitialize(()=>this.writeStreamMessage(e)",
+          "hop": "0.3.319->0.3.321",
+          "previews_truncated": false,
+          "removed_bytes": 136,
+          "removed_offset": 1306737,
+          "removed_preview": "===void 0)return this.writeAfterInitialize(e);return this.writeBehindPromptHold(this.promptHold,()=>this.transport.write(e)).then(()=>{}",
+          "status": "changed"
+        },
+        {
+          "added_bytes": 0,
+          "added_offset": 1324180,
+          "added_preview": "",
+          "hop": "0.3.321->0.3.322",
+          "previews_truncated": false,
+          "removed_bytes": 0,
+          "removed_offset": 1324120,
+          "removed_preview": "",
+          "status": "identical"
+        }
+      ],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2"
+        ],
+        "0.3.318": [
+          "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2"
+        ],
+        "0.3.319": [
+          "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2"
+        ],
+        "0.3.321": [
+          "b269ed66539fe74f48bcc6f996515eb471d2b63556bc51ab10a6d58d0b36d6fa"
+        ],
+        "0.3.322": [
+          "b269ed66539fe74f48bcc6f996515eb471d2b63556bc51ab10a6d58d0b36d6fa"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e"
+        ],
+        "0.3.318": [
+          "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e"
+        ],
+        "0.3.319": [
+          "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e"
+        ],
+        "0.3.321": [
+          "a3f5006bf00a5936f647535754e4276c7434a054ffb22fb8f7cecb39098eb0ec"
+        ],
+        "0.3.322": [
+          "a3f5006bf00a5936f647535754e4276c7434a054ffb22fb8f7cecb39098eb0ec"
+        ]
+      },
+      "note": "string-prompt write path; not selected by an iterable prompt",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "string-prompt only; the sidecar passes an async iterable",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": false
+    },
+    "query.writeStreamMessage": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.318": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.319": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.321": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.322": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.318": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.319": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.321": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "0.3.322": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ]
+      },
+      "note": "run-state reset plus transport write",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "streamInput writes each message here",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "settings.managed_projection": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "note": "restrictive managed-policy projection of the parent tier",
+      "present_in": [
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "the parent tier is empty for this route, but the native reads its own administrator tier, so managed policy is not excluded by these bytes",
+      "reordered_only_hops": [],
+      "selected_path": "native",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "settings.resolve.sources": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "0.3.318": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "0.3.319": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "0.3.321": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "0.3.322": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "0.3.318": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "0.3.319": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "0.3.321": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "0.3.322": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ]
+      },
+      "note": "how settingSources and Options.managedSettings become tiers",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "settingSources maps only user, project and local; the administrator tier is not one of them",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "settings.restrictive_key_table": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "note": "the managed-policy key table entry",
+      "present_in": [
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "the key is a managed-policy key; honor and bypass behavior are native",
+      "reordered_only_hops": [],
+      "selected_path": "native",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "telemetry.key_sanitizer_function": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "2b2f7175f372020dd4742d726d40db163532d763ce63c9aa7ea936665cae4364"
+        ],
+        "0.3.322": [
+          "2b2f7175f372020dd4742d726d40db163532d763ce63c9aa7ea936665cae4364"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "149d6971f09d466c78647feb67e6cd630c88051a679f6fc6eee4c815325ee4fa"
+        ],
+        "0.3.322": [
+          "149d6971f09d466c78647feb67e6cd630c88051a679f6fc6eee4c815325ee4fa"
+        ]
+      },
+      "note": "the gated recursive key sanitizer added at 0.3.321",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "its callers are the tag and custom-title writes, not the turn path",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "telemetry.key_sanitizer_legacy": {
+      "absent_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c"
+        ],
+        "0.3.318": [
+          "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c"
+        ],
+        "0.3.319": [
+          "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c"
+        ],
+        "0.3.321": null,
+        "0.3.322": null
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e"
+        ],
+        "0.3.318": [
+          "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e"
+        ],
+        "0.3.319": [
+          "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e"
+        ],
+        "0.3.321": null,
+        "0.3.322": null
+      },
+      "note": "the ungated sanitizer the earlier hops carry",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "reason": "its callers are the tag and custom-title writes, not the turn path",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "absent",
+        "0.3.322": "absent"
+      },
+      "structurally_identical_where_present": true
+    },
+    "telemetry.limits_gate": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ],
+        "0.3.322": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ],
+        "0.3.322": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ]
+      },
+      "note": "telemetry limits gate the sanitizer consults",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "only consulted from the sanitizer gate",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "telemetry.numeric_key_test": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ],
+        "0.3.322": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ],
+        "0.3.322": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ]
+      },
+      "note": "numeric-key predicate used by the sanitizer gate",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "only consulted from the sanitizer gate",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "telemetry.sanitizer_gate": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9bb8a7db46228cf17606a40c825c939b03091f8bcf4c9435baf0a1e0c1f219d3"
+        ],
+        "0.3.322": [
+          "9bb8a7db46228cf17606a40c825c939b03091f8bcf4c9435baf0a1e0c1f219d3"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "4a7cb056b32e4b9df62447c0bd6edf164e0c2b73e153c30578d249eb0410b32e"
+        ],
+        "0.3.322": [
+          "4a7cb056b32e4b9df62447c0bd6edf164e0c2b73e153c30578d249eb0410b32e"
+        ]
+      },
+      "note": "the telemetry-gated numeric-key condition inside the sanitizer",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "only consulted from the sanitizer, whose callers are control-path writes",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "telemetry.sanitizer_predicate": {
+      "0.3.317": {
+        "gate_present": false,
+        "source": null
+      },
+      "0.3.318": {
+        "gate_present": false,
+        "source": null
+      },
+      "0.3.319": {
+        "gate_present": false,
+        "source": null
+      },
+      "0.3.321": {
+        "gate_present": true,
+        "source": "o!==\"__proto__\"&&(o===n||!cD(o)||Number(o)<64||!uD(\"cleaned_key\")"
+      },
+      "0.3.322": {
+        "gate_present": true,
+        "source": "o!==\"__proto__\"&&(o===n||!cD(o)||Number(o)<64||!uD(\"cleaned_key\")"
+      }
+    },
+    "transport.argv.await_initialize_gate": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ],
+        "0.3.322": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ],
+        "0.3.322": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ]
+      },
+      "note": "the gate that keeps --await-initialize off this route",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "requires both pathToClaudeCodeExecutable and spawnClaudeCodeProcess to be unset",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "transport.argv.base": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.318": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.319": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.321": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.322": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.318": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.319": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.321": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "0.3.322": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ]
+      },
+      "note": "native argv construction",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "every native spawn uses this argv",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    },
+    "transport.argv.managed_settings": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.318": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.318": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.319": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.321": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "0.3.322": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ]
+      },
+      "note": "SDK-option parent tier on the native argv",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "emitted only for Options.managedSettings, which the sidecar never sets",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true
+    }
+  },
+  "closure_bounded": true,
+  "entry": {
+    "0.3.317": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.318": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.319": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.321": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.322": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    }
+  },
+  "fixture": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.322",
+  "identity": {
+    "0.3.317": {
+      "files": 21,
+      "sdk_mjs_bytes": 1347970,
+      "sdk_mjs_sha256": "ec77bcaf3e757a3c82f91228f7a968ffd856a4cdeee8b7e3fd186fc13597950f",
+      "tarball_sha256_frozen": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f"
+    },
+    "0.3.318": {
+      "files": 21,
+      "sdk_mjs_bytes": 1353011,
+      "sdk_mjs_sha256": "4cd470a25da93b4339218708120b8b87e76d172b5798ba973898bac809333d01",
+      "tarball_sha256_frozen": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e"
+    },
+    "0.3.319": {
+      "files": 21,
+      "sdk_mjs_bytes": 1363294,
+      "sdk_mjs_sha256": "71460e29f72859dbc65a613e3737c834b4afa4b6411716fd7b596f9c5e129b76",
+      "tarball_sha256_frozen": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001"
+    },
+    "0.3.321": {
+      "files": 21,
+      "sdk_mjs_bytes": 1380840,
+      "sdk_mjs_sha256": "20524b5de1d5e69f4b98005994e0970f0426c99ec55e9b9dae1af1f270d86ab7",
+      "tarball_sha256_frozen": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5"
+    },
+    "0.3.322": {
+      "files": 21,
+      "sdk_mjs_bytes": 1380900,
+      "sdk_mjs_sha256": "1c70356fe073f6c5423fb7138e2f2f6580a790eb055ad247e5d7927f57b53e8b",
+      "tarball_sha256_frozen": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93"
+    }
+  },
+  "import_closure": {
+    "0.3.317": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error",
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": [
+        "),headers:V(h(),h()).optional().describe(",
+        "),installLocation:h().describe(",
+        "),installLocation:h().optional().describe(",
+        "+f),p.warn(",
+        "+f)}return Xc("
+      ]
+    },
+    "0.3.318": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error",
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": [
+        "),headers:V(h(),h()).optional().describe(",
+        "),installLocation:h().describe(",
+        "),installLocation:h().optional().describe(",
+        "+f),p.warn(",
+        "+f)}return eu("
+      ]
+    },
+    "0.3.319": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error",
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "node:util",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": [
+        "),headers:V(h(),h()).optional().describe(",
+        "),installLocation:h().describe(",
+        "),installLocation:h().optional().describe(",
+        "+f),p.warn(",
+        "+f)}return ou("
+      ]
+    },
+    "0.3.321": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error",
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "node:util",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": [
+        "),headers:q(h(),h()).optional().describe(",
+        "),installLocation:h().describe(",
+        "),installLocation:h().optional().describe(",
+        "+f),p.warn(",
+        "+f)}return mu("
+      ]
+    },
+    "0.3.322": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error",
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "node:util",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": [
+        "),headers:q(h(),h()).optional().describe(",
+        "),installLocation:h().describe(",
+        "),installLocation:h().optional().describe(",
+        "+f),p.warn(",
+        "+f)}return mu("
+      ]
+    }
+  },
+  "reachability_inputs": {
+    "agents": "{}",
+    "allowedTools": "never set",
+    "canUseTool": "set (permission-prompt-tool=stdio)",
+    "disallowedTools": "set",
+    "env": "explicit child environment, never the inherited process environment",
+    "hooks": "{} (nothing sets onFailure, so hasHookSetToBlock() is false)",
+    "includePartialMessages": "false",
+    "managedSettings": "never set",
+    "pathToClaudeCodeExecutable": "set",
+    "plugins": "[]",
+    "prompt": "async iterable, so streamInput is the selected input path",
+    "settingSources": "[] (user, project and local disk tiers disabled)",
+    "settings": "never set",
+    "skills": "[]",
+    "spawnClaudeCodeProcess": "set",
+    "strictMcpConfig": "true",
+    "tools": "set"
+  },
+  "schema": "claude-agent-sdk-selected-flow-v1",
+  "surfaces": {
+    "0.3.317": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1297682
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1297682,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1297457
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1297457,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "masked_sequence_sha256": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1263529
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "masked_multiset_sha256": "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc",
+            "masked_sha256": "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3",
+            "offset": 1263466,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "masked_sequence_sha256": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1271607
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "masked_multiset_sha256": "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a",
+            "masked_sha256": "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036",
+            "offset": 1271604,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "masked_sequence_sha256": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1263985
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "masked_multiset_sha256": "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387",
+            "masked_sha256": "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde",
+            "offset": 1263973,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "masked_sequence_sha256": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296315
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
+            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "offset": 1296315,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "masked_sequence_sha256": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1264146
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "masked_multiset_sha256": "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca",
+            "masked_sha256": "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf",
+            "offset": 1264146,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2"
+        ],
+        "masked_sequence_sha256": [
+          "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1291360
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 171,
+            "masked_multiset_sha256": "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2",
+            "masked_sha256": "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e",
+            "offset": 1291360,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "masked_sequence_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1297338
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "masked_multiset_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "masked_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "offset": 1297338,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "masked_sequence_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1208249,
+          1231205
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "masked_multiset_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "masked_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "offset": 1208212,
+            "statement_aligned": true
+          },
+          {
+            "bytes": 579,
+            "masked_multiset_sha256": "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd",
+            "masked_sha256": "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1",
+            "offset": 1231095,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_function": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "masked_multiset_sha256": [
+          "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c"
+        ],
+        "masked_sequence_sha256": [
+          "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          290869
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c",
+            "masked_sha256": "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e",
+            "offset": 290688,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.limits_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.numeric_key_test": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.sanitizer_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.await_initialize_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "masked_sequence_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1244387
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "masked_multiset_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "masked_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "offset": 1244380,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1247398
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1247353,
+            "statement_aligned": true
+          }
+        ]
+      }
+    },
+    "0.3.318": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1302723
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1302723,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1302498
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1302498,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "masked_sequence_sha256": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1268570
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "masked_multiset_sha256": "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc",
+            "masked_sha256": "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3",
+            "offset": 1268507,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "masked_sequence_sha256": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1276648
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "masked_multiset_sha256": "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a",
+            "masked_sha256": "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036",
+            "offset": 1276645,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "masked_sequence_sha256": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1269026
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "masked_multiset_sha256": "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387",
+            "masked_sha256": "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde",
+            "offset": 1269014,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "masked_sequence_sha256": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1301356
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
+            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "offset": 1301356,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "masked_sequence_sha256": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1269187
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "masked_multiset_sha256": "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca",
+            "masked_sha256": "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf",
+            "offset": 1269187,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2"
+        ],
+        "masked_sequence_sha256": [
+          "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296401
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 171,
+            "masked_multiset_sha256": "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2",
+            "masked_sha256": "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e",
+            "offset": 1296401,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "masked_sequence_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1302379
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "masked_multiset_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "masked_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "offset": 1302379,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "masked_sequence_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1213232,
+          1236188
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "masked_multiset_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "masked_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "offset": 1213195,
+            "statement_aligned": true
+          },
+          {
+            "bytes": 579,
+            "masked_multiset_sha256": "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd",
+            "masked_sha256": "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1",
+            "offset": 1236078,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_function": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "masked_multiset_sha256": [
+          "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c"
+        ],
+        "masked_sequence_sha256": [
+          "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          292289
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c",
+            "masked_sha256": "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e",
+            "offset": 292108,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.limits_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.numeric_key_test": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.sanitizer_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.await_initialize_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "masked_sequence_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1249428
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "masked_multiset_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "masked_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "offset": 1249421,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1252439
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1252394,
+            "statement_aligned": true
+          }
+        ]
+      }
+    },
+    "0.3.319": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1313026
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1313026,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1312801
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1312801,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "masked_sequence_sha256": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1278892
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "masked_multiset_sha256": "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc",
+            "masked_sha256": "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3",
+            "offset": 1278829,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "masked_sequence_sha256": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1286970
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "masked_multiset_sha256": "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a",
+            "masked_sha256": "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036",
+            "offset": 1286967,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "masked_sequence_sha256": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1279348
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "masked_multiset_sha256": "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387",
+            "masked_sha256": "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde",
+            "offset": 1279336,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "masked_sequence_sha256": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1311659
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
+            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "offset": 1311659,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "masked_sequence_sha256": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1279509
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "masked_multiset_sha256": "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca",
+            "masked_sha256": "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf",
+            "offset": 1279509,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2"
+        ],
+        "masked_sequence_sha256": [
+          "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1306704
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 171,
+            "masked_multiset_sha256": "ab1a8339307ece121a46af688b1b8fa191af7af2ef789400501e99d7ee4fcda2",
+            "masked_sha256": "44e7ac5199ebcb3ddaff824035127c34b5b11b81f5d466c6357f736bf67b0c9e",
+            "offset": 1306704,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "masked_sequence_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1312682
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "masked_multiset_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "masked_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "offset": 1312682,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1205896
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 73,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1205879,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "masked_sequence_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1223275,
+          1246476
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "masked_multiset_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "masked_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "offset": 1223238,
+            "statement_aligned": true
+          },
+          {
+            "bytes": 579,
+            "masked_multiset_sha256": "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd",
+            "masked_sha256": "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1",
+            "offset": 1246366,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          818213
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 345,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 818208,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_function": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "masked_multiset_sha256": [
+          "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c"
+        ],
+        "masked_sequence_sha256": [
+          "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          294397
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "7a56bb39986293fe1b1bdb76d9cfac87de65fe92297c8e1070e5cac7d314671c",
+            "masked_sha256": "83c1a24e26b7b2ea4a6064d560fb3fbe287450a217933fc44db3d272d954e40e",
+            "offset": 294216,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.limits_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.numeric_key_test": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.sanitizer_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.await_initialize_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "masked_sequence_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1259716
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "masked_multiset_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "masked_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "offset": 1259709,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1262727
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1262682,
+            "statement_aligned": true
+          }
+        ]
+      }
+    },
+    "0.3.321": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330271
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1330271,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330046
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1330046,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "masked_sequence_sha256": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296160
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "masked_multiset_sha256": "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc",
+            "masked_sha256": "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3",
+            "offset": 1296097,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "masked_sequence_sha256": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1304238
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "masked_multiset_sha256": "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a",
+            "masked_sha256": "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036",
+            "offset": 1304235,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "masked_sequence_sha256": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296616
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "masked_multiset_sha256": "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387",
+            "masked_sha256": "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde",
+            "offset": 1296604,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "masked_sequence_sha256": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1328904
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
+            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "offset": 1328904,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "masked_sequence_sha256": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296777
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "masked_multiset_sha256": "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca",
+            "masked_sha256": "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf",
+            "offset": 1296777,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "b269ed66539fe74f48bcc6f996515eb471d2b63556bc51ab10a6d58d0b36d6fa"
+        ],
+        "masked_sequence_sha256": [
+          "a3f5006bf00a5936f647535754e4276c7434a054ffb22fb8f7cecb39098eb0ec"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1323922
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 198,
+            "masked_multiset_sha256": "b269ed66539fe74f48bcc6f996515eb471d2b63556bc51ab10a6d58d0b36d6fa",
+            "masked_sha256": "a3f5006bf00a5936f647535754e4276c7434a054ffb22fb8f7cecb39098eb0ec",
+            "offset": 1323922,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "masked_sequence_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1329927
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "masked_multiset_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "masked_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "offset": 1329927,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1221678
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 73,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1221661,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "masked_sequence_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1239051,
+          1263750
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "masked_multiset_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "masked_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "offset": 1239014,
+            "statement_aligned": true
+          },
+          {
+            "bytes": 579,
+            "masked_multiset_sha256": "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd",
+            "masked_sha256": "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1",
+            "offset": 1263640,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          829946
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 345,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 829941,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_function": {
+        "masked_multiset_sha256": [
+          "2b2f7175f372020dd4742d726d40db163532d763ce63c9aa7ea936665cae4364"
+        ],
+        "masked_sequence_sha256": [
+          "149d6971f09d466c78647feb67e6cd630c88051a679f6fc6eee4c815325ee4fa"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 276,
+            "masked_multiset_sha256": "2b2f7175f372020dd4742d726d40db163532d763ce63c9aa7ea936665cae4364",
+            "masked_sha256": "149d6971f09d466c78647feb67e6cd630c88051a679f6fc6eee4c815325ee4fa",
+            "offset": 300103,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.limits_gate": {
+        "masked_multiset_sha256": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ],
+        "masked_sequence_sha256": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          294081
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 176,
+            "masked_multiset_sha256": "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c",
+            "masked_sha256": "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c",
+            "offset": 294073,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.numeric_key_test": {
+        "masked_multiset_sha256": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ],
+        "masked_sequence_sha256": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          293896
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 78,
+            "masked_multiset_sha256": "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba",
+            "masked_sha256": "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba",
+            "offset": 293888,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.sanitizer_gate": {
+        "masked_multiset_sha256": [
+          "9bb8a7db46228cf17606a40c825c939b03091f8bcf4c9435baf0a1e0c1f219d3"
+        ],
+        "masked_sequence_sha256": [
+          "4a7cb056b32e4b9df62447c0bd6edf164e0c2b73e153c30578d249eb0410b32e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 186,
+            "masked_multiset_sha256": "9bb8a7db46228cf17606a40c825c939b03091f8bcf4c9435baf0a1e0c1f219d3",
+            "masked_sha256": "4a7cb056b32e4b9df62447c0bd6edf164e0c2b73e153c30578d249eb0410b32e",
+            "offset": 300280,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.await_initialize_gate": {
+        "masked_multiset_sha256": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ],
+        "masked_sequence_sha256": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1356432
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 418,
+            "masked_multiset_sha256": "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39",
+            "masked_sha256": "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39",
+            "offset": 1356432,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "masked_sequence_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1276986
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "masked_multiset_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "masked_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "offset": 1276979,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1279995
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1279950,
+            "statement_aligned": true
+          }
+        ]
+      }
+    },
+    "0.3.322": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330331
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1330331,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330106
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1330106,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc"
+        ],
+        "masked_sequence_sha256": [
+          "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296220
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "masked_multiset_sha256": "cc0595b7f4c2efbaa5311b692b4405aad1b8a98928bc59d665edf5c75c5c88bc",
+            "masked_sha256": "c905cc7b225ca27aaa0126e7e10946b466aaa2c4589b01caf3ce773105cc97f3",
+            "offset": 1296157,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a"
+        ],
+        "masked_sequence_sha256": [
+          "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1304298
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "masked_multiset_sha256": "7791cb363ceb837201c840e003134b2219c2f410f61a10f92335e9fc3778ef2a",
+            "masked_sha256": "0cc0ab38dcac6daf218f648014b8a4433ca25a97286f729ddeed99069a52c036",
+            "offset": 1304295,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387"
+        ],
+        "masked_sequence_sha256": [
+          "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296676
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "masked_multiset_sha256": "fb1b7077507faad1f122e87d5169a17438a987f59e6ee4cc34aad30d91370387",
+            "masked_sha256": "8963cab51d46a8b35680a10072bd6dd8c976c6c137f44eb3847ba1b3376a2fde",
+            "offset": 1296664,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+        ],
+        "masked_sequence_sha256": [
+          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1328964
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
+            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "offset": 1328964,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca"
+        ],
+        "masked_sequence_sha256": [
+          "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296837
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "masked_multiset_sha256": "ae7989b24a4f8cff70a20bcfdf8c5342fadd0490a5701b8a7a9168a6a74aadca",
+            "masked_sha256": "4754af746589f45ab318c71fbe72c54aa89c131319d998e58cf3dd52fdd432bf",
+            "offset": 1296837,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "b269ed66539fe74f48bcc6f996515eb471d2b63556bc51ab10a6d58d0b36d6fa"
+        ],
+        "masked_sequence_sha256": [
+          "a3f5006bf00a5936f647535754e4276c7434a054ffb22fb8f7cecb39098eb0ec"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1323982
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 198,
+            "masked_multiset_sha256": "b269ed66539fe74f48bcc6f996515eb471d2b63556bc51ab10a6d58d0b36d6fa",
+            "masked_sha256": "a3f5006bf00a5936f647535754e4276c7434a054ffb22fb8f7cecb39098eb0ec",
+            "offset": 1323982,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "masked_sequence_sha256": [
+          "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1329987
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "masked_multiset_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "masked_sha256": "d3fedce75d4f3932f68dda0ada1f27d6ecc6eba9e94d4c6ca258503c397bf128",
+            "offset": 1329987,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1221738
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 73,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1221721,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd"
+        ],
+        "masked_sequence_sha256": [
+          "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+          "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1239111,
+          1263810
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "masked_multiset_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "masked_sha256": "14340146e6420c8ecb62575a590f09f30e6a3a077b131e49794dc5986fff7048",
+            "offset": 1239074,
+            "statement_aligned": true
+          },
+          {
+            "bytes": 579,
+            "masked_multiset_sha256": "26f51d861f9a739940e3b8d7c29002257f9251cf713a6820bf24eb0a906a97bd",
+            "masked_sha256": "2191c6381971a65c32119b870840e788466c451f9fbc590cfbadc881883ab9f1",
+            "offset": 1263700,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          829946
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 345,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 829941,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_function": {
+        "masked_multiset_sha256": [
+          "2b2f7175f372020dd4742d726d40db163532d763ce63c9aa7ea936665cae4364"
+        ],
+        "masked_sequence_sha256": [
+          "149d6971f09d466c78647feb67e6cd630c88051a679f6fc6eee4c815325ee4fa"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 276,
+            "masked_multiset_sha256": "2b2f7175f372020dd4742d726d40db163532d763ce63c9aa7ea936665cae4364",
+            "masked_sha256": "149d6971f09d466c78647feb67e6cd630c88051a679f6fc6eee4c815325ee4fa",
+            "offset": 300103,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.limits_gate": {
+        "masked_multiset_sha256": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ],
+        "masked_sequence_sha256": [
+          "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          294081
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 176,
+            "masked_multiset_sha256": "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c",
+            "masked_sha256": "9217079659e7d5cd3b6ddc7087fd063e0756f40644a2c5b5c538bc4efa73795c",
+            "offset": 294073,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.numeric_key_test": {
+        "masked_multiset_sha256": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ],
+        "masked_sequence_sha256": [
+          "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          293896
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 78,
+            "masked_multiset_sha256": "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba",
+            "masked_sha256": "9150f2277a5e962e86adea5c4dfcede92a9e3ef23a23861f1f5ae0b55785faba",
+            "offset": 293888,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "telemetry.sanitizer_gate": {
+        "masked_multiset_sha256": [
+          "9bb8a7db46228cf17606a40c825c939b03091f8bcf4c9435baf0a1e0c1f219d3"
+        ],
+        "masked_sequence_sha256": [
+          "4a7cb056b32e4b9df62447c0bd6edf164e0c2b73e153c30578d249eb0410b32e"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 186,
+            "masked_multiset_sha256": "9bb8a7db46228cf17606a40c825c939b03091f8bcf4c9435baf0a1e0c1f219d3",
+            "masked_sha256": "4a7cb056b32e4b9df62447c0bd6edf164e0c2b73e153c30578d249eb0410b32e",
+            "offset": 300280,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.await_initialize_gate": {
+        "masked_multiset_sha256": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ],
+        "masked_sequence_sha256": [
+          "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1356492
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 418,
+            "masked_multiset_sha256": "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39",
+            "masked_sha256": "fda6b0bce391622aa7ed5a15957d43b6f6aafec5035824bcd92660e510eb9b39",
+            "offset": 1356492,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "masked_sequence_sha256": [
+          "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1277046
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "masked_multiset_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "masked_sha256": "3843971dcfdee5083e6289e1bbdbb003e538b5a8a668fc43ae4f19d415ac18a2",
+            "offset": 1277039,
+            "statement_aligned": true
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "masked_sequence_sha256": [
+          "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1280055
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "masked_multiset_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "masked_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "offset": 1280010,
+            "statement_aligned": true
+          }
+        ]
+      }
+    }
+  },
+  "versions": [
+    "0.3.317",
+    "0.3.318",
+    "0.3.319",
+    "0.3.321",
+    "0.3.322"
+  ]
+}

@@ -20,13 +20,31 @@ These points are a compatible extension of the selected ACP route. The
 `1.58.0` state-machine service rehome preserves the selected method boundary.
 The extracted compaction threshold preserves its prior calculations. Prompt
 contributions retain their text and now sort deterministically by extension
-name. In `1.59.0`, interrupted tool-call recovery returns the same error
-response for every unanswered unique request: the prior implementation used
-unique request IDs and an unanswered-response set; the new state ledger treats
-every request without a `ToolResponse` as open and deduplicates request IDs.
-Active advertised one-shot permission replies remain accepted. The additional
-advertised-request validation rejects stale or unmatched history, which the
-selected path does not submit.
+name.
+
+The built-in compaction input `crates/goose-context-management/src/prompts/compaction.md`
+changes from `1.58.0` to `1.58.1` (Git blobs
+`10e8692a4d41a54e37c6fdf4a9888f00cb115433` and
+`695651a56c002687e89568beadb8bb4a46696948`). `templates.rs` loads it as
+`COMPACTION_TEMPLATE`; `summarize.rs` renders it for the selected
+`ops_compaction` pipeline. The prompt now asks for structured working notes
+rather than a structured summary and revises part of the checklist, while
+preserving the user-request, technical-detail, useful-context, messages-input,
+and structured-output requirements. This can change internal summary phrasing;
+it does not change the ACP message, terminal-result, error, permission, or
+cleanup contract. The loader and summarizer source blobs remain identical across
+the frozen points.
+
+In `1.59.0`, interrupted tool-call recovery returns the same error response for
+every unanswered unique request: the prior implementation used unique request
+IDs and an unanswered-response set; the new state ledger deduplicates request
+IDs and treats each request without a `ToolResponse` as open. The selected
+adapter does not choose a permission option. For an active advertised request,
+it records the observation, sends `session/cancel`, then replies with outcome
+`cancelled` and no `optionId`. Goose's new confirmation-persistence guard
+checks advertised requests; the selected route does not persist a confirmation.
+The prepared-route ACP fake exercises the cancellation/reply order, interrupted
+tool update, cancelled prompt result, and cleanup.
 
 ## Identity and method
 
@@ -39,13 +57,16 @@ changed, and identical path sets. The selected closure follows the 1.58
 `StateMachineServices` rehome and the 1.59 `goose-agent` tool-call and
 permission implementation. Every changed selected path and residual path is
 classified in `protocol.json`; the test reconstructs these sets from the
-manifests and rejects missing, added, or reclassified paths.
+manifests and rejects missing, added, or reclassified paths. Selected-change
+classification hashes recursively sort JSON object keys so workspace features
+such as serde_json `preserve_order` cannot alter the digest.
 
 The fixture preserves earlier selected paths including model configuration,
 prompt management, reply parts, state-machine inference preparation,
-compaction, and exit-on-error. It also includes the added agent and service
-files that participate in the current method pipeline, permission replies,
-errors, cancellation, and cleanup. Optional context reporting, client tags,
+compaction, and exit-on-error. It also includes the compaction prompt and its
+unchanged loader/summarizer sources, plus the added agent and service files
+that participate in the method pipeline, permission replies, errors,
+cancellation, and cleanup. Optional context reporting, client tags,
 and live voice metadata remain unselected. Static release asset digests use
 GitHub's published digest metadata; source tags and recursive tree identities
 bind each point. Release binaries were not downloaded or executed.

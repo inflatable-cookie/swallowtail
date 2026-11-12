@@ -45,6 +45,9 @@
     "crates/goose-agent/src/tool_call_state.rs",
     "crates/goose-agent/src/unhandled_tool_calls.rs",
     "crates/goose-cli/src/cli.rs",
+    "crates/goose-context-management/src/prompts/compaction.md",
+    "crates/goose-context-management/src/summarize.rs",
+    "crates/goose-context-management/src/templates.rs",
     "crates/goose-provider-types/src/conversation/message.rs",
     "crates/goose-provider-types/src/errors.rs",
     "crates/goose-provider-types/src/goose_mode.rs",
@@ -106,7 +109,7 @@
     "crates/goose/src/session/session_manager.rs",
     "crates/goose/src/session_context.rs"
   ],
-  "selected_source_path_method": "The accepted 1.53.0 through 1.57.0 selected-source classifications are retained from Research 474. From 1.58.0, the closure follows the StateMachineServices and goose-agent implementation. Complete recursive tag-tree manifests cover every source file; each changed path within the applicable selected closure is classified once per hop, and all residual paths are bounded.",
+  "selected_source_path_method": "The accepted 1.53.0 through 1.57.0 selected-source classifications are retained from Research 474. From 1.58.0, the closure follows the StateMachineServices and goose-agent implementation and includes the built-in compaction prompt loaded by goose-context-management and rendered by the selected compaction pipeline. Complete recursive tag-tree manifests cover every source file; each changed path within the applicable selected closure is classified once per hop, and all residual paths are bounded.",
   "hop_classifications": {
     "1.53.0_to_1.54.0": {
       "selected_changes": {
@@ -1859,6 +1862,11 @@
           "inventory_change": "changed",
           "classification": "workspace_version_bump",
           "evidence": "Workspace version tracks this release; selected goose acp dispatch remains the standard ACP server."
+        },
+        "crates/goose-context-management/src/prompts/compaction.md": {
+          "inventory_change": "changed",
+          "classification": "compaction_prompt_instruction_rewording",
+          "evidence": "The exact built-in compaction prompt changes from distilling conversation into a structured summary to writing structured working notes. Both retain user requests, technical details, and as much useful prior context as possible; the structured-summary schema and {{ messages }} input remain. templates.rs loads this file as COMPACTION_TEMPLATE, and summarize.rs renders it as the system prompt from the selected ops_compaction pipeline. This may change internal summary wording, but it does not add an ACP update, method, result, error, permission, or cleanup outcome; the route continues to expose only its existing prompt text and terminal mapping."
         }
       },
       "residual_changes": {
@@ -1880,9 +1888,6 @@
           "ui/goose-binary/goose-binary-linux-arm64/package.json",
           "ui/goose-binary/goose-binary-linux-x64/package.json",
           "ui/goose-binary/goose-binary-win32-x64/package.json"
-        ],
-        "other_unselected_upstream": [
-          "crates/goose-context-management/src/prompts/compaction.md"
         ]
       }
     },
@@ -1995,8 +2000,8 @@
         },
         "crates/goose/src/agents/state_machine/tool_confirmation.rs": {
           "inventory_change": "changed",
-          "classification": "active_permission_reply_validation",
-          "evidence": "The new approval state additionally requires the tool request to have been advertised before persisting a confirmation. The selected ACP path only answers the current advertised pending request; its one-shot permission reply and request identity remain accepted, while stale or unmatched history is rejected."
+          "classification": "advertised_confirmation_persistence_guard",
+          "evidence": "The new guard checks that a tool request was advertised before persisting a user confirmation. The selected adapter does not persist or grant a permission choice: for the active advertised ACP request it sends session/cancel and replies with outcome=cancelled and no optionId. The prepared-route fake asserts this ordering and the cancelled prompt result. Unmatched persisted confirmations are outside the selected path."
         },
         "crates/goose/src/config/base.rs": {
           "inventory_change": "changed",
@@ -2129,8 +2134,14 @@
   "compatible_extension": {
     "shape": "compatible-extension",
     "finding": "Selected initialize/session/new/session/prompt/session/cancel methods and mapped failure outcomes remain within the existing route boundary.",
-    "interrupted_tool_call_recovery": "Equivalent: the 1.57 implementation returns one interruption error response for each unanswered unique tool request; in 1.59 ToolCallState::is_open is true for every state without a ToolResponse, and request IDs are deduplicated.",
-    "permission_reply": "Valid active advertised one-shot replies remain supported; the additional advertised-request check only rejects stale or unmatched request history.",
-    "claim": "Keep baseline, claim id, behavior revision, posture, gaps, and prior points; qualify 1.58.0, 1.58.1, and 1.59.0."
-  }
+    "interrupted_tool_call_recovery": "Equivalent selected result: the 1.57 implementation emits one interruption ToolResponse for each unanswered unique tool request; 1.59 deduplicates request IDs, marks any request without a ToolResponse as open, and emits the same error result for each open request. The prepared-route fake follows permission cancellation with an interrupted failed tool update, a cancelled prompt result, and joined cleanup.",
+    "permission_reply": "The selected route does not choose allow_once or any other permission option. For an active advertised permission request it records the observation, sends session/cancel, and replies with outcome=cancelled and no optionId. Goose 1.59 confirmation persistence validates that a request was advertised; this route does not persist a permission confirmation. The ACP fake exercises that exact cancel/reply order and the subsequent cancelled prompt result.",
+    "claim": "Keep baseline, claim id, behavior revision, posture, gaps, and prior points; qualify 1.58.0, 1.58.1, and 1.59.0.",
+    "selected_compaction_prompt": "1.58.1 rewords the built-in compaction instructions while keeping the structured-summary schema, message input, and compaction pipeline. It may affect provider-internal summary phrasing but adds no ACP method/update/result or mapped failure/cleanup outcome."
+  },
+  "selected_compaction_context_paths": [
+    "crates/goose-context-management/src/prompts/compaction.md",
+    "crates/goose-context-management/src/summarize.rs",
+    "crates/goose-context-management/src/templates.rs"
+  ]
 }

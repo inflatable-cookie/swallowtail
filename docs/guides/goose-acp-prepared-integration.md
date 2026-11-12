@@ -36,9 +36,11 @@ not make them qualified.
 
 Research 478 freezes official stable `1.58.0`, `1.58.1`, and `1.59.0`.
 Interrupted recovery still returns an error response for each unanswered unique
-tool request, and active advertised one-shot permission replies remain valid.
-The existing boundary and cleanup mapping therefore extend without a behavior
-revision change. Static qualification does not prove live HTTP MCP honouring.
+tool request. The route handles an active permission request by observing it,
+sending `session/cancel`, and replying `cancelled` without selecting a
+permission option. The existing boundary and cleanup mapping therefore extend
+without a behavior revision change. Static qualification does not prove live
+HTTP MCP honouring.
 
 Swallowtail does not install Goose, search `PATH`, run `goose configure`, bind
 `GOOSE_PROVIDER` / `GOOSE_MODEL` as Swallowtail selection, or default

@@ -23,7 +23,9 @@ pub struct ObservedProcess {
 struct AgentState {
     output: VecDeque<ProcessOutputChunk>,
     writes: Vec<Value>,
+    server_messages: Vec<Value>,
     prompt_id: Option<u64>,
+    permission_cancel_sent: bool,
     stopped: bool,
 }
 
@@ -36,6 +38,7 @@ struct SharedAgent {
 
 impl SharedAgent {
     fn enqueue(state: &mut AgentState, message: Value) {
+        state.server_messages.push(message.clone());
         let mut bytes = serde_json::to_vec(&message).expect("fixture message serializes");
         bytes.push(b'\n');
         state
@@ -195,24 +198,49 @@ impl SharedAgent {
                             }
                         }),
                     ),
-                    Scenario::Permission => Self::enqueue(
-                        &mut state,
-                        json!({
-                            "jsonrpc": "2.0",
-                            "id": 900,
-                            "method": "session/request_permission",
-                            "params": {
-                                "sessionId": "opaque-fixture-session",
-                                "toolCall": {"toolCallId": "tool-goose", "status": "pending"},
-                                "options": [
-                                    {"optionId": "allow_always", "name": "allow_always", "kind": "allow_always"},
-                                    {"optionId": "allow_once", "name": "allow_once", "kind": "allow_once"},
-                                    {"optionId": "reject_once", "name": "reject_once", "kind": "reject_once"},
-                                    {"optionId": "reject_always", "name": "reject_always", "kind": "reject_always"}
-                                ]
-                            }
-                        }),
-                    ),
+                    Scenario::Permission => {
+                        enqueue_session_metadata(&mut state);
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "method": "session/update",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "update": {
+                                        "sessionUpdate": "tool_call",
+                                        "toolCallId": "tool-goose",
+                                        "title": "Read fixture",
+                                        "kind": "read",
+                                        "status": "in_progress"
+                                    }
+                                }
+                            }),
+                        );
+                        Self::enqueue(
+                            &mut state,
+                            json!({
+                                "jsonrpc": "2.0",
+                                "id": 900,
+                                "method": "session/request_permission",
+                                "params": {
+                                    "sessionId": "opaque-fixture-session",
+                                    "toolCall": {
+                                        "toolCallId": "tool-goose",
+                                        "title": "Read fixture",
+                                        "kind": "read",
+                                        "status": "pending"
+                                    },
+                                    "options": [
+                                        {"optionId": "allow_always", "name": "allow_always", "kind": "allow_always"},
+                                        {"optionId": "allow_once", "name": "allow_once", "kind": "allow_once"},
+                                        {"optionId": "reject_once", "name": "reject_once", "kind": "reject_once"},
+                                        {"optionId": "reject_always", "name": "reject_always", "kind": "reject_always"}
+                                    ]
+                                }
+                            }),
+                        );
+                    }
                     Scenario::Oversized => {
                         let mut bytes = b"{\"jsonrpc\":\"2.0\",\"method\":\"session/update\",\"params\":{\"sessionId\":\"opaque-fixture-session\",\"update\":{\"sessionUpdate\":\"agent_message_chunk\",\"content\":{\"type\":\"text\",\"text\":\"".to_vec();
                         bytes.extend(std::iter::repeat_n(b'x', 64 * 1024));
@@ -237,7 +265,9 @@ impl SharedAgent {
                 }
             }
             Some("session/cancel") => {
-                if let Some(prompt_id) = state.prompt_id.take() {
+                if self.scenario == Scenario::Permission {
+                    state.permission_cancel_sent = true;
+                } else if let Some(prompt_id) = state.prompt_id.take() {
                     Self::enqueue(
                         &mut state,
                         json!({
@@ -249,7 +279,47 @@ impl SharedAgent {
                 }
             }
             Some("session/load") | Some("authenticate") => return Err(fixture_failure()),
-            None if id == Some(900) => {}
+            None if id == Some(900) && self.scenario == Scenario::Permission => {
+                let outcome = &message["result"]["outcome"];
+                if !state.permission_cancel_sent
+                    || outcome["outcome"] != "cancelled"
+                    || outcome.get("optionId").is_some()
+                {
+                    return Err(fixture_failure());
+                }
+                if let Some(prompt_id) = state.prompt_id.take() {
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "method": "session/update",
+                            "params": {
+                                "sessionId": "opaque-fixture-session",
+                                "update": {
+                                    "sessionUpdate": "tool_call_update",
+                                    "toolCallId": "tool-goose",
+                                    "status": "failed",
+                                    "content": [{
+                                        "type": "content",
+                                        "content": {
+                                            "type": "text",
+                                            "text": "Tool call was interrupted before completing"
+                                        }
+                                    }]
+                                }
+                            }
+                        }),
+                    );
+                    Self::enqueue(
+                        &mut state,
+                        json!({
+                            "jsonrpc": "2.0",
+                            "id": prompt_id,
+                            "result": {"stopReason": "cancelled"}
+                        }),
+                    );
+                }
+            }
             None if id == Some(702) => {}
             _ => return Err(fixture_failure()),
         }

@@ -185,8 +185,8 @@ fn unexpected_write_callback_is_rejected_before_host_mutation() {
 }
 
 #[test]
-fn permission_observes_without_selecting_allow_always() {
-    let (host, mut session, services) = open(Scenario::Permission, "permission");
+fn cancelled_permission_interrupts_tool_and_preserves_route_outcome() {
+    let (host, mut session, services) = open(Scenario::Permission, "permission-cancel");
     let mut turn = start(&mut *session, services.clone(), "permission-turn");
     assert!(turn.take_callbacks().is_none());
     let outcome = block_on(
@@ -197,15 +197,71 @@ fn permission_observes_without_selecting_allow_always() {
         outcome.status(),
         TerminalStatus::ProviderRequestObserved(_)
     ));
-    assert!(host.writes().iter().any(|message| {
-        message.get("method").and_then(serde_json::Value::as_str) == Some("session/cancel")
-    }));
-    assert!(host.writes().iter().any(|message| {
-        message.get("id").and_then(serde_json::Value::as_u64) == Some(900)
-            && message["result"]["outcome"]["outcome"] == "cancelled"
-            && message["result"]["outcome"].get("optionId")
-                != Some(&serde_json::json!("allow_always"))
-    }));
+    let writes = host.writes();
+    let cancel_index = writes
+        .iter()
+        .position(|message| message["method"] == "session/cancel")
+        .expect("active permission request triggers session/cancel");
+    let reply_index = writes
+        .iter()
+        .position(|message| message.get("id").and_then(serde_json::Value::as_u64) == Some(900))
+        .expect("permission request receives its response");
+    assert!(
+        cancel_index < reply_index,
+        "cancel precedes the permission reply"
+    );
+    let permission_reply = &writes[reply_index];
+    assert_eq!(
+        permission_reply["result"]["outcome"],
+        serde_json::json!({"outcome": "cancelled"})
+    );
+    assert!(
+        permission_reply["result"]["outcome"]
+            .get("optionId")
+            .is_none()
+    );
+
+    let server_messages = host.server_messages();
+    let advertised_tool_index = server_messages
+        .iter()
+        .position(|message| {
+            message["params"]["update"]["sessionUpdate"] == "tool_call"
+                && message["params"]["update"]["toolCallId"] == "tool-goose"
+                && message["params"]["update"]["status"] == "in_progress"
+        })
+        .expect("tool request is advertised before permission is requested");
+    let permission_request_index = server_messages
+        .iter()
+        .position(|message| message["method"] == "session/request_permission")
+        .expect("permission request is sent for the advertised tool");
+    assert!(advertised_tool_index < permission_request_index);
+    assert_eq!(
+        server_messages[permission_request_index]["params"]["toolCall"]["toolCallId"],
+        "tool-goose"
+    );
+    assert!(
+        server_messages[permission_request_index]["params"]["options"]
+            .as_array()
+            .expect("permission options")
+            .iter()
+            .any(|option| option["optionId"] == "allow_once")
+    );
+    let interrupted_tool_index = server_messages
+        .iter()
+        .position(|message| {
+            message["params"]["update"]["sessionUpdate"] == "tool_call_update"
+                && message["params"]["update"]["toolCallId"] == "tool-goose"
+                && message["params"]["update"]["status"] == "failed"
+                && message["params"]["update"]["content"][0]["content"]["text"]
+                    == "Tool call was interrupted before completing"
+        })
+        .expect("cancelled tool call produces an interrupted result update");
+    let cancelled_prompt_index = server_messages
+        .iter()
+        .position(|message| message["result"]["stopReason"] == "cancelled")
+        .expect("prompt finishes with its cancelled result");
+    assert!(permission_request_index < interrupted_tool_index);
+    assert!(interrupted_tool_index < cancelled_prompt_index);
     assert_eq!(
         ProviderRequestHandling::Reject,
         swallowtail_core::ProviderRequestPolicy::reject_all().handling_for(
@@ -218,6 +274,7 @@ fn permission_observes_without_selecting_allow_always() {
         block_on(close_session(session, services)),
         CleanupOutcome::Clean
     );
+    assert_eq!(host.releases(), 1);
 }
 
 #[test]

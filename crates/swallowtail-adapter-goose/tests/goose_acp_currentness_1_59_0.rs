@@ -14,6 +14,7 @@ const MANIFEST_1_57_0: &str = include_str!("fixtures/goose-acp-1.59.0/manifest-1
 const MANIFEST_1_58_0: &str = include_str!("fixtures/goose-acp-1.59.0/manifest-1.58.0.tsv");
 const MANIFEST_1_58_1: &str = include_str!("fixtures/goose-acp-1.59.0/manifest-1.58.1.tsv");
 const MANIFEST_1_59_0: &str = include_str!("fixtures/goose-acp-1.59.0/manifest-1.59.0.tsv");
+const COMPACTION_PROMPT: &str = "crates/goose-context-management/src/prompts/compaction.md";
 
 const NEW_SELECTED_SOURCE_PATHS: &[&str] = &[
     "crates/goose-agent/src/inference.rs",
@@ -27,6 +28,9 @@ const NEW_SELECTED_SOURCE_PATHS: &[&str] = &[
     "crates/goose-agent/src/tool_approval.rs",
     "crates/goose-agent/src/tool_call_state.rs",
     "crates/goose-agent/src/unhandled_tool_calls.rs",
+    "crates/goose-context-management/src/prompts/compaction.md",
+    "crates/goose-context-management/src/summarize.rs",
+    "crates/goose-context-management/src/templates.rs",
     "crates/goose/src/agents/active_run.rs",
     "crates/goose/src/agents/services.rs",
     "crates/goose/src/agents/session_runtime.rs",
@@ -78,11 +82,11 @@ const EXPECTED_SELECTED_CLASSIFICATION_SHA256: [(&str, &str); 3] = [
     ),
     (
         "1.58.0_to_1.58.1",
-        "f229328aec2b0dcf49af3fc9621b60e92ca9fa74989f440607e551e4b1e18ad1",
+        "a77129b5146e44a6fd0aa98c5ea53dbc9e75a7c16e309df08164b7c3a4ce4d26",
     ),
     (
         "1.58.1_to_1.59.0",
-        "448795c4a9b6132502d6570f4422cdf5d67f27d8e96137b8ba5829350e5e72d6",
+        "a9202c0105d3d29adcd7f94af211d6783941d349c1b214ed9a7292b0716ea058",
     ),
 ];
 
@@ -113,6 +117,42 @@ fn string_set(value: &Value) -> BTreeSet<String> {
 
 fn object_keys(value: &Value) -> BTreeSet<String> {
     value.as_object().expect("object").keys().cloned().collect()
+}
+
+fn write_canonical_json(value: &Value, output: &mut Vec<u8>) {
+    match value {
+        Value::Object(object) => {
+            output.push(b'{');
+            let mut entries: Vec<_> = object.iter().collect();
+            entries.sort_by(|(left, _), (right, _)| left.cmp(right));
+            for (index, (key, value)) in entries.into_iter().enumerate() {
+                if index > 0 {
+                    output.push(b',');
+                }
+                output.extend_from_slice(&serde_json::to_vec(key).expect("object key serializes"));
+                output.push(b':');
+                write_canonical_json(value, output);
+            }
+            output.push(b'}');
+        }
+        Value::Array(values) => {
+            output.push(b'[');
+            for (index, value) in values.iter().enumerate() {
+                if index > 0 {
+                    output.push(b',');
+                }
+                write_canonical_json(value, output);
+            }
+            output.push(b']');
+        }
+        _ => output.extend_from_slice(&serde_json::to_vec(value).expect("value serializes")),
+    }
+}
+
+fn canonical_json(value: &Value) -> Vec<u8> {
+    let mut output = Vec::new();
+    write_canonical_json(value, &mut output);
+    output
 }
 
 fn parse_manifest(body: &str, version: &str) -> Manifest {
@@ -196,6 +236,16 @@ fn official_hops_and_complete_source_deltas_are_frozen() {
     let protocol: Value = serde_json::from_str(PROTOCOL).expect("protocol");
     let prior_protocol: Value = serde_json::from_str(PRIOR_PROTOCOL).expect("prior protocol");
     let prior_inventory: Value = serde_json::from_str(PRIOR_INVENTORY).expect("prior inventory");
+    assert_eq!(
+        strings(&protocol["selected_compaction_context_paths"]),
+        [
+            "crates/goose-context-management/src/prompts/compaction.md".to_owned(),
+            "crates/goose-context-management/src/summarize.rs".to_owned(),
+            "crates/goose-context-management/src/templates.rs".to_owned(),
+        ]
+        .into_iter()
+        .collect()
+    );
     assert_eq!(identity["official_latest"], "1.59.0");
     assert_eq!(identity["previous_qualified_ceiling"], "1.57.0");
     assert_eq!(identity["compared"], serde_json::json!(ALL_VERSIONS));
@@ -262,6 +312,26 @@ fn official_hops_and_complete_source_deltas_are_frozen() {
         .iter()
         .map(|(v, body)| (*v, parse_manifest(body, v)))
         .collect();
+    assert_eq!(
+        manifests["1.58.0"][COMPACTION_PROMPT],
+        "100644\t10e8692a4d41a54e37c6fdf4a9888f00cb115433"
+    );
+    assert_eq!(
+        manifests["1.58.1"][COMPACTION_PROMPT],
+        "100644\t695651a56c002687e89568beadb8bb4a46696948"
+    );
+    for unchanged_compaction_support in [
+        "crates/goose-context-management/src/summarize.rs",
+        "crates/goose-context-management/src/templates.rs",
+    ] {
+        let previous = &manifests["1.57.0"][unchanged_compaction_support];
+        for version in ["1.58.0", "1.58.1", "1.59.0"] {
+            assert_eq!(
+                &manifests[version][unchanged_compaction_support], previous,
+                "compaction loader path stays unchanged: {unchanged_compaction_support} at {version}"
+            );
+        }
+    }
     for (version, body) in VERSIONS {
         assert_eq!(
             manifest_digest(body),
@@ -407,8 +477,7 @@ fn official_hops_and_complete_source_deltas_are_frozen() {
                     .is_empty()
             );
         }
-        let class_json =
-            serde_json::to_vec(&hop_record["selected_changes"]).expect("classification JSON");
+        let class_json = canonical_json(&hop_record["selected_changes"]);
         let class_sha = format!("{:x}", Sha256::digest(class_json));
         let expected_sha = EXPECTED_SELECTED_CLASSIFICATION_SHA256
             .iter()
@@ -458,21 +527,35 @@ fn official_hops_and_complete_source_deltas_are_frozen() {
     let extension = &protocol["compatible_extension"];
     assert_eq!(extension["shape"], "compatible-extension");
     assert!(
+        extension["selected_compaction_prompt"]
+            .as_str()
+            .unwrap()
+            .contains("structured-summary schema")
+    );
+    assert!(
         extension["interrupted_tool_call_recovery"]
             .as_str()
             .unwrap()
-            .contains("deduplicated")
+            .contains("same error result for each open request")
     );
     assert!(
         extension["permission_reply"]
             .as_str()
             .unwrap()
-            .contains("active advertised one-shot replies")
+            .contains("outcome=cancelled and no optionId")
     );
     assert_eq!(
         extension["claim"],
         "Keep baseline, claim id, behavior revision, posture, gaps, and prior points; qualify 1.58.0, 1.58.1, and 1.59.0."
     );
+}
+
+#[test]
+fn selected_classification_digest_is_independent_of_object_order() {
+    let first: Value = serde_json::from_str(r#"{"z":{"b":1,"a":2},"a":[]}"#).expect("first object");
+    let second: Value =
+        serde_json::from_str(r#"{"a":[],"z":{"a":2,"b":1}}"#).expect("second object");
+    assert_eq!(canonical_json(&first), canonical_json(&second));
 }
 
 #[test]

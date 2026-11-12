@@ -181,10 +181,11 @@ fn official_identity_freezes_npm_latest_and_preserves_the_claim_shape() {
         assert_eq!(record["tarball_sha256"].as_str().unwrap().len(), 64);
     }
 
-    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.26.6");
+    assert_eq!(QWEN_CODE_LATEST_QUALIFIED_VERSION, "0.27.2");
     let claim = qwen_headless_claim();
     for stable in [
-        "0.26.0", "0.26.1", "0.26.2", "0.26.3", "0.26.4", "0.26.5", "0.26.6",
+        "0.26.0", "0.26.1", "0.26.2", "0.26.3", "0.26.4", "0.26.5", "0.26.6", "0.26.7", "0.26.8",
+        "0.26.9", "0.27.0", "0.27.1", "0.27.2",
     ] {
         assert!(
             claim.supports(&version(stable)),
@@ -211,7 +212,7 @@ fn official_identity_freezes_npm_latest_and_preserves_the_claim_shape() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.7")),
+        claim.assess(&version("0.27.3")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

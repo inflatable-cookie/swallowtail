@@ -114,7 +114,8 @@ fn production_claim_excludes_the_documented_unpublished_interior_gaps() {
     }
     for point in [
         "0.24.3", "0.24.4", "0.24.5", "0.24.6", "0.24.7", "0.25.0", "0.25.1", "0.25.2", "0.25.3",
-        "0.26.0", "0.26.1", "0.26.2", "0.26.3", "0.26.4", "0.26.5", "0.26.6",
+        "0.26.0", "0.26.1", "0.26.2", "0.26.3", "0.26.4", "0.26.5", "0.26.6", "0.26.7", "0.26.8",
+        "0.26.9", "0.27.0", "0.27.1", "0.27.2",
     ] {
         assert!(
             claim.supports(&version(point)),
@@ -130,7 +131,7 @@ fn production_claim_excludes_the_documented_unpublished_interior_gaps() {
         InterfaceCompatibilityAssessment::Incompatible
     );
     assert!(matches!(
-        claim.assess(&version("0.26.7")),
+        claim.assess(&version("0.27.3")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 }

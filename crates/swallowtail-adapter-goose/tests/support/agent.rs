@@ -23,7 +23,6 @@ pub struct ObservedProcess {
 struct AgentState {
     output: VecDeque<ProcessOutputChunk>,
     writes: Vec<Value>,
-    server_messages: Vec<Value>,
     prompt_id: Option<u64>,
     permission_cancel_sent: bool,
     stopped: bool,
@@ -38,7 +37,6 @@ struct SharedAgent {
 
 impl SharedAgent {
     fn enqueue(state: &mut AgentState, message: Value) {
-        state.server_messages.push(message.clone());
         let mut bytes = serde_json::to_vec(&message).expect("fixture message serializes");
         bytes.push(b'\n');
         state

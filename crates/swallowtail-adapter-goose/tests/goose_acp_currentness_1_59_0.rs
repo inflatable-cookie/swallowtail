@@ -123,8 +123,10 @@ fn write_canonical_json(value: &Value, output: &mut Vec<u8>) {
     match value {
         Value::Object(object) => {
             output.push(b'{');
-            let mut entries: Vec<_> = object.iter().collect();
-            entries.sort_by(|(left, _), (right, _)| left.cmp(right));
+            let entries: BTreeMap<_, _> = object
+                .iter()
+                .map(|(key, value)| (key.as_str(), value))
+                .collect();
             for (index, (key, value)) in entries.into_iter().enumerate() {
                 if index > 0 {
                     output.push(b',');

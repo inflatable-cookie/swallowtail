@@ -91,15 +91,6 @@ impl FixtureHost {
             .writes
             .clone()
     }
-
-    pub fn server_messages(&self) -> Vec<Value> {
-        self.agent
-            .state
-            .lock()
-            .expect("fixture agent lock poisoned")
-            .server_messages
-            .clone()
-    }
 }
 
 pub fn close_session(

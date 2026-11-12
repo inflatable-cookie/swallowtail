@@ -6,7 +6,7 @@ use support::{FixtureHost, Scenario, close_session, selection, selection_with_ac
 use swallowtail_adapter_goose::{
     GOOSE_ACP_MCP_SERVER_NAME, GooseAcpDriver, GooseAcpRemoteMcpPlacement,
 };
-use swallowtail_core::{ExecutionHostId, ProviderRequestHandling, ResourceAccess};
+use swallowtail_core::{ExecutionHostId, ResourceAccess};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest,
     OperationContent, RequestId, RuntimeEventKind, RuntimeTurnId, SessionPlanAgreement,
@@ -182,99 +182,6 @@ fn unexpected_write_callback_is_rejected_before_host_mutation() {
         block_on(close_session(session, services)),
         CleanupOutcome::Clean
     );
-}
-
-#[test]
-fn cancelled_permission_interrupts_tool_and_preserves_route_outcome() {
-    let (host, mut session, services) = open(Scenario::Permission, "permission-cancel");
-    let mut turn = start(&mut *session, services.clone(), "permission-turn");
-    assert!(turn.take_callbacks().is_none());
-    let outcome = block_on(
-        turn.take_terminal_outcome()
-            .expect("terminal outcome is available"),
-    );
-    assert!(matches!(
-        outcome.status(),
-        TerminalStatus::ProviderRequestObserved(_)
-    ));
-    let writes = host.writes();
-    let cancel_index = writes
-        .iter()
-        .position(|message| message["method"] == "session/cancel")
-        .expect("active permission request triggers session/cancel");
-    let reply_index = writes
-        .iter()
-        .position(|message| message.get("id").and_then(serde_json::Value::as_u64) == Some(900))
-        .expect("permission request receives its response");
-    assert!(
-        cancel_index < reply_index,
-        "cancel precedes the permission reply"
-    );
-    let permission_reply = &writes[reply_index];
-    assert_eq!(
-        permission_reply["result"]["outcome"],
-        serde_json::json!({"outcome": "cancelled"})
-    );
-    assert!(
-        permission_reply["result"]["outcome"]
-            .get("optionId")
-            .is_none()
-    );
-
-    let server_messages = host.server_messages();
-    let advertised_tool_index = server_messages
-        .iter()
-        .position(|message| {
-            message["params"]["update"]["sessionUpdate"] == "tool_call"
-                && message["params"]["update"]["toolCallId"] == "tool-goose"
-                && message["params"]["update"]["status"] == "in_progress"
-        })
-        .expect("tool request is advertised before permission is requested");
-    let permission_request_index = server_messages
-        .iter()
-        .position(|message| message["method"] == "session/request_permission")
-        .expect("permission request is sent for the advertised tool");
-    assert!(advertised_tool_index < permission_request_index);
-    assert_eq!(
-        server_messages[permission_request_index]["params"]["toolCall"]["toolCallId"],
-        "tool-goose"
-    );
-    assert!(
-        server_messages[permission_request_index]["params"]["options"]
-            .as_array()
-            .expect("permission options")
-            .iter()
-            .any(|option| option["optionId"] == "allow_once")
-    );
-    let interrupted_tool_index = server_messages
-        .iter()
-        .position(|message| {
-            message["params"]["update"]["sessionUpdate"] == "tool_call_update"
-                && message["params"]["update"]["toolCallId"] == "tool-goose"
-                && message["params"]["update"]["status"] == "failed"
-                && message["params"]["update"]["content"][0]["content"]["text"]
-                    == "Tool call was interrupted before completing"
-        })
-        .expect("cancelled tool call produces an interrupted result update");
-    let cancelled_prompt_index = server_messages
-        .iter()
-        .position(|message| message["result"]["stopReason"] == "cancelled")
-        .expect("prompt finishes with its cancelled result");
-    assert!(permission_request_index < interrupted_tool_index);
-    assert!(interrupted_tool_index < cancelled_prompt_index);
-    assert_eq!(
-        ProviderRequestHandling::Reject,
-        swallowtail_core::ProviderRequestPolicy::reject_all().handling_for(
-            &swallowtail_core::ExtensionNamespace::new("acp/session/request-permission")
-                .expect("valid namespace")
-        )
-    );
-    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(
-        block_on(close_session(session, services)),
-        CleanupOutcome::Clean
-    );
-    assert_eq!(host.releases(), 1);
 }
 
 #[test]

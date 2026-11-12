@@ -204,6 +204,13 @@ The default prepared run or session rejects an unexpected permission once,
 cancels the turn, and reports `ProviderRequestObserved`. It exposes no callback
 exchange.
 
+The provider can also deny a tool without emitting a permission request. In
+that case the adapter does not invent a callback or a `ProviderRequestObserved`
+outcome. Tom's 2026-11-12 ruling preserves the inherited
+`permissions.denyInsteadOfPrompting` setting under a distinct revision for
+affected newer ACP versions once their exact behavior is qualified; it does not
+itself extend the current 0.100.0 qualified ceiling.
+
 Call `with_consumer_mediated_permissions` on
 `ClaudeAgentRunProfileInput` or `ClaudeAgentSessionProfileInput` to opt into
 the exact `acp/session/request-permission` provider extension. A run exposes

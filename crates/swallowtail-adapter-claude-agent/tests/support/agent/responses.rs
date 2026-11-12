@@ -10,6 +10,9 @@ impl SharedAgent {
             return Err(fixture_failure());
         }
         if let Some(id) = state.prompt_id.take() {
+            if self.scenario == Scenario::SimulatedIdleCompaction {
+                state.fake_idle_armed = true;
+            }
             let total_tokens = if self.scenario == Scenario::MalformedUsage {
                 22
             } else {

@@ -8,6 +8,9 @@ const PERMISSION: &str = include_str!("fixtures/claude-agent-acp-0.106.0/permiss
 const DEPENDENCIES: &str = include_str!("fixtures/claude-agent-acp-0.106.0/dependencies.json");
 const CLOSURE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/static-closure.json");
 const IDLE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/idle-compaction-boundary.json");
+const IDLE_TRACE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/idle-control-trace.json");
+const PERMISSION_CONTROL: &str =
+    include_str!("fixtures/claude-agent-acp-0.106.0/native-permission-control.json");
 
 #[test]
 fn current_acp_inventory_reconstructs_all_hops_without_qualifying_them() {
@@ -117,6 +120,14 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
         (
             IDLE,
             "fe0f77219190d123fdcf55efcdd46aac2767eb96d17bcf758bdd2882eb611129",
+        ),
+        (
+            IDLE_TRACE,
+            "e6e04b042909d0e321e21a9965b501647075aa1943e0f6e6a10d466fc48efcb7",
+        ),
+        (
+            PERMISSION_CONTROL,
+            "e8125782d88cd32160141e3fec2e67e870e98a7311b440b5753bf03bac1c8b38",
         ),
     ] {
         assert_eq!(format!("{:x}", Sha256::digest(text.as_bytes())), expected);

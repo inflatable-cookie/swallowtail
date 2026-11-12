@@ -110,6 +110,7 @@ impl SharedAgent {
                 }
             }
             Scenario::Success
+            | Scenario::SimulatedIdleCompaction
             | Scenario::LargeToolUpdate
             | Scenario::MalformedUsage
             | Scenario::RunDeleteDisconnect => {
@@ -151,6 +152,23 @@ impl SharedAgent {
                         "path": "/private/fixture/src/lib.rs"
                     }}),
                 );
+            }
+            Scenario::PermissionDeniedWithoutCallback => {
+                for update in [
+                    json!({"sessionUpdate": "tool_call", "toolCallId": "read-denied", "title": "Read fixture", "kind": "read", "status": "in_progress"}),
+                    json!({"sessionUpdate": "tool_call_update", "toolCallId": "read-denied", "status": "failed"}),
+                    json!({"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "The read was denied; continuing."}}),
+                ] {
+                    Self::enqueue(state, json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                        "sessionId": "claude-agent-session-fixture", "update": update
+                    }}));
+                }
+                if let Some(prompt_id) = state.prompt_id.take() {
+                    Self::enqueue(state, json!({"jsonrpc": "2.0", "id": prompt_id, "result": {
+                        "stopReason": "end_turn",
+                        "usage": {"inputTokens": 12, "outputTokens": 4, "cachedReadTokens": 3, "cachedWriteTokens": 2, "totalTokens": 21}
+                    }}));
+                }
             }
             Scenario::Permission => {
                 Self::enqueue(

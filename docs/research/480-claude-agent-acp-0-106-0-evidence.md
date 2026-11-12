@@ -1,8 +1,9 @@
 # Research 480: Claude Agent ACP 0.106.0 evidence
 
 Status: evidence only. `claude-agent.acp` remains qualified through 0.100.0;
-newer points remain `UnverifiedNewer`. The permission and process boundaries
-below require a route-specific decision. This record does not qualify the
+newer points remain `UnverifiedNewer`. Tom chose a distinct permission
+behavior revision; the process boundary still needs separate authority and
+proof. This record does not qualify the
 standalone Agent SDK, native executable, Node, shared ACP schema, or HTTP MCP.
 
 ## Identity
@@ -67,8 +68,9 @@ No static manifest or fake proves that the changed native binaries implement
 every selected SDK behavior. HTTP MCP live honouring remains exact to the
 previously evidenced points. The retained tests exercise adapter behavior
 against fakes; they do not execute or qualify the vendor artifacts. Operator
-decision `43ddf3d5-e62b-4516-8546-e53137b320be` owns the permission boundary;
-the separate idle-compaction process boundary has been reported to the planner.
+decision `43ddf3d5-e62b-4516-8546-e53137b320be` version 2 chooses a distinct
+ACP revision preserving the inherited permission setting. The separate
+idle-compaction process boundary has been reported to the planner.
 
 Sources: [official npm package](https://www.npmjs.com/package/@agentclientprotocol/claude-agent-acp),
 [upstream tags](https://github.com/agentclientprotocol/claude-agent-acp/tags),
@@ -98,3 +100,56 @@ unsolicited turn starts or can be disabled. Record platform, binary digest,
 settings, process actions and observable wire order. Use no real user home or
 ambient credentials, and keep network disabled except where explicitly
 approved. A fake result is harness proof, not vendor qualification.
+
+## Bounded follow-up inspection
+
+The `native-permission-control.json` fixture identifies an exact no-prompt
+control function in each independently downloaded Linux x64 and Darwin arm64
+SDK 0.3.319, 0.3.321 and 0.3.322 binary. Each recorded function range has a
+byte offset, length and SHA-256 under the whole binary hash. The fragments show
+conditional no-prompt denial after hook handling; they do not establish the
+entire caller chain, every tool outcome, or other platforms. In particular,
+the absence of a marker in 0.3.318 is not proof of that earlier binary's
+complete control flow. Fake ACP responses test the adapter, not native behavior.
+
+The `idle-control-trace.json` fixture binds source ranges in 0.101.0 and
+0.106.0 to the tarball trees. The session registers a timer and routes its
+callback into the v1 prompt method. The timer checks an observed one-hour cache,
+context threshold, active work and user input, rate limit, and elapsed deadline.
+The default delay is 54 minutes and default minimum is 200,000 tokens.
+`idleCompaction: false`, `autoCompactEnabled: false`, or truthy
+`DISABLE_COMPACT` or `DISABLE_AUTO_COMPACT` suppress it. Settings-provided env
+wins over the process environment for those flags. The adapter passes a
+host-supplied environment reference; it does not itself set these controls.
+
+Prompt, steer, cancel and model selection disarm a pending timer, and teardown
+disposes it. A timer that has already entered `compact()` is not undone by
+`disarm()` alone; the teardown path separately cancels and awaits queued
+turns. Exact race outcomes remain unproved without a bounded vendor-side
+observation. Contract 039 describes one consumer-submitted structured prompt
+and joined cleanup. The existence of a suppression setting does not prove this
+route enforces that authority boundary under inherited settings.
+
+In 0.101.0 the timer's settings callback reads
+`registered.settingsManager.getSettings()` rather than the inline SDK
+settings supplied through session metadata. The manager resolves user,
+project, local and managed files independently. An inline
+`idleCompaction: false` therefore does not establish suppression at that hop.
+The flags consult effective `settings.env` before process env, so a host env
+flag is not a guaranteed override either. In 0.106.0,
+`getCompactionSettings(configuredSettingsObject)` includes inline settings,
+but managed compaction values and managed env take precedence. The frozen
+inventory pins the relevant settings, timer and v1 agent files. No route-owned
+control has been proved across all hops while retaining inherited settings.
+
+The prepared-driver fake advances a controlled clock to 53 and then 54
+minutes after a completed turn. At the simulated deadline it emits an
+unsolicited message update; the adapter stops the connection and joins cleanup
+without issuing another `session/prompt`. This proves the adapter's response
+to that fake wire event, not the vendor timer, suppression or spend behavior.
+
+Keep the claim unchanged until the selected native and idle-work gates are
+resolved. A follow-up can prove a route-owned suppression control across
+settings precedence and teardown races, or propose a distinct lifecycle with
+explicit idle-work authority. Neither follows from the permission ruling. No
+provider process or model was executed in this inspection.

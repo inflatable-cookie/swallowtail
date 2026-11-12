@@ -35,3 +35,15 @@ not authorize provider execution or qualify a new version.
 `relocations.json` pairs the v1 paths moved in 0.103.0 and the session-index
 paths moved again in 0.105.0. Each pair has both hashes; nonidentical pairs
 remain selected review work rather than being classified as unchanged.
+
+`native-permission-control.json` pins bounded static no-prompt function ranges
+for Linux x64 and Darwin arm64 SDK 0.3.319, 0.3.321 and 0.3.322. The ranges
+are not a complete native behavior proof. `idle-control-trace.json` binds the
+v1 timer, settings and teardown trace to exact artifact source ranges and
+records the in-flight timer race and the route's host-supplied environment.
+
+At 0.101.0 the timer reads the ambient settings manager directly, so an inline
+SDK settings override does not establish idle suppression. At 0.106.0 inline
+compaction settings are considered, but managed values take precedence. The
+underlying files are pinned in `dist-inventory.json`; see Research 480 for
+the remaining route-authority and race proof.

@@ -48,6 +48,7 @@ pub struct SidecarProcess {
     stdin: ChildStdin,
     lines: Receiver<String>,
     directory: PathBuf,
+    node_version: String,
     pending: Vec<Value>,
     held: Vec<Value>,
     offered: Vec<String>,
@@ -169,6 +170,23 @@ impl SidecarProcess {
 
         let node = std::env::var("SWALLOWTAIL_CLAUDE_AGENT_SDK_NODE")
             .unwrap_or_else(|_| "node".to_owned());
+        let version = Command::new(&node)
+            .arg("--version")
+            .output()
+            .unwrap_or_else(|error| {
+                panic!("selected Node executable {node:?} cannot run: {error}")
+            });
+        assert!(
+            version.status.success(),
+            "selected Node executable {node:?} failed --version: {}",
+            String::from_utf8_lossy(&version.stderr)
+        );
+        let node_version = String::from_utf8(version.stdout)
+            .expect("selected Node version is UTF-8")
+            .trim()
+            .strip_prefix('v')
+            .expect("Node --version uses the v-prefixed semantic version")
+            .to_owned();
         let mut child = Command::new(&node)
             .arg(&entry)
             .env_clear()
@@ -239,6 +257,7 @@ impl SidecarProcess {
             stdin,
             lines,
             directory,
+            node_version,
             pending: Vec::new(),
             held: Vec::new(),
             offered: Vec::new(),
@@ -247,6 +266,12 @@ impl SidecarProcess {
 
     pub fn cwd(&self) -> String {
         self.directory.to_string_lossy().into_owned()
+    }
+
+    /// Reports the version printed by the exact Node executable used to
+    /// launch this sidecar process.
+    pub fn node_version(&self) -> &str {
+        &self.node_version
     }
 
     /// Reads one file under the leased cwd, or `None` when it was never

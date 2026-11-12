@@ -175,6 +175,13 @@ The Node, wire, and sidecar source axes remain separate and unchanged. Research
 416 remains the historical `.294` stop record and Research 420 the `.294`/`.295`
 qualification.
 
+Research 480 records official npm `latest` `0.3.322` (native `2.1.322`) and the
+hops `0.3.318`, `0.3.319`, and `0.3.321`. None is qualified. Each changes the
+native binary, and the selected native behavior is unproven. `0.3.319` also
+adds a `permissions.denyInsteadOfPrompting` projection; whether the native
+can apply it on this route's permission path is unverified and needs a ruling. The package and native claims stay
+through `0.3.317`/`2.1.317`.
+
 The extension's declarations add settings rows, capability strings, hook
 failure policy gates (`onFailure` with `hook_on_failure_supported`/`hooks_applied`),
 new message variants, cache-creation usage splits, and SDK-internal git and

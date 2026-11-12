@@ -201,7 +201,7 @@ terminal, native provider close/delete, and local cleanup as separate truth.
 For newer Claude Agent ACP points, supported suppression of unsolicited idle
 compaction remains a qualification gate. The control must survive inherited
 and managed settings and cover an already-fired compaction; see
-[Research 480](../research/480-claude-agent-acp-0-106-0-evidence.md). The
+[Research 482](../research/482-claude-agent-acp-0-106-0-evidence.md). The
 qualified ceiling remains 0.100.0.
 
 ### ACP Permission Exchange

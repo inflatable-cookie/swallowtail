@@ -39,6 +39,8 @@ if "--version" in sys.argv:
     if mode == "discovery-timeout":
         time.sleep(30)
         raise SystemExit(0)
+    if mode == "slow-discovery-session-new-failure":
+        time.sleep(2)
     if mode == "discovery-mutates-executable":
         with open(__file__, "a", encoding="utf-8") as stream:
             stream.write("\n# task-owned executable mutation\n")
@@ -82,7 +84,7 @@ for raw in sys.stdin:
         send({"jsonrpc":"2.0","id":request_id,"result":{"protocolVersion":1,"agentInfo":{"name":"copilot","version":"1.0.95"}}})
     elif method == "session/new":
         task_dir = request["params"]["cwd"]
-        if mode == "session-new-failure":
+        if mode == "session-new-failure" or mode == "slow-discovery-session-new-failure":
             send({"jsonrpc":"2.0","id":request_id,"error":{"code":-32603,"message":"fixture session/new failed"}})
         elif mode != "session-new-hang":
             send({"jsonrpc":"2.0","id":request_id,"result":{"sessionId":"task-owned-fake-session"}})
@@ -473,12 +475,25 @@ fn run_fake_original_branch(mode: &str, total: Duration, cleanup: Duration) -> R
         .expect("test-only planner binding runs only the fake child")
 }
 
-fn run_fake_original_branch_with_scratch(
-    scratch: &RealScratch,
-    mode: &str,
-    total: Duration,
-    cleanup: Duration,
-) -> Result<RunEvidence, OriginalRunDenied> {
+/// Fake-only settled-preparation budgets for the prepared-open cleanup
+/// regression. Preparation spawns a real CPython child, so under ordinary
+/// parallel QA scheduling its latency has a long tail; the generous finite
+/// preparation window absorbs that tail while the measured session-open
+/// branch keeps its tight original (total, cleanup) oracle. Production and
+/// original-run budgets are untouched.
+const FAKE_SETTLED_PREPARATION_TOTAL: Duration = Duration::from_secs(20);
+const FAKE_SETTLED_PREPARATION_CLEANUP: Duration = Duration::from_secs(5);
+
+struct FakeOriginalParts {
+    host: ExecutionHostId,
+    working: WorkingResourceRef,
+    local: LocalHostServices,
+    plan: serde_json::Value,
+    continuation: PlannerBoundContinuation,
+    executable_sha256: String,
+}
+
+fn fake_original_parts(scratch: &RealScratch, mode: &str) -> FakeOriginalParts {
     let python = find_program("python3").expect("Effigy-provided python3 is on PATH");
     let host = ExecutionHostId::new("assessment.real-local-host").expect("host id");
     let environment = EnvironmentRef::new(APPROVED_ENVIRONMENT).expect("environment ref");
@@ -546,15 +561,28 @@ fn run_fake_original_branch_with_scratch(
             .to_owned(),
     };
     let executable_sha256 = sha256_file(&scratch.executable);
-    if mode == "record-write-failure" {
-        fs::create_dir(scratch.records.join("1.0.95-execution.json"))
-            .expect("reserve only this task-owned result path to force the fallback writer");
+    FakeOriginalParts {
+        host,
+        working,
+        local,
+        plan,
+        continuation,
+        executable_sha256,
     }
+}
+
+/// Session-open regression path with settled preparation: preparation runs
+/// under its own finite fake-only budget, then the measured branch starts a
+/// fresh clock under (total, cleanup). A slow-but-successful preparation can
+/// no longer starve the intended session-open failure/timeout oracle.
+fn run_fake_session_open_branch(mode: &str, total: Duration, cleanup: Duration) -> RunEvidence {
+    let scratch = RealScratch::with_discovery_mode(mode);
+    let parts = fake_original_parts(&scratch, mode);
     run_original_task_once(
-        &plan,
-        Some(&continuation),
+        &parts.plan,
+        Some(&parts.continuation),
         preparation_input_with_executable(
-            host,
+            parts.host,
             scratch
                 .executable
                 .to_str()
@@ -562,21 +590,68 @@ fn run_fake_original_branch_with_scratch(
         ),
         RequestId::new("copilot-cli.assessment.fake-original.probe").expect("probe request"),
         RequestId::new("copilot-cli.assessment.fake-original.session").expect("session request"),
-        working,
-        &local,
+        parts.working,
+        &parts.local,
         &scratch.task,
         &scratch.records,
         Some(&scratch.trace),
         OriginalRunPolicy {
             total,
             cleanup,
-            expected_executable_sha256: executable_sha256,
+            settled_preparation: Some((
+                FAKE_SETTLED_PREPARATION_TOTAL,
+                FAKE_SETTLED_PREPARATION_CLEANUP,
+            )),
+            expected_executable_sha256: parts.executable_sha256,
+            original_started: false,
+            execution_mode: "fake-local-process-only",
+            cancel_discovery_before_start: false,
+            fail_protected_cleanup_for_test: false,
+            services_override: None,
+        },
+    )
+    .expect("test-only planner binding runs only the fake child")
+}
+
+fn run_fake_original_branch_with_scratch(
+    scratch: &RealScratch,
+    mode: &str,
+    total: Duration,
+    cleanup: Duration,
+) -> Result<RunEvidence, OriginalRunDenied> {
+    let parts = fake_original_parts(scratch, mode);
+    if mode == "record-write-failure" {
+        fs::create_dir(scratch.records.join("1.0.95-execution.json"))
+            .expect("reserve only this task-owned result path to force the fallback writer");
+    }
+    run_original_task_once(
+        &parts.plan,
+        Some(&parts.continuation),
+        preparation_input_with_executable(
+            parts.host,
+            scratch
+                .executable
+                .to_str()
+                .expect("fake executable path is UTF-8"),
+        ),
+        RequestId::new("copilot-cli.assessment.fake-original.probe").expect("probe request"),
+        RequestId::new("copilot-cli.assessment.fake-original.session").expect("session request"),
+        parts.working,
+        &parts.local,
+        &scratch.task,
+        &scratch.records,
+        Some(&scratch.trace),
+        OriginalRunPolicy {
+            total,
+            cleanup,
+            settled_preparation: None,
+            expected_executable_sha256: parts.executable_sha256,
             original_started: false,
             execution_mode: "fake-local-process-only",
             cancel_discovery_before_start: mode == "discovery-cancelled",
             fail_protected_cleanup_for_test: mode == "cleanup-failure",
             services_override: (mode == "preflight-failure")
-                .then(|| services_without_working_resource(local.services())),
+                .then(|| services_without_working_resource(parts.local.services())),
         },
     )
 }
@@ -1662,6 +1737,7 @@ fn run_original_task_once(
     let OriginalRunPolicy {
         total,
         cleanup,
+        settled_preparation,
         expected_executable_sha256,
         original_started,
         execution_mode,
@@ -1682,6 +1758,7 @@ fn run_original_task_once(
         trace,
         total,
         cleanup,
+        settled_preparation,
         &expected_executable_sha256,
         original_started,
         execution_mode,
@@ -1694,6 +1771,7 @@ fn run_original_task_once(
 struct OriginalRunPolicy {
     total: Duration,
     cleanup: Duration,
+    settled_preparation: Option<(Duration, Duration)>,
     expected_executable_sha256: String,
     original_started: bool,
     execution_mode: &'static str,
@@ -1908,6 +1986,7 @@ impl OriginalRunPolicy {
         Self {
             total: ORIGINAL_TOTAL_BUDGET,
             cleanup: ORIGINAL_CLEANUP_BUDGET,
+            settled_preparation: None,
             expected_executable_sha256: crate::assessment::NATIVE_EXECUTABLE_SHA256.to_owned(),
             original_started: true,
             execution_mode: "approved-local-process-host-original",
@@ -2295,6 +2374,7 @@ fn run_original_task_with_budget(
     trace: Option<&Path>,
     total: Duration,
     cleanup: Duration,
+    settled_preparation: Option<(Duration, Duration)>,
     expected_executable_sha256: &str,
     original_started: bool,
     execution_mode: &'static str,
@@ -2343,6 +2423,19 @@ fn run_original_task_with_budget(
 
     let action_window = total - cleanup;
     let action_deadline = local.deadline_after(action_window.saturating_sub(started.elapsed()));
+    // Settled-preparation runs give preparation its own finite fake-only
+    // window so host scheduling latency cannot consume the measured branch
+    // budget; the shared path keeps the single original budget end to end.
+    let (preparation_total, preparation_cleanup) = match settled_preparation {
+        Some((total, cleanup)) => (total, cleanup),
+        None => (total, cleanup),
+    };
+    if preparation_total <= preparation_cleanup {
+        return Err(OriginalRunDenied::ContinuationMismatch);
+    }
+    let preparation_window = preparation_total - preparation_cleanup;
+    let preparation_deadline =
+        local.deadline_after(preparation_window.saturating_sub(started.elapsed()));
     let before_tree_sha256 = measured_tree_sha256(task_directory);
     let (authority_binding_sha256, reviewed_head, enable_command, source_manifest_sha256) =
         plan_binding_metadata(plan);
@@ -2387,7 +2480,7 @@ fn run_original_task_with_budget(
         probe_request,
         ScopeId::new(format!("copilot-cli.assessment:{TASK_ID}:probe"))
             .expect("static task scope is valid"),
-        action_deadline,
+        preparation_deadline,
         discovery_cancellation,
     );
     let prepared = match File::open(executable_path) {
@@ -2469,6 +2562,16 @@ fn run_original_task_with_budget(
             ));
         }
     };
+    // Settled-preparation runs restart the clock once preparation succeeds
+    // so the measured session-open/cleanup oracle covers only its own phase.
+    let (drive_started, drive_window, drive_deadline) = match settled_preparation {
+        Some(_) => {
+            let fresh = Instant::now();
+            let window = total - cleanup;
+            (fresh, window, local.deadline_after(window))
+        }
+        None => (started, action_window, action_deadline),
+    };
     Ok(drive_prepared_session(
         session,
         PreparedSessionRun {
@@ -2481,9 +2584,9 @@ fn run_original_task_with_budget(
             },
             services,
             timing: SessionRunTiming {
-                started,
-                action_window,
-                action_deadline,
+                started: drive_started,
+                action_window: drive_window,
+                action_deadline: drive_deadline,
                 total,
             },
             identity: SessionRunIdentity {
@@ -3059,14 +3162,35 @@ fn real_local_prepared_path_failures_and_effect_are_measured() {
     assert!(effect.protected_executable_removed);
 }
 
+/// Bounded safe diagnostic for an unexpected run outcome: only the observed
+/// status, the allowlisted stage/class/diagnostic discriminant from the
+/// failure record, and the elapsed time. Failure records never carry provider
+/// text or secrets, so this stays safe to print on failure.
+fn describe_unexpected_run(evidence: &RunEvidence, expected: &str) -> String {
+    format!(
+        "expected status {expected} but observed {}; primary_failure={}; elapsed={:?}",
+        evidence.status,
+        serde_json::to_string(&evidence.primary_failure)
+            .unwrap_or_else(|_| "unserializable".to_owned()),
+        evidence.elapsed,
+    )
+}
+
 #[test]
 fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
-    let failed = run_fake_original_branch(
+    // Settled preparation keeps a slow real-child discovery from consuming
+    // the measured session-open budget under parallel QA scheduling.
+    let failed = run_fake_session_open_branch(
         "session-new-failure",
         Duration::from_secs(2),
         Duration::from_millis(500),
     );
-    assert_eq!(failed.status, "session-open-failed");
+    assert_eq!(
+        failed.status,
+        "session-open-failed",
+        "{}",
+        describe_unexpected_run(&failed, "session-open-failed")
+    );
     assert_eq!(
         failed.primary_failure.as_ref().unwrap()["class"],
         "session_open_failed"
@@ -3088,12 +3212,17 @@ fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
     assert!(!failed_record.contains("fixture session/new failed"));
     assert!(!failed_record.contains("SECRET_DIAGNOSTIC_SHOULD_NOT_LEAK"));
 
-    let timed_out = run_fake_original_branch(
+    let timed_out = run_fake_session_open_branch(
         "session-new-hang",
         Duration::from_secs(6),
         Duration::from_secs(2),
     );
-    assert_eq!(timed_out.status, "session-open-timeout");
+    assert_eq!(
+        timed_out.status,
+        "session-open-timeout",
+        "{}",
+        describe_unexpected_run(&timed_out, "session-open-timeout")
+    );
     assert_eq!(
         timed_out.primary_failure.as_ref().unwrap()["class"],
         "session_open_timeout"
@@ -3110,6 +3239,47 @@ fn real_local_prepared_open_failure_stops_and_joins_child_before_return() {
     assert!(timed_out.attempt_visible_before_version);
     assert!(!timed_out.prompt_visible_before_send);
     assert!(timed_out.protected_executable_removed);
+}
+
+#[test]
+fn settled_preparation_reaches_session_open_failure_after_slow_discovery() {
+    // Deterministic replay of the milestone-QA contention shape: discovery
+    // sleeps a fixed 2s (slow but successful inside the generous fake-only
+    // preparation window) while the measured session-open branch keeps its
+    // tight 2s budget. Under the old shared budget this starves preparation
+    // and reports preparation-failed; settled preparation must still reach
+    // the intended session-open failure with joined cleanup.
+    let failed = run_fake_session_open_branch(
+        "slow-discovery-session-new-failure",
+        Duration::from_secs(2),
+        Duration::from_millis(500),
+    );
+    assert_eq!(
+        failed.status,
+        "session-open-failed",
+        "{}",
+        describe_unexpected_run(&failed, "session-open-failed")
+    );
+    assert_eq!(
+        failed.primary_failure.as_ref().unwrap()["class"],
+        "session_open_failed"
+    );
+    assert_eq!(failed.cleanup, "driver-joined");
+    assert!(failed.elapsed < Duration::from_secs(2));
+    assert!(failed.prompt_record.is_none());
+    assert_eq!(failed.before_tree_sha256, failed.after_tree_sha256);
+    assert_eq!(failed.result_record["effect_count"], 0);
+    assert!(failed.process_stopped);
+    assert!(failed.process_exited);
+    assert!(failed.task_joined);
+    assert!(failed.resource_released);
+    assert!(failed.attempt_visible_before_version);
+    assert!(!failed.prompt_visible_before_send);
+    assert!(failed.protected_executable_removed);
+    let failed_record =
+        serde_json::to_string(&failed.result_record).expect("failure record serializes");
+    assert!(!failed_record.contains("fixture session/new failed"));
+    assert!(!failed_record.contains("SECRET_DIAGNOSTIC_SHOULD_NOT_LEAK"));
 }
 
 #[test]

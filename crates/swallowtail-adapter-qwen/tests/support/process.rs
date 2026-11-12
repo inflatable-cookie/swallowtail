@@ -122,6 +122,22 @@ impl FakeProcessService {
         Self::new([], ProcessExit::new(false, Some(130)), true)
     }
 
+    /// A child that writes its whole result transcript and then keeps
+    /// running, as a Qwen Code 0.27.1+ child may do while it drains its own
+    /// post-result memory work. The result envelope is on stdout; the process
+    /// exits only after a force stop.
+    pub fn result_then_held_open(jsonl: &str) -> (Arc<Self>, Arc<ProcessState>) {
+        let output = if jsonl.is_empty() {
+            Vec::new()
+        } else {
+            vec![ProcessOutputChunk::new(
+                ProcessOutputStream::Stdout,
+                jsonl.as_bytes().to_vec(),
+            )]
+        };
+        Self::new(output, ProcessExit::new(false, Some(130)), true)
+    }
+
     fn new(
         output: impl IntoIterator<Item = ProcessOutputChunk>,
         exit: ProcessExit,

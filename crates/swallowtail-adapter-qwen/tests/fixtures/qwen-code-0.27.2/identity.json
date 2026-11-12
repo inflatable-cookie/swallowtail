@@ -1,0 +1,441 @@
+{
+ "acp_registry_discovery": {
+  "agent_id": "qwen-code",
+  "role": "discovery metadata, not a Swallowtail claim",
+  "url": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+  "version": "0.27.2"
+ },
+ "axis": "qwen-code.package",
+ "channel_reprobe": {
+  "command": "npm view @qwen-code/qwen-code dist-tags --json",
+  "result": "latest=0.27.2; preview=0.27.2-preview.0; nightly=0.26.9-nightly.20261107.65e1f1aeaa",
+  "stable_current": true
+ },
+ "claim_at_observation": {
+  "behavior_revision": "qwen-code.headless.v0.21.15-reasoning-control",
+  "latest_qualified": "0.26.6",
+  "maintained_segment": "0.22.0..=0.26.6",
+  "posture": "AllowUnverified"
+ },
+ "evidence_limits": {
+  "complete_package_tree_manifests": true,
+  "complete_per_hop_path_diffs": true,
+  "credentials_read": false,
+  "host_installed_or_updated": false,
+  "provider_turns": false,
+  "selected_source_snapshots": true,
+  "selected_sources_frozen_from_attested_build_checkout": true,
+  "slsa_provenance_binds_tarball_sha512_to_git_commit": true,
+  "source_maps_in_npm_package": false,
+  "tag_and_build_checkout_selected_sources_compared": true,
+  "tarballs_executed": false,
+  "tarballs_retained_in_repository": false,
+  "vendor_execution": false
+ },
+ "first_unpublished_later_stable": null,
+ "historical_snapshot_qualification": "Research 475's frozen qwen-code-0.26.6 fixture registers no unpublished later stable at its 2026-11-03 observation. It stays unrewritten; this record supersedes that observation with the 2026-11-12 npm latest.",
+ "hops": [
+  {
+   "added": 365,
+   "changed": 24,
+   "dist_diff_file": "dist-diff-0.26.6-to-0.26.7.json",
+   "dist_diff_sha256": "1dbb049c440eaf82945d39a41bb401e8f35f293779ccab923ad69566dfcd7737",
+   "from": "0.26.6",
+   "identical": 1000,
+   "published_stable_hop": true,
+   "removed": 366,
+   "selected_source_changes": [
+    {
+     "after_sha256": "11cbb05bba62715b2021d30d3b4cb39426300a55ea6dfea792743a4d4a71466e",
+     "before_sha256": "00ee79ba0a9d0b47498fdaa1e6db307dab9e06655cc0d3f2c61c8a6e80ffd70d",
+     "key": "config",
+     "path": "packages/cli/src/config/config.ts"
+    }
+   ],
+   "to": "0.26.7"
+  },
+  {
+   "added": 456,
+   "changed": 36,
+   "dist_diff_file": "dist-diff-0.26.7-to-0.26.8.json",
+   "dist_diff_sha256": "143beb4f90f93b93bcc7cced903485d51f46743882d977073fe87fda0291e79f",
+   "from": "0.26.7",
+   "identical": 903,
+   "published_stable_hop": true,
+   "removed": 450,
+   "selected_source_changes": [
+    {
+     "after_sha256": "6c08e745badcf940ea87910d250155739a5c993db18c40effcb275f85a3748f1",
+     "before_sha256": "11cbb05bba62715b2021d30d3b4cb39426300a55ea6dfea792743a4d4a71466e",
+     "key": "config",
+     "path": "packages/cli/src/config/config.ts"
+    },
+    {
+     "after_sha256": "a08ec5818b46e8a1b9da6c6a74445116453fa297490fd1fed3b5925b128276ab",
+     "before_sha256": "deb26f295833a356e0918a777b87165ddb453500ca319bd8c45ecbf999b5f558",
+     "key": "top_level_options",
+     "path": "packages/cli/src/config/top-level-options.ts"
+    }
+   ],
+   "to": "0.26.8"
+  },
+  {
+   "added": 528,
+   "changed": 22,
+   "dist_diff_file": "dist-diff-0.26.8-to-0.26.9.json",
+   "dist_diff_sha256": "ddd4a0bd1b0dddb7ff666ffcd13e8d356d14a32511f454c2564d294e2c24e92d",
+   "from": "0.26.8",
+   "identical": 848,
+   "published_stable_hop": true,
+   "removed": 525,
+   "selected_source_changes": [],
+   "to": "0.26.9"
+  },
+  {
+   "added": 357,
+   "changed": 15,
+   "dist_diff_file": "dist-diff-0.26.9-to-0.27.0.json",
+   "dist_diff_sha256": "dcf52644c1bb3860a5b467eb89caddd4369c878f77267bc94623f2a6525205d9",
+   "from": "0.26.9",
+   "identical": 1028,
+   "published_stable_hop": true,
+   "removed": 355,
+   "selected_source_changes": [
+    {
+     "after_sha256": "ea6803239a505bfaf26db6a6e6ff46a0dcd6973f9cb9a4564e019840f7ca6ee3",
+     "before_sha256": "6c08e745badcf940ea87910d250155739a5c993db18c40effcb275f85a3748f1",
+     "key": "config",
+     "path": "packages/cli/src/config/config.ts"
+    }
+   ],
+   "to": "0.27.0"
+  },
+  {
+   "added": 415,
+   "changed": 38,
+   "dist_diff_file": "dist-diff-0.27.0-to-0.27.1.json",
+   "dist_diff_sha256": "b955490ff7b17df9031b800d39374cd932ae0b7d7c844bc315f0fee1e7f1adee",
+   "from": "0.27.0",
+   "identical": 949,
+   "published_stable_hop": true,
+   "removed": 413,
+   "selected_source_changes": [
+    {
+     "after_sha256": "b0190ea08cc9d161a81e0393642dae3df1f3ac63888be216f1e50debb783e568",
+     "before_sha256": "ea6803239a505bfaf26db6a6e6ff46a0dcd6973f9cb9a4564e019840f7ca6ee3",
+     "key": "config",
+     "path": "packages/cli/src/config/config.ts"
+    },
+    {
+     "after_sha256": "0c4d90e83f4aba7dde44187bc1abbfb64c484517aa3249935558d48a78ed432b",
+     "before_sha256": "04a27fe6aab09a4c905a0325ad39e090d6242bd734b8fb660532a0ece5a15f11",
+     "key": "session",
+     "path": "packages/cli/src/nonInteractive/session.ts"
+    }
+   ],
+   "to": "0.27.1"
+  },
+  {
+   "added": 498,
+   "changed": 37,
+   "dist_diff_file": "dist-diff-0.27.1-to-0.27.2.json",
+   "dist_diff_sha256": "76a8a89bed0bd3dbf9238b736e1d76286c486e5e4244b8152f1b7a5b6867b303",
+   "from": "0.27.1",
+   "identical": 881,
+   "published_stable_hop": true,
+   "removed": 484,
+   "selected_source_changes": [
+    {
+     "after_sha256": "22d2e7368368905a377cef76aa0bf30e805ef02945e040e3d71d37b85a8999ab",
+     "before_sha256": "f255df6c2276aaa3af262bbbd4ab48b83fe2ea3121b026a9ea83d0988dea8a37",
+     "key": "dashscope",
+     "path": "packages/core/src/core/openaiContentGenerator/provider/dashscope.ts"
+    }
+   ],
+   "to": "0.27.2"
+  }
+ ],
+ "identity_decision": {
+  "autofix_pr_exclusion_set_kept": true,
+  "autofix_pr_in_place_always_attended": true,
+  "dashscope_source_config_identity_frozen": true,
+  "extend_budgets_beyond_0_21_15": false,
+  "extend_plan_exact_list": false,
+  "extend_reasoning_beyond_0_21_15": false,
+  "extend_same_revision_segment": "0.22.0..=0.27.2",
+  "file_changed_hooks_inert_under_safe_mode": true,
+  "keep_0_22_4_incompatible": true,
+  "keep_0_23_5_incompatible": true,
+  "keep_0_25_4_incompatible": true,
+  "keep_exact_0_21_15": true,
+  "mods_opt_in_and_safe_mode_gated": true,
+  "new_public_mapped_operation": false,
+  "node_engine_range_unchanged": true,
+  "post_result_memory_drain_bounded_by_adapter_deadline": true,
+  "project_hooks_approval_gate_inert_under_safe_mode": true,
+  "provider_prompt_sent": false,
+  "raise_latest_qualified_to": "0.27.2",
+  "reuse_behavior_revision": "qwen-code.headless.v0.21.15-reasoning-control",
+  "safe_mode_bounds_hooks_extensions_mods_and_lsp": true,
+  "shape": "compatible-extension",
+  "tag_to_build_checkout_divergence_classified": true,
+  "unified_agent_loop_default": false,
+  "unified_agent_loop_opt_in_bounds_proven": true
+ },
+ "ignored_prereleases": [
+  "0.26.5-nightly.20261102.0441faff21",
+  "0.26.7-nightly.20261104.b9e20830f7",
+  "0.26.8-nightly.20261105.7bd78683e6",
+  "0.26.9-nightly.20261106.80fd7c3353",
+  "0.26.9-nightly.20261107.65e1f1aeaa",
+  "0.27.2-preview.0"
+ ],
+ "not_the_selected_product": "GitHub TypeScript SDK releases/tags are a separate product and do not establish npm CLI identity",
+ "npm_latest": "0.27.2",
+ "npm_other_dist_tags": {
+  "nightly": "0.26.9-nightly.20261107.65e1f1aeaa",
+  "preview": "0.27.2-preview.0"
+ },
+ "npm_package": "@qwen-code/qwen-code",
+ "observed_at": "2026-11-12",
+ "official_source": "npm dist-tag latest for @qwen-code/qwen-code",
+ "previous_ceiling": "0.26.6",
+ "published_stable_hops_after_previous_ceiling": [
+  "0.26.7",
+  "0.26.8",
+  "0.26.9",
+  "0.27.0",
+  "0.27.1",
+  "0.27.2"
+ ],
+ "reviewed_source_identities_file": "reviewed-source-identities.json",
+ "reviewed_source_identities_sha256": "3a100eb96decedb3bb50088c0859f167e9a2df14d742d5e6b65f42fa92bb642e",
+ "runtime_context": {
+  "host_installed_qwen_executed": false,
+  "host_installed_qwen_package_version": "0.21.2",
+  "node": "v26.11.0",
+  "official_package_installed_globally": false,
+  "qualification_uses": "exact npm artifacts and official source tags only"
+ },
+ "runtime_requirement": {
+  "admission_boundary": "No blanket host runtime qualification; the existing delegated-harness admission boundary is unchanged",
+  "node_engine_range": ">=22.0.0",
+  "unchanged_across_hops": true
+ },
+ "selected_source_identities_file": "selected-source-identities.json",
+ "selected_source_identities_sha256": "d3ec452b63d832d77050281c561bb663cd597dcb610a2c535f78cae5f8f7e348",
+ "source_to_shipped_file": "source-to-shipped.json",
+ "source_to_shipped_sha256": "9e48ccfccf5d1e90eade3ff275fcd0e526ba98a619d637fb6d3e93df251dd52d",
+ "versions": [
+  {
+   "integrity": "sha512-P+BAPNTTkgUAD7raYbYe14oFuwsAT3x/u+QgMLc0waNa94t6qLLh107Z9AC+ooyhQ5P+O3kjFYw9byqphEZy9Q==",
+   "inventory_entries": 1390,
+   "inventory_file": "dist-inventory-0.26.6.json",
+   "inventory_sha256": "95569dd7b2d9b5a17cf0559f01be1e7297c7fdd4385de3d1f8ba15c8f0022d9c",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1390,
+   "npm_dist_unpacked_size": 155339387,
+   "npm_git_head": "042c023b7beb4ad2a9ef95b2906b3564e3f23089",
+   "npm_version": "0.26.6",
+   "published_at": "2026-11-02T18:35:34.846Z",
+   "shasum": "bcf574b8c25f2fa75677f2c86ef30fc393b2cbfb",
+   "slsa_git_commit": "0441faff2149f5793f2aa36435b3f17c376bd3d3",
+   "source_commit": "042c023b7beb4ad2a9ef95b2906b3564e3f23089",
+   "tarball_sha256": "6d6889ae71ce6f3a892d597ba731edf1a45f34f3443ba1e55080511d1794b9cb",
+   "tarball_sha512": "3fe0403cd4d39205000fbada61b61ed78a05bb0b004f7c7fbbe42030b734c1a35af78b7aa8b2e1d74ed9f400bea28ca14393fe3b7923158c3d6f2aa9844672f5"
+  },
+  {
+   "integrity": "sha512-sRFWwmakpvF3bWBfG1M/ijoZG5h8Yxs0IC4cXZP3dJLyEbbTHItyhzMySG4o4CzLGFIfofArummQJo/xcggweQ==",
+   "inventory_entries": 1389,
+   "inventory_file": "dist-inventory-0.26.7.json",
+   "inventory_sha256": "e66c5d142f9651eac35c899eadb6d925dca18f3692337e53027b934cee402c98",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1389,
+   "npm_dist_unpacked_size": 155543826,
+   "npm_git_head": "f45c34d8ccbd651f2f0f4d97c9b013c11af52f5b",
+   "npm_version": "0.26.7",
+   "published_at": "2026-11-04T04:12:46.020Z",
+   "shasum": "136fc8063b0496010c61d6b7624a245ed71743a9",
+   "slsa_git_commit": "4593a3b8f2ff412847737a3abac517bd87726667",
+   "source_commit": "f45c34d8ccbd651f2f0f4d97c9b013c11af52f5b",
+   "tarball_sha256": "4cb0587ce0eb368230b128ffd4ff999e7b517865145a26fdab14b7e744c307f0",
+   "tarball_sha512": "b11156c266a4a6f1776d605f1b533f8a3a191b987c631b34202e1c5d93f77492f211b6d31c8b72873332486e28e02ccb18521fa1f02bba6990268ff172083079"
+  },
+  {
+   "integrity": "sha512-/BD+zs+VmOqInnYed3sxj7OKpBjAyZ7qoMw7Y9vLAur7QS66hsoiNAjUaON0yw6fS7WPTzN8mFZYvn3jdA3c/Q==",
+   "inventory_entries": 1395,
+   "inventory_file": "dist-inventory-0.26.8.json",
+   "inventory_sha256": "c4f2df57c0b504c9779200a0232500c2cd078dc88a00a48134667a585fd4d763",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1395,
+   "npm_dist_unpacked_size": 155962716,
+   "npm_git_head": "21ed8f1efbb351b973d96e2bc9efa78f278df99c",
+   "npm_version": "0.26.8",
+   "published_at": "2026-11-05T16:34:28.020Z",
+   "shasum": "7a5b04ba6f2decf1651cd79ec3d87337ff07dd6f",
+   "slsa_git_commit": "7c6f93ca516e5501397b3ccd3c925aa362b0b702",
+   "source_commit": "21ed8f1efbb351b973d96e2bc9efa78f278df99c",
+   "tarball_sha256": "9233a8f8e88404a3a5ee4f23c99bf7145edc8deb97635c71b8e73b24b2d899d3",
+   "tarball_sha512": "fc10fececf9598ea889e761e777b318fb38aa418c0c99eeaa0cc3b63dbcb02eafb412eba86ca223408d468e374cb0e9f4bb58f4f337c985658be7de3740ddcfd"
+  },
+  {
+   "integrity": "sha512-2orVsP3Dr01gk38STbYTWcFZeXftc0QXDHhglK7YPsIwgmumvnJeTAu1N00esRUwuLcevZ8k4godLwypDKb1LA==",
+   "inventory_entries": 1398,
+   "inventory_file": "dist-inventory-0.26.9.json",
+   "inventory_sha256": "3ab92d07c1513ccdbb8acc083e106a7a3a402d174bc0b2c273bc4359ee6a47dd",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1398,
+   "npm_dist_unpacked_size": 156117144,
+   "npm_git_head": "600aff0592bcfc21668ca4aba95a5b20c6491b86",
+   "npm_version": "0.26.9",
+   "published_at": "2026-11-06T16:19:07.514Z",
+   "shasum": "509328fede9d4c20bb02c523f23907fc5d974962",
+   "slsa_git_commit": "ee1a9b1e1e9453023c50a32f4abf5ff767adca35",
+   "source_commit": "600aff0592bcfc21668ca4aba95a5b20c6491b86",
+   "tarball_sha256": "383b47fd08735520aa938dcebefeb7775d986c02b73922f2f2241704d42c37e7",
+   "tarball_sha512": "da8ad5b0fdc3af4d60937f124db61359c1597977ed7344170c786094aed83ec230826ba6be725e4c0bb5374d1eb11530b8b71ebd9f24e20a1d2f0ca90ca6f52c"
+  },
+  {
+   "integrity": "sha512-efZt0LUm/raGUjR/SNN6pp8cpuNHnmE0hQvcvXzWHtVX9oVtDDgukq2IZNwYDErFYqHRj1xq2NQ5Jjt2SHUr/Q==",
+   "inventory_entries": 1400,
+   "inventory_file": "dist-inventory-0.27.0.json",
+   "inventory_sha256": "85c028a6dde7b29c0e3547d1f228927a60782e468ec017f0b1f6e7de27e0c032",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1400,
+   "npm_dist_unpacked_size": 156300038,
+   "npm_git_head": "03b0c2435be1890a21b117860eaf389076787275",
+   "npm_version": "0.27.0",
+   "published_at": "2026-11-07T20:55:40.797Z",
+   "shasum": "a0177d3b93509b65f235343ca91622c25ccd65ea",
+   "slsa_git_commit": "a32684604a12e39eb98de7181d986e33ddd7b3fe",
+   "source_commit": "03b0c2435be1890a21b117860eaf389076787275",
+   "tarball_sha256": "dd1c502c7c545537d93b240a940c4678f5b268a3cf96ab617daa34d6bc4ba8d7",
+   "tarball_sha512": "79f66dd0b526feb68652347f48d37aa69f1ca6e3479e6134850bdcbd7cd61ed557f6856d0c382e92ad8864dc180c4ac562a1d18f5c6ad8d439263b7648752bfd"
+  },
+  {
+   "integrity": "sha512-6LmUwR8VsgsWBgyZv0ltVJjVhob/0bGiwGFmfHd+QbheaIQQ/SLF6sXD+s9EfbCXBd91SUTr0iYLPS3iEJvNnw==",
+   "inventory_entries": 1402,
+   "inventory_file": "dist-inventory-0.27.1.json",
+   "inventory_sha256": "079b98dbdc59b1a938a66cc827e1fb5a1d7b612898c47b92937080d501a7d739",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1402,
+   "npm_dist_unpacked_size": 156756325,
+   "npm_git_head": "c2eccf7459c8d6d4b2a5df3733d2f3833153763b",
+   "npm_version": "0.27.1",
+   "published_at": "2026-11-09T13:42:22.430Z",
+   "shasum": "b1a914d984b9f5e15e644d981ef29b139f99e884",
+   "slsa_git_commit": "444ff228ee94ee316fe4a590a6fb5031b106cab5",
+   "source_commit": "c2eccf7459c8d6d4b2a5df3733d2f3833153763b",
+   "tarball_sha256": "c4b2f0f92f7076456c45bc22d714000c6f240a85a2ab6e55ded806696f05581a",
+   "tarball_sha512": "e8b994c11f15b20b16060c99bf496d5498d58686ffd1b1a2c061667c777e41b85e688410fd22c5eac5c3facf447db09705df754944ebd2260b3d2de2109bcd9f"
+  },
+  {
+   "integrity": "sha512-0X3lJvQI262mGK3P5iEQiGxu2Zg44aaV3du6Pe/JcWuhwlNeM9/cZF8bIpBhOgaymeSe8az15m//h5MHXHEkew==",
+   "inventory_entries": 1416,
+   "inventory_file": "dist-inventory-0.27.2.json",
+   "inventory_sha256": "d210b77643b63c371af0ca7ed19c66539f0ef8a53e09ee6f3a6f1a53e165c0a1",
+   "mapped_source_keys": [
+    "approval_mode",
+    "config",
+    "dashscope",
+    "exit_plan_mode",
+    "permission_flow",
+    "plan_mode_shell_policy",
+    "reasoning_effort",
+    "session",
+    "stream_types",
+    "system_controller",
+    "top_level_options"
+   ],
+   "node_engine_range": ">=22.0.0",
+   "npm_dist_file_count": 1416,
+   "npm_dist_unpacked_size": 159163313,
+   "npm_git_head": "f42fe0f3251172c1174d00382ece522eafb3c6c2",
+   "npm_version": "0.27.2",
+   "published_at": "2026-11-10T19:32:35.660Z",
+   "shasum": "890275f72633308fc61835d45833d1538638f693",
+   "slsa_git_commit": "74b8cde466120ff8ec73013d582260dd8a1760c7",
+   "source_commit": "f42fe0f3251172c1174d00382ece522eafb3c6c2",
+   "tarball_sha256": "3bdf4c84af2208ceaed5a6f8308504457fdb72d997eafba5b243061ad2d007bc",
+   "tarball_sha512": "d17de526f408dbada618adcfe62110886c6ed99838e1a695dddbba3defc9716ba1c2535e33dfdc645f1b2290613a06b299e49ef1acf5e66fff8793075c71247b"
+  }
+ ]
+}

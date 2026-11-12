@@ -191,3 +191,32 @@ approval; not a new Tom ruling):
   needed or permitted by this clarification.
 - Choosing A or B, or leaving the runner as the permanent baseline, remains
   with Tom. This question stays open for that decision.
+
+## Q-009 — How should `claude-agent.sdk` qualify past `0.3.317`?
+
+Status: open
+Asked: 2026-11-12
+Gate owner: Tom (operator) for items 1 and 2; planner for item 3
+
+Research 480 freezes npm `latest` `0.3.322` (native `2.1.322`) and the hops
+`0.3.318`, `0.3.319`, and `0.3.321`. Each bundled native binary changed.
+Identity manifests, CLI digest bindings, and wrapper similarity do not prove
+the selected native behavior. The package and native claims stay through
+`0.3.317`/`2.1.317`, with the default pair, the registered-tool live point,
+and the Node segment unchanged.
+
+Decision tree:
+
+1. Native behavior proof for the selected SDK paths on Darwin arm64 and Linux
+   x64 (`2.1.318`, `2.1.319`, `2.1.321`, `2.1.322`). Either authorise a
+   hermetic run of the vendor native with an isolated home and a local fake
+   endpoint, or accept a static control-flow method. Without one, the cells
+   stay unqualified.
+2. `permissions.denyInsteadOfPrompting` on this route, from `0.3.319`.
+   Preserve it under a distinct SDK behavior revision, or refuse the pair
+   when the setting is present. Either choice is a product decision.
+3. Residuals at `0.3.321`: `promptHold`, `initializeWritten`, and the `Ki`
+   telemetry callers. Planner closes these with the native proof.
+
+Cells covered: `claude-agent.sdk` package and native rows in the route matrix
+and the prepared-integration guide, from `0.3.318` through `0.3.322`.

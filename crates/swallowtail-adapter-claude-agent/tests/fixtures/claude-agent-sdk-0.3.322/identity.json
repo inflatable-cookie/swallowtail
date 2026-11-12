@@ -1,0 +1,820 @@
+{
+  "route": "claude-agent.sdk",
+  "schema": "claude-agent-sdk-published-hop-identity-v1",
+  "observed_at": "2026-11-12",
+  "research": "Research 480",
+  "official_channel": {
+    "registry": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk",
+    "selected": "dist-tags.latest",
+    "latest": "0.3.322",
+    "next": "0.3.322",
+    "absent_from_npm": [
+      "0.3.320"
+    ],
+    "published_above_latest": []
+  },
+  "accepted_base": {
+    "package_version": "0.3.317",
+    "native_version": "2.1.317",
+    "tarball_sha256": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f",
+    "tree_sha256_retained": "a374a2e4ba725610430e45d488aa7126bcd7007f76544fed59be12bae70ab388"
+  },
+  "hops": [
+    {
+      "sdk_version": "0.3.317",
+      "native_version": "2.1.317",
+      "published_utc": "2026-11-03T00:02:04.005Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.317.tgz",
+      "tarball_sha256": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f",
+      "tarball_sha1": "38fa617efff452beb6a800ca3ba2ec8860a31a8f",
+      "npm_integrity": "sha512-qoRB5svuBNXm5N5miBj3RS2JyA7daGcdOCopQIdJXMxaYREIvR7P1FFiFhSLwIjh61D9ir8f/8OFm5LyDJspEA==",
+      "tarball_bytes": 1464308,
+      "file_count": 21,
+      "package_json_claudeCodeVersion": "2.1.317",
+      "optional_dependencies_exact": [
+        "0.3.317"
+      ],
+      "shipped_files_sha256": {
+        "package.json": "9328268ea770893c781949c0259a2086c53f16c4f075cdd80c741d8b8b7226fe",
+        "manifest.json": "2337b6f8d99d893d2c9f12761b124bf64e80823a566464d44767e4ca595ee2b7",
+        "manifest.zst.json": "249225bdb0d68436139a15d53fa5fc9366f15f68d1f6f607dac2884943ad9e4b",
+        "sdk.mjs": "ec77bcaf3e757a3c82f91228f7a968ffd856a4cdeee8b7e3fd186fc13597950f"
+      },
+      "native_manifest": {
+        "version": "2.1.317",
+        "commit": "3d3e7cb16b5577dccaee9520c8dc1189d02d61b7",
+        "build_date": "2026-11-02T22:39:48Z",
+        "manifest_signature_enforcement": "flag",
+        "manifest_keys": [
+          "buildDate",
+          "commit",
+          "manifestSignatureEnforcement",
+          "platforms",
+          "sdkCompat",
+          "version"
+        ],
+        "platforms": {
+          "darwin-arm64": {
+            "binary": "claude",
+            "sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+            "bytes": 312806400
+          },
+          "darwin-x64": {
+            "binary": "claude",
+            "sha256": "01c714bc7febdb008f28e3f6facb1dc37e46a4d8fa8db58df2e281ee51cb333c",
+            "bytes": 327105808
+          },
+          "linux-arm64": {
+            "binary": "claude",
+            "sha256": "563a0d60ad0c223d9415768210997acb0f7134ea51dc3c238e88bc2e18ddeefa",
+            "bytes": 331212056
+          },
+          "linux-arm64-musl": {
+            "binary": "claude",
+            "sha256": "dc8c59cf937e60e9cc93afe226ef437474ded56ba813743d09106d24a08c83bd",
+            "bytes": 314667040
+          },
+          "linux-x64": {
+            "binary": "claude",
+            "sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+            "bytes": 331362672
+          },
+          "linux-x64-musl": {
+            "binary": "claude",
+            "sha256": "bcc2be9105875dc31a44825ede92e46c4f98225eeb3ad617340daa217100339b",
+            "bytes": 317499744
+          },
+          "win32-arm64": {
+            "binary": "claude.exe",
+            "sha256": "085bb0c34803276156b44dc529a0ad55bf74e2d2c5baaade620194b72cb27f16",
+            "bytes": 318687392
+          },
+          "win32-x64": {
+            "binary": "claude.exe",
+            "sha256": "26b01ec22df2c17ac7f5703aa547d36706e8d58412136ced0344a8ced4d86038",
+            "bytes": 338187936
+          }
+        }
+      },
+      "cli_native_binding": {
+        "cli_version": "2.1.317",
+        "darwin-arm64_matches_cli_fixture": true,
+        "linux-x64_matches_cli_fixture": true,
+        "cli_fixture": "tests/fixtures/claude-code-2.1.317/dist-inventory.json"
+      }
+    },
+    {
+      "sdk_version": "0.3.318",
+      "native_version": "2.1.318",
+      "published_utc": "2026-11-03T21:55:44.877Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.318.tgz",
+      "tarball_sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "tarball_sha1": "b6e6c49ba62a6d8e7b3cee7a7dd94ff6420a159d",
+      "npm_integrity": "sha512-z5WHCUeW52SKQ3rnvI3zt8X5h2QQ5o3Cgg5xarO5Rimfe67f3pOJt2aOh00S8t/nRzqfs+8nCb9o1EoXe+yccA==",
+      "tarball_bytes": 1475971,
+      "file_count": 21,
+      "package_json_claudeCodeVersion": "2.1.318",
+      "optional_dependencies_exact": [
+        "0.3.318"
+      ],
+      "shipped_files_sha256": {
+        "package.json": "f2799dd9c43f751e052bd4d410af96274fdc36f514a2d6666fe148c266a0e990",
+        "manifest.json": "608425e4ad6b6513a43c281c170d0bdd71b2d30bbf0df09df9b1a2e8c448df07",
+        "manifest.zst.json": "db65116f3264a34f9524d7420411ab323a698595ff8e761d887bd066f55ceeb7",
+        "sdk.mjs": "4cd470a25da93b4339218708120b8b87e76d172b5798ba973898bac809333d01"
+      },
+      "native_manifest": {
+        "version": "2.1.318",
+        "commit": "ca1fa9dea62c1027756786c841c548788644560d",
+        "build_date": "2026-11-03T19:21:35Z",
+        "manifest_signature_enforcement": "flag",
+        "manifest_keys": [
+          "buildDate",
+          "commit",
+          "manifestSignatureEnforcement",
+          "platforms",
+          "sdkCompat",
+          "version"
+        ],
+        "platforms": {
+          "darwin-arm64": {
+            "binary": "claude",
+            "sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
+            "bytes": 319598464
+          },
+          "darwin-x64": {
+            "binary": "claude",
+            "sha256": "ee9c8577a528aa8efa478bf552b17efa40bb58aa4981d2913c13d383a4d409a4",
+            "bytes": 334272544
+          },
+          "linux-arm64": {
+            "binary": "claude",
+            "sha256": "53a0d7e219d7b0804ecba5dbc002745e89f786cc946d2de85a6470d5b2d1fb06",
+            "bytes": 337438136
+          },
+          "linux-arm64-musl": {
+            "binary": "claude",
+            "sha256": "a5ec862f882101dbe3e959ec166ab144e902a8e8e76215a2345b3860fe92ad28",
+            "bytes": 321679624
+          },
+          "linux-x64": {
+            "binary": "claude",
+            "sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
+            "bytes": 337814032
+          },
+          "linux-x64-musl": {
+            "binary": "claude",
+            "sha256": "e6ff03823153a699d708c88c2fa87d18a1f6b45f13b14a985a221f8af442dd54",
+            "bytes": 324274760
+          },
+          "win32-arm64": {
+            "binary": "claude.exe",
+            "sha256": "4626adbfe89eac61c79771ba866c63e7561d501cfba66a45be11213f1a33b1a0",
+            "bytes": 325568672
+          },
+          "win32-x64": {
+            "binary": "claude.exe",
+            "sha256": "b9aa5b08dc2cc46ea77d334dce792d1b8fdbb3a43bb290efdebdc905b1181082",
+            "bytes": 342408352
+          }
+        }
+      },
+      "cli_native_binding": {
+        "cli_version": "2.1.318",
+        "status": "no CLI fixture digest retained in repository; manifest is the only identity"
+      }
+    },
+    {
+      "sdk_version": "0.3.319",
+      "native_version": "2.1.319",
+      "published_utc": "2026-11-06T00:59:53.715Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.319.tgz",
+      "tarball_sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "tarball_sha1": "72b63b8929cef5495b19946cf12b87c870c8501c",
+      "npm_integrity": "sha512-7X+sh4uZv/u4OL4I4cQvMr9N3NM6FDiuyk829hFylgbrnNwVyiGElWEDWGuO26zwMIxmgpKdPoDILoFIHh1uwA==",
+      "tarball_bytes": 1488068,
+      "file_count": 21,
+      "package_json_claudeCodeVersion": "2.1.319",
+      "optional_dependencies_exact": [
+        "0.3.319"
+      ],
+      "shipped_files_sha256": {
+        "package.json": "3fcd22fb5a674e94235f43c259539d3f711623f4f75c923e2ac6a1c86aeaaa38",
+        "manifest.json": "e5ddfc17fd4745e7b5a6ccff7ccc1e119f323726c4b585c544cd9b5a6b1752e5",
+        "manifest.zst.json": "cfb24c0f77ed1a6d1049d8f3fa63b938810e6449624d140df932902c3d97aee3",
+        "sdk.mjs": "71460e29f72859dbc65a613e3737c834b4afa4b6411716fd7b596f9c5e129b76"
+      },
+      "native_manifest": {
+        "version": "2.1.319",
+        "commit": "fbdd7e02e8530e4c2ade8cc67d30104e53d2c8f2",
+        "build_date": "2026-11-05T19:38:09Z",
+        "manifest_signature_enforcement": "flag",
+        "manifest_keys": [
+          "buildDate",
+          "commit",
+          "manifestSignatureEnforcement",
+          "platforms",
+          "sdkCompat",
+          "version"
+        ],
+        "platforms": {
+          "darwin-arm64": {
+            "binary": "claude",
+            "sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+            "bytes": 321995200
+          },
+          "darwin-x64": {
+            "binary": "claude",
+            "sha256": "af6f1f5510ae98d56a155bf8f007aa9d5b44efccc9c10c8e10ef35039e95a940",
+            "bytes": 336699808
+          },
+          "linux-arm64": {
+            "binary": "claude",
+            "sha256": "a7e687fd1cb054d651c7588223de3786c99d4c682365e3c3ae1e59ce7f3a591f",
+            "bytes": 339797432
+          },
+          "linux-arm64-musl": {
+            "binary": "claude",
+            "sha256": "244e1aaedb73cb73571c2d5f2380f7ad251ba7e010d2747a203d631a1e7bd2e8",
+            "bytes": 324104456
+          },
+          "linux-x64": {
+            "binary": "claude",
+            "sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+            "bytes": 340226576
+          },
+          "linux-x64-musl": {
+            "binary": "claude",
+            "sha256": "b0f74e3c97fc4df46101bc7bcd0054d0f63733261cd63e5a0413cd50d66197f2",
+            "bytes": 326687304
+          },
+          "win32-arm64": {
+            "binary": "claude.exe",
+            "sha256": "59b1ace11fad7f95c17a4ba01cf50eb48af20cd133df93129b34aa8e633bd6b1",
+            "bytes": 327968928
+          },
+          "win32-x64": {
+            "binary": "claude.exe",
+            "sha256": "2e055732c9d03d22700d9046251a8370b673607bfcc9e4d16a1b0e8fb1345cbd",
+            "bytes": 344807072
+          }
+        }
+      },
+      "cli_native_binding": {
+        "cli_version": "2.1.319",
+        "darwin-arm64_matches_cli_fixture": true,
+        "linux-x64_matches_cli_fixture": true,
+        "cli_fixture": "tests/fixtures/claude-code-2.1.319/dist-inventory.json"
+      }
+    },
+    {
+      "sdk_version": "0.3.321",
+      "native_version": "2.1.321",
+      "published_utc": "2026-11-09T19:03:36.409Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.321.tgz",
+      "tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "tarball_sha1": "36b4fde3d9c8df72d273a0eda0e44cc068d45fbf",
+      "npm_integrity": "sha512-Smer/h/jQLTtT+l4sxaAUwZq7wif/9RzzuqltS5Gy+kAFo/iP89H7JHa8avhVT0xGkPBvBD/1Bbdg3pcArhQcw==",
+      "tarball_bytes": 1507185,
+      "file_count": 21,
+      "package_json_claudeCodeVersion": "2.1.321",
+      "optional_dependencies_exact": [
+        "0.3.321"
+      ],
+      "shipped_files_sha256": {
+        "package.json": "b2e2de05b39aad8a090c5b11c51ccf021e98ac7e781e696c7062001bf383f7e4",
+        "manifest.json": "d073d63928081951b871b35780d7abc83c26fa9b8b97f1ace64fc90d4591d325",
+        "manifest.zst.json": "3595380b37df20285616989f3bbbbe0f5b3e035042f262fe2cce3ad47a28d796",
+        "sdk.mjs": "20524b5de1d5e69f4b98005994e0970f0426c99ec55e9b9dae1af1f270d86ab7"
+      },
+      "native_manifest": {
+        "version": "2.1.321",
+        "commit": "76bc735070b3499364675700dea5f5a133152e2e",
+        "build_date": "2026-11-09T17:01:59Z",
+        "manifest_signature_enforcement": "flag",
+        "manifest_keys": [
+          "buildDate",
+          "commit",
+          "manifestSignatureEnforcement",
+          "platforms",
+          "sdkCompat",
+          "version"
+        ],
+        "platforms": {
+          "darwin-arm64": {
+            "binary": "claude",
+            "sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+            "bytes": 323686048
+          },
+          "darwin-x64": {
+            "binary": "claude",
+            "sha256": "f4e04d8726ee1343999679ad745eca2f6d263c2941f132b1fdca4283ee6d5f02",
+            "bytes": 338384032
+          },
+          "linux-arm64": {
+            "binary": "claude",
+            "sha256": "6bea0633074627ba79328e00115ed0588c3acf906a8463612b25db696dbfd3f0",
+            "bytes": 341501368
+          },
+          "linux-arm64-musl": {
+            "binary": "claude",
+            "sha256": "d223ea603b4fe8521d35a47f1972fbb36f1028a40927f16160e6258e0b92d597",
+            "bytes": 325808392
+          },
+          "linux-x64": {
+            "binary": "claude",
+            "sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+            "bytes": 341910032
+          },
+          "linux-x64-musl": {
+            "binary": "claude",
+            "sha256": "efc4a3d94daf10c550cde589a4add37f67519be54252ba88f27e9627f7ad62b4",
+            "bytes": 328366664
+          },
+          "win32-arm64": {
+            "binary": "claude.exe",
+            "sha256": "670a397b3a4ce02ad400f37abd7dd7b57a21791abf29b8551fe43204fd0bebae",
+            "bytes": 329652384
+          },
+          "win32-x64": {
+            "binary": "claude.exe",
+            "sha256": "e6dae5fc45902b15751f2591a02f51760351c4788c5fd8291b3f1443d40c13a4",
+            "bytes": 346487456
+          }
+        }
+      },
+      "cli_native_binding": {
+        "cli_version": "2.1.321",
+        "darwin-arm64_matches_cli_fixture": true,
+        "linux-x64_matches_cli_fixture": true,
+        "cli_fixture": "tests/fixtures/claude-code-2.1.322/identity.json (Research 478 hop row)"
+      }
+    },
+    {
+      "sdk_version": "0.3.322",
+      "native_version": "2.1.322",
+      "published_utc": "2026-11-10T01:57:38.316Z",
+      "tarball_url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.322.tgz",
+      "tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "tarball_sha1": "7cacd5fcb26329b880f08713f04cdb797bb5c629",
+      "npm_integrity": "sha512-r88ij7R3SPV2j3BtFuavgrbWZNE8SVVS42AOQ1KxlS+QnSwNNnUhmVXV3Es2dniZySBYX8ENebL43ffhiB0azw==",
+      "tarball_bytes": 1507429,
+      "file_count": 21,
+      "package_json_claudeCodeVersion": "2.1.322",
+      "optional_dependencies_exact": [
+        "0.3.322"
+      ],
+      "shipped_files_sha256": {
+        "package.json": "d915ef8b7cbe591ef61b10b6c2182ea907e43c416783f01ec9ac45cc947e05ea",
+        "manifest.json": "05d2eff648bb528c1479c719bb8eca9a759657631e285d03aaf37fe779173f1c",
+        "manifest.zst.json": "79c3bf3e8351f875ba9999070b378a79f9ae034fc1596c4bd2020080262f4a57",
+        "sdk.mjs": "1c70356fe073f6c5423fb7138e2f2f6580a790eb055ad247e5d7927f57b53e8b"
+      },
+      "native_manifest": {
+        "version": "2.1.322",
+        "commit": "660928a5946898d0c8d3488f20dd9b0b2da4ec09",
+        "build_date": "2026-11-10T00:53:25Z",
+        "manifest_signature_enforcement": "flag",
+        "manifest_keys": [
+          "buildDate",
+          "commit",
+          "manifestSignatureEnforcement",
+          "platforms",
+          "sdkCompat",
+          "version"
+        ],
+        "platforms": {
+          "darwin-arm64": {
+            "binary": "claude",
+            "sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+            "bytes": 323702464
+          },
+          "darwin-x64": {
+            "binary": "claude",
+            "sha256": "b513d15117cbf1bb05095dab41963fd394ff40de1fa99dcc6d7d1033bf292e9b",
+            "bytes": 338400544
+          },
+          "linux-arm64": {
+            "binary": "claude",
+            "sha256": "f220ca50ea4f3222043ff83cc224a1262e0196e9897acc0871efa94235b0c1fd",
+            "bytes": 341501368
+          },
+          "linux-arm64-musl": {
+            "binary": "claude",
+            "sha256": "b8a07ebb71cd612bd1ed80eabd2084ded98cadbae298d068a4a1307f0448c40c",
+            "bytes": 325808392
+          },
+          "linux-x64": {
+            "binary": "claude",
+            "sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+            "bytes": 341914128
+          },
+          "linux-x64-musl": {
+            "binary": "claude",
+            "sha256": "9bed6cfc5d2420b673a0b9fe41c71533a02904935cbc3b4cd110302d475fee6f",
+            "bytes": 328374856
+          },
+          "win32-arm64": {
+            "binary": "claude.exe",
+            "sha256": "8e32c3f2fee1e5c17f0ae9a544fedf0951c4d0482268bb47c06c229fc62894c4",
+            "bytes": 329660576
+          },
+          "win32-x64": {
+            "binary": "claude.exe",
+            "sha256": "345996b4bdbae21d817f750fae2f34cbf8d81224a5444c78136091d121beb298",
+            "bytes": 346496160
+          }
+        }
+      },
+      "cli_native_binding": {
+        "cli_version": "2.1.322",
+        "darwin-arm64_matches_cli_fixture": true,
+        "linux-x64_matches_cli_fixture": true,
+        "cli_fixture": "tests/fixtures/claude-code-2.1.322/identity.json"
+      }
+    }
+  ],
+  "selected_entry": "@anthropic-ai/claude-agent-sdk . export -> sdk.mjs; sdk.mjs static imports resolve to Node builtins only; no core-*.mjs chunk is imported (static or dynamic) at any hop",
+  "claim_decision": "hold",
+  "claim_state": {
+    "package": "0.3.284..=0.3.317 (unchanged)",
+    "native": "2.1.284..=2.1.317 (unchanged)",
+    "default_pair": "0.3.293/2.1.293 (unchanged)",
+    "node": "22.23.2..=22.23.3 (unchanged)"
+  },
+  "no_execution": true,
+  "no_live_provider_work": true,
+  "no_native_download": true,
+  "selected_surface_probe": {
+    "method": "For each selected anchor, a window of 350 characters on each side is rendered with identifiers masked (keywords, long identifiers >=6 and an allow-list of SDK option names kept), string literals masked, and compared between adjacent hops. Counts are the anchor occurrences per hop.",
+    "anchors": [
+      {
+        "anchor": "\"--permission-mode\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--mcp-config\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--setting-sources\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--input-format\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--output-format\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--strict-mcp-config\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--disallowedTools\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--tools\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--resume\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--effort\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "anchor": "\"--model\"",
+        "occurrences": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "anchor": "spawnClaudeCodeProcess",
+        "occurrences": [
+          8,
+          8,
+          8,
+          9,
+          9
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "canUseTool",
+        "occurrences": [
+          13,
+          13,
+          14,
+          14,
+          14
+        ],
+        "window_identical_adjacent": [
+          true,
+          false,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "\"initialize\"",
+        "occurrences": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      {
+        "anchor": "initializationResult",
+        "occurrences": [
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "supportedModels",
+        "occurrences": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "window_identical_adjacent": [
+          true,
+          false,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "setModel",
+        "occurrences": [
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          false,
+          true
+        ]
+      },
+      {
+        "anchor": "CLAUDE_AGENT_SDK_VERSION",
+        "occurrences": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "window_identical_adjacent": [
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    ],
+    "adjacent_hops": [
+      "0.3.317->0.3.318",
+      "0.3.318->0.3.319",
+      "0.3.319->0.3.321",
+      "0.3.321->0.3.322"
+    ]
+  },
+  "string_ledger_selected_like": {
+    "note": "Exact unmasked literal ledger, adjacent hops. Route flags, control names, message types and permission modes were unchanged at every hop.",
+    "0.3.318_added_vs_0.3.317": [],
+    "0.3.319_added_vs_0.3.318": [
+      "auto_mode_no_check_in_session",
+      "auto_mode_stop_no_check_in_session",
+      "auto_mode_stop_no_result_for_calls",
+      "auto_mode_stop_no_verdict",
+      "classifier_transcript_too_long",
+      "memory_paused",
+      "outside_reads_blocked",
+      "voice-call"
+    ],
+    "0.3.321_added_vs_0.3.319": [
+      "await-initialize (gated off on this route; see selected_surface_probe notes)",
+      "sdk-url (nested-session predicate and Y5 gate; route never emits it)",
+      "cleaned_key (telemetry marker inside a shared key sanitizer; caller not classified)",
+      "agent-skills, anthropic-marketplace, anthropic-plugins and related plugin-directory names (plugin/marketplace text; sidecar sets plugins: [] and settingSources: [])"
+    ],
+    "0.3.322_added_vs_0.3.321": [],
+    "literal_removed_standalone_but_occurrence_kept": [
+      "typescript-language-server (example text now inside a longer description; occurrence count 1 at 0.3.317 and 0.3.321)"
+    ]
+  },
+  "classification": {
+    "method": "Selected surfaces on sdk.mjs (the only file the root export loads) compared per adjacent hop: anchor windows (selected_surface_probe), exact literal ledger, and direct reads of the selected argv, input-stream, prompt-write, and spawn code. Declarations (sdk.d.ts, sdk-tools.d.ts) are not runtime evidence.",
+    "reachability_inputs": {
+      "sidecar_options": [
+        "prompt (async iterable, so streamInput is the selected input path)",
+        "options.settingSources: []",
+        "options.plugins: []",
+        "options.skills: []",
+        "options.agents: {}",
+        "options.hooks: {}",
+        "options.pathToClaudeCodeExecutable (native binary)",
+        "options.spawnClaudeCodeProcess (custom spawn)",
+        "options.canUseTool",
+        "options.tools and options.disallowedTools",
+        "options.permissionMode",
+        "options.env (explicit allowlist)"
+      ],
+      "not_set": [
+        "managedSettings",
+        "settings",
+        "sessionStore",
+        "allowedTools",
+        "extraArgs",
+        "permissionPromptToolName"
+      ]
+    },
+    "hops": {
+      "0.3.318": {
+        "sdk": "Every selected anchor window and the argv, spawn, initialize, canUseTool, supportedModels and Query method windows are structurally identical to 0.3.317; the literal ledger adds nothing selected. Declarations changed.",
+        "native": "2.1.318 native bytes changed; no repository CLI digest binds this build, so the manifest is its only identity.",
+        "status": "selected native behaviour unproven; SDK wrapper unchanged on selected windows"
+      },
+      "0.3.319": {
+        "sdk": "The argv builders are structurally identical to 0.3.318 apart from minifier renames. New managed-policy projection (function Ex) carries permissions.denyInsteadOfPrompting as a restrictive key. canUseTool and supportedModels windows change through insertions and a private-field initialiser; the new text is declaration and policy wording.",
+        "native": "2.1.319 native applies permissions.denyInsteadOfPrompting: a call that would prompt is denied without calling canUseTool and the turn continues. The sidecar suppresses user, project and local settings (settingSources: []), whether managed policy can still set it under that option is unverified against the native.",
+        "status": "selected permission-mediation change on the SDK route; needs a ruling and native proof; not qualifiable here"
+      },
+      "0.3.321": {
+        "sdk": "The argv gains a --await-initialize branch gated by Y5, which requires both options.pathToClaudeCodeExecutable and options.spawnClaudeCodeProcess to be unset; the sidecar sets both, so the flag and extraArgs entry are not emitted. The nested-session sdk-url predicate is unchanged for this route. writePrompt now routes through afterInitialize and writeStreamMessage (which resets runEnded and resultReceived); that is the string-prompt path, which the sidecar does not use (it passes an async iterable through streamInput, whose structure is identical). promptHold and initializeWritten windows changed and are not fully classified. Ki, a shared key sanitizer, gains a telemetry marker whose callers are not classified.",
+        "native": "2.1.321 native bytes changed. CLI 2.1.321 static review was not sufficient for selected behaviour (Research 478 precedent).",
+        "status": "residual unclassified sdk changes plus unproven native; not qualifiable here"
+      },
+      "0.3.322": {
+        "sdk": "Masked whole-file structure is identical to 0.3.321 (zero changed masked lines). The only literal changes are the version stamp and one description string.",
+        "native": "2.1.322 native bytes changed; CLI 2.1.322 selected-behaviour proof is the open stop in Research 478.",
+        "status": "SDK wrapper unchanged from 0.3.321; native proof unavailable; not qualifiable here"
+      }
+    }
+  }
+}

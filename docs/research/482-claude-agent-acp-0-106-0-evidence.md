@@ -189,3 +189,52 @@ isolated home and workspace, no ambient credentials and network disabled by
 default. Any vendor execution, live network, credentials or paid provider work
 needs separate authority before the corresponding step. This is a proposal for
 planner review, not an upstream message or permission to run the probe.
+
+
+## Fake-only local guard prototype
+
+Decision `33e074b8-eeac-4095-aa12-78871f3ff203` remains pending. The
+prototype in `scripts/prototypes/claude-acp-idle-guard/` is not a supported
+launch or a qualification. It snapshots four digest-pinned fake modules,
+rejects startup controls in its host model, and hands source bytes to a Node
+preloader and narrowly scoped module loader. The loader accepts one entry
+and one caller-to-idle edge, then changes the fake idle class before the fake
+entrypoint body. It vetoes both scheduling and direct fire. Replacing the
+files after the snapshot does not change what this fake process loads.
+
+The Effigy prototype selector compares a six-timer unguarded fake with a
+zero-timer guarded fake, advances a fake clock beyond 30 days, and exercises
+new/load/resume, repeated idle, direct fire, fake cancellation and close. It
+rejects changed and missing files, duplicate imports, unsafe startup arguments,
+symlink and query aliases, and wrong caller edges. The fake reports inherited
+permission data unchanged. These are fake process observations, not proof of
+vendor behavior, actual permission inheritance, a real clock, or OS process
+cleanup. Node 26 was used only to exercise the fake; no Node support claim
+follows. Module initialization effects before the patch are also outside this
+fake's coverage.
+
+The current host model is itself JavaScript and cannot secure its own Node
+startup. A production admission primitive must validate the interpreter,
+complete startup argv and effective environment before spawning, reject
+unapproved preloads and loaders, bind immutable verified module bytes to the
+actual loader, and establish host policy and symlink/race safety. A child
+process marker or a hash followed by import of mutable files cannot do that.
+The exact Node, host policy, loader, shim and every ACP/SDK caller and imported
+module must form a separately attested tuple for each selected hop; the frozen
+inventory identifies those bytes but does not establish this tuple. Managed
+idle enablement would be vetoed by this candidate, so product authority is
+needed before any real launch. Permission behavior and native selection remain
+separate gates.
+
+A bounded original-artifact probe, only after separate execution authority,
+should run the exact integrity-pinned 0.101.0, 0.101.1, 0.102.0, 0.103.0,
+0.104.0, 0.104.1, 0.105.0 and 0.106.0 tuples in isolated homes and workspaces,
+with no ambient credentials and network disabled, against a controlled fake
+transport and clock. First demonstrate admission and byte replacement attacks
+against the fake harness; then verify each real loader edge and absence of
+idle scheduling or fire under conflicting user and managed settings on
+new/load/resume and prompt/cancel/close races. Observe permission callbacks,
+denial without callbacks and joined cleanup independently for each selected
+native artifact and platform. Any network, credential or paid-provider step
+requires additional explicit authority. A missing edge, unbound runtime or
+uncontrolled initialization fails closed and cannot extend the claim.

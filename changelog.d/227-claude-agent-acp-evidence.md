@@ -2,3 +2,5 @@
   preserving the existing qualification while idle-work authority and exact
   native behavior remain open.
 - Record the supported idle-suppression ruling and its qualification gate.
+
+- Prototype fake-only idle suppression; production qualification remains pending.

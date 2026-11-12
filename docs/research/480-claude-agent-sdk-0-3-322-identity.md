@@ -130,8 +130,11 @@ follow-up task needs one of these, decided by the planner:
 3. A closure of the `0.3.321` residuals: `promptHold`, `initializeWritten`,
    and the `Ki` telemetry callers.
 
-Until those close, the planner should keep `0.3.322` as an unverified-newer
-point with its evidence referenced here.
+Until those close, `0.3.322` stays official latest that the claims do not
+qualify. The claims refuse it on both axes, and this record is its evidence.
+Nothing here is an `UnverifiedNewer` posture change: the claims are
+`QualifiedOnly` through `0.3.317`, and the refusal is by claim arithmetic, not
+by a separate host or adapter posture.
 
 ## Sources
 

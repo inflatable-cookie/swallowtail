@@ -106,15 +106,21 @@ fn accepted_base_and_cli_bindings_stay_exact() {
         "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9"
     );
     // Darwin arm64 and Linux x64 manifest digests equal the retained CLI
-    // executables for every version a CLI fixture binds.
+    // executables for every native version a CLI fixture binds. The only
+    // manifest-only native is 2.1.318, and it must say so explicitly.
     for hop in hops {
-        if let Some(binding) = hop.get("cli_native_binding") {
-            if binding.get("status").is_some() {
-                assert_eq!(hop["native_version"], "2.1.318");
-                continue;
-            }
-            assert_eq!(binding["darwin-arm64_matches_cli_fixture"], true);
-            assert_eq!(binding["linux-x64_matches_cli_fixture"], true);
+        let native = hop["native_version"].as_str().unwrap();
+        let binding = &hop["cli_native_binding"];
+        assert_eq!(binding["cli_version"], native);
+        if native == "2.1.318" {
+            assert!(binding.get("status").is_some());
+            assert!(binding.get("darwin-arm64_matches_cli_fixture").is_none());
+        } else {
+            assert_eq!(
+                binding["darwin-arm64_matches_cli_fixture"], true,
+                "{native}"
+            );
+            assert_eq!(binding["linux-x64_matches_cli_fixture"], true, "{native}");
         }
     }
 }

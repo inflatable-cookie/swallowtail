@@ -869,9 +869,18 @@ fn a_substituted_probe_identity_is_refused_before_any_run() {
     assert!(!native.root().join("peer/native-observations.json").exists());
 }
 
+/// One refusal case for the probe-admission gate: the ledger override, the
+/// extra runner arguments and the refusal code the run must name.
+type RefusalCase = (
+    &'static str,
+    fn(&mut Value),
+    &'static [&'static str],
+    &'static str,
+);
+
 #[test]
 fn a_ledger_that_claims_production_admission_is_refused() {
-    let cases: [(&str, fn(&mut Value), &[&str], &str); 5] = [
+    let cases: [RefusalCase; 5] = [
         (
             "production admission",
             |admission: &mut Value| admission["production_admission"] = json!(true),

@@ -191,6 +191,7 @@ section = "Research Records"
 ]
 "validate:claude-agent-sdk-native-proof-harness" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness"
 "validate:claude-agent-sdk-probe-admission" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness -E 'test(/probe/)'"
+"lint:current-claude-agent-sdk" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --all-targets -- -D warnings"
 "format:current-pi-rpc" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi -- --check",

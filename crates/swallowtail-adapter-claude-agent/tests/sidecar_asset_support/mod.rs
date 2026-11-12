@@ -44,7 +44,9 @@ impl Default for Fixture {
 }
 
 /// Everything the native-proof harness hands the shipped sidecar, including the
-/// environment allowlist it must launch with.
+/// environment allowlist it must launch with. Only the native-proof test binary
+/// constructs it, and every test binary compiles this module tree separately.
+#[allow(dead_code)]
 pub struct NativeProofLaunch<'a> {
     pub directory: &'a Path,
     pub sdk_module: &'a Path,
@@ -225,6 +227,7 @@ impl SidecarProcess {
         )
     }
 
+    #[allow(dead_code)]
     /// Starts the shipped sidecar against an explicit fake-SDK module, fake
     /// native and environment. Used by the native-proof harness, which owns the
     /// fixture tree and the credential-free allowlist.
@@ -245,6 +248,7 @@ impl SidecarProcess {
         )
     }
 
+    #[allow(dead_code)]
     /// The fixture directory this process was launched in.
     pub fn fixture_directory(&self) -> &Path {
         &self.directory
@@ -638,12 +642,14 @@ impl SidecarProcess {
         self.stdin.flush().expect("wire flush");
     }
 
+    #[allow(dead_code)]
     /// Writes one record without waiting for a reply. Used where the reply may
     /// never arrive because the peer already died.
     pub fn send_without_reply(&mut self, record: Value) {
         self.write(record);
     }
 
+    #[allow(dead_code)]
     /// Reads the next record within `timeout`, reporting a closed wire, a
     /// timeout, or an unreadable line as `None`.
     pub fn next_record_within(&mut self, timeout: Duration) -> Option<Value> {
@@ -659,6 +665,7 @@ impl SidecarProcess {
         }
     }
 
+    #[allow(dead_code)]
     /// Reads the next record, reporting a closed or unreadable wire as `None`
     /// instead of panicking. Used where a peer's termination is the observation.
     pub fn next_record_or_closed(&mut self) -> Option<Value> {

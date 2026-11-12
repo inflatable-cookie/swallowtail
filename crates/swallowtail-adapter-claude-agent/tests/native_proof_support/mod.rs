@@ -510,12 +510,11 @@ impl NativeProofFixture {
         let deadline = Instant::now() + PROOF_BOUND;
         loop {
             let path = self.root.join("native-observations.json");
-            if let Ok(text) = std::fs::read_to_string(&path) {
-                if let Ok(observations) = serde_json::from_str::<Value>(&text) {
-                    if observations["exitCode"].is_number() {
-                        return observations;
-                    }
-                }
+            if let Ok(text) = std::fs::read_to_string(&path)
+                && let Ok(observations) = serde_json::from_str::<Value>(&text)
+                && observations["exitCode"].is_number()
+            {
+                return observations;
             }
             assert!(
                 Instant::now() < deadline,

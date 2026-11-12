@@ -18,3 +18,7 @@ force-stops, waits and cleans up. Baseline
 `0.19.11`, the deprecated segments, exact `0.21.15`, plan through `0.22.3`,
 and the reasoning and budget selections stay put, and Node `>=22.0.0`
 remains unchanged. See Research 481.
+
+The shared nextest shards no longer guess where a nested Cargo put the
+`grok-acp-echo-mcp` probe example: the test helper asks Cargo for the built
+artifact path, so the probe resolves in any target directory.

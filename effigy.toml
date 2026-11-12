@@ -402,7 +402,7 @@ section = "Research Records"
   "bash scripts/tests/oxide-rust-routing.sh",
   "python3 scripts/tests/oxide-selector-routing.py",
 ]
-"validate:grok-mcp-probe-helper-path" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-testkit --test grok_acp_client_mcp_probe -E 'test(echo_helper_liveness_self_check_distinguishes_healthy_from_dead)'"
+"validate:grok-mcp-probe-helper-path" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-testkit --test grok_acp_client_mcp_probe"
 "check:python-format" = "bash scripts/check-python-format.sh {args}"
 "check:copilot-acp-host-permission-format" = "bash scripts/check-python-format.sh scripts/copilot-acp-host-permission-proof.py"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"

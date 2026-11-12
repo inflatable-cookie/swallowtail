@@ -12,7 +12,9 @@ divergence is recorded file by file and its shipped hooks-watcher and
 `.title.json` migration changes remain behind the route's `--safe-mode`
 accessor gates. New Mods, project-hooks approval, LSP opt-in, and
 post-result memory-drain changes are sized against the safe-mode, opt-in,
-and joined-cleanup bounds, with mutation-checked evidence. Baseline
+and joined-cleanup bounds, with mutation-checked evidence; a fake child that
+writes its result and then keeps running proves cancellation still
+force-stops, waits and cleans up. Baseline
 `0.19.11`, the deprecated segments, exact `0.21.15`, plan through `0.22.3`,
 and the reasoning and budget selections stay put, and Node `>=22.0.0`
 remains unchanged. See Research 481.

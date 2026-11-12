@@ -120,6 +120,14 @@ fixture inventory. Each `dist-diff-<from>-to-<to>.json` records the complete
 added, removed, changed, and byte-identical path sets, and the identity test
 recomputes those path sets from the inventories.
 
+The last column names only the *mapped* selected source keys whose frozen
+hash moves on that hop. Reviewed boundary files that change without touching
+a mapped key are named in the prose instead: `nonInteractiveCli.ts` moves at
+`0.26.7 → 0.26.8` (Mods queued prompts, TEXT-only i18n), `0.26.9 → 0.27.0`
+(stacked-skill warning), and `0.27.0 → 0.27.1` (post-result memory drain);
+`mod-session.ts`, `autofix-pr.ts`, core `config.ts`, and `settingsSchema.ts`
+move at the hops the review bullets name.
+
 | Hop | Added | Removed | Changed | Identical | Changed selected mapped source files |
 | --- | ---: | ---: | ---: | ---: | --- |
 | `0.26.6 → 0.26.7` | 365 | 366 | 24 | 1,000 | `config.ts` |
@@ -195,17 +203,25 @@ permission is qualified.
   the session EOF window) before exit, and a success terminal waits for the
   memory writes that turn started. This is provider-internal cleanup after
   the terminal envelope; the adapter's own deadline and cancellation still
-  stop and join the child, and no wire event or subtype changes. Core
+  stop and join the child, and no wire event or subtype changes. `driver.rs`
+  proves that bound with a fake child that writes the whole result transcript
+  and then keeps running: the delivered envelope reaches the run, and
+  cancellation still force-stops the child, waits for it, and cleans up. Core
   `config.ts` adds subscription fallback models, `ModelSwitchOptions`, and
   auto-memory policy bookkeeping; `client.ts` tracks date reminders and
   relays `skipMemoryExtraction` for host-relayed turns.
-- **`0.27.1 → 0.27.2`:** `dashscope.ts` adds `isolatedRoute` organization/
-  project suppression, filters isolated model overrides, and reads cache
-  control from the isolated config only on that route. This route sets no
-  `isolatedRoute`, so its provider body and cache control behavior are
-  unchanged. Core `config.ts` returns the resident auto-memory prompt and
-  extends subscription-model fallback handling. `settingsSchema.ts`
-  rewrites the unified-loop description.
+- **`0.27.1 → 0.27.2`:** `dashscope.ts` gains three isolated-path guards.
+  The `extra_body` filter is `filterIsolatedModelOverrides`, which is gated
+  by `retryContext`'s `singleAttempt` flag and is a no-op without it;
+  `singleAttempt` is set only by the isolated single-attempt request path in
+  `baseLlmClient` (a model-completion path), which this route's stream-json
+  run and turn never take. The OpenAI client's `organization`/`project`
+  suppression and the cache-control config source are gated by
+  `isolatedRoute` instead, and this route sets neither. Its provider body,
+  request headers, and cache-control behavior are therefore unchanged. Core
+  `config.ts` returns the resident auto-memory prompt and extends
+  subscription-model fallback handling. `settingsSchema.ts` rewrites the
+  unified-loop description.
 - **Bounded provider-internal changes:** tool execution internals
   (`shell.ts`, `shell-semantics.ts`, `coreToolScheduler.ts`), subagent and
   background-task plumbing, memory extraction/dream planning, extension

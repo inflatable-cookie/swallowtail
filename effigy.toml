@@ -313,7 +313,7 @@ section = "Research Records"
 "check:adapt-gemini-headless-authority" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-adapter-gemini"
 "validate:current-qwen-headless" = "bash scripts/oxide-rust.sh nextest run --locked --all-features --profile ci -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test conformance --test current_qwen_headless --test driver --test interactive_session_corpus --test prepared_facade --test protocol_fixtures --test qwen_code_0_23_3_identity --test qwen_code_0_24_2_identity --test qwen_code_0_25_0_identity --test qwen_code_0_26_1_identity --test qwen_code_0_26_2_identity --test qwen_code_0_26_6_identity --test qwen_code_0_27_2_identity --test qwen_headless_identity"
 "check:current-qwen-headless" = "bash scripts/oxide-rust.sh check --locked --all-features -p swallowtail-adapter-qwen --all-targets"
-"lint:current-qwen-headless" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test current_qwen_headless --test qwen_code_0_26_6_identity --test qwen_code_0_27_2_identity -- -D warnings"
+"lint:current-qwen-headless" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-qwen --lib --test compatibility_corpus --test current_qwen_headless --test driver --test prepared_facade --test qwen_code_0_24_2_identity --test qwen_code_0_25_0_identity --test qwen_code_0_26_1_identity --test qwen_code_0_26_2_identity --test qwen_code_0_26_6_identity --test qwen_code_0_27_2_identity --test qwen_headless_identity -- -D warnings"
 "format:current-qwen-headless" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-qwen",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-qwen -- --check",

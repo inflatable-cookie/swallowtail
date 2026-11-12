@@ -393,6 +393,10 @@ async function main() {
     send(message);
   }
   for (const message of queue) send(message);
+  if (SCENARIO === "never-exit") {
+    // Stays alive after its turn so the probe must kill and report it.
+    return;
+  }
   observed.exitCode = SCENARIO === "exit-nonzero" ? 3 : 0;
   note("exit", { code: observed.exitCode });
   process.exit(observed.exitCode);
@@ -403,7 +407,12 @@ process.on("SIGTERM", () => {
   process.exit(143);
 });
 
-if (SCENARIO === "never-initialize") {
+if (SCENARIO === "never-exit") {
+  // Answers the handshake and the turn, then outlives the probe bound. Used to
+  // prove that a peer which will not be joined fails the probe closed.
+  void main();
+  setInterval(() => {}, 1000);
+} else if (SCENARIO === "never-initialize") {
   // Records the argv and then stays silent: the handshake must time out or the
   // fixture must observe an absent initialization rather than assume success.
   record();

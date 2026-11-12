@@ -682,3 +682,385 @@ fn the_harness_records_a_joined_cleanup_without_a_surviving_peer() {
         "the observation file survives the run for the reviewer"
     );
 }
+
+// ---------------------------------------------------------------------------
+// Temporary probe-only admission
+// ---------------------------------------------------------------------------
+
+use native_proof_support::{
+    PROBE_ADMISSION_SCHEMA, ProbeFixture, probe_admission, probe_options, probe_request,
+    selected_options_digest, verify_probe_admission,
+};
+
+#[test]
+fn the_probe_admission_binds_every_tuple_and_cannot_admit_production() {
+    verify_probe_admission().expect("the probe admission binds every digest it names");
+    let admission = probe_admission();
+    assert_eq!(admission["mode"], "probe-only");
+    assert_eq!(admission["production_admission"], json!(false));
+    assert_eq!(
+        admission["authority"]["original_run_authorised"],
+        json!(false)
+    );
+    assert_eq!(admission["authority"]["original_run_token"], Value::Null);
+    let tuples = admission["tuples"].as_array().expect("admitted tuples");
+    let planned = hops();
+    assert_eq!(
+        tuples.len(),
+        planned.len(),
+        "every planned artifact is admitted, including the accepted control"
+    );
+    let proposed: Vec<&str> = planned
+        .iter()
+        .map(|hop| hop.sdk_version.as_str())
+        .filter(|version| *version != ACCEPTED_SDK)
+        .collect();
+    assert_eq!(proposed.len(), 4, "four proposed hops are admitted");
+    let schema: Value = serde_json::from_str(PROBE_ADMISSION_SCHEMA).expect("admission schema");
+    assert_eq!(schema["properties"]["mode"]["const"], "probe-only");
+    assert_eq!(schema["properties"]["production_admission"]["const"], false);
+
+    // Production admission stays closed for every admitted tuple: the claim
+    // table does not contain them and the shipped sidecar refuses each one.
+    let maintained: Vec<&str> = ClaudeAgentSdkPackageNativePair::MAINTAINED
+        .iter()
+        .map(|pair| pair.package_version())
+        .collect();
+    for tuple in tuples {
+        let sdk_version = tuple["sdk_version"].as_str().expect("tuple sdk version");
+        if sdk_version == ACCEPTED_SDK {
+            assert!(
+                maintained.contains(&sdk_version),
+                "the admitted control stays the maintained pair"
+            );
+            continue;
+        }
+        assert!(
+            !maintained.contains(&sdk_version),
+            "the probe admission must not enter the maintained pair map"
+        );
+        let mut fixture = NativeProofFixture::start(&FixtureOptions::new(
+            "ok",
+            sdk_version,
+            tuple["native_version"]
+                .as_str()
+                .expect("tuple native version"),
+        ));
+        let cwd = fixture.sidecar().cwd();
+        let refusal = fixture.sidecar().command(
+            "open-1",
+            "open",
+            json!({
+                "cwd": cwd,
+                "model": "claude-sonnet-5-20250929",
+                "expectedSdkVersion": sdk_version,
+                "expectedNativeVersion": tuple["native_version"],
+            }),
+        );
+        assert_eq!(
+            refusal["success"], false,
+            "{sdk_version} must stay refused in production: {refusal}"
+        );
+        assert_eq!(refusal["failure"]["code"], "sdk_version_mismatch");
+        assert!(!fixture.sidecar().sdk_was_constructed());
+    }
+}
+
+#[test]
+fn every_admitted_tuple_runs_a_positive_fake_probe() {
+    let admission = probe_admission();
+    for tuple in admission["tuples"].as_array().expect("admitted tuples") {
+        let sdk_version = tuple["sdk_version"].as_str().expect("tuple sdk version");
+        let native_version = tuple["native_version"]
+            .as_str()
+            .expect("tuple native version");
+        for platform in ["darwin-arm64", "linux-x64"] {
+            let fixture = ProbeFixture::start("ok", &|_| {});
+            fixture.bind_peer(sdk_version, native_version);
+            let run = fixture.run(sdk_version, platform, "ok", None, 120_000, &[]);
+            assert_eq!(
+                run.status, 0,
+                "probe {sdk_version}/{platform} succeeds: {} {}",
+                run.stdout, run.stderr
+            );
+            let evidence = run.evidence.expect("probe evidence is written");
+            assert_eq!(evidence["probeOnly"], true);
+            assert_eq!(evidence["productionAdmission"], false);
+            assert_eq!(evidence["tuple"]["sdk_version"], sdk_version);
+            assert_eq!(evidence["tuple"]["native_version"], native_version);
+            assert_eq!(evidence["platform"], platform);
+            assert_eq!(evidence["nativeExit"]["join"], "exited");
+            assert_eq!(evidence["failure"], Value::Null);
+            let records = evidence["records"].as_array().expect("probe records");
+            assert!(
+                records
+                    .iter()
+                    .any(|record| record["event"] == "initialized"),
+                "the native initialize handshake is observed: {evidence}"
+            );
+            assert!(
+                records
+                    .iter()
+                    .any(|record| record["event"] == "message" && record["type"] == "result"),
+                "the native result frame is observed: {evidence}"
+            );
+            let native = fixture.native_observations();
+            assert_eq!(native["exitCode"], json!(0));
+            assert_eq!(
+                native["userMessages"].as_array().map(Vec::len),
+                Some(1),
+                "one streamed user message reached the peer"
+            );
+        }
+    }
+}
+
+#[test]
+fn the_probe_option_surface_equals_the_shipped_sidecar_surface() {
+    let mut fixture = fixture("ok");
+    assert_eq!(open(&mut fixture)["success"], true);
+    let sidecar_surface = fixture.sidecar().observed_options();
+    assert_eq!(
+        selected_options_digest(&sidecar_surface),
+        probe_admission()["selected_options_digest"],
+        "the probe template is exactly the sidecar's selected option surface: {sidecar_surface}"
+    );
+    assert_eq!(
+        selected_options_digest(&probe_options()),
+        probe_admission()["selected_options_digest"]
+    );
+    close(&mut fixture);
+}
+
+#[test]
+fn a_substituted_probe_identity_is_refused_before_any_run() {
+    let fixture = ProbeFixture::start("ok", &|_| {});
+    // The admitted tuple is 0.3.322/2.1.322; the peer claims the accepted pair.
+    fixture.bind_peer("0.3.317", "2.1.322");
+    let run = fixture.run("0.3.322", "linux-x64", "ok", None, 30_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "a substituted peer is refused: {}",
+        run.stderr
+    );
+    assert!(
+        run.stderr.contains("identity_substitution"),
+        "the refusal names identity substitution: {}",
+        run.stderr
+    );
+    assert!(run.evidence.is_none(), "no run is recorded");
+    assert!(
+        !fixture
+            .root()
+            .join("peer/native-observations.json")
+            .exists(),
+        "no native peer started"
+    );
+
+    let native = ProbeFixture::start("ok", &|_| {});
+    native.bind_peer("0.3.322", "2.1.317");
+    let run = native.run("0.3.322", "linux-x64", "ok", None, 30_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "a substituted native is refused: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("identity_substitution"));
+    assert!(!native.root().join("peer/native-observations.json").exists());
+}
+
+#[test]
+fn a_ledger_that_claims_production_admission_is_refused() {
+    let cases: [(&str, fn(&mut Value), &[&str], &str); 5] = [
+        (
+            "production admission",
+            |admission: &mut Value| admission["production_admission"] = json!(true),
+            &["--mode", "original", "--authority-token", "fixture-token"],
+            "production_admission_refused",
+        ),
+        (
+            "production mode",
+            |admission: &mut Value| admission["mode"] = json!("production"),
+            &["--mode", "original", "--authority-token", "fixture-token"],
+            "production_admission_refused",
+        ),
+        (
+            "foreign authority",
+            |admission: &mut Value| admission["authority"]["kind"] = json!("operator-authority"),
+            &[],
+            "authority_missing",
+        ),
+        (
+            "authority without a token",
+            |admission: &mut Value| {
+                admission["authority"]["original_run_authorised"] = json!(true);
+                admission["authority"]["original_run_token"] = json!("fixture-token");
+            },
+            &["--mode", "original"],
+            "authority_missing",
+        ),
+        (
+            "authority with the wrong token",
+            |admission: &mut Value| {
+                admission["authority"]["original_run_authorised"] = json!(true);
+                admission["authority"]["original_run_token"] = json!("fixture-token");
+            },
+            &["--mode", "original", "--authority-token", "another-token"],
+            "authority_missing",
+        ),
+    ];
+    for (label, overrides, extra, expected) in cases {
+        let fixture = ProbeFixture::start("ok", &overrides);
+        fixture.bind_peer("0.3.322", "2.1.322");
+        let run = fixture.run("0.3.322", "darwin-arm64", "ok", None, 30_000, extra);
+        assert_eq!(
+            run.status, 2,
+            "the {label} ledger is refused: {} {}",
+            run.stdout, run.stderr
+        );
+        assert!(
+            run.stderr.contains(expected),
+            "the {label} refusal names {expected}: {}",
+            run.stderr
+        );
+        assert!(run.evidence.is_none(), "no run is recorded for {label}");
+    }
+
+    // The gate is a real gate, not a stub: an authorised ledger with its exact
+    // token opens original mode, which is why the committed ledger keeps both
+    // fields closed and `verify_probe_admission` refuses if they drift.
+    let authorised = ProbeFixture::start("ok", &|admission: &mut Value| {
+        admission["authority"]["original_run_authorised"] = json!(true);
+        admission["authority"]["original_run_token"] = json!("fixture-token");
+    });
+    authorised.bind_peer("0.3.322", "2.1.322");
+    let run = authorised.run(
+        "0.3.322",
+        "linux-x64",
+        "ok",
+        None,
+        30_000,
+        &["--mode", "original", "--authority-token", "fixture-token"],
+    );
+    assert_eq!(
+        run.status, 0,
+        "the authority gate opens only for the exact token: {} {}",
+        run.stdout, run.stderr
+    );
+    assert_eq!(
+        run.evidence.expect("evidence")["mode"],
+        "original",
+        "the record truthfully identifies the mode that ran"
+    );
+}
+
+#[test]
+fn a_non_loopback_probe_endpoint_is_refused_before_spawn() {
+    let fixture = ProbeFixture::start("ok", &|_| {});
+    fixture.bind_peer("0.3.321", "2.1.321");
+    let run = fixture.run(
+        "0.3.321",
+        "linux-x64",
+        "ok",
+        Some("example.invalid:443"),
+        30_000,
+        &[],
+    );
+    assert_eq!(
+        run.status, 2,
+        "a non-loopback endpoint is refused: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("non_loopback_endpoint"));
+    assert!(
+        !fixture
+            .root()
+            .join("peer/native-observations.json")
+            .exists()
+    );
+
+    // The loopback endpoint is admitted and recorded as the only egress.
+    let loopback = ProbeFixture::start("ok", &|_| {});
+    loopback.bind_peer("0.3.318", "2.1.318");
+    let run = loopback.run(
+        "0.3.318",
+        "linux-x64",
+        "ok",
+        Some("127.0.0.1:1"),
+        120_000,
+        &[],
+    );
+    assert_eq!(
+        run.status, 0,
+        "loopback is the admitted endpoint: {}",
+        run.stderr
+    );
+    let evidence = run.evidence.expect("evidence");
+    assert_eq!(evidence["endpoint"], "127.0.0.1:1");
+}
+
+#[test]
+fn a_peer_that_outlives_the_bound_fails_the_probe_closed() {
+    let fixture = ProbeFixture::start("never-exit", &|_| {});
+    fixture.bind_peer("0.3.319", "2.1.319");
+    let run = fixture.run("0.3.319", "darwin-arm64", "never-exit", None, 1_500, &[]);
+    assert_eq!(
+        run.status, 2,
+        "an unjoined peer fails the probe: {}",
+        run.stderr
+    );
+    assert!(
+        run.stderr.contains("cleanup_failed"),
+        "the refusal names the cleanup failure: {}",
+        run.stderr
+    );
+    let evidence = run.evidence.expect("the probe still writes evidence");
+    assert_eq!(
+        evidence["nativeExit"]["join"], "killed",
+        "the unjoined peer is killed, not assumed gone: {evidence}"
+    );
+    assert_eq!(evidence["cleanup"], "killed");
+}
+
+#[test]
+fn the_probe_request_names_live_digests_and_the_exact_artifacts() {
+    let request = probe_request();
+    let digests = request["source_digests"]
+        .as_object()
+        .expect("request names source digests");
+    assert!(
+        digests.len() >= 5,
+        "the request names every probe source: {digests:?}"
+    );
+    assert!(
+        request["command"]
+            .as_str()
+            .expect("request names a command")
+            .contains("probe-runner.mjs")
+    );
+    assert!(
+        request["original_command_suffix"]
+            .as_str()
+            .expect("request names the original suffix")
+            .contains("--authority-token")
+    );
+    let artifacts = request["artifacts"].as_array().expect("request artifacts");
+    assert_eq!(
+        artifacts.len(),
+        5,
+        "the request names the accepted control and every proposed hop"
+    );
+    for artifact in artifacts {
+        for platform in ["darwin-arm64", "linux-x64"] {
+            assert!(
+                artifact["platforms"][platform]["binary_sha256"]
+                    .as_str()
+                    .is_some_and(|digest| digest.len() == 64),
+                "every artifact names its platform digest"
+            );
+        }
+    }
+    // The request's bound digests are the live ones; verify_probe_admission
+    // recomputes them and would have failed above if they had drifted.
+    verify_probe_admission().expect("request digests are live");
+}

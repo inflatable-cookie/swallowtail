@@ -186,10 +186,11 @@ section = "Research Records"
 "check:claude-agent-sdk-selected-flow" = "python3 -c 'from pathlib import Path; file = Path(\"scripts/claude-agent-sdk-selected-flow.py\"); compile(file.read_bytes(), str(file), \"exec\")'"
 "validate:claude-agent-sdk-selected-flow" = "python3 scripts/claude-agent-sdk-selected-flow.py --self-test"
 "check:claude-agent-sdk-native-proof-harness" = [
-  "python3 -c 'import json; from pathlib import Path; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.schema.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/selected-flow.json\")]'",
+  "python3 -c 'import json; from pathlib import Path; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.schema.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/selected-flow.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.schema.json\", \"crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json\")]'",
   "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness",
 ]
 "validate:claude-agent-sdk-native-proof-harness" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness"
+"validate:claude-agent-sdk-probe-admission" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness -E 'test(/probe/)'"
 "format:current-pi-rpc" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi -- --check",

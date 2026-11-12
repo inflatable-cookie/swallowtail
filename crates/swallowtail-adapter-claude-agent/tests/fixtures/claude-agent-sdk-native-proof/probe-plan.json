@@ -16,8 +16,9 @@
   "probe_admission": {
     "accepted_pair_available_now": "0.3.317 / 2.1.317",
     "ceiling": "Both the prepared driver and the shipped sidecar admit only the maintained pair map, so every hop above 0.3.317 fails closed with sdk_version_mismatch before the SDK loads. The fake-backed harness therefore proves the pipeline on the accepted pair.",
-    "original_run_requirement": "An authorised original-artifact run for 0.3.318, 0.3.319, 0.3.321 or 0.3.322 needs an explicit probe admission: either the authority names a probe-only admission for those exact pairs, or the qualification the run produces is what extends the map. The harness never widens it.",
-    "witness_selector": "native_proof_support::tests that open 0.3.322 and expect the refusal"
+    "temporary_probe_admission": "probe-admission.json records the planner's temporary probe-only admission: it binds these exact tuples, the selected option surface and the fake peer identity, admits harness-only fake runs, and carries no production admission. Production claims, the maintained pair map and the shipped sidecar are unchanged.",
+    "original_run_requirement": "An authorised original-artifact run for 0.3.318, 0.3.319, 0.3.321 or 0.3.322 needs an explicit operator authority statement naming these exact digests, a brief amendment, and this ledger set to original_run_authorised true with its token. The harness never widens the map and the ledger stays closed until then.",
+    "witness_selector": "validate:claude-agent-sdk-native-proof-harness (probe tests) and validate:claude-agent-sdk-probe-admission"
   },
   "platforms": [
     "darwin-arm64",

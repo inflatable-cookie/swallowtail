@@ -18,3 +18,12 @@ credential-free environment with no egress beyond the fake endpoint. Q-009 item
 `settingSources: []` but the SDK parent tier is never set on this route, so the
 permission ruling stays open. No qualification, claim, package or native axis
 moves.
+
+A temporary probe-only admission now binds every proposed tuple, the selected
+option surface and the fake peer identity, and admits harness-only fake runs for
+all five planned artifacts on both selected platforms. It refuses a production
+ledger, a foreign authority, original mode without its exact token, a substituted
+peer, a non-loopback endpoint and a peer that outlives the bound, and it writes
+every record marked probe-only. Production claims, the maintained pair map and
+the shipped sidecar are unchanged; original-artifact execution stays disabled and
+vendor execution remains unauthorised.

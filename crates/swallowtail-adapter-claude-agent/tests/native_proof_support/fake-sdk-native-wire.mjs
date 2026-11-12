@@ -200,7 +200,11 @@ class NativeWire {
   async next() {
     if (this.inbox.length > 0) return this.inbox.shift();
     if (this.stdinClosed) {
+      // The peer may still be emitting frames for work that started before the
+      // input ended, so the exit sentinel is only returned once the inbox is
+      // drained *after* the process has gone.
       const exit = await this.exit;
+      if (this.inbox.length > 0) return this.inbox.shift();
       return exit;
     }
     await new Promise((resolve) => this.waiters.push(resolve));
@@ -349,6 +353,12 @@ export function query({ prompt, options }) {
       return response;
     },
     mcpServerStatus: async () => [],
+    /// The probe runner joins the peer explicitly so a peer that never exits is
+    /// a cleanup failure rather than a hang.
+    joinNative: async () => wire.exit,
+    killNative: () => {
+      child.kill("SIGKILL");
+    },
     close: async () => {
       observed.closeCalls += 1;
       record();

@@ -197,6 +197,58 @@ with one controlled loopback request and no other egress.
 The harness proves the pipeline and its observation points, not the vendor's
 behavior. That distinction is the reason the plan exists.
 
+### Temporary probe-only admission
+
+The planner granted a harness-only probe admission on 2026-11-12 (question
+`e36390b98c373c94c17185abe8fcf9a5cbd14dcde0d2b720cfa8320a76caec7e`): prepare
+the bounded path, keep production claims and the maintained pair maps unchanged,
+and authorise no vendor execution. `probe-admission.json` records it.
+
+What the ledger binds:
+
+- the exact proposed tuples - `0.3.318`/`2.1.318`, `0.3.319`/`2.1.319`,
+  `0.3.321`/`2.1.321`, `0.3.322`/`2.1.322` - plus the accepted
+  `0.3.317`/`2.1.317` control, each with its wrapper tarball digest and its
+  Darwin arm64 and Linux x64 binary digest and size;
+- the selected option surface, as a digest of the option template the shipped
+  sidecar passes, with per-run paths and the environment list normalised out;
+- the fake peer identity: the SDK module digest and, per tuple, the fake native
+  digest, so a substituted peer is refused before it runs;
+- the environment allowlist, the Node requirement, the plan and option-template
+  digests and the same finite bounds as the plan.
+
+What the path refuses, proven by tests rather than asserted:
+
+- a ledger that claims production admission, a production mode, a foreign
+  authority, or original mode without the exact token;
+- a peer whose package version, native version or bytes are not the admitted
+  tuple - including a newer tuple dressed as the accepted pair;
+- a non-loopback endpoint, before any peer starts;
+- a peer that outlives the probe bound: it is killed and reported as a cleanup
+  failure, with `nativeExit.join: "killed"` in the evidence.
+
+What it does not do: it never imports the adapter, never prepares a session,
+never reaches the claim table or the sidecar's pair gate, and it writes every
+record with `probeOnly: true` and `productionAdmission: false`. The harness also
+asserts that the maintained pair map still lacks every proposed version and that
+the shipped sidecar still refuses each one, so the probe path cannot become an
+ordinary admission by accident.
+
+In harness mode the platform is a declared identity label, because the peers are
+JavaScript. Only an authorised original run would exercise the real per-platform
+binary; the ledger says so rather than implying the fake run proves a platform.
+
+### The pre-execution request
+
+`probe-admission.json` carries the request a reviewer and the operator read
+before any vendor run: the exact command, the original-mode suffix that needs the
+authority token, the live source digests (plan, option template, probe runner,
+fake peers, the shipped sidecar asset and the analysis script), the artifact set
+with per-platform digests, the isolation rules and the finite bounds. The digest
+block is verified against the files on every harness run, so a probe source edit
+cannot slip into an execution request unnoticed. Original mode in the committed
+ledger has `original_run_authorised: false` and no token.
+
 ### Admission caveat
 
 Both the prepared driver and the shipped sidecar admit only the maintained pair

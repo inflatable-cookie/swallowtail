@@ -231,6 +231,11 @@ Stage evidence (2026-11-12, Research 481):
   selected surface. Every selected surface digest across `0.3.317`,
   `0.3.318`, `0.3.319`, `0.3.321` and `0.3.322` is in
   `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/selected-flow.json`.
+- Item 2's ruling is with Tom in decision `d5a14f90-e837-42b6-9818-9b5e74a25547`,
+  which recommends a distinct SDK revision that preserves the managed denial.
+  That is a recommendation, not a ruling: neither preserve nor refuse is granted
+  yet, and probe evidence must precede any claim extension.
+
 - Item 2 now has its source-proven half. `permissions.denyInsteadOfPrompting`
   is an administrator-tier managed-policy key; `settingSources` selects only
   the user, project and local tiers, so `settingSources: []` does not exclude
@@ -239,6 +244,16 @@ Stage evidence (2026-11-12, Research 481):
   own administrator-tier discovery is opaque binary behavior. What remains is
   the product choice between preserving the managed denial under a distinct
   SDK behavior revision and refusing an affected pair.
+- A temporary *probe-only* admission now exists (planner, 2026-11-12, question
+  `e36390b98c373c94c17185abe8fcf9a5cbd14dcde0d2b720cfa8320a76caec7e`): the
+  ledger `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json`
+  binds every proposed tuple, the selected option surface and the fake peer
+  identity, admits harness-only fake runs, and carries no production admission.
+  It refuses a production ledger, a foreign authority, original mode without the
+  exact token, a substituted peer, a non-loopback endpoint and an unjoined peer,
+  and every record it writes is marked probe-only. Production claims, the
+  maintained pair map and the shipped sidecar are unchanged, and original mode
+  stays disabled. Vendor execution is still unauthorised.
 - Item 1 has its harness, not its proof.
   `probe-plan.json` fixes the artifacts, digests, argv, isolation, bounds and
   cleanup for both selected platforms, and the fake-backed harness proves the

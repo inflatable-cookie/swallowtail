@@ -1,0 +1,45 @@
+{
+  "schema": "claude-agent-sdk-probe-options-v1",
+  "note": "The selected option surface the shipped sidecar hands the SDK, with the three per-run values left as placeholders. The harness proves this template equals the sidecar's recorded options for the accepted pair, so a probe run cannot quietly select a different surface.",
+  "placeholders": [
+    "cwd",
+    "pathToClaudeCodeExecutable",
+    "env"
+  ],
+  "options": {
+    "cwd": "<workspace>",
+    "model": "claude-sonnet-5-20250929",
+    "executable": "node",
+    "pathToClaudeCodeExecutable": "<native>",
+    "env": "<allowlist>",
+    "settingSources": [],
+    "skills": [],
+    "plugins": [],
+    "agents": {},
+    "mcpServers": {},
+    "strictMcpConfig": true,
+    "hooks": {},
+    "persistSession": false,
+    "includePartialMessages": false,
+    "tools": [
+      "Read",
+      "Glob",
+      "Grep"
+    ],
+    "disallowedTools": [
+      "BashOutput",
+      "KillShell",
+      "NotebookEdit",
+      "WebFetch",
+      "WebSearch",
+      "Task",
+      "Edit",
+      "Write",
+      "MultiEdit",
+      "Bash"
+    ],
+    "permissionMode": "default",
+    "canUseTool": true,
+    "spawnClaudeCodeProcess": true
+  }
+}

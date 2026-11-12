@@ -107,7 +107,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.322"
+        "2.1.319"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -119,7 +119,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();
     assert_eq!(headless.latest_qualified().as_str(), "2.1.317");
-    assert_eq!(response.latest_qualified().as_str(), "2.1.322");
+    assert_eq!(response.latest_qualified().as_str(), "2.1.319");
     assert_ne!(headless.axis(), response.axis());
     for patch in 295..=310 {
         let version = InterfaceVersion::new(format!("2.1.{patch}")).expect("version");

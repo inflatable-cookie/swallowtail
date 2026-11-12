@@ -179,7 +179,7 @@ fn identity_and_claim_qualify_2_1_257_as_compatible_extension() {
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.322"
+        "2.1.319"
     );
 
     let headless = claude_code_headless_claim();

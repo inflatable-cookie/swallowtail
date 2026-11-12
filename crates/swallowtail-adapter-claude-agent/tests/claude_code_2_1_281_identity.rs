@@ -36,7 +36,7 @@ fn official_hops_and_claim_stop_are_explicit() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.322"
+        "2.1.319"
     );
     let headless = claude_code_headless_claim();
     let response = claude_code_response_only_claim();

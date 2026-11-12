@@ -155,7 +155,7 @@ fn response_only_advances_while_headless_waits_on_permission_mapping() {
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.322"
+        "2.1.319"
     );
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
@@ -168,7 +168,7 @@ fn response_only_advances_while_headless_waits_on_permission_mapping() {
     let response = claude_code_response_only_claim();
     assert_ne!(headless.axis(), response.axis());
     assert_eq!(headless.latest_qualified().as_str(), "2.1.317");
-    assert_eq!(response.latest_qualified().as_str(), "2.1.322");
+    assert_eq!(response.latest_qualified().as_str(), "2.1.319");
     for point in ["2.1.312", "2.1.314", "2.1.315", "2.1.316", "2.1.317"] {
         assert!(
             matches!(
@@ -196,18 +196,27 @@ fn response_only_advances_while_headless_waits_on_permission_mapping() {
             headless.assess(&version(point)),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
+    }
+    for point in ["2.1.321", "2.1.322", "2.1.323"] {
         assert!(matches!(
             response.assess(&version(point)),
-            InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.behavior_revision().as_str()
+            InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+                if newer.behavior_revision().as_str()
                     == "claude-code.response-only.stream-json.v3"
-                    && matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
     for gap in ["2.1.244", "2.1.279", "2.1.297", "2.1.298", "2.1.313"] {
         assert!(!headless.permits(&version(gap)), "{gap}");
         assert!(!response.permits(&version(gap)), "{gap}");
     }
+    assert!(matches!(
+        headless.assess(&version("2.1.320")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert_eq!(
+        response.assess(&version("2.1.320")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert!(matches!(
         headless.assess(&version("2.1.286")),
         InterfaceCompatibilityAssessment::Qualified(matched)

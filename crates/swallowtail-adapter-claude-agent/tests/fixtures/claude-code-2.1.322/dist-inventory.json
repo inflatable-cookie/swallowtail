@@ -212,20 +212,20 @@
       "sdk-tools.d.ts": "SDK declaration-only optional CronDeleteOutput.endedLoopWakeup field; neither CLI route imports this SDK type file"
     },
     "claude-code-darwin-arm64:2.1.319_to_2.1.321": {
-      "claude": "Native CLI binary changed. The 2.1.321 release notes cover tool, hook, plugin, MCP, settings, interactive and remote-control behavior; those paths are outside this route or unreachable with empty tools and strict empty MCP. Selected help and markers are in surface-ledger.json."
+      "claude": "Native CLI binary changed; its selected behavior remains unresolved. Frozen identities and marker counts do not establish control flow or reachability on Darwin arm64."
     },
     "claude-code-linux-x64:2.1.319_to_2.1.321": {
-      "claude": "Native CLI binary changed. The 2.1.321 Linux NFS transcript-loss correction reports a process error instead of silent success; the route maps nonzero exit to its existing typed process-failure class. The hook-counter note requires Bash or PowerShell calls, which empty tools cannot make. Other selected help and markers are in surface-ledger.json."
+      "claude": "Native CLI binary changed; the release note and marker counts do not establish selected stream-json failure behavior or hook reachability on Linux x64."
     },
     "claude-code:2.1.321_to_2.1.322": {
       "package.json": "npm version and optional platform dependency pins only; selected bin path and wrapper identity lookup stay the same"
     },
     "claude-code-darwin-arm64:2.1.321_to_2.1.322": {
-      "claude": "Native CLI binary changed. The 2.1.322 Vertex fast-mode fallback is a server/API path, not this local CLI route; selected help and markers are in surface-ledger.json."
+      "claude": "Native CLI binary changed again; the Vertex server/API note does not establish the changed CLI binary selected behavior."
     },
     "claude-code-linux-x64:2.1.321_to_2.1.322": {
-      "claude": "Native CLI binary changed. The 2.1.322 Vertex fast-mode fallback is a server/API path, not this local CLI route; selected help and markers are in surface-ledger.json."
+      "claude": "Native CLI binary changed again; the Vertex server/API note does not establish the changed CLI binary selected behavior."
     }
   },
-  "method": "Complete recursive file SHA-256 manifests for official npm tarball extractions; tarball SHA-256 and registry SHA-512 integrity per package; selected paths and release-note reachability in surface-ledger.json. The unpublished 2.1.320 gap is not filled."
+  "method": "Complete recursive file SHA-256 manifests for official npm tarball extractions; tarball SHA-256 and registry SHA-512 integrity per package; binary marker observations and explicit selected-behavior evidence stop in surface-ledger.json. The unpublished 2.1.320 gap is not filled."
 }

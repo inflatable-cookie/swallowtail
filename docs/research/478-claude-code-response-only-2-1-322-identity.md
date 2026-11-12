@@ -1,9 +1,11 @@
 # Research 478: Claude Code response-only 2.1.322 identity
 
-Status: response-only extends through official stable `2.1.322` on its existing
-`stream-json.v3` claim. Headless stays qualified through `2.1.317` with
-`2.1.318..=2.1.322` `UnverifiedNewer`; this task does not adapt its separate
-permission-flow stop. Claude Agent ACP and SDK claims remain independent.
+Status: official latest is `2.1.322`; response-only remains qualified through
+`2.1.319` on its existing `stream-json.v3` claim. The selected behavior of the
+changed native binaries at `2.1.321` and `2.1.322` is unresolved on both
+platforms, so both remain `UnverifiedNewer`. Headless stays qualified through
+`2.1.317`; this task does not adapt its separate permission-flow stop. Claude
+Agent ACP and SDK claims remain independent.
 
 Route: `claude-code.response-only`
 Axis: `claude-code.response-only-stream-json`
@@ -32,53 +34,54 @@ from Research 477. `2.1.320` and `2.1.323` both returned npm HTTP 404 and have
 no GitHub tag. No downloaded executable was run; there was no prompt, login,
 install, host change, or live session.
 
-## Selected surface and hop classification
+## Artifact identity and selected-evidence limit
 
 The npm launcher binary, `cli-wrapper.cjs`, and `install.cjs` are byte-identical
 from `2.1.319` through both hops. Wrapper `package.json` changes are version
 and platform dependency metadata; `sdk-tools.d.ts` adds an optional
 `CronDeleteOutput.endedLoopWakeup` declaration at `2.1.321`, unrelated to
 these CLI routes. Both native platform packages retain the same four-file
-shape; only `claude` and version metadata change at each hop. Complete added,
-removed, changed, identical, and per-file digest sets are frozen and tested in
-`dist-inventory.json`.
+shape; only `claude` and version metadata change at each hop. The complete
+inventories and digests are frozen in `dist-inventory.json`.
 
-Static printable-string inspection of both exact native artifacts finds the
-same selected input/output-format help lines as Research 477. The ledger records
-the selected flags and stream, result/failure, permission, hook and lifecycle
-markers for each binary. No executable or help command was run. Swallowtail's
-selected argv remains `-p --input-format text --output-format stream-json`
-with `--tools ""`, `--safe-mode`, disabled slash commands and Chrome, prompt
-suggestions disabled, an empty MCP server map, and strict MCP configuration.
-The existing adapter still validates the same init and text result shape,
-requires one terminal result, rejects tools and additional messages, maps
-provider `is_error` and nonzero child exit to the existing typed failures, and
-cancels and joins the child process using unchanged host code.
+The native binary identity and static-string observations are exact, but they
+do not prove selected behavior. The package contains the executable and
+metadata, not source-level route logic. No vendor binary or help command was
+run. Both changed executables contain the same printable input/output-format
+help lines as Research 477, but native code differs. Between `2.1.319` and
+`2.1.321`, marker counts on both platforms change for `--tools` (85 to 83),
+`--mcp-config` (93 to 94), `permissionDecision` (177 to 181),
+`parent_tool_use_id` (130 to 131), `PreToolUse` (350 to 352), and
+`updatedInput` (562 to 580). Linux `onFailure` remains 151; Darwin remains 159.
+Between `2.1.321` and `2.1.322`, the executable hashes and sizes change again
+while these measured marker counts stay the same. Counts establish neither
+which branch owns a marker nor whether it is reachable from the selected argv.
 
-- `2.1.321`: compatible extension. Release notes include an NFS transcript-loss
-  fix for Linux `-p`, now surfaced as a process error instead of silent exit 0.
-  The note names text and JSON output, not a changed stream-json frame; this
-  failure correction reaches the existing nonzero-exit process-failure class.
-  The `num_hooks` / `num_success` change requires Bash or PowerShell calls, which
-  the empty tool set cannot make. The other noted MCP, plugin, hook, settings,
-  filesystem-write, model-selection, remote-control and workspace changes are
-  outside the selected tool-free route or its configured command.
-- `2.1.322`: compatible extension. Vertex fast-mode fallback concerns a remote
-  Vertex/API path, not this locally launched Claude Code CLI route.
+The unchanged Swallowtail wrapper establishes only argument construction. Its
+fake-process tests establish adapter parsing and joined cleanup, not how the
+new native executables consume the flags, serialize stream-json init/result or
+failure frames, reach hooks/settings, or shut down after cancellation. Release
+notes do not close those gaps: the `2.1.321` Linux NFS note names text/JSON
+output but does not settle the `-p` stream-json path; the hook-counter note
+does not prove the relevant paths unreachable; and the `2.1.322` Vertex
+fast-mode note describes a server/API path without proving anything about the
+other changed native code. Therefore the available static evidence cannot
+qualify either hop on Darwin arm64 or Linux x64.
 
-The `permissions.denyInsteadOfPrompting` setting introduced at `2.1.319`
-remains in the binaries. Empty tools and safe mode leave no permissioned tool
-call for it to change in response-only. Headless retains its separate stop;
-this task changes no headless claim, maximum-turn point, ACP claim, SDK pin, or
+The `permissions.denyInsteadOfPrompting` setting remains in the `2.1.319`
+baseline. This task leaves the headless claim at `2.1.317`, with its separate
+permission-flow stop; it changes no maximum-turn point, ACP claim, SDK pin, or
 provider-wide activity record.
 
 ## Decision
 
-Extend only response-only v3 from `2.1.282..=2.1.319` through
-`2.1.322`; keep the `2.1.227` baseline, deprecated v1/v2 segments, deny-list,
-`AllowUnverified`, and previous holes. Add unpublished `2.1.320` to the explicit
-deny-list so it stays a gap; classify `2.1.323` as `UnverifiedNewer`. No public
-operation, authority, or lifecycle changes.
+Preserve the response-only v3 ceiling at `2.1.319` because static inspection
+does not settle selected native behavior in either published hop. Keep
+`2.1.321` and `2.1.322` `UnverifiedNewer`; keep the `2.1.227` baseline,
+deprecated v1/v2 segments, `AllowUnverified`, and previous holes. Deny
+unpublished `2.1.320` so it remains an explicit gap; `2.1.323` is also
+`UnverifiedNewer` as the first unpublished point above official latest. No
+public operation, authority, or lifecycle changes.
 
 ## Sources
 

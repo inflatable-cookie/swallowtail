@@ -3,8 +3,8 @@
   "behavior_revision": "claude-code.response-only.stream-json.v3",
   "previous_ceiling": "2.1.319",
   "hops": {
-    "2.1.321": "compatible-extension",
-    "2.1.322": "compatible-extension"
+    "2.1.321": "selected-behavior-unresolved",
+    "2.1.322": "selected-behavior-unresolved"
   },
   "selected_command": [
     "-p",
@@ -44,8 +44,8 @@
     "typed response and failure mapping",
     "cancellation and joined process cleanup"
   ],
-  "qualified_ceiling": "2.1.322",
+  "qualified_ceiling": "2.1.319",
   "preserved_gap": "2.1.320",
   "first_unpublished_after_latest": "2.1.323",
-  "decision": "Compatible extension through official stable 2.1.322 on the existing v3 segment. No public lifecycle, authority, or mapped stream-json frame change; response-only remains independent of headless, ACP, and SDK claims."
+  "decision": "Preserve the 2.1.319 ceiling. Exact wrapper and native package identities are frozen, but selected native behavior at both published hops is unresolved: the native binaries changed and available markers/release notes do not prove control flow or reachability. Keep 2.1.321 and 2.1.322 UnverifiedNewer, the unpublished 2.1.320 gap explicit, and 2.1.323 UnverifiedNewer."
 }

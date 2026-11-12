@@ -143,14 +143,14 @@ fn permission_setting_stops_headless_but_does_not_reach_response_only() {
     }
 
     assert_eq!(CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION, "2.1.317");
-    assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, "2.1.322");
+    assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, "2.1.319");
     let headless = claude_code_headless_claim();
     let response_only = claude_code_response_only_claim();
     assert!(matches!(
         headless.assess(&version("2.1.319")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
-    for point in ["2.1.318", "2.1.319", "2.1.321", "2.1.322"] {
+    for point in ["2.1.318", "2.1.319"] {
         assert!(matches!(
             response_only.assess(&version(point)),
             InterfaceCompatibilityAssessment::Qualified(matched)
@@ -163,8 +163,10 @@ fn permission_setting_stops_headless_but_does_not_reach_response_only() {
         response_only.assess(&version("2.1.320")),
         InterfaceCompatibilityAssessment::Incompatible
     ));
-    assert!(matches!(
-        response_only.assess(&version("2.1.323")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
-    ));
+    for point in ["2.1.321", "2.1.322", "2.1.323"] {
+        assert!(matches!(
+            response_only.assess(&version(point)),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+    }
 }

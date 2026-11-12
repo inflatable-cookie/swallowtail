@@ -152,7 +152,7 @@ fn identity_names_compatible_extension_without_changing_production() {
     assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_BASELINE_VERSION, "2.1.227");
     assert_eq!(
         CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION,
-        "2.1.322"
+        "2.1.319"
     );
 
     let headless = claude_code_headless_claim();

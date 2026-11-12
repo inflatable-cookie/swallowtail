@@ -153,7 +153,7 @@ fn complete_package_inventories_and_hop_deltas_are_exact() {
 }
 
 #[test]
-fn selected_response_surface_and_existing_claim_are_frozen() {
+fn selected_behavior_stop_and_route_ledger_are_frozen() {
     let surface = fixture(SURFACES);
     let route = fixture(ROUTE);
     assert_eq!(surface["versions_scanned"], json!(["2.1.319", "2.1.321", "2.1.322"]));
@@ -183,16 +183,49 @@ fn selected_response_surface_and_existing_claim_are_frozen() {
         }
     }
     assert_eq!(route["behavior_revision"], "claude-code.response-only.stream-json.v3");
-    assert_eq!(route["hops"]["2.1.321"], "compatible-extension");
-    assert_eq!(route["hops"]["2.1.322"], "compatible-extension");
-    assert_eq!(route["qualified_ceiling"], "2.1.322");
+    assert_eq!(route["previous_ceiling"], "2.1.319");
+    assert_eq!(route["hops"], json!({
+        "2.1.321": "selected-behavior-unresolved",
+        "2.1.322": "selected-behavior-unresolved"
+    }));
+    assert_eq!(route["selected_command"], json!([
+        "-p", "--input-format", "text", "--output-format", "stream-json", "--verbose",
+        "--no-session-persistence", "--tools", "", "--safe-mode", "--disable-slash-commands",
+        "--no-chrome", "--prompt-suggestions", "false", "--mcp-config", "{\"mcpServers\":{}}",
+        "--strict-mcp-config"
+    ]));
+    assert_eq!(route["selected_fields"], json!([
+        "init", "assistant", "content_block_delta", "result", "is_error", "permissionMode",
+        "tools", "mcp_servers", "num_turns"
+    ]));
+    assert_eq!(route["unchanged"], json!([
+        "tool-free behavior", "safe-mode behavior", "strict empty MCP", "init validation",
+        "typed response and failure mapping", "cancellation and joined process cleanup"
+    ]));
+    assert_eq!(route["qualified_ceiling"], "2.1.319");
     assert_eq!(route["preserved_gap"], "2.1.320");
-    assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, "2.1.322");
+    assert_eq!(route["first_unpublished_after_latest"], "2.1.323");
+    assert_eq!(route["decision"], "Preserve the 2.1.319 ceiling. Exact wrapper and native package identities are frozen, but selected native behavior at both published hops is unresolved: the native binaries changed and available markers/release notes do not prove control flow or reachability. Keep 2.1.321 and 2.1.322 UnverifiedNewer, the unpublished 2.1.320 gap explicit, and 2.1.323 UnverifiedNewer.");
+
+    assert_eq!(surface["selected_mapping"], json!({
+        "argv": "The npm wrapper launch binary, `cli-wrapper.cjs`, and `install.cjs` are byte-identical to 2.1.319, so the wrapper-side argument construction is unchanged. The native executables changed at both published hops; these artifacts do not establish how the changed native code consumes `--input-format text`, `--output-format stream-json`, an empty value following `--tools`, `--safe-mode`, or strict empty MCP.",
+        "stream_result_failure": "Static marker counts and printable help strings do not establish native stream parsing, init/result/failure serialization, or selected control flow. The 2.1.321 Linux NFS release note mentions text and JSON output but does not prove whether the correction reaches this stream-json route or how failures are serialized.",
+        "hooks_settings": "The route passes an empty tool set and no route-configured hooks, but binary markers do not prove whether hook or settings paths are reachable from native startup. The 2.1.321 hook-counter release note and 2.1.319 denyInsteadOfPrompting markers cannot settle that question for changed executables.",
+        "cancellation_cleanup": "Swallowtail adapter cancellation and joined child cleanup are covered by local process tests, but unchanged adapter tests do not establish native shutdown behavior for the changed executables."
+    }));
+    assert_eq!(surface["release_note_classification"], json!({
+        "2.1.321": "Both native executables changed. Marker-count deltas include `--tools` 85→83, `--mcp-config` 93→94, `permissionDecision` 177→181, `parent_tool_use_id` 130→131, `PreToolUse` 350→352, and `updatedInput` 562→580 on both platforms; Linux `onFailure` remains 151 while Darwin remains 159. The release note's Linux NFS correction does not identify stream-json framing. Selected behavior and reachability therefore remain unresolved on Darwin arm64 and Linux x64.",
+        "2.1.322": "Both native executables changed again (Darwin arm64 SHA-256 `a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450`; Linux x64 SHA-256 `bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478`) while the measured marker counts remain the same as 2.1.321. The Vertex fast-mode release note describes a server/API path but does not establish the changed native binaries' selected behavior."
+    }));
+    assert_eq!(CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION, "2.1.319");
     let claim = claude_code_response_only_claim();
-    for point in ["2.1.321", "2.1.322"] {
+    for point in ["2.1.318", "2.1.319"] {
         assert!(matches!(claim.assess(&version(point)), InterfaceCompatibilityAssessment::Qualified(matched)
             if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v3"
                 && matched.support_status() == InterfaceSupportStatus::Maintained));
+    }
+    for point in ["2.1.321", "2.1.322", "2.1.323"] {
+        assert!(matches!(claim.assess(&version(point)), InterfaceCompatibilityAssessment::UnverifiedNewer(_)));
     }
     assert_eq!(claim.assess(&version("2.1.320")), InterfaceCompatibilityAssessment::Incompatible);
     assert!(matches!(claim.assess(&version("2.1.323")), InterfaceCompatibilityAssessment::UnverifiedNewer(_)));

@@ -186,8 +186,9 @@ fn file_ledger_reproduces_the_retained_0_3_317_per_file_hashes() {
 fn adjacent_hop_deltas_keep_the_selected_wrapper_files_classified() {
     let ledger = json(DIST_INVENTORY);
     let adjacent = &ledger["adjacent"];
-    // sdk.mjs changes at every adjacent hop except 0.3.321 to 0.3.322,
-    // where only the version stamp and one description string changed.
+    // sdk.mjs changes at every adjacent hop. The 0.3.321 to 0.3.322 change is
+    // only the version stamp and one description string; the selected-surface
+    // windows stay identical (Research 480).
     for (hop, changed_sdk) in [
         ("0.3.317->0.3.318", true),
         ("0.3.318->0.3.319", true),

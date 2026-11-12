@@ -28,11 +28,17 @@ Preparation requires all of the following:
 - working resource, plus host services for task, process, and working-resource
   ownership
 
-The maintained claim preserves baseline `1.50.1` and qualifies eight exact
-published points: `1.50.1`, `1.51.0`, `1.52.0`, `1.53.0`, `1.54.0`, `1.55.0`,
-`1.56.0`, and `1.57.0`, all on `goose.acp.stdio-v2.auth-required`. Unpublished
-interstitial points remain incompatible. Later stable releases may be
-classified as `UnverifiedNewer`; that status does not make them qualified.
+The maintained claim preserves baseline `1.50.1` and qualifies eleven exact
+published points through `1.59.0` on `goose.acp.stdio-v2.auth-required`.
+Unpublished interstitial points `1.57.1` and `1.58.2` remain incompatible.
+Later stable releases may be classified as `UnverifiedNewer`; that status does
+not make them qualified.
+
+Research 478 freezes official stable `1.58.0`, `1.58.1`, and `1.59.0`.
+Interrupted recovery still returns an error response for each unanswered unique
+tool request, and active advertised one-shot permission replies remain valid.
+The existing boundary and cleanup mapping therefore extend without a behavior
+revision change. Static qualification does not prove live HTTP MCP honouring.
 
 Swallowtail does not install Goose, search `PATH`, run `goose configure`, bind
 `GOOSE_PROVIDER` / `GOOSE_MODEL` as Swallowtail selection, or default

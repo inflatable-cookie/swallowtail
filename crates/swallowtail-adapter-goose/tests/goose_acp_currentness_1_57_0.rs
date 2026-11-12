@@ -169,19 +169,20 @@ fn object_keys(value: &Value) -> BTreeSet<String> {
 #[test]
 fn production_claim_qualifies_every_published_point_and_keeps_the_holes() {
     let claim = goose_acp_claim();
-    assert_eq!(GOOSE_RELEASE_VERSION, "1.57.0");
+    assert_eq!(GOOSE_RELEASE_VERSION, "1.59.0");
     assert_eq!(claim.id().as_str(), "goose.acp.release-window-1");
     assert_eq!(claim.axis().as_str(), "goose.release");
     assert_eq!(claim.baseline().as_str(), "1.50.1");
-    assert_eq!(claim.latest_qualified().as_str(), "1.57.0");
-    assert_eq!(claim.milestones().len(), 8);
+    assert_eq!(claim.latest_qualified().as_str(), "1.59.0");
+    assert_eq!(claim.milestones().len(), 11);
     assert_eq!(
         claim.newer_version_posture(),
         InterfaceNewerVersionPosture::AllowUnverified
     );
 
     for (segment, expected) in claim.milestones().zip([
-        "1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.54.0", "1.55.0", "1.56.0", "1.57.0",
+        "1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.54.0", "1.55.0", "1.56.0", "1.57.0", "1.58.0",
+        "1.58.1", "1.59.0",
     ]) {
         assert_eq!(segment.minimum().as_str(), expected);
         assert_eq!(segment.maximum().as_str(), expected);
@@ -198,7 +199,7 @@ fn production_claim_qualifies_every_published_point_and_keeps_the_holes() {
     }
 
     for gap in [
-        "1.50.2", "1.51.1", "1.52.1", "1.53.1", "1.54.1", "1.55.1", "1.56.1",
+        "1.50.2", "1.51.1", "1.52.1", "1.53.1", "1.54.1", "1.55.1", "1.56.1", "1.57.1", "1.58.2",
     ] {
         assert!(matches!(
             claim.assess(&InterfaceVersion::new(gap).expect("version")),
@@ -206,13 +207,13 @@ fn production_claim_qualifies_every_published_point_and_keeps_the_holes() {
         ));
     }
     assert!(matches!(
-        claim.assess(&InterfaceVersion::new("1.57.1").expect("version")),
+        claim.assess(&InterfaceVersion::new("1.59.1").expect("version")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
 
     for version in [
         "1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.54.0", "1.55.0", "1.56.0", "1.56.1", "1.57.0",
-        "1.57.1",
+        "1.57.1", "1.58.0", "1.58.1", "1.58.2", "1.59.0", "1.59.1",
     ] {
         assert!(goose_release_binding(version).is_some(), "{version}");
     }

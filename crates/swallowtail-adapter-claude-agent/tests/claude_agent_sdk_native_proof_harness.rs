@@ -1073,3 +1073,169 @@ fn the_probe_request_names_live_digests_and_the_exact_artifacts() {
     // recomputes them and would have failed above if they had drifted.
     verify_probe_admission().expect("request digests are live");
 }
+
+// ---------------------------------------------------------------------------
+// Managed-denial behavior revision (Tom's decision d5a14f90 v2)
+// ---------------------------------------------------------------------------
+
+const MANAGED_DENIAL_CONTRACT: &str =
+    include_str!("fixtures/claude-agent-sdk-v2/managed-denial-contract.json");
+
+fn managed_denial_contract() -> Value {
+    serde_json::from_str(MANAGED_DENIAL_CONTRACT).expect("the managed-denial contract is JSON")
+}
+
+#[test]
+fn the_v2_revision_preserves_the_managed_denial_guarantees() {
+    let contract = managed_denial_contract();
+    assert_eq!(contract["behavior_revision"], "claude-agent.sdk-v2");
+    assert_eq!(
+        contract["ruling"]["decision"],
+        "d5a14f90-e837-42b6-9818-9b5e74a25547"
+    );
+    let guarantee_ids: Vec<&str> = contract["guarantees"]
+        .as_array()
+        .expect("contract guarantees")
+        .iter()
+        .map(|row| row["id"].as_str().expect("guarantee id"))
+        .collect();
+    for id in [
+        "no-fabricated-request",
+        "no-admission-claim",
+        "turn-carries-on",
+        "mediated-denial-distinguishable",
+    ] {
+        assert!(guarantee_ids.contains(&id), "contract names {id}");
+    }
+
+    // The admission declares v2 exactly where the setting can appear, and the
+    // probe run records the revision it ran under.
+    let admission = probe_admission();
+    for tuple in admission["tuples"].as_array().expect("admitted tuples") {
+        let sdk = tuple["sdk_version"].as_str().expect("tuple sdk version");
+        let expected = if sdk == ACCEPTED_SDK || sdk == "0.3.318" {
+            "claude-agent.sdk-v1"
+        } else {
+            "claude-agent.sdk-v2"
+        };
+        assert_eq!(tuple["behavior_revision"], expected, "tuple {sdk} revision");
+    }
+
+    let fixture = ProbeFixture::start("managed-deny", &|_| {});
+    fixture.bind_peer("0.3.319", "2.1.319");
+    let run = fixture.run(
+        "0.3.319",
+        "darwin-arm64",
+        "managed-deny",
+        None,
+        120_000,
+        &[],
+    );
+    assert_eq!(
+        run.status, 0,
+        "the managed-denial probe runs: {}",
+        run.stderr
+    );
+    let evidence = run.evidence.expect("probe evidence");
+    assert_eq!(evidence["behaviorRevision"], "claude-agent.sdk-v2");
+    assert_eq!(evidence["scenario"], "managed-deny");
+    assert_eq!(evidence["failure"], Value::Null);
+    assert!(
+        evidence["records"]
+            .as_array()
+            .expect("probe records")
+            .iter()
+            .any(|record| record["event"] == "message" && record["type"] == "result"),
+        "a managed denial is a completed turn: {evidence}"
+    );
+    let native = fixture.native_observations();
+    assert_eq!(
+        native["permissionRequestsSent"],
+        json!(0),
+        "no permission request is fabricated for a managed denial"
+    );
+    assert_eq!(
+        native["permissionAnswers"].as_array().map(Vec::len),
+        Some(0),
+        "a call the host never mediated carries no admission decision"
+    );
+}
+
+#[test]
+fn a_callback_mediated_denial_is_distinguishable_from_a_managed_denial() {
+    let mut fixture = fixture("permission");
+    assert_eq!(open(&mut fixture)["success"], true);
+    fixture
+        .sidecar()
+        .command("query-1", "query", json!({"text": "write a file"}));
+    let callback = fixture.sidecar().next_callback();
+    assert_eq!(callback["toolName"], "Read");
+    let identifier = callback["id"].as_str().expect("callback id").to_owned();
+    fixture.sidecar().respond_callback(&identifier, "deny");
+    let terminal = fixture.sidecar().wait_for_turn_end_record();
+    assert_eq!(terminal["isError"], false, "the turn still completes");
+    let observations = exit_after_close(&mut fixture);
+    assert_eq!(
+        observations["permissionRequestsSent"],
+        json!(1),
+        "a mediated denial carries exactly one request"
+    );
+    let answers = observations["permissionAnswers"]
+        .as_array()
+        .expect("native permission answers");
+    assert_eq!(answers.len(), 1);
+    assert!(
+        serde_json::to_string(&answers[0])
+            .expect("the recorded answer serialises")
+            .contains("\"behavior\":\"deny\""),
+        "the host's deny decision is recorded, which a managed denial never has: {answers:?}"
+    );
+    assert_eq!(
+        fixture.sidecar().callback_tool_names(),
+        vec!["Read".to_owned()],
+        "the callback is the observable difference between the two denials"
+    );
+}
+
+#[test]
+fn the_accepted_pair_keeps_the_v1_revision_while_v2_stays_probe_only() {
+    let mut fixture = fixture("ok");
+    let opened = open(&mut fixture);
+    assert_eq!(opened["success"], true, "the accepted pair opens: {opened}");
+    assert_eq!(
+        opened["data"]["behavior"], "claude-agent.sdk-v1",
+        "the shipped sidecar reports the qualified revision for the accepted pair"
+    );
+    close(&mut fixture);
+
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::MAINTAINED.len(),
+        31,
+        "the maintained pair map is unchanged"
+    );
+    let admission = probe_admission();
+    let control = admission["tuples"]
+        .as_array()
+        .expect("admitted tuples")
+        .iter()
+        .find(|tuple| tuple["sdk_version"] == ACCEPTED_SDK)
+        .expect("the accepted control is admitted");
+    assert_eq!(
+        control["behavior_revision"], "claude-agent.sdk-v1",
+        "the control keeps the qualified revision"
+    );
+    assert!(
+        admission["tuples"]
+            .as_array()
+            .expect("admitted tuples")
+            .iter()
+            .filter(|tuple| tuple["behavior_revision"] == "claude-agent.sdk-v2")
+            .all(|tuple| tuple["sdk_version"] != ACCEPTED_SDK),
+        "the accepted pair never adopts the managed-denial revision early"
+    );
+    assert_eq!(
+        managed_denial_contract()["claim_effect"]["pair_map"],
+        "unchanged",
+        "the contract records that no pair moves"
+    );
+}

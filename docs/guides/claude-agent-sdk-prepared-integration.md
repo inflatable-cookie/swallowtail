@@ -182,6 +182,38 @@ adds a `permissions.denyInsteadOfPrompting` projection; whether the native
 can apply it on this route's permission path is unverified and needs a ruling. The package and native claims stay
 through `0.3.317`/`2.1.317`.
 
+### Permission behavior revisions
+
+Two behavior revisions belong to this route. `claude-agent.sdk-v1` is the
+revision every maintained claim uses and the one the shipped sidecar reports.
+`claude-agent.sdk-v2` is the revision that preserves an inherited,
+administrator-tier `permissions.denyInsteadOfPrompting` denial, chosen by Tom in
+decision `d5a14f90` v2 and recorded in
+`tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json`.
+
+The reasons a distinct revision is needed: the setting first appears in SDK
+`0.3.319`; `settingSources` selects only the user, project and local tiers, so
+this route's `[]` does not exclude the administrator tier; the SDK parent tier
+stays empty because `Options.managedSettings` is never set, so no
+`--managed-settings` reaches the native; and a managed denial answers a
+prompt-requiring call without a `can_use_tool` request.
+
+Under v2 a consumer may rely on four things, and nothing more:
+
+1. a managed denial never becomes a host permission request;
+2. a call the host never mediated is never reported as admitted or
+   host-decided;
+3. a managed denial is a completed turn, not a failure or a stall;
+4. a callback-mediated denial stays distinguishable by its callback record and
+   its recorded decision.
+
+Whether a real native honours the administrator tier, and whether that honouring
+bypasses the callback on every tool class, remains unproven; the native proof
+described in `tests/fixtures/claude-agent-sdk-native-proof/` is the evidence
+that would settle it, and it is unauthorised. No claim adopts v2 yet: the
+package and native segments, the pair map and the sidecar's reported revision
+are unchanged.
+
 The extension's declarations add settings rows, capability strings, hook
 failure policy gates (`onFailure` with `hook_on_failure_supported`/`hooks_applied`),
 new message variants, cache-creation usage splits, and SDK-internal git and

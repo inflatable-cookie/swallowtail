@@ -27,6 +27,8 @@
     "native_sha256_per_tuple": "bound per tuple in fake_native_sha256",
     "platform_semantics": "in harness mode the platform is a declared identity label, not an executed per-platform binary; only an authorised original run would exercise the real artifact"
   },
+  "managed_denial_contract": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json",
+  "managed_denial_contract_sha256": "fc0b8a8d6ada9f72705db9149e1f4c1a5c067811e2a2bc9a7bf93acdbd141800",
   "environment_allowlist": [
     "PATH",
     "HOME",
@@ -72,7 +74,8 @@
           "binary_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
           "binary_bytes": 331362672
         }
-      }
+      },
+      "behavior_revision": "claude-agent.sdk-v1"
     },
     {
       "sdk_version": "0.3.318",
@@ -88,7 +91,8 @@
           "binary_sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
           "binary_bytes": 337814032
         }
-      }
+      },
+      "behavior_revision": "claude-agent.sdk-v1"
     },
     {
       "sdk_version": "0.3.319",
@@ -104,7 +108,8 @@
           "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
           "binary_bytes": 340226576
         }
-      }
+      },
+      "behavior_revision": "claude-agent.sdk-v2"
     },
     {
       "sdk_version": "0.3.321",
@@ -120,7 +125,8 @@
           "binary_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
           "binary_bytes": 341910032
         }
-      }
+      },
+      "behavior_revision": "claude-agent.sdk-v2"
     },
     {
       "sdk_version": "0.3.322",
@@ -136,7 +142,8 @@
           "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
           "binary_bytes": 341914128
         }
-      }
+      },
+      "behavior_revision": "claude-agent.sdk-v2"
     }
   ],
   "request": {
@@ -146,9 +153,10 @@
     "source_digests": {
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json": "4641174e47659dc0162955898204000d01509ef863b86f8ce63a55d4eb353b05",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
-      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs": "9a95bae621c9b4fb35f9ce60f95878b58c2148ff79798964fd511cc5c897292b",
+      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs": "6c56cf5e4e59f1c7c9fe057fc66ca71ce0e29b4aa0314be35a6f74a547febe08",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "6b72d27e1d315e6c481829302372f8e1b872098089232988eadc9be71ffdc4d2",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "fc0b8a8d6ada9f72705db9149e1f4c1a5c067811e2a2bc9a7bf93acdbd141800",
       "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs": "be6bc2cad7c2c55cb78bc6e5ba5a66981fba09e6f4acab0a057a2818b252bde1"
     },
     "artifacts": [

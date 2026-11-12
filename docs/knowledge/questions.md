@@ -196,7 +196,7 @@ approval; not a new Tom ruling):
 
 Status: open
 Asked: 2026-11-12
-Gate owner: Tom (operator) for items 1 and 2; planner for item 3
+Gate owner: Tom (operator) for item 1; item 2 answered; item 3 closed
 
 Research 480 freezes npm `latest` `0.3.322` (native `2.1.322`) and the hops
 `0.3.318`, `0.3.319`, and `0.3.321`. Each bundled native binary changed.
@@ -215,13 +215,22 @@ Decision tree:
 2. `permissions.denyInsteadOfPrompting` on this route, from `0.3.319`.
    Preserve it under a distinct SDK behavior revision, or refuse the pair
    when the setting is present. Either choice is a product decision.
+   **Answered 2026-11-12:** Tom chose preservation under a distinct revision,
+   decision `d5a14f90-e837-42b6-9818-9b5e74a25547` v2, relayed by the planner
+   and applied as `task232` brief v2
+   (`sha256:e6abac0dd3f10494a0a28fb379a7b183582bf87848b774fb1651bd18bf67cc1e`).
+   The distinct revision is `claude-agent.sdk-v2`; every maintained claim stays
+   on `claude-agent.sdk-v1` and no pair moves. Original-artifact execution is
+   still unauthorised, so the revision is declared for the probe admission
+   only. The contract and its fake regressions are
+   `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json`.
 3. Residuals at `0.3.321`: `promptHold`, `initializeWritten`, and the `Ki`
    telemetry callers. Planner closes these with the native proof.
 
 Cells covered: `claude-agent.sdk` package and native rows in the route matrix
 and the prepared-integration guide, from `0.3.318` through `0.3.322`.
 
-Stage evidence (2026-11-12, Research 481):
+Stage evidence (2026-11-12, Research 482):
 
 - Item 3 is closed. The three residuals are classified from exact bytes:
   `promptHold` is unchanged and unselected (`hooks: {}` cannot arm it),
@@ -231,10 +240,14 @@ Stage evidence (2026-11-12, Research 481):
   selected surface. Every selected surface digest across `0.3.317`,
   `0.3.318`, `0.3.319`, `0.3.321` and `0.3.322` is in
   `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/selected-flow.json`.
-- Item 2's ruling is with Tom in decision `d5a14f90-e837-42b6-9818-9b5e74a25547`,
-  which recommends a distinct SDK revision that preserves the managed denial.
-  That is a recommendation, not a ruling: neither preserve nor refuse is granted
-  yet, and probe evidence must precede any claim extension.
+- Item 2 is answered: preserve the managed denial under `claude-agent.sdk-v2`
+  (Tom, decision `d5a14f90` v2). The distinct revision names four guarantees -
+  no fabricated permission request, no admission claim for an unmediated call, a
+  completed turn, and a mediated denial distinguishable by its callback and
+  recorded decision - and the contract fixture pins each one against fake peers.
+  No claim adopts v2: the package and native segments, the pair map, the
+  behavior revision used by every claim and the shipped sidecar stay as they
+  were, because probe evidence must precede a claim extension.
 
 - Item 2 now has its source-proven half. `permissions.denyInsteadOfPrompting`
   is an administrator-tier managed-policy key; `settingSources` selects only

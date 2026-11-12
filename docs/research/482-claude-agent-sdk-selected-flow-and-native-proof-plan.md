@@ -1,4 +1,4 @@
-# Research 481: Claude Agent SDK selected flow and the native proof plan
+# Research 482: Claude Agent SDK selected flow and the native proof plan
 
 Status: evidence and a plan. No claim moves. `claude-agent.sdk` stays qualified
 through SDK `0.3.317` with native `2.1.317`, `QualifiedOnly`, with the default
@@ -174,6 +174,37 @@ description says allow rules, the permission mode, the auto-mode classifier and
 `PermissionRequest` hooks are consulted before the denial. This route sets no
 allow rules, uses the selected permission mode, and installs no hooks, so the
 only thing that could pre-empt the callback is the native's own policy.
+
+## The ruling: preserve the managed denial under a distinct revision
+
+After this record's first stage, Tom answered Q-009 item 2 (decision
+`d5a14f90-e837-42b6-9818-9b5e74a25547` v2, relayed by the planner as `task232`
+brief v2): preserve the managed denial under a distinct SDK behavior revision
+rather than refuse an affected pair.
+
+The distinct revision is `claude-agent.sdk-v2`
+(`CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR`), and its contract is
+`tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json`. It names the
+selected surface it applies to and four guarantees, each pinned by a fake
+regression:
+
+1. a managed denial never becomes a host permission request;
+2. a call the host never mediated is never reported as admitted or
+   host-decided;
+3. a managed denial is a completed turn with no error text;
+4. a callback-mediated denial stays distinguishable by its callback record and
+   its recorded decision.
+
+The revision changes no claim. Every maintained segment keeps
+`claude-agent.sdk-v1`, the package and native segments stay
+`0.3.284..=0.3.317` and `2.1.284..=2.1.317`, the pair map keeps its 31 pairs, and
+the shipped sidecar still reports v1 for the accepted pair; a library unit test
+asserts that no claim adopts v2. The probe admission declares v1 for `0.3.317`
+and `0.3.318`, where the setting cannot exist, and v2 from `0.3.319` on, so a
+probe run records which contract it belongs to. What the bytes still cannot prove
+is whether a real native honours the administrator tier and whether that
+honouring bypasses the callback on every tool class; that needs the
+original-artifact run, which stays unauthorised.
 
 ## Harness and plan
 

@@ -606,6 +606,8 @@ pub const PROBE_OPTIONS: &str =
 const PROBE_RUNNER: &str = include_str!("probe-runner.mjs");
 const PROBE_FAKE_NATIVE: &str = include_str!("fake-native.mjs");
 const PROBE_FAKE_SDK: &str = include_str!("fake-sdk-native-wire.mjs");
+const MANAGED_DENIAL_CONTRACT: &str =
+    include_str!("../fixtures/claude-agent-sdk-v2/managed-denial-contract.json");
 const SIDECAR_ASSET: &str = include_str!("../../sidecar/claude-agent-sdk-sidecar.mjs");
 
 pub fn probe_admission() -> Value {
@@ -708,6 +710,19 @@ pub fn verify_probe_admission() -> Result<(), String> {
     if admission["fake_peer"]["sdk_module_sha256"] != json!(sha256_hex(PROBE_FAKE_SDK.as_bytes())) {
         return Err("probe admission does not bind the fake SDK module".to_owned());
     }
+    if admission["managed_denial_contract_sha256"]
+        != json!(sha256_hex(MANAGED_DENIAL_CONTRACT.as_bytes()))
+    {
+        return Err("probe admission does not bind the managed-denial contract bytes".to_owned());
+    }
+    let contract: Value = serde_json::from_str(MANAGED_DENIAL_CONTRACT)
+        .expect("the managed-denial contract is valid JSON");
+    if contract["behavior_revision"] != "claude-agent.sdk-v2" {
+        return Err("the managed-denial contract names an unexpected revision".to_owned());
+    }
+    if contract["claim_effect"]["behavior_revision_used_by_claims"] != "claude-agent.sdk-v1" {
+        return Err("the managed-denial contract must leave every claim on v1".to_owned());
+    }
     if admission["fake_peer"]["platform_semantics"]
         .as_str()
         .is_none()
@@ -724,6 +739,17 @@ pub fn verify_probe_admission() -> Result<(), String> {
         return Err("probe admission does not cover every planned tuple".to_owned());
     }
     for planned_row in planned {
+        let planned_versions: Vec<u64> = planned_row["sdk_version"]
+            .as_str()
+            .expect("planned sdk version")
+            .split('.')
+            .map(|part| part.parse().expect("numeric sdk version part"))
+            .collect();
+        let expected_revision = if planned_versions.as_slice() >= [0, 3, 319].as_slice() {
+            "claude-agent.sdk-v2"
+        } else {
+            "claude-agent.sdk-v1"
+        };
         let tuple = tuples
             .iter()
             .find(|row| row["sdk_version"] == planned_row["sdk_version"])
@@ -743,6 +769,12 @@ pub fn verify_probe_admission() -> Result<(), String> {
             return Err(format!(
                 "tuple {} tarball digest diverges",
                 planned_row["sdk_version"]
+            ));
+        }
+        if tuple["behavior_revision"] != json!(expected_revision) {
+            return Err(format!(
+                "tuple {} names behavior revision {} instead of {expected_revision}",
+                planned_row["sdk_version"], tuple["behavior_revision"]
             ));
         }
         if tuple["fake_native_sha256"] != json!(sha256_hex(PROBE_FAKE_NATIVE.as_bytes())) {
@@ -784,6 +816,9 @@ pub fn verify_probe_admission() -> Result<(), String> {
             }
             "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs" => {
                 sha256_hex(PROBE_FAKE_SDK.as_bytes())
+            }
+            "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json" => {
+                sha256_hex(MANAGED_DENIAL_CONTRACT.as_bytes())
             }
             "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs" => {
                 sha256_hex(SIDECAR_ASSET.as_bytes())

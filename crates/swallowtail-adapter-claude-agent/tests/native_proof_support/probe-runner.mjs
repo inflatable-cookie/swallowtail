@@ -192,6 +192,12 @@ async function main() {
   if (tuple.platforms[platform] === undefined) {
     throw new Refusal("unknown_platform", `tuple ${sdkVersion} does not admit ${platform}`);
   }
+  if (typeof tuple.behavior_revision !== "string" || tuple.behavior_revision.length === 0) {
+    throw new Refusal(
+      "invalid_admission",
+      `tuple ${sdkVersion} names no behavior revision, so the run cannot identify its contract`,
+    );
+  }
   const { nativeBinary, nativeDigest } = checkPeer(peer, tuple, platform);
 
   const template = loadJson(optionsPath, "probe options");
@@ -265,6 +271,7 @@ async function main() {
     productionAdmission: false,
     mode,
     tuple: { sdk_version: tuple.sdk_version, native_version: tuple.native_version },
+    behaviorRevision: tuple.behavior_revision,
     platform,
     scenario,
     endpoint: endpoint ?? null,

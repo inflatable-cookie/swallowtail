@@ -123,7 +123,7 @@ fn prepared_session_advertises_and_exchanges_form_elicitation_as_typed_user_inpu
 #[test]
 fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
     let host_id = ExecutionHostId::new("fixture.session.consumer-mediated").expect("valid host");
-    let preparation_host = FixtureHost::new(Scenario::Version, "0.61.0");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.106.0");
     let prepared = block_on(prepare_claude_agent(
         preparation_input(host_id.clone()),
         probe(),
@@ -162,7 +162,7 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
         )
     );
 
-    let operation_host = FixtureHost::new(Scenario::Permission, "0.61.0");
+    let operation_host = FixtureHost::new(Scenario::Permission, "0.106.0");
     let services = operation_host.services(host_id.clone());
     let mut session =
         block_on(profile.open_session(services.clone())).expect("prepared session opens");
@@ -194,6 +194,9 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
         extension.namespace().as_str(),
         "acp/session/request-permission"
     );
+    assert!(!operation_host.writes().iter().any(|message| {
+        message.get("id").and_then(serde_json::Value::as_u64) == Some(900)
+    }));
     block_on(
         callbacks.responder().respond(CallbackResponse::new(
             callback_id.clone(),
@@ -222,12 +225,29 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
                 if id == &callback_id
         )
     }));
+    let callback_position = observed
+        .iter()
+        .position(|event| {
+            matches!(event.kind(), swallowtail_runtime::RuntimeEventKind::CallbackRequested(id) if id == &callback_id)
+        })
+        .expect("callback event");
+    assert!(
+        observed[callback_position + 1..].iter().any(|event| {
+            matches!(
+                event.kind(),
+                swallowtail_runtime::RuntimeEventKind::Activity(_)
+            )
+        }),
+        "the fake emits its completed tool activity only after the permission response"
+    );
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(
         block_on(session.close(operation_host.cleanup_request(), services)),
         CleanupOutcome::Clean
     );
+    assert_eq!(operation_host.credential_releases(), 1);
+    assert_eq!(operation_host.resource_releases(), 1);
     assert_eq!(
         profile
             .load_request(

@@ -17,3 +17,21 @@ permission requests through that callback. This needs a route-specific
 adaptation decision and proof; it does not establish a revised claim. The
 project and local settings copies of this key are ignored by the native
 setting; user and managed settings remain relevant.
+
+`dependencies.json` freezes registry integrity, per-file hashes, adjacent
+version deltas and the bundled Agent SDK native manifests. Those manifests
+are package evidence, not qualification of the separate SDK/native axes.
+`static-closure.json` records a conservative literal-import traversal from
+v1 entry points and assigns each changed path an explicit structural class and
+reachable modules a surface role. Dynamic resolution and semantic effects
+remain separate review obligations; a reachable label is not proof of use,
+and an unreached label is not proof of absence from all dynamic paths.
+
+`idle-compaction-boundary.json` records a second selected process boundary:
+from 0.101.0 the v1 session can initiate `/compact` without a client prompt
+when the recorded idle, cache and token conditions hold. This observation does
+not authorize provider execution or qualify a new version.
+
+`relocations.json` pairs the v1 paths moved in 0.103.0 and the session-index
+paths moved again in 0.105.0. Each pair has both hashes; nonidentical pairs
+remain selected review work rather than being classified as unchanged.

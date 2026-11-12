@@ -44,6 +44,13 @@ impl SharedAgent {
         } else if message["result"]["outcome"]["outcome"] == "selected"
             && message["result"]["outcome"]["optionId"] == "allow-once"
         {
+            Self::enqueue(
+                state,
+                json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                    "sessionId": "claude-agent-session-fixture",
+                    "update": {"sessionUpdate": "tool_call_update", "toolCallId": "shell-1", "status": "completed"}
+                }}),
+            );
             let id = state.prompt_id.take().ok_or_else(fixture_failure)?;
             Self::enqueue(
                 state,

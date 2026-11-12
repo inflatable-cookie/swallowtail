@@ -33,7 +33,28 @@ if [[ ${SWALLOWTAIL_OXIDE_EXEC_CHILD:-} != 1 ]]; then
     --host-tool bash "$validation_repo_root/scripts/verify-affected-packages.sh" "$@"
 fi
 
-validation_tmp=$(mktemp -d)
+# BSD mktemp needs an explicit template; unlike GNU mktemp it does not use
+# TMPDIR for an unqualified template. Prefer the caller's configured scratch
+# root and never fall back when one was supplied but cannot be used.
+if [[ -n ${TMPDIR:-} ]]; then
+  validation_scratch_root=$TMPDIR
+elif [[ -n ${TMP:-} ]]; then
+  validation_scratch_root=$TMP
+elif [[ -n ${TEMP:-} ]]; then
+  validation_scratch_root=$TEMP
+else
+  validation_scratch_root=${TMPDIR:-/tmp}
+fi
+while [[ "$validation_scratch_root" == */ && "$validation_scratch_root" != / ]]; do
+  validation_scratch_root=${validation_scratch_root%/}
+done
+if [[ ! -d "$validation_scratch_root" || ! -w "$validation_scratch_root" ]]; then
+  printf 'affected package proof scratch root is not an available writable directory: %s\n' \
+    "$validation_scratch_root" >&2
+  exit 1
+fi
+
+validation_tmp=$(mktemp -d "$validation_scratch_root/swallowtail-affected.XXXXXXXX")
 trap 'rm -rf "$validation_tmp"' EXIT
 export CARGO_BUILD_BUILD_DIR="$validation_tmp/build"
 

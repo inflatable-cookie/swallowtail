@@ -17,7 +17,7 @@ use serde_json::{Value, json};
 use sidecar_asset_support::SidecarProcess;
 use swallowtail_adapter_claude_agent::sdk::{
     CLAUDE_AGENT_SDK_NATIVE_AXIS, CLAUDE_AGENT_SDK_PACKAGE_AXIS, ClaudeAgentSdkPackageNativePair,
-    claude_agent_sdk_node_claim, prepare_claude_agent_sdk_session,
+    prepare_claude_agent_sdk_session,
 };
 use swallowtail_runtime::InteractiveSessionHandle;
 
@@ -350,7 +350,7 @@ fn wrong_unsupported_and_unreadable_package_native_identities_fail_before_sdk_co
 }
 
 #[test]
-fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
+fn matching_sdk_package_identity_and_executing_node_identity_are_reported_at_open() {
     let mut sidecar = SidecarProcess::start_scenario("sdk-identity-match");
     let open = sidecar.command(
         "open-1",
@@ -363,12 +363,13 @@ fn matching_sdk_package_identity_is_verified_and_reported_at_open() {
     let node_version = open["data"]["nodeVersion"]
         .as_str()
         .expect("the sidecar reports its executing Node version");
-    assert!(
-        claude_agent_sdk_node_claim().permits(
-            &swallowtail_core::InterfaceVersion::new(node_version)
-                .expect("the sidecar reports a semantic Node version")
-        )
+    assert_eq!(
+        node_version,
+        sidecar.node_version(),
+        "the sidecar reports the version of its selected executable truthfully"
     );
+    swallowtail_core::InterfaceVersion::new(node_version)
+        .expect("the sidecar reports a semantic Node version");
     assert!(sidecar.sdk_was_constructed());
     let close = sidecar.command("close-1", "close", json!({"joinBoundMs": 2_000}));
     assert_eq!(close["success"], true);

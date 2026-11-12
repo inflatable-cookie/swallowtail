@@ -1,4 +1,4 @@
-# Research 479: Claude Agent ACP 0.106.0 evidence
+# Research 480: Claude Agent ACP 0.106.0 evidence
 
 Status: evidence only. `claude-agent.acp` remains qualified through 0.100.0;
 newer points remain `UnverifiedNewer`. The permission and process boundaries

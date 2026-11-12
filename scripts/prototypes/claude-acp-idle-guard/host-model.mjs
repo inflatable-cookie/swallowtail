@@ -7,7 +7,7 @@ import { pathToFileURL } from 'node:url';
 const expected = Object.freeze({
   'preload.mjs': '69e92c9441d600427c6ece40f70a0f57d036c06a604e87461297f0fbc0eb9a72',
   'loader.mjs': 'de6365aa9e9dff14717d4a26d4c833a836bba8a63b649cd730256cdc7f67b30a',
-  'entry.mjs': 'befb675b6eae6ba79d1d7e894d0c13af98b96bebfe33e8529cfdf61e4f661ecf',
+  'entry.mjs': '7fb4e6c07bb456352e24d0d301506f0d492caf18e07e9762aa1de8d42a558210',
   'idle.mjs': '3d26aac0f45f61026c81fae01d191086384db796192cc196af092187472b99b2',
 });
 const dataUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`;

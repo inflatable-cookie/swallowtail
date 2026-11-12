@@ -42,6 +42,7 @@ test('rejects startup controls, missing, changed, duplicate and aliased modules 
   for (const key of ['NODE_OPTIONS', 'NODE_PATH', 'NODE_REPL_EXTERNAL_MODULE']) assert.throws(() => prepareFakeLaunch(dir, { [key]: '--require bad' }), /unsafe/);
   for (const args of [['--require', 'bad'], ['--import', 'bad'], ['--loader', 'bad'], ['--import', 'one', '--import', 'one']]) assert.throws(() => prepareFakeLaunch(dir, {}, args), /unsafe/);
   for (const name of names) assert.throws(() => prepareFakeLaunch(fixture(name)));
+  for (const name of names) { const changed = fixture(); writeFileSync(join(changed, name), 'changed'); assert.throws(() => prepareFakeLaunch(changed), /digest mismatch/); }
   const changed = fixture();
   writeFileSync(join(changed, 'entry.mjs'), "import './idle.mjs'; import './idle.mjs';");
   assert.throws(() => prepareFakeLaunch(changed), /digest mismatch/);

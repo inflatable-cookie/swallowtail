@@ -18,13 +18,14 @@ use swallowtail_adapter_goose::{
 use swallowtail_core::{
     AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
     CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
-    EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, RuntimeReadiness,
-    SupportAuthority,
+    EntitlementState, ExecutionHostId, ExtensionNamespace, InstanceRevision, InterfaceVersionAxis,
+    ProviderRequestHandling, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_runtime::{
-    CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef, ExecutableRef,
-    InstalledExecutableTarget, MonotonicInstant, OperationContent, PreparedAccessEvidence,
-    RequestId, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest, WorkingResourceRef,
+    ActivityKind, ActivityLifecyclePhase, ActivityStatus, CleanupOutcome, Deadline,
+    DiscoveryCancellation, EnvironmentRef, ExecutableRef, InstalledExecutableTarget,
+    MonotonicInstant, OperationContent, PreparedAccessEvidence, ProviderObservation, RequestId,
+    RuntimeEventKind, RuntimeTurnId, ScopeId, TerminalStatus, TurnRequest, WorkingResourceRef,
     WorkingStateRestorationOutcome,
 };
 use swallowtail_testkit::assert_prepared_operation_evidence_matches_plan;
@@ -141,6 +142,148 @@ fn prepared_session_names_goose_acp_and_release_then_drains_one_prompt() {
 }
 
 #[test]
+fn prepared_permission_cancellation_observes_interrupted_tool_and_cleanup() {
+    let host_id = ExecutionHostId::new("fixture.prepared.permission").expect("host");
+    let discovery = DiscoveryHost::new(GOOSE_RELEASE_VERSION);
+    let operation = FixtureHost::new(Scenario::Permission);
+    let mut preparation_services = discovery.services(host_id.clone());
+    preparation_services = preparation_services.with_working_resource(
+        operation
+            .services(host_id.clone())
+            .working_resource()
+            .expect("resource service")
+            .clone(),
+    );
+    let prepared = block_on(prepare_goose_acp(
+        preparation_input(host_id.clone()),
+        probe(),
+        preparation_services,
+    ))
+    .expect("Goose ACP prepares");
+    let session = prepared
+        .prepare_session(session_input("permission-cancel"))
+        .expect("permission session prepares");
+    assert_prepared_operation_evidence_matches_plan(session.evidence(), session.plan());
+
+    let operation_services = operation.services(host_id);
+    let mut handle = block_on(session.open_session(operation_services.clone()))
+        .expect("prepared permission session opens");
+    let mut turn = block_on(handle.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("goose-prepared-permission-turn").expect("turn"),
+            OperationContent::new("private fixture permission prompt").expect("prompt"),
+        ),
+        operation_services.clone(),
+    ))
+    .expect("prepared turn starts");
+    assert!(turn.take_callbacks().is_none());
+
+    let terminal = block_on(
+        turn.take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    let observation = match terminal.status() {
+        TerminalStatus::ProviderRequestObserved(observation) => observation,
+        other => panic!("permission route outcome must remain an observation: {other:?}"),
+    };
+    assert_eq!(
+        observation.namespace().as_str(),
+        "acp/session/request-permission"
+    );
+    assert_eq!(
+        observation.provider_request_ref().as_provider_value(),
+        "acp:900"
+    );
+
+    let writes = operation.writes();
+    let cancel_index = writes
+        .iter()
+        .position(|message| message["method"] == "session/cancel")
+        .expect("active permission request triggers session/cancel");
+    let reply_index = writes
+        .iter()
+        .position(|message| message.get("id").and_then(serde_json::Value::as_u64) == Some(900))
+        .expect("permission request receives its response");
+    assert!(
+        cancel_index < reply_index,
+        "cancel precedes the permission reply"
+    );
+    assert_eq!(
+        writes[reply_index]["result"]["outcome"],
+        serde_json::json!({"outcome": "cancelled"})
+    );
+    assert!(
+        writes[reply_index]["result"]["outcome"]
+            .get("optionId")
+            .is_none()
+    );
+
+    let events = block_on(turn.take_events().expect("events").collect::<Vec<_>>())
+        .into_iter()
+        .collect::<Result<Vec<_>, _>>()
+        .expect("prepared route events parse");
+    let tool_started_index = events
+        .iter()
+        .position(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(activity)
+                    if activity.kind() == &ActivityKind::ProviderOwnedTool
+                        && activity
+                            .provider_activity_ref()
+                            .is_some_and(|reference| {
+                                reference.as_provider_value() == "tool-goose"
+                            })
+                        && activity.phase() == ActivityLifecyclePhase::Started
+                        && activity.status() == ActivityStatus::InProgress
+            )
+        })
+        .expect("prepared route observes the active advertised tool");
+    let permission_observed_index = events
+        .iter()
+        .position(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::ProviderObservation(ProviderObservation::RequestCorrelation(
+                    reference
+                )) if reference.as_provider_value() == "acp:900"
+            )
+        })
+        .expect("prepared route emits the permission request observation");
+    let tool_failed_index = events
+        .iter()
+        .position(|event| {
+            matches!(
+                event.kind(),
+                RuntimeEventKind::Activity(activity)
+                    if activity.kind() == &ActivityKind::ProviderOwnedTool
+                        && activity
+                            .provider_activity_ref()
+                            .is_some_and(|reference| {
+                                reference.as_provider_value() == "tool-goose"
+                            })
+                        && activity.phase() == ActivityLifecyclePhase::Completed
+                        && activity.status() == ActivityStatus::Failed
+            )
+        })
+        .expect("prepared route observes the interrupted tool result");
+    assert!(tool_started_index < permission_observed_index);
+    assert!(permission_observed_index < tool_failed_index);
+    assert_eq!(
+        ProviderRequestHandling::Reject,
+        swallowtail_core::ProviderRequestPolicy::reject_all().handling_for(
+            &ExtensionNamespace::new("acp/session/request-permission").expect("namespace")
+        )
+    );
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(close_session(handle, operation_services)),
+        CleanupOutcome::Clean
+    );
+    assert_eq!(operation.releases(), 1);
+}
+
+#[test]
 fn preparation_admits_each_qualified_release_and_rejects_unverified_newer() {
     for (host_name, version) in [
         ("fixture.prepared.qualified.1_50_1", "1.50.1"),
@@ -151,6 +294,9 @@ fn preparation_admits_each_qualified_release_and_rejects_unverified_newer() {
         ("fixture.prepared.qualified.1_55_0", "1.55.0"),
         ("fixture.prepared.qualified.1_56_0", "1.56.0"),
         ("fixture.prepared.qualified.1_57_0", "1.57.0"),
+        ("fixture.prepared.qualified.1_58_0", "1.58.0"),
+        ("fixture.prepared.qualified.1_58_1", "1.58.1"),
+        ("fixture.prepared.qualified.1_59_0", "1.59.0"),
     ] {
         let host_id = ExecutionHostId::new(host_name).expect("host");
         let discovery = DiscoveryHost::new(version);
@@ -172,7 +318,7 @@ fn preparation_admits_each_qualified_release_and_rejects_unverified_newer() {
     }
 
     let host_id = ExecutionHostId::new("fixture.prepared.unverified-newer").expect("host");
-    let discovery = DiscoveryHost::new("1.57.1");
+    let discovery = DiscoveryHost::new("1.59.1");
     let error = block_on(prepare_goose_acp(
         preparation_input(host_id.clone()),
         probe(),

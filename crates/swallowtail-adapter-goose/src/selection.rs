@@ -12,7 +12,7 @@ pub const GOOSE_EXECUTABLE_NAME: &str = "goose";
 /// Opaque GitHub-release axis for Goose ACP.
 pub const GOOSE_RELEASE_AXIS: &str = "goose.release";
 /// Latest Goose CLI release qualified for ACP.
-pub const GOOSE_RELEASE_VERSION: &str = "1.57.0";
+pub const GOOSE_RELEASE_VERSION: &str = "1.59.0";
 /// First Goose CLI release retained by the ACP claim.
 #[cfg(test)]
 const GOOSE_RELEASE_BASELINE_VERSION: &str = "1.50.1";
@@ -125,6 +125,24 @@ pub fn goose_acp_claim() -> InterfaceCompatibilityClaim {
                     .expect("static Goose behavior is valid"),
                 InterfaceSupportStatus::Maintained,
             ),
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.58.0").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.58.1").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            InterfaceVersionSegment::exact(
+                InterfaceVersion::new("1.59.0").expect("static Goose version is valid"),
+                InterfaceBehaviorRevision::new(GOOSE_ACP_BEHAVIOR)
+                    .expect("static Goose behavior is valid"),
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
         [],
     )
@@ -199,7 +217,7 @@ mod tests {
     fn stable_releases_are_bound_for_claim_classification() {
         for accepted in [
             "1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.54.0", "1.55.0", "1.56.0", "1.56.1",
-            "1.57.0", "1.57.1",
+            "1.57.0", "1.57.1", "1.58.0", "1.58.1", "1.58.2", "1.59.0", "1.59.1",
         ] {
             assert!(goose_release_binding(accepted).is_some(), "{accepted}");
         }
@@ -229,13 +247,14 @@ mod tests {
         let claim = goose_acp_claim();
         assert_eq!(claim.baseline().as_str(), GOOSE_RELEASE_BASELINE_VERSION);
         assert_eq!(claim.latest_qualified().as_str(), GOOSE_RELEASE_VERSION);
-        assert_eq!(claim.milestones().len(), 8);
+        assert_eq!(claim.milestones().len(), 11);
         assert_eq!(
             claim.newer_version_posture(),
             InterfaceNewerVersionPosture::AllowUnverified
         );
         for qualified in [
             "1.50.1", "1.51.0", "1.52.0", "1.53.0", "1.54.0", "1.55.0", "1.56.0", "1.57.0",
+            "1.58.0", "1.58.1", "1.59.0",
         ] {
             let assessment = claim.assess(&InterfaceVersion::new(qualified).expect("version"));
             let swallowtail_core::InterfaceCompatibilityAssessment::Qualified(matched) = assessment
@@ -246,7 +265,8 @@ mod tests {
             assert_eq!(matched.support_status(), InterfaceSupportStatus::Maintained);
         }
         for gap in [
-            "1.50.2", "1.51.1", "1.52.1", "1.53.1", "1.54.1", "1.55.1", "1.56.1",
+            "1.50.2", "1.51.1", "1.52.1", "1.53.1", "1.54.1", "1.55.1", "1.56.1", "1.57.1",
+            "1.58.2",
         ] {
             assert!(
                 matches!(
@@ -257,7 +277,7 @@ mod tests {
             );
         }
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("1.57.1").expect("version")),
+            claim.assess(&InterfaceVersion::new("1.59.1").expect("version")),
             swallowtail_core::InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
         assert!(matches!(

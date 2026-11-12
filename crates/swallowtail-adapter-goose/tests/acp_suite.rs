@@ -6,7 +6,7 @@ use support::{FixtureHost, Scenario, close_session, selection, selection_with_ac
 use swallowtail_adapter_goose::{
     GOOSE_ACP_MCP_SERVER_NAME, GooseAcpDriver, GooseAcpRemoteMcpPlacement,
 };
-use swallowtail_core::{ExecutionHostId, ProviderRequestHandling, ResourceAccess};
+use swallowtail_core::{ExecutionHostId, ResourceAccess};
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, InteractiveSessionDriver, MonotonicInstant, OpenSessionRequest,
     OperationContent, RequestId, RuntimeEventKind, RuntimeTurnId, SessionPlanAgreement,
@@ -177,42 +177,6 @@ fn unexpected_write_callback_is_rejected_before_host_mutation() {
         message.get("id").and_then(serde_json::Value::as_u64) == Some(702)
             && message["error"]["code"] == -32601
     }));
-    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
-    assert_eq!(
-        block_on(close_session(session, services)),
-        CleanupOutcome::Clean
-    );
-}
-
-#[test]
-fn permission_observes_without_selecting_allow_always() {
-    let (host, mut session, services) = open(Scenario::Permission, "permission");
-    let mut turn = start(&mut *session, services.clone(), "permission-turn");
-    assert!(turn.take_callbacks().is_none());
-    let outcome = block_on(
-        turn.take_terminal_outcome()
-            .expect("terminal outcome is available"),
-    );
-    assert!(matches!(
-        outcome.status(),
-        TerminalStatus::ProviderRequestObserved(_)
-    ));
-    assert!(host.writes().iter().any(|message| {
-        message.get("method").and_then(serde_json::Value::as_str) == Some("session/cancel")
-    }));
-    assert!(host.writes().iter().any(|message| {
-        message.get("id").and_then(serde_json::Value::as_u64) == Some(900)
-            && message["result"]["outcome"]["outcome"] == "cancelled"
-            && message["result"]["outcome"].get("optionId")
-                != Some(&serde_json::json!("allow_always"))
-    }));
-    assert_eq!(
-        ProviderRequestHandling::Reject,
-        swallowtail_core::ProviderRequestPolicy::reject_all().handling_for(
-            &swallowtail_core::ExtensionNamespace::new("acp/session/request-permission")
-                .expect("valid namespace")
-        )
-    );
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(
         block_on(close_session(session, services)),

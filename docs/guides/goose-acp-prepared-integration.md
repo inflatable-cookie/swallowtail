@@ -34,7 +34,7 @@ Unpublished interstitial points `1.57.1` and `1.58.2` remain incompatible.
 Later stable releases may be classified as `UnverifiedNewer`; that status does
 not make them qualified.
 
-Research 478 freezes official stable `1.58.0`, `1.58.1`, and `1.59.0`.
+Research 479 freezes official stable `1.58.0`, `1.58.1`, and `1.59.0`.
 Interrupted recovery still returns an error response for each unanswered unique
 tool request. The route handles an active permission request by observing it,
 sending `session/cancel`, and replying `cancelled` without selecting a

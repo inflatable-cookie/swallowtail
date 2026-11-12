@@ -26,7 +26,7 @@ pub const CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str =
 /// Stable Claude Code releases explicitly denied for response-only execution.
 pub const CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str] = &[
     "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-    "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+    "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
 ];
 
 pub(crate) const RESPONSE_ONLY_BEHAVIOR: &str = "claude-code.response-only.stream-json.v1";
@@ -247,6 +247,13 @@ mod tests {
                 "{published}"
             );
         }
+        for newer in ["2.1.321", "2.1.322", "2.1.323"] {
+            assert!(matches!(
+                claim.assess(&InterfaceVersion::new(newer).unwrap()),
+                InterfaceCompatibilityAssessment::UnverifiedNewer(matched)
+                    if matched.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V3
+            ));
+        }
         assert!(!claim.permits(&InterfaceVersion::new("2.1.226").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.244").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.249").unwrap()));
@@ -260,8 +267,9 @@ mod tests {
         assert!(!claim.permits(&InterfaceVersion::new("2.1.297").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.298").unwrap()));
         assert!(!claim.permits(&InterfaceVersion::new("2.1.313").unwrap()));
+        assert!(!claim.permits(&InterfaceVersion::new("2.1.320").unwrap()));
         assert!(matches!(
-            claim.assess(&InterfaceVersion::new("2.1.320").unwrap()),
+            claim.assess(&InterfaceVersion::new("2.1.323").unwrap()),
             InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
                 if newer.behavior_revision().as_str() == RESPONSE_ONLY_BEHAVIOR_V3
         ));
@@ -299,7 +307,7 @@ mod tests {
             CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
             &[
                 "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262",
-                "2.1.264", "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+                "2.1.264", "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
             ]
         );
         let claim = response_only_claim(&["2.1.229"]);

@@ -1,0 +1,231 @@
+{
+  "versions": [
+    "2.1.319",
+    "2.1.321",
+    "2.1.322"
+  ],
+  "packages": {
+    "claude-code": {
+      "2.1.319": {
+        "tarball_sha256": "733a926c19df1c84f35a8e4285a637edce7bf2de13672cfe13a1397efd0bf823",
+        "integrity": "sha512-XoyAxGXBmNsb9ahz0xLAtyz/I6b1j+4lyLpucyTQIq4FcKUxrMDM2AzA2sHipHoN1DdMJINQQrLZxRZRq7FqBA==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b",
+          "cli-wrapper.cjs": "6815b1e3ca9f700b325e642b6b2434ac90190bd2b453b6a3fad27bcc79b576a5",
+          "install.cjs": "49e8406d5d752708458b0a5c39991784102bf9aeb6488782f2b0dffe07f944eb",
+          "package.json": "dc611e1b776489c21586c1e7dc72c405690d70f3ec8086cea69cecf916e1bd19",
+          "sdk-tools.d.ts": "2565f41f7d508beba3ed58823e8b7f63b95c0337970cce727baf8a004afdaab2"
+        },
+        "files_manifest_sha256": "d175ae0e0507151284daabd66ea0efe501bcb64546a455a472eadf7d2de48cf6"
+      },
+      "2.1.321": {
+        "tarball_sha256": "00ae37b8e165be25ffc4068ba698317b07fa2d3bf56146b21fb82ac950dbf161",
+        "integrity": "sha512-g9IMBKV0t092/KXM1iHE3LrsPzDaOqeYO6nHtXkztwP42Rf/w+pg/G4h5QVU51p3Nnkf/RyR0xi3V/1GEqmRsA==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "cli-wrapper.cjs": "6815b1e3ca9f700b325e642b6b2434ac90190bd2b453b6a3fad27bcc79b576a5",
+          "install.cjs": "49e8406d5d752708458b0a5c39991784102bf9aeb6488782f2b0dffe07f944eb",
+          "package.json": "d382e6dd0f495a49959a4e3f6ee984be3e8998f5b56f03cec9055e23146bbca0",
+          "sdk-tools.d.ts": "78e7cab89bb73f321ad4e1396d4d426ac29d71c617adbafc8a1121cda136d615",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b"
+        },
+        "files_manifest_sha256": "9e2320a4cd8d282467241bc122aacdde998dabc7d6684e7a95bfe69ba925454c"
+      },
+      "2.1.322": {
+        "tarball_sha256": "39f9d22aa2938cf276494d46b0c2bb593b4ef923323d02bf3cc5805b9d9a71c9",
+        "integrity": "sha512-oP7oW4vM5DREWfL1jn4JSGlmLcrJ5QmppgADrVNJBUPiC1mQ5YvRrke0on+YZ/3QhKIaCJtdr6jPvehcAQIHLQ==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "da7cf15ce4e35bad6a107acd6a36b4fe052083068bb9e564b1aa3f2078b5d0ce",
+          "cli-wrapper.cjs": "6815b1e3ca9f700b325e642b6b2434ac90190bd2b453b6a3fad27bcc79b576a5",
+          "install.cjs": "49e8406d5d752708458b0a5c39991784102bf9aeb6488782f2b0dffe07f944eb",
+          "package.json": "4d880cb9add93733fa259286f7b0d5a03c69e4eace22be39b90d3b32792a4c08",
+          "sdk-tools.d.ts": "78e7cab89bb73f321ad4e1396d4d426ac29d71c617adbafc8a1121cda136d615",
+          "bin/claude.exe": "6d7abae055d3b598281300a6c835086dec81bf3048f8a2294c5d3e50c8830d7b"
+        },
+        "files_manifest_sha256": "ed009e303063be3f6cbc850ed981f91197d38190ad6d57338e052ba0c11d0635"
+      }
+    },
+    "claude-code-darwin-arm64": {
+      "2.1.319": {
+        "tarball_sha256": "15d4176d3186db97836842e2c903c4a8d614246d8cb19b7bef2e5a2a4ed86e16",
+        "integrity": "sha512-dyAOFnsXbeyGgFJMlo2n6zSgLli5r4fTZ3Tj48eELxjccqM4s/wUmQ6P0DyCbxU0EC44VV44T2qj5xEpen25aA==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c",
+          "claude": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+          "package.json": "5261c0e32206111215d1b7b79e5e01272418313d1f9ff3159548195e0fd342ce"
+        },
+        "files_manifest_sha256": "c94744c0b11904f8b65bed0a9d89eb3e201d6da9f083505f557006aeab492b12"
+      },
+      "2.1.321": {
+        "tarball_sha256": "c2a561c2f090d2875d5b7bfac7c65c9050db3416559e7f8b40979b3ca615d5a3",
+        "integrity": "sha512-Cq4TmU0aidUvmnVMhmmAqNSG7jMZ60F5APqhyU/V3G9wv+65+H632FQTO8DSFQjQlNCuX8YJT8pm2dLXT5g9Aw==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c",
+          "claude": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "package.json": "8378115ea3018f97a5bc46c71302b581df6387cfccfaacbff00dab75408cffa2"
+        },
+        "files_manifest_sha256": "756da7121e992fa725231848c11124ac1655952fc25f43f8483d63ea83ada3db"
+      },
+      "2.1.322": {
+        "tarball_sha256": "906bde9402dfe0d2a38e931f582b7c831addef31b02b4dfa5bf05047075f4768",
+        "integrity": "sha512-OAx5Y7V7tGCi0tWuDV3lwcDWmIua512NgpClLbqvwC9m+mbLiaytgVLXf4unTXBjMf+QbQiIUO1Kus90PklDhA==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "26170f86550171a90850a39d867b0487d0d218e100ab5552e51ba4f1159b9a0c",
+          "claude": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "package.json": "b01c3720e68f08bf8c8e2ab053c606eca532b5e8b435d7713c10b47b97274e5e"
+        },
+        "files_manifest_sha256": "2a699855b30c51fb5361649f0d9e1fc7be8602e726afd7f94c4ba73afdeeba25"
+      }
+    },
+    "claude-code-linux-x64": {
+      "2.1.319": {
+        "tarball_sha256": "9b7b53954b8ffb886fafeefe9ef1e0e9e5c15e8aaf2f54d65ba64d0cca795dc7",
+        "integrity": "sha512-FO4Sd23BO1VCQPiJe5vG3bNnmV5+YiTau7o1lqK3Fr5VlE4TLdKiyYpwQRwEXO91kE2l12Ep2i7J19T8Md2oOQ==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5",
+          "claude": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+          "package.json": "ec4b5f9b8af21bfb912fbe3a68d902019b65959632b14ab1f035d955fa464b19"
+        },
+        "files_manifest_sha256": "336ba8dd79c17b9ca36cb27d28c65b785e845c8c15c1f127396ac69a03673270"
+      },
+      "2.1.321": {
+        "tarball_sha256": "249f294c2f6bfc1e6503f0780b610e880f7e9d7ae15ab34dd4ebdf23adf7664a",
+        "integrity": "sha512-lW+MhUThnU2hr6QnQ9xgD8c6OWAJbYNpiMzIQ4OJaLxcByTs53v7wV/2IzGspBbcMhnxFox1vvoltuWym/h6uw==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5",
+          "claude": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "package.json": "40d7a16c0d35885787df5903e8bb09d62cdccadb7acc1eb815034a5c8d40ea6e"
+        },
+        "files_manifest_sha256": "f9f64eaecda3edd222077c6a897f08c364ac9958490fe45abfa8c2ed64d447a1"
+      },
+      "2.1.322": {
+        "tarball_sha256": "3cc175d82980c20ab66057d345bd2d913244f8cf1791d10722a1225214b57219",
+        "integrity": "sha512-0DoaNAXLWCYYIGachWBCkTUsS8dOOgvk4R2fFKdrLejO9XlRTwaWUMD9ONdDmv0csdpwxj4qLUN6zWMaG2Sz6g==",
+        "files": {
+          "LICENSE.md": "8ce94b9478bb9868f9641f818e06cd722fbe55d4c22e2d2ed11971b20146173a",
+          "README.md": "ab4b9d72c3aa1ac7357e8eeb8b77c62e308e9af01ac0ecdb181f3bf1e57e25d5",
+          "claude": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "package.json": "08c60c68df79038f83943bd92dbffbe4872ef272ce145516343ff9b8bc342051"
+        },
+        "files_manifest_sha256": "686e81ec68c30d85ee457c4ee643bbf7abb43c0b0b994e0a96d73506042d88cb"
+      }
+    }
+  },
+  "hop_file_changes": {
+    "claude-code": {
+      "2.1.319_to_2.1.321": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json",
+          "sdk-tools.d.ts"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs"
+        ]
+      },
+      "2.1.321_to_2.1.322": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md",
+          "bin/claude.exe",
+          "cli-wrapper.cjs",
+          "install.cjs",
+          "sdk-tools.d.ts"
+        ]
+      }
+    },
+    "claude-code-darwin-arm64": {
+      "2.1.319_to_2.1.321": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.321_to_2.1.322": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      }
+    },
+    "claude-code-linux-x64": {
+      "2.1.319_to_2.1.321": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      },
+      "2.1.321_to_2.1.322": {
+        "added": [],
+        "removed": [],
+        "changed": [
+          "claude",
+          "package.json"
+        ],
+        "identical": [
+          "LICENSE.md",
+          "README.md"
+        ]
+      }
+    }
+  },
+  "changed_file_classification": {
+    "claude-code:2.1.319_to_2.1.321": {
+      "package.json": "npm version and optional platform dependency pins only; selected bin path and wrapper identity lookup stay the same",
+      "sdk-tools.d.ts": "SDK declaration-only optional CronDeleteOutput.endedLoopWakeup field; neither CLI route imports this SDK type file"
+    },
+    "claude-code-darwin-arm64:2.1.319_to_2.1.321": {
+      "claude": "Native CLI binary changed; its selected behavior remains unresolved. Frozen identities and marker counts do not establish control flow or reachability on Darwin arm64."
+    },
+    "claude-code-linux-x64:2.1.319_to_2.1.321": {
+      "claude": "Native CLI binary changed; the release note and marker counts do not establish selected stream-json failure behavior or hook reachability on Linux x64."
+    },
+    "claude-code:2.1.321_to_2.1.322": {
+      "package.json": "npm version and optional platform dependency pins only; selected bin path and wrapper identity lookup stay the same"
+    },
+    "claude-code-darwin-arm64:2.1.321_to_2.1.322": {
+      "claude": "Native CLI binary changed again; the Vertex server/API note does not establish the changed CLI binary selected behavior."
+    },
+    "claude-code-linux-x64:2.1.321_to_2.1.322": {
+      "claude": "Native CLI binary changed again; the Vertex server/API note does not establish the changed CLI binary selected behavior."
+    }
+  },
+  "method": "Complete recursive file SHA-256 manifests for official npm tarball extractions; tarball SHA-256 and registry SHA-512 integrity per package; binary marker observations and explicit selected-behavior evidence stop in surface-ledger.json. The unpublished 2.1.320 gap is not filled."
+}

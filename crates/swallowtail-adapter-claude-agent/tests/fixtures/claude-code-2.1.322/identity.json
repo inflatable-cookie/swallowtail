@@ -1,0 +1,88 @@
+{
+  "npm_package": "@anthropic-ai/claude-code",
+  "channel_at_observation": {
+    "stable": "2.1.311",
+    "latest": "2.1.322",
+    "next": "2.1.322"
+  },
+  "official_stable": "2.1.322",
+  "first_unpublished_after_latest": "2.1.323",
+  "unpublished_gap": "2.1.320",
+  "checked_unpublished": {
+    "2.1.320": {
+      "npm_http_status": 404,
+      "github_tag_present": false
+    },
+    "2.1.323": {
+      "npm_http_status": 404,
+      "github_tag_present": false
+    }
+  },
+  "versions": {
+    "2.1.319": {
+      "npm_published": "2026-11-06T00:58:56.366Z",
+      "npm_tarball_sha256": "733a926c19df1c84f35a8e4285a637edce7bf2de13672cfe13a1397efd0bf823",
+      "npm_integrity": "sha512-XoyAxGXBmNsb9ahz0xLAtyz/I6b1j+4lyLpucyTQIq4FcKUxrMDM2AzA2sHipHoN1DdMJINQQrLZxRZRq7FqBA==",
+      "github_tag": "v2.1.319",
+      "github_release_published": "2026-11-06T17:04:01Z",
+      "github_commit": "0ed94698aa0aeee471465fc9c867c2e8434c4d68",
+      "platform_packages": {
+        "darwin-arm64": {
+          "tarball_sha256": "15d4176d3186db97836842e2c903c4a8d614246d8cb19b7bef2e5a2a4ed86e16",
+          "integrity": "sha512-dyAOFnsXbeyGgFJMlo2n6zSgLli5r4fTZ3Tj48eELxjccqM4s/wUmQ6P0DyCbxU0EC44VV44T2qj5xEpen25aA==",
+          "binary_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd"
+        },
+        "linux-x64": {
+          "tarball_sha256": "9b7b53954b8ffb886fafeefe9ef1e0e9e5c15e8aaf2f54d65ba64d0cca795dc7",
+          "integrity": "sha512-FO4Sd23BO1VCQPiJe5vG3bNnmV5+YiTau7o1lqK3Fr5VlE4TLdKiyYpwQRwEXO91kE2l12Ep2i7J19T8Md2oOQ==",
+          "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed"
+        }
+      }
+    },
+    "2.1.321": {
+      "npm_published": "2026-11-09T19:02:47.641Z",
+      "npm_tarball_sha256": "00ae37b8e165be25ffc4068ba698317b07fa2d3bf56146b21fb82ac950dbf161",
+      "npm_integrity": "sha512-g9IMBKV0t092/KXM1iHE3LrsPzDaOqeYO6nHtXkztwP42Rf/w+pg/G4h5QVU51p3Nnkf/RyR0xi3V/1GEqmRsA==",
+      "github_tag": "v2.1.321",
+      "github_release_published": "2026-11-09T19:22:30Z",
+      "github_commit": "a4fcccc70a89df6607e66cc30682d551269d0680",
+      "platform_packages": {
+        "claude-code-darwin-arm64": {
+          "tarball_sha256": "c2a561c2f090d2875d5b7bfac7c65c9050db3416559e7f8b40979b3ca615d5a3",
+          "integrity": "sha512-Cq4TmU0aidUvmnVMhmmAqNSG7jMZ60F5APqhyU/V3G9wv+65+H632FQTO8DSFQjQlNCuX8YJT8pm2dLXT5g9Aw==",
+          "binary_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "binary_size": 323686048
+        },
+        "claude-code-linux-x64": {
+          "tarball_sha256": "249f294c2f6bfc1e6503f0780b610e880f7e9d7ae15ab34dd4ebdf23adf7664a",
+          "integrity": "sha512-lW+MhUThnU2hr6QnQ9xgD8c6OWAJbYNpiMzIQ4OJaLxcByTs53v7wV/2IzGspBbcMhnxFox1vvoltuWym/h6uw==",
+          "binary_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "binary_size": 341910032
+        }
+      }
+    },
+    "2.1.322": {
+      "npm_published": "2026-11-10T01:58:41.811Z",
+      "npm_tarball_sha256": "39f9d22aa2938cf276494d46b0c2bb593b4ef923323d02bf3cc5805b9d9a71c9",
+      "npm_integrity": "sha512-oP7oW4vM5DREWfL1jn4JSGlmLcrJ5QmppgADrVNJBUPiC1mQ5YvRrke0on+YZ/3QhKIaCJtdr6jPvehcAQIHLQ==",
+      "github_tag": "v2.1.322",
+      "github_release_published": "2026-11-10T02:29:43Z",
+      "github_commit": "6e1e44f6433bfa17d198e932bff53373aa229eea",
+      "platform_packages": {
+        "claude-code-darwin-arm64": {
+          "tarball_sha256": "906bde9402dfe0d2a38e931f582b7c831addef31b02b4dfa5bf05047075f4768",
+          "integrity": "sha512-OAx5Y7V7tGCi0tWuDV3lwcDWmIua512NgpClLbqvwC9m+mbLiaytgVLXf4unTXBjMf+QbQiIUO1Kus90PklDhA==",
+          "binary_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "binary_size": 323702464
+        },
+        "claude-code-linux-x64": {
+          "tarball_sha256": "3cc175d82980c20ab66057d345bd2d913244f8cf1791d10722a1225214b57219",
+          "integrity": "sha512-0DoaNAXLWCYYIGachWBCkTUsS8dOOgvk4R2fFKdrLejO9XlRTwaWUMD9ONdDmv0csdpwxj4qLUN6zWMaG2Sz6g==",
+          "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "binary_size": 341914128
+        }
+      }
+    }
+  },
+  "identity_method": "Official npm registry version metadata and tarball dist.integrity, wrapper/platform tarball SHA-256, exact extracted inventories, and GitHub release/tag/commit metadata; no downloaded executable was run."
+}

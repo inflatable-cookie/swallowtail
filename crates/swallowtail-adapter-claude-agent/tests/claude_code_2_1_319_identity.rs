@@ -161,6 +161,12 @@ fn permission_setting_stops_headless_but_does_not_reach_response_only() {
     }
     assert!(matches!(
         response_only.assess(&version("2.1.320")),
-        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        InterfaceCompatibilityAssessment::Incompatible
     ));
+    for point in ["2.1.321", "2.1.322", "2.1.323"] {
+        assert!(matches!(
+            response_only.assess(&version(point)),
+            InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+        ));
+    }
 }

@@ -173,7 +173,7 @@ fn both_claims_qualify_every_published_hop_through_2_1_316_on_the_existing_revis
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+            "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
         ]
     );
     let headless = claude_code_headless_claim();
@@ -219,7 +219,7 @@ fn both_claims_qualify_every_published_hop_through_2_1_316_on_the_existing_revis
             if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v1"
                 && matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
-    for newer_point in ["2.1.318", "2.1.319"] {
+    for newer_point in ["2.1.318", "2.1.322"] {
         assert!(
             matches!(
                 headless.assess(&version(newer_point)),
@@ -229,16 +229,17 @@ fn both_claims_qualify_every_published_hop_through_2_1_316_on_the_existing_revis
             ),
             "{newer_point}"
         );
+    }
+    for newer_point in ["2.1.321", "2.1.322", "2.1.323"] {
         assert!(matches!(
             response.assess(&version(newer_point)),
-            InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.behavior_revision().as_str()
+            InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+                if newer.behavior_revision().as_str()
                     == "claude-code.response-only.stream-json.v3"
-                    && matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
     assert!(matches!(
-        response.assess(&version("2.1.320")),
+        response.assess(&version("2.1.323")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
             if newer.behavior_revision().as_str()
                 == "claude-code.response-only.stream-json.v3"

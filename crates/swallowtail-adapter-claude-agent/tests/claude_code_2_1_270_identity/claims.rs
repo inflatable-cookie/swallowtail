@@ -89,7 +89,7 @@ fn unpublished_gaps_and_later_2_1_271_stay_classified() {
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+            "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
         ]
     );
     let headless = claude_code_headless_claim();

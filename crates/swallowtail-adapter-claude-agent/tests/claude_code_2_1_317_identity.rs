@@ -161,7 +161,7 @@ fn response_only_advances_while_headless_waits_on_permission_mapping() {
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+            "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
         ]
     );
     let headless = claude_code_headless_claim();
@@ -191,23 +191,32 @@ fn response_only_advances_while_headless_waits_on_permission_mapping() {
             "{point}"
         );
     }
-    for point in ["2.1.318", "2.1.319"] {
+    for point in ["2.1.318", "2.1.322"] {
         assert!(matches!(
             headless.assess(&version(point)),
             InterfaceCompatibilityAssessment::UnverifiedNewer(_)
         ));
+    }
+    for point in ["2.1.321", "2.1.322", "2.1.323"] {
         assert!(matches!(
             response.assess(&version(point)),
-            InterfaceCompatibilityAssessment::Qualified(matched)
-                if matched.behavior_revision().as_str()
+            InterfaceCompatibilityAssessment::UnverifiedNewer(newer)
+                if newer.behavior_revision().as_str()
                     == "claude-code.response-only.stream-json.v3"
-                    && matched.support_status() == InterfaceSupportStatus::Maintained
         ));
     }
     for gap in ["2.1.244", "2.1.279", "2.1.297", "2.1.298", "2.1.313"] {
         assert!(!headless.permits(&version(gap)), "{gap}");
         assert!(!response.permits(&version(gap)), "{gap}");
     }
+    assert!(matches!(
+        headless.assess(&version("2.1.320")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+    assert_eq!(
+        response.assess(&version("2.1.320")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
     assert!(matches!(
         headless.assess(&version("2.1.286")),
         InterfaceCompatibilityAssessment::Qualified(matched)
@@ -220,7 +229,7 @@ fn response_only_advances_while_headless_waits_on_permission_mapping() {
             if matched.behavior_revision().as_str() == "claude-code.response-only.stream-json.v1"
                 && matched.support_status() == InterfaceSupportStatus::Deprecated
     ));
-    let newer_point = "2.1.320";
+    let newer_point = "2.1.323";
     assert!(matches!(
         headless.assess(&version(newer_point)),
         InterfaceCompatibilityAssessment::UnverifiedNewer(newer)

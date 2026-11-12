@@ -113,7 +113,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
         CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS,
         &[
             "2.1.244", "2.1.249", "2.1.253", "2.1.254", "2.1.255", "2.1.256", "2.1.262", "2.1.264",
-            "2.1.279", "2.1.297", "2.1.298", "2.1.313",
+            "2.1.279", "2.1.297", "2.1.298", "2.1.313", "2.1.320",
         ]
     );
     let headless = claude_code_headless_claim();
@@ -162,7 +162,7 @@ fn both_claims_extend_through_2_1_310_and_keep_their_behavior() {
                 && matched.support_status() == InterfaceSupportStatus::Maintained
     ));
     assert!(matches!(
-        response.assess(&InterfaceVersion::new("2.1.320").expect("version")),
+        response.assess(&InterfaceVersion::new("2.1.323").expect("version")),
         InterfaceCompatibilityAssessment::UnverifiedNewer(_)
     ));
     assert!(response.supports(&InterfaceVersion::new("2.1.294").expect("version")));

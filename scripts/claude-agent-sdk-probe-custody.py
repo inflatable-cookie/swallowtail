@@ -55,7 +55,11 @@ def python_inputs():
 def runtime_inventory(node, expected):
     """One credential-free, non-root host-runtime observation, before payloads."""
     node = Path(node).resolve(strict=True)
-    if os.geteuid() == 0 or digest(node.read_bytes()) != expected:
+    if (
+        os.geteuid() == 0
+        or node.stat().st_mode & 0o6000
+        or digest(node.read_bytes()) != expected
+    ):
         raise Refused("nonroot_exact_runtime_preflight_required")
     command = [
         str(node),
@@ -197,7 +201,7 @@ class Lease:
             info = os.fstat(fd)
             if (
                 not stat.S_ISREG(info.st_mode)
-                or info.st_mode & 0o022
+                or info.st_mode & 0o6022
                 or info.st_uid not in self.owners
             ):
                 raise Refused("custody_unowned_or_writable_input")

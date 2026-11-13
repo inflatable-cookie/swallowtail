@@ -531,7 +531,12 @@ class NamespaceProposalTests(unittest.TestCase):
                                 "preflight_Node22_identity_before_execution",
                             ):
                                 CORE.inspect_host(candidate)
-                            run.assert_not_called()
+                            self.assertTrue(
+                                all(
+                                    row.args[0][0] != str(candidate)
+                                    for row in run.call_args_list
+                                )
+                            )
 
     def test_source_record_has_exact_acyclic_input_set(self):
         expected = "".join(

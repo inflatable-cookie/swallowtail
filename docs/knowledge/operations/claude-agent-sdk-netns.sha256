@@ -5,7 +5,7 @@ aef218c998dbe6a72de3189573b9cd0737719c4eeba83156a8f11374fcf1c6fd  scripts/claude
 7f5db6fd67e2f2ffb71d3ed78805ce0366bdb42439f886c39340d08e56a8053e  scripts/claude-agent-sdk-netns-kernel.py
 cd3fe92cedde440e596afa93b217523a8d560cd83ed52265faab8a168564d6d8  scripts/claude-agent-sdk-netns-entry.py
 c7778f4bb2b7680802dcdb1d60f0f2ec968fbe2834c51f7efb12c447aa34fa14  scripts/claude-agent-sdk-netns-native.mjs
-dcdce9e2130d3bf4e34fad8b2c0c84ea2cc4135d18bbe3dec6f1076eadb0721d  scripts/tests/claude-agent-sdk-netns-proposal.py
+097f91fdeb6bb773fa3ff4e65154e0177af272e106eeda696a2d3dffe9ee14d1  scripts/tests/claude-agent-sdk-netns-proposal.py
 1162b13c52e438552266aab2fd47b3651f0f9b1d361f604aec748f3b27dee37c  scripts/claude-agent-sdk-confined-probe.py
 aa24aac1b8d8a223d83982103c2e18823877822911215eb3c3c30dcf695d08cb  crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/confined-execution.sha256
 e650df1e96488408ba0ea10787cbbd5bd565ccace17a3da874f4616b6f239740  docs/knowledge/operations/claude-agent-sdk-netns-admission.json

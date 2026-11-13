@@ -517,14 +517,21 @@ class NamespaceProposalTests(unittest.TestCase):
         self.assertFalse(result["kernelEnforced"])
 
     def test_linux_inspect_rejects_unpinned_node_before_running_it(self):
-        with mock.patch.dict(os.environ, {"NETNS_RECORD": self.record_sha}):
-            with mock.patch.object(CORE.sys, "platform", "linux"):
-                with mock.patch.object(CORE.subprocess, "run") as run:
-                    with self.assertRaisesRegex(
-                        CORE.Refused, "preflight_Node22_identity_before_execution"
-                    ):
-                        CORE.inspect_host(self.node)
-                    run.assert_not_called()
+        with tempfile.TemporaryDirectory(
+            prefix="sdk-unpinned-node-", dir=os.environ["TMPDIR"]
+        ) as directory:
+            candidate = Path(directory) / "node"
+            candidate.write_bytes(b"owned unadmitted executable fixture")
+            with mock.patch.dict(os.environ, {"NETNS_RECORD": self.record_sha}):
+                with mock.patch.object(CORE.sys, "platform", "linux"):
+                    with mock.patch.object(shutil, "which", return_value=None):
+                        with mock.patch.object(CORE.subprocess, "run") as run:
+                            with self.assertRaisesRegex(
+                                CORE.Refused,
+                                "preflight_Node22_identity_before_execution",
+                            ):
+                                CORE.inspect_host(candidate)
+                            run.assert_not_called()
 
     def test_source_record_has_exact_acyclic_input_set(self):
         expected = "".join(

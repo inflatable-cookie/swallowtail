@@ -215,3 +215,21 @@ Linux activation requires a nonempty complete regular-file library inventory
 and refuses unresolved libraries. Pinning Darwin cache/runtime custody remains
 required before any corresponding original-host admission; the policy ruling
 does not waive that observed input gap.
+
+The host reserves the five explicit protocol pipe pairs before opening custody
+inputs, refuses unavailable descriptor numbers below64, and transfers each pair
+to exactly one cleanup owner. The root monitor closes its copies immediately
+after the trusted fork; it cannot keep a guest writer alive. A separate native
+start pipe releases the ordinary-TCP fake only after both custody-checked peers
+exist. This preserves the declared descriptor bound while holding the complete
+input inventory. Host exit/notification timing is bounded retained observation,
+not a replacement for actual guest waits and monitor pidfd reaping.
+
+Linux preflight checks the known Node22.23.2 executable digest before executing
+its read-only runtime report. A reported Linux vDSO is identified explicitly as
+a kernel-provided mapping bound to the observed kernel release, rather than
+inventing a regular-file digest. Unknown library names and missing file inputs
+refuse; imported Python inputs are refreshed before configuring the two launches.
+The thirty-second inner budget includes root custody capture; preflight remains
+within the job's five-minute bound. No passing fixture or old kernel proof was
+replayed to support these new source-only custody observations.

@@ -645,9 +645,14 @@ def inspect_host(node=None):
         # The hosted preflight runs as the ordinary runner, before any privilege.
         record = snapshots(ROOT, os.environ["NETNS_RECORD"])
         custody = load_verified(CUSTODY, record[CUSTODY])
-        observed["custodyRuntime"] = custody.runtime_inventory(
-            node, sha(Path(node).resolve(strict=True).read_bytes())
-        )
+        observed_node_sha = sha(Path(node).resolve(strict=True).read_bytes())
+        if (
+            sys.platform == "linux"
+            and observed_node_sha
+            != "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+        ):
+            raise Refused("preflight_Node22_identity_before_execution")
+        observed["custodyRuntime"] = custody.runtime_inventory(node, observed_node_sha)
         observed["nodeVersion"] = (
             subprocess.check_output(
                 [node, "--version"], env={"PATH": "/usr/bin:/bin"}, timeout=5

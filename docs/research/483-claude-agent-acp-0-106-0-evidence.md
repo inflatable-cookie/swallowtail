@@ -1,4 +1,4 @@
-# Research 482: Claude Agent ACP 0.106.0 evidence
+# Research 483: Claude Agent ACP 0.106.0 evidence
 
 Status: evidence only. `claude-agent.acp` remains qualified through 0.100.0;
 newer points remain `UnverifiedNewer`. Tom chose a distinct permission

@@ -87,7 +87,7 @@ a `canUseTool` callback, a custom `spawnClaudeCodeProcess`, and the native
 | Hop | Selected SDK surface | Native | Status |
 | --- | --- | --- | --- |
 | `0.3.318` | The argv builders, spawn, initialize, `canUseTool`, `supportedModels`, and the Query method windows are structurally identical to `0.3.317`. The literal ledger adds nothing selected. | Changed; no CLI digest in repo | Native proof required |
-| `0.3.319` | The argv builders match `0.3.318` apart from minifier renames. A new managed-policy projection (`Ex`) carries `permissions.denyInsteadOfPrompting` as a restrictive key. `canUseTool` and `supportedModels` windows change through insertions and a private-field initialiser. | Changed. The setting denies a prompt-requiring call without calling `canUseTool`. Whether managed policy can set it while `settingSources` is empty is unverified; the native has not been run. | Permission-mediation change on this route. Needs a ruling and native proof. |
+| `0.3.319` | The argv builders match `0.3.318` apart from minifier renames. A new managed-policy projection (`Ex`) carries `permissions.denyInsteadOfPrompting` as a restrictive key. `canUseTool` and `supportedModels` windows change through insertions and a private-field initialiser. | Changed. The setting denies a prompt-requiring call without calling `canUseTool`. Whether managed policy can set it while `settingSources` is empty is unverified; the native has not been run. | Permission-mediation change on this route. Ruling settled by decision `d5a14f90` v2 (Research 482); native proof remains open. |
 | `0.3.321` | The `--await-initialize` branch is gated by `Y5`, which requires both `pathToClaudeCodeExecutable` and `spawnClaudeCodeProcess` to be unset. The sidecar sets both, so the flag is not emitted. The `sdk-url` predicate is unchanged for this route. `writePrompt` now goes through `afterInitialize` and `writeStreamMessage`; that is the string-prompt path, which this sidecar does not use. `streamInput`, `waitForRunEnd`, `armRunEndCeiling`, and `endRun` windows are identical. `promptHold` and `initializeWritten` windows change and are not fully classified. The shared `Ki` key sanitizer gains a telemetry marker, and its callers are not classified. | Changed | Residual unclassified SDK changes plus native proof required |
 | `0.3.322` | Masked whole-file structure is identical to `0.3.321`. Literal changes are the version stamp and one description string. | Changed; the CLI `2.1.322` native proof is the open stop in Research 478 | SDK unchanged from `0.3.321`; native proof required |
 
@@ -123,15 +123,15 @@ follow-up task needs one of these, decided by the planner:
    of the native with an isolated home and a local fake endpoint (needs
    operator authority to execute vendor binaries) or a static control-flow
    method that the CLI Research 478 review has not yet accepted.
-2. A ruling on `denyInsteadOfPrompting` for the SDK route. Options: preserve
-   the managed-policy denial under a distinct SDK behavior revision, or detect
-   the managed setting and refuse the pair. This is a product decision, not a
-   proof.
+2. The SDK permission direction is now settled: Tom’s decision `d5a14f90` v2
+   preserves managed denial under a distinct SDK revision. Research 482 records
+   the contract and fake regressions. This answers the product question without
+   supplying native proof or original-execution authority.
 3. A closure of the `0.3.321` residuals: `promptHold`, `initializeWritten`,
    and the `Ki` telemetry callers.
 
-Until those close, `0.3.322` stays official latest that the claims do not
-qualify. The claims refuse it on both axes, and this record is its evidence.
+At this record’s observation, `0.3.322` was official latest and the claims
+do not qualify it. Research 482 records the later metadata observation. The claims refuse it on both axes, and this record is its evidence.
 Nothing here is an `UnverifiedNewer` posture change: the claims are
 `QualifiedOnly` through `0.3.317`, and the refusal is by claim arithmetic, not
 by a separate host or adapter posture.

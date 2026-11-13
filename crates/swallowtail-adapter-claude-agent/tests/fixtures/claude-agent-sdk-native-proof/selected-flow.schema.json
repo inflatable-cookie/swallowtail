@@ -1,0 +1,159 @@
+{
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Agent SDK selected-flow classification",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "fixture",
+    "versions",
+    "identity",
+    "entry",
+    "import_closure",
+    "surfaces",
+    "reachability_inputs",
+    "classification",
+    "closure_bounded",
+    "valid_evidence"
+  ],
+  "properties": {
+    "schema": {
+      "const": "claude-agent-sdk-selected-flow-v1"
+    },
+    "fixture": {
+      "type": "string",
+      "minLength": 1
+    },
+    "versions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "identity": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "entry": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "import_closure": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "static_node_builtins",
+          "static_vendor_specifiers",
+          "dynamic_import_sites",
+          "literal_require_specifiers",
+          "literal_require_selected_away",
+          "core_chunk_edges",
+          "emitted_require_specifiers",
+          "import_meta_sites",
+          "bounded"
+        ],
+        "properties": {
+          "static_node_builtins": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "static_vendor_specifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dynamic_import_sites": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "literal_require_specifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "literal_require_selected_away": {
+            "type": "boolean"
+          },
+          "core_chunk_edges": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "emitted_require_specifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "import_meta_sites": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "bounded": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "surfaces": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "reachability_inputs": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "classification": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "status_per_version"
+            ]
+          },
+          {
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "gate_present"
+              ]
+            }
+          }
+        ],
+        "properties": {
+          "status_per_version": {
+            "type": "object",
+            "minProperties": 1
+          },
+          "empty_in": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "valid_evidence": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "closure_bounded": {
+      "type": "boolean"
+    },
+    "valid_evidence": {
+      "type": "boolean"
+    }
+  }
+}

@@ -45,7 +45,7 @@ records the in-flight timer race and the route's host-supplied environment.
 At 0.101.0 the timer reads the ambient settings manager directly, so an inline
 SDK settings override does not establish idle suppression. At 0.106.0 inline
 compaction settings are considered, but managed values take precedence. The
-underlying files are pinned in `dist-inventory.json`; see Research 482 for
+underlying files are pinned in `dist-inventory.json`; see Research 483 for
 the remaining route-authority and race proof.
 
 `guard-import-edges.json` binds each observed v1 caller and idle module to

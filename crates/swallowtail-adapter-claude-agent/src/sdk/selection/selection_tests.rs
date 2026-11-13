@@ -8,9 +8,10 @@ use super::{
 };
 use crate::sdk::{
     CLAUDE_AGENT_SDK_BASELINE_VERSION, CLAUDE_AGENT_SDK_BEHAVIOR,
-    CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION,
-    CLAUDE_AGENT_SDK_NODE_RUNTIME, CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION,
-    CLAUDE_AGENT_SDK_WIRE, ClaudeAgentSdkPackageNativePair,
+    CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR, CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION,
+    CLAUDE_AGENT_SDK_NATIVE_VERSION, CLAUDE_AGENT_SDK_NODE_RUNTIME,
+    CLAUDE_AGENT_SDK_SIDECAR_SOURCE_TAG, CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_WIRE,
+    ClaudeAgentSdkPackageNativePair,
 };
 use swallowtail_core::InterfaceVersion;
 
@@ -220,4 +221,37 @@ fn every_axis_is_distinct() {
         assert_ne!(axis, crate::CLAUDE_CODE_HEADLESS_AXIS);
         assert_ne!(axis, crate::CLAUDE_CODE_RESPONSE_ONLY_AXIS);
     }
+}
+
+#[test]
+fn the_managed_denial_revision_is_declared_and_no_claim_adopts_it() {
+    assert_eq!(CLAUDE_AGENT_SDK_BEHAVIOR, "claude-agent.sdk-v1");
+    assert_eq!(
+        CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR, "claude-agent.sdk-v2",
+        "the distinct revision Tom's decision names"
+    );
+    let claims = [
+        claude_agent_sdk_package_claim(),
+        claude_agent_sdk_native_claim(),
+        claude_agent_sdk_sidecar_claim(),
+        claude_agent_sdk_wire_claim(),
+        claude_agent_sdk_node_claim(),
+    ];
+    for claim in &claims {
+        for segment in claim.milestones() {
+            assert_eq!(
+                segment.behavior_revision().as_str(),
+                CLAUDE_AGENT_SDK_BEHAVIOR,
+                "every maintained segment keeps the qualified revision; the managed-denial \
+                 revision stays a probe-only declaration until the native proof lands"
+            );
+        }
+    }
+    assert!(
+        claims.iter().all(|claim| claim
+            .milestones()
+            .all(|segment| segment.behavior_revision().as_str()
+                != CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR)),
+        "no claim may adopt the managed-denial revision without probe evidence"
+    );
 }

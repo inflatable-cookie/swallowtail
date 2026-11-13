@@ -1,0 +1,463 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://swallowtail.invalid/schemas/claude-agent-sdk-probe-admission-v1.json",
+  "title": "Claude Agent SDK temporary probe-only admission",
+  "description": "Harness-only admission for the native behavior proof. It binds the exact proposed tuples, the selected option surface and the fake peer identity, and it forbids production admission by constraint.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "route",
+    "mode",
+    "production_admission",
+    "note",
+    "authority",
+    "confinement",
+    "plan_sha256",
+    "options_template_sha256",
+    "selected_options_digest",
+    "options_template",
+    "fake_peer",
+    "environment_allowlist",
+    "node",
+    "bounds",
+    "tuples",
+    "request",
+    "managed_denial_contract",
+    "managed_denial_contract_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "claude-agent-sdk-probe-admission-v1"
+    },
+    "route": {
+      "const": "claude-agent.sdk"
+    },
+    "mode": {
+      "const": "probe-only"
+    },
+    "production_admission": {
+      "const": false
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "granted_by",
+        "question",
+        "scope",
+        "excludes",
+        "original_run_authorised",
+        "original_run_token",
+        "original_run_requires"
+      ],
+      "properties": {
+        "kind": {
+          "const": "planner-temporary-probe-admission"
+        },
+        "granted_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "excludes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "original_run_authorised": {
+          "const": false
+        },
+        "original_run_token": {
+          "type": "null"
+        },
+        "original_run_requires": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "plan_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "options_template_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "selected_options_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "options_template": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fake_peer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sdk_module_sha256",
+        "native_sha256_per_tuple",
+        "platform_semantics"
+      ],
+      "properties": {
+        "sdk_module_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "native_sha256_per_tuple": {
+          "type": "string",
+          "minLength": 1
+        },
+        "platform_semantics": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "environment_allowlist": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_major",
+        "qualified_window",
+        "harness_note"
+      ],
+      "properties": {
+        "required_major": {
+          "type": "integer",
+          "minimum": 18
+        },
+        "qualified_window": {
+          "type": "string",
+          "minLength": 1
+        },
+        "harness_note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wall_clock_seconds",
+        "native_processes",
+        "sidecar_processes",
+        "disk_bytes",
+        "captured_stdout_bytes",
+        "reason"
+      ],
+      "properties": {
+        "wall_clock_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 900
+        },
+        "native_processes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "sidecar_processes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "disk_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "captured_stdout_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "tuples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sdk_version",
+          "native_version",
+          "wrapper_tarball_sha256",
+          "fake_native_sha256",
+          "platforms",
+          "behavior_revision"
+        ],
+        "properties": {
+          "sdk_version": {
+            "type": "string"
+          },
+          "native_version": {
+            "type": "string"
+          },
+          "wrapper_tarball_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "fake_native_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "platforms": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "darwin-arm64",
+              "linux-x64"
+            ],
+            "properties": {
+              "darwin-arm64": {
+                "$ref": "#/definitions/platformArtifact"
+              },
+              "linux-x64": {
+                "$ref": "#/definitions/platformArtifact"
+              }
+            }
+          },
+          "behavior_revision": {
+            "enum": [
+              "claude-agent.sdk-v1",
+              "claude-agent.sdk-v2"
+            ]
+          }
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "purpose",
+        "command",
+        "original_command_suffix",
+        "source_digests",
+        "artifacts",
+        "isolation",
+        "bounds",
+        "digest_anchor",
+        "execution_digest_record"
+      ],
+      "properties": {
+        "purpose": {
+          "type": "string",
+          "minLength": 1
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_command_suffix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_digests": {
+          "type": "object",
+          "minProperties": 5,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "sdk_version",
+              "native_version",
+              "platforms"
+            ],
+            "properties": {
+              "sdk_version": {
+                "type": "string"
+              },
+              "native_version": {
+                "type": "string"
+              },
+              "platforms": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "darwin-arm64",
+                  "linux-x64"
+                ],
+                "properties": {
+                  "darwin-arm64": {
+                    "$ref": "#/definitions/platformArtifact"
+                  },
+                  "linux-x64": {
+                    "$ref": "#/definitions/platformArtifact"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "isolation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "workspace",
+            "home",
+            "settings",
+            "environment",
+            "egress",
+            "tmpdir"
+          ],
+          "properties": {
+            "workspace": {
+              "type": "string",
+              "minLength": 1
+            },
+            "home": {
+              "type": "string",
+              "minLength": 1
+            },
+            "settings": {
+              "type": "string",
+              "minLength": 1
+            },
+            "environment": {
+              "type": "string",
+              "minLength": 1
+            },
+            "egress": {
+              "type": "string",
+              "minLength": 1
+            },
+            "tmpdir": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "bounds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "wall_clock_seconds",
+            "native_processes",
+            "disk_bytes",
+            "evidence_bytes"
+          ],
+          "properties": {
+            "wall_clock_seconds": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "native_processes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "disk_bytes": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "evidence_bytes": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        },
+        "digest_anchor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "execution_digest_record": {
+          "const": "probe-execution.sha256"
+        }
+      }
+    },
+    "managed_denial_contract": {
+      "type": "string",
+      "minLength": 1
+    },
+    "managed_denial_contract_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "confinement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "available",
+        "unavailable",
+        "original_mode"
+      ],
+      "properties": {
+        "available": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unavailable": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "original_mode": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "definitions": {
+    "platformArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binary_sha256",
+        "binary_bytes"
+      ],
+      "properties": {
+        "binary_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "binary_bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

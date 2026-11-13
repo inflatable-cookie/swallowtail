@@ -6,6 +6,7 @@ exact authority naming source, owner, plan, guard, Node and module identities.
 Neither mode is whole-route/native proof. No install or host mutation occurs.
 """
 import argparse
+import grp
 import hashlib
 import json
 import os
@@ -25,9 +26,15 @@ MAX_OUTPUT = 1024 * 1024
 
 
 def digest(path):
+    if not path.is_file() or path.stat().st_size > 512 * 1024 * 1024:
+        raise ValueError("runtime source size/type limit")
     result = hashlib.sha256()
+    count = 0
     with path.open("rb") as source:
         while block := source.read(1024 * 1024):
+            count += len(block)
+            if count > 512 * 1024 * 1024:
+                raise ValueError("runtime source grew beyond limit")
             result.update(block)
     return result.hexdigest()
 
@@ -41,8 +48,13 @@ def runtime_files(node):
         if binary in files or str(binary).startswith(("/System/", "/usr/lib/")):
             continue
         files.add(binary)
-        result = subprocess.run(["/usr/bin/otool", "-L", str(binary)], env={"PATH":"/usr/bin:/bin"}, capture_output=True, text=True, timeout=5, check=True)
-        for line in result.stdout.splitlines()[1:]:
+        if len(files) > 129 or sum(p.stat().st_size for p in files) > 512 * 1024 * 1024:
+            raise ValueError("runtime closure limit")
+        child = subprocess.Popen(["/usr/bin/otool", "-L", str(binary)], env={"PATH":"/usr/bin:/bin"}, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, _ = bounded_output(child, 5, MAX_OUTPUT)
+        if child.returncode:
+            raise ValueError("runtime linkage inspection failed")
+        for line in stdout.decode().splitlines()[1:]:
             name = line.strip().split(" (", 1)[0]
             if name.startswith("@rpath/"):
                 name = str(binary.parent.parent / "lib" / name[7:])
@@ -53,6 +65,8 @@ def runtime_files(node):
             candidate = Path(name)
             aliases.add(candidate)
             aliases.add(candidate.parent.resolve() / candidate.name)
+            if len(aliases) > 512:
+                raise ValueError("runtime alias limit")
             canonical = candidate.resolve()
             if canonical != binary:
                 pending.append(canonical)
@@ -119,6 +133,9 @@ def main():
     parser.add_argument("--node", type=Path, required=True)
     parser.add_argument("--node-sha256")
     parser.add_argument("--runtime-closure-sha256")
+    parser.add_argument("--host-runtime-record", type=Path)
+    parser.add_argument("--rust-runtime-closure-sha256")
+    parser.add_argument("--launch-policy-sha256")
     parser.add_argument("--hop")
     parser.add_argument("--package", type=Path)
     args = parser.parse_args()
@@ -128,7 +145,7 @@ def main():
     node_hash = digest(node)
     if args.node_sha256 and node_hash != args.node_sha256:
         raise ValueError("Node executable identity changed")
-    if args.original and (not args.node_sha256 or not args.runtime_closure_sha256):
+    if args.original and (not args.node_sha256 or not args.runtime_closure_sha256 or not args.rust_runtime_closure_sha256 or not args.launch_policy_sha256 or not args.host_runtime_record):
         raise ValueError("original runtime binding absent")
     if args.original and (not args.hop or not args.package):
         raise ValueError("exact original component inputs absent")
@@ -143,7 +160,19 @@ def main():
     if info.st_uid != 0 or info.st_mode & (stat.S_ISUID | stat.S_IWGRP | stat.S_IWOTH):
         raise ValueError("untrusted sandbox owner")
     runtime, aliases = runtime_files(node)
-    runtime_record = {"node":str(node),"sha256":node_hash,"dependencies":[{"path":str(path),"sha256":digest(path)} for path in runtime if path != node],"trustedUsers":sorted(set([0, os.geteuid()])),"trustedGroups":[80]}
+    runtime_record = {"node":str(node),"sha256":node_hash,"dependencies":[{"path":str(path),"sha256":digest(path)} for path in runtime if path != node],"trustedUsers":sorted(set([0, os.geteuid()])),"trustedGroups":[grp.getgrnam("admin").gr_gid],"systemTreeOwner":{"path":"/bin/sleep","sha256":digest(Path("/bin/sleep"))}}
+    if args.host_runtime_record:
+        if args.host_runtime_record.stat().st_size > 256 * 1024:
+            raise ValueError("host runtime record limit")
+        approved = json.loads(args.host_runtime_record.read_text())
+        for key in ("node", "sha256", "dependencies", "systemTreeOwner"):
+            if approved.get(key) != runtime_record[key]:
+                raise ValueError("host-approved runtime source changed")
+        for key in ("trustedUsers", "trustedGroups"):
+            ids = approved.get(key)
+            if not isinstance(ids,list) or len(ids)>64 or any(type(i) is not int or not 0<=i<=4294967295 for i in ids):
+                raise ValueError("invalid host principals")
+            runtime_record[key] = ids
     closure_hash = hashlib.sha256(json.dumps(runtime_record,sort_keys=True,separators=(",",":")).encode()).hexdigest()
     if args.runtime_closure_sha256 and closure_hash != args.runtime_closure_sha256:
         raise ValueError("runtime dependency closure identity changed")
@@ -158,8 +187,9 @@ def main():
         bounded_copy(SUPPORT / "idle.mjs" if args.fake else args.package / "dist/idle-compaction.js", root / "idle.mjs", 1024 * 1024)
         (root / "outside-denied").write_text("owned denied-read canary\n")
         dependencies = runtime_record["dependencies"]
-        readable = [root/"owner", root/"entry.mjs", root/"idle.mjs", root/"input.json", *runtime, *aliases, Path("/bin/sleep")]
+        readable = [root/"owner", root/"entry.mjs", root/"idle.mjs", root/"input.json", *runtime, *aliases, Path("/bin/sleep"), Path("/bin/echo")]
         literals = " ".join(f"(literal {json.dumps(str(path))})" for path in readable)
+        executable_literals = " ".join(f"(literal {json.dumps(str(path))})" for path in (root/"owner",node,Path("/bin/sleep")))
         ancestors = " ".join(f"(path-ancestors {json.dumps(str(path))})" for path in readable)
         policy = f'''(version 1)
 (deny default)
@@ -171,7 +201,7 @@ def main():
 (allow file-map-executable {literals} (subpath "/System/Library") (subpath "/usr/lib") (subpath "/System/Volumes/Preboot/Cryptexes/OS") (subpath "/System/Cryptexes/OS"))
 (allow file-write-data (literal "/dev/null"))
 (allow process-fork)
-(allow process-exec {literals})
+(allow process-exec {executable_literals})
 (allow process-info* (target self) (target children))
 (allow signal (target children) (target same-sandbox))
 (allow sysctl-read (sysctl-name-regex #"^hw\\.") (sysctl-name "kern.osrelease" "kern.ostype" "kern.osversion" "kern.version" "kern.argmax" "kern.hostname" "kern.osproductversion" "kern.osproductversioncompat"))
@@ -179,15 +209,16 @@ def main():
         (root / "policy.sb").write_text(policy)
         results = []
         for control in (True, False):
-            (root / "input.json").write_text(json.dumps({"root":str(root),"node":str(node),"mode":"fake" if args.fake else "original","hop":args.hop,"control":control,"dependencies":dependencies,"nodeSha256":node_hash}))
+            (root / "input.json").write_text(json.dumps({"root":str(root),"node":str(node),"mode":"fake" if args.fake else "original","hop":args.hop,"control":control,"dependencies":dependencies,"nodeSha256":node_hash,"trustedUsers":runtime_record["trustedUsers"],"trustedGroups":runtime_record["trustedGroups"],"systemTreeOwner":runtime_record["systemTreeOwner"],"rustRuntimeSha256":args.rust_runtime_closure_sha256,"launchPolicySha256":args.launch_policy_sha256}))
             command = [str(sandbox),"-f",str(root/"policy.sb"),str(root/"owner"),str(root/"input.json")]
             child = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env={"PATH":"/usr/bin:/bin","HOME":str(root),"TMPDIR":str(root),"TMP":str(root),"TEMP":str(root)}, preexec_fn=limits)
             stdout, stderr = bounded_output(child)
             if child.returncode or len(stdout)>MAX_OUTPUT or len(stderr)>MAX_OUTPUT:
                 raise ValueError("confined component failed: "+stderr.decode(errors="replace")[:500])
             result = json.loads(stdout)
-            if result.get("nativeExecuted") is not False or result.get("routeQualified") is not False:
-                raise ValueError("component scope widened")
+            graph = result.get("graph",{})
+            if graph.get("files") != 2 or graph.get("nativeBindings") != 0 or graph.get("platformPrograms") != 0 or graph.get("entrySha256") != digest(SUPPORT/"entry.mjs"):
+                raise ValueError("component graph scope widened")
             results.append(result)
         print(json.dumps({"scope":"idle-class-component-only","mode":"fake" if args.fake else "original","hop":args.hop,"ownerSha256":args.owner_sha256,"runtime":runtime_record,"runtimeClosureSha256":closure_hash,"sandboxSha256":digest(sandbox),"policySha256":hashlib.sha256(policy.encode()).hexdigest(),"host":{"system":platform.system(),"machine":platform.machine(),"kernel":platform.release()},"results":results},sort_keys=True))
         success = True

@@ -536,3 +536,68 @@ fn checked_prepared_child_preserves_denial_without_permission_callback() {
     );
     assert_eq!(resources.resource_releases(), 1);
 }
+
+#[tokio::test]
+async fn checked_revocation_after_spawn_refuses_bootstrap_and_joins_children() {
+    fn children() -> std::collections::BTreeSet<u32> {
+        let output = std::process::Command::new("/bin/ps")
+            .args(["-axo", "pid=,ppid="])
+            .output()
+            .expect("owned child observation");
+        assert!(output.status.success());
+        String::from_utf8(output.stdout)
+            .expect("process identities")
+            .lines()
+            .filter_map(|line| {
+                let mut values = line.split_whitespace();
+                let pid = values.next()?.parse().ok()?;
+                let parent = values.next()?.parse::<u32>().ok()?;
+                (parent == std::process::id()).then_some(pid)
+            })
+            .collect()
+    }
+    for revoke_runtime in [false, true] {
+        let root = fixture();
+        let graph = capture(&root, "process.stdout.write('ENTRY_EFFECT');");
+        let host = fake_child(&root, graph);
+        let before = children();
+        let pending = host.local.start_checked(
+            ScopeId::new("revoked-bootstrap").expect("scope"),
+            CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
+            ProcessRequest::new(
+                ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
+            ),
+        );
+        let started: Vec<_> = children().difference(&before).copied().collect();
+        assert!(
+            !started.is_empty(),
+            "spawn precedes the bootstrap future poll"
+        );
+        if revoke_runtime {
+            host.runtime.revoke();
+        } else {
+            host.approval.revoke();
+        }
+        assert!(
+            pending.await.is_err(),
+            "revoked custody cannot deliver the graph"
+        );
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(8);
+        for pid in started {
+            while std::process::Command::new("/bin/kill")
+                .args(["-0", &pid.to_string()])
+                .output()
+                .expect("owned PID observation")
+                .status
+                .success()
+            {
+                assert!(
+                    std::time::Instant::now() < deadline,
+                    "revoked startup child was not joined"
+                );
+                tokio::time::sleep(std::time::Duration::from_millis(20)).await;
+            }
+        }
+        std::fs::remove_dir_all(root).expect("owned fixture cleanup");
+    }
+}

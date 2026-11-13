@@ -9,7 +9,8 @@ use swallowtail_runtime::{
 
 impl LocalProcessHost {
     /// Starts an ordinarily approved candidate while serializing host runtime
-    /// revocation with spawn and writing its captured-source bootstrap.
+    /// revocation with spawn, then writing its captured-source bootstrap.
+    /// Only the checked path rechecks admission through the final bootstrap byte.
     ///
     /// This is not a checked-process grant: graph, guard and policy authority
     /// must be independently established by the host before calling it. The
@@ -193,16 +194,55 @@ impl ProcessService for LocalProcessHost {
                     )
                 })
             });
+        let launch = self
+            .approvals
+            .executables
+            .get(request.executable())
+            .cloned();
         Box::pin(async move {
             let process = process?;
             let checked = checked.ok_or_else(crate::checked_node::denied)?;
-            if let Err(error) = process
-                .bootstrap(
-                    checked.recipe.bootstrap(),
-                    std::time::Duration::from_secs(5),
-                )
-                .await
-            {
+            let launch = launch.ok_or_else(crate::checked_node::denied)?;
+            // Recheck before sending any graph bytes, then serialize the final
+            // admission-byte write with both registration and runtime revocation.
+            // The callback never holds either synchronous lock across an await.
+            let admit = |write: &mut dyn FnMut() -> std::io::Result<usize>| {
+                checked
+                    .during_admission(&request, || {
+                        let _native = checked
+                            .recipe
+                            .native
+                            .as_ref()
+                            .map(crate::LocalTrustedRuntime::acquire_custody)
+                            .transpose()
+                            .map_err(|_| crate::checked_node::denied())?;
+                        let _ps = checked
+                            .recipe
+                            .ps
+                            .as_ref()
+                            .map(crate::LocalTrustedRuntime::acquire_custody)
+                            .transpose()
+                            .map_err(|_| crate::checked_node::denied())?;
+                        checked
+                            .runtime
+                            .during_spawn(&launch, write)
+                            .map_err(|_| crate::checked_node::denied())
+                    })
+                    .map_err(std::io::Error::other)?
+            };
+            let result = match admit(&mut || Ok(0)) {
+                Err(_) => Err(crate::checked_node::denied()),
+                Ok(_) => {
+                    process
+                        .bootstrap_with_admission(
+                            checked.recipe.bootstrap(),
+                            std::time::Duration::from_secs(5),
+                            &admit,
+                        )
+                        .await
+                }
+            };
+            if let Err(error) = result {
                 let stopped = process.force_stop().await;
                 let joined = process.wait().await;
                 stopped?;

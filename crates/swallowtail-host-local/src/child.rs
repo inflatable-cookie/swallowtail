@@ -13,6 +13,9 @@ use swallowtail_runtime::{
 
 mod supervision;
 
+type BootstrapAdmission<'a> =
+    dyn Fn(&mut dyn FnMut() -> std::io::Result<usize>) -> std::io::Result<usize> + Sync + 'a;
+
 pub(crate) struct LocalProcessParts {
     pub(crate) child: Child,
     pub(crate) group_owner: Option<Child>,
@@ -42,6 +45,17 @@ impl LocalProcessHandle {
         &self,
         bytes: &[u8],
         timeout: Duration,
+    ) -> Result<(), RuntimeFailure> {
+        self.bootstrap_with_admission(bytes, timeout, &|write| write())
+            .await
+    }
+
+    #[cfg(unix)]
+    pub(crate) async fn bootstrap_with_admission(
+        &self,
+        bytes: &[u8],
+        timeout: Duration,
+        admit: &BootstrapAdmission<'_>,
     ) -> Result<(), RuntimeFailure> {
         use async_io::{Async, Timer};
         use nix::fcntl::{FcntlArg, OFlag, fcntl};
@@ -96,7 +110,9 @@ impl LocalProcessHandle {
             }
             if let Some(final_byte) = bytes.last() {
                 let count = stdin
-                    .write_with(|stream| (&*stream).write(std::slice::from_ref(final_byte)))
+                    .write_with(|stream| {
+                        admit(&mut || (&*stream).write(std::slice::from_ref(final_byte)))
+                    })
                     .await
                     .map_err(|_| {
                         failure(

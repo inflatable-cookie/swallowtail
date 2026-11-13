@@ -50,6 +50,9 @@ mod probe {
         Ok(path)
     }
     pub fn run() -> Result<(), String> {
+        if !cfg!(all(target_os = "macos", target_arch = "aarch64")) {
+            return Err("component owner requires Darwin arm64".into());
+        }
         let args: Vec<_> = std::env::args_os().collect();
         if args.len() != 2 {
             return Err("use the source-bound confined probe owner".into());
@@ -88,8 +91,22 @@ mod probe {
                 return Err("network namespace has non-loopback routes or devices".into());
             }
         }
+        // Readability distinguishes an execution veto from a missing file.
+        std::fs::File::open("/bin/echo").map_err(|_| "exec canary unreadable")?;
+        match std::process::Command::new("/bin/echo")
+            .arg("DENIED_EXEC_CANARY")
+            .output()
+        {
+            Err(error) if error.kind() == std::io::ErrorKind::PermissionDenied => {}
+            _ => return Err("OS execution confinement not observed".into()),
+        }
         let mode = input["mode"].as_str().ok_or("missing mode")?;
         let control = input["control"].as_bool().ok_or("missing control")?;
+        let idle = if mode == "fake" {
+            include_bytes!("../tests/guard_component_probe/idle.mjs").to_vec()
+        } else {
+            read(&root.join("idle.mjs"))?
+        };
         let node_digest = hash(&read(&node)?);
         if node_digest != decode(input["nodeSha256"].as_str().ok_or("missing Node binding")?)? {
             return Err("Node executable identity changed".into());
@@ -111,7 +128,24 @@ mod probe {
             };
             let manifest: serde_json::Value =
                 serde_json::from_str(manifest).map_err(|_| "invalid packaged graph")?;
-            if hash(&read(&root.join("idle.mjs"))?)
+            let original = String::from_utf8(idle.clone()).map_err(|_| "non-UTF8 idle source")?;
+            // Appending a patch cannot intercept top-level evaluation. This
+            // exact audited prefix contains constants, a bounded intrinsic Set
+            // allocation and function declarations. The pinned class has no
+            // extends, static initializer/block or computed member.
+            let (prefix, class) = original
+                .split_once("export class IdleCompaction {")
+                .ok_or("idle declaration mismatch")?;
+            if hash(prefix.as_bytes())
+                != decode("9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b")?
+                || class
+                    .lines()
+                    .any(|line| line.starts_with("    static ") || line.starts_with("    ["))
+                || !class.ends_with("\n}\n")
+            {
+                return Err("unaudited original top-level evaluation".into());
+            }
+            if hash(&idle)
                 != decode(
                     manifest["files"]["acp/dist/idle-compaction.js"]["sha256"]
                         .as_str()
@@ -129,11 +163,7 @@ mod probe {
             return Err("unadmitted mode".into());
         };
         let entry = include_bytes!("../tests/guard_component_probe/entry.mjs");
-        let idle = if mode == "fake" {
-            include_bytes!("../tests/guard_component_probe/idle.mjs").to_vec()
-        } else {
-            read(&root.join("idle.mjs"))?
-        };
+
         let sources = LocalCapturedSources::capture(
             &root,
             &[
@@ -164,22 +194,53 @@ mod probe {
                 decode(row["sha256"].as_str().ok_or("missing dependency digest")?)?,
             ));
         }
+        let tree_owner = &input["systemTreeOwner"];
+        if tree_owner["path"] != "/bin/sleep" {
+            return Err("tree owner identity absent".into());
+        }
+        dependencies.push((
+            PathBuf::from("/bin/sleep"),
+            decode(
+                tree_owner["sha256"]
+                    .as_str()
+                    .ok_or("missing tree owner digest")?,
+            )?,
+        ));
+        let principals = |name: &str| -> Result<Vec<u32>, String> {
+            input[name]
+                .as_array()
+                .ok_or_else(|| "missing host principals".to_string())?
+                .iter()
+                .map(|id| {
+                    id.as_u64()
+                        .and_then(|id| u32::try_from(id).ok())
+                        .ok_or_else(|| "invalid host principal".to_string())
+                })
+                .collect()
+        };
         let runtime = LocalTrustedRuntime::capture_with_trust(
             &node,
             node_digest,
             &dependencies,
-            LocalRuntimeTrust::new(
-                vec![
-                    0,
-                    std::os::unix::fs::MetadataExt::uid(
-                        &std::fs::metadata(&root).map_err(|_| "host identity unavailable")?,
-                    ),
-                ],
-                vec![80],
-            )
-            .map_err(|_| "invalid host trust")?,
+            LocalRuntimeTrust::new(principals("trustedUsers")?, principals("trustedGroups")?)
+                .map_err(|_| "invalid host trust")?,
         )
         .map_err(|error| format!("runtime custody refused: {error}"))?;
+        let runtime_identity = *runtime.digest();
+        let runtime_source = *runtime.source_digest();
+        let host_policy = hash(b"swallowtail.darwin-acp-idle-component-v2");
+        if input["rustRuntimeSha256"]
+            .as_str()
+            .is_some_and(|expected| decode(expected).ok() != Some(runtime_identity))
+            || input["launchPolicySha256"]
+                .as_str()
+                .is_some_and(|expected| decode(expected).ok() != Some(host_policy))
+            || (mode == "original"
+                && (!input["rustRuntimeSha256"].is_string()
+                    || !input["launchPolicySha256"].is_string()))
+        {
+            return Err("operator-approved runtime/policy identity mismatch".into());
+        }
         let loader = if control {
             let needle = "if (url === idleUrl) source +=";
             if CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.matches(needle).count() != 1 {
@@ -195,13 +256,12 @@ mod probe {
             &loader,
             vendor,
             &runtime,
-            hash(if control {
-                b"probe-only unguarded counterexample"
-            } else {
-                b"guarded component witness"
-            }),
+            hash(&[host_policy.as_slice(), &[u8::from(control)]].concat()),
         )
         .map_err(|_| "component recipe refused")?;
+        let graph_scope: serde_json::Value =
+            serde_json::from_slice(graph.configuration()).map_err(|_| "invalid graph summary")?;
+        let graph_summary = serde_json::json!({"files":graph_scope["files"].as_array().map(Vec::len),"nativeBindings":usize::from(graph_scope["native"].is_object()),"platformPrograms":graph_scope["platformPrograms"].as_array().map_or(0,Vec::len),"entrySha256":format!("{:x}",Sha256::digest(entry)),"idleSha256":format!("{:x}",Sha256::digest(&idle))});
         let fingerprint = *recipe.fingerprint().digest();
         let target = ExecutableRef::new("probe.component").expect("literal target");
         let binding = CheckedProcessRef::new("probe.component.checked").expect("literal binding");
@@ -301,7 +361,7 @@ mod probe {
         let value = result?;
         println!(
             "{}",
-            serde_json::json!({"scope":"idle-class-component-only","mode":mode,"control":control,"nativeExecuted":false,"routeQualified":false,"runtimeSha256":format!("{:x}",Sha256::digest(read(&node)?)),"compoundFingerprint":fingerprint.iter().map(|b|format!("{b:02x}")).collect::<String>(),"witness":value})
+            serde_json::json!({"scope":"idle-class-component-only","mode":mode,"control":control,"graph":graph_summary,"runtimeSha256":runtime_source.iter().map(|b|format!("{b:02x}")).collect::<String>(),"rustRuntimeSha256":runtime_identity.iter().map(|b|format!("{b:02x}")).collect::<String>(),"launchPolicySha256":host_policy.iter().map(|b|format!("{b:02x}")).collect::<String>(),"compoundFingerprint":fingerprint.iter().map(|b|format!("{b:02x}")).collect::<String>(),"witness":value})
         );
         Ok(())
     }

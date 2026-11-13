@@ -290,14 +290,14 @@
   },
   "component_stage": {
     "scope": "idle-class-component-only",
-    "selector": "effigy probe:acp-idle-component --original --owner <exact-owner> --owner-sha256 <approved-owner-sha256> --node <installed-compatible-node> --node-sha256 <approved-node-sha256> --runtime-closure-sha256 <approved-closure-record-sha256> --hop <exact-hop> --package <verified-acp-package>",
+    "selector": "effigy probe:acp-idle-component --original --owner <exact-owner> --owner-sha256 <approved-owner-sha256> --node <installed-node> --node-sha256 <approved-node-sha256> --host-runtime-record <approved-record> --runtime-closure-sha256 <approved-record-sha256> --rust-runtime-closure-sha256 <approved-Rust-custody-sha256> --launch-policy-sha256 <approved-policy-sha256> --hop <exact-hop> --package <verified-acp-package>",
     "source_owner": "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs",
     "confinement_owner": "scripts/claude-acp-component-probe.py",
     "platform": "darwin-arm64",
     "vendor_effects": "Only captured original idle class; first-party host, settings, clock and compact promise; no ACP entrypoint, SDK or native execution",
     "authority": "Separate exact source/plan/owner/runtime/module authority required before --original",
     "attempts_per_hop": 1,
-    "processes_per_attempt": 3,
+    "processes_per_attempt": 4,
     "control_and_guarded_launches": 2,
     "seconds_per_launch": 40,
     "owned_child_seconds": 10,
@@ -336,17 +336,21 @@
       }
     },
     "source_sha256": {
-      "scripts/claude-acp-component-probe.py": "73af6e797c266fc7333df6e3c1777e100383dc7042b92965afa127921afea62b",
+      "scripts/claude-acp-component-probe.py": "38df73156cbb2d851504552ad5ac83af946e13826d2c25a535881bb3ca7cf057",
       "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
       "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs": "7ce0625f57f95291a60b21947cd5674732352567a900a99833e18334655669ac",
-      "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "92743386e4347d8d40f6f3b62834ec82066f0552f18a7f26687a1823f17590c6",
+      "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "d5de7cebb14ce52ba3036ffcd72fa857345cb3ef31cb724ff616086b1c573925",
       "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
       "Cargo.toml": "c349653298d6c24d3ac933ae36eb01c51abf6c570ceae3ae72de5ddd050e8f2b",
       "scripts/stage-claude-acp-fake-node.py": "e78bf664ada700bddd45bdadb1d522beb53a5e1940438e05b8b3d324b0360d08",
       "crates/swallowtail-host-local/src/trusted_runtime.rs": "9ef4fa9f7804dc48c51c8f91c395a583c38fb87b8d5c699f43b5bea8116476e8",
       "crates/swallowtail-adapter-claude-agent/src/guard_manifest.rs": "da7b587973e30aa04a263ce552f82bc133963605bc8eb02bba674d89d94847a7",
-      "scripts/run-claude-acp-installed-child.sh": "590816c45cdaeb6919083668139f8c74cf5cdfaa66d2e343ea56f1f578c2f956",
-      "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf"
+      "scripts/run-claude-acp-installed-child.sh": "715f46e682949ac533144f0a4f60217577018d10a08d60c6bf722bc5c71aaf78",
+      "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/darwin-spawn-path.json": "6f7193093718303785b549af11d17a604cbce25d65391d5fcd065b457603cf98",
+      "crates/swallowtail-host-local/src/process.rs": "8ac5082c85bee9a48f93c5a6338d5f7855a7d9630a32db0e8fa31fc7964eeb9f",
+      "crates/swallowtail-host-local/src/child.rs": "4e7924d1616b4f0ce9f9289da177c1fd623c1c207d13d8d1e551a2c5144a9530",
+      "scripts/tests/claude-acp-component-admission.py": "1e4446f79e72946550551c71b8067994e395ae90c27d6635fcea0620f0118c75"
     },
     "admission_status": "Requires exact installed compatible Node executable/dependency and host-principal binding, kernel confinement counterexamples and first-party fake control/guard success; separate authority naming changed source/plan/owner/runtime/class before original execution",
     "build_selector": "effigy build:acp-guard-component-probe",
@@ -357,6 +361,23 @@
       "host_installation_changes": false,
       "original_provider_code": false,
       "role": "Historical reference fixture; no additional runtime staging required or authorized by installed-runtime direction"
+    },
+    "owned_spawns_per_attempt": 6,
+    "execution_allowlist": "Selected Node, copied Rust owner initial exec, and the root-owned system sleep process-group owner; runtime libraries are map/read-only. Readable /bin/echo must fail process-exec before Node launch.",
+    "runtime_inspection": {
+      "files": 129,
+      "aliases": 512,
+      "bytes": 536870912,
+      "seconds_per_otool": 5,
+      "output_bytes_per_stream": 1048576,
+      "original_bindings": "Host record source digests and principals, Rust custody-v2 (paths/file identities/ancestors/trust/selected closure and tree owner) and compiled launch-policy digest; both mandatory in original mode"
+    },
+    "launch_policy_sha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+    "darwin_spawn_path": "darwin-spawn-path.json",
+    "top_level_admission": {
+      "patch_timing": "Appended after module evaluation; no top-level interception claimed",
+      "audited_prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b",
+      "selected_effects": "Numeric constants, one bounded intrinsic Set allocation, function declarations and the pinned class declaration; no external effects or imports. Class admission rejects static initializers, extends and computed members; complete class digest remains mandatory."
     }
   },
   "behavior_revision": "claude-agent.acp.guarded-permission-inheritance-v8",

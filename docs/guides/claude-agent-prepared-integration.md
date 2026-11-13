@@ -216,6 +216,11 @@ verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
 and pins native and required system `ps` custody. It requires independently
 approved host policy; ordinary version discovery supplies no grant. Original
 class/native behavior proof remains unproved, so the ceiling stays0.100.0.
+Checked startup rechecks revocation before graph delivery and at the final
+admission byte; refusal stops and joins the child. The component proposal binds
+host-approved principals and the full Rust runtime custody identity, alongside
+source/plan/owner/Node/class inputs. Its deny-exec canary and narrow system
+process-group helper are separate from original provider/native authority.
 The installed compatible runtime is supported under Tom's decision
 `d0a0761f-3c47-4cf2-b198-242d232b20cc`: Node>=22 with the required synchronous
 module-hook APIs, exact executable/dependency identity and explicit host custody.

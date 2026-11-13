@@ -250,15 +250,20 @@ A checked process reference is an opaque lookup key, not an attestation by
 itself. The process service must refuse preflight and checked start when it
 cannot resolve and verify the binding, and it must recheck at start so that
 revocation or drift cannot fall back to an ordinary process launch. Hosts
-without the capability refuse both operations. The current local host does
-does not yet provide the required checked runtime custody and therefore cannot
-admit this launch. Decision `fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2
-selects trusted-host custody for this invocation; it does not establish
-resistance to hostile same-user replacement or qualify the captured graph.
+without the capability refuse both operations. The local host now implements
+checked registrations with explicit runtime custody and captured loading;
+Contract010 owns their trust precondition. Decision
+`fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2 selects that trusted-host boundary,
+and `d0a0761f-3c47-4cf2-b198-242d232b20cc` v2 permits installed compatible
+Node with exact invocation identity. First-party fake proof does not establish
+hostile same-user resistance, original native behavior or qualification of the
+captured graph. The qualified ceiling remains0.100.0.
 
 The captured-graph bootstrap is host input, with its own size and deadline
 limits; it does not consume the consumer's provider-stdin allowance. The host
-must finish sending it before returning the process handle. A stalled or closed
+must finish sending it before returning the process handle. Checked admission
+rechecks revocation before graph delivery and serializes its final admission
+byte with custody revocation. A stalled or closed
 pipe, cancellation, timeout, or incomplete handoff fails admission and joins
 the owned process and writer. Dropping a pending handoff must also trigger
 cleanup. Neither the entrypoint nor a consumer input write may run before the

@@ -710,3 +710,64 @@ separate exact original-component authority remain required. Whole-route
 native/permission proof, Linux confinement and administrator-fixture admission
 remain independent. The qualified ceiling stays0.100.0; standalone SDK/Node,
 platform and exact HTTP MCP claims do not change.
+
+### Retained component review and admission repairs
+
+The retained reviewer accepted the c025c5c fake witness as bounded evidence and
+withheld original activation. The subsequent repair rechecks registration and
+runtime/native/helper revocation before sending graph bytes and serializes the
+final admission-byte write under those custody locks. It releases every lock
+before an async wait. A real checked-host test revokes registration or runtime
+after spawn, before polling bootstrap, and observes refusal plus joined child
+and process-group-owner cleanup. All18 captured-child tests passed on installed
+26.11.0 with the inspected closure.
+
+The component now consumes host-owned principal lists and compares the approved
+Rust closure-v2 digest and launch-policy digest before launch. It prints the
+held executable digest, not a fresh path hash after execution. The fake host
+resolves the macOS `admin` group; the Rust owner no longer infers its trusted
+user from fixture ownership. Both the component and wrapper refuse Linux;
+the installed-child selector reports not-applicable there without claiming
+proof. New fake counterexamples reject wrong Rust custody, launch policy and
+principal records; a matching approved record succeeds.
+
+The Seatbelt exec allowlist now contains only selected Node, the initial owned
+Rust executable, and the system process-group-owner helper `/bin/sleep` required
+by the existing local host's joined-tree contract. Runtime libraries retain
+read/map access only. The helper digest is included in Rust runtime custody.
+Readable `/bin/echo` must fail exec before Node launch, alongside the independent
+file and network canaries. The concurrent bound is4 (wrapper, Rust, Node, group
+owner), with6 owned spawns across the two serial launches. Runtime inspection
+bounds129 files,512 aliases,512MiB,5seconds per tool and1MiB per output stream.
+
+The exact selected Rust1.97.1 Darwin source path and no-fallback preconditions
+are retained in `darwin-spawn-path.json`. The absolute Mach-O invocation uses
+`posix_spawnp` and its process-group attribute, with no pre-exec closure,
+identity/session change or cwd. This is source evidence for the built owner
+under trusted-host custody, not OS verified execution; Linux original execution
+remains unavailable. The host coordinates loader/helper updates through
+bootstrap admission.
+
+The appended idle patch cannot intercept module top-level evaluation. Original
+component admission therefore also pins the audited prefix SHA256
+`9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b`,
+which contains constants, one bounded intrinsic Set allocation and function
+declarations. Prefix audit, full digest and captured graph use the same verified
+in-memory class bytes; capture refuses any intervening disk replacement. The complete class digest stays mandatory; static initializers,
+extends and computed members are outside this admitted source. The output now
+describes the actual two-file graph, entry/class digests and absence of native
+bindings/platform programs, rather than using constant native/qualification
+flags as proof.
+
+The refreshed fake owner SHA256 is
+`3ac9390096301c89275cb15639e9ffa36288d279f3dedfc6f3a965361fa13a89`.
+Its approved Rust custody identity is
+`0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0`;
+the launch policy is
+`0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da`.
+The readable host-record digest is separately
+`e8cae5c0e222aebed4af2a209977a4e349c958d8f6cbbd2e20b821ca450cfaa4`.
+Both serial launches preserve the12/15 control versus0/0 guard distinction,
+settings and joined modeled work. These changed bytes need fresh retained
+component review and exact original authority. Wider permission/native and
+qualification findings remain open; no claim or execution gate was waived.

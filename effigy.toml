@@ -179,7 +179,7 @@ section = "Research Records"
 "check:acp-guard-api" = "bash scripts/check-claude-acp-guard-api.sh check"
 "validate:acp-guard-proposal" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate)'"
 "validate:acp-guard-probe-bounds" = "python3 scripts/tests/claude-acp-component-bounds.py"
-"check:acp-guard-probe" = "python3 -c 'from pathlib import Path; files = [Path(\"scripts/claude-acp-component-probe.py\"), Path(\"scripts/build-claude-acp-guard-graphs.py\"), Path(\"scripts/stage-claude-acp-fake-node.py\")]; [compile(f.read_bytes(), str(f), \"exec\") for f in files]'"
+"check:acp-guard-probe" = "python3 -c 'from pathlib import Path; files = [Path(\"scripts/claude-acp-component-probe.py\"), Path(\"scripts/build-claude-acp-guard-graphs.py\"), Path(\"scripts/stage-claude-acp-fake-node.py\"), Path(\"scripts/tests/claude-acp-component-admission.py\")]; [compile(f.read_bytes(), str(f), \"exec\") for f in files]'"
 "evidence:acp-guard-graphs" = "python3 scripts/build-claude-acp-guard-graphs.py {args}"
 "prepare:acp-guard-fake-node" = "python3 scripts/stage-claude-acp-fake-node.py"
 "probe:acp-idle-component" = "python3 scripts/claude-acp-component-probe.py {args}"
@@ -188,7 +188,7 @@ section = "Research Records"
   { task = "build:acp-guard-component-probe" },
   { task = "validate:acp-guard-component-fake" },
 ]
-"validate:acp-guard-component-fake" = "python3 scripts/claude-acp-component-probe.py --fake --owner target/debug/examples/guarded_acp_component_probe --owner-sha256 \"$(shasum -a 256 target/debug/examples/guarded_acp_component_probe | cut -d' ' -f1)\" --node \"${SWALLOWTAIL_ACP_FAKE_NODE:-$(command -v node)}\""
+"validate:acp-guard-component-fake" = "python3 scripts/tests/claude-acp-component-admission.py --owner target/debug/examples/guarded_acp_component_probe --owner-sha256 \"$(shasum -a 256 target/debug/examples/guarded_acp_component_probe | cut -d' ' -f1)\" --node \"${SWALLOWTAIL_ACP_FAKE_NODE:-$(command -v node)}\""
 "update:acp-guard-api" = "bash scripts/check-claude-acp-guard-api.sh update"
 "validate:acp-checked-prepared" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(prepared_guarded_binding_refuses_missing_mismatch_and_revocation_without_fallback) | test(prepared_guarded_denial_without_callback_preserves_order_and_cleanup)'"
 "validate:acp-checked-process" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-runtime --lib -E 'test(checked_process_default_refuses_preflight_and_start_without_fallback)'"

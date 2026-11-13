@@ -247,7 +247,10 @@ A local checked Node registration is host policy, not caller attestation. It
 binds one opaque checked reference and executable to a captured recipe, the
 host's independently approved compound fingerprint, exact allowed argument
 vectors and a revocable runtime pin. Preflight and start verify the same
-registration; start serializes revocation with spawn. Unknown references,
+registration; start serializes revocation with spawn. It rechecks before any
+graph bootstrap bytes and holds registration plus runtime/native/helper custody
+while writing the final admission byte. No synchronous guard crosses an await;
+a refusal stops and joins the spawned child before returning. Unknown references,
 different targets, prefixes, startup controls, fingerprints or revoked custody
 refuse before spawn, without stock fallback. External `OPENSSL_` startup
 configuration/module controls are rejected alongside `NODE_`, `LD_` and
@@ -268,6 +271,30 @@ permits only the pinned native path, rejects shells and unsafe startup controls,
 and rechecks the native source identity before invoking it. Worker realms,
 addons and string code are not implicitly admitted. Unclassified source or
 edges refuse; there is no stock fallback.
+
+The Darwin idle-component owner additionally compares an approved Rust custody
+identity and launch-policy digest, rather than treating its own JSON hash or
+compound fingerprint as outside approval. Principals come from the host-owned
+record; the fake host resolves the macOS `admin` group (gid80 on the proved host).
+Other platforms refuse component execution. The existing local process-group
+owner requires the pinned root-owned `/bin/sleep`: the component's process-exec
+allowlist contains only that helper, selected Node and the initial owned Rust
+executable. Libraries are read/map-only. Readable `/bin/echo` must fail an exec
+canary; file and network canaries remain independent.
+
+The selected Darwin owner uses an absolute Mach-O Node path, no `pre_exec`,
+uid/gid/group/chroot/session changes or working directory. The retained Rust1.97.1
+standard-library source shows this command takes synchronous `posix_spawnp`
+with a process-group attribute; nonzero errors propagate. This bounds the
+selected build's spawn path, not hostile-user verified execution. The host
+coordinates runtime, loader and helper custody through bootstrap admission.
+
+The idle guard patch is appended after module evaluation. It does not intercept
+arbitrary original top-level effects. Component admission pins the audited
+constant/function prefix, bounded intrinsic Set allocation and full class
+source, rejects static/computed members, and executes no original ACP entry or
+SDK. Output describes the admitted graph and held runtime digest; proof-like
+constant qualification/native-execution flags are not used as evidence.
 
 The ACP guarded factory now consumes exact per-hop manifests, including
 caller-specific ESM/CommonJS/JSON resolution, native resolver edges and the

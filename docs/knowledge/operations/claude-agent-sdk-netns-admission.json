@@ -1,0 +1,12 @@
+{
+  "schema": "claude-agent-sdk-netns-proposal-v1",
+  "fakeScope": "loopback-transport-only",
+  "productionAdmission": false,
+  "originalActivation": false,
+  "canonicalFixtureAttempt": false,
+  "requiresSeparateSetupAuthority": true,
+  "sdkCustodyDecision": "6a14030b-ff23-4ef1-9b12-7a8cedbcca81",
+  "processes": {"monitor": 1, "guest": 1, "nodeChildren": 2},
+  "bounds": {"wallSeconds": 30, "nodeCpuSeconds": 10, "nodeDescriptors": 64, "outputBytes": 1000000, "writableBytes": 1000000},
+  "kernelActivationObserved": false
+}

@@ -24,3 +24,8 @@ exception; dispatch remains gated on exact-source authority and registration.
 Recorded the one separately authorized fixture attempt: all six immutable-source
 Linux/Darwin canonical settings jobs passed, with checked cleanup. The grant is
 consumed; fake canonical access supplies no native discovery or qualification.
+
+Prepared a private Linux loopback-only namespace proposal with an unapplied
+manual job, exact source binding and owned-fake orchestration/protocol tests.
+Namespace provisioning, runtime custody and original SDK/native activation
+remain separately gated; no qualification ceiling changes.

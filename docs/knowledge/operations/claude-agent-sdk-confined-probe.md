@@ -175,3 +175,9 @@ Primary mechanism references: [Landlock limitations](https://docs.kernel.org/use
 and [administrator settings paths](https://code.claude.com/docs/en/settings).
 These describe mechanisms and protocol shapes; they supply no frozen-native
 behavior or qualification evidence.
+
+The [Linux loopback namespace proposal](claude-agent-sdk-loopback-namespace.md)
+owns the separate ordinary-TCP transport preparation. Its unprivileged rehearsals
+model namespace operations and grant no kernel or original activation credit.
+The consumed canonical-fixture result and existing confinement evidence remain
+unchanged; SDK custody is still pending its standalone decision.

@@ -36,6 +36,11 @@ const EXIT = {
   failed: 3,
 };
 
+/// SHA-256 of the committed probe admission. Changing it is a source change the
+/// fixture verifier cross-checks, not a runtime option: a caller cannot supply
+/// it, so a ledger and a peer rewritten to agree with each other are refused.
+const COMMITTED_ADMISSION_SHA256 = "3e38a835f6b987aecf08cebd32aeb74d28f9245e7ae80df7fcc3542477973b26";
+
 function parseArguments(argv) {
   const values = new Map();
   for (let index = 0; index < argv.length; index += 2) {
@@ -320,7 +325,6 @@ function accountRecord(records, record, bounds, roots) {
 async function main() {
   const args = parseArguments(process.argv.slice(2));
   const admissionPath = args.get("admission");
-  const admissionDigest = args.get("admission-digest");
   const optionsPath = args.get("options");
   const peer = args.get("peer");
   const platform = args.get("platform");
@@ -329,6 +333,9 @@ async function main() {
   const ownershipNonce = args.get("ownership-nonce");
   const evidencePath = args.get("evidence");
   const requestedBoundMs = Number(args.get("bound-ms") ?? "0");
+  const requestedEvidenceBytes = Number(args.get("max-evidence-bytes") ?? "0");
+  const requestedDiskBytes = Number(args.get("max-disk-bytes") ?? "0");
+  const requestedJoinWaitMs = Number(args.get("join-wait-ms") ?? "0");
   const scenario = args.get("scenario") ?? "ok";
   const endpoint = args.get("endpoint");
   const mode = args.get("mode") ?? "fake";
@@ -341,17 +348,11 @@ async function main() {
     );
   }
 
-  if (typeof admissionDigest !== "string" || !/^[0-9a-f]{64}$/.test(admissionDigest)) {
-    throw new Refusal(
-      "invalid_invocation",
-      "the probe needs the committed admission digest, supplied outside the ledger",
-    );
-  }
   const admissionBytes = readFileSync(admissionPath);
-  if (sha256(admissionBytes) !== admissionDigest) {
+  if (sha256(admissionBytes) !== COMMITTED_ADMISSION_SHA256) {
     throw new Refusal(
       "admission_substitution",
-      "the admission document does not match the committed digest; a substituted ledger and peer are refused",
+      "the admission document does not match the digest compiled into this runner; a substituted ledger and peer are refused",
     );
   }
   const admission = JSON.parse(admissionBytes.toString("utf8"));
@@ -371,6 +372,35 @@ async function main() {
       "bound_refused",
       `the requested ${requestedBoundMs} ms exceeds the admitted ${ledgerBoundMs} ms`,
     );
+  }
+  const bounds = { ...admission.bounds };
+  if (requestedEvidenceBytes > 0) {
+    if (requestedEvidenceBytes > admission.bounds.captured_stdout_bytes) {
+      throw new Refusal(
+        "bound_refused",
+        "an evidence budget may only be tightened, never raised past the ledger",
+      );
+    }
+    bounds.captured_stdout_bytes = requestedEvidenceBytes;
+  }
+  if (requestedDiskBytes > 0) {
+    if (requestedDiskBytes > admission.bounds.disk_bytes) {
+      throw new Refusal(
+        "bound_refused",
+        "a disk budget may only be tightened, never raised past the ledger",
+      );
+    }
+    bounds.disk_bytes = requestedDiskBytes;
+  }
+  let joinWaitMs = Math.max(1_000, Math.min(boundMs, 10_000));
+  if (requestedJoinWaitMs > 0) {
+    if (requestedJoinWaitMs > boundMs) {
+      throw new Refusal(
+        "bound_refused",
+        "a join wait may only be tightened, never raised past the wall clock",
+      );
+    }
+    joinWaitMs = requestedJoinWaitMs;
   }
   const roots = createProbeRoots(base);
 
@@ -417,12 +447,12 @@ async function main() {
     env: environment,
     spawnClaudeCodeProcess: (spawnOptions) => {
       nativeSpawns += 1;
-      if (nativeSpawns > admission.bounds.native_processes) {
+      if (nativeSpawns > bounds.native_processes) {
         // A peer that catches the hook's error must still fail the probe, so the
         // refusal is latched and reported after the run settles.
         spawnRefusal ??= new Refusal(
           "process_limit_exceeded",
-          `the probe may start ${admission.bounds.native_processes} native process`,
+          `the probe may start ${bounds.native_processes} native process`,
         );
         throw spawnRefusal;
       }
@@ -457,16 +487,16 @@ async function main() {
   const document = (async () => {
     query = sdk.query({ prompt: prompt(), options });
     const initialization = await query.initializationResult();
-    accountRecord(records, { event: "initialized", models: initialization.models?.length ?? 0 }, admission.bounds, [peerReal, workspace]);
+    accountRecord(records, { event: "initialized", models: initialization.models?.length ?? 0 }, bounds, [peerReal, workspace]);
     const supported = await query.supportedModels();
-    accountRecord(records, { event: "supported_models", count: supported.length }, admission.bounds, [peerReal, workspace]);
+    accountRecord(records, { event: "supported_models", count: supported.length }, bounds, [peerReal, workspace]);
     const account = await query.accountInfo();
-    accountRecord(records, { event: "account", apiProvider: account?.apiProvider ?? null }, admission.bounds, [peerReal, workspace]);
+    accountRecord(records, { event: "account", apiProvider: account?.apiProvider ?? null }, bounds, [peerReal, workspace]);
     for await (const message of query) {
       accountRecord(
         records,
         { event: "message", type: message?.type ?? null, subtype: message?.subtype ?? null },
-        admission.bounds,
+        bounds,
         [peerReal, workspace],
       );
     }
@@ -487,9 +517,22 @@ async function main() {
       "cleanup_failed",
       "the probe exceeded its wall-clock bound before the peer joined; the peer was killed",
     );
-    nativeExit = await stopPeer(query, Math.max(1_000, Math.min(boundMs, 10_000)));
+    nativeExit = await stopPeer(query, joinWaitMs);
   } else {
-    nativeExit = await settle(query, Math.max(1_000, Math.min(boundMs, 10_000)));
+    nativeExit = await settle(query, joinWaitMs);
+  }
+
+  const joinedCleanly =
+    nativeExit?.timedOut !== true &&
+    (nativeExit?.join === "exited" ||
+      (nativeExit?.join === "killed" && nativeExit?.observed === true));
+  if (!joinedCleanly) {
+    failure ??= new Refusal(
+      "cleanup_failed",
+      `the native join was ${nativeExit?.join ?? "absent"} (observed: ${
+        nativeExit?.observed === true
+      }, timedOut: ${nativeExit?.timedOut === true}), so cleanup is unknown`,
+    );
   }
 
   const evidence = {
@@ -520,29 +563,24 @@ async function main() {
   };
   const serialized = JSON.stringify(evidence, null, 2);
   const evidenceBytes = Buffer.byteLength(serialized, "utf8");
-  if (evidenceBytes > admission.bounds.captured_stdout_bytes) {
+  if (evidenceBytes > bounds.captured_stdout_bytes) {
     throw new Refusal(
       "evidence_limit_exceeded",
-      `the evidence is ${evidenceBytes} bytes, over the admitted ${admission.bounds.captured_stdout_bytes}`,
+      `the evidence is ${evidenceBytes} bytes, over the effective ${bounds.captured_stdout_bytes}`,
     );
   }
   const disk = [peerReal, workspace].reduce(
     (total, root) => total + directoryBytes(root),
     0,
   );
-  if (disk > admission.bounds.disk_bytes) {
+  if (disk > bounds.disk_bytes) {
     throw new Refusal(
       "disk_limit_exceeded",
-      `the probe wrote ${disk} bytes, over the admitted ${admission.bounds.disk_bytes}`,
+      `the probe wrote ${disk} bytes, over the effective ${bounds.disk_bytes}`,
     );
   }
   writeFileSync(evidencePath, serialized);
-  if (nativeExit?.join !== "exited" && nativeExit?.join !== "killed") {
-    throw new Refusal(
-      "cleanup_failed",
-      `the native join was ${nativeExit?.join ?? "absent"}, so cleanup is unknown`,
-    );
-  }
+
   if (spawnRefusal !== null && failure === null) failure = spawnRefusal;
   if (failure !== null) throw failure;
   console.log(JSON.stringify({ probeOnly: true, status: "ok", tuple: evidence.tuple, platform }));
@@ -599,8 +637,10 @@ async function settle(query, boundMs) {
   try {
     const outcome = await Promise.race([query.joinNative().then((exit) => ({ exit })), bound]);
     if (outcome === "expired") {
-      // The wall-clock bound fired: stop the peer and observe the kill.
-      return await stopPeer(query, boundMs);
+      // The join timed out. That is unknown cleanup, never a success: stop the
+      // peer and report what was actually observed.
+      const stopped = await stopPeer(query, boundMs);
+      return { ...stopped, join: stopped.join === "killed" ? "killed" : "unknown", timedOut: true };
     }
     return { join: "exited", ...(outcome.exit ?? { code: null, signal: null }) };
   } finally {

@@ -95,6 +95,8 @@ function buildArgs(options) {
 class NativeWire {
   constructor(child, options) {
     this.child = child;
+    this.delivered = 0;
+    this.inboxWaiter = null;
     this.options = options;
     this.nextRequestId = 0;
     this.pending = new Map();
@@ -143,6 +145,9 @@ class NativeWire {
     record();
     const waiter = this.waiters.shift();
     waiter?.();
+    const inboxWaiter = this.inboxWaiter;
+    this.inboxWaiter = null;
+    inboxWaiter?.();
   }
 
   async answerControlRequest(message) {
@@ -210,14 +215,41 @@ class NativeWire {
   }
 
   async next() {
-    if (this.inbox.length > 0) return this.inbox.shift();
+    // A peer that keeps talking forever must not keep the document open in a
+    // scenario that is about the join, so a message count can end it.
+    if (
+      typeof SDK_CONFIG.endIterationAfterMessages === "number" &&
+      this.delivered >= SDK_CONFIG.endIterationAfterMessages
+    ) {
+      return { code: null, signal: null };
+    }
+    if (this.inbox.length > 0) {
+      this.delivered += 1;
+      return this.inbox.shift();
+    }
     if (this.stdinClosed) {
+      if (SDK_CONFIG.endIterationEarly === true && this.inbox.length === 0) {
+        // A peer that stays alive but has nothing left to say: the document
+        // finishes while the process does not, which is exactly the join-timeout
+        // case the probe must still treat as failed cleanup.
+        return { code: null, signal: null };
+      }
       // The peer may still be emitting frames for work that started before the
-      // input ended, so the exit sentinel is only returned once the inbox is
-      // drained *after* the process has gone.
-      const exit = await this.exit;
-      if (this.inbox.length > 0) return this.inbox.shift();
-      return exit;
+      // input ended, so wait for either the exit or a new frame, and drain the
+      // inbox before returning the exit sentinel. Waiting on the exit alone
+      // would drop frames that arrive after stdin closed but before the peer
+      // goes away.
+      const outcome = await Promise.race([
+        this.exit.then((exit) => ({ exit })),
+        new Promise((resolve) => {
+          this.inboxWaiter = resolve;
+        }).then(() => ({ inbox: true })),
+      ]);
+      if (this.inbox.length > 0) {
+        this.delivered += 1;
+        return this.inbox.shift();
+      }
+      return outcome.exit ?? { code: null, signal: null };
     }
     await new Promise((resolve) => this.waiters.push(resolve));
     return this.next();
@@ -289,6 +321,10 @@ export function query({ prompt, options }) {
     }
   }
   const wire = new NativeWire(child, options);
+  let releaseKill = () => {};
+  const killSignal = new Promise((resolve) => {
+    releaseKill = resolve;
+  });
   observed.closeCalls = 0;
 
   let cleanupPerformed = false;
@@ -375,9 +411,18 @@ export function query({ prompt, options }) {
     },
     mcpServerStatus: async () => [],
     /// The probe runner joins the peer explicitly so a peer that never exits is
-    /// a cleanup failure rather than a hang.
-    joinNative: async () => wire.exit,
+    /// a cleanup failure rather than a hang. A peer configured with
+    /// `delayJoinUntilKill` withholds its join until it is killed, which is the
+    /// "join timed out but the kill was observed" case the probe must still
+    /// treat as failed cleanup.
+    joinNative: async () => {
+      if (SDK_CONFIG.delayJoinUntilKill === true) {
+        await Promise.race([wire.exit, killSignal]);
+      }
+      return wire.exit;
+    },
     killNative: () => {
+      releaseKill();
       child.kill("SIGKILL");
     },
     close: async () => {

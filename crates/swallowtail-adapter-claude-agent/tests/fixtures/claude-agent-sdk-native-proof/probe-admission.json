@@ -41,7 +41,7 @@
   "selected_options_digest": "sha256:d07993a00214358736031d7ddc5fdff69103cf8918bd948bc79761f33b7c76fc",
   "options_template": "probe-options.json",
   "fake_peer": {
-    "sdk_module_sha256": "b518dbe54d7b2fe2ba260a7340d93feecd5dde91c8d60dac4a7d56ecc2b85084",
+    "sdk_module_sha256": "adaa94ea868eeff5d64ca7994f795c229a5b740f83b3ac2f647a30eb9596df8a",
     "native_sha256_per_tuple": "bound per tuple in fake_native_sha256",
     "platform_semantics": "in harness mode the platform is a declared identity label, not an executed per-platform binary; only an authorised original run would exercise the real artifact"
   },
@@ -82,7 +82,7 @@
       "sdk_version": "0.3.317",
       "native_version": "2.1.317",
       "wrapper_tarball_sha256": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f",
-      "fake_native_sha256": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "platforms": {
         "darwin-arm64": {
           "binary_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
@@ -99,7 +99,7 @@
       "sdk_version": "0.3.318",
       "native_version": "2.1.318",
       "wrapper_tarball_sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
-      "fake_native_sha256": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "platforms": {
         "darwin-arm64": {
           "binary_sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
@@ -116,7 +116,7 @@
       "sdk_version": "0.3.319",
       "native_version": "2.1.319",
       "wrapper_tarball_sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
-      "fake_native_sha256": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "platforms": {
         "darwin-arm64": {
           "binary_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
@@ -133,7 +133,7 @@
       "sdk_version": "0.3.321",
       "native_version": "2.1.321",
       "wrapper_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
-      "fake_native_sha256": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "platforms": {
         "darwin-arm64": {
           "binary_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
@@ -150,7 +150,7 @@
       "sdk_version": "0.3.322",
       "native_version": "2.1.322",
       "wrapper_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
-      "fake_native_sha256": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "platforms": {
         "darwin-arm64": {
           "binary_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
@@ -166,14 +166,13 @@
   ],
   "request": {
     "purpose": "the exact probe invocation this ledger admits, its sources, its artifacts, its runtime identity, its isolation and its bounds; vendor execution stays disabled until an operator authority names these digests",
-    "command": "node crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs --admission crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json --admission-digest <sha256 of the committed admission, supplied outside the ledger> --options crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json --peer <owned-peer-dir> --sdk-version <tuple.sdk_version> --platform <darwin-arm64|linux-x64> --base <0700 base dir> --ownership-nonce <run nonce> --evidence <evidence.json> --bound-ms 120000",
+    "command": "node crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs --admission crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json --options crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json --peer <owned-peer-dir> --sdk-version <tuple.sdk_version> --platform <darwin-arm64|linux-x64> --base <0700 base dir> --ownership-nonce <run nonce> --evidence <evidence.json> --bound-ms 120000",
     "original_command_suffix": "--mode original  (refused unconditionally: no kernel-level confinement is available)",
     "source_digests": {
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json": "e45adf81b19e3fc77f9e14683f447ca69bcd43018395252ee593236cad8e5fa7",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
-      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs": "f2bdac85309ea94a2acfe419fccb916146aa08d5dc659d10f0caff519e4a390c",
-      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
-      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "b518dbe54d7b2fe2ba260a7340d93feecd5dde91c8d60dac4a7d56ecc2b85084",
+      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "adaa94ea868eeff5d64ca7994f795c229a5b740f83b3ac2f647a30eb9596df8a",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "c0e7e406e64efb67a44e094141a526822e6df4f6fe85627085c0ed72c446f3b4",
       "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs": "be6bc2cad7c2c55cb78bc6e5ba5a66981fba09e6f4acab0a057a2818b252bde1"
     },
@@ -262,6 +261,7 @@
       "native_processes": 1,
       "disk_bytes": 8000000,
       "evidence_bytes": 1000000
-    }
+    },
+    "digest_anchor": "the runner compiles in the SHA-256 of this ledger and refuses any ledger that does not match it; no caller argument can supply or change that anchor, and the fixture verifier cross-checks the pinned value"
   }
 }

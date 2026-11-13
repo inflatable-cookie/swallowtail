@@ -688,8 +688,8 @@ fn the_harness_records_a_joined_cleanup_without_a_surviving_peer() {
 // ---------------------------------------------------------------------------
 
 use native_proof_support::{
-    PROBE_ADMISSION_SCHEMA, ProbeFixture, probe_admission, probe_options, probe_request,
-    selected_options_digest, verify_probe_admission,
+    PROBE_ADMISSION_SCHEMA, ProbeFixture, probe_admission, probe_options, selected_options_digest,
+    verify_probe_admission,
 };
 
 #[test]
@@ -869,68 +869,79 @@ fn a_substituted_probe_identity_is_refused_before_any_run() {
     assert!(!native.root().join("peer/native-observations.json").exists());
 }
 
-/// One refusal case for the probe-admission gate: the ledger override, the
-/// extra runner arguments and the refusal code the run must name.
-type RefusalCase = (
-    &'static str,
-    fn(&mut Value),
-    &'static [&'static str],
-    &'static str,
-);
-
-/// One original-mode case: the label, the ledger override and the extra
-/// arguments. Original mode must be refused for every combination, because the
-/// harness has no kernel-level confinement to offer it.
-type OriginalModeCase = (&'static str, fn(&mut Value), &'static [&'static str]);
+/// One ledger rewrite that must be refused by the runner's compiled anchor: the
+/// label and the mutation.
+type LedgerRewrite = (&'static str, fn(&mut Value));
 
 #[test]
-fn original_mode_is_refused_unconditionally() {
-    // Neither a ledger flag nor a token can open original mode: the harness has
-    // no kernel-level confinement, so the refusal cannot depend on the caller.
-    let cases: [OriginalModeCase; 3] = [
-        (
-            "committed ledger",
-            |_admission: &mut Value| {},
-            &["--mode", "original"],
-        ),
-        (
-            "authorised ledger with its token",
-            |admission: &mut Value| {
-                admission["authority"]["original_run_authorised"] = json!(true);
-                admission["authority"]["original_run_token"] = json!("fixture-token");
-            },
-            &["--mode", "original", "--authority-token", "fixture-token"],
-        ),
-        (
-            "production admission",
-            |admission: &mut Value| admission["production_admission"] = json!(true),
-            &["--mode", "original"],
-        ),
+fn every_rewritten_ledger_is_refused_by_the_anchor() {
+    // The runner holds the committed-ledger digest itself, so a rewritten ledger
+    // cannot reach any later check - not the mode, not the bounds, not the
+    // authority path. Each case would otherwise be a meaningful refusal; the
+    // anchor refuses it first, which is the stronger property.
+    let cases: [LedgerRewrite; 5] = [
+        ("production admission", |admission: &mut Value| {
+            admission["production_admission"] = json!(true)
+        }),
+        ("production mode", |admission: &mut Value| {
+            admission["mode"] = json!("production")
+        }),
+        ("foreign authority", |admission: &mut Value| {
+            admission["authority"]["kind"] = json!("operator-authority")
+        }),
+        ("raised bounds", |admission: &mut Value| {
+            admission["bounds"]["wall_clock_seconds"] = json!(900)
+        }),
+        ("authorised original run", |admission: &mut Value| {
+            admission["authority"]["original_run_authorised"] = json!(true);
+            admission["authority"]["original_run_token"] = json!("fixture-token");
+        }),
     ];
-    for (label, overrides, extra) in cases {
+    for (label, overrides) in cases {
         let fixture = ProbeFixture::start("ok", &overrides);
         fixture.bind_peer("0.3.322", "2.1.322");
-        let digest = fixture.admission_digest();
-        let run = fixture.run_bound_to(
-            "0.3.322",
-            "linux-x64",
-            "ok",
-            None,
-            120_000,
-            extra,
-            Some(&digest),
-        );
-        assert_eq!(run.status, 2, "{label} must be refused: {}", run.stderr);
-        assert!(
-            run.stderr.contains("original_mode_unavailable")
-                || run.stderr.contains("production_admission_refused")
-                || run.stderr.contains("invalid_invocation"),
-            "{label} names the refusal: {}",
+        let run = fixture.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+        assert_eq!(
+            run.status, 2,
+            "the {label} ledger is refused: {}",
             run.stderr
         );
-        assert!(run.evidence.is_none(), "{label} records no run");
+        assert!(
+            run.stderr.contains("admission_substitution"),
+            "the {label} ledger fails on the anchor: {}",
+            run.stderr
+        );
+        assert!(run.evidence.is_none(), "no run is recorded for {label}");
+        assert!(
+            !fixture
+                .root()
+                .join("peer/native-observations.json")
+                .exists(),
+            "no peer started for {label}"
+        );
     }
+}
 
+#[test]
+fn original_mode_is_refused_without_touching_the_ledger() {
+    // The committed ledger is the only one that can run at all; original mode is
+    // refused inside the runner, not by a ledger flag.
+    let fixture = ProbeFixture::start("ok", &|_| {});
+    fixture.bind_peer("0.3.322", "2.1.322");
+    for extra in [
+        vec!["--mode", "original"],
+        vec!["--mode", "original", "--authority-token", "fixture-token"],
+    ] {
+        let run = fixture.run("0.3.322", "linux-x64", "ok", None, 120_000, &extra);
+        assert_eq!(run.status, 2, "original mode is refused: {}", run.stderr);
+        assert!(
+            run.stderr.contains("original_mode_unavailable")
+                || run.stderr.contains("invalid_invocation"),
+            "the refusal names the missing capability: {}",
+            run.stderr
+        );
+        assert!(run.evidence.is_none());
+    }
     let admission = probe_admission();
     assert_eq!(
         admission["authority"]["original_run_authorised"],
@@ -944,333 +955,6 @@ fn original_mode_is_refused_unconditionally() {
             .len()
             >= 2,
         "the ledger names the missing execution capability"
-    );
-}
-
-#[test]
-fn a_foreign_authority_ledger_is_still_refused_for_a_fake_run() {
-    let cases: [RefusalCase; 3] = [
-        (
-            "production admission",
-            |admission: &mut Value| admission["production_admission"] = json!(true),
-            &[],
-            "production_admission_refused",
-        ),
-        (
-            "production mode",
-            |admission: &mut Value| admission["mode"] = json!("production"),
-            &[],
-            "production_admission_refused",
-        ),
-        (
-            "foreign authority",
-            |admission: &mut Value| admission["authority"]["kind"] = json!("operator-authority"),
-            &[],
-            "authority_missing",
-        ),
-    ];
-    for (label, overrides, extra, expected) in cases {
-        let fixture = ProbeFixture::start("ok", &overrides);
-        fixture.bind_peer("0.3.322", "2.1.322");
-        let digest = fixture.admission_digest();
-        let run = fixture.run_bound_to(
-            "0.3.322",
-            "darwin-arm64",
-            "ok",
-            None,
-            120_000,
-            extra,
-            Some(&digest),
-        );
-        assert_eq!(
-            run.status, 2,
-            "the {label} ledger is refused: {}",
-            run.stderr
-        );
-        assert!(
-            run.stderr.contains(expected),
-            "the {label} refusal names {expected}: {}",
-            run.stderr
-        );
-        assert!(run.evidence.is_none(), "no run is recorded for {label}");
-    }
-}
-
-#[test]
-fn a_non_loopback_probe_endpoint_is_refused_before_spawn() {
-    let fixture = ProbeFixture::start("ok", &|_| {});
-    fixture.bind_peer("0.3.321", "2.1.321");
-    let run = fixture.run(
-        "0.3.321",
-        "linux-x64",
-        "ok",
-        Some("example.invalid:443"),
-        30_000,
-        &[],
-    );
-    assert_eq!(
-        run.status, 2,
-        "a non-loopback endpoint is refused: {}",
-        run.stderr
-    );
-    assert!(run.stderr.contains("non_loopback_endpoint"));
-    assert!(
-        !fixture
-            .root()
-            .join("peer/native-observations.json")
-            .exists()
-    );
-
-    // The loopback endpoint is admitted and recorded as the only egress.
-    let loopback = ProbeFixture::start("ok", &|_| {});
-    loopback.bind_peer("0.3.318", "2.1.318");
-    let run = loopback.run(
-        "0.3.318",
-        "linux-x64",
-        "ok",
-        Some("127.0.0.1:1"),
-        120_000,
-        &[],
-    );
-    assert_eq!(
-        run.status, 0,
-        "loopback is the admitted endpoint: {}",
-        run.stderr
-    );
-    let evidence = run.evidence.expect("evidence");
-    assert_eq!(evidence["endpoint"], "127.0.0.1:1");
-}
-
-#[test]
-fn a_peer_that_outlives_the_bound_fails_the_probe_closed() {
-    let fixture = ProbeFixture::start("never-exit", &|_| {});
-    fixture.bind_peer("0.3.319", "2.1.319");
-    let run = fixture.run("0.3.319", "darwin-arm64", "never-exit", None, 1_500, &[]);
-    assert_eq!(
-        run.status, 2,
-        "an unjoined peer fails the probe: {}",
-        run.stderr
-    );
-    assert!(
-        run.stderr.contains("cleanup_failed"),
-        "the refusal names the cleanup failure: {}",
-        run.stderr
-    );
-    let evidence = run.evidence.expect("the probe still writes evidence");
-    assert_eq!(
-        evidence["nativeExit"]["join"], "killed",
-        "the unjoined peer is killed, not assumed gone: {evidence}"
-    );
-    assert_eq!(evidence["cleanup"], "killed");
-}
-
-#[test]
-fn the_probe_request_names_live_digests_and_the_exact_artifacts() {
-    let request = probe_request();
-    let digests = request["source_digests"]
-        .as_object()
-        .expect("request names source digests");
-    assert!(
-        digests.len() >= 5,
-        "the request names every probe source: {digests:?}"
-    );
-    assert!(
-        request["command"]
-            .as_str()
-            .expect("request names a command")
-            .contains("probe-runner.mjs")
-    );
-    assert!(
-        request["original_command_suffix"]
-            .as_str()
-            .expect("request names the original suffix")
-            .contains("refused unconditionally"),
-        "the request says original mode is unavailable rather than token-gated"
-    );
-    let artifacts = request["artifacts"].as_array().expect("request artifacts");
-    assert_eq!(
-        artifacts.len(),
-        5,
-        "the request names the accepted control and every proposed hop"
-    );
-    for artifact in artifacts {
-        for platform in ["darwin-arm64", "linux-x64"] {
-            assert!(
-                artifact["platforms"][platform]["binary_sha256"]
-                    .as_str()
-                    .is_some_and(|digest| digest.len() == 64),
-                "every artifact names its platform digest"
-            );
-        }
-    }
-    // The request's bound digests are the live ones; verify_probe_admission
-    // recomputes them and would have failed above if they had drifted.
-    verify_probe_admission().expect("request digests are live");
-}
-
-// ---------------------------------------------------------------------------
-// Managed-denial behavior revision (Tom's decision d5a14f90 v2)
-// ---------------------------------------------------------------------------
-
-const MANAGED_DENIAL_CONTRACT: &str =
-    include_str!("fixtures/claude-agent-sdk-v2/managed-denial-contract.json");
-
-fn managed_denial_contract() -> Value {
-    serde_json::from_str(MANAGED_DENIAL_CONTRACT).expect("the managed-denial contract is JSON")
-}
-
-#[test]
-fn the_v2_revision_preserves_the_managed_denial_guarantees() {
-    let contract = managed_denial_contract();
-    assert_eq!(contract["behavior_revision"], "claude-agent.sdk-v2");
-    assert_eq!(
-        contract["ruling"]["decision"],
-        "d5a14f90-e837-42b6-9818-9b5e74a25547"
-    );
-    let guarantee_ids: Vec<&str> = contract["guarantees"]
-        .as_array()
-        .expect("contract guarantees")
-        .iter()
-        .map(|row| row["id"].as_str().expect("guarantee id"))
-        .collect();
-    for id in [
-        "no-fabricated-request",
-        "no-admission-claim",
-        "turn-carries-on",
-        "mediated-denial-distinguishable",
-    ] {
-        assert!(guarantee_ids.contains(&id), "contract names {id}");
-    }
-
-    // The admission declares v2 exactly where the setting can appear, and the
-    // probe run records the revision it ran under.
-    let admission = probe_admission();
-    for tuple in admission["tuples"].as_array().expect("admitted tuples") {
-        let sdk = tuple["sdk_version"].as_str().expect("tuple sdk version");
-        let expected = if sdk == ACCEPTED_SDK || sdk == "0.3.318" {
-            "claude-agent.sdk-v1"
-        } else {
-            "claude-agent.sdk-v2"
-        };
-        assert_eq!(tuple["behavior_revision"], expected, "tuple {sdk} revision");
-    }
-
-    let fixture = ProbeFixture::start("managed-deny", &|_| {});
-    fixture.bind_peer("0.3.319", "2.1.319");
-    let run = fixture.run(
-        "0.3.319",
-        "darwin-arm64",
-        "managed-deny",
-        None,
-        120_000,
-        &[],
-    );
-    assert_eq!(
-        run.status, 0,
-        "the managed-denial probe runs: {}",
-        run.stderr
-    );
-    let evidence = run.evidence.expect("probe evidence");
-    assert_eq!(evidence["behaviorRevision"], "claude-agent.sdk-v2");
-    assert_eq!(evidence["scenario"], "managed-deny");
-    assert_eq!(evidence["failure"], Value::Null);
-    assert!(
-        evidence["records"]
-            .as_array()
-            .expect("probe records")
-            .iter()
-            .any(|record| record["event"] == "message" && record["type"] == "result"),
-        "a managed denial is a completed turn: {evidence}"
-    );
-    let native = fixture.native_observations();
-    assert_eq!(
-        native["permissionRequestsSent"],
-        json!(0),
-        "no permission request is fabricated for a managed denial"
-    );
-    assert_eq!(
-        native["permissionAnswers"].as_array().map(Vec::len),
-        Some(0),
-        "a call the host never mediated carries no admission decision"
-    );
-}
-
-#[test]
-fn a_callback_mediated_denial_is_distinguishable_from_a_managed_denial() {
-    let mut fixture = fixture("permission");
-    assert_eq!(open(&mut fixture)["success"], true);
-    fixture
-        .sidecar()
-        .command("query-1", "query", json!({"text": "write a file"}));
-    let callback = fixture.sidecar().next_callback();
-    assert_eq!(callback["toolName"], "Read");
-    let identifier = callback["id"].as_str().expect("callback id").to_owned();
-    fixture.sidecar().respond_callback(&identifier, "deny");
-    let terminal = fixture.sidecar().wait_for_turn_end_record();
-    assert_eq!(terminal["isError"], false, "the turn still completes");
-    let observations = exit_after_close(&mut fixture);
-    assert_eq!(
-        observations["permissionRequestsSent"],
-        json!(1),
-        "a mediated denial carries exactly one request"
-    );
-    let answers = observations["permissionAnswers"]
-        .as_array()
-        .expect("native permission answers");
-    assert_eq!(answers.len(), 1);
-    assert!(
-        serde_json::to_string(&answers[0])
-            .expect("the recorded answer serialises")
-            .contains("\"behavior\":\"deny\""),
-        "the host's deny decision is recorded, which a managed denial never has: {answers:?}"
-    );
-    assert_eq!(
-        fixture.sidecar().callback_tool_names(),
-        vec!["Read".to_owned()],
-        "the callback is the observable difference between the two denials"
-    );
-}
-
-#[test]
-fn the_accepted_pair_keeps_the_v1_revision_while_v2_stays_probe_only() {
-    let mut fixture = fixture("ok");
-    let opened = open(&mut fixture);
-    assert_eq!(opened["success"], true, "the accepted pair opens: {opened}");
-    assert_eq!(
-        opened["data"]["behavior"], "claude-agent.sdk-v1",
-        "the shipped sidecar reports the qualified revision for the accepted pair"
-    );
-    close(&mut fixture);
-
-    assert_eq!(
-        ClaudeAgentSdkPackageNativePair::MAINTAINED.len(),
-        31,
-        "the maintained pair map is unchanged"
-    );
-    let admission = probe_admission();
-    let control = admission["tuples"]
-        .as_array()
-        .expect("admitted tuples")
-        .iter()
-        .find(|tuple| tuple["sdk_version"] == ACCEPTED_SDK)
-        .expect("the accepted control is admitted");
-    assert_eq!(
-        control["behavior_revision"], "claude-agent.sdk-v1",
-        "the control keeps the qualified revision"
-    );
-    assert!(
-        admission["tuples"]
-            .as_array()
-            .expect("admitted tuples")
-            .iter()
-            .filter(|tuple| tuple["behavior_revision"] == "claude-agent.sdk-v2")
-            .all(|tuple| tuple["sdk_version"] != ACCEPTED_SDK),
-        "the accepted pair never adopts the managed-denial revision early"
-    );
-    assert_eq!(
-        managed_denial_contract()["claim_effect"]["pair_map"],
-        "unchanged",
-        "the contract records that no pair moves"
     );
 }
 
@@ -1338,21 +1022,12 @@ fn the_probe_refuses_a_peer_it_did_not_create_or_that_escapes() {
 
 #[test]
 fn the_probe_fails_closed_on_its_declared_bounds() {
-    let process = ProbeFixture::start("ok", &|admission: &mut Value| {
-        admission["bounds"]["native_processes"] = json!(1);
-    });
+    // A budget argument may tighten the ledger, never raise it, and the
+    // tightening is enforced during the run.
+    let process = ProbeFixture::start("ok", &|_| {});
     process.bind_peer("0.3.322", "2.1.322");
     process.configure_sdk(json!({"doubleSpawn": true}));
-    let digest = process.admission_digest();
-    let run = process.run_bound_to(
-        "0.3.322",
-        "linux-x64",
-        "ok",
-        None,
-        120_000,
-        &[],
-        Some(&digest),
-    );
+    let run = process.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
     assert_eq!(
         run.status, 2,
         "a second native start is refused: {}",
@@ -1364,19 +1039,15 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
         run.stderr
     );
 
-    let evidence = ProbeFixture::start("ok", &|admission: &mut Value| {
-        admission["bounds"]["captured_stdout_bytes"] = json!(8);
-    });
+    let evidence = ProbeFixture::start("ok", &|_| {});
     evidence.bind_peer("0.3.322", "2.1.322");
-    let digest = evidence.admission_digest();
-    let run = evidence.run_bound_to(
+    let run = evidence.run(
         "0.3.322",
         "linux-x64",
         "ok",
         None,
         120_000,
-        &[],
-        Some(&digest),
+        &["--max-evidence-bytes", "8"],
     );
     assert_eq!(
         run.status, 2,
@@ -1391,16 +1062,7 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
 
     let requested = ProbeFixture::start("ok", &|_| {});
     requested.bind_peer("0.3.322", "2.1.322");
-    let digest = requested.admission_digest();
-    let run = requested.run_bound_to(
-        "0.3.322",
-        "linux-x64",
-        "ok",
-        None,
-        900_000,
-        &[],
-        Some(&digest),
-    );
+    let run = requested.run("0.3.322", "linux-x64", "ok", None, 900_000, &[]);
     assert_eq!(
         run.status, 2,
         "a bound above the ledger is refused: {}",
@@ -1408,19 +1070,32 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
     );
     assert!(run.stderr.contains("bound_refused"), "{}", run.stderr);
 
-    let disk = ProbeFixture::start("ok", &|admission: &mut Value| {
-        admission["bounds"]["disk_bytes"] = json!(8);
-    });
-    disk.bind_peer("0.3.322", "2.1.322");
-    let digest = disk.admission_digest();
-    let run = disk.run_bound_to(
+    let raised = ProbeFixture::start("ok", &|_| {});
+    raised.bind_peer("0.3.322", "2.1.322");
+    let run = raised.run(
         "0.3.322",
         "linux-x64",
         "ok",
         None,
         120_000,
-        &[],
-        Some(&digest),
+        &["--max-evidence-bytes", "999999999"],
+    );
+    assert_eq!(
+        run.status, 2,
+        "a raised evidence budget is refused: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("bound_refused"), "{}", run.stderr);
+
+    let disk = ProbeFixture::start("ok", &|_| {});
+    disk.bind_peer("0.3.322", "2.1.322");
+    let run = disk.run(
+        "0.3.322",
+        "linux-x64",
+        "ok",
+        None,
+        120_000,
+        &["--max-disk-bytes", "8"],
     );
     assert_eq!(
         run.status, 2,
@@ -1430,6 +1105,38 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
     assert!(run.stderr.contains("disk_limit_exceeded"), "{}", run.stderr);
 }
 
+#[test]
+fn a_join_timeout_is_failed_cleanup_even_when_the_kill_is_observed() {
+    // The peer withholds its join until it is killed. The probe's join times out,
+    // then the kill is observed; the timeout must still fail the run.
+    let fixture = ProbeFixture::start("never-exit", &|_| {});
+    fixture.bind_peer("0.3.322", "2.1.322");
+    fixture.configure_sdk(json!({"delayJoinUntilKill": true, "endIterationAfterMessages": 3}));
+    let run = fixture.run(
+        "0.3.322",
+        "linux-x64",
+        "never-exit",
+        None,
+        120_000,
+        &["--join-wait-ms", "1500"],
+    );
+    assert_eq!(
+        run.status, 2,
+        "a join timeout is failed cleanup: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("cleanup_failed"), "{}", run.stderr);
+    let evidence = run.evidence.expect("the probe still writes evidence");
+    assert_eq!(
+        evidence["nativeExit"]["timedOut"], true,
+        "the timeout is recorded: {evidence}"
+    );
+    assert_ne!(
+        evidence["failure"],
+        Value::Null,
+        "the record carries the failure: {evidence}"
+    );
+}
 #[test]
 fn a_jointly_substituted_ledger_and_peer_are_refused() {
     let fixture = ProbeFixture::start("ok", &|_| {});

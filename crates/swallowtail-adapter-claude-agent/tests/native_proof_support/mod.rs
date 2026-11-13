@@ -795,6 +795,17 @@ pub fn verify_probe_admission() -> Result<(), String> {
             }
         }
     }
+    // The runner holds the ledger's digest as a compiled-in anchor, so the two
+    // are checked against each other here rather than by a mutual hash.
+    let pinned = format!(
+        "const COMMITTED_ADMISSION_SHA256 = \"{}\";",
+        sha256_hex(PROBE_ADMISSION.as_bytes())
+    );
+    if !PROBE_RUNNER.contains(&pinned) {
+        return Err(
+            "probe runner does not pin the committed admission digest; re-pin it".to_owned(),
+        );
+    }
     // The request must name live digests, so a probe source edit cannot slip
     // into an execution request unnoticed.
     let digests = admission["request"]["source_digests"]
@@ -807,9 +818,6 @@ pub fn verify_probe_admission() -> Result<(), String> {
             }
             "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json" => {
                 sha256_hex(PROBE_OPTIONS.as_bytes())
-            }
-            "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs" => {
-                sha256_hex(PROBE_RUNNER.as_bytes())
             }
             "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs" => {
                 sha256_hex(PROBE_FAKE_NATIVE.as_bytes())
@@ -933,22 +941,6 @@ impl ProbeFixture {
 
     /// Points the peer at one tuple's identity. Called separately so a test can
     /// substitute a version without touching the admitted ledger.
-    /// The SHA-256 of this fixture's admission copy. A test that deliberately
-    /// rewrites the ledger must bind the run to its own copy; every other run
-    /// binds the committed bytes and therefore refuses a substitution.
-    pub fn admission_digest(&self) -> String {
-        use sha2::{Digest, Sha256};
-        let mut hex = String::with_capacity(64);
-        for byte in Sha256::digest(
-            std::fs::read(self.root.join("probe-admission.json"))
-                .expect("admission copy is readable"),
-        ) {
-            use std::fmt::Write as _;
-            write!(&mut hex, "{byte:02x}").expect("writing into a String cannot fail");
-        }
-        hex
-    }
-
     /// Writes the peer SDK's misbehaviour knobs for a refusal scenario.
     pub fn configure_sdk(&self, config: Value) {
         std::fs::write(
@@ -1030,6 +1022,8 @@ impl ProbeFixture {
         .expect("peer native manifest is written");
     }
 
+    /// Runs the probe. The runner itself holds the committed-ledger digest, so
+    /// no caller argument can bind a substituted ledger.
     #[allow(clippy::too_many_arguments)]
     pub fn run(
         &self,
@@ -1040,43 +1034,6 @@ impl ProbeFixture {
         bound_ms: u64,
         extra: &[&str],
     ) -> ProbeRun {
-        self.run_bound_to(
-            sdk_version,
-            platform,
-            scenario,
-            endpoint,
-            bound_ms,
-            extra,
-            None,
-        )
-    }
-
-    /// Runs the probe with an explicit admission digest. `None` binds the run to
-    /// the committed ledger bytes, which is what a real caller does; `Some` is
-    /// only for a test that deliberately deviates from the committed ledger.
-    #[allow(clippy::too_many_arguments)]
-    pub fn run_bound_to(
-        &self,
-        sdk_version: &str,
-        platform: &str,
-        scenario: &str,
-        endpoint: Option<&str>,
-        bound_ms: u64,
-        extra: &[&str],
-        admission_digest: Option<&str>,
-    ) -> ProbeRun {
-        let digest = match admission_digest {
-            Some(value) => value.to_owned(),
-            None => {
-                use sha2::{Digest, Sha256};
-                let mut hex = String::with_capacity(64);
-                for byte in Sha256::digest(PROBE_ADMISSION.as_bytes()) {
-                    use std::fmt::Write as _;
-                    write!(&mut hex, "{byte:02x}").expect("writing into a String cannot fail");
-                }
-                hex
-            }
-        };
         let evidence = self.root.join("evidence.json");
         let node = std::env::var("SWALLOWTAIL_CLAUDE_AGENT_SDK_NODE")
             .unwrap_or_else(|_| "node".to_owned());
@@ -1087,8 +1044,6 @@ impl ProbeFixture {
             ))
             .arg("--admission")
             .arg(self.root.join("probe-admission.json"))
-            .arg("--admission-digest")
-            .arg(&digest)
             .arg("--options")
             .arg(self.root.join("probe-options.json"))
             .arg("--peer")
@@ -1165,11 +1120,4 @@ impl Drop for ProbeFixture {
             let _ = std::fs::remove_dir_all(&self.root);
         }
     }
-}
-
-/// The execution request a reviewer and the operator read before any vendor run:
-/// the command, the bound digests, the artifact set, the runtime identity, the
-/// isolation and the finite bounds.
-pub fn probe_request() -> Value {
-    probe_admission()["request"].clone()
 }

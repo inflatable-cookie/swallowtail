@@ -389,7 +389,15 @@ async function main() {
   // could still emit a frame has settled.
   for (;;) {
     const message = await nextMessage();
-    if (message === undefined) break;
+    if (message === undefined) {
+      if (SCENARIO === "never-exit") {
+        // Keep serving frames that a handler enqueues after stdin closed, so a
+        // peer that stays alive still reports its whole turn.
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        continue;
+      }
+      break;
+    }
     send(message);
   }
   for (const message of queue) send(message);

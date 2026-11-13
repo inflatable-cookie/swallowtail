@@ -180,10 +180,11 @@ native under this sidecar's options. The source settles part of it:
   bytes.
 
 So the honest statement is: **the setting is not excluded by anything the
-sidecar controls, its honour and its bypass of `canUseTool` are native behavior,
-and a product ruling is still needed.** The options Q-009 names — preserve the
-managed denial under a distinct SDK behavior revision, or refuse an affected
-pair — remain open with their gate owner.
+sidecar controls, and its honour and its bypass of `canUseTool` are native
+behavior.** The direction is settled: Tom's decision `d5a14f90` v2 preserves the
+managed denial under `claude-agent.sdk-v2` (see below). What remains open is not
+the policy but the evidence: whether a real native honours the administrator
+tier, which needs the original-artifact run that is still unauthorised.
 
 One related fact belongs here because it constrains any proof: the SDK
 description says allow rules, the permission mode, the auto-mode classifier and
@@ -312,6 +313,31 @@ Two more review findings are fixed and pinned:
   native pids. A test runs the peer that never exits and asserts, with `kill -0`,
   that its recorded pid is gone after the probe.
 
+### The ledger anchor and the join verdict
+
+The review found the previous binding circular: the digest was a caller argument,
+so a caller could point the runner at its own substituted ledger and peer. The
+anchor now lives in the runner source:
+
+- `probe-runner.mjs` compiles in the SHA-256 of the committed ledger and refuses
+  any ledger whose bytes do not match it (`admission_substitution`). No argument
+  can supply or change it, and the ledger no longer hashes the runner, so the
+  two are cross-checked rather than mutually hashed: the fixture verifier
+  asserts the pin equals the committed bytes.
+- Because the admission carries the peer SDK digest, the tuple digests and the
+  option surface, a ledger and a peer rewritten to agree with each other still
+  fail before any module is imported.
+- A caller may only *tighten* a budget (`--bound-ms`, `--max-evidence-bytes`,
+  `--max-disk-bytes`); raising one past the ledger is refused, so the tests that
+  exercise the limits do not need to rewrite the ledger.
+
+The join verdict was also unsound: a timed-out join could fall through to a
+successful run. Now `settle` marks the timeout, `joinedCleanly` requires both an
+observed exit and no timeout, and the verdict is computed before the evidence is
+written so the record carries the failure. A regression runs the peer whose join
+is withheld until it is killed: the timeout, the observed kill and the failed
+cleanup are all recorded.
+
 ### Fixture teardown
 
 Both fixtures remove only a directory they created: a direct child of the
@@ -415,8 +441,8 @@ produces. Nothing in this task widened the map.
 
 ## Sources
 
-- [Q-009](../knowledge/questions.md) (the three residuals and the two open
-  gates)
+- [Q-009](../knowledge/questions.md) (the closed residuals, the answered
+  permission direction and the open native-evidence and execution gates)
 - [Research 480](./480-claude-agent-sdk-0-3-322-identity.md) (accepted corpus)
 - [Research 472](./472-claude-agent-sdk-0-3-317-qualification.md) (accepted base)
 - [`0.3.322` fixture](../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.322/README.md)

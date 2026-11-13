@@ -71,4 +71,10 @@ digest out of band, so a ledger and peer substituted together are refused as
 through a kill-and-observe path that retries with SIGKILL and records the native
 pids, so a timed-out join cannot leave a child alive. Q-009's decision-tree item
 is rewritten as answered rather than an open choice.
+Fourth review correction: the runner compiles in the committed ledger digest and
+refuses any other ledger, so a caller can no longer substitute a ledger and a
+peer together; budget arguments may only tighten the ledger; and a join timeout
+now always fails the run, with the verdict computed before the evidence so the
+record carries it. Research 482 and Q-009 are reconciled with the settled
+permission direction.
 

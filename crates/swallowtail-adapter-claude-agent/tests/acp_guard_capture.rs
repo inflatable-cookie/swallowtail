@@ -361,7 +361,7 @@ fn bootstrap_does_not_spend_provider_stdin_budget() {
 #[test]
 fn trusted_runtime_custody_detects_drift_replacement_and_revocation() {
     use std::io::Write;
-    use std::os::unix::fs::{OpenOptionsExt, symlink};
+    use std::os::unix::fs::{OpenOptionsExt, PermissionsExt, symlink};
     let root = fixture();
     let runtime = root.join("runtime");
     let mut fixture = std::fs::OpenOptions::new()
@@ -378,6 +378,11 @@ fn trusted_runtime_custody_detects_drift_replacement_and_revocation() {
     let held = LocalTrustedRuntime::capture(&runtime, digest).expect("host-owned runtime");
     assert_eq!(held.digest(), &digest);
     held.verify().expect("unchanged runtime");
+    std::fs::set_permissions(&runtime, std::fs::Permissions::from_mode(0o720))
+        .expect("fixture permissions");
+    assert!(held.verify().is_err(), "group-writable runtime is refused");
+    std::fs::set_permissions(&runtime, std::fs::Permissions::from_mode(0o700))
+        .expect("restore fixture permissions");
     assert!(
         held.verify_launch(&LocalExecutableLaunch::new(&runtime))
             .is_err()

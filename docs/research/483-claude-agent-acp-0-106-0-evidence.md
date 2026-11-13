@@ -489,11 +489,17 @@ recipe from this held runtime and reject a revoked runtime; separate fixture
 tests exercise mutation, path replacement, links and revocation. Candidate
 launch verification also compares the host-held runtime, startup filter and
 exact recipe prefix; a substituted preload prefix is refused by the fake.
-This is one
-host building block, not a registered checked grant: it does not enforce the
-trusted-host precondition between its check and path-based spawn, identify the
-selected official graph, or protect CommonJS, builtin, native or worker
-resolution. The real local process service still refuses checked launches.
+The ordinary candidate start compares the pinned runtime digest and exact
+prefix, then holds its custody lock through spawn; revocation takes the same
+lock. Runtime files owned by another unprivileged user, group- or world-writable
+files, non-executables and links are refused. The host must still ensure the
+ancestor directories and loaded interpreter dependencies are under its control;
+this helper does not verify that precondition. The fake prepared driver
+exercises the candidate host method. This remains a
+building block, not a registered checked grant: it depends on trusted-host
+protection of the runtime path, does not identify the selected official graph,
+and does not protect CommonJS, builtin, native or worker resolution. The real
+local process service still refuses checked launches.
 The earlier conditional statement that the operator's custody choice is
 pending is superseded; original/native proof and separate execution authority
 remain open.

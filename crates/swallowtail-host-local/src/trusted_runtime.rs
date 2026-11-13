@@ -41,7 +41,7 @@ impl LocalTrustedRuntime {
         }
         let mut file = open_no_follow(path)?;
         let metadata = file.metadata()?;
-        if !metadata.is_file() || !executable(&metadata) || metadata.len() > MAX_RUNTIME {
+        if !metadata.is_file() || !trusted_file(&metadata) || metadata.len() > MAX_RUNTIME {
             return Err(invalid("invalid runtime file"));
         }
         if digest_file(&mut file)? != digest {
@@ -61,24 +61,28 @@ impl LocalTrustedRuntime {
     ///
     /// This does not itself spawn a process or close the trusted-host race.
     pub fn verify(&self) -> io::Result<()> {
+        let mut held = self
+            .inner
+            .file
+            .lock()
+            .map_err(|_| invalid("runtime custody unavailable"))?;
+        self.verify_held(&mut held)
+    }
+
+    fn verify_held(&self, held: &mut File) -> io::Result<()> {
         if self.inner.revoked.load(Ordering::Acquire) {
             return Err(invalid("runtime custody revoked"));
         }
         if self.inner.path.canonicalize()? != self.inner.path {
             return Err(invalid("runtime path is not canonical"));
         }
-        let mut held = self
-            .inner
-            .file
-            .lock()
-            .map_err(|_| invalid("runtime custody unavailable"))?;
         let current = open_no_follow(&self.inner.path)?;
         let held_metadata = held.metadata()?;
         let current_metadata = current.metadata()?;
-        if !executable(&held_metadata)
-            || !executable(&current_metadata)
+        if !trusted_file(&held_metadata)
+            || !trusted_file(&current_metadata)
             || !same_file(&held_metadata, &current_metadata)
-            || digest_file(&mut held)? != self.inner.digest
+            || digest_file(held)? != self.inner.digest
         {
             return Err(invalid("runtime custody changed"));
         }
@@ -97,8 +101,30 @@ impl LocalTrustedRuntime {
         self.verify()
     }
 
+    pub(crate) fn during_spawn<T>(
+        &self,
+        launch: &crate::LocalExecutableLaunch,
+        spawn: impl FnOnce() -> T,
+    ) -> io::Result<T> {
+        if launch.program() != self.inner.path || !launch.rejects_node_startup_environment() {
+            return Err(invalid("runtime launch mismatch"));
+        }
+        let mut held = self
+            .inner
+            .file
+            .lock()
+            .map_err(|_| invalid("runtime custody unavailable"))?;
+        self.verify_held(&mut held)?;
+        Ok(spawn())
+    }
+
     /// Revokes every clone of this host-held identity.
     pub fn revoke(&self) {
+        let _held = self
+            .inner
+            .file
+            .lock()
+            .unwrap_or_else(|error| error.into_inner());
         self.inner.revoked.store(true, Ordering::Release);
     }
 
@@ -159,11 +185,14 @@ fn same_file(_: &std::fs::Metadata, _: &std::fs::Metadata) -> bool {
 }
 
 #[cfg(unix)]
-fn executable(metadata: &std::fs::Metadata) -> bool {
-    use std::os::unix::fs::PermissionsExt;
-    metadata.permissions().mode() & 0o111 != 0
+fn trusted_file(metadata: &std::fs::Metadata) -> bool {
+    use std::os::unix::fs::MetadataExt;
+    let mode = metadata.mode();
+    (metadata.uid() == 0 || metadata.uid() == nix::unistd::geteuid().as_raw())
+        && mode & 0o111 != 0
+        && mode & 0o022 == 0
 }
 #[cfg(not(unix))]
-fn executable(_: &std::fs::Metadata) -> bool {
+fn trusted_file(_: &std::fs::Metadata) -> bool {
     false
 }

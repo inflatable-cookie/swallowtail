@@ -382,6 +382,7 @@ pub struct LocalCapturedNodeRecipe {
     arguments: Vec<std::ffi::OsString>,
     bootstrap: Arc<[u8]>,
     fingerprint: LocalCapturedLaunchFingerprint,
+    runtime_digest: [u8; 32],
 }
 
 impl LocalCapturedNodeRecipe {
@@ -465,6 +466,7 @@ impl LocalCapturedNodeRecipe {
             arguments,
             bootstrap: Arc::from(bootstrap),
             fingerprint,
+            runtime_digest: runtime,
         })
     }
 
@@ -488,7 +490,7 @@ impl LocalCapturedNodeRecipe {
         launch: &crate::LocalExecutableLaunch,
     ) -> io::Result<()> {
         runtime.verify_launch(launch)?;
-        if launch.prefix_arguments() != self.arguments {
+        if runtime.digest() != &self.runtime_digest || launch.prefix_arguments() != self.arguments {
             return Err(invalid("runtime prefix mismatch"));
         }
         Ok(())

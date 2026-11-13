@@ -135,13 +135,23 @@ impl ProcessService for FakeCheckedChild {
         }
         self.checked.fetch_add(1, Ordering::SeqCst);
         let local = self.local.clone();
-        let bootstrap = Arc::clone(&self.bootstrap);
+        let runtime = self.runtime.clone();
+        let graph = self.graph.clone();
         Box::pin(async move {
+            let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
+                &graph,
+                CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+                [1; 32],
+                &runtime,
+                [5; 32],
+            )
+            .map_err(|_| Self::denied())?;
             local
-                .start_with_bootstrap(
+                .start_trusted_candidate(
                     scope,
                     request,
-                    &bootstrap,
+                    &runtime,
+                    &recipe,
                     std::time::Duration::from_secs(5),
                 )
                 .await
@@ -271,6 +281,19 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
     assert_eq!(constrained.checked.load(Ordering::SeqCst), 1);
     assert_eq!(constrained.ordinary.load(Ordering::SeqCst), 0);
     let fake = fake_child(&root, graph);
+    let wrong_runtime = LocalCapturedNodeRecipe::new(
+        &fake.graph,
+        CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("candidate");
+    assert!(
+        wrong_runtime
+            .verify_trusted_launch(&fake.runtime, &fake.launch)
+            .is_err()
+    );
     let mut substituted = fake.clone();
     substituted.bootstrap = Arc::from(b"substituted bootstrap".as_slice());
     let substituted_request = ProcessRequest::new(

@@ -375,6 +375,29 @@ fn node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before
 }
 
 #[test]
+fn checked_launch_without_host_custody_refuses_before_ordinary_spawn() {
+    use swallowtail_runtime::{CheckedProcessRef, ProcessService, ScopeId};
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(
+            executable.clone(),
+            std::env::current_exe().expect("fixture executable"),
+        )
+        .build();
+    let scope = ScopeId::new("checked-fixture").expect("scope");
+    let binding = CheckedProcessRef::new("unissued-private-binding").expect("binding");
+    let request = ProcessRequest::new(executable).with_arguments(fixture_arguments());
+    assert_failure_code(
+        block_on(host.validate_checked(scope.clone(), binding.clone(), request.clone())),
+        "swallowtail.process.checked_binding_unavailable",
+    );
+    assert_failure_code(
+        block_on(host.start_checked(scope, binding, request)),
+        "swallowtail.process.checked_binding_unavailable",
+    );
+}
+
+#[test]
 fn bounded_stdio_round_trip_keeps_payloads_out_of_formatting() {
     let resource_directory = temporary_resource();
     std::fs::write(resource_directory.join("fixture-marker"), b"marker")

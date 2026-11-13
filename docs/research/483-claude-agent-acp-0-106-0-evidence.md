@@ -506,8 +506,93 @@ bootstrap now uses synchronous hooks and a fake explicitly admitted
 `node:module` edge to serve nested CommonJS bytes after source replacement.
 This candidate graph is caller-supplied, not an official closure or host
 attestation; direct builtin access and runtime dependencies remain unbounded.
-The real
-local process service still refuses checked launches.
+At that increment the real local process service still refused checked launches.
 The earlier conditional statement that the operator's custody choice is
 pending is superseded; original/native proof and separate execution authority
 remain open.
+
+## Local checked registration and remaining graph gate
+
+The local process service now implements checked preflight and start for
+explicit host registrations. A registration binds an independently approved
+compound fingerprint, one executable, the immutable captured recipe, exact
+allowed argument vectors and a revocable runtime pin. Both checked operations
+resolve that registration. Start holds the registration and runtime custody
+locks across synchronous spawn; neither lock crosses bootstrap suspension.
+Unknown bindings, target/argument substitution, a changed prefix, unsafe
+startup environment, changed runtime dependencies and revoked custody refuse
+before spawn. Ordinary start refuses a registered checked executable. Bootstrap
+failure stops and joins the owned process; existing bootstrap cancellation and
+descendant tests remain covering proof.
+
+`LocalTrustedRuntime::capture_with_dependencies` pins the host-selected
+non-system interpreter files and binds their exact paths and digests into its
+identity. Completeness, system-loader custody and stability through spawn are
+explicit trusted-host preconditions. This is not dependency discovery or
+same-user-resistant execution. Root-owned sticky temporary ancestors are
+accepted with their metadata recorded; writable non-sticky ancestors refuse.
+The prepared integration now uses the production local checked service rather
+than implementing acceptance in a fake `ProcessService`.
+
+The production guarded factory now captures the complete official per-hop
+entry/import closure:242–287 sources, including statically linked v2 modules
+without claiming v2 support. The frozen syntax inventory and package exports
+independently reconstruct each manifest with `build-claude-acp-guard-graphs.py
+--check`; missing/extra files, formats, hashes and edges fail exact comparison.
+The source reader can regenerate the same manifests from verified archives
+without executing any vendor source. Native resolver identities remain bound
+separately for Darwin arm64 and Linux x64.
+
+The synchronous loader serves captured ESM, CommonJS and JSON. Its
+`node:module` facade exposes only caller-bound `createRequire` and resolution;
+raw caches/hooks and foreign parents refuse. Child creation accepts only the
+held exact native, plus the exact root-owned `ps` binary for the session-index
+caller and its bounded PID/start-time query. It rechecks source/ancestor
+identity at use. Startup disables addons and string code, direct builtin access
+refuses, and workers/unknown imports are not admitted. Other reviewed builtins
+retain their normal capability under the trusted host; this is no general
+JavaScript sandbox. Frozen SDK `Function` schema fast paths require original
+compatibility proof with string compilation disabled; fake success cannot
+supply that conclusion.
+
+Real prepared-driver fake tests now use the production checked service and
+manifest reader, including ESM/CommonJS/JSON, native resolution/execution of an
+owned shell fake, caller-bound `ps`, source replacement after capture, absent
+permission callback with denied activity followed by continued output, and
+joined session cleanup. These establish integration only. They execute no
+original ACP, SDK or native source and qualify no newer point.
+
+`guarded-probe-proposal.json` retains all sixteen route/native tuples and exact
+Node22.23.2 archive/executable identities. It adds a runnable, separately scoped
+idle-class component stage: a first-party Rust checked-launch owner under a
+Seatbelt read whitelist and deny-all network policy. The owner verifies
+kernel-denied file/network counterexamples before launch. A deliberately
+unguarded control must arm/fire; the production guard must veto both while
+preserving settings. Controlled clocks exceed the finite timer maximum;
+new/load/resume are explicitly modeled contexts, not original ACP sessions.
+Owned compact promises, child exit and watchdog join are observed.
+
+Only repository-owned fake component execution is authorized in this PR.
+Original mode requires exact source, plan, owner executable, Node and class
+identities approved separately. It executes only the idle class, no ACP
+entrypoint, SDK/native/provider. Linux component execution currently refuses
+without admitted confinement integration. Full native permission and lifecycle
+proof still needs a separate confined driver and genuine administrator fixture
+environment; task234's authority does not transfer. These are separate proof
+stages, not a completed qualification. Contract029 keeps0.100.0; Contract061
+cannot project the guarded permission revision as qualified until the actual
+route-specific proof passes.
+
+Current-host component admission refused `untrusted runtime ancestor` for the
+Homebrew Node26.11.0 closure under `/opt/homebrew`. Its96 non-system libraries
+were enumerated; raising the finite descriptor budget did not waive ancestry
+custody. The positive confined component witness has not run. Required next
+input: an owner-provisioned exact Node22.23.2 closure with trusted ancestors and
+stable loader custody, then separate exact original-class execution authority.
+No host permissions, installations or runtime sources were changed to bypass
+this refusal. The runnable owner fails closed on this environment.
+
+Official npm metadata rechecked2026-11-13T12:58:45Z: latest remains0.106.0;
+the complete stable set above0.100.0 is unchanged. Canonical pushed main
+`1cbb29f459950a76fb9104fb10947fd87694e483` adds the separate SDK fixture workflow
+registration, with no ACP authority or proof transfer.

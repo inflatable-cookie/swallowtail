@@ -1,0 +1,608 @@
+{
+  "0.101.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./*": "./*"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.101.0"
+    },
+    "sha256": "598d76efac1eb9935ed0276227bf078dcbea653133a3f66f3edd46239dedab28"
+  },
+  "0.101.1": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./*": "./*"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.101.1"
+    },
+    "sha256": "92ed17b89d04eca7508bf02f21c764987f84096f5b2341b40294e85602a499de"
+  },
+  "0.102.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./*": "./*"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.102.0"
+    },
+    "sha256": "f9a10e056ff8efc5382562b5184aa5f205d634f34dbf834385cad256af7ed117"
+  },
+  "0.103.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.103.0"
+    },
+    "sha256": "846e671c1265c90f8526ed80a7bafaafb34d842345b4c77862a58f75cfbee7ef"
+  },
+  "0.104.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.104.0"
+    },
+    "sha256": "196757fa9f3cbaf862f14dac47d49cf2d7cac1fea93c3ed65f3e1684cdc065a9"
+  },
+  "0.104.1": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.104.1"
+    },
+    "sha256": "34dacb7177d9f4b065e8e6861e079c7ffe3dbce6ea6516a035bb7771652c6da8"
+  },
+  "0.105.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.105.0"
+    },
+    "sha256": "889ba2fa19f8e95446bb3f4c3c29a41f11f8b25946dd9d1548eb696293d66042"
+  },
+  "0.106.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": "./dist/lib.js",
+          "types": "./dist/lib.d.ts"
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "dist/lib.js",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "type": "module",
+      "version": "0.106.0"
+    },
+    "sha256": "7c5c49993c5b8413ea0fcb9e95cd6e6aaf374197939af191c5d38e976dbf9478"
+  },
+  "_agentclientprotocol_sdk_2.4.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./dist/v1/stable/acp.js",
+          "import": "./dist/v1/stable/acp.js",
+          "types": "./dist/v1/stable/acp.d.ts"
+        },
+        "./experimental/http-client": {
+          "default": "./dist/transports/http-stream.js",
+          "import": "./dist/transports/http-stream.js",
+          "types": "./dist/transports/http-stream.d.ts"
+        },
+        "./experimental/mcp-http": {
+          "default": "./dist/mcp/http.js",
+          "import": "./dist/mcp/http.js",
+          "types": "./dist/mcp/http.d.ts"
+        },
+        "./experimental/mcp-server": {
+          "default": "./dist/mcp/mcp-server.js",
+          "import": "./dist/mcp/mcp-server.js",
+          "types": "./dist/mcp/mcp-server.d.ts"
+        },
+        "./experimental/nes": {
+          "default": "./dist/nes/acp.js",
+          "import": "./dist/nes/acp.js",
+          "types": "./dist/nes/acp.d.ts"
+        },
+        "./experimental/node": {
+          "default": "./dist/transports/node-adapter.js",
+          "import": "./dist/transports/node-adapter.js",
+          "types": "./dist/transports/node-adapter.d.ts"
+        },
+        "./experimental/server": {
+          "default": "./dist/transports/server.js",
+          "import": "./dist/transports/server.js",
+          "types": "./dist/transports/server.d.ts"
+        },
+        "./experimental/v2": {
+          "default": "./dist/v2/stable/acp.js",
+          "import": "./dist/v2/stable/acp.js",
+          "types": "./dist/v2/stable/acp.d.ts"
+        },
+        "./experimental/v2/unstable": {
+          "default": "./dist/v2/unstable/acp.js",
+          "import": "./dist/v2/unstable/acp.js",
+          "types": "./dist/v2/unstable/acp.d.ts"
+        },
+        "./experimental/ws-client": {
+          "default": "./dist/transports/ws-stream.js",
+          "import": "./dist/transports/ws-stream.js",
+          "types": "./dist/transports/ws-stream.d.ts"
+        },
+        "./schema/v1/schema.json": "./schema/v1/schema.json",
+        "./schema/v1/schema.unstable.json": "./schema/v1/schema.unstable.json",
+        "./schema/v2/schema.json": "./schema/v2/schema.json",
+        "./schema/v2/schema.unstable.json": "./schema/v2/schema.unstable.json",
+        "./unstable": {
+          "default": "./dist/v1/unstable/acp.js",
+          "import": "./dist/v1/unstable/acp.js",
+          "types": "./dist/v1/unstable/acp.d.ts"
+        }
+      },
+      "main": "dist/v1/stable/acp.js",
+      "name": "@agentclientprotocol/sdk",
+      "type": "module",
+      "version": "2.4.0"
+    },
+    "sha256": "039d0c30f8af1b90189be4ce83024de6b6c54ab05cbea9eaf39802ffc61d0862"
+  },
+  "_agentclientprotocol_sdk_2.5.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./dist/v1/stable/acp.js",
+          "import": "./dist/v1/stable/acp.js",
+          "types": "./dist/v1/stable/acp.d.ts"
+        },
+        "./experimental/http-client": {
+          "default": "./dist/transports/http-stream.js",
+          "import": "./dist/transports/http-stream.js",
+          "types": "./dist/transports/http-stream.d.ts"
+        },
+        "./experimental/mcp-http": {
+          "default": "./dist/mcp/http.js",
+          "import": "./dist/mcp/http.js",
+          "types": "./dist/mcp/http.d.ts"
+        },
+        "./experimental/mcp-server": {
+          "default": "./dist/mcp/mcp-server.js",
+          "import": "./dist/mcp/mcp-server.js",
+          "types": "./dist/mcp/mcp-server.d.ts"
+        },
+        "./experimental/nes": {
+          "default": "./dist/nes/acp.js",
+          "import": "./dist/nes/acp.js",
+          "types": "./dist/nes/acp.d.ts"
+        },
+        "./experimental/node": {
+          "default": "./dist/transports/node-adapter.js",
+          "import": "./dist/transports/node-adapter.js",
+          "types": "./dist/transports/node-adapter.d.ts"
+        },
+        "./experimental/server": {
+          "default": "./dist/transports/server.js",
+          "import": "./dist/transports/server.js",
+          "types": "./dist/transports/server.d.ts"
+        },
+        "./experimental/v2": {
+          "default": "./dist/v2/stable/acp.js",
+          "import": "./dist/v2/stable/acp.js",
+          "types": "./dist/v2/stable/acp.d.ts"
+        },
+        "./experimental/v2/unstable": {
+          "default": "./dist/v2/unstable/acp.js",
+          "import": "./dist/v2/unstable/acp.js",
+          "types": "./dist/v2/unstable/acp.d.ts"
+        },
+        "./experimental/ws-client": {
+          "default": "./dist/transports/ws-stream.js",
+          "import": "./dist/transports/ws-stream.js",
+          "types": "./dist/transports/ws-stream.d.ts"
+        },
+        "./schema/v1/schema.json": "./schema/v1/schema.json",
+        "./schema/v1/schema.unstable.json": "./schema/v1/schema.unstable.json",
+        "./schema/v2/schema.json": "./schema/v2/schema.json",
+        "./schema/v2/schema.unstable.json": "./schema/v2/schema.unstable.json",
+        "./unstable": {
+          "default": "./dist/v1/unstable/acp.js",
+          "import": "./dist/v1/unstable/acp.js",
+          "types": "./dist/v1/unstable/acp.d.ts"
+        }
+      },
+      "main": "dist/v1/stable/acp.js",
+      "name": "@agentclientprotocol/sdk",
+      "type": "module",
+      "version": "2.5.0"
+    },
+    "sha256": "02e4b246269c0732affe8c25bd60c1b3a431968b90cea75e1bea4349632cb2c9"
+  },
+  "_agentclientprotocol_sdk_2.6.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./dist/v1/stable/acp.js",
+          "import": "./dist/v1/stable/acp.js",
+          "types": "./dist/v1/stable/acp.d.ts"
+        },
+        "./experimental/http-client": {
+          "default": "./dist/transports/http-stream.js",
+          "import": "./dist/transports/http-stream.js",
+          "types": "./dist/transports/http-stream.d.ts"
+        },
+        "./experimental/mcp-http": {
+          "default": "./dist/mcp/http.js",
+          "import": "./dist/mcp/http.js",
+          "types": "./dist/mcp/http.d.ts"
+        },
+        "./experimental/mcp-server": {
+          "default": "./dist/mcp/mcp-server.js",
+          "import": "./dist/mcp/mcp-server.js",
+          "types": "./dist/mcp/mcp-server.d.ts"
+        },
+        "./experimental/nes": {
+          "default": "./dist/nes/acp.js",
+          "import": "./dist/nes/acp.js",
+          "types": "./dist/nes/acp.d.ts"
+        },
+        "./experimental/node": {
+          "default": "./dist/transports/node-adapter.js",
+          "import": "./dist/transports/node-adapter.js",
+          "types": "./dist/transports/node-adapter.d.ts"
+        },
+        "./experimental/server": {
+          "default": "./dist/transports/server.js",
+          "import": "./dist/transports/server.js",
+          "types": "./dist/transports/server.d.ts"
+        },
+        "./experimental/v2": {
+          "default": "./dist/v2/stable/acp.js",
+          "import": "./dist/v2/stable/acp.js",
+          "types": "./dist/v2/stable/acp.d.ts"
+        },
+        "./experimental/v2/unstable": {
+          "default": "./dist/v2/unstable/acp.js",
+          "import": "./dist/v2/unstable/acp.js",
+          "types": "./dist/v2/unstable/acp.d.ts"
+        },
+        "./experimental/ws-client": {
+          "default": "./dist/transports/ws-stream.js",
+          "import": "./dist/transports/ws-stream.js",
+          "types": "./dist/transports/ws-stream.d.ts"
+        },
+        "./schema/v1/schema.json": "./schema/v1/schema.json",
+        "./schema/v1/schema.unstable.json": "./schema/v1/schema.unstable.json",
+        "./schema/v2/schema.json": "./schema/v2/schema.json",
+        "./schema/v2/schema.unstable.json": "./schema/v2/schema.unstable.json",
+        "./unstable": {
+          "default": "./dist/v1/unstable/acp.js",
+          "import": "./dist/v1/unstable/acp.js",
+          "types": "./dist/v1/unstable/acp.d.ts"
+        }
+      },
+      "main": "dist/v1/stable/acp.js",
+      "name": "@agentclientprotocol/sdk",
+      "type": "module",
+      "version": "2.6.0"
+    },
+    "sha256": "c9488d4a2d0df431c94732fbcf97a02d7c2a030ab0bef8a5a46c4520d70efc60"
+  },
+  "_anthropic-ai_claude-agent-sdk_0.3.318": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./sdk.mjs",
+          "types": "./sdk.d.ts"
+        },
+        "./bridge": {
+          "default": "./bridge.mjs",
+          "types": "./bridge.d.ts"
+        },
+        "./browser": {
+          "default": "./browser-sdk.js",
+          "types": "./browser-sdk.d.ts"
+        },
+        "./core": {
+          "default": "./core.mjs",
+          "types": "./core.d.ts"
+        },
+        "./extract": {
+          "default": "./extractFromBunfs.js",
+          "types": "./extractFromBunfs.d.ts"
+        },
+        "./sdk-tools": {
+          "types": "./sdk-tools.d.ts"
+        },
+        "./sdk-tools.js": {
+          "types": "./sdk-tools.d.ts"
+        }
+      },
+      "main": "sdk.mjs",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "type": "module",
+      "version": "0.3.318"
+    },
+    "sha256": "f2799dd9c43f751e052bd4d410af96274fdc36f514a2d6666fe148c266a0e990"
+  },
+  "_anthropic-ai_claude-agent-sdk_0.3.319": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./sdk.mjs",
+          "types": "./sdk.d.ts"
+        },
+        "./bridge": {
+          "default": "./bridge.mjs",
+          "types": "./bridge.d.ts"
+        },
+        "./browser": {
+          "default": "./browser-sdk.js",
+          "types": "./browser-sdk.d.ts"
+        },
+        "./core": {
+          "default": "./core.mjs",
+          "types": "./core.d.ts"
+        },
+        "./extract": {
+          "default": "./extractFromBunfs.js",
+          "types": "./extractFromBunfs.d.ts"
+        },
+        "./sdk-tools": {
+          "types": "./sdk-tools.d.ts"
+        },
+        "./sdk-tools.js": {
+          "types": "./sdk-tools.d.ts"
+        }
+      },
+      "main": "sdk.mjs",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "type": "module",
+      "version": "0.3.319"
+    },
+    "sha256": "3fcd22fb5a674e94235f43c259539d3f711623f4f75c923e2ac6a1c86aeaaa38"
+  },
+  "_anthropic-ai_claude-agent-sdk_0.3.321": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./sdk.mjs",
+          "types": "./sdk.d.ts"
+        },
+        "./bridge": {
+          "default": "./bridge.mjs",
+          "types": "./bridge.d.ts"
+        },
+        "./browser": {
+          "default": "./browser-sdk.js",
+          "types": "./browser-sdk.d.ts"
+        },
+        "./core": {
+          "default": "./core.mjs",
+          "types": "./core.d.ts"
+        },
+        "./extract": {
+          "default": "./extractFromBunfs.js",
+          "types": "./extractFromBunfs.d.ts"
+        },
+        "./sdk-tools": {
+          "types": "./sdk-tools.d.ts"
+        },
+        "./sdk-tools.js": {
+          "types": "./sdk-tools.d.ts"
+        }
+      },
+      "main": "sdk.mjs",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "type": "module",
+      "version": "0.3.321"
+    },
+    "sha256": "b2e2de05b39aad8a090c5b11c51ccf021e98ac7e781e696c7062001bf383f7e4"
+  },
+  "_anthropic-ai_claude-agent-sdk_0.3.322": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "default": "./sdk.mjs",
+          "types": "./sdk.d.ts"
+        },
+        "./bridge": {
+          "default": "./bridge.mjs",
+          "types": "./bridge.d.ts"
+        },
+        "./browser": {
+          "default": "./browser-sdk.js",
+          "types": "./browser-sdk.d.ts"
+        },
+        "./core": {
+          "default": "./core.mjs",
+          "types": "./core.d.ts"
+        },
+        "./extract": {
+          "default": "./extractFromBunfs.js",
+          "types": "./extractFromBunfs.d.ts"
+        },
+        "./sdk-tools": {
+          "types": "./sdk-tools.d.ts"
+        },
+        "./sdk-tools.js": {
+          "types": "./sdk-tools.d.ts"
+        }
+      },
+      "main": "sdk.mjs",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "type": "module",
+      "version": "0.3.322"
+    },
+    "sha256": "d915ef8b7cbe591ef61b10b6c2182ea907e43c416783f01ec9ac45cc947e05ea"
+  },
+  "diff_9.0.0": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "import": {
+            "default": "./libesm/index.js",
+            "types": "./libesm/index.d.ts"
+          },
+          "require": {
+            "default": "./libcjs/index.js",
+            "types": "./libcjs/index.d.ts"
+          }
+        },
+        "./lib/": {
+          "import": {
+            "default": "./libesm/",
+            "types": "./libesm/"
+          },
+          "require": {
+            "default": "./libcjs/",
+            "types": "./libcjs/"
+          }
+        },
+        "./lib/*.js": {
+          "import": {
+            "default": "./libesm/*.js",
+            "types": "./libesm/*.d.ts"
+          },
+          "require": {
+            "default": "./libcjs/*.js",
+            "types": "./libcjs/*.d.ts"
+          }
+        },
+        "./package.json": "./package.json"
+      },
+      "main": "./libcjs/index.js",
+      "name": "diff",
+      "type": "module",
+      "version": "9.0.0"
+    },
+    "sha256": "1c625fe9bba43722c8d8fbd8c2b70edcab5473d75f8d66a862f9800b415aa014"
+  },
+  "zod_4.6.7": {
+    "metadata": {
+      "exports": {
+        ".": {
+          "@zod/source": "./src/index.ts",
+          "import": "./index.js",
+          "require": "./index.cjs",
+          "types": "./index.d.cts"
+        },
+        "./compile": {
+          "@zod/source": "./src/compile.ts",
+          "import": "./compile.js",
+          "require": "./compile.cjs",
+          "types": "./compile.d.cts"
+        },
+        "./locales": {
+          "@zod/source": "./src/locales/index.ts",
+          "import": "./locales/index.js",
+          "require": "./locales/index.cjs",
+          "types": "./locales/index.d.cts"
+        },
+        "./mini": {
+          "@zod/source": "./src/mini/index.ts",
+          "import": "./mini/index.js",
+          "require": "./mini/index.cjs",
+          "types": "./mini/index.d.cts"
+        },
+        "./package.json": "./package.json",
+        "./v3": {
+          "@zod/source": "./src/v3/index.ts",
+          "import": "./v3/index.js",
+          "require": "./v3/index.cjs",
+          "types": "./v3/index.d.cts"
+        },
+        "./v4": {
+          "@zod/source": "./src/v4/index.ts",
+          "import": "./v4/index.js",
+          "require": "./v4/index.cjs",
+          "types": "./v4/index.d.cts"
+        },
+        "./v4-mini": {
+          "@zod/source": "./src/v4-mini/index.ts",
+          "import": "./v4-mini/index.js",
+          "require": "./v4-mini/index.cjs",
+          "types": "./v4-mini/index.d.cts"
+        },
+        "./v4/core": {
+          "@zod/source": "./src/v4/core/index.ts",
+          "import": "./v4/core/index.js",
+          "require": "./v4/core/index.cjs",
+          "types": "./v4/core/index.d.cts"
+        },
+        "./v4/locales": {
+          "@zod/source": "./src/v4/locales/index.ts",
+          "import": "./v4/locales/index.js",
+          "require": "./v4/locales/index.cjs",
+          "types": "./v4/locales/index.d.cts"
+        },
+        "./v4/locales/*": {
+          "@zod/source": "./src/v4/locales/*",
+          "import": "./v4/locales/*",
+          "require": "./v4/locales/*",
+          "types": "./v4/locales/*"
+        },
+        "./v4/mini": {
+          "@zod/source": "./src/v4/mini/index.ts",
+          "import": "./v4/mini/index.js",
+          "require": "./v4/mini/index.cjs",
+          "types": "./v4/mini/index.d.cts"
+        }
+      },
+      "main": "./index.cjs",
+      "name": "zod",
+      "type": "module",
+      "version": "4.6.7"
+    },
+    "sha256": "c2d190d9ee4e0bdb60332aaa2130a6a98d65ddb903fe1d29248b15de57832c45"
+  }
+}

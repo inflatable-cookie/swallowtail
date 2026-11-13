@@ -251,7 +251,10 @@ version 2) preserves the provider's inherited
 ACP versions under a distinct behavior revision. When the provider denies a
 tool before offering `canUseTool`, the adapter must not invent a permission
 request; a turn may continue with that denial. Earlier qualified versions
-retain their existing revisions. The first affected hop and each newer claim
+retain their existing revisions. The guarded admission declares
+`claude-agent.acp.guarded-permission-inheritance-v8` and binds it into the
+compound recipe policy. It is not projected as qualified by a stock version
+observation or by fake proof. The first affected hop and each newer claim
 still require exact selected-path and artifact evidence; the ruling alone
 does not qualify them or authorize an unsolicited provider turn.
 

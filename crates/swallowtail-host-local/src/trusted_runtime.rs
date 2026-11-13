@@ -4,6 +4,7 @@
 //! operating-system guarantee against a hostile same-user replacement.
 
 use sha2::{Digest, Sha256};
+use std::fmt;
 use std::fs::{File, OpenOptions};
 use std::io::{self, Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
@@ -12,7 +13,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
-const MAX_RUNTIME: u64 = 256 * 1024 * 1024;
+const MAX_RUNTIME: u64 = 512 * 1024 * 1024;
 
 /// A runtime file pinned by an execution host that controls its custody.
 ///
@@ -28,22 +29,146 @@ struct RuntimeInner {
     file: Mutex<File>,
     ancestors: Vec<(PathBuf, DirectoryIdentity)>,
     digest: [u8; 32],
+    dependencies: Vec<LocalTrustedRuntime>,
+    executable: bool,
+    source_digest: [u8; 32],
     revoked: AtomicBool,
 }
 
 impl LocalTrustedRuntime {
+    pub(crate) fn same_custody(&self, other: &Self) -> bool {
+        Arc::ptr_eq(&self.inner, &other.inner)
+    }
+    pub(crate) fn native_binding(&self) -> io::Result<serde_json::Value> {
+        self.verify()?;
+        let name = self
+            .inner
+            .path
+            .to_str()
+            .ok_or_else(|| invalid("non-UTF8 native path"))?;
+        if !name
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'/' | b'_' | b'-' | b'.'))
+        {
+            return Err(invalid("native path cannot be represented"));
+        }
+        let metadata = self
+            .inner
+            .file
+            .lock()
+            .map_err(|_| invalid("runtime custody unavailable"))?
+            .metadata()?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt;
+            let ancestors:Vec<_>=self.inner.ancestors.iter().map(|(path,(dev,ino,uid,mode))|serde_json::json!({"path":path,"dev":dev.to_string(),"ino":ino.to_string(),"uid":uid,"mode":mode})).collect();
+            Ok(
+                serde_json::json!({"path":name,"url":format!("file://{name}"),"sha256":self.inner.source_digest.iter().map(|b| format!("{b:02x}")).collect::<String>(),"bytes":metadata.len(),"dev":metadata.dev().to_string(),"ino":metadata.ino().to_string(),"uid":metadata.uid(),"ancestors":ancestors}),
+            )
+        }
+        #[cfg(not(unix))]
+        {
+            let _ = metadata;
+            Err(invalid("native custody unavailable"))
+        }
+    }
+
+    pub(crate) fn acquire_custody(&self) -> io::Result<std::sync::MutexGuard<'_, File>> {
+        let mut held = self
+            .inner
+            .file
+            .lock()
+            .map_err(|_| invalid("runtime custody unavailable"))?;
+        self.verify_held(&mut held)?;
+        Ok(held)
+    }
+
+    pub(crate) fn system_ps_binding(&self, platform: &str) -> io::Result<serde_json::Value> {
+        let expected = match platform {
+            "darwin-arm64" => "/bin/ps",
+            "linux-x64" => "/usr/bin/ps",
+            _ => return Err(invalid("unclassified platform program")),
+        };
+        let binding = self.native_binding()?;
+        if binding["path"] != expected {
+            return Err(invalid("system process helper mismatch"));
+        }
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt;
+            if self
+                .inner
+                .file
+                .lock()
+                .map_err(|_| invalid("runtime custody unavailable"))?
+                .metadata()?
+                .uid()
+                != 0
+            {
+                return Err(invalid("unowned system process helper"));
+            }
+        }
+        Ok(binding)
+    }
     /// Opens and verifies one absolute canonical runtime selected by the host.
     ///
     /// Returns an error for links, non-regular files, oversized files, or a
     /// digest mismatch. Callers must uphold the host custody precondition.
     pub fn capture(path: &Path, digest: [u8; 32]) -> io::Result<Self> {
+        Self::capture_file(path, digest, true)
+    }
+
+    /// Pins the executable and the host-selected non-system loader closure.
+    ///
+    /// The trusted host must establish completeness and protect all selected
+    /// files, including system loader dependencies, through spawn. This does
+    /// not discover dependencies or establish operating-system confinement.
+    pub fn capture_with_dependencies(
+        path: &Path,
+        digest: [u8; 32],
+        dependencies: &[(PathBuf, [u8; 32])],
+    ) -> io::Result<Self> {
+        if dependencies.len() > 128 {
+            return Err(invalid("runtime dependency limit"));
+        }
+        let mut runtime = Self::capture_file(path, digest, true)?;
+        let mut seen = std::collections::BTreeSet::from([path.to_path_buf()]);
+        let mut pins = Vec::new();
+        let mut identity = Sha256::new();
+        identity.update(b"swallowtail-trusted-runtime-closure-v1\0");
+        identity.update(digest);
+        // Identity is independent of caller ordering, but includes exact host paths.
+        let mut ordered = dependencies.to_vec();
+        ordered.sort_by(|a, b| a.0.cmp(&b.0));
+        for (dependency, digest) in ordered {
+            if !seen.insert(dependency.clone()) {
+                return Err(invalid("duplicate runtime dependency"));
+            }
+            let pin = Self::capture_file(&dependency, digest, false)?;
+            let name = dependency.as_os_str().as_encoded_bytes();
+            identity.update((name.len() as u64).to_be_bytes());
+            identity.update(name);
+            identity.update(digest);
+            pins.push(pin);
+        }
+        let inner = Arc::get_mut(&mut runtime.inner)
+            .ok_or_else(|| invalid("runtime custody unavailable"))?;
+        inner.digest = identity.finalize().into();
+        inner.dependencies = pins;
+        Ok(runtime)
+    }
+
+    fn capture_file(path: &Path, digest: [u8; 32], executable: bool) -> io::Result<Self> {
         if !path.is_absolute() || path.canonicalize()? != path {
             return Err(invalid("runtime path is not canonical"));
         }
         let ancestors = capture_ancestors(path)?;
         let mut file = open_no_follow(path)?;
         let metadata = file.metadata()?;
-        if !metadata.is_file() || !trusted_file(&metadata) || metadata.len() > MAX_RUNTIME {
+        if !metadata.is_file()
+            || !trusted_file(&metadata, executable)
+            || metadata.len() > MAX_RUNTIME
+        {
             return Err(invalid("invalid runtime file"));
         }
         if digest_file(&mut file)? != digest {
@@ -55,6 +180,9 @@ impl LocalTrustedRuntime {
                 file: Mutex::new(file),
                 ancestors,
                 digest,
+                dependencies: Vec::new(),
+                executable,
+                source_digest: digest,
                 revoked: AtomicBool::new(false),
             }),
         })
@@ -85,12 +213,15 @@ impl LocalTrustedRuntime {
         let current = open_no_follow(&self.inner.path)?;
         let held_metadata = held.metadata()?;
         let current_metadata = current.metadata()?;
-        if !trusted_file(&held_metadata)
-            || !trusted_file(&current_metadata)
+        if !trusted_file(&held_metadata, self.inner.executable)
+            || !trusted_file(&current_metadata, self.inner.executable)
             || !same_file(&held_metadata, &current_metadata)
-            || digest_file(held)? != self.inner.digest
+            || digest_file(held)? != self.inner.source_digest
         {
             return Err(invalid("runtime custody changed"));
+        }
+        for dependency in &self.inner.dependencies {
+            dependency.verify()?;
         }
         if self.inner.revoked.load(Ordering::Acquire) {
             return Err(invalid("runtime custody revoked"));
@@ -134,10 +265,25 @@ impl LocalTrustedRuntime {
         self.inner.revoked.store(true, Ordering::Release);
     }
 
-    /// Returns the pinned content digest, not a process attestation.
+    /// Returns the pinned runtime identity, not a process attestation.
+    /// For dependency-aware capture this binds the entire supplied closure.
     #[must_use]
     pub fn digest(&self) -> &[u8; 32] {
         &self.inner.digest
+    }
+
+    /// Returns the verified executable's digest separately from its dependency identity.
+    #[must_use]
+    pub fn source_digest(&self) -> &[u8; 32] {
+        &self.inner.source_digest
+    }
+}
+
+impl fmt::Debug for LocalTrustedRuntime {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("LocalTrustedRuntime")
+            .finish_non_exhaustive()
     }
 }
 
@@ -165,12 +311,12 @@ fn invalid(message: &'static str) -> io::Error {
 }
 
 #[cfg(unix)]
-type DirectoryIdentity = (u64, u64, u32, u32);
+pub(crate) type DirectoryIdentity = (u64, u64, u32, u32);
 #[cfg(not(unix))]
-type DirectoryIdentity = ();
+pub(crate) type DirectoryIdentity = ();
 
 #[cfg(unix)]
-fn capture_ancestors(path: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)>> {
+pub(crate) fn capture_ancestors(path: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)>> {
     use std::os::unix::fs::MetadataExt;
     path.ancestors()
         .skip(1)
@@ -179,7 +325,9 @@ fn capture_ancestors(path: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)
             let mode = metadata.mode();
             if !metadata.is_dir()
                 || (metadata.uid() != 0 && metadata.uid() != nix::unistd::geteuid().as_raw())
-                || mode & 0o022 != 0
+                // Root-owned sticky temporary parents protect each owned
+                // child directory from other users; record them as ancestors.
+                || (mode & 0o022 != 0 && !(metadata.uid() == 0 && mode & 0o1000 != 0))
             {
                 return Err(invalid("untrusted runtime ancestor"));
             }
@@ -192,7 +340,7 @@ fn capture_ancestors(path: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)
 }
 
 #[cfg(not(unix))]
-fn capture_ancestors(_: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)>> {
+pub(crate) fn capture_ancestors(_: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)>> {
     Err(io::Error::new(
         io::ErrorKind::Unsupported,
         "runtime custody unavailable",
@@ -226,14 +374,14 @@ fn same_file(_: &std::fs::Metadata, _: &std::fs::Metadata) -> bool {
 }
 
 #[cfg(unix)]
-fn trusted_file(metadata: &std::fs::Metadata) -> bool {
+pub(crate) fn trusted_file(metadata: &std::fs::Metadata, executable: bool) -> bool {
     use std::os::unix::fs::MetadataExt;
     let mode = metadata.mode();
     (metadata.uid() == 0 || metadata.uid() == nix::unistd::geteuid().as_raw())
-        && mode & 0o111 != 0
+        && (!executable || mode & 0o111 != 0)
         && mode & 0o022 == 0
 }
 #[cfg(not(unix))]
-fn trusted_file(_: &std::fs::Metadata) -> bool {
+pub(crate) fn trusted_file(_: &std::fs::Metadata, _: bool) -> bool {
     false
 }

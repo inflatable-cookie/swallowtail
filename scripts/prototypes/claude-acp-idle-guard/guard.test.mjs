@@ -57,7 +57,7 @@ test('rejects startup controls, missing, changed, duplicate and aliased modules 
 });
 
 test('loader rejects query and caller aliases', () => {
-  loader.initialize({ idleUrl: 'file:///fake/idle.mjs', files: [{url:'file:///fake/entry.mjs',source:''},{url:'file:///fake/idle.mjs',source:''}], edges:[{parent:'file:///fake/entry.mjs',specifier:'./idle.mjs',target:'file:///fake/idle.mjs'}] });
+  loader.initialize({ idleUrl: 'file:///fake/idle.mjs', files: [{url:'file:///fake/entry.mjs',format:'module',source:''},{url:'file:///fake/idle.mjs',format:'module',source:''}], edges:[{parent:'file:///fake/entry.mjs',specifier:'./idle.mjs',target:'file:///fake/idle.mjs'}] });
   assert.equal(loader.resolve('./idle.mjs', { parentURL: 'file:///fake/entry.mjs' }).url, 'file:///fake/idle.mjs');
   for (const [specifier, parentURL] of [['./idle.mjs?x', 'file:///fake/entry.mjs'], ['file:///fake/idle.mjs', 'file:///fake/entry.mjs'], ['./idle.mjs', 'file:///fake/entry.mjs?x'], ['./idle.mjs', 'file:///fake/other.mjs']]) assert.throws(() => loader.resolve(specifier, { parentURL }), /unapproved/);
   assert.throws(() => loader.load('file:///fake/idle.mjs?x'), /unapproved/);
@@ -77,7 +77,7 @@ test('launch uses the verified byte snapshots after all paths are replaced', () 
 
 
 test('capture rejects duplicate identities and edges and noncanonical URLs', () => {
-  const idle = {url:'file:///fake/idle.mjs',source:'export class IdleCompaction {}'};
+  const idle = {url:'file:///fake/idle.mjs',format:'module',source:'export class IdleCompaction {}'};
   const edge = {parent:null,specifier:'file:///fake/idle.mjs',target:idle.url};
   assert.throws(() => loader.initialize({idleUrl:idle.url,files:[idle,idle],edges:[edge]}), /identity/);
   assert.throws(() => loader.initialize({idleUrl:idle.url,files:[idle],edges:[edge,edge]}), /duplicate/);

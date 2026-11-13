@@ -1,12 +1,10 @@
-use super::{LocalCapturedGraph, capture, fixture};
+use super::{LocalCapturedGraph, capture, capture_native_graph, fixture};
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
+use futures_util::StreamExt;
 use sha2::{Digest, Sha256};
 use std::path::PathBuf;
-use std::sync::{
-    Arc,
-    atomic::{AtomicBool, AtomicUsize, Ordering},
-};
+use std::sync::Arc;
 use swallowtail_adapter_claude_agent::{
     CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE, ClaudeAgentModelSelection,
     ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentSessionProfileInput,
@@ -19,15 +17,14 @@ use swallowtail_core::{
     ModelRouteId, ModelRouteRevision, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_host_local::{
-    LocalCapturedNodeRecipe, LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits,
-    LocalTrustedRuntime,
+    LocalCapturedNodeRecipe, LocalCheckedNodeLaunch, LocalExecutableLaunch, LocalProcessHost,
+    LocalProcessLimits, LocalTrustedRuntime,
 };
 use swallowtail_runtime::{
-    BoxFuture, CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
+    CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
     ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
-    PreparedAccessEvidence, ProcessHandle, ProcessRequest, ProcessService, RequestId,
-    RuntimeFailure, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
-    WorkingResourceRef,
+    PreparedAccessEvidence, ProcessRequest, ProcessService, RequestId, RuntimeTurnId, ScopeId,
+    SessionOptions, TerminalStatus, TurnRequest, WorkingResourceRef,
 };
 
 const ACP_ENTRY: &str = r#"
@@ -59,104 +56,10 @@ else {
 }
 "#;
 
-#[derive(Clone)]
-struct FakeCheckedChild {
+struct CheckedChild {
     local: LocalProcessHost,
-    graph: LocalCapturedGraph,
     runtime: LocalTrustedRuntime,
-    launch: LocalExecutableLaunch,
-    expected: [u8; 32],
-    revoked: Arc<AtomicBool>,
-    checked: Arc<AtomicUsize>,
-    ordinary: Arc<AtomicUsize>,
-    bootstrap: Arc<[u8]>,
-}
-impl FakeCheckedChild {
-    fn allows(&self, binding: &CheckedProcessRef, request: &ProcessRequest) -> bool {
-        let candidate = LocalCapturedNodeRecipe::for_trusted_runtime(
-            &self.graph,
-            CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
-            [1; 32],
-            &self.runtime,
-            [5; 32],
-        );
-        !self.revoked.load(Ordering::SeqCst)
-            && binding.as_host_value() == "fixture.checked.binding"
-            && request.executable().as_host_value() == "claude-agent.prepared.executable"
-            && (request.arguments().len() == 0
-                || request.arguments().collect::<Vec<_>>() == ["--version"])
-            && candidate.as_ref().is_ok_and(|value| {
-                value.fingerprint().digest() == &self.expected
-                    && value.bootstrap() == self.bootstrap.as_ref()
-                    && value
-                        .verify_trusted_launch(&self.runtime, &self.launch)
-                        .is_ok()
-            })
-    }
-    fn denied() -> RuntimeFailure {
-        RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
-            "fixture.checked.denied",
-            "fake checked host denied",
-        ))
-    }
-}
-impl ProcessService for FakeCheckedChild {
-    fn start(
-        &self,
-        _scope: ScopeId,
-        _request: ProcessRequest,
-    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
-        self.ordinary.fetch_add(1, Ordering::SeqCst);
-        Box::pin(async { Err(Self::denied()) })
-    }
-    fn validate_checked(
-        &self,
-        _scope: ScopeId,
-        binding: CheckedProcessRef,
-        request: ProcessRequest,
-    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
-        let accepted = self.allows(&binding, &request);
-        Box::pin(async move {
-            if accepted {
-                Ok(())
-            } else {
-                Err(Self::denied())
-            }
-        })
-    }
-    fn start_checked(
-        &self,
-        scope: ScopeId,
-        binding: CheckedProcessRef,
-        request: ProcessRequest,
-    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
-        if !self.allows(&binding, &request) {
-            return Box::pin(async { Err(Self::denied()) });
-        }
-        self.checked.fetch_add(1, Ordering::SeqCst);
-        let local = self.local.clone();
-        let runtime = self.runtime.clone();
-        let graph = self.graph.clone();
-        Box::pin(async move {
-            let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
-                &graph,
-                CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
-                [1; 32],
-                &runtime,
-                [5; 32],
-            )
-            .map_err(|_| Self::denied())?;
-            local
-                .start_trusted_candidate(
-                    scope,
-                    request,
-                    &runtime,
-                    &recipe,
-                    std::time::Duration::from_secs(5),
-                )
-                .await
-        })
-    }
+    approval: LocalCheckedNodeLaunch,
 }
 
 fn node_path() -> PathBuf {
@@ -166,7 +69,7 @@ fn node_path() -> PathBuf {
         .expect("fake Node interpreter")
 }
 
-fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedChild {
+fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> CheckedChild {
     fake_child_with_input_limit(root, graph, 8 * 1024 * 1024)
 }
 
@@ -174,7 +77,16 @@ fn fake_child_with_input_limit(
     root: &std::path::Path,
     graph: LocalCapturedGraph,
     stdin_bytes: usize,
-) -> FakeCheckedChild {
+) -> CheckedChild {
+    fake_child_with_environment(root, graph, stdin_bytes, vec![])
+}
+
+fn fake_child_with_environment(
+    root: &std::path::Path,
+    graph: LocalCapturedGraph,
+    stdin_bytes: usize,
+    environment_values: Vec<(std::ffi::OsString, std::ffi::OsString)>,
+) -> CheckedChild {
     let original = node_path().canonicalize().expect("canonical Node path");
     let node = root.join("fixture-node");
     if !node.exists() {
@@ -204,8 +116,24 @@ fn fake_child_with_input_limit(
     }
     let node = node.canonicalize().expect("canonical fixture interpreter");
     let bytes = std::fs::read(&node).expect("read fake interpreter");
-    let runtime = LocalTrustedRuntime::capture(&node, Sha256::digest(&bytes).into())
-        .expect("trusted fake-host runtime");
+    let dependencies: Vec<_> = std::fs::read_dir(root)
+        .expect("fixture directory")
+        .map(|entry| entry.expect("dependency entry").path())
+        .filter(|path| {
+            path.extension()
+                .is_some_and(|extension| extension == "dylib")
+        })
+        .map(|path| {
+            let digest = Sha256::digest(std::fs::read(&path).expect("dependency source")).into();
+            (path, digest)
+        })
+        .collect();
+    let runtime = LocalTrustedRuntime::capture_with_dependencies(
+        &node,
+        Sha256::digest(&bytes).into(),
+        &dependencies,
+    )
+    .expect("trusted fake-host runtime");
     let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
         &graph,
         CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
@@ -215,7 +143,6 @@ fn fake_child_with_input_limit(
     )
     .expect("fake recipe");
     let expected = *recipe.fingerprint().digest();
-    let bootstrap: Arc<[u8]> = Arc::from(recipe.bootstrap());
     let launch = LocalExecutableLaunch::new(node)
         .with_prefix_arguments(recipe.prefix_arguments().map(std::ffi::OsStr::to_os_string))
         .with_node_startup_environment_filter();
@@ -223,6 +150,25 @@ fn fake_child_with_input_limit(
     let environment =
         EnvironmentRef::new("claude-agent.prepared.environment").expect("environment");
     let resource = WorkingResourceRef::new("checked.workspace").expect("resource");
+    assert!(
+        LocalCheckedNodeLaunch::new(
+            executable.clone(),
+            runtime.clone(),
+            recipe.clone(),
+            [0; 32],
+            vec![vec![]],
+        )
+        .is_err(),
+        "a caller cannot substitute the host's approved identity"
+    );
+    let approval = LocalCheckedNodeLaunch::new(
+        executable.clone(),
+        runtime.clone(),
+        recipe,
+        expected,
+        vec![vec![], vec!["--version".into()]],
+    )
+    .expect("host-owned fake graph policy");
     let local = LocalProcessHost::builder(LocalProcessLimits::new(
         128,
         256 * 1024,
@@ -231,20 +177,70 @@ fn fake_child_with_input_limit(
         1024 * 1024,
     ))
     .approve_executable_launch(executable, launch.clone())
-    .approve_environment(environment, [])
+    .approve_environment(environment, environment_values)
     .approve_working_resource(resource, root)
+    .approve_checked_node(
+        CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
+        approval.clone(),
+    )
+    .expect("register fake graph in production host")
     .build();
-    FakeCheckedChild {
+    CheckedChild {
         local,
-        graph,
         runtime,
-        launch,
-        expected,
-        revoked: Arc::new(AtomicBool::new(false)),
-        checked: Arc::new(AtomicUsize::new(0)),
-        ordinary: Arc::new(AtomicUsize::new(0)),
-        bootstrap,
+        approval,
     }
+}
+
+#[test]
+fn checked_production_host_rejects_startup_controls_and_runtime_dependency_drift() {
+    let root = fixture();
+    let graph = capture(&root, ACP_ENTRY);
+    let unsafe_host = fake_child_with_environment(
+        &root,
+        graph.clone(),
+        1024,
+        vec![("NODE_OPTIONS".into(), "--require=unapproved.js".into())],
+    );
+    let scope = ScopeId::new("checked-env").expect("scope");
+    let binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
+    let request = ProcessRequest::new(
+        ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
+    )
+    .with_environment([
+        EnvironmentRef::new("claude-agent.prepared.environment").expect("environment")
+    ]);
+    assert!(
+        block_on(unsafe_host.local.validate_checked(
+            scope.clone(),
+            binding.clone(),
+            request.clone()
+        ))
+        .is_err()
+    );
+    assert!(
+        block_on(
+            unsafe_host
+                .local
+                .start_checked(scope.clone(), binding.clone(), request.clone())
+        )
+        .is_err()
+    );
+    let library = root.join("fixture-dependency.dylib");
+    std::fs::write(&library, b"host-owned dependency").expect("dependency fixture");
+    let host = fake_child(&root, graph);
+    host.runtime
+        .verify()
+        .expect("complete pinned fixture closure");
+    std::fs::write(library, b"substituted dependency").expect("dependency replacement");
+    assert!(
+        block_on(
+            host.local
+                .validate_checked(scope.clone(), binding.clone(), request.clone())
+        )
+        .is_err()
+    );
+    assert!(block_on(host.local.start_checked(scope, binding, request)).is_err());
 }
 
 fn preparation(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
@@ -279,7 +275,7 @@ fn preparation(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
 #[test]
 fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
     let root = fixture();
-    let graph = capture(&root, ACP_ENTRY);
+    let graph = capture_native_graph(&root, ACP_ENTRY);
     std::fs::write(root.join("entry.mjs"), "throw new Error('replaced entry')")
         .expect("replace entry");
     std::fs::write(root.join("idle.mjs"), "throw new Error('replaced idle')")
@@ -289,7 +285,7 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
     let constrained_resources = FixtureHost::new(Scenario::Success, "0.100.0");
     let constrained_services = constrained_resources
         .services(constrained_host.clone())
-        .with_process(Arc::new(constrained.clone()));
+        .with_process(Arc::new(constrained.local.clone()));
     let constrained_probe = ClaudeAgentPreparationProbe::new(
         RequestId::new("checked-short").expect("request"),
         ScopeId::new("checked-short").expect("scope"),
@@ -303,56 +299,34 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
         constrained_services,
     ));
     assert!(constrained_result.is_ok(), "{constrained_result:?}");
-    assert_eq!(constrained.checked.load(Ordering::SeqCst), 1);
-    assert_eq!(constrained.ordinary.load(Ordering::SeqCst), 0);
     let fake = fake_child(&root, graph);
-    let wrong_runtime = LocalCapturedNodeRecipe::new(
-        &fake.graph,
-        CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
-        [1; 32],
-        [3; 32],
-        [5; 32],
-    )
-    .expect("candidate");
-    assert!(
-        wrong_runtime
-            .verify_trusted_launch(&fake.runtime, &fake.launch)
-            .is_err()
-    );
-    let mut substituted = fake.clone();
-    substituted.bootstrap = Arc::from(b"substituted bootstrap".as_slice());
-    let substituted_request = ProcessRequest::new(
+    let request = ProcessRequest::new(
         ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
     );
+    let binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
+    let scope = ScopeId::new("checked-refusals").expect("scope");
+    assert!(block_on(fake.local.start(scope.clone(), request.clone())).is_err());
     assert!(
-        block_on(substituted.validate_checked(
-            ScopeId::new("checked-substitution").expect("scope"),
-            CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
-            substituted_request
+        block_on(fake.local.start_checked(
+            scope.clone(),
+            CheckedProcessRef::new("unknown").expect("binding"),
+            request.clone()
         ))
         .is_err()
     );
-    assert_eq!(substituted.checked.load(Ordering::SeqCst), 0);
-    let mut unsafe_prefix = fake.clone();
-    unsafe_prefix.launch = LocalExecutableLaunch::new(node_path().canonicalize().expect("Node"))
-        .with_prefix_arguments(["--require".into(), "unapproved.js".into()])
-        .with_node_startup_environment_filter();
     assert!(
-        block_on(unsafe_prefix.validate_checked(
-            ScopeId::new("checked-prefix").expect("scope"),
-            CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
-            ProcessRequest::new(
-                ExecutableRef::new("claude-agent.prepared.executable").expect("target")
-            ),
+        block_on(fake.local.start_checked(
+            scope,
+            binding,
+            request.with_arguments(["--eval".into(), "process.stdout.write('effect')".into()])
         ))
         .is_err()
     );
-    assert_eq!(unsafe_prefix.checked.load(Ordering::SeqCst), 0);
     let host_id = ExecutionHostId::new("fake.checked.local").expect("host");
     let resources = FixtureHost::new(Scenario::Success, "0.100.0");
     let services = resources
         .services(host_id.clone())
-        .with_process(Arc::new(fake.clone()));
+        .with_process(Arc::new(fake.local.clone()));
     let binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
     let probe = ClaudeAgentPreparationProbe::new(
         RequestId::new("checked-probe").expect("request"),
@@ -395,9 +369,110 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
         block_on(session.close(resources.cleanup_request(), services.clone())),
         CleanupOutcome::Clean
     );
+    fake.approval.revoke();
+    assert!(block_on(profile.open_session(services.clone())).is_err());
     fake.runtime.revoke();
     assert!(block_on(profile.open_session(services)).is_err());
-    assert_eq!(fake.checked.load(Ordering::SeqCst), 2);
-    assert_eq!(fake.ordinary.load(Ordering::SeqCst), 0);
-    assert_eq!(resources.resource_releases(), 2);
+    assert_eq!(resources.resource_releases(), 3);
+}
+
+#[test]
+fn checked_prepared_child_preserves_denial_without_permission_callback() {
+    let root = fixture();
+    let entry = ACP_ENTRY.replace("0.100.0", "0.106.0").replace(
+        "text:'fake captured response'", "text:'The read was denied; continuing.'"
+    ).replace(
+        "else if (m.method === 'session/prompt') {",
+        r#"else if (m.method === 'session/prompt') {
+          for (const update of [
+            {sessionUpdate:'tool_call',toolCallId:'denied',title:'Read fixture',kind:'read',status:'in_progress'},
+            {sessionUpdate:'tool_call_update',toolCallId:'denied',status:'failed'},
+          ]) process.stdout.write(JSON.stringify({jsonrpc:'2.0',method:'session/update',params:{sessionId:'fake-captured-session',update}})+'\n');"#
+    );
+    let graph = capture_native_graph(&root, &entry);
+    let fake = fake_child(&root, graph);
+    let host_id = ExecutionHostId::new("fake.checked.denied").expect("host");
+    let resources = FixtureHost::new(Scenario::Success, "0.106.0");
+    let services = resources
+        .services(host_id.clone())
+        .with_process(Arc::new(fake.local));
+    let prepared = block_on(prepare_claude_agent(
+        preparation(host_id).with_checked_process(
+            CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
+        ),
+        ClaudeAgentPreparationProbe::new(
+            RequestId::new("denied-probe").expect("request"),
+            ScopeId::new("denied-probe").expect("scope"),
+            Deadline::at(MonotonicInstant::from_ticks(100)),
+            DiscoveryCancellation::new(),
+        ),
+        services.clone(),
+    ))
+    .expect("checked fake discovery");
+    assert!(!prepared.observation().is_qualified());
+    let profile = prepared
+        .prepare_session(ClaudeAgentSessionProfileInput::new(
+            RequestId::new("denied-open").expect("request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("checked.route").expect("route"),
+                ModelRouteRevision::new("1").expect("revision"),
+                ModelId::new("claude-sonnet-4-6").expect("model"),
+            ),
+            WorkingResourceRef::new("checked.workspace").expect("workspace"),
+            SessionOptions::default(),
+        ))
+        .expect("profile");
+    let mut session = block_on(profile.open_session(services.clone())).expect("checked session");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("denied-turn").expect("turn"),
+            OperationContent::new("attempt a read").expect("prompt"),
+        ),
+        services.clone(),
+    ))
+    .expect("turn");
+    let mut events = turn.take_events().expect("events");
+    let terminal = turn.take_terminal_outcome().expect("terminal");
+    let (observed, outcome) = block_on(async {
+        let mut observed = Vec::new();
+        while let Some(event) = events.next().await {
+            observed.push(event.expect("event"));
+        }
+        (observed, terminal.await)
+    });
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(
+        outcome.output().expect("continued output").as_str(),
+        "The read was denied; continuing."
+    );
+    assert!(!observed.iter().any(|event| matches!(
+        event.kind(),
+        swallowtail_runtime::RuntimeEventKind::CallbackRequested(_)
+    )));
+    let activity = observed
+        .iter()
+        .position(|event| {
+            matches!(
+                event.kind(),
+                swallowtail_runtime::RuntimeEventKind::Activity(_)
+            )
+        })
+        .expect("denied activity");
+    let output = observed
+        .iter()
+        .position(|event| {
+            matches!(
+                event.kind(),
+                swallowtail_runtime::RuntimeEventKind::OutputDelta
+            )
+        })
+        .expect("continued output");
+    assert!(activity < output);
+    assert_eq!(resources.reads(), 0);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(session.close(resources.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+    assert_eq!(resources.resource_releases(), 1);
 }

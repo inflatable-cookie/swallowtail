@@ -392,11 +392,19 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
         .output()
         .expect("mktemp starts");
     assert!(output.status.success());
-    let root = std::path::PathBuf::from(String::from_utf8(output.stdout).expect("path").trim());
+    let root = std::path::PathBuf::from(String::from_utf8(output.stdout).expect("path").trim())
+        .canonicalize()
+        .expect("canonical fixture root");
     std::fs::write(root.join("one.mjs"), b"one").expect("fixture");
     std::fs::write(root.join("two.mjs"), b"two").expect("fixture");
     let one = LocalExpectedSource::new("one.mjs", Sha256::digest(b"one").into());
     let two = LocalExpectedSource::new("two.mjs", Sha256::digest(b"two").into());
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(root.join("one.mjs"), std::fs::Permissions::from_mode(0o666))
+        .expect("writable source fixture");
+    assert!(LocalCapturedSources::capture(&root, std::slice::from_ref(&one)).is_err());
+    std::fs::set_permissions(root.join("one.mjs"), std::fs::Permissions::from_mode(0o600))
+        .expect("restore source ownership boundary");
     let captured =
         LocalCapturedSources::capture(&root, &[one.clone(), two.clone()]).expect("capture");
     let reversed = LocalCapturedSources::capture(&root, &[two.clone(), one.clone()])
@@ -412,14 +420,14 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
         &captured,
         Path::new("one.mjs"),
         Path::new("two.mjs"),
-        &[edge.clone()],
+        std::slice::from_ref(&edge),
     )
     .expect("graph");
     let graph_again = LocalCapturedGraph::new(
         &reversed,
         Path::new("one.mjs"),
         Path::new("two.mjs"),
-        &[edge.clone()],
+        std::slice::from_ref(&edge),
     )
     .expect("same graph");
     assert_eq!(graph.fingerprint(), graph_again.fingerprint());
@@ -488,7 +496,7 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
         recipe.fingerprint().digest(),
         altered.fingerprint().digest()
     );
-    assert_eq!(recipe.prefix_arguments().len(), 3);
+    assert_eq!(recipe.prefix_arguments().len(), 5);
     assert!(!format!("{recipe:?}").contains("one.mjs"));
     assert!(LocalCapturedNodeRecipe::new(&graph, "", [1; 32], [3; 32], [5; 32]).is_err());
     assert!(
@@ -503,7 +511,7 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
     let after_replacement: serde_json::Value =
         serde_json::from_slice(graph.configuration()).expect("captured config");
     assert_eq!(after_replacement["files"][0]["source"], "one");
-    assert!(LocalCapturedSources::capture(&root, &[one.clone()]).is_err());
+    assert!(LocalCapturedSources::capture(&root, std::slice::from_ref(&one)).is_err());
     assert!(LocalCapturedSources::capture(&root, &[two.clone(), two.clone()]).is_err());
     assert!(
         LocalCapturedSources::capture(
@@ -554,11 +562,11 @@ fn checked_launch_without_host_custody_refuses_before_ordinary_spawn() {
     let request = ProcessRequest::new(executable).with_arguments(fixture_arguments());
     assert_failure_code(
         block_on(host.validate_checked(scope.clone(), binding.clone(), request.clone())),
-        "swallowtail.process.checked_binding_unavailable",
+        "swallowtail.local_process.checked_binding_refused",
     );
     assert_failure_code(
         block_on(host.start_checked(scope, binding, request)),
-        "swallowtail.process.checked_binding_unavailable",
+        "swallowtail.local_process.checked_binding_refused",
     );
 }
 

@@ -8,7 +8,9 @@
 #![deny(missing_docs)]
 
 mod attachment;
+mod captured_manifest;
 mod captured_source;
+mod checked_node;
 mod child;
 mod connection_lifecycle;
 mod credential;
@@ -44,6 +46,7 @@ pub use captured_source::{
     LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint,
     LocalCapturedNodeRecipe, LocalCapturedSources, LocalExpectedSource,
 };
+pub use checked_node::LocalCheckedNodeLaunch;
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};

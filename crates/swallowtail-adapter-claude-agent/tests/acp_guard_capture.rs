@@ -36,6 +36,8 @@ fn fixture() -> PathBuf {
             .expect("fixture path")
             .trim(),
     )
+    .canonicalize()
+    .expect("canonical owned fixture")
 }
 
 fn capture(root: &Path, entry: &str) -> LocalCapturedGraph {
@@ -60,6 +62,95 @@ fn capture(root: &Path, entry: &str) -> LocalCapturedGraph {
         )],
     )
     .expect("capture fake graph")
+}
+
+fn capture_native_graph(root: &Path, entry: &str) -> LocalCapturedGraph {
+    use std::os::unix::fs::PermissionsExt;
+    let native_path = root.join("fake-native");
+    let native_source = b"#!/bin/sh\nprintf fake-native";
+    std::fs::write(&native_path, native_source).expect("owned native fake");
+    std::fs::set_permissions(&native_path, std::fs::Permissions::from_mode(0o700))
+        .expect("executable fake");
+    let native = LocalTrustedRuntime::capture(&native_path, Sha256::digest(native_source).into())
+        .expect("held fake native");
+    let prefix = "import {starts} from './acp/dist/session-index/live-registry.js'; if (!(await starts()).includes(String(process.pid))) throw Error('system process helper mismatch'); import {createRequire} from 'node:module'; import {execFileSync} from 'node:child_process'; import data from './data.json' with {type:'json'}; const get = createRequire(import.meta.resolve('./sdk.mjs')); const value = get('./bridge.cjs'); if (value !== data.value) throw Error('captured data mismatch'); const native = get.resolve('@fake/native/claude'); if (execFileSync(native,['--version'],{env:{}}).toString() !== 'fake-native') throw Error('native fake mismatch');\n";
+    let entry = format!("{prefix}{entry}");
+    let inputs = [
+        ("entry.mjs", entry.as_str(), "module"),
+        ("idle.mjs", IDLE, "module"),
+        ("sdk.mjs", "export const sdk = true;", "module"),
+        (
+            "bridge.cjs",
+            "module.exports = require('./leaf.cjs');",
+            "commonjs",
+        ),
+        ("leaf.cjs", "module.exports = 'captured';", "commonjs"),
+        ("data.json", "{\"value\":\"captured\"}", "json"),
+        (
+            "acp/dist/session-index/live-registry.js",
+            "import {execFile} from 'node:child_process'; export function starts(){return new Promise((resolve,reject)=>execFile('ps',['-o','pid=,lstart=','-p',String(process.pid)],{timeout:1000,env:{}},(error,stdout)=>error?reject(error):resolve(stdout)));}",
+            "module",
+        ),
+    ];
+    let mut files = serde_json::Map::new();
+    for (name, source, format) in inputs {
+        std::fs::create_dir_all(root.join(name).parent().expect("parent"))
+            .expect("owned source directory");
+        std::fs::write(root.join(name), source).expect("fake graph member");
+        files.insert(name.into(),serde_json::json!({"sha256":format!("{:x}",Sha256::digest(source.as_bytes())),"format":format}));
+    }
+    let native_record = serde_json::json!({"sha256":format!("{:x}",Sha256::digest(native_source)),"bytes":native_source.len(),"specifier":"@fake/native/claude"});
+    let manifest = serde_json::json!({"vendor":"11".repeat(32),"entry":"entry.mjs","idle":"idle.mjs","files":files,
+        "imports":[{"parent":"entry.mjs","specifier":"./acp/dist/session-index/live-registry.js","target":"acp/dist/session-index/live-registry.js"},{"parent":"entry.mjs","specifier":"./idle.mjs","target":"idle.mjs"},{"parent":"entry.mjs","specifier":"./sdk.mjs","target":"sdk.mjs"},{"parent":"entry.mjs","specifier":"./data.json","target":"data.json"},{"parent":"sdk.mjs","specifier":"./bridge.cjs","target":"bridge.cjs"},{"parent":"bridge.cjs","specifier":"./leaf.cjs","target":"leaf.cjs"}],
+        "builtins":[{"parent":"acp/dist/session-index/live-registry.js","specifier":"node:child_process","target":"node:child_process"},{"parent":"entry.mjs","specifier":"node:module","target":"node:module"},{"parent":"entry.mjs","specifier":"node:child_process","target":"node:child_process"}],
+        "require_parents":[["entry.mjs","sdk.mjs"]],"native_parents":["sdk.mjs"],"native":{"darwin-arm64":native_record,"linux-x64":native_record},"platform_programs":[{"parent":"acp/dist/session-index/live-registry.js","name":"ps","arguments":"live-process-starts-v1"}],"denied_dynamic":[],"source_cautions":[]});
+    let bytes = serde_json::to_vec(&manifest).expect("fake manifest");
+    let platform = if cfg!(target_os = "macos") {
+        "darwin-arm64"
+    } else {
+        "linux-x64"
+    };
+    let ps_path = if cfg!(target_os = "macos") {
+        Path::new("/bin/ps")
+    } else {
+        Path::new("/usr/bin/ps")
+    };
+    let ps = LocalTrustedRuntime::capture(
+        ps_path,
+        Sha256::digest(std::fs::read(ps_path).expect("system helper source")).into(),
+    )
+    .expect("trusted platform ps");
+    assert!(
+        LocalCapturedGraph::capture_manifest(root, &bytes, platform, &native, None).is_err(),
+        "missing system helper custody"
+    );
+    for change in ["worker", "format", "source", "edge", "native", "caution"] {
+        let mut changed = manifest.clone();
+        match change {
+            "worker" => changed["builtins"][0]["target"] = "node:worker_threads".into(),
+            "format" => changed["files"]["entry.mjs"]["format"] = "unknown".into(),
+            "source" => changed["files"]["entry.mjs"]["sha256"] = "00".repeat(32).into(),
+            "edge" => changed["imports"][0]["target"] = "missing.mjs".into(),
+            "native" => changed["native"][platform]["sha256"] = "00".repeat(32).into(),
+            "caution" => {
+                changed["source_cautions"] = serde_json::json!([{"kind":"worker-nonliteral"}])
+            }
+            _ => unreachable!(),
+        }
+        assert!(
+            LocalCapturedGraph::capture_manifest(
+                root,
+                &serde_json::to_vec(&changed).expect("changed manifest"),
+                platform,
+                &native,
+                Some(&ps)
+            )
+            .is_err(),
+            "{change}"
+        );
+    }
+    LocalCapturedGraph::capture_manifest(root, &bytes, platform, &native, Some(&ps))
+        .expect("admitted fake manifest")
 }
 
 fn node(arguments: &[&str]) -> Output {
@@ -147,6 +238,22 @@ fn unapproved_import_refuses_before_fake_entry_effects() {
 }
 
 #[test]
+fn captured_recipe_refuses_dynamic_code_and_native_addons() {
+    let root = fixture();
+    for expression in [
+        "eval(\"process.stdout.write('effect')\")",
+        "Function(\"process.stdout.write('effect')\")()",
+        "process.dlopen({}, '/unapproved.node')",
+        "process.getBuiltinModule('module')",
+    ] {
+        let graph = capture(&root, &format!("import './idle.mjs'; {expression};"));
+        let output = guarded(&graph);
+        assert!(!output.status.success());
+        assert!(output.stdout.is_empty());
+    }
+}
+
+#[test]
 fn synchronous_capture_serves_aliased_commonjs_and_refuses_unknown_edges() {
     let root = fixture();
     let entry = "import {createRequire as make} from 'node:module'; import './idle.mjs'; const get = make(import.meta.url); const name = get.resolve('./nested.cjs'); process.stdout.write(get(name).value);";
@@ -198,6 +305,52 @@ fn synchronous_capture_serves_aliased_commonjs_and_refuses_unknown_edges() {
     )
     .expect("graph without builtin");
     assert!(!guarded(&without_builtin).status.success());
+}
+
+#[test]
+fn captured_module_facade_refuses_hook_replacement_and_foreign_require_parents() {
+    for action in [
+        "if (module.registerHooks || module.Module || module._load) throw Error('raw module escaped'); process.stdout.write('bounded');",
+        "module.createRequire('file:///unapproved/parent.mjs'); process.stdout.write('effect');",
+        "module.createRequire(import.meta.url).resolve('./missing.cjs', {paths:['/unapproved']}); process.stdout.write('effect');",
+    ] {
+        let root = fixture();
+        let entry = format!("import module from 'node:module'; import './idle.mjs'; {action}");
+        std::fs::write(root.join("entry.mjs"), &entry).expect("entry");
+        std::fs::write(root.join("idle.mjs"), IDLE).expect("idle");
+        let sources = LocalCapturedSources::capture(
+            &root,
+            &[
+                LocalExpectedSource::new("entry.mjs", Sha256::digest(entry.as_bytes()).into()),
+                LocalExpectedSource::new("idle.mjs", Sha256::digest(IDLE.as_bytes()).into()),
+            ],
+        )
+        .expect("capture");
+        let graph = LocalCapturedGraph::with_builtins(
+            &sources,
+            Path::new("entry.mjs"),
+            Path::new("idle.mjs"),
+            &[LocalCapturedImport::new(
+                "entry.mjs",
+                "./idle.mjs",
+                "idle.mjs",
+            )],
+            &[("entry.mjs".into(), "node:module".into())],
+        )
+        .expect("graph");
+        let output = guarded(&graph);
+        if action.contains("bounded") {
+            assert!(
+                output.status.success(),
+                "{}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(output.stdout, b"bounded");
+        } else {
+            assert!(!output.status.success());
+            assert!(output.stdout.is_empty());
+        }
+    }
 }
 
 #[test]

@@ -219,6 +219,53 @@ hostile same-user replacement. A path hash followed by path-based spawn is
 not an OS-enforced verified-execution guarantee. This ruling does not extend
 other host or SDK claims.
 
+A local checked Node registration is host policy, not caller attestation. It
+binds one opaque checked reference and executable to a captured recipe, the
+host's independently approved compound fingerprint, exact allowed argument
+vectors and a revocable runtime pin. Preflight and start verify the same
+registration; start serializes revocation with spawn. Unknown references,
+different targets, prefixes, startup controls, fingerprints or revoked custody
+refuse before spawn, without stock fallback. Registration does not qualify a
+vendor graph. The host must independently approve the ACP factory's exact
+selected dependency/native edges and compound policy before registration.
+
+The guarded ACP factory accepts only packaged per-hop source/format/import
+manifests, the exact Node22.23.2 platform artifact and the matching held SDK
+native executable. It captures the complete statically linked closure,
+including modules linked before ACP v1 negotiation, and explicitly binds the
+wrapper's SDK-root `createRequire`. JavaScript and JSON load from captured
+bytes. The module facade exposes bounded resolution; the child-process facade
+permits only the pinned native path, rejects shells and unsafe startup controls,
+and rechecks the native source identity before invoking it. Worker realms,
+addons and string code are not implicitly admitted. Unclassified source or
+edges refuse; there is no stock fallback.
+
+The ACP guarded factory now consumes exact per-hop manifests, including
+caller-specific ESM/CommonJS/JSON resolution, native resolver edges and the
+session-index `ps` helper. The helper binds a root-owned exact system binary
+and only the upstream bounded PID/start-time query. Other child programs,
+worker realms, hook replacement, native addons and dynamic string code refuse.
+These controls constrain reviewed sources under the trusted-host boundary;
+they do not promise a general JavaScript security sandbox. Runtime/native
+custody must remain stable for active uses; revocation prevents future launch
+and never replaces cancellation and joined cleanup of an active process.
+
+The host maintains runtime and native custody for the admitted invocation,
+including later native spawns. Pins and pre-spawn hashes detect observed
+replacement; the trusted host prevents races between checks and path-based
+spawn. Revocation fences new checked starts; already admitted processes retain
+their owned lifecycle and joined cleanup. These rules do not establish a
+general JavaScript sandbox or authorize original-artifact execution. Exact
+route proof remains a separate qualification gate.
+
+Runtime custody includes the host-selected executable and explicitly pinned
+non-system interpreter dependencies. The host owns their complete selection
+and stable custody, including system-loader dependencies; file hashes cannot
+discover that closure. The pin rechecks files and ancestor metadata through
+spawn. This relies on the trusted host maintaining custody and does not
+protect against hostile same-user replacement. Captured JavaScript is loaded
+from verified retained bytes, independently of later source-path replacement.
+
 Renderer or remote-client data cannot establish authority by naming an
 executable path, environment variable, or working directory. Process output is
 not a safe diagnostic until normalized and redacted.

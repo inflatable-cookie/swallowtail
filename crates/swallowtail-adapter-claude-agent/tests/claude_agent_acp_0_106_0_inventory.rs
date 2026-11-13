@@ -123,7 +123,7 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
                 swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
             )
         ),
-        "5694068ca15f0a42c6e21310906b5dc330b9d04be8a3c3783571dc11df4a2475"
+        "f2acaea25ba0aa987d0a47793f948747b60dbbc6dc8838d8087acf24729d6343"
     );
     for (text, expected) in [
         (
@@ -402,5 +402,111 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
                 assert!(rows[path]["role"].as_str().is_some());
             }
         }
+    }
+}
+
+#[test]
+fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
+    const PROPOSAL: &str =
+        include_str!("fixtures/claude-agent-acp-0.106.0/guarded-probe-proposal.json");
+    assert_eq!(
+        format!("{:x}", Sha256::digest(PROPOSAL.as_bytes())),
+        "1ca468d349cc3a2244053bb484887aa5b15f49f87ade576a2dc57524ae26ec18"
+    );
+    let plan: Value = serde_json::from_str(PROPOSAL).expect("proposal JSON");
+    let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
+    let dependencies: Value = serde_json::from_str(DEPENDENCIES).expect("dependency JSON");
+    assert!(plan["original_runner"].is_null());
+    assert_eq!(plan["qualification_ceiling"], "0.100.0");
+    assert_eq!(plan["node"]["version"], "22.23.2");
+    assert_eq!(plan["tuples"].as_array().expect("tuples").len(), 16);
+    let mut actual = BTreeSet::new();
+    for tuple in plan["tuples"].as_array().expect("tuples") {
+        let hop = tuple["acp"].as_str().expect("ACP version");
+        let platform = tuple["platform"].as_str().expect("platform");
+        assert!(actual.insert((hop, platform)), "duplicate proposal tuple");
+        let sdk = registry["versions"][hop]["dependencies"]["@anthropic-ai/claude-agent-sdk"]
+            .as_str()
+            .expect("SDK version");
+        assert_eq!(tuple["agent_sdk"], sdk);
+        assert_eq!(
+            tuple["native_version"],
+            format!("2.1.{}", sdk.split('.').next_back().expect("patch"))
+        );
+        assert_eq!(
+            tuple["acp_tarball_sha256"],
+            registry["versions"][hop]["tarball_sha256"]
+        );
+        assert_eq!(
+            tuple["agent_sdk_tarball_sha256"],
+            dependencies["artifacts"][format!("@anthropic-ai/claude-agent-sdk@{sdk}")]["tarball_sha256"]
+        );
+        assert_eq!(
+            tuple["native_sha256"],
+            dependencies["native_manifests"][sdk]["platforms"][platform]["checksum"]
+        );
+        assert_eq!(
+            tuple["native_bytes"],
+            dependencies["native_manifests"][sdk]["platforms"][platform]["size"]
+        );
+        assert_eq!(
+            tuple["node_sha256"],
+            plan["node"]["platforms"][platform]["node_sha256"]
+        );
+    }
+    let expected: BTreeSet<_> = [
+        "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    ]
+    .into_iter()
+    .flat_map(|hop| ["darwin-arm64", "linux-x64"].map(|platform| (hop, platform)))
+    .collect();
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn guarded_production_graphs_pin_every_source_format_and_edge() {
+    assert_eq!(
+        swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+        "claude-agent.acp.guarded-permission-inheritance-v8"
+    );
+    for (source, expected) in [
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.101.0.json"),
+            "8ef8bf48279fa6ed2cbe12c8b77220f47d238df83e00962fcb612a98d8622be1",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.101.1.json"),
+            "9a2b5c118e097e9c3de153dbded1b0a83a99acaa7072e9c5e6d362293ee1a4b5",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.102.0.json"),
+            "b7c5d491fb7d71dea46ff4cd03849489bd7af4b13d6ab250601655c0e185d811",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.103.0.json"),
+            "2551b9679140c0c252e16a6c8176fe31ac3a17703e51ce8839be40d57e578b28",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.104.0.json"),
+            "b13669b6d243392a9a6a835b93721117d79de5cf4b41354cdaa9189f4d2f1a8a",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.104.1.json"),
+            "a25da1c72f5dc94dfb9d539c2612aa93edd25d8dbf88f38bfe88cd5d9bfa304d",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.105.0.json"),
+            "c01615f0ea9a0ecec00ebb3860079f20f655e5a8e84183bd2e45e5e4acbed4cc",
+        ),
+        (
+            include_str!("../sidecar/claude-agent-acp-guard-graphs/0.106.0.json"),
+            "1ce9e874d840aad7c28621abf1a850df53481d01fdda26eb930e60a9bee68331",
+        ),
+        (
+            include_str!("fixtures/claude-agent-acp-0.106.0/guard-package-metadata.json"),
+            "ec892ea5aa52fe6deb77d912d4c5747cfec41dcaff4fc966e40e1e20bd822080",
+        ),
+    ] {
+        assert_eq!(format!("{:x}", Sha256::digest(source.as_bytes())), expected);
     }
 }

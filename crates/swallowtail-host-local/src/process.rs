@@ -3,7 +3,8 @@ mod validation;
 
 use crate::host::LocalProcessHost;
 use swallowtail_runtime::{
-    BoxFuture, ProcessHandle, ProcessRequest, ProcessService, RuntimeFailure, ScopeId,
+    BoxFuture, CheckedProcessRef, ProcessHandle, ProcessRequest, ProcessService, RuntimeFailure,
+    ScopeId,
 };
 
 impl LocalProcessHost {
@@ -29,6 +30,25 @@ impl LocalProcessHost {
                 "Bootstrap input exceeds its host limit",
             ));
         }
+        let process = self.spawn_trusted_candidate(&scope, request, runtime, recipe)?;
+        if let Err(error) = process.bootstrap(recipe.bootstrap(), timeout).await {
+            let stopped = process.force_stop().await;
+            let joined = process.wait().await;
+            stopped?;
+            joined?;
+            return Err(error);
+        }
+        Ok(Box::new(process))
+    }
+
+    #[cfg(unix)]
+    fn spawn_trusted_candidate(
+        &self,
+        scope: &ScopeId,
+        request: ProcessRequest,
+        runtime: &crate::LocalTrustedRuntime,
+        recipe: &crate::LocalCapturedNodeRecipe,
+    ) -> Result<crate::child::LocalProcessHandle, RuntimeFailure> {
         let launch = self
             .approvals
             .executables
@@ -45,22 +65,26 @@ impl LocalProcessHost {
                 "Trusted runtime custody could not be verified",
             )
         })?;
-        let process = runtime
-            .during_spawn(launch, || self.start_process(&scope, request))
+        let _native_custody = recipe
+            .native
+            .as_ref()
+            .map(crate::LocalTrustedRuntime::acquire_custody)
+            .transpose()
+            .map_err(|_| crate::checked_node::denied())?;
+        let _ps_custody = recipe
+            .ps
+            .as_ref()
+            .map(crate::LocalTrustedRuntime::acquire_custody)
+            .transpose()
+            .map_err(|_| crate::checked_node::denied())?;
+        runtime
+            .during_spawn(launch, || self.start_process(scope, request))
             .map_err(|_| {
                 crate::output::failure(
                     "swallowtail.local_process.runtime_custody_mismatch",
                     "Trusted runtime custody could not be verified",
                 )
-            })??;
-        if let Err(error) = process.bootstrap(recipe.bootstrap(), timeout).await {
-            let stopped = process.force_stop().await;
-            let joined = process.wait().await;
-            stopped?;
-            joined?;
-            return Err(error);
-        }
-        Ok(Box::new(process))
+            })?
     }
 
     /// Starts an ordinarily approved process with a separate bounded input prelude.
@@ -103,9 +127,89 @@ impl ProcessService for LocalProcessHost {
         scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        if self
+            .approvals
+            .checked_nodes
+            .values()
+            .any(|checked| checked.executable == *request.executable())
+        {
+            return Box::pin(async { Err(crate::checked_node::denied()) });
+        }
         let result = self
             .start_process(&scope, request)
             .map(|handle| Box::new(handle) as Box<dyn ProcessHandle>);
         Box::pin(async move { result })
+    }
+
+    fn validate_checked(
+        &self,
+        _scope: ScopeId,
+        binding: CheckedProcessRef,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let result = self
+            .approvals
+            .checked_nodes
+            .get(&binding)
+            .ok_or_else(crate::checked_node::denied)
+            .and_then(|checked| {
+                checked.during_admission(&request, || {
+                    let launch = self
+                        .approvals
+                        .executables
+                        .get(request.executable())
+                        .ok_or_else(crate::checked_node::denied)?;
+                    checked
+                        .recipe
+                        .verify_trusted_launch(&checked.runtime, launch)
+                        .map_err(|_| crate::checked_node::denied())?;
+                    self.validate_arguments(&request)?;
+                    self.validate_launch(launch, &request)
+                })
+            });
+        Box::pin(async move { result })
+    }
+
+    #[cfg(unix)]
+    fn start_checked(
+        &self,
+        scope: ScopeId,
+        binding: CheckedProcessRef,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        // Resolve and spawn synchronously while both custody locks are held.
+        // No checked path calls the ordinary ProcessService::start fallback.
+        let checked = self.approvals.checked_nodes.get(&binding).cloned();
+        let process = checked
+            .as_ref()
+            .ok_or_else(crate::checked_node::denied)
+            .and_then(|checked| {
+                checked.during_admission(&request, || {
+                    self.spawn_trusted_candidate(
+                        &scope,
+                        request.clone(),
+                        &checked.runtime,
+                        &checked.recipe,
+                    )
+                })
+            });
+        Box::pin(async move {
+            let process = process?;
+            let checked = checked.ok_or_else(crate::checked_node::denied)?;
+            if let Err(error) = process
+                .bootstrap(
+                    checked.recipe.bootstrap(),
+                    std::time::Duration::from_secs(5),
+                )
+                .await
+            {
+                let stopped = process.force_stop().await;
+                let joined = process.wait().await;
+                stopped?;
+                joined?;
+                return Err(error);
+            }
+            Ok(Box::new(process) as Box<dyn ProcessHandle>)
+        })
     }
 }

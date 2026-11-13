@@ -14,9 +14,9 @@ use swallowtail_core::{
     DEFAULT_MAX_WATCHERS_PER_TURN, ExecutionHostId, ModelArtifactRef, WatcherOperationData,
 };
 use swallowtail_runtime::{
-    AttachmentRef, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef, ProcessRequest,
-    REGISTERED_TOOL_CLEANUP_BUDGET, RegisteredToolDispatcher, SchemaRef, TimeService,
-    WorkingResourceRef,
+    AttachmentRef, CheckedProcessRef, CredentialRef, EndpointRef, EnvironmentRef, ExecutableRef,
+    ProcessRequest, REGISTERED_TOOL_CLEANUP_BUDGET, RegisteredToolDispatcher, SchemaRef,
+    TimeService, WorkingResourceRef,
 };
 
 use crate::task::DEFAULT_TASK_REAP_CAPACITY;
@@ -25,6 +25,7 @@ type EnvironmentValues = Vec<(OsString, OsString)>;
 
 #[derive(Default)]
 pub(crate) struct LocalApprovals {
+    pub(crate) checked_nodes: HashMap<CheckedProcessRef, crate::LocalCheckedNodeLaunch>,
     pub(crate) executables: HashMap<ExecutableRef, LocalExecutableLaunch>,
     pub(crate) environments: HashMap<EnvironmentRef, EnvironmentValues>,
     pub(crate) working_resources: HashMap<WorkingResourceRef, PathBuf>,
@@ -51,6 +52,45 @@ pub struct LocalProcessHostBuilder {
 }
 
 impl LocalProcessHostBuilder {
+    /// Registers one exact captured Node launch under an opaque host reference.
+    ///
+    /// The executable recipe must already be approved. Duplicate references or
+    /// executable registrations and mismatched runtime/prefixes fail closed.
+    /// Calling this is execution-host policy authority, never renderer input.
+    pub fn approve_checked_node(
+        mut self,
+        reference: CheckedProcessRef,
+        checked: crate::LocalCheckedNodeLaunch,
+    ) -> Result<Self, std::io::Error> {
+        let launch = self
+            .approvals
+            .executables
+            .get(&checked.executable)
+            .ok_or_else(|| {
+                std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "checked executable is not approved",
+                )
+            })?;
+        checked
+            .recipe
+            .verify_trusted_launch(&checked.runtime, launch)?;
+        if self.approvals.checked_nodes.contains_key(&reference)
+            || self
+                .approvals
+                .checked_nodes
+                .values()
+                .any(|value| value.executable == checked.executable)
+        {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidInput,
+                "duplicate checked registration",
+            ));
+        }
+        self.approvals.checked_nodes.insert(reference, checked);
+        Ok(self)
+    }
+
     /// Approves one exact executable path behind an opaque reference.
     #[must_use]
     pub fn approve_executable(

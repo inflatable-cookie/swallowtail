@@ -27,3 +27,9 @@
 
 - Recheck runtime ancestor ownership, permissions and identity before candidate spawn.
 - Exercise synchronous captured ESM and CommonJS loading in the candidate bootstrap.
+- Register host-owned checked Node launches with exact argument policies,
+  revocation and interpreter-dependency custody; exercise the production host
+  through the prepared ACP driver. Bound module resolution and reject dynamic
+  string code and native addons. Official graph/native qualification stays gated.
+
+Add exact captured official graph admission and a confined idle-class component probe, with original/native execution and qualification still gated.

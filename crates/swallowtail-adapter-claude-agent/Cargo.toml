@@ -22,6 +22,7 @@ futures-core = "0.3"
 futures-executor = "0.3"
 semver = "1"
 serde_json = "1"
+sha2 = "0.10"
 swallowtail-core.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-protocol-acp.workspace = true
@@ -31,7 +32,6 @@ url = "2"
 [dev-dependencies]
 async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
 futures-util = "0.3"
-sha2 = "0.10"
 swallowtail-testkit.workspace = true
 swallowtail-transport-acp-remote.workspace = true
 tokio = { version = "1.52", default-features = false, features = ["macros", "net", "rt", "sync", "time"] }

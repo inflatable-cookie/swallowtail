@@ -206,8 +206,18 @@ qualified ceiling remains 0.100.0.
 
 The selected guarded launch relies on an execution host that verifies and
 holds custody of its exact runtime through spawn. It does not claim protection
-against hostile same-user runtime replacement. Guarded admission and native
-proof remain pending; ordinary version discovery does not establish them.
+against hostile same-user runtime replacement. The local host can register a
+captured Node recipe under an opaque checked-process reference. Registration
+binds the host's independently approved fingerprint, allowed arguments and
+revocable runtime/dependency custody. Ordinary start refuses a registered
+checked target. Prepared-driver proof uses owned fake modules through this
+production host. The guarded factory captures each exact official graph, serves
+verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
+and pins native and required system `ps` custody. It requires independently
+approved host policy; ordinary version discovery supplies no grant. Original
+class/native behavior proof remains unproved, so the ceiling stays0.100.0.
+The bounded original idle-class component proposal is separate from whole-route
+permission, lifecycle and native proof; see Research483.
 
 ### ACP Permission Exchange
 

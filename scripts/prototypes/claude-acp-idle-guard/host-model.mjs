@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url';
 
 const expected = Object.freeze({
   'preload.mjs': '69e92c9441d600427c6ece40f70a0f57d036c06a604e87461297f0fbc0eb9a72',
-  'loader.mjs': '5694068ca15f0a42c6e21310906b5dc330b9d04be8a3c3783571dc11df4a2475',
+  'loader.mjs': 'f2acaea25ba0aa987d0a47793f948747b60dbbc6dc8838d8087acf24729d6343',
   'entry.mjs': 'd39aac344d9efacbbe3496508da015d63a4e6146f171063ff031215e96c66490',
   'idle.mjs': '3d26aac0f45f61026c81fae01d191086384db796192cc196af092187472b99b2',
 });
@@ -33,7 +33,7 @@ export function prepareFakeLaunch(root, environment = {}, startupArgs = []) {
   const config = {
     entryUrl: pathToFileURL(join(base, 'entry.mjs')).href,
     idleUrl: pathToFileURL(join(base, 'idle.mjs')).href,
-    files: [ { url: pathToFileURL(join(base, 'entry.mjs')).href, source: sources['entry.mjs'] }, { url: pathToFileURL(join(base, 'idle.mjs')).href, source: sources['idle.mjs'] } ],
+    files: [ { url: pathToFileURL(join(base, 'entry.mjs')).href, format: 'module', source: sources['entry.mjs'] }, { url: pathToFileURL(join(base, 'idle.mjs')).href, format: 'module', source: sources['idle.mjs'] } ],
     edges: [ { parent: null, specifier: pathToFileURL(join(base, 'entry.mjs')).href, target: pathToFileURL(join(base, 'entry.mjs')).href }, { parent: pathToFileURL(join(base, 'entry.mjs')).href, specifier: './idle.mjs', target: pathToFileURL(join(base, 'idle.mjs')).href } ],
     loaderUrl: dataUrl(sources['loader.mjs']),
   };

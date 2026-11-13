@@ -40,7 +40,7 @@ impl LocalExpectedSource {
 /// module graph, guard, runtime custody and policy before using these bytes.
 #[derive(Clone)]
 pub struct LocalCapturedSources {
-    entries: BTreeMap<PathBuf, Arc<[u8]>>,
+    pub(crate) entries: BTreeMap<PathBuf, Arc<[u8]>>,
     digest: [u8; 32],
 }
 
@@ -58,6 +58,7 @@ impl LocalCapturedSources {
         if !root.is_absolute() || root.canonicalize()? != root {
             return Err(invalid("noncanonical root"));
         }
+        let ancestors = crate::trusted_runtime::capture_ancestors(&root.join("captured-source"))?;
         let mut entries = BTreeMap::new();
         let mut objects = BTreeSet::new();
         let mut total = 0usize;
@@ -85,7 +86,10 @@ impl LocalCapturedSources {
             }
             let file = open_no_follow(&candidate)?;
             let metadata = file.metadata()?;
-            if !metadata.is_file() || metadata.len() > MAX_MODULE_BYTES {
+            if !metadata.is_file()
+                || !crate::trusted_runtime::trusted_file(&metadata, false)
+                || metadata.len() > MAX_MODULE_BYTES
+            {
                 return Err(invalid("invalid source file"));
             }
             if !objects.insert(file_identity(&metadata)) {
@@ -104,6 +108,9 @@ impl LocalCapturedSources {
                 return Err(invalid("source size limit"));
             }
             entries.insert(source.path.clone(), Arc::<[u8]>::from(bytes));
+        }
+        if ancestors != crate::trusted_runtime::capture_ancestors(&root.join("captured-source"))? {
+            return Err(invalid("source ancestor custody changed"));
         }
         let mut hash = Sha256::new();
         hash.update(b"swallowtail-captured-sources-v1\0");
@@ -208,8 +215,10 @@ impl LocalCapturedImport {
 /// a complete provider closure, or proof of interpreter custody.
 #[derive(Clone)]
 pub struct LocalCapturedGraph {
-    configuration: Arc<[u8]>,
-    digest: [u8; 32],
+    pub(crate) configuration: Arc<[u8]>,
+    pub(crate) digest: [u8; 32],
+    pub(crate) native: Option<crate::LocalTrustedRuntime>,
+    pub(crate) ps: Option<crate::LocalTrustedRuntime>,
 }
 
 impl LocalCapturedGraph {
@@ -316,6 +325,8 @@ impl LocalCapturedGraph {
         Ok(Self {
             configuration: Arc::from(configuration),
             digest: hash.finalize().into(),
+            native: None,
+            ps: None,
         })
     }
 
@@ -375,7 +386,7 @@ impl LocalCapturedLaunchFingerprint {
         policy: [u8; 32],
     ) -> io::Result<Self> {
         let fields = [vendor, shim, runtime, recipe, policy];
-        if fields.iter().any(|digest| *digest == [0; 32]) {
+        if fields.contains(&[0; 32]) {
             return Err(invalid("missing launch digest"));
         }
         let mut hash = Sha256::new();
@@ -412,9 +423,14 @@ pub struct LocalCapturedNodeRecipe {
     bootstrap: Arc<[u8]>,
     fingerprint: LocalCapturedLaunchFingerprint,
     runtime_digest: [u8; 32],
+    pub(crate) native: Option<crate::LocalTrustedRuntime>,
+    pub(crate) ps: Option<crate::LocalTrustedRuntime>,
 }
 
 impl LocalCapturedNodeRecipe {
+    pub(crate) fn matches_runtime(&self, runtime: &crate::LocalTrustedRuntime) -> bool {
+        runtime.digest() == &self.runtime_digest
+    }
     /// Builds a candidate from a rechecked runtime held by the trusted host.
     ///
     /// This does not establish the caller's graph or issue a checked grant.
@@ -466,9 +482,32 @@ impl LocalCapturedNodeRecipe {
         let loader_url = data_url(loader.as_bytes())?;
         let loader_json = serde_json::to_string(&loader_url)?;
         let preload = format!(
-            "import {{ readSync }} from 'node:fs'; import {{ initialize }} from {loader_json}; function read(n) {{ const b=Buffer.alloc(n); let p=0; while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }} return b; }} const n=read(4).readUInt32BE(); if(n>33554432) throw new Error('graph bootstrap too large'); const data=JSON.parse(read(n).toString('utf8')); if(read(1)[0]!==165) throw new Error('invalid bootstrap admission'); initialize(data);"
+            r#"
+import {{ readSync, writeSync }} from 'node:fs';
+import {{ install }} from {loader_json};
+try {{
+  function read(n) {{
+    const b=Buffer.alloc(n); let p=0;
+    while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }}
+    return b;
+  }}
+  const n=read(4).readUInt32BE();
+  if(n>33554432) throw new Error('graph bootstrap too large');
+  const data=JSON.parse(read(n).toString('utf8'));
+  if(read(1)[0]!==165) throw new Error('invalid bootstrap admission');
+  Object.defineProperty(process,'getBuiltinModule',{{value(){{throw new Error('direct builtin access refused')}},writable:false,configurable:false}});
+  install(data);
+}} catch (error) {{
+  const labels=['incomplete graph bootstrap','graph bootstrap too large','invalid bootstrap admission','invalid capture','invalid module','invalid module identity','missing idle module','invalid edge','duplicate edge','runtime platform mismatch','missing native custody'];
+  const label=error instanceof SyntaxError ? 'SyntaxError' : labels.includes(error?.message) ? error.message : 'guard bootstrap refused';
+  writeSync(2,label+'\n');
+  process.exit(78);
+}}
+"#
         );
         let arguments = vec![
+            std::ffi::OsString::from("--no-addons"),
+            std::ffi::OsString::from("--disallow-code-generation-from-strings"),
             std::ffi::OsString::from("--import"),
             std::ffi::OsString::from(data_url(preload.as_bytes())?),
             std::ffi::OsString::from(entry),
@@ -496,6 +535,8 @@ impl LocalCapturedNodeRecipe {
             bootstrap: Arc::from(bootstrap),
             fingerprint,
             runtime_digest: runtime,
+            native: graph.native.clone(),
+            ps: graph.ps.clone(),
         })
     }
 
@@ -519,6 +560,23 @@ impl LocalCapturedNodeRecipe {
         launch: &crate::LocalExecutableLaunch,
     ) -> io::Result<()> {
         runtime.verify_launch(launch)?;
+        if let Some(native) = &self.native {
+            if native.same_custody(runtime) {
+                return Err(invalid("native and interpreter custody overlap"));
+            }
+            native.verify()?;
+        }
+        if let Some(ps) = &self.ps {
+            if ps.same_custody(runtime)
+                || self
+                    .native
+                    .as_ref()
+                    .is_some_and(|native| ps.same_custody(native))
+            {
+                return Err(invalid("process custody overlaps"));
+            }
+            ps.verify()?;
+        }
         if runtime.digest() != &self.runtime_digest || launch.prefix_arguments() != self.arguments {
             return Err(invalid("runtime prefix mismatch"));
         }

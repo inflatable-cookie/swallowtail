@@ -84,14 +84,58 @@ pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::list_instances(
 pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::list_overlay_markers(&self) -> core::result::Result<alloc::vec::Vec<swallowtail_core::connection_lifecycle::records::OverlayMarker>, swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::put_instance(&self, swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
+pub struct swallowtail_host_local::LocalCapturedGraph
+impl swallowtail_host_local::LocalCapturedGraph
+pub fn swallowtail_host_local::LocalCapturedGraph::configuration(&self) -> &[u8]
+pub const fn swallowtail_host_local::LocalCapturedGraph::fingerprint(&self) -> &[u8; 32]
+pub fn swallowtail_host_local::LocalCapturedGraph::new(&swallowtail_host_local::LocalCapturedSources, &std::path::Path, &std::path::Path, &[swallowtail_host_local::LocalCapturedImport]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalCapturedGraph::with_builtins(&swallowtail_host_local::LocalCapturedSources, &std::path::Path, &std::path::Path, &[swallowtail_host_local::LocalCapturedImport], &[(std::path::PathBuf, alloc::string::String)]) -> core::io::error::Result<Self>
+impl core::fmt::Debug for swallowtail_host_local::LocalCapturedGraph
+pub fn swallowtail_host_local::LocalCapturedGraph::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::LocalCapturedImport
+impl swallowtail_host_local::LocalCapturedImport
+pub fn swallowtail_host_local::LocalCapturedImport::new(impl core::convert::Into<std::path::PathBuf>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub struct swallowtail_host_local::LocalCapturedLaunchFingerprint(_)
+impl swallowtail_host_local::LocalCapturedLaunchFingerprint
+pub const fn swallowtail_host_local::LocalCapturedLaunchFingerprint::digest(&self) -> &[u8; 32]
+pub fn swallowtail_host_local::LocalCapturedLaunchFingerprint::new(&swallowtail_host_local::LocalCapturedGraph, [u8; 32], [u8; 32], [u8; 32], [u8; 32], [u8; 32]) -> core::io::error::Result<Self>
+impl core::fmt::Debug for swallowtail_host_local::LocalCapturedLaunchFingerprint
+pub fn swallowtail_host_local::LocalCapturedLaunchFingerprint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::LocalCapturedNodeRecipe
+impl swallowtail_host_local::LocalCapturedNodeRecipe
+pub fn swallowtail_host_local::LocalCapturedNodeRecipe::bootstrap(&self) -> &[u8]
+pub const fn swallowtail_host_local::LocalCapturedNodeRecipe::fingerprint(&self) -> &swallowtail_host_local::LocalCapturedLaunchFingerprint
+pub fn swallowtail_host_local::LocalCapturedNodeRecipe::for_trusted_runtime(&swallowtail_host_local::LocalCapturedGraph, &str, [u8; 32], &swallowtail_host_local::LocalTrustedRuntime, [u8; 32]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalCapturedNodeRecipe::new(&swallowtail_host_local::LocalCapturedGraph, &str, [u8; 32], [u8; 32], [u8; 32]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalCapturedNodeRecipe::prefix_arguments(&self) -> impl core::iter::traits::exact_size::ExactSizeIterator<Item = &std::ffi::os_str::OsStr>
+pub fn swallowtail_host_local::LocalCapturedNodeRecipe::verify_trusted_launch(&self, &swallowtail_host_local::LocalTrustedRuntime, &swallowtail_host_local::LocalExecutableLaunch) -> core::io::error::Result<()>
+impl core::fmt::Debug for swallowtail_host_local::LocalCapturedNodeRecipe
+pub fn swallowtail_host_local::LocalCapturedNodeRecipe::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::LocalCapturedSources
+impl swallowtail_host_local::LocalCapturedSources
+pub fn swallowtail_host_local::LocalCapturedSources::capture(&std::path::Path, &[swallowtail_host_local::LocalExpectedSource]) -> core::io::error::Result<Self>
+pub const fn swallowtail_host_local::LocalCapturedSources::fingerprint(&self) -> &[u8; 32]
+pub fn swallowtail_host_local::LocalCapturedSources::source(&self, &std::path::Path) -> core::option::Option<&[u8]>
+impl core::fmt::Debug for swallowtail_host_local::LocalCapturedSources
+pub fn swallowtail_host_local::LocalCapturedSources::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::LocalCheckedNodeLaunch
+impl swallowtail_host_local::LocalCheckedNodeLaunch
+pub fn swallowtail_host_local::LocalCheckedNodeLaunch::new(swallowtail_runtime::host_reference::ExecutableRef, swallowtail_host_local::LocalTrustedRuntime, swallowtail_host_local::LocalCapturedNodeRecipe, [u8; 32], alloc::vec::Vec<alloc::vec::Vec<alloc::string::String>>) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalCheckedNodeLaunch::revoke(&self)
+impl core::fmt::Debug for swallowtail_host_local::LocalCheckedNodeLaunch
+pub fn swallowtail_host_local::LocalCheckedNodeLaunch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_host_local::LocalExecutableLaunch
 impl swallowtail_host_local::LocalExecutableLaunch
 pub fn swallowtail_host_local::LocalExecutableLaunch::interpreted_script(impl core::convert::Into<std::path::PathBuf>, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalExecutableLaunch::new(impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalExecutableLaunch::with_bootstrap_environment(self, impl core::iter::traits::collect::IntoIterator<Item = (std::ffi::os_str::OsString, std::ffi::os_str::OsString)>) -> Self
+pub fn swallowtail_host_local::LocalExecutableLaunch::with_node_startup_environment_filter(self) -> Self
 pub fn swallowtail_host_local::LocalExecutableLaunch::with_prefix_arguments(self, impl core::iter::traits::collect::IntoIterator<Item = std::ffi::os_str::OsString>) -> Self
 impl core::fmt::Debug for swallowtail_host_local::LocalExecutableLaunch
 pub fn swallowtail_host_local::LocalExecutableLaunch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_host_local::LocalExpectedSource
+impl swallowtail_host_local::LocalExpectedSource
+pub fn swallowtail_host_local::LocalExpectedSource::new(impl core::convert::Into<std::path::PathBuf>, [u8; 32]) -> Self
 pub struct swallowtail_host_local::LocalHostServices
 impl swallowtail_host_local::LocalHostServices
 pub fn swallowtail_host_local::LocalHostServices::approved_environment(&self, &swallowtail_runtime::host_reference::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
@@ -120,6 +164,9 @@ impl swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHost::approved_environment(&self, &swallowtail_runtime::host_reference::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
 pub fn swallowtail_host_local::LocalProcessHost::approved_executable_path(&self, &swallowtail_runtime::host_reference::ExecutableRef) -> core::option::Option<&std::path::Path>
 pub fn swallowtail_host_local::LocalProcessHost::builder(swallowtail_host_local::LocalProcessLimits) -> swallowtail_host_local::LocalProcessHostBuilder
+impl swallowtail_host_local::LocalProcessHost
+pub async fn swallowtail_host_local::LocalProcessHost::start_trusted_candidate(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest, &swallowtail_host_local::LocalTrustedRuntime, &swallowtail_host_local::LocalCapturedNodeRecipe, core::time::Duration) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::ProcessHandle>, swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_host_local::LocalProcessHost::start_with_bootstrap(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest, &[u8], core::time::Duration) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::ProcessHandle>, swallowtail_runtime::failure::RuntimeFailure>
 impl swallowtail_runtime::host_traits::AttachmentService for swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHost::materialize_file(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::attachment::AttachmentDescriptor) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::AttachmentFileLease, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_host_local::LocalProcessHost::release_file(&self, swallowtail_runtime::host_traits::AttachmentFileLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
@@ -128,6 +175,8 @@ pub fn swallowtail_host_local::LocalProcessHost::acquire(&self, swallowtail_runt
 pub fn swallowtail_host_local::LocalProcessHost::release(&self, swallowtail_runtime::secret::CredentialLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
 impl swallowtail_runtime::host_traits::ProcessService for swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHost::start(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::ProcessHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::start_checked(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::CheckedProcessRef, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::host_traits::ProcessHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_host_local::LocalProcessHost::validate_checked(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::CheckedProcessRef, swallowtail_runtime::process_input::ProcessRequest) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>
 impl swallowtail_runtime::host_traits::SchemaService for swallowtail_host_local::LocalProcessHost
 pub fn swallowtail_host_local::LocalProcessHost::materialize_file(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::schema::SchemaDocument) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<swallowtail_runtime::host_traits::SchemaFileLease, swallowtail_runtime::failure::RuntimeFailure>>
 pub fn swallowtail_host_local::LocalProcessHost::release_file(&self, swallowtail_runtime::host_traits::SchemaFileLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
@@ -153,6 +202,7 @@ pub fn swallowtail_host_local::LocalProcessHost::write_text(&self, &swallowtail_
 pub struct swallowtail_host_local::LocalProcessHostBuilder
 impl swallowtail_host_local::LocalProcessHostBuilder
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_attachment(self, swallowtail_runtime::host_reference::AttachmentRef, impl core::convert::Into<std::path::PathBuf>) -> Self
+pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_checked_node(self, swallowtail_runtime::host_reference::CheckedProcessRef, swallowtail_host_local::LocalCheckedNodeLaunch) -> core::result::Result<Self, core::io::error::Error>
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_environment(self, swallowtail_runtime::host_reference::EnvironmentRef, impl core::iter::traits::collect::IntoIterator<Item = (std::ffi::os_str::OsString, std::ffi::os_str::OsString)>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_executable(self, swallowtail_runtime::host_reference::ExecutableRef, impl core::convert::Into<std::path::PathBuf>) -> Self
 pub fn swallowtail_host_local::LocalProcessHostBuilder::approve_executable_launch(self, swallowtail_runtime::host_reference::ExecutableRef, swallowtail_host_local::LocalExecutableLaunch) -> Self
@@ -217,6 +267,16 @@ pub fn swallowtail_host_local::LocalSignInPorts::poll(&self, &swallowtail_runtim
 pub fn swallowtail_host_local::LocalSignInPorts::release(&self, swallowtail_runtime::sign_in_ports::LoopbackCallbackLease) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
 impl swallowtail_runtime::sign_in_ports::UrlOpenService for swallowtail_host_local::LocalSignInPorts
 pub fn swallowtail_host_local::LocalSignInPorts::open(&self, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::host_reference::ApprovedUrlRef) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_host_local::LocalTrustedRuntime
+impl swallowtail_host_local::LocalTrustedRuntime
+pub fn swallowtail_host_local::LocalTrustedRuntime::capture(&std::path::Path, [u8; 32]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalTrustedRuntime::capture_with_dependencies(&std::path::Path, [u8; 32], &[(std::path::PathBuf, [u8; 32])]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalTrustedRuntime::digest(&self) -> &[u8; 32]
+pub fn swallowtail_host_local::LocalTrustedRuntime::revoke(&self)
+pub fn swallowtail_host_local::LocalTrustedRuntime::verify(&self) -> core::io::error::Result<()>
+pub fn swallowtail_host_local::LocalTrustedRuntime::verify_launch(&self, &swallowtail_host_local::LocalExecutableLaunch) -> core::io::error::Result<()>
+impl core::fmt::Debug for swallowtail_host_local::LocalTrustedRuntime
+pub fn swallowtail_host_local::LocalTrustedRuntime::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_host_local::MemoryConnectionLifecycleStore
 impl swallowtail_host_local::MemoryConnectionLifecycleStore
 pub fn swallowtail_host_local::MemoryConnectionLifecycleStore::new() -> Self

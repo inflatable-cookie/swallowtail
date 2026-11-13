@@ -566,6 +566,7 @@ pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput
 pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput::from_admitted(&swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_runtime::installed_executable::InstalledExecutableTarget, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::access::AccessProfile, swallowtail_runtime::prepared_access::PreparedAccessEvidence) -> Self
+pub fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationInput::with_checked_process(self, swallowtail_runtime::host_reference::CheckedProcessRef) -> Self
 pub struct swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe
 impl swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe
 pub const fn swallowtail_adapter_claude_agent::ClaudeAgentPreparationProbe::new(swallowtail_runtime::identity::RequestId, swallowtail_runtime::identity::ScopeId, swallowtail_runtime::time::Deadline, swallowtail_runtime::installed_executable::DiscoveryCancellation) -> Self
@@ -772,6 +773,7 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BASELINE_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_MCP_SERVER_NAME: &str
@@ -788,6 +790,7 @@ pub fn swallowtail_adapter_claude_agent::claude_agent_acp_addable_route_descript
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
+pub fn swallowtail_adapter_claude_agent::claude_agent_acp_guard_v1_source_manifest(&str) -> core::option::Option<alloc::vec::Vec<swallowtail_host_local::captured_source::LocalExpectedSource>>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_subscription_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
 pub fn swallowtail_adapter_claude_agent::claude_agent_permission_namespace() -> swallowtail_core::event::ExtensionNamespace
 pub fn swallowtail_adapter_claude_agent::claude_code_headless_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>

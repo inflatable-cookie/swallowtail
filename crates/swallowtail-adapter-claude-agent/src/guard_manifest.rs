@@ -45,7 +45,7 @@ fn decode_sha256(value: &str) -> Option<[u8; 32]> {
         return None;
     }
     let mut result = [0; 32];
-    for (index, pair) in bytes.chunks_exact(2).enumerate() {
+    for (index, pair) in bytes.as_chunks::<2>().0.iter().enumerate() {
         let nibble = |byte: u8| match byte {
             b'0'..=b'9' => Some(byte - b'0'),
             b'a'..=b'f' => Some(byte - b'a' + 10),

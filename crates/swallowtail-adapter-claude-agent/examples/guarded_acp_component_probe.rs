@@ -33,7 +33,7 @@ mod probe {
             return Err("invalid digest".into());
         }
         let mut out = [0; 32];
-        for (byte, pair) in out.iter_mut().zip(value.as_bytes().chunks_exact(2)) {
+        for (byte, pair) in out.iter_mut().zip(value.as_bytes().as_chunks::<2>().0) {
             let n = |b: u8| if b <= b'9' { b - b'0' } else { b - b'a' + 10 };
             *byte = n(pair[0]) * 16 + n(pair[1]);
         }

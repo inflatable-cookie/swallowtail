@@ -294,7 +294,7 @@ fn decode(text: &str) -> io::Result<[u8; 32]> {
         return Err(invalid("invalid source digest"));
     }
     let mut result = [0; 32];
-    for (out, pair) in result.iter_mut().zip(text.as_bytes().chunks_exact(2)) {
+    for (out, pair) in result.iter_mut().zip(text.as_bytes().as_chunks::<2>().0) {
         let nibble = |b: u8| if b <= b'9' { b - b'0' } else { b - b'a' + 10 };
         *out = nibble(pair[0]) * 16 + nibble(pair[1]);
     }

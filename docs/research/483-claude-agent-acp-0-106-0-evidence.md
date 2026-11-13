@@ -647,3 +647,9 @@ qualification. Contract029 In-Run Latest Movement keeps0.107.0 unverified for
 the next family run; the guarded factory refuses it. This task retains the
 accepted0.106.0 tuple set and original-execution gate. The planner owns its
 follow-up; no support or authority transfers.
+
+Rust1.100 CI required fixed-size hex decoding via `as_chunks`; the repaired
+decoders retain the1.95 floor. The current proposed probe owner SHA-256 is
+`807b2c75bd0d9c67c6a1e024648efab109ea4249542396b43c8ada8fe66475f9`, re-proved on the same exact Node22.23.2
+with identical control/guard outcomes and compound fingerprints. Earlier owner
+digests remain historical evidence, not the current activation artifact.

@@ -411,7 +411,7 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
         include_str!("fixtures/claude-agent-acp-0.106.0/guarded-probe-proposal.json");
     assert_eq!(
         format!("{:x}", Sha256::digest(PROPOSAL.as_bytes())),
-        "d0322efebd9d031dad65249dcade2a094bb4a560266c135bdd500d76a470d06f"
+        "552a24d1f3d4d0ccce811d5366bc2d080ee21fff4bb530fcfdc5b422dab14821"
     );
     let plan: Value = serde_json::from_str(PROPOSAL).expect("proposal JSON");
     let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");

@@ -493,12 +493,20 @@ The ordinary candidate start compares the pinned runtime digest and exact
 prefix, then holds its custody lock through spawn; revocation takes the same
 lock. Runtime files owned by another unprivileged user, group- or world-writable
 files, non-executables and links are refused. The host must still ensure the
-ancestor directories and loaded interpreter dependencies are under its control;
-this helper does not verify that precondition. The fake prepared driver
+loaded interpreter dependencies are under its control. The candidate now also
+records and rechecks each canonical ancestor's identity, ownership and mode;
+writable, replaced and linked ancestors are refused. This is metadata checking
+within trusted-host custody, not an OS-enforced protection against same-user
+mutation. The fake prepared driver
 exercises the candidate host method. This remains a
 building block, not a registered checked grant: it depends on trusted-host
 protection of the runtime path, does not identify the selected official graph,
-and does not protect CommonJS, builtin, native or worker resolution. The real
+and does not protect native, worker or direct builtin use. The captured-loader
+bootstrap now uses synchronous hooks and a fake explicitly admitted
+`node:module` edge to serve nested CommonJS bytes after source replacement.
+This candidate graph is caller-supplied, not an official closure or host
+attestation; direct builtin access and runtime dependencies remain unbounded.
+The real
 local process service still refuses checked launches.
 The earlier conditional statement that the operator's custody choice is
 pending is superseded; original/native proof and separate execution authority

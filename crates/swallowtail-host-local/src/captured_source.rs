@@ -224,16 +224,34 @@ impl LocalCapturedGraph {
         idle: &Path,
         imports: &[LocalCapturedImport],
     ) -> io::Result<Self> {
-        if imports.len() > 8192
+        Self::with_builtins(sources, entry, idle, imports, &[])
+    }
+
+    /// Builds a candidate graph with explicit caller-specific builtin edges.
+    /// The host must separately establish that each builtin use is safe.
+    pub fn with_builtins(
+        sources: &LocalCapturedSources,
+        entry: &Path,
+        idle: &Path,
+        imports: &[LocalCapturedImport],
+        builtins: &[(PathBuf, String)],
+    ) -> io::Result<Self> {
+        if imports.len().saturating_add(builtins.len()) > 8192
             || !sources.entries.contains_key(entry)
             || !sources.entries.contains_key(idle)
+            || idle.extension().is_some_and(|extension| extension == "cjs")
         {
             return Err(invalid("invalid captured graph"));
         }
         let mut files = Vec::with_capacity(sources.entries.len());
         for (path, bytes) in &sources.entries {
             let source = std::str::from_utf8(bytes).map_err(|_| invalid("non-UTF8 source"))?;
-            files.push(serde_json::json!({ "url": virtual_url(path)?, "source": source }));
+            let format = if path.extension().is_some_and(|extension| extension == "cjs") {
+                "commonjs"
+            } else {
+                "module"
+            };
+            files.push(serde_json::json!({ "url": virtual_url(path)?, "source": source, "format": format }));
         }
         let entry_url = virtual_url(entry)?;
         let idle_url = virtual_url(idle)?;
@@ -275,6 +293,17 @@ impl LocalCapturedGraph {
         let mut edges = vec![
             serde_json::json!({ "parent": null, "specifier": entry_url, "target": entry_url }),
         ];
+        let mut builtin_keys = BTreeSet::new();
+        for (parent, specifier) in builtins {
+            if !sources.entries.contains_key(parent)
+                || specifier != "node:module"
+                || graph.contains_key(&(parent.clone(), specifier.clone()))
+                || !builtin_keys.insert((parent.clone(), specifier.clone()))
+            {
+                return Err(invalid("invalid builtin edge"));
+            }
+            edges.push(serde_json::json!({ "parent": virtual_url(parent)?, "specifier": specifier, "target": specifier }));
+        }
         for ((parent, specifier), target) in graph {
             edges.push(serde_json::json!({ "parent": virtual_url(&parent)?, "specifier": specifier, "target": virtual_url(&target)? }));
         }
@@ -437,7 +466,7 @@ impl LocalCapturedNodeRecipe {
         let loader_url = data_url(loader.as_bytes())?;
         let loader_json = serde_json::to_string(&loader_url)?;
         let preload = format!(
-            "import {{ readSync }} from 'node:fs'; import {{ register }} from 'node:module'; function read(n) {{ const b=Buffer.alloc(n); let p=0; while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }} return b; }} const n=read(4).readUInt32BE(); if(n>33554432) throw new Error('graph bootstrap too large'); const data=JSON.parse(read(n).toString('utf8')); if(read(1)[0]!==165) throw new Error('invalid bootstrap admission'); register({loader_json}, {{ parentURL: import.meta.url, data }});"
+            "import {{ readSync }} from 'node:fs'; import {{ initialize }} from {loader_json}; function read(n) {{ const b=Buffer.alloc(n); let p=0; while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }} return b; }} const n=read(4).readUInt32BE(); if(n>33554432) throw new Error('graph bootstrap too large'); const data=JSON.parse(read(n).toString('utf8')); if(read(1)[0]!==165) throw new Error('invalid bootstrap admission'); initialize(data);"
         );
         let arguments = vec![
             std::ffi::OsString::from("--import"),

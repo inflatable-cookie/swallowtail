@@ -175,7 +175,34 @@ fn fake_child_with_input_limit(
     graph: LocalCapturedGraph,
     stdin_bytes: usize,
 ) -> FakeCheckedChild {
-    let node = node_path().canonicalize().expect("canonical Node path");
+    let original = node_path().canonicalize().expect("canonical Node path");
+    let node = root.join("fixture-node");
+    if !node.exists() {
+        std::fs::copy(&original, &node).expect("copy fake interpreter into owned fixture");
+    }
+    // Homebrew's Node can use @loader_path for libnode.  Keep this fake
+    // runnable after copying without changing the host installation.
+    #[cfg(target_os = "macos")]
+    {
+        let lib = original
+            .parent()
+            .and_then(|p| p.parent())
+            .expect("Node prefix")
+            .join("lib");
+        if let Ok(entries) = std::fs::read_dir(lib) {
+            for entry in entries.flatten() {
+                let name = entry.file_name();
+                let name_str = name.to_string_lossy();
+                if name_str.starts_with("libnode.") && name_str.ends_with(".dylib") {
+                    let destination = root.join(name);
+                    if !destination.exists() {
+                        std::fs::copy(entry.path(), destination).expect("copy fake Node library");
+                    }
+                }
+            }
+        }
+    }
+    let node = node.canonicalize().expect("canonical fixture interpreter");
     let bytes = std::fs::read(&node).expect("read fake interpreter");
     let runtime = LocalTrustedRuntime::capture(&node, Sha256::digest(&bytes).into())
         .expect("trusted fake-host runtime");
@@ -270,14 +297,12 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
         DiscoveryCancellation::new(),
     );
     let constrained_binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
-    assert!(
-        block_on(prepare_claude_agent(
-            preparation(constrained_host).with_checked_process(constrained_binding),
-            constrained_probe,
-            constrained_services
-        ))
-        .is_ok()
-    );
+    let constrained_result = block_on(prepare_claude_agent(
+        preparation(constrained_host).with_checked_process(constrained_binding),
+        constrained_probe,
+        constrained_services,
+    ));
+    assert!(constrained_result.is_ok(), "{constrained_result:?}");
     assert_eq!(constrained.checked.load(Ordering::SeqCst), 1);
     assert_eq!(constrained.ordinary.load(Ordering::SeqCst), 0);
     let fake = fake_child(&root, graph);

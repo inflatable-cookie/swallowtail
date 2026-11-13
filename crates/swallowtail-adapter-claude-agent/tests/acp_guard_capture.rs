@@ -147,6 +147,60 @@ fn unapproved_import_refuses_before_fake_entry_effects() {
 }
 
 #[test]
+fn synchronous_capture_serves_aliased_commonjs_and_refuses_unknown_edges() {
+    let root = fixture();
+    let entry = "import {createRequire as make} from 'node:module'; import './idle.mjs'; const get = make(import.meta.url); const name = get.resolve('./nested.cjs'); process.stdout.write(get(name).value);";
+    let nested = "module.exports = {value: require('./value.cjs')};";
+    let value = "module.exports = 'captured';";
+    let inputs = [
+        ("entry.mjs", entry),
+        ("idle.mjs", IDLE),
+        ("nested.cjs", nested),
+        ("value.cjs", value),
+    ];
+    for (name, source) in inputs {
+        std::fs::write(root.join(name), source).expect("fixture source");
+    }
+    let manifest: Vec<_> = inputs
+        .iter()
+        .map(|(name, source)| {
+            LocalExpectedSource::new(*name, Sha256::digest(source.as_bytes()).into())
+        })
+        .collect();
+    let sources = LocalCapturedSources::capture(&root, &manifest).expect("capture sources");
+    let imports = [
+        LocalCapturedImport::new("entry.mjs", "./idle.mjs", "idle.mjs"),
+        LocalCapturedImport::new("entry.mjs", "./nested.cjs", "nested.cjs"),
+        LocalCapturedImport::new("entry.mjs", "/swallowtail-capture/nested.cjs", "nested.cjs"),
+        LocalCapturedImport::new("nested.cjs", "./value.cjs", "value.cjs"),
+    ];
+    let graph = LocalCapturedGraph::with_builtins(
+        &sources,
+        Path::new("entry.mjs"),
+        Path::new("idle.mjs"),
+        &imports,
+        &[(PathBuf::from("entry.mjs"), "node:module".into())],
+    )
+    .expect("fake graph");
+    std::fs::write(root.join("value.cjs"), "throw Error('replacement')").expect("replace source");
+    let child = guarded(&graph);
+    assert!(
+        child.status.success(),
+        "{}",
+        String::from_utf8_lossy(&child.stderr)
+    );
+    assert_eq!(child.stdout, b"captured");
+    let without_builtin = LocalCapturedGraph::new(
+        &sources,
+        Path::new("entry.mjs"),
+        Path::new("idle.mjs"),
+        &imports,
+    )
+    .expect("graph without builtin");
+    assert!(!guarded(&without_builtin).status.success());
+}
+
+#[test]
 fn truncated_graph_bootstrap_fails_before_fake_entry_effects() {
     let root = fixture();
     let graph = capture(&root, ENTRY);
@@ -378,6 +432,13 @@ fn trusted_runtime_custody_detects_drift_replacement_and_revocation() {
     let held = LocalTrustedRuntime::capture(&runtime, digest).expect("host-owned runtime");
     assert_eq!(held.digest(), &digest);
     held.verify().expect("unchanged runtime");
+    std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o770))
+        .expect("make runtime ancestor group writable");
+    assert!(held.verify().is_err(), "writable ancestor is refused");
+    assert!(LocalTrustedRuntime::capture(&runtime, digest).is_err());
+    std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o700))
+        .expect("restore runtime ancestor");
+    held.verify().expect("restored ancestor");
     std::fs::set_permissions(&runtime, std::fs::Permissions::from_mode(0o720))
         .expect("fixture permissions");
     assert!(held.verify().is_err(), "group-writable runtime is refused");
@@ -419,6 +480,15 @@ fn trusted_runtime_custody_detects_drift_replacement_and_revocation() {
     let clone = fresh.clone();
     fresh.revoke();
     assert!(clone.verify().is_err(), "revocation covers clones");
+
+    let directory = root.join("owned");
+    std::fs::create_dir(&directory).expect("ancestor fixture");
+    let nested = directory.join("node");
+    std::fs::copy(&runtime, &nested).expect("nested runtime");
+    let nested_held = LocalTrustedRuntime::capture(&nested, digest).expect("nested custody");
+    std::fs::rename(&directory, root.join("moved")).expect("move ancestor");
+    symlink(root.join("moved"), &directory).expect("replace ancestor with link");
+    assert!(nested_held.verify().is_err(), "ancestor symlink is refused");
 }
 
 #[tokio::test]

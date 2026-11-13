@@ -24,3 +24,6 @@
 - Exercise a fake synchronous CommonJS loader and record selected SDK roots.
 
 - Record trusted-host runtime custody and test a revocable runtime pin.
+
+- Recheck runtime ancestor ownership, permissions and identity before candidate spawn.
+- Exercise synchronous captured ESM and CommonJS loading in the candidate bootstrap.

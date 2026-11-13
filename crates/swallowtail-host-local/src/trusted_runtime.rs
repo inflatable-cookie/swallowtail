@@ -26,6 +26,7 @@ pub struct LocalTrustedRuntime {
 struct RuntimeInner {
     path: PathBuf,
     file: Mutex<File>,
+    ancestors: Vec<(PathBuf, DirectoryIdentity)>,
     digest: [u8; 32],
     revoked: AtomicBool,
 }
@@ -39,6 +40,7 @@ impl LocalTrustedRuntime {
         if !path.is_absolute() || path.canonicalize()? != path {
             return Err(invalid("runtime path is not canonical"));
         }
+        let ancestors = capture_ancestors(path)?;
         let mut file = open_no_follow(path)?;
         let metadata = file.metadata()?;
         if !metadata.is_file() || !trusted_file(&metadata) || metadata.len() > MAX_RUNTIME {
@@ -51,6 +53,7 @@ impl LocalTrustedRuntime {
             inner: Arc::new(RuntimeInner {
                 path: path.to_path_buf(),
                 file: Mutex::new(file),
+                ancestors,
                 digest,
                 revoked: AtomicBool::new(false),
             }),
@@ -72,6 +75,9 @@ impl LocalTrustedRuntime {
     fn verify_held(&self, held: &mut File) -> io::Result<()> {
         if self.inner.revoked.load(Ordering::Acquire) {
             return Err(invalid("runtime custody revoked"));
+        }
+        if capture_ancestors(&self.inner.path)? != self.inner.ancestors {
+            return Err(invalid("runtime ancestor custody changed"));
         }
         if self.inner.path.canonicalize()? != self.inner.path {
             return Err(invalid("runtime path is not canonical"));
@@ -156,6 +162,41 @@ fn digest_file(file: &mut File) -> io::Result<[u8; 32]> {
 
 fn invalid(message: &'static str) -> io::Error {
     io::Error::new(io::ErrorKind::InvalidData, message)
+}
+
+#[cfg(unix)]
+type DirectoryIdentity = (u64, u64, u32, u32);
+#[cfg(not(unix))]
+type DirectoryIdentity = ();
+
+#[cfg(unix)]
+fn capture_ancestors(path: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)>> {
+    use std::os::unix::fs::MetadataExt;
+    path.ancestors()
+        .skip(1)
+        .map(|directory| {
+            let metadata = std::fs::symlink_metadata(directory)?;
+            let mode = metadata.mode();
+            if !metadata.is_dir()
+                || (metadata.uid() != 0 && metadata.uid() != nix::unistd::geteuid().as_raw())
+                || mode & 0o022 != 0
+            {
+                return Err(invalid("untrusted runtime ancestor"));
+            }
+            Ok((
+                directory.to_path_buf(),
+                (metadata.dev(), metadata.ino(), metadata.uid(), mode),
+            ))
+        })
+        .collect()
+}
+
+#[cfg(not(unix))]
+fn capture_ancestors(_: &Path) -> io::Result<Vec<(PathBuf, DirectoryIdentity)>> {
+    Err(io::Error::new(
+        io::ErrorKind::Unsupported,
+        "runtime custody unavailable",
+    ))
 }
 
 #[cfg(unix)]

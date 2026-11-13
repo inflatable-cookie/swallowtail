@@ -99,6 +99,12 @@ Original mode refuses unconditionally. Missing:
   The dedicated fixture attempt proves owned canonical file access on both
   hosts; it does not combine that environment with the original native or
   prove that native's settings discovery. No local canonical file is used.
+- A kernel-confined provider connection usable by the opaque Linux native.
+  Linux denies new sockets/connect; its owned Node fake carrier consumes a
+  preconnected descriptor by replacing `net.connect`/`net.createConnection`.
+  This does not establish that a vendor binary can consume that descriptor.
+  The fixture workflow supplies neither an original transport nor a new network
+  confinement mechanism. Do not enable socket creation to make a probe run.
 - Exact original-artifact authority and a structurally declared Nucleus
   source-immutable author-side proof selector.
 
@@ -110,6 +116,14 @@ exercise the canonical-path mapping with owned fakes first. Darwin needs an
 existing provisioned boundary because Seatbelt cannot supply that mapping.
 No privileged local helper, original-execution host provisioning or VM change
 is granted by this proposal.
+
+For the remaining Linux transport gate, an owner could provision a dedicated
+ephemeral loopback-only network namespace containing the owned endpoint and
+supervised children, then prove ordinary socket connections and forbidden egress
+with owned fakes before any original request. This needs separate exact setup/
+cleanup authority and observed tool/kernel support; the consumed file-fixture
+grant authorizes none of it. Custody must be settled for the standalone SDK;
+ACP's trusted-host ruling supplies context, not that decision.
 
 The planner's 2026-11-13 continuation requests a concrete
 [ephemeral-CI environment proposal](claude-agent-sdk-ephemeral-ci-proposal.md).

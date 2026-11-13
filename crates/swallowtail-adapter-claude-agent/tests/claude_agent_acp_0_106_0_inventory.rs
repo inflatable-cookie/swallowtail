@@ -17,6 +17,8 @@ const IMPORT_INVENTORY: &str =
     include_str!("fixtures/claude-agent-acp-0.106.0/import-edge-inventory.json");
 const IMPORT_ARTIFACTS: &str =
     include_str!("fixtures/claude-agent-acp-0.106.0/import-edge-artifacts.json");
+const SDK_ROOT_EXPORTS: &str =
+    include_str!("fixtures/claude-agent-acp-0.106.0/sdk-root-exports.json");
 
 #[test]
 fn current_acp_inventory_reconstructs_all_hops_without_qualifying_them() {
@@ -160,6 +162,10 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
             IMPORT_ARTIFACTS,
             "674bfe4f5d73b62ac8c705107eb5cac3508d532bc332d80121fd68bd2bf8d690",
         ),
+        (
+            SDK_ROOT_EXPORTS,
+            "b06ea5d8ae3b50a8c9fc17f8821a8ae6d587c46388a78c002e26898ec1595a17",
+        ),
     ] {
         assert_eq!(format!("{:x}", Sha256::digest(text.as_bytes())), expected);
     }
@@ -217,6 +223,8 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
         );
     }
     let closure: Value = serde_json::from_str(CLOSURE).expect("closure JSON");
+    let registry_for_roots: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
+    let sdk_roots: Value = serde_json::from_str(SDK_ROOT_EXPORTS).expect("SDK exports JSON");
     let manifest: Value = serde_json::from_str(GUARD_MANIFEST).expect("guard manifest JSON");
     let versions = [
         "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
@@ -225,10 +233,95 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
         manifest.as_object().expect("manifest versions").len(),
         versions.len()
     );
-    for version in versions {
+    for (index, version) in versions.into_iter().enumerate() {
         let expected_paths = closure["reachable_js"][version]
             .as_array()
             .expect("reachable paths");
+        let caller = if index < 3 {
+            "dist/acp-agent.js"
+        } else {
+            "dist/v1/acp-agent.js"
+        };
+        assert!(expected_paths.iter().any(|path| path == caller));
+        assert!(
+            expected_paths
+                .iter()
+                .any(|path| path == "dist/claude-cli.js")
+        );
+        assert!(
+            imports["packages"][version][caller]["edges"]
+                .as_array()
+                .expect("caller imports")
+                .iter()
+                .any(|edge| edge["kind"] == "static"
+                    && edge["specifier"] == "@anthropic-ai/claude-agent-sdk")
+        );
+        let sdk_version = registry_for_roots["versions"][version]["dependencies"]["@anthropic-ai/claude-agent-sdk"].as_str().expect("SDK version");
+        let root = &sdk_roots[sdk_version];
+        assert_eq!(root["root_export"]["default"], "./sdk.mjs");
+        assert_eq!(
+            root["package_json_sha256"],
+            dependencies["trees"]["agentsdk"][sdk_version]["package.json"]
+        );
+        assert_eq!(
+            root["archive_sha256"],
+            dependencies["artifacts"][format!("@anthropic-ai/claude-agent-sdk@{sdk_version}")]["tarball_sha256"]
+        );
+        let sdk = &imports["packages"][format!("_anthropic-ai_claude-agent-sdk_{sdk_version}")]["sdk.mjs"];
+        assert!(
+            sdk["cautions"]
+                .as_array()
+                .expect("SDK cautions")
+                .iter()
+                .any(|site| site["kind"] == "call:createRequire-alias")
+        );
+        assert!(
+            sdk["cautions"]
+                .as_array()
+                .expect("SDK cautions")
+                .iter()
+                .any(|site| site["kind"] == "identifier:Function")
+        );
+        assert!(
+            sdk["edges"]
+                .as_array()
+                .expect("SDK imports")
+                .iter()
+                .any(|edge| edge["specifier"] == "child_process"
+                    || edge["specifier"] == "node:child_process")
+        );
+        let mut builtins = BTreeSet::new();
+        for path in expected_paths {
+            let path = path.as_str().expect("reachable path");
+            for edge in imports["packages"][version][path]["edges"]
+                .as_array()
+                .expect("wrapper edges")
+            {
+                let specifier = edge["specifier"].as_str().expect("specifier");
+                if specifier.starts_with("node:") {
+                    builtins.insert(specifier);
+                }
+            }
+        }
+        let mut expected_builtins = BTreeSet::from([
+            "node:child_process",
+            "node:crypto",
+            "node:fs",
+            "node:fs/promises",
+            "node:module",
+            "node:os",
+            "node:path",
+            "node:readline",
+            "node:stream/web",
+            "node:util",
+        ]);
+        if index < 3 {
+            expected_builtins.insert("node:string_decoder");
+        }
+        assert_eq!(
+            builtins, expected_builtins,
+            "{version} conservative wrapper builtins"
+        );
         let rows = manifest[version].as_object().expect("manifest rows");
         assert_eq!(rows.len(), expected_paths.len());
         for path in expected_paths {

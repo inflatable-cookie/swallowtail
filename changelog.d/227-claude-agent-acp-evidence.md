@@ -20,3 +20,5 @@
 - Bound fake guarded bootstrap writes separately from provider input.
 
 - Record syntax-level import edges and fake bootstrap admission ordering.
+
+- Exercise a fake synchronous CommonJS loader and record selected SDK roots.

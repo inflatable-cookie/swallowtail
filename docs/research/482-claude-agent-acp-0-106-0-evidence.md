@@ -424,3 +424,51 @@ Fake tests cancel while the pipe is stalled before admission and
 terminate and wait for a process tree after admission, including a descendant.
 This tests those orderings, not every operating-system race or interpreter
 custody. The ordinary bootstrap API is not checked-launch attestation.
+
+## Synchronous hook candidate and selected roots
+
+The [Node 22.23.3 module documentation](https://nodejs.org/download/release/v22.23.3/docs/api/module.html#customization-hooks)
+describes synchronous `registerHooks` interception for import, built-in
+`require`, and `createRequire`-created require. Synchronous hooks are not
+inherited into worker realms by default. The documentation is not proof of
+this route's runtime or immutable interpreter identity.
+
+The fake-only `sync-preload.mjs` serves captured ESM and CommonJS source and
+allows only exact caller/specifier edges. On the current host Node, a fake
+`createRequire` alias and its `require.resolve` load captured CommonJS after
+the backing files are replaced; unknown paths, query aliases, denied builtins
+and duplicate edges fail. The fake explicitly permits `node:module` for its
+entry and does not establish confinement against direct builtins, native
+addons, dynamic code or independently created workers. It does not execute
+or admit official ACP bytes. Exact Node 22.23.3 fake execution remains unproved.
+
+`sdk-root-exports.json` binds each selected SDK's root export to the frozen
+archive and package.json digest: all four versions export `./sdk.mjs`.
+For each ACP hop the frozen conservative reachable set includes its exact
+v1 caller, which statically imports that SDK root, and `dist/claude-cli.js`,
+which dynamically imports `node:module` and calls `import.meta.resolve` for
+that SDK before `createRequire`. The selected `sdk.mjs` contains aliased
+`createRequire` calls and `Function` identifiers. These are statically
+reachable source sites, not proof that any particular call executes. The
+remaining dynamic-code, addon and worker paths need call/dataflow and runtime
+proof; no absence claim follows from the syntax inventory.
+
+The first newer hop, ACP 0.101.0, reaches the wrapper caller that imports
+Agent SDK 0.3.318's `sdk.mjs`; ACP 0.106.0 imports the corresponding root of
+SDK 0.3.322. Each selected SDK root contains a child-process import, aliased
+`createRequire` calls and `Function` identifiers. In the frozen 0.3.322
+source, one resolver call appears inside the native CLI lookup when no
+executable path is supplied. This locates a conditional selected-source path;
+it does not prove that the branch fires, identify every native or worker
+target, or bind the bytes eventually executed. Each hop retains its own
+package and source hashes in the two inventories.
+
+The conservative wrapper builtins include `node:fs`, `node:fs/promises`,
+`node:path` and `node:os` for filesystem and host information; `node:module`
+for module resolution; `node:child_process` for process creation; and
+`node:crypto`, `node:readline`, `node:stream/web` and `node:util` for library
+operations. The first three hops also include `node:string_decoder`.
+This is an inventory of reachable source imports, not approval to expose any
+builtin. `node:module`, filesystem access and child creation need an exact
+host policy; CommonJS, worker and native paths remain closed until the
+protected loaded-byte boundary and runtime custody are established.

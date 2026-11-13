@@ -123,7 +123,7 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
                 swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
             )
         ),
-        "f2acaea25ba0aa987d0a47793f948747b60dbbc6dc8838d8087acf24729d6343"
+        "481544ae878f7daa7a1bb5d963c13c1d6f94d28a5cec7e0cbe6a1206c2f3838d"
     );
     for (text, expected) in [
         (
@@ -411,11 +411,35 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
         include_str!("fixtures/claude-agent-acp-0.106.0/guarded-probe-proposal.json");
     assert_eq!(
         format!("{:x}", Sha256::digest(PROPOSAL.as_bytes())),
-        "1ca468d349cc3a2244053bb484887aa5b15f49f87ade576a2dc57524ae26ec18"
+        "162212512d289a5a32e650b660a3d914d8f079d03ea92081174de39b0d536e8b"
     );
     let plan: Value = serde_json::from_str(PROPOSAL).expect("proposal JSON");
     let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
     let dependencies: Value = serde_json::from_str(DEPENDENCIES).expect("dependency JSON");
+    for (name, source) in [
+        (
+            "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs",
+            include_bytes!("../examples/guarded_acp_component_probe.rs").as_slice(),
+        ),
+        (
+            "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs",
+            include_bytes!("../sidecar/claude-agent-acp-guard-loader.mjs").as_slice(),
+        ),
+        (
+            "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs",
+            include_bytes!("guard_component_probe/entry.mjs").as_slice(),
+        ),
+        (
+            "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs",
+            include_bytes!("guard_component_probe/idle.mjs").as_slice(),
+        ),
+    ] {
+        assert_eq!(
+            plan["component_stage"]["source_sha256"][name],
+            format!("{:x}", Sha256::digest(source)),
+            "proposal source drift: {name}"
+        );
+    }
     assert!(plan["original_runner"].is_null());
     assert_eq!(plan["qualification_ceiling"], "0.100.0");
     assert_eq!(plan["node"]["version"], "22.23.2");

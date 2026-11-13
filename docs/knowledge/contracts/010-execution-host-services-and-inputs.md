@@ -234,7 +234,8 @@ manifests, the exact Node22.23.2 platform artifact and the matching held SDK
 native executable. It captures the complete statically linked closure,
 including modules linked before ACP v1 negotiation, and explicitly binds the
 wrapper's SDK-root `createRequire`. JavaScript and JSON load from captured
-bytes. The module facade exposes bounded resolution; the child-process facade
+bytes. The module facade resolves only admitted captured/native/builtin edges;
+Node22's unhooked `createRequire().resolve()` is not used. The child-process facade
 permits only the pinned native path, rejects shells and unsafe startup controls,
 and rechecks the native source identity before invoking it. Worker realms,
 addons and string code are not implicitly admitted. Unclassified source or

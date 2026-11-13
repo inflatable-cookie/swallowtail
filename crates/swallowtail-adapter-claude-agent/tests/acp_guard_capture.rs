@@ -500,17 +500,24 @@ async fn cancelled_bootstrap_stops_and_reaps_the_owned_child() {
         "require('fs').writeFileSync('child.pid', String(process.pid)); setInterval(() => {}, 1000)",
     );
     let bytes = vec![b'x'; 1024 * 1024];
-    let result = tokio::time::timeout(
-        Duration::from_millis(500),
-        host.start_with_bootstrap(
-            ScopeId::new("bootstrap.cancel").expect("scope"),
-            request,
-            &bytes,
-            Duration::from_secs(5),
-        ),
-    )
-    .await;
-    assert!(result.is_err(), "stalled write must be cancelled");
+    let mut pending = Box::pin(host.start_with_bootstrap(
+        ScopeId::new("bootstrap.cancel").expect("scope"),
+        request,
+        &bytes,
+        Duration::from_secs(15),
+    ));
+    let started = Instant::now();
+    while !root.join("child.pid").exists() {
+        tokio::select! {
+            result = &mut pending => panic!("bootstrap completed before cancellation: {}", result.is_ok()),
+            () = tokio::time::sleep(Duration::from_millis(20)) => {}
+        }
+        assert!(
+            started.elapsed() < Duration::from_secs(10),
+            "child readiness was not observed"
+        );
+    }
+    drop(pending);
     let pid = std::fs::read_to_string(root.join("child.pid")).expect("child started");
     let pid: u32 = pid.parse().expect("fixture pid");
     let deadline = Instant::now() + Duration::from_secs(8);

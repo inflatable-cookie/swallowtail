@@ -216,8 +216,10 @@ verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
 and pins native and required system `ps` custody. It requires independently
 approved host policy; ordinary version discovery supplies no grant. Original
 class/native behavior proof remains unproved, so the ceiling stays0.100.0.
-The bounded original idle-class component proposal is separate from whole-route
-permission, lifecycle and native proof; see Research483.
+The bounded component harness has passed with first-party fakes on the exact
+Node22.23.2 Darwin arm64 runtime. Original idle-class execution requires separate
+exact authority; whole-route permission, lifecycle and native proof remain
+independent. See Research483.
 
 ### ACP Permission Exchange
 

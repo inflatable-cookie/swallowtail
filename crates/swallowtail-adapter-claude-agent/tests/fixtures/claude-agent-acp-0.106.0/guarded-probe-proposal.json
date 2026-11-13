@@ -335,11 +335,23 @@
       }
     },
     "source_sha256": {
-      "scripts/claude-acp-component-probe.py": "5d7e9de43c9c089f620356a1a8df63c62baeabf8b14633d57767f897bad6ce9f",
+      "scripts/claude-acp-component-probe.py": "cbe5fc49041f3b155f491d7cb9d858a56b968b981d8e57ea20d17970d146e715",
       "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs": "8c9e226ec92e0122175f29252580484af2f1c2ac98498f7b03c946777eea0be7",
-      "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs": "7ce0625f57f95291a60b21947cd5674732352567a900a99833e18334655669ac"
+      "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs": "7ce0625f57f95291a60b21947cd5674732352567a900a99833e18334655669ac",
+      "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "b199099afcad61007b722e34d53268c40d803c8e13f153f18f4b1ae712e2b1a5",
+      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "481544ae878f7daa7a1bb5d963c13c1d6f94d28a5cec7e0cbe6a1206c2f3838d",
+      "Cargo.toml": "c349653298d6c24d3ac933ae36eb01c51abf6c570ceae3ae72de5ddd050e8f2b",
+      "scripts/stage-claude-acp-fake-node.py": "e78bf664ada700bddd45bdadb1d522beb53a5e1940438e05b8b3d324b0360d08"
     },
-    "admission_status": "Current host fake run refuses untrusted Homebrew runtime ancestor; needs owner-provisioned exact runtime with trusted ancestors and complete loader custody. Positive confined component proof is not established."
+    "admission_status": "Requires exact Node22.23.2 source/runtime custody, kernel confinement counterexamples and first-party fake control/guard success before any separately authorized original class execution.",
+    "build_selector": "effigy build:acp-guard-component-probe",
+    "build_profile": "dev; existing sha2 dependency optimized at level3; byte verification unchanged",
+    "fake_runtime_fixture": {
+      "selector": "effigy prepare:acp-guard-fake-node",
+      "scratch_bytes": 201326592,
+      "host_installation_changes": false,
+      "original_provider_code": false
+    }
   },
   "behavior_revision": "claude-agent.acp.guarded-permission-inheritance-v8"
 }

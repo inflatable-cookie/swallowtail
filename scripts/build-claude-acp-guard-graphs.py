@@ -125,6 +125,10 @@ def main():
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     if args.check:
+        proposal = json.loads((FIXTURE / "guarded-probe-proposal.json").read_text())
+        for source, expected in proposal["component_stage"]["source_sha256"].items():
+            if hashlib.sha256((ROOT / source).read_bytes()).hexdigest() != expected:
+                raise ValueError("probe source drift: " + source)
         for hop in HOPS:
             expected = build(None, hop)
             actual = json.loads((ROOT / "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-graphs" / (hop + ".json")).read_text())

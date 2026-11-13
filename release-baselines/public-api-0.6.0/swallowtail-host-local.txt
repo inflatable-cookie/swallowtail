@@ -86,6 +86,8 @@ pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::put_instance(&s
 pub fn swallowtail_host_local::JsonFileConnectionLifecycleStore::put_overlay_marker(&self, swallowtail_core::connection_lifecycle::records::OverlayMarker) -> core::result::Result<(), swallowtail_runtime::connection_lifecycle::ConnectionLifecycleStoreFailure>
 pub struct swallowtail_host_local::LocalCapturedGraph
 impl swallowtail_host_local::LocalCapturedGraph
+pub fn swallowtail_host_local::LocalCapturedGraph::capture_manifest(&std::path::Path, &[u8], &str, &swallowtail_host_local::LocalTrustedRuntime, core::option::Option<&swallowtail_host_local::LocalTrustedRuntime>) -> core::io::error::Result<Self>
+impl swallowtail_host_local::LocalCapturedGraph
 pub fn swallowtail_host_local::LocalCapturedGraph::configuration(&self) -> &[u8]
 pub const fn swallowtail_host_local::LocalCapturedGraph::fingerprint(&self) -> &[u8; 32]
 pub fn swallowtail_host_local::LocalCapturedGraph::new(&swallowtail_host_local::LocalCapturedSources, &std::path::Path, &std::path::Path, &[swallowtail_host_local::LocalCapturedImport]) -> core::io::error::Result<Self>
@@ -273,6 +275,7 @@ pub fn swallowtail_host_local::LocalTrustedRuntime::capture(&std::path::Path, [u
 pub fn swallowtail_host_local::LocalTrustedRuntime::capture_with_dependencies(&std::path::Path, [u8; 32], &[(std::path::PathBuf, [u8; 32])]) -> core::io::error::Result<Self>
 pub fn swallowtail_host_local::LocalTrustedRuntime::digest(&self) -> &[u8; 32]
 pub fn swallowtail_host_local::LocalTrustedRuntime::revoke(&self)
+pub fn swallowtail_host_local::LocalTrustedRuntime::source_digest(&self) -> &[u8; 32]
 pub fn swallowtail_host_local::LocalTrustedRuntime::verify(&self) -> core::io::error::Result<()>
 pub fn swallowtail_host_local::LocalTrustedRuntime::verify_launch(&self, &swallowtail_host_local::LocalExecutableLaunch) -> core::io::error::Result<()>
 impl core::fmt::Debug for swallowtail_host_local::LocalTrustedRuntime

@@ -71,18 +71,33 @@ export function load(url, context, nextLoad) {
   if (childFacades.has(url)) return childFacade(native, platformPrograms.get(childFacades.get(url)));
   if (moduleFacades.has(url)) {
     const parent = JSON.stringify(moduleFacades.get(url));
-    const allowed = JSON.stringify([...requireParents.get(moduleFacades.get(url)) ?? []]);
+    const allowedParents = [moduleFacades.get(url), ...requireParents.get(moduleFacades.get(url)) ?? []];
+    const allowed = JSON.stringify(allowedParents.slice(1));
+    const resolutions = JSON.stringify([...edges].filter(([key]) => allowedParents.includes(JSON.parse(key)[0])));
     return { format: 'module', shortCircuit: true, source: `
 import { createRequire as original } from 'node:module';
 const parent = ${parent};
 const allowed = [parent, ...${allowed}];
+const resolutions = new Map(${resolutions});
 export function createRequire(filename) {
   const value = filename instanceof URL ? filename.href : filename;
   const selected = allowed.find(url => value === url || value === new URL(url).pathname);
   if (!selected) throw new Error('require parent mismatch');
   const raw = original(selected);
-  const require = specifier => raw(specifier);
-  Object.defineProperty(require, 'resolve', { value: (...args) => { if (args.length !== 1) throw new Error('resolver options refused'); return raw.resolve(args[0]); } });
+  const target = specifier => {
+    if (typeof specifier !== 'string') throw new Error('unapproved module edge');
+    const found = resolutions.get(JSON.stringify([selected, specifier]));
+    if (!found) throw new Error('unapproved module edge');
+    return found;
+  };
+  const require = specifier => { target(specifier); return raw(specifier); };
+  // Node22 does not route createRequire().resolve through synchronous hooks.
+  // Resolve only the admitted captured/native/builtin edge, without disk IO.
+  Object.defineProperty(require, 'resolve', { value: (...args) => {
+    if (args.length !== 1) throw new Error('resolver options refused');
+    const found = target(args[0]);
+    return found.startsWith('node:') ? found : new URL(found).pathname;
+  } });
   return Object.freeze(require);
 }
 export default Object.freeze({ createRequire });

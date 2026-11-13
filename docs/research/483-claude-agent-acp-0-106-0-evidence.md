@@ -583,14 +583,40 @@ stages, not a completed qualification. Contract029 keeps0.100.0; Contract061
 cannot project the guarded permission revision as qualified until the actual
 route-specific proof passes.
 
-Current-host component admission refused `untrusted runtime ancestor` for the
-Homebrew Node26.11.0 closure under `/opt/homebrew`. Its96 non-system libraries
-were enumerated; raising the finite descriptor budget did not waive ancestry
-custody. The positive confined component witness has not run. Required next
-input: an owner-provisioned exact Node22.23.2 closure with trusted ancestors and
-stable loader custody, then separate exact original-class execution authority.
-No host permissions, installations or runtime sources were changed to bypass
-this refusal. The runnable owner fails closed on this environment.
+The initial Homebrew runtime admission refused `untrusted runtime ancestor`.
+A subsequent unoptimized debug attempt exhausted the40s owner bound before a
+positive witness; it earns no cleanup or qualification credit. No owned Node
+process was present in the later process snapshot; absence is not joined proof.
+
+The worker resolved the runtime path inside this run: the frozen official
+Node22.23.2 Darwin arm64 executable was copied from its SHA-verified archive into
+a fresh owned fixture, with no installation or PATH change on the host. Only
+first-party fakes used it. `sha2` is optimized at level3 in development/test
+profiles so full113MB source checks fit the finite probe; no byte check was
+removed. Node22's `createRequire().resolve()` bypasses synchronous hooks, so the
+facade now resolves from its captured edge table, never the filesystem fallback.
+Cancellation proof waits for the child-ready PID before dropping the pending
+bootstrap and observing its exit.
+
+All15 captured-child tests passed on that exact Node22.23.2 fixture in12.160s.
+This includes production checked-host preparation, ESM/CommonJS/JSON, owned
+native fake and caller-bound `ps`, denied activity followed by continued output
+without a permission callback, source replacement, cancellation and joined
+cleanup. It does not execute the original provider.
+
+The confined first-party component witness then passed on Darwin arm64
+kernel25.6.0. Its unguarded control armed12 timers and fired15 times; the guard
+armed0 and fired0. Both ran the entry, preserved settings and joined their owned
+child/promise/watchdog cleanup. Kernel-denied filesystem and network
+counterexamples preceded launch. Original/native activation remained false.
+The tested owner SHA-256 is
+`e9370d1db6fe59c40ed88580424595e762da2bf14588f43380a03f359b1e5564`;
+the exact Node SHA-256 is
+`18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572`.
+This establishes the bounded fake harness, not original-class, original ACP or
+native behavior. The runnable component proposal still needs separate exact
+execution authority. Linux confinement and full native permission/lifecycle
+proof remain independent gates.
 
 Official npm metadata rechecked2026-11-13T12:58:45Z: latest remains0.106.0;
 the complete stable set above0.100.0 is unchanged. Canonical pushed main

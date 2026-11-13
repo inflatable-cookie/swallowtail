@@ -33,3 +33,5 @@
   string code and native addons. Official graph/native qualification stays gated.
 
 Add exact captured official graph admission and a confined idle-class component probe, with original/native execution and qualification still gated.
+
+Verify the guarded first-party fake harness on exact Node22.23.2, with explicit captured require resolution and bounded optimized hashing.

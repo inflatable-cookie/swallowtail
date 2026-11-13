@@ -773,6 +773,7 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_AXIS: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BASELINE_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_BINARY_PATH_FIELD_ID: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_ENVIRONMENT_FIELD_ID: &str
+pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str
@@ -786,6 +787,7 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_BASELINE_V
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str]
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str
+pub fn swallowtail_adapter_claude_agent::capture_claude_agent_acp_guarded_v1(&str, &std::path::Path, &str, &swallowtail_host_local::trusted_runtime::LocalTrustedRuntime, &swallowtail_host_local::trusted_runtime::LocalTrustedRuntime, core::option::Option<&swallowtail_host_local::trusted_runtime::LocalTrustedRuntime>) -> core::io::error::Result<swallowtail_host_local::captured_source::LocalCapturedNodeRecipe>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim

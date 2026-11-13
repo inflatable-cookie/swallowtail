@@ -6,7 +6,7 @@ import { pathToFileURL } from 'node:url';
 
 const expected = Object.freeze({
   'preload.mjs': '69e92c9441d600427c6ece40f70a0f57d036c06a604e87461297f0fbc0eb9a72',
-  'loader.mjs': 'f2acaea25ba0aa987d0a47793f948747b60dbbc6dc8838d8087acf24729d6343',
+  'loader.mjs': '481544ae878f7daa7a1bb5d963c13c1d6f94d28a5cec7e0cbe6a1206c2f3838d',
   'entry.mjs': 'd39aac344d9efacbbe3496508da015d63a4e6146f171063ff031215e96c66490',
   'idle.mjs': '3d26aac0f45f61026c81fae01d191086384db796192cc196af092187472b99b2',
 });

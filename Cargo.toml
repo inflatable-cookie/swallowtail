@@ -67,3 +67,11 @@ unsafe_code = "forbid"
 
 [profile.test]
 debug = 0
+
+# Checked custody hashes complete Node/native files. Keep the existing SHA-256
+# implementation optimized in bounded development and test probes as well.
+[profile.dev.package.sha2]
+opt-level = 3
+
+[profile.test.package.sha2]
+opt-level = 3

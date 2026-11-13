@@ -25,7 +25,11 @@ MAX_OUTPUT = 1024 * 1024
 
 
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    result = hashlib.sha256()
+    with path.open("rb") as source:
+        while block := source.read(1024 * 1024):
+            result.update(block)
+    return result.hexdigest()
 
 
 def runtime_files(node):

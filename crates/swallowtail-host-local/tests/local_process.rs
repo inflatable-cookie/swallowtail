@@ -327,6 +327,10 @@ fn node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before
         "node_path",
         "LD_PRELOAD",
         "DYLD_INSERT_LIBRARIES",
+        "OPENSSL_CONF",
+        "OPENSSL_CONF_INCLUDE",
+        "OPENSSL_MODULES",
+        "OPENSSL_ENGINES",
     ] {
         let launch =
             LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))

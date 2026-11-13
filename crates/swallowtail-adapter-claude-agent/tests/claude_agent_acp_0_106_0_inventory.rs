@@ -123,7 +123,7 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
                 swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
             )
         ),
-        "481544ae878f7daa7a1bb5d963c13c1d6f94d28a5cec7e0cbe6a1206c2f3838d"
+        "b89661de39326987f606faa61bf1a54b600d7d1fc3bffb3b62caafa226aae7fa"
     );
     for (text, expected) in [
         (
@@ -411,7 +411,7 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
         include_str!("fixtures/claude-agent-acp-0.106.0/guarded-probe-proposal.json");
     assert_eq!(
         format!("{:x}", Sha256::digest(PROPOSAL.as_bytes())),
-        "162212512d289a5a32e650b660a3d914d8f079d03ea92081174de39b0d536e8b"
+        "d0322efebd9d031dad65249dcade2a094bb4a560266c135bdd500d76a470d06f"
     );
     let plan: Value = serde_json::from_str(PROPOSAL).expect("proposal JSON");
     let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");

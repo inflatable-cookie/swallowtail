@@ -622,3 +622,17 @@ Official npm metadata rechecked2026-11-13T12:58:45Z: latest remains0.106.0;
 the complete stable set above0.100.0 is unchanged. Canonical pushed main
 `1cbb29f459950a76fb9104fb10947fd87694e483` adds the separate SDK fixture workflow
 registration, with no ACP authority or proof transfer.
+
+The startup filter also rejects external `OPENSSL_` configuration/module
+controls before spawn, including inherited/bootstrap environment bindings;
+the native facade applies the same refusal after settings inheritance.
+[Node22.23.2 CLI documentation](https://nodejs.org/download/release/v22.23.2/docs/api/cli.html#openssl_conffile)
+identifies `OPENSSL_CONF` as startup configuration. This prevents an unadmitted
+crypto configuration from entering the guarded launch; permission settings
+remain inherited unchanged.
+
+The final startup-control closure repeated the confined fake witness with the
+same12/15 control and0/0 guarded outcomes. Current tested owner SHA-256:
+`1c5df7bbfbd940d77d5182d7c71a6e63753bcf14925bd878fb77ace56d20e51c`. The earlier owner above remains
+historical fake evidence; this final artifact is the proposed original-class
+probe owner. Neither run activated original or native provider code.

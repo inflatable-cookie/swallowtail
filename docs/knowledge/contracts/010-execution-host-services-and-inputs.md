@@ -225,7 +225,9 @@ host's independently approved compound fingerprint, exact allowed argument
 vectors and a revocable runtime pin. Preflight and start verify the same
 registration; start serializes revocation with spawn. Unknown references,
 different targets, prefixes, startup controls, fingerprints or revoked custody
-refuse before spawn, without stock fallback. Registration does not qualify a
+refuse before spawn, without stock fallback. External `OPENSSL_` startup
+configuration/module controls are rejected alongside `NODE_`, `LD_` and
+`DYLD_` controls. Registration does not qualify a
 vendor graph. The host must independently approve the ACP factory's exact
 selected dependency/native edges and compound policy before registration.
 

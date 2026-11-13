@@ -339,7 +339,7 @@
       "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs": "8c9e226ec92e0122175f29252580484af2f1c2ac98498f7b03c946777eea0be7",
       "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs": "7ce0625f57f95291a60b21947cd5674732352567a900a99833e18334655669ac",
       "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "b199099afcad61007b722e34d53268c40d803c8e13f153f18f4b1ae712e2b1a5",
-      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "481544ae878f7daa7a1bb5d963c13c1d6f94d28a5cec7e0cbe6a1206c2f3838d",
+      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "b89661de39326987f606faa61bf1a54b600d7d1fc3bffb3b62caafa226aae7fa",
       "Cargo.toml": "c349653298d6c24d3ac933ae36eb01c51abf6c570ceae3ae72de5ddd050e8f2b",
       "scripts/stage-claude-acp-fake-node.py": "e78bf664ada700bddd45bdadb1d522beb53a5e1940438e05b8b3d324b0360d08"
     },

@@ -137,7 +137,7 @@ function check(command, args, options) {
   let binding = native;
   if (command === 'ps' && ps && args.length === 4 && args[0] === '-o' && args[1] === 'pid=,lstart=' && args[2] === '-p' && /^[0-9]+(,[0-9]+)*$/.test(args[3]) && args[3].length <= 4096 && options?.timeout === 1000) { command = ps.path; binding = ps; }
   if (command !== binding.path) throw new Error('unapproved native invocation');
-  if (Object.keys(options?.env ?? process.env).some(key => /^(NODE_|LD_|DYLD_|BUN_)/i.test(key))) throw new Error('unsafe native startup environment');
+  if (Object.keys(options?.env ?? process.env).some(key => /^(NODE_|LD_|DYLD_|BUN_|OPENSSL_)/i.test(key))) throw new Error('unsafe native startup environment');
   for (const parent of binding.ancestors) {
     const info = lstatSync(parent.path, {bigint:true});
     if (!info.isDirectory() || info.dev.toString() !== parent.dev || info.ino.toString() !== parent.ino || info.uid.toString() !== String(parent.uid) || info.mode.toString() !== String(parent.mode)) throw new Error('native ancestor custody changed');

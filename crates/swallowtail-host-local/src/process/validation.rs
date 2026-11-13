@@ -97,7 +97,10 @@ impl LocalProcessHost {
 
 fn unsafe_node_environment(name: &OsStr) -> bool {
     let name = name.to_string_lossy().to_ascii_uppercase();
-    name.starts_with("NODE_") || name.starts_with("LD_") || name.starts_with("DYLD_")
+    name.starts_with("NODE_")
+        || name.starts_with("LD_")
+        || name.starts_with("DYLD_")
+        || name.starts_with("OPENSSL_")
 }
 
 const MAXIMUM_SHEBANG_BYTES: u64 = 256;

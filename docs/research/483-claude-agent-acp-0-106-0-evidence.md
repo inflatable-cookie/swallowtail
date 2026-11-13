@@ -636,3 +636,14 @@ same12/15 control and0/0 guarded outcomes. Current tested owner SHA-256:
 `1c5df7bbfbd940d77d5182d7c71a6e63753bcf14925bd878fb77ace56d20e51c`. The earlier owner above remains
 historical fake evidence; this final artifact is the proposed original-class
 probe owner. Neither run activated original or native provider code.
+
+## Later stable discovery
+
+Official npm latest moved to0.107.0 at the final recheck2026-11-13T14:40Z,
+after the frozen0.106.0 identity at4332906a4 (2026-11-12). npm publication time
+is `2026-11-13T13:39:38.999Z`; published git head is
+`c5c120dba9c15bd88ea5d355fa3b77d1fc341392`. This is discovery metadata, not tarball or behavior
+qualification. Contract029 In-Run Latest Movement keeps0.107.0 unverified for
+the next family run; the guarded factory refuses it. This task retains the
+accepted0.106.0 tuple set and original-execution gate. The planner owns its
+follow-up; no support or authority transfers.

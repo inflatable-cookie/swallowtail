@@ -307,7 +307,9 @@ class NamespaceProposalTests(unittest.TestCase):
         )
         lines = [
             row[1:]
-            for row in proposal.read_text().splitlines()
+            for row in proposal.read_text()
+            .split("diff --git a/scripts/tests/", 1)[0]
+            .splitlines()
             if row.startswith("+") and not row.startswith("+++")
         ]
         with tempfile.TemporaryDirectory(
@@ -338,6 +340,40 @@ class NamespaceProposalTests(unittest.TestCase):
                     ast.parse(block)
                     python_blocks += 1
             self.assertEqual(python_blocks, 2)
+
+    def test_proposed_routing_exception_is_exact_and_unapplied(self):
+        proposal = ROOT / "docs/knowledge/operations/claude-agent-sdk-netns-ci.patch"
+        with tempfile.TemporaryDirectory(
+            prefix="sdk-netns-routing-", dir=os.environ["TMPDIR"]
+        ) as directory:
+            root = Path(directory)
+            (root / ".github/workflows").mkdir(parents=True)
+            guard = root / "scripts/tests/oxide-selector-routing.py"
+            guard.parent.mkdir(parents=True)
+            shutil.copyfile(ROOT / "scripts/tests/oxide-selector-routing.py", guard)
+            subprocess.run(
+                ["patch", "--batch", "--forward", "-p1", "-i", str(proposal)],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                timeout=5,
+            )
+            spec = importlib.util.spec_from_file_location("proposed_routing", guard)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            module.check_workflows()
+            workflow = root / ".github/workflows/sdk234-netns-proof.yml"
+            workflow.write_text(
+                workflow.read_text().replace("contents: read", "contents: write")
+            )
+            with self.assertRaises(module.RoutingDefect):
+                module.check_workflows()
+            workflow.unlink()
+            (workflow.parent / "unrelated.yml").write_text(
+                "name: forbidden non-Cargo workflow\n"
+            )
+            with self.assertRaises(module.RoutingDefect):
+                module.check_workflows()
 
     def test_source_record_has_exact_acyclic_input_set(self):
         expected = "".join(

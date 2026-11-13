@@ -77,7 +77,9 @@ Mechanism references: [network namespaces](https://man7.org/linux/man-pages/man7
 The [unapplied manual job](claude-agent-sdk-netns-ci.patch) contains the complete
 preflight, one attempt and always-cleanup commands. It adds only one fresh
 `ubuntu-latest` job, `contents: read`, Node 22.23.2 and a five-minute job bound.
-It is data: the active workflows are unchanged. Application, registration on
+The diff also carries the minimal exact-byte non-Cargo routing exception; its
+mutation rehearsal refuses changed permissions and unrelated workflows.
+It is data: the active workflows and routing helper are unchanged. Application, registration on
 main and dispatch need separate authority naming the resulting exact source;
 registration alone grants no execution. No automatic retry is proposed.
 

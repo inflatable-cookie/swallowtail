@@ -19,7 +19,8 @@
         "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
         "node_bytes": 124836408
       }
-    }
+    },
+    "role": "Historical reference tuple only; not a required installation or current installed-runtime admission"
   },
   "tuples": [
     {
@@ -289,7 +290,7 @@
   },
   "component_stage": {
     "scope": "idle-class-component-only",
-    "selector": "effigy probe:acp-idle-component --original --owner <exact-owner> --owner-sha256 <authority-approved-owner-sha256> --node <exact-node-22.23.2> --hop <exact-hop> --package <verified-acp-package>",
+    "selector": "effigy probe:acp-idle-component --original --owner <exact-owner> --owner-sha256 <approved-owner-sha256> --node <installed-compatible-node> --node-sha256 <approved-node-sha256> --runtime-closure-sha256 <approved-closure-record-sha256> --hop <exact-hop> --package <verified-acp-package>",
     "source_owner": "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs",
     "confinement_owner": "scripts/claude-acp-component-probe.py",
     "platform": "darwin-arm64",
@@ -335,23 +336,39 @@
       }
     },
     "source_sha256": {
-      "scripts/claude-acp-component-probe.py": "cbe5fc49041f3b155f491d7cb9d858a56b968b981d8e57ea20d17970d146e715",
-      "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs": "8c9e226ec92e0122175f29252580484af2f1c2ac98498f7b03c946777eea0be7",
+      "scripts/claude-acp-component-probe.py": "73af6e797c266fc7333df6e3c1777e100383dc7042b92965afa127921afea62b",
+      "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
       "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs": "7ce0625f57f95291a60b21947cd5674732352567a900a99833e18334655669ac",
-      "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "6e83671cb416c854df8af9b4f0b7f7aa35ef4a19666306664157a2373b26c9b2",
-      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "b89661de39326987f606faa61bf1a54b600d7d1fc3bffb3b62caafa226aae7fa",
+      "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "92743386e4347d8d40f6f3b62834ec82066f0552f18a7f26687a1823f17590c6",
+      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
       "Cargo.toml": "c349653298d6c24d3ac933ae36eb01c51abf6c570ceae3ae72de5ddd050e8f2b",
-      "scripts/stage-claude-acp-fake-node.py": "e78bf664ada700bddd45bdadb1d522beb53a5e1940438e05b8b3d324b0360d08"
+      "scripts/stage-claude-acp-fake-node.py": "e78bf664ada700bddd45bdadb1d522beb53a5e1940438e05b8b3d324b0360d08",
+      "crates/swallowtail-host-local/src/trusted_runtime.rs": "9ef4fa9f7804dc48c51c8f91c395a583c38fb87b8d5c699f43b5bea8116476e8",
+      "crates/swallowtail-adapter-claude-agent/src/guard_manifest.rs": "da7b587973e30aa04a263ce552f82bc133963605bc8eb02bba674d89d94847a7",
+      "scripts/run-claude-acp-installed-child.sh": "590816c45cdaeb6919083668139f8c74cf5cdfaa66d2e343ea56f1f578c2f956",
+      "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf"
     },
-    "admission_status": "Requires exact Node22.23.2 source/runtime custody, kernel confinement counterexamples and first-party fake control/guard success before any separately authorized original class execution.",
+    "admission_status": "Requires exact installed compatible Node executable/dependency and host-principal binding, kernel confinement counterexamples and first-party fake control/guard success; separate authority naming changed source/plan/owner/runtime/class before original execution",
     "build_selector": "effigy build:acp-guard-component-probe",
     "build_profile": "dev; existing sha2 dependency optimized at level3; byte verification unchanged",
     "fake_runtime_fixture": {
       "selector": "effigy prepare:acp-guard-fake-node",
       "scratch_bytes": 201326592,
       "host_installation_changes": false,
-      "original_provider_code": false
+      "original_provider_code": false,
+      "role": "Historical reference fixture; no additional runtime staging required or authorized by installed-runtime direction"
     }
   },
-  "behavior_revision": "claude-agent.acp.guarded-permission-inheritance-v8"
+  "behavior_revision": "claude-agent.acp.guarded-permission-inheritance-v8",
+  "installed_runtime_policy": {
+    "minimum_major": 22,
+    "required_apis": [
+      "node:module.registerHooks",
+      "node:module.isBuiltin"
+    ],
+    "identity": "Host selects actual executable and complete non-system loader files, source digests, principal policy and stable custody per invocation; changed identity requires fresh admission and route proof",
+    "consumer_installation_required": false,
+    "scope": "guarded ACP invocation only; no standalone SDK/Node claim",
+    "fixed_startup": "--no-addons --openssl-config=/dev/null --disallow-code-generation-from-strings; captured guard preloader before entrypoint"
+  }
 }

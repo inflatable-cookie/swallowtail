@@ -117,12 +117,19 @@ def main():
     parser.add_argument("--owner", type=Path, required=True)
     parser.add_argument("--owner-sha256", required=True)
     parser.add_argument("--node", type=Path, required=True)
+    parser.add_argument("--node-sha256")
+    parser.add_argument("--runtime-closure-sha256")
     parser.add_argument("--hop")
     parser.add_argument("--package", type=Path)
     args = parser.parse_args()
     owner, node = args.owner.resolve(strict=True), args.node.resolve(strict=True)
     if digest(owner) != args.owner_sha256:
         raise ValueError("owner artifact substitution")
+    node_hash = digest(node)
+    if args.node_sha256 and node_hash != args.node_sha256:
+        raise ValueError("Node executable identity changed")
+    if args.original and (not args.node_sha256 or not args.runtime_closure_sha256):
+        raise ValueError("original runtime binding absent")
     if args.original and (not args.hop or not args.package):
         raise ValueError("exact original component inputs absent")
     if args.fake and (args.hop or args.package):
@@ -136,6 +143,10 @@ def main():
     if info.st_uid != 0 or info.st_mode & (stat.S_ISUID | stat.S_IWGRP | stat.S_IWOTH):
         raise ValueError("untrusted sandbox owner")
     runtime, aliases = runtime_files(node)
+    runtime_record = {"node":str(node),"sha256":node_hash,"dependencies":[{"path":str(path),"sha256":digest(path)} for path in runtime if path != node],"trustedUsers":sorted(set([0, os.geteuid()])),"trustedGroups":[80]}
+    closure_hash = hashlib.sha256(json.dumps(runtime_record,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+    if args.runtime_closure_sha256 and closure_hash != args.runtime_closure_sha256:
+        raise ValueError("runtime dependency closure identity changed")
     root = Path(tempfile.mkdtemp(prefix="acp-component-", dir=os.environ["TMPDIR"])).resolve()
     success = False
     try:
@@ -146,7 +157,7 @@ def main():
         bounded_copy(SUPPORT / "entry.mjs", root / "entry.mjs", 1024 * 1024)
         bounded_copy(SUPPORT / "idle.mjs" if args.fake else args.package / "dist/idle-compaction.js", root / "idle.mjs", 1024 * 1024)
         (root / "outside-denied").write_text("owned denied-read canary\n")
-        dependencies = [{"path":str(path),"sha256":digest(path)} for path in runtime if path != node]
+        dependencies = runtime_record["dependencies"]
         readable = [root/"owner", root/"entry.mjs", root/"idle.mjs", root/"input.json", *runtime, *aliases, Path("/bin/sleep")]
         literals = " ".join(f"(literal {json.dumps(str(path))})" for path in readable)
         ancestors = " ".join(f"(path-ancestors {json.dumps(str(path))})" for path in readable)
@@ -168,7 +179,7 @@ def main():
         (root / "policy.sb").write_text(policy)
         results = []
         for control in (True, False):
-            (root / "input.json").write_text(json.dumps({"root":str(root),"node":str(node),"mode":"fake" if args.fake else "original","hop":args.hop,"control":control,"dependencies":dependencies}))
+            (root / "input.json").write_text(json.dumps({"root":str(root),"node":str(node),"mode":"fake" if args.fake else "original","hop":args.hop,"control":control,"dependencies":dependencies,"nodeSha256":node_hash}))
             command = [str(sandbox),"-f",str(root/"policy.sb"),str(root/"owner"),str(root/"input.json")]
             child = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env={"PATH":"/usr/bin:/bin","HOME":str(root),"TMPDIR":str(root),"TMP":str(root),"TEMP":str(root)}, preexec_fn=limits)
             stdout, stderr = bounded_output(child)
@@ -178,7 +189,7 @@ def main():
             if result.get("nativeExecuted") is not False or result.get("routeQualified") is not False:
                 raise ValueError("component scope widened")
             results.append(result)
-        print(json.dumps({"scope":"idle-class-component-only","mode":"fake" if args.fake else "original","hop":args.hop,"ownerSha256":args.owner_sha256,"sandboxSha256":digest(sandbox),"policySha256":hashlib.sha256(policy.encode()).hexdigest(),"host":{"system":platform.system(),"machine":platform.machine(),"kernel":platform.release()},"results":results},sort_keys=True))
+        print(json.dumps({"scope":"idle-class-component-only","mode":"fake" if args.fake else "original","hop":args.hop,"ownerSha256":args.owner_sha256,"runtime":runtime_record,"runtimeClosureSha256":closure_hash,"sandboxSha256":digest(sandbox),"policySha256":hashlib.sha256(policy.encode()).hexdigest(),"host":{"system":platform.system(),"machine":platform.machine(),"kernel":platform.release()},"results":results},sort_keys=True))
         success = True
     finally:
         if success:

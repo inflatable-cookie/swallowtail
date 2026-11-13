@@ -1,5 +1,6 @@
 // Captured-source loader. Admission and interpreter custody are host responsibilities.
-import { registerHooks, isBuiltin } from 'node:module';
+import * as nodeModule from 'node:module';
+const { registerHooks, isBuiltin } = nodeModule;
 let files;
 let edges;
 let idleUrl;
@@ -41,6 +42,7 @@ export function initialize(config) {
 }
 
 export function install(config) {
+  if (Number(process.versions.node.split('.')[0]) < 22 || typeof registerHooks !== 'function' || typeof isBuiltin !== 'function') throw new Error('required Node hook APIs unavailable');
   initialize(config);
   registerHooks({ resolve, load });
 }

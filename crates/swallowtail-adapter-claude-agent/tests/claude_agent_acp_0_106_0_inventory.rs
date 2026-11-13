@@ -123,7 +123,7 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
                 swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
             )
         ),
-        "b89661de39326987f606faa61bf1a54b600d7d1fc3bffb3b62caafa226aae7fa"
+        "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a"
     );
     for (text, expected) in [
         (
@@ -411,7 +411,7 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
         include_str!("fixtures/claude-agent-acp-0.106.0/guarded-probe-proposal.json");
     assert_eq!(
         format!("{:x}", Sha256::digest(PROPOSAL.as_bytes())),
-        "552a24d1f3d4d0ccce811d5366bc2d080ee21fff4bb530fcfdc5b422dab14821"
+        "f0c461157106b64eb3a26709f9a1c8b488447e49ed1d64503b514c8989c26649"
     );
     let plan: Value = serde_json::from_str(PROPOSAL).expect("proposal JSON");
     let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
@@ -442,7 +442,12 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
     }
     assert!(plan["original_runner"].is_null());
     assert_eq!(plan["qualification_ceiling"], "0.100.0");
-    assert_eq!(plan["node"]["version"], "22.23.2");
+    assert_eq!(plan["node"]["version"], "22.23.2"); // reference evidence only
+    assert_eq!(plan["installed_runtime_policy"]["minimum_major"], 22);
+    assert_eq!(
+        plan["installed_runtime_policy"]["consumer_installation_required"],
+        false
+    );
     assert_eq!(plan["tuples"].as_array().expect("tuples").len(), 16);
     let mut actual = BTreeSet::new();
     for tuple in plan["tuples"].as_array().expect("tuples") {

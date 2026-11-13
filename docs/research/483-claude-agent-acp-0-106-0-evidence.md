@@ -653,3 +653,60 @@ decoders retain the1.95 floor. The current proposed probe owner SHA-256 is
 `807b2c75bd0d9c67c6a1e024648efab109ea4249542396b43c8ada8fe66475f9`, re-proved on the same exact Node22.23.2
 with identical control/guard outcomes and compound fingerprints. Earlier owner
 digests remain historical evidence, not the current activation artifact.
+
+### Installed-runtime direction and bounded fake proof
+
+Tom's 2026-11-13 decision `d0a0761f-3c47-4cf2-b198-242d232b20cc` v2
+supersedes the exact22.23.2 implementation prerequisite. Upstream ACP requires
+Node>=22; the guard additionally needs synchronous `registerHooks` and builtin
+classification, checked before captured entry effects. Existing22.23.2 results
+remain reference evidence. No additional runtime was staged for this change.
+
+The installed Darwin arm64 Node26.11.0 executable has SHA256
+`832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc`.
+Read-only Mach-O inspection identified96 non-system library files. The retained
+invocation record binds their exact paths/digests and the host's trust policy;
+its SHA256 is
+`d566f2d8c15c30ad3627fc6def7488f8c775c38db7b25bf8565dff6cd42fbca0`.
+The host trusts root, execution user501 and administrator group80 to coordinate
+runtime updates through spawn. Explicit group trust admits the Homebrew
+ancestors; unknown groups, other writes, changed files/ancestors and revocation
+still refuse. This is the approved trusted-host precondition, not OS verified
+execution or protection against hostile same-user mutation.
+
+The first confined attempt exposed Node's compiled-in OpenSSL configuration
+read before JavaScript startup. Seatbelt refused it. The fixed checked prefix
+now supplies `--openssl-config=/dev/null`, closing that startup configuration
+edge without allowing the host configuration file. Ambient `OPENSSL_`, `NODE_`,
+`LD_` and `DYLD_` controls remain rejected. Both raw resolver behaviors are
+covered:22.23.2 can bypass synchronous hooks in `createRequire().resolve()`, while
+26.11.0 observes them. The guarded facade resolves from its captured edge table
+on both, rather than depending on either raw behavior.
+
+The first-party confined owner SHA256 is
+`b3c707d7ff58f75c7611f4cf27b265314010d9f8c3bf8a15bd58278cc2cabda0`.
+Its fresh installed-runtime fake control armed12 timers and fired15 compactions;
+the guard armed0 and fired0. Both entered, preserved settings and joined all
+modeled work. The retained results report Node26.11.0, Darwin arm64 kernel25.6.0,
+`nativeExecuted:false` and `routeQualified:false`. All17 captured-child tests
+also passed using the actual installed interpreter and inspected library
+closure, including production checked-host prepared-driver paths. New
+counterexamples cover explicit group admission, changed dependency identity,
+missing hook APIs and revocation. A PID-file readiness race in the cancellation
+fixture was corrected to await a parseable PID before cancellation.
+
+Covering selectors for this coherent change include
+`validate:acp-guard-installed-child` (the new Darwin-only closure wrapper),
+`validate:acp-guard-component-probe`, the existing currentness/proposal,
+host-environment, prototype, compile/lint/MSRV/API/format/package selectors,
+`validate:oxide-routing`, docs, routes and retired concepts. The installed
+runtime wrapper uses the maintained Oxide helper; it never executes original
+ACP/SDK/native code or mutates installed files.
+
+The updated proposal selects an installed compatible runtime per invocation;
+its22.23.2 tuples are explicitly historical references. Earlier exact-source
+execution requests cannot authorize these changed bytes. Retained review and
+separate exact original-component authority remain required. Whole-route
+native/permission proof, Linux confinement and administrator-fixture admission
+remain independent. The qualified ceiling stays0.100.0; standalone SDK/Node,
+platform and exact HTTP MCP claims do not change.

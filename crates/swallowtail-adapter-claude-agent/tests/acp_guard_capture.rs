@@ -507,7 +507,12 @@ async fn cancelled_bootstrap_stops_and_reaps_the_owned_child() {
         Duration::from_secs(15),
     ));
     let started = Instant::now();
-    while !root.join("child.pid").exists() {
+    let pid = loop {
+        if let Ok(text) = std::fs::read_to_string(root.join("child.pid"))
+            && let Ok(pid) = text.parse::<u32>()
+        {
+            break pid;
+        }
         tokio::select! {
             result = &mut pending => panic!("bootstrap completed before cancellation: {}", result.is_ok()),
             () = tokio::time::sleep(Duration::from_millis(20)) => {}
@@ -516,10 +521,8 @@ async fn cancelled_bootstrap_stops_and_reaps_the_owned_child() {
             started.elapsed() < Duration::from_secs(10),
             "child readiness was not observed"
         );
-    }
+    };
     drop(pending);
-    let pid = std::fs::read_to_string(root.join("child.pid")).expect("child started");
-    let pid: u32 = pid.parse().expect("fixture pid");
     let deadline = Instant::now() + Duration::from_secs(8);
     loop {
         let alive = Command::new("/bin/kill")
@@ -722,4 +725,82 @@ async fn cancellation_before_and_after_admission_joins_owned_tree() {
     process.wait().await.expect("join admitted tree");
     terminated(&root_pid).await;
     terminated(&descendant_pid).await;
+}
+
+#[test]
+fn installed_runtime_trust_pins_group_policy_dependencies_and_revocation() {
+    use std::os::unix::fs::{MetadataExt, PermissionsExt};
+    use swallowtail_host_local::LocalRuntimeTrust;
+    let root = fixture();
+    let runtime = root.join("node");
+    let library = root.join("libnode.dylib");
+    std::fs::write(&runtime, b"owned runtime fake").expect("runtime");
+    std::fs::write(&library, b"owned library fake").expect("library");
+    std::fs::set_permissions(&runtime, std::fs::Permissions::from_mode(0o770))
+        .expect("runtime mode");
+    std::fs::set_permissions(&library, std::fs::Permissions::from_mode(0o660))
+        .expect("library mode");
+    std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o770)).expect("ancestor mode");
+    let metadata = std::fs::metadata(&runtime).expect("metadata");
+    let users = vec![0, metadata.uid()];
+    let digest = Sha256::digest(b"owned runtime fake").into();
+    let dependencies = vec![(
+        library.clone(),
+        Sha256::digest(b"owned library fake").into(),
+    )];
+    let policy =
+        || LocalRuntimeTrust::new(users.clone(), vec![metadata.gid()]).expect("host principals");
+    assert!(
+        LocalTrustedRuntime::capture_with_dependencies(&runtime, digest, &dependencies).is_err()
+    );
+    assert!(
+        LocalTrustedRuntime::capture_with_trust(
+            &runtime,
+            digest,
+            &dependencies,
+            LocalRuntimeTrust::new(users.clone(), vec![]).expect("without group")
+        )
+        .is_err()
+    );
+    let admitted =
+        LocalTrustedRuntime::capture_with_trust(&runtime, digest, &dependencies, policy())
+            .expect("explicit host group custody");
+    admitted.verify().expect("unchanged installed closure");
+    std::fs::write(&library, b"changed library fake").expect("changed dependency");
+    assert!(admitted.verify().is_err());
+    let changed = vec![(
+        library.clone(),
+        Sha256::digest(b"changed library fake").into(),
+    )];
+    let fresh = LocalTrustedRuntime::capture_with_trust(&runtime, digest, &changed, policy())
+        .expect("fresh library approval");
+    assert_ne!(admitted.digest(), fresh.digest());
+    std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o777))
+        .expect("unsafe ancestor");
+    assert!(fresh.verify().is_err());
+    assert!(LocalTrustedRuntime::capture_with_trust(&runtime, digest, &changed, policy()).is_err());
+    std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o770))
+        .expect("restore ancestor");
+    fresh.verify().expect("restored custody");
+    let clone = fresh.clone();
+    fresh.revoke();
+    assert!(clone.verify().is_err());
+    std::fs::remove_dir_all(&root).expect("owned fixture cleanup");
+}
+
+#[test]
+fn missing_required_node_hook_refuses_before_entry_effects() {
+    let root = fixture();
+    let graph = capture(&root, "throw Error('ENTRY EFFECT');");
+    let loader = CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.replace(
+        "const { registerHooks, isBuiltin } = nodeModule;",
+        "const { isBuiltin } = nodeModule; const registerHooks = undefined;",
+    );
+    assert_ne!(loader, CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE);
+    let recipe = LocalCapturedNodeRecipe::new(&graph, &loader, [1; 32], [2; 32], [3; 32])
+        .expect("owned missing API peer");
+    let output = guarded_with_bootstrap(&recipe, recipe.bootstrap());
+    assert!(!output.status.success());
+    assert!(!String::from_utf8_lossy(&output.stderr).contains("ENTRY EFFECT"));
+    std::fs::remove_dir_all(&root).expect("owned fixture cleanup");
 }

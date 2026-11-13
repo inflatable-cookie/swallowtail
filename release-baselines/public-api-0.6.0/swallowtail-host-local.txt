@@ -242,6 +242,9 @@ pub const fn swallowtail_host_local::LocalProcessLimits::stdin_bytes(self) -> us
 pub const fn swallowtail_host_local::LocalProcessLimits::stdout_bytes(self) -> usize
 impl core::default::Default for swallowtail_host_local::LocalProcessLimits
 pub fn swallowtail_host_local::LocalProcessLimits::default() -> Self
+pub struct swallowtail_host_local::LocalRuntimeTrust
+impl swallowtail_host_local::LocalRuntimeTrust
+pub fn swallowtail_host_local::LocalRuntimeTrust::new(alloc::vec::Vec<u32>, alloc::vec::Vec<u32>) -> core::io::error::Result<Self>
 pub struct swallowtail_host_local::LocalScopedTaskService
 impl swallowtail_host_local::LocalScopedTaskService
 pub const fn swallowtail_host_local::LocalScopedTaskService::execution_host_id(&self) -> &swallowtail_core::runtime_identity::ExecutionHostId
@@ -273,6 +276,7 @@ pub struct swallowtail_host_local::LocalTrustedRuntime
 impl swallowtail_host_local::LocalTrustedRuntime
 pub fn swallowtail_host_local::LocalTrustedRuntime::capture(&std::path::Path, [u8; 32]) -> core::io::error::Result<Self>
 pub fn swallowtail_host_local::LocalTrustedRuntime::capture_with_dependencies(&std::path::Path, [u8; 32], &[(std::path::PathBuf, [u8; 32])]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalTrustedRuntime::capture_with_trust(&std::path::Path, [u8; 32], &[(std::path::PathBuf, [u8; 32])], swallowtail_host_local::LocalRuntimeTrust) -> core::io::error::Result<Self>
 pub fn swallowtail_host_local::LocalTrustedRuntime::digest(&self) -> &[u8; 32]
 pub fn swallowtail_host_local::LocalTrustedRuntime::revoke(&self)
 pub fn swallowtail_host_local::LocalTrustedRuntime::source_digest(&self) -> &[u8; 32]

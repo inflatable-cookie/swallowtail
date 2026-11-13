@@ -18,7 +18,7 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{
     LocalCapturedNodeRecipe, LocalCheckedNodeLaunch, LocalExecutableLaunch, LocalProcessHost,
-    LocalProcessLimits, LocalTrustedRuntime,
+    LocalProcessLimits, LocalRuntimeTrust, LocalTrustedRuntime,
 };
 use swallowtail_runtime::{
     CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
@@ -87,53 +87,113 @@ fn fake_child_with_environment(
     stdin_bytes: usize,
     environment_values: Vec<(std::ffi::OsString, std::ffi::OsString)>,
 ) -> CheckedChild {
-    let original = node_path().canonicalize().expect("canonical Node path");
-    let node = root.join("fixture-node");
-    if !node.exists() {
-        std::fs::copy(&original, &node).expect("copy fake interpreter into owned fixture");
-    }
-    // Homebrew's Node can use @loader_path for libnode.  Keep this fake
-    // runnable after copying without changing the host installation.
-    #[cfg(target_os = "macos")]
+    let (node, runtime) = if let Some(record) =
+        std::env::var_os("SWALLOWTAIL_ACP_INSTALLED_RUNTIME_RECORD")
     {
-        let lib = original
-            .parent()
-            .and_then(|p| p.parent())
-            .expect("Node prefix")
-            .join("lib");
-        if let Ok(entries) = std::fs::read_dir(lib) {
-            for entry in entries.flatten() {
-                let name = entry.file_name();
-                let name_str = name.to_string_lossy();
-                if name_str.starts_with("libnode.") && name_str.ends_with(".dylib") {
-                    let destination = root.join(name);
-                    if !destination.exists() {
-                        std::fs::copy(entry.path(), destination).expect("copy fake Node library");
+        let value: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(record).expect("host runtime record"))
+                .expect("runtime JSON");
+        let node = PathBuf::from(value["node"].as_str().expect("installed interpreter"));
+        let decode = |text: &str| -> [u8; 32] {
+            assert_eq!(text.len(), 64);
+            let mut digest = [0; 32];
+            for (out, pair) in digest.iter_mut().zip(text.as_bytes().as_chunks::<2>().0) {
+                *out = u8::from_str_radix(std::str::from_utf8(pair).expect("hex"), 16)
+                    .expect("digest");
+            }
+            digest
+        };
+        let mut dependencies: Vec<_> = value["dependencies"]
+            .as_array()
+            .expect("loader closure")
+            .iter()
+            .map(|row| {
+                (
+                    PathBuf::from(row["path"].as_str().expect("library path")),
+                    decode(row["sha256"].as_str().expect("library digest")),
+                )
+            })
+            .collect();
+        // Mutation counterexamples add only run-owned files; never alter the installed closure.
+        let fixture_dependency = root.join("fixture-dependency.dylib");
+        if fixture_dependency.exists() {
+            dependencies.push((
+                fixture_dependency.clone(),
+                Sha256::digest(std::fs::read(&fixture_dependency).expect("owned dependency"))
+                    .into(),
+            ));
+        }
+        let principals = |key: &str| {
+            value[key]
+                .as_array()
+                .expect("host principals")
+                .iter()
+                .map(|id| {
+                    u32::try_from(id.as_u64().expect("numeric principal")).expect("principal range")
+                })
+                .collect()
+        };
+        let runtime = LocalTrustedRuntime::capture_with_trust(
+            &node,
+            decode(value["sha256"].as_str().expect("Node identity")),
+            &dependencies,
+            LocalRuntimeTrust::new(principals("trustedUsers"), principals("trustedGroups"))
+                .expect("explicit host trust"),
+        )
+        .expect("installed runtime custody");
+        (node, runtime)
+    } else {
+        let original = node_path().canonicalize().expect("canonical Node path");
+        let node = root.join("fixture-node");
+        if !node.exists() {
+            std::fs::copy(&original, &node).expect("copy fake interpreter into owned fixture");
+        }
+        // Homebrew's Node can use @loader_path for libnode.  Keep this fake
+        // runnable after copying without changing the host installation.
+        #[cfg(target_os = "macos")]
+        {
+            let lib = original
+                .parent()
+                .and_then(|p| p.parent())
+                .expect("Node prefix")
+                .join("lib");
+            if let Ok(entries) = std::fs::read_dir(lib) {
+                for entry in entries.flatten() {
+                    let name = entry.file_name();
+                    let name_str = name.to_string_lossy();
+                    if name_str.starts_with("libnode.") && name_str.ends_with(".dylib") {
+                        let destination = root.join(name);
+                        if !destination.exists() {
+                            std::fs::copy(entry.path(), destination)
+                                .expect("copy fake Node library");
+                        }
                     }
                 }
             }
         }
-    }
-    let node = node.canonicalize().expect("canonical fixture interpreter");
-    let bytes = std::fs::read(&node).expect("read fake interpreter");
-    let dependencies: Vec<_> = std::fs::read_dir(root)
-        .expect("fixture directory")
-        .map(|entry| entry.expect("dependency entry").path())
-        .filter(|path| {
-            path.extension()
-                .is_some_and(|extension| extension == "dylib")
-        })
-        .map(|path| {
-            let digest = Sha256::digest(std::fs::read(&path).expect("dependency source")).into();
-            (path, digest)
-        })
-        .collect();
-    let runtime = LocalTrustedRuntime::capture_with_dependencies(
-        &node,
-        Sha256::digest(&bytes).into(),
-        &dependencies,
-    )
-    .expect("trusted fake-host runtime");
+        let node = node.canonicalize().expect("canonical fixture interpreter");
+        let bytes = std::fs::read(&node).expect("read fake interpreter");
+        let dependencies: Vec<_> = std::fs::read_dir(root)
+            .expect("fixture directory")
+            .map(|entry| entry.expect("dependency entry").path())
+            .filter(|path| {
+                path.extension()
+                    .is_some_and(|extension| extension == "dylib")
+            })
+            .map(|path| {
+                let digest =
+                    Sha256::digest(std::fs::read(&path).expect("dependency source")).into();
+                (path, digest)
+            })
+            .collect();
+        let runtime = LocalTrustedRuntime::capture_with_dependencies(
+            &node,
+            Sha256::digest(&bytes).into(),
+            &dependencies,
+        )
+        .expect("trusted fake-host runtime");
+        (node, runtime)
+    };
     let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
         &graph,
         CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,

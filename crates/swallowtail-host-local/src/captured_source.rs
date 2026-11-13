@@ -507,6 +507,7 @@ try {{
         );
         let arguments = vec![
             std::ffi::OsString::from("--no-addons"),
+            std::ffi::OsString::from("--openssl-config=/dev/null"),
             std::ffi::OsString::from("--disallow-code-generation-from-strings"),
             std::ffi::OsString::from("--import"),
             std::ffi::OsString::from(data_url(preload.as_bytes())?),

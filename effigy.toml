@@ -172,6 +172,7 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
+"validate:acp-guard-installed-child" = "bash scripts/run-claude-acp-installed-child.sh"
 "validate:acp-guard-captured-child" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture"
 "lint:acp-guard" = "bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- -D warnings"
 "check:acp-guard-msrv" = "RUSTUP_TOOLCHAIN=1.95.0 bash scripts/oxide-rust.sh check --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent"
@@ -431,6 +432,7 @@ section = "Research Records"
 "validate:format-selectors:test" = "bash scripts/tests/format-selectors.sh"
 "check:lease-api-fixture" = "bash scripts/verify-lease-api-fixture.sh"
 "check:oxide-routing" = [
+  "bash -n scripts/run-claude-acp-installed-child.sh",
   "bash -n scripts/check-claude-acp-guard-api.sh",
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/tests/oxide-selector-routing.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
   "bash -n scripts/check-msrv.sh",

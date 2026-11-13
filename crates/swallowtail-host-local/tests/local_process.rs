@@ -500,7 +500,20 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
         recipe.fingerprint().digest(),
         altered.fingerprint().digest()
     );
-    assert_eq!(recipe.prefix_arguments().len(), 5);
+    assert_eq!(recipe.prefix_arguments().len(), 6);
+    assert_eq!(
+        recipe
+            .prefix_arguments()
+            .take(4)
+            .map(|argument| argument.to_str().expect("literal startup argument"))
+            .collect::<Vec<_>>(),
+        [
+            "--no-addons",
+            "--openssl-config=/dev/null",
+            "--disallow-code-generation-from-strings",
+            "--import"
+        ]
+    );
     assert!(!format!("{recipe:?}").contains("one.mjs"));
     assert!(LocalCapturedNodeRecipe::new(&graph, "", [1; 32], [3; 32], [5; 32]).is_err());
     assert!(

@@ -82,14 +82,10 @@ pub fn capture_claude_agent_acp_guarded_v1(
         "0.106.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.106.0.json"),
         _ => return Err(guard_identity_failure()),
     };
-    let expected_node = match platform {
-        "darwin-arm64" => "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
-        "linux-x64" => "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
-        _ => return Err(guard_identity_failure()),
-    };
-    if Some(*node.source_digest()) != decode_sha256(expected_node) {
+    if !matches!(platform, "darwin-arm64" | "linux-x64") {
         return Err(guard_identity_failure());
     }
+    node.verify()?;
     let value: serde_json::Value = serde_json::from_slice(manifest)?;
     let vendor = value["vendor"]
         .as_str()
@@ -104,7 +100,7 @@ pub fn capture_claude_agent_acp_guarded_v1(
         vendor,
         node,
         Sha256::digest(
-            format!("swallowtail.claude-agent-acp.guarded-v1.trusted-host-custody-v1\0{CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR}").as_bytes()
+            format!("swallowtail.claude-agent-acp.guarded-v1.trusted-host-installed-node-v2\0{CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR}").as_bytes()
         ).into(),
     )
 }

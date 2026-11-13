@@ -51,4 +51,4 @@ for (const session of sessions) {
 let prototypeLocked=false, ownLocked=false;
 try { Object.defineProperty(IdleCompaction.prototype,'onIdle',{value(){}}); } catch {prototypeLocked=true;}
 try { Object.defineProperty(sessions[0].idle,'fire',{value(){}}); } catch {ownLocked=true;}
-process.stdout.write(JSON.stringify({entryRan:true,armed,fired,joined:pending.size===0,settingsUnchanged:settingsBefore===JSON.stringify(settings),prototypeLocked,ownLocked,modeledContexts:sessions.map(s=>s.kind)}));
+process.stdout.write(JSON.stringify({nodeVersion:process.versions.node,entryRan:true,armed,fired,joined:pending.size===0,settingsUnchanged:settingsBefore===JSON.stringify(settings),prototypeLocked,ownLocked,modeledContexts:sessions.map(s=>s.kind)}));

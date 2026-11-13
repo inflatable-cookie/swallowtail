@@ -14,7 +14,7 @@ mod probe {
     use swallowtail_host_local::{
         LocalCapturedGraph, LocalCapturedImport, LocalCapturedNodeRecipe, LocalCapturedSources,
         LocalCheckedNodeLaunch, LocalExecutableLaunch, LocalExpectedSource, LocalProcessHost,
-        LocalProcessLimits, LocalTrustedRuntime,
+        LocalProcessLimits, LocalRuntimeTrust, LocalTrustedRuntime,
     };
     use swallowtail_runtime::{
         CheckedProcessRef, ExecutableRef, ProcessOutputStream, ProcessRequest, ProcessService,
@@ -91,24 +91,12 @@ mod probe {
         let mode = input["mode"].as_str().ok_or("missing mode")?;
         let control = input["control"].as_bool().ok_or("missing control")?;
         let node_digest = hash(&read(&node)?);
+        if node_digest != decode(input["nodeSha256"].as_str().ok_or("missing Node binding")?)? {
+            return Err("Node executable identity changed".into());
+        }
         let vendor = if mode == "fake" {
             hash(b"repository-owned idle component peer")
         } else if mode == "original" {
-            let platform = if cfg!(all(target_os = "macos", target_arch = "aarch64")) {
-                "darwin-arm64"
-            } else if cfg!(all(target_os = "linux", target_arch = "x86_64")) {
-                "linux-x64"
-            } else {
-                return Err("unadmitted platform".into());
-            };
-            let expected = if platform == "darwin-arm64" {
-                "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
-            } else {
-                "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
-            };
-            if node_digest != decode(expected)? {
-                return Err("original component runtime not admitted".into());
-            }
             let hop = input["hop"].as_str().ok_or("missing exact hop")?;
             let manifest = match hop {
                 "0.101.0" => include_str!("../sidecar/claude-agent-acp-guard-graphs/0.101.0.json"),
@@ -176,9 +164,22 @@ mod probe {
                 decode(row["sha256"].as_str().ok_or("missing dependency digest")?)?,
             ));
         }
-        let runtime =
-            LocalTrustedRuntime::capture_with_dependencies(&node, node_digest, &dependencies)
-                .map_err(|error| format!("runtime custody refused: {error}"))?;
+        let runtime = LocalTrustedRuntime::capture_with_trust(
+            &node,
+            node_digest,
+            &dependencies,
+            LocalRuntimeTrust::new(
+                vec![
+                    0,
+                    std::os::unix::fs::MetadataExt::uid(
+                        &std::fs::metadata(&root).map_err(|_| "host identity unavailable")?,
+                    ),
+                ],
+                vec![80],
+            )
+            .map_err(|_| "invalid host trust")?,
+        )
+        .map_err(|error| format!("runtime custody refused: {error}"))?;
         let loader = if control {
             let needle = "if (url === idleUrl) source +=";
             if CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.matches(needle).count() != 1 {
@@ -243,6 +244,7 @@ mod probe {
                 .await
                 .map_err(|_| "component input close failed")?;
             let mut stdout = Vec::new();
+            let mut stderr = Vec::new();
             while let Some(chunk) = process
                 .read_output()
                 .await
@@ -250,6 +252,8 @@ mod probe {
             {
                 if chunk.stream() == ProcessOutputStream::Stdout {
                     stdout.extend_from_slice(chunk.bytes());
+                } else {
+                    stderr.extend_from_slice(chunk.bytes());
                 }
             }
             let exit = process
@@ -257,7 +261,10 @@ mod probe {
                 .await
                 .map_err(|_| "component cleanup unconfirmed")?;
             if !exit.success() {
-                return Err("component process failed".to_owned());
+                return Err(format!(
+                    "component process failed: {}",
+                    String::from_utf8_lossy(&stderr[stderr.len().saturating_sub(1024)..])
+                ));
             }
             let value: serde_json::Value =
                 serde_json::from_slice(&stdout).map_err(|_| "component output malformed")?;

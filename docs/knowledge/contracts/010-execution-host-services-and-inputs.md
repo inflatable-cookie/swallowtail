@@ -219,6 +219,30 @@ hostile same-user replacement. A path hash followed by path-based spawn is
 not an OS-enforced verified-execution guarantee. This ruling does not extend
 other host or SDK claims.
 
+Tom's same-day decision `d0a0761f-3c47-4cf2-b198-242d232b20cc` v2
+requires support for the installed compatible Node. The ACP invocation requires
+Node>=22 and synchronous module hooks, checked before captured entry effects;
+22.23.2 is retained reference evidence, not a consumer prerequisite. The host
+pins the actual executable and complete non-system loader closure per
+invocation. A changed identity needs fresh host admission and route proof;
+this supplies no standalone SDK/Node compatibility claim.
+
+`LocalRuntimeTrust` names the users and groups whose updates the host controls.
+The default rejects group-writable files and ancestors. Explicit installed
+runtime capture may admit group writes only for named trusted groups; it still
+rejects other-writable files and untrusted owners/groups (root-owned sticky
+ancestors remain bounded exceptions). The Darwin component host trusts root,
+the fixture-owning execution user and the administrator group80, whose members
+must coordinate updates with the host. This is a host operating precondition,
+not an advisory lock that prevents package-manager updates. Admission records
+file/ancestor identity, source digests and principals, rechecks the complete
+closure before spawn and serializes revocation with spawn. Dependency drift,
+replacement, permission/ancestor changes or revocation refuse. Host-controlled
+principals must preserve custody across the remaining path-spawn interval;
+The host also owns loader-alias resolution and system-loader custody; canonical
+file pins do not lock package-manager symlinks or the OS loader. No OS
+verified-execution or hostile-same-user resistance is claimed.
+
 A local checked Node registration is host policy, not caller attestation. It
 binds one opaque checked reference and executable to a captured recipe, the
 host's independently approved compound fingerprint, exact allowed argument
@@ -227,12 +251,14 @@ registration; start serializes revocation with spawn. Unknown references,
 different targets, prefixes, startup controls, fingerprints or revoked custody
 refuse before spawn, without stock fallback. External `OPENSSL_` startup
 configuration/module controls are rejected alongside `NODE_`, `LD_` and
-`DYLD_` controls. Registration does not qualify a
+`DYLD_` controls. The fixed Node prefix selects `--openssl-config=/dev/null`
+before runtime startup, preventing compiled-in default OpenSSL configuration
+from loading external modules before the guard. Registration does not qualify a
 vendor graph. The host must independently approve the ACP factory's exact
 selected dependency/native edges and compound policy before registration.
 
 The guarded ACP factory accepts only packaged per-hop source/format/import
-manifests, the exact Node22.23.2 platform artifact and the matching held SDK
+manifests, a host-admitted compatible installed Node and the matching held SDK
 native executable. It captures the complete statically linked closure,
 including modules linked before ACP v1 negotiation, and explicitly binds the
 wrapper's SDK-root `createRequire`. JavaScript and JSON load from captured

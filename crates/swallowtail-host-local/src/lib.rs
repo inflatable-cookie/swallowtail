@@ -54,5 +54,5 @@ pub use limits::{LocalMaterializationLimits, LocalProcessLimits};
 pub use services::LocalHostServices;
 pub use sign_in::{LocalSignInCall, LocalSignInPorts};
 pub use task::LocalScopedTaskService;
-pub use trusted_runtime::LocalTrustedRuntime;
+pub use trusted_runtime::{LocalRuntimeTrust, LocalTrustedRuntime};
 pub use watcher_bridge::WatcherBridgeProofKind;

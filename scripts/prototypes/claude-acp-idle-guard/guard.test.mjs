@@ -5,13 +5,13 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { prepareFakeLaunch } from './host-model.mjs';
-import * as loader from './loader.mjs';
+import * as loader from '../../../crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const names = ['preload.mjs', 'loader.mjs', 'entry.mjs', 'idle.mjs'];
 function fixture(missing) {
   const dir = mkdtempSync(join(process.env.TMPDIR, 'acp-guard-'));
-  for (const name of names) if (name !== missing) copyFileSync(join(here, name === 'entry.mjs' || name === 'idle.mjs' ? 'fakes' : '', name), join(dir, name));
+  for (const name of names) if (name !== missing) copyFileSync(name === 'loader.mjs' ? join(here, '../../../crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs') : join(here, name === 'entry.mjs' || name === 'idle.mjs' ? 'fakes' : '', name), join(dir, name));
   return dir;
 }
 function run(args, env = {}) {
@@ -24,6 +24,8 @@ test('guard precedes entry effects while sessions survive repeated and direct id
   const dir = fixture();
   const baseline = run([join(dir, 'entry.mjs')]);
   assert.equal(baseline.scheduled, 6);
+  assert.equal(baseline.prototypeMutationRefused, false);
+  assert.equal(baseline.ownMutationRefused, false);
   assert.deepEqual(baseline.firedBeforeDeadline, [0, 0, 0]);
   assert.deepEqual(baseline.sessions.map(s => s.idle.fired), [3, 3, 3]);
   const guarded = prepareFakeLaunch(dir);
@@ -32,6 +34,8 @@ test('guard precedes entry effects while sessions survive repeated and direct id
   assert.deepEqual(result.permission, { user: 'denyInsteadOfPrompting', managed: true });
   assert.deepEqual(result.sessions.map(s => s.kind), ['new', 'load', 'resume']);
   assert.equal(result.scheduled, 0);
+  assert.equal(result.prototypeMutationRefused, true);
+  assert.equal(result.ownMutationRefused, true);
   assert.deepEqual(result.sessions.map(s => s.idle.fired), [0, 0, 0]);
   assert.ok(result.sessions.every(s => s.closed));
   assert.equal(result.sessions[0].cancelled, true);
@@ -53,10 +57,11 @@ test('rejects startup controls, missing, changed, duplicate and aliased modules 
 });
 
 test('loader rejects query and caller aliases', () => {
-  loader.initialize({ entryUrl: 'file:///fake/entry.mjs', idleUrl: 'file:///fake/idle.mjs' });
+  loader.initialize({ idleUrl: 'file:///fake/idle.mjs', files: [{url:'file:///fake/entry.mjs',source:''},{url:'file:///fake/idle.mjs',source:''}], edges:[{parent:'file:///fake/entry.mjs',specifier:'./idle.mjs',target:'file:///fake/idle.mjs'}] });
   assert.equal(loader.resolve('./idle.mjs', { parentURL: 'file:///fake/entry.mjs' }).url, 'file:///fake/idle.mjs');
   for (const [specifier, parentURL] of [['./idle.mjs?x', 'file:///fake/entry.mjs'], ['file:///fake/idle.mjs', 'file:///fake/entry.mjs'], ['./idle.mjs', 'file:///fake/entry.mjs?x'], ['./idle.mjs', 'file:///fake/other.mjs']]) assert.throws(() => loader.resolve(specifier, { parentURL }), /unapproved/);
   assert.throws(() => loader.load('file:///fake/idle.mjs?x'), /unapproved/);
+  assert.throws(() => loader.resolve('node:worker_threads', {parentURL: 'file:///fake/entry.mjs'}), /unapproved/);
 });
 
 test('launch uses the verified byte snapshots after all paths are replaced', () => {
@@ -65,5 +70,27 @@ test('launch uses the verified byte snapshots after all paths are replaced', () 
   for (const name of names) writeFileSync(join(dir, name), "throw new Error('replacement executed')");
   const result = run(launch.args, launch.environment);
   assert.equal(result.scheduled, 0);
+  assert.equal(result.prototypeMutationRefused, true);
+  assert.equal(result.ownMutationRefused, true);
   assert.deepEqual(result.events, ['entrypoint', 'joined']);
+});
+
+
+test('capture rejects duplicate identities and edges and noncanonical URLs', () => {
+  const idle = {url:'file:///fake/idle.mjs',source:'export class IdleCompaction {}'};
+  const edge = {parent:null,specifier:'file:///fake/idle.mjs',target:idle.url};
+  assert.throws(() => loader.initialize({idleUrl:idle.url,files:[idle,idle],edges:[edge]}), /identity/);
+  assert.throws(() => loader.initialize({idleUrl:idle.url,files:[idle],edges:[edge,edge]}), /duplicate/);
+  assert.throws(() => loader.initialize({idleUrl:'file:///fake/idle.mjs?x',files:[{...idle,url:'file:///fake/idle.mjs?x'}],edges:[]}), /identity/);
+  assert.throws(() => loader.initialize({idleUrl:'file:///fake/%69dle.mjs',files:[{...idle,url:'file:///fake/%69dle.mjs'}],edges:[]}), /identity/);
+  assert.throws(() => loader.initialize({idleUrl:idle.url,files:[idle],edges:[{...edge,parent:'file:///fake/other.mjs'}]}), /edge/);
+});
+
+
+test('original probe mode refuses without running a provider', () => {
+  const probe = join(here, 'probe.mjs');
+  const child = spawnSync(process.execPath, [probe, '--original'], {env:{}, encoding:'utf8', timeout:5000});
+  assert.equal(child.status, 78);
+  assert.match(child.stderr, /original probe refused/);
+  assert.equal(child.stdout, '');
 });

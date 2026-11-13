@@ -13,4 +13,9 @@ sessions[0].cancelled = true;
 for (const session of sessions) session.finish();
 await Promise.all(operations);
 events.push('joined');
-process.stdout.write(JSON.stringify({ events, permission, sessions, firedBeforeDeadline, scheduled: clock.tasks.length }));
+let prototypeMutationRefused = false;
+let ownMutationRefused = false;
+try { Object.defineProperty(IdleCompaction.prototype, 'onIdle', { value() {} }); } catch { prototypeMutationRefused = true; }
+try { Object.defineProperty(sessions[0].idle, 'onIdle', { value() {} }); } catch { ownMutationRefused = true; }
+
+process.stdout.write(JSON.stringify({ events, permission, sessions, firedBeforeDeadline, prototypeMutationRefused, ownMutationRefused, scheduled: clock.tasks.length }));

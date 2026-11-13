@@ -13,12 +13,12 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionRef, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    CredentialLease, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession, OpenSessionRequest,
-    ProcessHandle, ProcessRequest, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId, ScopeId, SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
-    validate_session_resource_lease,
+    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CheckedProcessRef,
+    CleanupOutcome, CredentialLease, EnvironmentRef, ExecutableRef, HostServices,
+    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
+    LoadedSession, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId, ResourceLease,
+    ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId, SessionResumeBinding,
+    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.claude-agent.acp";
@@ -31,6 +31,7 @@ pub struct ClaudeAgentAcpDriver {
     environment: EnvironmentRef,
     credential: Option<CredentialRef>,
     http_mcp: Option<ClaudeAgentAcpRemoteMcpPlacement>,
+    checked_process: Option<CheckedProcessRef>,
 }
 
 impl ClaudeAgentAcpDriver {
@@ -41,6 +42,7 @@ impl ClaudeAgentAcpDriver {
             environment,
             credential: Some(credential),
             http_mcp: None,
+            checked_process: None,
         }
     }
 
@@ -51,6 +53,24 @@ impl ClaudeAgentAcpDriver {
             environment,
             credential: None,
             http_mcp: None,
+            checked_process: None,
+        }
+    }
+
+    pub(crate) fn with_checked_process(mut self, binding: Option<CheckedProcessRef>) -> Self {
+        self.checked_process = binding;
+        self
+    }
+
+    fn start_process(
+        &self,
+        service: &dyn swallowtail_runtime::ProcessService,
+        scope: ScopeId,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        match &self.checked_process {
+            Some(binding) => service.start_checked(scope, binding.clone(), request),
+            None => service.start(scope, request),
         }
     }
 

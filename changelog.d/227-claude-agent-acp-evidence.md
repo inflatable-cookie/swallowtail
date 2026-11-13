@@ -8,3 +8,5 @@
 - Add an opt-in host filter for Node and dynamic-loader startup environment bindings.
 
 - Record the exact selected idle-module import and caller for each newer ACP hop.
+
+- Add a captured-source guard asset and a fail-closed checked-process host boundary.

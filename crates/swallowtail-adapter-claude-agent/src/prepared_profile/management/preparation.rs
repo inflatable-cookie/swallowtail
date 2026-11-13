@@ -84,6 +84,7 @@ impl ClaudeAgentPreparedIntegration {
         Ok(ClaudeAgentPreparedDelete {
             environment: self.environment().clone(),
             credential: self.access_profile().credential_reference().cloned(),
+            checked_process: self.checked_process().cloned(),
             evidence: PreparedProviderSessionManagementEvidence::from_plan(plan)?,
             request,
         })

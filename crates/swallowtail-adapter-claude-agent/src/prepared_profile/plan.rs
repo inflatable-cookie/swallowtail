@@ -13,6 +13,7 @@ pub struct ClaudeAgentPreparedEvidence {
     observation: swallowtail_core::InstalledExecutableObservation,
     environment: swallowtail_runtime::EnvironmentRef,
     credential: Option<swallowtail_core::CredentialRef>,
+    checked_process: Option<swallowtail_runtime::CheckedProcessRef>,
     operation: PreparedOperationEvidence,
 }
 
@@ -26,6 +27,7 @@ impl ClaudeAgentPreparedEvidence {
             observation: prepared.observation().clone(),
             environment: prepared.environment().clone(),
             credential: prepared.access_profile().credential_reference().cloned(),
+            checked_process: prepared.checked_process().cloned(),
             operation: PreparedOperationEvidence::from_plan_with_activity_profile(
                 plan,
                 prepared.access_evidence().clone(),
@@ -59,12 +61,13 @@ impl ClaudeAgentPreparedEvidence {
     }
 
     pub(super) fn low_level_driver(&self) -> crate::ClaudeAgentAcpDriver {
-        match self.credential.as_ref() {
+        let driver = match self.credential.as_ref() {
             Some(credential) => {
                 crate::ClaudeAgentAcpDriver::new(self.environment.clone(), credential.clone())
             }
             None => crate::ClaudeAgentAcpDriver::with_local_auth(self.environment.clone()),
-        }
+        };
+        driver.with_checked_process(self.checked_process.clone())
     }
 }
 

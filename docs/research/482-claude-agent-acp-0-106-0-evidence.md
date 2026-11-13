@@ -276,3 +276,34 @@ does not close the interpreter race or establish the production import graph.
 The runnable original-artifact probe cannot be frozen until the guarded host
 path, its runtime and its final launch-policy digests exist. Vendor execution
 and live provider access remain outside this task's authority.
+
+
+## Captured graph and checked process scaffold
+
+The adapter now packages a candidate captured-source loader. It resolves only
+explicit captured graph edges, rejects unknown module identities and encoded
+URL aliases, and serves source strings supplied to its loader rather than
+reopening module paths. The fake guard locks the idle prototype and prevents
+new own-method overrides on constructed fake instances. This changes object
+shape and has not been shown compatible with the official sources; Node
+builtins and unexpected worker realms also fail without explicit edges. The
+captured graph and its calling rules still need a complete host-owned manifest
+and exact transitive dependency coverage. A caller-provided loader graph is
+not admission evidence.
+
+An opaque checked-process reference now crosses preparation and prepared
+session operations. Process-service preflight and start both default to
+refusal, with no ordinary-start fallback. A fake host tests target and binding
+mismatch, revocation between preparation and session start, successful fake
+operations and cleanup; that host is a harness, not proof of local runtime
+custody. The local host supplies no checked-process implementation. Earlier
+stock paths and claims remain unchanged.
+
+`scripts/prototypes/claude-acp-idle-guard/probe.mjs --original` always
+refuses before provider execution. Its fake-only mode is bounded by a timeout
+and output cap and exercises the fake loader tests. It is not an isolated
+original-artifact probe: runtime custody decision
+`fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f`, real OS egress enforcement, final
+interpreter and graph identities, and separate execution authority are still
+needed to make that probe runnable. No self-reported marker or local path
+can replace those requirements.

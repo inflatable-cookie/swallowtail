@@ -109,6 +109,15 @@ fn current_acp_inventory_reconstructs_all_hops_without_qualifying_them() {
 
 #[test]
 fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
+    assert_eq!(
+        format!(
+            "{:x}",
+            Sha256::digest(
+                swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
+            )
+        ),
+        "5694068ca15f0a42c6e21310906b5dc330b9d04be8a3c3783571dc11df4a2475"
+    );
     for (text, expected) in [
         (
             DEPENDENCIES,

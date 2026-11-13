@@ -102,6 +102,13 @@ pub use prepared_response::{
     ClaudeCodeResponseProfileInput, prepare_claude_code_response_only,
 };
 
+/// Source of the experimental captured-module ACP guard loader.
+///
+/// This asset is not an admitted launch or a compatibility claim. A host must
+/// bind the complete capture and interpreter before any production use.
+pub const CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE: &str =
+    include_str!("../sidecar/claude-agent-acp-guard-loader.mjs");
+
 const MAXIMUM_REPLAY_ITEMS: usize = 64;
 const MAXIMUM_REPLAY_BYTES: usize = 256 * 1024;
 pub use selection::{

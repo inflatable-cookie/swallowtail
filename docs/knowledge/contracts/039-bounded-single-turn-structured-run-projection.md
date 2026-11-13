@@ -246,6 +246,13 @@ coverage is not artifact qualification; selected native behavior and each
 hop's caller and module closure need independent proof before extending the
 claim. Paths and environment values stay host-private.
 
+A checked process reference is an opaque lookup key, not an attestation by
+itself. The process service must refuse preflight and checked start when it
+cannot resolve and verify the binding, and it must recheck at start so that
+revocation or drift cannot fall back to an ordinary process launch. Hosts
+without the capability refuse both operations. The current local host does
+not provide runtime custody and therefore cannot admit this launch.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`

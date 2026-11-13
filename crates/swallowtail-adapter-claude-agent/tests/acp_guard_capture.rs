@@ -11,7 +11,8 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 use swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE;
 use swallowtail_host_local::{
-    LocalCapturedGraph, LocalCapturedImport, LocalCapturedSources, LocalExpectedSource,
+    LocalCapturedGraph, LocalCapturedImport, LocalCapturedNodeRecipe, LocalCapturedSources,
+    LocalExpectedSource,
 };
 
 const IDLE: &str = "export class IdleCompaction { constructor() { this.armed = 0; this.fired = 0; } onIdle() { this.armed++; } async fire() { this.fired++; } }";
@@ -57,15 +58,6 @@ fn capture(root: &Path, entry: &str) -> LocalCapturedGraph {
     .expect("capture fake graph")
 }
 
-fn data_url(source: &str) -> String {
-    let mut encoded = String::from("data:text/javascript,");
-    for byte in source.bytes() {
-        use std::fmt::Write;
-        write!(&mut encoded, "%{byte:02X}").expect("format string");
-    }
-    encoded
-}
-
 fn node(arguments: &[&str]) -> Output {
     let search_path = std::env::var_os("PATH").expect("fixture node search path");
     Command::new("node")
@@ -76,18 +68,38 @@ fn node(arguments: &[&str]) -> Output {
         .expect("fake Node process starts")
 }
 
+fn guarded_with_bootstrap(recipe: &LocalCapturedNodeRecipe, bootstrap: &[u8]) -> Output {
+    use std::io::Write;
+    use std::process::Stdio;
+    let search_path = std::env::var_os("PATH").expect("fixture node search path");
+    let mut child = Command::new("node")
+        .args(recipe.prefix_arguments())
+        .env_clear()
+        .env("PATH", search_path)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .expect("fake Node process starts");
+    child
+        .stdin
+        .take()
+        .expect("child input")
+        .write_all(bootstrap)
+        .expect("fake bootstrap writes");
+    child.wait_with_output().expect("fake child joins")
+}
+
 fn guarded(graph: &LocalCapturedGraph) -> Output {
-    let loader = serde_json::to_string(&data_url(CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE))
-        .expect("loader JSON");
-    let configuration = std::str::from_utf8(graph.configuration()).expect("graph JSON");
-    let preload = format!(
-        "import {{ register }} from 'node:module'; register({loader}, {{ parentURL: import.meta.url, data: {configuration} }});"
-    );
-    node(&[
-        "--import",
-        &data_url(&preload),
-        "/swallowtail-capture/entry.mjs",
-    ])
+    let recipe = LocalCapturedNodeRecipe::new(
+        graph,
+        CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("fake recipe");
+    guarded_with_bootstrap(&recipe, recipe.bootstrap())
 }
 
 #[test]
@@ -128,4 +140,22 @@ fn unapproved_import_refuses_before_fake_entry_effects() {
     assert!(!child.status.success());
     assert!(child.stdout.is_empty());
     assert!(String::from_utf8_lossy(&child.stderr).contains("unapproved module edge"));
+}
+
+#[test]
+fn truncated_graph_bootstrap_fails_before_fake_entry_effects() {
+    let root = fixture();
+    let graph = capture(&root, ENTRY);
+    let recipe = LocalCapturedNodeRecipe::new(
+        &graph,
+        CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("recipe");
+    let child = guarded_with_bootstrap(&recipe, &recipe.bootstrap()[..5]);
+    assert!(!child.status.success());
+    assert!(child.stdout.is_empty());
+    assert!(String::from_utf8_lossy(&child.stderr).contains("incomplete graph bootstrap"));
 }

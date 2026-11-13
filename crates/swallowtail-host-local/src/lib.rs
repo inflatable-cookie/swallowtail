@@ -40,8 +40,8 @@ mod working_resource;
 mod working_resource_io;
 
 pub use captured_source::{
-    LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint, LocalCapturedSources,
-    LocalExpectedSource,
+    LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint,
+    LocalCapturedNodeRecipe, LocalCapturedSources, LocalExpectedSource,
 };
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;

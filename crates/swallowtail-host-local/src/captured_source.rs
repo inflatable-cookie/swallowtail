@@ -372,3 +372,129 @@ impl fmt::Debug for LocalCapturedLaunchFingerprint {
             .finish_non_exhaustive()
     }
 }
+
+/// A non-authoritative Node prefix derived from captured bytes and a loader.
+///
+/// This candidate cannot issue a checked-process grant or establish runtime
+/// custody. Production use requires an independently verified host policy.
+#[derive(Clone)]
+pub struct LocalCapturedNodeRecipe {
+    arguments: Vec<std::ffi::OsString>,
+    bootstrap: Arc<[u8]>,
+    fingerprint: LocalCapturedLaunchFingerprint,
+}
+
+impl LocalCapturedNodeRecipe {
+    /// Derives loader arguments and a candidate identity from the exact bytes.
+    ///
+    /// Vendor, runtime and policy digests are host-policy inputs, not proof.
+    /// The shim and recipe digests are calculated from the bytes supplied here.
+    /// The host must write the bounded bootstrap before exposing process input.
+    /// The prefix consumes exactly that bootstrap and leaves subsequent ACP
+    /// input unread. No local checked-launch capability is implied.
+    pub fn new(
+        graph: &LocalCapturedGraph,
+        loader: &str,
+        vendor: [u8; 32],
+        runtime: [u8; 32],
+        policy: [u8; 32],
+    ) -> io::Result<Self> {
+        if loader.is_empty() {
+            return Err(invalid("missing loader source"));
+        }
+        const MAX_BOOTSTRAP: usize = 32 * 1024 * 1024;
+        if graph.configuration().len() > MAX_BOOTSTRAP {
+            return Err(invalid("graph bootstrap size limit"));
+        }
+        let length = u32::try_from(graph.configuration().len())
+            .map_err(|_| invalid("graph bootstrap size limit"))?;
+        let mut bootstrap = Vec::with_capacity(4 + graph.configuration().len());
+        bootstrap.extend_from_slice(&length.to_be_bytes());
+        bootstrap.extend_from_slice(graph.configuration());
+        let graph_value: serde_json::Value = serde_json::from_slice(graph.configuration())?;
+        let root = graph_value["edges"][0]["target"]
+            .as_str()
+            .ok_or_else(|| invalid("missing graph entry"))?;
+        let entry = root
+            .strip_prefix("file://")
+            .ok_or_else(|| invalid("invalid graph entry"))?;
+        let loader_url = data_url(loader.as_bytes())?;
+        let loader_json = serde_json::to_string(&loader_url)?;
+        let preload = format!(
+            "import {{ readSync }} from 'node:fs'; import {{ register }} from 'node:module'; function read(n) {{ const b=Buffer.alloc(n); let p=0; while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }} return b; }} const n=read(4).readUInt32BE(); if(n>33554432) throw new Error('graph bootstrap too large'); const data=JSON.parse(read(n).toString('utf8')); register({loader_json}, {{ parentURL: import.meta.url, data }});"
+        );
+        let arguments = vec![
+            std::ffi::OsString::from("--import"),
+            std::ffi::OsString::from(data_url(preload.as_bytes())?),
+            std::ffi::OsString::from(entry),
+        ];
+        let mut recipe = Sha256::new();
+        recipe.update(b"swallowtail-node-prefix-v1\0");
+        for argument in &arguments {
+            let bytes = argument.as_os_str().as_encoded_bytes();
+            recipe.update((bytes.len() as u64).to_be_bytes());
+            recipe.update(bytes);
+        }
+        recipe.update((bootstrap.len() as u64).to_be_bytes());
+        recipe.update(&bootstrap);
+        let shim: [u8; 32] = Sha256::digest(loader.as_bytes()).into();
+        let fingerprint = LocalCapturedLaunchFingerprint::new(
+            graph,
+            vendor,
+            shim,
+            runtime,
+            recipe.finalize().into(),
+            policy,
+        )?;
+        Ok(Self {
+            arguments,
+            bootstrap: Arc::from(bootstrap),
+            fingerprint,
+        })
+    }
+
+    /// Iterates over immutable Node prefix arguments in launch order.
+    pub fn prefix_arguments(&self) -> impl ExactSizeIterator<Item = &std::ffi::OsStr> {
+        self.arguments.iter().map(std::ffi::OsString::as_os_str)
+    }
+
+    /// Returns the exact length-delimited graph bootstrap for the child input.
+    #[must_use]
+    pub fn bootstrap(&self) -> &[u8] {
+        &self.bootstrap
+    }
+
+    /// Returns the candidate fingerprint; this is not host attestation.
+    #[must_use]
+    pub const fn fingerprint(&self) -> &LocalCapturedLaunchFingerprint {
+        &self.fingerprint
+    }
+}
+
+impl fmt::Debug for LocalCapturedNodeRecipe {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("LocalCapturedNodeRecipe")
+            .field("argument_count", &self.arguments.len())
+            .finish_non_exhaustive()
+    }
+}
+
+fn data_url(bytes: &[u8]) -> io::Result<String> {
+    use std::fmt::Write;
+    const MAX_ENCODED_BYTES: usize = 128 * 1024;
+    let encoded_length = bytes
+        .len()
+        .checked_mul(3)
+        .and_then(|size| size.checked_add(21))
+        .ok_or_else(|| invalid("loader argument size overflow"))?;
+    if encoded_length > MAX_ENCODED_BYTES {
+        return Err(invalid("loader argument size limit"));
+    }
+    let mut output = String::with_capacity(encoded_length);
+    output.push_str("data:text/javascript,");
+    for byte in bytes {
+        write!(&mut output, "%{byte:02X}").map_err(|_| invalid("loader encoding failed"))?;
+    }
+    Ok(output)
+}

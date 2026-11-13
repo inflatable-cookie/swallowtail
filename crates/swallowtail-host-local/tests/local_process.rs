@@ -382,7 +382,7 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
     use std::process::Command;
     use swallowtail_host_local::{
         LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint,
-        LocalCapturedSources, LocalExpectedSource,
+        LocalCapturedNodeRecipe, LocalCapturedSources, LocalExpectedSource,
     };
     let template = std::env::temp_dir().join("checked-sources.XXXXXXXX");
     let output = Command::new("/usr/bin/mktemp")
@@ -468,6 +468,33 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
             .is_err()
     );
     assert!(!format!("{graph:?} {fingerprint:?}").contains("one.mjs"));
+    let recipe = LocalCapturedNodeRecipe::new(
+        &graph,
+        "export function resolve() {}",
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("candidate recipe");
+    let altered = LocalCapturedNodeRecipe::new(
+        &graph,
+        "export function load() {}",
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("altered candidate");
+    assert_ne!(
+        recipe.fingerprint().digest(),
+        altered.fingerprint().digest()
+    );
+    assert_eq!(recipe.prefix_arguments().len(), 3);
+    assert!(!format!("{recipe:?}").contains("one.mjs"));
+    assert!(LocalCapturedNodeRecipe::new(&graph, "", [1; 32], [3; 32], [5; 32]).is_err());
+    assert!(
+        LocalCapturedNodeRecipe::new(&graph, &"x".repeat(128 * 1024), [1; 32], [3; 32], [5; 32])
+            .is_err()
+    );
     std::fs::write(root.join("one.mjs"), b"changed").expect("replace fixture bytes");
     assert_eq!(
         captured.source(Path::new("one.mjs")),

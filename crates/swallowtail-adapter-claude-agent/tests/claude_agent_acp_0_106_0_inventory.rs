@@ -9,6 +9,7 @@ const DEPENDENCIES: &str = include_str!("fixtures/claude-agent-acp-0.106.0/depen
 const CLOSURE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/static-closure.json");
 const IDLE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/idle-compaction-boundary.json");
 const IDLE_TRACE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/idle-control-trace.json");
+const GUARD_MANIFEST: &str = include_str!("../sidecar/claude-agent-acp-guard-v1-inventory.json");
 const GUARD_EDGES: &str = include_str!("fixtures/claude-agent-acp-0.106.0/guard-import-edges.json");
 const PERMISSION_CONTROL: &str =
     include_str!("fixtures/claude-agent-acp-0.106.0/native-permission-control.json");
@@ -136,6 +137,10 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
             "e6e04b042909d0e321e21a9965b501647075aa1943e0f6e6a10d466fc48efcb7",
         ),
         (
+            GUARD_MANIFEST,
+            "d057fcb97d4a7a514b6b14dcb4548d61bbda47b1067b31da90bbd4be4f620141",
+        ),
+        (
             GUARD_EDGES,
             "0c1eb292ba566fc267714dcd6b2b352bdee2d4978c60b75de6b4bbddaa886a04",
         ),
@@ -148,6 +153,37 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
     }
     let inventory: Value = serde_json::from_str(INVENTORY).expect("inventory JSON");
     let closure: Value = serde_json::from_str(CLOSURE).expect("closure JSON");
+    let manifest: Value = serde_json::from_str(GUARD_MANIFEST).expect("guard manifest JSON");
+    let versions = [
+        "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    ];
+    assert_eq!(
+        manifest.as_object().expect("manifest versions").len(),
+        versions.len()
+    );
+    for version in versions {
+        let expected_paths = closure["reachable_js"][version]
+            .as_array()
+            .expect("reachable paths");
+        let rows = manifest[version].as_object().expect("manifest rows");
+        assert_eq!(rows.len(), expected_paths.len());
+        for path in expected_paths {
+            let path = path.as_str().expect("path");
+            assert_eq!(rows[path], inventory["sha256_by_path"][version][path]);
+        }
+        assert_eq!(
+            swallowtail_adapter_claude_agent::claude_agent_acp_guard_v1_source_manifest(version)
+                .expect("known hop")
+                .len(),
+            rows.len()
+        );
+    }
+    for version in ["0.100.0", "0.106.1", "latest"] {
+        assert!(
+            swallowtail_adapter_claude_agent::claude_agent_acp_guard_v1_source_manifest(version)
+                .is_none()
+        );
+    }
     let edges: Value = serde_json::from_str(GUARD_EDGES).expect("guard edges JSON");
     let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
     let hops = edges["hops"].as_object().expect("hop edges");

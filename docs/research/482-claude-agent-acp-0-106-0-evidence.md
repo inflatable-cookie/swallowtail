@@ -359,3 +359,20 @@ opaque binding, cancellation and joined cleanup, and an unverified 0.106.0
 denial-without-callback scenario with ordered activity and continued output.
 Those fakes do not prove the shipped native permission outcome or qualify a
 new behavior revision.
+
+The local host can derive a candidate Node prefix from the captured graph and
+loader bytes. Its candidate fingerprint binds the actual shim and encoded
+prefix digests together with host-supplied vendor, runtime and policy digests.
+The combined fake prepared-child test uses that prefix after replacing the
+source files. It does not attest those supplied digests or authorize the
+interpreter. The candidate sends a length-delimited graph bootstrap before
+ACP input, with a 32 MiB graph bound and a separately capped loader argument.
+The fake checked service writes that bootstrap before exposing the process;
+truncated input fails before entry effects. The real host does not implement
+this checked handoff or establish the required runtime custody.
+
+The packaged v1 wrapper manifest is derived from the frozen reachable-path
+set and shipped-tree hashes for each of the eight hops; its exact key set and
+digests are checked against both records. It is a conservative static wrapper
+inventory, not a complete dependency or dynamic-import graph, a Node binding
+or authority to use an installed package. Unknown versions fail closed.

@@ -1,7 +1,6 @@
-use super::{LocalCapturedGraph, capture, data_url, fixture};
+use super::{LocalCapturedGraph, capture, fixture};
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
-use std::ffi::OsString;
 use std::path::PathBuf;
 use std::sync::{
     Arc,
@@ -19,13 +18,13 @@ use swallowtail_core::{
     ModelRouteId, ModelRouteRevision, RuntimeReadiness, SupportAuthority,
 };
 use swallowtail_host_local::{
-    LocalCapturedLaunchFingerprint, LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits,
+    LocalCapturedNodeRecipe, LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits,
 };
 use swallowtail_runtime::{
     BoxFuture, CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
     ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
-    PreparedAccessEvidence, ProcessHandle, ProcessRequest, ProcessService, RequestId,
-    RuntimeFailure, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
+    PreparedAccessEvidence, ProcessHandle, ProcessInputChunk, ProcessRequest, ProcessService,
+    RequestId, RuntimeFailure, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
     WorkingResourceRef,
 };
 
@@ -66,15 +65,15 @@ struct FakeCheckedChild {
     revoked: Arc<AtomicBool>,
     checked: Arc<AtomicUsize>,
     ordinary: Arc<AtomicUsize>,
+    bootstrap: Arc<[u8]>,
 }
 impl FakeCheckedChild {
     fn allows(&self, binding: &CheckedProcessRef, request: &ProcessRequest) -> bool {
-        let candidate = LocalCapturedLaunchFingerprint::new(
+        let candidate = LocalCapturedNodeRecipe::new(
             &self.graph,
+            CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
             [1; 32],
-            [2; 32],
             [3; 32],
-            [4; 32],
             [5; 32],
         );
         !self.revoked.load(Ordering::SeqCst)
@@ -84,7 +83,7 @@ impl FakeCheckedChild {
                 || request.arguments().collect::<Vec<_>>() == ["--version"])
             && candidate
                 .as_ref()
-                .is_ok_and(|value| value.digest() == &self.expected)
+                .is_ok_and(|value| value.fingerprint().digest() == &self.expected)
     }
     fn denied() -> RuntimeFailure {
         RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
@@ -127,7 +126,20 @@ impl ProcessService for FakeCheckedChild {
             return Box::pin(async { Err(Self::denied()) });
         }
         self.checked.fetch_add(1, Ordering::SeqCst);
-        self.local.start(scope, request)
+        let start = self.local.start(scope, request);
+        let bootstrap = Arc::clone(&self.bootstrap);
+        Box::pin(async move {
+            let process = start.await?;
+            if let Err(error) = process
+                .write_stdin(ProcessInputChunk::new(bootstrap.as_ref().to_vec()))
+                .await
+            {
+                let _ = process.force_stop().await;
+                let _ = process.wait().await;
+                return Err(error);
+            }
+            Ok(process)
+        })
     }
 }
 
@@ -139,18 +151,18 @@ fn node_path() -> PathBuf {
 }
 
 fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedChild {
-    let loader = serde_json::to_string(&data_url(CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE))
-        .expect("loader JSON");
-    let config = std::str::from_utf8(graph.configuration()).expect("graph JSON");
-    let preload = format!(
-        "import {{ register }} from 'node:module'; register({loader}, {{ parentURL: import.meta.url, data: {config} }});"
-    );
+    let recipe = LocalCapturedNodeRecipe::new(
+        &graph,
+        CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("fake recipe");
+    let expected = *recipe.fingerprint().digest();
+    let bootstrap: Arc<[u8]> = Arc::from(recipe.bootstrap());
     let launch = LocalExecutableLaunch::new(node_path())
-        .with_prefix_arguments([
-            OsString::from("--import"),
-            OsString::from(data_url(&preload)),
-            OsString::from("/swallowtail-capture/entry.mjs"),
-        ])
+        .with_prefix_arguments(recipe.prefix_arguments().map(std::ffi::OsStr::to_os_string))
         .with_node_startup_environment_filter();
     let executable = ExecutableRef::new("claude-agent.prepared.executable").expect("target");
     let environment =
@@ -161,10 +173,6 @@ fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedC
         .approve_environment(environment, [])
         .approve_working_resource(resource, root)
         .build();
-    let expected =
-        *LocalCapturedLaunchFingerprint::new(&graph, [1; 32], [2; 32], [3; 32], [4; 32], [5; 32])
-            .expect("fake candidate")
-            .digest();
     FakeCheckedChild {
         local,
         graph,
@@ -172,6 +180,7 @@ fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedC
         revoked: Arc::new(AtomicBool::new(false)),
         checked: Arc::new(AtomicUsize::new(0)),
         ordinary: Arc::new(AtomicUsize::new(0)),
+        bootstrap,
     }
 }
 

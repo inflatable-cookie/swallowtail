@@ -34,6 +34,7 @@ mod discovery;
 mod driver;
 mod elicitation;
 mod failure;
+mod guard_manifest;
 mod mcp;
 mod permission;
 mod prepared;
@@ -73,6 +74,7 @@ pub use consumer_route_projection::{
     ClaudeAgentProjectionOpenOutcome,
 };
 pub use driver::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
+pub use guard_manifest::claude_agent_acp_guard_v1_source_manifest;
 pub use mcp::{
     CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT, CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
     ClaudeAgentAcpEncodedMcpServers, ClaudeAgentAcpRemoteMcpPlacement,

@@ -14,3 +14,5 @@
 - Capture bounded, digest-checked source bytes for future checked host launches.
 
 - Bind captured fake module graphs to candidate launch fingerprints for guarded-path testing.
+
+- Package the frozen per-hop v1 wrapper source manifest for candidate capture.

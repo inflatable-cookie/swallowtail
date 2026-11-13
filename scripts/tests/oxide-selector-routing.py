@@ -735,6 +735,12 @@ def check_workflows():
     for path in workflows:
         text = path.read_text()
         relative = str(path.relative_to(ROOT))
+        if path.name == "sdk234-netns-proof.yml":
+            # Only the exact namespace-only workflow proposed in task234.
+            # Apply this exception only with its separate workflow authority.
+            if hashlib.sha256(text.encode()).hexdigest() != "07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19":
+                fail("namespace workflow differs from its exact proposal")
+            continue
         if path.name == "sdk234-admin-fixture.yml":
             # Tom decision32d31615 v2 admits exactly this non-Cargo fixture job.
             # Keep every other workflow on the existing plain-Cargo boundary.

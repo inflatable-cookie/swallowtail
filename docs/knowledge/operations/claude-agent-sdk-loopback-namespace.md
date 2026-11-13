@@ -233,3 +233,12 @@ refuse; imported Python inputs are refreshed before configuring the two launches
 The thirty-second inner budget includes root custody capture; preflight remains
 within the job's five-minute bound. No passing fixture or old kernel proof was
 replayed to support these new source-only custody observations.
+
+Read-only local inspection found existing cache components under
+`/System/Volumes/Preboot/Cryptexes/OS/System/Library/dyld`, including the
+arm64e index and multi-gigabyte subcaches. Their existence is a feasible
+byte-inventory lead, not a cache identity or library-to-cache binding. This
+Linux-only attempt neither hashes/adopts that cache set nor claims it absent.
+Before original Darwin admission the host must bind the actual mapped cache
+set and exact identities in preflight, with a separately bounded preparation
+budget; current local rehearsals explicitly retain the unresolved names.

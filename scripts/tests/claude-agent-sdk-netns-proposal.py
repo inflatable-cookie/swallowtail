@@ -516,6 +516,16 @@ class NamespaceProposalTests(unittest.TestCase):
         self.assertEqual(result["failure"], "cleanup_join_unknown")
         self.assertFalse(result["kernelEnforced"])
 
+    def test_linux_inspect_rejects_unpinned_node_before_running_it(self):
+        with mock.patch.dict(os.environ, {"NETNS_RECORD": self.record_sha}):
+            with mock.patch.object(CORE.sys, "platform", "linux"):
+                with mock.patch.object(CORE.subprocess, "run") as run:
+                    with self.assertRaisesRegex(
+                        CORE.Refused, "preflight_Node22_identity_before_execution"
+                    ):
+                        CORE.inspect_host(self.node)
+                    run.assert_not_called()
+
     def test_source_record_has_exact_acyclic_input_set(self):
         expected = "".join(
             f"{CORE.sha((ROOT / name).read_bytes())}  {name}\n" for name in CORE.INPUTS

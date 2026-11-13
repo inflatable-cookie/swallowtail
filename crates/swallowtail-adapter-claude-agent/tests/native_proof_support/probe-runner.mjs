@@ -15,7 +15,16 @@
 // committed ledger has neither.
 
 import { createHash } from "node:crypto";
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import {
+  chmodSync as fsChmodSync,
+  lstatSync,
+  mkdtempSync as fsMkdtempSync,
+  readFileSync,
+  readdirSync,
+  realpathSync as fsRealpathSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { spawn } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
@@ -108,30 +117,104 @@ function checkAuthority(admission, mode, token) {
       "only a planner temporary probe admission may drive this path",
     );
   }
-  if (mode !== "original") return;
-  const original = admission.authority;
-  if (original.original_run_authorised !== true) {
+  if (mode === "original") {
+    // Original mode is refused unconditionally, whatever the ledger or the
+    // caller presents. This process cannot confine a vendor artifact: it has no
+    // network namespace or egress filter (the loopback endpoint is an
+    // observation point, not a firewall), no filesystem namespace or mount
+    // ownership, no uid/gid separation from the host user and no process
+    // cgroup or supervisor. A token or a ledger flag cannot create those
+    // capabilities, so a probe run must never claim them.
     throw new Refusal(
-      "original_mode_disabled",
-      "original-artifact execution is not authorised: the ledger still has original_run_authorised false",
+      "original_mode_unavailable",
+      "original-artifact execution needs kernel-level confinement this harness " +
+        "does not have: a network namespace or egress filter, a filesystem " +
+        "namespace with owned mounts, a separate uid/gid, and a process " +
+        "supervisor or cgroup. No ledger flag or token can substitute for them.",
     );
   }
-  if (typeof original.original_run_token !== "string" || original.original_run_token.length === 0) {
-    throw new Refusal("authority_missing", "the ledger names no original-run token");
-  }
-  if (token !== original.original_run_token) {
-    throw new Refusal("authority_missing", "the presented authority token does not match the ledger");
+  if (token !== undefined) {
+    throw new Refusal(
+      "invalid_invocation",
+      "an authority token is meaningless while original mode is unavailable",
+    );
   }
 }
 
-function insideDirectory(directory, candidate) {
-  const root = path.resolve(directory);
-  const resolved = path.resolve(candidate);
-  return resolved === root || resolved.startsWith(`${root}${path.sep}`);
+function realpath(directory) {
+  try {
+    return fsRealpathSync(directory);
+  } catch {
+    throw new Refusal("isolation_refused", `${directory} does not resolve`);
+  }
 }
 
-function checkPeer(peer, tuple, platform, admission) {
-  const manifest = loadJson(path.join(peer, "package.json"), "peer package identity");
+function isInside(rootReal, candidateReal) {
+  return candidateReal === rootReal || candidateReal.startsWith(`${rootReal}${path.sep}`);
+}
+
+/// A confined root is one this probe created: real directory, mode 0700, owned
+/// by this process's uid, and reachable without a symlinked component.
+function assertOwnedDirectory(directory, role) {
+  const stats = lstatSync(directory);
+  if (!stats.isDirectory() || stats.isSymbolicLink()) {
+    throw new Refusal("isolation_refused", `${role} ${directory} is not a real directory`);
+  }
+  if (typeof process.getuid === "function" && stats.uid !== process.getuid()) {
+    throw new Refusal("isolation_refused", `${role} ${directory} is not owned by this process`);
+  }
+  if ((stats.mode & 0o077) !== 0) {
+    throw new Refusal("isolation_refused", `${role} ${directory} is not mode 0700`);
+  }
+  return realpath(directory);
+}
+
+function createConfinedRoot(base, name) {
+  const root = fsMkdtempSync(path.join(base, `${name}-`));
+  fsChmodSync(root, 0o700);
+  return { path: root, real: assertOwnedDirectory(root, name) };
+}
+
+/// Creates the workspace, HOME and TMPDIR the probe runs in. The caller supplies
+/// only an owned base directory; every path the probe uses is created here, so
+/// no caller marker or lexical prefix can stand in for ownership.
+function createProbeRoots(base) {
+  const baseReal = assertOwnedDirectory(base, "probe base");
+  const workspace = createConfinedRoot(baseReal, "workspace");
+  const home = createConfinedRoot(baseReal, "home");
+  const tmpdir = createConfinedRoot(baseReal, "tmpdir");
+  return { workspace, home, tmpdir, baseReal };
+}
+
+function verifyPeerOwnership(peer, ownershipNonce) {
+  const peerReal = assertOwnedDirectory(peer, "peer");
+  if (typeof ownershipNonce !== "string" || ownershipNonce.length < 16) {
+    throw new Refusal("isolation_refused", "the probe needs the run's peer ownership nonce");
+  }
+  let record;
+  try {
+    record = readFileSync(path.join(peerReal, "ownership.json"), "utf8");
+  } catch {
+    throw new Refusal("isolation_refused", "the peer carries no ownership record");
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(record);
+  } catch {
+    throw new Refusal("isolation_refused", "the peer ownership record is not JSON");
+  }
+  if (parsed.nonce !== ownershipNonce) {
+    throw new Refusal("isolation_refused", "the peer ownership nonce does not match this run");
+  }
+  // The directory's own ownership was checked by `assertOwnedDirectory`; the
+  // nonce binds this peer tree to this invocation.
+  return peerReal;
+}
+
+function checkPeer(peer, tuple, platform, admission, ownershipNonce) {
+  const peerReal = verifyPeerOwnership(peer, ownershipNonce);
+  const manifestPath = path.join(peerReal, "package.json");
+  const manifest = loadJson(manifestPath, "peer package identity");
   if (manifest.name !== "@anthropic-ai/claude-agent-sdk") {
     throw new Refusal("identity_substitution", `peer package is ${manifest.name}`);
   }
@@ -141,83 +224,55 @@ function checkPeer(peer, tuple, platform, admission) {
       `peer package version ${manifest.version} is not the admitted ${tuple.sdk_version}`,
     );
   }
-  const nativeManifest = loadJson(path.join(peer, "native-manifest.json"), "peer native manifest");
+  const nativeManifest = loadJson(
+    path.join(peerReal, "native-manifest.json"),
+    "peer native manifest",
+  );
   if (nativeManifest.version !== tuple.native_version) {
     throw new Refusal(
       "identity_substitution",
       `peer native version ${nativeManifest.version} is not the admitted ${tuple.native_version}`,
     );
   }
-  if (typeof nativeManifest.binary !== "string" || !insideDirectory(peer, path.join(peer, nativeManifest.binary))) {
-    throw new Refusal("identity_substitution", "the peer native path escapes the peer directory");
-  }
   const admitted = tuple.platforms[platform];
   if (admitted === undefined) {
     throw new Refusal("unknown_platform", `the ledger does not admit platform ${platform}`);
   }
 
-  // Actual bytes, before the module is imported or the peer is spawned.
-  const nativeBinary = path.join(peer, nativeManifest.binary);
-  const nativeDigest = sha256(readFileSync(nativeBinary));
+  // Actual bytes, resolved through realpath so a symlink cannot point somewhere
+  // else than the path that was hashed.
+  const nativeCandidate = path.join(peerReal, String(nativeManifest.binary));
+  const nativeReal = realpath(nativeCandidate);
+  if (!isInside(peerReal, nativeReal)) {
+    throw new Refusal("identity_substitution", "the peer native resolves outside the peer");
+  }
+  const nativeBytes = readFileSync(nativeReal);
+  const nativeDigest = sha256(nativeBytes);
   if (tuple.fake_native_sha256 !== nativeDigest) {
     throw new Refusal(
       "identity_substitution",
       `peer native bytes ${nativeDigest} are not the admitted fake ${tuple.fake_native_sha256}`,
     );
   }
-  const sdkModulePath = path.join(peer, "probe-sdk.mjs");
-  if (!insideDirectory(peer, sdkModulePath)) {
-    throw new Refusal("identity_substitution", "the peer SDK module escapes the peer directory");
+  const sdkModuleReal = realpath(path.join(peerReal, "probe-sdk.mjs"));
+  if (!isInside(peerReal, sdkModuleReal)) {
+    throw new Refusal("identity_substitution", "the peer SDK module resolves outside the peer");
   }
-  const sdkDigest = sha256(readFileSync(sdkModulePath));
+  const sdkDigest = sha256(readFileSync(sdkModuleReal));
   if (admission.fake_peer?.sdk_module_sha256 !== sdkDigest) {
     throw new Refusal(
       "identity_substitution",
       `peer SDK bytes ${sdkDigest} are not the admitted ${admission.fake_peer?.sdk_module_sha256}`,
     );
   }
-  return { nativeBinary, nativeDigest, sdkModulePath, sdkDigest, sdkVersion: manifest.version };
-}
-
-/// The fixture root carries this marker, so a probe can refuse a workspace or
-/// peer tree it did not create instead of reading a real checkout.
-const FIXTURE_MARKER = "swallowtail-probe-fixture-v1";
-
-function fixtureRootOf(directory, role) {
-  let current = path.resolve(directory);
-  for (let depth = 0; depth < 4; depth += 1) {
-    const marker = path.join(current, FIXTURE_MARKER);
-    if (existsSync(marker)) {
-      if (readFileSync(marker, "utf8").trim() !== FIXTURE_MARKER) {
-        throw new Refusal("isolation_refused", `${role} ${directory} has an unknown fixture marker`);
-      }
-      return current;
-    }
-    const parent = path.dirname(current);
-    if (parent === current) break;
-    current = parent;
-  }
-  throw new Refusal(
-    "isolation_refused",
-    `${role} ${directory} is not a probe fixture root; a probe never reads a real checkout`,
-  );
-}
-
-function enforceIsolation({ peer, workspace, environment }) {
-  const peerRoot = fixtureRootOf(peer, "peer");
-  const workspaceRoot = fixtureRootOf(workspace, "workspace");
-  if (peerRoot !== workspaceRoot) {
-    throw new Refusal("isolation_refused", "peer and workspace belong to different fixtures");
-  }
-  for (const name of ["HOME", "TMPDIR"]) {
-    const value = environment[name];
-    if (value !== undefined && !insideDirectory(peerRoot, value)) {
-      throw new Refusal("isolation_refused", `${name} is outside the probe fixture`);
-    }
-  }
-  if (existsSync(path.join(workspace, ".git"))) {
-    throw new Refusal("isolation_refused", "the workspace looks like a real checkout");
-  }
+  return {
+    nativeBinary: nativeReal,
+    nativeDigest,
+    sdkModulePath: sdkModuleReal,
+    sdkDigest,
+    sdkVersion: manifest.version,
+    peerReal,
+  };
 }
 
 function directoryBytes(directory) {
@@ -239,20 +294,27 @@ function directoryBytes(directory) {
   return total;
 }
 
-function enforceLimits(bounds, roots, evidenceBytes) {
-  const disk = roots.reduce((total, root) => total + directoryBytes(root), 0);
-  if (disk > bounds.disk_bytes) {
-    throw new Refusal(
-      "disk_limit_exceeded",
-      `the probe wrote ${disk} bytes, over the admitted ${bounds.disk_bytes}`,
-    );
-  }
+/// Records are bounded while the probe runs, not only when the evidence is
+/// written, so a talkative peer cannot fill memory or the volume first.
+function accountRecord(records, record, bounds, roots) {
+  records.push(record);
+  const evidenceBytes = Buffer.byteLength(JSON.stringify(records), "utf8");
   if (evidenceBytes > bounds.captured_stdout_bytes) {
     throw new Refusal(
       "evidence_limit_exceeded",
-      `the evidence is ${evidenceBytes} bytes, over the admitted ${bounds.captured_stdout_bytes}`,
+      `the probe's records passed ${bounds.captured_stdout_bytes} bytes while running`,
     );
   }
+  if (records.length % 32 === 0) {
+    const disk = roots.reduce((total, root) => total + directoryBytes(root), 0);
+    if (disk > bounds.disk_bytes) {
+      throw new Refusal(
+        "disk_limit_exceeded",
+        `the probe wrote ${disk} bytes while running, over the admitted ${bounds.disk_bytes}`,
+      );
+    }
+  }
+  return record;
 }
 
 async function main() {
@@ -262,19 +324,20 @@ async function main() {
   const peer = args.get("peer");
   const platform = args.get("platform");
   const sdkVersion = args.get("sdk-version");
-  const workspace = args.get("workspace");
+  const base = args.get("base");
+  const ownershipNonce = args.get("ownership-nonce");
   const evidencePath = args.get("evidence");
-  const boundMs = Number(args.get("bound-ms") ?? "120000");
+  const requestedBoundMs = Number(args.get("bound-ms") ?? "0");
   const scenario = args.get("scenario") ?? "ok";
   const endpoint = args.get("endpoint");
   const mode = args.get("mode") ?? "fake";
   const token = args.get("authority-token");
 
-  if (!admissionPath || !optionsPath || !peer || !platform || !sdkVersion || !workspace || !evidencePath) {
-    throw new Refusal("invalid_invocation", "the probe needs admission, options, peer, platform, sdk-version, workspace and evidence");
-  }
-  if (!Number.isSafeInteger(boundMs) || boundMs <= 0) {
-    throw new Refusal("invalid_invocation", "the probe bound must be a positive integer");
+  if (!admissionPath || !optionsPath || !peer || !platform || !sdkVersion || !base || !evidencePath) {
+    throw new Refusal(
+      "invalid_invocation",
+      "the probe needs admission, options, peer, platform, sdk-version, base, ownership-nonce and evidence",
+    );
   }
 
   const admission = loadJson(admissionPath, "probe admission");
@@ -283,6 +346,19 @@ async function main() {
   }
   checkAuthority(admission, mode, token);
   requireLoopback(endpoint);
+
+  // The wall clock comes from the ledger, not from the caller. A caller may ask
+  // for less; it may never ask for more.
+  const ledgerBoundMs = admission.bounds.wall_clock_seconds * 1000;
+  const boundMs =
+    requestedBoundMs > 0 ? Math.min(requestedBoundMs, ledgerBoundMs) : ledgerBoundMs;
+  if (Number.isFinite(requestedBoundMs) && requestedBoundMs > ledgerBoundMs) {
+    throw new Refusal(
+      "bound_refused",
+      `the requested ${requestedBoundMs} ms exceeds the admitted ${ledgerBoundMs} ms`,
+    );
+  }
+  const roots = createProbeRoots(base);
 
   const tuple = admission.tuples.find((row) => row.sdk_version === sdkVersion);
   if (tuple === undefined) {
@@ -302,13 +378,19 @@ async function main() {
       admission.environment_allowlist.includes(key) || key.startsWith("LC_"),
     ),
   );
-  enforceIsolation({ peer, workspace, environment });
-  const { nativeBinary, nativeDigest, sdkModulePath } = checkPeer(
+  environment.HOME = roots.home.path;
+  environment.TMPDIR = roots.tmpdir.path;
+  // TMP/TEMP follow TMPDIR in the child, so they are set explicitly.
+  environment.TMP = roots.tmpdir.path;
+  environment.TEMP = roots.tmpdir.path;
+  const { nativeBinary, nativeDigest, sdkModulePath, peerReal } = checkPeer(
     peer,
     tuple,
     platform,
     admission,
+    ownershipNonce,
   );
+  const workspace = roots.workspace.path;
 
   const template = loadJson(optionsPath, "probe options");
   let nativeSpawns = 0;
@@ -358,13 +440,18 @@ async function main() {
   const document = (async () => {
     query = sdk.query({ prompt: prompt(), options });
     const initialization = await query.initializationResult();
-    records.push({ event: "initialized", models: initialization.models?.length ?? 0 });
+    accountRecord(records, { event: "initialized", models: initialization.models?.length ?? 0 }, admission.bounds, [peerReal, workspace]);
     const supported = await query.supportedModels();
-    records.push({ event: "supported_models", count: supported.length });
+    accountRecord(records, { event: "supported_models", count: supported.length }, admission.bounds, [peerReal, workspace]);
     const account = await query.accountInfo();
-    records.push({ event: "account", apiProvider: account?.apiProvider ?? null });
+    accountRecord(records, { event: "account", apiProvider: account?.apiProvider ?? null }, admission.bounds, [peerReal, workspace]);
     for await (const message of query) {
-      records.push({ event: "message", type: message?.type ?? null, subtype: message?.subtype ?? null });
+      accountRecord(
+        records,
+        { event: "message", type: message?.type ?? null, subtype: message?.subtype ?? null },
+        admission.bounds,
+        [peerReal, workspace],
+      );
     }
   })().then(
     () => "done",
@@ -383,11 +470,10 @@ async function main() {
       "cleanup_failed",
       "the probe exceeded its wall-clock bound before the peer joined; the peer was killed",
     );
-    query?.killNative?.();
+    nativeExit = await killAndJoin(query, Math.max(1_000, Math.min(boundMs, 10_000)));
+  } else {
+    nativeExit = await settle(query, Math.max(1_000, Math.min(boundMs, 10_000)));
   }
-  nativeExit = killedByBound
-    ? { join: "killed", code: null, signal: "SIGKILL" }
-    : await settle(query, Math.max(1_000, Math.min(boundMs, 10_000)));
 
   const evidence = {
     schema: "claude-agent-sdk-probe-evidence-v1",
@@ -400,24 +486,44 @@ async function main() {
     scenario,
     endpoint: endpoint ?? null,
     workspace,
+    workspaceCreatedByProbe: true,
+    home: roots.home.path,
+    tmpdir: roots.tmpdir.path,
+    peerReal,
     nativeDigest,
     optionsDigest: admission.selected_options_digest,
+    boundMs,
+    boundSource: "ledger wall_clock_seconds",
     records,
     nativeExit,
     cleanup: nativeExit?.join ?? "unknown",
     elapsedMs: Date.now() - started,
-    boundMs,
     failure: failure === null ? null : { code: failure.code, message: failure.message },
   };
   const serialized = JSON.stringify(evidence, null, 2);
-  enforceLimits(
-    admission.bounds,
-    [peer, workspace],
-    Buffer.byteLength(serialized, "utf8"),
+  const evidenceBytes = Buffer.byteLength(serialized, "utf8");
+  if (evidenceBytes > admission.bounds.captured_stdout_bytes) {
+    throw new Refusal(
+      "evidence_limit_exceeded",
+      `the evidence is ${evidenceBytes} bytes, over the admitted ${admission.bounds.captured_stdout_bytes}`,
+    );
+  }
+  const disk = [peerReal, workspace].reduce(
+    (total, root) => total + directoryBytes(root),
+    0,
   );
+  if (disk > admission.bounds.disk_bytes) {
+    throw new Refusal(
+      "disk_limit_exceeded",
+      `the probe wrote ${disk} bytes, over the admitted ${admission.bounds.disk_bytes}`,
+    );
+  }
   writeFileSync(evidencePath, serialized);
-  if (!killedByBound && nativeExit?.join !== "exited") {
-    throw new Refusal("cleanup_failed", "the native peer was not joined within the probe bound");
+  if (nativeExit?.join !== "exited" && nativeExit?.join !== "killed") {
+    throw new Refusal(
+      "cleanup_failed",
+      `the native join was ${nativeExit?.join ?? "absent"}, so cleanup is unknown`,
+    );
   }
   if (spawnRefusal !== null && failure === null) failure = spawnRefusal;
   if (failure !== null) throw failure;
@@ -427,17 +533,45 @@ async function main() {
 
 async function settle(query, boundMs) {
   if (query === undefined) return { join: "absent", code: null, signal: null };
+  if (typeof query.joinNative !== "function") {
+    // A peer that cannot report its own exit is unknown cleanup, not a clean
+    // exit; the probe fails closed on it.
+    return { join: "unknown", code: null, signal: null };
+  }
   let timer;
   const bound = new Promise((resolve) => {
-    timer = setTimeout(() => resolve("killed"), boundMs);
+    timer = setTimeout(() => resolve("expired"), boundMs);
   });
   try {
-    const joined = query.joinNative === undefined ? "exited" : await Promise.race([query.joinNative(), bound]);
-    if (joined === "killed") {
-      query.killNative?.();
-      return { join: "killed", code: null, signal: "SIGKILL" };
+    const outcome = await Promise.race([query.joinNative().then((exit) => ({ exit })), bound]);
+    if (outcome === "expired") {
+      return { join: "unknown", code: null, signal: null, timedOut: true };
     }
-    return { join: "exited", ...(joined ?? { code: null, signal: null }) };
+    return { join: "exited", ...(outcome.exit ?? { code: null, signal: null }) };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/// Kills the peer and waits for the observed exit. A kill that is not followed
+/// by an observed join is unknown cleanup.
+async function killAndJoin(query, boundMs) {
+  if (query === undefined) return { join: "absent", code: null, signal: null };
+  if (typeof query.joinNative !== "function") {
+    return { join: "unknown", code: null, signal: null };
+  }
+  const joined = query.joinNative();
+  query.killNative?.();
+  let timer;
+  const bound = new Promise((resolve) => {
+    timer = setTimeout(() => resolve("expired"), boundMs);
+  });
+  try {
+    const outcome = await Promise.race([joined.then((exit) => ({ exit })), bound]);
+    if (outcome === "expired") {
+      return { join: "unknown", code: null, signal: null, timedOut: true };
+    }
+    return { join: "killed", ...(outcome.exit ?? { code: null, signal: null }) };
   } finally {
     clearTimeout(timer);
   }

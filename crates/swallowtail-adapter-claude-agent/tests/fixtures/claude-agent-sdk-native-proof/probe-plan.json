@@ -170,11 +170,8 @@
     }
   },
   "isolation": {
-    "home": "a fresh directory under the run TMPDIR; never the host HOME",
-    "workspace": "a fresh leased directory under the run TMPDIR",
-    "settings": "a fresh directory holding only the controlled settings file",
-    "tmpdir": "the same isolated root",
-    "ambient_credentials": "absent: the child environment is an allowlist",
+    "fake_harness": "the probe creates its workspace, HOME and TMPDIR itself under a mode-0700 base directory and verifies ownership; the peer carries a per-run nonce; paths are resolved through realpath and refused when they escape",
+    "original_artifacts": "not available: this harness has no network namespace or egress filter, no filesystem namespace or mount ownership, no separate uid/gid and no process supervisor, so original mode is refused unconditionally",
     "host_paths": "none referenced; no sibling checkout is read or written"
   },
   "environment": {
@@ -209,7 +206,7 @@
       "NO_PROXY",
       "NODE_OPTIONS"
     ],
-    "egress": "no provider host is reachable; the only endpoint is a loopback fake that records contact and answers locally"
+    "egress": "one loopback observation endpoint records contact; it is not an egress filter, and no egress isolation is claimed for either mode"
   },
   "limits": {
     "wall_clock_seconds": 120,

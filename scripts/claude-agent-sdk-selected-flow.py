@@ -499,40 +499,42 @@ def lex(source: str, *, tolerant: bool = False) -> list[tuple[str, str]]:
 
 
 def mask_tokens_of(source: str) -> list[str]:
-    """Masked code tokens of a window.
+    """Masked code tokens of a window, one entry per lexical token.
 
-    Comments disappear, string and template literals become one marker, numbers
-    become `0`, and identifiers become `ID` unless they are member names, which
-    are the selected surfaces of this route. Whitespace runs collapse to one
-    space so minifier layout cannot masquerade as a change.
+    Comments disappear, whitespace disappears, string and template literals
+    become one marker, numbers become `0`, and identifiers become `ID` unless
+    they are member names, which are the selected surfaces of this route. The
+    list is built directly rather than joined and split: a minified window with
+    no whitespace at all (`endRun(){this.finish();}`) must still yield one entry
+    per token, or a token-boundary comparison would compare whole expressions
+    and a dropped final token would drop the window.
     """
-    out: list[str] = []
+    tokens: list[str] = []
     previous = ""
     before_previous = ""
     for kind, text in lex(source, tolerant=True):
         if kind in ("comment", "space"):
-            out.append(" ")
             continue
         if kind in ("string", "template"):
-            out.append('"S"')
+            tokens.append('"S"')
             previous, before_previous = '"S"', previous
             continue
         for token in re.findall(r"[A-Za-z_$][A-Za-z0-9_$]*|\d[\dA-Za-z_.]*|\s+|.", text, re.S):
             if token.isspace():
-                out.append(" ")
                 continue
             if token[0].isdigit():
-                out.append("0")
+                tokens.append("0")
             elif IDENTIFIER.fullmatch(token):
                 member_access = previous == "." and before_previous != "."
-                out.append(token if member_access else "ID")
+                tokens.append(token if member_access else "ID")
             else:
-                out.append(token)
+                tokens.append(token)
             previous, before_previous = token, previous
-    return [token for token in "".join(out).split(" ") if token]
+    return tokens
 
 
 def mask(source: str) -> str:
+    """The masked token string, used by the self-test and by reports."""
     return " ".join(mask_tokens_of(source))
 
 
@@ -557,14 +559,60 @@ def brace_body(source: str, start: int) -> tuple[int, str]:
     raise Refused("unbalanced braces in selected surface")
 
 
-def mask_tokens(text: str) -> list[str]:
-    """The masked token sequence of a window, minus its final partial token.
+def window_tokens(text: str, complete: bool) -> tuple[list[str], int]:
+    """The masked token sequence of one window, and how many tokens were dropped.
 
-    A byte-bounded window can cut the last token in half at different places
-    once upstream code shifts, so the final token is dropped before comparison.
+    A *complete* window (a brace-balanced definition, an enclosing function, or
+    a statement-aligned slice) is compared token for token: nothing is dropped,
+    because a dropped trailing token would hide an inserted statement at the end
+    of a window. Only a byte-bounded fallback window can cut its last token in
+    half, and only there is exactly one token dropped, recorded in the ledger.
     """
     tokens = mask_tokens_of(text)
-    return tokens[:-1] if tokens else tokens
+    if complete:
+        return tokens, 0
+    dropped = 1 if tokens else 0
+    return (tokens[:-1] if dropped else tokens), dropped
+
+
+def compare_window_text(left: str, right: str, complete: bool) -> dict:
+    """Compare two windows exactly the way the ledger does.
+
+    This is the single comparison function: `extract` uses it per window and the
+    mutation tests call it directly, so a regression here cannot hide behind a
+    separate self-test path.
+    """
+    left_tokens, left_dropped = window_tokens(left, complete)
+    right_tokens, right_dropped = window_tokens(right, complete)
+    if not left_tokens or not right_tokens:
+        return {
+            "valid": False,
+            "reason": "empty window",
+            "left_tokens": len(left_tokens),
+            "right_tokens": len(right_tokens),
+            "dropped": [left_dropped, right_dropped],
+            "sequence_equal": False,
+            "multiset_equal": False,
+        }
+    left_sequence = collapsed(" ".join(left_tokens))
+    right_sequence = collapsed(" ".join(right_tokens))
+    return {
+        "valid": True,
+        "left_tokens": len(left_tokens),
+        "right_tokens": len(right_tokens),
+        "dropped": [left_dropped, right_dropped],
+        "sequence_equal": left_sequence == right_sequence,
+        "multiset_equal": collapsed(" ".join(sorted(left_tokens)))
+        == collapsed(" ".join(sorted(right_tokens))),
+        "left_sha256": sha256_bytes(left_sequence.encode()),
+        "right_sha256": sha256_bytes(right_sequence.encode()),
+        "left_multiset_sha256": sha256_bytes(
+            collapsed(" ".join(sorted(left_tokens))).encode()
+        ),
+        "right_multiset_sha256": sha256_bytes(
+            collapsed(" ".join(sorted(right_tokens))).encode()
+        ),
+    }
 
 
 def enclosing_function(source: str, offset: int) -> tuple[int, int] | None:
@@ -656,12 +704,22 @@ def extract(source: str, surface: dict) -> dict:
                 "occurrences": len(offsets),
                 "bytes": len(text),
             }
-        tokens = mask_tokens(text)
+        tokens, dropped = window_tokens(text, bounded)
+        if not tokens:
+            return {
+                "status": "empty",
+                "offsets": offsets,
+                "occurrences": len(offsets),
+                "detail": "the selected window produced no masked tokens",
+            }
         windows.append(
             {
                 "offset": start,
                 "bytes": len(text),
                 "statement_aligned": bounded,
+                "complete": bounded,
+                "tokens": len(tokens),
+                "tokens_dropped": dropped,
                 "masked_sha256": sha256_bytes(collapsed(" ".join(tokens)).encode()),
                 "masked_multiset_sha256": sha256_bytes(
                     collapsed(" ".join(sorted(tokens))).encode()
@@ -888,10 +946,16 @@ def changed_spans(corpus: dict, versions: list, surface: dict, limit: int = 400)
             suffix += 1
         middle_a = text_a[prefix:len(text_a) - suffix]
         middle_b = text_b[prefix:len(text_b) - suffix]
+        comparison = compare_window_text(
+            text_a, text_b, surface["kind"] != "member" or surface.get("complete", False)
+        )
         spans.append(
             {
                 "hop": f"{left}->{right}",
                 "status": "identical" if not middle_a and not middle_b else "changed",
+                "sequence_equal": comparison["sequence_equal"],
+                "multiset_equal": comparison["multiset_equal"],
+                "valid_evidence": comparison["valid"],
                 "removed_offset": offset_a + prefix,
                 "added_offset": offset_b + prefix,
                 "removed_bytes": len(middle_a),
@@ -967,6 +1031,7 @@ def classify(fixture: pathlib.Path, corpus: dict[str, pathlib.Path]) -> dict:
             for version in versions
         }
         present = [version for version in versions if states[version] == "classified"]
+        empty = [version for version in versions if states[version] == "empty"]
         distinct = sorted({tuple(sequences[version]) for version in present})
         changed_hops = []
         reordered_hops = []
@@ -985,6 +1050,7 @@ def classify(fixture: pathlib.Path, corpus: dict[str, pathlib.Path]) -> dict:
             "note": surface["note"],
             "status_per_version": states,
             "present_in": present,
+            "empty_in": empty,
             "absent_in": [version for version in versions if states[version] != "classified"],
             "masked_sequence_sha256": sequences,
             "masked_multiset_sha256": multisets,
@@ -994,6 +1060,10 @@ def classify(fixture: pathlib.Path, corpus: dict[str, pathlib.Path]) -> dict:
             "selected_path": REACHABILITY[name][0],
             "reason": REACHABILITY[name][1],
             "bounded": all(
+                state in ("classified", "absent") for state in states.values()
+            ),
+            "valid_evidence": not empty
+            and all(
                 state in ("classified", "absent") for state in states.values()
             ),
         }
@@ -1017,6 +1087,11 @@ def classify(fixture: pathlib.Path, corpus: dict[str, pathlib.Path]) -> dict:
         for version in versions
     )
     report["closure_bounded"] = closure_bounded
+    report["valid_evidence"] = closure_bounded and all(
+        entry.get("valid_evidence", True)
+        for entry in report["classification"].values()
+        if isinstance(entry, dict)
+    )
     return report
 
 
@@ -1171,6 +1246,118 @@ def self_test() -> int:
         left = mask("if (a.promptHold !== void 0) b();")
         right = mask("/* a.promptHold */ if (a.promptHold !== void 0) b();")
         check("comments are not part of the surface", left == right)
+
+        # Mutation tests through the exact path that generates the ledger.
+        def surface_for(anchor: str, kind: str) -> dict:
+            return {
+                "name": "fixture",
+                "anchor": anchor,
+                "kind": kind,
+                "before": 0,
+                "after": 0,
+                "note": "fixture",
+            }
+
+        def window_of(source: str, anchor: str, kind: str) -> str:
+            surface = surface_for(anchor, kind)
+            extracted = extract(source, surface)
+            if extracted["status"] != "classified":
+                failures.append(f"mutation fixture did not classify: {extracted}")
+                return ""
+            start, end, _bounded = statement_window(source, source.index(anchor), anchor, surface)
+            return source[start:end] if kind == "member" else source[source.index(anchor):extracted["windows"][0]["offset"] + extracted["windows"][0]["bytes"]]
+
+        base = "function f(){let a=1;return a}"
+        anchor = "function f(){"
+        original = window_of(base, anchor, "definition")
+        renamed = window_of("function f(){let b=1;return b}", anchor, "definition")
+        inserted = window_of("function f(){let a=1;crash();return a}", anchor, "definition")
+        deleted = window_of("function f(){let a=1}", anchor, "definition")
+        reordered = window_of("function f(){return a;let a=1}", anchor, "definition")
+        trailing = window_of("function f(){let a=1;return a;crash()}", anchor, "definition")
+        trailing_only = window_of("function f(){let a=1;return a;crash2()}", anchor, "definition")
+
+        same = compare_window_text(original, renamed, True)
+        check("rename is identical", same["sequence_equal"] and same["multiset_equal"])
+        check("rename keeps evidence valid", same["valid"])
+
+        insertion = compare_window_text(original, inserted, True)
+        check("insertion is detected", not insertion["sequence_equal"])
+        check("insertion changes the multiset", not insertion["multiset_equal"])
+
+        deletion = compare_window_text(original, deleted, True)
+        check("deletion is detected", not deletion["sequence_equal"])
+        check("deletion changes the multiset", not deletion["multiset_equal"])
+
+        reorder = compare_window_text(original, reordered, True)
+        check("reordering is detected", not reorder["sequence_equal"])
+        check("reordering keeps the multiset", reorder["multiset_equal"])
+
+        trailing_change = compare_window_text(inserted, trailing_only, True)
+        check(
+            "a trailing-token change is detected in a complete window",
+            not trailing_change["sequence_equal"],
+        )
+
+        whitespace_free = compare_window_text(
+            "endRun(){this.finish();}", "endRun(){this.finish();}", True
+        )
+        check("whitespace-free windows keep their token boundaries", whitespace_free["valid"])
+        check(
+            "a whitespace-free window has one token per lexical item",
+            whitespace_free["left_tokens"] == whitespace_free["right_tokens"]
+            and whitespace_free["left_tokens"] > 5,
+        )
+
+        # The exact pair the review named, through the same comparison.
+        end_run_before = compare_window_text(
+            "endRun(){this.finish();}", "endRun(){this.crash();this.finish();}", True
+        )
+        check(
+            "endRun insertions are detected through the shared comparison",
+            not end_run_before["sequence_equal"] and not end_run_before["multiset_equal"],
+        )
+        end_run_reorder = compare_window_text(
+            "endRun(){this.finish();this.cleanup();}",
+            "endRun(){this.cleanup();this.finish();}",
+            True,
+        )
+        check(
+            "endRun reordering keeps the multiset and moves the sequence",
+            not end_run_reorder["sequence_equal"] and end_run_reorder["multiset_equal"],
+        )
+
+        empty = compare_window_text("", "endRun(){}", True)
+        check("an empty window is invalid evidence", not empty["valid"])
+
+        truncated = compare_window_text("endRun(){this.fini", "endRun(){this.finish();}", False)
+        check("a truncated window drops exactly one token", truncated["dropped"] == [1, 1] or truncated["dropped"] == [1, 0])
+
+        # The same mutations must land through extract(), not only the helper.
+        classify_source = (
+            "function cD(e){return e}\n"
+            "function uD(e){return e}\n"
+            "function Ki(e){return e}\n"
+            "endRun(){this.finish();}\n"
+            "x = 1;\n"
+        )
+        classify_mutated = classify_source.replace(
+            "endRun(){this.finish();}", "endRun(){this.crash();this.finish();}"
+        )
+        end_run_surface = surface_for("endRun(){", "definition")
+        before = extract(classify_source, end_run_surface)
+        after = extract(classify_mutated, end_run_surface)
+        through_extract = compare_window_text(
+            classify_source[classify_source.index("endRun(){"):],
+            classify_mutated[classify_mutated.index("endRun(){"):],
+            True,
+        )
+        check("extract classifies the mutation fixture", before["status"] == "classified" and after["status"] == "classified")
+        check(
+            "extract digests move for an insertion",
+            before["masked_sequence_sha256"] != after["masked_sequence_sha256"],
+        )
+        check("the shared comparison sees the same insertion", not through_extract["sequence_equal"])
 
         # Masking must ignore identifier renames and catch a structural change.
         left = mask("a.b(c=>d);")

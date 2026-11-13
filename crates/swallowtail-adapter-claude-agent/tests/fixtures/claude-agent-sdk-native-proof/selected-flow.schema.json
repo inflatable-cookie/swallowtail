@@ -13,7 +13,8 @@
     "surfaces",
     "reachability_inputs",
     "classification",
-    "closure_bounded"
+    "closure_bounded",
+    "valid_evidence"
   ],
   "properties": {
     "schema": {
@@ -130,10 +131,28 @@
               ]
             }
           }
-        ]
+        ],
+        "properties": {
+          "status_per_version": {
+            "type": "object",
+            "minProperties": 1
+          },
+          "empty_in": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "valid_evidence": {
+            "type": "boolean"
+          }
+        }
       }
     },
     "closure_bounded": {
+      "type": "boolean"
+    },
+    "valid_evidence": {
       "type": "boolean"
     }
   }

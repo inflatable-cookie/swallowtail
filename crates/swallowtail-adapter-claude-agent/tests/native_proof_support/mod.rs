@@ -837,6 +837,7 @@ pub fn verify_probe_admission() -> Result<(), String> {
 /// One isolated peer tree for a probe-only run.
 pub struct ProbeFixture {
     root: PathBuf,
+    ownership_nonce: String,
 }
 
 pub struct ProbeRun {
@@ -862,13 +863,30 @@ impl ProbeFixture {
         for directory in ["", "peer", "home", "workspace", "tmp", "settings"] {
             std::fs::create_dir_all(root.join(directory)).expect("probe directory is created");
         }
-        // The marker lets the runner refuse a peer or workspace it did not
-        // create, so a probe can never be pointed at a real checkout.
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&root, std::fs::Permissions::from_mode(0o700))
+                .expect("probe base is mode 0700");
+            std::fs::set_permissions(root.join("peer"), std::fs::Permissions::from_mode(0o700))
+                .expect("probe peer is mode 0700");
+        }
+        // The peer carries a per-run ownership nonce: the runner is told the
+        // same nonce on its command line, so a pre-existing tree cannot stand in
+        // for the peer this fixture created.
+        let ownership_nonce = format!(
+            "{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .expect("system time follows epoch")
+                .as_nanos()
+        );
         std::fs::write(
-            root.join("swallowtail-probe-fixture-v1"),
-            "swallowtail-probe-fixture-v1",
+            root.join("peer/ownership.json"),
+            json!({ "nonce": ownership_nonce }).to_string(),
         )
-        .expect("fixture marker is written");
+        .expect("peer ownership record is written");
         std::fs::write(
             root.join("settings/settings.json"),
             json!({"permissions": {"deny": ["Bash(rm:*)"]}}).to_string(),
@@ -896,7 +914,10 @@ impl ProbeFixture {
         .expect("probe admission copy is written");
         std::fs::write(root.join("probe-options.json"), PROBE_OPTIONS)
             .expect("probe options copy is written");
-        Self { root }
+        Self {
+            root,
+            ownership_nonce,
+        }
     }
 
     pub fn root(&self) -> &Path {
@@ -914,10 +935,29 @@ impl ProbeFixture {
         .expect("peer SDK configuration is written");
     }
 
-    /// Removes the fixture marker so the isolation boundary can be exercised.
-    pub fn remove_fixture_marker(&self) {
-        std::fs::remove_file(self.root.join("swallowtail-probe-fixture-v1"))
-            .expect("fixture marker is removed for the isolation case");
+    /// Rewrites the peer ownership record with a foreign nonce, so the
+    /// ownership boundary can be exercised.
+    pub fn forge_peer_ownership(&self) {
+        std::fs::write(
+            self.root.join("peer/ownership.json"),
+            json!({"nonce": "not-this-run-nonce"}).to_string(),
+        )
+        .expect("peer ownership record is forged");
+    }
+
+    /// Points the peer native at a symlink that escapes the peer directory.
+    pub fn symlink_peer_native_outside(&self) {
+        let link = self.root.join("peer/fake-native-link.mjs");
+        let outside = self.root.join("outside-native.mjs");
+        std::fs::copy(self.root.join("peer/fake-native.mjs"), &outside)
+            .expect("outside copy is written");
+        #[cfg(unix)]
+        std::os::unix::fs::symlink(&outside, &link).expect("escaping symlink is created");
+        std::fs::write(
+            self.root.join("peer/native-manifest.json"),
+            json!({"version": "2.1.322", "binary": "fake-native-link.mjs"}).to_string(),
+        )
+        .expect("native manifest points at the symlink");
     }
 
     /// Replaces the peer SDK bytes without touching its declared identity.
@@ -970,8 +1010,10 @@ impl ProbeFixture {
             .arg(sdk_version)
             .arg("--platform")
             .arg(platform)
-            .arg("--workspace")
-            .arg(self.root.join("workspace"))
+            .arg("--base")
+            .arg(&self.root)
+            .arg("--ownership-nonce")
+            .arg(&self.ownership_nonce)
             .arg("--evidence")
             .arg(&evidence)
             .arg("--bound-ms")
@@ -1021,7 +1063,20 @@ impl ProbeFixture {
 
 impl Drop for ProbeFixture {
     fn drop(&mut self) {
-        let _ = std::fs::remove_dir_all(&self.root);
+        // Nucleus permits a fixture to tear down temporary roots it created in
+        // this run. Guard that: only a direct child of the platform temporary
+        // directory carrying this fixture's own prefix is removed, so a
+        // mis-pointed root can never be deleted.
+        let temporary = std::env::temp_dir();
+        let owned = self
+            .root
+            .file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| name.starts_with("swallowtail-probe-"))
+            && self.root.parent() == Some(temporary.as_path());
+        if owned {
+            let _ = std::fs::remove_dir_all(&self.root);
+        }
     }
 }
 

@@ -49,4 +49,20 @@ remains); every fixture is validated against a complete JSON Schema with a
 mutation self-test; the answered `d5a14f90` ruling is reconciled everywhere; and
 `check:format:current-claude-agent-sdk` gives reviewers a read-only formatting
 check.
+Second review correction: the comparison pipeline now preserves token
+boundaries for whitespace-free minified windows, never drops the final token of
+a complete window, records the single dropped token of a truncated fallback
+window, and treats an empty window as invalid evidence; mutation tests run
+through the same extract/comparison path, including
+`endRun(){this.finish();}` versus `endRun(){this.crash();this.finish();}`, and
+the ledger was regenerated from a freshly digest-verified corpus. Re-reading the
+closure retracted the earlier claim that the bundled validator's
+`require("ajv/...")` calls are module edges: they are emitted code inside
+strings, and the only code-level literal require is `util`. The probe now
+creates its own confined workspace/HOME/TMPDIR, refuses a caller workspace, a
+symlink escape and a foreign peer, takes its time bound from the ledger,
+accounts records and disk while running, and requires an observed native join;
+because no kernel-level confinement exists, original-artifact mode is refused
+unconditionally and the ledger names the missing capability. Fixtures remove
+only directories they created.
 

@@ -705,7 +705,20 @@ impl Drop for SidecarProcess {
     fn drop(&mut self) {
         let _ = self.child.kill();
         let _ = self.child.wait();
-        let _ = std::fs::remove_dir_all(&self.directory);
+        // Nucleus permits a fixture to tear down temporary roots it created in
+        // this run. Guard that: only a direct child of the platform temporary
+        // directory carrying this fixture's own prefix is removed, so a
+        // mis-pointed root can never be deleted.
+        let temporary = std::env::temp_dir();
+        let owned = self
+            .directory
+            .file_name()
+            .and_then(|name| name.to_str())
+            .is_some_and(|name| name.starts_with("swallowtail-claude-agent-sdk-"))
+            && self.directory.parent() == Some(temporary.as_path());
+        if owned {
+            let _ = std::fs::remove_dir_all(&self.directory);
+        }
     }
 }
 

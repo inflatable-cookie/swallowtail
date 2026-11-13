@@ -217,7 +217,7 @@
     },
     "isolation": {
       "type": "object",
-      "minProperties": 4,
+      "minProperties": 3,
       "additionalProperties": {
         "type": "string"
       }

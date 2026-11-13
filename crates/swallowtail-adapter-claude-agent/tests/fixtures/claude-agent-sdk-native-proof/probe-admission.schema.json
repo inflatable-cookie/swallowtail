@@ -12,6 +12,7 @@
     "production_admission",
     "note",
     "authority",
+    "confinement",
     "plan_sha256",
     "options_template_sha256",
     "selected_options_digest",
@@ -399,6 +400,35 @@
     "managed_denial_contract_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "confinement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "available",
+        "unavailable",
+        "original_mode"
+      ],
+      "properties": {
+        "available": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unavailable": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string"
+          }
+        },
+        "original_mode": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     }
   },
   "definitions": {

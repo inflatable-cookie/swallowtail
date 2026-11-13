@@ -224,38 +224,82 @@ original-artifact run, which stays unauthorised.
 
 ## Review repairs
 
-A review of the first head found five defects, all repaired here and each pinned
-by a test or a validator rather than by prose:
+Two review rounds found the same load-bearing defects, so this section records
+what was *actually* corrected and what was retracted, not what was asserted.
 
-1. **Peer bytes are verified before anything is imported or spawned.** The probe
-   runner hashes the peer SDK module and the peer native, refuses a native path
-   that escapes the peer directory, and only then imports the module and starts
-   the process.
-2. **Isolation and limits fail closed.** The fixture root carries a marker, so a
-   peer or workspace the probe did not create is refused; `HOME` and `TMPDIR`
-   must live inside that root; a `.git` in the workspace is refused; the spawn
-   hook enforces the declared native-process bound even when a peer swallows the
-   hook's error; and the disk and evidence byte bounds are measured before the
-   evidence is written.
-3. **Tokenisation is repaired, and the closure re-assessed.** The scan is a small
-   JavaScript lexer rather than a regular expression over raw text, with mutation
-   tests for comment, string, template, interpolation and regular-expression
-   traps. Re-running it changed one earlier conclusion: the bundled validator's
-   `require("ajv/...")` text lives inside strings and templates as emitted code,
-   not as module edges, so the ledger now reports the single code-level
-   `require("util")` edge and the five emitted specifiers separately.
-4. **The fixtures are validated against complete schemas.** Every schema now
-   constrains the fields it names, `probe-options`, `selected-flow` and the
-   managed-denial contract have schemas of their own, and
-   `scripts/validate-claude-agent-sdk-fixtures.py` applies them with
-   `jsonschema` and proves eleven mutations are refused.
-5. **The answered ruling is reconciled.** Every place that still described the
-   SDK permission direction as open now records Tom's decision, and the frozen
-   identity fixture stays as observation-time history.
+### The comparison pipeline
 
-`check:format:current-claude-agent-sdk` was added so a reviewer can verify
-formatting with a read-only `cargo fmt --check`; `format:current-claude-agent-sdk`
-remains the author-side write-and-check pair.
+The earlier revision repaired the lexer but left the comparison wrong in three
+ways, all now fixed in the single function `compare_window_text` that `extract`
+uses per window:
+
+- **Token boundaries are preserved.** The masked token list is built directly;
+  it used to be joined with spaces and split again, which merged a whitespace-
+  free minified window (`endRun(){this.finish();}`) into one token and made the
+  whole expression the comparison unit.
+- **A complete window never drops its final token.** A brace-balanced
+  definition, an enclosing function and a statement-aligned slice are compared
+  token for token. Only a byte-bounded fallback window drops exactly one
+  possibly-partial token, and the ledger records `tokens_dropped` per window.
+  The earlier unconditional final-token drop could hide a statement appended at
+  the end of a window.
+- **An empty window is invalid evidence.** A classified window with no masked
+  tokens is reported as `empty`, the surface carries `valid_evidence: false`,
+  the report carries a top-level `valid_evidence`, and the fixture schema and
+  validator refuse the ledger. The regenerated ledger has no empty window and
+  no dropped token; the smallest surface is 15 tokens.
+
+The self-test is a mutation suite through that same path, including
+`endRun(){this.finish();}` versus `endRun(){this.crash();this.finish();}`:
+insertion, deletion, reordering, a trailing-token change, a whitespace-free
+window, an empty window, a truncated window, identifier renaming and comment
+insertion. The reordering case asserts that the multiset is unchanged while the
+sequence moves, which is why both digests are in the ledger.
+
+### The closure, reassessed
+
+Re-running the repaired scan over a freshly fetched and digest-verified corpus
+retracted part of the earlier text: the bundled JSON-schema validator's
+`require("ajv/...")` calls live inside string and template literals as *emitted
+code*, not as module edges of `sdk.mjs`. The only code-level literal `require`
+is `util`. The ledger now reports `literal_require_specifiers` and
+`emitted_require_specifiers` separately, and the closure holds on that reading:
+no vendor static specifier, no dynamic `import(`, no `core-*.mjs` edge, two
+`import.meta` sites.
+
+### The probe boundary
+
+The fake harness no longer advertises confinement it does not enforce:
+
+- The probe creates its own workspace, `HOME`, `TMPDIR`, `TMP` and `TEMP` with
+  `mkdtemp` under a mode-0700 base directory it verifies is a real directory
+  owned by this uid; a caller-supplied workspace is refused. The peer carries a
+  per-run ownership nonce that the runner receives on its command line, and
+  every component is checked through `lstat`/`realpath`, so a symlink escape or
+  a foreign tree is refused before any module is imported.
+- The wall clock is the ledger's `wall_clock_seconds`; a larger request is
+  refused, and records and disk use are accounted while the run proceeds.
+- The native process bound is latched in the spawn hook, so a peer that swallows
+  the hook error still fails the probe.
+- The native join is mandatory: a missing `joinNative`, a timed-out join or an
+  unobserved kill is failed cleanup, never `exited`.
+- Egress is **not** filtered. The loopback endpoint is an observation point, and
+  the plan says so instead of claiming isolation.
+
+Because those gaps are real, **original-artifact mode is refused
+unconditionally**: `original_mode_unavailable` names the missing capability (a
+network namespace or egress filter, a filesystem namespace with owned mounts, a
+separate uid/gid, and a process supervisor or cgroup), and no ledger flag or
+token can substitute for it. The ledger's `confinement` block lists what the
+harness does and does not have, and a test proves that an authorised ledger
+with its exact token is still refused.
+
+### Fixture teardown
+
+Both fixtures remove only a directory they created: a direct child of the
+platform temporary directory carrying the fixture's own prefix. Normal cleanup
+is retained; the run's recorded root and any directory this run did not create
+are never touched.
 
 ## Harness and plan
 

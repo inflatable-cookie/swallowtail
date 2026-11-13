@@ -878,19 +878,79 @@ type RefusalCase = (
     &'static str,
 );
 
+/// One original-mode case: the label, the ledger override and the extra
+/// arguments. Original mode must be refused for every combination, because the
+/// harness has no kernel-level confinement to offer it.
+type OriginalModeCase = (&'static str, fn(&mut Value), &'static [&'static str]);
+
 #[test]
-fn a_ledger_that_claims_production_admission_is_refused() {
-    let cases: [RefusalCase; 5] = [
+fn original_mode_is_refused_unconditionally() {
+    // Neither a ledger flag nor a token can open original mode: the harness has
+    // no kernel-level confinement, so the refusal cannot depend on the caller.
+    let cases: [OriginalModeCase; 3] = [
+        (
+            "committed ledger",
+            |_admission: &mut Value| {},
+            &["--mode", "original"],
+        ),
+        (
+            "authorised ledger with its token",
+            |admission: &mut Value| {
+                admission["authority"]["original_run_authorised"] = json!(true);
+                admission["authority"]["original_run_token"] = json!("fixture-token");
+            },
+            &["--mode", "original", "--authority-token", "fixture-token"],
+        ),
         (
             "production admission",
             |admission: &mut Value| admission["production_admission"] = json!(true),
-            &["--mode", "original", "--authority-token", "fixture-token"],
+            &["--mode", "original"],
+        ),
+    ];
+    for (label, overrides, extra) in cases {
+        let fixture = ProbeFixture::start("ok", &overrides);
+        fixture.bind_peer("0.3.322", "2.1.322");
+        let run = fixture.run("0.3.322", "linux-x64", "ok", None, 120_000, extra);
+        assert_eq!(run.status, 2, "{label} must be refused: {}", run.stderr);
+        assert!(
+            run.stderr.contains("original_mode_unavailable")
+                || run.stderr.contains("production_admission_refused")
+                || run.stderr.contains("invalid_invocation"),
+            "{label} names the refusal: {}",
+            run.stderr
+        );
+        assert!(run.evidence.is_none(), "{label} records no run");
+    }
+
+    let admission = probe_admission();
+    assert_eq!(
+        admission["authority"]["original_run_authorised"],
+        json!(false)
+    );
+    assert_eq!(admission["authority"]["original_run_token"], Value::Null);
+    assert!(
+        admission["confinement"]["unavailable"]
+            .as_array()
+            .expect("confinement gaps")
+            .len()
+            >= 2,
+        "the ledger names the missing execution capability"
+    );
+}
+
+#[test]
+fn a_foreign_authority_ledger_is_still_refused_for_a_fake_run() {
+    let cases: [RefusalCase; 3] = [
+        (
+            "production admission",
+            |admission: &mut Value| admission["production_admission"] = json!(true),
+            &[],
             "production_admission_refused",
         ),
         (
             "production mode",
             |admission: &mut Value| admission["mode"] = json!("production"),
-            &["--mode", "original", "--authority-token", "fixture-token"],
+            &[],
             "production_admission_refused",
         ),
         (
@@ -899,33 +959,15 @@ fn a_ledger_that_claims_production_admission_is_refused() {
             &[],
             "authority_missing",
         ),
-        (
-            "authority without a token",
-            |admission: &mut Value| {
-                admission["authority"]["original_run_authorised"] = json!(true);
-                admission["authority"]["original_run_token"] = json!("fixture-token");
-            },
-            &["--mode", "original"],
-            "authority_missing",
-        ),
-        (
-            "authority with the wrong token",
-            |admission: &mut Value| {
-                admission["authority"]["original_run_authorised"] = json!(true);
-                admission["authority"]["original_run_token"] = json!("fixture-token");
-            },
-            &["--mode", "original", "--authority-token", "another-token"],
-            "authority_missing",
-        ),
     ];
     for (label, overrides, extra, expected) in cases {
         let fixture = ProbeFixture::start("ok", &overrides);
         fixture.bind_peer("0.3.322", "2.1.322");
-        let run = fixture.run("0.3.322", "darwin-arm64", "ok", None, 30_000, extra);
+        let run = fixture.run("0.3.322", "darwin-arm64", "ok", None, 120_000, extra);
         assert_eq!(
             run.status, 2,
-            "the {label} ledger is refused: {} {}",
-            run.stdout, run.stderr
+            "the {label} ledger is refused: {}",
+            run.stderr
         );
         assert!(
             run.stderr.contains(expected),
@@ -934,33 +976,6 @@ fn a_ledger_that_claims_production_admission_is_refused() {
         );
         assert!(run.evidence.is_none(), "no run is recorded for {label}");
     }
-
-    // The gate is a real gate, not a stub: an authorised ledger with its exact
-    // token opens original mode, which is why the committed ledger keeps both
-    // fields closed and `verify_probe_admission` refuses if they drift.
-    let authorised = ProbeFixture::start("ok", &|admission: &mut Value| {
-        admission["authority"]["original_run_authorised"] = json!(true);
-        admission["authority"]["original_run_token"] = json!("fixture-token");
-    });
-    authorised.bind_peer("0.3.322", "2.1.322");
-    let run = authorised.run(
-        "0.3.322",
-        "linux-x64",
-        "ok",
-        None,
-        30_000,
-        &["--mode", "original", "--authority-token", "fixture-token"],
-    );
-    assert_eq!(
-        run.status, 0,
-        "the authority gate opens only for the exact token: {} {}",
-        run.stdout, run.stderr
-    );
-    assert_eq!(
-        run.evidence.expect("evidence")["mode"],
-        "original",
-        "the record truthfully identifies the mode that ran"
-    );
 }
 
 #[test]
@@ -1051,7 +1066,8 @@ fn the_probe_request_names_live_digests_and_the_exact_artifacts() {
         request["original_command_suffix"]
             .as_str()
             .expect("request names the original suffix")
-            .contains("--authority-token")
+            .contains("refused unconditionally"),
+        "the request says original mode is unavailable rather than token-gated"
     );
     let artifacts = request["artifacts"].as_array().expect("request artifacts");
     assert_eq!(
@@ -1267,19 +1283,35 @@ fn the_probe_verifies_peer_bytes_before_import_and_spawn() {
 }
 
 #[test]
-fn the_probe_refuses_a_tree_it_did_not_create() {
-    let fixture = ProbeFixture::start("ok", &|_| {});
-    fixture.bind_peer("0.3.321", "2.1.321");
-    fixture.remove_fixture_marker();
-    let run = fixture.run("0.3.321", "linux-x64", "ok", None, 30_000, &[]);
-    assert_eq!(run.status, 2, "an unmarked tree is refused: {}", run.stderr);
+fn the_probe_refuses_a_peer_it_did_not_create_or_that_escapes() {
+    let forged = ProbeFixture::start("ok", &|_| {});
+    forged.bind_peer("0.3.321", "2.1.321");
+    forged.forge_peer_ownership();
+    let run = forged.run("0.3.321", "linux-x64", "ok", None, 120_000, &[]);
+    assert_eq!(run.status, 2, "a foreign peer is refused: {}", run.stderr);
     assert!(
         run.stderr.contains("isolation_refused"),
-        "the refusal names the isolation boundary: {}",
+        "the refusal names the ownership boundary: {}",
+        run.stderr
+    );
+    assert!(!forged.root().join("peer/native-observations.json").exists());
+
+    let escaping = ProbeFixture::start("ok", &|_| {});
+    escaping.bind_peer("0.3.322", "2.1.322");
+    escaping.symlink_peer_native_outside();
+    let run = escaping.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "a symlinked native is refused: {}",
         run.stderr
     );
     assert!(
-        !fixture
+        run.stderr.contains("identity_substitution") || run.stderr.contains("isolation_refused"),
+        "the refusal names the escape: {}",
+        run.stderr
+    );
+    assert!(
+        !escaping
             .root()
             .join("peer/native-observations.json")
             .exists()
@@ -1320,6 +1352,16 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
         "{}",
         run.stderr
     );
+
+    let requested = ProbeFixture::start("ok", &|_| {});
+    requested.bind_peer("0.3.322", "2.1.322");
+    let run = requested.run("0.3.322", "linux-x64", "ok", None, 900_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "a bound above the ledger is refused: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("bound_refused"), "{}", run.stderr);
 
     let disk = ProbeFixture::start("ok", &|admission: &mut Value| {
         admission["bounds"]["disk_bytes"] = json!(8);

@@ -340,6 +340,11 @@ def protocol(
             pass
 
     class BoundedServer(HTTPServer):
+        def get_request(self):
+            connection, address = super().get_request()
+            connection.settimeout(1)  # Bound headers as well as the POST body.
+            return connection, address
+
         def handle_error(self, request, client_address):
             pass  # The failed bounded response fails the owned native/protocol.
 

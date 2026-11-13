@@ -486,7 +486,9 @@ class NamespaceProposalTests(unittest.TestCase):
                 )
 
     def test_monitor_death_recheck_and_unknown_cleanup_are_failures(self):
-        with mock.patch.object(KERNEL.LIBC, "prctl", return_value=0) as arm:
+        with mock.patch.object(
+            KERNEL.LIBC, "prctl", return_value=0, create=True
+        ) as arm:
             with mock.patch.object(KERNEL.os, "getppid", return_value=1):
                 with self.assertRaisesRegex(
                     OSError, "monitor_died_after_credential_drop"

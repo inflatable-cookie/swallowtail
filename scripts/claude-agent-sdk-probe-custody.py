@@ -81,13 +81,23 @@ def runtime_inventory(node, expected):
     report = json.loads(result.stdout)
     if Path(report["node"]).resolve(strict=True) != node:
         raise Refused("runtime_observation_identity")
-    libraries = sorted(
-        {str(Path(name).resolve(strict=True)) for name in report["libraries"]}
-    )
+    unresolved = []
+    libraries = set()
+    for name in report["libraries"]:
+        try:
+            libraries.add(str(Path(name).resolve(strict=True)))
+        except FileNotFoundError:
+            if sys.platform != "darwin" or not name.startswith(
+                ("/usr/lib/", "/System/Library/")
+            ):
+                raise
+            unresolved.append(name)
+    libraries = sorted(libraries)
     return {
         "node": str(node),
         "nodeSha256": expected,
         "version": report["version"],
+        "unresolvedSystemLibraries": sorted(unresolved),
         "libraries": {name: digest(Path(name).read_bytes()) for name in libraries},
         "startup": list(STARTUP),
         "decision": DECISION,
@@ -106,6 +116,7 @@ class Lease:
         self.files = {}
         self.commands = None
         self.launched = 0
+        self.unresolved = runtime.get("unresolvedSystemLibraries", [])
         self.policy = digest(json.dumps(policy, sort_keys=True).encode())
         if (
             runtime.get("decision") != DECISION
@@ -113,7 +124,10 @@ class Lease:
             or runtime.get("node") != str(Path(node).resolve(strict=True))
             or runtime.get("nodeSha256") != expected
             or not isinstance(runtime.get("libraries"), dict)
-            or (sys.platform == "linux" and not runtime["libraries"])
+            or (
+                sys.platform == "linux"
+                and (not runtime["libraries"] or self.unresolved)
+            )
         ):
             raise Refused("runtime_custody_binding_missing")
         try:
@@ -242,4 +256,6 @@ class Lease:
             "launches": self.launched,
             "hostileSameUserReplacementCovered": False,
             "verifiedExecutionPrimitive": False,
+            "unresolvedSystemLibraries": self.unresolved,
+            "runtimeCustodyComplete": not self.unresolved,
         }

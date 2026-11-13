@@ -206,3 +206,12 @@ wait and both exact peer wait identities are required for success. After final
 setresgid/setresuid, parent-death SIGKILL is rearmed and the expected monitor is
 rechecked before payload entry. Credential-drop/monitor-death uncertainty and
 unknown cleanup remain failures, not disposal-as-join claims.
+
+Darwin local rehearsal limitation: Node reports system dylibs whose bytes reside
+in the OS shared cache without regular files at their advertised paths. The
+rehearsal retains those names as `unresolvedSystemLibraries` and reports
+`runtimeCustodyComplete: false`; this supplies no Darwin runtime admission.
+Linux activation requires a nonempty complete regular-file library inventory
+and refuses unresolved libraries. Pinning Darwin cache/runtime custody remains
+required before any corresponding original-host admission; the policy ruling
+does not waive that observed input gap.

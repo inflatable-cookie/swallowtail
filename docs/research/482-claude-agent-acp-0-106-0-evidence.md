@@ -307,3 +307,17 @@ original-artifact probe: runtime custody decision
 interpreter and graph identities, and separate execution authority are still
 needed to make that probe runnable. No self-reported marker or local path
 can replace those requirements.
+
+
+A future authority request should name each of the eight frozen ACP hops and
+its exact SDK/native pair on Darwin arm64 and Linux x64, along with the final
+guard, graph, launch-policy and Node digests. A bounded starting envelope is
+one attempt per hop/platform tuple, at most three owned child processes, 120
+seconds per attempt, 1 MiB per output stream and 256 MiB of run-owned scratch.
+The harness must prove fake behavior first, reject all non-allowlisted inputs,
+use an isolated home without ambient credentials, and enforce no egress at
+the OS boundary. It must fail closed if that enforcement is unavailable.
+Each attempt records timeout, admission, identity, protocol, cleanup and
+isolation failures separately and joins all owned processes before returning.
+These proposed limits are not execution authority or proof that this host
+can enforce them; the concrete Node and launch-policy digests do not yet exist.

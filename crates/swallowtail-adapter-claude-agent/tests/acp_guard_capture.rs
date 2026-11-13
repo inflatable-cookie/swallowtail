@@ -159,3 +159,34 @@ fn truncated_graph_bootstrap_fails_before_fake_entry_effects() {
     assert!(child.stdout.is_empty());
     assert!(String::from_utf8_lossy(&child.stderr).contains("incomplete graph bootstrap"));
 }
+
+#[test]
+fn invalid_graph_bootstrap_refuses_before_fake_entry_effects() {
+    let root = fixture();
+    let graph = capture(&root, ENTRY);
+    let recipe = LocalCapturedNodeRecipe::new(
+        &graph,
+        CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("recipe");
+    for (bootstrap, diagnostic) in [
+        (vec![0, 0, 0], "incomplete graph bootstrap"),
+        (
+            (33_554_433_u32).to_be_bytes().to_vec(),
+            "graph bootstrap too large",
+        ),
+        (vec![0, 0, 0, 1, b'{'], "SyntaxError"),
+    ] {
+        let child = guarded_with_bootstrap(&recipe, &bootstrap);
+        assert!(!child.status.success());
+        assert!(child.stdout.is_empty());
+        assert!(
+            String::from_utf8_lossy(&child.stderr).contains(diagnostic),
+            "{}",
+            String::from_utf8_lossy(&child.stderr)
+        );
+    }
+}

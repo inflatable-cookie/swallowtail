@@ -253,6 +253,15 @@ revocation or drift cannot fall back to an ordinary process launch. Hosts
 without the capability refuse both operations. The current local host does
 not provide runtime custody and therefore cannot admit this launch.
 
+The captured-graph bootstrap is host input, with its own size and deadline
+limits; it does not consume the consumer's provider-stdin allowance. The host
+must finish sending it before returning the process handle. A stalled or closed
+pipe, cancellation, timeout, or incomplete handoff fails admission and joins
+the owned process and writer. Dropping a pending handoff must also trigger
+cleanup. Neither the entrypoint nor a consumer input write may run before the
+handoff is admitted. A synchronous write wrapped in an async timeout cannot
+satisfy this contract. This requirement does not grant runtime custody.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`

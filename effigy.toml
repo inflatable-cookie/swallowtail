@@ -168,7 +168,10 @@ section = "Research Records"
 "validate:current-claude-agent-acp-idle-fake" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(prepared_idle_update_without_turn_stops_connection_and_joins_cleanup)'"
 "validate:acp-guard-host-environment" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-host-local --test local_process -E 'test(node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before_spawn)'"
 "check:acp-guard-host-environment" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-host-local"
-"format:acp-guard-host-environment" = ["bash scripts/oxide-rust.sh fmt -p swallowtail-host-local", "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check"]
+"format:acp-guard-host-environment" = [
+  "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local",
+  "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
+]
 "validate:acp-idle-guard-prototype" = "node --test --test-timeout=15000 --test-force-exit scripts/prototypes/claude-acp-idle-guard/guard.test.mjs"
 "check:acp-idle-guard-prototype" = "node --check scripts/prototypes/claude-acp-idle-guard/host-model.mjs && node --check scripts/prototypes/claude-acp-idle-guard/preload.mjs && node --check scripts/prototypes/claude-acp-idle-guard/loader.mjs && node --check scripts/prototypes/claude-acp-idle-guard/fakes/entry.mjs && node --check scripts/prototypes/claude-acp-idle-guard/fakes/idle.mjs && node --check scripts/prototypes/claude-acp-idle-guard/guard.test.mjs"
 "check:current-claude-agent-acp" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-adapter-claude-agent"

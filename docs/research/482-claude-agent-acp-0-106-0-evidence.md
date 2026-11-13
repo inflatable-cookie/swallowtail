@@ -395,7 +395,8 @@ original-artifact probe execution remain unproved and unauthorized.
 ## Static import inventory and admission ordering
 
 `import-edge-inventory.json` records syntax-level imports, exports, literal
-`import()` and direct `require()` calls for every shipped JavaScript file in
+`import()`, `import.meta.resolve`, direct `require()` and visible Worker
+construction sites for every shipped JavaScript file in
 the eight ACP archives, the three selected ACP SDKs, four selected Agent SDKs,
 and the exact `diff` and `zod` packages. Each row binds a source SHA-256 and
 byte offset. `import-edge-artifacts.json` records the previously unfrozen

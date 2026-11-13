@@ -440,6 +440,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -2540,6 +2545,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -4655,6 +4665,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -6481,6 +6496,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -9787,6 +9807,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -13103,6 +13128,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -16419,6 +16449,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -19848,6 +19883,11 @@
             "kind": "dynamic",
             "specifier": "node:module",
             "offset": 1895
+          },
+          {
+            "kind": "import-meta-resolve",
+            "specifier": "@anthropic-ai/claude-agent-sdk",
+            "offset": 1948
           }
         ],
         "cautions": [
@@ -26619,6 +26659,10 @@
             "offset": 539
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 1437
+          },
+          {
             "kind": "identifier:Function",
             "offset": 150306
           },
@@ -26947,6 +26991,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 539
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 780
           },
           {
             "kind": "identifier:Function",
@@ -27459,6 +27507,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 905
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 94667
           }
         ]
       },
@@ -28088,6 +28140,10 @@
             "offset": 674
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 1493
+          },
+          {
             "kind": "identifier:Function",
             "offset": 57610
           },
@@ -28134,6 +28190,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 1237525
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 1326190
           }
         ]
       }
@@ -28697,6 +28757,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 539
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 1437
           },
           {
             "kind": "identifier:Function",
@@ -29392,6 +29456,10 @@
             "offset": 539
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 780
+          },
+          {
             "kind": "identifier:Function",
             "offset": 90852
           },
@@ -29574,6 +29642,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 905
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 94682
           }
         ]
       },
@@ -30228,6 +30300,10 @@
             "offset": 674
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 1493
+          },
+          {
             "kind": "identifier:Function",
             "offset": 57610
           },
@@ -30274,6 +30350,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 1247813
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 1336493
           }
         ]
       }
@@ -30839,6 +30919,10 @@
             "offset": 539
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 1437
+          },
+          {
             "kind": "identifier:Function",
             "offset": 150306
           },
@@ -31162,6 +31246,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 539
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 780
           },
           {
             "kind": "identifier:Function",
@@ -31709,6 +31797,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 906
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 94670
           }
         ]
       },
@@ -32358,6 +32450,10 @@
             "offset": 674
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 1494
+          },
+          {
             "kind": "identifier:Function",
             "offset": 57632
           },
@@ -32404,6 +32500,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 1265087
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 1353758
           }
         ]
       }
@@ -32967,6 +33067,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 539
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 1437
           },
           {
             "kind": "identifier:Function",
@@ -33600,6 +33704,10 @@
             "offset": 539
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 780
+          },
+          {
             "kind": "identifier:Function",
             "offset": 96232
           },
@@ -33839,6 +33947,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 906
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 94670
           }
         ]
       },
@@ -34488,6 +34600,10 @@
             "offset": 674
           },
           {
+            "kind": "call:createRequire-alias",
+            "offset": 1494
+          },
+          {
             "kind": "identifier:Function",
             "offset": 57632
           },
@@ -34534,6 +34650,10 @@
           {
             "kind": "identifier:createRequire",
             "offset": 1265147
+          },
+          {
+            "kind": "call:createRequire-alias",
+            "offset": 1353818
           }
         ]
       }

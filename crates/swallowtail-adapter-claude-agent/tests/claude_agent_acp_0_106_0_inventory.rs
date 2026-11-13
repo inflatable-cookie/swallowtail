@@ -154,7 +154,7 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
         ),
         (
             IMPORT_INVENTORY,
-            "3c27297204b219873901ba3a0bbf41f111ec8d8b77ac589231212cd2e73b6af1",
+            "cb2c20e7ab60a174f5ffb34368647acfeb5a6f4a78f3b0dd477e1bd1fd3c8cfb",
         ),
         (
             IMPORT_ARTIFACTS,
@@ -191,6 +191,30 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
         for (path, row) in rows {
             assert_eq!(row["sha256"], tree[path], "{name}/{path}");
         }
+    }
+    for version in [
+        "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    ] {
+        let cli = &imports["packages"][version]["dist/claude-cli.js"];
+        let edges = cli["edges"].as_array().expect("CLI edges");
+        assert!(
+            edges
+                .iter()
+                .any(|edge| edge["kind"] == "import-meta-resolve"
+                    && edge["specifier"] == "@anthropic-ai/claude-agent-sdk")
+        );
+        assert!(
+            edges
+                .iter()
+                .any(|edge| edge["kind"] == "dynamic" && edge["specifier"] == "node:module")
+        );
+        assert!(
+            cli["cautions"]
+                .as_array()
+                .expect("CLI cautions")
+                .iter()
+                .any(|item| item["kind"] == "identifier:createRequire")
+        );
     }
     let closure: Value = serde_json::from_str(CLOSURE).expect("closure JSON");
     let manifest: Value = serde_json::from_str(GUARD_MANIFEST).expect("guard manifest JSON");

@@ -15,6 +15,10 @@ for (const name of fs.readdirSync(process.argv[2]).filter(x => x.endsWith('.json
   for (const filename of Object.keys(input).sort()) {
     const text = input[filename];
     const ast = parser.parse(text, { ecmaVersion: 'latest', sourceType: filename.endsWith('.cjs') ? 'script' : 'module', allowHashBang: true, allowReturnOutsideFunction: true });
+    const watchedAliases = new Map();
+    for (const declaration of ast.body) if (declaration.type === 'ImportDeclaration') {
+      for (const specifier of declaration.specifiers) if (specifier.type === 'ImportSpecifier' && ['createRequire', 'Worker'].includes(specifier.imported.name)) watchedAliases.set(specifier.local.name, specifier.imported.name);
+    }
     const edges = [], cautions = [], stack = [ast];
     while (stack.length) {
       const n = stack.pop();
@@ -23,6 +27,9 @@ for (const name of fs.readdirSync(process.argv[2]).filter(x => x.endsWith('.json
       if (['ImportDeclaration', 'ExportNamedDeclaration', 'ExportAllDeclaration'].includes(n.type) && n.source) { kind = 'static'; arg = n.source; }
       if (n.type === 'ImportExpression') { kind = 'dynamic'; arg = n.source; }
       if (n.type === 'CallExpression' && n.callee.type === 'Identifier' && n.callee.name === 'require') { kind = 'require'; arg = n.arguments[0]; }
+      if (n.type === 'CallExpression' && n.callee.type === 'MemberExpression' && n.callee.object.type === 'MetaProperty' && n.callee.object.meta.name === 'import' && (n.callee.computed ? n.callee.property.value : n.callee.property.name) === 'resolve') { kind = 'import-meta-resolve'; arg = n.arguments[0]; }
+      if (n.type === 'CallExpression' && n.callee.type === 'Identifier' && watchedAliases.get(n.callee.name) === 'createRequire') cautions.push({ kind: 'call:createRequire-alias', offset: n.start });
+      if (n.type === 'NewExpression' && n.callee.type === 'Identifier' && (n.callee.name === 'Worker' || watchedAliases.get(n.callee.name) === 'Worker')) { kind = 'worker'; arg = n.arguments[0]; }
       if (kind) {
         if (arg && arg.type === 'Literal' && typeof arg.value === 'string') edges.push({ kind, specifier: arg.value, offset: n.start });
         else cautions.push({ kind: kind + '-nonliteral', offset: n.start });

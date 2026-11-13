@@ -1,8 +1,11 @@
 # SDK administrator-fixture CI proposal
 
 Environment-setup authority request for task 234, Q-009. **Not activated.**
-The planner's 2026-11-13 direction authorizes this proposal and owned-scratch
-rehearsals only. No workflow, canonical host path or privilege is changed here.
+Tom answered decision `32d31615-702b-4e3b-a972-56b4fb18bae2` v2 on
+2026-11-13 at 09:50:47.946Z: "Dedicated fixture-only CI." The approved exact
+workflow is now applied. This permits preparation and validation only;
+privileged activation still needs authority naming the resulting workflow/source
+SHA. No canonical host path or privilege has been changed by this task.
 
 ## Requested boundary
 
@@ -36,11 +39,17 @@ write permission. Policy directory: root-owned 0755; policy: root-owned 0444,
 one link; lease: root-owned 0600, one link. The lease binds run/attempt/job/state,
 directory device/inode and exact policy bytes. No ACL or ownership relaxation.
 
-## Exact proposed job addition
+## Applied job and activation gate
 
 The [reviewable job diff](claude-agent-sdk-ephemeral-ci.patch) adds only a new
-`.github/workflows/sdk234-admin-fixture.yml`. It is retained as proposal data;
-this task does not apply it. It contains complete preflight, root setup,
+`.github/workflows/sdk234-admin-fixture.yml`. The [applied workflow](../../../.github/workflows/sdk234-admin-fixture.yml)
+matches that diff byte for byte. The approved proposal was retained at source
+`6bb1ca20130f98a8af2ef2dd3fc03e6640f84a9e`, manifest SHA-256
+`cf370ed497f9f80e6ba7cdb865252f6c9556f55d1443b9f8cba039d66e4f4f52`;
+the unchanged diff SHA-256 is
+`16a02b1e0143992963b7a53178349bba0c4d44839f68df4a513622884da25bc7`.
+The current manifest follows the updated test, selectors and owning document;
+it does not replace that historical approval identity. The workflow contains complete preflight, root setup,
 unprivileged read and always-run cleanup commands, with no omitted adapters.
 No existing CI job is changed. No pull-request, push, schedule or
 `pull_request_target` trigger is proposed.
@@ -88,8 +97,12 @@ refusal, altered bytes, symlinks/hardlinks, replaced directory, unexpected
 entries, foreign lease and cleanup that preserves an owned sibling. It never
 claims root ownership, canonical access, native precedence or platform support.
 Compile and check-only format routes cover both new Python files. A separate
-test checks patch applicability, Bash syntax, embedded Python compilation and
-Node reader syntax without applying the patch or running its commands.
+test checks exact approved/applied byte equality, reverse patch applicability,
+Bash syntax, embedded Python compilation and Node reader syntax without
+running its commands. A routing mutation test accepts only this exact non-Cargo
+workflow and preserves the ordinary Cargo guard for every other workflow.
+`check:claude-agent-sdk-admin-workflow` runs installed actionlint on the actual
+workflow. `check:oxide-routing` compiles the changed routing guard.
 
 The six proposed jobs would establish canonical fixture readability and
 ordinary-uid write denial only. Opposite user/project files are deliberate
@@ -109,8 +122,28 @@ activation remains unconditionally refused; the production pair stays
 
 Before any privileged activation, return the exact applied workflow/source SHA,
 adapter/reader/helper digests and this six-job scope for operator authority.
-The current request authorizes preparing/reviewing that environment change,
-not original/native execution. A further original-artifact request still needs
+The preparation ruling does not authorize dispatch. After exact-SHA activation
+authority and workflow registration, the dispatch command is:
+
+```sh
+gh workflow run sdk234-admin-fixture.yml \
+  --repo inflatable-cookie/swallowtail \
+  --ref ns-d7afab60-9a93-4414-95e7-61608a703ab7 \
+  -f source_sha=<exact-approved-source-sha> \
+  -f proposal_sha=<exact-approved-manifest-sha256>
+```
+
+Before dispatch, verify that the workflow ref resolves to the named source SHA;
+ref movement invalidates this request. Return the literal command and exact
+digests in the PR/request, without embedding this document's own commit SHA.
+GitHub's [workflow_dispatch prerequisite](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)
+requires the workflow file on the default branch. Read-only workflow inventory
+on 2026-11-13 listed only `.github/workflows/ci.yml`; registration/integration
+therefore remains an owner gate. This task neither merges nor registers it and
+does not substitute an automatic trigger. Runtime/workflow custody remains
+explicitly separate from this fixture-only branch-ref handoff.
+
+A further original-artifact request still needs
 canonical injection proof, exact tuple/runtime custody and Nucleus admission.
 
 References: [vendor settings](https://code.claude.com/docs/en/settings),

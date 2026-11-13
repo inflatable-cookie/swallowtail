@@ -296,3 +296,10 @@ ownership/refusal/cleanup rehearsals grant no privileged execution, canonical
 injection proof, custody ruling or native activation. The environment-setup
 authority request must name the exact reviewed job/source before execution.
 
+Tom's decision `32d31615-702b-4e3b-a972-56b4fb18bae2` v2 on 2026-11-13
+chose "Dedicated fixture-only CI." The exact proposed workflow is applied;
+the preceding proposal-only restriction is superseded for preparation alone.
+Dispatch still needs authority naming the resulting workflow/source SHA and
+GitHub workflow registration. No privileged local setup or original activation
+follows from this answer.
+

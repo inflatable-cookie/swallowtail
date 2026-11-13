@@ -111,8 +111,10 @@ This task grants no privileged helper, host provisioning or VM change.
 
 The planner's 2026-11-13 continuation requests a concrete
 [ephemeral-CI environment proposal](claude-agent-sdk-ephemeral-ci-proposal.md).
-It supplies an unapplied job diff, exact canonical fixture states and bounded
-root setup/cleanup commands. Owned-scratch rehearsals test the fixture
+It supplies the exact job diff, canonical fixture states and bounded root
+setup/cleanup commands. Tom's decision `32d31615-702b-4e3b-a972-56b4fb18bae2`
+v2 permits applying that workflow; exact-SHA privileged activation is still
+gated. Owned-scratch rehearsals test the fixture
 lifecycle; they do not establish canonical injection or authorize provisioning.
 The proposed fixture-only authority is separate from custody and original
 SDK/native activation. Existing passing confinement evidence stays intact.

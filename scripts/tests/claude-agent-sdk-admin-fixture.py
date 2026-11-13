@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 SPEC = importlib.util.spec_from_file_location(
     "admin_fixture",
@@ -166,24 +167,30 @@ class FixtureTests(unittest.TestCase):
         held.rename(folder)
         self.cleanup()
 
-    def test_proposed_job_commands_compile_without_activation(self):
+    def test_applied_job_matches_approved_proposal_without_activation(self):
         root = Path(__file__).resolve().parents[2]
         proposal = (
             root / "docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.patch"
         )
-        subprocess.run(
-            ["git", "apply", "--check", str(proposal)],
-            cwd=root,
-            capture_output=True,
-            text=True,
-            check=True,
-            timeout=5,
+        self.assertEqual(
+            hashlib.sha256(proposal.read_bytes()).hexdigest(),
+            "16a02b1e0143992963b7a53178349bba0c4d44839f68df4a513622884da25bc7",
         )
         lines = [
             line[1:]
             for line in proposal.read_text().splitlines()
             if line.startswith("+") and not line.startswith("+++")
         ]
+        workflow = root / ".github/workflows/sdk234-admin-fixture.yml"
+        self.assertEqual(workflow.read_text(), "\n".join(lines) + "\n")
+        subprocess.run(
+            ["git", "apply", "--reverse", "--check", str(proposal)],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=5,
+        )
         commands = []
         for index, line in enumerate(lines):
             if line == "        run: |":
@@ -214,6 +221,35 @@ class FixtureTests(unittest.TestCase):
                 javascript_blocks += 1
         self.assertEqual(python_blocks, 3)
         self.assertEqual(javascript_blocks, 1)
+
+    def test_routing_exception_accepts_only_the_exact_approved_fixture_job(self):
+        root = Path(__file__).resolve().parents[2]
+        spec = importlib.util.spec_from_file_location(
+            "oxide_routing", root / "scripts/tests/oxide-selector-routing.py"
+        )
+        routing = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(routing)
+        name = "sdk234-admin-fixture.yml"
+        approved = (root / ".github/workflows" / name).read_bytes()
+        workflows = self.root / ".github/workflows"
+        workflows.mkdir(parents=True)
+        proposal = Path("docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.patch")
+        (self.root / proposal).parent.mkdir(parents=True)
+        (self.root / proposal).write_bytes((root / proposal).read_bytes())
+        candidate = workflows / name
+        candidate.write_bytes(approved)
+        with (
+            mock.patch.object(routing, "ROOT", self.root),
+            mock.patch.object(routing, "WORKFLOWS", workflows),
+        ):
+            routing.check_workflows()
+            candidate.write_bytes(approved + b"# changed byte\n")
+            with self.assertRaisesRegex(routing.RoutingDefect, "fixture workflow"):
+                routing.check_workflows()
+            candidate.write_bytes(approved)
+            (workflows / "foreign.yml").write_text("name: unclassified\n")
+            with self.assertRaisesRegex(routing.RoutingDefect, "plain-Cargo"):
+                routing.check_workflows()
 
     def test_manifest_binds_proposal_without_changing_confinement_record(self):
         root = Path(__file__).resolve().parents[2]

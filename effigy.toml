@@ -202,6 +202,9 @@ section = "Research Records"
 "validate:claude-agent-sdk-admin-fixture" = "python3 -B scripts/tests/claude-agent-sdk-admin-fixture.py"
 "check:claude-agent-sdk-admin-fixture" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-admin-fixture.py\", \"scripts/tests/claude-agent-sdk-admin-fixture.py\")]'"
 "check:format:claude-agent-sdk-admin-fixture" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-admin-fixture.py scripts/tests/claude-agent-sdk-admin-fixture.py"
+"check:claude-agent-sdk-admin-workflow" = "actionlint .github/workflows/sdk234-admin-fixture.yml"
+"check:format:oxide-routing-python" = "bash scripts/check-python-format.sh scripts/tests/oxide-selector-routing.py"
+"format:oxide-routing-python" = "ruff format --no-cache scripts/tests/oxide-selector-routing.py"
 "format:claude-agent-sdk-admin-fixture" = "ruff format --no-cache scripts/claude-agent-sdk-admin-fixture.py scripts/tests/claude-agent-sdk-admin-fixture.py"
 "check:claude-agent-sdk-confined-probe" = [
   "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-confined-probe.py\", \"scripts/claude-agent-sdk-confined-linux.py\", \"scripts/tests/claude-agent-sdk-confined-probe.py\")]'",

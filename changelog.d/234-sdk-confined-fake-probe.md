@@ -16,3 +16,7 @@ administrator paths, absent/disabled/managed-deny states and scoped setup/
 cleanup commands. Scratch rehearsals cover exclusive ownership, substitution
 refusal and cleanup. Privileged environment setup, custody and original/native
 activation still require their separate authority and proof.
+
+Applied Tom's dedicated fixture-only CI preparation ruling with the exact
+six-job workflow. Added actual workflow linting and a byte-bound routing
+exception; dispatch remains gated on exact-source authority and registration.

@@ -405,8 +405,12 @@ fn echo_helper_liveness_self_check_distinguishes_healthy_from_dead() {
 /// directory, which is the sibling candidate. A build-directory user such as
 /// Oxide keeps test executables in its build slot but uplifts final example
 /// binaries to `<CARGO_TARGET_DIR>/<profile>/examples`, so when that variable
-/// is exported the target-relative candidate is consulted too. An example
-/// target exposes no `CARGO_BIN_EXE_<name>` variable, so none is assumed.
+/// is exported the target-relative candidate is consulted too. A nested Cargo
+/// can also place the example in a target directory that neither candidate
+/// names, so the build reports its artifact path and that path is used
+/// directly. An example target exposes no `CARGO_BIN_EXE_<name>` variable, so
+/// none is assumed.
+///
 /// A missing example is still built once, and the first candidate that exists
 /// afterwards wins; plain Cargo reaches exactly the sibling it always did.
 fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
@@ -433,11 +437,25 @@ fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
                 .join("grok-acp-echo-mcp"),
         );
     }
+    // The workspace target directory that plain Cargo builds into, derived
+    // from the package manifest rather than from wherever the test binary was
+    // placed. `crates/swallowtail-testkit` lives two levels below the root.
+    if let Some(manifest) = std::env::var_os("CARGO_MANIFEST_DIR") {
+        let package = std::path::PathBuf::from(manifest);
+        if let Some(root) = package.parent().and_then(std::path::Path::parent) {
+            candidates.push(
+                root.join("target")
+                    .join(&profile)
+                    .join("examples")
+                    .join("grok-acp-echo-mcp"),
+            );
+        }
+    }
     candidates.push(sibling.clone());
     if let Some(found) = candidates.iter().find(|candidate| candidate.is_file()) {
         return found.clone();
     }
-    let status = std::process::Command::new(env!("CARGO"))
+    let build = std::process::Command::new(env!("CARGO"))
         .args([
             "build",
             "--offline",
@@ -446,17 +464,75 @@ fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
             "swallowtail-testkit",
             "--example",
             "grok-acp-echo-mcp",
+            "--message-format=json-render-diagnostics",
         ])
-        .status()
+        .output()
         .expect("build grok-acp-echo-mcp example");
     assert!(
-        status.success(),
-        "cargo build --example grok-acp-echo-mcp failed"
+        build.status.success(),
+        "cargo build --example grok-acp-echo-mcp failed: {}",
+        String::from_utf8_lossy(&build.stderr).trim()
     );
+    if let Some(found) = built_example_path(&build.stdout) {
+        return found;
+    }
     candidates
         .into_iter()
         .find(|candidate| candidate.is_file())
         .unwrap_or(sibling)
+}
+
+#[test]
+fn built_example_path_reads_cargo_artifact_records_only() {
+    let exe = std::env::current_exe().expect("test executable");
+    let record = serde_json::json!({
+        "reason": "compiler-artifact",
+        "target": {"name": "grok-acp-echo-mcp"},
+        "executable": exe.to_str().expect("utf8 executable path"),
+    });
+    let stdout = format!(
+        "not json\n{}\n",
+        serde_json::json!({
+            "reason": "build-finished",
+            "success": true,
+        })
+    );
+    assert_eq!(built_example_path(stdout.as_bytes()), None);
+    let stdout = format!("{record}\n");
+    assert_eq!(built_example_path(stdout.as_bytes()), Some(exe));
+    let missing = serde_json::json!({
+        "reason": "compiler-artifact",
+        "target": {"name": "grok-acp-echo-mcp"},
+        "executable": "/no/such/swallowtail-echo-helper",
+    });
+    assert_eq!(built_example_path(format!("{missing}\n").as_bytes()), None);
+}
+
+/// Returns the executable path Cargo reports for the built example.
+///
+/// `cargo build --message-format=json-render-diagnostics` writes one JSON
+/// record per line on stdout and keeps human-readable diagnostics on stderr.
+fn built_example_path(stdout: &[u8]) -> Option<std::path::PathBuf> {
+    let text = std::str::from_utf8(stdout).ok()?;
+    for line in text.lines() {
+        let Ok(record) = serde_json::from_str::<Value>(line) else {
+            continue;
+        };
+        if record["reason"] != "compiler-artifact" {
+            continue;
+        }
+        if record["target"]["name"] != "grok-acp-echo-mcp" {
+            continue;
+        }
+        let Some(executable) = record["executable"].as_str() else {
+            continue;
+        };
+        let path = std::path::PathBuf::from(executable);
+        if path.is_file() {
+            return Some(path);
+        }
+    }
+    None
 }
 
 fn assert_no_credentials_or_paths(value: &Value) {

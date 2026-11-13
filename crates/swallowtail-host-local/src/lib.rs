@@ -39,7 +39,10 @@ mod watcher_bridge;
 mod working_resource;
 mod working_resource_io;
 
-pub use captured_source::{LocalCapturedSources, LocalExpectedSource};
+pub use captured_source::{
+    LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint, LocalCapturedSources,
+    LocalExpectedSource,
+};
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};

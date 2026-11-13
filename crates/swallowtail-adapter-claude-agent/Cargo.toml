@@ -59,6 +59,10 @@ path = "tests/http_mcp_live_gate.rs"
 required-features = ["live-probes"]
 
 [[test]]
+name = "acp_guard_capture"
+path = "tests/acp_guard_capture.rs"
+
+[[test]]
 name = "integration"
 path = "tests/integration/main.rs"
 

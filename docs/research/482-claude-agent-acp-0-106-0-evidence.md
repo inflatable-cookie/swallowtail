@@ -331,3 +331,22 @@ caller-supplied manifest is not official identity, parent-directory custody
 is not established, and this helper does not issue a checked launch or bind
 Node. A future host authority must establish the complete graph, guard,
 runtime, recipe and policy and recheck that binding at start.
+
+The host can form a deterministic candidate graph from captured source bytes
+and literal import edges, refusing duplicate or disconnected entries. Its
+candidate launch fingerprint includes the graph and host-supplied vendor,
+shim, runtime, recipe and policy digests. The fake checked host compares that
+fingerprint through preparation and prepared operations, rejects substituted
+source or recipe, and keeps captured bytes after a disk change. Its scripted
+ACP peer does not execute the graph; the loader fake is tested separately.
+The fingerprint is not an approved tuple and supplies no runtime custody or
+complete official dependency closure. Production checked start still refuses.
+
+A provider-free process test sends host-captured fake source and graph bytes to
+the packaged loader, replaces the source files before launch, and checks the
+fake child executes the retained bytes with zero idle arming or firing. Its
+unguarded control performs both effects; an unapproved worker import fails
+before the fake entry body. The fake prepared-driver host checks the same
+candidate fingerprint and refuses altered source or recipe and revoked
+bindings. The scripted prepared peer and the fake Node child are separate
+proofs; this does not show that a real prepared host can launch this graph.

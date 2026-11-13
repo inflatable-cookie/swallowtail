@@ -380,7 +380,10 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
     use sha2::{Digest, Sha256};
     use std::path::Path;
     use std::process::Command;
-    use swallowtail_host_local::{LocalCapturedSources, LocalExpectedSource};
+    use swallowtail_host_local::{
+        LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint,
+        LocalCapturedSources, LocalExpectedSource,
+    };
     let template = std::env::temp_dir().join("checked-sources.XXXXXXXX");
     let output = Command::new("/usr/bin/mktemp")
         .arg("-d")
@@ -404,11 +407,75 @@ fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
         Some(b"one".as_slice())
     );
     assert!(!format!("{captured:?}").contains("one.mjs"));
+    let edge = LocalCapturedImport::new("one.mjs", "./two.mjs", "two.mjs");
+    let graph = LocalCapturedGraph::new(
+        &captured,
+        Path::new("one.mjs"),
+        Path::new("two.mjs"),
+        &[edge.clone()],
+    )
+    .expect("graph");
+    let graph_again = LocalCapturedGraph::new(
+        &reversed,
+        Path::new("one.mjs"),
+        Path::new("two.mjs"),
+        &[edge.clone()],
+    )
+    .expect("same graph");
+    assert_eq!(graph.fingerprint(), graph_again.fingerprint());
+    let config: serde_json::Value = serde_json::from_slice(graph.configuration()).expect("config");
+    assert_eq!(config["files"][0]["source"], "one");
+    assert!(
+        LocalCapturedGraph::new(&captured, Path::new("one.mjs"), Path::new("two.mjs"), &[])
+            .is_err()
+    );
+    assert!(
+        LocalCapturedGraph::new(
+            &captured,
+            Path::new("one.mjs"),
+            Path::new("two.mjs"),
+            &[edge.clone(), edge]
+        )
+        .is_err()
+    );
+    assert!(
+        LocalCapturedGraph::new(
+            &captured,
+            Path::new("one.mjs"),
+            Path::new("two.mjs"),
+            &[LocalCapturedImport::new(
+                "one.mjs",
+                "./missing",
+                "missing.mjs"
+            )]
+        )
+        .is_err()
+    );
+    let fingerprint =
+        LocalCapturedLaunchFingerprint::new(&graph, [1; 32], [2; 32], [3; 32], [4; 32], [5; 32])
+            .expect("candidate");
+    for changed in 0..5 {
+        let mut axes = [[1; 32], [2; 32], [3; 32], [4; 32], [5; 32]];
+        axes[changed][0] ^= 0x80;
+        let other = LocalCapturedLaunchFingerprint::new(
+            &graph, axes[0], axes[1], axes[2], axes[3], axes[4],
+        )
+        .expect("candidate");
+        assert_ne!(fingerprint.digest(), other.digest());
+    }
+    assert!(
+        LocalCapturedLaunchFingerprint::new(&graph, [0; 32], [2; 32], [3; 32], [4; 32], [5; 32])
+            .is_err()
+    );
+    assert!(!format!("{graph:?} {fingerprint:?}").contains("one.mjs"));
     std::fs::write(root.join("one.mjs"), b"changed").expect("replace fixture bytes");
     assert_eq!(
         captured.source(Path::new("one.mjs")),
         Some(b"one".as_slice())
     );
+    let after_replacement: serde_json::Value =
+        serde_json::from_slice(graph.configuration()).expect("captured config");
+    assert_eq!(after_replacement["files"][0]["source"], "one");
     assert!(LocalCapturedSources::capture(&root, &[one.clone()]).is_err());
     assert!(LocalCapturedSources::capture(&root, &[two.clone(), two.clone()]).is_err());
     assert!(

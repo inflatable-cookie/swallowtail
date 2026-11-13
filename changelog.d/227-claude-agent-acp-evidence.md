@@ -12,3 +12,5 @@
 - Add a captured-source guard asset and a fail-closed checked-process host boundary.
 
 - Capture bounded, digest-checked source bytes for future checked host launches.
+
+- Bind captured fake module graphs to candidate launch fingerprints for guarded-path testing.

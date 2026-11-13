@@ -177,3 +177,198 @@ fn file_identity(metadata: &std::fs::Metadata) -> (u64, u64) {
 fn file_identity(_metadata: &std::fs::Metadata) -> (u64, u64) {
     (0, 0)
 }
+
+/// One host-supplied directed import in a captured source graph.
+#[derive(Clone)]
+pub struct LocalCapturedImport {
+    parent: PathBuf,
+    specifier: String,
+    target: PathBuf,
+}
+
+impl LocalCapturedImport {
+    /// Creates a literal import edge between captured relative paths.
+    #[must_use]
+    pub fn new(
+        parent: impl Into<PathBuf>,
+        specifier: impl Into<String>,
+        target: impl Into<PathBuf>,
+    ) -> Self {
+        Self {
+            parent: parent.into(),
+            specifier: specifier.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// Immutable loader configuration and fingerprint for captured source bytes.
+///
+/// The graph is only a host-provided candidate. It is not an approved launch,
+/// a complete provider closure, or proof of interpreter custody.
+#[derive(Clone)]
+pub struct LocalCapturedGraph {
+    configuration: Arc<[u8]>,
+    digest: [u8; 32],
+}
+
+impl LocalCapturedGraph {
+    /// Binds a captured entry, idle module and explicit literal import edges.
+    ///
+    /// Rejects unknown endpoints, duplicate edges, disconnected sources and
+    /// URLs that the candidate loader cannot safely represent. Node builtins
+    /// and other uncaptured imports are not implicitly admitted.
+    pub fn new(
+        sources: &LocalCapturedSources,
+        entry: &Path,
+        idle: &Path,
+        imports: &[LocalCapturedImport],
+    ) -> io::Result<Self> {
+        if imports.len() > 8192
+            || !sources.entries.contains_key(entry)
+            || !sources.entries.contains_key(idle)
+        {
+            return Err(invalid("invalid captured graph"));
+        }
+        let mut files = Vec::with_capacity(sources.entries.len());
+        for (path, bytes) in &sources.entries {
+            let source = std::str::from_utf8(bytes).map_err(|_| invalid("non-UTF8 source"))?;
+            files.push(serde_json::json!({ "url": virtual_url(path)?, "source": source }));
+        }
+        let entry_url = virtual_url(entry)?;
+        let idle_url = virtual_url(idle)?;
+        let mut graph = BTreeMap::<(PathBuf, String), PathBuf>::new();
+        for import in imports {
+            if !sources.entries.contains_key(&import.parent)
+                || !sources.entries.contains_key(&import.target)
+                || import.specifier.is_empty()
+                || import.specifier.len() > 4096
+                || import.specifier.contains('\0')
+            {
+                return Err(invalid("invalid captured import"));
+            }
+            if graph
+                .insert(
+                    (import.parent.clone(), import.specifier.clone()),
+                    import.target.clone(),
+                )
+                .is_some()
+            {
+                return Err(invalid("duplicate captured import"));
+            }
+        }
+        let mut reached = BTreeSet::from([entry.to_path_buf()]);
+        loop {
+            let old = reached.len();
+            for ((parent, _), target) in &graph {
+                if reached.contains(parent) {
+                    reached.insert(target.clone());
+                }
+            }
+            if reached.len() == old {
+                break;
+            }
+        }
+        if reached.len() != sources.entries.len() || !reached.contains(idle) {
+            return Err(invalid("disconnected captured source"));
+        }
+        let mut edges = vec![
+            serde_json::json!({ "parent": null, "specifier": entry_url, "target": entry_url }),
+        ];
+        for ((parent, specifier), target) in graph {
+            edges.push(serde_json::json!({ "parent": virtual_url(&parent)?, "specifier": specifier, "target": virtual_url(&target)? }));
+        }
+        let configuration = serde_json::to_vec(
+            &serde_json::json!({ "idleUrl": idle_url, "files": files, "edges": edges }),
+        )?;
+        let mut hash = Sha256::new();
+        hash.update(b"swallowtail-captured-graph-v1\0");
+        hash.update(&configuration);
+        Ok(Self {
+            configuration: Arc::from(configuration),
+            digest: hash.finalize().into(),
+        })
+    }
+
+    /// Returns immutable configuration bytes for the captured-source loader.
+    #[must_use]
+    pub fn configuration(&self) -> &[u8] {
+        &self.configuration
+    }
+
+    /// Returns a deterministic graph fingerprint, not a host attestation.
+    #[must_use]
+    pub const fn fingerprint(&self) -> &[u8; 32] {
+        &self.digest
+    }
+}
+
+impl fmt::Debug for LocalCapturedGraph {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("LocalCapturedGraph")
+            .finish_non_exhaustive()
+    }
+}
+
+fn virtual_url(path: &Path) -> io::Result<String> {
+    let name = path
+        .to_str()
+        .ok_or_else(|| invalid("non-UTF8 source path"))?;
+    if name.is_empty()
+        || !name
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'/' | b'_' | b'-' | b'.'))
+    {
+        return Err(invalid("source path cannot be represented"));
+    }
+    Ok(format!("file:///swallowtail-capture/{name}"))
+}
+
+/// Candidate digest binding for a future host-verified guarded launch.
+///
+/// The inputs are supplied by host policy and are not verified by this type;
+/// constructing it cannot issue or authorize a checked-process reference.
+#[derive(Clone)]
+pub struct LocalCapturedLaunchFingerprint([u8; 32]);
+
+impl LocalCapturedLaunchFingerprint {
+    /// Binds the captured graph to vendor, shim, runtime, recipe and policy digests.
+    ///
+    /// The host must separately establish and enforce each digest, including
+    /// the selected runtime-custody policy, before admitting a launch.
+    pub fn new(
+        graph: &LocalCapturedGraph,
+        vendor: [u8; 32],
+        shim: [u8; 32],
+        runtime: [u8; 32],
+        recipe: [u8; 32],
+        policy: [u8; 32],
+    ) -> io::Result<Self> {
+        let fields = [vendor, shim, runtime, recipe, policy];
+        if fields.iter().any(|digest| *digest == [0; 32]) {
+            return Err(invalid("missing launch digest"));
+        }
+        let mut hash = Sha256::new();
+        hash.update(b"swallowtail-checked-launch-candidate-v1\0");
+        hash.update(graph.fingerprint());
+        for field in fields {
+            hash.update(field);
+        }
+        Ok(Self(hash.finalize().into()))
+    }
+
+    /// Returns the candidate fingerprint; it is not an attestation.
+    #[must_use]
+    pub const fn digest(&self) -> &[u8; 32] {
+        &self.0
+    }
+}
+
+impl fmt::Debug for LocalCapturedLaunchFingerprint {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("LocalCapturedLaunchFingerprint")
+            .finish_non_exhaustive()
+    }
+}

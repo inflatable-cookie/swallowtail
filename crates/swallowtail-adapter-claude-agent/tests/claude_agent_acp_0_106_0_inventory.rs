@@ -9,6 +9,7 @@ const DEPENDENCIES: &str = include_str!("fixtures/claude-agent-acp-0.106.0/depen
 const CLOSURE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/static-closure.json");
 const IDLE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/idle-compaction-boundary.json");
 const IDLE_TRACE: &str = include_str!("fixtures/claude-agent-acp-0.106.0/idle-control-trace.json");
+const GUARD_EDGES: &str = include_str!("fixtures/claude-agent-acp-0.106.0/guard-import-edges.json");
 const PERMISSION_CONTROL: &str =
     include_str!("fixtures/claude-agent-acp-0.106.0/native-permission-control.json");
 
@@ -126,6 +127,10 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
             "e6e04b042909d0e321e21a9965b501647075aa1943e0f6e6a10d466fc48efcb7",
         ),
         (
+            GUARD_EDGES,
+            "0c1eb292ba566fc267714dcd6b2b352bdee2d4978c60b75de6b4bbddaa886a04",
+        ),
+        (
             PERMISSION_CONTROL,
             "e8125782d88cd32160141e3fec2e67e870e98a7311b440b5753bf03bac1c8b38",
         ),
@@ -134,6 +139,45 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
     }
     let inventory: Value = serde_json::from_str(INVENTORY).expect("inventory JSON");
     let closure: Value = serde_json::from_str(CLOSURE).expect("closure JSON");
+    let edges: Value = serde_json::from_str(GUARD_EDGES).expect("guard edges JSON");
+    let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
+    let hops = edges["hops"].as_object().expect("hop edges");
+    assert_eq!(hops.len(), 8);
+    for (index, version) in [
+        "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let row = &hops[version];
+        let caller = if index < 3 {
+            "dist/acp-agent.js"
+        } else {
+            "dist/v1/acp-agent.js"
+        };
+        let import = if index < 3 {
+            "./idle-compaction.js"
+        } else {
+            "../idle-compaction.js"
+        };
+        assert_eq!(row["caller"], caller);
+        assert_eq!(row["import"], import);
+        assert_eq!(row["idle_module"], "dist/idle-compaction.js");
+        assert_eq!(
+            row["caller_sha256"],
+            inventory["sha256_by_path"][version][caller]
+        );
+        assert_eq!(
+            row["idle_sha256"],
+            inventory["sha256_by_path"][version]["dist/idle-compaction.js"]
+        );
+        assert_eq!(
+            row["tarball_sha256"],
+            registry["versions"][version]["tarball_sha256"]
+        );
+        assert_eq!(row["construction_count"], 1);
+        assert_eq!(row["literal_dot_method_assignment_count"], 0);
+    }
     for (hop, delta) in inventory["deltas"].as_object().expect("deltas") {
         let rows = closure["changes"][hop]
             .as_object()

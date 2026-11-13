@@ -47,3 +47,7 @@ SDK settings override does not establish idle suppression. At 0.106.0 inline
 compaction settings are considered, but managed values take precedence. The
 underlying files are pinned in `dist-inventory.json`; see Research 482 for
 the remaining route-authority and race proof.
+
+`guard-import-edges.json` binds each observed v1 caller and idle module to
+the registry tarball and complete inventory. It records only static class
+shape and the literal import; it does not attest Node loading or native code.

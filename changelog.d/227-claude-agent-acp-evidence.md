@@ -6,3 +6,5 @@
 - Prototype fake-only idle suppression; production qualification remains pending.
 
 - Add an opt-in host filter for Node and dynamic-loader startup environment bindings.
+
+- Record the exact selected idle-module import and caller for each newer ACP hop.

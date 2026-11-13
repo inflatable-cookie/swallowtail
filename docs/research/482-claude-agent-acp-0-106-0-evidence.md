@@ -238,3 +238,17 @@ denial without callbacks and joined cleanup independently for each selected
 native artifact and platform. Any network, credential or paid-provider step
 requires additional explicit authority. A missing edge, unbound runtime or
 uncontrolled initialization fails closed and cannot extend the claim.
+
+
+## Per-hop selected idle import
+
+A fresh integrity-checked extraction of all eight published tarballs records
+the selected v1 caller, literal import, caller digest, idle module digest and
+class-method shape in `guard-import-edges.json`. The first three hops import
+`./idle-compaction.js` from `dist/acp-agent.js`; from 0.103.0 the v1 caller
+is `dist/v1/acp-agent.js` and its import is `../idle-compaction.js`. The
+first group shares one idle module digest and the later group shares another.
+The source has one selected construction and prototype methods at each hop;
+this observation does not establish runtime module resolution, immutable
+loading, worker-realm exclusion, permission behavior or native behavior.
+The frozen inventory and registry bind each row to exact shipped bytes.

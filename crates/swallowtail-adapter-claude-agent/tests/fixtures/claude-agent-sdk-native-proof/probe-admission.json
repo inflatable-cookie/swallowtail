@@ -20,13 +20,14 @@
   },
   "confinement": {
     "available": [
+      "the caller supplies the committed admission digest out of band, so a substituted ledger and a substituted peer that agree with each other are refused before any module is imported",
       "the probe creates its workspace, HOME, TMPDIR, TMP and TEMP with mkdtemp under a 0700 base directory it verifies is a real directory owned by this uid",
       "the peer carries a per-run ownership nonce that the runner receives on its command line and compares with the uid",
       "peer, native and SDK paths are resolved through realpath and refused when they escape the peer directory",
       "the wall clock is the ledger's wall_clock_seconds; a larger request is refused",
       "records are accounted against the evidence bound while the run proceeds, and the disk bound is sampled during the run",
       "the native process bound is enforced by the spawn hook and latched, so a peer that swallows the error still fails the probe",
-      "the native join is mandatory: a missing join, a timed-out join or an unobserved kill is failed cleanup"
+      "the native join is mandatory: a missing join, a timed-out join or an unobserved kill is failed cleanup, every non-exit kill is retried with SIGKILL, and the evidence records the native pids so a caller can verify no child survived"
     ],
     "unavailable": [
       "network namespace or egress filter: the loopback endpoint is an observation point, not a firewall, and the harness cannot stop a peer from opening another socket",
@@ -165,12 +166,12 @@
   ],
   "request": {
     "purpose": "the exact probe invocation this ledger admits, its sources, its artifacts, its runtime identity, its isolation and its bounds; vendor execution stays disabled until an operator authority names these digests",
-    "command": "node crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs --admission crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json --options crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json --peer <owned-peer-dir> --sdk-version <tuple.sdk_version> --platform <darwin-arm64|linux-x64> --base <0700 base dir> --ownership-nonce <run nonce> --evidence <evidence.json> --bound-ms 120000",
+    "command": "node crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs --admission crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json --admission-digest <sha256 of the committed admission, supplied outside the ledger> --options crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json --peer <owned-peer-dir> --sdk-version <tuple.sdk_version> --platform <darwin-arm64|linux-x64> --base <0700 base dir> --ownership-nonce <run nonce> --evidence <evidence.json> --bound-ms 120000",
     "original_command_suffix": "--mode original  (refused unconditionally: no kernel-level confinement is available)",
     "source_digests": {
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json": "e45adf81b19e3fc77f9e14683f447ca69bcd43018395252ee593236cad8e5fa7",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
-      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs": "dcd2c3249fa03d1e93779e7eb4bed0675267ab6a7942efe49e141d42a4464b5d",
+      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs": "f2bdac85309ea94a2acfe419fccb916146aa08d5dc659d10f0caff519e4a390c",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "0b47d9f56f0bd7b8e7a953e475b922c7e54e757eea053881d66e0e1287daa17c",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "b518dbe54d7b2fe2ba260a7340d93feecd5dde91c8d60dac4a7d56ecc2b85084",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "c0e7e406e64efb67a44e094141a526822e6df4f6fe85627085c0ed72c446f3b4",

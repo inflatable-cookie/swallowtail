@@ -910,7 +910,16 @@ fn original_mode_is_refused_unconditionally() {
     for (label, overrides, extra) in cases {
         let fixture = ProbeFixture::start("ok", &overrides);
         fixture.bind_peer("0.3.322", "2.1.322");
-        let run = fixture.run("0.3.322", "linux-x64", "ok", None, 120_000, extra);
+        let digest = fixture.admission_digest();
+        let run = fixture.run_bound_to(
+            "0.3.322",
+            "linux-x64",
+            "ok",
+            None,
+            120_000,
+            extra,
+            Some(&digest),
+        );
         assert_eq!(run.status, 2, "{label} must be refused: {}", run.stderr);
         assert!(
             run.stderr.contains("original_mode_unavailable")
@@ -963,7 +972,16 @@ fn a_foreign_authority_ledger_is_still_refused_for_a_fake_run() {
     for (label, overrides, extra, expected) in cases {
         let fixture = ProbeFixture::start("ok", &overrides);
         fixture.bind_peer("0.3.322", "2.1.322");
-        let run = fixture.run("0.3.322", "darwin-arm64", "ok", None, 120_000, extra);
+        let digest = fixture.admission_digest();
+        let run = fixture.run_bound_to(
+            "0.3.322",
+            "darwin-arm64",
+            "ok",
+            None,
+            120_000,
+            extra,
+            Some(&digest),
+        );
         assert_eq!(
             run.status, 2,
             "the {label} ledger is refused: {}",
@@ -1325,7 +1343,16 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
     });
     process.bind_peer("0.3.322", "2.1.322");
     process.configure_sdk(json!({"doubleSpawn": true}));
-    let run = process.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    let digest = process.admission_digest();
+    let run = process.run_bound_to(
+        "0.3.322",
+        "linux-x64",
+        "ok",
+        None,
+        120_000,
+        &[],
+        Some(&digest),
+    );
     assert_eq!(
         run.status, 2,
         "a second native start is refused: {}",
@@ -1341,7 +1368,16 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
         admission["bounds"]["captured_stdout_bytes"] = json!(8);
     });
     evidence.bind_peer("0.3.322", "2.1.322");
-    let run = evidence.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    let digest = evidence.admission_digest();
+    let run = evidence.run_bound_to(
+        "0.3.322",
+        "linux-x64",
+        "ok",
+        None,
+        120_000,
+        &[],
+        Some(&digest),
+    );
     assert_eq!(
         run.status, 2,
         "an oversized evidence record is refused: {}",
@@ -1355,7 +1391,16 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
 
     let requested = ProbeFixture::start("ok", &|_| {});
     requested.bind_peer("0.3.322", "2.1.322");
-    let run = requested.run("0.3.322", "linux-x64", "ok", None, 900_000, &[]);
+    let digest = requested.admission_digest();
+    let run = requested.run_bound_to(
+        "0.3.322",
+        "linux-x64",
+        "ok",
+        None,
+        900_000,
+        &[],
+        Some(&digest),
+    );
     assert_eq!(
         run.status, 2,
         "a bound above the ledger is refused: {}",
@@ -1367,11 +1412,92 @@ fn the_probe_fails_closed_on_its_declared_bounds() {
         admission["bounds"]["disk_bytes"] = json!(8);
     });
     disk.bind_peer("0.3.322", "2.1.322");
-    let run = disk.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    let digest = disk.admission_digest();
+    let run = disk.run_bound_to(
+        "0.3.322",
+        "linux-x64",
+        "ok",
+        None,
+        120_000,
+        &[],
+        Some(&digest),
+    );
     assert_eq!(
         run.status, 2,
         "an oversized fixture tree is refused: {}",
         run.stderr
     );
     assert!(run.stderr.contains("disk_limit_exceeded"), "{}", run.stderr);
+}
+
+#[test]
+fn a_jointly_substituted_ledger_and_peer_are_refused() {
+    let fixture = ProbeFixture::start("ok", &|_| {});
+    fixture.bind_peer("0.3.322", "2.1.322");
+    // The ledger and the peer are rewritten together so they agree with each
+    // other. The caller still binds the committed digest, so the pair fails
+    // before any module is imported.
+    fixture.substitute_ledger_and_peer();
+    let run = fixture.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "a substituted pair is refused: {}",
+        run.stderr
+    );
+    assert!(
+        run.stderr.contains("admission_substitution"),
+        "the refusal names the substitution: {}",
+        run.stderr
+    );
+    assert!(
+        !fixture
+            .root()
+            .join("peer/native-observations.json")
+            .exists(),
+        "no peer started and nothing was imported"
+    );
+    assert!(run.evidence.is_none());
+}
+
+#[test]
+fn a_timed_out_join_leaves_no_live_child() {
+    let fixture = ProbeFixture::start("never-exit", &|_| {});
+    fixture.bind_peer("0.3.319", "2.1.319");
+    let run = fixture.run("0.3.319", "darwin-arm64", "never-exit", None, 1_500, &[]);
+    assert_eq!(
+        run.status, 2,
+        "an unjoined peer fails the probe: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("cleanup_failed"), "{}", run.stderr);
+    let evidence = run.evidence.expect("the probe still writes evidence");
+    assert_eq!(evidence["cleanup"], "killed");
+    assert_eq!(
+        evidence["nativeExit"]["observed"], true,
+        "the kill was observed: {evidence}"
+    );
+    let pids: Vec<i64> = evidence["nativePids"]
+        .as_array()
+        .expect("recorded pids")
+        .iter()
+        .filter_map(|value| value.as_i64())
+        .collect();
+    assert_eq!(pids.len(), 1, "one native process was started: {pids:?}");
+    for pid in pids {
+        assert!(
+            !process_is_alive(pid),
+            "the native child {pid} must be gone after the probe"
+        );
+    }
+}
+
+fn process_is_alive(pid: i64) -> bool {
+    std::process::Command::new("kill")
+        .arg("-0")
+        .arg(pid.to_string())
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
 }

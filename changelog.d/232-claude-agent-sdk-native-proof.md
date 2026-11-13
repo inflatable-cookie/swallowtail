@@ -65,4 +65,10 @@ accounts records and disk while running, and requires an observed native join;
 because no kernel-level confinement exists, original-artifact mode is refused
 unconditionally and the ledger names the missing capability. Fixtures remove
 only directories they created.
+Third review correction: the probe runner now takes the committed admission
+digest out of band, so a ledger and peer substituted together are refused as
+`admission_substitution` before any import; and every non-exited join goes
+through a kill-and-observe path that retries with SIGKILL and records the native
+pids, so a timed-out join cannot leave a child alive. Q-009's decision-tree item
+is rewritten as answered rather than an open choice.
 

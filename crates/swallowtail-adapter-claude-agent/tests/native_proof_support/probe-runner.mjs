@@ -320,6 +320,7 @@ function accountRecord(records, record, bounds, roots) {
 async function main() {
   const args = parseArguments(process.argv.slice(2));
   const admissionPath = args.get("admission");
+  const admissionDigest = args.get("admission-digest");
   const optionsPath = args.get("options");
   const peer = args.get("peer");
   const platform = args.get("platform");
@@ -340,7 +341,20 @@ async function main() {
     );
   }
 
-  const admission = loadJson(admissionPath, "probe admission");
+  if (typeof admissionDigest !== "string" || !/^[0-9a-f]{64}$/.test(admissionDigest)) {
+    throw new Refusal(
+      "invalid_invocation",
+      "the probe needs the committed admission digest, supplied outside the ledger",
+    );
+  }
+  const admissionBytes = readFileSync(admissionPath);
+  if (sha256(admissionBytes) !== admissionDigest) {
+    throw new Refusal(
+      "admission_substitution",
+      "the admission document does not match the committed digest; a substituted ledger and peer are refused",
+    );
+  }
+  const admission = JSON.parse(admissionBytes.toString("utf8"));
   if (admission.schema !== "claude-agent-sdk-probe-admission-v1") {
     throw new Refusal("invalid_admission", "the admission schema tag is unknown");
   }
@@ -395,6 +409,7 @@ async function main() {
   const template = loadJson(optionsPath, "probe options");
   let nativeSpawns = 0;
   let spawnRefusal = null;
+  const nativePids = [];
   const options = {
     ...template.options,
     cwd: workspace,
@@ -411,11 +426,13 @@ async function main() {
         );
         throw spawnRefusal;
       }
-      return spawn(spawnOptions.command, spawnOptions.args, {
+      const child = spawn(spawnOptions.command, spawnOptions.args, {
         cwd: spawnOptions.cwd,
         env: spawnOptions.env,
         stdio: ["pipe", "pipe", "pipe"],
       });
+      nativePids.push(child.pid ?? null);
+      return child;
     },
   };
   const envKeys = Object.keys(environment).sort();
@@ -470,7 +487,7 @@ async function main() {
       "cleanup_failed",
       "the probe exceeded its wall-clock bound before the peer joined; the peer was killed",
     );
-    nativeExit = await killAndJoin(query, Math.max(1_000, Math.min(boundMs, 10_000)));
+    nativeExit = await stopPeer(query, Math.max(1_000, Math.min(boundMs, 10_000)));
   } else {
     nativeExit = await settle(query, Math.max(1_000, Math.min(boundMs, 10_000)));
   }
@@ -496,6 +513,7 @@ async function main() {
     boundSource: "ledger wall_clock_seconds",
     records,
     nativeExit,
+    nativePids,
     cleanup: nativeExit?.join ?? "unknown",
     elapsedMs: Date.now() - started,
     failure: failure === null ? null : { code: failure.code, message: failure.message },
@@ -531,12 +549,48 @@ async function main() {
   return EXIT.ok;
 }
 
+/// Kills the peer, waits for the observed exit, and never leaves it running.
+/// Every non-exited outcome is reported as unknown cleanup, and the kill is
+/// retried with SIGKILL before the probe gives up.
+async function stopPeer(query, boundMs) {
+  const attempts = [
+    () => query?.killNative?.(),
+    () => query?.killNative?.("SIGKILL"),
+  ];
+  for (const attempt of attempts) {
+    try {
+      attempt();
+    } catch {
+      // A kill that throws is still followed by an observation attempt.
+    }
+    let timer;
+    const bound = new Promise((resolve) => {
+      timer = setTimeout(() => resolve("expired"), boundMs);
+    });
+    try {
+      if (typeof query?.joinNative !== "function") {
+        return { join: "unknown", killed: true, observed: false };
+      }
+      const outcome = await Promise.race([
+        query.joinNative().then((exit) => ({ exit })),
+        bound,
+      ]);
+      if (outcome !== "expired") {
+        return { join: "killed", killed: true, observed: true, ...(outcome.exit ?? {}) };
+      }
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  return { join: "unknown", killed: true, observed: false };
+}
+
 async function settle(query, boundMs) {
   if (query === undefined) return { join: "absent", code: null, signal: null };
   if (typeof query.joinNative !== "function") {
     // A peer that cannot report its own exit is unknown cleanup, not a clean
-    // exit; the probe fails closed on it.
-    return { join: "unknown", code: null, signal: null };
+    // exit. Kill it so the probe cannot leave a child behind, and say so.
+    return await stopPeer(query, boundMs);
   }
   let timer;
   const bound = new Promise((resolve) => {
@@ -545,33 +599,10 @@ async function settle(query, boundMs) {
   try {
     const outcome = await Promise.race([query.joinNative().then((exit) => ({ exit })), bound]);
     if (outcome === "expired") {
-      return { join: "unknown", code: null, signal: null, timedOut: true };
+      // The wall-clock bound fired: stop the peer and observe the kill.
+      return await stopPeer(query, boundMs);
     }
     return { join: "exited", ...(outcome.exit ?? { code: null, signal: null }) };
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-/// Kills the peer and waits for the observed exit. A kill that is not followed
-/// by an observed join is unknown cleanup.
-async function killAndJoin(query, boundMs) {
-  if (query === undefined) return { join: "absent", code: null, signal: null };
-  if (typeof query.joinNative !== "function") {
-    return { join: "unknown", code: null, signal: null };
-  }
-  const joined = query.joinNative();
-  query.killNative?.();
-  let timer;
-  const bound = new Promise((resolve) => {
-    timer = setTimeout(() => resolve("expired"), boundMs);
-  });
-  try {
-    const outcome = await Promise.race([joined.then((exit) => ({ exit })), bound]);
-    if (outcome === "expired") {
-      return { join: "unknown", code: null, signal: null, timedOut: true };
-    }
-    return { join: "killed", ...(outcome.exit ?? { code: null, signal: null }) };
   } finally {
     clearTimeout(timer);
   }

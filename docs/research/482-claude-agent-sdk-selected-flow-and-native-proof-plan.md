@@ -294,6 +294,24 @@ token can substitute for it. The ledger's `confinement` block lists what the
 harness does and does not have, and a test proves that an authorised ledger
 with its exact token is still refused.
 
+### Ledger substitution and peer clean-up
+
+Two more review findings are fixed and pinned:
+
+- **A jointly substituted ledger and peer is refused.** The runner is given the
+  committed admission digest *out of band* (a compile-time constant in the test
+  binary, or the operator's own record for a real caller) and refuses a ledger
+  whose bytes do not match it. Because the admission carries the peer SDK digest,
+  tuple digests and option surface, a substituted ledger and a peer rewritten to
+  agree with it still fail with `admission_substitution` before any module is
+  imported. A test performs exactly that substitution.
+- **A timed-out join cannot leave a child alive.** Every non-exited outcome goes
+  through `stopPeer`, which kills the peer, retries with `SIGKILL`, and waits for
+  an observed exit. A missing `joinNative`, a timed-out join or an unobserved
+  kill is `unknown`/failed cleanup, never `exited`, and the evidence records the
+  native pids. A test runs the peer that never exits and asserts, with `kill -0`,
+  that its recorded pid is gone after the probe.
+
 ### Fixture teardown
 
 Both fixtures remove only a directory they created: a direct child of the

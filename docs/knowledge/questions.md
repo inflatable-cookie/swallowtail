@@ -213,17 +213,17 @@ Decision tree:
    endpoint, or accept a static control-flow method. Without one, the cells
    stay unqualified.
 2. `permissions.denyInsteadOfPrompting` on this route, from `0.3.319`.
-   Preserve it under a distinct SDK behavior revision, or refuse the pair
-   when the setting is present. Either choice is a product decision.
-   **Answered 2026-11-12:** Tom chose preservation under a distinct revision,
-   decision `d5a14f90-e837-42b6-9818-9b5e74a25547` v2, relayed by the planner
-   and applied as `task232` brief v2
+   **Answered 2026-11-12: preserve it under a distinct SDK behavior revision.**
+   Tom's decision `d5a14f90-e837-42b6-9818-9b5e74a25547` v2 chose preservation
+   over refusing an affected pair; the planner relayed it and applied it as
+   `task232` brief v2
    (`sha256:e6abac0dd3f10494a0a28fb379a7b183582bf87848b774fb1651bd18bf67cc1e`).
    The distinct revision is `claude-agent.sdk-v2`; every maintained claim stays
-   on `claude-agent.sdk-v1` and no pair moves. Original-artifact execution is
-   still unauthorised, so the revision is declared for the probe admission
-   only. The contract and its fake regressions are
+   on `claude-agent.sdk-v1` and no pair moves. The contract and its fake
+   regressions are
    `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json`.
+   What this answer does not grant: original-artifact execution, a qualification
+   extension, or any statement about a real native's behaviour.
 3. Residuals at `0.3.321`: `promptHold`, `initializeWritten`, and the `Ki`
    telemetry callers. Planner closes these with the native proof.
 
@@ -249,31 +249,32 @@ Stage evidence (2026-11-12, Research 482):
   behavior revision used by every claim and the shipped sidecar stay as they
   were, because probe evidence must precede a claim extension.
 
-- Item 2 now has its source-proven half. `permissions.denyInsteadOfPrompting`
-  is an administrator-tier managed-policy key; `settingSources` selects only
-  the user, project and local tiers, so `settingSources: []` does not exclude
-  it; the SDK's parent tier comes only from `Options.managedSettings`, which
-  the sidecar never sets, so `--managed-settings` is not emitted; the native's
-  own administrator-tier discovery is opaque binary behavior. What remains is
-  the product choice between preserving the managed denial under a distinct
-  SDK behavior revision and refusing an affected pair.
+- The source-proven half of Item 2 stands behind that answer:
+  `permissions.denyInsteadOfPrompting` is an administrator-tier managed-policy
+  key; `settingSources` selects only the user, project and local tiers, so
+  `settingSources: []` does not exclude it; the SDK's parent tier comes only
+  from `Options.managedSettings`, which the sidecar never sets, so
+  `--managed-settings` is not emitted; the native's own administrator-tier
+  discovery is opaque binary behavior. The direction is answered - preserve it
+  under `claude-agent.sdk-v2` - and only the native evidence that a real binary
+  honours it remains unproven.
 - A temporary *probe-only* admission now exists (planner, 2026-11-12, question
   `e36390b98c373c94c17185abe8fcf9a5cbd14dcde0d2b720cfa8320a76caec7e`): the
   ledger `crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json`
   binds every proposed tuple, the selected option surface and the fake peer
   identity, admits harness-only fake runs, and carries no production admission.
-  It refuses a production ledger, a foreign authority, original mode without the
-  exact token, a substituted peer, a non-loopback endpoint and an unjoined peer,
-  and every record it writes is marked probe-only. Production claims, the
-  maintained pair map and the shipped sidecar are unchanged, and original mode
-  stays disabled. Vendor execution is still unauthorised.
+  It refuses a production ledger, a foreign authority, a substituted ledger or
+  peer, a non-loopback endpoint and an unjoined peer, and every record it writes
+  is marked probe-only. Original-artifact mode is refused unconditionally
+  because the harness has no kernel-level confinement, and the ledger names that
+  missing capability. Production claims, the maintained pair map and the shipped
+  sidecar are unchanged. Vendor execution is still unauthorised.
 - Item 1 has its harness, not its proof.
   `probe-plan.json` fixes the artifacts, digests, argv, isolation, bounds and
   cleanup for both selected platforms, and the fake-backed harness proves the
   pipeline and its observation points on the accepted pair. Both the prepared
   driver and the sidecar admit only the maintained pair map, so every planned
-  hop above `0.3.317` is refused before the SDK loads; an authorised original
-  run needs an explicit probe admission for those exact pairs. That admission
-  and the permission ruling are the open gates, and neither is granted by this
-  evidence.
+  hop above `0.3.317` is refused before the SDK loads. The permission direction
+  is settled; the open gates are the exact native evidence and the execution
+  admission, and neither is granted by this evidence.
 

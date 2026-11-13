@@ -905,13 +905,20 @@ impl ProbeFixture {
             .to_string(),
         )
         .expect("peer configuration is written");
-        let mut admission = probe_admission();
+        let committed = probe_admission();
+        let mut admission = committed.clone();
         overrides(&mut admission);
-        std::fs::write(
-            root.join("probe-admission.json"),
-            serde_json::to_string_pretty(&admission).expect("admission serialises"),
-        )
-        .expect("probe admission copy is written");
+        // An unmodified fixture writes the committed bytes verbatim, so a run
+        // that binds the committed digest (the normal case) matches exactly. A
+        // deliberately rewritten ledger is written as its own copy and must be
+        // bound explicitly by the test that rewrites it.
+        let body = if admission == committed {
+            PROBE_ADMISSION.to_owned()
+        } else {
+            serde_json::to_string_pretty(&admission).expect("admission serialises")
+        };
+        std::fs::write(root.join("probe-admission.json"), body)
+            .expect("probe admission copy is written");
         std::fs::write(root.join("probe-options.json"), PROBE_OPTIONS)
             .expect("probe options copy is written");
         Self {
@@ -926,6 +933,22 @@ impl ProbeFixture {
 
     /// Points the peer at one tuple's identity. Called separately so a test can
     /// substitute a version without touching the admitted ledger.
+    /// The SHA-256 of this fixture's admission copy. A test that deliberately
+    /// rewrites the ledger must bind the run to its own copy; every other run
+    /// binds the committed bytes and therefore refuses a substitution.
+    pub fn admission_digest(&self) -> String {
+        use sha2::{Digest, Sha256};
+        let mut hex = String::with_capacity(64);
+        for byte in Sha256::digest(
+            std::fs::read(self.root.join("probe-admission.json"))
+                .expect("admission copy is readable"),
+        ) {
+            use std::fmt::Write as _;
+            write!(&mut hex, "{byte:02x}").expect("writing into a String cannot fail");
+        }
+        hex
+    }
+
     /// Writes the peer SDK's misbehaviour knobs for a refusal scenario.
     pub fn configure_sdk(&self, config: Value) {
         std::fs::write(
@@ -943,6 +966,31 @@ impl ProbeFixture {
             json!({"nonce": "not-this-run-nonce"}).to_string(),
         )
         .expect("peer ownership record is forged");
+    }
+
+    /// Rewrites the admission copy and the peer SDK together, the way a
+    /// substitution would try to keep them consistent. The committed digest is
+    /// still what a caller binds, so the pair must be refused.
+    pub fn substitute_ledger_and_peer(&self) {
+        let mut admission = probe_admission();
+        let tampered = format!("{}\n// substituted peer bytes\n", PROBE_FAKE_SDK);
+        std::fs::write(self.root.join("peer/probe-sdk.mjs"), &tampered)
+            .expect("peer SDK bytes are substituted");
+        let digest = {
+            use sha2::{Digest, Sha256};
+            let mut hex = String::with_capacity(64);
+            for byte in Sha256::digest(tampered.as_bytes()) {
+                use std::fmt::Write as _;
+                write!(&mut hex, "{byte:02x}").expect("writing into a String cannot fail");
+            }
+            hex
+        };
+        admission["fake_peer"]["sdk_module_sha256"] = json!(digest);
+        std::fs::write(
+            self.root.join("probe-admission.json"),
+            serde_json::to_string_pretty(&admission).expect("admission serialises"),
+        )
+        .expect("substituted admission is written");
     }
 
     /// Points the peer native at a symlink that escapes the peer directory.
@@ -992,6 +1040,43 @@ impl ProbeFixture {
         bound_ms: u64,
         extra: &[&str],
     ) -> ProbeRun {
+        self.run_bound_to(
+            sdk_version,
+            platform,
+            scenario,
+            endpoint,
+            bound_ms,
+            extra,
+            None,
+        )
+    }
+
+    /// Runs the probe with an explicit admission digest. `None` binds the run to
+    /// the committed ledger bytes, which is what a real caller does; `Some` is
+    /// only for a test that deliberately deviates from the committed ledger.
+    #[allow(clippy::too_many_arguments)]
+    pub fn run_bound_to(
+        &self,
+        sdk_version: &str,
+        platform: &str,
+        scenario: &str,
+        endpoint: Option<&str>,
+        bound_ms: u64,
+        extra: &[&str],
+        admission_digest: Option<&str>,
+    ) -> ProbeRun {
+        let digest = match admission_digest {
+            Some(value) => value.to_owned(),
+            None => {
+                use sha2::{Digest, Sha256};
+                let mut hex = String::with_capacity(64);
+                for byte in Sha256::digest(PROBE_ADMISSION.as_bytes()) {
+                    use std::fmt::Write as _;
+                    write!(&mut hex, "{byte:02x}").expect("writing into a String cannot fail");
+                }
+                hex
+            }
+        };
         let evidence = self.root.join("evidence.json");
         let node = std::env::var("SWALLOWTAIL_CLAUDE_AGENT_SDK_NODE")
             .unwrap_or_else(|_| "node".to_owned());
@@ -1002,6 +1087,8 @@ impl ProbeFixture {
             ))
             .arg("--admission")
             .arg(self.root.join("probe-admission.json"))
+            .arg("--admission-digest")
+            .arg(&digest)
             .arg("--options")
             .arg(self.root.join("probe-options.json"))
             .arg("--peer")

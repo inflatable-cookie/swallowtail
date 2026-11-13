@@ -374,6 +374,77 @@ fn node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before
     assert!(block_on(process.wait()).expect("fixture joins").success());
 }
 
+#[cfg(unix)]
+#[test]
+fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
+    use sha2::{Digest, Sha256};
+    use std::path::Path;
+    use std::process::Command;
+    use swallowtail_host_local::{LocalCapturedSources, LocalExpectedSource};
+    let template = std::env::temp_dir().join("checked-sources.XXXXXXXX");
+    let output = Command::new("/usr/bin/mktemp")
+        .arg("-d")
+        .arg(template)
+        .env_clear()
+        .output()
+        .expect("mktemp starts");
+    assert!(output.status.success());
+    let root = std::path::PathBuf::from(String::from_utf8(output.stdout).expect("path").trim());
+    std::fs::write(root.join("one.mjs"), b"one").expect("fixture");
+    std::fs::write(root.join("two.mjs"), b"two").expect("fixture");
+    let one = LocalExpectedSource::new("one.mjs", Sha256::digest(b"one").into());
+    let two = LocalExpectedSource::new("two.mjs", Sha256::digest(b"two").into());
+    let captured =
+        LocalCapturedSources::capture(&root, &[one.clone(), two.clone()]).expect("capture");
+    let reversed = LocalCapturedSources::capture(&root, &[two.clone(), one.clone()])
+        .expect("order independent capture");
+    assert_eq!(captured.fingerprint(), reversed.fingerprint());
+    assert_eq!(
+        captured.source(Path::new("one.mjs")),
+        Some(b"one".as_slice())
+    );
+    assert!(!format!("{captured:?}").contains("one.mjs"));
+    std::fs::write(root.join("one.mjs"), b"changed").expect("replace fixture bytes");
+    assert_eq!(
+        captured.source(Path::new("one.mjs")),
+        Some(b"one".as_slice())
+    );
+    assert!(LocalCapturedSources::capture(&root, &[one.clone()]).is_err());
+    assert!(LocalCapturedSources::capture(&root, &[two.clone(), two.clone()]).is_err());
+    assert!(
+        LocalCapturedSources::capture(
+            &root,
+            &[LocalExpectedSource::new(
+                "../two.mjs",
+                Sha256::digest(b"two").into()
+            )]
+        )
+        .is_err()
+    );
+    std::os::unix::fs::symlink("two.mjs", root.join("link.mjs")).expect("symlink fixture");
+    assert!(
+        LocalCapturedSources::capture(
+            &root,
+            &[LocalExpectedSource::new(
+                "link.mjs",
+                Sha256::digest(b"two").into()
+            )]
+        )
+        .is_err()
+    );
+    std::fs::hard_link(root.join("two.mjs"), root.join("alias.mjs")).expect("hardlink fixture");
+    assert!(
+        LocalCapturedSources::capture(
+            &root,
+            &[
+                two,
+                LocalExpectedSource::new("alias.mjs", Sha256::digest(b"two").into())
+            ]
+        )
+        .is_err()
+    );
+}
+
 #[test]
 fn checked_launch_without_host_custody_refuses_before_ordinary_spawn() {
     use swallowtail_runtime::{CheckedProcessRef, ProcessService, ScopeId};

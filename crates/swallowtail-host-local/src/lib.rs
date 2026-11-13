@@ -8,6 +8,7 @@
 #![deny(missing_docs)]
 
 mod attachment;
+mod captured_source;
 mod child;
 mod connection_lifecycle;
 mod credential;
@@ -38,6 +39,7 @@ mod watcher_bridge;
 mod working_resource;
 mod working_resource_io;
 
+pub use captured_source::{LocalCapturedSources, LocalExpectedSource};
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};

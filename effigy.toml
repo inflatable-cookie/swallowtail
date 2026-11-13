@@ -166,7 +166,7 @@ section = "Research Records"
 ]
 "validate:current-claude-agent-acp-evidence-additions" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(/current_acp_dependency_and_closure_evidence_is_complete_and_pinned|prepared_unverified_session_cancels_then_joins_cleanup/)'"
 "validate:current-claude-agent-acp-idle-fake" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(prepared_idle_update_without_turn_stops_connection_and_joins_cleanup)'"
-"validate:acp-guard-host-environment" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-host-local --test local_process -E 'test(node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before_spawn) | test(checked_launch_without_host_custody_refuses_before_ordinary_spawn)'"
+"validate:acp-guard-host-environment" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-host-local --test local_process -E 'test(node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before_spawn) | test(checked_launch_without_host_custody_refuses_before_ordinary_spawn) | test(checked_source_capture_freezes_verified_bytes_and_rejects_aliases)'"
 "check:acp-guard-host-environment" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-host-local"
 "format:acp-guard-host-environment" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local",

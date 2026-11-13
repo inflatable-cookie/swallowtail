@@ -321,3 +321,13 @@ Each attempt records timeout, admission, identity, protocol, cleanup and
 isolation failures separately and joins all owned processes before returning.
 These proposed limits are not execution authority or proof that this host
 can enforce them; the concrete Node and launch-policy digests do not yet exist.
+
+
+The local host also has a bounded source-byte capture helper. It checks a
+host-supplied manifest's paths and hashes, rejects observed symlinks and
+aliases, and retains the verified bytes in memory after later file changes.
+Its deterministic fingerprint binds the captured names and bytes only. The
+caller-supplied manifest is not official identity, parent-directory custody
+is not established, and this helper does not issue a checked launch or bind
+Node. A future host authority must establish the complete graph, guard,
+runtime, recipe and policy and recheck that binding at start.

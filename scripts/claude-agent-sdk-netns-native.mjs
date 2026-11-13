@@ -3,6 +3,11 @@ import fs from "node:fs";
 import net from "node:net";
 import http from "node:http";
 const config = JSON.parse(fs.readFileSync(new URL("./native-config.json", import.meta.url)));
+const release = Buffer.alloc(1);
+if (fs.readSync(config.startFd, release, 0, 1, null) !== 1 || release[0] !== 49) {
+  throw new Error("owned_topology_not_released");
+}
+fs.closeSync(config.startFd);
 let outsideDenial = null;
 if (config.forbiddenHostPort !== null) {
   outsideDenial = await new Promise((resolve, reject) => {

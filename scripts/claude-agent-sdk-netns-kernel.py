@@ -310,7 +310,9 @@ def launch(args, files, core, lease):
     record["receipt"] = {"device": info.st_dev, "inode": info.st_ino}
     handles = {}
     host = ns()
-    deadline = time.monotonic() + 27
+    deadline = args.custody_started + 27
+    if time.monotonic() >= deadline:
+        raise OSError(errno.ETIMEDOUT, "custody_setup_deadline")
     result = None
     failure = None
     cancelled = False

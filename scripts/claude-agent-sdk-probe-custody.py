@@ -7,6 +7,7 @@ observed byte/identity custody, not hostile-same-user verified execution.
 import hashlib
 import json
 import os
+import platform
 from pathlib import Path
 import stat
 import subprocess
@@ -81,9 +82,15 @@ def runtime_inventory(node, expected):
     report = json.loads(result.stdout)
     if Path(report["node"]).resolve(strict=True) != node:
         raise Refused("runtime_observation_identity")
+    kernel_mappings = []
     unresolved = []
     libraries = set()
     for name in report["libraries"]:
+        if sys.platform == "linux" and name == "linux-vdso.so.1":
+            kernel_mappings.append({"name": name, "kernel": platform.release()})
+            continue
+        if not Path(name).is_absolute():
+            raise Refused("unidentified_runtime_library")
         try:
             libraries.add(str(Path(name).resolve(strict=True)))
         except FileNotFoundError:
@@ -98,6 +105,7 @@ def runtime_inventory(node, expected):
         "nodeSha256": expected,
         "version": report["version"],
         "unresolvedSystemLibraries": sorted(unresolved),
+        "kernelMappings": kernel_mappings,
         "libraries": {name: digest(Path(name).read_bytes()) for name in libraries},
         "startup": list(STARTUP),
         "decision": DECISION,
@@ -116,6 +124,12 @@ class Lease:
         self.files = {}
         self.commands = None
         self.launched = 0
+        self.kernel_mappings = runtime.get("kernelMappings", [])
+        if any(
+            row != {"name": "linux-vdso.so.1", "kernel": platform.release()}
+            for row in self.kernel_mappings
+        ):
+            raise Refused("kernel_runtime_mapping_changed")
         self.unresolved = runtime.get("unresolvedSystemLibraries", [])
         self.policy = digest(json.dumps(policy, sort_keys=True).encode())
         if (
@@ -200,6 +214,8 @@ class Lease:
         self.check()
 
     def configure(self, commands, environments):
+        for name in python_inputs():
+            self.bind(name)
         self.check()
         if self.commands is not None or len(commands) != 2:
             raise Refused("custody_fixed_topology")

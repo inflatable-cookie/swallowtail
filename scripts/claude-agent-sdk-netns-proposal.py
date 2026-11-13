@@ -386,6 +386,7 @@ def protocol(
     owned = []
     entered_supervision = False
     fds = []
+    native_gate = os.pipe()
     try:
         canary_port = ops.endpoint_ready(server.server_port)
         (root / "native-config.json").write_text(
@@ -394,6 +395,7 @@ def protocol(
                     "port": server.server_port,
                     "forbiddenHostPort": canary_port,
                     "scenario": scenario,
+                    "startFd": native_gate[0],
                 }
             )
         )
@@ -486,6 +488,8 @@ def protocol(
                     root / "confined-config.json",
                     sha((root / "confined-config.json").read_bytes()),
                 )
+            if lease.launched == 1:
+                kwargs["pass_fds"] = (*kwargs.get("pass_fds", ()), native_gate[0])
             reject_inherited_sockets(kwargs.get("pass_fds", ()))
             if ops.kernel:
                 command, kwargs = ops.entry(command, kwargs, root, node, files)
@@ -500,6 +504,8 @@ def protocol(
             child = subprocess.Popen(command, **kwargs)
             owned.append(child)
             ops.confirm_child(child)
+            if lease.launched == 2:
+                os.write(native_gate[1], b"1")
             return child
 
         old.subprocess = types.SimpleNamespace(
@@ -539,6 +545,8 @@ def protocol(
                     if stream is not None:
                         stream.close()
     finally:
+        for fd in native_gate:
+            os.close(fd)
         if not entered_supervision:
             for pair in fds:
                 for fd in pair:
@@ -638,6 +646,7 @@ def inspect_host(node=None):
 
 def kernel_with_custody(args, files, kernel):
     kernel.root_required(args)
+    args.custody_started = time.monotonic()
     preflight = Path(os.environ["TMPDIR"]) / "preflight.json"
     info = preflight.lstat()
     if preflight.is_symlink() or info.st_uid != args.uid or info.st_mode & 0o022:

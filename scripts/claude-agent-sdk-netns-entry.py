@@ -245,9 +245,7 @@ def restrict_tcp_sockets():
         Instruction(0x15, 1, 0, socket.AF_INET),
         Instruction(0x15, 0, 8, socket.AF_INET6),
         Instruction(0x20, 0, 0, 24),
-        Instruction(
-            0x54, 0, 0, 0xFFFFFFFF ^ (socket.SOCK_CLOEXEC | socket.SOCK_NONBLOCK)
-        ),
+        Instruction(0x54, 0, 0, 0xFFFFFFFF ^ (0x80000 | 0x800)),
         Instruction(0x15, 0, 5, socket.SOCK_STREAM),
         Instruction(0x20, 0, 0, 32),
         Instruction(0x15, 2, 0, 0),

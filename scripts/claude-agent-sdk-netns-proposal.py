@@ -477,6 +477,9 @@ def protocol(
                 if child.poll() is None:
                     child.kill()
                 child.wait(timeout=2)
+                for stream in (child.stdout, child.stderr):
+                    if stream is not None:
+                        stream.close()
     finally:
         if not entered_supervision:
             for pair in fds:

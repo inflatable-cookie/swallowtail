@@ -131,6 +131,10 @@ only that receipt. Temporary payload teardown belongs to the guest's own fresh
 fixture. Unknown or hard-killed monitor state fails and requires disposable-job
 settlement; it cannot become a passed proof through a cleanup marker.
 
+The shipped sidecar control uses the retained managed-denial scenario. The
+selected probe separately exercises callback denial and managed denial; this
+proposal does not extend the old sidecar driver's callback-response coverage.
+
 ## Required authority and unobserved capabilities
 
 Request only one application/registration and one exact-source namespace-only

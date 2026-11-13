@@ -55,7 +55,10 @@ class NamespaceProposalTests(unittest.TestCase):
     def test_real_ordinary_tcp_selected_driver_and_sidecar(self):
         for mode in ("probe", "sidecar"):
             with self.subTest(mode=mode):
-                result = self.run_protocol(mode=mode)
+                result = self.run_protocol(
+                    mode=mode,
+                    scenario="managed-deny" if mode == "sidecar" else "permission",
+                )
                 self.assertIsNone(result["failure"], result)
                 self.assertTrue(result["protocol"]["ordinaryTcp"])
                 self.assertEqual(len(result["protocol"]["requests"]), 1)

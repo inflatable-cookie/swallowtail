@@ -376,3 +376,17 @@ set and shipped-tree hashes for each of the eight hops; its exact key set and
 digests are checked against both records. It is a conservative static wrapper
 inventory, not a complete dependency or dynamic-import graph, a Node binding
 or authority to use an installed package. Unknown versions fail closed.
+
+The current fake checked host sends the bootstrap through the ordinary
+process-input handle. The local host charges those bytes against its existing
+per-process input budget, and its synchronous write path has no separate
+bootstrap deadline. Production adoption therefore needs a separately bounded
+bootstrap handoff and cancellation/join proof that preserves the existing
+consumer input budget; the small fake does not establish either property for
+a full dependency closure. The real checked host remains unavailable.
+
+The combined fake checked host also rejects a substituted bootstrap before
+spawn. When its intentionally small process-input limit rejects the genuine
+bootstrap, the fake host stops and joins the child before returning failure.
+This demonstrates that specific failure path, not a deadline for an already
+blocked write or a separate production bootstrap budget.

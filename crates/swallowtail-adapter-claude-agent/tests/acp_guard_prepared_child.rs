@@ -66,6 +66,7 @@ struct FakeCheckedChild {
     checked: Arc<AtomicUsize>,
     ordinary: Arc<AtomicUsize>,
     bootstrap: Arc<[u8]>,
+    failed_bootstrap_joins: Arc<AtomicUsize>,
 }
 impl FakeCheckedChild {
     fn allows(&self, binding: &CheckedProcessRef, request: &ProcessRequest) -> bool {
@@ -81,9 +82,10 @@ impl FakeCheckedChild {
             && request.executable().as_host_value() == "claude-agent.prepared.executable"
             && (request.arguments().len() == 0
                 || request.arguments().collect::<Vec<_>>() == ["--version"])
-            && candidate
-                .as_ref()
-                .is_ok_and(|value| value.fingerprint().digest() == &self.expected)
+            && candidate.as_ref().is_ok_and(|value| {
+                value.fingerprint().digest() == &self.expected
+                    && value.bootstrap() == self.bootstrap.as_ref()
+            })
     }
     fn denied() -> RuntimeFailure {
         RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
@@ -128,6 +130,7 @@ impl ProcessService for FakeCheckedChild {
         self.checked.fetch_add(1, Ordering::SeqCst);
         let start = self.local.start(scope, request);
         let bootstrap = Arc::clone(&self.bootstrap);
+        let joins = Arc::clone(&self.failed_bootstrap_joins);
         Box::pin(async move {
             let process = start.await?;
             if let Err(error) = process
@@ -135,7 +138,9 @@ impl ProcessService for FakeCheckedChild {
                 .await
             {
                 let _ = process.force_stop().await;
-                let _ = process.wait().await;
+                if process.wait().await.is_ok() {
+                    joins.fetch_add(1, Ordering::SeqCst);
+                }
                 return Err(error);
             }
             Ok(process)
@@ -151,6 +156,14 @@ fn node_path() -> PathBuf {
 }
 
 fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedChild {
+    fake_child_with_input_limit(root, graph, 8 * 1024 * 1024)
+}
+
+fn fake_child_with_input_limit(
+    root: &std::path::Path,
+    graph: LocalCapturedGraph,
+    stdin_bytes: usize,
+) -> FakeCheckedChild {
     let recipe = LocalCapturedNodeRecipe::new(
         &graph,
         CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
@@ -168,11 +181,17 @@ fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedC
     let environment =
         EnvironmentRef::new("claude-agent.prepared.environment").expect("environment");
     let resource = WorkingResourceRef::new("checked.workspace").expect("resource");
-    let local = LocalProcessHost::builder(LocalProcessLimits::default())
-        .approve_executable_launch(executable, launch)
-        .approve_environment(environment, [])
-        .approve_working_resource(resource, root)
-        .build();
+    let local = LocalProcessHost::builder(LocalProcessLimits::new(
+        128,
+        256 * 1024,
+        stdin_bytes,
+        8 * 1024 * 1024,
+        1024 * 1024,
+    ))
+    .approve_executable_launch(executable, launch)
+    .approve_environment(environment, [])
+    .approve_working_resource(resource, root)
+    .build();
     FakeCheckedChild {
         local,
         graph,
@@ -181,6 +200,7 @@ fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedC
         checked: Arc::new(AtomicUsize::new(0)),
         ordinary: Arc::new(AtomicUsize::new(0)),
         bootstrap,
+        failed_bootstrap_joins: Arc::new(AtomicUsize::new(0)),
     }
 }
 
@@ -221,7 +241,45 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
         .expect("replace entry");
     std::fs::write(root.join("idle.mjs"), "throw new Error('replaced idle')")
         .expect("replace idle");
+    let constrained = fake_child_with_input_limit(&root, graph.clone(), 4);
+    let constrained_host = ExecutionHostId::new("fake.checked.constrained").expect("host");
+    let constrained_resources = FixtureHost::new(Scenario::Success, "0.100.0");
+    let constrained_services = constrained_resources
+        .services(constrained_host.clone())
+        .with_process(Arc::new(constrained.clone()));
+    let constrained_probe = ClaudeAgentPreparationProbe::new(
+        RequestId::new("checked-short").expect("request"),
+        ScopeId::new("checked-short").expect("scope"),
+        Deadline::at(MonotonicInstant::from_ticks(100)),
+        DiscoveryCancellation::new(),
+    );
+    let constrained_binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
+    assert!(
+        block_on(prepare_claude_agent(
+            preparation(constrained_host).with_checked_process(constrained_binding),
+            constrained_probe,
+            constrained_services
+        ))
+        .is_err()
+    );
+    assert_eq!(constrained.checked.load(Ordering::SeqCst), 1);
+    assert_eq!(constrained.failed_bootstrap_joins.load(Ordering::SeqCst), 1);
+    assert_eq!(constrained.ordinary.load(Ordering::SeqCst), 0);
     let fake = fake_child(&root, graph);
+    let mut substituted = fake.clone();
+    substituted.bootstrap = Arc::from(b"substituted bootstrap".as_slice());
+    let substituted_request = ProcessRequest::new(
+        ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
+    );
+    assert!(
+        block_on(substituted.validate_checked(
+            ScopeId::new("checked-substitution").expect("scope"),
+            CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
+            substituted_request
+        ))
+        .is_err()
+    );
+    assert_eq!(substituted.checked.load(Ordering::SeqCst), 0);
     let host_id = ExecutionHostId::new("fake.checked.local").expect("host");
     let resources = FixtureHost::new(Scenario::Success, "0.100.0");
     let services = resources

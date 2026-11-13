@@ -279,3 +279,11 @@ Stage evidence (2026-11-12, Research 482):
   is settled; the open gates are the exact native evidence and the execution
   admission, and neither is granted by this evidence.
 
+Confined fake continuation (task 234): the private
+[probe contract](operations/claude-agent-sdk-confined-probe.md) owns the
+Darwin enforcement boundary, executable fake proposal and remaining platform,
+settings and interpreter-custody gates. The new launcher never enables original
+mode. Its fake observations do not close item 1, qualify Node, adopt the v2
+revision in production or qualify any SDK/native pair. Linux x64 admission,
+exact original-artifact authority and Nucleus proof execution remain open.
+

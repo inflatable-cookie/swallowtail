@@ -364,7 +364,9 @@ async fn cancellation_before_and_after_admission_joins_owned_tree() {
     async fn wait_for(root: &Path, name: &str) -> String {
         let deadline = Instant::now() + Duration::from_secs(8);
         loop {
-            if let Ok(value) = std::fs::read_to_string(root.join(name)) {
+            if let Ok(value) = std::fs::read_to_string(root.join(name))
+                && value.parse::<u32>().is_ok()
+            {
                 return value;
             }
             assert!(Instant::now() < deadline, "missing fixture marker {name}");

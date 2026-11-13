@@ -1,0 +1,3666 @@
+{
+  "classification": {
+    "query.armRunEndCeiling": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "0.3.318": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "0.3.319": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "0.3.321": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "0.3.322": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "0.3.318": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "0.3.319": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "0.3.321": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "0.3.322": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ]
+      },
+      "note": "run-end ceiling",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "ceiling is armed for every turn",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.endRun": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "0.3.318": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "0.3.319": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "0.3.321": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "0.3.322": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "0.3.318": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "0.3.319": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "0.3.321": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "0.3.322": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ]
+      },
+      "note": "run-end settlement",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "run-end settlement is observed by the driver",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.initializeWritten.gate": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "0.3.318": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "0.3.319": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "0.3.321": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "0.3.322": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "0.3.318": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "0.3.319": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "0.3.321": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "0.3.322": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ]
+      },
+      "note": "the initialize-written promise and its resolver",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "streamInput awaits it before the first write; resolved by the first initialize",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.processControlRequest.can_use_tool": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "0.3.318": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "0.3.319": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "0.3.321": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "0.3.322": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "0.3.318": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "0.3.319": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "0.3.321": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "0.3.322": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ]
+      },
+      "note": "the native permission request the callback answers",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "canUseTool is set, so the SDK answers a native can_use_tool request here",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.promptHold.assignment": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "0.3.318": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "0.3.319": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "0.3.321": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "0.3.322": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "0.3.318": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "0.3.319": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "0.3.321": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "0.3.322": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ]
+      },
+      "note": "the only assignment site of promptHold",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "assigned only under hasHookSetToBlock(), which hooks:{} cannot satisfy",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.streamInput": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "0.3.318": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "0.3.319": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "0.3.321": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "0.3.322": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "0.3.318": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "0.3.319": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "0.3.321": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "0.3.322": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ]
+      },
+      "note": "the selected input path for this route",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "iterable prompt is written through streamInput",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.writeBehindPromptHold": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "0.3.318": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "0.3.319": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "0.3.321": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "0.3.322": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "0.3.318": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "0.3.319": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "0.3.321": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "0.3.322": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ]
+      },
+      "note": "the hold barrier every prompt-hold branch funnels through",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "every call site is gated on promptHold being defined",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "query.writePrompt": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [
+        "0.3.319->0.3.321"
+      ],
+      "changed_spans": [
+        {
+          "added_bytes": 0,
+          "added_offset": 1296572,
+          "added_preview": "",
+          "hop": "0.3.317->0.3.318",
+          "multiset_equal": true,
+          "previews_truncated": false,
+          "removed_bytes": 0,
+          "removed_offset": 1291531,
+          "removed_preview": "",
+          "sequence_equal": true,
+          "status": "identical",
+          "valid_evidence": true
+        },
+        {
+          "added_bytes": 0,
+          "added_offset": 1306875,
+          "added_preview": "",
+          "hop": "0.3.318->0.3.319",
+          "multiset_equal": true,
+          "previews_truncated": false,
+          "removed_bytes": 0,
+          "removed_offset": 1296572,
+          "removed_preview": "",
+          "sequence_equal": true,
+          "status": "identical",
+          "valid_evidence": true
+        },
+        {
+          "added_bytes": 163,
+          "added_offset": 1323955,
+          "added_preview": "!==void 0)return this.writeBehindPromptHold(this.promptHold,()=>this.writeStreamMessage(e)).then(()=>{});return this.afterInitialize(()=>this.writeStreamMessage(e)",
+          "hop": "0.3.319->0.3.321",
+          "multiset_equal": false,
+          "previews_truncated": false,
+          "removed_bytes": 136,
+          "removed_offset": 1306737,
+          "removed_preview": "===void 0)return this.writeAfterInitialize(e);return this.writeBehindPromptHold(this.promptHold,()=>this.transport.write(e)).then(()=>{}",
+          "sequence_equal": false,
+          "status": "changed",
+          "valid_evidence": true
+        },
+        {
+          "added_bytes": 0,
+          "added_offset": 1324180,
+          "added_preview": "",
+          "hop": "0.3.321->0.3.322",
+          "multiset_equal": true,
+          "previews_truncated": false,
+          "removed_bytes": 0,
+          "removed_offset": 1324120,
+          "removed_preview": "",
+          "sequence_equal": true,
+          "status": "identical",
+          "valid_evidence": true
+        }
+      ],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd"
+        ],
+        "0.3.318": [
+          "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd"
+        ],
+        "0.3.319": [
+          "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd"
+        ],
+        "0.3.321": [
+          "eca48a104eddfa3a2f62508cf5de83b028c6059560cce51cab7e4b42afde1e8f"
+        ],
+        "0.3.322": [
+          "eca48a104eddfa3a2f62508cf5de83b028c6059560cce51cab7e4b42afde1e8f"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9"
+        ],
+        "0.3.318": [
+          "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9"
+        ],
+        "0.3.319": [
+          "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9"
+        ],
+        "0.3.321": [
+          "7a849e655919d47ec67964d233e1971a9503e4869afb9545ac78bad0ef199961"
+        ],
+        "0.3.322": [
+          "7a849e655919d47ec67964d233e1971a9503e4869afb9545ac78bad0ef199961"
+        ]
+      },
+      "note": "string-prompt write path; not selected by an iterable prompt",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "string-prompt only; the sidecar passes an async iterable",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": false,
+      "valid_evidence": true
+    },
+    "query.writeStreamMessage": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "0.3.318": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "0.3.319": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "0.3.321": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "0.3.322": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "0.3.318": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "0.3.319": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "0.3.321": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "0.3.322": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ]
+      },
+      "note": "run-state reset plus transport write",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "streamInput writes each message here",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "settings.managed_projection": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195"
+        ],
+        "0.3.321": [
+          "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195"
+        ],
+        "0.3.322": [
+          "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078"
+        ],
+        "0.3.321": [
+          "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078"
+        ],
+        "0.3.322": [
+          "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078"
+        ]
+      },
+      "note": "restrictive managed-policy projection of the parent tier",
+      "present_in": [
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "the parent tier is empty for this route, but the native reads its own administrator tier, so managed policy is not excluded by these bytes",
+      "reordered_only_hops": [],
+      "selected_path": "native",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "settings.resolve.sources": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "0.3.318": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "0.3.319": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "0.3.321": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "0.3.322": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "0.3.318": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "0.3.319": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "0.3.321": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "0.3.322": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ]
+      },
+      "note": "how settingSources and Options.managedSettings become tiers",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "settingSources maps only user, project and local; the administrator tier is not one of them",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "settings.restrictive_key_table": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20"
+        ],
+        "0.3.321": [
+          "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20"
+        ],
+        "0.3.322": [
+          "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": [
+          "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d"
+        ],
+        "0.3.321": [
+          "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d"
+        ],
+        "0.3.322": [
+          "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d"
+        ]
+      },
+      "note": "the managed-policy key table entry",
+      "present_in": [
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "the key is a managed-policy key; honor and bypass behavior are native",
+      "reordered_only_hops": [],
+      "selected_path": "native",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "telemetry.key_sanitizer_function": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "6f8da1493c4f6ebf205a42d382f73af9c83d2886a80a8455a23ffc45c15fc8f0"
+        ],
+        "0.3.322": [
+          "6f8da1493c4f6ebf205a42d382f73af9c83d2886a80a8455a23ffc45c15fc8f0"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9ce5737d643b1489f5f0ac207ac1772ba9c095d8ae796200f1fa7e1f7e7090fc"
+        ],
+        "0.3.322": [
+          "9ce5737d643b1489f5f0ac207ac1772ba9c095d8ae796200f1fa7e1f7e7090fc"
+        ]
+      },
+      "note": "the gated recursive key sanitizer added at 0.3.321",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "its callers are the tag and custom-title writes, not the turn path",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "telemetry.key_sanitizer_legacy": {
+      "absent_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889"
+        ],
+        "0.3.318": [
+          "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889"
+        ],
+        "0.3.319": [
+          "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889"
+        ],
+        "0.3.321": null,
+        "0.3.322": null
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99"
+        ],
+        "0.3.318": [
+          "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99"
+        ],
+        "0.3.319": [
+          "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99"
+        ],
+        "0.3.321": null,
+        "0.3.322": null
+      },
+      "note": "the ungated sanitizer the earlier hops carry",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "reason": "its callers are the tag and custom-title writes, not the turn path",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "absent",
+        "0.3.322": "absent"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "telemetry.limits_gate": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9ddb8e94f0f0fbc680ba6baac4bcafce24df4d56b79ef863d5d1ec04739fb92d"
+        ],
+        "0.3.322": [
+          "9ddb8e94f0f0fbc680ba6baac4bcafce24df4d56b79ef863d5d1ec04739fb92d"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "54852f2cf60645a5f70f5f5c5f975fca8f0aca9a37e34921702f8872ddedd86b"
+        ],
+        "0.3.322": [
+          "54852f2cf60645a5f70f5f5c5f975fca8f0aca9a37e34921702f8872ddedd86b"
+        ]
+      },
+      "note": "telemetry limits gate the sanitizer consults",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "only consulted from the sanitizer gate",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "telemetry.numeric_key_test": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "89162ecc9eebbdde1adadfc0616ed73110c37b93e47513deaba22d2350c7d172"
+        ],
+        "0.3.322": [
+          "89162ecc9eebbdde1adadfc0616ed73110c37b93e47513deaba22d2350c7d172"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "9d572923d7d11e8f1551972a63837449e7f7b9e60e8600f6838b1bdf3bb7f0f3"
+        ],
+        "0.3.322": [
+          "9d572923d7d11e8f1551972a63837449e7f7b9e60e8600f6838b1bdf3bb7f0f3"
+        ]
+      },
+      "note": "numeric-key predicate used by the sanitizer gate",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "only consulted from the sanitizer gate",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "telemetry.sanitizer_gate": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "fa2606d6d33d9d59a6a03fd1961aa38d457062b0d7368f23ce36b6f3b7d5c06a"
+        ],
+        "0.3.322": [
+          "fa2606d6d33d9d59a6a03fd1961aa38d457062b0d7368f23ce36b6f3b7d5c06a"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "0bf6b477789d8aae888d718f2d0972d53a6bc5d2ae8581c2085d9def917bffc1"
+        ],
+        "0.3.322": [
+          "0bf6b477789d8aae888d718f2d0972d53a6bc5d2ae8581c2085d9def917bffc1"
+        ]
+      },
+      "note": "the telemetry-gated numeric-key condition inside the sanitizer",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "only consulted from the sanitizer, whose callers are control-path writes",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "telemetry.sanitizer_predicate": {
+      "0.3.317": {
+        "gate_present": false,
+        "source": null
+      },
+      "0.3.318": {
+        "gate_present": false,
+        "source": null
+      },
+      "0.3.319": {
+        "gate_present": false,
+        "source": null
+      },
+      "0.3.321": {
+        "gate_present": true,
+        "source": "o!==\"__proto__\"&&(o===n||!cD(o)||Number(o)<64||!uD(\"cleaned_key\")"
+      },
+      "0.3.322": {
+        "gate_present": true,
+        "source": "o!==\"__proto__\"&&(o===n||!cD(o)||Number(o)<64||!uD(\"cleaned_key\")"
+      }
+    },
+    "transport.argv.await_initialize_gate": {
+      "absent_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319"
+      ],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "0377729512c3f05ea4bb8209cfe184335ba30cddd2099a332331b020e2c1fed7"
+        ],
+        "0.3.322": [
+          "0377729512c3f05ea4bb8209cfe184335ba30cddd2099a332331b020e2c1fed7"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": null,
+        "0.3.318": null,
+        "0.3.319": null,
+        "0.3.321": [
+          "d629419dd09f18cac1677cb5a6888f70d2362bea4e932204c959dfc18f263759"
+        ],
+        "0.3.322": [
+          "d629419dd09f18cac1677cb5a6888f70d2362bea4e932204c959dfc18f263759"
+        ]
+      },
+      "note": "the gate that keeps --await-initialize off this route",
+      "present_in": [
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "requires both pathToClaudeCodeExecutable and spawnClaudeCodeProcess to be unset",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "absent",
+        "0.3.318": "absent",
+        "0.3.319": "absent",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "transport.argv.base": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "0.3.318": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "0.3.319": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "0.3.321": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "0.3.322": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "0.3.318": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "0.3.319": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "0.3.321": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "0.3.322": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ]
+      },
+      "note": "native argv construction",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "every native spawn uses this argv",
+      "reordered_only_hops": [],
+      "selected_path": "selected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    },
+    "transport.argv.managed_settings": {
+      "absent_in": [],
+      "bounded": true,
+      "changed_hops": [],
+      "empty_in": [],
+      "masked_multiset_sha256": {
+        "0.3.317": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "0.3.318": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "0.3.319": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "0.3.321": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "0.3.322": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ]
+      },
+      "masked_sequence_sha256": {
+        "0.3.317": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "0.3.318": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "0.3.319": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "0.3.321": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "0.3.322": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ]
+      },
+      "note": "SDK-option parent tier on the native argv",
+      "present_in": [
+        "0.3.317",
+        "0.3.318",
+        "0.3.319",
+        "0.3.321",
+        "0.3.322"
+      ],
+      "reason": "emitted only for Options.managedSettings, which the sidecar never sets",
+      "reordered_only_hops": [],
+      "selected_path": "unselected",
+      "status_per_version": {
+        "0.3.317": "classified",
+        "0.3.318": "classified",
+        "0.3.319": "classified",
+        "0.3.321": "classified",
+        "0.3.322": "classified"
+      },
+      "structurally_identical_where_present": true,
+      "valid_evidence": true
+    }
+  },
+  "closure_bounded": true,
+  "entry": {
+    "0.3.317": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.318": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.319": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.321": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    },
+    "0.3.322": {
+      "file": "sdk.mjs",
+      "specifier": "./sdk.mjs"
+    }
+  },
+  "fixture": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.322",
+  "identity": {
+    "0.3.317": {
+      "files": 21,
+      "sdk_mjs_bytes": 1347970,
+      "sdk_mjs_sha256": "ec77bcaf3e757a3c82f91228f7a968ffd856a4cdeee8b7e3fd186fc13597950f",
+      "tarball_sha256_frozen": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f"
+    },
+    "0.3.318": {
+      "files": 21,
+      "sdk_mjs_bytes": 1353011,
+      "sdk_mjs_sha256": "4cd470a25da93b4339218708120b8b87e76d172b5798ba973898bac809333d01",
+      "tarball_sha256_frozen": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e"
+    },
+    "0.3.319": {
+      "files": 21,
+      "sdk_mjs_bytes": 1363294,
+      "sdk_mjs_sha256": "71460e29f72859dbc65a613e3737c834b4afa4b6411716fd7b596f9c5e129b76",
+      "tarball_sha256_frozen": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001"
+    },
+    "0.3.321": {
+      "files": 21,
+      "sdk_mjs_bytes": 1380840,
+      "sdk_mjs_sha256": "20524b5de1d5e69f4b98005994e0970f0426c99ec55e9b9dae1af1f270d86ab7",
+      "tarball_sha256_frozen": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5"
+    },
+    "0.3.322": {
+      "files": 21,
+      "sdk_mjs_bytes": 1380900,
+      "sdk_mjs_sha256": "1c70356fe073f6c5423fb7138e2f2f6580a790eb055ad247e5d7927f57b53e8b",
+      "tarball_sha256_frozen": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93"
+    }
+  },
+  "import_closure": {
+    "0.3.317": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "emitted_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": []
+    },
+    "0.3.318": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "emitted_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": []
+    },
+    "0.3.319": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "emitted_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "node:util",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": []
+    },
+    "0.3.321": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "emitted_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "node:util",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": []
+    },
+    "0.3.322": {
+      "bounded": true,
+      "core_chunk_edges": [],
+      "dynamic_import_sites": 0,
+      "emitted_require_specifiers": [
+        "ajv-formats/dist/formats",
+        "ajv/dist/runtime/equal",
+        "ajv/dist/runtime/ucs2length",
+        "ajv/dist/runtime/uri",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
+        "util"
+      ],
+      "static_node_builtins": [
+        "async_hooks",
+        "buffer",
+        "child_process",
+        "crypto",
+        "events",
+        "fs",
+        "fs/promises",
+        "module",
+        "net",
+        "node:fs",
+        "node:module",
+        "node:os",
+        "node:path",
+        "node:process",
+        "node:util",
+        "os",
+        "path",
+        "readline",
+        "string_decoder",
+        "url",
+        "util"
+      ],
+      "static_vendor_specifiers": []
+    }
+  },
+  "reachability_inputs": {
+    "agents": "{}",
+    "allowedTools": "never set",
+    "canUseTool": "set (permission-prompt-tool=stdio)",
+    "disallowedTools": "set",
+    "env": "explicit child environment, never the inherited process environment",
+    "hooks": "{} (nothing sets onFailure, so hasHookSetToBlock() is false)",
+    "includePartialMessages": "false",
+    "managedSettings": "never set",
+    "pathToClaudeCodeExecutable": "set",
+    "plugins": "[]",
+    "prompt": "async iterable, so streamInput is the selected input path",
+    "settingSources": "[] (user, project and local disk tiers disabled)",
+    "settings": "never set",
+    "skills": "[]",
+    "spawnClaudeCodeProcess": "set",
+    "strictMcpConfig": "true",
+    "tools": "set"
+  },
+  "schema": "claude-agent-sdk-selected-flow-v1",
+  "surfaces": {
+    "0.3.317": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "masked_sequence_sha256": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1297682
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "complete": true,
+            "masked_multiset_sha256": "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0",
+            "masked_sha256": "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40",
+            "offset": 1297682,
+            "statement_aligned": true,
+            "tokens": 83,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "masked_sequence_sha256": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1297457
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5",
+            "masked_sha256": "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524",
+            "offset": 1297457,
+            "statement_aligned": true,
+            "tokens": 52,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "masked_sequence_sha256": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1263529
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "complete": true,
+            "masked_multiset_sha256": "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8",
+            "masked_sha256": "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677",
+            "offset": 1263466,
+            "statement_aligned": true,
+            "tokens": 322,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "masked_sequence_sha256": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1271607
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "complete": true,
+            "masked_multiset_sha256": "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417",
+            "masked_sha256": "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30",
+            "offset": 1271604,
+            "statement_aligned": true,
+            "tokens": 531,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "masked_sequence_sha256": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1263985
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "complete": true,
+            "masked_multiset_sha256": "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af",
+            "masked_sha256": "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df",
+            "offset": 1263973,
+            "statement_aligned": true,
+            "tokens": 301,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "masked_sequence_sha256": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296315
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "complete": true,
+            "masked_multiset_sha256": "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252",
+            "masked_sha256": "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638",
+            "offset": 1296315,
+            "statement_aligned": true,
+            "tokens": 274,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "masked_sequence_sha256": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1264146
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "complete": true,
+            "masked_multiset_sha256": "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00",
+            "masked_sha256": "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204",
+            "offset": 1264146,
+            "statement_aligned": true,
+            "tokens": 107,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd"
+        ],
+        "masked_sequence_sha256": [
+          "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1291360
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 171,
+            "complete": true,
+            "masked_multiset_sha256": "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd",
+            "masked_sha256": "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9",
+            "offset": 1291360,
+            "statement_aligned": true,
+            "tokens": 57,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "masked_sequence_sha256": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1297338
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "complete": true,
+            "masked_multiset_sha256": "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8",
+            "masked_sha256": "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1",
+            "offset": 1297338,
+            "statement_aligned": true,
+            "tokens": 35,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "masked_sequence_sha256": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1208249,
+          1231205
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "complete": true,
+            "masked_multiset_sha256": "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+            "masked_sha256": "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+            "offset": 1208212,
+            "statement_aligned": true,
+            "tokens": 66,
+            "tokens_dropped": 0
+          },
+          {
+            "bytes": 579,
+            "complete": true,
+            "masked_multiset_sha256": "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c",
+            "masked_sha256": "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9",
+            "offset": 1231095,
+            "statement_aligned": true,
+            "tokens": 235,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_function": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "masked_multiset_sha256": [
+          "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889"
+        ],
+        "masked_sequence_sha256": [
+          "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          290869
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889",
+            "masked_sha256": "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99",
+            "offset": 290688,
+            "statement_aligned": true,
+            "tokens": 110,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.limits_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.numeric_key_test": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.sanitizer_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.await_initialize_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "masked_sequence_sha256": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1244387
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "complete": true,
+            "masked_multiset_sha256": "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8",
+            "masked_sha256": "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed",
+            "offset": 1244380,
+            "statement_aligned": true,
+            "tokens": 15,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "masked_sequence_sha256": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1247398
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "complete": true,
+            "masked_multiset_sha256": "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596",
+            "masked_sha256": "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22",
+            "offset": 1247353,
+            "statement_aligned": true,
+            "tokens": 27,
+            "tokens_dropped": 0
+          }
+        ]
+      }
+    },
+    "0.3.318": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "masked_sequence_sha256": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1302723
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "complete": true,
+            "masked_multiset_sha256": "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0",
+            "masked_sha256": "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40",
+            "offset": 1302723,
+            "statement_aligned": true,
+            "tokens": 83,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "masked_sequence_sha256": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1302498
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5",
+            "masked_sha256": "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524",
+            "offset": 1302498,
+            "statement_aligned": true,
+            "tokens": 52,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "masked_sequence_sha256": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1268570
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "complete": true,
+            "masked_multiset_sha256": "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8",
+            "masked_sha256": "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677",
+            "offset": 1268507,
+            "statement_aligned": true,
+            "tokens": 322,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "masked_sequence_sha256": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1276648
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "complete": true,
+            "masked_multiset_sha256": "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417",
+            "masked_sha256": "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30",
+            "offset": 1276645,
+            "statement_aligned": true,
+            "tokens": 531,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "masked_sequence_sha256": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1269026
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "complete": true,
+            "masked_multiset_sha256": "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af",
+            "masked_sha256": "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df",
+            "offset": 1269014,
+            "statement_aligned": true,
+            "tokens": 301,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "masked_sequence_sha256": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1301356
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "complete": true,
+            "masked_multiset_sha256": "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252",
+            "masked_sha256": "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638",
+            "offset": 1301356,
+            "statement_aligned": true,
+            "tokens": 274,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "masked_sequence_sha256": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1269187
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "complete": true,
+            "masked_multiset_sha256": "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00",
+            "masked_sha256": "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204",
+            "offset": 1269187,
+            "statement_aligned": true,
+            "tokens": 107,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd"
+        ],
+        "masked_sequence_sha256": [
+          "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296401
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 171,
+            "complete": true,
+            "masked_multiset_sha256": "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd",
+            "masked_sha256": "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9",
+            "offset": 1296401,
+            "statement_aligned": true,
+            "tokens": 57,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "masked_sequence_sha256": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1302379
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "complete": true,
+            "masked_multiset_sha256": "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8",
+            "masked_sha256": "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1",
+            "offset": 1302379,
+            "statement_aligned": true,
+            "tokens": 35,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "masked_sequence_sha256": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1213232,
+          1236188
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "complete": true,
+            "masked_multiset_sha256": "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+            "masked_sha256": "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+            "offset": 1213195,
+            "statement_aligned": true,
+            "tokens": 66,
+            "tokens_dropped": 0
+          },
+          {
+            "bytes": 579,
+            "complete": true,
+            "masked_multiset_sha256": "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c",
+            "masked_sha256": "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9",
+            "offset": 1236078,
+            "statement_aligned": true,
+            "tokens": 235,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_function": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "masked_multiset_sha256": [
+          "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889"
+        ],
+        "masked_sequence_sha256": [
+          "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          292289
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889",
+            "masked_sha256": "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99",
+            "offset": 292108,
+            "statement_aligned": true,
+            "tokens": 110,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.limits_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.numeric_key_test": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.sanitizer_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.await_initialize_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "masked_sequence_sha256": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1249428
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "complete": true,
+            "masked_multiset_sha256": "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8",
+            "masked_sha256": "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed",
+            "offset": 1249421,
+            "statement_aligned": true,
+            "tokens": 15,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "masked_sequence_sha256": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1252439
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "complete": true,
+            "masked_multiset_sha256": "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596",
+            "masked_sha256": "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22",
+            "offset": 1252394,
+            "statement_aligned": true,
+            "tokens": 27,
+            "tokens_dropped": 0
+          }
+        ]
+      }
+    },
+    "0.3.319": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "masked_sequence_sha256": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1313026
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "complete": true,
+            "masked_multiset_sha256": "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0",
+            "masked_sha256": "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40",
+            "offset": 1313026,
+            "statement_aligned": true,
+            "tokens": 83,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "masked_sequence_sha256": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1312801
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5",
+            "masked_sha256": "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524",
+            "offset": 1312801,
+            "statement_aligned": true,
+            "tokens": 52,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "masked_sequence_sha256": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1278892
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "complete": true,
+            "masked_multiset_sha256": "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8",
+            "masked_sha256": "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677",
+            "offset": 1278829,
+            "statement_aligned": true,
+            "tokens": 322,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "masked_sequence_sha256": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1286970
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "complete": true,
+            "masked_multiset_sha256": "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417",
+            "masked_sha256": "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30",
+            "offset": 1286967,
+            "statement_aligned": true,
+            "tokens": 531,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "masked_sequence_sha256": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1279348
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "complete": true,
+            "masked_multiset_sha256": "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af",
+            "masked_sha256": "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df",
+            "offset": 1279336,
+            "statement_aligned": true,
+            "tokens": 301,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "masked_sequence_sha256": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1311659
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "complete": true,
+            "masked_multiset_sha256": "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252",
+            "masked_sha256": "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638",
+            "offset": 1311659,
+            "statement_aligned": true,
+            "tokens": 274,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "masked_sequence_sha256": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1279509
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "complete": true,
+            "masked_multiset_sha256": "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00",
+            "masked_sha256": "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204",
+            "offset": 1279509,
+            "statement_aligned": true,
+            "tokens": 107,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd"
+        ],
+        "masked_sequence_sha256": [
+          "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1306704
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 171,
+            "complete": true,
+            "masked_multiset_sha256": "e4dcdc8bf850f21778af7d98e9d72b3892fbf1e4a7599e5b0690b8c86a191edd",
+            "masked_sha256": "85fb9920038632d370411423ae4ec5ec431955790ae8fdd2abab4f1952f074b9",
+            "offset": 1306704,
+            "statement_aligned": true,
+            "tokens": 57,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "masked_sequence_sha256": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1312682
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "complete": true,
+            "masked_multiset_sha256": "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8",
+            "masked_sha256": "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1",
+            "offset": 1312682,
+            "statement_aligned": true,
+            "tokens": 35,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "masked_multiset_sha256": [
+          "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195"
+        ],
+        "masked_sequence_sha256": [
+          "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1205896
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 73,
+            "complete": true,
+            "masked_multiset_sha256": "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195",
+            "masked_sha256": "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078",
+            "offset": 1205879,
+            "statement_aligned": true,
+            "tokens": 20,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "masked_sequence_sha256": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1223275,
+          1246476
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "complete": true,
+            "masked_multiset_sha256": "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+            "masked_sha256": "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+            "offset": 1223238,
+            "statement_aligned": true,
+            "tokens": 66,
+            "tokens_dropped": 0
+          },
+          {
+            "bytes": 579,
+            "complete": true,
+            "masked_multiset_sha256": "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c",
+            "masked_sha256": "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9",
+            "offset": 1246366,
+            "statement_aligned": true,
+            "tokens": 235,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "masked_multiset_sha256": [
+          "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20"
+        ],
+        "masked_sequence_sha256": [
+          "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          818213
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 345,
+            "complete": true,
+            "masked_multiset_sha256": "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20",
+            "masked_sha256": "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d",
+            "offset": 818208,
+            "statement_aligned": true,
+            "tokens": 96,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_function": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "masked_multiset_sha256": [
+          "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889"
+        ],
+        "masked_sequence_sha256": [
+          "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          294397
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "ddcd727c363b034308acc04a24faa0eba8d9e82945a099dd00869e344c9cc889",
+            "masked_sha256": "64fafb7ff4f50de072b25811ab56e70e6964f338ae2f258e497846b93f970b99",
+            "offset": 294216,
+            "statement_aligned": true,
+            "tokens": 110,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.limits_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.numeric_key_test": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.sanitizer_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.await_initialize_gate": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "masked_sequence_sha256": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1259716
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "complete": true,
+            "masked_multiset_sha256": "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8",
+            "masked_sha256": "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed",
+            "offset": 1259709,
+            "statement_aligned": true,
+            "tokens": 15,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "masked_sequence_sha256": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1262727
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "complete": true,
+            "masked_multiset_sha256": "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596",
+            "masked_sha256": "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22",
+            "offset": 1262682,
+            "statement_aligned": true,
+            "tokens": 27,
+            "tokens_dropped": 0
+          }
+        ]
+      }
+    },
+    "0.3.321": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "masked_sequence_sha256": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330271
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "complete": true,
+            "masked_multiset_sha256": "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0",
+            "masked_sha256": "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40",
+            "offset": 1330271,
+            "statement_aligned": true,
+            "tokens": 83,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "masked_sequence_sha256": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330046
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5",
+            "masked_sha256": "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524",
+            "offset": 1330046,
+            "statement_aligned": true,
+            "tokens": 52,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "masked_sequence_sha256": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296160
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "complete": true,
+            "masked_multiset_sha256": "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8",
+            "masked_sha256": "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677",
+            "offset": 1296097,
+            "statement_aligned": true,
+            "tokens": 322,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "masked_sequence_sha256": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1304238
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "complete": true,
+            "masked_multiset_sha256": "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417",
+            "masked_sha256": "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30",
+            "offset": 1304235,
+            "statement_aligned": true,
+            "tokens": 531,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "masked_sequence_sha256": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296616
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "complete": true,
+            "masked_multiset_sha256": "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af",
+            "masked_sha256": "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df",
+            "offset": 1296604,
+            "statement_aligned": true,
+            "tokens": 301,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "masked_sequence_sha256": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1328904
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "complete": true,
+            "masked_multiset_sha256": "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252",
+            "masked_sha256": "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638",
+            "offset": 1328904,
+            "statement_aligned": true,
+            "tokens": 274,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "masked_sequence_sha256": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296777
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "complete": true,
+            "masked_multiset_sha256": "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00",
+            "masked_sha256": "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204",
+            "offset": 1296777,
+            "statement_aligned": true,
+            "tokens": 107,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "eca48a104eddfa3a2f62508cf5de83b028c6059560cce51cab7e4b42afde1e8f"
+        ],
+        "masked_sequence_sha256": [
+          "7a849e655919d47ec67964d233e1971a9503e4869afb9545ac78bad0ef199961"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1323922
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 198,
+            "complete": true,
+            "masked_multiset_sha256": "eca48a104eddfa3a2f62508cf5de83b028c6059560cce51cab7e4b42afde1e8f",
+            "masked_sha256": "7a849e655919d47ec67964d233e1971a9503e4869afb9545ac78bad0ef199961",
+            "offset": 1323922,
+            "statement_aligned": true,
+            "tokens": 64,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "masked_sequence_sha256": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1329927
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "complete": true,
+            "masked_multiset_sha256": "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8",
+            "masked_sha256": "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1",
+            "offset": 1329927,
+            "statement_aligned": true,
+            "tokens": 35,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "masked_multiset_sha256": [
+          "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195"
+        ],
+        "masked_sequence_sha256": [
+          "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1221678
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 73,
+            "complete": true,
+            "masked_multiset_sha256": "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195",
+            "masked_sha256": "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078",
+            "offset": 1221661,
+            "statement_aligned": true,
+            "tokens": 20,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "masked_sequence_sha256": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1239051,
+          1263750
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "complete": true,
+            "masked_multiset_sha256": "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+            "masked_sha256": "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+            "offset": 1239014,
+            "statement_aligned": true,
+            "tokens": 66,
+            "tokens_dropped": 0
+          },
+          {
+            "bytes": 579,
+            "complete": true,
+            "masked_multiset_sha256": "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c",
+            "masked_sha256": "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9",
+            "offset": 1263640,
+            "statement_aligned": true,
+            "tokens": 235,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "masked_multiset_sha256": [
+          "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20"
+        ],
+        "masked_sequence_sha256": [
+          "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          829946
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 345,
+            "complete": true,
+            "masked_multiset_sha256": "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20",
+            "masked_sha256": "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d",
+            "offset": 829941,
+            "statement_aligned": true,
+            "tokens": 96,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_function": {
+        "masked_multiset_sha256": [
+          "6f8da1493c4f6ebf205a42d382f73af9c83d2886a80a8455a23ffc45c15fc8f0"
+        ],
+        "masked_sequence_sha256": [
+          "9ce5737d643b1489f5f0ac207ac1772ba9c095d8ae796200f1fa7e1f7e7090fc"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 276,
+            "complete": true,
+            "masked_multiset_sha256": "6f8da1493c4f6ebf205a42d382f73af9c83d2886a80a8455a23ffc45c15fc8f0",
+            "masked_sha256": "9ce5737d643b1489f5f0ac207ac1772ba9c095d8ae796200f1fa7e1f7e7090fc",
+            "offset": 300103,
+            "statement_aligned": true,
+            "tokens": 141,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.limits_gate": {
+        "masked_multiset_sha256": [
+          "9ddb8e94f0f0fbc680ba6baac4bcafce24df4d56b79ef863d5d1ec04739fb92d"
+        ],
+        "masked_sequence_sha256": [
+          "54852f2cf60645a5f70f5f5c5f975fca8f0aca9a37e34921702f8872ddedd86b"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          294081
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 176,
+            "complete": true,
+            "masked_multiset_sha256": "9ddb8e94f0f0fbc680ba6baac4bcafce24df4d56b79ef863d5d1ec04739fb92d",
+            "masked_sha256": "54852f2cf60645a5f70f5f5c5f975fca8f0aca9a37e34921702f8872ddedd86b",
+            "offset": 294073,
+            "statement_aligned": true,
+            "tokens": 16,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.numeric_key_test": {
+        "masked_multiset_sha256": [
+          "89162ecc9eebbdde1adadfc0616ed73110c37b93e47513deaba22d2350c7d172"
+        ],
+        "masked_sequence_sha256": [
+          "9d572923d7d11e8f1551972a63837449e7f7b9e60e8600f6838b1bdf3bb7f0f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          293896
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 78,
+            "complete": true,
+            "masked_multiset_sha256": "89162ecc9eebbdde1adadfc0616ed73110c37b93e47513deaba22d2350c7d172",
+            "masked_sha256": "9d572923d7d11e8f1551972a63837449e7f7b9e60e8600f6838b1bdf3bb7f0f3",
+            "offset": 293888,
+            "statement_aligned": true,
+            "tokens": 48,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.sanitizer_gate": {
+        "masked_multiset_sha256": [
+          "fa2606d6d33d9d59a6a03fd1961aa38d457062b0d7368f23ce36b6f3b7d5c06a"
+        ],
+        "masked_sequence_sha256": [
+          "0bf6b477789d8aae888d718f2d0972d53a6bc5d2ae8581c2085d9def917bffc1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 186,
+            "complete": true,
+            "masked_multiset_sha256": "fa2606d6d33d9d59a6a03fd1961aa38d457062b0d7368f23ce36b6f3b7d5c06a",
+            "masked_sha256": "0bf6b477789d8aae888d718f2d0972d53a6bc5d2ae8581c2085d9def917bffc1",
+            "offset": 300280,
+            "statement_aligned": true,
+            "tokens": 97,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.await_initialize_gate": {
+        "masked_multiset_sha256": [
+          "0377729512c3f05ea4bb8209cfe184335ba30cddd2099a332331b020e2c1fed7"
+        ],
+        "masked_sequence_sha256": [
+          "d629419dd09f18cac1677cb5a6888f70d2362bea4e932204c959dfc18f263759"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1356432
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 418,
+            "complete": true,
+            "masked_multiset_sha256": "0377729512c3f05ea4bb8209cfe184335ba30cddd2099a332331b020e2c1fed7",
+            "masked_sha256": "d629419dd09f18cac1677cb5a6888f70d2362bea4e932204c959dfc18f263759",
+            "offset": 1356432,
+            "statement_aligned": true,
+            "tokens": 103,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "masked_sequence_sha256": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1276986
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "complete": true,
+            "masked_multiset_sha256": "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8",
+            "masked_sha256": "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed",
+            "offset": 1276979,
+            "statement_aligned": true,
+            "tokens": 15,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "masked_sequence_sha256": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1279995
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "complete": true,
+            "masked_multiset_sha256": "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596",
+            "masked_sha256": "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22",
+            "offset": 1279950,
+            "statement_aligned": true,
+            "tokens": 27,
+            "tokens_dropped": 0
+          }
+        ]
+      }
+    },
+    "0.3.322": {
+      "query.armRunEndCeiling": {
+        "masked_multiset_sha256": [
+          "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0"
+        ],
+        "masked_sequence_sha256": [
+          "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330331
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 341,
+            "complete": true,
+            "masked_multiset_sha256": "a1d8eeaf9513be6b9f65428900a4135761cf62c1fd13351fde84bf10e23cd0f0",
+            "masked_sha256": "014556764662e28c070be5bedfb9af65631e495c63e24aab9e57cf9cbc7aee40",
+            "offset": 1330331,
+            "statement_aligned": true,
+            "tokens": 83,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.endRun": {
+        "masked_multiset_sha256": [
+          "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5"
+        ],
+        "masked_sequence_sha256": [
+          "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1330106
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 225,
+            "complete": true,
+            "masked_multiset_sha256": "bc5f967589569799d43ca7eac85ceb2371ef18788dd9e5cc719e5934034259c5",
+            "masked_sha256": "f2b02be0555bdddae914907f47e4f1811c80c4c7f480da630af033239c4c4524",
+            "offset": 1330106,
+            "statement_aligned": true,
+            "tokens": 52,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.initializeWritten.gate": {
+        "masked_multiset_sha256": [
+          "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8"
+        ],
+        "masked_sequence_sha256": [
+          "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296220
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 998,
+            "complete": true,
+            "masked_multiset_sha256": "c62f14e52c023608a0dc8acb7cc3d79bdd515833120539785b32af53a80169b8",
+            "masked_sha256": "5d7ac21854d07cf9ac52eb0396e92f07fd681e7ed0ecf103072319838ac84677",
+            "offset": 1296157,
+            "statement_aligned": true,
+            "tokens": 322,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.processControlRequest.can_use_tool": {
+        "masked_multiset_sha256": [
+          "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417"
+        ],
+        "masked_sequence_sha256": [
+          "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1304298
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1948,
+            "complete": true,
+            "masked_multiset_sha256": "800903bc70b84c253dea2369bf01bb2ef06fcebc37d8c6dfa098d7cacb20f417",
+            "masked_sha256": "f38c8c9dbd644f1edf5f88302e69541d3d6c2367270704437a204dee74b55e30",
+            "offset": 1304295,
+            "statement_aligned": true,
+            "tokens": 531,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.promptHold.assignment": {
+        "masked_multiset_sha256": [
+          "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af"
+        ],
+        "masked_sequence_sha256": [
+          "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296676
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 753,
+            "complete": true,
+            "masked_multiset_sha256": "07a1d60ce455c05865223deef9e1ee5ac600ac13074a8219858ac3f85ecf29af",
+            "masked_sha256": "4b1fe22cd670c3c66baba0992eea2ca65d6e530c25ed0ef24f88100b576348df",
+            "offset": 1296664,
+            "statement_aligned": true,
+            "tokens": 301,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.streamInput": {
+        "masked_multiset_sha256": [
+          "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252"
+        ],
+        "masked_sequence_sha256": [
+          "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1328964
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 1023,
+            "complete": true,
+            "masked_multiset_sha256": "7cd49dd7b3ace28afabcce2169aa20a15509365f90714a39520303e526d9c252",
+            "masked_sha256": "f2d1db564e63b14e6a9a37da411817203794673f464a981e03b210f5e60e2638",
+            "offset": 1328964,
+            "statement_aligned": true,
+            "tokens": 274,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeBehindPromptHold": {
+        "masked_multiset_sha256": [
+          "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00"
+        ],
+        "masked_sequence_sha256": [
+          "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1296837
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 242,
+            "complete": true,
+            "masked_multiset_sha256": "70f8b82610ecb0760b5283957ac6a8bd87703e43ea9c6ef556710757dd169a00",
+            "masked_sha256": "493a37943f925c772da4837fdd40eb18f9aa609fc9d6e4e82de3ba4b3ea82204",
+            "offset": 1296837,
+            "statement_aligned": true,
+            "tokens": 107,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writePrompt": {
+        "masked_multiset_sha256": [
+          "eca48a104eddfa3a2f62508cf5de83b028c6059560cce51cab7e4b42afde1e8f"
+        ],
+        "masked_sequence_sha256": [
+          "7a849e655919d47ec67964d233e1971a9503e4869afb9545ac78bad0ef199961"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1323982
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 198,
+            "complete": true,
+            "masked_multiset_sha256": "eca48a104eddfa3a2f62508cf5de83b028c6059560cce51cab7e4b42afde1e8f",
+            "masked_sha256": "7a849e655919d47ec67964d233e1971a9503e4869afb9545ac78bad0ef199961",
+            "offset": 1323982,
+            "statement_aligned": true,
+            "tokens": 64,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "query.writeStreamMessage": {
+        "masked_multiset_sha256": [
+          "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8"
+        ],
+        "masked_sequence_sha256": [
+          "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1329987
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 119,
+            "complete": true,
+            "masked_multiset_sha256": "d795be1c2332e0fe920fef27bde5418f434eedac210e29e4f9fdb70efc42e3e8",
+            "masked_sha256": "a902fa87c710ac31b92019de42452962ebe15fc2c8e10df61f78d6c6680f16f1",
+            "offset": 1329987,
+            "statement_aligned": true,
+            "tokens": 35,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.managed_projection": {
+        "masked_multiset_sha256": [
+          "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195"
+        ],
+        "masked_sequence_sha256": [
+          "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1221738
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 73,
+            "complete": true,
+            "masked_multiset_sha256": "f05b6b00bf9710f9137059ad5d3ecfa3f26e2f87ecbd361e247b4f90ee52d195",
+            "masked_sha256": "0bcfefe56bb6dda2e0d9696e1f045a96abe7499fb57dac90cb9a744c55631078",
+            "offset": 1221721,
+            "statement_aligned": true,
+            "tokens": 20,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.resolve.sources": {
+        "masked_multiset_sha256": [
+          "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+          "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c"
+        ],
+        "masked_sequence_sha256": [
+          "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+          "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9"
+        ],
+        "occurrences": 2,
+        "offsets": [
+          1239111,
+          1263810
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 233,
+            "complete": true,
+            "masked_multiset_sha256": "55e0b80c805063496779ee3cb3f9c31b1cfa0a7e14abb0d08121c42a0fb22d25",
+            "masked_sha256": "7eda52ee724029556ad21aee6319acaf31a2e2602166a410db080fb9c59f8a08",
+            "offset": 1239074,
+            "statement_aligned": true,
+            "tokens": 66,
+            "tokens_dropped": 0
+          },
+          {
+            "bytes": 579,
+            "complete": true,
+            "masked_multiset_sha256": "72425ad07b8c71242a563f3685d06cd6134f975290a79682bad69a85fa28405c",
+            "masked_sha256": "251d31b73c351453910a894560593f21718f00d87c949eb5eb65dad3f83423c9",
+            "offset": 1263700,
+            "statement_aligned": true,
+            "tokens": 235,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "settings.restrictive_key_table": {
+        "masked_multiset_sha256": [
+          "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20"
+        ],
+        "masked_sequence_sha256": [
+          "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          829946
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 345,
+            "complete": true,
+            "masked_multiset_sha256": "e8d340219c796e329aa5aab9e466fb1f8aadcc7359392523eb22a4d4c5088a20",
+            "masked_sha256": "051ceb52b04e41a678f0da3d318cf1a496cb2b698298605c3942c17f67daff2d",
+            "offset": 829941,
+            "statement_aligned": true,
+            "tokens": 96,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_function": {
+        "masked_multiset_sha256": [
+          "6f8da1493c4f6ebf205a42d382f73af9c83d2886a80a8455a23ffc45c15fc8f0"
+        ],
+        "masked_sequence_sha256": [
+          "9ce5737d643b1489f5f0ac207ac1772ba9c095d8ae796200f1fa7e1f7e7090fc"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 276,
+            "complete": true,
+            "masked_multiset_sha256": "6f8da1493c4f6ebf205a42d382f73af9c83d2886a80a8455a23ffc45c15fc8f0",
+            "masked_sha256": "9ce5737d643b1489f5f0ac207ac1772ba9c095d8ae796200f1fa7e1f7e7090fc",
+            "offset": 300103,
+            "statement_aligned": true,
+            "tokens": 141,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.key_sanitizer_legacy": {
+        "occurrences": 0,
+        "offsets": [],
+        "status": "absent"
+      },
+      "telemetry.limits_gate": {
+        "masked_multiset_sha256": [
+          "9ddb8e94f0f0fbc680ba6baac4bcafce24df4d56b79ef863d5d1ec04739fb92d"
+        ],
+        "masked_sequence_sha256": [
+          "54852f2cf60645a5f70f5f5c5f975fca8f0aca9a37e34921702f8872ddedd86b"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          294081
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 176,
+            "complete": true,
+            "masked_multiset_sha256": "9ddb8e94f0f0fbc680ba6baac4bcafce24df4d56b79ef863d5d1ec04739fb92d",
+            "masked_sha256": "54852f2cf60645a5f70f5f5c5f975fca8f0aca9a37e34921702f8872ddedd86b",
+            "offset": 294073,
+            "statement_aligned": true,
+            "tokens": 16,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.numeric_key_test": {
+        "masked_multiset_sha256": [
+          "89162ecc9eebbdde1adadfc0616ed73110c37b93e47513deaba22d2350c7d172"
+        ],
+        "masked_sequence_sha256": [
+          "9d572923d7d11e8f1551972a63837449e7f7b9e60e8600f6838b1bdf3bb7f0f3"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          293896
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 78,
+            "complete": true,
+            "masked_multiset_sha256": "89162ecc9eebbdde1adadfc0616ed73110c37b93e47513deaba22d2350c7d172",
+            "masked_sha256": "9d572923d7d11e8f1551972a63837449e7f7b9e60e8600f6838b1bdf3bb7f0f3",
+            "offset": 293888,
+            "statement_aligned": true,
+            "tokens": 48,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "telemetry.sanitizer_gate": {
+        "masked_multiset_sha256": [
+          "fa2606d6d33d9d59a6a03fd1961aa38d457062b0d7368f23ce36b6f3b7d5c06a"
+        ],
+        "masked_sequence_sha256": [
+          "0bf6b477789d8aae888d718f2d0972d53a6bc5d2ae8581c2085d9def917bffc1"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          300335
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 186,
+            "complete": true,
+            "masked_multiset_sha256": "fa2606d6d33d9d59a6a03fd1961aa38d457062b0d7368f23ce36b6f3b7d5c06a",
+            "masked_sha256": "0bf6b477789d8aae888d718f2d0972d53a6bc5d2ae8581c2085d9def917bffc1",
+            "offset": 300280,
+            "statement_aligned": true,
+            "tokens": 97,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.await_initialize_gate": {
+        "masked_multiset_sha256": [
+          "0377729512c3f05ea4bb8209cfe184335ba30cddd2099a332331b020e2c1fed7"
+        ],
+        "masked_sequence_sha256": [
+          "d629419dd09f18cac1677cb5a6888f70d2362bea4e932204c959dfc18f263759"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1356492
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 418,
+            "complete": true,
+            "masked_multiset_sha256": "0377729512c3f05ea4bb8209cfe184335ba30cddd2099a332331b020e2c1fed7",
+            "masked_sha256": "d629419dd09f18cac1677cb5a6888f70d2362bea4e932204c959dfc18f263759",
+            "offset": 1356492,
+            "statement_aligned": true,
+            "tokens": 103,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.base": {
+        "masked_multiset_sha256": [
+          "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8"
+        ],
+        "masked_sequence_sha256": [
+          "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1277046
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 83,
+            "complete": true,
+            "masked_multiset_sha256": "7a51b4538e891436545fb2e29f1e090709f654ce0d1f73e59c51ae56677ddef8",
+            "masked_sha256": "607d0aaccc977444d03eeafdfc2bbf35bcdf6442ae04c14a719f11ed5d3966ed",
+            "offset": 1277039,
+            "statement_aligned": true,
+            "tokens": 15,
+            "tokens_dropped": 0
+          }
+        ]
+      },
+      "transport.argv.managed_settings": {
+        "masked_multiset_sha256": [
+          "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596"
+        ],
+        "masked_sequence_sha256": [
+          "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22"
+        ],
+        "occurrences": 1,
+        "offsets": [
+          1280055
+        ],
+        "status": "classified",
+        "windows": [
+          {
+            "bytes": 97,
+            "complete": true,
+            "masked_multiset_sha256": "5d8b62acc13627e08a6a177114d8eb9aa6c9b4e646fa18346841d965d5902596",
+            "masked_sha256": "0461071c40aa8841e5f0ec53c86984066821bb9b2782a0f2086d7feeffec5b22",
+            "offset": 1280010,
+            "statement_aligned": true,
+            "tokens": 27,
+            "tokens_dropped": 0
+          }
+        ]
+      }
+    }
+  },
+  "valid_evidence": true,
+  "versions": [
+    "0.3.317",
+    "0.3.318",
+    "0.3.319",
+    "0.3.321",
+    "0.3.322"
+  ]
+}

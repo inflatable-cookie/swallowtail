@@ -1,0 +1,268 @@
+{
+  "schema": "claude-agent-sdk-probe-admission-v1",
+  "route": "claude-agent.sdk",
+  "mode": "probe-only",
+  "production_admission": false,
+  "note": "Temporary probe-only admission for the native behavior proof. It binds the exact proposed tuples, the selected option surface and the fake peer identity, and it admits nothing in production: the maintained pair map, the claims and the shipped sidecar are untouched.",
+  "authority": {
+    "kind": "planner-temporary-probe-admission",
+    "granted_by": "planner nucleus-agent:v1",
+    "question": "e36390b98c373c94c17185abe8fcf9a5cbd14dcde0d2b720cfa8320a76caec7e",
+    "scope": "harness-only fake runs; probe evidence precedes any claim extension",
+    "excludes": [
+      "vendor artifact execution",
+      "production or ordinary admission",
+      "claim or pair-map change"
+    ],
+    "original_run_authorised": false,
+    "original_run_token": null,
+    "original_run_requires": "a launcher that supplies kernel-level confinement this harness lacks: a network namespace or egress filter, a filesystem namespace with owned mounts, a separate uid/gid, and a process supervisor or cgroup. A ledger flag or token cannot substitute for them, so original mode is refused unconditionally."
+  },
+  "confinement": {
+    "available": [
+      "the runner pins the committed admission SHA-256 in its source; a substituted ledger and a substituted peer that agree with each other are refused before any module is imported",
+      "the probe creates its workspace, HOME, TMPDIR, TMP and TEMP with mkdtemp under a 0700 base directory it verifies is a real directory owned by this uid",
+      "the peer carries a per-run ownership nonce that the runner receives on its command line and compares with the uid",
+      "peer, native and SDK paths are resolved through realpath and refused when they escape the peer directory",
+      "the wall clock is the ledger's wall_clock_seconds; a larger request is refused",
+      "records are accounted against the evidence bound while the run proceeds, and the disk bound is sampled during the run",
+      "the native process bound is enforced by the spawn hook and latched, so a peer that swallows the error still fails the probe",
+      "the native join is mandatory: a missing join, a timed-out join or an unobserved kill is failed cleanup, every non-exit kill is retried with SIGKILL, and the evidence records the native pids so a caller can verify no child survived"
+    ],
+    "unavailable": [
+      "network namespace or egress filter: the loopback endpoint is an observation point, not a firewall, and the harness cannot stop a peer from opening another socket",
+      "filesystem namespace or mount ownership, and no separate uid/gid from the host user",
+      "process cgroup or supervisor: the probe bounds and observes its own children, and a peer that forks away is outside that observation"
+    ],
+    "original_mode": "refused unconditionally with original_mode_unavailable; the missing capability is named above"
+  },
+  "plan_sha256": "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502",
+  "options_template_sha256": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
+  "selected_options_digest": "sha256:d07993a00214358736031d7ddc5fdff69103cf8918bd948bc79761f33b7c76fc",
+  "options_template": "probe-options.json",
+  "fake_peer": {
+    "sdk_module_sha256": "adaa94ea868eeff5d64ca7994f795c229a5b740f83b3ac2f647a30eb9596df8a",
+    "native_sha256_per_tuple": "bound per tuple in fake_native_sha256",
+    "platform_semantics": "in harness mode the platform is a declared identity label, not an executed per-platform binary; only an authorised original run would exercise the real artifact"
+  },
+  "managed_denial_contract": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json",
+  "managed_denial_contract_sha256": "14b14c01753b652d1806042ca992cefc9120ab9116bf0126d4361baccb748070",
+  "environment_allowlist": [
+    "PATH",
+    "HOME",
+    "TMPDIR",
+    "LANG",
+    "LC_ALL",
+    "LC_CTYPE",
+    "USER",
+    "SHELL",
+    "TERM",
+    "COLORTERM",
+    "__CF_USER_TEXT_ENCODING",
+    "XPC_FLAGS",
+    "XPC_SERVICE_NAME",
+    "MallocNanoZone",
+    "COMMAND_MODE"
+  ],
+  "node": {
+    "required_major": 22,
+    "qualified_window": "22.23.2..=22.23.3",
+    "harness_note": "the fake-backed runs use the host Node; production admission keeps its own Node window and no probe run changes it"
+  },
+  "bounds": {
+    "wall_clock_seconds": 120,
+    "native_processes": 1,
+    "sidecar_processes": 1,
+    "disk_bytes": 8000000,
+    "captured_stdout_bytes": 1000000,
+    "reason": "the harness must fail closed on a wedged peer rather than hang, and the original run must never fill the volume"
+  },
+  "tuples": [
+    {
+      "sdk_version": "0.3.317",
+      "native_version": "2.1.317",
+      "wrapper_tarball_sha256": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "platforms": {
+        "darwin-arm64": {
+          "binary_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+          "binary_bytes": 312806400
+        },
+        "linux-x64": {
+          "binary_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+          "binary_bytes": 331362672
+        }
+      },
+      "behavior_revision": "claude-agent.sdk-v1"
+    },
+    {
+      "sdk_version": "0.3.318",
+      "native_version": "2.1.318",
+      "wrapper_tarball_sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "platforms": {
+        "darwin-arm64": {
+          "binary_sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
+          "binary_bytes": 319598464
+        },
+        "linux-x64": {
+          "binary_sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
+          "binary_bytes": 337814032
+        }
+      },
+      "behavior_revision": "claude-agent.sdk-v1"
+    },
+    {
+      "sdk_version": "0.3.319",
+      "native_version": "2.1.319",
+      "wrapper_tarball_sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "platforms": {
+        "darwin-arm64": {
+          "binary_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+          "binary_bytes": 321995200
+        },
+        "linux-x64": {
+          "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+          "binary_bytes": 340226576
+        }
+      },
+      "behavior_revision": "claude-agent.sdk-v2"
+    },
+    {
+      "sdk_version": "0.3.321",
+      "native_version": "2.1.321",
+      "wrapper_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "platforms": {
+        "darwin-arm64": {
+          "binary_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "binary_bytes": 323686048
+        },
+        "linux-x64": {
+          "binary_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "binary_bytes": 341910032
+        }
+      },
+      "behavior_revision": "claude-agent.sdk-v2"
+    },
+    {
+      "sdk_version": "0.3.322",
+      "native_version": "2.1.322",
+      "wrapper_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "fake_native_sha256": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "platforms": {
+        "darwin-arm64": {
+          "binary_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "binary_bytes": 323702464
+        },
+        "linux-x64": {
+          "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "binary_bytes": 341914128
+        }
+      },
+      "behavior_revision": "claude-agent.sdk-v2"
+    }
+  ],
+  "request": {
+    "purpose": "The exact fake probe invocation, sources, artifacts, isolation and cooperative bounds. This is not a runnable confined original-artifact proposal: original mode remains unconditionally refused and a future launcher must bind the actual Node executable identity as well as SDK/native identities.",
+    "command": "node crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs --admission crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json --options crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json --peer <owned-peer-dir> --sdk-version <tuple.sdk_version> --platform <darwin-arm64|linux-x64> --base <0700 base dir> --ownership-nonce <run nonce> --evidence <evidence.json> --bound-ms 120000",
+    "original_command_suffix": "--mode original  (refused unconditionally: no kernel-level confinement is available)",
+    "source_digests": {
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json": "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
+      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
+      "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "adaa94ea868eeff5d64ca7994f795c229a5b740f83b3ac2f647a30eb9596df8a",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "14b14c01753b652d1806042ca992cefc9120ab9116bf0126d4361baccb748070",
+      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs": "be6bc2cad7c2c55cb78bc6e5ba5a66981fba09e6f4acab0a057a2818b252bde1"
+    },
+    "artifacts": [
+      {
+        "sdk_version": "0.3.317",
+        "native_version": "2.1.317",
+        "platforms": {
+          "darwin-arm64": {
+            "binary_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+            "binary_bytes": 312806400
+          },
+          "linux-x64": {
+            "binary_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+            "binary_bytes": 331362672
+          }
+        }
+      },
+      {
+        "sdk_version": "0.3.318",
+        "native_version": "2.1.318",
+        "platforms": {
+          "darwin-arm64": {
+            "binary_sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
+            "binary_bytes": 319598464
+          },
+          "linux-x64": {
+            "binary_sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
+            "binary_bytes": 337814032
+          }
+        }
+      },
+      {
+        "sdk_version": "0.3.319",
+        "native_version": "2.1.319",
+        "platforms": {
+          "darwin-arm64": {
+            "binary_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+            "binary_bytes": 321995200
+          },
+          "linux-x64": {
+            "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+            "binary_bytes": 340226576
+          }
+        }
+      },
+      {
+        "sdk_version": "0.3.321",
+        "native_version": "2.1.321",
+        "platforms": {
+          "darwin-arm64": {
+            "binary_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+            "binary_bytes": 323686048
+          },
+          "linux-x64": {
+            "binary_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+            "binary_bytes": 341910032
+          }
+        }
+      },
+      {
+        "sdk_version": "0.3.322",
+        "native_version": "2.1.322",
+        "platforms": {
+          "darwin-arm64": {
+            "binary_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+            "binary_bytes": 323702464
+          },
+          "linux-x64": {
+            "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+            "binary_bytes": 341914128
+          }
+        }
+      }
+    ],
+    "isolation": {
+      "workspace": "created by the probe with mkdtemp under the base directory, mode 0700, owned by this uid",
+      "home": "created by the probe, same rule",
+      "settings": "one controlled settings file outside the roots, not selected by settingSources",
+      "environment": "the allowlist in this ledger; no provider credential and no proxy name",
+      "egress": "one loopback observation endpoint; this is not a firewall and the plan does not claim egress isolation",
+      "tmpdir": "created by the probe, same rule"
+    },
+    "bounds": {
+      "wall_clock_seconds": 120,
+      "native_processes": 1,
+      "disk_bytes": 8000000,
+      "evidence_bytes": 1000000
+    },
+    "digest_anchor": "the runner compiles in the SHA-256 of this ledger and refuses any ledger that does not match it; no caller argument can supply or change that anchor, and the fixture verifier cross-checks the pinned value",
+    "execution_digest_record": "probe-execution.sha256"
+  }
+}

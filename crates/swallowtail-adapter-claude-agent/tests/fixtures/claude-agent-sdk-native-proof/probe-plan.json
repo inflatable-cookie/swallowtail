@@ -1,0 +1,255 @@
+{
+  "schema": "claude-agent-sdk-native-proof-plan-v1",
+  "route": "claude-agent.sdk",
+  "purpose": "Plan for the native behavior proof Q-009 item 1 names. Fake-backed tests prove observation points and cooperative fake limits, not OS confinement or vendor behavior. Original mode is refused unconditionally until a separately implemented confined launcher and exact authority exist.",
+  "authorized_stage": {
+    "wrapper_analysis": "permitted; delivered as selected-flow.json",
+    "fake_backed_harness": "permitted; delivered as this plan and the harness tests",
+    "original_artifact_execution": {
+      "enabled": false,
+      "reason": "Executing a vendor artifact needs the operator's exact authority and a brief amendment. Nothing in this repository grants it.",
+      "mode_env": "CLAUDE_AGENT_SDK_NATIVE_PROOF_MODE",
+      "authority_env": "CLAUDE_AGENT_SDK_NATIVE_PROOF_AUTHORITY",
+      "required_authority": "a brief amendment naming these exact artifacts, and an operator authority statement naming the same digests"
+    }
+  },
+  "probe_admission": {
+    "accepted_pair_available_now": "0.3.317 / 2.1.317",
+    "ceiling": "Both the prepared driver and the shipped sidecar admit only the maintained pair map, so every hop above 0.3.317 fails closed with sdk_version_mismatch before the SDK loads. The fake-backed harness therefore proves the pipeline on the accepted pair.",
+    "temporary_probe_admission": "probe-admission.json records the planner's temporary probe-only admission: it binds these exact tuples, the selected option surface and the fake peer identity, admits harness-only fake runs, and carries no production admission. Production claims, the maintained pair map and the shipped sidecar are unchanged.",
+    "original_run_requirement": "A separately implemented launcher must enforce egress, filesystem, process and storage confinement, with exact SDK/native/Node identity, operator authority and a brief amendment. This runner refuses original mode unconditionally; no ledger flag or token can enable it.",
+    "witness_selector": "validate:claude-agent-sdk-native-proof-harness (probe tests) and validate:claude-agent-sdk-probe-admission"
+  },
+  "platforms": [
+    "darwin-arm64",
+    "linux-x64"
+  ],
+  "deferred_platforms": {
+    "win32-arm64": "Windows qualification is deferred by the lane's Windows scheduling ruling",
+    "win32-x64": "Windows qualification is deferred by the lane's Windows scheduling ruling",
+    "darwin-x64": "no selected-path proof is authorised or claimed for this platform",
+    "linux-arm64": "no selected-path proof is authorised or claimed for this platform",
+    "linux-arm64-musl": "no selected-path proof is authorised or claimed for this platform",
+    "linux-x64-musl": "no selected-path proof is authorised or claimed for this platform"
+  },
+  "artifacts": [
+    {
+      "sdk_version": "0.3.317",
+      "native_version": "2.1.317",
+      "wrapper_tarball_sha256": "e91e5a4347e0cd8c51c5d2e8dac005769c2d1ddcb53102f14b5506646485112f",
+      "native_manifest_commit": "3d3e7cb16b5577dccaee9520c8dc1189d02d61b7",
+      "native_manifest_build_date": "2026-11-02T22:39:48Z",
+      "cli_cross_binding": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.317/dist-inventory.json",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "binary_sha256": "09f153b46b5df9e8b3454716d682a91901de020cbca630f61dec1a015b32b5e9",
+          "binary_bytes": 312806400
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "binary_sha256": "eb224419e344575faa4a1f39b290b649425a10cd5ee2ef1d003480cd9ae57eb0",
+          "binary_bytes": 331362672
+        }
+      }
+    },
+    {
+      "sdk_version": "0.3.318",
+      "native_version": "2.1.318",
+      "wrapper_tarball_sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "native_manifest_commit": "ca1fa9dea62c1027756786c841c548788644560d",
+      "native_manifest_build_date": "2026-11-03T19:21:35Z",
+      "cli_cross_binding": null,
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "binary_sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
+          "binary_bytes": 319598464
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "binary_sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
+          "binary_bytes": 337814032
+        }
+      }
+    },
+    {
+      "sdk_version": "0.3.319",
+      "native_version": "2.1.319",
+      "wrapper_tarball_sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "native_manifest_commit": "fbdd7e02e8530e4c2ade8cc67d30104e53d2c8f2",
+      "native_manifest_build_date": "2026-11-05T19:38:09Z",
+      "cli_cross_binding": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.319/dist-inventory.json",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "binary_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+          "binary_bytes": 321995200
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+          "binary_bytes": 340226576
+        }
+      }
+    },
+    {
+      "sdk_version": "0.3.321",
+      "native_version": "2.1.321",
+      "wrapper_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_manifest_commit": "76bc735070b3499364675700dea5f5a133152e2e",
+      "native_manifest_build_date": "2026-11-09T17:01:59Z",
+      "cli_cross_binding": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.322/identity.json",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "binary_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "binary_bytes": 323686048
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "binary_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "binary_bytes": 341910032
+        }
+      }
+    },
+    {
+      "sdk_version": "0.3.322",
+      "native_version": "2.1.322",
+      "wrapper_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_manifest_commit": "660928a5946898d0c8d3488f20dd9b0b2da4ec09",
+      "native_manifest_build_date": "2026-11-10T00:53:25Z",
+      "cli_cross_binding": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-code-2.1.322/identity.json",
+      "platforms": {
+        "darwin-arm64": {
+          "binary": "claude",
+          "binary_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "binary_bytes": 323702464
+        },
+        "linux-x64": {
+          "binary": "claude",
+          "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "binary_bytes": 341914128
+        }
+      }
+    }
+  ],
+  "selected_invocation": {
+    "shape": "<node> <native-binary> --output-format stream-json --verbose --input-format stream-json ...; the SDK builds the argv from the sidecar's options and the sidecar spawns it through its own hook",
+    "argv": [
+      "--output-format",
+      "stream-json",
+      "--verbose",
+      "--input-format",
+      "stream-json",
+      "--model",
+      "<selected model>",
+      "--permission-prompt-tool=stdio",
+      "--disallowedTools",
+      "<admitted-set complement>",
+      "--tools",
+      "<admitted tools>",
+      "--setting-sources",
+      "",
+      "--strict-mcp-config",
+      "--permission-mode",
+      "<selected mode>"
+    ],
+    "absent_flags": {
+      "--await-initialize": "gated off: the route sets both the native path and the spawn hook",
+      "--managed-settings": "emitted only for Options.managedSettings, which the sidecar never sets",
+      "--allowedTools": "never set; bare entries would auto-approve without the callback",
+      "--include-partial-messages": "includePartialMessages is false"
+    },
+    "settings_binding": {
+      "settingSources": "[]",
+      "settings": "not set",
+      "managedSettings": "not set",
+      "hooks": "{}",
+      "canUseTool": "set"
+    }
+  },
+  "isolation": {
+    "fake_harness": "the probe creates its workspace, HOME and TMPDIR itself under a mode-0700 base directory and verifies ownership; the peer carries a per-run nonce; paths are resolved through realpath and refused when they escape",
+    "original_artifacts": "not available: this harness has no network namespace or egress filter, no filesystem namespace or mount ownership, no separate uid/gid and no process supervisor, so original mode is refused unconditionally",
+    "host_paths": "none referenced; no sibling checkout is read or written"
+  },
+  "environment": {
+    "allowlist": [
+      "PATH",
+      "HOME",
+      "TMPDIR",
+      "LANG",
+      "LC_ALL",
+      "LC_CTYPE",
+      "USER",
+      "SHELL",
+      "TERM",
+      "COLORTERM"
+    ],
+    "forbidden_names": [
+      "ANTHROPIC_API_KEY",
+      "ANTHROPIC_AUTH_TOKEN",
+      "CLAUDE_CODE_OAUTH_TOKEN",
+      "OPENAI_API_KEY",
+      "GOOGLE_API_KEY",
+      "GEMINI_API_KEY",
+      "AWS_ACCESS_KEY_ID",
+      "AWS_SECRET_ACCESS_KEY",
+      "AWS_SESSION_TOKEN",
+      "AZURE_OPENAI_API_KEY",
+      "MISTRAL_API_KEY",
+      "DEEPSEEK_API_KEY",
+      "HTTP_PROXY",
+      "HTTPS_PROXY",
+      "ALL_PROXY",
+      "NO_PROXY",
+      "NODE_OPTIONS"
+    ],
+    "egress": "one loopback observation endpoint records contact; it is not an egress filter, and no egress isolation is claimed for either mode"
+  },
+  "limits": {
+    "wall_clock_seconds": 120,
+    "native_processes": 1,
+    "sidecar_processes": 1,
+    "disk_bytes": 8000000,
+    "captured_stdout_bytes": 1000000,
+    "reason": "the harness must fail closed on a wedged peer rather than hang, and the original run must never fill the volume"
+  },
+  "observations": [
+    "argv and environment keys the SDK hands the spawn hook",
+    "the native initialize control request and its response payload",
+    "each streamed user message reaching the native",
+    "assistant and result frames, including usage counters",
+    "a native can_use_tool request and the callback decision written back",
+    "absence of a permission request when the peer denies before asking",
+    "interrupt control request and its receipt",
+    "native exit code and signal",
+    "joined cleanup: no surviving child, closed stdin, closed endpoint",
+    "loopback endpoint contact count and request count"
+  ],
+  "failure_classes": {
+    "identity_substitution": "a package or native identity that differs from the plan's pair fails before any peer runs; a native binary whose digest differs is refused in original mode",
+    "boundary_breach": "a spawn hook argument, argv or environment key outside the declared surface fails the run",
+    "unexpected_permission_request": "a permission request in a denial scenario, or a missing one in a callback scenario, fails the run",
+    "unjoined_cleanup": "a surviving child or an unread exit code fails the run",
+    "authority_absent": "original mode without the declared authority fails closed and names what is missing",
+    "sidecar_pair_gate": "a hop above the maintained pair map is refused with sdk_version_mismatch before the SDK loads and before any native process starts"
+  },
+  "cleanup": [
+    "kill and join the native child if it outlives the bound",
+    "close the sidecar wire and join the sidecar process",
+    "stop the loopback endpoint thread and drop its listener",
+    "remove the isolated fixture root"
+  ],
+  "claims": {
+    "unchanged": [
+      "claude-agent.sdk.package stays 0.3.284..=0.3.317",
+      "claude-agent.sdk.native stays 2.1.284..=2.1.317",
+      "the 0.3.293/2.1.293 default pair and the finite 31-pair map are unchanged",
+      "the 0.3.259/2.1.259 registered-tool live point is unchanged",
+      "Node 22.23.2..=22.23.3 and the wire and sidecar source tags are unchanged"
+    ],
+    "not_a_claim": "this plan and its fake-backed harness prove no vendor behavior; a qualification needs the original-artifact run this plan describes"
+  }
+}

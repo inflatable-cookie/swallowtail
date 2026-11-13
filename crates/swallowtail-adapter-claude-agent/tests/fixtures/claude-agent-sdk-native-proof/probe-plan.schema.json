@@ -1,0 +1,396 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://swallowtail.invalid/schemas/claude-agent-sdk-native-proof-plan-v1.json",
+  "title": "Claude Agent SDK native proof plan",
+  "description": "Structural shape of probe-plan.json. The harness validates identity digests against the committed fixtures; this schema only pins the fields that make the plan reviewable and keeps original-artifact execution disabled by constraint.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "route",
+    "purpose",
+    "authorized_stage",
+    "probe_admission",
+    "platforms",
+    "deferred_platforms",
+    "artifacts",
+    "selected_invocation",
+    "isolation",
+    "environment",
+    "limits",
+    "observations",
+    "failure_classes",
+    "cleanup",
+    "claims"
+  ],
+  "properties": {
+    "schema": {
+      "const": "claude-agent-sdk-native-proof-plan-v1"
+    },
+    "route": {
+      "const": "claude-agent.sdk"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorized_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wrapper_analysis",
+        "fake_backed_harness",
+        "original_artifact_execution"
+      ],
+      "properties": {
+        "wrapper_analysis": {
+          "type": "string"
+        },
+        "fake_backed_harness": {
+          "type": "string"
+        },
+        "original_artifact_execution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "enabled",
+            "reason",
+            "mode_env",
+            "authority_env",
+            "required_authority"
+          ],
+          "properties": {
+            "enabled": {
+              "const": false
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mode_env": {
+              "const": "CLAUDE_AGENT_SDK_NATIVE_PROOF_MODE"
+            },
+            "authority_env": {
+              "const": "CLAUDE_AGENT_SDK_NATIVE_PROOF_AUTHORITY"
+            },
+            "required_authority": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "platforms": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "enum": [
+          "darwin-arm64",
+          "linux-x64"
+        ]
+      }
+    },
+    "deferred_platforms": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sdk_version",
+          "native_version",
+          "wrapper_tarball_sha256",
+          "native_manifest_commit",
+          "native_manifest_build_date",
+          "cli_cross_binding",
+          "platforms"
+        ],
+        "properties": {
+          "sdk_version": {
+            "type": "string"
+          },
+          "native_version": {
+            "type": "string"
+          },
+          "wrapper_tarball_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "native_manifest_commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "native_manifest_build_date": {
+            "type": "string"
+          },
+          "cli_cross_binding": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "platforms": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "darwin-arm64",
+              "linux-x64"
+            ],
+            "properties": {
+              "darwin-arm64": {
+                "$ref": "#/definitions/platformArtifact"
+              },
+              "linux-x64": {
+                "$ref": "#/definitions/platformArtifact"
+              }
+            }
+          }
+        }
+      }
+    },
+    "selected_invocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "shape",
+        "argv",
+        "absent_flags",
+        "settings_binding"
+      ],
+      "properties": {
+        "shape": {
+          "type": "string",
+          "minLength": 1
+        },
+        "argv": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "type": "string"
+          }
+        },
+        "absent_flags": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "settings_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "settingSources",
+            "settings",
+            "managedSettings",
+            "hooks",
+            "canUseTool"
+          ],
+          "properties": {
+            "settingSources": {
+              "const": "[]"
+            },
+            "settings": {
+              "const": "not set"
+            },
+            "managedSettings": {
+              "const": "not set"
+            },
+            "hooks": {
+              "const": "{}"
+            },
+            "canUseTool": {
+              "const": "set"
+            }
+          }
+        }
+      }
+    },
+    "isolation": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "environment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowlist",
+        "forbidden_names",
+        "egress"
+      ],
+      "properties": {
+        "allowlist": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "forbidden_names": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "egress": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "wall_clock_seconds",
+        "native_processes",
+        "sidecar_processes",
+        "disk_bytes",
+        "captured_stdout_bytes",
+        "reason"
+      ],
+      "properties": {
+        "wall_clock_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 900
+        },
+        "native_processes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "sidecar_processes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "disk_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "captured_stdout_bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "string"
+      }
+    },
+    "failure_classes": {
+      "type": "object",
+      "minProperties": 3,
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "cleanup": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string"
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unchanged",
+        "not_a_claim"
+      ],
+      "properties": {
+        "unchanged": {
+          "type": "array",
+          "minItems": 3,
+          "items": {
+            "type": "string"
+          }
+        },
+        "not_a_claim": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "probe_admission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_pair_available_now",
+        "ceiling",
+        "temporary_probe_admission",
+        "original_run_requirement",
+        "witness_selector"
+      ],
+      "properties": {
+        "accepted_pair_available_now": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ceiling": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_run_requirement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "witness_selector": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temporary_probe_admission": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "definitions": {
+    "platformArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binary",
+        "binary_sha256",
+        "binary_bytes"
+      ],
+      "properties": {
+        "binary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "binary_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "binary_bytes": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    }
+  }
+}

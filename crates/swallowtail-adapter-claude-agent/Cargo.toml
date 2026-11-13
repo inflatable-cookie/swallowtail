@@ -71,6 +71,10 @@ name = "claude_agent_sdk_sidecar_asset"
 path = "tests/claude_agent_sdk_sidecar_asset.rs"
 
 [[test]]
+name = "claude_agent_sdk_native_proof_harness"
+path = "tests/claude_agent_sdk_native_proof_harness.rs"
+
+[[test]]
 name = "claude_agent_sdk_0_3_322_identity"
 path = "tests/claude_agent_sdk_0_3_322_identity.rs"
 

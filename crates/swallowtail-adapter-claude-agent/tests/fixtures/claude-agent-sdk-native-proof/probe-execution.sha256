@@ -1,0 +1,3 @@
+e3d7cba8e802560404f3952d93247d31075e51ef48e5927a0aed7cce0e0e181f  crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs
+2afdd4dfd8a35b9eb7765fc5e55bd3e63d84acd32ef0b190ff212ec1f9735b2a  crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json
+e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502  crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json

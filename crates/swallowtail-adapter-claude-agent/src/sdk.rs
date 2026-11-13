@@ -78,6 +78,25 @@ pub use selection::{
 pub const CLAUDE_AGENT_SDK_WIRE: &str = "swallowtail-claude-agent-sdk-jsonl-v1";
 /// Frozen sidecar construction and projection behavior revision.
 pub const CLAUDE_AGENT_SDK_BEHAVIOR: &str = "claude-agent.sdk-v1";
+/// Behavior revision that preserves an inherited, administrator-tier
+/// `permissions.denyInsteadOfPrompting` denial.
+///
+/// Tom's ruling in decision `d5a14f90` (relayed 2026-11-12) chooses preserving
+/// the managed denial over refusing an affected pair. Under this revision a
+/// call that would prompt is denied by the manager without a `can_use_tool`
+/// request, the model is told, and the turn carries on. Two consumer guarantees
+/// follow and are pinned by the fixture
+/// `tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json`: a
+/// managed denial never becomes a host permission request, and a call the host
+/// never mediated is never reported as admitted.
+///
+/// The maintained package and native claims stay on
+/// [`CLAUDE_AGENT_SDK_BEHAVIOR`]: the setting first appears at `0.3.319`, and
+/// the selected native behavior above `0.3.317` is unproven. The revision is
+/// therefore declared for the probe admission only; it becomes a claim revision
+/// when the native proof supports an extension.
+#[cfg_attr(not(test), allow(dead_code))]
+pub(crate) const CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR: &str = "claude-agent.sdk-v2";
 /// Exact upstream SDK package the sidecar loads through its `.` entry point.
 pub const CLAUDE_AGENT_SDK_PACKAGE: &str = "@anthropic-ai/claude-agent-sdk";
 /// First qualified SDK wrapper package version in the maintained segment.

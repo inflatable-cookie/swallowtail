@@ -1,0 +1,132 @@
+{
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Agent SDK probe option template",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "note",
+    "placeholders",
+    "options"
+  ],
+  "properties": {
+    "schema": {
+      "const": "claude-agent-sdk-probe-options-v1"
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1
+    },
+    "placeholders": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cwd",
+        "model",
+        "executable",
+        "pathToClaudeCodeExecutable",
+        "env",
+        "settingSources",
+        "skills",
+        "plugins",
+        "agents",
+        "mcpServers",
+        "strictMcpConfig",
+        "hooks",
+        "persistSession",
+        "includePartialMessages",
+        "tools",
+        "disallowedTools",
+        "permissionMode",
+        "canUseTool",
+        "spawnClaudeCodeProcess"
+      ],
+      "properties": {
+        "cwd": {
+          "const": "<workspace>"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "executable": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pathToClaudeCodeExecutable": {
+          "const": "<native>"
+        },
+        "env": {
+          "const": "<allowlist>"
+        },
+        "settingSources": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "skills": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "plugins": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "agents": {
+          "type": "object",
+          "maxProperties": 0
+        },
+        "mcpServers": {
+          "type": "object",
+          "maxProperties": 0
+        },
+        "strictMcpConfig": {
+          "const": true
+        },
+        "hooks": {
+          "type": "object",
+          "maxProperties": 0
+        },
+        "persistSession": {
+          "const": false
+        },
+        "includePartialMessages": {
+          "const": false
+        },
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "disallowedTools": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "permissionMode": {
+          "enum": [
+            "default",
+            "plan",
+            "acceptEdits"
+          ]
+        },
+        "canUseTool": {
+          "const": true
+        },
+        "spawnClaudeCodeProcess": {
+          "const": true
+        }
+      }
+    }
+  }
+}

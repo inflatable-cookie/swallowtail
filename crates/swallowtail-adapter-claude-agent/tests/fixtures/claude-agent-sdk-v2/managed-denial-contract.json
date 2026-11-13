@@ -1,0 +1,62 @@
+{
+  "schema": "claude-agent-sdk-managed-denial-contract-v1",
+  "route": "claude-agent.sdk",
+  "behavior_revision": "claude-agent.sdk-v2",
+  "qualified_behavior_revision": "claude-agent.sdk-v1",
+  "ruling": {
+    "decision": "d5a14f90-e837-42b6-9818-9b5e74a25547",
+    "version": 2,
+    "choice": "preserve the managed denial under a distinct SDK behavior revision",
+    "relayed_by": "planner nucleus-agent:v1",
+    "brief": "sha256:e6abac0dd3f10494a0a28fb379a7b183582bf87848b774fb1651bd18bf67cc1e",
+    "applies_from": "0.3.319, where the setting first appears",
+    "not_authorised": [
+      "original-artifact execution",
+      "a claim or pair-map extension",
+      "a live or provider run"
+    ],
+    "brief_label": "task232 brief v2"
+  },
+  "selected_surface": {
+    "settingSources": "[]",
+    "settings": "not set",
+    "managedSettings": "not set",
+    "hooks": "{}",
+    "canUseTool": "set",
+    "reason": "the administrator tier is not selected by settingSources, so the sidecar cannot exclude it; the SDK parent tier is empty because Options.managedSettings is never set, so no --managed-settings reaches the native"
+  },
+  "guarantees": [
+    {
+      "id": "no-fabricated-request",
+      "statement": "a call the manager denies never becomes a host permission request",
+      "fake_observation": "managed-deny scenario: callback_tool_names is empty and the native records no permission request"
+    },
+    {
+      "id": "no-admission-claim",
+      "statement": "a call the host never mediated is never reported as admitted or host-decided",
+      "fake_observation": "managed-deny scenario: the run records no callback, so no admission decision exists to report"
+    },
+    {
+      "id": "turn-carries-on",
+      "statement": "a managed tool denial does not itself end or fail the turn; completion follows the native result",
+      "fake_observation": "managed-deny scenario: the turn ends with subtype success and no error text"
+    },
+    {
+      "id": "mediated-denial-distinguishable",
+      "statement": "a callback-mediated denial is distinguishable from a managed denial by the presence of the callback and its recorded decision",
+      "fake_observation": "permission scenario answered deny: one callback record, one recorded deny decision, one permission answer at the native"
+    }
+  ],
+  "unproven": [
+    "whether a real native honours an administrator-tier denyInsteadOfPrompting without a can_use_tool request",
+    "whether that honouring bypasses the callback on every tool class",
+    "whether the native's own administrator-tier discovery reaches this route's child process"
+  ],
+  "claim_effect": {
+    "package_axis": "0.3.284..=0.3.317 (unchanged)",
+    "native_axis": "2.1.284..=2.1.317 (unchanged)",
+    "pair_map": "unchanged",
+    "behavior_revision_used_by_claims": "claude-agent.sdk-v1",
+    "note": "the distinct revision is declared for the probe admission only; no claim moves until probe evidence supports an extension"
+  }
+}

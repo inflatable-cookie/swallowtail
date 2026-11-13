@@ -1,0 +1,94 @@
+name: SDK234 loopback namespace fake proof
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact separately approved helper source SHA
+        required: true
+      record_sha:
+        description: Exact separately approved namespace source-record SHA256
+        required: true
+permissions:
+  contents: read
+jobs:
+  namespace-fake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      NETNS_SOURCE: ${{ inputs.source_sha }}
+      NETNS_RECORD: ${{ inputs.record_sha }}
+    steps:
+      - name: Require exact inputs
+        shell: bash
+        run: '[[ "$NETNS_SOURCE" =~ ^[0-9a-f]{40}$ && "$NETNS_RECORD" =~ ^[0-9a-f]{64}$ ]]'
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.23.2
+      - name: Read-only source and host preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NETNS_SOURCE"
+          test -z "$(git status --porcelain)"
+          netns_work=$(mktemp -d "$RUNNER_TEMP/sdk234-netns.XXXXXXXX")
+          export TMPDIR="$netns_work" TMP="$netns_work" TEMP="$netns_work"
+          python3 -I -B - <<'PYCODE'
+          import hashlib, os, pathlib
+          record=pathlib.Path("docs/knowledge/operations/claude-agent-sdk-netns.sha256").read_bytes()
+          assert hashlib.sha256(record).hexdigest()==os.environ["NETNS_RECORD"]
+          for row in record.decode().splitlines():
+              expected,name=row.split("  ",1)
+              candidate=pathlib.Path(name)
+              assert not candidate.is_absolute() and ".." not in candidate.parts
+              assert candidate.resolve()==candidate.absolute()
+              assert hashlib.sha256(candidate.read_bytes()).hexdigest()==expected
+          PYCODE
+          python3 -I -B scripts/claude-agent-sdk-netns-proposal.py --inspect --node "$(command -v node)" > "$netns_work/preflight.json"
+          python3 -I -B - <<'PYCODE'
+          import json, os, pathlib
+          data=json.loads((pathlib.Path(os.environ["TMPDIR"])/"preflight.json").read_text())
+          print(json.dumps(data))
+          assert data["host"]["system"]=="Linux" and data["host"]["machine"]=="x86_64"
+          assert data["landlockAbiReadOnly"]>=3 and data["namespaceReadable"]
+          assert data["nodeVersion"]=="v22.23.2" and data["pidfdSelfReadOnly"]
+          assert data["tools"]["node"]["sha256"]=="3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+          assert all(data["tools"][name] for name in ("sudo","timeout","python3","node"))
+          assert data["tools"]["python3"]["sha256"]==data["pythonSha256"]
+          with open(os.environ["GITHUB_ENV"],"a") as output:
+              for name in ("sudo","timeout","python3","node"):
+                  key=name.upper()
+                  output.write(f"NETNS_{key}={data['tools'][name]['path']}\n")
+                  output.write(f"NETNS_{key}_SHA={data['tools'][name]['sha256']}\n")
+              for name in ("TMPDIR","TMP","TEMP"):
+                  output.write(f"{name}={os.environ[name]}\n")
+          PYCODE
+      - name: One namespace-only owned-fake attempt
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$NETNS_SUDO" -n "$NETNS_TIMEOUT" --signal=TERM --kill-after=2s 35s \
+            /usr/bin/env -i PATH=/usr/bin:/bin HOME="$TMPDIR" \
+            TMPDIR="$TMPDIR" TMP="$TMP" TEMP="$TEMP" LANG=C LC_ALL=C \
+            "$NETNS_PYTHON3" -I -B scripts/claude-agent-sdk-netns-proposal.py \
+            --kernel-proposal --record-sha256 "$NETNS_RECORD" \
+            --node "$NETNS_NODE" --node-sha256 "$NETNS_NODE_SHA" \
+            --python-sha256 "$NETNS_PYTHON3_SHA" --timeout-sha256 "$NETNS_TIMEOUT_SHA" \
+            --uid "$(id -u)" --gid "$(id -g)"
+      - name: Independent owned settlement observation
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${TMPDIR:-}" && test -f "$TMPDIR/netns-monitor.json"
+          "$NETNS_SUDO" -n "$NETNS_TIMEOUT" --signal=TERM --kill-after=2s 5s \
+            /usr/bin/env -i PATH=/usr/bin:/bin HOME="$TMPDIR" \
+            TMPDIR="$TMPDIR" TMP="$TMP" TEMP="$TEMP" LANG=C LC_ALL=C \
+            "$NETNS_PYTHON3" -I -B scripts/claude-agent-sdk-netns-proposal.py \
+            --cleanup-proposal --record-sha256 "$NETNS_RECORD" \
+            --node "$NETNS_NODE" --node-sha256 "$NETNS_NODE_SHA" \
+            --python-sha256 "$NETNS_PYTHON3_SHA" --timeout-sha256 "$NETNS_TIMEOUT_SHA" \
+            --uid "$(id -u)" --gid "$(id -g)"

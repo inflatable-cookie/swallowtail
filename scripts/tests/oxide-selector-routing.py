@@ -735,6 +735,29 @@ def check_workflows():
     for path in workflows:
         text = path.read_text()
         relative = str(path.relative_to(ROOT))
+        if path.name == "sdk234-admin-fixture.yml":
+            # Tom decision32d31615 v2 admits exactly this non-Cargo fixture job.
+            # Keep every other workflow on the existing plain-Cargo boundary.
+            proposal = (
+                ROOT / "docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.patch"
+            )
+            data = proposal.read_bytes()
+            if (
+                hashlib.sha256(data).hexdigest()
+                != "16a02b1e0143992963b7a53178349bba0c4d44839f68df4a513622884da25bc7"
+            ):
+                fail("approved fixture workflow proposal changed")
+            expected = (
+                "\n".join(
+                    line[1:]
+                    for line in data.decode().splitlines()
+                    if line.startswith("+") and not line.startswith("+++")
+                )
+                + "\n"
+            )
+            if text != expected:
+                fail("fixture workflow differs from its exact approved proposal")
+            continue
         if "oxide" in text:
             fail(
                 "%s must stay on plain Cargo: hosted runners have no Oxide and "
@@ -828,7 +851,7 @@ def main(argv):
     print("  frozen_routes=%d" % len(FROZEN_ROUTES))
     print("  maintained_scripts=%d" % len(scripts))
     print("  release_include=routed, workspace test recipe routed")
-    print("  workflows=plain Cargo")
+    print("  workflows=plain Cargo; exact SDK234 fixture-only exception")
     print("  target_ignore=/target")
     print("  agent_block=generated")
     print("oxide selector routing passed")

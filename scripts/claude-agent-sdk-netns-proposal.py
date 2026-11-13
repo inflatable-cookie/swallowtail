@@ -524,6 +524,28 @@ def protocol(
 
             child.poll = observed_poll
             ops.confirm_child(child)
+            if (
+                mode == "sidecar"
+                and not ops.kernel
+                and lease.launched == 1
+                and Path("/usr/sbin/lsof").is_file()
+            ):
+                inspection = subprocess.run(
+                    ["/usr/sbin/lsof", "-n", "-P", "-p", str(child.pid)],
+                    capture_output=True,
+                    text=True,
+                    timeout=2,
+                )
+                host_events.append(
+                    {
+                        "nativePipes": [
+                            row
+                            for row in inspection.stdout.splitlines()
+                            if "PIPE" in row
+                        ],
+                        "relayFds": [native_fds, driver_fds],
+                    }
+                )
             if lease.launched == 2:
                 os.write(native_gate[1], b"1")
             return child

@@ -173,7 +173,7 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
 "validate:acp-guard-captured-child" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture"
-"validate:acp-checked-prepared" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(prepared_guarded_binding_refuses_missing_mismatch_and_revocation_without_fallback)'"
+"validate:acp-checked-prepared" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(prepared_guarded_binding_refuses_missing_mismatch_and_revocation_without_fallback) | test(prepared_guarded_denial_without_callback_preserves_order_and_cleanup)'"
 "validate:acp-checked-process" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-runtime --lib -E 'test(checked_process_default_refuses_preflight_and_start_without_fallback)'"
 "check:acp-checked-process" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-runtime -p swallowtail-adapter-claude-agent"
 "format:acp-checked-process" = [

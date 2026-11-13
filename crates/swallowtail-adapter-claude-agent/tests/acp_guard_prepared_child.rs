@@ -1,0 +1,268 @@
+use super::{LocalCapturedGraph, capture, data_url, fixture};
+use crate::support::{FixtureHost, Scenario};
+use futures_executor::block_on;
+use std::ffi::OsString;
+use std::path::PathBuf;
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, AtomicUsize, Ordering},
+};
+use swallowtail_adapter_claude_agent::{
+    CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE, ClaudeAgentModelSelection,
+    ClaudeAgentPreparationInput, ClaudeAgentPreparationProbe, ClaudeAgentSessionProfileInput,
+    prepare_claude_agent,
+};
+use swallowtail_core::{
+    AccessProfile, AccessProfileId, AccessStatus, ConfiguredInstanceId, CredentialMechanism,
+    CredentialState, EndpointAudience, EndpointAuthorization, EntitlementMetering,
+    EntitlementState, ExecutionHostId, InstanceRevision, InterfaceVersionAxis, ModelId,
+    ModelRouteId, ModelRouteRevision, RuntimeReadiness, SupportAuthority,
+};
+use swallowtail_host_local::{
+    LocalCapturedLaunchFingerprint, LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits,
+};
+use swallowtail_runtime::{
+    BoxFuture, CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
+    ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
+    PreparedAccessEvidence, ProcessHandle, ProcessRequest, ProcessService, RequestId,
+    RuntimeFailure, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
+    WorkingResourceRef,
+};
+
+const ACP_ENTRY: &str = r#"
+import { IdleCompaction } from './idle.mjs';
+const idle = new IdleCompaction(); idle.onIdle(); await idle.fire();
+if (idle.armed || idle.fired) throw new Error('idle was not vetoed');
+if (process.argv.includes('--version')) { process.stdout.write('0.100.0\n'); }
+else {
+  let buffer = ''; let model = 'default';
+  const options = () => [{type:'select',id:'model',name:'Model',category:'model',currentValue:model,options:[{value:'default',name:'Default'},{value:'claude-sonnet-4-6',name:'Sonnet'}]}];
+  const reply = (id, result) => process.stdout.write(JSON.stringify({jsonrpc:'2.0',id,result})+'\n');
+  process.stdin.setEncoding('utf8');
+  process.stdin.on('data', chunk => {
+    buffer += chunk;
+    for (;;) {
+      const i = buffer.indexOf('\n'); if (i < 0) break;
+      const m = JSON.parse(buffer.slice(0,i)); buffer = buffer.slice(i+1);
+      if (m.method === 'initialize') reply(m.id, {protocolVersion:1,agentCapabilities:{_meta:{claudeCode:{promptQueueing:true}},promptCapabilities:{image:true,embeddedContext:true},loadSession:true,sessionCapabilities:{close:{},delete:{},resume:{}},providers:{}},agentInfo:{name:'@agentclientprotocol/claude-agent-acp',version:'0.100.0'},authMethods:[],_meta:{steering:{supported:true}}});
+      else if (m.method === 'session/new') reply(m.id, {sessionId:'fake-captured-session',modes:{currentModeId:'default',availableModes:[{id:'default',name:'Default'}]},configOptions:options()});
+      else if (m.method === 'session/set_config_option') { model = m.params.value; reply(m.id,{configOptions:options()}); }
+      else if (m.method === 'session/prompt') {
+        process.stdout.write(JSON.stringify({jsonrpc:'2.0',method:'session/update',params:{sessionId:'fake-captured-session',update:{sessionUpdate:'agent_message_chunk',content:{type:'text',text:'fake captured response'}}}})+'\n');
+        reply(m.id,{stopReason:'end_turn',usage:{inputTokens:1,outputTokens:1,cachedReadTokens:0,cachedWriteTokens:0,totalTokens:2}});
+      }
+      else if (m.method === 'session/close') { reply(m.id,{}); }
+      else throw new Error('unexpected fake method');
+    }
+  });
+}
+"#;
+
+#[derive(Clone)]
+struct FakeCheckedChild {
+    local: LocalProcessHost,
+    graph: LocalCapturedGraph,
+    expected: [u8; 32],
+    revoked: Arc<AtomicBool>,
+    checked: Arc<AtomicUsize>,
+    ordinary: Arc<AtomicUsize>,
+}
+impl FakeCheckedChild {
+    fn allows(&self, binding: &CheckedProcessRef, request: &ProcessRequest) -> bool {
+        let candidate = LocalCapturedLaunchFingerprint::new(
+            &self.graph,
+            [1; 32],
+            [2; 32],
+            [3; 32],
+            [4; 32],
+            [5; 32],
+        );
+        !self.revoked.load(Ordering::SeqCst)
+            && binding.as_host_value() == "fixture.checked.binding"
+            && request.executable().as_host_value() == "claude-agent.prepared.executable"
+            && (request.arguments().len() == 0
+                || request.arguments().collect::<Vec<_>>() == ["--version"])
+            && candidate
+                .as_ref()
+                .is_ok_and(|value| value.digest() == &self.expected)
+    }
+    fn denied() -> RuntimeFailure {
+        RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+            "fixture.checked.denied",
+            "fake checked host denied",
+        ))
+    }
+}
+impl ProcessService for FakeCheckedChild {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        self.ordinary.fetch_add(1, Ordering::SeqCst);
+        Box::pin(async { Err(Self::denied()) })
+    }
+    fn validate_checked(
+        &self,
+        _scope: ScopeId,
+        binding: CheckedProcessRef,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let accepted = self.allows(&binding, &request);
+        Box::pin(async move {
+            if accepted {
+                Ok(())
+            } else {
+                Err(Self::denied())
+            }
+        })
+    }
+    fn start_checked(
+        &self,
+        scope: ScopeId,
+        binding: CheckedProcessRef,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        if !self.allows(&binding, &request) {
+            return Box::pin(async { Err(Self::denied()) });
+        }
+        self.checked.fetch_add(1, Ordering::SeqCst);
+        self.local.start(scope, request)
+    }
+}
+
+fn node_path() -> PathBuf {
+    std::env::split_paths(&std::env::var_os("PATH").expect("PATH"))
+        .map(|dir| dir.join("node"))
+        .find(|candidate| candidate.is_file())
+        .expect("fake Node interpreter")
+}
+
+fn fake_child(root: &std::path::Path, graph: LocalCapturedGraph) -> FakeCheckedChild {
+    let loader = serde_json::to_string(&data_url(CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE))
+        .expect("loader JSON");
+    let config = std::str::from_utf8(graph.configuration()).expect("graph JSON");
+    let preload = format!(
+        "import {{ register }} from 'node:module'; register({loader}, {{ parentURL: import.meta.url, data: {config} }});"
+    );
+    let launch = LocalExecutableLaunch::new(node_path())
+        .with_prefix_arguments([
+            OsString::from("--import"),
+            OsString::from(data_url(&preload)),
+            OsString::from("/swallowtail-capture/entry.mjs"),
+        ])
+        .with_node_startup_environment_filter();
+    let executable = ExecutableRef::new("claude-agent.prepared.executable").expect("target");
+    let environment =
+        EnvironmentRef::new("claude-agent.prepared.environment").expect("environment");
+    let resource = WorkingResourceRef::new("checked.workspace").expect("resource");
+    let local = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(executable, launch)
+        .approve_environment(environment, [])
+        .approve_working_resource(resource, root)
+        .build();
+    let expected =
+        *LocalCapturedLaunchFingerprint::new(&graph, [1; 32], [2; 32], [3; 32], [4; 32], [5; 32])
+            .expect("fake candidate")
+            .digest();
+    FakeCheckedChild {
+        local,
+        graph,
+        expected,
+        revoked: Arc::new(AtomicBool::new(false)),
+        checked: Arc::new(AtomicUsize::new(0)),
+        ordinary: Arc::new(AtomicUsize::new(0)),
+    }
+}
+
+fn preparation(host: ExecutionHostId) -> ClaudeAgentPreparationInput {
+    let id = AccessProfileId::new("checked.local-access").expect("access");
+    ClaudeAgentPreparationInput::new(
+        ConfiguredInstanceId::new("checked.instance").expect("instance"),
+        InstanceRevision::new("1").expect("revision"),
+        host,
+        InstalledExecutableTarget::new(
+            ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
+            InterfaceVersionAxis::new(CLAUDE_AGENT_ACP_AXIS).expect("axis"),
+        ),
+        EnvironmentRef::new("claude-agent.prepared.environment").expect("environment"),
+        AccessProfile::new(
+            id.clone(),
+            CredentialMechanism::LocalUnauthenticated,
+            EntitlementMetering::SubscriptionAllowance,
+            EndpointAudience::new("api.anthropic.com").expect("audience"),
+            SupportAuthority::IntegrationMaintainerSupported,
+        ),
+        PreparedAccessEvidence::caller_asserted(AccessStatus::new(
+            id,
+            CredentialState::NotRequired,
+            EntitlementState::Available,
+            EndpointAuthorization::Allowed,
+            RuntimeReadiness::Ready,
+            SupportAuthority::IntegrationMaintainerSupported,
+        )),
+    )
+}
+
+#[test]
+fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
+    let root = fixture();
+    let graph = capture(&root, ACP_ENTRY);
+    std::fs::write(root.join("entry.mjs"), "throw new Error('replaced entry')")
+        .expect("replace entry");
+    std::fs::write(root.join("idle.mjs"), "throw new Error('replaced idle')")
+        .expect("replace idle");
+    let fake = fake_child(&root, graph);
+    let host_id = ExecutionHostId::new("fake.checked.local").expect("host");
+    let resources = FixtureHost::new(Scenario::Success, "0.100.0");
+    let services = resources
+        .services(host_id.clone())
+        .with_process(Arc::new(fake.clone()));
+    let binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
+    let probe = ClaudeAgentPreparationProbe::new(
+        RequestId::new("checked-probe").expect("request"),
+        ScopeId::new("checked-probe").expect("scope"),
+        Deadline::at(MonotonicInstant::from_ticks(100)),
+        DiscoveryCancellation::new(),
+    );
+    let prepared = block_on(prepare_claude_agent(
+        preparation(host_id).with_checked_process(binding),
+        probe,
+        services.clone(),
+    ))
+    .expect("fake prepared discovery");
+    let profile = prepared
+        .prepare_session(ClaudeAgentSessionProfileInput::new(
+            RequestId::new("checked-open").expect("request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("checked.route").expect("route"),
+                ModelRouteRevision::new("1").expect("revision"),
+                ModelId::new("claude-sonnet-4-6").expect("model"),
+            ),
+            WorkingResourceRef::new("checked.workspace").expect("workspace"),
+            SessionOptions::default(),
+        ))
+        .expect("profile");
+    let mut session =
+        block_on(profile.open_session(services.clone())).expect("captured fake session");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("captured-turn").expect("turn"),
+            OperationContent::new("fake prompt").expect("prompt"),
+        ),
+        services.clone(),
+    ))
+    .expect("fake turn");
+    let terminal = turn.take_terminal_outcome().expect("terminal");
+    assert_eq!(block_on(terminal).status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(session.close(resources.cleanup_request(), services.clone())),
+        CleanupOutcome::Clean
+    );
+    fake.revoked.store(true, Ordering::SeqCst);
+    assert!(block_on(profile.open_session(services)).is_err());
+    assert_eq!(fake.checked.load(Ordering::SeqCst), 2);
+    assert_eq!(fake.ordinary.load(Ordering::SeqCst), 0);
+    assert_eq!(resources.resource_releases(), 2);
+}

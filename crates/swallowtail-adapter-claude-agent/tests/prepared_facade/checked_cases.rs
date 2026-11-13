@@ -106,9 +106,21 @@ fn prepared_guarded_binding_refuses_missing_mismatch_and_revocation_without_fall
     )).expect("prepared profile");
     let operation = CheckedFixture::new(FixtureHost::new(Scenario::Success, "0.100.0"), graph.clone(), expected);
     let session = block_on(profile.open_session(operation.services(host_id.clone()))).expect("fake checked session");
+    let resume_binding = session.resume_binding().expect("checked resume binding").clone();
     assert_eq!(block_on(session.close(operation.inner.cleanup_request(), operation.services(host_id.clone()))), CleanupOutcome::Clean);
     assert_eq!(operation.checked_starts.load(Ordering::SeqCst), 1);
     assert_eq!(operation.ordinary_starts.load(Ordering::SeqCst), 0);
+    let load = CheckedFixture::new(FixtureHost::new(Scenario::Success, "0.100.0"), graph.clone(), expected);
+    let loaded = block_on(profile.load_session(RequestId::new("checked-load").expect("request"), resume_binding.clone(), load.services(host_id.clone())).expect("load derives")).expect("checked load");
+    let (_, loaded_session) = loaded.into_parts();
+    assert_eq!(block_on(loaded_session.close(load.inner.cleanup_request(), load.services(host_id.clone()))), CleanupOutcome::Clean);
+    assert_eq!(load.checked_starts.load(Ordering::SeqCst), 1);
+    assert_eq!(load.ordinary_starts.load(Ordering::SeqCst), 0);
+    let resume = CheckedFixture::new(FixtureHost::new(Scenario::Success, "0.100.0"), graph.clone(), expected);
+    let resumed = block_on(profile.resume_session(RequestId::new("checked-resume").expect("request"), resume_binding, resume.services(host_id.clone())).expect("resume derives")).expect("checked resume");
+    assert_eq!(block_on(resumed.close(resume.inner.cleanup_request(), resume.services(host_id.clone()))), CleanupOutcome::Clean);
+    assert_eq!(resume.checked_starts.load(Ordering::SeqCst), 1);
+    assert_eq!(resume.ordinary_starts.load(Ordering::SeqCst), 0);
     let cancel = CheckedFixture::new(FixtureHost::new(Scenario::Cancellation, "0.100.0"), graph.clone(), expected);
     let services = cancel.services(host_id.clone());
     let mut session = block_on(profile.open_session(services.clone())).expect("checked cancellation session");
@@ -132,4 +144,45 @@ fn prepared_guarded_binding_refuses_missing_mismatch_and_revocation_without_fall
     assert_eq!(revoked.ordinary_starts.load(Ordering::SeqCst), 0);
     assert_eq!(revoked.inner.resource_releases(), 1);
     assert_eq!(revoked.inner.credential_releases(), 1);
+}
+
+#[cfg(unix)]
+#[test]
+fn prepared_guarded_denial_without_callback_preserves_order_and_cleanup() {
+    let (_, graph) = checked_fixture_graph(b"guarded permission fixture");
+    let expected = *LocalCapturedLaunchFingerprint::new(&graph, [1;32], [2;32], [3;32], [4;32], [5;32]).expect("candidate").digest();
+    let host_id = ExecutionHostId::new("fixture.checked.denial").expect("host");
+    let binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
+    let discovery = CheckedFixture::new(FixtureHost::new(Scenario::Version, "0.106.0"), graph.clone(), expected);
+    let prepared = block_on(prepare_claude_agent(preparation_input(host_id.clone()).with_checked_process(binding), probe(), discovery.services(host_id.clone()))).expect("checked fake discovery");
+    assert!(!prepared.observation().is_qualified());
+    let profile = prepared.prepare_session(ClaudeAgentSessionProfileInput::new(
+        RequestId::new("checked-denial-open").expect("request"),
+        ClaudeAgentModelSelection::new(ModelRouteId::new("checked.route").expect("route"), ModelRouteRevision::new("1").expect("revision"), ModelId::new("claude-sonnet-4-6").expect("model")),
+        WorkingResourceRef::new("checked.workspace").expect("resource"), SessionOptions::default(),
+    )).expect("profile");
+    let operation = CheckedFixture::new(FixtureHost::new(Scenario::PermissionDeniedWithoutCallback, "0.106.0"), graph, expected);
+    let services = operation.services(host_id);
+    let mut session = block_on(profile.open_session(services.clone())).expect("checked session");
+    let mut turn = block_on(session.start_turn(TurnRequest::new(RuntimeTurnId::new("checked-denial-turn").expect("turn"), OperationContent::new("attempt a read").expect("prompt")), services.clone())).expect("turn");
+    let mut events = turn.take_events().expect("events");
+    let terminal = turn.take_terminal_outcome().expect("terminal");
+    let (observed, outcome) = block_on(async {
+        let mut observed = Vec::new();
+        while let Some(event) = events.next().await { observed.push(event.expect("event")); }
+        (observed, terminal.await)
+    });
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(outcome.output().expect("output").as_str(), "The read was denied; continuing.");
+    assert!(!observed.iter().any(|event| matches!(event.kind(), swallowtail_runtime::RuntimeEventKind::CallbackRequested(_))));
+    let activity = observed.iter().position(|event| matches!(event.kind(), swallowtail_runtime::RuntimeEventKind::Activity(_))).expect("denial activity");
+    let output = observed.iter().position(|event| matches!(event.kind(), swallowtail_runtime::RuntimeEventKind::OutputDelta)).expect("continued output");
+    assert!(activity < output);
+    assert_eq!(operation.inner.reads(), 0);
+    assert!(!operation.inner.writes().iter().any(|message| message.get("id").and_then(serde_json::Value::as_u64) == Some(900)));
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(block_on(session.close(operation.inner.cleanup_request(), services)), CleanupOutcome::Clean);
+    assert_eq!(operation.ordinary_starts.load(Ordering::SeqCst), 0);
+    assert_eq!(operation.inner.resource_releases(), 1);
+    assert_eq!(operation.inner.credential_releases(), 1);
 }

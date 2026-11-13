@@ -348,5 +348,14 @@ fake child executes the retained bytes with zero idle arming or firing. Its
 unguarded control performs both effects; an unapproved worker import fails
 before the fake entry body. The fake prepared-driver host checks the same
 candidate fingerprint and refuses altered source or recipe and revoked
-bindings. The scripted prepared peer and the fake Node child are separate
-proofs; this does not show that a real prepared host can launch this graph.
+bindings. A separate checked fake host wraps the local process host and runs
+the captured fake Node graph through prepared discovery, session creation,
+prompt and joined close after disk replacement; revocation prevents another
+start. This fake wrapper supplies no real interpreter custody, and does not
+show that a production host can admit an official graph.
+
+Checked prepared-driver fakes also exercise load and resume through the same
+opaque binding, cancellation and joined cleanup, and an unverified 0.106.0
+denial-without-callback scenario with ordered activity and continued output.
+Those fakes do not prove the shipped native permission outcome or qualify a
+new behavior revision.

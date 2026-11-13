@@ -1,5 +1,11 @@
 #![cfg(unix)]
 
+#[path = "acp_guard_prepared_child.rs"]
+mod prepared_child;
+#[allow(dead_code, unused_imports)]
+#[path = "support/mod.rs"]
+mod support;
+
 use sha2::{Digest, Sha256};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};

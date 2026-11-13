@@ -72,9 +72,13 @@ impl LocalProcessHandle {
         })?;
         let write = async {
             let mut offset = 0;
-            while offset < bytes.len() {
+            // The final byte is the caller's admission point. A pending write
+            // has not sent it; a successful final write resolves this write
+            // future in the same poll. Later errors still stop the child.
+            let frame_end = bytes.len().saturating_sub(1);
+            while offset < frame_end {
                 let count = stdin
-                    .write_with(|stream| (&*stream).write(&bytes[offset..]))
+                    .write_with(|stream| (&*stream).write(&bytes[offset..frame_end]))
                     .await
                     .map_err(|_| {
                         failure(
@@ -89,6 +93,23 @@ impl LocalProcessHandle {
                     ));
                 }
                 offset += count;
+            }
+            if let Some(final_byte) = bytes.last() {
+                let count = stdin
+                    .write_with(|stream| (&*stream).write(std::slice::from_ref(final_byte)))
+                    .await
+                    .map_err(|_| {
+                        failure(
+                            "swallowtail.local_process.bootstrap_write_failed",
+                            "Bootstrap input could not be written",
+                        )
+                    })?;
+                if count != 1 {
+                    return Err(failure(
+                        "swallowtail.local_process.bootstrap_write_failed",
+                        "Bootstrap input could not be written",
+                    ));
+                }
             }
             Ok(())
         };

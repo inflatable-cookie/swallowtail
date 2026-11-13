@@ -356,3 +356,74 @@ fn bootstrap_does_not_spend_provider_stdin_budget() {
             .success()
     );
 }
+
+#[tokio::test]
+async fn cancellation_before_and_after_admission_joins_owned_tree() {
+    use std::time::{Duration, Instant};
+
+    async fn wait_for(root: &Path, name: &str) -> String {
+        let deadline = Instant::now() + Duration::from_secs(8);
+        loop {
+            if let Ok(value) = std::fs::read_to_string(root.join(name)) {
+                return value;
+            }
+            assert!(Instant::now() < deadline, "missing fixture marker {name}");
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    }
+    async fn terminated(pid: &str) {
+        let pid: u32 = pid.parse().expect("fixture pid");
+        let deadline = Instant::now() + Duration::from_secs(8);
+        loop {
+            let result = Command::new("/bin/ps")
+                .args(["-p", &pid.to_string(), "-o", "stat="])
+                .output()
+                .expect("observe owned fixture");
+            let state = String::from_utf8_lossy(&result.stdout);
+            if !result.status.success() || state.trim().starts_with('Z') {
+                return;
+            }
+            assert!(Instant::now() < deadline, "owned fixture was not reaped");
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    }
+
+    let before = fixture();
+    let (host, request) = bootstrap_host(
+        &before,
+        "require('fs').writeFileSync('root.pid',String(process.pid)); setTimeout(() => { process.stdin.on('data',()=>require('fs').writeFileSync('entry','effect')); },3000); setInterval(()=>{},1000)",
+    );
+    let bytes = vec![0xa5; 1024 * 1024];
+    let mut pending = Box::pin(host.start_with_bootstrap(
+        ScopeId::new("bootstrap.before").expect("scope"),
+        request,
+        &bytes,
+        Duration::from_secs(5),
+    ));
+    let root_pid = tokio::select! {
+        result = &mut pending => panic!("unread bootstrap unexpectedly resolved: {}", result.is_ok()),
+        pid = wait_for(&before, "root.pid") => pid,
+    };
+    drop(pending);
+    terminated(&root_pid).await;
+    assert!(!before.join("entry").exists());
+
+    let after = fixture();
+    let script = "process.stdin.once('data', b => { if(b[0] !== 165) process.exit(2); const fs=require('fs'); const c=require('child_process').spawn(process.execPath,['-e','setInterval(()=>{},1000)'],{stdio:'ignore'}); fs.writeFileSync('root.pid',String(process.pid)); fs.writeFileSync('descendant.pid',String(c.pid)); }); setInterval(()=>{},1000)";
+    let (host, request) = bootstrap_host(&after, script);
+    let process = host
+        .start_with_bootstrap(
+            ScopeId::new("bootstrap.after").expect("scope"),
+            request,
+            &[0xa5],
+            Duration::from_secs(5),
+        )
+        .await
+        .expect("admission committed");
+    let root_pid = wait_for(&after, "root.pid").await;
+    let descendant_pid = wait_for(&after, "descendant.pid").await;
+    process.force_stop().await.expect("stop admitted tree");
+    process.wait().await.expect("join admitted tree");
+    terminated(&root_pid).await;
+    terminated(&descendant_pid).await;
+}

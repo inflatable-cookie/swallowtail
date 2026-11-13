@@ -13,6 +13,10 @@ const GUARD_MANIFEST: &str = include_str!("../sidecar/claude-agent-acp-guard-v1-
 const GUARD_EDGES: &str = include_str!("fixtures/claude-agent-acp-0.106.0/guard-import-edges.json");
 const PERMISSION_CONTROL: &str =
     include_str!("fixtures/claude-agent-acp-0.106.0/native-permission-control.json");
+const IMPORT_INVENTORY: &str =
+    include_str!("fixtures/claude-agent-acp-0.106.0/import-edge-inventory.json");
+const IMPORT_ARTIFACTS: &str =
+    include_str!("fixtures/claude-agent-acp-0.106.0/import-edge-artifacts.json");
 
 #[test]
 fn current_acp_inventory_reconstructs_all_hops_without_qualifying_them() {
@@ -148,10 +152,46 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
             PERMISSION_CONTROL,
             "e8125782d88cd32160141e3fec2e67e870e98a7311b440b5753bf03bac1c8b38",
         ),
+        (
+            IMPORT_INVENTORY,
+            "3c27297204b219873901ba3a0bbf41f111ec8d8b77ac589231212cd2e73b6af1",
+        ),
+        (
+            IMPORT_ARTIFACTS,
+            "674bfe4f5d73b62ac8c705107eb5cac3508d532bc332d80121fd68bd2bf8d690",
+        ),
     ] {
         assert_eq!(format!("{:x}", Sha256::digest(text.as_bytes())), expected);
     }
     let inventory: Value = serde_json::from_str(INVENTORY).expect("inventory JSON");
+    let imports: Value = serde_json::from_str(IMPORT_INVENTORY).expect("import inventory JSON");
+    let dependencies: Value = serde_json::from_str(DEPENDENCIES).expect("dependency JSON");
+    let packages = imports["packages"].as_object().expect("import packages");
+    assert_eq!(packages.len(), 17);
+    for (name, files) in packages {
+        let expected = if name.starts_with("0.10") {
+            &inventory["sha256_by_path"][name]
+        } else if let Some(version) = name.strip_prefix("_agentclientprotocol_sdk_") {
+            &dependencies["trees"]["acpsdk"][version]
+        } else if let Some(version) = name.strip_prefix("_anthropic-ai_claude-agent-sdk_") {
+            &dependencies["trees"]["agentsdk"][version]
+        } else {
+            assert!(name == "diff_9.0.0" || name == "zod_4.6.7");
+            continue;
+        };
+        let tree = expected.as_object().expect("frozen package tree");
+        let js_paths = tree
+            .keys()
+            .filter(|name| {
+                name.ends_with(".js") || name.ends_with(".mjs") || name.ends_with(".cjs")
+            })
+            .collect::<BTreeSet<_>>();
+        let rows = files.as_object().expect("package imports");
+        assert_eq!(rows.keys().collect::<BTreeSet<_>>(), js_paths, "{name}");
+        for (path, row) in rows {
+            assert_eq!(row["sha256"], tree[path], "{name}/{path}");
+        }
+    }
     let closure: Value = serde_json::from_str(CLOSURE).expect("closure JSON");
     let manifest: Value = serde_json::from_str(GUARD_MANIFEST).expect("guard manifest JSON");
     let versions = [

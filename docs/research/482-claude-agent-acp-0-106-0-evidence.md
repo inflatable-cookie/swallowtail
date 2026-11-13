@@ -391,3 +391,35 @@ execution. The checked local host still refuses admission without custody.
 The static wrapper manifest does not capture the complete bare-package,
 builtin, dynamic-import or worker closure. Actual graph construction and
 original-artifact probe execution remain unproved and unauthorized.
+
+## Static import inventory and admission ordering
+
+`import-edge-inventory.json` records syntax-level imports, exports, literal
+`import()` and direct `require()` calls for every shipped JavaScript file in
+the eight ACP archives, the three selected ACP SDKs, four selected Agent SDKs,
+and the exact `diff` and `zod` packages. Each row binds a source SHA-256 and
+byte offset. `import-edge-artifacts.json` records the previously unfrozen
+`diff` and `zod` archive identities. `scripts/extract-claude-acp-import-inputs.py`
+verifies both SHA-256 and SHA-512 before reading archive members, and
+`scripts/analyze-claude-acp-imports.cjs` parses source without evaluating it.
+The exact analysis tool was Node v26.11.0's embedded Acorn with SHA-256
+`fc3ed7b81e58464715d0291402892f22c3d86ea75302645a330390f85d8015c9`.
+This identifies the parser only; it does not qualify Node 26 as a runtime.
+
+The inventory includes conservative caution sites for `createRequire`,
+`require`, `eval`, `Function` and `Worker`. It is not a closed runtime graph:
+aliased calls, constructed code, builtins, CommonJS resolution, native
+launches and worker realms need separate analysis. For example every wrapper
+hop contains `dist/claude-cli.js` `createRequire` sites; the selected Agent
+SDK has additional dynamic-code and CommonJS sites. The present guard refuses
+unknown ESM edges and does not admit the builtin and native paths. No source
+inventory is a claim that the original artifacts have run under the guard.
+
+The bootstrap writer now sends the admission byte in a separate final write.
+No pending write has sent that byte; a successful write resolves its write
+future in the same poll. On successful restoration the start returns without
+yielding again. A restoration error can yield during later child cleanup.
+Fake tests cancel while the pipe is stalled before admission and
+terminate and wait for a process tree after admission, including a descendant.
+This tests those orderings, not every operating-system race or interpreter
+custody. The ordinary bootstrap API is not checked-launch attestation.

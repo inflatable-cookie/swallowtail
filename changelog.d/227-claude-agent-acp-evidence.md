@@ -18,3 +18,5 @@
 - Package the frozen per-hop v1 wrapper source manifest for candidate capture.
 
 - Bound fake guarded bootstrap writes separately from provider input.
+
+- Record syntax-level import edges and fake bootstrap admission ordering.

@@ -252,3 +252,27 @@ The source has one selected construction and prototype methods at each hop;
 this observation does not establish runtime module resolution, immutable
 loading, worker-realm exclusion, permission behavior or native behavior.
 The frozen inventory and registry bind each row to exact shipped bytes.
+
+
+## Interpreter binding prerequisite
+
+The host launch currently passes an approved path to `Command::new`; neither
+its fixed prefix nor the Node-environment filter binds the interpreter bytes
+to what the kernel executes. A file hash followed by path spawn leaves a
+replacement window. The available `nix` 0.31.3 `fexecve` wrapper is not
+compiled for macOS; this host crate forbids unsafe code. The retained reviewer
+confirmed that the repository has no existing descriptor-exec primitive.
+
+A run-owned, mode-restricted staged copy would protect against replacement
+of the source path, but same-user modification of the copy between its last
+hash and path spawn remains possible. The Node runtime's own reported path
+and version are observations, not an independently established identity.
+Neither alternative meets this task's requirement to bind the exact Node
+runtime. A platform-specific verified-execution or equivalent protected
+immutable-byte primitive, with bounded ownership and joined cleanup, is
+needed before the distinct launch can be admitted on each claimed platform.
+The existing fake data-URL snapshot proves only the fake module handoff; it
+does not close the interpreter race or establish the production import graph.
+The runnable original-artifact probe cannot be frozen until the guarded host
+path, its runtime and its final launch-policy digests exist. Vendor execution
+and live provider access remain outside this task's authority.

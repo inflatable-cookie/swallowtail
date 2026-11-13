@@ -23,8 +23,8 @@ use swallowtail_host_local::{
 use swallowtail_runtime::{
     BoxFuture, CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
     ExecutableRef, InstalledExecutableTarget, MonotonicInstant, OperationContent,
-    PreparedAccessEvidence, ProcessHandle, ProcessInputChunk, ProcessRequest, ProcessService,
-    RequestId, RuntimeFailure, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
+    PreparedAccessEvidence, ProcessHandle, ProcessRequest, ProcessService, RequestId,
+    RuntimeFailure, RuntimeTurnId, ScopeId, SessionOptions, TerminalStatus, TurnRequest,
     WorkingResourceRef,
 };
 
@@ -66,7 +66,6 @@ struct FakeCheckedChild {
     checked: Arc<AtomicUsize>,
     ordinary: Arc<AtomicUsize>,
     bootstrap: Arc<[u8]>,
-    failed_bootstrap_joins: Arc<AtomicUsize>,
 }
 impl FakeCheckedChild {
     fn allows(&self, binding: &CheckedProcessRef, request: &ProcessRequest) -> bool {
@@ -128,22 +127,17 @@ impl ProcessService for FakeCheckedChild {
             return Box::pin(async { Err(Self::denied()) });
         }
         self.checked.fetch_add(1, Ordering::SeqCst);
-        let start = self.local.start(scope, request);
+        let local = self.local.clone();
         let bootstrap = Arc::clone(&self.bootstrap);
-        let joins = Arc::clone(&self.failed_bootstrap_joins);
         Box::pin(async move {
-            let process = start.await?;
-            if let Err(error) = process
-                .write_stdin(ProcessInputChunk::new(bootstrap.as_ref().to_vec()))
+            local
+                .start_with_bootstrap(
+                    scope,
+                    request,
+                    &bootstrap,
+                    std::time::Duration::from_secs(5),
+                )
                 .await
-            {
-                let _ = process.force_stop().await;
-                if process.wait().await.is_ok() {
-                    joins.fetch_add(1, Ordering::SeqCst);
-                }
-                return Err(error);
-            }
-            Ok(process)
         })
     }
 }
@@ -200,7 +194,6 @@ fn fake_child_with_input_limit(
         checked: Arc::new(AtomicUsize::new(0)),
         ordinary: Arc::new(AtomicUsize::new(0)),
         bootstrap,
-        failed_bootstrap_joins: Arc::new(AtomicUsize::new(0)),
     }
 }
 
@@ -260,10 +253,9 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
             constrained_probe,
             constrained_services
         ))
-        .is_err()
+        .is_ok()
     );
     assert_eq!(constrained.checked.load(Ordering::SeqCst), 1);
-    assert_eq!(constrained.failed_bootstrap_joins.load(Ordering::SeqCst), 1);
     assert_eq!(constrained.ordinary.load(Ordering::SeqCst), 0);
     let fake = fake_child(&root, graph);
     let mut substituted = fake.clone();

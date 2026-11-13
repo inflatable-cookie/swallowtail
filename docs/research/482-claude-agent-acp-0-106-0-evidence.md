@@ -377,16 +377,17 @@ digests are checked against both records. It is a conservative static wrapper
 inventory, not a complete dependency or dynamic-import graph, a Node binding
 or authority to use an installed package. Unknown versions fail closed.
 
-The current fake checked host sends the bootstrap through the ordinary
-process-input handle. The local host charges those bytes against its existing
-per-process input budget, and its synchronous write path has no separate
-bootstrap deadline. Production adoption therefore needs a separately bounded
-bootstrap handoff and cancellation/join proof that preserves the existing
-consumer input budget; the small fake does not establish either property for
-a full dependency closure. The real checked host remains unavailable.
+The fake checked host now uses a separate bounded bootstrap write before
+returning the process handle. The host writes through a nonblocking pipe under
+a deadline without charging the normal stdin budget. Failed writes stop and
+join the child; dropping a pending start requests process-tree cleanup. The
+candidate loader requires an admission byte after the complete graph and fails
+before entry effects for malformed, oversized or truncated frames. Fake tests
+cover a child that never reads, a closed pipe, timeout, cancellation and a
+small ordinary stdin budget. This does not prove that an actual runtime is
+attested, or that cancellation after the admission byte cannot race entry
+execution. The checked local host still refuses admission without custody.
 
-The combined fake checked host also rejects a substituted bootstrap before
-spawn. When its intentionally small process-input limit rejects the genuine
-bootstrap, the fake host stops and joins the child before returning failure.
-This demonstrates that specific failure path, not a deadline for an already
-blocked write or a separate production bootstrap budget.
+The static wrapper manifest does not capture the complete bare-package,
+builtin, dynamic-import or worker closure. Actual graph construction and
+original-artifact probe execution remain unproved and unauthorized.

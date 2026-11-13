@@ -12,7 +12,10 @@ use std::process::{Command, Output};
 use swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE;
 use swallowtail_host_local::{
     LocalCapturedGraph, LocalCapturedImport, LocalCapturedNodeRecipe, LocalCapturedSources,
-    LocalExpectedSource,
+    LocalExecutableLaunch, LocalExpectedSource, LocalProcessHost, LocalProcessLimits,
+};
+use swallowtail_runtime::{
+    ExecutableRef, ProcessInputChunk, ProcessRequest, ScopeId, WorkingResourceRef,
 };
 
 const IDLE: &str = "export class IdleCompaction { constructor() { this.armed = 0; this.fired = 0; } onIdle() { this.armed++; } async fire() { this.fired++; } }";
@@ -189,4 +192,167 @@ fn invalid_graph_bootstrap_refuses_before_fake_entry_effects() {
             String::from_utf8_lossy(&child.stderr)
         );
     }
+    let without_admission = &recipe.bootstrap()[..recipe.bootstrap().len() - 1];
+    let child = guarded_with_bootstrap(&recipe, without_admission);
+    assert!(!child.status.success());
+    assert!(child.stdout.is_empty());
+    assert!(String::from_utf8_lossy(&child.stderr).contains("incomplete graph bootstrap"));
+    let mut wrong_admission = recipe.bootstrap().to_vec();
+    *wrong_admission.last_mut().expect("admission byte") = 0;
+    let child = guarded_with_bootstrap(&recipe, &wrong_admission);
+    assert!(!child.status.success());
+    assert!(child.stdout.is_empty());
+    assert!(String::from_utf8_lossy(&child.stderr).contains("invalid bootstrap admission"));
+}
+
+fn bootstrap_host(root: &Path, script: &str) -> (LocalProcessHost, ProcessRequest) {
+    let node = std::env::split_paths(&std::env::var_os("PATH").expect("PATH"))
+        .map(|dir| dir.join("node"))
+        .find(|candidate| candidate.is_file())
+        .expect("fake Node interpreter");
+    let executable = ExecutableRef::new("bootstrap.fake").expect("executable");
+    let resource = WorkingResourceRef::new("bootstrap.workspace").expect("resource");
+    let launch = LocalExecutableLaunch::new(node)
+        .with_prefix_arguments([
+            std::ffi::OsString::from("-e"),
+            std::ffi::OsString::from(script),
+        ])
+        .with_node_startup_environment_filter();
+    let host = LocalProcessHost::builder(LocalProcessLimits::new(8, 4096, 4, 4096, 4096))
+        .approve_executable_launch(executable.clone(), launch)
+        .approve_working_resource(resource.clone(), root)
+        .build();
+    (
+        host,
+        ProcessRequest::new(executable).with_working_resource(resource),
+    )
+}
+
+#[test]
+fn bootstrap_host_bounds_stalled_and_closed_pipes_and_rejects_oversize_before_spawn() {
+    use std::time::{Duration, Instant};
+    let root = fixture();
+    let scope = ScopeId::new("bootstrap.test").expect("scope");
+    let bytes = vec![b'x'; 1024 * 1024];
+    let (host, request) = bootstrap_host(&root, "setInterval(() => {}, 1000)");
+    let started = Instant::now();
+    let error = futures_executor::block_on(host.start_with_bootstrap(
+        scope.clone(),
+        request,
+        &bytes,
+        Duration::from_millis(100),
+    ))
+    .err()
+    .expect("never-reading child times out");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.local_process.bootstrap_timeout"
+    );
+    assert!(started.elapsed() < Duration::from_secs(8));
+
+    let (host, request) = bootstrap_host(
+        &root,
+        "require('fs').closeSync(0); setInterval(() => {}, 1000)",
+    );
+    let error = futures_executor::block_on(host.start_with_bootstrap(
+        scope.clone(),
+        request,
+        &bytes,
+        Duration::from_secs(2),
+    ))
+    .err()
+    .expect("closed child input fails");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.local_process.bootstrap_write_failed"
+    );
+
+    let (host, request) = bootstrap_host(&root, "require('fs').writeFileSync('spawned', 'yes')");
+    let error = futures_executor::block_on(host.start_with_bootstrap(
+        scope,
+        request,
+        &vec![0; 32 * 1024 * 1024 + 6],
+        Duration::from_secs(1),
+    ))
+    .err()
+    .expect("oversized bootstrap refused");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.local_process.bootstrap_limit"
+    );
+    assert!(!root.join("spawned").exists());
+}
+
+#[tokio::test]
+async fn cancelled_bootstrap_stops_and_reaps_the_owned_child() {
+    use std::time::{Duration, Instant};
+    let root = fixture();
+    let (host, request) = bootstrap_host(
+        &root,
+        "require('fs').writeFileSync('child.pid', String(process.pid)); setInterval(() => {}, 1000)",
+    );
+    let bytes = vec![b'x'; 1024 * 1024];
+    let result = tokio::time::timeout(
+        Duration::from_millis(500),
+        host.start_with_bootstrap(
+            ScopeId::new("bootstrap.cancel").expect("scope"),
+            request,
+            &bytes,
+            Duration::from_secs(5),
+        ),
+    )
+    .await;
+    assert!(result.is_err(), "stalled write must be cancelled");
+    let pid = std::fs::read_to_string(root.join("child.pid")).expect("child started");
+    let pid: u32 = pid.parse().expect("fixture pid");
+    let deadline = Instant::now() + Duration::from_secs(8);
+    loop {
+        let alive = Command::new("/bin/kill")
+            .args(["-0", &pid.to_string()])
+            .output()
+            .expect("observe fixture process")
+            .status
+            .success();
+        if !alive {
+            break;
+        }
+        assert!(Instant::now() < deadline, "cancelled child was not reaped");
+        tokio::time::sleep(Duration::from_millis(20)).await;
+    }
+}
+
+#[test]
+fn bootstrap_does_not_spend_provider_stdin_budget() {
+    use std::time::Duration;
+    let root = fixture();
+    let (host, request) = bootstrap_host(
+        &root,
+        "let data=''; process.stdin.on('data', x => { data += x; if(data.length >= 10) { process.stdout.write(data); process.exit(0); } });",
+    );
+    let process = futures_executor::block_on(host.start_with_bootstrap(
+        ScopeId::new("bootstrap.budget").expect("scope"),
+        request,
+        b"123456",
+        Duration::from_secs(2),
+    ))
+    .expect("bootstrap completes");
+    futures_executor::block_on(process.write_stdin(ProcessInputChunk::new(b"abcd".to_vec())))
+        .expect("full independent provider budget remains");
+    let error =
+        futures_executor::block_on(process.write_stdin(ProcessInputChunk::new(b"e".to_vec())))
+            .expect_err("provider budget remains enforced");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.local_process.stdin_limit_exceeded"
+    );
+    let mut output = Vec::new();
+    while let Some(chunk) = futures_executor::block_on(process.read_output()).expect("output") {
+        output.extend_from_slice(chunk.bytes());
+    }
+    assert_eq!(output, b"123456abcd");
+    assert!(
+        futures_executor::block_on(process.wait())
+            .expect("child joined")
+            .success()
+    );
 }

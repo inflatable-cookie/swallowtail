@@ -5,6 +5,8 @@ use std::process::{Child, ChildStderr, ChildStdin, ChildStdout};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
+#[cfg(unix)]
+use std::time::Duration;
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, RuntimeFailure,
 };
@@ -35,6 +37,92 @@ pub(crate) struct LocalProcessHandle {
 }
 
 impl LocalProcessHandle {
+    #[cfg(unix)]
+    pub(crate) async fn bootstrap(
+        &self,
+        bytes: &[u8],
+        timeout: Duration,
+    ) -> Result<(), RuntimeFailure> {
+        use async_io::{Async, Timer};
+        use nix::fcntl::{FcntlArg, OFlag, fcntl};
+
+        let stdin = self
+            .shared
+            .stdin
+            .lock()
+            .expect("local process stdin lock poisoned")
+            .take()
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.local_process.stdin_closed",
+                    "Local process input is closed",
+                )
+            })?;
+        let original = fcntl(&stdin, FcntlArg::F_GETFL).map_err(|_| {
+            failure(
+                "swallowtail.local_process.bootstrap_unavailable",
+                "Bootstrap input could not be configured",
+            )
+        })?;
+        let stdin = Async::new(stdin).map_err(|_| {
+            failure(
+                "swallowtail.local_process.bootstrap_unavailable",
+                "Bootstrap input could not be configured",
+            )
+        })?;
+        let write = async {
+            let mut offset = 0;
+            while offset < bytes.len() {
+                let count = stdin
+                    .write_with(|stream| (&*stream).write(&bytes[offset..]))
+                    .await
+                    .map_err(|_| {
+                        failure(
+                            "swallowtail.local_process.bootstrap_write_failed",
+                            "Bootstrap input could not be written",
+                        )
+                    })?;
+                if count == 0 {
+                    return Err(failure(
+                        "swallowtail.local_process.bootstrap_write_failed",
+                        "Bootstrap input could not be written",
+                    ));
+                }
+                offset += count;
+            }
+            Ok(())
+        };
+        futures_lite::future::race(write, async {
+            Timer::after(timeout).await;
+            Err(failure(
+                "swallowtail.local_process.bootstrap_timeout",
+                "Bootstrap input deadline expired",
+            ))
+        })
+        .await?;
+        let stdin = stdin.into_inner().map_err(|_| {
+            failure(
+                "swallowtail.local_process.bootstrap_unavailable",
+                "Bootstrap input could not be restored",
+            )
+        })?;
+        fcntl(
+            &stdin,
+            FcntlArg::F_SETFL(OFlag::from_bits_truncate(original)),
+        )
+        .map_err(|_| {
+            failure(
+                "swallowtail.local_process.bootstrap_unavailable",
+                "Bootstrap input could not be restored",
+            )
+        })?;
+        *self
+            .shared
+            .stdin
+            .lock()
+            .expect("local process stdin lock poisoned") = Some(stdin);
+        Ok(())
+    }
     fn write(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
         let bytes = chunk.into_bytes();
         let mut written = self

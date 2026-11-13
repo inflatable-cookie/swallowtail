@@ -408,9 +408,10 @@ impl LocalCapturedNodeRecipe {
         }
         let length = u32::try_from(graph.configuration().len())
             .map_err(|_| invalid("graph bootstrap size limit"))?;
-        let mut bootstrap = Vec::with_capacity(4 + graph.configuration().len());
+        let mut bootstrap = Vec::with_capacity(5 + graph.configuration().len());
         bootstrap.extend_from_slice(&length.to_be_bytes());
         bootstrap.extend_from_slice(graph.configuration());
+        bootstrap.push(0xa5);
         let graph_value: serde_json::Value = serde_json::from_slice(graph.configuration())?;
         let root = graph_value["edges"][0]["target"]
             .as_str()
@@ -421,7 +422,7 @@ impl LocalCapturedNodeRecipe {
         let loader_url = data_url(loader.as_bytes())?;
         let loader_json = serde_json::to_string(&loader_url)?;
         let preload = format!(
-            "import {{ readSync }} from 'node:fs'; import {{ register }} from 'node:module'; function read(n) {{ const b=Buffer.alloc(n); let p=0; while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }} return b; }} const n=read(4).readUInt32BE(); if(n>33554432) throw new Error('graph bootstrap too large'); const data=JSON.parse(read(n).toString('utf8')); register({loader_json}, {{ parentURL: import.meta.url, data }});"
+            "import {{ readSync }} from 'node:fs'; import {{ register }} from 'node:module'; function read(n) {{ const b=Buffer.alloc(n); let p=0; while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }} return b; }} const n=read(4).readUInt32BE(); if(n>33554432) throw new Error('graph bootstrap too large'); const data=JSON.parse(read(n).toString('utf8')); if(read(1)[0]!==165) throw new Error('invalid bootstrap admission'); register({loader_json}, {{ parentURL: import.meta.url, data }});"
         );
         let arguments = vec![
             std::ffi::OsString::from("--import"),

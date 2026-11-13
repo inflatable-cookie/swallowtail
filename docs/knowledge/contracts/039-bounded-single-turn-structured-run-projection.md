@@ -251,7 +251,10 @@ itself. The process service must refuse preflight and checked start when it
 cannot resolve and verify the binding, and it must recheck at start so that
 revocation or drift cannot fall back to an ordinary process launch. Hosts
 without the capability refuse both operations. The current local host does
-not provide runtime custody and therefore cannot admit this launch.
+does not yet provide the required checked runtime custody and therefore cannot
+admit this launch. Decision `fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2
+selects trusted-host custody for this invocation; it does not establish
+resistance to hostile same-user replacement or qualify the captured graph.
 
 The captured-graph bootstrap is host input, with its own size and deadline
 limits; it does not consume the consumer's provider-stdin allowance. The host

@@ -22,3 +22,5 @@
 - Record syntax-level import edges and fake bootstrap admission ordering.
 
 - Exercise a fake synchronous CommonJS loader and record selected SDK roots.
+
+- Record trusted-host runtime custody and test a revocable runtime pin.

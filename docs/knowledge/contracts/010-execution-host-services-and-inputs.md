@@ -211,6 +211,14 @@ search `PATH` at execution time, infer a provider-specific launcher inside an
 adapter, or substitute another recipe after a request begins. Native execution
 is the zero-prefix, empty-bootstrap case.
 
+For the separately guarded Claude Agent ACP launch, Tom's 2026-11-13
+decision `fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2 selects explicit trusted
+execution-host runtime custody. The host selects and verifies the exact
+interpreter and owns its custody through spawn; the trust boundary excludes
+hostile same-user replacement. A path hash followed by path-based spawn is
+not an OS-enforced verified-execution guarantee. This ruling does not extend
+other host or SDK claims.
+
 Renderer or remote-client data cannot establish authority by naming an
 executable path, environment variable, or working directory. Process output is
 not a safe diagnostic until normalized and redacted.

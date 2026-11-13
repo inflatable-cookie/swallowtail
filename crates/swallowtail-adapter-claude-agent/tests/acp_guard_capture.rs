@@ -13,6 +13,7 @@ use swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE;
 use swallowtail_host_local::{
     LocalCapturedGraph, LocalCapturedImport, LocalCapturedNodeRecipe, LocalCapturedSources,
     LocalExecutableLaunch, LocalExpectedSource, LocalProcessHost, LocalProcessLimits,
+    LocalTrustedRuntime,
 };
 use swallowtail_runtime::{
     ExecutableRef, ProcessInputChunk, ProcessRequest, ScopeId, WorkingResourceRef,
@@ -355,6 +356,64 @@ fn bootstrap_does_not_spend_provider_stdin_budget() {
             .expect("child joined")
             .success()
     );
+}
+
+#[test]
+fn trusted_runtime_custody_detects_drift_replacement_and_revocation() {
+    use std::io::Write;
+    use std::os::unix::fs::{OpenOptionsExt, symlink};
+    let root = fixture();
+    let runtime = root.join("runtime");
+    let mut fixture = std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o700)
+        .open(&runtime)
+        .expect("runtime fixture");
+    fixture
+        .write_all(b"host-selected runtime")
+        .expect("runtime bytes");
+    let digest = Sha256::digest(b"host-selected runtime").into();
+    assert!(LocalTrustedRuntime::capture(&runtime, [0; 32]).is_err());
+    let held = LocalTrustedRuntime::capture(&runtime, digest).expect("host-owned runtime");
+    assert_eq!(held.digest(), &digest);
+    held.verify().expect("unchanged runtime");
+    assert!(
+        held.verify_launch(&LocalExecutableLaunch::new(&runtime))
+            .is_err()
+    );
+    let approved = LocalExecutableLaunch::new(&runtime).with_node_startup_environment_filter();
+    held.verify_launch(&approved)
+        .expect("matching filtered launch");
+    let mismatch =
+        LocalExecutableLaunch::new(root.join("other")).with_node_startup_environment_filter();
+    assert!(held.verify_launch(&mismatch).is_err());
+    let alias = root.join("alias");
+    symlink(&runtime, &alias).expect("alias fixture");
+    assert!(LocalTrustedRuntime::capture(&alias, digest).is_err());
+    std::fs::write(&runtime, b"changed in place").expect("mutate runtime");
+    assert!(held.verify().is_err());
+    std::fs::write(&runtime, b"host-selected runtime").expect("restore bytes");
+    held.verify().expect("held file matches again");
+    let replacement = root.join("replacement");
+    let mut replacement_file = std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .mode(0o700)
+        .open(&replacement)
+        .expect("replacement");
+    replacement_file
+        .write_all(b"host-selected runtime")
+        .expect("replacement bytes");
+    std::fs::rename(replacement, &runtime).expect("replace path");
+    assert!(
+        held.verify().is_err(),
+        "equal bytes do not preserve file custody"
+    );
+    let fresh = LocalTrustedRuntime::capture(&runtime, digest).expect("new custody");
+    let clone = fresh.clone();
+    fresh.revoke();
+    assert!(clone.verify().is_err(), "revocation covers clones");
 }
 
 #[tokio::test]

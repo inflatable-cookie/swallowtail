@@ -385,6 +385,20 @@ pub struct LocalCapturedNodeRecipe {
 }
 
 impl LocalCapturedNodeRecipe {
+    /// Builds a candidate from a rechecked runtime held by the trusted host.
+    ///
+    /// This does not establish the caller's graph or issue a checked grant.
+    pub fn for_trusted_runtime(
+        graph: &LocalCapturedGraph,
+        loader: &str,
+        vendor: [u8; 32],
+        runtime: &crate::LocalTrustedRuntime,
+        policy: [u8; 32],
+    ) -> io::Result<Self> {
+        runtime.verify()?;
+        Self::new(graph, loader, vendor, *runtime.digest(), policy)
+    }
+
     /// Derives loader arguments and a candidate identity from the exact bytes.
     ///
     /// Vendor, runtime and policy digests are host-policy inputs, not proof.
@@ -463,6 +477,21 @@ impl LocalCapturedNodeRecipe {
     #[must_use]
     pub fn bootstrap(&self) -> &[u8] {
         &self.bootstrap
+    }
+
+    /// Rechecks host runtime custody and the complete fixed interpreter prefix.
+    ///
+    /// This does not prove that the graph or its policy is authorized.
+    pub fn verify_trusted_launch(
+        &self,
+        runtime: &crate::LocalTrustedRuntime,
+        launch: &crate::LocalExecutableLaunch,
+    ) -> io::Result<()> {
+        runtime.verify_launch(launch)?;
+        if launch.prefix_arguments() != self.arguments {
+            return Err(invalid("runtime prefix mismatch"));
+        }
+        Ok(())
     }
 
     /// Returns the candidate fingerprint; this is not host attestation.

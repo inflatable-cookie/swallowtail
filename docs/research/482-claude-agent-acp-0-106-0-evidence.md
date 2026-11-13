@@ -472,3 +472,28 @@ This is an inventory of reachable source imports, not approval to expose any
 builtin. `node:module`, filesystem access and child creation need an exact
 host policy; CommonJS, worker and native paths remain closed until the
 protected loaded-byte boundary and runtime custody are established.
+
+## Trusted-host runtime custody ruling
+
+Tom's decision `fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2 selects
+trusted-host runtime custody for this guarded ACP invocation. It supersedes
+the earlier pending custody choice; it does not make path-based spawn an
+OS-enforced verified-execution primitive or cover a hostile same-user
+replacement. The host must select and pin the runtime, protect its custody
+through spawn, and bind it with the exact launch and captured graph.
+
+`LocalTrustedRuntime` opens a canonical host-selected executable, verifies a
+bounded SHA-256 digest, retains its file handle and rechecks identity,
+contents and revocation. Fake prepared-driver tests derive their candidate
+recipe from this held runtime and reject a revoked runtime; separate fixture
+tests exercise mutation, path replacement, links and revocation. Candidate
+launch verification also compares the host-held runtime, startup filter and
+exact recipe prefix; a substituted preload prefix is refused by the fake.
+This is one
+host building block, not a registered checked grant: it does not enforce the
+trusted-host precondition between its check and path-based spawn, identify the
+selected official graph, or protect CommonJS, builtin, native or worker
+resolution. The real local process service still refuses checked launches.
+The earlier conditional statement that the operator's custody choice is
+pending is superseded; original/native proof and separate execution authority
+remain open.

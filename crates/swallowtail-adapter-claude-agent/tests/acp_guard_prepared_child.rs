@@ -1,6 +1,7 @@
 use super::{LocalCapturedGraph, capture, fixture};
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
+use sha2::{Digest, Sha256};
 use std::path::PathBuf;
 use std::sync::{
     Arc,
@@ -19,6 +20,7 @@ use swallowtail_core::{
 };
 use swallowtail_host_local::{
     LocalCapturedNodeRecipe, LocalExecutableLaunch, LocalProcessHost, LocalProcessLimits,
+    LocalTrustedRuntime,
 };
 use swallowtail_runtime::{
     BoxFuture, CheckedProcessRef, CleanupOutcome, Deadline, DiscoveryCancellation, EnvironmentRef,
@@ -61,6 +63,8 @@ else {
 struct FakeCheckedChild {
     local: LocalProcessHost,
     graph: LocalCapturedGraph,
+    runtime: LocalTrustedRuntime,
+    launch: LocalExecutableLaunch,
     expected: [u8; 32],
     revoked: Arc<AtomicBool>,
     checked: Arc<AtomicUsize>,
@@ -69,11 +73,11 @@ struct FakeCheckedChild {
 }
 impl FakeCheckedChild {
     fn allows(&self, binding: &CheckedProcessRef, request: &ProcessRequest) -> bool {
-        let candidate = LocalCapturedNodeRecipe::new(
+        let candidate = LocalCapturedNodeRecipe::for_trusted_runtime(
             &self.graph,
             CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
             [1; 32],
-            [3; 32],
+            &self.runtime,
             [5; 32],
         );
         !self.revoked.load(Ordering::SeqCst)
@@ -84,6 +88,9 @@ impl FakeCheckedChild {
             && candidate.as_ref().is_ok_and(|value| {
                 value.fingerprint().digest() == &self.expected
                     && value.bootstrap() == self.bootstrap.as_ref()
+                    && value
+                        .verify_trusted_launch(&self.runtime, &self.launch)
+                        .is_ok()
             })
     }
     fn denied() -> RuntimeFailure {
@@ -158,17 +165,21 @@ fn fake_child_with_input_limit(
     graph: LocalCapturedGraph,
     stdin_bytes: usize,
 ) -> FakeCheckedChild {
-    let recipe = LocalCapturedNodeRecipe::new(
+    let node = node_path().canonicalize().expect("canonical Node path");
+    let bytes = std::fs::read(&node).expect("read fake interpreter");
+    let runtime = LocalTrustedRuntime::capture(&node, Sha256::digest(&bytes).into())
+        .expect("trusted fake-host runtime");
+    let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
         &graph,
         CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
         [1; 32],
-        [3; 32],
+        &runtime,
         [5; 32],
     )
     .expect("fake recipe");
     let expected = *recipe.fingerprint().digest();
     let bootstrap: Arc<[u8]> = Arc::from(recipe.bootstrap());
-    let launch = LocalExecutableLaunch::new(node_path())
+    let launch = LocalExecutableLaunch::new(node)
         .with_prefix_arguments(recipe.prefix_arguments().map(std::ffi::OsStr::to_os_string))
         .with_node_startup_environment_filter();
     let executable = ExecutableRef::new("claude-agent.prepared.executable").expect("target");
@@ -182,13 +193,15 @@ fn fake_child_with_input_limit(
         8 * 1024 * 1024,
         1024 * 1024,
     ))
-    .approve_executable_launch(executable, launch)
+    .approve_executable_launch(executable, launch.clone())
     .approve_environment(environment, [])
     .approve_working_resource(resource, root)
     .build();
     FakeCheckedChild {
         local,
         graph,
+        runtime,
+        launch,
         expected,
         revoked: Arc::new(AtomicBool::new(false)),
         checked: Arc::new(AtomicUsize::new(0)),
@@ -272,6 +285,21 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
         .is_err()
     );
     assert_eq!(substituted.checked.load(Ordering::SeqCst), 0);
+    let mut unsafe_prefix = fake.clone();
+    unsafe_prefix.launch = LocalExecutableLaunch::new(node_path().canonicalize().expect("Node"))
+        .with_prefix_arguments(["--require".into(), "unapproved.js".into()])
+        .with_node_startup_environment_filter();
+    assert!(
+        block_on(unsafe_prefix.validate_checked(
+            ScopeId::new("checked-prefix").expect("scope"),
+            CheckedProcessRef::new("fixture.checked.binding").expect("binding"),
+            ProcessRequest::new(
+                ExecutableRef::new("claude-agent.prepared.executable").expect("target")
+            ),
+        ))
+        .is_err()
+    );
+    assert_eq!(unsafe_prefix.checked.load(Ordering::SeqCst), 0);
     let host_id = ExecutionHostId::new("fake.checked.local").expect("host");
     let resources = FixtureHost::new(Scenario::Success, "0.100.0");
     let services = resources
@@ -319,7 +347,7 @@ fn prepared_checked_driver_uses_captured_fake_child_and_joins() {
         block_on(session.close(resources.cleanup_request(), services.clone())),
         CleanupOutcome::Clean
     );
-    fake.revoked.store(true, Ordering::SeqCst);
+    fake.runtime.revoke();
     assert!(block_on(profile.open_session(services)).is_err());
     assert_eq!(fake.checked.load(Ordering::SeqCst), 2);
     assert_eq!(fake.ordinary.load(Ordering::SeqCst), 0);

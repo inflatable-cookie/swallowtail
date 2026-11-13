@@ -204,6 +204,11 @@ and managed settings and cover an already-fired compaction; see
 [Research 482](../research/482-claude-agent-acp-0-106-0-evidence.md). The
 qualified ceiling remains 0.100.0.
 
+The selected guarded launch relies on an execution host that verifies and
+holds custody of its exact runtime through spawn. It does not claim protection
+against hostile same-user runtime replacement. Guarded admission and native
+proof remain pending; ordinary version discovery does not establish them.
+
 ### ACP Permission Exchange
 
 The default prepared run or session rejects an unexpected permission once,

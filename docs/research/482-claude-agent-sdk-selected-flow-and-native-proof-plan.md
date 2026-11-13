@@ -11,7 +11,9 @@ Node `22.23.2..=22.23.3`, wire and sidecar source stay separate.
 Not a Claude Code, ACP, or shared-schema claim.
 
 This record closes Q-009 item 3 (the `0.3.321` residuals) and delivers the
-harness and plan Q-009 items 1 and 2 need. It does not answer either of them.
+harness and plan for the native-evidence gate in item 1. Item 2 is answered by
+Tom’s decision `d5a14f90` v2: preserve managed denial under a distinct SDK
+revision. Exact native behavior and execution confinement/authority remain open.
 
 ## What was rechecked, and how
 
@@ -39,6 +41,13 @@ plan equals the manifest checksum and the size the manifest declares; where the
 repository retains a CLI fixture that binds the same build, the planned digest
 appears in that fixture. `2.1.318` has no retained CLI digest, so its manifest
 is its only identity, and the plan says so by leaving `cli_cross_binding` null.
+
+Pre-push metadata recheck on 2026-11-13 reports npm `latest` and `next` as
+`0.3.323`, after this task committed the frozen `.322` identities. No `.323`
+artifact was downloaded or classified here. Contract 029’s In-Run Latest
+Movement rule keeps this exact artifact set; `.323` remains unqualified and
+refused by the existing `QualifiedOnly` claims. The planner was notified for
+separate currentness work. No Node or sibling-route claim follows.
 
 ## Method
 
@@ -208,7 +217,8 @@ regression:
 1. a managed denial never becomes a host permission request;
 2. a call the host never mediated is never reported as admitted or
    host-decided;
-3. a managed denial is a completed turn with no error text;
+3. a managed tool denial does not itself end or fail the turn; the native result
+   determines completion (the fake supplies a successful result);
 4. a callback-mediated denial stays distinguishable by its callback record and
    its recorded decision.
 
@@ -299,13 +309,12 @@ with its exact token is still refused.
 
 Two more review findings are fixed and pinned:
 
-- **A jointly substituted ledger and peer is refused.** The runner is given the
-  committed admission digest *out of band* (a compile-time constant in the test
-  binary, or the operator's own record for a real caller) and refuses a ledger
-  whose bytes do not match it. Because the admission carries the peer SDK digest,
-  tuple digests and option surface, a substituted ledger and a peer rewritten to
-  agree with it still fail with `admission_substitution` before any module is
-  imported. A test performs exactly that substitution.
+- **A jointly substituted ledger and peer is refused.** The runner pins the
+  committed admission SHA-256 in its own source; no caller-provided digest can
+  change it. The admission binds the peer SDK digest, tuple digests and option
+  surface, so a jointly rewritten ledger and peer fail with
+  `admission_substitution` before import. The mutation regression exercises
+  both substitutions together.
 - **A timed-out join cannot leave a child alive.** Every non-exited outcome goes
   through `stopPeer`, which kills the peer, retries with `SIGKILL`, and waits for
   an observed exit. A missing `joinNative`, a timed-out join or an unobserved
@@ -321,9 +330,10 @@ anchor now lives in the runner source:
 
 - `probe-runner.mjs` compiles in the SHA-256 of the committed ledger and refuses
   any ledger whose bytes do not match it (`admission_substitution`). No argument
-  can supply or change it, and the ledger no longer hashes the runner, so the
-  two are cross-checked rather than mutually hashed: the fixture verifier
-  asserts the pin equals the committed bytes.
+  can supply or change it. The fixture verifier asserts the pin equals the
+  committed bytes. A detached `probe-execution.sha256` record binds the final
+  runner, ledger and plan without a mutual-hash cycle; both the schema-check
+  selector and harness verify its complete contents against those files.
 - Because the admission carries the peer SDK digest, the tuple digests and the
   option surface, a ledger and a peer rewritten to agree with each other still
   fail before any module is imported.
@@ -351,8 +361,8 @@ are never touched.
 fixes the artefacts, digests, selected argv, isolation, environment allowlist,
 egress rule, bounds, observations, failure classes and cleanup for the four
 candidate native builds on both selected platforms. Original-artifact execution
-is `enabled: false`, and the harness refuses any request to enable it without
-the authority the plan names.
+is `enabled: false`. The runner refuses original mode unconditionally because
+it lacks OS-level confinement; authority alone cannot enable it.
 
 `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_native_proof_harness.rs`
 proves the harness against fake peers, over the real prepared-driver launch
@@ -361,8 +371,10 @@ streamed user message, assistant and result frames with usage, a typed failure
 result, a callback round trip that reaches the native, a pre-callback denial
 that fabricates no permission request, an interrupt with its terminal reason, a
 native death mid-session that turns the session terminal, exact identity
-substitution refusal before any peer runs, and a credential-free environment
-with one controlled loopback request and no other egress.
+substitution refusal before any peer runs, and a credential-free child environment
+with one controlled loopback request. This observes the cooperative fake’s
+contact; it does not filter egress or prove that arbitrary code cannot connect
+elsewhere.
 
 The harness proves the pipeline and its observation points, not the vendor's
 behavior. That distinction is the reason the plan exists.
@@ -389,8 +401,9 @@ What the ledger binds:
 
 What the path refuses, proven by tests rather than asserted:
 
-- a ledger that claims production admission, a production mode, a foreign
-  authority, or original mode without the exact token;
+- a ledger that differs from the source-pinned digest (including production or
+  foreign-authority mutations), and original mode regardless of ledger flags
+  or a token;
 - a peer whose package version, native version or bytes are not the admitted
   tuple - including a newer tuple dressed as the accepted pair;
 - a non-loopback endpoint, before any peer starts;
@@ -410,14 +423,27 @@ binary; the ledger says so rather than implying the fake run proves a platform.
 
 ### The pre-execution request
 
-`probe-admission.json` carries the request a reviewer and the operator read
-before any vendor run: the exact command, the original-mode suffix that needs the
-authority token, the live source digests (plan, option template, probe runner,
-fake peers, the shipped sidecar asset and the analysis script), the artifact set
-with per-platform digests, the isolation rules and the finite bounds. The digest
-block is verified against the files on every harness run, so a probe source edit
-cannot slip into an execution request unnoticed. Original mode in the committed
-ledger has `original_run_authorised: false` and no token.
+`probe-admission.json` carries the exact fake command, artifact identities,
+finite cooperative bounds and isolation limits. Its `source_digests` bind the
+plan, option template, fake peers, managed-denial contract and shipped sidecar.
+The runner pins that ledger before any import. The separately committed
+`probe-execution.sha256` binds the final runner, admission and plan, so their
+final identities can be verified without circular hashes. Both
+`check:claude-agent-sdk-native-proof-harness` and the harness test verify this
+record; it can also be verified from the repository root with:
+
+```sh
+shasum -a 256 -c crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-execution.sha256
+```
+
+This is a runnable **fake** invocation, not a confined original-artifact
+proposal. Original mode is unconditionally unavailable, even with a ledger flag
+or authority token. Before requesting original execution, a separate launcher
+must enforce egress, filesystem, process and storage confinement, bind the
+actual Node executable/version/digest as well as the frozen SDK/native bytes,
+and name exact commands and finite bounds on both selected platforms. Exact
+operator authority and a brief amendment are then still required. No native
+behavior or qualification credit follows from this checksum record.
 
 ### Admission caveat
 
@@ -425,9 +451,9 @@ Both the prepared driver and the shipped sidecar admit only the maintained pair
 map, so every planned hop above `0.3.317` is refused with
 `sdk_version_mismatch` before the SDK loads. The harness proves the pipeline on
 `0.3.317`/`2.1.317` and proves the refusal for the newer hops. An authorised
-original run for a newer hop needs an explicit probe admission, either from the
-authority that names those exact pairs or from the qualification the run
-produces. Nothing in this task widened the map.
+original run for a newer hop needs a separately confined probe launcher and
+exact authority; its results must be reviewed before any production admission
+changes. Nothing in this task widened the map.
 
 ## Claims and boundaries
 

@@ -1,7 +1,7 @@
 {
   "schema": "claude-agent-sdk-native-proof-plan-v1",
   "route": "claude-agent.sdk",
-  "purpose": "Executable plan for the native behavior proof Q-009 item 1 names. The fake-backed harness proves the observation points, identity checks, egress controls, bounds and cleanup; an original-artifact run stays disabled until the operator authorises it.",
+  "purpose": "Plan for the native behavior proof Q-009 item 1 names. Fake-backed tests prove observation points and cooperative fake limits, not OS confinement or vendor behavior. Original mode is refused unconditionally until a separately implemented confined launcher and exact authority exist.",
   "authorized_stage": {
     "wrapper_analysis": "permitted; delivered as selected-flow.json",
     "fake_backed_harness": "permitted; delivered as this plan and the harness tests",
@@ -17,7 +17,7 @@
     "accepted_pair_available_now": "0.3.317 / 2.1.317",
     "ceiling": "Both the prepared driver and the shipped sidecar admit only the maintained pair map, so every hop above 0.3.317 fails closed with sdk_version_mismatch before the SDK loads. The fake-backed harness therefore proves the pipeline on the accepted pair.",
     "temporary_probe_admission": "probe-admission.json records the planner's temporary probe-only admission: it binds these exact tuples, the selected option surface and the fake peer identity, admits harness-only fake runs, and carries no production admission. Production claims, the maintained pair map and the shipped sidecar are unchanged.",
-    "original_run_requirement": "An authorised original-artifact run for 0.3.318, 0.3.319, 0.3.321 or 0.3.322 needs an explicit operator authority statement naming these exact digests, a brief amendment, and this ledger set to original_run_authorised true with its token. The harness never widens the map and the ledger stays closed until then.",
+    "original_run_requirement": "A separately implemented launcher must enforce egress, filesystem, process and storage confinement, with exact SDK/native/Node identity, operator authority and a brief amendment. This runner refuses original mode unconditionally; no ledger flag or token can enable it.",
     "witness_selector": "validate:claude-agent-sdk-native-proof-harness (probe tests) and validate:claude-agent-sdk-probe-admission"
   },
   "platforms": [

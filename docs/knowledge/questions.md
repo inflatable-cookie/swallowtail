@@ -243,7 +243,8 @@ Stage evidence (2026-11-12, Research 482):
 - Item 2 is answered: preserve the managed denial under `claude-agent.sdk-v2`
   (Tom, decision `d5a14f90` v2). The distinct revision names four guarantees -
   no fabricated permission request, no admission claim for an unmediated call, a
-  completed turn, and a mediated denial distinguishable by its callback and
+  turn that continues until its native result, and a mediated denial
+  distinguishable by its callback and
   recorded decision - and the contract fixture pins each one against fake peers.
   No claim adopts v2: the package and native segments, the pair map, the
   behavior revision used by every claim and the shipped sidecar stay as they

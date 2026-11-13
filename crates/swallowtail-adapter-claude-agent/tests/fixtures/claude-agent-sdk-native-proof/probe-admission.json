@@ -20,7 +20,7 @@
   },
   "confinement": {
     "available": [
-      "the caller supplies the committed admission digest out of band, so a substituted ledger and a substituted peer that agree with each other are refused before any module is imported",
+      "the runner pins the committed admission SHA-256 in its source; a substituted ledger and a substituted peer that agree with each other are refused before any module is imported",
       "the probe creates its workspace, HOME, TMPDIR, TMP and TEMP with mkdtemp under a 0700 base directory it verifies is a real directory owned by this uid",
       "the peer carries a per-run ownership nonce that the runner receives on its command line and compares with the uid",
       "peer, native and SDK paths are resolved through realpath and refused when they escape the peer directory",
@@ -36,7 +36,7 @@
     ],
     "original_mode": "refused unconditionally with original_mode_unavailable; the missing capability is named above"
   },
-  "plan_sha256": "e45adf81b19e3fc77f9e14683f447ca69bcd43018395252ee593236cad8e5fa7",
+  "plan_sha256": "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502",
   "options_template_sha256": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
   "selected_options_digest": "sha256:d07993a00214358736031d7ddc5fdff69103cf8918bd948bc79761f33b7c76fc",
   "options_template": "probe-options.json",
@@ -46,7 +46,7 @@
     "platform_semantics": "in harness mode the platform is a declared identity label, not an executed per-platform binary; only an authorised original run would exercise the real artifact"
   },
   "managed_denial_contract": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json",
-  "managed_denial_contract_sha256": "c0e7e406e64efb67a44e094141a526822e6df4f6fe85627085c0ed72c446f3b4",
+  "managed_denial_contract_sha256": "14b14c01753b652d1806042ca992cefc9120ab9116bf0126d4361baccb748070",
   "environment_allowlist": [
     "PATH",
     "HOME",
@@ -165,15 +165,15 @@
     }
   ],
   "request": {
-    "purpose": "the exact probe invocation this ledger admits, its sources, its artifacts, its runtime identity, its isolation and its bounds; vendor execution stays disabled until an operator authority names these digests",
+    "purpose": "The exact fake probe invocation, sources, artifacts, isolation and cooperative bounds. This is not a runnable confined original-artifact proposal: original mode remains unconditionally refused and a future launcher must bind the actual Node executable identity as well as SDK/native identities.",
     "command": "node crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs --admission crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json --options crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json --peer <owned-peer-dir> --sdk-version <tuple.sdk_version> --platform <darwin-arm64|linux-x64> --base <0700 base dir> --ownership-nonce <run nonce> --evidence <evidence.json> --bound-ms 120000",
     "original_command_suffix": "--mode original  (refused unconditionally: no kernel-level confinement is available)",
     "source_digests": {
-      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json": "e45adf81b19e3fc77f9e14683f447ca69bcd43018395252ee593236cad8e5fa7",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json": "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-options.json": "ff1e9edcc2f98c35c7783274872f8f3113cbcdaeaf50faced35a2177f454450e",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "adaa94ea868eeff5d64ca7994f795c229a5b740f83b3ac2f647a30eb9596df8a",
-      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "c0e7e406e64efb67a44e094141a526822e6df4f6fe85627085c0ed72c446f3b4",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "14b14c01753b652d1806042ca992cefc9120ab9116bf0126d4361baccb748070",
       "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs": "be6bc2cad7c2c55cb78bc6e5ba5a66981fba09e6f4acab0a057a2818b252bde1"
     },
     "artifacts": [
@@ -262,6 +262,7 @@
       "disk_bytes": 8000000,
       "evidence_bytes": 1000000
     },
-    "digest_anchor": "the runner compiles in the SHA-256 of this ledger and refuses any ledger that does not match it; no caller argument can supply or change that anchor, and the fixture verifier cross-checks the pinned value"
+    "digest_anchor": "the runner compiles in the SHA-256 of this ledger and refuses any ledger that does not match it; no caller argument can supply or change that anchor, and the fixture verifier cross-checks the pinned value",
+    "execution_digest_record": "probe-execution.sha256"
   }
 }

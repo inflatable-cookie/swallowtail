@@ -19,10 +19,10 @@ Evidence and the executable plan for the native behavior proof that Q-009 item
 ## Why the plan exists before the authority
 
 Running a vendor binary needs the operator's exact authority and a brief
-amendment. Building the plan and proving the harness first means the authorised
-run has nothing left to invent: the artifact digests, the argv, the observed
-facts, the bounds and the cleanup are already fixed and tested against fake
-peers.
+amendment. The fake harness tests the observations and cooperative bounds.
+It supplies no OS egress, filesystem or process confinement, so original mode
+is unconditionally refused. A confined launcher and exact Node executable
+identity are still required before requesting original execution.
 
 The harness that consumes this plan is
 `crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_native_proof_harness.rs`
@@ -56,3 +56,16 @@ python3 scripts/claude-agent-sdk-selected-flow.py --corpus <dir> --json <out>
 ```
 
 It never downloads, installs or executes anything.
+
+## Final execution identities
+
+`probe-execution.sha256` names the final runner, admission ledger and plan.
+The runner pins the ledger, which binds the options and fake peers. This
+detached record avoids a mutual-hash cycle and is verified by both harness and
+check selectors. From the repository root:
+
+```sh
+shasum -a 256 -c crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-execution.sha256
+```
+
+The record grants no execution authority or qualification.

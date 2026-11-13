@@ -206,7 +206,8 @@ Under v2 a consumer may rely on four things, and nothing more:
 1. a managed denial never becomes a host permission request;
 2. a call the host never mediated is never reported as admitted or
    host-decided;
-3. a managed denial is a completed turn, not a failure or a stall;
+3. a managed tool denial does not itself end or fail the turn; completion
+   follows the native result;
 4. a callback-mediated denial stays distinguishable by its callback record and
    its recorded decision.
 

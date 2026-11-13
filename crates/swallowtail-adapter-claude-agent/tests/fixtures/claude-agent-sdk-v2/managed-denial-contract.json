@@ -38,7 +38,7 @@
     },
     {
       "id": "turn-carries-on",
-      "statement": "a managed denial is a completed turn, not a failure or a stall",
+      "statement": "a managed tool denial does not itself end or fail the turn; completion follows the native result",
       "fake_observation": "managed-deny scenario: the turn ends with subtype success and no error text"
     },
     {

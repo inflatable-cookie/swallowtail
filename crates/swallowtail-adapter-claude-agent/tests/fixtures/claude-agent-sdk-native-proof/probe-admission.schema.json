@@ -266,7 +266,8 @@
         "artifacts",
         "isolation",
         "bounds",
-        "digest_anchor"
+        "digest_anchor",
+        "execution_digest_record"
       ],
       "properties": {
         "purpose": {
@@ -395,6 +396,9 @@
         "digest_anchor": {
           "type": "string",
           "minLength": 1
+        },
+        "execution_digest_record": {
+          "const": "probe-execution.sha256"
         }
       }
     },

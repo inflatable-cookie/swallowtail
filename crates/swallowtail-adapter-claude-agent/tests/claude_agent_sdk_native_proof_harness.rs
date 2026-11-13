@@ -476,6 +476,74 @@ fn a_pre_callback_denial_fabricates_no_permission_request() {
 }
 
 #[test]
+fn a_callback_mediated_denial_is_distinguishable_from_a_managed_denial() {
+    let mut fixture = fixture("permission");
+    assert_eq!(open(&mut fixture)["success"], true);
+    fixture
+        .sidecar()
+        .command("query-1", "query", json!({"text": "write a file"}));
+    let callback = fixture.sidecar().next_callback();
+    assert_eq!(callback["toolName"], "Read");
+    let identifier = callback["id"].as_str().expect("callback id").to_owned();
+    fixture.sidecar().respond_callback(&identifier, "deny");
+    let terminal = fixture.sidecar().wait_for_turn_end_record();
+    assert_eq!(terminal["isError"], false, "the fake turn still completes");
+    let observations = exit_after_close(&mut fixture);
+    assert_eq!(observations["permissionRequestsSent"], 1);
+    let answers = observations["permissionAnswers"]
+        .as_array()
+        .expect("native permission answers");
+    assert_eq!(answers.len(), 1);
+    assert_eq!(
+        answers[0]["response"]["response"]["behavior"], "deny",
+        "the native received the host denial: {answers:?}"
+    );
+    assert_eq!(
+        fixture.sdk_observations()["permissionAnswers"][0]["behavior"],
+        "deny"
+    );
+    assert_eq!(
+        fixture.sidecar().callback_tool_names(),
+        vec!["Read".to_owned()],
+        "a mediated denial has a callback and decision; a managed denial has neither"
+    );
+}
+
+#[test]
+fn the_managed_denial_revision_is_recorded_only_as_probe_evidence() {
+    let fixture = ProbeFixture::start("managed-deny", &|_| {});
+    fixture.bind_peer("0.3.319", "2.1.319");
+    let run = fixture.run(
+        "0.3.319",
+        "darwin-arm64",
+        "managed-deny",
+        None,
+        120_000,
+        &[],
+    );
+    assert_eq!(
+        run.status, 0,
+        "the managed-denial fake runs: {}",
+        run.stderr
+    );
+    let evidence = run.evidence.expect("probe evidence");
+    assert_eq!(evidence["behaviorRevision"], "claude-agent.sdk-v2");
+    assert_eq!(evidence["probeOnly"], true);
+    assert_eq!(evidence["productionAdmission"], false);
+    assert_eq!(evidence["failure"], Value::Null);
+    assert!(
+        evidence["records"]
+            .as_array()
+            .expect("probe records")
+            .iter()
+            .any(|record| record["event"] == "message" && record["type"] == "result")
+    );
+    let native = fixture.native_observations();
+    assert_eq!(native["permissionRequestsSent"], 0);
+    assert_eq!(native["permissionAnswers"], json!([]));
+}
+
+#[test]
 fn interrupt_reaches_the_native_and_the_turn_settles() {
     let mut fixture = fixture("abortable-turn");
     assert_eq!(open(&mut fixture)["success"], true);
@@ -1130,6 +1198,15 @@ fn a_join_timeout_is_failed_cleanup_even_when_the_kill_is_observed() {
     assert_eq!(
         evidence["nativeExit"]["timedOut"], true,
         "the timeout is recorded: {evidence}"
+    );
+    assert_eq!(evidence["nativeExit"]["join"], "killed");
+    assert_eq!(evidence["nativeExit"]["observed"], true);
+    let pids = evidence["nativePids"].as_array().expect("recorded pids");
+    assert_eq!(pids.len(), 1, "one native was started: {evidence}");
+    let pid = pids[0].as_i64().expect("native pid");
+    assert!(
+        !process_is_alive(pid),
+        "native {pid} survived the join timeout"
     );
     assert_ne!(
         evidence["failure"],

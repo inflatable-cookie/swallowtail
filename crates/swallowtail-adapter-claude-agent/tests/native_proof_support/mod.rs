@@ -604,6 +604,8 @@ pub const PROBE_ADMISSION_SCHEMA: &str =
 pub const PROBE_OPTIONS: &str =
     include_str!("../fixtures/claude-agent-sdk-native-proof/probe-options.json");
 const PROBE_RUNNER: &str = include_str!("probe-runner.mjs");
+const EXECUTION_DIGESTS: &str =
+    include_str!("../fixtures/claude-agent-sdk-native-proof/probe-execution.sha256");
 const PROBE_FAKE_NATIVE: &str = include_str!("fake-native.mjs");
 const PROBE_FAKE_SDK: &str = include_str!("fake-sdk-native-wire.mjs");
 const MANAGED_DENIAL_CONTRACT: &str =
@@ -805,6 +807,34 @@ pub fn verify_probe_admission() -> Result<(), String> {
         return Err(
             "probe runner does not pin the committed admission digest; re-pin it".to_owned(),
         );
+    }
+    // Detached checksums bind the final runner, ledger and plan without making
+    // the ledger hash the runner which already pins the ledger.
+    let mut expected_digests = String::new();
+    for (name, bytes) in [
+        (
+            "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs",
+            PROBE_RUNNER,
+        ),
+        (
+            "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-admission.json",
+            PROBE_ADMISSION,
+        ),
+        (
+            "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/probe-plan.json",
+            PLAN,
+        ),
+    ] {
+        use std::fmt::Write as _;
+        writeln!(
+            &mut expected_digests,
+            "{}  {name}",
+            sha256_hex(bytes.as_bytes())
+        )
+        .expect("writing into a String cannot fail");
+    }
+    if EXECUTION_DIGESTS != expected_digests {
+        return Err("detached execution checksums are stale or incomplete".to_owned());
     }
     // The request must name live digests, so a probe source edit cannot slip
     // into an execution request unnoticed.

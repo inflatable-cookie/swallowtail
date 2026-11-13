@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import pathlib
 import sys
@@ -79,6 +80,19 @@ def check() -> int:
             failures.append(f"{label}: {schema_path} is missing")
             continue
         failures.extend(validate(load(document_path), load(schema_path), label))
+    # Detached from the admission: the runner pins the admission, while this
+    # record names all three final files without a mutual-hash cycle.
+    execution_sources = [
+        pathlib.Path("crates/swallowtail-adapter-claude-agent/tests/native_proof_support/probe-runner.mjs"),
+        FIXTURE / "probe-admission.json",
+        FIXTURE / "probe-plan.json",
+    ]
+    expected = "".join(
+        f"{hashlib.sha256(source.read_bytes()).hexdigest()}  {source}\n"
+        for source in execution_sources
+    )
+    if (FIXTURE / "probe-execution.sha256").read_text() != expected:
+        failures.append("detached execution checksums are stale or incomplete")
     for failure in failures:
         print(failure, file=sys.stderr)
     if failures:

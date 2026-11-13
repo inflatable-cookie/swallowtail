@@ -10,9 +10,8 @@
 // peer, and labels every record it writes as probe-only. It never imports the
 // adapter, never edits a claim, and never widens the maintained pair map.
 //
-// Original-artifact mode stays disabled: it needs `authority.original_run_authorised`
-// in the admission ledger (false here) and the exact token it names, and the
-// committed ledger has neither.
+// Original-artifact mode is refused unconditionally. This runner has no
+// OS-level confinement; a ledger flag or authority token cannot supply it.
 
 import { createHash } from "node:crypto";
 import {
@@ -39,7 +38,7 @@ const EXIT = {
 /// SHA-256 of the committed probe admission. Changing it is a source change the
 /// fixture verifier cross-checks, not a runtime option: a caller cannot supply
 /// it, so a ledger and a peer rewritten to agree with each other are refused.
-const COMMITTED_ADMISSION_SHA256 = "3e38a835f6b987aecf08cebd32aeb74d28f9245e7ae80df7fcc3542477973b26";
+const COMMITTED_ADMISSION_SHA256 = "2afdd4dfd8a35b9eb7765fc5e55bd3e63d84acd32ef0b190ff212ec1f9735b2a";
 
 function parseArguments(argv) {
   const values = new Map();

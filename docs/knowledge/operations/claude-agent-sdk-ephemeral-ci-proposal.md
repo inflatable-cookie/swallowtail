@@ -1,22 +1,19 @@
 # SDK administrator-fixture CI proposal
 
-Environment-setup authority request for task 234, Q-009. **Not activated.**
-Tom answered decision `32d31615-702b-4e3b-a972-56b4fb18bae2` v2 on
-2026-11-13 at 09:50:47.946Z: "Dedicated fixture-only CI." The approved exact
-workflow is now applied. This permits preparation and validation only;
-privileged activation still needs authority naming the resulting workflow/source
-SHA. No canonical host path or privilege has been changed by this task.
+Fixture-only environment record for task 234, Q-009. **One attempt consumed.**
+Tom's decision `32d31615-702b-4e3b-a972-56b4fb18bae2` v2 authorized preparation.
+Decision `5912d4df-9a3c-4bfe-950e-8b2dad638bb2` v2 on 2026-11-13 at
+11:41:31.965Z separately answered "Authorize one fixture attempt." That attempt
+completed below. No replay, original/native execution or qualification follows.
 
-## Requested boundary
+## Approved boundary
 
-Authorize one separately reviewed, manually dispatched fixture-only workflow
-at its exact resulting source SHA: six fresh GitHub-hosted jobs, one attempt
-per OS/state, five minutes per job, no automatic retry. Use `ubuntu-latest`
-and `macos-latest`, preserving the existing ordinary CI jobs. Grant passwordless
-`sudo -n` only for exclusive fixture creation and identity-checked cleanup in
-these disposable jobs. All reads and hostile write attempts run as the normal
-runner uid. No new tools, OS policy, namespace configuration, VM management,
-SDK/native download, provider call or original execution is requested.
+One manually dispatched attempt covered six fresh GitHub-hosted jobs: one per
+OS/state, five minutes per job, no automatic retry. Ubuntu/macOS ordinary CI
+stayed separate. Privilege covered exclusive fixture creation and checked cleanup
+on those disposable hosts; canonical reads and hostile write attempts used the
+normal runner uid. No new tools, OS policy, namespace configuration, VM management,
+SDK/native download, provider call or original execution was authorized.
 
 The existing Node setup step is copied exactly. Refuse a runtime other than
 Node 22.23.2 or the observed per-platform digest; do not chase an updated image.
@@ -120,28 +117,57 @@ artifact ledger is unchanged and no artifact enters these jobs. Original
 activation remains unconditionally refused; the production pair stays
 0.3.317/2.1.317.
 
-Before any privileged activation, return the exact applied workflow/source SHA,
-adapter/reader/helper digests and this six-job scope for operator authority.
-The preparation ruling does not authorize dispatch. After exact-SHA activation
-authority and workflow registration, the dispatch command is:
+## Consumed immutable-source attempt
+
+Registration235 placed the exact workflow on main
+`1cbb29f459950a76fb9104fb10947fd87694e483`, workflow id `417208829`.
+Immediate preflight verified zero earlier dispatches, the exact queue ref,
+checked-out and remote workflow bytes, and the execution manifest.
+[Run 43420542403](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403)
+completed successfully, attempt 1, at execution source
+`bfd9341bde002eef64beb5560f2bfeb51d6b06a6`. Its manifest was
+`eceeb513d7adb0ad3a8889f2f39686dd64a23855f9490a401c21913b60f702e6`,
+not the earlier preparation manifest. Later documentation and main reconciliation
+do not transfer this authority to another SHA.
+
+All six logs recorded root-owned setup receipts, ordinary-uid canonical reads,
+expected false/false/true outcomes and successful identity-checked cleanup.
+The helper returned after removing only its checked policy/lease/directory;
+each independent GitHub cleanup step also concluded successfully. No separate
+post-cleanup filesystem inspection or original native discovery is claimed.
+
+| Platform/state | Job | Observed kernel | Effective denial |
+| --- | --- | --- | --- |
+| Linux absent | [131869140709](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403/job/131869140709) | 7.0.0-1016-aws, x86_64 | false |
+| Linux disabled | [131869140749](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403/job/131869140749) | 7.0.0-1019-azure, x86_64 | false |
+| Linux managed-deny | [131869140697](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403/job/131869140697) | 7.0.0-1019-azure, x86_64 | true |
+| Darwin absent | [131869140730](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403/job/131869140730) | 25.6.0, arm64 | false |
+| Darwin disabled | [131869140407](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403/job/131869140407) | 25.6.0, arm64 | false |
+| Darwin managed-deny | [131869140777](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403/job/131869140777) | 25.6.0, arm64 | true |
+
+Actual Node was 22.23.2 in every job. Linux Node SHA-256 was
+`3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327`;
+Darwin was `18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572`.
+Observed Python executable SHA-256 was
+`be9a2a5eada8c89c1c399fdfb8397179e877c20d8db0739c802f726d4d0e69fd`
+on Linux and `0f407a0ac747337b659538c9560e4fdd48b354dbdbe0a143276b56ee23899fb7`
+on Darwin. These are observations, not interpreter-custody admission.
+Every reader reported `nativeAdministratorDiscovery: false` and
+`originalActivation: false`.
+
+The historical command is retained below as a consumed attempt, not a new grant:
 
 ```sh
 gh workflow run sdk234-admin-fixture.yml \
   --repo inflatable-cookie/swallowtail \
   --ref ns-d7afab60-9a93-4414-95e7-61608a703ab7 \
-  -f source_sha=<exact-approved-source-sha> \
-  -f proposal_sha=<exact-approved-manifest-sha256>
+  -f source_sha=bfd9341bde002eef64beb5560f2bfeb51d6b06a6 \
+  -f proposal_sha=eceeb513d7adb0ad3a8889f2f39686dd64a23855f9490a401c21913b60f702e6
 ```
 
-Before dispatch, verify that the workflow ref resolves to the named source SHA;
-ref movement invalidates this request. Return the literal command and exact
-digests in the PR/request, without embedding this document's own commit SHA.
 GitHub's [workflow_dispatch prerequisite](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)
-requires the workflow file on the default branch. Read-only workflow inventory
-on 2026-11-13 listed only `.github/workflows/ci.yml`; registration/integration
-therefore remains an owner gate. This task neither merges nor registers it and
-does not substitute an automatic trigger. Runtime/workflow custody remains
-explicitly separate from this fixture-only branch-ref handoff.
+was supplied by235 before dispatch. Runtime/workflow custody stays separate from
+this fixture-only branch-ref handoff. No further fixture attempt is granted.
 
 A further original-artifact request still needs
 canonical injection proof, exact tuple/runtime custody and Nucleus admission.

@@ -20,3 +20,7 @@ activation still require their separate authority and proof.
 Applied Tom's dedicated fixture-only CI preparation ruling with the exact
 six-job workflow. Added actual workflow linting and a byte-bound routing
 exception; dispatch remains gated on exact-source authority and registration.
+
+Recorded the one separately authorized fixture attempt: all six immutable-source
+Linux/Darwin canonical settings jobs passed, with checked cleanup. The grant is
+consumed; fake canonical access supplies no native discovery or qualification.

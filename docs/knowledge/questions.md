@@ -303,3 +303,12 @@ Dispatch still needs authority naming the resulting workflow/source SHA and
 GitHub workflow registration. No privileged local setup or original activation
 follows from this answer.
 
+Tom decision `5912d4df-9a3c-4bfe-950e-8b2dad638bb2` v2 separately authorized
+one fixture-only attempt at `bfd9341bde002eef64beb5560f2bfeb51d6b06a6` after
+registration235. [Run 43420542403](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403)
+passed all six Linux/Darwin absent/disabled/managed-deny jobs, including checked
+cleanup. This establishes the owned canonical fixture environment; every reader
+reports `nativeAdministratorDiscovery: false`. The attempt is consumed. SDK
+runtime/source custody, confined original administrator discovery and exact
+original/native execution remain open; item 1 and all qualification limits stand.
+

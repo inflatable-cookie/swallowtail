@@ -85,7 +85,8 @@ The suite separately observes whether Linux permits
 `unshare --user --map-root-user --mount -- /bin/true`, retaining the actual exit
 and diagnostic. It neither installs a helper nor changes a mount/VM. A success
 is namespace capability evidence only. Darwin Seatbelt has no path-remap
-operation and the host administrator path is not provisioned by this task.
+operation. The separately authorized ephemeral fixture attempt below proves
+canonical fixture access without enabling original mode.
 
 ## Original activation gate and feasible proposal
 
@@ -94,10 +95,10 @@ Original mode refuses unconditionally. Missing:
 - A settled interpreter/source custody contract. Staging, Node/library hashes
   and child write denial do not resist hostile same-uid replacement of the
   supervisor, interpreter, libraries or host startup policy.
-- Genuine administrator-tier injection at the canonical path without host
-  mutation. The documented paths are `/Library/Application Support/ClaudeCode/managed-settings.json`
-  and `/etc/claude-code/managed-settings.json`. No host
-  file at either path is read, written or used as a fake negative target.
+- Canonical administrator discovery in the actual confined SDK/native path.
+  The dedicated fixture attempt proves owned canonical file access on both
+  hosts; it does not combine that environment with the original native or
+  prove that native's settings discovery. No local canonical file is used.
 - Exact original-artifact authority and a structurally declared Nucleus
   source-immutable author-side proof selector.
 
@@ -107,16 +108,22 @@ filesystem mapping where kernel namespace support is actually observed. Bind
 that host policy, qualified Node executable and frozen SDK/native artifacts;
 exercise the canonical-path mapping with owned fakes first. Darwin needs an
 existing provisioned boundary because Seatbelt cannot supply that mapping.
-This task grants no privileged helper, host provisioning or VM change.
+No privileged local helper, original-execution host provisioning or VM change
+is granted by this proposal.
 
 The planner's 2026-11-13 continuation requests a concrete
 [ephemeral-CI environment proposal](claude-agent-sdk-ephemeral-ci-proposal.md).
 It supplies the exact job diff, canonical fixture states and bounded root
 setup/cleanup commands. Tom's decision `32d31615-702b-4e3b-a972-56b4fb18bae2`
-v2 permits applying that workflow; exact-SHA privileged activation is still
-gated. Owned-scratch rehearsals test the fixture
+v2 permitted applying that workflow. Decision
+`5912d4df-9a3c-4bfe-950e-8b2dad638bb2` v2 separately authorized its one
+fixture-only attempt at source `bfd9341bde002eef64beb5560f2bfeb51d6b06a6`.
+[Run 43420542403](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403)
+passed all six platform/state jobs with canonical fake reads and checked
+cleanup. That authority is consumed; every reader explicitly reported no native
+administrator discovery or original activation. Owned-scratch rehearsals test the fixture
 lifecycle; they do not establish canonical injection or authorize provisioning.
-The proposed fixture-only authority is separate from custody and original
+The fixture-only authority is separate from custody and original
 SDK/native activation. Existing passing confinement evidence stays intact.
 
 Concrete Linux observation: [Ubuntu CI job 131785252340](https://github.com/inflatable-cookie/swallowtail/actions/runs/43395484971/job/131785252340)
@@ -125,8 +132,8 @@ x86_64, kernel `7.0.0-1019-azure`, Landlock ABI 8 and Node 22.23.2 (executable
 SHA-256 `3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327`).
 Its namespace probe exited 1: `unshare: write failed /proc/self/uid_map:
 Operation not permitted`. That runner cannot supply the proposed rootless
-canonical-path mapping. An owner-provided admitted boundary is required;
-this diagnostic authorizes no privileged fallback.
+canonical-path mapping. The later separately approved CI fixture setup does not
+change that rootless limit; this diagnostic authorizes no privileged fallback.
 
 The accepted `probe-plan.json` retains all exact wrapper/native identities for
 0.3.318/.319/.321/.322 and the .317 control on both selected platforms. No

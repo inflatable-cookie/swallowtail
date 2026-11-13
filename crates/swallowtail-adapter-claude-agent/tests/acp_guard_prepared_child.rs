@@ -540,10 +540,14 @@ fn checked_prepared_child_preserves_denial_without_permission_callback() {
 #[tokio::test]
 async fn checked_revocation_after_spawn_refuses_bootstrap_and_joins_children() {
     fn children() -> std::collections::BTreeSet<u32> {
-        let output = std::process::Command::new("/bin/ps")
+        let observer = std::process::Command::new("/bin/ps")
             .args(["-axo", "pid=,ppid="])
-            .output()
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::piped())
+            .spawn()
             .expect("owned child observation");
+        let observer_pid = observer.id();
+        let output = observer.wait_with_output().expect("observer joined");
         assert!(output.status.success());
         String::from_utf8(output.stdout)
             .expect("process identities")
@@ -552,7 +556,7 @@ async fn checked_revocation_after_spawn_refuses_bootstrap_and_joins_children() {
                 let mut values = line.split_whitespace();
                 let pid = values.next()?.parse().ok()?;
                 let parent = values.next()?.parse::<u32>().ok()?;
-                (parent == std::process::id()).then_some(pid)
+                (parent == std::process::id() && pid != observer_pid).then_some(pid)
             })
             .collect()
     }
@@ -569,9 +573,10 @@ async fn checked_revocation_after_spawn_refuses_bootstrap_and_joins_children() {
             ),
         );
         let started: Vec<_> = children().difference(&before).copied().collect();
-        assert!(
-            !started.is_empty(),
-            "spawn precedes the bootstrap future poll"
+        assert_eq!(
+            started.len(),
+            2,
+            "Node and its group owner precede bootstrap polling"
         );
         if revoke_runtime {
             host.runtime.revoke();

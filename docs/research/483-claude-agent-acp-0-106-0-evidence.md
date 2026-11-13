@@ -719,7 +719,8 @@ runtime/native/helper revocation before sending graph bytes and serializes the
 final admission-byte write under those custody locks. It releases every lock
 before an async wait. A real checked-host test revokes registration or runtime
 after spawn, before polling bootstrap, and observes refusal plus joined child
-and process-group-owner cleanup. All18 captured-child tests passed on installed
+and process-group-owner cleanup. The observer PID is excluded; both owned
+children must be present before revocation. All18 captured-child tests passed on installed
 26.11.0 with the inspected closure.
 
 The component now consumes host-owned principal lists and compares the approved

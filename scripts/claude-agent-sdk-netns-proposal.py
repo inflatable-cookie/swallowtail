@@ -384,6 +384,8 @@ def protocol(
         target=server.serve_forever, kwargs={"poll_interval": 0.01}
     )
     owned = []
+    host_events = []
+    started_at = time.monotonic()
     entered_supervision = False
     fds = []
     native_gate = os.pipe()
@@ -503,11 +505,39 @@ def protocol(
             lease.check()
             child = subprocess.Popen(command, **kwargs)
             owned.append(child)
+            original_poll = child.poll
+            noted = False
+
+            def observed_poll():
+                nonlocal noted
+                code = original_poll()
+                if code is not None and not noted:
+                    noted = True
+                    host_events.append(
+                        {
+                            "pid": child.pid,
+                            "exitCode": code,
+                            "at": time.monotonic() - started_at,
+                        }
+                    )
+                return code
+
+            child.poll = observed_poll
             ops.confirm_child(child)
             if lease.launched == 2:
                 os.write(native_gate[1], b"1")
             return child
 
+        original_write = os.write
+
+        def observed_write(fd, data):
+            if data.startswith(b'{"code":'):
+                host_events.append(
+                    {"exitNotificationFd": fd, "at": time.monotonic() - started_at}
+                )
+            return original_write(fd, data)
+
+        old.os = types.SimpleNamespace(**{**vars(os), "write": observed_write})
         old.subprocess = types.SimpleNamespace(
             Popen=spawn,
             PIPE=subprocess.PIPE,
@@ -528,6 +558,7 @@ def protocol(
                 driver_environment=driver_env,
                 cancelled=ops.protocol_cancelled,
             )
+            result["hostExitEvents"] = host_events
             result["custody"] = lease.observation()
             result["requests"] = requests
             result["ordinaryTcp"] = (

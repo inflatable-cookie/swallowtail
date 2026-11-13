@@ -60,7 +60,16 @@ class NamespaceProposalTests(unittest.TestCase):
                     mode=mode,
                     scenario="managed-deny" if mode == "sidecar" else "permission",
                 )
-                self.assertIsNone(result["failure"], result)
+                self.assertIsNone(
+                    result["failure"],
+                    {
+                        "failure": result["failure"],
+                        "hostExitEvents": (result["protocol"] or {}).get(
+                            "hostExitEvents"
+                        ),
+                        "driver": (result["protocol"] or {}).get("driver"),
+                    },
+                )
                 self.assertTrue(result["protocol"]["ordinaryTcp"])
                 self.assertEqual(len(result["protocol"]["requests"]), 1)
                 self.assertEqual(

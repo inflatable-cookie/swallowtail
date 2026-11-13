@@ -84,9 +84,14 @@ Tom decision `05d81f49-83da-42d0-b7ab-8a9bc29212ee` v2 authorizes
 application/registration of those exact bytes from source36fc153ac. The patch
 SHA256 is5b804c0693aff7fc1d09a8654f32ad4ab761354236c5f51154732760c85ae700;
 applied workflow SHA256 is07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19.
-Task236 owns default-branch registration. This PR applies the same workflow
-and narrow routing exception. Registration grants no execution; a fresh exact
-source and detached record need separate activation authority. No retry is granted.
+Task236 registered the same workflow and narrow routing exception on canonical
+main `93db082092203b1d87c2665c5b1d2a988191f709` (PR555). This branch
+reconciles that commit without duplicating either addition. Read-only GitHub
+verification on2026-11-13 reports workflow id417366274, path
+`.github/workflows/sdk234-netns-proof.yml`, state `active`, and zero
+`workflow_dispatch` runs. Registration grants no execution; the resulting
+fresh source and detached record need separate activation authority. No retry
+is granted. The historical proposal digest is not the current execution binding.
 
 The source record `claude-agent-sdk-netns.sha256` binds the coordinator, root
 monitor, child entry, ordinary-TCP fake, tests, admission, this contract, job

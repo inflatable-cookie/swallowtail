@@ -34,3 +34,8 @@ Applied the separately approved namespace-only workflow preparation and added
 private trusted-host SDK custody admission with input pinning, launch checks,
 revocation and owned-fake cleanup proof. Namespace dispatch and original/native
 activation still require exact-source authority; qualification is unchanged.
+
+Reconciled the registered namespace-only workflow from main without duplicating
+its workflow or routing exception, and refreshed the source record for a
+separately authorized immutable-source attempt. No dispatch or qualification
+increase is included.

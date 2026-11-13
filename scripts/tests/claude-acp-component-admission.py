@@ -34,21 +34,24 @@ def run(index, extra, failure=None):
 
 try:
     witness = run(0,[])
+    assert hashlib.sha256(witness['confinementPolicySource'].encode()).hexdigest()==witness['confinementPolicySha256']
+    assert hashlib.sha256(witness['confinementPolicySource'].replace(witness['ownedRoot'],'@OWNED_COMPONENT_ROOT@').encode()).hexdigest()==witness['confinementPolicyTemplateSha256']
     record=root/'host-runtime.json'
     record.write_text(json.dumps(witness['runtime']))
     observed=witness['results'][0]
     assert observed['rustRuntimeSha256']==witness['results'][1]['rustRuntimeSha256']
-    assert observed['launchPolicySha256']==witness['results'][1]['launchPolicySha256']
-    bindings=['--host-runtime-record',str(record),'--runtime-closure-sha256',witness['runtimeClosureSha256'],'--node-sha256',witness['runtime']['sha256']]
-    approved=run(1,bindings+['--rust-runtime-closure-sha256',observed['rustRuntimeSha256'],'--launch-policy-sha256',observed['launchPolicySha256']])
+    assert observed['launchPolicyRevisionSha256']==witness['results'][1]['launchPolicyRevisionSha256']
+    bindings=['--host-runtime-record',str(record),'--runtime-closure-sha256',witness['runtimeClosureSha256'],'--node-sha256',witness['runtime']['sha256'],'--confinement-policy-template-sha256',witness['confinementPolicyTemplateSha256']]
+    approved=run(1,bindings+['--rust-runtime-closure-sha256',observed['rustRuntimeSha256'],'--launch-policy-revision-sha256',observed['launchPolicyRevisionSha256']])
     assert approved['results'][0]['rustRuntimeSha256']==observed['rustRuntimeSha256']
-    run(2,bindings+['--rust-runtime-closure-sha256','00'*32,'--launch-policy-sha256',observed['launchPolicySha256']],'operator-approved runtime/policy identity mismatch')
-    run(3,bindings+['--rust-runtime-closure-sha256',observed['rustRuntimeSha256'],'--launch-policy-sha256','00'*32],'operator-approved runtime/policy identity mismatch')
+    run(2,bindings+['--rust-runtime-closure-sha256','00'*32,'--launch-policy-revision-sha256',observed['launchPolicyRevisionSha256']],'operator-approved runtime/policy identity mismatch')
+    run(3,bindings+['--rust-runtime-closure-sha256',observed['rustRuntimeSha256'],'--launch-policy-revision-sha256','00'*32],'operator-approved runtime/policy identity mismatch')
+    run(5,['--confinement-policy-template-sha256','00'*32],'approved confinement policy template mismatch')
     changed=json.loads(record.read_text()); changed['trustedGroups']=[]
     record.write_text(json.dumps(changed))
     changed_hash=hashlib.sha256(json.dumps(changed,sort_keys=True,separators=(',',':')).encode()).hexdigest()
-    run(4,['--host-runtime-record',str(record),'--runtime-closure-sha256',changed_hash,'--rust-runtime-closure-sha256',observed['rustRuntimeSha256'],'--launch-policy-sha256',observed['launchPolicySha256']],'runtime custody refused')
+    run(4,['--host-runtime-record',str(record),'--runtime-closure-sha256',changed_hash,'--rust-runtime-closure-sha256',observed['rustRuntimeSha256'],'--launch-policy-revision-sha256',observed['launchPolicyRevisionSha256']],'runtime custody refused')
     print(json.dumps(approved,sort_keys=True))
-    print('fake admission: approved Rust custody/policy matched; wrong custody, policy and principals refused before Node entry')
+    print('fake admission: approved Rust custody/policy matched; wrong custody, policy revision, principals and confinement template refused before Node entry')
 finally:
     shutil.rmtree(root)

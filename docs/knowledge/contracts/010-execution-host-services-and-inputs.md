@@ -273,20 +273,26 @@ addons and string code are not implicitly admitted. Unclassified source or
 edges refuse; there is no stock fallback.
 
 The Darwin idle-component owner additionally compares an approved Rust custody
-identity and launch-policy digest, rather than treating its own JSON hash or
+identity and launch-policy revision digest, rather than treating its own JSON hash or
 compound fingerprint as outside approval. Principals come from the host-owned
 record; the fake host resolves the macOS `admin` group (gid80 on the proved host).
-Other platforms refuse component execution. The existing local process-group
+The policy revision tag is distinct from confinement. Original mode also
+requires the approved exact normalized Seatbelt template digest before spawn;
+only the fresh owned scratch-root literal is substituted. The wrapper records
+the actual generated profile bytes and their digest, plus that template digest,
+so the confinement can be reconstructed. Other platforms refuse component execution. The existing local process-group
 owner requires the pinned root-owned `/bin/sleep`: the component's process-exec
 allowlist contains only that helper, selected Node and the initial owned Rust
-executable. Libraries are read/map-only. Readable `/bin/echo` must fail an exec
+executable. Libraries are read/map-only. The inherited policy deliberately permits the idle
+class to exec `/bin/sleep`; this is not a hostile-JavaScript sandbox. Readable `/bin/echo` must fail an exec
 canary; file and network canaries remain independent.
 
 The selected Darwin owner uses an absolute Mach-O Node path, no `pre_exec`,
 uid/gid/group/chroot/session changes or working directory. The retained Rust1.97.1
 standard-library source shows this command takes synchronous `posix_spawnp`
-with a process-group attribute; nonzero errors propagate. This bounds the
-selected build's spawn path, not hostile-user verified execution. The host
+with a process-group attribute; nonzero errors propagate. This is source evidence for the
+selected build's spawn path, not runtime exec tracing or hostile-user verified
+execution. The host
 coordinates runtime, loader and helper custody through bootstrap admission.
 
 The idle guard patch is appended after module evaluation. It does not intercept

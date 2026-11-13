@@ -232,12 +232,12 @@ mod probe {
         if input["rustRuntimeSha256"]
             .as_str()
             .is_some_and(|expected| decode(expected).ok() != Some(runtime_identity))
-            || input["launchPolicySha256"]
+            || input["launchPolicyRevisionSha256"]
                 .as_str()
                 .is_some_and(|expected| decode(expected).ok() != Some(host_policy))
             || (mode == "original"
                 && (!input["rustRuntimeSha256"].is_string()
-                    || !input["launchPolicySha256"].is_string()))
+                    || !input["launchPolicyRevisionSha256"].is_string()))
         {
             return Err("operator-approved runtime/policy identity mismatch".into());
         }
@@ -361,7 +361,7 @@ mod probe {
         let value = result?;
         println!(
             "{}",
-            serde_json::json!({"scope":"idle-class-component-only","mode":mode,"control":control,"graph":graph_summary,"runtimeSha256":runtime_source.iter().map(|b|format!("{b:02x}")).collect::<String>(),"rustRuntimeSha256":runtime_identity.iter().map(|b|format!("{b:02x}")).collect::<String>(),"launchPolicySha256":host_policy.iter().map(|b|format!("{b:02x}")).collect::<String>(),"compoundFingerprint":fingerprint.iter().map(|b|format!("{b:02x}")).collect::<String>(),"witness":value})
+            serde_json::json!({"scope":"idle-class-component-only","mode":mode,"control":control,"graph":graph_summary,"runtimeSha256":runtime_source.iter().map(|b|format!("{b:02x}")).collect::<String>(),"rustRuntimeSha256":runtime_identity.iter().map(|b|format!("{b:02x}")).collect::<String>(),"launchPolicyRevisionSha256":host_policy.iter().map(|b|format!("{b:02x}")).collect::<String>(),"compoundFingerprint":fingerprint.iter().map(|b|format!("{b:02x}")).collect::<String>(),"witness":value})
         );
         Ok(())
     }

@@ -772,3 +772,45 @@ Both serial launches preserve the12/15 control versus0/0 guard distinction,
 settings and joined modeled work. These changed bytes need fresh retained
 component review and exact original authority. Wider permission/native and
 qualification findings remain open; no claim or execution gate was waived.
+
+### Conditional component disposition: confinement and prefix identity
+
+The retained reviewer passed the repaired fake witness and conditionally
+accepted scheduling a separate original-component authority request. It does
+not qualify the route. The remaining confinement naming/binding and per-hop
+prefix conditions are addressed here.
+
+`launchPolicyRevisionSha256` now names the revision tag0af0…95da. It is not the
+Seatbelt profile hash. Original mode separately requires an approved
+`confinementPolicyTemplateSha256`, checked before spawn against the exact
+profile with only the fresh owned scratch-root literal replaced by
+`@OWNED_COMPONENT_ROOT@`. No other policy field is substituted. Each attempt
+records its actual profile bytes, actual profile SHA256, template SHA256 and
+owned root, permitting independent reconstruction. Wrong template approval is
+an additional fake refusal before Node entry.
+
+The observed installed-runtime template SHA256 is
+`50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab`.
+The fresh fake profile SHA256 is
+`d389538b007acfc736d0415c5f041ff10ab2cd67a75d16c2b730e8cb27477c27`;
+its complete source is retained with the witness. The updated first-party
+owner SHA256 is
+`f5fafa02ca0892fb1580d8fcaffbffb72f56b4c4e054e0e8d02c3fa29e564588`.
+Matching approval succeeds; wrong Rust custody, policy revision, principals
+and confinement template all refuse. Control12/15 and guard0/0 remain joined
+with settings intact.
+
+`idle-prefix-inventory.json` records a separate read of each of the eight
+selected shipped modules, verifying its complete class digest before hashing
+the prefix. All eight prefixes are1558bytes and match9178…653b, across the two
+complete-module digest groups. The exact ledger, hop set, per-hop class and
+prefix digests are regression-pinned; no endpoint inference or original module
+execution was used.
+
+The review caveats remain explicit: Rust1.97.1 `posix_spawnp` is source evidence,
+not runtime exec tracing; Linux original mode refuses;26.11.0 proof is exact to
+that installed invocation and22.23.2 remains historical. The inherited sandbox
+permits `/bin/sleep` for the host's group owner, so the idle class could exec it;
+this is not a hostile-JavaScript sandbox. `/bin/echo` remains the denied-exec
+counterexample. Full native/permission, platform and exact HTTP MCP gates and
+the0.100.0 ceiling remain unchanged.

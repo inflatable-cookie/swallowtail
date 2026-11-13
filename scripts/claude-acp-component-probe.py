@@ -135,7 +135,8 @@ def main():
     parser.add_argument("--runtime-closure-sha256")
     parser.add_argument("--host-runtime-record", type=Path)
     parser.add_argument("--rust-runtime-closure-sha256")
-    parser.add_argument("--launch-policy-sha256")
+    parser.add_argument("--launch-policy-revision-sha256")
+    parser.add_argument("--confinement-policy-template-sha256")
     parser.add_argument("--hop")
     parser.add_argument("--package", type=Path)
     args = parser.parse_args()
@@ -145,7 +146,7 @@ def main():
     node_hash = digest(node)
     if args.node_sha256 and node_hash != args.node_sha256:
         raise ValueError("Node executable identity changed")
-    if args.original and (not args.node_sha256 or not args.runtime_closure_sha256 or not args.rust_runtime_closure_sha256 or not args.launch_policy_sha256 or not args.host_runtime_record):
+    if args.original and (not args.node_sha256 or not args.runtime_closure_sha256 or not args.rust_runtime_closure_sha256 or not args.launch_policy_revision_sha256 or not args.host_runtime_record or not args.confinement_policy_template_sha256):
         raise ValueError("original runtime binding absent")
     if args.original and (not args.hop or not args.package):
         raise ValueError("exact original component inputs absent")
@@ -206,10 +207,14 @@ def main():
 (allow signal (target children) (target same-sandbox))
 (allow sysctl-read (sysctl-name-regex #"^hw\\.") (sysctl-name "kern.osrelease" "kern.ostype" "kern.osversion" "kern.version" "kern.argmax" "kern.hostname" "kern.osproductversion" "kern.osproductversioncompat"))
 '''
+        policy_hash = hashlib.sha256(policy.encode()).hexdigest()
+        policy_template_hash = hashlib.sha256(policy.replace(str(root), "@OWNED_COMPONENT_ROOT@").encode()).hexdigest()
+        if args.confinement_policy_template_sha256 and policy_template_hash != args.confinement_policy_template_sha256:
+            raise ValueError("approved confinement policy template mismatch")
         (root / "policy.sb").write_text(policy)
         results = []
         for control in (True, False):
-            (root / "input.json").write_text(json.dumps({"root":str(root),"node":str(node),"mode":"fake" if args.fake else "original","hop":args.hop,"control":control,"dependencies":dependencies,"nodeSha256":node_hash,"trustedUsers":runtime_record["trustedUsers"],"trustedGroups":runtime_record["trustedGroups"],"systemTreeOwner":runtime_record["systemTreeOwner"],"rustRuntimeSha256":args.rust_runtime_closure_sha256,"launchPolicySha256":args.launch_policy_sha256}))
+            (root / "input.json").write_text(json.dumps({"root":str(root),"node":str(node),"mode":"fake" if args.fake else "original","hop":args.hop,"control":control,"dependencies":dependencies,"nodeSha256":node_hash,"trustedUsers":runtime_record["trustedUsers"],"trustedGroups":runtime_record["trustedGroups"],"systemTreeOwner":runtime_record["systemTreeOwner"],"rustRuntimeSha256":args.rust_runtime_closure_sha256,"launchPolicyRevisionSha256":args.launch_policy_revision_sha256}))
             command = [str(sandbox),"-f",str(root/"policy.sb"),str(root/"owner"),str(root/"input.json")]
             child = subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env={"PATH":"/usr/bin:/bin","HOME":str(root),"TMPDIR":str(root),"TMP":str(root),"TEMP":str(root)}, preexec_fn=limits)
             stdout, stderr = bounded_output(child)
@@ -220,7 +225,7 @@ def main():
             if graph.get("files") != 2 or graph.get("nativeBindings") != 0 or graph.get("platformPrograms") != 0 or graph.get("entrySha256") != digest(SUPPORT/"entry.mjs"):
                 raise ValueError("component graph scope widened")
             results.append(result)
-        print(json.dumps({"scope":"idle-class-component-only","mode":"fake" if args.fake else "original","hop":args.hop,"ownerSha256":args.owner_sha256,"runtime":runtime_record,"runtimeClosureSha256":closure_hash,"sandboxSha256":digest(sandbox),"policySha256":hashlib.sha256(policy.encode()).hexdigest(),"host":{"system":platform.system(),"machine":platform.machine(),"kernel":platform.release()},"results":results},sort_keys=True))
+        print(json.dumps({"scope":"idle-class-component-only","mode":"fake" if args.fake else "original","hop":args.hop,"ownerSha256":args.owner_sha256,"runtime":runtime_record,"runtimeClosureSha256":closure_hash,"sandboxSha256":digest(sandbox),"confinementPolicySha256":policy_hash,"confinementPolicyTemplateSha256":policy_template_hash,"confinementPolicySource":policy,"ownedRoot":str(root),"host":{"system":platform.system(),"machine":platform.machine(),"kernel":platform.release()},"results":results},sort_keys=True))
         success = True
     finally:
         if success:

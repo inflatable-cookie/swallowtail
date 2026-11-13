@@ -411,9 +411,36 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
         include_str!("fixtures/claude-agent-acp-0.106.0/guarded-probe-proposal.json");
     assert_eq!(
         format!("{:x}", Sha256::digest(PROPOSAL.as_bytes())),
-        "4fac13ceac337d4088031ddab305bb4656b352ec0bc98b56873c6fb5e9699e48"
+        "321f2fe458175f63f35031a93c7776c750d79bf1978c82f2579a8defe14ec878"
     );
     let plan: Value = serde_json::from_str(PROPOSAL).expect("proposal JSON");
+    const PREFIXES: &str =
+        include_str!("fixtures/claude-agent-acp-0.106.0/idle-prefix-inventory.json");
+    assert_eq!(
+        format!("{:x}", Sha256::digest(PREFIXES.as_bytes())),
+        "e331249c2335dfc09abf0636d15225003debf2be9fba8ee0a6c9d6e36bb1f4a3"
+    );
+    let prefixes: Value = serde_json::from_str(PREFIXES).expect("per-hop prefix ledger");
+    let inputs = plan["component_stage"]["inputs"]
+        .as_object()
+        .expect("component inputs");
+    assert_eq!(
+        prefixes["hops"]
+            .as_object()
+            .expect("prefix hops")
+            .keys()
+            .collect::<BTreeSet<_>>(),
+        inputs.keys().collect::<BTreeSet<_>>()
+    );
+    for (hop, input) in inputs {
+        let row = &prefixes["hops"][hop];
+        assert_eq!(row["source_sha256"], input["class_sha256"]);
+        assert_eq!(
+            row["prefix_sha256"],
+            plan["component_stage"]["top_level_admission"]["audited_prefix_sha256"]
+        );
+        assert_eq!(row["prefix_bytes"], 1558);
+    }
     let registry: Value = serde_json::from_str(REGISTRY).expect("registry JSON");
     let dependencies: Value = serde_json::from_str(DEPENDENCIES).expect("dependency JSON");
     for (name, source) in [

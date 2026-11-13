@@ -388,7 +388,7 @@ def protocol(
     started_at = time.monotonic()
     entered_supervision = False
     fds = []
-    native_gate = os.pipe()
+    native_gate = lease.take_pipe(3)
     try:
         canary_port = ops.endpoint_ready(server.server_port)
         (root / "native-config.json").write_text(
@@ -422,7 +422,7 @@ def protocol(
             "--permission-mode",
             "default",
         ]
-        fds = [os.pipe() for _ in range(3)]
+        fds = [lease.take_pipe(index) for index in range(3)]
         native_fds = (fds[0][0], fds[1][1], fds[2][1])
         driver_fds = (fds[0][1], fds[1][0], fds[2][0])
         (root / "confined-config.json").write_text(
@@ -524,28 +524,6 @@ def protocol(
 
             child.poll = observed_poll
             ops.confirm_child(child)
-            if (
-                mode == "sidecar"
-                and not ops.kernel
-                and lease.launched == 1
-                and Path("/usr/sbin/lsof").is_file()
-            ):
-                inspection = subprocess.run(
-                    ["/usr/sbin/lsof", "-n", "-P", "-p", str(child.pid)],
-                    capture_output=True,
-                    text=True,
-                    timeout=2,
-                )
-                host_events.append(
-                    {
-                        "nativePipes": [
-                            row
-                            for row in inspection.stdout.splitlines()
-                            if "PIPE" in row
-                        ],
-                        "relayFds": [native_fds, driver_fds],
-                    }
-                )
             if lease.launched == 2:
                 os.write(native_gate[1], b"1")
             return child
@@ -559,7 +537,9 @@ def protocol(
                 )
             return original_write(fd, data)
 
-        old.os = types.SimpleNamespace(**{**vars(os), "write": observed_write})
+        old.os = types.SimpleNamespace(
+            **{**vars(os), "write": observed_write, "pipe": lambda: lease.take_pipe(4)}
+        )
         old.subprocess = types.SimpleNamespace(
             Popen=spawn,
             PIPE=subprocess.PIPE,
@@ -581,6 +561,7 @@ def protocol(
                 cancelled=ops.protocol_cancelled,
             )
             result["hostExitEvents"] = host_events
+            result["stdioDescriptors"] = list(native_fds + driver_fds + native_gate)
             result["custody"] = lease.observation()
             result["requests"] = requests
             result["ordinaryTcp"] = (

@@ -122,6 +122,7 @@ class Lease:
         self.revoked = False
         self.closed = False
         self.files = {}
+        self.reserved = {}
         self.commands = None
         self.launched = 0
         self.kernel_mappings = runtime.get("kernelMappings", [])
@@ -145,6 +146,11 @@ class Lease:
         ):
             raise Refused("runtime_custody_binding_missing")
         try:
+            for index in range(5):
+                pair = os.pipe()
+                self.reserved[index] = pair
+                if max(pair) >= 64:
+                    raise Refused("bounded_stdio_descriptors_unavailable")
             self.bind(node, expected)
             for name, sha in runtime["libraries"].items():
                 self.bind(name, sha)
@@ -160,7 +166,21 @@ class Lease:
 
     @property
     def descriptors(self):
-        return {row[0] for row in self.files.values()}
+        return {row[0] for row in self.files.values()} | {
+            fd for pair in self.reserved.values() for fd in pair
+        }
+
+    def take_pipe(self, index):
+        self.check()
+        if index not in self.reserved:
+            raise Refused("owned_pipe_reservation_missing")
+        return self.reserved.pop(index)
+
+    def release_reservations(self):
+        for pair in self.reserved.values():
+            for fd in pair:
+                os.close(fd)
+        self.reserved.clear()
 
     def bind(self, name, expected=None):
         self.check()
@@ -258,6 +278,7 @@ class Lease:
 
     def close(self):
         if not self.closed:
+            self.release_reservations()
             for fd, _, _ in self.files.values():
                 os.close(fd)
             self.closed = True

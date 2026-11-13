@@ -408,6 +408,7 @@ class NamespaceProposalTests(unittest.TestCase):
         self.assertEqual(admitted["decision"], "89db0f25-dc94-4feb-b447-8b9fabe52561")
         self.assertEqual(admitted["inputs"][str(self.node)], self.node_sha)
         self.assertEqual(admitted["launches"], 2)
+        self.assertLess(max(result["protocol"]["stdioDescriptors"]), 64)
         self.assertFalse(admitted["verifiedExecutionPrimitive"])
         self.assertFalse(admitted["hostileSameUserReplacementCovered"])
 

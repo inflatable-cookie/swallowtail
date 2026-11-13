@@ -397,6 +397,7 @@ def launch(args, files, core, lease):
             os._exit(78)
     os.close(write)
     os.close(answer_read)
+    lease.release_reservations()  # Only the guest may retain payload pipe ends.
     guest_namespace = None
     canary = None
     phases = []

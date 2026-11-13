@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Private fake-only Darwin probe supervisor; original activation is absent.
+"""Private fake-only Darwin/Linux probe supervisor; original activation is absent.
 
 The trusted caller binds the detached source record. This host still lacks a
 settled same-user interpreter-custody contract. Never use this for vendor code.
@@ -16,10 +16,12 @@ import platform
 import resource
 import selectors
 import signal
+import socket
 import stat
 import subprocess
 import tempfile
 import time
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SUPPORT = Path("crates/swallowtail-adapter-claude-agent/tests/native_proof_support")
@@ -29,10 +31,17 @@ FIXTURE = Path(
 RECORD = FIXTURE / "confined-execution.sha256"
 SOURCES = (
     Path("scripts/claude-agent-sdk-confined-probe.py"),
+    Path("scripts/claude-agent-sdk-confined-linux.py"),
+    Path("scripts/tests/claude-agent-sdk-confined-probe.py"),
+    Path(".config/nextest.toml"),
+    Path(
+        "crates/swallowtail-adapter-claude-agent/tests/claude_agent_sdk_native_proof_harness.rs"
+    ),
     SUPPORT / "confined-spawn.mjs",
     SUPPORT / "confined-runner.mjs",
     SUPPORT / "confined-hostile.mjs",
     SUPPORT / "confined-sidecar-driver.mjs",
+    SUPPORT / "confined-native-startup.mjs",
     SUPPORT / "probe-runner.mjs",
     SUPPORT / "fake-sdk-native-wire.mjs",
     SUPPORT / "fake-native.mjs",
@@ -103,11 +112,12 @@ def verified_sources(root, expected_record):
 def host_capabilities():
     return {
         "platform": f"{platform.system()}-{platform.machine()}",
+        "kernel": platform.release(),
         "sandbox_exec": Path("/usr/bin/sandbox-exec").is_file(),
         "original_mode": False,
         "gates": [
             "same-user interpreter/source custody is unresolved",
-            "Linux x64 concrete execution host and enforced boundary are missing",
+            "original administrator-tier settings injection is not admitted",
             "exact original-artifact authority and declared Nucleus proof are absent",
         ],
     }
@@ -149,7 +159,7 @@ def runtime_files(node):
     return sorted(seen), sorted(metadata)
 
 
-def policy(root, runtime, endpoint, metadata=()):
+def policy(root, runtime, endpoint, metadata=(), settings_file=None):
     literals = " ".join(f"(literal {json.dumps(str(file))})" for file in runtime)
     aliases = " ".join(f"(literal {json.dumps(str(file))})" for file in metadata)
     ancestors = " ".join(
@@ -157,6 +167,7 @@ def policy(root, runtime, endpoint, metadata=()):
         for file in (*runtime, *metadata)
     )
     network = ""
+    settings = f"(literal {json.dumps(str(settings_file))})" if settings_file else ""
     if endpoint is not None:
         host, port = endpoint.split(":")
         if host != "127.0.0.1" or not port.isdigit() or not 0 < int(port) < 65536:
@@ -171,7 +182,7 @@ def policy(root, runtime, endpoint, metadata=()):
 (allow file-read* (subpath "/System/Library") (subpath "/usr/lib")
   (subpath "/System/Volumes/Preboot/Cryptexes/OS") (subpath "/System/Cryptexes/OS")
   (literal "/dev/urandom") (literal "/dev/random") (literal "/dev/null")
-  (subpath {json.dumps(str(root))}) {literals} {aliases})
+  (subpath {json.dumps(str(root))}) {literals} {aliases} {settings})
 (allow file-write-data (literal "/dev/null")
   (literal {json.dumps(str(root / "workspace/storage.bin"))}))
 (allow process-exec {literals})
@@ -202,6 +213,7 @@ def supervise(
     cancel_on_barrier=False,
     driver_environment=None,
     cancelled=None,
+    extra_native_fds=(),
 ):
     """Observe actual children; fork denial makes these the entire child tree."""
     children = []
@@ -210,7 +222,9 @@ def supervise(
     observed = []
     selection = selectors.DefaultSelector()
     exit_read, exit_write = os.pipe()
-    owned_fds = set((*native_fds, *driver_fds, exit_read, exit_write))
+    owned_fds = set(
+        (*native_fds, *driver_fds, *extra_native_fds, exit_read, exit_write)
+    )
 
     def close_owned(descriptor):
         if descriptor in owned_fds:
@@ -226,7 +240,7 @@ def supervise(
             stdin=native_fds[0],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            pass_fds=(native_fds[0],),
+            pass_fds=(native_fds[0], *extra_native_fds),
             preexec_fn=limits,
             close_fds=True,
         )
@@ -248,7 +262,9 @@ def supervise(
         children.append(driver)
         # Close duplicate ends: only the driver writes native input. Native
         # output crosses the supervisor's bounded relay before the driver.
-        for descriptor in set((native_fds[0], *driver_fds, exit_read)):
+        for descriptor in set(
+            (native_fds[0], *driver_fds, *extra_native_fds, exit_read)
+        ):
             close_owned(descriptor)
         relays = {}
         for stream, destination, label in (
@@ -378,10 +394,14 @@ def run_fake(
     sdk_config=None,
     sdk_version="0.3.322",
     cancelled=None,
+    provider_protocol=False,
+    managed_deny=False,
 ):
-    if platform.system() != "Darwin" or platform.machine() != "arm64":
-        raise Refused("darwin_arm64_boundary_unavailable")
-    if not Path("/usr/bin/sandbox-exec").is_file():
+    is_linux = platform.system() == "Linux" and platform.machine() == "x86_64"
+    is_darwin = platform.system() == "Darwin" and platform.machine() == "arm64"
+    if not (is_linux or is_darwin):
+        raise Refused("selected_platform_boundary_unavailable")
+    if is_darwin and not Path("/usr/bin/sandbox-exec").is_file():
         raise Refused("sandbox_capability_missing_or_revoked")
     if not 0 < bound <= WALL_SECONDS or not 0 < output_limit <= MAX_OUTPUT:
         raise Refused("bound_may_only_tighten")
@@ -401,12 +421,20 @@ def run_fake(
     node_bytes = read_regular(node)
     if digest(node_bytes) != expected_node:
         raise Refused("node_substitution")
-    runtime, metadata = runtime_files(node)
+    if is_darwin:
+        runtime, metadata = runtime_files(node)
+    else:
+        runtime, metadata = [node], []
     identities = {str(file): digest(read_regular(file)) for file in runtime}
-    identities["/usr/bin/sandbox-exec"] = digest(read_regular("/usr/bin/sandbox-exec"))
-    identities["/System/Library/Sandbox/Profiles/dyld-support.sb"] = digest(
-        read_regular("/System/Library/Sandbox/Profiles/dyld-support.sb")
-    )
+    if is_darwin:
+        identities["/usr/bin/sandbox-exec"] = digest(
+            read_regular("/usr/bin/sandbox-exec")
+        )
+        identities["/System/Library/Sandbox/Profiles/dyld-support.sb"] = digest(
+            read_regular("/System/Library/Sandbox/Profiles/dyld-support.sb")
+        )
+    elif Path("/etc/ld.so.cache").is_file():
+        identities["/etc/ld.so.cache"] = digest(read_regular("/etc/ld.so.cache"))
     if cancelled is not None and cancelled():
         raise Refused("cancelled_before_launch")
     scratch = Path(os.environ["TMPDIR"]).resolve(strict=True)
@@ -424,6 +452,8 @@ def run_fake(
             (SUPPORT / "fake-native.mjs", "fake-native.mjs"),
             (SUPPORT / "confined-hostile.mjs", "confined-hostile.mjs"),
             (SUPPORT / "confined-sidecar-driver.mjs", "confined-sidecar-driver.mjs"),
+            (SUPPORT / "confined-native-startup.mjs", "confined-native-startup.mjs"),
+            (Path("scripts/claude-agent-sdk-confined-linux.py"), "linux-entry.py"),
             (
                 Path(
                     "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs"
@@ -446,6 +476,19 @@ def run_fake(
         # tree. Never try a user file or a real credential as a negative case.
         outside = fixture / "outside"
         outside.write_text("owned sentinel")
+        administrator = fixture / "administrator"
+        administrator.mkdir(mode=0o700)
+        managed_settings = administrator / "managed-settings.json"
+        managed_settings.write_text(
+            json.dumps({"permissions": {"denyInsteadOfPrompting": managed_deny}})
+        )
+        for tier in (root / "home", root / "workspace"):
+            (tier / ".claude").mkdir()
+            (tier / ".claude/settings.json").write_text(
+                json.dumps(
+                    {"permissions": {"denyInsteadOfPrompting": not managed_deny}}
+                )
+            )
         os.symlink(outside, root / "escape")
         native_config = {
             "scenario": scenario,
@@ -453,9 +496,35 @@ def run_fake(
             "outside": str(outside),
             "escape": str(root / "escape"),
             "forbiddenPort": forbidden_port,
+            "administratorSettings": str(managed_settings),
+            "providerProtocol": provider_protocol,
+            "expectedManagedDeny": managed_deny,
+            "inheritedEndpointFd": None,
+            "supervisorPid": os.getpid(),
         }
         if endpoint is not None:
-            native_config["endpoint"] = endpoint
+            # Validate before opening any socket or launching a peer.
+            host, separator, port = endpoint.rpartition(":")
+            if (
+                host != "127.0.0.1"
+                or not separator
+                or not port.isdigit()
+                or len(port) > 5
+                or not 0 < int(port) < 65536
+            ):
+                raise Refused("endpoint_refused")
+            native_config["providerEndpoint"] = endpoint
+            if not provider_protocol:
+                native_config["endpoint"] = endpoint
+        if provider_protocol:
+            native_config["scenario"] = "managed-deny" if managed_deny else "permission"
+        endpoint_fds = ()
+        if is_linux and endpoint is not None:
+            connection = socket.create_connection(("127.0.0.1", int(port)), timeout=2)
+            connection.settimeout(None)
+            descriptor = connection.detach()
+            endpoint_fds = (descriptor,)
+            native_config["inheritedEndpointFd"] = descriptor
         (root / "native-config.json").write_text(json.dumps(native_config))
         template = json.loads(snapshots[FIXTURE / "probe-options.json"])["options"]
         native_name = "fake-native.mjs" if attack is None else "confined-hostile.mjs"
@@ -479,6 +548,10 @@ def run_fake(
             "--permission-mode",
             "default",
         ]
+        # Validate policy before allocating descriptors, so an invalid endpoint
+        # or unavailable mechanism cannot leak a pipe into a later attempt.
+        if driver_mode not in ("probe", "sidecar"):
+            raise Refused("unknown_driver_mode")
         input_read, input_write = os.pipe()
         output_read, output_write = os.pipe()
         error_read, error_write = os.pipe()
@@ -492,7 +565,39 @@ def run_fake(
             "withoutSdkJoin": bool((sdk_config or {}).get("withoutSdkJoin")),
         }
         (root / "confined-config.json").write_text(json.dumps(config))
-        profile = policy(root, runtime, endpoint, metadata)
+        if is_darwin:
+            profile = policy(root, runtime, endpoint, metadata, managed_settings)
+            prefix = ["/usr/bin/sandbox-exec", "-p", profile, str(node)]
+        else:
+            runtime_roots = sorted(
+                {
+                    str(Path(name).resolve())
+                    for name in (
+                        "/usr/lib",
+                        "/lib",
+                        "/lib64",
+                        str(node.parent.parent / "lib"),
+                    )
+                    if Path(name).is_dir()
+                }
+            )
+            policy_data = {
+                "root": str(root),
+                "node": str(node),
+                "runtimeRoots": runtime_roots,
+                "writable": str(root / "workspace/storage.bin"),
+                "readFiles": [str(managed_settings), "/dev/urandom", "/dev/random"]
+                + (["/etc/ld.so.cache"] if Path("/etc/ld.so.cache").is_file() else []),
+            }
+            profile = json.dumps(policy_data, sort_keys=True)
+            (root / "linux-policy.json").write_text(profile)
+            prefix = [
+                sys.executable,
+                "-B",
+                str(root / "linux-entry.py"),
+                str(root / "linux-policy.json"),
+                str(node),
+            ]
         env = {
             "PATH": "/usr/bin:/bin",
             "HOME": str(root / "home"),
@@ -515,16 +620,11 @@ def run_fake(
             )
         elif driver_mode != "probe":
             raise Refused("unknown_driver_mode")
-        prefix = [
-            "/usr/bin/sandbox-exec",
-            "-p",
-            profile,
-            str(node),
-            "--no-addons",
-            "--openssl-config=/dev/null",
-        ]
+        prefix += ["--no-addons", "--openssl-config=/dev/null"]
         commands = [
-            prefix + native_args,
+            prefix
+            + ["--import", str(root / "confined-native-startup.mjs")]
+            + native_args,
             prefix
             + [
                 "--import",
@@ -551,6 +651,7 @@ def run_fake(
                 cancel_on_barrier,
                 driver_env,
                 cancelled,
+                endpoint_fds,
             )
             result["outsideUnchanged"] = outside.read_text() == "owned sentinel"
             result["storageBytes"] = (root / "workspace/storage.bin").stat().st_size
@@ -569,6 +670,7 @@ def run_fake(
                 "processLimit": 2,
                 "writableFileLimit": MAX_FILE,
                 "capabilities": host_capabilities(),
+                "settingsInjection": "owned-fake-administrator-file; original canonical path not injected",
             }
         )
         return result
@@ -590,7 +692,7 @@ def main():
         return 0
     if args.mode == "original":
         raise Refused(
-            "original_mode_unavailable: custody, Linux x64, authority and Nucleus proof gate"
+            "original_mode_unavailable: custody, administrator-tier injection, authority and Nucleus proof gate"
         )
     if not all((args.node, args.node_sha256, args.execution_sha256)):
         raise Refused("exact_node_and_execution_identity_required")

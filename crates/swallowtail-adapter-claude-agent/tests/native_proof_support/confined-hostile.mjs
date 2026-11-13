@@ -14,17 +14,21 @@ const attempt = (name, action) => {
 if (config.attack === "filesystem") {
   attempt("read_outside", () => fs.readFileSync(config.outside));
   attempt("stat_outside", () => fs.statSync(config.outside));
+  attempt("chmod_outside", () => fs.chmodSync(config.outside, 0o777));
   attempt("write_outside", () => fs.writeFileSync(config.outside, "changed"));
   attempt("symlink_escape", () => fs.readFileSync(config.escape));
   attempt("source_write", () => fs.writeFileSync(new URL("./confined-runner.mjs", import.meta.url), "changed"));
   attempt("extra_file", () => fs.writeFileSync("extra.bin", "changed"));
   attempt("new_directory", () => fs.mkdirSync("extra"));
   attempt("hardlink", () => fs.linkSync("storage.bin", "extra-link"));
+  attempt("signal_supervisor", () => process.kill(config.supervisorPid, 0));
 } else if (config.attack === "fork") {
   const child = spawnSync(process.execPath, ["-e", "process.exit(73)"], { timeout: 1000 });
   console.log(JSON.stringify({ name: "fork", code: child.error?.code, status: child.status }));
 } else if (config.attack === "network") {
-  const socket = net.connect({ host: "127.0.0.1", port: config.forbiddenPort });
+  // Bypass the fake provider carrier: this exercises the kernel's new-socket
+  // denial on Linux, and Seatbelt's destination denial on Darwin.
+  const socket = new net.Socket().connect({ host: "127.0.0.1", port: config.forbiddenPort });
   socket.once("connect", () => { console.log('"forbidden_connected"'); socket.end(); });
   socket.once("error", (error) => console.log(JSON.stringify({ name: "network", code: error.code })));
 } else if (config.attack === "storage") {

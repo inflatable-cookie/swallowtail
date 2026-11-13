@@ -12,6 +12,7 @@ import sys
 import tempfile
 import threading
 import unittest
+import platform
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from unittest import mock
 
@@ -30,12 +31,70 @@ class ConfinedProbeTests(unittest.TestCase):
         cls.node = Path(shutil.which("node")).resolve()
         cls.node_digest = PROBE.digest(PROBE.read_regular(cls.node))
         cls.execution_digest = PROBE.digest((ROOT / PROBE.RECORD).read_bytes())
+        cls.node_version = subprocess.run(
+            [str(cls.node), "--version"],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=5,
+            env={"PATH": "/usr/bin:/bin"},
+        ).stdout.strip()
+        if (
+            os.environ.get("GITHUB_ACTIONS") == "true"
+            and cls.node_version != "v22.23.2"
+        ):
+            raise RuntimeError(
+                f"CI Node identity differs: {cls.node_version}; expected v22.23.2"
+            )
+        cls.observations = {
+            "host": platform.uname()._asdict(),
+            "node": cls.node_version,
+            "nodeSha256": cls.node_digest,
+            "executionSha256": cls.execution_digest,
+            "originalActivation": False,
+        }
+
+    @classmethod
+    def tearDownClass(cls):
+        print(
+            "SDK_CONFINED_PLATFORM_PROOF "
+            + json.dumps(cls.observations, sort_keys=True),
+            flush=True,
+        )
 
     def run_probe(self, **kwargs):
         result = PROBE.run_fake(
             self.node, self.node_digest, self.execution_digest, **kwargs
         )
         result.pop("runtimeFiles", None)
+        actual = [
+            json.loads(line)
+            for line in result["stderr"].splitlines()
+            if line.startswith("{")
+        ]
+        runtimes = [
+            row["boundaryRuntime"] for row in actual if "boundaryRuntime" in row
+        ]
+        if runtimes:
+            expected_os, expected_arch = (
+                ("darwin", "arm64")
+                if platform.system() == "Darwin"
+                else ("linux", "x64")
+            )
+            self.assertEqual(
+                runtimes,
+                [
+                    {
+                        "platform": expected_os,
+                        "arch": expected_arch,
+                        "node": self.node_version,
+                    }
+                ],
+            )
+            self.observations["nativeRuntime"] = runtimes[0]
+        linux = [row["linuxBoundary"] for row in actual if "linuxBoundary" in row]
+        if linux:
+            self.observations["linuxBoundary"] = linux
         self.assertEqual(len(result["exits"]), 2, result)
         for row in result["exits"]:
             with self.assertRaises(ProcessLookupError):
@@ -56,15 +115,24 @@ class ConfinedProbeTests(unittest.TestCase):
             {
                 "read_outside",
                 "stat_outside",
+                "chmod_outside",
                 "write_outside",
                 "symlink_escape",
                 "source_write",
                 "extra_file",
                 "new_directory",
                 "hardlink",
+                "signal_supervisor",
             },
             result,
         )
+        if platform.system() == "Linux":
+            # Landlock does not mediate stat. Report the limit, never claim it.
+            self.assertFalse(
+                next(row for row in rows if row["name"] == "stat_outside")["denied"]
+            )
+            rows = [row for row in rows if row["name"] != "stat_outside"]
+            self.observations["filesystemMetadata"] = "stat is not mediated by Landlock"
         self.assertTrue(all(row["denied"] for row in rows), result)
         self.assertTrue(result["outsideUnchanged"])
 
@@ -181,14 +249,17 @@ class ConfinedProbeTests(unittest.TestCase):
                 thread.join(timeout=2)
 
     def test_missing_capability_and_wrong_node_refuse(self):
-        with mock.patch.object(PROBE.platform, "system", return_value="Linux"):
+        with mock.patch.object(PROBE.platform, "system", return_value="Unavailable"):
             with self.assertRaisesRegex(PROBE.Refused, "boundary_unavailable"):
                 self.run_probe()
         with self.assertRaisesRegex(PROBE.Refused, "node_substitution"):
             PROBE.run_fake(self.node, "0" * 64, self.execution_digest)
-        with mock.patch.object(PROBE.Path, "is_file", return_value=False):
-            with self.assertRaisesRegex(PROBE.Refused, "capability_missing_or_revoked"):
-                self.run_probe()
+        if platform.system() == "Darwin":
+            with mock.patch.object(PROBE.Path, "is_file", return_value=False):
+                with self.assertRaisesRegex(
+                    PROBE.Refused, "capability_missing_or_revoked"
+                ):
+                    self.run_probe()
         with self.assertRaisesRegex(PROBE.Refused, "unadmitted_tuple"):
             self.run_probe(sdk_version="0.3.323")
 
@@ -203,16 +274,55 @@ class ConfinedProbeTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2, result)
         self.assertEqual(
             json.loads(result.stdout)["refused"],
-            "original_mode_unavailable: custody, Linux x64, authority and Nucleus proof gate",
+            "original_mode_unavailable: custody, administrator-tier injection, authority and Nucleus proof gate",
         )
 
+    def test_administrator_path_mapping_capability_is_observed(self):
+        if platform.system() == "Darwin":
+            self.observations["administratorPathMapping"] = {
+                "available": False,
+                "reason": "Seatbelt has no filesystem path-remap operation; host administrator path is not provisioned",
+            }
+        elif shutil.which("unshare"):
+            command = [
+                shutil.which("unshare"),
+                "--user",
+                "--map-root-user",
+                "--mount",
+                "--",
+                "/bin/true",
+            ]
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=5,
+                env={"PATH": "/usr/bin:/bin"},
+            )
+            self.observations["administratorPathMapping"] = {
+                "available": result.returncode == 0,
+                "command": command,
+                "exitCode": result.returncode,
+                "stderr": result.stderr.strip(),
+                "originalInjectionProven": False,
+            }
+        else:
+            self.observations["administratorPathMapping"] = {
+                "available": False,
+                "reason": "unshare executable absent",
+            }
+
     def test_kernel_network_denial_has_independent_listener(self):
-        with socket.socket() as forbidden:
+        with socket.socket() as forbidden, socket.socket() as allowed:
             forbidden.bind(("127.0.0.1", 0))
             forbidden.listen()
             forbidden.settimeout(0.1)
+            allowed.bind(("127.0.0.1", 0))
+            allowed.listen()
             result = self.run_probe(
-                attack="network", forbidden_port=forbidden.getsockname()[1]
+                attack="network",
+                forbidden_port=forbidden.getsockname()[1],
+                endpoint=f"127.0.0.1:{allowed.getsockname()[1]}",
             )
             self.assertIn('"code":"EPERM"', result["native"], result)
             with self.assertRaises(socket.timeout):
@@ -253,6 +363,97 @@ class ConfinedProbeTests(unittest.TestCase):
             or '"denied":true' in result["native"],
             result,
         )
+
+    def test_provider_stream_and_isolated_fake_settings_injection(self):
+        requests = []
+        frames = [
+            {
+                "type": "message_start",
+                "message": {
+                    "id": "owned-message",
+                    "type": "message",
+                    "role": "assistant",
+                    "model": "owned-model",
+                    "content": [],
+                    "stop_reason": None,
+                    "stop_sequence": None,
+                    "usage": {"input_tokens": 21, "output_tokens": 0},
+                },
+            },
+            {
+                "type": "content_block_start",
+                "index": 0,
+                "content_block": {"type": "text", "text": ""},
+            },
+            {
+                "type": "content_block_delta",
+                "index": 0,
+                "delta": {"type": "text_delta", "text": "owned response"},
+            },
+            {"type": "content_block_stop", "index": 0},
+            {
+                "type": "message_delta",
+                "delta": {"stop_reason": "end_turn", "stop_sequence": None},
+                "usage": {"output_tokens": 5},
+            },
+            {"type": "message_stop"},
+        ]
+        stream = "".join(
+            f"event: {row['type']}\ndata: {json.dumps(row)}\n\n" for row in frames
+        ).encode()
+
+        class Endpoint(BaseHTTPRequestHandler):
+            def do_POST(self):
+                body = self.rfile.read(int(self.headers["Content-Length"]))
+                requests.append((self.path, dict(self.headers), json.loads(body)))
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream")
+                self.send_header("Content-Length", str(len(stream)))
+                self.end_headers()
+                self.wfile.write(stream)
+
+            def log_message(self, *args):
+                pass
+
+        with HTTPServer(("127.0.0.1", 0), Endpoint) as server:
+            thread = threading.Thread(target=server.serve_forever)
+            thread.start()
+            try:
+                callback = self.run_probe(
+                    provider_protocol=True,
+                    managed_deny=False,
+                    endpoint=f"127.0.0.1:{server.server_port}",
+                )
+                managed = self.run_probe(
+                    provider_protocol=True,
+                    managed_deny=True,
+                    endpoint=f"127.0.0.1:{server.server_port}",
+                )
+            finally:
+                server.shutdown()
+                thread.join(timeout=2)
+        for result in (callback, managed):
+            self.assertIsNone(result["failure"], result)
+            self.assertIn('"ownedProviderStream":', result["stderr"], result)
+            self.assertIn('"fakeAdministratorInjection":', result["stderr"], result)
+            self.assertIn(
+                '"originalAdministratorDiscovery":false', result["stderr"], result
+            )
+        self.assertIn('"event":"permission"', callback["driver"], callback)
+        self.assertNotIn('"event":"permission"', managed["driver"], managed)
+        self.assertEqual(len(requests), 2, requests)
+        for path, headers, body in requests:
+            self.assertEqual(path, "/v1/messages")
+            self.assertEqual(body["max_tokens"], 64)
+            self.assertTrue(body["stream"])
+            self.assertEqual(body["model"], "claude-sonnet-5-20250929")
+            self.assertNotIn("authorization", {name.lower() for name in headers})
+            self.assertNotIn("x-api-key", {name.lower() for name in headers})
+        self.observations["providerEndpoint"] = {
+            "requests": 2,
+            "frames": [row["type"] for row in frames],
+            "settings": "owned fake administrator tier; original injection unproven",
+        }
 
     def test_live_output_bound(self):
         result = self.run_probe(attack="output", output_limit=1024)

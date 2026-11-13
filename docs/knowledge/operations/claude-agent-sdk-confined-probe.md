@@ -1,145 +1,137 @@
 # Claude Agent SDK confined probe
 
-Private test/proof contract for Q-009. Original SDK/native execution remains
-disabled. Production claims and admission stay unchanged.
+Private fake-only execution contract for Q-009. Original/native execution and
+qualification remain gated. Production stays SDK 0.3.317/native 2.1.317.
 
-## Enforcement contract
+## Scope and identity
 
-The launcher owns a fresh directory under the run's TMPDIR. It reads and
-verifies the detached source ledger before staging executable source, the
-probe admission, options and fake peers. It rejects symlinks and changed
-bytes before import. Children receive explicit values for HOME, TMPDIR, TMP,
-TEMP, PATH and locale; no inherited Node startup options, proxies or credentials.
+The launcher owns a fresh fixture below the run's TMPDIR. It verifies the
+externally supplied digest of `confined-execution.sha256`, reads regular source
+files without symlinks, snapshots their bytes, and denies child writes to the
+staged code. The detached record binds the launcher, Linux entry, startup
+carriers, drivers, hostile fake, tests, CI test routing, accepted plan/admission/
+options/peers and unchanged shipped sidecar without a hash cycle. A replacement
+record chosen by a caller supplies no authority.
 
-On Darwin arm64, test a fixed topology: the supervisor starts one driver and
-one native, each under a deny-default Seatbelt policy. Neither may fork.
-The spawn hook receives a pipe-backed child supplied by the supervisor; it
-does not launch another process. The supervisor observes both wait results,
-including normal iterator completion with a hanging native. A missing SDK
-join method cannot supply cleanup evidence.
+Each run binds the resolved Node executable digest, explicit startup argv,
+policy bytes and accepted fake tuple. The native startup carrier reports its
+actual `process.platform`, `process.arch` and `process.version`. The suite
+prints `SDK_CONFINED_PLATFORM_PROOF` with host OS/kernel/architecture, Node
+version/digest, source-record digest and observed kernel/settings capabilities.
+Platform labels supply no qualification.
 
-Allow only TCP at the declared loopback port (Seatbelt's localhost filter
-covers IPv4 and IPv6), staged read-only sources and system runtime files.
-Writable paths must be a finite list with hard per-file size limits, so their
-sum bounds storage. Bound captured output during reading,
-not after the run. A monotonic deadline or cancellation stops both owned
-PIDs and observes both exits. No process-name killing or directory-tree size
-polling supplies enforcement.
+## Fixed enforcement boundary
 
-Use only owned hostile fakes and local endpoints to test each enforcement
-property. A failed or revoked mechanism refuses launch. A declared platform
-label, caller marker, callback or successful fake is never platform evidence.
+Two supervisor-owned sibling processes run the selected SDK driver and native
+fake. The one-use spawn hook connects their inherited pipes for the exact
+native argv/cwd; it creates no child. The supervisor accounts native bytes
+before relaying them, stops only its owned PIDs and observes both actual exits.
+SDK join promises supply no cleanup verdict. Normal iterator completion with a
+hanging native remains a failure. CLI SIGINT/SIGTERM requests the same cleanup.
 
-## Identity and custody
+Each invocation permits one attempt, two processes, ten wall seconds, ten CPU
+seconds per process, 64 descriptors per process, no core dump, one existing
+writable file capped at 1,000,000 bytes, and 1,000,000 captured stdout/stderr
+bytes. No sampled directory-size check supplies enforcement. Native Node
+threads share their process; Linux clone is restricted to that case.
 
-The detached ledger binds the final launcher, runner, startup shim, plan,
-admission, option template and fake sources without a hash cycle. Snapshot
-verified bytes into the owned tree and deny child writes to those paths.
-Bind the actual Node executable by digest and explicit startup argv.
+| Property | Darwin arm64 | Linux x64 |
+| --- | --- | --- |
+| Files | Deny-default Seatbelt; declared runtime paths, path ancestors, staged reads and one explicit fake administrator file | Landlock ABI >=3; staged/runtime/fake-settings reads, one writable file; missing ABI refuses launch |
+| Metadata | Outside-file stat and mutation denied | Stat is not mediated by Landlock; metadata-changing syscalls are denied by seccomp. This limit is explicit |
+| Egress | TCP at the declared loopback port, IPv4 or IPv6 | New sockets/connect/bind and io_uring denied; one already-connected owned endpoint descriptor may be inherited |
+| Processes | Further forks denied | fork/vfork denied; clone3 returns ENOSYS; clone requires CLONE_THREAD; foreign-process signal/control paths denied |
+| Storage | Finite writable-path policy plus hard RLIMIT_FSIZE | Finite writable-path policy plus hard RLIMIT_FSIZE; anonymous memfd and SysV IPC creation also denied |
 
-This does not establish resistance to another hostile process with the same
-uid replacing an interpreter or staged source between verification and use.
-Do not turn private directory permissions into an immutable-custody claim.
-Original activation requires a settled host custody contract as well as
-exact operator authority and Nucleus's declared source-immutable proof route.
+Children receive explicit PATH, HOME, TMPDIR/TMP/TEMP and locale values. They
+start with `--no-addons --openssl-config=/dev/null`; credentials, proxies and
+ambient Node startup variables are absent. Linux requires an unprivileged uid
+with no effective/permitted/ambient capabilities before applying no-new-privs,
+Landlock and seccomp. Kernel refusal is a failed proof, never a fallback.
 
-## Platform gates
+## Existing CI hosts
 
-The current worker host is Darwin arm64. Its installed sandbox interfaces
-are private/deprecated; successful tests establish only the tested host
-mechanism. Linux x64 needs an existing concrete host with tested kernel
-filesystem/network/process/storage constraints and the exact Node artifact.
-Do not install a helper, start or alter a VM, or substitute an arm64 guest.
+The planner's 2026-11-13 continuation names the existing Ubuntu nextest shards
+and macOS process job, both already configured with Node 22.23.2. No workflow,
+installation or VM change is required. The Rust test
+`confined_platform_boundary_matches_running_host` runs the Python suite in its
+own temporary fixture. The nextest override exposes its successful proof
+output on both jobs. CI refuses an actual Node version other than 22.23.2;
+architecture and kernel identity come from the running processes.
 
-Before original execution can be requested, retain an exact runnable command,
-host identities, all Node/SDK/native digests, settings injection, local endpoint
-protocol, finite attempts and limits, independent observations and cleanup.
-An unavailable mechanism or unresolved custody boundary blocks that request.
-No authority token enables missing confinement.
+Local fake tests may use the installed Node outside the qualified segment.
+That observation gives no Node support credit. CI proof must be read at the
+exact pushed head before naming either selected platform proven.
 
-## Runnable fake stage
+## Endpoint and settings proof
 
-From the repository root, with this run's TMPDIR/TMP/TEMP set:
+The owned endpoint accepts one bounded, credential-free POST to `/v1/messages`
+per protocol attempt. Its response streams message-start, content-block-start,
+text-delta, content-block-stop, message-delta and message-stop events. Independent
+observations bind the request, frame order, end-turn reason and usage counters.
+The fake native startup carrier validates the stream before the existing
+stdio-native fake exercises init, input/result/error/usage, permission denial,
+interrupt and joined close. This proves an owned protocol peer; it does not
+prove an original native's provider transport.
 
-```sh
-effigy validate:claude-agent-sdk-confined-probe
-effigy check:claude-agent-sdk-confined-probe
-effigy check:format:claude-agent-sdk-confined-probe
-effigy check:format:claude-agent-sdk-confined-javascript
-```
+A read-only owned administrator fixture sits outside HOME/workspace. Opposite
+user/project settings remain in those roots. The fake carrier reads only the
+explicit administrator fixture and records its digest and effective denial;
+callback denial and managed denial stay distinguishable. Records explicitly
+say `originalAdministratorDiscovery: false`. This carrier is not a genuine
+injection at the vendor's canonical administrator path.
 
-The direct fake command is `python3 -B
+The suite separately observes whether Linux permits
+`unshare --user --map-root-user --mount -- /bin/true`, retaining the actual exit
+and diagnostic. It neither installs a helper nor changes a mount/VM. A success
+is namespace capability evidence only. Darwin Seatbelt has no path-remap
+operation and the host administrator path is not provisioned by this task.
+
+## Original activation gate and feasible proposal
+
+Original mode refuses unconditionally. Missing:
+
+- A settled interpreter/source custody contract. Staging, Node/library hashes
+  and child write denial do not resist hostile same-uid replacement of the
+  supervisor, interpreter, libraries or host startup policy.
+- Genuine administrator-tier injection at the canonical path without host
+  mutation. The documented paths are `/Library/Application Support/ClaudeCode/managed-settings.json`
+  and `/etc/claude-code/managed-settings.json`. No host
+  file at either path is read, written or used as a fake negative target.
+- Exact original-artifact authority and a structurally declared Nucleus
+  source-immutable author-side proof selector.
+
+Feasible owner proposal: provide an already admitted ephemeral execution host
+with the canonical administrator fixture preprovisioned, or admit a private
+filesystem mapping where kernel namespace support is actually observed. Bind
+that host policy, qualified Node executable and frozen SDK/native artifacts;
+exercise the canonical-path mapping with owned fakes first. Darwin needs an
+existing provisioned boundary because Seatbelt cannot supply that mapping.
+This task grants no privileged helper, host provisioning or VM change.
+
+The accepted `probe-plan.json` retains all exact wrapper/native identities for
+0.3.318/.319/.321/.322 and the .317 control on both selected platforms. No
+unchanged artifact is downloaded again or executed. Original activation still
+needs exact authority through Nucleus; no token enables missing confinement.
+
+## Commands and sources
+
+Run the confined suite and its compile/format routes through Effigy:
+`validate:claude-agent-sdk-confined-probe`,
+`check:claude-agent-sdk-confined-probe`,
+`check:format:claude-agent-sdk-confined-probe`, and
+`check:format:claude-agent-sdk-confined-javascript`. Python uses installed Ruff
+0.14.1; JavaScript uses installed eclint plus separate `node --check` syntax
+proof. Selectors install nothing.
+
+The direct fake proposal is `python3 -B
 scripts/claude-agent-sdk-confined-probe.py --node <absolute-node>
---node-sha256 <exact-executable-digest> --execution-sha256
-<confined-execution.sha256-digest> --sdk-version 0.3.322`. Execution selectors
-remain the validation route. The source record is detached: it binds the
-launcher, both drivers, the startup shim, hostile fake, accepted runner/peers,
-old plan/admission/options, new plan and unchanged shipped sidecar. The trusted
-host must supply the expected record digest; computing a replacement from
-arbitrary caller bytes supplies no authority.
+--node-sha256 <exact-node-digest> --execution-sha256 <record-digest>
+--sdk-version 0.3.322`. Execution selectors remain the validation route.
 
-Each invocation makes one attempt, with two processes, ten wall seconds,
-ten CPU seconds per process, 64 descriptors per process, no core dump, one
-pre-existing writable file capped at 1,000,000 bytes, and 1,000,000 captured
-bytes across native and driver stdout/stderr. The supervisor counts native
-bytes before relaying them, stops at a monotonic deadline or controlled
-cancellation barrier (also SIGINT/SIGTERM on the CLI), kills only its actual
-PIDs and observes both wait results.
-Denied fork means those PIDs are the entire child tree. The native exit does
-not come from an SDK promise. Normal completion closes the pipes and joins;
-an iterator ending while a native hangs is a failed run.
-
-The options come from the accepted template. The startup shim supplies a
-single child-like pipe handle for the exact native argv and cwd, preserving
-the selected SDK flow. The shipped-sidecar driver imports the unchanged asset
-and drives open, query, callback denial and joined close. The prepared Rust
-driver remains covered by the existing native-proof harness selector; this
-does not claim a new public host/process capability.
-
-Children receive explicit environment values and start with `--no-addons`
-and `--openssl-config=/dev/null`. The launcher hashes the resolved installed
-Node executable and enumerated non-system Mach-O libraries, sandbox-exec and
-the installed dyld support profile. It snapshots verified repository bytes
-before import and denies child writes to executable sources. It does not
-freeze the interpreter, its libraries, the Python supervisor or OS policy
-against a hostile same-uid process. That custody gap remains a blocking gate.
-
-## Concrete host and missing original proof
-
-Read-only inventory on 2026-11-13 found Darwin arm64, macOS 26.6.2 / Darwin
-25.6.0, with installed sandbox-exec. The available PATH Node is 26.11.0,
-SHA-256 `832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc`.
-It is a fake-test tool, outside the qualified Node segment. No Node 26 support
-or qualification follows. Existing Colima profiles `effigy` and
-`effigy-release` are running aarch64 guests; neither is a Linux x64 proof host.
-No guest was started or changed.
-
-Original execution is not runnable or admitted on this inventory. Missing:
-
-- A settled interpreter/source custody contract; no weaker same-user
-  assumption is adopted here.
-- An existing Linux x64 host with exercised kernel confinement and exact
-  Node identity. The launcher refuses Linux rather than simulating Darwin
-  proof with a platform label.
-- Provisioned exact Node 22.23.2 or 22.23.3 executables on both selected
-  hosts. The accepted Darwin identities remain in the Node fixture; a Linux
-  identity is not invented from that evidence.
-- Isolated native administrator-tier settings injection without modifying
-  the host. `managed-deny` reproduces the outcome in an owned fake; it does
-  not prove a real binary's administrator discovery or settings enforcement.
-- A reviewed local provider-protocol endpoint and exact original commands
-  for every frozen pair. The fake endpoint records one owned POST; it is not
-  a proven substitute for the native's provider transport.
-- Exact operator authority and a declared Nucleus source-immutable
-  author-side proof selector. Do not activate that route from this launcher.
-
-The accepted `probe-plan.json` retains every wrapper/native digest for
-0.3.318/.319/.321/.322 and the .317 control on Darwin arm64 and Linux x64.
-Those artifacts are not downloaded again or executed. Until the missing
-capabilities and authority exist, Q-009 stays open and production remains
-SDK 0.3.317/native 2.1.317, with all older points and exclusions retained.
-
-Python formatting uses installed Ruff 0.14.1 through the repository's
-check-only helper. The JavaScript format route uses installed eclint with
-explicit two-space, UTF-8, LF and trailing-whitespace/final-newline rules;
-`node --check` separately proves syntax. No formatter is installed by a selector.
+Primary mechanism references: [Landlock limitations](https://docs.kernel.org/userspace-api/landlock.html),
+[nextest per-test output](https://www.nexte.st/docs/configuration/per-test-overrides/),
+[Messages streaming](https://platform.claude.com/docs/en/build-with-claude/streaming),
+and [administrator settings paths](https://code.claude.com/docs/en/settings).
+These describe mechanisms and protocol shapes; they supply no frozen-native
+behavior or qualification evidence.

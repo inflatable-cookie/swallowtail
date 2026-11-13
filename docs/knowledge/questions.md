@@ -281,9 +281,11 @@ Stage evidence (2026-11-12, Research 482):
 
 Confined fake continuation (task 234): the private
 [probe contract](operations/claude-agent-sdk-confined-probe.md) owns the
-Darwin enforcement boundary, executable fake proposal and remaining platform,
+Darwin/Linux fake enforcement boundary, executable proposal and remaining platform,
 settings and interpreter-custody gates. The new launcher never enables original
-mode. Its fake observations do not close item 1, qualify Node, adopt the v2
+mode. Existing Ubuntu/macOS Node 22.23.2 jobs supply observed fake-platform
+identities; canonical administrator injection and custody remain separate gates.
+Its fake observations do not close item 1, qualify Node, adopt the v2
 revision in production or qualify any SDK/native pair. Linux x64 admission,
 exact original-artifact authority and Nucleus proof execution remain open.
 

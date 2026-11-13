@@ -34,6 +34,55 @@ use swallowtail_runtime::InteractiveSessionHandle;
 const ACCEPTED_SDK: &str = "0.3.317";
 const ACCEPTED_NATIVE: &str = "2.1.317";
 
+/// Existing Ubuntu shards and the macOS process job run this with their real
+/// Node 22.23.2. The proof prints OS/arch/runtime identities on success.
+#[test]
+fn confined_platform_boundary_matches_running_host() {
+    let repository = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+        .ancestors()
+        .nth(2)
+        .expect("adapter crate has a workspace root");
+    let base = std::env::var_os("TMPDIR")
+        .or_else(|| std::env::var_os("RUNNER_TEMP"))
+        .expect("the run supplies TMPDIR or CI supplies RUNNER_TEMP");
+    let fixture = std::path::PathBuf::from(base).join(format!(
+        "sdk-confined-ci-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("system time follows epoch")
+            .as_nanos()
+    ));
+    std::fs::create_dir(&fixture).expect("fresh owned proof fixture is created");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        std::fs::set_permissions(&fixture, std::fs::Permissions::from_mode(0o700))
+            .expect("owned proof fixture is private");
+    }
+    let output = std::process::Command::new("python3")
+        .arg("-B")
+        .arg(repository.join("scripts/tests/claude-agent-sdk-confined-probe.py"))
+        .env("TMPDIR", &fixture)
+        .env("TMP", &fixture)
+        .env("TEMP", &fixture)
+        .output();
+    let cleanup = std::fs::remove_dir_all(&fixture);
+    let output = output.expect("the platform proof Python runner starts");
+    assert!(cleanup.is_ok(), "owned platform proof fixture is removed");
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    println!("{stdout}\n{stderr}");
+    assert!(
+        output.status.success(),
+        "platform confinement proof failed: {stdout}\n{stderr}"
+    );
+    assert!(
+        stdout.contains("SDK_CONFINED_PLATFORM_PROOF"),
+        "proof carries observed runtime identity"
+    );
+}
+
 fn fixture(scenario: &str) -> NativeProofFixture {
     NativeProofFixture::start(&FixtureOptions::new(
         scenario,

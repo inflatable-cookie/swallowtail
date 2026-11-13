@@ -200,14 +200,15 @@ section = "Research Records"
 "lint:current-claude-agent-sdk" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --all-targets -- -D warnings"
 "validate:claude-agent-sdk-confined-probe" = "python3 -B scripts/tests/claude-agent-sdk-confined-probe.py"
 "check:claude-agent-sdk-confined-probe" = [
-  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-confined-probe.py\", \"scripts/tests/claude-agent-sdk-confined-probe.py\")]'",
+  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-confined-probe.py\", \"scripts/claude-agent-sdk-confined-linux.py\", \"scripts/tests/claude-agent-sdk-confined-probe.py\")]'",
   "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-runner.mjs",
   "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-spawn.mjs",
   "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-hostile.mjs",
   "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-sidecar-driver.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-native-startup.mjs",
 ]
-"check:format:claude-agent-sdk-confined-probe" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-confined-probe.py scripts/tests/claude-agent-sdk-confined-probe.py"
-"format:claude-agent-sdk-confined-probe" = "ruff format --no-cache scripts/claude-agent-sdk-confined-probe.py scripts/tests/claude-agent-sdk-confined-probe.py"
+"check:format:claude-agent-sdk-confined-probe" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-confined-probe.py scripts/claude-agent-sdk-confined-linux.py scripts/tests/claude-agent-sdk-confined-probe.py"
+"format:claude-agent-sdk-confined-probe" = "ruff format --no-cache scripts/claude-agent-sdk-confined-probe.py scripts/claude-agent-sdk-confined-linux.py scripts/tests/claude-agent-sdk-confined-probe.py"
 "check:format:claude-agent-sdk-confined-javascript" = "eclint check --indent_style space --indent_size 2 --end_of_line lf --charset utf-8 --trim_trailing_whitespace --insert_final_newline crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-*.mjs"
 "format:current-pi-rpc" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi",

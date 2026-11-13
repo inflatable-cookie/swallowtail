@@ -1,0 +1,149 @@
+{
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Agent SDK managed-denial contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "route",
+    "behavior_revision",
+    "qualified_behavior_revision",
+    "ruling",
+    "selected_surface",
+    "guarantees",
+    "unproven",
+    "claim_effect"
+  ],
+  "properties": {
+    "schema": {
+      "const": "claude-agent-sdk-managed-denial-contract-v1"
+    },
+    "route": {
+      "const": "claude-agent.sdk"
+    },
+    "behavior_revision": {
+      "const": "claude-agent.sdk-v2"
+    },
+    "qualified_behavior_revision": {
+      "const": "claude-agent.sdk-v1"
+    },
+    "ruling": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "version",
+        "choice",
+        "relayed_by",
+        "brief",
+        "brief_label",
+        "applies_from",
+        "not_authorised"
+      ],
+      "properties": {
+        "decision": {
+          "const": "d5a14f90-e837-42b6-9818-9b5e74a25547"
+        },
+        "version": {
+          "const": 2
+        },
+        "choice": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relayed_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "brief": {
+          "type": "string",
+          "pattern": "sha256:[0-9a-f]{64}"
+        },
+        "applies_from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "not_authorised": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "brief_label": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "selected_surface": {
+      "type": "object",
+      "minProperties": 4
+    },
+    "guarantees": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "statement",
+          "fake_observation"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fake_observation": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "unproven": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "claim_effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_axis",
+        "native_axis",
+        "pair_map",
+        "behavior_revision_used_by_claims",
+        "note"
+      ],
+      "properties": {
+        "package_axis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "native_axis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pair_map": {
+          "const": "unchanged"
+        },
+        "behavior_revision_used_by_claims": {
+          "const": "claude-agent.sdk-v1"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

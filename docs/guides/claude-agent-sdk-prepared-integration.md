@@ -178,9 +178,12 @@ qualification.
 Research 480 records official npm `latest` `0.3.322` (native `2.1.322`) and the
 hops `0.3.318`, `0.3.319`, and `0.3.321`. None is qualified. Each changes the
 native binary, and the selected native behavior is unproven. `0.3.319` also
-adds a `permissions.denyInsteadOfPrompting` projection; whether the native
-can apply it on this route's permission path is unverified and needs a ruling. The package and native claims stay
-through `0.3.317`/`2.1.317`.
+adds a `permissions.denyInsteadOfPrompting` projection. Tom's decision
+`d5a14f90` v2 preserves that managed denial under the distinct
+`claude-agent.sdk-v2` behavior revision, described below; whether a native can
+apply it on this route's permission path is still unproven and needs the
+original-artifact proof. The package and native claims stay through
+`0.3.317`/`2.1.317`.
 
 ### Permission behavior revisions
 

@@ -15,7 +15,8 @@
 // committed ledger has neither.
 
 import { createHash } from "node:crypto";
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { spawn } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
@@ -123,7 +124,13 @@ function checkAuthority(admission, mode, token) {
   }
 }
 
-function checkPeer(peer, tuple, platform) {
+function insideDirectory(directory, candidate) {
+  const root = path.resolve(directory);
+  const resolved = path.resolve(candidate);
+  return resolved === root || resolved.startsWith(`${root}${path.sep}`);
+}
+
+function checkPeer(peer, tuple, platform, admission) {
   const manifest = loadJson(path.join(peer, "package.json"), "peer package identity");
   if (manifest.name !== "@anthropic-ai/claude-agent-sdk") {
     throw new Refusal("identity_substitution", `peer package is ${manifest.name}`);
@@ -141,19 +148,111 @@ function checkPeer(peer, tuple, platform) {
       `peer native version ${nativeManifest.version} is not the admitted ${tuple.native_version}`,
     );
   }
-  const nativeBytes = readFileSync(path.join(peer, nativeManifest.binary));
-  const digest = sha256(nativeBytes);
+  if (typeof nativeManifest.binary !== "string" || !insideDirectory(peer, path.join(peer, nativeManifest.binary))) {
+    throw new Refusal("identity_substitution", "the peer native path escapes the peer directory");
+  }
   const admitted = tuple.platforms[platform];
   if (admitted === undefined) {
     throw new Refusal("unknown_platform", `the ledger does not admit platform ${platform}`);
   }
-  if (tuple.fake_native_sha256 !== digest) {
+
+  // Actual bytes, before the module is imported or the peer is spawned.
+  const nativeBinary = path.join(peer, nativeManifest.binary);
+  const nativeDigest = sha256(readFileSync(nativeBinary));
+  if (tuple.fake_native_sha256 !== nativeDigest) {
     throw new Refusal(
       "identity_substitution",
-      `peer native bytes ${digest} are not the admitted fake ${tuple.fake_native_sha256}`,
+      `peer native bytes ${nativeDigest} are not the admitted fake ${tuple.fake_native_sha256}`,
     );
   }
-  return { nativeBinary: path.join(peer, nativeManifest.binary), nativeDigest: digest };
+  const sdkModulePath = path.join(peer, "probe-sdk.mjs");
+  if (!insideDirectory(peer, sdkModulePath)) {
+    throw new Refusal("identity_substitution", "the peer SDK module escapes the peer directory");
+  }
+  const sdkDigest = sha256(readFileSync(sdkModulePath));
+  if (admission.fake_peer?.sdk_module_sha256 !== sdkDigest) {
+    throw new Refusal(
+      "identity_substitution",
+      `peer SDK bytes ${sdkDigest} are not the admitted ${admission.fake_peer?.sdk_module_sha256}`,
+    );
+  }
+  return { nativeBinary, nativeDigest, sdkModulePath, sdkDigest, sdkVersion: manifest.version };
+}
+
+/// The fixture root carries this marker, so a probe can refuse a workspace or
+/// peer tree it did not create instead of reading a real checkout.
+const FIXTURE_MARKER = "swallowtail-probe-fixture-v1";
+
+function fixtureRootOf(directory, role) {
+  let current = path.resolve(directory);
+  for (let depth = 0; depth < 4; depth += 1) {
+    const marker = path.join(current, FIXTURE_MARKER);
+    if (existsSync(marker)) {
+      if (readFileSync(marker, "utf8").trim() !== FIXTURE_MARKER) {
+        throw new Refusal("isolation_refused", `${role} ${directory} has an unknown fixture marker`);
+      }
+      return current;
+    }
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  throw new Refusal(
+    "isolation_refused",
+    `${role} ${directory} is not a probe fixture root; a probe never reads a real checkout`,
+  );
+}
+
+function enforceIsolation({ peer, workspace, environment }) {
+  const peerRoot = fixtureRootOf(peer, "peer");
+  const workspaceRoot = fixtureRootOf(workspace, "workspace");
+  if (peerRoot !== workspaceRoot) {
+    throw new Refusal("isolation_refused", "peer and workspace belong to different fixtures");
+  }
+  for (const name of ["HOME", "TMPDIR"]) {
+    const value = environment[name];
+    if (value !== undefined && !insideDirectory(peerRoot, value)) {
+      throw new Refusal("isolation_refused", `${name} is outside the probe fixture`);
+    }
+  }
+  if (existsSync(path.join(workspace, ".git"))) {
+    throw new Refusal("isolation_refused", "the workspace looks like a real checkout");
+  }
+}
+
+function directoryBytes(directory) {
+  let total = 0;
+  const visit = (entry) => {
+    let stats;
+    try {
+      stats = statSync(entry);
+    } catch {
+      return;
+    }
+    if (stats.isDirectory()) {
+      for (const name of readdirSync(entry)) visit(path.join(entry, name));
+      return;
+    }
+    total += stats.size;
+  };
+  visit(directory);
+  return total;
+}
+
+function enforceLimits(bounds, roots, evidenceBytes) {
+  const disk = roots.reduce((total, root) => total + directoryBytes(root), 0);
+  if (disk > bounds.disk_bytes) {
+    throw new Refusal(
+      "disk_limit_exceeded",
+      `the probe wrote ${disk} bytes, over the admitted ${bounds.disk_bytes}`,
+    );
+  }
+  if (evidenceBytes > bounds.captured_stdout_bytes) {
+    throw new Refusal(
+      "evidence_limit_exceeded",
+      `the evidence is ${evidenceBytes} bytes, over the admitted ${bounds.captured_stdout_bytes}`,
+    );
+  }
 }
 
 async function main() {
@@ -198,19 +297,44 @@ async function main() {
       `tuple ${sdkVersion} names no behavior revision, so the run cannot identify its contract`,
     );
   }
-  const { nativeBinary, nativeDigest } = checkPeer(peer, tuple, platform);
-
-  const template = loadJson(optionsPath, "probe options");
   const environment = Object.fromEntries(
     Object.entries(process.env).filter(([key]) =>
       admission.environment_allowlist.includes(key) || key.startsWith("LC_"),
     ),
   );
+  enforceIsolation({ peer, workspace, environment });
+  const { nativeBinary, nativeDigest, sdkModulePath } = checkPeer(
+    peer,
+    tuple,
+    platform,
+    admission,
+  );
+
+  const template = loadJson(optionsPath, "probe options");
+  let nativeSpawns = 0;
+  let spawnRefusal = null;
   const options = {
     ...template.options,
     cwd: workspace,
     pathToClaudeCodeExecutable: nativeBinary,
     env: environment,
+    spawnClaudeCodeProcess: (spawnOptions) => {
+      nativeSpawns += 1;
+      if (nativeSpawns > admission.bounds.native_processes) {
+        // A peer that catches the hook's error must still fail the probe, so the
+        // refusal is latched and reported after the run settles.
+        spawnRefusal ??= new Refusal(
+          "process_limit_exceeded",
+          `the probe may start ${admission.bounds.native_processes} native process`,
+        );
+        throw spawnRefusal;
+      }
+      return spawn(spawnOptions.command, spawnOptions.args, {
+        cwd: spawnOptions.cwd,
+        env: spawnOptions.env,
+        stdio: ["pipe", "pipe", "pipe"],
+      });
+    },
   };
   const envKeys = Object.keys(environment).sort();
   if (optionsDigest({ ...options, env: envKeys }) !== admission.selected_options_digest) {
@@ -220,7 +344,6 @@ async function main() {
     );
   }
 
-  const sdkModulePath = path.join(peer, "probe-sdk.mjs");
   const sdk = await import(pathToFileURL(sdkModulePath).href);
   if (typeof sdk.query !== "function") {
     throw new Refusal("sdk_unavailable", "the peer does not export query()");
@@ -251,6 +374,7 @@ async function main() {
       return "failed";
     },
   );
+  if (spawnRefusal !== null && failure === null) failure = spawnRefusal;
   const expiry = new Promise((resolve) => setTimeout(() => resolve("expired"), boundMs));
   const outcome = await Promise.race([document, expiry]);
   if (outcome === "expired") {
@@ -285,10 +409,17 @@ async function main() {
     boundMs,
     failure: failure === null ? null : { code: failure.code, message: failure.message },
   };
-  writeFileSync(evidencePath, JSON.stringify(evidence, null, 2));
+  const serialized = JSON.stringify(evidence, null, 2);
+  enforceLimits(
+    admission.bounds,
+    [peer, workspace],
+    Buffer.byteLength(serialized, "utf8"),
+  );
+  writeFileSync(evidencePath, serialized);
   if (!killedByBound && nativeExit?.join !== "exited") {
     throw new Refusal("cleanup_failed", "the native peer was not joined within the probe bound");
   }
+  if (spawnRefusal !== null && failure === null) failure = spawnRefusal;
   if (failure !== null) throw failure;
   console.log(JSON.stringify({ probeOnly: true, status: "ok", tuple: evidence.tuple, platform }));
   return EXIT.ok;

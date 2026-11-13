@@ -1239,3 +1239,97 @@ fn the_accepted_pair_keeps_the_v1_revision_while_v2_stays_probe_only() {
         "the contract records that no pair moves"
     );
 }
+
+#[test]
+fn the_probe_verifies_peer_bytes_before_import_and_spawn() {
+    let fixture = ProbeFixture::start("ok", &|_| {});
+    fixture.bind_peer("0.3.322", "2.1.322");
+    fixture.substitute_sdk_bytes();
+    let run = fixture.run("0.3.322", "linux-x64", "ok", None, 30_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "substituted SDK bytes are refused: {}",
+        run.stderr
+    );
+    assert!(
+        run.stderr.contains("identity_substitution"),
+        "the refusal names the substitution: {}",
+        run.stderr
+    );
+    assert!(
+        !fixture
+            .root()
+            .join("peer/native-observations.json")
+            .exists(),
+        "no peer started and no module was imported before the byte check"
+    );
+    assert!(run.evidence.is_none());
+}
+
+#[test]
+fn the_probe_refuses_a_tree_it_did_not_create() {
+    let fixture = ProbeFixture::start("ok", &|_| {});
+    fixture.bind_peer("0.3.321", "2.1.321");
+    fixture.remove_fixture_marker();
+    let run = fixture.run("0.3.321", "linux-x64", "ok", None, 30_000, &[]);
+    assert_eq!(run.status, 2, "an unmarked tree is refused: {}", run.stderr);
+    assert!(
+        run.stderr.contains("isolation_refused"),
+        "the refusal names the isolation boundary: {}",
+        run.stderr
+    );
+    assert!(
+        !fixture
+            .root()
+            .join("peer/native-observations.json")
+            .exists()
+    );
+}
+
+#[test]
+fn the_probe_fails_closed_on_its_declared_bounds() {
+    let process = ProbeFixture::start("ok", &|admission: &mut Value| {
+        admission["bounds"]["native_processes"] = json!(1);
+    });
+    process.bind_peer("0.3.322", "2.1.322");
+    process.configure_sdk(json!({"doubleSpawn": true}));
+    let run = process.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "a second native start is refused: {}",
+        run.stderr
+    );
+    assert!(
+        run.stderr.contains("process_limit_exceeded") || run.stderr.contains("probe_failed"),
+        "the refusal names the bound: {}",
+        run.stderr
+    );
+
+    let evidence = ProbeFixture::start("ok", &|admission: &mut Value| {
+        admission["bounds"]["captured_stdout_bytes"] = json!(8);
+    });
+    evidence.bind_peer("0.3.322", "2.1.322");
+    let run = evidence.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "an oversized evidence record is refused: {}",
+        run.stderr
+    );
+    assert!(
+        run.stderr.contains("evidence_limit_exceeded"),
+        "{}",
+        run.stderr
+    );
+
+    let disk = ProbeFixture::start("ok", &|admission: &mut Value| {
+        admission["bounds"]["disk_bytes"] = json!(8);
+    });
+    disk.bind_peer("0.3.322", "2.1.322");
+    let run = disk.run("0.3.322", "linux-x64", "ok", None, 120_000, &[]);
+    assert_eq!(
+        run.status, 2,
+        "an oversized fixture tree is refused: {}",
+        run.stderr
+    );
+    assert!(run.stderr.contains("disk_limit_exceeded"), "{}", run.stderr);
+}

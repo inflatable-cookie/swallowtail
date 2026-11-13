@@ -60,10 +60,23 @@ one upstream insertion can otherwise cut the window's last token in half and
 make every hop look changed. Every anchor was verified to occur exactly once;
 an absent or ambiguous anchor is reported as such, never as unchanged.
 
+The scan itself is a small JavaScript lexer, not a regular expression over raw
+text: comments, string literals, template literals with interpolation,
+regular-expression literals and whitespace are separate token kinds, so an
+`import` inside a comment or a `require` inside an emitted-code string cannot
+become an edge. A window is a slice of code, so window masking uses a tolerant
+mode that treats a literal truncated at the window edge as a token rather than a
+broken file; whole-file scans stay strict and refuse an unterminated construct.
+The self-test is a mutation suite: it proves that a comment import is not an
+edge, that a string or regular-expression `import(` is not a dynamic site, that
+template text is not a specifier while its interpolation is code, that a vendor
+import makes the closure unbounded, and that an unterminated template, string or
+comment is refused.
+
 The classification is reproducible: the same script, run over extracted trees,
 refuses a tree whose bytes disagree with the committed ledger and re-emits
-`selected-flow.json`. `effigy validate:claude-agent-sdk-selected-flow` runs its
-self-test, which proves the refusals and the masking against synthetic fixtures.
+`selected-flow.json`. `effigy validate:claude-agent-sdk-selected-flow` runs the
+self-test.
 
 ## Selected surfaces, hop by hop
 
@@ -135,13 +148,16 @@ The closure of `sdk.mjs` is bounded at every hop:
 - no dynamic `import(` appears;
 - no `./core-*.mjs` chunk is named, so the rotating chunk files stay tree-bound;
 - `import.meta` appears twice, in bundler helpers;
-- seven literal `require()` specifiers appear inside the bundled `ajv`
-  validator (`ajv/dist/runtime/*`, `ajv-formats/dist/formats`, `util`). They
-  execute only when a JSON schema is compiled. This route never sets
-  `outputFormat` or `jsonSchema`, so those edges stay unselected. The previous
-  record said "static imports are Node builtins only" without naming these
-  literals; this record does, and classifies them as unselected rather than
-  pretending they are absent.
+- the only code-level literal `require("...")` is `util`, a Node builtin. Five
+  ajv specifiers (`ajv/dist/runtime/equal`, `.../ucs2length`, `.../uri`,
+  `.../validation_error` and `ajv-formats/dist/formats`) appear only as
+  **emitted code text** inside string and template literals: the bundled
+  JSON-schema validator stores the imports it will generate, and they become
+  edges of generated code only when a schema is compiled. This route never sets
+  `outputFormat` or `jsonSchema`. An earlier raw-text scan counted those
+  strings as module edges; the token-based scan in this record separates them,
+  which is why the ledger names them as `emitted_require_specifiers` rather
+  than specifiers of `sdk.mjs`.
 
 ## Managed policy: what the bytes prove and what they do not
 
@@ -205,6 +221,41 @@ probe run records which contract it belongs to. What the bytes still cannot prov
 is whether a real native honours the administrator tier and whether that
 honouring bypasses the callback on every tool class; that needs the
 original-artifact run, which stays unauthorised.
+
+## Review repairs
+
+A review of the first head found five defects, all repaired here and each pinned
+by a test or a validator rather than by prose:
+
+1. **Peer bytes are verified before anything is imported or spawned.** The probe
+   runner hashes the peer SDK module and the peer native, refuses a native path
+   that escapes the peer directory, and only then imports the module and starts
+   the process.
+2. **Isolation and limits fail closed.** The fixture root carries a marker, so a
+   peer or workspace the probe did not create is refused; `HOME` and `TMPDIR`
+   must live inside that root; a `.git` in the workspace is refused; the spawn
+   hook enforces the declared native-process bound even when a peer swallows the
+   hook's error; and the disk and evidence byte bounds are measured before the
+   evidence is written.
+3. **Tokenisation is repaired, and the closure re-assessed.** The scan is a small
+   JavaScript lexer rather than a regular expression over raw text, with mutation
+   tests for comment, string, template, interpolation and regular-expression
+   traps. Re-running it changed one earlier conclusion: the bundled validator's
+   `require("ajv/...")` text lives inside strings and templates as emitted code,
+   not as module edges, so the ledger now reports the single code-level
+   `require("util")` edge and the five emitted specifiers separately.
+4. **The fixtures are validated against complete schemas.** Every schema now
+   constrains the fields it names, `probe-options`, `selected-flow` and the
+   managed-denial contract have schemas of their own, and
+   `scripts/validate-claude-agent-sdk-fixtures.py` applies them with
+   `jsonschema` and proves eleven mutations are refused.
+5. **The answered ruling is reconciled.** Every place that still described the
+   SDK permission direction as open now records Tom's decision, and the frozen
+   identity fixture stays as observation-time history.
+
+`check:format:current-claude-agent-sdk` was added so a reviewer can verify
+formatting with a read-only `cargo fmt --check`; `format:current-claude-agent-sdk`
+remains the author-side write-and-check pair.
 
 ## Harness and plan
 

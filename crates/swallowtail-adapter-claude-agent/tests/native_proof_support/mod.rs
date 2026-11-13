@@ -862,6 +862,13 @@ impl ProbeFixture {
         for directory in ["", "peer", "home", "workspace", "tmp", "settings"] {
             std::fs::create_dir_all(root.join(directory)).expect("probe directory is created");
         }
+        // The marker lets the runner refuse a peer or workspace it did not
+        // create, so a probe can never be pointed at a real checkout.
+        std::fs::write(
+            root.join("swallowtail-probe-fixture-v1"),
+            "swallowtail-probe-fixture-v1",
+        )
+        .expect("fixture marker is written");
         std::fs::write(
             root.join("settings/settings.json"),
             json!({"permissions": {"deny": ["Bash(rm:*)"]}}).to_string(),
@@ -898,6 +905,30 @@ impl ProbeFixture {
 
     /// Points the peer at one tuple's identity. Called separately so a test can
     /// substitute a version without touching the admitted ledger.
+    /// Writes the peer SDK's misbehaviour knobs for a refusal scenario.
+    pub fn configure_sdk(&self, config: Value) {
+        std::fs::write(
+            self.root.join("peer/sdk-config.json"),
+            serde_json::to_string(&config).expect("peer configuration serialises"),
+        )
+        .expect("peer SDK configuration is written");
+    }
+
+    /// Removes the fixture marker so the isolation boundary can be exercised.
+    pub fn remove_fixture_marker(&self) {
+        std::fs::remove_file(self.root.join("swallowtail-probe-fixture-v1"))
+            .expect("fixture marker is removed for the isolation case");
+    }
+
+    /// Replaces the peer SDK bytes without touching its declared identity.
+    pub fn substitute_sdk_bytes(&self) {
+        std::fs::write(
+            self.root.join("peer/probe-sdk.mjs"),
+            format!("{}\n// substituted peer bytes\n", PROBE_FAKE_SDK),
+        )
+        .expect("peer SDK bytes are substituted");
+    }
+
     pub fn bind_peer(&self, sdk_version: &str, native_version: &str) {
         std::fs::write(
             self.root.join("peer/package.json"),

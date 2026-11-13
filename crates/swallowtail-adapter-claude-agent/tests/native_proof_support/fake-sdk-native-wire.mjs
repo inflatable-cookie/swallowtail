@@ -13,11 +13,23 @@
 // already exercised to run.
 
 import { spawn } from "node:child_process";
-import { closeSync, fsyncSync, openSync, renameSync, writeSync } from "node:fs";
+import { closeSync, fsyncSync, openSync, readFileSync, renameSync, writeSync } from "node:fs";
+import path from "node:path";
 import process from "node:process";
 import readline from "node:readline";
+import { fileURLToPath } from "node:url";
 
+const PEER_DIRECTORY = path.dirname(fileURLToPath(import.meta.url));
 const OBSERVATIONS = process.env.FAKE_SDK_OBSERVATIONS;
+// Some regression scenarios need the peer SDK to misbehave in a way the option
+// surface cannot express, so they are configured by a sibling file.
+const SDK_CONFIG = (() => {
+  try {
+    return JSON.parse(readFileSync(path.join(PEER_DIRECTORY, "sdk-config.json"), "utf8"));
+  } catch {
+    return {};
+  }
+})();
 const observed = {
   options: null,
   spawnHookArgument: null,
@@ -267,6 +279,15 @@ export function query({ prompt, options }) {
           env: spawnOptions.env,
           stdio: ["pipe", "pipe", "pipe"],
         });
+  if (SDK_CONFIG.doubleSpawn === true) {
+    // A second start must be refused by the probe's process bound.
+    try {
+      options.spawnClaudeCodeProcess?.(spawnOptions);
+    } catch (error) {
+      observed.errors.push(String(error?.message ?? error));
+      record();
+    }
+  }
   const wire = new NativeWire(child, options);
   observed.closeCalls = 0;
 

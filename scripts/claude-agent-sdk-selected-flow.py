@@ -308,12 +308,17 @@ REACHABILITY = {
     ),
 }
 
-TOKEN = re.compile(
-    r"[A-Za-z_$][A-Za-z0-9_$]*|\d[\dA-Za-z_.]*"
-    r'|"(?:[^"\\\n]|\\.)*"|\'(?:[^\'\\\n]|\\.)*\'|`(?:[^`\\]|\\.)*`|\s+|.',
-    re.S,
-)
 IDENTIFIER = re.compile(r"[A-Za-z_$][A-Za-z0-9_$]*")
+NUMBER = re.compile(r"\d[\dA-Za-z_.]*")
+# Tokens after which a `/` starts a regular expression rather than a division.
+REGEX_PRECEDERS = set(
+    [
+        "", "(", ",", "=", ":", "[", "!", "&", "|", "?", "{", "}", ";", "+",
+        "-", "*", "%", "<", ">", "~", "^", "return", "typeof", "instanceof",
+        "in", "of", "new", "delete", "void", "throw", "case", "do", "else",
+        "yield", "await",
+    ]
+)
 GATE_SHAPE = re.compile(
     r'[A-Za-z_$][A-Za-z0-9_$]*!=="__proto__"&&\([^\n]{0,200}?cleaned_key"\)'
 )
@@ -327,30 +332,208 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def mask(source: str) -> str:
-    """Identifiers, string literals and numbers become opaque markers.
+def scan_template(source: str, index: int, tolerant: bool) -> tuple[int, str, bool, bool]:
+    """Scan a template chunk from just after a backtick.
 
-    Member names survive after a `.`, because the selected surfaces of this
-    route are member names. Whitespace collapses so minifier layout cannot
-    masquerade as a change.
+    Returns `(end, chunk, interpolated, closed)`. `interpolated` means the chunk
+    ended at `${`, so the caller continues in code mode and resumes the template
+    after the matching `}`.
     """
-    out = []
-    tokens = TOKEN.findall(source)
-    for index, token in enumerate(tokens):
-        previous = tokens[index - 1] if index else ""
-        before_previous = tokens[index - 2] if index > 1 else ""
-        member_access = previous == "." and before_previous != "."
-        if token.isspace():
+    start = index
+    length = len(source)
+    while index < length:
+        current = source[index]
+        if current == "\\":
+            index += 2
+            continue
+        if current == "`":
+            return index + 1, source[start:index], False, True
+        if current == "$" and source.startswith("${", index):
+            return index + 2, source[start:index], True, False
+        index += 1
+    if not tolerant:
+        raise Refused(f"unterminated template literal at byte {start}")
+    return index, source[start:index], False, False
+
+
+def lex(source: str, *, tolerant: bool = False) -> list[tuple[str, str]]:
+    """Tokenise JavaScript well enough to bound a minified bundle.
+
+    The lexer is deliberately small but sound about the things that made a
+    regular-expression scan wrong: comments, string and template literals,
+    template interpolation, and regular-expression literals. A construct it
+    cannot terminate raises `Refused`, so an unparsable file is reported as
+    unparsable instead of being silently mis-tokenised.
+
+    Token kinds: `code`, `space`, `string`, `template`, `comment`.
+
+    `tolerant` is for the bounded windows: a window is a slice of code, so it
+    can start or end in the middle of a token, and a truncated literal there is
+    expected rather than a broken file. Whole-file scans use the strict mode.
+    """
+    tokens: list[tuple[str, str]] = []
+    length = len(source)
+    index = 0
+    previous_code = ""
+    template_stack: list[int] = []
+
+    def emit(kind: str, text: str) -> None:
+        nonlocal previous_code
+        tokens.append((kind, text))
+        if kind == "code":
+            previous_code = text
+
+    while index < length:
+        character = source[index]
+        if character in " \t\r\n":
+            start = index
+            while index < length and source[index] in " \t\r\n":
+                index += 1
+            emit("space", source[start:index])
+            continue
+        if source.startswith("//", index):
+            start = index
+            while index < length and source[index] != "\n":
+                index += 1
+            emit("comment", source[start:index])
+            continue
+        if source.startswith("/*", index):
+            start = index
+            close = source.find("*/", index + 2)
+            if close < 0:
+                raise Refused("unterminated block comment")
+            index = close + 2
+            emit("comment", source[start:index])
+            continue
+        if character in "\"'":
+            start = index
+            index += 1
+            while index < length:
+                current = source[index]
+                if current == "\\":
+                    index += 2
+                    continue
+                if current == character:
+                    index += 1
+                    break
+                if current == "\n":
+                    if tolerant:
+                        break
+                    raise Refused(f"unterminated string literal at byte {start}")
+                index += 1
+            else:
+                if not tolerant:
+                    raise Refused(f"unterminated string literal at byte {start}")
+            emit("string", source[start:index])
+            continue
+        if character == "`":
+            chunk_end, chunk, interpolated, closed = scan_template(
+                source, index + 1, tolerant
+            )
+            if chunk:
+                emit("template", chunk)
+            if interpolated:
+                emit("code", "${")
+                template_stack.append(1)
+            elif not closed and not tolerant:
+                raise Refused(f"unterminated template literal at byte {index}")
+            index = chunk_end
+            continue
+        if character == "}" and template_stack:
+            template_stack.pop()
+            emit("code", "}")
+            index += 1
+            chunk_end, chunk, interpolated, closed = scan_template(
+                source, index, tolerant
+            )
+            if chunk:
+                emit("template", chunk)
+            if interpolated:
+                emit("code", "${")
+                template_stack.append(1)
+            elif not closed and not tolerant:
+                raise Refused(f"unterminated template literal at byte {index}")
+            index = chunk_end
+            continue
+        if character == "/" and previous_code in REGEX_PRECEDERS:
+            start = index
+            index += 1
+            in_class = False
+            while index < length:
+                current = source[index]
+                if current == "\\":
+                    index += 2
+                    continue
+                if current == "\n":
+                    raise Refused(f"unterminated regular expression literal at byte {start}")
+                if current == "[":
+                    in_class = True
+                elif current == "]":
+                    in_class = False
+                elif current == "/" and not in_class:
+                    index += 1
+                    while index < length and source[index].isalpha():
+                        index += 1
+                    break
+                index += 1
+            else:
+                if not tolerant:
+                    raise Refused(f"unterminated regular expression literal at byte {start}")
+            emit("code", source[start:index])
+            continue
+        match = IDENTIFIER.match(source, index)
+        if match is not None:
+            emit("code", match.group(0))
+            index = match.end()
+            continue
+        match = NUMBER.match(source, index)
+        if match is not None:
+            emit("code", match.group(0))
+            index = match.end()
+            continue
+        emit("code", character)
+        index += 1
+    if template_stack:
+        raise Refused(f"unterminated template literal at byte {start if 'start' in dir() else index}")
+    return tokens
+
+
+def mask_tokens_of(source: str) -> list[str]:
+    """Masked code tokens of a window.
+
+    Comments disappear, string and template literals become one marker, numbers
+    become `0`, and identifiers become `ID` unless they are member names, which
+    are the selected surfaces of this route. Whitespace runs collapse to one
+    space so minifier layout cannot masquerade as a change.
+    """
+    out: list[str] = []
+    previous = ""
+    before_previous = ""
+    for kind, text in lex(source, tolerant=True):
+        if kind in ("comment", "space"):
             out.append(" ")
-        elif token[0] in "\"'`":
+            continue
+        if kind in ("string", "template"):
             out.append('"S"')
-        elif token[0].isdigit():
-            out.append("0")
-        elif IDENTIFIER.fullmatch(token):
-            out.append(token if member_access else "ID")
-        else:
-            out.append(token)
-    return "".join(out)
+            previous, before_previous = '"S"', previous
+            continue
+        for token in re.findall(r"[A-Za-z_$][A-Za-z0-9_$]*|\d[\dA-Za-z_.]*|\s+|.", text, re.S):
+            if token.isspace():
+                out.append(" ")
+                continue
+            if token[0].isdigit():
+                out.append("0")
+            elif IDENTIFIER.fullmatch(token):
+                member_access = previous == "." and before_previous != "."
+                out.append(token if member_access else "ID")
+            else:
+                out.append(token)
+            previous, before_previous = token, previous
+    return [token for token in "".join(out).split(" ") if token]
+
+
+def mask(source: str) -> str:
+    return " ".join(mask_tokens_of(source))
 
 
 def collapsed(text: str) -> str:
@@ -380,7 +563,7 @@ def mask_tokens(text: str) -> list[str]:
     A byte-bounded window can cut the last token in half at different places
     once upstream code shifts, so the final token is dropped before comparison.
     """
-    tokens = [token for token in mask(text).split(" ") if token]
+    tokens = mask_tokens_of(text)
     return tokens[:-1] if tokens else tokens
 
 
@@ -518,31 +701,87 @@ SELECTED_AWAY_REQUIRE = [
 ]
 
 
+def unquote(token: str) -> str:
+    """The value of a string token, or its raw text when it is not a string."""
+    if len(token) >= 2 and token[0] in "\"'" and token[-1] == token[0]:
+        body = token[1:-1]
+        return re.sub(r"\\(.)", r"\1", body)
+    return token
+
+
 def import_closure(source: str) -> dict:
-    specifiers = set(re.findall(r'from\s*"([^"]+)"', source))
+    """Bound the module edges of one file from its token stream.
+
+    Only code tokens count. A static specifier is a string token that follows
+    `from`, or that directly follows `import` for a side-effect import, so an
+    `import` inside a comment, string, template or regular expression is not an
+    edge. A literal `require("...")` and a dynamic `import(` are recorded
+    separately, and a core-chunk string is recorded wherever it appears as a
+    string token.
+    """
+    tokens = [
+        (kind, text)
+        for kind, text in lex(source)
+        if kind in ("code", "string", "template")
+    ]
+    static_specifiers: set = set()
+    requires: set = set()
+    dynamic = 0
+    import_meta = 0
+    chunk_edges: set = set()
+    for index, (kind, text) in enumerate(tokens):
+        if kind != "code":
+            continue
+        following = tokens[index + 1] if index + 1 < len(tokens) else ("", "")
+        after = tokens[index + 2] if index + 2 < len(tokens) else ("", "")
+        if text == "import":
+            if following[0] == "code" and following[1] == "(":
+                dynamic += 1
+            elif following[0] == "code" and following[1] == ".":
+                if after[0] == "code" and after[1] == "meta":
+                    import_meta += 1
+            elif following[0] == "string":
+                static_specifiers.add(unquote(following[1]))
+        if text == "from" and following[0] == "string":
+            static_specifiers.add(unquote(following[1]))
+        if text == "require" and following[0] == "code" and following[1] == "(":
+            if after[0] == "string":
+                requires.add(unquote(after[1]))
+    emitted_requires: set = set()
+    for kind, text in tokens:
+        if kind == "string":
+            value = unquote(text)
+            if re.fullmatch(r"\./core-[^\"']+\.mjs", value):
+                chunk_edges.add(value)
+        if kind in ("string", "template"):
+            # A literal that *carries code text* is emitted code, not a module
+            # edge. The bundled JSON-schema validator stores its runtime imports
+            # this way, so they are recorded separately instead of counting as
+            # edges of this file.
+            for match in re.finditer(r'require\(\s*"([^"]+)"\s*\)', text):
+                emitted_requires.add(match.group(1))
     node_builtins = sorted(
-        value for value in specifiers if value.startswith("node:") or value in NODE_BUILTINS
+        value for value in static_specifiers if value.startswith("node:") or value in NODE_BUILTINS
     )
     vendor = sorted(
         value
-        for value in specifiers
+        for value in static_specifiers
         if not value.startswith("node:") and value not in NODE_BUILTINS
     )
-    requires = sorted(set(re.findall(r'\brequire\s*\(\s*"([^"]+)"', source)))
-    dynamic = len(re.findall(r"\bimport\s*\(", source))
-    chunks = sorted(set(re.findall(r'"(\./core-[^"]+\.mjs)"', source)))
+    requires_sorted = sorted(requires)
     return {
         "static_node_builtins": node_builtins,
         "static_vendor_specifiers": vendor,
         "dynamic_import_sites": dynamic,
-        "literal_require_specifiers": requires,
+        "literal_require_specifiers": requires_sorted,
         "literal_require_selected_away": all(
             value in SELECTED_AWAY_REQUIRE or value in NODE_BUILTINS
-            for value in requires
+            for value in requires_sorted
         ),
-        "core_chunk_edges": chunks,
-        "import_meta_sites": len(re.findall(r"import\.meta", source)),
-        "bounded": dynamic == 0 and not chunks,
+        "core_chunk_edges": sorted(chunk_edges),
+        "emitted_require_specifiers": sorted(emitted_requires),
+        "import_meta_sites": import_meta,
+        "bounded": dynamic == 0 and not chunk_edges and not vendor,
     }
 
 
@@ -701,8 +940,12 @@ def classify(fixture: pathlib.Path, corpus: dict[str, pathlib.Path]) -> dict:
         "classification": {},
     }
     for version, package_root in corpus.items():
-        entry = resolve_entry(package_root)
-        source = (package_root / entry["file"]).read_text()
+        try:
+            entry = resolve_entry(package_root)
+            source = (package_root / entry["file"]).read_text()
+            lex(source)
+        except Refused as refusal:
+            raise Refused(f"hop {version}: {refusal}") from refusal
         report["entry"][version] = entry
         report["import_closure"][version] = import_closure(source)
         per_version = {}
@@ -868,6 +1111,66 @@ def self_test() -> int:
             failures.append("unledgered hop was not refused")
         except Refused:
             pass
+
+        # Mutation tests for the lexer and the closure. A raw regular-expression
+        # scan passed all of these wrongly; the token scan must not.
+        comment_import = import_closure('// import "left-pad"\nconst a = 1;')
+        check("comment import is not an edge", comment_import["static_vendor_specifiers"] == [])
+        check("comment import keeps closure bounded", comment_import["bounded"])
+
+        string_import = import_closure('const a = \'import("left-pad")\';')
+        check("string dynamic import is not a site", string_import["dynamic_import_sites"] == 0)
+
+        template_import = import_closure('const a = `from"left-pad" ${require("ajv/dist/runtime/equal")}`;')
+        check(
+            "template literal text is not a specifier",
+            "left-pad" not in template_import["static_vendor_specifiers"],
+        )
+        check(
+            "template interpolation is code",
+            template_import["literal_require_specifiers"] == ["ajv/dist/runtime/equal"],
+        )
+
+        regex_dynamic = import_closure('const re = /import\\(/;')
+        check("regex literal is not a dynamic site", regex_dynamic["dynamic_import_sites"] == 0)
+
+        vendor = import_closure('import x from "left-pad";')
+        check("vendor import is an edge", vendor["static_vendor_specifiers"] == ["left-pad"])
+        check("vendor import is unbounded", not vendor["bounded"])
+
+        side_effect = import_closure('import "node:fs";')
+        check(
+            "side-effect builtin import is an edge",
+            side_effect["static_node_builtins"] == ["node:fs"],
+        )
+
+        dynamic = import_closure("const m = await import(\"./core-abc.mjs\");")
+        check("dynamic import is a site", dynamic["dynamic_import_sites"] == 1)
+        check("dynamic import is unbounded", not dynamic["bounded"])
+
+        chunk = import_closure('const name = "./core-abc.mjs";')
+        check("core chunk string is an edge", chunk["core_chunk_edges"] == ["./core-abc.mjs"])
+
+        try:
+            lex("const a = `unterminated ${")
+            failures.append("unterminated template was not refused")
+        except Refused:
+            pass
+        try:
+            lex('const a = "unterminated')
+            failures.append("unterminated string was not refused")
+        except Refused:
+            pass
+        try:
+            lex("/* unterminated")
+            failures.append("unterminated comment was not refused")
+        except Refused:
+            pass
+
+        # A comment mentioning a selected member must not change the surface.
+        left = mask("if (a.promptHold !== void 0) b();")
+        right = mask("/* a.promptHold */ if (a.promptHold !== void 0) b();")
+        check("comments are not part of the surface", left == right)
 
         # Masking must ignore identifier renames and catch a structural change.
         left = mask("a.b(c=>d);")

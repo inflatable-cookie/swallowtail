@@ -340,6 +340,7 @@
       "required": [
         "accepted_pair_available_now",
         "ceiling",
+        "temporary_probe_admission",
         "original_run_requirement",
         "witness_selector"
       ],
@@ -357,6 +358,10 @@
           "minLength": 1
         },
         "witness_selector": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temporary_probe_admission": {
           "type": "string",
           "minLength": 1
         }

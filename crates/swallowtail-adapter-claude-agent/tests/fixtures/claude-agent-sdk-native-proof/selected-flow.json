@@ -296,36 +296,36 @@
       "changed_hops": [],
       "masked_multiset_sha256": {
         "0.3.317": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "0.3.318": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "0.3.319": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "0.3.321": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "0.3.322": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ]
       },
       "masked_sequence_sha256": {
         "0.3.317": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "0.3.318": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "0.3.319": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "0.3.321": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "0.3.322": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ]
       },
       "note": "the selected input path for this route",
@@ -1226,14 +1226,16 @@
       "bounded": true,
       "core_chunk_edges": [],
       "dynamic_import_sites": 0,
-      "import_meta_sites": 2,
-      "literal_require_selected_away": true,
-      "literal_require_specifiers": [
+      "emitted_require_specifiers": [
         "ajv-formats/dist/formats",
         "ajv/dist/runtime/equal",
         "ajv/dist/runtime/ucs2length",
         "ajv/dist/runtime/uri",
-        "ajv/dist/runtime/validation_error",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
         "util"
       ],
       "static_node_builtins": [
@@ -1258,26 +1260,22 @@
         "url",
         "util"
       ],
-      "static_vendor_specifiers": [
-        "),headers:V(h(),h()).optional().describe(",
-        "),installLocation:h().describe(",
-        "),installLocation:h().optional().describe(",
-        "+f),p.warn(",
-        "+f)}return Xc("
-      ]
+      "static_vendor_specifiers": []
     },
     "0.3.318": {
       "bounded": true,
       "core_chunk_edges": [],
       "dynamic_import_sites": 0,
-      "import_meta_sites": 2,
-      "literal_require_selected_away": true,
-      "literal_require_specifiers": [
+      "emitted_require_specifiers": [
         "ajv-formats/dist/formats",
         "ajv/dist/runtime/equal",
         "ajv/dist/runtime/ucs2length",
         "ajv/dist/runtime/uri",
-        "ajv/dist/runtime/validation_error",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
         "util"
       ],
       "static_node_builtins": [
@@ -1302,26 +1300,22 @@
         "url",
         "util"
       ],
-      "static_vendor_specifiers": [
-        "),headers:V(h(),h()).optional().describe(",
-        "),installLocation:h().describe(",
-        "),installLocation:h().optional().describe(",
-        "+f),p.warn(",
-        "+f)}return eu("
-      ]
+      "static_vendor_specifiers": []
     },
     "0.3.319": {
       "bounded": true,
       "core_chunk_edges": [],
       "dynamic_import_sites": 0,
-      "import_meta_sites": 2,
-      "literal_require_selected_away": true,
-      "literal_require_specifiers": [
+      "emitted_require_specifiers": [
         "ajv-formats/dist/formats",
         "ajv/dist/runtime/equal",
         "ajv/dist/runtime/ucs2length",
         "ajv/dist/runtime/uri",
-        "ajv/dist/runtime/validation_error",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
         "util"
       ],
       "static_node_builtins": [
@@ -1347,26 +1341,22 @@
         "url",
         "util"
       ],
-      "static_vendor_specifiers": [
-        "),headers:V(h(),h()).optional().describe(",
-        "),installLocation:h().describe(",
-        "),installLocation:h().optional().describe(",
-        "+f),p.warn(",
-        "+f)}return ou("
-      ]
+      "static_vendor_specifiers": []
     },
     "0.3.321": {
       "bounded": true,
       "core_chunk_edges": [],
       "dynamic_import_sites": 0,
-      "import_meta_sites": 2,
-      "literal_require_selected_away": true,
-      "literal_require_specifiers": [
+      "emitted_require_specifiers": [
         "ajv-formats/dist/formats",
         "ajv/dist/runtime/equal",
         "ajv/dist/runtime/ucs2length",
         "ajv/dist/runtime/uri",
-        "ajv/dist/runtime/validation_error",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
         "util"
       ],
       "static_node_builtins": [
@@ -1392,26 +1382,22 @@
         "url",
         "util"
       ],
-      "static_vendor_specifiers": [
-        "),headers:q(h(),h()).optional().describe(",
-        "),installLocation:h().describe(",
-        "),installLocation:h().optional().describe(",
-        "+f),p.warn(",
-        "+f)}return mu("
-      ]
+      "static_vendor_specifiers": []
     },
     "0.3.322": {
       "bounded": true,
       "core_chunk_edges": [],
       "dynamic_import_sites": 0,
-      "import_meta_sites": 2,
-      "literal_require_selected_away": true,
-      "literal_require_specifiers": [
+      "emitted_require_specifiers": [
         "ajv-formats/dist/formats",
         "ajv/dist/runtime/equal",
         "ajv/dist/runtime/ucs2length",
         "ajv/dist/runtime/uri",
-        "ajv/dist/runtime/validation_error",
+        "ajv/dist/runtime/validation_error"
+      ],
+      "import_meta_sites": 2,
+      "literal_require_selected_away": true,
+      "literal_require_specifiers": [
         "util"
       ],
       "static_node_builtins": [
@@ -1437,13 +1423,7 @@
         "url",
         "util"
       ],
-      "static_vendor_specifiers": [
-        "),headers:q(h(),h()).optional().describe(",
-        "),installLocation:h().describe(",
-        "),installLocation:h().optional().describe(",
-        "+f),p.warn(",
-        "+f)}return mu("
-      ]
+      "static_vendor_specifiers": []
     }
   },
   "reachability_inputs": {
@@ -1580,10 +1560,10 @@
       },
       "query.streamInput": {
         "masked_multiset_sha256": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "masked_sequence_sha256": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "occurrences": 1,
         "offsets": [
@@ -1593,8 +1573,8 @@
         "windows": [
           {
             "bytes": 1023,
-            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
-            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "masked_multiset_sha256": "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954",
+            "masked_sha256": "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621",
             "offset": 1296315,
             "statement_aligned": true
           }
@@ -1913,10 +1893,10 @@
       },
       "query.streamInput": {
         "masked_multiset_sha256": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "masked_sequence_sha256": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "occurrences": 1,
         "offsets": [
@@ -1926,8 +1906,8 @@
         "windows": [
           {
             "bytes": 1023,
-            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
-            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "masked_multiset_sha256": "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954",
+            "masked_sha256": "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621",
             "offset": 1301356,
             "statement_aligned": true
           }
@@ -2246,10 +2226,10 @@
       },
       "query.streamInput": {
         "masked_multiset_sha256": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "masked_sequence_sha256": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "occurrences": 1,
         "offsets": [
@@ -2259,8 +2239,8 @@
         "windows": [
           {
             "bytes": 1023,
-            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
-            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "masked_multiset_sha256": "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954",
+            "masked_sha256": "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621",
             "offset": 1311659,
             "statement_aligned": true
           }
@@ -2613,10 +2593,10 @@
       },
       "query.streamInput": {
         "masked_multiset_sha256": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "masked_sequence_sha256": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "occurrences": 1,
         "offsets": [
@@ -2626,8 +2606,8 @@
         "windows": [
           {
             "bytes": 1023,
-            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
-            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "masked_multiset_sha256": "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954",
+            "masked_sha256": "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621",
             "offset": 1328904,
             "statement_aligned": true
           }
@@ -3048,10 +3028,10 @@
       },
       "query.streamInput": {
         "masked_multiset_sha256": [
-          "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee"
+          "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954"
         ],
         "masked_sequence_sha256": [
-          "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf"
+          "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621"
         ],
         "occurrences": 1,
         "offsets": [
@@ -3061,8 +3041,8 @@
         "windows": [
           {
             "bytes": 1023,
-            "masked_multiset_sha256": "6d62b6882c7daf6c312ba76023860ec7f23e5f04948ad826b3a11f0b789b09ee",
-            "masked_sha256": "0b41b971c446b4b401bf1c3ad955015ce479073527b80b4e66cbefdf4bb28eaf",
+            "masked_multiset_sha256": "8428b970b635a9b7be9d1362c628ca342cd58e20b222a5eaf4ebb82747170954",
+            "masked_sha256": "79e7dceb93cf0ea4d68a2f0a51e5f8310e747cab32e5375d7a36ccb390179621",
             "offset": 1328964,
             "statement_aligned": true
           }

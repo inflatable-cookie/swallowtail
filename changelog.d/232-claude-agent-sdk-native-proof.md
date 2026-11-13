@@ -15,8 +15,9 @@ pre-callback denial that fabricates no permission request, interrupt, a native
 death, identity substitution refusal before any peer runs, and a
 credential-free environment with no egress beyond the fake endpoint. Q-009 item
 2's source-proven half is recorded: managed policy is not excluded by
-`settingSources: []` but the SDK parent tier is never set on this route, so the
-permission ruling stays open. No qualification, claim, package or native axis
+`settingSources: []` but the SDK parent tier is never set on this route. Tom's
+decision `d5a14f90` v2 settled the direction by preserving the managed denial
+under `claude-agent.sdk-v2`. No qualification, claim, package or native axis
 moves.
 
 A temporary probe-only admission now binds every proposed tuple, the selected
@@ -38,4 +39,14 @@ segments, the pair map and the sidecar's reported revision are unchanged. The
 probe admission declares v1 up to `0.3.318` and v2 from `0.3.319` so a probe run
 records which contract it belongs to. Original-artifact execution remains
 unauthorised.
+Review repairs: the probe verifies actual peer bytes before importing the SDK
+module or spawning the native; the fixture marker, `HOME`/`TMPDIR` containment,
+the `.git` refusal, the native-process bound and the disk and evidence byte
+bounds all fail closed; the wrapper scan is a JavaScript lexer with mutation
+tests, which reclassifies the bundled validator's `require("ajv/...")` text as
+emitted code rather than module edges (one code-level `require("util")` edge
+remains); every fixture is validated against a complete JSON Schema with a
+mutation self-test; the answered `d5a14f90` ruling is reconciled everywhere; and
+`check:format:current-claude-agent-sdk` gives reviewers a read-only formatting
+check.
 

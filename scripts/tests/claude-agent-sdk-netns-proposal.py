@@ -29,6 +29,7 @@ def load(name):
 
 CORE = load("claude-agent-sdk-netns-proposal.py")
 KERNEL = load("claude-agent-sdk-netns-kernel.py")
+CUSTODY = load("claude-agent-sdk-probe-custody.py")
 ENTRY = load("claude-agent-sdk-netns-entry.py")
 
 
@@ -296,10 +297,17 @@ class NamespaceProposalTests(unittest.TestCase):
             self.assertNotEqual(interpret(captured[0], syscall, [0, 0, 0]), allow)
         self.assertEqual(interpret(captured[0], 42, [0, 0, 0]), allow)
 
-    def test_unapplied_job_lint_and_commands_without_dispatch_or_privilege(self):
+    def test_applied_job_lint_and_commands_without_dispatch_or_privilege(self):
         proposal = ROOT / "docs/knowledge/operations/claude-agent-sdk-netns-ci.patch"
         subprocess.run(
-            ["git", "apply", "--check", str(proposal)],
+            [
+                "git",
+                "apply",
+                "--reverse",
+                "--check",
+                "--include=.github/workflows/sdk234-netns-proof.yml",
+                str(proposal),
+            ],
             cwd=ROOT,
             check=True,
             capture_output=True,
@@ -350,7 +358,17 @@ class NamespaceProposalTests(unittest.TestCase):
             (root / ".github/workflows").mkdir(parents=True)
             guard = root / "scripts/tests/oxide-selector-routing.py"
             guard.parent.mkdir(parents=True)
-            shutil.copyfile(ROOT / "scripts/tests/oxide-selector-routing.py", guard)
+            guard.write_bytes(
+                subprocess.check_output(
+                    [
+                        "git",
+                        "show",
+                        "36fc153aca5c89028681601b04bdf9f62bbcfb7b:scripts/tests/oxide-selector-routing.py",
+                    ],
+                    cwd=ROOT,
+                    timeout=5,
+                )
+            )
             subprocess.run(
                 ["patch", "--batch", "--forward", "-p1", "-i", str(proposal)],
                 cwd=root,
@@ -374,6 +392,117 @@ class NamespaceProposalTests(unittest.TestCase):
             )
             with self.assertRaises(module.RoutingDefect):
                 module.check_workflows()
+
+    def test_custody_is_live_exact_and_closed_after_real_orchestration(self):
+        result = self.run_protocol()
+        admitted = result["protocol"]["custody"]
+        self.assertEqual(admitted["decision"], "89db0f25-dc94-4feb-b447-8b9fabe52561")
+        self.assertEqual(admitted["inputs"][str(self.node)], self.node_sha)
+        self.assertEqual(admitted["launches"], 2)
+        self.assertFalse(admitted["verifiedExecutionPrimitive"])
+        self.assertFalse(admitted["hostileSameUserReplacementCovered"])
+
+    def test_custody_revocation_before_each_launch_stops_and_joins_owned_peers(self):
+        for boundary in (0, 1):
+
+            class Revoke(CORE.Model):
+                def __init__(self):
+                    super().__init__()
+                    self.pids = []
+
+                def confirm_child(self, child):
+                    self.pids.append(child.pid)
+                    super().confirm_child(child)
+
+                def custody_event(self, number, lease, command):
+                    if number == boundary:
+                        lease.revoke()
+
+            ops = Revoke()
+            result = self.run_protocol(ops)
+            self.assertIn("custody_absent_revoked", result["failure"])
+            self.assertEqual(len(ops.pids), boundary)
+            for pid in ops.pids:
+                with self.assertRaises(ProcessLookupError):
+                    os.kill(pid, 0)
+
+    def test_custody_command_substitution_before_payload(self):
+        class Substitute(CORE.Model):
+            def custody_event(self, number, lease, command):
+                command.append("--require=unadmitted-loader")
+
+        result = self.run_protocol(Substitute())
+        self.assertIn("custody_launch_mismatch", result["failure"])
+
+    def test_host_owned_file_and_library_custody_refuses_drift_and_closes_descriptors(
+        self,
+    ):
+        runtime = CUSTODY.runtime_inventory(self.node, self.node_sha)
+        for mode in ("replace", "bytes", "remove", "revoke"):
+            with tempfile.TemporaryDirectory(
+                prefix="sdk-custody-", dir=os.environ["TMPDIR"]
+            ) as directory:
+                target = Path(directory).resolve(strict=True) / "owned-library"
+                target.write_bytes(b"owned library bytes")
+                lease = CUSTODY.Lease(
+                    runtime, self.node, self.node_sha, {"fakeOnly": True}
+                )
+                try:
+                    lease.bind(target, CORE.sha(target.read_bytes()))
+                    handles = lease.descriptors.copy()
+                    if mode == "replace":
+                        target.unlink()
+                        target.write_bytes(b"owned library bytes")
+                    elif mode == "bytes":
+                        target.write_bytes(b"changed library")
+                    elif mode == "remove":
+                        target.unlink()
+                    else:
+                        lease.revoke()
+                    with self.assertRaises(OSError):
+                        lease.check()
+                finally:
+                    lease.close()
+                for fd in handles:
+                    with self.assertRaises(OSError):
+                        os.fstat(fd)
+
+    def test_missing_or_wrong_runtime_custody_refuses(self):
+        runtime = CUSTODY.runtime_inventory(self.node, self.node_sha)
+        for change in (
+            {"decision": "caller-success"},
+            {"nodeSha256": "0" * 64},
+            {"startup": ["--require=foreign"]},
+        ):
+            with self.assertRaises(OSError):
+                CUSTODY.Lease({**runtime, **change}, self.node, self.node_sha, {})
+        files = CORE.snapshots(ROOT, self.record_sha)
+        with tempfile.TemporaryDirectory(
+            prefix="sdk-no-custody-", dir=os.environ["TMPDIR"]
+        ) as directory:
+            with self.assertRaisesRegex(CORE.Refused, "host_custody_missing"):
+                CORE.protocol(
+                    self.node, self.node_sha, 1, files, CORE.Model(), directory
+                )
+
+    def test_monitor_death_recheck_and_unknown_cleanup_are_failures(self):
+        with mock.patch.object(KERNEL.LIBC, "prctl", return_value=0) as arm:
+            with mock.patch.object(KERNEL.os, "getppid", return_value=1):
+                with self.assertRaisesRegex(
+                    OSError, "monitor_died_after_credential_drop"
+                ):
+                    KERNEL.arm_parent(123)
+            self.assertEqual(arm.call_args.args[0], 1)
+
+        class Unknown(CORE.Model):
+            def cleanup(self):
+                return {"observed": False, "kernelEnforced": False}
+
+        result = CORE.execute(
+            Unknown(), lambda ops: {"failure": None, "exits": [{}, {}]}
+        )
+        self.assertEqual(result["failure"], "cleanup_join_unknown")
+        self.assertFalse(result["kernelEnforced"])
 
     def test_source_record_has_exact_acyclic_input_set(self):
         expected = "".join(

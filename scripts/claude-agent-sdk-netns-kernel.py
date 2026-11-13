@@ -95,6 +95,12 @@ def require_nonroot(info, uid, gid):
         raise OSError(errno.EPERM, "nonroot_capability_identity")
 
 
+def arm_parent(expected):
+    checked(LIBC.prctl(1, signal.SIGKILL, 0, 0, 0), "PARENT_DEATH_SIGNAL")
+    if expected <= 1 or os.getppid() != expected:
+        raise OSError(errno.ESRCH, "monitor_died_after_credential_drop")
+
+
 def loopback_up():
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as control:
         request = bytearray(40)
@@ -157,6 +163,7 @@ class Guest:
         self.namespace = None
         self.gates = {}
         self.serial = 0
+        self.monitor_pid = os.getppid()
 
     def clock(self):
         return time.monotonic()
@@ -194,10 +201,10 @@ class Guest:
                 checked(LIBC.prctl(24, number, 0, 0, 0), "PR_CAPBSET_DROP")
             checked(LIBC.prctl(47, 4, 0, 0, 0), "CLEAR_AMBIENT_CAPABILITIES")
             os.setgroups([])
-            os.setgid(self.args.gid)
-            os.setuid(self.args.uid)
+            os.setresgid(self.args.gid, self.args.gid, self.args.gid)
+            os.setresuid(self.args.uid, self.args.uid, self.args.uid)
             checked(LIBC.prctl(38, 1, 0, 0, 0), "NO_NEW_PRIVILEGES")
-            checked(LIBC.prctl(1, signal.SIGKILL, 0, 0, 0), "PARENT_DEATH_SIGNAL")
+            arm_parent(self.monitor_pid)
             require_nonroot(process(os.getpid()), self.args.uid, self.args.gid)
         self.exchange(phase)
 
@@ -238,7 +245,7 @@ class Guest:
             raise OSError(errno.EPERM, "staged_entry_changed")
         kwargs["pass_fds"] = (*kwargs.get("pass_fds", ()), read)
         self.gates[str(name)] = (read, write)
-        return [os.sys.executable, "-B", str(target), str(name), *command], kwargs
+        return [os.sys.executable, "-I", "-B", str(target), str(name), *command], kwargs
 
     def confirm_child(self, child):
         self.exchange("child", pid=child.pid)
@@ -283,7 +290,7 @@ def root_required(args):
             raise OSError(errno.EPERM, "startup_runtime_changed")
 
 
-def launch(args, files, core):
+def launch(args, files, core, lease):
     root_required(args)
     path, identity = receipt_path(args)
     descriptor = os.open(
@@ -297,6 +304,7 @@ def launch(args, files, core):
         "children": [],
         "settled": False,
         "originalActivation": False,
+        "custody": lease.observation(),
     }
     info = os.fstat(descriptor)
     record["receipt"] = {"device": info.st_dev, "inode": info.st_ino}
@@ -309,6 +317,8 @@ def launch(args, files, core):
 
     def save():
         data = json.dumps(record).encode()
+        if len(data) > 65536:
+            raise OSError(errno.EFBIG, "root_receipt_limit")
         os.lseek(descriptor, 0, 0)
         os.ftruncate(descriptor, 0)
         os.write(descriptor, data)
@@ -344,7 +354,7 @@ def launch(args, files, core):
         try:
             os.close(read)
             os.close(answer_write)
-            allowed = {0, 1, 2, write, answer_read}
+            allowed = {0, 1, 2, write, answer_read, *lease.descriptors}
             for name in os.listdir("/proc/self/fd"):
                 fd = int(name)
                 if fd not in allowed:
@@ -353,10 +363,10 @@ def launch(args, files, core):
                     except OSError:
                         pass
             core.reject_inherited_sockets(allowed)
-            checked(LIBC.prctl(1, signal.SIGKILL, 0, 0, 0), "PARENT_DEATH_SIGNAL")
-            if os.getppid() != record["monitor"]["pid"]:
-                raise OSError(errno.ESRCH, "monitor_died")
+            arm_parent(record["monitor"]["pid"])
+            lease.adopt_fork(record["monitor"]["pid"])
             ops = Guest(args, host, write, answer_read)
+            ops.lease = lease
 
             def protocol(selected):
                 with core.tempfile.TemporaryDirectory(
@@ -400,6 +410,15 @@ def launch(args, files, core):
                 raise OSError(errno.EPERM, message["error"])
             if phase == "done":
                 result = message["result"]
+                peer_waits = (result.get("protocol") or {}).get("exits", [])
+                expected_peers = set(handles) - {pid}
+                if (
+                    len(peer_waits) != 2
+                    or {row["pid"] for row in peer_waits} != expected_peers
+                ):
+                    raise OSError(errno.ECHILD, "guest_peer_waits_missing")
+                record["peerWaitActor"] = pid
+                record["guestPeerWaits"] = peer_waits
                 break
             if phase == "endpoint":
                 if not phases or phases[-1] != "protocol" or canary is not None:
@@ -413,6 +432,12 @@ def launch(args, files, core):
                 send(answer_write, {"continue": True, "canaryPort": port})
                 continue
             if phase == "child":
+                if (
+                    message["pid"] in handles
+                    or len(handles) >= 3
+                    or guest_namespace is None
+                ):
+                    raise OSError(errno.EPERM, "duplicate_or_unowned_peer")
                 info = register(message["pid"], pid, guest_namespace)
                 require_nonroot(info, args.uid, args.gid)
                 if len(handles) > 3:
@@ -515,6 +540,7 @@ def launch(args, files, core):
         or result["failure"]
         or phases != list(core.PHASES)
         or len(handles) != 3
+        or not any(row["pid"] == pid and row["waitStatus"] == 0 for row in waited)
         or not record.get("outsideCanaryUnreached")
     ):
         raise OSError(errno.EPERM, "namespace_attempt_failed; inspect root receipt")

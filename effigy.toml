@@ -201,12 +201,13 @@ section = "Research Records"
 "validate:claude-agent-sdk-confined-probe" = "python3 -B scripts/tests/claude-agent-sdk-confined-probe.py"
 "validate:claude-agent-sdk-netns-proposal" = "python3 -B scripts/tests/claude-agent-sdk-netns-proposal.py"
 "check:claude-agent-sdk-netns-proposal" = [
-  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-netns-proposal.py\", \"scripts/claude-agent-sdk-netns-kernel.py\", \"scripts/claude-agent-sdk-netns-entry.py\", \"scripts/tests/claude-agent-sdk-netns-proposal.py\")]'",
+  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-probe-custody.py\", \"scripts/claude-agent-sdk-netns-proposal.py\", \"scripts/claude-agent-sdk-netns-kernel.py\", \"scripts/claude-agent-sdk-netns-entry.py\", \"scripts/tests/claude-agent-sdk-netns-proposal.py\")]'",
   "node --check scripts/claude-agent-sdk-netns-native.mjs",
 ]
-"check:format:claude-agent-sdk-netns-proposal" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-netns-proposal.py scripts/claude-agent-sdk-netns-kernel.py scripts/claude-agent-sdk-netns-entry.py scripts/tests/claude-agent-sdk-netns-proposal.py"
-"format:claude-agent-sdk-netns-proposal" = "ruff format --no-cache scripts/claude-agent-sdk-netns-proposal.py scripts/claude-agent-sdk-netns-kernel.py scripts/claude-agent-sdk-netns-entry.py scripts/tests/claude-agent-sdk-netns-proposal.py"
+"check:format:claude-agent-sdk-netns-proposal" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-probe-custody.py scripts/claude-agent-sdk-netns-proposal.py scripts/claude-agent-sdk-netns-kernel.py scripts/claude-agent-sdk-netns-entry.py scripts/tests/claude-agent-sdk-netns-proposal.py"
+"format:claude-agent-sdk-netns-proposal" = "ruff format --no-cache scripts/claude-agent-sdk-probe-custody.py scripts/claude-agent-sdk-netns-proposal.py scripts/claude-agent-sdk-netns-kernel.py scripts/claude-agent-sdk-netns-entry.py scripts/tests/claude-agent-sdk-netns-proposal.py"
 "check:format:claude-agent-sdk-netns-javascript" = "eclint check --indent_style space --indent_size 2 --end_of_line lf --charset utf-8 --trim_trailing_whitespace --insert_final_newline scripts/claude-agent-sdk-netns-native.mjs"
+"check:claude-agent-sdk-netns-workflow" = "actionlint .github/workflows/sdk234-netns-proof.yml"
 "validate:claude-agent-sdk-admin-fixture" = "python3 -B scripts/tests/claude-agent-sdk-admin-fixture.py"
 "check:claude-agent-sdk-admin-fixture" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-admin-fixture.py\", \"scripts/tests/claude-agent-sdk-admin-fixture.py\")]'"
 "check:format:claude-agent-sdk-admin-fixture" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-admin-fixture.py scripts/tests/claude-agent-sdk-admin-fixture.py"

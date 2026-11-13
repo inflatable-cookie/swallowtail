@@ -21,8 +21,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 
 ROOT = Path(__file__).resolve().parents[1]
 RECORD = Path("docs/knowledge/operations/claude-agent-sdk-netns.sha256")
+CUSTODY = "scripts/claude-agent-sdk-probe-custody.py"
 ADMISSION = "docs/knowledge/operations/claude-agent-sdk-netns-admission.json"
 INPUTS = (
+    CUSTODY,
+    ".github/workflows/sdk234-netns-proof.yml",
+    "scripts/tests/oxide-selector-routing.py",
     "scripts/claude-agent-sdk-netns-proposal.py",
     "scripts/claude-agent-sdk-netns-kernel.py",
     "scripts/claude-agent-sdk-netns-entry.py",
@@ -85,7 +89,9 @@ def snapshots(root, expected):
     if (
         admission["fakeScope"] != "loopback-transport-only"
         or admission["kernelActivationObserved"] is not False
-        or admission["sdkCustodyDecision"] != "6a14030b-ff23-4ef1-9b12-7a8cedbcca81"
+        or admission["sdkCustodyDecision"] != "89db0f25-dc94-4feb-b447-8b9fabe52561"
+        or admission["custodyModel"] != "explicit-trusted-host"
+        or admission["hostileSameUserReplacementCovered"] is not False
         or admission["productionAdmission"] is not False
         or admission["originalActivation"] is not False
         or admission["canonicalFixtureAttempt"] is not False
@@ -109,6 +115,22 @@ def load_verified(name, data, root=ROOT):
     module.__file__ = str(root / name)
     exec(compile(data, module.__file__, "exec"), module.__dict__)
     return module
+
+
+def host_custody(files, node, node_sha, record_sha, runtime=None):
+    custody = load_verified(CUSTODY, files[CUSTODY])
+    runtime = (
+        runtime if runtime is not None else custody.runtime_inventory(node, node_sha)
+    )
+    lease = custody.Lease(runtime, node, node_sha, json.loads(files[ADMISSION]))
+    try:
+        for name, data in files.items():
+            lease.bind(ROOT / name, sha(data))
+        lease.bind(ROOT / RECORD, record_sha)
+        return lease
+    except BaseException:
+        lease.close()
+        raise
 
 
 def reject_inherited_sockets(descriptors):
@@ -221,6 +243,8 @@ def execute(ops, protocol):
             failure = failure or str(error)
         try:
             cleanup = ops.cleanup()
+            if not cleanup or cleanup.get("observed") is not True:
+                raise Refused("cleanup_join_unknown")
         except (Refused, OSError) as error:
             failure = (failure + "; " if failure else "") + str(error)
     return {
@@ -250,6 +274,12 @@ def protocol(
         or admission["authority"]["original_run_authorised"]
     ):
         raise Refused("production_or_original_admission")
+    lease = getattr(ops, "lease", None)
+    if lease is None:
+        raise Refused("host_custody_missing")
+    lease.check()
+    for name, data in accepted.items():
+        lease.bind(ROOT / name, sha(data))
     node = Path(node).resolve(strict=True)
     if sha(old.read_regular(node)) != node_sha:
         raise Refused("node_identity")
@@ -441,10 +471,32 @@ def protocol(
                 }
             )
 
+        lease.configure(commands, [env, driver_env])
+        for staged in root.iterdir():
+            if staged.is_file() and staged.name != "confined-config.json":
+                lease.bind(staged, sha(staged.read_bytes()))
+
         def spawn(command, **kwargs):
+            hook = getattr(ops, "custody_event", None)
+            if hook is not None:
+                hook(lease.launched, lease, command)
+            lease.permit(command, kwargs["env"])
+            if lease.launched == 2:
+                lease.bind(
+                    root / "confined-config.json",
+                    sha((root / "confined-config.json").read_bytes()),
+                )
             reject_inherited_sockets(kwargs.get("pass_fds", ()))
             if ops.kernel:
                 command, kwargs = ops.entry(command, kwargs, root, node, files)
+            if ops.kernel:
+                for entry in root.glob("entry-*.json"):
+                    lease.bind(entry, sha(entry.read_bytes()))
+                lease.bind(
+                    root / "netns-entry.py",
+                    sha(files["scripts/claude-agent-sdk-netns-entry.py"]),
+                )
+            lease.check()
             child = subprocess.Popen(command, **kwargs)
             owned.append(child)
             ops.confirm_child(child)
@@ -470,6 +522,7 @@ def protocol(
                 driver_environment=driver_env,
                 cancelled=ops.protocol_cancelled,
             )
+            result["custody"] = lease.observation()
             result["requests"] = requests
             result["ordinaryTcp"] = (
                 len(requests) == 1 and '"ordinaryTcp":true' in result["stderr"]
@@ -507,15 +560,21 @@ def rehearse(
     files = snapshots(ROOT, expected)
     if not 0 < bound <= 10:
         raise Refused("bound_may_only_tighten")
-    with tempfile.TemporaryDirectory(
-        prefix="sdk-netns-model-", dir=os.environ["TMPDIR"]
-    ) as temporary:
-        return execute(
-            ops or Model(),
-            lambda selected: protocol(
-                node, node_sha, bound, files, selected, temporary, mode, scenario
-            ),
-        )
+    selected_ops = ops or Model()
+    lease = host_custody(files, node, node_sha, expected)
+    selected_ops.lease = lease
+    try:
+        with tempfile.TemporaryDirectory(
+            prefix="sdk-netns-model-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            return execute(
+                selected_ops,
+                lambda selected: protocol(
+                    node, node_sha, bound, files, selected, temporary, mode, scenario
+                ),
+            )
+    finally:
+        lease.close()
 
 
 def inspect_host(node=None):
@@ -541,6 +600,12 @@ def inspect_host(node=None):
         else:
             observed["tools"][name] = None
     if node:
+        # The hosted preflight runs as the ordinary runner, before any privilege.
+        record = snapshots(ROOT, os.environ["NETNS_RECORD"])
+        custody = load_verified(CUSTODY, record[CUSTODY])
+        observed["custodyRuntime"] = custody.runtime_inventory(
+            node, sha(Path(node).resolve(strict=True).read_bytes())
+        )
         observed["nodeVersion"] = (
             subprocess.check_output(
                 [node, "--version"], env={"PATH": "/usr/bin:/bin"}, timeout=5
@@ -571,6 +636,28 @@ def inspect_host(node=None):
     return observed
 
 
+def kernel_with_custody(args, files, kernel):
+    kernel.root_required(args)
+    preflight = Path(os.environ["TMPDIR"]) / "preflight.json"
+    info = preflight.lstat()
+    if preflight.is_symlink() or info.st_uid != args.uid or info.st_mode & 0o022:
+        raise Refused("host_preflight_ownership")
+    runtime = json.loads(preflight.read_bytes())["custodyRuntime"]
+    if runtime["version"] != "v22.23.2" or runtime["ownerUid"] != args.uid:
+        raise Refused("host_preflight_runtime_version")
+    lease = host_custody(
+        files, args.node, args.node_sha256, args.record_sha256, runtime
+    )
+    try:
+        lease.bind(preflight, sha(preflight.read_bytes()))
+        lease.bind(
+            Path(f"/proc/{os.getppid()}/exe").resolve(strict=True), args.timeout_sha256
+        )
+        return kernel.launch(args, files, sys.modules[__name__], lease)
+    finally:
+        lease.close()
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--rehearse", action="store_true")
@@ -596,7 +683,7 @@ def main():
         result = (
             kernel.cleanup_receipt(args)
             if args.cleanup_proposal
-            else kernel.launch(args, files, sys.modules[__name__])
+            else kernel_with_custody(args, files, kernel)
         )
         print(json.dumps(result))
     elif args.rehearse:

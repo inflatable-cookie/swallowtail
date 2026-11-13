@@ -29,3 +29,8 @@ Prepared a private Linux loopback-only namespace proposal with an unapplied
 manual job, exact source binding and owned-fake orchestration/protocol tests.
 Namespace provisioning, runtime custody and original SDK/native activation
 remain separately gated; no qualification ceiling changes.
+
+Applied the separately approved namespace-only workflow preparation and added
+private trusted-host SDK custody admission with input pinning, launch checks,
+revocation and owned-fake cleanup proof. Namespace dispatch and original/native
+activation still require exact-source authority; qualification is unchanged.

@@ -92,7 +92,7 @@ canonical fixture access without enabling original mode.
 
 Original mode refuses unconditionally. Missing:
 
-- A settled interpreter/source custody contract. Staging, Node/library hashes
+- Exact target-host custody admission under Tom decision89db0f25 v2. Staging, Node/library hashes
   and child write denial do not resist hostile same-uid replacement of the
   supervisor, interpreter, libraries or host startup policy.
 - Canonical administrator discovery in the actual confined SDK/native path.
@@ -180,4 +180,5 @@ The [Linux loopback namespace proposal](claude-agent-sdk-loopback-namespace.md)
 owns the separate ordinary-TCP transport preparation. Its unprivileged rehearsals
 model namespace operations and grant no kernel or original activation credit.
 The consumed canonical-fixture result and existing confinement evidence remain
-unchanged; SDK custody is still pending its standalone decision.
+unchanged. Tom decision89db0f25 v2 settles private explicit trusted-host SDK
+custody; the linked proposal records its implemented admission and limits.

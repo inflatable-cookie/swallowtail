@@ -1,7 +1,8 @@
 # SDK loopback transport proposal
 
 Private, fake-only proposal for Q-009. Not an admitted host or an activation.
-SDK custody decision `6a14030b-ff23-4ef1-9b12-7a8cedbcca81` remains open.
+Tom settled SDK custody in decision `89db0f25-dc94-4feb-b447-8b9fabe52561` v2:
+"Explicit trusted-host SDK custody." The private implementation below owns it.
 The canonical-fixture grant is consumed; no canonical path is touched here.
 Production stays SDK 0.3.317/native 2.1.317, frozen target 0.3.322.
 
@@ -61,11 +62,11 @@ a negative target. Existing passing kernel and canonical-fixture evidence is
 retained without replay.
 
 The eventual setup request must bind exact helper, entry, source/admission,
-Node and startup bytes, the unapplied manual-job diff and actual host tool
+Node and startup bytes, the approved preparation diff and actual host tool
 observations. It grants only one namespace-only fake attempt. It cannot grant
 original code, another canonical fixture attempt, a custody model, installation,
 host provisioning or a public runtime capability. Operator approval of an
-exact new execution source is required before applying/dispatching that job.
+exact new execution source is required before dispatching that job.
 
 Mechanism references: [network namespaces](https://man7.org/linux/man-pages/man7/network_namespaces.7.html),
 [unshare](https://man7.org/linux/man-pages/man2/unshare.2.html),
@@ -74,14 +75,18 @@ Mechanism references: [network namespaces](https://man7.org/linux/man-pages/man7
 
 ## Exact proposal surface
 
-The [unapplied manual job](claude-agent-sdk-netns-ci.patch) contains the complete
+The [approved preparation diff](claude-agent-sdk-netns-ci.patch) contains the complete
 preflight, one attempt and always-cleanup commands. It adds only one fresh
 `ubuntu-latest` job, `contents: read`, Node 22.23.2 and a five-minute job bound.
 The diff also carries the minimal exact-byte non-Cargo routing exception; its
 mutation rehearsal refuses changed permissions and unrelated workflows.
-It is data: the active workflows and routing helper are unchanged. Application, registration on
-main and dispatch need separate authority naming the resulting exact source;
-registration alone grants no execution. No automatic retry is proposed.
+Tom decision `05d81f49-83da-42d0-b7ab-8a9bc29212ee` v2 authorizes
+application/registration of those exact bytes from source36fc153ac. The patch
+SHA256 is5b804c0693aff7fc1d09a8654f32ad4ab761354236c5f51154732760c85ae700;
+applied workflow SHA256 is07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19.
+Task236 owns default-branch registration. This PR applies the same workflow
+and narrow routing exception. Registration grants no execution; a fresh exact
+source and detached record need separate activation authority. No retry is granted.
 
 The source record `claude-agent-sdk-netns.sha256` binds the coordinator, root
 monitor, child entry, ordinary-TCP fake, tests, admission, this contract, job
@@ -98,7 +103,7 @@ refuses. The proposed Linux Node digest is
 `3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327`.
 Python/timeout identities are observed at preflight and checked again against
 `/proc/self/exe` and the monitor's parent executable. This detects observed
-changes; it does not settle the open SDK runtime/source custody choice or
+changes; it implements the approved trusted-host scope and does not
 promise verified execution against a hostile same-user replacement.
 
 The only proposed privileged operations are two exact `sudo -n timeout`
@@ -156,5 +161,48 @@ This request excludes another canonical-fixture attempt, original SDK/native
 execution, provider credentials or spend, installs, host provisioning, Darwin
 changes and production admission. Even successful fake TCP isolation would not
 prove original administrator discovery or selected original behavior. The SDK
-custody decision remains with Tom; the future original proof still needs its
+custody policy is settled; the future original proof still needs its
 own concrete source-immutable Nucleus route and exact execution authority.
+
+## Private custody admission
+
+The host constructs a live private custody lease from captured verified source,
+not a caller attestation. Decision89db0f25 v2 excludes hostile arbitrary
+same-user replacement; hashes, descriptors and staging are not OS-enforced
+verified execution. The admission remains fake-only and cannot authorize an
+original artifact or admit an unobserved namespace mechanism.
+
+The ordinary hosted preflight observes the exact Node executable and loaded
+shared-library list using a fixed credential-free Node report command, with a
+five-second timeout. No provider or probe payload runs in that observation.
+Its output joins the existing private preflight file; root requires its runner
+ownership, fixed Node22.23.2 identity and startup policy. The host then opens and
+hashes exact Node/libraries, Python executable/imported modules/mapped libraries,
+loader cache, source record, supervisor/entry/sidecar/SDK/native and loader inputs.
+Root also binds its actual timeout parent executable. Ambient loader preload is
+refused. Inputs must be regular, owned by root/the trusted runner and unwritable
+by other users. Open descriptors and device/inode/owner/mode/size/mtime/ctime
+observations stay owned through launch. Captured source bytes feed helper imports
+and staged payloads. Each launch rechecks the live lease and exact command/env;
+missing, replaced, changed or host-revoked inputs refuse before payload effects.
+
+The lease is an in-process host object, bound to the owning PID and explicit
+trusted fork, not a serializable success flag. The fixed two launch commands,
+Node flags, isolated paths and explicit environment are registered before spawn.
+Staged modules/configs are pinned before each child entry. Failure after one child
+starts kills and actually waits that owned process and closes custody descriptors.
+The host releases the lease only after protocol teardown; root retains its own
+copy through namespace settlement. Independent host/runtime admission still
+needs actual target-host observations in the separately authorized attempt.
+
+The retained guest topology follows the design consultation's alternative:
+the root monitor pins the guest from its own fork and peers from the trusted
+guest's actual Popen identities under a start barrier, validating kernel parent,
+namespace and credentials before release. Guest waits are recorded with their
+actor; the root cannot wait a live grandchild. It independently requires pidfd
+HUP for those registered peers and actually waits the guest or adopted children.
+ECHILD or disappearance alone never establishes a peer join. A zero-status guest
+wait and both exact peer wait identities are required for success. After final
+setresgid/setresuid, parent-death SIGKILL is rearmed and the expected monitor is
+rechecked before payload entry. Credential-drop/monitor-death uncertainty and
+unknown cleanup remain failures, not disposal-as-join claims.

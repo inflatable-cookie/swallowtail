@@ -471,7 +471,9 @@ class ConfinedProbeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(
             prefix="sdk-confined-substitute-", dir=os.environ["TMPDIR"]
         ) as temporary:
-            root = Path(temporary)
+            # Hosted macOS supplies TMPDIR through /var -> /private/var.
+            # Canonicalize only this freshly owned fixture, not peer inputs.
+            root = Path(temporary).resolve(strict=True)
             for name in (*PROBE.SOURCES, PROBE.RECORD):
                 (root / name).parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(ROOT / name, root / name)

@@ -109,6 +109,15 @@ exercise the canonical-path mapping with owned fakes first. Darwin needs an
 existing provisioned boundary because Seatbelt cannot supply that mapping.
 This task grants no privileged helper, host provisioning or VM change.
 
+Concrete Linux observation: [Ubuntu CI job 131785252340](https://github.com/inflatable-cookie/swallowtail/actions/runs/43395484971/job/131785252340)
+at source `0d4713088098238906534a540a11bbd9a6d16854` ran the fake boundary on
+x86_64, kernel `7.0.0-1019-azure`, Landlock ABI 8 and Node 22.23.2 (executable
+SHA-256 `3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327`).
+Its namespace probe exited 1: `unshare: write failed /proc/self/uid_map:
+Operation not permitted`. That runner cannot supply the proposed rootless
+canonical-path mapping. An owner-provided admitted boundary is required;
+this diagnostic authorizes no privileged fallback.
+
 The accepted `probe-plan.json` retains all exact wrapper/native identities for
 0.3.318/.319/.321/.322 and the .317 control on both selected platforms. No
 unchanged artifact is downloaded again or executed. Original activation still

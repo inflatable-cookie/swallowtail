@@ -1,0 +1,159 @@
+diff --git a/.github/workflows/sdk234-admin-fixture.yml b/.github/workflows/sdk234-admin-fixture.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/sdk234-admin-fixture.yml
+@@ -0,0 +1,154 @@
++name: SDK234 administrator fixture only
++on:
++  workflow_dispatch:
++    inputs:
++      source_sha:
++        description: Exact reviewed source commit; no branch or tag
++        required: true
++      proposal_sha:
++        description: Exact approved proposal-manifest SHA-256
++        required: true
++permissions:
++  contents: read
++jobs:
++  canonical-fixture:
++    timeout-minutes: 5
++    strategy:
++      fail-fast: false
++      matrix:
++        os: [ubuntu-latest, macos-latest]
++        state: [absent, disabled, managed-deny]
++    runs-on: ${{ matrix.os }}
++    env:
++      SDK234_PROPOSAL_SHA: ${{ inputs.proposal_sha }}
++      SDK234_SOURCE_SHA: ${{ inputs.source_sha }}
++      SDK234_STATE: ${{ matrix.state }}
++      SDK234_RUN: ${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.os }}-${{ matrix.state }}
++    steps:
++      - name: Require exact input
++        shell: bash
++        run: '[[ "$SDK234_SOURCE_SHA" =~ ^[0-9a-f]{40}$ && "$SDK234_PROPOSAL_SHA" =~ ^[0-9a-f]{64}$ ]]'
++      - uses: actions/checkout@v7
++        with:
++          ref: ${{ inputs.source_sha }}
++          persist-credentials: false
++      - uses: actions/setup-node@v6
++        with:
++          node-version: 22.23.2
++      - name: Bind source and runtime; stage fixture-only code
++        shell: bash
++        run: |
++          set -euo pipefail
++          test "$(git rev-parse HEAD)" = "$SDK234_SOURCE_SHA"
++          test -z "$(git status --porcelain)"
++          sdk234_work=$(mktemp -d "$RUNNER_TEMP/sdk234-admin.XXXXXXXX")
++          sdk234_python=$(command -v python3)
++          sdk234_node=$(command -v node)
++          export SDK234_WORK="$sdk234_work" SDK234_NODE="$sdk234_node"
++          "$sdk234_python" -I -B - <<'PY'
++          import hashlib, json, os, pathlib, platform, subprocess, sys
++          source = pathlib.Path.cwd() / "scripts/claude-agent-sdk-admin-fixture.py"
++          manifest = pathlib.Path("docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.sha256").read_bytes()
++          assert hashlib.sha256(manifest).hexdigest() == os.environ["SDK234_PROPOSAL_SHA"]
++          for row in manifest.decode().splitlines():
++              expected_sha, relative = row.split("  ", 1)
++              item = pathlib.Path(relative)
++              assert not item.is_absolute() and ".." not in item.parts
++              assert hashlib.sha256(item.read_bytes()).hexdigest() == expected_sha
++          patch = pathlib.Path("docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.patch").read_text()
++          workflow = "\n".join(row[1:] for row in patch.splitlines() if row.startswith("+") and not row.startswith("+++")) + "\n"
++          assert pathlib.Path(".github/workflows/sdk234-admin-fixture.yml").read_text() == workflow
++          node = pathlib.Path(os.environ["SDK234_NODE"]).resolve(strict=True)
++          host = (platform.system(), platform.machine())
++          expected = {
++              ("Linux", "x86_64"): "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
++              ("Darwin", "arm64"): "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
++          }
++          digest = lambda p: hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest()
++          assert os.getuid() != 0 and host in expected
++          assert digest(node) == expected[host]
++          version = subprocess.check_output([str(node), "--version"], env={"PATH":"/usr/bin:/bin"}, timeout=5).decode().strip()
++          assert version == "v22.23.2"
++          print(json.dumps({"source": os.environ["SDK234_SOURCE_SHA"], "host": platform.uname()._asdict(), "uid": os.getuid(), "node": str(node), "nodeSha256": digest(node), "nodeVersion": version, "python": sys.executable, "pythonSha256": digest(sys.executable), "helperSha256": digest(source), "originalActivation": False}))
++          with open(os.environ["GITHUB_ENV"], "a") as output:
++              for key, value in {"SDK234_WORK": os.environ["SDK234_WORK"], "SDK234_NODE": str(node), "SDK234_PYTHON": sys.executable, "SDK234_HELPER": str(source), "SDK234_HELPER_SHA": digest(source)}.items():
++                  output.write(f"{key}={value}\n")
++          PY
++          cat > "$SDK234_WORK/phase.py" <<'PY'
++          import hashlib, os, pathlib, platform, sys
++          phase, helper, expected, state, run = sys.argv[1:]
++          assert phase in {"setup", "cleanup"} and os.getuid() == 0
++          source = pathlib.Path(helper).read_bytes()
++          assert hashlib.sha256(source).hexdigest() == expected
++          module = {"__name__": "fixture_only"}
++          exec(compile(source, helper, "exec"), module)
++          parent, name = {
++              "Linux": (pathlib.Path("/etc"), "claude-code"),
++              "Darwin": (pathlib.Path("/Library/Application Support"), "ClaudeCode"),
++          }[platform.system()]
++          for entry in (parent, *parent.parents):
++              info = entry.lstat()
++              assert entry.is_dir() and not entry.is_symlink()
++              assert info.st_uid == 0 and info.st_mode & 0o022 == 0
++          result = module["prepare" if phase == "setup" else "cleanup"](parent, name, state, 0, run)
++          print({"phase": phase, "receipt": result, "originalActivation": False})
++          PY
++          cat > "$SDK234_WORK/read.mjs" <<'JS'
++          import fs from 'node:fs';
++          import assert from 'node:assert/strict';
++          const [state] = process.argv.slice(2);
++          assert.notEqual(process.getuid(), 0);
++          assert.ok(['absent', 'disabled', 'managed-deny'].includes(state));
++          const root = process.platform === 'darwin'
++            ? '/Library/Application Support/ClaudeCode' : '/etc/claude-code';
++          const policy = root + '/managed-settings.json';
++          let effective = false;
++          if (state === 'absent') {
++            assert.throws(() => fs.readFileSync(policy), { code: 'ENOENT' });
++          } else {
++            const info = fs.lstatSync(policy);
++            assert.equal(info.uid, 0);
++            assert.equal(info.mode & 0o7777, 0o444);
++            assert.equal(info.nlink, 1);
++            effective = JSON.parse(fs.readFileSync(policy)).permissions.denyInsteadOfPrompting;
++          }
++          assert.equal(effective, state === 'managed-deny');
++          for (const target of [policy, root + '/forbidden-new-file']) {
++            assert.throws(() => fs.openSync(target, 'a'), error => ['EACCES', 'EPERM'].includes(error.code));
++          }
++          console.log(JSON.stringify({ canonicalFixtureRead: true, state, effective,
++            nativeAdministratorDiscovery: false, originalActivation: false }));
++          JS
++          "$sdk234_python" -I -B -c 'import hashlib,pathlib,sys; [print(hashlib.sha256(pathlib.Path(p).read_bytes()).hexdigest(), p) for p in sys.argv[1:]]' "$SDK234_WORK/phase.py" "$SDK234_WORK/read.mjs"
++      - name: Provision fixture; read as runner uid
++        shell: bash
++        run: |
++          set -euo pipefail
++          sudo -n "$SDK234_PYTHON" -I -B "$SDK234_WORK/phase.py" setup \
++            "$SDK234_HELPER" "$SDK234_HELPER_SHA" "$SDK234_STATE" "$SDK234_RUN"
++          mkdir -m 700 "$SDK234_WORK/home" "$SDK234_WORK/workspace"
++          export SDK234_WORK
++          "$SDK234_PYTHON" -I -B - <<'PY'
++          import json, os, pathlib
++          work = pathlib.Path(os.environ["SDK234_WORK"])
++          opposite = os.environ["SDK234_STATE"] != "managed-deny"
++          for base in (work / "home", work / "workspace"):
++              (base / ".claude").mkdir(mode=0o700)
++              (base / ".claude/settings.json").write_text(json.dumps({"permissions":{"denyInsteadOfPrompting":opposite}}))
++          PY
++          cd "$SDK234_WORK/workspace"
++          env -i PATH=/usr/bin:/bin HOME="$SDK234_WORK/home" \
++            TMPDIR="$SDK234_WORK" TMP="$SDK234_WORK" TEMP="$SDK234_WORK" \
++            "$SDK234_NODE" --no-addons --openssl-config=/dev/null \
++            "$SDK234_WORK/read.mjs" "$SDK234_STATE"
++      - name: Remove only the verified fixture
++        if: always()
++        shell: bash
++        run: |
++          set -euo pipefail
++          test -n "${SDK234_WORK:-}" # Missing preflight means failure, never a cleanup pass.
++          sudo -n "$SDK234_PYTHON" -I -B "$SDK234_WORK/phase.py" cleanup \
++            "$SDK234_HELPER" "$SDK234_HELPER_SHA" "$SDK234_STATE" "$SDK234_RUN"
++          # Successful cleanup removes only the verified policy, lease and directory.
++          # Do not recursively delete the canonical path or restore an old policy.
++          # Ordinary scratch is left to GitHub's disposable-job teardown.

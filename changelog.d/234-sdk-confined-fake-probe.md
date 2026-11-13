@@ -10,3 +10,9 @@ Existing Ubuntu/macOS Node 22.23.2 jobs retain actual platform proof identities;
 canonical administrator injection and interpreter custody remain separate gates.
 CI mutation fixtures canonicalize their owned temporary roots before checking
 source substitution, including macOS's `/var` temporary-path alias.
+
+Prepared an unapplied, fixture-only ephemeral-CI job proposal with exact
+administrator paths, absent/disabled/managed-deny states and scoped setup/
+cleanup commands. Scratch rehearsals cover exclusive ownership, substitution
+refusal and cleanup. Privileged environment setup, custody and original/native
+activation still require their separate authority and proof.

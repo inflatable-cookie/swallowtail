@@ -109,6 +109,14 @@ exercise the canonical-path mapping with owned fakes first. Darwin needs an
 existing provisioned boundary because Seatbelt cannot supply that mapping.
 This task grants no privileged helper, host provisioning or VM change.
 
+The planner's 2026-11-13 continuation requests a concrete
+[ephemeral-CI environment proposal](claude-agent-sdk-ephemeral-ci-proposal.md).
+It supplies an unapplied job diff, exact canonical fixture states and bounded
+root setup/cleanup commands. Owned-scratch rehearsals test the fixture
+lifecycle; they do not establish canonical injection or authorize provisioning.
+The proposed fixture-only authority is separate from custody and original
+SDK/native activation. Existing passing confinement evidence stays intact.
+
 Concrete Linux observation: [Ubuntu CI job 131785252340](https://github.com/inflatable-cookie/swallowtail/actions/runs/43395484971/job/131785252340)
 at source `0d4713088098238906534a540a11bbd9a6d16854` ran the fake boundary on
 x86_64, kernel `7.0.0-1019-azure`, Landlock ABI 8 and Node 22.23.2 (executable

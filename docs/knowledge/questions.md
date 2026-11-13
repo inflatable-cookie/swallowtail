@@ -289,3 +289,10 @@ Its fake observations do not close item 1, qualify Node, adopt the v2
 revision in production or qualify any SDK/native pair. Linux x64 admission,
 exact original-artifact authority and Nucleus proof execution remain open.
 
+The planner's 2026-11-13 continuation requested a reviewable
+[dedicated ephemeral-CI proposal](operations/claude-agent-sdk-ephemeral-ci-proposal.md)
+for genuine administrator fixture setup. Its unapplied job diff and scratch-only
+ownership/refusal/cleanup rehearsals grant no privileged execution, canonical
+injection proof, custody ruling or native activation. The environment-setup
+authority request must name the exact reviewed job/source before execution.
+

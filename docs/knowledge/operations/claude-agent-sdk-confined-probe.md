@@ -92,9 +92,10 @@ canonical fixture access without enabling original mode.
 
 Original mode refuses unconditionally. Missing:
 
-- Exact target-host custody admission under Tom decision89db0f25 v2. Staging, Node/library hashes
-  and child write denial do not resist hostile same-uid replacement of the
-  supervisor, interpreter, libraries or host startup policy.
+- Exact target-host custody observations under Tom decision89db0f25 v2. The
+  private trusted-host lease is implemented in the namespace path; local
+  Darwin shared-cache inputs remain unresolved. Hostile arbitrary same-user
+  replacement is outside this guarantee, not a required stronger primitive.
 - Canonical administrator discovery in the actual confined SDK/native path.
   The dedicated fixture attempt proves owned canonical file access on both
   hosts; it does not combine that environment with the original native or

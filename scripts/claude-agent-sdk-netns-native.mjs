@@ -1,6 +1,7 @@
 // Owned fake only: ordinary TCP, no connection patch and no inherited socket.
 import fs from "node:fs";
 import net from "node:net";
+import http from "node:http";
 const config = JSON.parse(fs.readFileSync(new URL("./native-config.json", import.meta.url)));
 let outsideDenial = null;
 if (config.forbiddenHostPort !== null) {
@@ -16,18 +17,29 @@ if (config.forbiddenHostPort !== null) {
     });
   });
 }
-const response = await fetch(`http://127.0.0.1:${config.port}/v1/messages`, {
-  method: "POST", signal: AbortSignal.timeout(2000),
-  headers: { "content-type": "application/json", "anthropic-version": "2023-06-01" },
-  body: JSON.stringify({ model: "owned-model", max_tokens: 64, stream: true,
-    messages: [{ role: "user", content: "owned transport probe" }] }),
+const body = JSON.stringify({ model: "owned-model", max_tokens: 64, stream: true,
+  messages: [{ role: "user", content: "owned transport probe" }] });
+const text = await new Promise((resolve, reject) => {
+  const request = http.request({ host: "127.0.0.1", port: config.port,
+    path: "/v1/messages", method: "POST", agent: false,
+    headers: { "content-type": "application/json", "content-length": Buffer.byteLength(body),
+      "anthropic-version": "2023-06-01", "connection": "close" } }, (response) => {
+    if (response.statusCode !== 200) {
+      response.destroy(); reject(new Error("owned_endpoint_refused")); return;
+    }
+    let received = "";
+    response.setEncoding("utf8");
+    response.on("data", (chunk) => {
+      received += chunk;
+      if (received.length > 65536) response.destroy(new Error("owned_response_limit"));
+    });
+    response.once("end", () => resolve(received));
+    response.once("error", reject);
+  });
+  request.setTimeout(2000, () => request.destroy(new Error("owned_endpoint_deadline")));
+  request.once("error", reject);
+  request.end(body);
 });
-if (response.status !== 200) throw new Error("owned_endpoint_refused");
-let text = "";
-for await (const chunk of response.body) {
-  text += new TextDecoder().decode(chunk);
-  if (text.length > 65536) throw new Error("owned_response_limit");
-}
 const frames = text.split("\n\n").filter(Boolean).map((block) => {
   const lines = block.split("\n");
   const frame = JSON.parse(lines.find((line) => line.startsWith("data: ")).slice(6));

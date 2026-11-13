@@ -4,7 +4,7 @@
 b1f34171f9c1292f72beccff30a809054699f579dd5e5369a1660a2087e819e1  scripts/claude-agent-sdk-netns-proposal.py
 eb4262f81395e5ef368891e2894634f02ca24fa278548f2f028919ed77af7a92  scripts/claude-agent-sdk-netns-kernel.py
 cd3fe92cedde440e596afa93b217523a8d560cd83ed52265faab8a168564d6d8  scripts/claude-agent-sdk-netns-entry.py
-68c33bb02b673611023aa4484d88877868335a4b94a4c3b69fb56905077cd971  scripts/claude-agent-sdk-netns-native.mjs
+ac3856769e6ef76f9cc7e8815a82337dd3e213704ff5e4d7e1be878c5e858c0d  scripts/claude-agent-sdk-netns-native.mjs
 96556d2381102775070f75a6bb8870bb5d56a735bbd43629cf8a57612163c7ee  scripts/tests/claude-agent-sdk-netns-proposal.py
 1162b13c52e438552266aab2fd47b3651f0f9b1d361f604aec748f3b27dee37c  scripts/claude-agent-sdk-confined-probe.py
 aa24aac1b8d8a223d83982103c2e18823877822911215eb3c3c30dcf695d08cb  crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/confined-execution.sha256

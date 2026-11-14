@@ -233,7 +233,7 @@
       "scope": "two consumed read-only attempts; no host/runtime admission or new activation",
       "proposal": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.json",
       "record": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.sha256",
-      "recordSha256": "fc9350814682bcecd837cc20aabeadebee4f1c696da4400d2a6e77c1784cf649",
+      "recordSha256": "681c83a51c554236a00f365176b55f1dafffd8eb2a652ca9db581798d6c0bfdb",
       "workflowApplied": true,
       "registered": true,
       "activationAuthorized": false,
@@ -293,5 +293,17 @@
     "mapping": "ACP consumes this private schema with its own captured outer Rust/LocalProcessHost/ACP/native inputs; software actor stand-ins do not prove that composition",
     "runtimeAxis": "ACP installed-compatible runtime separate from SDK exact22; Darwin shared-cache unresolved",
     "actualTopologyLimit": "ACP LocalProcessHost sleep group leader and checked ACP are siblings under Rust host. Current acp-actor-shape parent-child stand-in does not prove that actual graph;227 owns private sibling adaptation."
+  },
+  "bootstrapCustodyRepair": {
+    "scope": "source/fake only; no new host admission",
+    "requiresLivePreentryCapture": true,
+    "independentBootstrapClosureRequired": true,
+    "permissionProposal": "docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json",
+    "permissionRecordSha256": "0e8b8f3a9fe05624ccfac158c05f9fb86a4fdc49d694fd23d382a1bccdca24b0",
+    "unapplied": true,
+    "runtimeExecutionAuthorized": false,
+    "softwareTestsModelBootstrapClosure": true,
+    "actualRuntimeCustodyComplete": false,
+    "originalActivation": false
   }
 }

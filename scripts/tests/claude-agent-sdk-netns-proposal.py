@@ -574,8 +574,8 @@ class NamespaceProposalTests(unittest.TestCase):
     def test_host_owned_file_and_library_custody_refuses_drift_and_closes_descriptors(
         self,
     ):
-        runtime = CUSTODY.runtime_inventory(self.node, self.node_sha)
         for mode in ("replace", "bytes", "remove", "revoke"):
+            runtime = CUSTODY.runtime_inventory(self.node, self.node_sha)
             with tempfile.TemporaryDirectory(
                 prefix="sdk-custody-", dir=os.environ["TMPDIR"]
             ) as directory:
@@ -606,6 +606,7 @@ class NamespaceProposalTests(unittest.TestCase):
 
     def test_missing_or_wrong_runtime_custody_refuses(self):
         runtime = CUSTODY.runtime_inventory(self.node, self.node_sha)
+        self.addCleanup(runtime.close)
         for change in (
             {"decision": "caller-success"},
             {"nodeSha256": "0" * 64},

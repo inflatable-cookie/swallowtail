@@ -67,3 +67,56 @@ preparation/registration ruling. Existing combined/namespace/fixture workflows
 and all runtime/admission rules remain unchanged; all historical execution
 grants are spent. Q-009 and the qualification merge hold remain open. The exact
 failed combined shell gate and all actual diagnostic host facts are unobserved.
+
+
+## Consumed diagnostic attempt and current host gate
+
+Tom decisiond600b741-16e6-42da-bd59-e1678161fd2a v2, answered2026-11-14
+16:50:54.547Z, granted exactly one read-only diagnostic dispatch. Immediate
+independent local/remote/source, all9 captured input, proposal/helper,
+registration/default/execution workflow bytes and zero-attempt checks agreed.
+The exact command returned exit0 and [run43618052014](https://github.com/inflatable-cookie/swallowtail/actions/runs/43618052014).
+Final run/job/history reads confirm workflow418437987, workflow_dispatch,
+attempt1 and exactly one diagnostic dispatch, at frozen source
+0967f07d11950178b6265c3437d161728163119b /record
+4fa4a28b09cfcc04ae757bd7b638d635a2070636cf1001a7521c983c6cd4d5b4 /proposal
+33d18a171aaa5c5ed85d8038f22d5b196c4136750889445cefe97ba6925d441e. The ref stayed
+immutable through settlement. Grantd600b741 v2 is consumed; no retry is granted.
+
+[Job132517351658](https://github.com/inflatable-cookie/swallowtail/actions/runs/43618052014/job/132517351658)
+exited1. Complete helper output is1286 bytes, seven records within the32KiB
+bound, plus the input/launcher/exit envelope records:
+
+| Phase | Actual observation |
+| --- | --- |
+| source_identity | observed exact source and diagnostic record |
+| clean_worktree | observed clean:true |
+| scratch_creation | observed createdPrivateLeaf:true and removedOwnLeaf:true |
+| cached_executable | refused, reason cached_executable_unavailable |
+| inventory_production | skipped |
+| host_capabilities | skipped |
+
+The summary names failedPhase:cached_executable and reportProduced:false
+(inventory), readOnlyChecksPassed:false, hostAdmission:false,
+kernelEnforced:false and originalActivation:false. The required path
+`/opt/hostedtoolcache/node/22.23.2/x64/bin/node` failed the predicate that it is
+both a file and executable. The diagnostic does not distinguish missing,
+non-file or non-executable states. No cached Node was executed or hashed; no
+inventory/current Python/kernel/runtime-library or controller/delegation/
+privileged capability report was produced. Runner setup reported
+Ubuntu26.04.1 /ubuntu-26.04 image20261111.196.1; this is image metadata only.
+The successful private-leaf removal is not canonical fixture cleanup,
+independent process-tree settlement or post-cleanup filesystem inspection.
+
+This supplies an actionable current-host cache-availability gate, not an
+admitted shared host or a retrospective explanation of the unlabelled
+43599057785 failure. There is no substantive admitted-host milestone to release
+ACP227. Require an authorized existing host/environment that provides the exact
+cached Node22.23.2 executable and then proves the remaining tool/runtime/library
+custody, pre-enabled controllers and required kernel capabilities. No runtime
+substitution, installation/staging, provisioning, controller enablement or
+weakened admission is authorized here. Any further diagnostic or combined job
+requires fresh exact source/record/attempt authority; do not replay this grant.
+All planned limits are unchanged, and no timeout or privileged branch ran.
+The consumed combined grant, original/vendor/Darwin/ACP gates, Q-009 and the
+qualification merge hold remain open or spent exactly as previously recorded.

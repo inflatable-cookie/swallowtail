@@ -92,3 +92,10 @@ Reconcile registration238/PR557 at canonicaleea290a5c2a without workflow or
 helper drift. Independently verify active diagnostic418437987, exact9e5b668f
 bytes and zero diagnostic dispatches. Refresh diagnostic/parent bindings for a
 separate exact one-attempt read-only choice; no activation or admission follows.
+
+Record consumed Tomd600b741 v2 diagnostic43618052014/attempt1 at frozen0967:
+source/clean/scratch phases observed, cached executable availability refused,
+inventory/capability phases skipped, exit1 and hostAdmission:false. Preserve
+complete1286-byte helper output and missing-versus-nonexecutable limit. Require
+an authorized host with the exact cached runtime plus remaining admission and
+fresh attempt authority; no retry/install, combined proof or ACP release.

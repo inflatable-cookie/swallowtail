@@ -390,6 +390,28 @@ unchanged approved bytes; source checks reverse/reapply only in owned fixtures.
 Their finite20s+2s/10s/32KiB limits and exact hashes are in the packet. Registration238/PR557 is reconciled at canonicaleea290a5c2a151934027aa82c9718e3aff1bb2eb.
 Independent registry/content reads identify active diagnostic workflow418437987,
 approved9e5b668f bytes and zero diagnostic dispatches. A separate exact
-resulting-source activation choice remains required. No diagnostic has run. The consumed combined grant supplies no
+resulting-source activation choice was separately granted once and consumed
+by diagnostic43618052014, recorded below. No retry is authorized. The consumed combined grant supplies no
 retry authority, host fallback or runtime installation. This preparation does
 not supply actual Linux-host facts, original compatibility or ACP composition.
+
+
+## Read-only diagnostic result: cache availability refused
+
+The [owning diagnostic record](claude-agent-sdk-preflight-diagnostic.md#consumed-diagnostic-attempt-and-current-host-gate)
+records Tomd600b741 v2 and consumed run43618052014/attempt1/job132517351658 at
+frozen0967f07d /diagnostic record4fa4a28b. Source identity, clean worktree and
+private scratch creation/removal were observed before cached_executable refused
+cached_executable_unavailable. Inventory and host capability phases were
+skipped; exit1 and all admission/enforcement/original flags remained false.
+No Node execution, combined retry, privileged setup or provider work occurred.
+
+The current fresh host does not provide the required cached executable predicate;
+missing versus non-file/non-executable is not distinguished. This result does
+not prove the old unlabelled failure's cause, runtime/library custody,
+controller availability, actual combined enforcement, native compatibility or
+ACP sibling composition. The next external gate is an authorized existing
+host/environment with the exact required cached Node, followed by remaining
+custody/controller/kernel admission and fresh exact attempt authority. No
+installation, staging or runtime fallback follows. Do not resume ACP227 on
+this diagnostic alone; Q-009 and the qualification merge hold remain open.

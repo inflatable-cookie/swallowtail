@@ -1,0 +1,95 @@
+name: SDK234 combined owned-fake proposal
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Exact separately approved combined fake source SHA
+        required: true
+      record_sha:
+        description: Exact separately approved private-spawn source record SHA256
+        required: true
+permissions:
+  contents: read
+jobs:
+  combined-fake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        state: [absent, disabled, managed-deny]
+    env:
+      COMBINED_SOURCE: ${{ inputs.source_sha }}
+      COMBINED_RECORD: ${{ inputs.record_sha }}
+      COMBINED_STATE: ${{ matrix.state }}
+    steps:
+      - name: Require exact inputs
+        shell: bash
+        run: '[[ "$COMBINED_SOURCE" =~ ^[0-9a-f]{40}$ && "$COMBINED_RECORD" =~ ^[0-9a-f]{64}$ ]]'
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.source_sha }}
+          persist-credentials: false
+      - name: Existing runtime and read-only combined preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$COMBINED_SOURCE"
+          test -z "$(git status --porcelain)"
+          combined_work=$(mktemp -d "$RUNNER_TEMP/sdk234-combined.XXXXXXXX")
+          export TMPDIR="$combined_work" TMP="$combined_work" TEMP="$combined_work"
+          combined_node=/opt/hostedtoolcache/node/22.23.2/x64/bin/node
+          test -x "$combined_node"
+          python3 -I -B -S scripts/claude-agent-sdk-spawn-combined.py --inspect \
+            --record-sha256 "$COMBINED_RECORD" --node "$combined_node" \
+            > "$TMPDIR/combined-preflight.json"
+          python3 -I -B -S - <<'PYCODE'
+          import json, os, pathlib
+          data=json.loads((pathlib.Path(os.environ["TMPDIR"])/"combined-preflight.json").read_bytes())
+          print(json.dumps(data))
+          assert data["host"]["system"]=="Linux" and data["host"]["machine"]=="x86_64"
+          assert data["nodeVersion"]=="v22.23.2" and data["landlockAbiReadOnly"]>=3
+          assert data["pidfdSelfReadOnly"] and data["namespaceReadable"]
+          assert not data["custodyRuntime"]["unresolvedSystemLibraries"]
+          assert {"pids","memory","cpu"} <= set(data["combinedCgroup"]["enabled"])
+          assert all(data["tools"][name] for name in ("node","python3","timeout","sudo"))
+          with open(os.environ["GITHUB_ENV"],"a") as out:
+              for name,binding in data["tools"].items():
+                  out.write(f"COMBINED_{name.upper()}={binding['path']}\n")
+                  out.write(f"COMBINED_{name.upper()}_SHA={binding['sha256']}\n")
+              for name in ("TMPDIR","TMP","TEMP"):
+                  out.write(f"{name}={os.environ[name]}\n")
+          PYCODE
+      - name: One separately approved combined owned-fake attempt
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$COMBINED_SUDO" -n "$COMBINED_TIMEOUT" --signal=TERM --kill-after=2s 35s \
+            /usr/bin/env -i PATH=/usr/bin:/bin HOME="$TMPDIR" \
+            TMPDIR="$TMPDIR" TMP="$TMP" TEMP="$TEMP" LANG=C LC_ALL=C \
+            "$COMBINED_PYTHON3" -I -B -S scripts/claude-agent-sdk-spawn-combined.py \
+            --kernel-combined --record-sha256 "$COMBINED_RECORD" \
+            --node "$COMBINED_NODE" --node-sha256 "$COMBINED_NODE_SHA" \
+            --python-sha256 "$COMBINED_PYTHON3_SHA" --timeout-sha256 "$COMBINED_TIMEOUT_SHA" \
+            --uid "$(id -u)" --gid "$(id -g)" --state "$COMBINED_STATE" \
+            --profile acp-actor-shape --cgroup-parent /sys/fs/cgroup --run "$GITHUB_RUN_ID-$COMBINED_STATE"
+      - name: Independent identity-checked combined cleanup
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "${COMBINED_PYTHON3:-}" ]]; then
+            echo 'Read-only preflight refused; privileged setup was not reached'
+            exit 0
+          fi
+          test -f "$TMPDIR/combined-root.json"
+          "$COMBINED_SUDO" -n "$COMBINED_TIMEOUT" --signal=TERM --kill-after=2s 5s \
+            /usr/bin/env -i PATH=/usr/bin:/bin HOME="$TMPDIR" \
+            TMPDIR="$TMPDIR" TMP="$TMP" TEMP="$TEMP" LANG=C LC_ALL=C \
+            "$COMBINED_PYTHON3" -I -B -S scripts/claude-agent-sdk-spawn-combined.py \
+            --cleanup-combined --record-sha256 "$COMBINED_RECORD" \
+            --node "$COMBINED_NODE" --node-sha256 "$COMBINED_NODE_SHA" \
+            --python-sha256 "$COMBINED_PYTHON3_SHA" --timeout-sha256 "$COMBINED_TIMEOUT_SHA" \
+            --uid "$(id -u)" --gid "$(id -g)" --state "$COMBINED_STATE" \
+            --profile acp-actor-shape --cgroup-parent /sys/fs/cgroup --run "$GITHUB_RUN_ID-$COMBINED_STATE"

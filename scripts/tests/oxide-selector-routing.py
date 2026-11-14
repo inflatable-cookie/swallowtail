@@ -735,6 +735,14 @@ def check_workflows():
     for path in workflows:
         text = path.read_text()
         relative = str(path.relative_to(ROOT))
+        if path.name == "sdk234-combined-fake.yml":
+            # Only the separately approved exact combined owned-fake packet.
+            if (
+                hashlib.sha256(text.encode()).hexdigest()
+                != "6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29"
+            ):
+                fail("combined fake workflow differs from its exact proposal")
+            continue
         if path.name == "sdk234-netns-proof.yml":
             # Only the exact namespace-only workflow proposed in task234.
             # Apply this exception only with its separate workflow authority.

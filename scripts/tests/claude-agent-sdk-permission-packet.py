@@ -82,6 +82,14 @@ class PermissionTests(unittest.TestCase):
             ).read_text()
         )
         self.assertFalse(spec_data["applied"])
+        self.assertFalse(
+            (ROOT / "scripts/claude-agent-sdk-runtime-permissions.py").exists()
+        )
+        self.assertFalse(
+            (
+                ROOT / ".github/workflows/sdk234-runtime-permission-preparation.yml"
+            ).exists()
+        )
         self.assertFalse(spec_data["activationAuthorized"])
         self.assertEqual(
             hashlib.sha256(PATCH.read_bytes()).hexdigest(),
@@ -257,6 +265,20 @@ class PermissionTests(unittest.TestCase):
             self.prep.prepare()
         self.assertFalse(self.journal.exists())
         self.assertEqual(self.node.stat().st_mode & 0o777, 0o777)
+        self.release()
+        self.prep.capture = None
+        self.library.chmod(0o644)
+        unsafe = self.root / "unsafe-parent"
+        unsafe.mkdir(mode=0o777)
+        unsafe.chmod(0o777)
+        leaf = unsafe / "owned-node"
+        leaf.write_bytes(self.node.read_bytes())
+        leaf.chmod(0o777)
+        self.manifest["path"] = str(leaf)
+        with self.assertRaisesRegex(OSError, "unsafe_ancestor"):
+            self.prep.prepare()
+        self.assertFalse(self.journal.exists())
+        self.assertEqual(leaf.stat().st_mode & 0o777, 0o777)
 
     def test_unexpected_mode_retains_unknown_receipt_without_rollback(self):
         self.prep.prepare()

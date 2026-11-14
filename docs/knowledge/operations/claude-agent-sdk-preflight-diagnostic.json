@@ -628,7 +628,7 @@
     "hostAdmission": false,
     "softwareBootstrapModel": "explicit test-only stand-in; actual owned JS behavior remains software evidence, runtimeCustodyComplete:false",
     "permissionProposal": "docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json",
-    "permissionRecordSha256": "0e8b8f3a9fe05624ccfac158c05f9fb86a4fdc49d694fd23d382a1bccdca24b0",
+    "permissionRecordSha256": "87c229a762209308689218be728e2253a263f0876a66ea14005b397a2eedee45",
     "permissionHelperApplied": false,
     "permissionWorkflowApplied": false,
     "candidateRuntimeExecuted": false

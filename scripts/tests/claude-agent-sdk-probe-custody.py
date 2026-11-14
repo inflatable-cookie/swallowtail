@@ -173,13 +173,13 @@ class BootstrapTests(unittest.TestCase):
         self.assertFalse(self.marker.exists())
 
     def test_unsafe_interpreter_and_library_refuse(self):
-        for key in ["interpreters", "libraries"]:
-            self.library.chmod(0o777)
+        for target in (self.library, self.python):
+            target.chmod(0o777)
             try:
                 with self.assertRaisesRegex(OSError, "writable_input"):
-                    self.bootstrap(**{key: {str(self.library): sha(self.library)}})
+                    self.bootstrap()
             finally:
-                self.library.chmod(0o644)
+                target.chmod(0o755 if target == self.python else 0o644)
         self.assertFalse(self.marker.exists())
 
     def test_missing_interpreter_and_supervisor_bindings_refuse(self):

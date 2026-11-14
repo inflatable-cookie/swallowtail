@@ -15,3 +15,6 @@
   denial/continued activity and cancellation/cleanup through owned ACP, SDK,
   child, endpoint and settings fakes. Keep shared native supervision and
   administrator-fixture admission separate from this software proof.
+- Prepare the ACP-private binding to task234's reviewed software entry and
+  caller-bound launch facade, preserving the actual Rust sibling process graph.
+  Keep original execution, kernel settlement and administrator admission closed.

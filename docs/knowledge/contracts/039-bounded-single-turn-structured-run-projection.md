@@ -281,6 +281,18 @@ source/fake preparation uses actual prepared ACP operations; the private
 [composition procedure](../operations/claude-agent-acp-full-route-proof.md)
 keeps shared supervision and original execution prerequisites separate.
 
+The bounded shared-source integration consumes task234's reviewed
+`f9025d2197333c53aed2266627dfa39d05bff7e3` milestone (review5903353390),
+not its ACP-shaped actor model. In the actual `LocalProcessHost` layout, the
+Rust prepared owner starts the group leader and checked ACP Node as siblings;
+Node joins the leader's group, then starts the owned native entry. The private
+adapter must observe the actual parent/group/start/command identities before
+entry release, preserve pipes and wait outcomes, and refuse changed inputs or
+revoked admission. Neither a payload trace nor an actor-shaped stand-in can
+supply those identities or wait rights. Software integration does not admit
+original vendor payloads, establish kernel settlement or raise a claim. The
+procedure pins the exact shared bytes and records remaining host prerequisites.
+
 The captured-graph bootstrap is host input, with its own size and deadline
 limits; it does not consume the consumer's provider-stdin allowance. The host
 must finish sending it before returning the process handle. Checked admission

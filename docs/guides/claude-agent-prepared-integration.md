@@ -238,6 +238,15 @@ proof remain independent; see
 [Contract039](../knowledge/contracts/039-bounded-single-turn-structured-run-projection.md)
 and Research483.
 
+The ACP-private shared-software harness binds task234's reviewed validation and
+entry sources to the actual Rust/`LocalProcessHost` sibling process layout.
+Its manifest distinguishes the prepared owner, group leader, checked ACP Node
+and owned entry/child, with OS-derived identities and separate software wait
+receipts. Run `effigy validate:acp-shared-software` for that bounded integration;
+[the procedure](../knowledge/operations/claude-agent-acp-full-route-proof.md)
+keeps shared kernel/admin/original admission gaps explicit. This is a test-only
+private seam; consumers receive no new runtime API or qualification claim.
+
 ### ACP Permission Exchange
 
 The default prepared run or session rejects an unexpected permission once,

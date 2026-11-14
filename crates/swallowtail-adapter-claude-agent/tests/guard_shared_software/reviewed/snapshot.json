@@ -1,0 +1,31 @@
+{
+  "sourceHead": "f9025d2197333c53aed2266627dfa39d05bff7e3",
+  "review": 5903353390,
+  "scope": "Exact bounded software-source snapshots only; no privileged/kernel/canonical/original invocation. ACP adapter uses process_identity/validate_entry, native entry and one-shot facade; not stand-in ActorRegistry topology.",
+  "files": {
+    "proposal.py": {
+      "source": "scripts/claude-agent-sdk-spawn-proposal.py",
+      "sha256": "97cabd0ede8b624c388fa058a53b2fb45c8fd20795bb0b9dc243a7a5c9e8ce55"
+    },
+    "entry.py": {
+      "source": "scripts/claude-agent-sdk-spawn-entry.py",
+      "sha256": "9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1"
+    },
+    "loader.mjs": {
+      "source": "scripts/claude-agent-sdk-spawn-loader.mjs",
+      "sha256": "814df22587472a9e5dd5a17e4c6cd240effae7b2c1f6649d6b595ddce02728c5"
+    },
+    "bootstrap-native.mjs": {
+      "source": "scripts/claude-agent-sdk-spawn-bootstrap.mjs",
+      "sha256": "ed2645fe8e67d631b59dbe7f10744daaad2d499d9111bb4cc9edffd3964ce9d2"
+    },
+    "plan.json": {
+      "source": "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
+      "sha256": "3956dfa3fefeceffdf5501e2f7e81dbb8bd50c4c83baff08b25b3ddd89da1fe4"
+    },
+    "source.sha256": {
+      "source": "docs/knowledge/operations/claude-agent-sdk-spawn.sha256",
+      "sha256": "8a819724898208411b81977abbadf05084545a2f6c179ecb08d9775df99b00a9"
+    }
+  }
+}

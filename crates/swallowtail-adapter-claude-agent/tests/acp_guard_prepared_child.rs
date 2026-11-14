@@ -63,6 +63,7 @@ struct CheckedChild {
     local: LocalProcessHost,
     runtime: LocalTrustedRuntime,
     approval: LocalCheckedNodeLaunch,
+    command: Vec<String>,
 }
 
 fn node_path() -> PathBuf {
@@ -198,16 +199,31 @@ fn fake_child_with_environment(
     stdin_bytes: usize,
     environment_values: Vec<(std::ffi::OsString, std::ffi::OsString)>,
 ) -> CheckedChild {
-    let (node, runtime) = runtime_for_fixture(root);
-    let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
-        &graph,
+    fake_child_with_loader(
+        root,
+        graph,
+        stdin_bytes,
+        environment_values,
         CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
-        [1; 32],
-        &runtime,
-        [5; 32],
     )
-    .expect("fake recipe");
+}
+
+fn fake_child_with_loader(
+    root: &std::path::Path,
+    graph: LocalCapturedGraph,
+    stdin_bytes: usize,
+    environment_values: Vec<(std::ffi::OsString, std::ffi::OsString)>,
+    loader: &str,
+) -> CheckedChild {
+    let (node, runtime) = runtime_for_fixture(root);
+    let recipe =
+        LocalCapturedNodeRecipe::for_trusted_runtime(&graph, loader, [1; 32], &runtime, [5; 32])
+            .expect("fake recipe");
     let expected = *recipe.fingerprint().digest();
+    let command = std::iter::once(node.as_os_str())
+        .chain(recipe.prefix_arguments())
+        .map(|v| v.to_str().expect("owned launch UTF8").to_owned())
+        .collect();
     let launch = LocalExecutableLaunch::new(node)
         .with_prefix_arguments(recipe.prefix_arguments().map(std::ffi::OsStr::to_os_string))
         .with_node_startup_environment_filter();
@@ -254,6 +270,7 @@ fn fake_child_with_environment(
         local,
         runtime,
         approval,
+        command,
     }
 }
 

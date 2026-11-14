@@ -1,17 +1,28 @@
 {
   "schema": "swallowtail.acp227.private-full-route-proposal.v1",
-  "status": "source-fake-rehearsal; original composition not admitted",
+  "status": "accepted ACP-only source/fake rehearsal; shared actual-actor integration awaits targeted proof; original composition not admitted",
   "sourceBinding": "Final commit is bound by a detached record; source files below are independently digest-pinned.",
   "sources": {
-    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "016027737ff6fa5832a32e9145b5808e637ebbb82529d5b8ff3153dd7b21ae94",
-    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_prepared_child.rs": "533c64c9e23469e8b4cac0d579764c875ed23ef63bf6d99cccf09ec1a039661e",
-    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs": "01dcbdf3049eb6d9fddac68a63e9a03d616dd430720752574a76bc45396933a8",
-    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs": "0cecdea9f73d822f6eef519f0607de2392feeea34d4ec078e66b39056a2067af",
-    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs": "78782456cb6fb25620632ace42e87089c3611f8ff637bd64db3844030830ccd4",
     "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "4a23c664c07aeea13ada15c937dd9dd99b0ec9c0cf1f13e84c11aa3a59dd694c",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_prepared_child.rs": "4415e3cc59ee40d40db7349f7b02795d6267bc5a1a5fc0f5fe99ba7a091b5f73",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_shared_software.rs": "e6717c7feb19dd4501611fe55c05d4a4fa3ddfabcc5b439f8cdd15e16a7a690b",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs": "01dcbdf3049eb6d9fddac68a63e9a03d616dd430720752574a76bc45396933a8",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs": "656a11543e418e317d2ae33c614a29675bad3b877f5192b64e29f5215efbe4c3",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs": "0cecdea9f73d822f6eef519f0607de2392feeea34d4ec078e66b39056a2067af",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/host.py": "757fdc325b13618dae31d826bfe92bd67cb3a6ed4401d27f2d96d5ba839a59b5",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/bootstrap-native.mjs": "ed2645fe8e67d631b59dbe7f10744daaad2d499d9111bb4cc9edffd3964ce9d2",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/entry.py": "9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/loader.mjs": "814df22587472a9e5dd5a17e4c6cd240effae7b2c1f6649d6b595ddce02728c5",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/plan.json": "3956dfa3fefeceffdf5501e2f7e81dbb8bd50c4c83baff08b25b3ddd89da1fe4",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/proposal.py": "97cabd0ede8b624c388fa058a53b2fb45c8fd20795bb0b9dc243a7a5c9e8ce55",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/snapshot.json": "11c3291fc31b6bfae52375016c1362e4fbfd74e9b5837dd13f738cf6af75979f",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/source.sha256": "8a819724898208411b81977abbadf05084545a2f6c179ecb08d9775df99b00a9",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/sdk.mjs": "50ca9796b0707eca7e2b3ee9dc5ce81518f34a22e39f47f48df251b29335403f",
     "crates/swallowtail-host-local/src/captured_manifest.rs": "b296e1e52cc0e29898c68d531d368bafcad47625e580633e1aa47c42c265b904",
     "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
-    "scripts/run-claude-acp-installed-child.sh": "715f46e682949ac533144f0a4f60217577018d10a08d60c6bf722bc5c71aaf78"
+    "scripts/run-claude-acp-installed-child.sh": "715f46e682949ac533144f0a4f60217577018d10a08d60c6bf722bc5c71aaf78",
+    "scripts/run-claude-acp-shared-software.sh": "f9be884a08dafa6311791cad04ddb632e25b59d56c62f85c70630665c1ee478f"
   },
   "runnableFakeCommands": [
     [
@@ -25,15 +36,23 @@
     [
       "effigy",
       "lint:acp-guard-full-route"
+    ],
+    [
+      "effigy",
+      "check:acp-shared-software"
+    ],
+    [
+      "effigy",
+      "validate:acp-shared-software"
     ]
   ],
   "originalCommand": null,
   "sharedSupervisor": {
     "owner": "swallowtail#234",
     "schema": "swallowtail.sdk234.private-spawn.v1",
-    "sourceHead": null,
-    "manifestSha256": null,
-    "disposition": "Exact software prototype/schema reference recorded; original-host source/manifest binding remains absent until the completed graph/kernel/fixture boundary and ACP actor registration are admitted.",
+    "sourceHead": "f9025d2197333c53aed2266627dfa39d05bff7e3",
+    "manifestSha256": "3956dfa3fefeceffdf5501e2f7e81dbb8bd50c4c83baff08b25b3ddd89da1fe4",
+    "disposition": "Reviewed source/security milestone5903353390; consumed through ACP-private actual sibling actor adapter for source/fake proof only. No original/kernel/admin admission.",
     "requiredEvents": [
       "driver_started",
       "spawn_requested",
@@ -50,15 +69,15 @@
       "fixture_cleanup"
     ],
     "softwarePrototype": {
-      "sourceHead": "8ed3ce84ccd00a79d9090a3af525bae1365f6a7b",
+      "sourceHead": "f9025d2197333c53aed2266627dfa39d05bff7e3",
       "sourceRecordPath": "docs/knowledge/operations/claude-agent-sdk-spawn.sha256",
-      "sourceRecordSha256": "29d604c0755442d7f8ecb636d7fee5726ffcb4831ff98b21067a38cf7ae7a0dd",
+      "sourceRecordSha256": "8a819724898208411b81977abbadf05084545a2f6c179ecb08d9775df99b00a9",
       "manifestPath": "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
-      "manifestSha256": "5d67db9798577ff7e8ab334c71561a778fc6cded87cc4032c0011578bdb96fbb",
-      "scope": "Schema/source reference only; not ACP proof or original-host binding. SDK234 reports12 software tests; no replay or authority transfer.",
+      "manifestSha256": "3956dfa3fefeceffdf5501e2f7e81dbb8bd50c4c83baff08b25b3ddd89da1fe4",
+      "snapshot": "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/snapshot.json",
+      "scope": "Exact bounded software source reuse; no original, SDK, Node, platform or authority transfer.",
       "remaining": [
-        "Current rehearsal accepts only sidecar/probe drivers and fixes native parent/group to driverPID",
-        "ACP prepared Rust driver launches a checked ACP Node under a host-owned group leader; register that actor chain privately before native entry",
+        "ACP actual sibling topology must be carried into a reviewed original-compatible shared kernel/job adapter by234; its driver-under-group-owner stand-ins are not that graph",
         "Selected reachable exec/worker/dynamic/addon edge closure and changed kernel/cgroup tree settlement unproved",
         "Combined canonical fixture packet not admitted; original command remains absent"
       ]
@@ -106,14 +125,52 @@
     "retryPolicy": "No automatic original retry or replay of uncertain delivery; this record authorizes no attempt"
   },
   "requiredBeforeOriginal": [
-    "Exact shared supervisor source/manifest/disposition and original-compatible host-owned native entry gate",
+    "Reviewed original-compatible shared supervisor/kernel/job/fixture adapter that binds this actual Rust sibling actor graph, not acp-shaped stand-ins",
     "Complete reachable spawn/exec/worker/dynamic-code/addon edge closure, including bypass by permitted executables; trusted host custody does not trust payload or provide this proof",
     "Exact prepared-driver/supervisor binaries, per-hop ACP/SDK/native/runtime/guard/startup identities in final detached record",
     "Admitted owned transport with actual original-compatible I/O; software loopback rehearsal is not observed kernel confinement",
     "Combined canonical absent/disabled/managed-deny fixture setup/checked cleanup with exact activation authority; sibling grants do not transfer",
     "Independent parent/adoptee waits, pidfd/cgroup settlement and bounded cleanup on failures",
     "Explicit selected platform admission; Darwin shared-cache and Linux changed kernel/cgroup boundary remain gaps",
-    "Separate exact ACP entrypoint/SDK/native execution authority; spent idle-class grant provides none"
+    "Separate exact ACP entrypoint/SDK/native execution authority; spent idle-class grant provides none",
+    "Complete trusted Python/interpreter/framework/cache custody if the reviewed Python entry remains selected; fake executable digest does not establish complete runtime closure"
   ],
-  "qualifiedCeiling": "0.100.0"
+  "qualifiedCeiling": "0.100.0",
+  "softwareComposition": {
+    "schema": "swallowtail.acp227.shared-software.v1",
+    "actors": [
+      {
+        "role": "prepared-owner",
+        "implementation": "actual Rust prepared integration test"
+      },
+      {
+        "role": "software-supervisor",
+        "parent": "prepared-owner",
+        "implementation": "ACP-private Python host adapter"
+      },
+      {
+        "role": "group-owner",
+        "parent": "prepared-owner",
+        "group": "own PID",
+        "implementation": "LocalProcessHost /bin/sleep86400"
+      },
+      {
+        "role": "driver",
+        "parent": "prepared-owner",
+        "group": "group-owner PID",
+        "implementation": "checked captured ACP Node"
+      },
+      {
+        "role": "native-entry",
+        "parent": "driver",
+        "group": "group-owner PID",
+        "implementation": "reviewed Python entry execs captured owned Node fake under same PID and pipes"
+      }
+    ],
+    "identitySource": "Reviewed OS process_identity/validate_entry functions; actual pid/parent/group/start/exact argv before host release. Trace cannot register actors.",
+    "hostControl": "Private Rust-parent pipe; source/runtime verification and revocation recheck before release. No kernelPolicy supplied or privileged branch invoked.",
+    "kernelEnforced": false,
+    "fullKernelTreeSettlement": false,
+    "pythonRule": "Installed Xcode framework app interpreter selected directly and digest-pinned; launcher re-exec is not silently treated as the admitted inode. Complete Python/framework/cache custody remains an original-admission gap."
+  }
 }

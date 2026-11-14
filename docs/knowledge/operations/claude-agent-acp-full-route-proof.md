@@ -15,27 +15,38 @@ The next stage composes two private responsibilities:
 
 The [inactive composition proposal](claude-agent-acp-full-route-proposal.json)
 pins the ACP source/fake inputs and runnable rehearsal commands. Its original
-command and shared source/digest are deliberately absent until admitted.
+command remains absent; the reviewed shared software source is pinned separately
+from an admitted original host.
 It is not yet a runnable combined original execution packet.
 
-The agreed seam is task234's proposed private
-`swallowtail.sdk234.private-spawn.v1` invocation/event record. The exact software prototype at
-`8ed3ce84ccd00a79d9090a3af525bae1365f6a7b` and detached source-record digest
-`29d604c0755442d7f8ecb636d7fee5726ffcb4831ff98b21067a38cf7ae7a0dd`
-are recorded as schema/source references only. Original-host binding still
-requires the completed reviewed graph/kernel/fixture boundary.
-Inputs must bind a detached source record, route-specific runtime/custody,
-entry/native/startup/arguments/environment policy, fixture identities/state,
-owned transport and finite limits. The ACP route runs its own upstream entry,
-not Swallowtail's standalone SDK sidecar: supervision must cover its SDK's
-caller-bound `child_process.spawn`, not rely only on the standalone sidecar's
-custom SDK hook. No public runtime contract changes follow.
-The current shared rehearsal accepts SDK sidecar/probe drivers and fixes native
-parent/group to that driver PID. ACP instead has an outer Rust prepared driver,
-a host-owned group leader and checked ACP Node, then the SDK/native child.
-Private actor registration must identify that parent/group chain from host
-observations before native release; no public PID API or payload self-report
-can supply it. This is the exact remaining composition seam with234.
+The reviewed shared software source is task234
+`f9025d2197333c53aed2266627dfa39d05bff7e3`, review5903353390,
+`private-spawn.v1` plan `3956dfa3fefeceffdf5501e2f7e81dbb8bd50c4c83baff08b25b3ddd89da1fe4`
+and source record `8a819724898208411b81977abbadf05084545a2f6c179ecb08d9775df99b00a9`.
+The bounded snapshot retains exact validation, entry, loader and bootstrap bytes;
+the ACP-private adapter invokes only ordinary process observation and validation.
+It never invokes the shared kernel, namespace or canonical-fixture branches.
+
+The actual graph has a Rust prepared owner with three children: the private
+software supervisor, a `/bin/sleep` process-group owner, and checked ACP Node.
+The group owner and ACP Node are siblings; ACP Node joins the sleep PID's group.
+The owned SDK then spawns the reviewed Python entry, which execs the captured
+owned Node child with the same PID and pipes after host release. Parent, group,
+start and exact launch command come from OS observation before release. The
+shared ACP-shaped stand-in's driver-under-group-owner topology is not reused.
+No route trace can register an actor or supply wait rights. No public PID API
+or runtime contract changes follow. Any future shared schema/kernel/job change
+for this sibling graph belongs to task234 and needs its own review.
+
+The ACP-specific loader recipe preserves captured ACP loading and its idle
+veto, but substitutes the exact reviewed caller-bound one-shot child facade.
+Its host binding names only the captured SDK caller, Python entry arguments,
+empty environment, fixture cwd and piped streams. This derived recipe has its
+own identity; it is not the production guard's unchanged source identity.
+The private supervisor verifies source/runtime inputs, compares actual actors,
+and checks revocation again before release. This ordinary software gate is
+not kernel confinement or original payload admission. In particular, Python's
+complete library/cache custody and the selected vendor graph remain unresolved.
 
 Events distinguish driver start, native spawn request/start/release/entry,
 protocol observations, cancellation/stop request and acknowledgment, native and
@@ -61,13 +72,15 @@ original native permission or administrator discovery proof.
 
 ```sh
 effigy check:acp-guard-full-route
+effigy check:acp-shared-software
 effigy validate:acp-guard-installed-child
+effigy validate:acp-shared-software
 effigy lint:acp-guard-full-route
 ```
 
 The current rehearsal uses the installed compatible Node with exact runtime
-and library custody; it adds no runtime installation. Its local phase trace is
-not yet a shared-supervisor execution record. Darwin source/fake success gives
+and library custody; it adds no runtime installation. The shared integration emits a separate ACP-private software actor record,
+with original activation and kernel settlement explicitly false. Darwin source/fake success gives
 no Linux, native, standalone SDK/Node or live HTTP MCP claim.
 
 ## Combined original proposal gate

@@ -17,13 +17,15 @@ response. The tests check activity ordering, persisted model identity across
 load/resume, unchanged settings, cancellation, native exit and resource cleanup.
 
 The trace records actual phase calls, child PIDs and exit codes; no active or
-qualified marker supplies proof. It is an ACP-local rehearsal trace, not an
-instance of task234's shared supervision record. The private shared seam will
-bind its exact source/manifest before composition. Native-entry release,
-parent/adoptee supervision, pidfd/cgroup settlement, canonical administrator
-fixtures and kernel enforcement remain independent prerequisites owned by234.
-This harness adds no public runtime API. Ambient local fake execution does not
-prove the original native can use the eventual confined transport.
+qualified marker supplies proof. The additional
+[shared software harness](../guard_shared_software/README.md) pins task234's
+reviewed source and checks the actual Rust/LocalProcessHost sibling actor
+layout through an ACP-private adapter. Its targeted integration proof is
+separate from this accepted ACP-only rehearsal. Kernel/native admission,
+parent/adoptee supervision, pidfd/cgroup settlement and canonical administrator
+fixtures remain independent prerequisites owned by234. This adds no public
+runtime API. Ambient local fake execution does not prove that original native
+code can use the eventual confined transport.
 
 Run `effigy validate:acp-guard-installed-child` for these two cases and the18 captured-host regressions on the
 installed Darwin arm64 runtime; other platforms report not applicable. The

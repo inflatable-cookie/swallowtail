@@ -1,8 +1,8 @@
 // First-party native peer. Never loads Claude code or contacts a provider.
 const fs = require('node:fs');
 const http = require('node:http');
-const root = process.argv[1];
-const port = Number(process.argv[2]);
+const root = process.argv.at(-2);
+const port = Number(process.argv.at(-1));
 const trace = (phase, extra={}) => fs.appendFileSync(root+'/trace.jsonl', JSON.stringify({phase,pid:process.pid,parent:process.ppid,...extra})+'\n');
 const send = value => process.stdout.write(JSON.stringify(value)+'\n');
 let active;

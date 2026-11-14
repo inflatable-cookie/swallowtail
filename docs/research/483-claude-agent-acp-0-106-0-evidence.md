@@ -916,3 +916,31 @@ opaque original native entry gate or pidfd/cgroup/adoptee settlement. The
 names the runnable fake checks and the exact remaining composition prerequisites.
 No new kernel/workflow/admin or original entrypoint/native/provider activation
 follows from these tests.
+
+### Reviewed shared-source composition preparation
+
+Task234 source/security review5903353390 approves the software seam at
+`f9025d2197333c53aed2266627dfa39d05bff7e3`, private-spawn.v1 plan
+`3956dfa3fefeceffdf5501e2f7e81dbb8bd50c4c83baff08b25b3ddd89da1fe4`
+and record `8a819724898208411b81977abbadf05084545a2f6c179ecb08d9775df99b00a9`.
+The bounded ACP snapshot retains those exact sources. The ACP-private adapter
+uses their process observation/validation, exec entry and caller-bound child
+facade while preserving ACP captured loading and idle veto. Its graph records
+actual Rust-owned sibling group leader/checked ACP actors, not the shared
+model's driver-under-group-owner stand-in. No shared kernel/fixture branch runs.
+
+Development refusals exposed an owned SDK prompt waiting after child failure,
+and the installed Xcode Python launcher re-executing the framework app binary.
+The fake now rejects a pending prompt when its child exits; the runner selects
+and pins the actual installed framework interpreter directly. These repairs
+need the targeted integration proof; they are not original runtime admission.
+The first failed integration run also hit Nextest's120s timeout; Effigy then
+reported a foreground guard closure timeout and an unknown journal. Preserve
+that failed run separately from any later successful proof. No observation of
+absence earns parent/adoptee wait or whole-subtree settlement credit.
+
+The [inactive proposal](../knowledge/operations/claude-agent-acp-full-route-proposal.json)
+names exact current software sources and the remaining shared host, canonical
+fixture, vendor graph and Python/cache custody prerequisites. OriginalCommand
+remains null and the original component grant remains spent. Ceiling0.100.0,
+newer guarded permission, native/platform and exact HTTP MCP findings remain.

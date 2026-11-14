@@ -1,4 +1,6 @@
 //! ACP-specific source/fake proof; no kernel or original/native qualification.
+#[path = "acp_guard_shared_software.rs"]
+mod shared_software;
 use super::*;
 use serde_json::{Value, json};
 use std::io::{Read, Write};
@@ -98,10 +100,27 @@ fn graph(root: &Path) -> LocalCapturedGraph {
             &serde_json::to_string(include_str!("guard_full_route/native.cjs"))
                 .expect("owned native source"),
         );
+    capture_route_graph(
+        root,
+        include_str!("guard_full_route/entry.mjs"),
+        &sdk,
+        &native,
+        std::fs::metadata(&node).expect("native metadata").len(),
+    )
+}
+
+fn capture_route_graph(
+    root: &Path,
+    entry: &str,
+    sdk: &str,
+    native: &LocalTrustedRuntime,
+    native_bytes: u64,
+) -> LocalCapturedGraph {
+    let node_bytes = native.source_digest();
     let inputs = [
-        ("entry.mjs", include_str!("guard_full_route/entry.mjs")),
+        ("entry.mjs", entry),
         ("idle.mjs", crate::IDLE),
-        ("sdk.mjs", sdk.as_str()),
+        ("sdk.mjs", sdk),
     ];
     let mut files = serde_json::Map::new();
     for (name, source) in inputs {
@@ -111,7 +130,7 @@ fn graph(root: &Path) -> LocalCapturedGraph {
             json!({"format":"module","sha256":format!("{:x}",Sha256::digest(source.as_bytes()))}),
         );
     }
-    let native_record = json!({"sha256":format!("{:x}",Sha256::digest(std::fs::read(&node).expect("owned native runtime"))),"bytes":std::fs::metadata(&node).expect("runtime metadata").len(),"specifier":"@owned/native"});
+    let native_record = json!({"sha256":node_bytes.iter().map(|b|format!("{b:02x}")).collect::<String>(),"bytes":native_bytes,"specifier":"@owned/native"});
     let manifest = json!({"vendor":"11".repeat(32),"entry":"entry.mjs","idle":"idle.mjs","files":files,
       "imports":[{"parent":"entry.mjs","specifier":"./idle.mjs","target":"idle.mjs"},{"parent":"entry.mjs","specifier":"./sdk.mjs","target":"sdk.mjs"}],
       "builtins":[{"parent":"entry.mjs","specifier":"node:fs","target":"node:fs"},{"parent":"sdk.mjs","specifier":"node:fs","target":"node:fs"},{"parent":"sdk.mjs","specifier":"node:child_process","target":"node:child_process"}],
@@ -124,7 +143,7 @@ fn graph(root: &Path) -> LocalCapturedGraph {
         } else {
             "linux-x64"
         },
-        &native,
+        native,
         None,
     )
     .expect("owned graph admission")
@@ -170,6 +189,12 @@ fn prepare(
             ),
         ],
     );
+    prepare_registered(fake)
+}
+
+fn prepare_registered(
+    fake: CheckedChild,
+) -> (ClaudeAgentPreparedSession, HostServices, FixtureHost) {
     let host = ExecutionHostId::new("owned.full-route").expect("host");
     let resources = FixtureHost::new(Scenario::Success, "0.106.0");
     let services = resources

@@ -173,6 +173,14 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
 "validate:acp-guard-installed-child" = "bash scripts/run-claude-acp-installed-child.sh"
+"validate:acp-shared-software" = "bash scripts/run-claude-acp-shared-software.sh"
+"check:acp-shared-software" = [
+  "bash -n scripts/run-claude-acp-shared-software.sh",
+  "python3 -c 'from pathlib import Path; files = [Path(\"crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/host.py\"), *Path(\"crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed\").glob(\"*.py\")]; [compile(f.read_bytes(), str(f), \"exec\") for f in files]'",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/sdk.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/loader.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/bootstrap-native.mjs",
+]
 "lint:acp-guard-full-route" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --test acp_guard_capture -- -D warnings"
 "check:acp-guard-full-route" = [
   "bash -n scripts/run-claude-acp-installed-child.sh",
@@ -439,6 +447,7 @@ section = "Research Records"
 "validate:format-selectors:test" = "bash scripts/tests/format-selectors.sh"
 "check:lease-api-fixture" = "bash scripts/verify-lease-api-fixture.sh"
 "check:oxide-routing" = [
+  "bash -n scripts/run-claude-acp-shared-software.sh",
   "bash -n scripts/run-claude-acp-installed-child.sh",
   "bash -n scripts/check-claude-acp-guard-api.sh",
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/tests/oxide-selector-routing.py\"); compile(file.read_bytes(), str(file), \"exec\")'",

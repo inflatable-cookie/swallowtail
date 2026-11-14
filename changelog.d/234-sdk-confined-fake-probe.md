@@ -39,3 +39,8 @@ Reconciled the registered namespace-only workflow from main without duplicating
 its workflow or routing exception, and refreshed the source record for a
 separately authorized immutable-source attempt. No dispatch or qualification
 increase is included.
+
+Recorded the consumed namespace-only attempt: runtime, namespace, credentials
+and reaping observations were retained, but the bounded result frame refused
+completion. Added acknowledged, size-bounded result chunks with integrity and
+refusal tests. No retry or qualification increase is included.

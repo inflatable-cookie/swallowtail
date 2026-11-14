@@ -10,5 +10,5 @@
   "hostileSameUserReplacementCovered": false,
   "processes": {"monitor": 1, "guest": 1, "nodeChildren": 2},
   "bounds": {"wallSeconds": 30, "nodeCpuSeconds": 10, "nodeDescriptors": 64, "outputBytes": 1000000, "writableBytes": 1000000},
-  "kernelActivationObserved": false
+  "kernelProofAccepted": false
 }

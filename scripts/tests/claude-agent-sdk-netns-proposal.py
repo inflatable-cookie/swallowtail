@@ -14,6 +14,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import threading
 import unittest
 from unittest import mock
 
@@ -222,6 +223,103 @@ class NamespaceProposalTests(unittest.TestCase):
         finally:
             os.close(read)
             os.close(write)
+
+    def test_complete_custody_result_crosses_owned_pipes_in_bounded_frames(self):
+        result = {
+            "failure": None,
+            "kernelEnforced": False,
+            "originalActivation": False,
+            "protocol": {
+                "custody": {
+                    "inputs": {
+                        "/owned/probe/" + str(i) + "/runtime-library": "a" * 64
+                        for i in range(210)
+                    }
+                },
+                "exits": [{"pid": 1}, {"pid": 2}],
+            },
+        }
+        self.assertGreater(len(json.dumps(result).encode()), 16384)
+        messages = list(KERNEL.result_messages(result))
+        self.assertLessEqual(len(messages), 7)
+        self.assertTrue(
+            all(
+                len((json.dumps(message) + "\n").encode()) <= 16384
+                for message in messages
+            )
+        )
+        read, write = os.pipe()
+        ack_read, ack_write = os.pipe()
+        guest = KERNEL.Guest(None, None, write, ack_read)
+        guest.deadline = time.monotonic() + 2
+        errors = []
+
+        def produce():
+            try:
+                guest.send_result(result)
+            except BaseException as error:
+                errors.append(error)
+
+        producer = threading.Thread(target=produce, daemon=True)
+        receiver = KERNEL.ResultReceiver()
+        try:
+            with self.assertRaisesRegex(OSError, "monitor_message_limit"):
+                KERNEL.send(write, {"phase": "done", "result": result})
+            producer.start()
+            pending = bytearray()
+            deadline = time.monotonic() + 2
+            for _ in range(8):
+                message = KERNEL.read_line(read, deadline, pending)
+                if message["phase"] == "done":
+                    break
+                receiver.accept(message)
+                KERNEL.send(ack_write, {"continue": True})
+            else:
+                self.fail("bounded result did not finish")
+            self.assertEqual(receiver.finish(), result)
+        finally:
+            os.close(ack_write)
+            os.close(read)
+            if producer.ident is not None:
+                producer.join(timeout=2)
+            os.close(write)
+            os.close(ack_read)
+        self.assertFalse(producer.is_alive())
+        self.assertEqual(errors, [])
+
+    def test_result_transport_refuses_oversize_truncation_and_substitution(self):
+        with self.assertRaisesRegex(OSError, "monitor_result_limit"):
+            list(KERNEL.result_messages({"data": "x" * KERNEL.RESULT_BYTES}))
+        messages = list(
+            KERNEL.result_messages({"kernelEnforced": False, "payload": "owned"})
+        )
+        for mutation in (
+            "header",
+            "sequence",
+            "encoding",
+            "digest",
+            "truncated",
+            "duplicate",
+        ):
+            receiver = KERNEL.ResultReceiver()
+            header = dict(messages[0])
+            chunk = dict(messages[1])
+            with self.subTest(mutation=mutation), self.assertRaises(OSError):
+                if mutation == "header":
+                    header["bytes"] = KERNEL.RESULT_BYTES + 1
+                if mutation == "digest":
+                    header["sha256"] = "0" * 64
+                receiver.accept(header)
+                if mutation == "duplicate":
+                    receiver.accept(header)
+                if mutation == "truncated":
+                    receiver.finish()
+                if mutation == "sequence":
+                    chunk["index"] = 1
+                if mutation == "encoding":
+                    chunk["data"] = "!"
+                receiver.accept(chunk)
+                receiver.finish()
 
     def test_nonroot_identity_requires_all_observations(self):
         good = {

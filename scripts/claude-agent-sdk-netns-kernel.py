@@ -1,10 +1,12 @@
 """UNACTIVATED Linux-only root monitor for one owned-fake namespace proposal.
 
 No arbitrary command, canonical fixture, namespace name or original artifact.
-Current tests never call launch(), cleanup_receipt() or live namespace methods.
+Tests never call launch(), cleanup_receipt() or namespace/credential methods.
+Owned-pipe tests exercise the actual bounded result framing only.
 """
 
 import ctypes
+import base64
 import errno
 import fcntl
 import hashlib
@@ -149,6 +151,87 @@ def read_line(fd, deadline, pending, cancelled=lambda: False):
     return json.loads(line)
 
 
+RESULT_BYTES = 32768
+RESULT_CHUNK = 6000
+
+
+def result_messages(result):
+    """Keep complete evidence within bounded, individually acknowledged frames."""
+    data = json.dumps(result, separators=(",", ":")).encode()
+    if not 0 < len(data) <= RESULT_BYTES:
+        raise OSError(errno.EFBIG, "monitor_result_limit")
+    yield {
+        "phase": "result_begin",
+        "bytes": len(data),
+        "sha256": hashlib.sha256(data).hexdigest(),
+    }
+    for index, offset in enumerate(range(0, len(data), RESULT_CHUNK)):
+        yield {
+            "phase": "result_chunk",
+            "index": index,
+            "data": base64.b64encode(data[offset : offset + RESULT_CHUNK]).decode(
+                "ascii"
+            ),
+        }
+
+
+class ResultReceiver:
+    def __init__(self):
+        self.header = None
+        self.data = bytearray()
+        self.index = 0
+
+    def accept(self, message):
+        if message["phase"] == "result_begin":
+            if (
+                self.header is not None
+                or type(message.get("bytes")) is not int
+                or not 0 < message["bytes"] <= RESULT_BYTES
+            ):
+                raise OSError(errno.EFBIG, "monitor_result_header")
+            digest = message.get("sha256")
+            if (
+                not isinstance(digest, str)
+                or len(digest) != 64
+                or any(c not in "0123456789abcdef" for c in digest)
+            ):
+                raise OSError(errno.EINVAL, "monitor_result_digest")
+            self.header = message
+        elif message["phase"] == "result_chunk":
+            if (
+                self.header is None
+                or type(message.get("index")) is not int
+                or message["index"] != self.index
+            ):
+                raise OSError(errno.EINVAL, "monitor_result_sequence")
+            encoded = message.get("data")
+            if not isinstance(encoded, str) or len(encoded) > 8000:
+                raise OSError(errno.EFBIG, "monitor_result_chunk")
+            try:
+                chunk = base64.b64decode(encoded, validate=True)
+            except (ValueError, TypeError) as error:
+                raise OSError(errno.EINVAL, "monitor_result_encoding") from error
+            if (
+                len(chunk) != min(RESULT_CHUNK, self.header["bytes"] - len(self.data))
+                or not chunk
+            ):
+                raise OSError(errno.EFBIG, "monitor_result_chunk")
+            self.data.extend(chunk)
+            self.index += 1
+        else:
+            raise OSError(errno.EINVAL, "monitor_result_phase")
+
+    def finish(self):
+        if self.header is None or len(self.data) != self.header["bytes"]:
+            raise OSError(errno.EPIPE, "monitor_result_incomplete")
+        if hashlib.sha256(self.data).hexdigest() != self.header["sha256"]:
+            raise OSError(errno.EINVAL, "monitor_result_changed")
+        result = json.loads(self.data)
+        if not isinstance(result, dict):
+            raise OSError(errno.EINVAL, "monitor_result_shape")
+        return result
+
+
 class Guest:
     kernel = True
     missing_join = False
@@ -183,6 +266,12 @@ class Guest:
 
     def endpoint_ready(self, port):
         return self.exchange("endpoint", port=port)["canaryPort"]
+
+    def send_result(self, result):
+        for message in result_messages(result):
+            phase = message.pop("phase")
+            self.exchange(phase, **message)
+        send(self.write, {"phase": "done"})
 
     def stage(self, phase):
         if phase == "namespace":
@@ -387,7 +476,7 @@ def launch(args, files, core, lease):
                 ]
                 for key in ("native", "driver", "stderr"):
                     response["protocol"].pop(key, None)
-            send(write, {"phase": "done", "result": response})
+            ops.send_result(response)
             os._exit(0 if not response["failure"] else 78)
         except BaseException as error:
             try:
@@ -401,6 +490,7 @@ def launch(args, files, core, lease):
     guest_namespace = None
     canary = None
     phases = []
+    result_receiver = ResultReceiver()
     try:
         register(pid, os.getpid())
         pending = bytearray()
@@ -411,8 +501,14 @@ def launch(args, files, core, lease):
             phase = message["phase"]
             if phase == "error":
                 raise OSError(errno.EPERM, message["error"])
+            if phase in ("result_begin", "result_chunk"):
+                if not phases or phases[-1] != "cleanup":
+                    raise OSError(errno.EPERM, "result_before_cleanup")
+                result_receiver.accept(message)
+                send(answer_write, {"continue": True})
+                continue
             if phase == "done":
-                result = message["result"]
+                result = result_receiver.finish()
                 peer_waits = (result.get("protocol") or {}).get("exits", [])
                 expected_peers = set(handles) - {pid}
                 if (

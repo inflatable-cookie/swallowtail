@@ -1,6 +1,8 @@
 # SDK loopback transport proposal
 
-Private, fake-only proposal for Q-009. Not an admitted host or an activation.
+Private, fake-only probe preparation for Q-009. The single namespace attempt
+below produced partial observations and refused its result; no complete host
+or original activation is admitted.
 Tom settled SDK custody in decision `89db0f25-dc94-4feb-b447-8b9fabe52561` v2:
 "Explicit trusted-host SDK custody." The private implementation below owns it.
 The canonical-fixture grant is consumed; no canonical path is touched here.
@@ -155,12 +157,13 @@ source must stay immutable through dispatch; an unknown response is reconciled
 by reads, never blindly replayed. A changed helper, source, admission, runtime
 or job identity refuses and needs a new request.
 
-Actual hosted sudo policy, CLONE_NEWNET, loopback ioctl, capability drop,
-subreaper adoption, pidfd HUP and the modified socket filter remain unobserved.
-The old Linux kernel proof uses a different networking boundary and supplies
-none of those missing observations. Source-only BPF interpretation and modeled
-namespace records cannot admit a host. Capture actual preflight and independent
-kernel/credential/route/wait records before claiming any namespace enforcement.
+The consumed namespace attempt below supplies limited new namespace,
+credential and reaping observations. Complete peer result/transport/filter
+observations and an exercised adoption case remain missing. The old Linux
+kernel proof uses a different networking boundary and cannot supply them.
+Source-only BPF interpretation and modeled namespace records cannot admit a
+host. Capture actual preflight and independent kernel/credential/route/wait
+records before claiming complete enforcement.
 
 This request excludes another canonical-fixture attempt, original SDK/native
 execution, provider credentials or spend, installs, host provisioning, Darwin
@@ -247,3 +250,58 @@ Linux-only attempt neither hashes/adopts that cache set nor claims it absent.
 Before original Darwin admission the host must bind the actual mapped cache
 set and exact identities in preflight, with a separately bounded preparation
 budget; current local rehearsals explicitly retain the unresolved names.
+
+## Consumed namespace-only attempt — 2026-11-14
+
+Tom decision `486c23c9-a77f-45ed-8299-84a01f501532` v2 authorized one
+namespace-only fake attempt at source
+`cc4ffc2248721a4da38fd291d8c9b1738d3a56aa`, detached record
+`e579b92941aedd484ef4d9cf9ec04812f4130e5cf0d91afd0bf554d326faf4e0`.
+Immediate local/remote/workflow/record verification found the exact requested
+identities and zero prior dispatches. Exactly one command produced
+[run43531230335](https://github.com/inflatable-cookie/swallowtail/actions/runs/43531230335),
+attempt1, [job132249164711](https://github.com/inflatable-cookie/swallowtail/actions/runs/43531230335/job/132249164711).
+The namespace fake step failed; independent settlement succeeded. The grant is
+consumed. No rerun or second dispatch occurred.
+
+Actual host: Linux x86_64, kernel7.0.0-1019-azure, Landlock VERSION query ABI8,
+Node22.23.2 with digest3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327.
+Python3.14 executable digest wasbe9a2a5eada8c89c1c399fdfb8397179e877c20d8db0739c802f726d4d0e69fd.
+Preflight retained actual library/tool identities, no unresolved Node system
+libraries and the observed kernel-provided vDSO mapping. It is runtime evidence,
+not a new SDK/native qualification.
+
+The checked root receipt records a distinct guest network namespace shared by
+the two registered peers. Guest/peer uid/gid sets are1001, supplementary groups
+empty and all five recorded capability sets zero. All seven phase exchanges
+reached cleanup. From the exact monitor's acknowledged checks, loopback/interface
+and route guards completed; their raw snapshots were not separately retained.
+The outside canary remained unreached; without the peer result this does not
+prove that the forbidden connection was attempted or denied.
+
+The failure is `[Errno 1] [Errno 27] monitor_message_limit`. The root custody
+observation alone was18185 JSON bytes over157 inputs, exceeding the16384-byte
+control-frame bound before adding guest/protocol evidence. Guest completion
+could not send its complete result. The monitor waited guest2457 with status78
+(raw wait status19968), and independently observed pidfd HUP for2457,2459,2460.
+The receipt's settled observation and independent identity-checked cleanup
+succeeded. Peer exit codes, full selected protocol output and socket/filter
+observations were not retained; `kernelResult` is null. Do not infer peer
+success, actual native administrator discovery or complete confinement from
+these partial observations. No separate post-cleanup filesystem inspection is
+claimed.
+
+The source correction keeps the16384-byte frame and65536-byte root-receipt
+limits. A complete result is capped at32768 bytes and sent as at most six
+6000-byte chunks, each separately acknowledged, with exact sequence, length
+and SHA256 verification before acceptance. Full custody evidence is preserved
+instead of replaced by a success marker. Oversize, reordered, changed, truncated
+or invalidly encoded results fail. Owned-pipe tests exercise the actual framing
+without calling privileged namespace/credential methods. This correction has
+not run on the hosted kernel and grants no retry.
+
+The new private admission names `kernelProofAccepted: false`; it does not use
+the old preparation flag `kernelActivationObserved: false` as a claim that no
+namespace was ever created. A fresh exact-source authority is required for
+another namespace-only attempt. The canonical-fixture grant remains spent;
+original SDK/native execution and qualification remain separately gated.

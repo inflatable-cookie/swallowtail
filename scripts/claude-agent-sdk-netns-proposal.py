@@ -88,7 +88,7 @@ def snapshots(root, expected):
     admission = json.loads(result[ADMISSION])
     if (
         admission["fakeScope"] != "loopback-transport-only"
-        or admission["kernelActivationObserved"] is not False
+        or admission["kernelProofAccepted"] is not False
         or admission["sdkCustodyDecision"] != "89db0f25-dc94-4feb-b447-8b9fabe52561"
         or admission["custodyModel"] != "explicit-trusted-host"
         or admission["hostileSameUserReplacementCovered"] is not False

@@ -268,9 +268,15 @@ receipt256KiB, each bounded and sequence/length/SHA checked. These are new
 proposal bounds, never substitutions in the old consumed grants.
 
 The packet's runnable commands are in the applied workflow and the plan JSON.
-Registration is separately owned by task237. After its canonical reconciliation
-and a fresh exact-source one-attempt grant, a proposed dispatch would name the exact
-pushed source and current detached spawn record:
+Task237/PR556 merged atf3a134d47598b074de3f80776453f814a7905313 and is
+reconciled into this parent. Independent GitHub registry/content reads identify
+workflow418195892 at`.github/workflows/sdk234-combined-fake.yml`, state active,
+with the exact approved6dfe800d workflow bytes and zero recorded
+`workflow_dispatch` attempts. The registry state is availability, not execution
+authority or proof of host capability. The routing helper is byte-identical to
+the approved4cba13f2 prepared helper; no exception or process semantics changed.
+After a fresh exact-source one-attempt grant, the proposed dispatch names the
+exact pushed parent source and current detached spawn record:
 
 ```sh
 gh workflow run sdk234-combined-fake.yml --repo inflatable-cookie/swallowtail \
@@ -278,9 +284,8 @@ gh workflow run sdk234-combined-fake.yml --repo inflatable-cookie/swallowtail \
   -f source_sha=EXACT_APPROVED_SOURCE -f record_sha=EXACT_APPROVED_SPAWN_RECORD
 ```
 
-This workflow is applied for preparation only. Registration237 and a separate
-exact resulting-source activation grant are still required; it is not authorized
-to run. It selects only
+This workflow is registered for preparation only. A separate exact
+resulting-source activation grant is still required; it is not authorized to run. It selects only
 owned fakes. Root ptrace/PID-namespace capability, exclusive pre-enabled cgroup
 custody and the changed combined enforcement/administrator path remain
 unobserved. The existing runner is a concrete candidate, not an admitted host.

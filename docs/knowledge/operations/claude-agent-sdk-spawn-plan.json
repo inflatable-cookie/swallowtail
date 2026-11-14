@@ -149,7 +149,7 @@
     "cleanupSeconds": 5,
     "profile": "acp-actor-shape (first-party stand-ins, not ACP route proof)",
     "newAuthorityRequired": [
-      "separate exact resulting-source one-attempt combined owned-fake activation after registration237",
+      "separate exact resulting-source one-attempt combined owned-fake activation; registration237 is reconciled",
       "actual original-compatible source graph and separately declared source-immutable original execution route after host evidence"
     ],
     "routingPatch": "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
@@ -157,7 +157,18 @@
     "routingPreparedSha256": "4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925",
     "workflowPath": ".github/workflows/sdk234-combined-fake.yml",
     "preparationDecision": "3ca51d63-6e82-4a23-a069-946c320fe4f1 v2",
-    "registrationPrerequisite": "swallowtail#237 / 2fe98479-c452-41ba-bd8f-1be4413f834b"
+    "registrationPrerequisite": "swallowtail#237 / 2fe98479-c452-41ba-bd8f-1be4413f834b",
+    "registration": {
+      "task": "swallowtail#237 / 2fe98479-c452-41ba-bd8f-1be4413f834b",
+      "pr": 556,
+      "canonicalCommit": "f3a134d47598b074de3f80776453f814a7905313",
+      "workflowId": 418195892,
+      "workflowPath": ".github/workflows/sdk234-combined-fake.yml",
+      "workflowSha256": "6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29",
+      "state": "active registry entry; activation authority absent",
+      "dispatchAttemptsAtRegistrationReconciliation": 0,
+      "parentReconciled": true
+    }
   },
   "sharedConsumer": {
     "task": "swallowtail#227",

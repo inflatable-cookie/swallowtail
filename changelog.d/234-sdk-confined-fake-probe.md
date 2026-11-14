@@ -61,3 +61,9 @@ changed kernel/cgroup execution remain inactive preparation, not admission.
 Repair partial fixture creation: persist intent before mkdir, bind identity before chmod, and retain the journal when ownership, cleanup or tree settlement is unresolved. Add owned early-fault and interruption counterexamples; no canonical or kernel activation.
 
 Apply the exact combined owned-fake workflow and narrow routing exception under Tom’s preparation-only ruling. Preserve separate registration, activation, original execution and qualification gates, including the ACP sibling-topology proof limit.
+
+Reconcile task237/PR556 registration atf3a134d475 without changing approved
+workflow/routing bytes. Independently verified workflow418195892 and zero
+combined dispatch attempts; refresh the private plan/source record for the
+separate exact-source three-job owned-fake activation request. Registration
+proves no host/kernel/combined discovery, native or ACP qualification.

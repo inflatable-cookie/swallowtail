@@ -215,7 +215,7 @@ production host. The guarded factory captures each exact official graph, serves
 verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
 and pins native and required system `ps` custody. It requires independently
 approved host policy; ordinary version discovery supplies no grant. Original
-Full-route/native behavior proof remains unproved, so the ceiling stays0.100.0.
+full-route/native behavior remains unproved, so the ceiling stays0.100.0.
 Checked startup rechecks revocation before graph delivery and at the final
 admission byte; refusal stops and joins the child. The component proposal binds
 host-approved principals and the full Rust runtime custody identity, alongside

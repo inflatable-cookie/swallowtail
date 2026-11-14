@@ -173,6 +173,12 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
 "validate:acp-guard-installed-child" = "bash scripts/run-claude-acp-installed-child.sh"
+"format:acp-admission-record" = "ruff format --no-cache -- scripts/claude-acp-admission.py scripts/tests/claude-acp-admission.py"
+"check:acp-admission-format" = "bash scripts/check-python-format.sh scripts/claude-acp-admission.py scripts/tests/claude-acp-admission.py"
+"inspect:acp-admission-python" = "python3 -I -B scripts/claude-acp-admission.py inspect-python {args}"
+"build:acp-admission-record" = "python3 -I -B scripts/claude-acp-admission.py build {args}"
+"validate:acp-admission-record" = "python3 -I -B scripts/tests/claude-acp-admission.py"
+"check:acp-admission-record" = "python3 -I -B scripts/claude-acp-admission.py verify {args}"
 "validate:acp-shared-software" = "bash scripts/run-claude-acp-shared-software.sh"
 "check:acp-shared-software" = [
   "bash -n scripts/run-claude-acp-shared-software.sh",

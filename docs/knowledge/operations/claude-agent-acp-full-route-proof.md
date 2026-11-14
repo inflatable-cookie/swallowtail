@@ -138,3 +138,13 @@ The intentional failure roots exited1; that is expected failure-path evidence,
 not a successful provider turn. All host exits remain RootOnly. Raw observations
 and exact source bindings accompany the retained review; no original command,
 canonical fixture, kernel adapter or qualification claim is enabled.
+
+## Independent selected-launch preparation
+
+The [admission preparation](claude-agent-acp-admission-preparation.md) records
+all retained per-hop execution-import parents, the production/fake recipe
+boundary, opaque native gates and the finite actual-sibling delta for234.
+Its bounded Python/framework inspection identifies direct non-system inputs
+without claiming complete import/cache custody or OS verified execution. This
+record does not enable an original command, replay accepted proof, change the
+trusted-host/system-loader scope or alter234's frozen pending packet.

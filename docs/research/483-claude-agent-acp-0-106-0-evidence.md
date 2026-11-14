@@ -973,3 +973,25 @@ exit1 as expected. The dropped-start case awaits its late capability before
 refusing it. EOF is a descriptor fact, all host waits are RootOnly, and no
 adoptee/cgroup/kernel emptiness or original native claim follows. The earlier
 failed run remains failed. Full qualification and original execution gates stay.
+
+### Independent selected-launch admission record
+
+Review5904122860 accepts the5bb3579c source/fake milestone: `proof`,
+`source_cleanup` and `source_actor` pass within that scope; `outcome` remains
+insufficient for qualification. The independent
+[admission record](../knowledge/operations/claude-agent-acp-admission-preparation.md)
+now separates captured static edges, production path-only launch mediation,
+stricter fake one-shot entry, prohibited startup features and opaque native
+unknowns across all eight retained hops. It does not infer full closure from
+import reachability or one platform binary. Raw process capabilities and every
+ACP child-process caller remain explicit original-admission requirements.
+
+Bounded read-only inspection identifies the installed Python app and its
+Python3 framework image,17 direct import roots and system-loader references.
+The framework self install-name is distinguished from a dependency. Transitive
+imports/extensions, prefix/path and bytecode/zip selection remain unbound;
+no complete runtime custody or OS-cache attestation is invented. Mutation
+oracles preserve these unknowns and the actual Rust sibling graph. The shared
+kernel/transport/canonical-fixture admission and separate exact original
+authority remain external gates; no original code, grant or accepted suite is
+replayed. The frozen234 packet, originalCommand null and0.100.0 ceiling remain.

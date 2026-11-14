@@ -186,5 +186,11 @@
       "execution": "three cases serial on installed Darwin arm64 Node26.11.0; includes controlled assertion, deadline and dropped-start future counterexamples",
       "productionPolicyChange": false
     }
+  },
+  "admissionPreparation": {
+    "record": "docs/knowledge/operations/claude-agent-acp-admission-record.json",
+    "sha256": "a49bd4888d0aafd1a96a5379c07d17da1d7d969bc6eeb6af29be3c71441cfc1e",
+    "scope": "source/identity requirements only; no runtime admission or execution capability",
+    "originalCommand": null
   }
 }

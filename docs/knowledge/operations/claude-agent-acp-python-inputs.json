@@ -1,0 +1,307 @@
+{
+  "admitted": false,
+  "bytecodeRule": "-B prevents writes, not reads; existing cache and zip selection remain host inputs",
+  "directEntrySourceSha256": {
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/host.py": "757fdc325b13618dae31d826bfe92bd67cb3a6ed4401d27f2d96d5ba839a59b5",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/entry.py": "9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/proposal.py": "97cabd0ede8b624c388fa058a53b2fb45c8fd20795bb0b9dc243a7a5c9e8ce55"
+  },
+  "directImportCandidates": {
+    "argparse": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/argparse.py": {
+          "bytes": 97714,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "0e82574a85809fa1b7e0ce7e05230ff0a95ce196713cfbed47ab79bccb37ab0f",
+          "uid": 0
+        }
+      }
+    },
+    "hashlib": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/hashlib.py": {
+          "bytes": 10010,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "a25e6f24d6ae5b5205844e2717f3d6dbeda005c1afeaf4d450b4f2c363a3d34a",
+          "uid": 0
+        }
+      }
+    },
+    "http.client": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/http/__init__.py": {
+          "bytes": 6732,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "f20ee6263f81332dbb385e3bd5d51f1cdb075fb8d1dc8b0af7cd58747815749b",
+          "uid": 0
+        },
+        "lib/python3.9/http/client.py": {
+          "bytes": 55520,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "bb1b56ca9ae39036d57f9e9c9420862a150c13c3c940e8eb63fda05a6961351b",
+          "uid": 0
+        }
+      }
+    },
+    "http.server": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/http/__init__.py": {
+          "bytes": 6732,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "f20ee6263f81332dbb385e3bd5d51f1cdb075fb8d1dc8b0af7cd58747815749b",
+          "uid": 0
+        },
+        "lib/python3.9/http/server.py": {
+          "bytes": 47705,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "9d012c2f66822dea6e1baeeea02c518713247a9d5ec4459e35e365114a6828af",
+          "uid": 0
+        }
+      }
+    },
+    "importlib.util": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/importlib/__init__.py": {
+          "bytes": 6061,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "45421c08a03062ba41e37e484cb0e4d8474be13c2a34806cb5b63c9edcb94a10",
+          "uid": 0
+        },
+        "lib/python3.9/importlib/util.py": {
+          "bytes": 11321,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "b6a71515fade6516217f7c7d78ab927fde6530a145543c39ce03d1577f668fb7",
+          "uid": 0
+        }
+      }
+    },
+    "json": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/json/__init__.py": {
+          "bytes": 14017,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "332fabb72a4a1ed02c9207a7619ab339dac8f0b6862e16f6499147121b302a27",
+          "uid": 0
+        }
+      }
+    },
+    "os": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/os.py": {
+          "bytes": 39404,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "8dbe2d2e9f228747cacbbcc6758721e794b652e5c22b6224cb07e303ebbc620d",
+          "uid": 0
+        }
+      }
+    },
+    "pathlib": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/pathlib.py": {
+          "bytes": 53285,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "6b33d2d55c09aa9c607a528003ed8fe154894afaa977ec554e0a858240412b72",
+          "uid": 0
+        }
+      }
+    },
+    "re": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/re.py": {
+          "bytes": 15861,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "4326ef93e3cf336c06523426187dce705c12f9fdc0a562a7cd00ab1739b14c2d",
+          "uid": 0
+        }
+      }
+    },
+    "select": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {}
+    },
+    "selectors": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/selectors.py": {
+          "bytes": 19536,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "b16e673c110fd6a362414308ef73ffc3c15125c87361333b309791735931040d",
+          "uid": 0
+        }
+      }
+    },
+    "signal": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/signal.py": {
+          "bytes": 2273,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "4ebf461c99cf469e2ac22f6076040c6d16eeef0130a42a13a6ff7fe6cbe4ae6a",
+          "uid": 0
+        }
+      }
+    },
+    "stat": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/stat.py": {
+          "bytes": 5485,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "052af0327eae6941b69b05c088b3e748f79995635f80ac4cc7125eb333eb4c77",
+          "uid": 0
+        }
+      }
+    },
+    "subprocess": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/subprocess.py": {
+          "bytes": 82644,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "d2f73c7128a3931f74411b46352146ba85322a8dc8f12a721d4801dc43d9766e",
+          "uid": 0
+        }
+      }
+    },
+    "sys": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {}
+    },
+    "tempfile": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/tempfile.py": {
+          "bytes": 27600,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "58e5216725e9e411e90b8444c99327e565e84887078160fada255fcb64ce9763",
+          "uid": 0
+        }
+      }
+    },
+    "threading": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {
+        "lib/python3.9/threading.py": {
+          "bytes": 52933,
+          "gid": 0,
+          "mode": 33188,
+          "sha256": "576085b4d09b488133e900bcdc821da005d3f117dd3595cf8c392dc5285729f2",
+          "uid": 0
+        }
+      }
+    },
+    "time": {
+      "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+      "sources": {}
+    }
+  },
+  "directImportRoots": [
+    "argparse",
+    "hashlib",
+    "http",
+    "importlib",
+    "json",
+    "os",
+    "pathlib",
+    "re",
+    "select",
+    "selectors",
+    "signal",
+    "stat",
+    "subprocess",
+    "sys",
+    "tempfile",
+    "threading",
+    "time"
+  ],
+  "frameworkLayout": "Xcode Python3.framework/Versions/3.9",
+  "inspectionSourceSha256": "3f17ef3831ee73de3ab3830f7be7ee9ca908fc941013052310d895477f101ff0",
+  "interpreter": "Resources/Python.app/Contents/MacOS/Python",
+  "machOFiles": {
+    "Python3": {
+      "bytes": 5881904,
+      "gid": 0,
+      "mode": 33261,
+      "sha256": "2fd8e73d1633bb44c9e6a8c86df54b01ce7a440b56942f58dc8c86f9ae73620a",
+      "uid": 0
+    },
+    "Resources/Python.app/Contents/MacOS/Python": {
+      "bytes": 101280,
+      "gid": 0,
+      "mode": 33261,
+      "sha256": "21e7b7310c29e736fce8dd1d5daa9b17c0c6328cf34ac124a651adaab87c1d16",
+      "uid": 0
+    }
+  },
+  "machOLinks": [
+    {
+      "class": "trusted-system-loader-input; not extracted/attested",
+      "installName": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "parent": "Resources/Python.app/Contents/MacOS/Python"
+    },
+    {
+      "class": "non-system framework dependency; inventory only",
+      "installName": "@executable_path/../../../../Python3",
+      "parent": "Resources/Python.app/Contents/MacOS/Python",
+      "target": "Python3"
+    },
+    {
+      "class": "trusted-system-loader-input; not extracted/attested",
+      "installName": "/usr/lib/libSystem.B.dylib",
+      "parent": "Resources/Python.app/Contents/MacOS/Python"
+    },
+    {
+      "class": "trusted-system-loader-input; not extracted/attested",
+      "installName": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "parent": "Python3"
+    },
+    {
+      "class": "trusted-system-loader-input; not extracted/attested",
+      "installName": "/usr/lib/libSystem.B.dylib",
+      "parent": "Python3"
+    }
+  ],
+  "observedBytecodeCandidates": {},
+  "schema": "swallowtail.acp227.python-inputs.v1",
+  "scope": "bounded read-only direct inputs, not complete runtime custody",
+  "startup": [
+    "-I",
+    "-B",
+    "-S"
+  ],
+  "stdlibZipCandidate": {
+    "present": false,
+    "relativePath": "lib/python39.zip"
+  },
+  "unresolved": [
+    "CPYTHON_TRANSITIVE_IMPORT_EXTENSION_AND_BYTECODE_CUSTODY",
+    "CPYTHON_PREFIX_ZIP_PATH_CONFIGURATION",
+    "TRUSTED_HOST_SYSTEM_LOADER_IDENTITY_AND_UPDATE_CUSTODY"
+  ]
+}

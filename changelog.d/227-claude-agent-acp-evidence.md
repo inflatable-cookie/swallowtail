@@ -22,3 +22,6 @@
   ownership through stop/wait on failure, timeout and abandoned startup.
   Prove actual sibling actors with owned fakes and separate descriptor EOF
   counterexamples; retain the original/kernel/native qualification gates.
+- Record exact selected launch-edge requirements and a bounded Python/framework
+  input inventory. Add mutation-sensitive proposal checks while keeping opaque
+  native, actual shared-host and separate original-execution gates closed.

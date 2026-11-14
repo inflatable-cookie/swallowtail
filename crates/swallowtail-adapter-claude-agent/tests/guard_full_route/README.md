@@ -25,7 +25,7 @@ fixtures and kernel enforcement remain independent prerequisites owned by234.
 This harness adds no public runtime API. Ambient local fake execution does not
 prove the original native can use the eventual confined transport.
 
-Run `effigy validate:acp-guard-full-route` for the two targeted cases on the
+Run `effigy validate:acp-guard-installed-child` for these two cases and the18 captured-host regressions on the
 installed Darwin arm64 runtime; other platforms report not applicable. The
 existing installed-child selector includes these cases and the captured-host
 regressions. All temporary fixtures belong to the current run's `TMPDIR`.

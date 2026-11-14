@@ -10,7 +10,8 @@
     "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs": "78782456cb6fb25620632ace42e87089c3611f8ff637bd64db3844030830ccd4",
     "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
     "crates/swallowtail-host-local/src/captured_manifest.rs": "b296e1e52cc0e29898c68d531d368bafcad47625e580633e1aa47c42c265b904",
-    "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf"
+    "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
+    "scripts/run-claude-acp-installed-child.sh": "715f46e682949ac533144f0a4f60217577018d10a08d60c6bf722bc5c71aaf78"
   },
   "runnableFakeCommands": [
     [
@@ -19,7 +20,7 @@
     ],
     [
       "effigy",
-      "validate:acp-guard-full-route"
+      "validate:acp-guard-installed-child"
     ],
     [
       "effigy",

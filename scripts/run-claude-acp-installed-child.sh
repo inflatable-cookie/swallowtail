@@ -2,12 +2,6 @@
 # Route-specific fake proof against the installed Darwin runtime. No original code.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-selected_tests=()
-case "${1:-}" in
-  "") ;;
-  --full-route) selected_tests=(-E 'test(/prepared_child::full_route::/)') ;;
-  *) echo 'unsupported installed-runtime fake selector' >&2; exit 2 ;;
-esac
 if [[ "$(uname -s):$(uname -m)" != Darwin:arm64 ]]; then
   echo 'not applicable: installed-runtime closure proof requires Darwin arm64; no Linux proof supplied'
   exit 0
@@ -28,4 +22,4 @@ record={'node':str(node),'sha256':owner.digest(node),'dependencies':[{'path':str
 pathlib.Path(os.environ['SWALLOWTAIL_ACP_INSTALLED_RUNTIME_RECORD']).write_text(json.dumps(record))
 print(json.dumps({'installedRuntime':record},sort_keys=True))
 PY
-bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture "${selected_tests[@]}"
+bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture

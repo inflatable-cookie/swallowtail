@@ -173,7 +173,6 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
 "validate:acp-guard-installed-child" = "bash scripts/run-claude-acp-installed-child.sh"
-"validate:acp-guard-full-route" = "bash scripts/run-claude-acp-installed-child.sh --full-route"
 "lint:acp-guard-full-route" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --test acp_guard_capture -- -D warnings"
 "check:acp-guard-full-route" = [
   "bash -n scripts/run-claude-acp-installed-child.sh",

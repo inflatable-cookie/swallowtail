@@ -52,7 +52,7 @@ original native permission or administrator discovery proof.
 
 ```sh
 effigy check:acp-guard-full-route
-effigy validate:acp-guard-full-route
+effigy validate:acp-guard-installed-child
 effigy lint:acp-guard-full-route
 ```
 

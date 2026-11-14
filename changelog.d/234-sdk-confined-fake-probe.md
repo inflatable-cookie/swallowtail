@@ -57,3 +57,5 @@ invocation inputs and actor-specific waits. Combined canonical settings and
 changed kernel/cgroup execution remain inactive preparation, not admission.
 
 - Extend the private source/fake spawn seam with OS-derived group-owner/driver/native actors, captured launch-graph refusals and an inactive combined Linux cgroup/exec-stop/administrator-fixture proposal. Keep new kernel/combined discovery, original admission and Q-009 qualification gated; both namespace grants remain consumed.
+
+Repair partial fixture creation: persist intent before mkdir, bind identity before chmod, and retain the journal when ownership, cleanup or tree settlement is unresolved. Add owned early-fault and interruption counterexamples; no canonical or kernel activation.

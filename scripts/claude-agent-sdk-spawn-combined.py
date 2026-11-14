@@ -110,11 +110,28 @@ def sha(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def persist_journal(descriptor, journal, parent):
+    data = json.dumps(journal, separators=(",", ":")).encode()
+    if len(data) > RECEIPT:
+        raise Refused(errno.EFBIG, "receipt_bound")
+    os.lseek(descriptor, 0, 0)
+    os.ftruncate(descriptor, 0)
+    if os.write(descriptor, data) != len(data):
+        raise Refused(errno.EIO, "journal_short_write")
+    os.fsync(descriptor)
+    directory = os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+
+
 def prepare_fixture(parent, owner, state, run, helper, store):
-    """Existing helper's exact bytes, with a durable identity before writes."""
+    """Persist intent before effects; no receipt means unknown, not absent."""
     data = helper.payload(state)
     parent_fd = helper.directory(parent, owner)
     try:
+        store("creating", None)
         os.mkdir("claude-code", 0o755, dir_fd=parent_fd)
         fd = os.open(
             "claude-code",
@@ -122,7 +139,6 @@ def prepare_fixture(parent, owner, state, run, helper, store):
             dir_fd=parent_fd,
         )
         try:
-            os.fchmod(fd, 0o755)
             info = os.fstat(fd)
             if info.st_uid != owner:
                 raise Refused(errno.EPERM, "fixture_owner")
@@ -134,7 +150,8 @@ def prepare_fixture(parent, owner, state, run, helper, store):
                 "inode": info.st_ino,
                 "policySha256": sha(data) if data is not None else None,
             }
-            store(receipt)
+            store("created", receipt)
+            os.fchmod(fd, 0o755)
             if data is not None:
                 helper.write_file(fd, helper.POLICY, data, 0o444)
             helper.write_file(
@@ -160,7 +177,7 @@ def cleanup_partial_fixture(parent, owner, receipt, helper):
             info = os.fstat(fd)
             if (
                 info.st_uid != owner
-                or stat.S_IMODE(info.st_mode) != 0o755
+                or stat.S_IMODE(info.st_mode) & 0o022
                 or (info.st_dev, info.st_ino) != (receipt["device"], receipt["inode"])
             ):
                 raise Refused(errno.EPERM, "partial_fixture_identity")
@@ -185,6 +202,74 @@ def cleanup_partial_fixture(parent, owner, receipt, helper):
             os.close(fd)
     finally:
         os.close(parent_fd)
+
+
+def cleanup_resources(journal, parent, owner, fixture, cgroup_cleanup):
+    """A nullable receipt is never evidence that a creation attempt was absent."""
+    errors = []
+    cgroup_cleaned = False
+    fixture_cleaned = False
+    if journal.get("cgroup") is not None:
+        try:
+            cgroup_cleanup(journal["cgroup"])
+            cgroup_cleaned = True
+        except OSError as error:
+            errors.append(str(error))
+    elif journal.get("cgroupStage") == "not-started":
+        cgroup_cleaned = True
+    else:
+        errors.append("cgroup_creation_identity_unresolved")
+    receipt = journal.get("fixture")
+    stage = journal.get("fixtureStage")
+    if stage == "not-started" and receipt is None:
+        fixture_cleaned = True
+    elif stage in {"created", "ready"} and isinstance(receipt, dict):
+        try:
+            if (
+                receipt.get("run") != journal["run"]
+                or receipt.get("state") != journal["state"]
+                or receipt.get("owner") != owner
+            ):
+                raise Refused(errno.EPERM, "fixture_cleanup_binding")
+            if stage == "ready":
+                fixture.cleanup(
+                    parent, "claude-code", journal["state"], owner, journal["run"]
+                )
+            else:
+                cleanup_partial_fixture(parent, owner, receipt, fixture)
+            fixture_cleaned = True
+        except (OSError, fixture.Refused, KeyError, ValueError, TypeError) as error:
+            errors.append(str(error))
+    else:
+        errors.append("fixture_creation_identity_unresolved")
+    return {
+        "fixtureCleanup": fixture_cleaned,
+        "cgroupCleanup": cgroup_cleaned,
+        "failure": errors or None,
+    }
+
+
+def finish_cleanup(path, before, journal, resources, tree):
+    after = path.lstat()
+    if (after.st_dev, after.st_ino) != (before.st_dev, before.st_ino):
+        raise Refused(errno.EPERM, "journal_replaced")
+    complete = (
+        tree
+        and resources["fixtureCleanup"] is True
+        and resources["cgroupCleanup"] is True
+        and not resources["failure"]
+    )
+    if complete:
+        path.unlink()
+    return {
+        **resources,
+        "independentTreeSettlement": tree,
+        "journalRetained": not complete,
+        "originalActivation": False,
+        "failure": resources["failure"]
+        or (None if complete else "tree_settlement_unproved"),
+        "journal": journal,
+    }
 
 
 def captured_core(expected):
@@ -594,6 +679,7 @@ class Monitor:
         self.previous_signals = {}
         self.parent_fd = os.pidfd_open(os.getpid())
         self.journal_fd = args.journal_fd
+        self.journal_parent = Path(os.environ["TMPDIR"]).resolve(strict=True)
         import socket
 
         self.canary = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -839,15 +925,7 @@ class Monitor:
         self.journal["custody"] = self.lease.observation()
         self.journal["traceEvents"] = self.gate.events if self.gate else []
         self.journal["traceWaits"] = self.trace.waits
-        data = json.dumps(self.journal, separators=(",", ":")).encode()
-        if len(data) > RECEIPT:
-            raise Refused(errno.EFBIG, "combined_receipt_bound")
-        fd = self.journal_fd
-        os.lseek(fd, 0, 0)
-        os.ftruncate(fd, 0)
-        if os.write(fd, data) != len(data):
-            raise Refused(errno.EIO, "journal_short_write")
-        os.fsync(fd)
+        persist_journal(self.journal_fd, self.journal, self.journal_parent)
 
     def drain(self):
         for _ in range(128):
@@ -1309,7 +1387,9 @@ def activate(args, core, files):
         "state": args.state,
         "run": args.run,
         "fixture": None,
+        "fixtureStage": "not-started",
         "cgroup": None,
+        "cgroupStage": "not-started",
         "treeSettled": False,
         "originalActivation": False,
         "monitor": identity(os.getpid()),
@@ -1320,15 +1400,10 @@ def activate(args, core, files):
     args.journal_fd = descriptor
 
     def save():
-        data = json.dumps(journal, separators=(",", ":")).encode()
-        if len(data) > RECEIPT:
-            raise Refused(errno.EFBIG, "receipt_bound")
-        os.lseek(descriptor, 0, 0)
-        os.ftruncate(descriptor, 0)
-        os.write(descriptor, data)
-        os.fsync(descriptor)
+        persist_journal(descriptor, journal, path.parent)
 
     try:
+        save()
         for name, data in files.items():
             lease.bind(ROOT / name, sha(data))
         lease.bind(ROOT / RECORD, args.record_sha256)
@@ -1339,12 +1414,15 @@ def activate(args, core, files):
         group = modules["cgroup"].LinuxCgroup(
             args.cgroup_parent, "sdk234-" + os.urandom(12).hex()
         )
+        journal["cgroupStage"] = "creating"
+        save()
         journal["cgroup"] = group.create()
+        journal["cgroupStage"] = "created"
         save()
 
-        def fixture_created(receipt):
+        def fixture_created(stage, receipt):
             journal["fixture"] = receipt
-            journal["fixtureStage"] = "created"
+            journal["fixtureStage"] = stage
             save()
 
         prepare_fixture(Path("/etc"), 0, args.state, args.run, fixture, fixture_created)
@@ -1364,6 +1442,7 @@ def activate(args, core, files):
         journal["failure"] = str(error)[:2000]
         if group is not None and group.created:
             journal["cgroup"] = group.receipt()
+            journal["cgroupStage"] = "created"
         save()
         raise
     finally:
@@ -1406,41 +1485,14 @@ def cleanup(args, core, files):
     # A missing full-tree observation is never repaired by emptiness/disposal.
     tree = verify_settlement(journal)
     modules = private_modules(core, files)
-    errors = []
-    cgroup_cleaned = journal["cgroup"] is None
-    fixture_cleaned = journal["fixture"] is None
-    if journal["cgroup"] is not None:
-        try:
-            modules["cgroup"].cleanup(journal["cgroup"])
-            cgroup_cleaned = True
-        except OSError as error:
-            errors.append(str(error))
     fixture = core.module(
         "scripts/claude-agent-sdk-admin-fixture.py",
         files["scripts/claude-agent-sdk-admin-fixture.py"],
     )
-    if journal["fixture"] is not None:
-        try:
-            if journal.get("fixtureStage") == "ready":
-                fixture.cleanup(Path("/etc"), "claude-code", args.state, 0, args.run)
-            else:
-                cleanup_partial_fixture(Path("/etc"), 0, journal["fixture"], fixture)
-            fixture_cleaned = True
-        except (OSError, fixture.Refused) as error:
-            errors.append(str(error))
-    after = path.lstat()
-    if (after.st_dev, after.st_ino) != (st.st_dev, st.st_ino):
-        raise Refused(errno.EPERM, "journal_replaced")
-    if not errors:
-        path.unlink()
-    return {
-        "fixtureCleanup": fixture_cleaned,
-        "cgroupCleanup": cgroup_cleaned,
-        "independentTreeSettlement": tree,
-        "originalActivation": False,
-        "failure": errors or (None if tree else "tree_settlement_unproved"),
-        "journal": journal,
-    }
+    resources = cleanup_resources(
+        journal, Path("/etc"), 0, fixture, modules["cgroup"].cleanup
+    )
+    return finish_cleanup(path, st, journal, resources, tree)
 
 
 def main():

@@ -79,7 +79,19 @@
     "exclusiveFreshJobs": true,
     "oppositeHomeAndProject": true,
     "sameConfinementAsNative": "required",
-    "actualCombinedDiscovery": "unproved"
+    "actualCombinedDiscovery": "unproved",
+    "creationJournal": {
+      "stages": [
+        "not-started",
+        "creating",
+        "created",
+        "ready"
+      ],
+      "persistIntentBeforeMkdir": true,
+      "persistIdentityBeforeChmod": true,
+      "unknownIdentityOrAbsence": "refuse cleanup success; retain journal; never adopt current path",
+      "deleteJournalOnlyAfter": "proved fixture and cgroup cleanup plus independent tree settlement"
+    }
   },
   "events": [
     "driver_started",

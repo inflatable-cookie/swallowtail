@@ -232,11 +232,17 @@ fails. Killing owned remaining tasks during independent disposal cannot repair
 missing reaping proof.
 
 The canonical helper's exact payload/read/write/cleanup primitives are reused.
-The new orchestration journals the exclusively created directory identity before
-writing its files, so a partial setup can remove only that inode and exact known
-helper files. Unexpected files, changed bytes, symlinks, ownership or identity
-refuse and preserve the finding. Cgroup cleanup and fixture cleanup are both
-attempted independently. Unknown settlement remains failed even after disposal.
+Before mkdir or any creation effect, the host durably records creation in
+progress with identity unknown. It binds the opened directory's actual identity
+as soon as fstat supplies it, before chmod or file writes. Only an explicit
+not-started state means no creation was attempted. An interrupted mkdir/open/stat
+or identity-persistence gap remains unresolved even if the path appears absent;
+cleanup never adopts an object just because it occupies the expected path.
+Only a proved owned inode and exact known helper files may be removed. Unknown
+identity, unexpected files, changed bytes, symlinks or ownership refuse. Cgroup
+and fixture cleanup remain separate observations. The journal is retained on
+unresolved creation, interruption, partial cleanup or unproved tree settlement;
+successful disposal cannot manufacture missing evidence.
 
 ## Exact inactive job and next gates
 

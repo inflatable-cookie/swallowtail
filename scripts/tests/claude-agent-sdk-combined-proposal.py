@@ -1,6 +1,7 @@
 """Owned event/filesystem models; no root adapter or kernel policy is activated."""
 
 import copy
+from contextlib import contextmanager
 import errno
 import hashlib
 import importlib.util
@@ -385,6 +386,357 @@ class CgroupTests(unittest.TestCase):
 
 
 class CombinedTests(unittest.TestCase):
+    creation_observations = []
+
+    @contextmanager
+    def fixture_transaction(self, root, fault=None):
+        file = ROOT / "scripts/claude-agent-sdk-admin-fixture.py"
+        spec = importlib.util.spec_from_file_location("fixture", file)
+        fixture = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fixture)
+        parent = root / "parent"
+        parent.mkdir(mode=0o755)
+        journal_path = root / "journal.json"
+        fd = os.open(journal_path, os.O_CREAT | os.O_EXCL | os.O_RDWR, 0o600)
+        journal = {
+            "fixture": None,
+            "fixtureStage": "not-started",
+            "cgroup": None,
+            "cgroupStage": "not-started",
+            "state": "disabled",
+            "run": "owned-model",
+        }
+        COMBINED.persist_journal(fd, journal, root)
+
+        def store(stage, receipt):
+            journal.update(fixtureStage=stage, fixture=receipt)
+            if stage == "creating" and fault == "intent-persistence":
+                raise OSError("owned intent persistence failure")
+            if stage == "created" and fault in {
+                "receipt-persistence",
+                "interrupt-receipt",
+            }:
+                if fault == "interrupt-receipt":
+                    raise KeyboardInterrupt()
+                raise OSError("owned identity persistence failure")
+            COMBINED.persist_journal(fd, journal, root)
+            if stage == "creating" and fault == "interrupt-before-mkdir":
+                raise KeyboardInterrupt()
+
+        try:
+            yield fixture, parent, journal_path, store
+        finally:
+            os.close(fd)
+
+    def observed_cleanup(self, fixture, parent, journal_path, *, tree=True):
+        journal = json.loads(journal_path.read_bytes())
+        resources = COMBINED.cleanup_resources(
+            journal, parent, os.getuid(), fixture, mock.Mock()
+        )
+        return COMBINED.finish_cleanup(
+            journal_path, journal_path.lstat(), journal, resources, tree
+        )
+
+    def test_creation_faults_preserve_unknown_identity_and_reported_journal(self):
+        cases = (
+            "after-mkdir",
+            "before-open",
+            "before-stat",
+            "before-chmod",
+            "before-chmod-private-mode",
+            "receipt-persistence",
+            "interrupt-after-mkdir",
+            "interrupt-receipt",
+            "interrupt-before-mkdir",
+        )
+        for fault in cases:
+            with (
+                self.subTest(fault=fault),
+                tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary,
+            ):
+                root = Path(temporary)
+                with self.fixture_transaction(root, fault) as (
+                    fixture,
+                    parent,
+                    journal_path,
+                    store,
+                ):
+                    original_open, original_mkdir, original_fstat, original_fchmod = (
+                        os.open,
+                        os.mkdir,
+                        os.fstat,
+                        os.fchmod,
+                    )
+                    child = []
+
+                    def mkdir(name, *args, **kwargs):
+                        if (
+                            name == "claude-code"
+                            and fault == "before-chmod-private-mode"
+                        ):
+                            result = original_mkdir(name, 0o700, **kwargs)
+                        else:
+                            result = original_mkdir(name, *args, **kwargs)
+                        if name == "claude-code" and fault in {
+                            "after-mkdir",
+                            "interrupt-after-mkdir",
+                        }:
+                            if fault.startswith("interrupt"):
+                                raise KeyboardInterrupt()
+                            raise OSError("owned interruption after mkdir")
+                        return result
+
+                    def open_file(name, *args, **kwargs):
+                        if name == "claude-code" and fault == "before-open":
+                            raise OSError("owned open refusal")
+                        result = original_open(name, *args, **kwargs)
+                        if name == "claude-code":
+                            child.append(result)
+                        return result
+
+                    def fstat(descriptor):
+                        if descriptor in child and fault == "before-stat":
+                            raise OSError("owned stat refusal")
+                        return original_fstat(descriptor)
+
+                    def fchmod(descriptor, mode):
+                        if descriptor in child and fault in {
+                            "before-chmod",
+                            "before-chmod-private-mode",
+                        }:
+                            raise OSError("owned chmod refusal")
+                        return original_fchmod(descriptor, mode)
+
+                    with (
+                        mock.patch.object(COMBINED.os, "mkdir", side_effect=mkdir),
+                        mock.patch.object(COMBINED.os, "open", side_effect=open_file),
+                        mock.patch.object(COMBINED.os, "fstat", side_effect=fstat),
+                        mock.patch.object(COMBINED.os, "fchmod", side_effect=fchmod),
+                    ):
+                        with self.assertRaises((OSError, KeyboardInterrupt)):
+                            COMBINED.prepare_fixture(
+                                parent,
+                                os.getuid(),
+                                "disabled",
+                                "owned-model",
+                                fixture,
+                                store,
+                            )
+                    persisted = json.loads(journal_path.read_bytes())
+                    known = fault in {"before-chmod", "before-chmod-private-mode"}
+                    self.assertEqual(
+                        persisted["fixtureStage"], "created" if known else "creating"
+                    )
+                    self.assertEqual(persisted["fixture"] is not None, known)
+                    result = self.observed_cleanup(fixture, parent, journal_path)
+                    self.assertEqual(result["fixtureCleanup"], known)
+                    self.assertEqual(result["journalRetained"], not known)
+                    self.assertEqual(journal_path.exists(), not known)
+                    self.assertEqual(
+                        (parent / "claude-code").exists(),
+                        not known and fault != "interrupt-before-mkdir",
+                    )
+                    if not known:
+                        self.assertIn(
+                            "fixture_creation_identity_unresolved", result["failure"]
+                        )
+                    self.creation_observations.append(
+                        {
+                            "fault": fault,
+                            "persistedStage": persisted["fixtureStage"],
+                            "identityKnown": known,
+                            "fixtureCleanup": result["fixtureCleanup"],
+                            "journalRetained": result["journalRetained"],
+                            "kernelEnforced": False,
+                        }
+                    )
+
+    def test_intent_must_persist_before_mkdir(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            with self.fixture_transaction(Path(temporary), "intent-persistence") as (
+                fixture,
+                parent,
+                journal_path,
+                store,
+            ):
+                with mock.patch.object(COMBINED.os, "mkdir") as mkdir:
+                    with self.assertRaisesRegex(OSError, "intent persistence"):
+                        COMBINED.prepare_fixture(
+                            parent,
+                            os.getuid(),
+                            "disabled",
+                            "owned-model",
+                            fixture,
+                            store,
+                        )
+                mkdir.assert_not_called()
+                self.assertEqual(
+                    json.loads(journal_path.read_bytes())["fixtureStage"], "not-started"
+                )
+                result = self.observed_cleanup(
+                    fixture, parent, journal_path, tree=False
+                )
+                self.assertTrue(result["fixtureCleanup"])
+                self.assertTrue(result["journalRetained"])
+                self.assertTrue(journal_path.exists())
+
+    def test_absence_or_legacy_null_receipt_never_adopts_creation(self):
+        for stage in (None, "creating", "created", "ready"):
+            with (
+                self.subTest(stage=stage),
+                tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary,
+            ):
+                with self.fixture_transaction(Path(temporary)) as (
+                    fixture,
+                    parent,
+                    journal_path,
+                    store,
+                ):
+                    journal = json.loads(journal_path.read_bytes())
+                    if stage is None:
+                        journal.pop("fixtureStage")
+                    else:
+                        journal["fixtureStage"] = stage
+                    journal_path.write_text(json.dumps(journal))
+                    result = self.observed_cleanup(fixture, parent, journal_path)
+                    self.assertFalse(result["fixtureCleanup"])
+                    self.assertTrue(result["journalRetained"])
+                    self.assertTrue(journal_path.exists())
+                    self.assertFalse((parent / "claude-code").exists())
+
+    def test_existing_object_is_not_adopted_after_exclusive_creation_refusal(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            with self.fixture_transaction(Path(temporary)) as (
+                fixture,
+                parent,
+                journal_path,
+                store,
+            ):
+                existing = parent / "claude-code"
+                existing.mkdir()
+                (existing / "unowned-by-this-transaction").write_text("preserve")
+                with self.assertRaises(FileExistsError):
+                    COMBINED.prepare_fixture(
+                        parent, os.getuid(), "disabled", "owned-model", fixture, store
+                    )
+                result = self.observed_cleanup(fixture, parent, journal_path)
+                self.assertFalse(result["fixtureCleanup"])
+                self.assertTrue(result["journalRetained"])
+                self.assertTrue((existing / "unowned-by-this-transaction").is_file())
+
+    def test_short_intent_write_refuses_before_creation_and_preserves_corrupt_journal(
+        self,
+    ):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            with self.fixture_transaction(Path(temporary)) as (
+                fixture,
+                parent,
+                journal_path,
+                store,
+            ):
+                original = os.write
+                with mock.patch.object(
+                    COMBINED.os,
+                    "write",
+                    side_effect=lambda fd, data: original(fd, data[:1]),
+                ):
+                    with self.assertRaisesRegex(OSError, "journal_short_write"):
+                        COMBINED.prepare_fixture(
+                            parent,
+                            os.getuid(),
+                            "disabled",
+                            "owned-model",
+                            fixture,
+                            store,
+                        )
+                self.assertFalse((parent / "claude-code").exists())
+                self.assertTrue(journal_path.exists())
+                with self.assertRaises(json.JSONDecodeError):
+                    self.observed_cleanup(fixture, parent, journal_path)
+                self.assertTrue(journal_path.exists())
+
+    def test_unknown_cgroup_creation_also_prevents_journal_disposal(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            with self.fixture_transaction(Path(temporary)) as (
+                fixture,
+                parent,
+                journal_path,
+                store,
+            ):
+                journal = json.loads(journal_path.read_bytes())
+                journal["cgroupStage"] = "creating"
+                journal_path.write_text(json.dumps(journal))
+                result = self.observed_cleanup(fixture, parent, journal_path)
+                self.assertFalse(result["cgroupCleanup"])
+                self.assertTrue(result["journalRetained"])
+                self.assertTrue(journal_path.exists())
+
+    def test_known_identity_cleanup_failure_and_interruption_preserve_journal(self):
+        for interrupt in (False, True):
+            with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+                with self.fixture_transaction(Path(temporary)) as (
+                    fixture,
+                    parent,
+                    journal_path,
+                    store,
+                ):
+                    COMBINED.prepare_fixture(
+                        parent, os.getuid(), "disabled", "owned-model", fixture, store
+                    )
+                    unlink = os.unlink
+                    removed = []
+
+                    def partial_unlink(name, *args, **kwargs):
+                        unlink(name, *args, **kwargs)
+                        removed.append(name)
+                        if len(removed) == 1:
+                            if interrupt:
+                                raise KeyboardInterrupt()
+                            raise OSError("owned partial cleanup failure")
+
+                    reported = None
+                    with mock.patch.object(
+                        COMBINED.os, "unlink", side_effect=partial_unlink
+                    ):
+                        if interrupt:
+                            with self.assertRaises(KeyboardInterrupt):
+                                reported = self.observed_cleanup(
+                                    fixture, parent, journal_path
+                                )
+                        else:
+                            reported = self.observed_cleanup(
+                                fixture, parent, journal_path
+                            )
+                    self.assertTrue(journal_path.exists())
+                    self.assertEqual(len(os.listdir(parent / "claude-code")), 1)
+                    if interrupt:
+                        self.assertIsNone(reported)
+                    else:
+                        self.assertFalse(reported["fixtureCleanup"])
+                        self.assertTrue(reported["journalRetained"])
+                        self.assertIn(
+                            "owned partial cleanup failure", reported["failure"][0]
+                        )
+
+    def test_known_receipt_with_missing_object_preserves_unresolved_evidence(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            with self.fixture_transaction(Path(temporary)) as (
+                fixture,
+                parent,
+                journal_path,
+                store,
+            ):
+                COMBINED.prepare_fixture(
+                    parent, os.getuid(), "disabled", "owned-model", fixture, store
+                )
+                fixture.cleanup(
+                    parent, "claude-code", "disabled", os.getuid(), "owned-model"
+                )
+                result = self.observed_cleanup(fixture, parent, journal_path)
+                self.assertFalse(result["fixtureCleanup"])
+                self.assertTrue(result["journalRetained"])
+                self.assertTrue(journal_path.exists())
+
     def test_fixture_partial_setup_cleans_only_its_exclusive_exact_inode(self):
         file = ROOT / "scripts/claude-agent-sdk-admin-fixture.py"
         spec = importlib.util.spec_from_file_location("fixture", file)
@@ -396,9 +748,10 @@ class CombinedTests(unittest.TestCase):
                 receipt = []
                 original = fixture.write_file
 
-                def store(value):
-                    receipt.append(value)
-                    if fault == "after_identity":
+                def store(stage, value):
+                    if stage == "created":
+                        receipt.append(value)
+                    if stage == "created" and fault == "after_identity":
                         raise OSError("modeled write refusal")
 
                 def write(fd, name, data, mode):
@@ -434,7 +787,14 @@ class CombinedTests(unittest.TestCase):
                 root = Path(temporary)
                 receipt = []
                 COMBINED.prepare_fixture(
-                    root, os.getuid(), state, "owned-model", fixture, receipt.append
+                    root,
+                    os.getuid(),
+                    state,
+                    "owned-model",
+                    fixture,
+                    lambda stage, value: receipt.append(value)
+                    if stage == "created"
+                    else None,
                 )
                 policy = root / "claude-code" / fixture.POLICY
                 if state == "absent":
@@ -679,6 +1039,7 @@ class CombinedTests(unittest.TestCase):
                 m.journal_fd = os.open(
                     Path(root) / "receipt", os.O_CREAT | os.O_WRONLY, 0o600
                 )
+                m.journal_parent = Path(root)
                 m.run_owned = mock.Mock(side_effect=OSError(errno.EPERM, message))
                 try:
                     with mock.patch.object(
@@ -709,6 +1070,7 @@ class CombinedTests(unittest.TestCase):
             json.dumps(
                 {
                     "kernelEnforced": False,
+                    "creationCounterexamples": cls.creation_observations,
                     "originalActivation": False,
                     "sourceRecord": hashlib.sha256(
                         (ROOT / COMBINED.RECORD).read_bytes()

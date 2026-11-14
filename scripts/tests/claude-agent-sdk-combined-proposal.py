@@ -559,6 +559,30 @@ class CombinedTests(unittest.TestCase):
         )
         self.assertFalse((ROOT / ".github/workflows/sdk234-combined-fake.yml").exists())
 
+    def test_routing_patch_applies_only_in_owned_fixture_and_rejects_scope_mutations(
+        self,
+    ):
+        names = [
+            "scripts/tests/oxide-selector-routing.py",
+            "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
+            "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
+        ]
+        files = {name: (ROOT / name).read_bytes() for name in names}
+        patch = (
+            ROOT / "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch"
+        ).read_bytes()
+        body = COMBINED.proposed_workflow(patch)
+        before = files[names[0]]
+        COMBINED.check_routing_packet(files, body)
+        self.assertEqual((ROOT / names[0]).read_bytes(), before)
+        with self.assertRaises(OSError):
+            COMBINED.check_routing_packet(
+                {**files, names[0]: before + b"# changed base\n"}, body
+            )
+        changed = files[names[2]].replace(b"sdk234-combined-fake.yml", b"other.yml")
+        with self.assertRaises(OSError):
+            COMBINED.check_routing_packet({**files, names[2]: changed}, body)
+
     def test_sequence_length_digest_and_missing_result_are_checked_by_actual_monitor(
         self,
     ):

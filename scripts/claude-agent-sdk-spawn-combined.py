@@ -258,21 +258,88 @@ def proposed_workflow(data):
     return body
 
 
-def check_workflow(files):
+def check_routing_packet(files, body, *, tools=False):
     import tempfile
 
-    body = proposed_workflow(
-        files["docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch"]
+    relative = "scripts/tests/oxide-selector-routing.py"
+    plan = json.loads(
+        files["docs/knowledge/operations/claude-agent-sdk-spawn-plan.json"]
+    )["combinedProposal"]
+    source = files[relative]
+    patch = files["docs/knowledge/operations/claude-agent-sdk-combined-routing.patch"]
+    prefix = (
+        f"diff --git a/{relative} b/{relative}\n--- a/{relative}\n+++ b/{relative}\n"
     )
+    if (
+        sha(source) != plan["routingBaseSha256"]
+        or not patch.decode().startswith(prefix)
+        or patch.decode().count("diff --git ") != 1
+    ):
+        raise Refused(errno.EPERM, "exact_routing_base_and_patch_required")
     with tempfile.TemporaryDirectory(
         prefix="sdk234-workflow-", dir=os.environ["TMPDIR"]
     ) as temporary:
-        file = Path(temporary) / "sdk234-combined-fake.yml"
+        root = Path(temporary)
+        script = root / relative
+        script.parent.mkdir(parents=True)
+        script.write_bytes(source)
+        diff = root / "routing.patch"
+        diff.write_bytes(patch)
+        subprocess.run(
+            ["git", "apply", str(diff)],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            timeout=10,
+        )
+        prepared = script.read_bytes()
+        if sha(prepared) != plan["routingPreparedSha256"]:
+            raise Refused(errno.EPERM, "routing_patch_scope_or_bytes")
+        workflows = root / ".github/workflows"
+        workflows.mkdir(parents=True)
+        file = workflows / "sdk234-combined-fake.yml"
         file.write_text(body)
-        subprocess.run(["actionlint", str(file)], check=True, timeout=10)
+        unrelated = workflows / "ordinary.yml"
+        unrelated.write_text(
+            "name: unrelated\n# ordinary existing Cargo route\nrun: cargo check\n"
+        )
+        namespace = {"__name__": "owned_routing_model", "__file__": str(script)}
+        exec(compile(prepared, str(script), "exec"), namespace)
+        namespace["check_workflows"]()
+        file.write_text(body + "# changed bytes\n")
+        try:
+            namespace["check_workflows"]()
+        except namespace["RoutingDefect"]:
+            pass
+        else:
+            raise Refused(errno.EPERM, "changed_workflow_was_admitted")
+        file.write_text(body)
+        unrelated.write_text("name: unrelated\nrun: python3 unsafe.py\n")
+        try:
+            namespace["check_workflows"]()
+        except namespace["RoutingDefect"]:
+            pass
+        else:
+            raise Refused(errno.EPERM, "unrelated_workflow_exception_expanded")
+        if tools:
+            subprocess.run(["actionlint", str(file)], check=True, timeout=10)
+            subprocess.run(
+                ["bash", str(ROOT / "scripts/check-python-format.sh"), str(script)],
+                check=True,
+                timeout=10,
+            )
+    return plan["routingPreparedSha256"]
+
+
+def check_workflow(files):
+    body = proposed_workflow(
+        files["docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch"]
+    )
+    prepared = check_routing_packet(files, body, tools=True)
     return {
         "workflowApplied": False,
         "workflowSha256": sha(body.encode()),
+        "routingPreparedSha256": prepared,
         "originalActivation": False,
     }
 

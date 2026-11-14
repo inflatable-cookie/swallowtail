@@ -241,6 +241,11 @@ attempted independently. Unknown settlement remains failed even after disposal.
 ## Exact inactive job and next gates
 
 The unapplied [combined workflow patch](claude-agent-sdk-combined-workflow.patch)
+and [byte-bound routing patch](claude-agent-sdk-combined-routing.patch) form one
+preparation packet. Applying only the workflow would fail the existing routing
+guard. Source tests apply the routing diff only inside an owned scratch fixture,
+check the prepared helper digest/format and reject changed workflow bytes or a
+widened unrelated-workflow exception. The active helper is unchanged. The job
 contains three fresh Linux jobs (absent, disabled, managed-deny), manual-only,
 contents:read, five minutes each, fail-fast disabled and no retry. It uses an
 **already cached** exact Node22.23.2; there is no setup-node, installation or
@@ -254,7 +259,7 @@ complete result is128KiB and the root
 receipt256KiB, each bounded and sequence/length/SHA checked. These are new
 proposal bounds, never substitutions in the old consumed grants.
 
-The packet's runnable commands are in the patch and the plan JSON. After separate
+The packet's runnable commands are in the patches and the plan JSON. After separate
 application/registration authority, a proposed dispatch would name the exact
 pushed source and current detached spawn record:
 

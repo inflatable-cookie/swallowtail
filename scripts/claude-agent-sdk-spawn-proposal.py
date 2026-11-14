@@ -46,6 +46,8 @@ INPUTS = (
     "docs/knowledge/operations/claude-agent-sdk-spawn-proposal.md",
     "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
     "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch",
+    "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
+    "scripts/tests/oxide-selector-routing.py",
     "effigy.toml",
 )
 SCHEMA = "swallowtail.sdk234.private-spawn.v1"

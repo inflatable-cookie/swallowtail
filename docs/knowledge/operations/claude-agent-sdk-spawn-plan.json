@@ -140,7 +140,10 @@
       "workflow application/registration at exact reviewed source",
       "one bounded three-job combined owned-fake setup/probe/cleanup attempt",
       "actual original-compatible source graph and separately declared source-immutable original execution route after host evidence"
-    ]
+    ],
+    "routingPatch": "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
+    "routingBaseSha256": "400a6d42d962f82949fe5b53e3373f8df4888e315893f5d7c601775e96e88443",
+    "routingPreparedSha256": "4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925"
   },
   "sharedConsumer": {
     "task": "swallowtail#227",

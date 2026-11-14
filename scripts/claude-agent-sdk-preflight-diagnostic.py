@@ -42,8 +42,13 @@ class Refused(Exception):
 
 
 def bounded_read(file, maximum=8192):
-    with file.open("rb") as stream:
-        data = stream.read(maximum + 1)
+    descriptor = os.open(file, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    try:
+        if not stat.S_ISREG(os.fstat(descriptor).st_mode):
+            raise Refused("read_type")
+        data = os.read(descriptor, maximum + 1)
+    finally:
+        os.close(descriptor)
     if len(data) > maximum:
         raise Refused("read_bound")
     return data
@@ -236,13 +241,25 @@ class Diagnostic:
             "controllersAvailable": required <= set(controllers),
             "controllersEnabled": required <= set(enabled),
         }
+        namespaces = {}
+        for name in ("net", "pid"):
+            file = Path("/proc/self/ns", name)
+            if file.exists():
+                entry = file.stat()
+                namespaces[name] = {"device": entry.st_dev, "inode": entry.st_ino}
         return {
             "checks": checks,
+            "cgroupParent": {
+                "device": info.st_dev,
+                "inode": info.st_ino,
+                "ownerUid": info.st_uid,
+                "mode": stat.S_IMODE(info.st_mode),
+            },
+            "requiredControllersPresent": sorted(required & set(controllers)),
+            "requiredControllersEnabled": sorted(required & set(enabled)),
+            "namespaceIdentities": namespaces,
             "readOnlyChecksPassed": all(checks.values()),
             "rootCapabilities": "unobserved; no privileged methods invoked",
-            "namespaceEntriesReadable": all(
-                Path("/proc/self/ns", name).exists() for name in ("net", "pid")
-            ),
         }
 
     def run(self):

@@ -229,6 +229,12 @@ class DiagnosticTests(unittest.TestCase):
         file.symlink_to(target)
         self.refuses_at("source_identity")
 
+    def test_fifo_record_refuses_without_blocking(self):
+        file = self.repo / D.RECORD
+        file.unlink()
+        os.mkfifo(file)
+        self.refuses_at("source_identity")
+
     def test_dirty_worktree_does_not_print_filename(self):
         (self.repo / "SECRET-DO-NOT-PRINT").write_text("owned")
         self.refuses_at("clean_worktree")
@@ -283,6 +289,12 @@ class DiagnosticTests(unittest.TestCase):
         self.assertTrue(rows[-1]["reportProduced"])
         self.assertFalse(rows[-1]["readOnlyChecksPassed"])
         self.assertFalse(rows[5]["facts"]["checks"]["nodeBytesMatch"])
+        self.assertEqual(
+            rows[5]["facts"]["cgroupParent"]["inode"], self.cgroup.stat().st_ino
+        )
+        self.assertEqual(
+            rows[5]["facts"]["requiredControllersEnabled"], ["cpu", "memory", "pids"]
+        )
 
     def test_missing_controller_record_is_a_host_phase_refusal(self):
         (self.cgroup / "cgroup.controllers").unlink()

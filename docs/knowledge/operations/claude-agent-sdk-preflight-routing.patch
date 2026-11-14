@@ -9,7 +9,7 @@ diff --git a/scripts/tests/oxide-selector-routing.py b/scripts/tests/oxide-selec
 +            # Exact separately reviewed read-only diagnostic; no host admission.
 +            if (
 +                hashlib.sha256(path.read_bytes()).hexdigest()
-+                != "cd88347ddc7e9b05bbc645fd1a9bf07c4bfc4e98848944cdc991c4a929923698"
++                != "9e5b668fc2e2d1f8760fb92e161a37fc4092364bca9d9c85029521159757490c"
 +            ):
 +                fail("read-only diagnostic workflow differs from its exact proposal")
 +            continue

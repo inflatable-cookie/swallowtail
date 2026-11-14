@@ -233,7 +233,7 @@
       "scope": "source/fake only; separate unapplied read-only job",
       "proposal": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.json",
       "record": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.sha256",
-      "recordSha256": "ead60c2ebcc6f473a1fa95aa371ff935f0eade175f5a186bbfb8f0b97e4d0ce7",
+      "recordSha256": "5c62323a02e06f5e0b8f9c48c48f7d22b390b31063ad09b0591e8b203a266891",
       "workflowApplied": false,
       "registered": false,
       "activationAuthorized": false,

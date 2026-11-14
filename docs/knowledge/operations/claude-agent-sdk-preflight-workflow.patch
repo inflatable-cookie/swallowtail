@@ -2,7 +2,7 @@ diff --git a/.github/workflows/sdk234-preflight-diagnostic.yml b/.github/workflo
 new file mode 100644
 --- /dev/null
 +++ b/.github/workflows/sdk234-preflight-diagnostic.yml
-@@ -0,0 +1,53 @@
+@@ -0,0 +1,55 @@
 +name: SDK234 read-only preflight diagnostic
 +on:
 +  workflow_dispatch:
@@ -22,9 +22,6 @@ new file mode 100644
 +    env:
 +      DIAGNOSTIC_SOURCE: ${{ inputs.source_sha }}
 +      DIAGNOSTIC_RECORD: ${{ inputs.record_sha }}
-+      TMPDIR: ${{ runner.temp }}
-+      TMP: ${{ runner.temp }}
-+      TEMP: ${{ runner.temp }}
 +    steps:
 +      - name: Exact input envelope
 +        shell: bash
@@ -43,6 +40,11 @@ new file mode 100644
 +        shell: bash
 +        run: |
 +          set -euo pipefail
++          if [[ -z "${RUNNER_TEMP:-}" ]]; then
++            printf '{"phase":"scratch_creation","status":"refused","reason":"runner_temp_unavailable","hostAdmission":false}\n'
++            exit 1
++          fi
++          export TMPDIR="$RUNNER_TEMP" TMP="$RUNNER_TEMP" TEMP="$RUNNER_TEMP"
 +          if [[ ! -x /usr/bin/timeout ]]; then
 +            printf '{"phase":"diagnostic_launcher","status":"refused","reason":"timeout_unavailable","hostAdmission":false}\n'
 +            exit 1

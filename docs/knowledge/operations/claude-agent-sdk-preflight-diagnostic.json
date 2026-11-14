@@ -1,6 +1,6 @@
 {
   "schema": "swallowtail.sdk234.readonly-preflight-proposal.v1",
-  "scope": "Applied and registered single-job read-only diagnostic; activation not authorized",
+  "scope": "Consumed v1 diagnostic; independent v2 source/fake preparation, no new activation",
   "workflowApplied": true,
   "workflowRegistered": true,
   "activationAuthorized": false,
@@ -36,7 +36,11 @@
     "scratch_creation",
     "cached_executable",
     "inventory_production",
-    "host_capabilities"
+    "cache_metadata",
+    "host_identity",
+    "host_capabilities",
+    "namespace_identity",
+    "kernel_methods"
   ],
   "runtimeExecution": false,
   "privilegedBranches": false,
@@ -47,7 +51,7 @@
     "grantConsumed": true,
     "failedShellGate": "unknown; missing cached Node not established"
   },
-  "nextAuthority": "Required exact cached Node executable is unavailable on the observed fresh host. An authorized existing host/environment providing that exact executable and remaining custody/controllers is required before fresh exact diagnostic/combined attempt authority; no retry, install, staging or fallback under consumed grants.",
+  "nextAuthority": "Retained review of independent v2 source/fake packet, then fresh exact-source one-job read-only authority using unchanged registered workflow. No candidate execution or combined retry. Fixed-path metadata will compare qualified existing-host options with fake-only22.23.4 without fallback or claim changes.",
   "preparationDecision": "77371f79-2764-458c-90ac-e2787207421a v2",
   "registrationPrerequisite": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7",
   "registration": {
@@ -202,5 +206,67 @@
     "originalActivation": false,
     "substantiveAdmittedSharedHostMilestone": false,
     "retryAuthorized": false
+  },
+  "phaseContract": {
+    "schema": "swallowtail.sdk234.readonly-preflight.v2",
+    "guards": [
+      "source_identity",
+      "clean_worktree",
+      "scratch_creation"
+    ],
+    "runtimeDependency": {
+      "inventory_production": "cached_executable"
+    },
+    "independentAfterGuards": [
+      "cache_metadata",
+      "host_identity",
+      "host_capabilities",
+      "namespace_identity",
+      "kernel_methods"
+    ],
+    "failureComposition": "retain first and all refused phases; any refusal forces exit1",
+    "reportProduction": "reportProduced means emitted runtime inventory; producedPhaseReports lists all emitted fact records; independentHostReportProduced means emitted host identity",
+    "hostAdmission": false,
+    "runtimeExecution": false
+  },
+  "noInstallHostOptions": {
+    "qualifiedNodeAxis": [
+      "22.23.2",
+      "22.23.3"
+    ],
+    "requiredPin": "22.23.2",
+    "fakeOnlyCandidate": {
+      "path": "/opt/hostedtoolcache/node/22.23.4/x64/bin/node",
+      "pathVersionLabel": "22.23.4",
+      "observedVersion": null,
+      "observedSha256": null,
+      "runtimeCustody": false,
+      "activationAuthorized": false,
+      "originalAdmission": false
+    },
+    "metadataOnlyDefault": "24.22.2",
+    "implicitFallback": false,
+    "currentlyAdmittedHost": null,
+    "imageDocument": {
+      "url": "https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md",
+      "cachedVersions": [
+        "22.23.4",
+        "24.22.2"
+      ],
+      "defaultVersion": "24.22.2",
+      "evidenceKind": "published image metadata, not current host custody"
+    },
+    "requiredBeforeFakeExecution": [
+      "fresh exact-source/path/digest/runtime execution authority",
+      "actual version and explicit startup policy",
+      "complete per-invocation runtime/library/loader/supervisor/source custody through launch",
+      "unchanged bounded owned SDK/native/sidecar rehearsal and observed joins"
+    ],
+    "requiredBeforeOriginals": [
+      "separate22.23.4 Node-axis qualification and reviewed admission changes",
+      "exact SDK/native/platform artifacts and selected route proof",
+      "combined host/canonical/transport/process enforcement and settlement proof",
+      "separate source-immutable original execution authority"
+    ]
   }
 }

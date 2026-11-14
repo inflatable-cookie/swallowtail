@@ -35,8 +35,13 @@ PHASES = (
     "scratch_creation",
     "cached_executable",
     "inventory_production",
+    "cache_metadata",
+    "host_identity",
     "host_capabilities",
+    "namespace_identity",
+    "kernel_methods",
 )
+CACHE_VERSIONS = ("22.23.2", "22.23.3", "22.23.4", "24.22.2")
 
 
 class Refused(Exception):
@@ -57,11 +62,24 @@ def bounded_read(file, maximum=8192):
 
 
 class Diagnostic:
-    def __init__(self, root, source, record, temporary, output, node=NODE, cgroup=None):
+    def __init__(
+        self,
+        root,
+        source,
+        record,
+        temporary,
+        output,
+        node=NODE,
+        cgroup=None,
+        cache=None,
+        public_root=None,
+    ):
         self.root, self.source, self.record = Path(root), source, record
         self.temporary = Path(temporary) if temporary else None
         self.output, self.node = output, Path(node)
         self.cgroup = Path(cgroup or "/sys/fs/cgroup")
+        self.cache = Path(cache or "/opt/hostedtoolcache/node")
+        self.public_root = Path(public_root or "/")
         self.deadline, self.output_bytes = time.monotonic() + 10, 0
         self.inventory = None
 
@@ -227,8 +245,48 @@ class Diagnostic:
             "kernelRelease": platform.release(),
             "runtimeLibrariesAttested": False,
             "candidateExecuted": False,
+            "readOnlyChecksPassed": False,
         }
+        self.inventory["readOnlyChecksPassed"] = (
+            self.inventory["cachedNode"]["sha256"] == NODE_SHA
+        )
         return self.inventory
+
+    def cache_metadata(self):
+        entries = []
+        for version in CACHE_VERSIONS:
+            self.remaining()
+            candidate = self.cache / version / "x64/bin/node"
+            entry = {
+                "pathVersionLabel": version,
+                "executed": False,
+                "versionVerified": False,
+                "runtimeCustody": False,
+            }
+            try:
+                info = candidate.lstat()
+                entry["regularFile"] = stat.S_ISREG(info.st_mode)
+                entry["executableAccess"] = os.access(candidate, os.X_OK)
+                if entry["regularFile"]:
+                    entry["file"] = self.file_identity(candidate)
+                else:
+                    entry["observation"] = "nonregular; no target read"
+            except FileNotFoundError:
+                entry["observation"] = "path_not_found"
+            except (OSError, Refused) as error:
+                if isinstance(error, Refused) and str(error) == "deadline":
+                    raise
+                entry["observation"] = "unavailable"
+            entries.append(entry)
+        return {"fixedCachePaths": entries, "candidateSelection": "none"}
+
+    def host_identity(self):
+        return {
+            "system": platform.system(),
+            "machine": platform.machine(),
+            "kernelRelease": platform.release(),
+            "custodyAttested": False,
+        }
 
     def host_capabilities(self):
         info = self.cgroup.lstat()
@@ -236,19 +294,10 @@ class Diagnostic:
         enabled = bounded_read(self.cgroup / "cgroup.subtree_control").decode().split()
         required = {"pids", "memory", "cpu"}
         checks = {
-            "linuxX64": self.inventory["system"] == "Linux"
-            and self.inventory["machine"] == "x86_64",
-            "nodeBytesMatch": self.inventory["cachedNode"]["sha256"] == NODE_SHA,
             "rootOwnedParent": info.st_uid == 0 and not info.st_mode & 0o022,
             "controllersAvailable": required <= set(controllers),
             "controllersEnabled": required <= set(enabled),
         }
-        namespaces = {}
-        for name in ("net", "pid"):
-            file = Path("/proc/self/ns", name)
-            if file.exists():
-                entry = file.stat()
-                namespaces[name] = {"device": entry.st_dev, "inode": entry.st_ino}
         return {
             "checks": checks,
             "cgroupParent": {
@@ -259,55 +308,115 @@ class Diagnostic:
             },
             "requiredControllersPresent": sorted(required & set(controllers)),
             "requiredControllersEnabled": sorted(required & set(enabled)),
-            "namespaceIdentities": namespaces,
+            "exclusiveDelegationAttested": False,
             "readOnlyChecksPassed": all(checks.values()),
             "rootCapabilities": "unobserved; no privileged methods invoked",
         }
 
+    def namespace_identity(self):
+        namespaces = {}
+        for name in ("net", "pid", "user", "cgroup"):
+            self.remaining()
+            entry = (self.public_root / "proc/self/ns" / name).stat()
+            namespaces[name] = {"device": entry.st_dev, "inode": entry.st_ino}
+        return {"namespaceIdentities": namespaces, "creationTested": False}
+
+    def kernel_methods(self):
+        observations = {}
+        for name, relative in (
+            ("ptraceScope", "proc/sys/kernel/yama/ptrace_scope"),
+            ("maxUserNamespaces", "proc/sys/user/max_user_namespaces"),
+        ):
+            self.remaining()
+            try:
+                raw = bounded_read(self.public_root / relative, 64).decode().strip()
+                observations[name] = (
+                    int(raw) if re.fullmatch(r"[0-9]{1,12}", raw) else "unrecognized"
+                )
+            except OSError:
+                observations[name] = "unavailable"
+        try:
+            raw = (
+                bounded_read(
+                    self.public_root / "proc/sys/kernel/seccomp/actions_avail", 256
+                )
+                .decode()
+                .split()
+            )
+            allowed = {
+                "kill_process",
+                "kill_thread",
+                "trap",
+                "errno",
+                "user_notif",
+                "trace",
+                "log",
+                "allow",
+            }
+            observations["seccompActions"] = sorted(allowed & set(raw))
+        except OSError:
+            observations["seccompActions"] = "unavailable"
+        return {
+            "publicKernelMetadata": observations,
+            "pythonPidfdOpenSymbol": hasattr(os, "pidfd_open"),
+            "landlockAbi": "unobserved",
+            "ptraceCommittedImageGate": "unobserved",
+            "pidfdOperation": "unobserved",
+            "kernelMethodsTested": False,
+        }
+
     def run(self):
-        failed, produced = None, False
+        failed, reports = [], []
+        guards_failed = False
         try:
             for phase in PHASES:
-                if failed:
-                    self.emit({"phase": phase, "status": "skipped"})
+                if guards_failed or (
+                    phase == "inventory_production" and "cached_executable" in failed
+                ):
+                    self.emit(
+                        {
+                            "phase": phase,
+                            "status": "skipped",
+                            "reason": "dependency_refused",
+                        }
+                    )
                     continue
                 try:
                     self.remaining()
                     facts = getattr(self, phase)()
-                    if (
-                        phase == "host_capabilities"
-                        and not facts["readOnlyChecksPassed"]
-                    ):
-                        failed = phase
+                    refused = facts.get("readOnlyChecksPassed") is False
                     self.emit(
                         {
                             "phase": phase,
-                            "status": "refused" if failed else "observed",
+                            "status": "refused" if refused else "observed",
                             "facts": facts,
                         }
                     )
-                    if phase == "inventory_production":
-                        produced = True
+                    reports.append(phase)
+                    if refused:
+                        failed.append(phase)
                 except (
                     OSError,
                     ValueError,
                     Refused,
                     subprocess.TimeoutExpired,
                 ) as error:
-                    failed = phase
+                    failed.append(phase)
                     reason = (
                         str(error) if isinstance(error, Refused) else "operation_failed"
                     )
                     self.emit({"phase": phase, "status": "refused", "reason": reason})
+                if phase in PHASES[:3] and phase in failed:
+                    guards_failed = True
             self.emit(
                 {
-                    "schema": "swallowtail.sdk234.readonly-preflight.v1",
-                    "failedPhase": failed,
-                    "reportProduced": produced,
-                    "readOnlyChecksPassed": failed is None,
-                    "hostAdmission": False,
-                    "kernelEnforced": False,
-                    "originalActivation": False,
+                    "schema": "swallowtail.sdk234.readonly-preflight.v2",
+                    "failedPhase": failed[0] if failed else None,
+                    "failedPhases": failed,
+                    "reportProduced": "inventory_production" in reports,
+                    "producedPhaseReports": reports,
+                    "independentHostReportProduced": "host_identity" in reports,
+                    "readOnlyChecksPassed": not failed,
                 }
             )
         except (OSError, Refused):

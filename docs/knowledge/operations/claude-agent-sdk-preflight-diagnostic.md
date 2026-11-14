@@ -10,8 +10,8 @@ is recorded below.
 Emit bounded, sanitized JSON lines for source identity, clean worktree,
 private scratch creation, required cached executable, inventory production
 and read-only host checks. Flush each completed observation before advancing.
-On refusal, preserve those observations, label later phases skipped and exit
-nonzero. Never print environment values, dirty filenames, command output or
+On refusal, preserve those observations and exit nonzero. The v2 dependency
+rules below determine which later phases are skipped. Never print environment values, dirty filenames, command output or
 arbitrary exception text. No blanket tracing. Broken output is failure.
 
 The inventory reads exact executable bytes and existing controller/namespace
@@ -120,3 +120,77 @@ requires fresh exact source/record/attempt authority; do not replay this grant.
 All planned limits are unchanged, and no timeout or privileged branch ran.
 The consumed combined grant, original/vendor/Darwin/ACP gates, Q-009 and the
 qualification merge hold remain open or spent exactly as previously recorded.
+
+## Independent read-only phases and no-install comparison
+
+Private v2 contract, specified before implementation: source identity, clean
+worktree and owned scratch are guards. A guard refusal skips all host reads.
+After those guards, the required 22.23.2 predicate controls only its dependent
+runtime inventory. Its refusal remains the first failure and forces exit 1.
+Independent fixed-path cache metadata, host identity, controller, namespace and
+kernel-method observations continue, including after another independent phase
+refuses. The summary retains every failed phase, emitted report names and a
+separate runtime-inventory production flag. Report production never supplies
+host admission; all records keep admission, enforcement and original activation
+false. Deadline and output failure still refuse rather than continuing work
+beyond their bounds. Error strings and unrelated environment/user files are
+never emitted. The registered workflow and CLI remain unchanged.
+
+Only four fixed tool-cache paths are inspected: 22.23.2 (required pin), 22.23.3
+(already-qualified axis, availability unobserved), 22.23.4 (owned-fake candidate)
+and 24.22.2 (published image default, metadata only). Path labels are not observed
+versions. Available executable files may be hashed, never run; missing paths,
+symlinks and read failures are labelled without fallback. No directory scan,
+runtime installation, staging or controller mutation is part of this contract.
+
+
+The job's [published image document](https://github.com/actions/runner-images/blob/ubuntu26/20261111.196/images/ubuntu/Ubuntu2604-Readme.md)
+lists cached22.23.4 and24.22.2, default24.22.2. This is an exact image-metadata
+lead, not observed cache bytes, runtime version, library custody or a current
+host. It cannot explain the exact old combined shell failure. The consumed
+0967 diagnostic and its v1 output remain historical evidence; v2 has not run
+on a hosted runner.
+
+| No-install option | Current evidence | Next gate |
+| --- | --- | --- |
+| Existing22.23.2 host | required executable predicate refused on43618052014 | another existing exact host must establish executable bytes and complete custody; no host is currently admitted |
+| Existing22.23.3 host | within qualified Node axis; availability unobserved | fixed-path read-only availability/identity, then exact runtime/startup/library and host admission proof |
+| Cached22.23.4 | published image lists it; no actual bytes/version/custody observed | independently collect fixed-path metadata; separately authorize exact owned-fake runtime custody and rehearsal |
+| Image default24.22.2 | published image default only | metadata only; no automatic selection or SDK/ACP authority transfer |
+
+The concrete next packet uses registered workflow418437987, unchanged bytes
+9e5b668f, one2min job/20s+2s outer/10s inner/32KiB. Supply the newly reviewed
+source and detached diagnostic record to the existing source_sha/record_sha
+inputs. This packet reads all four fixed paths and independent public host
+facts even when the required22.23.2 predicate refuses. All grants are spent;
+its next dispatch requires fresh exact-source authority. No combined retry or
+candidate runtime execution is hidden in it.
+
+If22.23.4 is present, the following is the finite **future owned-fake** option,
+not an enabled command: freeze its exact absolute path, observed bytes/digest
+and file identity, independently establish actual versionv22.23.4 under the
+existing explicit STARTUP policy, and capture all loaded libraries/loader,
+Python supervisor and source inputs. Host-owned custody must remain valid
+through launch and refuse substitutions/revocation. Hashes from this diagnostic
+alone cannot attest that custody or the runtime's actual version. The existing
+private spawn rehearsal accepts explicit --node and --node-sha256 together
+with its detached spawn record, --rehearse, --state and --mode; it can exercise
+owned SDK/native peers through the prepared driver and unchanged sidecar after
+separate exact execution authority. Bound each selected absent/disabled/
+managed-deny × sidecar/probe case by its existing30s maximum, finite output/
+storage and observed child joins. Do not execute the runtime merely to complete
+this source comparison. Darwin26 first-party rehearsals supply context only.
+
+Before this candidate could carry **original SDK/native evidence**, it needs a
+separate22.23.4 Node-axis qualification: exact official artifact/platform
+identity and provenance, selected startup/loader/library compatibility and
+regressions against the retained22.23.2/.3 baseline, plus route-specific proof
+and reviewed admission changes preserving older qualified points. The frozen
+SDK/native package/platform identities, combined canonical administrator
+fixture discovery, native-usable confined transport, finite actor/thread/
+resource enforcement and full software/adoptee/pidfd/cgroup settlement still
+need actual exact-host proof and fresh authority. The current combined packet
+continues to require22.23.2; this proposal does not weaken or replace its pin.
+Original activation and the public Node22.23.2..=22.23.3 claim remain unchanged.
+Darwin shared-cache custody and actual ACP Rust sibling composition remain
+separate gaps. A read-only result alone does not resume ACP227.

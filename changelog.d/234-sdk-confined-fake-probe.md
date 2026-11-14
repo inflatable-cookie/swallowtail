@@ -99,3 +99,8 @@ inventory/capability phases skipped, exit1 and hostAdmission:false. Preserve
 complete1286-byte helper output and missing-versus-nonexecutable limit. Require
 an authorized host with the exact cached runtime plus remaining admission and
 fresh attempt authority; no retry/install, combined proof or ACP release.
+
+- Prepare independent read-only cache/controller/namespace/kernel reports after
+  runtime refusal; retain nonzero composed failures and unchanged workflow bounds.
+  Compare existing qualified-host options with cached22.23.4 as a fake-only
+  no-install candidate. No candidate execution, fallback or Node claim change.

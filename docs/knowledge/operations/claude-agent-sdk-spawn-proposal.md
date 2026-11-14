@@ -415,3 +415,9 @@ host/environment with the exact required cached Node, followed by remaining
 custody/controller/kernel admission and fresh exact attempt authority. No
 installation, staging or runtime fallback follows. Do not resume ACP227 on
 this diagnostic alone; Q-009 and the qualification merge hold remain open.
+
+The independent v2 diagnostic source proposal now compares fixed existing cache
+paths and public host prerequisites after a runtime refusal. Its separately
+bound owning record describes22.23.4 only as an owned-fake no-install candidate.
+No hosted v2 observation or candidate execution exists; the combined22.23.2 pin,
+original admission and qualification hold remain unchanged.

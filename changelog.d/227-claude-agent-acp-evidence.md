@@ -6,5 +6,8 @@
   Veto unsolicited idle work while preserving inherited permission settings.
 - Declare the distinct guarded permission behavior and prove the prepared
   driver and confined component harness with first-party fakes. Support installed
-  compatible Node through explicit host user/group and dependency custody. Original ACP/native behavior and execution authority remain
-  separate qualification gates.
+  compatible Node through explicit host user/group and dependency custody.
+- Record the separately authorized eight-hop Darwin original idle-class
+  checks: each control armed6 timers/fired5 compactions and each guard0/0,
+  with unchanged settings and joined cleanup. Full-route/native permission
+  behavior and execution authority remain separate qualification gates.

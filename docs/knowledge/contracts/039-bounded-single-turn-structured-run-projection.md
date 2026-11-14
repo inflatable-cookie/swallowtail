@@ -259,6 +259,23 @@ Node with exact invocation identity. First-party fake proof does not establish
 hostile same-user resistance, original native behavior or qualification of the
 captured graph. The qualified ceiling remains0.100.0.
 
+Tom's 2026-11-14 decision `2f4d33df-aaa6-4497-80c1-8c56fc6c2ccc` v2
+authorized one offline idle-class control/guard pair per frozen hop at source
+`c0d591438590f77f502650a47b44e96295cf23f3`. All eight single attempts,
+0.101.0 through0.106.0, passed on the admitted Darwin arm64 Node26.11.0
+invocation: each original-class control armed6 timers and fired5 compactions;
+each guarded run armed and fired0. Owners returned after child waits and
+watchdog joins, settings were unchanged and owned fixture cleanup was observed.
+The exact inputs, confinement and observations are retained in
+[Research483](../../research/483-claude-agent-acp-0-106-0-evidence.md#original-idle-class-observations).
+
+That grant is consumed and authorizes no retry. Only the captured idle class
+ran with first-party host/settings/clock/compact promises; new/load/resume were
+modeled contexts. This does not prove the actual ACP entrypoint/session paths,
+native permission behavior or full-route lifecycle. Those need an admitted
+route-specific confined driver and separate exact execution authority. The
+guarded permission revision and newer points remain unqualified.
+
 The captured-graph bootstrap is host input, with its own size and deadline
 limits; it does not consume the consumer's provider-stdin allowance. The host
 must finish sending it before returning the process handle. Checked admission

@@ -572,7 +572,7 @@ preserving settings. Controlled clocks exceed the finite timer maximum;
 new/load/resume are explicitly modeled contexts, not original ACP sessions.
 Owned compact promises, child exit and watchdog join are observed.
 
-Only repository-owned fake component execution is authorized in this PR.
+At this preparation stage only repository-owned fake component execution was authorized.
 Original mode requires exact source, plan, owner executable, Node and class
 identities approved separately. It executes only the idle class, no ACP
 entrypoint, SDK/native/provider. Linux component execution currently refuses
@@ -814,3 +814,72 @@ permits `/bin/sleep` for the host's group owner, so the idle class could exec it
 this is not a hostile-JavaScript sandbox. `/bin/echo` remains the denied-exec
 counterexample. Full native/permission, platform and exact HTTP MCP gates and
 the0.100.0 ceiling remain unchanged.
+
+### Original idle-class observations
+
+Tom's decision `2f4d33df-aaa6-4497-80c1-8c56fc6c2ccc` v2,
+answered2026-11-14, authorized the eight serial offline component checks at
+immutable source `c0d591438590f77f502650a47b44e96295cf23f3`.
+The grant superseded the earlier return-to-planner disposition only for these
+exact idle-class inputs. Before every pair, the worker re-read the frozen
+source/plan/command/owner/class bindings, inspected the actual97-file Node
+and non-system library closure, recomputed the Rust custody identity including
+file/ancestor identities and trusted principals, and checked prior attempts.
+Retained Nucleus records showed the earlier restart sent no continuation and
+the grant was unused. Each attempt was recorded before launch; none was retried.
+
+The [machine-readable observations](483-claude-agent-acp-idle-component-observations.json)
+bind the source, committed plan, detached proposal, command set, built owner,
+guard, installed Node26.11.0, host custody, confinement and original class
+digests. The detached proposal SHA256 is
+`50076fe81644ce772a8aecd859f258f86faa63e4ce58fbac7adcfab88d349086`;
+the eight-command SHA256 is
+`40b5d96b6e766b68653191054e1b2626282f34be6d70ee4573e3e402e0281471`.
+The same approved owner and runtime were present; neither was rebuilt,
+substituted, installed or staged. Commands used this run's fresh scratch root;
+the approved template permits only that owned-root substitution.
+
+| Original ACP idle class | Attempt | Control arms/fires | Guard arms/fires | Owners / cleanup |
+| --- | --- | --- | --- | --- |
+|0.101.0|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.101.1|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.102.0|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.103.0|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.104.0|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.104.1|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.105.0|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+|0.106.0|1|6 /5|0 /0|Both exit0; joined; fixture removed|
+
+Each owner verified kernel-denied network/file access and readable `/bin/echo`
+execution before Node launch. Each admitted graph contained exactly the two
+captured JavaScript files, no native binding and no platform program. Its
+guarded outcome preserved inherited settings and locked prototype/own-method
+replacement. Controlled clocks exceeded the finite timer maximum; direct fire
+was also vetoed. Original controls differ from the earlier first-party fake's
+12/15 outcome: the observed original result is6/5 on every hop.
+
+The wrapper observed both owner exits; the Rust owners returned only after
+Node `wait` and watchdog `join`. The first-party compact promises joined and
+all eight owned fixtures were absent after successful teardown. Bounds stayed
+40s per owner,10s child watchdog,30sCPU,256fds,1MiB per output stream,
+64MiB scratch,4 concurrent owned processes and6 total launches per pair.
+Raw per-hop output, actual generated policy bytes/hashes, preflight identities
+and start/settlement records were delivered as retained per-head proof.
+
+All eight grants are consumed. This proves the captured original idle class
+under first-party host/settings/clock/compact promises on Darwin arm64, with
+new/load/resume modeled rather than actual ACP sessions. No ACP entrypoint,
+Agent SDK, original native binary, provider request, credentials/spend, Linux,
+canonical-fixture retry, host mutation or release was executed. Rust spawn
+evidence remains source-only; trusted-host custody and the deliberate
+`/bin/sleep` allowance remain necessary, with no hostile-JavaScript or
+same-user-resistant verified-exec claim.
+
+The next gate is a route-specific confined prepared-driver proof of actual
+ACP session paths and inherited native permission denial without a callback,
+continued turn, cancellation and joined native cleanup. It needs admitted
+transport/administrator-fixture inputs and separate exact ACP/SDK/native
+execution authority; task234's fixture or custody authority does not transfer.
+Contract029/061 still forbid a qualified projection of the guarded revision
+from this component evidence. The ceiling stays0.100.0, earlier stock and
+exact HTTP MCP points remain intact, and0.107.0 remains UnverifiedNewer.

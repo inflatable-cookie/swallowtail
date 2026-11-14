@@ -215,7 +215,7 @@ production host. The guarded factory captures each exact official graph, serves
 verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
 and pins native and required system `ps` custody. It requires independently
 approved host policy; ordinary version discovery supplies no grant. Original
-class/native behavior proof remains unproved, so the ceiling stays0.100.0.
+Full-route/native behavior proof remains unproved, so the ceiling stays0.100.0.
 Checked startup rechecks revocation before graph delivery and at the final
 admission byte; refusal stops and joins the child. The component proposal binds
 host-approved principals and the full Rust runtime custody identity, alongside
@@ -229,9 +229,14 @@ Homebrew group write alone is not a refusal when that group is explicitly
 trusted. Changes or revocation invalidate admission. Node22.23.2 fake proof is
 retained reference evidence, not an installation requirement. Installed runtime
 proof applies only to this guarded ACP invocation; it does not extend the
-standalone SDK/Node claims. Original idle-class execution requires separate
-exact authority; whole-route permission, lifecycle and native proof remain
-independent. See Research483.
+standalone SDK/Node claims. The separately authorized eight-hop Darwin
+idle-class component attempt passed: each control armed6 timers/fired5
+compactions, while each guard armed/fired0, with settings intact and joined
+cleanup. This models session contexts; it does not execute ACP session paths.
+Its one-attempt grant is consumed. Whole-route permission, lifecycle and native
+proof remain independent; see
+[Contract039](../knowledge/contracts/039-bounded-single-turn-structured-run-projection.md)
+and Research483.
 
 ### ACP Permission Exchange
 

@@ -3,7 +3,7 @@
   "status": "source-fake-rehearsal; original composition not admitted",
   "sourceBinding": "Final commit is bound by a detached record; source files below are independently digest-pinned.",
   "sources": {
-    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "c81ae24b7e25f68266b159e93445973d9e8295d746170d75e6aca2ae64481bb5",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "016027737ff6fa5832a32e9145b5808e637ebbb82529d5b8ff3153dd7b21ae94",
     "crates/swallowtail-adapter-claude-agent/tests/acp_guard_prepared_child.rs": "533c64c9e23469e8b4cac0d579764c875ed23ef63bf6d99cccf09ec1a039661e",
     "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs": "01dcbdf3049eb6d9fddac68a63e9a03d616dd430720752574a76bc45396933a8",
     "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs": "0cecdea9f73d822f6eef519f0607de2392feeea34d4ec078e66b39056a2067af",

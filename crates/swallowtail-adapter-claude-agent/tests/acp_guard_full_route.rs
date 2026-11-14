@@ -306,6 +306,37 @@ fn turn(
     }
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
 }
+fn assert_native_waits(rows: &[Value], expected: usize) {
+    let starts: Vec<_> = rows
+        .iter()
+        .filter(|row| row["phase"] == "native-start")
+        .collect();
+    assert_eq!(starts.len(), expected);
+    for native in starts {
+        let pid = native["pid"]
+            .as_u64()
+            .filter(|pid| *pid > 0)
+            .expect("actual native PID");
+        assert_eq!(
+            rows.iter()
+                .filter(|row| row["phase"] == "sdk-native-start"
+                    && row["child"] == pid
+                    && row["pid"] == native["parent"])
+                .count(),
+            1
+        );
+        assert_eq!(
+            rows.iter()
+                .filter(|row| row["phase"] == "sdk-native-wait"
+                    && row["child"] == pid
+                    && row["code"] == 0
+                    && row["signal"].is_null())
+                .count(),
+            1
+        );
+    }
+}
+
 fn close_after_turn(
     mut session: Box<dyn InteractiveSessionHandle>,
     services: HostServices,
@@ -391,6 +422,7 @@ fn actual_prepared_new_load_resume_use_sdk_native_endpoint_and_settings_fakes() 
         );
         wait_phase(&root, "sdk-joined");
         let rows = trace(&root);
+        assert_native_waits(&rows, 3);
         for method in ["session/new", "session/load", "session/resume"] {
             assert!(
                 rows.iter()
@@ -441,6 +473,7 @@ fn actual_prepared_cancel_stops_owned_native_and_joins_session_cleanup() {
     close_after_turn(session, services, &resources, &root, false, true);
     wait_phase(&root, "sdk-joined");
     let rows = trace(&root);
+    assert_native_waits(&rows, 1);
     assert!(rows.iter().any(|row| row["phase"] == "native-cancel"));
     assert!(
         rows.iter()

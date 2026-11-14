@@ -11,3 +11,7 @@
   checks: each control armed6 timers/fired5 compactions and each guard0/0,
   with unchanged settings and joined cleanup. Full-route/native permission
   behavior and execution authority remain separate qualification gates.
+- Exercise actual guarded prepared new/load/resume/prompt, permission ordering,
+  denial/continued activity and cancellation/cleanup through owned ACP, SDK,
+  child, endpoint and settings fakes. Keep shared native supervision and
+  administrator-fixture admission separate from this software proof.

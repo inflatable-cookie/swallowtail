@@ -173,6 +173,14 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
 "validate:acp-guard-installed-child" = "bash scripts/run-claude-acp-installed-child.sh"
+"validate:acp-guard-full-route" = "bash scripts/run-claude-acp-installed-child.sh --full-route"
+"lint:acp-guard-full-route" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --test acp_guard_capture -- -D warnings"
+"check:acp-guard-full-route" = [
+  "bash -n scripts/run-claude-acp-installed-child.sh",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs",
+]
 "validate:acp-guard-captured-child" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture"
 "lint:acp-guard" = "bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- -D warnings"
 "check:acp-guard-msrv" = "RUSTUP_TOOLCHAIN=1.95.0 bash scripts/oxide-rust.sh check --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent"

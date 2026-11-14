@@ -1,0 +1,104 @@
+{
+  "schema": "swallowtail.acp227.private-full-route-proposal.v1",
+  "status": "source-fake-rehearsal; original composition not admitted",
+  "sourceBinding": "Final commit is bound by a detached record; source files below are independently digest-pinned.",
+  "sources": {
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "c81ae24b7e25f68266b159e93445973d9e8295d746170d75e6aca2ae64481bb5",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_prepared_child.rs": "533c64c9e23469e8b4cac0d579764c875ed23ef63bf6d99cccf09ec1a039661e",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs": "01dcbdf3049eb6d9fddac68a63e9a03d616dd430720752574a76bc45396933a8",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs": "0cecdea9f73d822f6eef519f0607de2392feeea34d4ec078e66b39056a2067af",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs": "78782456cb6fb25620632ace42e87089c3611f8ff637bd64db3844030830ccd4",
+    "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
+    "crates/swallowtail-host-local/src/captured_manifest.rs": "b296e1e52cc0e29898c68d531d368bafcad47625e580633e1aa47c42c265b904",
+    "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf"
+  },
+  "runnableFakeCommands": [
+    [
+      "effigy",
+      "check:acp-guard-full-route"
+    ],
+    [
+      "effigy",
+      "validate:acp-guard-full-route"
+    ],
+    [
+      "effigy",
+      "lint:acp-guard-full-route"
+    ]
+  ],
+  "originalCommand": null,
+  "sharedSupervisor": {
+    "owner": "swallowtail#234",
+    "schema": "swallowtail.sdk234.private-spawn.v1",
+    "sourceHead": null,
+    "manifestSha256": null,
+    "disposition": "Await exact committed/reviewed source and manifest. Do not bind an uncommitted prototype or transfer authority.",
+    "requiredEvents": [
+      "driver_started",
+      "spawn_requested",
+      "native_started",
+      "native_released",
+      "native_entry",
+      "native_wait",
+      "driver_wait",
+      "stop_requested",
+      "stop_acknowledged",
+      "adoptee_wait",
+      "pidfd_reaped",
+      "cgroup_empty",
+      "fixture_cleanup"
+    ]
+  },
+  "routeInputs": {
+    "hops": [
+      "0.101.0",
+      "0.101.1",
+      "0.102.0",
+      "0.103.0",
+      "0.104.0",
+      "0.104.1",
+      "0.105.0",
+      "0.106.0"
+    ],
+    "guardGraphsDirectory": "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-graphs",
+    "behaviorRevision": "claude-agent.acp.guarded-permission-inheritance-v8; declared, unqualified",
+    "runtimeRule": "Installed compatible Node>=22 with required hooks; exact executable/loader/principal custody per invocation. SDK23422.23.2 identity does not transfer.",
+    "rehearsalRuntime": "Darwin arm64 installed26.11.0;96 non-system libraries",
+    "settingsStates": [
+      "managed-absent/user-disabled",
+      "managed-disabled/user-disabled",
+      "managed-deny/user-disabled",
+      "managed-absent/user-deny"
+    ],
+    "paths": [
+      "actual prepared new/load/resume",
+      "prompt",
+      "callback before tool effect",
+      "denial without callback and continued turn/activity",
+      "cancel pending prompt",
+      "close stdin/session and observe native ChildProcess wait/resource cleanup"
+    ]
+  },
+  "limitsProposal": {
+    "attempts": 1,
+    "wallSecondsPerCase": 120,
+    "sidecarNativeOutputBytes": 1048576,
+    "protocolInputBytes": 32768,
+    "nativeLineBytes": 16384,
+    "endpointReadWriteSeconds": 2,
+    "taskBudget": "Proposed shared cgroup32 tasks includes threads, not an exact child count; require admitted kernel setup before untrusted code",
+    "scratchBytes": 67108864,
+    "retryPolicy": "No automatic original retry or replay of uncertain delivery; this record authorizes no attempt"
+  },
+  "requiredBeforeOriginal": [
+    "Exact shared supervisor source/manifest/disposition and original-compatible host-owned native entry gate",
+    "Complete reachable spawn/exec/worker/dynamic-code/addon edge closure, including bypass by permitted executables; trusted host custody does not trust payload or provide this proof",
+    "Exact prepared-driver/supervisor binaries, per-hop ACP/SDK/native/runtime/guard/startup identities in final detached record",
+    "Admitted owned transport with actual original-compatible I/O; software loopback rehearsal is not observed kernel confinement",
+    "Combined canonical absent/disabled/managed-deny fixture setup/checked cleanup with exact activation authority; sibling grants do not transfer",
+    "Independent parent/adoptee waits, pidfd/cgroup settlement and bounded cleanup on failures",
+    "Explicit selected platform admission; Darwin shared-cache and Linux changed kernel/cgroup boundary remain gaps",
+    "Separate exact ACP entrypoint/SDK/native execution authority; spent idle-class grant provides none"
+  ],
+  "qualifiedCeiling": "0.100.0"
+}

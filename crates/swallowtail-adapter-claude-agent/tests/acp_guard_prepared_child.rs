@@ -1,3 +1,6 @@
+#[path = "acp_guard_full_route.rs"]
+mod full_route;
+
 use super::{LocalCapturedGraph, capture, capture_native_graph, fixture};
 use crate::support::{FixtureHost, Scenario};
 use futures_executor::block_on;
@@ -81,15 +84,8 @@ fn fake_child_with_input_limit(
     fake_child_with_environment(root, graph, stdin_bytes, vec![])
 }
 
-fn fake_child_with_environment(
-    root: &std::path::Path,
-    graph: LocalCapturedGraph,
-    stdin_bytes: usize,
-    environment_values: Vec<(std::ffi::OsString, std::ffi::OsString)>,
-) -> CheckedChild {
-    let (node, runtime) = if let Some(record) =
-        std::env::var_os("SWALLOWTAIL_ACP_INSTALLED_RUNTIME_RECORD")
-    {
+fn runtime_for_fixture(root: &std::path::Path) -> (PathBuf, LocalTrustedRuntime) {
+    if let Some(record) = std::env::var_os("SWALLOWTAIL_ACP_INSTALLED_RUNTIME_RECORD") {
         let value: serde_json::Value =
             serde_json::from_slice(&std::fs::read(record).expect("host runtime record"))
                 .expect("runtime JSON");
@@ -193,7 +189,16 @@ fn fake_child_with_environment(
         )
         .expect("trusted fake-host runtime");
         (node, runtime)
-    };
+    }
+}
+
+fn fake_child_with_environment(
+    root: &std::path::Path,
+    graph: LocalCapturedGraph,
+    stdin_bytes: usize,
+    environment_values: Vec<(std::ffi::OsString, std::ffi::OsString)>,
+) -> CheckedChild {
+    let (node, runtime) = runtime_for_fixture(root);
     let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
         &graph,
         CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,

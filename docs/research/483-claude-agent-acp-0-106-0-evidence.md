@@ -883,3 +883,36 @@ execution authority; task234's fixture or custody authority does not transfer.
 Contract029/061 still forbid a qualified projection of the guarded revision
 from this component evidence. The ceiling stays0.100.0, earlier stock and
 exact HTTP MCP points remain intact, and0.107.0 remains UnverifiedNewer.
+
+### Retained component disposition and full-route source/fake preparation
+
+The retained reviewer accepted the eight original idle-class pairs at
+`530bd06df` in question
+`a777c09a22c3eed3af7d90ef1e981d6fb78105d2e090dc7b2118d18286f912fc`,
+as bounded component evidence only. All wider qualification findings remain.
+The grant is consumed, with no retry or authority transfer.
+
+Independent ACP source/fake preparation now uses actual prepared-driver
+new/load/resume/prompt operations through checked captured Node loading. Its
+owned SDK hook starts a real child peer; the peer reads owned user/managed
+settings, asks before a permitted tool read, or denies without invoking the
+callback, then obtains continued output from an owned loopback HTTP endpoint.
+The fake persists the selected model across real load/resume requests. Ordered
+adapter events distinguish activity, callback and continued output. A pending
+prompt is cancelled through the wire; the SDK observes child exit0, then the
+session releases its resources. Session cleanup runs even when a test assertion
+fails. These are first-party software integration observations, not execution
+of upstream ACP, SDK or native code, canonical administrator discovery, kernel
+confinement or independent whole-subtree settlement.
+
+Task234 owns the shared private supervision/native-entry and combined canonical
+fixture proposal. The agreed manifest/event seam is private; its exact reviewed
+source/digest is required before binding it into ACP execution. The ACP route
+uses its upstream entry and SDK child-process facade, not Swallowtail's standalone
+SDK sidecar, so the shared boundary must cover that spawn path. Software
+ChildProcess waits and cooperative fake entry release cannot establish an
+opaque original native entry gate or pidfd/cgroup/adoptee settlement. The
+[full-route preparation procedure](../knowledge/operations/claude-agent-acp-full-route-proof.md)
+names the runnable fake checks and the exact remaining composition prerequisites.
+No new kernel/workflow/admin or original entrypoint/native/provider activation
+follows from these tests.

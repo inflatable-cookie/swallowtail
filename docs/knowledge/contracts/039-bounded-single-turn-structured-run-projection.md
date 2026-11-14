@@ -275,6 +275,11 @@ modeled contexts. This does not prove the actual ACP entrypoint/session paths,
 native permission behavior or full-route lifecycle. Those need an admitted
 route-specific confined driver and separate exact execution authority. The
 guarded permission revision and newer points remain unqualified.
+The retained reviewer accepted this bounded component evidence at530bd06df;
+that disposition does not close any full-route/native finding. Independent
+source/fake preparation uses actual prepared ACP operations; the private
+[composition procedure](../operations/claude-agent-acp-full-route-proof.md)
+keeps shared supervision and original execution prerequisites separate.
 
 The captured-graph bootstrap is host input, with its own size and deadline
 limits; it does not consume the consumer's provider-stdin allowance. The host

@@ -74,3 +74,10 @@ privileged probes skipped, cleanup took only the no-setup branch. Preserve raw
 refusal and exact limits; the untraced shell output does not identify its failed
 check or prove missing cached Node. Host admission/diagnostic and fresh exact
 authority remain required; no kernel, canonical, original or ACP proof follows.
+
+Prepare a private read-only preflight diagnostic with sanitized phase/refusal
+records and owned missing-executable/inventory/report/deadline counterexamples.
+Keep report production separate from host admission and never execute candidate
+Node. Retain exact unapplied manual diagnostic workflow/routing patches for
+separate review and preparation/activation choices; active admission/workflows
+and consumed grants remain unchanged.

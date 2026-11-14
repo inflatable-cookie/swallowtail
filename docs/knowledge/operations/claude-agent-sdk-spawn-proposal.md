@@ -364,3 +364,31 @@ memory/CPU/FD/output/storage/transfer and cleanup limits remain unchanged but
 were not exercised by the skipped combined probe. Original vendor/launch-graph,
 Darwin shared-cache and actual ACP sibling composition gates remain separate;
 Q-009 and the qualification merge hold stay open.
+
+
+## Read-only diagnostic preparation after refusal
+
+The bounded continuation prepares a [separate phase-labelled diagnostic](claude-agent-sdk-preflight-diagnostic.md)
+and [exact inactive packet](claude-agent-sdk-preflight-diagnostic.json). Fresh
+reads of all three retained job logs still show exit1/no-setup without the exact
+failed shell gate. No cached Node absence or controller failure is inferred.
+Existing ordinary CI has no diagnostic command and some routes install Node
+before tests; those jobs cannot establish the untouched failed-job cache state.
+
+The diagnostic binds its own acyclic captured source record, checks the exact
+source/clean worktree, tests a fresh private scratch leaf, observes required
+cached executable availability without executing it, produces bounded metadata
+and reads existing controller/namespace identities. It emits sanitized phase
+records, preserves earlier observations and nonzero refusal, and distinguishes
+report production from read-only check success and actual host admission.
+All records explicitly keep hostAdmission/kernelEnforced/originalActivation
+false. It never invokes the combined probe, sudo or candidate Node.
+
+The new manual one-job workflow and exact-byte routing exception are retained
+as unapplied patches; no `.github/workflows` or active routing/helper bytes are
+changed. Their finite20s+2s/10s/32KiB limits and exact hashes are in the packet.
+Only owned fixtures apply them for actionlint/routing/mutation checks. Applying,
+registering and activating them remain separately reserved choices after the
+same retained source/security review. The consumed combined grant supplies no
+retry authority, host fallback or runtime installation. This preparation does
+not supply actual Linux-host facts, original compatibility or ACP composition.

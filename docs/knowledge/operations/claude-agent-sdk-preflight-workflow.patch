@@ -1,0 +1,58 @@
+diff --git a/.github/workflows/sdk234-preflight-diagnostic.yml b/.github/workflows/sdk234-preflight-diagnostic.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/sdk234-preflight-diagnostic.yml
+@@ -0,0 +1,53 @@
++name: SDK234 read-only preflight diagnostic
++on:
++  workflow_dispatch:
++    inputs:
++      source_sha:
++        description: Exact separately approved diagnostic source SHA
++        required: true
++      record_sha:
++        description: Exact separately approved diagnostic source record SHA256
++        required: true
++permissions:
++  contents: read
++jobs:
++  readonly-diagnostic:
++    runs-on: ubuntu-latest
++    timeout-minutes: 2
++    env:
++      DIAGNOSTIC_SOURCE: ${{ inputs.source_sha }}
++      DIAGNOSTIC_RECORD: ${{ inputs.record_sha }}
++      TMPDIR: ${{ runner.temp }}
++      TMP: ${{ runner.temp }}
++      TEMP: ${{ runner.temp }}
++    steps:
++      - name: Exact input envelope
++        shell: bash
++        run: |
++          python3 -I -B -S - <<'PYCODE'
++          import json, os, re, sys
++          valid=bool(re.fullmatch(r"[a-f0-9]{40}",os.environ["DIAGNOSTIC_SOURCE"]) and re.fullmatch(r"[a-f0-9]{64}",os.environ["DIAGNOSTIC_RECORD"]))
++          print(json.dumps({"phase":"input_envelope","status":"observed" if valid else "refused","hostAdmission":False}))
++          sys.exit(0 if valid else 1)
++          PYCODE
++      - uses: actions/checkout@v7
++        with:
++          ref: ${{ inputs.source_sha }}
++          persist-credentials: false
++      - name: Bounded phase-labelled read-only observations
++        shell: bash
++        run: |
++          set -euo pipefail
++          if [[ ! -x /usr/bin/timeout ]]; then
++            printf '{"phase":"diagnostic_launcher","status":"refused","reason":"timeout_unavailable","hostAdmission":false}\n'
++            exit 1
++          fi
++          printf '{"phase":"diagnostic_launcher","status":"observed","hostAdmission":false}\n'
++          set +e
++          /usr/bin/timeout --signal=TERM --kill-after=2s 20s \
++            python3 -I -B -S scripts/claude-agent-sdk-preflight-diagnostic.py \
++            --source-sha "$DIAGNOSTIC_SOURCE" --record-sha256 "$DIAGNOSTIC_RECORD"
++          diagnostic_exit=$?
++          set -e
++          printf '{"phase":"diagnostic_exit","exit":%s,"hostAdmission":false}\n' "$diagnostic_exit"
++          exit "$diagnostic_exit"

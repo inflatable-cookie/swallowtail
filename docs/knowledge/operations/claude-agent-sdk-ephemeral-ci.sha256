@@ -1,6 +1,6 @@
 a67c1e2bbc1ebfda26b71c1ef04411268a05e0bc2e5933b247bd92e09bf630bc  scripts/claude-agent-sdk-admin-fixture.py
 3255f6a83c9e4e6594445e55081f9b90a28da3ce9f75b13afa88d31f87e953c6  scripts/tests/claude-agent-sdk-admin-fixture.py
-5046a2aa5fbd98e3ca6b38b641f890181c435266513fd0ea49cf062c87d64095  effigy.toml
+07e72e9b251b8a587b679aebc6a1c38f0b4ee1b80b71744fa5d0451e356e48b6  effigy.toml
 a9c099e9948c37a0e12df74c9924f9bc0f695494da5453d2888720cf872c3e8d  docs/knowledge/operations/claude-agent-sdk-ephemeral-ci-proposal.md
 16a02b1e0143992963b7a53178349bba0c4d44839f68df4a513622884da25bc7  docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.patch
 aa24aac1b8d8a223d83982103c2e18823877822911215eb3c3c30dcf695d08cb  crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-native-proof/confined-execution.sha256

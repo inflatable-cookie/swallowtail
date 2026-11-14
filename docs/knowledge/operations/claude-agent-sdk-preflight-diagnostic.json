@@ -1,0 +1,51 @@
+{
+  "schema": "swallowtail.sdk234.readonly-preflight-proposal.v1",
+  "scope": "Unapplied single-job read-only Linux diagnostic; no attempt authority",
+  "workflowApplied": false,
+  "workflowRegistered": false,
+  "activationAuthorized": false,
+  "originalActivation": false,
+  "hostAdmission": false,
+  "workflowPath": ".github/workflows/sdk234-preflight-diagnostic.yml",
+  "workflowPatch": "docs/knowledge/operations/claude-agent-sdk-preflight-workflow.patch",
+  "workflowPatchSha256": "e5d073f9ea922744929ce5ed5f987b85d8785b7d90ef7e056e395c83e855e068",
+  "workflowSha256": "cd88347ddc7e9b05bbc645fd1a9bf07c4bfc4e98848944cdc991c4a929923698",
+  "routingPatch": "docs/knowledge/operations/claude-agent-sdk-preflight-routing.patch",
+  "routingPatchSha256": "1a2f1a63397c74c1cad19b9e4b799cd2b4c6ad26e956aefe405cbb3a41b14176",
+  "routingBaseSha256": "4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925",
+  "routingPreparedSha256": "a2066280b1a95b1825d1e2fa60ab86f0db75b38353bc6dd5057a03d49e5e8ad0",
+  "entrypoint": "scripts/claude-agent-sdk-preflight-diagnostic.py",
+  "record": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.sha256",
+  "command": "python3 -I -B -S scripts/claude-agent-sdk-preflight-diagnostic.py --source-sha EXACT_APPROVED_SOURCE --record-sha256 EXACT_APPROVED_DIAGNOSTIC_RECORD",
+  "host": "existing GitHub ubuntu-latest x86_64 runner before any runtime installation or setup; actual host facts unobserved",
+  "limits": {
+    "jobs": 1,
+    "jobMinutes": 2,
+    "outerSeconds": 20,
+    "killGraceSeconds": 2,
+    "innerSeconds": 10,
+    "gitOutputBytes": 8192,
+    "phaseBytes": 4096,
+    "totalReportBytes": 32768,
+    "sourceFileBytes": 2097152,
+    "executableReadBytes": 268435456
+  },
+  "readOnlyPhases": [
+    "source_identity",
+    "clean_worktree",
+    "scratch_creation",
+    "cached_executable",
+    "inventory_production",
+    "host_capabilities"
+  ],
+  "runtimeExecution": false,
+  "privilegedBranches": false,
+  "existingCI": "No supported diagnostic hook; Rust jobs with setup-node change cache state before tests. No new activation hidden in ordinary CI.",
+  "retainedFailure": {
+    "run": 43599057785,
+    "source": "2ea832c64269f4adfcaf1436dcfd93afee06c271",
+    "grantConsumed": true,
+    "failedShellGate": "unknown; missing cached Node not established"
+  },
+  "nextAuthority": "retained source/security disposition, separate exact workflow/routing preparation and registration, then fresh exact-source one-attempt read-only activation; no combined probe retry"
+}

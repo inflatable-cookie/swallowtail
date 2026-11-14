@@ -75,9 +75,9 @@ path absence, not a fake environment flag.
 The proposed states are the existing fixture helper's exact paths and bytes;
 no second invocation of its consumed workflow or reuse of its old grant is
 requested. A future combined manual job needs separate exact workflow-source,
-record, state/attempt and minimal privileged setup/cleanup authority. Keep its
-patch unapplied. No local canonical write, cgroup provisioning or host update is
-a rehearsal. Darwin needs separately admitted shared-cache/runtime custody and
+record, state/attempt and minimal privileged setup/cleanup authority. The exact
+patch is applied under the preparation ruling below; execution remains gated.
+No local canonical write, cgroup provisioning or host update is a rehearsal. Darwin needs separately admitted shared-cache/runtime custody and
 its own combined boundary; this Linux proposal makes no Darwin claim.
 
 ## Required evidence and refusal cases

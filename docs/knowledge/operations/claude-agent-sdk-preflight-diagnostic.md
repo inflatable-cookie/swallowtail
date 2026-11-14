@@ -259,3 +259,28 @@ Node22.23.4 original use still requires its separate Node-axis qualification;
 the current combined22.23.2 pin and public22.23.2..=22.23.3 axis stay unchanged.
 ACP227 remains parked pending actual shared actor/runtime/host admission;
 Q-009 and the task-owner qualification merge hold remain open.
+
+## Pre-entry custody repair contract
+
+Before any runtime-report execution, hold descriptor identities and exact bytes
+for the executable, declared libraries/loader inputs, any shebang interpreter
+and the Python supervisor inputs. Every ancestor is pinned by directory
+identity/owner/mode; writable or symlinked ancestry refuses. Directory content
+changes do not replace directory identity. A complete independently established
+trusted-host loader/library manifest is a prerequisite, never inferred from the
+candidate's later report. Missing closure refuses before execution. No caller
+success boolean or serialized runtime report can replace the live capture.
+
+Keep the capture through the bounded observation and hand the same live object
+to launch custody. Recheck before entry, after observation and before launches;
+refuse revocation, path/descriptor/owner/mode/byte drift. Stop and actually wait
+the owned observer on malformed output, limits or cancellation. Unknown join
+retains custody and failure. This is trusted-host custody, not verified exec or
+resistance to hostile same-user mutation. Node22.23.4 is still fake-only.
+
+Existing real SDK/sidecar software tests may explicitly model the unavailable
+bootstrap closure while exercising actual owned JS children. Their test-only
+model must label runtime custody incomplete, supply no production bypass and
+never count as admitted host/library evidence. Strict pre-entry regressions use
+owned executable sentinels, libraries and ancestors. Darwin shared-cache and
+actual Linux candidate loader closure remain unproved prerequisites.

@@ -1,0 +1,103 @@
+diff --git a/.github/workflows/sdk234-runtime-permission-preparation.yml b/.github/workflows/sdk234-runtime-permission-preparation.yml
+new file mode 100644
+--- /dev/null
++++ b/.github/workflows/sdk234-runtime-permission-preparation.yml
+@@ -0,0 +1,98 @@
++name: SDK234 inactive runtime permission preparation
++on:
++  workflow_dispatch:
++    inputs:
++      source_sha:
++        description: Exact separately approved preparation source
++        required: true
++      record_sha:
++        description: Exact separately approved permission record
++        required: true
++permissions:
++  contents: read
++jobs:
++  permission-only:
++    runs-on: ubuntu-latest
++    timeout-minutes: 2
++    env:
++      PREPARATION_SOURCE: ${{ inputs.source_sha }}
++      PREPARATION_RECORD: ${{ inputs.record_sha }}
++    steps:
++      - uses: actions/checkout@v7
++        with:
++          ref: ${{ inputs.source_sha }}
++          persist-credentials: false
++      - name: Bind source and prepare owned helper scratch
++        shell: bash
++        run: |
++          set -euo pipefail
++          test "$(git rev-parse HEAD)" = "$PREPARATION_SOURCE"
++          test -z "$(git status --porcelain --untracked-files=normal)"
++          test -n "${RUNNER_TEMP:-}"
++          permission_root=$(mktemp -d "$RUNNER_TEMP/sdk234-permission.XXXXXX")
++          chmod 700 "$permission_root"
++          export PERMISSION_ROOT="$permission_root"
++          printf 'PERMISSION_ROOT=%s\n' "$permission_root" >> "$GITHUB_ENV"
++          python3 -I -B -S - <<'PYCODE'
++          import hashlib,json,os,pathlib,re
++          assert re.fullmatch(r"[a-f0-9]{40}",os.environ["PREPARATION_SOURCE"])
++          record=pathlib.Path("docs/knowledge/operations/claude-agent-sdk-runtime-permissions.sha256")
++          raw=record.read_bytes()
++          assert hashlib.sha256(raw).hexdigest()==os.environ["PREPARATION_RECORD"]
++          names=[]
++          for row in raw.decode().splitlines():
++              digest,name=row.split("  ",1)
++              file=pathlib.Path(name)
++              assert not file.is_absolute() and ".." not in file.parts and file.resolve()==file.absolute()
++              assert file.is_file() and hashlib.sha256(file.read_bytes()).hexdigest()==digest
++              names.append(name)
++          assert len(names)==len(set(names))==9
++          spec=json.loads(pathlib.Path("docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json").read_text())
++          patch=pathlib.Path(spec["helperPatch"]).read_text()
++          helper="\n".join(row[1:] for row in patch.splitlines() if row.startswith("+") and not row.startswith("+++"))+"\n"
++          assert hashlib.sha256(helper.encode()).hexdigest()==spec["helperSha256"]
++          root=pathlib.Path(os.environ["PERMISSION_ROOT"])
++          (root/"claude-agent-sdk-runtime-permissions.py").write_text(helper)
++          (root/"claude-agent-sdk-probe-custody.py").write_bytes(pathlib.Path("scripts/claude-agent-sdk-probe-custody.py").read_bytes())
++          PYCODE
++      - name: Bounded permission preparation with in-process rollback
++        shell: bash
++        run: |
++          set -euo pipefail
++          export TMPDIR="$PERMISSION_ROOT" TMP="$PERMISSION_ROOT" TEMP="$PERMISSION_ROOT"
++          manifest=docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json
++          manifest_sha=$(shasum -a 256 "$manifest" | cut -d ' ' -f 1)
++          /usr/bin/timeout --signal=TERM --kill-after=2s 20s \
++            python3 -I -B -S "$PERMISSION_ROOT/claude-agent-sdk-runtime-permissions.py" \
++            --manifest "$manifest" --manifest-sha256 "$manifest_sha" --receipt "$PERMISSION_ROOT/receipt.json"
++      - name: Independent checked rollback
++        if: always()
++        shell: bash
++        run: |
++          set -euo pipefail
++          if [[ -z "${PERMISSION_ROOT:-}" || ! -f "$PERMISSION_ROOT/claude-agent-sdk-runtime-permissions.py" ]]; then
++            printf '{"noSetup":true,"runtimeExecuted":false}\n'
++            exit 0
++          fi
++          export TMPDIR="$PERMISSION_ROOT" TMP="$PERMISSION_ROOT" TEMP="$PERMISSION_ROOT"
++          manifest=docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json
++          manifest_sha=$(shasum -a 256 "$manifest" | cut -d ' ' -f 1)
++          set +e
++          /usr/bin/timeout --signal=TERM --kill-after=2s 5s \
++            python3 -I -B -S "$PERMISSION_ROOT/claude-agent-sdk-runtime-permissions.py" \
++            --cleanup-only --manifest "$manifest" --manifest-sha256 "$manifest_sha" --receipt "$PERMISSION_ROOT/receipt.json"
++          cleanup_exit=$?
++          set -e
++          python3 -I -B -S - <<'PYCODE'
++          import json,os,pathlib
++          receipt=pathlib.Path(os.environ["PERMISSION_ROOT"])/"receipt.json"
++          if receipt.is_file():
++              raw=receipt.read_bytes()
++              if len(raw)>65536: raise RuntimeError("receipt_bound")
++              source=json.loads(raw)
++              summary={k:source.get(k) for k in ("phase","fixtureCleanup","runtimeExecuted","identity","originalMode","targetMode","children","ownedWaits")}
++              output=json.dumps(summary)
++              if len(output)>4096: raise RuntimeError("receipt_report_bound")
++              print(output)
++          PYCODE
++          exit "$cleanup_exit"

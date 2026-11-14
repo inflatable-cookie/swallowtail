@@ -51,7 +51,7 @@
     "grantConsumed": true,
     "failedShellGate": "unknown; missing cached Node not established"
   },
-  "nextAuthority": "Retained result review, then exact source-only permission/custody preparation for existing cached22.23.4 bytes94efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90. Observed0777 file mode violates existing custody policy; no candidate execution or chmod/staging/install is authorized. Preserve pre-entry custody and separately authorize any exact host permission repair/runtime observation. Controllers are enabled but exclusive delegation/enforcement remain unproved; no blind pinned-runtime retry.",
+  "nextAuthority": "Retained review of repaired pre-entry custody and exact unapplied permission packet. Complete independent library/loader/interpreter/supervisor and safe ancestry prerequisites on a fresh host before any separately approved exact helper/workflow application, permission preparation or runtime execution. No leaf-only repair or blind diagnostic/combined retry.",
   "preparationDecision": "77371f79-2764-458c-90ac-e2787207421a v2",
   "registrationPrerequisite": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7",
   "registration": {
@@ -619,5 +619,18 @@
     "hostAdmission": false,
     "kernelEnforced": false,
     "originalActivation": false
+  },
+  "sourceSecurityRepair": {
+    "scope": "private source/fake repair only",
+    "bootstrapGate": "descriptor/regular-file/owner/mode/byte and ancestor checks before runtime report; independently established complete bootstrap bindings required",
+    "liveCustodyThroughObservationAndLaunch": true,
+    "serializedReportAdmits": false,
+    "hostAdmission": false,
+    "softwareBootstrapModel": "explicit test-only stand-in; actual owned JS behavior remains software evidence, runtimeCustodyComplete:false",
+    "permissionProposal": "docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json",
+    "permissionRecordSha256": "0e8b8f3a9fe05624ccfac158c05f9fb86a4fdc49d694fd23d382a1bccdca24b0",
+    "permissionHelperApplied": false,
+    "permissionWorkflowApplied": false,
+    "candidateRuntimeExecuted": false
   }
 }

@@ -366,3 +366,13 @@ authority. This record-only revision does not transfer the consumed grant to
 its changed source record; `kernelProofAccepted: false` remains the static
 closed admission guard, not a denial of this historical exact-point fake proof.
 Q-009 stays open and no SDK/native qualification ceiling moves.
+
+
+SDK234's pre-entry repair now refuses runtime observation before executable,
+ancestor and independently declared bootstrap library/loader/interpreter/
+supervisor custody. Missing closure or a serialized observation cannot admit
+a launch. The standalone unguarded --version call is removed. Historical
+activated namespace proof remains tied to its original source; current
+software protocol tests explicitly model bootstrap closure and claim runtime
+custody incomplete. The [inactive permission packet](claude-agent-sdk-runtime-permissions.md)
+supplies no new kernel, runtime, canonical or original activation authority.

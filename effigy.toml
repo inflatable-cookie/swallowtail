@@ -199,6 +199,22 @@ section = "Research Records"
 "validate:claude-agent-sdk-probe-admission" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness -E 'test(/probe/)'"
 "lint:current-claude-agent-sdk" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --all-targets -- -D warnings"
 "validate:claude-agent-sdk-confined-probe" = "python3 -B scripts/tests/claude-agent-sdk-confined-probe.py"
+"validate:claude-agent-sdk-runtime-custody" = [
+  "python3 -B scripts/tests/claude-agent-sdk-probe-custody.py",
+  "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py",
+]
+"check:claude-agent-sdk-runtime-custody" = [
+  "python3 -c 'from pathlib import Path; [compile(Path(n).read_bytes(), n, \"exec\") for n in (\"scripts/claude-agent-sdk-probe-custody.py\", \"scripts/tests/claude-agent-sdk-probe-custody.py\", \"scripts/tests/claude-agent-sdk-permission-packet.py\", \"scripts/tests/sdk-runtime-model.py\")]'",
+  "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py --check-compile",
+]
+"check:format:claude-agent-sdk-runtime-custody" = [
+  "bash scripts/check-python-format.sh scripts/claude-agent-sdk-probe-custody.py scripts/tests/claude-agent-sdk-probe-custody.py scripts/tests/claude-agent-sdk-permission-packet.py scripts/tests/sdk-runtime-model.py",
+  "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py --check-format",
+]
+"format:claude-agent-sdk-runtime-custody" = [
+  "ruff format --no-cache scripts/claude-agent-sdk-probe-custody.py scripts/tests/claude-agent-sdk-probe-custody.py scripts/tests/claude-agent-sdk-permission-packet.py scripts/tests/sdk-runtime-model.py",
+  "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py --format-packet",
+]
 "validate:claude-agent-sdk-spawn-proposal" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py"
 "validate:claude-agent-sdk-preflight-diagnostic" = "python3 -B scripts/tests/claude-agent-sdk-preflight-diagnostic.py"
 "check:claude-agent-sdk-preflight-diagnostic" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-preflight-diagnostic.py\", \"scripts/tests/claude-agent-sdk-preflight-diagnostic.py\")]'"

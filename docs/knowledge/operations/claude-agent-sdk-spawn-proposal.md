@@ -434,3 +434,31 @@ controllers, plus the next source-only pre-entry permission/custody packet.
 No exclusive delegation, kernel/combined/canonical settlement or runtime
 version/library custody is established. Both read-only grants are spent;
 there is no retry, candidate execution, host permission change or ACP transfer.
+
+
+## Pre-entry repair and inactive permission proposal
+
+Runtime report execution now needs a live descriptor capture of eligible exact
+executable/startup inputs, safe pinned ancestry and independently established
+library/loader/interpreter/supervisor bindings. The same capture remains live
+through observation and Lease launch custody; serialization, revocation and
+drift refuse. Missing bootstrap closure refuses before entry. No candidate is
+executed to discover its later writable-input refusal. Bounded observer failure
+uses actual child stop/wait and retains unknown custody rather than releasing it.
+
+Owned pre-entry fixtures use first-party fork observers, not a candidate Node.
+Existing real SDK/sidecar software regressions explicitly model their unproved
+bootstrap closure while retaining real owned JS child streams/PIDs/waits; they
+report runtimeCustodyComplete:false. This is source/model behavior proof, not
+new actual runtime/host admission. Actual Linux loader and Darwin shared-cache
+closure remain separate prerequisites. The observed exit-between-identity-and-
+signal race now tolerates ProcessLookupError while caller waits remain required.
+
+The [permission helper/workflow packet](claude-agent-sdk-runtime-permissions.md)
+is unapplied, unregistered and non-executing in this run. It targets only the
+existing94efd062 candidate bytes, requires complete safe ancestry/library
+prerequisites and journals intent before any proposed descriptor chmod. Primary
+and independent checked rollback preserve unknown receipts and refuse unbound
+objects/orphan children. No public Node-axis, original/vendor/native, ACP or
+qualification claim follows; source review precedes all new preparation, host
+permission, runtime or workflow activation choices.

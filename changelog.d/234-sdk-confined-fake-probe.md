@@ -110,3 +110,9 @@ fresh attempt authority; no retry/install, combined proof or ACP release.
   qualified cache paths not found; candidate22.23.4 hashed without execution,
   mode0777 ineligible for current custody. Name exact pre-entry permission/
   custody preparation; no host mutation, retry, admission or claim increase.
+
+- Repair runtime bootstrap ordering with live pre-entry descriptor/ancestry/
+  library custody, non-execution sentinels and actual failed-observer waits.
+  Keep missing host closure fail-closed and software bootstrap models explicit.
+  Prepare unapplied exact no-install permission/rollback packet; no host chmod
+  or candidate execution. Repair the observed exit-before-SIGKILL cleanup race.

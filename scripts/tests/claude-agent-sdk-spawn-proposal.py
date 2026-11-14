@@ -17,6 +17,12 @@ spec = importlib.util.spec_from_file_location(NAME, ROOT / NAME)
 CORE = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(CORE)
 
+MODEL_SPEC = importlib.util.spec_from_file_location(
+    "runtime_model", ROOT / "scripts/tests/sdk-runtime-model.py"
+)
+MODEL = importlib.util.module_from_spec(MODEL_SPEC)
+MODEL_SPEC.loader.exec_module(MODEL)
+
 
 class SpawnTests(unittest.TestCase):
     @classmethod
@@ -40,11 +46,36 @@ class SpawnTests(unittest.TestCase):
             + "\n"
         )
 
+    def setUp(self):
+        original = CORE.module
+
+        def load(name, data):
+            selected = original(name, data)
+            if name == "scripts/claude-agent-sdk-probe-custody.py":
+                selected.runtime_inventory = lambda node, expected: MODEL.observation(
+                    selected, node, expected
+                )
+            return selected
+
+        patch = mock.patch.object(CORE, "module", side_effect=load)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def test_exit_between_identity_and_signal_still_reaches_driver_cleanup(self):
+        driver = mock.Mock()
+        driver.poll.return_value = None
+        owned = {"pid": 123, "start": 456, "group": 789}
+        with mock.patch.object(CORE.os, "kill", side_effect=ProcessLookupError):
+            CORE.stop_owned(driver, [owned], observer=lambda pid: owned)
+        driver.kill.assert_called_once()
+
     def run_peer(self, **kwargs):
         result = CORE.rehearsal(self.record, self.node, self.node_sha, **kwargs)
         self.assertFalse(result["kernelEnforced"])
         self.assertFalse(result["originalActivation"])
         self.assertFalse(result["fullKernelTreeSettlement"])
+        if result.get("custody"):
+            self.assertFalse(result["custody"]["runtimeCustodyComplete"])
         if result["failure"] is None:
             self.evidence.append(result)
         return result

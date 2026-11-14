@@ -24,6 +24,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 ROOT = Path(__file__).resolve().parents[1]
 RECORD = Path("docs/knowledge/operations/claude-agent-sdk-spawn.sha256")
 INPUTS = (
+    "scripts/tests/sdk-runtime-model.py",
     ".github/workflows/sdk234-combined-fake.yml",
     "scripts/claude-agent-sdk-spawn-proposal.py",
     "scripts/claude-agent-sdk-spawn-entry.py",
@@ -341,9 +342,15 @@ def stop_owned(driver, registered, observer=None, stop=None):
         if stop is not None:
             stop(owned)
         else:
-            os.kill(owned["pid"], signal.SIGKILL)
+            try:
+                os.kill(owned["pid"], signal.SIGKILL)
+            except ProcessLookupError:
+                pass  # Exited after identity read; caller still performs its waits.
     if driver.poll() is None:
-        driver.kill()
+        try:
+            driver.kill()
+        except ProcessLookupError:
+            pass
 
 
 def parse_events(data):

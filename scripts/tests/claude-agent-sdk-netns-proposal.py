@@ -33,6 +33,12 @@ KERNEL = load("claude-agent-sdk-netns-kernel.py")
 CUSTODY = load("claude-agent-sdk-probe-custody.py")
 ENTRY = load("claude-agent-sdk-netns-entry.py")
 
+MODEL_SPEC = importlib.util.spec_from_file_location(
+    "runtime_model", ROOT / "scripts/tests/sdk-runtime-model.py"
+)
+MODEL = importlib.util.module_from_spec(MODEL_SPEC)
+MODEL_SPEC.loader.exec_module(MODEL)
+
 
 class NamespaceProposalTests(unittest.TestCase):
     @classmethod
@@ -40,6 +46,29 @@ class NamespaceProposalTests(unittest.TestCase):
         cls.node = Path(shutil.which("node")).resolve(strict=True)
         cls.node_sha = CORE.sha(cls.node.read_bytes())
         cls.record_sha = CORE.sha((ROOT / CORE.RECORD).read_bytes())
+
+    def setUp(self):
+        original = CORE.load_verified
+
+        def load(name, data, root=ROOT):
+            selected = original(name, data, root)
+            if name == CORE.CUSTODY:
+                selected.runtime_inventory = lambda node, expected: MODEL.observation(
+                    selected, node, expected
+                )
+            return selected
+
+        for target, name, value in (
+            (CORE, "load_verified", load),
+            (
+                CUSTODY,
+                "runtime_inventory",
+                lambda node, expected: MODEL.observation(CUSTODY, node, expected),
+            ),
+        ):
+            patch = mock.patch.object(target, name, side_effect=value)
+            patch.start()
+            self.addCleanup(patch.stop)
 
     def assert_no_children(self, result):
         self.assertFalse(result["kernelEnforced"])

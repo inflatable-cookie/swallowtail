@@ -24,6 +24,7 @@ RECORD = Path("docs/knowledge/operations/claude-agent-sdk-netns.sha256")
 CUSTODY = "scripts/claude-agent-sdk-probe-custody.py"
 ADMISSION = "docs/knowledge/operations/claude-agent-sdk-netns-admission.json"
 INPUTS = (
+    "scripts/tests/sdk-runtime-model.py",
     CUSTODY,
     ".github/workflows/sdk234-netns-proof.yml",
     "scripts/tests/oxide-selector-routing.py",
@@ -653,13 +654,7 @@ def inspect_host(node=None):
         ):
             raise Refused("preflight_Node22_identity_before_execution")
         observed["custodyRuntime"] = custody.runtime_inventory(node, observed_node_sha)
-        observed["nodeVersion"] = (
-            subprocess.check_output(
-                [node, "--version"], env={"PATH": "/usr/bin:/bin"}, timeout=5
-            )
-            .decode()
-            .strip()
-        )
+        observed["nodeVersion"] = observed["custodyRuntime"]["version"]
     if sys.platform == "linux":
         import ctypes
 

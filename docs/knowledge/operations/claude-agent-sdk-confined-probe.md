@@ -185,3 +185,9 @@ model namespace operations and grant no kernel or original activation credit.
 The consumed canonical-fixture result and existing confinement evidence remain
 unchanged. Tom decision89db0f25 v2 settles private explicit trusted-host SDK
 custody; the linked proposal records its implemented admission and limits.
+
+The next [private child-spawn preparation](claude-agent-sdk-spawn-proposal.md)
+now rehearses the actual SDK hook/sidecar ChildProcess path through a captured
+preexec gate. Its changed execution graph, cgroup boundary and combined canonical
+environment are still incomplete and unactivated; software waits are separate
+from independent kernel settlement. It raises no qualification ceiling.

@@ -50,3 +50,8 @@ ordinary TCP, definite forbidden connection failure, complete custody/filter
 observations, peer/guest waits and checked cleanup passed. The grant is spent;
 original-compatible spawning/settings and Darwin custody remain gated, with
 no SDK/native qualification increase.
+
+Added a private child-spawn contract and owned-fake rehearsal through the actual
+SDK hook and unchanged shipped sidecar, with a captured preexec entry, explicit
+invocation inputs and actor-specific waits. Combined canonical settings and
+changed kernel/cgroup execution remain inactive preparation, not admission.

@@ -120,7 +120,7 @@ def runtime_inventory(node, expected):
 class Lease:
     """Host-created live custody, no caller boolean or serializable attestation."""
 
-    def __init__(self, runtime, node, expected, policy):
+    def __init__(self, runtime, node, expected, policy, *, reserve_pipes=True):
         self.owner = os.getpid()
         self.owners = {0, runtime["ownerUid"]}
         self.revoked = False
@@ -150,7 +150,7 @@ class Lease:
         ):
             raise Refused("runtime_custody_binding_missing")
         try:
-            for index in range(5):
+            for index in range(5 if reserve_pipes else 0):
                 pair = os.pipe()
                 self.reserved[index] = pair
                 if max(pair) >= 64:

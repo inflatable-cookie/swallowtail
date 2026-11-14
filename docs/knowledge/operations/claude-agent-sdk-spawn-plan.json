@@ -1,0 +1,98 @@
+{
+  "schema": "swallowtail.sdk234.private-spawn.v1",
+  "scope": "source-and-owned-fake-rehearsal",
+  "originalActivation": false,
+  "productionAdmission": false,
+  "authority": {
+    "kernelSetup": false,
+    "canonicalSetup": false,
+    "workflowApplied": false
+  },
+  "sourceBinding": "Externally supplied detached claude-agent-sdk-spawn.sha256 digest; captured before imports",
+  "runtime": {
+    "sdkTargetNode": "22.23.2",
+    "linuxNodeSha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+    "custodyDecision": "89db0f25-dc94-4feb-b447-8b9fabe52561",
+    "darwinSharedCacheCustody": "unresolved"
+  },
+  "launch": {
+    "driver": "unchanged shipped sidecar or prepared option driver with owned SDK",
+    "native": "genuine SDK hook child behind independently checked owned entry",
+    "startup": [
+      "--no-addons",
+      "--openssl-config=/dev/null"
+    ],
+    "ambientEnvironment": false,
+    "secondNativeStart": "refuse"
+  },
+  "limits": {
+    "wallSeconds": 30,
+    "cpuSecondsPerProcess": 10,
+    "descriptorsPerProcess": 64,
+    "outputBytes": 1000000,
+    "writableBytes": 1000000,
+    "proposedCgroupTasksIncludingThreads": 32,
+    "proposedMemoryBytes": 268435456
+  },
+  "endpoint": {
+    "protocol": "ordinary TCP HTTP Messages streaming",
+    "externalInterfaces": false,
+    "inheritedConnectedSocket": false
+  },
+  "fixture": {
+    "states": [
+      "absent",
+      "disabled",
+      "managed-deny"
+    ],
+    "linuxCanonical": "/etc/claude-code/managed-settings.json",
+    "helper": "scripts/claude-agent-sdk-admin-fixture.py",
+    "ownerUid": 0,
+    "policyMode": "0444",
+    "exclusiveFreshJobs": true,
+    "oppositeHomeAndProject": true,
+    "sameConfinementAsNative": "required",
+    "actualCombinedDiscovery": "unproved"
+  },
+  "events": [
+    "driver_started",
+    "spawn_requested",
+    "native_started",
+    "native_released",
+    "native_entry",
+    "native_wait",
+    "driver_wait",
+    "stop_requested",
+    "stop_acknowledged",
+    "adoptee_wait",
+    "pidfd_reaped",
+    "cgroup_empty",
+    "fixture_cleanup"
+  ],
+  "kernelPrerequisites": [
+    "fresh exclusive delegated cgroupv2 with pids/memory/cpu controllers, kill and freeze",
+    "observed unnamed loopback-only netns",
+    "inherited Landlock/seccomp with bounded fork allowance",
+    "trusted native entry and kernel-derived registration before payload",
+    "pidfd reaping and actual parent/adoptee waits",
+    "independent checked canonical-fixture cleanup"
+  ],
+  "kernelAdmission": "closed; changed process/cgroup and combined fixture boundary unimplemented/unobserved",
+  "retainedTransportEvidence": {
+    "source": "05af44845f0dbbe4b5bc3fbd75bc98a358e50cc5",
+    "run": 43560978666,
+    "grantConsumed": true
+  },
+  "originalArtifacts": {
+    "sdkVersions": [
+      "0.3.317",
+      "0.3.318",
+      "0.3.319",
+      "0.3.321",
+      "0.3.322"
+    ],
+    "ledger": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.322/identity.json",
+    "reuseFrozenIdentities": true,
+    "downloadOrExecution": false
+  }
+}

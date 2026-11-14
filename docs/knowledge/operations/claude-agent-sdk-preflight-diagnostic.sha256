@@ -1,5 +1,5 @@
-7c77bebb27f5a5098f4dfe08e4710ada171de47277b3959967baa5effa4293e1  scripts/claude-agent-sdk-preflight-diagnostic.py
-2cd0b0f8b991f0d0a311646765366c8ef31ea9911ed81db506b1cb46c98d9567  scripts/tests/claude-agent-sdk-preflight-diagnostic.py
+9a75fe50a9a9094b74243059a8a149d9fb2698bffd64baa4ad3f3c5624b546a4  scripts/claude-agent-sdk-preflight-diagnostic.py
+e7d013e06fa8c37b96cfeee1d141c01a581ad4e15d66062ef4964afb909d5841  scripts/tests/claude-agent-sdk-preflight-diagnostic.py
 75303c82432f7b26625cda1dea7afe73325c72c631ae8f0de69fa28f5f11ef95  docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.md
 89ffddbf0c3bd73445602d79bbb45b1a1348c6ee31ae55c4e1d973d511579594  docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.json
 71f1cc92016f2cbd5ca25873aaf0ee5d69bbb17f0a7fb51bf606f8b63c3f9f09  docs/knowledge/operations/claude-agent-sdk-preflight-workflow.patch

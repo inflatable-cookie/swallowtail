@@ -448,6 +448,30 @@ class DiagnosticTests(unittest.TestCase):
             list(D.CACHE_VERSIONS),
         )
 
+    def test_cache_parent_symlink_does_not_read_escaped_file(self):
+        escaped = self.base / "owned-escaped-cache"
+        candidate = escaped / "x64/bin/node"
+        candidate.parent.mkdir(parents=True)
+        candidate.write_bytes(self.node.read_bytes())
+        (self.cache / "22.23.4").symlink_to(escaped, target_is_directory=True)
+        diagnostic = self.diagnostic()
+        original = diagnostic.file_identity
+
+        def no_escape(file, maximum=268435456):
+            if file == self.cache / "22.23.4/x64/bin/node":
+                raise AssertionError("escaped content read")
+            return original(file, maximum)
+
+        with mock.patch.object(diagnostic, "file_identity", side_effect=no_escape):
+            _, rows = self.run_diagnostic(diagnostic)
+        facts = next(
+            row["facts"] for row in rows if row.get("phase") == "cache_metadata"
+        )
+        self.assertEqual(
+            facts["fixedCachePaths"][2]["observation"], "symlinked_path; no target read"
+        )
+        self.assertNotIn("file", facts["fixedCachePaths"][2])
+
     def test_namespace_failure_does_not_erase_later_kernel_metadata(self):
         (self.public / "proc/self/ns/net").unlink()
         _, rows = self.run_diagnostic()

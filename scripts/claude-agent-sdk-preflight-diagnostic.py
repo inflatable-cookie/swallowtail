@@ -264,6 +264,10 @@ class Diagnostic:
                 "runtimeCustody": False,
             }
             try:
+                if candidate.resolve(strict=True) != candidate.absolute():
+                    entry["observation"] = "symlinked_path; no target read"
+                    entries.append(entry)
+                    continue
                 info = candidate.lstat()
                 entry["regularFile"] = stat.S_ISREG(info.st_mode)
                 entry["executableAccess"] = os.access(candidate, os.X_OK)
@@ -294,7 +298,9 @@ class Diagnostic:
         enabled = bounded_read(self.cgroup / "cgroup.subtree_control").decode().split()
         required = {"pids", "memory", "cpu"}
         checks = {
-            "rootOwnedParent": info.st_uid == 0 and not info.st_mode & 0o022,
+            "rootOwnedParent": stat.S_ISDIR(info.st_mode)
+            and info.st_uid == 0
+            and not info.st_mode & 0o022,
             "controllersAvailable": required <= set(controllers),
             "controllersEnabled": required <= set(enabled),
         }

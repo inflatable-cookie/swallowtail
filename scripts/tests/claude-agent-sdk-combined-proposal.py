@@ -959,6 +959,7 @@ class CombinedTests(unittest.TestCase):
             "scripts/tests/oxide-selector-routing.py",
             "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
             "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
+            "docs/knowledge/operations/claude-agent-sdk-preflight-routing.patch",
         ]
         files = {name: (ROOT / name).read_bytes() for name in names}
         patch = (
@@ -975,6 +976,10 @@ class CombinedTests(unittest.TestCase):
         changed = files[names[2]].replace(b"sdk234-combined-fake.yml", b"other.yml")
         with self.assertRaises(OSError):
             COMBINED.check_routing_packet({**files, names[2]: changed}, body)
+        with self.assertRaises(OSError):
+            COMBINED.check_routing_packet(
+                {**files, names[3]: files[names[3]] + b"# changed\n"}, body
+            )
 
     def test_sequence_length_digest_and_missing_result_are_checked_by_actual_monitor(
         self,

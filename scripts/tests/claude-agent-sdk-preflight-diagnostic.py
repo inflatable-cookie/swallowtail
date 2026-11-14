@@ -44,6 +44,28 @@ def packet_check():
         helper.write_bytes(
             (ROOT / "scripts/tests/oxide-selector-routing.py").read_bytes()
         )
+        workflow = fixture / proposal["workflowPath"]
+        if proposal["workflowApplied"]:
+            assert (
+                hashlib.sha256(helper.read_bytes()).hexdigest()
+                == proposal["routingPreparedSha256"]
+            )
+            assert (
+                hashlib.sha256(workflow.read_bytes()).hexdigest()
+                == proposal["workflowSha256"]
+            )
+            for kind in ("routing", "workflow"):
+                patch = ROOT / proposal[kind + "Patch"]
+                assert (
+                    hashlib.sha256(patch.read_bytes()).hexdigest()
+                    == proposal[kind + "PatchSha256"]
+                )
+                subprocess.run(
+                    ["git", "apply", "--reverse", str(patch)],
+                    cwd=fixture,
+                    check=True,
+                    capture_output=True,
+                )
         assert (
             hashlib.sha256(helper.read_bytes()).hexdigest()
             == proposal["routingBaseSha256"]
@@ -103,7 +125,9 @@ def packet_check():
             pass
         else:
             raise AssertionError("unrelated workflow exception admitted")
-    print("unapplied read-only workflow/routing packet and changed-byte refusal passed")
+    print(
+        "read-only applied-state/reverse/reapply packet and changed-byte refusal passed"
+    )
 
 
 class DiagnosticTests(unittest.TestCase):

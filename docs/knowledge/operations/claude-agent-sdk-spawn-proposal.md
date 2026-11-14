@@ -369,7 +369,7 @@ Q-009 and the qualification merge hold stay open.
 ## Read-only diagnostic preparation after refusal
 
 The bounded continuation prepares a [separate phase-labelled diagnostic](claude-agent-sdk-preflight-diagnostic.md)
-and [exact inactive packet](claude-agent-sdk-preflight-diagnostic.json). Fresh
+and [exact preparation packet](claude-agent-sdk-preflight-diagnostic.json). Fresh
 reads of all three retained job logs still show exit1/no-setup without the exact
 failed shell gate. No cached Node absence or controller failure is inferred.
 Existing ordinary CI has no diagnostic command and some routes install Node
@@ -384,11 +384,11 @@ report production from read-only check success and actual host admission.
 All records explicitly keep hostAdmission/kernelEnforced/originalActivation
 false. It never invokes the combined probe, sudo or candidate Node.
 
-The new manual one-job workflow and exact-byte routing exception are retained
-as unapplied patches; no `.github/workflows` or active routing/helper bytes are
-changed. Their finite20s+2s/10s/32KiB limits and exact hashes are in the packet.
-Only owned fixtures apply them for actionlint/routing/mutation checks. Applying,
-registering and activating them remain separately reserved choices after the
-same retained source/security review. The consumed combined grant supplies no
+Tom77371f79 v2 now authorizes application and ordinary reviewed registration
+of the exact diagnostic packet. The workflow/routing are applied in PR553 with
+unchanged approved bytes; source checks reverse/reapply only in owned fixtures.
+Their finite20s+2s/10s/32KiB limits and exact hashes are in the packet. Registration
+is solely task238. Normal canonical reconciliation and a separate exact
+resulting-source activation choice remain required. No diagnostic has run. The consumed combined grant supplies no
 retry authority, host fallback or runtime installation. This preparation does
 not supply actual Linux-host facts, original compatibility or ACP composition.

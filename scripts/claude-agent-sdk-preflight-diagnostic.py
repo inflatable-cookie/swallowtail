@@ -24,6 +24,8 @@ INPUTS = (
     "docs/knowledge/operations/claude-agent-sdk-preflight-workflow.patch",
     "docs/knowledge/operations/claude-agent-sdk-preflight-routing.patch",
     "effigy.toml",
+    ".github/workflows/sdk234-preflight-diagnostic.yml",
+    "scripts/tests/oxide-selector-routing.py",
 )
 NODE = Path("/opt/hostedtoolcache/node/22.23.2/x64/bin/node")
 NODE_SHA = "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"

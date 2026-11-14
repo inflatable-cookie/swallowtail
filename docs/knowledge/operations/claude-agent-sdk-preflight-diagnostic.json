@@ -1,7 +1,7 @@
 {
   "schema": "swallowtail.sdk234.readonly-preflight-proposal.v1",
-  "scope": "Unapplied single-job read-only Linux diagnostic; no attempt authority",
-  "workflowApplied": false,
+  "scope": "Applied preparation-only single-job read-only Linux diagnostic; no attempt authority",
+  "workflowApplied": true,
   "workflowRegistered": false,
   "activationAuthorized": false,
   "originalActivation": false,
@@ -47,5 +47,7 @@
     "grantConsumed": true,
     "failedShellGate": "unknown; missing cached Node not established"
   },
-  "nextAuthority": "retained source/security disposition, separate exact workflow/routing preparation and registration, then fresh exact-source one-attempt read-only activation; no combined probe retry"
+  "nextAuthority": "canonical registration238 and normal parent reconciliation, then separate exact resulting-source one-attempt read-only diagnostic activation; no combined retry",
+  "preparationDecision": "77371f79-2764-458c-90ac-e2787207421a v2",
+  "registrationPrerequisite": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7"
 }

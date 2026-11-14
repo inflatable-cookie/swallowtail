@@ -351,12 +351,16 @@ def check_routing_packet(files, body, *, tools=False):
         files["docs/knowledge/operations/claude-agent-sdk-spawn-plan.json"]
     )["combinedProposal"]
     source = files[relative]
+    diagnostic = plan.get("diagnosticRouting")
+    allowed = {plan["routingBaseSha256"], plan["routingPreparedSha256"]}
+    if diagnostic:
+        allowed.add(diagnostic["preparedSha256"])
     patch = files["docs/knowledge/operations/claude-agent-sdk-combined-routing.patch"]
     prefix = (
         f"diff --git a/{relative} b/{relative}\n--- a/{relative}\n+++ b/{relative}\n"
     )
     if (
-        sha(source) not in {plan["routingBaseSha256"], plan["routingPreparedSha256"]}
+        sha(source) not in allowed
         or not patch.decode().startswith(prefix)
         or patch.decode().count("diff --git ") != 1
     ):
@@ -370,6 +374,22 @@ def check_routing_packet(files, body, *, tools=False):
         script.write_bytes(source)
         diff = root / "routing.patch"
         diff.write_bytes(patch)
+        if diagnostic and sha(source) == diagnostic["preparedSha256"]:
+            data = files[diagnostic["patch"]]
+            if sha(data) != diagnostic["patchSha256"]:
+                raise Refused(errno.EPERM, "diagnostic_routing_patch_changed")
+            diagnostic_diff = root / "diagnostic-routing.patch"
+            diagnostic_diff.write_bytes(data)
+            subprocess.run(
+                ["git", "apply", "--reverse", str(diagnostic_diff)],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                timeout=10,
+            )
+            source = script.read_bytes()
+            if sha(source) != plan["routingPreparedSha256"]:
+                raise Refused(errno.EPERM, "diagnostic_routing_base_changed")
         if sha(source) == plan["routingPreparedSha256"]:
             try:
                 subprocess.run(
@@ -444,6 +464,7 @@ def check_workflow(files):
         "workflowApplied": plan["combinedProposal"]["workflowApplied"],
         "workflowSha256": sha(body.encode()),
         "routingPreparedSha256": prepared,
+        "routingCurrentSha256": sha(files["scripts/tests/oxide-selector-routing.py"]),
         "originalActivation": False,
     }
 

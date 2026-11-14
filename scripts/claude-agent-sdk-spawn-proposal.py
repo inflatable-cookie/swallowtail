@@ -48,6 +48,7 @@ INPUTS = (
     "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
     "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch",
     "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
+    "docs/knowledge/operations/claude-agent-sdk-preflight-routing.patch",
     "scripts/tests/oxide-selector-routing.py",
     "effigy.toml",
 )

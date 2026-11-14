@@ -81,3 +81,9 @@ Keep report production separate from host admission and never execute candidate
 Node. Retain exact unapplied manual diagnostic workflow/routing patches for
 separate review and preparation/activation choices; active admission/workflows
 and consumed grants remain unchanged.
+
+Apply Tom77371f79 v2 exact diagnostic preparation packet after donor/patch
+verification. Bind the applied read-only workflow and helper, adapt exact
+applied-state validators with owned reverse/reapply fixtures and preserve all
+runtime/admission rules. Registration belongs to task238; no activation, host
+probe, cached-runtime execution or qualification authority follows.

@@ -1,8 +1,8 @@
 # SDK loopback transport proposal
 
-Private, fake-only probe preparation for Q-009. The single namespace attempt
-below produced partial observations and refused its result; no complete host
-or original activation is admitted.
+Private, fake-only probe preparation for Q-009. The corrected namespace attempt
+below passed on its exact Linux host/source with complete fake protocol and
+settlement observations. It admits no original activation or broader topology.
 Tom settled SDK custody in decision `89db0f25-dc94-4feb-b447-8b9fabe52561` v2:
 "Explicit trusted-host SDK custody." The private implementation below owns it.
 The canonical-fixture grant is consumed; no canonical path is touched here.
@@ -149,7 +149,7 @@ The shipped sidecar control uses the retained managed-denial scenario. The
 selected probe separately exercises callback denial and managed denial; this
 proposal does not extend the old sidecar driver's callback-response coverage.
 
-## Required authority and unobserved capabilities
+## Required authority and remaining capabilities
 
 Request only one application/registration and one exact-source namespace-only
 owned-fake job, with the diff's two setup/cleanup invocations. The first approved
@@ -157,13 +157,15 @@ source must stay immutable through dispatch; an unknown response is reconciled
 by reads, never blindly replayed. A changed helper, source, admission, runtime
 or job identity refuses and needs a new request.
 
-The consumed namespace attempt below supplies limited new namespace,
-credential and reaping observations. Complete peer result/transport/filter
-observations and an exercised adoption case remain missing. The old Linux
-kernel proof uses a different networking boundary and cannot supply them.
-Source-only BPF interpretation and modeled namespace records cannot admit a
-host. Capture actual preflight and independent kernel/credential/route/wait
-records before claiming complete enforcement.
+The corrected attempt below supplies exact Linux fake namespace, credential,
+ordinary TCP, entry-filter and successful peer/guest wait observations. Raw
+interface/route snapshots and an exercised adoption case remain absent; the
+monitor checks are source-flow evidence. This fixed topology cannot qualify the
+original SDK/native spawn path: its filter permits Node threads but forbids new
+processes, and the two peers are host-created owned Node fakes. Preserve that
+process boundary until a separately proved original-compatible topology exists.
+Source-only BPF interpretation and modeled namespace records do not admit
+another host or transfer proof to original artifacts.
 
 This request excludes another canonical-fixture attempt, original SDK/native
 execution, provider credentials or spend, installs, host provisioning, Darwin
@@ -200,8 +202,9 @@ Node flags, isolated paths and explicit environment are registered before spawn.
 Staged modules/configs are pinned before each child entry. Failure after one child
 starts kills and actually waits that owned process and closes custody descriptors.
 The host releases the lease only after protocol teardown; root retains its own
-copy through namespace settlement. Independent host/runtime admission still
-needs actual target-host observations in the separately authorized attempt.
+copy through namespace settlement. The successful corrected attempt retains the actual Linux runtime/library and
+host custody observations for its exact source; another source/host still needs
+its own applicable admission and execution authority.
 
 The retained guest topology follows the design consultation's alternative:
 the root monitor pins the guest from its own fork and peers from the trusted
@@ -305,3 +308,61 @@ the old preparation flag `kernelActivationObserved: false` as a claim that no
 namespace was ever created. A fresh exact-source authority is required for
 another namespace-only attempt. The canonical-fixture grant remains spent;
 original SDK/native execution and qualification remain separately gated.
+
+## Corrected namespace-only result — 2026-11-14
+
+Tom decision `61b7a755-24d3-484c-8cad-275a3cef0cb2` v2 authorized one fresh
+namespace-only fake attempt at source
+`05af44845f0dbbe4b5bc3fbd75bc98a358e50cc5`, record
+`8150eaf8aa7e31a82c05abd161f90963ddb5fad8a4e952d55e0f6a988f0e5829`.
+Immediate independent source/ref/workflow/record checks found exactly the one
+old failed dispatch. The single new command produced
+[run43560978666](https://github.com/inflatable-cookie/swallowtail/actions/runs/43560978666),
+attempt1, [job132344363281](https://github.com/inflatable-cookie/swallowtail/actions/runs/43560978666/job/132344363281).
+Preflight, fake execution and independent checked cleanup all passed. Exactly
+two namespace dispatches now exist: the old failure and this success. Both
+grants are consumed; neither a rerun nor a third dispatch is authorized.
+
+Actual host remained Linux x86_64/kernel7.0.0-1019-azure, Node22.23.2 digest
+`3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327`
+and Python3.14 digest
+`be9a2a5eada8c89c1c399fdfb8397179e877c20d8db0739c802f726d4d0e69fd`.
+The retained tool/library inventory contains no unresolved Node system inputs.
+Root custody holds157 exact inputs; the guest retains195 and two registered
+launches, with `runtimeCustodyComplete: true`. This is the approved trusted-host
+guarantee, excluding hostile same-user replacement and OS verified execution.
+
+The complete bounded result reports `kernelEnforced: true`, seven completed
+phases, one ordinary TCP streamed Messages request to the owned endpoint,
+`failure: null`, and3531 captured bytes. Both Node entries report Landlock ABI8,
+seccomp, non-root uid1001 and namespace device5/inode4026532309. The guest and
+peers share that namespace, distinct from monitor2378's host namespace; root
+independently records all uid/gid fields1001, empty supplementary groups and
+zero capability sets. The ordinary fake reports no inherited connected socket,
+`outsideNamespaceDenial: ECONNREFUSED`; the independently hosted canary remained
+unreached. This proves the selected fake's definite forbidden connection
+failure alongside successful local TCP. It does not prove every possible
+network syscall or an opaque original's transport. Raw interface/route snapshots
+were not emitted; lo-only/route guards are inferred from the exact acknowledged
+monitor checks.
+
+Guest2379 actually waited peers2381/2382 with returncode0. The monitor separately
+waited its guest with status0 and observed pidfd HUP for all three registered
+processes. The independent cleanup receipt retains the same peer-wait actor,
+identities, full protocol result and settled observations. It checked and
+removed the owned receipt successfully. No adopted-peer wait or separate
+post-cleanup filesystem inspection is claimed. The result chunks preserved the
+complete custody/protocol record under the existing limits.
+
+Remaining gate: original mode still refuses unconditionally. The namespace
+proof covers the fixed one-guest/two-Node fake topology, not vendor process
+creation, canonical administrator discovery, exact native behavior or Darwin
+shared-cache custody. Existing canonical fixtures were proven in separate jobs;
+no combined original-compatible settings/confinement host is admitted. Before
+any original request, prepare and fake-prove that actual spawn/settings boundary,
+bind exact runtime/artifact/platform inputs and declare the Nucleus immutable
+proof selector. Any new privileged setup or execution needs its own exact
+authority. This record-only revision does not transfer the consumed grant to
+its changed source record; `kernelProofAccepted: false` remains the static
+closed admission guard, not a denial of this historical exact-point fake proof.
+Q-009 stays open and no SDK/native qualification ceiling moves.

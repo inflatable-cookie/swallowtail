@@ -44,3 +44,9 @@ Recorded the consumed namespace-only attempt: runtime, namespace, credentials
 and reaping observations were retained, but the bounded result frame refused
 completion. Added acknowledged, size-bounded result chunks with integrity and
 refusal tests. No retry or qualification increase is included.
+
+Recorded the separately authorized corrected Linux namespace-only fake attempt:
+ordinary TCP, definite forbidden connection failure, complete custody/filter
+observations, peer/guest waits and checked cleanup passed. The grant is spent;
+original-compatible spawning/settings and Darwin custody remain gated, with
+no SDK/native qualification increase.

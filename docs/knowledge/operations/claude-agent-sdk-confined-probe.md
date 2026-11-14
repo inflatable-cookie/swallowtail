@@ -100,12 +100,15 @@ Original mode refuses unconditionally. Missing:
   The dedicated fixture attempt proves owned canonical file access on both
   hosts; it does not combine that environment with the original native or
   prove that native's settings discovery. No local canonical file is used.
-- A kernel-confined provider connection usable by the opaque Linux native.
-  Linux denies new sockets/connect; its owned Node fake carrier consumes a
-  preconnected descriptor by replacing `net.connect`/`net.createConnection`.
-  This does not establish that a vendor binary can consume that descriptor.
-  The fixture workflow supplies neither an original transport nor a new network
-  confinement mechanism. Do not enable socket creation to make a probe run.
+- An original-compatible confined process/settings boundary. The older Linux
+  carrier denies new sockets/connect and patches owned Node connection
+  functions around a preconnected descriptor. The separate
+  [namespace fake proof](claude-agent-sdk-loopback-namespace.md#corrected-namespace-only-result--2026-11-14)
+  now proves ordinary local TCP and a definite forbidden-connection failure
+  for its exact fixed two-Node topology. Its filter forbids new processes;
+  this cannot qualify the actual SDK/native spawn path or combined canonical
+  settings discovery. Preserve those restrictions until that topology is
+  separately prepared and fake-proven; do not weaken the old carrier to run it.
 - Exact original-artifact authority and a structurally declared Nucleus
   source-immutable author-side proof selector.
 
@@ -118,13 +121,12 @@ existing provisioned boundary because Seatbelt cannot supply that mapping.
 No privileged local helper, original-execution host provisioning or VM change
 is granted by this proposal.
 
-For the remaining Linux transport gate, an owner could provision a dedicated
-ephemeral loopback-only network namespace containing the owned endpoint and
-supervised children, then prove ordinary socket connections and forbidden egress
-with owned fakes before any original request. This needs separate exact setup/
-cleanup authority and observed tool/kernel support; the consumed file-fixture
-grant authorizes none of it. Custody must be settled for the standalone SDK;
-ACP's trusted-host ruling supplies context, not that decision.
+The separately authorized Linux namespace attempt now supplies that ordinary
+fake TCP/isolation proof at source05af44845, run43560978666, with checked cleanup.
+Its grant is consumed and supplies no original execution or wider process-tree
+admission. Standalone SDK custody is settled independently by89db0f25 v2;
+Darwin shared-cache inputs and the combined original-compatible spawn/settings
+boundary remain open. ACP custody grants no transferable authority.
 
 The planner's 2026-11-13 continuation requests a concrete
 [ephemeral-CI environment proposal](claude-agent-sdk-ephemeral-ci-proposal.md).

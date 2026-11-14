@@ -67,3 +67,10 @@ workflow/routing bytes. Independently verified workflow418195892 and zero
 combined dispatch attempts; refresh the private plan/source record for the
 separate exact-source three-job owned-fake activation request. Registration
 proves no host/kernel/combined discovery, native or ACP qualification.
+
+Record Tom78e36a73 v2 and consumed combined run43599057785/attempt1 at frozen
+2ea832c6: all three owned-fake state jobs refused read-only preflight at exit1,
+privileged probes skipped, cleanup took only the no-setup branch. Preserve raw
+refusal and exact limits; the untraced shell output does not identify its failed
+check or prove missing cached Node. Host admission/diagnostic and fresh exact
+authority remain required; no kernel, canonical, original or ACP proof follows.

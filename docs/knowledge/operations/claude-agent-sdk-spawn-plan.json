@@ -149,7 +149,7 @@
     "cleanupSeconds": 5,
     "profile": "acp-actor-shape (first-party stand-ins, not ACP route proof)",
     "newAuthorityRequired": [
-      "separate exact resulting-source one-attempt combined owned-fake activation; registration237 is reconciled",
+      "Grant78e36a73 v2 consumed by run43599057785 preflight refusal; identify the exact failing host preflight gate via a separately reviewed/authorized diagnostic or admit an existing exact host, then obtain fresh exact-source attempt authority; no retry/install/controller fallback",
       "actual original-compatible source graph and separately declared source-immutable original execution route after host evidence"
     ],
     "routingPatch": "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
@@ -168,6 +168,66 @@
       "state": "active registry entry; activation authority absent",
       "dispatchAttemptsAtRegistrationReconciliation": 0,
       "parentReconciled": true
+    },
+    "retainedAttempt": {
+      "grant": "78e36a73-4254-42a2-b872-71235fbdf4f9 v2",
+      "consumed": true,
+      "runId": 43599057785,
+      "attempt": 1,
+      "source": "2ea832c64269f4adfcaf1436dcfd93afee06c271",
+      "sourceRecord": "cedc3216b416764ecfc56b84581e08a6be8f1ad4b5861073a4d3e8f7a4437d9c",
+      "planSha256": "8cf7b25a8640ca8f49f07628be4d84b9d90d605e5948adce256ec40355b5bf2d",
+      "workflowId": 418195892,
+      "workflowSha256": "6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29",
+      "dispatchCount": 1,
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "jobId": 132459693979,
+          "name": "combined-fake (disabled)",
+          "url": "https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459693979",
+          "logSha256": "6d7a0fc7b6036f322326afbc646d740afddbd2b89e6c4e6aec3bad89dce75c14",
+          "preflight": "failure exit1 before inventory output",
+          "privilegedAttempt": "skipped",
+          "cleanup": "success exit0; preflight-refusal/no-setup branch only",
+          "reportedImage": "Ubuntu26.04.1 / ubuntu-26.04 / 20261111.82.6",
+          "runtimeKernelCustody": "not observed"
+        },
+        {
+          "jobId": 132459694198,
+          "name": "combined-fake (managed-deny)",
+          "url": "https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459694198",
+          "logSha256": "f1e16dcaf773699920051d034ee7e639d6418c5a849ce24285d459a147464e1a",
+          "preflight": "failure exit1 before inventory output",
+          "privilegedAttempt": "skipped",
+          "cleanup": "success exit0; preflight-refusal/no-setup branch only",
+          "reportedImage": "Ubuntu26.04.1 / ubuntu-26.04 / 20261111.196.1",
+          "runtimeKernelCustody": "not observed"
+        },
+        {
+          "jobId": 132459694239,
+          "name": "combined-fake (absent)",
+          "url": "https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459694239",
+          "logSha256": "e363a66d2f19f568a7affa7f1d8b5d9f55e1eb652f2a04ddfdd57119b70669a7",
+          "preflight": "failure exit1 before inventory output",
+          "privilegedAttempt": "skipped",
+          "cleanup": "success exit0; preflight-refusal/no-setup branch only",
+          "reportedImage": "Ubuntu26.04.1 / ubuntu-26.04 / 20261111.196.1",
+          "runtimeKernelCustody": "not observed"
+        }
+      ],
+      "exactFailureCommand": "unresolved within untraced pre-Python shell block; no diagnostic identifies cached executable absence versus earlier shell gate",
+      "noNewProof": [
+        "Node/Python/tool/library runtime custody",
+        "cgroup controllers/delegation/limits",
+        "PID/netns/ptrace/filter/route/actor admission",
+        "canonical fixture provisioning/discovery",
+        "software or independent kernel waits/joins/cleanup"
+      ],
+      "noSetupCleanupBranch": true,
+      "fixtureCleanupAttestation": false,
+      "retryAuthorized": false,
+      "originalActivation": false
     }
   },
   "sharedConsumer": {

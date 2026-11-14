@@ -272,7 +272,8 @@ Task237/PR556 merged atf3a134d47598b074de3f80776453f814a7905313 and is
 reconciled into this parent. Independent GitHub registry/content reads identify
 workflow418195892 at`.github/workflows/sdk234-combined-fake.yml`, state active,
 with the exact approved6dfe800d workflow bytes and zero recorded
-`workflow_dispatch` attempts. The registry state is availability, not execution
+`workflow_dispatch` attempts at registration reconciliation. The later consumed
+attempt is recorded below. The registry state is availability, not execution
 authority or proof of host capability. The routing helper is byte-identical to
 the approved4cba13f2 prepared helper; no exception or process semantics changed.
 After a fresh exact-source one-attempt grant, the proposed dispatch names the
@@ -307,3 +308,59 @@ under the Rust host. The reviewed acp-actor-shape stand-in uses a parent-child
 graph and does not prove that composition. Task227 owns its private sibling
 adapter; no shared actor/kernel/schema change or integration claim is made by
 this exact workflow preparation.
+
+
+## Consumed combined attempt and actual host refusal
+
+Tom decision78e36a73-4254-42a2-b872-71235fbdf4f9 v2, answered2026-11-14
+13:15:23.553Z, granted exactly one new three-job owned-fake dispatch at source
+2ea832c64269f4adfcaf1436dcfd93afee06c271, record
+cedc3216b416764ecfc56b84581e08a6be8f1ad4b5861073a4d3e8f7a4437d9c and plan
+8cf7b25a8640ca8f49f07628be4d84b9d90d605e5948adce256ec40355b5bf2d. Immediate
+independent local/remote/ref, all26 captured input, workflow/default/execution
+byte, plan/routing and prior-attempt checks agreed. The recorded exact command
+returned exit0 and [run43599057785](https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785).
+Its final metadata independently confirms that source, workflow418195892,
+workflow_dispatch, attempt1 and failure. The source/ref stayed frozen through
+settlement; workflow history contains exactly one combined dispatch. The grant
+is consumed. No retry, rerun or changed-source substitution is authorized.
+
+| State / actual job | Preflight | Privileged probe | Independent cleanup step |
+| --- | --- | --- | --- |
+| [absent132459694239](https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459694239) | exit1 | skipped | exit0, no-setup branch |
+| [disabled132459693979](https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459693979) | exit1 | skipped | exit0, no-setup branch |
+| [managed-deny132459694198](https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459694198) | exit1 | skipped | exit0, no-setup branch |
+
+All jobs checked out the frozen source and passed the exact input step. Runner
+setup reported Ubuntu26.04.1 / ubuntu-26.04; absent and managed-deny image
+20261111.196.1, disabled image20261111.82.6. These are runner image observations,
+not an actual kernel/runtime custody inventory. All failed `Existing runtime
+and read-only combined preflight` before any inspect JSON or Python traceback
+was emitted. The untraced shell block contains source/clean-worktree checks,
+private mktemp creation and `test -x` for the cached exact Node before Python.
+The logs do not identify which shell operation failed. Missing cached Node is
+therefore a candidate, not a proved diagnosis; no runtime, cgroup or kernel
+capability was admitted from this failure.
+
+Each cleanup step printed `Read-only preflight refused; privileged setup was
+not reached`. It did not invoke the root cleanup helper. This is a successful
+no-setup branch, not fixtureCleanup:true, independent tree settlement or
+post-cleanup filesystem inspection. No root fixture/cgroup/PID/netns/ptrace
+setup or owned driver/native probe ran. No actor/exec/filter/route records,
+software waits, pidfd/cgroup observations, canonical policy discovery or runtime
+library attestation were produced. Full raw job logs, final run/job/history
+metadata, exact dispatch receipt and input checks are retained as author
+review evidence; no success is inferred from their absence.
+
+The next actual gate is identifying the failing existing-host preflight check
+and establishing an admitted host with the unchanged required cached exact
+Node22.23.2, complete tool/runtime/library custody and pre-enabled exclusive
+cgroup controllers plus the required kernel methods. A bounded diagnostic must
+report the individual read-only gate outcome before any privileged entry; any
+new job/source/workflow bytes need applicable review/preparation and a fresh
+exact attempt grant. No installation, parent-controller mutation, provisioning,
+policy weakening or replay follows from this refusal. All planned time/task/
+memory/CPU/FD/output/storage/transfer and cleanup limits remain unchanged but
+were not exercised by the skipped combined probe. Original vendor/launch-graph,
+Darwin shared-cache and actual ACP sibling composition gates remain separate;
+Q-009 and the qualification merge hold stay open.

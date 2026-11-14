@@ -8,6 +8,9 @@
 #![deny(missing_docs)]
 
 mod attachment;
+mod captured_manifest;
+mod captured_source;
+mod checked_node;
 mod child;
 mod connection_lifecycle;
 mod credential;
@@ -33,11 +36,17 @@ mod services;
 mod serving_endpoint;
 mod sign_in;
 mod task;
+mod trusted_runtime;
 mod watcher;
 mod watcher_bridge;
 mod working_resource;
 mod working_resource_io;
 
+pub use captured_source::{
+    LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint,
+    LocalCapturedNodeRecipe, LocalCapturedSources, LocalExpectedSource,
+};
+pub use checked_node::LocalCheckedNodeLaunch;
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};
@@ -45,4 +54,5 @@ pub use limits::{LocalMaterializationLimits, LocalProcessLimits};
 pub use services::LocalHostServices;
 pub use sign_in::{LocalSignInCall, LocalSignInPorts};
 pub use task::LocalScopedTaskService;
+pub use trusted_runtime::{LocalRuntimeTrust, LocalTrustedRuntime};
 pub use watcher_bridge::WatcherBridgeProofKind;

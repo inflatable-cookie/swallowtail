@@ -1,0 +1,18 @@
+{
+  "first_observed_acp": "0.101.0",
+  "file": "dist/idle-compaction.js",
+  "sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+  "default_delay_ms": 3240000,
+  "default_minimum_context_tokens": 200000,
+  "minimum_context_floor": 100000,
+  "conditions": [
+    "one-hour cache TTL observed in current process",
+    "session idle",
+    "context meets configured minimum",
+    "no disqualifying rate-limit or missed deadline",
+    "not disabled by inherited settings or environment"
+  ],
+  "action": "Calls the v1 agent prompt path with /compact without an explicit client prompt.",
+  "lifecycle": "Disarmed on client prompt, steer, cancellation, model change and disposed on session close.",
+  "assessment": "Selected session process and spend boundary; no compatible claim inferred and no vendor executable was run."
+}

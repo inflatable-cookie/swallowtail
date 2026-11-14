@@ -2,11 +2,11 @@
 
 use crate::debug_observation::DebugObservation;
 use crate::{
-    AttachmentDescriptor, AttachmentRef, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
-    Deadline, DeadlineObservation, LeaseCleanupAuthority, MaterializedFileRef,
-    MaterializedResourceRef, MonotonicInstant, ProcessExit, ProcessInputChunk, ProcessOutputChunk,
-    ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure, SchemaDocument,
-    ScopeId, WorkingResourceRef,
+    AttachmentDescriptor, AttachmentRef, BoxFuture, CheckedProcessRef, CleanupOutcome,
+    CredentialLease, CredentialRef, Deadline, DeadlineObservation, LeaseCleanupAuthority,
+    MaterializedFileRef, MaterializedResourceRef, MonotonicInstant, ProcessExit, ProcessInputChunk,
+    ProcessOutputChunk, ProcessRequest, ResourceAccess, ResourceRepresentation, RuntimeFailure,
+    SchemaDocument, ScopeId, WorkingResourceRef,
 };
 use std::any::Any;
 use std::task::Waker;
@@ -190,6 +190,41 @@ pub trait ProcessService: Send + Sync {
         scope: ScopeId,
         request: ProcessRequest,
     ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>>;
+
+    /// Checks a host-owned compound launch binding without starting a process.
+    ///
+    /// Implementations must resolve the opaque reference and compare the
+    /// complete target and policy, including current custody and revocation.
+    /// A successful check is not a substitute for the check at start time.
+    fn validate_checked(
+        &self,
+        _scope: ScopeId,
+        _binding: CheckedProcessRef,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        Box::pin(async { Err(checked_process_unavailable()) })
+    }
+
+    /// Starts only after atomically rechecking the host-owned binding.
+    ///
+    /// An absent, mismatched, revoked or unverifiable binding must fail. It
+    /// must never fall back to [`Self::start`]. The host remains responsible
+    /// for binding verified bytes to the interpreter and sources actually used.
+    fn start_checked(
+        &self,
+        _scope: ScopeId,
+        _binding: CheckedProcessRef,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        Box::pin(async { Err(checked_process_unavailable()) })
+    }
+}
+
+fn checked_process_unavailable() -> RuntimeFailure {
+    RuntimeFailure::new(SafeDiagnostic::new(
+        "swallowtail.process.checked_binding_unavailable",
+        "The host cannot verify the checked process binding",
+    ))
 }
 
 /// Host boundary for acquiring and releasing credential leases.
@@ -449,5 +484,71 @@ pub trait DiagnosticObserver: Send + Sync {
     /// compiling. Hosts that want restricted debug context override this method.
     fn observe_debug(&self, observation: &DebugObservation) {
         let _ = observation;
+    }
+}
+
+#[cfg(test)]
+mod checked_process_tests {
+    use super::{BoxFuture, ProcessHandle, ProcessRequest, ProcessService, RuntimeFailure};
+    use crate::{CheckedProcessRef, ExecutableRef, ScopeId};
+    use std::future::Future;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::task::{Context, Poll, Waker};
+    use swallowtail_core::SafeDiagnostic;
+
+    struct LegacyHost(AtomicUsize);
+
+    impl ProcessService for LegacyHost {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            self.0.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "fixture.started",
+                    "ordinary start was called",
+                )))
+            })
+        }
+    }
+
+    fn ready<T>(future: impl Future<Output = T>) -> T {
+        let mut future = Box::pin(future);
+        match future
+            .as_mut()
+            .poll(&mut Context::from_waker(Waker::noop()))
+        {
+            Poll::Ready(value) => value,
+            Poll::Pending => panic!("fixture future must be ready"),
+        }
+    }
+
+    #[test]
+    fn checked_process_default_refuses_preflight_and_start_without_fallback() {
+        let host = LegacyHost(AtomicUsize::new(0));
+        let scope = ScopeId::new("scope").expect("scope");
+        let binding = CheckedProcessRef::new("private-binding").expect("binding");
+        let request =
+            ProcessRequest::new(ExecutableRef::new("private-executable").expect("target"));
+        assert!(!format!("{binding:?}").contains("private-binding"));
+        let preflight =
+            ready(host.validate_checked(scope.clone(), binding.clone(), request.clone()))
+                .expect_err("legacy host cannot attest a checked launch");
+        assert_eq!(
+            preflight.diagnostic().code(),
+            "swallowtail.process.checked_binding_unavailable"
+        );
+        let start = ready(host.start_checked(scope, binding, request));
+        assert_eq!(
+            start
+                .err()
+                .expect("checked start must refuse")
+                .diagnostic()
+                .code(),
+            "swallowtail.process.checked_binding_unavailable"
+        );
+        assert_eq!(host.0.load(Ordering::SeqCst), 0);
     }
 }

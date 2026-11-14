@@ -181,6 +181,16 @@ impl FixtureHost {
     }
 
     #[allow(dead_code)]
+    pub fn advance_fake_idle_minutes(&self, minutes: u64) {
+        self.agent.advance_fake_idle_minutes(minutes);
+    }
+
+    #[allow(dead_code)]
+    pub fn wait_for_stop(&self) {
+        self.agent.wait_for_stop();
+    }
+
+    #[allow(dead_code)]
     pub fn wait_for_write(&self, method: &str) {
         self.agent.wait_for_method(method);
     }

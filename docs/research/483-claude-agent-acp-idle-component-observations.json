@@ -1,0 +1,671 @@
+{
+  "schema": "swallowtail.acp.idle-component-observations.v1",
+  "decision": {
+    "id": "2f4d33df-aaa6-4497-80c1-8c56fc6c2ccc",
+    "version": 2,
+    "ruling": "Run eight offline component checks",
+    "date": "2026-11-14"
+  },
+  "sourceHead": "c0d591438590f77f502650a47b44e96295cf23f3",
+  "bindings": {
+    "proposalSha256": "321f2fe458175f63f35031a93c7776c750d79bf1978c82f2579a8defe14ec878",
+    "ownerSha256": "f5fafa02ca0892fb1580d8fcaffbffb72f56b4c4e054e0e8d02c3fa29e564588",
+    "canonicalRecordSha256": "e8cae5c0e222aebed4af2a209977a4e349c958d8f6cbbd2e20b821ca450cfaa4",
+    "rustCustodySha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+    "confinementPolicyTemplateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+    "guardSha256": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
+    "classArchiveSha256": "9035a82e8db990a464b49317f05d15dba271890428f3e1d7231ceedc5014644c",
+    "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+    "sandboxSha256": "abc5bb136d6b5cce8fa85d789f78e3326c51ca60cae637b2064adfb67a1dcd9a"
+  },
+  "detachedRecordSha256": "50076fe81644ce772a8aecd859f258f86faa63e4ce58fbac7adcfab88d349086",
+  "commandsSha256": "40b5d96b6e766b68653191054e1b2626282f34be6d70ee4573e3e402e0281471",
+  "runtimeVersion": "26.11.0",
+  "runtimeSourceSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+  "runtimeNonSystemDependencies": 96,
+  "host": {
+    "kernel": "25.6.0",
+    "machine": "arm64",
+    "system": "Darwin"
+  },
+  "attempts": [
+    {
+      "hop": "0.101.0",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "4bf957e91ed40ef4ea8da23746b58776aedcbcd31cbb0899ac5d348a9bdf4030",
+      "confinementPolicySha256": "9a9c3967b251b1d61e7ee498e7960d185717981fdb4a6552ac4c6b60c8959fda",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "d38c5635b7db3aca2fa0fad062a4561f66aa59f5950238aa0119e73f4dcf4400",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "18cc814252bdc680f77dd33231ef7dc6dae8afe53b89d87e19a9020d23e23da7",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.101.1",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "914e178f518663ec6c34fbf3f371bc61d498fbf9d1580f510f1d34d95e24b2ad",
+      "confinementPolicySha256": "84d512cf1dd5915d7bcf2d1b60facfa5d2a8f4aa3531945824e4807ba035fe92",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "27539890b213c51cd1210c9affe84a01b8d68abdceffd28c5974d2ec6ce64e8e",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "48534c40e4ad389a89bc40b105b3bcad2004351836e647f16e9911d5a43707a2",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.102.0",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "edbf33e7f5da4e6010a2894c42aa2b56f7fb74ae5ec1d4a83bbe0af3b890953b",
+      "confinementPolicySha256": "cc4ef8ff83d9d1f420d6af46e0c418febc5982ddadd7abae3e08eeb3893c8b7b",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "2046de04b357cd8c0b3d03aa4a789220a60f3f3c9ab81b2d54e88973cf805ae8",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "cb5c6ddb85c9ed5263d002be6fe8e0f84fc98e91b562c684f77c04cd770c7047",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.103.0",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "60709cc9f7fde2cbf29ef34f0f9bcddff8455977497b686146b41a8a62ebe780",
+      "confinementPolicySha256": "f00002145b168b5752bce23a0a83c775e64b0b5adb347304ada5efc3673c108a",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "288485021c1f7bd71f08e3fad30faa032423ad2c9672e452fb89620b86353123",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "e179093072a96ed287ccfce17c9ba07ec7b27cbf061c8f39d85114e081bf96ee",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.104.0",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "ab79b26d2009be2b3e35fae5eea6bab0c136b6249d2cc1d9476d8fb08118e1c1",
+      "confinementPolicySha256": "9a03c2303d64fcb4c5d822b0d1a261817fe85bbadbb095d7466bc2478b969cee",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "cf861da5630a3dfadd8cc9f11724b157e0c9be016c95f189870f06557220ad92",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "e96ef79fd804e936b2147e14d168904f48aa9017edefa2ece82856444da22c3e",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.104.1",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "4d383edd25897868cd9623a71ddeb6c992a8799112787379dc393e62155beb9d",
+      "confinementPolicySha256": "2d6dccbee5bb36abe8e6883b5e33eed1caf511fcbe308c1e77d559ad6630d9d3",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "00f622919494beeb947aa2bbd31079c6178a8d6e5ecb799dead9911115684b87",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "b42744c72e144ca13a356440c9b7fc5702a267e4ee29fc13c5930a06f52e4902",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.105.0",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "d318dedc10eb19596b73c37b250a7f56b7b9e97c7a2663a5a06609226fb74503",
+      "confinementPolicySha256": "66e9483b5ddb7409f5a42c336066c3bff6bcb838f6b6bda7c2508f40f96f9af5",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "e3cd2332e4f0c2a75c02d004406482feb63a01d08b8b9a22611fc61d7b385082",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "5d706e920aca714c7c7d080cd0edc809c7c591837fcc0641ce287dd2a50b0210",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    },
+    {
+      "hop": "0.106.0",
+      "attempt": 1,
+      "ownerExits": [
+        0,
+        0
+      ],
+      "wrapperExit": 0,
+      "logSha256": "a54a778d5892f435f7f46bbbd33b4cc4f332bc7cdae3ab2241728b4490c8d4b9",
+      "confinementPolicySha256": "f880af2ac13b75e9da7c9baa51ead21543fdcfd63779aa1d2958d9851fe7ffa2",
+      "templateSha256": "50970df3dc04a6efb4a5e913b1feab40bb356848f945835954f970f79f97b1ab",
+      "fixtureRemoved": true,
+      "childWaitAndWatchdogJoin": "Each Rust owner returned only after process.wait and watchdog.join; wrapper observed both owner exits.",
+      "results": [
+        {
+          "compoundFingerprint": "1b5378f7ca2d35f3d5f9f3f5021cff7660d308421a7185a33e9ee423cde11ce4",
+          "control": true,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 6,
+            "entryRan": true,
+            "fired": 5,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": false,
+            "prototypeLocked": false,
+            "settingsUnchanged": true
+          }
+        },
+        {
+          "compoundFingerprint": "c92b7e35c74b4558cd072f311969a9ec61444931351797b631ad85c57bed1a12",
+          "control": false,
+          "graph": {
+            "entrySha256": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+            "files": 2,
+            "idleSha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+            "nativeBindings": 0,
+            "platformPrograms": 0
+          },
+          "launchPolicyRevisionSha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+          "mode": "original",
+          "runtimeSha256": "832eaf52cafa7ff1364c2ca378451db14fb043d8d23a5cfd18a0a103d66226fc",
+          "rustRuntimeSha256": "0878e1f6a91209a907f5d56ef195bcd556c31084b7225e022d355b9038501cb0",
+          "scope": "idle-class-component-only",
+          "witness": {
+            "armed": 0,
+            "entryRan": true,
+            "fired": 0,
+            "joined": true,
+            "modeledContexts": [
+              "new-model",
+              "load-model",
+              "resume-model"
+            ],
+            "nodeVersion": "26.11.0",
+            "ownLocked": true,
+            "prototypeLocked": true,
+            "settingsUnchanged": true
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "Original idle class only; first-party host/settings/clock/compact promises; new/load/resume are modeled contexts, not actual ACP sessions.",
+  "limitations": [
+    "No ACP entrypoint, Agent SDK, original native, provider request, credentials/spend, Linux, installation or release executed.",
+    "Spawn-path evidence remains Rust source evidence; explicit trusted-host custody excludes hostile same-user replacement.",
+    "Pinned /bin/sleep remains a deliberate process-exec allowance; this is not a hostile-JavaScript sandbox.",
+    "Original permission callback/native behavior and full-route lifecycle proof remain missing; ceiling remains0.100.0."
+  ],
+  "limits": {
+    "attempts_per_hop": 1,
+    "control_and_guarded_launches": 2,
+    "cpu_seconds": 30,
+    "cleanup": "Observed child wait, Rust watchdog join, both owner exits; success removes only owned fixture; timeout/unknown cleanup refuses and retains fixture",
+    "execution_allowlist": "Selected Node, copied Rust owner initial exec, and the root-owned system sleep process-group owner; runtime libraries are map/read-only. Readable /bin/echo must fail process-exec before Node launch. The idle class inherits permission to exec the sleep helper; no hostile-JavaScript sandbox claim."
+  }
+}

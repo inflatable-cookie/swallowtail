@@ -328,3 +328,102 @@ fn unsupported_options_fail_before_session_process_effects() {
     ));
     assert!(result.is_err());
 }
+
+#[test]
+fn prepared_unverified_session_cancels_then_joins_cleanup() {
+    let host_id = ExecutionHostId::new("fixture.prepared.cancel-106").expect("valid host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.106.0");
+    let prepared = block_on(prepare_claude_agent(
+        preparation_input(host_id.clone()),
+        probe(),
+        preparation_host.services(host_id.clone()),
+    ))
+    .expect("unverified Claude Agent prepares");
+    let profile = prepared
+        .prepare_session(ClaudeAgentSessionProfileInput::new(
+            RequestId::new("claude-agent-cancel-106").expect("request"),
+            ClaudeAgentModelSelection::new(
+                ModelRouteId::new("claude-agent.prepared.route").expect("route"),
+                ModelRouteRevision::new("1").expect("revision"),
+                ModelId::new("claude-sonnet-4-6").expect("model"),
+            ),
+            WorkingResourceRef::new("claude-agent.prepared.workspace").expect("resource"),
+            SessionOptions::default(),
+        ))
+        .expect("session profile");
+    let host = FixtureHost::new(Scenario::Cancellation, "0.106.0");
+    let services = host.services(host_id);
+    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("claude-agent-cancel-turn").expect("turn"),
+            OperationContent::new("pending turn").expect("prompt"),
+        ),
+        services.clone(),
+    ))
+    .expect("turn starts");
+    host.wait_for_write("session/prompt");
+    block_on(turn.cancellation().request()).expect("cancellation requested");
+    let terminal = turn.take_terminal_outcome().expect("terminal");
+    assert_eq!(block_on(terminal).status(), &TerminalStatus::Cancelled);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    assert_eq!(
+        block_on(session.close(host.cleanup_request(), services)),
+        CleanupOutcome::Clean
+    );
+    let writes = host.writes();
+    let position = |method: &str| {
+        writes
+            .iter()
+            .position(|message| message["method"] == method)
+            .expect("method written")
+    };
+    assert!(position("session/prompt") < position("session/cancel"));
+    assert!(!writes.iter().any(|message| message["method"] == "session/close"));
+    assert_eq!(host.credential_releases(), 1);
+    assert_eq!(host.resource_releases(), 1);
+}
+
+#[test]
+fn prepared_idle_update_without_turn_stops_connection_and_joins_cleanup() {
+    let host_id = ExecutionHostId::new("fixture.prepared.idle-clock").expect("host");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.106.0");
+    let prepared = block_on(prepare_claude_agent(
+        preparation_input(host_id.clone()), probe(), preparation_host.services(host_id.clone()),
+    )).expect("prepares");
+    let profile = prepared.prepare_session(ClaudeAgentSessionProfileInput::new(
+        RequestId::new("idle-open").expect("request"),
+        ClaudeAgentModelSelection::new(
+            ModelRouteId::new("claude-agent.prepared.route").expect("route"),
+            ModelRouteRevision::new("1").expect("revision"),
+            ModelId::new("claude-sonnet-4-6").expect("model"),
+        ),
+        WorkingResourceRef::new("claude-agent.prepared.workspace").expect("resource"),
+        SessionOptions::default(),
+    )).expect("session profile");
+    let host = FixtureHost::new(Scenario::SimulatedIdleCompaction, "0.106.0");
+    let services = host.services(host_id);
+    let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
+    let mut turn = block_on(session.start_turn(
+        TurnRequest::new(RuntimeTurnId::new("idle-turn").expect("turn"),
+            OperationContent::new("one prompt").expect("prompt")),
+        services.clone(),
+    )).expect("turn starts");
+    let mut events = turn.take_events().expect("events");
+    let terminal = turn.take_terminal_outcome().expect("terminal");
+    let outcome = block_on(async {
+        while let Some(event) = events.next().await { event.expect("event"); }
+        terminal.await
+    });
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
+    host.advance_fake_idle_minutes(53);
+    assert_eq!(host.writes().iter().filter(|m| m["method"] == "session/prompt").count(), 1);
+    host.advance_fake_idle_minutes(1);
+    host.wait_for_stop();
+    assert_eq!(block_on(session.close(host.cleanup_request(), services)), CleanupOutcome::Clean);
+    assert_eq!(host.writes().iter().filter(|m| m["method"] == "session/prompt").count(), 1);
+    assert!(host.cleanup_events().contains(&"process_joined"));
+    assert_eq!(host.resource_releases(), 1);
+    assert_eq!(host.credential_releases(), 1);
+}

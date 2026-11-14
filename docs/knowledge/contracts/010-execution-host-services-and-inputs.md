@@ -211,6 +211,123 @@ search `PATH` at execution time, infer a provider-specific launcher inside an
 adapter, or substitute another recipe after a request begins. Native execution
 is the zero-prefix, empty-bootstrap case.
 
+For the separately guarded Claude Agent ACP launch, Tom's 2026-11-13
+decision `fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2 selects explicit trusted
+execution-host runtime custody. The host selects and verifies the exact
+interpreter and owns its custody through spawn; the trust boundary excludes
+hostile same-user replacement. A path hash followed by path-based spawn is
+not an OS-enforced verified-execution guarantee. This ruling does not extend
+other host or SDK claims.
+
+Tom's same-day decision `d0a0761f-3c47-4cf2-b198-242d232b20cc` v2
+requires support for the installed compatible Node. The ACP invocation requires
+Node>=22 and synchronous module hooks, checked before captured entry effects;
+22.23.2 is retained reference evidence, not a consumer prerequisite. The host
+pins the actual executable and complete non-system loader closure per
+invocation. A changed identity needs fresh host admission and route proof;
+this supplies no standalone SDK/Node compatibility claim.
+
+`LocalRuntimeTrust` names the users and groups whose updates the host controls.
+The default rejects group-writable files and ancestors. Explicit installed
+runtime capture may admit group writes only for named trusted groups; it still
+rejects other-writable files and untrusted owners/groups (root-owned sticky
+ancestors remain bounded exceptions). The Darwin component host trusts root,
+the fixture-owning execution user and the administrator group80, whose members
+must coordinate updates with the host. This is a host operating precondition,
+not an advisory lock that prevents package-manager updates. Admission records
+file/ancestor identity, source digests and principals, rechecks the complete
+closure before spawn and serializes revocation with spawn. Dependency drift,
+replacement, permission/ancestor changes or revocation refuse. Host-controlled
+principals must preserve custody across the remaining path-spawn interval;
+The host also owns loader-alias resolution and system-loader custody; canonical
+file pins do not lock package-manager symlinks or the OS loader. No OS
+verified-execution or hostile-same-user resistance is claimed.
+
+A local checked Node registration is host policy, not caller attestation. It
+binds one opaque checked reference and executable to a captured recipe, the
+host's independently approved compound fingerprint, exact allowed argument
+vectors and a revocable runtime pin. Preflight and start verify the same
+registration; start serializes revocation with spawn. It rechecks before any
+graph bootstrap bytes and holds registration plus runtime/native/helper custody
+while writing the final admission byte. No synchronous guard crosses an await;
+a refusal stops and joins the spawned child before returning. Unknown references,
+different targets, prefixes, startup controls, fingerprints or revoked custody
+refuse before spawn, without stock fallback. External `OPENSSL_` startup
+configuration/module controls are rejected alongside `NODE_`, `LD_` and
+`DYLD_` controls. The fixed Node prefix selects `--openssl-config=/dev/null`
+before runtime startup, preventing compiled-in default OpenSSL configuration
+from loading external modules before the guard. Registration does not qualify a
+vendor graph. The host must independently approve the ACP factory's exact
+selected dependency/native edges and compound policy before registration.
+
+The guarded ACP factory accepts only packaged per-hop source/format/import
+manifests, a host-admitted compatible installed Node and the matching held SDK
+native executable. It captures the complete statically linked closure,
+including modules linked before ACP v1 negotiation, and explicitly binds the
+wrapper's SDK-root `createRequire`. JavaScript and JSON load from captured
+bytes. The module facade resolves only admitted captured/native/builtin edges;
+Node22's unhooked `createRequire().resolve()` is not used. The child-process facade
+permits only the pinned native path, rejects shells and unsafe startup controls,
+and rechecks the native source identity before invoking it. Worker realms,
+addons and string code are not implicitly admitted. Unclassified source or
+edges refuse; there is no stock fallback.
+
+The Darwin idle-component owner additionally compares an approved Rust custody
+identity and launch-policy revision digest, rather than treating its own JSON hash or
+compound fingerprint as outside approval. Principals come from the host-owned
+record; the fake host resolves the macOS `admin` group (gid80 on the proved host).
+The policy revision tag is distinct from confinement. Original mode also
+requires the approved exact normalized Seatbelt template digest before spawn;
+only the fresh owned scratch-root literal is substituted. The wrapper records
+the actual generated profile bytes and their digest, plus that template digest,
+so the confinement can be reconstructed. Other platforms refuse component execution. The existing local process-group
+owner requires the pinned root-owned `/bin/sleep`: the component's process-exec
+allowlist contains only that helper, selected Node and the initial owned Rust
+executable. Libraries are read/map-only. The inherited policy deliberately permits the idle
+class to exec `/bin/sleep`; this is not a hostile-JavaScript sandbox. Readable `/bin/echo` must fail an exec
+canary; file and network canaries remain independent.
+
+The selected Darwin owner uses an absolute Mach-O Node path, no `pre_exec`,
+uid/gid/group/chroot/session changes or working directory. The retained Rust1.97.1
+standard-library source shows this command takes synchronous `posix_spawnp`
+with a process-group attribute; nonzero errors propagate. This is source evidence for the
+selected build's spawn path, not runtime exec tracing or hostile-user verified
+execution. The host
+coordinates runtime, loader and helper custody through bootstrap admission.
+
+The idle guard patch is appended after module evaluation. It does not intercept
+arbitrary original top-level effects. Component admission pins the audited
+constant/function prefix, bounded intrinsic Set allocation and full class
+source, rejects static/computed members, and executes no original ACP entry or
+SDK. Output describes the admitted graph and held runtime digest; proof-like
+constant qualification/native-execution flags are not used as evidence.
+
+The ACP guarded factory now consumes exact per-hop manifests, including
+caller-specific ESM/CommonJS/JSON resolution, native resolver edges and the
+session-index `ps` helper. The helper binds a root-owned exact system binary
+and only the upstream bounded PID/start-time query. Other child programs,
+worker realms, hook replacement, native addons and dynamic string code refuse.
+These controls constrain reviewed sources under the trusted-host boundary;
+they do not promise a general JavaScript security sandbox. Runtime/native
+custody must remain stable for active uses; revocation prevents future launch
+and never replaces cancellation and joined cleanup of an active process.
+
+The host maintains runtime and native custody for the admitted invocation,
+including later native spawns. Pins and pre-spawn hashes detect observed
+replacement; the trusted host prevents races between checks and path-based
+spawn. Revocation fences new checked starts; already admitted processes retain
+their owned lifecycle and joined cleanup. These rules do not establish a
+general JavaScript sandbox or authorize original-artifact execution. Exact
+route proof remains a separate qualification gate.
+
+Runtime custody includes the host-selected executable and explicitly pinned
+non-system interpreter dependencies. The host owns their complete selection
+and stable custody, including system-loader dependencies; file hashes cannot
+discover that closure. The pin rechecks files and ancestor metadata through
+spawn. This relies on the trusted host maintaining custody and does not
+protect against hostile same-user replacement. Captured JavaScript is loaded
+from verified retained bytes, independently of later source-path replacement.
+
 Renderer or remote-client data cannot establish authority by naming an
 executable path, environment variable, or working directory. Process output is
 not a safe diagnostic until normalized and redacted.

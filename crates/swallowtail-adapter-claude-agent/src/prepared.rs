@@ -6,6 +6,7 @@ pub(crate) mod instance;
 use failure::{discovery_outcome_failure, discovery_runtime_failure, preparation_failure};
 use instance::configured_instance;
 use std::collections::BTreeSet;
+use std::sync::Arc;
 use swallowtail_core::{
     AccessProfile, AdmittedInstanceRecord, ConfigFieldId, ConfiguredInstance, ConfiguredInstanceId,
     CredentialMechanism, CredentialState, DiscoveryOutcome, EntitlementMetering, ExecutionHostId,
@@ -13,9 +14,10 @@ use swallowtail_core::{
     SupportAuthority,
 };
 use swallowtail_runtime::{
-    Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef, ExecutableRef, HostServices,
-    InstalledExecutableDiscoveryRequest, InstalledExecutableTarget, PreparationFailure,
-    PreparationStage, PreparedAccessEvidence, RequestId, ScopeId,
+    BoxFuture, CheckedProcessRef, Deadline, DiscoveryCancellation, DiscoveryDriver, EnvironmentRef,
+    ExecutableRef, HostServices, InstalledExecutableDiscoveryRequest, InstalledExecutableTarget,
+    PreparationFailure, PreparationStage, PreparedAccessEvidence, ProcessHandle, ProcessRequest,
+    ProcessService, RequestId, RuntimeFailure, ScopeId,
 };
 
 const ENDPOINT_AUDIENCE: &str = "api.anthropic.com";
@@ -30,6 +32,7 @@ pub struct ClaudeAgentPreparationInput {
     environment: EnvironmentRef,
     access_profile: AccessProfile,
     access_evidence: PreparedAccessEvidence,
+    checked_process: Option<CheckedProcessRef>,
 }
 
 impl ClaudeAgentPreparationInput {
@@ -52,7 +55,18 @@ impl ClaudeAgentPreparationInput {
             environment,
             access_profile,
             access_evidence,
+            checked_process: None,
         }
+    }
+
+    /// Requires the host to validate and use an opaque checked-process binding.
+    ///
+    /// The reference is only a host lookup key. Hosts without the checked
+    /// capability refuse preparation and never fall back to an ordinary spawn.
+    #[must_use]
+    pub fn with_checked_process(mut self, binding: CheckedProcessRef) -> Self {
+        self.checked_process = Some(binding);
+        self
     }
 
     /// Builds the addable ACP preparation input from one admitted record.
@@ -144,6 +158,7 @@ pub struct ClaudeAgentPreparedIntegration {
     access_evidence: PreparedAccessEvidence,
     instance: ConfiguredInstance,
     available_host_services: BTreeSet<HostServiceKind>,
+    checked_process: Option<CheckedProcessRef>,
 }
 
 impl ClaudeAgentPreparedIntegration {
@@ -192,6 +207,11 @@ impl ClaudeAgentPreparedIntegration {
     #[must_use]
     pub fn low_level_driver(&self) -> ClaudeAgentAcpDriver {
         driver_for_access(self.environment.clone(), &self.access_profile)
+            .with_checked_process(self.checked_process.clone())
+    }
+
+    pub(crate) fn checked_process(&self) -> Option<&CheckedProcessRef> {
+        self.checked_process.as_ref()
     }
 
     /// Rejects host or executable drift from the prepared target.
@@ -215,9 +235,34 @@ impl ClaudeAgentPreparedIntegration {
 pub async fn prepare_claude_agent(
     input: ClaudeAgentPreparationInput,
     probe: ClaudeAgentPreparationProbe,
-    services: HostServices,
+    mut services: HostServices,
 ) -> Result<ClaudeAgentPreparedIntegration, PreparationFailure> {
     validate_input(&input)?;
+    if let Some(binding) = input.checked_process.as_ref() {
+        services
+            .require_execution_host(&input.execution_host_id)
+            .map_err(discovery_runtime_failure)?;
+        let process = services.process().cloned().ok_or_else(|| {
+            preparation_failure(
+                PreparationStage::TargetSelection,
+                "swallowtail.claude_agent.preparation.checked_process_unavailable",
+                "Claude Agent checked process service is unavailable",
+            )
+        })?;
+        process
+            .validate_checked(
+                probe.scope_id.clone(),
+                binding.clone(),
+                ProcessRequest::new(input.target.executable().clone())
+                    .with_arguments(["--version".to_owned()]),
+            )
+            .await
+            .map_err(discovery_runtime_failure)?;
+        services = services.with_process(Arc::new(CheckedDiscoveryProcess {
+            process,
+            binding: binding.clone(),
+        }));
+    }
     let available_host_services = services.available_kinds();
     let request = InstalledExecutableDiscoveryRequest::new(
         probe.request_id,
@@ -317,6 +362,7 @@ fn promote(
         access_evidence: input.access_evidence,
         instance,
         available_host_services,
+        checked_process: input.checked_process,
     })
 }
 
@@ -324,5 +370,21 @@ fn driver_for_access(environment: EnvironmentRef, profile: &AccessProfile) -> Cl
     match profile.credential_reference() {
         Some(credential) => ClaudeAgentAcpDriver::new(environment, credential.clone()),
         None => ClaudeAgentAcpDriver::with_local_auth(environment),
+    }
+}
+
+struct CheckedDiscoveryProcess {
+    process: Arc<dyn ProcessService>,
+    binding: CheckedProcessRef,
+}
+
+impl ProcessService for CheckedDiscoveryProcess {
+    fn start(
+        &self,
+        scope: ScopeId,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        self.process
+            .start_checked(scope, self.binding.clone(), request)
     }
 }

@@ -35,6 +35,7 @@ use swallowtail_testkit::{
     assert_observable_activity_trace, assert_prepared_operation_evidence_matches_plan,
 };
 
+include!("prepared_facade/checked_cases.rs");
 include!("prepared_facade/session_cases.rs");
 include!("prepared_facade/structured_cases.rs");
 include!("prepared_facade/permission_cases.rs");

@@ -95,10 +95,15 @@ impl ClaudeAgentAcpDriver {
         ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated process service")
-            .start(scope.clone(), process_request)
+        let process: Arc<dyn ProcessHandle> = match self
+            .start_process(
+                services
+                    .process()
+                    .expect("validated process service")
+                    .as_ref(),
+                scope.clone(),
+                process_request,
+            )
             .await
         {
             Ok(process) => Arc::from(process),

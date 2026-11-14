@@ -198,11 +198,69 @@ present, and the terminal outcome concurrently. Cancellation stops only the
 active operation. Always close and join the turn, session or run; retain
 terminal, native provider close/delete, and local cleanup as separate truth.
 
+For newer Claude Agent ACP points, supported suppression of unsolicited idle
+compaction remains a qualification gate. The control must survive inherited
+and managed settings and cover an already-fired compaction; see
+[Research 483](../research/483-claude-agent-acp-0-106-0-evidence.md). The
+qualified ceiling remains 0.100.0.
+
+The selected guarded launch relies on an execution host that verifies and
+holds custody of its exact runtime through spawn. It does not claim protection
+against hostile same-user runtime replacement. The local host can register a
+captured Node recipe under an opaque checked-process reference. Registration
+binds the host's independently approved fingerprint, allowed arguments and
+revocable runtime/dependency custody. Ordinary start refuses a registered
+checked target. Prepared-driver proof uses owned fake modules through this
+production host. The guarded factory captures each exact official graph, serves
+verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
+and pins native and required system `ps` custody. It requires independently
+approved host policy; ordinary version discovery supplies no grant. Original
+full-route/native behavior remains unproved, so the ceiling stays0.100.0.
+Checked startup rechecks revocation before graph delivery and at the final
+admission byte; refusal stops and joins the child. The component proposal binds
+host-approved principals and the full Rust runtime custody identity, alongside
+source/plan/owner/Node/class inputs. Its deny-exec canary and narrow system
+process-group helper are separate from original provider/native authority.
+The installed compatible runtime is supported under Tom's decision
+`d0a0761f-3c47-4cf2-b198-242d232b20cc`: Node>=22 with the required synchronous
+module-hook APIs, exact executable/dependency identity and explicit host custody.
+The host must coordinate updates by every trusted user/group through spawn;
+Homebrew group write alone is not a refusal when that group is explicitly
+trusted. Changes or revocation invalidate admission. Node22.23.2 fake proof is
+retained reference evidence, not an installation requirement. Installed runtime
+proof applies only to this guarded ACP invocation; it does not extend the
+standalone SDK/Node claims. The separately authorized eight-hop Darwin
+idle-class component attempt passed: each control armed6 timers/fired5
+compactions, while each guard armed/fired0, with settings intact and joined
+cleanup. This models session contexts; it does not execute ACP session paths.
+Its one-attempt grant is consumed. Whole-route permission, lifecycle and native
+proof remain independent; see
+[Contract039](../knowledge/contracts/039-bounded-single-turn-structured-run-projection.md)
+and Research483.
+
+The ACP-private shared-software harness binds task234's reviewed validation and
+entry sources to the actual Rust/`LocalProcessHost` sibling process layout.
+Its manifest distinguishes the prepared owner, group leader, checked ACP Node
+and owned entry/child, with OS-derived identities and separate software wait
+receipts. Run `effigy validate:acp-shared-software` for that bounded integration;
+[the procedure](../knowledge/operations/claude-agent-acp-full-route-proof.md)
+keeps shared kernel/admin/original admission gaps explicit. Its test-only
+watchdog retains and awaits helper ownership on errors, cancellation and
+pending-start abandonment; diagnostic EOF supplies no kernel tree claim. This is a test-only
+private seam; consumers receive no new runtime API or qualification claim.
+
 ### ACP Permission Exchange
 
 The default prepared run or session rejects an unexpected permission once,
 cancels the turn, and reports `ProviderRequestObserved`. It exposes no callback
 exchange.
+
+The provider can also deny a tool without emitting a permission request. In
+that case the adapter does not invent a callback or a `ProviderRequestObserved`
+outcome. Tom's 2026-11-12 ruling preserves the inherited
+`permissions.denyInsteadOfPrompting` setting under a distinct revision for
+affected newer ACP versions once their exact behavior is qualified; it does not
+itself extend the current 0.100.0 qualified ceiling.
 
 Call `with_consumer_mediated_permissions` on
 `ClaudeAgentRunProfileInput` or `ClaudeAgentSessionProfileInput` to opt into

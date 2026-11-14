@@ -1,0 +1,3594 @@
+{
+  "changes": {
+    "0.100.0..0.101.0": {
+      "README.md": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      },
+      "dist/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/agent-command.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/agent-command.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/agent-command.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/background-output.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/background-output.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/background-output.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/background-work.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/background-work.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/background-work.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/claude-cli.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/claude-cli.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/claude-cli.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/context-compaction-meta.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/context-compaction-meta.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/context-compaction.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/context-compaction.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/context-compaction.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/elicitation.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/idle-compaction.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/idle-compaction.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/idle-compaction.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/index.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/mcp-command.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/mcp-command.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/permissions/modes.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/permissions/modes.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/permissions/modes.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-mode.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-mode.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-mode.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/tools.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tools.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.101.0..0.101.1": {
+      "dist/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/async-tasks.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/async-tasks.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/async-tasks.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/auth-status.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/background-work.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/background-work.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/background-work.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/context-compaction.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/elicitation.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/session-model.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-model.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-model.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-notices.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-notices.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-notices.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/tool-calls/field-tracker.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tool-calls/field-tracker.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tool-calls/field-tracker.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.101.1..0.102.0": {
+      "dist/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/background-work.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/background-work.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/background-work.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/plans.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/plans.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/plans.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/session-model.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-model.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-model.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/v2/session-update.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session-update.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session-update.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/workflow-progress.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/workflow-progress.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/workflow-progress.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "background-and-extension-adjacent"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.102.0..0.103.0": {
+      "README.md": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      },
+      "dist/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/acp-client.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/acp-client.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/acp-client.js": {
+        "class": "unreached-js",
+        "delta": "added"
+      },
+      "dist/acp-subagents.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-subagents.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-methods.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/auth-methods.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/auth-methods.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/auth-status-reporter.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/auth-status-reporter.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/auth-status-reporter.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/background-work.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/background-work.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/background-work.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/client-system-prompt.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/client-system-prompt.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/client-system-prompt.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/context-compaction.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/context-compaction.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/context-compaction.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/context-window.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/context-window.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/context-window.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/diff.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/diff.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/elicitation.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/elicitation.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/elicitation.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/file-change-audit.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/file-change-audit.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/file-change-audit.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/goal-extension.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/goal-extension.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/goal-extension.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/hide-claude-auth.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/hide-claude-auth.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/idle-compaction.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/idle-compaction.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/lib.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/lib.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/lib.js": {
+        "class": "unreached-js",
+        "delta": "changed"
+      },
+      "dist/logger.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/logger.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/logger.js": {
+        "class": "unreached-js",
+        "delta": "added"
+      },
+      "dist/mcp-oauth.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/mcp-oauth.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/mcp-oauth.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/mcp-servers.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/mcp-servers.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/mcp-servers.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/message-filters.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/message-filters.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/message-filters.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/native-subagents.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/native-subagents.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/native-subagents.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/new-session-meta.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/new-session-meta.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/new-session-meta.js": {
+        "class": "unreached-js",
+        "delta": "added"
+      },
+      "dist/permissions/presentation.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/permissions/presentation.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/permissions/presentation.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/plans.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/plans.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/plans.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/prompt-suggestions.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/prompt-suggestions.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/prompt-suggestions.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/prompt-to-claude.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/prompt-to-claude.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/prompt-to-claude.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/providers.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/providers.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/providers.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/remote-control.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/remote-control.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/remote-control.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/result-end.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/result-end.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/result-end.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/sdk-to-acp.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/sdk-to-acp.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/sdk-to-acp.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/serve.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/serve.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/serve.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/session-config-ids.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-config-ids.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-config-ids.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-config-options.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-config-options.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-config-options.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-effort.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-effort.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-effort.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-env.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-env.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-env.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-fast-mode.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-fast-mode.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-fast-mode.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-index/activity.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/activity.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/activity.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/archive-title.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/archive-title.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/archive-title.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/background-tasks.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/background-tasks.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/background-tasks.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/connection.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/connection.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/connection.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/dir-listing.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/dir-listing.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/dir-listing.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/first-prompt.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/first-prompt.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/first-prompt.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/list-subscriptions.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/list-subscriptions.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/list-subscriptions.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/live-registry.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/live-registry.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/live-registry.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/project-dirs.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/project-dirs.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/project-dirs.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/service.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/service.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/service.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/session-index.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/session-index.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/session-index.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/session-info.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/session-info.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/session-info.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/transcript-scan.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/transcript-scan.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/transcript-scan.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/worktrees.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/worktrees.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/session-index/worktrees.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-mode.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-mode.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-mode.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-model.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-model.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-model.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/session-notices.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-notices.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-notices.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/session-titles.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-titles.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-titles.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-usage.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-usage.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-usage.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/slash-commands.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/slash-commands.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/slash-commands.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/streamed-text.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/streamed-text.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/streamed-text.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/subagent-configuration.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/subagent-configuration.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/subagent-configuration.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/subagent-replay.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/subagent-replay.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/subagent-replay.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/task-notifications.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/task-notifications.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/tool-calls/changed-meta-filter.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/tool-calls/changed-meta-filter.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/tool-calls/changed-meta-filter.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/tool-calls/client-capabilities.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tool-calls/client-capabilities.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/tool-calls/renderer.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tool-calls/renderer.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tool-calls/renderer.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/tools.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tools.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/tools.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/turn-events.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/turn-events.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/turn-events.js": {
+        "class": "unreached-js",
+        "delta": "removed"
+      },
+      "dist/utils.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/utils.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/v1/background-work.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/background-work.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/background-work.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/v1/goal-extension.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/goal-extension.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/goal-extension.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "background-and-extension-adjacent"
+      },
+      "dist/v1/session-index/activity.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/activity.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/activity.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/archive-title.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/archive-title.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/archive-title.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/background-tasks.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/background-tasks.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/background-tasks.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/connection.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/connection.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/connection.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/dir-listing.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/dir-listing.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/dir-listing.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/first-prompt.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/first-prompt.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/first-prompt.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/list-subscriptions.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/list-subscriptions.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/list-subscriptions.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/live-registry.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/live-registry.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/live-registry.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/project-dirs.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/project-dirs.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/project-dirs.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/service.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/service.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/service.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/session-index.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/session-index.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/session-index.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/session-info.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/session-info.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/session-info.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/transcript-scan.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/transcript-scan.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/transcript-scan.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/worktrees.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/worktrees.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index/worktrees.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/tool-calls/changed-meta-filter.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/tool-calls/changed-meta-filter.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/tool-calls/changed-meta-filter.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/v1/turn-events.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/turn-events.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/turn-events.js": {
+        "class": "unreached-js",
+        "delta": "added"
+      },
+      "dist/v2/agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/agent.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/air.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/air.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/air.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/auth.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/auth.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/auth.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/background.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/background.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/background.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/child-config.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/child-config.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/child-config.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/clear-context.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/clear-context.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/clear-context.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/commands.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/commands.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/commands.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/config.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/config.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/config.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/elicitation.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/elicitation.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/elicitation.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/file-changes.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/file-changes.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/file-changes.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/file-preview.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/file-preview.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/file-preview.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/initialize.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/outcome.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/outcome.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/outcome.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/permission.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v2/permission.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v2/permission.js": {
+        "class": "v2-only",
+        "delta": "removed"
+      },
+      "dist/v2/permissions.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/permissions.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/permissions.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/prompt.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/prompt.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/prompt.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/remote-control.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/remote-control.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/remote-control.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/reports.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/reports.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/reports.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/restarts.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/restarts.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/restarts.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/session-requests.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/session-requests.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/session-requests.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/session-update.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session-update.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session-update.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/session.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/setup.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/setup.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/setup.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/stopped-work.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/stopped-work.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/stopped-work.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/stream.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/stream.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/stream.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/subagent-replay.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/subagent-replay.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/subagent-replay.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/subscription-guard.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/subscription-guard.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/subscription-guard.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/tasks.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/tasks.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/tasks.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/v2/terminal.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/terminal.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/tool-call.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/tool-call.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/update-translator.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/update-translator.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v2/update-translator.js": {
+        "class": "v2-only",
+        "delta": "added"
+      },
+      "dist/workflow-progress.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/workflow-progress.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/workflow-progress.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "background-and-extension-adjacent"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.103.0..0.104.0": {
+      "dist/acp-client.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/acp-client.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/agent-command.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/agent-command.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/agent-command.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/auth-methods.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-methods.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-methods.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/auth-status-reporter.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status-reporter.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status-reporter.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/auth-status.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/hide-claude-auth.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/hide-claude-auth.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/hide-claude-auth.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/index.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/v1/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/v2/agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/agent.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/auth.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/auth.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/auth.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.104.0..0.104.1": {
+      "dist/auth-status-reporter.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status-reporter.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/auth-status.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.104.1..0.105.0": {
+      "README.md": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      },
+      "dist/acp-client.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/message-filters.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/message-filters.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/message-filters.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/paths.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/paths.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/paths.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/session-index/activity.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/activity.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/activity.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/archive-title.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/archive-title.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/archive-title.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/background-tasks.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/background-tasks.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/background-tasks.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/dir-listing.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/dir-listing.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/dir-listing.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/first-prompt.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/first-prompt.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/first-prompt.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/list-subscriptions.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/list-subscriptions.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/list-subscriptions.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/live-registry.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/live-registry.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/live-registry.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/project-dirs.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/project-dirs.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/project-dirs.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/rename.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/rename.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/rename.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/service.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/service.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/service.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/session-index.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/session-index.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/session-index.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/session-info.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/session-info.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/session-info.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/transcript-scan.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/transcript-scan.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/transcript-scan.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-index/worktrees.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/worktrees.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-index/worktrees.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-status.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-status.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/session-status.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/settings.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/settings.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/settings.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/task-notifications.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/task-notifications.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "prompt-activity-result-permission-and-support-helpers"
+      },
+      "dist/v1/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/v1/client-connection.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/client-connection.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/client-connection.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/v1/session-index.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/v1/session-index.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/activity.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/activity.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/activity.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/archive-title.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/archive-title.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/archive-title.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/background-tasks.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/background-tasks.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/background-tasks.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/connection.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/connection.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/connection.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/dir-listing.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/dir-listing.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/dir-listing.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/first-prompt.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/first-prompt.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/first-prompt.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/list-subscriptions.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/list-subscriptions.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/list-subscriptions.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/live-registry.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/live-registry.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/live-registry.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/project-dirs.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/project-dirs.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/project-dirs.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/service.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/service.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/service.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/session-index.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/session-index.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/session-index.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/session-info.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/session-info.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/session-info.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/transcript-scan.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/transcript-scan.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/transcript-scan.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v1/session-index/worktrees.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/worktrees.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "removed"
+      },
+      "dist/v1/session-index/worktrees.js": {
+        "class": "v1-reachable",
+        "delta": "removed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/v2/agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/agent.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/background.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/background.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/background.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/outcome.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/outcome.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/outcome.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/reports.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/reports.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/reports.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/session.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/setup.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/setup.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/setup.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    },
+    "0.105.0..0.106.0": {
+      "README.md": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      },
+      "dist/auth-status.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/auth-status.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "authentication-and-provider-management-adjacent"
+      },
+      "dist/fork-session.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/fork-session.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/idle-compaction.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/idle-compaction.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/initial-config-options.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/initial-config-options.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "added"
+      },
+      "dist/initial-config-options.js": {
+        "class": "v1-reachable",
+        "delta": "added",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/resumed-session.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/resumed-session.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/resumed-session.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "session-operations-and-replay"
+      },
+      "dist/session-mode.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-mode.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/session-mode.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/settings.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/settings.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/settings.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "model-configuration-and-permission-inheritance"
+      },
+      "dist/v1/acp-agent.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v1/acp-agent.js": {
+        "class": "v1-reachable",
+        "delta": "changed",
+        "role": "construction-capabilities-dispatch-and-lifecycle"
+      },
+      "dist/v2/agent.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/agent.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/config.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/config.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/config.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/initialize.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/reports.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/reports.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/reports.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/session-requests.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session-requests.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session-requests.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "dist/v2/session.d.ts": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session.d.ts.map": {
+        "class": "non-executable-map-or-declaration",
+        "delta": "changed"
+      },
+      "dist/v2/session.js": {
+        "class": "v2-only",
+        "delta": "changed"
+      },
+      "package.json": {
+        "class": "package-metadata-or-documentation",
+        "delta": "changed"
+      }
+    }
+  },
+  "method": "Static relative JS import over-approximation from executable, server and v1 agent. V2-specific modules are excluded, though shared imports remain. Dynamic imports without literal paths and dependency packages require separate review. Reachability alone does not prove selected behavior. Role labels group reachable changed modules by the surfaces they may affect; they do not assert semantic compatibility or establish that every branch is reached.",
+  "reachable_js": {
+    "0.100.0": [
+      "dist/acp-agent.js",
+      "dist/acp-subagents.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-status.js",
+      "dist/background-work.js",
+      "dist/blob-resources.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/goal-extension.js",
+      "dist/hide-claude-auth.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/prompt-suggestions.js",
+      "dist/resumed-session.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-effort.js",
+      "dist/session-failure-extension.js",
+      "dist/session-index/activity.js",
+      "dist/session-index/archive-title.js",
+      "dist/session-index/background-tasks.js",
+      "dist/session-index/connection.js",
+      "dist/session-index/dir-listing.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-index/first-prompt.js",
+      "dist/session-index/list-subscriptions.js",
+      "dist/session-index/live-registry.js",
+      "dist/session-index/project-dirs.js",
+      "dist/session-index/service.js",
+      "dist/session-index/session-index.js",
+      "dist/session-index/session-info.js",
+      "dist/session-index/transcript-scan.js",
+      "dist/session-index/worktrees.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/settings.js",
+      "dist/startup-failure.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/changed-meta-filter.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js"
+    ],
+    "0.101.0": [
+      "dist/acp-agent.js",
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-status.js",
+      "dist/background-output.js",
+      "dist/background-work.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/goal-extension.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/prompt-suggestions.js",
+      "dist/resumed-session.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-effort.js",
+      "dist/session-failure-extension.js",
+      "dist/session-index/activity.js",
+      "dist/session-index/archive-title.js",
+      "dist/session-index/background-tasks.js",
+      "dist/session-index/connection.js",
+      "dist/session-index/dir-listing.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-index/first-prompt.js",
+      "dist/session-index/list-subscriptions.js",
+      "dist/session-index/live-registry.js",
+      "dist/session-index/project-dirs.js",
+      "dist/session-index/service.js",
+      "dist/session-index/session-index.js",
+      "dist/session-index/session-info.js",
+      "dist/session-index/transcript-scan.js",
+      "dist/session-index/worktrees.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/settings.js",
+      "dist/startup-failure.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/changed-meta-filter.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js"
+    ],
+    "0.101.1": [
+      "dist/acp-agent.js",
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-status.js",
+      "dist/background-output.js",
+      "dist/background-work.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/goal-extension.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/prompt-suggestions.js",
+      "dist/resumed-session.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-effort.js",
+      "dist/session-failure-extension.js",
+      "dist/session-index/activity.js",
+      "dist/session-index/archive-title.js",
+      "dist/session-index/background-tasks.js",
+      "dist/session-index/connection.js",
+      "dist/session-index/dir-listing.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-index/first-prompt.js",
+      "dist/session-index/list-subscriptions.js",
+      "dist/session-index/live-registry.js",
+      "dist/session-index/project-dirs.js",
+      "dist/session-index/service.js",
+      "dist/session-index/session-index.js",
+      "dist/session-index/session-info.js",
+      "dist/session-index/transcript-scan.js",
+      "dist/session-index/worktrees.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/settings.js",
+      "dist/startup-failure.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/changed-meta-filter.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js"
+    ],
+    "0.102.0": [
+      "dist/acp-agent.js",
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-status.js",
+      "dist/background-output.js",
+      "dist/background-work.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/goal-extension.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/plans.js",
+      "dist/prompt-suggestions.js",
+      "dist/resumed-session.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-effort.js",
+      "dist/session-failure-extension.js",
+      "dist/session-index/activity.js",
+      "dist/session-index/archive-title.js",
+      "dist/session-index/background-tasks.js",
+      "dist/session-index/connection.js",
+      "dist/session-index/dir-listing.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-index/first-prompt.js",
+      "dist/session-index/list-subscriptions.js",
+      "dist/session-index/live-registry.js",
+      "dist/session-index/project-dirs.js",
+      "dist/session-index/service.js",
+      "dist/session-index/session-index.js",
+      "dist/session-index/session-info.js",
+      "dist/session-index/transcript-scan.js",
+      "dist/session-index/worktrees.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/settings.js",
+      "dist/startup-failure.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/changed-meta-filter.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js",
+      "dist/workflow-progress.js"
+    ],
+    "0.103.0": [
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-methods.js",
+      "dist/auth-status-reporter.js",
+      "dist/auth-status.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/context-window.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/mcp-oauth.js",
+      "dist/mcp-servers.js",
+      "dist/message-filters.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/plans.js",
+      "dist/prompt-suggestions.js",
+      "dist/prompt-to-claude.js",
+      "dist/providers.js",
+      "dist/remote-control.js",
+      "dist/result-end.js",
+      "dist/resumed-session.js",
+      "dist/sdk-to-acp.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-config-options.js",
+      "dist/session-effort.js",
+      "dist/session-env.js",
+      "dist/session-failure-extension.js",
+      "dist/session-fast-mode.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/session-usage.js",
+      "dist/settings.js",
+      "dist/slash-commands.js",
+      "dist/startup-failure.js",
+      "dist/streamed-text.js",
+      "dist/subagent-configuration.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js",
+      "dist/v1/acp-agent.js",
+      "dist/v1/background-work.js",
+      "dist/v1/goal-extension.js",
+      "dist/v1/session-index/activity.js",
+      "dist/v1/session-index/archive-title.js",
+      "dist/v1/session-index/background-tasks.js",
+      "dist/v1/session-index/connection.js",
+      "dist/v1/session-index/dir-listing.js",
+      "dist/v1/session-index/first-prompt.js",
+      "dist/v1/session-index/list-subscriptions.js",
+      "dist/v1/session-index/live-registry.js",
+      "dist/v1/session-index/project-dirs.js",
+      "dist/v1/session-index/service.js",
+      "dist/v1/session-index/session-index.js",
+      "dist/v1/session-index/session-info.js",
+      "dist/v1/session-index/transcript-scan.js",
+      "dist/v1/session-index/worktrees.js",
+      "dist/v1/tool-calls/changed-meta-filter.js"
+    ],
+    "0.104.0": [
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-methods.js",
+      "dist/auth-status-reporter.js",
+      "dist/auth-status.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/context-window.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/mcp-oauth.js",
+      "dist/mcp-servers.js",
+      "dist/message-filters.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/plans.js",
+      "dist/prompt-suggestions.js",
+      "dist/prompt-to-claude.js",
+      "dist/providers.js",
+      "dist/remote-control.js",
+      "dist/result-end.js",
+      "dist/resumed-session.js",
+      "dist/sdk-to-acp.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-config-options.js",
+      "dist/session-effort.js",
+      "dist/session-env.js",
+      "dist/session-failure-extension.js",
+      "dist/session-fast-mode.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/session-usage.js",
+      "dist/settings.js",
+      "dist/slash-commands.js",
+      "dist/startup-failure.js",
+      "dist/streamed-text.js",
+      "dist/subagent-configuration.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js",
+      "dist/v1/acp-agent.js",
+      "dist/v1/background-work.js",
+      "dist/v1/goal-extension.js",
+      "dist/v1/session-index/activity.js",
+      "dist/v1/session-index/archive-title.js",
+      "dist/v1/session-index/background-tasks.js",
+      "dist/v1/session-index/connection.js",
+      "dist/v1/session-index/dir-listing.js",
+      "dist/v1/session-index/first-prompt.js",
+      "dist/v1/session-index/list-subscriptions.js",
+      "dist/v1/session-index/live-registry.js",
+      "dist/v1/session-index/project-dirs.js",
+      "dist/v1/session-index/service.js",
+      "dist/v1/session-index/session-index.js",
+      "dist/v1/session-index/session-info.js",
+      "dist/v1/session-index/transcript-scan.js",
+      "dist/v1/session-index/worktrees.js",
+      "dist/v1/tool-calls/changed-meta-filter.js"
+    ],
+    "0.104.1": [
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-methods.js",
+      "dist/auth-status-reporter.js",
+      "dist/auth-status.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/context-window.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/mcp-oauth.js",
+      "dist/mcp-servers.js",
+      "dist/message-filters.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/plans.js",
+      "dist/prompt-suggestions.js",
+      "dist/prompt-to-claude.js",
+      "dist/providers.js",
+      "dist/remote-control.js",
+      "dist/result-end.js",
+      "dist/resumed-session.js",
+      "dist/sdk-to-acp.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-config-options.js",
+      "dist/session-effort.js",
+      "dist/session-env.js",
+      "dist/session-failure-extension.js",
+      "dist/session-fast-mode.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/session-usage.js",
+      "dist/settings.js",
+      "dist/slash-commands.js",
+      "dist/startup-failure.js",
+      "dist/streamed-text.js",
+      "dist/subagent-configuration.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js",
+      "dist/v1/acp-agent.js",
+      "dist/v1/background-work.js",
+      "dist/v1/goal-extension.js",
+      "dist/v1/session-index/activity.js",
+      "dist/v1/session-index/archive-title.js",
+      "dist/v1/session-index/background-tasks.js",
+      "dist/v1/session-index/connection.js",
+      "dist/v1/session-index/dir-listing.js",
+      "dist/v1/session-index/first-prompt.js",
+      "dist/v1/session-index/list-subscriptions.js",
+      "dist/v1/session-index/live-registry.js",
+      "dist/v1/session-index/project-dirs.js",
+      "dist/v1/session-index/service.js",
+      "dist/v1/session-index/session-index.js",
+      "dist/v1/session-index/session-info.js",
+      "dist/v1/session-index/transcript-scan.js",
+      "dist/v1/session-index/worktrees.js",
+      "dist/v1/tool-calls/changed-meta-filter.js"
+    ],
+    "0.105.0": [
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-methods.js",
+      "dist/auth-status-reporter.js",
+      "dist/auth-status.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/context-window.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/mcp-oauth.js",
+      "dist/mcp-servers.js",
+      "dist/message-filters.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/plans.js",
+      "dist/prompt-suggestions.js",
+      "dist/prompt-to-claude.js",
+      "dist/providers.js",
+      "dist/remote-control.js",
+      "dist/result-end.js",
+      "dist/resumed-session.js",
+      "dist/sdk-to-acp.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-config-options.js",
+      "dist/session-effort.js",
+      "dist/session-env.js",
+      "dist/session-failure-extension.js",
+      "dist/session-fast-mode.js",
+      "dist/session-index/activity.js",
+      "dist/session-index/archive-title.js",
+      "dist/session-index/background-tasks.js",
+      "dist/session-index/dir-listing.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-index/first-prompt.js",
+      "dist/session-index/list-subscriptions.js",
+      "dist/session-index/live-registry.js",
+      "dist/session-index/project-dirs.js",
+      "dist/session-index/rename.js",
+      "dist/session-index/service.js",
+      "dist/session-index/session-index.js",
+      "dist/session-index/session-info.js",
+      "dist/session-index/transcript-scan.js",
+      "dist/session-index/worktrees.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-status.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/session-usage.js",
+      "dist/settings.js",
+      "dist/slash-commands.js",
+      "dist/startup-failure.js",
+      "dist/streamed-text.js",
+      "dist/subagent-configuration.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js",
+      "dist/v1/acp-agent.js",
+      "dist/v1/background-work.js",
+      "dist/v1/client-connection.js",
+      "dist/v1/goal-extension.js",
+      "dist/v1/session-index.js",
+      "dist/v1/tool-calls/changed-meta-filter.js"
+    ],
+    "0.106.0": [
+      "dist/acp-subagents.js",
+      "dist/agent-command.js",
+      "dist/air-extension.js",
+      "dist/async-tasks.js",
+      "dist/auth-methods.js",
+      "dist/auth-status-reporter.js",
+      "dist/auth-status.js",
+      "dist/blob-resources.js",
+      "dist/claude-cli.js",
+      "dist/clear-context-coordinator.js",
+      "dist/client-system-prompt.js",
+      "dist/context-compaction-meta.js",
+      "dist/context-compaction.js",
+      "dist/context-window.js",
+      "dist/diff.js",
+      "dist/elicitation.js",
+      "dist/exit-plan.js",
+      "dist/file-change-audit.js",
+      "dist/fork-session.js",
+      "dist/gateway-models.js",
+      "dist/hide-claude-auth.js",
+      "dist/idle-compaction.js",
+      "dist/index.js",
+      "dist/initial-config-options.js",
+      "dist/managed-policy.js",
+      "dist/mcp-command.js",
+      "dist/mcp-oauth.js",
+      "dist/mcp-servers.js",
+      "dist/message-filters.js",
+      "dist/native-subagents.js",
+      "dist/paths.js",
+      "dist/permissions/effects.js",
+      "dist/permissions/modes.js",
+      "dist/permissions/normalization.js",
+      "dist/permissions/options.js",
+      "dist/permissions/options/filesystem.js",
+      "dist/permissions/options/shared.js",
+      "dist/permissions/options/shell.js",
+      "dist/permissions/options/tools.js",
+      "dist/permissions/presentation.js",
+      "dist/permissions/response.js",
+      "dist/plans.js",
+      "dist/prompt-suggestions.js",
+      "dist/prompt-to-claude.js",
+      "dist/providers.js",
+      "dist/remote-control.js",
+      "dist/result-end.js",
+      "dist/resumed-session.js",
+      "dist/sdk-to-acp.js",
+      "dist/serve.js",
+      "dist/session-config-ids.js",
+      "dist/session-config-options.js",
+      "dist/session-effort.js",
+      "dist/session-env.js",
+      "dist/session-failure-extension.js",
+      "dist/session-fast-mode.js",
+      "dist/session-index/activity.js",
+      "dist/session-index/archive-title.js",
+      "dist/session-index/background-tasks.js",
+      "dist/session-index/dir-listing.js",
+      "dist/session-index/explicit-title.js",
+      "dist/session-index/first-prompt.js",
+      "dist/session-index/list-subscriptions.js",
+      "dist/session-index/live-registry.js",
+      "dist/session-index/project-dirs.js",
+      "dist/session-index/rename.js",
+      "dist/session-index/service.js",
+      "dist/session-index/session-index.js",
+      "dist/session-index/session-info.js",
+      "dist/session-index/transcript-scan.js",
+      "dist/session-index/worktrees.js",
+      "dist/session-mode.js",
+      "dist/session-model.js",
+      "dist/session-notices.js",
+      "dist/session-status.js",
+      "dist/session-timing.js",
+      "dist/session-titles.js",
+      "dist/session-ultracode.js",
+      "dist/session-usage.js",
+      "dist/settings.js",
+      "dist/slash-commands.js",
+      "dist/startup-failure.js",
+      "dist/streamed-text.js",
+      "dist/subagent-configuration.js",
+      "dist/subagent-history.js",
+      "dist/subagent-replay.js",
+      "dist/task-notifications.js",
+      "dist/tool-calls/background.js",
+      "dist/tool-calls/client-capabilities.js",
+      "dist/tool-calls/content.js",
+      "dist/tool-calls/field-tracker.js",
+      "dist/tool-calls/renderer.js",
+      "dist/tool-calls/reporters/agent.js",
+      "dist/tool-calls/reporters/bash.js",
+      "dist/tool-calls/reporters/compaction.js",
+      "dist/tool-calls/reporters/file-edit.js",
+      "dist/tool-calls/reporters/index.js",
+      "dist/tool-calls/reporters/interaction.js",
+      "dist/tool-calls/reporters/read.js",
+      "dist/tool-calls/reporters/search.js",
+      "dist/tool-calls/reporters/web.js",
+      "dist/tool-result-meta.js",
+      "dist/tools.js",
+      "dist/usage-markdown.js",
+      "dist/utils.js",
+      "dist/v1/acp-agent.js",
+      "dist/v1/background-work.js",
+      "dist/v1/client-connection.js",
+      "dist/v1/goal-extension.js",
+      "dist/v1/session-index.js",
+      "dist/v1/tool-calls/changed-meta-filter.js"
+    ]
+  }
+}

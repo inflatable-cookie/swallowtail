@@ -1,0 +1,398 @@
+{
+  "schema": "claude-agent-acp-guarded-probe-proposal-v1",
+  "route": "claude-agent.acp",
+  "status": "proposal-not-execution-authority",
+  "qualification_ceiling": "0.100.0",
+  "node": {
+    "version": "22.23.2",
+    "source": "https://nodejs.org/dist/v22.23.2/SHASUMS256.txt",
+    "platforms": {
+      "darwin-arm64": {
+        "tarball": "https://nodejs.org/dist/v22.23.2/node-v22.23.2-darwin-arm64.tar.xz",
+        "tarball_sha256": "5eff7a9011895aae3f29d06f167b84a62b028a591370c7cafb59103559fd26e1",
+        "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572",
+        "node_bytes": 112937728
+      },
+      "linux-x64": {
+        "tarball": "https://nodejs.org/dist/v22.23.2/node-v22.23.2-linux-x64.tar.xz",
+        "tarball_sha256": "d60acfe00a2932254bb0ad20e01b0d74397a0875595de719654b214f4b03f307",
+        "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+        "node_bytes": 124836408
+      }
+    },
+    "role": "Historical reference tuple only; not a required installation or current installed-runtime admission"
+  },
+  "tuples": [
+    {
+      "acp": "0.101.0",
+      "acp_tarball_sha256": "7f52fb5f7447f73a503ab9fc4fc886da3cc8658d4693954f086a617f57eb3abb",
+      "acp_sdk": "2.4.0",
+      "acp_sdk_tarball_sha256": "87acc66d5824f88d8913702f85cf74c997526bbffb06fce15a9f0d637566ca8d",
+      "agent_sdk": "0.3.318",
+      "agent_sdk_tarball_sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "native_version": "2.1.318",
+      "platform": "darwin-arm64",
+      "native_sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
+      "native_bytes": 319598464,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.101.0",
+      "acp_tarball_sha256": "7f52fb5f7447f73a503ab9fc4fc886da3cc8658d4693954f086a617f57eb3abb",
+      "acp_sdk": "2.4.0",
+      "acp_sdk_tarball_sha256": "87acc66d5824f88d8913702f85cf74c997526bbffb06fce15a9f0d637566ca8d",
+      "agent_sdk": "0.3.318",
+      "agent_sdk_tarball_sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "native_version": "2.1.318",
+      "platform": "linux-x64",
+      "native_sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
+      "native_bytes": 337814032,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.101.1",
+      "acp_tarball_sha256": "773924c931aec60c60e7669fb561eec7e54534fa093068b6bc91a6641c4a9f2a",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.319",
+      "agent_sdk_tarball_sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "native_version": "2.1.319",
+      "platform": "darwin-arm64",
+      "native_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+      "native_bytes": 321995200,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.101.1",
+      "acp_tarball_sha256": "773924c931aec60c60e7669fb561eec7e54534fa093068b6bc91a6641c4a9f2a",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.319",
+      "agent_sdk_tarball_sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "native_version": "2.1.319",
+      "platform": "linux-x64",
+      "native_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+      "native_bytes": 340226576,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.102.0",
+      "acp_tarball_sha256": "89ae947fa17ce875abb6128049534fe6c118a71f2e0a4ecb2e332e8c8c24526f",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.321",
+      "agent_sdk_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_version": "2.1.321",
+      "platform": "darwin-arm64",
+      "native_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+      "native_bytes": 323686048,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.102.0",
+      "acp_tarball_sha256": "89ae947fa17ce875abb6128049534fe6c118a71f2e0a4ecb2e332e8c8c24526f",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.321",
+      "agent_sdk_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_version": "2.1.321",
+      "platform": "linux-x64",
+      "native_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+      "native_bytes": 341910032,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.103.0",
+      "acp_tarball_sha256": "1c5b572c2287c5810ed1d1f5784bf44bf77cbdfe86ac8736639e58abaa443667",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.321",
+      "agent_sdk_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_version": "2.1.321",
+      "platform": "darwin-arm64",
+      "native_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+      "native_bytes": 323686048,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.103.0",
+      "acp_tarball_sha256": "1c5b572c2287c5810ed1d1f5784bf44bf77cbdfe86ac8736639e58abaa443667",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.321",
+      "agent_sdk_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_version": "2.1.321",
+      "platform": "linux-x64",
+      "native_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+      "native_bytes": 341910032,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.104.0",
+      "acp_tarball_sha256": "727295374962db5baab47bd6e15e64d92fcaf788b18873d10634db5b240691a2",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.321",
+      "agent_sdk_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_version": "2.1.321",
+      "platform": "darwin-arm64",
+      "native_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+      "native_bytes": 323686048,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.104.0",
+      "acp_tarball_sha256": "727295374962db5baab47bd6e15e64d92fcaf788b18873d10634db5b240691a2",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.321",
+      "agent_sdk_tarball_sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "native_version": "2.1.321",
+      "platform": "linux-x64",
+      "native_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+      "native_bytes": 341910032,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.104.1",
+      "acp_tarball_sha256": "036cc8f1d561aa853c472523b56186d8f22678054afc34fba48524e35728f6ab",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.322",
+      "agent_sdk_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_version": "2.1.322",
+      "platform": "darwin-arm64",
+      "native_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+      "native_bytes": 323702464,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.104.1",
+      "acp_tarball_sha256": "036cc8f1d561aa853c472523b56186d8f22678054afc34fba48524e35728f6ab",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.322",
+      "agent_sdk_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_version": "2.1.322",
+      "platform": "linux-x64",
+      "native_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+      "native_bytes": 341914128,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.105.0",
+      "acp_tarball_sha256": "0d0cd92dd09fa6b7e6890cb652df4b60ce8faa9ee42e49d3f504df7df35920b5",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.322",
+      "agent_sdk_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_version": "2.1.322",
+      "platform": "darwin-arm64",
+      "native_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+      "native_bytes": 323702464,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.105.0",
+      "acp_tarball_sha256": "0d0cd92dd09fa6b7e6890cb652df4b60ce8faa9ee42e49d3f504df7df35920b5",
+      "acp_sdk": "2.5.0",
+      "acp_sdk_tarball_sha256": "94f837f50d2ca4885e905b66460bc32360e11b82ca4edf70c0415c028c66074a",
+      "agent_sdk": "0.3.322",
+      "agent_sdk_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_version": "2.1.322",
+      "platform": "linux-x64",
+      "native_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+      "native_bytes": 341914128,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    },
+    {
+      "acp": "0.106.0",
+      "acp_tarball_sha256": "d00e52680d3aed564346acadddd4603de3f9178d385ef257283839c41d9da4b0",
+      "acp_sdk": "2.6.0",
+      "acp_sdk_tarball_sha256": "7958428b1e2b768808887a643d1f6ed8e81ab34769f550992245c57e7dfd88c0",
+      "agent_sdk": "0.3.322",
+      "agent_sdk_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_version": "2.1.322",
+      "platform": "darwin-arm64",
+      "native_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+      "native_bytes": 323702464,
+      "node_sha256": "18e387c90ab8a8400183e8bdd396376e1e875b91b4c874b894dcade7b35bf572"
+    },
+    {
+      "acp": "0.106.0",
+      "acp_tarball_sha256": "d00e52680d3aed564346acadddd4603de3f9178d385ef257283839c41d9da4b0",
+      "acp_sdk": "2.6.0",
+      "acp_sdk_tarball_sha256": "7958428b1e2b768808887a643d1f6ed8e81ab34769f550992245c57e7dfd88c0",
+      "agent_sdk": "0.3.322",
+      "agent_sdk_tarball_sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "native_version": "2.1.322",
+      "platform": "linux-x64",
+      "native_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+      "native_bytes": 341914128,
+      "node_sha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327"
+    }
+  ],
+  "limits": {
+    "attempts_per_tuple": 1,
+    "parallel_tuples": 1,
+    "wall_seconds_per_attempt": 120,
+    "cpu_seconds_per_process": 30,
+    "owned_processes_including_group_owner_and_supervisor": 4,
+    "output_bytes_per_stream": 1048576,
+    "scratch_bytes": 805306368,
+    "retry_on_failure": false
+  },
+  "preconditions": [
+    "Exact source commit, detached source record and plan digest named by separate execution authority",
+    "Reviewed host-owned official graph including selected native resolution and restricted builtin policy",
+    "Trusted host custody of exact Node, native and complete non-system loader dependencies",
+    "OS-enforced no-provider egress and finite read/write/process policies; refuse unavailable enforcement",
+    "Owner-provisioned canonical administrator settings fixtures, without modifying this shared host",
+    "No ambient credentials; isolated run-owned HOME/workspace/TMPDIR; preserve user and administrator permission inheritance"
+  ],
+  "observations": [
+    "new/load/resume initialization before entry effects",
+    "no idle timer arming, direct fire or compaction, including repeated idle and controlled fake clocks beyond 2147483647ms",
+    "managed denyInsteadOfPrompting denial without callback, continued-turn result and no invented permission request",
+    "before/after permission and ordered activity on the exact native tuple",
+    "prompt/cancel/close races, observed process exits and joined cleanup"
+  ],
+  "failure_classes": [
+    "authority-refused",
+    "identity-refused",
+    "custody-refused",
+    "startup-refused",
+    "graph-refused",
+    "isolation-refused",
+    "administrator-fixture-unavailable",
+    "protocol-failed",
+    "permission-proof-failed",
+    "idle-work-observed",
+    "limit-exceeded",
+    "cleanup-unconfirmed"
+  ],
+  "fake_witness_selector": "effigy validate:acp-guard-captured-child",
+  "original_runner": null,
+  "remaining_engineering": [
+    "Whole-route original/native permission and lifecycle driver remains separate from the idle-class component witness",
+    "Linux x64 component owner refuses until its confined-executor integration is admitted; no raw fallback",
+    "Genuine administrator-path fixture environment is still independently gated in task234"
+  ],
+  "confinement_reference": {
+    "task": "swallowtail#234",
+    "source_commit": "02d10a7b9123e51c8a649987d6f6523fc317eab8",
+    "paths": [
+      "scripts/claude-agent-sdk-confined-probe.py",
+      "scripts/claude-agent-sdk-confined-linux.py"
+    ],
+    "authority_transfer": false,
+    "qualification_transfer": false
+  },
+  "component_stage": {
+    "scope": "idle-class-component-only",
+    "selector": "effigy probe:acp-idle-component --original --owner <exact-owner> --owner-sha256 <approved-owner-sha256> --node <installed-node> --node-sha256 <approved-node-sha256> --host-runtime-record <approved-record> --runtime-closure-sha256 <approved-record-sha256> --rust-runtime-closure-sha256 <approved-Rust-custody-sha256> --launch-policy-revision-sha256 <approved-revision-sha256> --confinement-policy-template-sha256 <approved-template-sha256> --hop <exact-hop> --package <verified-acp-package>",
+    "source_owner": "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs",
+    "confinement_owner": "scripts/claude-acp-component-probe.py",
+    "platform": "darwin-arm64",
+    "vendor_effects": "Only captured original idle class; first-party host, settings, clock and compact promise; no ACP entrypoint, SDK or native execution",
+    "authority": "Separate exact source/plan/owner/runtime/module authority required before --original",
+    "attempts_per_hop": 1,
+    "processes_per_attempt": 4,
+    "control_and_guarded_launches": 2,
+    "seconds_per_launch": 40,
+    "owned_child_seconds": 10,
+    "cpu_seconds": 30,
+    "open_files": 256,
+    "output_bytes_per_stream": 1048576,
+    "scratch_bytes": 67108864,
+    "network": "Seatbelt deny-all; kernel loopback denial checked before child spawn",
+    "filesystem": "Explicit source/runtime/system-loader read whitelist; denied-data canary; no scratch writes inside confinement",
+    "cleanup": "Observed child wait, Rust watchdog join, both owner exits; success removes only owned fixture; timeout/unknown cleanup refuses and retains fixture",
+    "failure": "No retry, no original execution on missing identities, custody, confinement, or authority",
+    "inputs": {
+      "0.101.0": {
+        "class_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d"
+      },
+      "0.101.1": {
+        "class_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d"
+      },
+      "0.102.0": {
+        "class_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d"
+      },
+      "0.103.0": {
+        "class_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d"
+      },
+      "0.104.0": {
+        "class_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d"
+      },
+      "0.104.1": {
+        "class_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d"
+      },
+      "0.105.0": {
+        "class_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d"
+      },
+      "0.106.0": {
+        "class_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d"
+      }
+    },
+    "source_sha256": {
+      "scripts/claude-acp-component-probe.py": "12930323c00566f3a821cfa8dce9fc8c22f88a069ce55321913d8cb5c7d08d86",
+      "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/entry.mjs": "4e26c9bdd2314d0bd077e145182481e697b2440e493ad2c1ca89f8ceedcefeff",
+      "crates/swallowtail-adapter-claude-agent/tests/guard_component_probe/idle.mjs": "7ce0625f57f95291a60b21947cd5674732352567a900a99833e18334655669ac",
+      "crates/swallowtail-adapter-claude-agent/examples/guarded_acp_component_probe.rs": "acbcea2362631a2964998c8d65ef3855d48fb9d1d6df9527726d89c71a47d4d8",
+      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
+      "Cargo.toml": "c349653298d6c24d3ac933ae36eb01c51abf6c570ceae3ae72de5ddd050e8f2b",
+      "scripts/stage-claude-acp-fake-node.py": "e78bf664ada700bddd45bdadb1d522beb53a5e1940438e05b8b3d324b0360d08",
+      "crates/swallowtail-host-local/src/trusted_runtime.rs": "9ef4fa9f7804dc48c51c8f91c395a583c38fb87b8d5c699f43b5bea8116476e8",
+      "crates/swallowtail-adapter-claude-agent/src/guard_manifest.rs": "da7b587973e30aa04a263ce552f82bc133963605bc8eb02bba674d89d94847a7",
+      "scripts/run-claude-acp-installed-child.sh": "715f46e682949ac533144f0a4f60217577018d10a08d60c6bf722bc5c71aaf78",
+      "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/darwin-spawn-path.json": "6f7193093718303785b549af11d17a604cbce25d65391d5fcd065b457603cf98",
+      "crates/swallowtail-host-local/src/process.rs": "8ac5082c85bee9a48f93c5a6338d5f7855a7d9630a32db0e8fa31fc7964eeb9f",
+      "crates/swallowtail-host-local/src/child.rs": "4e7924d1616b4f0ce9f9289da177c1fd623c1c207d13d8d1e551a2c5144a9530",
+      "scripts/tests/claude-acp-component-admission.py": "673d10750b8eafedee7509725539d518526b0f52935929fd225e9eca1189a509",
+      "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/idle-prefix-inventory.json": "e331249c2335dfc09abf0636d15225003debf2be9fba8ee0a6c9d6e36bb1f4a3"
+    },
+    "admission_status": "Requires exact installed compatible Node executable/dependency and host-principal binding, kernel confinement counterexamples and first-party fake control/guard success; separate authority naming changed source/plan/owner/runtime/class before original execution",
+    "build_selector": "effigy build:acp-guard-component-probe",
+    "build_profile": "dev; existing sha2 dependency optimized at level3; byte verification unchanged",
+    "fake_runtime_fixture": {
+      "selector": "effigy prepare:acp-guard-fake-node",
+      "scratch_bytes": 201326592,
+      "host_installation_changes": false,
+      "original_provider_code": false,
+      "role": "Historical reference fixture; no additional runtime staging required or authorized by installed-runtime direction"
+    },
+    "owned_spawns_per_attempt": 6,
+    "execution_allowlist": "Selected Node, copied Rust owner initial exec, and the root-owned system sleep process-group owner; runtime libraries are map/read-only. Readable /bin/echo must fail process-exec before Node launch. The idle class inherits permission to exec the sleep helper; no hostile-JavaScript sandbox claim.",
+    "runtime_inspection": {
+      "files": 129,
+      "aliases": 512,
+      "bytes": 536870912,
+      "seconds_per_otool": 5,
+      "output_bytes_per_stream": 1048576,
+      "original_bindings": "Host record source digests and principals, Rust custody-v2 (paths/file identities/ancestors/trust/selected closure and tree owner) and compiled launch-policy digest; both mandatory in original mode"
+    },
+    "darwin_spawn_path": "darwin-spawn-path.json",
+    "top_level_admission": {
+      "patch_timing": "Appended after module evaluation; no top-level interception claimed",
+      "audited_prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b",
+      "selected_effects": "Numeric constants, one bounded intrinsic Set allocation, function declarations and the pinned class declaration; no external effects or imports. Class admission rejects static initializers, extends and computed members; complete class digest remains mandatory.",
+      "per_hop_prefix_evidence": "idle-prefix-inventory.json"
+    },
+    "launch_policy_revision_sha256": "0af0ee5f8a6eed6c99abfae20559d22c05e2be1bf0a276442592425a84ff95da",
+    "confinement_binding": "Original requires the approved SHA256 of the exact generated Seatbelt template with only the fresh owned root replaced by @OWNED_COMPONENT_ROOT@. Actual profile source and SHA256 are recorded independently for each attempt; the revision tag is not a confinement hash."
+  },
+  "behavior_revision": "claude-agent.acp.guarded-permission-inheritance-v8",
+  "installed_runtime_policy": {
+    "minimum_major": 22,
+    "required_apis": [
+      "node:module.registerHooks",
+      "node:module.isBuiltin"
+    ],
+    "identity": "Host selects actual executable and complete non-system loader files, source digests, principal policy and stable custody per invocation; changed identity requires fresh admission and route proof",
+    "consumer_installation_required": false,
+    "scope": "guarded ACP invocation only; no standalone SDK/Node claim",
+    "fixed_startup": "--no-addons --openssl-config=/dev/null --disallow-code-generation-from-strings; captured guard preloader before entrypoint"
+  }
+}

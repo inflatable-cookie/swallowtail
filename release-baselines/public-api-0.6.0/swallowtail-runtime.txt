@@ -1161,6 +1161,12 @@ pub const fn swallowtail_runtime::CallbackResponse::operation_id(&self) -> &swal
 pub const fn swallowtail_runtime::CallbackResponse::result(&self) -> &swallowtail_runtime::CallbackResult
 pub const fn swallowtail_runtime::CallbackResponse::run_id(&self) -> core::option::Option<&swallowtail_runtime::RuntimeRunId>
 pub const fn swallowtail_runtime::CallbackResponse::turn_id(&self) -> core::option::Option<&swallowtail_runtime::RuntimeTurnId>
+pub struct swallowtail_runtime::CheckedProcessRef(_)
+impl swallowtail_runtime::CheckedProcessRef
+pub fn swallowtail_runtime::CheckedProcessRef::as_host_value(&self) -> &str
+pub fn swallowtail_runtime::CheckedProcessRef::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_runtime::InputValueRequired>
+impl core::fmt::Debug for swallowtail_runtime::CheckedProcessRef
+pub fn swallowtail_runtime::CheckedProcessRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::ConfiguredProviderCredentialPosture
 impl swallowtail_runtime::ConfiguredProviderCredentialPosture
 pub const fn swallowtail_runtime::ConfiguredProviderCredentialPosture::credential_mechanism(&self) -> &swallowtail_core::access::CredentialMechanism
@@ -4050,6 +4056,8 @@ pub fn swallowtail_runtime::ProcessHandle::wait(&self) -> swallowtail_runtime::B
 pub fn swallowtail_runtime::ProcessHandle::write_stdin(&self, swallowtail_runtime::ProcessInputChunk) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::ProcessService: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ProcessService::start(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::ProcessRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::ProcessHandle>, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::ProcessService::start_checked(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::CheckedProcessRef, swallowtail_runtime::ProcessRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::ProcessHandle>, swallowtail_runtime::RuntimeFailure>>
+pub fn swallowtail_runtime::ProcessService::validate_checked(&self, swallowtail_runtime::ScopeId, swallowtail_runtime::CheckedProcessRef, swallowtail_runtime::ProcessRequest) -> swallowtail_runtime::BoxFuture<'static, core::result::Result<(), swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::ProviderRecoveredResourceCleanupDriver: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::ProviderRecoveredResourceCleanupDriver::cleanup_recovered_resources(&self, swallowtail_runtime::ProviderRecoveredResourceCleanupPlan, swallowtail_runtime::ProviderRecoveredResourceCleanupRequest, swallowtail_runtime::HostServices) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::ProviderRecoveredResourceCleanupOutcome, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::ProviderRunReconciliationDriver: core::marker::Send + core::marker::Sync

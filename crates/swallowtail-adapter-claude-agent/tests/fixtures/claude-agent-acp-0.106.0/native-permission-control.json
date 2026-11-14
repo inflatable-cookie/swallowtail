@@ -1,0 +1,82 @@
+{
+  "method": "Inspect exact npm package binaries statically after matching npm SHA-512 and manifest SHA-256. Locate the first anchored no-prompt branch after byte 200000000; scan backward at most 400 bytes to async function and forward to the next function. No binary was executed.",
+  "control_functions": [
+    {
+      "sdk_version": "0.3.319",
+      "platform": "linux-x64",
+      "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+      "native_size": 340226576,
+      "function_offset": 295098154,
+      "function_length": 903,
+      "function_sha256": "1d7dfc1a2d2672dc02b6860162fdadbedb00442616cca320fde7c7e1cfdd3477",
+      "anchor": "shouldAvoidPermissionPrompts||",
+      "function_name": "nie",
+      "observation": "The anchored function reads denyInsteadOfPrompting, takes a no-prompt branch and can return a deny decision after conditional hook handling. This bounded fragment does not prove all caller, callback, settings or result paths."
+    },
+    {
+      "sdk_version": "0.3.319",
+      "platform": "darwin-arm64",
+      "binary_sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+      "native_size": 321995200,
+      "function_offset": 272485857,
+      "function_length": 903,
+      "function_sha256": "142be5587eada0fbe6e1559b922d20cab108406d837ae6b7f57ba5f2795bd670",
+      "anchor": "shouldAvoidPermissionPrompts||",
+      "function_name": "eie",
+      "observation": "The anchored function reads denyInsteadOfPrompting, takes a no-prompt branch and can return a deny decision after conditional hook handling. This bounded fragment does not prove all caller, callback, settings or result paths."
+    },
+    {
+      "sdk_version": "0.3.321",
+      "platform": "linux-x64",
+      "binary_sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+      "native_size": 341910032,
+      "function_offset": 296430880,
+      "function_length": 903,
+      "function_sha256": "47fcdcabf44dddd3434f22cc89e48a54e21df4061bfd22829c018f353adeb585",
+      "anchor": "shouldAvoidPermissionPrompts||",
+      "function_name": "Zae",
+      "observation": "The anchored function reads denyInsteadOfPrompting, takes a no-prompt branch and can return a deny decision after conditional hook handling. This bounded fragment does not prove all caller, callback, settings or result paths."
+    },
+    {
+      "sdk_version": "0.3.321",
+      "platform": "darwin-arm64",
+      "binary_sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+      "native_size": 323686048,
+      "function_offset": 274055054,
+      "function_length": 903,
+      "function_sha256": "44ff55f24d114b2e8e5034213f964946434e9f41e821c3e21f217f04fd62fbd1",
+      "anchor": "shouldAvoidPermissionPrompts||",
+      "function_name": "Kae",
+      "observation": "The anchored function reads denyInsteadOfPrompting, takes a no-prompt branch and can return a deny decision after conditional hook handling. This bounded fragment does not prove all caller, callback, settings or result paths."
+    },
+    {
+      "sdk_version": "0.3.322",
+      "platform": "linux-x64",
+      "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+      "native_size": 341914128,
+      "function_offset": 296438070,
+      "function_length": 903,
+      "function_sha256": "c0fb6236b8e4b1be306efb7e97c110d62080008ee3e63d4cd001867d31eb7eba",
+      "anchor": "shouldAvoidPermissionPrompts||",
+      "function_name": "ele",
+      "observation": "The anchored function reads denyInsteadOfPrompting, takes a no-prompt branch and can return a deny decision after conditional hook handling. This bounded fragment does not prove all caller, callback, settings or result paths."
+    },
+    {
+      "sdk_version": "0.3.322",
+      "platform": "darwin-arm64",
+      "binary_sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+      "native_size": 323702464,
+      "function_offset": 274063972,
+      "function_length": 903,
+      "function_sha256": "d454a022153be82203ff61b9176b68765bca58b0a91b2cc2bf2837c49ff58b84",
+      "anchor": "shouldAvoidPermissionPrompts||",
+      "function_name": "qae",
+      "observation": "The anchored function reads denyInsteadOfPrompting, takes a no-prompt branch and can return a deny decision after conditional hook handling. This bounded fragment does not prove all caller, callback, settings or result paths."
+    }
+  ],
+  "limits": [
+    "A single bounded function does not prove entry conditions, callback routing, all tool and hook cases, or changed native behavior as a whole.",
+    "0.3.318 absence of the string is not a proof of the full prior permission path.",
+    "Other platform artifacts and ACP process authority remain independently unresolved."
+  ]
+}

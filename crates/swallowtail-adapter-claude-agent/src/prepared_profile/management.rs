@@ -13,6 +13,7 @@ mod preparation;
 pub struct ClaudeAgentPreparedDelete {
     environment: EnvironmentRef,
     credential: Option<swallowtail_core::CredentialRef>,
+    checked_process: Option<swallowtail_runtime::CheckedProcessRef>,
     evidence: PreparedProviderSessionManagementEvidence,
     request: DeleteProviderSessionRequest,
 }
@@ -47,6 +48,7 @@ impl ClaudeAgentPreparedDelete {
             }
             None => ClaudeAgentAcpDriver::with_local_auth(self.environment.clone()),
         };
+        let driver = driver.with_checked_process(self.checked_process.clone());
         let plan = self.plan().clone();
         let request = self.request.clone();
         Box::pin(async move { driver.delete_session(plan, request, services).await })

@@ -4,7 +4,7 @@ use crate::host::LocalProcessHost;
 use crate::output::failure;
 use std::io;
 use std::process::{Child, Command, Stdio};
-use swallowtail_runtime::{ProcessHandle, ProcessRequest, RuntimeFailure, ScopeId};
+use swallowtail_runtime::{ProcessRequest, RuntimeFailure, ScopeId};
 
 #[cfg(unix)]
 use std::os::unix::process::CommandExt;
@@ -14,7 +14,7 @@ impl LocalProcessHost {
         &self,
         scope: &ScopeId,
         request: ProcessRequest,
-    ) -> Result<Box<dyn ProcessHandle>, RuntimeFailure> {
+    ) -> Result<LocalProcessHandle, RuntimeFailure> {
         self.validate_arguments(&request)?;
         let launch = self
             .approvals
@@ -124,7 +124,6 @@ impl LocalProcessHost {
             },
             self.limits,
         )
-        .map(|handle| Box::new(handle) as Box<dyn ProcessHandle>)
     }
 
     fn apply_environment(

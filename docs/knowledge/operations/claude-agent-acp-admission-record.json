@@ -1,0 +1,1881 @@
+{
+  "acceptedReview": 5904122860,
+  "acceptedSoftwareHead": "5bb3579c3824763fd9b3339d0707c4a820c74281",
+  "admission": "closed",
+  "compositionDelta": {
+    "actors": [
+      {
+        "parent": "host monitor",
+        "role": "prepared-owner"
+      },
+      {
+        "group": "own PID",
+        "parent": "prepared-owner",
+        "role": "group-owner"
+      },
+      {
+        "group": "group-owner PID",
+        "parent": "prepared-owner",
+        "role": "checked-acp"
+      },
+      {
+        "group": "group-owner PID",
+        "parent": "checked-acp",
+        "role": "native-entry"
+      }
+    ],
+    "frozenPacketMutation": false,
+    "owner": "swallowtail#234",
+    "pendingDecision": "78e36a73-4254-42a2-b872-71235fbdf4f9",
+    "requirements": [
+      "Host observes actual PID/parent/group/start/launch before release; stand-in parent==group-owner is invalid for ACP.",
+      "Admit each selected original caller and exact one-attempt argv/env/cwd/native identity before payload effects; cover permitted-executable bypass.",
+      "Kernel task budget counts threads and encloses helper, checked ACP and descendants; deny migration/controller changes before untrusted entry.",
+      "Transport and canonical absent/disabled/managed-deny fixtures must compose with actual prepared ACP on the chosen platform.",
+      "Keep native/driver/helper software waits, adoptee rights, pidfd/cgroup settlement and fixture cleanup separate.",
+      "Bind ACP installed compatible Node and Python inputs independently of SDK22 evidence; preserve trusted-host/system-loader boundary."
+    ]
+  },
+  "edgeClasses": {
+    "acpCallers": "All four child_process import parents per hop require selected-call/argv classification; graph reachability cannot label ACP auth/status/index callers unreachable.",
+    "addons": "Node --no-addons is required; original embedded native addon/dynamic-loader behavior remains opaque.",
+    "capturedImport": "Exact retained ESM/CJS/JSON static closure; resolution misses refuse. This is not complete semantic/native closure.",
+    "childProcess": "Production facade mediates held native path/hash and bounded caller ps; permits spawn/spawnSync/execFile/execFileSync. Exact argv/env/cwd/stdio/detached policy, one-shot and pre-entry release are NOT supplied by path matching.",
+    "dynamicCode": "Node startup disallows string code generation. Function cautions remain selected-compatibility unknowns; do not relax flags from fake success.",
+    "fakeRecipe": "Accepted first-party recipe substitutes f902 caller-bound one-shot facade and Python entry. It does not attest the original SDK launch argv or native behavior.",
+    "native": "Frozen native SHA/size by hop/platform identifies bytes only. Descendant exec, workers, dynamic code and permitted-executable argv bypass remain opaque/unadmitted; no further native disassembly is inferred.",
+    "rawProcess": "getBuiltinModule is disabled by production bootstrap, but process.binding/_linkedBinding/execve are not established blocked there. Broad normal builtins remain capabilities; no hostile-JavaScript sandbox claim.",
+    "startup": "Checked host binds prefix/runtime/source identities and rejects unsafe startup environment before spawn. This is not a kernel payload sandbox.",
+    "workerVm": "Absent worker_threads/vm module edges refuse captured resolution. This proves no original-native/ambient-process worker prohibition."
+  },
+  "hops": [
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1493,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57610,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 283433,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 283553,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 404528,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 426718,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 752787,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 764056,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 764268,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 771424,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 771436,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 819521,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1237525,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1326190,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/acp-agent.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "8ef8bf48279fa6ed2cbe12c8b77220f47d238df83e00962fcb612a98d8622be1",
+      "hop": "0.101.0",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 319598464,
+          "sha256": "677a2ea7bf576cedd20e191d973914ed8a41796f53a63b1923381ddc4d5b5e7d",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 337814032,
+          "sha256": "708c77b204db30086ff6f1ed34577bda03e1be74ced80557cbf7b54249ebf0bd",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [
+        {
+          "arguments": "live-process-starts-v1",
+          "name": "ps",
+          "parent": "acp/dist/session-index/live-registry.js"
+        }
+      ],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.318",
+      "selectedFiles": 242,
+      "staticClosureSha256": "d07037b405dc0fe4d9e3ca91937c7639678138c9c11e00b480435d653fd7aa38",
+      "unselectedImports": [],
+      "vendorSha256": "7f52fb5f7447f73a503ab9fc4fc886da3cc8658d4693954f086a617f57eb3abb"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1493,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57610,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 285541,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 285661,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 408826,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 431016,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 757607,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 768876,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769088,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 776244,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 776256,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 824552,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1247813,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1336493,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/acp-agent.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "9a2b5c118e097e9c3de153dbded1b0a83a99acaa7072e9c5e6d362293ee1a4b5",
+      "hop": "0.101.1",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 321995200,
+          "sha256": "1f53587e92dee8e089fa349188a4cda64fa34ace6e7b0ca2ee278ddaa3cc2ebd",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 340226576,
+          "sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [
+        {
+          "arguments": "live-process-starts-v1",
+          "name": "ps",
+          "parent": "acp/dist/session-index/live-registry.js"
+        }
+      ],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.319",
+      "selectedFiles": 242,
+      "staticClosureSha256": "c2bb53b5f638fc8f8acbbebb976e371b73b9d2ff4402eea893915572d49aa58d",
+      "unselectedImports": [],
+      "vendorSha256": "773924c931aec60c60e7669fb561eec7e54534fa093068b6bc91a6641c4a9f2a"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1494,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57632,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291205,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291325,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 420505,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 442695,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769264,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780533,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780745,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787901,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787913,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 836285,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1265087,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1353758,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/acp-agent.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "b7c5d491fb7d71dea46ff4cd03849489bd7af4b13d6ab250601655c0e185d811",
+      "hop": "0.102.0",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 323686048,
+          "sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 341910032,
+          "sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [
+        {
+          "arguments": "live-process-starts-v1",
+          "name": "ps",
+          "parent": "acp/dist/session-index/live-registry.js"
+        }
+      ],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.321",
+      "selectedFiles": 244,
+      "staticClosureSha256": "50664cee94024b2a47cf17ac646f7698dcb52a70c2f34652e40d8a9b2a32dad0",
+      "unselectedImports": [],
+      "vendorSha256": "89ae947fa17ce875abb6128049534fe6c118a71f2e0a4ecb2e332e8c8c24526f"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1494,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57632,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291205,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291325,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 420505,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 442695,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769264,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780533,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780745,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787901,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787913,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 836285,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1265087,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1353758,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/auth-status-reporter.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/v1/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "2551b9679140c0c252e16a6c8176fe31ac3a17703e51ce8839be40d57e578b28",
+      "hop": "0.103.0",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 323686048,
+          "sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 341910032,
+          "sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.321",
+      "selectedFiles": 283,
+      "staticClosureSha256": "4941a6d559cfbbe7627bbbfd2988e06d87055862f2a855b3500603ecd909a80f",
+      "unselectedImports": [],
+      "vendorSha256": "1c5b572c2287c5810ed1d1f5784bf44bf77cbdfe86ac8736639e58abaa443667"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1494,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57632,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291205,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291325,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 420505,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 442695,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769264,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780533,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780745,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787901,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787913,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 836285,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1265087,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1353758,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/auth-status-reporter.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/v1/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "b13669b6d243392a9a6a835b93721117d79de5cf4b41354cdaa9189f4d2f1a8a",
+      "hop": "0.104.0",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 323686048,
+          "sha256": "abc9feeeca8091d51b623291e044cf0528c2f6b74e0c1d6ef671d52c73f7cd3c",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 341910032,
+          "sha256": "426c33815ca6645a772f722fbff10dbf2cbdb124a8aeab733c1365dbf8bbf61f",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.321",
+      "selectedFiles": 283,
+      "staticClosureSha256": "681d9098c798d04c1d1c2afcb9eb5f68937056f210ab547a56f8a8246d7c080d",
+      "unselectedImports": [],
+      "vendorSha256": "727295374962db5baab47bd6e15e64d92fcaf788b18873d10634db5b240691a2"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1494,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57632,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291205,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291325,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 420505,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 442695,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769264,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780533,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780745,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787901,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787913,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 836285,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1265147,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1353818,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/auth-status-reporter.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/v1/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "a25da1c72f5dc94dfb9d539c2612aa93edd25d8dbf88f38bfe88cd5d9bfa304d",
+      "hop": "0.104.1",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 323702464,
+          "sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 341914128,
+          "sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.322",
+      "selectedFiles": 283,
+      "staticClosureSha256": "9360fdc9844b3c939b2869e256c56cd85a93dda0b56b4d6e897e3f66efff2244",
+      "unselectedImports": [],
+      "vendorSha256": "036cc8f1d561aa853c472523b56186d8f22678054afc34fba48524e35728f6ab"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1494,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57632,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291205,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291325,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 420505,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 442695,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769264,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780533,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780745,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787901,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787913,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 836285,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1265147,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1353818,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/auth-status-reporter.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "c01615f0ea9a0ecec00ebb3860079f20f655e5a8e84183bd2e45e5e4acbed4cc",
+      "hop": "0.105.0",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 323702464,
+          "sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 341914128,
+          "sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [
+        {
+          "arguments": "live-process-starts-v1",
+          "name": "ps",
+          "parent": "acp/dist/session-index/live-registry.js"
+        }
+      ],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.322",
+      "selectedFiles": 286,
+      "staticClosureSha256": "17a01f15c1762e2c7036f6df49cd0258dbf9bc60c47167c230f27555519dc2b3",
+      "unselectedImports": [],
+      "vendorSha256": "0d0cd92dd09fa6b7e6890cb652df4b60ce8faa9ee42e49d3f504df7df35920b5"
+    },
+    {
+      "dynamicCautions": [
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1871,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1934,
+          "parent": "acp/dist/claude-cli.js"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 674,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1494,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 57632,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291205,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 291325,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 420505,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 442695,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 769264,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780533,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 780745,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787901,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:require",
+          "offset": 787913,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 836285,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:createRequire",
+          "offset": 1265147,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "call:createRequire-alias",
+          "offset": 1353818,
+          "parent": "agentsdk/sdk.mjs"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 9509,
+          "parent": "zod/v4/core/compile.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 1036,
+          "parent": "zod/v4/core/doc.js"
+        },
+        {
+          "kind": "identifier:Function",
+          "offset": 8536,
+          "parent": "zod/v4/core/util.js"
+        }
+      ],
+      "executionImportEdges": [
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/auth-status-reporter.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "acp/dist/claude-cli.js",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/index.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "acp/dist/session-index/live-registry.js",
+          "specifier": "node:child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "mediated-path-only",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "child_process",
+          "target": "node:child_process"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "module",
+          "target": "node:module"
+        },
+        {
+          "classification": "caller-bound module facade",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:module",
+          "target": "node:module"
+        },
+        {
+          "classification": "ambient process capability; raw binding/execve not proved prohibited",
+          "parent": "agentsdk/sdk.mjs",
+          "specifier": "node:process",
+          "target": "node:process"
+        }
+      ],
+      "graphSha256": "1ce9e874d840aad7c28621abf1a850df53481d01fdda26eb930e60a9bee68331",
+      "hop": "0.106.0",
+      "nativeCallers": [
+        "agentsdk/sdk.mjs"
+      ],
+      "nativeImages": {
+        "darwin-arm64": {
+          "bytes": 323702464,
+          "sha256": "a9d237949db816a0b7afd88a9a8e1df36b3a597a30f5a41d1c0539eb180a3450",
+          "specifier": "@anthropic-ai/claude-agent-sdk-darwin-arm64/claude"
+        },
+        "linux-x64": {
+          "bytes": 341914128,
+          "sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+          "specifier": "@anthropic-ai/claude-agent-sdk-linux-x64/claude"
+        }
+      },
+      "platformPrograms": [
+        {
+          "arguments": "live-process-starts-v1",
+          "name": "ps",
+          "parent": "acp/dist/session-index/live-registry.js"
+        }
+      ],
+      "requireParents": [
+        [
+          "acp/dist/claude-cli.js",
+          "agentsdk/sdk.mjs"
+        ]
+      ],
+      "sdk": "0.3.322",
+      "selectedFiles": 287,
+      "staticClosureSha256": "8ac0437607c50eb670d79749fb5cd83f03eeac57c18609bea99904142e0d14ea",
+      "unselectedImports": [],
+      "vendorSha256": "d00e52680d3aed564346acadddd4603de3f9178d385ef257283839c41d9da4b0"
+    }
+  ],
+  "inputs": {
+    "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_shared_software.rs": "1a36ab81171efcca825ba97d4e081185e7a8d480b43ce0181a5d01fcd5ca1e87",
+    "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/import-edge-inventory.json": "cb2c20e7ab60a174f5ffb34368647acfeb5a6f4a78f3b0dd477e1bd1fd3c8cfb",
+    "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/native-permission-control.json": "e8125782d88cd32160141e3fec2e67e870e98a7311b440b5753bf03bac1c8b38",
+    "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/registry.json": "f95b1f9aa27ed0f892e983d423b11b6aab8dd393e649d0e2becbd1cb4cec9e45",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/host.py": "757fdc325b13618dae31d826bfe92bd67cb3a6ed4401d27f2d96d5ba839a59b5",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/bootstrap-native.mjs": "ed2645fe8e67d631b59dbe7f10744daaad2d499d9111bb4cc9edffd3964ce9d2",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/entry.py": "9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/loader.mjs": "814df22587472a9e5dd5a17e4c6cd240effae7b2c1f6649d6b595ddce02728c5",
+    "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/proposal.py": "97cabd0ede8b624c388fa058a53b2fb45c8fd20795bb0b9dc243a7a5c9e8ce55",
+    "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
+    "docs/knowledge/operations/claude-agent-acp-python-inputs.json": "9f927ad7d6fff6870ac2d1ca21c9581be13272b9459eb76a128a2e365b171dc5",
+    "scripts/claude-acp-admission.py": "3f17ef3831ee73de3ab3830f7be7ee9ca908fc941013052310d895477f101ff0",
+    "scripts/tests/claude-acp-admission.py": "de8c3d7c42c41575cd09bbdec85ebfa8ebf9b399bb4f1ec4cb905b9baf8decf6"
+  },
+  "originalCommand": null,
+  "pythonInputs": {
+    "admitted": false,
+    "bytecodeRule": "-B prevents writes, not reads; existing cache and zip selection remain host inputs",
+    "directEntrySourceSha256": {
+      "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/host.py": "757fdc325b13618dae31d826bfe92bd67cb3a6ed4401d27f2d96d5ba839a59b5",
+      "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/entry.py": "9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1",
+      "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/proposal.py": "97cabd0ede8b624c388fa058a53b2fb45c8fd20795bb0b9dc243a7a5c9e8ce55"
+    },
+    "directImportCandidates": {
+      "argparse": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/argparse.py": {
+            "bytes": 97714,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "0e82574a85809fa1b7e0ce7e05230ff0a95ce196713cfbed47ab79bccb37ab0f",
+            "uid": 0
+          }
+        }
+      },
+      "hashlib": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/hashlib.py": {
+            "bytes": 10010,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "a25e6f24d6ae5b5205844e2717f3d6dbeda005c1afeaf4d450b4f2c363a3d34a",
+            "uid": 0
+          }
+        }
+      },
+      "http.client": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/http/__init__.py": {
+            "bytes": 6732,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "f20ee6263f81332dbb385e3bd5d51f1cdb075fb8d1dc8b0af7cd58747815749b",
+            "uid": 0
+          },
+          "lib/python3.9/http/client.py": {
+            "bytes": 55520,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "bb1b56ca9ae39036d57f9e9c9420862a150c13c3c940e8eb63fda05a6961351b",
+            "uid": 0
+          }
+        }
+      },
+      "http.server": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/http/__init__.py": {
+            "bytes": 6732,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "f20ee6263f81332dbb385e3bd5d51f1cdb075fb8d1dc8b0af7cd58747815749b",
+            "uid": 0
+          },
+          "lib/python3.9/http/server.py": {
+            "bytes": 47705,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "9d012c2f66822dea6e1baeeea02c518713247a9d5ec4459e35e365114a6828af",
+            "uid": 0
+          }
+        }
+      },
+      "importlib.util": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/importlib/__init__.py": {
+            "bytes": 6061,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "45421c08a03062ba41e37e484cb0e4d8474be13c2a34806cb5b63c9edcb94a10",
+            "uid": 0
+          },
+          "lib/python3.9/importlib/util.py": {
+            "bytes": 11321,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "b6a71515fade6516217f7c7d78ab927fde6530a145543c39ce03d1577f668fb7",
+            "uid": 0
+          }
+        }
+      },
+      "json": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/json/__init__.py": {
+            "bytes": 14017,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "332fabb72a4a1ed02c9207a7619ab339dac8f0b6862e16f6499147121b302a27",
+            "uid": 0
+          }
+        }
+      },
+      "os": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/os.py": {
+            "bytes": 39404,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "8dbe2d2e9f228747cacbbcc6758721e794b652e5c22b6224cb07e303ebbc620d",
+            "uid": 0
+          }
+        }
+      },
+      "pathlib": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/pathlib.py": {
+            "bytes": 53285,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "6b33d2d55c09aa9c607a528003ed8fe154894afaa977ec554e0a858240412b72",
+            "uid": 0
+          }
+        }
+      },
+      "re": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/re.py": {
+            "bytes": 15861,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "4326ef93e3cf336c06523426187dce705c12f9fdc0a562a7cd00ab1739b14c2d",
+            "uid": 0
+          }
+        }
+      },
+      "select": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {}
+      },
+      "selectors": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/selectors.py": {
+            "bytes": 19536,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "b16e673c110fd6a362414308ef73ffc3c15125c87361333b309791735931040d",
+            "uid": 0
+          }
+        }
+      },
+      "signal": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/signal.py": {
+            "bytes": 2273,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "4ebf461c99cf469e2ac22f6076040c6d16eeef0130a42a13a6ff7fe6cbe4ae6a",
+            "uid": 0
+          }
+        }
+      },
+      "stat": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/stat.py": {
+            "bytes": 5485,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "052af0327eae6941b69b05c088b3e748f79995635f80ac4cc7125eb333eb4c77",
+            "uid": 0
+          }
+        }
+      },
+      "subprocess": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/subprocess.py": {
+            "bytes": 82644,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "d2f73c7128a3931f74411b46352146ba85322a8dc8f12a721d4801dc43d9766e",
+            "uid": 0
+          }
+        }
+      },
+      "sys": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {}
+      },
+      "tempfile": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/tempfile.py": {
+            "bytes": 27600,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "58e5216725e9e411e90b8444c99327e565e84887078160fada255fcb64ce9763",
+            "uid": 0
+          }
+        }
+      },
+      "threading": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {
+          "lib/python3.9/threading.py": {
+            "bytes": 52933,
+            "gid": 0,
+            "mode": 33188,
+            "sha256": "576085b4d09b488133e900bcdc821da005d3f117dd3595cf8c392dc5285729f2",
+            "uid": 0
+          }
+        }
+      },
+      "time": {
+        "scope": "literal module and package-prefix candidates; not transitive/runtime selection",
+        "sources": {}
+      }
+    },
+    "directImportRoots": [
+      "argparse",
+      "hashlib",
+      "http",
+      "importlib",
+      "json",
+      "os",
+      "pathlib",
+      "re",
+      "select",
+      "selectors",
+      "signal",
+      "stat",
+      "subprocess",
+      "sys",
+      "tempfile",
+      "threading",
+      "time"
+    ],
+    "frameworkLayout": "Xcode Python3.framework/Versions/3.9",
+    "inspectionSourceSha256": "3f17ef3831ee73de3ab3830f7be7ee9ca908fc941013052310d895477f101ff0",
+    "interpreter": "Resources/Python.app/Contents/MacOS/Python",
+    "machOFiles": {
+      "Python3": {
+        "bytes": 5881904,
+        "gid": 0,
+        "mode": 33261,
+        "sha256": "2fd8e73d1633bb44c9e6a8c86df54b01ce7a440b56942f58dc8c86f9ae73620a",
+        "uid": 0
+      },
+      "Resources/Python.app/Contents/MacOS/Python": {
+        "bytes": 101280,
+        "gid": 0,
+        "mode": 33261,
+        "sha256": "21e7b7310c29e736fce8dd1d5daa9b17c0c6328cf34ac124a651adaab87c1d16",
+        "uid": 0
+      }
+    },
+    "machOLinks": [
+      {
+        "class": "trusted-system-loader-input; not extracted/attested",
+        "installName": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+        "parent": "Resources/Python.app/Contents/MacOS/Python"
+      },
+      {
+        "class": "non-system framework dependency; inventory only",
+        "installName": "@executable_path/../../../../Python3",
+        "parent": "Resources/Python.app/Contents/MacOS/Python",
+        "target": "Python3"
+      },
+      {
+        "class": "trusted-system-loader-input; not extracted/attested",
+        "installName": "/usr/lib/libSystem.B.dylib",
+        "parent": "Resources/Python.app/Contents/MacOS/Python"
+      },
+      {
+        "class": "trusted-system-loader-input; not extracted/attested",
+        "installName": "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+        "parent": "Python3"
+      },
+      {
+        "class": "trusted-system-loader-input; not extracted/attested",
+        "installName": "/usr/lib/libSystem.B.dylib",
+        "parent": "Python3"
+      }
+    ],
+    "observedBytecodeCandidates": {},
+    "schema": "swallowtail.acp227.python-inputs.v1",
+    "scope": "bounded read-only direct inputs, not complete runtime custody",
+    "startup": [
+      "-I",
+      "-B",
+      "-S"
+    ],
+    "stdlibZipCandidate": {
+      "present": false,
+      "relativePath": "lib/python39.zip"
+    },
+    "unresolved": [
+      "CPYTHON_TRANSITIVE_IMPORT_EXTENSION_AND_BYTECODE_CUSTODY",
+      "CPYTHON_PREFIX_ZIP_PATH_CONFIGURATION",
+      "TRUSTED_HOST_SYSTEM_LOADER_IDENTITY_AND_UPDATE_CUSTODY"
+    ]
+  },
+  "qualifiedCeiling": "0.100.0",
+  "remainingGates": [
+    "SELECTED_ORIGINAL_CALLER_ARGV_AND_PREENTRY_ADMISSION",
+    "OPAQUE_NATIVE_EXEC_WORKER_LOADER_CLOSURE",
+    "PYTHON_COMPLETE_NON_SYSTEM_INPUT_CUSTODY",
+    "ACTUAL_SIBLING_KERNEL_TRANSPORT_CANONICAL_FIXTURE_ADMISSION",
+    "SEPARATE_EXACT_ORIGINAL_EXECUTION_AUTHORITY"
+  ],
+  "schema": "swallowtail.acp227.admission-preparation.v1",
+  "sharedSourceHead": "f9025d2197333c53aed2266627dfa39d05bff7e3"
+}

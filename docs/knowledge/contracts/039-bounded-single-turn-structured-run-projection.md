@@ -220,6 +220,95 @@ requires and selects the provider's `acceptEdits` mode before the prompt.
 Neither the working directory nor that provider mode creates a bounded
 filesystem-containment claim under `AmbientHost`.
 
+Tom's 2026-11-12 ruling (decision `e7fdb750-688e-4326-a197-5ce89a8e300d`,
+version 2) requires a supported idle-compaction suppression control before
+newer Claude Agent ACP points can be qualified. It must preserve
+consumer-owned turn and spend authority across new, load and resume, resist
+inherited and managed settings precedence, and cover cancellation and joined
+cleanup if compaction has already fired. The ruling grants no autonomous idle
+turn or permission to discard inherited settings. The existing 0.100.0 ceiling
+stays until the exact control and native behavior are proved.
+
+Tom's 2026-11-12 decision `33e074b8-eeac-4095-aa12-78871f3ff203`,
+version 2, selects a separately identified Swallowtail-owned suppression
+launch. It vetoes idle work even when inherited idle settings enable it,
+while retaining inherited permission security settings. Earlier stock launches
+and claims stay unchanged. Selection does not establish artifact identity or
+authorize executing original artifacts.
+
+The guarded launch must bind a host-established opaque identity to the exact
+Node runtime, fixed startup flags, guard, selected entry and module closure,
+and launch-policy revision. Admission must reject unverifiable or mismatched
+bindings before process start, including unsafe interpreter startup controls
+from every effective environment source. Verified bytes must be the bytes
+actually loaded. No unchecked fallback to stock launch is allowed. Fake
+coverage is not artifact qualification; selected native behavior and each
+hop's caller and module closure need independent proof before extending the
+claim. Paths and environment values stay host-private.
+
+A checked process reference is an opaque lookup key, not an attestation by
+itself. The process service must refuse preflight and checked start when it
+cannot resolve and verify the binding, and it must recheck at start so that
+revocation or drift cannot fall back to an ordinary process launch. Hosts
+without the capability refuse both operations. The local host now implements
+checked registrations with explicit runtime custody and captured loading;
+Contract010 owns their trust precondition. Decision
+`fdd2eb69-e5c7-4743-bde5-fd5be30f7c1f` v2 selects that trusted-host boundary,
+and `d0a0761f-3c47-4cf2-b198-242d232b20cc` v2 permits installed compatible
+Node with exact invocation identity. First-party fake proof does not establish
+hostile same-user resistance, original native behavior or qualification of the
+captured graph. The qualified ceiling remains0.100.0.
+
+Tom's 2026-11-14 decision `2f4d33df-aaa6-4497-80c1-8c56fc6c2ccc` v2
+authorized one offline idle-class control/guard pair per frozen hop at source
+`c0d591438590f77f502650a47b44e96295cf23f3`. All eight single attempts,
+0.101.0 through0.106.0, passed on the admitted Darwin arm64 Node26.11.0
+invocation: each original-class control armed6 timers and fired5 compactions;
+each guarded run armed and fired0. Owners returned after child waits and
+watchdog joins, settings were unchanged and owned fixture cleanup was observed.
+The exact inputs, confinement and observations are retained in
+[Research483](../../research/483-claude-agent-acp-0-106-0-evidence.md#original-idle-class-observations).
+
+That grant is consumed and authorizes no retry. Only the captured idle class
+ran with first-party host/settings/clock/compact promises; new/load/resume were
+modeled contexts. This does not prove the actual ACP entrypoint/session paths,
+native permission behavior or full-route lifecycle. Those need an admitted
+route-specific confined driver and separate exact execution authority. The
+guarded permission revision and newer points remain unqualified.
+The retained reviewer accepted this bounded component evidence at530bd06df;
+that disposition does not close any full-route/native finding. Independent
+source/fake preparation uses actual prepared ACP operations; the private
+[composition procedure](../operations/claude-agent-acp-full-route-proof.md)
+keeps shared supervision and original execution prerequisites separate.
+
+The bounded shared-source integration consumes task234's reviewed
+`f9025d2197333c53aed2266627dfa39d05bff7e3` milestone (review5903353390),
+not its ACP-shaped actor model. In the actual `LocalProcessHost` layout, the
+Rust prepared owner starts the group leader and checked ACP Node as siblings;
+Node joins the leader's group, then starts the owned native entry. The private
+adapter must observe the actual parent/group/start/command identities before
+entry release, preserve pipes and wait outcomes, and refuse changed inputs or
+revoked admission. Neither a payload trace nor an actor-shaped stand-in can
+supply those identities or wait rights. Software integration does not admit
+original vendor payloads, establish kernel settlement or raise a claim. The
+procedure pins the exact shared bytes and records remaining host prerequisites.
+The private software fixture retains process capabilities through stop/wait,
+including pending starts whose callers disappear, and closes its test-owned
+scope before failure escapes. Its watchdog and diagnostic descriptor prove
+only that bounded fake lifecycle; they change no consumer session lifetime or
+production process policy. Contract010's RootOnly/tree-evidence boundary stays.
+
+The captured-graph bootstrap is host input, with its own size and deadline
+limits; it does not consume the consumer's provider-stdin allowance. The host
+must finish sending it before returning the process handle. Checked admission
+rechecks revocation before graph delivery and serializes its final admission
+byte with custody revocation. A stalled or closed
+pipe, cancellation, timeout, or incomplete handoff fails admission and joins
+the owned process and writer. Dropping a pending handoff must also trigger
+cleanup. Neither the entrypoint nor a consumer input write may run before the
+handoff is admitted. A synchronous write wrapped in an async timeout cannot
+satisfy this contract. This requirement does not grant runtime custody.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`

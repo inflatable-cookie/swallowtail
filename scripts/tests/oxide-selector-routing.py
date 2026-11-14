@@ -103,6 +103,9 @@ PROOF_SELECTORS = {
 
 # Maintained scripts that reach Cargo, with the class each must keep.
 SCRIPT_CLASSES = {
+    "scripts/run-claude-acp-installed-child.sh": "switched",
+    "scripts/run-claude-acp-shared-software.sh": "switched",
+    "scripts/check-claude-acp-guard-api.sh": "switched",
     HELPER: "helper",
     "scripts/check-msrv.sh": "switched",
     "scripts/check-package-metadata.sh": "switched",

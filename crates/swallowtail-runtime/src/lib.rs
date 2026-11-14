@@ -179,9 +179,9 @@ pub use harness_user_input::{
     HarnessUserInputRequest, HarnessUserInputResponse,
 };
 pub use host_reference::{
-    ApprovedUrlRef, AttachmentRef, EndpointRef, EnvironmentRef, ExecutableRef, MaterializedFileRef,
-    MaterializedModelArtifactRef, MaterializedResourceRef, SchemaRef, SelectedContentRef,
-    WorkingResourceRef,
+    ApprovedUrlRef, AttachmentRef, CheckedProcessRef, EndpointRef, EnvironmentRef, ExecutableRef,
+    MaterializedFileRef, MaterializedModelArtifactRef, MaterializedResourceRef, SchemaRef,
+    SelectedContentRef, WorkingResourceRef,
 };
 pub use host_registry::HostServices;
 pub use host_traits::{

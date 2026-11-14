@@ -34,6 +34,7 @@ mod discovery;
 mod driver;
 mod elicitation;
 mod failure;
+mod guard_manifest;
 mod mcp;
 mod permission;
 mod prepared;
@@ -73,6 +74,10 @@ pub use consumer_route_projection::{
     ClaudeAgentProjectionOpenOutcome,
 };
 pub use driver::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
+pub use guard_manifest::{
+    CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR, capture_claude_agent_acp_guarded_v1,
+    claude_agent_acp_guard_v1_source_manifest,
+};
 pub use mcp::{
     CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT, CLAUDE_AGENT_ACP_MCP_SERVER_NAME,
     ClaudeAgentAcpEncodedMcpServers, ClaudeAgentAcpRemoteMcpPlacement,
@@ -101,6 +106,13 @@ pub use prepared_response::{
     ClaudeCodeResponsePreparedIntegration, ClaudeCodeResponsePreparedRun,
     ClaudeCodeResponseProfileInput, prepare_claude_code_response_only,
 };
+
+/// Source of the experimental captured-module ACP guard loader.
+///
+/// This asset is not an admitted launch or a compatibility claim. A host must
+/// bind the complete capture and interpreter before any production use.
+pub const CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE: &str =
+    include_str!("../sidecar/claude-agent-acp-guard-loader.mjs");
 
 const MAXIMUM_REPLAY_ITEMS: usize = 64;
 const MAXIMUM_REPLAY_BYTES: usize = 256 * 1024;

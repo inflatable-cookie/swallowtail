@@ -1,12 +1,15 @@
 {
   "schema": "swallowtail.acp227.private-full-route-proposal.v1",
-  "status": "accepted ACP-only source/fake rehearsal; shared actual-actor integration awaits targeted proof; original composition not admitted",
+  "status": "source/fake actual-actor integration proved; original composition not admitted",
   "sourceBinding": "Final commit is bound by a detached record; source files below are independently digest-pinned.",
   "sources": {
+    "Cargo.lock": "bdfe195d110596c1615d2b438f0cf0b48f2ae86579242605e716745105fe4c37",
+    "crates/swallowtail-adapter-claude-agent/Cargo.toml": "7051a5859ad24a489a1750c6e4602794b2894367be22958ba568f159992666a3",
     "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
-    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "4a23c664c07aeea13ada15c937dd9dd99b0ec9c0cf1f13e84c11aa3a59dd694c",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "3f8b95950aba79917e3e33e10ec376cfdc40b44c6476f9e4dc120b9a5a8b851a",
     "crates/swallowtail-adapter-claude-agent/tests/acp_guard_prepared_child.rs": "4415e3cc59ee40d40db7349f7b02795d6267bc5a1a5fc0f5fe99ba7a091b5f73",
-    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_shared_software.rs": "e6717c7feb19dd4501611fe55c05d4a4fa3ddfabcc5b439f8cdd15e16a7a690b",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_scope.rs": "c4f1096b46429dccfcde880ab85bdbc5080edc173e686df3d66f4b502cf40f21",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_shared_software.rs": "1a36ab81171efcca825ba97d4e081185e7a8d480b43ce0181a5d01fcd5ca1e87",
     "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs": "01dcbdf3049eb6d9fddac68a63e9a03d616dd430720752574a76bc45396933a8",
     "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs": "656a11543e418e317d2ae33c614a29675bad3b877f5192b64e29f5215efbe4c3",
     "crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs": "0cecdea9f73d822f6eef519f0607de2392feeea34d4ec078e66b39056a2067af",
@@ -21,8 +24,13 @@
     "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/sdk.mjs": "50ca9796b0707eca7e2b3ee9dc5ce81518f34a22e39f47f48df251b29335403f",
     "crates/swallowtail-host-local/src/captured_manifest.rs": "b296e1e52cc0e29898c68d531d368bafcad47625e580633e1aa47c42c265b904",
     "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
+    "crates/swallowtail-host-local/src/child/supervision.rs": "16bab3fc73bda5463b9ee65dfd40d96dedb4c750f904f7d570ea5c22f9e75da4",
+    "crates/swallowtail-host-local/src/process.rs": "8ac5082c85bee9a48f93c5a6338d5f7855a7d9630a32db0e8fa31fc7964eeb9f",
+    "crates/swallowtail-host-local/src/process/launch.rs": "251f2404f4711d50fd06817409f163b612e821a5f077e2d8a2a957ece951c02b",
+    "crates/swallowtail-host-local/src/process_exit.rs": "e25aa84adbc0ab3c38b23c075bdf7c43aa3f67067c4ac5e7c60bbb6cd5724260",
+    "crates/swallowtail-host-local/src/process_exit/supervision.rs": "70ca3454f7c763580eecae2bb689a4367a0d4a32ab95935f9725547f07678bc4",
     "scripts/run-claude-acp-installed-child.sh": "715f46e682949ac533144f0a4f60217577018d10a08d60c6bf722bc5c71aaf78",
-    "scripts/run-claude-acp-shared-software.sh": "f9be884a08dafa6311791cad04ddb632e25b59d56c62f85c70630665c1ee478f"
+    "scripts/run-claude-acp-shared-software.sh": "0ac503fe8fdc458040f14a073c797b076de304b0361095d630c467eb985097ee"
   },
   "runnableFakeCommands": [
     [
@@ -171,6 +179,12 @@
     "hostControl": "Private Rust-parent pipe; source/runtime verification and revocation recheck before release. No kernelPolicy supplied or privileged branch invoked.",
     "kernelEnforced": false,
     "fullKernelTreeSettlement": false,
-    "pythonRule": "Installed Xcode framework app interpreter selected directly and digest-pinned; launcher re-exec is not silently treated as the admitted inode. Complete Python/framework/cache custody remains an original-admission gap."
+    "pythonRule": "Installed Xcode framework app interpreter selected directly and digest-pinned; launcher re-exec is not silently treated as the admitted inode. Complete Python/framework/cache custody remains an original-admission gap.",
+    "fixtureOwnership": {
+      "guard": "test-only30s watchdog, stop/wait on unwind/early return/deadline, pending-start worker ownership and joined worker completion",
+      "descriptor": "private Unix socket write end intentionally inherited; live-before/non-EOF then post-wait EOF, distinct from Effigy pin and kernel tree evidence",
+      "execution": "three cases serial on installed Darwin arm64 Node26.11.0; includes controlled assertion, deadline and dropped-start future counterexamples",
+      "productionPolicyChange": false
+    }
   }
 }

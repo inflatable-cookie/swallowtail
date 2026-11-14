@@ -21,3 +21,13 @@ software waits are separate from independent kernel subtree settlement.
 `originalCommand` remains null. Complete vendor closure, Python/cache custody,
 combined administrator discovery, kernel enforcement and original authority
 are separate gates. Changes to the shared schema/kernel/job belong to234.
+
+`acp_guard_scope.rs` owns every checked-process capability and pending start
+until stop/wait and worker join. Its30s test deadline is not a session policy.
+Controlled unwind,150ms timeout and dropped-start counterexamples retain
+software wait evidence; a deliberately inherited test socket must remain
+non-EOF while actors are live and reach EOF after cleanup. The runner is
+serial to keep descriptor inheritance inside one fixture. Effigy's descriptor
+is untouched, and EOF never attests whole-tree completion. The fresh three-case
+proof passed; the earlier timeout/residue record stays failed, with its manual
+residual cleanup earning no historical joined-wait credit.

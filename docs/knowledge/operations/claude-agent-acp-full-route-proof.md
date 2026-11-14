@@ -101,3 +101,40 @@ kernel/cgroup activation are explicit environment gaps. No new kernel,
 workflow, administrator or original/provider activation is authorized by this
 source/fake preparation. Any missing, changed or revoked binding refuses;
 never substitute, retry an uncertain attempt or raise the ceiling from fakes.
+
+## Owned test lifetime and descriptor counterexample
+
+The source/fake fixture owns every returned checked-process capability, including
+version probes. A private30s wall-clock watchdog requests stop and awaits those
+capabilities; unwind, early return and explicit fixture close use the same path.
+A private start worker drives pending bootstrap even if its caller drops the
+response future. Late completion after stop is refused only after its capability
+is stopped and awaited; fixture close waits and joins all start workers. Production pending-bootstrap cleanup stays with LocalProcessHost.
+That host's wait includes its private process-group owner's wait and reader
+joins; it reports RootOnly, not observed whole-tree emptiness. No production
+process or public runtime policy is changed by this test-only lifetime limit.
+
+A Unix-only test socket deliberately inherits its write end into the checked
+root and group helper. The counterexample closes only the test parent's copy
+while those actors are live and requires non-EOF, then exercises assertion
+unwind and a controlled pending-turn deadline. Stop/wait receipts, the owned
+SDK's native-child wait and final socket EOF are distinct observations. The
+Effigy cleanup pin is never read, closed or modified. EOF remains a descriptor
+fact and cannot supply kernel subtree/adoptee attestation. Run cases serially
+to avoid unrelated fixture descriptor inheritance. A failed cleanup cannot be
+converted to success by merely closing a descriptor or observing a missing PID.
+
+The earlier failed run left two helpers orphaned with Effigy's fd10 retained.
+The planner's identity-checked termination of96144/96148 is residual cleanup,
+with no recoverable wait status or joined/pass credit. Its retained cleanup
+record and Effigy's supported sentinel/gate settlement do not prove the new
+three-case integration. Keep the failed run separate from fresh repaired proof.
+
+Fresh repaired execution passed all three targeted cases on installed26.11.0.
+The controlled assertion and150ms deadline both observed the live inherited
+socket, then native exit0, checked-root/helper waits and EOF. Dropping an
+unpolled start response also completed its late start under stop/wait ownership.
+The intentional failure roots exited1; that is expected failure-path evidence,
+not a successful provider turn. All host exits remain RootOnly. Raw observations
+and exact source bindings accompany the retained review; no original command,
+canonical fixture, kernel adapter or qualification claim is enabled.

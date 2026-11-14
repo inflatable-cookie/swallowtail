@@ -26,4 +26,4 @@ record={'node':str(node),'sha256':inspector.digest(node),'dependencies':[{'path'
 pathlib.Path(os.environ['SWALLOWTAIL_ACP_SHARED_RUNTIME_RECORD']).write_text(json.dumps(record))
 print(json.dumps({'ownedSoftwareRuntime':record},sort_keys=True))
 PY
-bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture --run-ignored only -E 'test(/shared_software::/)' --success-output final
+bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture --test-threads 1 --run-ignored only -E 'test(/shared_software::/)' --success-output final

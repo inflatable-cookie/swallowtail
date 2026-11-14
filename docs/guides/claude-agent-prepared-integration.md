@@ -244,7 +244,9 @@ Its manifest distinguishes the prepared owner, group leader, checked ACP Node
 and owned entry/child, with OS-derived identities and separate software wait
 receipts. Run `effigy validate:acp-shared-software` for that bounded integration;
 [the procedure](../knowledge/operations/claude-agent-acp-full-route-proof.md)
-keeps shared kernel/admin/original admission gaps explicit. This is a test-only
+keeps shared kernel/admin/original admission gaps explicit. Its test-only
+watchdog retains and awaits helper ownership on errors, cancellation and
+pending-start abandonment; diagnostic EOF supplies no kernel tree claim. This is a test-only
 private seam; consumers receive no new runtime API or qualification claim.
 
 ### ACP Permission Exchange

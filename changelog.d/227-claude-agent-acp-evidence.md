@@ -18,3 +18,7 @@
 - Prepare the ACP-private binding to task234's reviewed software entry and
   caller-bound launch facade, preserving the actual Rust sibling process graph.
   Keep original execution, kernel settlement and administrator admission closed.
+- Bound the private shared-test fixture lifetime and retain process/helper
+  ownership through stop/wait on failure, timeout and abandoned startup.
+  Prove actual sibling actors with owned fakes and separate descriptor EOF
+  counterexamples; retain the original/kernel/native qualification gates.

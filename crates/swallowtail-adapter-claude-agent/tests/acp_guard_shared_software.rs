@@ -1,5 +1,8 @@
 //! Actual LocalProcessHost siblings bound to exact reviewed software entry helpers.
 use super::*;
+#[path = "acp_guard_scope.rs"]
+mod scope;
+use scope::FixtureScope;
 use std::io::{BufRead, BufReader};
 use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::mpsc::{Receiver, channel};
@@ -181,6 +184,7 @@ fn setup(
     FixtureHost,
     CheckedChild,
     Supervisor,
+    FixtureScope,
 ) {
     let record: Value = serde_json::from_slice(
         &std::fs::read(
@@ -330,8 +334,9 @@ fn setup(
         approval: fake.approval.clone(),
         command: fake.command.clone(),
     };
-    let (profile, services, resources) = prepare_registered(fake);
-    (profile, services, resources, cloned, supervisor)
+    let (scope, process) = FixtureScope::new(fake.local);
+    let (profile, services, resources) = prepare_with_process(process);
+    (profile, services, resources, cloned, supervisor, scope)
 }
 
 fn validate_actors(value: &Value, root: &Path, expected: usize) {
@@ -377,7 +382,7 @@ fn actual_local_host_siblings_use_reviewed_entry_permissions_and_waits() {
         let root = fixture();
         let endpoint = OwnedEndpoint::new();
         let settings = json!({"user":{"permissions":{"denyInsteadOfPrompting":false}},"managed":{"permissions":{"denyInsteadOfPrompting":!callback}}});
-        let (profile, services, resources, _host, mut supervisor) =
+        let (profile, services, resources, _host, mut supervisor, mut scope) =
             setup(&root, &endpoint, settings, false);
         supervisor.arm("new", false);
         let opened = block_on(profile.open_session(services.clone())).expect("actual new");
@@ -418,6 +423,9 @@ fn actual_local_host_siblings_use_reviewed_entry_permissions_and_waits() {
             "SHARED_ACP_SOFTWARE {}",
             json!({"callback":callback,"events":value,"trace":trace(&root)})
         );
+        let cleanup = scope.finish();
+        assert_eq!(cleanup["timedOut"], false);
+        assert_eq!(cleanup["ownDescriptorEof"], true);
         drop(supervisor);
         drop(endpoint);
         std::fs::remove_dir_all(root).expect("owned fixture cleanup");
@@ -427,9 +435,12 @@ fn actual_local_host_siblings_use_reviewed_entry_permissions_and_waits() {
 #[test]
 #[ignore = "requires explicit installed-runtime shared software host record"]
 fn actual_shared_cancel_and_checked_revocation_preserve_scope_cleanup() {
+    cleanup_counterexample(false);
+    cleanup_counterexample(true);
+    dropped_start_counterexample();
     let root = fixture();
     let endpoint = OwnedEndpoint::new();
-    let (profile, services, resources, host, mut supervisor) = setup(
+    let (profile, services, resources, host, mut supervisor, mut scope) = setup(
         &root,
         &endpoint,
         json!({"managed":{"permissions":{"denyInsteadOfPrompting":true}}}),
@@ -450,6 +461,9 @@ fn actual_shared_cancel_and_checked_revocation_preserve_scope_cleanup() {
         "SHARED_ACP_SOFTWARE {}",
         json!({"events":value,"trace":trace(&root)})
     );
+    let cleanup = scope.finish();
+    assert_eq!(cleanup["timedOut"], false);
+    assert_eq!(cleanup["ownDescriptorEof"], true);
     drop(supervisor);
     drop(endpoint);
     std::fs::remove_dir_all(root).expect("owned fixture cleanup");
@@ -461,7 +475,7 @@ fn actual_shared_preentry_revoke_and_argv_substitution_refuse_payload() {
     for substitute in [false, true] {
         let root = fixture();
         let endpoint = OwnedEndpoint::new();
-        let (profile, services, resources, _host, mut supervisor) =
+        let (profile, services, resources, _host, mut supervisor, mut scope) =
             setup(&root, &endpoint, json!({}), substitute);
         supervisor.arm("refusal", !substitute);
         if substitute {
@@ -492,6 +506,9 @@ fn actual_shared_preentry_revoke_and_argv_substitution_refuse_payload() {
                 .any(|v| v["kind"] == "native_released")
         );
         println!("SHARED_ACP_REFUSAL {}", value);
+        let cleanup = scope.finish();
+        assert_eq!(cleanup["timedOut"], false);
+        assert_eq!(cleanup["ownDescriptorEof"], true);
         drop(supervisor);
         drop(endpoint);
         std::fs::remove_dir_all(root).expect("owned fixture cleanup");
@@ -511,4 +528,113 @@ fn wait_phase_file(root: &Path, kind: &str) {
         assert!(Instant::now() < end, "missing host phase {kind}: {data}");
         std::thread::sleep(Duration::from_millis(5));
     }
+}
+
+// Both paths use the actual checked ACP root and its native child. The panic
+// unwinds into the fixture owner; the controlled deadline stops it before the
+// Nextest backstop can kill the Rust parent and orphan its private helper.
+fn cleanup_counterexample(timeout: bool) {
+    let root = fixture();
+    let endpoint = OwnedEndpoint::new();
+    let (profile, services, resources, _host, mut supervisor, scope) =
+        setup(&root, &endpoint, json!({}), false);
+    let receipt = scope.receipt();
+    let case_root = root.clone();
+    let observed = std::panic::catch_unwind(std::panic::AssertUnwindSafe(move || {
+        let mut scope = scope;
+        supervisor.arm("owned-cleanup-fault", false);
+        let mut session = block_on(profile.open_session(services.clone())).expect("fault session");
+        let mut turn = block_on(session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("fault.turn").expect("turn"),
+                OperationContent::new("hold").expect("held prompt"),
+            ),
+            services.clone(),
+        ))
+        .expect("fault turn");
+        wait_phase(&case_root, "native-prompt");
+        scope.prove_live_inheritance();
+        if !timeout {
+            panic!("deliberate owned fixture failure");
+        }
+        scope.expire_soon();
+        let terminal = block_on(turn.take_terminal_outcome().expect("pending terminal"));
+        assert_ne!(terminal.status(), &TerminalStatus::Completed);
+        let cleanup = scope.finish();
+        assert_eq!(cleanup["timedOut"], true);
+        assert_eq!(cleanup["ownDescriptorEof"], true);
+        // Provider/session close remains separate from the host's process wait.
+        assert_eq!(
+            block_on(session.close(resources.cleanup_request(), services)),
+            CleanupOutcome::Clean
+        );
+    }));
+    assert_eq!(observed.is_ok(), timeout);
+    let cleanup = receipt
+        .lock()
+        .expect("fixture receipt")
+        .clone()
+        .expect("cleanup before failure escapes");
+    assert_eq!(cleanup["liveInheritanceObserved"], true);
+    assert_eq!(cleanup["ownDescriptorEof"], true);
+    let waits = cleanup["waits"].as_array().expect("host waits");
+    assert_eq!(
+        waits.len(),
+        2,
+        "version probe and ACP session both remain owned"
+    );
+    assert!(
+        waits
+            .iter()
+            .all(|v| v["wait"] == true && v["stop"] == true && v["tree"] == "RootOnly")
+    );
+    assert_native_waits(&trace(&root), 1);
+    println!(
+        "ACP_CONTROLLED_FAULT {}",
+        json!({"timeout":timeout,"cleanup":cleanup,"trace":trace(&root)})
+    );
+    drop(endpoint);
+    std::fs::remove_dir_all(root).expect("owned fault fixture cleanup");
+}
+
+fn dropped_start_counterexample() {
+    let root = fixture();
+    let endpoint = OwnedEndpoint::new();
+    let (_profile, services, _resources, _host, supervisor, mut scope) =
+        setup(&root, &endpoint, json!({}), false);
+    let request = ProcessRequest::new(
+        ExecutableRef::new("claude-agent.prepared.executable").expect("target"),
+    )
+    .with_arguments(["--version".to_owned()])
+    .with_environment([
+        EnvironmentRef::new("claude-agent.prepared.environment").expect("environment")
+    ])
+    .with_working_resource(WorkingResourceRef::new("checked.workspace").expect("workspace"));
+    let pending = services
+        .process()
+        .expect("tracked process host")
+        .start_checked(
+            ScopeId::new("dropped.fixture.start").expect("scope"),
+            CheckedProcessRef::new("fixture.checked.binding").expect("checked binding"),
+            request,
+        );
+    drop(pending);
+    let cleanup = scope.finish();
+    assert_eq!(cleanup["ownDescriptorEof"], true);
+    let waits = cleanup["waits"].as_array().expect("wait receipts");
+    assert_eq!(waits.len(), 2);
+    assert!(
+        waits
+            .iter()
+            .all(|v| v["stop"] == true && v["wait"] == true && v["tree"] == "RootOnly")
+    );
+    assert!(
+        waits.iter().any(|v| v["late"] == true),
+        "abandoned startup must finish under the stopped fixture owner"
+    );
+    assert!(!trace(&root).iter().any(|v| v["phase"] == "native-start"));
+    println!("ACP_DROPPED_START {cleanup}");
+    drop(supervisor);
+    drop(endpoint);
+    std::fs::remove_dir_all(root).expect("owned dropped-start fixture cleanup");
 }

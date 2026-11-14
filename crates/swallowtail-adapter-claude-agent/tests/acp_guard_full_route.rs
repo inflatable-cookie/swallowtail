@@ -195,11 +195,15 @@ fn prepare(
 fn prepare_registered(
     fake: CheckedChild,
 ) -> (ClaudeAgentPreparedSession, HostServices, FixtureHost) {
+    prepare_with_process(Arc::new(fake.local))
+}
+
+fn prepare_with_process(
+    process: Arc<dyn ProcessService>,
+) -> (ClaudeAgentPreparedSession, HostServices, FixtureHost) {
     let host = ExecutionHostId::new("owned.full-route").expect("host");
     let resources = FixtureHost::new(Scenario::Success, "0.106.0");
-    let services = resources
-        .services(host.clone())
-        .with_process(Arc::new(fake.local));
+    let services = resources.services(host.clone()).with_process(process);
     let prepared = block_on(prepare_claude_agent(
         preparation(host).with_checked_process(
             CheckedProcessRef::new("fixture.checked.binding").expect("binding"),

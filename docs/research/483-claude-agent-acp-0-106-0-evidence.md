@@ -944,3 +944,32 @@ names exact current software sources and the remaining shared host, canonical
 fixture, vendor graph and Python/cache custody prerequisites. OriginalCommand
 remains null and the original component grant remains spent. Ceiling0.100.0,
 newer guarded permission, native/platform and exact HTTP MCP findings remain.
+
+### Repaired shared fixture lifetime
+
+The first failed development run had two independent causes: the test left
+its long-lived group helpers orphaned with the inherited cleanup pin, and
+Effigy failed to settle its dead foreground owner. The planner's verified
+termination of helpers96144/96148 records absence only, with no recoverable
+wait status or historical pass/join credit. Supported Effigy settlement cleared
+the old selector gate. Neither event supplies ACP execution proof.
+
+The private fixture now owns every returned checked-process capability,
+drives pending starts even after caller abandonment, and requests stop/waits
+on assertion unwind, early return, cancellation and a30s test deadline. It
+joins its start workers. Production host/process policy is unchanged. Safe
+Unix descriptor operations use the existing nix0.31.3 as a test dependency;
+no unsafe code or public PID API is introduced.
+
+Fresh targeted proof passed all three cases, serially on installed Darwin
+arm64 Node26.11.0. It covers actual sibling identities, prepared new/load/resume,
+permission-before-effect/denial and continued output, streams, cancellation,
+checked revocation, pre-entry revocation and argument substitution. Additional
+counterexamples deliberately unwind with a held native turn, expire a pending
+turn after150ms, and drop an unpolled checked-start response. Each retains
+capabilities through cleanup. The first two observe non-EOF while live and EOF
+after typed host waits and the owned SDK's native-child exit0; their ACP roots
+exit1 as expected. The dropped-start case awaits its late capability before
+refusing it. EOF is a descriptor fact, all host waits are RootOnly, and no
+adoptee/cgroup/kernel emptiness or original native claim follows. The earlier
+failed run remains failed. Full qualification and original execution gates stay.

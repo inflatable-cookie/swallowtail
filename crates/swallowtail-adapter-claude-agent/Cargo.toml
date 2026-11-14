@@ -36,6 +36,9 @@ swallowtail-testkit.workspace = true
 swallowtail-transport-acp-remote.workspace = true
 tokio = { version = "1.52", default-features = false, features = ["macros", "net", "rt", "sync", "time"] }
 
+[target.'cfg(unix)'.dev-dependencies]
+nix = { version = "0.31.3", default-features = false, features = ["fs"] }
+
 [lints]
 workspace = true
 

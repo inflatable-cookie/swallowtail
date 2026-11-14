@@ -292,6 +292,11 @@ revoked admission. Neither a payload trace nor an actor-shaped stand-in can
 supply those identities or wait rights. Software integration does not admit
 original vendor payloads, establish kernel settlement or raise a claim. The
 procedure pins the exact shared bytes and records remaining host prerequisites.
+The private software fixture retains process capabilities through stop/wait,
+including pending starts whose callers disappear, and closes its test-owned
+scope before failure escapes. Its watchdog and diagnostic descriptor prove
+only that bounded fake lifecycle; they change no consumer session lifetime or
+production process policy. Contract010's RootOnly/tree-evidence boundary stays.
 
 The captured-graph bootstrap is host input, with its own size and deadline
 limits; it does not consume the consumer's provider-stdin allowance. The host

@@ -235,7 +235,9 @@ class SpawnTests(unittest.TestCase):
             ).read_text()
         )
         self.assertFalse(plan["originalActivation"])
-        self.assertFalse(any(plan["authority"].values()))
+        self.assertFalse(plan["authority"]["kernelSetup"])
+        self.assertFalse(plan["authority"]["canonicalSetup"])
+        self.assertTrue(plan["authority"]["workflowApplied"])
         self.assertEqual(plan["limits"]["proposedCgroupTasksIncludingThreads"], 32)
         self.assertEqual(
             plan["fixture"]["states"], ["absent", "disabled", "managed-deny"]

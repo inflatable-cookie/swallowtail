@@ -356,7 +356,7 @@ def check_routing_packet(files, body, *, tools=False):
         f"diff --git a/{relative} b/{relative}\n--- a/{relative}\n+++ b/{relative}\n"
     )
     if (
-        sha(source) != plan["routingBaseSha256"]
+        sha(source) not in {plan["routingBaseSha256"], plan["routingPreparedSha256"]}
         or not patch.decode().startswith(prefix)
         or patch.decode().count("diff --git ") != 1
     ):
@@ -370,6 +370,19 @@ def check_routing_packet(files, body, *, tools=False):
         script.write_bytes(source)
         diff = root / "routing.patch"
         diff.write_bytes(patch)
+        if sha(source) == plan["routingPreparedSha256"]:
+            try:
+                subprocess.run(
+                    ["git", "apply", "--reverse", str(diff)],
+                    cwd=root,
+                    check=True,
+                    capture_output=True,
+                    timeout=10,
+                )
+            except subprocess.CalledProcessError as error:
+                raise Refused(errno.EPERM, "routing_patch_reverse_scope") from error
+            if sha(script.read_bytes()) != plan["routingBaseSha256"]:
+                raise Refused(errno.EPERM, "routing_recovered_base_changed")
         subprocess.run(
             ["git", "apply", str(diff)],
             cwd=root,
@@ -421,8 +434,14 @@ def check_workflow(files):
         files["docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch"]
     )
     prepared = check_routing_packet(files, body, tools=True)
+    plan = json.loads(
+        files["docs/knowledge/operations/claude-agent-sdk-spawn-plan.json"]
+    )
+    if plan["combinedProposal"]["workflowApplied"]:
+        if files[".github/workflows/sdk234-combined-fake.yml"] != body.encode():
+            raise Refused(errno.EPERM, "applied_workflow_bytes_changed")
     return {
-        "workflowApplied": False,
+        "workflowApplied": plan["combinedProposal"]["workflowApplied"],
         "workflowSha256": sha(body.encode()),
         "routingPreparedSha256": prepared,
         "originalActivation": False,

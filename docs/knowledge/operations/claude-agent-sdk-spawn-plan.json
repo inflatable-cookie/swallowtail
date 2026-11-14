@@ -6,7 +6,7 @@
   "authority": {
     "kernelSetup": false,
     "canonicalSetup": false,
-    "workflowApplied": false
+    "workflowApplied": true
   },
   "sourceBinding": "Externally supplied detached claude-agent-sdk-spawn.sha256 digest; captured before imports",
   "runtime": {
@@ -139,7 +139,7 @@
   "combinedProposal": {
     "entrypoint": "scripts/claude-agent-sdk-spawn-combined.py",
     "workflowPatch": "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch",
-    "workflowApplied": false,
+    "workflowApplied": true,
     "originalModeAvailable": false,
     "jobs": 3,
     "freshStateJobs": true,
@@ -149,18 +149,21 @@
     "cleanupSeconds": 5,
     "profile": "acp-actor-shape (first-party stand-ins, not ACP route proof)",
     "newAuthorityRequired": [
-      "workflow application/registration at exact reviewed source",
-      "one bounded three-job combined owned-fake setup/probe/cleanup attempt",
+      "separate exact resulting-source one-attempt combined owned-fake activation after registration237",
       "actual original-compatible source graph and separately declared source-immutable original execution route after host evidence"
     ],
     "routingPatch": "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
     "routingBaseSha256": "400a6d42d962f82949fe5b53e3373f8df4888e315893f5d7c601775e96e88443",
-    "routingPreparedSha256": "4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925"
+    "routingPreparedSha256": "4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925",
+    "workflowPath": ".github/workflows/sdk234-combined-fake.yml",
+    "preparationDecision": "3ca51d63-6e82-4a23-a069-946c320fe4f1 v2",
+    "registrationPrerequisite": "swallowtail#237 / 2fe98479-c452-41ba-bd8f-1be4413f834b"
   },
   "sharedConsumer": {
     "task": "swallowtail#227",
     "source": "baaa17635b2c67c254f9f7b2377a8b8f9d8751e6",
     "mapping": "ACP consumes this private schema with its own captured outer Rust/LocalProcessHost/ACP/native inputs; software actor stand-ins do not prove that composition",
-    "runtimeAxis": "ACP installed-compatible runtime separate from SDK exact22; Darwin shared-cache unresolved"
+    "runtimeAxis": "ACP installed-compatible runtime separate from SDK exact22; Darwin shared-cache unresolved",
+    "actualTopologyLimit": "ACP LocalProcessHost sleep group leader and checked ACP are siblings under Rust host. Current acp-actor-shape parent-child stand-in does not prove that actual graph;227 owns private sibling adaptation."
   }
 }

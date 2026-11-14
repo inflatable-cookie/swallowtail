@@ -927,7 +927,7 @@ class CombinedTests(unittest.TestCase):
         with self.assertRaisesRegex(OSError, "incomplete_layout"):
             m.handle({"kind": "layout_end"})
 
-    def test_unapplied_workflow_retains_fixed_scope_and_active_workflow_bytes(self):
+    def test_applied_workflow_retains_fixed_scope_and_prior_workflow_bytes(self):
         patch = (
             ROOT / "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch"
         ).read_bytes()
@@ -947,7 +947,10 @@ class CombinedTests(unittest.TestCase):
             hashlib.sha256(current.read_bytes()).hexdigest(),
             "07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19",
         )
-        self.assertFalse((ROOT / ".github/workflows/sdk234-combined-fake.yml").exists())
+        self.assertEqual(
+            (ROOT / ".github/workflows/sdk234-combined-fake.yml").read_bytes(),
+            body.encode(),
+        )
 
     def test_routing_patch_applies_only_in_owned_fixture_and_rejects_scope_mutations(
         self,

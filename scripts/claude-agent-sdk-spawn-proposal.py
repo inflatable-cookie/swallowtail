@@ -24,6 +24,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 ROOT = Path(__file__).resolve().parents[1]
 RECORD = Path("docs/knowledge/operations/claude-agent-sdk-spawn.sha256")
 INPUTS = (
+    ".github/workflows/sdk234-combined-fake.yml",
     "scripts/claude-agent-sdk-spawn-proposal.py",
     "scripts/claude-agent-sdk-spawn-entry.py",
     "scripts/claude-agent-sdk-spawn-owner.py",

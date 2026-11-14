@@ -246,12 +246,14 @@ successful disposal cannot manufacture missing evidence.
 
 ## Exact inactive job and next gates
 
-The unapplied [combined workflow patch](claude-agent-sdk-combined-workflow.patch)
-and [byte-bound routing patch](claude-agent-sdk-combined-routing.patch) form one
-preparation packet. Applying only the workflow would fail the existing routing
-guard. Source tests apply the routing diff only inside an owned scratch fixture,
-check the prepared helper digest/format and reject changed workflow bytes or a
-widened unrelated-workflow exception. The active helper is unchanged. The job
+Tom decision3ca51d63 v2 (2026-11-14) authorizes preparation and ordinary reviewed
+registration of the exact donor f9025d219 packet. The [workflow patch](claude-agent-sdk-combined-workflow.patch)
+and [byte-bound routing patch](claude-agent-sdk-combined-routing.patch) are now
+applied together in PR553, preserving workflow SHA2566dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29
+and prepared helper4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925.
+Source tests reverse/reapply the exact routing delta only in an owned scratch
+fixture, verify both identities and reject changed workflow bytes or an unrelated
+exception. The earlier namespace and administrator workflows remain unchanged. The job
 contains three fresh Linux jobs (absent, disabled, managed-deny), manual-only,
 contents:read, five minutes each, fail-fast disabled and no retry. It uses an
 **already cached** exact Node22.23.2; there is no setup-node, installation or
@@ -265,8 +267,9 @@ complete result is128KiB and the root
 receipt256KiB, each bounded and sequence/length/SHA checked. These are new
 proposal bounds, never substitutions in the old consumed grants.
 
-The packet's runnable commands are in the patches and the plan JSON. After separate
-application/registration authority, a proposed dispatch would name the exact
+The packet's runnable commands are in the applied workflow and the plan JSON.
+Registration is separately owned by task237. After its canonical reconciliation
+and a fresh exact-source one-attempt grant, a proposed dispatch would name the exact
 pushed source and current detached spawn record:
 
 ```sh
@@ -275,7 +278,9 @@ gh workflow run sdk234-combined-fake.yml --repo inflatable-cookie/swallowtail \
   -f source_sha=EXACT_APPROVED_SOURCE -f record_sha=EXACT_APPROVED_SPAWN_RECORD
 ```
 
-This workflow is not applied/registered or authorized to run. It selects only
+This workflow is applied for preparation only. Registration237 and a separate
+exact resulting-source activation grant are still required; it is not authorized
+to run. It selects only
 owned fakes. Root ptrace/PID-namespace capability, exclusive pre-enabled cgroup
 custody and the changed combined enforcement/administrator path remain
 unobserved. The existing runner is a concrete candidate, not an admitted host.
@@ -291,3 +296,9 @@ complete admission. There is no original mode or command that can bypass these
 gates. Darwin's shared-cache custody and combined boundary remain unresolved.
 Q-009 stays open; no ACP/CLI proof transfer, platform widening or qualification
 increase follows from this source/fake milestone.
+
+ACP227 reports that its actual sleep group leader and checked ACP are siblings
+under the Rust host. The reviewed acp-actor-shape stand-in uses a parent-child
+graph and does not prove that composition. Task227 owns its private sibling
+adapter; no shared actor/kernel/schema change or integration claim is made by
+this exact workflow preparation.

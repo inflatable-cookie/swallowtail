@@ -59,3 +59,5 @@ changed kernel/cgroup execution remain inactive preparation, not admission.
 - Extend the private source/fake spawn seam with OS-derived group-owner/driver/native actors, captured launch-graph refusals and an inactive combined Linux cgroup/exec-stop/administrator-fixture proposal. Keep new kernel/combined discovery, original admission and Q-009 qualification gated; both namespace grants remain consumed.
 
 Repair partial fixture creation: persist intent before mkdir, bind identity before chmod, and retain the journal when ownership, cleanup or tree settlement is unresolved. Add owned early-fault and interruption counterexamples; no canonical or kernel activation.
+
+Apply the exact combined owned-fake workflow and narrow routing exception under Tom’s preparation-only ruling. Preserve separate registration, activation, original execution and qualification gates, including the ACP sibling-topology proof limit.

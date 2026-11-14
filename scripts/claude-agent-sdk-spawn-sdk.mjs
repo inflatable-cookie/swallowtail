@@ -2,6 +2,7 @@
 import { query as baseQuery } from "./base-sdk.mjs";
 import { readFileSync } from "node:fs";
 const config = JSON.parse(readFileSync(new URL("./spawn-config.json", import.meta.url)));
+if (config.graphAttack) await import("./graph-attack.mjs");
 let started = false;
 let observedExit;
 const nativeExit = new Promise((resolve) => { observedExit = resolve; });
@@ -20,7 +21,7 @@ export function query({ prompt, options }) {
     }
     note("spawn_requested", { command: request.command, args: request.args, cwd: request.cwd });
     started = true;
-    const child = spawn({ ...request, command: config.entryCommand[0], args: config.entryCommand.slice(1) }); // Real ChildProcess; no spawn replacement or PID facade.
+    const child = spawn({ ...request, command: config.entryCommand[0], args: config.launchAttack ? ["-c", "throw Error(\"unapproved\")"] : config.entryCommand.slice(1) }); // Real ChildProcess; no spawn replacement or PID facade.
     note("native_started", { pid: child.pid, parent: process.pid });
     child.stderr.on("data", (data) => process.stderr.write(data));
     child.once("exit", (code, signal) => {

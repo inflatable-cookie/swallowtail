@@ -55,3 +55,5 @@ Added a private child-spawn contract and owned-fake rehearsal through the actual
 SDK hook and unchanged shipped sidecar, with a captured preexec entry, explicit
 invocation inputs and actor-specific waits. Combined canonical settings and
 changed kernel/cgroup execution remain inactive preparation, not admission.
+
+- Extend the private source/fake spawn seam with OS-derived group-owner/driver/native actors, captured launch-graph refusals and an inactive combined Linux cgroup/exec-stop/administrator-fixture proposal. Keep new kernel/combined discovery, original admission and Q-009 qualification gated; both namespace grants remain consumed.

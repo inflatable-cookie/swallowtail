@@ -20,16 +20,18 @@ def sha(file):
     return value.hexdigest()
 
 
-def run(config_file):
+def run(config_file, role="native"):
     config = json.loads(Path(config_file).read_bytes())
-    entry = config["entry"]
+    if role not in {"driver", "native"}:
+        raise RuntimeError("entry_role")
+    entry = config["entry" if role == "native" else "driverEntry"]
     command = entry["command"]
     if (
         config["originalActivation"] is not False
         or entry["pythonSha256"] != sha(Path(sys.executable).resolve(strict=True))
         or entry["sourceSha256"] != sha(Path(__file__))
         or entry["nodeSha256"] != sha(command[0])
-        or entry["nativeSha256"] != sha(command[3])
+        or entry["nativeSha256"] != sha(entry["nativePath"])
         or command[1:3] != ["--no-addons", "--openssl-config=/dev/null"]
     ):
         raise RuntimeError("trusted_entry_binding")
@@ -43,11 +45,13 @@ def run(config_file):
         "args": command[1:],
         "entrySourceSha256": entry["sourceSha256"],
     }
+    if config.get("fault") == "forged-approval":
+        request["token"] = "forged"
     connection = http.client.HTTPConnection("127.0.0.1", config["port"], timeout=1)
     try:
         connection.request(
             "POST",
-            "/native-entry",
+            "/" + role + "-entry",
             json.dumps(request),
             {"Content-Type": "application/json"},
         )
@@ -57,7 +61,20 @@ def run(config_file):
             raise RuntimeError("trusted_entry_refused")
     finally:
         connection.close()
-    if entry["nativeSha256"] != sha(command[3]) or entry["nodeSha256"] != sha(
+    reply = json.loads(data)
+    if config.get("kernelPolicy") is not None:
+        binding = config["kernelPolicy"]
+        source = Path(binding["file"]).read_bytes()
+        if hashlib.sha256(source).hexdigest() != binding["sha256"]:
+            raise RuntimeError("kernel_policy_source_changed")
+        namespace = {"__name__": "private_child_policy", "__file__": binding["file"]}
+        exec(compile(source, binding["file"], "exec"), namespace)
+        # This response arrives through the trusted guest's private root pipe;
+        # root authenticates this live TCP socket and the actual traced task.
+        namespace["install"]({**binding["inputs"], **reply["kernel"]}, role)
+    elif reply:
+        raise RuntimeError("unexpected_kernel_policy")
+    if entry["nativeSha256"] != sha(entry["nativePath"]) or entry["nodeSha256"] != sha(
         command[0]
     ):
         raise RuntimeError("trusted_entry_changed_before_exec")
@@ -65,4 +82,4 @@ def run(config_file):
 
 
 if __name__ == "__main__":
-    run(sys.argv[1])
+    run(sys.argv[1], sys.argv[2])

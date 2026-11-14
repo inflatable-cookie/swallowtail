@@ -121,8 +121,8 @@ waits, parent/second-start refusal, revocation before driver/native entry, chang
 staged native, source/symlink mismatch, cancellation, live output/storage and
 hanging native limits, missing waits and cleanup failures. A refused signal
 regression verifies endpoint threads and custody descriptors still close. Owned
-scratch settings are not canonical administrator-path proof. Kernel, canonical
-setup and original entrypoints remain unavailable in this prototype.
+scratch settings are not canonical administrator-path proof. Ordinary software mode activates no kernel or canonical setup; original mode
+remains unavailable. The inactive adapter is described below.
 
 Planner design answer to questionc84fed65: no blanket USER_NOTIF requirement,
 and no new trust ruling. Custody does not make admitted SDK/native code trusted.
@@ -131,9 +131,8 @@ edge must be mediated, prohibited or source-proven unreachable for the exact
 invocation. An executable bypass of the wrapper keeps that invocation refused;
 detecting it after target effects is failure. Cgroup task limits include threads
 and must apply before untrusted code, with migration/controller/monitor escape
-blocked. Empty membership is not reaping. The current graph and changed kernel
-adapter are still incomplete; this software checkpoint is not a ready original
-execution request. A seccomp-notification CONTINUE over mutable argv/path memory
+blocked. Empty membership is not reaping. The vendor graph and actual changed-kernel admission remain unproved; this
+source/fake milestone is not a ready original execution request. A seccomp-notification CONTINUE over mutable argv/path memory
 would not itself close that gap.
 
 Coordination: task227 supplies exact captured facade/loader evidence at
@@ -144,3 +143,140 @@ It is ACP-specific evidence, not SDK qualification or a complete native exec
 mediator. Reuse its private invocation/event seam without changing public APIs,
 borrowing authority or duplicating the cgroup/namespace implementation. ACP's
 installed-compatible Node axis remains separate from this SDK target.
+
+## Composable source/fake boundary
+
+The private `swallowtail.sdk234.private-spawn.v1` record now has explicit finite
+actor profiles. `sdk` binds trusted guest → checked Node driver → native child.
+`acp-actor-shape` adds a captured Python group owner: trusted guest → group owner
+→ checked Node driver → native child. The latter is an owned stand-in for the
+outer Rust prepared host / LocalProcessHost group owner / checked ACP entry,
+not an execution of ACP or an extension of its claim. Driver PID and group leader
+are independent. The native's parent is the registered checked Node actor.
+All actors come from OS observations of host-owned starts, never route trace
+PIDs or a public runtime handle. ACP227 binds its own captured actors, runtime,
+source closure and route tests to this seam; SDK22 and ACP's installed-compatible
+Node remain separate axes.
+
+Each invocation binds actual source-record/runtime identities, the captured
+entry/facade/graph bytes, exact argv/environment/cwd, actor parent/group/start,
+fixture state and limits. Events carry `seq`, `phase`, `kind` and actor-specific
+identity or wait fields. Native start/release/entry, actual ChildProcess exit,
+parent driver/group-owner waits, stop requests, independent terminal waits,
+pidfd HUP, cgroup emptiness and fixture cleanup are separate observations.
+A caller cannot instantiate admission by serializing this record.
+
+The selected first-party graph uses captured synchronous resolve/load hooks,
+including CJS and parent-bound `createRequire`, derived from the pinned ACP
+loader above. Only the shipped sidecar and retained option driver may obtain
+the one exact registered real ChildProcess spawn. Shells, alternate Python/Node
+arguments, additional starts, workers, vm/string code, addons, data imports and
+unregistered process bindings refuse before the owned effect marker. Fixed
+startup includes `--no-addons`, `--disallow-code-generation-from-strings` and the
+captured bootstrap. This closes the tested owned invocation, not arbitrary
+JavaScript or an opaque vendor dependency graph. Unknown vendor edges still
+refuse original admission. Trusted-host custody does not turn payloads into
+trusted code.
+
+## Inactive Linux combined adapter
+
+`scripts/claude-agent-sdk-spawn-combined.py` now expresses the proposed host
+orchestration. Its root modes are unavailable to ordinary rehearsals. Source
+state-machine tests supply owned event/filesystem models and explicitly report
+`kernelEnforced: false`. No changed filter, ptrace, PID namespace, cgroup or
+canonical path has been activated by these tests. Earlier successful transport
+and fixture runs remain exact historical evidence, not proof of this adapter.
+
+The proposed monitor starts outside a new PID namespace, puts the trusted guest
+inside its exclusive cgroup before releasing the fork barrier, then creates an
+unnamed loopback-only network namespace and drops groups, saved credentials and
+all capability sets. It requires already-enabled pids/memory/cpu controllers;
+it never enables parent controllers or installs a host service. Controller
+requirements follow the [cgroupv2 interface](https://docs.kernel.org/admin-guide/cgroup-v2.html). Limits are
+pids.max32 including TIDs, memory256MiB with no swap, and one CPU core. Missing
+delegation, controllers, kernel methods, exact runtime/libraries or custody
+refuse. Payloads receive no cgroup-control write, namespace escape, raw ptrace,
+CLONE_UNTRACED or inherited outside network socket.
+
+A root `PTRACE_SEIZE` owner follows fork/vfork/clone/exec/exit with EXITKILL.
+At an exec stop it checks the committed executable device/inode/hash, argv,
+environment and cwd, actual namespace/cgroup/credentials and live input custody
+before resuming user entry. Process pidfds are opened while stopped, before
+release. Only the finite driver → trusted Python native entry → exact owned
+native sequence is admitted; a missing, duplicate, early, revoked, changed or
+late native approval refuses. Unknown descendants and nonleader exec refuse.
+Thread events count toward the same task budget. An exec-exit stop is not a
+terminal wait. Ordinary signals do not grant approval. These are proposed uses of
+[ptrace exec/event semantics](https://man7.org/linux/man-pages/man2/ptrace.2.html),
+not observations of this backend.
+
+This choice avoids treating a seccomp CONTINUE over mutable pathname/argv
+memory as verified execution. An FD-number/AT_EMPTY_PATH scalar check is also
+insufficient: [an absolute execveat pathname ignores dirfd](https://man7.org/linux/man-pages/man2/execveat.2.html). Exec stops verify the
+loaded image, while captured launch-graph analysis must also show that every
+allowed pre-exec child path is trusted runtime bootstrap. The prototype is not
+a hostile-driver sandbox. A reachable vendor fork/exec/dynamic-code bypass, or
+an unknown pre-exec child path, keeps that original invocation refused.
+
+The driver receives inherited Landlock/seccomp before its Node entry. Native
+entry adds its narrower policy before native Node entry. The root authenticates
+entry requests using actual TCP socket ownership in that namespace/cgroup,
+not a caller-supplied PID/token alone. Only the trusted guest inherits the root
+control pipe. The native attempts an owned outside-file read, canonical fixture
+write and connection to an independent host-loopback canary; an unattempted or
+timed-out canary is not denial evidence. The same run must show the selected
+protocol, permission behavior, endpoint stream, native/driver software waits,
+actual root parent/adoptee waits, pidfd HUP for every process and empty cgroup.
+Cleanup rechecks these separate records; a summary flag or empty cgroup alone
+fails. Killing owned remaining tasks during independent disposal cannot repair
+missing reaping proof.
+
+The canonical helper's exact payload/read/write/cleanup primitives are reused.
+The new orchestration journals the exclusively created directory identity before
+writing its files, so a partial setup can remove only that inode and exact known
+helper files. Unexpected files, changed bytes, symlinks, ownership or identity
+refuse and preserve the finding. Cgroup cleanup and fixture cleanup are both
+attempted independently. Unknown settlement remains failed even after disposal.
+
+## Exact inactive job and next gates
+
+The unapplied [combined workflow patch](claude-agent-sdk-combined-workflow.patch)
+contains three fresh Linux jobs (absent, disabled, managed-deny), manual-only,
+contents:read, five minutes each, fail-fast disabled and no retry. It uses an
+**already cached** exact Node22.23.2; there is no setup-node, installation or
+download fallback. Read-only preflight records actual Python/timeout/sudo/Node,
+libraries, Landlock ABI, pidfd API and existing controller delegation. A missing
+cached runtime or enabled controller is an environment prerequisite, not a
+reason to mutate the host. Its source-checked root setup is bounded by35s plus
+2s kill grace, with a30s inner wall and independent5s checked cleanup. New
+combined control frames remain16KiB; the acknowledged layout is64KiB, the
+complete result is128KiB and the root
+receipt256KiB, each bounded and sequence/length/SHA checked. These are new
+proposal bounds, never substitutions in the old consumed grants.
+
+The packet's runnable commands are in the patch and the plan JSON. After separate
+application/registration authority, a proposed dispatch would name the exact
+pushed source and current detached spawn record:
+
+```sh
+gh workflow run sdk234-combined-fake.yml --repo inflatable-cookie/swallowtail \
+  --ref ns-d7afab60-9a93-4414-95e7-61608a703ab7 \
+  -f source_sha=EXACT_APPROVED_SOURCE -f record_sha=EXACT_APPROVED_SPAWN_RECORD
+```
+
+This workflow is not applied/registered or authorized to run. It selects only
+owned fakes. Root ptrace/PID-namespace capability, exclusive pre-enabled cgroup
+custody and the changed combined enforcement/administrator path remain
+unobserved. The existing runner is a concrete candidate, not an admitted host.
+No privileged attempt is requested just to replay the old incompatible topology.
+
+Original execution additionally needs the exact original SDK/native artifacts
+and every reachable selected launch/code edge closed under their frozen
+identities, combined native administrator discovery and platform/runtime
+custody, then separate exact source/platform/artifact/attempt authority through
+a declared Nucleus source-immutable proof route. The accepted identity ledger
+and Research480/482 provide artifact lineage/source-flow evidence, not this
+complete admission. There is no original mode or command that can bypass these
+gates. Darwin's shared-cache custody and combined boundary remain unresolved.
+Q-009 stays open; no ACP/CLI proof transfer, platform widening or qualification
+increase follows from this source/fake milestone.

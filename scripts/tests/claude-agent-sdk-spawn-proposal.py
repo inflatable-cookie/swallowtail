@@ -61,6 +61,14 @@ class SpawnTests(unittest.TestCase):
                     },
                 )
                 self.assertEqual(result["driverWait"], 0)
+                self.assertEqual(
+                    [row["seq"] for row in result["events"]],
+                    list(range(len(result["events"]))),
+                )
+                self.assertTrue(
+                    {"native_started", "native_entry", "native_wait", "driver_wait"}
+                    <= {row["kind"] for row in result["events"]}
+                )
                 self.assertEqual(len(result["registered"]), 1)
                 self.assertEqual(result["nativeWaits"][0]["code"], 0)
                 self.assertEqual(
@@ -138,7 +146,7 @@ class SpawnTests(unittest.TestCase):
     def test_live_limits_and_hanging_native_refuse(self):
         for kwargs in (
             {"output_limit": 1},
-            {"storage_limit": 1},
+            {"storage_limit": 1024, "fault": "storage-excess"},
             {"scenario": "never-exit", "bound": 1},
         ):
             with self.subTest(kwargs=kwargs):
@@ -153,6 +161,46 @@ class SpawnTests(unittest.TestCase):
             with self.assertRaises(PermissionError):
                 self.run_peer()
         self.assertEqual(set(threading.enumerate()), before)
+
+    def test_captured_graph_denies_launch_and_dynamic_edges_before_effects(self):
+        for fault in (*CORE.GRAPH_ATTACKS, "alternate-flags", "forged-approval"):
+            with self.subTest(fault=fault):
+                result = self.run_peer(fault=fault)
+                self.assertIsNotNone(result["failure"])
+                self.assertNotIn("deadline", result["failure"])
+                self.assertFalse(result.get("bypassEffectObserved", False))
+                self.assertFalse(result.get("requests", []))
+                self.assertFalse(result["registered"])
+
+    def test_driver_actor_group_is_explicit_not_assumed_to_be_driver_pid(self):
+        actor = {"pid": 101, "group": 100, "start": "owned"}
+        observed = {"pid": 102, "parent": 101, "group": 100, "command": ["owned"]}
+        CORE.validate_entry(observed, actor, ["owned"])
+        with self.assertRaises(CORE.Refused):
+            CORE.validate_entry({**observed, "group": 101}, actor, ["owned"])
+
+    def test_real_nonleader_driver_actor_and_native_parent_group_chain(self):
+        result = self.run_peer(composition="acp-actor-shape")
+        self.assertIsNone(
+            result["failure"],
+            {k: result.get(k) for k in ("failure", "peerEvents", "stderr", "events")},
+        )
+        actors = result["actorGraph"]
+        self.assertEqual(set(actors), {"monitor", "group-owner", "driver", "native"})
+        self.assertNotEqual(actors["driver"]["pid"], actors["driver"]["group"])
+        self.assertEqual(actors["driver"]["group"], actors["group-owner"]["pid"])
+        self.assertEqual(actors["native"]["parent"], actors["driver"]["pid"])
+        self.assertEqual(actors["native"]["group"], actors["group-owner"]["pid"])
+        self.assertEqual(result["nativeWaits"][0]["actor"], actors["driver"]["pid"])
+        self.assertEqual(result["actorWaits"][0]["actor"], actors["group-owner"]["pid"])
+        self.assertEqual(result["actorWaits"][0]["code"], 0)
+
+    def test_actor_registry_rejects_forged_or_duplicate_roles(self):
+        registry = CORE.ActorRegistry("sdk")
+        with self.assertRaises(CORE.Refused):
+            registry.bind("driver", os.getpid(), ["fake"], "monitor")
+        with self.assertRaises(CORE.Refused):
+            registry.bind("native", os.getpid(), ["fake"], "monitor")
 
     def test_source_record_and_symlink_refuse(self):
         with self.assertRaises(CORE.Refused):

@@ -1,6 +1,6 @@
 {
   "schema": "swallowtail.sdk234.private-spawn.v1",
-  "scope": "source-and-owned-fake-rehearsal",
+  "scope": "source-and-owned-fake-rehearsal; inactive combined Linux host proposal",
   "originalActivation": false,
   "productionAdmission": false,
   "authority": {
@@ -20,10 +20,29 @@
     "native": "genuine SDK hook child behind independently checked owned entry",
     "startup": [
       "--no-addons",
-      "--openssl-config=/dev/null"
+      "--openssl-config=/dev/null",
+      "--disallow-code-generation-from-strings",
+      "--import exact captured bootstrap"
     ],
     "ambientEnvironment": false,
-    "secondNativeStart": "refuse"
+    "secondNativeStart": "refuse",
+    "profiles": {
+      "sdk": [
+        "trusted guest",
+        "checked SDK Node",
+        "native child"
+      ],
+      "acp-actor-shape": [
+        "trusted guest (outer-host stand-in)",
+        "captured Python group owner (LocalProcessHost stand-in)",
+        "checked Node driver (ACP stand-in)",
+        "native child"
+      ]
+    },
+    "actorRegistration": "Private OS-derived pid, parent, process group, start, namespace/cgroup/uid/gid and actual argv; no public PID API or payload trace attestation",
+    "nativeEntry": "Captured Python entry followed by kernel exec-stop committed-image validation before user entry in the inactive Linux proposal",
+    "ownedGraph": "Captured ESM/CJS/JSON resolve/load hooks; one parent-bound exact real ChildProcess spawn; alternate starts, workers, dynamic code and addons refused",
+    "vendorGraph": "Not admitted: every reachable vendor spawn/exec/worker/dynamic-code/addon edge still requires exact selected invocation closure; custody alone does not close it"
   },
   "limits": {
     "wallSeconds": 30,
@@ -32,7 +51,15 @@
     "outputBytes": 1000000,
     "writableBytes": 1000000,
     "proposedCgroupTasksIncludingThreads": 32,
-    "proposedMemoryBytes": 268435456
+    "proposedMemoryBytes": 268435456,
+    "ordinaryFakeDefaultSeconds": 10,
+    "controlFrameBytes": 16384,
+    "combinedResultBytes": 131072,
+    "combinedReceiptBytes": 262144,
+    "pidNamespace": "new; payload cannot signal the outside root monitor",
+    "proposedCpuQuota": "100000 100000",
+    "originalLimitsUnchanged": true,
+    "combinedLayoutBytes": 65536
   },
   "endpoint": {
     "protocol": "ordinary TCP HTTP Messages streaming",
@@ -70,14 +97,16 @@
     "fixture_cleanup"
   ],
   "kernelPrerequisites": [
-    "fresh exclusive delegated cgroupv2 with pids/memory/cpu controllers, kill and freeze",
-    "observed unnamed loopback-only netns",
-    "inherited Landlock/seccomp with bounded fork allowance",
-    "trusted native entry and kernel-derived registration before payload",
-    "pidfd reaping and actual parent/adoptee waits",
-    "independent checked canonical-fixture cleanup"
+    "existing root-owned cgroupv2 delegation with pids/memory/cpu already enabled; no parent controller writes",
+    "pids.max=32 and memory/CPU limits read back before initial guest release; inherited across fork/exec",
+    "distinct PID namespace with trusted init and distinct unnamed lo-only network namespace",
+    "Landlock plus inherited role-specific seccomp; forbid CLONE_UNTRACED, namespace escape, raw ptrace, migration/control writes and native process forks",
+    "root PTRACE_SEIZE/EXITKILL with fork/vfork/clone/exec events; match committed image/argv/env/cwd at exec stop before user return; pin process pidfds while stopped",
+    "host-derived finite group-owner/driver/native actor graph; one-shot native release and live custody check at exec stop",
+    "actual software driver/native waits plus root parent/adoptee terminal waits, pidfd HUP and empty cgroup; empty alone refuses",
+    "independent identity-checked fixture/cgroup cleanup, retaining failed/unknown settlement"
   ],
-  "kernelAdmission": "closed; changed process/cgroup and combined fixture boundary unimplemented/unobserved",
+  "kernelAdmission": "closed; implemented inactive Linux adapter and owned models supply no actual changed-kernel, host delegation or combined administrator evidence",
   "retainedTransportEvidence": {
     "source": "05af44845f0dbbe4b5bc3fbd75bc98a358e50cc5",
     "run": 43560978666,
@@ -94,5 +123,29 @@
     "ledger": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.322/identity.json",
     "reuseFrozenIdentities": true,
     "downloadOrExecution": false
+  },
+  "combinedProposal": {
+    "entrypoint": "scripts/claude-agent-sdk-spawn-combined.py",
+    "workflowPatch": "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch",
+    "workflowApplied": false,
+    "originalModeAvailable": false,
+    "jobs": 3,
+    "freshStateJobs": true,
+    "jobMinutes": 5,
+    "setupSeconds": 35,
+    "killGraceSeconds": 2,
+    "cleanupSeconds": 5,
+    "profile": "acp-actor-shape (first-party stand-ins, not ACP route proof)",
+    "newAuthorityRequired": [
+      "workflow application/registration at exact reviewed source",
+      "one bounded three-job combined owned-fake setup/probe/cleanup attempt",
+      "actual original-compatible source graph and separately declared source-immutable original execution route after host evidence"
+    ]
+  },
+  "sharedConsumer": {
+    "task": "swallowtail#227",
+    "source": "baaa17635b2c67c254f9f7b2377a8b8f9d8751e6",
+    "mapping": "ACP consumes this private schema with its own captured outer Rust/LocalProcessHost/ACP/native inputs; software actor stand-ins do not prove that composition",
+    "runtimeAxis": "ACP installed-compatible runtime separate from SDK exact22; Darwin shared-cache unresolved"
   }
 }

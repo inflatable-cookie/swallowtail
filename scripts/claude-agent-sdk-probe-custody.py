@@ -44,6 +44,9 @@ def python_inputs():
         name = getattr(module, "__file__", None)
         if name and Path(name).is_file():
             paths.add(Path(name).resolve(strict=True))
+        cache = getattr(module, "__cached__", None)
+        if cache and Path(cache).is_file():
+            paths.add(Path(cache).resolve(strict=True))
     if sys.platform == "linux":
         for row in Path("/proc/self/maps").read_text().splitlines():
             fields = row.split(maxsplit=5)

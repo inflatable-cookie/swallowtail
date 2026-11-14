@@ -737,6 +737,36 @@ class CombinedTests(unittest.TestCase):
                 self.assertTrue(result["journalRetained"])
                 self.assertTrue(journal_path.exists())
 
+    def test_proved_fixture_disposal_cannot_discard_unknown_tree_evidence(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            with self.fixture_transaction(Path(temporary)) as (
+                fixture,
+                parent,
+                journal_path,
+                store,
+            ):
+                COMBINED.prepare_fixture(
+                    parent, os.getuid(), "disabled", "owned-model", fixture, store
+                )
+                result = self.observed_cleanup(
+                    fixture, parent, journal_path, tree=False
+                )
+                self.assertTrue(result["fixtureCleanup"])
+                self.assertFalse((parent / "claude-code").exists())
+                self.assertFalse(result["independentTreeSettlement"])
+                self.assertEqual(result["failure"], "tree_settlement_unproved")
+                self.assertTrue(result["journalRetained"])
+                self.assertTrue(journal_path.exists())
+                self.creation_observations.append(
+                    {
+                        "fault": "tree-settlement-unproved",
+                        "identityKnown": True,
+                        "fixtureCleanup": True,
+                        "journalRetained": True,
+                        "kernelEnforced": False,
+                    }
+                )
+
     def test_fixture_partial_setup_cleans_only_its_exclusive_exact_inode(self):
         file = ROOT / "scripts/claude-agent-sdk-admin-fixture.py"
         spec = importlib.util.spec_from_file_location("fixture", file)

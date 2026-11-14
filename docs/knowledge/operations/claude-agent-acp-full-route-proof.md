@@ -19,14 +19,23 @@ command and shared source/digest are deliberately absent until admitted.
 It is not yet a runnable combined original execution packet.
 
 The agreed seam is task234's proposed private
-`swallowtail.sdk234.private-spawn.v1` invocation/event record. Before binding it,
-227 needs its exact committed source, manifest digest and retained disposition.
+`swallowtail.sdk234.private-spawn.v1` invocation/event record. The exact software prototype at
+`8ed3ce84ccd00a79d9090a3af525bae1365f6a7b` and detached source-record digest
+`29d604c0755442d7f8ecb636d7fee5726ffcb4831ff98b21067a38cf7ae7a0dd`
+are recorded as schema/source references only. Original-host binding still
+requires the completed reviewed graph/kernel/fixture boundary.
 Inputs must bind a detached source record, route-specific runtime/custody,
 entry/native/startup/arguments/environment policy, fixture identities/state,
 owned transport and finite limits. The ACP route runs its own upstream entry,
 not Swallowtail's standalone SDK sidecar: supervision must cover its SDK's
 caller-bound `child_process.spawn`, not rely only on the standalone sidecar's
 custom SDK hook. No public runtime contract changes follow.
+The current shared rehearsal accepts SDK sidecar/probe drivers and fixes native
+parent/group to that driver PID. ACP instead has an outer Rust prepared driver,
+a host-owned group leader and checked ACP Node, then the SDK/native child.
+Private actor registration must identify that parent/group chain from host
+observations before native release; no public PID API or payload self-report
+can supply it. This is the exact remaining composition seam with234.
 
 Events distinguish driver start, native spawn request/start/release/entry,
 protocol observations, cancellation/stop request and acknowledgment, native and

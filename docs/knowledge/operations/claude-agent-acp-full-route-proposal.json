@@ -33,7 +33,7 @@
     "schema": "swallowtail.sdk234.private-spawn.v1",
     "sourceHead": null,
     "manifestSha256": null,
-    "disposition": "Await exact committed/reviewed source and manifest. Do not bind an uncommitted prototype or transfer authority.",
+    "disposition": "Exact software prototype/schema reference recorded; original-host source/manifest binding remains absent until the completed graph/kernel/fixture boundary and ACP actor registration are admitted.",
     "requiredEvents": [
       "driver_started",
       "spawn_requested",
@@ -48,7 +48,21 @@
       "pidfd_reaped",
       "cgroup_empty",
       "fixture_cleanup"
-    ]
+    ],
+    "softwarePrototype": {
+      "sourceHead": "8ed3ce84ccd00a79d9090a3af525bae1365f6a7b",
+      "sourceRecordPath": "docs/knowledge/operations/claude-agent-sdk-spawn.sha256",
+      "sourceRecordSha256": "29d604c0755442d7f8ecb636d7fee5726ffcb4831ff98b21067a38cf7ae7a0dd",
+      "manifestPath": "docs/knowledge/operations/claude-agent-sdk-spawn-plan.json",
+      "manifestSha256": "5d67db9798577ff7e8ab334c71561a778fc6cded87cc4032c0011578bdb96fbb",
+      "scope": "Schema/source reference only; not ACP proof or original-host binding. SDK234 reports12 software tests; no replay or authority transfer.",
+      "remaining": [
+        "Current rehearsal accepts only sidecar/probe drivers and fixes native parent/group to driverPID",
+        "ACP prepared Rust driver launches a checked ACP Node under a host-owned group leader; register that actor chain privately before native entry",
+        "Selected reachable exec/worker/dynamic/addon edge closure and changed kernel/cgroup tree settlement unproved",
+        "Combined canonical fixture packet not admitted; original command remains absent"
+      ]
+    }
   },
   "routeInputs": {
     "hops": [

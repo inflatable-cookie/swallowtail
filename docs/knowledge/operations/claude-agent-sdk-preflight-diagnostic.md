@@ -53,11 +53,17 @@ checks; no process/filter/admission rule changes. Actual diagnostic workflow and
 routing inputs join the separate captured diagnostic record; the parent uses
 an acyclic reference to that record. No diagnostic is executed by validation.
 
-Canonical registration is solely task238 /02bb26b2-517c-427e-a0e5-4b49b0be44c7.
-After it settles, reconcile canonical main normally, verify the registered
-workflow bytes/identity and zero prior diagnostic attempts, then name the exact
-resulting source/record/command for a separate one-attempt activation decision.
-No dispatch is authorized by preparation. Existing combined/namespace/fixture
-workflow and runtime admission bytes remain unchanged; all historical execution
+Task238 /PR557 merged ateea290a5c2a151934027aa82c9718e3aff1bb2eb and is
+reconciled normally into the parent. Independent registry/content reads confirm
+active workflow418437987 at`.github/workflows/sdk234-preflight-diagnostic.yml`,
+exact approved9e5b668f bytes and zero prior diagnostic workflow_dispatch
+attempts. Main/parent routing bytes match the approved1b050616 helper exactly;
+reconciliation added only the registration changelog. Registration is
+availability, not host admission, diagnostic results or activation authority.
+
+Return the exact resulting source/current diagnostic record and command for a
+separate one-attempt activation decision. No dispatch is authorized by this
+preparation/registration ruling. Existing combined/namespace/fixture workflows
+and all runtime/admission rules remain unchanged; all historical execution
 grants are spent. Q-009 and the qualification merge hold remain open. The exact
 failed combined shell gate and all actual diagnostic host facts are unobserved.

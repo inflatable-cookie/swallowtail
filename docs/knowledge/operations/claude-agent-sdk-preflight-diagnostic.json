@@ -1,8 +1,8 @@
 {
   "schema": "swallowtail.sdk234.readonly-preflight-proposal.v1",
-  "scope": "Applied preparation-only single-job read-only Linux diagnostic; no attempt authority",
+  "scope": "Applied and registered single-job read-only diagnostic; activation not authorized",
   "workflowApplied": true,
-  "workflowRegistered": false,
+  "workflowRegistered": true,
   "activationAuthorized": false,
   "originalActivation": false,
   "hostAdmission": false,
@@ -47,7 +47,18 @@
     "grantConsumed": true,
     "failedShellGate": "unknown; missing cached Node not established"
   },
-  "nextAuthority": "canonical registration238 and normal parent reconciliation, then separate exact resulting-source one-attempt read-only diagnostic activation; no combined retry",
+  "nextAuthority": "retained resulting-source disposition, then separate exact resulting-source one-attempt read-only activation; no combined retry",
   "preparationDecision": "77371f79-2764-458c-90ac-e2787207421a v2",
-  "registrationPrerequisite": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7"
+  "registrationPrerequisite": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7",
+  "registration": {
+    "task": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7",
+    "pr": 557,
+    "canonicalCommit": "eea290a5c2a151934027aa82c9718e3aff1bb2eb",
+    "workflowId": 418437987,
+    "path": ".github/workflows/sdk234-preflight-diagnostic.yml",
+    "workflowSha256": "9e5b668fc2e2d1f8760fb92e161a37fc4092364bca9d9c85029521159757490c",
+    "state": "active registration only; no activation authority",
+    "workflowDispatchCountAtReconciliation": 0,
+    "parentReconciled": true
+  }
 }

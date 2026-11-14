@@ -230,15 +230,26 @@
       "originalActivation": false
     },
     "preflightDiagnostic": {
-      "scope": "applied preparation-only read-only job; canonical registration pending",
+      "scope": "applied and registered read-only job; activation not authorized",
       "proposal": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.json",
       "record": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.sha256",
-      "recordSha256": "30cb2469233c79f3e8f035d8014bd4e9f9d0d4327014c95aca99e8d8d59390b0",
+      "recordSha256": "4fa4a28b09cfcc04ae757bd7b638d635a2070636cf1001a7521c983c6cd4d5b4",
       "workflowApplied": true,
-      "registered": false,
+      "registered": true,
       "activationAuthorized": false,
       "hostAdmission": false,
-      "candidateRuntimeExecution": false
+      "candidateRuntimeExecution": false,
+      "registration": {
+        "task": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7",
+        "pr": 557,
+        "canonicalCommit": "eea290a5c2a151934027aa82c9718e3aff1bb2eb",
+        "workflowId": 418437987,
+        "path": ".github/workflows/sdk234-preflight-diagnostic.yml",
+        "workflowSha256": "9e5b668fc2e2d1f8760fb92e161a37fc4092364bca9d9c85029521159757490c",
+        "state": "active registration only; no activation authority",
+        "workflowDispatchCountAtReconciliation": 0,
+        "parentReconciled": true
+      }
     },
     "diagnosticRouting": {
       "patch": "docs/knowledge/operations/claude-agent-sdk-preflight-routing.patch",

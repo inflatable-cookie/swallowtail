@@ -87,3 +87,8 @@ verification. Bind the applied read-only workflow and helper, adapt exact
 applied-state validators with owned reverse/reapply fixtures and preserve all
 runtime/admission rules. Registration belongs to task238; no activation, host
 probe, cached-runtime execution or qualification authority follows.
+
+Reconcile registration238/PR557 at canonicaleea290a5c2a without workflow or
+helper drift. Independently verify active diagnostic418437987, exact9e5b668f
+bytes and zero diagnostic dispatches. Refresh diagnostic/parent bindings for a
+separate exact one-attempt read-only choice; no activation or admission follows.

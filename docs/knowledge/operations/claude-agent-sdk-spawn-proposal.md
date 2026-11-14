@@ -387,8 +387,9 @@ false. It never invokes the combined probe, sudo or candidate Node.
 Tom77371f79 v2 now authorizes application and ordinary reviewed registration
 of the exact diagnostic packet. The workflow/routing are applied in PR553 with
 unchanged approved bytes; source checks reverse/reapply only in owned fixtures.
-Their finite20s+2s/10s/32KiB limits and exact hashes are in the packet. Registration
-is solely task238. Normal canonical reconciliation and a separate exact
-resulting-source activation choice remain required. No diagnostic has run. The consumed combined grant supplies no
+Their finite20s+2s/10s/32KiB limits and exact hashes are in the packet. Registration238/PR557 is reconciled at canonicaleea290a5c2a151934027aa82c9718e3aff1bb2eb.
+Independent registry/content reads identify active diagnostic workflow418437987,
+approved9e5b668f bytes and zero diagnostic dispatches. A separate exact
+resulting-source activation choice remains required. No diagnostic has run. The consumed combined grant supplies no
 retry authority, host fallback or runtime installation. This preparation does
 not supply actual Linux-host facts, original compatibility or ACP composition.

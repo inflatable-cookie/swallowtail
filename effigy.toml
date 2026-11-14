@@ -198,6 +198,56 @@ section = "Research Records"
 "validate:claude-agent-sdk-native-proof-harness" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness"
 "validate:claude-agent-sdk-probe-admission" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness -E 'test(/probe/)'"
 "lint:current-claude-agent-sdk" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --all-targets -- -D warnings"
+"validate:claude-agent-sdk-confined-probe" = "python3 -B scripts/tests/claude-agent-sdk-confined-probe.py"
+"validate:claude-agent-sdk-spawn-proposal" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py"
+"validate:claude-agent-sdk-preflight-diagnostic" = "python3 -B scripts/tests/claude-agent-sdk-preflight-diagnostic.py"
+"check:claude-agent-sdk-preflight-diagnostic" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-preflight-diagnostic.py\", \"scripts/tests/claude-agent-sdk-preflight-diagnostic.py\")]'"
+"check:format:claude-agent-sdk-preflight-diagnostic" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-preflight-diagnostic.py scripts/tests/claude-agent-sdk-preflight-diagnostic.py"
+"format:claude-agent-sdk-preflight-diagnostic" = "ruff format --no-cache scripts/claude-agent-sdk-preflight-diagnostic.py scripts/tests/claude-agent-sdk-preflight-diagnostic.py"
+"check:claude-agent-sdk-preflight-workflow" = "python3 -B scripts/tests/claude-agent-sdk-preflight-diagnostic.py --check-packet"
+"validate:claude-agent-sdk-combined-proposal" = "python3 -B scripts/tests/claude-agent-sdk-combined-proposal.py"
+"check:claude-agent-sdk-combined-workflow" = "python3 -B scripts/claude-agent-sdk-spawn-combined.py --check-workflow --record-sha256 $(shasum -a 256 docs/knowledge/operations/claude-agent-sdk-spawn.sha256 | cut -d ' ' -f 1)"
+"check:claude-agent-sdk-combined-proposal" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-spawn-trace.py\", \"scripts/claude-agent-sdk-spawn-policy.py\", \"scripts/claude-agent-sdk-spawn-cgroup.py\", \"scripts/claude-agent-sdk-spawn-combined.py\", \"scripts/tests/claude-agent-sdk-combined-proposal.py\")]'"
+"format:claude-agent-sdk-combined-proposal" = "ruff format --no-cache scripts/claude-agent-sdk-spawn-trace.py scripts/claude-agent-sdk-spawn-policy.py scripts/claude-agent-sdk-spawn-cgroup.py scripts/claude-agent-sdk-spawn-combined.py scripts/tests/claude-agent-sdk-combined-proposal.py"
+"check:format:claude-agent-sdk-combined-proposal" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-spawn-trace.py scripts/claude-agent-sdk-spawn-policy.py scripts/claude-agent-sdk-spawn-cgroup.py scripts/claude-agent-sdk-spawn-combined.py scripts/tests/claude-agent-sdk-combined-proposal.py"
+"check:claude-agent-sdk-spawn-proposal" = [
+  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-spawn-entry.py\",\"scripts/claude-agent-sdk-spawn-owner.py\", \"scripts/claude-agent-sdk-spawn-proposal.py\", \"scripts/tests/claude-agent-sdk-spawn-proposal.py\")]'",
+  "node --check scripts/claude-agent-sdk-spawn-sdk.mjs",
+  "node --check scripts/claude-agent-sdk-spawn-native.mjs",
+  "node --check scripts/claude-agent-sdk-spawn-driver.mjs",
+  "node --check scripts/claude-agent-sdk-spawn-loader.mjs",
+  "node --check scripts/claude-agent-sdk-spawn-bootstrap.mjs",
+]
+"check:format:claude-agent-sdk-spawn-proposal" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-spawn-owner.py scripts/claude-agent-sdk-spawn-entry.py scripts/claude-agent-sdk-spawn-proposal.py scripts/tests/claude-agent-sdk-spawn-proposal.py"
+"format:claude-agent-sdk-spawn-proposal" = "ruff format --no-cache scripts/claude-agent-sdk-spawn-owner.py scripts/claude-agent-sdk-spawn-entry.py scripts/claude-agent-sdk-spawn-proposal.py scripts/tests/claude-agent-sdk-spawn-proposal.py"
+"check:format:claude-agent-sdk-spawn-javascript" = "eclint check --indent_style space --indent_size 2 --end_of_line lf --charset utf-8 --trim_trailing_whitespace --insert_final_newline scripts/claude-agent-sdk-spawn-sdk.mjs scripts/claude-agent-sdk-spawn-native.mjs scripts/claude-agent-sdk-spawn-driver.mjs scripts/claude-agent-sdk-spawn-loader.mjs scripts/claude-agent-sdk-spawn-bootstrap.mjs"
+"validate:claude-agent-sdk-netns-proposal" = "python3 -B scripts/tests/claude-agent-sdk-netns-proposal.py"
+"check:claude-agent-sdk-netns-proposal" = [
+  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-probe-custody.py\", \"scripts/claude-agent-sdk-netns-proposal.py\", \"scripts/claude-agent-sdk-netns-kernel.py\", \"scripts/claude-agent-sdk-netns-entry.py\", \"scripts/tests/claude-agent-sdk-netns-proposal.py\")]'",
+  "node --check scripts/claude-agent-sdk-netns-native.mjs",
+]
+"check:format:claude-agent-sdk-netns-proposal" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-probe-custody.py scripts/claude-agent-sdk-netns-proposal.py scripts/claude-agent-sdk-netns-kernel.py scripts/claude-agent-sdk-netns-entry.py scripts/tests/claude-agent-sdk-netns-proposal.py"
+"format:claude-agent-sdk-netns-proposal" = "ruff format --no-cache scripts/claude-agent-sdk-probe-custody.py scripts/claude-agent-sdk-netns-proposal.py scripts/claude-agent-sdk-netns-kernel.py scripts/claude-agent-sdk-netns-entry.py scripts/tests/claude-agent-sdk-netns-proposal.py"
+"check:format:claude-agent-sdk-netns-javascript" = "eclint check --indent_style space --indent_size 2 --end_of_line lf --charset utf-8 --trim_trailing_whitespace --insert_final_newline scripts/claude-agent-sdk-netns-native.mjs"
+"check:claude-agent-sdk-netns-workflow" = "actionlint .github/workflows/sdk234-netns-proof.yml"
+"validate:claude-agent-sdk-admin-fixture" = "python3 -B scripts/tests/claude-agent-sdk-admin-fixture.py"
+"check:claude-agent-sdk-admin-fixture" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-admin-fixture.py\", \"scripts/tests/claude-agent-sdk-admin-fixture.py\")]'"
+"check:format:claude-agent-sdk-admin-fixture" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-admin-fixture.py scripts/tests/claude-agent-sdk-admin-fixture.py"
+"check:claude-agent-sdk-admin-workflow" = "actionlint .github/workflows/sdk234-admin-fixture.yml"
+"check:format:oxide-routing-python" = "bash scripts/check-python-format.sh scripts/tests/oxide-selector-routing.py"
+"format:oxide-routing-python" = "ruff format --no-cache scripts/tests/oxide-selector-routing.py"
+"format:claude-agent-sdk-admin-fixture" = "ruff format --no-cache scripts/claude-agent-sdk-admin-fixture.py scripts/tests/claude-agent-sdk-admin-fixture.py"
+"check:claude-agent-sdk-confined-probe" = [
+  "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-confined-probe.py\", \"scripts/claude-agent-sdk-confined-linux.py\", \"scripts/tests/claude-agent-sdk-confined-probe.py\")]'",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-runner.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-spawn.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-hostile.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-sidecar-driver.mjs",
+  "node --check crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-native-startup.mjs",
+]
+"check:format:claude-agent-sdk-confined-probe" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-confined-probe.py scripts/claude-agent-sdk-confined-linux.py scripts/tests/claude-agent-sdk-confined-probe.py"
+"format:claude-agent-sdk-confined-probe" = "ruff format --no-cache scripts/claude-agent-sdk-confined-probe.py scripts/claude-agent-sdk-confined-linux.py scripts/tests/claude-agent-sdk-confined-probe.py"
+"check:format:claude-agent-sdk-confined-javascript" = "eclint check --indent_style space --indent_size 2 --end_of_line lf --charset utf-8 --trim_trailing_whitespace --insert_final_newline crates/swallowtail-adapter-claude-agent/tests/native_proof_support/confined-*.mjs"
 "format:current-pi-rpc" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-pi -- --check",

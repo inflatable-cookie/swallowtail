@@ -279,3 +279,36 @@ Stage evidence (2026-11-12, Research 482):
   is settled; the open gates are the exact native evidence and the execution
   admission, and neither is granted by this evidence.
 
+Confined fake continuation (task 234): the private
+[probe contract](operations/claude-agent-sdk-confined-probe.md) owns the
+Darwin/Linux fake enforcement boundary, executable proposal and remaining platform,
+settings and interpreter-custody gates. The new launcher never enables original
+mode. Existing Ubuntu/macOS Node 22.23.2 jobs supply observed fake-platform
+identities; canonical administrator injection and custody remain separate gates.
+Its fake observations do not close item 1, qualify Node, adopt the v2
+revision in production or qualify any SDK/native pair. Linux x64 admission,
+exact original-artifact authority and Nucleus proof execution remain open.
+
+The planner's 2026-11-13 continuation requested a reviewable
+[dedicated ephemeral-CI proposal](operations/claude-agent-sdk-ephemeral-ci-proposal.md)
+for genuine administrator fixture setup. Its unapplied job diff and scratch-only
+ownership/refusal/cleanup rehearsals grant no privileged execution, canonical
+injection proof, custody ruling or native activation. The environment-setup
+authority request must name the exact reviewed job/source before execution.
+
+Tom's decision `32d31615-702b-4e3b-a972-56b4fb18bae2` v2 on 2026-11-13
+chose "Dedicated fixture-only CI." The exact proposed workflow is applied;
+the preceding proposal-only restriction is superseded for preparation alone.
+Dispatch still needs authority naming the resulting workflow/source SHA and
+GitHub workflow registration. No privileged local setup or original activation
+follows from this answer.
+
+Tom decision `5912d4df-9a3c-4bfe-950e-8b2dad638bb2` v2 separately authorized
+one fixture-only attempt at `bfd9341bde002eef64beb5560f2bfeb51d6b06a6` after
+registration235. [Run 43420542403](https://github.com/inflatable-cookie/swallowtail/actions/runs/43420542403)
+passed all six Linux/Darwin absent/disabled/managed-deny jobs, including checked
+cleanup. This establishes the owned canonical fixture environment; every reader
+reports `nativeAdministratorDiscovery: false`. The attempt is consumed. SDK
+runtime/source custody, confined original administrator discovery and exact
+original/native execution remain open; item 1 and all qualification limits stand.
+

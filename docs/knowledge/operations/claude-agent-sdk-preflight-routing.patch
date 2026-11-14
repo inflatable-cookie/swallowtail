@@ -1,0 +1,18 @@
+diff --git a/scripts/tests/oxide-selector-routing.py b/scripts/tests/oxide-selector-routing.py
+--- a/scripts/tests/oxide-selector-routing.py
++++ b/scripts/tests/oxide-selector-routing.py
+@@ -735,6 +735,14 @@
+     for path in workflows:
+         text = path.read_text()
+         relative = str(path.relative_to(ROOT))
++        if path.name == "sdk234-preflight-diagnostic.yml":
++            # Exact separately reviewed read-only diagnostic; no host admission.
++            if (
++                hashlib.sha256(path.read_bytes()).hexdigest()
++                != "9e5b668fc2e2d1f8760fb92e161a37fc4092364bca9d9c85029521159757490c"
++            ):
++                fail("read-only diagnostic workflow differs from its exact proposal")
++            continue
+         if path.name == "sdk234-combined-fake.yml":
+             # Only the separately approved exact combined owned-fake packet.
+             if (

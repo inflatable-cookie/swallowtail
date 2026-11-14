@@ -1,0 +1,40 @@
+{
+  "schema": "claude-agent-sdk-confined-fake-plan-v1",
+  "mode": "fake-only",
+  "productionAdmission": false,
+  "originalActivation": false,
+  "acceptedArtifactPlan": "probe-plan.json",
+  "acceptedProbeAdmission": "probe-admission.json",
+  "sourceRecord": "confined-execution.sha256",
+  "sourceRecordAuthority": "exact digest supplied by the source-immutable proof host; a caller-selected replacement record is not an authority",
+  "implementedPlatforms": ["darwin-arm64", "linux-x64"],
+  "ciProof": "existing Ubuntu nextest shards and macOS process nextest; actual Node must be 22.23.2; stdout carries observed OS/arch/kernel/Node digest",
+  "nodeStartup": ["--no-addons", "--openssl-config=/dev/null"],
+  "driverStartup": ["--import", "<staged>/confined-spawn.mjs", "<staged>/confined-runner.mjs"],
+  "environment": ["PATH", "HOME", "TMPDIR", "TMP", "TEMP", "LANG", "LC_ALL"],
+  "limits": {
+    "attemptsPerInvocation": 1,
+    "processes": 2,
+    "wallSeconds": 10,
+    "capturedBytes": 1000000,
+    "writablePaths": ["workspace/storage.bin"],
+    "bytesPerWritablePath": 1000000,
+    "openDescriptorsPerProcess": 64,
+    "cpuSecondsPerProcess": 10,
+    "coreBytes": 0
+  },
+  "enforcement": {
+    "processes": "two supervisor-owned sibling PIDs; Seatbelt denies process-fork on Darwin; Linux seccomp permits clone only for same-process threads, refuses fork/vfork and clone3, and denies signalling foreign PIDs; a one-use pipe-backed spawn hook connects the peers",
+    "filesystem": "Seatbelt or Landlock ABI >=3 denies file reads outside staged roots, explicit fake settings and runtime paths; source writes, new files/directories and hard links are refused. Linux seccomp also denies metadata-changing syscalls; Landlock does not mediate stat",
+    "network": "Darwin permits TCP at the declared loopback port (IPv4 or IPv6). Linux denies new sockets/connect/bind and io_uring, while the native receives one supervisor-connected socket to the owned IPv4 listener",
+    "storage": "Seatbelt's finite writable-path set plus hard RLIMIT_FSIZE; no sampled directory-size claim",
+    "output": "supervisor accounts native stdout, native stderr, driver stdout and driver stderr during reads before relaying",
+    "deadlineAndCancel": "monotonic supervisor deadline or owned output barrier; kill only owned PIDs, then wait for both actual exit results"
+  },
+  "missingOriginalCapabilities": [
+    "settled same-user interpreter and source custody, including Node libraries and OS startup policy",
+    "exact platform proof from the existing Node22.23.2 CI jobs must be observed at the pushed source head; labels alone supply no proof",
+    "genuine canonical administrator-tier settings injection for the original native without host mutation; the owned fake settings carrier and observed user/mount namespace capability are reported separately",
+    "reviewed exact original-artifact authority and a structurally declared Nucleus proof selector"
+  ]
+}

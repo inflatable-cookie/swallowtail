@@ -1,0 +1,251 @@
+{
+  "schema": "swallowtail.sdk234.private-spawn.v1",
+  "scope": "source-and-owned-fake-rehearsal; inactive combined Linux host proposal",
+  "originalActivation": false,
+  "productionAdmission": false,
+  "authority": {
+    "kernelSetup": false,
+    "canonicalSetup": false,
+    "workflowApplied": true
+  },
+  "sourceBinding": "Externally supplied detached claude-agent-sdk-spawn.sha256 digest; captured before imports",
+  "runtime": {
+    "sdkTargetNode": "22.23.2",
+    "linuxNodeSha256": "3517c2df0b2f8cd7f422b4b8450ef81c6889f08eb03e281d6de9079b15e6a327",
+    "custodyDecision": "89db0f25-dc94-4feb-b447-8b9fabe52561",
+    "darwinSharedCacheCustody": "unresolved"
+  },
+  "launch": {
+    "driver": "unchanged shipped sidecar or prepared option driver with owned SDK",
+    "native": "genuine SDK hook child behind independently checked owned entry",
+    "startup": [
+      "--no-addons",
+      "--openssl-config=/dev/null",
+      "--disallow-code-generation-from-strings",
+      "--import exact captured bootstrap"
+    ],
+    "ambientEnvironment": false,
+    "secondNativeStart": "refuse",
+    "profiles": {
+      "sdk": [
+        "trusted guest",
+        "checked SDK Node",
+        "native child"
+      ],
+      "acp-actor-shape": [
+        "trusted guest (outer-host stand-in)",
+        "captured Python group owner (LocalProcessHost stand-in)",
+        "checked Node driver (ACP stand-in)",
+        "native child"
+      ]
+    },
+    "actorRegistration": "Private OS-derived pid, parent, process group, start, namespace/cgroup/uid/gid and actual argv; no public PID API or payload trace attestation",
+    "nativeEntry": "Captured Python entry followed by kernel exec-stop committed-image validation before user entry in the inactive Linux proposal",
+    "ownedGraph": "Captured ESM/CJS/JSON resolve/load hooks; one parent-bound exact real ChildProcess spawn; alternate starts, workers, dynamic code and addons refused",
+    "vendorGraph": "Not admitted: every reachable vendor spawn/exec/worker/dynamic-code/addon edge still requires exact selected invocation closure; custody alone does not close it"
+  },
+  "limits": {
+    "wallSeconds": 30,
+    "cpuSecondsPerProcess": 10,
+    "descriptorsPerProcess": 64,
+    "outputBytes": 1000000,
+    "writableBytes": 1000000,
+    "proposedCgroupTasksIncludingThreads": 32,
+    "proposedMemoryBytes": 268435456,
+    "ordinaryFakeDefaultSeconds": 10,
+    "controlFrameBytes": 16384,
+    "combinedResultBytes": 131072,
+    "combinedReceiptBytes": 262144,
+    "pidNamespace": "new; payload cannot signal the outside root monitor",
+    "proposedCpuQuota": "100000 100000",
+    "originalLimitsUnchanged": true,
+    "combinedLayoutBytes": 65536
+  },
+  "endpoint": {
+    "protocol": "ordinary TCP HTTP Messages streaming",
+    "externalInterfaces": false,
+    "inheritedConnectedSocket": false
+  },
+  "fixture": {
+    "states": [
+      "absent",
+      "disabled",
+      "managed-deny"
+    ],
+    "linuxCanonical": "/etc/claude-code/managed-settings.json",
+    "helper": "scripts/claude-agent-sdk-admin-fixture.py",
+    "ownerUid": 0,
+    "policyMode": "0444",
+    "exclusiveFreshJobs": true,
+    "oppositeHomeAndProject": true,
+    "sameConfinementAsNative": "required",
+    "actualCombinedDiscovery": "unproved",
+    "creationJournal": {
+      "stages": [
+        "not-started",
+        "creating",
+        "created",
+        "ready"
+      ],
+      "persistIntentBeforeMkdir": true,
+      "persistIdentityBeforeChmod": true,
+      "unknownIdentityOrAbsence": "refuse cleanup success; retain journal; never adopt current path",
+      "deleteJournalOnlyAfter": "proved fixture and cgroup cleanup plus independent tree settlement"
+    }
+  },
+  "events": [
+    "driver_started",
+    "spawn_requested",
+    "native_started",
+    "native_released",
+    "native_entry",
+    "native_wait",
+    "driver_wait",
+    "stop_requested",
+    "stop_acknowledged",
+    "adoptee_wait",
+    "pidfd_reaped",
+    "cgroup_empty",
+    "fixture_cleanup"
+  ],
+  "kernelPrerequisites": [
+    "existing root-owned cgroupv2 delegation with pids/memory/cpu already enabled; no parent controller writes",
+    "pids.max=32 and memory/CPU limits read back before initial guest release; inherited across fork/exec",
+    "distinct PID namespace with trusted init and distinct unnamed lo-only network namespace",
+    "Landlock plus inherited role-specific seccomp; forbid CLONE_UNTRACED, namespace escape, raw ptrace, migration/control writes and native process forks",
+    "root PTRACE_SEIZE/EXITKILL with fork/vfork/clone/exec events; match committed image/argv/env/cwd at exec stop before user return; pin process pidfds while stopped",
+    "host-derived finite group-owner/driver/native actor graph; one-shot native release and live custody check at exec stop",
+    "actual software driver/native waits plus root parent/adoptee terminal waits, pidfd HUP and empty cgroup; empty alone refuses",
+    "independent identity-checked fixture/cgroup cleanup, retaining failed/unknown settlement"
+  ],
+  "kernelAdmission": "closed; implemented inactive Linux adapter and owned models supply no actual changed-kernel, host delegation or combined administrator evidence",
+  "retainedTransportEvidence": {
+    "source": "05af44845f0dbbe4b5bc3fbd75bc98a358e50cc5",
+    "run": 43560978666,
+    "grantConsumed": true
+  },
+  "originalArtifacts": {
+    "sdkVersions": [
+      "0.3.317",
+      "0.3.318",
+      "0.3.319",
+      "0.3.321",
+      "0.3.322"
+    ],
+    "ledger": "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.322/identity.json",
+    "reuseFrozenIdentities": true,
+    "downloadOrExecution": false
+  },
+  "combinedProposal": {
+    "entrypoint": "scripts/claude-agent-sdk-spawn-combined.py",
+    "workflowPatch": "docs/knowledge/operations/claude-agent-sdk-combined-workflow.patch",
+    "workflowApplied": true,
+    "originalModeAvailable": false,
+    "jobs": 3,
+    "freshStateJobs": true,
+    "jobMinutes": 5,
+    "setupSeconds": 35,
+    "killGraceSeconds": 2,
+    "cleanupSeconds": 5,
+    "profile": "acp-actor-shape (first-party stand-ins, not ACP route proof)",
+    "newAuthorityRequired": [
+      "Grant78e36a73 v2 consumed by run43599057785 preflight refusal; identify the exact failing host preflight gate via a separately reviewed/authorized diagnostic or admit an existing exact host, then obtain fresh exact-source attempt authority; no retry/install/controller fallback",
+      "actual original-compatible source graph and separately declared source-immutable original execution route after host evidence"
+    ],
+    "routingPatch": "docs/knowledge/operations/claude-agent-sdk-combined-routing.patch",
+    "routingBaseSha256": "400a6d42d962f82949fe5b53e3373f8df4888e315893f5d7c601775e96e88443",
+    "routingPreparedSha256": "4cba13f2bc52d0cfa9165c70eb758cdf8d79d2827cd8981d590310e3c422c925",
+    "workflowPath": ".github/workflows/sdk234-combined-fake.yml",
+    "preparationDecision": "3ca51d63-6e82-4a23-a069-946c320fe4f1 v2",
+    "registrationPrerequisite": "swallowtail#237 / 2fe98479-c452-41ba-bd8f-1be4413f834b",
+    "registration": {
+      "task": "swallowtail#237 / 2fe98479-c452-41ba-bd8f-1be4413f834b",
+      "pr": 556,
+      "canonicalCommit": "f3a134d47598b074de3f80776453f814a7905313",
+      "workflowId": 418195892,
+      "workflowPath": ".github/workflows/sdk234-combined-fake.yml",
+      "workflowSha256": "6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29",
+      "state": "active registry entry; activation authority absent",
+      "dispatchAttemptsAtRegistrationReconciliation": 0,
+      "parentReconciled": true
+    },
+    "retainedAttempt": {
+      "grant": "78e36a73-4254-42a2-b872-71235fbdf4f9 v2",
+      "consumed": true,
+      "runId": 43599057785,
+      "attempt": 1,
+      "source": "2ea832c64269f4adfcaf1436dcfd93afee06c271",
+      "sourceRecord": "cedc3216b416764ecfc56b84581e08a6be8f1ad4b5861073a4d3e8f7a4437d9c",
+      "planSha256": "8cf7b25a8640ca8f49f07628be4d84b9d90d605e5948adce256ec40355b5bf2d",
+      "workflowId": 418195892,
+      "workflowSha256": "6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29",
+      "dispatchCount": 1,
+      "conclusion": "failure",
+      "jobs": [
+        {
+          "jobId": 132459693979,
+          "name": "combined-fake (disabled)",
+          "url": "https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459693979",
+          "logSha256": "6d7a0fc7b6036f322326afbc646d740afddbd2b89e6c4e6aec3bad89dce75c14",
+          "preflight": "failure exit1 before inventory output",
+          "privilegedAttempt": "skipped",
+          "cleanup": "success exit0; preflight-refusal/no-setup branch only",
+          "reportedImage": "Ubuntu26.04.1 / ubuntu-26.04 / 20261111.82.6",
+          "runtimeKernelCustody": "not observed"
+        },
+        {
+          "jobId": 132459694198,
+          "name": "combined-fake (managed-deny)",
+          "url": "https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459694198",
+          "logSha256": "f1e16dcaf773699920051d034ee7e639d6418c5a849ce24285d459a147464e1a",
+          "preflight": "failure exit1 before inventory output",
+          "privilegedAttempt": "skipped",
+          "cleanup": "success exit0; preflight-refusal/no-setup branch only",
+          "reportedImage": "Ubuntu26.04.1 / ubuntu-26.04 / 20261111.196.1",
+          "runtimeKernelCustody": "not observed"
+        },
+        {
+          "jobId": 132459694239,
+          "name": "combined-fake (absent)",
+          "url": "https://github.com/inflatable-cookie/swallowtail/actions/runs/43599057785/job/132459694239",
+          "logSha256": "e363a66d2f19f568a7affa7f1d8b5d9f55e1eb652f2a04ddfdd57119b70669a7",
+          "preflight": "failure exit1 before inventory output",
+          "privilegedAttempt": "skipped",
+          "cleanup": "success exit0; preflight-refusal/no-setup branch only",
+          "reportedImage": "Ubuntu26.04.1 / ubuntu-26.04 / 20261111.196.1",
+          "runtimeKernelCustody": "not observed"
+        }
+      ],
+      "exactFailureCommand": "unresolved within untraced pre-Python shell block; no diagnostic identifies cached executable absence versus earlier shell gate",
+      "noNewProof": [
+        "Node/Python/tool/library runtime custody",
+        "cgroup controllers/delegation/limits",
+        "PID/netns/ptrace/filter/route/actor admission",
+        "canonical fixture provisioning/discovery",
+        "software or independent kernel waits/joins/cleanup"
+      ],
+      "noSetupCleanupBranch": true,
+      "fixtureCleanupAttestation": false,
+      "retryAuthorized": false,
+      "originalActivation": false
+    },
+    "preflightDiagnostic": {
+      "scope": "source/fake only; separate unapplied read-only job",
+      "proposal": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.json",
+      "record": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.sha256",
+      "recordSha256": "5c62323a02e06f5e0b8f9c48c48f7d22b390b31063ad09b0591e8b203a266891",
+      "workflowApplied": false,
+      "registered": false,
+      "activationAuthorized": false,
+      "hostAdmission": false,
+      "candidateRuntimeExecution": false
+    }
+  },
+  "sharedConsumer": {
+    "task": "swallowtail#227",
+    "source": "baaa17635b2c67c254f9f7b2377a8b8f9d8751e6",
+    "mapping": "ACP consumes this private schema with its own captured outer Rust/LocalProcessHost/ACP/native inputs; software actor stand-ins do not prove that composition",
+    "runtimeAxis": "ACP installed-compatible runtime separate from SDK exact22; Darwin shared-cache unresolved",
+    "actualTopologyLimit": "ACP LocalProcessHost sleep group leader and checked ACP are siblings under Rust host. Current acp-actor-shape parent-child stand-in does not prove that actual graph;227 owns private sibling adaptation."
+  }
+}

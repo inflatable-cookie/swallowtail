@@ -15,6 +15,11 @@ Evidence and the executable plan for the native behavior proof that Q-009 item
   `../claude-agent-sdk-0.3.322/identity.json`. It records the resolved entry
   point, the import closure and the masked digests of every selected surface
   across the accepted base and each published hop.
+- `confined-plan.json` and `confined-execution.sha256` — the separately bound
+  fake-only Darwin enforcement stage. The
+  [private contract](../../../../../docs/knowledge/operations/claude-agent-sdk-confined-probe.md)
+  records its exact limits and the original-execution gates. The earlier
+  cooperative runner and its evidence are preserved.
 
 ## Why the plan exists before the authority
 

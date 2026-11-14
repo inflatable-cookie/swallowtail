@@ -1,6 +1,6 @@
 {
   "schema": "swallowtail.sdk234.readonly-preflight-proposal.v1",
-  "scope": "Consumed v1 diagnostic; independent v2 source/fake preparation, no new activation",
+  "scope": "Consumed v1 and v2 read-only diagnostics; no host/runtime admission or further activation",
   "workflowApplied": true,
   "workflowRegistered": true,
   "activationAuthorized": false,
@@ -17,7 +17,7 @@
   "entrypoint": "scripts/claude-agent-sdk-preflight-diagnostic.py",
   "record": "docs/knowledge/operations/claude-agent-sdk-preflight-diagnostic.sha256",
   "command": "python3 -I -B -S scripts/claude-agent-sdk-preflight-diagnostic.py --source-sha EXACT_APPROVED_SOURCE --record-sha256 EXACT_APPROVED_DIAGNOSTIC_RECORD",
-  "host": "existing GitHub ubuntu-latest x86_64 runner before any runtime installation or setup; actual host facts unobserved",
+  "host": "Observed fresh Ubuntu26.04.1 x86_64 image20261111.196.1, kernel7.0.0-1019-azure; no host/runtime admission",
   "limits": {
     "jobs": 1,
     "jobMinutes": 2,
@@ -51,7 +51,7 @@
     "grantConsumed": true,
     "failedShellGate": "unknown; missing cached Node not established"
   },
-  "nextAuthority": "Retained review of independent v2 source/fake packet, then fresh exact-source one-job read-only authority using unchanged registered workflow. No candidate execution or combined retry. Fixed-path metadata will compare qualified existing-host options with fake-only22.23.4 without fallback or claim changes.",
+  "nextAuthority": "Retained result review, then exact source-only permission/custody preparation for existing cached22.23.4 bytes94efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90. Observed0777 file mode violates existing custody policy; no candidate execution or chmod/staging/install is authorized. Preserve pre-entry custody and separately authorize any exact host permission repair/runtime observation. Controllers are enabled but exclusive delegation/enforcement remain unproved; no blind pinned-runtime retry.",
   "preparationDecision": "77371f79-2764-458c-90ac-e2787207421a v2",
   "registrationPrerequisite": "swallowtail#238 / 02bb26b2-517c-427e-a0e5-4b49b0be44c7",
   "registration": {
@@ -239,10 +239,20 @@
       "path": "/opt/hostedtoolcache/node/22.23.4/x64/bin/node",
       "pathVersionLabel": "22.23.4",
       "observedVersion": null,
-      "observedSha256": null,
+      "observedSha256": "94efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90",
       "runtimeCustody": false,
       "activationAuthorized": false,
-      "originalAdmission": false
+      "originalAdmission": false,
+      "observedBytes": 124902584,
+      "observedFileIdentity": {
+        "device": 2049,
+        "inode": 311247,
+        "ownerUid": 1001,
+        "mode": 511,
+        "modeOctal": "0777"
+      },
+      "observationRun": 43625464586,
+      "existingCustodyModeRuleSatisfied": false
     },
     "metadataOnlyDefault": "24.22.2",
     "implicitFallback": false,
@@ -267,6 +277,347 @@
       "exact SDK/native/platform artifacts and selected route proof",
       "combined host/canonical/transport/process enforcement and settlement proof",
       "separate source-immutable original execution authority"
-    ]
+    ],
+    "qualifiedPathsObservedNotFound": {
+      "run": 43625464586,
+      "versions": [
+        "22.23.2",
+        "22.23.3"
+      ],
+      "scope": "exact fixed cache paths on this fresh runner only"
+    },
+    "nextSourcePreparation": {
+      "candidatePath": "/opt/hostedtoolcache/node/22.23.4/x64/bin/node",
+      "expectedCandidateSha256": "94efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90",
+      "existingRule": "Lease.bind rejects st_mode & 0o6022;0777 is ineligible",
+      "proposedPermissionTarget": "0755, only after separately approved exact host permission preparation; never executed in this run",
+      "preEntryRequirement": "reject ineligible mode/identity and maintain host custody before any runtime_inventory execution; a later Lease.bind refusal cannot authorize earlier runtime observation",
+      "separateAuthorityRequired": [
+        "any in-place cache permission change with exact identity and checked cleanup",
+        "any runtime version/library observation or owned-fake candidate execution",
+        "exclusive cgroup/kernel/canonical setup and combined probe"
+      ],
+      "runtimeExecuted": false,
+      "permissionChanged": false,
+      "staged": false
+    }
+  },
+  "retainedRevisedAttempt": {
+    "schema": "swallowtail.sdk234.readonly-diagnostic-result.v2",
+    "grant": "7f7c7a49-5d69-4b24-a5ab-88f84443e324 v2",
+    "grantConsumed": true,
+    "runId": 43625464586,
+    "jobId": 132540185267,
+    "runAttempt": 1,
+    "source": "3fa6b24127d2f67dfebc65ed41646957b4888747",
+    "diagnosticRecordSha256": "c240e5cb22f6137c384615c5fdec949eaf5911d99796e26e2e8e41a1444f8d3e",
+    "proposalSha256": "89ffddbf0c3bd73445602d79bbb45b1a1348c6ee31ae55c4e1d973d511579594",
+    "workflowId": 418437987,
+    "workflowSha256": "9e5b668fc2e2d1f8760fb92e161a37fc4092364bca9d9c85029521159757490c",
+    "conclusion": "failure",
+    "exit": 1,
+    "dispatchCount": 2,
+    "revisedSourceDispatchCount": 1,
+    "phaseRecords": [
+      {
+        "observedAt": "2026-11-14T18:14:25.7302200Z",
+        "record": {
+          "phase": "input_envelope",
+          "status": "observed",
+          "hostAdmission": false
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.3113504Z",
+        "record": {
+          "phase": "diagnostic_launcher",
+          "status": "observed",
+          "hostAdmission": false
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.3661606Z",
+        "record": {
+          "facts": {
+            "recordSha256": "c240e5cb22f6137c384615c5fdec949eaf5911d99796e26e2e8e41a1444f8d3e",
+            "source": "3fa6b24127d2f67dfebc65ed41646957b4888747"
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "source_identity",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.5202160Z",
+        "record": {
+          "facts": {
+            "clean": true
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "clean_worktree",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.5205082Z",
+        "record": {
+          "facts": {
+            "createdPrivateLeaf": true,
+            "removedOwnLeaf": true
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "scratch_creation",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.5212178Z",
+        "record": {
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "cached_executable",
+          "reason": "cached_executable_unavailable",
+          "status": "refused"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.5214087Z",
+        "record": {
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "inventory_production",
+          "reason": "dependency_refused",
+          "status": "skipped"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9158322Z",
+        "record": {
+          "facts": {
+            "candidateSelection": "none",
+            "fixedCachePaths": [
+              {
+                "executed": false,
+                "observation": "path_not_found",
+                "pathVersionLabel": "22.23.2",
+                "runtimeCustody": false,
+                "versionVerified": false
+              },
+              {
+                "executed": false,
+                "observation": "path_not_found",
+                "pathVersionLabel": "22.23.3",
+                "runtimeCustody": false,
+                "versionVerified": false
+              },
+              {
+                "executableAccess": true,
+                "executed": false,
+                "file": {
+                  "bytes": 124902584,
+                  "device": 2049,
+                  "inode": 311247,
+                  "mode": 511,
+                  "ownerUid": 1001,
+                  "sha256": "94efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90"
+                },
+                "pathVersionLabel": "22.23.4",
+                "regularFile": true,
+                "runtimeCustody": false,
+                "versionVerified": false
+              },
+              {
+                "executableAccess": true,
+                "executed": false,
+                "file": {
+                  "bytes": 126881248,
+                  "device": 2049,
+                  "inode": 325308,
+                  "mode": 511,
+                  "ownerUid": 1001,
+                  "sha256": "904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52"
+                },
+                "pathVersionLabel": "24.22.2",
+                "regularFile": true,
+                "runtimeCustody": false,
+                "versionVerified": false
+              }
+            ]
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "cache_metadata",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9163698Z",
+        "record": {
+          "facts": {
+            "custodyAttested": false,
+            "kernelRelease": "7.0.0-1019-azure",
+            "machine": "x86_64",
+            "system": "Linux"
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "host_identity",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9166274Z",
+        "record": {
+          "facts": {
+            "cgroupParent": {
+              "device": 30,
+              "inode": 1,
+              "mode": 365,
+              "ownerUid": 0
+            },
+            "checks": {
+              "controllersAvailable": true,
+              "controllersEnabled": true,
+              "rootOwnedParent": true
+            },
+            "exclusiveDelegationAttested": false,
+            "readOnlyChecksPassed": true,
+            "requiredControllersEnabled": [
+              "cpu",
+              "memory",
+              "pids"
+            ],
+            "requiredControllersPresent": [
+              "cpu",
+              "memory",
+              "pids"
+            ],
+            "rootCapabilities": "unobserved; no privileged methods invoked"
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "host_capabilities",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9169365Z",
+        "record": {
+          "facts": {
+            "creationTested": false,
+            "namespaceIdentities": {
+              "cgroup": {
+                "device": 5,
+                "inode": 4026531835
+              },
+              "net": {
+                "device": 5,
+                "inode": 4026531833
+              },
+              "pid": {
+                "device": 5,
+                "inode": 4026531836
+              },
+              "user": {
+                "device": 5,
+                "inode": 4026531837
+              }
+            }
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "namespace_identity",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9172215Z",
+        "record": {
+          "facts": {
+            "kernelMethodsTested": false,
+            "landlockAbi": "unobserved",
+            "pidfdOperation": "unobserved",
+            "ptraceCommittedImageGate": "unobserved",
+            "publicKernelMetadata": {
+              "maxUserNamespaces": 58121,
+              "ptraceScope": 1,
+              "seccompActions": [
+                "allow",
+                "errno",
+                "kill_process",
+                "kill_thread",
+                "log",
+                "trace",
+                "trap",
+                "user_notif"
+              ]
+            },
+            "pythonPidfdOpenSymbol": true
+          },
+          "hostAdmission": false,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "phase": "kernel_methods",
+          "status": "observed"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9175456Z",
+        "record": {
+          "failedPhase": "cached_executable",
+          "failedPhases": [
+            "cached_executable"
+          ],
+          "hostAdmission": false,
+          "independentHostReportProduced": true,
+          "kernelEnforced": false,
+          "originalActivation": false,
+          "producedPhaseReports": [
+            "source_identity",
+            "clean_worktree",
+            "scratch_creation",
+            "cache_metadata",
+            "host_identity",
+            "host_capabilities",
+            "namespace_identity",
+            "kernel_methods"
+          ],
+          "readOnlyChecksPassed": false,
+          "reportProduced": false,
+          "schema": "swallowtail.sdk234.readonly-preflight.v2"
+        }
+      },
+      {
+        "observedAt": "2026-11-14T18:14:30.9338143Z",
+        "record": {
+          "phase": "diagnostic_exit",
+          "exit": 1,
+          "hostAdmission": false
+        }
+      }
+    ],
+    "helperReportBytes": 4199,
+    "helperRecords": 11,
+    "completeJobLogSha256": "6e376524786268619ea5a181d896bff6fce98a93ade959b6b73bab0d0aed8c89",
+    "reportedImage": {
+      "operatingSystem": "Ubuntu26.04.1",
+      "image": "ubuntu-26.04",
+      "version": "20261111.196.1"
+    },
+    "hostAdmission": false,
+    "kernelEnforced": false,
+    "originalActivation": false
   }
 }

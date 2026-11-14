@@ -148,22 +148,22 @@ The job's [published image document](https://github.com/actions/runner-images/bl
 lists cached22.23.4 and24.22.2, default24.22.2. This is an exact image-metadata
 lead, not observed cache bytes, runtime version, library custody or a current
 host. It cannot explain the exact old combined shell failure. The consumed
-0967 diagnostic and its v1 output remain historical evidence; v2 has not run
-on a hosted runner.
+0967 diagnostic and its v1 output remain historical evidence. The exact v2
+attempt and its independently retained observations are recorded below.
 
 | No-install option | Current evidence | Next gate |
 | --- | --- | --- |
-| Existing22.23.2 host | required executable predicate refused on43618052014 | another existing exact host must establish executable bytes and complete custody; no host is currently admitted |
-| Existing22.23.3 host | within qualified Node axis; availability unobserved | fixed-path read-only availability/identity, then exact runtime/startup/library and host admission proof |
-| Cached22.23.4 | published image lists it; no actual bytes/version/custody observed | independently collect fixed-path metadata; separately authorize exact owned-fake runtime custody and rehearsal |
-| Image default24.22.2 | published image default only | metadata only; no automatic selection or SDK/ACP authority transfer |
+| Existing22.23.2 host | fixed path not found on43625464586 | another existing exact host must establish executable bytes and complete custody; no host is currently admitted |
+| Existing22.23.3 host | within qualified axis; fixed path not found on43625464586 | another existing host must establish exact runtime/startup/library and host admission proof |
+| Cached22.23.4 | file hash/size/mode observed on43625464586; version/custody unproved |0777 mode fails current custody rule; exact permission/custody preparation before any separately authorized fake execution |
+| Image default24.22.2 | file hash/size/mode observed; version/custody unproved | metadata only; no automatic selection or SDK/ACP authority transfer |
 
-The concrete next packet uses registered workflow418437987, unchanged bytes
-9e5b668f, one2min job/20s+2s outer/10s inner/32KiB. Supply the newly reviewed
-source and detached diagnostic record to the existing source_sha/record_sha
-inputs. This packet reads all four fixed paths and independent public host
-facts even when the required22.23.2 predicate refuses. All grants are spent;
-its next dispatch requires fresh exact-source authority. No combined retry or
+The v2 packet consumed below used registered workflow418437987, unchanged bytes
+9e5b668f, one2min job/20s+2s outer/10s inner/32KiB. It bound its exact
+source and detached diagnostic record through the existing source_sha/record_sha
+inputs. The packet reads all four fixed paths and independent public host
+facts even when the required22.23.2 predicate refuses. Both read-only grants are now spent;
+there is no further dispatch authority. No combined retry or
 candidate runtime execution is hidden in it.
 
 If22.23.4 is present, the following is the finite **future owned-fake** option,
@@ -194,3 +194,68 @@ continues to require22.23.2; this proposal does not weaken or replace its pin.
 Original activation and the public Node22.23.2..=22.23.3 claim remain unchanged.
 Darwin shared-cache custody and actual ACP Rust sibling composition remain
 separate gaps. A read-only result alone does not resume ACP227.
+
+
+## Consumed revised diagnostic and concrete custody gate
+
+Tom decision7f7c7a49-5d69-4b24-a5ab-88f84443e324 v2, answered2026-11-14
+18:11:50.156Z, granted one revised read-only dispatch at immutable
+3fa6b24127d2f67dfebc65ed41646957b4888747 /record
+c240e5cb22f6137c384615c5fdec949eaf5911d99796e26e2e8e41a1444f8d3e /proposal
+89ffddbf0c3bd73445602d79bbb45b1a1348c6ee31ae55c4e1d973d511579594.
+Immediately rechecked local/remote source, all9 captured inputs, exact workflow/
+helper/default/execution bytes, active418437987 and exactly one old0967 run.
+The exact command returned0 and [run43625464586](https://github.com/inflatable-cookie/swallowtail/actions/runs/43625464586).
+Independent terminal run/job/history reads confirm attempt1,
+[job132540185267](https://github.com/inflatable-cookie/swallowtail/actions/runs/43625464586/job/132540185267),
+exactly one new dispatch, two total diagnostic dispatches and the ref frozen
+through settlement. This grant and the oldd600 grant are spent; no rerun.
+
+The job exited1 at cached_executable, with dependent inventory skipped.
+Complete helper output is4199 bytes/11 records, plus three envelope records.
+Source/clean worktree/private scratch and all five independent metadata phases
+were observed. readOnlyChecksPassed:false, reportProduced:false (runtime),
+independentHostReportProduced:true and failedPhases:[cached_executable] preserve
+the failed overall result. Every helper record keeps hostAdmission,
+kernelEnforced and originalActivation false. No timeout or runtime execution.
+
+| Observation | Exact scope |
+| --- | --- |
+| Cache22.23.2/.3 | path_not_found for each fixed x64/bin/node path on this fresh job; not a claim about other hosts or old43599057785 |
+| Cache22.23.4 |124902584 bytes, SHA25694efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90, device2049/inode311247, owner1001, mode0777, executable access; path label only, versionVerified:false/runtimeCustody:false/executed:false |
+| Cache24.22.2 |126881248 bytes, SHA256904a6d3484241d466989f9df9ba3aab822b1496191bdb28230eb491a55c32a52, device2049/inode325308, owner1001/mode0777; metadata only |
+| Actual host | Linux x86_64, kernel7.0.0-1019-azure; job reports Ubuntu26.04.1/image20261111.196.1 |
+| Cgroup parent | device30/inode1, root-owned/mode0555; cpu/memory/pids available and enabled; exclusiveDelegationAttested:false |
+| Namespaces | device5; cgroup4026531835/net4026531833/pid4026531836/user4026531837; no creation tested |
+| Public kernel metadata | ptrace_scope1, max_user_namespaces58121, eight reported seccomp actions and Python pidfd_open symbol; no kernel methods tested |
+
+No runtime version, loaded-library/loader/Python custody, Landlock ABI,
+committed-image ptrace gate, pidfd operation, exclusive delegated cgroup,
+namespace enforcement, canonical fixture discovery or software/adoptee/tree
+settlement was proved. Private scratch leaf removal is the only owned cleanup
+observation. Metadata does not prove historical failure, original/native
+behavior or actual ACP sibling composition.
+
+The precise next no-install source/security packet should prepare custody of
+`/opt/hostedtoolcache/node/22.23.4/x64/bin/node` at the observed94efd062 digest.
+Its0777 mode currently fails `Lease.bind`'s existing0o6022 mask with
+custody_unowned_or_writable_input. Do not run the current rehearsal to discover
+that refusal: runtime_inventory executes Node before Lease creation. The next
+source preparation must enforce eligibility and stable host-owned pre-entry
+custody before any version/library observation, then specify narrowly bounded,
+identity-checked **separately authorized** in-place permission preparation
+(proposed0755, unchanged bytes, checked cleanup/retained failures). This run
+changed no cache permissions and staged/installed/executed no runtime. Do not
+weaken the settled custody contract or treat the byte hash as provenance,
+verified version or an OS verified-exec guarantee.
+
+Enabled parent controllers remove one unknown, not the exclusive delegation
+or enforcement gates. A later exact host packet must still bind complete
+runtime/tool/library/startup inputs and establish a bounded exclusive child
+with32 TIDs/256MiB/no swap/one CPU before any separately authorized combined
+fake run. No parent-controller enablement follows. Candidate execution,
+permission repair and privileged setup each remain outside the spent grants.
+Node22.23.4 original use still requires its separate Node-axis qualification;
+the current combined22.23.2 pin and public22.23.2..=22.23.3 axis stay unchanged.
+ACP227 remains parked pending actual shared actor/runtime/host admission;
+Q-009 and the task-owner qualification merge hold remain open.

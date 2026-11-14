@@ -419,5 +419,18 @@ this diagnostic alone; Q-009 and the qualification merge hold remain open.
 The independent v2 diagnostic source proposal now compares fixed existing cache
 paths and public host prerequisites after a runtime refusal. Its separately
 bound owning record describes22.23.4 only as an owned-fake no-install candidate.
-No hosted v2 observation or candidate execution exists; the combined22.23.2 pin,
-original admission and qualification hold remain unchanged.
+The authorized v2 observation is now retained below. No candidate execution
+exists; the combined22.23.2 pin, original admission and qualification hold
+remain unchanged.
+
+
+Revised read-only run43625464586/attempt1/job132540185267 consumed Tom7f7c7a49
+v2 at frozen3fa6b241/recordc240e5cb. It retained independent cache/host/controller/
+namespace/public-kernel reports while keeping the runtime refusal nonzero.
+Fixed22.23.2/.3 paths were not found on that fresh job.22.23.4 bytes94efd062
+were hashed, never executed, and its0777 mode fails the existing custody rule.
+The owning diagnostic result names exact file identities and enabled parent
+controllers, plus the next source-only pre-entry permission/custody packet.
+No exclusive delegation, kernel/combined/canonical settlement or runtime
+version/library custody is established. Both read-only grants are spent;
+there is no retry, candidate execution, host permission change or ACP transfer.

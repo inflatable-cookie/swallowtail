@@ -104,3 +104,9 @@ fresh attempt authority; no retry/install, combined proof or ACP release.
   runtime refusal; retain nonzero composed failures and unchanged workflow bounds.
   Compare existing qualified-host options with cached22.23.4 as a fake-only
   no-install candidate. No candidate execution, fallback or Node claim change.
+
+- Record the one revised read-only attempt43625464586 and spent7f7c7a49 grant.
+  Retain independent cache/controller/kernel metadata despite runtime refusal:
+  qualified cache paths not found; candidate22.23.4 hashed without execution,
+  mode0777 ineligible for current custody. Name exact pre-entry permission/
+  custody preparation; no host mutation, retry, admission or claim increase.

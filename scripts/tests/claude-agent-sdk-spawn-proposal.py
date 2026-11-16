@@ -676,6 +676,7 @@ class LaunchObligationTests(unittest.TestCase):
                 owner = caught.exception.rehearsal
                 self.assertTrue(owner.driver_intent)
                 self.assertIsNone(owner.driver)
+                self.assertFalse(owner.thread.is_alive())
                 self.assertIsNone(child.poll())
                 self.assertTrue(owner.retained)
                 self.assertFalse(owner.lease.closed)

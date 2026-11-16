@@ -541,9 +541,9 @@ class RehearsalResources:
         if self.released:
             return
         try:
+            self.quiesce_endpoint()
             if self.driver_intent and self.driver is None:
                 raise Refused("driver_spawn_outcome_unknown; custody retained")
-            self.quiesce_endpoint()
             if self.driver is not None:
                 try:
                     stop_natives(

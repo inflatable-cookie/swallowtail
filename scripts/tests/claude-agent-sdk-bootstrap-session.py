@@ -242,6 +242,7 @@ class SessionTests(unittest.TestCase):
         )
         model = load("sdk_inner_model", ROOT / "scripts/tests/sdk-runtime-model.py")
         original_module, parse = core.module, core.parse_events
+        popen = subprocess.Popen
         node = Path(shutil.which("node")).resolve(strict=True)
 
         def modeled_module(name, data):
@@ -262,7 +263,10 @@ class SessionTests(unittest.TestCase):
             # and the inner ordinary source-modeled Node peer are distinct.
             # This is neither candidate execution nor same-host qualification.
             self.rehearsal(*args, **kwargs)
-            return core.rehearsal(sha(ROOT / core.RECORD), node, sha(node))
+            # run_session models the outer observer through the shared subprocess
+            # module; restore real Popen for the inner owned source/fake peer.
+            with mock.patch.object(core.subprocess, "Popen", popen):
+                return core.rehearsal(sha(ROOT / core.RECORD), node, sha(node))
 
         owner = None
         try:

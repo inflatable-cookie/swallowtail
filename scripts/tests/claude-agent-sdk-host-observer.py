@@ -345,6 +345,27 @@ class ObserverTests(unittest.TestCase):
                 context.before_fixture_cleanup.side_effect = None
                 owner.settle()  # Same exact already-observed child wait, never a restart.
 
+    def test_observer_fixture_release_requires_closed_capture_and_exact_members(self):
+        self.prepare()
+        self.capture.closed = False
+        with self.assertRaisesRegex(OSError, "capture_or_wait_still_live"):
+            self.guest.release()
+        for name in ("read", "write"):
+            os.close(getattr(self.guest, name))
+            setattr(self.guest, name, None)
+        self.guest.settled = (
+            True  # Source model only: no child was launched in this test.
+        )
+        self.capture.closed = True
+        file = self.guest.root / "entry.py"
+        source = file.read_bytes()
+        file.write_bytes(b"owned drift")
+        with self.assertRaisesRegex(OSError, "cleanup_bytes_or_alias"):
+            self.guest.release()
+        file.write_bytes(source)
+        self.guest.release()
+        self.assertFalse(self.guest.root.exists())
+
 
 if __name__ == "__main__":
     unittest.main()

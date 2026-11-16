@@ -339,8 +339,8 @@ executable source commit/record and workflow patch. Applying/registering that
 workflow and its single attempt are separate reserved effects. Its only payload
 route is the three owned SDK cases; it installs/copies no runtime, runs no original
 or vendor package, and grants no ACP topology credit. Initial GitHub administration
-includes the service job/image identity, system Git/sudo/hash tools and the pinned
-artifact uploader for bounded metadata export. Export contains only receipts and
+includes the service job/image identity, system Git/sudo/hash tools, the pinned
+checkout action and artifact uploader for bounded metadata export. Export contains only receipts and
 manifest metadata, not runtime bytes. The uploader's platform runtime supplies no
 SDK Node-axis qualification. Its registration receipt must bind the exact resulting
 workflow commit before a dispatch can be approved.

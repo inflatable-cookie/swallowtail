@@ -237,6 +237,22 @@ class CompositionTests(unittest.TestCase):
         self.package.check()
         self.assertEqual(self.lease.mode, 0o777)
 
+    def test_refusal_replies_on_private_pipe_and_prevents_new_entry(self):
+        _, cls = H.compose(C, B)
+        monitor = cls.__new__(cls)
+        monitor.refusal = None
+        monitor.journal = {}
+        monitor.handle_owned = mock.Mock(side_effect=OSError("owned admission refused"))
+        reply = monitor.handle({"kind": "observer_started", "namespacePid": 3})
+        self.assertIn("owned admission refused", reply["error"])
+        self.assertEqual(reply["errno"], 1)
+        monitor.handle_owned.reset_mock()
+        blocked = monitor.handle(
+            {"kind": "case_begin", "mode": "probe", "state": "absent"}
+        )
+        self.assertEqual(blocked["error"], reply["error"])
+        monitor.handle_owned.assert_not_called()
+
 
 class PackageProvenanceTests(unittest.TestCase):
     def test_selected_bytes_must_match_the_held_package_record(self):
@@ -605,7 +621,7 @@ def check_packet():
     ):
         raise AssertionError("workflow source bindings")
     expected = packet["uploader"]
-    if job["steps"][1]["uses"] != expected:
+    if job["steps"][-1]["uses"] != expected:
         raise AssertionError("immutable metadata uploader")
     fixture = Path(tempfile.mkdtemp(prefix="host-packet-", dir=os.environ["TMPDIR"]))
     try:

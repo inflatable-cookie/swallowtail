@@ -294,6 +294,11 @@ class AdminTests(unittest.TestCase):
                         uid=os.getuid(),
                     )
                 owner.state = saved
+                # The journal normally shares identity lists with the live rows;
+                # undo only this test's metadata mutation, not filesystem drift.
+                for live, record in zip(owner.rows, saved["rows"]):
+                    live["original"] = list(record["original"])
+                    live["current"] = list(record["current"])
                 owner.store()
                 self.dispose(root, owner)
 

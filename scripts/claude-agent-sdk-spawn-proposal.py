@@ -435,6 +435,15 @@ class RehearsalResources:
             ):
                 raise Refused("native_parent_wait_missing; custody retained")
 
+    def quiesce_endpoint(self):
+        if self.server is not None:
+            if self.thread is not None and self.thread.ident is not None:
+                self.server.shutdown()
+                self.thread.join(timeout=1)
+                if self.thread.is_alive():
+                    raise Refused("endpoint_join_missing")
+            self.server.server_close()
+
     def settle(self):
         """Retry only owned stop/join/cleanup; never restart a rehearsal."""
         if self.released:
@@ -456,13 +465,7 @@ class RehearsalResources:
                         actor=os.getpid(),
                         code=terminal,
                     )
-            if self.server is not None:
-                if self.thread is not None and self.thread.ident is not None:
-                    self.server.shutdown()
-                    self.thread.join(timeout=1)
-                    if self.thread.is_alive():
-                        raise Refused("endpoint_join_missing")
-                self.server.server_close()
+            self.quiesce_endpoint()
             if self.driver is not None:
                 self.native_joins()
             # These releases cannot run after a stop or join raised above.
@@ -1109,6 +1112,8 @@ def rehearsal(
                 )
                 # Keep the actual parent alive to receive ChildProcess.exit;
                 # its graceful-close deadline must not race a still-live native.
+                # Finish any in-flight registration before taking that set.
+                resources.quiesce_endpoint()
                 stop_natives(
                     registered,
                     context.observe if context else None,

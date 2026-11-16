@@ -30,7 +30,7 @@ resolution; the captured module facade only resolves admitted parent/edge pairs.
 
 Every selected SDK version has **two module-scope calls** to
 `globalThis.process?.getBuiltinModule?.("async_hooks")`. Neither has a surrounding
-catch. The production bootstrap in `captured_source.rs` defines a present,
+catch. The reviewed c1e07dae bootstrap in `captured_source.rs` defines a present,
 nonconfigurable `getBuiltinModule` function that throws before installing the
 captured loader. Optional chaining calls a present function: it does not take
 the SDK's missing-API fallback. Therefore SDK evaluation fails under this exact
@@ -38,9 +38,9 @@ bootstrap before a query can start.
 
 `guardStartup` and the SDK `raw` entries bind both sides of this mismatch.
 The owned fixture demonstrates the optional-call semantics with a miniature
-first-party object; it never imports SDK code. A compatible bootstrap adaptation
-needs the shared bootstrap owner's planning disposition. This record changes
-no startup policy and supplies no original execution authority.
+first-party object; it never imports SDK code. The [startup integration](claude-agent-acp-startup-integration.md) now applies
+the independently accepted absence-only adaptation. This frozen record retains
+the earlier bootstrap identity; it supplies no original execution authority.
 
 ## Dynamic and ambient edges
 

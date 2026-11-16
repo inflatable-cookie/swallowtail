@@ -484,7 +484,8 @@ impl LocalCapturedNodeRecipe {
         let preload = format!(
             r#"
 import {{ readSync, writeSync }} from 'node:fs';
-import {{ install }} from {loader_json};
+import * as capturedLoader from {loader_json};
+const install = capturedLoader.install;
 try {{
   function read(n) {{
     const b=Buffer.alloc(n); let p=0;
@@ -495,7 +496,12 @@ try {{
   if(n>33554432) throw new Error('graph bootstrap too large');
   const data=JSON.parse(read(n).toString('utf8'));
   if(read(1)[0]!==165) throw new Error('invalid bootstrap admission');
-  Object.defineProperty(process,'getBuiltinModule',{{value(){{throw new Error('direct builtin access refused')}},writable:false,configurable:false}});
+  Object.defineProperty(process,'getBuiltinModule',{{value(...args){{
+    if(args.length===1 && args[0]==='async_hooks' && typeof capturedLoader.sdkStartupBuiltinLookup==='function') {{
+      if(capturedLoader.sdkStartupBuiltinLookup(...args)===undefined) return undefined;
+    }}
+    throw new Error('direct builtin access refused');
+  }},writable:false,configurable:false}});
   install(data);
 }} catch (error) {{
   const labels=['incomplete graph bootstrap','graph bootstrap too large','invalid bootstrap admission','invalid capture','invalid module','invalid module identity','missing idle module','invalid edge','duplicate edge','runtime platform mismatch','missing native custody'];

@@ -83,11 +83,12 @@ JSON, invented PIDs/hashes or a new model instance cannot confer runtime custody
 
 The source requirement retains the accepted f902 software entry identity as
 history. It is not a claim that its Python/runtime inputs are currently admitted.
-The startup migration candidate at b8193390 remains unreviewed and unapplied.
-Consuming it needs its exact independent source/security disposition, accepted
-helper/patch/loader/preload identities, an ACP integration and changed-input
-proof through the actual owned Rust sibling route. It does not require waiting
-for unrelated completion of the entire SDK task.
+The [startup integration](claude-agent-acp-startup-integration.md) consumes only
+the exact migration accepted at SDK240 commit3a9ca6b6, review5919931970. Its
+owned actual sibling checks are separate from this unchanged metadata model.
+The 24 profiles are eight hops times three caller kinds, not24 observed launches
+or a phase/process schedule. Full option-tail and runtime caller provenance
+remain unresolved; source-shaped startup success supplies neither.
 
 The next real packet also needs full ACP source option resolution, same-invocation
 trusted caller/entry and descriptor bindings, actual host/kernel/transport and

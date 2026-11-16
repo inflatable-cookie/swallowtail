@@ -186,6 +186,31 @@ fn setup(
     Supervisor,
     FixtureScope,
 ) {
+    let (prepared, host, supervisor, scope) =
+        setup_startup(root, endpoint, settings, wrong_argv, StartupGuard::Reviewed);
+    let (profile, services, resources) = prepared.expect("owned shared preparation");
+    (profile, services, resources, host, supervisor, scope)
+}
+
+#[derive(Clone, Copy, Debug)]
+enum StartupGuard {
+    Reviewed,
+    MissingOptIn,
+    ObjectReturn,
+}
+
+fn setup_startup(
+    root: &Path,
+    endpoint: &OwnedEndpoint,
+    settings: Value,
+    wrong_argv: bool,
+    startup: StartupGuard,
+) -> (
+    Result<(ClaudeAgentPreparedSession, HostServices, FixtureHost), String>,
+    CheckedChild,
+    Supervisor,
+    FixtureScope,
+) {
     let record: Value = serde_json::from_slice(
         &std::fs::read(
             std::env::var_os("SWALLOWTAIL_ACP_SHARED_RUNTIME_RECORD")
@@ -275,9 +300,20 @@ fn setup(
         python_bytes.len() as u64,
     );
     let loader = strict_loader(root, &entry_args);
+    let loader = match startup {
+        StartupGuard::Reviewed => loader,
+        StartupGuard::MissingOptIn => loader.replace(
+            "export function sdkStartupBuiltinLookup(",
+            "export function unadmittedStartupLookup(",
+        ),
+        StartupGuard::ObjectReturn => loader.replace(
+            "if (args.length === 1 && args[0] === \"async_hooks\") return undefined;",
+            "if (args.length === 1 && args[0] === \"async_hooks\") return {};",
+        ),
+    };
     let fake = fake_child_with_loader(
         root,
-        graph,
+        graph.clone(),
         8 * 1024 * 1024,
         vec![
             ("SWALLOWTAIL_FAKE_ROOT".into(), root.as_os_str().to_owned()),
@@ -287,6 +323,34 @@ fn setup(
             ),
         ],
         &loader,
+    );
+    let recipe = LocalCapturedNodeRecipe::for_trusted_runtime(
+        &graph,
+        &loader,
+        [1; 32],
+        &fake.runtime,
+        [5; 32],
+    )
+    .expect("same owned checked recipe");
+    let mut recipe_hash = Sha256::new();
+    recipe_hash.update(b"swallowtail-node-prefix-v1\0");
+    for argument in recipe.prefix_arguments() {
+        let bytes = argument.as_encoded_bytes();
+        recipe_hash.update((bytes.len() as u64).to_be_bytes());
+        recipe_hash.update(bytes);
+    }
+    recipe_hash.update((recipe.bootstrap().len() as u64).to_be_bytes());
+    recipe_hash.update(recipe.bootstrap());
+    println!(
+        "SHARED_ACP_RECIPE {}",
+        json!({
+            "startup":format!("{startup:?}"),
+            "sourceGraphSha256":format!("{:x}", Sha256::digest(graph.configuration())),
+            "shimSha256":format!("{:x}", Sha256::digest(loader.as_bytes())),
+            "recipeSha256":format!("{:x}", recipe_hash.finalize()),
+            "launchFingerprint":recipe.fingerprint().digest().iter().map(|byte| format!("{byte:02x}")).collect::<String>(),
+            "originalAllowed":false,"kernelEnforced":false
+        })
     );
     let native_command = vec![
         node.to_str().expect("Node path").to_owned(),
@@ -335,8 +399,8 @@ fn setup(
         command: fake.command.clone(),
     };
     let (scope, process) = FixtureScope::new(fake.local);
-    let (profile, services, resources) = prepare_with_process(process);
-    (profile, services, resources, cloned, supervisor, scope)
+    let prepared = try_prepare_with_process(process);
+    (prepared, cloned, supervisor, scope)
 }
 
 fn validate_actors(value: &Value, root: &Path, expected: usize) {
@@ -375,19 +439,78 @@ fn validate_actors(value: &Value, root: &Path, expected: usize) {
     );
 }
 
+// Both turns use the same real session and native peer. The fixture scope still
+// owns cleanup if either turn fails before close_after_turn can run.
+fn close_after_continued_turn(
+    mut session: Box<dyn InteractiveSessionHandle>,
+    services: HostServices,
+    resources: &FixtureHost,
+    root: &Path,
+    callback: bool,
+    cancel: bool,
+) {
+    turn(session.as_mut(), services.clone(), root, callback, cancel);
+    close_after_turn(session, services, resources, root, callback, cancel);
+}
+
+#[test]
+#[ignore = "requires explicit installed-runtime shared software host record"]
+fn actual_shared_startup_missing_optin_and_object_return_refuse_before_entry() {
+    for startup in [StartupGuard::MissingOptIn, StartupGuard::ObjectReturn] {
+        let root = fixture();
+        let endpoint = OwnedEndpoint::new();
+        let (prepared, _host, mut supervisor, mut scope) =
+            setup_startup(&root, &endpoint, json!({}), false, startup);
+        supervisor.arm("startup-refusal", false);
+        assert!(prepared.is_err(), "{startup:?}");
+        let cleanup = scope.finish();
+        assert_eq!(cleanup["timedOut"], false);
+        assert_eq!(cleanup["ownDescriptorEof"], true);
+        assert!(!cleanup["waits"].as_array().expect("real waits").is_empty());
+        assert!(
+            cleanup["waits"]
+                .as_array()
+                .expect("real waits")
+                .iter()
+                .all(|r| r["wait"] == true)
+        );
+        let value = supervisor.settle(&root);
+        assert!(
+            !value["events"]
+                .as_array()
+                .expect("events")
+                .iter()
+                .any(|row| row["kind"] == "native_registered")
+        );
+        assert!(!trace(&root).iter().any(|row| row["phase"] == "sdk-startup-fallback" || row["phase"] == "native-start"));
+        assert_eq!(endpoint.requests.load(Ordering::Acquire), 0);
+        println!(
+            "SHARED_ACP_STARTUP_REFUSAL {}",
+            json!({"case":format!("{startup:?}"),"cleanup":cleanup,"events":value})
+        );
+        drop(supervisor);
+        drop(endpoint);
+        std::fs::remove_dir_all(root).expect("owned fixture cleanup");
+    }
+}
+
 #[test]
 #[ignore = "requires explicit installed-runtime shared software host record"]
 fn actual_local_host_siblings_use_reviewed_entry_permissions_and_waits() {
-    for callback in [false, true] {
+    for (user_denies, managed_denies, callback) in [
+        (false, Some(false), true),
+        (false, Some(true), false),
+        (true, None, false),
+    ] {
         let root = fixture();
         let endpoint = OwnedEndpoint::new();
-        let settings = json!({"user":{"permissions":{"denyInsteadOfPrompting":false}},"managed":{"permissions":{"denyInsteadOfPrompting":!callback}}});
+        let settings = json!({"user":{"permissions":{"denyInsteadOfPrompting":user_denies}},"managed":managed_denies.map(|deny|json!({"permissions":{"denyInsteadOfPrompting":deny}}))});
         let (profile, services, resources, _host, mut supervisor, mut scope) =
             setup(&root, &endpoint, settings, false);
         supervisor.arm("new", false);
         let opened = block_on(profile.open_session(services.clone())).expect("actual new");
         let binding = opened.resume_binding().expect("binding").clone();
-        close_after_turn(opened, services.clone(), &resources, &root, callback, false);
+        close_after_continued_turn(opened, services.clone(), &resources, &root, callback, false);
         supervisor.settle(&root);
         supervisor.arm("load", false);
         let loaded = block_on(
@@ -401,7 +524,7 @@ fn actual_local_host_siblings_use_reviewed_entry_permissions_and_waits() {
         )
         .expect("actual load");
         let (_, loaded) = loaded.into_parts();
-        close_after_turn(loaded, services.clone(), &resources, &root, callback, false);
+        close_after_continued_turn(loaded, services.clone(), &resources, &root, callback, false);
         supervisor.settle(&root);
         supervisor.arm("resume", false);
         let resumed = block_on(
@@ -414,11 +537,18 @@ fn actual_local_host_siblings_use_reviewed_entry_permissions_and_waits() {
                 .expect("resume derives"),
         )
         .expect("actual resume");
-        close_after_turn(resumed, services, &resources, &root, callback, false);
+        close_after_continued_turn(resumed, services, &resources, &root, callback, false);
         let value = supervisor.settle(&root);
         validate_actors(&value, &root, 3);
         assert_native_waits(&trace(&root), 3);
-        assert_eq!(endpoint.requests.load(Ordering::Acquire), 3);
+        assert_eq!(endpoint.requests.load(Ordering::Acquire), 6);
+        assert_eq!(
+            trace(&root)
+                .iter()
+                .filter(|row| row["phase"] == "sdk-startup-fallback")
+                .count(),
+            3
+        );
         println!(
             "SHARED_ACP_SOFTWARE {}",
             json!({"callback":callback,"events":value,"trace":trace(&root)})

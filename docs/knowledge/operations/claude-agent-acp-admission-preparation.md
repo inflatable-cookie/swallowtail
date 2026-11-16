@@ -8,8 +8,9 @@ No settled test or spent original grant is replayed here.
 
 The [source callsite proof](claude-agent-acp-callsite-proof.md) now binds actual
 invocations and argument dataflow across the eight graphs. It identifies the
-SDK module-scope `getBuiltinModule` calls as incompatible with the current
-throwing bootstrap. Exact source evidence replaces the import-parent-only
+SDK module-scope `getBuiltinModule` calls as incompatible with the frozen
+throwing bootstrap. The [startup integration](claude-agent-acp-startup-integration.md)
+binds its reviewed absence-only repair and actual owned sibling proof. Exact source evidence replaces the import-parent-only
 unknowns below; original admission remains closed. The frozen preparation record
 retains its original requirements scope.
 
@@ -34,7 +35,7 @@ they supply no admission capability, original command or new qualification.
 | Accepted fake launch | The separate fake recipe uses the reviewed f902 one-shot facade and trusted entry. | Do not project that stricter recipe onto the original SDK or production path-only facade. |
 | Workers/VM | Unlisted `worker_threads`/`vm` imports refuse captured resolution. | This does not prohibit opaque native workers or raw process capabilities. |
 | Dynamic code/addons | Node startup disables string code generation and addons. | Retained SDK/Zod `Function` sites need selected compatibility proof. Do not relax startup controls from fake success. |
-| Ambient process access | Production bootstrap disables `getBuiltinModule`. | It does not establish that `process.binding`, `_linkedBinding` or `execve` are blocked. Classify selected uses or mediate them before effects; normal builtins are not a hostile-code sandbox. |
+| Ambient process access | Bootstrap returns undefined only for the source-bound one-argument `async_hooks` opt-in; other requests throw. | It does not establish that `process.binding`, `_linkedBinding` or `execve` are blocked. Classify selected uses or mediate them before effects; normal builtins are not a hostile-code sandbox. |
 | Native image | Each hop/platform retains exact image SHA256 and size. | Those identities and bounded permission fragments do not close descendant exec, workers, loader or permitted-executable argv bypass. This remains opaque, with no further reverse engineering inferred. |
 
 ACP caller names change across the v1 relocation: the first three hops include
@@ -69,7 +70,7 @@ new same-user-resistant or verified-exec requirement.
 
 ## Finite shared-host delta
 
-Task234 owns the shared implementation and frozen pending-attempt packet.
+SDK continuation240 (from234) owns the shared implementation and frozen pending-attempt packet.
 This preparation changes neither. Its next ACP composition must bind:
 
 1. A host monitor and actual Rust prepared owner; the sleep group owner and

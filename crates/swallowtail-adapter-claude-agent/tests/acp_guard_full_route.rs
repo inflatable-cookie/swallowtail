@@ -201,6 +201,12 @@ fn prepare_registered(
 fn prepare_with_process(
     process: Arc<dyn ProcessService>,
 ) -> (ClaudeAgentPreparedSession, HostServices, FixtureHost) {
+    try_prepare_with_process(process).expect("owned preparation")
+}
+
+fn try_prepare_with_process(
+    process: Arc<dyn ProcessService>,
+) -> Result<(ClaudeAgentPreparedSession, HostServices, FixtureHost), String> {
     let host = ExecutionHostId::new("owned.full-route").expect("host");
     let resources = FixtureHost::new(Scenario::Success, "0.106.0");
     let services = resources.services(host.clone()).with_process(process);
@@ -216,7 +222,7 @@ fn prepare_with_process(
         ),
         services.clone(),
     ))
-    .expect("owned preparation");
+    .map_err(|error| format!("{error:?}"))?;
     assert!(!prepared.observation().is_qualified());
     let profile = prepared
         .prepare_session(
@@ -233,7 +239,7 @@ fn prepare_with_process(
             .with_consumer_mediated_permissions(),
         )
         .expect("owned session profile");
-    (profile, services, resources)
+    Ok((profile, services, resources))
 }
 fn turn(
     session: &mut dyn InteractiveSessionHandle,

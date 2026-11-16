@@ -7,3 +7,8 @@
 - Record the SDK startup mismatch with the throwing builtin guard. Preserve the
   Paseo handoff's prior evidence, spent grants, closed original admission and
   0.100.0 qualification ceiling.
+- Integrate the independently reviewed SDK absence-only startup lookup into the
+  Rust captured preload and ACP loader. Exercise owned source-shaped startup,
+  strict refusals, user/managed denial and continued turns through actual Rust
+  siblings, with real software waits and descriptor cleanup; keep original and
+  kernel admission closed.

@@ -199,18 +199,15 @@ enum StartupGuard {
     ObjectReturn,
 }
 
+type PreparedAttempt = Result<(ClaudeAgentPreparedSession, HostServices, FixtureHost), String>;
+
 fn setup_startup(
     root: &Path,
     endpoint: &OwnedEndpoint,
     settings: Value,
     wrong_argv: bool,
     startup: StartupGuard,
-) -> (
-    Result<(ClaudeAgentPreparedSession, HostServices, FixtureHost), String>,
-    CheckedChild,
-    Supervisor,
-    FixtureScope,
-) {
+) -> (PreparedAttempt, CheckedChild, Supervisor, FixtureScope) {
     let record: Value = serde_json::from_slice(
         &std::fs::read(
             std::env::var_os("SWALLOWTAIL_ACP_SHARED_RUNTIME_RECORD")

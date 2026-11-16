@@ -19,7 +19,7 @@
   "currentSources": {
     "crates/swallowtail-host-local/src/captured_source.rs": "ef159545b7cdbcd31371d56e1ea9607f119da170ee92a7dd38c8ba7a5b0d531a",
     "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "34cf60596e2c202949d7acf86f8878559fbbf22e4905e24d60248c0d10121a94",
-    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_shared_software.rs": "f01d2257243e51a0e59e11323b95601433f1416c32decd0f4b394333c7f9ddee",
+    "crates/swallowtail-adapter-claude-agent/tests/acp_guard_shared_software.rs": "3a0183118b277bf4501cf47e37e3d12ceb2566c3e2883f85fd0d622049f38d14",
     "crates/swallowtail-adapter-claude-agent/tests/acp_guard_full_route.rs": "cffc299cc955dcd3ac5b9b53b375bbc654b2571e123d497b1622409f8c92a29d",
     "crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/sdk.mjs": "847a1774592eff9d396b0014dedcc2d9334c28e5cd605ee24808cbd00a12b654",
     "scripts/run-claude-acp-shared-software.sh": "0ac503fe8fdc458040f14a073c797b076de304b0361095d630c467eb985097ee",

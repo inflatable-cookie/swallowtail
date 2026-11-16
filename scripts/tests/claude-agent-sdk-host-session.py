@@ -467,7 +467,14 @@ class PipelineTests(unittest.TestCase):
         )
 
     def invoke(self):
-        with mock.patch.object(H, "compose", return_value=(None, self.monitor_type)):
+        with (
+            mock.patch.object(H, "compose", return_value=(None, self.monitor_type)),
+            mock.patch.object(
+                C,
+                "identity",
+                side_effect=lambda pid: {"pid": pid, "scope": "owned software only"},
+            ),
+        ):
             return H.transaction(
                 self.args,
                 self.session,

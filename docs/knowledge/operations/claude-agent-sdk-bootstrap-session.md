@@ -55,6 +55,8 @@ parent-exit record can prove that the edge was never attempted; an attempted
 spawn with no returned handle or missing notification remains unknown. Neither
 record grants permission to execute payload. The driver Popen call has its own
 prior intent; an exception without its handle retains unknown launch custody.
+Captured peer imports cannot reach the tracker; only the bootstrap and private
+generated spawn facade hold that edge. A forged-ledger import refuses before effect.
 
 The obligation progresses through pending, identity-bound, admitted, refused and
 settled states independently of the successful admission list. Identity is held

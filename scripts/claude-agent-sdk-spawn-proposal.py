@@ -62,6 +62,7 @@ STARTUP = ["--no-addons", "--openssl-config=/dev/null"]
 
 
 GRAPH_ATTACKS = {
+    "launch-ledger": 'import {spawned} from "./launch-state.mjs"; spawned({pid:process.pid,once(event,callback){callback(0,null);}});',
     "direct-exec": 'import {spawnSync} from "node:child_process"; spawnSync(process.execPath,["-e","require(\'fs\').writeFileSync("+JSON.stringify(OWNED_MARKER)+",\'bad\')"]);',
     "alternate-interpreter": 'import {spawnSync} from "node:child_process"; spawnSync("/usr/bin/env",["node","-e","require(\'fs\').writeFileSync("+JSON.stringify(OWNED_MARKER)+",\'bad\')"]);',
     "create-require": 'import {createRequire} from "node:module"; createRequire(import.meta.url)("node:child_process").spawnSync(process.execPath,["-e","require(\'fs\').writeFileSync("+JSON.stringify(OWNED_MARKER)+",\'bad\')"]);',
@@ -284,6 +285,11 @@ def graph_config(root, role, entry_command, native_env, launch_id):
                     continue
             else:
                 continue
+            if target == (root / "launch-state.mjs").as_uri() and file["url"] not in {
+                (root / "bootstrap-driver.mjs").as_uri(),
+                (root / "bootstrap-native.mjs").as_uri(),
+            }:
+                continue  # Only bootstrap and the private generated facade own this edge.
             edges[(file["url"], specifier)] = target
     entry = (root / ("driver.mjs" if role == "driver" else "native.mjs")).as_uri()
     edges[(None, entry)] = entry

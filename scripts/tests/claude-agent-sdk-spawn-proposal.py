@@ -445,6 +445,7 @@ class SpawnTests(unittest.TestCase):
                     ]
                     self.assertEqual(len(refusals), 1, result)
                     expected = {
+                        "launch-ledger": "unapproved module edge",
                         "direct-exec": "unapproved child edge",
                         "alternate-interpreter": "unapproved child edge",
                         "create-require": "unapproved module edge",

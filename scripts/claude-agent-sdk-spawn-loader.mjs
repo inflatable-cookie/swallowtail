@@ -53,6 +53,7 @@ export function resolve(specifier, context) {
   if (childFacades.has(context.parentURL) && specifier === native.launchTrackerUrl && files.has(specifier)) return { url: specifier, shortCircuit: true };
   const target = edges.get(JSON.stringify([context.parentURL ?? null, specifier]));
   if (!target) throw new Error('unapproved module edge');
+  if (target === native.launchTrackerUrl) throw new Error('unapproved module edge');
   if (target === 'node:module') {
     const url = `swallowtail-module:${encodeURIComponent(context.parentURL)}`;
     moduleFacades.set(url, context.parentURL);

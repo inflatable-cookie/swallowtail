@@ -8,3 +8,6 @@ ambient builtin, and prepare a source-bound ACP guard migration for review.
 
 Bound read-only input batches with complete freshness checks, and require typed
 guard-refusal evidence alongside owned waits in the fake denial proof.
+
+Retain the live rehearsal handles, custody and staged fixture when stop or wait
+fails; release them only after a successful owned cleanup retry.

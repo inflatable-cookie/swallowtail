@@ -296,6 +296,7 @@ class Session:
         self.child = None
         self.unsettled = False
         self.results = []
+        self.retained_rehearsal = None
         self.source_inputs = {} if source_inputs is None else dict(source_inputs)
 
     def hold_source(self):
@@ -393,15 +394,19 @@ class Session:
                     self.store("fake_entry_intent", unresolved=True)
                     return observed
 
-                result = core.rehearsal(
-                    record,
-                    self.manifest["path"],
-                    self.manifest["sha256"],
-                    mode=mode,
-                    state=state,
-                    bound=10,
-                    runtime_factory=capture,
-                )
+                try:
+                    result = core.rehearsal(
+                        record,
+                        self.manifest["path"],
+                        self.manifest["sha256"],
+                        mode=mode,
+                        state=state,
+                        bound=10,
+                        runtime_factory=capture,
+                    )
+                except BaseException as error:
+                    self.retained_rehearsal = getattr(error, "rehearsal", None)
+                    raise
                 if (
                     result.get("failure") is not None
                     or result.get("driverWait") != 0

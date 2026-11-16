@@ -13,6 +13,7 @@ from pathlib import Path
 import selectors
 import re
 import signal
+import shutil
 import stat
 import subprocess
 import sys
@@ -365,6 +366,82 @@ def parse_events(data):
     return rows
 
 
+class RehearsalResources:
+    """Retain the live rehearsal on unknown cleanup; no temporary-dir finalizer."""
+
+    def __init__(self, registered, context, emit):
+        self.root = Path(
+            tempfile.mkdtemp(prefix="sdk234-spawn-", dir=os.environ["TMPDIR"])
+        ).resolve()
+        info = self.root.lstat()
+        self.identity = (info.st_dev, info.st_ino, info.st_uid)
+        self.registered, self.context, self.emit = registered, context, emit
+        self.lease = self.driver = self.pidfd = self.server = self.thread = None
+        self.retained = self.released = False
+
+    def __enter__(self):
+        return self.root
+
+    def __exit__(self, kind, error, traceback):
+        if not self.released and not self.retained:
+            self.settle()
+        return False
+
+    def settle(self):
+        """Retry only owned stop/join/cleanup; never restart a rehearsal."""
+        if self.released:
+            return
+        try:
+            if self.driver is not None:
+                try:
+                    stop_owned(
+                        self.driver,
+                        self.registered,
+                        self.context.observe if self.context else None,
+                        self.context.stop if self.context else None,
+                    )
+                finally:
+                    terminal = self.driver.wait(timeout=1)
+                    self.emit(
+                        "driver_cleanup_wait",
+                        pid=self.driver.pid,
+                        actor=os.getpid(),
+                        code=terminal,
+                    )
+            if self.server is not None:
+                if self.thread is not None and self.thread.ident is not None:
+                    self.server.shutdown()
+                    self.thread.join(timeout=1)
+                    if self.thread.is_alive():
+                        raise Refused("endpoint_join_missing")
+                self.server.server_close()
+            # These releases cannot run after a stop or join raised above.
+            if self.lease is not None:
+                self.lease.close()
+            if self.pidfd is not None:
+                os.close(self.pidfd)
+                self.pidfd = None
+            if self.driver is not None:
+                self.driver.stdout.close()
+                self.driver.stderr.close()
+            info = self.root.lstat()
+            if (
+                not stat.S_ISDIR(info.st_mode)
+                or info.st_mode & 0o022
+                or (info.st_dev, info.st_ino, info.st_uid) != self.identity
+            ):
+                raise Refused("rehearsal_fixture_identity_changed")
+            shutil.rmtree(self.root)
+            self.released, self.retained = True, False
+        except BaseException as error:
+            self.retained = True
+            if self.lease is not None:
+                self.lease.revoke()
+            unknown = Refused("rehearsal_cleanup_unknown; owned resources retained")
+            unknown.rehearsal = self
+            raise unknown from error
+
+
 def rehearsal(
     expected,
     node,
@@ -494,10 +571,8 @@ def rehearsal(
                     observation=row,
                 )
 
-    with tempfile.TemporaryDirectory(
-        prefix="sdk234-spawn-", dir=os.environ["TMPDIR"]
-    ) as temporary:
-        root = Path(temporary)
+    resources = RehearsalResources(registered, context, emit)
+    with resources as root:
         lease = custody.Lease(
             runtime,
             node,
@@ -505,6 +580,7 @@ def rehearsal(
             {"schema": SCHEMA, "fakeOnly": True},
             reserve_pipes=False,
         )
+        resources.lease = lease
         timing("lease_ready")
         server, thread = None, None
         try:
@@ -780,6 +856,7 @@ def rehearsal(
                                 raise Refused("cancel_native-entry")
                             if hasattr(os, "pidfd_open"):
                                 pidfd = os.pidfd_open(value["pid"])
+                                resources.pidfd = pidfd
                             registered.append(observed)
                             emit("native_released", identity=observed)
                             answer = (
@@ -822,6 +899,7 @@ def rehearsal(
                     return connection, address
 
             server = BoundedServer(("127.0.0.1", 0), Endpoint)
+            resources.server = server
             server.timeout = 1
             config = {
                 "workspace": str(root / "workspace"),
@@ -918,6 +996,7 @@ def rehearsal(
             thread = threading.Thread(
                 target=server.serve_forever, kwargs={"poll_interval": 0.01}
             )
+            resources.thread = thread
             thread.start()
             host_command = (
                 owner_command
@@ -932,6 +1011,7 @@ def rehearsal(
                 stderr=subprocess.PIPE,
                 start_new_session=True,
             )
+            resources.driver = driver
             timing("spawn", pid=driver.pid)
             holder["driver"] = driver
             if composition == "acp-actor-shape":
@@ -1096,41 +1176,8 @@ def rehearsal(
                 "fullKernelTreeSettlement": False,
             }
         finally:
-            try:
-                if driver is not None:
-                    try:
-                        stop_owned(
-                            driver,
-                            registered,
-                            context.observe if context else None,
-                            context.stop if context else None,
-                        )
-                    finally:
-                        terminal = driver.wait(timeout=1)
-                        emit(
-                            "driver_cleanup_wait",
-                            pid=driver.pid,
-                            actor=os.getpid(),
-                            code=terminal,
-                        )
-                        driver.stdout.close()
-                        driver.stderr.close()
-            finally:
-                try:
-                    if server is not None:
-                        try:
-                            if thread is not None:
-                                server.shutdown()
-                                thread.join(timeout=1)
-                                if thread.is_alive():
-                                    raise Refused("endpoint_join_missing")
-                        finally:
-                            server.server_close()
-                finally:
-                    if pidfd is not None:
-                        os.close(pidfd)
-                    lease.close()
-                    timing("cleanup_complete")
+            resources.settle()
+            timing("cleanup_complete")
 
 
 def main():

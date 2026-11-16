@@ -41,6 +41,16 @@ cannot clear that gate. Recovery reacquires independently verified inputs; it
 never inherits a dead supervisor's custody. The independent recover-only command
 refuses any journal with pending children/entry intent and never launches Node.
 
+The rehearsal has an explicit in-memory resource owner, without a temporary
+directory finalizer. If stopping or waiting raises, it revokes further launches
+and retains the actual process handle, open capture, pidfd, endpoint and staged
+fixture. The refusal carries that owner; the outer transaction retains it too.
+Only a later cleanup attempt using those same handles may release the capture
+and identity-bound fixture after the owned stop, driver wait and endpoint join
+succeed. This cleanup retry cannot launch another rehearsal or clear the outer
+transaction's unknown-settlement receipt. Process exit never substitutes for an
+actual wait, and this retention does not establish kernel tree reaping.
+
 Read-only input batches check every held identity before and after acquisition,
 and retain each member's byte, owner, mode and ancestry checks. A partial failure
 revokes that capture. Batches are bounded to512 members and refuse after command

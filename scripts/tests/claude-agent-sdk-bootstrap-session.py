@@ -220,6 +220,21 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(self.node.stat().st_mode & 0o777, 0o755)
         self.assertFalse(self.session.host.capture.closed)
 
+    def test_unknown_rehearsal_retains_live_owner_and_outer_capture(self):
+        owner = object()
+
+        def failed(*args, **kwargs):
+            error = RuntimeError("owned rehearsal unsettled")
+            error.rehearsal = owner
+            raise error
+
+        with self.assertRaisesRegex(OSError, "child_settlement_unknown"):
+            self.run_session(failed)
+        self.assertIs(self.session.retained_rehearsal, owner)
+        self.assertFalse(self.session.host.capture.closed)
+        self.assertEqual(self.node.stat().st_mode & 0o777, 0o755)
+        self.assertFalse(json.loads(self.journal.read_text())["fixtureCleanup"])
+
     def test_unknown_actual_observer_wait_retains_custody_and_mode(self):
         original = self.observer
 

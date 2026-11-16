@@ -6,6 +6,8 @@ import json
 import os
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -254,14 +256,83 @@ class SpawnTests(unittest.TestCase):
                 result = self.run_peer(**kwargs)
                 self.assertIsNotNone(result["failure"])
 
-    def test_cleanup_signal_failure_still_releases_endpoint_and_custody(self):
+    def assert_retained(self, owner):
+        self.assertTrue(owner.retained)
+        self.assertFalse(owner.released)
+        self.assertTrue(owner.root.is_dir())
+        self.assertTrue((owner.root / "native.mjs").is_file())
+        self.assertTrue(owner.lease.revoked)
+        self.assertFalse(owner.lease.closed)
+        self.assertTrue(owner.lease.descriptors)
+        for descriptor in owner.lease.descriptors:
+            os.fstat(descriptor)
+        self.assertFalse(owner.driver.stdout.closed)
+        self.assertFalse(owner.driver.stderr.closed)
+        if owner.pidfd is not None:
+            os.fstat(owner.pidfd)
+
+    def test_cleanup_signal_failure_retains_endpoint_and_custody(self):
         before = set(threading.enumerate())
         with mock.patch.object(
             CORE, "stop_owned", side_effect=PermissionError("owned signal refused")
         ):
-            with self.assertRaises(PermissionError):
+            with self.assertRaisesRegex(
+                CORE.Refused, "rehearsal_cleanup_unknown"
+            ) as caught:
                 self.run_peer()
+        owner = caught.exception.rehearsal
+        try:
+            self.assert_retained(owner)
+            self.assertTrue(owner.thread.is_alive())
+        finally:
+            owner.settle()
+        self.assertTrue(owner.released)
+        self.assertTrue(owner.lease.closed)
+        self.assertFalse(owner.root.exists())
         self.assertEqual(set(threading.enumerate()), before)
+
+    def test_unsettled_actual_child_retains_handles_and_fixture_until_wait(self):
+        # Lifetime-only first-party sleeper, not SDK/native or topology proof.
+        popen = subprocess.Popen
+        child, owner, kill, wait = None, None, None, None
+
+        def start(*args, **kwargs):
+            nonlocal child, kill, wait
+            child = popen(
+                [sys.executable, "-I", "-B", "-S", "-c", "import time; time.sleep(30)"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                env={"PATH": "/usr/bin:/bin"},
+                cwd=os.environ["TMPDIR"],
+            )
+            kill, wait = child.kill, child.wait
+            child.kill = child.terminate = lambda: None
+            child.wait = mock.Mock(
+                side_effect=subprocess.TimeoutExpired("owned sleeper", 1)
+            )
+            return child
+
+        try:
+            with mock.patch.object(CORE.subprocess, "Popen", side_effect=start):
+                with self.assertRaisesRegex(
+                    CORE.Refused, "rehearsal_cleanup_unknown"
+                ) as caught:
+                    self.run_peer(bound=0.1)
+            owner = caught.exception.rehearsal
+            self.assertIs(owner.driver, child)
+            self.assertIsNone(child.poll())
+            self.assert_retained(owner)
+            self.assertTrue(owner.thread.is_alive())
+        finally:
+            if child is not None:
+                kill()
+                wait(timeout=2)
+                child.wait, child.kill = wait, kill
+            if owner is not None:
+                owner.settle()
+        self.assertTrue(owner.lease.closed)
+        self.assertFalse(owner.root.exists())
+        self.assertFalse(owner.thread.is_alive())
 
     def test_captured_graph_denies_launch_and_dynamic_edges_before_effects(self):
         for fault in (*CORE.GRAPH_ATTACKS, "alternate-flags", "forged-approval"):

@@ -595,6 +595,7 @@ class MetadataTests(unittest.TestCase):
             script = script.replace(
                 "/usr/bin/prlimit --fsize=2031616 --", command + " 2031616"
             )
+            script = script.replace("/usr/bin/cat", shlex.quote(shutil.which("cat")))
             if kind in ("stdout", "stderr"):
                 flood = root / "flood.py"
                 fd = 1 if kind == "stdout" else 2
@@ -640,6 +641,11 @@ class MetadataTests(unittest.TestCase):
             else:
                 import tarfile
 
+                self.assertGreater(
+                    (root / "evidence.tar").stat().st_size,
+                    0,
+                    (root / "export.log").read_text() + result.stderr.decode(),
+                )
                 with tarfile.open(root / "evidence.tar") as archive:
                     self.assertEqual(
                         sorted(archive.getnames()),

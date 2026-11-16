@@ -156,7 +156,9 @@ class ImageFiles:
             raise Refused("package_search_bound")
         self.lookup[canonical] = names
 
-    def check(self):
+    def check(self, *, candidate_mode=0o777):
+        if candidate_mode not in (0o755, 0o777):
+            raise Refused("package_exact_leaf_mode_required")
         if self.owner is not None:
             self.owner.check_ancestors()
         for name, (fd, expected, digest, candidate) in self.files.items():
@@ -167,7 +169,7 @@ class ImageFiles:
                 # Only the later leaf transaction may alter mode/ctime; require restored0777 and exact bytes.
                 if (
                     current[:4] + current[5:7] != expected[:4] + expected[5:7]
-                    or stat.S_IMODE(current[4]) != 0o777
+                    or stat.S_IMODE(current[4]) != candidate_mode
                 ):
                     raise Refused("package_candidate_drift")
                 value = hashlib.sha256()

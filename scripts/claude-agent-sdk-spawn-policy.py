@@ -23,7 +23,7 @@ ALLOW = 0x7FFF0000
 
 def instructions(role, pid, blocked):
     """Scalar syscall restrictions; committed-image entry is gated by ptrace."""
-    if role not in {"driver", "native"} or pid <= 0:
+    if role not in {"driver", "native", "observer"} or pid <= 0:
         raise ValueError("policy_role_or_pid")
     rows, labels = [], {}
 
@@ -64,13 +64,13 @@ def instructions(role, pid, blocked):
     # enrolled in the inherited cgroup, PID namespace and kernel tracing.
     jump(0x45, 0x7E820080, "deny", "clone_kind")
     label("clone_kind")
-    if role == "native":
+    if role in {"native", "observer"}:
         jump(0x45, 0x10000, "allow", "deny")
     else:
         ret(ALLOW)
     label("kill")
     load(16)
-    if role == "native":
+    if role in {"native", "observer"}:
         jump(0x15, pid, "allow", "deny")
     else:
         jump(0x15, 0, "deny", "kill_sign")
@@ -162,11 +162,11 @@ def install(config, role):
         or os.geteuid() == 0
     ):
         raise OSError(errno.EPERM, "nonroot_Linux_x64_policy_required")
-    if role not in {"driver", "native"}:
+    if role not in {"driver", "native", "observer"}:
         raise OSError(errno.EPERM, "kernel_policy_role")
     if os.getuid() != config["uid"] or os.getgid() != config["gid"]:
         raise OSError(errno.EPERM, "kernel_membership_or_credentials")
-    if role == "driver":
+    if role in {"driver", "observer"}:
         info = Path("/proc/self/status").read_text().splitlines()
         caps = [
             row.split(":", 1)[1].strip()

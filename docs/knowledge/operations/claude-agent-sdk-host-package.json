@@ -55,5 +55,7 @@
   "qualificationMergeHold": true,
   "transactionSource": "scripts/claude-agent-sdk-host-transaction.py",
   "producerSource": "scripts/claude-agent-sdk-host-package.py",
-  "sourceImplementationApproved": true
+  "sourceImplementationApproved": true,
+  "observerBridgeSource": "scripts/claude-agent-sdk-host-observer.py",
+  "observerEntrySource": "scripts/claude-agent-sdk-observer-entry.py"
 }

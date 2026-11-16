@@ -395,6 +395,17 @@ class RuntimeObservation(dict):
         self.capture.close()
 
 
+def observer_command(node):
+    """The sole private report expression; callers cannot supply another tail."""
+    return [
+        str(node),
+        *STARTUP,
+        "-e",
+        "console.log(JSON.stringify({node:process.execPath,version:process.version,"
+        "libraries:process.report.getReport().sharedObjects}))",
+    ]
+
+
 def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
     """Observe only after eligibility and independently supplied bootstrap inputs."""
     node = Path(node).absolute()
@@ -417,13 +428,7 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
         if bootstrap.launch_pending:
             raise Refused("runtime_observer_launch_unknown; custody retained")
         bootstrap.check()
-        command = [
-            str(node),
-            *STARTUP,
-            "-e",
-            "console.log(JSON.stringify({node:process.execPath,version:process.version,"
-            "libraries:process.report.getReport().sharedObjects}))",
-        ]
+        command = observer_command(node)
         environment = {
             "PATH": "/usr/bin:/bin",
             "HOME": os.environ["TMPDIR"],
@@ -465,9 +470,9 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
                         raise Refused("runtime_observation_limit")
         if child.wait(timeout=max(0.001, deadline - time.monotonic())) != 0:
             raise Refused("runtime_observer_exit")
-        bootstrap.active_child = None
         if observer_owner is not None:
             observer_owner.joined(child)
+        bootstrap.active_child = None
         bootstrap.check()
         report = json.loads(stdout)
         if report["node"] != str(node) or report["version"] != bootstrap.version:
@@ -512,9 +517,9 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
                 if child.poll() is None:
                     child.kill()
                 child.wait(timeout=2)
-                bootstrap.active_child = None
                 if observer_owner is not None:
                     observer_owner.joined(child)
+                bootstrap.active_child = None
             except BaseException:
                 unknown = Refused("runtime_observer_join_unknown; custody retained")
                 unknown.capture = bootstrap

@@ -355,6 +355,7 @@ class BootstrapTests(unittest.TestCase):
         session_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(session_module)
         owner = session_module.Session.__new__(session_module.Session)
+        owner.boundary = None
         owner.host = mock.Mock()
         owner.preparation = types.SimpleNamespace(
             state={}, receipt=self.root / "owned-receipt"
@@ -392,6 +393,7 @@ class BootstrapTests(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         owner = module.Session.__new__(module.Session)
+        owner.boundary = None
         owner.child = child
         owner.runtime_bootstrap = capture
         owner.preparation = types.SimpleNamespace(state={})

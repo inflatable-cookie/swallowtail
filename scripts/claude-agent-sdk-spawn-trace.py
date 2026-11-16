@@ -114,7 +114,18 @@ def observe_image(pid):
 class ExecGate:
     """Two exact payload actors and their threads; no arbitrary process API."""
 
-    def __init__(self, io, snapshot, membership, images, pin=None, before_release=None):
+    def __init__(
+        self,
+        io,
+        snapshot,
+        membership,
+        images,
+        pin=None,
+        before_release=None,
+        *,
+        allow_native=True,
+    ):
+        self.allow_native = allow_native
         self.io = io
         self.snapshot = snapshot
         self.membership = membership
@@ -199,7 +210,8 @@ class ExecGate:
                 role, state = task["role"], "thread"
             else:
                 if (
-                    task["role"] != "driver"
+                    not self.allow_native
+                    or task["role"] != "driver"
                     or task["state"] not in {"driver", "thread"}
                     or self.seen_native
                 ):

@@ -286,6 +286,26 @@ actual join clears that capture's active child and closes those streams.
 These are source/owned-child seams for composition, not an activated kernel or
 completed three-case adapter.
 
+The private [observer bridge](../../../scripts/claude-agent-sdk-host-observer.py)
+and [Python barrier](../../../scripts/claude-agent-sdk-observer-entry.py) now
+prepare a fixed runtime-report command behind a one-shot pipe. Root records the
+observer obligation before Popen, authenticates the actual Python actor, installs
+its existing committed-exec gate and returns the exact observer policy. Only then
+may the barrier install Landlock/seccomp and exec Node. The observer policy denies
+process children; root also rejects a process-child trace event. Threads retain
+the existing finite task limit. Missing notification or refusal retains the
+obligation, source capture and actual child handle.
+
+An observer join must match the live tracer's terminal rows and the exact
+ordinary parent's Popen wait. Staged-fixture cleanup has a separate callback
+before capture closure or unlink: root compares the driver's actual parent wait
+and native ChildProcess.exit record with its live case tracer, including namespace
+PID, launch ID and status. A root acknowledgement failure retains the same
+fixture, capture and streams for a later matching wait. The acknowledgement itself
+performs no unlink and releases no foundational host inputs. These components
+still need the three-case root adapter and exact unapplied job packet; their owned
+Python/model tests do not prove actual kernel entry or ACP topology.
+
 ### Verification commands for a later grant
 
 These commands are **unapplied**. As root custodian, first verify the independently

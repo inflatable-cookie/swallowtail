@@ -655,6 +655,19 @@ class RehearsalResources:
                     )
             if self.driver is not None:
                 self.native_joins()
+            if self.context is not None and hasattr(
+                self.context, "before_fixture_cleanup"
+            ):
+                self.context.before_fixture_cleanup(
+                    self.root,
+                    {
+                        "driverIntent": self.driver_intent,
+                        "driver": None
+                        if self.driver is None
+                        else {"pid": self.driver.pid, "code": self.driver.returncode},
+                        "launch": self.launch,
+                    },
+                )
             # These releases cannot run after a stop or join raised above.
             if self.lease is not None:
                 self.lease.close()
@@ -731,7 +744,9 @@ def rehearsal(
     if context is not None and runtime_factory is not None:
         raise Refused("one_runtime_custody_owner_required")
     runtime = (
-        context.runtime
+        context.capture_runtime(custody, node, node_sha)
+        if context and hasattr(context, "capture_runtime")
+        else context.runtime
         if context
         else runtime_factory(custody, node, node_sha)
         if runtime_factory

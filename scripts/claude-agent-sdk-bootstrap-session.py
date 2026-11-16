@@ -346,6 +346,7 @@ class Session:
         self.results = []
         self.retained_rehearsal = None
         self.runtime_bootstrap = None
+        self.boundary = None
         self.source_inputs = {} if source_inputs is None else dict(source_inputs)
 
     def hold_source(self):
@@ -363,17 +364,25 @@ class Session:
         # The crash window before a Popen handle exists is explicitly unknown.
         self.preparation.state["runtimeEntryAttempted"] = True
         self.store("observer_entry_intent", unresolved=True)
+        if self.boundary is not None:
+            command, kwargs = self.boundary.observer_prepare(
+                command, kwargs, self.runtime_bootstrap
+            )
         self.child = subprocess.Popen(command, **kwargs)
         # Preserve the actual handle before the next fallible durable write.
         if self.runtime_bootstrap is not None:
             self.runtime_bootstrap.active_child = self.child
         self.preparation.state["children"] = [self.child.pid]
         self.helper.persist(self.preparation.receipt, self.preparation.state)
+        if self.boundary is not None:
+            self.boundary.observer_started(self.child)
         return self.child
 
     def joined(self, child):
         if child is not self.child or child.returncode is None:
             raise OSError("actual_owned_observer_wait_required")
+        if self.boundary is not None:
+            self.boundary.observer_joined(child)
         self.preparation.state.setdefault("observerWaits", []).append(
             {"pid": child.pid, "exit": child.returncode}
         )
@@ -430,7 +439,8 @@ class Session:
             raise
         return observed
 
-    def run(self, core, record):
+    def run(self, core, record, *, context=None):
+        self.boundary = context
         try:
             self.host = HostInputs(self.custody, self.elf, self.manifest)
             self.hold_source()
@@ -439,12 +449,16 @@ class Session:
                 os.fstat(self.host.node_fd)
             ):
                 raise OSError("permission_descriptor_binding_changed")
+            if context is not None:
+                context.leaf_prepared(self.preparation.receipt)
             for mode, state in (
                 ("probe", "absent"),
                 ("sidecar", "absent"),
                 ("sidecar", "managed-deny"),
             ):
                 self.host.check()
+                if context is not None:
+                    context.case_begin(mode, state)
                 # A crash anywhere in rehearsal retains unknown child settlement.
                 self.store("fake_entry_intent", unresolved=True)
 
@@ -453,6 +467,8 @@ class Session:
                     self.store("fake_entry_intent", unresolved=True)
                     return observed
 
+                if context is not None:
+                    context.capture_runtime = capture
                 try:
                     result = core.rehearsal(
                         record,
@@ -461,7 +477,8 @@ class Session:
                         mode=mode,
                         state=state,
                         bound=10,
-                        runtime_factory=capture,
+                        runtime_factory=capture if context is None else None,
+                        context=context,
                     )
                 except BaseException as error:
                     self.retained_rehearsal = getattr(error, "rehearsal", None)
@@ -474,6 +491,8 @@ class Session:
                 ):
                     raise OSError("owned_fake_settlement_failed; receipt retained")
                 self.store("fake_joined", unresolved=False)
+                if context is not None:
+                    context.case_end(result)
                 self.results.append(
                     {
                         "mode": mode,
@@ -497,6 +516,8 @@ class Session:
                     )
                 self.host.check()
                 self.preparation.cleanup()
+                if context is not None:
+                    context.leaf_restored(self.preparation.receipt)
             else:
                 self.preparation.close()
             if self.host is not None:

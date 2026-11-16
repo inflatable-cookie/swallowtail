@@ -1,8 +1,63 @@
 diff --git a/.github/workflows/sdk240-host-setup.yml b/.github/workflows/sdk240-host-setup.yml
-new file mode 100644
---- /dev/null
+index d9bdb8d18a22b4e5b62369fbe823b3802906c58b..3c1a4aa7ee68af30aaf23e5dfa97b146b0787162 100644
+--- a/.github/workflows/sdk240-host-setup.yml
 +++ b/.github/workflows/sdk240-host-setup.yml
-@@ -0,0 +1,55 @@
+@@ -1,55 +1,55 @@
+-{
+-  "name": "SDK240 bounded host preparation",
+-  "on": {
+-    "workflow_dispatch": {}
+-  },
+-  "permissions": {
+-    "contents": "read"
+-  },
+-  "concurrency": {
+-    "group": "sdk240-host-preparation",
+-    "cancel-in-progress": false
+-  },
+-  "jobs": {
+-    "host": {
+-      "runs-on": "ubuntu-26.04",
+-      "timeout-minutes": 2,
+-      "env": {
+-        "SDK240_SOURCE": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
+-        "SDK240_RECORD": "631a1bc3cd0b210848791d1f839f5620c8fd26eef0c9e92881342d1c1a0267cb",
+-        "SDK240_BOOTSTRAP": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605"
+-      },
+-      "steps": [
+-        {
+-          "name": "Exact image and single-attempt envelope",
+-          "shell": "bash",
+-          "run": "set -euo pipefail\n[[ \"$GITHUB_REPOSITORY\" == \"inflatable-cookie/swallowtail\" ]]\n[[ \"${ImageOS:-}\" == \"ubuntu26\" && \"${ImageVersion:-}\" == \"20261111.196.1\" ]]\n[[ \"$GITHUB_RUN_ID\" =~ ^[1-9][0-9]*$ && \"$GITHUB_RUN_ATTEMPT\" == \"1\" ]]\n[[ \"$(id -u)\" == \"1001\" && \"$(id -g)\" == \"1001\" ]]\n[[ -d \"${RUNNER_TEMP:?}\" ]]\nprintf 'SDK240_BUDGET_END=%s\\n' \"$(( $(date +%s) + 100 ))\" >> \"$GITHUB_ENV\"\n"
+-        },
+-        {
+-          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+-          "with": {
+-            "ref": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
+-            "persist-credentials": false
+-          }
+-        },
+-        {
+-          "name": "One same-owner preparation and owned-fake transaction",
+-          "id": "prepare",
+-          "shell": "bash",
+-          "run": "set -euo pipefail\numask 077\n[[ \"$(git rev-parse HEAD)\" == \"$SDK240_SOURCE\" ]]\n[[ \"$(sha256sum docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 | cut -d ' ' -f 1)\" == \"$SDK240_RECORD\" ]]\nordinary_root=$(mktemp -d \"${RUNNER_TEMP:?}/sdk240-ordinary.XXXXXXXX\")\nsha256sum -c docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 > \"$ordinary_root/source-check.log\"\nadmin_root=\"/run/sdk240-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}\"\n# New exclusive allocation only: never reuse or remove an earlier job's directory.\nsudo -n /usr/bin/mkdir --mode=0700 -- \"$admin_root\"\nroot_budget=$(( SDK240_BUDGET_END - $(date +%s) ))\n(( root_budget > 3 ))\n(( root_budget <= 90 )) || root_budget=90\nprintf 'evidence=%s\\n' \"$ordinary_root/evidence.tar\" >> \"$GITHUB_OUTPUT\"\nset +e\nsudo -n /usr/bin/timeout --signal=TERM --kill-after=2s \"${root_budget}s\" \\\n  /usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C HOME=\"$ordinary_root\" \\\n  TMPDIR=\"$ordinary_root\" TMP=\"$ordinary_root\" TEMP=\"$ordinary_root\" \\\n  /usr/bin/python3 -I -S -B scripts/claude-agent-sdk-host-session.py \\\n  --record-sha256 \"$SDK240_RECORD\" --bootstrap-sha256 \"$SDK240_BOOTSTRAP\" \\\n  --source-revision \"$SDK240_SOURCE\" --image-os \"$ImageOS\" --image-version \"$ImageVersion\" \\\n  --repository \"$GITHUB_REPOSITORY\" --run \"$GITHUB_RUN_ID\" --attempt \"$GITHUB_RUN_ATTEMPT\" \\\n  --receipt-root \"$admin_root\" --cgroup-parent /sys/fs/cgroup --uid 1001 --gid 1001 \\\n  --seconds \"$root_budget\" </dev/null > \"$ordinary_root/host-output.json\" 2>&1\nhost_exit=$?\n# Metadata only. No runtime/source payload bytes are copied or installed.\n# Root output is a fixed small result; this export has its own exact file ceiling.\nsudo -n /usr/bin/prlimit --fsize=2097152 -- /usr/bin/timeout --signal=TERM --kill-after=2s 10s \\\n  /usr/bin/tar --format=ustar --no-recursion -cf - --directory=\"$admin_root\" \\\n  -- admin.json monitor.json host-manifest.json > \"$ordinary_root/evidence.tar\" 2> \"$ordinary_root/export.log\"\nexport_exit=$?\nset -e\n[[ \"$(wc -c < \"$ordinary_root/host-output.json\")\" -lt 16384 ]]\n[[ \"$(wc -c < \"$ordinary_root/evidence.tar\")\" -lt 2097152 ]]\nprintf '{\"hostExit\":%s,\"metadataExportExit\":%s,\"qualified\":false,\"originalActivation\":false}\\n' \"$host_exit\" \"$export_exit\"\n(( host_exit == 0 )) || exit \"$host_exit\"\nexit \"$export_exit\"\n"
+-        },
+-        {
+-          "name": "Retain bounded metadata",
+-          "if": "${{ always() && steps.prepare.outputs.evidence != '' }}",
+-          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+-          "with": {
+-            "name": "sdk240-${{ github.run_id }}-${{ github.run_attempt }}",
+-            "path": "${{ steps.prepare.outputs.evidence }}",
+-            "retention-days": 7,
+-            "if-no-files-found": "error"
+-          }
+-        }
+-      ]
+-    }
+-  }
+-}
 +{
 +  "name": "SDK240 bounded host preparation",
 +  "on": {
@@ -20,8 +75,8 @@ new file mode 100644
 +      "runs-on": "ubuntu-26.04",
 +      "timeout-minutes": 2,
 +      "env": {
-+        "SDK240_SOURCE": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
-+        "SDK240_RECORD": "631a1bc3cd0b210848791d1f839f5620c8fd26eef0c9e92881342d1c1a0267cb",
++        "SDK240_SOURCE": "8685fa3b61e20fbe2297eb56632d57fd8cff45d2",
++        "SDK240_RECORD": "39a8775a2592bfb69e7b405f9f8e277ef3b23c02bbe53177b1fc5bf62c7185f8",
 +        "SDK240_BOOTSTRAP": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605"
 +      },
 +      "steps": [
@@ -33,7 +88,7 @@ new file mode 100644
 +        {
 +          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
 +          "with": {
-+            "ref": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
++            "ref": "8685fa3b61e20fbe2297eb56632d57fd8cff45d2",
 +            "persist-credentials": false
 +          }
 +        },
@@ -41,7 +96,7 @@ new file mode 100644
 +          "name": "One same-owner preparation and owned-fake transaction",
 +          "id": "prepare",
 +          "shell": "bash",
-+          "run": "set -euo pipefail\numask 077\n[[ \"$(git rev-parse HEAD)\" == \"$SDK240_SOURCE\" ]]\n[[ \"$(sha256sum docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 | cut -d ' ' -f 1)\" == \"$SDK240_RECORD\" ]]\nordinary_root=$(mktemp -d \"${RUNNER_TEMP:?}/sdk240-ordinary.XXXXXXXX\")\nsha256sum -c docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 > \"$ordinary_root/source-check.log\"\nadmin_root=\"/run/sdk240-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}\"\n# New exclusive allocation only: never reuse or remove an earlier job's directory.\nsudo -n /usr/bin/mkdir --mode=0700 -- \"$admin_root\"\nroot_budget=$(( SDK240_BUDGET_END - $(date +%s) ))\n(( root_budget > 3 ))\n(( root_budget <= 90 )) || root_budget=90\nprintf 'evidence=%s\\n' \"$ordinary_root/evidence.tar\" >> \"$GITHUB_OUTPUT\"\nset +e\nsudo -n /usr/bin/timeout --signal=TERM --kill-after=2s \"${root_budget}s\" \\\n  /usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C HOME=\"$ordinary_root\" \\\n  TMPDIR=\"$ordinary_root\" TMP=\"$ordinary_root\" TEMP=\"$ordinary_root\" \\\n  /usr/bin/python3 -I -S -B scripts/claude-agent-sdk-host-session.py \\\n  --record-sha256 \"$SDK240_RECORD\" --bootstrap-sha256 \"$SDK240_BOOTSTRAP\" \\\n  --source-revision \"$SDK240_SOURCE\" --image-os \"$ImageOS\" --image-version \"$ImageVersion\" \\\n  --repository \"$GITHUB_REPOSITORY\" --run \"$GITHUB_RUN_ID\" --attempt \"$GITHUB_RUN_ATTEMPT\" \\\n  --receipt-root \"$admin_root\" --cgroup-parent /sys/fs/cgroup --uid 1001 --gid 1001 \\\n  --seconds \"$root_budget\" </dev/null > \"$ordinary_root/host-output.json\" 2>&1\nhost_exit=$?\n# Metadata only. No runtime/source payload bytes are copied or installed.\n# Root output is a fixed small result; this export has its own exact file ceiling.\nsudo -n /usr/bin/prlimit --fsize=2097152 -- /usr/bin/timeout --signal=TERM --kill-after=2s 10s \\\n  /usr/bin/tar --format=ustar --no-recursion -cf - --directory=\"$admin_root\" \\\n  -- admin.json monitor.json host-manifest.json > \"$ordinary_root/evidence.tar\" 2> \"$ordinary_root/export.log\"\nexport_exit=$?\nset -e\n[[ \"$(wc -c < \"$ordinary_root/host-output.json\")\" -lt 16384 ]]\n[[ \"$(wc -c < \"$ordinary_root/evidence.tar\")\" -lt 2097152 ]]\nprintf '{\"hostExit\":%s,\"metadataExportExit\":%s,\"qualified\":false,\"originalActivation\":false}\\n' \"$host_exit\" \"$export_exit\"\n(( host_exit == 0 )) || exit \"$host_exit\"\nexit \"$export_exit\"\n"
++          "run": "set -euo pipefail\numask 077\n[[ \"$(git rev-parse HEAD)\" == \"$SDK240_SOURCE\" ]]\n[[ \"$(sha256sum docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 | cut -d ' ' -f 1)\" == \"$SDK240_RECORD\" ]]\nordinary_root=$(mktemp -d \"${RUNNER_TEMP:?}/sdk240-ordinary.XXXXXXXX\")\nsha256sum -c docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 > \"$ordinary_root/source-check.log\"\nadmin_root=\"/run/sdk240-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}\"\n# New exclusive allocation only: never reuse or remove an earlier job's directory.\nsudo -n /usr/bin/mkdir --mode=0700 -- \"$admin_root\"\nroot_budget=$(( SDK240_BUDGET_END - $(date +%s) ))\n(( root_budget > 3 ))\n(( root_budget <= 90 )) || root_budget=90\nprintf 'evidence=%s\\n' \"$ordinary_root\" >> \"$GITHUB_OUTPUT\"\nset +e\nsudo -n /usr/bin/timeout --signal=TERM --kill-after=2s \"${root_budget}s\" \\\n  /usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C HOME=\"$ordinary_root\" \\\n  TMPDIR=\"$ordinary_root\" TMP=\"$ordinary_root\" TEMP=\"$ordinary_root\" \\\n  /usr/bin/python3 -I -S -B scripts/claude-agent-sdk-host-session.py \\\n  --record-sha256 \"$SDK240_RECORD\" --bootstrap-sha256 \"$SDK240_BOOTSTRAP\" \\\n  --source-revision \"$SDK240_SOURCE\" --image-os \"$ImageOS\" --image-version \"$ImageVersion\" \\\n  --repository \"$GITHUB_REPOSITORY\" --run \"$GITHUB_RUN_ID\" --attempt \"$GITHUB_RUN_ATTEMPT\" \\\n  --receipt-root \"$admin_root\" --cgroup-parent /sys/fs/cgroup --uid 1001 --gid 1001 \\\n  --seconds \"$root_budget\" </dev/null > \"$ordinary_root/host-output.json\" 2>&1\nhost_exit=$?\n# Metadata only: fixed names, no runtime/source payload or recursive export.\n# Stdout is a pipe; the root producer's16KiB file limit bounds stderr.\n# The ordinary relay reserves64KiB of the existing2MiB metadata ceiling.\nsudo -n /usr/bin/prlimit --fsize=16384 -- /usr/bin/timeout --signal=TERM --kill-after=2s 10s \\\n  /usr/bin/tar --format=ustar --no-recursion -cf - --directory=\"$admin_root\" \\\n  -- admin.json monitor.json host-manifest.json 2> \"$ordinary_root/export.log\" | \\\n  /usr/bin/prlimit --fsize=2031616 -- /usr/bin/cat > \"$ordinary_root/evidence.tar\"\nexport_codes=(\"${PIPESTATUS[@]}\")\nexport_exit=${export_codes[0]}\n(( export_exit != 0 )) || export_exit=${export_codes[1]}\nmissing=''\nfor record in admin.json monitor.json host-manifest.json; do\n  if [[ ! -f \"$admin_root/$record\" || -L \"$admin_root/$record\" ]]; then\n    missing=\"${missing}${missing:+,}\\\"${record}\\\"\"\n  fi\ndone\nprintf '{\"hostExit\":%s,\"metadataExportExit\":%s,\"producerExit\":%s,\"relayExit\":%s,\"missing\":[%s],\"qualified\":false,\"originalActivation\":false}\\n' \\\n  \"$host_exit\" \"$export_exit\" \"${export_codes[0]}\" \"${export_codes[1]}\" \"$missing\" > \"$ordinary_root/export-status.json\"\nset -e\n[[ \"$(wc -c < \"$ordinary_root/host-output.json\")\" -lt 16384 ]]\n[[ \"$(wc -c < \"$ordinary_root/export.log\")\" -le 16384 ]]\n[[ \"$(wc -c < \"$ordinary_root/export-status.json\")\" -lt 1024 ]]\n[[ \"$(wc -c < \"$ordinary_root/evidence.tar\")\" -le 2031616 ]]\ncat \"$ordinary_root/export-status.json\"\n(( host_exit == 0 )) || exit \"$host_exit\"\nexit \"$export_exit\"\n"
 +        },
 +        {
 +          "name": "Retain bounded metadata",
@@ -49,7 +104,7 @@ new file mode 100644
 +          "uses": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
 +          "with": {
 +            "name": "sdk240-${{ github.run_id }}-${{ github.run_attempt }}",
-+            "path": "${{ steps.prepare.outputs.evidence }}",
++            "path": "${{ steps.prepare.outputs.evidence }}/evidence.tar\n${{ steps.prepare.outputs.evidence }}/host-output.json\n${{ steps.prepare.outputs.evidence }}/export.log\n${{ steps.prepare.outputs.evidence }}/export-status.json",
 +            "retention-days": 7,
 +            "if-no-files-found": "error"
 +          }

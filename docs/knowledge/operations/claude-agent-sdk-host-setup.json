@@ -2,18 +2,18 @@
   "schema": "swallowtail.sdk240.exact-host-setup-proposal.v1",
   "activationAuthorized": false,
   "qualified": false,
-  "sourceCommit": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
+  "sourceCommit": "8685fa3b61e20fbe2297eb56632d57fd8cff45d2",
   "sourceRecord": {
     "path": "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256",
-    "sha256": "631a1bc3cd0b210848791d1f839f5620c8fd26eef0c9e92881342d1c1a0267cb"
+    "sha256": "39a8775a2592bfb69e7b405f9f8e277ef3b23c02bbe53177b1fc5bf62c7185f8"
   },
   "workflowPatch": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-setup.patch",
-    "sha256": "a4a9d80efe4f688b5bd9dde61efbd7ec9d472e472c534a60674639da2dbe5352"
+    "sha256": "33766f5ee89f35667ae21d001208ef5bdbd2224d03680450d14b6a613528c748"
   },
   "workflowPath": ".github/workflows/sdk240-host-setup.yml",
-  "workflowBlobSha256": "7a19751473aff6b17051016d23513741f7e45e7ceef1dbc544177116517e8e18",
-  "workflowGitBlob": "d9bdb8d18a22b4e5b62369fbe823b3802906c58b",
+  "workflowBlobSha256": "197e8c06aca59c0eea984ba615fa113bc5f6704fdddec82e6f3b47e3d6338fab",
+  "workflowGitBlob": "3c1a4aa7ee68af30aaf23e5dfa97b146b0787162",
   "bootstrapSha256": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605",
   "checkout": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
   "uploader": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
@@ -31,7 +31,7 @@
     "freshBootRequired": true,
     "exclusiveJobRequired": true
   },
-  "scope": "prepare only the five approved cache directories; produce complete existing-reader package; transfer manifest; ordinary leaf/runtime/three-owned-fake/actual waits/leaf then reverse ancestor restore; no runtime install/copy",
+  "scope": "prepare only the six approved literal directories including /opt; produce complete existing-reader package; transfer manifest; ordinary leaf/runtime/three-owned-fake/actual waits/leaf then reverse ancestor restore; no runtime install/copy",
   "limits": {
     "jobs": 1,
     "attempts": 1,
@@ -54,11 +54,14 @@
     "administrativeReceiptBytes": 65536,
     "monitorReceiptBytes": 262144,
     "resultOutputBytes": 16384,
-    "metadataArchiveBytes": 2097152
+    "metadataArchiveBytes": 2097152,
+    "metadataTarBytes": 2031616,
+    "exportErrorBytes": 16384,
+    "exportStatusBytes": 1024
   },
   "requiredFreshResources": [
     "selected image/service job identity and fresh boot/UID/source/tool bindings",
-    "safe / and /opt; only five literal cache directories eligible",
+    "safe /; only /opt and the five literal cache directories eligible; root administrative ownership of /opt",
     "existing pinned Node22.23.4 bytes, never installed or staged",
     "complete safe loader/search/cache/alias/Python/supervisor inputs from the same producer",
     "already enabled cpu/memory/pids on root-owned cgroupv2 /sys/fs/cgroup; no parent controller mutation",
@@ -69,9 +72,10 @@
     {
       "phase": "application",
       "authorityRequired": true,
-      "operation": "apply only this exact new-file patch after independent source/security acceptance; refuse any existing destination or unrelated workflow diff",
+      "operation": "replace only the exact registered base workflow blob after independent source/security acceptance; refuse a changed base or unrelated workflow diff",
       "path": ".github/workflows/sdk240-host-setup.yml",
-      "gitBlob": "d9bdb8d18a22b4e5b62369fbe823b3802906c58b"
+      "gitBlob": "3c1a4aa7ee68af30aaf23e5dfa97b146b0787162",
+      "baseGitBlob": "d9bdb8d18a22b4e5b62369fbe823b3802906c58b"
     },
     {
       "phase": "registration",
@@ -118,5 +122,20 @@
   "providerAdmission": "closed",
   "acpAdmission": "closed; accepted3cd84aec exact Rust sibling topology remains a separate host composition obligation",
   "qualificationMergeHolds": "both retained",
-  "laterAuthority": "after normal independent review, exact workflow application/registration/one-attempt grant; no route choice or manual manifest assembly needed"
+  "laterAuthority": "normal independent review, exact replacement workflow application/registration and a NEW one-attempt grant explicitly covering /opt; previous grant consumed; no dispatch now",
+  "workflowBase": {
+    "commit": "6122f196f7a9fdc7c4217fb7f13ef76d92fc7760",
+    "workflowId": 420660279,
+    "gitBlob": "d9bdb8d18a22b4e5b62369fbe823b3802906c58b",
+    "sha256": "7a19751473aff6b17051016d23513741f7e45e7ceef1dbc544177116517e8e18",
+    "proposalHead": "8090d8cb48c8751d4a5e5a7d87b4c6d9710ab71d"
+  },
+  "previousAttempt": {
+    "decision": "22344158-3de9-4952-915e-1762d8c41f21 v2",
+    "run": 43972504898,
+    "attempt": 1,
+    "consumed": true,
+    "conclusion": "failure before runtime entry; writable /opt; hostExit78/exportExit2",
+    "record": "docs/knowledge/operations/claude-agent-sdk-host-attempt.md"
+  }
 }

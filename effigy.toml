@@ -228,6 +228,7 @@ section = "Research Records"
 ]
 "validate:claude-agent-sdk-spawn-proposal" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py"
 "validate:claude-agent-sdk-runtime-factory" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py SpawnTests.test_source_bound_runtime_factory_reaches_real_prepared_and_sidecar_peers"
+"validate:claude-agent-sdk-spawn-edges" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py SpawnTests.test_captured_graph_denies_launch_and_dynamic_edges_before_effects"
 "validate:claude-agent-sdk-startup-lookup" = "python3 -B scripts/tests/claude-agent-sdk-startup-lookup.py"
 "check:claude-agent-sdk-startup-lookup" = [
   "python3 -c 'from pathlib import Path; n=\"scripts/tests/claude-agent-sdk-startup-lookup.py\"; compile(Path(n).read_bytes(), n, \"exec\")'",

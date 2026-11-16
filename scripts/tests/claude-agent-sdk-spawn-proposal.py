@@ -417,7 +417,9 @@ class SpawnTests(unittest.TestCase):
             self.assertIs(owner.driver, child)
             self.assertIsNone(child.poll())
             self.assert_retained(owner)
-            self.assertTrue(owner.thread.is_alive())
+            # Protocol refusal quiesces registration before stopping children;
+            # that endpoint join cannot release the still-live driver's capture.
+            self.assertFalse(owner.thread.is_alive())
         finally:
             if child is not None:
                 kill()

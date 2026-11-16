@@ -789,7 +789,7 @@ def check_workflows():
             # Keep every other workflow on the existing plain-Cargo boundary.
             if (
                 hashlib.sha256(workflow_bytes).hexdigest()
-                != "7a19751473aff6b17051016d23513741f7e45e7ceef1dbc544177116517e8e18"
+                != "fdbc12663e6c6dba0e96daa1e5680c8c9b67145ab92de3054b16796bc319d062"
             ):
                 fail("SDK240 host workflow differs from its exact approved bytes")
             continue

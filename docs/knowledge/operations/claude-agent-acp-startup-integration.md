@@ -79,7 +79,33 @@ by this integration.
 
 ## Covering checks
 
-Run the changed-input selectors through Effigy:
+The deterministic receipt verifier pins the reviewed receipt at5923c113 by
+SHA256, then independently hashes the accepted shared Git files, before-source
+Git files, all seven current sources, and both historical/current invocation and
+source-flow records. Exact JSON comparison also protects provenance metadata,
+lookup policy, history and closed gates, including missing/extra fields and
+boolean/number substitutions. The candidate receipt cannot select input paths
+or bless a changed source by changing its recorded hash. Missing local Git
+bindings refuse; verification performs no network fetch or package evaluation.
+
+Owned mutation tests cover each field and byte binding, coordinated source/hash
+drift, missing Git inputs, duplicate keys, invalid numbers and bounded regular
+files. This check detects source/receipt drift; it grants no runtime admission.
+
+For receipt-only changes, run these selectors plus Python format, routing, docs
+and retired-concept checks; preserve the unchanged Rust/owned-sibling proof:
+
+```sh
+effigy compile:acp-startup-integration
+effigy check:acp-startup-integration
+effigy validate:acp-startup-integration
+effigy check:python-format scripts/claude-acp-startup-integration.py scripts/tests/claude-acp-startup-integration.py
+effigy validate:oxide-routing
+effigy qa:docs
+effigy skill run northstar/retired-concepts
+```
+
+Changes to the Rust integration or owned sibling route additionally need:
 
 ```sh
 effigy format:package swallowtail-host-local swallowtail-adapter-claude-agent

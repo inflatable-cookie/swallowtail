@@ -190,6 +190,10 @@ section = "Research Records"
 "compile:acp-invocation" = "python3 -I -B scripts/tests/claude-acp-invocation.py --compile-only"
 "validate:acp-invocation" = "python3 -I -B scripts/tests/claude-acp-invocation.py"
 "format:acp-invocation" = "ruff format --no-cache -- scripts/claude-acp-invocation.py scripts/tests/claude-acp-invocation.py"
+"compile:acp-startup-integration" = "python3 -I -B scripts/tests/claude-acp-startup-integration.py --compile-only"
+"check:acp-startup-integration" = "python3 -I -B scripts/claude-acp-startup-integration.py {args}"
+"validate:acp-startup-integration" = "python3 -I -B scripts/tests/claude-acp-startup-integration.py"
+"format:acp-startup-integration" = "ruff format --no-cache -- scripts/claude-acp-startup-integration.py scripts/tests/claude-acp-startup-integration.py"
 "validate:acp-shared-software" = "bash scripts/run-claude-acp-shared-software.sh"
 "check:acp-shared-software" = [
   "bash -n scripts/run-claude-acp-shared-software.sh",

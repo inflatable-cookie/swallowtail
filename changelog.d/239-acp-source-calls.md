@@ -12,3 +12,5 @@
   strict refusals, user/managed denial and continued turns through actual Rust
   siblings, with real software waits and descriptor cleanup; keep original and
   kernel admission closed.
+- Verify the startup receipt's exact reviewed provenance, current source hashes
+  and closed policy with deterministic compile/check and owned mutation tests.

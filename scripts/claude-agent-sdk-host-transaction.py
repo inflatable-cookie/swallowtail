@@ -1,4 +1,4 @@
-"""Private five-ancestor administrative owner; live host use remains gated.
+"""Private six-ancestor administrative owner; live host use remains gated.
 
 Only owned temporary directories/processes exercise mutations in validation.
 No ordinary Inputs/Lease rule is changed and no installed helper is created.
@@ -14,11 +14,15 @@ import subprocess
 import time
 
 CANDIDATE = "/opt/hostedtoolcache/node/22.23.4/x64/bin/node"
-DIRECTORIES = tuple(
-    str(p)
-    for p in reversed(Path(CANDIDATE).parent.parents)
-    if str(p).startswith("/opt/hostedtoolcache")
-) + (str(Path(CANDIDATE).parent),)
+DIRECTORIES = (
+    ("/opt",)
+    + tuple(
+        str(p)
+        for p in reversed(Path(CANDIDATE).parent.parents)
+        if str(p).startswith("/opt/hostedtoolcache")
+    )
+    + (str(Path(CANDIDATE).parent),)
+)
 MAX_JOURNAL = 65536
 
 
@@ -189,6 +193,11 @@ class AdministrativeOwner:
                 mode = stat.S_IMODE(info.st_mode)
                 if not stat.S_ISDIR(info.st_mode) or info.st_uid not in (0, self.uid):
                     raise Refused("admin_ancestor_type_or_owner")
+                if name == "/opt" and (info.st_uid, info.st_gid) != (
+                    os.geteuid(),
+                    os.getegid(),
+                ):
+                    raise Refused("admin_opt_administrative_owner_required")
                 if name not in DIRECTORIES:
                     if info.st_mode & 0o022:
                         raise Refused("unrepairable_outer_ancestor:" + name)
@@ -202,7 +211,7 @@ class AdministrativeOwner:
                 tuple(row["name"] for row in self.rows if row["name"] in DIRECTORIES)
                 != DIRECTORIES
             ):
-                raise Refused("exact_five_ancestors_required")
+                raise Refused("exact_six_ancestors_required")
             self.state["phase"] = "prepared"
             self.store()
             self.check()
@@ -534,6 +543,11 @@ class AdministrativeOwner:
                 ):
                     raise Refused("admin_recovery_row_shape")
                 if record["name"] in DIRECTORIES:
+                    if record["name"] == "/opt" and original[2:4] != [
+                        os.geteuid(),
+                        os.getegid(),
+                    ]:
+                        raise Refused("admin_recovery_opt_owner")
                     if stat.S_IMODE(original[4]) not in (0o755, 0o777) or stat.S_IMODE(
                         current[4]
                     ) != (0o755 if record["changed"] else stat.S_IMODE(original[4])):

@@ -165,7 +165,6 @@ class PackageTests(unittest.TestCase):
             dir=os.environ["TMPDIR"], prefix="package-complete-"
         ) as temporary:
             root = Path(temporary).resolve()
-            (root / "opt").mkdir(mode=0o755)
             for name in A.DIRECTORIES:
                 actual = root / name.lstrip("/")
                 actual.mkdir(mode=0o777)
@@ -307,7 +306,6 @@ class PackageTests(unittest.TestCase):
             initial.close()
             (root / "lib64").mkdir(mode=0o700)
             (root / "lib64/ld-linux-x86-64.so.2").symlink_to("../lib/loader.so")
-            (root / "opt").mkdir(mode=0o755)
             for name in A.DIRECTORIES:
                 actual = root / name.lstrip("/")
                 actual.mkdir(mode=0o777)

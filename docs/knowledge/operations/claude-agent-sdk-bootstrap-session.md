@@ -1,6 +1,8 @@
 # SDK trusted-host bootstrap transaction
 
-Status: source/security proposal; no host activation.
+Status: revised source/security proposal; no further host activation. The
+[first host attempt](claude-agent-sdk-host-attempt.md) consumed its grant and
+refused writable `/opt` before candidate open.
 
 Tom's 2026-11-16 preserved T3-to-Paseo handoff keeps the SDK qualification
 obligation, inherited242f repair and original PR553 as history. The continuation
@@ -181,13 +183,15 @@ candidate or executing any candidate command. Leaf preparation cannot repair it.
 A narrowly scoped setup alternative must be reviewed before any repair attempt;
 no broad recursive cache chmod or weakened ancestry rule is authorized.
 
-### Five-ancestor administrative transaction
+### Six-ancestor administrative transaction
 
 Planner disposition030bc11f, recorded in version8, approves the exact five-object
 design for source/owned-fixture implementation and independent review. This
 supersedes the gate-only stop at a3941b5e. It grants no host mutation or activation.
-The administrative exception covers only the literal cache root, node,22.23.4,
-x64 and bin directories; `/` and `/opt` must already be safe. Only0777→0755 is
+After run43972504898 observed root-owned `/opt`0777, brief v11 permits the source
+and owned-fixture design to add exactly `/opt` to the literal cache root,
+node,22.23.4,x64 and bin directories. `/` stays already safe. `/opt` must belong
+to the administrative uid/gid. This is not another execution grant. Only0777→0755 is
 prepared;0755 is held unchanged. Every other mode/type/owner/alias refuses.
 Ordinary Inputs/Lease checks remain strict.
 
@@ -336,13 +340,19 @@ bounded source/package/receipt sizes. No phase budgets are summed into a larger
 allowance. A spent budget refuses further entry.
 
 The exact unapplied [host setup packet](claude-agent-sdk-host-setup.json) binds the
-executable source commit/record and workflow patch. Applying/registering that
+revised executable source commit/record and replacement workflow patch against
+the exact registered base blob. Applying/registering that
 workflow and its single attempt are separate reserved effects. Its only payload
 route is the three owned SDK cases; it installs/copies no runtime, runs no original
 or vendor package, and grants no ACP topology credit. Initial GitHub administration
 includes the service job/image identity, system Git/sudo/hash tools, the pinned
 checkout action and artifact uploader for bounded metadata export. Export contains only receipts and
-manifest metadata, not runtime bytes. The uploader's platform runtime supplies no
+manifest metadata, the bounded fixed refusal result, export stderr/status and
+missing-record names, not runtime bytes. A foreground producer/relay pipeline
+waits both export processes and preserves both statuses. Its tar reserve2031616,
+host output below16384, stderr at most16384 and status below1024 remain inside
+the existing2097152-byte metadata ceiling. Partial tar output remains failed
+evidence, never admission. The uploader's platform runtime supplies no
 SDK Node-axis qualification. Its registration receipt must bind the exact resulting
 workflow commit before a dispatch can be approved.
 

@@ -47,7 +47,6 @@ class CompositionTests(unittest.TestCase):
         self.scratch.mkdir(mode=0o700)
         self.admin_root = self.root / "receipts"
         self.admin_root.mkdir(mode=0o700)
-        (self.root / "opt").mkdir(mode=0o755)
         for name in A.DIRECTORIES:
             path = self.root / name.lstrip("/")
             path.mkdir(mode=0o777)
@@ -285,7 +284,6 @@ class PipelineTests(unittest.TestCase):
         self.root = Path(
             tempfile.mkdtemp(prefix="host-pipeline-", dir=os.environ["TMPDIR"])
         ).resolve()
-        (self.root / "opt").mkdir(mode=0o755)
         for name in A.DIRECTORIES:
             path = self.root / name.lstrip("/")
             path.mkdir(mode=0o777)
@@ -551,6 +549,125 @@ def stat_mode(path):
     return stat.S_IMODE(path.stat().st_mode)
 
 
+class MetadataTests(unittest.TestCase):
+    def exercise(self, kind):
+        import shlex
+
+        patch = (
+            ROOT / "docs/knowledge/operations/claude-agent-sdk-host-setup.patch"
+        ).read_text()
+        workflow = json.loads(
+            "\n".join(
+                row[1:]
+                for row in patch.splitlines()
+                if row.startswith("+") and not row.startswith("+++")
+            )
+        )
+        script = workflow["jobs"]["host"]["steps"][2]["run"]
+        script = script[script.index("# Metadata only:") :]
+        with tempfile.TemporaryDirectory(
+            prefix="metadata-owned-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            receipts = root / "receipts"
+            receipts.mkdir()
+            if kind != "absent":
+                (receipts / "admin.json").write_text('{"entryAttempted":false}')
+            if kind == "complete":
+                for name in ("monitor.json", "host-manifest.json"):
+                    (receipts / name).write_text("{}")
+            (root / "host-output.json").write_text(
+                '{"hostSessionRefused":"owned refusal"}'
+            )
+            # Same published shell pipeline and actual owned tar/cat, with only
+            # Linux privilege/limit/timeout launchers replaced by an owned limit shim.
+            shim = root / "limit.py"
+            shim.write_text(
+                "import os,resource,signal,sys\nlimit=int(sys.argv[1]);resource.setrlimit(resource.RLIMIT_FSIZE,(limit,limit))\nsignal.signal(signal.SIGPIPE,signal.SIG_DFL);signal.signal(signal.SIGXFSZ,signal.SIG_DFL)\nos.execv(sys.argv[2],sys.argv[2:])\n"
+            )
+            command = (
+                shlex.quote(sys.executable) + " -I -B -S " + shlex.quote(str(shim))
+            )
+            script = script.replace(
+                "/usr/bin/prlimit --fsize=16384 -- /usr/bin/timeout --signal=TERM --kill-after=2s 10s",
+                command + " 16384",
+            )
+            script = script.replace(
+                "/usr/bin/prlimit --fsize=2031616 --", command + " 2031616"
+            )
+            if kind in ("stdout", "stderr"):
+                flood = root / "flood.py"
+                fd = 1 if kind == "stdout" else 2
+                flood.write_text(
+                    f"import os\nfor i in range(1024): os.write({fd},b'x'*4096)\n"
+                )
+                script = script.replace(
+                    "/usr/bin/tar",
+                    shlex.quote(sys.executable)
+                    + " -I -B -S "
+                    + shlex.quote(str(flood)),
+                )
+            prelude = (
+                'set +e\nsudo() { shift; "$@"; }\nordinary_root='
+                + shlex.quote(str(root))
+                + "\nadmin_root="
+                + shlex.quote(str(receipts))
+                + "\nhost_exit=78\n"
+            )
+            result = subprocess.run(
+                [shutil.which("bash"), "--noprofile", "--norc", "-c", prelude + script],
+                capture_output=True,
+                timeout=10,
+            )
+            self.assertEqual(result.returncode, 78)
+            status = json.loads((root / "export-status.json").read_bytes())
+            self.assertEqual(status["hostExit"], 78)
+            self.assertFalse(status["qualified"])
+            self.assertLessEqual((root / "export.log").stat().st_size, 16384)
+            self.assertLessEqual((root / "evidence.tar").stat().st_size, 2031616)
+            total = sum(
+                (root / name).stat().st_size
+                for name in (
+                    "host-output.json",
+                    "export.log",
+                    "export-status.json",
+                    "evidence.tar",
+                )
+            )
+            self.assertLess(total, 2097152)
+            if kind in ("stdout", "stderr"):
+                self.assertNotEqual(status["metadataExportExit"], 0)
+            else:
+                import tarfile
+
+                with tarfile.open(root / "evidence.tar") as archive:
+                    self.assertEqual(
+                        sorted(archive.getnames()),
+                        sorted(p.name for p in receipts.iterdir()),
+                    )
+                self.assertEqual(
+                    status["missing"],
+                    [
+                        name
+                        for name in ("admin.json", "monitor.json", "host-manifest.json")
+                        if not (receipts / name).exists()
+                    ],
+                )
+                self.assertEqual(status["metadataExportExit"] == 0, kind == "complete")
+
+    def test_partial_absent_and_complete_exports_preserve_refusal_and_missing_facts(
+        self,
+    ):
+        for kind in ("partial", "absent", "complete"):
+            with self.subTest(kind=kind):
+                self.exercise(kind)
+
+    def test_export_stdout_and_stderr_remain_inside_existing_total_bound(self):
+        for kind in ("stdout", "stderr"):
+            with self.subTest(kind=kind):
+                self.exercise(kind)
+
+
 def check_packet():
     """Exact proposal bytes and bash syntax; never apply/register/run a job."""
     packet = json.loads(
@@ -607,8 +724,61 @@ def check_packet():
     expected = packet["uploader"]
     if job["steps"][-1]["uses"] != expected:
         raise AssertionError("immutable metadata uploader")
+    if job["steps"][-1]["with"]["path"] != "\n".join(
+        "${{ steps.prepare.outputs.evidence }}/" + name
+        for name in (
+            "evidence.tar",
+            "host-output.json",
+            "export.log",
+            "export-status.json",
+        )
+    ):
+        raise AssertionError("exact bounded failure metadata members")
     fixture = Path(tempfile.mkdtemp(prefix="host-packet-", dir=os.environ["TMPDIR"]))
     try:
+        base = packet["workflowBase"]
+        prior = subprocess.check_output(
+            [
+                "git",
+                "show",
+                base["proposalHead"] + ":" + packet["workflowPatch"]["path"],
+            ],
+            cwd=ROOT,
+        ).decode()
+        original = (
+            "\n".join(
+                row[1:]
+                for row in prior.splitlines()
+                if row.startswith("+") and not row.startswith("+++")
+            )
+            + "\n"
+        ).encode()
+        if (
+            H.sha(original) != base["sha256"]
+            or hashlib.sha1(
+                b"blob " + str(len(original)).encode() + b"\0" + original
+            ).hexdigest()
+            != base["gitBlob"]
+        ):
+            raise AssertionError("exact registered workflow base")
+        destination = fixture / packet["workflowPath"]
+        destination.parent.mkdir(parents=True)
+        destination.write_bytes(original)
+        for arguments in (["--check"], []):
+            subprocess.run(
+                [
+                    "git",
+                    "apply",
+                    *arguments,
+                    str((ROOT / packet["workflowPatch"]["path"]).resolve()),
+                ],
+                cwd=fixture,
+                check=True,
+                capture_output=True,
+                timeout=5,
+            )
+        if destination.read_bytes() != body.encode():
+            raise AssertionError("exact replacement workflow patch")
         for index, step in enumerate(job["steps"]):
             if "run" not in step:
                 continue

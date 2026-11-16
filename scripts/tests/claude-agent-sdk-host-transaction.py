@@ -25,6 +25,7 @@ def load(name):
 
 
 A = load("claude-agent-sdk-host-transaction")
+RETAINED = []
 
 
 class OwnedDirectScope:
@@ -50,7 +51,6 @@ class AdminTests(unittest.TestCase):
         root = Path(
             tempfile.mkdtemp(prefix="admin-owned-", dir=os.environ["TMPDIR"])
         ).resolve()
-        (root / "opt").mkdir(mode=0o755)
         for name in A.DIRECTORIES:
             (root / name.lstrip("/")).mkdir(mode=0o777)
         # mkdir respects parent umask; set only owned test paths explicitly.
@@ -87,6 +87,64 @@ class AdminTests(unittest.TestCase):
         effects = [name for phase, name in events if phase == "restore_after_effect"]
         self.assertEqual(effects, list(reversed(A.DIRECTORIES)))
         shutil.rmtree(root)
+
+    def test_actual_writable_opt_counterexample_is_the_only_added_object(self):
+        self.assertEqual(
+            A.DIRECTORIES,
+            (
+                "/opt",
+                "/opt/hostedtoolcache",
+                "/opt/hostedtoolcache/node",
+                "/opt/hostedtoolcache/node/22.23.4",
+                "/opt/hostedtoolcache/node/22.23.4/x64",
+                "/opt/hostedtoolcache/node/22.23.4/x64/bin",
+            ),
+        )
+        root, owner = self.fixture()
+        self.assertEqual((root / "opt").stat().st_mode & 0o7777, 0o777)
+        owner.prepare()
+        self.assertEqual((root / "opt").stat().st_mode & 0o7777, 0o755)
+        self.assertFalse(owner.state["entryAttempted"])
+        self.assertFalse((root / A.CANDIDATE.lstrip("/")).exists())
+        self.dispose(root, owner)
+
+    def test_opt_rejects_other_modes_alias_type_and_administrative_owner(self):
+        for failure in ("mode", "alias", "type", "uid", "gid"):
+            with self.subTest(failure=failure):
+                root, owner = self.fixture()
+                target = root / "opt"
+                if failure == "mode":
+                    target.chmod(0o775)
+                elif failure in ("alias", "type"):
+                    target.rename(root / "retained-opt")
+                    if failure == "alias":
+                        target.symlink_to(
+                            root / "retained-opt", target_is_directory=True
+                        )
+                    else:
+                        target.write_bytes(b"owned non-directory")
+                original = A.os.fstat
+
+                def observe(fd):
+                    info = original(fd)
+                    if (
+                        failure in ("uid", "gid")
+                        and info.st_ino == target.stat().st_ino
+                    ):
+                        values = list(info)
+                        values[4 if failure == "uid" else 5] += 999
+                        return os.stat_result(values)
+                    return info
+
+                with mock.patch.object(A.os, "fstat", side_effect=observe):
+                    with self.assertRaises(OSError):
+                        owner.prepare()
+                self.assertFalse(owner.state["entryAttempted"])
+                if failure in ("uid", "gid"):
+                    # An inconsistent captured identity cannot authorize cleanup.
+                    RETAINED.append(owner)
+                else:
+                    self.dispose(root, owner)
 
     def test_existing_safe_directory_is_never_changed_or_restored(self):
         root, owner = self.fixture()
@@ -165,7 +223,7 @@ class AdminTests(unittest.TestCase):
                     target.rmdir()
                     target.symlink_to(root / "opt", target_is_directory=True)
                 elif failure == "outer":
-                    (root / "opt").chmod(0o777)
+                    root.chmod(0o777)
                 if failure == "replacement":
                     owner.prepare()
                     target.rename(target.with_name("prior"))
@@ -183,7 +241,7 @@ class AdminTests(unittest.TestCase):
                     owner.prepare()
                 # Restore only known exact captured objects; never repair the refused path.
                 if failure == "outer":
-                    self.assertEqual((root / "opt").stat().st_mode & 0o777, 0o777)
+                    self.assertEqual(root.stat().st_mode & 0o777, 0o777)
                 self.dispose(root, owner)
 
     def test_ordinary_guard_remains_strict_before_and_after_administrative_scope(self):

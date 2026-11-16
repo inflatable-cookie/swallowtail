@@ -3,9 +3,11 @@
 Status: one authorized attempt consumed; host preparation refused before runtime
 entry. Both qualification merge holds and Q-009 remain open.
 
-This file owns actual attempt status. The [bootstrap contract](claude-agent-sdk-bootstrap-session.md),
-[setup packet](claude-agent-sdk-host-setup.json), patch and execution record retain
-their reviewed source-snapshot bytes; their proposal flags grant no further run.
+This file owns actual attempt status. The executed contract, packet and record
+remain frozen in the exact Git objects below. The current
+[bootstrap contract](claude-agent-sdk-bootstrap-session.md) and
+[future setup packet](claude-agent-sdk-host-setup.json) propose only the v11
+correction; their flags grant no further run.
 
 ## Authority and exact inputs
 
@@ -73,12 +75,13 @@ members; nothing was executed or extracted through archive paths.
 
 The selected image does not meet the already-safe `/opt` prerequisite. The
 five-directory grant expressly excludes `/opt`; no repair or retry was made.
-The smallest next disposition is a reviewed, separately authorized treatment of
-this one outer directory: provide it already safe under trusted provisioning,
-or approve its exact identity-held transition and checked reverse recovery.
-The existing source must continue refusing until that disposition is concrete.
-A future corrected packet also needs bounded export of the fixed refusal result
-and export diagnostics so an early refusal remains directly observable.
+Brief v11 now approves only source/owned-fixture preparation for this sixth
+literal object, with the same identity-held transition and reverse recovery;
+`/` remains permanently already safe and ordinary custody stays strict. The
+future packet also retains bounded refusal and export diagnostics, including
+available receipts and explicit missing names on a nonzero export.
+This correction requires independent review, exact workflow replacement and
+registration, and NEW authority explicitly covering `/opt` before any attempt.
 
 No candidate bytes/version/custody, package production, runtime observation,
 three-case fake result, kernel/canonical/native discovery, ACP sibling topology

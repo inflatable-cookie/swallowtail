@@ -2,6 +2,8 @@
   dynamic-code boundaries, with owned refusal fixtures and recoverable frozen
   source inputs.
 - Keep relocated v1 session-registry calls under the bounded ps policy.
+- Specify private caller-specific launch/pre-entry references and owned refusal
+  checks; keep unresolved real invocation and host bindings closed.
 - Record the SDK startup mismatch with the throwing builtin guard. Preserve the
   Paseo handoff's prior evidence, spent grants, closed original admission and
   0.100.0 qualification ceiling.

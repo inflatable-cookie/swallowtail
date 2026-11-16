@@ -184,6 +184,11 @@ section = "Research Records"
 "compile:acp-source-flow" = "python3 -I -B scripts/tests/claude-acp-source-flow.py --compile-only"
 "validate:acp-source-flow" = "python3 -I -B scripts/tests/claude-acp-source-flow.py"
 "format:acp-source-flow" = "ruff format --no-cache -- scripts/claude-acp-source-flow.py scripts/tests/claude-acp-source-flow.py"
+"build:acp-invocation" = "python3 -I -B scripts/claude-acp-invocation.py build {args}"
+"check:acp-invocation" = "python3 -I -B scripts/claude-acp-invocation.py verify {args}"
+"compile:acp-invocation" = "python3 -I -B scripts/tests/claude-acp-invocation.py --compile-only"
+"validate:acp-invocation" = "python3 -I -B scripts/tests/claude-acp-invocation.py"
+"format:acp-invocation" = "ruff format --no-cache -- scripts/claude-acp-invocation.py scripts/tests/claude-acp-invocation.py"
 "validate:acp-shared-software" = "bash scripts/run-claude-acp-shared-software.sh"
 "check:acp-shared-software" = [
   "bash -n scripts/run-claude-acp-shared-software.sh",

@@ -13,6 +13,11 @@ throwing bootstrap. Exact source evidence replaces the import-parent-only
 unknowns below; original admission remains closed. The frozen preparation record
 retains its original requirements scope.
 
+The [selected invocation contract](claude-agent-acp-invocation-contract.md) now
+specifies per-caller exact launch/entry references and owned refusal semantics.
+It keeps actual source resolution, host observations and original admission
+unfilled; matching synthetic metadata supplies none of them.
+
 The [exact preparation record](claude-agent-acp-admission-record.json) binds
 retained graph/artifact identities, selected execution-import parents, dynamic
 source cautions and native identities for all eight hops. It adds a bounded

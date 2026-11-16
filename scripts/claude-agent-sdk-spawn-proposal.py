@@ -1428,7 +1428,14 @@ def rehearsal(
                 "events": events,
                 "registered": registered,
                 "launchObligation": resources.launch,
-                "payloadEffectObserved": (root / "native-payload-effect").exists(),
+                "payloadEffectObserved": (
+                    (
+                        (root / "storage.bin").exists()
+                        and (root / "storage.bin").stat().st_size > 0
+                    )
+                    if context is not None
+                    else (root / "native-payload-effect").exists()
+                ),
                 "nativeWaits": native_waits,
                 "actorGraph": registry.actors,
                 "actorWaits": [
@@ -1476,7 +1483,14 @@ def rehearsal(
                 "events": events,
                 "registered": registered,
                 "launchObligation": resources.launch,
-                "payloadEffectObserved": (root / "native-payload-effect").exists(),
+                "payloadEffectObserved": (
+                    (
+                        (root / "storage.bin").exists()
+                        and (root / "storage.bin").stat().st_size > 0
+                    )
+                    if context is not None
+                    else (root / "native-payload-effect").exists()
+                ),
                 "fullKernelTreeSettlement": False,
             }
         finally:

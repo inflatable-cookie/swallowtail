@@ -71,6 +71,8 @@ class GuestObserver:
         self.command = None
         self.pending = False
         self.settled = False
+        self.identity = None
+        self.members = {}
 
     def prepare(self, command, kwargs, bootstrap):
         if self.pending or self.child is not None or bootstrap is None:
@@ -82,6 +84,11 @@ class GuestObserver:
         self.root = Path(
             tempfile.mkdtemp(prefix="sdk-host-observer-", dir=os.environ["TMPDIR"])
         )
+        self.identity = (
+            self.root.stat().st_dev,
+            self.root.stat().st_ino,
+            self.root.stat().st_uid,
+        )
         for source, name in (
             (ENTRY, "entry.py"),
             (POLICY, "policy.py"),
@@ -90,6 +97,7 @@ class GuestObserver:
             target = self.root / name
             target.write_bytes(self.files[source])
             target.chmod(0o600)
+            self.members[name] = sha(self.files[source])
             bootstrap.bind(target, sha(self.files[source]))
         self.read, self.write = os.pipe()
         for fd in (self.read, self.write):
@@ -106,6 +114,8 @@ class GuestObserver:
         file = self.root / "config.json"
         file.write_bytes(data)
         file.chmod(0o600)
+        self.members[file.name] = sha(data)
+        self.bootstrap = bootstrap
         bootstrap.bind(file, sha(data))
         bootstrap.check()
         self.command = [
@@ -157,6 +167,38 @@ class GuestObserver:
         self.settled = True
         # Derived files remain bound in the runtime capture through its fake
         # case. Only the outer transaction may close/unlink after root's ack.
+
+    def release(self):
+        if (
+            not self.settled
+            or not self.bootstrap.closed
+            or self.read is not None
+            or self.write is not None
+        ):
+            raise OSError("observer_case_capture_or_wait_still_live")
+        info = self.root.lstat()
+        if (
+            self.root.resolve(strict=True) != self.root
+            or (info.st_dev, info.st_ino, info.st_uid) != self.identity
+            or stat.S_IMODE(info.st_mode) != 0o700
+            or set(os.listdir(self.root)) != set(self.members)
+        ):
+            raise OSError("observer_fixture_cleanup_identity")
+        for name, expected in self.members.items():
+            file = self.root / name
+            info = file.lstat()
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or info.st_uid != os.getuid()
+                or info.st_nlink != 1
+                or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_size > 65536
+                or sha(file.read_bytes()) != expected
+            ):
+                raise OSError("observer_fixture_cleanup_bytes_or_alias")
+        import shutil
+
+        shutil.rmtree(self.root)
 
 
 class RootObserver:

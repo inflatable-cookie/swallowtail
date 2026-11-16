@@ -1024,7 +1024,14 @@ class Monitor:
             row = self.trace.wait()
             if row is None:
                 return
-            handled = self.gate.process(row) if self.gate else False
+            try:
+                handled = self.gate.process(row) if self.gate else False
+            except (OSError, ValueError) as error:
+                refused = getattr(self, "trace_refused", None)
+                if refused is None:
+                    raise
+                refused(row, error)
+                handled = True
             if not handled:
                 if not (os.WIFEXITED(row["status"]) or os.WIFSIGNALED(row["status"])):
                     raise Refused(errno.EPERM, "unexpected_untraced_stop")

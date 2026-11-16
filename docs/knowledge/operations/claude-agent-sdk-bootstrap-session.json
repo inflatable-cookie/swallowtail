@@ -47,7 +47,7 @@
   "qualificationMergeHoldRequired": true,
   "independentPrerequisite": "Planner disposition030bc11f resolves the five-ancestor source/fake contract. The administrative owner prepares only those exact objects before candidate bytes, retains descriptors/journals and requires real settlement before reverse restore. Ordinary Inputs/Lease remain strict. Root image/loader/tool trust and the complete bounded producer are source-owned; actual host/kernel/runtime/workflow activation remains gated.",
   "provisionerHandoff": {
-    "status": "v8 source/owned-fixture implementation: producer, descriptor transfer, observer barrier/live-trace settlement and staged-cleanup acknowledgement components available; three-case root adapter/job packet pending",
+    "status": "Concrete source composition implemented; exact unapplied host-setup packet supplied separately; independent review and each activation authority remain required",
     "accountableOwner": "Tom resource owner; task240 source producer; exact administrative workflow/job identity required before activation",
     "recommended": "GitHub Linux VM route selected by decision0dfce67e-1c14-427e-be51-365db853eb87 v2",
     "alternative": null,
@@ -80,7 +80,9 @@
     "recoveryOwner": "Named custodian retains unresolved receipts/fixtures; recover-only cannot accept a missing or invented wait",
     "acpRequirement": "239 actual Rust group-leader/ACP siblings and native child must compose inside the finite host/kernel boundary; SDK stand-in supplies no topology proof",
     "producerProfile": "docs/knowledge/operations/claude-agent-sdk-host-package.json",
-    "stillRequired": "Three-case existing-kernel monitor adapter including runtime observation, exact unapplied setup/registration/one-attempt packet and independent review; no host/runtime attempt granted"
+    "stillRequired": "Independent source/security acceptance and exact setup/application/registration/one-attempt authority. Real host admission, actual ACP Rust sibling host composition and original/native qualification remain separate proof gates.",
+    "activationPacket": "docs/knowledge/operations/claude-agent-sdk-host-setup.json",
+    "threeCaseSource": "scripts/claude-agent-sdk-host-session.py"
   },
   "acpCandidateHandoff": {
     "source": "3cd84aec7a4a1742d6a08966969af11a4b061086",

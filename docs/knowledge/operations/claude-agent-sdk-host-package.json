@@ -41,14 +41,14 @@
     "supersededBy": "Planner disposition030bc11f / brief v8 approves exact five-ancestor source/fake implementation; ordinary custody unchanged; no host activation"
   },
   "admissionSource": "scripts/claude-agent-sdk-host-admission.py",
-  "producerState": "Five-ancestor owner, bounded loader/Python producer and ordinary read-only manifest-descriptor bridge implemented in private source. Live monitor ownership/retention seams are prepared; the three-case kernel adapter and exact activation packet are not yet supplied. No actual host package or activation claimed.",
+  "producerState": "Image-specific producer, five-ancestor administrative owner, read-only manifest transfer and three-case existing-kernel adapter implemented in source. The exact unapplied setup packet requires independent review and separate activation authority. No actual host package or qualification credit.",
   "unappliedAlternative": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-ancestor-alternative.patch",
     "sha256": "17fcd226ef7a55d1cd4db6914a1e3fcf0c423d8eb948911cc8ad8d4a9091c936",
     "scope": "five fixed ancestors only; same live owner through later permission/runtime/fakes/actual waits/checked restore; no mutation now"
   },
-  "activationPacket": null,
-  "activationPacketReason": "Source implementation proceeds under v8; exact source-immutable job/ordinary invocation integration and independent review are still required before any activation.",
+  "activationPacket": "docs/knowledge/operations/claude-agent-sdk-host-setup.json",
+  "activationPacketReason": "Unapplied proposal only; its exact immutable source/patch bindings and reserved application/registration/one-attempt steps are reviewed separately from activation.",
   "runtimeExecuted": false,
   "hostPackageProduced": false,
   "activationAuthorized": false,
@@ -57,5 +57,7 @@
   "producerSource": "scripts/claude-agent-sdk-host-package.py",
   "sourceImplementationApproved": true,
   "observerBridgeSource": "scripts/claude-agent-sdk-host-observer.py",
-  "observerEntrySource": "scripts/claude-agent-sdk-observer-entry.py"
+  "observerEntrySource": "scripts/claude-agent-sdk-observer-entry.py",
+  "compositionSource": "scripts/claude-agent-sdk-host-session.py",
+  "selectedPackageProvenance": "Selected system files only: safe system aliases, exact dpkg ownership, held package checksum records, matching installed bytes and package/source version rows. Root image/admin remains the trust anchor; MD5 metadata is not runtime authority."
 }

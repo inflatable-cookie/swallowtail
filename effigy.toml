@@ -203,10 +203,16 @@ section = "Research Records"
   "python3 -B scripts/tests/claude-agent-sdk-probe-custody.py",
   "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py",
 ]
+"check:claude-agent-sdk-host-setup" = "python3 -B scripts/tests/claude-agent-sdk-host-session.py --check-packet"
+"validate:claude-agent-sdk-host-session" = "python3 -B scripts/tests/claude-agent-sdk-host-session.py"
+"check:claude-agent-sdk-host-session" = "python3 -c 'from pathlib import Path; [compile(Path(n).read_bytes(), n, \"exec\") for n in (\"scripts/claude-agent-sdk-host-session.py\", \"scripts/tests/claude-agent-sdk-host-session.py\")]'"
+"check:format:claude-agent-sdk-host-session" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-host-session.py scripts/tests/claude-agent-sdk-host-session.py"
+"format:claude-agent-sdk-host-session" = "ruff format --no-cache scripts/claude-agent-sdk-host-session.py scripts/tests/claude-agent-sdk-host-session.py"
 "validate:claude-agent-sdk-host-observer" = "python3 -B scripts/tests/claude-agent-sdk-host-observer.py"
 "check:claude-agent-sdk-host-observer" = "python3 -c 'from pathlib import Path; [compile(Path(n).read_bytes(), n, \"exec\") for n in (\"scripts/claude-agent-sdk-host-observer.py\", \"scripts/claude-agent-sdk-observer-entry.py\", \"scripts/tests/claude-agent-sdk-host-observer.py\")]'"
 "check:format:claude-agent-sdk-host-observer" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-host-observer.py scripts/claude-agent-sdk-observer-entry.py scripts/tests/claude-agent-sdk-host-observer.py"
 "format:claude-agent-sdk-host-observer" = "ruff format --no-cache scripts/claude-agent-sdk-host-observer.py scripts/claude-agent-sdk-observer-entry.py scripts/tests/claude-agent-sdk-host-observer.py"
+"validate:claude-agent-sdk-host-package" = "python3 -B scripts/tests/claude-agent-sdk-host-package.py"
 "validate:claude-agent-sdk-host-producer" = [
   "python3 -B scripts/tests/claude-agent-sdk-host-transaction.py",
   "python3 -B scripts/tests/claude-agent-sdk-host-package.py",

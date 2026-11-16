@@ -2,7 +2,8 @@
 import { readFileSync, writeFileSync, statSync } from "node:fs";
 import http from "node:http";
 const config = JSON.parse(readFileSync(new URL("./spawn-config.json", import.meta.url)));
-writeFileSync(new URL("./native-payload-effect", import.meta.url), "entered\n");
+const effectFile = config.kernelPolicy ? "./storage.bin" : "./native-payload-effect";
+writeFileSync(new URL(effectFile, import.meta.url), "entered\n");
 async function post(route, value) {
   const data = JSON.stringify(value);
   return new Promise((resolve, reject) => {

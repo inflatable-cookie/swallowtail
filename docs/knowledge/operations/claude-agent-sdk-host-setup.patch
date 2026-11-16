@@ -1,5 +1,5 @@
 diff --git a/.github/workflows/sdk240-host-setup.yml b/.github/workflows/sdk240-host-setup.yml
-index d9bdb8d18a22b4e5b62369fbe823b3802906c58b..3c1a4aa7ee68af30aaf23e5dfa97b146b0787162 100644
+index d9bdb8d18a22b4e5b62369fbe823b3802906c58b..f70e059842970a98684f4983790a54bf99e84d7b 100644
 --- a/.github/workflows/sdk240-host-setup.yml
 +++ b/.github/workflows/sdk240-host-setup.yml
 @@ -1,55 +1,55 @@
@@ -75,8 +75,8 @@ index d9bdb8d18a22b4e5b62369fbe823b3802906c58b..3c1a4aa7ee68af30aaf23e5dfa97b146
 +      "runs-on": "ubuntu-26.04",
 +      "timeout-minutes": 2,
 +      "env": {
-+        "SDK240_SOURCE": "8685fa3b61e20fbe2297eb56632d57fd8cff45d2",
-+        "SDK240_RECORD": "39a8775a2592bfb69e7b405f9f8e277ef3b23c02bbe53177b1fc5bf62c7185f8",
++        "SDK240_SOURCE": "1cf5e99f6a4bf741f46f135daadb9fb0df42a801",
++        "SDK240_RECORD": "22a325e7d9bf1a19809c7603eba967c9ff3138d359322ca6fae14623b3a9b4a2",
 +        "SDK240_BOOTSTRAP": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605"
 +      },
 +      "steps": [
@@ -88,7 +88,7 @@ index d9bdb8d18a22b4e5b62369fbe823b3802906c58b..3c1a4aa7ee68af30aaf23e5dfa97b146
 +        {
 +          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
 +          "with": {
-+            "ref": "8685fa3b61e20fbe2297eb56632d57fd8cff45d2",
++            "ref": "1cf5e99f6a4bf741f46f135daadb9fb0df42a801",
 +            "persist-credentials": false
 +          }
 +        },

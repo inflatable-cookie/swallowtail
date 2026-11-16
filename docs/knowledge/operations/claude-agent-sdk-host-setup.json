@@ -2,18 +2,18 @@
   "schema": "swallowtail.sdk240.exact-host-setup-proposal.v1",
   "activationAuthorized": false,
   "qualified": false,
-  "sourceCommit": "8685fa3b61e20fbe2297eb56632d57fd8cff45d2",
+  "sourceCommit": "1cf5e99f6a4bf741f46f135daadb9fb0df42a801",
   "sourceRecord": {
     "path": "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256",
-    "sha256": "39a8775a2592bfb69e7b405f9f8e277ef3b23c02bbe53177b1fc5bf62c7185f8"
+    "sha256": "22a325e7d9bf1a19809c7603eba967c9ff3138d359322ca6fae14623b3a9b4a2"
   },
   "workflowPatch": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-setup.patch",
-    "sha256": "33766f5ee89f35667ae21d001208ef5bdbd2224d03680450d14b6a613528c748"
+    "sha256": "91b8495a529f3988816eaf13115c358521b34642f88736ae3625fc6338bc213c"
   },
   "workflowPath": ".github/workflows/sdk240-host-setup.yml",
-  "workflowBlobSha256": "197e8c06aca59c0eea984ba615fa113bc5f6704fdddec82e6f3b47e3d6338fab",
-  "workflowGitBlob": "3c1a4aa7ee68af30aaf23e5dfa97b146b0787162",
+  "workflowBlobSha256": "141109e756191e4e7784b1d407e34e657e094d0d5bffcf24de8da6205c525105",
+  "workflowGitBlob": "f70e059842970a98684f4983790a54bf99e84d7b",
   "bootstrapSha256": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605",
   "checkout": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
   "uploader": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
@@ -74,7 +74,7 @@
       "authorityRequired": true,
       "operation": "replace only the exact registered base workflow blob after independent source/security acceptance; refuse a changed base or unrelated workflow diff",
       "path": ".github/workflows/sdk240-host-setup.yml",
-      "gitBlob": "3c1a4aa7ee68af30aaf23e5dfa97b146b0787162",
+      "gitBlob": "f70e059842970a98684f4983790a54bf99e84d7b",
       "baseGitBlob": "d9bdb8d18a22b4e5b62369fbe823b3802906c58b"
     },
     {

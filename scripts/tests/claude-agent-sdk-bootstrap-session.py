@@ -499,6 +499,162 @@ class HostInputTests(unittest.TestCase):
 
 
 class SourcePacketTests(unittest.TestCase):
+    def test_readonly_combined_capture_enforces_limit_and_refuses_saturation(self):
+        document = (
+            ROOT / "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.md"
+        ).read_text()
+        command = re.findall(r"```sh\n(.*?)\n```", document, re.S)[1]
+        # Exercise the actual published acceptance expression, not a Python copy.
+        accept = command[command.index("verifier_exit=$?") :].rsplit("\n)", 1)[0]
+        cases = {
+            "below": ("os.write(1,b'a'*8000);os.write(2,b'b'*8000)", True),
+            "exact": ("os.write(1,b'x'*16384)", False),
+            "stdout": ("os.write(1,b'x'*32768)", False),
+            "stderr": ("os.write(2,b'x'*32768)", False),
+            "combined": ("os.write(1,b'a'*10000);os.write(2,b'b'*10000)", False),
+            "flood": ("while True: os.write(1,b'x'*4096)", False),
+            "traceback": ("raise RuntimeError('x'*65536)", False),
+        }
+        for name, (body, success) in cases.items():
+            with self.subTest(name=name):
+                # Real owned Python child; no Linux prlimit/timeout or host proof.
+                root = Path(
+                    tempfile.mkdtemp(prefix="readonly-cap-", dir=os.environ["TMPDIR"])
+                )
+                output = root / "host-verifier.log"
+                peer = root / "peer.py"
+                peer.write_text(
+                    "import os,resource\n"
+                    "assert resource.getrlimit(resource.RLIMIT_FSIZE)==(16384,16384)\n"
+                    + body
+                    + "\n"
+                )
+                child = None
+                waited = False
+                try:
+                    # This owned launcher models prlimit's inherited POSIX limit.
+                    launcher = (
+                        "import os,resource,sys;"
+                        "resource.setrlimit(resource.RLIMIT_FSIZE,(16384,16384));"
+                        "os.execv(sys.executable,[sys.executable,'-I','-B','-S',sys.argv[1]])"
+                    )
+                    with os.fdopen(
+                        os.open(output, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600),
+                        "wb",
+                        buffering=0,
+                    ) as stream:
+                        child = subprocess.Popen(
+                            [
+                                sys.executable,
+                                "-I",
+                                "-B",
+                                "-S",
+                                "-c",
+                                launcher,
+                                str(peer),
+                            ],
+                            cwd=root,
+                            env={"PATH": "/usr/bin:/bin", "TMPDIR": str(root)},
+                            stdout=stream,
+                            stderr=subprocess.STDOUT,
+                        )
+                        code = child.wait(timeout=5)
+                        waited = True
+                    data = output.read_bytes()
+                    self.assertLessEqual(len(data), 16384)
+                    if name == "below":
+                        self.assertEqual(data, b"a" * 8000 + b"b" * 8000)
+                    else:
+                        self.assertEqual(len(data), 16384)
+                    if name in ("exact", "stdout", "stderr", "combined"):
+                        self.assertEqual(code, 0)  # saturation alone must refuse
+                    checked = subprocess.run(
+                        [
+                            shutil.which("bash"),
+                            "--noprofile",
+                            "--norc",
+                            "-c",
+                            '(exit "$owned_exit");\n' + accept,
+                        ],
+                        env={
+                            "PATH": "/usr/bin:/bin",
+                            "owned_exit": str(code),
+                            "read_only_output": str(output),
+                            "TMPDIR": str(root),
+                        },
+                        capture_output=True,
+                        timeout=5,
+                    )
+                    self.assertEqual(checked.returncode == 0, success)
+                finally:
+                    if child is not None and not waited:
+                        if child.poll() is None:
+                            child.kill()
+                        child.wait(timeout=2)
+                        waited = True
+                    if child is None or waited:
+                        shutil.rmtree(root)
+
+    def test_readonly_capture_noclobber_refuses_before_owned_effect(self):
+        document = (
+            ROOT / "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.md"
+        ).read_text()
+        command = re.findall(r"```sh\n(.*?)\n```", document, re.S)[1]
+        prefix = command.split("env -i", 1)[0]
+        for kind in ("regular", "dangling-link", "fifo"):
+            with self.subTest(kind=kind):
+                with tempfile.TemporaryDirectory(
+                    prefix="readonly-noclobber-", dir=os.environ["TMPDIR"]
+                ) as temporary:
+                    root = Path(temporary)
+                    output = root / "host-verifier.log"
+                    if kind == "regular":
+                        output.write_bytes(b"retained prior receipt")
+                    elif kind == "dangling-link":
+                        output.symlink_to(root / "absent-owned-target")
+                    else:
+                        os.mkfifo(output, 0o600)
+                    before = output.lstat()
+                    checked = subprocess.run(
+                        [
+                            shutil.which("bash"),
+                            "--noprofile",
+                            "--norc",
+                            "-c",
+                            prefix
+                            + '{ printf started > "$receipt_root/effect"; } > "$read_only_output" 2>&1\n)',
+                        ],
+                        env={
+                            "PATH": "/usr/bin:/bin",
+                            "receipt_root": str(root),
+                            "TMPDIR": str(root),
+                        },
+                        capture_output=True,
+                        timeout=5,
+                    )
+                    self.assertNotEqual(checked.returncode, 0)
+                    self.assertEqual(
+                        (
+                            output.lstat().st_dev,
+                            output.lstat().st_ino,
+                            output.lstat().st_mode,
+                            output.lstat().st_size,
+                            output.lstat().st_mtime_ns,
+                            output.lstat().st_ctime_ns,
+                        ),
+                        (
+                            before.st_dev,
+                            before.st_ino,
+                            before.st_mode,
+                            before.st_size,
+                            before.st_mtime_ns,
+                            before.st_ctime_ns,
+                        ),
+                    )
+                    if kind == "regular":
+                        self.assertEqual(output.read_bytes(), b"retained prior receipt")
+                    self.assertFalse((root / "effect").exists())
+
     def test_provisioner_commands_compile_without_host_execution(self):
         # Syntax/source consistency only; supplies no manifest or host authority.
         sources = S.source_packet(S.RECORD, sha(S.RECORD))
@@ -521,7 +677,7 @@ class SourcePacketTests(unittest.TestCase):
                 },
             )
             self.assertEqual(checked.returncode, 0, checked.stderr)
-        embedded = re.findall(r"<<'PY'\n(.*?)\nPY", document, re.S)
+        embedded = re.findall(r"<<'PY'[^\n]*\n(.*?)\nPY", document, re.S)
         self.assertEqual(len(embedded), 1)
         compile(embedded[0], name + ":read-only-verifier", "exec")
 

@@ -24,3 +24,7 @@ stop/wait, and refuse late SDK spawns once parent shutdown starts.
 Specify the custodian/provider handoff, independent pre-entry policy/artifact
 obligations, bounded read-only verification and receipt recovery ownership.
 No provisioned host, manifest or activation authority is claimed.
+
+Enforce the read-only verifier output cap with an inherited hard file-size limit,
+combined exclusive capture and saturation refusal. Retain the exact review-pending
+ACP sibling integration handoff without granting consumption or activation.

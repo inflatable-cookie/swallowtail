@@ -60,7 +60,8 @@
       "host-manifest.json and independent manifest/policy SHA-256 values",
       "exact checkout/source record and independent source-record digest",
       "existing private 0700 ordinary-uid receipt allocation",
-      "already provisioned finite kernel composition and exact parent/adoptee wait owner"
+      "already provisioned finite kernel composition and exact parent/adoptee wait owner",
+      "approved pre-entry prlimit/timeout/shell/wc bytes and closure; no installation authorized"
     ],
     "producerAvailable": false,
     "manifestAvailable": false,
@@ -70,10 +71,32 @@
       "seconds": 20,
       "killGraceSeconds": 2,
       "manifestBytes": 1048576,
-      "outputBytes": 16384
+      "outputBytes": 16384,
+      "mechanism": "independently bound existing prlimit sets inherited soft/hard RLIMIT_FSIZE=16384 before timeout/Python; exclusive regular file combines stdout/stderr",
+      "saturatedFileRefusesEvenIfExitZero": true,
+      "existingOutputRefusesBeforeStart": true
     },
     "nextAuthority": "Separate exact host/source/manifest/policy/permission/same-invocation runtime/owned-fake/restore grant after actual prerequisites and review; all activation closed now",
     "recoveryOwner": "Named custodian retains unresolved receipts/fixtures; recover-only cannot accept a missing or invented wait",
     "acpRequirement": "239 actual Rust group-leader/ACP siblings and native child must compose inside the finite host/kernel boundary; SDK stand-in supplies no topology proof"
+  },
+  "acpCandidateHandoff": {
+    "source": "5923c113c9e4ee4be42c3345148b212b1d8733cf",
+    "pr": 558,
+    "status": "candidate submitted for independent review; not accepted consumption or host input",
+    "receipt": {
+      "path": "docs/knowledge/operations/claude-agent-acp-startup-integration.json",
+      "bytes": 3541,
+      "sha256": "38eac917e03e8b0888767e5edc9005e44f0647188d8deba0c9d56ce426411634"
+    },
+    "explanation": {
+      "path": "docs/knowledge/operations/claude-agent-acp-startup-integration.md",
+      "bytes": 5646,
+      "sha256": "96faa926e2a1ca8f02494816132a16e975a1d012439b55c6a94a367dfe6de4c5"
+    },
+    "topology": "Rust parents sleep group owner and checked ACP as siblings; ACP joins sleep group and parents native entry",
+    "remaining": "Bind exact prefix/entry/FD/runtime before release; software waits and descriptor EOF do not prove kernel/adoptee/tree settlement; original option tails/callsite/Python/non-system-runtime/opaque-native/combined fixtures remain gates",
+    "consumptionAuthorized": false,
+    "activationAuthorized": false
   }
 }

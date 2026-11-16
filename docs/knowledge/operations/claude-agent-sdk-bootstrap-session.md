@@ -213,8 +213,15 @@ bound ordinary uid with its already-approved initial Python, use the existing
 source packet and reader in this bounded read-only invocation:
 
 ```sh
-env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C HOME="$receipt_root" TMPDIR="$receipt_root" TMP="$receipt_root" TEMP="$receipt_root" /usr/bin/timeout --signal=TERM --kill-after=2s 20s /usr/bin/python3 -I -B -S - "$host_manifest" "$host_manifest_sha256" "$source_record_sha256" <<'PY'
-import hashlib, json, runpy, sys
+(
+set +e
+set -C
+umask 077
+read_only_output="$receipt_root/host-verifier.log"
+if [ -e "$read_only_output" ] || [ -L "$read_only_output" ]; then exit 1; fi
+env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C HOME="$receipt_root" TMPDIR="$receipt_root" TMP="$receipt_root" TEMP="$receipt_root" /usr/bin/prlimit --fsize=16384:16384 -- /usr/bin/timeout --signal=TERM --kill-after=2s 20s /usr/bin/python3 -I -B -S - "$host_manifest" "$host_manifest_sha256" "$source_record_sha256" <<'PY' >"$read_only_output" 2>&1
+import hashlib, json, resource, runpy, sys
+assert resource.getrlimit(resource.RLIMIT_FSIZE) == (16384, 16384)
 s = runpy.run_path("scripts/claude-agent-sdk-bootstrap-session.py")
 sources = s["source_packet"](s["RECORD"], sys.argv[3])
 with open(sys.argv[1], "rb") as stream:
@@ -236,15 +243,34 @@ try:
 finally:
     h.close()
 PY
+verifier_exit=$?
+[ "$verifier_exit" -eq 0 ] && [ "$(/usr/bin/wc -c < "$read_only_output")" -lt 16384 ]
+)
 ```
 
+The already-installed, independently bound `prlimit`, `timeout`, shell and `wc`
+are additional custodian bootstrap inputs. The [util-linux resource limiter](https://man7.org/linux/man-pages/man1/prlimit.1.html)
+sets both soft and hard RLIMIT_FSIZE to16384 bytes before timeout and Python
+entry. Stdout and stderr share one exclusively created regular output file, so
+the kernel bounds their combined captured bytes, including interpreter failures.
+The verifier reads back both limits before input inspection. A full16KiB file
+refuses even if a partial write or caught EFBIG lets the child exit0; truncation
+is never accepted as success. An explicit existing-path/symlink check refuses any prior output, including a
+FIFO or dangling link; noclobber additionally guards regular-file creation. The
+custodian keeps the private allocation quiescent, and umask077 creates0600
+capture without starting the verifier against any existing output. The custodian records the actual command/wait status and
+retains the file on every failure; it does not append diagnostics past its cap.
+
 This performs no permission transition, candidate execution or rehearsal. One
-read-only attempt is20s plus2s kill grace, at most1MiB manifest and16KiB recorded
-output. Retain failures; no automatic retry/install/repair. Its output checks the
+read-only attempt is20s plus2s kill grace, at most1MiB manifest and16KiB combined
+captured verifier output. Retain failures; no automatic retry/install/repair. Its output checks the
 custodian's inputs, never their authority. The primary invocation must reacquire
 and hold its own live descriptors; this check cannot stand in for custody.
 Source-only checks must compile this embedded Python and validate the surrounding
-shell syntax without executing either command on a host.
+shell syntax without executing either command on a host. Owned child fixtures
+exercise the inherited file-size limit, combined stdout/stderr saturation and
+existing-file refusal. They model the limiter with Python resource.setrlimit;
+they do not prove the future Linux prlimit binary, timeout or host admission.
 
 ## Exact proposed host and command
 
@@ -308,6 +334,25 @@ authorized here. `originalCommand` and original admission stay closed.
 The [selected SDK startup absence probe](claude-agent-sdk-startup-lookup.md)
 owns the source-discovered optional-builtin incompatibility and the exact shared
 ACP migration candidate. It supplies no host or original-runtime authority.
+
+## Pending ACP integration input
+
+Version5 retains PR558 candidate source
+`5923c113c9e4ee4be42c3345148b212b1d8733cf`, submitted to its own independent
+review, not yet an accepted host/migration input. At that exact commit,
+`docs/knowledge/operations/claude-agent-acp-startup-integration.json` is3541 bytes,
+SHA-256 `38eac917e03e8b0888767e5edc9005e44f0647188d8deba0c9d56ce426411634`;
+its `.md` explanation is5646 bytes, SHA-256
+`96faa926e2a1ca8f02494816132a16e975a1d012439b55c6a94a367dfe6de4c5`.
+Read exact Rust prefix/recipe, ACP loader/shim and FD/runtime identities from
+that receipt after independent acceptance; short labels and historical
+fingerprints are not bindings. The real Rust parent owns the sleep group leader
+and checked ACP as siblings; ACP joins sleep's group and parents native entry.
+Software waits/descriptor EOF remain separate from kernel/adoptee/tree waits.
+Original option tails/callsite provenance, selected Python/non-system runtime/
+opaque-native closure and original-compatible combined fixtures still refuse.
+No counterpart worktree change, consumption, activation or qualification credit
+is granted. The resource-owner question and all host/kernel/workflow holds remain.
 
 ## Covering proof
 

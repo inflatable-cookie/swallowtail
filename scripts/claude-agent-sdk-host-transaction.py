@@ -69,7 +69,7 @@ class AdministrativeOwner:
         if (
             not stat.S_ISDIR(st.st_mode)
             or st.st_mode & 0o022
-            or st.st_uid not in (0, uid)
+            or st.st_uid != os.geteuid()
         ):
             raise Refused("admin_private_journal_parent")
         try:
@@ -408,7 +408,7 @@ class AdministrativeOwner:
             if (
                 not stat.S_ISREG(st.st_mode)
                 or stat.S_IMODE(st.st_mode) != 0o600
-                or st.st_uid not in (0, uid)
+                or st.st_uid != os.geteuid()
                 or st.st_size > MAX_JOURNAL
             ):
                 raise Refused("admin_recovery_journal_identity")
@@ -442,6 +442,9 @@ class AdministrativeOwner:
             owner.parent_fd = os.open(
                 path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
             )
+            parent = os.fstat(owner.parent_fd)
+            if parent.st_uid != os.geteuid() or parent.st_mode & 0o022:
+                raise Refused("admin_recovery_private_parent")
             expected_names = ["/"] + [
                 "/" + "/".join(Path(CANDIDATE).parent.parts[1:i])
                 for i in range(2, len(Path(CANDIDATE).parent.parts) + 1)
@@ -452,6 +455,31 @@ class AdministrativeOwner:
             ) > 7:
                 raise Refused("admin_recovery_exact_chain")
             for record in rows:
+                # Recovery accepts only the exact finite state the live owner can
+                # produce, never caller-selected modes or a serialized wait claim.
+                original, current = record.get("original"), record.get("current")
+                if (
+                    not isinstance(original, list)
+                    or not isinstance(current, list)
+                    or len(original) != 6
+                    or len(current) != 6
+                    or any(type(value) is not int for value in original + current)
+                    or original[:4] != current[:4]
+                    or not stat.S_ISDIR(original[4])
+                    or not stat.S_ISDIR(current[4])
+                    or original[2] not in (0, uid)
+                    or type(record.get("changed")) is not bool
+                ):
+                    raise Refused("admin_recovery_row_shape")
+                if record["name"] in DIRECTORIES:
+                    if stat.S_IMODE(original[4]) not in (0o755, 0o777) or stat.S_IMODE(
+                        current[4]
+                    ) != (0o755 if record["changed"] else stat.S_IMODE(original[4])):
+                        raise Refused("admin_recovery_exact_modes")
+                    if record["changed"] and stat.S_IMODE(original[4]) != 0o777:
+                        raise Refused("admin_recovery_exact_transition")
+                elif original != current or original[4] & 0o022 or record["changed"]:
+                    raise Refused("admin_recovery_outer_unchanged")
                 actual = (
                     owner.root
                     if record["name"] == "/"

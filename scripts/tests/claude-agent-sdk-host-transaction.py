@@ -269,6 +269,75 @@ class AdminTests(unittest.TestCase):
         os.close(owner.parent_fd)
         shutil.rmtree(root)
 
+    def test_recovery_refuses_forged_restore_mode_or_transition(self):
+        for field, value in (
+            ("original", 0o40700),
+            ("current", 0o40777),
+            ("changed", False),
+        ):
+            with self.subTest(field=field):
+                root, owner = self.fixture()
+                owner.prepare()
+                saved = json.loads(json.dumps(owner.state))
+                row = owner.state["rows"][-1]
+                if field == "changed":
+                    row[field] = value
+                else:
+                    row[field][4] = value
+                owner.store()
+                with self.assertRaisesRegex(A.Refused, "admin_recovery_exact"):
+                    A.AdministrativeOwner.recover(
+                        owner.journal,
+                        owner.binding,
+                        inspect_inputs=lambda: None,
+                        root=root,
+                        uid=os.getuid(),
+                    )
+                owner.state = saved
+                owner.store()
+                self.dispose(root, owner)
+
+    def test_tool_output_bound_and_missing_wait_keep_live_owner(self):
+        root, owner = self.fixture()
+        owner.prepare()
+        with self.assertRaisesRegex(A.Refused, "output_bound"):
+            owner.tool(
+                [
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    "-S",
+                    "-c",
+                    "import os;os.write(1,b'x'*16385)",
+                ],
+                environment={"PATH": "/usr/bin:/bin"},
+            )
+        self.assertIsNone(owner.tool_child)
+        self.assertEqual(len(owner.state["toolWaits"]), 1)
+        real = subprocess.Popen
+        children = []
+
+        def spawn(*args, **kwargs):
+            child = real(*args, **kwargs)
+            children.append(child)
+            child.wait = mock.Mock(
+                side_effect=subprocess.TimeoutExpired("owned wait withheld", 1)
+            )
+            return child
+
+        with mock.patch.object(A.subprocess, "Popen", side_effect=spawn):
+            with self.assertRaises(subprocess.TimeoutExpired):
+                owner.tool(
+                    [sys.executable, "-I", "-B", "-S", "-c", "pass"],
+                    environment={"PATH": "/usr/bin:/bin"},
+                )
+        with self.assertRaisesRegex(A.Refused, "unknown_administrative_tool"):
+            owner.restore()
+        self.assertIs(owner.tool_child, children[0])
+        del children[0].wait
+        owner.settle_tool()
+        self.dispose(root, owner)
+
     def test_source_drift_and_tool_failure_known_wait_are_not_cleanup_success(self):
         root, owner = self.fixture()
         source = root / "source"

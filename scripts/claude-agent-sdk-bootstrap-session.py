@@ -227,11 +227,13 @@ class HostInputs:
 
     def bind_alias(self, name, target):
         path = Path(name)
-        if (
-            not path.is_absolute()
-            or str(path.resolve(strict=True)) != target
-            or target not in self.capture.files
-        ):
+        if not path.is_absolute() or str(path.resolve(strict=True)) != target:
+            raise OSError("independent_loader_alias_missing")
+        if Path(target).is_dir():
+            # Canonical directory aliases retain the same safe ordinary ancestry
+            # checks; the symlink chain below remains independently held.
+            self.capture.bind_ancestors(Path(target) / ".alias-directory")
+        elif target not in self.capture.files:
             raise OSError("independent_loader_alias_missing")
         rows = []
         for part in (*reversed(path.parents), path):

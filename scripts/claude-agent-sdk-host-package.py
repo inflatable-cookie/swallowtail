@@ -47,6 +47,7 @@ class ImageFiles:
         self.root, self.uid = Path(root).resolve(strict=True), uid
         self.owner = owner
         self.files, self.links, self.directories = {}, {}, {}
+        self.aliases = {}
         self.lookup, self.absent = {}, set()
         self.deadline = time.monotonic() + 30
         self.bytes = 0
@@ -65,7 +66,7 @@ class ImageFiles:
         return self.root / name.lstrip("/")
 
     def literal(self, actual):
-        return "/" + str(actual.relative_to(self.root))
+        return "/" if actual == self.root else "/" + str(actual.relative_to(self.root))
 
     def canonical(self, name):
         path = self.actual(name)
@@ -86,7 +87,10 @@ class ImageFiles:
                 self.directories[str(part)] = identity(st)[:5]
         if len(self.directories) > 256:
             raise Refused("package_ancestor_bound")
-        return self.literal(target)
+        canonical = self.literal(target)
+        if name != canonical:
+            self.aliases[name] = canonical
+        return canonical
 
     def read(self, name, *, candidate=False):
         canonical = self.canonical(name)
@@ -141,15 +145,17 @@ class ImageFiles:
             while not parent.exists():
                 parent = parent.parent
             self.canonical(self.literal(parent))
-            self.absent.add(name)
+            canonical_parent = self.canonical(self.literal(parent))
+            first_missing = actual.relative_to(parent).parts[0]
+            self.absent.add(canonical_parent.rstrip("/") + "/" + first_missing)
             if len(self.absent) > 128:
                 raise Refused("package_absence_bound")
             return
         canonical = self.canonical(name)
         names = sorted(os.listdir(self.actual(canonical)))
-        if len(names) > 8192 or len(self.lookup) >= 32 and name not in self.lookup:
+        if len(names) > 8192 or len(self.lookup) >= 32 and canonical not in self.lookup:
             raise Refused("package_search_bound")
-        self.lookup[name] = names
+        self.lookup[canonical] = names
 
     def check(self):
         if self.owner is not None:
@@ -419,6 +425,9 @@ def python_context():
                 loaded.add(str(Path(name).absolute()))
     return {
         "version": sys.version_info[:2],
+        "cacheTag": sys.implementation.cache_tag,
+        "cachePrefix": sys.pycache_prefix,
+        "optimize": sys.flags.optimize,
         "search": list(sys.path),
         "executable": str(Path(sys.executable).resolve(strict=True)),
         "loaded": loaded,
@@ -434,6 +443,12 @@ def python_closure(files, source_files, context):
     ]
     if tuple(context["version"]) != (3, 14) or set(context["search"]) != set(search):
         raise Refused("package_system_python_profile")
+    if (
+        context.get("cacheTag") != "cpython-314"
+        or context.get("cachePrefix") is not None
+        or context.get("optimize") != 0
+    ):
+        raise Refused("package_system_python_cache_profile")
     for name in search:
         files.inventory(name)
     pending = {
@@ -507,7 +522,11 @@ def python_closure(files, source_files, context):
                 name if spec.submodule_search_locations else name.rpartition(".")[0]
             )
             pending.update(source_imports(data, package))
-            cached = importlib.util.cache_from_source(origin)
+            cached = str(
+                Path(origin).parent
+                / "__pycache__"
+                / (Path(origin).stem + "." + context["cacheTag"] + ".pyc")
+            )
             if os.path.lexists(cached):
                 canonical, cached_data = files.read(cached)
                 checked_bytecode(data, cached_data)
@@ -544,6 +563,44 @@ def produce(owner, session, elf, sources, *, root=Path("/"), uid=1001):
         if code:
             raise Refused("trusted_loader_help_failed")
         directories = loader_directories(help_data.decode("ascii"))
+        # Initial Python's fixed image configuration is independently bound too.
+        for name in (
+            "/etc/nsswitch.conf",
+            "/etc/hosts",
+            "/etc/resolv.conf",
+            "/etc/gai.conf",
+            "/etc/mime.types",
+            "/etc/ssl/openssl.cnf",
+            "/usr/lib/ssl/openssl.cnf",
+            "/etc/ld.so.conf",
+        ):
+            if not os.path.lexists(files.actual(name)):
+                files.inventory(name)
+                continue
+            canonical, configuration = files.read(name)
+            if name.endswith("openssl.cnf") and re.search(
+                rb"(?m)^\s*(?:\.include|(?:providers|engines)\s*=)", configuration
+            ):
+                raise Refused("package_unreviewed_openssl_configuration")
+            if name == "/etc/nsswitch.conf":
+                lines = [
+                    line.split("#", 1)[0].strip()
+                    for line in configuration.decode().splitlines()
+                ]
+                hosts = [
+                    line.split(":", 1)[1].split()
+                    for line in lines
+                    if line.startswith("hosts:")
+                ]
+                if hosts != [["files", "dns"]]:
+                    raise Refused("package_unreviewed_nss_hosts")
+        config_dir = "/etc/ld.so.conf.d"
+        files.inventory(config_dir)
+        if files.actual(config_dir).is_dir():
+            for child in sorted(files.actual(config_dir).iterdir()):
+                if not child.name.endswith(".conf"):
+                    raise Refused("package_loader_config_entry")
+                files.read(config_dir + "/" + child.name)
         cache_name, cache_data = files.read("/etc/ld.so.cache")
         graph = LoaderGraph(files, elf, cache_entries(cache_data), directories)
         node, data = files.read(CANDIDATE, candidate=True)
@@ -629,7 +686,7 @@ def produce(owner, session, elf, sources, *, root=Path("/"), uid=1001):
                 "supervisorInputs": files.hashes(supervisor),
             },
             "resolutions": edges,
-            "aliases": graph.aliases,
+            "aliases": {**files.aliases, **graph.aliases},
             "interpreterAliases": interpreters,
             "lookup": {
                 "directories": files.lookup,

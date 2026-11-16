@@ -435,6 +435,33 @@ class SessionTests(unittest.TestCase):
 
 
 class HostInputTests(unittest.TestCase):
+    def test_directory_alias_keeps_ordinary_safe_ancestry_and_identity(self):
+        with tempfile.TemporaryDirectory(
+            prefix="sdk-directory-alias-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            target = root / "directory"
+            target.mkdir(mode=0o755)
+            alias = root / "alias"
+            alias.symlink_to(target, target_is_directory=True)
+            host = S.HostInputs.__new__(S.HostInputs)
+            host.custody, host.aliases = C, {}
+            host.capture = C.Inputs(reserve_pipes=False)
+            host.lookup = {"directories": {}, "absent": []}
+            try:
+                target.chmod(0o777)
+                with self.assertRaises(OSError):
+                    host.bind_alias(str(alias), str(target))
+                target.chmod(0o755)
+                host.bind_alias(str(alias), str(target))
+                host.check()
+                alias.unlink()
+                alias.symlink_to(root, target_is_directory=True)
+                with self.assertRaisesRegex(OSError, "loader_alias_changed"):
+                    host.check()
+            finally:
+                host.close()
+
     def test_real_reader_accepts_exact_synthetic_graph_and_detects_alias_drift(self):
         with tempfile.TemporaryDirectory(
             prefix="sdk-host-input-", dir=os.environ["TMPDIR"]

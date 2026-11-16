@@ -214,6 +214,9 @@ class PackageTests(unittest.TestCase):
             (root / "repo/source.py").write_bytes(b"import sys\n")
             context = {
                 "version": (3, 14),
+                "cacheTag": "cpython-314",
+                "cachePrefix": None,
+                "optimize": 0,
                 "search": [
                     "/usr/lib/python314.zip",
                     "/usr/lib/python3.14",

@@ -246,7 +246,9 @@ class ActorRegistry:
         return actual
 
 
-def graph_config(root, role, entry_command, native_env, launch_id):
+def graph_config(
+    root, role, entry_command, native_env, launch_id, control_identity, fault
+):
     """Close the selected first-party graph, not an arbitrary JS program."""
     names = [p for p in root.iterdir() if p.suffix in {".mjs", ".cjs"}]
     files = [
@@ -311,6 +313,11 @@ def graph_config(root, role, entry_command, native_env, launch_id):
         )
     native = {
         "launchId": launch_id,
+        "launchControl": {
+            "path": str(root / "launch-control"),
+            "identity": [str(value) for value in control_identity],
+        },
+        "pauseBeforeArm": fault == "driver-before-launch-arm",
         "launchTrackerUrl": (root / "launch-state.mjs").as_uri(),
         "path": str(python),
         "sha256": sha(python.read_bytes()),
@@ -383,13 +390,14 @@ def parse_events(data):
 class RehearsalResources:
     """Retain the live rehearsal on unknown cleanup; no temporary-dir finalizer."""
 
-    def __init__(self, registered, context, emit, output):
+    def __init__(self, registered, context, emit, output, composition="sdk"):
         self.root = Path(
             tempfile.mkdtemp(prefix="sdk234-spawn-", dir=os.environ["TMPDIR"])
         ).resolve()
         info = self.root.lstat()
         self.identity = (info.st_dev, info.st_ino, info.st_uid)
         self.registered, self.context, self.emit = registered, context, emit
+        self.composition = composition
         self.output = output
         self.launch_id = os.urandom(16).hex()
         self.launch = {
@@ -403,6 +411,20 @@ class RehearsalResources:
         self.driver_intent = False
         self.lease = self.driver = self.pidfd = self.server = self.thread = None
         self.retained = self.released = False
+        self.launch_fd = os.open(
+            self.root / "launch-control",
+            os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+            0o600,
+        )
+        info = os.fstat(self.launch_fd)
+        self.control_identity = (
+            info.st_dev,
+            info.st_ino,
+            info.st_uid,
+            info.st_gid,
+            info.st_mode,
+        )
+        self.closing = False
 
     def __enter__(self):
         return self.root
@@ -416,6 +438,45 @@ class RehearsalResources:
         if self.launch["active"]:
             raise Refused("launch_slot_reused")
         self.launch.update(active=True, parent=dict(parent))
+
+    def bind_launch_parent(self, parent):
+        if self.launch["parent"] is not None:
+            raise Refused("duplicate_launch_parent")
+        self.launch["parent"] = dict(parent)
+
+    def check_control(self):
+        info = os.fstat(self.launch_fd)
+        actual = (info.st_dev, info.st_ino, info.st_uid, info.st_gid, info.st_mode)
+        path = (self.root / "launch-control").lstat()
+        if (
+            actual != self.control_identity
+            or (path.st_dev, path.st_ino, path.st_uid, path.st_gid, path.st_mode)
+            != actual
+            or info.st_nlink != 1
+            or info.st_size > 1
+        ):
+            raise Refused("launch_control_identity_changed")
+        value = os.pread(self.launch_fd, 2, 0)
+        if value != (b"\1" if self.launch["active"] else b""):
+            raise Refused("launch_control_changed")
+
+    def permit_launch(self, row):
+        self.check_control()
+        parent = self.launch["parent"]
+        if (
+            self.closing
+            or parent is None
+            or row.get("actor") != parent["pid"]
+            or row.get("launchId") != self.launch_id
+            or row.get("source") != "owned bootstrap before payload"
+        ):
+            raise Refused("launch_ready_binding")
+        self.lease.check()
+        self.activate_launch(parent)  # Obligation precedes the control-channel effect.
+        if os.write(self.launch_fd, b"\1") != 1:
+            raise Refused("launch_permit_short_write")
+        os.fsync(self.launch_fd)
+        self.check_control()
 
     def live_natives(self):
         identity = self.launch["identity"]
@@ -442,13 +503,31 @@ class RehearsalResources:
                 break
             self.output["stderr"].extend(data)
             remaining -= len(data)
+        self.check_control()
         obligation = self.launch
+        if self.composition == "acp-actor-shape":
+            actor_waits = [
+                row
+                for row in parse_events(self.output["stderr"].decode(errors="replace"))
+                if isinstance(row, dict)
+                and row.get("probeEvent") == "actor_wait"
+                and row.get("actor") == self.driver.pid
+                and row.get("source") == "Popen.wait"
+                and type(row.get("code")) is int
+                and type(row.get("pid")) is int
+            ]
+            if len(actor_waits) != 1 or (
+                obligation["parent"] is not None
+                and actor_waits[0]["pid"] != obligation["parent"]["pid"]
+            ):
+                raise Refused("driver_parent_wait_missing; custody retained")
         if not obligation["active"]:
             if obligation["notified"]:
                 raise Refused("native_launch_parent_unknown")
-            # The source-bound Python driver entry never released its Node
-            # payload. Its actual Popen wait covers that pre-exec path.
-            obligation.update(state="settled", settlement="driver_not_released")
+            # The source-bound bootstrap cannot reach its one-shot spawn before
+            # this host's control byte. No missing stderr record is inferred.
+            self.check_control()
+            obligation.update(state="settled", settlement="native_spawn_not_permitted")
             return
         rows = [
             row
@@ -528,6 +607,7 @@ class RehearsalResources:
         )
 
     def quiesce_endpoint(self):
+        self.closing = True
         if self.server is not None:
             if self.thread is not None and self.thread.ident is not None:
                 self.server.shutdown()
@@ -578,6 +658,9 @@ class RehearsalResources:
             # These releases cannot run after a stop or join raised above.
             if self.lease is not None:
                 self.lease.close()
+            if self.launch_fd is not None:
+                os.close(self.launch_fd)
+                self.launch_fd = None
             if self.pidfd is not None:
                 os.close(self.pidfd)
                 self.pidfd = None
@@ -716,6 +799,12 @@ def rehearsal(
                 row = json.loads(line)
             except (ValueError, UnicodeError):
                 continue
+            if isinstance(row, dict) and row.get("probeEvent") == "native_launch_ready":
+                if time.monotonic() - started > bound or (
+                    cancel and cancel("protocol")
+                ):
+                    raise Refused("launch_release_cancelled")
+                resources.permit_launch(row)
             if isinstance(row, dict) and row.get("probeEvent") in {
                 "spawn_requested",
                 "native_started",
@@ -731,7 +820,9 @@ def rehearsal(
                     observation=row,
                 )
 
-    resources = RehearsalResources(registered, context, emit, captured_output)
+    resources = RehearsalResources(
+        registered, context, emit, captured_output, composition
+    )
     with resources as root:
         lease = custody.Lease(
             runtime,
@@ -972,7 +1063,7 @@ def rehearsal(
                                 else None,
                             )
                             lease.permit(driver_command, driver_env)
-                            resources.activate_launch(actor)
+                            resources.bind_launch_parent(actor)
                             holder["actor"] = actor
                             emit("driver_released", identity=actor)
                             answer = (
@@ -1010,6 +1101,7 @@ def rehearsal(
                             resources.launch.update(
                                 state="identity-bound", identity=dict(observed)
                             )
+                            resources.check_control()
                             if hasattr(os, "pidfd_open"):
                                 pidfd = os.pidfd_open(value["pid"])
                                 resources.pidfd = pidfd
@@ -1151,14 +1243,21 @@ def rehearsal(
                 (root / f"{role}-graph.json").write_text(
                     json.dumps(
                         graph_config(
-                            root, role, entry_command, native_env, resources.launch_id
+                            root,
+                            role,
+                            entry_command,
+                            native_env,
+                            resources.launch_id,
+                            resources.control_identity,
+                            fault,
                         )
                     )
                 )
             lease.bind_many(
                 (entry, sha(entry.read_bytes()))
                 for entry in root.rglob("*")
-                if entry.is_file() and entry.name != "storage.bin"
+                if entry.is_file()
+                and entry.name not in {"storage.bin", "launch-control"}
             )
             timing("fixture_binding_complete")
             timing("configure_start")

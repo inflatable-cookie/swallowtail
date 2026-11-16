@@ -47,14 +47,25 @@ and retains the actual process handle, open capture, pidfd, endpoint and staged
 fixture. The refusal carries that owner; the outer transaction retains it too.
 
 Tom's convergence direction separates admission from settlement. The private
-contract now reserves one native launch obligation before the driver spawn, and
-activates it before releasing the driver's payload. At the existing approved
-one-shot spawn edge, source-bound tracking records intent before calling spawn,
+contract reserves one native launch obligation before the driver spawn and
+binds its parent at the Python entry. The trusted Node bootstrap arms tracking
+and its stop/wait handler, then waits for this host's one-byte control grant
+before loading the driver's SDK payload. The host activates the obligation
+before writing that byte. At the existing approved one-shot spawn edge,
+source-bound tracking records intent before calling spawn,
 the actual returned child handle, and that handle's terminal wait. A synchronous
 parent-exit record can prove that the edge was never attempted; an attempted
 spawn with no returned handle or missing notification remains unknown. Neither
-record grants permission to execute payload. The driver Popen call has its own
-prior intent; an exception without its handle retains unknown launch custody.
+record grants permission to execute original payload. The private control file
+is a single identity-held0600 IPC object with only empty/one-byte states; it is
+not an executable input or a bootstrap attestation. Ordinary and root monitors
+hold/check that exact identity separately from immutable source hashes. Payload
+code receives no writer, and kernel filesystem policy allows it only read access.
+A driver killed before arm/grant cannot have used this source-bound spawn edge;
+the still-empty held channel and its actual Popen wait prove that narrow no-spawn
+case without inventing a missing stderr record. Once granted, all existing exact
+parent-wait requirements remain. This trusted-host contract adds no hostile
+same-user execution claim. The driver Popen call has its own prior intent; an exception without its handle retains unknown launch custody.
 Captured peer imports cannot reach the tracker; only the bootstrap and private
 generated spawn facade hold that edge. A forged-ledger import refuses before effect.
 
@@ -270,7 +281,8 @@ Unknown fork or receipt/wait failure keeps monitor, group, journal and capture
 handles. A source-proved no-fork refusal may restore the exact prepared chain.
 The runtime observer similarly keeps launch intent before Popen: a constructor
 with no returned handle retains custody; a later journal refusal uses the actual
-handle already held by the session and waits it before capture release.
+handle already held by the session and waits it before capture release. Unknown observer waits also retain stdout/stderr handles; only the same later
+actual join clears that capture's active child and closes those streams.
 These are source/owned-child seams for composition, not an activated kernel or
 completed three-case adapter.
 

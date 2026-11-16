@@ -719,6 +719,8 @@ class Monitor:
         self.setup_fds = []
         self.previous_signals = {}
         self.fork_attempted = False
+        self.control_fd = None
+        self.control_identity = None
         self.parent_fd = os.pidfd_open(os.getpid())
         self.journal_fd = args.journal_fd
         self.journal_parent = Path(os.environ["TMPDIR"]).resolve(strict=True)
@@ -727,6 +729,28 @@ class Monitor:
         self.canary = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.canary.bind(("127.0.0.1", 0))
         self.canary.listen(1)
+
+    def check_custody(self):
+        self.lease.check()
+        fd = getattr(self, "control_fd", None)
+        if fd is not None:
+            info = os.fstat(fd)
+            path = (Path(self.packet["root"]) / "launch-control").lstat()
+            stable = lambda row: (
+                row.st_dev,
+                row.st_ino,
+                row.st_uid,
+                row.st_gid,
+                row.st_mode,
+            )
+            if (
+                stable(info) != self.control_identity
+                or stable(path) != self.control_identity
+                or info.st_nlink != 1
+                or info.st_size > 1
+                or os.pread(fd, 2, 0) not in (b"", b"\1")
+            ):
+                raise Refused(errno.EPERM, "owned_launch_control_changed")
 
     def member(self, info):
         self.group.assert_limits()
@@ -859,12 +883,36 @@ class Monitor:
             ]:
                 raise Refused(errno.EPERM, "captured_entry_or_driver_changed")
             for path in root.rglob("*"):
-                if path.is_file() and path.name != "storage.bin":
+                if path.is_file() and path.name not in {
+                    "storage.bin",
+                    "launch-control",
+                }:
                     self.lease.bind(path)
             for path in packet["readFiles"]:
                 self.lease.bind(path)
-            self.lease.check()
+            self.check_custody()
             self.packet = packet
+            control = root / "launch-control"
+            self.control_fd = os.open(
+                control, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK
+            )
+            info = os.fstat(self.control_fd)
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_uid != self.args.uid
+                or info.st_size != 0
+                or info.st_nlink != 1
+            ):
+                raise Refused(errno.EPERM, "owned_empty_launch_control_required")
+            self.control_identity = (
+                info.st_dev,
+                info.st_ino,
+                info.st_uid,
+                info.st_gid,
+                info.st_mode,
+            )
+            self.check_custody()
             trace = self.modules["trace"]
             cwd = root / "workspace"
             images = {
@@ -879,14 +927,14 @@ class Monitor:
                 ),
             }
             self.gate = trace.ExecGate(
-                self.trace, identity, self.member, images, self.pin, self.lease.check
+                self.trace, identity, self.member, images, self.pin, self.check_custody
             )
             return {}
         if kind == "identity":
             info = self.find(request["namespacePid"])
             return {"identity": self.normalized(info)}
         if kind in {"driver_gate", "native_gate"}:
-            self.lease.check()
+            self.check_custody()
             self.check_network()
             info = self.find(request["namespacePid"])
             peer = socket_peer(
@@ -916,6 +964,8 @@ class Monitor:
                 self.journal["driverActor"] = info
                 self.gate.driver(info["pid"])
             else:
+                if os.pread(self.control_fd, 2, 0) != b"\1":
+                    raise Refused(errno.EPERM, "native_spawn_not_permitted")
                 if info["command"] != self.packet["nativeEntry"]:
                     raise Refused(errno.EPERM, "native_entry_argv")
                 driver = self.journal["driverActor"]
@@ -1120,13 +1170,22 @@ class Monitor:
         )
 
     def release_handles(self):
-        for fd in set([*self.setup_fds, self.parent_fd, *self.handles.values()]):
+        control = getattr(self, "control_fd", None)
+        for fd in set(
+            [
+                *self.setup_fds,
+                self.parent_fd,
+                *self.handles.values(),
+                *([] if control is None else [control]),
+            ]
+        ):
             try:
                 os.close(fd)
             except OSError as error:
                 if error.errno != errno.EBADF:
                     raise
         self.canary.close()
+        self.control_fd = None
 
     def guest(self, answer_read, write):
         context = GuestContext(

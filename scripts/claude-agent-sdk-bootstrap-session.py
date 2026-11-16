@@ -377,6 +377,12 @@ class Session:
         self.preparation.state.setdefault("observerWaits", []).append(
             {"pid": child.pid, "exit": child.returncode}
         )
+        if (
+            self.runtime_bootstrap is not None
+            and self.runtime_bootstrap.active_child is child
+        ):
+            self.runtime_bootstrap.active_child = None
+            self.runtime_bootstrap.launch_pending = False
         child.stdout.close()
         child.stderr.close()
         self.child = None

@@ -332,9 +332,13 @@ class BootstrapTests(unittest.TestCase):
         with self.assertRaisesRegex(OSError, "join_unknown"):
             capture.close()
         child, wait = children[0]
+        self.assertFalse(child.stdout.closed)
+        self.assertFalse(child.stderr.closed)
         if child.poll() is None:
             child.kill()
         wait(timeout=2)
+        child.stdout.close()
+        child.stderr.close()
         capture.active_child = None
         capture.close()
         self.assertTrue(capture.closed)
@@ -376,6 +380,43 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(waits, [owner.child])
         self.assertTrue(capture.closed)
         self.assertFalse(capture.launch_pending)
+
+    def test_session_late_actual_join_closes_retained_observer_streams(self):
+        self.body = "time.sleep(10)\n"
+        self.write_observer()
+        capture = self.bootstrap()
+        child = OwnedForkObserver(self.node)
+        spec = importlib.util.spec_from_file_location(
+            "owned_late_join", ROOT / "scripts/claude-agent-sdk-bootstrap-session.py"
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        owner = module.Session.__new__(module.Session)
+        owner.child = child
+        owner.runtime_bootstrap = capture
+        owner.preparation = types.SimpleNamespace(state={})
+        owner.store = mock.Mock()
+        capture.active_child = child
+        try:
+            with self.assertRaisesRegex(OSError, "actual_owned_observer_wait"):
+                owner.joined(child)
+            self.assertFalse(child.stdout.closed)
+            self.assertFalse(child.stderr.closed)
+            child.kill()
+            child.wait(timeout=2)
+            owner.joined(child)
+            self.assertIsNone(capture.active_child)
+            self.assertTrue(child.stdout.closed)
+            self.assertTrue(child.stderr.closed)
+            capture.close()
+        finally:
+            if child.poll() is None:
+                child.kill()
+            child.wait(timeout=2)
+            child.stdout.close()
+            child.stderr.close()
+            capture.active_child = None
+            capture.close()
 
     def test_unknown_constructor_return_keeps_capture_and_refuses_close(self):
         capture = self.bootstrap()

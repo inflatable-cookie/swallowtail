@@ -1,5 +1,5 @@
 4a13c4290c8aea48aadff5a0030eaee95f6868fdefa085003ec20d2537a8caa9  scripts/tests/sdk-runtime-model.py
-93e17cc62931324979d0127def2557b85d0732743533eaf809c63878eeccaf7a  scripts/claude-agent-sdk-probe-custody.py
+4f52d90f421a9d0969b4c1b67c5c7c3e02a634658bb10aeaa7b5029e348fa75a  scripts/claude-agent-sdk-probe-custody.py
 07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19  .github/workflows/sdk234-netns-proof.yml
 1b050616a676aedc7c75903218ff50349b68928fe50a143db9752ac03ad7d1dc  scripts/tests/oxide-selector-routing.py
 d92db0b4b062ea24f184ab93a6e35396aafd6a7b8785a3a2e7ebe2b0f7ccd8ea  scripts/claude-agent-sdk-netns-proposal.py

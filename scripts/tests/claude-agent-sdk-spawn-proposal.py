@@ -355,6 +355,29 @@ class SpawnTests(unittest.TestCase):
             self.assertIsNotNone(result["failure"])
             self.assertFalse(result["registered"])
 
+    def test_cancel_after_driver_admission_before_launch_arm_proves_no_native_spawn(
+        self,
+    ):
+        admitted = threading.Event()
+        original = CORE.RehearsalResources.bind_launch_parent
+
+        def bind(owner, parent):
+            original(owner, parent)
+            admitted.set()
+
+        with mock.patch.object(CORE.RehearsalResources, "bind_launch_parent", bind):
+            result = self.run_peer(
+                fault="driver-before-launch-arm",
+                cancel=lambda phase: phase == "protocol" and admitted.is_set(),
+            )
+        self.assertTrue(admitted.is_set())
+        self.assertIsNotNone(result["failure"])
+        self.assertEqual(result["nativeWaits"], [])
+        self.assertFalse(result["payloadEffectObserved"])
+        self.assertEqual(
+            result["launchObligation"]["settlement"], "native_spawn_not_permitted"
+        )
+
     def test_live_limits_and_hanging_native_refuse(self):
         for kwargs in (
             {"output_limit": 1},

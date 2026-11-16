@@ -522,7 +522,11 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
         bootstrap.close()
         raise
     finally:
-        if child is not None:
+        if (
+            child is not None
+            and bootstrap.active_child is None
+            and not bootstrap.launch_pending
+        ):
             child.stdout.close()
             child.stderr.close()
 

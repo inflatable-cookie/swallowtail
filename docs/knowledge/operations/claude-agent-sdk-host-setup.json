@@ -1,5 +1,122 @@
 {
-  "status": "Source binding generation in progress; unactivated proposal",
+  "schema": "swallowtail.sdk240.exact-host-setup-proposal.v1",
   "activationAuthorized": false,
-  "qualified": false
+  "qualified": false,
+  "sourceCommit": "f2c81d8689d0b2468b5befb81683ba63a1a3369d",
+  "sourceRecord": {
+    "path": "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256",
+    "sha256": "b2b5b332965dbecc1e17d197299822bd74534ce5a76c390931c090f0dd98db44"
+  },
+  "workflowPatch": {
+    "path": "docs/knowledge/operations/claude-agent-sdk-host-setup.patch",
+    "sha256": "0abf6e1e9b4fe597ef9e970511799991051e2bbcdd512c729897db952766c7cf"
+  },
+  "workflowPath": ".github/workflows/sdk240-host-setup.yml",
+  "workflowBlobSha256": "4a2e85d49aa0a18cbb106b1537f2bab80895c318cee86b38cf029f3a5320770b",
+  "workflowGitBlob": "1096e0f380ae2ffb9e55d4be44dd077356c69596",
+  "bootstrapSha256": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605",
+  "checkout": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+  "uploader": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+  "repository": "inflatable-cookie/swallowtail",
+  "resourceOwner": "Tom",
+  "producerOwner": "swallowtail#240",
+  "principal": "root in the exact GitHub host job identified by this workflow blob and its later registration commit; not an already allocated custodian",
+  "trustAnchor": "authorized initial selected GitHub image, service job/runner, pinned platform checkout/uploader and system root administrative tooling; candidate output never supplies bootstrap authority",
+  "image": {
+    "label": "ubuntu-26.04",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "uid": 1001,
+    "gid": 1001,
+    "freshBootRequired": true,
+    "exclusiveJobRequired": true
+  },
+  "scope": "prepare only the five approved cache directories; produce complete existing-reader package; transfer manifest; ordinary leaf/runtime/three-owned-fake/actual waits/leaf then reverse ancestor restore; no runtime install/copy",
+  "limits": {
+    "jobs": 1,
+    "attempts": 1,
+    "jobMinutes": 2,
+    "outerSecondsMaximum": 90,
+    "terminationGraceSeconds": 2,
+    "setupSeconds": 15,
+    "packageSeconds": 30,
+    "ordinarySecondsMaximum": 80,
+    "observerSecondsEach": 5,
+    "caseSecondsEach": 10,
+    "payloadTasks": 32,
+    "payloadMemoryBytes": 268435456,
+    "payloadCpuQuota": "100000 100000",
+    "payloadCpuSeconds": 10,
+    "payloadFds": 64,
+    "administrativeFds": 1024,
+    "payloadOutputStorageBytes": 1000000,
+    "manifestBytes": 1048576,
+    "administrativeReceiptBytes": 65536,
+    "monitorReceiptBytes": 262144,
+    "resultOutputBytes": 16384,
+    "metadataArchiveBytes": 2097152
+  },
+  "requiredFreshResources": [
+    "selected image/service job identity and fresh boot/UID/source/tool bindings",
+    "safe / and /opt; only five literal cache directories eligible",
+    "existing pinned Node22.23.4 bytes, never installed or staged",
+    "complete safe loader/search/cache/alias/Python/supervisor inputs from the same producer",
+    "already enabled cpu/memory/pids on root-owned cgroupv2 /sys/fs/cgroup; no parent controller mutation",
+    "no pre-existing /etc/claude-code; identity-bound intent before its owned creation",
+    "fresh ordinary0700 scratch and exclusive root0700 /run allocation"
+  ],
+  "reservedEffects": [
+    {
+      "phase": "application",
+      "authorityRequired": true,
+      "operation": "apply only this exact new-file patch after independent source/security acceptance; refuse any existing destination or unrelated workflow diff",
+      "path": ".github/workflows/sdk240-host-setup.yml",
+      "gitBlob": "1096e0f380ae2ffb9e55d4be44dd077356c69596"
+    },
+    {
+      "phase": "registration",
+      "authorityRequired": true,
+      "operation": "owner records the resulting immutable workflow commit and GitHub workflow ID; verify exact blob and selected executable source before any dispatch",
+      "requiredReceipt": [
+        "workflowCommit",
+        "workflowId",
+        "workflowBlobSha256",
+        "sourceCommit",
+        "sourceRecordSha256"
+      ]
+    },
+    {
+      "phase": "one_attempt",
+      "authorityRequired": true,
+      "operation": "approve exactly one dispatch at the registration receipt immutable workflow commit; no rerun or unknown-delivery retry",
+      "command": [
+        "gh",
+        "workflow",
+        "run",
+        "sdk240-host-setup.yml",
+        "--repo",
+        "inflatable-cookie/swallowtail",
+        "--ref",
+        "REGISTRATION_RECEIPT_WORKFLOW_COMMIT"
+      ],
+      "attempts": 1,
+      "automaticRetries": 0
+    }
+  ],
+  "recovery": {
+    "owner": "same live root owner; independent recovery only for a proven no-entry prefix",
+    "commandSuffix": "--recover-only with the original recorded binding and independently bounded10s parent timeout",
+    "refusals": [
+      "entry/tool intent or missing actual wait",
+      "partial/ambiguous kernel or canonical resource creation",
+      "identity/source/mode drift or unknown restore"
+    ],
+    "retention": "same owner/handles/receipts until matching waits; timeout or VM disposal is never cleanup/reaping proof; bounded metadata export preserves refusal"
+  },
+  "originalCommand": null,
+  "originalAdmission": "closed",
+  "providerAdmission": "closed",
+  "acpAdmission": "closed; accepted3cd84aec exact Rust sibling topology remains a separate host composition obligation",
+  "qualificationMergeHolds": "both retained",
+  "laterAuthority": "after normal independent review, exact workflow application/registration/one-attempt grant; no route choice or manual manifest assembly needed"
 }

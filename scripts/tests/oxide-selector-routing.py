@@ -733,7 +733,8 @@ def check_workflows():
     if not workflows:
         fail("no hosted workflow is checked; .github/workflows owns the CI route")
     for path in workflows:
-        text = path.read_text()
+        workflow_bytes = path.read_bytes()
+        text = workflow_bytes.decode()
         relative = str(path.relative_to(ROOT))
         if path.name == "sdk234-preflight-diagnostic.yml":
             # Exact separately reviewed read-only diagnostic; no host admission.
@@ -782,6 +783,15 @@ def check_workflows():
             )
             if text != expected:
                 fail("fixture workflow differs from its exact approved proposal")
+            continue
+        if path.name == "sdk240-host-setup.yml":
+            # Planner ruling 7059541d admits only the reviewed manual host job.
+            # Keep every other workflow on the existing plain-Cargo boundary.
+            if (
+                hashlib.sha256(workflow_bytes).hexdigest()
+                != "7a19751473aff6b17051016d23513741f7e45e7ceef1dbc544177116517e8e18"
+            ):
+                fail("SDK240 host workflow differs from its exact approved bytes")
             continue
         if "oxide" in text:
             fail(

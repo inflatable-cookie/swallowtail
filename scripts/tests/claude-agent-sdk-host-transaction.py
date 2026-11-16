@@ -58,7 +58,11 @@ class AdminTests(unittest.TestCase):
             (root / name.lstrip("/")).chmod(0o777)
         binding = {"fixture": str(root), "source": "owned", "boot": "owned-test-only"}
         owner = A.AdministrativeOwner(
-            root / "admin.json", binding, root=root, uid=os.getuid()
+            root / "admin.json",
+            binding,
+            inspect_inputs=lambda: None,
+            root=root,
+            uid=os.getuid(),
         )
         return root, owner
 
@@ -82,6 +86,20 @@ class AdminTests(unittest.TestCase):
         owner.restore()
         effects = [name for phase, name in events if phase == "restore_after_effect"]
         self.assertEqual(effects, list(reversed(A.DIRECTORIES)))
+        shutil.rmtree(root)
+
+    def test_existing_safe_directory_is_never_changed_or_restored(self):
+        root, owner = self.fixture()
+        safe = root / A.DIRECTORIES[2].lstrip("/")
+        safe.chmod(0o755)
+        events = []
+        owner.fault = lambda phase, name: events.append((phase, name))
+        owner.prepare()
+        row = next(row for row in owner.rows if row["name"] == A.DIRECTORIES[2])
+        self.assertFalse(row["changed"])
+        self.assertFalse(any(name == A.DIRECTORIES[2] for phase, name in events))
+        owner.restore()
+        self.assertEqual(safe.stat().st_mode & 0o777, 0o755)
         shutil.rmtree(root)
 
     def test_every_prepare_mutation_boundary_keeps_receipts_and_known_or_unknown_state(
@@ -342,6 +360,48 @@ class AdminTests(unittest.TestCase):
         del children[0].wait
         owner.settle_tool()
         self.dispose(root, owner)
+
+    def test_directory_sync_failure_keeps_ambiguous_effect_and_exact_owner(self):
+        root, owner = self.fixture()
+        real = os.fsync
+
+        def sync(fd):
+            if any(
+                row["fd"] == fd and row["name"] == A.DIRECTORIES[0]
+                for row in owner.rows
+            ):
+                raise OSError("owned directory fsync failed after chmod")
+            return real(fd)
+
+        with mock.patch.object(A.os, "fsync", side_effect=sync):
+            with self.assertRaisesRegex(OSError, "fsync failed"):
+                owner.prepare()
+        self.assertIsNotNone(owner.state["operation"])
+        with self.assertRaisesRegex(A.Refused, "ambiguous"):
+            owner.restore()
+        with self.assertRaisesRegex(A.Refused, "unobserved"):
+            owner.finish_known_effect()
+        # Intentionally retain this owned fixture: durability/receipt is unknown.
+
+    def test_initial_binding_refusal_has_no_mutation_or_journal(self):
+        root = Path(
+            tempfile.mkdtemp(prefix="admin-binding-", dir=os.environ["TMPDIR"])
+        ).resolve()
+
+        def refuse():
+            raise A.Refused("fresh image/source binding refused")
+
+        with self.assertRaisesRegex(A.Refused, "fresh image"):
+            A.AdministrativeOwner(
+                root / "admin.json",
+                {"source": "wrong"},
+                inspect_inputs=refuse,
+                root=root,
+                uid=os.getuid(),
+            )
+        self.assertFalse((root / "admin.json").exists())
+        self.assertEqual(list(root.iterdir()), [])
+        shutil.rmtree(root)
 
     def test_source_drift_and_tool_failure_known_wait_are_not_cleanup_success(self):
         root, owner = self.fixture()

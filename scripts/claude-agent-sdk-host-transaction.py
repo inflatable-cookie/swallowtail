@@ -37,10 +37,15 @@ def identity(info):
 
 
 class AdministrativeOwner:
-    def __init__(self, journal, binding, *, root=Path("/"), uid=1001, fault=None):
+    def __init__(
+        self, journal, binding, *, inspect_inputs, root=Path("/"), uid=1001, fault=None
+    ):
+        if not callable(inspect_inputs):
+            raise Refused("independent_administrative_input_checker_required")
+        inspect_inputs()
         self.pid = os.getpid()
         self.root, self.uid = Path(root).absolute(), uid
-        self.journal, self.binding = Path(journal), dict(binding)
+        self.journal, self.binding = Path(journal), json.loads(json.dumps(binding))
         self.fault = fault or (lambda phase, name: None)
         self.rows, self.child = [], None
         self.tool_child = None
@@ -49,7 +54,7 @@ class AdministrativeOwner:
         self._waited_child = None
         self._effect_possible = False
         self._effect_observed = None
-        self.check_inputs = lambda: None
+        self.check_inputs = inspect_inputs
         self.deadline = time.monotonic() + 15
         self.state = {
             "schema": "sdk240.admin.v1",
@@ -67,7 +72,8 @@ class AdministrativeOwner:
         parent = self.journal.parent
         st = parent.lstat()
         if (
-            not stat.S_ISDIR(st.st_mode)
+            parent.resolve(strict=True) != parent.absolute()
+            or not stat.S_ISDIR(st.st_mode)
             or st.st_mode & 0o022
             or st.st_uid != os.geteuid()
         ):
@@ -101,6 +107,13 @@ class AdministrativeOwner:
             raise Refused("admin_journal_bound")
         fd = self.journal_fd
         st = os.fstat(fd)
+        if (
+            not stat.S_ISREG(st.st_mode)
+            or stat.S_IMODE(st.st_mode) != 0o600
+            or st.st_uid != os.geteuid()
+            or st.st_nlink != 1
+        ):
+            raise Refused("admin_journal_type_owner_mode_or_link")
         if (st.st_dev, st.st_ino) != (
             self.journal.lstat().st_dev,
             self.journal.lstat().st_ino,
@@ -222,6 +235,7 @@ class AdministrativeOwner:
         # Once the effect may have happened, a missing receipt is never inferred.
         self._effect_possible = True
         os.fchmod(row["fd"], mode)
+        os.fsync(row["fd"])
         observed = identity(os.fstat(row["fd"]))
         if observed[:4] != row["current"][:4] or stat.S_IMODE(observed[4]) != mode:
             raise Refused("admin_mutation_identity_or_mode")
@@ -409,6 +423,8 @@ class AdministrativeOwner:
                 not stat.S_ISREG(st.st_mode)
                 or stat.S_IMODE(st.st_mode) != 0o600
                 or st.st_uid != os.geteuid()
+                or st.st_nlink != 1
+                or path.parent.resolve(strict=True) != path.parent.absolute()
                 or st.st_size > MAX_JOURNAL
             ):
                 raise Refused("admin_recovery_journal_identity")

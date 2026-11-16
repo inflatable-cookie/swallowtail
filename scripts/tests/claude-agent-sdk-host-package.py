@@ -168,7 +168,11 @@ class PackageTests(unittest.TestCase):
                 actual.mkdir(mode=0o777)
                 actual.chmod(0o777)
             owner = A.AdministrativeOwner(
-                root / "admin.json", {"fixture": True}, root=root, uid=os.getuid()
+                root / "admin.json",
+                {"fixture": True},
+                inspect_inputs=lambda: None,
+                root=root,
+                uid=os.getuid(),
             )
             data = F.elf(needed=("liba.so",), interpreter="/lib/loader.so")
             candidate = root / P.CANDIDATE.lstrip("/")
@@ -286,6 +290,131 @@ class PackageTests(unittest.TestCase):
                     owner.check_inputs = lambda: None
                     owner.cancel_known_no_effect()
                     owner.restore()
+
+    def test_partial_package_retains_inputs_until_owned_tool_wait_is_observed(self):
+        import subprocess
+        import sys
+
+        A = load("claude-agent-sdk-host-transaction")
+        with tempfile.TemporaryDirectory(
+            dir=os.environ["TMPDIR"], prefix="package-tool-wait-"
+        ) as temporary:
+            root = Path(temporary).resolve()
+            initial = self.fixture(root)
+            initial.close()
+            (root / "lib64").mkdir(mode=0o700)
+            (root / "lib64/ld-linux-x86-64.so.2").symlink_to("../lib/loader.so")
+            (root / "opt").mkdir(mode=0o755)
+            for name in A.DIRECTORIES:
+                actual = root / name.lstrip("/")
+                actual.mkdir(mode=0o777)
+                actual.chmod(0o777)
+            owner = A.AdministrativeOwner(
+                root / "admin.json",
+                {"fixture": True},
+                inspect_inputs=lambda: None,
+                root=root,
+                uid=os.getuid(),
+            )
+            owner.prepare()
+            actual_tool, actual_spawn = owner.tool, subprocess.Popen
+            children = []
+
+            def spawn(*args, **kwargs):
+                child = actual_spawn(*args, **kwargs)
+                child.wait = mock.Mock(
+                    side_effect=subprocess.TimeoutExpired("owned wait withheld", 1)
+                )
+                children.append(child)
+                return child
+
+            def owned_tool(*args, **kwargs):
+                return actual_tool(
+                    [sys.executable, "-I", "-B", "-S", "-c", "pass"], environment=P.ENV
+                )
+
+            session = types.SimpleNamespace(ROOT=Path("/repo"))
+            with (
+                mock.patch.object(owner, "tool", side_effect=owned_tool),
+                mock.patch.object(A.subprocess, "Popen", side_effect=spawn),
+            ):
+                with self.assertRaises(subprocess.TimeoutExpired) as error:
+                    P.produce(owner, session, E, {}, root=root, uid=os.getuid())
+            self.assertIs(error.exception.owner, owner)
+            self.assertIsNotNone(owner.retained_inputs)
+            for fd, *_ in owner.retained_inputs.files.values():
+                os.fstat(fd)
+            with self.assertRaisesRegex(A.Refused, "unknown_administrative_tool"):
+                owner.restore()
+            del children[0].wait
+            owner.settle_tool()
+            owner.check_inputs = owner.retained_inputs.check
+            owner.restore()
+            owner.retained_inputs.close()
+
+    def test_python_cache_lookup_stays_inside_owned_image_and_checks_source(self):
+        import importlib.util
+        import marshal
+
+        with tempfile.TemporaryDirectory(
+            dir=os.environ["TMPDIR"], prefix="package-cache-"
+        ) as temporary:
+            root = Path(temporary).resolve()
+            directory = root / "usr/lib/python3.14"
+            (directory / "encodings/__pycache__").mkdir(parents=True)
+            source = b"# owned source\n"
+            for module in (
+                "encodings/__init__",
+                "encodings/utf_8",
+                "encodings/ascii",
+                "encodings/latin_1",
+                "_strptime",
+            ):
+                (directory / (module + ".py")).write_bytes(source)
+            cached = directory / "encodings/__pycache__/utf_8.cpython-314.pyc"
+            cached.write_bytes(
+                importlib.util.MAGIC_NUMBER
+                + b"\0" * 12
+                + marshal.dumps(compile(source, "owned-only", "exec"))
+            )
+            context = {
+                "version": (3, 14),
+                "cacheTag": "cpython-314",
+                "cachePrefix": None,
+                "optimize": 0,
+                "search": [
+                    "/usr/lib/python314.zip",
+                    "/usr/lib/python3.14",
+                    "/usr/lib/python3.14/lib-dynload",
+                ],
+                "loaded": [],
+            }
+            files = P.ImageFiles(root=root, uid=os.getuid())
+            try:
+                selected = P.python_closure(files, {}, context)
+                self.assertIn(
+                    "/usr/lib/python3.14/encodings/__pycache__/utf_8.cpython-314.pyc",
+                    selected,
+                )
+                self.assertTrue(
+                    all(
+                        name.startswith(str(root) + "/") or name == str(root)
+                        for name in files.directories
+                    )
+                )
+            finally:
+                files.close()
+            cached.write_bytes(
+                importlib.util.MAGIC_NUMBER
+                + b"\0" * 12
+                + marshal.dumps(compile(b"effect=1", "owned-only", "exec"))
+            )
+            files = P.ImageFiles(root=root, uid=os.getuid())
+            try:
+                with self.assertRaisesRegex(P.Refused, "cache_source_mismatch"):
+                    P.python_closure(files, {}, context)
+            finally:
+                files.close()
 
     def test_input_mode_bytes_identity_and_partial_failure_close_owned_fds(self):
         with tempfile.TemporaryDirectory(

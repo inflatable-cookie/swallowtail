@@ -39,3 +39,5 @@ source; the unsafe published cache ancestry remains an explicit prerequisite.
 
 Implement the planner-approved five-ancestor administrative exception in private
 source, preserving ordinary custody and safe-chain-before-candidate entry.
+
+Hold exact administrative identities through durable directory effects and real tool waits. Bind canonical loader/directory aliases and Python cache inputs; retain partial package inputs when a tool wait is unknown. Source/owned-fixture preparation only; activation and qualification holds remain.

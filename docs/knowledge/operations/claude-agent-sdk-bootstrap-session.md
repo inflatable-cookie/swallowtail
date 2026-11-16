@@ -137,8 +137,9 @@ The manifest's exact fields are:
 The provisioner must independently prove search completeness, including absent
 hwcaps alternatives; a self-authored snapshot of arbitrary directories is not
 that proof. The reader retains their identities, contents/absence, cache bytes
-and safe aliases through entry and restore. No permission repair is allowed on
-an unsafe ancestor or library. Graph inputs total at most512MiB/128 ELF objects;
+and safe aliases through entry and restore. Ordinary custody cannot repair an
+unsafe ancestor or library. The separate five-object administrative exception
+below must finish before this ordinary reader opens the candidate. Graph inputs total at most512MiB/128 ELF objects;
 each file is at most256MiB. The manifest is at most1MiB.
 
 ## GitHub host-package producer
@@ -205,7 +206,11 @@ establishes pre-entry authority. Both qualification holds remain unchanged.
 and [package producer](../../../scripts/claude-agent-sdk-host-package.py) implement
 the refined contract. The root owner journals each operation, retains exact
 post-effect identities and requires actual owned waits plus a live scope's
-settlement before restore. Serialized wait fields cannot clear an unknown launch.
+settlement before restore. Directory effects are fsynced before their receipts;
+a failed directory sync leaves an ambiguous operation and retains custody.
+Construction requires an independent live input checker before any journal or
+mutation. The future root entry must supply its exact image/boot/source/tool
+checker; a serialized binding is not that checker. Serialized wait fields cannot clear an unknown launch.
 A new recovery process refuses all entry attempts and ambiguous operations; known
 no-entry recovery independently rebinds inputs and directory identities. A live
 owner may complete a receipt only for an effect it actually observed. Root
@@ -223,19 +228,32 @@ image trust anchor; it is not candidate-generated authority.
 The private Python profile is isolated/no-site system3.14 with its exact three
 system search locations. The producer walks selected first-party and transitive
 stdlib literal imports, binds source and cache bytes, verifies selected bytecode
-against source, and includes extension/interpreter ELF closures. First-party
+against source, and includes extension/interpreter ELF closures. The exact
+cache tag is `cpython-314`, with no cache prefix or optimization override;
+canonical cache lookups stay inside the selected image. Missing nested paths
+bind the first absent component beneath a safe existing parent. Canonical
+directory aliases use the same strict ordinary ancestry checks as file inputs. First-party
 nonliteral import calls and sourceless modules refuse. The trusted initial
 interpreter/import bootstrap and fixed UTF8/ASCII/latin1 codec profile remain
 explicit; no original/vendor Python code or arbitrary third-party search is
 admitted. Installed package/source versions and the dpkg database bind image
-provenance, rather than a `complete:true` snapshot assertion.
+provenance, rather than a `complete:true` snapshot assertion. The cache layout
+and x86_64 flag policy follow the glibc
+[cache definitions](https://github.com/bminor/glibc/blob/glibc-2.42/sysdeps/generic/dl-cache.h)
+and [architecture selection](https://github.com/bminor/glibc/blob/glibc-2.42/sysdeps/x86_64/dl-cache.h);
+nonzero selected hwcaps and ambiguous targets still refuse.
 
 All512-input,128-object,32-directory,128-absence,512MiB aggregate,256MiB/file and
 1MiB manifest bounds remain unchanged. Tool output is bounded to16KiB and every
 returned tool handle is stopped/waited on failure. Unknown tool or ordinary-child
 waits retain both administrative and package inputs. Real image/tool behavior
 and the ordinary invocation/activation bridge still need their exact job binding;
-owned fixtures are not host admission or completed qualification.
+owned fixtures are not host admission or completed qualification. The current
+owned-child scope has no descendants and supplies software proof only; it is
+not an implementation or attestation of the required kernel/adoptee adapter.
+The ordinary manifest-descriptor bridge, existing finite kernel monitor
+composition and exact unapplied job packet remain separate source work before
+this setup can be proposed for one activation.
 
 ### Verification commands for a later grant
 

@@ -144,7 +144,6 @@ class ImageFiles:
             parent = actual.parent
             while not parent.exists():
                 parent = parent.parent
-            self.canonical(self.literal(parent))
             canonical_parent = self.canonical(self.literal(parent))
             first_missing = actual.relative_to(parent).parts[0]
             self.absent.add(canonical_parent.rstrip("/") + "/" + first_missing)
@@ -527,7 +526,7 @@ def python_closure(files, source_files, context):
                 / "__pycache__"
                 / (Path(origin).stem + "." + context["cacheTag"] + ".pyc")
             )
-            if os.path.lexists(cached):
+            if os.path.lexists(files.actual(cached)):
                 canonical, cached_data = files.read(cached)
                 checked_bytecode(data, cached_data)
                 selected.add(canonical)

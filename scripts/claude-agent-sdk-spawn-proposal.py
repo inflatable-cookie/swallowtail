@@ -540,14 +540,27 @@ class RehearsalResources:
             self.quiesce_endpoint()
             if self.driver is not None:
                 try:
-                    stop_owned(
-                        self.driver,
+                    stop_natives(
                         self.live_natives(),
                         self.context.observe if self.context else None,
                         self.context.stop if self.context else None,
                     )
                 finally:
-                    terminal = self.driver.wait(timeout=1)
+                    # All exits give the exact parent an opportunity to wait,
+                    # including exceptions that bypassed the protocol close.
+                    # Split the existing1s cleanup join bound; do not extend it.
+                    if self.driver.poll() is None:
+                        self.driver.terminate()
+                    try:
+                        terminal = self.driver.wait(timeout=0.5)
+                    except subprocess.TimeoutExpired:
+                        stop_owned(
+                            self.driver,
+                            self.live_natives(),
+                            self.context.observe if self.context else None,
+                            self.context.stop if self.context else None,
+                        )
+                        terminal = self.driver.wait(timeout=0.5)
                     self.emit(
                         "driver_cleanup_wait",
                         pid=self.driver.pid,

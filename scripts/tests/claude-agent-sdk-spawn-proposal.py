@@ -367,7 +367,7 @@ class SpawnTests(unittest.TestCase):
     def test_cleanup_signal_failure_retains_endpoint_and_custody(self):
         before = set(threading.enumerate())
         with mock.patch.object(
-            CORE, "stop_owned", side_effect=PermissionError("owned signal refused")
+            CORE, "stop_natives", side_effect=PermissionError("owned signal refused")
         ):
             with self.assertRaisesRegex(
                 CORE.Refused, "rehearsal_cleanup_unknown"

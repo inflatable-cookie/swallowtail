@@ -93,6 +93,20 @@ class SpawnTests(unittest.TestCase):
         except CORE.Refused as error:
             owner = getattr(error, "rehearsal", None)
             if owner is not None:
+                self.diagnostics.append(
+                    {
+                        "kind": "retained_unknown",
+                        "fault": kwargs.get("fault"),
+                        "launchObligation": json.loads(json.dumps(owner.launch)),
+                        "driverIntent": owner.driver_intent,
+                        "captureClosed": owner.lease.closed,
+                        "captureRevoked": owner.lease.revoked,
+                        "fixtureExists": owner.root.is_dir(),
+                        "payloadEffectObserved": (
+                            owner.root / "native-payload-effect"
+                        ).exists(),
+                    }
+                )
                 (owner.root / "retention-diagnostic.json").write_text(
                     json.dumps(
                         {
@@ -113,6 +127,8 @@ class SpawnTests(unittest.TestCase):
         self.diagnostics.append(
             {
                 "fault": kwargs.get("fault"),
+                "launchObligation": result.get("launchObligation"),
+                "payloadEffectObserved": result.get("payloadEffectObserved"),
                 "failure": result.get("failure"),
                 "timings": result.get("timings", []),
                 "driverWait": result.get("driverWait"),
@@ -348,6 +364,7 @@ class SpawnTests(unittest.TestCase):
             with self.subTest(kwargs=kwargs):
                 result = self.run_peer(**kwargs)
                 self.assertIsNotNone(result["failure"])
+                self.assertEqual(result["launchObligation"]["state"], "settled")
 
     def assert_retained(self, owner):
         self.assertTrue(owner.retained)

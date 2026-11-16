@@ -81,6 +81,9 @@ transaction's unknown-settlement receipt. Process exit never substitutes for an
 actual wait, and this retention does not establish kernel tree reaping.
 On a protocol refusal, stop the identity-bound native before asking its driver
 to close, so that the actual parent remains alive to receive the exit status.
+The private owned driver also retains its returned ChildProcess handle and, on
+termination, stops and awaits that handle before requesting sidecar close. This
+covers a child still checking its Python entry before host identity notification.
 If that parent still exits without the wait, retention remains mandatory.
 
 Read-only input batches check every held identity before and after acquisition,

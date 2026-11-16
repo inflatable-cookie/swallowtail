@@ -8,8 +8,14 @@ if (config.graphAttack) {
 }
 let started = false;
 let observedExit;
+let nativeChild;
 const nativeExit = new Promise((resolve) => { observedExit = resolve; });
 export const waitForNativeExit = () => nativeExit;
+export async function stopAndWaitForNativeExit() {
+  if (!nativeChild) return;
+  nativeChild.kill("SIGKILL");
+  await nativeExit;
+}
 function note(kind, data) { console.error(JSON.stringify({ probeEvent: kind, ...data })); }
 function refused(at, error) {
   const message = typeof error?.message === "string" ? error.message : "";
@@ -35,6 +41,7 @@ export function query({ prompt, options }) {
     try { child = spawn({ ...request, command: config.entryCommand[0], args: config.launchAttack ? ["-c", "throw Error(\"unapproved\")"] : config.entryCommand.slice(1) }); }
     catch (error) { refused("launch", error); throw error; }
     // Real ChildProcess; no spawn replacement or PID facade.
+    nativeChild = child;
     child.stderr.on("data", (data) => process.stderr.write(data));
     child.once("exit", (code, signal) => {
       observedExit({ code, signal });

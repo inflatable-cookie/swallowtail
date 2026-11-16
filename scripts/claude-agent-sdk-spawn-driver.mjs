@@ -35,7 +35,12 @@ if (config.mode === "probe") {
     }
     return result;
   };
-  process.once("SIGTERM", close);
+  process.once("SIGTERM", async () => {
+    // Retain the real handle through its actual wait before sidecar close can
+    // exit this parent. This includes children still in the Python entry gate.
+    await import("./probe-sdk.mjs").then((sdk) => sdk.stopAndWaitForNativeExit());
+    close();
+  });
   await import("./claude-agent-sdk-sidecar.mjs");
   send("open", "open", { cwd: config.workspace, model: config.model,
     tools: ["Read", "Glob", "Grep"], permissionMode: "default",

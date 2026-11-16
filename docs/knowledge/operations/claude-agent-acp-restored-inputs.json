@@ -1,0 +1,248 @@
+{
+  "artifacts": [
+    {
+      "analysisSelectedFileCount": 100,
+      "archiveMembers": 309,
+      "bytes": 609433,
+      "integrity": "sha512-c9YGBfdJrLcKiinRpXuDuibC+CRGqQpe9+ey/+TuuZ7ejHlVyEELbbvRkxHZN+Hf5XGecJD5i0kvP2opCseATA==",
+      "key": "0.101.0",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 100,
+      "sha256": "7f52fb5f7447f73a503ab9fc4fc886da3cc8658d4693954f086a617f57eb3abb",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2285589,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.101.0.tgz",
+      "verificationMemberLimit": 412,
+      "version": "0.101.0"
+    },
+    {
+      "analysisSelectedFileCount": 2,
+      "archiveMembers": 21,
+      "bytes": 1475971,
+      "integrity": "sha512-z5WHCUeW52SKQ3rnvI3zt8X5h2QQ5o3Cgg5xarO5Rimfe67f3pOJt2aOh00S8t/nRzqfs+8nCb9o1EoXe+yccA==",
+      "key": "_anthropic-ai_claude-agent-sdk_0.3.318",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "selectedFileCount": 13,
+      "sha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 5086044,
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.318.tgz",
+      "verificationMemberLimit": 40,
+      "version": "0.3.318"
+    },
+    {
+      "analysisSelectedFileCount": 100,
+      "archiveMembers": 309,
+      "bytes": 613681,
+      "integrity": "sha512-re7jjUO8EvOaH5GcpG7wKlZwplDsQSMPYW2wR1ZS/pWvpOsmq7Vn774EFGibjmTpzwko0FOtHTIVRd/1byJWnA==",
+      "key": "0.101.1",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 100,
+      "sha256": "773924c931aec60c60e7669fb561eec7e54534fa093068b6bc91a6641c4a9f2a",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2301056,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.101.1.tgz",
+      "verificationMemberLimit": 412,
+      "version": "0.101.1"
+    },
+    {
+      "analysisSelectedFileCount": 2,
+      "archiveMembers": 21,
+      "bytes": 1488068,
+      "integrity": "sha512-7X+sh4uZv/u4OL4I4cQvMr9N3NM6FDiuyk829hFylgbrnNwVyiGElWEDWGuO26zwMIxmgpKdPoDILoFIHh1uwA==",
+      "key": "_anthropic-ai_claude-agent-sdk_0.3.319",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "selectedFileCount": 13,
+      "sha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 5127413,
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.319.tgz",
+      "verificationMemberLimit": 40,
+      "version": "0.3.319"
+    },
+    {
+      "analysisSelectedFileCount": 102,
+      "archiveMembers": 315,
+      "bytes": 617993,
+      "integrity": "sha512-0SRpXg8hNmMDxoF3+HgAsRu/pOJwO3lyrWGf80UvAUWuuc5gxTPZyI8jXxKNuxj+ChYsBzhen+KHKZiHou6pEg==",
+      "key": "0.102.0",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 102,
+      "sha256": "89ae947fa17ce875abb6128049534fe6c118a71f2e0a4ecb2e332e8c8c24526f",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2316971,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.102.0.tgz",
+      "verificationMemberLimit": 420,
+      "version": "0.102.0"
+    },
+    {
+      "analysisSelectedFileCount": 2,
+      "archiveMembers": 21,
+      "bytes": 1507185,
+      "integrity": "sha512-Smer/h/jQLTtT+l4sxaAUwZq7wif/9RzzuqltS5Gy+kAFo/iP89H7JHa8avhVT0xGkPBvBD/1Bbdg3pcArhQcw==",
+      "key": "_anthropic-ai_claude-agent-sdk_0.3.321",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "selectedFileCount": 13,
+      "sha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 5182471,
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.321.tgz",
+      "verificationMemberLimit": 40,
+      "version": "0.3.321"
+    },
+    {
+      "analysisSelectedFileCount": 141,
+      "archiveMembers": 441,
+      "bytes": 752451,
+      "integrity": "sha512-ypU56QEre6RKCxxQfP34GGcRTGpXgdD9RVLXXN0OgaXglq9oIauwnY8SKerOx068J9d+RulZZ3fIj39EgX9wwA==",
+      "key": "0.103.0",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 141,
+      "sha256": "1c5b572c2287c5810ed1d1f5784bf44bf77cbdfe86ac8736639e58abaa443667",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2836158,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.103.0.tgz",
+      "verificationMemberLimit": 588,
+      "version": "0.103.0"
+    },
+    {
+      "analysisSelectedFileCount": 141,
+      "archiveMembers": 441,
+      "bytes": 755311,
+      "integrity": "sha512-omZp9RHHuV5m6SD8qwQh990jerDBfer5fis+QRlfcEewOCB2SEEkx2XVcZJRolPNygLr6jVEaSiksmwSnkJcjw==",
+      "key": "0.104.0",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 141,
+      "sha256": "727295374962db5baab47bd6e15e64d92fcaf788b18873d10634db5b240691a2",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2846945,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.104.0.tgz",
+      "verificationMemberLimit": 588,
+      "version": "0.104.0"
+    },
+    {
+      "analysisSelectedFileCount": 141,
+      "archiveMembers": 441,
+      "bytes": 755783,
+      "integrity": "sha512-wokBSGBEpYWgewoK1xeg/hiNg6KDFw9yY5QD+jYjDu3oVfALJGVCsc+sIHAA2hVcflJsqxRrYv+6AnCRAwRyFQ==",
+      "key": "0.104.1",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 141,
+      "sha256": "036cc8f1d561aa853c472523b56186d8f22678054afc34fba48524e35728f6ab",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2848383,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.104.1.tgz",
+      "verificationMemberLimit": 588,
+      "version": "0.104.1"
+    },
+    {
+      "analysisSelectedFileCount": 2,
+      "archiveMembers": 21,
+      "bytes": 1507429,
+      "integrity": "sha512-r88ij7R3SPV2j3BtFuavgrbWZNE8SVVS42AOQ1KxlS+QnSwNNnUhmVXV3Es2dniZySBYX8ENebL43ffhiB0azw==",
+      "key": "_anthropic-ai_claude-agent-sdk_0.3.322",
+      "name": "@anthropic-ai/claude-agent-sdk",
+      "selectedFileCount": 13,
+      "sha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 5182651,
+      "url": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk/-/claude-agent-sdk-0.3.322.tgz",
+      "verificationMemberLimit": 40,
+      "version": "0.3.322"
+    },
+    {
+      "analysisSelectedFileCount": 144,
+      "archiveMembers": 450,
+      "bytes": 763360,
+      "integrity": "sha512-D5OS0g+9IdwJHJEnX0MURUHZh+zeMNguFVDIQBqheNACktmjiK2WbWQJ4hF4qot9gZelXP+OJ02PKJaQ4iXWtw==",
+      "key": "0.105.0",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 144,
+      "sha256": "0d0cd92dd09fa6b7e6890cb652df4b60ce8faa9ee42e49d3f504df7df35920b5",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2878339,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.105.0.tgz",
+      "verificationMemberLimit": 600,
+      "version": "0.105.0"
+    },
+    {
+      "analysisSelectedFileCount": 145,
+      "archiveMembers": 453,
+      "bytes": 770884,
+      "integrity": "sha512-jfwcUc7J+KTIOqsPPSDzCgh4WI+QgvbPEACPtibMV1e41spmsR2Wb5xEeO1lh0el/kLxi7nF3zqZ1RYpdoVw7Q==",
+      "key": "0.106.0",
+      "name": "@agentclientprotocol/claude-agent-acp",
+      "selectedFileCount": 145,
+      "sha256": "d00e52680d3aed564346acadddd4603de3f9178d385ef257283839c41d9da4b0",
+      "source": "credential-free-official-fetch",
+      "unpackedBytes": 2908533,
+      "url": "https://registry.npmjs.org/@agentclientprotocol/claude-agent-acp/-/claude-agent-acp-0.106.0.tgz",
+      "verificationMemberLimit": 604,
+      "version": "0.106.0"
+    },
+    {
+      "analysisSelectedFileCount": 98,
+      "archiveMembers": 840,
+      "bytes": 1141941,
+      "integrity": "sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==",
+      "key": "zod_4.6.7",
+      "name": "zod",
+      "selectedFileCount": 98,
+      "sha256": "84efd155bed93270286e793fc951be270b536cbd5b0eeb111f0fa3967201d698",
+      "source": "verified-cache",
+      "unpackedBytes": 6148944,
+      "url": "https://registry.npmjs.org/zod/-/zod-4.6.7.tgz",
+      "verificationMemberLimit": 996,
+      "version": "4.6.7"
+    }
+  ],
+  "bundles": {
+    "acp-source": {
+      "bytes": 5641539,
+      "entries": [
+        "0.101.0",
+        "0.101.1",
+        "0.102.0",
+        "0.103.0",
+        "0.104.0",
+        "0.104.1",
+        "0.105.0",
+        "0.106.0"
+      ],
+      "sha256": "1afba4c937de0b4966d0f5f38bf3747cdb055b3aabf99b29bf886e5b950fdc3a"
+    },
+    "agent-sdk-source": {
+      "bytes": 5975350,
+      "entries": [
+        "_anthropic-ai_claude-agent-sdk_0.3.318",
+        "_anthropic-ai_claude-agent-sdk_0.3.319",
+        "_anthropic-ai_claude-agent-sdk_0.3.321",
+        "_anthropic-ai_claude-agent-sdk_0.3.322"
+      ],
+      "sha256": "f4962e80e42a301072665c3fa612f4ba4751f44cd55a49d6de20d9f687e3c007"
+    },
+    "zod-source": {
+      "bytes": 1138968,
+      "entries": [
+        "zod_4.6.7"
+      ],
+      "sha256": "80dfb4560cdef0d9bee5241754987d94076b1f943c0c7538a724c474ab9965e3"
+    }
+  },
+  "execution": "none; source data only",
+  "limits": {
+    "artifactBytes": 8388608,
+    "attempts": 3,
+    "basis": "8MiB supported proof retention and existing 64MiB source reader cap; identities pin exact bytes; selected counts from frozen inventories",
+    "frozenSourceByteSizes": "not separately recorded; verified dual hashes bind restored exact bytes",
+    "members": 8192,
+    "secondsPerArtifact": 120,
+    "unpackedBytes": 67108864
+  },
+  "schema": "swallowtail.acp239.restored-inputs.v1",
+  "verification": {
+    "analysisScope": "selected graph files for ACP/Agent SDK/Zod; initial restoration selected-file count also includes retained SDK source helpers, never executed",
+    "memberBound": "4 * (recorded executable source count + 1), accommodating metadata/declarations/maps; exact archive hashes additionally bind all members",
+    "source": "frozen import inventories plus graph hashes; no new registry metadata"
+  }
+}

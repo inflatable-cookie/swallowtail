@@ -6,6 +6,13 @@ accepts the source/fake milestone at5bb3579c. Its `proof`, `source_cleanup` and
 for qualification. Preserve that proof and the earlier failed-run limits.
 No settled test or spent original grant is replayed here.
 
+The [source callsite proof](claude-agent-acp-callsite-proof.md) now binds actual
+invocations and argument dataflow across the eight graphs. It identifies the
+SDK module-scope `getBuiltinModule` calls as incompatible with the current
+throwing bootstrap. Exact source evidence replaces the import-parent-only
+unknowns below; original admission remains closed. The frozen preparation record
+retains its original requirements scope.
+
 The [exact preparation record](claude-agent-acp-admission-record.json) binds
 retained graph/artifact identities, selected execution-import parents, dynamic
 source cautions and native identities for all eight hops. It adds a bounded

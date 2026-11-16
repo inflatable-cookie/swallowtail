@@ -369,14 +369,14 @@ def parse_events(data):
 class RehearsalResources:
     """Retain the live rehearsal on unknown cleanup; no temporary-dir finalizer."""
 
-    def __init__(self, registered, context, emit, output, output_limit):
+    def __init__(self, registered, context, emit, output):
         self.root = Path(
             tempfile.mkdtemp(prefix="sdk234-spawn-", dir=os.environ["TMPDIR"])
         ).resolve()
         info = self.root.lstat()
         self.identity = (info.st_dev, info.st_ino, info.st_uid)
         self.registered, self.context, self.emit = registered, context, emit
-        self.output, self.output_limit = output, output_limit
+        self.output = output
         self.lease = self.driver = self.pidfd = self.server = self.thread = None
         self.retained = self.released = False
 
@@ -391,23 +391,20 @@ class RehearsalResources:
     def native_joins(self):
         # Read only these owned pipes, after the actual driver wait. A bounded
         # tail may contain its final ChildProcess.exit observation after cancel.
-        for name in self.output:
-            stream = getattr(self.driver, name)
-            while sum(len(data) for data in self.output.values()) < self.output_limit:
-                try:
-                    data = os.read(
-                        stream.fileno(),
-                        min(
-                            8192,
-                            self.output_limit
-                            - sum(len(data) for data in self.output.values()),
-                        ),
-                    )
-                except BlockingIOError:
-                    break
-                if not data:
-                    break
-                self.output[name].extend(data)
+        # A smaller protocol fault threshold must not discard an actual wait.
+        # Cleanup may read at most64KiB, sharing the existing fixed1MiB ceiling.
+        remaining = min(
+            65536, max(0, 1000000 - sum(len(data) for data in self.output.values()))
+        )
+        while remaining:
+            try:
+                data = os.read(self.driver.stderr.fileno(), min(8192, remaining))
+            except BlockingIOError:
+                break
+            if not data:
+                break
+            self.output["stderr"].extend(data)
+            remaining -= len(data)
         waits = parse_events(self.output["stderr"].decode(errors="replace"))
         for native in self.registered:
             matches = [
@@ -619,9 +616,7 @@ def rehearsal(
                     observation=row,
                 )
 
-    resources = RehearsalResources(
-        registered, context, emit, captured_output, output_limit
-    )
+    resources = RehearsalResources(registered, context, emit, captured_output)
     with resources as root:
         lease = custody.Lease(
             runtime,

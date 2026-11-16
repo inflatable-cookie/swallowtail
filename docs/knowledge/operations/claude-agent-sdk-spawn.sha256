@@ -1,6 +1,6 @@
 4a13c4290c8aea48aadff5a0030eaee95f6868fdefa085003ec20d2537a8caa9  scripts/tests/sdk-runtime-model.py
 6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29  .github/workflows/sdk234-combined-fake.yml
-9a2324350a3a2e473c18a07a168611d1731ee03f48ee3041b919b91e28176cbf  scripts/claude-agent-sdk-spawn-proposal.py
+8c770814a6b1d8936394ba1e57887b8901daa60505c126bac0e9193efbc94ad4  scripts/claude-agent-sdk-spawn-proposal.py
 9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1  scripts/claude-agent-sdk-spawn-entry.py
 8afaab08f1d798fbf3f9318ec22ef9005fb22f9ce2657806bb39da930b337114  scripts/claude-agent-sdk-spawn-owner.py
 0b5b7732112f6a127d927927f85e96bde0bf4d5db08c9a084150ec2275577074  scripts/claude-agent-sdk-spawn-policy.py

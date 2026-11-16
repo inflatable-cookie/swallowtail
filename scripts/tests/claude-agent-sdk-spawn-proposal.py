@@ -298,6 +298,8 @@ class SpawnTests(unittest.TestCase):
 
         def start(*args, **kwargs):
             nonlocal child, kill, wait
+            if not kwargs.get("start_new_session"):
+                return popen(*args, **kwargs)
             child = popen(
                 [sys.executable, "-I", "-B", "-S", "-c", "import time; time.sleep(30)"],
                 stdout=subprocess.PIPE,

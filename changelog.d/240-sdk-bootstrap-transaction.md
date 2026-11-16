@@ -17,3 +17,6 @@ including through outer transaction failures and cancellation.
 Track every possible one-shot launch separately from admission, including refused
 and pre-notification children, and require the exact owned parent's wait before
 releasing custody. Preserve refusal before the owned payload's first effect.
+
+Serialize normal and signalled private-driver exits through actual child
+stop/wait, and refuse late SDK spawns once parent shutdown starts.

@@ -9,9 +9,12 @@ if (config.graphAttack) {
 let started = false;
 let observedExit;
 let nativeChild;
+let stopping = false;
 const nativeExit = new Promise((resolve) => { observedExit = resolve; });
 export const waitForNativeExit = () => nativeExit;
 export async function stopAndWaitForNativeExit() {
+  // Quiesce synchronously even if the pending SDK open has not spawned yet.
+  stopping = true;
   if (!nativeChild) return;
   nativeChild.kill("SIGKILL");
   await nativeExit;
@@ -27,6 +30,10 @@ function refused(at, error) {
 export function query({ prompt, options }) {
   const spawn = options.spawnClaudeCodeProcess;
   return baseQuery({ prompt, options: { ...options, spawnClaudeCodeProcess: (request) => {
+    if (stopping) {
+      note("native_spawn_quiesced", { reason: "parent_closing" });
+      throw new Error("parent_closing");
+    }
     if (started) { note("start_refused", { reason: "second_native_start" }); throw new Error("second_native_start"); }
     const keys = Object.keys(request.env).sort();
     if (request.command !== process.execPath || request.cwd !== config.workspace ||

@@ -561,6 +561,105 @@ class LaunchObligationTests(unittest.TestCase):
     run_peer = SpawnTests.run_peer
     assert_retained = SpawnTests.assert_retained
 
+    def test_normal_close_survivor_waits_before_parent_exit_without_signal(self):
+        result = self.run_peer(scenario="never-exit", fault="close-before-native-wait")
+        self.assertIsNotNone(result["failure"])
+        self.assertEqual(result["driverWait"], 1)
+        self.assertFalse(
+            any(row["kind"] == "stop_requested" for row in result["events"])
+        )
+        close = next(
+            row
+            for row in CORE.parse_events(result["stdout"])
+            if row.get("type") == "response" and row.get("id") == "close"
+        )
+        self.assertEqual(close["data"]["nativeJoin"], "survivor")
+        self.assertFalse(close["data"]["nativeExitObserved"])
+        rows = result["peerEvents"]
+        requested = next(
+            i
+            for i, row in enumerate(rows)
+            if row.get("probeEvent") == "driver_exit_requested"
+        )
+        waited = next(
+            i for i, row in enumerate(rows) if row.get("probeEvent") == "native_wait"
+        )
+        ready = next(
+            i
+            for i, row in enumerate(rows)
+            if row.get("probeEvent") == "driver_exit_ready"
+        )
+        closed = next(
+            i
+            for i, row in enumerate(rows)
+            if row.get("probeEvent") == "native_launch_closed"
+        )
+        self.assertLess(requested, waited)
+        self.assertLess(waited, ready)
+        self.assertLess(ready, closed)
+        self.assertEqual(rows[waited]["source"], "ChildProcess.exit")
+        self.assertEqual(rows[waited]["pid"], result["registered"][0]["pid"])
+        self.assertEqual(rows[waited]["actor"], result["registered"][0]["parent"])
+        self.assertEqual(rows[waited]["signal"], "SIGKILL")
+        self.assertEqual(
+            result["launchObligation"]["settlement"], "exact_parent_handle_wait"
+        )
+
+    def test_parent_stop_quiesces_a_late_sdk_open_before_spawn_effect(self):
+        # Source-shaped denial unit only; no runtime custody or topology credit.
+        with tempfile.TemporaryDirectory(
+            prefix="late-sdk-open-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary)
+            (root / "sdk.mjs").write_bytes(
+                (ROOT / "scripts/claude-agent-sdk-spawn-sdk.mjs").read_bytes()
+            )
+            (root / "spawn-config.json").write_text(
+                json.dumps(
+                    {
+                        "nativeArgs": [],
+                        "nativeEnvKeys": [],
+                        "workspace": str(root),
+                        "entryCommand": ["unreachable"],
+                    }
+                )
+            )
+            (root / "base-sdk.mjs").write_text("""export function query({options}) {
+  return options.spawnClaudeCodeProcess({command:process.execPath,args:[],cwd:process.cwd(),env:{}});
+}\n""")
+            entry = root / "entry.mjs"
+            entry.write_text("""import {query,stopAndWaitForNativeExit} from './sdk.mjs';
+import {writeFileSync,existsSync} from 'node:fs';
+await stopAndWaitForNativeExit();
+let denied = false;
+try { query({prompt:{},options:{spawnClaudeCodeProcess(){writeFileSync('spawn-effect','bad');}}}); }
+catch (error) { if(error.message !== 'parent_closing') throw error; denied = true; }
+if(!denied || existsSync('spawn-effect')) throw Error('late spawn reached');
+console.log('late_start_refused');\n""")
+            child = subprocess.Popen(
+                [
+                    str(self.node),
+                    *CORE.STARTUP,
+                    "--disallow-code-generation-from-strings",
+                    str(entry),
+                ],
+                cwd=root,
+                env={"PATH": "/usr/bin:/bin", "HOME": str(root), "TMPDIR": str(root)},
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            try:
+                stdout, stderr = child.communicate(timeout=5)
+            finally:
+                if child.poll() is None:
+                    child.kill()
+                child.wait(timeout=2)
+                child.stdout.close()
+                child.stderr.close()
+            self.assertEqual(child.returncode, 0, stderr)
+            self.assertEqual(stdout, b"late_start_refused\n")
+            self.assertFalse((root / "spawn-effect").exists())
+
     def refusals(self):
         def revoke(phase, lease, root):
             if phase == "native-entry":

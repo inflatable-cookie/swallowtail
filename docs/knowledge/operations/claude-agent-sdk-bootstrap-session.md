@@ -84,6 +84,12 @@ to close, so that the actual parent remains alive to receive the exit status.
 The private owned driver also retains its returned ChildProcess handle and, on
 termination, stops and awaits that handle before requesting sidecar close. This
 covers a child still checking its Python entry before host identity notification.
+Normal close can race that signal path. Every private driver exit request now
+synchronously quiesces future SDK spawns and awaits the same actual child before
+calling the retained immediate-exit primitive. A sidecar survivor response stays
+a failure; the later supervisor stop/wait supplies cleanup evidence only. A
+failed wait leaves the parent under the existing host deadline and retains
+unknown custody. No deadline or admission bound is enlarged.
 If that parent still exits without the wait, retention remains mandatory.
 
 Read-only input batches check every held identity before and after acquisition,

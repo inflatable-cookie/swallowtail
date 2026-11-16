@@ -36,3 +36,6 @@ while keeping source proof separate from host/original qualification.
 Add a bounded fail-closed image/ancestry gate and pin the selected image build
 provenance. Retain the exact five-ancestor alternative as unapplied contract
 source; the unsafe published cache ancestry remains an explicit prerequisite.
+
+Implement the planner-approved five-ancestor administrative exception in private
+source, preserving ordinary custody and safe-chain-before-candidate entry.

@@ -37,19 +37,23 @@
     "recipeMode": "0777",
     "required": "no group/other-writable ancestor before ordinary custody or candidate open",
     "freshHostModeObserved": false,
-    "reviewerDisposition": "215354c7f119499f294dddb308660fd1028ae0e87470b5caab0049710c1e5e97; keep unsupported under current custody contract; ancestor-only alternative requires separate contract review and exact authority"
+    "reviewerDisposition": "215354c7f119499f294dddb308660fd1028ae0e87470b5caab0049710c1e5e97; keep unsupported under current custody contract; ancestor-only alternative requires separate contract review and exact authority",
+    "supersededBy": "Planner disposition030bc11f / brief v8 approves exact five-ancestor source/fake implementation; ordinary custody unchanged; no host activation"
   },
   "admissionSource": "scripts/claude-agent-sdk-host-admission.py",
-  "producerState": "admission gate implemented; complete package production blocked by source-profile ancestry incompatibility; no complete:true or manifest template published",
+  "producerState": "Five-ancestor owner and bounded loader/Python package producer implemented in private source; ordinary invocation bridge and exact activation packet in progress; no actual host package or activation claimed",
   "unappliedAlternative": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-ancestor-alternative.patch",
     "sha256": "17fcd226ef7a55d1cd4db6914a1e3fcf0c423d8eb948911cc8ad8d4a9091c936",
     "scope": "five fixed ancestors only; same live owner through later permission/runtime/fakes/actual waits/checked restore; no mutation now"
   },
   "activationPacket": null,
-  "activationPacketReason": "Do not register or dispatch a known-unsupported setup or permission-only diagnostic; exact executable packet requires ancestor contract disposition and finished complete producer first.",
+  "activationPacketReason": "Source implementation proceeds under v8; exact source-immutable job/ordinary invocation integration and independent review are still required before any activation.",
   "runtimeExecuted": false,
   "hostPackageProduced": false,
   "activationAuthorized": false,
-  "qualificationMergeHold": true
+  "qualificationMergeHold": true,
+  "transactionSource": "scripts/claude-agent-sdk-host-transaction.py",
+  "producerSource": "scripts/claude-agent-sdk-host-package.py",
+  "sourceImplementationApproved": true
 }

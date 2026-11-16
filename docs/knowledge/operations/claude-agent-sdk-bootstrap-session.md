@@ -169,41 +169,73 @@ candidate or executing any candidate command. Leaf preparation cannot repair it.
 A narrowly scoped setup alternative must be reviewed before any repair attempt;
 no broad recursive cache chmod or weakened ancestry rule is authorized.
 
-### Exact unsupported prerequisite and bounded alternative
+### Five-ancestor administrative transaction
 
-The official image release tag `ubuntu26/20261111.196` resolves to source
-`93a4e4e98715026b60fdf86893cf193b4be3bd47`. Its README identifies image
-20261111.196.1. The [pinned environment recipe](https://github.com/actions/runner-images/blob/93a4e4e98715026b60fdf86893cf193b4be3bd47/images/ubuntu/scripts/build/configure-environment.sh)
-sets the tool-cache root0777. Exact file digests and source URLs are retained in
-[the producer profile](claude-agent-sdk-host-package.json); no fresh host mode
-is inferred. This source-derived precondition conflicts with the unchanged
-safe-ancestry contract before loader/search or candidate-byte admission.
+Planner disposition030bc11f, recorded in version8, approves the exact five-object
+design for source/owned-fixture implementation and independent review. This
+supersedes the gate-only stop at a3941b5e. It grants no host mutation or activation.
+The administrative exception covers only the literal cache root, node,22.23.4,
+x64 and bin directories; `/` and `/opt` must already be safe. Only0777→0755 is
+prepared;0755 is held unchanged. Every other mode/type/owner/alias refuses.
+Ordinary Inputs/Lease checks remain strict.
 
-The repository [admission gate](../../../scripts/claude-agent-sdk-host-admission.py)
-holds and checks the literal parent directory chain without opening a candidate,
-following aliases, changing modes or creating a child. It refuses image drift,
-unsafe ownership/modes, alias/replacement and bounded-output failures; partial
-captures close only their own descriptors. A safe-chain result is explicitly
-ancestry-only, never a completed package or runtime/host admission. The complete
-loader/search/Python/supervisor producer remains240's obligation after this
-prerequisite is settled; it has not been replaced by a manually assembled manifest.
+The same administrative process holds noninheritable directory descriptors and
+a durable journal through package production and the later ordinary invocation.
+It persists identity and intent before each mutation, prepares outer-to-inner,
+and completes safe ancestry before opening candidate bytes. Known no-entry
+failures may conditionally restore checked identities. An attempted/possibly
+completed spawn creates an unresolved obligation before calling Popen; missing
+actual waits, drift and ambiguous effects retain owner, descriptors and evidence.
+After exact settlement and leaf restore, ancestors restore in reverse order.
+No root directory handle passes to the ordinary supervisor or its payload.
 
-The retained reviewer advised keeping this image unsupported and preparing the
-[ancestor-only alternative](claude-agent-sdk-host-ancestor-alternative.patch) for
-separate contract review and exact authority. That patch is **unapplied contract
-source**, not an executable setup or workflow patch. It names only the five
-literal cache ancestors, held identities, intent-before-mutation, finite one-job
-bounds, conditional reverse restore and independent recovery. The same root owner
-must retain the chain through the later same-invocation permission/runtime/fake
-proof and real waits; no standalone chmod demonstration is proposed. `/opt`,
-libraries and recursive cache repairs remain excluded. No clamp was attempted.
+The [pinned image profile](claude-agent-sdk-host-package.json) binds the official
+Ubuntu26.04.1/20261111.196.1 build source. Its0777 tool-cache recipe is the reason
+for this narrow administrative preparation, not a waiver of safe ancestry or a
+fresh host observation. The historical unapplied contract patch remains retained;
+the implemented transaction follows this refined safe-chain-before-candidate rule.
+Task240 owns complete package production and exact unapplied setup/activation
+source. Tom supplies no manually assembled hashes. Root bootstrap trusts the
+selected GitHub image, loader and administrative tooling; candidate output never
+establishes pre-entry authority. Both qualification holds remain unchanged.
 
-There is no honest source-immutable activation packet yet for this incompatible
-image. Do not register a gate-only diagnostic or dispatch a known-refusing job.
-The concrete next disposition is review/authority for that bounded ancestor
-contract, or an already-safe existing runtime ancestry on the same chosen GitHub
-route. Do not ask Tom to rechoose the route or supply hundreds of hashes.
-The initial image/root tooling trust anchor does not waive safe ancestry.
+### Image-specific producer source
+
+[The administrative owner](../../../scripts/claude-agent-sdk-host-transaction.py)
+and [package producer](../../../scripts/claude-agent-sdk-host-package.py) implement
+the refined contract. The root owner journals each operation, retains exact
+post-effect identities and requires actual owned waits plus a live scope's
+settlement before restore. Serialized wait fields cannot clear an unknown launch.
+A new recovery process refuses all entry attempts and ambiguous operations; known
+no-entry recovery independently rebinds inputs and directory identities. A live
+owner may complete a receipt only for an effect it actually observed. Root
+handles are noninheritable and remain subject to owner-process identity checks.
+
+The producer uses the existing ELF reader. It parses the selected little-endian
+glibc1.1 cache, accepts only x86_64 entries and unambiguous cache/default targets,
+and obtains built-in search paths from the trusted system loader's `--help`
+without naming a candidate program. All glibc-hwcaps directories must be absent;
+preload, legacy search, unsupported dynamic inputs and ambiguous targets refuse.
+Actual cache bytes, paths/aliases, search inventories/absence and fresh host/auxv
+inputs are held. The initial loader/dpkg tooling belongs to the explicit GitHub
+image trust anchor; it is not candidate-generated authority.
+
+The private Python profile is isolated/no-site system3.14 with its exact three
+system search locations. The producer walks selected first-party and transitive
+stdlib literal imports, binds source and cache bytes, verifies selected bytecode
+against source, and includes extension/interpreter ELF closures. First-party
+nonliteral import calls and sourceless modules refuse. The trusted initial
+interpreter/import bootstrap and fixed UTF8/ASCII/latin1 codec profile remain
+explicit; no original/vendor Python code or arbitrary third-party search is
+admitted. Installed package/source versions and the dpkg database bind image
+provenance, rather than a `complete:true` snapshot assertion.
+
+All512-input,128-object,32-directory,128-absence,512MiB aggregate,256MiB/file and
+1MiB manifest bounds remain unchanged. Tool output is bounded to16KiB and every
+returned tool handle is stopped/waited on failure. Unknown tool or ordinary-child
+waits retain both administrative and package inputs. Real image/tool behavior
+and the ordinary invocation/activation bridge still need their exact job binding;
+owned fixtures are not host admission or completed qualification.
 
 ### Verification commands for a later grant
 
@@ -363,7 +395,12 @@ holds and every original/provider/host/kernel/canonical activation gate remain.
 
 ## Covering proof
 
-For the admission change run `check:claude-agent-sdk-host-admission`,
+For producer changes run `check:claude-agent-sdk-host-producer`,
+`check:format:claude-agent-sdk-host-producer`,
+`validate:claude-agent-sdk-host-producer` and the source-packet/docs/routes/routing
+checks below. Accepted unchanged runtime/ACP suites are not a ritual.
+
+For admission changes run `check:claude-agent-sdk-host-admission`,
 `check:format:claude-agent-sdk-host-admission`,
 `validate:claude-agent-sdk-host-admission` and
 `validate:claude-agent-sdk-source-packet`, plus the changed docs/routes/retired and

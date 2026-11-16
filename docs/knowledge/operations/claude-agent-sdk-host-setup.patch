@@ -20,8 +20,8 @@ new file mode 100644
 +      "runs-on": "ubuntu-26.04",
 +      "timeout-minutes": 2,
 +      "env": {
-+        "SDK240_SOURCE": "a9252306b78033f525dbf28457a2d2c43258628f",
-+        "SDK240_RECORD": "5b2b9c16a2315bc4ef6c658759dd33015bb53ace91d8b280f36e702cfb325bb5",
++        "SDK240_SOURCE": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
++        "SDK240_RECORD": "631a1bc3cd0b210848791d1f839f5620c8fd26eef0c9e92881342d1c1a0267cb",
 +        "SDK240_BOOTSTRAP": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605"
 +      },
 +      "steps": [
@@ -33,7 +33,7 @@ new file mode 100644
 +        {
 +          "uses": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
 +          "with": {
-+            "ref": "a9252306b78033f525dbf28457a2d2c43258628f",
++            "ref": "23c06db6cdb5e2218426bdcae7efdb5c16accf02",
 +            "persist-credentials": false
 +          }
 +        },

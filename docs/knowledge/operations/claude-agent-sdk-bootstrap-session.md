@@ -259,6 +259,21 @@ handle refuses. The same owner retains the transfer while a child wait is unknow
 Existing finite kernel monitor composition and the exact unapplied job packet
 remain source work before this setup can be proposed for one activation.
 
+The existing monitor now exposes the narrow ordinary-guest/descriptor seam without
+changing its legacy30s default. That seam accepts at most one administrative
+regular0600 read-only file; directory and write handles refuse before fork.
+The administrative owner records monitor intent before the owned fork seam and
+retains the same monitor object. Release checks its live tracer's terminal rows,
+actual init parent/adoptee wait and complete task gate, alongside the existing
+software-parent observations. A serialized summary cannot supply those rows.
+Unknown fork or receipt/wait failure keeps monitor, group, journal and capture
+handles. A source-proved no-fork refusal may restore the exact prepared chain.
+The runtime observer similarly keeps launch intent before Popen: a constructor
+with no returned handle retains custody; a later journal refusal uses the actual
+handle already held by the session and waits it before capture release.
+These are source/owned-child seams for composition, not an activated kernel or
+completed three-case adapter.
+
 ### Verification commands for a later grant
 
 These commands are **unapplied**. As root custodian, first verify the independently

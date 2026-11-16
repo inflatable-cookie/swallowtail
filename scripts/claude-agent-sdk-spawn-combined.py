@@ -8,6 +8,7 @@ namespaces, tracing, cgroups or canonical administrator setup.
 import argparse
 import ctypes
 import errno
+import fcntl
 import hashlib
 import json
 import os
@@ -717,6 +718,7 @@ class Monitor:
         self.waits = []
         self.setup_fds = []
         self.previous_signals = {}
+        self.fork_attempted = False
         self.parent_fd = os.pidfd_open(os.getpid())
         self.journal_fd = args.journal_fd
         self.journal_parent = Path(os.environ["TMPDIR"]).resolve(strict=True)
@@ -991,6 +993,7 @@ class Monitor:
         try:
             return self.run_owned()
         except BaseException as error:
+            error.monitor = self
             # Even failure before cgroup attachment owns this direct child.
             # Stop by held pidfd and actually wait it; never signal a PID found
             # later by pattern, nor call disappearance a successful join.
@@ -1038,18 +1041,109 @@ class Monitor:
                         if row["pid"] == self.init:
                             break
             self.journal.update({"failure": str(error)[:2000], "waits": self.waits})
-            self.save()
+            try:
+                self.save()
+            except BaseException as receipt_error:
+                receipt_error.monitor = self
+                raise receipt_error from error
             raise
         finally:
-            for fd in set([*self.setup_fds, self.parent_fd, *self.handles.values()]):
-                try:
-                    os.close(fd)
-                except OSError as error:
-                    if error.errno != errno.EBADF:
-                        raise
-            self.canary.close()
+            try:
+                release = (
+                    self.init is None and not self.fork_attempted
+                ) or self.settlement_observed()
+            except BaseException as settlement_error:
+                settlement_error.monitor = self
+                raise
+            if release:
+                self.release_handles()
+            # Unknown launch or actual wait retains the same handles and owner.
             for sig, handler in self.previous_signals.items():
                 signal.signal(sig, handler)
+
+    def guest_fds(self):
+        return set()
+
+    def checked_guest_fds(self):
+        descriptors = self.guest_fds()
+        if not isinstance(descriptors, set) or len(descriptors) > 1:
+            raise Refused(errno.EPERM, "one_readonly_manifest_transfer_only")
+        for fd in descriptors:
+            if type(fd) is not int or not 3 <= fd < 4096:
+                raise Refused(errno.EPERM, "manifest_descriptor_number")
+            info = os.fstat(fd)
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_uid != os.geteuid()
+                or info.st_nlink != 1
+                or info.st_size > 1048576
+                or fcntl.fcntl(fd, fcntl.F_GETFL) & os.O_ACCMODE != os.O_RDONLY
+            ):
+                raise Refused(
+                    errno.EPERM, "root_directory_or_writable_descriptor_refused"
+                )
+        return descriptors
+
+    def primary_seconds(self):
+        return 30
+
+    def settlement_observed(self):
+        # The serialized receipt is diagnostic; release also requires this live
+        # tracer's actual terminal observations and the direct init wait.
+        if not verify_settlement(self.journal) or self.init is None:
+            return False
+        observed = {
+            (row["actor"], row["pid"], row["status"])
+            for row in self.trace.waits
+            if os.WIFEXITED(row["status"]) or os.WIFSIGNALED(row["status"])
+        }
+        if not any(
+            row["pid"] == self.init
+            and row["actor"] == os.getpid()
+            and (row["actor"], row["pid"], row["status"]) in observed
+            for row in self.waits
+        ):
+            return False
+        return (
+            self.gate is not None
+            and self.gate.complete()
+            and all(
+                (
+                    task["terminal"]["actor"],
+                    task["terminal"]["pid"],
+                    task["terminal"]["status"],
+                )
+                in observed
+                for task in self.gate.tasks.values()
+            )
+        )
+
+    def release_handles(self):
+        for fd in set([*self.setup_fds, self.parent_fd, *self.handles.values()]):
+            try:
+                os.close(fd)
+            except OSError as error:
+                if error.errno != errno.EBADF:
+                    raise
+        self.canary.close()
+
+    def guest(self, answer_read, write):
+        context = GuestContext(
+            self.runtime, self.args, answer_read, write, {}, self.files
+        )
+        context.metadata = context.request("ready")
+        result = self.core.rehearsal(
+            self.args.record_sha256,
+            self.args.node,
+            NODE22,
+            state=self.args.state,
+            composition=self.args.profile,
+            bound=20,
+            context=context,
+        )
+        context.finish(result)
+        os._exit(0 if result["failure"] is None else 78)
 
     def run_owned(self):
         libc = ctypes.CDLL(None, use_errno=True)
@@ -1062,7 +1156,10 @@ class Monitor:
         answer_read, answer_write = os.pipe()
         self.setup_fds = [read, write, answer_read, answer_write]
         self.journal_fd = self.args.journal_fd
-        deadline = time.monotonic() + 30
+        seconds = self.primary_seconds()
+        if type(seconds) is not int or not 0 < seconds <= 90:
+            raise Refused(errno.EPERM, "finite_monitor_primary_bound")
+        deadline = time.monotonic() + seconds
         previous = {
             sig: signal.signal(sig, lambda sig, frame: setattr(self, "cancelled", True))
             for sig in (signal.SIGTERM, signal.SIGINT)
@@ -1071,10 +1168,12 @@ class Monitor:
         self.previous_signals = previous
         checked(libc.prctl(36, 1, 0, 0, 0), "ROOT_SUBREAPER")
         checked(libc.unshare(0x20000000), "CLONE_NEWPID")
+        guest_fds = self.checked_guest_fds()
+        self.fork_attempted = True
         pid = os.fork()
         if pid == 0:
             try:
-                keep = {0, 1, 2, write, answer_read, self.parent_fd}
+                keep = {0, 1, 2, write, answer_read, self.parent_fd} | guest_fds
                 for name in os.listdir("/proc/self/fd"):
                     fd = int(name)
                     if fd not in keep:
@@ -1104,21 +1203,7 @@ class Monitor:
                 parent.register(self.parent_fd, select.POLLIN | select.POLLHUP)
                 if parent.poll(0):
                     raise Refused(errno.ESRCH, "root_monitor_died_during_drop")
-                context = GuestContext(
-                    self.runtime, self.args, answer_read, write, {}, self.files
-                )
-                context.metadata = context.request("ready")
-                result = self.core.rehearsal(
-                    self.args.record_sha256,
-                    self.args.node,
-                    NODE22,
-                    state=self.args.state,
-                    composition=self.args.profile,
-                    bound=20,
-                    context=context,
-                )
-                context.finish(result)
-                os._exit(0 if result["failure"] is None else 78)
+                self.guest(answer_read, write)
             except BaseException as error:
                 try:
                     write_frame(
@@ -1253,12 +1338,7 @@ class Monitor:
                 }
             )
             self.save()
-        if (
-            failure
-            or not complete
-            or not self.result
-            or not verify_settlement(self.journal)
-        ):
+        if failure or not complete or not self.result or not self.settlement_observed():
             raise Refused(errno.EPERM, failure or "combined_result_missing")
         return {
             "kernelEnforced": True,
@@ -1421,6 +1501,7 @@ def activate(args, core, files):
         reserve_pipes=False,
     )
     group = None
+    monitor = None
     journal = {
         "sourceRecord": args.record_sha256,
         "directory": directory,
@@ -1479,17 +1560,35 @@ def activate(args, core, files):
         monitor = Monitor(args, core, files, modules, runtime, lease, group, journal)
         return monitor.run()
     except BaseException as error:
-        journal["failure"] = str(error)[:2000]
-        if group is not None and group.created:
-            journal["cgroup"] = group.receipt()
-            journal["cgroupStage"] = "created"
-        save()
+        error.monitor = monitor
+        error.resources = (lease, group, descriptor)
+        try:
+            journal["failure"] = str(error)[:2000]
+            if group is not None and group.created:
+                journal["cgroup"] = group.receipt()
+                journal["cgroupStage"] = "created"
+            save()
+        except BaseException as receipt_error:
+            receipt_error.monitor = monitor
+            receipt_error.resources = (lease, group, descriptor)
+            raise receipt_error from error
         raise
     finally:
-        os.close(descriptor)
-        if group is not None:
-            group.close()
-        lease.close()
+        try:
+            release = (
+                monitor is None
+                or (monitor.init is None and not monitor.fork_attempted)
+                or monitor.settlement_observed()
+            )
+        except BaseException as settlement_error:
+            settlement_error.monitor = monitor
+            settlement_error.resources = (lease, group, descriptor)
+            raise
+        if release:
+            os.close(descriptor)
+            if group is not None:
+                group.close()
+            lease.close()
 
 
 def cleanup(args, core, files):

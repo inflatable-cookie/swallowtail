@@ -73,6 +73,7 @@ class Inputs:
         self.revoked = self.closed = False
         self.files, self.directories, self.reserved = {}, {}, {}
         self.active_child = None
+        self.launch_pending = False
         self.batch_active = False
         self.deadline = time.monotonic() + 10
         self.commands, self.launched = None, 0
@@ -274,6 +275,8 @@ class Inputs:
         self.revoked = True
 
     def close(self):
+        if self.launch_pending:
+            raise Refused("runtime_observer_launch_unknown; custody retained")
         if self.active_child is not None:
             error = Refused("runtime_observer_join_unknown; custody retained")
             error.capture = self
@@ -411,6 +414,8 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
         raise Refused("runtime_bootstrap_binding_missing")
     child = None
     try:
+        if bootstrap.launch_pending:
+            raise Refused("runtime_observer_launch_unknown; custody retained")
         bootstrap.check()
         command = [
             str(node),
@@ -429,6 +434,7 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
         launch = (
             observer_owner.start if observer_owner is not None else subprocess.Popen
         )
+        bootstrap.launch_pending = True
         child = launch(
             command,
             env=environment,
@@ -437,6 +443,7 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
             stderr=subprocess.PIPE,
         )
         bootstrap.active_child = child
+        bootstrap.launch_pending = False
         stdout, stderr = bytearray(), bytearray()
         deadline = time.monotonic() + 5
         with selectors.DefaultSelector() as poll:
@@ -490,6 +497,16 @@ def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
             bootstrap,
         )
     except BaseException as error:
+        # The source-bound owner may have acquired the actual Popen handle
+        # before its journal/entry gate raised. Recover that same live handle;
+        # a constructor refusal with no returned handle stays unknown.
+        if child is None and bootstrap.active_child is not None:
+            child = bootstrap.active_child
+            bootstrap.launch_pending = False
+        if bootstrap.launch_pending:
+            unknown = Refused("runtime_observer_launch_unknown; custody retained")
+            unknown.capture = bootstrap
+            raise unknown from error
         if child is not None and bootstrap.active_child is not None:
             try:
                 if child.poll() is None:

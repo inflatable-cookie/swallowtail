@@ -431,6 +431,62 @@ class AdminTests(unittest.TestCase):
         transfer.close()
         self.dispose(root, owner)
 
+    def test_monitor_entry_keeps_outer_owner_until_same_owned_child_actual_wait(self):
+        class OwnedMonitor:
+            # Direct owned Python fixture only, never a kernel/topology claim.
+            fork_attempted = False
+            init = None
+            observed = None
+
+            def run(self):
+                self.fork_attempted = True
+                self.child = subprocess.Popen(
+                    [sys.executable, "-I", "-B", "-S", "-c", "pass"],
+                    close_fds=True,
+                    env={"PATH": "/usr/bin:/bin"},
+                )
+                self.init = self.child.pid
+                raise OSError("owned monitor wait withheld")
+
+            def settlement_observed(self):
+                return self.observed is self.child and self.child.returncode is not None
+
+            def actual_wait(self):
+                self.child.wait(timeout=2)
+                self.observed = self.child
+
+        root, owner = self.fixture()
+        owner.prepare()
+        monitor = OwnedMonitor()
+        with self.assertRaisesRegex(OSError, "wait withheld") as error:
+            owner.monitor_entry(monitor)
+        self.assertIs(error.exception.owner, owner)
+        owner.state["wait"] = {"forged": True}
+        with self.assertRaisesRegex(A.Refused, "actual_monitor_tree"):
+            owner.finish_monitor()
+        with self.assertRaisesRegex(A.Refused, "unknown_child"):
+            owner.restore()
+        monitor.actual_wait()
+        owner.finish_monitor()
+        self.dispose(root, owner)
+
+    def test_monitor_known_no_fork_refusal_restores_but_unknown_fork_retains(self):
+        for attempted in (False, True):
+            root, owner = self.fixture()
+            owner.prepare()
+            monitor = mock.Mock()
+            monitor.fork_attempted, monitor.init = attempted, None
+            monitor.run.side_effect = OSError("owned monitor fork refused")
+            monitor.settlement_observed.return_value = False
+            with self.assertRaisesRegex(OSError, "fork refused"):
+                owner.monitor_entry(monitor)
+            if attempted:
+                with self.assertRaisesRegex(A.Refused, "unknown_child"):
+                    owner.restore()
+                # Retain owned fixture/receipt: unknown fork supplies no wait.
+            else:
+                self.dispose(root, owner)
+
     def test_initial_binding_refusal_has_no_mutation_or_journal(self):
         root = Path(
             tempfile.mkdtemp(prefix="admin-binding-", dir=os.environ["TMPDIR"])

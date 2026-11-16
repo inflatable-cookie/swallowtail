@@ -53,6 +53,7 @@ class AdministrativeOwner:
         self._scope, self._tree_settled = None, False
         self.retained_inputs = None
         self._waited_child = None
+        self.monitor, self._waited_monitor = None, None
         self._effect_possible = False
         self._effect_observed = None
         self.check_inputs = inspect_inputs
@@ -315,12 +316,60 @@ class AdministrativeOwner:
             self.state["toolIntent"] is not None
             or self.state["operation"] is not None
             or self.state["entryAttempted"]
-            and (
-                self.child is None
-                or self._waited_child is not self.child
-                or not self._tree_settled
-            )
+            and not self.entry_settled()
         )
+
+    def entry_settled(self):
+        if self.monitor is not None:
+            return (
+                self._waited_monitor is self.monitor
+                and self.monitor.settlement_observed()
+                and self.state["wait"] is not None
+            )
+        return (
+            self.child is not None
+            and self._waited_child is self.child
+            and self._tree_settled
+            and self.state["wait"] is not None
+        )
+
+    def monitor_entry(self, monitor):
+        self.prepared()
+        if self.state["entryAttempted"]:
+            raise Refused("admin_one_entry_only")
+        self.monitor = monitor
+        self.state.update(entryAttempted=True, phase="monitor_entry_intent")
+        try:
+            self.store()  # Before run can reach its owned fork seam.
+            result = monitor.run()
+            self.finish_monitor()
+            return result
+        except BaseException as error:
+            error.owner = self
+            # Only this source-bound live monitor can know fork was not called.
+            # An attempted fork without its returned handle remains unknown.
+            if not monitor.fork_attempted and monitor.init is None:
+                self.monitor = None
+                self.state.update(entryAttempted=False, phase="prepared")
+                try:
+                    self.store()
+                except BaseException as receipt_error:
+                    receipt_error.owner = self
+                    raise receipt_error from error
+            raise
+
+    def finish_monitor(self):
+        monitor = self.monitor
+        if monitor is None or not monitor.settlement_observed():
+            raise Refused("actual_monitor_tree_waits_required")
+        self._waited_monitor = monitor
+        self.state["wait"] = {
+            "monitor": self.pid,
+            "init": monitor.init,
+            "source": "same_live_monitor_actual_waits",
+        }
+        self.state["phase"] = "monitor_settled"
+        self.store()
 
     def entry(self, factory, scope):
         self.check()
@@ -397,12 +446,7 @@ class AdministrativeOwner:
             raise Refused("unknown_administrative_tool_retained")
         if self.state["operation"] is not None:
             raise Refused("ambiguous_admin_mutation_retained")
-        if self.state["entryAttempted"] and (
-            self.child is None
-            or self._waited_child is not self.child
-            or self.state["wait"] is None
-            or not self._tree_settled
-        ):
+        if self.state["entryAttempted"] and not self.entry_settled():
             raise Refused("unknown_child_wait_retained")
         self.check()
         for row in reversed(self.rows):
@@ -453,6 +497,7 @@ class AdministrativeOwner:
             owner.rows, owner.child, owner.tool_child = [], None, None
             owner._scope, owner._tree_settled, owner.retained_inputs = None, False, None
             owner._waited_child, owner._effect_possible = None, False
+            owner.monitor, owner._waited_monitor = None, None
             owner.check_inputs = inspect_inputs
             owner._effect_observed = None
             owner.state, owner.journal_fd = state, fd

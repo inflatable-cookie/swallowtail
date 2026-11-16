@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import types
 import unittest
 from unittest import mock
 
@@ -80,8 +81,18 @@ class OwnedForkObserver:
 
 class BootstrapTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory(prefix="sdk-bootstrap-")
-        self.addCleanup(self.temporary.cleanup)
+        self.temporary = tempfile.TemporaryDirectory(
+            prefix="sdk-bootstrap-", dir=os.environ["TMPDIR"]
+        )
+        self.retain_fixture = False
+
+        def cleanup():
+            if self.retain_fixture:
+                self.temporary._finalizer.detach()
+            else:
+                self.temporary.cleanup()
+
+        self.addCleanup(cleanup)
         self.root = Path(self.temporary.name).resolve()
         self.node = self.root / "owned-observer"
         self.marker = self.root / "effect"
@@ -327,6 +338,61 @@ class BootstrapTests(unittest.TestCase):
         capture.active_child = None
         capture.close()
         self.assertTrue(capture.closed)
+
+    def test_owner_post_spawn_refusal_uses_actual_handle_and_wait_before_capture_close(
+        self,
+    ):
+        capture = self.bootstrap()
+        waits = []
+        spec = importlib.util.spec_from_file_location(
+            "owned_session_start",
+            ROOT / "scripts/claude-agent-sdk-bootstrap-session.py",
+        )
+        session_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(session_module)
+        owner = session_module.Session.__new__(session_module.Session)
+        owner.host = mock.Mock()
+        owner.preparation = types.SimpleNamespace(state={})
+        owner.runtime_bootstrap = capture
+        owner.store = mock.Mock()
+        owner.helper = types.SimpleNamespace(
+            persist=mock.Mock(
+                side_effect=OSError("owned journal failed after Popen returned")
+            )
+        )
+
+        def joined(child):
+            self.assertIs(child, owner.child)
+            self.assertIsNotNone(child.returncode)
+            waits.append(child)
+
+        owner.joined = joined
+        with self.assertRaisesRegex(OSError, "journal failed"):
+            C.runtime_inventory(
+                self.node, sha(self.node), bootstrap=capture, observer_owner=owner
+            )
+        self.assertEqual(waits, [owner.child])
+        self.assertTrue(capture.closed)
+        self.assertFalse(capture.launch_pending)
+
+    def test_unknown_constructor_return_keeps_capture_and_refuses_close(self):
+        capture = self.bootstrap()
+        with mock.patch.object(
+            C.subprocess,
+            "Popen",
+            side_effect=OSError("owned constructor return unknown"),
+        ):
+            with self.assertRaisesRegex(OSError, "launch_unknown") as failure:
+                self.observe(capture)
+        self.assertIs(failure.exception.capture, capture)
+        self.assertTrue(capture.launch_pending)
+        self.assertFalse(capture.closed)
+        with self.assertRaisesRegex(OSError, "launch_unknown"):
+            capture.close()
+        self.assertFalse(self.marker.exists())
+        self.retain_fixture = (
+            True  # No fabricated wait/cleanup credit for this unknown seam.
+        )
 
     def test_unexpected_library_report_refuses_and_joins(self):
         unexpected = self.root / "unexpected"

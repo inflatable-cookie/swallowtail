@@ -1058,6 +1058,7 @@ class CombinedTests(unittest.TestCase):
                 m.setup_fds = [write]
                 m.parent_fd = os.dup(read)
                 m.init = 500
+                m.fork_attempted = True
                 m.handles = {500: read}
                 m.waits = []
                 m.gate = None
@@ -1090,8 +1091,121 @@ class CombinedTests(unittest.TestCase):
                         m.journal["waits"][0]["source"], "parent_or_adoptee_waitpid"
                     )
                     self.assertFalse(m.journal["treeSettled"])
+                    for fd in [*m.setup_fds, m.parent_fd, *m.handles.values()]:
+                        os.fstat(fd)
+                    m.canary.close.assert_not_called()
+                finally:
+                    # These are owned pipe/event models, not real child handles;
+                    # model teardown supplies no kernel or reaping credit.
+                    for fd in {
+                        *m.setup_fds,
+                        m.parent_fd,
+                        *m.handles.values(),
+                        m.journal_fd,
+                    }:
+                        os.close(fd)
+
+    def test_unknown_fork_retains_monitor_handles_but_known_no_fork_releases(self):
+        for attempted in (False, True):
+            with (
+                self.subTest(attempted=attempted),
+                tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as root,
+            ):
+                m = COMBINED.Monitor.__new__(COMBINED.Monitor)
+                read, write = os.pipe()
+                m.setup_fds, m.parent_fd, m.handles = [write], read, {}
+                m.init, m.fork_attempted, m.waits, m.gate = None, attempted, [], None
+                m.previous_signals = {}
+                m.canary = mock.Mock()
+                m.journal = {"treeSettled": False}
+                m.lease = mock.Mock()
+                m.lease.observation.return_value = {"modeled": True}
+                m.trace = mock.Mock()
+                m.trace.waits = []
+                m.journal_fd = os.open(
+                    Path(root) / "receipt", os.O_CREAT | os.O_WRONLY, 0o600
+                )
+                m.journal_parent = Path(root)
+                m.run_owned = mock.Mock(
+                    side_effect=OSError("owned fork boundary refused")
+                )
+                if attempted:
+                    m.save = mock.Mock(
+                        side_effect=OSError("owned receipt write refused")
+                    )
+                try:
+                    with self.assertRaises(OSError) as failure:
+                        m.run()
+                    self.assertIs(failure.exception.monitor, m)
+                    if attempted:
+                        os.fstat(read)
+                        os.fstat(write)
+                        m.canary.close.assert_not_called()
+                    else:
+                        with self.assertRaises(OSError):
+                            os.fstat(read)
+                        with self.assertRaises(OSError):
+                            os.fstat(write)
+                        m.canary.close.assert_called_once()
                 finally:
                     os.close(m.journal_fd)
+                    if attempted:
+                        os.close(read)
+                        os.close(write)
+
+    def test_guest_seam_rejects_administrative_directory_and_write_handles(self):
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            root = Path(temporary).resolve()
+            file = root / "manifest"
+            file.write_bytes(b"{}\n")
+            file.chmod(0o600)
+            m = COMBINED.Monitor.__new__(COMBINED.Monitor)
+            for kind in ("directory", "writable", "mode", "two"):
+                with self.subTest(kind=kind):
+                    file.chmod(0o644 if kind == "mode" else 0o600)
+                    fd = os.open(
+                        root if kind == "directory" else file,
+                        os.O_RDWR if kind == "writable" else os.O_RDONLY,
+                    )
+                    try:
+                        m.guest_fds = lambda: {fd}
+                        if kind == "two":
+                            extra = os.dup(fd)
+                            m.guest_fds = lambda: {fd, extra}
+                        with self.assertRaises(OSError):
+                            m.checked_guest_fds()
+                    finally:
+                        os.close(fd)
+                        if kind == "two":
+                            os.close(extra)
+            file.chmod(0o600)
+            fd = os.open(file, os.O_RDONLY)
+            try:
+                m.guest_fds = lambda: {fd}
+                self.assertEqual(m.checked_guest_fds(), {fd})
+            finally:
+                os.close(fd)
+
+    def test_live_monitor_never_releases_from_serialized_summary_alone(self):
+        m = COMBINED.Monitor.__new__(COMBINED.Monitor)
+        m.init = 10
+        m.trace = mock.Mock()
+        m.trace.waits = []
+        m.waits = [{"actor": os.getpid(), "pid": 10, "status": 0}]
+        m.journal = {"forged": True}
+        m.gate = mock.Mock()
+        m.gate.complete.return_value = True
+        m.gate.tasks = {}
+        with mock.patch.object(COMBINED, "verify_settlement", return_value=True):
+            self.assertFalse(m.settlement_observed())
+            m.trace.waits.append({"actor": os.getpid(), "pid": 10, "status": 0})
+            terminal = {"actor": os.getpid(), "pid": 11, "status": 0}
+            m.gate.tasks = {11: {"terminal": terminal}}
+            self.assertFalse(m.settlement_observed())
+            m.trace.waits.append(terminal)
+            self.assertTrue(m.settlement_observed())
+            m.gate.complete.return_value = False
+            self.assertFalse(m.settlement_observed())
 
     def test_root_entrypoints_refuse_this_unprivileged_host_without_mutation(self):
         if os.geteuid() == 0:

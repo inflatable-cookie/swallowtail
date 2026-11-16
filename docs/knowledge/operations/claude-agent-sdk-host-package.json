@@ -41,7 +41,7 @@
     "supersededBy": "Planner disposition030bc11f / brief v8 approves exact five-ancestor source/fake implementation; ordinary custody unchanged; no host activation"
   },
   "admissionSource": "scripts/claude-agent-sdk-host-admission.py",
-  "producerState": "Five-ancestor owner and bounded loader/Python package producer implemented in private source; ordinary invocation bridge and exact activation packet in progress; no actual host package or activation claimed",
+  "producerState": "Five-ancestor owner, bounded loader/Python producer and ordinary read-only manifest-descriptor bridge implemented in private source. Live monitor ownership/retention seams are prepared; the three-case kernel adapter and exact activation packet are not yet supplied. No actual host package or activation claimed.",
   "unappliedAlternative": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-ancestor-alternative.patch",
     "sha256": "17fcd226ef7a55d1cd4db6914a1e3fcf0c423d8eb948911cc8ad8d4a9091c936",

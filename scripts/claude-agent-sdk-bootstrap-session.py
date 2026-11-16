@@ -345,6 +345,7 @@ class Session:
         self.unsettled = False
         self.results = []
         self.retained_rehearsal = None
+        self.runtime_bootstrap = None
         self.source_inputs = {} if source_inputs is None else dict(source_inputs)
 
     def hold_source(self):
@@ -363,6 +364,9 @@ class Session:
         self.preparation.state["runtimeEntryAttempted"] = True
         self.store("observer_entry_intent", unresolved=True)
         self.child = subprocess.Popen(command, **kwargs)
+        # Preserve the actual handle before the next fallible durable write.
+        if self.runtime_bootstrap is not None:
+            self.runtime_bootstrap.active_child = self.child
         self.preparation.state["children"] = [self.child.pid]
         self.helper.persist(self.preparation.receipt, self.preparation.state)
         return self.child
@@ -405,6 +409,7 @@ class Session:
             supervisor_inputs=inputs["supervisorInputs"],
             reserve_pipes=False,
         )
+        self.runtime_bootstrap = bootstrap
         observed = custody.runtime_inventory(
             node, digest, bootstrap=bootstrap, observer_owner=self
         )

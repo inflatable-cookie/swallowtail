@@ -36,10 +36,3 @@ while keeping source proof separate from host/original qualification.
 Add a bounded fail-closed image/ancestry gate and pin the selected image build
 provenance. Retain the exact five-ancestor alternative as unapplied contract
 source; the unsafe published cache ancestry remains an explicit prerequisite.
-
-Implement the planner-approved five-ancestor administrative exception in private
-source, preserving ordinary custody and safe-chain-before-candidate entry.
-
-Hold exact administrative identities through durable directory effects and real tool waits. Bind canonical loader/directory aliases and Python cache inputs; retain partial package inputs when a tool wait is unknown. Source/owned-fixture preparation only; activation and qualification holds remain.
-
-Transfer the independently produced manifest through one checked read-only regular descriptor, closing it before ordinary candidate entry.

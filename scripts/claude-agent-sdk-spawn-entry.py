@@ -25,6 +25,8 @@ def run(config_file, role="native"):
     if role not in {"driver", "native"}:
         raise RuntimeError("entry_role")
     entry = config["entry" if role == "native" else "driverEntry"]
+    if role == "native" and config.get("fault") == "native-pre-notification":
+        raise RuntimeError("owned_pre_notification_refusal")
     command = entry["command"]
     if (
         config["originalActivation"] is not False
@@ -47,6 +49,10 @@ def run(config_file, role="native"):
     }
     if config.get("fault") == "forged-approval":
         request["token"] = "forged"
+    if role == "native" and config.get("fault") == "native-source-refusal":
+        request["entrySourceSha256"] = "0" * 64
+    if role == "native" and config.get("fault") == "native-identity-refusal":
+        request["pid"] = os.getppid()
     connection = http.client.HTTPConnection("127.0.0.1", config["port"], timeout=1)
     try:
         connection.request(

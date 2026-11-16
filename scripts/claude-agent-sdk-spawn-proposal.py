@@ -38,6 +38,7 @@ INPUTS = (
     "scripts/claude-agent-sdk-netns-kernel.py",
     "scripts/claude-agent-sdk-spawn-loader.mjs",
     "scripts/claude-agent-sdk-spawn-bootstrap.mjs",
+    "scripts/claude-agent-sdk-spawn-launch.mjs",
     "scripts/claude-agent-sdk-startup-lookup.mjs",
     "scripts/tests/fixtures/sdk-startup-probes.mjs",
     "scripts/claude-agent-sdk-spawn-sdk.mjs",
@@ -244,7 +245,7 @@ class ActorRegistry:
         return actual
 
 
-def graph_config(root, role, entry_command, native_env):
+def graph_config(root, role, entry_command, native_env, launch_id):
     """Close the selected first-party graph, not an arbitrary JS program."""
     names = [p for p in root.iterdir() if p.suffix in {".mjs", ".cjs"}]
     files = [
@@ -303,6 +304,8 @@ def graph_config(root, role, entry_command, native_env):
             }
         )
     native = {
+        "launchId": launch_id,
+        "launchTrackerUrl": (root / "launch-state.mjs").as_uri(),
         "path": str(python),
         "sha256": sha(python.read_bytes()),
         "uid": str(info.st_uid),
@@ -382,6 +385,16 @@ class RehearsalResources:
         self.identity = (info.st_dev, info.st_ino, info.st_uid)
         self.registered, self.context, self.emit = registered, context, emit
         self.output = output
+        self.launch_id = os.urandom(16).hex()
+        self.launch = {
+            "state": "pending",
+            "active": False,
+            "parent": None,
+            "identity": None,
+            "notified": False,
+            "admitted": False,
+        }
+        self.driver_intent = False
         self.lease = self.driver = self.pidfd = self.server = self.thread = None
         self.retained = self.released = False
 
@@ -392,6 +405,19 @@ class RehearsalResources:
         if not self.released and not self.retained:
             self.settle()
         return False
+
+    def activate_launch(self, parent):
+        if self.launch["active"]:
+            raise Refused("launch_slot_reused")
+        self.launch.update(active=True, parent=dict(parent))
+
+    def live_natives(self):
+        identity = self.launch["identity"]
+        return (
+            [identity]
+            if identity is not None and self.launch["state"] != "settled"
+            else []
+        )
 
     def native_joins(self):
         # Read only these owned pipes, after the actual driver wait. A bounded
@@ -410,19 +436,75 @@ class RehearsalResources:
                 break
             self.output["stderr"].extend(data)
             remaining -= len(data)
-        waits = parse_events(self.output["stderr"].decode(errors="replace"))
-        for native in self.registered:
-            matches = [
-                row
-                for row in waits
-                if (
-                    row.get("probeEvent") == "native_wait"
-                    and row.get("pid") == native["pid"]
-                    and row.get("actor") == native["parent"]
-                    and row.get("source") == "ChildProcess.exit"
-                )
-            ]
-            if len(matches) != 1 or not (
+        obligation = self.launch
+        if not obligation["active"]:
+            if obligation["notified"]:
+                raise Refused("native_launch_parent_unknown")
+            # The source-bound Python driver entry never released its Node
+            # payload. Its actual Popen wait covers that pre-exec path.
+            obligation.update(state="settled", settlement="driver_not_released")
+            return
+        rows = [
+            row
+            for row in parse_events(self.output["stderr"].decode(errors="replace"))
+            if isinstance(row, dict)
+            and row.get("launchId") == self.launch_id
+            and row.get("actor") == obligation["parent"]["pid"]
+        ]
+        intents = [
+            r
+            for r in rows
+            if r.get("probeEvent") == "native_launch_intent"
+            and r.get("source") == "owned one-shot before spawn"
+        ]
+        starts = [
+            r
+            for r in rows
+            if r.get("probeEvent") == "native_started"
+            and r.get("source") == "ChildProcess.spawn"
+        ]
+        waits = [r for r in rows if r.get("probeEvent") == "native_wait"]
+        closed = [
+            r
+            for r in rows
+            if r.get("probeEvent") == "native_launch_closed"
+            and r.get("source") == "owned one-shot parent exit"
+        ]
+        if (
+            not intents
+            and not starts
+            and not waits
+            and not obligation["notified"]
+            and len(closed) == 1
+            and closed[0].get("attempted") is False
+            and closed[0].get("pid") is None
+        ):
+            obligation.update(
+                state="settled", settlement="parent_never_attempted_spawn"
+            )
+            return
+        if (
+            len(intents) != 1
+            or len(starts) != 1
+            or type(starts[0].get("pid")) is not int
+            or starts[0]["pid"] <= 0
+        ):
+            raise Refused("native_launch_outcome_unknown; custody retained")
+        pid = starts[0]["pid"]
+        # A reported PID is not a kernel identity and never authorizes a signal.
+        # Only this exact source-bound parent's actual ChildProcess handle wait
+        # can settle a child that died/refused before host identity admission.
+        if obligation["identity"] is not None and pid != obligation["identity"]["pid"]:
+            raise Refused("native_launch_identity_conflict")
+        matches = [
+            row
+            for row in waits
+            if row.get("pid") == pid and row.get("source") == "ChildProcess.exit"
+        ]
+        if (
+            len(matches) != 1
+            or len(waits) != 1
+            or not (
                 (
                     type(matches[0].get("code")) is int
                     and 0 <= matches[0]["code"] <= 255
@@ -432,8 +514,12 @@ class RehearsalResources:
                     matches[0].get("code") is None
                     and matches[0].get("signal") in signal.Signals.__members__
                 )
-            ):
-                raise Refused("native_parent_wait_missing; custody retained")
+            )
+        ):
+            raise Refused("native_parent_wait_missing; custody retained")
+        obligation.update(
+            state="settled", settlement="exact_parent_handle_wait", wait=matches[0]
+        )
 
     def quiesce_endpoint(self):
         if self.server is not None:
@@ -449,11 +535,14 @@ class RehearsalResources:
         if self.released:
             return
         try:
+            if self.driver_intent and self.driver is None:
+                raise Refused("driver_spawn_outcome_unknown; custody retained")
+            self.quiesce_endpoint()
             if self.driver is not None:
                 try:
                     stop_owned(
                         self.driver,
-                        self.registered,
+                        self.live_natives(),
                         self.context.observe if self.context else None,
                         self.context.stop if self.context else None,
                     )
@@ -465,7 +554,6 @@ class RehearsalResources:
                         actor=os.getpid(),
                         code=terminal,
                     )
-            self.quiesce_endpoint()
             if self.driver is not None:
                 self.native_joins()
             # These releases cannot run after a stop or join raised above.
@@ -685,6 +773,9 @@ def rehearsal(
             (root / "sdk-startup-lookup.mjs").write_bytes(
                 files["scripts/claude-agent-sdk-startup-lookup.mjs"]
             )
+            (root / "launch-state.mjs").write_bytes(
+                files["scripts/claude-agent-sdk-spawn-launch.mjs"]
+            )
             for role in ("driver", "native"):
                 (root / f"bootstrap-{role}.mjs").write_bytes(
                     files["scripts/claude-agent-sdk-spawn-bootstrap.mjs"]
@@ -862,6 +953,7 @@ def rehearsal(
                                 else None,
                             )
                             lease.permit(driver_command, driver_env)
+                            resources.activate_launch(actor)
                             holder["actor"] = actor
                             emit("driver_released", identity=actor)
                             answer = (
@@ -881,6 +973,7 @@ def rehearsal(
                             phase = "protocol"
                         elif self.path == "/native-entry":
                             phase = "native-entry"
+                            resources.launch["notified"] = True
                             if (
                                 registered
                                 or value.get("token") != config["token"]
@@ -895,6 +988,12 @@ def rehearsal(
                                 "driver",
                                 "driver",
                             )
+                            resources.launch.update(
+                                state="identity-bound", identity=dict(observed)
+                            )
+                            if hasattr(os, "pidfd_open"):
+                                pidfd = os.pidfd_open(value["pid"])
+                                resources.pidfd = pidfd
                             if (
                                 value.get("entrySourceSha256")
                                 != config["entry"]["sourceSha256"]
@@ -907,10 +1006,8 @@ def rehearsal(
                             lease.permit(native_command, native_env)
                             if cancel and cancel("native-entry"):
                                 raise Refused("cancel_native-entry")
-                            if hasattr(os, "pidfd_open"):
-                                pidfd = os.pidfd_open(value["pid"])
-                                resources.pidfd = pidfd
                             registered.append(observed)
+                            resources.launch.update(state="admitted", admitted=True)
                             emit("native_released", identity=observed)
                             answer = (
                                 {
@@ -939,6 +1036,11 @@ def rehearsal(
                         else:
                             raise Refused("endpoint_route")
                     except (OSError, ValueError, KeyError, Refused) as error:
+                        if (
+                            self.path == "/native-entry"
+                            and resources.launch["state"] != "admitted"
+                        ):
+                            resources.launch["state"] = "refused"
                         errors.append(str(error))
                         self.send_error(403)
 
@@ -1028,7 +1130,11 @@ def rehearsal(
             (root / "graph-attack.mjs").write_text(attack)
             for role in ("driver", "native"):
                 (root / f"{role}-graph.json").write_text(
-                    json.dumps(graph_config(root, role, entry_command, native_env))
+                    json.dumps(
+                        graph_config(
+                            root, role, entry_command, native_env, resources.launch_id
+                        )
+                    )
                 )
             lease.bind_many(
                 (entry, sha(entry.read_bytes()))
@@ -1056,6 +1162,7 @@ def rehearsal(
                 if composition == "acp-actor-shape"
                 else driver_entry_command
             )
+            resources.driver_intent = True
             driver = subprocess.Popen(
                 host_command,
                 cwd=config["workspace"],
@@ -1115,7 +1222,7 @@ def rehearsal(
                 # Finish any in-flight registration before taking that set.
                 resources.quiesce_endpoint()
                 stop_natives(
-                    registered,
+                    resources.live_natives(),
                     context.observe if context else None,
                     context.stop if context else None,
                 )
@@ -1131,7 +1238,7 @@ def rehearsal(
             except subprocess.TimeoutExpired:
                 stop_owned(
                     driver,
-                    registered,
+                    resources.live_natives(),
                     context.observe if context else None,
                     context.stop if context else None,
                 )
@@ -1187,6 +1294,8 @@ def rehearsal(
                 "timings": timings,
                 "events": events,
                 "registered": registered,
+                "launchObligation": resources.launch,
+                "payloadEffectObserved": (root / "native-payload-effect").exists(),
                 "nativeWaits": native_waits,
                 "actorGraph": registry.actors,
                 "actorWaits": [
@@ -1233,6 +1342,8 @@ def rehearsal(
                 "timings": timings,
                 "events": events,
                 "registered": registered,
+                "launchObligation": resources.launch,
+                "payloadEffectObserved": (root / "native-payload-effect").exists(),
                 "fullKernelTreeSettlement": False,
             }
         finally:

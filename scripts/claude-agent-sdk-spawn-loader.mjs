@@ -50,6 +50,7 @@ export function resolve(specifier, context) {
   // loader registration, extensions, caches or arbitrary resolver options.
   if (moduleFacades.has(context.parentURL) && specifier === 'node:module') return { url: specifier, shortCircuit: true };
   if (childFacades.has(context.parentURL) && ['node:child_process', 'node:fs', 'node:crypto'].includes(specifier)) return { url: specifier, shortCircuit: true };
+  if (childFacades.has(context.parentURL) && specifier === native.launchTrackerUrl && files.has(specifier)) return { url: specifier, shortCircuit: true };
   const target = edges.get(JSON.stringify([context.parentURL ?? null, specifier]));
   if (!target) throw new Error('unapproved module edge');
   if (target === 'node:module') {
@@ -113,6 +114,7 @@ function childFacade(binding, caller) {
 import * as original from 'node:child_process';
 import { readFileSync, realpathSync, lstatSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { beforeSpawn, spawned } from ${JSON.stringify(binding.launchTrackerUrl)};
 const binding = ${JSON.stringify(binding)};
 let used = false;
 function refuse() { throw new Error('unapproved child edge'); }
@@ -134,7 +136,13 @@ function check(command, args, options) {
       createHash('sha256').update(readFileSync(command)).digest('hex') !== binding.sha256) refuse();
   used = true;
 }
-export function spawn(command, args, options) { check(command,args,options); return original.spawn(command,args,options); }
+export function spawn(command, args, options) {
+  check(command,args,options);
+  beforeSpawn();
+  const child = original.spawn(command,args,options);
+  spawned(child);
+  return child;
+}
 export const spawnSync = refuse;
 export const execFile = refuse;
 export const execFileSync = refuse;

@@ -35,10 +35,8 @@ export function query({ prompt, options }) {
     try { child = spawn({ ...request, command: config.entryCommand[0], args: config.launchAttack ? ["-c", "throw Error(\"unapproved\")"] : config.entryCommand.slice(1) }); }
     catch (error) { refused("launch", error); throw error; }
     // Real ChildProcess; no spawn replacement or PID facade.
-    note("native_started", { pid: child.pid, parent: process.pid });
     child.stderr.on("data", (data) => process.stderr.write(data));
     child.once("exit", (code, signal) => {
-      note("native_wait", { actor: process.pid, pid: child.pid, code, signal, source: "ChildProcess.exit" });
       observedExit({ code, signal });
     });
     return child;

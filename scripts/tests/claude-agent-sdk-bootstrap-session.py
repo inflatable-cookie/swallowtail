@@ -237,6 +237,24 @@ class SessionTests(unittest.TestCase):
         self.assertFalse(json.loads(self.journal.read_text())["fixtureCleanup"])
 
     def test_missing_native_wait_retains_real_inner_and_outer_custody(self):
+        self.inner_wait_retention({}, admitted=True)
+
+    def test_cancel_before_admission_retains_inner_and_outer_custody(self):
+        self.inner_wait_retention(
+            {"cancel": lambda phase: phase == "native-entry"}, admitted=False
+        )
+
+    def test_revocation_before_admission_retains_inner_and_outer_custody(self):
+        def revoke(phase, lease, root):
+            if phase == "native-entry":
+                lease.revoke()
+
+        self.inner_wait_retention({"custody_hook": revoke}, admitted=False)
+
+    def test_pre_notification_refusal_retains_inner_and_outer_custody(self):
+        self.inner_wait_retention({"fault": "native-pre-notification"}, admitted=False)
+
+    def inner_wait_retention(self, options, *, admitted):
         core = load(
             "sdk_inner_rehearsal", ROOT / "scripts/claude-agent-sdk-spawn-proposal.py"
         )
@@ -266,7 +284,9 @@ class SessionTests(unittest.TestCase):
             # run_session models the outer observer through the shared subprocess
             # module; restore real Popen for the inner owned source/fake peer.
             with mock.patch.object(core.subprocess, "Popen", popen):
-                return core.rehearsal(sha(ROOT / core.RECORD), node, sha(node))
+                return core.rehearsal(
+                    sha(ROOT / core.RECORD), node, sha(node), **options
+                )
 
         owner = None
         try:
@@ -278,8 +298,12 @@ class SessionTests(unittest.TestCase):
                     self.run_session(inner)
                 owner = self.session.retained_rehearsal
                 self.assertIsNotNone(owner)
-                self.assertEqual(len(owner.registered), 1)
-                self.assertEqual(owner.driver.returncode, 0)
+                self.assertEqual(len(owner.registered), 1 if admitted else 0)
+                self.assertIsNotNone(owner.driver.returncode)
+                self.assertEqual(owner.launch["admitted"], admitted)
+                self.assertNotEqual(owner.launch["state"], "settled")
+                if not admitted:
+                    self.assertFalse((owner.root / "native-payload-effect").exists())
                 self.assertTrue(owner.retained)
                 self.assertFalse(owner.lease.closed)
                 self.assertTrue(owner.lease.revoked)

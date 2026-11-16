@@ -13,3 +13,7 @@ Retain the live rehearsal handles, custody and staged fixture when stop or wait
 fails; release them only after a successful owned cleanup retry.
 Require the bound parent's actual native wait before releasing rehearsal custody,
 including through outer transaction failures and cancellation.
+
+Track every possible one-shot launch separately from admission, including refused
+and pre-notification children, and require the exact owned parent's wait before
+releasing custody. Preserve refusal before the owned payload's first effect.

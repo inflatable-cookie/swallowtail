@@ -45,14 +45,33 @@ The rehearsal has an explicit in-memory resource owner, without a temporary
 directory finalizer. If stopping or waiting raises, it revokes further launches
 and retains the actual process handle, open capture, pidfd, endpoint and staged
 fixture. The refusal carries that owner; the outer transaction retains it too.
+
+Tom's convergence direction separates admission from settlement. The private
+contract now reserves one native launch obligation before the driver spawn, and
+activates it before releasing the driver's payload. At the existing approved
+one-shot spawn edge, source-bound tracking records intent before calling spawn,
+the actual returned child handle, and that handle's terminal wait. A synchronous
+parent-exit record can prove that the edge was never attempted; an attempted
+spawn with no returned handle or missing notification remains unknown. Neither
+record grants permission to execute payload. The driver Popen call has its own
+prior intent; an exception without its handle retains unknown launch custody.
+
+The obligation progresses through pending, identity-bound, admitted, refused and
+settled states independently of the successful admission list. Identity is held
+before native source/custody/cancellation admission checks. A failed identity
+check keeps the pending obligation; a reported PID never authorizes a signal.
+When entry notification is absent, only the already-bound parent's exact one-shot
+child handle and actual wait can settle it. No adopter path is implemented here.
+The same predicate covers success, refusal, cancellation and outer transaction
+errors. Ordinary refusal still precedes the owned payload's first effect marker.
 Only a later cleanup attempt using those same handles may release the capture
 and identity-bound fixture after the owned stop, driver wait and endpoint join
-succeed, and each registered native has its exact parent's `ChildProcess.exit`
+succeed, and every active launch obligation has its exact parent's `ChildProcess.exit`
 observation. Cleanup checks the retained owned stderr bytes, including at most
 64KiB of tail after the driver wait within the fixed1MiB output ceiling. A smaller
 protocol fault threshold still refuses that protocol; it cannot discard the
 cleanup wait observation. Matching requires native PID, registered parent,
-source and terminal exit status. A missing or conflicting wait retains custody
+source, one-shot launch binding and terminal exit status. A missing or conflicting wait retains custody
 even when the driver exited successfully. This route implements no adopter wait
 and never accepts a caller-supplied receipt as one. The cleanup retry cannot
 launch another rehearsal or clear the outer

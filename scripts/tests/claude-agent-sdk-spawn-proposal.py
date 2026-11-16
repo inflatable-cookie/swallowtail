@@ -376,7 +376,7 @@ class SpawnTests(unittest.TestCase):
         owner = caught.exception.rehearsal
         try:
             self.assert_retained(owner)
-            self.assertTrue(owner.thread.is_alive())
+            self.assertFalse(owner.thread.is_alive())
         finally:
             owner.settle()
         self.assertTrue(owner.released)
@@ -534,6 +534,163 @@ class SpawnTests(unittest.TestCase):
             plan["fixture"]["states"], ["absent", "disabled", "managed-deny"]
         )
         self.assertTrue(plan["retainedTransportEvidence"]["grantConsumed"])
+
+
+class LaunchObligationTests(unittest.TestCase):
+    setUpClass = classmethod(SpawnTests.setUpClass.__func__)
+    tearDownClass = classmethod(SpawnTests.tearDownClass.__func__)
+    setUp = SpawnTests.setUp
+    run_peer = SpawnTests.run_peer
+    assert_retained = SpawnTests.assert_retained
+
+    def refusals(self):
+        def revoke(phase, lease, root):
+            if phase == "native-entry":
+                lease.revoke()
+
+        return [
+            {"cancel": lambda phase: phase == "native-entry"},
+            {"custody_hook": revoke},
+            {"fault": "native-source-refusal"},
+            {"fault": "native-identity-refusal"},
+            {"fault": "native-pre-notification"},
+        ]
+
+    def test_every_refused_actual_spawn_retains_until_its_real_parent_wait(self):
+        parse = CORE.parse_events
+
+        def withheld(data):
+            return [
+                row for row in parse(data) if row.get("probeEvent") != "native_wait"
+            ]
+
+        for options in self.refusals():
+            with self.subTest(options=options):
+                owner = None
+                try:
+                    with mock.patch.object(CORE, "parse_events", side_effect=withheld):
+                        with self.assertRaises(CORE.Refused) as caught:
+                            self.run_peer(**options)
+                        owner = caught.exception.rehearsal
+                        self.assert_retained(owner)
+                        self.assertFalse(owner.registered)
+                        self.assertFalse(owner.launch["admitted"])
+                        self.assertTrue(owner.launch["active"])
+                        self.assertNotEqual(owner.launch["state"], "settled")
+                        self.assertFalse(
+                            (owner.root / "native-payload-effect").exists()
+                        )
+                        rows = parse(owner.output["stderr"].decode(errors="replace"))
+                        starts = [
+                            r for r in rows if r.get("probeEvent") == "native_started"
+                        ]
+                        waits = [
+                            r for r in rows if r.get("probeEvent") == "native_wait"
+                        ]
+                        self.assertEqual(
+                            len(starts), 1
+                        )  # Actual returned child handle.
+                        self.assertEqual(len(waits), 1)  # Actual parent exit callback.
+                        self.assertEqual(starts[0]["pid"], waits[0]["pid"])
+                        self.assertEqual(starts[0]["launchId"], owner.launch_id)
+                        self.assertEqual(
+                            waits[0]["actor"], owner.launch["parent"]["pid"]
+                        )
+                        if options.get("fault") in {
+                            "native-identity-refusal",
+                            "native-pre-notification",
+                        }:
+                            self.assertIsNone(owner.launch["identity"])
+                        if options.get("fault") == "native-pre-notification":
+                            self.assertFalse(owner.launch["notified"])
+                        with self.assertRaises(CORE.Refused):
+                            owner.settle()
+                        self.assert_retained(owner)
+                finally:
+                    if owner is not None:
+                        owner.settle()  # Restore parser; observe the retained actual wait.
+                self.assertTrue(owner.released)
+                self.assertEqual(owner.launch["state"], "settled")
+                self.assertEqual(owner.launch["settlement"], "exact_parent_handle_wait")
+
+    def test_ordinary_refusal_with_parent_wait_releases_without_admission(self):
+        for options in self.refusals():
+            with self.subTest(options=options):
+                result = self.run_peer(**options)
+                self.assertIsNotNone(result["failure"])
+                self.assertFalse(result["registered"])
+                self.assertFalse(result["payloadEffectObserved"])
+                obligation = result["launchObligation"]
+                self.assertFalse(obligation["admitted"])
+                self.assertEqual(obligation["state"], "settled")
+                self.assertEqual(obligation["settlement"], "exact_parent_handle_wait")
+
+    def test_lost_pre_notification_birth_and_wait_leave_unknown_obligation(self):
+        parse, owner = CORE.parse_events, None
+
+        def withheld(data):
+            return [
+                r
+                for r in parse(data)
+                if r.get("probeEvent") not in {"native_started", "native_wait"}
+            ]
+
+        try:
+            with mock.patch.object(CORE, "parse_events", side_effect=withheld):
+                with self.assertRaises(CORE.Refused) as caught:
+                    self.run_peer(fault="native-pre-notification")
+                owner = caught.exception.rehearsal
+                self.assert_retained(owner)
+                self.assertFalse(owner.launch["notified"])
+                self.assertIsNone(owner.launch["identity"])
+                self.assertIn(
+                    "native_launch_outcome_unknown", str(caught.exception.__cause__)
+                )
+        finally:
+            if owner is not None:
+                owner.settle()
+
+    def test_possibly_completed_driver_spawn_retains_before_handle_return(self):
+        # Lifetime-only Popen fault. This first-party sleeper grants no SDK,
+        # native topology or payload admission credit.
+        popen, child, owner = subprocess.Popen, None, None
+
+        def uncertain(*args, **kwargs):
+            nonlocal child
+            if not kwargs.get("start_new_session"):
+                return popen(*args, **kwargs)
+            child = popen(
+                [sys.executable, "-I", "-B", "-S", "-c", "import time; time.sleep(30)"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                cwd=os.environ["TMPDIR"],
+                env={"PATH": "/usr/bin:/bin"},
+            )
+            raise OSError("owned spawn completed before return failure")
+
+        try:
+            with mock.patch.object(CORE.subprocess, "Popen", side_effect=uncertain):
+                with self.assertRaises(CORE.Refused) as caught:
+                    self.run_peer()
+                owner = caught.exception.rehearsal
+                self.assertTrue(owner.driver_intent)
+                self.assertIsNone(owner.driver)
+                self.assertIsNone(child.poll())
+                self.assertTrue(owner.retained)
+                self.assertFalse(owner.lease.closed)
+                self.assertTrue(owner.root.exists())
+                with self.assertRaises(CORE.Refused):
+                    owner.settle()
+        finally:
+            if child is not None:
+                child.kill()
+                child.wait(timeout=2)
+            if owner is not None:
+                # Recover the exact already-owned handle in this test. No PID
+                # probe or serialized status substitutes for the actual wait.
+                owner.driver = child
+                owner.settle()
+        self.assertTrue(owner.released)
 
 
 if __name__ == "__main__":

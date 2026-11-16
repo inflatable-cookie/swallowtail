@@ -45,5 +45,35 @@
   "providerActivation": false,
   "qualified": false,
   "qualificationMergeHoldRequired": true,
-  "independentPrerequisite": "Provisioned manifest must independently attest complete actual loader selection and pre-entry Python/supervisor closure; the byte reader checks it and holds descriptors, never self-attests completeness. Existing outer kernel boundary and exact new source/host/permission/runtime attempt authority remain required."
+  "independentPrerequisite": "Tom or named root custodian must supply an independently audited complete loader/search and pre-entry Python/supervisor policy, exact host manifest and detached authority, private receipt allocation and finite kernel boundary. No host/manifest producer is currently allocated; this is an external resource request, not a runnable packet. Original admission stays closed.",
+  "provisionerHandoff": {
+    "status": "external resource request; no allocated host or approved manifest producer",
+    "accountableOwner": "Tom as root host custodian, or human delegate Tom names before provisioning",
+    "recommended": "A: custodian-audited GitHub Actions Linux VM with existing exact candidate; abort on drift",
+    "alternative": "B: existing Tom-administered Linux x86_64 host, separately proposed and admitted",
+    "provider": "GitHub Actions hosted Linux VM service; exact future image not reserved",
+    "trustAnchor": "Independent custodian acceptance of image bootstrap and initial Python/loader/supervisor closure before ordinary verifier entry; no self-attestation chain",
+    "requiredArtifacts": [
+      "host/principal/boot/uid/CPU record",
+      "audited loader/cache/default/hwcaps/absence/alias policy with package/build provenance",
+      "initial Python/stdlib/extension/bytecode/search and supervisor closure",
+      "host-manifest.json and independent manifest/policy SHA-256 values",
+      "exact checkout/source record and independent source-record digest",
+      "existing private 0700 ordinary-uid receipt allocation",
+      "already provisioned finite kernel composition and exact parent/adoptee wait owner"
+    ],
+    "producerAvailable": false,
+    "manifestAvailable": false,
+    "verification": "Unapplied bounded read-only existing-reader command in claude-agent-sdk-bootstrap-session.md; consumes authority, never creates it",
+    "readOnlyLimits": {
+      "attempts": 1,
+      "seconds": 20,
+      "killGraceSeconds": 2,
+      "manifestBytes": 1048576,
+      "outputBytes": 16384
+    },
+    "nextAuthority": "Separate exact host/source/manifest/policy/permission/same-invocation runtime/owned-fake/restore grant after actual prerequisites and review; all activation closed now",
+    "recoveryOwner": "Named custodian retains unresolved receipts/fixtures; recover-only cannot accept a missing or invented wait",
+    "acpRequirement": "239 actual Rust group-leader/ACP siblings and native child must compose inside the finite host/kernel boundary; SDK stand-in supplies no topology proof"
+  }
 }

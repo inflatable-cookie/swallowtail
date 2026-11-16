@@ -141,6 +141,111 @@ and safe aliases through entry and restore. No permission repair is allowed on
 an unsafe ancestor or library. Graph inputs total at most512MiB/128 ELF objects;
 each file is at most256MiB. The manifest is at most1MiB.
 
+## Provisioner and external resource handoff
+
+The proposed accountable bootstrap principal is **Tom as host custodian**, or a
+human delegate Tom names, acting through host root before the ordinary-uid
+transaction starts. The SDK worker and candidate are not that principal.
+GitHub Actions is the proposed infrastructure provider: its
+[Linux VM runners support passwordless sudo](https://docs.github.com/en/actions/reference/runners/github-hosted-runners#administrative-privileges).
+The past Ubuntu image observation demonstrates that host family existed, not
+that an exact future image is reserved. No live host or independent manifest
+producer has been assigned. GitHub's image label/software inventory is not a
+complete loader/Python manifest.
+
+The finite trust anchor is the custodian's explicit acceptance of the provider
+image, its bootstrap tools and root provisioning process. Before ordinary
+Python entry, the custodian must independently approve the exact initial Python,
+loader, standard-library, extension, shared-library and supervisor closure.
+That authority arrives through the authenticated operator/plan channel. Python's
+later module/map inventory checks containment; it cannot supply pre-entry
+authority. The custodian's authority is the root of trust, not another executable
+whose report needs an endless chain of self-attestation. This proposes trusted
+host administration within decision89db0f25, not hostile-same-user verification.
+It preserves every reviewed completeness, search and live-custody check.
+
+Recommend **A: one custodian-audited GitHub Linux VM** with a separately approved
+root preparation phase and the already-installed exact candidate below. This
+uses a real provider, but requires an actual job/VM allocation and audited policy.
+Abort on image/candidate mismatch without install, runtime copying or other
+permission repairs. **B: an existing Tom-administered Linux x86_64 host** can
+supply the same package, but its actual image/kernel needs a separate exact host
+proposal. Neither option is activated here. If neither owner can supply the
+package, request a named provisioner first; another worker-generated inventory
+is not a runnable third option.
+
+The named custodian must supply this complete package for one host/boot/uid:
+
+| Resource | Exact obligation |
+| --- | --- |
+| Host/principal record | Tom names the root custodian, provider job/VM, image/build source, boot ID, kernel, ordinary uid and CPU/auxv. Approve initial bootstrap-tool identities before ordinary Python starts. No same-user adversary claim. |
+| Existing candidate and ancestry | Exact path/bytes/hash below, ordinary-uid owner,0777 leaf and already-safe ancestors/aliases. No Node invocation, including `--version`, establishes this input. |
+| Independent loader policy | Audit the exact loader/libc package/build sources and configuration; complete cache/default/hwcaps search for the actual CPU/auxv; every directory inventory, absent alternative and preload path; aliases and justified selected targets for every transitive DT_NEEDED. Bind cache/config bytes. Refuse unsupported dynamic inputs and nonempty RPATH/RUNPATH. `ldd`, a directory snapshot or a completeness flag supplies no authority. |
+| Initial supervisor policy | Canonical Python target, interpreter/DSOs, isolated/no-site stdlib/extensions, bytecode that may be read despite `-B`, import/search/absence policy, lazy imports and all first-party supervisor/timeout inputs. Post-startup modules/maps alone are insufficient. |
+| Published artifacts | Existing0600 `host-manifest.json` with the schema above; custodian-authored loader/Python completeness/provenance record; exact source commit/record; detached manifest, policy and source-record digests delivered independently through Nucleus before ordinary verifier entry. Keep the inputs quiescent through settlement. |
+| Existing private allocation | Safe canonical checkout, ordinary-uid0700 receipt/scratch root with initially absent `session.json`, and failure-retention space. Supply allocation identity; never adopt an unknown fixture. No runtime staging. |
+| Outer boundary and wait owner | Already-enabled exclusive cgroupv2 delegation, PID namespace/init, loopback-only network, filesystem/filter/ptrace monitor and actual parent/adoptee wait owner, with exact source/config/readbacks and receipts. The transaction neither provisions nor proves these. |
+
+There is **no approved executable provisioner** here that derives this image's
+loader/search or initial Python authority. `HostInputs` consumes it and the ELF
+reader checks its graph. The smallest missing component is the named custodian's
+finite policy/manifest for this one image/candidate, backed by independent
+package/build audit. No general ELF packager or sandbox is needed. If an exact
+selected input cannot be justified, refuse and request that image/package record
+from the custodian. Source/fake work cannot manufacture this trust input. Until
+it is supplied and reviewed, this is an external-resource request, not a runnable
+host packet.
+
+### Verification commands for a later grant
+
+These commands are **unapplied**. As root custodian, first verify the independently
+accepted source-record and manifest digests from the exact approved checkout:
+
+```sh
+printf '%s  %s\n' "$source_record_sha256" docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256 | /usr/bin/sha256sum --check --strict -
+/usr/bin/sha256sum --check --strict docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256
+printf '%s  %s\n' "$host_manifest_sha256" "$host_manifest" | /usr/bin/sha256sum --check --strict -
+```
+
+The manifest must be authored and its separate policy/provenance digest accepted
+before these checks. Hashing an unapproved file grants nothing. Then, as the
+bound ordinary uid with its already-approved initial Python, use the existing
+source packet and reader in this bounded read-only invocation:
+
+```sh
+env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C HOME="$receipt_root" TMPDIR="$receipt_root" TMP="$receipt_root" TEMP="$receipt_root" /usr/bin/timeout --signal=TERM --kill-after=2s 20s /usr/bin/python3 -I -B -S - "$host_manifest" "$host_manifest_sha256" "$source_record_sha256" <<'PY'
+import hashlib, json, runpy, sys
+s = runpy.run_path("scripts/claude-agent-sdk-bootstrap-session.py")
+sources = s["source_packet"](s["RECORD"], sys.argv[3])
+with open(sys.argv[1], "rb") as stream:
+    raw = stream.read(1048577)
+assert len(raw) <= 1048576 and hashlib.sha256(raw).hexdigest() == sys.argv[2]
+m = json.loads(raw)
+assert (m["path"], m["sha256"], m["bytes"], m["version"]) == (s["CANDIDATE"], s["CANDIDATE_SHA"], 124902584, "v22.23.4")
+assert m["originalActivation"] is False
+assert (m["host"]["system"], m["host"]["machine"]) == ("Linux", "x86_64")
+c = s["load"]("scripts/claude-agent-sdk-probe-custody.py", sources["scripts/claude-agent-sdk-probe-custody.py"])
+e = s["load"]("scripts/claude-agent-sdk-bootstrap-elf.py", sources["scripts/claude-agent-sdk-bootstrap-elf.py"])
+h = s["HostInputs"](c, e, m)
+try:
+    for name, data in sources.items():
+        h.capture.bind(str(s["ROOT"] / name), hashlib.sha256(data).hexdigest())
+    h.capture.bind(str(s["RECORD"]), sys.argv[3])
+    h.check()
+    print('{"hostInputsVerified":true,"runtimeExecuted":false}')
+finally:
+    h.close()
+PY
+```
+
+This performs no permission transition, candidate execution or rehearsal. One
+read-only attempt is20s plus2s kill grace, at most1MiB manifest and16KiB recorded
+output. Retain failures; no automatic retry/install/repair. Its output checks the
+custodian's inputs, never their authority. The primary invocation must reacquire
+and hold its own live descriptors; this check cannot stand in for custody.
+Source-only checks must compile this embedded Python and validate the surrounding
+shell syntax without executing either command on a host.
+
 ## Exact proposed host and command
 
 The [machine-readable proposal](claude-agent-sdk-bootstrap-session.json) fixes
@@ -172,12 +277,33 @@ boundary before candidate entry; this transaction builds no alternate sandbox
 and attests none of those gates. No combined, canonical, namespace/controller,
 original/vendor/provider or release authority is bundled here.
 
-The command is executable source with a concrete input contract, not an active
+The command is a conditional source template, not an executable host packet
+until the named custodian supplies the independent package. It is not an active
 job or a permission-only demonstration. Until the independent host manifest and
 outer boundary are provisioned and exactly authorized, only the owned source/fake
 tests may run. Darwin shared-cache closure remains outside this Linux proposal.
-ACP239 must supply its actual Rust sibling topology; SDK source/fake credit does
-not transfer. Qualification claims and the merge hold stay unchanged.
+The ordinary supervisor owns the journal, live capture and actual child handles
+until checked settlement and restore. After supervisor loss, the named custodian
+owns retained journals/fixtures and independent recover-only execution (10s+2s);
+recovery never launches Node or accepts an unresolved entry/child intent as a
+wait. No old fixture or missing historical wait is adopted.
+
+The custodian must provide the reviewed32-task/thread,256MiB, one-CPU
+`100000 100000` quota,10 CPU seconds/process,64 payload-FD and1MiB per-rehearsal
+output/writable bounds before candidate entry. Kernel parent/adoptee waits remain
+required; cgroup emptiness and VM disposal cannot supply them. Task239 owns the
+actual Rust parent with LocalProcessHost group-leader/ACP siblings and native
+child. Its exact software integration must later compose inside this same finite
+host/kernel boundary; the SDK stand-in proves none of that topology. Do not
+duplicate239 integration or activate an extra job. Full original permission,
+continued-turn/lifecycle and Q-009 remain open under the qualification merge hold.
+
+The next authority must name the real host/boot, custodian, source/record,
+manifest/policy digests, private allocation, boundary readbacks and one exact
+permission/runtime/owned-fake/restore attempt. No chmod-only demonstration,
+workflow edit/application/registration/dispatch, new host, runtime install/staging,
+controller/canonical setup, original/native/provider/spend or release action is
+authorized here. `originalCommand` and original admission stay closed.
 
 The [selected SDK startup absence probe](claude-agent-sdk-startup-lookup.md)
 owns the source-discovered optional-builtin incompatibility and the exact shared

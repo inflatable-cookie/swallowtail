@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -498,6 +499,32 @@ class HostInputTests(unittest.TestCase):
 
 
 class SourcePacketTests(unittest.TestCase):
+    def test_provisioner_commands_compile_without_host_execution(self):
+        # Syntax/source consistency only; supplies no manifest or host authority.
+        sources = S.source_packet(S.RECORD, sha(S.RECORD))
+        name = "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.md"
+        document = sources[name].decode()
+        commands = re.findall(r"```sh\n(.*?)\n```", document, re.S)
+        self.assertEqual(len(commands), 2)
+        shell = shutil.which("bash")
+        self.assertIsNotNone(shell)
+        for command in commands:
+            checked = subprocess.run(
+                [shell, "--noprofile", "--norc", "-n"],
+                input=command,
+                text=True,
+                capture_output=True,
+                timeout=5,
+                env={
+                    "PATH": "/usr/bin:/bin",
+                    **{key: os.environ["TMPDIR"] for key in ("TMPDIR", "TMP", "TEMP")},
+                },
+            )
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+        embedded = re.findall(r"<<'PY'\n(.*?)\nPY", document, re.S)
+        self.assertEqual(len(embedded), 1)
+        compile(embedded[0], name + ":read-only-verifier", "exec")
+
     def test_source_binding_and_drift_refuse_before_loading(self):
         with tempfile.TemporaryDirectory(
             prefix="sdk-source-packet-", dir=os.environ["TMPDIR"]

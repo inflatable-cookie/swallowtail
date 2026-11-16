@@ -366,6 +366,47 @@ class ObserverTests(unittest.TestCase):
         self.guest.release()
         self.assertFalse(self.guest.root.exists())
 
+    def test_never_granted_native_edge_still_requires_actual_driver_wait(self):
+        control = self.root / "control"
+        control.write_bytes(b"")
+        fd = os.open(control, os.O_RDONLY)
+        try:
+            row = {"actor": os.getpid(), "pid": 1001, "status": 78 << 8}
+            gate = SimpleNamespace(
+                roles={"driver": 1001},
+                tasks={
+                    1001: {"identity": {"namespacePids": [1001, 3]}, "terminal": row}
+                },
+                complete=lambda: True,
+            )
+            monitor = SimpleNamespace(
+                packet={"root": str(self.root)},
+                control_fd=fd,
+                gate=gate,
+                trace=SimpleNamespace(waits=[]),
+                check_custody=mock.Mock(),
+                drain=mock.Mock(),
+            )
+            proof = {
+                "driverIntent": True,
+                "driver": {"pid": 3, "code": 78},
+                "launch": {
+                    "state": "settled",
+                    "active": False,
+                    "notified": False,
+                    "settlement": "native_spawn_not_permitted",
+                },
+            }
+            with self.assertRaisesRegex(OSError, "live_trace_wait_missing"):
+                B.fixture_settlement(monitor, self.root, proof)
+            monitor.trace.waits = [row]
+            self.assertIsNone(B.fixture_settlement(monitor, self.root, proof)["native"])
+            control.write_bytes(b"\1")
+            with self.assertRaisesRegex(OSError, "not_proved_absent"):
+                B.fixture_settlement(monitor, self.root, proof)
+        finally:
+            os.close(fd)
+
 
 if __name__ == "__main__":
     unittest.main()

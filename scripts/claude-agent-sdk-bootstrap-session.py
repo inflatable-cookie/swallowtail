@@ -483,16 +483,26 @@ class Session:
                 except BaseException as error:
                     self.retained_rehearsal = getattr(error, "rehearsal", None)
                     raise
-                if (
+                failed = (
                     result.get("failure") is not None
                     or result.get("driverWait") != 0
                     or len(result.get("nativeWaits", [])) != 1
                     or result["nativeWaits"][0].get("code") != 0
-                ):
-                    raise OSError("owned_fake_settlement_failed; receipt retained")
-                self.store("fake_joined", unresolved=False)
-                if context is not None:
+                )
+                if context is not None and context.case_settled:
+                    # Only the same private root's live wait acknowledgement,
+                    # followed by checked source-fixture cleanup, settles a
+                    # refused case. Outcome and custody are separate.
                     context.case_end(result)
+                    self.store("fake_joined", unresolved=False)
+                elif failed:
+                    raise OSError("owned_fake_settlement_failed; receipt retained")
+                else:
+                    self.store("fake_joined", unresolved=False)
+                    if context is not None:
+                        context.case_end(result)
+                if failed:
+                    raise OSError("owned_fake_protocol_refused_after_actual_settlement")
                 self.results.append(
                     {
                         "mode": mode,

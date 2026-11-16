@@ -67,6 +67,68 @@ class PackageLease:
         self.stage = None
         self.roots = []
         self.closed = False
+        self.sentinel = None
+
+    def bind_sentinel(self, path):
+        path = Path(path)
+        if (
+            path.parent != self.scratch
+            or path.resolve(strict=True) != path
+            or self.sentinel is not None
+        ):
+            raise OSError("one_owned_outside_sentinel_only")
+        fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        info = os.fstat(fd)
+        if (
+            not stat.S_ISREG(info.st_mode)
+            or info.st_uid != os.geteuid()
+            or stat.S_IMODE(info.st_mode) != 0o444
+            or info.st_nlink != 1
+            or os.pread(fd, 257, 0) != b"owned boundary sentinel"
+        ):
+            os.close(fd)
+            raise OSError("outside_sentinel_identity_or_bytes")
+        self.sentinel = (
+            path,
+            fd,
+            (
+                info.st_dev,
+                info.st_ino,
+                info.st_uid,
+                info.st_gid,
+                info.st_mode,
+                info.st_size,
+                info.st_mtime_ns,
+                info.st_ctime_ns,
+            ),
+        )
+
+    def check_sentinel(self):
+        if self.sentinel is None:
+            return
+        path, fd, expected = self.sentinel
+        stable = lambda row: (
+            row.st_dev,
+            row.st_ino,
+            row.st_uid,
+            row.st_gid,
+            row.st_mode,
+            row.st_size,
+            row.st_mtime_ns,
+            row.st_ctime_ns,
+        )
+        if (
+            stable(os.fstat(fd)) != expected
+            or stable(path.lstat()) != expected
+            or os.pread(fd, 257, 0) != b"owned boundary sentinel"
+        ):
+            raise OSError("outside_sentinel_drift")
+
+    def close_sentinel(self):
+        self.check_sentinel()
+        if self.sentinel is not None:
+            os.close(self.sentinel[1])
+            self.sentinel = None
 
     def begin(self, root):
         root = Path(root)
@@ -114,6 +176,7 @@ class PackageLease:
     def check(self):
         if self.closed:
             raise OSError("root_package_lease_closed")
+        self.check_sentinel()
         self.package.files.check(candidate_mode=self.mode)
         if self.stage is not None:
             self.stage.check()
@@ -182,6 +245,7 @@ def compose(combined, boundary):
             self.observer_command = monitor.custody.observer_command
             self.session_module = monitor.session_module
             self.observer = None
+            self.case_settled = False
             self.capture_runtime = None
 
         def leaf_prepared(self, receipt):
@@ -193,6 +257,7 @@ def compose(combined, boundary):
         def case_begin(self, mode, state):
             self.request("case_begin", mode=mode, state=state)
             self.layout = None
+            self.case_settled = False
             self.observer = boundary.GuestObserver(self, self.files)
 
         def observer_prepare(self, command, kwargs, bootstrap):
@@ -206,13 +271,21 @@ def compose(combined, boundary):
 
         def before_fixture_cleanup(self, root, proof):
             self.request("fixture_waits", root=str(root), proof=proof)
+            self.case_settled = True
 
         def case_end(self, result):
             # Core already closed its capture and identity-checked its own stage
             # after the root acknowledgement. Observer files are separately owned.
+            passed = (
+                result.get("failure") is None
+                and result.get("driverWait") == 0
+                and len(result.get("nativeWaits", [])) == 1
+                and result["nativeWaits"][0].get("code") == 0
+            )
             self.request(
                 "case_end",
                 failure=result.get("failure"),
+                passed=passed,
                 driverWait=result.get("driverWait"),
             )
             self.observer.release()
@@ -244,6 +317,7 @@ def compose(combined, boundary):
             self.observer = None
             self.case = None
             self.case_ack = None
+            self.case_stop = False
             self.leaf_restored = False
             self.fixture_fd = None
             self.group_removed = False
@@ -307,6 +381,11 @@ def compose(combined, boundary):
             manifest = json.loads(raw)
             context = Guest(self, answer_read, write)
             context.metadata = context.request("ready")
+            if (
+                Path(context.metadata["outsidePath"]).read_bytes()
+                != b"owned boundary sentinel"
+            ):
+                raise OSError("outside_canary_must_be_readable_before_kernel_entry")
             owner = session.Session(
                 self.custody,
                 self.elf,
@@ -345,6 +424,7 @@ def compose(combined, boundary):
                 "stop_actor",
                 "observer_joined",
                 "fixture_waits",
+                "case_end",
                 "leaf_restored",
             }:
                 return {"error": self.refusal, "errno": errno.EPERM}
@@ -368,7 +448,11 @@ def compose(combined, boundary):
                         raise OSError("duplicate_leaf_preparation")
                     self.lease.leaf(receipt, 0o755)
                 else:
-                    if len(self.case_rows) != 3 or self.case is not None:
+                    if (
+                        not self.case_rows
+                        or self.case is not None
+                        or (len(self.case_rows) != 3 and not self.case_stop)
+                    ):
                         raise OSError("leaf_restore_before_all_case_waits")
                     self.lease.leaf(receipt, 0o777)
                     self.leaf_restored = True
@@ -376,7 +460,8 @@ def compose(combined, boundary):
             if kind == "case_begin":
                 pair = (request["mode"], request["state"])
                 if (
-                    self.case is not None
+                    self.case_stop
+                    or self.case is not None
                     or len(self.case_rows) >= 3
                     or pair != CASES[len(self.case_rows)]
                     or self.lease.mode != 0o755
@@ -433,12 +518,13 @@ def compose(combined, boundary):
                     self.control_identity = None
                 return ack
             if kind == "case_end":
-                if (
-                    self.case_ack is None
+                if self.case_ack is None:
+                    raise OSError("case_actual_wait_missing")
+                self.case_stop = (
+                    request["passed"] is not True
                     or request["failure"] is not None
                     or request["driverWait"] != 0
-                ):
-                    raise OSError("case_result_or_actual_wait_missing")
+                )
                 combined.cleanup_partial_fixture(
                     Path("/etc"), 0, self.journal["fixture"], self.fixture
                 )
@@ -448,6 +534,7 @@ def compose(combined, boundary):
                     "case": self.case,
                     "ack": self.case_ack["ack"],
                     "gate": self.case_ack["gate"],
+                    "passed": not self.case_stop,
                 }
                 self.case_rows.append(row)
                 self.case = None
@@ -475,14 +562,10 @@ def compose(combined, boundary):
 
         def settlement_observed(self):
             if (
-                self.refusal is not None
-                or not self.leaf_restored
+                not self.leaf_restored
                 or self.case is not None
-                or len(self.case_rows) != 3
-                or self.result is None
-                or self.result.get("failure") is not None
+                or not self.case_rows
                 or not self.journal.get("treeSettled")
-                or self.journal.get("failure")
                 or not (self.group_removed or self.group.empty())
                 or self.journal.get("fixtureStage") != "removed"
             ):
@@ -494,7 +577,7 @@ def compose(combined, boundary):
             }
             if not any(
                 row["pid"] == self.init
-                and row["status"] == 0
+                and (os.WIFEXITED(row["status"]) or os.WIFSIGNALED(row["status"]))
                 and row["actor"] == os.getpid()
                 and (row["actor"], row["pid"], row["status"]) in observed
                 for row in self.waits
@@ -503,7 +586,14 @@ def compose(combined, boundary):
             gates = [row.gate for row in self.phases] + [
                 row["gate"] for row in self.case_rows
             ]
-            if not all(row.settled for row in self.phases) or len(gates) != 6:
+            if not all(row.settled for row in self.phases) or len(gates) != 2 * len(
+                self.case_rows
+            ):
+                return False
+            allowed = {self.init} | {
+                pid for gate in gates if gate is not None for pid in gate.roles.values()
+            }
+            if not set(self.seen) <= allowed:
                 return False
             return all(
                 gate is not None
@@ -682,6 +772,7 @@ def transaction(args, session, files, binding, inspect_inputs):
         "monitor": combined.identity(os.getpid()),
     }
     effect_pending = False
+    finishing = False
 
     def save():
         combined.persist_journal(descriptor, journal, root)
@@ -713,7 +804,7 @@ def transaction(args, session, files, binding, inspect_inputs):
         journal["cgroupStage"] = "created"
         save()
         effect_pending = False
-        outside = root / "outside-readable-owned-sentinel"
+        outside = Path(os.environ["TMPDIR"]) / "outside-readable-owned-sentinel"
         fd = os.open(
             outside, os.O_CREAT | os.O_EXCL | os.O_WRONLY | os.O_NOFOLLOW, 0o444
         )
@@ -722,6 +813,7 @@ def transaction(args, session, files, binding, inspect_inputs):
             os.fsync(fd)
         finally:
             os.close(fd)
+        lease.bind_sentinel(outside)
         journal["outsidePath"] = str(outside)
         save()
         _, batch = compose(combined, boundary)
@@ -741,6 +833,11 @@ def transaction(args, session, files, binding, inspect_inputs):
             fixture,
         )
         result = owner.monitor_entry(monitor)
+        if len(monitor.case_rows) != 3 or not all(
+            row["passed"] for row in monitor.case_rows
+        ):
+            raise OSError("three_passing_cases_required_for_success")
+        finishing = True
         # Actual software/tracer/init waits have already matched. Remove only
         # the identity-held empty group, then preserve those live observations
         # through the administrative reverse restore.
@@ -750,6 +847,7 @@ def transaction(args, session, files, binding, inspect_inputs):
         lease.check()
         owner.restore()
         package.close()
+        lease.close_sentinel()
         transfer.close()
         group.close()
         os.close(descriptor)
@@ -767,6 +865,42 @@ def transaction(args, session, files, binding, inspect_inputs):
     except BaseException as error:
         # Known no-spawn refusal may restore only before any ambiguous resource
         # effect, with no child/observer/kernel entry and exact held identities.
+        try:
+            actual_settled = monitor is not None and monitor.settlement_observed()
+        except BaseException as wait_error:
+            wait_error.resources = (
+                owner,
+                transfer,
+                package,
+                lease,
+                group,
+                monitor,
+                descriptor,
+            )
+            raise wait_error from error
+        if actual_settled and not finishing:
+            try:
+                owner.finish_monitor()
+                monitor.remove_group()
+                lease.check()
+                owner.restore()
+                package.close()
+                lease.close_sentinel()
+                transfer.close()
+                group.close()
+                os.close(descriptor)
+            except BaseException as cleanup_error:
+                cleanup_error.resources = (
+                    owner,
+                    transfer,
+                    package,
+                    lease,
+                    group,
+                    monitor,
+                    descriptor,
+                )
+                raise cleanup_error from error
+            raise
         try:
             safe = (
                 not effect_pending
@@ -792,6 +926,8 @@ def transaction(args, session, files, binding, inspect_inputs):
                 owner.restore()
                 if package is not None:
                     package.close()
+                if lease is not None:
+                    lease.close_sentinel()
                 if transfer is not None:
                     transfer.close()
                 if group is not None:

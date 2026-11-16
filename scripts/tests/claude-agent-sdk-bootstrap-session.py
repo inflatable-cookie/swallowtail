@@ -207,6 +207,35 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(state["children"], [])
         self.assertTrue(self.session.host.capture.closed)
 
+    def test_root_acknowledged_refusal_restores_only_after_checked_case_cleanup(self):
+        context = types.SimpleNamespace(
+            case_settled=True,
+            case_begin=mock.Mock(),
+            case_end=mock.Mock(),
+            leaf_prepared=mock.Mock(),
+            leaf_restored=mock.Mock(),
+        )
+
+        def refused(*args, **kwargs):
+            return {
+                "failure": "owned protocol refusal",
+                "driverWait": 78,
+                "nativeWaits": [],
+            }
+
+        with self.assertRaisesRegex(
+            OSError, "protocol_refused_after_actual_settlement"
+        ):
+            self.session.run(
+                types.SimpleNamespace(rehearsal=refused),
+                "owned-record",
+                context=context,
+            )
+        context.case_end.assert_called_once()
+        context.leaf_restored.assert_called_once()
+        self.assertEqual(self.node.stat().st_mode & 0o777, 0o777)
+        self.assertEqual(json.loads(self.journal.read_text())["phase"], "restored")
+
     def test_unsettled_fake_result_retains_receipt_and_prepared_mode(self):
         def failed(*args, **kwargs):
             result = self.rehearsal(*args, **kwargs)

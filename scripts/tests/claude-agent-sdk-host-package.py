@@ -205,7 +205,6 @@ class PackageTests(unittest.TestCase):
                 "prlimit",
                 "bash",
                 "wc",
-                "tar",
             ):
                 (root / ("usr/bin/" + tool)).write_bytes(data)
             for module in (
@@ -243,29 +242,9 @@ class PackageTests(unittest.TestCase):
                 },
             )
 
-            (root / "usr/bin/tar").write_bytes(data)
-            (root / "var/lib/dpkg/info").mkdir(parents=True, exist_ok=True)
-            md5_rows = []
-            for file in root.rglob("*"):
-                if file.is_file() and str(file.relative_to(root)).startswith(
-                    ("usr/", "lib/", "lib64/")
-                ):
-                    md5_rows.append(
-                        hashlib.md5(file.read_bytes()).hexdigest()
-                        + "  "
-                        + str(file.relative_to(root))
-                    )
-            (root / "var/lib/dpkg/info/owned-image.md5sums").write_text(
-                "\n".join(md5_rows) + "\n"
-            )
-
             def tool(command, **kwargs):
                 if command[-1] == "--help":
                     return 0, HELP.encode()
-                if command[1:3] == ["-S", "--"]:
-                    return 0, "".join(
-                        "owned-image: " + name + "\n" for name in command[3:]
-                    ).encode()
                 names = command[3:]
                 return 0, "".join(
                     name + "\t1-owned\towned-source\t1-owned\tinstall ok installed\n"

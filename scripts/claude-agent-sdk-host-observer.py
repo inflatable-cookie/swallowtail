@@ -356,7 +356,11 @@ def fixture_settlement(monitor, root, proof):
         raise OSError("staged_fixture_or_driver_intent_changed")
     monitor.drain()
     gate = monitor.gate
-    if gate is None or not gate.complete() or set(gate.roles) != {"driver", "native"}:
+    if (
+        gate is None
+        or not gate.complete()
+        or set(gate.roles) not in ({"driver"}, {"driver", "native"})
+    ):
         raise OSError("staged_actual_child_waits_missing")
     actual = {
         (row["actor"], row["pid"], row["status"])
@@ -367,9 +371,8 @@ def fixture_settlement(monitor, root, proof):
         row = task["terminal"]
         if (row["actor"], row["pid"], row["status"]) not in actual:
             raise OSError("staged_live_trace_wait_missing")
-    driver, native = (gate.tasks[gate.roles[role]] for role in ("driver", "native"))
+    driver = gate.tasks[gate.roles["driver"]]
     driver_pid = driver["identity"]["namespacePids"][-1]
-    native_pid = native["identity"]["namespacePids"][-1]
     parent_wait = proof.get("driver")
     if (
         not isinstance(parent_wait, dict)
@@ -379,6 +382,25 @@ def fixture_settlement(monitor, root, proof):
     ):
         raise OSError("staged_driver_parent_wait_disagrees")
     launch = proof.get("launch", {})
+    if set(gate.roles) == {"driver"}:
+        if (
+            launch.get("state") != "settled"
+            or launch.get("active") is not False
+            or launch.get("notified") is not False
+            or launch.get("settlement") != "native_spawn_not_permitted"
+            or monitor.control_fd is None
+            or os.pread(monitor.control_fd, 2, 0) != b""
+        ):
+            raise OSError("staged_native_obligation_not_proved_absent")
+        monitor.check_custody()  # Held never-granted channel plus actual driver wait.
+        return {
+            "stage": str(root),
+            "driver": driver_pid,
+            "native": None,
+            "waitsSha256": sha(encoded(sorted(actual), limit=65536)),
+        }
+    native = gate.tasks[gate.roles["native"]]
+    native_pid = native["identity"]["namespacePids"][-1]
     wait = launch.get("wait", {})
     config = json.loads(Path(monitor.packet["config"]).read_bytes())
     if (

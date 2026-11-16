@@ -58,6 +58,5 @@
   "sourceImplementationApproved": true,
   "observerBridgeSource": "scripts/claude-agent-sdk-host-observer.py",
   "observerEntrySource": "scripts/claude-agent-sdk-observer-entry.py",
-  "compositionSource": "scripts/claude-agent-sdk-host-session.py",
-  "selectedPackageProvenance": "Selected system files only: safe system aliases, exact dpkg ownership, held package checksum records, matching installed bytes and package/source version rows. Root image/admin remains the trust anchor; MD5 metadata is not runtime authority."
+  "compositionSource": "scripts/claude-agent-sdk-host-session.py"
 }

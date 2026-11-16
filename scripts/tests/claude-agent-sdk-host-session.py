@@ -161,6 +161,7 @@ class CompositionTests(unittest.TestCase):
             "failure": None,
         }
         monitor.init = 900
+        monitor.seen = {pid: {} for pid in range(900, 907)}
         row = {"actor": os.getpid(), "pid": 900, "status": 0}
         monitor.waits = [row]
         monitor.trace = SimpleNamespace(waits=[row])
@@ -170,7 +171,9 @@ class CompositionTests(unittest.TestCase):
             monitor.trace.waits.append(terminal)
             gates.append(
                 SimpleNamespace(
-                    complete=lambda: True, tasks={901 + index: {"terminal": terminal}}
+                    complete=lambda: True,
+                    roles={"driver": 901 + index},
+                    tasks={901 + index: {"terminal": terminal}},
                 )
             )
         monitor.phases = [
@@ -219,6 +222,7 @@ class CompositionTests(unittest.TestCase):
         monitor = cls.__new__(cls)
         monitor.case = None
         monitor.case_rows = []
+        monitor.case_stop = False
         monitor.lease = SimpleNamespace(mode=0o755)
         with self.assertRaisesRegex(OSError, "three_exact_cases"):
             monitor.handle_owned(
@@ -253,64 +257,25 @@ class CompositionTests(unittest.TestCase):
         self.assertEqual(blocked["error"], reply["error"])
         monitor.handle_owned.assert_not_called()
 
-
-class PackageProvenanceTests(unittest.TestCase):
-    def test_selected_bytes_must_match_the_held_package_record(self):
-        root = Path(
-            tempfile.mkdtemp(prefix="host-provenance-", dir=os.environ["TMPDIR"])
-        ).resolve()
-        files = None
-        try:
-            (root / "usr/lib").mkdir(parents=True)
-            (root / "var/lib/dpkg/info").mkdir(parents=True)
-            target = root / "usr/lib/owned.so"
-            target.write_bytes(b"owned selected bytes")
-            metadata = root / "var/lib/dpkg/info/owned-image.md5sums"
-            metadata.write_text(
-                hashlib.md5(target.read_bytes()).hexdigest() + "  usr/lib/owned.so\n"
-            )
-            files = P.ImageFiles(root=root, uid=os.getuid())
-            files.read("/usr/lib/owned.so")
-            owner = SimpleNamespace(
-                tool=lambda command, **kwargs: (0, b"owned-image: /usr/lib/owned.so\n")
-            )
-            self.assertEqual(
-                P.installed_provenance(files, owner, "/owned/query", set(files.files)),
-                {"/usr/lib/owned.so": "owned-image"},
-            )
-            metadata.write_text("0" * 32 + "  usr/lib/owned.so\n")
-            # Reacquire only this fresh owned fixture's metadata to test a bad
-            # independently supplied package record; it is never runtime proof.
-            files.close()
-            files = P.ImageFiles(root=root, uid=os.getuid())
-            files.read("/usr/lib/owned.so")
-            with self.assertRaisesRegex(P.Refused, "bytes_mismatch"):
-                P.installed_provenance(files, owner, "/owned/query", set(files.files))
-        finally:
-            if files is not None:
-                files.close()
-            shutil.rmtree(root)
-
-    def test_ambiguous_or_missing_owner_never_becomes_provenance(self):
-        root = Path(
-            tempfile.mkdtemp(prefix="host-provenance-", dir=os.environ["TMPDIR"])
-        ).resolve()
-        files = None
-        try:
-            (root / "usr/lib").mkdir(parents=True)
-            (root / "usr/lib/owned.so").write_bytes(b"owned")
-            files = P.ImageFiles(root=root, uid=os.getuid())
-            files.read("/usr/lib/owned.so")
-            for output in (b"", b"a, b: /usr/lib/owned.so\n", b"a: /other.so\n"):
-                owner = SimpleNamespace(tool=lambda *args, **kwargs: (0, output))
-                with self.assertRaises(P.Refused):
-                    P.installed_provenance(
-                        files, owner, "/owned/query", set(files.files)
-                    )
-        finally:
-            if files is not None:
-                files.close()
-            shutil.rmtree(root)
+    def test_refused_case_uses_the_same_actual_wait_predicate(self):
+        monitor = self.monitor_model()
+        monitor.phases = monitor.phases[:1]
+        monitor.case_rows = monitor.case_rows[:1]
+        allowed = {monitor.init} | {
+            pid
+            for gate in (monitor.phases[0].gate, monitor.case_rows[0]["gate"])
+            for pid in gate.roles.values()
+        }
+        monitor.seen = {pid: {} for pid in allowed}
+        monitor.trace.waits = [
+            row for row in monitor.trace.waits if row["pid"] in allowed
+        ]
+        monitor.waits[0]["status"] = 78 << 8
+        monitor.result = None
+        monitor.journal["failure"] = "known protocol refusal"
+        self.assertTrue(monitor.settlement_observed())
+        monitor.trace.waits.pop()
+        self.assertFalse(monitor.settlement_observed())
 
 
 class PipelineTests(unittest.TestCase):
@@ -331,8 +296,12 @@ class PipelineTests(unittest.TestCase):
         self.receipts = self.root / "receipts"
         self.receipts.mkdir(mode=0o700)
         (self.root / "kernel-parent").mkdir(mode=0o700)
+        self.ordinary = self.root / "ordinary"
+        self.ordinary.mkdir(mode=0o700)
+        self.previous_tmp = os.environ["TMPDIR"]
+        os.environ["TMPDIR"] = str(self.ordinary)
         self.instances = {}
-        self.withhold = self.refuse_parent = False
+        self.withhold = self.refuse_parent = self.protocol_refuse = False
         outer = self
 
         def administrative(journal, binding, **kwargs):
@@ -398,6 +367,7 @@ class PipelineTests(unittest.TestCase):
             ):
                 self.fork_attempted = False
                 self.init = None
+                self.case_rows = [{"passed": True} for _ in H.CASES]
                 self.children = []
                 self.group = group
                 self.journal = journal
@@ -437,6 +407,8 @@ class PipelineTests(unittest.TestCase):
                     child.wait(timeout=2)
                 if outer.withhold:
                     raise OSError("owned wait observations withheld")
+                if outer.protocol_refuse:
+                    raise OSError("owned protocol refusal after actual waits")
                 return {"softwareResult": {"cases": list(H.CASES)}}
 
             def settlement_observed(self):
@@ -513,6 +485,7 @@ class PipelineTests(unittest.TestCase):
                 owner.finish_monitor()
                 monitor.remove_group()
             owner.restore()
+            self.instances["lease"].close_sentinel()
             for name in ("package", "transfer", "group"):
                 value = self.instances.get(name)
                 if value is not None:
@@ -520,6 +493,7 @@ class PipelineTests(unittest.TestCase):
             descriptor = self.instances.get("descriptor")
             if descriptor is not None:
                 os.close(descriptor)
+        os.environ["TMPDIR"] = self.previous_tmp
         shutil.rmtree(self.root)
 
     def test_full_owner_sequence_keeps_root_handles_out_of_actual_owned_children(self):
@@ -551,6 +525,16 @@ class PipelineTests(unittest.TestCase):
         self.withhold = False
         owner.finish_monitor()  # Same actual owned Popen waits, never a replay.
         self.assertFalse(owner.unsettled())
+
+    def test_known_protocol_refusal_restores_after_the_same_actual_waits(self):
+        self.protocol_refuse = True
+        with self.assertRaisesRegex(
+            OSError, "protocol refusal after actual waits"
+        ) as caught:
+            self.invoke()
+        self.assertFalse(hasattr(caught.exception, "resources"))
+        self.assertEqual(self.instances["owner"].state["phase"], "restored")
+        self.assertFalse(self.instances["group"].path.exists())
 
     def test_parent_prerequisite_refuses_before_any_ancestor_mutation(self):
         self.refuse_parent = True

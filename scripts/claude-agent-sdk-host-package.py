@@ -264,8 +264,18 @@ def loader_directories(help_text):
         result.append(name)
     if not result or len(set(result)) != len(result):
         raise Refused("package_default_search_shape")
-    caps = re.findall(r"^  (x86-64-v[234])(?: \(.*\))?$", help_text, re.M)
-    if set(caps) != {"x86-64-v2", "x86-64-v3", "x86-64-v4"}:
+    header = "Subdirectories of glibc-hwcaps directories, in priority order:\n"
+    if help_text.count(header) != 1:
+        raise Refused("package_hwcaps_policy")
+    caps = []
+    for row in help_text.split(header, 1)[1].splitlines():
+        if not row:
+            continue
+        match = re.fullmatch(r"  (x86-64-v[234])(?: \(supported, searched\))?", row)
+        if not match:
+            raise Refused("package_hwcaps_policy")
+        caps.append(match[1])
+    if caps != ["x86-64-v4", "x86-64-v3", "x86-64-v2"]:
         raise Refused("package_hwcaps_policy")
     if "Legacy HWCAP" in help_text:
         raise Refused("package_legacy_hwcaps_refused")

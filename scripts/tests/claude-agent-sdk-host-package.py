@@ -60,6 +60,9 @@ class PackageTests(unittest.TestCase):
             HELP.replace("system search path", "LD_LIBRARY_PATH"),
             HELP.replace("x86-64-v4", "x86-64-v5"),
             HELP + "Legacy HWCAP directories",
+            HELP + "  x86-64-v5 (supported, searched)\n",
+            HELP.replace("x86-64-v3", "x86-64-v4"),
+            HELP.replace("supported, searched", "supported, masked"),
         ):
             with self.subTest(text=text), self.assertRaises(P.Refused):
                 P.loader_directories(text)

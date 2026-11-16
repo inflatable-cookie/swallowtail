@@ -141,60 +141,69 @@ and safe aliases through entry and restore. No permission repair is allowed on
 an unsafe ancestor or library. Graph inputs total at most512MiB/128 ELF objects;
 each file is at most256MiB. The manifest is at most1MiB.
 
-## Provisioner and external resource handoff
+## GitHub host-package producer
 
-The proposed accountable bootstrap principal is **Tom as host custodian**, or a
-human delegate Tom names, acting through host root before the ordinary-uid
-transaction starts. The SDK worker and candidate are not that principal.
-GitHub Actions is the proposed infrastructure provider: its
-[Linux VM runners support passwordless sudo](https://docs.github.com/en/actions/reference/runners/github-hosted-runners#administrative-privileges).
-The past Ubuntu image observation demonstrates that host family existed, not
-that an exact future image is reserved. No live host or independent manifest
-producer has been assigned. GitHub's image label/software inventory is not a
-complete loader/Python manifest.
+Tom said "Go for it" on2026-11-16 and chose the GitHub Linux VM route in
+decision0dfce67e-1c14-427e-be51-365db853eb87 v2. Tom owns the resource; task240
+owns the repository provisioning stage. The old manual-manifest/resource-choice
+request is superseded. Do not ask Tom to assemble file hashes or choose a route
+again. This ruling authorizes source/owned-fixture preparation, not allocation,
+workflow application/registration/dispatch, privileged setup, permission mutation,
+candidate execution, installation or provider activity.
 
-The finite trust anchor is the custodian's explicit acceptance of the provider
-image, its bootstrap tools and root provisioning process. Before ordinary
-Python entry, the custodian must independently approve the exact initial Python,
-loader, standard-library, extension, shared-library and supervisor closure.
-That authority arrives through the authenticated operator/plan channel. Python's
-later module/map inventory checks containment; it cannot supply pre-entry
-authority. The custodian's authority is the root of trust, not another executable
-whose report needs an endless chain of self-attestation. This proposes trusted
-host administration within decision89db0f25, not hostile-same-user verification.
-It preserves every reviewed completeness, search and live-custody check.
+The trusted bootstrap principal will be the exact reviewed GitHub workflow/job
+running its repository-owned administrative stage. Its operational identity must
+be supplied by the later activation grant; no job or host is already admitted.
+The initial GitHub image, system loader, root administrative tools and initial
+system Python form the explicit finite trusted-host anchor. The producer binds
+those exact image/package/source inputs before producing the ordinary-uid
+manifest; candidate reports supply none of that authority. Complete loader/search,
+Python/supervisor closure, safe ancestry and live pre-entry custody remain required.
 
-Recommend **A: one custodian-audited GitHub Linux VM** with a separately approved
-root preparation phase and the already-installed exact candidate below. This
-uses a real provider, but requires an actual job/VM allocation and audited policy.
-Abort on image/candidate mismatch without install, runtime copying or other
-permission repairs. **B: an existing Tom-administered Linux x86_64 host** can
-supply the same package, but its actual image/kernel needs a separate exact host
-proposal. Neither option is activated here. If neither owner can supply the
-package, request a named provisioner first; another worker-generated inventory
-is not a runnable third option.
+The selected profile remains Ubuntu26.04.1/20261111.196.1 x86_64 and the exact
+already-installed22.23.4 candidate below. There is no runtime install/copy/staging
+fallback. The image's published build recipe sets `/opt/hostedtoolcache`0777;
+that is a source-discovered safe-ancestry prerequisite, not a fresh host-mode
+observation. The producer must refuse unsafe actual ancestry before opening the
+candidate or executing any candidate command. Leaf preparation cannot repair it.
+A narrowly scoped setup alternative must be reviewed before any repair attempt;
+no broad recursive cache chmod or weakened ancestry rule is authorized.
 
-The named custodian must supply this complete package for one host/boot/uid:
+### Exact unsupported prerequisite and bounded alternative
 
-| Resource | Exact obligation |
-| --- | --- |
-| Host/principal record | Tom names the root custodian, provider job/VM, image/build source, boot ID, kernel, ordinary uid and CPU/auxv. Approve initial bootstrap-tool identities before ordinary Python starts. No same-user adversary claim. |
-| Existing candidate and ancestry | Exact path/bytes/hash below, ordinary-uid owner,0777 leaf and already-safe ancestors/aliases. No Node invocation, including `--version`, establishes this input. |
-| Independent loader policy | Audit the exact loader/libc package/build sources and configuration; complete cache/default/hwcaps search for the actual CPU/auxv; every directory inventory, absent alternative and preload path; aliases and justified selected targets for every transitive DT_NEEDED. Bind cache/config bytes. Refuse unsupported dynamic inputs and nonempty RPATH/RUNPATH. `ldd`, a directory snapshot or a completeness flag supplies no authority. |
-| Initial supervisor policy | Canonical Python target, interpreter/DSOs, isolated/no-site stdlib/extensions, bytecode that may be read despite `-B`, import/search/absence policy, lazy imports and all first-party supervisor/timeout inputs. Post-startup modules/maps alone are insufficient. |
-| Published artifacts | Existing0600 `host-manifest.json` with the schema above; custodian-authored loader/Python completeness/provenance record; exact source commit/record; detached manifest, policy and source-record digests delivered independently through Nucleus before ordinary verifier entry. Keep the inputs quiescent through settlement. |
-| Existing private allocation | Safe canonical checkout, ordinary-uid0700 receipt/scratch root with initially absent `session.json`, and failure-retention space. Supply allocation identity; never adopt an unknown fixture. No runtime staging. |
-| Outer boundary and wait owner | Already-enabled exclusive cgroupv2 delegation, PID namespace/init, loopback-only network, filesystem/filter/ptrace monitor and actual parent/adoptee wait owner, with exact source/config/readbacks and receipts. The transaction neither provisions nor proves these. |
+The official image release tag `ubuntu26/20261111.196` resolves to source
+`93a4e4e98715026b60fdf86893cf193b4be3bd47`. Its README identifies image
+20261111.196.1. The [pinned environment recipe](https://github.com/actions/runner-images/blob/93a4e4e98715026b60fdf86893cf193b4be3bd47/images/ubuntu/scripts/build/configure-environment.sh)
+sets the tool-cache root0777. Exact file digests and source URLs are retained in
+[the producer profile](claude-agent-sdk-host-package.json); no fresh host mode
+is inferred. This source-derived precondition conflicts with the unchanged
+safe-ancestry contract before loader/search or candidate-byte admission.
 
-There is **no approved executable provisioner** here that derives this image's
-loader/search or initial Python authority. `HostInputs` consumes it and the ELF
-reader checks its graph. The smallest missing component is the named custodian's
-finite policy/manifest for this one image/candidate, backed by independent
-package/build audit. No general ELF packager or sandbox is needed. If an exact
-selected input cannot be justified, refuse and request that image/package record
-from the custodian. Source/fake work cannot manufacture this trust input. Until
-it is supplied and reviewed, this is an external-resource request, not a runnable
-host packet.
+The repository [admission gate](../../../scripts/claude-agent-sdk-host-admission.py)
+holds and checks the literal parent directory chain without opening a candidate,
+following aliases, changing modes or creating a child. It refuses image drift,
+unsafe ownership/modes, alias/replacement and bounded-output failures; partial
+captures close only their own descriptors. A safe-chain result is explicitly
+ancestry-only, never a completed package or runtime/host admission. The complete
+loader/search/Python/supervisor producer remains240's obligation after this
+prerequisite is settled; it has not been replaced by a manually assembled manifest.
+
+The retained reviewer advised keeping this image unsupported and preparing the
+[ancestor-only alternative](claude-agent-sdk-host-ancestor-alternative.patch) for
+separate contract review and exact authority. That patch is **unapplied contract
+source**, not an executable setup or workflow patch. It names only the five
+literal cache ancestors, held identities, intent-before-mutation, finite one-job
+bounds, conditional reverse restore and independent recovery. The same root owner
+must retain the chain through the later same-invocation permission/runtime/fake
+proof and real waits; no standalone chmod demonstration is proposed. `/opt`,
+libraries and recursive cache repairs remain excluded. No clamp was attempted.
+
+There is no honest source-immutable activation packet yet for this incompatible
+image. Do not register a gate-only diagnostic or dispatch a known-refusing job.
+The concrete next disposition is review/authority for that bounded ancestor
+contract, or an already-safe existing runtime ancestry on the same chosen GitHub
+route. Do not ask Tom to rechoose the route or supply hundreds of hashes.
+The initial image/root tooling trust anchor does not waive safe ancestry.
 
 ### Verification commands for a later grant
 
@@ -304,7 +313,7 @@ and attests none of those gates. No combined, canonical, namespace/controller,
 original/vendor/provider or release authority is bundled here.
 
 The command is a conditional source template, not an executable host packet
-until the named custodian supplies the independent package. It is not an active
+until the repository producer supplies the independently bound package. It is not an active
 job or a permission-only demonstration. Until the independent host manifest and
 outer boundary are provisioned and exactly authorized, only the owned source/fake
 tests may run. Darwin shared-cache closure remains outside this Linux proposal.
@@ -335,28 +344,32 @@ The [selected SDK startup absence probe](claude-agent-sdk-startup-lookup.md)
 owns the source-discovered optional-builtin incompatibility and the exact shared
 ACP migration candidate. It supplies no host or original-runtime authority.
 
-## Pending ACP integration input
+## Accepted ACP integration input
 
-Version5 retains PR558 candidate source
-`5923c113c9e4ee4be42c3345148b212b1d8733cf`, submitted to its own independent
-review, not yet an accepted host/migration input. At that exact commit,
-`docs/knowledge/operations/claude-agent-acp-startup-integration.json` is3541 bytes,
-SHA-256 `38eac917e03e8b0888767e5edc9005e44f0647188d8deba0c9d56ce426411634`;
-its `.md` explanation is5646 bytes, SHA-256
-`96faa926e2a1ca8f02494816132a16e975a1d012439b55c6a94a367dfe6de4c5`.
-Read exact Rust prefix/recipe, ACP loader/shim and FD/runtime identities from
-that receipt after independent acceptance; short labels and historical
-fingerprints are not bindings. The real Rust parent owns the sleep group leader
-and checked ACP as siblings; ACP joins sleep's group and parents native entry.
-Software waits/descriptor EOF remain separate from kernel/adoptee/tree waits.
-Original option tails/callsite provenance, selected Python/non-system runtime/
-opaque-native closure and original-compatible combined fixtures still refuse.
-No counterpart worktree change, consumption, activation or qualification credit
-is granted. The resource-owner question and all host/kernel/workflow holds remain.
+ACP239 PR558 is independently accepted at
+`3cd84aec7a4a1742d6a08966969af11a4b061086`, review5920577693. This supersedes the
+old pending5923 status. At the accepted commit, the integration JSON remains3541
+bytes, SHA-256 `38eac917e03e8b0888767e5edc9005e44f0647188d8deba0c9d56ce426411634`;
+the explanation is7025 bytes, SHA-256
+`7383cfb79c12a3f493c38a55da1e628a809be29f122d8a9b015f54fac81e848d`.
+Read the exact Rust captured prefix/recipe and ACP loader/shim/FD/runtime bindings
+from that receipt. Rust parents the sleep group owner and checked ACP as siblings;
+ACP joins sleep's group and parents native entry. Reuse this accepted source for
+future exact composition without repeating unchanged accepted software tests.
+Software waits and descriptor EOF do not prove kernel/adoptee/tree settlement.
+Original option tails/callsite provenance, Python/non-system runtime/opaque-native
+closure and original-compatible combined fixtures remain gates. Both qualification
+holds and every original/provider/host/kernel/canonical activation gate remain.
 
 ## Covering proof
 
-Run `check:claude-agent-sdk-bootstrap-session`,
+For the admission change run `check:claude-agent-sdk-host-admission`,
+`check:format:claude-agent-sdk-host-admission`,
+`validate:claude-agent-sdk-host-admission` and
+`validate:claude-agent-sdk-source-packet`, plus the changed docs/routes/retired and
+selector-routing checks. Do not repeat accepted unchanged runtime/ACP suites.
+
+For transaction changes run `check:claude-agent-sdk-bootstrap-session`,
 `validate:claude-agent-sdk-bootstrap-session`,
 `validate:claude-agent-sdk-source-packet`,
 `check:format:claude-agent-sdk-bootstrap-session`, the inherited

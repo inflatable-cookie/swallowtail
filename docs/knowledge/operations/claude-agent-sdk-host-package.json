@@ -1,0 +1,55 @@
+{
+  "schema": "swallowtail.sdk240.host-package-profile.v1",
+  "routeDecision": "0dfce67e-1c14-427e-be51-365db853eb87 v2; GitHub Linux route unchanged",
+  "producerOwner": "swallowtail#240",
+  "resourceOwner": "Tom",
+  "image": {
+    "imageOS": "ubuntu26",
+    "imageVersion": "20261111.196.1",
+    "system": "Linux",
+    "machine": "x86_64"
+  },
+  "sourceBasis": {
+    "repository": "https://github.com/actions/runner-images",
+    "tag": "ubuntu26/20261111.196",
+    "commit": "93a4e4e98715026b60fdf86893cf193b4be3bd47",
+    "files": {
+      "images/ubuntu/Ubuntu2604-Readme.md": {
+        "url": "https://raw.githubusercontent.com/actions/runner-images/93a4e4e98715026b60fdf86893cf193b4be3bd47/images/ubuntu/Ubuntu2604-Readme.md",
+        "bytes": 16171,
+        "sha256": "71deed1cbf0dbff266efa496cba433609fb6352cc2fa88f7eaac132caae1d872"
+      },
+      "images/ubuntu/scripts/build/configure-environment.sh": {
+        "url": "https://raw.githubusercontent.com/actions/runner-images/93a4e4e98715026b60fdf86893cf193b4be3bd47/images/ubuntu/scripts/build/configure-environment.sh",
+        "bytes": 6322,
+        "sha256": "4ffd69e1ddc1ce17e05d6662aab9e9b354d1cf93a3825e85016a1a1deb4edc3e"
+      },
+      "images/ubuntu/scripts/build/install-nodejs.sh": {
+        "url": "https://raw.githubusercontent.com/actions/runner-images/93a4e4e98715026b60fdf86893cf193b4be3bd47/images/ubuntu/scripts/build/install-nodejs.sh",
+        "bytes": 988,
+        "sha256": "d7eeb0bb16e2cbed150808c51bd1beb4cdadb9c5c56edd65d6b5ed9246c8ac24"
+      }
+    },
+    "scope": "Published selected image tag build source only; no fresh host observation or activation"
+  },
+  "sourceDiscoveredGate": {
+    "ancestor": "/opt/hostedtoolcache",
+    "recipeMode": "0777",
+    "required": "no group/other-writable ancestor before ordinary custody or candidate open",
+    "freshHostModeObserved": false,
+    "reviewerDisposition": "215354c7f119499f294dddb308660fd1028ae0e87470b5caab0049710c1e5e97; keep unsupported under current custody contract; ancestor-only alternative requires separate contract review and exact authority"
+  },
+  "admissionSource": "scripts/claude-agent-sdk-host-admission.py",
+  "producerState": "admission gate implemented; complete package production blocked by source-profile ancestry incompatibility; no complete:true or manifest template published",
+  "unappliedAlternative": {
+    "path": "docs/knowledge/operations/claude-agent-sdk-host-ancestor-alternative.patch",
+    "sha256": "17fcd226ef7a55d1cd4db6914a1e3fcf0c423d8eb948911cc8ad8d4a9091c936",
+    "scope": "five fixed ancestors only; same live owner through later permission/runtime/fakes/actual waits/checked restore; no mutation now"
+  },
+  "activationPacket": null,
+  "activationPacketReason": "Do not register or dispatch a known-unsupported setup or permission-only diagnostic; exact executable packet requires ancestor contract disposition and finished complete producer first.",
+  "runtimeExecuted": false,
+  "hostPackageProduced": false,
+  "activationAuthorized": false,
+  "qualificationMergeHold": true
+}

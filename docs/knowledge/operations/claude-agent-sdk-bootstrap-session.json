@@ -45,14 +45,14 @@
   "providerActivation": false,
   "qualified": false,
   "qualificationMergeHoldRequired": true,
-  "independentPrerequisite": "Tom or named root custodian must supply an independently audited complete loader/search and pre-entry Python/supervisor policy, exact host manifest and detached authority, private receipt allocation and finite kernel boundary. No host/manifest producer is currently allocated; this is an external resource request, not a runnable packet. Original admission stays closed.",
+  "independentPrerequisite": "Task240 owns producer delivery. The selected published image tool-cache0777 ancestry is incompatible with the unchanged custody contract. Admission guard refuses before candidate open. A five-object ancestor-only same-live-owner alternative is unapplied and requires separate contract review/exact authority; no runnable activation packet or complete host package is claimed.",
   "provisionerHandoff": {
-    "status": "external resource request; no allocated host or approved manifest producer",
-    "accountableOwner": "Tom as root host custodian, or human delegate Tom names before provisioning",
-    "recommended": "A: custodian-audited GitHub Actions Linux VM with existing exact candidate; abort on drift",
-    "alternative": "B: existing Tom-administered Linux x86_64 host, separately proposed and admitted",
+    "status": "GitHub route chosen; admission guard implemented; selected image unsupported under unchanged safe-ancestry contract",
+    "accountableOwner": "Tom resource owner; task240 source producer; exact administrative workflow/job identity required before activation",
+    "recommended": "GitHub Linux VM route selected by decision0dfce67e-1c14-427e-be51-365db853eb87 v2",
+    "alternative": null,
     "provider": "GitHub Actions hosted Linux VM service; exact future image not reserved",
-    "trustAnchor": "Independent custodian acceptance of image bootstrap and initial Python/loader/supervisor closure before ordinary verifier entry; no self-attestation chain",
+    "trustAnchor": "Authorized initial GitHub image/system-loader/root-administrative-tool/system-Python bootstrap; independently bound exact image/package/source inputs; no candidate self-report",
     "requiredArtifacts": [
       "host/principal/boot/uid/CPU record",
       "audited loader/cache/default/hwcaps/absence/alias policy with package/build provenance",
@@ -78,12 +78,14 @@
     },
     "nextAuthority": "Separate exact host/source/manifest/policy/permission/same-invocation runtime/owned-fake/restore grant after actual prerequisites and review; all activation closed now",
     "recoveryOwner": "Named custodian retains unresolved receipts/fixtures; recover-only cannot accept a missing or invented wait",
-    "acpRequirement": "239 actual Rust group-leader/ACP siblings and native child must compose inside the finite host/kernel boundary; SDK stand-in supplies no topology proof"
+    "acpRequirement": "239 actual Rust group-leader/ACP siblings and native child must compose inside the finite host/kernel boundary; SDK stand-in supplies no topology proof",
+    "producerProfile": "docs/knowledge/operations/claude-agent-sdk-host-package.json",
+    "stillRequired": "Separate bounded ancestor contract disposition, then complete source package producer and exact unapplied activation packet; no manual manifest assembly by Tom"
   },
   "acpCandidateHandoff": {
-    "source": "5923c113c9e4ee4be42c3345148b212b1d8733cf",
+    "source": "3cd84aec7a4a1742d6a08966969af11a4b061086",
     "pr": 558,
-    "status": "candidate submitted for independent review; not accepted consumption or host input",
+    "status": "independently accepted source/owned-fake only; review5920577693; future exact composition only",
     "receipt": {
       "path": "docs/knowledge/operations/claude-agent-acp-startup-integration.json",
       "bytes": 3541,
@@ -91,12 +93,14 @@
     },
     "explanation": {
       "path": "docs/knowledge/operations/claude-agent-acp-startup-integration.md",
-      "bytes": 5646,
-      "sha256": "96faa926e2a1ca8f02494816132a16e975a1d012439b55c6a94a367dfe6de4c5"
+      "bytes": 7025,
+      "sha256": "7383cfb79c12a3f493c38a55da1e628a809be29f122d8a9b015f54fac81e848d"
     },
     "topology": "Rust parents sleep group owner and checked ACP as siblings; ACP joins sleep group and parents native entry",
     "remaining": "Bind exact prefix/entry/FD/runtime before release; software waits and descriptor EOF do not prove kernel/adoptee/tree settlement; original option tails/callsite/Python/non-system-runtime/opaque-native/combined fixtures remain gates",
-    "consumptionAuthorized": false,
-    "activationAuthorized": false
+    "activationAuthorized": false,
+    "review": 5920577693,
+    "sourceCompositionReferenceAccepted": true,
+    "hostRuntimeConsumptionAuthorized": false
   }
 }

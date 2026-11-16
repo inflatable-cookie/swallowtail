@@ -28,3 +28,11 @@ No provisioned host, manifest or activation authority is claimed.
 Enforce the read-only verifier output cap with an inherited hard file-size limit,
 combined exclusive capture and saturation refusal. Retain the exact review-pending
 ACP sibling integration handoff without granting consumption or activation.
+
+Record Tom's GitHub route ruling and task240 ownership of the repository host
+producer. Advance the retained ACP integration to independently accepted3cd84aec
+while keeping source proof separate from host/original qualification.
+
+Add a bounded fail-closed image/ancestry gate and pin the selected image build
+provenance. Retain the exact five-ancestor alternative as unapplied contract
+source; the unsafe published cache ancestry remains an explicit prerequisite.

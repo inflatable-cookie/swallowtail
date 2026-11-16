@@ -203,6 +203,10 @@ section = "Research Records"
   "python3 -B scripts/tests/claude-agent-sdk-probe-custody.py",
   "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py",
 ]
+"validate:claude-agent-sdk-host-admission" = "python3 -B scripts/tests/claude-agent-sdk-host-admission.py"
+"check:claude-agent-sdk-host-admission" = "python3 -c 'from pathlib import Path; [compile(Path(n).read_bytes(), n, \"exec\") for n in (\"scripts/claude-agent-sdk-host-admission.py\", \"scripts/tests/claude-agent-sdk-host-admission.py\")]'"
+"check:format:claude-agent-sdk-host-admission" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-host-admission.py scripts/tests/claude-agent-sdk-host-admission.py"
+"format:claude-agent-sdk-host-admission" = "ruff format --no-cache scripts/claude-agent-sdk-host-admission.py scripts/tests/claude-agent-sdk-host-admission.py"
 "validate:claude-agent-sdk-bootstrap-session" = [
   { task = "validate:claude-agent-sdk-bootstrap-elf" },
   { task = "validate:claude-agent-sdk-bootstrap-transaction" },

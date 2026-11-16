@@ -88,7 +88,28 @@ class SpawnTests(unittest.TestCase):
         driver.kill.assert_called_once()
 
     def run_peer(self, **kwargs):
-        result = CORE.rehearsal(self.record, self.node, self.node_sha, **kwargs)
+        try:
+            result = CORE.rehearsal(self.record, self.node, self.node_sha, **kwargs)
+        except CORE.Refused as error:
+            owner = getattr(error, "rehearsal", None)
+            if owner is not None:
+                (owner.root / "retention-diagnostic.json").write_text(
+                    json.dumps(
+                        {
+                            "registered": owner.registered,
+                            "driverExit": owner.driver.returncode
+                            if owner.driver
+                            else None,
+                            "output": {
+                                name: data.decode(errors="replace")[-8192:]
+                                for name, data in owner.output.items()
+                            },
+                        },
+                        indent=2,
+                    )
+                    + "\n"
+                )
+            raise
         self.diagnostics.append(
             {
                 "fault": kwargs.get("fault"),

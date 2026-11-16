@@ -80,6 +80,11 @@ literal object, with the same identity-held transition and reverse recovery;
 `/` remains permanently already safe and ordinary custody stays strict. The
 future packet also retains bounded refusal and export diagnostics, including
 available receipts and explicit missing names on a nonzero export.
+Review5929551379 identified that the ordinary shell could not inspect root0700
+receipts and that the future dispatch ref still named a SHA placeholder. Brief
+v12 authorizes only the source correction: root-produced present/missing/unknown
+facts and fixed main with an immediate exact registration-SHA comparison fence.
+The passing six-ancestor implementation and the consumed failure remain unchanged.
 This correction requires independent review, exact workflow replacement and
 registration, and NEW authority explicitly covering `/opt` before any attempt.
 

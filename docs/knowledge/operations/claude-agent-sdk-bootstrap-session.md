@@ -347,14 +347,36 @@ route is the three owned SDK cases; it installs/copies no runtime, runs no origi
 or vendor package, and grants no ACP topology credit. Initial GitHub administration
 includes the service job/image identity, system Git/sudo/hash tools, the pinned
 checkout action and artifact uploader for bounded metadata export. Export contains only receipts and
-manifest metadata, the bounded fixed refusal result, export stderr/status and
-missing-record names, not runtime bytes. A foreground producer/relay pipeline
+manifest metadata, the bounded fixed refusal result and export status, not
+runtime bytes. Brief v12 corrects the receipt privilege boundary: only the
+authorized root collector opens the three fixed names through a held0700
+directory descriptor, checks regular-file identity/owner/mode/link/size and
+holds/checks each read. Its bounded `export.log` JSON distinguishes present,
+missing at initial open, and unknown for access/error/drift. A later ENOENT is
+unknown, not missing. The ordinary shell reports only process statuses; it makes
+no filesystem claims inside the root directory. Invalid or absent collector
+facts remain unknown. Available safe snapshots survive a partial export.
+A foreground producer/relay pipeline
 waits both export processes and preserves both statuses. Its tar reserve2031616,
 host output below16384, stderr at most16384 and status below1024 remain inside
 the existing2097152-byte metadata ceiling. Partial tar output remains failed
 evidence, never admission. The uploader's platform runtime supplies no
 SDK Node-axis qualification. Its registration receipt must bind the exact resulting
 workflow commit before a dispatch can be approved.
+
+The v2 future packet fixes `--ref main`, following GitHub's
+[branch/tag dispatch contract](https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event).
+Its embedded preflight checks the exact active registry, workflow blob, selected
+source/record/bootstrap and expected consumed-attempt history, then immediately
+compares independently observed main HEAD to the registration receipt's exact
+workflow commit. That SHA is solely a comparison fence. Drift or unknown input
+refuses before the command; actual run head/event/workflow/attempt must then match
+the receipt. The packet's executable guard is for a future separately granted
+attempt with prior durable intent. It grants no dispatch now.
+Owned tests execute the actual embedded collector and dispatch guard with explicit
+access/API boundary injection. They do not prove root0700 access, sudo, host
+execution or actual GitHub dispatch. Passing six-ancestor proof keeps its prior
+scope; neither finding changes ordinary custody or actual wait requirements.
 
 The accepted ACP239 source remains a separate exact composition obligation: actual
 Rust parents the sleep group owner and checked ACP as siblings, and ACP parents

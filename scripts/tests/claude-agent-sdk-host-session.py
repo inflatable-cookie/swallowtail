@@ -549,122 +549,208 @@ def stat_mode(path):
     return stat.S_IMODE(path.stat().st_mode)
 
 
+def proposed_workflow():
+    patch = (
+        ROOT / "docs/knowledge/operations/claude-agent-sdk-host-setup.patch"
+    ).read_text()
+    return json.loads(
+        "\n".join(
+            row[1:]
+            for row in patch.splitlines()
+            if row.startswith("+") and not row.startswith("+++")
+        )
+    )
+
+
 class MetadataTests(unittest.TestCase):
     def exercise(self, kind):
         import shlex
+        import tarfile
 
-        patch = (
-            ROOT / "docs/knowledge/operations/claude-agent-sdk-host-setup.patch"
-        ).read_text()
-        workflow = json.loads(
-            "\n".join(
-                row[1:]
-                for row in patch.splitlines()
-                if row.startswith("+") and not row.startswith("+++")
-            )
-        )
-        script = workflow["jobs"]["host"]["steps"][2]["run"]
+        script = proposed_workflow()["jobs"]["host"]["steps"][2]["run"]
         script = script[script.index("# Metadata only:") :]
+        marker = "SDK240_RECEIPTS"
+        begin = (
+            script.index(
+                "\n", script.index("/usr/bin/prlimit --fsize=2031616 -- /usr/bin/cat")
+            )
+            + 1
+        )
+        end = script.index("\n" + marker + "\n", begin)
+        collector = script[begin:end]
+        tail = script[end + len(marker) + 2 :]
         with tempfile.TemporaryDirectory(
-            prefix="metadata-owned-", dir=os.environ["TMPDIR"]
+            prefix="receipt-view-owned-", dir=os.environ["TMPDIR"]
         ) as temporary:
             root = Path(temporary).resolve()
             receipts = root / "receipts"
-            receipts.mkdir()
-            if kind != "absent":
-                (receipts / "admin.json").write_text('{"entryAttempted":false}')
-            if kind == "complete":
-                for name in ("monitor.json", "host-manifest.json"):
-                    (receipts / name).write_text("{}")
+            receipts.mkdir(mode=0o700)
+            for name in ("admin.json", "monitor.json", "host-manifest.json"):
+                if kind == "absent" or kind == "partial" and name != "admin.json":
+                    continue
+                item = receipts / name
+                item.write_bytes(b'{"owned":true}')
+                item.chmod(0o600)
+            if kind == "unsafe_mode":
+                (receipts / "admin.json").chmod(0o644)
+            if kind == "oversize":
+                (receipts / "admin.json").write_bytes(b"x" * 65537)
+            if kind == "alias":
+                (receipts / "admin.json").unlink()
+                (receipts / "admin.json").symlink_to(receipts / "monitor.json")
             (root / "host-output.json").write_text(
                 '{"hostSessionRefused":"owned refusal"}'
             )
-            # Same published shell pipeline and actual owned tar/cat, with only
-            # Linux privilege/limit/timeout launchers replaced by an owned limit shim.
-            shim = root / "limit.py"
-            shim.write_text(
-                "import os,resource,signal,sys\nlimit=int(sys.argv[1]);resource.setrlimit(resource.RLIMIT_FSIZE,(limit,limit))\nsignal.signal(signal.SIGPIPE,signal.SIG_DFL);signal.signal(signal.SIGXFSZ,signal.SIG_DFL)\nos.execv(sys.argv[2],sys.argv[2:])\n"
+            source = root / "collector.py"
+            source.write_text(collector)
+            # Explicit privilege-boundary model, never sudo replacement or proof
+            # that this ordinary test process can traverse a real root0700 path.
+            runner = root / "boundary.py"
+            runner.write_text("""import io,json,os,resource,stat,sys,tarfile,types
+from unittest import mock
+source,folder,kind=sys.argv[1:]
+resource.setrlimit(resource.RLIMIT_FSIZE,(16384,16384))
+original_open,original_stat,original_fstat,original_pread=os.open,os.stat,os.fstat,os.pread
+def metadata(info):
+    names=('st_dev','st_ino','st_uid','st_gid','st_mode','st_nlink','st_size','st_mtime_ns','st_ctime_ns')
+    values={name:getattr(info,name) for name in names};values.update(st_uid=0,st_gid=0)
+    return types.SimpleNamespace(**values)
+def opening(name,*args,**kwargs):
+    if kind=='inaccessible' and str(name)==folder or kind=='denied_record' and name=='admin.json': raise PermissionError(13,'owned access boundary')
+    return original_open(name,*args,**kwargs)
+def stating(name,*args,**kwargs):
+    if kind=='vanished_record' and name=='admin.json': raise FileNotFoundError(2,'owned post-open drift')
+    return metadata(original_stat(name,*args,**kwargs))
+def reading(fd,*args):
+    if kind=='read_error' and original_fstat(fd).st_ino==original_stat(folder+'/admin.json').st_ino: raise OSError(5,'owned read error')
+    return original_pread(fd,*args)
+sys.argv=['collector',folder]
+with mock.patch.object(os,'geteuid',return_value=1001 if kind=='ordinary' else 0),mock.patch.object(os,'open',side_effect=opening),mock.patch.object(os,'fstat',side_effect=lambda fd:metadata(original_fstat(fd))),mock.patch.object(os,'stat',side_effect=stating),mock.patch.object(os,'pread',side_effect=reading):
+    exec(compile(open(source).read(),source,'exec'),{'__name__':'__main__'})
+""")
+            limit = root / "limit.py"
+            limit.write_text(
+                "import os,resource,sys\nvalue=int(sys.argv[1]);resource.setrlimit(resource.RLIMIT_FSIZE,(value,value));os.execv(sys.argv[2],sys.argv[2:])\n"
             )
-            command = (
-                shlex.quote(sys.executable) + " -I -B -S " + shlex.quote(str(shim))
+            command = " ".join(
+                shlex.quote(x)
+                for x in (
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    "-S",
+                    str(runner),
+                    str(source),
+                    str(receipts),
+                    kind,
+                )
             )
-            script = script.replace(
-                "/usr/bin/prlimit --fsize=16384 -- /usr/bin/timeout --signal=TERM --kill-after=2s 10s",
-                command + " 16384",
-            )
-            script = script.replace(
-                "/usr/bin/prlimit --fsize=2031616 --", command + " 2031616"
-            )
-            script = script.replace("/usr/bin/cat", shlex.quote(shutil.which("cat")))
             if kind in ("stdout", "stderr"):
-                flood = root / "flood.py"
-                fd = 1 if kind == "stdout" else 2
-                flood.write_text(
-                    f"import os\nfor i in range(1024): os.write({fd},b'x'*4096)\n"
+                source.write_text(
+                    "import os\nfor i in range(1024):os.write("
+                    + ("1" if kind == "stdout" else "2")
+                    + ",b'x'*4096)\n"
                 )
-                script = script.replace(
-                    "/usr/bin/tar",
-                    shlex.quote(sys.executable)
-                    + " -I -B -S "
-                    + shlex.quote(str(flood)),
+            relay = " ".join(
+                shlex.quote(x)
+                for x in (
+                    sys.executable,
+                    "-I",
+                    "-B",
+                    "-S",
+                    str(limit),
+                    "2031616",
+                    shutil.which("cat"),
                 )
-            prelude = (
-                'set +e\nsudo() { shift; "$@"; }\nordinary_root='
+            )
+            # The actual collector code and ordinary status tail are exercised;
+            # only the privileged launch is injected at the declared boundary.
+            program = (
+                "set +e\nordinary_root="
                 + shlex.quote(str(root))
-                + "\nadmin_root="
-                + shlex.quote(str(receipts))
                 + "\nhost_exit=78\n"
+                + command
+                + ' 2> "$ordinary_root/export.log" | '
+                + relay
+                + ' > "$ordinary_root/evidence.tar"\n'
+                + tail
             )
             result = subprocess.run(
-                [shutil.which("bash"), "--noprofile", "--norc", "-c", prelude + script],
+                [shutil.which("bash"), "--noprofile", "--norc", "-c", program],
                 capture_output=True,
                 timeout=10,
             )
-            self.assertEqual(result.returncode, 78)
+            self.assertEqual(result.returncode, 78, result.stderr.decode())
             status = json.loads((root / "export-status.json").read_bytes())
+            self.assertNotIn("missing", status)
             self.assertEqual(status["hostExit"], 78)
-            self.assertFalse(status["qualified"])
             self.assertLessEqual((root / "export.log").stat().st_size, 16384)
             self.assertLessEqual((root / "evidence.tar").stat().st_size, 2031616)
-            total = sum(
-                (root / name).stat().st_size
-                for name in (
-                    "host-output.json",
-                    "export.log",
-                    "export-status.json",
-                    "evidence.tar",
-                )
+            self.assertLess(
+                sum(
+                    (root / name).stat().st_size
+                    for name in (
+                        "host-output.json",
+                        "export.log",
+                        "export-status.json",
+                        "evidence.tar",
+                    )
+                ),
+                2097152,
             )
-            self.assertLess(total, 2097152)
             if kind in ("stdout", "stderr"):
                 self.assertNotEqual(status["metadataExportExit"], 0)
-            else:
-                import tarfile
-
-                self.assertGreater(
-                    (root / "evidence.tar").stat().st_size,
-                    0,
-                    (root / "export.log").read_text() + result.stderr.decode(),
+                return
+            facts = json.loads((root / "export.log").read_bytes())["records"]
+            expected = {
+                name: "present"
+                for name in ("admin.json", "monitor.json", "host-manifest.json")
+            }
+            if kind in ("inaccessible", "ordinary"):
+                expected = {name: "unknown" for name in expected}
+            if kind == "absent":
+                expected = {name: "missing" for name in expected}
+            if kind == "partial":
+                expected.update(
+                    {"monitor.json": "missing", "host-manifest.json": "missing"}
                 )
-                with tarfile.open(root / "evidence.tar") as archive:
-                    self.assertEqual(
-                        sorted(archive.getnames()),
-                        sorted(p.name for p in receipts.iterdir()),
-                    )
+            if kind in (
+                "denied_record",
+                "read_error",
+                "vanished_record",
+                "unsafe_mode",
+                "oversize",
+                "alias",
+            ):
+                expected["admin.json"] = "unknown"
+            self.assertEqual(
+                {name: value["state"] for name, value in facts.items()}, expected
+            )
+            with tarfile.open(root / "evidence.tar") as archive:
                 self.assertEqual(
-                    status["missing"],
-                    [
-                        name
-                        for name in ("admin.json", "monitor.json", "host-manifest.json")
-                        if not (receipts / name).exists()
-                    ],
+                    sorted(archive.getnames()),
+                    sorted(
+                        name for name, value in expected.items() if value == "present"
+                    ),
                 )
-                self.assertEqual(status["metadataExportExit"] == 0, kind == "complete")
+            self.assertEqual(status["metadataExportExit"] == 0, kind == "complete")
 
-    def test_partial_absent_and_complete_exports_preserve_refusal_and_missing_facts(
+    def test_authorized_view_models_present_missing_inaccessible_and_partial_error(
         self,
     ):
-        for kind in ("partial", "absent", "complete"):
+        for kind in (
+            "complete",
+            "partial",
+            "absent",
+            "inaccessible",
+            "ordinary",
+            "denied_record",
+            "read_error",
+            "vanished_record",
+            "unsafe_mode",
+            "oversize",
+            "alias",
+        ):
             with self.subTest(kind=kind):
                 self.exercise(kind)
 
@@ -672,6 +758,144 @@ class MetadataTests(unittest.TestCase):
         for kind in ("stdout", "stderr"):
             with self.subTest(kind=kind):
                 self.exercise(kind)
+
+    def test_all_record_inspection_is_inside_authorized_collector(self):
+        script = proposed_workflow()["jobs"]["host"]["steps"][2]["run"]
+        self.assertIn(
+            "sudo -n /usr/bin/prlimit --fsize=16384 -- /usr/bin/timeout", script
+        )
+        self.assertIn(
+            '/usr/bin/env -i PATH=/usr/bin:/bin LANG=C LC_ALL=C /usr/bin/python3 -I -B -S - "$admin_root"',
+            script,
+        )
+        self.assertNotIn('[[ ! -f "$admin_root/', script)
+        self.assertNotIn('[[ -f "$admin_root/', script)
+        tail = script.split("\nSDK240_RECEIPTS\n", 1)[1]
+        self.assertNotIn("$admin_root", tail)
+        self.assertNotIn("$admin_root/", script)
+        outside = script.split("import io,json,os,stat,sys,tarfile\n", 1)[0] + tail
+        for name in ("admin.json", "monitor.json", "host-manifest.json"):
+            self.assertNotIn(name, outside)
+        self.assertNotIn('"missing"', tail)
+
+
+class DispatchTests(unittest.TestCase):
+    def test_published_dispatch_guard_refuses_ref_registry_source_and_history_drift(
+        self,
+    ):
+        import base64
+        import copy
+
+        packet = json.loads(
+            (
+                ROOT / "docs/knowledge/operations/claude-agent-sdk-host-setup.json"
+            ).read_bytes()
+        )
+        code = {"__name__": "owned_dispatch_model"}
+        exec(
+            compile(packet["dispatchPreflightPython"], "packet:dispatch", "exec"), code
+        )
+        workflow = (json.dumps(proposed_workflow(), indent=2) + "\n").encode()
+        receipt = {
+            "workflowCommit": "a" * 40,
+            "workflowId": 420660279,
+            "workflowBlobSha256": packet["workflowBlobSha256"],
+            "sourceCommit": packet["sourceCommit"],
+            "sourceRecordSha256": packet["sourceRecord"]["sha256"],
+        }
+        for failure in (
+            None,
+            "sha_ref",
+            "branch",
+            "unknown",
+            "registry",
+            "blob",
+            "source",
+            "history",
+        ):
+            with self.subTest(failure=failure):
+                candidate = copy.deepcopy(packet)
+                if failure == "sha_ref":
+                    candidate["reservedEffects"][2]["command"][-1] = receipt[
+                        "workflowCommit"
+                    ]
+                calls = []
+
+                def command(argv, **kwargs):
+                    if argv[1] != "api":
+                        calls.append(argv)
+                        return SimpleNamespace(returncode=0)
+                    suffix = argv[-1].split("swallowtail/", 1)[1]
+                    if failure == "unknown":
+                        raise subprocess.CalledProcessError(1, argv)
+                    if suffix == "git/ref/heads/main":
+                        value = {
+                            "object": {
+                                "sha": "b" * 40
+                                if failure == "branch"
+                                else receipt["workflowCommit"]
+                            }
+                        }
+                    elif suffix.endswith("/runs?event=workflow_dispatch&per_page=100"):
+                        value = {
+                            "total_count": 2 if failure == "history" else 1,
+                            "workflow_runs": candidate["dispatchFence"][
+                                "expectedPriorAttempts"
+                            ],
+                        }
+                    elif suffix.startswith("actions/"):
+                        value = {
+                            "id": 420660279,
+                            "state": "disabled" if failure == "registry" else "active",
+                            "path": candidate["workflowPath"],
+                        }
+                    else:
+                        if candidate["workflowPath"] in suffix:
+                            data = workflow
+                        elif candidate["sourceRecord"]["path"] in suffix:
+                            data = (
+                                ROOT / candidate["sourceRecord"]["path"]
+                            ).read_bytes()
+                        else:
+                            data = (
+                                ROOT / "scripts/claude-agent-sdk-bootstrap-session.py"
+                            ).read_bytes()
+                        if failure == "source" and "bootstrap-session.py" in suffix:
+                            data += b"drift"
+                        value = {
+                            "sha": "bad"
+                            if failure == "blob"
+                            else candidate["workflowGitBlob"],
+                            "content": base64.b64encode(data).decode(),
+                        }
+                    kwargs["stdout"].write(json.dumps(value).encode())
+                    return SimpleNamespace(returncode=0)
+
+                with mock.patch.object(subprocess, "run", side_effect=command):
+                    if failure is None:
+                        code["dispatch"](candidate, receipt)
+                    else:
+                        with self.assertRaises(
+                            (ValueError, subprocess.CalledProcessError)
+                        ):
+                            code["dispatch"](candidate, receipt)
+                self.assertEqual(calls, [] if failure else [code["COMMAND"]])
+        run = {
+            "workflow_id": 420660279,
+            "head_sha": receipt["workflowCommit"],
+            "event": "workflow_dispatch",
+            "run_attempt": 1,
+        }
+        code["verify_run"](receipt, run)
+        for key, value in (
+            ("head_sha", "b" * 40),
+            ("run_attempt", 2),
+            ("event", "push"),
+            ("workflow_id", 1),
+        ):
+            with self.subTest(key=key):
+                with self.assertRaisesRegex(ValueError, "actual_run_binding_drift"):
+                    code["verify_run"](receipt, {**run, key: value})
 
 
 def check_packet():
@@ -688,6 +912,30 @@ def check_packet():
         raise AssertionError(
             "setup packet cannot authorize activation or qualification"
         )
+    if packet["schema"] != "swallowtail.sdk240.exact-host-setup-proposal.v2":
+        raise AssertionError("receipt view and dispatch fence schema")
+    command = [
+        "gh",
+        "workflow",
+        "run",
+        "sdk240-host-setup.yml",
+        "--repo",
+        "inflatable-cookie/swallowtail",
+        "--ref",
+        "main",
+    ]
+    if (
+        packet["reservedEffects"][2]["command"] != command
+        or packet["dispatchFence"]["ref"] != "main"
+    ):
+        raise AssertionError("supported fixed main dispatch ref")
+    if (
+        packet["dispatchFence"]["expectedWorkflowCommit"]
+        != "REGISTRATION_RECEIPT_WORKFLOW_COMMIT"
+        or json.dumps(packet).count("REGISTRATION_RECEIPT_WORKFLOW_COMMIT") != 1
+    ):
+        raise AssertionError("registration SHA is a comparison fence only")
+    compile(packet["dispatchPreflightPython"], "packet:dispatch", "exec")
     source = packet["sourceCommit"]
     if len(source) != 40 or any(ch not in "0123456789abcdef" for ch in source):
         raise AssertionError("exact source commit")
@@ -720,6 +968,18 @@ def check_packet():
     if set(workflow["jobs"]) != {"host"}:
         raise AssertionError("one exclusive job")
     job = workflow["jobs"]["host"]
+    script = job["steps"][2]["run"]
+    begin = (
+        script.index(
+            "\n", script.index("/usr/bin/prlimit --fsize=2031616 -- /usr/bin/cat")
+        )
+        + 1
+    )
+    compile(
+        script[begin : script.index("\nSDK240_RECEIPTS\n", begin)],
+        "packet:root-receipts",
+        "exec",
+    )
     if job["runs-on"] != "ubuntu-26.04" or job["timeout-minutes"] != 2:
         raise AssertionError("exact route/bound")
     if (

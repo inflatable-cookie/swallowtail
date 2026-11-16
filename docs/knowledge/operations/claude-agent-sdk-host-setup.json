@@ -1,19 +1,19 @@
 {
-  "schema": "swallowtail.sdk240.exact-host-setup-proposal.v1",
+  "schema": "swallowtail.sdk240.exact-host-setup-proposal.v2",
   "activationAuthorized": false,
   "qualified": false,
-  "sourceCommit": "1cf5e99f6a4bf741f46f135daadb9fb0df42a801",
+  "sourceCommit": "7e5ef0bc920e4303d8a7683c62c6ca2353688b39",
   "sourceRecord": {
     "path": "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256",
-    "sha256": "22a325e7d9bf1a19809c7603eba967c9ff3138d359322ca6fae14623b3a9b4a2"
+    "sha256": "8c1bf1afa337af21cab83bf55d3f78c92c2c61b2ac4a0f687e2985f1a0f67682"
   },
   "workflowPatch": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-setup.patch",
-    "sha256": "91b8495a529f3988816eaf13115c358521b34642f88736ae3625fc6338bc213c"
+    "sha256": "91c85da9da9d6235cfbd87feb1230e8a21173f74a42375bed9e9dbdf0affb26c"
   },
   "workflowPath": ".github/workflows/sdk240-host-setup.yml",
-  "workflowBlobSha256": "141109e756191e4e7784b1d407e34e657e094d0d5bffcf24de8da6205c525105",
-  "workflowGitBlob": "f70e059842970a98684f4983790a54bf99e84d7b",
+  "workflowBlobSha256": "fdbc12663e6c6dba0e96daa1e5680c8c9b67145ab92de3054b16796bc319d062",
+  "workflowGitBlob": "61beaaf9b4968b6baaa531bdf0a700ba25d4f049",
   "bootstrapSha256": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605",
   "checkout": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
   "uploader": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
@@ -74,7 +74,7 @@
       "authorityRequired": true,
       "operation": "replace only the exact registered base workflow blob after independent source/security acceptance; refuse a changed base or unrelated workflow diff",
       "path": ".github/workflows/sdk240-host-setup.yml",
-      "gitBlob": "f70e059842970a98684f4983790a54bf99e84d7b",
+      "gitBlob": "61beaaf9b4968b6baaa531bdf0a700ba25d4f049",
       "baseGitBlob": "d9bdb8d18a22b4e5b62369fbe823b3802906c58b"
     },
     {
@@ -92,7 +92,7 @@
     {
       "phase": "one_attempt",
       "authorityRequired": true,
-      "operation": "approve exactly one dispatch at the registration receipt immutable workflow commit; no rerun or unknown-delivery retry",
+      "operation": "after NEW exact authority, independently compare immediate main HEAD to the registration receipt workflowCommit and verify registry/blob/source/record/history before the fixed --ref main dispatch; no raw SHA ref or retry",
       "command": [
         "gh",
         "workflow",
@@ -101,7 +101,7 @@
         "--repo",
         "inflatable-cookie/swallowtail",
         "--ref",
-        "REGISTRATION_RECEIPT_WORKFLOW_COMMIT"
+        "main"
       ],
       "attempts": 1,
       "automaticRetries": 0
@@ -137,5 +137,45 @@
     "consumed": true,
     "conclusion": "failure before runtime entry; writable /opt; hostExit78/exportExit2",
     "record": "docs/knowledge/operations/claude-agent-sdk-host-attempt.md"
-  }
+  },
+  "dispatchFence": {
+    "ref": "main",
+    "expectedWorkflowCommit": "REGISTRATION_RECEIPT_WORKFLOW_COMMIT",
+    "expectedPriorAttempts": [
+      {
+        "id": 43972504898,
+        "event": "workflow_dispatch",
+        "head_sha": "6122f196f7a9fdc7c4217fb7f13ef76d92fc7760",
+        "run_attempt": 1,
+        "status": "completed",
+        "conclusion": "failure"
+      }
+    ],
+    "actualRunMustMatch": [
+      "workflowId",
+      "event=workflow_dispatch",
+      "head_sha=workflowCommit",
+      "run_attempt=1"
+    ],
+    "unknownOrDrift": "refuse before dispatch; issuing the command consumes a separately granted attempt even on unknown delivery"
+  },
+  "dispatchPreflightPython": "import base64,hashlib,json,os,resource,subprocess,sys,tempfile\nCOMMAND=[\"gh\",\"workflow\",\"run\",\"sdk240-host-setup.yml\",\"--repo\",\"inflatable-cookie/swallowtail\",\"--ref\",\"main\"]\n\ndef dispatch(packet,receipt):\n    if packet[\"reservedEffects\"][2][\"command\"]!=COMMAND or packet[\"dispatchFence\"][\"ref\"]!=\"main\":\n        raise ValueError(\"fixed_main_dispatch_required\")\n    expected=receipt[\"workflowCommit\"]\n    if len(expected)!=40 or any(c not in \"0123456789abcdef\" for c in expected):\n        raise ValueError(\"exact_registration_commit_required\")\n    for key,value in ((\"workflowBlobSha256\",packet[\"workflowBlobSha256\"]),(\"sourceCommit\",packet[\"sourceCommit\"]),(\"sourceRecordSha256\",packet[\"sourceRecord\"][\"sha256\"])):\n        if receipt[key]!=value: raise ValueError(\"registration_binding_drift\")\n    workflow_id=receipt[\"workflowId\"]\n    if type(workflow_id) is not int or workflow_id!=packet[\"workflowBase\"][\"workflowId\"]: raise ValueError(\"registry_identity_required\")\n    def get(suffix):\n        def limit(): resource.setrlimit(resource.RLIMIT_FSIZE,(1048576,1048576))\n        with tempfile.TemporaryFile(dir=os.environ[\"TMPDIR\"]) as output:\n            subprocess.run([\"gh\",\"api\",\"repos/inflatable-cookie/swallowtail/\"+suffix],stdout=output,stderr=subprocess.STDOUT,preexec_fn=limit,check=True,timeout=30)\n            output.seek(0);raw=output.read(1048577)\n        if len(raw)>1048576: raise ValueError(\"preflight_output_bound\")\n        return json.loads(raw)\n    registry=get(\"actions/workflows/\"+str(workflow_id))\n    if registry[\"id\"]!=workflow_id or registry[\"state\"]!=\"active\" or registry[\"path\"]!=packet[\"workflowPath\"]: raise ValueError(\"registry_drift\")\n    workflow=get(\"contents/\"+packet[\"workflowPath\"]+\"?ref=main\")\n    if workflow[\"sha\"]!=packet[\"workflowGitBlob\"] or hashlib.sha256(base64.b64decode(workflow[\"content\"])).hexdigest()!=packet[\"workflowBlobSha256\"]: raise ValueError(\"workflow_drift\")\n    for name,digest in ((packet[\"sourceRecord\"][\"path\"],packet[\"sourceRecord\"][\"sha256\"]),(\"scripts/claude-agent-sdk-bootstrap-session.py\",packet[\"bootstrapSha256\"])):\n        item=get(\"contents/\"+name+\"?ref=\"+packet[\"sourceCommit\"])\n        if hashlib.sha256(base64.b64decode(item[\"content\"])).hexdigest()!=digest: raise ValueError(\"executable_input_drift\")\n    history=get(\"actions/workflows/\"+str(workflow_id)+\"/runs?event=workflow_dispatch&per_page=100\")\n    prior=packet[\"dispatchFence\"][\"expectedPriorAttempts\"]\n    keys=(\"id\",\"event\",\"head_sha\",\"run_attempt\",\"status\",\"conclusion\")\n    if history[\"total_count\"]!=len(prior) or [{key:r[key] for key in keys} for r in history[\"workflow_runs\"]]!=prior: raise ValueError(\"attempt_history_drift\")\n    # Last remote observation is the comparison fence, never a --ref argument.\n    if get(\"git/ref/heads/main\")[\"object\"][\"sha\"]!=expected: raise ValueError(\"main_ref_drift\")\n    return subprocess.run(COMMAND,check=True,timeout=45)\n\ndef verify_run(receipt,run):\n    if run[\"workflow_id\"]!=receipt[\"workflowId\"] or run[\"head_sha\"]!=receipt[\"workflowCommit\"] or run[\"event\"]!=\"workflow_dispatch\" or run[\"run_attempt\"]!=1:\n        raise ValueError(\"actual_run_binding_drift\")\n\nif __name__==\"__main__\":\n    # Operator uses this source only after a separately recorded exact grant and\n    # durable attempt intent; this proposal itself grants no execution authority.\n    dispatch(json.load(open(sys.argv[1])),json.load(open(sys.argv[2])))\n",
+  "receiptObservation": {
+    "view": "authorized root collector only",
+    "names": [
+      "admin.json",
+      "monitor.json",
+      "host-manifest.json"
+    ],
+    "states": [
+      "present",
+      "missing",
+      "unknown"
+    ],
+    "missing": "ENOENT at initial fixed-name open through an already verified directory descriptor",
+    "unknown": "inaccessible, directory failure, unsafe type/owner/mode/links, drift, read/error or invalid/unexported facts",
+    "artifact": "export.log contains bounded structured facts if collector completed; export-status.json preserves both process statuses and makes no ordinary presence claim",
+    "localProof": "explicit privilege-boundary injection and owned bytes; no root-directory access or privileged host execution claim"
+  },
+  "dispatchInstructions": "After NEW authority and durable one-attempt intent, materialize the exact dispatchPreflightPython bytes and run them with this reviewed packet and the independently verified registration-receipt JSON. Its final main HEAD query is the comparison fence. Never substitute the receipt SHA for --ref main. Observe unknown delivery read-only; verify actual run via verify_run; never retry."
 }

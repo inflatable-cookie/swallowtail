@@ -566,13 +566,42 @@ class LaunchObligationTests(unittest.TestCase):
             if phase == "native-entry":
                 lease.revoke()
 
-        return [
+        failures = [
             {"cancel": lambda phase: phase == "native-entry"},
             {"custody_hook": revoke},
             {"fault": "native-source-refusal"},
             {"fault": "native-identity-refusal"},
             {"fault": "native-pre-notification"},
         ]
+        return [
+            {"mode": mode, **failure}
+            for mode in ("sidecar", "probe")
+            for failure in failures
+        ]
+
+    def test_probe_cancel_after_actual_payload_entry_waits_the_owned_child(self):
+        roots = []
+
+        def root_ready(phase, lease, root):
+            if phase == "driver-start":
+                roots.append(root)
+
+        def cancel(phase):
+            return (
+                phase == "protocol"
+                and bool(roots)
+                and (roots[0] / "native-payload-effect").exists()
+            )
+
+        result = self.run_peer(
+            mode="probe", scenario="never-exit", custody_hook=root_ready, cancel=cancel
+        )
+        self.assertIsNotNone(result["failure"])
+        self.assertTrue(result["payloadEffectObserved"])
+        self.assertEqual(result["launchObligation"]["state"], "settled")
+        self.assertEqual(
+            result["launchObligation"]["settlement"], "exact_parent_handle_wait"
+        )
 
     def test_every_refused_actual_spawn_retains_until_its_real_parent_wait(self):
         parse = CORE.parse_events

@@ -252,7 +252,9 @@ class SessionTests(unittest.TestCase):
         self.inner_wait_retention({"custody_hook": revoke}, admitted=False)
 
     def test_pre_notification_refusal_retains_inner_and_outer_custody(self):
-        self.inner_wait_retention({"fault": "native-pre-notification"}, admitted=False)
+        self.inner_wait_retention(
+            {"fault": "native-pre-notification", "mode": "probe"}, admitted=False
+        )
 
     def inner_wait_retention(self, options, *, admitted):
         core = load(

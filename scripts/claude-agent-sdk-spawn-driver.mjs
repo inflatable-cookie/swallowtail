@@ -6,6 +6,10 @@ import { readFileSync } from "node:fs";
 delete process.env.__CF_USER_TEXT_ENCODING;
 const config = JSON.parse(readFileSync(new URL("./spawn-config.json", import.meta.url)));
 if (config.mode === "probe") {
+  process.once("SIGTERM", async () => {
+    await import("./probe-sdk.mjs").then((sdk) => sdk.stopAndWaitForNativeExit());
+    process.exit(1);
+  });
   await import("./prepared-probe.mjs");
 } else {
   const input = new PassThrough();

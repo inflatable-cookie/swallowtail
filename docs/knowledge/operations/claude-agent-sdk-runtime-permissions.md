@@ -1,5 +1,10 @@
 # Inactive SDK runtime permission packet
 
+Retained historical permission-only source. The
+[same-invocation transaction](claude-agent-sdk-bootstrap-session.md) owns the
+continuation. Do not register or dispatch this packet: its null bootstrap and
+permission-only lifetime cannot satisfy runtime custody.
+
 This is a source/security proposal, not applied workflow/helper source or an
 activation request. The [revised diagnostic](claude-agent-sdk-preflight-diagnostic.md#consumed-revised-diagnostic-and-concrete-custody-gate)
 owns observed cache bytes and the0777 refusal. The packet targets only that

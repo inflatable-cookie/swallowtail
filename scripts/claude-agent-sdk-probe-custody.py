@@ -269,8 +269,9 @@ class Bootstrap(Inputs):
         loader_inputs,
         interpreters,
         supervisor_inputs,
+        reserve_pipes=True,
     ):
-        super().__init__()
+        super().__init__(reserve_pipes=reserve_pipes)
         try:
             self.node, self.expected = str(Path(node).absolute()), expected
             self.bind(self.node, expected)
@@ -335,6 +336,13 @@ class Bootstrap(Inputs):
         ):
             raise Refused("bootstrap_launch_inputs_changed")
 
+    def resolve_library(self, name):
+        if not Path(name).is_absolute() or Path(name).resolve(strict=True) != Path(
+            name
+        ):
+            raise Refused("unidentified_runtime_library")
+        return name
+
 
 class RuntimeObservation(dict):
     """An observation with retained live custody; JSON alone is insufficient."""
@@ -347,7 +355,7 @@ class RuntimeObservation(dict):
         self.capture.close()
 
 
-def runtime_inventory(node, expected, *, bootstrap=None):
+def runtime_inventory(node, expected, *, bootstrap=None, observer_owner=None):
     """Observe only after eligibility and independently supplied bootstrap inputs."""
     node = Path(node).absolute()
     if bootstrap is None:
@@ -381,7 +389,10 @@ def runtime_inventory(node, expected, *, bootstrap=None):
             "LANG": "C",
             "LC_ALL": "C",
         }
-        child = subprocess.Popen(
+        launch = (
+            observer_owner.start if observer_owner is not None else subprocess.Popen
+        )
+        child = launch(
             command,
             env=environment,
             cwd=bootstrap.scratch,
@@ -411,6 +422,8 @@ def runtime_inventory(node, expected, *, bootstrap=None):
         if child.wait(timeout=max(0.001, deadline - time.monotonic())) != 0:
             raise Refused("runtime_observer_exit")
         bootstrap.active_child = None
+        if observer_owner is not None:
+            observer_owner.joined(child)
         bootstrap.check()
         report = json.loads(stdout)
         if report["node"] != str(node) or report["version"] != bootstrap.version:
@@ -420,11 +433,7 @@ def runtime_inventory(node, expected, *, bootstrap=None):
             if sys.platform == "linux" and name == "linux-vdso.so.1":
                 kernel.append({"name": name, "kernel": platform.release()})
                 continue
-            if not Path(name).is_absolute() or Path(name).resolve(strict=True) != Path(
-                name
-            ):
-                raise Refused("unidentified_runtime_library")
-            libraries.add(name)
+            libraries.add(bootstrap.resolve_library(name))
         if libraries != set(bootstrap.libraries):
             raise Refused("runtime_library_manifest_mismatch")
         bootstrap.check()
@@ -450,6 +459,8 @@ def runtime_inventory(node, expected, *, bootstrap=None):
                     child.kill()
                 child.wait(timeout=2)
                 bootstrap.active_child = None
+                if observer_owner is not None:
+                    observer_owner.joined(child)
             except BaseException:
                 unknown = Refused("runtime_observer_join_unknown; custody retained")
                 unknown.capture = bootstrap

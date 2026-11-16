@@ -13,6 +13,7 @@ to it; don't restate it.
 | How we release | [contracts/release.md](contracts/release.md) (rules: [Contract 036](contracts/036-crate-release-and-compatibility-boundary.md)) |
 | Version currentness procedure | [operations/version-currentness-checkpoint.md](operations/version-currentness-checkpoint.md) (rules: [Contract 029](contracts/029-interface-version-qualification-and-compatibility.md)) |
 | SDK confined fake probe and original-execution gates | [operations/claude-agent-sdk-confined-probe.md](operations/claude-agent-sdk-confined-probe.md) |
+| SDK private trusted-host bootstrap transaction | [operations/claude-agent-sdk-bootstrap-session.md](operations/claude-agent-sdk-bootstrap-session.md) |
 | Rust quality profile and deviations | [contracts/rust-quality-profile.json](contracts/rust-quality-profile.json), [contracts/rust-quality-deviations.json](contracts/rust-quality-deviations.json) |
 | Writing style | [contracts/writing-style.md](contracts/writing-style.md) |
 | Specs, provisional or promoted | [specs/](specs/README.md) |

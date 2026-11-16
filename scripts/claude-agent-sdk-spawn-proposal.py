@@ -37,6 +37,8 @@ INPUTS = (
     "scripts/claude-agent-sdk-netns-kernel.py",
     "scripts/claude-agent-sdk-spawn-loader.mjs",
     "scripts/claude-agent-sdk-spawn-bootstrap.mjs",
+    "scripts/claude-agent-sdk-startup-lookup.mjs",
+    "scripts/tests/fixtures/sdk-startup-probes.mjs",
     "scripts/claude-agent-sdk-spawn-sdk.mjs",
     "scripts/claude-agent-sdk-spawn-native.mjs",
     "scripts/claude-agent-sdk-spawn-driver.mjs",
@@ -379,6 +381,7 @@ def rehearsal(
     custody_hook=None,
     context=None,
     fault=None,
+    runtime_factory=None,
 ):
     if state not in {"absent", "disabled", "managed-deny"} or mode not in {
         "sidecar",
@@ -405,7 +408,15 @@ def rehearsal(
         ROOT, "aa24aac1b8d8a223d83982103c2e18823877822911215eb3c3c30dcf695d08cb"
     )
     node = Path(node).resolve(strict=True)
-    runtime = context.runtime if context else custody.runtime_inventory(node, node_sha)
+    if context is not None and runtime_factory is not None:
+        raise Refused("one_runtime_custody_owner_required")
+    runtime = (
+        context.runtime
+        if context
+        else runtime_factory(custody, node, node_sha)
+        if runtime_factory
+        else custody.runtime_inventory(node, node_sha)
+    )
     events, registered, requests = [], [], []
     event_lock = threading.Lock()
     peer_pending = bytearray()
@@ -466,6 +477,11 @@ def rehearsal(
                 "confined-runner.mjs": "prepared-probe.mjs",
             }.items():
                 data = accepted[old.SUPPORT / source]
+                if (
+                    source == "fake-sdk-native-wire.mjs"
+                    and fault == "sdk-startup-probes"
+                ):
+                    data = files["scripts/tests/fixtures/sdk-startup-probes.mjs"] + data
                 if source == "confined-runner.mjs":
                     anchor = b"process.exit(0);"
                     if data.count(anchor) != 1:
@@ -492,6 +508,9 @@ def rehearsal(
             )
             (root / "captured-loader.mjs").write_bytes(
                 files["scripts/claude-agent-sdk-spawn-loader.mjs"]
+            )
+            (root / "sdk-startup-lookup.mjs").write_bytes(
+                files["scripts/claude-agent-sdk-startup-lookup.mjs"]
             )
             for role in ("driver", "native"):
                 (root / f"bootstrap-{role}.mjs").write_bytes(

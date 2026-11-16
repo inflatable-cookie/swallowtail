@@ -299,11 +299,12 @@
     "requiresLivePreentryCapture": true,
     "independentBootstrapClosureRequired": true,
     "permissionProposal": "docs/knowledge/operations/claude-agent-sdk-runtime-permissions.json",
-    "permissionRecordSha256": "87c229a762209308689218be728e2253a263f0876a66ea14005b397a2eedee45",
     "unapplied": true,
     "runtimeExecutionAuthorized": false,
     "softwareTestsModelBootstrapClosure": true,
     "actualRuntimeCustodyComplete": false,
-    "originalActivation": false
+    "originalActivation": false,
+    "historicalPermissionRecordSha256": "87c229a762209308689218be728e2253a263f0876a66ea14005b397a2eedee45",
+    "continuationProposal": "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.json"
   }
 }

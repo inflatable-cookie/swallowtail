@@ -135,6 +135,43 @@ class SpawnTests(unittest.TestCase):
         self.assertIn('"initialized"', result["stdout"])
         self.assertIn('"permission"', result["stdout"])
 
+    def test_source_bound_runtime_factory_reaches_real_prepared_and_sidecar_peers(self):
+        captures = []
+
+        def factory(custody, node, expected):
+            observed = MODEL.observation(custody, node, expected)
+            captures.append(observed.capture)
+            return observed
+
+        for mode in ("probe", "sidecar"):
+            result = self.run_peer(mode=mode, runtime_factory=factory)
+            self.assertIsNone(result["failure"])
+            self.assertEqual(result["driverWait"], 0)
+            self.assertEqual(len(result["nativeWaits"]), 1)
+            self.assertFalse(result["custody"]["runtimeCustodyComplete"])
+        self.assertEqual(len(captures), 2)
+        self.assertTrue(all(capture.closed for capture in captures))
+
+    def test_source_shaped_sdk_startup_keeps_permission_and_managed_denial(self):
+        for mode, state in (
+            ("probe", "absent"),
+            ("sidecar", "absent"),
+            ("sidecar", "managed-deny"),
+        ):
+            result = self.run_peer(mode=mode, state=state, fault="sdk-startup-probes")
+            self.assertIsNone(result["failure"], result.get("stderr"))
+            self.assertEqual(result["driverWait"], 0)
+            self.assertEqual(result["nativeWaits"][0]["code"], 0)
+            if mode == "probe":
+                self.assertIn('"permission"', result["stdout"])
+            else:
+                callbacks = [
+                    row
+                    for row in CORE.parse_events(result["stdout"])
+                    if row.get("type") == "callback"
+                ]
+                self.assertEqual(len(callbacks), 0 if state == "managed-deny" else 1)
+
     def test_second_start_and_wrong_parent_refuse(self):
         for fault in ("double-start", "wrong-parent"):
             with self.subTest(fault=fault):

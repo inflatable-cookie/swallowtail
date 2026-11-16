@@ -1,5 +1,5 @@
 750cd98d4257cb46a5fe1d0d0bda3cdfff28d84359fa28fe0f4f4e836b927e49  scripts/tests/sdk-runtime-model.py
-f8d5e77142a73b7030d97e62855698fb8750322e020371d79a75c543b19a9bb6  scripts/claude-agent-sdk-probe-custody.py
+ced8ca3943d3ba8a9059cf7412c9fbf8b4af517deac51dc0d3cdd741cbaecba0  scripts/claude-agent-sdk-probe-custody.py
 07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19  .github/workflows/sdk234-netns-proof.yml
 1b050616a676aedc7c75903218ff50349b68928fe50a143db9752ac03ad7d1dc  scripts/tests/oxide-selector-routing.py
 d92db0b4b062ea24f184ab93a6e35396aafd6a7b8785a3a2e7ebe2b0f7ccd8ea  scripts/claude-agent-sdk-netns-proposal.py
@@ -12,4 +12,4 @@ aa24aac1b8d8a223d83982103c2e18823877822911215eb3c3c30dcf695d08cb  crates/swallow
 a2a78a29ad73ad1aec700d06d4b17a56feb02fa7af52aee4913f3226ecb462af  docs/knowledge/operations/claude-agent-sdk-netns-admission.json
 29420677e192443542b4155298b82893db280eb8fc248bf9e34cb0a58ed2a540  docs/knowledge/operations/claude-agent-sdk-loopback-namespace.md
 5b804c0693aff7fc1d09a8654f32ad4ab761354236c5f51154732760c85ae700  docs/knowledge/operations/claude-agent-sdk-netns-ci.patch
-feb946a951e070a2d5e3d395d9e7f5f350817ebd04fbc0fabd37cc99846acde6  effigy.toml
+c7be5c535613480893697fffcfe59d689c9eb9b969b6a7fb7d8079e4878c52ee  effigy.toml

@@ -1,0 +1,149 @@
+{
+  "schema": "swallowtail.sdk240.startup-source.v1",
+  "scope": "source data only; vendor files never evaluated",
+  "upstream": {
+    "commit": "81c27b9d2756842d9f1db3f3203c5f7b40474adb",
+    "path": "docs/knowledge/operations/claude-agent-acp-source-flow.json",
+    "sha256": "e57249e1b0a12a4d6785b7e4c27c5d0c5e4d8ba5164d21130f908182b4f0506d"
+  },
+  "guard": {
+    "path": "crates/swallowtail-host-local/src/captured_source.rs",
+    "sha256": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
+    "bytes": 23089,
+    "originalPreloadRust": "\nimport {{ readSync, writeSync }} from 'node:fs';\nimport {{ install }} from {loader_json};\ntry {{\n  function read(n) {{\n    const b=Buffer.alloc(n); let p=0;\n    while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }}\n    return b;\n  }}\n  const n=read(4).readUInt32BE();\n  if(n>33554432) throw new Error('graph bootstrap too large');\n  const data=JSON.parse(read(n).toString('utf8'));\n  if(read(1)[0]!==165) throw new Error('invalid bootstrap admission');\n  Object.defineProperty(process,'getBuiltinModule',{{value(){{throw new Error('direct builtin access refused')}},writable:false,configurable:false}});\n  install(data);\n}} catch (error) {{\n  const labels=['incomplete graph bootstrap','graph bootstrap too large','invalid bootstrap admission','invalid capture','invalid module','invalid module identity','missing idle module','invalid edge','duplicate edge','runtime platform mismatch','missing native custody'];\n  const label=error instanceof SyntaxError ? 'SyntaxError' : labels.includes(error?.message) ? error.message : 'guard bootstrap refused';\n  writeSync(2,label+'\\n');\n  process.exit(78);\n}}\n",
+    "proposedPreloadRust": "\nimport {{ readSync, writeSync }} from 'node:fs';\nimport * as capturedLoader from {loader_json};\nconst install = capturedLoader.install;\ntry {{\n  function read(n) {{\n    const b=Buffer.alloc(n); let p=0;\n    while(p<n) {{ const k=readSync(0,b,p,n-p,null); if(k===0) throw new Error('incomplete graph bootstrap'); p+=k; }}\n    return b;\n  }}\n  const n=read(4).readUInt32BE();\n  if(n>33554432) throw new Error('graph bootstrap too large');\n  const data=JSON.parse(read(n).toString('utf8'));\n  if(read(1)[0]!==165) throw new Error('invalid bootstrap admission');\n  Object.defineProperty(process,'getBuiltinModule',{{value(...args){{\n    if(args.length===1 && args[0]==='async_hooks' && typeof capturedLoader.sdkStartupBuiltinLookup==='function') {{\n      if(capturedLoader.sdkStartupBuiltinLookup(...args)===undefined) return undefined;\n    }}\n    throw new Error('direct builtin access refused');\n  }},writable:false,configurable:false}});\n  install(data);\n}} catch (error) {{\n  const labels=['incomplete graph bootstrap','graph bootstrap too large','invalid bootstrap admission','invalid capture','invalid module','invalid module identity','missing idle module','invalid edge','duplicate edge','runtime platform mismatch','missing native custody'];\n  const label=error instanceof SyntaxError ? 'SyntaxError' : labels.includes(error?.message) ? error.message : 'guard bootstrap refused';\n  writeSync(2,label+'\\n');\n  process.exit(78);\n}}\n",
+    "proposedSha256": "ef159545b7cdbcd31371d56e1ea9607f119da170ee92a7dd38c8ba7a5b0d531a"
+  },
+  "loader": {
+    "path": "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs",
+    "sha256": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
+    "proposedSha256": "34cf60596e2c202949d7acf86f8878559fbbf22e4905e24d60248c0d10121a94"
+  },
+  "sdk": {
+    "0.3.318": {
+      "sdkMjsSha256": "4cd470a25da93b4339218708120b8b87e76d172b5798ba973898bac809333d01",
+      "tarballSha256": "7a79b4aa90dec557caf4638a8403e21649c371c4f6d0113cdd44a6da6b27836e",
+      "sites": [
+        {
+          "context": "e,DPKG_ADMINDIR:()=>oAe,DPKG_MAINTSCRIPT_PACKAGE:()=>rAe,DPKG_ROOT:()=>sAe,SELF_HOSTED_RUNNER_AGENT_PROXY_URL:()=>ZCe,_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL:()=>eCe});var t_={};Rr(t_,{default:()=>yo});var r_={};Rr(r_,{default:()=>So});var w_={};Rr(w_,{default:()=>vp});import{createHash as ck,randomBytes as jJ,randomUUID as La}from\"crypto\";var uk=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),Li=uk?(e)=>uk.AsyncResource.bind(e):(e)=>e;function Ae(e){if(!e)return!1;if(typeof e===\"boolean\")return e;let t=String(e).toLowerCase().trim();return[\"1\",\"true\",\"yes\",\"on\"].includes(t)}function Wr(e){if(e===void 0)return!1;if(typeof e===\"boolean\")return!e;let t=String(e).toLowerCase().trim();return[\"0\",\"false\",\"no\",\"off\"].includes",
+          "expression": {
+            "endByte": 176734,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 176698,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        },
+        {
+          "context": "{code:\"InvalidArgument\",argument:e,...t!==void 0&&{reason:t}}}var F5=\"ByteViewUnsupported\";function TP(e){return e.code===\"Failed\"&&\"telemetryCode\"in e&&e.telemetryCode===F5}var Hf={home:(e)=>({space:\"home\",path:e}),workspace:(e)=>({space:\"workspace\",path:e}),system:(e)=>({space:\"system\",path:e}),userNamed:(e)=>({space:\"userNamed\",path:e})};var CE=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),vP=CE!==void 0,AE=CE?new CE.AsyncLocalStorage:{run:(e,t)=>t(),getStore:()=>{return}};function xP({writeBatch:e,sizeOf:t,flushIntervalMs:n=1000,maxBufferSize:r=100,maxBufferBytes:o=1/0,immediateMode:s=!1}){let i=[],a=0,l=null,c=null;function d(){if(l)clearTimeout(l),l=null}function p(_){try{e(_)}catch{}}function f(){if(c)p(c),c=nul",
+          "expression": {
+            "endByte": 260477,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 260441,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        }
+      ]
+    },
+    "0.3.319": {
+      "sdkMjsSha256": "71460e29f72859dbc65a613e3737c834b4afa4b6411716fd7b596f9c5e129b76",
+      "tarballSha256": "6bfb9ccb6a5d15686f5c7dd12d7a7da6d7b486ca6e1331ac8a7ab98a2d302001",
+      "sites": [
+        {
+          "context": "e,DPKG_ADMINDIR:()=>KAe,DPKG_MAINTSCRIPT_PACKAGE:()=>BAe,DPKG_ROOT:()=>GAe,SELF_HOSTED_RUNNER_AGENT_PROXY_URL:()=>NAe,_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL:()=>$Ce});var r_={};Rr(r_,{default:()=>yo});var s_={};Rr(s_,{default:()=>So});var x_={};Rr(x_,{default:()=>Ip});import{createHash as bk,randomBytes as l5,randomUUID as La}from\"crypto\";var Ck=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),Li=Ck?(e)=>Ck.AsyncResource.bind(e):(e)=>e;function Ae(e){if(!e)return!1;if(typeof e===\"boolean\")return e;let t=String(e).toLowerCase().trim();return[\"1\",\"true\",\"yes\",\"on\"].includes(t)}function Wr(e){if(e===void 0)return!1;if(typeof e===\"boolean\")return!e;let t=String(e).toLowerCase().trim();return[\"0\",\"false\",\"no\",\"off\"].includes",
+          "expression": {
+            "endByte": 177378,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 177342,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        },
+        {
+          "context": "{code:\"InvalidArgument\",argument:e,...t!==void 0&&{reason:t}}}var oX=\"ByteViewUnsupported\";function $P(e){return e.code===\"Failed\"&&\"telemetryCode\"in e&&e.telemetryCode===oX}var Kf={home:(e)=>({space:\"home\",path:e}),workspace:(e)=>({space:\"workspace\",path:e}),system:(e)=>({space:\"system\",path:e}),userNamed:(e)=>({space:\"userNamed\",path:e})};var wE=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),zP=wE!==void 0,vE=wE?new wE.AsyncLocalStorage:{run:(e,t)=>t(),getStore:()=>{return}};function jP({writeBatch:e,sizeOf:t,flushIntervalMs:n=1000,maxBufferSize:r=100,maxBufferBytes:o=1/0,immediateMode:s=!1}){let i=[],a=0,l=null,c=null;function d(){if(l)clearTimeout(l),l=null}function p(_){try{e(_)}catch{}}function f(){if(c)p(c),c=nul",
+          "expression": {
+            "endByte": 262585,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 262549,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        }
+      ]
+    },
+    "0.3.321": {
+      "sdkMjsSha256": "20524b5de1d5e69f4b98005994e0970f0426c99ec55e9b9dae1af1f270d86ab7",
+      "tarballSha256": "c8685dc9fbe245f90189e14acd5a3b74773e2027bdaff95b95b729fbb53ef6f5",
+      "sites": [
+        {
+          "context": "e,DPKG_ADMINDIR:()=>NOe,DPKG_MAINTSCRIPT_PACKAGE:()=>MOe,DPKG_ROOT:()=>UOe,SELF_HOSTED_RUNNER_AGENT_PROXY_URL:()=>vOe,_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL:()=>PRe});var E_={};Tr(E_,{default:()=>Ao});var C_={};Tr(C_,{default:()=>Ro});var W_={};Tr(W_,{default:()=>Bp});import{createHash as nP,randomBytes as cX,randomUUID as za}from\"crypto\";var rP=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),Hi=rP?(e)=>rP.AsyncResource.bind(e):(e)=>e;function Ae(e){if(!e)return!1;if(typeof e===\"boolean\")return e;let t=String(e).toLowerCase().trim();return[\"1\",\"true\",\"yes\",\"on\"].includes(t)}function Zr(e){if(e===void 0)return!1;if(typeof e===\"boolean\")return!e;let t=String(e).toLowerCase().trim();return[\"0\",\"false\",\"no\",\"off\"].includes",
+          "expression": {
+            "endByte": 178008,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 177972,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        },
+        {
+          "context": "{code:\"InvalidArgument\",argument:e,...t!==void 0&&{reason:t}}}var d8=\"ByteViewUnsupported\";function TI(e){return e.code===\"Failed\"&&\"telemetryCode\"in e&&e.telemetryCode===d8}var nm={home:(e)=>({space:\"home\",path:e}),workspace:(e)=>({space:\"workspace\",path:e}),system:(e)=>({space:\"system\",path:e}),userNamed:(e)=>({space:\"userNamed\",path:e})};var tb=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),vI=tb!==void 0,nb=tb?new tb.AsyncLocalStorage:{run:(e,t)=>t(),getStore:()=>{return}};function xI({writeBatch:e,sizeOf:t,flushIntervalMs:n=1000,maxBufferSize:r=100,maxBufferBytes:o=1/0,immediateMode:s=!1}){let i=[],a=0,l=null,c=null;function d(){if(l)clearTimeout(l),l=null}function p(_){try{e(_)}catch{}}function f(){if(c)p(c),c=nul",
+          "expression": {
+            "endByte": 268173,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 268137,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        }
+      ]
+    },
+    "0.3.322": {
+      "sdkMjsSha256": "1c70356fe073f6c5423fb7138e2f2f6580a790eb055ad247e5d7927f57b53e8b",
+      "tarballSha256": "5db6881a4da75539d8b090f0a4b791043f9cbdbae439e5f9cf27356b28c59a93",
+      "sites": [
+        {
+          "context": "e,DPKG_ADMINDIR:()=>NOe,DPKG_MAINTSCRIPT_PACKAGE:()=>MOe,DPKG_ROOT:()=>UOe,SELF_HOSTED_RUNNER_AGENT_PROXY_URL:()=>vOe,_CLAUDE_CODE_ASSUME_FIRST_PARTY_BASE_URL:()=>PRe});var E_={};Tr(E_,{default:()=>Ao});var C_={};Tr(C_,{default:()=>Ro});var W_={};Tr(W_,{default:()=>Bp});import{createHash as nP,randomBytes as cX,randomUUID as za}from\"crypto\";var rP=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),Hi=rP?(e)=>rP.AsyncResource.bind(e):(e)=>e;function Ae(e){if(!e)return!1;if(typeof e===\"boolean\")return e;let t=String(e).toLowerCase().trim();return[\"1\",\"true\",\"yes\",\"on\"].includes(t)}function Zr(e){if(e===void 0)return!1;if(typeof e===\"boolean\")return!e;let t=String(e).toLowerCase().trim();return[\"0\",\"false\",\"no\",\"off\"].includes",
+          "expression": {
+            "endByte": 178008,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 177972,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        },
+        {
+          "context": "{code:\"InvalidArgument\",argument:e,...t!==void 0&&{reason:t}}}var d8=\"ByteViewUnsupported\";function TI(e){return e.code===\"Failed\"&&\"telemetryCode\"in e&&e.telemetryCode===d8}var nm={home:(e)=>({space:\"home\",path:e}),workspace:(e)=>({space:\"workspace\",path:e}),system:(e)=>({space:\"system\",path:e}),userNamed:(e)=>({space:\"userNamed\",path:e})};var tb=globalThis.process?.getBuiltinModule?.(\"async_hooks\"),vI=tb!==void 0,nb=tb?new tb.AsyncLocalStorage:{run:(e,t)=>t(),getStore:()=>{return}};function xI({writeBatch:e,sizeOf:t,flushIntervalMs:n=1000,maxBufferSize:r=100,maxBufferBytes:o=1/0,immediateMode:s=!1}){let i=[],a=0,l=null,c=null;function d(){if(l)clearTimeout(l),l=null}function p(_){try{e(_)}catch{}}function f(){if(c)p(c),c=nul",
+          "expression": {
+            "endByte": 268173,
+            "sha256": "64f0261e9d93e9570a3556347fb309d7b27131f7e94e9845432c14c87e5d3863",
+            "startByte": 268137,
+            "text": "globalThis.process?.getBuiltinModule"
+          },
+          "owner": {
+            "name": "<module>"
+          }
+        }
+      ]
+    }
+  },
+  "migrationPatchSha256": "4a1ece2a71994a9d6760cf6c9b3e6cef8351b3a428e777b59a09a58f3ce56c3a",
+  "lookupSha256": "e16515aa99c86c86c51d5e7e5ed79512aab8b58298fedb23306cf58268ed3d62",
+  "independentReviewRequired": true,
+  "consumable": false,
+  "originalExecution": false
+}

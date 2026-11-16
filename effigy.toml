@@ -203,6 +203,17 @@ section = "Research Records"
   "python3 -B scripts/tests/claude-agent-sdk-probe-custody.py",
   "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py",
 ]
+"validate:claude-agent-sdk-bootstrap-session" = [
+  { task = "validate:claude-agent-sdk-bootstrap-elf" },
+  { task = "validate:claude-agent-sdk-bootstrap-transaction" },
+  { task = "validate:claude-agent-sdk-source-packet" },
+]
+"validate:claude-agent-sdk-bootstrap-elf" = "python3 -B scripts/tests/claude-agent-sdk-bootstrap-elf.py"
+"validate:claude-agent-sdk-bootstrap-transaction" = "python3 -B scripts/tests/claude-agent-sdk-bootstrap-session.py SessionTests HostInputTests"
+"validate:claude-agent-sdk-source-packet" = "python3 -B scripts/tests/claude-agent-sdk-bootstrap-session.py SourcePacketTests"
+"check:claude-agent-sdk-bootstrap-session" = "python3 -c 'import json; from pathlib import Path; [compile(Path(n).read_bytes(), n, \"exec\") for n in (\"scripts/claude-agent-sdk-bootstrap-elf.py\", \"scripts/claude-agent-sdk-bootstrap-session.py\", \"scripts/tests/claude-agent-sdk-bootstrap-elf.py\", \"scripts/tests/claude-agent-sdk-bootstrap-session.py\")]; json.loads(Path(\"docs/knowledge/operations/claude-agent-sdk-bootstrap-session.json\").read_bytes())'"
+"check:format:claude-agent-sdk-bootstrap-session" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-bootstrap-elf.py scripts/claude-agent-sdk-bootstrap-session.py scripts/tests/claude-agent-sdk-bootstrap-elf.py scripts/tests/claude-agent-sdk-bootstrap-session.py"
+"format:claude-agent-sdk-bootstrap-session" = "ruff format --no-cache scripts/claude-agent-sdk-bootstrap-elf.py scripts/claude-agent-sdk-bootstrap-session.py scripts/tests/claude-agent-sdk-bootstrap-elf.py scripts/tests/claude-agent-sdk-bootstrap-session.py scripts/claude-agent-sdk-probe-custody.py scripts/claude-agent-sdk-spawn-proposal.py"
 "check:claude-agent-sdk-runtime-custody" = [
   "python3 -c 'from pathlib import Path; [compile(Path(n).read_bytes(), n, \"exec\") for n in (\"scripts/claude-agent-sdk-probe-custody.py\", \"scripts/tests/claude-agent-sdk-probe-custody.py\", \"scripts/tests/claude-agent-sdk-permission-packet.py\", \"scripts/tests/sdk-runtime-model.py\")]'",
   "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py --check-compile",
@@ -216,6 +227,18 @@ section = "Research Records"
   "python3 -B scripts/tests/claude-agent-sdk-permission-packet.py --format-packet",
 ]
 "validate:claude-agent-sdk-spawn-proposal" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py"
+"validate:claude-agent-sdk-runtime-factory" = "python3 -B scripts/tests/claude-agent-sdk-spawn-proposal.py SpawnTests.test_source_bound_runtime_factory_reaches_real_prepared_and_sidecar_peers"
+"validate:claude-agent-sdk-startup-lookup" = "python3 -B scripts/tests/claude-agent-sdk-startup-lookup.py"
+"check:claude-agent-sdk-startup-lookup" = [
+  "python3 -c 'from pathlib import Path; n=\"scripts/tests/claude-agent-sdk-startup-lookup.py\"; compile(Path(n).read_bytes(), n, \"exec\")'",
+  "node --check scripts/claude-agent-sdk-startup-lookup.mjs",
+  "node --check scripts/tests/fixtures/sdk-startup-probes.mjs",
+]
+"check:format:claude-agent-sdk-startup-lookup" = [
+  "bash scripts/check-python-format.sh scripts/tests/claude-agent-sdk-startup-lookup.py",
+  "eclint check --indent_style space --indent_size 2 --end_of_line lf --charset utf-8 --trim_trailing_whitespace --insert_final_newline scripts/claude-agent-sdk-startup-lookup.mjs scripts/tests/fixtures/sdk-startup-probes.mjs",
+]
+"format:claude-agent-sdk-startup-lookup" = "ruff format --no-cache scripts/tests/claude-agent-sdk-startup-lookup.py scripts/claude-agent-sdk-spawn-proposal.py scripts/tests/claude-agent-sdk-spawn-proposal.py scripts/claude-agent-sdk-bootstrap-session.py scripts/tests/claude-agent-sdk-bootstrap-session.py"
 "validate:claude-agent-sdk-preflight-diagnostic" = "python3 -B scripts/tests/claude-agent-sdk-preflight-diagnostic.py"
 "check:claude-agent-sdk-preflight-diagnostic" = "python3 -c 'from pathlib import Path; [compile(Path(name).read_bytes(), name, \"exec\") for name in (\"scripts/claude-agent-sdk-preflight-diagnostic.py\", \"scripts/tests/claude-agent-sdk-preflight-diagnostic.py\")]'"
 "check:format:claude-agent-sdk-preflight-diagnostic" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-preflight-diagnostic.py scripts/tests/claude-agent-sdk-preflight-diagnostic.py"

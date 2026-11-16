@@ -58,6 +58,9 @@ and never accepts a caller-supplied receipt as one. The cleanup retry cannot
 launch another rehearsal or clear the outer
 transaction's unknown-settlement receipt. Process exit never substitutes for an
 actual wait, and this retention does not establish kernel tree reaping.
+On a protocol refusal, stop the identity-bound native before asking its driver
+to close, so that the actual parent remains alive to receive the exit status.
+If that parent still exits without the wait, retention remains mandatory.
 
 Read-only input batches check every held identity before and after acquisition,
 and retain each member's byte, owner, mode and ancestry checks. A partial failure

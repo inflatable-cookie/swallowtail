@@ -333,8 +333,8 @@ def graph_config(root, role, entry_command, native_env):
     }
 
 
-def stop_owned(driver, registered, observer=None, stop=None):
-    """Signal only this rehearsal's directly owned driver and checked native."""
+def stop_natives(registered, observer=None, stop=None):
+    """Signal checked natives while their actual parent can still wait them."""
     for owned in registered:
         try:
             actual = (observer or process_identity)(owned["pid"])
@@ -349,6 +349,11 @@ def stop_owned(driver, registered, observer=None, stop=None):
                 os.kill(owned["pid"], signal.SIGKILL)
             except ProcessLookupError:
                 pass  # Exited after identity read; caller still performs its waits.
+
+
+def stop_owned(driver, registered, observer=None, stop=None):
+    """Signal only this rehearsal's directly owned driver and checked native."""
+    stop_natives(registered, observer, stop)
     if driver.poll() is None:
         try:
             driver.kill()
@@ -1101,6 +1106,13 @@ def rehearsal(
             if driver.poll() is None and failure:
                 emit(
                     "stop_requested", actor=os.getpid(), pid=driver.pid, reason=failure
+                )
+                # Keep the actual parent alive to receive ChildProcess.exit;
+                # its graceful-close deadline must not race a still-live native.
+                stop_natives(
+                    registered,
+                    context.observe if context else None,
+                    context.stop if context else None,
                 )
                 driver.terminate()
                 emit(

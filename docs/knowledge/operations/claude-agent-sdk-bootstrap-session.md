@@ -258,17 +258,15 @@ All512-input,128-object,32-directory,128-absence,512MiB aggregate,256MiB/file an
 1MiB manifest bounds remain unchanged. Tool output is bounded to16KiB and every
 returned tool handle is stopped/waited on failure. Unknown tool or ordinary-child
 waits retain both administrative and package inputs. Real image/tool behavior
-and the ordinary invocation/activation bridge still need their exact job binding;
-owned fixtures are not host admission or completed qualification. The current
-owned-child scope has no descendants and supplies software proof only; it is
-not an implementation or attestation of the required kernel/adoptee adapter.
+still requires later exact activation. Producer-only owned-child tests supply
+software proof, not kernel/adoptee attestation or completed qualification.
 The ordinary manifest-descriptor bridge publishes one0600 administrative
 regular file, closes its writer and passes only a read-only file descriptor.
 The ordinary reader checks type, owner, mode, link count, bound and exact hash,
 then closes that descriptor before candidate entry. A directory or writable
 handle refuses. The same owner retains the transfer while a child wait is unknown.
-Existing finite kernel monitor composition and the exact unapplied job packet
-remain source work before this setup can be proposed for one activation.
+The concrete monitor composition and exact unapplied job packet follow below;
+independent review and activation authority remain required.
 
 The existing monitor now exposes the narrow ordinary-guest/descriptor seam without
 changing its legacy30s default. That seam accepts at most one administrative
@@ -283,8 +281,8 @@ The runtime observer similarly keeps launch intent before Popen: a constructor
 with no returned handle retains custody; a later journal refusal uses the actual
 handle already held by the session and waits it before capture release. Unknown observer waits also retain stdout/stderr handles; only the same later
 actual join clears that capture's active child and closes those streams.
-These are source/owned-child seams for composition, not an activated kernel or
-completed three-case adapter.
+The three-case adapter below composes these seams. Their owned-child proof does
+not establish actual kernel admission.
 
 The private [observer bridge](../../../scripts/claude-agent-sdk-host-observer.py),
 [Python barrier](../../../scripts/claude-agent-sdk-observer-entry.py) and

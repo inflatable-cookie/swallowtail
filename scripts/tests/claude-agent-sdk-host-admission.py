@@ -141,9 +141,25 @@ class AdmissionTests(unittest.TestCase):
         self.assertEqual(
             profile["sourceBasis"]["commit"], "93a4e4e98715026b60fdf86893cf193b4be3bd47"
         )
-        self.assertIsNone(profile["activationPacket"])
+        self.assertEqual(
+            profile["activationPacket"],
+            "docs/knowledge/operations/claude-agent-sdk-host-setup.json",
+        )
         self.assertFalse(profile["activationAuthorized"])
         self.assertFalse(profile["hostPackageProduced"])
+        packet = json.loads((ROOT / profile["activationPacket"]).read_text())
+        self.assertFalse(packet["activationAuthorized"])
+        self.assertFalse(packet["qualified"])
+        self.assertIsNone(packet["originalCommand"])
+        self.assertEqual(packet["originalAdmission"], "closed")
+        self.assertEqual(packet["providerAdmission"], "closed")
+        self.assertEqual(packet["qualificationMergeHolds"], "both retained")
+        self.assertEqual(
+            [effect["phase"] for effect in packet["reservedEffects"]],
+            ["application", "registration", "one_attempt"],
+        )
+        for effect in packet["reservedEffects"]:
+            self.assertTrue(effect["authorityRequired"])
         alternative = profile["unappliedAlternative"]
         patch = (ROOT / alternative["path"]).read_bytes()
         self.assertEqual(hashlib.sha256(patch).hexdigest(), alternative["sha256"])

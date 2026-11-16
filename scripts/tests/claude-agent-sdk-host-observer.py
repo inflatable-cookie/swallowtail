@@ -322,6 +322,7 @@ class ObserverTests(unittest.TestCase):
             stderr=subprocess.PIPE,
             close_fds=True,
         )
+        child.wait(timeout=2)
         owner.driver, owner.driver_intent = child, True
         owner.lease = mock.Mock()
         try:

@@ -352,7 +352,9 @@ class BootstrapTests(unittest.TestCase):
         spec.loader.exec_module(session_module)
         owner = session_module.Session.__new__(session_module.Session)
         owner.host = mock.Mock()
-        owner.preparation = types.SimpleNamespace(state={})
+        owner.preparation = types.SimpleNamespace(
+            state={}, receipt=self.root / "owned-receipt"
+        )
         owner.runtime_bootstrap = capture
         owner.store = mock.Mock()
         owner.helper = types.SimpleNamespace(

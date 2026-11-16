@@ -1204,6 +1204,9 @@ class Monitor:
                 if parent.poll(0):
                     raise Refused(errno.ESRCH, "root_monitor_died_during_drop")
                 self.guest(answer_read, write)
+                raise Refused(
+                    errno.EPERM, "ordinary_guest_returned_without_terminal_report"
+                )
             except BaseException as error:
                 try:
                     write_frame(

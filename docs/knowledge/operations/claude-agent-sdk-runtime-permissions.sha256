@@ -2,7 +2,7 @@
 087d937c796759e1baf5916e5852ce1fe86789a8a62826fb5fa924200230cc99  docs/knowledge/operations/claude-agent-sdk-runtime-permissions.patch
 ad11b49d3d9e1e35712c0254ef64c7a434acd0bb0c9ccb83d5b53ec7f71fa0a6  docs/knowledge/operations/claude-agent-sdk-runtime-permissions-workflow.patch
 93e17cc62931324979d0127def2557b85d0732743533eaf809c63878eeccaf7a  scripts/claude-agent-sdk-probe-custody.py
-547bb927b4a774e52dfb77f1d7ff26519cdffff97d96e46aae1a8b9caf8482a1  scripts/tests/claude-agent-sdk-probe-custody.py
+036f642ff53855f4bdeb71d635d6b8ad36eab54cadc1e9f00e54250eb57ba8b2  scripts/tests/claude-agent-sdk-probe-custody.py
 bb2860c53fb01cfdc777c5cde5c743152ab602a3ef0cd8600b2b9b66f3b8c979  scripts/tests/claude-agent-sdk-permission-packet.py
 4a13c4290c8aea48aadff5a0030eaee95f6868fdefa085003ec20d2537a8caa9  scripts/tests/sdk-runtime-model.py
 1b8b36f04d65cf5b9934be6e1e6f259b96355a01e81b97d8bb242b119bc71703  effigy.toml

@@ -1,6 +1,6 @@
 4a13c4290c8aea48aadff5a0030eaee95f6868fdefa085003ec20d2537a8caa9  scripts/tests/sdk-runtime-model.py
 6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29  .github/workflows/sdk234-combined-fake.yml
-76fdcf1c9e2634e3498cab8aca6428abbd3af953faa2e1f72131b2f7c7b61888  scripts/claude-agent-sdk-spawn-proposal.py
+9a2324350a3a2e473c18a07a168611d1731ee03f48ee3041b919b91e28176cbf  scripts/claude-agent-sdk-spawn-proposal.py
 9f0e48b497b3d6a93513d010277582a9a90dd9375e2f9ea5c1bffdbc4f1ba2f1  scripts/claude-agent-sdk-spawn-entry.py
 8afaab08f1d798fbf3f9318ec22ef9005fb22f9ce2657806bb39da930b337114  scripts/claude-agent-sdk-spawn-owner.py
 0b5b7732112f6a127d927927f85e96bde0bf4d5db08c9a084150ec2275577074  scripts/claude-agent-sdk-spawn-policy.py
@@ -16,7 +16,7 @@ e16515aa99c86c86c51d5e7e5ed79512aab8b58298fedb23306cf58268ed3d62  scripts/claude
 4509281402693c8cf5dac1b9ad91070c8a91da2a0bb973a0c30a1f91bebb3f41  scripts/claude-agent-sdk-spawn-sdk.mjs
 2bf743c0f684bc36d682f90e1227587dfe29b61a3bbafdf8ba0acb9d67c868c7  scripts/claude-agent-sdk-spawn-native.mjs
 ec9ae61785efc2a375ed971a45037aceafcff9e5c70b31b4dc17b4a685bea164  scripts/claude-agent-sdk-spawn-driver.mjs
-206f8014733c5c23969f843b569bf92e5a75ae1acb86fa2c7226bf5c0326ea45  scripts/tests/claude-agent-sdk-spawn-proposal.py
+e240b3867cf9c95c82409f60e1d40e133cb3595314e580eded5d5d72cc505a49  scripts/tests/claude-agent-sdk-spawn-proposal.py
 b743e346480717f1bb2ea0884ed82bc904fb0b05b72b709ed549aa470cccaafb  scripts/tests/claude-agent-sdk-combined-proposal.py
 30f293c812614eef6f4423bb74ef5bd50fd42999f95a13a341e0a5364bbe913f  scripts/claude-agent-sdk-probe-custody.py
 1162b13c52e438552266aab2fd47b3651f0f9b1d361f604aec748f3b27dee37c  scripts/claude-agent-sdk-confined-probe.py

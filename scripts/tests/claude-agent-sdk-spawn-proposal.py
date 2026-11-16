@@ -213,11 +213,83 @@ class SpawnTests(unittest.TestCase):
                 result = self.run_peer(fault=fault)
                 self.assertIsNotNone(result["failure"])
 
-    def test_missing_wait_and_failed_cleanup_refuse(self):
-        for fault in ("missing-wait", "cleanup"):
-            with self.subTest(fault=fault):
-                result = self.run_peer(fault=fault)
-                self.assertIsNotNone(result["failure"])
+    def test_failed_cleanup_refuses(self):
+        result = self.run_peer(fault="cleanup")
+        self.assertIsNotNone(result["failure"])
+
+    def test_missing_native_parent_wait_retains_custody_until_observed(self):
+        parse = CORE.parse_events
+        owner = None
+
+        def withheld(data):
+            return [
+                row for row in parse(data) if row.get("probeEvent") != "native_wait"
+            ]
+
+        try:
+            with mock.patch.object(CORE, "parse_events", side_effect=withheld):
+                with self.assertRaisesRegex(
+                    CORE.Refused, "rehearsal_cleanup_unknown"
+                ) as caught:
+                    self.run_peer()
+                owner = caught.exception.rehearsal
+                self.assert_retained(owner)
+                self.assertEqual(len(owner.registered), 1)
+                self.assertEqual(owner.driver.returncode, 0)
+                self.assertIn(
+                    "native_parent_wait_missing", str(caught.exception.__cause__)
+                )
+                # The parent really waited. Only its observation was withheld;
+                # exit/disappearance/driver wait must not authorize release.
+                waits = [
+                    row
+                    for row in parse(owner.output["stderr"].decode())
+                    if row.get("probeEvent") == "native_wait"
+                ]
+                self.assertEqual(len(waits), 1)
+                self.assertEqual(waits[0]["pid"], owner.registered[0]["pid"])
+                self.assertEqual(waits[0]["actor"], owner.registered[0]["parent"])
+                with self.assertRaises(CORE.Refused):
+                    owner.settle()
+                self.assert_retained(owner)
+        finally:
+            if owner is not None:
+                # Parser restored: retry reads the retained owned stream's real
+                # parent exit observation, never a supplied receipt or PID probe.
+                owner.settle()
+        self.assertTrue(owner.released)
+        self.assertTrue(owner.lease.closed)
+        self.assertFalse(owner.root.exists())
+
+    def test_unbound_or_nonterminal_native_wait_cannot_release_custody(self):
+        parse = CORE.parse_events
+        for changed in (
+            {"pid": -1},
+            {"actor": -1},
+            {"source": "pidfd HUP"},
+            {"code": None, "signal": None},
+        ):
+            with self.subTest(changed=changed):
+                owner = None
+
+                def unbound(data):
+                    return [
+                        {**row, **changed}
+                        if row.get("probeEvent") == "native_wait"
+                        else row
+                        for row in parse(data)
+                    ]
+
+                try:
+                    with mock.patch.object(CORE, "parse_events", side_effect=unbound):
+                        with self.assertRaises(CORE.Refused) as caught:
+                            self.run_peer()
+                        owner = caught.exception.rehearsal
+                        self.assert_retained(owner)
+                finally:
+                    if owner is not None:
+                        owner.settle()
+                self.assertTrue(owner.released)
 
     def test_revocation_before_driver_and_native_entry(self):
         for phase in ("driver-start", "native-entry"):

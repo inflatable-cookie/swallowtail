@@ -47,7 +47,13 @@ and retains the actual process handle, open capture, pidfd, endpoint and staged
 fixture. The refusal carries that owner; the outer transaction retains it too.
 Only a later cleanup attempt using those same handles may release the capture
 and identity-bound fixture after the owned stop, driver wait and endpoint join
-succeed. This cleanup retry cannot launch another rehearsal or clear the outer
+succeed, and each registered native has its exact parent's `ChildProcess.exit`
+observation. Cleanup checks the retained owned stderr bytes, including a bounded
+tail read after the driver wait; matching requires native PID, registered parent,
+source and terminal exit status. A missing or conflicting wait retains custody
+even when the driver exited successfully. This route implements no adopter wait
+and never accepts a caller-supplied receipt as one. The cleanup retry cannot
+launch another rehearsal or clear the outer
 transaction's unknown-settlement receipt. Process exit never substitutes for an
 actual wait, and this retention does not establish kernel tree reaping.
 

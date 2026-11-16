@@ -11,3 +11,5 @@ guard-refusal evidence alongside owned waits in the fake denial proof.
 
 Retain the live rehearsal handles, custody and staged fixture when stop or wait
 fails; release them only after a successful owned cleanup retry.
+Require the bound parent's actual native wait before releasing rehearsal custody,
+including through outer transaction failures and cancellation.

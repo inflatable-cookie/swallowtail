@@ -369,13 +369,14 @@ def parse_events(data):
 class RehearsalResources:
     """Retain the live rehearsal on unknown cleanup; no temporary-dir finalizer."""
 
-    def __init__(self, registered, context, emit):
+    def __init__(self, registered, context, emit, output, output_limit):
         self.root = Path(
             tempfile.mkdtemp(prefix="sdk234-spawn-", dir=os.environ["TMPDIR"])
         ).resolve()
         info = self.root.lstat()
         self.identity = (info.st_dev, info.st_ino, info.st_uid)
         self.registered, self.context, self.emit = registered, context, emit
+        self.output, self.output_limit = output, output_limit
         self.lease = self.driver = self.pidfd = self.server = self.thread = None
         self.retained = self.released = False
 
@@ -386,6 +387,51 @@ class RehearsalResources:
         if not self.released and not self.retained:
             self.settle()
         return False
+
+    def native_joins(self):
+        # Read only these owned pipes, after the actual driver wait. A bounded
+        # tail may contain its final ChildProcess.exit observation after cancel.
+        for name in self.output:
+            stream = getattr(self.driver, name)
+            while sum(len(data) for data in self.output.values()) < self.output_limit:
+                try:
+                    data = os.read(
+                        stream.fileno(),
+                        min(
+                            8192,
+                            self.output_limit
+                            - sum(len(data) for data in self.output.values()),
+                        ),
+                    )
+                except BlockingIOError:
+                    break
+                if not data:
+                    break
+                self.output[name].extend(data)
+        waits = parse_events(self.output["stderr"].decode(errors="replace"))
+        for native in self.registered:
+            matches = [
+                row
+                for row in waits
+                if (
+                    row.get("probeEvent") == "native_wait"
+                    and row.get("pid") == native["pid"]
+                    and row.get("actor") == native["parent"]
+                    and row.get("source") == "ChildProcess.exit"
+                )
+            ]
+            if len(matches) != 1 or not (
+                (
+                    type(matches[0].get("code")) is int
+                    and 0 <= matches[0]["code"] <= 255
+                    and matches[0].get("signal") is None
+                )
+                or (
+                    matches[0].get("code") is None
+                    and matches[0].get("signal") in signal.Signals.__members__
+                )
+            ):
+                raise Refused("native_parent_wait_missing; custody retained")
 
     def settle(self):
         """Retry only owned stop/join/cleanup; never restart a rehearsal."""
@@ -415,6 +461,8 @@ class RehearsalResources:
                     if self.thread.is_alive():
                         raise Refused("endpoint_join_missing")
                 self.server.server_close()
+            if self.driver is not None:
+                self.native_joins()
             # These releases cannot run after a stop or join raised above.
             if self.lease is not None:
                 self.lease.close()
@@ -571,7 +619,9 @@ def rehearsal(
                     observation=row,
                 )
 
-    resources = RehearsalResources(registered, context, emit)
+    resources = RehearsalResources(
+        registered, context, emit, captured_output, output_limit
+    )
     with resources as root:
         lease = custody.Lease(
             runtime,
@@ -1077,8 +1127,6 @@ def rehearsal(
             emit("driver_wait", pid=driver.pid, actor=os.getpid(), code=code)
             software = parse_events(captured_output["stderr"].decode(errors="replace"))
             native_waits = [x for x in software if x.get("probeEvent") == "native_wait"]
-            if fault == "missing-wait":
-                native_waits = []
             if not failure and (
                 code != 0
                 or errors

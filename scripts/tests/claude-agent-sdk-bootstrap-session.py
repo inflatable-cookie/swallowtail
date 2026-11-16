@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -231,6 +232,67 @@ class SessionTests(unittest.TestCase):
         with self.assertRaisesRegex(OSError, "child_settlement_unknown"):
             self.run_session(failed)
         self.assertIs(self.session.retained_rehearsal, owner)
+        self.assertFalse(self.session.host.capture.closed)
+        self.assertEqual(self.node.stat().st_mode & 0o777, 0o755)
+        self.assertFalse(json.loads(self.journal.read_text())["fixtureCleanup"])
+
+    def test_missing_native_wait_retains_real_inner_and_outer_custody(self):
+        core = load(
+            "sdk_inner_rehearsal", ROOT / "scripts/claude-agent-sdk-spawn-proposal.py"
+        )
+        model = load("sdk_inner_model", ROOT / "scripts/tests/sdk-runtime-model.py")
+        original_module, parse = core.module, core.parse_events
+        node = Path(shutil.which("node")).resolve(strict=True)
+
+        def modeled_module(name, data):
+            selected = original_module(name, data)
+            if name == "scripts/claude-agent-sdk-probe-custody.py":
+                selected.runtime_inventory = lambda runtime, digest: model.observation(
+                    selected, runtime, digest
+                )
+            return selected
+
+        def withheld(data):
+            return [
+                row for row in parse(data) if row.get("probeEvent") != "native_wait"
+            ]
+
+        def inner(*args, **kwargs):
+            # Compose lifetime boundaries only: the outer owned-fork host fixture
+            # and the inner ordinary source-modeled Node peer are distinct.
+            # This is neither candidate execution nor same-host qualification.
+            self.rehearsal(*args, **kwargs)
+            return core.rehearsal(sha(ROOT / core.RECORD), node, sha(node))
+
+        owner = None
+        try:
+            with (
+                mock.patch.object(core, "module", side_effect=modeled_module),
+                mock.patch.object(core, "parse_events", side_effect=withheld),
+            ):
+                with self.assertRaisesRegex(OSError, "child_settlement_unknown"):
+                    self.run_session(inner)
+                owner = self.session.retained_rehearsal
+                self.assertIsNotNone(owner)
+                self.assertEqual(len(owner.registered), 1)
+                self.assertEqual(owner.driver.returncode, 0)
+                self.assertTrue(owner.retained)
+                self.assertFalse(owner.lease.closed)
+                self.assertTrue(owner.lease.revoked)
+                self.assertTrue((owner.root / "native.mjs").is_file())
+                for descriptor in owner.lease.descriptors:
+                    os.fstat(descriptor)
+                if owner.pidfd is not None:
+                    os.fstat(owner.pidfd)
+                self.assertFalse(self.session.host.capture.closed)
+                self.assertEqual(self.node.stat().st_mode & 0o777, 0o755)
+                self.assertFalse(json.loads(self.journal.read_text())["fixtureCleanup"])
+        finally:
+            if owner is not None:
+                owner.settle()
+        self.assertTrue(owner.lease.closed)
+        self.assertFalse(owner.root.exists())
+        # Settling the inner owner alone cannot clear an outer unknown receipt.
         self.assertFalse(self.session.host.capture.closed)
         self.assertEqual(self.node.stat().st_mode & 0o777, 0o755)
         self.assertFalse(json.loads(self.journal.read_text())["fixtureCleanup"])

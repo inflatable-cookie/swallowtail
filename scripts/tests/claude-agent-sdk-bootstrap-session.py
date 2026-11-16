@@ -435,6 +435,39 @@ class SessionTests(unittest.TestCase):
 
 
 class HostInputTests(unittest.TestCase):
+    def test_manifest_descriptor_refuses_directory_writable_owner_mode_and_bytes(self):
+        with tempfile.TemporaryDirectory(
+            prefix="sdk-manifest-fd-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            name = root / "manifest"
+            raw = b'{"owned":true}\n'
+            name.write_bytes(raw)
+            name.chmod(0o600)
+            digest = S.sha(raw)
+            for failure in ("directory", "writable", "owner", "mode", "bytes"):
+                with self.subTest(failure=failure):
+                    name.chmod(0o644 if failure == "mode" else 0o600)
+                    fd = os.open(
+                        root if failure == "directory" else name,
+                        os.O_RDWR if failure == "writable" else os.O_RDONLY,
+                    )
+                    with self.assertRaises(OSError):
+                        S.manifest_bytes(
+                            "0" * 64 if failure == "bytes" else digest,
+                            descriptor=fd,
+                            owner_uid=os.getuid() + 1
+                            if failure == "owner"
+                            else os.getuid(),
+                        )
+                    with self.assertRaises(OSError):
+                        os.fstat(fd)
+            name.chmod(0o600)
+            fd = os.open(name, os.O_RDONLY)
+            self.assertEqual(
+                S.manifest_bytes(digest, descriptor=fd, owner_uid=os.getuid()), raw
+            )
+
     def test_directory_alias_keeps_ordinary_safe_ancestry_and_identity(self):
         with tempfile.TemporaryDirectory(
             prefix="sdk-directory-alias-", dir=os.environ["TMPDIR"]

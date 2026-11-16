@@ -5,6 +5,7 @@ No ordinary Inputs/Lease rule is changed and no installed helper is created.
 """
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import stat
@@ -528,3 +529,93 @@ class AdministrativeOwner:
         if self.parent_fd is not None:
             os.close(self.parent_fd)
             self.parent_fd = None
+
+
+class ManifestTransfer:
+    """One private root-owned file; only its regular read-only fd is passed."""
+
+    def __init__(self, owner, name):
+        self.owner, self.path = owner, Path(name)
+        if (
+            self.path.parent != owner.journal.parent
+            or self.path.parent.resolve(strict=True) != self.path.parent
+        ):
+            raise Refused("manifest_private_administrative_parent")
+        owner.state["manifestOutput"] = {"path": str(self.path), "phase": "creating"}
+        owner.store()
+        self.write_fd = os.open(
+            self.path, os.O_RDWR | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600
+        )
+        self.read_fd = None
+        self.expected, self.binding = None, identity(os.fstat(self.write_fd))
+        owner.manifest_transfer = self
+
+    def publish(self, manifest):
+        if self.read_fd is not None or self.expected is not None:
+            raise Refused("manifest_one_publication_only")
+        self.owner.prepared()
+        raw = (json.dumps(manifest, sort_keys=True) + "\n").encode()
+        if len(raw) > 1048576:
+            raise Refused("package_manifest_bound")
+        before = os.fstat(self.write_fd)
+        if (
+            identity(before) != identity(self.path.lstat())
+            or identity(before) != self.binding
+            or before.st_uid != os.geteuid()
+            or stat.S_IMODE(before.st_mode) != 0o600
+            or before.st_nlink != 1
+            or before.st_size
+        ):
+            raise Refused("manifest_output_identity")
+        view = memoryview(raw)
+        while view:
+            count = os.write(self.write_fd, view)
+            if count <= 0:
+                raise Refused("manifest_short_write")
+            view = view[count:]
+        os.fsync(self.write_fd)
+        os.fsync(self.owner.parent_fd)
+        self.read_fd = os.open(self.path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        after = os.fstat(self.read_fd)
+        if identity(after) != identity(os.fstat(self.write_fd)) or identity(
+            after
+        ) != identity(self.path.lstat()):
+            raise Refused("manifest_output_replaced")
+        self.binding = identity(after)
+        self.expected = hashlib.sha256(raw).hexdigest()
+        os.close(self.write_fd)
+        self.write_fd = None
+        self.check()
+        self.owner.state["manifestOutput"].update(
+            phase="published", sha256=self.expected, identity=self.binding
+        )
+        self.owner.store()
+        return self.read_fd, self.expected
+
+    def check(self):
+        if self.read_fd is None or self.expected is None:
+            raise Refused("manifest_publication_incomplete")
+        info = os.fstat(self.read_fd)
+        if (
+            identity(info) != self.binding
+            or identity(self.path.lstat()) != self.binding
+            or info.st_nlink != 1
+            or info.st_size > 1048576
+            or os.get_inheritable(self.read_fd)
+        ):
+            raise Refused("manifest_transfer_drift")
+        if (
+            hashlib.sha256(os.pread(self.read_fd, 1048577, 0)).hexdigest()
+            != self.expected
+        ):
+            raise Refused("manifest_transfer_bytes_changed")
+
+    def close(self):
+        if self.owner.unsettled():
+            raise Refused("unknown_child_keeps_manifest_transfer")
+        for name in ("write_fd", "read_fd"):
+            fd = getattr(self, name)
+            if fd is not None:
+                os.close(fd)
+                setattr(self, name, None)
+        # The retained regular file is evidence, never an automatic teardown.

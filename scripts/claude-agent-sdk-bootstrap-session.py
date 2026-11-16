@@ -6,6 +6,7 @@ Only owned fixtures exercise mutation/entry under ordinary validation.
 """
 
 import argparse
+import fcntl
 import hashlib
 import importlib.util
 import json
@@ -108,6 +109,51 @@ def source_packet(record, expected, *, root=ROOT):
         finally:
             os.close(descriptor)
     return sources
+
+
+def manifest_bytes(expected, *, path=None, descriptor=None, owner_uid=0):
+    """Consume one transferred root-owned regular read-only descriptor.
+
+    The inherited descriptor is closed before ordinary custody or candidate
+    entry. Directory handles and writable descriptors cannot cross this seam.
+    """
+    if (path is None) == (descriptor is None):
+        raise OSError("one_manifest_source_required")
+    if descriptor is None:
+        with open(path, "rb") as stream:
+            raw = stream.read(1048577)
+    else:
+        if type(descriptor) is not int or not 3 <= descriptor < 4096:
+            raise OSError("manifest_descriptor_number")
+        try:
+            info = os.fstat(descriptor)
+            if (
+                not stat.S_ISREG(info.st_mode)
+                or stat.S_IMODE(info.st_mode) != 0o600
+                or info.st_uid != owner_uid
+                or info.st_nlink != 1
+                or info.st_size > 1048576
+                or fcntl.fcntl(descriptor, fcntl.F_GETFL) & os.O_ACCMODE != os.O_RDONLY
+            ):
+                raise OSError("readonly_administrative_manifest_descriptor_required")
+            raw = os.pread(descriptor, 1048577, 0)
+            fields = lambda row: (
+                row.st_dev,
+                row.st_ino,
+                row.st_uid,
+                row.st_gid,
+                row.st_mode,
+                row.st_size,
+                row.st_mtime_ns,
+                row.st_ctime_ns,
+            )
+            if fields(info) != fields(os.fstat(descriptor)):
+                raise OSError("manifest_descriptor_changed")
+        finally:
+            os.close(descriptor)
+    if len(raw) > 1048576 or sha(raw) != expected:
+        raise OSError("independently_provisioned_manifest_binding")
+    return raw
 
 
 def permission_source():
@@ -462,7 +508,9 @@ class Session:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--host-manifest", required=True)
+    manifest_source = parser.add_mutually_exclusive_group(required=True)
+    manifest_source.add_argument("--host-manifest")
+    manifest_source.add_argument("--host-manifest-fd", type=int)
     parser.add_argument("--host-manifest-sha256", required=True)
     parser.add_argument("--record-sha256", required=True)
     parser.add_argument("--receipt", required=True)
@@ -478,9 +526,11 @@ def main():
     ):
         raise OSError("credential_free_explicit_supervisor_environment_required")
     sources = source_packet(RECORD, args.record_sha256)
-    raw = Path(args.host_manifest).read_bytes()
-    if len(raw) > 1048576 or sha(raw) != args.host_manifest_sha256:
-        raise OSError("independently_provisioned_manifest_binding")
+    raw = manifest_bytes(
+        args.host_manifest_sha256,
+        path=args.host_manifest,
+        descriptor=args.host_manifest_fd,
+    )
     manifest = json.loads(raw)
     if (
         platform.system() != "Linux"

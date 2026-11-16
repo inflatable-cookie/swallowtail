@@ -251,9 +251,13 @@ and the ordinary invocation/activation bridge still need their exact job binding
 owned fixtures are not host admission or completed qualification. The current
 owned-child scope has no descendants and supplies software proof only; it is
 not an implementation or attestation of the required kernel/adoptee adapter.
-The ordinary manifest-descriptor bridge, existing finite kernel monitor
-composition and exact unapplied job packet remain separate source work before
-this setup can be proposed for one activation.
+The ordinary manifest-descriptor bridge publishes one0600 administrative
+regular file, closes its writer and passes only a read-only file descriptor.
+The ordinary reader checks type, owner, mode, link count, bound and exact hash,
+then closes that descriptor before candidate entry. A directory or writable
+handle refuses. The same owner retains the transfer while a child wait is unknown.
+Existing finite kernel monitor composition and the exact unapplied job packet
+remain source work before this setup can be proposed for one activation.
 
 ### Verification commands for a later grant
 

@@ -383,6 +383,54 @@ class AdminTests(unittest.TestCase):
             owner.finish_known_effect()
         # Intentionally retain this owned fixture: durability/receipt is unknown.
 
+    def test_manifest_transfer_passes_only_readonly_regular_file_to_owned_child(self):
+        root, owner = self.fixture()
+        transfer = A.ManifestTransfer(owner, root / "manifest.json")
+        owner.prepare()
+        fd, digest = transfer.publish({"owned": True, "originalActivation": False})
+        self.assertFalse(os.get_inheritable(fd))
+        code = (
+            "import runpy,os; s=runpy.run_path("
+            + repr(str(ROOT / "scripts/claude-agent-sdk-bootstrap-session.py"))
+            + "); s['manifest_bytes']("
+            + repr(digest)
+            + ",descriptor="
+            + str(fd)
+            + ",owner_uid=os.getuid());\ntry: os.fstat("
+            + str(fd)
+            + ")\nexcept OSError: pass\nelse: raise RuntimeError('manifest descriptor leaked')"
+        )
+        child = owner.entry(
+            lambda: subprocess.Popen(
+                [sys.executable, "-I", "-B", "-S", "-c", code],
+                pass_fds=(fd,),
+                close_fds=True,
+                env={"PATH": "/usr/bin:/bin", "TMPDIR": str(root)},
+            ),
+            OwnedDirectScope(),
+        )
+        with self.assertRaisesRegex(A.Refused, "unknown_child"):
+            transfer.close()
+        self.assertEqual(owner.wait(), 0)
+        transfer.check()
+        transfer.close()
+        self.dispose(root, owner)
+
+    def test_manifest_transfer_refuses_replacement_and_oversize(self):
+        root, owner = self.fixture()
+        transfer = A.ManifestTransfer(owner, root / "manifest.json")
+        owner.prepare()
+        with self.assertRaisesRegex(A.Refused, "manifest_bound"):
+            transfer.publish({"owned": "x" * 1048576})
+        transfer.publish({"owned": True})
+        transfer.path.chmod(0o644)
+        with self.assertRaisesRegex(A.Refused, "transfer_drift"):
+            transfer.check()
+        # File-mode drift affects the retained output, not ancestor identities;
+        # a known no-entry attempt may restore ancestors, retaining the output.
+        transfer.close()
+        self.dispose(root, owner)
+
     def test_initial_binding_refusal_has_no_mutation_or_journal(self):
         root = Path(
             tempfile.mkdtemp(prefix="admin-binding-", dir=os.environ["TMPDIR"])

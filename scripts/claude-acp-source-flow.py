@@ -208,6 +208,31 @@ def bundle_archives(bundles, packages):
     return result
 
 
+def policy_for_call(key, call):
+    if key.endswith("/dist/index.js"):
+        return "cli-delegation"
+    if key.endswith(
+        (
+            "/dist/session-index/live-registry.js",
+            "/dist/v1/session-index/live-registry.js",
+        )
+    ):
+        return "registry-ps"
+    if key.endswith("/sdk.mjs"):
+        return (
+            "sdk-transport"
+            if call["imported"] == "spawn"
+            else "sdk-where"
+            if call["imported"] == "execFileSync"
+            else "sdk-other-exec"
+        )
+    return (
+        "auth-logout"
+        if '["auth", "logout"]' in call["expression"]["text"]
+        else "auth-status"
+    )
+
+
 def build(inputs=None, bundles=()):
     packages, hops = plan()
     bundled = bundle_archives(bundles, packages) if bundles else None
@@ -243,24 +268,7 @@ def build(inputs=None, bundles=()):
     syntax = inspect(sources)
     for key, value in syntax["files"].items():
         for call in value["calls"]:
-            if key.endswith("/dist/index.js"):
-                call["policy"] = "cli-delegation"
-            elif key.endswith("/dist/session-index/live-registry.js"):
-                call["policy"] = "registry-ps"
-            elif key.endswith("/sdk.mjs"):
-                call["policy"] = (
-                    "sdk-transport"
-                    if call["imported"] == "spawn"
-                    else "sdk-where"
-                    if call["imported"] == "execFileSync"
-                    else "sdk-other-exec"
-                )
-            else:
-                call["policy"] = (
-                    "auth-logout"
-                    if '["auth", "logout"]' in call["expression"]["text"]
-                    else "auth-status"
-                )
+            call["policy"] = policy_for_call(key, call)
     for hop in hops:
         selected = hop["selected"]
         actual = sorted(

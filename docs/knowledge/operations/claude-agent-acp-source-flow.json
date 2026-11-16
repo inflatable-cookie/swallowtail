@@ -7144,8 +7144,8 @@
     "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-acp-guard-loader.mjs": "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a",
     "crates/swallowtail-host-local/src/captured_source.rs": "e75caa2819f12d2653a97153c276259c7ca3f0d961241007ec15372a57f50dbf",
     "scripts/claude-acp-call-sites.cjs": "9a6640f83cd5d91454f99e8687fa8f059f2cb5b538aa796e2627ca74e09ae5de",
-    "scripts/claude-acp-source-flow.py": "bfcf4a4ddfe708f7b2e05383fdc62273ee78f348ff0360a3864b332ba09af72b",
-    "scripts/tests/claude-acp-source-flow.py": "d80db281deee621deac24799c61f5a59fa2d377c61b8e7c7d93de4a32a77430b"
+    "scripts/claude-acp-source-flow.py": "05f90a48c84e3907e0bd1fd21b4900e5188b1883893a2aadbd2de02f7f01f677",
+    "scripts/tests/claude-acp-source-flow.py": "9578bf1624240c7c37dff13ceb44d3147936bcfaccc3cc169fdfa5c6ba5f3bbf"
   },
   "originalCommand": null,
   "policies": {
@@ -9120,7 +9120,7 @@
               "name": "defaultProcessStarts",
               "startByte": 2062
             },
-            "policy": "auth-status",
+            "policy": "registry-ps",
             "via": "import"
           }
         ],
@@ -9580,7 +9580,7 @@
               "name": "defaultProcessStarts",
               "startByte": 2062
             },
-            "policy": "auth-status",
+            "policy": "registry-ps",
             "via": "import"
           }
         ],
@@ -10040,7 +10040,7 @@
               "name": "defaultProcessStarts",
               "startByte": 2062
             },
-            "policy": "auth-status",
+            "policy": "registry-ps",
             "via": "import"
           }
         ],

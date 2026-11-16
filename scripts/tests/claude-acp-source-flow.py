@@ -46,6 +46,35 @@ def fixture(members):
 
 
 class SourceFlow(unittest.TestCase):
+    def test_live_registry_policy_survives_v1_relocation(self):
+        call = {"imported": "execFile", "expression": {"text": 'execFile("ps", args)'}}
+        for relative in (
+            "dist/session-index/live-registry.js",
+            "dist/v1/session-index/live-registry.js",
+        ):
+            with self.subTest(relative=relative):
+                self.assertEqual(
+                    flow.policy_for_call("owned/" + relative, call), "registry-ps"
+                )
+        self.assertEqual(
+            flow.policy_for_call("owned/dist/auth-status-reporter.js", call),
+            "auth-status",
+        )
+
+    def test_record_has_one_registry_and_auth_status_call_per_hop(self):
+        record = flow.read_json(
+            ROOT / "docs/knowledge/operations/claude-agent-acp-source-flow.json"
+        )
+        for hop in record["hops"]:
+            calls = [
+                call
+                for key in hop["selected"].values()
+                for call in record["syntax"]["files"].get(key, {}).get("calls", [])
+            ]
+            with self.subTest(hop=hop["hop"]):
+                self.assertEqual(sum(c["policy"] == "registry-ps" for c in calls), 1)
+                self.assertEqual(sum(c["policy"] == "auth-status" for c in calls), 1)
+
     def test_archive_identity_and_selected_set(self):
         raw, expected = fixture(
             [("package/source.js", b"owned source", tarfile.REGTYPE)]

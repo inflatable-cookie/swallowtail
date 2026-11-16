@@ -886,7 +886,7 @@ def main(argv):
     print("  frozen_routes=%d" % len(FROZEN_ROUTES))
     print("  maintained_scripts=%d" % len(scripts))
     print("  release_include=routed, workspace test recipe routed")
-    print("  workflows=plain Cargo; exact SDK234 fixture-only exception")
+    print("  workflows=plain Cargo; exact SDK234 and SDK240 exceptions")
     print("  target_ignore=/target")
     print("  agent_block=generated")
     print("oxide selector routing passed")

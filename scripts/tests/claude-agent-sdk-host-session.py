@@ -314,6 +314,7 @@ class PipelineTests(unittest.TestCase):
         node.chmod(0o777)
         self.receipts = self.root / "receipts"
         self.receipts.mkdir(mode=0o700)
+        (self.root / "kernel-parent").mkdir(mode=0o700)
         self.instances = {}
         self.withhold = self.refuse_parent = False
         outer = self
@@ -340,7 +341,7 @@ class PipelineTests(unittest.TestCase):
             def __init__(self, parent, name):
                 if outer.refuse_parent:
                     raise OSError("owned delegation refused")
-                self.path = outer.root / "group"
+                self.path = outer.root / "kernel-parent/group"
                 self.created = False
                 outer.instances["group"] = self
 

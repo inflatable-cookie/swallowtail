@@ -424,8 +424,49 @@ def rehearsal(
     captured_output = {"stdout": bytearray(), "stderr": bytearray()}
     phase = "prepare"
     started = time.monotonic()
+    timings = []
+
+    def timing(stage, **observation):
+        capture = getattr(runtime, "capture", None)
+        held = getattr(capture, "files", {})
+        with event_lock:
+            if len(timings) >= 64:
+                return
+            timings.append(
+                {
+                    "stage": stage,
+                    "fault": fault,
+                    "wallElapsed": time.monotonic() - started,
+                    "captureElapsed": time.monotonic() - (capture.deadline - 10)
+                    if capture
+                    else None,
+                    "inputCount": len(held),
+                    "inputBytes": sum(row[1][5] for row in held.values()),
+                    **observation,
+                }
+            )
+
+    timing("runtime_capture")
 
     def emit(kind, **data):
+        if kind in {
+            "driver_released",
+            "native_released",
+            "native_wait",
+            "stop_requested",
+            "driver_wait",
+            "driver_cleanup_wait",
+            "guard_refused",
+        }:
+            timing(
+                kind,
+                **{key: data[key] for key in ("pid", "code") if key in data},
+                **(
+                    {"reason": data["observation"].get("reason")}
+                    if kind == "guard_refused"
+                    else {}
+                ),
+            )
         with event_lock:
             events.append({"seq": len(events), "phase": phase, "kind": kind, **data})
 
@@ -445,6 +486,7 @@ def rehearsal(
                 "native_wait",
                 "actor_wait",
                 "boundary_attempts",
+                "guard_refused",
             }:
                 emit(
                     row["probeEvent"],
@@ -463,12 +505,14 @@ def rehearsal(
             {"schema": SCHEMA, "fakeOnly": True},
             reserve_pipes=False,
         )
+        timing("lease_ready")
         server, thread = None, None
         try:
-            for name, data in accepted.items():
-                lease.bind(ROOT / name, sha(data))
-            for name, data in files.items():
-                lease.bind(ROOT / name, sha(data))
+            lease.bind_many(
+                (ROOT / name, sha(data))
+                for name, data in [*accepted.items(), *files.items()]
+            )
+            timing("source_binding_complete")
             for name in ("home", "tmp", "workspace", "fixture"):
                 (root / name).mkdir(mode=0o700)
             for source, target in {
@@ -855,10 +899,15 @@ def rehearsal(
                 (root / f"{role}-graph.json").write_text(
                     json.dumps(graph_config(root, role, entry_command, native_env))
                 )
-            for entry in root.rglob("*"):
-                if entry.is_file() and entry.name != "storage.bin":
-                    lease.bind(entry, sha(entry.read_bytes()))
+            lease.bind_many(
+                (entry, sha(entry.read_bytes()))
+                for entry in root.rglob("*")
+                if entry.is_file() and entry.name != "storage.bin"
+            )
+            timing("fixture_binding_complete")
+            timing("configure_start")
             lease.configure([driver_command, native_command], [driver_env, native_env])
+            timing("configured")
             if context:
                 context.ready(lease)
             phase = "driver-start"
@@ -883,6 +932,7 @@ def rehearsal(
                 stderr=subprocess.PIPE,
                 start_new_session=True,
             )
+            timing("spawn", pid=driver.pid)
             holder["driver"] = driver
             if composition == "acp-actor-shape":
                 emit(
@@ -968,6 +1018,22 @@ def rehearsal(
                     any(flags & select.POLLHUP for _, flags in poll.poll(100))
                 )
             phase = "cleanup"
+            timing(
+                "attack_or_protocol_refusal",
+                failure=failure,
+                driverExit=code,
+                guardRefusals=[
+                    label
+                    for label in (
+                        "unapproved module edge",
+                        "unapproved child edge",
+                        "unapproved process edge",
+                        "direct builtin access refused",
+                        "Code generation from strings disallowed",
+                    )
+                    if label.encode() in captured_output["stderr"]
+                ],
+            )
             if fault == "cleanup":
                 failure = "cleanup_failed"
             observation = lease.observation()
@@ -978,6 +1044,7 @@ def rehearsal(
                 "productionAdmission": False,
                 "nativeAdministratorDiscovery": False,
                 "failure": failure,
+                "timings": timings,
                 "events": events,
                 "registered": registered,
                 "nativeWaits": native_waits,
@@ -1017,11 +1084,13 @@ def rehearsal(
                 "fixtureCleanup": {"ownedScratchOnly": True, "canonical": False},
             }
         except (OSError, ValueError, Refused) as error:
+            timing("refusal", failure=str(error)[:160])
             return {
                 "schema": SCHEMA,
                 "kernelEnforced": False,
                 "originalActivation": False,
                 "failure": str(error),
+                "timings": timings,
                 "events": events,
                 "registered": registered,
                 "fullKernelTreeSettlement": False,
@@ -1037,7 +1106,13 @@ def rehearsal(
                             context.stop if context else None,
                         )
                     finally:
-                        driver.wait(timeout=1)
+                        terminal = driver.wait(timeout=1)
+                        emit(
+                            "driver_cleanup_wait",
+                            pid=driver.pid,
+                            actor=os.getpid(),
+                            code=terminal,
+                        )
                         driver.stdout.close()
                         driver.stderr.close()
             finally:
@@ -1055,6 +1130,7 @@ def rehearsal(
                     if pidfd is not None:
                         os.close(pidfd)
                     lease.close()
+                    timing("cleanup_complete")
 
 
 def main():

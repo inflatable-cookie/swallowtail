@@ -17,8 +17,7 @@ def observation(custody, node, expected):
     capture = SoftwareInputs()
     try:
         capture.bind(node, expected)
-        for name in custody.python_inputs():
-            capture.bind(name)
+        capture.bind_many((name, None) for name in custody.python_inputs())
         return custody.RuntimeObservation(
             {
                 "node": str(Path(node).absolute()),

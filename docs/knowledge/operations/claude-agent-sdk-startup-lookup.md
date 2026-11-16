@@ -75,3 +75,8 @@ remain denied. `validate:claude-agent-sdk-spawn-proposal` covers real owned
 prepared/sidecar peers and the permission, cancellation, revocation and cleanup
 regressions. Cover compile, formatting, routing, docs and retired concepts through
 the named Effigy selectors; no original activation is part of them.
+
+Denial proof also requires a source-bound typed guard-refusal event and actual
+owned terminal waits; an unrelated exit or a deadline is insufficient. Bounded
+phase diagnostics retain both original timer starts, input counts/bytes and
+cleanup separately from passing proof. Earlier deadline failures remain failures.

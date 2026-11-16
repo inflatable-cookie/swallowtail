@@ -5,3 +5,6 @@ prerequisite. No host activation or qualified-version claim changes.
 
 Repair the selected captured SDK startup absence probes without exposing an
 ambient builtin, and prepare a source-bound ACP guard migration for review.
+
+Bound read-only input batches with complete freshness checks, and require typed
+guard-refusal evidence alongside owned waits in the fake denial proof.

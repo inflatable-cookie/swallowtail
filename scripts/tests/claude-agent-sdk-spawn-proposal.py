@@ -31,10 +31,26 @@ class SpawnTests(unittest.TestCase):
         cls.node_sha = hashlib.sha256(cls.node.read_bytes()).hexdigest()
         cls.record = hashlib.sha256((ROOT / CORE.RECORD).read_bytes()).hexdigest()
         cls.evidence = []
+        cls.diagnostics = []
 
     @classmethod
     def tearDownClass(cls):
-        (Path(os.environ["TMPDIR"]) / "spawn-software-observations.json").write_text(
+        evidence_root = Path(
+            tempfile.mkdtemp(prefix="spawn-evidence-", dir=os.environ["TMPDIR"])
+        )
+        (evidence_root / "spawn-software-diagnostics.json").write_text(
+            json.dumps(
+                {
+                    "sourceRecord": cls.record,
+                    "kernelEnforced": False,
+                    "originalActivation": False,
+                    "cases": cls.diagnostics,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        (evidence_root / "spawn-software-observations.json").write_text(
             json.dumps(
                 {
                     "sourceRecord": cls.record,
@@ -71,6 +87,23 @@ class SpawnTests(unittest.TestCase):
 
     def run_peer(self, **kwargs):
         result = CORE.rehearsal(self.record, self.node, self.node_sha, **kwargs)
+        self.diagnostics.append(
+            {
+                "fault": kwargs.get("fault"),
+                "failure": result.get("failure"),
+                "timings": result.get("timings", []),
+                "driverWait": result.get("driverWait"),
+                "nativeWaits": result.get("nativeWaits", []),
+                "guardRefusals": [
+                    row
+                    for row in result.get("peerEvents", [])
+                    if row.get("probeEvent") == "guard_refused"
+                ],
+                "registeredCount": len(result.get("registered", [])),
+                "requestCount": len(result.get("requests", [])),
+                "bypassEffectObserved": result.get("bypassEffectObserved", False),
+            }
+        )
         self.assertFalse(result["kernelEnforced"])
         self.assertFalse(result["originalActivation"])
         self.assertFalse(result["fullKernelTreeSettlement"])
@@ -236,6 +269,28 @@ class SpawnTests(unittest.TestCase):
                 result = self.run_peer(fault=fault)
                 self.assertIsNotNone(result["failure"])
                 self.assertNotIn("deadline", result["failure"])
+                if fault != "forged-approval":
+                    refusals = [
+                        row
+                        for row in result.get("peerEvents", [])
+                        if row.get("probeEvent") == "guard_refused"
+                    ]
+                    self.assertEqual(len(refusals), 1, result)
+                    expected = {
+                        "direct-exec": "unapproved child edge",
+                        "alternate-interpreter": "unapproved child edge",
+                        "create-require": "unapproved module edge",
+                        "worker": "unapproved module edge",
+                        "dynamic-code": "code_generation_refused",
+                        "vm": "unapproved module edge",
+                        "addon": "unapproved process edge",
+                        "process-binding": "unapproved process edge",
+                        "data-import": "unapproved module edge",
+                        "alternate-flags": "unapproved child edge",
+                    }
+                    self.assertEqual(refusals[0]["reason"], expected[fault])
+                else:
+                    self.assertEqual(result["failure"], "driver_registration")
                 self.assertFalse(result.get("bypassEffectObserved", False))
                 self.assertFalse(result.get("requests", []))
                 self.assertFalse(result["registered"])

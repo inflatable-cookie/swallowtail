@@ -2,12 +2,22 @@
 import { query as baseQuery } from "./base-sdk.mjs";
 import { readFileSync } from "node:fs";
 const config = JSON.parse(readFileSync(new URL("./spawn-config.json", import.meta.url)));
-if (config.graphAttack) await import("./graph-attack.mjs");
+if (config.graphAttack) {
+  try { await import("./graph-attack.mjs"); }
+  catch (error) { refused("graph", error); throw error; }
+}
 let started = false;
 let observedExit;
 const nativeExit = new Promise((resolve) => { observedExit = resolve; });
 export const waitForNativeExit = () => nativeExit;
-const note = (kind, data) => console.error(JSON.stringify({ probeEvent: kind, ...data }));
+function note(kind, data) { console.error(JSON.stringify({ probeEvent: kind, ...data })); }
+function refused(at, error) {
+  const message = typeof error?.message === "string" ? error.message : "";
+  const allowed = ["unapproved module edge", "unapproved child edge", "unapproved process edge", "require parent mismatch"];
+  const reason = allowed.includes(message) ? message :
+    message.startsWith("Code generation from strings disallowed") ? "code_generation_refused" : "unexpected_guard_error";
+  note("guard_refused", { at, fault: config.fault, reason });
+}
 export function query({ prompt, options }) {
   const spawn = options.spawnClaudeCodeProcess;
   return baseQuery({ prompt, options: { ...options, spawnClaudeCodeProcess: (request) => {
@@ -21,7 +31,10 @@ export function query({ prompt, options }) {
     }
     note("spawn_requested", { command: request.command, args: request.args, cwd: request.cwd });
     started = true;
-    const child = spawn({ ...request, command: config.entryCommand[0], args: config.launchAttack ? ["-c", "throw Error(\"unapproved\")"] : config.entryCommand.slice(1) }); // Real ChildProcess; no spawn replacement or PID facade.
+    let child;
+    try { child = spawn({ ...request, command: config.entryCommand[0], args: config.launchAttack ? ["-c", "throw Error(\"unapproved\")"] : config.entryCommand.slice(1) }); }
+    catch (error) { refused("launch", error); throw error; }
+    // Real ChildProcess; no spawn replacement or PID facade.
     note("native_started", { pid: child.pid, parent: process.pid });
     child.stderr.on("data", (data) => process.stderr.write(data));
     child.once("exit", (code, signal) => {

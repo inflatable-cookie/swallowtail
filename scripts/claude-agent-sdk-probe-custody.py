@@ -73,6 +73,7 @@ class Inputs:
         self.revoked = self.closed = False
         self.files, self.directories, self.reserved = {}, {}, {}
         self.active_child = None
+        self.batch_active = False
         self.deadline = time.monotonic() + 10
         self.commands, self.launched = None, 0
         try:
@@ -105,6 +106,36 @@ class Inputs:
 
     def bind(self, name, expected=None):
         self.check()
+        self._bind_input(name, expected)
+
+    def bind_many(self, bindings):
+        """Read-only pre-entry capture, checked at both ends; never a trust cache."""
+        self.check()
+        if self.active_child is not None or self.commands is not None:
+            raise Refused("custody_batch_requires_preentry_state")
+        self.batch_active = True
+        try:
+            if time.monotonic() > self.deadline:
+                raise Refused("custody_capture_deadline")
+            bounded = []
+            for index, (name, expected) in enumerate(bindings):
+                if index >= 512:
+                    raise Refused("custody_batch_bound")
+                bounded.append((name, expected))
+            for name, expected in bounded:
+                self._bind_input(name, expected)
+            self.batch_active = False
+            self.check()
+            if time.monotonic() > self.deadline:
+                raise Refused("custody_capture_deadline")
+        except BaseException:
+            self.revoke()  # A partially captured batch can never become launch authority.
+            raise
+        finally:
+            self.batch_active = False
+
+    def _bind_input(self, name, expected):
+        self._check_owner()
         path = Path(name).absolute()
         if path.resolve(strict=True) != path:
             raise Refused("custody_symlink")
@@ -174,8 +205,9 @@ class Inputs:
                 raise
 
     def check(self):
-        if self.closed or self.revoked or self.owner != os.getpid():
-            raise Refused("custody_absent_revoked_or_wrong_host")
+        self._check_owner()
+        if self.batch_active:
+            raise Refused("custody_batch_in_progress")
         for name, (fd, expected) in self.directories.items():
             if (
                 directory_identity(os.fstat(fd)) != expected
@@ -189,6 +221,10 @@ class Inputs:
             ):
                 raise Refused("custody_input_identity_changed")
 
+    def _check_owner(self):
+        if self.closed or self.revoked or self.owner != os.getpid():
+            raise Refused("custody_absent_revoked_or_wrong_host")
+
     def adopt_fork(self, parent):
         if self.owner != parent or os.getppid() != parent:
             raise Refused("custody_unowned_fork")
@@ -196,8 +232,7 @@ class Inputs:
         self.check()
 
     def configure(self, commands, environments):
-        for name in python_inputs():
-            self.bind(name)
+        self.bind_many((name, None) for name in python_inputs())
         self.check()
         if self.commands is not None or len(commands) != 2:
             raise Refused("custody_fixed_topology")
@@ -289,13 +324,15 @@ class Bootstrap(Inputs):
             if not libraries or not isinstance(version, str):
                 raise Refused("trusted_host_library_manifest_required")
             self.libraries = dict(libraries)
+            bindings = []
             for mapping in (libraries, loader_inputs, interpreters, supervisor_inputs):
                 if not isinstance(mapping, dict):
                     raise Refused("bootstrap_manifest_shape")
                 for name, sha in mapping.items():
                     if not Path(name).is_absolute() or not isinstance(sha, str):
                         raise Refused("bootstrap_manifest_shape")
-                    self.bind(name, sha)
+                    bindings.append((name, sha))
+            self.bind_many(bindings)
             if not {str(p) for p in python_inputs()} <= set(supervisor_inputs):
                 raise Refused("bootstrap_supervisor_manifest_missing")
             header = os.pread(self.files[self.node][0], 256, 0)
@@ -514,11 +551,13 @@ class Lease(Inputs):
                 raise Refused("runtime_observation_binding_changed")
             if not reserve_pipes:
                 self.release_reservations()
-            self.bind(node, expected)
-            for name, sha in runtime["libraries"].items():
-                self.bind(name, sha)
-            for name in python_inputs():
-                self.bind(name)
+            self.bind_many(
+                [
+                    (node, expected),
+                    *runtime["libraries"].items(),
+                    *((name, None) for name in python_inputs()),
+                ]
+            )
             self.check()
         except BaseException:
             self.close()
@@ -526,6 +565,9 @@ class Lease(Inputs):
 
     def bind(self, name, expected=None):
         return self.capture.bind(name, expected)
+
+    def bind_many(self, bindings):
+        return self.capture.bind_many(bindings)
 
     def check(self):
         return self.capture.check()

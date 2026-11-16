@@ -41,6 +41,13 @@ cannot clear that gate. Recovery reacquires independently verified inputs; it
 never inherits a dead supervisor's custody. The independent recover-only command
 refuses any journal with pending children/entry intent and never launches Node.
 
+Read-only input batches check every held identity before and after acquisition,
+and retain each member's byte, owner, mode and ancestry checks. A partial failure
+revokes that capture. Batches are bounded to512 members and refuse after command
+configuration or while an observer is active. Entry/permit checks remain complete;
+no cross-invocation cache or deadline extension is used. This removes repeated
+metadata scans during preparation while preserving the original10s capture start.
+
 ## Non-circular trust anchor
 
 The first-party ELF reader parses held bytes without executing Node, `ldd`,

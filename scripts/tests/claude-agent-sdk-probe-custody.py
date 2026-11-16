@@ -341,5 +341,165 @@ class BootstrapTests(unittest.TestCase):
         self.assertTrue(capture.closed)
 
 
+class BatchTests(unittest.TestCase):
+    def setUp(self):
+        self.temporary = tempfile.TemporaryDirectory(
+            prefix="sdk-custody-batch-", dir=os.environ["TMPDIR"]
+        )
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name).resolve()
+        self.files = [self.root / name for name in ("held", "second", "third")]
+        for index, file in enumerate(self.files):
+            file.write_bytes(("owned input " + str(index)).encode())
+        self.capture = C.Inputs(reserve_pipes=False)
+        self.addCleanup(self.release)
+
+    def release(self):
+        self.capture.active_child = None
+        self.capture.close()
+
+    def test_partial_batch_cannot_be_checked_or_configured_during_a_read(self):
+        real_read = C.os.read
+        seen = []
+
+        def attempt_entry(descriptor, count):
+            if not seen:
+                for action in (
+                    self.capture.check,
+                    lambda: self.capture.configure([], []),
+                    lambda: self.capture.permit(["unadmitted"], {}),
+                ):
+                    with self.assertRaisesRegex(OSError, "custody_batch_in_progress"):
+                        action()
+                seen.append(True)
+            return real_read(descriptor, count)
+
+        with mock.patch.object(C.os, "read", side_effect=attempt_entry):
+            self.capture.bind_many([(file, sha(file)) for file in self.files])
+        self.assertTrue(seen)
+        self.assertIsNone(self.capture.commands)
+        self.assertEqual(self.capture.launched, 0)
+        self.capture.check()
+
+    def test_later_capture_detects_drift_of_previously_held_input(self):
+        held, second, third = self.files
+        self.capture.bind(held, sha(held))
+        real_read = C.os.read
+        changed = False
+
+        def drift(descriptor, count):
+            nonlocal changed
+            data = real_read(descriptor, count)
+            if not changed and os.fstat(descriptor).st_ino == second.stat().st_ino:
+                held.write_bytes(b"changed earlier owned input")
+                changed = True
+            return data
+
+        with (
+            mock.patch.object(C.os, "read", side_effect=drift),
+            mock.patch.object(
+                self.capture, "check", wraps=self.capture.check
+            ) as checks,
+        ):
+            with self.assertRaisesRegex(OSError, "custody_input_identity_changed"):
+                self.capture.bind_many([(second, sha(second)), (third, sha(third))])
+        self.assertTrue(changed)
+        self.assertEqual(checks.call_count, 2)
+        with self.assertRaises(OSError):
+            self.capture.permit(["unadmitted"], {})
+
+    def test_revocation_during_last_capture_cannot_admit_partial_batch(self):
+        second, third = self.files[1:]
+        real_read = C.os.read
+        revoked = False
+
+        def revoke(descriptor, count):
+            nonlocal revoked
+            data = real_read(descriptor, count)
+            if not revoked and os.fstat(descriptor).st_ino == third.stat().st_ino:
+                self.capture.revoke()
+                revoked = True
+            return data
+
+        with mock.patch.object(C.os, "read", side_effect=revoke):
+            with self.assertRaisesRegex(
+                OSError, "custody_absent_revoked_or_wrong_host"
+            ):
+                self.capture.bind_many([(second, sha(second)), (third, sha(third))])
+        self.assertTrue(revoked)
+        with self.assertRaisesRegex(OSError, "custody_absent_revoked_or_wrong_host"):
+            self.capture.permit(["unadmitted"], {})
+        self.assertEqual(self.capture.launched, 0)
+
+    def test_wrong_owner_closed_or_active_observer_refuses_before_any_capture(self):
+        for state in ("wrong-owner", "closed", "active-observer", "configured"):
+            with self.subTest(state=state):
+                capture = C.Inputs(reserve_pipes=False)
+                try:
+                    if state == "wrong-owner":
+                        capture.owner = -1
+                    elif state == "closed":
+                        capture.close()
+                    elif state == "active-observer":
+                        capture.active_child = object()
+                    else:
+                        capture.commands = []
+                    with mock.patch.object(C.os, "open") as opened:
+                        with self.assertRaises(OSError):
+                            capture.bind_many([(self.files[0], sha(self.files[0]))])
+                    opened.assert_not_called()
+                    self.assertEqual(capture.files, {})
+                    self.assertEqual(capture.launched, 0)
+                finally:
+                    capture.active_child = None
+                    capture.close()
+
+    def test_success_holds_exact_bytes_with_two_full_boundary_checks(self):
+        pairs = [(file, sha(file)) for file in self.files]
+        with mock.patch.object(
+            self.capture, "check", wraps=self.capture.check
+        ) as checks:
+            self.capture.bind_many(pairs)
+        self.assertEqual(checks.call_count, 2)
+        self.assertEqual(set(self.capture.files), {str(file) for file in self.files})
+        for file, expected in pairs:
+            descriptor, identity, observed = self.capture.files[str(file)]
+            self.assertEqual(os.pread(descriptor, identity[5], 0), file.read_bytes())
+            self.assertEqual(observed, expected)
+        self.files[0].write_bytes(b"changed after complete acquisition")
+        with self.assertRaisesRegex(OSError, "custody_input_identity_changed"):
+            self.capture.check()
+
+    def test_deadline_and_batch_count_remain_finite(self):
+        self.capture.deadline = -1  # already expired; never reset or extend a timer
+        with self.assertRaisesRegex(OSError, "custody_capture_deadline"):
+            self.capture.bind_many([(self.files[0], sha(self.files[0]))])
+        self.assertEqual(self.capture.files, {})
+        capture = C.Inputs(reserve_pipes=False)
+        try:
+            with mock.patch.object(C.os, "open") as opened:
+                with self.assertRaises(OSError):
+                    capture.bind_many([(self.files[0], sha(self.files[0]))] * 513)
+            opened.assert_not_called()
+            self.assertEqual(capture.files, {})
+        finally:
+            capture.close()
+
+    def test_partial_batch_byte_failure_poison_prevents_later_configuration(self):
+        first, second = self.files[:2]
+        with self.assertRaisesRegex(OSError, "custody_bytes_changed"):
+            self.capture.bind_many([(first, sha(first)), (second, "0" * 64)])
+        self.assertTrue(self.capture.revoked)
+        self.assertIn(str(first), self.capture.files)
+        with mock.patch.object(C, "python_inputs", return_value=set()):
+            with self.assertRaisesRegex(
+                OSError, "custody_absent_revoked_or_wrong_host"
+            ):
+                self.capture.configure([["unadmitted"]], [{}])
+        with self.assertRaisesRegex(OSError, "custody_absent_revoked_or_wrong_host"):
+            self.capture.permit(["unadmitted"], {})
+        self.assertEqual(self.capture.launched, 0)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -325,8 +325,9 @@ class ObserverTests(unittest.TestCase):
         owner.driver, owner.driver_intent = child, True
         owner.lease = mock.Mock()
         try:
-            with self.assertRaisesRegex(OSError, "root wait missing"):
+            with self.assertRaisesRegex(core.Refused, "cleanup_unknown") as caught:
                 owner.settle()
+            self.assertIn("root wait missing", str(caught.exception.__cause__))
             self.assertEqual(child.returncode, 0)
             self.assertTrue(owner.root.exists())
             self.assertTrue(owner.retained)

@@ -167,7 +167,7 @@ class ModelFixture:
                     ]
                     reason = "tool_use"
                 message = {
-                    "id": "msg_owned",
+                    "id": "msg_owned_" + str(row["request"]),
                     "type": "message",
                     "role": "assistant",
                     "model": body.get("model", "claude-sonnet-4-6"),
@@ -331,12 +331,39 @@ if __name__ == "__main__":
                     and "Read allowed" in result["content"][0]["text"]
                 )
                 assert peer.rows[-1]["secretSeen"] is True
+                mixed = json.loads(
+                    request(
+                        {
+                            "model": "owned-model",
+                            "tools": [{"name": "Read"}],
+                            "messages": [
+                                {
+                                    "role": "user",
+                                    "content": [
+                                        {
+                                            "type": "tool_result",
+                                            "tool_use_id": "owned_read_1",
+                                            "content": "owned-secret-value",
+                                        },
+                                        {
+                                            "type": "text",
+                                            "text": "Read the next owned file.",
+                                        },
+                                    ],
+                                }
+                            ],
+                        }
+                    )
+                )
+                assert mixed["stop_reason"] == "tool_use"
+                assert mixed["content"][0]["name"] == "Read"
+                assert mixed["id"] != result["id"]
             finally:
                 peer.close()
             peer = ModelFixture(root, "error")
             try:
                 try:
-                    request({"messages": []})
+                    request({"tools": [{"name": "Read"}], "messages": []})
                     raise AssertionError("fixture error was not delivered")
                 except urllib.error.HTTPError as error:
                     assert error.code == 400 and b"owned fixture error" in error.read()

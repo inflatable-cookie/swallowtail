@@ -323,7 +323,12 @@ def inside(root):
             work = root / (case["hop"] + "-" + scenario)
             for relative in ("workspace", "home/.claude", "outside"):
                 (work / relative).mkdir(parents=True, exist_ok=True)
-            (work / "outside/secret.txt").write_text("owned-secret-value\n")
+            # A distinct owned file per request avoids native Read-result cache
+            # satisfying a later turn without a new permission decision.
+            for number in range(1, 33):
+                (work / f"outside/secret-{number}.txt").write_text(
+                    "owned-secret-value\n"
+                )
             (work / "home/.claude/settings.json").write_text(
                 json.dumps(
                     {

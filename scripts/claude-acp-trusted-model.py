@@ -144,7 +144,9 @@ class ModelFixture:
                             "name": "Read",
                             "input": {
                                 "file_path": str(
-                                    fixture.root / "outside" / "secret.txt"
+                                    fixture.root
+                                    / "outside"
+                                    / ("secret-" + str(row["request"]) + ".txt")
                                 )
                             },
                         }

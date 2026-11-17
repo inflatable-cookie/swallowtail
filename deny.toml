@@ -1,5 +1,9 @@
 [advisories]
-ignore = []
+ignore = [
+  # Maintenance-only exception; no vulnerability/unsoundness advisory is waived.
+  # Scope and migration review: docs/knowledge/operations/chrono-maintenance.md.
+  { id = "RUSTSEC-2026-0543", reason = "Pinned transitive chrono0.4.45 through cbor-diag0.1.12/serde_with3.21.0; review upstream migration by2026-12-17", expiry = "2026-12-17" },
+]
 
 [licenses]
 allow = [

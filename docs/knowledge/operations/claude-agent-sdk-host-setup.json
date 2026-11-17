@@ -2,18 +2,18 @@
   "schema": "swallowtail.sdk240.exact-host-setup-proposal.v2",
   "activationAuthorized": false,
   "qualified": false,
-  "sourceCommit": "87bdcda073a870376cf0fecab2c4c9f262f649ed",
+  "sourceCommit": "3ecd63c48207438459c20f761cfd001b294ae76f",
   "sourceRecord": {
     "path": "docs/knowledge/operations/claude-agent-sdk-bootstrap-session.sha256",
-    "sha256": "80a694f63e2f5ec7bdca292321436eefeec4ea2290fbfd85e2e11d9d4446210b"
+    "sha256": "f5afb24dd8f336e650b00cfd3580ea7dd190fd160a5dc28dcde5a3fca2be66f9"
   },
   "workflowPatch": {
     "path": "docs/knowledge/operations/claude-agent-sdk-host-setup.patch",
-    "sha256": "6b19a7b42e942444d05d2eee8851c17f2418acd973e71553128c4ab865ecbbb8"
+    "sha256": "918ef98c16710a34f132e6e8ce605dc92d272fa755700043ed605ce0b7dae04b"
   },
   "workflowPath": ".github/workflows/sdk240-host-setup.yml",
-  "workflowBlobSha256": "2e896a7db82c68d87d0d7fc591537b38652b4d17471000bf3ab291e0cc64029a",
-  "workflowGitBlob": "9a3c68429b0d266da5dcbbc4dc669e8748472ce9",
+  "workflowBlobSha256": "94b2bfd65dd46773a740c97e88f15a167028ac73cefeb6c389baa6721f1cda4c",
+  "workflowGitBlob": "727dfbb345138b64d0b22a0e9e2084dfe802272c",
   "bootstrapSha256": "08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605",
   "checkout": "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
   "uploader": "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
@@ -74,7 +74,7 @@
       "authorityRequired": true,
       "operation": "replace only the exact registered base workflow blob after independent source/security acceptance; refuse a changed base or unrelated workflow diff",
       "path": ".github/workflows/sdk240-host-setup.yml",
-      "gitBlob": "9a3c68429b0d266da5dcbbc4dc669e8748472ce9",
+      "gitBlob": "727dfbb345138b64d0b22a0e9e2084dfe802272c",
       "baseGitBlob": "61beaaf9b4968b6baaa531bdf0a700ba25d4f049"
     },
     {
@@ -201,6 +201,7 @@
     "inputFileBytes": 8388608,
     "additionalInputBytes": 16777216,
     "outputBytes": 262144,
-    "semantics": "raw bytes and bounded literal reference/search evidence only; activation/custom controls/environment/ambiguous syntax remain unresolved; no parser acceptance"
+    "semantics": "raw bytes and bounded literal reference/search evidence only; activation/custom controls/environment/ambiguous syntax remain unresolved; no parser acceptance",
+    "countEnforcement": "32 shared diagnostic object/probe reservations before resolution/read/queue work;16 configuration requests including repeats, seeds and directory children before enqueue/inspection; excess explicit unknown."
   }
 }

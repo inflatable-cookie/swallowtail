@@ -181,5 +181,92 @@
       "44114321537": "Mac latest cancelled before any command: hosted runner not acquired after multiple attempts. No Mac test credit; Linux15 passed.",
       "44121411903": "Older owned drain test advanced virtual time before native start dispatch; its cleanup assertion failed. Startup/terminal checkpoints fixed the fixture; strict assertions remain."
     }
+  },
+  "preQueryRollback": {
+    "implementationHead": "86e2f90d4de2f20e91baf45ca51e5949a7599b00",
+    "integratedMain": "285850f74b93fa9b1a07c0a83eb05fb933691334",
+    "runId": 44153209142,
+    "scope": "15 original two-turn prepared deadline/cancel/normal-reuse cases per platform; same frozen5-pair matrix, not additive unique behaviour claims. Earlier full200/component140 keep their old scopes.",
+    "platforms": [
+      {
+        "platform": "linux-x64",
+        "artifactId": 14358878980,
+        "artifactSha256": "ac64071ade57119ea58b1a329fb427bbad8d94d4ff1d54c185fcb51b0f233752",
+        "resultSha256": "cd4aa4b7f521cf63c5061a6cbc547827b667cfbc759a6af40c4e4eed44d6746a",
+        "cases": 15,
+        "turns": 30,
+        "failures": 0,
+        "node": {
+          "archiveSha256": "df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de",
+          "binarySha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+          "version": "22.23.3"
+        },
+        "metadata": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.43",
+          "imageOS": "ubuntu26",
+          "imageVersion": "20261111.196.1",
+          "source": "2bacced4ebb99662c26a4aa648a64ad53018f740"
+        },
+        "firstOutcomes": {
+          "TimedOut": 5,
+          "Cancelled": 5,
+          "Completed": 5
+        },
+        "deadlineBusyRefusals": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "platform": "darwin-arm64",
+        "artifactId": 14361795818,
+        "artifactSha256": "a7f490aac79d7b90b07cb43f005993c694c40370fac762980a21a2ebd37064be",
+        "resultSha256": "884f72abf55cbf139a6ada06bb5a34e06099d48b157f8e2be297281a2fb9130b",
+        "cases": 15,
+        "turns": 30,
+        "failures": 0,
+        "node": {
+          "archiveSha256": "72d5d8832b41c9d9646197af614ffd751406ea4d215060eb91b98864e1919a3e",
+          "binarySha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+          "version": "22.23.3"
+        },
+        "metadata": {
+          "system": "Darwin",
+          "machine": "arm64",
+          "platform": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+          "imageOS": "macos15",
+          "imageVersion": "20261104.0514.1",
+          "source": "2bacced4ebb99662c26a4aa648a64ad53018f740"
+        },
+        "firstOutcomes": {
+          "TimedOut": 5,
+          "Cancelled": 5,
+          "Completed": 5
+        },
+        "deadlineBusyRefusals": [
+          1,
+          10,
+          2,
+          1,
+          1
+        ]
+      }
+    ],
+    "lifecycle": "Only exact registered-unsent recipient can roll back after deadline reservation/spawn refusal. Query commitment is monotonic before enqueue/write. Active and timeout-draining recipients cannot use unsent rollback. Drained reuse stays synchronized.",
+    "localValidation": {
+      "sdkFocusedTests": 56,
+      "ownedRunnerTests": 11,
+      "sdkCheckLintFormat": "passed; lint Rust1.95",
+      "trustedSyntaxCompileFormat": "passed",
+      "routingDocsRoutesRetired": "passed",
+      "semanticApi": "passed",
+      "affectedPackageAssembly": "passed"
+    },
+    "delivery": "Required raw archives, checkout versus synthetic-merge bindings, inputs and bounded logs are supplied through current-run proofFiles; copying is recorded by the report bridge, not inferred from forge availability."
   }
 }

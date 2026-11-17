@@ -126,4 +126,16 @@ same recipient lock and precedes every query enqueue/write; send errors never
 restore rollback authority. Normal canonical-main integration preserves the
 landed ACP0.106.0/v7-v8 claims, shared security fix and both test surfaces.
 The retired manual SDK host entrypoint stays removed; its commits/runs remain
-history. Final rollback/integration validation and refreshed proof are pending.
+history. Local rollback/integration validation passed:56 focused SDK tests,11 owned
+runner tests, compile/lint/format, routing/docs/routes/retired, semantic API and
+package assembly. [Run44153209142](https://github.com/inflatable-cookie/swallowtail/actions/runs/44153209142)
+passed15 original two-turn cases per platform at86e2f90d4, after the production
+fix and main integration. The JSON receipt and report index distinguish checkout
+from GitHub synthetic merge metadata, with exact hashes and actual wait/order
+facts. Earlier100 cases/platform and component140 remain at their old scopes.
+Final independent review, required CI and planner hold release remain gates.
+
+The normal process-test job now uses standard macos-15 arm64 after macos-latest
+repeatedly failed acquisition before checkout. Test commands, selected coverage,
+Node22.23.2 and20-minute execution bound remain unchanged. This is test routing,
+not a public OS/runtime qualification or permission-policy change.

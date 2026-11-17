@@ -62,7 +62,8 @@ jobs:
 
   stable-process-nextest:
     name: Stable process-spawning nextest
-    runs-on: macos-latest
+    # Standard arm64; latest repeatedly failed hosted acquisition before checkout.
+    runs-on: macos-15
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7

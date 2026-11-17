@@ -243,13 +243,12 @@ impl TurnHandle for ClaudeAgentSdkTurnHandle {
             }
             self.turn
                 .abandon_admissions(CallbackAbandonment::TurnTerminated);
-            if !self.turn.is_reusable() {
+            if !self.connection.clear_active_turn(&self.turn) {
                 // The session still owns the native close. Retain the exact
                 // timed-out turn to drain its one interruption terminal; the
                 // session guardian (or next-turn reap) owns the slot/task.
                 return CleanupOutcome::NotApplicable;
             }
-            self.connection.clear_active_turn(&self.turn);
             let mut slot = self
                 .active
                 .lock()

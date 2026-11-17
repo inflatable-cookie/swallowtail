@@ -81,6 +81,7 @@ pub(super) async fn reap_finished(
     services: &HostServices,
     execution_host_id: &swallowtail_core::ExecutionHostId,
     deadline: Deadline,
+    connection: &SdkConnection,
 ) {
     let bounded = crate::sdk::bounded::HostBound::new(
         services
@@ -93,7 +94,7 @@ pub(super) async fn reap_finished(
         let mut active = active.lock().expect("SDK sidecar active lock poisoned");
         if active
             .as_ref()
-            .is_some_and(|active| active.turn.is_reusable())
+            .is_some_and(|active| connection.may_release_turn(&active.turn))
         {
             active.take()
         } else {

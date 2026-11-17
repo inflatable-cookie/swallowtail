@@ -195,7 +195,7 @@ impl SdkConnection {
         Ok(())
     }
 
-    pub(crate) fn clear_active_turn(&self, turn: &Arc<SdkActiveTurn>) {
+    pub(crate) fn clear_active_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
         let mut active = self
             .active_turn
             .lock()
@@ -205,7 +205,17 @@ impl SdkConnection {
             .is_some_and(|current| Arc::ptr_eq(current, turn) && current.is_reusable())
         {
             *active = None;
+            return true;
         }
+        false
+    }
+
+    pub(crate) fn may_release_turn(&self, turn: &SdkActiveTurn) -> bool {
+        let _active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        turn.is_reusable()
     }
 
     fn dispatch_turn_event(

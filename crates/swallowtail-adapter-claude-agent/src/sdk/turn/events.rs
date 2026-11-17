@@ -15,10 +15,41 @@ use swallowtail_runtime::{
 impl SdkActiveTurn {
     pub(crate) fn handle_event(&self, event: ClaudeAgentSdkEvent) -> Result<(), RuntimeFailure> {
         if self.is_finished() {
+            // A caller deadline finishes the public outcome before the native
+            // interruption completes. Drain exactly its expected terminal so
+            // the same connection can still perform cooperative close/wait.
+            // No activity is projected and no new permission is granted.
+            if self.is_timed_out()
+                && matches!(&event, ClaudeAgentSdkEvent::TurnEnded {
+                    failed: true, terminal_reason: Some(reason), stop_reason, ..
+                } if reason == "aborted_streaming" && stop_reason == "error_during_execution")
+                && !self.deadline_terminal_drained.swap(true, Ordering::SeqCst)
+            {
+                return Ok(());
+            }
             return Err(failure(
                 "swallowtail.claude-agent.sdk.event_after_terminal",
                 "Claude Agent SDK sidecar emitted an event after the active turn terminated",
             ));
+        }
+        match &event {
+            ClaudeAgentSdkEvent::TurnStarted
+                if self.native_turn_started.swap(true, Ordering::SeqCst) =>
+            {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.duplicate_turn_start",
+                    "Claude Agent SDK sidecar repeated a turn start",
+                ));
+            }
+            ClaudeAgentSdkEvent::TurnEnded { .. }
+                if !self.native_turn_started.load(Ordering::SeqCst) =>
+            {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.terminal_before_turn_start",
+                    "Claude Agent SDK sidecar returned a terminal before this turn started",
+                ));
+            }
+            _ => {}
         }
         self.project_activity(&event)?;
         match event {
@@ -61,6 +92,13 @@ impl SdkActiveTurn {
                 self.events.send(usage_event)?;
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
+                } else if self.cancelled.load(Ordering::SeqCst)
+                    && terminal_reason.as_deref() == Some("aborted_streaming")
+                {
+                    // Frozen originals report their acknowledged interruption
+                    // as an error result. Only this exact reason plus our
+                    // cancellation request is cancellation; API errors stay failures.
+                    (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else if failed || stop_reason != "success" {
                     (
                         TerminalStatus::ProviderFailed(self.add_stderr_to_diagnostic(

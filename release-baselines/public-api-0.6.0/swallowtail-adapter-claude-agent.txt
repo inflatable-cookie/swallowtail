@@ -295,9 +295,13 @@ pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_315Native2_1_315
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_316Native2_1_316
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_317Native2_1_317
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_318Native2_1_318
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_319Native2_1_319
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_321Native2_1_321
+pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_322Native2_1_322
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair
 pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::DEFAULT: Self
-pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::MAINTAINED: [Self; 31]
+pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::MAINTAINED: [Self; 35]
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::native_version(self) -> &'static str
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::package_version(self) -> &'static str
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode

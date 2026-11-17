@@ -27,7 +27,7 @@ const CARD126_SELECTED_SKILL: &str =
 
 #[test]
 fn all_maintained_pairs_flow_from_prepared_plan_into_the_shipped_sidecar() {
-    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 35);
     for (index, pair) in ClaudeAgentSdkPackageNativePair::MAINTAINED[..12]
         .iter()
         .copied()
@@ -245,10 +245,10 @@ fn wrong_unsupported_and_unreadable_package_native_identities_fail_before_sdk_co
             "native_version_mismatch",
         ),
         (
-            "0.3.318",
-            "2.1.318",
-            "0.3.318",
-            "2.1.318",
+            "0.3.323",
+            "2.1.323",
+            "0.3.323",
+            "2.1.323",
             "sdk_version_mismatch",
         ),
         (

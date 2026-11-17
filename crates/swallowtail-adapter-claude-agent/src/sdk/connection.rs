@@ -182,7 +182,10 @@ impl SdkConnection {
             .active_turn
             .lock()
             .expect("SDK sidecar active lock poisoned");
-        if active.as_ref().is_some_and(|active| !active.is_finished()) {
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(self.closed_failure());
+        }
+        if active.as_ref().is_some_and(|active| !active.is_reusable()) {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.turn_active",
                 "Claude Agent SDK sidecar session already has an active turn",
@@ -192,17 +195,113 @@ impl SdkConnection {
         Ok(())
     }
 
-    pub(crate) fn clear_active_turn(&self, turn: &Arc<SdkActiveTurn>) {
+    /// Roll back registration only when deadline setup failed before a task or
+    /// query was submitted. Public completion uses `clear_active_turn` instead;
+    /// an expired recipient must never lose its outstanding drain obligation.
+    pub(crate) fn rollback_pre_query_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
+        let mut active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        if active.as_ref().is_some_and(|current| {
+            Arc::ptr_eq(current, turn)
+                && !current.is_query_committed()
+                && !current.is_finished()
+                && !current.is_timed_out()
+        }) {
+            *active = None;
+            return true;
+        }
+        false
+    }
+
+    /// Commit before query enqueue/write. A failed or ambiguous send never
+    /// restores the pre-query rollback privilege.
+    pub(crate) fn commit_turn_query(
+        &self,
+        turn: &Arc<SdkActiveTurn>,
+    ) -> Result<(), RuntimeFailure> {
+        let active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        // This only commits ownership. The existing bounded command retains
+        // responsibility for public deadline/closed failure ordering.
+        if !active
+            .as_ref()
+            .is_some_and(|current| Arc::ptr_eq(current, turn) && !current.is_query_committed())
+        {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.turn_active",
+                "Claude Agent SDK sidecar query recipient is no longer available",
+            ));
+        }
+        turn.commit_query();
+        Ok(())
+    }
+
+    pub(crate) fn clear_active_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
         let mut active = self
             .active_turn
             .lock()
             .expect("SDK sidecar active lock poisoned");
         if active
             .as_ref()
-            .is_some_and(|current| Arc::ptr_eq(current, turn))
+            .is_some_and(|current| Arc::ptr_eq(current, turn) && current.is_reusable())
         {
             *active = None;
+            return true;
         }
+        false
+    }
+
+    pub(crate) fn may_release_turn(&self, turn: &SdkActiveTurn) -> bool {
+        let _active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        turn.is_reusable()
+    }
+
+    fn dispatch_turn_event(
+        &self,
+        event: super::wire::ClaudeAgentSdkEvent,
+    ) -> Result<(), RuntimeFailure> {
+        // Selection and dispatch share the replacement/expiry lock. Never take
+        // a recipient snapshot and subsequently apply an event after replacement.
+        let active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        match active.as_ref() {
+            Some(turn) => turn.handle_event(event),
+            None => Err(failure(
+                "swallowtail.claude-agent.sdk.event_without_turn",
+                "Claude Agent SDK sidecar emitted a turn event outside an active turn",
+            )),
+        }
+    }
+
+    /// Linearize deadline expiry with event dispatch and recipient replacement.
+    /// A normal terminal that won the lock cannot acquire a timeout obligation.
+    pub(crate) fn expire_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
+        let active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        if !active
+            .as_ref()
+            .is_some_and(|current| Arc::ptr_eq(current, turn))
+            || turn.is_finished()
+        {
+            return false;
+        }
+        turn.mark_timed_out();
+        turn.fail_connection(SafeDiagnostic::new(
+            "swallowtail.claude-agent.sdk.turn_deadline_elapsed",
+            "Claude Agent SDK sidecar turn reached its host deadline",
+        ));
+        true
     }
 
     /// Ends sidecar input and requests cooperative stop. This is not a join
@@ -258,7 +357,7 @@ impl SdkConnection {
             .active_turn
             .lock()
             .expect("SDK sidecar active lock poisoned")
-            .take()
+            .as_ref()
             && !turn.is_finished()
         {
             turn.fail_connection(error.diagnostic().clone());

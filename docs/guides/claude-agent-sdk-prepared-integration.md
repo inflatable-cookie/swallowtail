@@ -148,11 +148,11 @@ exact one-point claims. The open path has one narrow observation-only exception
 for a newer Node runtime that passes the sidecar floor:
 
 - `claude-agent.sdk.package`: `@anthropic-ai/claude-agent-sdk`
-  `0.3.284..=0.3.317`, excluding the unpublished `0.3.297`, `0.3.298`, and
-  `0.3.313` points (Research 472)
-- `claude-agent.sdk.native`: `2.1.284..=2.1.317`, coupled point-for-point to
+  `0.3.284..=0.3.322`, excluding the unpublished `0.3.297`, `0.3.298`,
+  `0.3.313`, and `0.3.320` points (Research 472)
+- `claude-agent.sdk.native`: `2.1.284..=2.1.322`, coupled point-for-point to
   the package version by each shipped `manifest.json` and excluding the
-  unpublished `2.1.297`, `2.1.298`, and `2.1.313` points (Research 472)
+  unpublished `2.1.297`, `2.1.298`, `2.1.313`, and `2.1.320` points (Research 472)
 - `claude-agent.sdk.node`: maintained Node `22.23.2..=22.23.3` (satisfying the
   upstream `>=18.0.0` requirement; Research 387)
 - `claude-agent.sdk.wire`: exact `swallowtail-claude-agent-sdk-jsonl-v1`
@@ -175,20 +175,17 @@ The Node, wire, and sidecar source axes remain separate and unchanged. Research
 416 remains the historical `.294` stop record and Research 420 the `.294`/`.295`
 qualification.
 
-Research 480 records official npm `latest` `0.3.322` (native `2.1.322`) and the
-hops `0.3.318`, `0.3.319`, and `0.3.321`. None is qualified. Each changes the
-native binary, and the selected native behavior is unproven. `0.3.319` also
-adds a `permissions.denyInsteadOfPrompting` projection. Tom's decision
-`d5a14f90` v2 preserves that managed denial under the distinct
-`claude-agent.sdk-v2` behavior revision, described below; whether a native can
-apply it on this route's permission path is still unproven and needs the
-original-artifact proof. The package and native claims stay through
-`0.3.317`/`2.1.317`.
+Research480 freezes SDK0.3.318/.319/.321/.322 and their matching native binaries.
+[Original qualification on trusted disposable Linux x64 and Darwin arm64](../knowledge/operations/claude-agent-sdk-trusted-qualification.md)
+executes every frozen pair and the0.3.317 control through the selected SDK options
+and shipped sidecar. The maintained map now includes those four exact pairs.
+Package/native v1 extends through318; v2 starts319. The default293 pair, older
+points, independent Node22.23.2..22.23.3 axis and frozen live evidence remain.
 
 ### Permission behavior revisions
 
 Two behavior revisions belong to this route. `claude-agent.sdk-v1` is the
-revision every maintained claim uses and the one the shipped sidecar reports.
+package/native revision through318 and the wire revision the sidecar reports.
 `claude-agent.sdk-v2` is the revision that preserves an inherited,
 administrator-tier `permissions.denyInsteadOfPrompting` denial, chosen by Tom in
 decision `d5a14f90` v2 and recorded in
@@ -211,12 +208,12 @@ Under v2 a consumer may rely on four things, and nothing more:
 4. a callback-mediated denial stays distinguishable by its callback record and
    its recorded decision.
 
-Whether a real native honours the administrator tier, and whether that honouring
-bypasses the callback on every tool class, remains unproven; the native proof
-described in `tests/fixtures/claude-agent-sdk-native-proof/` is the evidence
-that would settle it, and it is unauthorised. No claim adopts v2 yet: the
-package and native segments, the pair map and the sidecar's reported revision
-are unchanged.
+Real native observations now prove the selected managed-denial branch on both
+platforms: no callback, no owned Write effect, continued output and joined native
+close. User settings remain excluded by `settingSources: []`. Package/native
+claims adopt v2 from319; Node, wire and source-tag claims retain v1. The tests
+exercise a prompt-requiring owned Write and retain the shared source binding;
+they do not claim separate execution of every possible tool class.
 
 The extension's declarations add settings rows, capability strings, hook
 failure policy gates (`onFailure` with `hook_on_failure_supported`/`hooks_applied`),
@@ -250,7 +247,7 @@ module path and the shipped native manifest from the host-supplied manifest
 path. Preparation selects an exact coupled package/native point with
 `ClaudeAgentSdkSessionPreparation::with_package_native_pair`; the finite
 `ClaudeAgentSdkPackageNativePair` choices cover `0.3.284`/`2.1.284` through
-`0.3.317`/`2.1.317` over every published point (the unpublished `0.3.297`,
+`0.3.322`/`2.1.322` over every published point (the unpublished `0.3.297`,
 `0.3.298`, and `0.3.313` are absent). Existing callers retain the `.293` pair by default. The
 driver takes both expected versions from the prepared plan and passes them in
 its private launch messages. Before constructing the SDK query, the sidecar
@@ -580,7 +577,7 @@ value is in that open-time list, so an unsupported model is rejected before
 `Query.setModel` is called.
 
 `set_model` reports the exact model returned by the sidecar only when the SDK
-supplies that value. The qualified SDK declaration through `0.3.317` exposes
+supplies that value. The qualified SDK declaration through `0.3.322` exposes
 `Query.setModel` without a returned model value, so its normal outcome is the
 typed `swallowtail.claude-agent.sdk.model_change_unconfirmed` failure. In that
 outcome the previously confirmed model remains effective. No requested value
@@ -597,7 +594,7 @@ scope.
 
 ## Resume And Session Listing
 
-The qualified SDK declaration through `0.3.317` exposes `persistSession`, `resume`, and
+The qualified SDK declaration through `0.3.322` exposes `persistSession`, `resume`, and
 `resumeSessionAt` on `Options`, plus the bounded `listSessions` function. The
 prepared profile keeps persistence disabled by default. Calling
 `with_persist_session(true)` opts into provider-owned retention, adds the
@@ -633,7 +630,7 @@ transcript content.
 
 ## Client MCP Servers
 
-The qualified SDK declaration through `0.3.317` exposes `Options.mcpServers`, `strictMcpConfig`, and
+The qualified SDK declaration through `0.3.322` exposes `Options.mcpServers`, `strictMcpConfig`, and
 `Query.mcpServerStatus()`. This route maps only consumer-declared **stdio**
 servers. SSE and HTTP configs carry URLs and optional headers; in-process
 `sdk` servers execute callbacks inside the sidecar. Neither shape is
@@ -772,7 +769,7 @@ carrier `swallowtail-claude-agent-sdk-registered-tool-mcp-v1`,
 Research 315 rebound the route's wrapper/native axes to `0.3.270`/`2.1.270`,
 and Research 367 rebound them to `0.3.284`/`2.1.284`. Research 416 extended
 the package/native segment through `0.3.293`/`2.1.293`; Research 420 extends
-it through `0.3.317`/`2.1.317` without extending that live evidence, so the
+it through `0.3.322`/`2.1.322` without extending that live evidence, so the
 compiled tuple projects the
 unqualified truth with the reason `live_tuple_not_compiled` until a separately
 authorized live requalification runs on the new tuple. The qualification

@@ -9,7 +9,7 @@
 //! argv and environment, the initialize handshake, streamed input, result and
 //! usage projection, the permission round trip, pre-callback denial, interrupt,
 //! native exit, joined cleanup and egress silence. They prove nothing about the
-//! real native; that is what the disabled original mode in the plan is for.
+//! real native; the separate trusted-runner suite supplies original evidence.
 
 mod native_proof_support;
 mod sdk_support;
@@ -30,7 +30,7 @@ use swallowtail_adapter_claude_agent::sdk::{
 };
 use swallowtail_runtime::InteractiveSessionHandle;
 
-/// The only pair the prepared driver and the shipped sidecar admit today.
+/// Retained control pair; later frozen pairs have separate original-run proof.
 const ACCEPTED_SDK: &str = "0.3.317";
 const ACCEPTED_NATIVE: &str = "2.1.317";
 
@@ -175,43 +175,22 @@ fn the_plan_keeps_original_execution_disabled_behind_an_explicit_authority() {
 }
 
 #[test]
-fn the_prepared_driver_and_sidecar_still_refuse_every_unqualified_hop() {
+fn the_prepared_driver_and_sidecar_admit_only_qualified_pairs() {
     let maintained: Vec<&str> = ClaudeAgentSdkPackageNativePair::MAINTAINED
         .iter()
         .map(|pair| pair.package_version())
         .collect();
     for hop in hops() {
-        if hop.sdk_version == ACCEPTED_SDK {
-            assert!(
-                maintained.contains(&ACCEPTED_SDK),
-                "the accepted pair stays admitted"
-            );
-            continue;
-        }
         assert!(
-            !maintained.contains(&hop.sdk_version.as_str()),
-            "hop {} must not be admitted on claim evidence alone",
+            maintained.contains(&hop.sdk_version.as_str()),
+            "frozen hop {} has trusted-runner original proof",
             hop.sdk_version
-        );
-        let host = swallowtail_core::ExecutionHostId::new(format!(
-            "claude-agent-sdk.native-proof.{}",
-            hop.sdk_version
-        ))
-        .expect("fixture host id is valid");
-        assert!(
-            prepare_claude_agent_sdk_session(
-                preparation(host)
-                    .with_package_native_pair(ClaudeAgentSdkPackageNativePair::MAINTAINED[0]),
-                swallowtail_runtime::SessionOptions::default(),
-            )
-            .is_ok(),
-            "the accepted pair still prepares"
         );
     }
 
-    // The sidecar enforces the same ceiling: a planned hop above it fails
+    // The sidecar enforces the same ceiling: the next unqualified hop fails
     // before the SDK module loads and before any native process starts.
-    let mut sidecar = NativeProofFixture::start(&FixtureOptions::new("ok", "0.3.322", "2.1.322"));
+    let mut sidecar = NativeProofFixture::start(&FixtureOptions::new("ok", "0.3.323", "2.1.323"));
     let cwd = sidecar.sidecar().cwd();
     let refusal = sidecar.sidecar().command(
         "open-1",
@@ -219,8 +198,8 @@ fn the_prepared_driver_and_sidecar_still_refuse_every_unqualified_hop() {
         json!({
             "cwd": cwd,
             "model": "claude-sonnet-5-20250929",
-            "expectedSdkVersion": "0.3.322",
-            "expectedNativeVersion": "2.1.322",
+            "expectedSdkVersion": "0.3.323",
+            "expectedNativeVersion": "2.1.323",
         }),
     );
     assert_eq!(refusal["success"], false, "the hop is refused: {refusal}");
@@ -788,50 +767,9 @@ fn the_probe_admission_binds_every_tuple_and_cannot_admit_production() {
     assert_eq!(schema["properties"]["mode"]["const"], "probe-only");
     assert_eq!(schema["properties"]["production_admission"]["const"], false);
 
-    // Production admission stays closed for every admitted tuple: the claim
-    // table does not contain them and the shipped sidecar refuses each one.
-    let maintained: Vec<&str> = ClaudeAgentSdkPackageNativePair::MAINTAINED
-        .iter()
-        .map(|pair| pair.package_version())
-        .collect();
-    for tuple in tuples {
-        let sdk_version = tuple["sdk_version"].as_str().expect("tuple sdk version");
-        if sdk_version == ACCEPTED_SDK {
-            assert!(
-                maintained.contains(&sdk_version),
-                "the admitted control stays the maintained pair"
-            );
-            continue;
-        }
-        assert!(
-            !maintained.contains(&sdk_version),
-            "the probe admission must not enter the maintained pair map"
-        );
-        let mut fixture = NativeProofFixture::start(&FixtureOptions::new(
-            "ok",
-            sdk_version,
-            tuple["native_version"]
-                .as_str()
-                .expect("tuple native version"),
-        ));
-        let cwd = fixture.sidecar().cwd();
-        let refusal = fixture.sidecar().command(
-            "open-1",
-            "open",
-            json!({
-                "cwd": cwd,
-                "model": "claude-sonnet-5-20250929",
-                "expectedSdkVersion": sdk_version,
-                "expectedNativeVersion": tuple["native_version"],
-            }),
-        );
-        assert_eq!(
-            refusal["success"], false,
-            "{sdk_version} must stay refused in production: {refusal}"
-        );
-        assert_eq!(refusal["failure"]["code"], "sdk_version_mismatch");
-        assert!(!fixture.sidecar().sdk_was_constructed());
-    }
+    // This fake-only admission still grants no original or product authority.
+    // The current maintained tuples have independent trusted-runner original
+    // evidence; their production ceiling is checked separately above.
 }
 
 #[test]

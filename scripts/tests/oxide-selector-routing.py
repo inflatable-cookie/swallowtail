@@ -737,53 +737,20 @@ def check_workflows():
         workflow_bytes = path.read_bytes()
         text = workflow_bytes.decode()
         relative = str(path.relative_to(ROOT))
-        if path.name == "sdk234-preflight-diagnostic.yml":
-            # Exact separately reviewed read-only diagnostic; no host admission.
-            if (
-                hashlib.sha256(path.read_bytes()).hexdigest()
-                != "9e5b668fc2e2d1f8760fb92e161a37fc4092364bca9d9c85029521159757490c"
-            ):
-                fail("read-only diagnostic workflow differs from its exact proposal")
-            continue
-        if path.name == "sdk234-combined-fake.yml":
-            # Only the separately approved exact combined owned-fake packet.
-            if (
-                hashlib.sha256(text.encode()).hexdigest()
-                != "6dfe800d3e3e1c950e755af38a29e2728be343b941bdf3a7e6112ee7e5e0ce29"
-            ):
-                fail("combined fake workflow differs from its exact proposal")
-            continue
-        if path.name == "sdk234-netns-proof.yml":
-            # Only the exact namespace-only workflow proposed in task234.
-            # Apply this exception only with its separate workflow authority.
-            if (
-                hashlib.sha256(text.encode()).hexdigest()
-                != "07a24539f219a477886cae19f9de5d738cc021d998469401eefb3faa2c2c1d19"
-            ):
-                fail("namespace workflow differs from its exact proposal")
-            continue
-        if path.name == "sdk234-admin-fixture.yml":
-            # Tom decision32d31615 v2 admits exactly this non-Cargo fixture job.
-            # Keep every other workflow on the existing plain-Cargo boundary.
-            proposal = (
-                ROOT / "docs/knowledge/operations/claude-agent-sdk-ephemeral-ci.patch"
+        if path.name == "sdk240-trusted-native.yml":
+            # Decision1ec44a26 v2: ordinary PR-triggered frozen original tests,
+            # through the narrow Effigy selector, on disposable trusted hosts.
+            required = (
+                "pull_request:",
+                "contents: read",
+                "persist-credentials: false",
+                "timeout-minutes: 20",
+                "effigy validate:claude-agent-sdk-trusted-native",
             )
-            data = proposal.read_bytes()
-            if (
-                hashlib.sha256(data).hexdigest()
-                != "16a02b1e0143992963b7a53178349bba0c4d44839f68df4a513622884da25bc7"
+            if any(token not in text for token in required) or any(
+                token in text for token in ("workflow_dispatch:", "secrets:", "cargo ")
             ):
-                fail("approved fixture workflow proposal changed")
-            expected = (
-                "\n".join(
-                    line[1:]
-                    for line in data.decode().splitlines()
-                    if line.startswith("+") and not line.startswith("+++")
-                )
-                + "\n"
-            )
-            if text != expected:
-                fail("fixture workflow differs from its exact approved proposal")
+                fail("trusted SDK original job routing/authority changed")
             continue
         if path.name == "sdk240-host-setup.yml":
             # Planner ruling 7059541d admits only the reviewed manual host job.

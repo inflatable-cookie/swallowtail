@@ -28,7 +28,7 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
         &version(CLAUDE_AGENT_SDK_BASELINE_VERSION)
     );
     assert_eq!(claim.latest_qualified(), &version(CLAUDE_AGENT_SDK_VERSION));
-    assert_eq!(claim.milestones().len(), 1);
+    assert_eq!(claim.milestones().len(), 2);
     for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
         let patch = pair
             .package_version()
@@ -39,7 +39,11 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
         assert!(assessment.is_permitted(), "published package patch {patch}");
         assert_eq!(
             assessment.behavior_revision().unwrap().as_str(),
-            CLAUDE_AGENT_SDK_BEHAVIOR
+            if patch >= "319" {
+                CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR
+            } else {
+                CLAUDE_AGENT_SDK_BEHAVIOR
+            }
         );
     }
     // The window claim keeps its unpublished interior points incompatible
@@ -47,7 +51,7 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
     // the artifact-backed pair check on top.
     for rejected in [
         "0.3.283",
-        "0.3.318",
+        "0.3.323",
         "0.3.259-rc.1",
         "0.3.297",
         "0.3.298",
@@ -58,7 +62,7 @@ fn package_claim_qualifies_each_published_sdk_hop_in_the_maintained_segment() {
             "unqualified point {rejected} must be rejected"
         );
     }
-    assert_eq!(claim.exclusions().count(), 3);
+    assert_eq!(claim.exclusions().count(), 4);
     assert!(claude_agent_sdk_package_binding(CLAUDE_AGENT_SDK_VERSION).is_some());
     for value in ["", " 0.3.270", "latest", "0.3.270 "] {
         assert!(claude_agent_sdk_package_binding(value).is_none());
@@ -77,7 +81,7 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
         native.latest_qualified(),
         &version(CLAUDE_AGENT_SDK_NATIVE_VERSION)
     );
-    assert_eq!(native.milestones().len(), 1);
+    assert_eq!(native.milestones().len(), 2);
     for patch in ClaudeAgentSdkPackageNativePair::MAINTAINED
         .iter()
         .map(|pair| {
@@ -92,11 +96,11 @@ fn native_and_node_axes_stay_separate_from_the_wrapper_axis() {
     // The Claude Code routes sit on the same native version family. Their
     // qualification never transfers here and this one never transfers back.
     for rejected in [
-        "2.1.283", "2.1.318", "2.1.297", "2.1.298", "2.1.313", "0.3.293",
+        "2.1.283", "2.1.323", "2.1.297", "2.1.298", "2.1.313", "0.3.293",
     ] {
         assert!(!native.permits(&version(rejected)));
     }
-    assert_eq!(native.exclusions().count(), 3);
+    assert_eq!(native.exclusions().count(), 4);
     assert!(claude_agent_sdk_native_binding(CLAUDE_AGENT_SDK_NATIVE_VERSION).is_some());
     assert!(claude_agent_sdk_native_binding("2.1").is_none());
 
@@ -147,7 +151,7 @@ fn package_and_native_points_keep_the_published_coupling() {
     // The unpublished gap points are not maintained pairs and are explicit
     // claim exclusions, even though their patch numbers would satisfy the
     // coupling predicate.
-    for patch in [297, 298, 313] {
+    for patch in [297, 298, 313, 320] {
         let package = format!("0.3.{patch}");
         let native = format!("2.1.{patch}");
         assert!(super::package_native_pair_matches(&package, &native));
@@ -224,34 +228,37 @@ fn every_axis_is_distinct() {
 }
 
 #[test]
-fn the_managed_denial_revision_is_declared_and_no_claim_adopts_it() {
-    assert_eq!(CLAUDE_AGENT_SDK_BEHAVIOR, "claude-agent.sdk-v1");
-    assert_eq!(
-        CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR, "claude-agent.sdk-v2",
-        "the distinct revision Tom's decision names"
-    );
-    let claims = [
-        claude_agent_sdk_package_claim(),
-        claude_agent_sdk_native_claim(),
-        claude_agent_sdk_sidecar_claim(),
-        claude_agent_sdk_wire_claim(),
-        claude_agent_sdk_node_claim(),
-    ];
-    for claim in &claims {
-        for segment in claim.milestones() {
-            assert_eq!(
-                segment.behavior_revision().as_str(),
-                CLAUDE_AGENT_SDK_BEHAVIOR,
-                "every maintained segment keeps the qualified revision; the managed-denial \
-                 revision stays a probe-only declaration until the native proof lands"
-            );
-        }
+fn managed_denial_revision_starts_at_the_proved_native_hop() {
+    for (claim, old, changed) in [
+        (claude_agent_sdk_package_claim(), "0.3.318", "0.3.319"),
+        (claude_agent_sdk_native_claim(), "2.1.318", "2.1.319"),
+    ] {
+        assert_eq!(
+            claim
+                .assess(&version(old))
+                .behavior_revision()
+                .unwrap()
+                .as_str(),
+            CLAUDE_AGENT_SDK_BEHAVIOR
+        );
+        assert_eq!(
+            claim
+                .assess(&version(changed))
+                .behavior_revision()
+                .unwrap()
+                .as_str(),
+            CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR
+        );
     }
-    assert!(
-        claims.iter().all(|claim| claim
-            .milestones()
-            .all(|segment| segment.behavior_revision().as_str()
-                != CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR)),
-        "no claim may adopt the managed-denial revision without probe evidence"
-    );
+    for claim in [
+        claude_agent_sdk_node_claim(),
+        claude_agent_sdk_wire_claim(),
+        claude_agent_sdk_sidecar_claim(),
+    ] {
+        assert!(
+            claim
+                .milestones()
+                .all(|segment| segment.behavior_revision().as_str() == CLAUDE_AGENT_SDK_BEHAVIOR)
+        );
+    }
 }

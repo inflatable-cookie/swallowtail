@@ -174,7 +174,7 @@
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-native.mjs": "8605a4c38aabc40113a7f96b6ad397e9ca3a7d10015c9a04b2af1e311e5f11ca",
       "crates/swallowtail-adapter-claude-agent/tests/native_proof_support/fake-sdk-native-wire.mjs": "adaa94ea868eeff5d64ca7994f795c229a5b740f83b3ac2f647a30eb9596df8a",
       "crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-v2/managed-denial-contract.json": "14b14c01753b652d1806042ca992cefc9120ab9116bf0126d4361baccb748070",
-      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs": "be6bc2cad7c2c55cb78bc6e5ba5a66981fba09e6f4acab0a057a2818b252bde1"
+      "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs": "2cbd84902119e3793664cd4d7928c0e71157e7403c43706c34c9f3f42cbd7d13"
     },
     "artifacts": [
       {

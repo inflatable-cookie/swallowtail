@@ -113,20 +113,7 @@ impl SdkConnection {
                 }));
                 Ok(())
             }
-            ClaudeAgentSdkRecord::Event(event) => {
-                let active = self
-                    .active_turn
-                    .lock()
-                    .expect("SDK sidecar active lock poisoned")
-                    .clone();
-                match active {
-                    Some(turn) => turn.handle_event(event),
-                    None => Err(failure(
-                        "swallowtail.claude-agent.sdk.event_without_turn",
-                        "Claude Agent SDK sidecar emitted a turn event outside an active turn",
-                    )),
-                }
-            }
+            ClaudeAgentSdkRecord::Event(event) => self.dispatch_turn_event(event),
             ClaudeAgentSdkRecord::Callback(callback) => {
                 let active = self
                     .active_turn

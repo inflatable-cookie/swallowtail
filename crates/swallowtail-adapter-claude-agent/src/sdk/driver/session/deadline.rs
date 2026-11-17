@@ -56,21 +56,20 @@ pub(super) fn spawn_turn_deadline(
                 }
             })
             .await;
-            if timed_out {
+            if timed_out && connection.expire_turn(&turn) {
                 // The terminal outcome is completed first and never waits
                 // on a receipt. An accepted turn whose sidecar stops
                 // answering still resolves at its deadline; the interrupt
                 // stays a request, and bounded session close owns the
                 // descendant termination.
-                turn.mark_timed_out();
-                turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
-                    "swallowtail.claude-agent.sdk.turn_deadline_elapsed",
-                    "Claude Agent SDK sidecar turn reached its host deadline",
-                ));
                 let id = format!("deadline-interrupt:{}", turn.runtime_id().as_str());
-                let _ = connection
+                if let Ok(response) = connection
                     .send(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
-                    .await;
+                    .await
+                    && response.await.is_ok_and(|response| response.success)
+                {
+                    turn.finish_deadline_interrupt();
+                }
             }
         }),
     )
@@ -82,6 +81,7 @@ pub(super) async fn reap_finished(
     services: &HostServices,
     execution_host_id: &swallowtail_core::ExecutionHostId,
     deadline: Deadline,
+    connection: &SdkConnection,
 ) {
     let bounded = crate::sdk::bounded::HostBound::new(
         services
@@ -94,7 +94,7 @@ pub(super) async fn reap_finished(
         let mut active = active.lock().expect("SDK sidecar active lock poisoned");
         if active
             .as_ref()
-            .is_some_and(|active| active.turn.is_finished())
+            .is_some_and(|active| connection.may_release_turn(&active.turn))
         {
             active.take()
         } else {

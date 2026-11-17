@@ -95,8 +95,8 @@ fn accepted_base_and_cli_bindings_stay_exact() {
     let identity = json(IDENTITY);
     let hops = identity["hops"].as_array().unwrap();
     let base = &hops[0];
-    assert_eq!(base["sdk_version"], CLAUDE_AGENT_SDK_VERSION);
-    assert_eq!(base["native_version"], CLAUDE_AGENT_SDK_NATIVE_VERSION);
+    assert_eq!(base["sdk_version"], "0.3.317");
+    assert_eq!(base["native_version"], "2.1.317");
     assert_eq!(
         base["tarball_sha256"],
         identity["accepted_base"]["tarball_sha256"]
@@ -206,46 +206,51 @@ fn adjacent_hop_deltas_keep_the_selected_wrapper_files_classified() {
 }
 
 #[test]
-fn claims_keep_refusing_every_published_point_above_the_accepted_pair() {
-    let package = claude_agent_sdk_package_claim();
-    let native = claude_agent_sdk_native_claim();
-    for version in ["0.3.318", "0.3.319", "0.3.321", "0.3.322", "0.3.323"] {
-        let package_version = InterfaceVersion::new(version).unwrap();
-        assert!(
-            !package.assess(&package_version).is_permitted(),
-            "package {version} must stay unqualified"
-        );
+fn frozen_hops_are_qualified_without_accepting_the_next_or_missing_pair() {
+    for (claim, versions, rejected) in [
+        (
+            claude_agent_sdk_package_claim(),
+            ["0.3.317", "0.3.318", "0.3.319", "0.3.321", "0.3.322"],
+            ["0.3.320", "0.3.323"],
+        ),
+        (
+            claude_agent_sdk_native_claim(),
+            ["2.1.317", "2.1.318", "2.1.319", "2.1.321", "2.1.322"],
+            ["2.1.320", "2.1.323"],
+        ),
+    ] {
+        for point in versions {
+            assert!(
+                claim.permits(&InterfaceVersion::new(point).unwrap()),
+                "{point}"
+            );
+        }
+        for point in rejected {
+            assert!(
+                !claim.permits(&InterfaceVersion::new(point).unwrap()),
+                "{point}"
+            );
+        }
     }
-    for version in ["2.1.318", "2.1.319", "2.1.321", "2.1.322", "2.1.323"] {
-        let native_version = InterfaceVersion::new(version).unwrap();
-        assert!(
-            !native.assess(&native_version).is_permitted(),
-            "native {version} must stay unqualified"
-        );
-    }
-    assert!(
-        package
-            .assess(&InterfaceVersion::new("0.3.317").unwrap())
-            .is_permitted()
-    );
-    assert!(
-        native
-            .assess(&InterfaceVersion::new("2.1.317").unwrap())
-            .is_permitted()
-    );
 }
 
 #[test]
-fn maintained_pair_map_has_no_point_above_the_accepted_pair() {
+fn maintained_pair_map_extends_only_the_frozen_published_hops() {
     let last = ClaudeAgentSdkPackageNativePair::MAINTAINED
         .last()
         .copied()
-        .expect("the maintained pair map is not empty");
-    assert_eq!(last.package_version(), "0.3.317");
-    assert_eq!(last.native_version(), "2.1.317");
+        .unwrap();
+    assert_eq!(last.package_version(), CLAUDE_AGENT_SDK_VERSION);
+    assert_eq!(last.native_version(), CLAUDE_AGENT_SDK_NATIVE_VERSION);
     for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
         assert!(!UNPUBLISHED_ABOVE_ACCEPTED.contains(&pair.package_version()));
-        assert!(!HOP_VERSIONS[1..].contains(&pair.package_version()));
     }
-    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
+    for hop in HOP_VERSIONS {
+        assert!(
+            ClaudeAgentSdkPackageNativePair::MAINTAINED
+                .iter()
+                .any(|pair| pair.package_version() == hop)
+        );
+    }
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 35);
 }

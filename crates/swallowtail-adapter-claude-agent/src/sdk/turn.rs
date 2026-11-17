@@ -47,7 +47,11 @@ pub(crate) struct SdkActiveTurn {
     deadline: Option<Deadline>,
     cancelled: AtomicBool,
     timed_out: AtomicBool,
+    deadline_terminal_drained: AtomicBool,
+    deadline_interrupt_finished: AtomicBool,
     finished: AtomicBool,
+    native_turn_started: AtomicBool,
+    query_committed: AtomicBool,
     finish_signal: Arc<Mutex<FinishedState>>,
     /// The session's admitted tool set. Admission never widens per turn.
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
@@ -105,7 +109,11 @@ impl SdkActiveTurn {
                 deadline,
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
+                deadline_terminal_drained: AtomicBool::new(false),
+                deadline_interrupt_finished: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
+                native_turn_started: AtomicBool::new(false),
+                query_committed: AtomicBool::new(false),
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
                 profile,
                 admitted_mcp_tools,
@@ -120,8 +128,31 @@ impl SdkActiveTurn {
         &self.runtime_id
     }
 
+    pub(crate) fn commit_query(&self) {
+        self.query_committed.store(true, Ordering::SeqCst);
+    }
+
+    pub(crate) fn is_query_committed(&self) -> bool {
+        self.query_committed.load(Ordering::SeqCst)
+    }
+
     pub(crate) fn is_finished(&self) -> bool {
         self.finished.load(Ordering::SeqCst)
+    }
+
+    /// Public timeout is not native completion. Retain the recipient until
+    /// its exact terminal is consumed and its correlated interrupt command cannot reach a
+    /// later query. These transitions are monotonic after public completion.
+    pub(crate) fn is_reusable(&self) -> bool {
+        self.is_finished()
+            && (!self.is_timed_out()
+                || (self.deadline_terminal_drained.load(Ordering::SeqCst)
+                    && self.deadline_interrupt_finished.load(Ordering::SeqCst)))
+    }
+
+    pub(crate) fn finish_deadline_interrupt(&self) {
+        self.deadline_interrupt_finished
+            .store(true, Ordering::SeqCst);
     }
 
     pub(crate) fn mark_cancelled(&self) {
@@ -129,6 +160,10 @@ impl SdkActiveTurn {
     }
 
     /// Records that the host deadline, not the consumer, ended this turn.
+    pub(crate) fn is_timed_out(&self) -> bool {
+        self.timed_out.load(Ordering::SeqCst)
+    }
+
     pub(crate) fn mark_timed_out(&self) {
         self.timed_out.store(true, Ordering::SeqCst);
     }

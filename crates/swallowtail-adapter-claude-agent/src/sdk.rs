@@ -90,25 +90,22 @@ pub const CLAUDE_AGENT_SDK_BEHAVIOR: &str = "claude-agent.sdk-v1";
 /// managed denial never becomes a host permission request, and a call the host
 /// never mediated is never reported as admitted.
 ///
-/// The maintained package and native claims stay on
-/// [`CLAUDE_AGENT_SDK_BEHAVIOR`]: the setting first appears at `0.3.319`, and
-/// the selected native behavior above `0.3.317` is unproven. The revision is
-/// therefore declared for the probe admission only; it becomes a claim revision
-/// when the native proof supports an extension.
-#[cfg_attr(not(test), allow(dead_code))]
+/// The package/native claims retain v1 through318 and use this revision from
+///319, where original Linux x64 and Darwin arm64 proof observes managed denial
+///without a callback and continued output. Node/wire/source axes stay separate.
 pub(crate) const CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR: &str = "claude-agent.sdk-v2";
 /// Exact upstream SDK package the sidecar loads through its `.` entry point.
 pub const CLAUDE_AGENT_SDK_PACKAGE: &str = "@anthropic-ai/claude-agent-sdk";
 /// First qualified SDK wrapper package version in the maintained segment.
 pub(crate) const CLAUDE_AGENT_SDK_BASELINE_VERSION: &str = "0.3.284";
 /// Current qualified SDK wrapper package version.
-pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.317";
+pub const CLAUDE_AGENT_SDK_VERSION: &str = "0.3.322";
 /// First qualified native binary version in the maintained segment.
 pub(crate) const CLAUDE_AGENT_SDK_NATIVE_BASELINE_VERSION: &str = "2.1.284";
 /// Current native version the shipped SDK manifest declares. The wrapper and
 /// native axes are coupled but never equal, and neither transfers a Claude
 /// Code qualification to this route.
-pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.317";
+pub const CLAUDE_AGENT_SDK_NATIVE_VERSION: &str = "2.1.322";
 /// Current official Node 22 runtime satisfying the upstream `>=18.0.0`
 /// requirement. The qualified Node claim retains the earlier `22.23.2` point.
 pub const CLAUDE_AGENT_SDK_NODE_RUNTIME: &str = "22.23.3";

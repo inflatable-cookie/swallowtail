@@ -86,3 +86,109 @@ fn a_pump_failure_between_command_check_and_registration_rejects_the_command() {
             .is_empty()
     );
 }
+
+#[test]
+fn deadline_recipient_retains_until_drain_and_interrupt_command_settle() {
+    use crate::sdk::wire::ClaudeAgentSdkEvent;
+    for drain_first in [true, false] {
+        let connection = SdkConnection::new(
+            Arc::new(RegistrationGateProcess {
+                writes: Arc::new(AtomicUsize::new(0)),
+            }),
+            HostServices::new(ExecutionHostId::new("sdk.deadline-race").expect("host")),
+        );
+        let make = |id| {
+            SdkActiveTurn::new(
+                swallowtail_runtime::RuntimeTurnId::new(id).expect("id"),
+                Arc::downgrade(&connection),
+                None,
+                crate::sdk::profile::ClaudeAgentSdkSessionProfile::default(),
+                Vec::new(),
+            )
+            .expect("turn")
+        };
+        let (old, _events, _callbacks, terminal) = make("old");
+        let (next, _next_events, _next_callbacks, _next_terminal) = make("next");
+        connection
+            .set_active_turn(old.clone())
+            .expect("old recipient");
+        assert!(
+            !connection.rollback_pre_query_turn(&next),
+            "identity must match"
+        );
+        connection
+            .commit_turn_query(&old)
+            .expect("query commitment");
+        assert!(
+            !connection.rollback_pre_query_turn(&old),
+            "query commitment forbids unsent rollback even before native start"
+        );
+        assert!(connection.expire_turn(&old));
+        assert!(
+            !connection.rollback_pre_query_turn(&old),
+            "pre-query rollback cannot discard a timed-out recipient"
+        );
+        assert_eq!(
+            futures_executor::block_on(terminal).status(),
+            &swallowtail_runtime::TerminalStatus::TimedOut
+        );
+        let abort = || ClaudeAgentSdkEvent::TurnEnded {
+            usage: crate::sdk::wire::ClaudeAgentSdkUsage {
+                input_tokens: 0,
+                output_tokens: 0,
+                cache_read_input_tokens: None,
+                cache_write_input_tokens: None,
+            },
+            stop_reason: "error_during_execution".into(),
+            failed: true,
+            subtype: None,
+            num_turns: None,
+            duration_ms: None,
+            error_text_present: true,
+            error_text_type: "array".into(),
+            result_field_presence: BTreeMap::new(),
+            api_error_status: None,
+            terminal_reason: Some("aborted_streaming".into()),
+            rate_limit_status: None,
+        };
+        if drain_first {
+            connection
+                .dispatch_turn_event(abort())
+                .expect("exact drain");
+        } else {
+            old.finish_deadline_interrupt();
+        }
+        connection.clear_active_turn(&old);
+        assert!(
+            connection.set_active_turn(next.clone()).is_err(),
+            "one half alone cannot release"
+        );
+        if drain_first {
+            old.finish_deadline_interrupt();
+        } else {
+            connection
+                .dispatch_turn_event(abort())
+                .expect("exact drain");
+        }
+        connection
+            .set_active_turn(next.clone())
+            .expect("both halves permit replacement");
+        assert!(
+            !connection.expire_turn(&old),
+            "late deadline claim cannot mutate old or next recipient"
+        );
+        assert!(!next.is_finished());
+        assert_eq!(
+            connection
+                .dispatch_turn_event(abort())
+                .expect_err("old terminal before next start refuses")
+                .diagnostic()
+                .code(),
+            "swallowtail.claude-agent.sdk.terminal_before_turn_start"
+        );
+        assert!(
+            !next.is_finished(),
+            "stale terminal is never the next outcome"
+        );
+    }
+}

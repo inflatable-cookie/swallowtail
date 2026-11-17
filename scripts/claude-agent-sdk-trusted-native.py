@@ -412,7 +412,18 @@ def case(
         except ValueError:
             result = {"failure": "invalid driver output"}
         if prepared and (root / "observation.json").is_file():
-            result.update(json.loads((root / "observation.json").read_bytes()))
+            try:
+                observation = json.loads((root / "observation.json").read_bytes())
+            except ValueError as error:
+                raise ValueError(
+                    "invalid prepared observation; actual driver wait="
+                    + str(code)
+                    + " stderr="
+                    + (root / "stderr.txt").read_text(errors="replace")[:32768]
+                    + " stdout="
+                    + output.decode(errors="replace")[:32768]
+                ) from error
+            result.update(observation)
             result["closeResponse"] = next(
                 (
                     e

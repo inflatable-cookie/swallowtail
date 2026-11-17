@@ -197,7 +197,7 @@ OpenHands adds a package without a production route.
   ambient read-write one-prompt structured runs and read-only interactive
   sessions for Claude Agent ACP `0.53.0..=0.100.0`, excluding `0.58.0`, plus
   eight exact frozen points through `0.106.0`, over
-  ACP v1 stdio (Research 460, 469, 470, 471, 483);the eight frozen points require a
+  ACP v1 stdio (Research 460, 469, 470, 471, 483); the eight frozen points require a
   checked guarded Linux x64/Darwin arm64 process, with inherited-permission v8
   from 0.101.1. Stable newer versions remain visible and
   unverified, while separate local-subscription

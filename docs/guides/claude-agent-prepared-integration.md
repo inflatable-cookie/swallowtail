@@ -202,8 +202,9 @@ Claude Agent ACP is qualified through 0.106.0. The eight published hops after
 0.100.0 require a host-bound checked guarded launch; a stock process refuses
 before credential acquisition or launch. The guard vetoes unsolicited idle
 compaction and preserves inherited permission security settings. Existing
-qualified segments and exclusions remain unchanged. From0.101.1 the distinct
-`claude-agent.acp.guarded-permission-inheritance-v8` segment preserves native
+qualified segments and exclusions remain unchanged. The seven frozen points from
+0.101.1 through 0.106.0 use `claude-agent.acp.guarded-permission-inheritance-v8`
+to preserve native
 user/managed no-prompt denial. Exact 0.101.0 retains v7: its native version does
 not support that key and still requests consumer permission.
 
@@ -223,7 +224,7 @@ results/errors, cancellation/deadline/native exit, native close and joined child
 cleanup on trusted disposable Linux/macOS runners. These tests use owned
 loopback model peers, dummy keys and isolated settings; they make no live
 provider or broader HTTP MCP claim. The consumed idle-component pairs retain
-their separate historical scope.0.107.0 and later remain unverified.
+their separate historical scope. 0.107.0 and later remain unverified.
 
 Run `effigy validate:claude-agent-acp-trusted-native-self-test` for the owned
 Rust-route harness; the PR-triggered disposable workflow runs the originals.

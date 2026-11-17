@@ -38,7 +38,7 @@ const EXIT = {
 /// SHA-256 of the committed probe admission. Changing it is a source change the
 /// fixture verifier cross-checks, not a runtime option: a caller cannot supply
 /// it, so a ledger and a peer rewritten to agree with each other are refused.
-const COMMITTED_ADMISSION_SHA256 = "2afdd4dfd8a35b9eb7765fc5e55bd3e63d84acd32ef0b190ff212ec1f9735b2a";
+const COMMITTED_ADMISSION_SHA256 = "b5986627d832d93de8be1a3d099ea5d4871fe4d6da00a0f346bcd77a73a8bb52";
 
 function parseArguments(argv) {
   const values = new Map();

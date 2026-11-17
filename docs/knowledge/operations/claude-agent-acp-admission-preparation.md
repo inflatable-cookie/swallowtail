@@ -16,7 +16,7 @@ are authorized. Administrator settings fixtures exist only on disposable jobs.
 
 ## Current route
 
-The eight frozen published ACP points after0.100.0 through 0.106.0 use checked
+The eight frozen published ACP points after 0.100.0 through 0.106.0 use checked
 guarded launches on Linux x64/Darwin arm64. The adapter refuses their stock
 launch before credential acquisition or effects. The host binds the exact
 runtime, captured source graph, native image and guard to a revocable opaque

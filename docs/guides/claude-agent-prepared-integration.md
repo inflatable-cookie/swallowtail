@@ -612,8 +612,9 @@ See the compile-tested
 
 The root `package.json` keeps `@agentclientprotocol/claude-agent-acp` pinned to
 exact `0.81.2` for development and live probes. Research 460, 469, 470, and
-471 separately qualify the wrapper claim through `0.100.0`; the local
-dependency pin is not currentness or live MCP evidence and remains unchanged.
+471 retain qualification through `0.100.0`; Research 483 adds the eight exact
+guarded points through `0.106.0`. The local dependency pin is not currentness
+or live MCP evidence and remains unchanged.
 Development and live probes use:
 
 ```sh
@@ -634,19 +635,21 @@ integration.
 
 ## ACP Version Posture
 
-Discovery records the exact Claude Agent ACP wrapper version. Qualified
-wrappers are `0.53.0..=0.100.0`, excluding unpublished `0.58.0` (Research 460,
-469, 470, 471). Those milestones remain guaranteed. A newer stable release is
-admitted as unverified, remains inspectable in evidence, and must identify
-itself as that same exact version during ACP initialization. Excluded and
-older versions do not prepare. HTTP MCP live honouring remains exact to
-`0.79.0` and `0.81.2`.
+Discovery records the exact Claude Agent ACP wrapper version. The existing
+`0.53.0..=0.100.0` segments and unpublished `0.58.0` exclusion remain intact.
+Eight exact frozen points through `0.106.0` are also qualified on the checked
+guarded Linux x64/Darwin arm64 route (Research 483). Exact `0.101.0` retains
+v7; the seven points from `0.101.1` use inherited-permission v8. Unpublished
+interior versions are not added. Stable `0.107.0` and later remain visible
+`UnverifiedNewer` and must identify the same exact version during initialization.
+Excluded and older versions do not prepare. HTTP MCP live honouring remains
+exact to `0.79.0` and `0.81.2`.
 
-ACP `available_commands_update`, `config_option_update`, and
-`current_mode_update` metadata is accepted whether it arrives between session
-creation and the first turn or during a prompt. These session-scoped updates
-do not become consumer tools, commands, or turn output. Any other
-`session/update` without an active turn remains a protocol failure.
+Declared session-scoped metadata remains passive and does not become consumer
+tools, commands or turn output. Informational `auth/status_update` cannot change
+prepared access evidence. Other updates require an active turn. A validated
+queued tail after a cancelled or failed prompt is discarded without events or
+callbacks until the next turn; normal unsolicited idle updates still fail.
 
 The Claude Agent route accepts one ACP receive frame up to 4 MiB and keeps at
 most 8 MiB in its receive decoder. This adapter-specific bound admits bridge

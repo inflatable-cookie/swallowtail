@@ -104,15 +104,14 @@ fn recipe(config: &Value, root: &Path, node: &LocalTrustedRuntime) -> LocalCaptu
             _ => panic!("unlisted original version"),
         };
         let ps = runtime(Path::new("/bin/ps"));
-        let graph = LocalCapturedGraph::capture_manifest(
+        LocalCapturedGraph::capture_manifest(
             Path::new(config["sourceRoot"].as_str().expect("source root")),
             manifest,
             platform,
             &native,
             Some(&ps),
         )
-        .expect("frozen original graph and native hash");
-        graph
+        .expect("frozen original graph and native hash")
     } else {
         let entry =
             include_str!("../tests/guard_full_route/entry.mjs").replace("0.106.0", "0.100.0");

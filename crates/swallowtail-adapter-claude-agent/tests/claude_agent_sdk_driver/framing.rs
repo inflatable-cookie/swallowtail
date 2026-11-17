@@ -601,15 +601,7 @@ fn native_aborted_streaming_is_cancelled_only_after_a_caller_request() {
         if cancel {
             block_on(turn.cancellation().request()).expect("caller cancellation");
         }
-        let presence: serde_json::Map<String, serde_json::Value> =
-            crate::sdk_support::SDK_RESULT_FIELD_NAMES
-                .iter()
-                .map(|name| ((*name).to_owned(), serde_json::json!(true)))
-                .collect();
-        fixture.emit(serde_json::json!({"type":"event","event":"turn_ended", "subtype":"error_during_execution",
-            "stopReason":"error_during_execution","isError":true,"numTurns":1,"durationMs":1,
-            "errorTextPresent":true,"errorTextType":"array","usage":{"inputTokens":0,"outputTokens":0,"cacheReadInputTokens":0,"cacheWriteInputTokens":0},
-            "resultFieldPresence":presence,"apiErrorStatus":null,"terminalReason":reason,"rateLimitStatus":null}));
+        fixture.emit(failed_native_result(reason));
         let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
         if expected_cancelled {
             assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
@@ -621,5 +613,59 @@ fn native_aborted_streaming_is_cancelled_only_after_a_caller_request() {
         }
         let _ = block_on(turn.close());
         let _ = block_on(session.close(cleanup_request(), services));
+    }
+}
+
+fn failed_native_result(reason: &str) -> serde_json::Value {
+    let presence: serde_json::Map<String, serde_json::Value> =
+        crate::sdk_support::SDK_RESULT_FIELD_NAMES
+            .iter()
+            .map(|name| ((*name).to_owned(), serde_json::json!(true)))
+            .collect();
+    serde_json::json!({"type":"event","event":"turn_ended", "subtype":"error_during_execution",
+        "stopReason":"error_during_execution","isError":true,"numTurns":1,"durationMs":1,
+        "errorTextPresent":true,"errorTextType":"array","usage":{"inputTokens":0,"outputTokens":0,"cacheReadInputTokens":0,"cacheWriteInputTokens":0},
+        "resultFieldPresence":presence,"apiErrorStatus":null,"terminalReason":reason,"rateLimitStatus":null})
+}
+
+#[test]
+fn timed_out_turn_drains_one_abort_terminal_for_cooperative_close_only() {
+    for tail in ["abort", "duplicate", "unexpected_output"] {
+        let host = host_id("claude-agent-sdk.fixture.deadline-drain");
+        let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+        let services = fixture.services(host.clone());
+        let mut session =
+            block_on(prepared_session(host).open_session(services.clone())).expect("open");
+        let mut turn = block_on(session.start_turn(
+            turn_request("turn", "owned").with_deadline(swallowtail_runtime::Deadline::at(
+                swallowtail_runtime::MonotonicInstant::from_ticks(100),
+            )),
+            services.clone(),
+        ))
+        .expect("turn");
+        fixture.advance_time_to_ticks(100);
+        let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
+        assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
+        let _ = block_on(turn.close());
+        if tail == "unexpected_output" {
+            fixture.emit(serde_json::json!({"type":"event","event":"output_delta","delta":"late"}));
+        } else {
+            fixture.emit(failed_native_result("aborted_streaming"));
+            if tail == "duplicate" {
+                fixture.emit(failed_native_result("aborted_streaming"));
+            }
+        }
+        // A new cleanup deadline, not the already-expired turn deadline.
+        let outcome = block_on(session.close(cleanup_request(), services));
+        let diagnostic = outcome
+            .diagnostic()
+            .expect("fixture reports root-only completion");
+        assert_eq!(
+            diagnostic
+                .message()
+                .contains("close_evidence: nativeExitObserved=true"),
+            tail == "abort",
+            "{tail}: {outcome:?}"
+        );
     }
 }

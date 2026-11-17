@@ -15,6 +15,18 @@ use swallowtail_runtime::{
 impl SdkActiveTurn {
     pub(crate) fn handle_event(&self, event: ClaudeAgentSdkEvent) -> Result<(), RuntimeFailure> {
         if self.is_finished() {
+            // A caller deadline finishes the public outcome before the native
+            // interruption completes. Drain exactly its expected terminal so
+            // the same connection can still perform cooperative close/wait.
+            // No activity is projected and no new permission is granted.
+            if self.is_timed_out()
+                && matches!(&event, ClaudeAgentSdkEvent::TurnEnded {
+                    failed: true, terminal_reason: Some(reason), stop_reason, ..
+                } if reason == "aborted_streaming" && stop_reason == "error_during_execution")
+                && !self.deadline_terminal_drained.swap(true, Ordering::SeqCst)
+            {
+                return Ok(());
+            }
             return Err(failure(
                 "swallowtail.claude-agent.sdk.event_after_terminal",
                 "Claude Agent SDK sidecar emitted an event after the active turn terminated",

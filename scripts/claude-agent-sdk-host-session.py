@@ -783,7 +783,27 @@ def transaction(args, session, files, binding, inspect_inputs):
         )
         transfer = admin.ManifestTransfer(owner, root / "host-manifest.json")
         owner.prepare()
-        package = producer.produce(owner, session, elf, files, uid=args.uid)
+
+        def configuration_evidence(report):
+            # Reuse the already identity-held metadata output; this is NOT a
+            # bootstrap manifest and cannot reach ordinary/candidate admission.
+            owner.state["manifestOutput"]["purpose"] = (
+                "openssl_configuration_evidence_only"
+            )
+            owner.store()
+            transfer.publish(report)
+
+        package = producer.produce(
+            owner,
+            session,
+            elf,
+            files,
+            uid=args.uid,
+            configuration_evidence=configuration_evidence,
+            configuration_evidence_only=getattr(
+                args, "configuration_evidence_only", False
+            ),
+        )
         transfer.publish(package.manifest)
         lease = PackageLease(package, producer, Path(os.environ["TMPDIR"]))
         descriptor = os.open(
@@ -975,7 +995,10 @@ def main():
     parser.add_argument("--uid", type=int, default=1001)
     parser.add_argument("--gid", type=int, default=1001)
     parser.add_argument("--recover-only", action="store_true")
+    parser.add_argument("--configuration-evidence-only", action="store_true")
     args = parser.parse_args()
+    if args.recover_only and args.configuration_evidence_only:
+        parser.error("configuration evidence collection and recovery are separate")
     args.started = started
     import resource
 

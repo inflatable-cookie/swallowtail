@@ -1,8 +1,8 @@
 # SDK trusted-host bootstrap transaction
 
-Status: revised source/security proposal; no further host activation. The
-[first host attempt](claude-agent-sdk-host-attempt.md) consumed its grant and
-refused writable `/opt` before candidate open.
+Status: revised source/security proposal; no further host activation. Both
+[host attempts](claude-agent-sdk-host-attempt.md) consumed their grants; the
+corrected job refused unreviewed OpenSSL configuration before candidate open.
 
 Tom's 2026-11-16 preserved T3-to-Paseo handoff keeps the SDK qualification
 obligation, inherited242f repair and original PR553 as history. The continuation
@@ -377,6 +377,69 @@ Owned tests execute the actual embedded collector and dispatch guard with explic
 access/API boundary injection. They do not prove root0700 access, sudo, host
 execution or actual GitHub dispatch. Passing six-ancestor proof keeps its prior
 scope; neither finding changes ordinary custody or actual wait requirements.
+
+### OpenSSL evidence-only proposal after the consumed corrected attempt
+
+Brief v14 authorizes a finite source/owned-fixture correction, not a third run.
+The failed host exported no configuration bytes. The pinned image's
+[published package list](https://raw.githubusercontent.com/actions/runner-images/93a4e4e98715026b60fdf86893cf193b4be3bd47/images/ubuntu/Ubuntu2604-Readme.md)
+names OpenSSL3.5.5-1ubuntu3.7. The
+[upstream3.5.5 example](https://raw.githubusercontent.com/openssl/openssl/openssl-3.5.5/apps/openssl.cnf)
+contains an uncommented provider-section mapping and a commented activation line.
+Neither source proves the failed host's bytes, alias or selected provider. The
+distribution source request returned403. No permissive configuration acceptance
+was inferred from release labels or this upstream shape.
+
+| Inert public source | Bytes | Whole-file SHA-256 |
+| --- | --- | --- |
+| Pinned image README | 16171 | `71deed1cbf0dbff266efa496cba433609fb6352cc2fa88f7eaac132caae1d872` |
+| Upstream3.5.5 example | 12411 | `a65a2cb9f4ee8ffdc7ef4f0ac600c0bdafb95b7b1ab457188ac610a62f5ad6b3` |
+| [Versioned config documentation](https://raw.githubusercontent.com/openssl/openssl/openssl-3.5.5/doc/man5/config.pod) | 19790 | `2d29f2f20edcc2bce199cd212b62bc0d03cdeaab566df607c7951ece25eb9e3c` |
+
+The existing producer now gathers an inert diagnostic envelope before refusing
+unsupported configuration. It reads both fixed openssl.cnf roots and their safe
+aliases, preserves exact raw bytes/hash/identity and matched guard spans/lines,
+and captures bounded literal include files/directories. Commented directives are
+not treated as live. As described by OpenSSL's
+[configuration documentation](https://docs.openssl.org/3.5/man5/config/), directory
+includes select .cnf/.conf files; relative paths can depend on environment/cwd.
+The diagnostic supports only explicit absolute paths under /etc/ssl or /usr/lib/ssl,
+excluding private/cert trees. Quotes, variables, pragmas, cycles and unresolved
+paths remain explicit unknowns. Section activation and custom controls are not
+interpreted, and no configuration is evaluated.
+
+Provider/engine observations are confined to the two fixed x86_64-linux-gnu
+ossl-modules/engines-3 directories and literal module references there. Existing
+ELF/cache readers capture hashes and bounded dependency/resolution metadata as
+data, without loading modules or copying their binary bytes into evidence.
+These are diagnostic candidates, not proof of the active OpenSSL search policy
+or a complete admission closure. Missing, inaccessible, changed, ambiguous,
+unsupported or excess inputs remain nonzero and explicit.
+
+Bounds stay within the existing job limits:64KiB/config,128KiB retained raw
+configuration bytes,8 config files,16 requests/entries/modules, include depth3,
+32 objects/module closure,8MiB/input and16MiB additional reads,256KiB serialized
+evidence. Raw configuration is base64 data. Public-mode/type/owner/link checks
+exclude private key/certificate reads. Held inputs are rechecked through the
+same capture before and after evidence publication; drift cannot admit runtime.
+
+The existing identity-held host-manifest.json output is reused, with
+manifestOutput.purpose set to openssl_configuration_evidence_only. Its diagnostic
+schema sets diagnosticOnly:true, completeForAdmission:false and qualified:false;
+it is never passed to the ordinary supervisor as a manifest. The future workflow
+sets --configuration-evidence-only, which unconditionally refuses before candidate
+open even when all guard markers are absent. The enclosing six-directory
+administrative prepare/restore effects remain separately gated; this is not an
+already authorized read-only host job. The existing root exporter retains the
+bounded envelope and accurate present/missing/unknown facts with no larger
+artifact or new cleanup authority.
+
+Owned fixtures exercise a public-source-shaped config, includes/aliases,
+provider/engine candidate data and missing/access/cycle/changed/module/unknown
+refusals. They supply no actual-host or provider-activation evidence. Both old
+grants remain consumed. This exact inactive source/workflow/record packet needs
+normal independent review and NEW authority before observation; no diagnostic,
+third fake-host or original attempt is automatically authorized.
 
 The accepted ACP239 source remains a separate exact composition obligation: actual
 Rust parents the sleep group owner and checked ACP as siblings, and ACP parents

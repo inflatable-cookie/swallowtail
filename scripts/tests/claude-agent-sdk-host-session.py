@@ -542,6 +542,42 @@ class PipelineTests(unittest.TestCase):
         for name in A.DIRECTORIES:
             self.assertEqual(stat_mode(self.root / name.lstrip("/")), 0o777)
 
+    def test_configuration_evidence_is_retained_without_ordinary_entry(self):
+        self.args.configuration_evidence_only = True
+        report = {
+            "schema": "sdk240.openssl-evidence.v1",
+            "diagnosticOnly": True,
+            "qualified": False,
+            "completeForAdmission": False,
+            "configurations": {"owned": {"rawBase64": "b3duZWQ="}},
+        }
+
+        def refused(owner, *args, configuration_evidence, **kwargs):
+            self.assertTrue(kwargs["configuration_evidence_only"])
+            configuration_evidence(report)
+            raise P.Refused("package_unreviewed_openssl_configuration")
+
+        with mock.patch.object(self.producer, "produce", side_effect=refused):
+            with self.assertRaisesRegex(
+                P.Refused, "package_unreviewed_openssl_configuration"
+            ):
+                self.invoke()
+        owner = self.instances["owner"]
+        self.assertEqual(
+            owner.state["manifestOutput"]["purpose"],
+            "openssl_configuration_evidence_only",
+        )
+        self.assertEqual(owner.state["phase"], "restored")
+        self.assertFalse(owner.state["entryAttempted"])
+        self.assertNotIn("monitor", self.instances)
+        self.assertFalse(self.instances["group"].created)
+        self.assertEqual(
+            json.loads((self.receipts / "host-manifest.json").read_bytes()), report
+        )
+        self.assertIsNone(owner.manifest_transfer.read_fd)
+        for name in A.DIRECTORIES:
+            self.assertEqual(stat_mode(self.root / name.lstrip("/")), 0o777)
+
 
 def stat_mode(path):
     import stat
@@ -838,7 +874,10 @@ class DispatchTests(unittest.TestCase):
                         }
                     elif suffix.endswith("/runs?event=workflow_dispatch&per_page=100"):
                         value = {
-                            "total_count": 2 if failure == "history" else 1,
+                            "total_count": len(
+                                candidate["dispatchFence"]["expectedPriorAttempts"]
+                            )
+                            + (1 if failure == "history" else 0),
                             "workflow_runs": candidate["dispatchFence"][
                                 "expectedPriorAttempts"
                             ],
@@ -969,6 +1008,13 @@ def check_packet():
         raise AssertionError("one exclusive job")
     job = workflow["jobs"]["host"]
     script = job["steps"][2]["run"]
+    if (
+        script.count("--configuration-evidence-only") != 1
+        or packet.get("configurationEvidenceOnly") is not True
+    ):
+        raise AssertionError(
+            "inactive configuration-only packet cannot enter candidate"
+        )
     begin = (
         script.index(
             "\n", script.index("/usr/bin/prlimit --fsize=2031616 -- /usr/bin/cat")

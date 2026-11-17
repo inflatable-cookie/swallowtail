@@ -1,6 +1,7 @@
 """Synthetic image/ELF/cache/import inputs; no candidate or root tooling runs."""
 
 import importlib.util
+import base64
 import os
 import hashlib
 import json
@@ -436,6 +437,260 @@ class PackageTests(unittest.TestCase):
                 files.close()
             with self.assertRaises(OSError):
                 os.fstat(fd)
+
+
+class OpenSSLEvidenceTests(unittest.TestCase):
+    """Public-source-shaped bytes, never evidence of the failed host's config."""
+
+    CONFIG = b"""# Shape from OpenSSL3.5.5 apps/openssl.cnf; owned fixture only.
+# .include /etc/ssl/private/never.cnf
+openssl_conf = openssl_init
+[openssl_init]
+providers = provider_sect
+[provider_sect]
+default = default_sect
+[default_sect]
+# activate = 1
+.include = /etc/ssl/owned.d
+"""
+
+    def fixture(self, root):
+        for name in (
+            "etc/ssl/owned.d",
+            "usr/lib/ssl",
+            *[p.lstrip("/") for p in P.OPENSSL_SEARCH],
+            "lib",
+            "lib64",
+        ):
+            (root / name).mkdir(parents=True, exist_ok=True, mode=0o700)
+        (root / "etc/ssl/openssl.cnf").write_bytes(self.CONFIG)
+        (root / "usr/lib/ssl/openssl.cnf").symlink_to("../../../etc/ssl/openssl.cnf")
+        (root / "etc/ssl/owned.d/extra.cnf").write_bytes(
+            b"[owned_engine]\ndynamic_path = /usr/lib/x86_64-linux-gnu/engines-3/owned.so\n"
+        )
+        (root / "etc/ssl/owned.d/ignored.txt").write_bytes(b"not a config input")
+        for item in (root / "etc/ssl").rglob("*.cnf"):
+            item.chmod(0o644)
+        (root / "lib/liba.so").write_bytes(F.elf(soname="liba.so"))
+        (root / "lib/loader.so").write_bytes(F.elf(soname="loader.so"))
+        (root / "lib64/ld-linux-x86-64.so.2").symlink_to("../lib/loader.so")
+        (root / "etc/ld.so.cache").write_bytes(cache([("liba.so", "/lib/liba.so", 0)]))
+        for folder, name in zip(P.OPENSSL_SEARCH, ("legacy.so", "owned.so")):
+            (root / folder.lstrip("/") / name).write_bytes(
+                F.elf(needed=("liba.so",), soname=name)
+            )
+        return P.ImageFiles(root=root, uid=os.getuid())
+
+    def test_full_raw_roots_include_alias_and_module_candidates_are_data_only(self):
+        with tempfile.TemporaryDirectory(
+            prefix="openssl-owned-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            files = self.fixture(root)
+            try:
+                with mock.patch(
+                    "subprocess.Popen", side_effect=AssertionError("no execution")
+                ):
+                    report = P.openssl_evidence(files, E, ["/lib"])
+                config = report["configurations"]["/etc/ssl/openssl.cnf"]
+                self.assertEqual(base64.b64decode(config["rawBase64"]), self.CONFIG)
+                self.assertEqual(
+                    config["sha256"], hashlib.sha256(self.CONFIG).hexdigest()
+                )
+                self.assertEqual(
+                    report["configurationAliases"]["/usr/lib/ssl/openssl.cnf"],
+                    "/etc/ssl/openssl.cnf",
+                )
+                self.assertIn("/usr/lib/ssl/openssl.cnf", report["configurationLinks"])
+                self.assertIn("/etc/ssl/owned.d/extra.cnf", report["configurations"])
+                self.assertNotIn("/etc/ssl/private/never.cnf", report["paths"])
+                for row in report["modules"].values():
+                    self.assertEqual(row["state"], "present")
+                    self.assertIn("/lib/liba.so", row["closure"])
+                    self.assertNotIn("rawBase64", row)
+                self.assertTrue(report["activationUnknown"])
+                self.assertFalse(report["completeForAdmission"])
+                self.assertFalse(report["runtimeExecuted"])
+                self.assertLessEqual(len(json.dumps(report).encode()), 262144)
+                files.check()
+                (root / "etc/ssl/openssl.cnf").write_bytes(self.CONFIG + b"# drift\n")
+                with self.assertRaisesRegex(P.Refused, "drift"):
+                    files.check()
+            finally:
+                files.close()
+
+    def test_missing_unknown_cycles_alias_and_bounds_remain_explicit(self):
+        for failure in (
+            "missing",
+            "permission",
+            "cycle",
+            "alias",
+            "environment",
+            "module",
+            "bound",
+        ):
+            with (
+                self.subTest(failure=failure),
+                tempfile.TemporaryDirectory(
+                    prefix="openssl-refusal-", dir=os.environ["TMPDIR"]
+                ) as temporary,
+            ):
+                root = Path(temporary).resolve()
+                files = self.fixture(root)
+                extra = root / "etc/ssl/owned.d/extra.cnf"
+                if failure == "missing":
+                    extra.unlink()
+                    (root / "etc/ssl/openssl.cnf").write_bytes(
+                        self.CONFIG + b".include /etc/ssl/absent.cnf\n"
+                    )
+                elif failure == "cycle":
+                    extra.write_bytes(b".include /etc/ssl/openssl.cnf\n")
+                elif failure == "alias":
+                    extra.unlink()
+                    extra.symlink_to("../../../lib/liba.so")
+                elif failure == "environment":
+                    extra.write_bytes(b".include $ENV::UNKNOWN/config.cnf\n")
+                elif failure == "module":
+                    (root / P.OPENSSL_SEARCH[0].lstrip("/") / "legacy.so").write_bytes(
+                        b"not ELF"
+                    )
+                elif failure == "bound":
+                    extra.write_bytes(b"x" * 65537)
+                original = P.os.open
+
+                def opening(name, *args, **kwargs):
+                    if failure == "permission" and Path(name) == extra:
+                        raise PermissionError(13, "owned denial")
+                    return original(name, *args, **kwargs)
+
+                try:
+                    with mock.patch.object(P.os, "open", side_effect=opening):
+                        report = P.openssl_evidence(files, E, ["/lib"])
+                    self.assertTrue(report["unknown"])
+                    self.assertIn("/etc/ssl/openssl.cnf", report["configurations"])
+                    self.assertFalse(report["completeForAdmission"])
+                    if failure == "missing":
+                        # Directory includes select existing names only; bind its
+                        # inventory and a separate explicit missing include too.
+                        self.assertNotIn(
+                            "extra.cnf", report["paths"]["/etc/ssl/owned.d"]["entries"]
+                        )
+                finally:
+                    files.close()
+
+    def test_producer_publishes_evidence_then_refuses_before_candidate_open(self):
+        with tempfile.TemporaryDirectory(
+            prefix="openssl-producer-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            seed = self.fixture(root)
+            seed.close()
+            published = []
+            owner = types.SimpleNamespace(
+                prepared=lambda: None,
+                unsettled=lambda: False,
+                check_ancestors=lambda: None,
+                tool=mock.Mock(return_value=(0, HELP.encode())),
+            )
+            session = types.SimpleNamespace(ROOT=Path("/repo"))
+            original = P.ImageFiles.read
+
+            def read(files, name, **kwargs):
+                self.assertFalse(
+                    kwargs.get("candidate"), "candidate must stay unopened"
+                )
+                return original(files, name, **kwargs)
+
+            with mock.patch.object(P.ImageFiles, "read", read):
+                with self.assertRaisesRegex(
+                    P.Refused, "package_unreviewed_openssl_configuration"
+                ):
+                    P.produce(
+                        owner,
+                        session,
+                        E,
+                        {},
+                        root=root,
+                        uid=os.getuid(),
+                        configuration_evidence=lambda report: published.append(
+                            json.loads(json.dumps(report))
+                        ),
+                    )
+            self.assertEqual(len(published), 1)
+            self.assertTrue(published[0]["diagnosticOnly"])
+            self.assertFalse(published[0]["qualified"])
+
+    def test_evidence_only_mode_refuses_even_without_any_guard_marker(self):
+        with tempfile.TemporaryDirectory(
+            prefix="openssl-only-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            seed = self.fixture(root)
+            seed.close()
+            (root / "etc/ssl/openssl.cnf").write_bytes(
+                b"# providers = commented_only\n"
+            )
+            owner = types.SimpleNamespace(
+                prepared=lambda: None,
+                unsettled=lambda: False,
+                check_ancestors=lambda: None,
+                tool=mock.Mock(return_value=(0, HELP.encode())),
+            )
+            published = []
+            original = P.ImageFiles.read
+
+            def read(files, name, **kwargs):
+                self.assertFalse(
+                    kwargs.get("candidate"), "evidence-only cannot open candidate"
+                )
+                return original(files, name, **kwargs)
+
+            with mock.patch.object(P.ImageFiles, "read", read):
+                with self.assertRaisesRegex(P.Refused, "package_openssl_evidence_only"):
+                    P.produce(
+                        owner,
+                        types.SimpleNamespace(ROOT=Path("/repo")),
+                        E,
+                        {},
+                        root=root,
+                        uid=os.getuid(),
+                        configuration_evidence_only=True,
+                        configuration_evidence=published.append,
+                    )
+            self.assertEqual(published[0]["guardMatches"], [])
+            self.assertIn("/etc/ssl/openssl.cnf", published[0]["configurations"])
+
+    def test_module_resolution_cannot_open_candidate_as_a_library(self):
+        with tempfile.TemporaryDirectory(
+            prefix="openssl-no-node-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            files = self.fixture(root)
+            node = root / P.CANDIDATE.lstrip("/")
+            node.parent.mkdir(parents=True, mode=0o700)
+            node.write_bytes(b"owned forbidden bytes")
+            (root / "etc/ld.so.cache").write_bytes(cache([("liba.so", P.CANDIDATE, 0)]))
+            # Remove the competing system candidate so resolution reaches this
+            # exact forbidden edge rather than refusing only for ambiguity.
+            (root / "lib/liba.so").unlink()
+            original = P.os.open
+
+            def opening(name, *args, **kwargs):
+                self.assertNotEqual(Path(name), node)
+                return original(name, *args, **kwargs)
+
+            try:
+                with mock.patch.object(P.os, "open", side_effect=opening):
+                    report = P.openssl_evidence(files, E, ["/lib"], force=True)
+                self.assertTrue(
+                    any(
+                        "candidate_forbidden" in row["reason"]
+                        for row in report["unknown"]
+                    )
+                )
+                self.assertNotIn(P.CANDIDATE, files.files)
+            finally:
+                files.close()
 
 
 if __name__ == "__main__":

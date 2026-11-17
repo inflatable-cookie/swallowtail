@@ -5,6 +5,7 @@ This derives an exact bounded package; observed candidate reports grant nothing.
 """
 
 import ast
+import base64
 import hashlib
 import importlib.machinery
 import importlib.util
@@ -23,6 +24,12 @@ CANDIDATE = "/opt/hostedtoolcache/node/22.23.4/x64/bin/node"
 CANDIDATE_BYTES = 124902584
 CANDIDATE_SHA = "94efd062ed066c1a0b332e18249859c905e920eeada5df55d24c99b919629a90"
 ENV = {"PATH": "/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"}
+OPENSSL_ROOTS = ("/etc/ssl/openssl.cnf", "/usr/lib/ssl/openssl.cnf")
+OPENSSL_SEARCH = (
+    "/usr/lib/x86_64-linux-gnu/ossl-modules",
+    "/usr/lib/x86_64-linux-gnu/engines-3",
+)
+OPENSSL_GUARD = re.compile(rb"(?m)^\s*(?:\.include|(?:providers|engines)\s*=)")
 
 
 class Refused(OSError):
@@ -51,6 +58,8 @@ class ImageFiles:
         self.lookup, self.absent = {}, set()
         self.deadline = time.monotonic() + 30
         self.bytes = 0
+        self.file_bound, self.byte_bound = 268435456, 536870912
+        self.candidate_forbidden = False
 
     def actual(self, name):
         if (
@@ -92,8 +101,12 @@ class ImageFiles:
             self.aliases[name] = canonical
         return canonical
 
-    def read(self, name, *, candidate=False):
+    def read(self, name, *, candidate=False, maximum_bytes=None, public_config=False):
+        if self.candidate_forbidden and (candidate or name == CANDIDATE):
+            raise Refused("openssl_evidence_candidate_forbidden")
         canonical = self.canonical(name)
+        if self.candidate_forbidden and canonical == CANDIDATE:
+            raise Refused("openssl_evidence_candidate_forbidden")
         if canonical not in self.files:
             if len(self.files) >= 512:
                 raise Refused("package_input_bound")
@@ -103,15 +116,24 @@ class ImageFiles:
             try:
                 st = os.fstat(fd)
                 mode = stat.S_IMODE(st.st_mode)
-                if not stat.S_ISREG(st.st_mode) or st.st_size > 268435456:
+                if not stat.S_ISREG(st.st_mode) or st.st_size > min(
+                    self.file_bound,
+                    maximum_bytes if maximum_bytes is not None else self.file_bound,
+                ):
                     raise Refused("package_input_type_or_size")
+                if public_config and (
+                    st.st_uid != os.geteuid()
+                    or st.st_nlink != 1
+                    or mode not in (0o444, 0o644)
+                ):
+                    raise Refused("package_config_public_identity_required")
                 if candidate:
                     if canonical != CANDIDATE or st.st_uid != self.uid or mode != 0o777:
                         raise Refused("package_candidate_identity_or_mode")
                 elif st.st_mode & 0o6022:
                     raise Refused("package_writable_input")
                 self.bytes += st.st_size
-                if self.bytes > 536870912:
+                if self.bytes > self.byte_bound:
                     raise Refused("package_byte_bound")
                 digest = hashlib.sha256()
                 while True:
@@ -135,6 +157,17 @@ class ImageFiles:
                 os.close(fd)
                 raise
         fd, before, digest, is_candidate = self.files[canonical]
+        if maximum_bytes is not None and before[5] > maximum_bytes:
+            raise Refused("package_input_type_or_size")
+        if public_config:
+            info = os.fstat(fd)
+            if (
+                identity(info) != before
+                or info.st_uid != os.geteuid()
+                or info.st_nlink != 1
+                or stat.S_IMODE(info.st_mode) not in (0o444, 0o644)
+            ):
+                raise Refused("package_config_public_identity_required")
         return canonical, os.pread(fd, before[5] + 1, 0)
 
     def inventory(self, name):
@@ -560,7 +593,360 @@ class HostPackage:
         self.files.close()
 
 
-def produce(owner, session, elf, sources, *, root=Path("/"), uid=1001):
+def openssl_evidence(files, elf, directories, *, force=False):
+    """Bounded inert evidence, never configuration interpretation or admission."""
+    report = {
+        "schema": "sdk240.openssl-evidence.v1",
+        "diagnosticOnly": True,
+        "qualified": False,
+        "runtimeExecuted": False,
+        "completeForAdmission": False,
+        "paths": {},
+        "configurations": {},
+        "directives": [],
+        "searches": {},
+        "modules": {},
+        "unknown": [],
+        "guardMatches": [],
+    }
+    initial_aliases = set(files.aliases)
+    previous_candidate_policy = files.candidate_forbidden
+    files.candidate_forbidden = True
+    initial_links, initial_bytes = set(files.links), files.bytes
+    pending = [(name, 0, ()) for name in OPENSSL_ROOTS]
+    modules, raw_bytes = set(), 0
+
+    def unknown(name, reason):
+        if len(report["unknown"]) < 32:
+            report["unknown"].append({"path": name, "reason": str(reason)[:256]})
+        else:
+            report["unknownExcess"] = True
+
+    def config_path(name):
+        return (
+            len(name) <= 256
+            and re.fullmatch(r"[A-Za-z0-9_./-]+", name)
+            and name.startswith(("/etc/ssl/", "/usr/lib/ssl/"))
+            and not any(part in ("private", "certs", "..") for part in Path(name).parts)
+        )
+
+    while pending:
+        name, depth, parents = pending.pop(0)
+        if len(report["paths"]) >= 16 or depth > 3:
+            unknown(name, "configuration_count_or_depth_bound")
+            continue
+        if not config_path(name):
+            unknown(name, "unsupported_configuration_path")
+            continue
+        existed = False
+        try:
+            files.actual(name).lstat()
+            existed = True
+            canonical = files.canonical(name)
+            if not config_path(canonical):
+                raise Refused("configuration_alias_outside_scope")
+            if canonical in parents:
+                raise Refused("configuration_include_cycle")
+            actual = files.actual(canonical)
+            if actual.is_dir():
+                files.inventory(name)
+                entries = files.lookup[canonical]
+                if len(entries) > 16:
+                    raise Refused("configuration_directory_entry_bound")
+                report["paths"][name] = {
+                    "state": "present",
+                    "canonical": canonical,
+                    "entries": entries,
+                }
+                for entry in entries:
+                    child = canonical.rstrip("/") + "/" + entry
+                    if (
+                        entry.endswith((".cnf", ".conf"))
+                        and not files.actual(child).is_dir()
+                    ):
+                        pending.append((child, depth + 1, parents + (canonical,)))
+                continue
+            if not name.endswith((".cnf", ".conf")):
+                raise Refused("unsupported_configuration_file_suffix")
+            canonical, data = files.read(name, maximum_bytes=65536, public_config=True)
+            report["paths"][name] = {"state": "present", "canonical": canonical}
+            if canonical in report["configurations"]:
+                continue
+            if len(report["configurations"]) >= 8 or raw_bytes + len(data) > 131072:
+                raise Refused("configuration_raw_byte_bound")
+            raw_bytes += len(data)
+            report["configurations"][canonical] = {
+                "identity": files.files[canonical][1],
+                "bytes": len(data),
+                "sha256": hashlib.sha256(data).hexdigest(),
+                "rawBase64": base64.b64encode(data).decode("ascii"),
+            }
+            for match in OPENSSL_GUARD.finditer(data):
+                if len(report["guardMatches"]) < 32:
+                    number = data[: match.end()].count(b"\n") + 1
+                    row = {
+                        "path": canonical,
+                        "line": number,
+                        "span": list(match.span()),
+                    }
+                    raw_line = data.splitlines()[number - 1]
+                    if len(raw_line) <= 512:
+                        row["lineRawBase64"] = base64.b64encode(raw_line).decode(
+                            "ascii"
+                        )
+                    else:
+                        unknown(canonical, "matched_directive_line_bound")
+                    report["guardMatches"].append(row)
+            for number, line in enumerate(data.decode("utf-8").splitlines(), 1):
+                text = line.strip()
+                if not text or text.startswith("#"):
+                    continue
+                relevant = re.match(
+                    r"(?:\.include\b|\.pragma\b|\[|(?:openssl_conf|providers|engines|module|dynamic_path|SO_PATH|activate)\s*=)",
+                    text,
+                )
+                if not relevant:
+                    continue
+                if len(report["directives"]) >= 64 or len(text.encode()) > 512:
+                    unknown(canonical, "directive_count_or_line_bound")
+                    continue
+                report["directives"].append(
+                    {
+                        "path": canonical,
+                        "line": number,
+                        "text": text,
+                        "meaning": "lexical evidence only; not activation proof",
+                    }
+                )
+                if any(
+                    character in text for character in "\\\"'$\x00"
+                ) or text.startswith(".pragma"):
+                    unknown(canonical, "unsupported_syntax_or_environment_expansion")
+                    continue
+                simple = text.split("#", 1)[0].strip()
+                include = re.fullmatch(r"\.include\s*(?:=\s*)?(/[^\s]+)", simple)
+                if simple.startswith(".include"):
+                    if not include:
+                        unknown(canonical, "unsupported_include_expression")
+                    else:
+                        pending.append((include[1], depth + 1, parents + (canonical,)))
+                module = re.fullmatch(
+                    r"(?:module|dynamic_path|SO_PATH)\s*=\s*(/[^\s]+)", simple
+                )
+                if re.match(r"(?:module|dynamic_path|SO_PATH)\s*=", simple):
+                    if (
+                        module
+                        and len(module[1]) <= 256
+                        and any(
+                            module[1].startswith(folder + "/")
+                            for folder in OPENSSL_SEARCH
+                        )
+                    ):
+                        modules.add(module[1])
+                    else:
+                        unknown(canonical, "unsupported_module_or_engine_path")
+        except FileNotFoundError:
+            report["paths"][name] = {"state": "unknown" if existed else "missing"}
+            if existed:
+                unknown(name, "dangling_alias_or_changed_after_observation")
+            elif name not in OPENSSL_ROOTS:
+                unknown(name, "included_configuration_missing")
+            try:
+                files.inventory(name)
+            except OSError as error:
+                report["paths"][name] = {"state": "unknown", "reason": str(error)[:256]}
+                unknown(name, error)
+        except (OSError, ValueError, RuntimeError, UnicodeError) as error:
+            report["paths"][name] = {"state": "unknown", "reason": str(error)[:256]}
+            try:
+                if files.actual(name).is_symlink():
+                    target = os.readlink(files.actual(name))
+                    if len(target) <= 512:
+                        report["paths"][name]["linkTarget"] = target
+            except OSError:
+                pass
+            unknown(name, error)
+    if (
+        not force
+        and not report["guardMatches"]
+        and not report["unknown"]
+        and not report.get("unknownExcess")
+    ):
+        files.candidate_forbidden = previous_candidate_policy
+        return None
+
+    report["configurationAliases"] = {
+        name: value["canonical"]
+        for name, value in report["paths"].items()
+        if value.get("canonical") and name != value["canonical"]
+    }
+    report["configurationLinks"] = {}
+    for name in sorted(set(files.links) - initial_links):
+        identity_value, target = files.links[name]
+        if len(report["configurationLinks"]) >= 16 or len(target) > 512:
+            unknown(files.literal(Path(name)), "configuration_alias_chain_bound")
+            continue
+        report["configurationLinks"][files.literal(Path(name))] = {
+            "identity": identity_value,
+            "target": target,
+        }
+
+    # No candidate/config execution. Search only these fixed image-specific
+    # directories; unresolved/dynamic semantics stay explicit and non-admitting.
+    files.file_bound = min(files.file_bound, 8388608)
+    files.byte_bound = min(files.byte_bound, initial_bytes + 16777216)
+    for folder in OPENSSL_SEARCH:
+        existed = False
+        try:
+            files.actual(folder).lstat()
+            existed = True
+            canonical = files.canonical(folder)
+            if canonical not in OPENSSL_SEARCH or not files.actual(canonical).is_dir():
+                raise Refused("module_search_alias_or_type")
+            files.inventory(folder)
+            if canonical not in files.lookup:
+                raise Refused("module_search_changed_during_capture")
+            entries = files.lookup[canonical]
+            if len(entries) > 16:
+                raise Refused("module_search_entry_bound")
+            report["searches"][folder] = {
+                "state": "present",
+                "canonical": canonical,
+                "entries": entries,
+            }
+            for entry in entries:
+                if re.fullmatch(r"[A-Za-z0-9_.-]+\.so", entry):
+                    modules.add(folder + "/" + entry)
+                else:
+                    unknown(folder, "unsupported_module_search_entry")
+        except FileNotFoundError:
+            report["searches"][folder] = {"state": "unknown" if existed else "missing"}
+            if existed:
+                unknown(folder, "module_search_changed_or_dangling")
+            else:
+                try:
+                    files.inventory(folder)
+                except OSError as error:
+                    report["searches"][folder] = {
+                        "state": "unknown",
+                        "reason": str(error)[:256],
+                    }
+                    unknown(folder, error)
+        except (OSError, ValueError, RuntimeError) as error:
+            report["searches"][folder] = {
+                "state": "unknown",
+                "reason": str(error)[:256],
+            }
+            unknown(folder, error)
+    graph = None
+    if modules:
+        try:
+            cache_name, cache_data = files.read(
+                "/etc/ld.so.cache", maximum_bytes=8388608
+            )
+            graph = LoaderGraph(files, elf, cache_entries(cache_data), directories)
+            report["loaderCache"] = {
+                "path": cache_name,
+                "sha256": files.files[cache_name][2],
+            }
+        except (OSError, ValueError, RuntimeError, struct.error) as error:
+            unknown("/etc/ld.so.cache", error)
+    for name in sorted(modules)[:16]:
+        existed = False
+        try:
+            files.actual(name).lstat()
+            existed = True
+            canonical = files.canonical(name)
+            if not any(canonical.startswith(folder + "/") for folder in OPENSSL_SEARCH):
+                raise Refused("module_alias_outside_scope")
+            canonical, data = files.read(name, maximum_bytes=8388608)
+            row = {
+                "state": "present",
+                "canonical": canonical,
+                "identity": files.files[canonical][1],
+                "bytes": len(data),
+                "sha256": files.files[canonical][2],
+            }
+            report["modules"][name] = row
+            if graph is None:
+                raise Refused("module_loader_closure_unknown")
+            objects, edges, interpreters = graph.graph(canonical)
+            if len(objects) > 32:
+                raise Refused("module_loader_object_bound")
+            row.update(
+                closure=files.hashes(objects),
+                resolutions=edges,
+                interpreters=interpreters,
+            )
+        except FileNotFoundError:
+            report["modules"][name] = {"state": "unknown" if existed else "missing"}
+            unknown(name, "module_missing_or_changed")
+        except (OSError, ValueError, RuntimeError, struct.error) as error:
+            report["modules"][name] = {
+                **report["modules"].get(name, {}),
+                "state": "unknown",
+                "reason": str(error)[:256],
+            }
+            unknown(name, error)
+    if len(modules) > 16:
+        unknown("modules", "module_count_bound")
+    report["aliases"] = {
+        name: value
+        for name, value in files.aliases.items()
+        if name not in initial_aliases
+    }
+    report["resolutionBasis"] = (
+        "current cache and fixed permitted diagnostic directories, not a loader/activation attestation"
+    )
+    report["activationUnknown"] = True
+    report["semantics"] = (
+        "section activation and custom provider/engine controls are not interpreted; only fixed literal references are captured"
+    )
+    report["limits"] = {
+        "configurationFileBytes": 65536,
+        "configurationRawBytes": 131072,
+        "configurationFiles": 8,
+        "includeDepth": 3,
+        "requests": 16,
+        "directoryEntries": 16,
+        "modules": 16,
+        "moduleObjects": 32,
+        "inputFileBytes": 8388608,
+        "additionalInputBytes": 16777216,
+        "outputBytes": 262144,
+    }
+    report["captureRecheck"] = "checked"
+    try:
+        files.check()
+    except OSError as error:
+        report["captureRecheck"] = "unknown"
+        unknown("capture", error)
+    if len(json.dumps(report).encode()) > 262144:
+        # Retain root bytes and every already bounded configuration observation;
+        # do not silently label omitted loader detail complete.
+        report["modules"] = {"state": "unknown", "reason": "serialized_evidence_bound"}
+        report["aliases"] = {}
+        report["directives"] = [
+            {"path": row["path"], "line": row["line"], "textInRawConfiguration": True}
+            for row in report["directives"]
+        ]
+        unknown("evidence", "serialized_evidence_bound")
+    if len(json.dumps(report).encode()) > 262144:
+        raise Refused("openssl_evidence_output_bound")
+    return report
+
+
+def produce(
+    owner,
+    session,
+    elf,
+    sources,
+    *,
+    root=Path("/"),
+    uid=1001,
+    configuration_evidence=None,
+    configuration_evidence_only=False,
+):
     owner.prepared()  # Complete held safe ancestry precedes candidate bytes.
     files = ImageFiles(root=root, uid=uid, owner=owner)
     try:
@@ -574,6 +960,18 @@ def produce(owner, session, elf, sources, *, root=Path("/"), uid=1001):
         if code:
             raise Refused("trusted_loader_help_failed")
         directories = loader_directories(help_data.decode("ascii"))
+        configuration = openssl_evidence(
+            files, elf, directories, force=configuration_evidence_only
+        )
+        if configuration is not None:
+            if configuration_evidence is not None:
+                configuration_evidence(configuration)
+            files.check()  # Same capture survives through diagnostic publication.
+            raise Refused(
+                "package_openssl_evidence_only"
+                if configuration_evidence_only
+                else "package_unreviewed_openssl_configuration"
+            )
         # Initial Python's fixed image configuration is independently bound too.
         for name in (
             "/etc/nsswitch.conf",
@@ -581,18 +979,12 @@ def produce(owner, session, elf, sources, *, root=Path("/"), uid=1001):
             "/etc/resolv.conf",
             "/etc/gai.conf",
             "/etc/mime.types",
-            "/etc/ssl/openssl.cnf",
-            "/usr/lib/ssl/openssl.cnf",
             "/etc/ld.so.conf",
         ):
             if not os.path.lexists(files.actual(name)):
                 files.inventory(name)
                 continue
             canonical, configuration = files.read(name)
-            if name.endswith("openssl.cnf") and re.search(
-                rb"(?m)^\s*(?:\.include|(?:providers|engines)\s*=)", configuration
-            ):
-                raise Refused("package_unreviewed_openssl_configuration")
             if name == "/etc/nsswitch.conf":
                 lines = [
                     line.split("#", 1)[0].strip()

@@ -181,6 +181,15 @@ host attempt require separate review/disposition; no broad setup project or
 automatic diagnostic/follow-on job was started here. Runtime and workflow source
 remain unchanged by this result.
 
+Brief v14 subsequently permits only a finite source/owned-fixture evidence
+addition. Public image/upstream records do not establish these failed-host bytes.
+The [current proposal](claude-agent-sdk-bootstrap-session.md) therefore retains
+bounded raw configuration and literal include/module/search facts in the existing
+metadata output, with explicit unknowns and unconditional evidence-only refusal
+before candidate open. It adds no configuration acceptance or execution credit.
+Both consumed attempts and their exact source/evidence above remain history;
+the revised inactive packet requires independent review and new exact authority.
+
 No candidate bytes/version/custody, package production, runtime observation,
 three-case fake result, kernel/canonical/native discovery, ACP sibling topology
 or original startup was proved. Node22.23.4 remains fake-only outside the public

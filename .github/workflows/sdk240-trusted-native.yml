@@ -50,15 +50,30 @@ jobs:
         env:
           SDK240_TRUSTED_ORIGINAL: '1'
         run: effigy validate:claude-agent-sdk-trusted-native
+      - name: Collect at most sixteen MiB of evidence
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os,pathlib,json,shutil
+          root=pathlib.Path(os.environ['SDK240_TRUSTED_WORK'])
+          out=root/'evidence';out.mkdir(exist_ok=True)
+          files=[root/name for name in ('result.json','inputs.json','metadata.json')]
+          files+=sorted(root.glob('*/*/stdout.json'))+sorted(root.glob('*/*/stderr.txt'))
+          total=0;missing=[]
+          for item in files:
+              if not item.is_file(): missing.append(str(item.relative_to(root)));continue
+              size=item.stat().st_size
+              if size>1048576 or total+size>15*1048576: missing.append(str(item.relative_to(root)));continue
+              target=out/item.relative_to(root);target.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copyfile(item,target);total+=size
+          (out/'collection.json').write_text(json.dumps({'bytes':total,'missingOrExcess':missing}))
+          PY
       - name: Retain bounded real results
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: sdk240-trusted-${{ matrix.os }}
-          path: |
-            ${{ env.SDK240_TRUSTED_WORK }}/result.json
-            ${{ env.SDK240_TRUSTED_WORK }}/inputs.json
-            ${{ env.SDK240_TRUSTED_WORK }}/*/*/stdout.json
-            ${{ env.SDK240_TRUSTED_WORK }}/*/*/stderr.txt
+          path: ${{ env.SDK240_TRUSTED_WORK }}/evidence
           if-no-files-found: warn
           retention-days: 7

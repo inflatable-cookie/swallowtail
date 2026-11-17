@@ -105,6 +105,15 @@ export function query({options}) {
                 check=True,
             )
             observed = json.loads(result.stdout)
+            # Exercise the actual portable limits, endpoint lifetime and parent
+            # wait seam with owned source, never an original artifact.
+            case_root = root / "cases"
+            case_root.mkdir()
+            case_result = T.case(
+                case_root, sdk, Path("owned-unused"), Path(node), "deny"
+            )
+            self.assertEqual(case_result["returncode"], 0, case_result)
+            self.assertTrue(case_result["allClosed"])
             self.assertTrue(observed["allClosed"])
             self.assertEqual(observed["children"], 1)
             self.assertEqual(

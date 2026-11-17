@@ -1,5 +1,5 @@
 // Original SDK/native test driver. Runs only in a disposable trusted CI job.
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 const config = JSON.parse(readFileSync(process.argv[2], "utf8"));
@@ -19,7 +19,9 @@ const options = {
   disallowedTools: ["Read", "Glob", "Grep", "Edit", "MultiEdit", "Bash", "BashOutput", "KillShell", "NotebookEdit", "WebFetch", "WebSearch", "Task"],
   permissionMode: "default", abortController,
   canUseTool: async (toolName, input) => {
-    events.push({ event: "callback", toolName, input });
+    const effectBeforePermission = config.effect ? existsSync(config.effect) : false;
+    events.push({ event: "callback", toolName, input, effectBeforePermission });
+    if (effectBeforePermission) throw new Error("effect before permission");
     return config.case === "allow"
       ? { behavior: "allow", updatedInput: input }
       : { behavior: "deny", message: "owned fixture denial" };
@@ -47,7 +49,7 @@ try {
   handle = query({ prompt: prompt(), options });
   await handle.initializationResult();
   events.push({ event: "initialized" });
-  if (config.case === "cancel") cancellation = setTimeout(() => abortController.abort(), 1000);
+  if (["cancel", "deadline"].includes(config.case)) cancellation = setTimeout(() => abortController.abort(), config.case === "cancel" ? 1000 : 500);
   for await (const message of handle) {
     events.push({ event: "message", type: message.type, subtype: message.subtype,
       result: message.type === "result" ? message.result : undefined,
@@ -71,4 +73,4 @@ try {
 }
 console.log(JSON.stringify({ events, failure, children: children.length,
   allClosed: children.every((child) => child.closed) }));
-if (failure && config.case !== "cancel") process.exitCode = 1;
+if (failure && !["cancel", "deadline", "error"].includes(config.case)) process.exitCode = 1;

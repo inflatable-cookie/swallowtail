@@ -735,6 +735,16 @@ def check_workflows():
     for path in workflows:
         text = path.read_text()
         relative = str(path.relative_to(ROOT))
+        if path.name == "sdk240-trusted-native.yml":
+            # Decision1ec44a26 v2: ordinary PR-triggered frozen original tests,
+            # through the narrow Effigy selector, on disposable trusted hosts.
+            required = ("pull_request:", "contents: read", "persist-credentials: false",
+                        "timeout-minutes: 20", "effigy validate:claude-agent-sdk-trusted-native")
+            if any(token not in text for token in required) or any(
+                token in text for token in ("workflow_dispatch:", "secrets:", "cargo ")
+            ):
+                fail("trusted SDK original job routing/authority changed")
+            continue
         if path.name == "sdk234-preflight-diagnostic.yml":
             # Exact separately reviewed read-only diagnostic; no host admission.
             if (

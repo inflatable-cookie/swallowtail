@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "crates/swallowtail-adapter-claude-agent/tests/fixtures"
 PLAN = FIXTURES / "claude-agent-sdk-native-proof/probe-plan.json"
 PLAN_SHA = "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502"
-CASES = ("allow", "deny", "user-deny", "managed-deny", "cancel")
+CASES = ("allow", "deny", "user-deny", "managed-deny", "cancel", "deadline", "error")
 
 
 def digest(data):
@@ -122,6 +122,19 @@ def provision_node(base, target_platform):
     destination = base / "node"
     destination.write_bytes(node)
     destination.chmod(0o700)
+    observed = (
+        subprocess.run(
+            [str(destination), "--version"],
+            env={"PATH": "/usr/bin:/bin", "HOME": str(base), "TMPDIR": str(base)},
+            capture_output=True,
+            timeout=10,
+            check=True,
+        )
+        .stdout.decode()
+        .strip()
+    )
+    if observed != "v22.23.3":
+        raise ValueError("Node observed version mismatch")
     return destination, {
         "archiveSha256": expected,
         "binarySha256": digest(node),
@@ -152,7 +165,15 @@ class Peer(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(data)
             return
-        if self.server.case == "cancel":
+        if self.server.case == "error":
+            self.send_response(400)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(
+                b'{"type":"error","error":{"type":"invalid_request_error","message":"owned fixture error"}}'
+            )
+            return
+        if self.server.case in ("cancel", "deadline"):
             self.server.stopping.wait(4)
         continued = any(
             isinstance(message.get("content"), list)
@@ -249,12 +270,13 @@ def case(base, sdk, native, node, name):
         if platform.system() == "Linux"
         else Path("/Library/Application Support/ClaudeCode/managed-settings.json")
     )
-    if managed.exists():
-        raise ValueError("disposable fixture settings already present")
     if name == "managed-deny":
+        if managed.exists():
+            raise ValueError("disposable fixture settings already present")
         managed.parent.mkdir(parents=True, exist_ok=True)
         managed.write_text(json.dumps(settings))
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Peer)
+    server.daemon_threads = False
     server.requests, server.effect, server.case = [], effect, name
     server.stopping = threading.Event()
     thread = threading.Thread(target=server.serve_forever)
@@ -275,6 +297,7 @@ def case(base, sdk, native, node, name):
         "native": str(native),
         "workspace": str(workspace),
         "case": name,
+        "effect": str(effect),
         "environment": environment,
     }
     config_path = root / "case.json"
@@ -288,18 +311,21 @@ def case(base, sdk, native, node, name):
         command = [
             "/usr/bin/sandbox-exec",
             "-p",
-            '(version 1)(allow default)(deny network*)(allow network-outbound (remote ip "127.0.0.1:*"))(allow network-inbound (local ip "127.0.0.1:*"))',
+            '(version 1)(allow default)(deny network*)(allow network-outbound (remote ip "localhost:*"))(allow network-inbound (local ip "localhost:*"))',
             *command,
         ]
 
     def limits():
-        resource.setrlimit(resource.RLIMIT_CPU, (45, 45))
-        resource.setrlimit(resource.RLIMIT_NOFILE, (256, 256))
-        resource.setrlimit(resource.RLIMIT_FSIZE, (1048576, 1048576))
-        resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
-        # Darwin's RSS limit is advisory. Linux additionally has the strict
-        # container memory bound; neither is a hostile same-user guarantee.
-        resource.setrlimit(resource.RLIMIT_RSS, (2147483648, 2147483648))
+        for kind, value in (
+            (resource.RLIMIT_CPU, 45),
+            (resource.RLIMIT_NOFILE, 256),
+            (resource.RLIMIT_FSIZE, 1048576),
+            (resource.RLIMIT_CORE, 0),
+            (resource.RLIMIT_AS, 32 * 1024**4),
+        ):
+            hard = resource.getrlimit(kind)[1]
+            target = value if hard == resource.RLIM_INFINITY else min(value, hard)
+            resource.setrlimit(kind, (target, target))
 
     try:
         with (
@@ -414,8 +440,7 @@ def originals(work, inside=False):
             events = result.get("events", [])
             callbacks = [event for event in events if event["event"] == "callback"]
             expected_no_callback = (
-                name in ("user-deny", "managed-deny")
-                and row["sdk_version"] >= "0.3.319"
+                name == "managed-deny" and row["sdk_version"] >= "0.3.319"
             )
             if (
                 result["returncode"]
@@ -430,7 +455,14 @@ def originals(work, inside=False):
                         result.get("failure"),
                     )
                 )
-            elif name != "cancel" and (
+            elif name == "error":
+                if not any(
+                    e.get("type") == "result" and e.get("is_error") for e in events
+                ) and not result.get("failure"):
+                    failures.append(
+                        (row["sdk_version"], name, "missing error observation", None)
+                    )
+            elif name not in ("cancel", "deadline") and (
                 bool(callbacks) == expected_no_callback
                 or result["effect"] != (name == "allow")
                 or not any(
@@ -449,6 +481,19 @@ def originals(work, inside=False):
 
 
 def prepare(work, target):
+    (work / "metadata.json").write_text(
+        json.dumps(
+            {
+                "system": platform.system(),
+                "machine": platform.machine(),
+                "platform": platform.platform(),
+                "imageOS": os.environ.get("ImageOS"),
+                "imageVersion": os.environ.get("ImageVersion"),
+                "source": os.environ.get("GITHUB_SHA"),
+            },
+            indent=2,
+        )
+    )
     plan = json.loads(checked(PLAN.read_bytes(), PLAN_SHA))
     node, node_row = provision_node(work, target)
     rows = []

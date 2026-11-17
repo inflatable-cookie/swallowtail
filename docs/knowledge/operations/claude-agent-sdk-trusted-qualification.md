@@ -1,68 +1,79 @@
 # SDK disposable trusted-runner qualification
 
-Status: direct original SDK/native and shipped-sidecar component proof passed.
-Full qualification awaits actual Rust prepared-route, selected user-tier control,
-caller-deadline and stricter assertion evidence under task240 brief19. Proposed
-claims through0.3.322/2.1.322 remain under the qualification hold.
+Status: Linux x64 and Darwin arm64 each passed 100 original cases at
+9e5ee425dd7ec53a65402dc42a1d24595d988bc7. The proposed qualification through
+0.3.322/2.1.322 now has actual route proof; normal independent review, current
+CI and the planner's qualification hold remain merge gates.
 
 Tom's decision1ec44a26-3d20-45ab-84e9-1523c2dfbbe4 v2 on2026-11-17
 replaces the bespoke test-host admission ladder with trusted disposable
 GitHub-hosted Linux x64/macOS arm64 runners and ordinary OS/runtime libraries.
-The frozen original SDK/native tuples through0.3.322/2.1.322 and ephemeral exact
-runtime/dependency setup are authorized there with credential-free local peers.
-No original execution or installation is authorized on the persistent Mac.
-
 Rolling image builds are observed metadata, not admission pins. Recursive
 ELF/OpenSSL/Python custody, cache chmod, ptrace/pidfd/adoptee/cgroup attestation
-and original caller provenance are retired prerequisites for this test procedure.
-Historical records and three consumed manual runs remain failures at their
-original scopes; none is retried. Configuration capture44066141928 is recorded
-in [the retirement provenance](claude-agent-sdk-prototype-retirement.md).
+and caller-provenance catalogues are retired prerequisites for this test
+procedure. The three consumed manual failures and exact source history remain
+in [retirement provenance](claude-agent-sdk-prototype-retirement.md).
+No original execution or installation is authorized on the persistent Mac.
 
-Tests must use the actual prepared/shipped sidecar and frozen originals, bounded
-behaviours and real process waits. Isolated HOME/settings/workspace, explicit
-credential-free environments, owned HTTP/MCP/model peers, controlled effects and
-ordinary available network/resource controls apply. No live provider calls,
-account credentials, paid turns or hostile same-user sandbox claims. Node's
-22.23.2..22.23.3 axis stays separate; no22.23.4 widening. Linux proof cannot
-transfer to Darwin, Windows remains deferred, and ACP is independent.
+## Original route proof
 
-The next deliverable is actual selected-route original evidence and resulting
-claims, or an exact real product failure. Both qualification holds and Q-009
-remain until that proof and normal review/CI; no host framework or manual
-registration milestone is required.
+[Run44092489812](https://github.com/inflatable-cookie/swallowtail/actions/runs/44092489812)
+checks out9e5ee425dd7ec53a65402dc42a1d24595d988bc7 explicitly. The
+[receipt](claude-agent-sdk-trusted-qualification.json) binds tested source,
+artifacts, results and exact Node22.23.3 bytes. GitHub's reported SHA is the
+PR merge context; it is recorded separately from the actual checkout.
 
+Each platform's matrix has 100 cases across the317 control and318/319/321/322:
+35 direct SDK cases,30 shipped-sidecar cases and 35 through the actual Rust
+prepared facade, LocalProcessHost, permission exchange, event projection and
+session lifecycle. The original SDK modules and matching native binaries are
+verified against the unchanged frozen plan; no fake receives qualification
+credit. Owned-fake self-tests first exercise the same runner and assertion
+function, including mutations for missing, misordered and incorrect outcomes.
 
-## Observed original proof
+Allow and deny cases require Write activity, permission before effect, exact
+callback counts and continued output. Shipped/prepared user settings remain
+excluded by settingSources:[] and denial stays callback-mediated. A separate
+direct SDK control selects user settings: from319, both selected-user and
+managed denyInsteadOfPrompting suppress the callback, deny the tool and
+continue the turn.317/318 retain their observed callback behaviour. Each newer
+pair is executed; the318-to319 source delta agrees with these observations.
+Package/native behaviour v1 stays through318 and v2 starts319;320 is excluded.
 
-[Run44072626492](https://github.com/inflatable-cookie/swallowtail/actions/runs/44072626492)
-passed at checkout61ac73331ad94ed35c449b075bea8811c1d65213. Each platform ran
-70 cases: five frozen pairs, seven cases each through both the SDK selected
-options and the shipped sidecar. The [receipt](claude-agent-sdk-trusted-qualification.json)
-binds artifact/result hashes, platforms and exact Node22.23.3 bytes. GitHub's
-reported SHA is the PR merge context; the workflow explicitly checks out the
-PR head, recorded separately in the receipt. Final claim-only changes retain
-these exact runner/native/sidecar inputs rather than replaying unchanged proof.
+Prepared cancellation requires Cancelled after an explicit request; the caller's
+real deadline API requires TimedOut without that request. A real 400 API error
+requires ProviderFailed. Strict assertions require ordered activity/results,
+denial continuation, actual native exit and driver wait, and a successful
+cooperative close receipt. Two minimal product fixes classify the native's
+requested aborted_streaming result as cancellation and retain a timed-out turn
+to drain exactly one expected native abort before close. Other late events and
+duplicate terminals still refuse; no new activity or permission is projected.
 
-The cases cover callback allow/deny with no effect before permission; excluded
-user settings; managed deny without a callback and continued output from319;
-ordered turn start/result and provider-error output; cancellation/deadline and
-actual child close/sidecar exit. The owned prompt-requiring Write is controlled
-inside each isolated fixture. No fake SDK/native receives qualification credit.
-Sidecar fixture instrumentation supplies only loopback transport/dummy key and
-holds the actual child through close; it does not replace product permission or
-message projection. Local owned-fake tests cover this driver before originals.
+The ordinary host reports root-only completion as Degraded with the exact
+close_root_only_degraded diagnostic. Proof retains that limit: positive native
+and driver waits do not attest an empty descendant tree or hostile same-user
+containment. Every case uses isolated HOME/settings/workspace, explicit dummy
+credentials, owned loopback peers, finite process limits and controlled effects.
+Linux uses a standard network-none Trixie container; Darwin uses the existing
+loopback-only OS sandbox. Bounds remain 45s/case plus 5s stop/join, 1MiB output
+per case, 16MiB artifacts and 20min jobs. No live provider or paid turn runs.
 
-First changed hop318→319 is supported by the retained per-hop source ledger and
-real matching-native observations on both platforms;321/322 are each executed,
-not inferred from another binary. Package/native v1 stays through318 and v2
-starts319; unpublished320 stays excluded. Node/wire/source axes remain separate;
-no Node22.23.4, Windows or ACP transfer. This is trusted test-machine evidence,
-not hostile same-user containment or new live-provider qualification.
+## Retained scopes and failures
 
-The first direct run44070325578 retained two harness failures: an incorrect
-expectation that excluded user settings suppress callbacks, and a Darwin
-resource-limit portability failure. Corrected direct run44071249908 passed35
-cases/platform. Both remain history; the140-case shipped-sidecar composition is
-44072626492. Ordinary process limits, Linux network-none container and Darwin
-loopback-only sandbox,45s case bounds plus5s join, and16MiB artifact cap apply.
+The earlier 140 observations at61ac73331ad94ed35c449b075bea8811c1d65213
+([44072626492](https://github.com/inflatable-cookie/swallowtail/actions/runs/44072626492))
+remain direct SDK/sidecar components. Their timer-labelled deadline was an abort
+control, not typed Rust deadline proof. They are not transferred as prepared
+route evidence. Earlier44070325578 retained incorrect user-setting assumptions
+and a Darwin limit failure; corrected direct44071249908 passed its component
+scope. Run44087907051 then exposed a Linux container ABI mismatch and incomplete
+prepared deadline waits. The Trixie correction at392b09faf68da7cb4be0e59b61c9dac812557a5a
+([44089153111](https://github.com/inflatable-cookie/swallowtail/actions/runs/44089153111))
+left five Linux and one Darwin deadline-wait failures. None is relabelled a pass.
+The new deadline regression also retained a failed virtual-clock fixture setup
+before its correction; 52 focused adapter tests and nine owned harness tests pass.
+
+The Node22.23.2..22.23.3 axis, older pairs/default, live evidence and exclusions
+remain separate. No Node22.23.4 widening, Windows or ACP transfer is claimed.
+This evidence qualifies only the tested trusted-machine selected flows; normal
+review/CI and planner hold release remain the merge gates.

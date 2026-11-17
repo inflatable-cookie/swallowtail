@@ -194,19 +194,21 @@ approval; not a new Tom ruling):
 
 ## Q-009 — How should `claude-agent.sdk` qualify past `0.3.317`?
 
-Status: component proof retained; prepared-route, user-tier and typed deadline gaps require new original evidence under task240 brief19.
+Status: answered 2026-11-17; independent review/CI and planner merge-hold release remain.
 Gate owner: maintainers for independent review/CI; planner for merge-hold release.
 
 Tom's decision1ec44a26 v2 replaces the custom test-host ladder with trusted
-disposable runners. [Original SDK/native and shipped-sidecar qualification](operations/claude-agent-sdk-trusted-qualification.md)
-passed140 component cases across Linux x64 and Darwin arm64 for the317 control and the
-318/319/321/322 pairs. Managed deny-instead-of-prompting starts at319 without a
-callback, permits continued output and retains a distinct v2 package/native
-segment. User settings remain excluded by this route. Node22.23.2..22.23.3,
-older points/default pair, live evidence and exclusions remain separate.
-No extra recursive loader/OpenSSL/custody admission gate applies to these tests.
-Both merge holds await normal review/CI; this evidence gives no ACP/Windows,
-hostile same-user sandbox or new paid-provider claim.
+disposable runners. [Original qualification](operations/claude-agent-sdk-trusted-qualification.md)
+passed 200 cases across Linux x64 and Darwin arm64 for the317 control and
+318/319/321/322 pairs, including the actual Rust prepared route, selected-user
+no-callback control, distinct typed cancellation/deadline and actual native/root
+waits. Shipped user settings remain excluded. Managed and selected-user denial
+without callbacks starts at319; package/native v2 stays separate from v1.
+Node22.23.2..22.23.3, older points/default, live evidence and exclusions remain
+independent. No ACP, Windows, hostile sandbox or empty-descendant-tree claim
+transfers. The earlier 140 observations remain component proof, not prepared
+route or caller-deadline evidence.
 
 Historical decisions, source and consumed attempts remain at the exact commits
-and Nucleus proof records named in the [retirement note](operations/claude-agent-sdk-prototype-retirement.md).
+and Nucleus proof records in the [retirement note](operations/claude-agent-sdk-prototype-retirement.md).
+No recursive loader/OpenSSL/custody admission gate applies to this test procedure.

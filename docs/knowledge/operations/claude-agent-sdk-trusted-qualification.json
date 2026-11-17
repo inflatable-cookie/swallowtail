@@ -1,9 +1,9 @@
 {
-  "schema": "sdk240.trusted-native-qualification.v1",
-  "trust": "Disposable GitHub OS/runtime trusted; no hostile same-user sandbox claim",
+  "schema": "sdk240.trusted-native-qualification.v2",
+  "trust": "Disposable GitHub OS/runtime trusted; no hostile same-user sandbox or empty-descendant-tree claim",
   "decision": "1ec44a26-3d20-45ab-84e9-1523c2dfbbe4/v2",
-  "runId": 44072626492,
-  "implementationHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
+  "runId": 44092489812,
+  "implementationHead": "9e5ee425dd7ec53a65402dc42a1d24595d988bc7",
   "frozenPlanSha256": "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502",
   "sdkNativePairs": [
     "0.3.317/2.1.317",
@@ -12,67 +12,89 @@
     "0.3.321/2.1.321",
     "0.3.322/2.1.322"
   ],
-  "cases": [
-    "allow",
-    "deny",
-    "user-deny",
-    "managed-deny",
-    "cancel",
-    "deadline",
-    "error"
-  ],
+  "casesPerPlatform": {
+    "directSdk": 35,
+    "shippedSidecar": 30,
+    "rustPreparedRoute": 35
+  },
+  "preparedOutcomesPerPlatform": {
+    "Completed": 20,
+    "Cancelled": 5,
+    "ProviderFailed": 5,
+    "TimedOut": 5
+  },
   "platforms": [
     {
-      "platform": "darwin-arm64",
-      "os": "macOS-26.7.2-arm64-arm-64bit-Mach-O",
-      "workflowHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
-      "reportedGithubSha": "4c42926de72c918b2bdecc2928c4c736ff25981b",
-      "artifactId": 14323602620,
-      "artifactSha256": "f972081ce803e3d2e788d71de0bd84ced7dd644afd91174930197c39e7dd8415",
-      "resultSha256": "452460114094bb0f17b743f4874c6195c258f97c32b5c82b08a3a57a61fc6d62",
-      "node": {
-        "archiveSha256": "72d5d8832b41c9d9646197af614ffd751406ea4d215060eb91b98864e1919a3e",
-        "binarySha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
-        "version": "22.23.3"
-      },
-      "cases": 70,
-      "originalSdkCases": 35,
-      "shippedSidecarCases": 35,
-      "failures": 0
-    },
-    {
       "platform": "linux-x64",
-      "os": "Linux-7.0.0-1016-aws-x86_64-with-glibc2.36",
-      "workflowHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
-      "reportedGithubSha": "4c42926de72c918b2bdecc2928c4c736ff25981b",
-      "artifactId": 14322903590,
-      "artifactSha256": "66b5dd64ee2f24816aefa604bb14279d5c99a7d136397fbc33ac305bf8857f48",
-      "resultSha256": "406d33fdb911f8092fd65e9474799a868438c2c7fe92f5c8c37b339b1e5ad4a9",
+      "os": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.41",
+      "runnerMetadata": {
+        "system": "Linux",
+        "machine": "x86_64",
+        "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.43",
+        "imageOS": "ubuntu26",
+        "imageVersion": "20261111.196.1",
+        "source": "20cd995296ffeb2a8fea32b03b020dda9d831339"
+      },
+      "workflowHead": "9e5ee425dd7ec53a65402dc42a1d24595d988bc7",
+      "artifactId": 14332382498,
+      "artifactSha256": "3828d75ed37094ff1c0896d2bb4975147689726c74cfa70eff3770813dbe91c7",
+      "resultSha256": "e1d0577278b3ba01f8566732534cf73bc90d63f929a230ae807e492ba5050c2a",
       "node": {
         "archiveSha256": "df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de",
         "binarySha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
         "version": "22.23.3"
       },
-      "cases": 70,
-      "originalSdkCases": 35,
-      "shippedSidecarCases": 35,
+      "cases": 100,
+      "failures": 0
+    },
+    {
+      "platform": "darwin-arm64",
+      "os": "macOS-26.7.2-arm64-arm-64bit-Mach-O",
+      "runnerMetadata": {
+        "system": "Darwin",
+        "machine": "arm64",
+        "platform": "macOS-26.7.2-arm64-arm-64bit-Mach-O",
+        "imageOS": "macos26",
+        "imageVersion": "20261112.0504.1",
+        "source": "20cd995296ffeb2a8fea32b03b020dda9d831339"
+      },
+      "workflowHead": "9e5ee425dd7ec53a65402dc42a1d24595d988bc7",
+      "artifactId": 14334181291,
+      "artifactSha256": "ab55158ac2db26fb81305edaf2cbaf81874ca4ddf36b2919bffb8e61eba04012",
+      "resultSha256": "7130756c146e56d29fa55eefa205a0ea72c073865f9648560ebf6a17adc01c29",
+      "node": {
+        "archiveSha256": "72d5d8832b41c9d9646197af614ffd751406ea4d215060eb91b98864e1919a3e",
+        "binarySha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "version": "22.23.3"
+      },
+      "cases": 100,
       "failures": 0
     }
   ],
   "observations": {
-    "permissionBeforeEffect": true,
-    "callbackAllowDeny": true,
-    "userSettingsExcludedBySettingSourcesEmpty": true,
-    "managedDenyNoCallbackFrom319": true,
-    "managedDenyContinues": true,
-    "orderedTurnStartResultError": true,
-    "actualNativeCloseAndSidecarExitObserved": true
+    "actualRustPreparedFacadeAndLocalProcessHost": true,
+    "permissionBeforeEffectAndExactCallbacks": true,
+    "orderedToolActivityAndDenialContinuation": true,
+    "productUserSettingsExcluded": true,
+    "separateSelectedUserAndManagedNoCallbackFrom319": true,
+    "realApiError400": true,
+    "explicitCancellationDistinctFromCallerDeadline": true,
+    "actualNativeExitAndDriverWaitAndCooperativeClose": true
   },
-  "fixtureTransport": "Sidecar spawn instrumentation injects only owned loopback API endpoint/dummy key and disables optional traffic. Product permission/mapping/lifecycle logic is unchanged. Native binaries and SDK modules are originals, not fixtures.",
+  "cleanup": "RootCompleted is the test receipt label for the existing Degraded/close_root_only_degraded outcome; actual native and root waits are positive, owned descendant-tree emptiness is not attested.",
+  "fixtureTransport": "Only owned loopback peers and dummy keys; production permission and projection guards unchanged. Original SDK/native bytes match the retained plan.",
+  "historicalComponentProof": {
+    "runId": 44072626492,
+    "implementationHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
+    "cases": 140,
+    "receiptRetainedAt": "9e5ee425dd7ec53a65402dc42a1d24595d988bc7:docs/knowledge/operations/claude-agent-sdk-trusted-qualification.json",
+    "receiptSha256": "ec192109b0e86be1150b2868dce9a5d43ba84c714aa918a710dbd8c52f338963",
+    "scope": "Direct SDK and sidecar components only; old timer-labelled deadline was an abort control, not typed prepared deadline proof."
+  },
   "historicalFailures": {
-    "44070325578": "Linux originals ran; three incorrect user-settings assertions failed. macOS preexec resource setup failed. Neither failure counted as qualification.",
-    "44071249908": "Corrected direct-original35 cases/platform passed; before shipped-sidecar composition."
+    "44087907051": "Linux prepared consumer could not start against the bookworm glibc ABI; Darwin also exposed incomplete deadline waits. No qualification credit for failed cases.",
+    "44089153111": "Trixie fixed Linux ABI; five Linux and one Darwin prepared deadline cases still lacked native wait evidence. Retained as failures."
   },
-  "scope": "No live provider, new public Node range, Windows proof, ACP transfer, or guarantee that every tool class was separately executed. Prompt-requiring owned Write exercises the shared permission branch; retained per-hop source evidence remains bound.",
-  "evidenceScope": "Historical direct SDK and shipped-sidecar components only. Not actual Rust prepared-route, selected-user-tier or typed caller-deadline proof; task240 brief19 requires additional exact-head originals before full qualification."
+  "implementationCiRun": 44092489963,
+  "scope": "Tested selected flows on Linux x64 and Darwin arm64. Older points/default, live evidence, Node22.23.2..22.23.3 and exclusions remain independent. No Node22.23.4, Windows or ACP transfer. Independent review/CI and planner hold release remain required."
 }

@@ -58,7 +58,8 @@ jobs:
           git -C "$work/effigy-source" fetch --depth 1 origin ee4ac29b6fff184669d702b22dcd1224aaf99713
           git -C "$work/effigy-source" checkout --detach --no-recurse-submodules FETCH_HEAD
           test "$(git -C "$work/effigy-source" rev-parse HEAD)" = ee4ac29b6fff184669d702b22dcd1224aaf99713
-          cargo install --path "$work/effigy-source" --debug --locked --root "$work/effigy" effigy
+          # Reuse ordinary rust-cache build outputs for this exact tool source.
+          CARGO_TARGET_DIR="$GITHUB_WORKSPACE/target/acp-effigy" cargo install --path "$work/effigy-source" --debug --locked --root "$work/effigy" effigy
           echo "$work/effigy/bin" >> "$GITHUB_PATH"
       - name: Prove owned harness before originals
         run: |

@@ -638,12 +638,12 @@ fn timed_out_turn_drains_one_abort_terminal_for_cooperative_close_only() {
             block_on(prepared_session(host).open_session(services.clone())).expect("open");
         let mut turn = block_on(session.start_turn(
             turn_request("turn", "owned").with_deadline(swallowtail_runtime::Deadline::at(
-                swallowtail_runtime::MonotonicInstant::from_ticks(100),
+                swallowtail_runtime::MonotonicInstant::from_ticks(1_100),
             )),
             services.clone(),
         ))
         .expect("turn");
-        fixture.advance_time_to_ticks(100);
+        fixture.advance_time_to_ticks(1_100);
         let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
         assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
         let _ = block_on(turn.close());

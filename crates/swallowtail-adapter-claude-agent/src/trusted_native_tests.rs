@@ -301,7 +301,17 @@ fn exercise(config: &Value) {
     let root = Path::new(config["caseRoot"].as_str().expect("owned case"));
     let mut binding = None;
     let scenario = config["scenario"].as_str().expect("scenario");
-    let contexts = if matches!(scenario, "allow" | "user-deny" | "managed-deny") {
+    let unsupported = matches!(
+        scenario,
+        "inherited-user-unsupported" | "inherited-managed-unsupported"
+    );
+    if unsupported {
+        assert_eq!(config["hop"], "0.101.0");
+        assert_eq!(config["original"], true);
+    }
+    let permits = scenario == "allow" || unsupported;
+    let read_case = permits || matches!(scenario, "user-deny" | "managed-deny");
+    let contexts = if read_case {
         vec!["new", "load", "resume"]
     } else {
         vec!["new"]
@@ -344,11 +354,7 @@ fn exercise(config: &Value) {
                 .expect("persisted session binding")
                 .clone(),
         );
-        let count = if matches!(scenario, "allow" | "user-deny" | "managed-deny") {
-            2
-        } else {
-            1
-        };
+        let count = if read_case { 2 } else { 1 };
         for turn_index in 0..count {
             scope.renew_behaviour_budget();
             println!("ACP_TRUSTED_BEGIN {context}/{turn_index}/{scenario}");
@@ -421,7 +427,7 @@ fn exercise(config: &Value) {
                     futures_util::select! {
                         request=requests.next()=>if let Some(request)=request {
                             let request=request.expect("callback");callback_count+=1;
-                            assert_eq!(scenario,"allow","inherited denial must not fabricate a callback");
+                            assert!(permits,"inherited denial must not fabricate a callback");
                             assert!(!observations(root).last().is_some_and(|r|r["continuing"]==true),"tool effect before permission");
                             let CallbackRequestKind::Extension(extension)=request.kind() else {panic!("expected actual ACP permission extension")};
                             let offered:Value=serde_json::from_slice(extension.payload()).expect("permission options");
@@ -433,9 +439,9 @@ fn exercise(config: &Value) {
                 }
             });
             let outcome = block_on(terminal);
-            if matches!(scenario, "allow" | "user-deny" | "managed-deny") {
+            if read_case {
                 assert_eq!(outcome.status(), &TerminalStatus::Completed, "{outcome:?}");
-                assert_eq!(callback_count, usize::from(scenario == "allow"));
+                assert_eq!(callback_count, usize::from(permits));
                 assert!(
                     outcome
                         .output()
@@ -461,7 +467,7 @@ fn exercise(config: &Value) {
                             .rev()
                             .find(|r| r["selected"] == true && r["continuing"] == true)
                             .expect("this turn's actual tool result")["secretSeen"],
-                        scenario == "allow"
+                        permits
                     );
                     assert!(
                         observed

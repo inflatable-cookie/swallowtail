@@ -109,3 +109,11 @@ prompts in the frozen ACP. The adapter now accepts absent usage only for
 validation for supplied usage and completed turns. The owned cancellation peer
 omits usage as a focused regression; the malformed-usage regression remains in
 the covering selector. Original deadline cases must report TimedOut specifically.
+
+The original0.101.0/SDK0.3.318 still issues permission callbacks with the inherited
+key enabled;0.101.1 and later tested native versions deny without that callback.
+The0.101.0 unsupported-key cases are explicitly named as such and must continue
+through real consumer permission, not receive denial credit. This preserves its
+older permission semantics; the planned distinct v8 segment begins at0.101.1.
+No vendor patch or setting override retrofits the newer feature into0.101.0.
+Earlier qualified segments and their exclusions remain untouched.

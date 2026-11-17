@@ -321,6 +321,10 @@ def inside(root):
             "native-exit",
             "error",
         ):
+            # Native0.3.318 predates denyInsteadOfPrompting. Keep this point's
+            # callback semantics; do not count an unsupported key as a denial.
+            if case["hop"] == "0.101.0" and scenario in ("user-deny", "managed-deny"):
+                scenario = "inherited-" + scenario.split("-")[0] + "-unsupported"
             work = root / (case["hop"] + "-" + scenario)
             for relative in ("workspace", "home/.claude", "outside"):
                 (work / relative).mkdir(parents=True, exist_ok=True)
@@ -335,13 +339,14 @@ def inside(root):
                     {
                         "permissions": {
                             "ask": ["Read"],
-                            "denyInsteadOfPrompting": scenario == "user-deny",
+                            "denyInsteadOfPrompting": scenario
+                            in ("user-deny", "inherited-user-unsupported"),
                         }
                     }
                 )
             )
             policy = json.dumps({"permissions": {"denyInsteadOfPrompting": True}})
-            if scenario == "managed-deny":
+            if scenario in ("managed-deny", "inherited-managed-unsupported"):
                 if platform.system() == "Darwin":
                     subprocess.run(
                         ["sudo", "-n", "tee", str(system_policy)],

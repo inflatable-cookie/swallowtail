@@ -1,7 +1,7 @@
 # SDK disposable trusted-runner qualification
 
 Status: Linux x64 and Darwin arm64 each passed 100 original cases at
-9e5ee425dd7ec53a65402dc42a1d24595d988bc7. A final deadline-recipient race correction awaits changed-input proof. The proposed qualification through
+9e5ee425dd7ec53a65402dc42a1d24595d988bc7. The proposed qualification through
 0.3.322/2.1.322 now has actual route proof; normal independent review, current
 CI and the planner's qualification hold remain merge gates.
 
@@ -93,3 +93,23 @@ qualification job now selects macos-15, a standard arm64 label in
 This stays within the trusted disposable OS ruling; the actual image is
 observed metadata, not an admission pin. SDK/native/Node identities and bounds
 stay unchanged.
+
+## Deadline recipient and reuse repair
+
+[Run 44125722281](https://github.com/inflatable-cookie/swallowtail/actions/runs/44125722281)
+passed 15 original two-turn cases per platform at 8b7223e2622490ef74183b2e54a7be887374202e:
+deadline, cancellation and normal reuse on all five frozen pairs. Every first
+deadline returned TimedOut and observed typed busy before a genuine next turn
+completed. Cancellation stayed Cancelled; normal and next outcomes completed.
+Raw ordering requires the old native terminal before the next start. Permission,
+continuation, actual native/driver waits and root-only Degraded limits remain
+strict. The receipt binds actual Linux and macos-15 arm64 artifacts and Node
+bytes. Earlier 200-case evidence keeps its original source scope.
+
+The owned tests now checkpoint native start before virtual expiry and terminal
+dispatch before close; the prior timing-dependent cleanup failure stays failed.
+They hold the old terminal while attempting a second query, cover missing,
+duplicate, stale and racing terminals, and observe normal reuse after settlement.
+Receipt scheduling may return only bounded typed busy before admission; it is
+not assumed synchronous with wire dispatch. No product permission or projection
+policy is weakened. Normal CI 44125722318 passed after the fixture correction.

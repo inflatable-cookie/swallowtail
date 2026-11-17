@@ -212,3 +212,8 @@ route or caller-deadline evidence.
 Historical decisions, source and consumed attempts remain at the exact commits
 and Nucleus proof records in the [retirement note](operations/claude-agent-sdk-prototype-retirement.md).
 No recursive loader/OpenSSL/custody admission gate applies to this test procedure.
+
+The final deadline-recipient repair adds 30 original two-turn lifecycle cases
+across both platforms; see the owning qualification receipt for exact heads,
+busy/refusal ordering, native waits and retained failures. Earlier component and
+full-matrix observations are not relabelled as current-head evidence.

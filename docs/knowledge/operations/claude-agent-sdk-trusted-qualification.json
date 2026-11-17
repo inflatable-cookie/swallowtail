@@ -96,5 +96,90 @@
     "44089153111": "Trixie fixed Linux ABI; five Linux and one Darwin prepared deadline cases still lacked native wait evidence. Retained as failures."
   },
   "implementationCiRun": 44092489963,
-  "scope": "Tested selected flows on Linux x64 and Darwin arm64. Older points/default, live evidence, Node22.23.2..22.23.3 and exclusions remain independent. No Node22.23.4, Windows or ACP transfer. Independent review/CI and planner hold release remain required."
+  "scope": "Tested selected flows on Linux x64 and Darwin arm64. Older points/default, live evidence, Node22.23.2..22.23.3 and exclusions remain independent. No Node22.23.4, Windows or ACP transfer. Independent review/CI and planner hold release remain required.",
+  "deadlineOwnershipRepair": {
+    "runId": 44125722281,
+    "implementationHead": "8b7223e2622490ef74183b2e54a7be887374202e",
+    "scope": "15 original prepared lifecycle cases/platform, each with a genuine second turn; deadline, cancellation and normal reuse on all five frozen pairs. Earlier full200 remains at its declared heads.",
+    "reuseInvariant": "TimedOut recipient retained until exact native terminal drain and successful correlated interrupt completion; pending/unknown refuses before query. Expiry, event dispatch, release and replacement share the existing lock.",
+    "platforms": [
+      {
+        "platform": "linux-x64",
+        "os": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.41",
+        "runnerMetadata": {
+          "system": "Linux",
+          "machine": "x86_64",
+          "platform": "Linux-7.0.0-1019-azure-x86_64-with-glibc2.43",
+          "imageOS": "ubuntu26",
+          "imageVersion": "20261111.196.1",
+          "source": "d8a0025a99afd6e97c09cd389738f79b2e037b86"
+        },
+        "artifactId": 14346973960,
+        "artifactSha256": "7c70e0511afa448d5dce29e0746a1356ff5f3ed9bf11ec5db5a74725420b0b58",
+        "resultSha256": "860a92640b415f1845ae872a41d99c8ed84f1cd14a8c6f729edc92e7a9d89b82",
+        "node": {
+          "archiveSha256": "df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de",
+          "binarySha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+          "version": "22.23.3"
+        },
+        "cases": 15,
+        "turns": 30,
+        "failures": 0,
+        "deadlineBusyRefusals": [
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      {
+        "platform": "darwin-arm64",
+        "os": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+        "runnerMetadata": {
+          "system": "Darwin",
+          "machine": "arm64",
+          "platform": "macOS-15.8.2-arm64-arm-64bit-Mach-O",
+          "imageOS": "macos15",
+          "imageVersion": "20261104.0514.1",
+          "source": "d8a0025a99afd6e97c09cd389738f79b2e037b86"
+        },
+        "artifactId": 14347732103,
+        "artifactSha256": "f0382fd4cbf7d1f0f2a3c3411b7067d20d25fd113b4a1a49e9fc2d97dccdf94a",
+        "resultSha256": "544eaaea38113940a75f4358a276628483ffa01a75951c383d5137f4e3ce7c42",
+        "node": {
+          "archiveSha256": "72d5d8832b41c9d9646197af614ffd751406ea4d215060eb91b98864e1919a3e",
+          "binarySha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+          "version": "22.23.3"
+        },
+        "cases": 15,
+        "turns": 30,
+        "failures": 0,
+        "deadlineBusyRefusals": [
+          1,
+          1,
+          2,
+          1,
+          2
+        ]
+      }
+    ],
+    "firstOutcomesPerPlatform": {
+      "TimedOut": 5,
+      "Cancelled": 5,
+      "Completed": 5
+    },
+    "nextOutcomesPerPlatform": {
+      "Completed": 15
+    },
+    "orderedNativeTerminalBeforeNextStart": true,
+    "actualNativeAndDriverWaits": true,
+    "rootOnlyDegradedPreserved": true,
+    "normalCiRun": 44125722318,
+    "retainedFailures": {
+      "44113045668": "Author-caused Rust1.95 collapsible_match lint; equivalent match guard fixed it. The superseded workflow was cancelled; the failed job remains failed.",
+      "44114321537": "Mac latest cancelled before any command: hosted runner not acquired after multiple attempts. No Mac test credit; Linux15 passed.",
+      "44121411903": "Older owned drain test advanced virtual time before native start dispatch; its cleanup assertion failed. Startup/terminal checkpoints fixed the fixture; strict assertions remain."
+    }
+  }
 }

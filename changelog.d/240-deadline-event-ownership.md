@@ -18,3 +18,7 @@ Keep frozen artifacts, observed OS metadata, isolated peers and all bounds.
 
 Make the owned deadline tests synchronize native-start and terminal dispatch
 before virtual expiry and close, retaining the same strict cleanup assertions.
+
+Passed 30 original lifecycle cases across Linux x64 and Darwin arm64, covering60
+turns with actual native/driver waits and genuine reuse after deadline/cancel.
+Keep earlier full-matrix evidence at its accepted heads and all exclusions.

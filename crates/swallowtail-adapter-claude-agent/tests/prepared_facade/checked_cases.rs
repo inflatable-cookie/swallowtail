@@ -155,7 +155,7 @@ fn prepared_guarded_denial_without_callback_preserves_order_and_cleanup() {
     let binding = CheckedProcessRef::new("fixture.checked.binding").expect("binding");
     let discovery = CheckedFixture::new(FixtureHost::new(Scenario::Version, "0.106.0"), graph.clone(), expected);
     let prepared = block_on(prepare_claude_agent(preparation_input(host_id.clone()).with_checked_process(binding), probe(), discovery.services(host_id.clone()))).expect("checked fake discovery");
-    assert!(!prepared.observation().is_qualified());
+    assert!(prepared.observation().is_qualified());
     let profile = prepared.prepare_session(ClaudeAgentSessionProfileInput::new(
         RequestId::new("checked-denial-open").expect("request"),
         ClaudeAgentModelSelection::new(ModelRouteId::new("checked.route").expect("route"), ModelRouteRevision::new("1").expect("revision"), ModelId::new("claude-sonnet-4-6").expect("model")),
@@ -182,6 +182,7 @@ fn prepared_guarded_denial_without_callback_preserves_order_and_cleanup() {
     assert!(!operation.inner.writes().iter().any(|message| message.get("id").and_then(serde_json::Value::as_u64) == Some(900)));
     assert_eq!(block_on(turn.close()), CleanupOutcome::NotApplicable);
     assert_eq!(block_on(session.close(operation.inner.cleanup_request(), services)), CleanupOutcome::Clean);
+    assert!(operation.inner.writes().iter().any(|message| message.get("method").and_then(serde_json::Value::as_str) == Some("session/close")));
     assert_eq!(operation.ordinary_starts.load(Ordering::SeqCst), 0);
     assert_eq!(operation.inner.resource_releases(), 1);
     assert_eq!(operation.inner.credential_releases(), 1);

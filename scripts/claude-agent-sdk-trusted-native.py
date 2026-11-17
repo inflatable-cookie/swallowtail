@@ -672,7 +672,7 @@ def originals(work, inside=False):
             str(ROOT) + ":" + str(ROOT) + ":ro",
             "-v",
             str(work) + ":" + str(work),
-            "python:3.12-bookworm",
+            "python:3.12-trixie",
             "python3",
             "-B",
             str(Path(__file__).resolve()),

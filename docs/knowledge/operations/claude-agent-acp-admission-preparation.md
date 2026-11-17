@@ -117,3 +117,16 @@ through real consumer permission, not receive denial credit. This preserves its
 older permission semantics; the planned distinct v8 segment begins at0.101.1.
 No vendor patch or setting override retrofits the newer feature into0.101.0.
 Earlier qualified segments and their exclusions remain untouched.
+
+Diagnostics identified the intermittent cancelled-turn close failure as a race
+between terminal event-buffer closure and an already-bound update still being
+projected. Projection and terminalization now serialize; a valid tail retained
+by the finished turn publishes nothing, while mismatched sessions and unattached
+updates retain their existing rejection. A deterministic regression closes the
+turn first, delivers its bound replay tail, and checks no output/events reopen.
+
+macOS resource setup also hit EAGAIN before vendor startup: RLIMIT_NPROC applies
+to the runner user's existing OS processes, not just the fixture. Its finite
+user limit is now2048 (or the lower existing ceiling); Linux retains the offline
+container's256-task cap. The limits self-test must actually start and wait an
+owned Python child. These ordinary OS limits are not a custody/sandbox claim.

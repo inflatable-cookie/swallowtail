@@ -28,6 +28,7 @@ pub(crate) struct ActiveTurn {
     sequence: AtomicU64,
     output: Mutex<String>,
     activity: Mutex<crate::acp_activity::AcpActivityProjection>,
+    projection: Mutex<()>,
     deadline: Option<Deadline>,
     callbacks: crate::permission::CallbackHub,
     connection: Weak<crate::connection::AcpConnection>,
@@ -72,6 +73,7 @@ impl ActiveTurn {
                 sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
                 activity: Mutex::new(crate::acp_activity::AcpActivityProjection::new(runtime_id)),
+                projection: Mutex::new(()),
                 deadline,
                 callbacks,
                 connection,
@@ -196,6 +198,10 @@ impl ActiveTurn {
     }
 
     pub(crate) fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
+        let _projection = self
+            .projection
+            .lock()
+            .expect("turn projection lock poisoned");
         let decoded =
             swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
         if decoded.session_id.as_str() != self.session_id {
@@ -203,6 +209,11 @@ impl ActiveTurn {
                 "swallowtail.claude_agent.acp.session_mismatch",
                 "Claude Agent update does not match the active session",
             ));
+        }
+        // A response task can terminalize while the pump retains this turn.
+        // Validate the bound frame, then discard its already-finished tail.
+        if self.is_finished() {
+            return Ok(());
         }
         match &decoded.update {
             AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
@@ -310,6 +321,10 @@ impl ActiveTurn {
     }
 
     fn finish_internal(&self, status: TerminalStatus, usage: Option<TokenUsage>) {
+        let _projection = self
+            .projection
+            .lock()
+            .expect("turn projection lock poisoned");
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
@@ -418,5 +433,43 @@ fn text_content(content: &AcpContentBlock) -> Result<&str, RuntimeFailure> {
     match content {
         AcpContentBlock::Text(text) => Ok(text.as_str()),
         _ => Err(malformed()),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use futures_executor::block_on;
+    use futures_util::StreamExt;
+    use serde_json::json;
+
+    #[test]
+    fn late_cancelled_turn_update_does_not_reopen_terminal_events() {
+        let (turn, events, _, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("owned.cancel-tail").unwrap(),
+            "owned-session".into(),
+            None,
+            &ProviderRequestPolicy::reject_all(),
+            Weak::new(),
+        )
+        .unwrap();
+        turn.finish_prompt(&json!({"stopReason":"cancelled"}));
+        let tail = json!({"sessionId":"owned-session","update":{
+            "sessionUpdate":"user_message_chunk", "content":{"type":"text","text":"in-flight replay"}
+        }});
+        turn.handle_update(&tail)
+            .expect("finished tail does not fail the connection");
+        let mut wrong = tail.clone();
+        wrong["sessionId"] = "different-session".into();
+        assert!(
+            turn.handle_update(&wrong).is_err(),
+            "binding validation remains strict"
+        );
+        let rows = block_on(events.collect::<Vec<_>>());
+        assert_eq!(rows.len(), 1, "only the original Started event remains");
+        assert!(rows[0].is_ok());
+        let outcome = block_on(terminal);
+        assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+        assert!(outcome.output().is_none(), "no late output is published");
     }
 }

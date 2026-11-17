@@ -237,7 +237,10 @@ def execution_limits():
     import resource
 
     limits = {}
-    requested = [("RLIMIT_NPROC", 256), ("RLIMIT_NOFILE", 2048)]
+    requested = [
+        ("RLIMIT_NPROC", 2048 if platform.system() == "Darwin" else 256),
+        ("RLIMIT_NOFILE", 2048),
+    ]
     if platform.system() != "Darwin":
         requested.append(("RLIMIT_RSS", 4 * 1024**3))
     else:
@@ -451,6 +454,9 @@ def main():
     args = parser.parse_args()
     if args.limits_self_test:
         print(json.dumps(execution_limits()))
+        subprocess.run(
+            [sys.executable, "-I", "-B", "-c", "pass"], check=True, timeout=5
+        )
         return
     if args.inside:
         inside(args.inside)

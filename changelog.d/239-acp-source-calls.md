@@ -37,3 +37,6 @@
 
 - Preserve cancellation when the frozen ACP omits usage for a queued turn;
   absent counters stay unknown and malformed supplied counters still fail.
+
+- Serialize turn projection with terminalization so a cancelled turn's bound
+  in-flight tail cannot close the ACP transport through a rejected event send.

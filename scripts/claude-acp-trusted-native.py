@@ -235,8 +235,32 @@ def prepare(root, hops):
 
 def inside(root):
     trusted_ci()
+    import resource
+
     cases = json.loads((root / "cases.json").read_text())
     evidence = root / "evidence"
+    limits = {}
+    for name, value in (
+        ("RLIMIT_NPROC", 256),
+        ("RLIMIT_NOFILE", 2048),
+        ("RLIMIT_RSS", 4 * 1024**3),
+    ):
+        kind = getattr(resource, name)
+        _, hard = resource.getrlimit(kind)
+        value = min(value, hard) if hard != resource.RLIM_INFINITY else value
+        resource.setrlimit(kind, (value, value))
+        limits[name] = value
+    (evidence / "execution-os.json").write_text(
+        json.dumps(
+            {
+                "os": platform.uname()._asdict(),
+                "limits": limits,
+                "rssLimit": "ordinary OS advisory; Linux container additionally enforces4GiB",
+                "kernelAttestationClaim": False,
+            },
+            indent=2,
+        )
+    )
     if platform.system() == "Linux":
         # The offline container owns its copy. Do not mutate a toolcache or
         # reclassify uid1001 bind-mounted sources as root-owned source custody.
@@ -443,6 +467,13 @@ def main():
     )
     shutil.copyfile(executable, root / "test-runner")
     (root / "test-runner").chmod(0o755)
+    metadata = json.loads((root / "evidence/runner.json").read_text())
+    metadata.update(
+        nodeSha256=digest(Path(shutil.which("node")).resolve()),
+        testRunnerSha256=digest(root / "test-runner"),
+        rustVersion=subprocess.check_output(["rustc", "--version"], text=True).strip(),
+    )
+    (root / "evidence/runner.json").write_text(json.dumps(metadata, indent=2))
     shutil.copyfile(__file__, root / "run.py")
     shutil.copyfile(ROOT / "scripts/claude-acp-trusted-model.py", root / "model.py")
     try:
@@ -464,6 +495,23 @@ def main():
                 ],
                 check=True,
                 timeout=180,
+            )
+            image = subprocess.check_output(
+                ["docker", "image", "inspect", "acp239-trusted", "--format", "{{.Id}}"],
+                text=True,
+            ).strip()
+            (root / "evidence/container.json").write_text(
+                json.dumps(
+                    {
+                        "image": image,
+                        "base": "ubuntu:24.04",
+                        "network": "none",
+                        "memory": "4GiB",
+                        "pids": 256,
+                        "trust": "ordinary disposable test OS, not an admission pin",
+                    },
+                    indent=2,
+                )
             )
             command = [
                 "docker",

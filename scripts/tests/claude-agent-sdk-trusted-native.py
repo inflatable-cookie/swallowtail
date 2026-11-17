@@ -1,5 +1,6 @@
 """Owned fake/self-test for the narrow trusted-original runner; no vendor runs."""
 
+import copy
 import hashlib
 import importlib.util
 import io
@@ -136,7 +137,11 @@ export function query({options}) {
             (root / "manifest.json").write_text('{"version":"2.1.317"}')
             sdk.write_text("""export function query({prompt,options}) {
               const child=options.spawnClaudeCodeProcess({command:options.pathToClaudeCodeExecutable,args:["-e","process.stdin.resume()"],cwd:options.cwd,env:options.env});
-              const stream=(async function*() { for await(const input of prompt) { yield {type:"system",subtype:"init",cwd:options.cwd,model:options.model,session_id:"owned",tools:["Write"],permissionMode:"default"}; await options.canUseTool("Write",{file_path:"owned"}); yield {type:"result",subtype:"success",result:"continued",is_error:false,usage:{input_tokens:1,output_tokens:1}}; return; }})();
+              const stream=(async function*() { for await(const input of prompt) { yield {type:"system",subtype:"init",cwd:options.cwd,model:options.model,session_id:"owned",tools:["Write"],permissionMode:"default"}; yield {type:"assistant",message:{content:[{type:"tool_use",id:"owned",name:"Write"}]}};
+              await options.canUseTool("Write",{file_path:"owned"});
+              yield {type:"user",message:{content:[{type:"tool_result",tool_use_id:"owned",is_error:true}]}};
+              yield {type:"assistant",message:{content:[{type:"text",text:"continued"}]}};
+              yield {type:"result",subtype:"success",result:"continued",is_error:false,usage:{input_tokens:1,output_tokens:1}}; return; }})();
               return Object.assign(stream,{initializationResult:async()=>({}), supportedModels:async()=>[{value:options.model}], accountInfo:async()=>({apiProvider:"firstParty",subscriptionType:"max",tokenSource:"oauth"}), close:()=>child.stdin.end()});
             }""")
             cases = root / "cases"
@@ -147,9 +152,179 @@ export function query({options}) {
             self.assertEqual(observed["returncode"], 0, observed)
             self.assertTrue(observed["allClosed"])
             self.assertTrue(observed["closeResponse"]["data"]["nativeExitObserved"])
+            prepared = T.case(
+                cases,
+                sdk,
+                Path(node),
+                Path(node),
+                "deny",
+                prepared=True,
+                owned_fake=True,
+                bound=15,
+            )
+            T.assert_case(prepared, "0.3.317", "prepared")
             self.assertEqual(
                 len([e for e in observed["events"] if e["event"] == "callback"]), 1
             )
+
+
+class AssertionTests(unittest.TestCase):
+    def fixture(self, driver="shipped-sidecar", name="deny"):
+        silent = name == "managed-deny"
+        callbacks = (
+            []
+            if silent or name in ("error", "cancel", "deadline")
+            else [
+                {
+                    "event": "callback",
+                    "toolName": "Write",
+                    "effectBeforePermission": False,
+                }
+            ]
+        )
+        events = [
+            {"event": "turn_started"},
+            {"event": "tool_started", "toolCallId": "owned", "toolName": "Write"},
+            {"event": "tool_ended", "toolCallId": "owned", "isError": name != "allow"},
+            {"event": "output_delta", "delta": "continued"},
+            {
+                "event": "turn_ended",
+                "isError": name in ("error", "cancel"),
+                "stopReason": "error_during_execution"
+                if name in ("error", "cancel")
+                else "success",
+                "terminalReason": "api_error"
+                if name == "error"
+                else "aborted_streaming"
+                if name == "cancel"
+                else None,
+                "apiErrorStatus": 400 if name == "error" else None,
+            },
+            {"event": "native_close", "code": 0, "signal": None},
+        ]
+        if driver != "prepared":
+            events += callbacks
+        result = {
+            "case": name,
+            "returncode": 0,
+            "driverWaitCode": 0,
+            "allClosed": True,
+            "children": 1,
+            "effect": name == "allow",
+            "events": events,
+            "closeResponse": {"success": True, "data": {"nativeExitObserved": True}},
+            "terminalStatus": {
+                "deadline": "TimedOut",
+                "cancel": "Cancelled",
+                "error": "ProviderFailed",
+            }.get(name, "Completed"),
+            "turnCleanup": "Clean",
+            "sessionCleanup": "Clean",
+            "driverWaitObserved": True,
+            "callbacks": callbacks,
+            "cancellation": "Requested" if name == "cancel" else None,
+            "runtimeEvents": [
+                {"kind": "Started", "sequence": 0},
+                {"kind": "Activity:Tool:Started:Running", "sequence": 1},
+                {"kind": "OutputDelta", "sequence": 2, "content": "continued"},
+            ],
+        }
+        if driver == "shipped-sidecar" and name == "cancel":
+            events.append({"type": "response", "id": "cancel", "success": True})
+        return result
+
+    def test_actual_predicate_accepts_its_owned_controls(self):
+        for driver in ["shipped-sidecar", "prepared"]:
+            for name in [
+                "allow",
+                "deny",
+                "user-deny",
+                "managed-deny",
+                "cancel",
+                "error",
+            ] + (["deadline"] if driver == "prepared" else []):
+                T.assert_case(self.fixture(driver, name), "0.3.322", driver)
+
+    def test_actual_predicate_refuses_semantic_and_wait_mutations(self):
+        for driver in ["shipped-sidecar", "prepared"]:
+            base = self.fixture(driver)
+            variants = []
+            for event in [
+                "output_delta",
+                "tool_started",
+                "tool_ended",
+                "turn_started",
+                "turn_ended",
+                "native_close",
+            ]:
+                value = copy.deepcopy(base)
+                value["events"] = [
+                    e for e in value["events"] if e.get("event") != event
+                ]
+                variants.append(value)
+            value = copy.deepcopy(base)
+            value["events"][1], value["events"][2] = (
+                value["events"][2],
+                value["events"][1],
+            )
+            variants.append(value)
+            for key, bad in [
+                ("effect", True),
+                ("allClosed", False),
+                ("children", 0),
+                ("driverWaitCode", None),
+                ("failure", "startup error"),
+            ]:
+                value = copy.deepcopy(base)
+                value[key] = bad
+                variants.append(value)
+            value = copy.deepcopy(base)
+            value["closeResponse"]["data"]["nativeExitObserved"] = False
+            variants.append(value)
+            value = copy.deepcopy(base)
+            if driver == "prepared":
+                value["callbacks"] *= 2
+            else:
+                value["events"].append(
+                    {
+                        "event": "callback",
+                        "toolName": "Write",
+                        "effectBeforePermission": False,
+                    }
+                )
+            variants.append(value)
+            for value in variants:
+                with self.subTest(driver=driver, value=value):
+                    with self.assertRaises(ValueError):
+                        T.assert_case(value, "0.3.322", driver)
+            value = self.fixture(driver, "error")
+            value["events"][4].update(isError=False, stopReason="success")
+            with self.assertRaises(ValueError):
+                T.assert_case(value, "0.3.322", driver)
+        for key, bad in [
+            ("terminalStatus", "Cancelled"),
+            ("cancellation", "Requested"),
+            ("sessionCleanup", "Degraded"),
+            ("driverWaitObserved", False),
+        ]:
+            value = self.fixture("prepared", "deadline")
+            value[key] = bad
+            with self.assertRaises(ValueError):
+                T.assert_case(value, "0.3.322", "prepared")
+
+    def test_original_error_cannot_be_a_caught_startup_failure(self):
+        value = {
+            "case": "error",
+            "returncode": 0,
+            "driverWaitCode": 0,
+            "allClosed": True,
+            "children": 1,
+            "effect": False,
+            "failure": "SDK import failed",
+            "events": [{"event": "native_close", "code": 0}],
+        }
+        with self.assertRaises(ValueError):
+            T.assert_case(value, "0.3.322", "sdk-options")
 
 
 if __name__ == "__main__":

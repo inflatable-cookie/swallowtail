@@ -12,6 +12,7 @@ to it; don't restate it.
 | Repository authority and consumer boundaries | [contracts/002-repository-authority.md](contracts/002-repository-authority.md), [architecture/repository-authority-map.md](architecture/repository-authority-map.md) |
 | How we release | [contracts/release.md](contracts/release.md) (rules: [Contract 036](contracts/036-crate-release-and-compatibility-boundary.md)) |
 | Version currentness procedure | [operations/version-currentness-checkpoint.md](operations/version-currentness-checkpoint.md) (rules: [Contract 029](contracts/029-interface-version-qualification-and-compatibility.md)) |
+| Bounded transitive chrono maintenance disposition | [operations/chrono-maintenance.md](operations/chrono-maintenance.md) |
 | SDK original qualification and retired prototype provenance | [operations/claude-agent-sdk-trusted-qualification.md](operations/claude-agent-sdk-trusted-qualification.md), [operations/claude-agent-sdk-prototype-retirement.md](operations/claude-agent-sdk-prototype-retirement.md) |
 | Rust quality profile and deviations | [contracts/rust-quality-profile.json](contracts/rust-quality-profile.json), [contracts/rust-quality-deviations.json](contracts/rust-quality-deviations.json) |
 | Writing style | [contracts/writing-style.md](contracts/writing-style.md) |

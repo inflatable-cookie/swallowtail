@@ -581,3 +581,45 @@ fn an_interrupt_receipt_that_never_arrives_still_returns_requested() {
     );
     let _ = block_on(session.close(cleanup_request(), services_for_cleanup));
 }
+
+#[test]
+fn native_aborted_streaming_is_cancelled_only_after_a_caller_request() {
+    for (cancel, reason, expected_cancelled) in [
+        (true, "aborted_streaming", true),
+        (false, "aborted_streaming", false),
+        (true, "api_error", false),
+        (false, "api_error", false),
+    ] {
+        let host = host_id("claude-agent-sdk.fixture.original-interrupt");
+        let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+        let services = fixture.services(host.clone());
+        let mut session =
+            block_on(prepared_session(host).open_session(services.clone())).expect("open");
+        let mut turn =
+            block_on(session.start_turn(turn_request("turn", "owned"), services.clone()))
+                .expect("turn");
+        if cancel {
+            block_on(turn.cancellation().request()).expect("caller cancellation");
+        }
+        let presence: serde_json::Map<String, serde_json::Value> =
+            crate::sdk_support::SDK_RESULT_FIELD_NAMES
+                .iter()
+                .map(|name| ((*name).to_owned(), serde_json::json!(true)))
+                .collect();
+        fixture.emit(serde_json::json!({"type":"event","event":"turn_ended", "subtype":"error_during_execution",
+            "stopReason":"error_during_execution","isError":true,"numTurns":1,"durationMs":1,
+            "errorTextPresent":true,"errorTextType":"array","usage":{"inputTokens":0,"outputTokens":0,"cacheReadInputTokens":0,"cacheWriteInputTokens":0},
+            "resultFieldPresence":presence,"apiErrorStatus":null,"terminalReason":reason,"rateLimitStatus":null}));
+        let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
+        if expected_cancelled {
+            assert_eq!(terminal.status(), &TerminalStatus::Cancelled);
+        } else {
+            assert!(matches!(
+                terminal.status(),
+                TerminalStatus::ProviderFailed(_)
+            ));
+        }
+        let _ = block_on(turn.close());
+        let _ = block_on(session.close(cleanup_request(), services));
+    }
+}

@@ -61,6 +61,13 @@ impl SdkActiveTurn {
                 self.events.send(usage_event)?;
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
+                } else if self.cancelled.load(Ordering::SeqCst)
+                    && terminal_reason.as_deref() == Some("aborted_streaming")
+                {
+                    // Frozen originals report their acknowledged interruption
+                    // as an error result. Only this exact reason plus our
+                    // cancellation request is cancellation; API errors stay failures.
+                    (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else if failed || stop_reason != "success" {
                     (
                         TerminalStatus::ProviderFailed(self.add_stderr_to_diagnostic(

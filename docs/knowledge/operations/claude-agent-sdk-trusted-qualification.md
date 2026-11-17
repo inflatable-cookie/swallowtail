@@ -1,7 +1,9 @@
 # SDK disposable trusted-runner qualification
 
-Status: frozen original SDK/native and shipped-sidecar proof passed on Linux x64
-and Darwin arm64; claims extend through0.3.322/2.1.322 with distinct v2 semantics.
+Status: direct original SDK/native and shipped-sidecar component proof passed.
+Full qualification awaits actual Rust prepared-route, selected user-tier control,
+caller-deadline and stricter assertion evidence under task240 brief19. Proposed
+claims through0.3.322/2.1.322 remain under the qualification hold.
 
 Tom's decision1ec44a26-3d20-45ab-84e9-1523c2dfbbe4 v2 on2026-11-17
 replaces the bespoke test-host admission ladder with trusted disposable

@@ -13,7 +13,7 @@ const prompt = async function* () {
 const options = {
   cwd: config.workspace, model: "claude-sonnet-5-20250929", executable: "node",
   pathToClaudeCodeExecutable: config.native, env: config.environment,
-  settingSources: [], skills: [], plugins: [], agents: {}, mcpServers: {},
+  settingSources: config.case === "selected-user-deny" ? ["user"] : [], skills: [], plugins: [], agents: {}, mcpServers: {},
   strictMcpConfig: true, hooks: {}, persistSession: false,
   includePartialMessages: false, tools: ["Write"],
   disallowedTools: ["Read", "Glob", "Grep", "Edit", "MultiEdit", "Bash", "BashOutput", "KillShell", "NotebookEdit", "WebFetch", "WebSearch", "Task"],
@@ -49,10 +49,11 @@ try {
   handle = query({ prompt: prompt(), options });
   await handle.initializationResult();
   events.push({ event: "initialized" });
-  if (["cancel", "deadline"].includes(config.case)) cancellation = setTimeout(() => abortController.abort(), config.case === "cancel" ? 1000 : 500);
+  if (config.case === "cancel") cancellation = setTimeout(() => { events.push({event:"abort_requested"}); abortController.abort(); }, 1000);
   for await (const message of handle) {
     events.push({ event: "message", type: message.type, subtype: message.subtype,
       result: message.type === "result" ? message.result : undefined,
+      blocks: message.message?.content?.map(part => ({type:part.type,name:part.name,text:part.text})),
       is_error: message.type === "result" ? message.is_error : undefined });
     if (message.type === "result") break;
   }
@@ -71,6 +72,6 @@ try {
     events.push({ event: "stderr", text: observed.stderr });
   }
 }
-console.log(JSON.stringify({ events, failure, children: children.length,
+console.log(JSON.stringify({ events, failure, aborted:abortController.signal.aborted, children: children.length,
   allClosed: children.every((child) => child.closed) }));
-if (failure && !["cancel", "deadline", "error"].includes(config.case)) process.exitCode = 1;
+if (failure && !["cancel", "error"].includes(config.case)) process.exitCode = 1;

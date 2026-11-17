@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "crates/swallowtail-adapter-claude-agent/tests/fixtures"
 PLAN = FIXTURES / "claude-agent-sdk-native-proof/probe-plan.json"
 PLAN_SHA = "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502"
-CASES = ("allow", "deny", "user-deny", "managed-deny", "cancel", "deadline", "error")
+CASES = ("allow", "deny", "user-deny", "managed-deny", "cancel", "error")
 
 
 def digest(data):
@@ -254,15 +254,27 @@ class Peer(http.server.BaseHTTPRequestHandler):
             pass
 
 
-def case(base, sdk, native, node, name, *, sidecar=False, version="0.3.317", bound=45):
-    root = base / (("sidecar-" if sidecar else "") + name)
+def case(
+    base,
+    sdk,
+    native,
+    node,
+    name,
+    *,
+    sidecar=False,
+    prepared=False,
+    owned_fake=False,
+    version="0.3.317",
+    bound=45,
+):
+    root = base / (("prepared-" if prepared else "sidecar-" if sidecar else "") + name)
     root.mkdir()
     home, workspace = root / "home", root / "workspace"
     home.mkdir()
     workspace.mkdir()
     effect = home / "owned-effect.txt"
     settings = {"permissions": {"denyInsteadOfPrompting": True}}
-    if name == "user-deny":
+    if name in ("user-deny", "selected-user-deny"):
         (home / ".claude").mkdir()
         (home / ".claude/settings.json").write_text(json.dumps(settings))
     managed = (
@@ -306,6 +318,10 @@ def case(base, sdk, native, node, name, *, sidecar=False, version="0.3.317", bou
         "nativeVersion": "2.1." + version.rsplit(".", 1)[1],
         "manifest": str(sdk.parent / "manifest.json"),
         "environment": environment,
+        "node": str(node),
+        "observer": str(ROOT / "scripts/claude-agent-sdk-trusted-sidecar.mjs"),
+        "observation": str(root / "observation.json"),
+        "ownedFake": owned_fake,
     }
     config_path = root / "case.json"
     config_path.write_text(json.dumps(config))
@@ -321,6 +337,16 @@ def case(base, sdk, native, node, name, *, sidecar=False, version="0.3.317", bou
         ),
         str(config_path),
     ]
+    if prepared:
+        command = [
+            os.environ.get(
+                "SDK240_PREPARED_DRIVER",
+                str(ROOT / "target/debug/examples/sdk240-trusted-prepared"),
+            ),
+            str(config_path),
+        ]
+        if os.environ.get("GITHUB_ACTIONS") == "true":
+            environment["GITHUB_ACTIONS"] = "true"
     if platform.system() == "Darwin":
         command = [
             "/usr/bin/sandbox-exec",
@@ -373,6 +399,18 @@ def case(base, sdk, native, node, name, *, sidecar=False, version="0.3.317", bou
             result = json.loads(output) if output else {}
         except ValueError:
             result = {"failure": "invalid driver output"}
+        if prepared and (root / "observation.json").is_file():
+            result.update(json.loads((root / "observation.json").read_bytes()))
+            result["closeResponse"] = next(
+                (
+                    e
+                    for e in result["events"]
+                    if e.get("type") == "response"
+                    and "nativeExitObserved" in e.get("data", {})
+                ),
+                {},
+            )
+        result["driverWaitCode"] = code
         result["driverStderr"] = (root / "stderr.txt").read_text(errors="replace")[
             :32768
         ]
@@ -389,6 +427,198 @@ def case(base, sdk, native, node, name, *, sidecar=False, version="0.3.317", bou
             raise RuntimeError("endpoint wait missing")
         if name == "managed-deny":
             managed.unlink()
+
+
+def assert_case(result, version, driver):
+    """The actual original-proof predicate, also exercised by owned mutations."""
+
+    def need(condition, label):
+        if not condition:
+            raise ValueError(label)
+
+    name = result["case"]
+    events = result.get("events", [])
+    callbacks = (
+        result.get("callbacks", [])
+        if driver == "prepared"
+        else [e for e in events if e.get("event") == "callback"]
+    )
+    need(
+        result.get("returncode") == 0 and result.get("driverWaitCode") == 0,
+        "driver actual wait",
+    )
+    need(
+        result.get("allClosed") is True and result.get("children") == 1,
+        "native actual wait",
+    )
+    closes = [e for e in events if e.get("event") == "native_close"]
+    need(
+        len(closes) == 1
+        and (closes[0].get("code") is not None or closes[0].get("signal") is not None),
+        "exact native close",
+    )
+    silent = (
+        name in ("managed-deny", "selected-user-deny")
+        and int(version.rsplit(".", 1)[1]) >= 319
+    )
+    count = 0 if silent or name in ("cancel", "deadline", "error") else 1
+    need(len(callbacks) == count, "exact permission callback count")
+    need(
+        all(
+            e.get("toolName") == "Write" and e.get("effectBeforePermission") is False
+            for e in callbacks
+        ),
+        "permission before effect",
+    )
+    need(result.get("effect") is (name == "allow"), "exact controlled effect")
+    if driver == "prepared":
+        expected = {
+            "cancel": "Cancelled",
+            "deadline": "TimedOut",
+            "error": "ProviderFailed",
+        }.get(name, "Completed")
+        need(result.get("terminalStatus") == expected, "distinct typed terminal")
+        need(
+            result.get("sessionCleanup") == "Clean"
+            and result.get("turnCleanup") in ("Clean", "NotApplicable")
+            and result.get("driverWaitObserved") is True,
+            "prepared actual cleanup",
+        )
+        need(
+            (result.get("cancellation") == "Requested") is (name == "cancel"),
+            "deadline is not cancellation",
+        )
+        runtime = result.get("runtimeEvents", [])
+        need(runtime and runtime[0]["kind"] == "Started", "prepared ordered start")
+        need(
+            all(a["sequence"] < b["sequence"] for a, b in zip(runtime, runtime[1:])),
+            "prepared event order",
+        )
+        if name not in ("cancel", "deadline", "error"):
+            need(
+                any(
+                    e["kind"].startswith("Activity:") and "Tool" in e["kind"]
+                    for e in runtime
+                ),
+                "prepared tool activity",
+            )
+            need(
+                any(
+                    e["kind"] == "OutputDelta"
+                    and "continued" in (e.get("content") or "")
+                    for e in runtime
+                ),
+                "prepared continued output",
+            )
+    if driver in ("shipped-sidecar", "prepared"):
+        need(not result.get("failure"), "no unexpected driver failure")
+        close = result.get("closeResponse", {})
+        need(
+            close.get("success") is True
+            and close.get("data", {}).get("nativeExitObserved") is True,
+            "sidecar close and wait receipt",
+        )
+        starts = [i for i, e in enumerate(events) if e.get("event") == "turn_started"]
+        ends = [i for i, e in enumerate(events) if e.get("event") == "turn_ended"]
+        need(len(starts) == 1, "exact turn start")
+        if name == "deadline":
+            need(
+                driver == "prepared"
+                and not callbacks
+                and not result.get("cancellation"),
+                "real prepared deadline only",
+            )
+            return
+        need(len(ends) == 1 and starts[0] < ends[0], "ordered terminal result")
+        end = events[ends[0]]
+        if name == "error":
+            need(
+                end.get("isError") is True
+                and end.get("apiErrorStatus") == 400
+                and end.get("terminalReason") == "api_error",
+                "real provider error",
+            )
+        elif name == "cancel":
+            need(
+                end.get("isError") is True
+                and end.get("terminalReason") == "aborted_streaming",
+                "actual interrupted native result",
+            )
+            if driver == "shipped-sidecar":
+                need(
+                    any(
+                        e.get("type") == "response"
+                        and e.get("id") == "cancel"
+                        and e.get("success") is True
+                        for e in events
+                    ),
+                    "actual interrupt acknowledgement",
+                )
+        else:
+            need(
+                end.get("isError") is False and end.get("stopReason") == "success",
+                "successful continued terminal",
+            )
+            tools = [
+                i for i, e in enumerate(events) if e.get("event") == "tool_started"
+            ]
+            done = [i for i, e in enumerate(events) if e.get("event") == "tool_ended"]
+            output = [
+                i
+                for i, e in enumerate(events)
+                if e.get("event") == "output_delta"
+                and "continued" in e.get("delta", "")
+            ]
+            need(
+                len(tools) == 1 and len(done) == 1 and output,
+                "tool and continued output required",
+            )
+            need(
+                starts[0] < tools[0] < done[0] < output[-1] < ends[0],
+                "start/tool/result ordering",
+            )
+            need(
+                events[tools[0]].get("toolName") == "Write"
+                and events[tools[0]].get("toolCallId")
+                == events[done[0]].get("toolCallId"),
+                "correlated tool activity",
+            )
+            need(
+                events[done[0]].get("isError") is (name != "allow"),
+                "tool decision outcome",
+            )
+    else:
+        need(any(e.get("event") == "initialized" for e in events), "SDK initialized")
+        results = [e for e in events if e.get("type") == "result"]
+        if name == "cancel":
+            need(
+                result.get("aborted") is True
+                and any(e.get("event") == "abort_requested" for e in events),
+                "SDK actual cancellation",
+            )
+        else:
+            need(
+                not result.get("failure") and len(results) == 1,
+                "SDK actual result, not startup error",
+            )
+            if name == "error":
+                need(results[0].get("is_error") is True, "SDK real error result")
+            else:
+                need(
+                    results[0].get("is_error") is False
+                    and results[0].get("result") == "continued",
+                    "SDK successful continuation",
+                )
+                need(
+                    any(
+                        any(
+                            b.get("type") == "tool_use" and b.get("name") == "Write"
+                            for b in e.get("blocks") or []
+                        )
+                        for e in events
+                    ),
+                    "SDK tool activity",
+                )
 
 
 def originals(work, inside=False):
@@ -414,6 +644,12 @@ def originals(work, inside=False):
             "fsize=1048576:1048576",
             "-e",
             "GITHUB_ACTIONS=true",
+            "-e",
+            "SDK240_PREPARED_DRIVER="
+            + os.environ.get(
+                "SDK240_PREPARED_DRIVER",
+                str(ROOT / "target/debug/examples/sdk240-trusted-prepared"),
+            ),
             "-e",
             "GITHUB_SHA=" + os.environ["GITHUB_SHA"],
             "-v",
@@ -444,79 +680,31 @@ def originals(work, inside=False):
     }
     failures = []
     for row in manifest["tuples"]:
-        for sidecar, name in [(False, n) for n in CASES] + ([(True, n) for n in CASES]):
+        cases = [("sdk-options", n) for n in CASES + ("selected-user-deny",)]
+        cases += [("shipped-sidecar", n) for n in CASES]
+        cases += [("prepared", n) for n in CASES + ("deadline",)]
+        for driver, name in cases:
             result = case(
                 Path(row["root"]),
                 Path(row["sdk"]),
                 Path(row["native"]),
                 Path(manifest["nodePath"]),
                 name,
-                sidecar=sidecar,
+                sidecar=driver == "shipped-sidecar",
+                prepared=driver == "prepared",
                 version=row["sdk_version"],
             )
-            result["driver"] = "shipped-sidecar" if sidecar else "sdk-options"
-            result["sdkVersion"] = row["sdk_version"]
-            result["nativeSha256"] = row["binary_sha256"]
-            results["cases"].append(result)
-            (work / "result.json").write_text(json.dumps(results, indent=2) + "\n")
-            events = result.get("events", [])
-            callbacks = [event for event in events if event["event"] == "callback"]
-            expected_no_callback = (
-                name == "managed-deny" and row["sdk_version"] >= "0.3.319"
+            result.update(
+                driver=driver,
+                sdkVersion=row["sdk_version"],
+                nativeSha256=row["binary_sha256"],
             )
-            if (
-                result["returncode"]
-                or not result.get("allClosed")
-                or result.get("children") != 1
-            ):
-                failures.append(
-                    (
-                        row["sdk_version"],
-                        name,
-                        "startup/lifecycle",
-                        result.get("failure"),
-                    )
-                )
-            elif sidecar:
-                close = result.get("closeResponse", {}).get("data", {})
-                ended = [e for e in events if e.get("event") == "turn_ended"]
-                if (
-                    not close.get("nativeExitObserved")
-                    or not ended
-                    or (
-                        name not in ("cancel", "deadline", "error")
-                        and (
-                            bool(callbacks) == expected_no_callback
-                            or result["effect"] != (name == "allow")
-                        )
-                    )
-                ):
-                    failures.append(
-                        (
-                            row["sdk_version"],
-                            name,
-                            "sidecar permission/lifecycle",
-                            close,
-                        )
-                    )
-            elif name == "error":
-                if not any(
-                    e.get("type") == "result" and e.get("is_error") for e in events
-                ) and not result.get("failure"):
-                    failures.append(
-                        (row["sdk_version"], name, "missing error observation", None)
-                    )
-            elif name not in ("cancel", "deadline") and (
-                bool(callbacks) == expected_no_callback
-                or result["effect"] != (name == "allow")
-                or not any(
-                    e.get("type") == "result" and e.get("result") == "continued"
-                    for e in events
-                )
-            ):
-                failures.append(
-                    (row["sdk_version"], name, "permission/continued result", None)
-                )
+            results["cases"].append(result)
+            try:
+                assert_case(result, row["sdk_version"], driver)
+            except ValueError as error:
+                failures.append((row["sdk_version"], driver, name, str(error)))
+            (work / "result.json").write_text(json.dumps(results, indent=2) + "\n")
     results["failures"] = failures
     (work / "result.json").write_text(json.dumps(results, indent=2) + "\n")
     if failures:

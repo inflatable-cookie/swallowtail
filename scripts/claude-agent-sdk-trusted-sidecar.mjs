@@ -3,7 +3,7 @@
 import cp from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
 import { PassThrough } from "node:stream";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 const config = JSON.parse(readFileSync(process.argv[2], "utf8"));
 const events = [], children = [];
@@ -24,6 +24,22 @@ cp.spawn = (command, args, options) => {
   return child;
 };
 syncBuiltinESMExports();
+if (process.argv[3] === "--prepared") {
+  const output = process.stdout.write.bind(process.stdout);
+  let pending = "";
+  process.stdout.write = (chunk, ...args) => {
+    pending += chunk.toString();
+    while (pending.includes("\n")) {
+      const end = pending.indexOf("\n");
+      events.push({ event: "wire", ...JSON.parse(pending.slice(0,end)) });
+      pending = pending.slice(end+1);
+    }
+    return output(chunk, ...args);
+  };
+  process.on("exit", () => writeFileSync(config.observation, JSON.stringify({events,
+    children:children.length, allClosed:children.every(c=>c.closed)})));
+  await import(pathToFileURL(config.sidecar).href);
+} else {
 const input = new PassThrough();
 Object.defineProperty(process, "stdin", { value: input });
 const output = process.stdout.write.bind(process.stdout);
@@ -44,7 +60,7 @@ process.stdout.write = (chunk, ...args) => {
         else {
           events.push({ event: "initialized" });
           send("query", "query", { text: "Use the owned fixture tool and continue." });
-          if (["cancel", "deadline"].includes(config.case)) cancellation = setTimeout(() => send("cancel", "interrupt"), config.case === "cancel" ? 1000 : 500);
+          if (config.case === "cancel") cancellation = setTimeout(() => send("cancel", "interrupt"), 1000);
         }
       }
       if (record.type === "response" && !record.success && !["open", "close"].includes(record.id)) {
@@ -90,3 +106,5 @@ for (const observed of children) {
 output(JSON.stringify({ events, failure, closeResponse, children: children.length,
   allClosed: children.every((child) => child.closed) }) + "\n");
 if (failure) process.exitCode = 1;
+
+}

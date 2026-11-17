@@ -194,12 +194,12 @@ approval; not a new Tom ruling):
 
 ## Q-009 — How should `claude-agent.sdk` qualify past `0.3.317`?
 
-Status: answered by frozen original proof; qualification change awaiting normal review/CI.
+Status: component proof retained; prepared-route, user-tier and typed deadline gaps require new original evidence under task240 brief19.
 Gate owner: maintainers for independent review/CI; planner for merge-hold release.
 
 Tom's decision1ec44a26 v2 replaces the custom test-host ladder with trusted
 disposable runners. [Original SDK/native and shipped-sidecar qualification](operations/claude-agent-sdk-trusted-qualification.md)
-passed140 cases across Linux x64 and Darwin arm64 for the317 control and the
+passed140 component cases across Linux x64 and Darwin arm64 for the317 control and the
 318/319/321/322 pairs. Managed deny-instead-of-prompting starts at319 without a
 callback, permits continued output and retains a distinct v2 package/native
 segment. User settings remain excluded by this route. Node22.23.2..22.23.3,

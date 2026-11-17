@@ -199,13 +199,15 @@ section = "Research Records"
 "validate:claude-agent-sdk-probe-admission" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness -E 'test(/probe/)'"
 "lint:current-claude-agent-sdk" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --all-targets -- -D warnings"
 "validate:claude-agent-sdk-trusted-native" = "python3 -B scripts/claude-agent-sdk-trusted-native.py"
+"build:claude-agent-sdk-trusted-prepared" = "bash scripts/oxide-rust.sh build --locked -p swallowtail-adapter-claude-agent --example sdk240-trusted-prepared"
 "check:claude-agent-sdk-trusted-native" = [
+  "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-claude-agent --example sdk240-trusted-prepared",
   "python3 -c 'from pathlib import Path; [compile(Path(p).read_bytes(), p, \"exec\") for p in (\"scripts/claude-agent-sdk-trusted-native.py\", \"scripts/tests/claude-agent-sdk-trusted-native.py\")]'",
   "node --check scripts/claude-agent-sdk-trusted-case.mjs",
   "node --check scripts/claude-agent-sdk-trusted-sidecar.mjs",
 ]
-"check:format:claude-agent-sdk-trusted-native" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py"
-"format:claude-agent-sdk-trusted-native" = "ruff format --no-cache scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py"
+"check:format:claude-agent-sdk-trusted-native" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py scripts/check-chrono-maintenance.py"
+"format:claude-agent-sdk-trusted-native" = "ruff format --no-cache scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py scripts/check-chrono-maintenance.py"
 "validate:claude-agent-sdk-startup-lookup" = "python3 -B scripts/tests/claude-agent-sdk-startup-lookup.py"
 "check:claude-agent-sdk-startup-lookup" = [
   "python3 -c 'from pathlib import Path; n=\"scripts/tests/claude-agent-sdk-startup-lookup.py\"; compile(Path(n).read_bytes(), n, \"exec\")'",

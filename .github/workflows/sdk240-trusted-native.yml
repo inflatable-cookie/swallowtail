@@ -45,6 +45,12 @@ jobs:
           echo "TMPDIR=$work" >> "$GITHUB_ENV"
           echo "TMP=$work" >> "$GITHUB_ENV"
           echo "TEMP=$work" >> "$GITHUB_ENV"
+      - name: Build real prepared consumer once
+        env:
+          RUSTUP_TOOLCHAIN: 1.95.0
+        run: |
+          rustup toolchain install 1.95.0 --profile minimal
+          effigy build:claude-agent-sdk-trusted-prepared
       - name: Bounded owned-fake self-test
         run: effigy validate:claude-agent-sdk-trusted-native
       - name: Frozen originals against local peers

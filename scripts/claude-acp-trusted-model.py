@@ -105,9 +105,9 @@ class ModelFixture:
                         self.send_json({"error": "request count bound"}, 429)
                         return
                     fixture.rows.append(row)
-                    (fixture.root / "model-observations.json").write_text(
-                        json.dumps(fixture.rows)
-                    )
+                    pending = fixture.root / "model-observations.pending"
+                    pending.write_text(json.dumps(fixture.rows))
+                    pending.replace(fixture.root / "model-observations.json")
                 if fixture.scenario == "error":
                     self.send_json(
                         {

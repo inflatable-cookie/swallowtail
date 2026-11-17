@@ -253,6 +253,7 @@ impl FixtureScope {
             service,
         )
     }
+    #[allow(dead_code)] // Used by the explicit trusted-original unit runner.
     pub(super) fn renew_behaviour_budget(&self) {
         // Trusted original tests bound each behaviour separately, including
         // discovery and each continued turn; historical fixtures keep 30s.

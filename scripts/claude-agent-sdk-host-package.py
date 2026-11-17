@@ -318,7 +318,7 @@ def loader_directories(help_text):
 
 
 class LoaderGraph:
-    def __init__(self, files, elf, cache, directories):
+    def __init__(self, files, elf, cache, directories, *, object_limit=None):
         self.files, self.elf, self.cache, self.directories = (
             files,
             elf,
@@ -326,6 +326,10 @@ class LoaderGraph:
             directories,
         )
         self.aliases = {}
+        # Ordinary package policy retains its existing graph limit. The smaller
+        # diagnostic budget also charges unresolved probes before touching them.
+        self.object_limit = object_limit
+        self.reserved, self.known, self.resolved = set(), set(), {}
         for name in directories:
             files.inventory(name)
             self.no_hwcaps(name)
@@ -339,33 +343,86 @@ class LoaderGraph:
             raise Refused("package_hwcaps_directory_refused")
         self.files.inventory(name)
 
+    def reserve(self, name):
+        if self.object_limit is None or name in self.reserved or name in self.known:
+            return
+        if len(self.reserved) >= self.object_limit:
+            raise Refused("module_loader_object_bound")
+        self.reserved.add(name)
+
+    def read(self, name, **kwargs):
+        self.reserve(name)
+        canonical, data = self.files.read(name, **kwargs)
+        self.known.add(canonical)
+        return canonical, data
+
     def resolve(self, needed):
+        if self.object_limit is None:
+            paths = []
+            for name, hwcap in self.cache.get(needed, []):
+                if hwcap:
+                    raise Refused("package_cached_hwcaps_refused")
+                paths.append(name)
+            paths += [
+                name + "/" + needed
+                for name in self.directories
+                if os.path.lexists(self.files.actual(name + "/" + needed))
+            ]
+            choices = set()
+            for name in paths:
+                parent = str(Path(name).parent)
+                self.files.inventory(parent)
+                self.no_hwcaps(parent)
+                canonical, data = self.files.read(name)
+                choices.add(canonical)
+                self.aliases[name] = canonical
+            if len(choices) != 1:
+                raise Refused("package_missing_or_ambiguous_resolution:" + needed)
+            return choices.pop()
+        if self.object_limit is not None:
+            if needed in self.resolved:
+                return self.resolved[needed]
+            # A new resolution may discover another object. Refuse before even
+            # probing its search locations when no uncommitted capacity remains.
+            if len(self.reserved) >= self.object_limit:
+                raise Refused("module_loader_object_bound")
         paths = []
         for name, hwcap in self.cache.get(needed, []):
             if hwcap:
                 raise Refused("package_cached_hwcaps_refused")
-            paths.append(name)
-        paths += [
-            name + "/" + needed
-            for name in self.directories
-            if os.path.lexists(self.files.actual(name + "/" + needed))
-        ]
+            if name not in paths:
+                paths.append(name)
         choices = set()
-        for name in paths:
+        # Reserve each cache alternative and fallback probe before its first
+        # inventory/lookup/open. Aliases can conservatively consume extra slots.
+        candidates = [(name, False) for name in paths]
+        candidates += [
+            (name + "/" + needed, True)
+            for name in self.directories
+            if name + "/" + needed not in paths
+        ]
+        for name, probe in candidates:
+            self.reserve(name)
+            if probe and not os.path.lexists(self.files.actual(name)):
+                continue
             parent = str(Path(name).parent)
             self.files.inventory(parent)
             self.no_hwcaps(parent)
-            canonical, data = self.files.read(name)
+            canonical, data = self.read(name)
             choices.add(canonical)
             self.aliases[name] = canonical
         if len(choices) != 1:
             raise Refused("package_missing_or_ambiguous_resolution:" + needed)
-        return choices.pop()
+        target = choices.pop()
+        if self.object_limit is not None:
+            self.resolved[needed] = target
+        return target
 
     def graph(self, root, *, candidate=False):
-        root, data = self.files.read(root, candidate=candidate)
+        root, data = self.read(root, candidate=candidate)
         objects, edges, interpreters = {}, {}, {}
         pending = [(root, data)]
+        discovered = {root}
         while pending:
             name, data = pending.pop()
             if name in objects:
@@ -377,13 +434,17 @@ class LoaderGraph:
             for needed in metadata["needed"]:
                 target = self.resolve(needed)
                 edges[name][needed] = target
-                pending.append(self.files.read(target))
+                if self.object_limit is None or target not in discovered:
+                    discovered.add(target)
+                    pending.append(self.read(target))
             if metadata["interpreter"]:
                 literal = metadata["interpreter"]
-                target, content = self.files.read(literal)
+                target, content = self.read(literal)
                 interpreters[literal] = target
                 self.aliases[literal] = target
-                pending.append((target, content))
+                if self.object_limit is None or target not in discovered:
+                    discovered.add(target)
+                    pending.append((target, content))
         if candidate:
             self.elf.verify_graph(root, objects, edges, interpreter_paths=interpreters)
         return set(objects), edges, interpreters
@@ -613,7 +674,8 @@ def openssl_evidence(files, elf, directories, *, force=False):
     previous_candidate_policy = files.candidate_forbidden
     files.candidate_forbidden = True
     initial_links, initial_bytes = set(files.links), files.bytes
-    pending = [(name, 0, ()) for name in OPENSSL_ROOTS]
+    pending = []
+    requests = 0
     modules, raw_bytes = set(), 0
 
     def unknown(name, reason):
@@ -621,6 +683,22 @@ def openssl_evidence(files, elf, directories, *, force=False):
             report["unknown"].append({"path": name, "reason": str(reason)[:256]})
         else:
             report["unknownExcess"] = True
+
+    def enqueue(name, depth, parents, *, directory=True):
+        nonlocal requests
+        if requests >= 16 or depth > 3:
+            unknown(name, "configuration_count_or_depth_bound")
+            report["configurationRequestExcess"] = True
+            return
+        requests += 1
+        pending.append((name, depth, parents, directory))
+        report["configurationRequests"] = requests
+        report["configurationPendingPeak"] = max(
+            report.get("configurationPendingPeak", 0), len(pending)
+        )
+
+    for name in OPENSSL_ROOTS:
+        enqueue(name, 0, ())
 
     def config_path(name):
         return (
@@ -631,10 +709,7 @@ def openssl_evidence(files, elf, directories, *, force=False):
         )
 
     while pending:
-        name, depth, parents = pending.pop(0)
-        if len(report["paths"]) >= 16 or depth > 3:
-            unknown(name, "configuration_count_or_depth_bound")
-            continue
+        name, depth, parents, directory = pending.pop(0)
         if not config_path(name):
             unknown(name, "unsupported_configuration_path")
             continue
@@ -649,6 +724,8 @@ def openssl_evidence(files, elf, directories, *, force=False):
                 raise Refused("configuration_include_cycle")
             actual = files.actual(canonical)
             if actual.is_dir():
+                if not directory:
+                    continue  # OpenSSL directory includes do not recurse into subdirectories.
                 files.inventory(name)
                 entries = files.lookup[canonical]
                 if len(entries) > 16:
@@ -660,11 +737,10 @@ def openssl_evidence(files, elf, directories, *, force=False):
                 }
                 for entry in entries:
                     child = canonical.rstrip("/") + "/" + entry
-                    if (
-                        entry.endswith((".cnf", ".conf"))
-                        and not files.actual(child).is_dir()
-                    ):
-                        pending.append((child, depth + 1, parents + (canonical,)))
+                    if entry.endswith((".cnf", ".conf")):
+                        enqueue(
+                            child, depth + 1, parents + (canonical,), directory=False
+                        )
                 continue
             if not name.endswith((".cnf", ".conf")):
                 raise Refused("unsupported_configuration_file_suffix")
@@ -729,7 +805,7 @@ def openssl_evidence(files, elf, directories, *, force=False):
                     if not include:
                         unknown(canonical, "unsupported_include_expression")
                     else:
-                        pending.append((include[1], depth + 1, parents + (canonical,)))
+                        enqueue(include[1], depth + 1, parents + (canonical,))
                 module = re.fullmatch(
                     r"(?:module|dynamic_path|SO_PATH)\s*=\s*(/[^\s]+)", simple
                 )
@@ -844,7 +920,9 @@ def openssl_evidence(files, elf, directories, *, force=False):
             cache_name, cache_data = files.read(
                 "/etc/ld.so.cache", maximum_bytes=8388608
             )
-            graph = LoaderGraph(files, elf, cache_entries(cache_data), directories)
+            graph = LoaderGraph(
+                files, elf, cache_entries(cache_data), directories, object_limit=32
+            )
             report["loaderCache"] = {
                 "path": cache_name,
                 "sha256": files.files[cache_name][2],
@@ -854,12 +932,15 @@ def openssl_evidence(files, elf, directories, *, force=False):
     for name in sorted(modules)[:16]:
         existed = False
         try:
+            if graph is None:
+                raise Refused("module_loader_closure_unknown")
+            graph.reserve(name)
             files.actual(name).lstat()
             existed = True
             canonical = files.canonical(name)
             if not any(canonical.startswith(folder + "/") for folder in OPENSSL_SEARCH):
                 raise Refused("module_alias_outside_scope")
-            canonical, data = files.read(name, maximum_bytes=8388608)
+            canonical, data = graph.read(name, maximum_bytes=8388608)
             row = {
                 "state": "present",
                 "canonical": canonical,
@@ -868,11 +949,7 @@ def openssl_evidence(files, elf, directories, *, force=False):
                 "sha256": files.files[canonical][2],
             }
             report["modules"][name] = row
-            if graph is None:
-                raise Refused("module_loader_closure_unknown")
             objects, edges, interpreters = graph.graph(canonical)
-            if len(objects) > 32:
-                raise Refused("module_loader_object_bound")
             row.update(
                 closure=files.hashes(objects),
                 resolutions=edges,
@@ -888,6 +965,7 @@ def openssl_evidence(files, elf, directories, *, force=False):
                 "reason": str(error)[:256],
             }
             unknown(name, error)
+    report["moduleObjectReservations"] = len(graph.reserved) if graph is not None else 0
     if len(modules) > 16:
         unknown("modules", "module_count_bound")
     report["aliases"] = {

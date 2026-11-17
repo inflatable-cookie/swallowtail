@@ -694,6 +694,275 @@ default = default_sect
             finally:
                 files.close()
 
+    def test_diagnostic_reserves_fanout_depth_and_interpreter_before_work(self):
+        for shape in ("fanout", "depth", "interpreter"):
+            for excess in (False, True):
+                with (
+                    self.subTest(shape=shape, excess=excess),
+                    tempfile.TemporaryDirectory(
+                        prefix="openssl-object-bound-", dir=os.environ["TMPDIR"]
+                    ) as temporary,
+                ):
+                    root = Path(temporary).resolve()
+                    files = self.fixture(root)
+                    # One fixed module root and a source-shaped config; all ELF
+                    # inputs are synthetic data and no process can be started.
+                    module = P.OPENSSL_SEARCH[0] + "/legacy.so"
+                    (root / P.OPENSSL_SEARCH[1].lstrip("/") / "owned.so").unlink()
+                    (root / "etc/ssl/openssl.cnf").write_bytes(b"providers = owned\n")
+                    count = 31 + int(excess)
+                    needed = tuple("n%d.so" % i for i in range(count))
+                    interpreter = None
+                    if shape == "interpreter":
+                        needed = needed[:-1]
+                        interpreter = "/lib/n%d.so" % len(needed)
+                    (root / module.lstrip("/")).write_bytes(
+                        F.elf(
+                            needed=needed if shape != "depth" else ("n0.so",),
+                            interpreter=interpreter,
+                        )
+                    )
+                    for i in range(count):
+                        next_names = (
+                            ("n%d.so" % (i + 1),)
+                            if shape == "depth" and i + 1 < count
+                            else ()
+                        )
+                        (root / ("lib/n%d.so" % i)).write_bytes(
+                            F.elf(needed=next_names)
+                        )
+                    (root / "etc/ld.so.cache").write_bytes(
+                        cache(
+                            [("n%d.so" % i, "/lib/n%d.so" % i, 0) for i in range(count)]
+                        )
+                    )
+                    original = files.actual
+                    touched = []
+
+                    def actual(name):
+                        touched.append(name)
+                        if excess and name == "/lib/n31.so":
+                            self.fail(
+                                "out-of-budget object was inspected before refusal"
+                            )
+                        return original(name)
+
+                    try:
+                        with (
+                            mock.patch.object(files, "actual", side_effect=actual),
+                            mock.patch(
+                                "subprocess.Popen",
+                                side_effect=AssertionError("no execution"),
+                            ),
+                        ):
+                            report = P.openssl_evidence(files, E, ["/lib"], force=True)
+                        row = report["modules"][module]
+                        if excess:
+                            self.assertEqual(row["state"], "unknown")
+                            self.assertIn("module_loader_object_bound", row["reason"])
+                            self.assertNotIn("/lib/n31.so", touched)
+                        else:
+                            self.assertEqual(row["state"], "present")
+                            self.assertEqual(len(row["closure"]), 32)
+                        held = [v[0] for v in files.files.values()]
+                        self.assertLessEqual(
+                            len([name for name in files.files if name.endswith(".so")]),
+                            32,
+                        )
+                    finally:
+                        files.close()
+                    for fd in held:
+                        with self.assertRaises(OSError):
+                            os.fstat(fd)
+
+    def test_loader_budget_counts_pending_aliases_cycles_and_resolution_probes(self):
+        with tempfile.TemporaryDirectory(
+            prefix="openssl-pending-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            files = self.fixture(root)
+            module = P.OPENSSL_SEARCH[0] + "/legacy.so"
+            for name, needed in (("a", ("c.so",)), ("b", ("c.so",)), ("c", ("a.so",))):
+                (root / ("lib/" + name + ".so")).write_bytes(F.elf(needed=needed))
+            (root / module.lstrip("/")).write_bytes(F.elf(needed=("a.so", "b.so")))
+            graph = P.LoaderGraph(files, E, {}, ["/lib"], object_limit=4)
+            try:
+                with mock.patch.object(E, "parse_elf", wraps=E.parse_elf) as parsing:
+                    objects, _, _ = graph.graph(module)
+                self.assertEqual(len(objects), 4)
+                self.assertEqual(
+                    parsing.call_count, 4
+                )  # shared pending/cycle parsed once
+                self.assertEqual(len(graph.reserved), 4)
+                # An unseen alias might denote a new object. No identity lookup
+                # is allowed after capacity is full, even if it aliases a held one.
+                (root / "lib/alias.so").symlink_to("a.so")
+                with mock.patch.object(
+                    files, "actual", side_effect=AssertionError("no alias probe")
+                ):
+                    with self.assertRaisesRegex(
+                        P.Refused, "module_loader_object_bound"
+                    ):
+                        graph.graph("/lib/alias.so")
+                    with self.assertRaisesRegex(
+                        P.Refused, "module_loader_object_bound"
+                    ):
+                        graph.resolve("unseen.so")
+            finally:
+                files.close()
+        # A cache alias and its separate fallback probe each reserve capacity;
+        # do not read a second alternative merely to discover it is the same ELF.
+        with tempfile.TemporaryDirectory(
+            prefix="openssl-probe-", dir=os.environ["TMPDIR"]
+        ) as temporary:
+            root = Path(temporary).resolve()
+            files = self.fixture(root)
+            (root / "app").mkdir(mode=0o700)
+            (root / "app/owned").write_bytes(F.elf(needed=("liba.so",)))
+            (root / "lib/alias.so").symlink_to("liba.so")
+            (root / "lib/second-alias.so").symlink_to("liba.so")
+            graph = P.LoaderGraph(
+                files,
+                E,
+                {"liba.so": [("/lib/alias.so", 0), ("/lib/second-alias.so", 0)]},
+                ["/lib"],
+                object_limit=2,
+            )
+            original_read = files.read
+            reads = []
+
+            def read(name, **kwargs):
+                reads.append(name)
+                return original_read(name, **kwargs)
+
+            try:
+                original_actual = files.actual
+
+                def actual(name):
+                    if name == "/lib/second-alias.so":
+                        self.fail("out-of-budget alias resolution")
+                    return original_actual(name)
+
+                with (
+                    mock.patch.object(files, "read", side_effect=read),
+                    mock.patch.object(files, "actual", side_effect=actual),
+                ):
+                    with self.assertRaisesRegex(
+                        P.Refused, "module_loader_object_bound"
+                    ):
+                        graph.graph("/app/owned")
+                self.assertEqual(reads, ["/app/owned", "/lib/alias.so"])
+                self.assertEqual(len(graph.reserved), 2)
+            finally:
+                files.close()
+
+    def test_configuration_requests_charge_repeated_files_and_directories(self):
+        for directory in (False, True):
+            for excess in (False, True):
+                with (
+                    self.subTest(directory=directory, excess=excess),
+                    tempfile.TemporaryDirectory(
+                        prefix="openssl-request-bound-", dir=os.environ["TMPDIR"]
+                    ) as temporary,
+                ):
+                    root = Path(temporary).resolve()
+                    files = self.fixture(root)
+                    target = "/etc/ssl/repeated.cnf"
+                    if directory:
+                        target = "/etc/ssl/repeated.d"
+                        (root / target.lstrip("/")).mkdir(mode=0o700)
+                    else:
+                        (root / target.lstrip("/")).write_bytes(
+                            b"# owned repeated input\n"
+                        )
+                        (root / target.lstrip("/")).chmod(0o644)
+                    data = "providers = owned\n" + (".include " + target + "\n") * (
+                        14 + int(excess)
+                    )
+                    (root / "etc/ssl/openssl.cnf").write_text(data)
+                    original_read, original_inventory = files.read, files.inventory
+                    reads, inventories = [], []
+
+                    def read(name, **kwargs):
+                        reads.append(name)
+                        return original_read(name, **kwargs)
+
+                    def inventory(name):
+                        inventories.append(name)
+                        return original_inventory(name)
+
+                    try:
+                        with (
+                            mock.patch.object(files, "read", side_effect=read),
+                            mock.patch.object(
+                                files, "inventory", side_effect=inventory
+                            ),
+                        ):
+                            report = P.openssl_evidence(files, E, ["/lib"], force=True)
+                        self.assertEqual(report["configurationRequests"], 16)
+                        self.assertLessEqual(report["configurationPendingPeak"], 16)
+                        self.assertEqual(
+                            (inventories if directory else reads).count(target), 14
+                        )
+                        self.assertEqual(
+                            bool(report.get("configurationRequestExcess")), excess
+                        )
+                        reasons = [row["reason"] for row in report["unknown"]]
+                        self.assertEqual(
+                            "configuration_count_or_depth_bound" in reasons, excess
+                        )
+                    finally:
+                        files.close()
+
+    def test_configuration_queue_reserves_before_child_or_depth_inspection(self):
+        for shape in ("children", "depth"):
+            with (
+                self.subTest(shape=shape),
+                tempfile.TemporaryDirectory(
+                    prefix="openssl-queue-bound-", dir=os.environ["TMPDIR"]
+                ) as temporary,
+            ):
+                root = Path(temporary).resolve()
+                files = self.fixture(root)
+                if shape == "children":
+                    folder = root / "etc/ssl/many.d"
+                    folder.mkdir(mode=0o700)
+                    for i in range(16):
+                        (folder / ("c%02d.cnf" % i)).write_bytes(b"# bounded\n")
+                    (root / "etc/ssl/openssl.cnf").write_bytes(
+                        b"providers = owned\n.include /etc/ssl/many.d\n"
+                    )
+                    forbidden = "/etc/ssl/many.d/c13.cnf"
+                else:
+                    (root / "etc/ssl/openssl.cnf").write_bytes(
+                        b"providers = owned\n.include /etc/ssl/d1.cnf\n"
+                    )
+                    for i in range(1, 5):
+                        (root / ("etc/ssl/d%d.cnf" % i)).write_text(
+                            ".include /etc/ssl/d%d.cnf\n" % (i + 1)
+                        )
+                    forbidden = "/etc/ssl/d4.cnf"
+                original = files.actual
+
+                def actual(name):
+                    if name == forbidden:
+                        self.fail("unreserved configuration was inspected")
+                    return original(name)
+
+                try:
+                    with mock.patch.object(files, "actual", side_effect=actual):
+                        report = P.openssl_evidence(files, E, ["/lib"], force=True)
+                    self.assertTrue(
+                        any(
+                            row["reason"] == "configuration_count_or_depth_bound"
+                            for row in report["unknown"]
+                        )
+                    )
+                    self.assertLessEqual(report["configurationRequests"], 16)
+                    self.assertLessEqual(report["configurationPendingPeak"], 16)
+                finally:
+                    files.close()
+
 
 if __name__ == "__main__":
     unittest.main()

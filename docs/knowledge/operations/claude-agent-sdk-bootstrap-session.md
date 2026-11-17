@@ -418,10 +418,26 @@ unsupported or excess inputs remain nonzero and explicit.
 
 Bounds stay within the existing job limits:64KiB/config,128KiB retained raw
 configuration bytes,8 config files,16 requests/entries/modules, include depth3,
-32 objects/module closure,8MiB/input and16MiB additional reads,256KiB serialized
+32 diagnostic ELF object/probe reservations,8MiB/input and16MiB additional reads,256KiB serialized
 evidence. Raw configuration is base64 data. Public-mode/type/owner/link checks
 exclude private key/certificate reads. Held inputs are rechecked through the
 same capture before and after evidence publication; drift cannot admit runtime.
+
+The diagnostic LoaderGraph reserves its32-slot capacity before root, dependency,
+interpreter or resolver-probe inspection/read/queue work. One shared budget covers
+all module candidates; an unseen alias or absent search probe conservatively
+consumes a slot. Known canonical objects and cached dependency resolutions need
+no new slot; discovered pending objects and cycles are deduplicated. Exhaustion
+returns explicit unknown before an out-of-budget filesystem operation. Ordinary
+producer resolution retains its separate existing policy.
+
+Configuration requests consume their16-slot capacity at enqueue, including the
+two seeds, repeated file paths, repeated directories and directory children.
+Depth or capacity excess is reported before inspection or inventory; pending
+work cannot exceed the same bound. Unique result keys do not refund requests.
+Owned boundary spies exercise exact-limit/one-over fan-out, deep and interpreter
+edges, aliases/probes/shared pending cycles, repeated includes/directories and
+child/depth excess. These fixtures remain local source proof, not host evidence.
 
 The existing identity-held host-manifest.json output is reused, with
 manifestOutput.purpose set to openssl_configuration_evidence_only. Its diagnostic

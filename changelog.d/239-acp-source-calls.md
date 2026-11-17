@@ -17,3 +17,9 @@
 - Adopt Tom's trusted disposable-runner ruling (decision1ec44a26 v2) for bounded
   original ACP qualification; retain the superseded custody ladder and consumed
   proofs as history, with no original execution or installs on the persistent Mac.
+
+- Apply Tom's v4 scope correction: archive abandoned catalogues, static admission
+  models and idle prototypes; retain frozen identities, production guards and
+  focused lifecycle/startup tests. Current original tests explicitly request Read
+  permission and keep the runtime-copy custody fix. No qualification pass is
+  inferred from the earlier failed native cases.

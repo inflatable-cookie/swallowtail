@@ -21,11 +21,12 @@ setting; user and managed settings remain relevant.
 `dependencies.json` freezes registry integrity, per-file hashes, adjacent
 version deltas and the bundled Agent SDK native manifests. Those manifests
 are package evidence, not qualification of the separate SDK/native axes.
-`static-closure.json` records a conservative literal-import traversal from
-v1 entry points and assigns each changed path an explicit structural class and
-reachable modules a surface role. Dynamic resolution and semantic effects
-remain separate review obligations; a reachable label is not proof of use,
-and an unreached label is not proof of absence from all dynamic paths.
+The exhaustive static/import/callsite and proposal catalogues served the abandoned
+admission project and are retained by immutable Git head/hash in the
+[archive note](../../../../../docs/knowledge/operations/claude-agent-acp-retired-analysis.md).
+They are not required runtime or CI inputs. The current original runner verifies
+frozen registry integrity, selected source hashes and exact native hashes before
+using the actual Rust prepared route on disposable runners.
 
 `idle-compaction-boundary.json` records a second selected process boundary:
 from 0.101.0 the v1 session can initiate `/compact` without a client prompt

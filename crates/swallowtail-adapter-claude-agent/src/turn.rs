@@ -36,6 +36,7 @@ pub(crate) struct ActiveTurn {
     cancelled: AtomicBool,
     timed_out: AtomicBool,
     finished: AtomicBool,
+    terminal_tail: AtomicBool,
     finish_signal: FinishedSignal,
 }
 
@@ -81,6 +82,7 @@ impl ActiveTurn {
                 cancelled: AtomicBool::new(false),
                 timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
+                terminal_tail: AtomicBool::new(false),
                 finish_signal: FinishedSignal::new(),
             }),
             Box::pin(stream),
@@ -99,6 +101,10 @@ impl ActiveTurn {
 
     pub(crate) fn is_finished(&self) -> bool {
         self.finished.load(Ordering::SeqCst)
+    }
+
+    pub(crate) fn retains_terminal_tail(&self) -> bool {
+        self.is_finished() && self.terminal_tail.load(Ordering::SeqCst)
     }
 
     pub(crate) fn finished_future(&self) -> TurnFinishedFuture {
@@ -328,6 +334,13 @@ impl ActiveTurn {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
+        // Cancellation and rejected prompts can precede their final queued
+        // session updates. Keep one finished sink until the next prompt; it
+        // validates the session but publishes no events or callback authority.
+        self.terminal_tail.store(
+            !matches!(status, TerminalStatus::Completed),
+            Ordering::SeqCst,
+        );
         self.callbacks.abandon(CallbackAbandonment::TurnTerminated);
         if let Ok(observations) = self
             .activity
@@ -444,6 +457,29 @@ mod tests {
     use serde_json::json;
 
     #[test]
+    fn terminal_tail_retention_does_not_admit_normal_idle_updates() {
+        for (status, retained) in [
+            (TerminalStatus::Completed, false),
+            (TerminalStatus::Cancelled, true),
+            (
+                TerminalStatus::RuntimeFailed(malformed().diagnostic().clone()),
+                true,
+            ),
+        ] {
+            let (turn, _, _, _) = ActiveTurn::new(
+                RuntimeTurnId::new("owned.terminal-tail").unwrap(),
+                "owned-session".into(),
+                None,
+                &ProviderRequestPolicy::reject_all(),
+                Weak::new(),
+            )
+            .unwrap();
+            turn.finish(status);
+            assert_eq!(turn.retains_terminal_tail(), retained);
+        }
+    }
+
+    #[test]
     fn late_cancelled_turn_update_does_not_reopen_terminal_events() {
         let (turn, events, _, terminal) = ActiveTurn::new(
             RuntimeTurnId::new("owned.cancel-tail").unwrap(),
@@ -454,6 +490,7 @@ mod tests {
         )
         .unwrap();
         turn.finish_prompt(&json!({"stopReason":"cancelled"}));
+        assert!(turn.retains_terminal_tail());
         let tail = json!({"sessionId":"owned-session","update":{
             "sessionUpdate":"user_message_chunk", "content":{"type":"text","text":"in-flight replay"}
         }});

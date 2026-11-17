@@ -95,6 +95,24 @@ prompt. They are failed harness observations, not qualification. The corrected
 fixture explicitly asks for Read; current runs must prove the callback and denial
 paths without inventing native events or changing public semantics.
 
+## Trusted-runner observations before claim promotion
+
+At5f22062f700028b481debfe9d0179992dfa6ff0d, workflow44089786882 ran actual
+frozen originals through the prepared Rust route. All56 Linux cases passed.
+The macOS0.102.0/0.103.0 pair passed14/14;0.104.0/0.104.1 passed13/14.
+The0.101.0/0.101.1 pair passed8/14. Remaining Mac results and repaired cases
+are not inferred passes. Exact job logs and bounded packets retain the failures.
+
+Mac originals exposed queued updates after cancelled or rejected prompt
+responses, causing `update_without_turn` and degraded session close. Retaining
+one non-completed finished turn as a validating sink repairs that lifecycle
+boundary; normal idle updates and late callback requests still refuse. A second
+failure was an allowed outside-resource Read returning a native tool error.
+The corrected selected-route probe requests files inside its approved working
+resource and still explicitly asks for Read permission; it does not claim an
+outside-resource fix. Bounded tool-result diagnostics preserve any repeated
+failure. None of these failed cases authorizes a ceiling increase.
+
 ## Original idle-class observations
 
 Tom's decision `2f4d33df-aaa6-4497-80c1-8c56fc6c2ccc` v2,

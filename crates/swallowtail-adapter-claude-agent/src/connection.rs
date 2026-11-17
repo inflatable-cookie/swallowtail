@@ -335,6 +335,7 @@ impl AcpConnection {
         if active
             .as_ref()
             .is_some_and(|current| Arc::ptr_eq(current, turn))
+            && !turn.retains_terminal_tail()
         {
             *active = None;
         }

@@ -19,6 +19,7 @@ pub(super) async fn open_management_connection(
     request_id: &RequestId,
     services: &HostServices,
 ) -> Result<PendingManagement, RuntimeFailure> {
+    driver.validate_process_binding(plan)?;
     let scope = ScopeId::new(format!(
         "claude-agent-acp:management:{}",
         request_id.as_str()

@@ -108,6 +108,7 @@ class ModelFixture:
                     "selected": selected,
                     "secretSeen": secret_seen,
                     "toolError": any(p.get("is_error") for p in latest_result),
+                    "toolResultSummary": json.dumps(latest_result)[:640],
                 }
                 with fixture.lock:
                     if len(fixture.rows) >= 32:
@@ -160,7 +161,8 @@ class ModelFixture:
                             "input": {
                                 "file_path": str(
                                     fixture.root
-                                    / "outside"
+                                    / "workspace"
+                                    / "permission"
                                     / ("secret-" + str(row["request"]) + ".txt")
                                 )
                             },

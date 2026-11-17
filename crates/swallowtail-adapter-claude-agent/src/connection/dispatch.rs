@@ -207,6 +207,7 @@ impl AcpConnection {
             .lock()
             .expect("ACP active lock poisoned")
             .clone()
+            .filter(|turn| !turn.is_finished())
             .ok_or_else(|| {
                 failure(
                     "swallowtail.claude_agent.acp.permission_without_turn",
@@ -260,6 +261,7 @@ impl AcpConnection {
             .lock()
             .expect("ACP active lock poisoned")
             .clone()
+            .filter(|turn| !turn.is_finished())
             .ok_or_else(|| {
                 failure(
                     "swallowtail.claude_agent.acp.elicitation_without_turn",

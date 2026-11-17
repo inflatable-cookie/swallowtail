@@ -21,6 +21,7 @@ impl ClaudeAgentAcpDriver {
         access_policy: &SessionAccessPolicy,
         services: &HostServices,
     ) -> Result<PendingSession, RuntimeFailure> {
+        self.validate_process_binding(plan)?;
         let scope = ScopeId::new(format!("claude-agent-acp:session:{}", request_id.as_str()))
             .map_err(|_| malformed())?;
         let mut credential = match self.credential.as_ref() {

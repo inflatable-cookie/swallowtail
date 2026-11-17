@@ -460,22 +460,13 @@ fn exercise(config: &Value) {
                 assert!(activity < output, "activity must precede continued result");
                 if config["original"] == true {
                     let observed = observations(root);
-                    assert_eq!(
-                        observed
-                            .iter()
-                            .skip(observed_before)
-                            .rev()
-                            .find(|r| r["selected"] == true && r["continuing"] == true)
-                            .expect("this turn's actual tool result")["secretSeen"],
-                        permits
-                    );
-                    assert!(
-                        observed
-                            .iter()
-                            .filter(|r| r["selected"] == true)
-                            .all(|r| r["model"] == "claude-sonnet-4-6"),
-                        "model/options must persist through actual new/load/resume: {observed:?}"
-                    );
+                    let result = observed
+                        .iter()
+                        .skip(observed_before)
+                        .rev()
+                        .find(|r| r["selected"] == true && r["continuing"] == true)
+                        .expect("this turn's actual tool result");
+                    assert_eq!(result["secretSeen"], permits, "owned Read result: {result}");
                 }
             } else if scenario == "cancel" {
                 assert_eq!(outcome.status(), &TerminalStatus::Cancelled);

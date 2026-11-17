@@ -130,3 +130,12 @@ to the runner user's existing OS processes, not just the fixture. Its finite
 user limit is now2048 (or the lower existing ceiling); Linux retains the offline
 container's256-task cap. The limits self-test must actually start and wait an
 owned Python child. These ordinary OS limits are not a custody/sandbox claim.
+
+Mac originals additionally exposed queued updates arriving after cancelled or
+rejected prompt responses. The connection retains one finished non-completed
+turn as a session-validating sink until the next prompt, without events or
+callback authority. Normal completed turns still detach: unsolicited idle
+updates retain their strict refusal. The fixture's permission files now live
+inside its approved working resource, with explicit Read-ask settings retained;
+outside-resource Read errors receive no qualification credit. Bounded owned
+result summaries preserve the next actual tool failure without guessing its cause.

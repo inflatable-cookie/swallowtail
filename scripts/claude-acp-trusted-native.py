@@ -329,12 +329,12 @@ def inside(root):
             if case["hop"] == "0.101.0" and scenario in ("user-deny", "managed-deny"):
                 scenario = "inherited-" + scenario.split("-")[0] + "-unsupported"
             work = root / (case["hop"] + "-" + scenario)
-            for relative in ("workspace", "home/.claude", "outside"):
+            for relative in ("workspace/permission", "home/.claude"):
                 (work / relative).mkdir(parents=True, exist_ok=True)
             # A distinct owned file per request avoids native Read-result cache
             # satisfying a later turn without a new permission decision.
             for number in range(1, 33):
-                (work / f"outside/secret-{number}.txt").write_text(
+                (work / f"workspace/permission/secret-{number}.txt").write_text(
                     "owned-secret-value\n"
                 )
             (work / "home/.claude/settings.json").write_text(

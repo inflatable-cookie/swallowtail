@@ -11,6 +11,10 @@ const HOPS: [&str; 8] = [
     "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
 ];
 
+pub(crate) fn requires_checked_process(version: &str) -> bool {
+    HOPS.contains(&version)
+}
+
 /// Returns the frozen static v1 wrapper source manifest for one exact hop.
 ///
 /// This is only the relative-JavaScript wrapper inventory. It does not include

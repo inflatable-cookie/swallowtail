@@ -62,6 +62,21 @@ impl ClaudeAgentAcpDriver {
         self
     }
 
+    fn validate_process_binding(&self, plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+        if self.checked_process.is_none()
+            && plan.interface_versions().any(|binding| {
+                binding.axis().as_str() == crate::CLAUDE_AGENT_ACP_AXIS
+                    && crate::guard_manifest::requires_checked_process(binding.version().as_str())
+            })
+        {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.checked_process_required",
+                "This Claude Agent ACP version requires the host-bound guarded process recipe",
+            ));
+        }
+        Ok(())
+    }
+
     fn start_process(
         &self,
         service: &dyn swallowtail_runtime::ProcessService,

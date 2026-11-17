@@ -114,6 +114,14 @@ impl SharedAgent {
                     }
                 }}),
             );
+            Self::enqueue(
+                state,
+                json!({"jsonrpc":"2.0", "method":"session/update", "params":{
+                    "sessionId":"claude-agent-session-fixture", "update":{
+                        "sessionUpdate":"user_message_chunk", "content":{"type":"text","text":"queued cancelled replay"}
+                    }
+                }}),
+            );
         }
         Ok(())
     }

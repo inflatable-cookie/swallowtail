@@ -199,5 +199,30 @@ fn guarded_production_graphs_pin_every_source_format_and_edge() {
         ),
     ] {
         assert_eq!(format!("{:x}", Sha256::digest(source.as_bytes())), expected);
+        let graph: Value = serde_json::from_str(source).expect("frozen graph");
+        if let Some(programs) = graph.get("platform_programs") {
+            let programs = programs.as_array().expect("platform programs");
+            assert_eq!(
+                programs.len(),
+                1,
+                "each hop needs the bounded registry ps edge"
+            );
+            let parent = programs[0]["parent"].as_str().expect("ps caller");
+            assert!(matches!(
+                parent,
+                "acp/dist/session-index/live-registry.js"
+                    | "acp/dist/v1/session-index/live-registry.js"
+            ));
+            assert_eq!(programs[0]["name"], "ps");
+            assert_eq!(programs[0]["arguments"], "live-process-starts-v1");
+            assert!(
+                graph["builtins"]
+                    .as_array()
+                    .expect("builtins")
+                    .iter()
+                    .any(|edge| edge["parent"] == parent
+                        && edge["specifier"] == "node:child_process")
+            );
+        }
     }
 }

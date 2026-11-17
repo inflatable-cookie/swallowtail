@@ -123,7 +123,7 @@ fn prepared_session_advertises_and_exchanges_form_elicitation_as_typed_user_inpu
 #[test]
 fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
     let host_id = ExecutionHostId::new("fixture.session.consumer-mediated").expect("valid host");
-    let preparation_host = FixtureHost::new(Scenario::Version, "0.106.0");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.107.0");
     let prepared = block_on(prepare_claude_agent(
         preparation_input(host_id.clone()),
         probe(),
@@ -162,7 +162,7 @@ fn prepared_session_opt_in_exposes_one_shot_permission_exchange() {
         )
     );
 
-    let operation_host = FixtureHost::new(Scenario::Permission, "0.106.0");
+    let operation_host = FixtureHost::new(Scenario::Permission, "0.107.0");
     let services = operation_host.services(host_id.clone());
     let mut session =
         block_on(profile.open_session(services.clone())).expect("prepared session opens");
@@ -412,7 +412,7 @@ fn prepared_structured_run_opt_in_exposes_one_shot_permission_exchange() {
 fn prepared_session_preserves_denial_without_inventing_permission_callback() {
     let host_id = ExecutionHostId::new("fixture.session.denied-without-callback")
         .expect("valid host");
-    let preparation_host = FixtureHost::new(Scenario::Version, "0.106.0");
+    let preparation_host = FixtureHost::new(Scenario::Version, "0.107.0");
     let prepared = block_on(prepare_claude_agent(
         preparation_input(host_id.clone()),
         probe(),
@@ -432,7 +432,7 @@ fn prepared_session_preserves_denial_without_inventing_permission_callback() {
             SessionOptions::default(),
         ))
         .expect("session profile");
-    let host = FixtureHost::new(Scenario::PermissionDeniedWithoutCallback, "0.106.0");
+    let host = FixtureHost::new(Scenario::PermissionDeniedWithoutCallback, "0.107.0");
     let services = host.services(host_id);
     let mut session = block_on(profile.open_session(services.clone())).expect("session opens");
     let mut turn = block_on(session.start_turn(

@@ -123,6 +123,34 @@ export function query({options}) {
                 len([v for v in observed["events"] if v["event"] == "native_close"]), 1
             )
 
+    def test_shipped_sidecar_driver_uses_real_wire_and_owned_child(self):
+        node = shutil.which("node")
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            root = Path(temporary)
+            sdk = root / "sdk.mjs"
+            (root / "package.json").write_text(
+                json.dumps(
+                    {"name": "@anthropic-ai/claude-agent-sdk", "version": "0.3.317"}
+                )
+            )
+            (root / "manifest.json").write_text('{"version":"2.1.317"}')
+            sdk.write_text("""export function query({prompt,options}) {
+              const child=options.spawnClaudeCodeProcess({command:options.pathToClaudeCodeExecutable,args:["-e","process.stdin.resume()"],cwd:options.cwd,env:options.env});
+              const stream=(async function*() { for await(const input of prompt) { yield {type:"system",subtype:"init",cwd:options.cwd,model:options.model,session_id:"owned",tools:["Write"],permissionMode:"default"}; await options.canUseTool("Write",{file_path:"owned"}); yield {type:"result",subtype:"success",result:"continued",is_error:false,usage:{input_tokens:1,output_tokens:1}}; return; }})();
+              return Object.assign(stream,{initializationResult:async()=>({}), supportedModels:async()=>[{value:options.model}], accountInfo:async()=>({apiProvider:"firstParty",subscriptionType:"max",tokenSource:"oauth"}), close:()=>child.stdin.end()});
+            }""")
+            cases = root / "cases"
+            cases.mkdir()
+            observed = T.case(
+                cases, sdk, Path(node), Path(node), "deny", sidecar=True, bound=5
+            )
+            self.assertEqual(observed["returncode"], 0, observed)
+            self.assertTrue(observed["allClosed"])
+            self.assertTrue(observed["closeResponse"]["data"]["nativeExitObserved"])
+            self.assertEqual(
+                len([e for e in observed["events"] if e["event"] == "callback"]), 1
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

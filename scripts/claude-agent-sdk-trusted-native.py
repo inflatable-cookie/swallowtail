@@ -254,8 +254,8 @@ class Peer(http.server.BaseHTTPRequestHandler):
             pass
 
 
-def case(base, sdk, native, node, name):
-    root = base / name
+def case(base, sdk, native, node, name, *, sidecar=False, version="0.3.317", bound=45):
+    root = base / (("sidecar-" if sidecar else "") + name)
     root.mkdir()
     home, workspace = root / "home", root / "workspace"
     home.mkdir()
@@ -298,13 +298,27 @@ def case(base, sdk, native, node, name):
         "workspace": str(workspace),
         "case": name,
         "effect": str(effect),
+        "sidecar": str(
+            ROOT
+            / "crates/swallowtail-adapter-claude-agent/sidecar/claude-agent-sdk-sidecar.mjs"
+        ),
+        "sdkVersion": version,
+        "nativeVersion": "2.1." + version.rsplit(".", 1)[1],
+        "manifest": str(sdk.parent / "manifest.json"),
         "environment": environment,
     }
     config_path = root / "case.json"
     config_path.write_text(json.dumps(config))
     command = [
         str(node),
-        str(ROOT / "scripts/claude-agent-sdk-trusted-case.mjs"),
+        str(
+            ROOT
+            / (
+                "scripts/claude-agent-sdk-trusted-sidecar.mjs"
+                if sidecar
+                else "scripts/claude-agent-sdk-trusted-case.mjs"
+            )
+        ),
         str(config_path),
     ]
     if platform.system() == "Darwin":
@@ -342,11 +356,16 @@ def case(base, sdk, native, node, name):
                 preexec_fn=limits,
             )
             try:
-                code = process.wait(timeout=45)
+                code = process.wait(timeout=bound)
             except subprocess.TimeoutExpired:
                 os.killpg(process.pid, 9)
                 code = process.wait(timeout=5)
-                raise RuntimeError("case deadline; actual driver wait=" + str(code))
+                raise RuntimeError(
+                    "case deadline; actual driver wait="
+                    + str(code)
+                    + " stderr="
+                    + (root / "stderr.txt").read_text(errors="replace")[:32768]
+                )
         output = (root / "stdout.json").read_bytes()
         if len(output) > 1048576 or (root / "stderr.txt").stat().st_size > 1048576:
             raise ValueError("case output bound")
@@ -425,14 +444,17 @@ def originals(work, inside=False):
     }
     failures = []
     for row in manifest["tuples"]:
-        for name in CASES:
+        for sidecar, name in [(False, n) for n in CASES] + ([(True, n) for n in CASES]):
             result = case(
                 Path(row["root"]),
                 Path(row["sdk"]),
                 Path(row["native"]),
                 Path(manifest["nodePath"]),
                 name,
+                sidecar=sidecar,
+                version=row["sdk_version"],
             )
+            result["driver"] = "shipped-sidecar" if sidecar else "sdk-options"
             result["sdkVersion"] = row["sdk_version"]
             result["nativeSha256"] = row["binary_sha256"]
             results["cases"].append(result)
@@ -455,6 +477,28 @@ def originals(work, inside=False):
                         result.get("failure"),
                     )
                 )
+            elif sidecar:
+                close = result.get("closeResponse", {}).get("data", {})
+                ended = [e for e in events if e.get("event") == "turn_ended"]
+                if (
+                    not close.get("nativeExitObserved")
+                    or not ended
+                    or (
+                        name not in ("cancel", "deadline", "error")
+                        and (
+                            bool(callbacks) == expected_no_callback
+                            or result["effect"] != (name == "allow")
+                        )
+                    )
+                ):
+                    failures.append(
+                        (
+                            row["sdk_version"],
+                            name,
+                            "sidecar permission/lifecycle",
+                            close,
+                        )
+                    )
             elif name == "error":
                 if not any(
                     e.get("type") == "result" and e.get("is_error") for e in events

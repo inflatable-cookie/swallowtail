@@ -202,6 +202,7 @@ section = "Research Records"
 "check:claude-agent-sdk-trusted-native" = [
   "python3 -c 'from pathlib import Path; [compile(Path(p).read_bytes(), p, \"exec\") for p in (\"scripts/claude-agent-sdk-trusted-native.py\", \"scripts/tests/claude-agent-sdk-trusted-native.py\")]'",
   "node --check scripts/claude-agent-sdk-trusted-case.mjs",
+  "node --check scripts/claude-agent-sdk-trusted-sidecar.mjs",
 ]
 "check:format:claude-agent-sdk-trusted-native" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py"
 "format:claude-agent-sdk-trusted-native" = "ruff format --no-cache scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py"

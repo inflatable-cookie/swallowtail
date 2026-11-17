@@ -448,10 +448,15 @@ def assert_case(result, version, driver):
         "driver actual wait",
     )
     need(
-        result.get("allClosed") is True and result.get("children") == 1,
+        result.get("allWaited" if driver == "prepared" else "allClosed") is True
+        and result.get("children") == 1,
         "native actual wait",
     )
-    closes = [e for e in events if e.get("event") == "native_close"]
+    closes = [
+        e
+        for e in events
+        if e.get("event") == ("native_exit" if driver == "prepared" else "native_close")
+    ]
     need(
         len(closes) == 1
         and (closes[0].get("code") is not None or closes[0].get("signal") is not None),
@@ -479,10 +484,21 @@ def assert_case(result, version, driver):
         }.get(name, "Completed")
         need(result.get("terminalStatus") == expected, "distinct typed terminal")
         need(
-            result.get("sessionCleanup") == "Clean"
+            result.get("sessionCleanup") in ("Clean", "RootCompleted")
+            and (
+                result.get("sessionCleanup") != "RootCompleted"
+                or result.get("sessionCleanupDiagnostic")
+                == "swallowtail.claude-agent.sdk.close_root_only_degraded"
+            )
             and result.get("turnCleanup") in ("Clean", "NotApplicable")
             and result.get("driverWaitObserved") is True,
-            "prepared actual cleanup",
+            "prepared actual cleanup: "
+            + repr(
+                {
+                    key: result.get(key)
+                    for key in ("turnCleanup", "sessionCleanup", "driverWaitObserved")
+                }
+            ),
         )
         need(
             (result.get("cancellation") == "Requested") is (name == "cancel"),

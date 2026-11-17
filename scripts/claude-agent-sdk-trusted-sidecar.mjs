@@ -15,7 +15,11 @@ cp.spawn = (command, args, options) => {
     ANTHROPIC_API_KEY: "owned-fixture-key",
     ANTHROPIC_BASE_URL: config.environment.ANTHROPIC_BASE_URL,
     CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1", DISABLE_AUTOUPDATER: "1" } });
-  const observed = { child, closed: false, stderr: "" };
+  const observed = { child, closed: false, exited: false, stderr: "" };
+  child.once("exit", (code, signal) => {
+    observed.exited = true;
+    events.push({event:"native_exit",code,signal,pid:child.pid});
+  });
   observed.wait = new Promise((resolve) => child.once("close", (code, signal) => {
     observed.closed = true; events.push({ event: "native_close", code, signal, pid: child.pid }); resolve();
   }));
@@ -37,7 +41,7 @@ if (process.argv[3] === "--prepared") {
     return output(chunk, ...args);
   };
   process.on("exit", () => writeFileSync(config.observation, JSON.stringify({events,
-    children:children.length, allClosed:children.every(c=>c.closed)})));
+    children:children.length, allWaited:children.every(c=>c.exited)})));
   await import(pathToFileURL(config.sidecar).href);
 } else {
 const input = new PassThrough();

@@ -202,13 +202,16 @@ class AssertionTests(unittest.TestCase):
             },
             {"event": "native_close", "code": 0, "signal": None},
         ]
-        if driver != "prepared":
+        if driver == "prepared":
+            events[-1]["event"] = "native_exit"
+        else:
             events += callbacks
         result = {
             "case": name,
             "returncode": 0,
             "driverWaitCode": 0,
             "allClosed": True,
+            "allWaited": True,
             "children": 1,
             "effect": name == "allow",
             "events": events,
@@ -245,6 +248,17 @@ class AssertionTests(unittest.TestCase):
             ] + (["deadline"] if driver == "prepared" else []):
                 T.assert_case(self.fixture(driver, name), "0.3.322", driver)
 
+    def test_root_only_posture_requires_its_exact_positive_receipt(self):
+        value = self.fixture("prepared")
+        value.update(
+            sessionCleanup="RootCompleted",
+            sessionCleanupDiagnostic="swallowtail.claude-agent.sdk.close_root_only_degraded",
+        )
+        T.assert_case(value, "0.3.322", "prepared")
+        value["driverWaitObserved"] = False
+        with self.assertRaises(ValueError):
+            T.assert_case(value, "0.3.322", "prepared")
+
     def test_actual_predicate_refuses_semantic_and_wait_mutations(self):
         for driver in ["shipped-sidecar", "prepared"]:
             base = self.fixture(driver)
@@ -255,7 +269,7 @@ class AssertionTests(unittest.TestCase):
                 "tool_ended",
                 "turn_started",
                 "turn_ended",
-                "native_close",
+                "native_exit" if driver == "prepared" else "native_close",
             ]:
                 value = copy.deepcopy(base)
                 value["events"] = [
@@ -270,7 +284,7 @@ class AssertionTests(unittest.TestCase):
             variants.append(value)
             for key, bad in [
                 ("effect", True),
-                ("allClosed", False),
+                ("allWaited" if driver == "prepared" else "allClosed", False),
                 ("children", 0),
                 ("driverWaitCode", None),
                 ("failure", "startup error"),
@@ -293,6 +307,26 @@ class AssertionTests(unittest.TestCase):
                     }
                 )
             variants.append(value)
+            if driver == "prepared":
+                for missing in (
+                    "Started",
+                    "Activity:Tool:Started:Running",
+                    "OutputDelta",
+                ):
+                    value = copy.deepcopy(base)
+                    value["runtimeEvents"] = [
+                        e for e in value["runtimeEvents"] if e["kind"] != missing
+                    ]
+                    variants.append(value)
+                value = copy.deepcopy(base)
+                value["runtimeEvents"][2]["sequence"] = 0
+                variants.append(value)
+                value = copy.deepcopy(base)
+                value.update(
+                    sessionCleanup="RootCompleted",
+                    sessionCleanupDiagnostic="unrelated_degradation",
+                )
+                variants.append(value)
             for value in variants:
                 with self.subTest(driver=driver, value=value):
                     with self.assertRaises(ValueError):
@@ -318,6 +352,7 @@ class AssertionTests(unittest.TestCase):
             "returncode": 0,
             "driverWaitCode": 0,
             "allClosed": True,
+            "allWaited": True,
             "children": 1,
             "effect": False,
             "failure": "SDK import failed",

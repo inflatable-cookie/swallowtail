@@ -192,8 +192,22 @@ async fn run(config: &Value, config_file: &std::path::Path) -> Value {
         )
         .await;
     local.shutdown_task_reapers().expect("actual task joins");
+    // Preserve the product's existing root-only degraded posture. This is a
+    // positive host root wait, not attested descendant-tree emptiness.
+    let session_class = match &session_cleanup {
+        CleanupOutcome::Clean => "Clean",
+        CleanupOutcome::Degraded(d)
+            if d.code() == "swallowtail.claude-agent.sdk.close_root_only_degraded" =>
+        {
+            "RootCompleted"
+        }
+        CleanupOutcome::Degraded(_) => "Degraded",
+        CleanupOutcome::Failed(_) => "Failed",
+        CleanupOutcome::NotApplicable => "NotApplicable",
+    };
     json!({"terminalStatus":terminal_status,"output":output,"runtimeEvents":recorded,"callbacks":callbacks,
         "cancellation":cancellation,"deadlineTicks":deadline.instant().ticks(),
-        "turnCleanup":format!("{turn_cleanup:?}"),"sessionCleanup":format!("{session_cleanup:?}"),
-        "driverWaitObserved":matches!(session_cleanup,CleanupOutcome::Clean)})
+        "turnCleanup":format!("{turn_cleanup:?}"),"sessionCleanup":session_class, "sessionCleanupDiagnostic":session_cleanup.diagnostic().map(|d|d.code()),
+        "sessionCleanupDetail":format!("{session_cleanup:?}"),
+        "driverWaitObserved":matches!(session_class,"Clean"|"RootCompleted")})
 }

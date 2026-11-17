@@ -1,14 +1,14 @@
 # SDK registered host attempt
 
-Status: two authorized attempts consumed. The corrected job refused unreviewed
-OpenSSL configuration before candidate open or runtime entry. Both qualification
-merge holds and Q-009 remain open.
+Status: two owned-fake host grants and one configuration-capture grant consumed.
+The capture failed its exact image/envelope gate before checkout or configuration
+collection. Both qualification merge holds and Q-009 remain open.
 
 This file owns actual attempt status. The executed contract, packet and record
 remain frozen in the exact Git objects below. The current
 [bootstrap contract](claude-agent-sdk-bootstrap-session.md) and
 [setup packet](claude-agent-sdk-host-setup.json) describe the reviewed source
-correction. Its registration and two consumed grants below authorize no further run.
+correction. The registrations and three consumed grants below authorize no further run.
 
 ## First attempt: authority and exact inputs
 
@@ -170,7 +170,7 @@ intent/preflight and metadata, delivered through proof files rather than scratch
 references. Archives were read as bounded untrusted data with fixed regular
 names; no contents were executed or extracted through archive paths.
 
-## Current next prerequisite
+## Prerequisite after the corrected owned-fake attempt
 
 The precise gate is the selected image's unreviewed OpenSSL configuration.
 The smallest next preparation is exact configuration/alias/directive evidence
@@ -194,3 +194,77 @@ No candidate bytes/version/custody, package production, runtime observation,
 three-case fake result, kernel/canonical/native discovery, ACP sibling topology
 or original startup was proved. Node22.23.4 remains fake-only outside the public
 SDK Node axis. No automatic second attempt or original follow-on is authorized.
+
+
+## Configuration capture: authority and exact inputs
+
+Tom selected “Run one configuration capture” in decision
+2b92468a-236d-4026-86a8-9fa1c3c6fae0 v2 at 2026-11-17T10:31:09.080Z.
+This separate grant covered only the registered evidence-only path, including
+its existing six-object administrative preparation/conditional restoration. It
+allowed no candidate open, leaf transition, Node/fake execution, kernel/canonical
+payload setup or original/vendor/provider entry. Review5935972993 accepted the
+source packet; registration244/PR562 was reviewed at5936208209.
+
+| Binding | Exact identity |
+| --- | --- |
+| Registration/main | `c2a9ba084dd7893df999bb4693d7949ebe296ce9` (PR562) |
+| Workflow | `420660279`, `.github/workflows/sdk240-host-setup.yml` |
+| Workflow bytes | 8723; SHA256 `94b2bfd65dd46773a740c97e88f15a167028ac73cefeb6c389baa6721f1cda4c` |
+| Workflow Git blob | `727dfbb345138b64d0b22a0e9e2084dfe802272c` |
+| Fixed execution source | `3ecd63c48207438459c20f761cfd001b294ae76f` |
+| Source-record SHA256 | `f5afb24dd8f336e650b00cfd3580ea7dd190fd160a5dc28dcde5a3fca2be66f9` |
+| Bootstrap SHA256 | `08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605` |
+| Accepted author head | `a7ef1de8a51c7b6171730665b5bdab3c9551c519` |
+
+The accepted v2 preflight verified active registry/workflow bytes, fixed
+source/record/bootstrap, clean author branch and exactly the two prior failed
+attempt1 runs. Its final remote read fenced main to the registration SHA. A
+bounded durable intent preceded the sole `--ref main` command, which returned0
+and consumed this grant. No retry, rerun or fallback occurred.
+
+## Configuration capture: settled observation
+
+[Run44066141928](https://github.com/inflatable-cookie/swallowtail/actions/runs/44066141928),
+manual attempt1 at the registration head, completed failure. The
+[job133980211643](https://github.com/inflatable-cookie/swallowtail/actions/runs/44066141928/job/133980211643)
+failed “Exact image and single-attempt envelope” with exit1 at
+2026-11-17T10:35:01Z. Final history contains exactly43972504898,44041875249
+and44066141928, all attempt1; main remained at the registration through settlement.
+
+The runner banner reports Ubuntu26.04.1, image ubuntu-26.04,
+version20261111.82.6 and cloud AWS. The registered shell requires
+ImageOS=ubuntu26 and ImageVersion=20261111.196.1. The banner therefore differs
+from the authorized image pin. The combined shell does not trace commands or
+print actual ImageOS/ImageVersion environment values; do not invent a more
+precise failing expression, UID/GID observation or fresh boot identity.
+
+Fixed checkout, the same-owner preparation/capture transaction and bounded
+metadata upload were all skipped. The artifact API reports zero artifacts.
+No configuration bytes, aliases/directives/include/module/search closure,
+admin journal, trusted-tool wait or restoration receipt was produced. The
+runner's generic orphan-cleanup line is neither a terminal child wait nor
+filesystem restoration evidence. No preparation or runtime admission credit
+follows from the job status or the absence of artifacts.
+
+The complete job log is3429 bytes, SHA256
+`9b03dadee9f38a3f46db8a5a823a62dfe991d6e690262b14f379d70d6e80d7c0`.
+A read-only log fetch initially refused terminal escape sequences; that refusal
+and partial output were retained, then the CLI's documented allow-output flag
+saved the complete log as bounded inert data. No archive existed to extract.
+Intent/preflight/final metadata and logs are delivered through proof files.
+This result-only record and changelog were written after immutable settlement;
+they cannot have caused the already-completed envelope failure. Executable
+source, workflow, record and runtime bytes remain unchanged.
+
+## Current next prerequisite after configuration capture
+
+The exact configuration capture is missing, not waived. The smallest prerequisite
+is an available host matching the authorized20261111.196.1 image, or a separate
+reviewed image-specific source/security disposition for the available image and
+new exact execution authority. Do not silently repin, infer configuration bytes
+from a release label, relax the image gate or replay any consumed grant.
+
+This capture proves no candidate/runtime/owned-fake/kernel/canonical/ACP/original
+result. Both qualification holds, Q-009, public Node-axis exclusions and ACP239's
+park remain. All three grants are consumed, with no automatic follow-on.

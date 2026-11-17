@@ -1,0 +1,39 @@
+{
+  "acp_reachability": "ACP 0.101.1 and 0.106.0 v1 enable user settings and register canUseTool for provider permission requests.",
+  "boundary": "No native executable was run. A static setting description and byte identity support this risk but do not establish every control-flow case or authorize changing the consumer contract.",
+  "dependency_edges": {
+    "0.100.0": "0.3.316",
+    "0.101.1": "0.3.319",
+    "0.106.0": "0.3.322"
+  },
+  "native_artifacts": {
+    "0.3.316": {
+      "binary_sha256": "fd13c70000fec3f2116dfbcbb6121210b4a29328bf0e46210a59dd594a67d824",
+      "binary_size": 328262000,
+      "integrity": "sha512-+csYyGkHziNp4It+ZykqTmXRZBuNrieTiBnji+zwAxNmLLCWz8xEWjNmwhaLPIMpUiaYREkDhZXt/AS6xXta5w==",
+      "npm_tarball": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk-linux-x64/-/claude-agent-sdk-linux-x64-0.3.316.tgz",
+      "setting_occurrences": 0,
+      "tarball_sha256": "0b2ca2ac0c5ec37b79c2c53ccc6d2e5dcf3ca5ee11d1b39aef6591a8ac6e77fa"
+    },
+    "0.3.319": {
+      "binary_sha256": "dabafec82ca1319fa43d8be36a10fc61b1d11821cb98ad5df04ad95e199b8eed",
+      "binary_size": 340226576,
+      "integrity": "sha512-uBAZA8x0hd5gVifyL5Lo73dVmi9xZeJ6jro2NO0al6yyWaw/6UL9xbsVh9lOhLFOmYIdSbQ2j4zAfnvG/t5F3Q==",
+      "npm_tarball": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk-linux-x64/-/claude-agent-sdk-linux-x64-0.3.319.tgz",
+      "setting_occurrences": 32,
+      "tarball_sha256": "6f83234a4d88ed061b6b64a64b22a947eb5d9b0de6e2b88158edb29f08bb8f9d"
+    },
+    "0.3.322": {
+      "binary_sha256": "bfb3703ad5380242328459bc62ada4bde8ae7ba57c6e1eeadb9c00e08874c478",
+      "binary_size": 341914128,
+      "integrity": "sha512-M/i7uV5wQf1kvjiPJr2KF5PeA9BpftUpMTtwE+DpQ0Tj+scthQXSMsEhDvau/Rh/MfFOc+UHED4tltignmA5+Q==",
+      "npm_tarball": "https://registry.npmjs.org/@anthropic-ai/claude-agent-sdk-linux-x64/-/claude-agent-sdk-linux-x64-0.3.322.tgz",
+      "setting_occurrences": 34,
+      "tarball_sha256": "cc294a64eacb94472983ba3912612ceecf97c0bf9372027fc94485c89e4594e2"
+    }
+  },
+  "package": "@anthropic-ai/claude-agent-sdk-linux-x64",
+  "scope": "Preliminary static evidence, Linux x64 only; does not qualify any route or establish all affected cases.",
+  "setting": "permissions.denyInsteadOfPrompting",
+  "source_behavior": "The 0.3.319 native settings description states that user or managed settings can deny a call that would prompt, without asking canUseTool, and continue the turn. Project and local values of this key are ignored."
+}

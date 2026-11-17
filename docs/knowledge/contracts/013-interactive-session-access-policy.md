@@ -245,6 +245,19 @@ explicitly bind `ConsumerMediated` approval and the exact
 `acp/session/request-permission` exchange; an interactive selection is frozen
 for the session and inherited by every turn.
 
+Tom's 2026-11-12 ruling (decision `43ddf3d5-e62b-4516-8546-e53137b320be`,
+version 2) preserves the provider's inherited
+`permissions.denyInsteadOfPrompting` setting for affected newer Claude Agent
+ACP versions under a distinct behavior revision. When the provider denies a
+tool before offering `canUseTool`, the adapter must not invent a permission
+request; a turn may continue with that denial. Earlier qualified versions
+retain their existing revisions. The guarded admission declares
+`claude-agent.acp.guarded-permission-inheritance-v8` and binds it into the
+compound recipe policy. It is not projected as qualified by a stock version
+observation or by fake proof. The first affected hop and each newer claim
+still require exact selected-path and artifact evidence; the ruling alone
+does not qualify them or authorize an unsolicited provider turn.
+
 Attached session close owns local HTTP/SSE work only. It does not call OpenCode
 instance dispose, authentication, configuration, share, or server lifecycle
 routes.

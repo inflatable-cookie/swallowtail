@@ -103,6 +103,7 @@ PROOF_SELECTORS = {
 
 # Maintained scripts that reach Cargo, with the class each must keep.
 SCRIPT_CLASSES = {
+    "scripts/check-claude-acp-guard-api.sh": "switched",
     HELPER: "helper",
     "scripts/check-msrv.sh": "switched",
     "scripts/check-package-metadata.sh": "switched",
@@ -733,7 +734,8 @@ def check_workflows():
     if not workflows:
         fail("no hosted workflow is checked; .github/workflows owns the CI route")
     for path in workflows:
-        text = path.read_text()
+        workflow_bytes = path.read_bytes()
+        text = workflow_bytes.decode()
         relative = str(path.relative_to(ROOT))
         if path.name == "sdk240-trusted-native.yml":
             # Decision1ec44a26 v2: ordinary PR-triggered frozen original tests,
@@ -749,6 +751,15 @@ def check_workflows():
                 token in text for token in ("workflow_dispatch:", "secrets:", "cargo ")
             ):
                 fail("trusted SDK original job routing/authority changed")
+            continue
+        if path.name == "sdk240-host-setup.yml":
+            # Planner ruling 7059541d admits only the reviewed manual host job.
+            # Keep every other workflow on the existing plain-Cargo boundary.
+            if (
+                hashlib.sha256(workflow_bytes).hexdigest()
+                != "94b2bfd65dd46773a740c97e88f15a167028ac73cefeb6c389baa6721f1cda4c"
+            ):
+                fail("SDK240 host workflow differs from its exact approved bytes")
             continue
         if "oxide" in text:
             fail(
@@ -843,7 +854,7 @@ def main(argv):
     print("  frozen_routes=%d" % len(FROZEN_ROUTES))
     print("  maintained_scripts=%d" % len(scripts))
     print("  release_include=routed, workspace test recipe routed")
-    print("  workflows=plain Cargo; exact SDK234 fixture-only exception")
+    print("  workflows=plain Cargo; exact SDK234 and SDK240 exceptions")
     print("  target_ignore=/target")
     print("  agent_block=generated")
     print("oxide selector routing passed")

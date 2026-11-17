@@ -15,6 +15,7 @@ pub struct LocalExecutableLaunch {
     program: PathBuf,
     prefix_arguments: Vec<OsString>,
     bootstrap_environment: Vec<(OsString, OsString)>,
+    reject_node_startup_environment: bool,
 }
 
 impl LocalExecutableLaunch {
@@ -25,6 +26,7 @@ impl LocalExecutableLaunch {
             program: program.into(),
             prefix_arguments: Vec::new(),
             bootstrap_environment: Vec::new(),
+            reject_node_startup_environment: false,
         }
     }
 
@@ -55,6 +57,20 @@ impl LocalExecutableLaunch {
     ) -> Self {
         self.bootstrap_environment = values.into_iter().collect();
         self
+    }
+
+    /// Rejects Node and dynamic-loader environment controls before spawning.
+    ///
+    /// This filter is only one admission check. It does not attest the
+    /// interpreter, its arguments, the guard or the bytes Node will load.
+    #[must_use]
+    pub fn with_node_startup_environment_filter(mut self) -> Self {
+        self.reject_node_startup_environment = true;
+        self
+    }
+
+    pub(crate) fn rejects_node_startup_environment(&self) -> bool {
+        self.reject_node_startup_environment
     }
 
     pub(crate) fn program(&self) -> &Path {

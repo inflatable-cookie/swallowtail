@@ -1,0 +1,22 @@
+{
+  "schema": "swallowtail.acp.darwin-spawn-path.v1",
+  "toolchain": "rust1.97.1 aarch64-apple-darwin",
+  "source": "https://github.com/rust-lang/rust/blob/1.97.1/library/std/src/sys/process/unix/unix.rs",
+  "sha256": "465f8e5615034028b0afcd81e0690af1c3a2bedd4cf3f686e0d0811698c1d9ed",
+  "selected_command": {
+    "program": "absolute canonical pinned Mach-O Node",
+    "uid_gid_groups_chroot_setsid": "unset",
+    "pre_exec": "none",
+    "cwd": "unset in component probe",
+    "environment": "cleared then approved values only",
+    "pgroup": "existing host-owned group; POSIX_SPAWN_SETPGROUP"
+  },
+  "source_checks": [
+    "Command::spawn calls posix_spawn before fork fallback",
+    "all generic early-fallback conditions are false for the selected command",
+    "Darwin selects libc::posix_spawnp",
+    "nonzero posix_spawn errors propagate; the pinned Node is Mach-O, so no ENOEXEC shell fallback",
+    "pgroup is implemented by posix_spawnattr_setpgroup"
+  ],
+  "guarantee": "Trusted host preserves runtime and loader custody through synchronous spawn and bootstrap admission. This is source-path evidence for this built Darwin owner, not OS verified execution or resistance to hostile same-user replacement. Linux component execution remains refused."
+}

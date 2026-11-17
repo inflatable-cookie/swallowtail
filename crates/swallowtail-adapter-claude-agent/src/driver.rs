@@ -13,12 +13,12 @@ use swallowtail_core::{
     SessionAccessPolicy, SessionRef, TransportFamilyId,
 };
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    CredentialLease, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, LoadSessionRequest, LoadedSession, OpenSessionRequest,
-    ProcessHandle, ProcessRequest, RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure,
-    RuntimeSessionId, ScopeId, SessionResumeBinding, TerminalOutcome, TurnHandle, TurnRequest,
-    validate_session_resource_lease,
+    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CheckedProcessRef,
+    CleanupOutcome, CredentialLease, EnvironmentRef, ExecutableRef, HostServices,
+    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
+    LoadedSession, OpenSessionRequest, ProcessHandle, ProcessRequest, RequestId, ResourceLease,
+    ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId, SessionResumeBinding,
+    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.claude-agent.acp";
@@ -31,6 +31,7 @@ pub struct ClaudeAgentAcpDriver {
     environment: EnvironmentRef,
     credential: Option<CredentialRef>,
     http_mcp: Option<ClaudeAgentAcpRemoteMcpPlacement>,
+    checked_process: Option<CheckedProcessRef>,
 }
 
 impl ClaudeAgentAcpDriver {
@@ -41,6 +42,7 @@ impl ClaudeAgentAcpDriver {
             environment,
             credential: Some(credential),
             http_mcp: None,
+            checked_process: None,
         }
     }
 
@@ -51,6 +53,39 @@ impl ClaudeAgentAcpDriver {
             environment,
             credential: None,
             http_mcp: None,
+            checked_process: None,
+        }
+    }
+
+    pub(crate) fn with_checked_process(mut self, binding: Option<CheckedProcessRef>) -> Self {
+        self.checked_process = binding;
+        self
+    }
+
+    fn validate_process_binding(&self, plan: &PreflightPlan) -> Result<(), RuntimeFailure> {
+        if self.checked_process.is_none()
+            && plan.interface_versions().any(|binding| {
+                binding.axis().as_str() == crate::CLAUDE_AGENT_ACP_AXIS
+                    && crate::guard_manifest::requires_checked_process(binding.version().as_str())
+            })
+        {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.checked_process_required",
+                "This Claude Agent ACP version requires the host-bound guarded process recipe",
+            ));
+        }
+        Ok(())
+    }
+
+    fn start_process(
+        &self,
+        service: &dyn swallowtail_runtime::ProcessService,
+        scope: ScopeId,
+        request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        match &self.checked_process {
+            Some(binding) => service.start_checked(scope, binding.clone(), request),
+            None => service.start(scope, request),
         }
     }
 

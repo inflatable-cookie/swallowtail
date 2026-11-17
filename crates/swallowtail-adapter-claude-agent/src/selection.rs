@@ -13,7 +13,7 @@ pub const CLAUDE_AGENT_ACP_AXIS: &str = "claude-agent.acp-adapter";
 /// Oldest qualified Claude Agent ACP version.
 pub const CLAUDE_AGENT_ACP_BASELINE_VERSION: &str = "0.53.0";
 /// Most recent qualified Claude Agent ACP version.
-pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.100.0";
+pub const CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION: &str = "0.106.0";
 
 const BASELINE_BEHAVIOR: &str = "claude-agent.acp.baseline-v1";
 const SESSION_CONFIG_BEHAVIOR: &str = "claude-agent.acp.session-config-v2";
@@ -139,6 +139,54 @@ pub fn claude_agent_acp_claim() -> InterfaceCompatibilityClaim {
                 INITIALIZE_META_EXTENSIONS_BEHAVIOR,
                 InterfaceSupportStatus::Maintained,
             ),
+            segment(
+                "0.101.0",
+                "0.101.0",
+                INITIALIZE_META_EXTENSIONS_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.101.1",
+                "0.101.1",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.102.0",
+                "0.102.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.103.0",
+                "0.103.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.104.0",
+                "0.104.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.104.1",
+                "0.104.1",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.105.0",
+                "0.105.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
+            segment(
+                "0.106.0",
+                "0.106.0",
+                crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR,
+                InterfaceSupportStatus::Maintained,
+            ),
         ],
         [
             version("0.52.0").expect("static Claude Agent version is valid"),
@@ -203,7 +251,10 @@ fn behavior(revision: &InterfaceBehaviorRevision) -> Option<ClaudeAgentBehavior>
         STEERING_METADATA_BEHAVIOR => Some(ClaudeAgentBehavior::SteeringMetadata),
         TOOL_SUBAGENT_CORRELATION_BEHAVIOR => Some(ClaudeAgentBehavior::ToolSubagentCorrelation),
         HOST_STEERING_FORM_MARKER_BEHAVIOR => Some(ClaudeAgentBehavior::HostSteeringFormMarker),
-        INITIALIZE_META_EXTENSIONS_BEHAVIOR => Some(ClaudeAgentBehavior::InitializeMetaExtensions),
+        INITIALIZE_META_EXTENSIONS_BEHAVIOR
+        | crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR => {
+            Some(ClaudeAgentBehavior::InitializeMetaExtensions)
+        }
         _ => None,
     }
 }
@@ -233,17 +284,17 @@ fn segment(
 #[cfg(test)]
 mod tests {
     use super::{
-        CLAUDE_AGENT_ACP_AXIS, INITIALIZE_META_EXTENSIONS_BEHAVIOR, claude_agent_acp_binding,
-        claude_agent_acp_claim, version_supports_config_options,
+        CLAUDE_AGENT_ACP_AXIS, claude_agent_acp_binding, claude_agent_acp_claim,
+        version_supports_config_options,
     };
     use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
 
     #[test]
-    fn claim_preserves_seven_milestones_exclusions_and_visible_newer_execution() {
+    fn claim_preserves_historical_milestones_and_guarded_permission_boundary() {
         let claim = claude_agent_acp_claim();
         assert_eq!(claim.baseline().as_str(), "0.53.0");
-        assert_eq!(claim.latest_qualified().as_str(), "0.100.0");
-        assert_eq!(claim.milestones().len(), 7);
+        assert_eq!(claim.latest_qualified().as_str(), "0.106.0");
+        assert_eq!(claim.milestones().len(), 15);
         for qualified in [
             "0.53.0", "0.54.1", "0.58.1", "0.59.0", "0.61.0", "0.62.0", "0.63.0", "0.64.0",
             "0.64.1", "0.65.0", "0.66.0", "0.69.0", "0.70.0", "0.71.0", "0.72.0", "0.73.0",
@@ -251,7 +302,8 @@ mod tests {
             "0.81.0", "0.81.1", "0.81.2", "0.82.0", "0.83.0", "0.84.0", "0.85.0", "0.85.1",
             "0.86.0", "0.87.0", "0.88.0", "0.89.0", "0.89.1", "0.90.0", "0.91.0", "0.92.0",
             "0.93.0", "0.94.0", "0.95.0", "0.96.0", "0.97.0", "0.98.0", "0.99.0", "0.99.1",
-            "0.100.0",
+            "0.100.0", "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0",
+            "0.106.0",
         ] {
             assert!(claim.supports(&version(qualified)));
         }
@@ -265,13 +317,13 @@ mod tests {
             assert!(!claim.permits(&version(incompatible)));
         }
         let InterfaceCompatibilityAssessment::UnverifiedNewer(newer) =
-            claim.assess(&version("0.100.1"))
+            claim.assess(&version("0.107.0"))
         else {
             panic!("newer stable version remains unverified");
         };
         assert_eq!(
             newer.behavior_revision().as_str(),
-            INITIALIZE_META_EXTENSIONS_BEHAVIOR
+            crate::CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR
         );
     }
 

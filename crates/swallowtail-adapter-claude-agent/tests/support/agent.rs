@@ -22,6 +22,8 @@ pub enum Scenario {
     DeleteMalformed,
     DeletePending,
     Permission,
+    PermissionDeniedWithoutCallback,
+    SimulatedIdleCompaction,
     Elicitation,
     Cancellation,
     ClosePending,
@@ -66,6 +68,8 @@ pub(super) struct AgentState {
     released_close_response: bool,
     reject_close_response: bool,
     held_close_id: Option<u64>,
+    fake_idle_minutes: u64,
+    fake_idle_armed: bool,
     http_mcp: Option<(String, Vec<(String, String)>)>,
 }
 

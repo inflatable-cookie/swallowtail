@@ -195,8 +195,11 @@ OpenHands adds a package without a production route.
   bounded-workspace app-server interactive sessions through runtime host ports
 - `swallowtail-adapter-claude-agent` implements installed discovery,
   ambient read-write one-prompt structured runs and read-only interactive
-  sessions for Claude Agent ACP `0.53.0..=0.100.0`, excluding `0.58.0`, over
-  ACP v1 stdio (Research 460, 469, 470, 471); stable newer versions remain visible and
+  sessions for Claude Agent ACP `0.53.0..=0.100.0`, excluding `0.58.0`, plus
+  eight exact frozen points through `0.106.0`, over
+  ACP v1 stdio (Research 460, 469, 470, 471, 483); the eight frozen points require a
+  checked guarded Linux x64/Darwin arm64 process, with inherited-permission v8
+  from 0.101.1. Stable newer versions remain visible and
   unverified, while separate local-subscription
   and public-API-key profiles, model confirmation, ambient configuration,
   ambient-host isolation, permission rejection, cancellation, deadlines, and
@@ -1095,7 +1098,12 @@ an absent transcript still throws for that client. From `0.91.0`,
 transcript returns an empty success through `0.100.0`. Live close of a session
 in memory and delete of a stored transcript still return an empty object. The
 empty close or unstored-delete success adds no stronger deletion claim. Later
-stable versions remain visible and unverified.
+stable versions remain visible and unverified. Research 483 adds actual original
+selected-route new/load/resume, continued permission/denial, cancellation,
+deadline/native exit, close and joined-cleanup evidence through 0.106.0 on trusted
+Linux x64/Darwin arm64 runners. Its guarded v8 preserves native inherited denial
+without fabricating callbacks. This does not add an HTTP MCP live point or a
+standalone SDK/Node claim.
 
 The Claude Agent stdio driver now realizes the qualified mapping. Initialization
 requires independently advertised close and delete capabilities before session

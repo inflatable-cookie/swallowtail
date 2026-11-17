@@ -1,6 +1,35 @@
 use super::*;
 
 impl SharedAgent {
+    pub(in crate::support) fn advance_fake_idle_minutes(&self, minutes: u64) {
+        let mut state = self.state.lock().expect("fixture agent lock poisoned");
+        state.fake_idle_minutes += minutes;
+        if state.fake_idle_armed && state.fake_idle_minutes >= 54 {
+            state.fake_idle_armed = false;
+            Self::enqueue(
+                &mut state,
+                json!({"jsonrpc": "2.0", "method": "session/update", "params": {
+                    "sessionId": "claude-agent-session-fixture",
+                    "update": {"sessionUpdate": "agent_message_chunk", "content": {"type": "text", "text": "simulated idle work"}}
+                }}),
+            );
+        }
+        drop(state);
+        self.changed.notify_all();
+    }
+
+    pub(in crate::support) fn wait_for_stop(&self) {
+        let state = self.state.lock().expect("fixture agent lock poisoned");
+        let (state, timeout) = self
+            .changed
+            .wait_timeout_while(state, std::time::Duration::from_secs(2), |state| {
+                !state.stopped
+            })
+            .expect("fixture agent wait lock poisoned");
+        assert!(!timeout.timed_out(), "fixture process did not stop");
+        drop(state);
+    }
+
     pub(super) fn close_session(
         &self,
         state: &mut AgentState,

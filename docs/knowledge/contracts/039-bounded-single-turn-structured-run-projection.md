@@ -220,6 +220,48 @@ requires and selects the provider's `acceptEdits` mode before the prompt.
 Neither the working directory nor that provider mode creates a bounded
 filesystem-containment claim under `AmbientHost`.
 
+For frozen ACP0.101.0 through0.106.0, qualification requires the separately
+identified Swallowtail guarded launch. It vetoes unsolicited idle compaction
+while preserving inherited permission security settings. The host binds an
+opaque checked-process reference to the exact runtime, startup flags, captured
+module graph, native image and launch policy. Unknown identities, unsafe runtime
+startup controls, drift and revocation refuse before entry; there is no stock
+fallback. The adapter rejects these versions without a checked binding before
+acquiring credentials or launching a process. Contract010 owns the trusted-host
+custody precondition; this is not a hostile same-user verified-exec guarantee.
+
+Tom's decision1ec44a26 v2 (2026-11-17) authorizes bounded original qualification
+on trusted disposable Linux x64/macOS arm64 runners. Ordinary OS/runtime
+libraries are trusted test inputs. The abandoned shared Python/kernel/caller-
+provenance admission ladder is not a prerequisite for these tests. The actual
+prepared Rust/LocalProcessHost route, permission-before-effect, continued turns,
+model/options, cancellation, native close and functional child waits remain
+required. Native child handles must settle before guarded ACP exit; software
+waits do not establish kernel/adoptee/tree enforcement. No real provider calls,
+credentials or paid spend are part of this evidence.
+
+The eight original idle-class control/guard pairs atc0d591438 are consumed
+historical component proof: each control armed6/fired5; each guard armed0/fired0.
+They modeled session contexts and do not replace actual ACP/native full-route
+qualification. [Research483](../../research/483-claude-agent-acp-0-106-0-evidence.md)
+retains their exact scope and the current original results. The
+[current procedure](../operations/claude-agent-acp-admission-preparation.md)
+defines bounded trusted-runner qualification; the
+[archive note](../operations/claude-agent-acp-retired-analysis.md) preserves
+retired proposal bytes and review scopes. Earlier stock claims and exact-point
+HTTP MCP evidence remain independent.
+
+The captured-graph bootstrap is host input, with its own size and deadline
+limits; it does not consume the consumer's provider-stdin allowance. The host
+must finish sending it before returning the process handle. Checked admission
+rechecks revocation before graph delivery and serializes its final admission
+byte with custody revocation. A stalled or closed
+pipe, cancellation, timeout, or incomplete handoff fails admission and joins
+the owned process and writer. Dropping a pending handoff must also trigger
+cleanup. Neither the entrypoint nor a consumer input write may run before the
+handoff is admitted. A synchronous write wrapped in an async timeout cannot
+satisfy this contract. This requirement does not grant runtime custody.
+
 ## Callback Projection
 
 When the exact route supports consumer callbacks, `RunHandle::take_callbacks`

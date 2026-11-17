@@ -20,12 +20,12 @@ status-level = "fail"
 [profile.ci]
 inherits = "default"
 slow-timeout = { period = "60s", terminate-after = 2 }
-default-filter = "not (binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service))"
+default-filter = "not (binary(acp_guard_capture) | binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service))"
 
 [profile.ci-process]
 inherits = "default"
 slow-timeout = { period = "60s", terminate-after = 2 }
-default-filter = "binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service)"
+default-filter = "binary(acp_guard_capture) | binary(claude_agent_sdk_sidecar_asset) | binary(claude_agent_sdk_driver) | binary(sidecar_driver) | binary(claude_code_structured_run) | binary(local_process) | binary(watcher_service)"
 
 # Narrow provider-free Claude SDK usage projection proofs. Reuse the process
 # fixture timeout and forced termination, while allowing the decoder unit-test

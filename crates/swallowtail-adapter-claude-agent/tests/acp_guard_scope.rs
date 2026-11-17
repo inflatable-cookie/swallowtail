@@ -106,7 +106,20 @@ impl ProcessHandle for TrackedHandle {
         self.0.close_stdin()
     }
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
-        self.0.read_output()
+        let next = self.0.read_output();
+        Box::pin(async move {
+            let chunk = next.await?;
+            if std::env::var_os("SWALLOWTAIL_ACP_TRUSTED_CASE").is_some()
+                && let Some(value) = &chunk
+                && value.stream() == swallowtail_runtime::ProcessOutputStream::Stderr
+            {
+                eprintln!(
+                    "ACP_TRUSTED_STDERR {}",
+                    String::from_utf8_lossy(value.bytes())
+                );
+            }
+            Ok(chunk)
+        })
     }
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
         self.0.request_stop()

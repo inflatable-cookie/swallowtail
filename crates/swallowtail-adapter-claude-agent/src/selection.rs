@@ -176,6 +176,10 @@ pub(crate) fn select_claude_agent_plan(
         ));
     }
     let qualified = matches!(assessment, InterfaceCompatibilityAssessment::Qualified(_));
+    // Private unit-runner admission is set only after the frozen graph/native
+    // capture succeeds. It changes no production claim or permission mapping.
+    #[cfg(all(test, unix))]
+    let qualified = qualified || crate::trusted_native_tests::admitted(binding.version().as_str());
     let revision = assessment
         .behavior_revision()
         .expect("permitted assessment has a behavior revision");

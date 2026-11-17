@@ -194,6 +194,12 @@ section = "Research Records"
 "check:acp-startup-integration" = "python3 -I -B scripts/claude-acp-startup-integration.py {args}"
 "validate:acp-startup-integration" = "python3 -I -B scripts/tests/claude-acp-startup-integration.py"
 "format:acp-startup-integration" = "ruff format --no-cache -- scripts/claude-acp-startup-integration.py scripts/tests/claude-acp-startup-integration.py"
+"validate:claude-agent-acp-trusted-native-self-test" = "bash scripts/oxide-rust.sh test --locked -p swallowtail-adapter-claude-agent --lib trusted_native_tests::owned_self_test -- --ignored --exact --nocapture"
+"check:claude-agent-acp-trusted-native" = "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-claude-agent --tests"
+"validate:claude-agent-acp-trusted-native" = "python3 -I -B scripts/claude-acp-trusted-native.py {args}"
+"compile:claude-agent-acp-trusted-native" = "python3 -I -B -c 'from pathlib import Path; files = [Path(\"scripts/claude-acp-trusted-native.py\"),Path(\"scripts/claude-acp-trusted-model.py\")]; [compile(f.read_bytes(),str(f),\"exec\") for f in files]'"
+"format:claude-agent-acp-trusted-native" = "ruff format --no-cache -- scripts/claude-acp-trusted-native.py scripts/claude-acp-trusted-model.py"
+"validate:claude-agent-acp-trusted-model-self-test" = "python3 -I -B scripts/claude-acp-trusted-model.py --self-test"
 "validate:acp-shared-software" = "bash scripts/run-claude-acp-shared-software.sh"
 "check:acp-shared-software" = [
   "bash -n scripts/run-claude-acp-shared-software.sh",

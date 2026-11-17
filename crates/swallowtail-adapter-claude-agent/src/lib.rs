@@ -116,6 +116,8 @@ pub const CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE: &str =
 
 const MAXIMUM_REPLAY_ITEMS: usize = 64;
 const MAXIMUM_REPLAY_BYTES: usize = 256 * 1024;
+#[cfg(all(test, unix))]
+mod trusted_native_tests;
 pub use selection::{
     CLAUDE_AGENT_ACP_AXIS, CLAUDE_AGENT_ACP_BASELINE_VERSION,
     CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, claude_agent_acp_binding, claude_agent_acp_claim,

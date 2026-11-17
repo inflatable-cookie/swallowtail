@@ -14,3 +14,6 @@
   kernel admission closed.
 - Verify the startup receipt's exact reviewed provenance, current source hashes
   and closed policy with deterministic compile/check and owned mutation tests.
+- Adopt Tom's trusted disposable-runner ruling (decision1ec44a26 v2) for bounded
+  original ACP qualification; retain the superseded custody ladder and consumed
+  proofs as history, with no original execution or installs on the persistent Mac.

@@ -1,0 +1,64 @@
+name: SDK240 trusted original qualification
+on:
+  pull_request:
+    paths:
+      - 'scripts/claude-agent-sdk-trusted-*'
+      - 'scripts/tests/claude-agent-sdk-trusted-*'
+      - 'crates/swallowtail-adapter-claude-agent/**'
+      - '.github/workflows/sdk240-trusted-native.yml'
+permissions:
+  contents: read
+jobs:
+  originals:
+    name: Frozen SDK/native (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Ephemeral pinned Effigy and owned work
+        shell: bash
+        run: |
+          set -euo pipefail
+          work=$(mktemp -d "$RUNNER_TEMP/sdk240-trusted.XXXXXXXX")
+          tools=$(mktemp -d "$RUNNER_TEMP/sdk240-tools.XXXXXXXX")
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            asset=effigy-x86_64-unknown-linux-gnu
+            digest=18c6e6b1626cdeafa05c97547d9da6c177825592814f837c9119980f9aa1fc34
+          else
+            test "$(uname -m)" = arm64
+            asset=effigy-aarch64-apple-darwin
+            digest=d18801a4c833ed36d2be205bfba79e689295b701a047d92aa0399cc2bed4e7e9
+            sudo install -d -o "$(id -u)" '/Library/Application Support/ClaudeCode'
+          fi
+          curl --fail --location --max-time 60 --max-filesize 67108864 "https://github.com/inflatable-cookie/effigy/releases/download/v0.14.1/$asset" -o "$tools/effigy"
+          test "$(shasum -a 256 "$tools/effigy" | cut -d' ' -f1)" = "$digest"
+          chmod 700 "$tools/effigy"
+          echo "$tools" >> "$GITHUB_PATH"
+          echo "SDK240_TRUSTED_WORK=$work" >> "$GITHUB_ENV"
+          echo "TMPDIR=$work" >> "$GITHUB_ENV"
+          echo "TMP=$work" >> "$GITHUB_ENV"
+          echo "TEMP=$work" >> "$GITHUB_ENV"
+      - name: Bounded owned-fake self-test
+        run: effigy validate:claude-agent-sdk-trusted-native
+      - name: Frozen originals against local peers
+        env:
+          SDK240_TRUSTED_ORIGINAL: '1'
+        run: effigy validate:claude-agent-sdk-trusted-native
+      - name: Retain bounded real results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: sdk240-trusted-${{ matrix.os }}
+          path: |
+            ${{ env.SDK240_TRUSTED_WORK }}/result.json
+            ${{ env.SDK240_TRUSTED_WORK }}/inputs.json
+            ${{ env.SDK240_TRUSTED_WORK }}/*/*/stdout.json
+            ${{ env.SDK240_TRUSTED_WORK }}/*/*/stderr.txt
+          if-no-files-found: warn
+          retention-days: 7

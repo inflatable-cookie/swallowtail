@@ -194,6 +194,11 @@ approval; not a new Tom ruling):
 
 ## Q-009 — How should `claude-agent.sdk` qualify past `0.3.317`?
 
+Current test authority: decision1ec44a26 v2 authorizes frozen original tests on
+[trusted disposable runners](operations/claude-agent-sdk-trusted-qualification.md).
+This supersedes the custom host-attestation prerequisites below for testing;
+qualification still requires actual native behavior on both selected platforms.
+
 Status: open
 Asked: 2026-11-12
 Gate owner: Tom (operator) for item 1; item 2 answered; item 3 closed

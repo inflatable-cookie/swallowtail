@@ -198,6 +198,13 @@ section = "Research Records"
 "validate:claude-agent-sdk-native-proof-harness" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness"
 "validate:claude-agent-sdk-probe-admission" = "bash scripts/oxide-rust.sh nextest run --locked --profile sdk-usage -p swallowtail-adapter-claude-agent --test claude_agent_sdk_native_proof_harness -E 'test(/probe/)'"
 "lint:current-claude-agent-sdk" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --all-targets -- -D warnings"
+"validate:claude-agent-sdk-trusted-native" = "python3 -B scripts/claude-agent-sdk-trusted-native.py"
+"check:claude-agent-sdk-trusted-native" = [
+  "python3 -c 'from pathlib import Path; [compile(Path(p).read_bytes(), p, \"exec\") for p in (\"scripts/claude-agent-sdk-trusted-native.py\", \"scripts/tests/claude-agent-sdk-trusted-native.py\")]'",
+  "node --check scripts/claude-agent-sdk-trusted-case.mjs",
+]
+"check:format:claude-agent-sdk-trusted-native" = "bash scripts/check-python-format.sh scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py"
+"format:claude-agent-sdk-trusted-native" = "ruff format --no-cache scripts/claude-agent-sdk-trusted-native.py scripts/tests/claude-agent-sdk-trusted-native.py"
 "validate:claude-agent-sdk-confined-probe" = "python3 -B scripts/tests/claude-agent-sdk-confined-probe.py"
 "validate:claude-agent-sdk-runtime-custody" = [
   "python3 -B scripts/tests/claude-agent-sdk-probe-custody.py",

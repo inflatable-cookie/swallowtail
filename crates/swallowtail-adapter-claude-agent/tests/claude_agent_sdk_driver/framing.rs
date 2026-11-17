@@ -845,22 +845,26 @@ fn deadline_setup_refusal_rolls_back_before_query_and_allows_recovery() {
         } else {
             reaper.fail_spawn_after(0);
         }
-        let error = block_on(session.start_turn(
-            turn_request("unsubmitted", "owned"),
-            services.clone(),
-        ))
-        .err()
-        .expect("deadline setup refuses before query");
-        assert_eq!(error.diagnostic().code(), "swallowtail.fixture_task.unavailable");
+        let error =
+            block_on(session.start_turn(turn_request("unsubmitted", "owned"), services.clone()))
+                .err()
+                .expect("deadline setup refuses before query");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.fixture_task.unavailable"
+        );
         assert!(fixture.inputs().iter().all(|v| v["command"] != "query"));
 
         reaper.restore_capacity();
-        let mut next = block_on(
-            session.start_turn(turn_request("genuine-next", "owned"), services.clone()),
-        )
-        .expect("capacity recovery admits a genuine turn");
+        let mut next =
+            block_on(session.start_turn(turn_request("genuine-next", "owned"), services.clone()))
+                .expect("capacity recovery admits a genuine turn");
         assert_eq!(
-            fixture.inputs().iter().filter(|v| v["command"] == "query").count(),
+            fixture
+                .inputs()
+                .iter()
+                .filter(|v| v["command"] == "query")
+                .count(),
             1
         );
         fixture.emit_and_wait_until_dispatched(completed_native_result());
@@ -876,7 +880,11 @@ fn deadline_setup_refusal_rolls_back_before_query_and_allows_recovery() {
                 .contains("close_evidence: nativeExitObserved=true")),
             "{refusal}: {cleanup:?}"
         );
-        assert!(fixture.cleanup_events().contains(&crate::sdk_support::CleanupEvent::ProcessWait));
+        assert!(
+            fixture
+                .cleanup_events()
+                .contains(&crate::sdk_support::CleanupEvent::ProcessWait)
+        );
         reaper.shutdown();
     }
 }

@@ -51,6 +51,7 @@ pub(crate) struct SdkActiveTurn {
     deadline_interrupt_finished: AtomicBool,
     finished: AtomicBool,
     native_turn_started: AtomicBool,
+    query_committed: AtomicBool,
     finish_signal: Arc<Mutex<FinishedState>>,
     /// The session's admitted tool set. Admission never widens per turn.
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
@@ -112,6 +113,7 @@ impl SdkActiveTurn {
                 deadline_interrupt_finished: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
                 native_turn_started: AtomicBool::new(false),
+                query_committed: AtomicBool::new(false),
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
                 profile,
                 admitted_mcp_tools,
@@ -124,6 +126,14 @@ impl SdkActiveTurn {
 
     pub(crate) const fn runtime_id(&self) -> &RuntimeTurnId {
         &self.runtime_id
+    }
+
+    pub(crate) fn commit_query(&self) {
+        self.query_committed.store(true, Ordering::SeqCst);
+    }
+
+    pub(crate) fn is_query_committed(&self) -> bool {
+        self.query_committed.load(Ordering::SeqCst)
     }
 
     pub(crate) fn is_finished(&self) -> bool {

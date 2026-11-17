@@ -120,5 +120,10 @@ non-expired registration. No query or native terminal exists for that attempt.
 Ordinary completion and timeout drain still use the strict reuse predicate.
 Owned reservation/spawn refusal controls prove zero queries before recovery,
 then a genuine completed turn and actual close waits after capacity returns.
-Validation and refreshed proof delivery for this correction are pending a new
-Nucleus run scratch directory; the removed prior run root is not recreated.
+The private states are registered-unsent, query-committed/active, publicly
+finished but draining, and reusable. Query commitment is monotonic under the
+same recipient lock and precedes every query enqueue/write; send errors never
+restore rollback authority. Normal canonical-main integration preserves the
+landed ACP0.106.0/v7-v8 claims, shared security fix and both test surfaces.
+The retired manual SDK host entrypoint stays removed; its commits/runs remain
+history. Final rollback/integration validation and refreshed proof are pending.

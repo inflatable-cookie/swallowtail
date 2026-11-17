@@ -204,12 +204,40 @@ impl SdkConnection {
             .lock()
             .expect("SDK sidecar active lock poisoned");
         if active.as_ref().is_some_and(|current| {
-            Arc::ptr_eq(current, turn) && !current.is_finished() && !current.is_timed_out()
+            Arc::ptr_eq(current, turn)
+                && !current.is_query_committed()
+                && !current.is_finished()
+                && !current.is_timed_out()
         }) {
             *active = None;
             return true;
         }
         false
+    }
+
+    /// Commit before query enqueue/write. A failed or ambiguous send never
+    /// restores the pre-query rollback privilege.
+    pub(crate) fn commit_turn_query(
+        &self,
+        turn: &Arc<SdkActiveTurn>,
+    ) -> Result<(), RuntimeFailure> {
+        let active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(self.closed_failure());
+        }
+        if !active.as_ref().is_some_and(|current| {
+            Arc::ptr_eq(current, turn) && !current.is_finished() && !current.is_query_committed()
+        }) {
+            return Err(failure(
+                "swallowtail.claude-agent.sdk.turn_active",
+                "Claude Agent SDK sidecar query recipient is no longer available",
+            ));
+        }
+        turn.commit_query();
+        Ok(())
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {

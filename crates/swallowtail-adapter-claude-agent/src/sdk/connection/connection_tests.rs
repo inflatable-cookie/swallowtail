@@ -112,7 +112,17 @@ fn deadline_recipient_retains_until_drain_and_interrupt_command_settle() {
         connection
             .set_active_turn(old.clone())
             .expect("old recipient");
-        assert!(!connection.rollback_pre_query_turn(&next), "identity must match");
+        assert!(
+            !connection.rollback_pre_query_turn(&next),
+            "identity must match"
+        );
+        connection
+            .commit_turn_query(&old)
+            .expect("query commitment");
+        assert!(
+            !connection.rollback_pre_query_turn(&old),
+            "query commitment forbids unsent rollback even before native start"
+        );
         assert!(connection.expire_turn(&old));
         assert!(
             !connection.rollback_pre_query_turn(&old),

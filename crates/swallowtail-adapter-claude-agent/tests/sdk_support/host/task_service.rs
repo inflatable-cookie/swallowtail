@@ -108,7 +108,10 @@ impl FixtureReaper {
 
     /// Models recovery from a transient reservation or worker-creation refusal.
     pub fn restore_capacity(&self) {
-        *self.accepting.lock().expect("SDK fixture reaper lock poisoned") = true;
+        *self
+            .accepting
+            .lock()
+            .expect("SDK fixture reaper lock poisoned") = true;
         *self
             .spawns_before_failure
             .lock()

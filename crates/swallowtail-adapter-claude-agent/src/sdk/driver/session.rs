@@ -169,6 +169,9 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             // makes the session terminal. Later query failures belong to the
             // individual turn unless the sidecar explicitly says otherwise.
             let first_turn_initialization = self.readiness.readiness_state() != "confirmed";
+            if let Err(error) = self.connection.commit_turn_query(&turn) {
+                return Err(self.reject_turn(&turn, error));
+            }
             let response = bounded
                 .run(self.connection.command(
                     id,

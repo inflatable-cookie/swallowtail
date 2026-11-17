@@ -226,3 +226,39 @@ fn guarded_production_graphs_pin_every_source_format_and_edge() {
         }
     }
 }
+
+#[test]
+fn qualified_frozen_hops_preserve_the_native_permission_boundary() {
+    use swallowtail_adapter_claude_agent::{
+        CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR, CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION,
+        claude_agent_acp_claim,
+    };
+    use swallowtail_core::{InterfaceCompatibilityAssessment, InterfaceVersion};
+    let claim = claude_agent_acp_claim();
+    assert_eq!(CLAUDE_AGENT_ACP_LATEST_QUALIFIED_VERSION, "0.106.0");
+    for hop in [
+        "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    ] {
+        let v = InterfaceVersion::new(hop).expect("frozen version");
+        let InterfaceCompatibilityAssessment::Qualified(matched) = claim.assess(&v) else {
+            panic!("frozen original hop must be qualified: {hop}")
+        };
+        assert_eq!(
+            matched.behavior_revision().as_str(),
+            if hop == "0.101.0" {
+                "claude-agent.acp.initialize-meta-extensions-v7"
+            } else {
+                CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR
+            }
+        );
+    }
+    for gap in [
+        "0.52.0", "0.58.0", "0.100.1", "0.101.2", "0.102.1", "0.105.1",
+    ] {
+        assert!(!claim.permits(&InterfaceVersion::new(gap).expect("version")));
+    }
+    assert!(matches!(
+        claim.assess(&InterfaceVersion::new("0.107.0").expect("version")),
+        InterfaceCompatibilityAssessment::UnverifiedNewer(_)
+    ));
+}

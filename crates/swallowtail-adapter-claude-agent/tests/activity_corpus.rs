@@ -24,7 +24,7 @@ const EXPECTED_EMITTED_UPDATES: &[&str] = &[
 ];
 
 #[test]
-fn every_qualified_claude_segment_has_exact_activity_provenance() {
+fn historical_claude_segments_keep_exact_activity_provenance() {
     let range: Value = serde_json::from_str(RANGE).expect("range fixture is valid JSON");
     let segments = range["qualified_segments"]
         .as_array()

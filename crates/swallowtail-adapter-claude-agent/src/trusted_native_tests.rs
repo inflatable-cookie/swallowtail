@@ -4,7 +4,6 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
-use std::cell::RefCell;
 use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -17,19 +16,6 @@ use swallowtail_runtime::*;
 #[allow(dead_code)]
 #[path = "../tests/acp_guard_scope.rs"]
 mod scope;
-
-thread_local! { static ADMITTED: RefCell<Option<String>> = const { RefCell::new(None) }; }
-
-pub(crate) fn admitted(version: &str) -> bool {
-    ADMITTED.with(|value| value.borrow().as_deref() == Some(version))
-}
-
-struct Admission;
-impl Drop for Admission {
-    fn drop(&mut self) {
-        ADMITTED.with(|value| *value.borrow_mut() = None);
-    }
-}
 
 fn hash(file: &Path) -> [u8; 32] {
     Sha256::digest(std::fs::read(file).expect("qualification source")).into()
@@ -126,7 +112,6 @@ fn recipe(config: &Value, root: &Path, node: &LocalTrustedRuntime) -> LocalCaptu
             Some(&ps),
         )
         .expect("frozen original graph and native hash");
-        ADMITTED.with(|value| *value.borrow_mut() = Some(version.to_owned()));
         graph
     } else {
         let entry =
@@ -297,7 +282,6 @@ fn prepare(
 }
 
 fn exercise(config: &Value) {
-    let _admission = Admission;
     let root = Path::new(config["caseRoot"].as_str().expect("owned case"));
     let mut binding = None;
     let scenario = config["scenario"].as_str().expect("scenario");

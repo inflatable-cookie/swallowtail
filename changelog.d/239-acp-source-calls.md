@@ -1,3 +1,6 @@
+- Qualify guarded Claude Agent ACP through 0.106.0 on Linux x64/Darwin arm64.
+  Preserve earlier segments/exclusions and distinguish inherited user/managed
+  no-prompt denial from 0.101.1 under v8;0.101.0 retains callback semantics.
 - Add bounded frozen-original ACP tests through the real prepared Rust route on
   trusted disposable Linux/macOS runners, using owned loopback peers and no live
   provider. Preserve the T3-to-Paseo handoff and consumed historical evidence.

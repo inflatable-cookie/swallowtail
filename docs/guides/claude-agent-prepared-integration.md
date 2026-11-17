@@ -198,52 +198,37 @@ present, and the terminal outcome concurrently. Cancellation stops only the
 active operation. Always close and join the turn, session or run; retain
 terminal, native provider close/delete, and local cleanup as separate truth.
 
-For newer Claude Agent ACP points, supported suppression of unsolicited idle
-compaction remains a qualification gate. The control must survive inherited
-and managed settings and cover an already-fired compaction; see
-[Research 483](../research/483-claude-agent-acp-0-106-0-evidence.md). The
-qualified ceiling remains 0.100.0.
+Claude Agent ACP is qualified through 0.106.0. The eight published hops after
+0.100.0 require a host-bound checked guarded launch; a stock process refuses
+before credential acquisition or launch. The guard vetoes unsolicited idle
+compaction and preserves inherited permission security settings. Existing
+qualified segments and exclusions remain unchanged. From0.101.1 the distinct
+`claude-agent.acp.guarded-permission-inheritance-v8` segment preserves native
+user/managed no-prompt denial. Exact 0.101.0 retains v7: its native version does
+not support that key and still requests consumer permission.
 
-The selected guarded launch relies on an execution host that verifies and
-holds custody of its exact runtime through spawn. It does not claim protection
-against hostile same-user runtime replacement. The local host can register a
-captured Node recipe under an opaque checked-process reference. Registration
-binds the host's independently approved fingerprint, allowed arguments and
-revocable runtime/dependency custody. Ordinary start refuses a registered
-checked target. Prepared-driver proof uses owned fake modules through this
-production host. The guarded factory captures each exact official graph, serves
-verified ESM/CommonJS/JSON bytes, restricts module and child-process facades,
-and pins native and required system `ps` custody. It requires independently
-approved host policy; ordinary version discovery supplies no grant. Original
-full-route/native behavior remains unproved, so the ceiling stays0.100.0.
-Checked startup rechecks revocation before graph delivery and at the final
-admission byte; refusal stops and joins the child. The component proposal binds
-host-approved principals and the full Rust runtime custody identity, alongside
-source/plan/owner/Node/class inputs. Its deny-exec canary and narrow system
-process-group helper are separate from original provider/native authority.
-The installed compatible runtime is supported under Tom's decision
-`d0a0761f-3c47-4cf2-b198-242d232b20cc`: Node>=22 with the required synchronous
-module-hook APIs, exact executable/dependency identity and explicit host custody.
-The host must coordinate updates by every trusted user/group through spawn;
-Homebrew group write alone is not a refusal when that group is explicitly
-trusted. Changes or revocation invalidate admission. Node22.23.2 fake proof is
-retained reference evidence, not an installation requirement. Installed runtime
-proof applies only to this guarded ACP invocation; it does not extend the
-standalone SDK/Node claims. The separately authorized eight-hop Darwin
-idle-class component attempt passed: each control armed6 timers/fired5
-compactions, while each guard armed/fired0, with settings intact and joined
-cleanup. This models session contexts; it does not execute ACP session paths.
-Its one-attempt grant is consumed. Whole-route permission, lifecycle and native
-proof remain independent; see
-[Contract039](../knowledge/contracts/039-bounded-single-turn-structured-run-projection.md)
-and Research483.
+Use `capture_claude_agent_acp_guarded_v1` for the exact frozen graph on Linux x64
+or Darwin arm64, register the resulting recipe with the local checked-process
+service, and pass that opaque binding to preparation. The host verifies runtime,
+native and required `ps` identity and retains custody through spawn. Drift or
+revocation refuses; there is no unchecked fallback. This trusted-host boundary
+does not claim protection against hostile same-user runtime replacement.
+Node >=22 with the synchronous module-hook APIs is supported; the exact compatible
+runtime is captured by the host. CI's Node 22.23.2 is evidence provenance, not a
+consumer prerequisite or a standalone SDK/Node claim extension.
 
-The direct owned trusted-runner harness uses the actual Rust/LocalProcessHost
-sibling layout and checks source-shaped startup fallbacks and child waits.
-Run `effigy validate:claude-agent-acp-trusted-native-self-test` for this focused
-proof. The [current procedure](../knowledge/operations/claude-agent-acp-admission-preparation.md)
-executes frozen originals only on trusted disposable runners. Earlier shared
-Python/kernel proposals remain historical evidence, not current prerequisites.
+[Research 483](../research/483-claude-agent-acp-0-106-0-evidence.md) records original
+new/load/resume, two-turn permissions and denial, model/options, activity,
+results/errors, cancellation/deadline/native exit, native close and joined child
+cleanup on trusted disposable Linux/macOS runners. These tests use owned
+loopback model peers, dummy keys and isolated settings; they make no live
+provider or broader HTTP MCP claim. The consumed idle-component pairs retain
+their separate historical scope.0.107.0 and later remain unverified.
+
+Run `effigy validate:claude-agent-acp-trusted-native-self-test` for the owned
+Rust-route harness; the PR-triggered disposable workflow runs the originals.
+The [current procedure](../knowledge/operations/claude-agent-acp-admission-preparation.md)
+replaces the retired shared Python/kernel/caller-catalogue admission ladder.
 
 ### ACP Permission Exchange
 
@@ -255,8 +240,9 @@ The provider can also deny a tool without emitting a permission request. In
 that case the adapter does not invent a callback or a `ProviderRequestObserved`
 outcome. Tom's 2026-11-12 ruling preserves the inherited
 `permissions.denyInsteadOfPrompting` setting under a distinct revision for
-affected newer ACP versions once their exact behavior is qualified; it does not
-itself extend the current 0.100.0 qualified ceiling.
+ACP 0.101.1 through 0.106.0. Denied calls produce no fabricated consumer callback;
+the provider can continue the same turn. Exact 0.101.0 retains its prior callback
+semantics because its bundled native version does not support the key.
 
 Call `with_consumer_mediated_permissions` on
 `ClaudeAgentRunProfileInput` or `ClaudeAgentSessionProfileInput` to opt into

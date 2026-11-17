@@ -1,20 +1,21 @@
-# Claude Agent ACP 0.106.0 inventory in progress
+# Claude Agent ACP 0.106.0 frozen evidence
 
-This preliminary inventory records the npm package trees from 0.100.0 through
+This frozen inventory records the npm package trees from 0.100.0 through
 0.106.0 and the complete per-hop path and digest changes. The registry record
 includes npm metadata, downloaded tarball SHA-256 values and matching upstream
-Git tag commits. No package was installed or executed.
+Git tag commits. The identity observation executed no package. Later trusted-runner original
+qualification is recorded separately in Research 483.
 
-This is identity work in progress, not qualification. Integrity verification,
-selected-path classification, dependency tracing, behavioral proof and
-mutation-sensitive assertions remain before changing the compatibility claim.
+The public guarded route is qualified through 0.106.0 on Linux x64/Darwin arm64.
+The historical registry observation remains unchanged; it is not current runtime
+proof. Research 483 binds the original results and exact source heads.
 
 The ACP tarballs' SHA-512 integrity values and SHA-256 values were verified
 against npm. `permission-boundary.json` records a separate Linux x64 static
 observation: the SDK 0.3.319 and 0.3.322 native artifacts contain a setting
 that can suppress `canUseTool` prompts. ACP enables user settings and routes
-permission requests through that callback. This needs a route-specific
-adaptation decision and proof; it does not establish a revised claim. The
+permission requests through that callback. Original tests confirm that boundary from 0.101.1;0.101.0 retains callback
+semantics. Static ranges alone do not establish a revised claim. The
 project and local settings copies of this key are ignored by the native
 setting; user and managed settings remain relevant.
 
@@ -35,7 +36,7 @@ not authorize provider execution or qualify a new version.
 
 `relocations.json` pairs the v1 paths moved in 0.103.0 and the session-index
 paths moved again in 0.105.0. Each pair has both hashes; nonidentical pairs
-remain selected review work rather than being classified as unchanged.
+were reviewed as changed selected inputs, not assumed unchanged.
 
 `native-permission-control.json` pins bounded static no-prompt function ranges
 for Linux x64 and Darwin arm64 SDK 0.3.319, 0.3.321 and 0.3.322. The ranges
@@ -47,7 +48,7 @@ At 0.101.0 the timer reads the ambient settings manager directly, so an inline
 SDK settings override does not establish idle suppression. At 0.106.0 inline
 compaction settings are considered, but managed values take precedence. The
 underlying files are pinned in `dist-inventory.json`; see Research 483 for
-the remaining route-authority and race proof.
+the original qualification and repaired native-wait/cancellation races.
 
 `guard-import-edges.json` binds each observed v1 caller and idle module to
 the registry tarball and complete inventory. It records only static class

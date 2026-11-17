@@ -1,10 +1,11 @@
 # Research 483: Claude Agent ACP 0.106.0 evidence
 
-Status: evidence only. `claude-agent.acp` remains qualified through 0.100.0;
-newer points remain `UnverifiedNewer`. Tom chose a distinct permission
-behavior revision; the process boundary still needs separate authority and
-proof. This record does not qualify the
-standalone Agent SDK, native executable, Node, shared ACP schema, or HTTP MCP.
+Status: selected-route original qualification evidence through 0.106.0 on Linux
+x64/Darwin arm64. Preserve earlier segments/exclusions; add only the eight frozen
+published points. Exact 0.101.0 retains v7 callback behavior; the seven points
+from 0.101.1 use guarded inherited-permission v8. This does not qualify standalone
+Agent SDK, native executable, Node, shared ACP schema, Windows or new HTTP MCP
+live points. Independent review and ordinary CI remain merge requirements.
 
 ## Identity
 
@@ -14,7 +15,8 @@ point the complete published stable set is 0.101.0, 0.101.1, 0.102.0,
 integrity and SHA-256 were checked; npm `gitHead` matches the corresponding
 upstream tag. The [fixture](../../crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/README.md)
 retains exact identities, all package paths and hashes, adjacent deltas, and
-the dependency package trees. No package was installed or run.
+the dependency package trees. That identity observation ran no package; the
+trusted-runner original qualification below is separate.
 
 | ACP hop | ACP SDK | Agent SDK | Bundled native manifest |
 | --- | --- | --- | --- |
@@ -62,12 +64,12 @@ must not be mistaken for proof that their behavior is unchanged.
   load path now attempts history replay across compaction boundaries, falling
   back to the current chain on read failure. ACP SDK 2.6.0 adds the v1
   session/options request and schema. Swallowtail does not select that new
-  operation; the changed load and shared handlers still require proof.
+  operation; the original selected load/resume proof is recorded below.
 
 No static manifest or fake proves that the changed native binaries implement
 every selected SDK behavior. HTTP MCP live honouring remains exact to the
-previously evidenced points. The retained tests exercise adapter behavior
-against fakes; they do not execute or qualify the vendor artifacts. Operator
+previously evidenced points. The historical fake tests alone do not qualify vendor artifacts. The trusted
+original proof below exercises the selected route against those frozen bytes. Operator
 decision `43ddf3d5-e62b-4516-8546-e53137b320be` version 2 chooses a distinct
 ACP revision preserving the inherited permission setting. The route-owned idle veto and its bounded original component proof are retained below.
 
@@ -75,52 +77,87 @@ Sources: [official npm package](https://www.npmjs.com/package/@agentclientprotoc
 [upstream tags](https://github.com/agentclientprotocol/claude-agent-acp/tags),
 and the exact tarball URLs and integrity values in the fixture.
 
-## Current qualification procedure
+## Trusted original selected-route proof
 
-The original source analysis and prototypes are retained at commit
-98067e2e2e49f946f9eeac6d386e946c749c48ad. The exhaustive import/static-callsite
-catalogues and abandoned host-admission models are archived as described in
-[the provenance note](../knowledge/operations/claude-agent-acp-retired-analysis.md).
-Their absence does not establish source coverage or close a qualification gate.
-Frozen artifact, dependency, dist, permission and selected guard inputs remain.
+Tom's decision 1ec44a26 v2 replaced the bespoke shared-host/kernel/Python/caller-
+provenance test ladder with trusted disposable Linux x64/macOS arm64 runners.
+Ordinary OS/runtime libraries are trusted; rolling image metadata is observation,
+not an admission pin. The [current procedure](../knowledge/operations/claude-agent-acp-admission-preparation.md)
+requires the real prepared Rust/LocalProcessHost route, product custody and
+permission guards, isolated settings/HOME/workspace and owned loopback model
+peers. No originals or installs run on the persistent Mac; no real credentials,
+provider/model spend, login/catalogue or release is involved.
 
-Tom's decision1ec44a26 v2 authorizes finite original tests on trusted disposable
-Linux x64/macOS arm64 runners. It supersedes the previous shared-host/kernel/
-Python-custody/caller-catalogue prerequisites for this procedure. The actual
-prepared Rust route, inherited permissions, idle veto and functional waits remain
-required. See [the current procedure](../knowledge/operations/claude-agent-acp-admission-preparation.md).
-The new first original attempts reached a real native Read and continued output,
-but failed a callback assertion: outside-workspace Read alone did not force a
-prompt. They are failed harness observations, not qualification. The corrected
-fixture explicitly asks for Read; current runs must prove the callback and denial
-paths without inventing native events or changing public semantics.
+At source `0f88437b60b3b127f130ea2c9ca43144241ad4c2`, all 112 behavior cases
+passed: eight exact hops × seven scenarios × two platforms. The pre-claim private
+admission was set only after frozen graph/native capture; it changed test
+qualification gating, not product permission/mapping or the actual route. The
+public claim now carries the qualified points and the runner's private override
+has been removed. Normal current-head CI verifies that public selection.
 
-## Trusted-runner observations before claim promotion
+| Platform | Exact hops | Behavior results | CI source job | Packet SHA-256 prefix |
+| --- | --- | --- | --- | --- |
+| Darwin arm64 | 0.101.0 / 0.101.1 | 14/14; upload deadline | [job134104413586](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104413586) | `d1c98ec98ad7381b` |
+| Darwin arm64 | 0.102.0 / 0.103.0 | 14/14 | [job134104413445](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104413445) | `9847f3c164b4e386` |
+| Darwin arm64 | 0.104.0 / 0.104.1 | 14/14 | [job134104414263](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104414263) | `d4bf71ee0612b2f3` |
+| Darwin arm64 | 0.105.0 / 0.106.0 | 14/14 | [job134104413501](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104413501) | `af4b6b53da5951de` |
+| Linux x64 | 0.101.0 / 0.101.1 | 14/14 | [job134104413626](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104413626) | `a06673bf4b4b50ea` |
+| Linux x64 | 0.102.0 / 0.103.0 | 14/14 | [job134104412763](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104412763) | `bfde8c24b93bcf2f` |
+| Linux x64 | 0.104.0 / 0.104.1 | 14/14 | [job134104413551](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104413551) | `00fb418bdd990a77` |
+| Linux x64 | 0.105.0 / 0.106.0 | 14/14 | [job134104414295](https://github.com/inflatable-cookie/swallowtail/actions/runs/44102066351/job/134104414295) | `9f78b6101f7285f3` |
 
-At5f22062f700028b481debfe9d0179992dfa6ff0d, workflow44089786882 ran actual
-frozen originals through the prepared Rust route. All56 Linux cases passed.
-The macOS0.102.0/0.103.0 pair passed14/14;0.104.0/0.104.1 passed13/14.
-The0.101.0/0.101.1 pair passed8/14. Remaining Mac results and repaired cases
-are not inferred passes. Exact job logs and bounded packets retain the failures.
+One initial Mac pair completed every native case, then crossed the 20-minute job
+limit during artifact upload. Its job remains cancelled; it is not relabelled a
+CI pass. The corrected workflow gives0.101.0 and0.101.1 separate Mac jobs, keeping
+setup, tests, upload and cleanup inside the same limit. All case log hashes and
+packet source heads were independently re-read before claim editing. Full packet
+hashes, original receipts and outputs are retained evidence; vendor binaries and
+whole vendor trees are not committed or presented as small proof artifacts.
 
-Mac originals exposed queued updates after cancelled or rejected prompt
-responses, causing `update_without_turn` and degraded session close. Retaining
-one non-completed finished turn as a validating sink repairs that lifecycle
-boundary; normal idle updates and late callback requests still refuse. A second
-failure was an allowed outside-resource Read returning a native tool error.
-The corrected selected-route probe requests files inside its approved working
-resource and still explicitly asks for Read permission; it does not claim an
-outside-resource fix. Bounded tool-result diagnostics preserve any repeated
-failure. None of these failed cases authorizes a ceiling increase.
+Each allow/denial scenario opens new/load/resume and runs two turns per session.
+Original API traffic confirms the selected model/options and protected Read
+results; actual one-shot callbacks precede the allowed result. User and managed
+no-prompt denial from 0.101.1 emits no fabricated callback, reports a tool error
+without protected data, and continues the same turn. Exact 0.101.0's native does
+not support that key: its two inherited-key cases require real callbacks and
+allowed Reads, and receive no denial credit. Cancellation, deadline, native exit
+and provider error cases retain distinct terminal results and joined cleanup.
+Activity precedes the continued result; native close and local cleanup stay
+separate. Actual native-child exit events, Rust child waits and descriptor EOF
+supply functional wait evidence, not PID disappearance, job teardown or kernel/
+adoptee/tree enforcement.
 
-The c4e2f9b4 packet resolved the Read diagnostic: `No tools needed for suggestion`.
-The old fixture treated advertised Read tools on auxiliary native suggestion
-requests as selected principal work, then generated an invalid tool call there.
-Selection now binds the actual owned prompt or its own result ID; suggestion
-traffic gets text. Moving files alone did not repair this harness bug. The
-c4e2f9b4 Linux56 and Mac0.102/0.103/0.105/0.106 cases passed; the older Mac
-allow cases still need the corrected fixture proof. Cancellation tails passed
-on the previously failing0.101.0/0.101.1 cases.
+Node 22.23.2 and rustc 1.100.0 are recorded provenance for these jobs; OS/arch/image,
+Node/test-binary hashes, observed argv and frozen artifact receipts are in each
+packet. Compatible installed Node remains the ACP host choice, not an exact
+consumer pin or a standalone SDK/Node claim extension. The registry recheck on
+2026-11-17 observed0.108.0 after the frozen identity commit;0.107.0 and later
+stay UnverifiedNewer on the separate follow-up, outside this qualification.
+
+## Repairs and preserved failures
+
+Originals exposed unsupported informational auth notifications, a missing bounded
+ps binding after v1 relocation, ACP exiting before actual native-child joins,
+cancelled prompts with omitted usage, and queued updates after cancellation/RPC
+errors. Focused regressions retain strict unknown notifications, caller binding,
+malformed supplied usage and normal idle-update refusal. A finished non-completed
+turn can validate/discard its queued tail, but grants no events or callbacks.
+
+The model peer also needed corrections: force Read to ask, distinguish coalesced
+new prompts from tool results, and separate auxiliary suggestion traffic from
+the owned test turn. The older Mac native rejected fabricated auxiliary tools as
+`No tools needed for suggestion`. Selection now binds the actual owned prompt or
+its own result ID; merely advertising Read does not select a tool call. The
+outside-resource hypothesis alone did not repair this fixture bug. Current Read
+files live inside the approved resource with explicit ask settings retained.
+Earlier failed packets remain failures at their exact heads, with bounded error
+summaries and reproductions; they are not counted as passes.
+
+The abandoned analysis/proposal catalogues are preserved by immutable Git head
+and hash in [the archive note](../knowledge/operations/claude-agent-acp-retired-analysis.md).
+Frozen registry/dist/dependency/native identities and production guard inputs
+remain active. No runtime or CI depends on the archive, and no shared SDK task
+completion or retired host-attestation packet is a prerequisite.
 
 ## Original idle-class observations
 
@@ -182,12 +219,7 @@ evidence remains source-only; trusted-host custody and the deliberate
 `/bin/sleep` allowance remain necessary, with no hostile-JavaScript or
 same-user-resistant verified-exec claim.
 
-The next gate is a route-specific confined prepared-driver proof of actual
-ACP session paths and inherited native permission denial without a callback,
-continued turn, cancellation and joined native cleanup. It needs admitted
-transport/administrator-fixture inputs and separate exact ACP/SDK/native
-execution authority; task234's fixture or custody authority does not transfer.
-Contract029/061 still forbid a qualified projection of the guarded revision
-from this component evidence. The ceiling stays0.100.0, earlier stock and
-exact HTTP MCP points remain intact, and0.107.0 remains UnverifiedNewer.
-
+Those component results alone did not qualify the actual ACP/native route.
+The separate trusted-runner proof above supplies that selected-route evidence;
+it does not replay the consumed component grants or transfer their host/kernel
+assertions. Earlier stock claims and exact HTTP MCP live points remain intact.

@@ -1,7 +1,7 @@
 use sha2::{Digest, Sha256};
 use swallowtail_host_local::LocalExpectedSource;
 
-/// Candidate guarded permission behavior; declared for admission, not qualified.
+/// Guarded permission behavior qualified from ACP 0.101.1 through 0.106.0.
 /// Preserves inherited managed denial without fabricating a permission callback.
 pub const CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR: &str =
     "claude-agent.acp.guarded-permission-inheritance-v8";

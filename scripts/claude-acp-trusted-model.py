@@ -330,7 +330,9 @@ if __name__ == "__main__":
     else:
         root = Path(sys.argv[1])
         peer = ModelFixture(root, "allow")
-        (root / "fixture-port").write_text(str(peer.server.server_port))
+        pending = root / "fixture-port.pending"
+        pending.write_text(str(peer.server.server_port))
+        pending.replace(root / "fixture-port")
         try:
             sys.stdin.readline()
         finally:

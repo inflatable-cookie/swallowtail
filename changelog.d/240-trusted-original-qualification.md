@@ -6,3 +6,7 @@ older/default pairs, missing320, independent Node range and live-proof limits.
 Refresh the current fake-harness source binding, next-unqualified-pair refusal
 and additive working API snapshot after the qualified ceiling changed. Consumed
 host packets keep their historical bindings and are not reactivated.
+
+Remove the abandoned host/custody/namespace/administrator prototype chains,
+packets, selectors and manual entrypoints under brief18. Retain frozen identity,
+focused permission/lifecycle regressions and historical commit/proof provenance.

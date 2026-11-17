@@ -15,7 +15,7 @@ ELF/OpenSSL/Python custody, cache chmod, ptrace/pidfd/adoptee/cgroup attestation
 and original caller provenance are retired prerequisites for this test procedure.
 Historical records and three consumed manual runs remain failures at their
 original scopes; none is retried. Configuration capture44066141928 is recorded
-in [the attempt record](claude-agent-sdk-host-attempt.md).
+in [the retirement provenance](claude-agent-sdk-prototype-retirement.md).
 
 Tests must use the actual prepared/shipped sidecar and frozen originals, bounded
 behaviours and real process waits. Isolated HOME/settings/workspace, explicit

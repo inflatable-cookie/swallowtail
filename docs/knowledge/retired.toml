@@ -61,7 +61,7 @@ allow = ["CHANGELOG.md", "docs/knowledge/retired.toml", "docs/guides/validation-
 [[retired]]
 id = "sdk-original-test-custom-host-admission"
 retired = "2026-11-17"
-replacement = "Decision1ec44a26 v2: bounded frozen original SDK tests on trusted disposable runners; product permission/mapping guards remain. Historical manual workflows stay dormant and grants remain consumed."
+replacement = "Decision1ec44a26 v2: bounded frozen original SDK tests on trusted disposable runners; product permission/mapping guards remain. Obsolete manual entrypoints and prototype chains are removed; grants remain consumed."
 owner = "docs/knowledge/operations/claude-agent-sdk-trusted-qualification.md"
 terms = ["Original mode is refused unconditionally until a separately implemented confined launcher and exact authority exist."]
 paths = []

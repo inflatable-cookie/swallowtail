@@ -27,7 +27,7 @@ else {
       reply(m.id,{sessionId:id,modes:{currentModeId:'default',availableModes:[{id:'default',name:'Default'}]},configOptions:options()});
     } else if(m.method==='session/set_config_option'){model=m.params.value;writeFileSync(sessionFile,JSON.stringify({model}));reply(m.id,{configOptions:options()});}
     else if(m.method==='session/prompt')sdk.prompt(m.params.prompt.some(part=>part.text==='hold')).then(result=>{
-      if(result.kind==='cancelled'){reply(m.id,{stopReason:'cancelled',usage:{inputTokens:0,outputTokens:0,cachedReadTokens:0,cachedWriteTokens:0,totalTokens:0}});return;}
+      if(result.kind==='cancelled'){reply(m.id,{stopReason:'cancelled'});return;}
       activity('in_progress');activity(result.denied?'failed':'completed');update({sessionUpdate:'agent_message_chunk',content:{type:'text',text:result.text}});reply(m.id,{stopReason:'end_turn',usage:{inputTokens:1,outputTokens:1,cachedReadTokens:0,cachedWriteTokens:0,totalTokens:2}});
     });
     else if(m.method==='session/cancel')sdk.cancel();

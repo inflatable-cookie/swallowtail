@@ -455,7 +455,12 @@ fn exercise(config: &Value) {
                 if config["original"] == true {
                     let observed = observations(root);
                     assert_eq!(
-                        observed.last().expect("real fixture request")["secretSeen"],
+                        observed
+                            .iter()
+                            .skip(observed_before)
+                            .rev()
+                            .find(|r| r["selected"] == true && r["continuing"] == true)
+                            .expect("this turn's actual tool result")["secretSeen"],
                         scenario == "allow"
                     );
                     assert!(
@@ -468,11 +473,15 @@ fn exercise(config: &Value) {
                 }
             } else if scenario == "cancel" {
                 assert_eq!(outcome.status(), &TerminalStatus::Cancelled);
+            } else if scenario == "deadline" {
+                assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
             } else {
-                assert_ne!(
-                    outcome.status(),
-                    &TerminalStatus::Completed,
-                    "failure/deadline must surface"
+                assert!(
+                    matches!(
+                        outcome.status(),
+                        TerminalStatus::RuntimeFailed(_) | TerminalStatus::ProviderFailed(_)
+                    ),
+                    "actual native/provider failure must surface: {outcome:?}"
                 );
             }
             println!(

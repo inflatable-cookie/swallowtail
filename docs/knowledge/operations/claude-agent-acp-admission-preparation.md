@@ -102,3 +102,10 @@ with failure79 if joins remain missing at5 seconds. This is bounded functional
 cleanup, not tree/adoptee attestation. A focused owned test exits the parent
 immediately after spawning and requires the native exit event before parent
 completion. The idle-veto transform and inherited security settings are unchanged.
+
+The original cancel case exposed an omitted-usage branch for queued cancelled
+prompts in the frozen ACP. The adapter now accepts absent usage only for
+`stopReason: cancelled`, emits no invented usage observation, and retains strict
+validation for supplied usage and completed turns. The owned cancellation peer
+omits usage as a focused regression; the malformed-usage regression remains in
+the covering selector. Original deadline cases must report TimedOut specifically.

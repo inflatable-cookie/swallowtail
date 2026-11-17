@@ -246,11 +246,17 @@ impl ActiveTurn {
                 return;
             }
         };
-        let usage = match prompt_usage(response) {
-            Ok(usage) => usage,
-            Err(error) => {
-                self.fail(&error);
-                return;
+        // ACP can cancel a queued turn before it has any usage to report.
+        // Absence is unknown usage, never fabricated zero token counts.
+        let usage = if stop_reason == "cancelled" && response.get("usage").is_none() {
+            None
+        } else {
+            match prompt_usage(response) {
+                Ok(usage) => Some(usage),
+                Err(error) => {
+                    self.fail(&error);
+                    return;
+                }
             }
         };
         let status = if let Some(observation) = self
@@ -282,7 +288,10 @@ impl ActiveTurn {
                 ),
             }
         };
-        self.finish_with_usage(status, usage);
+        match usage {
+            Some(usage) => self.finish_with_usage(status, usage),
+            None => self.finish(status),
+        }
     }
 
     pub(crate) fn fail(&self, error: &RuntimeFailure) {

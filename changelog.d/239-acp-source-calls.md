@@ -34,3 +34,6 @@
 - Join actual asynchronous guarded children before ACP exits; bound forced stop
   to owned child handles and fail shutdown if their waits do not settle. Original
   tests exposed the exit race after six successful permission/continued turns.
+
+- Preserve cancellation when the frozen ACP omits usage for a queued turn;
+  absent counters stay unknown and malformed supplied counters still fail.

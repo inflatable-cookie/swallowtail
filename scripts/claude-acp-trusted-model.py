@@ -97,7 +97,8 @@ class ModelFixture:
                     and tail[-1].get("type") == "tool_result"
                 )
                 selected = any(t.get("name") == "Read" for t in body.get("tools", []))
-                secret_seen = "owned-secret-value" in json.dumps(results)
+                latest_result = tail[-1:] if continuing else []
+                secret_seen = "owned-secret-value" in json.dumps(latest_result)
                 row = {
                     "request": len(fixture.rows) + 1,
                     "model": body.get("model"),
@@ -106,7 +107,7 @@ class ModelFixture:
                     "continuing": continuing,
                     "selected": selected,
                     "secretSeen": secret_seen,
-                    "toolError": any(p.get("is_error") for p in results),
+                    "toolError": any(p.get("is_error") for p in latest_result),
                 }
                 with fixture.lock:
                     if len(fixture.rows) >= 32:

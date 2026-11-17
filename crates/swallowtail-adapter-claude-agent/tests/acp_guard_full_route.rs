@@ -307,6 +307,17 @@ fn turn(
             &TerminalStatus::Completed
         }
     );
+    if cancel {
+        assert!(
+            !events.iter().any(|event| matches!(
+                event.kind(),
+                swallowtail_runtime::RuntimeEventKind::ProviderObservation(
+                    swallowtail_runtime::ProviderObservation::Usage(_)
+                )
+            )),
+            "absent cancelled-turn usage must not become zero counters"
+        );
+    }
     if !cancel {
         assert_eq!(
             outcome.output().expect("continued output").as_str(),

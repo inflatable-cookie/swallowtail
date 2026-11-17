@@ -587,6 +587,7 @@ default = default_sect
             seed.close()
             published = []
             owner = types.SimpleNamespace(
+                rows=[],
                 prepared=lambda: None,
                 unsettled=lambda: False,
                 check_ancestors=lambda: None,
@@ -631,6 +632,7 @@ default = default_sect
                 b"# providers = commented_only\n"
             )
             owner = types.SimpleNamespace(
+                rows=[],
                 prepared=lambda: None,
                 unsettled=lambda: False,
                 check_ancestors=lambda: None,

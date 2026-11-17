@@ -65,7 +65,7 @@ e16515aa99c86c86c51d5e7e5ed79512aab8b58298fedb23306cf58268ed3d62  scripts/claude
 792a8d33b8e23f5291eb0cb0dd5ba14652110e27c04cefd5e34bd335000f491e  scripts/tests/claude-agent-sdk-confined-probe.py
 ae45abc3ad26528205e95bd11440ee56605065c5d2e9c06e393ae0305f5da35e  scripts/tests/claude-agent-sdk-host-admission.py
 07855b13adc1baf7fbb956c5717916ac44e2d8d3767c44185fa16350c364863c  scripts/tests/claude-agent-sdk-host-observer.py
-979adb6624877ef7f5d9e1e4b0e6abbefc5315c37798d3359780becdb7c6be31  scripts/tests/claude-agent-sdk-host-package.py
+99b9e605872d3471cd8ea19056efe701f36a425908f3d038ecf9427b25691fa3  scripts/tests/claude-agent-sdk-host-package.py
 35da31663f1d2c81a278205986a1a27729e7118b4aff5e6e5f728eee49a5c52d  scripts/tests/claude-agent-sdk-host-session.py
 c8ad1a2b823ac67e15d836a5d1fb39f3e2b6d8fa9f4bf6e9e63bd9e7e3c427e7  scripts/tests/claude-agent-sdk-host-transaction.py
 51ba7079073cb36fd8ea845883c447046322709a94a313c9cf3fbaa88c48bc6b  scripts/tests/claude-agent-sdk-spawn-proposal.py

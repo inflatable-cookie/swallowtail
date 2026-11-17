@@ -12,12 +12,12 @@ serde_with3.21.0. Swallowtail adds no direct chrono API use or new exposure here
 
 Task240 brief19 permits a precise bounded maintenance disposition. Accept only
 this maintenance advisory for the currently pinned transitive use until the
-expiry in deny.toml. This accepts delayed maintenance response, not absence of
+expiry enforced by scripts/check-chrono-maintenance.py before cargo-deny. This accepts delayed maintenance response, not absence of
 risk. Replacing the transitive serialization/date APIs across upstream consumers
 is a separate dependency migration; it is not silently folded into SDK semantics.
 Review upstream replacement releases and remove this exception on migration.
 Every other advisory, including any future chrono vulnerability or unsoundness,
-continues to fail the normal gate. The exception expires automatically; the
+continues to fail the normal gate. The exact three locked versions and expiry are checked before cargo-deny; the
 security job is neither disabled nor filtered.
 
 The separate [libz-sys vulnerability](https://github.com/RustSec/advisory-db/blob/main/crates/libz-sys/RUSTSEC-2026-0544.md)

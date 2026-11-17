@@ -471,7 +471,11 @@ section = "Research Records"
 
 "package:metadata" = "bash scripts/check-package-metadata.sh"
 "package:api" = "bash scripts/check-public-api.sh"
-"security:dependencies" = "bash scripts/oxide-rust.sh deny check advisories licenses sources"
+"security:dependencies" = [
+  "python3 -B scripts/check-chrono-maintenance.py --self-test",
+  "python3 -B scripts/check-chrono-maintenance.py",
+  "bash scripts/oxide-rust.sh deny check advisories licenses sources",
+]
 "package:verify-affected" = "bash scripts/verify-affected-packages.sh {args}"
 "package:docs" = "RUSTDOCFLAGS='-D missing_docs' bash scripts/oxide-rust.sh doc --workspace --all-features --no-deps --locked"
 "package:msrv" = "bash scripts/check-msrv.sh"

@@ -150,7 +150,7 @@ fn frozen_acp_dependencies_and_idle_evidence_stay_pinned() {
                 swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
             )
         ),
-        "34cf60596e2c202949d7acf86f8878559fbbf22e4905e24d60248c0d10121a94"
+        "f2a728819aa9f68815e3255c0c1a8d547337f102b352c5c730051d1799c5c56b"
     );
 }
 
@@ -175,15 +175,15 @@ fn guarded_production_graphs_pin_every_source_format_and_edge() {
         ),
         (
             include_str!("../sidecar/claude-agent-acp-guard-graphs/0.103.0.json"),
-            "2551b9679140c0c252e16a6c8176fe31ac3a17703e51ce8839be40d57e578b28",
+            "724ecc91a68c7ddd9b47d225ff07c6bb787b805837f9fafaef9bd4b7ce7e8d30",
         ),
         (
             include_str!("../sidecar/claude-agent-acp-guard-graphs/0.104.0.json"),
-            "b13669b6d243392a9a6a835b93721117d79de5cf4b41354cdaa9189f4d2f1a8a",
+            "6ece22462bc7c0e5ea5891ca285da6081b528e25d92db22d23b333795c80f610",
         ),
         (
             include_str!("../sidecar/claude-agent-acp-guard-graphs/0.104.1.json"),
-            "a25da1c72f5dc94dfb9d539c2612aa93edd25d8dbf88f38bfe88cd5d9bfa304d",
+            "adbac07eb5e0f895b87151a0d6a9dc86f4b4081e629fe4832d17878af985586d",
         ),
         (
             include_str!("../sidecar/claude-agent-acp-guard-graphs/0.105.0.json"),

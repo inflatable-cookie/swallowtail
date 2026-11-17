@@ -65,6 +65,10 @@ fn capture(root: &Path, entry: &str) -> LocalCapturedGraph {
 }
 
 fn capture_native_graph(root: &Path, entry: &str) -> LocalCapturedGraph {
+    capture_native_graph_at(root, entry, "acp/dist/session-index/live-registry.js")
+}
+
+fn capture_native_graph_at(root: &Path, entry: &str, registry_parent: &str) -> LocalCapturedGraph {
     use std::os::unix::fs::PermissionsExt;
     let native_path = root.join("fake-native");
     let native_source = b"#!/bin/sh\nprintf fake-native";
@@ -73,7 +77,8 @@ fn capture_native_graph(root: &Path, entry: &str) -> LocalCapturedGraph {
         .expect("executable fake");
     let native = LocalTrustedRuntime::capture(&native_path, Sha256::digest(native_source).into())
         .expect("held fake native");
-    let prefix = "import {starts} from './acp/dist/session-index/live-registry.js'; if (!(await starts()).includes(String(process.pid))) throw Error('system process helper mismatch'); import {createRequire} from 'node:module'; import {execFileSync} from 'node:child_process'; import data from './data.json' with {type:'json'}; const get = createRequire(import.meta.resolve('./sdk.mjs')); const value = get('./bridge.cjs'); if (value !== data.value) throw Error('captured data mismatch'); const native = get.resolve('@fake/native/claude'); if (execFileSync(native,['--version'],{env:{}}).toString() !== 'fake-native') throw Error('native fake mismatch');\n";
+    let prefix = "import {starts} from './acp/dist/session-index/live-registry.js'; if (!(await starts()).includes(String(process.pid))) throw Error('system process helper mismatch'); import {createRequire} from 'node:module'; import {execFileSync,spawn} from 'node:child_process'; import data from './data.json' with {type:'json'}; const get = createRequire(import.meta.resolve('./sdk.mjs')); const value = get('./bridge.cjs'); if (value !== data.value) throw Error('captured data mismatch'); const native = get.resolve('@fake/native/claude'); if (execFileSync(native,['--version'],{env:{}}).toString() !== 'fake-native') throw Error('native fake mismatch');\n";
+    let prefix = prefix.replace("acp/dist/session-index/live-registry.js", registry_parent);
     let entry = format!("{prefix}{entry}");
     let inputs = [
         ("entry.mjs", entry.as_str(), "module"),
@@ -87,7 +92,7 @@ fn capture_native_graph(root: &Path, entry: &str) -> LocalCapturedGraph {
         ("leaf.cjs", "module.exports = 'captured';", "commonjs"),
         ("data.json", "{\"value\":\"captured\"}", "json"),
         (
-            "acp/dist/session-index/live-registry.js",
+            registry_parent,
             "import {execFile} from 'node:child_process'; export function starts(){return new Promise((resolve,reject)=>execFile('ps',['-o','pid=,lstart=','-p',String(process.pid)],{timeout:1000,env:{}},(error,stdout)=>error?reject(error):resolve(stdout)));}",
             "module",
         ),
@@ -101,9 +106,9 @@ fn capture_native_graph(root: &Path, entry: &str) -> LocalCapturedGraph {
     }
     let native_record = serde_json::json!({"sha256":format!("{:x}",Sha256::digest(native_source)),"bytes":native_source.len(),"specifier":"@fake/native/claude"});
     let manifest = serde_json::json!({"vendor":"11".repeat(32),"entry":"entry.mjs","idle":"idle.mjs","files":files,
-        "imports":[{"parent":"entry.mjs","specifier":"./acp/dist/session-index/live-registry.js","target":"acp/dist/session-index/live-registry.js"},{"parent":"entry.mjs","specifier":"./idle.mjs","target":"idle.mjs"},{"parent":"entry.mjs","specifier":"./sdk.mjs","target":"sdk.mjs"},{"parent":"entry.mjs","specifier":"./data.json","target":"data.json"},{"parent":"sdk.mjs","specifier":"./bridge.cjs","target":"bridge.cjs"},{"parent":"bridge.cjs","specifier":"./leaf.cjs","target":"leaf.cjs"}],
-        "builtins":[{"parent":"acp/dist/session-index/live-registry.js","specifier":"node:child_process","target":"node:child_process"},{"parent":"entry.mjs","specifier":"node:module","target":"node:module"},{"parent":"entry.mjs","specifier":"node:child_process","target":"node:child_process"}],
-        "require_parents":[["entry.mjs","sdk.mjs"]],"native_parents":["sdk.mjs"],"native":{"darwin-arm64":native_record,"linux-x64":native_record},"platform_programs":[{"parent":"acp/dist/session-index/live-registry.js","name":"ps","arguments":"live-process-starts-v1"}],"denied_dynamic":[],"source_cautions":[]});
+        "imports":[{"parent":"entry.mjs","specifier":format!("./{registry_parent}"),"target":registry_parent},{"parent":"entry.mjs","specifier":"./idle.mjs","target":"idle.mjs"},{"parent":"entry.mjs","specifier":"./sdk.mjs","target":"sdk.mjs"},{"parent":"entry.mjs","specifier":"./data.json","target":"data.json"},{"parent":"sdk.mjs","specifier":"./bridge.cjs","target":"bridge.cjs"},{"parent":"bridge.cjs","specifier":"./leaf.cjs","target":"leaf.cjs"}],
+        "builtins":[{"parent":registry_parent,"specifier":"node:child_process","target":"node:child_process"},{"parent":"entry.mjs","specifier":"node:module","target":"node:module"},{"parent":"entry.mjs","specifier":"node:child_process","target":"node:child_process"}],
+        "require_parents":[["entry.mjs","sdk.mjs"]],"native_parents":["sdk.mjs"],"native":{"darwin-arm64":native_record,"linux-x64":native_record},"platform_programs":[{"parent":registry_parent,"name":"ps","arguments":"live-process-starts-v1"}],"denied_dynamic":[],"source_cautions":[]});
     let bytes = serde_json::to_vec(&manifest).expect("fake manifest");
     let platform = if cfg!(target_os = "macos") {
         "darwin-arm64"
@@ -124,9 +129,18 @@ fn capture_native_graph(root: &Path, entry: &str) -> LocalCapturedGraph {
         LocalCapturedGraph::capture_manifest(root, &bytes, platform, &native, None).is_err(),
         "missing system helper custody"
     );
-    for change in ["worker", "format", "source", "edge", "native", "caution"] {
+    for change in [
+        "worker",
+        "format",
+        "source",
+        "edge",
+        "native",
+        "caution",
+        "ps-caller",
+    ] {
         let mut changed = manifest.clone();
         match change {
+            "ps-caller" => changed["platform_programs"][0]["parent"] = "entry.mjs".into(),
             "worker" => changed["builtins"][0]["target"] = "node:worker_threads".into(),
             "format" => changed["files"]["entry.mjs"]["format"] = "unknown".into(),
             "source" => changed["files"]["entry.mjs"]["sha256"] = "00".repeat(32).into(),
@@ -842,5 +856,54 @@ fn startup_absence_lookup_requires_exact_optin_and_undefined_result() {
             );
         }
     }
+    std::fs::remove_dir_all(root).expect("remove only own fixture");
+}
+
+#[test]
+fn bounded_ps_call_survives_v1_registry_relocation() {
+    for parent in [
+        "acp/dist/session-index/live-registry.js",
+        "acp/dist/v1/session-index/live-registry.js",
+    ] {
+        let root = fixture();
+        let graph = capture_native_graph_at(&root, "process.stdout.write('bounded');", parent);
+        let recipe = LocalCapturedNodeRecipe::new(
+            &graph,
+            CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+            [1; 32],
+            [2; 32],
+            [3; 32],
+        )
+        .expect("owned registry recipe");
+        let output = guarded_with_bootstrap(&recipe, recipe.bootstrap());
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(output.stdout, b"bounded");
+        std::fs::remove_dir_all(root).expect("remove only own fixture");
+    }
+}
+
+#[test]
+fn guarded_parent_exit_waits_the_actual_async_native_child() {
+    let root = fixture();
+    let graph = capture_native_graph(
+        &root,
+        "const child=spawn(native,[],{env:{},stdio:['pipe','pipe','pipe']}); child.once('exit',()=>process.stdout.write('waited')); process.exit(0);",
+    );
+    // Add only the fixture's already admitted child-process binding to its source.
+    // The fixture entry currently imports execFileSync; also bind spawn.
+    let loader = CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE;
+    let recipe = LocalCapturedNodeRecipe::new(&graph, loader, [1; 32], [2; 32], [3; 32])
+        .expect("owned exit recipe");
+    let output = guarded_with_bootstrap(&recipe, recipe.bootstrap());
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert_eq!(output.stdout, b"waited");
     std::fs::remove_dir_all(root).expect("remove only own fixture");
 }

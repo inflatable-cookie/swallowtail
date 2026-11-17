@@ -239,7 +239,12 @@ impl LocalCapturedGraph {
         for program in &manifest.platform_programs {
             if program.name != "ps"
                 || program.arguments != "live-process-starts-v1"
-                || program.parent != Path::new("acp/dist/session-index/live-registry.js")
+                || ![
+                    "acp/dist/session-index/live-registry.js",
+                    "acp/dist/v1/session-index/live-registry.js",
+                ]
+                .iter()
+                .any(|parent| program.parent == Path::new(parent))
                 || !manifest.files.contains_key(&program.parent)
             {
                 return Err(invalid("unclassified platform program"));

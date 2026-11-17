@@ -70,9 +70,9 @@ fn native_observations(root: &Path) -> Vec<Value> {
 fn observed_loader(root: &Path) -> String {
     let output = serde_json::to_string(&root.join("native-waits.jsonl")).expect("trace path");
     let source = CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE;
-    let needle = "return original.spawn(check(command,args,options),args,options);";
+    let needle = "return trackChild(original.spawn(check(command,args,options),args,options));";
     assert_eq!(source.matches(needle).count(), 1);
-    source.replace(needle, &format!(r#"const child=original.spawn(check(command,args,options),args,options);
+    source.replace(needle, &format!(r#"const child=trackChild(original.spawn(check(command,args,options),args,options));
 const record=value=>{{ const fs=originalFs; fs.appendFileSync({output},JSON.stringify(value)+'\\n'); }};
 record({{phase:'start',pid:child.pid,parent:process.pid,command,args,cwd:options.cwd}});
 child.once('exit',(code,signal)=>record({{phase:'wait',pid:child.pid,code,signal}}));

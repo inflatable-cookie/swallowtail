@@ -310,6 +310,7 @@ def inside(root):
     else:
         system_policy.parent.mkdir(parents=True, exist_ok=True)
     results = []
+    failures = []
     for case in cases:
         for scenario in (
             "allow",
@@ -430,11 +431,11 @@ def inside(root):
                 (evidence / "results.json").write_text(json.dumps(results, indent=2))
                 print(json.dumps(results[-1]), flush=True)
                 if result.returncode:
-                    raise RuntimeError(
-                        "real prepared ACP failure: " + case["hop"] + "/" + scenario
-                    )
+                    failures.append(case["hop"] + "/" + scenario)
             finally:
                 fixture.close()
+    if failures:
+        raise RuntimeError("real prepared ACP failures: " + ", ".join(failures))
 
 
 def main():

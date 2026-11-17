@@ -9,6 +9,33 @@ const childFacades = new Map();
 let requireParents;
 let native;
 let platformPrograms;
+const childWaits = new Map();
+
+// The official ACP shutdown calls process.exit after synchronous SDK close.
+// Keep the real ChildProcess close/wait obligation before letting ACP exit.
+export function trackChild(child) {
+  const waited = new Promise(resolve => child.once('close', resolve));
+  childWaits.set(child, waited);
+  waited.then(() => childWaits.delete(child));
+  return child;
+}
+
+function installJoinedExit() {
+  const exit = process.exit.bind(process);
+  let exiting = false;
+  Object.defineProperty(process, 'exit', { configurable: false, writable: false, value(code) {
+    if (exiting) return;
+    exiting = true;
+    const stop = setTimeout(() => {
+      for (const child of childWaits.keys()) child.kill('SIGKILL');
+    }, 3000);
+    const failed = setTimeout(() => exit(79), 5000);
+    (async () => {
+      while (childWaits.size) await Promise.all([...childWaits.values()]);
+      clearTimeout(stop); clearTimeout(failed); exit(code);
+    })();
+  }});
+}
 
 export function initialize(config) {
   if (!config || !Array.isArray(config.files) || !Array.isArray(config.edges)) throw new Error('invalid capture');
@@ -44,6 +71,7 @@ export function initialize(config) {
 export function install(config) {
   if (Number(process.versions.node.split('.')[0]) < 22 || typeof registerHooks !== 'function' || typeof isBuiltin !== 'function') throw new Error('required Node hook APIs unavailable');
   initialize(config);
+  if (native) installJoinedExit();
   registerHooks({ resolve, load });
 }
 
@@ -52,6 +80,7 @@ export function resolve(specifier, context) {
   // callers receive createRequire bound to their captured parent, without
   // loader registration, extensions, caches or arbitrary resolver options.
   if (moduleFacades.has(context.parentURL) && specifier === 'node:module') return { url: specifier, shortCircuit: true };
+  if (childFacades.has(context.parentURL) && specifier === import.meta.url) return { url: specifier, shortCircuit: true };
   if (childFacades.has(context.parentURL) && ['node:child_process', 'node:fs', 'node:crypto'].includes(specifier)) return { url: specifier, shortCircuit: true };
   const target = edges.get(JSON.stringify([context.parentURL ?? null, specifier]));
   if (!target) throw new Error('unapproved module edge');
@@ -69,7 +98,7 @@ export function resolve(specifier, context) {
 }
 
 export function load(url, context, nextLoad) {
-  if (isBuiltin(url)) return nextLoad(url, context);
+  if (isBuiltin(url) || url === import.meta.url) return nextLoad(url, context);
   if (childFacades.has(url)) return childFacade(native, platformPrograms.get(childFacades.get(url)));
   if (moduleFacades.has(url)) {
     const parent = JSON.stringify(moduleFacades.get(url));
@@ -129,6 +158,7 @@ Object.freeze(IdleCompaction);
 
 function childFacade(binding, processStarts) {
   return { format: 'module', shortCircuit: true, source: `
+import { trackChild } from ${JSON.stringify(import.meta.url)};
 import * as original from 'node:child_process';
 import { readFileSync, realpathSync, lstatSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -150,12 +180,12 @@ function check(command, args, options) {
   if (bytes.length !== binding.bytes || createHash('sha256').update(bytes).digest('hex') !== binding.sha256) throw new Error('native source changed');
   return command;
 }
-export function spawn(command, args = [], options = {}) { return original.spawn(check(command,args,options),args,options); }
+export function spawn(command, args = [], options = {}) { return trackChild(original.spawn(check(command,args,options),args,options)); }
 export function spawnSync(command, args = [], options = {}) { return original.spawnSync(check(command,args,options),args,options); }
-export function execFile(command, args = [], options = {}, callback) { return original.execFile(check(command,args,typeof options === 'object' ? options : {}),args,options,callback); }
+export function execFile(command, args = [], options = {}, callback) { return trackChild(original.execFile(check(command,args,typeof options === 'object' ? options : {}),args,options,callback)); }
 export function execFileSync(command, args = [], options = {}) { return original.execFileSync(check(command,args,options),args,options); }
 const custom = Symbol.for('nodejs.util.promisify.custom');
-if (original.execFile[custom]) Object.defineProperty(execFile,custom,{value:(command,args=[],options={})=>original.execFile[custom](check(command,args,options),args,options)});
+if (original.execFile[custom]) Object.defineProperty(execFile,custom,{value:(command,args=[],options={})=>{const result=original.execFile[custom](check(command,args,options),args,options);trackChild(result.child);return result;}});
 export default Object.freeze({spawn,spawnSync,execFile,execFileSync});
 ` };
 }

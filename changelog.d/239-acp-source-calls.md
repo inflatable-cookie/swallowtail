@@ -27,3 +27,10 @@
 - Accept the frozen SDK's informational `auth/status_update` notification without
   changing prepared access evidence; keep unknown notifications strict. The
   actual original session/new failure exposed this adapter gap.
+
+- Repair the production guard's bounded `ps` binding for the exact v1 registry
+  relocation in0.103.0/0.104.0/0.104.1; unknown caller paths still refuse.
+
+- Join actual asynchronous guarded children before ACP exits; bound forced stop
+  to owned child handles and fail shutdown if their waits do not settle. Original
+  tests exposed the exit race after six successful permission/continued turns.

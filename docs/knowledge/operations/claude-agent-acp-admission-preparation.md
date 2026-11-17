@@ -87,3 +87,18 @@ exact informational notification with a string state, discards its display-only
 account payload, and preserves prepared access evidence. The owned real-route
 peer emits it during new/load/resume as a regression. Unknown methods still
 refuse. Original CI must confirm the repair before a qualification claim moves.
+
+The three v1-relocated registry callers lacked the production guard's bounded
+`ps` entry. Their policies now bind the exact relocated source parent; unknown
+callers still refuse. Vendor source and native identities are unchanged.
+
+Original new/load/resume each completed two allowed turns, but then failed the
+native-child wait assertion. The official ACP shutdown calls `process.exit`
+after synchronous SDK close; Rust can close the transport before Node delivers
+the native child's close event. The guarded child facade now retains its real
+async child handles and defers ACP exit until their actual close/wait events.
+It sends SIGKILL only to its own still-pending handles after3 seconds and exits
+with failure79 if joins remain missing at5 seconds. This is bounded functional
+cleanup, not tree/adoptee attestation. A focused owned test exits the parent
+immediately after spawning and requires the native exit event before parent
+completion. The idle-veto transform and inherited security settings are unchanged.

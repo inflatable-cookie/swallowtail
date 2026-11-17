@@ -643,16 +643,22 @@ fn timed_out_turn_drains_one_abort_terminal_for_cooperative_close_only() {
             services.clone(),
         ))
         .expect("turn");
+        // Query acceptance precedes asynchronous native start dispatch. Hold
+        // virtual time until the intended already-started interleaving exists.
+        fixture
+            .emit_and_wait_until_dispatched(serde_json::json!({"type":"event","event":"progress"}));
         fixture.advance_time_to_ticks(1_100);
         let terminal = block_on(turn.take_terminal_outcome().expect("terminal"));
         assert_eq!(terminal.status(), &TerminalStatus::TimedOut);
         let _ = block_on(turn.close());
         if tail == "unexpected_output" {
-            fixture.emit(serde_json::json!({"type":"event","event":"output_delta","delta":"late"}));
+            fixture.emit_and_wait_until_dispatched(
+                serde_json::json!({"type":"event","event":"output_delta","delta":"late"}),
+            );
         } else {
-            fixture.emit(failed_native_result("aborted_streaming"));
+            fixture.emit_and_wait_until_dispatched(failed_native_result("aborted_streaming"));
             if tail == "duplicate" {
-                fixture.emit(failed_native_result("aborted_streaming"));
+                fixture.emit_and_wait_until_dispatched(failed_native_result("aborted_streaming"));
             }
         }
         // A new cleanup deadline, not the already-expired turn deadline.
@@ -686,6 +692,10 @@ fn timed_out_recipient_blocks_reuse_until_its_exact_terminal_is_drained() {
         ))
         .expect("old turn");
         let first_events = first.take_events().expect("old events");
+        // Query acceptance precedes asynchronous native start dispatch. Hold
+        // virtual time until the intended already-started interleaving exists.
+        fixture
+            .emit_and_wait_until_dispatched(serde_json::json!({"type":"event","event":"progress"}));
         fixture.advance_time_to_ticks(1_100);
         let outcome = block_on(first.take_terminal_outcome().expect("old terminal"));
         assert_eq!(outcome.status(), &TerminalStatus::TimedOut);

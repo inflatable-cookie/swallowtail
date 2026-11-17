@@ -15,3 +15,6 @@ record cannot supply its public outcome. Duplicate starts and terminals refuse.
 After GitHub failed to acquire a macos-latest arm64 runner before any command,
 select the standard macos-15 arm64 image in the existing qualification job.
 Keep frozen artifacts, observed OS metadata, isolated peers and all bounds.
+
+Make the owned deadline tests synchronize native-start and terminal dispatch
+before virtual expiry and close, retaining the same strict cleanup assertions.

@@ -87,9 +87,16 @@ class ModelFixture:
                 last_user = next(
                     (m for m in reversed(messages) if m.get("role") == "user"), {}
                 )
-                continuing = isinstance(last_user.get("content"), list) and any(
-                    p.get("type") == "tool_result" for p in last_user["content"]
+                # The API may coalesce the prior tool result and the NEXT user
+                # prompt into one user block. A new trailing text prompt is a
+                # new turn, not another result-continuation request.
+                tail = last_user.get("content")
+                continuing = (
+                    isinstance(tail, list)
+                    and bool(tail)
+                    and tail[-1].get("type") == "tool_result"
                 )
+                selected = any(t.get("name") == "Read" for t in body.get("tools", []))
                 secret_seen = "owned-secret-value" in json.dumps(results)
                 row = {
                     "request": len(fixture.rows) + 1,
@@ -97,6 +104,7 @@ class ModelFixture:
                     "tools": [tool.get("name") for tool in body.get("tools", [])],
                     "toolResults": len(results),
                     "continuing": continuing,
+                    "selected": selected,
                     "secretSeen": secret_seen,
                     "toolError": any(p.get("is_error") for p in results),
                 }
@@ -108,7 +116,7 @@ class ModelFixture:
                     pending = fixture.root / "model-observations.pending"
                     pending.write_text(json.dumps(fixture.rows))
                     pending.replace(fixture.root / "model-observations.json")
-                if fixture.scenario == "error":
+                if fixture.scenario == "error" and selected:
                     self.send_json(
                         {
                             "type": "error",
@@ -120,12 +128,18 @@ class ModelFixture:
                         400,
                     )
                     return
-                if fixture.scenario in ("cancel", "deadline", "native-exit"):
+                if (
+                    fixture.scenario in ("cancel", "deadline", "native-exit")
+                    and selected
+                ):
                     # Keep the real request pending until interrupt/stop, never a
                     # preloaded ACP/native response. The parent owns fixture join.
                     fixture.stop.wait(40)
                     return
-                if continuing:
+                if not selected:
+                    content = [{"type": "text", "text": "Owned fixture ready."}]
+                    reason = "end_turn"
+                elif continuing:
                     denied = not secret_seen
                     content = [
                         {
@@ -274,6 +288,7 @@ if __name__ == "__main__":
                 raw = request(
                     {
                         "model": "owned-model",
+                        "tools": [{"name": "Read"}],
                         "stream": True,
                         "messages": [{"role": "user", "content": "owned read"}],
                     }
@@ -295,6 +310,7 @@ if __name__ == "__main__":
                     request(
                         {
                             "model": "owned-model",
+                            "tools": [{"name": "Read"}],
                             "messages": [
                                 {
                                     "role": "user",

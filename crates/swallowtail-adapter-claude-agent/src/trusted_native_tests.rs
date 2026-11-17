@@ -352,6 +352,7 @@ fn exercise(config: &Value) {
         for turn_index in 0..count {
             scope.renew_behaviour_budget();
             println!("ACP_TRUSTED_BEGIN {context}/{turn_index}/{scenario}");
+            let observed_before = observations(root).len();
             let mut turn = block_on(
                 session.start_turn(
                     TurnRequest::new(
@@ -378,7 +379,11 @@ fn exercise(config: &Value) {
             let terminal = turn.take_terminal_outcome().expect("terminal");
             if scenario == "cancel" {
                 let until = Instant::now() + Duration::from_secs(10);
-                while observations(root).is_empty() {
+                while !observations(root)
+                    .iter()
+                    .skip(observed_before)
+                    .any(|r| r["selected"] == true)
+                {
                     assert!(Instant::now() < until, "real model request");
                     std::thread::sleep(Duration::from_millis(10));
                 }
@@ -386,7 +391,11 @@ fn exercise(config: &Value) {
             }
             if scenario == "native-exit" {
                 let until = Instant::now() + Duration::from_secs(10);
-                while observations(root).is_empty() {
+                while !observations(root)
+                    .iter()
+                    .skip(observed_before)
+                    .any(|r| r["selected"] == true)
+                {
                     assert!(Instant::now() < until, "real pending native request");
                     std::thread::sleep(Duration::from_millis(10));
                 }
@@ -450,7 +459,10 @@ fn exercise(config: &Value) {
                         scenario == "allow"
                     );
                     assert!(
-                        observed.iter().all(|r| r["model"] == "claude-sonnet-4-6"),
+                        observed
+                            .iter()
+                            .filter(|r| r["selected"] == true)
+                            .all(|r| r["model"] == "claude-sonnet-4-6"),
                         "model/options must persist through actual new/load/resume: {observed:?}"
                     );
                 }

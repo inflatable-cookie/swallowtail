@@ -32,6 +32,10 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 22.23.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          shared-key: acp239-trusted
+          cache-on-failure: true
       - name: Ephemeral exact Effigy and owned scratch
         shell: bash
         run: |
@@ -49,7 +53,7 @@ jobs:
           git -C "$work/effigy-source" fetch --depth 1 origin ee4ac29b6fff184669d702b22dcd1224aaf99713
           git -C "$work/effigy-source" checkout --detach --no-recurse-submodules FETCH_HEAD
           test "$(git -C "$work/effigy-source" rev-parse HEAD)" = ee4ac29b6fff184669d702b22dcd1224aaf99713
-          cargo install --path "$work/effigy-source" --locked --root "$work/effigy" effigy
+          cargo install --path "$work/effigy-source" --debug --locked --root "$work/effigy" effigy
           echo "$work/effigy/bin" >> "$GITHUB_PATH"
       - name: Prove owned harness before originals
         run: |

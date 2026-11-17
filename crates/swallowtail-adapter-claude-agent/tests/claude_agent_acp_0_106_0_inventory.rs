@@ -463,6 +463,16 @@ fn guarded_probe_proposal_keeps_exact_tuples_and_unproved_gates_separate() {
             include_bytes!("guard_component_probe/idle.mjs").as_slice(),
         ),
     ] {
+        if name.ends_with("/claude-agent-acp-guard-loader.mjs") {
+            // This consumed proposal precedes the accepted startup migration.
+            // The current loader is pinned separately above and by the startup
+            // integration receipt; do not rewrite historical proposal bytes.
+            assert_eq!(
+                plan["component_stage"]["source_sha256"][name],
+                "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a"
+            );
+            continue;
+        }
         assert_eq!(
             plan["component_stage"]["source_sha256"][name],
             format!("{:x}", Sha256::digest(source)),

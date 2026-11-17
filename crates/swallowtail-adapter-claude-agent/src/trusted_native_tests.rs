@@ -544,6 +544,15 @@ fn owned_self_test() {
         .expect("installed Node")
         .canonicalize()
         .expect("Node path");
+    let node = if std::env::var("GITHUB_ACTIONS").as_deref() == Ok("true") {
+        // GitHub's shared toolcache may be writable. Use a job-owned copy;
+        // never chmod or transact over the toolcache itself.
+        let owned = root.join("owned-node");
+        std::fs::copy(&node, &owned).expect("copy installed CI Node for owned fake");
+        owned
+    } else {
+        node
+    };
     std::fs::create_dir(root.join("workspace")).expect("workspace");
     std::fs::create_dir(root.join("home")).expect("home");
     std::fs::write(

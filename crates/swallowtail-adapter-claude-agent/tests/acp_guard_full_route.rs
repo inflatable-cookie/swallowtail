@@ -221,7 +221,7 @@ fn try_prepare_with_process(
         services.clone(),
     ))
     .map_err(|error| format!("{error:?}"))?;
-    assert!(!prepared.observation().is_qualified());
+    assert!(prepared.observation().is_qualified());
     let profile = prepared
         .prepare_session(
             ClaudeAgentSessionProfileInput::new(

@@ -485,7 +485,7 @@ fn checked_prepared_child_preserves_denial_without_permission_callback() {
         services.clone(),
     ))
     .expect("checked fake discovery");
-    assert!(!prepared.observation().is_qualified());
+    assert!(prepared.observation().is_qualified());
     let profile = prepared
         .prepare_session(ClaudeAgentSessionProfileInput::new(
             RequestId::new("denied-open").expect("request"),

@@ -225,12 +225,12 @@ impl SdkConnection {
             .active_turn
             .lock()
             .expect("SDK sidecar active lock poisoned");
-        if self.closed.load(Ordering::SeqCst) {
-            return Err(self.closed_failure());
-        }
-        if !active.as_ref().is_some_and(|current| {
-            Arc::ptr_eq(current, turn) && !current.is_finished() && !current.is_query_committed()
-        }) {
+        // This only commits ownership. The existing bounded command retains
+        // responsibility for public deadline/closed failure ordering.
+        if !active
+            .as_ref()
+            .is_some_and(|current| Arc::ptr_eq(current, turn) && !current.is_query_committed())
+        {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.turn_active",
                 "Claude Agent SDK sidecar query recipient is no longer available",

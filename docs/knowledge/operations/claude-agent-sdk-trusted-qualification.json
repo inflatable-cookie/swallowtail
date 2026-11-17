@@ -183,10 +183,9 @@
     }
   },
   "preQueryRollback": {
-    "implementationHead": "86e2f90d4de2f20e91baf45ca51e5949a7599b00",
     "integratedMain": "285850f74b93fa9b1a07c0a83eb05fb933691334",
     "runId": 44153209142,
-    "scope": "15 original two-turn prepared deadline/cancel/normal-reuse cases per platform; same frozen5-pair matrix, not additive unique behaviour claims. Earlier full200/component140 keep their old scopes.",
+    "scope": "Integration-stage15 original two-turn cases/platform at the recorded checkout. Final marker ordering/routing revision requires its own head-bound lifecycle receipts in the Nucleus index; this stage is not relabelled.",
     "platforms": [
       {
         "platform": "linux-x64",
@@ -267,6 +266,8 @@
       "semanticApi": "passed",
       "affectedPackageAssembly": "passed"
     },
-    "delivery": "Required raw archives, checkout versus synthetic-merge bindings, inputs and bounded logs are supplied through current-run proofFiles; copying is recorded by the report bridge, not inferred from forge availability."
+    "delivery": "Required raw archives, checkout versus synthetic-merge bindings, inputs and bounded logs are supplied through current-run proofFiles; copying is recorded by the report bridge, not inferred from forge availability.",
+    "proofCheckoutHead": "86e2f90d4de2f20e91baf45ca51e5949a7599b00",
+    "markerOrdering": "Commit records responsibility only; existing bounded command retains public deadline/closed failure ordering. No post-send error restores the unsent rollback state."
   }
 }

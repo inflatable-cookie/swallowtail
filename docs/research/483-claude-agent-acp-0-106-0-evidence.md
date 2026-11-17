@@ -113,6 +113,15 @@ resource and still explicitly asks for Read permission; it does not claim an
 outside-resource fix. Bounded tool-result diagnostics preserve any repeated
 failure. None of these failed cases authorizes a ceiling increase.
 
+The c4e2f9b4 packet resolved the Read diagnostic: `No tools needed for suggestion`.
+The old fixture treated advertised Read tools on auxiliary native suggestion
+requests as selected principal work, then generated an invalid tool call there.
+Selection now binds the actual owned prompt or its own result ID; suggestion
+traffic gets text. Moving files alone did not repair this harness bug. The
+c4e2f9b4 Linux56 and Mac0.102/0.103/0.105/0.106 cases passed; the older Mac
+allow cases still need the corrected fixture proof. Cancellation tails passed
+on the previously failing0.101.0/0.101.1 cases.
+
 ## Original idle-class observations
 
 Tom's decision `2f4d33df-aaa6-4497-80c1-8c56fc6c2ccc` v2,

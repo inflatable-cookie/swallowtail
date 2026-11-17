@@ -8,3 +8,5 @@
   idle updates still refuse and finished turns grant no callback authority.
 - Archive the abandoned provenance/admission project and duplicate catalogues;
   retain exact artifact identities, production guards and focused regressions.
+- Keep native suggestion/background model traffic separate from the owned Read
+  test turn; advertised tools alone do not select a fixture tool call.

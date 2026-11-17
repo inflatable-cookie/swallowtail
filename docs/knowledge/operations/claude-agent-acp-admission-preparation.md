@@ -139,3 +139,11 @@ updates retain their strict refusal. The fixture's permission files now live
 inside its approved working resource, with explicit Read-ask settings retained;
 outside-resource Read errors receive no qualification credit. Bounded owned
 result summaries preserve the next actual tool failure without guessing its cause.
+
+The next Mac packet identified the Read error as `No tools needed for suggestion`:
+the older native sends auxiliary suggestion requests with Read advertised, and
+the model fixture wrongly answered them with tools. Fixture selection now binds
+the latest owned prompt or its owned tool-result ID, rather than tool presence.
+Auxiliary traffic receives text and never gets a fabricated tool call. A focused
+counterexample retains the principal prompt in history while making the last
+request a suggestion. The earlier outside-resource hypothesis was not the cause.

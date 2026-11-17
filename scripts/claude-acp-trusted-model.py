@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 import threading
 
+OWNED_PROMPT = "Read the owned fixture file requested by the model, then continue."
+
 
 class ModelFixture:
     def __init__(self, root, scenario):
@@ -96,7 +98,26 @@ class ModelFixture:
                     and bool(tail)
                     and tail[-1].get("type") == "tool_result"
                 )
-                selected = any(t.get("name") == "Read" for t in body.get("tools", []))
+                texts = (
+                    [tail]
+                    if isinstance(tail, str)
+                    else [
+                        part.get("text", "")
+                        for part in (tail or [])
+                        if part.get("type") == "text"
+                    ]
+                )
+                owned_prompt = any(
+                    text.strip().startswith(OWNED_PROMPT) for text in texts
+                )
+                owned_result = continuing and str(
+                    tail[-1].get("tool_use_id", "")
+                ).startswith("owned_read_")
+                # Native suggestion/background requests can also advertise Read.
+                # Only this fixture's actual prompt or result gets a tool call.
+                selected = any(
+                    t.get("name") == "Read" for t in body.get("tools", [])
+                ) and (owned_prompt or owned_result)
                 latest_result = tail[-1:] if continuing else []
                 secret_seen = "owned-secret-value" in json.dumps(latest_result)
                 row = {
@@ -106,6 +127,12 @@ class ModelFixture:
                     "toolResults": len(results),
                     "continuing": continuing,
                     "selected": selected,
+                    "purpose": "owned-prompt"
+                    if owned_prompt
+                    else "owned-result"
+                    if owned_result
+                    else "ancillary",
+                    "userText": "\n".join(texts)[:512],
                     "secretSeen": secret_seen,
                     "toolError": any(p.get("is_error") for p in latest_result),
                     "toolResultSummary": json.dumps(latest_result)[:640],
@@ -293,7 +320,7 @@ if __name__ == "__main__":
                         "model": "owned-model",
                         "tools": [{"name": "Read"}],
                         "stream": True,
-                        "messages": [{"role": "user", "content": "owned read"}],
+                        "messages": [{"role": "user", "content": OWNED_PROMPT}],
                     }
                 )
                 events = [
@@ -350,7 +377,7 @@ if __name__ == "__main__":
                                         },
                                         {
                                             "type": "text",
-                                            "text": "Read the next owned file.",
+                                            "text": OWNED_PROMPT,
                                         },
                                     ],
                                 }
@@ -361,12 +388,41 @@ if __name__ == "__main__":
                 assert mixed["stop_reason"] == "tool_use"
                 assert mixed["content"][0]["name"] == "Read"
                 assert mixed["id"] != result["id"]
+                ancillary = json.loads(
+                    request(
+                        {
+                            "model": "owned-model",
+                            "tools": [{"name": "Read"}],
+                            "messages": [
+                                {"role": "user", "content": OWNED_PROMPT},
+                                {
+                                    "role": "assistant",
+                                    "content": "Read allowed; continuing.",
+                                },
+                                {
+                                    "role": "user",
+                                    "content": "[SUGGESTION MODE] Suggest the next input; no tools needed.",
+                                },
+                            ],
+                        }
+                    )
+                )
+                assert ancillary["stop_reason"] == "end_turn"
+                assert all(part["type"] == "text" for part in ancillary["content"])
+                assert peer.rows[-1]["selected"] is False
+                assert peer.rows[-1]["purpose"] == "ancillary"
+
             finally:
                 peer.close()
             peer = ModelFixture(root, "error")
             try:
                 try:
-                    request({"tools": [{"name": "Read"}], "messages": []})
+                    request(
+                        {
+                            "tools": [{"name": "Read"}],
+                            "messages": [{"role": "user", "content": OWNED_PROMPT}],
+                        }
+                    )
                     raise AssertionError("fixture error was not delivered")
                 except urllib.error.HTTPError as error:
                     assert error.code == 400 and b"owned fixture error" in error.read()

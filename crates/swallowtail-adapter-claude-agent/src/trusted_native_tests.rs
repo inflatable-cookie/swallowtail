@@ -236,6 +236,7 @@ fn prepare(
     .expect("checked registration")
     .build_services(host.clone());
     let (scope, process) = scope::FixtureScope::new(local.process_host().as_ref().clone());
+    scope.renew_behaviour_budget();
     let services = local.services().clone().with_process(process);
     let access = AccessProfileId::new("acp239.dummy-access").expect("access");
     let input = ClaudeAgentPreparationInput::new(
@@ -307,6 +308,7 @@ fn exercise(config: &Value) {
     };
     for context in contexts {
         let (profile, local, services, mut scope) = prepare(config, root);
+        scope.renew_behaviour_budget();
         let mut session = match context {
             "new" => {
                 block_on(profile.open_session(services.clone())).expect("original session/new")
@@ -348,6 +350,8 @@ fn exercise(config: &Value) {
             1
         };
         for turn_index in 0..count {
+            scope.renew_behaviour_budget();
+            println!("ACP_TRUSTED_BEGIN {context}/{turn_index}/{scenario}");
             let mut turn = block_on(
                 session.start_turn(
                     TurnRequest::new(

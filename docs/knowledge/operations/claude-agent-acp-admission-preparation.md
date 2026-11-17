@@ -47,6 +47,17 @@ not the retired custody or hostile-same-user sandbox claim. The private unit
 admission is enabled only after exact original graph/native capture; production
 builds and public compatibility claims have no test-admission switch.
 
+## Scope reduction — brief v4
+
+Tom requires removal of the abandoned analysis-only admission chain from the
+active PR. Keep production guard inputs, frozen artifact identities and focused
+behaviour tests. Archive exact prototype bytes by Git commit and hash; no CI or
+runtime may depend on the archive. Current original runs, not static catalogue
+closure, decide qualification. The trusted fixture now explicitly asks for Read:
+being outside the working directory alone did not make the native Read prompt.
+The first original attempts therefore failed the callback assertion and are not
+qualification passes.
+
 ## Historical preparation (superseded test-admission ladder)
 
 [Review5904122860](https://github.com/inflatable-cookie/swallowtail/pull/546#pullrequestreview-5904122860)

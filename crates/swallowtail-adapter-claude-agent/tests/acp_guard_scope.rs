@@ -253,6 +253,16 @@ impl FixtureScope {
             service,
         )
     }
+    pub(super) fn renew_behaviour_budget(&self) {
+        // Trusted original tests bound each behaviour separately, including
+        // discovery and each continued turn; historical fixtures keep 30s.
+        self.owner
+            .state
+            .lock()
+            .expect("owned fixture lock")
+            .deadline = Instant::now() + Duration::from_secs(50);
+        self.owner.changed.notify_all();
+    }
     pub(super) fn receipt(&self) -> Arc<Mutex<Option<Value>>> {
         self.receipt.clone()
     }

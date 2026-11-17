@@ -310,7 +310,12 @@ def inside(root):
             (work / "outside/secret.txt").write_text("owned-secret-value\n")
             (work / "home/.claude/settings.json").write_text(
                 json.dumps(
-                    {"permissions": {"denyInsteadOfPrompting": scenario == "user-deny"}}
+                    {
+                        "permissions": {
+                            "ask": ["Read"],
+                            "denyInsteadOfPrompting": scenario == "user-deny",
+                        }
+                    }
                 )
             )
             policy = json.dumps({"permissions": {"denyInsteadOfPrompting": True}})

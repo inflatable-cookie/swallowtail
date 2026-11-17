@@ -94,6 +94,7 @@ class ModelFixture:
                 row = {
                     "request": len(fixture.rows) + 1,
                     "model": body.get("model"),
+                    "tools": [tool.get("name") for tool in body.get("tools", [])],
                     "toolResults": len(results),
                     "continuing": continuing,
                     "secretSeen": secret_seen,

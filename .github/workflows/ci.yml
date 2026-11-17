@@ -190,7 +190,10 @@ jobs:
           cache-targets: false
           cache-on-failure: true
       - uses: taiki-e/install-action@cargo-deny
-      - run: cargo deny check advisories licenses sources
+      - run: |
+          python3 -B scripts/check-chrono-maintenance.py --self-test
+          python3 -B scripts/check-chrono-maintenance.py
+          cargo deny check advisories licenses sources
 
   external-source:
     name: External Git-source consumer

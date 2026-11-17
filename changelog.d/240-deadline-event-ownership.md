@@ -11,3 +11,7 @@ identities, security fixes and the trimmed source scope.
 
 Reject a terminal before the replacement turn has actually started, so a stale
 record cannot supply its public outcome. Duplicate starts and terminals refuse.
+
+After GitHub failed to acquire a macos-latest arm64 runner before any command,
+select the standard macos-15 arm64 image in the existing qualification job.
+Keep frozen artifacts, observed OS metadata, isolated peers and all bounds.

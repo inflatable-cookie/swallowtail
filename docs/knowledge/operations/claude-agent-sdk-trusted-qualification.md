@@ -84,3 +84,12 @@ correlated interrupt command has settled. Expiry, event dispatch and replacement
 connection lock; a pending or unknown drain returns typed turn_active without
 sending another query. Bounded session close still owns stop and actual waits.
 Normal completion/reuse and public permission/projection semantics stay intact.
+
+GitHub could not acquire a hosted arm64 runner for the macos-latest job in
+[44114321537](https://github.com/inflatable-cookie/swallowtail/actions/runs/44114321537/job/134148083380).
+No command ran, so that cancelled job supplies no test evidence. The existing
+qualification job now selects macos-15, a standard arm64 label in
+[GitHub's runner table](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).
+This stays within the trusted disposable OS ruling; the actual image is
+observed metadata, not an admission pin. SDK/native/Node identities and bounds
+stay unchanged.

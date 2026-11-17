@@ -123,7 +123,9 @@ fn current_acp_dependency_and_closure_evidence_is_complete_and_pinned() {
                 swallowtail_adapter_claude_agent::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.as_bytes()
             )
         ),
-        "512a2b607f94b29ff215ed2eb6028ab09bc6a06ee30e14b6d6c9f798d5f0c71a"
+        // Current loader includes the accepted SDK240 absence-only migration;
+        // the frozen proposal and historical component runner retain old bytes.
+        "34cf60596e2c202949d7acf86f8878559fbbf22e4905e24d60248c0d10121a94"
     );
     for (text, expected) in [
         (

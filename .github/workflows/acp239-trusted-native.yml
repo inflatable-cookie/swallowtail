@@ -42,7 +42,14 @@ jobs:
           echo "TEMP=$work" >> "$GITHUB_ENV"
           echo "ACP_TRUSTED_EVIDENCE=$work/evidence" >> "$GITHUB_ENV"
           export TMPDIR="$work" TMP="$work" TEMP="$work"
-          cargo install --git https://github.com/inflatable-cookie/effigy.git --rev ee4ac29b6fff184669d702b22dcd1224aaf99713 --locked --root "$work/effigy" effigy
+          # Build only the exact CLI source, without Cargo's automatic fetch of
+          # unrelated private fixture submodules in the upstream repository.
+          git init "$work/effigy-source"
+          git -C "$work/effigy-source" remote add origin https://github.com/inflatable-cookie/effigy.git
+          git -C "$work/effigy-source" fetch --depth 1 origin ee4ac29b6fff184669d702b22dcd1224aaf99713
+          git -C "$work/effigy-source" checkout --detach --no-recurse-submodules FETCH_HEAD
+          test "$(git -C "$work/effigy-source" rev-parse HEAD)" = ee4ac29b6fff184669d702b22dcd1224aaf99713
+          cargo install --path "$work/effigy-source" --locked --root "$work/effigy" effigy
           echo "$work/effigy/bin" >> "$GITHUB_PATH"
       - name: Prove owned harness before originals
         run: |

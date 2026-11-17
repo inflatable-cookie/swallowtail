@@ -768,10 +768,27 @@ fn timed_out_recipient_blocks_reuse_until_its_exact_terminal_is_drained() {
                     1
                 );
             } else {
-                let mut next = block_on(
-                    session.start_turn(turn_request("genuine-next", "owned"), services.clone()),
-                )
-                .expect("drained recipient can be replaced");
+                // Receipt handling and native dispatch use independent tasks.
+                // Observe typed admission rather than assume their scheduling.
+                let bound = std::time::Instant::now() + std::time::Duration::from_secs(10);
+                let mut next = loop {
+                    match block_on(
+                        session.start_turn(turn_request("genuine-next", "owned"), services.clone()),
+                    ) {
+                        Ok(next) => break next,
+                        Err(error) => {
+                            assert_eq!(
+                                error.diagnostic().code(),
+                                "swallowtail.claude-agent.sdk.turn_active"
+                            );
+                            assert!(
+                                std::time::Instant::now() < bound,
+                                "settled drain did not permit reuse"
+                            );
+                            std::thread::yield_now();
+                        }
+                    }
+                };
                 fixture.emit_and_wait_until_dispatched(completed_native_result());
                 assert_eq!(
                     block_on(next.take_terminal_outcome().expect("next terminal")).status(),

@@ -804,3 +804,43 @@ fn missing_required_node_hook_refuses_before_entry_effects() {
     assert!(!String::from_utf8_lossy(&output.stderr).contains("ENTRY EFFECT"));
     std::fs::remove_dir_all(&root).expect("owned fixture cleanup");
 }
+
+#[test]
+fn startup_absence_lookup_requires_exact_optin_and_undefined_result() {
+    let root = fixture();
+    let source = "import './idle.mjs'; const hooks = process.getBuiltinModule('async_hooks'); if (hooks !== undefined) throw Error('unexpected builtin'); process.stdout.write('fallback');";
+    let graph = capture(&root, source);
+    for mode in ["accepted", "missing", "object"] {
+        let loader = match mode {
+            "missing" => CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.replace(
+                "export function sdkStartupBuiltinLookup",
+                "function sdkStartupBuiltinLookup",
+            ),
+            "object" => {
+                CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.replace("return undefined;", "return {};")
+            }
+            _ => CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE.to_string(),
+        };
+        if mode != "accepted" {
+            assert_ne!(loader, CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE);
+        }
+        let recipe = LocalCapturedNodeRecipe::new(&graph, &loader, [1; 32], [2; 32], [3; 32])
+            .expect("owned startup recipe");
+        let output = guarded_with_bootstrap(&recipe, recipe.bootstrap());
+        if mode == "accepted" {
+            assert!(
+                output.status.success(),
+                "{}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            assert_eq!(output.stdout, b"fallback");
+        } else {
+            assert!(!output.status.success());
+            assert!(
+                output.stdout.is_empty(),
+                "startup refusal precedes entry effect"
+            );
+        }
+    }
+    std::fs::remove_dir_all(root).expect("remove only own fixture");
+}

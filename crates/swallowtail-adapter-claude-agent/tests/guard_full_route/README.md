@@ -16,18 +16,12 @@ but receives continued output. Allowed reads happen only after a real callback
 response. The tests check activity ordering, persisted model identity across
 load/resume, unchanged settings, cancellation, native exit and resource cleanup.
 
-The trace records actual phase calls, child PIDs and exit codes; no active or
-qualified marker supplies proof. The additional
-[shared software harness](../guard_shared_software/README.md) pins task234's
-reviewed source and checks the actual Rust/LocalProcessHost sibling actor
-layout through an ACP-private adapter. Its targeted integration proof is
-separate from this accepted ACP-only rehearsal. Kernel/native admission,
-parent/adoptee supervision, pidfd/cgroup settlement and canonical administrator
-fixtures remain independent prerequisites owned by234. This adds no public
-runtime API. Ambient local fake execution does not prove that original native
-code can use the eventual confined transport.
+The direct owned trusted-runner self-test checks the actual Rust sibling route,
+startup-shaped SDK fallbacks and joined cleanup. The older shared Python actor/
+kernel proposal is archived at its accepted historical head. No shared host
+admission is required for the disposable original qualification procedure.
 
-Run `effigy validate:acp-guard-installed-child` for these two cases and the18 captured-host regressions on the
-installed Darwin arm64 runtime; other platforms report not applicable. The
-existing installed-child selector includes these cases and the captured-host
-regressions. All temporary fixtures belong to the current run's `TMPDIR`.
+Run `effigy validate:claude-agent-acp-trusted-native-self-test` for the direct
+owned route, or `effigy validate:acp-guard-captured-child` for captured-loader
+and focused refusal/lifecycle regressions. Original qualification runs separately
+on disposable CI and receives no credit from these fakes.

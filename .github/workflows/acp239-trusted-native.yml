@@ -16,12 +16,17 @@ permissions:
 
 jobs:
   original-acp:
-    name: Original ACP (${{ matrix.os }})
+    name: Original ACP (${{ matrix.os }}, ${{ matrix.hops.first }})
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, macos-15]
+        hops:
+          - {first: '0.101.0', second: '0.101.1'}
+          - {first: '0.102.0', second: '0.103.0'}
+          - {first: '0.104.0', second: '0.104.1'}
+          - {first: '0.105.0', second: '0.106.0'}
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -57,15 +62,16 @@ jobs:
           echo "$work/effigy/bin" >> "$GITHUB_PATH"
       - name: Prove owned harness before originals
         run: |
+          effigy validate:claude-agent-acp-trusted-limits-self-test
           effigy validate:claude-agent-acp-trusted-model-self-test
           effigy validate:claude-agent-acp-trusted-native-self-test
       - name: Frozen originals through real prepared Rust ACP
-        run: effigy validate:claude-agent-acp-trusted-native
+        run: effigy validate:claude-agent-acp-trusted-native --hop ${{ matrix.hops.first }} --hop ${{ matrix.hops.second }}
       - name: Retain bounded qualification evidence
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
-          name: acp239-original-${{ matrix.os }}
+          name: acp239-original-${{ matrix.os }}-${{ matrix.hops.first }}
           path: ${{ env.ACP_TRUSTED_EVIDENCE }}/*.tgz
           if-no-files-found: error
           retention-days: 14

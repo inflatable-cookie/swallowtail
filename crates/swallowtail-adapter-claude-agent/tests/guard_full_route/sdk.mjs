@@ -5,6 +5,29 @@ const nativePath = __NATIVE_PATH__;
 const nativeProgram = __NATIVE_PROGRAM__;
 const root = process.env.SWALLOWTAIL_FAKE_ROOT;
 const trace = (phase,extra={}) => appendFileSync(root+'/trace.jsonl',JSON.stringify({phase,pid:process.pid,...extra})+'\n');
+// Owned source-shaped versions of the two uncaught module-scope SDK probes.
+// Do not import or evaluate restored vendor code here.
+const callbackHooks = globalThis.process?.getBuiltinModule?.("async_hooks");
+const bindCallback = callbackHooks?.AsyncResource?.bind ?? (callback => callback);
+const contextHooks = globalThis.process?.getBuiltinModule?.("async_hooks");
+const context = contextHooks?.AsyncLocalStorage
+  ? new contextHooks.AsyncLocalStorage()
+  : { run: (_store, callback) => callback(), getStore: () => undefined };
+const callback = () => 'owned-fallback';
+if (callbackHooks !== undefined || contextHooks !== undefined ||
+    bindCallback(callback) !== callback || context.run({}, callback) !== 'owned-fallback' ||
+    context.getStore() !== undefined) throw Error('SDK absence fallback mismatch');
+const builtin = Object.getOwnPropertyDescriptor(process, 'getBuiltinModule');
+if (builtin.configurable || builtin.writable) throw Error('mutable builtin guard');
+for (const args of [[], ['fs'], ['node:async_hooks'], [null], [{}], [1],
+                    ['async_hooks', undefined], ['async_hooks', 'extra']]) {
+  let refused = false;
+  try { process.getBuiltinModule(...args); } catch (error) {
+    refused = error.message === 'direct builtin access refused';
+  }
+  if (!refused) throw Error('non-admitted builtin request');
+}
+if (root) trace('sdk-startup-fallback', { callbackIdentity: true, contextFallback: true, otherRequestsRefused: 8 });
 let child, exited, pending;
 export function open(kind, permission, activity) {
   trace('sdk-open',{kind});

@@ -233,29 +233,45 @@ def prepare(root, hops):
     )
 
 
-def inside(root):
-    trusted_ci()
+def execution_limits():
     import resource
 
+    limits = {}
+    requested = [("RLIMIT_NPROC", 256), ("RLIMIT_NOFILE", 2048)]
+    if platform.system() != "Darwin":
+        requested.append(("RLIMIT_RSS", 4 * 1024**3))
+    else:
+        # XNU rejects RSS/data rlimits. Use the disposable VM's finite RAM
+        # allocation, recorded honestly; do not invent a per-process RSS cap.
+        limits["disposableVmMemoryBytes"] = int(
+            subprocess.check_output(["/usr/sbin/sysctl", "-n", "hw.memsize"], text=True)
+        )
+    for name, value in requested:
+        kind = getattr(resource, name)
+        soft, hard = resource.getrlimit(kind)
+        ceilings = [value] + [n for n in (soft, hard) if n != resource.RLIM_INFINITY]
+        value = min(ceilings)
+        try:
+            resource.setrlimit(kind, (value, hard))
+        except (ValueError, OSError) as error:
+            raise RuntimeError(
+                f"{name} soft={soft} hard={hard} requested={value}: {error}"
+            ) from error
+        limits[name] = list(resource.getrlimit(kind))
+    return limits
+
+
+def inside(root):
+    trusted_ci()
     cases = json.loads((root / "cases.json").read_text())
     evidence = root / "evidence"
-    limits = {}
-    for name, value in (
-        ("RLIMIT_NPROC", 256),
-        ("RLIMIT_NOFILE", 2048),
-        ("RLIMIT_RSS", 4 * 1024**3),
-    ):
-        kind = getattr(resource, name)
-        _, hard = resource.getrlimit(kind)
-        value = min(value, hard) if hard != resource.RLIM_INFINITY else value
-        resource.setrlimit(kind, (value, value))
-        limits[name] = value
+    limits = execution_limits()
     (evidence / "execution-os.json").write_text(
         json.dumps(
             {
                 "os": platform.uname()._asdict(),
                 "limits": limits,
-                "rssLimit": "ordinary OS advisory; Linux container additionally enforces4GiB",
+                "memoryLimit": "Darwin finite disposable VM RAM; Linux container hard4GiB",
                 "kernelAttestationClaim": False,
             },
             indent=2,
@@ -418,9 +434,13 @@ def inside(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--limits-self-test", action="store_true")
     parser.add_argument("--inside", type=Path)
     parser.add_argument("--hop", choices=HOPS, action="append")
     args = parser.parse_args()
+    if args.limits_self_test:
+        print(json.dumps(execution_limits()))
+        return
     if args.inside:
         inside(args.inside)
         return

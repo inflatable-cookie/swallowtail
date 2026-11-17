@@ -238,16 +238,12 @@ proof remain independent; see
 [Contract039](../knowledge/contracts/039-bounded-single-turn-structured-run-projection.md)
 and Research483.
 
-The ACP-private shared-software harness binds task234's reviewed validation and
-entry sources to the actual Rust/`LocalProcessHost` sibling process layout.
-Its manifest distinguishes the prepared owner, group leader, checked ACP Node
-and owned entry/child, with OS-derived identities and separate software wait
-receipts. Run `effigy validate:acp-shared-software` for that bounded integration;
-[the procedure](../knowledge/operations/claude-agent-acp-full-route-proof.md)
-keeps shared kernel/admin/original admission gaps explicit. Its test-only
-watchdog retains and awaits helper ownership on errors, cancellation and
-pending-start abandonment; diagnostic EOF supplies no kernel tree claim. This is a test-only
-private seam; consumers receive no new runtime API or qualification claim.
+The direct owned trusted-runner harness uses the actual Rust/LocalProcessHost
+sibling layout and checks source-shaped startup fallbacks and child waits.
+Run `effigy validate:claude-agent-acp-trusted-native-self-test` for this focused
+proof. The [current procedure](../knowledge/operations/claude-agent-acp-admission-preparation.md)
+executes frozen originals only on trusted disposable runners. Earlier shared
+Python/kernel proposals remain historical evidence, not current prerequisites.
 
 ### ACP Permission Exchange
 

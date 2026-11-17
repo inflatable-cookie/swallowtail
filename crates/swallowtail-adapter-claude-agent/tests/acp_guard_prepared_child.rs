@@ -63,7 +63,6 @@ struct CheckedChild {
     local: LocalProcessHost,
     runtime: LocalTrustedRuntime,
     approval: LocalCheckedNodeLaunch,
-    command: Vec<String>,
 }
 
 fn node_path() -> PathBuf {
@@ -220,10 +219,6 @@ fn fake_child_with_loader(
         LocalCapturedNodeRecipe::for_trusted_runtime(&graph, loader, [1; 32], &runtime, [5; 32])
             .expect("fake recipe");
     let expected = *recipe.fingerprint().digest();
-    let command = std::iter::once(node.as_os_str())
-        .chain(recipe.prefix_arguments())
-        .map(|v| v.to_str().expect("owned launch UTF8").to_owned())
-        .collect();
     let launch = LocalExecutableLaunch::new(node)
         .with_prefix_arguments(recipe.prefix_arguments().map(std::ffi::OsStr::to_os_string))
         .with_node_startup_environment_filter();
@@ -270,7 +265,6 @@ fn fake_child_with_loader(
         local,
         runtime,
         approval,
-        command,
     }
 }
 

@@ -1,6 +1,4 @@
 //! ACP-specific source/fake proof; no kernel or original/native qualification.
-#[path = "acp_guard_shared_software.rs"]
-mod shared_software;
 use super::*;
 use serde_json::{Value, json};
 use std::io::{Read, Write};

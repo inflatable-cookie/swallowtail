@@ -173,24 +173,15 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-host-local -- --check",
 ]
-"validate:acp-guard-installed-child" = "bash scripts/run-claude-acp-installed-child.sh"
 "validate:claude-agent-acp-trusted-native-self-test" = "bash scripts/oxide-rust.sh test --locked -p swallowtail-adapter-claude-agent --lib trusted_native_tests::owned_self_test -- --ignored --exact --nocapture"
 "check:claude-agent-acp-trusted-native" = "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-claude-agent --tests"
 "validate:claude-agent-acp-trusted-native" = "python3 -I -B scripts/claude-acp-trusted-native.py {args}"
 "compile:claude-agent-acp-trusted-native" = "python3 -I -B -c 'from pathlib import Path; files = [Path(\"scripts/claude-acp-trusted-native.py\"),Path(\"scripts/claude-acp-trusted-model.py\")]; [compile(f.read_bytes(),str(f),\"exec\") for f in files]'"
 "format:claude-agent-acp-trusted-native" = "ruff format --no-cache -- scripts/claude-acp-trusted-native.py scripts/claude-acp-trusted-model.py"
+"validate:claude-agent-acp-trusted-limits-self-test" = "python3 -I -B scripts/claude-acp-trusted-native.py --limits-self-test"
 "validate:claude-agent-acp-trusted-model-self-test" = "python3 -I -B scripts/claude-acp-trusted-model.py --self-test"
-"validate:acp-shared-software" = "bash scripts/run-claude-acp-shared-software.sh"
-"check:acp-shared-software" = [
-  "bash -n scripts/run-claude-acp-shared-software.sh",
-  "python3 -c 'from pathlib import Path; files = [Path(\"crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/host.py\"), *Path(\"crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed\").glob(\"*.py\")]; [compile(f.read_bytes(), str(f), \"exec\") for f in files]'",
-  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/sdk.mjs",
-  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/loader.mjs",
-  "node --check crates/swallowtail-adapter-claude-agent/tests/guard_shared_software/reviewed/bootstrap-native.mjs",
-]
 "lint:acp-guard-full-route" = "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-claude-agent --test acp_guard_capture -- -D warnings"
 "check:acp-guard-full-route" = [
-  "bash -n scripts/run-claude-acp-installed-child.sh",
   "node --check crates/swallowtail-adapter-claude-agent/tests/guard_full_route/entry.mjs",
   "node --check crates/swallowtail-adapter-claude-agent/tests/guard_full_route/sdk.mjs",
   "node --check crates/swallowtail-adapter-claude-agent/tests/guard_full_route/native.cjs",
@@ -439,8 +430,6 @@ section = "Research Records"
 "validate:format-selectors:test" = "bash scripts/tests/format-selectors.sh"
 "check:lease-api-fixture" = "bash scripts/verify-lease-api-fixture.sh"
 "check:oxide-routing" = [
-  "bash -n scripts/run-claude-acp-shared-software.sh",
-  "bash -n scripts/run-claude-acp-installed-child.sh",
   "bash -n scripts/check-claude-acp-guard-api.sh",
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/tests/oxide-selector-routing.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
   "bash -n scripts/check-msrv.sh",

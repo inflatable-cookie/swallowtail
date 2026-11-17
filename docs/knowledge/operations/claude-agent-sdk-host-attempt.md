@@ -1,15 +1,16 @@
 # SDK registered host attempt
 
-Status: one authorized attempt consumed; host preparation refused before runtime
-entry. Both qualification merge holds and Q-009 remain open.
+Status: two authorized attempts consumed. The corrected job refused unreviewed
+OpenSSL configuration before candidate open or runtime entry. Both qualification
+merge holds and Q-009 remain open.
 
 This file owns actual attempt status. The executed contract, packet and record
 remain frozen in the exact Git objects below. The current
 [bootstrap contract](claude-agent-sdk-bootstrap-session.md) and
-[future setup packet](claude-agent-sdk-host-setup.json) propose only the v11
-correction; their flags grant no further run.
+[setup packet](claude-agent-sdk-host-setup.json) describe the reviewed source
+correction. Its registration and two consumed grants below authorize no further run.
 
-## Authority and exact inputs
+## First attempt: authority and exact inputs
 
 Tom selected “Run one bounded host test” in decision
 22344158-3de9-4952-915e-1762d8c41f21 v2 at 2026-11-16T22:36:26.497Z.
@@ -35,7 +36,7 @@ identity-bound, fsynced intent was retained before issuing the approved command
 once. It returned success and the run URL. Final history contains exactly one
 manual dispatch; main remained at the registration commit through settlement.
 
-## Observed outcome
+## First attempt: observed outcome
 
 [Run43972504898](https://github.com/inflatable-cookie/swallowtail/actions/runs/43972504898)
 was `workflow_dispatch`, attempt1, workflow420660279, registration head6122f196.
@@ -71,7 +72,7 @@ Runner disposal and its “orphan processes” message supply no settlement cred
 The archive was read as bounded data, permitting only regular named metadata
 members; nothing was executed or extracted through archive paths.
 
-## Next prerequisite
+## Source correction after the first attempt
 
 The selected image does not meet the already-safe `/opt` prerequisite. The
 five-directory grant expressly excludes `/opt`; no repair or retry was made.
@@ -85,8 +86,100 @@ receipts and that the future dispatch ref still named a SHA placeholder. Brief
 v12 authorizes only the source correction: root-produced present/missing/unknown
 facts and fixed main with an immediate exact registration-SHA comparison fence.
 The passing six-ancestor implementation and the consumed failure remain unchanged.
-This correction requires independent review, exact workflow replacement and
-registration, and NEW authority explicitly covering `/opt` before any attempt.
+Review5929871642 accepted the correction at d331fbf2. Registration243/PR561 and
+the separately granted corrected attempt below subsequently consumed that authority.
+
+## Corrected attempt: authority and exact inputs
+
+Tom chose “Run one corrected host test” in decision
+692d4979-835a-48f9-8cd5-8d4ad823c7bf v2 at 2026-11-17T07:45:53.681Z.
+The grant covered only one registered six-directory/existing-Node owned-fake job,
+with the same finite bounds, actual waits and conditional restoration. The old
+22344158 grant remains consumed; it was not replayed.
+
+| Binding | Exact identity |
+| --- | --- |
+| Registration/main | `a3b7402ae53d1be5a400e1da1ea528f972a36861` (PR561) |
+| Workflow | `420660279`, `.github/workflows/sdk240-host-setup.yml`, active |
+| Workflow SHA-256 | `fdbc12663e6c6dba0e96daa1e5680c8c9b67145ab92de3054b16796bc319d062` |
+| Workflow Git blob | `61beaaf9b4968b6baaa531bdf0a700ba25d4f049` |
+| Execution checkout | `7e5ef0bc920e4303d8a7683c62c6ca2353688b39` |
+| Execution record SHA-256 | `8c1bf1afa337af21cab83bf55d3f78c92c2c61b2ac4a0f687e2985f1a0f67682` |
+| Bootstrap SHA-256 | `08d32a744f26ebe628c0b249b98bcb626d550f79fde5f2b6821b06d8b7979605` |
+| Source/security acceptance | review5929871642 at `d331fbf2f06f544db9f7106179b3baf5bd288942` |
+
+The accepted packet's exact published preflight checked registry/content,
+source/record/bootstrap and history containing only old43972504898/attempt1.
+Its final remote observation fenced main to the registration SHA. Local author
+source/index/branch stayed clean and unchanged through settlement; no conflicting
+writer was observed. A local evidence-wrapper assertion first stopped before
+intent or OS command launch; no dispatch occurred on that path. The corrected
+wrapper then retained fresh preflight and fsynced intent before issuing the
+approved `--ref main` command once. Its successful response named the new run.
+Final history contains exactly the old failed run and this new run, each attempt1;
+main remained at the registration commit through settlement. No retry or rerun occurred.
+
+## Corrected attempt: observed outcome
+
+[Run44041875249](https://github.com/inflatable-cookie/swallowtail/actions/runs/44041875249)
+is workflow420660279, event `workflow_dispatch`, attempt1, head a3b7402a.
+The [host job133898138473](https://github.com/inflatable-cookie/swallowtail/actions/runs/44041875249/job/133898138473)
+completed with failure at 2026-11-17T07:51:16Z. Image/UID envelope and fixed
+checkout passed. The host step returned78; export producer2/relay0; metadata
+upload and platform post-job steps succeeded. This documentation change was
+made after settlement and cannot have caused the frozen job's refusal.
+
+The retained host result directly reports
+`package_unreviewed_openssl_configuration`, with `qualified:false`.
+Root-authorized receipt facts report admin.json present (2386 bytes),
+host-manifest.json present (0 bytes) and monitor.json missing, with no archive
+error. The tar contains only the two reported present regular members. Missing,
+present-but-empty and failed admission remain separate observations.
+
+The administrative journal binds fresh boot af52c769-7fa8-4e47-b771-269fb1245daf,
+Ubuntu26/20261111.196.1, kernel7.0.0-1019-azure, root system Python3.14 and ordinary
+UID/GID1001. It records `/`0755 unchanged and all six literal directory identities
+back at their original0777 modes, with changed flags false, null operation/tool
+intent, `phase:restored`, `entryAttempted:false` and no entry wait. It records one
+owned tool terminal wait, PID2514/code0. The fixed source places the trusted loader
+`--help` tool before configuration checks, and requires the prepared safe chain
+before package production. This supports that narrow source-bound administrative
+prepare/tool-wait/restore prefix, not complete filesystem disposal or payload-tree
+settlement. No ordinary supervisor, Node leaf transition, observer, fake case,
+canonical fixture or kernel scope was reached.
+
+The package source refuses an OpenSSL config containing an anchored `.include`,
+`providers =` or `engines =` directive in either `/etc/ssl/openssl.cnf` or
+`/usr/lib/ssl/openssl.cnf`. It does so before candidate bytes are opened. The
+actual configuration bytes, alias, exact triggering directive and referenced
+closure were not exported, so this result does not identify them or authorize
+an exception. Package production and manifest publication remain incomplete.
+
+| Corrected-attempt evidence | SHA-256 |
+| --- | --- |
+| Complete final job log | `df36ba1d72d32a328ed2c3123c0887ae8c50051899653d3ea06af4ad5ac00e9e` |
+| Artifact14310161121 ZIP (1867 bytes) | `db0a037b24644191be9987c08570957b0bde1adfbdfce47499cf8d921f4445ea` |
+| Metadata tar | `538b341ae105c963a5925edd49e58a2c610ccb019cd5db1b6ea935db0051cf99` |
+| Host result | `8d3ba94a8878f34563a2045346f3bad912d58a6debd56ec7e39c4d205db8206f` |
+| Root receipt facts | `7c78a527e1a9382b8e7009f402bd687c0e07d62fe46d7b733a322de55cd69923` |
+| Export status | `6dba3428a9b8069d2bd42fd15d64c180712505e4a13c5974a2b530d27fa382c3` |
+| Administrative journal | `d5bd5a684376cfe80874b79e04c2a6367430a4aa494113bd6568494b53332bf5` |
+
+Required result evidence comprises complete final status/logs, bounded
+intent/preflight and metadata, delivered through proof files rather than scratch
+references. Archives were read as bounded untrusted data with fixed regular
+names; no contents were executed or extracted through archive paths.
+
+## Current next prerequisite
+
+The precise gate is the selected image's unreviewed OpenSSL configuration.
+The smallest next preparation is exact configuration/alias/directive evidence
+and a reviewed finite binding for any include/provider/engine inputs it selects
+in the existing image-specific producer. Neither disabling this refusal nor
+guessing the unexported configuration is justified. That correction and any new
+host attempt require separate review/disposition; no broad setup project or
+automatic diagnostic/follow-on job was started here. Runtime and workflow source
+remain unchanged by this result.
 
 No candidate bytes/version/custody, package production, runtime observation,
 three-case fake result, kernel/canonical/native discovery, ACP sibling topology

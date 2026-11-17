@@ -66,7 +66,7 @@ jobs:
           root=pathlib.Path(os.environ['SDK240_TRUSTED_WORK'])
           out=root/'evidence';out.mkdir(exist_ok=True)
           files=[root/name for name in ('result.json','inputs.json','metadata.json')]
-          files+=sorted(root.glob('*/*/stdout.json'))+sorted(root.glob('*/*/stderr.txt'))
+          files+=sorted(root.glob('*/*/stdout.json'))+sorted(root.glob('*/*/stderr.txt'))+sorted(root.glob('*/*/observation.json'))
           total=0;missing=[]
           for item in files:
               if not item.is_file(): missing.append(str(item.relative_to(root)));continue

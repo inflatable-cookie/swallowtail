@@ -33,13 +33,13 @@ impl SdkActiveTurn {
             ));
         }
         match &event {
-            ClaudeAgentSdkEvent::TurnStarted => {
-                if self.native_turn_started.swap(true, Ordering::SeqCst) {
-                    return Err(failure(
-                        "swallowtail.claude-agent.sdk.duplicate_turn_start",
-                        "Claude Agent SDK sidecar repeated a turn start",
-                    ));
-                }
+            ClaudeAgentSdkEvent::TurnStarted
+                if self.native_turn_started.swap(true, Ordering::SeqCst) =>
+            {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.duplicate_turn_start",
+                    "Claude Agent SDK sidecar repeated a turn start",
+                ));
             }
             ClaudeAgentSdkEvent::TurnEnded { .. }
                 if !self.native_turn_started.load(Ordering::SeqCst) =>

@@ -19,6 +19,7 @@ else {
     trace('acp-method',{method:m.method});
     if(m.method==='initialize')reply(m.id,{protocolVersion:1,agentCapabilities:{_meta:{claudeCode:{promptQueueing:true}},promptCapabilities:{image:true,embeddedContext:true},loadSession:true,sessionCapabilities:{close:{},delete:{},resume:{}},providers:{}},agentInfo:{name:'@agentclientprotocol/claude-agent-acp',version:'0.106.0'},authMethods:[],_meta:{steering:{supported:true}}});
     else if(['session/new','session/load','session/resume'].includes(m.method)) {
+      write({method:'auth/status_update',params:{state:'unknown',accounts:[]}});
       const idle=new IdleCompaction();idle.onIdle();idle.fire();if(idle.armed||idle.fired)throw Error('guard veto missing');
       if(m.method==='session/new')writeFileSync(sessionFile,JSON.stringify({model}));
       else model=JSON.parse(readFileSync(sessionFile,'utf8')).model;

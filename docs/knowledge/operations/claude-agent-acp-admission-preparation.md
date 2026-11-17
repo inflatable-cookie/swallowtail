@@ -73,3 +73,17 @@ runner now copies Node into its own disposable directory and captures that
 exact runtime. Product runtime-custody checks remain enabled; shared toolcache
 permissions are never changed. Current qualification evidence records runtime
 identity separately from standalone SDK/Node claims.
+
+## Original-run repairs
+
+The owned model peer distinguishes a new prompt coalesced with a prior tool
+result from a continuation, gives response messages unique IDs, and answers
+no-tool warm-up requests with text. Continued permission tests request distinct
+owned files. These fixes change the fixture, not vendor permission semantics.
+
+An original0.105 session/new failed with `notification_unsupported`. Its frozen
+ACP SDK2.5 schema introduces `auth/status_update`; the adapter now accepts that
+exact informational notification with a string state, discards its display-only
+account payload, and preserves prepared access evidence. The owned real-route
+peer emits it during new/load/resume as a regression. Unknown methods still
+refuse. Original CI must confirm the repair before a qualification claim moves.

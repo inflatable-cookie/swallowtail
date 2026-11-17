@@ -23,3 +23,7 @@
   focused lifecycle/startup tests. Current original tests explicitly request Read
   permission and keep the runtime-copy custody fix. No qualification pass is
   inferred from the earlier failed native cases.
+
+- Accept the frozen SDK's informational `auth/status_update` notification without
+  changing prepared access evidence; keep unknown notifications strict. The
+  actual original session/new failure exposed this adapter gap.

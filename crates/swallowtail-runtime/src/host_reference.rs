@@ -34,6 +34,7 @@ macro_rules! opaque_host_reference {
 }
 
 opaque_host_reference!(ExecutableRef, "executable reference");
+opaque_host_reference!(CheckedProcessRef, "checked process reference");
 opaque_host_reference!(EnvironmentRef, "environment reference");
 opaque_host_reference!(EndpointRef, "endpoint reference");
 opaque_host_reference!(WorkingResourceRef, "working resource reference");

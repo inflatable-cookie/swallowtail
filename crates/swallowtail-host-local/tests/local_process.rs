@@ -319,6 +319,275 @@ fn explicit_request_environment_overrides_bounded_bootstrap_environment() {
 }
 
 #[test]
+fn node_startup_environment_filter_checks_bootstrap_and_approved_bindings_before_spawn() {
+    let executable = executable_ref();
+    let environment = environment_ref();
+    for name in [
+        "NODE_OPTIONS",
+        "node_path",
+        "LD_PRELOAD",
+        "DYLD_INSERT_LIBRARIES",
+        "OPENSSL_CONF",
+        "OPENSSL_CONF_INCLUDE",
+        "OPENSSL_MODULES",
+        "OPENSSL_ENGINES",
+    ] {
+        let launch =
+            LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))
+                .with_prefix_arguments(fixture_arguments().map(OsString::from))
+                .with_node_startup_environment_filter();
+        let host = LocalProcessHost::builder(LocalProcessLimits::default())
+            .approve_executable_launch(executable.clone(), launch)
+            .approve_environment(
+                environment.clone(),
+                [(OsString::from(name), OsString::from("unsafe"))],
+            )
+            .build();
+        assert_failure_code(
+            start(
+                &host,
+                ProcessRequest::new(executable.clone()).with_environment([environment.clone()]),
+            ),
+            "swallowtail.local_process.unsafe_node_startup_environment",
+        );
+    }
+    let launch = LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))
+        .with_bootstrap_environment([(
+            OsString::from("NODE_OPTIONS"),
+            OsString::from("--require=unsafe"),
+        )])
+        .with_node_startup_environment_filter();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(executable.clone(), launch)
+        .build();
+    assert_failure_code(
+        start(&host, ProcessRequest::new(executable.clone())),
+        "swallowtail.local_process.unsafe_node_startup_environment",
+    );
+
+    let launch = LocalExecutableLaunch::new(std::env::current_exe().expect("fixture executable"))
+        .with_prefix_arguments(fixture_arguments().map(OsString::from))
+        .with_bootstrap_environment(fixture_environment("version"))
+        .with_node_startup_environment_filter();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable_launch(executable.clone(), launch)
+        .build();
+    let process = start(&host, ProcessRequest::new(executable)).expect("safe fixture starts");
+    let (stdout, _) = collect_output(process.as_ref()).expect("bounded output");
+    assert!(String::from_utf8_lossy(&stdout).contains("fixture-harness 1.2.0"));
+    assert!(block_on(process.wait()).expect("fixture joins").success());
+}
+
+#[cfg(unix)]
+#[test]
+fn checked_source_capture_freezes_verified_bytes_and_rejects_aliases() {
+    use sha2::{Digest, Sha256};
+    use std::path::Path;
+    use std::process::Command;
+    use swallowtail_host_local::{
+        LocalCapturedGraph, LocalCapturedImport, LocalCapturedLaunchFingerprint,
+        LocalCapturedNodeRecipe, LocalCapturedSources, LocalExpectedSource,
+    };
+    let template = std::env::temp_dir().join("checked-sources.XXXXXXXX");
+    let output = Command::new("/usr/bin/mktemp")
+        .arg("-d")
+        .arg(template)
+        .env_clear()
+        .output()
+        .expect("mktemp starts");
+    assert!(output.status.success());
+    let root = std::path::PathBuf::from(String::from_utf8(output.stdout).expect("path").trim())
+        .canonicalize()
+        .expect("canonical fixture root");
+    std::fs::write(root.join("one.mjs"), b"one").expect("fixture");
+    std::fs::write(root.join("two.mjs"), b"two").expect("fixture");
+    let one = LocalExpectedSource::new("one.mjs", Sha256::digest(b"one").into());
+    let two = LocalExpectedSource::new("two.mjs", Sha256::digest(b"two").into());
+    use std::os::unix::fs::PermissionsExt;
+    std::fs::set_permissions(root.join("one.mjs"), std::fs::Permissions::from_mode(0o666))
+        .expect("writable source fixture");
+    assert!(LocalCapturedSources::capture(&root, std::slice::from_ref(&one)).is_err());
+    std::fs::set_permissions(root.join("one.mjs"), std::fs::Permissions::from_mode(0o600))
+        .expect("restore source ownership boundary");
+    let captured =
+        LocalCapturedSources::capture(&root, &[one.clone(), two.clone()]).expect("capture");
+    let reversed = LocalCapturedSources::capture(&root, &[two.clone(), one.clone()])
+        .expect("order independent capture");
+    assert_eq!(captured.fingerprint(), reversed.fingerprint());
+    assert_eq!(
+        captured.source(Path::new("one.mjs")),
+        Some(b"one".as_slice())
+    );
+    assert!(!format!("{captured:?}").contains("one.mjs"));
+    let edge = LocalCapturedImport::new("one.mjs", "./two.mjs", "two.mjs");
+    let graph = LocalCapturedGraph::new(
+        &captured,
+        Path::new("one.mjs"),
+        Path::new("two.mjs"),
+        std::slice::from_ref(&edge),
+    )
+    .expect("graph");
+    let graph_again = LocalCapturedGraph::new(
+        &reversed,
+        Path::new("one.mjs"),
+        Path::new("two.mjs"),
+        std::slice::from_ref(&edge),
+    )
+    .expect("same graph");
+    assert_eq!(graph.fingerprint(), graph_again.fingerprint());
+    let config: serde_json::Value = serde_json::from_slice(graph.configuration()).expect("config");
+    assert_eq!(config["files"][0]["source"], "one");
+    assert!(
+        LocalCapturedGraph::new(&captured, Path::new("one.mjs"), Path::new("two.mjs"), &[])
+            .is_err()
+    );
+    assert!(
+        LocalCapturedGraph::new(
+            &captured,
+            Path::new("one.mjs"),
+            Path::new("two.mjs"),
+            &[edge.clone(), edge]
+        )
+        .is_err()
+    );
+    assert!(
+        LocalCapturedGraph::new(
+            &captured,
+            Path::new("one.mjs"),
+            Path::new("two.mjs"),
+            &[LocalCapturedImport::new(
+                "one.mjs",
+                "./missing",
+                "missing.mjs"
+            )]
+        )
+        .is_err()
+    );
+    let fingerprint =
+        LocalCapturedLaunchFingerprint::new(&graph, [1; 32], [2; 32], [3; 32], [4; 32], [5; 32])
+            .expect("candidate");
+    for changed in 0..5 {
+        let mut axes = [[1; 32], [2; 32], [3; 32], [4; 32], [5; 32]];
+        axes[changed][0] ^= 0x80;
+        let other = LocalCapturedLaunchFingerprint::new(
+            &graph, axes[0], axes[1], axes[2], axes[3], axes[4],
+        )
+        .expect("candidate");
+        assert_ne!(fingerprint.digest(), other.digest());
+    }
+    assert!(
+        LocalCapturedLaunchFingerprint::new(&graph, [0; 32], [2; 32], [3; 32], [4; 32], [5; 32])
+            .is_err()
+    );
+    assert!(!format!("{graph:?} {fingerprint:?}").contains("one.mjs"));
+    let recipe = LocalCapturedNodeRecipe::new(
+        &graph,
+        "export function resolve() {}",
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("candidate recipe");
+    let altered = LocalCapturedNodeRecipe::new(
+        &graph,
+        "export function load() {}",
+        [1; 32],
+        [3; 32],
+        [5; 32],
+    )
+    .expect("altered candidate");
+    assert_ne!(
+        recipe.fingerprint().digest(),
+        altered.fingerprint().digest()
+    );
+    assert_eq!(recipe.prefix_arguments().len(), 6);
+    assert_eq!(
+        recipe
+            .prefix_arguments()
+            .take(4)
+            .map(|argument| argument.to_str().expect("literal startup argument"))
+            .collect::<Vec<_>>(),
+        [
+            "--no-addons",
+            "--openssl-config=/dev/null",
+            "--disallow-code-generation-from-strings",
+            "--import"
+        ]
+    );
+    assert!(!format!("{recipe:?}").contains("one.mjs"));
+    assert!(LocalCapturedNodeRecipe::new(&graph, "", [1; 32], [3; 32], [5; 32]).is_err());
+    assert!(
+        LocalCapturedNodeRecipe::new(&graph, &"x".repeat(128 * 1024), [1; 32], [3; 32], [5; 32])
+            .is_err()
+    );
+    std::fs::write(root.join("one.mjs"), b"changed").expect("replace fixture bytes");
+    assert_eq!(
+        captured.source(Path::new("one.mjs")),
+        Some(b"one".as_slice())
+    );
+    let after_replacement: serde_json::Value =
+        serde_json::from_slice(graph.configuration()).expect("captured config");
+    assert_eq!(after_replacement["files"][0]["source"], "one");
+    assert!(LocalCapturedSources::capture(&root, std::slice::from_ref(&one)).is_err());
+    assert!(LocalCapturedSources::capture(&root, &[two.clone(), two.clone()]).is_err());
+    assert!(
+        LocalCapturedSources::capture(
+            &root,
+            &[LocalExpectedSource::new(
+                "../two.mjs",
+                Sha256::digest(b"two").into()
+            )]
+        )
+        .is_err()
+    );
+    std::os::unix::fs::symlink("two.mjs", root.join("link.mjs")).expect("symlink fixture");
+    assert!(
+        LocalCapturedSources::capture(
+            &root,
+            &[LocalExpectedSource::new(
+                "link.mjs",
+                Sha256::digest(b"two").into()
+            )]
+        )
+        .is_err()
+    );
+    std::fs::hard_link(root.join("two.mjs"), root.join("alias.mjs")).expect("hardlink fixture");
+    assert!(
+        LocalCapturedSources::capture(
+            &root,
+            &[
+                two,
+                LocalExpectedSource::new("alias.mjs", Sha256::digest(b"two").into())
+            ]
+        )
+        .is_err()
+    );
+}
+
+#[test]
+fn checked_launch_without_host_custody_refuses_before_ordinary_spawn() {
+    use swallowtail_runtime::{CheckedProcessRef, ProcessService, ScopeId};
+    let executable = executable_ref();
+    let host = LocalProcessHost::builder(LocalProcessLimits::default())
+        .approve_executable(
+            executable.clone(),
+            std::env::current_exe().expect("fixture executable"),
+        )
+        .build();
+    let scope = ScopeId::new("checked-fixture").expect("scope");
+    let binding = CheckedProcessRef::new("unissued-private-binding").expect("binding");
+    let request = ProcessRequest::new(executable).with_arguments(fixture_arguments());
+    assert_failure_code(
+        block_on(host.validate_checked(scope.clone(), binding.clone(), request.clone())),
+        "swallowtail.local_process.checked_binding_refused",
+    );
+    assert_failure_code(
+        block_on(host.start_checked(scope, binding, request)),
+        "swallowtail.local_process.checked_binding_refused",
+    );
+}
+
+#[test]
 fn bounded_stdio_round_trip_keeps_payloads_out_of_formatting() {
     let resource_directory = temporary_resource();
     std::fs::write(resource_directory.join("fixture-marker"), b"marker")

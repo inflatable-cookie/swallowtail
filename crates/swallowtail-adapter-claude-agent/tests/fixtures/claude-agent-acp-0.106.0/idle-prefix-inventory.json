@@ -1,0 +1,59 @@
+{
+  "schema": "swallowtail.acp.idle-prefix-inventory.v1",
+  "method": "Each exact selected shipped class was read separately; hash raw bytes, split at the exact class declaration, hash its prefix; no module execution",
+  "prefix_effects": [
+    "numeric constants",
+    "bounded intrinsic Set allocation",
+    "function declarations"
+  ],
+  "hops": {
+    "0.101.0": {
+      "source_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "source_bytes": 9257,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.101.1": {
+      "source_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "source_bytes": 9257,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.102.0": {
+      "source_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "source_bytes": 9257,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.103.0": {
+      "source_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "source_bytes": 9260,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.104.0": {
+      "source_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "source_bytes": 9260,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.104.1": {
+      "source_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "source_bytes": 9260,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.105.0": {
+      "source_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "source_bytes": 9260,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    },
+    "0.106.0": {
+      "source_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "source_bytes": 9260,
+      "prefix_bytes": 1558,
+      "prefix_sha256": "9178cba38b0cd5451ff1425b2cfa762882fb13662c30fd13f7530f6673fd653b"
+    }
+  }
+}

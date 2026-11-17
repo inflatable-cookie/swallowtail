@@ -57,6 +57,17 @@ impl AcpConnection {
     fn dispatch_notification(&self, method: &str, params: &Value) -> Result<(), RuntimeFailure> {
         match method {
             "session/update" => self.dispatch_session_update(params),
+            // Frozen ACP SDK2.5+ can publish this informational auth push.
+            // It grants no access and cannot replace prepared access evidence.
+            "auth/status_update" => {
+                params
+                    .get("state")
+                    .and_then(Value::as_str)
+                    .ok_or_else(malformed)?;
+                #[cfg(test)]
+                eprintln!("ACP_TRUSTED_PASSIVE_AUTH_STATUS");
+                Ok(())
+            }
             method if method.starts_with('_') => Ok(()),
             _ => Err(failure(
                 "swallowtail.claude_agent.acp.notification_unsupported",
@@ -196,6 +207,7 @@ impl AcpConnection {
             .lock()
             .expect("ACP active lock poisoned")
             .clone()
+            .filter(|turn| !turn.is_finished())
             .ok_or_else(|| {
                 failure(
                     "swallowtail.claude_agent.acp.permission_without_turn",
@@ -249,6 +261,7 @@ impl AcpConnection {
             .lock()
             .expect("ACP active lock poisoned")
             .clone()
+            .filter(|turn| !turn.is_finished())
             .ok_or_else(|| {
                 failure(
                     "swallowtail.claude_agent.acp.elicitation_without_turn",

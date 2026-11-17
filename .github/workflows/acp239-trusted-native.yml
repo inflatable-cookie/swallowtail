@@ -1,0 +1,87 @@
+name: ACP trusted original qualification
+
+on:
+  pull_request:
+    paths:
+      - 'crates/swallowtail-adapter-claude-agent/src/**'
+      - 'crates/swallowtail-adapter-claude-agent/sidecar/**'
+      - 'crates/swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-acp-0.106.0/**'
+      - 'scripts/claude-acp-trusted-*'
+      - '.github/workflows/acp239-trusted-native.yml'
+      - 'effigy.toml'
+      - 'Cargo.lock'
+
+permissions:
+  contents: read
+
+jobs:
+  original-acp:
+    name: Original ACP (${{ matrix.os }}, ${{ matrix.first }})
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-24.04, first: '0.101.0', second: '0.101.1'}
+          - {os: ubuntu-24.04, first: '0.102.0', second: '0.103.0'}
+          - {os: ubuntu-24.04, first: '0.104.0', second: '0.104.1'}
+          - {os: ubuntu-24.04, first: '0.105.0', second: '0.106.0'}
+          # The older Mac pair reaches the20-minute cap during artifact upload.
+          - {os: macos-15, first: '0.101.0', second: ''}
+          - {os: macos-15, first: '0.101.1', second: ''}
+          - {os: macos-15, first: '0.102.0', second: '0.103.0'}
+          - {os: macos-15, first: '0.104.0', second: '0.104.1'}
+          - {os: macos-15, first: '0.105.0', second: '0.106.0'}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 22.23.2
+      - uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2
+        with:
+          shared-key: acp239-trusted
+          cache-on-failure: true
+      - name: Ephemeral exact Effigy and owned scratch
+        shell: bash
+        run: |
+          set -euo pipefail
+          work=$(mktemp -d "$RUNNER_TEMP/acp239.XXXXXXXX")
+          echo "TMPDIR=$work" >> "$GITHUB_ENV"
+          echo "TMP=$work" >> "$GITHUB_ENV"
+          echo "TEMP=$work" >> "$GITHUB_ENV"
+          echo "ACP_TRUSTED_EVIDENCE=$work/evidence" >> "$GITHUB_ENV"
+          export TMPDIR="$work" TMP="$work" TEMP="$work"
+          # Build only the exact CLI source, without Cargo's automatic fetch of
+          # unrelated private fixture submodules in the upstream repository.
+          git init "$work/effigy-source"
+          git -C "$work/effigy-source" remote add origin https://github.com/inflatable-cookie/effigy.git
+          git -C "$work/effigy-source" fetch --depth 1 origin ee4ac29b6fff184669d702b22dcd1224aaf99713
+          git -C "$work/effigy-source" checkout --detach --no-recurse-submodules FETCH_HEAD
+          test "$(git -C "$work/effigy-source" rev-parse HEAD)" = ee4ac29b6fff184669d702b22dcd1224aaf99713
+          # Reuse ordinary rust-cache build outputs for this exact tool source.
+          CARGO_TARGET_DIR="$GITHUB_WORKSPACE/target/acp-effigy" cargo install --path "$work/effigy-source" --debug --locked --root "$work/effigy" effigy
+          echo "$work/effigy/bin" >> "$GITHUB_PATH"
+      - name: Prove owned harness before originals
+        run: |
+          effigy validate:claude-agent-acp-trusted-limits-self-test
+          effigy validate:claude-agent-acp-trusted-model-self-test
+          effigy validate:claude-agent-acp-trusted-native-self-test
+      - name: Frozen originals through real prepared Rust ACP
+        shell: bash
+        run: |
+          args=(--hop "${{ matrix.first }}")
+          if [[ -n "${{ matrix.second }}" ]]; then args+=(--hop "${{ matrix.second }}"); fi
+          effigy validate:claude-agent-acp-trusted-native "${args[@]}"
+      - name: Retain bounded qualification evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: acp239-original-${{ matrix.os }}-${{ matrix.first }}
+          path: ${{ env.ACP_TRUSTED_EVIDENCE }}/*.tgz
+          if-no-files-found: error
+          retention-days: 14

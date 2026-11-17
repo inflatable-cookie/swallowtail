@@ -103,6 +103,7 @@ PROOF_SELECTORS = {
 
 # Maintained scripts that reach Cargo, with the class each must keep.
 SCRIPT_CLASSES = {
+    "scripts/check-claude-acp-guard-api.sh": "switched",
     HELPER: "helper",
     "scripts/check-msrv.sh": "switched",
     "scripts/check-package-metadata.sh": "switched",

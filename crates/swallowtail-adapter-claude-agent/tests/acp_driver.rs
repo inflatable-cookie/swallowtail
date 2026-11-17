@@ -17,6 +17,32 @@ use swallowtail_runtime::{
 };
 
 #[test]
+fn guarded_versions_refuse_stock_process_before_credentials_or_effects() {
+    for version in [
+        "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
+    ] {
+        let host_id = ExecutionHostId::new("fixture.guarded.host").expect("host");
+        let selected = selection(host_id.clone(), version);
+        let host = FixtureHost::new(Scenario::Success, version);
+        let result = block_on(driver(selected.credential).open_session(
+            selected.plan,
+            open_request("guarded-stock-refusal", selected.resource),
+            host.services(host_id),
+        ));
+        let Err(error) = result else {
+            panic!("stock process must refuse")
+        };
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.claude_agent.acp.checked_process_required"
+        );
+        assert_eq!(host.credential_acquires(), 0);
+        assert_eq!(host.reads(), 0);
+        assert!(host.writes().is_empty());
+    }
+}
+
+#[test]
 fn qualified_milestones_and_unverified_newer_use_one_exact_read_only_session_shape() {
     for (host_name, host_suffix) in [
         ("fixture.host.local", "local"),

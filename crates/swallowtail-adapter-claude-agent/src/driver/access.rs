@@ -21,6 +21,7 @@ impl ClaudeAgentAcpDriver {
         access_policy: &SessionAccessPolicy,
         services: &HostServices,
     ) -> Result<PendingSession, RuntimeFailure> {
+        self.validate_process_binding(plan)?;
         let scope = ScopeId::new(format!("claude-agent-acp:session:{}", request_id.as_str()))
             .map_err(|_| malformed())?;
         let mut credential = match self.credential.as_ref() {
@@ -95,10 +96,15 @@ impl ClaudeAgentAcpDriver {
         ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
-        let process: Arc<dyn ProcessHandle> = match services
-            .process()
-            .expect("validated process service")
-            .start(scope.clone(), process_request)
+        let process: Arc<dyn ProcessHandle> = match self
+            .start_process(
+                services
+                    .process()
+                    .expect("validated process service")
+                    .as_ref(),
+                scope.clone(),
+                process_request,
+            )
             .await
         {
             Ok(process) => Arc::from(process),

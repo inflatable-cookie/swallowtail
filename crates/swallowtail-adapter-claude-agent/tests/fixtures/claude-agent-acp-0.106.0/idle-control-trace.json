@@ -1,0 +1,95 @@
+{
+  "affected_stables": {
+    "0.100.0": null,
+    "0.101.0": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+    "0.101.1": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+    "0.102.0": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+    "0.103.0": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+    "0.104.0": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+    "0.104.1": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+    "0.105.0": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+    "0.106.0": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d"
+  },
+  "controls": "false idleCompaction or autoCompactEnabled settings suppress the timer. Truthy DISABLE_COMPACT or DISABLE_AUTO_COMPACT suppress it; settings.env is read before the process environment, so an ambient setting can override a host environment value.",
+  "proof_limit": "Static source and fake adapter observations do not prove upstream execution. No vendor code was run.",
+  "recommendation": "Retain claim while obtaining route-specific authority and proof. Consider an explicitly controlled setting that preserves released turn authority, or a separately revised lifecycle that permits idle work. Do not rely on an ambient environment flag without proving settings precedence and race behavior.",
+  "route_configuration": "The process request selects an EnvironmentRef and working resource; the ACP driver does not itself set DISABLE_COMPACT, DISABLE_AUTO_COMPACT, idleCompaction or autoCompactEnabled. EnvironmentRef is host-supplied and its actual contents are not established by this observation.",
+  "segments": {
+    "0.101.0:dist/acp-agent.js:2150-2163": {
+      "file_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "range_bytes": 803,
+      "range_sha256": "f874e6dbdfcd4667bc634828d8799c5ababf090b485964a27e22b2355ab5c3d4"
+    },
+    "0.101.0:dist/acp-agent.js:4499-4512": {
+      "file_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "range_bytes": 1199,
+      "range_sha256": "d7dcafd697731cbb443bc5697337d2d537bc774280d676ade8cb3db75cdd27d1"
+    },
+    "0.101.0:dist/acp-agent.js:6449-6503": {
+      "file_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "range_bytes": 2699,
+      "range_sha256": "35d1f743c5ddd674b38241741c84f2a1c3207eb7cb5c8bed8a34e9215300a394"
+    },
+    "0.101.0:dist/acp-agent.js:6869-6884": {
+      "file_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "range_bytes": 755,
+      "range_sha256": "1ec6d9e79e22a5cd7640b1f5407a0219317fe05bef1ae2c178560797842e08e7"
+    },
+    "0.101.0:dist/acp-agent.js:6962-6970": {
+      "file_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "range_bytes": 312,
+      "range_sha256": "0f7b1d7a89889164ad9e41d5f99295e3f6f0ff635b13b28f37ca4c2336ac3a81"
+    },
+    "0.101.0:dist/acp-agent.js:9683-9701": {
+      "file_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "range_bytes": 1190,
+      "range_sha256": "9148ba32089001df015a9783feed91c03c75691387ade66436433230bb23e1f3"
+    },
+    "0.101.0:dist/idle-compaction.js:1-32": {
+      "file_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "range_bytes": 1516,
+      "range_sha256": "b5f13f008c63e57226800d863eaa2d0624bcee6a10da045386044a9613628515"
+    },
+    "0.101.0:dist/idle-compaction.js:118-211": {
+      "file_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "range_bytes": 3824,
+      "range_sha256": "f2ce47b82f13a3b35ed1e8a7d5adab01160f4c7b31dccc4b3ec67b54c1f7b352"
+    },
+    "0.101.0:dist/idle-compaction.js:35-96": {
+      "file_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "range_bytes": 2887,
+      "range_sha256": "87109fa6ac1517fac1b11e3815de5a7b64ff319ae12b10f8430464680f0e202d"
+    },
+    "0.106.0:dist/v1/acp-agent.js:1227-1239": {
+      "file_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "range_bytes": 722,
+      "range_sha256": "eb3662279be747e84675b36695321b9496ecdf44d0ad10e33d841b241c6f3d14"
+    },
+    "0.106.0:dist/v1/acp-agent.js:3519-3531": {
+      "file_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "range_bytes": 986,
+      "range_sha256": "4e2f8e408517af913d8734e970f8e25130087877af6d83df10f4b31f58dbaaa0"
+    },
+    "0.106.0:dist/v1/acp-agent.js:5373-5427": {
+      "file_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "range_bytes": 2699,
+      "range_sha256": "35d1f743c5ddd674b38241741c84f2a1c3207eb7cb5c8bed8a34e9215300a394"
+    },
+    "0.106.0:dist/v1/acp-agent.js:5784-5798": {
+      "file_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "range_bytes": 689,
+      "range_sha256": "4f43cfb8b8aa9c3407beeffc43d58063838c1dd97882b40df9d5cd3d53b84bcc"
+    },
+    "0.106.0:dist/v1/acp-agent.js:5870-5878": {
+      "file_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "range_bytes": 282,
+      "range_sha256": "217308fa1848c02b85348ec7cdc2659eef6ae8daa27dcec30220f3bed617c9f7"
+    },
+    "0.106.0:dist/v1/acp-agent.js:8064-8079": {
+      "file_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "range_bytes": 981,
+      "range_sha256": "3e1ba51d0e3ca9f5660b1e3738c25c8e67426328b92b9b68cb16aea2678d3dcf"
+    }
+  },
+  "timing_and_race": "Default timer is 90% of one hour after the observed request; TTL must be 1h, context at least 200000 tokens by default (floor 100000), no busy work or pending user input, no unsuitable rate limit or stale deadline. onIdle and fire both check. Prompt, steer, cancel and model change disarm a pending timer; teardown disposes it. After fire starts compact(), disarm alone does not abort that async work; teardown separately cancels and joins queued turns. No race outcome is inferred without the exact executed upstream proof."
+}

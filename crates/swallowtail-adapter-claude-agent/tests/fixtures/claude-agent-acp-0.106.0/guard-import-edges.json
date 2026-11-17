@@ -1,0 +1,110 @@
+{
+  "package": "@agentclientprotocol/claude-agent-acp",
+  "scope": "static v1 import and class shape only; not runtime attestation",
+  "hops": {
+    "0.101.0": {
+      "tarball_sha256": "7f52fb5f7447f73a503ab9fc4fc886da3cc8658d4693954f086a617f57eb3abb",
+      "caller": "dist/acp-agent.js",
+      "caller_sha256": "aa7681b597fc44748ae57877c1eb92dae9e701bc02d6594cbb718540a9217b50",
+      "import": "./idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.101.1": {
+      "tarball_sha256": "773924c931aec60c60e7669fb561eec7e54534fa093068b6bc91a6641c4a9f2a",
+      "caller": "dist/acp-agent.js",
+      "caller_sha256": "098f1eb6b4fd8dcc34c42c5421c54c92914dc742894a6827edb424872fe3b7a5",
+      "import": "./idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.102.0": {
+      "tarball_sha256": "89ae947fa17ce875abb6128049534fe6c118a71f2e0a4ecb2e332e8c8c24526f",
+      "caller": "dist/acp-agent.js",
+      "caller_sha256": "691ae93c84d169a77bfd820dec261e505d056ab131791f841eb224aeedadd7af",
+      "import": "./idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "9a80ae2bc2485a2c7e1b47789c447d1d0ca980926e1086c2cf17bdb01613de9d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.103.0": {
+      "tarball_sha256": "1c5b572c2287c5810ed1d1f5784bf44bf77cbdfe86ac8736639e58abaa443667",
+      "caller": "dist/v1/acp-agent.js",
+      "caller_sha256": "0890a76bdc3f00f71ae928d50e048c1a0fcc237b7cfc169b3992f2ba013b60a5",
+      "import": "../idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.104.0": {
+      "tarball_sha256": "727295374962db5baab47bd6e15e64d92fcaf788b18873d10634db5b240691a2",
+      "caller": "dist/v1/acp-agent.js",
+      "caller_sha256": "dcbb889abd7cc10a3ecb233750b2b324078af122d3379720363d95ba5e8238e5",
+      "import": "../idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.104.1": {
+      "tarball_sha256": "036cc8f1d561aa853c472523b56186d8f22678054afc34fba48524e35728f6ab",
+      "caller": "dist/v1/acp-agent.js",
+      "caller_sha256": "dcbb889abd7cc10a3ecb233750b2b324078af122d3379720363d95ba5e8238e5",
+      "import": "../idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.105.0": {
+      "tarball_sha256": "0d0cd92dd09fa6b7e6890cb652df4b60ce8faa9ee42e49d3f504df7df35920b5",
+      "caller": "dist/v1/acp-agent.js",
+      "caller_sha256": "e97b52cf1966468c28fb00e2396c93a49b1202c1d37a3132b9d99071c68ba2dc",
+      "import": "../idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    },
+    "0.106.0": {
+      "tarball_sha256": "d00e52680d3aed564346acadddd4603de3f9178d385ef257283839c41d9da4b0",
+      "caller": "dist/v1/acp-agent.js",
+      "caller_sha256": "811bb2fa230fa43531a2df20996ef710668a2e0723dc0ca9d782d221c221eb97",
+      "import": "../idle-compaction.js",
+      "idle_module": "dist/idle-compaction.js",
+      "idle_sha256": "3128c2566a2f8c3b69be35e63780f8c87faf7f3184cd723d7a095a44bde7f28d",
+      "declaration": "export class IdleCompaction",
+      "on_idle": "onIdle()",
+      "fire": "async fire()",
+      "construction_count": 1,
+      "literal_dot_method_assignment_count": 0
+    }
+  }
+}

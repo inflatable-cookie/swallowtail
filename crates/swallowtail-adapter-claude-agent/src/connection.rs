@@ -82,6 +82,8 @@ impl AcpConnection {
 
     pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
         let diagnostic = error.diagnostic();
+        #[cfg(test)]
+        eprintln!("ACP_TRUSTED_PROTOCOL {stage} {}", diagnostic.code());
         self.services.emit_failure_debug(
             DebugObservationKind::ProtocolParse,
             "claude-agent.acp",
@@ -333,6 +335,7 @@ impl AcpConnection {
         if active
             .as_ref()
             .is_some_and(|current| Arc::ptr_eq(current, turn))
+            && !turn.retains_terminal_tail()
         {
             *active = None;
         }

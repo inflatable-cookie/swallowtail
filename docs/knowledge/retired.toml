@@ -57,3 +57,13 @@ terms = ["SWALLOWTAIL_RUST_RUNNER"]
 # sibling form by name. The guard names this escape so it can reject it, and
 # the guide records the ruling.
 allow = ["CHANGELOG.md", "docs/knowledge/retired.toml", "docs/guides/validation-tiers.md", "scripts/tests/oxide-selector-routing.py"]
+
+[[retired]]
+id = "sdk-original-test-custom-host-admission"
+retired = "2026-11-17"
+replacement = "Decision1ec44a26 v2: bounded frozen original SDK tests on trusted disposable runners; product permission/mapping guards remain. Historical manual workflows stay dormant and grants remain consumed."
+owner = "docs/knowledge/operations/claude-agent-sdk-trusted-qualification.md"
+terms = ["Original mode is refused unconditionally until a separately implemented confined launcher and exact authority exist."]
+paths = []
+config_keys = []
+allow = ["docs/knowledge/retired.toml"]

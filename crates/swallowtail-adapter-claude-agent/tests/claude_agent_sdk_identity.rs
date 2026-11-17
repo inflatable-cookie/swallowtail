@@ -114,10 +114,20 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
             swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
             "no axis may inherit an unverified-newer posture"
         );
-        assert_eq!(claim.milestones().len(), 1, "each axis has one segment");
+        assert_eq!(
+            claim.milestones().len(),
+            if matches!(
+                axis.as_str(),
+                "claude-agent.sdk.package" | "claude-agent.sdk.native"
+            ) {
+                2
+            } else {
+                1
+            }
+        );
         let point = swallowtail_core::InterfaceVersion::new(point).expect("valid version");
         let expected_exclusions = match axis.as_str() {
-            "claude-agent.sdk.package" | "claude-agent.sdk.native" => 3,
+            "claude-agent.sdk.package" | "claude-agent.sdk.native" => 4,
             _ => 0,
         };
         assert_eq!(
@@ -165,8 +175,8 @@ fn the_route_binds_package_native_segments_and_exact_axes_with_node_window() {
     // The SDK wrapper and the native binary it delivers are coupled but never
     // equal, and neither is the Claude Code axis.
     assert_ne!(CLAUDE_AGENT_SDK_VERSION, CLAUDE_AGENT_SDK_NATIVE_VERSION);
-    assert_eq!(CLAUDE_AGENT_SDK_NATIVE_VERSION, "2.1.317");
-    assert_eq!(CLAUDE_AGENT_SDK_VERSION, "0.3.317");
+    assert_eq!(CLAUDE_AGENT_SDK_NATIVE_VERSION, "2.1.322");
+    assert_eq!(CLAUDE_AGENT_SDK_VERSION, "0.3.322");
     assert_eq!(
         swallowtail_adapter_claude_agent::CLAUDE_CODE_HEADLESS_LATEST_QUALIFIED_VERSION,
         "2.1.317",
@@ -223,7 +233,17 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
             claim.newer_version_posture(),
             swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly
         );
-        assert_eq!(claim.milestones().len(), 1);
+        assert_eq!(
+            claim.milestones().len(),
+            if matches!(
+                id,
+                "claude-agent.sdk.package-window-1" | "claude-agent.sdk.native-window-1"
+            ) {
+                2
+            } else {
+                1
+            }
+        );
         let point = swallowtail_core::InterfaceVersion::new(point).expect("valid version");
         assert_eq!(
             claim.baseline(),
@@ -233,7 +253,7 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
         let expected_exclusions = if id == "claude-agent.sdk.package-window-1"
             || id == "claude-agent.sdk.native-window-1"
         {
-            3
+            4
         } else {
             0
         };
@@ -284,11 +304,11 @@ fn package_native_segments_preserve_baselines_claim_ids_and_qualified_only() {
         assert!(package.permits(&version(pair.package_version())));
         assert!(native.permits(&version(pair.native_version())));
     }
-    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 35);
     assert!(!package.permits(&version("0.3.283")));
-    assert!(!package.permits(&version("0.3.318")));
+    assert!(!package.permits(&version("0.3.323")));
     assert!(!native.permits(&version("2.1.283")));
-    assert!(!native.permits(&version("2.1.318")));
+    assert!(!native.permits(&version("2.1.323")));
     // Older native inventory points stay outside the selected segment.
     assert!(!package.permits(&version("0.3.260")));
     assert!(!native.permits(&version("2.1.258")));
@@ -701,8 +721,8 @@ fn frozen_current_identity_records_every_published_hop_and_selected_surface() {
 fn the_shipped_asset_matches_the_frozen_identity() {
     let protocol: serde_json::Value = serde_json::from_str(LATEST_PROTOCOL).unwrap();
     assert_eq!(protocol["sdk_package"], CLAUDE_AGENT_SDK_PACKAGE);
-    assert_eq!(protocol["sdk_version"], CLAUDE_AGENT_SDK_VERSION);
-    assert_eq!(protocol["native_version"], CLAUDE_AGENT_SDK_NATIVE_VERSION);
+    assert_eq!(protocol["sdk_version"], "0.3.317");
+    assert_eq!(protocol["native_version"], "2.1.317");
     assert_eq!(protocol["node_runtime"], CLAUDE_AGENT_SDK_NODE_RUNTIME);
     assert_eq!(protocol["behavior_revision"], CLAUDE_AGENT_SDK_BEHAVIOR);
     assert_eq!(
@@ -1212,7 +1232,7 @@ fn extension_ledger_binds_every_published_hop_from_0_3_295_to_0_3_317() {
     }
     // The finite maintained pair map carries exactly the published points,
     // keeps the unpublished gaps out, and the claims exclude them too.
-    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 31);
+    assert_eq!(ClaudeAgentSdkPackageNativePair::MAINTAINED.len(), 35);
     for patch in [297, 298, 313] {
         assert!(
             !ClaudeAgentSdkPackageNativePair::MAINTAINED

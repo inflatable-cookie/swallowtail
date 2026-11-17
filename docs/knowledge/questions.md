@@ -194,6 +194,24 @@ approval; not a new Tom ruling):
 
 ## Q-009 — How should `claude-agent.sdk` qualify past `0.3.317`?
 
+Status: answered by frozen original proof; qualification change awaiting normal review/CI.
+Gate owner: maintainers for independent review/CI; planner for merge-hold release.
+
+Tom's decision1ec44a26 v2 replaces the custom test-host ladder with trusted
+disposable runners. [Original SDK/native and shipped-sidecar qualification](operations/claude-agent-sdk-trusted-qualification.md)
+passed140 cases across Linux x64 and Darwin arm64 for the317 control and the
+318/319/321/322 pairs. Managed deny-instead-of-prompting starts at319 without a
+callback, permits continued output and retains a distinct v2 package/native
+segment. User settings remain excluded by this route. Node22.23.2..22.23.3,
+older points/default pair, live evidence and exclusions remain separate.
+No extra recursive loader/OpenSSL/custody admission gate applies to these tests.
+Both merge holds await normal review/CI; this evidence gives no ACP/Windows,
+hostile same-user sandbox or new paid-provider claim.
+
+<details>
+<summary>Historical decisions and consumed-host evidence; test-admission prerequisites superseded by decision1ec44a26 v2</summary>
+
+
 Current test authority: decision1ec44a26 v2 authorizes frozen original tests on
 [trusted disposable runners](operations/claude-agent-sdk-trusted-qualification.md).
 This supersedes the custom host-attestation prerequisites below for testing;
@@ -317,3 +335,5 @@ reports `nativeAdministratorDiscovery: false`. The attempt is consumed. SDK
 runtime/source custody, confined original administrator discovery and exact
 original/native execution remain open; item 1 and all qualification limits stand.
 
+
+</details>

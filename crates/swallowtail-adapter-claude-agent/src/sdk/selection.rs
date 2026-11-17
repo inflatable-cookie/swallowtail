@@ -4,7 +4,7 @@
 //! manifest, the approved Node runtime, the private sidecar wire, and the
 //! source-tagged sidecar revision. The package/native axes retain their
 //! baselines and claim IDs while extending across every published hop through
-//! `0.3.317`; the unpublished `0.3.297`, `0.3.298`, and `0.3.313` points (and
+//! `0.3.322`; the unpublished `0.3.297`, `0.3.298`, `0.3.313`, and `0.3.320` points (and
 //! their native mirrors) are explicit claim exclusions, so they assess
 //! incompatible on the claims themselves. The independent Node axis is
 //! maintained through `22.23.3` (Research 387). Wire and sidecar source stay
@@ -105,6 +105,14 @@ pub enum ClaudeAgentSdkPackageNativePair {
     V0_3_316Native2_1_316,
     /// SDK package `0.3.317` with native `2.1.317`.
     V0_3_317Native2_1_317,
+    /// SDK package `0.3.318` with native `2.1.318`.
+    V0_3_318Native2_1_318,
+    /// SDK package `0.3.319` with native `2.1.319`.
+    V0_3_319Native2_1_319,
+    /// SDK package `0.3.321` with native `2.1.321`.
+    V0_3_321Native2_1_321,
+    /// SDK package `0.3.322` with native `2.1.322`.
+    V0_3_322Native2_1_322,
 }
 
 impl ClaudeAgentSdkPackageNativePair {
@@ -113,7 +121,7 @@ impl ClaudeAgentSdkPackageNativePair {
 
     /// Every maintained coupled pair, ordered by publication. The
     /// unpublished `0.3.297`, `0.3.298` and `0.3.313` points are absent.
-    pub const MAINTAINED: [Self; 31] = [
+    pub const MAINTAINED: [Self; 35] = [
         Self::V0_3_284Native2_1_284,
         Self::V0_3_285Native2_1_285,
         Self::V0_3_286Native2_1_286,
@@ -145,6 +153,10 @@ impl ClaudeAgentSdkPackageNativePair {
         Self::V0_3_315Native2_1_315,
         Self::V0_3_316Native2_1_316,
         Self::V0_3_317Native2_1_317,
+        Self::V0_3_318Native2_1_318,
+        Self::V0_3_319Native2_1_319,
+        Self::V0_3_321Native2_1_321,
+        Self::V0_3_322Native2_1_322,
     ];
 
     /// Returns the exact SDK wrapper package version.
@@ -182,6 +194,10 @@ impl ClaudeAgentSdkPackageNativePair {
             Self::V0_3_315Native2_1_315 => "0.3.315",
             Self::V0_3_316Native2_1_316 => "0.3.316",
             Self::V0_3_317Native2_1_317 => "0.3.317",
+            Self::V0_3_318Native2_1_318 => "0.3.318",
+            Self::V0_3_319Native2_1_319 => "0.3.319",
+            Self::V0_3_321Native2_1_321 => "0.3.321",
+            Self::V0_3_322Native2_1_322 => "0.3.322",
         }
     }
 
@@ -220,6 +236,10 @@ impl ClaudeAgentSdkPackageNativePair {
             Self::V0_3_315Native2_1_315 => "2.1.315",
             Self::V0_3_316Native2_1_316 => "2.1.316",
             Self::V0_3_317Native2_1_317 => "2.1.317",
+            Self::V0_3_318Native2_1_318 => "2.1.318",
+            Self::V0_3_319Native2_1_319 => "2.1.319",
+            Self::V0_3_321Native2_1_321 => "2.1.321",
+            Self::V0_3_322Native2_1_322 => "2.1.322",
         }
     }
 }
@@ -227,9 +247,9 @@ impl ClaudeAgentSdkPackageNativePair {
 const CLAUDE_AGENT_SDK_NODE_BASELINE: &str = "22.23.2";
 
 /// Unpublished stables inside the coupled package window (Research 472).
-const SDK_PACKAGE_UNPUBLISHED_GAPS: &[&str] = &["0.3.297", "0.3.298", "0.3.313"];
+const SDK_PACKAGE_UNPUBLISHED_GAPS: &[&str] = &["0.3.297", "0.3.298", "0.3.313", "0.3.320"];
 /// Unpublished stables inside the coupled native window (Research 472).
-const SDK_NATIVE_UNPUBLISHED_GAPS: &[&str] = &["2.1.297", "2.1.298", "2.1.313"];
+const SDK_NATIVE_UNPUBLISHED_GAPS: &[&str] = &["2.1.297", "2.1.298", "2.1.313", "2.1.320"];
 
 /// Parses one static unpublished-gap version for claim construction. The
 /// indirection keeps `InterfaceVersion::new` calls literal at their other
@@ -307,6 +327,8 @@ pub fn claude_agent_sdk_package_claim() -> InterfaceCompatibilityClaim {
             .expect("static SDK baseline is valid"),
         InterfaceVersion::new(CLAUDE_AGENT_SDK_VERSION)
             .expect("static SDK sidecar version is valid"),
+        InterfaceVersion::new("0.3.318").expect("static v1 ceiling is valid"),
+        InterfaceVersion::new("0.3.319").expect("static v2 baseline is valid"),
         SDK_PACKAGE_UNPUBLISHED_GAPS
             .iter()
             .map(|gap| sdk_gap_version(gap).expect("static SDK gap is valid")),
@@ -326,6 +348,8 @@ pub fn claude_agent_sdk_native_claim() -> InterfaceCompatibilityClaim {
             .expect("static SDK baseline is valid"),
         InterfaceVersion::new(CLAUDE_AGENT_SDK_NATIVE_VERSION)
             .expect("static SDK sidecar version is valid"),
+        InterfaceVersion::new("2.1.318").expect("static v1 ceiling is valid"),
+        InterfaceVersion::new("2.1.319").expect("static v2 baseline is valid"),
         SDK_NATIVE_UNPUBLISHED_GAPS
             .iter()
             .map(|gap| sdk_gap_version(gap).expect("static SDK gap is valid")),
@@ -459,9 +483,13 @@ fn validate_axis(
     let assessment = claim.assess(binding.version());
     if assessment != plan.assess_interface_version(binding)
         || !assessment.is_permitted()
-        || assessment
-            .behavior_revision()
-            .is_none_or(|revision| revision.as_str() != CLAUDE_AGENT_SDK_BEHAVIOR)
+        || assessment.behavior_revision().is_none_or(|revision| {
+            ![
+                CLAUDE_AGENT_SDK_BEHAVIOR,
+                super::CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR,
+            ]
+            .contains(&revision.as_str())
+        })
     {
         return Err(failure(
             "swallowtail.claude-agent.sdk.version_incompatible",
@@ -485,16 +513,34 @@ fn window_claim(
     axis: InterfaceVersionAxis,
     baseline: InterfaceVersion,
     current: InterfaceVersion,
+    v1_ceiling: InterfaceVersion,
+    v2_baseline: InterfaceVersion,
     exclusions: impl IntoIterator<Item = InterfaceVersion>,
 ) -> InterfaceCompatibilityClaim {
-    window_claim_versions_with_exclusions(
-        id,
+    InterfaceCompatibilityClaim::new(
+        InterfaceCompatibilityClaimId::new(id).expect("static SDK claim id is valid"),
         axis,
         InterfaceVersionScheme::Semantic,
-        baseline,
-        current,
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [
+            swallowtail_core::InterfaceVersionSegment::new(
+                baseline,
+                v1_ceiling,
+                InterfaceBehaviorRevision::new(CLAUDE_AGENT_SDK_BEHAVIOR)
+                    .expect("static v1 revision"),
+                InterfaceSupportStatus::Maintained,
+            ),
+            swallowtail_core::InterfaceVersionSegment::new(
+                v2_baseline,
+                current,
+                InterfaceBehaviorRevision::new(super::CLAUDE_AGENT_SDK_MANAGED_DENIAL_BEHAVIOR)
+                    .expect("static v2 revision"),
+                InterfaceSupportStatus::Maintained,
+            ),
+        ],
         exclusions,
     )
+    .expect("static coupled SDK claim is valid")
 }
 
 fn window_claim_versions(

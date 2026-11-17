@@ -1,0 +1,77 @@
+{
+  "schema": "sdk240.trusted-native-qualification.v1",
+  "trust": "Disposable GitHub OS/runtime trusted; no hostile same-user sandbox claim",
+  "decision": "1ec44a26-3d20-45ab-84e9-1523c2dfbbe4/v2",
+  "runId": 44072626492,
+  "implementationHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
+  "frozenPlanSha256": "e177a8267f37f8269533ce82fa20ddd89c1784bc0e37cbcf0efdaa15f1e29502",
+  "sdkNativePairs": [
+    "0.3.317/2.1.317",
+    "0.3.318/2.1.318",
+    "0.3.319/2.1.319",
+    "0.3.321/2.1.321",
+    "0.3.322/2.1.322"
+  ],
+  "cases": [
+    "allow",
+    "deny",
+    "user-deny",
+    "managed-deny",
+    "cancel",
+    "deadline",
+    "error"
+  ],
+  "platforms": [
+    {
+      "platform": "darwin-arm64",
+      "os": "macOS-26.7.2-arm64-arm-64bit-Mach-O",
+      "workflowHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
+      "reportedGithubSha": "4c42926de72c918b2bdecc2928c4c736ff25981b",
+      "artifactId": 14323602620,
+      "artifactSha256": "f972081ce803e3d2e788d71de0bd84ced7dd644afd91174930197c39e7dd8415",
+      "resultSha256": "452460114094bb0f17b743f4874c6195c258f97c32b5c82b08a3a57a61fc6d62",
+      "node": {
+        "archiveSha256": "72d5d8832b41c9d9646197af614ffd751406ea4d215060eb91b98864e1919a3e",
+        "binarySha256": "68f4d07ca49e0500cc135c7e0a445093e228e42e126ac22306d045f0a8c2636b",
+        "version": "22.23.3"
+      },
+      "cases": 70,
+      "originalSdkCases": 35,
+      "shippedSidecarCases": 35,
+      "failures": 0
+    },
+    {
+      "platform": "linux-x64",
+      "os": "Linux-7.0.0-1016-aws-x86_64-with-glibc2.36",
+      "workflowHead": "61ac73331ad94ed35c449b075bea8811c1d65213",
+      "reportedGithubSha": "4c42926de72c918b2bdecc2928c4c736ff25981b",
+      "artifactId": 14322903590,
+      "artifactSha256": "66b5dd64ee2f24816aefa604bb14279d5c99a7d136397fbc33ac305bf8857f48",
+      "resultSha256": "406d33fdb911f8092fd65e9474799a868438c2c7fe92f5c8c37b339b1e5ad4a9",
+      "node": {
+        "archiveSha256": "df450af89261115ef9f9e3830c3eeb2cc9213b63c720b1af623cb5dcbe2e02de",
+        "binarySha256": "fde6a4bf8d0562f7751d1a2d6cb9b417c4cfe107bbcb0aa3e9a24e125e348f48",
+        "version": "22.23.3"
+      },
+      "cases": 70,
+      "originalSdkCases": 35,
+      "shippedSidecarCases": 35,
+      "failures": 0
+    }
+  ],
+  "observations": {
+    "permissionBeforeEffect": true,
+    "callbackAllowDeny": true,
+    "userSettingsExcludedBySettingSourcesEmpty": true,
+    "managedDenyNoCallbackFrom319": true,
+    "managedDenyContinues": true,
+    "orderedTurnStartResultError": true,
+    "actualNativeCloseAndSidecarExitObserved": true
+  },
+  "fixtureTransport": "Sidecar spawn instrumentation injects only owned loopback API endpoint/dummy key and disables optional traffic. Product permission/mapping/lifecycle logic is unchanged. Native binaries and SDK modules are originals, not fixtures.",
+  "historicalFailures": {
+    "44070325578": "Linux originals ran; three incorrect user-settings assertions failed. macOS preexec resource setup failed. Neither failure counted as qualification.",
+    "44071249908": "Corrected direct-original35 cases/platform passed; before shipped-sidecar composition."
+  },
+  "scope": "No live provider, new public Node range, Windows proof, ACP transfer, or guarantee that every tool class was separately executed. Prompt-requiring owned Write exercises the shared permission branch; retained per-hop source evidence remains bound."
+}

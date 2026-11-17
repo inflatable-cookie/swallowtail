@@ -1,7 +1,7 @@
 # SDK disposable trusted-runner qualification
 
 Status: Linux x64 and Darwin arm64 each passed 100 original cases at
-9e5ee425dd7ec53a65402dc42a1d24595d988bc7. The proposed qualification through
+9e5ee425dd7ec53a65402dc42a1d24595d988bc7. A final deadline-recipient race correction awaits changed-input proof. The proposed qualification through
 0.3.322/2.1.322 now has actual route proof; normal independent review, current
 CI and the planner's qualification hold remain merge gates.
 
@@ -77,3 +77,10 @@ The Node22.23.2..22.23.3 axis, older pairs/default, live evidence and exclusions
 remain separate. No Node22.23.4 widening, Windows or ACP transfer is claimed.
 This evidence qualifies only the tested trusted-machine selected flows; normal
 review/CI and planner hold release remain the merge gates.
+
+The private reuse invariant is stricter than public completion: a TimedOut
+recipient remains bound until its exact native terminal has drained and its
+interrupt write has settled. Expiry, event dispatch and replacement share the
+connection lock; a pending or unknown drain returns typed turn_active without
+sending another query. Bounded session close still owns stop and actual waits.
+Normal completion/reuse and public permission/projection semantics stay intact.

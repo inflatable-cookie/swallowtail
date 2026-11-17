@@ -137,11 +137,11 @@ export function query({options}) {
             (root / "manifest.json").write_text('{"version":"2.1.317"}')
             sdk.write_text("""export function query({prompt,options}) {
               const child=options.spawnClaudeCodeProcess({command:options.pathToClaudeCodeExecutable,args:["-e","process.stdin.resume()"],cwd:options.cwd,env:options.env});
-              const stream=(async function*() { for await(const input of prompt) { yield {type:"system",subtype:"init",cwd:options.cwd,model:options.model,session_id:"owned",tools:["Write"],permissionMode:"default"}; yield {type:"assistant",message:{content:[{type:"tool_use",id:"owned",name:"Write"}]}};
+              const stream=(async function*() { let count=0; for await(const input of prompt) { if(count++ === 0) { yield {type:"system",subtype:"init",cwd:options.cwd,model:options.model,session_id:"owned",tools:["Write"],permissionMode:"default"}; yield {type:"assistant",message:{content:[{type:"tool_use",id:"owned",name:"Write"}]}};
               await options.canUseTool("Write",{file_path:"owned"});
-              yield {type:"user",message:{content:[{type:"tool_result",tool_use_id:"owned",is_error:true}]}};
+              yield {type:"user",message:{content:[{type:"tool_result",tool_use_id:"owned",is_error:true}]}}; }
               yield {type:"assistant",message:{content:[{type:"text",text:"continued"}]}};
-              yield {type:"result",subtype:"success",result:"continued",is_error:false,usage:{input_tokens:1,output_tokens:1}}; return; }})();
+              yield {type:"result",subtype:"success",result:"continued",is_error:false,usage:{input_tokens:1,output_tokens:1}}; }})();
               return Object.assign(stream,{initializationResult:async()=>({}), supportedModels:async()=>[{value:options.model}], accountInfo:async()=>({apiProvider:"firstParty",subscriptionType:"max",tokenSource:"oauth"}), close:()=>child.stdin.end()});
             }""")
             cases = root / "cases"
@@ -163,9 +163,74 @@ export function query({options}) {
                 bound=15,
             )
             T.assert_case(prepared, "0.3.317", "prepared")
+            lifecycle = T.case(
+                cases,
+                sdk,
+                Path(node),
+                Path(node),
+                "next-turn",
+                prepared=True,
+                owned_fake=True,
+                lifecycle=True,
+                bound=15,
+            )
+            T.assert_case(lifecycle, "0.3.317", "prepared")
             self.assertEqual(
                 len([e for e in observed["events"] if e["event"] == "callback"]), 1
             )
+
+    def test_missing_terminal_refuses_reuse_and_waits_owned_native_and_transport(self):
+        node = shutil.which("node")
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            root = Path(temporary)
+            (root / "package.json").write_text(
+                '{"name":"@anthropic-ai/claude-agent-sdk","version":"0.3.317"}'
+            )
+            (root / "manifest.json").write_text('{"version":"2.1.317"}')
+            sdk = root / "sdk.mjs"
+            sdk.write_text("""export function query({prompt,options}) {
+              const child=options.spawnClaudeCodeProcess({command:options.pathToClaudeCodeExecutable,args:["-e","process.stdin.resume()"],cwd:options.cwd,env:options.env});
+              let release; const held=new Promise(r=>release=r);
+              const stream=(async function*(){ for await(const input of prompt) {
+                yield {type:"system",subtype:"init",cwd:options.cwd,model:options.model,session_id:"owned",tools:["Write"],permissionMode:"default"};
+                await held; return;
+              }})();
+              return Object.assign(stream,{initializationResult:async()=>({}),supportedModels:async()=>[{value:options.model}],
+                accountInfo:async()=>({apiProvider:"firstParty",subscriptionType:"max",tokenSource:"oauth"}),
+                interrupt:async()=>{},close:()=>{release();child.stdin.end();}});
+            }""")
+            cases = root / "cases"
+            cases.mkdir()
+            observed = T.case(
+                cases,
+                sdk,
+                Path(node),
+                Path(node),
+                "deadline",
+                prepared=True,
+                owned_fake=True,
+                lifecycle=True,
+                expect_reuse_refusal=True,
+                bound=15,
+            )
+            self.assertEqual(observed["returncode"], 0, observed)
+            self.assertEqual(observed["terminalStatus"], "TimedOut")
+            self.assertTrue(observed["reuseBlocked"])
+            self.assertEqual(
+                observed["reuseRefusals"], ["swallowtail.claude-agent.sdk.turn_active"]
+            )
+            self.assertNotIn("nextTurn", observed)
+            self.assertTrue(observed["allWaited"])
+            self.assertTrue(observed["driverWaitObserved"])
+            self.assertTrue(observed["closeResponse"]["data"]["nativeExitObserved"])
+            self.assertEqual(
+                len(
+                    [e for e in observed["events"] if e.get("event") == "turn_started"]
+                ),
+                1,
+            )
+            with self.assertRaisesRegex(ValueError, "genuine next turn"):
+                T.assert_case(observed, "0.3.317", "prepared")
 
 
 class AssertionTests(unittest.TestCase):
@@ -345,6 +410,54 @@ class AssertionTests(unittest.TestCase):
             value[key] = bad
             with self.assertRaises(ValueError):
                 T.assert_case(value, "0.3.322", "prepared")
+
+    def test_actual_lifecycle_assertion_refuses_old_terminal_misattribution(self):
+        base = self.fixture("prepared", "cancel")
+        base["lifecycle"] = True
+        base["reuseRefusals"] = ["swallowtail.claude-agent.sdk.turn_active"]
+        base["nextTurn"] = {
+            "terminalStatus": "Completed",
+            "output": "continued",
+            "callbacks": [],
+            "cancellation": None,
+            "runtimeEvents": [
+                {"kind": "Started", "sequence": 0},
+                {"kind": "OutputDelta", "sequence": 1, "content": "continued"},
+            ],
+        }
+        base["events"][5:5] = [
+            {"event": "turn_started"},
+            {"event": "output_delta", "delta": "continued"},
+            {"event": "turn_ended", "isError": False, "stopReason": "success"},
+        ]
+        T.assert_case(base, "0.3.322", "prepared")
+        variants = []
+        for key, value in [
+            ("terminalStatus", "TimedOut"),
+            ("output", None),
+            ("callbacks", [{"event": "callback"}]),
+        ]:
+            v = copy.deepcopy(base)
+            v["nextTurn"][key] = value
+            variants.append(v)
+        v = copy.deepcopy(base)
+        v["events"][4], v["events"][5] = v["events"][5], v["events"][4]
+        variants.append(v)
+        v = copy.deepcopy(base)
+        v.pop("nextTurn")
+        variants.append(v)
+        v = copy.deepcopy(base)
+        v["reuseRefusals"] = ["unrelated_error"]
+        variants.append(v)
+        v = copy.deepcopy(base)
+        v["allWaited"] = False
+        variants.append(v)
+        v = copy.deepcopy(base)
+        v["events"][7]["isError"] = True
+        variants.append(v)
+        for v in variants:
+            with self.subTest(value=v), self.assertRaises(ValueError):
+                T.assert_case(v, "0.3.322", "prepared")
 
     def test_original_error_cannot_be_a_caught_startup_failure(self):
         value = {

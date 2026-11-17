@@ -182,7 +182,10 @@ impl SdkConnection {
             .active_turn
             .lock()
             .expect("SDK sidecar active lock poisoned");
-        if active.as_ref().is_some_and(|active| !active.is_finished()) {
+        if self.closed.load(Ordering::SeqCst) {
+            return Err(self.closed_failure());
+        }
+        if active.as_ref().is_some_and(|active| !active.is_reusable()) {
             return Err(failure(
                 "swallowtail.claude-agent.sdk.turn_active",
                 "Claude Agent SDK sidecar session already has an active turn",
@@ -199,10 +202,51 @@ impl SdkConnection {
             .expect("SDK sidecar active lock poisoned");
         if active
             .as_ref()
-            .is_some_and(|current| Arc::ptr_eq(current, turn))
+            .is_some_and(|current| Arc::ptr_eq(current, turn) && current.is_reusable())
         {
             *active = None;
         }
+    }
+
+    fn dispatch_turn_event(
+        &self,
+        event: super::wire::ClaudeAgentSdkEvent,
+    ) -> Result<(), RuntimeFailure> {
+        // Selection and dispatch share the replacement/expiry lock. Never take
+        // a recipient snapshot and subsequently apply an event after replacement.
+        let active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        match active.as_ref() {
+            Some(turn) => turn.handle_event(event),
+            None => Err(failure(
+                "swallowtail.claude-agent.sdk.event_without_turn",
+                "Claude Agent SDK sidecar emitted a turn event outside an active turn",
+            )),
+        }
+    }
+
+    /// Linearize deadline expiry with event dispatch and recipient replacement.
+    /// A normal terminal that won the lock cannot acquire a timeout obligation.
+    pub(crate) fn expire_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
+        let active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        if !active
+            .as_ref()
+            .is_some_and(|current| Arc::ptr_eq(current, turn))
+            || turn.is_finished()
+        {
+            return false;
+        }
+        turn.mark_timed_out();
+        turn.fail_connection(SafeDiagnostic::new(
+            "swallowtail.claude-agent.sdk.turn_deadline_elapsed",
+            "Claude Agent SDK sidecar turn reached its host deadline",
+        ));
+        true
     }
 
     /// Ends sidecar input and requests cooperative stop. This is not a join
@@ -258,7 +302,7 @@ impl SdkConnection {
             .active_turn
             .lock()
             .expect("SDK sidecar active lock poisoned")
-            .take()
+            .as_ref()
             && !turn.is_finished()
         {
             turn.fail_connection(error.diagnostic().clone());

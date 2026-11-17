@@ -119,7 +119,7 @@ async fn run(config: &Value, config_file: &std::path::Path) -> Value {
     } else {
         35000
     }));
-    let mut turn = session
+    let turn = session
         .start_turn(
             TurnRequest::new(
                 RuntimeTurnId::new("turn").expect("turn"),
@@ -131,15 +131,113 @@ async fn run(config: &Value, config_file: &std::path::Path) -> Value {
         )
         .await
         .expect("actual prepared turn");
+    let mut result = observe_turn(
+        turn,
+        config,
+        case,
+        deadline,
+        local.deadline_after(Duration::from_secs(1)),
+        &services,
+    )
+    .await;
+    if config["lifecycle"] == true {
+        fs::write(text("nextTurnMarker"), b"owned next turn").expect("owned marker");
+        let reuse_deadline = local.deadline_after(Duration::from_secs(5));
+        let mut refusals = Vec::new();
+        loop {
+            let next_deadline = local.deadline_after(Duration::from_secs(20));
+            match session
+                .start_turn(
+                    TurnRequest::new(
+                        RuntimeTurnId::new("next").expect("next id"),
+                        OperationContent::new("Report continued for the owned next turn.")
+                            .expect("next prompt"),
+                    )
+                    .with_deadline(next_deadline),
+                    services.clone(),
+                )
+                .await
+            {
+                Ok(next) => {
+                    result["nextTurn"] = observe_turn(
+                        next,
+                        config,
+                        "next",
+                        next_deadline,
+                        local.deadline_after(Duration::from_secs(1)),
+                        &services,
+                    )
+                    .await;
+                    break;
+                }
+                Err(error) => {
+                    assert_eq!(
+                        error.diagnostic().code(),
+                        "swallowtail.claude-agent.sdk.turn_active",
+                        "only typed busy can be retried"
+                    );
+                    refusals.push(error.diagnostic().code().to_owned());
+                    if config["expectReuseRefusal"] == true {
+                        result["reuseBlocked"] = json!(true);
+                        break;
+                    }
+                    assert!(
+                        services.time().expect("clock").now() < reuse_deadline.instant(),
+                        "terminal drain did not settle"
+                    );
+                    services
+                        .time()
+                        .expect("clock")
+                        .wait_until(local.deadline_after(Duration::from_millis(20)))
+                        .await;
+                }
+            }
+        }
+        result["reuseRefusals"] = json!(refusals);
+    }
+    let session_cleanup = session
+        .close(
+            SessionCleanupRequest::new(local.deadline_after(Duration::from_secs(5))),
+            services,
+        )
+        .await;
+    local.shutdown_task_reapers().expect("actual task joins");
+    // Preserve the product's existing root-only degraded posture. This is a
+    // positive host root wait, not attested descendant-tree emptiness.
+    let session_class = match &session_cleanup {
+        CleanupOutcome::Clean => "Clean",
+        CleanupOutcome::Degraded(d)
+            if d.code() == "swallowtail.claude-agent.sdk.close_root_only_degraded" =>
+        {
+            "RootCompleted"
+        }
+        CleanupOutcome::Degraded(_) => "Degraded",
+        CleanupOutcome::Failed(_) => "Failed",
+        CleanupOutcome::NotApplicable => "NotApplicable",
+    };
+    result["sessionCleanup"] = json!(session_class);
+    result["sessionCleanupDiagnostic"] = json!(session_cleanup.diagnostic().map(|d| d.code()));
+    result["sessionCleanupDetail"] = json!(format!("{session_cleanup:?}"));
+    result["driverWaitObserved"] = json!(matches!(session_class, "Clean" | "RootCompleted"));
+    result
+}
+
+async fn observe_turn(
+    mut turn: Box<dyn swallowtail_runtime::TurnHandle>,
+    config: &Value,
+    case: &str,
+    deadline: swallowtail_runtime::Deadline,
+    cancel_at: swallowtail_runtime::Deadline,
+    services: &swallowtail_runtime::HostServices,
+) -> Value {
+    let text = |key: &str| config[key].as_str().expect("case string");
     let mut events = turn.take_events().expect("events").fuse();
     let mut exchange = turn.take_callbacks().expect("callbacks");
     let responder = exchange.responder();
     let mut requests = exchange.take_requests().expect("request stream").fuse();
     let mut terminal = turn.take_terminal_outcome().expect("terminal").fuse();
     let clock = services.time().expect("host time");
-    let mut cancel_timer = clock
-        .wait_until(local.deadline_after(Duration::from_millis(1000)))
-        .fuse();
+    let mut cancel_timer = clock.wait_until(cancel_at).fuse();
     let mut recorded = Vec::new();
     let mut callbacks = Vec::new();
     let mut cancellation = None;
@@ -185,29 +283,7 @@ async fn run(config: &Value, config_file: &std::path::Path) -> Value {
         .map(OperationContent::as_str)
         .map(str::to_owned);
     let turn_cleanup = turn.close().await;
-    let session_cleanup = session
-        .close(
-            SessionCleanupRequest::new(local.deadline_after(Duration::from_secs(5))),
-            services,
-        )
-        .await;
-    local.shutdown_task_reapers().expect("actual task joins");
-    // Preserve the product's existing root-only degraded posture. This is a
-    // positive host root wait, not attested descendant-tree emptiness.
-    let session_class = match &session_cleanup {
-        CleanupOutcome::Clean => "Clean",
-        CleanupOutcome::Degraded(d)
-            if d.code() == "swallowtail.claude-agent.sdk.close_root_only_degraded" =>
-        {
-            "RootCompleted"
-        }
-        CleanupOutcome::Degraded(_) => "Degraded",
-        CleanupOutcome::Failed(_) => "Failed",
-        CleanupOutcome::NotApplicable => "NotApplicable",
-    };
     json!({"terminalStatus":terminal_status,"output":output,"runtimeEvents":recorded,"callbacks":callbacks,
         "cancellation":cancellation,"deadlineTicks":deadline.instant().ticks(),
-        "turnCleanup":format!("{turn_cleanup:?}"),"sessionCleanup":session_class, "sessionCleanupDiagnostic":session_cleanup.diagnostic().map(|d|d.code()),
-        "sessionCleanupDetail":format!("{session_cleanup:?}"),
-        "driverWaitObserved":matches!(session_class,"Clean"|"RootCompleted")})
+        "turnCleanup":format!("{turn_cleanup:?}")})
 }

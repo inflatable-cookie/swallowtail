@@ -669,3 +669,170 @@ fn timed_out_turn_drains_one_abort_terminal_for_cooperative_close_only() {
         );
     }
 }
+
+#[test]
+fn timed_out_recipient_blocks_reuse_until_its_exact_terminal_is_drained() {
+    for tail in ["drained", "missing", "duplicate", "raced"] {
+        let host = host_id("claude-agent-sdk.fixture.deadline-reuse");
+        let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+        let services = fixture.services(host.clone());
+        let mut session =
+            block_on(prepared_session(host).open_session(services.clone())).expect("open");
+        let mut first = block_on(session.start_turn(
+            turn_request("old", "owned").with_deadline(swallowtail_runtime::Deadline::at(
+                swallowtail_runtime::MonotonicInstant::from_ticks(1_100),
+            )),
+            services.clone(),
+        ))
+        .expect("old turn");
+        let first_events = first.take_events().expect("old events");
+        fixture.advance_time_to_ticks(1_100);
+        let outcome = block_on(first.take_terminal_outcome().expect("old terminal"));
+        assert_eq!(outcome.status(), &TerminalStatus::TimedOut);
+        assert!(
+            first.take_terminal_outcome().is_none(),
+            "public outcome is single-use"
+        );
+        let _ = block_on(first.close());
+        fixture.wait_for_command("interrupt");
+        let refused =
+            block_on(session.start_turn(turn_request("premature", "owned"), services.clone()));
+        assert_eq!(
+            refused
+                .err()
+                .expect("pending drain is busy")
+                .diagnostic()
+                .code(),
+            "swallowtail.claude-agent.sdk.turn_active"
+        );
+        assert_eq!(
+            fixture
+                .inputs()
+                .iter()
+                .filter(|v| v["command"] == "query")
+                .count(),
+            1
+        );
+        if tail != "missing" {
+            if tail == "raced" {
+                let gate = std::sync::Arc::new(std::sync::Barrier::new(2));
+                let peer = fixture.clone();
+                let release = gate.clone();
+                let writer = std::thread::spawn(move || {
+                    release.wait();
+                    peer.emit_and_wait_until_dispatched(failed_native_result("aborted_streaming"));
+                });
+                gate.wait();
+                let raced =
+                    block_on(session.start_turn(turn_request("racing", "owned"), services.clone()));
+                writer.join().expect("terminal writer joins");
+                if let Err(error) = &raced {
+                    assert_eq!(
+                        error.diagnostic().code(),
+                        "swallowtail.claude-agent.sdk.turn_active"
+                    );
+                }
+                if let Ok(mut next) = raced {
+                    fixture.emit_and_wait_until_dispatched(completed_native_result());
+                    assert_eq!(
+                        block_on(next.take_terminal_outcome().expect("new terminal")).status(),
+                        &TerminalStatus::Completed
+                    );
+                    let _ = block_on(next.close());
+                }
+            } else {
+                fixture.emit_and_wait_until_dispatched(failed_native_result("aborted_streaming"));
+            }
+            if tail == "duplicate" {
+                fixture.emit_and_wait_until_dispatched(failed_native_result("aborted_streaming"));
+                assert!(
+                    block_on(session.start_turn(turn_request("stale", "owned"), services.clone()))
+                        .is_err()
+                );
+                assert_eq!(
+                    fixture
+                        .inputs()
+                        .iter()
+                        .filter(|v| v["command"] == "query")
+                        .count(),
+                    1
+                );
+            } else {
+                let mut next = block_on(
+                    session.start_turn(turn_request("genuine-next", "owned"), services.clone()),
+                )
+                .expect("drained recipient can be replaced");
+                fixture.emit_and_wait_until_dispatched(completed_native_result());
+                assert_eq!(
+                    block_on(next.take_terminal_outcome().expect("next terminal")).status(),
+                    &TerminalStatus::Completed
+                );
+                let _ = block_on(next.close());
+            }
+        }
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::TimedOut,
+            "old outcome never changes"
+        );
+        let old_events = block_on(futures_util::StreamExt::collect::<Vec<_>>(first_events));
+        assert!(
+            !old_events.iter().any(|e| e.as_ref().is_ok_and(|e| matches!(
+                e.kind(),
+                swallowtail_runtime::RuntimeEventKind::OutputDelta
+            )))
+        );
+        let cleanup = block_on(session.close(cleanup_request(), services));
+        assert!(
+            matches!(cleanup, swallowtail_runtime::CleanupOutcome::Degraded(_)),
+            "{tail}: {cleanup:?}"
+        );
+        assert!(
+            fixture
+                .cleanup_events()
+                .contains(&crate::sdk_support::CleanupEvent::ProcessWait)
+        );
+    }
+}
+
+fn completed_native_result() -> serde_json::Value {
+    let mut value = failed_native_result("unused");
+    value["subtype"] = serde_json::json!("success");
+    value["stopReason"] = serde_json::json!("success");
+    value["isError"] = serde_json::json!(false);
+    value["terminalReason"] = serde_json::Value::Null;
+    value
+}
+
+#[test]
+fn ordinary_completed_recipient_allows_normal_subsequent_reuse() {
+    let host = host_id("claude-agent-sdk.fixture.normal-reuse");
+    let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+    let services = fixture.services(host.clone());
+    let mut session =
+        block_on(prepared_session(host).open_session(services.clone())).expect("open");
+    for id in ["first", "next"] {
+        let mut turn = block_on(session.start_turn(turn_request(id, "owned"), services.clone()))
+            .expect("normal turn");
+        fixture.emit_and_wait_until_dispatched(completed_native_result());
+        assert_eq!(
+            block_on(turn.take_terminal_outcome().expect("terminal")).status(),
+            &TerminalStatus::Completed
+        );
+        let _ = block_on(turn.close());
+    }
+    assert_eq!(
+        fixture
+            .inputs()
+            .iter()
+            .filter(|v| v["command"] == "query")
+            .count(),
+        2
+    );
+    let _ = block_on(session.close(cleanup_request(), services));
+    assert!(
+        fixture
+            .cleanup_events()
+            .contains(&crate::sdk_support::CleanupEvent::ProcessWait)
+    );
+}

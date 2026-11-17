@@ -173,9 +173,13 @@ class Peer(http.server.BaseHTTPRequestHandler):
                 b'{"type":"error","error":{"type":"invalid_request_error","message":"owned fixture error"}}'
             )
             return
-        if self.server.case in ("cancel", "deadline"):
+        next_turn = (
+            hasattr(self.server, "next_turn_marker")
+            and self.server.next_turn_marker.exists()
+        )
+        if self.server.case in ("cancel", "deadline") and not next_turn:
             self.server.stopping.wait(4)
-        continued = any(
+        continued = next_turn or any(
             isinstance(message.get("content"), list)
             and any(part.get("type") == "tool_result" for part in message["content"])
             for message in body.get("messages", [])
@@ -266,7 +270,11 @@ def case(
     owned_fake=False,
     version="0.3.317",
     bound=45,
+    lifecycle=False,
+    expect_reuse_refusal=False,
 ):
+    if expect_reuse_refusal and not owned_fake:
+        raise ValueError("missing terminal fixture is owned-only")
     root = base / (("prepared-" if prepared else "sidecar-" if sidecar else "") + name)
     root.mkdir()
     home, workspace = root / "home", root / "workspace"
@@ -291,6 +299,7 @@ def case(
     server.daemon_threads = False
     server.requests, server.effect, server.case = [], effect, name
     server.stopping = threading.Event()
+    server.next_turn_marker = root / "next-turn-ready"
     thread = threading.Thread(target=server.serve_forever)
     thread.start()
     environment = {
@@ -309,6 +318,9 @@ def case(
         "native": str(native),
         "workspace": str(workspace),
         "case": name,
+        "lifecycle": lifecycle,
+        "expectReuseRefusal": expect_reuse_refusal,
+        "nextTurnMarker": str(server.next_turn_marker),
         "effect": str(effect),
         "sidecar": str(
             ROOT
@@ -415,7 +427,11 @@ def case(
             :32768
         ]
         result.update(
-            returncode=code, effect=effect.exists(), requests=server.requests, case=name
+            returncode=code,
+            effect=effect.exists(),
+            requests=server.requests,
+            case=name,
+            lifecycle=lifecycle,
         )
         return result
     finally:
@@ -429,6 +445,84 @@ def case(
             managed.unlink()
 
 
+def assert_prepared_lifecycle(result, version, driver):
+    def need(condition, message):
+        if not condition:
+            raise ValueError(message)
+
+    need(driver == "prepared", "lifecycle uses actual prepared route")
+    events = result.get("events", [])
+    starts = [i for i, e in enumerate(events) if e.get("event") == "turn_started"]
+    ends = [i for i, e in enumerate(events) if e.get("event") == "turn_ended"]
+    need(
+        len(starts) == len(ends) == 2 and starts[0] < ends[0] < starts[1] < ends[1],
+        "old terminal must drain before next start",
+    )
+    need(
+        all(
+            v == "swallowtail.claude-agent.sdk.turn_active"
+            for v in result.get("reuseRefusals", [])
+        ),
+        "only typed busy refusals",
+    )
+    need(not result.get("reuseBlocked"), "genuine next turn admitted")
+    next_turn = result["nextTurn"]
+    need(
+        next_turn.get("terminalStatus") == "Completed"
+        and next_turn.get("output") == "continued"
+        and next_turn.get("callbacks") == []
+        and next_turn.get("cancellation") is None,
+        "next turn has its own successful outcome without old callback or cancellation",
+    )
+    runtime = next_turn.get("runtimeEvents", [])
+    need(
+        runtime
+        and runtime[0]["kind"] == "Started"
+        and all(a["sequence"] < b["sequence"] for a, b in zip(runtime, runtime[1:]))
+        and any(
+            e["kind"] == "OutputDelta" and "continued" in (e.get("content") or "")
+            for e in runtime
+        ),
+        "next projection and continuation",
+    )
+    end = events[ends[1]]
+    need(
+        not any(
+            e.get("event") in ("callback", "tool_started", "tool_ended")
+            for e in events[starts[1] : ends[1]]
+        ),
+        "next text-only turn has no tool edge",
+    )
+    need(
+        end.get("isError") is False and end.get("stopReason") == "success",
+        "next native result is successful",
+    )
+    need(
+        any(
+            e.get("event") == "output_delta" and "continued" in e.get("delta", "")
+            for e in events[starts[1] : ends[1]]
+        ),
+        "next native continued output",
+    )
+    first = dict(result)
+    first.pop("nextTurn")
+    first["lifecycle"] = False
+    first["events"] = events[: starts[1]] + [
+        e
+        for e in events[ends[1] + 1 :]
+        if e.get("event") in ("native_exit", "native_close")
+    ]
+    if first["case"] == "next-turn":
+        first["case"] = "deny"
+    if first["case"] == "deadline":
+        need(
+            events[ends[0]].get("terminalReason") == "aborted_streaming"
+            and events[ends[0]].get("isError") is True,
+            "exact old deadline terminal",
+        )
+    assert_case(first, version, driver)
+
+
 def assert_case(result, version, driver):
     """The actual original-proof predicate, also exercised by owned mutations."""
 
@@ -436,6 +530,10 @@ def assert_case(result, version, driver):
         if not condition:
             raise ValueError(label)
 
+    if result.get("lifecycle"):
+        if not isinstance(result.get("nextTurn"), dict):
+            raise ValueError("lifecycle requires a genuine next turn")
+        return assert_prepared_lifecycle(result, version, driver)
     name = result["case"]
     events = result.get("events", [])
     callbacks = (
@@ -661,6 +759,8 @@ def originals(work, inside=False):
             "-e",
             "GITHUB_ACTIONS=true",
             "-e",
+            "SDK240_TRUSTED_SCOPE=" + os.environ.get("SDK240_TRUSTED_SCOPE", "full"),
+            "-e",
             "SDK240_PREPARED_DRIVER="
             + os.environ.get(
                 "SDK240_PREPARED_DRIVER",
@@ -688,17 +788,27 @@ def originals(work, inside=False):
     manifest = json.loads((work / "inputs.json").read_text())
     results = {
         "schema": "sdk240.trusted-original.v1",
+        "scope": os.environ.get("SDK240_TRUSTED_SCOPE", "full"),
         "platform": target,
         "os": platform.platform(),
         "node": manifest["node"],
         "source": os.environ.get("GITHUB_SHA"),
         "cases": [],
     }
+    if results["scope"] not in ("full", "prepared-lifecycle"):
+        raise ValueError("unknown trusted proof scope")
     failures = []
     for row in manifest["tuples"]:
-        cases = [("sdk-options", n) for n in CASES + ("selected-user-deny",)]
-        cases += [("shipped-sidecar", n) for n in CASES]
-        cases += [("prepared", n) for n in CASES + ("deadline",)]
+        lifecycle = os.environ.get("SDK240_TRUSTED_SCOPE") == "prepared-lifecycle"
+        cases = (
+            [("prepared", n) for n in ("deadline", "cancel", "next-turn")]
+            if lifecycle
+            else (
+                [("sdk-options", n) for n in CASES + ("selected-user-deny",)]
+                + [("shipped-sidecar", n) for n in CASES]
+                + [("prepared", n) for n in CASES + ("deadline",)]
+            )
+        )
         for driver, name in cases:
             result = case(
                 Path(row["root"]),
@@ -709,6 +819,7 @@ def originals(work, inside=False):
                 sidecar=driver == "shipped-sidecar",
                 prepared=driver == "prepared",
                 version=row["sdk_version"],
+                lifecycle=lifecycle,
             )
             result.update(
                 driver=driver,

@@ -504,10 +504,12 @@ impl ClaudeAgentSdkSessionHandle {
     fn reject_turn(&self, turn: &Arc<SdkActiveTurn>, error: RuntimeFailure) -> RuntimeFailure {
         turn.fail_connection(error.diagnostic().clone());
         self.connection.clear_active_turn(turn);
-        self.active
-            .lock()
-            .expect("SDK sidecar active lock poisoned")
-            .take();
+        if turn.is_reusable() {
+            self.active
+                .lock()
+                .expect("SDK sidecar active lock poisoned")
+                .take();
+        }
         error
     }
 

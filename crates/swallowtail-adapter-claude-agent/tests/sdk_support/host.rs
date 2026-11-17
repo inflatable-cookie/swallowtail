@@ -76,6 +76,8 @@ pub(super) struct TimeState {
 #[derive(Default)]
 pub(super) struct ProcessState {
     pub(super) input: Vec<Value>,
+    pub(super) output_taken: u64,
+    pub(super) output_processed: u64,
     pub(super) output: VecDeque<ProcessOutputChunk>,
     pub(super) stopped: bool,
     pub(super) opened: bool,
@@ -339,6 +341,31 @@ impl SdkFixtureHost {
 
     /// Emits one extra record outside any command response, used to prove
     /// unsolicited records fail closed.
+    /// The pump's next read proves dispatch of the previous chunk completed.
+    /// This is a transport checkpoint, not a sleep or a fabricated terminal.
+    pub fn emit_and_wait_until_dispatched(&self, record: Value) {
+        let mut state = self
+            .shared
+            .process
+            .lock()
+            .expect("SDK fixture state lock poisoned");
+        script::push(&mut state, record);
+        let target = state.output_taken + u64::try_from(state.output.len()).expect("bounded queue");
+        self.shared.changed.notify_all();
+        let (state, wait) = self
+            .shared
+            .changed
+            .wait_timeout_while(state, std::time::Duration::from_secs(10), |state| {
+                state.output_processed < target && !state.stopped
+            })
+            .expect("fixture checkpoint lock");
+        assert!(
+            !wait.timed_out(),
+            "pump did not dispatch checkpoint: {} < {target}",
+            state.output_processed
+        );
+    }
+
     pub fn emit(&self, record: Value) {
         let mut state = self
             .shared

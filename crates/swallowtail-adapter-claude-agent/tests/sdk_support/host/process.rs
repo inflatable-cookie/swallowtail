@@ -155,11 +155,13 @@ impl ProcessHandle for SdkFixtureProcess {
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         let held = self.stall == Some(super::super::host::Stall::PumpRead);
         Box::pin(async move {
-            let state = self
+            let mut state = self
                 .shared
                 .process
                 .lock()
                 .expect("SDK fixture state lock poisoned");
+            state.output_processed = state.output_taken;
+            self.shared.changed.notify_all();
             let (mut state, wait) = self
                 .shared
                 .changed
@@ -178,7 +180,11 @@ impl ProcessHandle for SdkFixtureProcess {
             if (held || state.holding_pump) && state.pump_released {
                 return Ok(None);
             }
-            Ok(state.output.pop_front())
+            let chunk = state.output.pop_front();
+            if chunk.is_some() {
+                state.output_taken += 1;
+            }
+            Ok(chunk)
         })
     }
 

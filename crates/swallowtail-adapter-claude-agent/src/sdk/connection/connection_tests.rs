@@ -88,7 +88,7 @@ fn a_pump_failure_between_command_check_and_registration_rejects_the_command() {
 }
 
 #[test]
-fn deadline_recipient_retains_until_drain_and_interrupt_write_settle() {
+fn deadline_recipient_retains_until_drain_and_interrupt_command_settle() {
     use crate::sdk::wire::ClaudeAgentSdkEvent;
     for drain_first in [true, false] {
         let connection = SdkConnection::new(

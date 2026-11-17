@@ -80,7 +80,7 @@ review/CI and planner hold release remain the merge gates.
 
 The private reuse invariant is stricter than public completion: a TimedOut
 recipient remains bound until its exact native terminal has drained and its
-interrupt write has settled. Expiry, event dispatch and replacement share the
+correlated interrupt command has settled. Expiry, event dispatch and replacement share the
 connection lock; a pending or unknown drain returns typed turn_active without
 sending another query. Bounded session close still owns stop and actual waits.
 Normal completion/reuse and public permission/projection semantics stay intact.

@@ -131,7 +131,7 @@ impl SdkActiveTurn {
     }
 
     /// Public timeout is not native completion. Retain the recipient until
-    /// its exact terminal is consumed and its interrupt write cannot reach a
+    /// its exact terminal is consumed and its correlated interrupt command cannot reach a
     /// later query. These transitions are monotonic after public completion.
     pub(crate) fn is_reusable(&self) -> bool {
         self.is_finished()

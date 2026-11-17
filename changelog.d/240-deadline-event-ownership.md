@@ -1,5 +1,5 @@
 Keep a timed-out SDK turn as the connection event recipient until its exact
-native abort terminal is drained and the owned interrupt write has settled.
+native abort terminal is drained and the owned correlated interrupt command has settled.
 Refuse new queries while either is pending; serialize expiry, event dispatch
 and replacement under the existing connection lock. Preserve one public
 TimedOut outcome and bounded close/wait when a terminal never arrives.

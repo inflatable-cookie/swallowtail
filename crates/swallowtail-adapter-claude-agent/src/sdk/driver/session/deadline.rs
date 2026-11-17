@@ -63,10 +63,10 @@ pub(super) fn spawn_turn_deadline(
                 // stays a request, and bounded session close owns the
                 // descendant termination.
                 let id = format!("deadline-interrupt:{}", turn.runtime_id().as_str());
-                if connection
+                if let Ok(response) = connection
                     .send(id, ClaudeAgentSdkCommand::Interrupt, json!({}))
                     .await
-                    .is_ok()
+                    && response.await.is_ok_and(|response| response.success)
                 {
                     turn.finish_deadline_interrupt();
                 }

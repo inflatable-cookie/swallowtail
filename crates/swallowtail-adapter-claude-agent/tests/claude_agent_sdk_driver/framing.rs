@@ -832,6 +832,56 @@ fn completed_native_result() -> serde_json::Value {
 }
 
 #[test]
+fn deadline_setup_refusal_rolls_back_before_query_and_allows_recovery() {
+    for refusal in ["reservation", "spawn"] {
+        let host = host_id("claude-agent-sdk.fixture.deadline-setup");
+        let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);
+        let services = fixture.services(host.clone());
+        let mut session =
+            block_on(prepared_session(host).open_session(services.clone())).expect("open");
+        let reaper = fixture.reaper();
+        if refusal == "reservation" {
+            reaper.close_admission();
+        } else {
+            reaper.fail_spawn_after(0);
+        }
+        let error = block_on(session.start_turn(
+            turn_request("unsubmitted", "owned"),
+            services.clone(),
+        ))
+        .err()
+        .expect("deadline setup refuses before query");
+        assert_eq!(error.diagnostic().code(), "swallowtail.fixture_task.unavailable");
+        assert!(fixture.inputs().iter().all(|v| v["command"] != "query"));
+
+        reaper.restore_capacity();
+        let mut next = block_on(
+            session.start_turn(turn_request("genuine-next", "owned"), services.clone()),
+        )
+        .expect("capacity recovery admits a genuine turn");
+        assert_eq!(
+            fixture.inputs().iter().filter(|v| v["command"] == "query").count(),
+            1
+        );
+        fixture.emit_and_wait_until_dispatched(completed_native_result());
+        assert_eq!(
+            block_on(next.take_terminal_outcome().expect("next terminal")).status(),
+            &TerminalStatus::Completed
+        );
+        let _ = block_on(next.close());
+        let cleanup = block_on(session.close(cleanup_request(), services));
+        assert!(
+            cleanup.diagnostic().is_some_and(|diagnostic| diagnostic
+                .message()
+                .contains("close_evidence: nativeExitObserved=true")),
+            "{refusal}: {cleanup:?}"
+        );
+        assert!(fixture.cleanup_events().contains(&crate::sdk_support::CleanupEvent::ProcessWait));
+        reaper.shutdown();
+    }
+}
+
+#[test]
 fn ordinary_completed_recipient_allows_normal_subsequent_reuse() {
     let host = host_id("claude-agent-sdk.fixture.normal-reuse");
     let fixture = SdkFixtureHost::new(SdkScenario::ToolAdmission);

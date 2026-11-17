@@ -195,6 +195,23 @@ impl SdkConnection {
         Ok(())
     }
 
+    /// Roll back registration only when deadline setup failed before a task or
+    /// query was submitted. Public completion uses `clear_active_turn` instead;
+    /// an expired recipient must never lose its outstanding drain obligation.
+    pub(crate) fn rollback_pre_query_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
+        let mut active = self
+            .active_turn
+            .lock()
+            .expect("SDK sidecar active lock poisoned");
+        if active.as_ref().is_some_and(|current| {
+            Arc::ptr_eq(current, turn) && !current.is_finished() && !current.is_timed_out()
+        }) {
+            *active = None;
+            return true;
+        }
+        false
+    }
+
     pub(crate) fn clear_active_turn(&self, turn: &Arc<SdkActiveTurn>) -> bool {
         let mut active = self
             .active_turn

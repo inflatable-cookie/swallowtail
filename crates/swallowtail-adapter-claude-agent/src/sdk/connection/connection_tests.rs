@@ -112,7 +112,12 @@ fn deadline_recipient_retains_until_drain_and_interrupt_command_settle() {
         connection
             .set_active_turn(old.clone())
             .expect("old recipient");
+        assert!(!connection.rollback_pre_query_turn(&next), "identity must match");
         assert!(connection.expire_turn(&old));
+        assert!(
+            !connection.rollback_pre_query_turn(&old),
+            "pre-query rollback cannot discard a timed-out recipient"
+        );
         assert_eq!(
             futures_executor::block_on(terminal).status(),
             &swallowtail_runtime::TerminalStatus::TimedOut

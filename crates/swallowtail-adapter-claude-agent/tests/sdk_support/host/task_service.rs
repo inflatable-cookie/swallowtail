@@ -105,6 +105,15 @@ impl FixtureReaper {
             .lock()
             .expect("SDK fixture reaper lock poisoned") = false;
     }
+
+    /// Models recovery from a transient reservation or worker-creation refusal.
+    pub fn restore_capacity(&self) {
+        *self.accepting.lock().expect("SDK fixture reaper lock poisoned") = true;
+        *self
+            .spawns_before_failure
+            .lock()
+            .expect("SDK fixture reaper lock poisoned") = None;
+    }
 }
 
 impl ThreadTaskService {

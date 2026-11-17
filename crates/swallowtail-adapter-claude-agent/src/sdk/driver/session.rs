@@ -143,7 +143,7 @@ impl InteractiveSessionHandle for ClaudeAgentSdkSessionHandle {
             ) {
                 Ok(task) => task,
                 Err(error) => {
-                    self.connection.clear_active_turn(&turn);
+                    self.connection.rollback_pre_query_turn(&turn);
                     return Err(error);
                 }
             };

@@ -113,3 +113,12 @@ duplicate, stale and racing terminals, and observe normal reuse after settlement
 Receipt scheduling may return only bounded typed busy before admission; it is
 not assumed synchronous with wire dispatch. No product permission or projection
 policy is weakened. Normal CI 44125722318 passed after the fixture correction.
+
+Deadline-task setup refusal is a separate pre-query boundary: if reservation or
+worker creation fails, synchronized rollback releases only the same unfinished,
+non-expired registration. No query or native terminal exists for that attempt.
+Ordinary completion and timeout drain still use the strict reuse predicate.
+Owned reservation/spawn refusal controls prove zero queries before recovery,
+then a genuine completed turn and actual close waits after capacity returns.
+Validation and refreshed proof delivery for this correction are pending a new
+Nucleus run scratch directory; the removed prior run root is not recreated.

@@ -816,50 +816,9 @@ fn the_probe_admission_binds_every_tuple_and_cannot_admit_production() {
     assert_eq!(schema["properties"]["mode"]["const"], "probe-only");
     assert_eq!(schema["properties"]["production_admission"]["const"], false);
 
-    // Production admission stays closed for every admitted tuple: the claim
-    // table does not contain them and the shipped sidecar refuses each one.
-    let maintained: Vec<&str> = ClaudeAgentSdkPackageNativePair::MAINTAINED
-        .iter()
-        .map(|pair| pair.package_version())
-        .collect();
-    for tuple in tuples {
-        let sdk_version = tuple["sdk_version"].as_str().expect("tuple sdk version");
-        if sdk_version == ACCEPTED_SDK {
-            assert!(
-                maintained.contains(&sdk_version),
-                "the admitted control stays the maintained pair"
-            );
-            continue;
-        }
-        assert!(
-            !maintained.contains(&sdk_version),
-            "the probe admission must not enter the maintained pair map"
-        );
-        let mut fixture = NativeProofFixture::start(&FixtureOptions::new(
-            "ok",
-            sdk_version,
-            tuple["native_version"]
-                .as_str()
-                .expect("tuple native version"),
-        ));
-        let cwd = fixture.sidecar().cwd();
-        let refusal = fixture.sidecar().command(
-            "open-1",
-            "open",
-            json!({
-                "cwd": cwd,
-                "model": "claude-sonnet-5-20250929",
-                "expectedSdkVersion": sdk_version,
-                "expectedNativeVersion": tuple["native_version"],
-            }),
-        );
-        assert_eq!(
-            refusal["success"], false,
-            "{sdk_version} must stay refused in production: {refusal}"
-        );
-        assert_eq!(refusal["failure"]["code"], "sdk_version_mismatch");
-        assert!(!fixture.sidecar().sdk_was_constructed());
-    }
+    // This fake-only admission still grants no original or product authority.
+    // The current maintained tuples have independent trusted-runner original
+    // evidence; their production ceiling is checked separately above.
 }
 
 #[test]

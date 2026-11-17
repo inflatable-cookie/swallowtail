@@ -50,6 +50,7 @@ pub(crate) struct SdkActiveTurn {
     deadline_terminal_drained: AtomicBool,
     deadline_interrupt_finished: AtomicBool,
     finished: AtomicBool,
+    native_turn_started: AtomicBool,
     finish_signal: Arc<Mutex<FinishedState>>,
     /// The session's admitted tool set. Admission never widens per turn.
     profile: crate::sdk::profile::ClaudeAgentSdkSessionProfile,
@@ -110,6 +111,7 @@ impl SdkActiveTurn {
                 deadline_terminal_drained: AtomicBool::new(false),
                 deadline_interrupt_finished: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
+                native_turn_started: AtomicBool::new(false),
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
                 profile,
                 admitted_mcp_tools,

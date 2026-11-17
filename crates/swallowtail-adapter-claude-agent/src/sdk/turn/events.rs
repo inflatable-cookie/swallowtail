@@ -32,6 +32,25 @@ impl SdkActiveTurn {
                 "Claude Agent SDK sidecar emitted an event after the active turn terminated",
             ));
         }
+        match &event {
+            ClaudeAgentSdkEvent::TurnStarted => {
+                if self.native_turn_started.swap(true, Ordering::SeqCst) {
+                    return Err(failure(
+                        "swallowtail.claude-agent.sdk.duplicate_turn_start",
+                        "Claude Agent SDK sidecar repeated a turn start",
+                    ));
+                }
+            }
+            ClaudeAgentSdkEvent::TurnEnded { .. }
+                if !self.native_turn_started.load(Ordering::SeqCst) =>
+            {
+                return Err(failure(
+                    "swallowtail.claude-agent.sdk.terminal_before_turn_start",
+                    "Claude Agent SDK sidecar returned a terminal before this turn started",
+                ));
+            }
+            _ => {}
+        }
         self.project_activity(&event)?;
         match event {
             ClaudeAgentSdkEvent::TurnStarted | ClaudeAgentSdkEvent::Progress => self.progress(),

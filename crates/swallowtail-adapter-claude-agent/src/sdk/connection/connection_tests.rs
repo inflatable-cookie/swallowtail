@@ -163,5 +163,17 @@ fn deadline_recipient_retains_until_drain_and_interrupt_write_settle() {
             "late deadline claim cannot mutate old or next recipient"
         );
         assert!(!next.is_finished());
+        assert_eq!(
+            connection
+                .dispatch_turn_event(abort())
+                .expect_err("old terminal before next start refuses")
+                .diagnostic()
+                .code(),
+            "swallowtail.claude-agent.sdk.terminal_before_turn_start"
+        );
+        assert!(
+            !next.is_finished(),
+            "stale terminal is never the next outcome"
+        );
     }
 }

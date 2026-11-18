@@ -22,7 +22,7 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 
 The plan (lanes, their documents and their order), leads, papercuts, brief
 drafts, tasks and status live in Queue, never in this repository. Read what's
-next with `plan.get` (see the `northstar` skill).
+next with `plan.get` (see the `nucleus` skill).
 
 ## Commands
 
@@ -124,7 +124,7 @@ admission query (Tom approved this preflight replacement, 2026-10-07).
 ## Papercuts and leads
 
 File small, recurring friction in Queue with `papercut.add`, and unplanned
-ideas or observations with `lead.add` (see the `northstar` skill). The
+ideas or observations with `lead.add` (see the `nucleus` skill). The
 repository holds no papercut file or triage folder.
 
 ## Shell snippets

@@ -14,7 +14,6 @@ to it; don't restate it.
 | Version currentness procedure | [operations/version-currentness-checkpoint.md](operations/version-currentness-checkpoint.md) (rules: [Contract 029](contracts/029-interface-version-qualification-and-compatibility.md)) |
 | Bounded transitive chrono maintenance disposition | [operations/chrono-maintenance.md](operations/chrono-maintenance.md) |
 | SDK original qualification and retired prototype provenance | [operations/claude-agent-sdk-trusted-qualification.md](operations/claude-agent-sdk-trusted-qualification.md), [operations/claude-agent-sdk-prototype-retirement.md](operations/claude-agent-sdk-prototype-retirement.md) |
-| Rust quality profile and deviations | [contracts/rust-quality-profile.json](contracts/rust-quality-profile.json), [contracts/rust-quality-deviations.json](contracts/rust-quality-deviations.json) |
 | Writing style | [contracts/writing-style.md](contracts/writing-style.md) |
 | Specs, provisional or promoted | [specs/](specs/README.md) |
 | Retired concepts | [retired.toml](retired.toml) |

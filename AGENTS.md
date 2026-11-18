@@ -15,7 +15,6 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 
 - Current state: `docs/README.md`
 - Knowledge (one owner per fact): `docs/knowledge/README.md`
-- Retired concepts, which must not come back: `docs/knowledge/retired.toml`
 - Open questions: `docs/knowledge/questions.md`
 - Consumer guides, route and feature matrices: `docs/guides/`
 - Retained research evidence: `docs/research/`
@@ -40,8 +39,6 @@ effigy test --plan
 - `effigy format:package <pkg>...` — exact-package fmt plus check for one to
   four workspace packages; never the whole workspace
 - `effigy qa:docs` — docs, link, index and guide checks
-- `effigy skill run northstar/retired-concepts` — retired-concept check;
-  kept out of repository QA, so run it before pushing docs changes
 - `effigy qa:routes` — route, feature and activity matrix checks
 - `effigy validate:oxide-routing` — selector routing inventory and hermetic
   Oxide/plain-Cargo routing tests; run it when selectors or the helper change

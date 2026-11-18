@@ -16,7 +16,6 @@ to it; don't restate it.
 | SDK original qualification and retired prototype provenance | [operations/claude-agent-sdk-trusted-qualification.md](operations/claude-agent-sdk-trusted-qualification.md), [operations/claude-agent-sdk-prototype-retirement.md](operations/claude-agent-sdk-prototype-retirement.md) |
 | Writing style | [contracts/writing-style.md](contracts/writing-style.md) |
 | Specs, provisional or promoted | [specs/](specs/README.md) |
-| Retired concepts | [retired.toml](retired.toml) |
 | Open questions | [questions.md](questions.md) |
 
 Product documentation and evidence that live outside this folder:

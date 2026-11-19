@@ -21,7 +21,7 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 - Release compatibility notes: `docs/releases/`
 
 The plan (lanes, their documents and their order), leads, papercuts, brief
-drafts, tasks and status live in Queue, never in this repository. Read what's
+drafts, tasks and status live in Nucleus, never in this repository. Read what's
 next with `plan.get` (see the `nucleus` skill).
 
 ## Commands
@@ -67,7 +67,7 @@ Swallowtail's selectors and guardrails here. The `effigy` executable is
 separate; if it is missing, use the [Effigy installation
 instructions](https://github.com/inflatable-cookie/effigy#install). Before
 validation, check `command -v effigy` and `effigy --version`. Run checks
-through Effigy selectors; heavy work routes through the Queue/Nucleus
+through Effigy selectors; heavy work routes through the Nucleus
 scheduler. A `scheduler_unreachable` result is a blocker, never permission
 for raw-tool or direct-execution fallback. Effigy v0.14 has no local
 admission query (Tom approved this preflight replacement, 2026-10-07).
@@ -95,7 +95,7 @@ admission query (Tom approved this preflight replacement, 2026-10-07).
   it gets an adaptation task that qualifies the current release (Contract 029,
   No Terminal Stop).
 - **Feature matrix.** An unavailable cell is exactly one of: a provider
-  limitation citing frozen evidence; a producer gap naming the Queue lane
+  limitation citing frozen evidence; a producer gap naming the Nucleus lane
   that builds it (`lane:<key>`); or evidence pending, naming an open
   question in `docs/knowledge/questions.md` that states the gate owner, the
   decision tree into the other two kinds, and the cells it covers. A cross
@@ -123,7 +123,7 @@ admission query (Tom approved this preflight replacement, 2026-10-07).
 
 ## Papercuts and leads
 
-File small, recurring friction in Queue with `papercut.add`, and unplanned
+File small, recurring friction in Nucleus with `papercut.add`, and unplanned
 ideas or observations with `lead.add` (see the `nucleus` skill). The
 repository holds no papercut file or triage folder.
 
@@ -150,13 +150,13 @@ the PR and report. Reviewers run the same checks and exercise the behaviour.
 Skip the full `effigy qa` / `ci` and repeat passes per task; do not skip a
 covering selector merely because it belongs to a QA group.
 
-The planner runs full `effigy qa` through Queue on `main` at release points
+The planner runs full `effigy qa` through Nucleus on `main` at release points
 and after major chunks of work, then briefs fixes for failures.
 `validate:focused` runs whole package suites; it is not the task default.
 Use it only when the brief establishes that this package scope covers the
 change, rather than adding it as a validation ritual.
 
-Queue validates merges through GitHub CI; it runs no separate pre-merge
+Nucleus validates merges through GitHub CI; it runs no separate pre-merge
 command for this repository (Q-002).
 
 <!-- oxide:begin -->

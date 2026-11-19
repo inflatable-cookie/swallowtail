@@ -12,7 +12,7 @@ pins. Copy the nearest prior family and replace numbers.
 | Route + lifecycle rows | `docs/guides/provider-route-matrix.md` |
 | Decoder / help specimen | adapter `tests/fixtures/<family>-<baseline>/` |
 | Official channel | last currentness research row, adapter README/guide, changelog URL in prior identity research |
-| Current deferrals and open stops | `version-currentness` Queue lane document and its leads |
+| Current deferrals and open stops | `version-currentness` Nucleus lane document and its leads |
 | Next unused numbers | highest research id on refreshed canonical pushed main (`https://github.com/inflatable-cookie/swallowtail.git` `main`), not this worktree or `origin/main` |
 
 Do not treat a frozen currentness table as still-true official latest.
@@ -226,7 +226,7 @@ Update current surfaces that name the ceiling:
   ceiling
 - `CHANGELOG.md` Unreleased
 
-Status and outcomes go to Queue, never into repository files. Leave
+Status and outcomes go to Nucleus, never into repository files. Leave
 historical research and immutable release docs alone.
 `v0.3.2` (or whichever tagged release) keeps its recorded package/route
 counts; current source may already differ.

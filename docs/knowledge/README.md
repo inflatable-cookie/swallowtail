@@ -3,6 +3,9 @@
 Current truth for Swallowtail. Every topic has exactly one owning file. Link
 to it; don't restate it.
 
+When sources disagree, contracts govern behaviour, then architecture, then
+vision. Specs and research stay provisional until promoted.
+
 | Topic | Owner |
 | --- | --- |
 | Vision and non-goals | [vision.md](vision.md) |

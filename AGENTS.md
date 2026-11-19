@@ -13,7 +13,7 @@ consumers may provide evidence; they do not own Swallowtail decisions.
 
 ## Where things live
 
-- Current state: `docs/README.md`
+- Docs entry point: `docs/README.md`
 - Knowledge (one owner per fact): `docs/knowledge/README.md`
 - Open questions: `docs/knowledge/questions.md`
 - Consumer guides, route and feature matrices: `docs/guides/`

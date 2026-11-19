@@ -1,53 +1,16 @@
-# Swallowtail — current state
+# Swallowtail documentation
 
-Swallowtail is a pre-1.0 Rust library for driving AI model providers and agent
-harnesses through exact, testable routes. The current source tag is `v0.5.4`
-(40 packages, 50 released production routes). The coordinated source-only
-candidate is `0.6.0` (40 packages, 51 production routes); its tag needs separate
-exact-SHA authority. For the tagged package and route inventory, see
-[releases](releases/README.md).
+The entry point to Swallowtail's docs. Consumers start with the guides; anyone
+changing the library starts with the vision and the knowledge index, which
+names the one owning file for each topic.
 
-What is true now:
-
-- Production route claims follow the Contract 029 exact-artifact procedure.
-  Currentness stops stay visible: `kimi-code.acp` remains qualified through
-  `0.38.0` while official stable `2.1.1` retains the local-spawn process-
-  authority stop (Research 403); a host-terminal API design awaits separate
-  review.
-- Cursor Agent ACP and headless remain qualified through
-  `2026.10.01-14929f9`. Newer identities are retained, but selected handler,
-  callback/cancel/validation, and executing-runtime impact proof is incomplete
-  ([Research 450](research/450-cursor-agent-acp-headless-2026-10-22-identity.md#finite-stop-and-follow-up-proof)).
-  Catalogue independently qualifies through `2026.10.22-27dcf5f`.
-- DeepSeek Harness Web now includes exact selected RCs through `0.1.1-rc.2`;
-  npm `latest`/`next` `0.2.0-rc.2` remains unqualified pending the browser-auth
-  adaptation in Research 411.
-- Contract 063 admits a consumer-supplied streamable-HTTP MCP placement.
-  `opencode.acp` is live-proven honouring it. `claude-agent.acp` honours it
-  on exact `0.81.2` (Research 364) after Research 352's `cleanup_failed`
-  stop. `gemini-cli.acp` honours it on host exact `0.61.0` (Research 362)
-  after Research 360's Plan-mode `tool_not_called` stop. `copilot-cli.acp`,
-  `goose.acp` and `kiro.acp` emit the entry with live honouring unproven
-  (Research 351).
-- Unavailable feature-matrix cells are provider limitations with frozen
-  evidence or producer gaps owned by a Nucleus lane.
-
-When sources disagree: contracts govern behaviour, then architecture, then
-vision. Specs and research stay provisional until promoted.
-
-## By topic
-
-- Vision: [knowledge/vision.md](knowledge/vision.md)
-- Architecture: [knowledge/architecture/](knowledge/architecture/README.md)
-- Contracts: [knowledge/contracts/](knowledge/contracts/README.md)
-- All knowledge, one owner per topic: [knowledge/README.md](knowledge/README.md)
-- Consumer guides and matrices: [guides/](guides/README.md)
+- Why Swallowtail exists and what it is not: [knowledge/vision.md](knowledge/vision.md)
+- How the system is shaped: [knowledge/architecture/](knowledge/architecture/README.md)
+- Durable rules and interfaces: [knowledge/contracts/](knowledge/contracts/README.md)
+- Everything, by topic: [knowledge/README.md](knowledge/README.md)
+- Consumer guides and route and feature matrices: [guides/](guides/README.md)
+- Release notes and compatibility records: [releases/](releases/README.md)
 - Retained research evidence: [research/](research/README.md)
-- Release notes: [releases/](releases/README.md)
-- Currentness minor source/compatibility ledger and candidate record:
-  [releases/currentness-minor-compatibility.md](releases/currentness-minor-compatibility.md)
+- Open questions: [knowledge/questions.md](knowledge/questions.md)
 
-## What's next
-
-The project's plan is in Nucleus: its lanes, their documents and their order.
-Open questions: [knowledge/questions.md](knowledge/questions.md).
+The plan (lanes, their documents and their order) lives in Nucleus, not here.

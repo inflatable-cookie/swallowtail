@@ -22,8 +22,8 @@ Read [reference.md](reference.md) before writing research, fixtures, or claims.
 Read, in order, then follow the latest of these over memory:
 
 1. this skill and `reference.md`
-2. the task brief, when Queue dispatched this run
-3. the `version-currentness` Queue lane document and its leads (deferrals
+2. the task brief, when Nucleus dispatched this run
+3. the `version-currentness` Nucleus lane document and its leads (deferrals
    and open stops)
 4. Contract 029 Upgrade Workflow, No Terminal Stop, and Recurring Currentness
    Checkpoint
@@ -205,7 +205,7 @@ Typical claim shape for compatible-extension:
 
 Then update tests, the prepared guide, route + lifecycle matrix rows,
 feature-matrix CSV, architecture if it names the ceiling, `CHANGELOG.md`
-Unreleased, and the research index. Status and outcomes go to Queue, not
+Unreleased, and the research index. Status and outcomes go to Nucleus, not
 the repository.
 
 Do **not** edit historical research, immutable release notes, or
@@ -237,7 +237,7 @@ Live probes still need separate operator authority.
 Glue-light: what changed, current state, failed or material validation,
 next move.
 
-Report through Queue:
+Report through Nucleus:
 
 - more official-newer families remain → name the next family for the planner
 - sweep complete except recorded deferrals → say so; currentness is idle

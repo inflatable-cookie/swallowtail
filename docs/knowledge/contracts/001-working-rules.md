@@ -27,20 +27,20 @@ These rules apply to all Swallowtail work before v1.0.
   if it is absent, correct the plan rather than hardening the probe.
 - Keep external source repositories as evidence, not hidden build inputs.
 - Run all-route version currentness as a named Contract 029 checkpoint. It is
-  a standing Queue lane, never finished. Do not extend a compatibility claim
+  a standing Nucleus lane, never finished. Do not extend a compatibility claim
   from registry `latest` or local `--version` alone.
 
 ## Roles And Authority
 
 - The planner (Chatterbox) explores problems with the operator, keeps
-  the plan in Queue and the knowledge files current, writes task briefs, and
+  the plan in Nucleus and the knowledge files current, writes task briefs, and
   requests dispatch approval. It writes no runtime code and does not merge.
-- Tasks, briefs, status, review and closeout live in Queue, never in this
-  repository. A worker implements one brief in the worktree Queue gives it,
+- Tasks, briefs, status, review and closeout live in Nucleus, never in this
+  repository. A worker implements one brief in the worktree Nucleus gives it,
   edits only what the brief owns, and stops at exact-head review; it never
   merges.
 - Triage notes are intake, never execution authority. Papercuts are filed
-  in Queue with `papercut.add` (see `AGENTS.md`); the planner promotes one to
+  in Nucleus with `papercut.add` (see `AGENTS.md`); the planner promotes one to
   a task or closes it. A papercut is never an automatic triage note or task.
 - Release mutations (tag, push, publication, GitHub Release, consumer or
   provider changes) need explicit operator authority under Contract 036. A

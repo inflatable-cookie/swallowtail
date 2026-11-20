@@ -23,8 +23,37 @@ use swallowtail_runtime::{
 
 const DRIVER_ID: &str = "swallowtail.claude-agent.acp";
 const ENDPOINT_AUDIENCE: &str = "api.anthropic.com";
+/// Longest adapter-derived operation scope accepted from a caller identity.
+///
+/// [`ScopeId`] itself rejects only blank text, so an unbounded caller-supplied
+/// turn or request id would otherwise be echoed into every host scope, task
+/// lane, and cleanup record. The bound matches the workspace convention for
+/// opaque identity text; a longer identity is refused before the driver takes
+/// any provider side effect.
+const MAXIMUM_SCOPE_BYTES: usize = 256;
 
 use self::validation::{validate_attachment, validate_open, validate_plan};
+
+/// Derives one bounded operation scope from a caller-supplied identity.
+///
+/// Every caller derives its scope through this function *before* the first
+/// provider side effect, so a rejected scope can neither leave an active turn
+/// behind nor leak a spawned session.
+fn derived_scope(prefix: &str, identity: &str) -> Result<ScopeId, RuntimeFailure> {
+    let scope = format!("{prefix}{identity}");
+    if scope.len() > MAXIMUM_SCOPE_BYTES {
+        return Err(failure(
+            "swallowtail.claude_agent.acp.scope_invalid",
+            "Claude Agent operation scope exceeded its bounded identity length",
+        ));
+    }
+    ScopeId::new(scope).map_err(|_| {
+        failure(
+            "swallowtail.claude_agent.acp.scope_invalid",
+            "Claude Agent operation scope was invalid",
+        )
+    })
+}
 
 /// Low-level driver for Claude Agent ACP discovery, runs, and sessions.
 pub struct ClaudeAgentAcpDriver {

@@ -781,3 +781,99 @@ fn assert_malformed(output: String) {
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
     assert!(state.waited());
 }
+
+#[test]
+fn refused_task_spawn_releases_the_launch_directory_the_start_created() {
+    let host =
+        swallowtail_core::ExecutionHostId::new("host.response-only.spawn-refused").expect("host");
+    let local = empty_launch_host(host.clone());
+    let prepared = prepared_at_narrowed(host.clone(), "2.1.293", None, &local);
+    let run = profile(&prepared, "spawn-refused");
+    let (process, state) =
+        FakeProcessService::completed(&response_fixture("response-complete.jsonl"));
+    let resources = RecordingResources::new(
+        local
+            .services()
+            .working_resource()
+            .expect("the local host owns a working-resource service")
+            .clone(),
+    );
+    let services = local
+        .services()
+        .clone()
+        .with_process(process)
+        .with_task(Arc::new(crate::claude_code_support::FailingTaskService))
+        .with_working_resource(resources.clone());
+    let error = match block_on(run.start_run(services)) {
+        Ok(_handle) => panic!("a refused task spawn must fail the start"),
+        Err(error) => error,
+    };
+    assert_eq!(error.diagnostic().code(), "fixture.task.spawn_failed");
+    assert!(state.started(), "the child process had already started");
+    assert_eq!(
+        resources.created.load(Ordering::SeqCst),
+        1,
+        "the narrowed segment binds one temporary launch directory"
+    );
+    assert_eq!(
+        resources.released.load(Ordering::SeqCst),
+        1,
+        "a refused spawn releases the launch directory it created"
+    );
+}
+
+/// Delegates to the host working-resource service while counting what the
+/// driver asked for, so a refused start can prove it released its own lease.
+struct RecordingResources {
+    inner: Arc<dyn swallowtail_runtime::WorkingResourceService>,
+    created: AtomicUsize,
+    released: AtomicUsize,
+}
+
+impl RecordingResources {
+    fn new(inner: Arc<dyn swallowtail_runtime::WorkingResourceService>) -> Arc<Self> {
+        Arc::new(Self {
+            inner,
+            created: AtomicUsize::new(0),
+            released: AtomicUsize::new(0),
+        })
+    }
+}
+
+impl swallowtail_runtime::WorkingResourceService for RecordingResources {
+    fn resolve(
+        &self,
+        scope: swallowtail_runtime::ScopeId,
+        reference: swallowtail_runtime::WorkingResourceRef,
+        access: swallowtail_core::ResourceAccess,
+        representation: swallowtail_core::ResourceRepresentation,
+    ) -> swallowtail_runtime::BoxFuture<
+        'static,
+        Result<swallowtail_runtime::ResourceLease, swallowtail_runtime::RuntimeFailure>,
+    > {
+        self.inner.resolve(scope, reference, access, representation)
+    }
+
+    fn create_temporary(
+        &self,
+        scope: swallowtail_runtime::ScopeId,
+        access: swallowtail_core::ResourceAccess,
+        representation: swallowtail_core::ResourceRepresentation,
+    ) -> swallowtail_runtime::BoxFuture<
+        'static,
+        Result<swallowtail_runtime::ResourceLease, swallowtail_runtime::RuntimeFailure>,
+    > {
+        self.created.fetch_add(1, Ordering::SeqCst);
+        self.inner.create_temporary(scope, access, representation)
+    }
+
+    fn release(
+        &self,
+        lease: swallowtail_runtime::ResourceLease,
+    ) -> swallowtail_runtime::BoxFuture<'static, CleanupOutcome> {
+        self.released.fetch_add(1, Ordering::SeqCst);
+        self.inner.release(lease)
+    }
+}
+
+use std::sync::atomic::{AtomicUsize, Ordering};

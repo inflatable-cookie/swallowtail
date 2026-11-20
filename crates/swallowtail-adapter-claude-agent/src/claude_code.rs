@@ -2,7 +2,7 @@ use crate::claude_code_command::arguments;
 use crate::claude_code_handle::{ClaudeCodeCancellation, ClaudeCodeRunHandle};
 use crate::claude_code_pump::{PumpHost, cleanup_failed_start, pump};
 use crate::failure::failure;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
     ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
@@ -249,7 +249,9 @@ impl ClaudeCodeHeadlessDriver {
                 Ok(process) => Arc::from(process),
                 Err(error) => {
                     if let Some(binding) = watcher_binding {
-                        let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+                        let _ = binding
+                            .close(swallowtail_core::WatcherCleanupCause::Failed)
+                            .await;
                     }
                     if let (Some(watcher), Some(turn)) = (watcher.as_ref(), watcher_turn) {
                         let _ =
@@ -261,7 +263,9 @@ impl ClaudeCodeHeadlessDriver {
         if let Err(error) = write_prompt(process.as_ref(), &request).await {
             cleanup_failed_start(process.as_ref()).await;
             if let Some(binding) = watcher_binding {
-                let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+                let _ = binding
+                    .close(swallowtail_core::WatcherCleanupCause::Failed)
+                    .await;
             }
             if let (Some(watcher), Some(turn)) = (watcher.as_ref(), watcher_turn) {
                 let _ = WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
@@ -272,7 +276,9 @@ impl ClaudeCodeHeadlessDriver {
         if let Err(error) = event_sender.send(RuntimeEvent::new(0, RuntimeEventKind::Started)) {
             cleanup_failed_start(process.as_ref()).await;
             if let Some(binding) = watcher_binding {
-                let _ = binding.close(swallowtail_core::WatcherCleanupCause::Failed);
+                let _ = binding
+                    .close(swallowtail_core::WatcherCleanupCause::Failed)
+                    .await;
             }
             if let (Some(watcher), Some(turn)) = (watcher.as_ref(), watcher_turn) {
                 let _ = WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
@@ -282,6 +288,11 @@ impl ClaudeCodeHeadlessDriver {
         let (terminal_sender, terminal_future) = terminal_outcome_channel();
         let cancellation = Arc::new(ClaudeCodeCancellation::new(Arc::clone(&process)));
         let cleanup_turn = watcher_turn.clone();
+        // The pump takes the binding on its first poll. Holding it in a slot
+        // instead of moving it straight into the pump future is what lets a
+        // refused task spawn still close the bridge lease.
+        let binding_slot = Arc::new(Mutex::new(watcher_binding));
+        let pump_binding = Arc::clone(&binding_slot);
         let task = task_service.spawn(
             scope,
             Box::pin({
@@ -290,6 +301,10 @@ impl ClaudeCodeHeadlessDriver {
                 let operation_id = ActivityOperationId::Run(run_id.clone());
                 let services = services.clone();
                 async move {
+                    let watcher_binding = pump_binding
+                        .lock()
+                        .expect("Claude Code watcher binding lock poisoned")
+                        .take();
                     let outcome = pump(
                         process,
                         event_sender.clone(),
@@ -314,6 +329,15 @@ impl ClaudeCodeHeadlessDriver {
             Ok(task) => task,
             Err(error) => {
                 cleanup_failed_start(process.as_ref()).await;
+                let unclosed = binding_slot
+                    .lock()
+                    .expect("Claude Code watcher binding lock poisoned")
+                    .take();
+                if let Some(binding) = unclosed {
+                    let _ = binding
+                        .close(swallowtail_core::WatcherCleanupCause::Failed)
+                        .await;
+                }
                 if let (Some(watcher), Some(turn)) = (watcher.as_ref(), cleanup_turn) {
                     let _ = WatcherHostService::close_lifecycle_feed(watcher.as_ref(), turn).await;
                 }

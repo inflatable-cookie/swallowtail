@@ -2,6 +2,8 @@
 mod conformance;
 #[path = "acp_driver/deadline.rs"]
 mod deadline;
+#[path = "acp_driver/turn_scope.rs"]
+mod turn_scope;
 use crate::support;
 
 use futures_executor::block_on;

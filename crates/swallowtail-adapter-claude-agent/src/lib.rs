@@ -36,6 +36,7 @@ mod elicitation;
 mod failure;
 mod guard_manifest;
 mod mcp;
+mod ndjson;
 mod permission;
 mod prepared;
 mod prepared_code;

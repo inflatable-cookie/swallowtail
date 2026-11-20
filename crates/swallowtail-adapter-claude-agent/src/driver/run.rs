@@ -1,6 +1,6 @@
 use super::session::merge_cleanup;
 use super::validation::{permission_handling, validate_plan, validate_run};
-use super::{ClaudeAgentAcpDriver, failure, malformed};
+use super::{ClaudeAgentAcpDriver, derived_scope, failure, malformed};
 use crate::connection::AcpConnection;
 use crate::turn::ActiveTurn;
 use serde_json::json;
@@ -74,9 +74,9 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                 open_request = open_request
                     .with_options(SessionOptions::default().with_reasoning_mode(reasoning.clone()));
             }
-            let mut session = self
-                .start_session(&plan, &open_request, &services, selected, reasoning)
-                .await?;
+            // Identity and scope derivation is fallible and runs before the
+            // session exists, so a rejected value cannot leak a spawned
+            // session, its credential lease, or its working resource.
             let run_id = RuntimeRunId::new(format!(
                 "claude-agent-acp:{}",
                 request.request_id().as_str()
@@ -87,6 +87,13 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                 request.request_id().as_str()
             ))
             .map_err(|_| malformed())?;
+            let task_scope = derived_scope(
+                "claude-agent-acp:run-cleanup:",
+                request.request_id().as_str(),
+            )?;
+            let mut session = self
+                .start_session(&plan, &open_request, &services, selected, reasoning)
+                .await?;
             let mut turn_request = TurnRequest::new(turn_id, request.content().clone());
             if let Some(deadline) = request.deadline() {
                 turn_request = turn_request.with_deadline(deadline);
@@ -171,11 +178,6 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                 terminal: turn_terminal,
             })));
             let (terminal_sender, terminal) = terminal_outcome_channel();
-            let task_scope = swallowtail_runtime::ScopeId::new(format!(
-                "claude-agent-acp:run-cleanup:{}",
-                request.request_id().as_str()
-            ))
-            .map_err(|_| malformed())?;
             let task_pending = Arc::clone(&pending);
             let task_cleanup_boundary = cleanup_boundary.clone();
             let task = services.task().expect("validated task").spawn(

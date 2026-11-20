@@ -941,3 +941,151 @@ fn every_failure_kind_keeps_a_stable_namespaced_code() {
         );
     }
 }
+
+#[test]
+fn revocation_in_require_current_signals_active_cancellation() {
+    struct RevokeAfterFirstVerdict(std::sync::atomic::AtomicUsize);
+
+    impl ConsumerAdmissionHostService for RevokeAfterFirstVerdict {
+        fn validate(
+            &self,
+            _binding: &ConsumerAdmissionBinding,
+            _phase: AdmissionPhase,
+        ) -> crate::BoxFuture<'_, Result<AdmissionVerdict, crate::RuntimeFailure>> {
+            let count = self.0.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            let verdict = if count == 0 {
+                AdmissionVerdict::Current
+            } else {
+                AdmissionVerdict::Revoked(
+                    RegisteredToolReasonCode::new("fixture.revoked").expect("reason code"),
+                )
+            };
+            Box::pin(ready(Ok(verdict)))
+        }
+    }
+
+    struct CapturingPendingDispatcher {
+        captured: std::sync::Mutex<Option<RegisteredToolCancellation>>,
+    }
+
+    impl RegisteredToolDispatcher for CapturingPendingDispatcher {
+        fn dispatch(
+            &self,
+            _call: RegisteredToolCall,
+            context: RegisteredToolDispatchContext,
+        ) -> crate::BoxFuture<'_, Result<RegisteredToolOutcome, crate::RuntimeFailure>> {
+            *self.captured.lock().expect("captured lock") = Some(context.cancellation().clone());
+            Box::pin(std::future::pending())
+        }
+    }
+
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let dispatcher = Arc::new(CapturingPendingDispatcher {
+        captured: std::sync::Mutex::new(None),
+    });
+    let admission = ConsumerAdmissionBinding::new(
+        ConsumerProcessIncarnation::new("incarnation").expect("incarnation"),
+        ConsumerWorkspaceGeneration::initial(),
+        ConsumerTaskGeneration::initial(),
+        AdmittedTaskId::new("task").expect("task"),
+        AdmittedSessionId::new("session").expect("session"),
+        AdmittedAttemptId::new("attempt").expect("attempt"),
+        Arc::new(RevokeAfterFirstVerdict(
+            std::sync::atomic::AtomicUsize::new(0),
+        )),
+    );
+    let request = RegisteredToolOpenRequest::new(
+        host(),
+        ConfiguredInstanceId::new("instance").expect("instance"),
+        ScopeId::new("scope").expect("scope"),
+        RuntimeTurnId::new("turn").expect("turn"),
+        selection(),
+        admission,
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
+    );
+    let (kernel, lease) = RegisteredToolOperationKernel::open(
+        request,
+        &proof,
+        Arc::clone(&dispatcher) as Arc<dyn RegisteredToolDispatcher>,
+        Arc::new(FixedClock::default()),
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("open");
+
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+    let mut call = lease.call(call_request("revoked-in-flight"));
+    assert!(call.as_mut().poll(&mut context).is_pending());
+    let cancellation = dispatcher
+        .captured
+        .lock()
+        .expect("captured lock")
+        .take()
+        .expect("dispatcher captured cancellation");
+    assert!(!cancellation.is_cancelled());
+
+    let error = block(Box::pin(kernel.deliver_progress())).expect_err("second verdict revokes");
+    assert_eq!(
+        error.diagnostic().code(),
+        RegisteredToolFailureKind::Revoked.code()
+    );
+    assert!(
+        cancellation.is_cancelled(),
+        "revocation in require_current must signal active cancellation to in-flight dispatchers"
+    );
+}
+
+#[test]
+fn abandoning_dispatched_call_signals_active_cancellation() {
+    struct CapturingPendingDispatcher {
+        captured: std::sync::Mutex<Option<RegisteredToolCancellation>>,
+    }
+
+    impl RegisteredToolDispatcher for CapturingPendingDispatcher {
+        fn dispatch(
+            &self,
+            _call: RegisteredToolCall,
+            context: RegisteredToolDispatchContext,
+        ) -> crate::BoxFuture<'_, Result<RegisteredToolOutcome, crate::RuntimeFailure>> {
+            *self.captured.lock().expect("captured lock") = Some(context.cancellation().clone());
+            Box::pin(std::future::pending())
+        }
+    }
+
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let dispatcher = Arc::new(CapturingPendingDispatcher {
+        captured: std::sync::Mutex::new(None),
+    });
+    let (_kernel, lease) = RegisteredToolOperationKernel::open(
+        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500))),
+        &proof,
+        Arc::clone(&dispatcher) as Arc<dyn RegisteredToolDispatcher>,
+        Arc::new(FixedClock::default()),
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("open");
+
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+    let mut call = lease.call(call_request("abandoned-cancel"));
+    assert!(call.as_mut().poll(&mut context).is_pending());
+    let cancellation = dispatcher
+        .captured
+        .lock()
+        .expect("captured lock")
+        .take()
+        .expect("dispatcher captured cancellation");
+    assert!(!cancellation.is_cancelled());
+
+    drop(call);
+    assert!(
+        cancellation.is_cancelled(),
+        "abandoning a dispatched call must signal active cancellation"
+    );
+}

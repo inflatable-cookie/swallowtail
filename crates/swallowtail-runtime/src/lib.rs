@@ -113,8 +113,9 @@ pub use connection_lifecycle::{
     SignInMethod, SignInOutcome, SignInSession, SignInStartRequest, SignInStatus,
     SubjectObservationFailure, SubjectObservationFailureKind, admit_instance,
     apply_model_presentation_overlay, apply_stored_model_presentation_overlay, cancel_sign_in,
-    complete_sign_in, observe_authenticated_subject, observe_instance_update, poll_sign_in,
-    refresh_readiness, start_sign_in, submit_sign_in_credential_field,
+    cancel_sign_in_async, complete_sign_in, complete_sign_in_async, observe_authenticated_subject,
+    observe_instance_update, poll_sign_in, poll_sign_in_async, refresh_readiness, start_sign_in,
+    start_sign_in_async, submit_sign_in_credential_field,
 };
 pub use consumer_route_projection::{
     ADAPTER_UNQUALIFIED_CODE, ConsumerRouteAcknowledgementState, ConsumerRouteActiveSessionState,

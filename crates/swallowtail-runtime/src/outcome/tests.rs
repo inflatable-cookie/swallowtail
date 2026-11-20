@@ -247,3 +247,17 @@ fn conversation_deletion_cannot_stand_in_for_item_deletion() {
         Some(RemoteResourceDeletionOutcome::Confirmed)
     );
 }
+
+#[test]
+fn terminal_already_set_implements_display_and_error() {
+    use super::TerminalAlreadySet;
+    use std::error::Error;
+
+    let error = TerminalAlreadySet;
+    assert_eq!(
+        error.to_string(),
+        "Operation already has a terminal outcome"
+    );
+    let as_error: &dyn Error = &error;
+    assert!(as_error.source().is_none());
+}

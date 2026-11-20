@@ -296,9 +296,25 @@ mod tests {
     #[test]
     fn dropped_sender_wakes_a_pending_stream_consumer() {
         let (sender, mut stream) = runtime_event_channel(2).expect("capacity is valid");
-        let mut context = Context::from_waker(Waker::noop());
+        let woken = std::sync::Arc::new(std::sync::atomic::AtomicUsize::new(0));
+        struct CountingWaker(std::sync::Arc<std::sync::atomic::AtomicUsize>);
+        impl std::task::Wake for CountingWaker {
+            fn wake(self: std::sync::Arc<Self>) {
+                self.0.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            }
+        }
+        let waker = Waker::from(std::sync::Arc::new(CountingWaker(std::sync::Arc::clone(
+            &woken,
+        ))));
+        let mut context = Context::from_waker(&waker);
         assert_eq!(Pin::new(&mut stream).poll_next(&mut context), Poll::Pending);
+        assert_eq!(woken.load(std::sync::atomic::Ordering::SeqCst), 0);
         drop(sender);
+        assert_eq!(
+            woken.load(std::sync::atomic::Ordering::SeqCst),
+            1,
+            "dropping the last sender must wake the registered consumer waker"
+        );
         assert_eq!(
             Pin::new(&mut stream).poll_next(&mut context),
             Poll::Ready(None),

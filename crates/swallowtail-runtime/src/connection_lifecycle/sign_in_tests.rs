@@ -1,7 +1,8 @@
 use super::{
     ConnectionLifecycleStore, ConnectionLifecycleStoreFailure, SignInAuthorityBinding,
     SignInFailureKind, SignInMethod, SignInStartRequest, SignInStatus, cancel_sign_in,
-    complete_sign_in, poll_sign_in, start_sign_in, submit_sign_in_credential_field,
+    cancel_sign_in_async, complete_sign_in, complete_sign_in_async, poll_sign_in,
+    poll_sign_in_async, start_sign_in, start_sign_in_async, submit_sign_in_credential_field,
 };
 use crate::{
     ApprovedUrlRef, BoxFuture, CleanupOutcome, CredentialRef, Deadline, DeviceAuthorizationId,
@@ -601,4 +602,663 @@ fn api_key_collection_stores_a_reference_not_the_secret() {
     assert!(!format!("{stored:?}").contains("sk-secret-bytes"));
     assert!(!format!("{outcome:?}").contains("sk-secret-bytes"));
     assert!(services.credential().is_none());
+}
+
+fn block_on<F: std::future::Future>(future: F) -> F::Output {
+    use std::task::{Context, Poll, Waker};
+    let mut future = std::pin::pin!(future);
+    let mut context = Context::from_waker(Waker::noop());
+    for _ in 0..128 {
+        if let Poll::Ready(value) = future.as_mut().poll(&mut context) {
+            return value;
+        }
+    }
+    panic!("fixture future did not resolve within bounded polls");
+}
+
+fn yield_once_then<T: Send + 'static>(
+    produce: impl FnOnce() -> T + Send + 'static,
+) -> BoxFuture<'static, T> {
+    let mut yielded = false;
+    let mut produce = Some(produce);
+    Box::pin(std::future::poll_fn(move |context| {
+        if !yielded {
+            yielded = true;
+            context.waker().wake_by_ref();
+            std::task::Poll::Pending
+        } else {
+            let f = produce.take().expect("future polled after completion");
+            std::task::Poll::Ready(f())
+        }
+    }))
+}
+
+struct AsyncSignInPorts {
+    calls: Mutex<Vec<&'static str>>,
+    open_fails: bool,
+    materialize_fails: bool,
+    pending_polls_before_ready: usize,
+    credential: CredentialRef,
+    audience: EndpointAudience,
+}
+
+impl AsyncSignInPorts {
+    fn new(credential: CredentialRef, audience: EndpointAudience) -> Arc<Self> {
+        Arc::new(Self {
+            calls: Mutex::new(Vec::new()),
+            open_fails: false,
+            materialize_fails: false,
+            pending_polls_before_ready: 1,
+            credential,
+            audience,
+        })
+    }
+
+    fn record(&self, call: &'static str) {
+        self.calls.lock().expect("lock").push(call);
+    }
+
+    fn calls(&self) -> Vec<&'static str> {
+        self.calls.lock().expect("lock").clone()
+    }
+}
+
+impl UrlOpenService for AsyncSignInPorts {
+    fn open(
+        &self,
+        _scope: ScopeId,
+        _url: ApprovedUrlRef,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        self.record("url_open");
+        let fails = self.open_fails;
+        yield_once_then(move || {
+            if fails {
+                Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.url_open_failed",
+                    "URL open failed",
+                )))
+            } else {
+                Ok(())
+            }
+        })
+    }
+}
+
+impl LoopbackCallbackService for AsyncSignInPorts {
+    fn bind(
+        &self,
+        scope: ScopeId,
+    ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+        self.record("loopback_bind");
+        yield_once_then(move || {
+            Ok(LoopbackCallbackLease::new(
+                scope,
+                LoopbackCallbackId::new("fixture.async.loopback").expect("id is valid"),
+            ))
+        })
+    }
+
+    fn poll(
+        &self,
+        lease: &LoopbackCallbackLease,
+    ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+        self.record("loopback_poll");
+        let callback_id = lease.callback_id().clone();
+        let mut remaining_pending = self.pending_polls_before_ready;
+        Box::pin(std::future::poll_fn(move |context| {
+            if remaining_pending > 0 {
+                remaining_pending -= 1;
+                context.waker().wake_by_ref();
+                std::task::Poll::Pending
+            } else {
+                std::task::Poll::Ready(Ok(Some(LoopbackCallbackReceipt::new(callback_id.clone()))))
+            }
+        }))
+    }
+
+    fn materialize_credential(
+        &self,
+        _receipt: &LoopbackCallbackReceipt,
+        audience: &EndpointAudience,
+    ) -> Result<CredentialRef, RuntimeFailure> {
+        self.record("loopback_materialize");
+        if self.materialize_fails || audience != &self.audience {
+            return Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "fixture.materialize_failed",
+                "Loopback materialization failed",
+            )));
+        }
+        Ok(self.credential.clone())
+    }
+
+    fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+        self.record("loopback_release");
+        yield_once_then(|| CleanupOutcome::Clean)
+    }
+}
+
+impl DeviceCodeDisplayService for AsyncSignInPorts {
+    fn display(
+        &self,
+        _scope: ScopeId,
+        _prompt: DeviceCodePrompt,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        self.record("device_display");
+        yield_once_then(|| Ok(()))
+    }
+
+    fn poll_authorization(
+        &self,
+        _scope: &ScopeId,
+    ) -> BoxFuture<'static, Result<Option<DeviceAuthorizationReceipt>, RuntimeFailure>> {
+        self.record("device_poll");
+        let mut remaining_pending = self.pending_polls_before_ready;
+        Box::pin(std::future::poll_fn(move |context| {
+            if remaining_pending > 0 {
+                remaining_pending -= 1;
+                context.waker().wake_by_ref();
+                std::task::Poll::Pending
+            } else {
+                std::task::Poll::Ready(Ok(Some(DeviceAuthorizationReceipt::new(
+                    DeviceAuthorizationId::new("fixture.async.device").expect("id is valid"),
+                ))))
+            }
+        }))
+    }
+
+    fn materialize_credential(
+        &self,
+        _receipt: &DeviceAuthorizationReceipt,
+        _audience: &EndpointAudience,
+    ) -> Result<CredentialRef, RuntimeFailure> {
+        self.record("device_materialize");
+        Ok(self.credential.clone())
+    }
+}
+
+struct TrackingProcess {
+    calls: Mutex<Vec<&'static str>>,
+    exited: std::sync::atomic::AtomicBool,
+    async_cleanup: bool,
+}
+
+impl TrackingProcess {
+    fn new(async_cleanup: bool) -> Arc<Self> {
+        Arc::new(Self {
+            calls: Mutex::new(Vec::new()),
+            exited: std::sync::atomic::AtomicBool::new(false),
+            async_cleanup,
+        })
+    }
+
+    fn record(&self, call: &'static str) {
+        self.calls.lock().expect("lock").push(call);
+    }
+
+    fn calls(&self) -> Vec<&'static str> {
+        self.calls.lock().expect("lock").clone()
+    }
+}
+
+struct TrackingProcessHandle {
+    shared: Arc<TrackingProcess>,
+}
+
+impl ProcessHandle for TrackingProcessHandle {
+    fn write_stdin(&self, _chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+        Box::pin(async { Ok(None) })
+    }
+
+    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.shared.record("process_request_stop");
+        if self.shared.async_cleanup {
+            yield_once_then(|| Ok(()))
+        } else {
+            Box::pin(async { Ok(()) })
+        }
+    }
+
+    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.shared.record("process_force_stop");
+        self.shared
+            .exited
+            .store(true, std::sync::atomic::Ordering::SeqCst);
+        if self.shared.async_cleanup {
+            yield_once_then(|| Ok(()))
+        } else {
+            Box::pin(async { Ok(()) })
+        }
+    }
+
+    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        self.shared.record("process_wait");
+        let shared = Arc::clone(&self.shared);
+        Box::pin(std::future::poll_fn(move |context| {
+            if shared.exited.load(std::sync::atomic::Ordering::SeqCst) {
+                if shared.async_cleanup {
+                    shared
+                        .exited
+                        .store(false, std::sync::atomic::Ordering::SeqCst);
+                    context.waker().wake_by_ref();
+                    // One pending tick after exit before reporting reaped.
+                    std::task::Poll::Pending
+                } else {
+                    std::task::Poll::Ready(Ok(ProcessExit::new(true, Some(0))))
+                }
+            } else if shared.async_cleanup
+                && shared
+                    .calls
+                    .lock()
+                    .expect("lock")
+                    .contains(&"process_force_stop")
+            {
+                std::task::Poll::Ready(Ok(ProcessExit::new(true, Some(0))))
+            } else {
+                std::task::Poll::Pending
+            }
+        }))
+    }
+}
+
+impl ProcessService for TrackingProcess {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        self.record("process_start");
+        let shared = Arc::clone(self.calls_arc_workaround());
+        if self.async_cleanup {
+            yield_once_then(move || {
+                Ok(Box::new(TrackingProcessHandle { shared }) as Box<dyn ProcessHandle>)
+            })
+        } else {
+            Box::pin(async move {
+                Ok(Box::new(TrackingProcessHandle { shared }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+}
+
+struct SharedProcessService(Arc<TrackingProcess>);
+
+impl ProcessService for SharedProcessService {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        self.0.record("process_start");
+        let shared = Arc::clone(&self.0);
+        if shared.async_cleanup {
+            yield_once_then(move || {
+                Ok(Box::new(TrackingProcessHandle { shared }) as Box<dyn ProcessHandle>)
+            })
+        } else {
+            Box::pin(async move {
+                Ok(Box::new(TrackingProcessHandle { shared }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+}
+
+impl TrackingProcess {
+    fn calls_arc_workaround(&self) -> &Arc<Self> {
+        panic!("use SharedProcessService wrapper")
+    }
+}
+
+#[test]
+fn async_sign_in_ports_complete_and_cancel_without_poll_now_panic() {
+    let ports = AsyncSignInPorts::new(credential(), audience());
+    let process = TrackingProcess::new(true);
+    let services = HostServices::new(host_id())
+        .with_url_open(ports.clone())
+        .with_loopback_callback(ports.clone())
+        .with_device_code_display(ports.clone())
+        .with_process(Arc::new(SharedProcessService(Arc::clone(&process))))
+        .with_time(Arc::new(FixedTime(1)));
+
+    let mut session = block_on(start_sign_in_async(&services, interactive_request()))
+        .expect("async interactive start succeeds across Poll::Pending");
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut session, &services)).expect("async poll succeeds"),
+        SignInStatus::ReadyToComplete
+    );
+    let outcome = block_on(complete_sign_in_async(session, &services, None))
+        .expect("async complete succeeds");
+    assert_eq!(outcome.audience(), &audience());
+    assert!(ports.calls().contains(&"loopback_release"));
+
+    let mut device = block_on(start_sign_in_async(
+        &services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::DeviceOauth,
+                audience(),
+                EntitlementMetering::SubscriptionAllowance,
+            ),
+            SignInMethod::DeviceOauth {
+                prompt: DeviceCodePrompt::new("WDJB-MJHT").expect("code is valid"),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("async device start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut device, &services)).expect("async device poll succeeds"),
+        SignInStatus::ReadyToComplete
+    );
+    block_on(complete_sign_in_async(device, &services, None)).expect("async device complete");
+
+    let delegated = block_on(start_sign_in_async(
+        &services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("async delegated start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(delegated, &services)).expect("async cancel succeeds"),
+        SignInStatus::Cancelled
+    );
+    assert_eq!(
+        process.calls(),
+        vec![
+            "process_start",
+            "process_request_stop",
+            "process_force_stop",
+            "process_wait",
+        ]
+    );
+}
+
+#[test]
+fn sync_sign_in_handles_poll_pending_without_panicking() {
+    let async_ports = AsyncSignInPorts::new(credential(), audience());
+    let async_services = HostServices::new(host_id())
+        .with_url_open(async_ports.clone())
+        .with_loopback_callback(async_ports.clone())
+        .with_time(Arc::new(FixedTime(1)));
+    let pending_start = start_sign_in(&async_services, interactive_request())
+        .expect_err("pending start future fails closed instead of panicking");
+    assert_eq!(pending_start.kind(), SignInFailureKind::HostPort);
+
+    struct ImmediateStartAsyncPollPorts {
+        inner: Arc<AsyncSignInPorts>,
+        calls: Mutex<Vec<&'static str>>,
+    }
+    impl UrlOpenService for ImmediateStartAsyncPollPorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            self.calls.lock().expect("lock").push("url_open");
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for ImmediateStartAsyncPollPorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            self.calls.lock().expect("lock").push("loopback_bind");
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.sync.loopback").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            self.inner.poll(lease)
+        }
+        fn materialize_credential(
+            &self,
+            receipt: &LoopbackCallbackReceipt,
+            audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            LoopbackCallbackService::materialize_credential(&*self.inner, receipt, audience)
+        }
+        fn release(&self, lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            self.inner.release(lease)
+        }
+    }
+    impl DeviceCodeDisplayService for ImmediateStartAsyncPollPorts {
+        fn display(
+            &self,
+            _scope: ScopeId,
+            _prompt: DeviceCodePrompt,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn poll_authorization(
+            &self,
+            scope: &ScopeId,
+        ) -> BoxFuture<'static, Result<Option<DeviceAuthorizationReceipt>, RuntimeFailure>>
+        {
+            self.inner.poll_authorization(scope)
+        }
+        fn materialize_credential(
+            &self,
+            receipt: &DeviceAuthorizationReceipt,
+            audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            DeviceCodeDisplayService::materialize_credential(&*self.inner, receipt, audience)
+        }
+    }
+
+    let ports = Arc::new(ImmediateStartAsyncPollPorts {
+        inner: AsyncSignInPorts::new(credential(), audience()),
+        calls: Mutex::new(Vec::new()),
+    });
+    let services = HostServices::new(host_id())
+        .with_url_open(ports.clone())
+        .with_loopback_callback(ports.clone())
+        .with_device_code_display(ports.clone())
+        .with_time(Arc::new(FixedTime(1)));
+
+    let mut session = start_sign_in(&services, interactive_request()).expect("start succeeds");
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("first pending poll does not panic"),
+        SignInStatus::InProgress
+    );
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("second poll advances pending future"),
+        SignInStatus::ReadyToComplete
+    );
+    assert_eq!(
+        cancel_sign_in(session, &services).expect("sync cancel with pending release succeeds"),
+        SignInStatus::Cancelled
+    );
+    assert!(ports.inner.calls().contains(&"loopback_release"));
+}
+
+#[test]
+fn sign_in_releases_loopback_and_stops_reaps_process_on_timeout_and_errors() {
+    // 1. start_interactive releases bound loopback lease if url_open.open fails.
+    let failing_open = Arc::new(AsyncSignInPorts {
+        calls: Mutex::new(Vec::new()),
+        open_fails: true,
+        materialize_fails: false,
+        pending_polls_before_ready: 0,
+        credential: credential(),
+        audience: audience(),
+    });
+    let services_open_fail = HostServices::new(host_id())
+        .with_url_open(failing_open.clone())
+        .with_loopback_callback(failing_open.clone())
+        .with_time(Arc::new(FixedTime(1)));
+    let error = block_on(start_sign_in_async(
+        &services_open_fail,
+        interactive_request(),
+    ))
+    .expect_err("url_open error must fail start");
+    assert_eq!(error.kind(), SignInFailureKind::HostPort);
+    assert!(
+        failing_open.calls().contains(&"loopback_release"),
+        "start_interactive must release bound loopback lease on url_open error"
+    );
+
+    // 2. poll_sign_in timeout releases loopback and stops/reaps process.
+    let ports = MockSignInPorts::new(credential(), audience());
+    let interactive_services = interactive_services(ports.clone());
+    let mut timed_out_interactive = start_sign_in(
+        &interactive_services,
+        interactive_request().with_deadline(Deadline::at(MonotonicInstant::from_ticks(0))),
+    )
+    .expect("start");
+    assert_eq!(
+        poll_sign_in(&mut timed_out_interactive, &interactive_services).expect("timeout"),
+        SignInStatus::TimedOut
+    );
+    assert!(
+        ports.calls().contains(&"loopback_release"),
+        "poll_sign_in timeout must release session.loopback"
+    );
+
+    let timeout_process = TrackingProcess::new(false);
+    let delegated_services = HostServices::new(host_id())
+        .with_process(Arc::new(SharedProcessService(Arc::clone(&timeout_process))))
+        .with_time(Arc::new(FixedTime(1)));
+    let mut timed_out_delegated = start_sign_in(
+        &delegated_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        )
+        .with_deadline(Deadline::at(MonotonicInstant::from_ticks(0))),
+    )
+    .expect("delegated start");
+    assert_eq!(
+        poll_sign_in(&mut timed_out_delegated, &delegated_services).expect("timeout"),
+        SignInStatus::TimedOut
+    );
+    assert_eq!(
+        timeout_process.calls(),
+        vec![
+            "process_start",
+            "process_request_stop",
+            "process_force_stop",
+            "process_wait",
+        ]
+    );
+
+    // 3. complete_sign_in error paths release loopback and stop/reap process.
+    let ports_incomplete = MockSignInPorts::new(credential(), audience());
+    let services_incomplete = interactive_services_fn(ports_incomplete.clone());
+    let incomplete_session =
+        start_sign_in(&services_incomplete, interactive_request()).expect("start");
+    let err = complete_sign_in(incomplete_session, &services_incomplete, None)
+        .expect_err("incomplete fails");
+    assert_eq!(err.kind(), SignInFailureKind::Incomplete);
+    assert!(
+        ports_incomplete.calls().contains(&"loopback_release"),
+        "complete_sign_in must release loopback on Incomplete error"
+    );
+
+    let ports_store_err = MockSignInPorts::new(credential(), audience());
+    let services_store_err = interactive_services_fn(ports_store_err.clone());
+    let mut store_err_session =
+        start_sign_in(&services_store_err, interactive_request()).expect("start");
+    *ports_store_err.loopback_ready.lock().expect("lock") = true;
+    poll_sign_in(&mut store_err_session, &services_store_err).expect("ready");
+    let empty_store = MemoryStore::new();
+    let err = complete_sign_in(store_err_session, &services_store_err, Some(&empty_store))
+        .expect_err("absent instance fails");
+    assert_eq!(err.kind(), SignInFailureKind::InstanceAbsent);
+    assert!(
+        ports_store_err.calls().contains(&"loopback_release"),
+        "complete_sign_in must release loopback on store error"
+    );
+
+    let incomplete_process = TrackingProcess::new(false);
+    let services_proc_err = HostServices::new(host_id())
+        .with_process(Arc::new(SharedProcessService(Arc::clone(
+            &incomplete_process,
+        ))))
+        .with_time(Arc::new(FixedTime(1)));
+    let proc_session = start_sign_in(
+        &services_proc_err,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    )
+    .expect("start");
+    let err = complete_sign_in(proc_session, &services_proc_err, None)
+        .expect_err("incomplete delegated fails");
+    assert_eq!(err.kind(), SignInFailureKind::Incomplete);
+    assert_eq!(
+        incomplete_process.calls(),
+        vec![
+            "process_start",
+            "process_request_stop",
+            "process_force_stop",
+            "process_wait",
+        ]
+    );
+}
+
+fn interactive_services_fn(ports: Arc<MockSignInPorts>) -> HostServices {
+    interactive_services(ports)
 }

@@ -39,7 +39,8 @@ pub use refresh::{ReadinessRefreshRequest, refresh_readiness};
 pub use sign_in::{
     SignInAuthorityBinding, SignInFailure, SignInFailureKind, SignInKind, SignInMethod,
     SignInOutcome, SignInSession, SignInStartRequest, SignInStatus, cancel_sign_in,
-    complete_sign_in, poll_sign_in, start_sign_in, submit_sign_in_credential_field,
+    cancel_sign_in_async, complete_sign_in, complete_sign_in_async, poll_sign_in,
+    poll_sign_in_async, start_sign_in, start_sign_in_async, submit_sign_in_credential_field,
 };
 pub use subject::observe_authenticated_subject;
 pub use update::observe_instance_update;

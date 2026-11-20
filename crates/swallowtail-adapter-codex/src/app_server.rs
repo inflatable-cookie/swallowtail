@@ -18,9 +18,9 @@ use swallowtail_core::{
 };
 use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, EnvironmentRef, ExecutableRef, HostServices,
-    InteractiveSessionDriver, InteractiveSessionHandle, JoinedTask, LoadSessionRequest,
-    LoadedSession, ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest, ProcessHandle,
-    ProcessRequest, RequestId, ResolvedSkillBundle, ResumeSessionRequest, RuntimeFailure, ScopeId,
+    InteractiveSessionDriver, InteractiveSessionHandle, LoadSessionRequest, LoadedSession,
+    ModelCatalogDriver, ModelCatalogRequest, OpenSessionRequest, ProcessHandle, ProcessRequest,
+    RequestId, ResolvedSkillBundle, ResumeSessionRequest, RuntimeFailure, ScopeId,
     WorkingResourceRef, validate_session_plan_agreement,
 };
 

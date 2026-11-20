@@ -25,6 +25,10 @@ impl ProcessHandle for ScriptedAppServerHandle {
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         Box::pin(async move {
+            let ignore_eof = matches!(
+                self.mode, AppServerMode::ThreadCatalogue(ThreadCatalogueMode::IgnoreEof)
+            );
+            let mut eof_since = None;
             loop {
                 if let Some(chunk) = self
                     .state
@@ -35,17 +39,26 @@ impl ProcessHandle for ScriptedAppServerHandle {
                 {
                     return Ok(Some(chunk));
                 }
-                if self.state.closed.load(Ordering::SeqCst)
-                    || self.state.forced.load(Ordering::SeqCst)
-                {
+                if self.state.forced.load(Ordering::SeqCst) {
                     return Ok(None);
                 }
-                thread::yield_now();
+                if self.state.closed.load(Ordering::SeqCst) {
+                    if !ignore_eof
+                        || eof_since.get_or_insert_with(std::time::Instant::now).elapsed()
+                            >= std::time::Duration::from_secs(3)
+                    {
+                        return Ok(None);
+                    }
+                    thread::sleep(std::time::Duration::from_millis(1));
+                } else {
+                    thread::yield_now();
+                }
             }
         })
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        self.state.stop_requested.store(true, Ordering::SeqCst);
         self.state.closed.store(true, Ordering::SeqCst);
         Box::pin(async { Ok(()) })
     }

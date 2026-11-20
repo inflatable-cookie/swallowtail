@@ -7,6 +7,7 @@ use super::{
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
 use crate::control_wait::{Controlled, wait_controlled};
+use crate::process_close::close_budget;
 use crate::session_replay::{project_interrupted_turn_state, project_thread_history};
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
@@ -158,7 +159,13 @@ impl CodexAppServerDriver {
         let cleanup = if interrupted {
             cancel_and_release(&connection, task, resource).await
         } else {
-            close_and_release(&connection, task, resource).await
+            close_and_release(
+                &connection,
+                task,
+                resource,
+                close_budget(&services, agreement.deadline()),
+            )
+            .await
         };
         let observation = match (projected, &cleanup) {
             (Ok(observation), CleanupOutcome::Clean | CleanupOutcome::NotApplicable) => observation,

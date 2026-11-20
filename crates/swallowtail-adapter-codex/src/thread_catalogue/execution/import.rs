@@ -7,6 +7,7 @@ use super::{
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
 use crate::control_wait::{Controlled, wait_controlled};
+use crate::process_close::close_budget;
 use crate::session_replay::project_thread_history;
 use swallowtail_runtime::{
     HostServices, ProviderSessionImportOutcome, ProviderSessionImportPlan,
@@ -67,6 +68,14 @@ impl CodexAppServerDriver {
             return Err(cleanup_or(cleanup, control));
         }
 
+        let deadline = request.agreement().deadline();
+        let deadline_wait = match deadline_wait(deadline, &services) {
+            Ok(wait) => wait,
+            Err(error) => {
+                let cleanup = cancel_and_release(&connection, task, resource).await;
+                return Err(cleanup_or(cleanup, error));
+            }
+        };
         let response = connection
             .dispatch_request(
                 "thread/read",
@@ -78,33 +87,29 @@ impl CodexAppServerDriver {
             .await;
         let response = match response {
             Ok(response) => {
-                wait_controlled(
-                    response,
-                    request.cancellation().as_ref(),
-                    deadline_wait(request.agreement().deadline(), &services)?,
-                )
-                .await
+                wait_controlled(response, request.cancellation().as_ref(), deadline_wait).await
             }
             Err(error) => Controlled::Completed(Err(error)),
         };
         let revalidation = match &response {
             Controlled::Completed(Ok(response)) => {
-                project_thread_history(response, request.provider_session_ref()).map_err(
-                    |error| {
+                project_thread_history(response, request.provider_session_ref())
+                    .map_err(|error| {
                         from_runtime(
                             ProviderSessionOperationFailureStage::ImportRevalidation,
                             error,
                         )
-                    },
-                )?;
-                project_revalidation(
-                    response,
-                    request.provider_session_ref(),
-                    &cwd,
-                    plan.agreement().candidate().updated_at_unix_milliseconds(),
-                    plan.agreement().candidate_id().clone(),
-                    plan.agreement().working_resource().clone(),
-                )
+                    })
+                    .and_then(|_| {
+                        project_revalidation(
+                            response,
+                            request.provider_session_ref(),
+                            &cwd,
+                            plan.agreement().candidate().updated_at_unix_milliseconds(),
+                            plan.agreement().candidate_id().clone(),
+                            plan.agreement().working_resource().clone(),
+                        )
+                    })
             }
             Controlled::Completed(Err(error)) => Err(from_runtime(
                 ProviderSessionOperationFailureStage::ImportRevalidation,
@@ -124,7 +129,13 @@ impl CodexAppServerDriver {
         let cleanup = if matches!(response, Controlled::Cancelled | Controlled::Deadline) {
             cancel_and_release(&connection, task, resource).await
         } else {
-            close_and_release(&connection, task, resource).await
+            close_and_release(
+                &connection,
+                task,
+                resource,
+                close_budget(&services, deadline),
+            )
+            .await
         };
         let revalidation = finish(revalidation, cleanup.clone())?;
         ProviderSessionImportOutcome::new(&plan, &request, revalidation, cleanup)

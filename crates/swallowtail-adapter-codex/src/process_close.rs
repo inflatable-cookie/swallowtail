@@ -1,75 +1,126 @@
 //! Escalating shutdown for a Codex app-server child after stdin EOF.
-//!
-//! Closing stdin asks `codex app-server` to exit. A child that ignores EOF
-//! must not be waited on forever, and must not be abandoned by the caller's
-//! cleanup bound either: the remaining budget is split so a graceful stop is
-//! requested at its midpoint and a forced stop at three quarters. The reader
-//! task is joined after each escalation so the child is reaped before cleanup
-//! reports.
 
+use futures_channel::oneshot;
 use futures_util::future::{Either, select};
-use std::sync::Arc;
+use std::sync::{Arc, mpsc};
+use std::time::Duration;
 use swallowtail_runtime::{
-    Deadline, JoinedTask, MonotonicInstant, ProcessHandle, RuntimeFailure, TimeService,
+    BoxFuture, Deadline, HostServices, JoinedTask, MonotonicInstant, ProcessHandle, RuntimeFailure,
+    ScopeId, ScopedTaskService, TimeService,
 };
 
-/// Host time and the caller's hard deadline that bound one close.
+/// Grace given to EOF and then to graceful stop when there is no caller deadline.
+const CLOSE_GRACE: Duration = Duration::from_millis(250);
+
 pub(crate) struct CloseBudget {
     time: Arc<dyn TimeService>,
     deadline: Deadline,
 }
 
-impl CloseBudget {
-    pub(crate) fn new(time: Arc<dyn TimeService>, deadline: Deadline) -> Self {
-        Self { time, deadline }
-    }
-}
-
-/// Joins `task` after stdin EOF, escalating to stop when the child lingers.
-///
-/// Without a budget there is no clock to escalate against, so the join waits
-/// exactly as before. With one, the stop and kill points are computed from the
-/// host's own ticks, which keeps the policy independent of tick units.
-pub(crate) async fn join_or_escalate(
-    process: &dyn ProcessHandle,
-    task: Box<dyn JoinedTask>,
-    budget: Option<CloseBudget>,
-) -> Result<(), RuntimeFailure> {
-    let Some(budget) = budget else {
-        return task.join().await;
-    };
-    let now = budget.time.now().ticks();
-    let remaining = budget.deadline.instant().ticks().saturating_sub(now);
-    let stop_at = now.saturating_add(remaining / 2);
-    let kill_at = now.saturating_add(remaining / 4 * 3);
-
-    let mut joined = task.join();
-    if let Either::Left((result, _)) =
-        select(&mut joined, budget.time.wait_until(at(stop_at))).await
-    {
-        return result;
-    }
-    if process.request_stop().await.is_err() {
-        let _ = process.force_stop().await;
-        return joined.await;
-    }
-    if let Either::Left((result, _)) =
-        select(&mut joined, budget.time.wait_until(at(kill_at))).await
-    {
-        return result;
-    }
-    let _ = process.force_stop().await;
-    joined.await
-}
-
-/// Builds the close budget from a caller deadline and host time, when both exist.
 pub(crate) fn close_budget(
-    services: &swallowtail_runtime::HostServices,
+    services: &HostServices,
     deadline: Option<Deadline>,
 ) -> Option<CloseBudget> {
-    let deadline = deadline?;
-    let time = services.time()?.clone();
-    Some(CloseBudget::new(time, deadline))
+    Some(CloseBudget {
+        time: services.time()?.clone(),
+        deadline: deadline?,
+    })
+}
+
+/// Owns the pump join and signals when the pump can be joined. Ordinary host
+/// joins may block on their first poll, so escalation races the signal instead.
+pub(crate) struct AppServerTask {
+    task: Box<dyn JoinedTask>,
+    finished: oneshot::Receiver<()>,
+    service: Arc<dyn ScopedTaskService>,
+    scope: ScopeId,
+}
+
+impl AppServerTask {
+    pub(crate) fn spawn(
+        service: Arc<dyn ScopedTaskService>,
+        scope: ScopeId,
+        pump: BoxFuture<'static, ()>,
+    ) -> Result<Self, RuntimeFailure> {
+        let (finish, finished) = oneshot::channel();
+        let task = service.spawn(
+            scope.clone(),
+            Box::pin(async move {
+                pump.await;
+                // Dropping the sender wakes close even if the pump unwinds.
+                drop(finish);
+            }),
+        )?;
+        Ok(Self {
+            task,
+            finished,
+            service,
+            scope,
+        })
+    }
+
+    pub(crate) async fn join(self) -> Result<(), RuntimeFailure> {
+        let _ = self.finished.await;
+        self.task.join().await
+    }
+
+    pub(crate) async fn join_or_escalate(
+        mut self,
+        process: &dyn ProcessHandle,
+        budget: Option<CloseBudget>,
+    ) -> Result<(), RuntimeFailure> {
+        let stages = budget.as_ref().map(|budget| {
+            let now = budget.time.now().ticks();
+            let remaining = budget.deadline.instant().ticks().saturating_sub(now);
+            let stop_at = at(now + remaining / 2);
+            let kill_at = at(now + remaining - remaining.div_ceil(4));
+            (budget.time.as_ref(), stop_at, kill_at)
+        });
+
+        let stop_at = stages.map(|(time, stop_at, _)| (time, stop_at));
+        if self.finishes_before(stop_at).await {
+            return self.task.join().await;
+        }
+        let kill_at = stages.map(|(time, _, kill_at)| (time, kill_at));
+        if process.request_stop().await.is_ok() && self.finishes_before(kill_at).await {
+            return self.task.join().await;
+        }
+        let stop = process.force_stop().await;
+        let join = self.join().await;
+        stop.and(join)
+    }
+
+    async fn finishes_before(&mut self, stage: Option<(&dyn TimeService, Deadline)>) -> bool {
+        // The sender is dropped upon completion. A closed channel is the signal.
+        if self.finished.try_recv().is_err() {
+            return true;
+        }
+        if let Some((time, deadline)) = stage {
+            return matches!(
+                select(&mut self.finished, time.wait_until(deadline)).await,
+                Either::Left(_)
+            );
+        }
+
+        // Without a caller deadline, wait for a short relative grace period in
+        // the scoped task service. This interval never sets a terminal timeout.
+        let (cancel, cancelled) = mpsc::channel::<()>();
+        let (elapsed, expiry) = oneshot::channel::<()>();
+        let timer = self.service.spawn(
+            self.scope.clone(),
+            Box::pin(async move {
+                let _ = cancelled.recv_timeout(CLOSE_GRACE);
+                drop(elapsed);
+            }),
+        );
+        let Ok(timer) = timer else {
+            return false;
+        };
+        let finished = matches!(select(&mut self.finished, expiry).await, Either::Left(_));
+        drop(cancel);
+        let _ = timer.join().await;
+        finished
+    }
 }
 
 fn at(ticks: u64) -> Deadline {
@@ -81,7 +132,7 @@ mod tests {
     use super::*;
     use futures_util::future::BoxFuture;
     use std::sync::Mutex;
-    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+    use std::sync::atomic::{AtomicUsize, Ordering};
     use swallowtail_runtime::{
         DeadlineObservation, ProcessExit, ProcessInputChunk, ProcessOutputChunk,
     };
@@ -105,7 +156,7 @@ mod tests {
     #[derive(Default)]
     struct StubbornChild {
         stops: AtomicUsize,
-        killed: Arc<AtomicBool>,
+        finished: Mutex<Option<oneshot::Sender<()>>>,
         requests_fail: bool,
         log: Mutex<Vec<&'static str>>,
     }
@@ -141,7 +192,7 @@ mod tests {
 
         fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
             self.log.lock().expect("log lock").push("kill");
-            self.killed.store(true, Ordering::SeqCst);
+            self.finished.lock().expect("finish lock").take();
             Box::pin(async { Ok(()) })
         }
 
@@ -150,33 +201,50 @@ mod tests {
         }
     }
 
-    struct ChildTask(Arc<AtomicBool>);
+    struct ChildTask(Arc<StubbornChild>);
 
     impl JoinedTask for ChildTask {
         fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
-            let killed = self.0;
-            Box::pin(std::future::poll_fn(move |_| {
-                if killed.load(Ordering::SeqCst) {
-                    std::task::Poll::Ready(Ok(()))
-                } else {
-                    std::task::Poll::Pending
-                }
-            }))
+            assert!(self.0.finished.lock().expect("finish lock").is_none());
+            Box::pin(async { Ok(()) })
+        }
+    }
+
+    struct UnusedTaskService;
+
+    impl ScopedTaskService for UnusedTaskService {
+        fn spawn(
+            &self,
+            _: ScopeId,
+            _: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            panic!("a deadline-bound close does not spawn a timer")
+        }
+    }
+
+    fn task(child: &Arc<StubbornChild>) -> AppServerTask {
+        let (finish, finished) = oneshot::channel();
+        *child.finished.lock().expect("finish lock") = Some(finish);
+        AppServerTask {
+            task: Box::new(ChildTask(Arc::clone(child))),
+            finished,
+            service: Arc::new(UnusedTaskService),
+            scope: ScopeId::new("codex-close-test").unwrap(),
         }
     }
 
     fn budget() -> Option<CloseBudget> {
-        Some(CloseBudget::new(
-            Arc::new(PastClock),
-            Deadline::at(MonotonicInstant::from_ticks(100)),
-        ))
+        Some(CloseBudget {
+            time: Arc::new(PastClock),
+            deadline: at(100),
+        })
     }
 
     #[test]
     fn child_ignoring_eof_is_stopped_then_killed_before_join() {
-        let child = StubbornChild::default();
-        let task = Box::new(ChildTask(Arc::clone(&child.killed)));
-        let result = futures_executor_block_on(join_or_escalate(&child, task, budget()));
+        let child = Arc::new(StubbornChild::default());
+        let result =
+            futures_executor::block_on(task(&child).join_or_escalate(child.as_ref(), budget()));
         assert!(result.is_ok());
         assert_eq!(child.stops.load(Ordering::SeqCst), 1);
         assert_eq!(*child.log.lock().expect("log lock"), vec!["stop", "kill"]);
@@ -184,28 +252,23 @@ mod tests {
 
     #[test]
     fn failed_graceful_stop_escalates_straight_to_kill() {
-        let child = StubbornChild {
+        let child = Arc::new(StubbornChild {
             requests_fail: true,
             ..StubbornChild::default()
-        };
-        let task = Box::new(ChildTask(Arc::clone(&child.killed)));
-        let result = futures_executor_block_on(join_or_escalate(&child, task, budget()));
+        });
+        let result =
+            futures_executor::block_on(task(&child).join_or_escalate(child.as_ref(), budget()));
         assert!(result.is_ok());
         assert_eq!(*child.log.lock().expect("log lock"), vec!["stop", "kill"]);
     }
 
     #[test]
     fn exit_on_eof_is_joined_without_escalation() {
-        let child = StubbornChild::default();
-        child.killed.store(true, Ordering::SeqCst);
-        let task = Box::new(ChildTask(Arc::clone(&child.killed)));
-        let result = futures_executor_block_on(join_or_escalate(&child, task, budget()));
+        let child = Arc::new(StubbornChild::default());
+        let task = task(&child);
+        child.finished.lock().expect("finish lock").take();
+        let result = futures_executor::block_on(task.join_or_escalate(child.as_ref(), budget()));
         assert!(result.is_ok());
         assert!(child.log.lock().expect("log lock").is_empty());
-    }
-
-    fn futures_executor_block_on<F: std::future::Future>(future: F) -> F::Output {
-        futures_util::future::FutureExt::now_or_never(std::pin::pin!(future))
-            .expect("escalation completes without external wakeups")
     }
 }

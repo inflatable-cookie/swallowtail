@@ -8,10 +8,10 @@
   a bound fails the stream with `swallowtail.codex.exec.line_too_large`,
   `swallowtail.codex.app_server.line_too_large`, or
   `swallowtail.codex.app_server.turn_output_too_large`.
-- Closing an app-server session or connection escalates to a graceful stop at
-  the midpoint of the caller's remaining cleanup budget and to a forced stop
-  at three quarters, so a child that ignores stdin EOF is no longer left
-  running.
+- App-server shutdown escalates from stdin EOF to graceful stop to forced
+  stop before joining the pump. When a caller supplies a deadline, escalation
+  starts at the midpoint and three-quarter point of the remaining budget.
+  Without a deadline, EOF and graceful stop each get 250 ms to work.
 - A Codex CLI version lookup now selects the Codex CLI axis rather than the
   first interface-version binding, which could be another axis.
 - Registered-tool leases are returned when a turn fails before `turn/start`,

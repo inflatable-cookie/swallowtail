@@ -13,8 +13,9 @@ use support::registered::{
 use std::sync::atomic::{AtomicBool, Ordering};
 use swallowtail_host_local::LocalHostServices;
 use swallowtail_runtime::{
-    RegisteredToolDispatcher, RegisteredToolExecutionDisposition, RegisteredToolExecutionKind,
-    RegisteredToolFailure, RegisteredToolFailureKind, RegisteredToolOutcome,
+    BoxFuture, JoinedTask, RegisteredToolDispatcher, RegisteredToolExecutionDisposition,
+    RegisteredToolExecutionKind, RegisteredToolFailure, RegisteredToolFailureKind, RegisteredToolOutcome,
+    RuntimeFailure, ScopeId, ScopedTaskService,
 };
 use swallowtail_testkit::ScriptedAdmissionPort;
 
@@ -173,70 +174,145 @@ fn revoked_admission_refuses_the_call_before_any_dispatch() {
 }
 
 #[test]
-fn an_unsettled_dispatch_keeps_its_lease_and_never_reports_a_clean_close() {
-    let released = Arc::new(AtomicBool::new(false));
-    let dispatcher_gate = Arc::clone(&released);
-    let admission = Arc::new(ScriptedAdmissionPort::current());
+fn close_joins_an_unsettled_dispatch_before_releasing_its_lease() {
+    let (release, gate) = std::sync::mpsc::channel();
+    let gate = Mutex::new(gate);
     let dispatcher = RouteDispatcher::new(move |call| {
-        while !dispatcher_gate.load(Ordering::SeqCst) {
-            std::thread::yield_now();
-        }
+        let _ = gate.lock().unwrap().recv();
         Ok(text_result(call, "late result"))
     });
-    let (process, state) = ScriptedAppServer::new(AppServerMode::RegisteredToolCall);
-    let (services, local) = registered_services(process, dispatcher.clone());
-    let binding = registered_binding(&admission);
-    let mut session = block_on(
-        driver()
-            .with_registered_tools(binding.clone())
-            .open_session(
-                registered_plan(),
-                read_only_open_request(
-                    RequestId::new("session-registered-retained").expect("request id is valid"),
-                    working_resource(),
-                    None,
-                )
-                .with_options(registered_options(&binding)),
-                services.clone(),
-            ),
-    )
-    .expect("registered session opens");
-    let turn = block_on(session.start_turn(
-        TurnRequest::new(
-            RuntimeTurnId::new("turn-registered-retained").expect("turn id is valid"),
-            OperationContent::new("use the registered tool").expect("content is valid"),
-        ),
-        services.clone(),
-    ))
-    .expect("turn starts");
-    // The dispatch is committed and unsettled: the kernel is holding the call.
+    let join_started = Arc::new(AtomicBool::new(false));
+    let (mut session, services, state, local) = open_registered_fixture(
+        AppServerMode::RegisteredToolCall,
+        dispatcher.clone(),
+        DispatchTasks::ObserveJoin(join_started.clone()),
+    );
+    let turn = block_on(session.start_turn(registered_turn_request(), services.clone()))
+        .expect("turn starts");
     wait_until(|| dispatcher.dispatches() == 1);
 
-    let cleanup = block_on(turn.close());
+    let close = std::thread::spawn(move || block_on(turn.close()));
+    wait_until(|| join_started.load(Ordering::SeqCst));
+    assert_eq!(local.registered_tool_lease_count(), 1);
 
-    assert_eq!(
-        cleanup,
-        CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
-            "swallowtail.codex.app_server.registered_lease_retained",
-            "Codex registered tool lease is still held by an unsettled dispatch",
-        ))
-    );
-    assert_eq!(
-        local.registered_tool_lease_count(),
-        1,
-        "the unjoined lease stays owned by its host registry"
-    );
+    release.send(()).expect("the dispatcher is waiting");
+    assert_eq!(close.join().expect("close rejoins"), CleanupOutcome::Clean);
+    assert_eq!(tool_response(&state)["result"]["success"], true);
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert_eq!(block_on(support::close_session(session, services)), CleanupOutcome::Clean);
+}
 
-    // Releasing the dispatcher settles the call; the retained lease is then
-    // released by its own defensive cleanup, never by the failed close.
-    released.store(true, Ordering::SeqCst);
-    let response = tool_response(&state);
-    assert_eq!(response["result"]["success"], true);
-    wait_until(|| local.registered_tool_lease_count() == 0);
-    assert_eq!(
-        block_on(support::close_session(session, services)),
-        CleanupOutcome::Clean
+#[test]
+fn a_refused_dispatch_spawn_returns_the_lease_for_turn_cleanup() {
+    let dispatcher = RouteDispatcher::new(|call| Ok(text_result(call, "never dispatched")));
+    let (mut session, services, state, local) = open_registered_fixture(
+        AppServerMode::RegisteredToolCall,
+        dispatcher.clone(),
+        DispatchTasks::Reject,
     );
+    let mut turn = block_on(session.start_turn(registered_turn_request(), services.clone()))
+        .expect("turn starts before tool dispatch");
+    let terminal = block_on(turn.take_terminal_outcome().expect("turn exposes a terminal outcome"));
+
+    let TerminalStatus::RuntimeFailed(diagnostic) = terminal.status() else {
+        panic!("the dispatch spawn failure ends the turn");
+    };
+    assert_eq!(diagnostic.code(), "fixture.registered_spawn_refused");
+    assert_eq!(dispatcher.dispatches(), 0);
+    assert_eq!(local.registered_tool_lease_count(), 1);
+    assert_eq!(block_on(turn.close()), CleanupOutcome::Clean);
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert!(state.forced());
+    assert_eq!(block_on(support::close_session(session, services)), CleanupOutcome::Clean);
+}
+
+#[test]
+fn a_rejected_turn_start_closes_the_registered_lease() {
+    let dispatcher = RouteDispatcher::new(|call| Ok(text_result(call, "never dispatched")));
+    let (mut session, services, state, local) = open_registered_fixture(
+        AppServerMode::RejectTurnStart,
+        dispatcher.clone(),
+        DispatchTasks::Reject,
+    );
+    let result = block_on(session.start_turn(registered_turn_request(), services.clone()));
+
+    assert!(result.is_err());
+    assert!(state.methods().contains(&"turn/start".to_owned()));
+    assert_eq!(dispatcher.dispatches(), 0);
+    assert_eq!(local.registered_tool_lease_count(), 0);
+    assert_eq!(block_on(support::close_session(session, services)), CleanupOutcome::Clean);
+}
+
+fn registered_turn_request() -> TurnRequest {
+    TurnRequest::new(
+        RuntimeTurnId::new("turn-registered-cleanup").unwrap(),
+        OperationContent::new("use the registered tool").unwrap(),
+    )
+}
+
+fn open_registered_fixture(
+    mode: AppServerMode,
+    dispatcher: Arc<dyn RegisteredToolDispatcher>,
+    tasks: DispatchTasks,
+) -> (
+    Box<dyn swallowtail_runtime::InteractiveSessionHandle>,
+    swallowtail_runtime::HostServices,
+    Arc<support::app_server::AppServerState>,
+    LocalHostServices,
+) {
+    let (process, state) = ScriptedAppServer::new(mode);
+    let (services, local) = registered_services(process, dispatcher);
+    let services = services.with_task(Arc::new(tasks));
+    let binding = registered_binding(&Arc::new(ScriptedAdmissionPort::current()));
+    let session = block_on(
+        driver().with_registered_tools(binding.clone()).open_session(
+            registered_plan(),
+            read_only_open_request(RequestId::new("session-registered-cleanup").unwrap(), working_resource(), None)
+                .with_options(registered_options(&binding)),
+            services.clone(),
+        ),
+    )
+    .expect("registered session opens");
+    (session, services, state, local)
+}
+
+enum DispatchTasks {
+    Reject,
+    ObserveJoin(Arc<AtomicBool>),
+}
+
+impl ScopedTaskService for DispatchTasks {
+    fn spawn(
+        &self,
+        scope: ScopeId,
+        task: BoxFuture<'static, ()>,
+    ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+        if !scope.as_str().starts_with("codex-app-server:registered-tool:") {
+            return support::ThreadTaskService.spawn(scope, task);
+        }
+        match self {
+            Self::Reject => Err(RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(
+                "fixture.registered_spawn_refused",
+                "Fixture refused a registered dispatch",
+            ))),
+            Self::ObserveJoin(started) => Ok(Box::new(ObservedDispatchJoin {
+                task: support::ThreadTaskService.spawn(scope, task)?,
+                started: started.clone(),
+            })),
+        }
+    }
+}
+
+struct ObservedDispatchJoin {
+    task: Box<dyn JoinedTask>,
+    started: Arc<AtomicBool>,
+}
+
+impl JoinedTask for ObservedDispatchJoin {
+    fn join(self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        self.started.store(true, Ordering::SeqCst);
+        self.task.join()
+    }
 }
 
 /// Opens one registered session with a deliberately substituted tool set.

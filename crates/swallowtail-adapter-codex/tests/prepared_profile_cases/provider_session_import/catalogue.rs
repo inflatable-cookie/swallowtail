@@ -189,3 +189,58 @@ fn resource_mismatch_fails_closed_without_projecting_candidates() {
     assert!(state.waited());
 }
 
+
+#[test]
+fn catalogue_close_escalates_with_or_without_a_caller_deadline() {
+    let deadline = Deadline::at(MonotonicInstant::from_ticks(100));
+    let clock = Arc::new(CatalogueCloseClock::default());
+    for deadline in [None, Some(deadline)] {
+        let recording = RecordingHostServices::default();
+        let prepared_app = prepared(CodexPreparedDriver::AppServer, "0.146.0", &recording, true);
+        let mut input = catalogue_input("ignore-eof");
+        if let Some(deadline) = deadline {
+            input = input.with_deadline(deadline);
+        }
+        let catalogue = prepared_app
+            .prepare_session_catalogue(input)
+            .expect("catalogue prepares");
+        let (process, state) = ScriptedAppServer::new(AppServerMode::ThreadCatalogue(
+            ThreadCatalogueMode::IgnoreEof,
+        ));
+        let mut services = host_services_with(process, &recording, [HostServiceKind::WorkingResource]);
+        if deadline.is_some() {
+            services = services.with_time(clock.clone());
+        }
+
+        let outcome = block_on(catalogue.list_sessions(services)).expect("catalogue completes");
+        assert_eq!(outcome.candidates().count(), 2);
+        assert!(state.stop_requested());
+        assert!(state.forced());
+        assert!(state.waited());
+        assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
+    }
+    assert_eq!(*clock.waits.lock().unwrap(), [100, 50, 75]);
+}
+
+#[derive(Default)]
+struct CatalogueCloseClock {
+    waits: std::sync::Mutex<Vec<u64>>,
+}
+
+impl swallowtail_runtime::TimeService for CatalogueCloseClock {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(0)
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> swallowtail_runtime::BoxFuture<'static, swallowtail_runtime::DeadlineObservation> {
+        let ticks = deadline.instant().ticks();
+        self.waits.lock().unwrap().push(ticks);
+        if ticks == 100 {
+            Box::pin(std::future::pending())
+        } else {
+            Box::pin(async move {
+                swallowtail_runtime::DeadlineObservation::new(deadline, deadline.instant())
+            })
+        }
+    }
+}

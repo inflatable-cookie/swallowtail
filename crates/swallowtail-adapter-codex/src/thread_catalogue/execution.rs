@@ -11,13 +11,14 @@ mod reconciliation;
 mod resource;
 
 use crate::app_server::close_connection;
+use crate::process_close::{AppServerTask, CloseBudget};
 use crate::rpc::RpcConnection;
 use crate::selection::supports_thread_catalogue_version;
 use resource::ScopedResource;
 use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices, JoinedTask,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
     ProviderSessionOperationFailure, ProviderSessionOperationFailureStage, RuntimeFailure,
 };
 
@@ -90,16 +91,17 @@ pub(super) fn deadline_wait(
 
 async fn close_and_release(
     connection: &Arc<RpcConnection>,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     resource: ScopedResource,
+    budget: Option<CloseBudget>,
 ) -> CleanupOutcome {
-    let connection = close_connection(connection, task, None).await;
+    let connection = close_connection(connection, task, budget).await;
     merge_cleanup(connection, resource.release().await)
 }
 
 async fn cancel_and_release(
     connection: &Arc<RpcConnection>,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     resource: ScopedResource,
 ) -> CleanupOutcome {
     let stop = connection.cancel_session().await;

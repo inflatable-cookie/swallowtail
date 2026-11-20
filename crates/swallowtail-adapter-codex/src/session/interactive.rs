@@ -1,4 +1,4 @@
-use crate::process_close::{close_budget, join_or_escalate};
+use crate::process_close::close_budget;
 impl InteractiveSessionHandle for CodexSessionHandle {
     fn request_id(&self) -> &RequestId {
         &self.request_id
@@ -157,7 +157,6 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 Ok(task) => task,
                 Err(error) => {
                     turn.mark_cancelled();
-                    close_registered(registered.as_ref()).await;
                     let _ = self
                         .connection
                         .request_without_waiting(
@@ -168,6 +167,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                             }),
                         )
                         .await;
+                    close_registered(registered.as_ref()).await;
                     turn.finish(
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                         CleanupOutcome::NotApplicable,
@@ -212,7 +212,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
             services,
             Box::pin(async move {
             let close = self.connection.close_input().await;
-            let join = join_or_escalate(self.connection.process(), self.task, budget).await;
+            let join = self.task.join_or_escalate(self.connection.process(), budget).await;
             let process_cleanup = if close.is_err() || join.is_err() {
                 CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
                     "swallowtail.codex.app_server.session_close_failed",

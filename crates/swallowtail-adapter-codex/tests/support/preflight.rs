@@ -13,7 +13,9 @@ use swallowtail_core::{
     SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 
+#[path = "preflight/exec.rs"]
 mod exec;
+#[path = "preflight/unqualified.rs"]
 mod unqualified;
 
 const CODEX_APP_SERVER_TEST_QUALIFIED_VERSION: &str = "0.161.0";

@@ -1,3 +1,4 @@
+use crate::process_close::AppServerTask;
 use crate::rpc::{RpcConnection, failure};
 use crate::session::CodexSessionHandle;
 use crate::session_access::CodexSessionAccess;
@@ -7,14 +8,14 @@ use serde_json::Value;
 use std::sync::Arc;
 use swallowtail_core::{PreflightPlan, SessionRef};
 use swallowtail_runtime::{
-    InteractiveSessionHandle, JoinedTask, LoadedSession, RequestId, RuntimeFailure,
-    RuntimeSessionId, SessionResumeBinding,
+    InteractiveSessionHandle, LoadedSession, RequestId, RuntimeFailure, RuntimeSessionId,
+    SessionResumeBinding,
 };
 
 pub(crate) struct PendingSessionOpen {
     request_id: RequestId,
     connection: Arc<RpcConnection>,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     session_input: CodexSessionInput,
     deadline_planned: bool,
     access: CodexSessionAccess,
@@ -24,7 +25,7 @@ impl PendingSessionOpen {
     pub(crate) fn new(
         request_id: RequestId,
         connection: Arc<RpcConnection>,
-        task: Box<dyn JoinedTask>,
+        task: AppServerTask,
         session_input: CodexSessionInput,
         deadline_planned: bool,
         access: CodexSessionAccess,
@@ -189,4 +190,96 @@ fn malformed_response() -> RuntimeFailure {
         "swallowtail.codex.app_server.malformed_response",
         "Codex app-server returned a malformed response",
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::preflight_fixture::{
+        app_server_session_plan_without_model_route, bounded_workspace_plan,
+    };
+    use crate::session_access::codex_bounded_workspace_access_policy;
+    use futures_executor::block_on;
+    use swallowtail_runtime::{
+        ExecutableRef, ProcessRequest, ScopeId, SessionOptions, WorkingResourceRef,
+    };
+    use swallowtail_testkit::{RecordedHostCall, RecordingHostServices, RecordingOutcome};
+
+    #[test]
+    fn resume_binding_failure_aborts_and_releases_the_started_session() {
+        block_on(async {
+            let plan = bounded_workspace_plan();
+            let recording = RecordingHostServices::for_host(
+                plan.execution_host_id().clone(),
+                RecordingOutcome::Succeed,
+            );
+            let services = recording.services();
+            let scope = ScopeId::new("codex-open-binding-failure").unwrap();
+            let resource = WorkingResourceRef::new("workspace.main").unwrap();
+            let access = CodexSessionAccess::prepare(
+                &plan,
+                &codex_bounded_workspace_access_policy(),
+                &resource,
+                scope.clone(),
+                services,
+            )
+            .await
+            .expect("writable access acquires a resource lease");
+            let process = services
+                .process()
+                .unwrap()
+                .start(
+                    scope.clone(),
+                    ProcessRequest::new(ExecutableRef::from_instance_target(
+                        plan.instance_target_ref(),
+                    )),
+                )
+                .await
+                .unwrap();
+            let connection = RpcConnection::new(Arc::from(process), services.clone());
+            let task =
+                AppServerTask::spawn(services.task().unwrap().clone(), scope, Box::pin(async {}))
+                    .unwrap();
+            let input = CodexSessionInput::for_open(&plan, &SessionOptions::default(), services)
+                .expect("session input prepares");
+
+            // The public open rejects a missing model sooner. Exercise the
+            // failure defensively once a process and writable lease are owned.
+            let plan_without_route = app_server_session_plan_without_model_route([]);
+            let pending = PendingSessionOpen::new(
+                RequestId::new("open-binding-failure").unwrap(),
+                connection,
+                task,
+                input,
+                false,
+                access,
+            );
+            let result = pending
+                .finish(
+                    &plan_without_route,
+                    Ok(serde_json::json!({"thread": {"id": "thread-started"}})),
+                    None,
+                )
+                .await;
+
+            let Err(error) = result else {
+                panic!("a started session without a resume binding must fail");
+            };
+            assert_eq!(
+                error.diagnostic().code(),
+                "swallowtail.codex.app_server.model_route_missing"
+            );
+            assert_eq!(
+                recording.calls(),
+                [
+                    RecordedHostCall::WorkingResourceResolve,
+                    RecordedHostCall::ProcessStart,
+                    RecordedHostCall::TaskSpawn,
+                    RecordedHostCall::ProcessForceStop,
+                    RecordedHostCall::TaskJoin,
+                    RecordedHostCall::WorkingResourceRelease,
+                ]
+            );
+        });
+    }
 }

@@ -1,4 +1,5 @@
 use crate::cleanup::merge_cleanup;
+use crate::process_close::AppServerTask;
 use crate::registered_tools::CodexRegisteredTurn;
 use crate::rpc::{RpcConnection, failure};
 use crate::session_access::CodexSessionAccess;
@@ -177,7 +178,7 @@ pub(crate) struct CodexSessionHandle {
     resume_binding: SessionResumeBinding,
     connection: Arc<RpcConnection>,
     cancellation: SessionCancellation,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     runtime: CodexSessionRuntime,
     access: CodexSessionAccess,
 }
@@ -188,7 +189,7 @@ impl CodexSessionHandle {
         runtime_id: RuntimeSessionId,
         resume_binding: SessionResumeBinding,
         connection: Arc<RpcConnection>,
-        task: Box<dyn JoinedTask>,
+        task: AppServerTask,
         runtime: CodexSessionRuntime,
         access: CodexSessionAccess,
     ) -> Self {

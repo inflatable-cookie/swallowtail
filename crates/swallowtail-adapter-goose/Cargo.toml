@@ -33,41 +33,6 @@ sha2.workspace = true
 workspace = true
 
 [[test]]
-name = "goose_acp_identity"
-path = "tests/goose_acp_identity.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "activity_corpus"
-path = "tests/activity_corpus.rs"
-
-[[test]]
-name = "acp_suite"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "prepared_facade"
-path = "tests/prepared_facade.rs"
-
-[[test]]
-name = "consumer_route_projection"
-path = "tests/consumer_route_projection.rs"
-
-[[test]]
-name = "goose_1_50_0_delta_ledger"
-path = "tests/goose_1_50_0_delta_ledger.rs"
-
-[[test]]
-name = "goose_acp_currentness_1_53_0"
-path = "tests/goose_acp_currentness_1_53_0.rs"
-
-[[test]]
-name = "goose_acp_currentness_1_56_0"
-path = "tests/goose_acp_currentness_1_56_0.rs"
-
-[[test]]
-name = "goose_acp_currentness_1_57_0"
-path = "tests/goose_acp_currentness_1_57_0.rs"
-
-[[test]]
-name = "goose_acp_currentness_1_59_0"
-path = "tests/goose_acp_currentness_1_59_0.rs"

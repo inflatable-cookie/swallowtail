@@ -1,4 +1,4 @@
-use crate::{fixture, server, services};
+use crate::direct_suite::{fixture, server, services};
 
 use fixture::Fixture;
 use server::ServerMode;

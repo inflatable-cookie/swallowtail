@@ -1,5 +1,5 @@
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "addable_route.rs"]
 mod addable_route;

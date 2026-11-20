@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use crate::realtime_support;
 
 use realtime_support::{Call, RealtimeFixture, RealtimeScenario, TimeMode};

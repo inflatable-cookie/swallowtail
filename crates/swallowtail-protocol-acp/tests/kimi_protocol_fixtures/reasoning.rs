@@ -2,7 +2,7 @@ use super::{
     EFFECTIVE_DRIFT, EFFORT_REASONING, EFFORT_REASONING_SUCCESS, LEGACY_REASONING,
     LEGACY_REASONING_SUCCESS, MISSING_CONFIRMATION, PROVIDER_REJECTION,
 };
-use crate::support::{Direction, methods, parse_json, parse_transcript};
+use crate::protocol_suite::support::{Direction, methods, parse_json, parse_transcript};
 use serde_json::{Value, json};
 use swallowtail_protocol_acp::ACP_PROTOCOL_VERSION;
 

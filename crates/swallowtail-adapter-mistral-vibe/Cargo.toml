@@ -31,29 +31,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "mistral_vibe_headless_identity"
-path = "tests/mistral_vibe_headless_identity.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "mistral_vibe_2_25_4_delta_ledger"
-path = "tests/mistral_vibe_2_25_4_delta_ledger.rs"
-
-[[test]]
-name = "mistral_vibe_2_26_0_delta_ledger"
-path = "tests/mistral_vibe_2_26_0_delta_ledger.rs"
-
-[[test]]
-name = "mistral_vibe_3_0_2_identity_stop"
-path = "tests/mistral_vibe_3_0_2_identity_stop.rs"
-
-[[test]]
-name = "activity_corpus"
-path = "tests/activity_corpus.rs"
-
-[[test]]
-name = "headless_suite"
-path = "tests/headless_suite.rs"
-
-[[test]]
-name = "prepared_facade"
-path = "tests/prepared_facade.rs"

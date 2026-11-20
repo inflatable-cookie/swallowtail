@@ -1,5 +1,5 @@
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "dual_driver.rs"]
 mod dual_driver;

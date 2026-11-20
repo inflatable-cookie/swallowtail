@@ -1,4 +1,4 @@
-use crate::http_support;
+use crate::runtime_suite::http_support;
 
 use futures_executor::block_on;
 use futures_util::StreamExt;

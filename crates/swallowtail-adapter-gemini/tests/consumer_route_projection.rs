@@ -2,12 +2,12 @@
 
 #[path = "support/mod.rs"]
 mod acp_support;
-#[path = "support/discovery.rs"]
-mod discovery_support;
-#[path = "headless_support/mod.rs"]
-mod headless_support;
-#[path = "live_support/mod.rs"]
-mod live_support;
+#[allow(unused_imports)]
+use crate::discovery_support;
+#[allow(unused_imports)]
+use crate::headless_support;
+#[allow(unused_imports)]
+use crate::live_support;
 
 use futures_executor::block_on;
 use std::collections::{BTreeMap, BTreeSet};

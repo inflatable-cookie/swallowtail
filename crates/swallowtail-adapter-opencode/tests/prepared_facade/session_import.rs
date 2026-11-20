@@ -1,5 +1,5 @@
 use super::fixture::PreparedFixture;
-use crate::http_support::StreamFixture;
+use crate::runtime_suite::http_support::StreamFixture;
 use futures_executor::block_on;
 use std::num::{NonZeroU32, NonZeroU64};
 use std::sync::Arc;

@@ -36,59 +36,8 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "discovery_suite"
-path = "tests/discovery_suite.rs"
-
-[[test]]
-name = "acp_suite"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "compatibility_corpus"
-path = "tests/compatibility_corpus.rs"
-
-[[test]]
-name = "catalogue_suite"
-path = "tests/catalogue_suite.rs"
-
-[[test]]
-name = "grok_1_0_30_identity"
-path = "tests/grok_1_0_30_identity.rs"
-
-[[test]]
-name = "grok_1_0_30_catalogue_identity"
-path = "tests/grok_1_0_30_catalogue_identity.rs"
-
-[[test]]
-name = "grok_1_0_46_catalogue_identity"
-path = "tests/grok_1_0_46_catalogue_identity.rs"
-
-[[test]]
-name = "grok_1_0_70_catalogue_identity"
-path = "tests/grok_1_0_70_catalogue_identity.rs"
-
-[[test]]
-name = "grok_1_0_40_identity"
-path = "tests/grok_1_0_40_identity.rs"
-
-[[test]]
-name = "grok_1_0_41_identity"
-path = "tests/grok_1_0_41_identity.rs"
-
-[[test]]
-name = "grok_1_0_46_identity"
-path = "tests/grok_1_0_46_identity.rs"
-
-[[test]]
-name = "grok_1_0_70_acp_identity"
-path = "tests/grok_1_0_70_acp_identity.rs"
-
-# Desktop and fixture harnesses for the client-MCP probe. Both need the
-# optional probe module, so the default package build stays free of it.
-[[test]]
-name = "grok_acp_client_mcp_probe"
-path = "tests/grok_acp_client_mcp_probe.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
 
 [[example]]
 name = "grok-acp-client-mcp-probe"
@@ -98,12 +47,3 @@ required-features = ["live-probes"]
 name = "grok-acp-echo-mcp"
 required-features = ["live-probes"]
 
-[[test]]
-name = "live_installed_probe"
-path = "tests/live_installed_probe.rs"
-required-features = ["live-probes"]
-
-[[test]]
-name = "live_catalogue_probe"
-path = "tests/live_catalogue_probe.rs"
-required-features = ["live-probes"]

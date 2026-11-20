@@ -32,25 +32,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "kiro_acp_identity"
-path = "tests/kiro_acp_identity.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "kiro_2_21_4_delta_ledger"
-path = "tests/kiro_2_21_4_delta_ledger.rs"
-
-[[test]]
-name = "activity_corpus"
-path = "tests/activity_corpus.rs"
-
-[[test]]
-name = "acp_suite"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "prepared_facade"
-path = "tests/prepared_facade.rs"
-
-[[test]]
-name = "consumer_route_projection"
-path = "tests/consumer_route_projection.rs"

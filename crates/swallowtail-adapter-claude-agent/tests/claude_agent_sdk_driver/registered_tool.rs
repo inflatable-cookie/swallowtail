@@ -11,6 +11,7 @@
 //!
 //! No provider process, credential, network call, or live MCP server is used.
 
+#[allow(unused_imports)]
 use crate::sdk_support;
 use serde_json::{Value, json};
 use std::sync::{Arc, Mutex};

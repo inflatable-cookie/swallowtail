@@ -2,10 +2,11 @@
 
 #![allow(dead_code, unused_imports)]
 
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
-#[path = "prepared_facade/fixtures.rs"]
-mod prepared_fixtures;
+#[allow(unused_imports)]
+use crate::prepared_fixtures;
 
 #[path = "consumer_route_projection/assembly.rs"]
 mod assembly;

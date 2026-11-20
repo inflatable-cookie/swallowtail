@@ -6,7 +6,7 @@
 //! no secret bytes or endpoint URLs in portable records.
 
 #[allow(unused_imports)]
-mod support;
+use crate::support;
 
 use crate::support::Fixture;
 use futures_executor::block_on;

@@ -1,10 +1,9 @@
-#[allow(dead_code)]
-#[path = "installed_discovery/support.rs"]
-mod discovery_support;
-#[path = "prepared_facade/fixtures.rs"]
-mod fixtures;
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::discovery_support;
+#[allow(unused_imports)]
+use crate::fixtures;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "acp_driver.rs"]
 mod acp_driver;
@@ -24,8 +23,8 @@ mod plan_mode_lifecycle;
 mod prepared_facade;
 #[path = "provider_session_acceptance.rs"]
 mod provider_session_acceptance;
-#[path = "provider_session_import.rs"]
-mod provider_session_import;
+#[allow(unused_imports)]
+use crate::provider_session_import;
 #[path = "reasoning_dispatch.rs"]
 mod reasoning_dispatch;
 #[path = "reasoning_lifecycle.rs"]

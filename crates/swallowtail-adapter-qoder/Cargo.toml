@@ -30,33 +30,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "qoder_headless_identity"
-path = "tests/qoder_headless_identity.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "activity_corpus"
-path = "tests/activity_corpus.rs"
-
-[[test]]
-name = "headless_suite"
-path = "tests/headless_suite.rs"
-
-[[test]]
-name = "prepared_facade"
-path = "tests/prepared_facade.rs"
-
-[[test]]
-name = "consumer_route_projection"
-path = "tests/consumer_route_projection.rs"
-
-[[test]]
-name = "qoder_1_1_52_delta_ledger"
-path = "tests/qoder_1_1_52_delta_ledger.rs"
-
-[[test]]
-name = "qoder_1_1_54_reopen"
-path = "tests/qoder_1_1_54_reopen.rs"
-
-[[test]]
-name = "qoder_1_1_65_delta_ledger"
-path = "tests/qoder_1_1_65_delta_ledger.rs"

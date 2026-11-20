@@ -32,6 +32,6 @@ swallowtail-host-local.workspace = true
 workspace = true
 
 [[test]]
-name = "live_installed_probe"
-path = "tests/live_installed_probe.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
+

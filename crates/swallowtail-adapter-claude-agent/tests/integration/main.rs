@@ -1,3 +1,8 @@
+// The consolidated suites keep per-suite instances of shared helper files,
+// exactly as the former one-binary-per-suite layout did, so the same source
+// file is still loaded as more than one module.
+#![allow(clippy::duplicate_mod)]
+
 #[path = "../claude_code_support/mod.rs"]
 #[allow(dead_code, unused_imports)]
 mod claude_code_support;
@@ -35,68 +40,16 @@ mod addable_route;
 mod claude_agent_acp_0_100_0_identity;
 #[path = "../claude_agent_acp_0_106_0_inventory.rs"]
 mod claude_agent_acp_0_106_0_inventory;
-#[path = "../claude_agent_acp_0_70_identity.rs"]
-mod claude_agent_acp_0_70_identity;
-#[path = "../claude_agent_acp_0_73_delta_ledger.rs"]
-mod claude_agent_acp_0_73_delta_ledger;
-#[path = "../claude_agent_acp_0_73_identity.rs"]
-mod claude_agent_acp_0_73_identity;
-#[path = "../claude_agent_acp_0_76_delta_ledger.rs"]
-mod claude_agent_acp_0_76_delta_ledger;
-#[path = "../claude_agent_acp_0_76_identity.rs"]
-mod claude_agent_acp_0_76_identity;
 #[path = "../claude_agent_acp_0_81_2_delta_ledger.rs"]
 mod claude_agent_acp_0_81_2_delta_ledger;
-#[path = "../claude_agent_acp_0_81_2_identity.rs"]
-mod claude_agent_acp_0_81_2_identity;
-#[path = "../claude_agent_acp_0_87_0_identity.rs"]
-mod claude_agent_acp_0_87_0_identity;
-#[path = "../claude_agent_acp_0_96_0_identity.rs"]
-mod claude_agent_acp_0_96_0_identity;
-#[path = "../claude_agent_acp_0_98_0_identity.rs"]
-mod claude_agent_acp_0_98_0_identity;
-#[path = "../claude_agent_acp_0_99_0_identity.rs"]
-mod claude_agent_acp_0_99_0_identity;
-#[path = "../claude_agent_acp_0_99_1_identity.rs"]
-mod claude_agent_acp_0_99_1_identity;
 #[path = "../claude_agent_acp_identity.rs"]
 mod claude_agent_acp_identity;
-#[path = "../claude_agent_sdk_0_3_259_identity.rs"]
-mod claude_agent_sdk_0_3_259_identity;
-#[path = "../claude_agent_sdk_0_3_270_identity.rs"]
-mod claude_agent_sdk_0_3_270_identity;
-#[path = "../claude_agent_sdk_0_3_284_identity.rs"]
-mod claude_agent_sdk_0_3_284_identity;
 #[path = "../claude_agent_sdk_identity.rs"]
 mod claude_agent_sdk_identity;
 #[path = "../claude_agent_sdk_mcp_status_rows.rs"]
 mod claude_agent_sdk_mcp_status_rows;
 #[path = "../claude_agent_sdk_native_read_mediation_limitation.rs"]
 mod claude_agent_sdk_native_read_mediation_limitation;
-#[path = "../claude_code_2_1_252_identity.rs"]
-mod claude_code_2_1_252_identity;
-#[path = "../claude_code_2_1_257_identity.rs"]
-mod claude_code_2_1_257_identity;
-#[path = "../claude_code_2_1_270_identity.rs"]
-mod claude_code_2_1_270_identity;
-#[path = "../claude_code_2_1_278_identity.rs"]
-mod claude_code_2_1_278_identity;
-#[path = "../claude_code_2_1_280_identity.rs"]
-mod claude_code_2_1_280_identity;
-#[path = "../claude_code_2_1_281_identity.rs"]
-mod claude_code_2_1_281_identity;
-#[path = "../claude_code_2_1_293_identity.rs"]
-mod claude_code_2_1_293_identity;
-#[path = "../claude_code_2_1_294_identity.rs"]
-mod claude_code_2_1_294_identity;
-#[path = "../claude_code_2_1_310_identity.rs"]
-mod claude_code_2_1_310_identity;
-#[path = "../claude_code_2_1_312_identity.rs"]
-mod claude_code_2_1_312_identity;
-#[path = "../claude_code_2_1_316_identity.rs"]
-mod claude_code_2_1_316_identity;
-#[path = "../claude_code_2_1_317_identity.rs"]
-mod claude_code_2_1_317_identity;
 #[path = "../claude_code_headless_autocompaction_identity.rs"]
 mod claude_code_headless_autocompaction_identity;
 #[path = "../claude_code_headless_identity.rs"]
@@ -129,3 +82,30 @@ mod prepared_facade;
 mod structured_run;
 #[path = "../usage_corpus.rs"]
 mod usage_corpus;
+
+#[cfg(feature = "live-probes")]
+#[path = "../live_response_only_probe.rs"]
+mod live_response_only_probe;
+
+#[cfg(feature = "live-probes")]
+#[path = "../live_watcher_probe.rs"]
+mod live_watcher_probe;
+
+#[path = "../http_mcp_live_harness.rs"]
+mod http_mcp_live_harness;
+
+#[cfg(feature = "live-probes")]
+#[path = "../http_mcp_live_gate.rs"]
+mod http_mcp_live_gate;
+
+#[path = "../claude_agent_sdk_native_proof_harness.rs"]
+mod claude_agent_sdk_native_proof_harness;
+
+#[path = "../claude_agent_sdk_0_3_322_identity.rs"]
+mod claude_agent_sdk_0_3_322_identity;
+
+#[path = "../claude_agent_sdk_node_22_23_3_identity.rs"]
+mod claude_agent_sdk_node_22_23_3_identity;
+
+#[path = "../sdk_support/mod.rs"]
+mod sdk_support;

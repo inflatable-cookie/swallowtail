@@ -1,5 +1,5 @@
-use crate::discovery_support::DiscoveryHost;
-use crate::headless_support::FixtureHost;
+use crate::consumer_route_projection::discovery_support::DiscoveryHost;
+use crate::consumer_route_projection::headless_support::FixtureHost;
 
 use futures_executor::block_on;
 use std::collections::{BTreeMap, BTreeSet};

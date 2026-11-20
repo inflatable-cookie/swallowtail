@@ -1,7 +1,7 @@
-#[path = "claude_agent_support/mod.rs"]
-mod claude_agent_support;
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::claude_agent_support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "acp_lifecycle_protocol_fixtures.rs"]
 mod acp_lifecycle_protocol_fixtures;

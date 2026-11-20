@@ -1,4 +1,4 @@
-use crate::support::{local_topology, prepared, profile};
+use crate::headless_suite::support::{local_topology, prepared, profile};
 use std::collections::BTreeMap;
 use swallowtail_testkit::{
     ConsumerRouteLedgerClaim, assert_consumer_route_ledger_emitted_by_facade,

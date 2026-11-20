@@ -13,8 +13,6 @@ mod pi_acp_identity;
 mod pi_rpc_0_84_4_identity;
 #[path = "../pi_rpc_0_85_1_identity.rs"]
 mod pi_rpc_0_85_1_identity;
-#[path = "../pi_rpc_1_1_0_identity.rs"]
-mod pi_rpc_1_1_0_identity;
 #[path = "../pi_rpc_1_4_0_identity.rs"]
 mod pi_rpc_1_4_0_identity;
 #[path = "../pi_rpc_identity.rs"]
@@ -31,3 +29,7 @@ mod sidecar_addable;
 mod structured_run;
 #[path = "../usage_corpus.rs"]
 mod usage_corpus;
+
+#[cfg(feature = "live-probes")]
+#[path = "../live_installed_probe.rs"]
+mod live_installed_probe;

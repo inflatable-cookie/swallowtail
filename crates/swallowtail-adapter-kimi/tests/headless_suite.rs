@@ -1,5 +1,5 @@
-#[path = "installed_discovery/support.rs"]
-mod discovery_support;
+#[allow(unused_imports)]
+use crate::discovery_support;
 
 #[path = "headless_structured_run/support.rs"]
 mod support;

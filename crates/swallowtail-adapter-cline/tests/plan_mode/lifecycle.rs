@@ -1,5 +1,5 @@
-use crate::helpers::{config_sets, driver, plan_open_request, wire_methods};
-use crate::support::{FixtureHost, Scenario, plan_selection};
+use crate::plan_mode::helpers::{config_sets, driver, plan_open_request, wire_methods};
+use crate::plan_mode::support::{FixtureHost, Scenario, plan_selection};
 use futures_executor::block_on;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{

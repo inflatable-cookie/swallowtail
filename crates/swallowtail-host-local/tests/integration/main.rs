@@ -18,3 +18,7 @@ mod sign_in_ports;
 mod watcher_bridge;
 #[path = "../working_resource_io.rs"]
 mod working_resource_io;
+
+#[cfg(feature = "mediated-stdio-proxy")]
+#[path = "../registered_tool_proxy.rs"]
+mod registered_tool_proxy;

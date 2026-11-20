@@ -1,4 +1,5 @@
 [package]
+autotests = false
 name = "swallowtail-adapter-xai"
 version.workspace = true
 edition.workspace = true
@@ -30,3 +31,7 @@ swallowtail-testkit.workspace = true
 
 [lints]
 workspace = true
+
+[[test]]
+name = "integration"
+path = "tests/integration/main.rs"

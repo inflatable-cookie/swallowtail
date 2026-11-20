@@ -1,4 +1,4 @@
-use crate::support::FixtureHost;
+use crate::plan_mode::support::FixtureHost;
 use swallowtail_adapter_cline::ClineAcpDriver;
 use swallowtail_core::{HarnessMode, ResourceAccess};
 use swallowtail_runtime::{OpenSessionRequest, RequestId, SessionOptions, SessionPlanAgreement};

@@ -1,9 +1,9 @@
 #[path = "direct_support/fixture.rs"]
 mod fixture;
-#[path = "support/server.rs"]
-mod server;
-#[path = "support/services.rs"]
-mod services;
+#[allow(unused_imports)]
+use crate::server;
+#[allow(unused_imports)]
+use crate::services;
 
 #[path = "background_projection.rs"]
 mod background_projection;

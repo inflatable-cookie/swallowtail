@@ -167,12 +167,12 @@ FROZEN_ROUTES = {
     "package:source-consumer": "ba60e274b11fcd880914c93f8a9668d54dc3c5755e694cccd8748aa226abc123",
     "package:verify-affected": "7bf8687e2b046979607f0f126b3d9b18a811ed4d4db0fd9cdbefde747a890d27",
     "test:rust": "2e3dff1832737681769bbb4efc952ddfcc49db54b33ce5de2b116f17633b242b",
-    "validate:current-claude-agent-sdk-node": "e6fe50168218c42873a09b99cca8e42246220ae13284874fbcc69ba200b43ecf",
-    "validate:current-grok-build-acp": "d845b915a54aa23bae9f7581511d127c3256701da627e908cae599cc9dc8fa2b",
+    "validate:current-claude-agent-sdk-node": "c2c6c1dbe353c96f761c50aca577a75473086fa6e7bd6e2e10e5d986e87a5722",
+    "validate:current-grok-build-acp": "520b44ffdf4a113ee0d138b66017c04c5e1e8c1f01f5685dbc65d567249a2707",
     "validate:focused": "c14780de9a78c0e78c9badd6ff76fee8910471c2067691a5fd51c27ac5d7571b",
-    "validate:sdk-courier-idle": "3407911648ad02cb060b4c391cf44ac3fe7daafed946fd8f036ac4f5c0c50154",
-    "validate:sdk-courier-timeout": "a8ad8d435a62eb1fb33fe7bd1b44deca4fb4681b12b9314f98d5f38f6d939be8",
-    "validate:sdk-registered-lifetime": "9f1b942a2d9698dcec791cc469ae5c732e9508dced5fd9c522ce65eeb4c96559",
+    "validate:sdk-courier-idle": "e4bdf483c42adbfe9e4ebbc4a61d75b1535ad8f48eadcfb17f6bcce372bd8b7c",
+    "validate:sdk-courier-timeout": "a5b73b4f39bb8f865ad67c1839486e77ce7c51ceef469527e23cc2f165cf72f6",
+    "validate:sdk-registered-lifetime": "0f4230e46fdbc58de4812bf77075977036521e72e79edec2d1059da28174e354",
     "validate:sdk-unsolicited-close": "0a0ee775a6fcb39fd05435acdb97ec5da39a322df26ef6c39c6a78ed59c1d210",
 }
 

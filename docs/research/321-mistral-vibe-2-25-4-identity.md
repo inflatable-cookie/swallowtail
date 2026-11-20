@@ -164,7 +164,9 @@ wire because every selected-surface input is unchanged. The new evidence
 corpus is
 [`mistral-vibe-headless-2.25.4`](../../crates/swallowtail-adapter-mistral-vibe/tests/fixtures/mistral-vibe-headless-2.25.4/)
 with the mutation-sensitive assertions in
-[`mistral_vibe_2_25_4_delta_ledger.rs`](../../crates/swallowtail-adapter-mistral-vibe/tests/mistral_vibe_2_25_4_delta_ledger.rs).
+the per-hop `mistral_vibe_2_25_4_delta_ledger` test, which Wave 1C retired when
+the crate's version-identity suite moved to one table-driven integration
+binary.
 
 ## Non-goals
 

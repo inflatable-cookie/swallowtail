@@ -33,53 +33,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "cline_acp_identity"
-path = "tests/cline_acp_identity.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "cline_acp_3_0_70_delta_ledger"
-path = "tests/cline_acp_3_0_70_delta_ledger.rs"
-
-[[test]]
-name = "cline_acp_3_0_74_delta_ledger"
-path = "tests/cline_acp_3_0_74_delta_ledger.rs"
-
-[[test]]
-name = "cline_headless_identity"
-path = "tests/cline_headless_identity.rs"
-
-[[test]]
-name = "cline_headless_currentness"
-path = "tests/cline_headless_currentness.rs"
-
-[[test]]
-name = "cline_headless_model_shape"
-path = "tests/cline_headless_model_shape.rs"
-
-[[test]]
-name = "activity_corpus"
-path = "tests/activity_corpus.rs"
-
-[[test]]
-name = "acp_suite"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "plan_mode"
-path = "tests/plan_mode/mod.rs"
-
-[[test]]
-name = "headless_suite"
-path = "tests/headless_suite.rs"
-
-[[test]]
-name = "prepared_facade"
-path = "tests/prepared_facade.rs"
-
-[[test]]
-name = "prepared_headless_facade"
-path = "tests/prepared_headless_facade.rs"
-
-[[test]]
-name = "consumer_route_projection"
-path = "tests/consumer_route_projection.rs"

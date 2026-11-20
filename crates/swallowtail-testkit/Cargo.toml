@@ -26,9 +26,6 @@ serde_json.workspace = true
 workspace = true
 
 [[test]]
-name = "activity_corpora"
-path = "tests/activity_suite.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "conformance_profiles"
-path = "tests/conformance_suite.rs"

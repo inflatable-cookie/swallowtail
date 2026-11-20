@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use crate::headless_support;
 
 use futures_executor::block_on;

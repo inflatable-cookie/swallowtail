@@ -1,7 +1,7 @@
-#[path = "support/discovery.rs"]
-mod discovery_support;
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::discovery_support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "acp_driver.rs"]
 mod acp_driver;

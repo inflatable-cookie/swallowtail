@@ -1,4 +1,4 @@
-use crate::support;
+use crate::protocol_suite::support;
 
 use support::{Direction, methods, parse_json, parse_transcript};
 use swallowtail_protocol_acp::ACP_PROTOCOL_VERSION;

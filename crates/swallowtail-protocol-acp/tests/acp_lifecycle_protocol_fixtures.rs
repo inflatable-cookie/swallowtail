@@ -1,4 +1,4 @@
-use crate::support;
+use crate::protocol_suite::support;
 
 use serde_json::{Value, json};
 use support::{Direction, methods, parse_json, parse_transcript};

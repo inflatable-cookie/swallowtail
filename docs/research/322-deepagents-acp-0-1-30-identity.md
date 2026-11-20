@@ -157,7 +157,9 @@ the constructor-default `agentInfo.version` `0.0.1` stay outside the claim.
 The new evidence corpus is
 [`deepagents-acp-0.1.30`](../../crates/swallowtail-adapter-deepagents/tests/fixtures/deepagents-acp-0.1.30/)
 with the mutation-sensitive assertions in
-[`deepagents_acp_0_1_30_delta_ledger.rs`](../../crates/swallowtail-adapter-deepagents/tests/deepagents_acp_0_1_30_delta_ledger.rs).
+the per-hop `deepagents_acp_0_1_30_delta_ledger` test, which Wave 1C retired
+when the crate's version-identity suite moved to one table-driven integration
+binary.
 
 ## Non-goals
 

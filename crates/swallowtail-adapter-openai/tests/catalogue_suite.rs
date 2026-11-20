@@ -1,5 +1,5 @@
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "catalogue_activity.rs"]
 mod catalogue_activity;

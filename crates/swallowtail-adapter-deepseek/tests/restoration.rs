@@ -2,7 +2,8 @@
 #[path = "driver/fixture.rs"]
 mod fixture;
 #[allow(dead_code)]
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 use fixture::Fixture;
 use futures_executor::block_on;

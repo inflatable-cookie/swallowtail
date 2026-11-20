@@ -1,14 +1,15 @@
 use crate::failure::failure;
-use crate::protocol::{NativeEvent, Request, Response};
-use futures_channel::{mpsc, oneshot};
-use futures_core::Stream;
-use std::pin::Pin;
+use crate::protocol::{ChatDecoder, Method, NativeEvent, Request, Response, require_success};
 use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::AtomicBool;
 use std::task::{Context, Poll};
-use swallowtail_runtime::{BoxFuture, HostServices, RuntimeFailure, ScopeId};
+use swallowtail_runtime::{HostServices, RuntimeFailure, ScopeId};
+use swallowtail_transport_http::{
+    BodyDecoder, HttpRequest, HttpTransport, Method as HttpMethod, StreamError,
+    StreamItem as SharedStreamItem, Subscription as SharedSubscription, TransportError,
+};
 
-const STREAM_CAPACITY: usize = 64;
+const RESPONSE_LIMIT: usize = 4 * 1024 * 1024;
 
 #[derive(Clone, Default)]
 pub(crate) struct CurlTransport;
@@ -22,30 +23,16 @@ impl CurlTransport {
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
     ) -> Result<Response, RuntimeFailure> {
-        let blocking = services.blocking_work().cloned().ok_or_else(|| {
-            failure(
-                "swallowtail.ollama.blocking_service_missing",
-                "Ollama HTTP requires a blocking-work service",
-            )
-        })?;
-        let url = request_url(&endpoint, &request)?;
-        let (sender, receiver) = oneshot::channel();
-        blocking
-            .run(
-                scope,
-                Box::new(move || {
-                    let result = perform_request(url, request, cancelled);
-                    let _ = sender.send(result);
-                    Ok(())
-                }),
-            )
-            .await?;
-        receiver.await.map_err(|_| {
-            failure(
-                "swallowtail.ollama.blocking_result_missing",
-                "Ollama blocking HTTP work returned no result",
-            )
-        })?
+        let shared = shared_request(&request)?;
+        check_endpoint(&shared, &endpoint)?;
+        let response = HttpTransport::new()
+            .execute(scope, &endpoint, shared, services, cancelled)
+            .await
+            .map_err(transport_failure)?;
+        Ok(Response {
+            status: response.status,
+            body: response.body,
+        })
     }
 
     pub(crate) fn subscribe(
@@ -57,68 +44,130 @@ impl CurlTransport {
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
     ) -> Result<Subscription, RuntimeFailure> {
-        let blocking = services.blocking_work().cloned().ok_or_else(|| {
-            failure(
-                "swallowtail.ollama.blocking_service_missing",
-                "Ollama NDJSON requires a blocking-work service",
+        let shared = shared_request(&request)?;
+        check_endpoint(&shared, &endpoint)?;
+        let subscription = HttpTransport::new()
+            .subscribe(
+                scope,
+                &endpoint,
+                shared,
+                ChatDecoder::new(model),
+                services,
+                cancelled,
             )
-        })?;
-        let url = request_url(&endpoint, &request)?;
-        let (sender, receiver) = mpsc::channel(STREAM_CAPACITY);
-        let job_cancelled = Arc::clone(&cancelled);
-        let work = blocking.run(
-            scope,
-            Box::new(move || perform_ndjson(url, request, model, sender, job_cancelled)),
-        );
-        Ok(Subscription {
-            receiver,
-            cancelled,
-            work: Some(work),
-        })
+            .map_err(transport_failure)?;
+        Ok(Subscription(subscription))
     }
 }
 
-pub(crate) struct Subscription {
-    receiver: mpsc::Receiver<NativeEvent>,
-    cancelled: Arc<AtomicBool>,
-    work: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
-}
+pub(crate) struct Subscription(SharedSubscription<NativeEvent, RuntimeFailure>);
 
 impl Subscription {
-    pub(crate) async fn close(mut self) -> Result<(), RuntimeFailure> {
-        self.cancelled.store(true, Ordering::SeqCst);
-        match self.work.take() {
-            Some(work) => work.await,
-            None => Ok(()),
-        }
+    pub(crate) async fn close(self) -> Result<(), RuntimeFailure> {
+        self.0.close().await.map_err(stream_failure)
     }
 
     pub(crate) fn poll_next(
         &mut self,
         context: &mut Context<'_>,
     ) -> Poll<Option<Result<NativeEvent, RuntimeFailure>>> {
-        if let Poll::Ready(item) = Pin::new(&mut self.receiver).poll_next(context)
-            && item.is_some()
-        {
-            return Poll::Ready(item.map(Ok));
-        }
-        match self
-            .work
-            .as_mut()
-            .map_or(Poll::Ready(Ok(())), |work| work.as_mut().poll(context))
-        {
-            Poll::Ready(result) => {
-                self.work = None;
-                match result {
-                    Err(error) => Poll::Ready(Some(Err(error))),
-                    Ok(()) => Pin::new(&mut self.receiver)
-                        .poll_next(context)
-                        .map(|item| item.map(Ok)),
+        loop {
+            match self.0.poll_next(context) {
+                Poll::Ready(Some(Ok(SharedStreamItem::Body(event)))) => {
+                    return Poll::Ready(Some(Ok(event)));
                 }
+                Poll::Ready(Some(Ok(SharedStreamItem::Headers(_)))) => {}
+                Poll::Ready(Some(Err(error))) => {
+                    return Poll::Ready(Some(Err(stream_failure(error))));
+                }
+                Poll::Ready(None) => return Poll::Ready(None),
+                Poll::Pending => return Poll::Pending,
             }
-            Poll::Pending => Poll::Pending,
         }
     }
 }
 
-include!("transport/io.rs");
+impl BodyDecoder for ChatDecoder {
+    type Item = NativeEvent;
+    type Error = RuntimeFailure;
+
+    fn push(&mut self, chunk: &[u8]) -> Result<Vec<Self::Item>, Self::Error> {
+        ChatDecoder::push(self, chunk)
+    }
+
+    fn finish(self) -> Result<(), Self::Error> {
+        ChatDecoder::finish(self)
+    }
+}
+
+fn shared_request(request: &Request) -> Result<HttpRequest, RuntimeFailure> {
+    let method = match request.method {
+        Method::Get => HttpMethod::Get,
+        Method::Post => HttpMethod::Post,
+    };
+    let mut shared = HttpRequest::new(method, request.path).with_response_limit(RESPONSE_LIMIT);
+    if request.method == Method::Post {
+        shared = shared
+            .with_header("content-type", "application/json")
+            .with_header("accept", "application/x-ndjson");
+        if let Some(body) = &request.body {
+            shared = shared.with_body(body.clone());
+        }
+    }
+    Ok(shared)
+}
+
+fn check_endpoint(request: &HttpRequest, endpoint: &str) -> Result<(), RuntimeFailure> {
+    let url = request.resolve(endpoint).map_err(transport_failure)?;
+    if url.scheme() != "http" || !matches!(url.host_str(), Some("127.0.0.1" | "::1")) {
+        return Err(endpoint_failure());
+    }
+    Ok(())
+}
+
+fn endpoint_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.ollama.endpoint_invalid",
+        "Ollama endpoint grant was invalid",
+    )
+}
+
+fn transport_failure(error: TransportError) -> RuntimeFailure {
+    match error {
+        TransportError::BlockingServiceMissing => failure(
+            "swallowtail.ollama.blocking_service_missing",
+            "Ollama HTTP requires a blocking-work service",
+        ),
+        TransportError::BlockingResultMissing => failure(
+            "swallowtail.ollama.blocking_result_missing",
+            "Ollama blocking HTTP work returned no result",
+        ),
+        TransportError::EndpointInvalid => endpoint_failure(),
+        TransportError::CredentialInvalid => failure(
+            "swallowtail.ollama.credential_invalid",
+            "Ollama request carried an invalid credential",
+        ),
+        TransportError::ResponseLimit => failure(
+            "swallowtail.ollama.response_limit",
+            "Ollama HTTP response exceeded its limit",
+        ),
+        TransportError::Cancelled => failure(
+            "swallowtail.ollama.cancelled",
+            "Ollama HTTP work was cancelled",
+        ),
+        TransportError::Transport => failure(
+            "swallowtail.ollama.transport_failed",
+            "Ollama HTTP transport failed",
+        ),
+    }
+}
+
+fn stream_failure(error: StreamError<RuntimeFailure>) -> RuntimeFailure {
+    match error {
+        StreamError::Transport(error) => transport_failure(error),
+        StreamError::Decode(error) => error,
+        StreamError::Status { status, body, .. } => {
+            require_success(&Response { status, body }, "chat request").unwrap_err()
+        }
+    }
+}

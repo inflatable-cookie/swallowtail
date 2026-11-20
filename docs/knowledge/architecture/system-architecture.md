@@ -36,6 +36,7 @@ host crates   provider adapter crates
           swallowtail-core
 
 provider adapters -> swallowtail-protocol-acp | swallowtail-protocol-openai-chat
+HTTP/SSE adapters -> swallowtail-transport-http -> runtime
 remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protocol-acp
 consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
 ```
@@ -72,6 +73,11 @@ consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
   HTTP/SSE or WebSocket selection, connection-private affinity, bounded frames
   and streams, correlation, initialize-version validation, cancellation,
   deadlines, and host-owned joined cleanup.
+- **Bounded HTTP transport.** `swallowtail-transport-http` owns the one
+  provider-neutral `curl` exchange shared by every HTTP/SSE adapter: endpoint
+  resolution, bounded responses and SSE framing, blocking-worker bridging,
+  backpressure that never abandons a live stream, connect and finite-transfer
+  timeouts, cancellation on close and drop, and zeroized secret headers.
 - **Test support.** `swallowtail-testkit` depends on core, runtime, and idioms.
   It provides contract-kernel, preflight, and callback fixtures, recording
   host services, and composable provider-free conformance profiles. Tests

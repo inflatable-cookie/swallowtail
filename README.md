@@ -81,7 +81,7 @@ There is no umbrella crate. Every package is independently selectable.
 | --- | --- |
 | Portable contracts and execution | `swallowtail-core`, `swallowtail-runtime` |
 | Host integration, idioms, and conformance | `swallowtail-host-local`, `swallowtail-idioms`, `swallowtail-testkit` |
-| Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote` |
+| Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote`, `swallowtail-transport-http` |
 | Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-cline`, `swallowtail-adapter-codex`, `swallowtail-adapter-command-code`, `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-cursor`, `swallowtail-adapter-deepagents`, `swallowtail-adapter-deepseek-harness`, `swallowtail-adapter-goose`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-kiro`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qoder`, `swallowtail-adapter-qwen`, `swallowtail-adapter-zcode` |
 | Hosted APIs and SDKs | `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-gemini`, `swallowtail-adapter-kimi-platform`, `swallowtail-adapter-openai`, `swallowtail-adapter-xai` |
 | Local model runtimes | `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama` |

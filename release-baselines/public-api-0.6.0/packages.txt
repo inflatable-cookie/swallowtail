@@ -37,3 +37,4 @@ swallowtail-protocol-openai-chat
 swallowtail-runtime
 swallowtail-testkit
 swallowtail-transport-acp-remote
+swallowtail-transport-http

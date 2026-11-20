@@ -16,6 +16,11 @@ impl swallowtail_adapter_ollama::protocol::ChatDecoder
 pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::finish(self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::new(impl core::convert::Into<alloc::string::String>) -> Self
 pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_adapter_ollama::protocol::NativeEvent>, swallowtail_runtime::failure::RuntimeFailure>
+impl swallowtail_transport_http::stream::BodyDecoder for swallowtail_adapter_ollama::protocol::ChatDecoder
+pub type swallowtail_adapter_ollama::protocol::ChatDecoder::Error = swallowtail_runtime::failure::RuntimeFailure
+pub type swallowtail_adapter_ollama::protocol::ChatDecoder::Item = swallowtail_adapter_ollama::protocol::NativeEvent
+pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::finish(self) -> core::result::Result<(), Self::Error>
+pub fn swallowtail_adapter_ollama::protocol::ChatDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<Self::Item>, Self::Error>
 pub struct swallowtail_adapter_ollama::protocol::ObservationBinding
 pub swallowtail_adapter_ollama::protocol::ObservationBinding::execution_host_id: swallowtail_core::runtime_identity::ExecutionHostId
 pub swallowtail_adapter_ollama::protocol::ObservationBinding::instance_id: swallowtail_core::runtime_identity::ConfiguredInstanceId

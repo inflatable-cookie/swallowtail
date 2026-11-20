@@ -1,6 +1,4 @@
 use crate::failure::failure;
-use curl::easy::{Easy, List, WriteError};
-use futures_channel::oneshot;
 use serde_json::Value;
 use std::collections::BTreeSet;
 use std::future::Future;
@@ -19,7 +17,9 @@ use swallowtail_runtime::{
     BoxFuture, CleanupOutcome, CredentialLease, EndpointRef, HostServices, ModelCatalogDriver,
     ModelCatalogRequest, RuntimeFailure, ScopeId,
 };
-use url::Url;
+use swallowtail_transport_http::{
+    HttpRequest, HttpTransport, Method as HttpMethod, SecretHeader, TransportError,
+};
 
 const DRIVER_ID: &str = "swallowtail.gemini.models";
 const MAXIMUM_MODELS: usize = 4_096;

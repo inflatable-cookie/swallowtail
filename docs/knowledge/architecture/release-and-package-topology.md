@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-11-20
+Updated: 2026-11-21
 Realization: roadmap g02.001; g03.043; g03.059; g04.003; g05.021
 
 ## Boundary
@@ -49,6 +49,7 @@ Protocols and transport:
 - `swallowtail-protocol-acp`
 - `swallowtail-protocol-openai-chat`
 - `swallowtail-transport-acp-remote`
+- `swallowtail-transport-http`
 
 Adapters:
 
@@ -108,7 +109,7 @@ self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
 Release metadata, dependency topology, and semantic API checks distinguish the
-39-package current source and its 51-route inventory from the immutable
+40-package current source and its 51-route inventory from the immutable
 40-package, 51-route `v0.6.0` tag, the 40-package, 50-route `v0.5.4` tag, the
 47-route `v0.3.3` tag, and the
 30-package `v0.3.2` source.
@@ -158,15 +159,19 @@ The prepared candidate version is `0.6.0`. Its package order places
 core and protocols first, idioms before runtime, then host support, testkit,
 transport, and adapters. This keeps the
 runtime-to-idioms dependency resolvable from independently packaged source.
+`swallowtail-transport-http` sits beside `swallowtail-transport-acp-remote` in
+that transport stage; every `curl` HTTP/SSE adapter depends on it for its one
+bounded socket, SSE framing, timeout, cancellation and secret-header
+implementation.
 
 The candidate is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 39-package current-source metadata and 89-edge topology, kept distinct from
+- 40-package current-source metadata and 102-edge topology, kept distinct from
   the immutable 40-package `v0.6.0`, `v0.5.4` and `v0.3.3`, 30-package
   `v0.3.2`, 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
-- frozen 39-package current-source semantic API inventory and 51-route
+- frozen 40-package current-source semantic API inventory and 51-route
   inventory, including `opencode.acp`; historical `v0.6.0`, `v0.5.4` and
   `v0.3.3` files stay immutable, with removals from the immutable `v0.5.4`
   baseline forbidden

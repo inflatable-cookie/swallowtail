@@ -39,6 +39,7 @@ members = [
   "crates/swallowtail-runtime",
   "crates/swallowtail-testkit",
   "crates/swallowtail-transport-acp-remote",
+  "crates/swallowtail-transport-http",
 ]
 resolver = "3"
 
@@ -60,6 +61,7 @@ swallowtail-protocol-openai-chat = { path = "crates/swallowtail-protocol-openai-
 swallowtail-runtime = { path = "crates/swallowtail-runtime", version = "0.6.0" }
 swallowtail-testkit = { path = "crates/swallowtail-testkit", version = "0.6.0" }
 swallowtail-transport-acp-remote = { path = "crates/swallowtail-transport-acp-remote", version = "0.6.0" }
+swallowtail-transport-http = { path = "crates/swallowtail-transport-http", version = "0.6.0" }
 
 # Shared external crates carry one version requirement here and are inherited
 # with `workspace = true`, so no crate manifest can drift from another.

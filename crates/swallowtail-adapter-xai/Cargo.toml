@@ -14,14 +14,13 @@ description = "xAI direct-inference drivers for Swallowtail"
 doctest = false
 
 [dependencies]
-curl.workspace = true
 futures-channel.workspace = true
 futures-core.workspace = true
 serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-runtime.workspace = true
+swallowtail-transport-http.workspace = true
 tungstenite.workspace = true
-url.workspace = true
 
 [dev-dependencies]
 futures-executor.workspace = true

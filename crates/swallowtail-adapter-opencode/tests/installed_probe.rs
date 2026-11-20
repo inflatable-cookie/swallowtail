@@ -1,7 +1,9 @@
-use curl::easy::Easy;
 use serde_json::Value;
+use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 use swallowtail_adapter_opencode::{opencode_http_claim, opencode_server_binding};
 use swallowtail_core::InterfaceCompatibilityAssessment;
+use swallowtail_transport_http::{HttpRequest, HttpTransport, Method};
 
 #[test]
 #[ignore = "requires SWALLOWTAIL_OPENCODE_PROBE_ENDPOINT and an operator-started OpenCode server"]
@@ -106,23 +108,13 @@ fn unhealthy_server_is_rejected_before_compatibility_acceptance() {
 }
 
 fn get(endpoint: &str, path: &str) -> Vec<u8> {
-    let mut easy = Easy::new();
-    easy.url(&format!("{}{path}", endpoint.trim_end_matches('/')))
-        .expect("probe endpoint is valid");
-    easy.proxy("").expect("ambient proxy is disabled");
-    easy.follow_location(false)
-        .expect("redirect following is disabled");
-    let mut body = Vec::new();
-    {
-        let mut transfer = easy.transfer();
-        transfer
-            .write_function(|chunk| {
-                body.extend_from_slice(chunk);
-                Ok(chunk.len())
-            })
-            .expect("response callback installs");
-        transfer.perform().expect("probe request succeeds");
-    }
-    assert_eq!(easy.response_code().expect("status is available"), 200);
-    body
+    let response = HttpTransport::new()
+        .execute_blocking(
+            endpoint.trim_end_matches('/'),
+            HttpRequest::new(Method::Get, path),
+            &Arc::new(AtomicBool::new(false)),
+        )
+        .expect("probe request succeeds");
+    assert_eq!(response.status, 200);
+    response.body
 }

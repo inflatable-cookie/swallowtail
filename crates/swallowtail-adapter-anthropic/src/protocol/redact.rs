@@ -75,14 +75,6 @@ impl Drop for RedactedBytes {
     }
 }
 
-struct ZeroizingBuf(Vec<u8>);
-
-impl Drop for ZeroizingBuf {
-    fn drop(&mut self) {
-        self.0.fill(0);
-    }
-}
-
 struct ZeroizingJson(serde_json::Value);
 
 impl Drop for ZeroizingJson {

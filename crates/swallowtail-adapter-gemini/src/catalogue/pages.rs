@@ -111,28 +111,40 @@ async fn http_get(
     cancelled: Arc<AtomicBool>,
     services: &HostServices,
 ) -> Result<Vec<u8>, RuntimeFailure> {
-    let blocking = services
-        .blocking_work()
-        .cloned()
-        .expect("validated blocking-work service");
-    let endpoint = endpoint.to_owned();
-    let page_token = page_token.map(str::to_owned);
-    let (sender, receiver) = oneshot::channel();
-    blocking
-        .run(
-            scope,
-            Box::new(move || {
-                let result = perform_get(&endpoint, page_token.as_deref(), secret, cancelled);
-                let _ = sender.send(result);
-                Ok(())
-            }),
-        )
-        .await?;
-    receiver.await.map_err(|_| {
-        failure(
-            "swallowtail.gemini.models.blocking_result_missing",
-            "Gemini Models blocking HTTP work returned no result",
-        )
-    })?
+    let mut request = HttpRequest::new(HttpMethod::Get, "/v1beta/models")
+        .with_query("pageSize", "1000")
+        .with_response_limit(MAXIMUM_BODY_BYTES)
+        .with_transfer_timeout(Duration::from_secs(10))
+        .with_header("accept", "application/json")
+        .with_secret_header(
+            SecretHeader::prefixed("x-goog-api-key", "", secret)
+                .map_err(|_| protocol_failure())?,
+        );
+    if let Some(page_token) = page_token {
+        request = request.with_query("pageToken", page_token);
+    }
+    let url = request.resolve(endpoint).map_err(|_| protocol_failure())?;
+    if url.scheme() != "https"
+        || url.host_str() != Some("generativelanguage.googleapis.com")
+        || url.path() != "/v1beta/models"
+    {
+        return Err(protocol_failure());
+    }
+    let response = HttpTransport::new()
+        .execute(scope, endpoint, request, services, cancelled)
+        .await
+        .map_err(|error| {
+            if error == TransportError::ResponseLimit {
+                protocol_failure()
+            } else {
+                transport_failure()
+            }
+        })?;
+    if !(200..300).contains(&response.status) {
+        return Err(failure(
+            "swallowtail.gemini.models.provider_rejected",
+            "Gemini rejected model catalogue discovery",
+        ));
+    }
+    Ok(response.body)
 }
-

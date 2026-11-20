@@ -49,10 +49,13 @@ consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
   Its only dependency is `semver`.
 - **Runtime.** `swallowtail-runtime` depends on core, `swallowtail-idioms`,
   `futures-core`, `zeroize`, and `sha2`. It owns executor-neutral dynamic
-  roles, scoped handles, bounded events, terminal outcomes, usage and quota
-  observations, operation policy, plan-derived request and safe evidence
-  records, scope- and audience-bound host ports, and the shared prepared
-  evidence record. It never names a provider.
+  roles, scoped handles, bounded events, terminal outcomes, cleanup-outcome
+  composition, bounded LF-delimited line framing, bounded attachment reads,
+  usage and quota observations, operation policy, plan-derived request and
+  safe evidence records, scope- and audience-bound host ports, and the shared
+  prepared evidence record. It never names a provider, so a helper that any
+  adapter would otherwise copy belongs here and keeps the caller's own
+  provider-specific codes and messages.
 - **Idioms.** `swallowtail-idioms` depends on core only. It owns portable
   idiom records, deterministic confidence decay, merge outcomes, bounded
   selection, and a fail-soft recorder behind host ports. It composes no prompt

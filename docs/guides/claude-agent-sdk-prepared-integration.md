@@ -246,9 +246,12 @@ At open, the sidecar resolves the package manifest from the host-supplied SDK
 module path and the shipped native manifest from the host-supplied manifest
 path. Preparation selects an exact coupled package/native point with
 `ClaudeAgentSdkSessionPreparation::with_package_native_pair`; the finite
-`ClaudeAgentSdkPackageNativePair` choices cover `0.3.284`/`2.1.284` through
+`ClaudeAgentSdkPackageNativePair` table covers `0.3.284`/`2.1.284` through
 `0.3.322`/`2.1.322` over every published point (the unpublished `0.3.297`,
-`0.3.298`, and `0.3.313` are absent). Existing callers retain the `.293` pair by default. The
+`0.3.298`, and `0.3.313` are absent). The pair is an opaque struct over one
+static row: `MAINTAINED` lists every row in publication order, and
+`from_package_version` or `from_versions` names one row from the exact
+versions a consumer already holds. Existing callers retain the `.293` pair by default. The
 driver takes both expected versions from the prepared plan and passes them in
 its private launch messages. Before constructing the SDK query, the sidecar
 checks that the selected pair is maintained, the loaded package metadata has
@@ -268,9 +271,13 @@ missing and unreadable identities before SDK construction.
 
 `ClaudeAgentSdkPackageNativePair` and `with_package_native_pair` are additive
 APIs of the `0.6.0` candidate. Existing preparation calls remain
-source-compatible and continue to select `.293` by default. The additive
-pair-selection entries, including the `.294` and `.295` exact-pair choices,
-appear only in
+source-compatible and continue to select `.293` by default. The pair type is a
+static-table-backed struct rather than a 35-variant enum, so a caller that
+named one variant moves to the equivalent lookup: `V0_3_284Native2_1_284`
+becomes `ClaudeAgentSdkPackageNativePair::from_package_version("0.3.284")`,
+and `MAINTAINED` keeps its length and order. `DEFAULT`, `MAINTAINED`,
+`package_version`, and `native_version` keep their names and meanings. The
+resulting entries appear only in
 `release-baselines/public-api-0.6.0/swallowtail-adapter-claude-agent.txt`;
 `public-api-0.5.1` and every other older version-labelled baseline again record
 their own tagged source byte-for-byte, as

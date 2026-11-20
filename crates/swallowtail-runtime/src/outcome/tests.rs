@@ -261,3 +261,86 @@ fn terminal_already_set_implements_display_and_error() {
     let as_error: &dyn Error = &error;
     assert!(as_error.source().is_none());
 }
+
+#[test]
+fn merged_cleanup_reports_the_worse_of_two_releases() {
+    let degraded = swallowtail_core::SafeDiagnostic::new("fixture.degraded", "Cleanup degraded");
+    let failed = swallowtail_core::SafeDiagnostic::new("fixture.failed", "Cleanup failed");
+    let cases = [
+        (
+            CleanupOutcome::Clean,
+            CleanupOutcome::Clean,
+            CleanupOutcome::Clean,
+        ),
+        (
+            CleanupOutcome::Clean,
+            CleanupOutcome::NotApplicable,
+            CleanupOutcome::Clean,
+        ),
+        (
+            CleanupOutcome::NotApplicable,
+            CleanupOutcome::Clean,
+            CleanupOutcome::Clean,
+        ),
+        (
+            CleanupOutcome::NotApplicable,
+            CleanupOutcome::NotApplicable,
+            CleanupOutcome::NotApplicable,
+        ),
+        (
+            CleanupOutcome::Clean,
+            CleanupOutcome::Degraded(degraded.clone()),
+            CleanupOutcome::Degraded(degraded.clone()),
+        ),
+        (
+            CleanupOutcome::Degraded(degraded.clone()),
+            CleanupOutcome::Clean,
+            CleanupOutcome::Degraded(degraded.clone()),
+        ),
+        (
+            CleanupOutcome::Degraded(degraded.clone()),
+            CleanupOutcome::Failed(failed.clone()),
+            CleanupOutcome::Failed(failed.clone()),
+        ),
+        (
+            CleanupOutcome::Failed(failed.clone()),
+            CleanupOutcome::Degraded(degraded.clone()),
+            CleanupOutcome::Failed(failed.clone()),
+        ),
+        (
+            CleanupOutcome::NotApplicable,
+            CleanupOutcome::Failed(failed.clone()),
+            CleanupOutcome::Failed(failed.clone()),
+        ),
+    ];
+    for (left, right, expected) in cases {
+        let merged = left.clone().merge(right.clone());
+        assert_eq!(merged, expected, "merging {left:?} with {right:?}");
+    }
+}
+
+#[test]
+fn merging_two_failures_keeps_the_first_observed_reason() {
+    let first = swallowtail_core::SafeDiagnostic::new("fixture.first", "First failure");
+    let second = swallowtail_core::SafeDiagnostic::new("fixture.second", "Second failure");
+    assert_eq!(
+        CleanupOutcome::Failed(first.clone()).merge(CleanupOutcome::Failed(second)),
+        CleanupOutcome::Failed(first)
+    );
+}
+
+#[test]
+fn merging_a_cleanup_chain_is_order_independent_in_severity() {
+    let degraded = swallowtail_core::SafeDiagnostic::new("fixture.degraded", "Cleanup degraded");
+    let failed = swallowtail_core::SafeDiagnostic::new("fixture.failed", "Cleanup failed");
+    let forward = CleanupOutcome::Clean
+        .merge(CleanupOutcome::Degraded(degraded.clone()))
+        .merge(CleanupOutcome::Failed(failed.clone()))
+        .merge(CleanupOutcome::NotApplicable);
+    let reverse = CleanupOutcome::NotApplicable
+        .merge(CleanupOutcome::Failed(failed.clone()))
+        .merge(CleanupOutcome::Degraded(degraded))
+        .merge(CleanupOutcome::Clean);
+    assert_eq!(forward, CleanupOutcome::Failed(failed.clone()));
+    assert_eq!(reverse, CleanupOutcome::Failed(failed));
+}

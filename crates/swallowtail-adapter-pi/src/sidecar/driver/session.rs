@@ -1,4 +1,4 @@
-use self::cleanup::{merge_cleanup, release_credential, release_resource};
+use self::cleanup::{release_credential, release_resource};
 use super::handle::{PiSdkSidecarTurnBinding, PiSdkSidecarTurnHandle, SessionCancellation};
 use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
@@ -240,7 +240,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 };
                 let resource = release_resource(self.resource.take(), &self.services).await;
                 let credential = release_credential(self.credential.take(), &self.services).await;
-                merge_cleanup(merge_cleanup(process, resource), credential)
+                CleanupOutcome::merge(CleanupOutcome::merge(process, resource), credential)
             }),
         )
     }

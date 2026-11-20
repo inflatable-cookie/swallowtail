@@ -262,3 +262,56 @@ fn managed_denial_revision_starts_at_the_proved_native_hop() {
         );
     }
 }
+
+#[test]
+fn the_maintained_table_names_every_pair_once_in_publication_order() {
+    let packages: Vec<&str> = ClaudeAgentSdkPackageNativePair::MAINTAINED
+        .iter()
+        .map(|pair| pair.package_version())
+        .collect();
+    assert_eq!(packages.len(), 35, "the maintained window has 35 pairs");
+    let mut sorted = packages.clone();
+    sorted.sort_unstable();
+    sorted.dedup();
+    assert_eq!(sorted.len(), packages.len(), "no pair repeats");
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::MAINTAINED[0].package_version(),
+        "0.3.284"
+    );
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::MAINTAINED[34].package_version(),
+        "0.3.322"
+    );
+}
+
+#[test]
+fn exact_version_lookups_name_only_maintained_pairs() {
+    for pair in ClaudeAgentSdkPackageNativePair::MAINTAINED {
+        assert_eq!(
+            ClaudeAgentSdkPackageNativePair::from_package_version(pair.package_version()),
+            Some(pair)
+        );
+        assert_eq!(
+            ClaudeAgentSdkPackageNativePair::from_versions(
+                pair.package_version(),
+                pair.native_version()
+            ),
+            Some(pair)
+        );
+    }
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::from_package_version("0.3.297"),
+        None,
+        "an unpublished package patch is not a maintained pair"
+    );
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::from_versions("0.3.293", "2.1.294"),
+        None,
+        "a package and native version from different hops is not a pair"
+    );
+    assert_eq!(
+        ClaudeAgentSdkPackageNativePair::DEFAULT,
+        ClaudeAgentSdkPackageNativePair::from_package_version("0.3.293")
+            .expect("the default pair is maintained")
+    );
+}

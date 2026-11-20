@@ -1,6 +1,7 @@
 use crate::claude_code_command::arguments;
 use crate::claude_code_handle::{ClaudeCodeCancellation, ClaudeCodeRunHandle};
-use crate::claude_code_pump::{PumpHost, cleanup_failed_start, pump};
+use crate::claude_code_pump::{PumpHost, pump};
+use crate::claude_code_pump_common::cleanup_failed_start;
 use crate::failure::failure;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{

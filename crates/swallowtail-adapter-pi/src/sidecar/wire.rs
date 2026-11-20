@@ -28,23 +28,22 @@ impl PiSdkSidecarDecoder {
         &mut self,
         bytes: &[u8],
     ) -> Result<Vec<PiSdkSidecarRecord>, PiSdkSidecarProtocolFailure> {
-        self.buffer.extend_from_slice(bytes);
-        if self.buffer.len() > MAXIMUM_RECORD_BYTES && !self.buffer.contains(&b'\n') {
-            return Err(failure(PiSdkSidecarProtocolFailureKind::RecordTooLarge));
-        }
+        let mut buffer = std::mem::take(&mut self.buffer);
         let mut records = Vec::new();
-        while let Some(end) = self.buffer.iter().position(|byte| *byte == b'\n') {
-            if end > MAXIMUM_RECORD_BYTES {
-                return Err(failure(PiSdkSidecarProtocolFailureKind::RecordTooLarge));
-            }
-            let mut line: Vec<_> = self.buffer.drain(..=end).collect();
-            line.pop();
-            if line.last() == Some(&b'\r') {
-                line.pop();
-            }
-            records.push(decode_record(&line)?);
-        }
-        Ok(records)
+        let scanned = swallowtail_runtime::scan_lines(
+            &mut buffer,
+            bytes,
+            MAXIMUM_RECORD_BYTES,
+            || failure(PiSdkSidecarProtocolFailureKind::RecordTooLarge),
+            |line| {
+                records.push(decode_record(swallowtail_runtime::strip_carriage_return(
+                    line,
+                ))?);
+                Ok(())
+            },
+        );
+        self.buffer = buffer;
+        scanned.map(|()| records)
     }
 
     pub(crate) fn finish(self) -> Result<(), PiSdkSidecarProtocolFailure> {

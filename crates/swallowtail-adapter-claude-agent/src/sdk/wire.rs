@@ -41,7 +41,7 @@ impl ClaudeAgentSdkDecoder {
     ) -> Result<Vec<ClaudeAgentSdkRecord>, ClaudeAgentSdkProtocolFailure> {
         let mut buffer = std::mem::take(&mut self.buffer);
         let mut records = Vec::new();
-        let scanned = crate::ndjson::scan_lines(
+        let scanned = swallowtail_runtime::scan_lines(
             &mut buffer,
             bytes,
             MAXIMUM_RECORD_BYTES,

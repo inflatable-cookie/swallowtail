@@ -24,6 +24,20 @@ pub(crate) fn attach_install_guidance(outcome: DiscoveryOutcome) -> DiscoveryOut
     outcome.with_install_guidance(CLAUDE_CODE_INSTALL_GUIDANCE)
 }
 
+/// Extracts the version from `claude --version` output for one route binding.
+///
+/// Both routes read the same `"<version> (Claude Code)\n"` shape and differ
+/// only in the claim that judges the version, so the strict shape check lives
+/// here once and each route passes its own binding parser.
+pub(crate) fn parse_version_output(
+    output: &[u8],
+    binding: impl FnOnce(&str) -> Option<swallowtail_core::InterfaceVersionBinding>,
+) -> Option<swallowtail_core::InterfaceVersionBinding> {
+    let output = std::str::from_utf8(output).ok()?;
+    let output = output.strip_suffix('\n').unwrap_or(output);
+    binding(output.strip_suffix(" (Claude Code)")?)
+}
+
 impl ClaudeCodeHeadlessDriver {
     #[must_use]
     /// Returns the descriptive vendor guidance used for an absent executable.
@@ -67,10 +81,7 @@ impl DiscoveryDriver for ClaudeCodeHeadlessDriver {
 }
 
 fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBinding> {
-    let output = std::str::from_utf8(output).ok()?;
-    let output = output.strip_suffix('\n').unwrap_or(output);
-    let version = output.strip_suffix(" (Claude Code)")?;
-    crate::claude_code_headless_binding(version)
+    parse_version_output(output, crate::claude_code_headless_binding)
 }
 
 #[cfg(test)]

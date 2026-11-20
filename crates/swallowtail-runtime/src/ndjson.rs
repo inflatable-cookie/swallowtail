@@ -1,18 +1,27 @@
-//! Bounded LF-delimited framing shared by the Claude Code stream parsers and
-//! the private SDK wire decoder.
+//! Bounded LF-delimited line framing for newline-delimited provider streams.
 //!
-//! One complete line is handed to the callback as a borrowed slice, and only a
-//! trailing partial line is held for the next chunk. Every length bound is
+//! A provider stream arrives as chunks that split lines arbitrarily. Every
+//! adapter that frames such a stream holds one trailing partial line between
+//! chunks and bounds the bytes of any single line, so this module owns that
+//! one implementation instead of one copy per adapter.
+//!
+//! One complete line is handed to the callback as a borrowed slice and only a
+//! trailing partial line is copied into the held buffer. Every length bound is
 //! checked *before* bytes are copied, so one oversized chunk can neither grow
 //! the held buffer past the bound nor allocate the rejected text, and each
 //! chunk is visited once instead of draining the buffer per line.
 
 /// Scans `bytes` into complete lines, holding one trailing partial line.
 ///
-/// `maximum` bounds the bytes of one line, excluding the delimiter. `too_long`
-/// names the caller's own bound failure; `on_line` receives each complete line
-/// without its `\n` delimiter.
-pub(crate) fn scan_lines<E>(
+/// `maximum` bounds the bytes of one line, excluding the `\n` delimiter. An
+/// oversized line is reported through `too_long` before any of its bytes are
+/// held, and the callback is then never called for it. `on_line` receives each
+/// complete line without its `\n` delimiter; a caller that also tolerates
+/// `\r\n` framing strips the carriage return itself.
+///
+/// The scan is linear in the bytes offered: each byte is visited once whether
+/// it completes a line, joins the held partial line, or starts the next one.
+pub fn scan_lines<E>(
     pending: &mut Vec<u8>,
     bytes: &[u8],
     maximum: usize,
@@ -52,9 +61,15 @@ pub(crate) fn scan_lines<E>(
     Ok(())
 }
 
+/// Returns `line` without a trailing carriage return, for `\r\n` framing.
+#[must_use]
+pub fn strip_carriage_return(line: &[u8]) -> &[u8] {
+    line.strip_suffix(b"\r").unwrap_or(line)
+}
+
 #[cfg(test)]
 mod tests {
-    use super::scan_lines;
+    use super::{scan_lines, strip_carriage_return};
 
     fn limit() -> &'static str {
         "line too long"
@@ -129,5 +144,33 @@ mod tests {
             Err("line too long")
         );
         assert!(pending.is_empty());
+    }
+
+    #[test]
+    fn a_callback_error_stops_the_scan_with_the_line_already_consumed() {
+        let mut pending = Vec::new();
+        let mut seen = Vec::new();
+        let scanned = scan_lines(&mut pending, b"one\ntwo\nthree\n", 8, limit, |line| {
+            seen.push(String::from_utf8(line.to_vec()).expect("fixture line is UTF-8"));
+            if line == b"two" {
+                return Err("stop");
+            }
+            Ok(())
+        });
+        assert_eq!(scanned, Err("stop"));
+        assert_eq!(seen, ["one".to_owned(), "two".to_owned()]);
+    }
+
+    #[test]
+    fn a_carriage_return_is_stripped_only_when_the_caller_asks() {
+        let mut pending = Vec::new();
+        let mut lines: Vec<Vec<u8>> = Vec::new();
+        scan_lines(&mut pending, b"one\r\nplain\n", 8, limit, |line| {
+            lines.push(strip_carriage_return(line).to_vec());
+            Ok(())
+        })
+        .expect("chunk is within bounds");
+        assert_eq!(lines, [b"one".to_vec(), b"plain".to_vec()]);
+        assert_eq!(strip_carriage_return(b"plain"), b"plain");
     }
 }

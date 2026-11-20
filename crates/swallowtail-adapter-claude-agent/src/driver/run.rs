@@ -1,4 +1,3 @@
-use super::session::merge_cleanup;
 use super::validation::{permission_handling, validate_plan, validate_run};
 use super::{ClaudeAgentAcpDriver, derived_scope, failure, malformed};
 use crate::connection::AcpConnection;
@@ -196,7 +195,7 @@ impl StructuredRunDriver for ClaudeAgentAcpDriver {
                         task_cleanup_boundary,
                     )
                     .await;
-                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup);
+                    let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), session_cleanup);
                     let mut finished = TerminalOutcome::new(outcome.status().clone(), cleanup);
                     if let Some(output) = outcome.output().cloned() {
                         finished = finished.with_output(output);

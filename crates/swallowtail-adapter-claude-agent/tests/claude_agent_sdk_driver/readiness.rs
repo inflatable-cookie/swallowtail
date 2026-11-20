@@ -813,7 +813,8 @@ fn the_live_capture_path_retains_message_fields_and_close_evidence_provider_free
 fn the_selected_model_crosses_the_wire_on_open() {
     let host = host_id("claude-agent-sdk.fixture.model");
     let fixture = SdkFixtureHost::new(SdkScenario::Complete);
-    let pair = ClaudeAgentSdkPackageNativePair::V0_3_284Native2_1_284;
+    let pair = ClaudeAgentSdkPackageNativePair::from_package_version("0.3.284")
+        .expect("0.3.284 is a maintained package");
     let prepared = prepare_claude_agent_sdk_session(
         preparation(host.clone()).with_package_native_pair(pair),
         SessionOptions::default(),

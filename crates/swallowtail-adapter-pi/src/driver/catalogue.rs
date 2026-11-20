@@ -1,5 +1,5 @@
 use super::launch::catalogue_arguments;
-use super::session::cleanup::{merge_cleanup, release_credential};
+use super::session::cleanup::release_credential;
 use super::validation::validate_catalogue;
 use crate::catalogue::parse_catalogue;
 use crate::connection::{CommandResult, PiConnection};
@@ -148,7 +148,7 @@ impl super::PiRpcDriver {
             )),
         };
         let credential_cleanup = release_credential(credential.take(), &services).await;
-        let cleanup = merge_cleanup(process_cleanup, credential_cleanup);
+        let cleanup = CleanupOutcome::merge(process_cleanup, credential_cleanup);
         match (result, cleanup) {
             (Err(error), _) => Err(error),
             (Ok(models), CleanupOutcome::Clean) => Ok(models),

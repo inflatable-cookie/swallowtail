@@ -1,4 +1,4 @@
-use super::session::cleanup::{merge_cleanup, release_credential};
+use super::session::cleanup::release_credential;
 use super::validation::validate_catalogue;
 use crate::failure::failure;
 use crate::sidecar::catalogue::parse_catalogue;
@@ -158,7 +158,7 @@ impl super::PiSdkSidecarDriver {
             )),
         };
         let credential_cleanup = release_credential(credential.take(), &services).await;
-        let cleanup = merge_cleanup(process_cleanup, credential_cleanup);
+        let cleanup = CleanupOutcome::merge(process_cleanup, credential_cleanup);
         match (result, cleanup) {
             (Err(error), _) => Err(error),
             (Ok(models), CleanupOutcome::Clean) => Ok(models),

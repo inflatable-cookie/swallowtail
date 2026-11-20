@@ -6,7 +6,7 @@ use crate::driver::validation::validate_turn;
 mod cleanup;
 mod deadline;
 
-pub(in crate::driver) use cleanup::{cleanup_failure, merge_cleanup};
+pub(in crate::driver) use cleanup::cleanup_failure;
 use cleanup::{
     close_provider_session, delete_owned_provider_session, finish_cleanup, join_connection,
 };
@@ -76,8 +76,12 @@ impl ClaudeAgentSessionHandle {
             let _ = join_active(active).await;
         }
         let task = join_connection(&mut self).await;
-        let cleanup =
-            finish_cleanup(self, merge_cleanup(native_close, deletion_cleanup), task).await;
+        let cleanup = finish_cleanup(
+            self,
+            CleanupOutcome::merge(native_close, deletion_cleanup),
+            task,
+        )
+        .await;
         (cleanup, deletion)
     }
 }

@@ -1,6 +1,6 @@
 use super::*;
 use crate::driver::handle::SessionCancellation;
-use crate::driver::session::{ClaudeAgentSessionHandle, cleanup_failure, merge_cleanup};
+use crate::driver::session::{ClaudeAgentSessionHandle, cleanup_failure};
 
 mod open;
 
@@ -201,7 +201,7 @@ impl PendingSession {
         };
         let resource = release_resource(self.resource.take(), services).await;
         let credential = release_credential(self.credential.take(), services).await;
-        merge_cleanup(merge_cleanup(task, resource), credential)
+        CleanupOutcome::merge(CleanupOutcome::merge(task, resource), credential)
     }
 }
 

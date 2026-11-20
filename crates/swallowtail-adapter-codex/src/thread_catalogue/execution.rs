@@ -1,4 +1,3 @@
-use crate::cleanup::merge_cleanup;
 #[path = "execution/catalogue.rs"]
 mod catalogue;
 #[path = "execution/history.rs"]
@@ -129,7 +128,7 @@ async fn close_and_release(
     budget: CloseBudget,
 ) -> CleanupOutcome {
     let connection = close_connection(connection, task, budget).await;
-    merge_cleanup(connection, resource.release().await)
+    CleanupOutcome::merge(connection, resource.release().await)
 }
 
 async fn cancel_and_release(
@@ -147,7 +146,7 @@ async fn cancel_and_release(
     } else {
         connection.cleanup_outcome()
     };
-    merge_cleanup(connection_cleanup, resource.release().await)
+    CleanupOutcome::merge(connection_cleanup, resource.release().await)
 }
 
 pub(super) fn finish<T>(

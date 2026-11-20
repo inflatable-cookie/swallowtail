@@ -123,6 +123,9 @@ pub swallowtail_runtime::AdmissionVerdict::Revoked(swallowtail_runtime::Register
 impl swallowtail_runtime::AdmissionVerdict
 pub const fn swallowtail_runtime::AdmissionVerdict::is_current(&self) -> bool
 pub const fn swallowtail_runtime::AdmissionVerdict::reason(&self) -> core::option::Option<&swallowtail_runtime::RegisteredToolReasonCode>
+pub enum swallowtail_runtime::AttachmentReadFailure
+pub swallowtail_runtime::AttachmentReadFailure::TooLarge
+pub swallowtail_runtime::AttachmentReadFailure::Unreadable
 pub enum swallowtail_runtime::AttachmentRepresentation
 pub swallowtail_runtime::AttachmentRepresentation::BoundedBytes
 pub swallowtail_runtime::AttachmentRepresentation::ProviderUpload
@@ -176,6 +179,7 @@ pub swallowtail_runtime::CleanupOutcome::Failed(swallowtail_core::diagnostic::Sa
 pub swallowtail_runtime::CleanupOutcome::NotApplicable
 impl swallowtail_runtime::CleanupOutcome
 pub const fn swallowtail_runtime::CleanupOutcome::diagnostic(&self) -> core::option::Option<&swallowtail_core::diagnostic::SafeDiagnostic>
+pub fn swallowtail_runtime::CleanupOutcome::merge(self, Self) -> Self
 pub enum swallowtail_runtime::ConfiguredProviderInstanceCatalogueFailureKind
 pub swallowtail_runtime::ConfiguredProviderInstanceCatalogueFailureKind::AccessMismatch
 pub swallowtail_runtime::ConfiguredProviderInstanceCatalogueFailureKind::DriverMismatch
@@ -4216,14 +4220,17 @@ pub fn swallowtail_runtime::probe_runtime_failure(&swallowtail_runtime::RuntimeF
 pub fn swallowtail_runtime::project_registered_capability(swallowtail_runtime::RegisteredCapabilityProjectionInput<'_>) -> core::result::Result<swallowtail_runtime::ConsumerRouteProjectionContribution, swallowtail_runtime::ConsumerRouteProjectionFailure>
 pub fn swallowtail_runtime::project_watcher_activity(&swallowtail_runtime::RuntimeTurnId, &swallowtail_runtime::WatcherSnapshot) -> core::result::Result<swallowtail_runtime::WatcherActivityProjection, swallowtail_runtime::WatcherActivityProjectionFailure>
 pub fn swallowtail_runtime::provider_status(swallowtail_runtime::RuntimeFailure) -> swallowtail_runtime::TerminalStatus
+pub fn swallowtail_runtime::read_bounded_attachment(&str, u64) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_runtime::AttachmentReadFailure>
 pub fn swallowtail_runtime::refresh_readiness(&dyn swallowtail_runtime::ConnectionLifecycleStore, swallowtail_runtime::ReadinessRefreshRequest) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AdmittedInstanceRecord, swallowtail_runtime::ReadinessRefreshFailure>
 pub fn swallowtail_runtime::registered_capability_control_id(&str, &swallowtail_runtime::RegisteredToolProtocolVersion, &str) -> core::result::Result<swallowtail_runtime::ConsumerRouteControlId, swallowtail_runtime::ConsumerRouteProjectionFailure>
 pub fn swallowtail_runtime::registered_capability_feature_id(&str, &swallowtail_runtime::RegisteredToolProtocolVersion, &str) -> core::result::Result<swallowtail_runtime::ConsumerRouteFeatureId, swallowtail_runtime::ConsumerRouteProjectionFailure>
 pub fn swallowtail_runtime::resolve_idiom_instructions(&swallowtail_runtime::HostServices, &swallowtail_runtime::SessionOptions) -> core::result::Result<core::option::Option<swallowtail_runtime::OperationContent>, swallowtail_runtime::IdiomSourceUnavailable>
 pub fn swallowtail_runtime::runtime_event_channel(usize) -> core::result::Result<(swallowtail_runtime::RuntimeEventSender, swallowtail_runtime::RuntimeEventStream), swallowtail_runtime::RuntimeFailure>
+pub fn swallowtail_runtime::scan_lines<E>(&mut alloc::vec::Vec<u8>, &[u8], usize, impl core::ops::function::Fn() -> E, impl core::ops::function::FnMut(&[u8]) -> core::result::Result<(), E>) -> core::result::Result<(), E>
 pub fn swallowtail_runtime::settled_session_plans_share_binding(&swallowtail_core::preflight::PreflightPlan, &swallowtail_core::preflight::PreflightPlan) -> bool
 pub fn swallowtail_runtime::start_sign_in(&swallowtail_runtime::HostServices, swallowtail_runtime::SignInStartRequest) -> core::result::Result<swallowtail_runtime::SignInSession, swallowtail_runtime::SignInFailure>
 pub async fn swallowtail_runtime::start_sign_in_async(&swallowtail_runtime::HostServices, swallowtail_runtime::SignInStartRequest) -> core::result::Result<swallowtail_runtime::SignInSession, swallowtail_runtime::SignInFailure>
+pub fn swallowtail_runtime::strip_carriage_return(&[u8]) -> &[u8]
 pub fn swallowtail_runtime::submit_sign_in_credential_field(&mut swallowtail_runtime::SignInSession, swallowtail_core::connection_lifecycle::identity::CredentialFieldId, swallowtail_core::runtime_identity::CredentialRef) -> core::result::Result<swallowtail_runtime::SignInStatus, swallowtail_runtime::SignInFailure>
 pub fn swallowtail_runtime::terminal_outcome_channel() -> (swallowtail_runtime::TerminalOutcomeSender, swallowtail_runtime::TerminalOutcomeFuture)
 pub fn swallowtail_runtime::validate_attached_runtime_residency_policy(&swallowtail_core::preflight::PreflightPlan, &swallowtail_runtime::OperationPolicy) -> core::result::Result<(), swallowtail_runtime::IncompatibleOperationPolicy>

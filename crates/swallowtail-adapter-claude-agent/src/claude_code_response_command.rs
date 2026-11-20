@@ -1,23 +1,7 @@
 use swallowtail_core::{ModelId, ReasoningMode};
 
 pub(crate) fn arguments(model: &ModelId, reasoning: Option<&ReasoningMode>) -> Vec<String> {
-    let mut arguments = [
-        "-p",
-        "--input-format",
-        "text",
-        "--output-format",
-        "stream-json",
-        "--verbose",
-        "--no-session-persistence",
-        "--model",
-        model.as_str(),
-    ]
-    .into_iter()
-    .map(str::to_owned)
-    .collect::<Vec<_>>();
-    if let Some(reasoning) = reasoning.filter(|mode| mode.as_str() != "default") {
-        arguments.extend(["--effort".to_owned(), reasoning.as_str().to_owned()]);
-    }
+    let mut arguments = crate::claude_code_invocation::invocation_prefix(model, reasoning);
     arguments.extend(
         [
             "--tools",

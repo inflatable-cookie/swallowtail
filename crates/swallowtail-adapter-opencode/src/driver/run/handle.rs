@@ -185,8 +185,8 @@ impl OpenCodeSessionHandle {
             None => CleanupOutcome::NotApplicable,
         };
         CreatedSessionCleanup {
-            cleanup: merge_cleanup(
-                merge_cleanup(active_cleanup, deletion.0),
+            cleanup: CleanupOutcome::merge(
+                CleanupOutcome::merge(active_cleanup, deletion.0),
                 lease_cleanup,
             ),
             deletion: deletion.1,

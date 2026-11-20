@@ -258,7 +258,7 @@ fn cleanup(
                 None => CleanupOutcome::NotApplicable,
             };
             let resource = futures_executor::block_on(resources.release(resource));
-            merge_cleanup(bridge, resource)
+            CleanupOutcome::merge(bridge, resource)
         })
         .await
         .unwrap_or_else(|error| CleanupOutcome::Failed(error.diagnostic().clone()))
@@ -411,23 +411,6 @@ fn join_utf8(root: &str, relative: &str) -> Result<String, RuntimeFailure> {
                 "Claude Code watcher private material path is not UTF-8",
             )
         })
-}
-
-fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(diagnostic), _) | (_, CleanupOutcome::Failed(diagnostic)) => {
-            CleanupOutcome::Failed(diagnostic)
-        }
-        (CleanupOutcome::Degraded(diagnostic), _) | (_, CleanupOutcome::Degraded(diagnostic)) => {
-            CleanupOutcome::Degraded(diagnostic)
-        }
-        (CleanupOutcome::Clean, CleanupOutcome::Clean)
-        | (CleanupOutcome::Clean, CleanupOutcome::NotApplicable)
-        | (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
 }
 
 fn missing_service(name: &'static str) -> RuntimeFailure {

@@ -1,4 +1,3 @@
-use crate::cleanup::merge_cleanup;
 use crate::exec_events::ExecEventParser;
 use crate::exec_handle::ProcessCancellation;
 use crate::exec_input::SharedExecMaterializations;
@@ -212,7 +211,7 @@ fn process_cleanup_failed() -> CleanupOutcome {
 }
 
 fn with_cleanup(outcome: TerminalOutcome, materialization: CleanupOutcome) -> TerminalOutcome {
-    let cleanup = merge_cleanup(outcome.cleanup().clone(), materialization);
+    let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), materialization);
     let mut combined = TerminalOutcome::new(outcome.status().clone(), cleanup);
     if let Some(output) = outcome.output() {
         combined = combined.with_output(output.clone());

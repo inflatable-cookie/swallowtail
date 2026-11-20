@@ -34,45 +34,28 @@ validation_manifest_has_no_path_or_git() {
   ' "$validation_manifest"
 }
 
-# Host paths are any absolute /home/<user>/ or /Users/<user>/ location. Packaged
-# files that already carry one are listed here, relative to the package
-# directory, until the crate fixture or source string that holds it is
-# replaced. Each entry is pre-existing debt; a new host path in any other file
-# fails the audit, and so does a new host path in a listed file on a line the
-# list does not name. Remove an entry when its file is cleaned.
-validation_host_path_debt=(
-  swallowtail-adapter-antigravity/src/discovery/probe.rs
-  swallowtail-adapter-antigravity/tests/foundation.rs
-  swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.270/identity.json
-  swallowtail-adapter-codex/src/discovery/outcome.rs
-  swallowtail-adapter-codex/tests/prepared.rs
-  swallowtail-adapter-cursor/src/discovery/outcome.rs
-  swallowtail-adapter-cursor/tests/foundation.rs
-  swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.43.0/identity.json
-  swallowtail-adapter-opencode/tests/fixtures/opencode-1.18.18/identity.json
-  swallowtail-adapter-opencode/tests/fixtures/opencode-acp-1.18.32/identity.json
-)
+# Pre-existing host paths in packaged files are listed by exact line in this
+# file (package-relative path, then a tab, then the line text). A host path is
+# exempt only when its whole line matches a row, so any other host path, and any
+# changed or added line in a listed file, fails the audit.
+validation_host_path_debt_file="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/host-path-debt.tsv"
 
-# Prints the files under a tree that match one pattern. Status 0 means matches
-# were printed, 1 means none, and anything else is an audit error.
-validation_scan_tree() {
-  local validation_pattern=$1
-  local validation_tree=$2
-  rg -l -- "$validation_pattern" "$validation_tree"
-}
-
-# Prints the host-path hits that are not listed debt. Returns 0 when the scan
-# ran, whether or not it found hits, and the scan's own status otherwise, so an
-# audit error is never mistaken for a clean tree.
+# Prints each host-path line under the tree that no debt row names, as
+# <relative path>:<line>: <text>. Returns 0 when the scan ran, whether or not it
+# found anything, and rg's own status otherwise, so an audit error is never read
+# as a clean tree.
 validation_unlisted_host_path_hits() {
-  local validation_tree=$1
+  local validation_tree=${1%/}
   local validation_all
   local validation_status=0
   local validation_hit
-  local validation_debt
-  local validation_listed
-  validation_all=$(validation_scan_tree '/(home|Users)/[^/[:space:]]+/' "$validation_tree") ||
-    validation_status=$?
+  local validation_path
+  local validation_rest
+  local validation_line
+  local validation_text
+  local validation_relative
+  validation_all=$(rg -n -H --no-heading --color never \
+    -e '/(home|Users)/[^/[:space:]]+/' -- "$validation_tree") || validation_status=$?
   if [[ $validation_status -eq 1 ]]; then
     return 0
   fi
@@ -81,14 +64,15 @@ validation_unlisted_host_path_hits() {
   fi
   while IFS= read -r validation_hit; do
     [[ -z $validation_hit ]] && continue
-    validation_listed=false
-    for validation_debt in "${validation_host_path_debt[@]}"; do
-      case $validation_hit in
-        */"$validation_debt") validation_listed=true ;;
-      esac
-    done
-    if [[ $validation_listed == false ]]; then
-      printf '%s\n' "$validation_hit"
+    validation_path=${validation_hit%%:*}
+    validation_rest=${validation_hit#*:}
+    validation_line=${validation_rest%%:*}
+    validation_text=${validation_rest#*:}
+    validation_relative=${validation_path#"$validation_tree"/}
+    if ! grep -Fxq -- "$(printf '%s\t%s' "$validation_relative" "$validation_text")" \
+      "$validation_host_path_debt_file"
+    then
+      printf '%s:%s: %s\n' "$validation_relative" "$validation_line" "$validation_text"
     fi
   done <<< "$validation_all"
   return 0
@@ -106,7 +90,7 @@ validation_extracted_tree_is_safe() {
   local validation_host_hits=""
   local validation_host_status=0
 
-  validation_hits=$(validation_scan_tree \
+  validation_hits=$(rg -l -- \
     "$validation_repo_root|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|\\bsk-[A-Za-z0-9_-]{20,}" \
     "$validation_tree") || validation_status=$?
   if [[ $validation_status -ne 0 && $validation_status -ne 1 ]]; then
@@ -128,7 +112,7 @@ validation_extracted_tree_is_safe() {
       printf 'forbidden content in:\n%s\n' "$validation_hits"
     fi
     if [[ -n $validation_host_hits ]]; then
-      printf 'host path outside the listed debt in:\n%s\n' "$validation_host_hits"
+      printf 'host path outside the listed debt rows:\n%s\n' "$validation_host_hits"
     fi
     printf 'content audit found forbidden content in %s\n' "$validation_tree" >&2
     return 1

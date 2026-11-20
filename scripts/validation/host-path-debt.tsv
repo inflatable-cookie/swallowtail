@@ -1,0 +1,16 @@
+# Pre-existing host paths in packaged crate files, exempt from the archive
+# content audit. Each row is <package-relative path><TAB><exact line text>.
+# A host path is exempt only when its whole line matches a row here, so a new
+# host path, or a changed or added line in a listed file, fails the audit.
+# Remove a row when its line is replaced; scripts/validation/archive.sh owns the rule.
+swallowtail-adapter-antigravity/src/discovery/probe.rs	            "\u{1b}[31mwrapper failed at /Users/private/bin/agy \
+swallowtail-adapter-antigravity/tests/foundation.rs	            "authentication failed for user@example.com token=private at /Users/private/keyring",
+swallowtail-adapter-antigravity/tests/foundation.rs	            "wrapper at /Users/private/bin/agy token=private user@example.com",
+swallowtail-adapter-claude-agent/tests/fixtures/claude-agent-sdk-0.3.270/identity.json	  "node_source": "/Users/tom/.local/bin/node (`node --version`)",
+swallowtail-adapter-codex/src/discovery/outcome.rs	            "\u{1b}[31mcmux wrapper failed at /Users/private/bin/codex \
+swallowtail-adapter-codex/tests/prepared.rs	        "\u{1b}[31mcmux wrapper could not start Codex from /Users/private/bin \
+swallowtail-adapter-cursor/src/discovery/outcome.rs	            "\u{1b}[31mwrapper failed at /Users/private/bin/cursor-agent \
+swallowtail-adapter-cursor/tests/foundation.rs	            "wrapper at /Users/private/bin/cursor-agent token=private user@example.com",
+swallowtail-adapter-kimi/tests/fixtures/kimi-code-0.43.0/identity.json	    "path": "/Users/tom/.kimi-code/bin/kimi",
+swallowtail-adapter-opencode/tests/fixtures/opencode-1.18.18/identity.json	  "local_executable": "/Users/tom/.opencode/bin/opencode",
+swallowtail-adapter-opencode/tests/fixtures/opencode-acp-1.18.32/identity.json	    "path": "/Users/tom/.opencode/bin/opencode",

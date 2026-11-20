@@ -317,4 +317,49 @@ for validation_driver_outcome in success failure; do
 done
 rm -rf "$validation_driver_fixture"
 
+# Host-path debt is exempt by exact line, never by file. A listed line passes;
+# the same file with a new or altered host path fails, as does any host path in
+# an unlisted file.
+validation_debt_root=$(mktemp -d)
+validation_debt_file=scripts/validation/host-path-debt.tsv
+validation_debt_path=swallowtail-adapter-antigravity/src/discovery/probe.rs
+validation_debt_line=$(grep -F -- "$validation_debt_path"$'\t' "$validation_debt_file" | head -1 | cut -f2-)
+if [[ -z $validation_debt_line ]]; then
+  printf 'host-path debt file lacks a row for %s\n' "$validation_debt_path" >&2
+  exit 1
+fi
+validation_debt_write() {
+  local validation_tree=$1
+  local validation_relative=$2
+  local validation_text=$3
+  mkdir -p "$validation_tree/$(dirname "$validation_relative")"
+  printf '%s\n' "$validation_text" >>"$validation_tree/$validation_relative"
+}
+validation_debt_tree=$validation_debt_root/listed
+validation_debt_write "$validation_debt_tree" "$validation_debt_path" "$validation_debt_line"
+if ! validation_extracted_tree_is_safe "$validation_debt_tree" /nonexistent-repo-root-for-archive-audit; then
+  printf 'listed host-path debt row was rejected\n' >&2
+  exit 1
+fi
+validation_debt_tree=$validation_debt_root/listed-extended
+validation_debt_write "$validation_debt_tree" "$validation_debt_path" "$validation_debt_line"
+validation_debt_write "$validation_debt_tree" "$validation_debt_path" "  wrapper at /Users/private/bin/newtool"
+if validation_extracted_tree_is_safe "$validation_debt_tree" /nonexistent-repo-root-for-archive-audit >/dev/null 2>&1; then
+  printf 'new host path in a listed debt file was accepted\n' >&2
+  exit 1
+fi
+validation_debt_tree=$validation_debt_root/listed-altered
+validation_debt_write "$validation_debt_tree" "$validation_debt_path" "$validation_debt_line /Users/private/extra"
+if validation_extracted_tree_is_safe "$validation_debt_tree" /nonexistent-repo-root-for-archive-audit >/dev/null 2>&1; then
+  printf 'altered host-path debt line was accepted\n' >&2
+  exit 1
+fi
+validation_debt_tree=$validation_debt_root/unlisted
+validation_debt_write "$validation_debt_tree" private/file "path /home/runner/private/file"
+if validation_extracted_tree_is_safe "$validation_debt_tree" /nonexistent-repo-root-for-archive-audit >/dev/null 2>&1; then
+  printf 'host path in an unlisted file was accepted\n' >&2
+  exit 1
+fi
+rm -rf "$validation_debt_root"
+
 printf 'validation selector argument and archive-scope tests passed\n'

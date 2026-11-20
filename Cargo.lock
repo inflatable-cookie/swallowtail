@@ -3449,7 +3449,6 @@ dependencies = [
  "serde_json",
  "swallowtail-core",
  "swallowtail-idioms",
- "swallowtail-protocol-acp",
  "swallowtail-runtime",
 ]
 

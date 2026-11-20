@@ -5,7 +5,7 @@
 use std::env;
 use std::io::{self, BufRead, Write};
 use std::path::PathBuf;
-use swallowtail_testkit::{
+use swallowtail_adapter_grok::grok_acp_client_mcp_probe::{
     ECHO_MCP_TRANSCRIPT_ENV, ECHO_MCP_TRANSCRIPT_FLAG, append_echo_mcp_transcript,
     grok_acp_echo_mcp_reply, grok_acp_echo_mcp_stdio_frame,
 };

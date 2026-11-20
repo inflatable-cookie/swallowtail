@@ -1,4 +1,131 @@
 pub mod swallowtail_adapter_grok
+pub mod swallowtail_adapter_grok::grok_acp_client_mcp_probe
+pub enum swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::AdmittedAndCalled
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::AdmittedListedNotCalledCompleted
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::AdmittedNotListed
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::HelperUnspawnable
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::NoAdmission
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::SessionNewAnswerRequired
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape::SessionNewSilentAfterAnswer
+pub enum swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict::AcceptsClientMcp
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict::IgnoresClientMcp
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict::Inconclusive
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict::RejectsClientMcp
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict::as_str(self) -> &'static str
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict::from_capsule(&str) -> core::result::Result<Self, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub enum swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::FrameLimit
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::InvalidVerdict
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::LiveIsolationMissing
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::LivePathMissing
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::LiveProbeGated
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::LiveTranscriptExists
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind::Transport
+pub enum swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::EchoLivenessUnproven
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::EmptyMcpServers
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::MissingSessionNew
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::NativeEchoWithoutAdmission
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::NoTurnResult
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::PermissionRejected
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::SessionNewBoundExceeded
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::SessionNewErrorNotClientMcp
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::SessionNewUnanswered
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::Truncated
+pub swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::TurnCompletedWithoutToolCall
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause::as_str(self) -> &'static str
+pub struct swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript::admitted_listed() -> Self
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript::called() -> Self
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript::initialize(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript::observed_idle() -> Self
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript::tools_call(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript::tools_list(&self) -> bool
+pub struct swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::cleanup(&self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::client_mcp_admitted(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::client_mcp_tools_listed(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::echo_helper_live(&self) -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::echo_mcp_methods(&self) -> &[alloc::string::String]
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::frames(&self) -> &[swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame]
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::inconclusive_cause(&self) -> core::option::Option<swallowtail_adapter_grok::grok_acp_client_mcp_probe::InconclusiveCause>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::prompt(&self) -> &str
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::prompt_turn_completed(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::stale_callback_rejected(&self) -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::stop_reason(&self) -> core::option::Option<&str>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::to_json(&self) -> serde_json::value::Value
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::truncated(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::verdict(&self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule::version(&self) -> &str
+pub struct swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup::joined(self) -> bool
+pub struct swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError::kind(self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpErrorKind
+impl core::error::Error for swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError
+impl core::fmt::Display for swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame::is_outbound(&self) -> bool
+pub const fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame::message(&self) -> &serde_json::value::Value
+pub struct swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer for swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::close(&mut self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::echo_helper_live(&mut self) -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::echo_mcp_transcript(&mut self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::push_outbound(&mut self, serde_json::value::Value) -> core::result::Result<(), swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::stale_callback_request(&mut self) -> core::option::Option<serde_json::value::Value>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::take_inbound(&mut self) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::take_inbound_within(&mut self, core::time::Duration) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE: &str
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::ECHO_MCP_SERVER_NAME: &str
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::ECHO_MCP_TOOL: &str
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::ECHO_MCP_TRANSCRIPT_ENV: &str
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::ECHO_MCP_TRANSCRIPT_FLAG: &str
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::ECHO_PROMPT: &str
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::LIVE_PROMPT_WAIT: core::time::Duration
+pub const swallowtail_adapter_grok::grok_acp_client_mcp_probe::LIVE_SESSION_NEW_WAIT: core::time::Duration
+pub trait swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::close(&mut self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::echo_helper_live(&mut self) -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::echo_mcp_transcript(&mut self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::push_outbound(&mut self, serde_json::value::Value) -> core::result::Result<(), swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::stale_callback_request(&mut self) -> core::option::Option<serde_json::value::Value>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::take_inbound(&mut self) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer::take_inbound_within(&mut self, core::time::Duration) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+impl swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer for swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::close(&mut self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCleanup
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::echo_helper_live(&mut self) -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::echo_mcp_transcript(&mut self) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::push_outbound(&mut self, serde_json::value::Value) -> core::result::Result<(), swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::stale_callback_request(&mut self) -> core::option::Option<serde_json::value::Value>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::take_inbound(&mut self) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer::take_inbound_within(&mut self, core::time::Duration) -> core::result::Result<alloc::vec::Vec<serde_json::value::Value>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::append_echo_mcp_transcript(&std::path::Path, &str) -> core::result::Result<(), swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::create_echo_mcp_transcript(&std::path::Path) -> core::result::Result<std::path::PathBuf, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::desktop_grok_acp_client_mcp_probe_is_gated_open() -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::echo_mcp_helper_is_live(&std::path::Path) -> bool
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_client_mcp_fixture_probe(&str, swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict) -> core::result::Result<swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_client_mcp_oracle_fixture_probe(&str, swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpOracleShape) -> core::result::Result<swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_client_mcp_verdict(&[swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame], &swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_client_mcp_verdict_from_frames(&[swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame]) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_client_mcp_verdict_with_helper(&[swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpFrame], &swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript, bool) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::ClientMcpVerdict
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_client_request_reply(&serde_json::value::Value) -> core::option::Option<serde_json::value::Value>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_echo_mcp_reply(&serde_json::value::Value) -> core::option::Option<serde_json::value::Value>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::grok_acp_echo_mcp_stdio_frame(&serde_json::value::Value) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::isolated_grok_home() -> core::result::Result<std::path::PathBuf, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::open_desktop_live_grok_acp_peer(&std::path::Path, &std::path::Path) -> core::result::Result<swallowtail_adapter_grok::grok_acp_client_mcp_probe::LiveGrokAcpPeer, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::read_echo_mcp_transcript(&std::path::Path) -> swallowtail_adapter_grok::grok_acp_client_mcp_probe::EchoMcpTranscript
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::run_grok_acp_client_mcp_probe(&mut dyn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer, &str, &str, &str) -> core::result::Result<swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
+pub fn swallowtail_adapter_grok::grok_acp_client_mcp_probe::run_grok_acp_client_mcp_probe_with_transcript(&mut dyn swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpPeer, &str, &str, &str, core::option::Option<&std::path::Path>) -> core::result::Result<swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpCapsule, swallowtail_adapter_grok::grok_acp_client_mcp_probe::GrokAcpClientMcpError>
 pub mod swallowtail_adapter_grok::registered_tool
 pub struct swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration
 impl swallowtail_adapter_grok::registered_tool::GrokAcpMcpServerDeclaration

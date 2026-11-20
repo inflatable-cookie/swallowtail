@@ -6,7 +6,7 @@ use std::env;
 use std::fs;
 use std::path::PathBuf;
 use std::process::ExitCode;
-use swallowtail_testkit::{
+use swallowtail_adapter_grok::grok_acp_client_mcp_probe::{
     ClientMcpVerdict, create_echo_mcp_transcript, grok_acp_client_mcp_fixture_probe,
     isolated_grok_home, open_desktop_live_grok_acp_peer,
     run_grok_acp_client_mcp_probe_with_transcript,

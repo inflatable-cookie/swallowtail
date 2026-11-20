@@ -402,7 +402,7 @@ PATH="$routing_fake_bin:$PATH" GITHUB_ACTIONS=true \
   --output "$routing_scratch/capsule.json" >/dev/null 2>&1 || true
 routing_expect_absent oxide
 routing_expect_line cargo \
-  'cargo [build] [--offline] [--locked] [-p] [swallowtail-testkit] [--example] [grok-acp-echo-mcp]'
+  'cargo [build] [--offline] [--locked] [-p] [swallowtail-adapter-grok] [--features] [live-probes] [--example] [grok-acp-echo-mcp]'
 
 # 22. The leased fake really overwrites an inherited target, as `oxide exec`
 #     does: a tool started through the helper's host-tool route sees

@@ -1,8 +1,8 @@
 //! Deterministic conformance support for Swallowtail adapters.
 //!
 //! Fixtures and assertions operate on Swallowtail public contracts. Library
-//! proofs start no provider process. The Card 128 Grok ACP client-MCP live
-//! entrypoint is Desktop-gated and is never invoked by crate tests.
+//! proofs start no provider process. Provider-specific probes belong to the
+//! adapter that owns them, never to this provider-neutral crate.
 
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
@@ -16,7 +16,6 @@ mod consumer_route_projection_fixture;
 mod direct_continuation_fixture;
 mod failure_assertions;
 mod fixture;
-mod grok_acp_client_mcp_probe;
 mod idiom_assertions;
 mod installed_executable_assertions;
 mod interface_compatibility_assertions;
@@ -98,21 +97,6 @@ pub use consumer_route_projection_fixture::{
 };
 pub use failure_assertions::assert_portable_failure_classification_contract;
 pub use fixture::ContractKernelFixture;
-pub use grok_acp_client_mcp_probe::{
-    ClientMcpOracleShape, ClientMcpVerdict, DESKTOP_GROK_ACP_CLIENT_MCP_PROBE_GATE,
-    ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL, ECHO_MCP_TRANSCRIPT_ENV, ECHO_MCP_TRANSCRIPT_FLAG,
-    ECHO_PROMPT, EchoMcpTranscript, GrokAcpClientMcpCapsule, GrokAcpClientMcpCleanup,
-    GrokAcpClientMcpError, GrokAcpClientMcpErrorKind, GrokAcpClientMcpFrame, GrokAcpClientMcpPeer,
-    InconclusiveCause, LIVE_PROMPT_WAIT, LIVE_SESSION_NEW_WAIT, LiveGrokAcpPeer,
-    append_echo_mcp_transcript, create_echo_mcp_transcript,
-    desktop_grok_acp_client_mcp_probe_is_gated_open, echo_mcp_helper_is_live,
-    grok_acp_client_mcp_fixture_probe, grok_acp_client_mcp_oracle_fixture_probe,
-    grok_acp_client_mcp_verdict, grok_acp_client_mcp_verdict_from_frames,
-    grok_acp_client_mcp_verdict_with_helper, grok_acp_client_request_reply,
-    grok_acp_echo_mcp_reply, grok_acp_echo_mcp_stdio_frame, isolated_grok_home,
-    open_desktop_live_grok_acp_peer, read_echo_mcp_transcript, run_grok_acp_client_mcp_probe,
-    run_grok_acp_client_mcp_probe_with_transcript,
-};
 pub use idiom_assertions::{
     assert_idiom_engine_contract, assert_idiom_static_rules_delivery_contract,
     assert_idioms_route_opt_in_contract,
@@ -140,7 +124,7 @@ pub use prepared_integration_assertions::{
     assert_prepared_failure_before_effects, assert_prepared_integration_primitives,
     assert_prepared_operation_evidence_matches_plan,
 };
-pub(crate) use profile_common::assert_common_contract;
+pub(crate) use profile_common::{CommonContract, assert_common_contract};
 pub(crate) use profile_fixture::ProfilePreflightFixture;
 pub use profile_provider_conversation::{
     run_provider_conversation_boundary_assertions,

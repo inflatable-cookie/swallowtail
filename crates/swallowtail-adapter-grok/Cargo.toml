@@ -83,6 +83,21 @@ path = "tests/grok_1_0_46_identity.rs"
 name = "grok_1_0_70_acp_identity"
 path = "tests/grok_1_0_70_acp_identity.rs"
 
+# Desktop and fixture harnesses for the client-MCP probe. Both need the
+# optional probe module, so the default package build stays free of it.
+[[test]]
+name = "grok_acp_client_mcp_probe"
+path = "tests/grok_acp_client_mcp_probe.rs"
+required-features = ["live-probes"]
+
+[[example]]
+name = "grok-acp-client-mcp-probe"
+required-features = ["live-probes"]
+
+[[example]]
+name = "grok-acp-echo-mcp"
+required-features = ["live-probes"]
+
 [[test]]
 name = "live_installed_probe"
 path = "tests/live_installed_probe.rs"

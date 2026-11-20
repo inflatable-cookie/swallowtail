@@ -1,6 +1,6 @@
 use crate::{
-    ConformanceAssertion, ConformanceReport, ProfilePreflightFixture, RealtimeMediaPreflightCase,
-    RealtimeMediaPreflightFixture, SyntheticProfile, assert_common_contract,
+    CommonContract, ConformanceAssertion, ConformanceReport, ProfilePreflightFixture,
+    RealtimeMediaPreflightCase, RealtimeMediaPreflightFixture, SyntheticProfile,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -17,9 +17,16 @@ use swallowtail_runtime::{
 mod lifecycle;
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(
+        SyntheticProfile::RealtimeMediaDirectSession,
+    ))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::RealtimeMediaDirectSession;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     assert_preflight_matrix();
     let fixture = ProfilePreflightFixture::new(profile);

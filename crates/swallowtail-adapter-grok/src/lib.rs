@@ -11,6 +11,8 @@ mod descriptor;
 mod discovery;
 mod driver;
 mod failure;
+#[cfg(feature = "live-probes")]
+pub mod grok_acp_client_mcp_probe;
 mod permission;
 mod prepared;
 mod prepared_profile;

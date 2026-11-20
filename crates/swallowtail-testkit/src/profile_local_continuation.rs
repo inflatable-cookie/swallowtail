@@ -1,7 +1,7 @@
 use crate::{
-    ConformanceAssertion, ConformanceReport, ExecutionTopologyFixture, ProfilePreflightFixture,
-    RecordedHostCall, RecordingHostServices, RecordingOutcome, SyntheticProfile,
-    assert_common_contract, poll_immediate,
+    CommonContract, ConformanceAssertion, ConformanceReport, ExecutionTopologyFixture,
+    ProfilePreflightFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
+    SyntheticProfile, poll_immediate,
 };
 use std::num::NonZeroU64;
 use swallowtail_core::{
@@ -16,9 +16,16 @@ use swallowtail_runtime::{
 };
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(
+        SyntheticProfile::LocallyContinuedDirectSession,
+    ))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::LocallyContinuedDirectSession;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     let fixture = ProfilePreflightFixture::new(profile);
     let plan = fixture

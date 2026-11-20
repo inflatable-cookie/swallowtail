@@ -1,3 +1,4 @@
+use crate::process_close::{CloseBudget, join_or_escalate};
 impl CodexAppServerDriver {
     pub(crate) fn validate_plan(
         &self,
@@ -163,7 +164,7 @@ fn require_continuity_capabilities(
 }
 
 fn supports_exclude_turns(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
-    let binding = plan.interface_versions().next().ok_or_else(|| {
+    let binding = crate::cli_version::bound_codex_cli_version(plan).ok_or_else(|| {
         failure(
             "swallowtail.codex.app_server.version_missing",
             "Codex app-server continuity requires an exact executable version",
@@ -212,9 +213,10 @@ fn model_metadata(model: &Value) -> Result<ModelMetadata, RuntimeFailure> {
 pub(crate) async fn close_connection(
     connection: &Arc<RpcConnection>,
     task: Box<dyn JoinedTask>,
+    budget: Option<CloseBudget>,
 ) -> CleanupOutcome {
     let close = connection.close_input().await;
-    let join = task.join().await;
+    let join = join_or_escalate(connection.process(), task, budget).await;
     if close.is_err() || join.is_err() {
         CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
             "swallowtail.codex.app_server.close_failed",

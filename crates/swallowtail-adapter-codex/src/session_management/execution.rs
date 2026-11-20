@@ -4,8 +4,8 @@ use super::protocol::{
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::{close_connection, scope};
-use std::future::Future;
-use std::task::Poll;
+use crate::control_wait::{Controlled, wait_controlled};
+use crate::process_close::close_budget;
 use swallowtail_core::{
     ProviderSessionEffectTruth, ProviderSessionManagementAction, ProviderSessionManagementEffect,
     SafeDiagnostic,
@@ -89,7 +89,12 @@ impl CodexAppServerDriver {
             }
         }
         if cancelled_or_expired(agreement, cancellation, &services)? {
-            let cleanup = close_connection(&connection, task).await;
+            let cleanup = close_connection(
+                &connection,
+                task,
+                close_budget(&services, agreement.deadline()),
+            )
+            .await;
             return Ok(with_cleanup(
                 outcome(
                     agreement,
@@ -107,7 +112,12 @@ impl CodexAppServerDriver {
         let response = match connection.dispatch_request(method, params).await {
             Ok(response) => response,
             Err(error) => {
-                let cleanup = close_connection(&connection, task).await;
+                let cleanup = close_connection(
+                    &connection,
+                    task,
+                    close_budget(&services, agreement.deadline()),
+                )
+                .await;
                 return Ok(with_cleanup(
                     outcome(
                         agreement,
@@ -133,7 +143,12 @@ impl CodexAppServerDriver {
             Controlled::Completed(result) => result,
         };
 
-        let cleanup = close_connection(&connection, task).await;
+        let cleanup = close_connection(
+            &connection,
+            task,
+            close_budget(&services, agreement.deadline()),
+        )
+        .await;
         let mut result = match result {
             Ok(response) => match validate_lifecycle_response(action, target, &response) {
                 Ok(()) => outcome(
@@ -218,39 +233,4 @@ fn deadline_wait(
                 .map(|time| time.wait_until(deadline))
         })
         .transpose()
-}
-
-enum Controlled<T> {
-    Completed(T),
-    Cancelled,
-    Deadline,
-}
-
-async fn wait_controlled<F, T>(
-    operation: F,
-    cancellation: &ImmediateCancellation,
-    deadline: Option<BoxFuture<'static, swallowtail_runtime::DeadlineObservation>>,
-) -> Controlled<T>
-where
-    F: Future<Output = T>,
-{
-    let mut operation = Box::pin(operation);
-    let mut cancelled = cancellation.wait_requested();
-    let mut deadline = deadline;
-    std::future::poll_fn(|context| {
-        if let Poll::Ready(result) = operation.as_mut().poll(context) {
-            return Poll::Ready(Controlled::Completed(result));
-        }
-        if cancelled.as_mut().poll(context).is_ready() {
-            return Poll::Ready(Controlled::Cancelled);
-        }
-        if deadline
-            .as_mut()
-            .is_some_and(|deadline| deadline.as_mut().poll(context).is_ready())
-        {
-            return Poll::Ready(Controlled::Deadline);
-        }
-        Poll::Pending
-    })
-    .await
 }

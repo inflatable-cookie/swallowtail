@@ -16,5 +16,6 @@ pub fn unqualified_app_server_plan(role: DriverRole, version: Option<&str>) -> P
         [],
         SessionAccessPolicy::read_only(),
         [],
+        true,
     )
 }

@@ -1,4 +1,5 @@
 use super::ExecEventParser;
+use crate::limits::MAX_STDOUT_LINE_BYTES;
 use semver::Version;
 use serde_json::Value;
 use swallowtail_runtime::{
@@ -186,5 +187,29 @@ fn multi_release_core_corpus_preserves_selected_and_additive_events() {
     assert_eq!(
         outcome.output().map(|value| value.as_str()),
         Some("final answer")
+    );
+}
+
+#[test]
+fn oversized_stdout_line_is_refused_before_it_is_buffered() {
+    let mut unterminated = parser();
+    let oversized = vec![b'x'; MAX_STDOUT_LINE_BYTES + 1];
+    let Err(error) = unterminated.push(&oversized) else {
+        panic!("an unterminated oversized line is refused");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.exec.line_too_large"
+    );
+
+    let mut terminated = parser();
+    let mut line = vec![b'x'; MAX_STDOUT_LINE_BYTES + 1];
+    line.push(b'\n');
+    let Err(error) = terminated.push(&line) else {
+        panic!("a terminated oversized line is refused");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.exec.line_too_large"
     );
 }

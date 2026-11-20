@@ -1,3 +1,4 @@
+use crate::process_close::close_budget;
 use crate::registered_tools::CodexRegisteredToolBinding;
 use crate::rpc::{RpcConnection, failure};
 use crate::selection::{CodexAppServerBehavior, classify_app_server_plan, codex_app_server_claim};
@@ -189,7 +190,8 @@ impl ModelCatalogDriver for CodexAppServerDriver {
                 }
                 None => self.read_catalog(&connection).await,
             };
-            let cleanup = close_connection(&connection, task).await;
+            let budget = close_budget(&services, request.deadline());
+            let cleanup = close_connection(&connection, task, budget).await;
             match (result, cleanup) {
                 (Ok(models), CleanupOutcome::Clean) => Ok(models),
                 (Err(error), _) => Err(error),

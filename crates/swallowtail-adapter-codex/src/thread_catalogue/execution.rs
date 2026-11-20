@@ -1,7 +1,6 @@
+use crate::cleanup::merge_cleanup;
 #[path = "execution/catalogue.rs"]
 mod catalogue;
-#[path = "execution/control.rs"]
-mod control;
 #[path = "execution/history.rs"]
 mod history;
 #[path = "execution/import.rs"]
@@ -25,7 +24,7 @@ use swallowtail_runtime::{
 pub(super) fn require_catalogue_version(
     plan: &swallowtail_core::PreflightPlan,
 ) -> Result<(), ProviderSessionOperationFailure> {
-    let version = plan.interface_versions().next().ok_or_else(|| {
+    let version = crate::cli_version::bound_codex_cli_version(plan).ok_or_else(|| {
         control_failure(
             ProviderSessionOperationFailureStage::BeforeDispatch,
             "swallowtail.codex.thread_catalogue.version_missing",
@@ -94,7 +93,7 @@ async fn close_and_release(
     task: Box<dyn JoinedTask>,
     resource: ScopedResource,
 ) -> CleanupOutcome {
-    let connection = close_connection(connection, task).await;
+    let connection = close_connection(connection, task, None).await;
     merge_cleanup(connection, resource.release().await)
 }
 
@@ -114,18 +113,6 @@ async fn cancel_and_release(
         connection.cleanup_outcome()
     };
     merge_cleanup(connection_cleanup, resource.release().await)
-}
-
-pub(super) fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcome {
-    match (&current, &next) {
-        (CleanupOutcome::Failed(_), _) => current,
-        (_, CleanupOutcome::Failed(_)) => next,
-        (CleanupOutcome::Degraded(_), _) => current,
-        (_, CleanupOutcome::Degraded(_)) => next,
-        (CleanupOutcome::Clean, CleanupOutcome::NotApplicable) => current,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => next,
-        _ => current,
-    }
 }
 
 pub(super) fn finish<T>(

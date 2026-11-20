@@ -410,3 +410,28 @@ impl DiagnosticObserver for CapturingDebugObserver {
             .push(observation.clone());
     }
 }
+
+#[test]
+fn plan_mode_without_a_bound_model_is_refused_before_provider_work() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let services = host_services(process);
+    let result = block_on(driver().open_session(
+        app_server_session_plan_without_model_route([harness_mode_capability()]),
+        read_only_open_request(
+            RequestId::new("session-plan-without-model").expect("request id is valid"),
+            working_resource(),
+            None,
+        )
+        .with_options(SessionOptions::default().with_harness_mode(HarnessMode::Plan)),
+        services.clone(),
+    ));
+
+    let Err(error) = result else {
+        panic!("plan mode without a bound model is refused");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.app_server.model_missing"
+    );
+    assert!(state.methods().is_empty());
+}

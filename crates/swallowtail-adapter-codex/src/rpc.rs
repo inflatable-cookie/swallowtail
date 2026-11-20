@@ -1,3 +1,4 @@
+use crate::limits::MAX_STDOUT_LINE_BYTES;
 use crate::safe_excerpt::{normalized_ascii, sanitize_stderr};
 use crate::turn_state::ActiveTurn;
 use serde_json::Value;
@@ -104,17 +105,20 @@ impl RpcConnection {
         method: &str,
         params: Value,
     ) -> Result<ResponseFuture, RuntimeFailure> {
-        if self.closed.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.codex.app_server.connection_closed",
-                "Codex app-server connection is closed",
-            ));
-        }
         let (sender, response) = response_channel();
-        self.pending
-            .lock()
-            .expect("RPC pending-response lock poisoned")
-            .insert(id, sender);
+        {
+            let mut pending = self
+                .pending
+                .lock()
+                .expect("RPC pending-response lock poisoned");
+            if self.closed.load(Ordering::SeqCst) {
+                return Err(failure(
+                    "swallowtail.codex.app_server.connection_closed",
+                    "Codex app-server connection is closed",
+                ));
+            }
+            pending.insert(id, sender);
+        }
         let message = serde_json::json!({"id": id, "method": method, "params": params});
         if let Err(write_failure) = self.write_message(&message).await {
             self.pending
@@ -206,6 +210,10 @@ impl RpcConnection {
         {
             *active = None;
         }
+    }
+
+    pub(crate) fn process(&self) -> &dyn ProcessHandle {
+        self.process.as_ref()
     }
 
     pub(crate) async fn close_input(&self) -> Result<(), RuntimeFailure> {
@@ -316,6 +324,13 @@ fn malformed_inbound() -> RuntimeFailure {
     failure(
         "swallowtail.codex.app_server.malformed_message",
         "Codex app-server returned a malformed protocol message",
+    )
+}
+
+fn line_too_large() -> RuntimeFailure {
+    failure(
+        "swallowtail.codex.app_server.line_too_large",
+        "Codex app-server stdout line exceeded its byte bound",
     )
 }
 

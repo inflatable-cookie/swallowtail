@@ -1,5 +1,4 @@
 use super::super::protocol::project_page;
-use super::control::{Controlled, wait_controlled};
 use super::resource::ScopedResource;
 use super::{
     cancel_and_release, cleanup_or, close_and_release, control_before_dispatch, control_failure,
@@ -7,6 +6,7 @@ use super::{
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
+use crate::control_wait::{Controlled, wait_controlled};
 use swallowtail_runtime::{
     HostServices, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
     ProviderSessionCatalogueRequest, ProviderSessionOperationFailure,

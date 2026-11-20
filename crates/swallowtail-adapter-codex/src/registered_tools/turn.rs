@@ -24,6 +24,9 @@ const CODEX_ARGUMENT_MEDIA_TYPE: &str = "application/json";
 /// Bounded registered dispatch count for one turn attempt.
 const MAX_REGISTERED_DISPATCHES_PER_TURN: usize = 64;
 
+/// Where a dispatch returns its lease if the spawned task never ran.
+type LeaseSlot = Arc<Mutex<Option<RegisteredToolBridgeLease>>>;
+
 /// Registered-tool state owned by exactly one Codex turn attempt.
 pub(crate) struct CodexRegisteredTurn {
     binding: CodexRegisteredToolBinding,
@@ -100,9 +103,18 @@ impl CodexRegisteredTurn {
             }
         };
         let owner = Arc::clone(self);
+        let slot: LeaseSlot = Arc::new(Mutex::new(Some(lease)));
+        let task_slot = Arc::clone(&slot);
         let task = self.tasks.spawn(
             self.scope.clone(),
             Box::pin(async move {
+                let taken = task_slot
+                    .lock()
+                    .expect("registered lease slot lock poisoned")
+                    .take();
+                let Some(lease) = taken else {
+                    return;
+                };
                 let settled = lease.call(request).await;
                 let (result, _executed) = provider_result(settled);
                 // The lease returns before the provider is answered, so joined
@@ -123,7 +135,17 @@ impl CodexRegisteredTurn {
                     .push(task);
                 Ok(())
             }
-            Err(error) => Err(error),
+            Err(error) => {
+                // The spawn refused the task, so its lease never left the slot.
+                let unrun = slot
+                    .lock()
+                    .expect("registered lease slot lock poisoned")
+                    .take();
+                if let Some(lease) = unrun {
+                    self.check_in(lease);
+                }
+                Err(error)
+            }
         }
     }
 
@@ -200,6 +222,8 @@ impl CodexRegisteredTurn {
         ) {
             return CleanupOutcome::NotApplicable;
         }
+        // A live dispatch holds the lease, so a held lease is never taken and
+        // close reports the retained lease without waiting on the dispatch.
         let lease = self
             .lease
             .lock()
@@ -211,8 +235,8 @@ impl CodexRegisteredTurn {
                 "Codex registered tool lease is still held by an unsettled dispatch",
             ));
         };
-        // Every dispatch returned the lease before its response, so these joins
-        // are bounded by the responses already in flight.
+        // Holding the lease proves no dispatch is mid-call, so these joins only
+        // wait for responses already past the lease.
         let dispatches = std::mem::take(
             &mut *self
                 .dispatches

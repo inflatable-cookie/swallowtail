@@ -5,8 +5,8 @@ use futures_util::StreamExt;
 use std::sync::{Arc, Mutex};
 use support::app_server::{AppServerMode, ScriptedAppServer};
 use support::{
-    app_server_plan, app_server_plan_with, host_services, host_services_with,
-    session_resume_binding, working_resource,
+    app_server_plan, app_server_plan_with, app_server_session_plan_without_model_route,
+    host_services, host_services_with, session_resume_binding, working_resource,
 };
 use swallowtail_adapter_codex::CodexAppServerDriver;
 use swallowtail_core::Diagnostic;

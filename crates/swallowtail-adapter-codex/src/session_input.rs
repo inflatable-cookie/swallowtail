@@ -113,17 +113,28 @@ impl CodexSessionInput {
         let reasoning_effort = options
             .reasoning_mode()
             .map(|mode| mode.as_str().to_owned());
-        let collaboration_mode = options.harness_mode().map(|mode| {
-            debug_assert_eq!(mode, HarnessMode::Plan);
-            serde_json::json!({
-                "mode": "plan",
-                "settings": {
-                    "model": plan.model_id().expect("validated model route").as_str(),
-                    "reasoning_effort": reasoning_effort,
-                    "developer_instructions": developer_instructions,
-                }
-            })
-        });
+        let collaboration_mode = match options.harness_mode() {
+            Some(mode) => {
+                debug_assert_eq!(mode, HarnessMode::Plan);
+                // Plan mode needs the preflight-bound model; a plan without one
+                // is a refusal, never a panic in the request path.
+                let model = plan.model_id().ok_or_else(|| {
+                    failure(
+                        "swallowtail.codex.app_server.model_missing",
+                        "Codex plan mode requires a preflight-bound model",
+                    )
+                })?;
+                Some(serde_json::json!({
+                    "mode": "plan",
+                    "settings": {
+                        "model": model.as_str(),
+                        "reasoning_effort": reasoning_effort,
+                        "developer_instructions": developer_instructions,
+                    }
+                }))
+            }
+            None => None,
+        };
         Ok(Self {
             developer_instructions,
             reasoning_effort,

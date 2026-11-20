@@ -7,6 +7,10 @@ impl RpcConnection {
                 Ok(Some(chunk)) if chunk.stream() == ProcessOutputStream::Stdout => {
                     pending_bytes.extend_from_slice(chunk.bytes());
                     while let Some(newline) = pending_bytes.iter().position(|byte| *byte == b'\n') {
+                        if newline > MAX_STDOUT_LINE_BYTES {
+                            protocol_failure = Some(line_too_large());
+                            break;
+                        }
                         let line: Vec<_> = pending_bytes.drain(..=newline).collect();
                         let line = trim_newline(&line);
                         if let Err(error) = self.dispatch(line).await {
@@ -15,6 +19,9 @@ impl RpcConnection {
                             protocol_failure = Some(error);
                             break;
                         }
+                    }
+                    if protocol_failure.is_none() && pending_bytes.len() > MAX_STDOUT_LINE_BYTES {
+                        protocol_failure = Some(line_too_large());
                     }
                     if protocol_failure.is_some() {
                         break;
@@ -40,7 +47,16 @@ impl RpcConnection {
             let _ = self.process.force_stop().await;
         }
         let exit = self.process.wait().await;
-        self.closed.store(true, Ordering::SeqCst);
+        {
+            // Setting `closed` under the pending lock orders it against
+            // request registration: a request either lands before this drain
+            // or observes the closed flag and is refused.
+            let _pending = self
+                .pending
+                .lock()
+                .expect("RPC pending-response lock poisoned");
+            self.closed.store(true, Ordering::SeqCst);
+        }
         let cleanup = if exit.is_ok() {
             CleanupOutcome::Clean
         } else {

@@ -30,14 +30,16 @@ impl CancellationControl for ProcessCancellation {
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
-        let already_requested = self.requested.swap(true, Ordering::SeqCst);
         Box::pin(async move {
-            if already_requested {
-                Ok(CancellationAcknowledgement::AlreadyRequested)
-            } else {
-                self.process.force_stop().await?;
-                Ok(CancellationAcknowledgement::Requested)
+            if self.requested.swap(true, Ordering::SeqCst) {
+                return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
+            if let Err(error) = self.process.force_stop().await {
+                // A refused stop leaves nothing requested, so a retry may try again.
+                self.requested.store(false, Ordering::SeqCst);
+                return Err(error);
+            }
+            Ok(CancellationAcknowledgement::Requested)
         })
     }
 }

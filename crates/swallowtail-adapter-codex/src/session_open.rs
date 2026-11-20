@@ -85,12 +85,20 @@ impl PendingSessionOpen {
         let runtime_id =
             RuntimeSessionId::new(format!("codex-app-server:{}", self.request_id.as_str()))
                 .expect("request id produces a valid session id");
-        let resume_binding = resume_binding(
+        let resume_binding = match resume_binding(
             plan,
             provider_ref,
             self.access.working_resource().clone(),
             self.access.policy().clone(),
-        )?;
+        ) {
+            Ok(binding) => binding,
+            Err(error) => {
+                // The started provider session is released before the failure
+                // reaches the caller, so no process or workspace lease survives.
+                self.abort().await;
+                return Err(error);
+            }
+        };
         let runtime = self.session_input.into_runtime(
             self.deadline_planned,
             self.access.turn_sandbox_policy(),

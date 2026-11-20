@@ -72,14 +72,6 @@ Run only the relevant static truth:
 - `effigy format:package <pkg>...` for Rust formatting of one to four exact
   workspace packages; runs `cargo fmt` for that scope only. The check-only
   workspace gate is `effigy format:check`, which CI runs too
-- `effigy check:copilot-acp-host-permission-format` for the Python formatting
-  of the host-permission proof runner; check-only, needs the pinned Ruff on
-  `PATH` (see [Python Format Prerequisite](#python-format-prerequisite)).
-  Expected negative baseline: it exits nonzero and names
-  `scripts/copilot-acp-host-permission-proof.py`, because the frozen runner
-  carries historical formatting debt. The runner is not reformatted, exempted
-  or suppressed. Its hash bindings stay intact. The selector is not part of
-  mandatory QA. Open question Q-008 records the unmade operator decision.
 - `effigy check:python-format <file>...` for any other Python file, same rules
 - `effigy package:api` for public Rust declarations
 - `effigy package:metadata` for package topology
@@ -91,16 +83,15 @@ map changes.
 
 ## Python Format Prerequisite
 
-`effigy check:python-format` and `effigy check:copilot-acp-host-permission-format`
-need Ruff `0.14.1` on `PATH`. The check refuses any other version. It never
-rewrites files. Install the pinned formatter in a task-owned environment, not
-globally:
+`effigy check:python-format` needs Ruff `0.14.1` on `PATH`. The check refuses
+any other version. It never rewrites files. Install the pinned formatter in a
+task-owned environment, not globally:
 
 ```sh
 python3 -m venv "$HOME/.local/share/swallowtail/ruff-0.14.1"
 "$HOME/.local/share/swallowtail/ruff-0.14.1/bin/pip" install ruff==0.14.1
 PATH="$HOME/.local/share/swallowtail/ruff-0.14.1/bin:$PATH" \
-  effigy check:copilot-acp-host-permission-format
+  effigy check:python-format scripts/check-docs-links.py
 ```
 
 Prefix `PATH` on the one validation invocation only. Do not edit shell startup
@@ -256,10 +247,6 @@ this project's shared slot, and the run removes only the directory it created:
   workspace and lock outside this checkout;
 - `verify-lease-api-fixture.sh` (`check:lease-api-fixture`) compiles the
   released lease API from a temporary external consumer;
-- the `sdk-v0.5.2` backport runner (`format:sdk-patch-backport`,
-  `check:sdk-patch-backport`, `validate:sdk-patch-backport`) stages a private
-  candidate and consumer clone with their own targets, build directories and
-  pinned toolchains.
 
 Each still takes exactly one `oxide exec --` lease, so the route, admission and
 refusal wording are Oxide's; the private build directory is the contract's

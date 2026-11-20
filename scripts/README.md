@@ -47,9 +47,10 @@ Normal validation scripts:
   methods released in `v0.5.4` from one temporary external consumer workspace,
   then require each released signature in the generated current-version
   semantic API dump
-- `copilot-acp-no-child-original-diagnostic.py` — original-profile fake proof
-  and one authorized Copilot `1.0.93` initialize under the reviewed no-child
-  isolation; does not reopen the 432 preparation entrypoint
+- `copilot-acp-private-assessment.py` / `copilot-acp-currentness-ledger.py` —
+  reviewed Copilot private assessment and currentness ledger behind
+  `effigy check:current-copilot-cli-acp`; the retired one-off card proof
+  scripts and the `sdk-v0.5.2` backport runner left `scripts/` in Wave 1B
 - `run-with-isolated-home.sh` — run one command under an isolated `HOME` and
   named provider-home variables, restoring the host environment on exit
 - `run-grok-acp-client-mcp-probe.sh` — Desktop-only Grok ACP client-MCP live

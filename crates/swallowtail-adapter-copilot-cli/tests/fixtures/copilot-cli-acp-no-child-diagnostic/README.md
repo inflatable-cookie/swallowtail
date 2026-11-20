@@ -6,30 +6,21 @@ record includes replayable relative scratch roles, the exact profile template,
 the current OS and imported runtime-profile closure, and the fake, launcher,
 and harness identities.
 
-Regenerate the record only with the Effigy preparation selector on the same
-macOS build and architecture:
-
-```sh
-effigy prepare:copilot-acp-no-child-diagnostic
-```
-
-Run the fake boundary proof with:
-
-```sh
-effigy validate:copilot-acp-no-child-diagnostic
-```
+The records were produced by `scripts/copilot-acp-no-child-diagnostic.py` and
+`scripts/copilot-acp-no-child-original-diagnostic.py`, retired on 2026-11-21 as
+a spent one-off proof (Wave 1B of lane
+`workspace-slimming-and-acp-consolidation`). Their bytes, and the fake and
+stage-launcher sources they compiled, stay in Git history before that removal.
+The records stay frozen; they are evidence, not a live entry point.
 
 The request stays data-only and `execution_authorized: false`. Fake success
 does not establish original Copilot startup, host-login, Auto-model, auth, or
 provider compatibility.
 
 `authority-record.json` is the separate exact grant for one isolated original
-`1.0.93` initialize. Prove the original-profile path with fakes first:
-
-```sh
-effigy validate:copilot-acp-no-child-original-diagnostic
-effigy prepare:copilot-acp-no-child-original-diagnostic
-```
+`1.0.93` initialize. The fake original-profile proof ran first through the
+retired `validate:copilot-acp-no-child-original-diagnostic` and
+`prepare:copilot-acp-no-child-original-diagnostic` selectors.
 
 `--execute-original` is a consumed one-shot worker entrypoint.
 `execution-record.json` freezes the original result: initialize not reached,

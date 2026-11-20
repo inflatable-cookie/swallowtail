@@ -23,16 +23,14 @@ not attempt authentication, so no session, prompt, permission request,
 cancellation exchange, or tool call occurred. The record keeps permission
 proof false and does not support moving any production claim.
 
-To reacquire the artifacts, run `python3 scripts/stage-copilot-acp-offline-artifacts.py`
-and retain its output in fresh task-owned scratch. It verifies pinned public
-registry metadata and inventories each extracted tree without installing a
-package. Use a new task-owned scratch record for the harness `--prepare`
-preflight before any exact execution; pass the staging helper's `artifact_root`
-to `scripts/copilot-acp-offline-proof.py --execute` only after reviewing the
-record. A matching `Authentication required` response is the stop condition
-when running without auth or network. The committed execution record describes
-the completed run; do not repeat the exact binary attempts as part of routine
-validation.
+The staging helper and harness that produced these records
+(`scripts/stage-copilot-acp-offline-artifacts.py` and
+`scripts/copilot-acp-offline-proof.py`) were retired on 2026-11-21 as a spent
+one-off proof (Wave 1B of lane `workspace-slimming-and-acp-consolidation`).
+Their bytes stay in Git history before that removal. The committed record
+describes the completed run; do not repeat the exact binary attempts as part of
+routine validation. A matching `Authentication required` response was the stop
+condition when running without auth or network.
 
 The authenticated-proof harness also runs a separate fake-only pre-prompt
 discovery path. It accepts initialize, authenticate, and session creation,
@@ -102,7 +100,8 @@ decision `411be8ce-77a0-4a50-930f-d6aeacdffce9`. Admission is read-only and
 refuses missing, tampered, mismatched or consumed authority before staging.
 `permission-proof-renewal-attempt.json` is created exclusively before launch.
 `permission-proof-renewal-execution-record.json` is created exclusively after
-the run and checked by `check:copilot-acp-permission-record`.
+the run and was checked by `check:copilot-acp-permission-record`, retired with
+the harness.
 
 The renewed invocation exited before ACP `initialize` with a `sandbox-denial`
 stderr category, zero prompts and no permission evidence. The renewal is

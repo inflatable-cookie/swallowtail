@@ -63,19 +63,7 @@ section = "Research Records"
 "check:opaque-set-claim" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-core -p swallowtail-runtime"
 "validate:opaque-set-claim" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-core -p swallowtail-runtime --lib -E 'test(/interface_version::tests::/) | test(/installed_executable::tests::/) | test(/connection_lifecycle::tests::/) | test(/connection_lifecycle::update_tests::/) | test(/prepared_operation::tests::(opaque_set|prepared_opaque_set)/)'"
 "validate:rustls-security" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-transport-acp-remote --lib -E 'test(remote_transport_lifecycles_run_sequentially) | test(cleanup_failure_is_explicit_and_redacted) | test(stable_errors_never_include_raw_transport_material) | test(maintained_server_matches_raw_http_boundary_cases)'"
-"format:copilot-acp-offline-proof" = [
-  "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-copilot-cli",
-  "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-copilot-cli -- --check",
-]
 "check:rust" = "bash scripts/oxide-rust.sh check --workspace --all-targets"
-"check:copilot-acp-offline-proof" = [
-  "python3 -c 'from pathlib import Path; files = (Path(\"scripts/copilot-acp-offline-proof.py\"), Path(\"scripts/stage-copilot-acp-offline-artifacts.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]'",
-  "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof",
-]
-"validate:copilot-acp-offline-proof" = [
-  "python3 scripts/copilot-acp-offline-proof.py --self-test",
-  "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",
-]
 "check:current-copilot-cli-acp" = [
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/copilot-acp-currentness-ledger.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
   "python3 -c 'from pathlib import Path; file = Path(\"scripts/copilot-acp-private-assessment.py\"); compile(file.read_bytes(), str(file), \"exec\")'",
@@ -100,65 +88,6 @@ section = "Research Records"
   "RUSTUP_TOOLCHAIN=1.95.0 bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
 ]
 "observe:copilot-acp-private-assessment" = "bash scripts/copilot-acp-original-entry.sh {args}"
-"check:copilot-acp-authenticated-proof" = [
-  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-offline-proof.py\"), Path(\"scripts/stage-copilot-acp-offline-artifacts.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/authenticated-proof-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-correction-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-correction-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-preflight-record.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-offline-proof/permission-proof-execution-record-v2.schema.json\")]'",
-  "python3 scripts/copilot-acp-offline-proof.py --validate-plan",
-  "python3 scripts/copilot-acp-offline-proof.py --validate-permission-plan",
-  "python3 scripts/copilot-acp-offline-proof.py --validate-renewal-authority",
-  "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof",
-]
-"check:copilot-acp-permission-fake" = "python3 scripts/copilot-acp-offline-proof.py --compile-permission-fake"
-"check:copilot-acp-stage-launcher" = "python3 scripts/copilot-acp-offline-proof.py --compile-stage-launcher"
-"validate:copilot-acp-stage-launcher" = "python3 scripts/copilot-acp-offline-proof.py --stage-launcher-smoke"
-"prepare:copilot-acp-no-child-diagnostic" = "python3 scripts/copilot-acp-no-child-diagnostic.py --prepare-record"
-"check:copilot-acp-no-child-diagnostic" = [
-  "python3 -c 'from pathlib import Path; files = (Path(\"scripts/copilot-acp-no-child-diagnostic.py\"), Path(\"scripts/copilot-acp-no-child-original-diagnostic.py\")); [compile(file.read_bytes(), str(file), \"exec\") for file in files]'",
-  "python3 scripts/copilot-acp-no-child-diagnostic.py --compile-fake-only",
-  "python3 scripts/copilot-acp-no-child-diagnostic.py --validate-record",
-  "python3 scripts/copilot-acp-no-child-original-diagnostic.py --validate-records",
-]
-"validate:copilot-acp-no-child-diagnostic" = "python3 scripts/copilot-acp-no-child-diagnostic.py --self-test"
-"prepare:copilot-acp-no-child-original-diagnostic" = "python3 scripts/copilot-acp-no-child-original-diagnostic.py --prepare-original-profile-record"
-"check:copilot-acp-no-child-original-diagnostic" = [
-  "python3 -c 'from pathlib import Path; files = (Path(\"scripts/copilot-acp-no-child-original-diagnostic.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]'",
-  "python3 scripts/copilot-acp-no-child-original-diagnostic.py --validate-records",
-]
-"validate:copilot-acp-no-child-original-diagnostic" = "python3 scripts/copilot-acp-no-child-original-diagnostic.py --self-test-original-profile"
-"check:copilot-acp-host-permission-proof" = [
-  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-host-permission-proof.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-172-attempt-proposal.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-172-attempt-proposal.schema.json\")]'",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-plan",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-172-proposal",
-]
-"validate:copilot-acp-host-permission-proof" = "python3 scripts/copilot-acp-host-permission-proof.py --self-test"
-"check:copilot-acp-host-permission-delta" = [
-  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-host-permission-proof.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/original-execution-authority.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/original-execution-authority.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-attempt-proposal.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-attempt-proposal.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-execution-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-execution-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-execution-authority.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/corrected-execution-authority.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-172-attempt-proposal.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-172-attempt-proposal.schema.json\", \"docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json\")]'",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-plan",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-authority",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-correction-plan",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-final-plan",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-172-proposal",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-corrected-authority",
-]
-"validate:copilot-acp-host-permission-delta" = "python3 scripts/copilot-acp-host-permission-proof.py --self-test --fake-pass-record docs/research/437-copilot-acp-corrected-normal-host-fake-pass.json"
-"execute:copilot-acp-host-permission-original" = "python3 scripts/copilot-acp-host-permission-proof.py --execute-original"
-"execute:copilot-acp-host-permission-corrected-original" = "python3 scripts/copilot-acp-host-permission-proof.py --execute-corrected-original"
-"check:copilot-acp-host-permission-original-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-original-record docs/research/435-copilot-acp-normal-host-permission-observation.json"
-"check:copilot-acp-host-permission-corrected-original-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-corrected-original-record docs/research/437-copilot-acp-corrected-normal-host-execution.json"
-"check:copilot-acp-host-permission-task-173-binding" = [
-  "python3 -c 'import json; from pathlib import Path; files = (Path(\"scripts/copilot-acp-host-permission-proof.py\"),); [compile(file.read_bytes(), str(file), \"exec\") for file in files]; [json.loads(Path(name).read_text()) for name in (\"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-plan.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-plan.schema.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-authority.json\", \"crates/swallowtail-adapter-copilot-cli/tests/fixtures/copilot-cli-acp-host-permission-proof/task-173-execution-authority.schema.json\", \"docs/research/439-copilot-acp-pending-announcement-cancellation-fake-pass.json\")]'",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-172-proposal",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-plan",
-  "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-authority",
-]
-"validate:copilot-acp-host-permission-task-173-binding" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-binding"
-"check:copilot-acp-host-permission-task-173-record" = "python3 scripts/copilot-acp-host-permission-proof.py --validate-task-173-original-record docs/research/439-copilot-acp-pending-announcement-cancellation-execution.json"
-"validate:copilot-acp-authenticated-proof" = [
-  "python3 scripts/copilot-acp-offline-proof.py --self-test",
-  "bash scripts/oxide-rust.sh nextest run --locked --profile ci --no-fail-fast -p swallowtail-adapter-copilot-cli --test copilot_acp_offline_proof --test acp_suite -E 'binary(copilot_acp_offline_proof) | test(/(permission_observes_without_selecting_allow_always|active_turn_cancellation_waits_for_cancelled_prompt_result|unexpected_write_callback_is_rejected_before_host_mutation)/)'",
-]
-"check:copilot-acp-permission-record" = "python3 scripts/copilot-acp-offline-proof.py --validate-permission-record --record {args}"
-"check:kiro-acp-owner-state-offline" = "python3 -c 'from pathlib import Path; file = Path(\"scripts/kiro-acp-owner-state-offline-proof.py\"); compile(file.read_bytes(), str(file), \"exec\")'"
-"validate:kiro-acp-owner-state-offline" = "python3 scripts/kiro-acp-owner-state-offline-proof.py --run"
 "check:sdk-usage-projection" = "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-claude-agent --all-targets"
 "format:current-claude-agent-acp" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-claude-agent",
@@ -430,9 +359,6 @@ section = "Research Records"
 "check:sdk-courier-timeout" = "bash scripts/run-with-owned-cargo-target.sh cargo check --locked --all-targets -p swallowtail-host-local --features mediated-stdio-proxy --then cargo check --locked --all-targets -p swallowtail-adapter-claude-agent"
 "validate:sdk-courier-timeout" = "bash scripts/run-with-owned-cargo-target.sh cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --bin swallowtail-registered-tool-courier --then cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy -E 'test(real_courier_and_sdk_shaped_process_reach_the_kernel_dispatcher) | test(mounted_proxy_denies_through_kernel_admission_before_dispatch) | test(mounted_proxy_revocation_between_dispatch_and_delivery_is_reported_without_replay) | test(mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch) | test(mounted_proxy_cancellation_closes_the_shared_listener_before_late_transport) | test(close_joins_an_idle_keep_alive_connection_without_paying_the_read_timeout) | test(mounted_proxy_rejects_stale_foreign_and_late_generations_without_reauth) | test(mounted_proxy_second_real_courier_cannot_claim_one_rendezvous_or_connection) | test(mounted_proxy_concurrency_rejects_a_second_connection_while_dispatch_is_in_flight) | test(mounted_proxy_uncooperative_teardown_reports_failure_and_retains_resources) | test(mounted_proxy_drops_oversized_and_partial_transport_without_dispatch)' --then cargo nextest run --locked --profile ci -p swallowtail-runtime --lib -E 'test(a_session_lease_ignores_its_elapsed_open_deadline) | test(an_explicit_session_lease_deadline_rejects_late_calls)' --then cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(registered_session_lease_survives_open_deadline_and_pending_permission) | test(expired_call_returns_one_correlated_error_then_the_courier_accepts_a_new_call) | test(a_revoked_before_dispatch_never_reaches_the_dispatcher) | test(cancellation_during_a_registered_call_joins_the_lease) | test(close_joins_the_registered_listener) | test(ready_follows_kernel_authenticated_connect) | test(a_second_courier_cannot_reread_an_expired_rendezvous)' --then cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_sidecar_asset -E 'test(a_declared_stdio_mcp_server_connects_and_its_tool_is_mediated)'"
 "validate:sdk-courier-idle" = "bash scripts/run-with-owned-cargo-target.sh cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --lib -E 'test(/operation_bridge::listener::tests::/)' --then cargo nextest run --locked --profile ci -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy -E 'test(real_courier_survives_idle_gaps_longer_than_the_io_timeout) | test(an_explicit_lease_deadline_expiring_during_idle_rejects_late_calls_without_dispatch) | test(cancelling_a_registered_lease_during_idle_joins_the_listener_and_refuses_later_frames) | test(watcher_unauthenticated_idle_is_bounded_on_the_shared_listener) | test(close_joins_an_idle_keep_alive_connection_without_paying_the_read_timeout) | test(mounted_both_profiles_demux_through_one_listener_and_one_resource_owner) | test(mounted_proxy_drops_oversized_and_partial_transport_without_dispatch)' --then cargo nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(registered_session_survives_idle_before_can_use_tool_approval) | test(a_lease_revoked_while_idle_never_reaches_the_dispatcher)'"
-"format:sdk-patch-backport" = "bash scripts/release/backports/sdk-v0.5.2/runner.sh format"
-"check:sdk-patch-backport" = "bash scripts/release/backports/sdk-v0.5.2/runner.sh check --packages swallowtail-runtime,swallowtail-host-local,swallowtail-adapter-claude-agent"
-"validate:sdk-patch-backport" = "bash scripts/release/backports/sdk-v0.5.2/runner.sh validate --packages swallowtail-runtime,swallowtail-host-local,swallowtail-adapter-claude-agent --filter 'test(/a_session_lease_ignores_its_elapsed_open_deadline/) | test(/an_explicit_session_lease_deadline_rejects_late_calls/) | test(/the_effective_call_deadline_takes_the_earliest_bound/) | test(/an_expired_call_never_reaches_the_dispatcher/) | test(/the_kernel_is_the_only_lease_and_binding_source/) | test(/mounted_proxy_expired_deadline_rejects_the_callable_frame_before_dispatch/) | test(/a_pump_failure_between_command_check_and_registration_rejects_the_command/) | test(/registered_session_lease_survives_open_deadline_and_pending_permission/) | test(/cancellation_during_a_registered_call_joins_the_lease/) | test(/close_joins_the_registered_listener/) | test(/events_outside_an_active_turn_fail_closed/) | test(/closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline/) | test(/usage_snapshots_keep_each_turn_independent_across_failure_and_reset/) | test(/usage_duplicate_result_after_turn_end_is_not_correlated_or_counted_twice/) | test(/usage_projection_keeps_only_bounded_per_turn_counters_and_rejects_invalid_snapshots/) | test(/usage_events_decode_qualified_payloads_and_reject_unknown_usage_report/) | test(/usage_turn_end_decodes_every_sanitized_result_observation_without_result_text/) | test(/turn_end_rejects_malformed_or_missing_usage_counts/) | test(/the_route_binds_five_independent_exact_identities/) | test(/the_lifecycle_and_credential_invariants_survived_the_hop/) | test(/identity_and_claim_qualify_0_69_0_as_compatible_extension/) | test(/prepared_route_returns_one_ordinary_text_result_without_authority/)'"
 "format:sdk-unsolicited-close" = [
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-claude-agent",
   "bash scripts/oxide-rust.sh fmt -p swallowtail-adapter-claude-agent -- --check",
@@ -442,7 +368,6 @@ section = "Research Records"
   "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test claude_agent_sdk_driver -E 'test(events_outside_an_active_turn_fail_closed) | test(open_streams_one_turn_and_closes_without_claiming_tree_completion) | test(closing_a_session_with_a_live_turn_resolves_it_instead_of_waiting_on_its_deadline) | test(dropping_close_after_one_pending_poll_hands_the_guardian_to_the_host) | test(close_joins_the_registered_listener)'",
 ]
 "validate:focused" = "bash scripts/validate-focused-packages.sh {args}"
-"validate:card116-mediated-stdio" = "bash scripts/oxide-rust.sh test -p swallowtail-host-local --features mediated-stdio-proxy --test registered_tool_proxy"
 "validate:selectors:test" = "bash scripts/tests/validation-selectors.sh"
 "format:package" = "bash scripts/format-packages.sh {args}"
 "check:format-selectors" = [
@@ -463,7 +388,6 @@ section = "Research Records"
   "bash -n scripts/format-packages.sh",
   "bash -n scripts/generate-public-api-baseline.sh",
   "bash -n scripts/oxide-rust.sh",
-  "bash -n scripts/release/backports/sdk-v0.5.2/runner.sh",
   "bash -n scripts/run-grok-acp-client-mcp-probe.sh",
   "bash -n scripts/run-with-owned-cargo-target.sh",
   "bash -n scripts/tests/format-selectors.sh",
@@ -480,7 +404,6 @@ section = "Research Records"
 ]
 "validate:grok-mcp-probe-helper-path" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-grok --features live-probes --test grok_acp_client_mcp_probe"
 "check:python-format" = "bash scripts/check-python-format.sh {args}"
-"check:copilot-acp-host-permission-format" = "bash scripts/check-python-format.sh scripts/copilot-acp-host-permission-proof.py"
 "qa:routes" = "bash scripts/check-provider-route-matrix.sh"
 "probe:gemini-installed" = "bash scripts/oxide-rust.sh test -p swallowtail-adapter-gemini --features live-probes --test live_installed_probe -- --ignored --exact gemini_cli_is_installed_when_live_probe_is_enabled"
 "probe:grok-installed" = "SWALLOWTAIL_LIVE_GROK=1 bash scripts/oxide-rust.sh test -p swallowtail-adapter-grok --features live-probes --test live_installed_probe -- --ignored --exact installed_grok_build_is_exactly_classified"

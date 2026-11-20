@@ -1,6 +1,7 @@
 use crate::{CredentialRef, ScopeId};
 use std::fmt;
 use swallowtail_core::EndpointAudience;
+use zeroize::Zeroize;
 
 /// Operation-scoped secret bytes bound to one credential reference and audience.
 ///
@@ -66,7 +67,9 @@ impl SecretLease {
 
 impl Drop for SecretLease {
     fn drop(&mut self) {
-        self.bytes.fill(0);
+        // `Zeroize` for `Vec<u8>` zeroes the spare capacity too and resists
+        // the optimizer proving the write dead, unlike `fill(0)`.
+        self.bytes.zeroize();
         if let Some(release) = self.release.take() {
             release();
         }

@@ -3,7 +3,7 @@
 use crate::{OrderedEventBuffer, RuntimeEvent, RuntimeFailure};
 use futures_core::Stream;
 use std::pin::Pin;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::SafeDiagnostic;
 
@@ -13,7 +13,8 @@ struct EventChannelState {
     terminal: bool,
     closed: bool,
     sender_count: usize,
-    waiters: Vec<Waker>,
+    /// One stream consumer registers here; a wake is never held under the lock.
+    waiter: Option<Waker>,
 }
 
 /// Cloneable producer for one bounded ordered runtime-event stream.
@@ -25,9 +26,13 @@ pub struct RuntimeEventSender {
     state: Arc<Mutex<EventChannelState>>,
 }
 
+fn locked(state: &Arc<Mutex<EventChannelState>>) -> std::sync::MutexGuard<'_, EventChannelState> {
+    state.lock().unwrap_or_else(PoisonError::into_inner)
+}
+
 impl Clone for RuntimeEventSender {
     fn clone(&self) -> Self {
-        let mut state = self.state.lock().expect("event channel lock poisoned");
+        let mut state = locked(&self.state);
         state.sender_count = state.sender_count.saturating_add(1);
         drop(state);
         Self {
@@ -38,48 +43,68 @@ impl Clone for RuntimeEventSender {
 
 impl Drop for RuntimeEventSender {
     fn drop(&mut self) {
-        let mut state = self.state.lock().expect("event channel lock poisoned");
-        state.sender_count = state.sender_count.saturating_sub(1);
-        if state.sender_count == 0 {
-            state.closed = true;
-            wake(&mut state);
-        }
+        let waiter = {
+            let mut state = locked(&self.state);
+            state.sender_count = state.sender_count.saturating_sub(1);
+            if state.sender_count == 0 {
+                state.closed = true;
+                state.waiter.take()
+            } else {
+                None
+            }
+        };
+        wake(waiter);
     }
 }
 
 impl RuntimeEventSender {
     /// Sends one event or closes the channel with the buffer's semantic failure.
     pub fn send(&self, event: RuntimeEvent) -> Result<(), RuntimeFailure> {
-        let mut state = self.state.lock().expect("event channel lock poisoned");
-        if state.closed {
-            return Err(channel_closed());
-        }
-        if let Err(failure) = state.buffer.push(event) {
-            let runtime_failure = RuntimeFailure::new(failure.diagnostic().clone());
-            if !state.terminal {
-                state.failure = Some(runtime_failure.clone());
-                state.closed = true;
+        // The waiter leaves the lock before it is woken: a waker may poll the
+        // stream again immediately, and it must never observe a held lock.
+        let (waiter, failure) = {
+            let mut state = locked(&self.state);
+            if state.closed {
+                return Err(channel_closed());
             }
-            wake(&mut state);
-            return Err(runtime_failure);
+            match state.buffer.push(event) {
+                Err(failure) => {
+                    let runtime_failure = RuntimeFailure::new(failure.diagnostic().clone());
+                    if !state.terminal {
+                        state.failure = Some(runtime_failure.clone());
+                        state.closed = true;
+                    }
+                    (state.waiter.take(), Some(runtime_failure))
+                }
+                Ok(()) => (state.waiter.take(), None),
+            }
+        };
+        wake(waiter);
+        match failure {
+            Some(failure) => Err(failure),
+            None => Ok(()),
         }
-        wake(&mut state);
-        Ok(())
     }
 
     /// Marks terminal state after which the stream drains and ends.
     pub fn mark_terminal(&self) {
-        let mut state = self.state.lock().expect("event channel lock poisoned");
-        state.buffer.mark_terminal();
-        state.terminal = true;
-        wake(&mut state);
+        let waiter = {
+            let mut state = locked(&self.state);
+            state.buffer.mark_terminal();
+            state.terminal = true;
+            state.waiter.take()
+        };
+        wake(waiter);
     }
 
     /// Closes the stream without manufacturing terminal outcome truth.
     pub fn close(&self) {
-        let mut state = self.state.lock().expect("event channel lock poisoned");
-        state.closed = true;
-        wake(&mut state);
+        let waiter = {
+            let mut state = locked(&self.state);
+            state.closed = true;
+            state.waiter.take()
+        };
+        wake(waiter);
     }
 }
 
@@ -92,7 +117,7 @@ impl Stream for RuntimeEventStream {
     type Item = Result<RuntimeEvent, RuntimeFailure>;
 
     fn poll_next(self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Option<Self::Item>> {
-        let mut state = self.state.lock().expect("event channel lock poisoned");
+        let mut state = locked(&self.state);
         if let Some(event) = state.buffer.pop_front() {
             return Poll::Ready(Some(Ok(event)));
         }
@@ -102,13 +127,7 @@ impl Stream for RuntimeEventStream {
         if state.closed || state.terminal {
             Poll::Ready(None)
         } else {
-            if !state
-                .waiters
-                .iter()
-                .any(|waiter| waiter.will_wake(context.waker()))
-            {
-                state.waiters.push(context.waker().clone());
-            }
+            register(&mut state.waiter, context.waker());
             Poll::Pending
         }
     }
@@ -126,7 +145,7 @@ pub fn runtime_event_channel(
         terminal: false,
         closed: false,
         sender_count: 1,
-        waiters: Vec::new(),
+        waiter: None,
     }));
     Ok((
         RuntimeEventSender {
@@ -136,8 +155,18 @@ pub fn runtime_event_channel(
     ))
 }
 
-fn wake(state: &mut EventChannelState) {
-    for waiter in state.waiters.drain(..) {
+/// Registers the single stream consumer without replacing a live waker.
+fn register(waiter: &mut Option<Waker>, waker: &Waker) {
+    match waiter {
+        Some(existing) if existing.will_wake(waker) => {}
+        Some(existing) => *existing = waker.clone(),
+        None => *waiter = Some(waker.clone()),
+    }
+}
+
+/// Wakes the consumer after every lock is released.
+fn wake(waiter: Option<Waker>) {
+    if let Some(waiter) = waiter {
         waiter.wake();
     }
 }
@@ -227,6 +256,40 @@ mod tests {
             Pin::new(&mut stream).poll_next(&mut context),
             Poll::Ready(None),
             "the last sender closing resolves the pending stream"
+        );
+    }
+
+    /// Waker that records whether the channel lock was free when it ran.
+    struct LockProbe {
+        state: std::sync::Arc<std::sync::Mutex<super::EventChannelState>>,
+        observed: std::sync::Mutex<Vec<bool>>,
+    }
+
+    impl std::task::Wake for LockProbe {
+        fn wake(self: std::sync::Arc<Self>) {
+            let free = self.state.try_lock().is_ok();
+            self.observed.lock().expect("probe lock").push(free);
+        }
+    }
+
+    #[test]
+    fn a_woken_consumer_never_observes_the_channel_lock_held() {
+        let (sender, mut stream) = runtime_event_channel(2).expect("capacity is valid");
+        let probe = std::sync::Arc::new(LockProbe {
+            state: std::sync::Arc::clone(&stream.state),
+            observed: std::sync::Mutex::new(Vec::new()),
+        });
+        let waker = Waker::from(std::sync::Arc::clone(&probe));
+        let mut context = Context::from_waker(&waker);
+        assert_eq!(Pin::new(&mut stream).poll_next(&mut context), Poll::Pending);
+
+        sender.close();
+
+        let observed = probe.observed.lock().expect("probe lock");
+        assert_eq!(observed.len(), 1, "the pending consumer is woken once");
+        assert!(
+            observed[0],
+            "the consumer must be woken after the channel lock is released"
         );
     }
 

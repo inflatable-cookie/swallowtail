@@ -263,15 +263,35 @@ async fn probe_process(
             ProbeSignal::Output(Ok(None)) => break,
         }
     }
-    let exit = match process.wait().await {
-        Ok(exit) => exit,
-        Err(_) => {
+    let exit = match next_exit(process.as_ref(), &mut deadline, &mut cancelled).await {
+        ExitSignal::Exited(Ok(exit)) => exit,
+        ExitSignal::Exited(Err(_)) => {
             return Ok(outcome(
                 &services,
                 codes,
                 solution,
                 DiscoveryStatus::CleanupFailed,
             ));
+        }
+        ExitSignal::Cancelled => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::Cancelled,
+            )
+            .await);
+        }
+        ExitSignal::TimedOut => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::TimedOut,
+            )
+            .await);
         }
     };
     if !exit.success() {
@@ -308,6 +328,35 @@ enum ProbeSignal {
     Output(Result<Option<crate::ProcessOutputChunk>, RuntimeFailure>),
     TimedOut,
     Cancelled,
+}
+
+enum ExitSignal {
+    Exited(Result<crate::ProcessExit, RuntimeFailure>),
+    TimedOut,
+    Cancelled,
+}
+
+/// Awaits the process exit under the request deadline and cancellation.
+///
+/// A probe that closed its output but never exits is exactly the case that
+/// previously held the operation open forever: the exit wait must observe the
+/// same bounded signals as output reading.
+async fn next_exit(
+    process: &dyn ProcessHandle,
+    deadline: &mut BoxFuture<'static, crate::DeadlineObservation>,
+    cancelled: &mut BoxFuture<'static, ()>,
+) -> ExitSignal {
+    let mut exit = process.wait();
+    poll_fn(|context| {
+        if cancelled.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ExitSignal::Cancelled);
+        }
+        if deadline.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ExitSignal::TimedOut);
+        }
+        exit.as_mut().poll(context).map(ExitSignal::Exited)
+    })
+    .await
 }
 
 async fn next_output(
@@ -441,12 +490,14 @@ pub fn preparation_failure(
 #[cfg(test)]
 mod tests {
     use super::{
-        MAX_VERSION_BYTES, parse_semantic_version_binding, probe_outcome_failure,
-        probe_runtime_failure,
+        InstalledProbeCodes, MAX_VERSION_BYTES, parse_semantic_version_binding,
+        probe_installed_executable_version, probe_outcome_failure, probe_runtime_failure,
     };
-    use crate::{PreparationStage, RuntimeFailure};
+    use crate::{Deadline, HostServices, MonotonicInstant, PreparationStage, RuntimeFailure};
+    use std::sync::Arc;
     use swallowtail_core::{
-        DiscoveryOutcome, DiscoveryStatus, InterfaceVersionAxis, SafeDiagnostic,
+        DiscoveryOutcome, DiscoveryStatus, ExecutionHostId, InterfaceCompatibilityClaim,
+        InterfaceVersion, InterfaceVersionAxis, SafeDiagnostic,
     };
 
     fn axis() -> InterfaceVersionAxis {
@@ -525,10 +576,216 @@ mod tests {
     }
 
     #[test]
+    fn a_probe_whose_child_never_exits_still_honors_its_deadline() {
+        let codes = fixture_codes();
+        let services = HostServices::new(host_id())
+            .with_task(Arc::new(InlineTask))
+            .with_time(Arc::new(LateDeadline))
+            .with_process(Arc::new(NeverExitingProcess::default()));
+        let outcome = block(Box::pin(probe_installed_executable_version(
+            fixture_request(),
+            services,
+            fixture_claim(),
+            |_| None,
+            codes,
+            "Fixture harness",
+        )))
+        .expect("the bounded probe reports an outcome");
+
+        assert_eq!(
+            outcome.status(),
+            DiscoveryStatus::TimedOut,
+            "the exit wait observes the request deadline instead of hanging"
+        );
+        assert_eq!(
+            outcome.diagnostic().map(SafeDiagnostic::code),
+            Some(codes.timed_out)
+        );
+    }
+
+    #[test]
     fn outcome_failure_keeps_the_exact_outcome_diagnostic() {
         let diagnostic = SafeDiagnostic::new("fixture.exact", "exact failure");
         let outcome = DiscoveryOutcome::new(DiscoveryStatus::Malformed, Some(diagnostic));
         let mapped = probe_outcome_failure(&outcome, "fixture.rejected", "fixture rejected");
         assert_eq!(mapped.diagnostic().safe().code(), "fixture.exact");
+    }
+
+    fn fixture_codes() -> InstalledProbeCodes {
+        crate::installed_probe_codes!("fixture")
+    }
+
+    fn host_id() -> ExecutionHostId {
+        ExecutionHostId::new("fixture.host.local").expect("host id is valid")
+    }
+
+    fn fixture_request() -> crate::InstalledExecutableDiscoveryRequest {
+        crate::InstalledExecutableDiscoveryRequest::new(
+            crate::RequestId::new("fixture-request").expect("request id is valid"),
+            crate::ScopeId::new("fixture-scope").expect("scope id is valid"),
+            host_id(),
+            crate::InstalledExecutableTarget::new(
+                crate::ExecutableRef::new("/private/fixture/bin").expect("reference is valid"),
+                InterfaceVersionAxis::new("fixture.axis").expect("axis is valid"),
+            ),
+            Deadline::at(MonotonicInstant::from_ticks(1_000_000)),
+            crate::DiscoveryCancellation::new(),
+        )
+    }
+
+    fn fixture_claim() -> InterfaceCompatibilityClaim {
+        InterfaceCompatibilityClaim::new(
+            swallowtail_core::InterfaceCompatibilityClaimId::new("fixture-claim")
+                .expect("claim id"),
+            InterfaceVersionAxis::new("fixture.axis").expect("axis is valid"),
+            swallowtail_core::InterfaceVersionScheme::Semantic,
+            swallowtail_core::InterfaceNewerVersionPosture::QualifiedOnly,
+            [swallowtail_core::InterfaceVersionSegment::new(
+                InterfaceVersion::new("1.0.0").expect("version"),
+                InterfaceVersion::new("2.0.0").expect("version"),
+                swallowtail_core::InterfaceBehaviorRevision::new("fixture-v1").expect("revision"),
+                swallowtail_core::InterfaceSupportStatus::Maintained,
+            )],
+            [],
+        )
+        .expect("static fixture claim is valid")
+    }
+
+    /// Runs one task to completion on the calling thread.
+    struct InlineTask;
+
+    impl crate::ScopedTaskService for InlineTask {
+        fn spawn(
+            &self,
+            _scope: crate::ScopeId,
+            task: crate::BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn crate::JoinedTask>, RuntimeFailure> {
+            block(task);
+            Ok(Box::new(InlineJoin))
+        }
+    }
+
+    struct InlineJoin;
+
+    impl crate::JoinedTask for InlineJoin {
+        fn join(self: Box<Self>) -> crate::BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+    }
+
+    /// Deadline future that resolves only after two polls.
+    struct LateDeadline;
+
+    impl crate::TimeService for LateDeadline {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+
+        fn wait_until(
+            &self,
+            deadline: Deadline,
+        ) -> crate::BoxFuture<'static, crate::DeadlineObservation> {
+            Box::pin(LateObservation {
+                deadline,
+                polls_left: 2,
+            })
+        }
+    }
+
+    struct LateObservation {
+        deadline: Deadline,
+        polls_left: usize,
+    }
+
+    impl std::future::Future for LateObservation {
+        type Output = crate::DeadlineObservation;
+
+        fn poll(
+            mut self: std::pin::Pin<&mut Self>,
+            _context: &mut std::task::Context<'_>,
+        ) -> std::task::Poll<Self::Output> {
+            if self.polls_left == 0 {
+                std::task::Poll::Ready(crate::DeadlineObservation::new(
+                    self.deadline,
+                    self.deadline.instant(),
+                ))
+            } else {
+                self.polls_left -= 1;
+                std::task::Poll::Pending
+            }
+        }
+    }
+
+    /// Child process that never exits on its first `wait` call.
+    ///
+    /// A probe that closed its output must still observe its deadline instead
+    /// of awaiting that first, never-resolving exit forever.
+    #[derive(Default)]
+    struct NeverExitingProcess {
+        waits: std::sync::atomic::AtomicUsize,
+    }
+
+    impl crate::ProcessHandle for NeverExitingProcess {
+        fn write_stdin(
+            &self,
+            _chunk: crate::ProcessInputChunk,
+        ) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn close_stdin(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn read_output(
+            &self,
+        ) -> crate::BoxFuture<'_, Result<Option<crate::ProcessOutputChunk>, RuntimeFailure>>
+        {
+            Box::pin(std::future::ready(Ok(None)))
+        }
+
+        fn request_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn force_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn wait(&self) -> crate::BoxFuture<'_, Result<crate::ProcessExit, RuntimeFailure>> {
+            let wait = self.waits.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            if wait == 0 {
+                Box::pin(std::future::pending())
+            } else {
+                Box::pin(std::future::ready(Ok(crate::ProcessExit::new(
+                    true,
+                    Some(0),
+                ))))
+            }
+        }
+    }
+
+    impl crate::ProcessService for NeverExitingProcess {
+        fn start(
+            &self,
+            _scope: crate::ScopeId,
+            _request: crate::ProcessRequest,
+        ) -> crate::BoxFuture<'static, Result<Box<dyn crate::ProcessHandle>, RuntimeFailure>>
+        {
+            Box::pin(std::future::ready(Ok(
+                Box::new(Self::default()) as Box<dyn crate::ProcessHandle>
+            )))
+        }
+    }
+
+    fn block<T>(future: crate::BoxFuture<'_, T>) -> T {
+        let mut future = future;
+        let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+        for _ in 0..4096 {
+            if let std::task::Poll::Ready(value) = future.as_mut().poll(&mut context) {
+                return value;
+            }
+        }
+        panic!("fixture future never settled");
     }
 }

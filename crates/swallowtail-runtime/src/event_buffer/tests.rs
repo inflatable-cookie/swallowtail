@@ -1,4 +1,4 @@
-use super::{EventBufferFailureKind, OrderedEventBuffer};
+use super::{EventBufferFailureKind, MAX_QUARANTINED_LATE_EVENTS, OrderedEventBuffer};
 use crate::{RuntimeEvent, RuntimeEventKind};
 
 #[test]
@@ -72,4 +72,28 @@ fn late_events_are_quarantined() {
 
     assert_eq!(failure.kind(), EventBufferFailureKind::LateEvent);
     assert_eq!(buffer.quarantined_late_events().count(), 1);
+}
+
+#[test]
+fn quarantine_evidence_stays_bounded_after_terminal_state() {
+    let mut buffer = OrderedEventBuffer::new(2).expect("capacity is valid");
+    buffer
+        .push(RuntimeEvent::new(1, RuntimeEventKind::Started))
+        .expect("start is valid");
+    buffer.mark_terminal();
+    for sequence in 2..(MAX_QUARANTINED_LATE_EVENTS as u64 + 12) {
+        let failure = buffer
+            .push(RuntimeEvent::new(
+                sequence,
+                RuntimeEventKind::OutputAvailable,
+            ))
+            .expect_err("every late event is still rejected");
+        assert_eq!(failure.kind(), EventBufferFailureKind::LateEvent);
+    }
+
+    assert_eq!(
+        buffer.quarantined_late_events().count(),
+        MAX_QUARANTINED_LATE_EVENTS,
+        "retained quarantine evidence is bounded"
+    );
 }

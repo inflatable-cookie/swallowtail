@@ -1,5 +1,6 @@
 use crate::confidence::Confidence;
 use crate::record::{Idiom, IdiomConstraint, IdiomScope, Provenance};
+use std::fmt;
 
 /// One lint finding on an idiom record or store (Contract 055).
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -25,6 +26,31 @@ pub enum LintReason {
 pub struct LintIssue {
     index: usize,
     reason: LintReason,
+}
+
+impl fmt::Display for LintIssue {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            formatter,
+            "idiom record {} failed lint: {}",
+            self.index,
+            reason_label(self.reason)
+        )
+    }
+}
+
+impl std::error::Error for LintIssue {}
+
+fn reason_label(reason: LintReason) -> &'static str {
+    match reason {
+        LintReason::ConfidenceOutOfRange => "stored confidence is outside 0..=100",
+        LintReason::ZeroHalfLife => "stored decay half-life is zero",
+        LintReason::IdBlank => "id is blank",
+        LintReason::PatternBlank => "constraint pattern is blank",
+        LintReason::PackageNameBlank => "package scope name is blank",
+        LintReason::SourceBlank => "static provenance source is blank",
+        LintReason::PackageRefBlank => "imported provenance package reference is blank",
+    }
 }
 
 impl LintIssue {
@@ -178,6 +204,14 @@ mod tests {
         );
         let issues = lint_idiom(&record);
         assert!(issues.contains(&LintReason::ZeroHalfLife));
+    }
+
+    #[test]
+    fn issue_display_names_the_index_and_reason() {
+        let message = super::LintIssue::new(2, LintReason::ConfidenceOutOfRange).to_string();
+        assert!(message.contains('2'));
+        assert!(message.contains("0..=100"));
+        let _: &dyn std::error::Error = &super::LintIssue::new(0, LintReason::IdBlank);
     }
 
     #[test]

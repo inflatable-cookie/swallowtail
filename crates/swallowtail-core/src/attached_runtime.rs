@@ -46,6 +46,9 @@ impl AttachedModelTag {
 }
 
 /// Safe digest of one observed runtime manifest. The manifest stays private.
+///
+/// Accepted `sha256:` hex is normalized to lowercase so digest equality is
+/// case-consistent regardless of how the runtime spelled it.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct ModelManifestDigest(String);
 
@@ -59,7 +62,7 @@ impl ModelManifestDigest {
         if hex.len() != SHA256_HEX_BYTES || !hex.bytes().all(|byte| byte.is_ascii_hexdigit()) {
             return Err(InvalidAttachedRuntimeRecord::manifest_digest());
         }
-        Ok(Self(value))
+        Ok(Self(format!("{SHA256_PREFIX}{}", hex.to_ascii_lowercase())))
     }
 
     #[must_use]

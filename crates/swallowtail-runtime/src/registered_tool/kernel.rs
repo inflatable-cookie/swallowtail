@@ -89,6 +89,20 @@ pub struct RegisteredToolOperationKernel {
     gate: AdmissionGate,
 }
 
+/// Releases the one active call slot on every exit path, including a dropped
+/// `issue` future.
+///
+/// Without this guard, dropping the future at an `.await` after `reserve`
+/// permanently jams the kernel: the slot stays occupied, so every later call
+/// is rejected with `LimitExceeded`.
+struct ActiveCallRelease(Arc<RegisteredToolOperationKernel>);
+
+impl Drop for ActiveCallRelease {
+    fn drop(&mut self) {
+        self.0.release();
+    }
+}
+
 struct CallCancellation {
     flag: Arc<AtomicBool>,
 }
@@ -326,16 +340,12 @@ impl RegisteredToolOperationKernel {
     }
 
     fn maximum_call_deadline(&self, started: MonotonicInstant) -> Deadline {
-        let max_duration_ticks = u64::try_from(
-            self.binding
-                .effective_bounds()
-                .max_call_duration()
-                .as_nanos(),
+        // The runtime owns exactly one duration-to-tick boundary
+        // (`MonotonicInstant::saturating_add_duration`), so a host's declared
+        // duration bound is never added to host ticks as a raw nanos count.
+        Deadline::at(
+            started.saturating_add_duration(self.binding.effective_bounds().max_call_duration()),
         )
-        .unwrap_or(u64::MAX);
-        Deadline::at(MonotonicInstant::from_ticks(
-            started.ticks().saturating_add(max_duration_ticks),
-        ))
     }
 
     async fn admit_progress(&self, progress: RegisteredToolProgress) -> Result<(), RuntimeFailure> {
@@ -572,28 +582,25 @@ impl RegisteredToolOperationKernel {
         // The dispatch admission sequence runs under the same serialized gate.
         // It is released before the dispatcher runs so a dispatcher publishing
         // progress cannot deadlock against its own call.
-        let (cancelled, epoch) = {
+        let (cancelled, epoch, release) = {
             let permit = self.gate.acquire().await;
             let (cancelled, epoch) = self.reserve(&request, expires_at, started)?;
-            if let Err(error) = self
-                .require_current(AdmissionPhase::BeforeDispatch, &permit)
-                .await
-            {
-                self.release();
-                return Err(error);
-            }
+            // From here the reserved slot is released by the guard, not by
+            // each individual exit path, so a dropped future cannot leak it.
+            let release = ActiveCallRelease(Arc::clone(&self));
+            self.require_current(AdmissionPhase::BeforeDispatch, &permit)
+                .await?;
             if self.locked().epoch != epoch {
-                self.release();
                 return Err(fail(RegisteredToolFailureKind::Revoked));
             }
             if reached(self.time.now(), expires_at) {
                 cancelled.store(true, Ordering::SeqCst);
-                self.release();
                 return Err(fail(RegisteredToolFailureKind::DeadlineExceeded));
             }
-            (cancelled, epoch)
+            (cancelled, epoch, release)
         };
         let _ = epoch;
+        let _release = release;
         let call = match RegisteredToolCall::mint(
             self.binding.clone(),
             request.call_id().clone(),
@@ -603,10 +610,7 @@ impl RegisteredToolOperationKernel {
             expires_at,
         ) {
             Ok(call) => call,
-            Err(error) => {
-                self.release();
-                return Err(error.into_runtime_failure());
-            }
+            Err(error) => return Err(error.into_runtime_failure()),
         };
         let context = RegisteredToolDispatchContext::new(
             RegisteredToolCancellation::new(
@@ -623,9 +627,7 @@ impl RegisteredToolOperationKernel {
             ),
         );
         let dispatched = self.dispatcher.dispatch(call.clone(), context).await;
-        let settled = self.settle(&call, expires_at, dispatched).await;
-        self.release();
-        settled
+        self.settle(&call, expires_at, dispatched).await
     }
 
     async fn settle(

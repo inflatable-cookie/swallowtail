@@ -1,3 +1,5 @@
+use std::fmt;
+
 /// Default maximum bytes for one idiom pattern.
 pub const DEFAULT_MAX_PATTERN_BYTES: usize = 512;
 /// Default maximum bytes for one signal target or correlation value.
@@ -56,6 +58,19 @@ pub enum BoundedTextError {
     TooLong(usize),
 }
 
+impl fmt::Display for BoundedTextError {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Blank => formatter.write_str("bounded text is blank"),
+            Self::TooLong(maximum_bytes) => {
+                write!(formatter, "bounded text exceeds {maximum_bytes} bytes")
+            }
+        }
+    }
+}
+
+impl std::error::Error for BoundedTextError {}
+
 #[cfg(test)]
 mod tests {
     use super::{BoundedText, BoundedTextError};
@@ -65,6 +80,13 @@ mod tests {
         let value = BoundedText::new("named exports", 64).expect("bounded text");
         assert_eq!(value.as_str(), "named exports");
         assert_eq!(value.len(), 13);
+    }
+
+    #[test]
+    fn error_reports_the_rejection_reason() {
+        assert!(BoundedTextError::Blank.to_string().contains("blank"));
+        assert!(BoundedTextError::TooLong(64).to_string().contains("64"));
+        let _: &dyn std::error::Error = &BoundedTextError::Blank;
     }
 
     #[test]

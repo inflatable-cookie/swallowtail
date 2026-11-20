@@ -4,6 +4,7 @@ use super::direct_continuation::validate_direct_continuation;
 use super::harness_configuration::validate_harness_configuration;
 use super::planned_connection_rollover::validate_planned_connection_rollover;
 use super::realtime_media::validate_realtime_media;
+use super::remote_acp::validate_remote_acp;
 use super::session_access::validate_session_access;
 use super::session_provider_state::validate_session_provider_state;
 use super::{PreflightContext, PreflightDimension, PreflightFailure};
@@ -68,6 +69,7 @@ pub(super) fn validate(
     validate_session_provider_state(requirements)?;
     validate_realtime_media(context, requirements)?;
     validate_planned_connection_rollover(requirements)?;
+    validate_remote_acp(requirements)?;
     validate_direct_continuation(context, requirements)?;
     validate_attached_runtime(context, requirements)?;
     validate_capabilities(context, requirements)?;

@@ -8,6 +8,26 @@ use std::pin::Pin;
 use std::task::{Context, Poll, Waker};
 
 #[test]
+fn dropping_a_sender_recovers_a_poisoned_terminal_lock() {
+    let (sender, mut future) = terminal_outcome_channel();
+    let state = std::sync::Arc::clone(&future.state);
+    let poisoned = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let _guard = state.lock().expect("terminal lock");
+        panic!("poison the terminal lock");
+    }));
+    assert!(poisoned.is_err(), "the fixture poisons the lock");
+
+    drop(sender);
+
+    let mut context = Context::from_waker(Waker::noop());
+    let outcome = match Pin::new(&mut future).poll(&mut context) {
+        Poll::Ready(outcome) => outcome,
+        Poll::Pending => panic!("a poisoned lock must not stall the terminal future"),
+    };
+    assert!(matches!(outcome.status(), TerminalStatus::RuntimeFailed(_)));
+}
+
+#[test]
 fn exactly_one_terminal_outcome_wins() {
     let (sender, _future) = terminal_outcome_channel();
     sender

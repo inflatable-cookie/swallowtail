@@ -1,7 +1,7 @@
 use crate::{BoxFuture, RuntimeFailure};
 use std::fmt;
-use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Mutex, PoisonError};
 use std::task::{Poll, Waker};
 use swallowtail_core::CancellationScope;
 
@@ -59,19 +59,22 @@ impl ImmediateCancellation {
         self.requested.load(Ordering::SeqCst)
     }
 
+    fn locked(&self) -> std::sync::MutexGuard<'_, Vec<Waker>> {
+        self.waiters.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+
     /// Resolves when cancellation is first requested.
     ///
     /// Concurrent waiters are all notified; each registered waker is woken
-    /// exactly once when the request is recorded.
+    /// exactly once when the request is recorded. Registration holds one waker
+    /// per distinct waiter and the set is drained on request, so it never
+    /// outlives the cancellation it observes.
     pub fn wait_requested(&self) -> BoxFuture<'_, ()> {
         Box::pin(std::future::poll_fn(|context| {
             if self.is_requested() {
                 return Poll::Ready(());
             }
-            let mut waiters = self
-                .waiters
-                .lock()
-                .expect("cancellation waiter lock poisoned");
+            let mut waiters = self.locked();
             if self.is_requested() {
                 Poll::Ready(())
             } else {
@@ -96,11 +99,11 @@ impl CancellationControl for ImmediateCancellation {
         let acknowledgement = if self.requested.swap(true, Ordering::SeqCst) {
             CancellationAcknowledgement::AlreadyRequested
         } else {
-            let mut waiters = self
-                .waiters
-                .lock()
-                .expect("cancellation waiter lock poisoned");
-            for waiter in waiters.drain(..) {
+            // Waiters leave the lock before they are woken: a waker may poll
+            // its own future immediately, and that poll must never observe a
+            // held lock.
+            let waiters: Vec<Waker> = self.locked().drain(..).collect();
+            for waiter in waiters {
                 waiter.wake();
             }
             CancellationAcknowledgement::Requested

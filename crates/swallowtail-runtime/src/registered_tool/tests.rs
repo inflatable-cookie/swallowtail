@@ -420,6 +420,20 @@ impl TimeService for FixedClock {
 
 struct EchoDispatcher;
 
+/// Dispatcher that never settles, so a dropped call future leaves the kernel
+/// exactly at its dispatch await.
+struct PendingDispatcher;
+
+impl RegisteredToolDispatcher for PendingDispatcher {
+    fn dispatch(
+        &self,
+        _call: RegisteredToolCall,
+        _context: RegisteredToolDispatchContext,
+    ) -> crate::BoxFuture<'_, Result<RegisteredToolOutcome, crate::RuntimeFailure>> {
+        Box::pin(std::future::pending())
+    }
+}
+
 impl RegisteredToolDispatcher for EchoDispatcher {
     fn dispatch(
         &self,
@@ -737,6 +751,47 @@ fn the_effective_call_deadline_takes_the_earliest_bound() {
         duration_bound.instant().ticks(),
         u64::try_from(REGISTERED_TOOL_MAX_CALL_DURATION.as_nanos()).expect("bounded"),
         "the maximum call duration bounds a caller deadline that never arrives"
+    );
+}
+
+#[test]
+fn dropping_an_issued_call_future_releases_the_reserved_slot() {
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let (kernel, lease) = RegisteredToolOperationKernel::open(
+        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500))),
+        &proof,
+        Arc::new(PendingDispatcher),
+        Arc::new(FixedClock::default()),
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("open");
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+
+    let mut abandoned = lease.call(call_request("abandoned"));
+    assert!(
+        abandoned.as_mut().poll(&mut context).is_pending(),
+        "the call is suspended in its dispatcher"
+    );
+    assert_eq!(
+        kernel.outstanding_calls(),
+        1,
+        "the dispatched call owns the one slot"
+    );
+    drop(abandoned);
+    assert_eq!(
+        kernel.outstanding_calls(),
+        0,
+        "dropping the future at its dispatch await must release the slot"
+    );
+
+    let mut next = lease.call(call_request("after-abandon"));
+    assert!(
+        next.as_mut().poll(&mut context).is_pending(),
+        "the next call is admitted instead of failing with LimitExceeded"
     );
 }
 

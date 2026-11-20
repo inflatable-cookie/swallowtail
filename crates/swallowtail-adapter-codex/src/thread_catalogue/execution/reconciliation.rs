@@ -1,18 +1,20 @@
 use super::super::protocol::project_reconciliation_activity;
 use super::resource::ScopedResource;
 use super::{
-    cancel_and_release, close_and_release, control_before_dispatch, deadline_wait,
-    require_catalogue_version, runtime_from_operation,
+    abort_runtime, control_before_dispatch, deadline_wait, finish_runtime, release_runtime,
+    request_controlled, require_catalogue_version, runtime_from_operation, settle,
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
-use crate::control_wait::{Controlled, wait_controlled};
+use crate::control_wait::Controlled;
 use crate::process_close::close_budget;
 use crate::session_replay::{project_interrupted_turn_state, project_thread_history};
+use serde_json::json;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, ProviderSessionReconciliationOutcome,
-    ProviderSessionReconciliationPlan, ProviderSessionReconciliationRequest, RuntimeFailure,
+    HostServices, InterruptedTurnState, ProviderSessionReconciliationObservation,
+    ProviderSessionReconciliationOutcome, ProviderSessionReconciliationPlan,
+    ProviderSessionReconciliationRequest, RuntimeFailure, bound_provider_session_replay_tail,
 };
 
 impl CodexAppServerDriver {
@@ -37,7 +39,7 @@ impl CodexAppServerDriver {
                 .await
                 .map_err(runtime_from_operation)?;
         let cwd = resource.root().to_owned();
-        let connection = self
+        let (connection, task) = match self
             .start_connection(
                 plan.preflight(),
                 behavior,
@@ -46,63 +48,47 @@ impl CodexAppServerDriver {
                 false,
                 &services,
             )
-            .await;
-        let (connection, task) = match connection {
-            Ok(connection) => connection,
-            Err(error) => {
-                let cleanup = resource.release().await;
-                return match cleanup {
-                    CleanupOutcome::Clean | CleanupOutcome::NotApplicable => Err(error),
-                    CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-                        Err(RuntimeFailure::new(diagnostic))
-                    }
-                };
-            }
+            .await
+        {
+            Ok(started) => started,
+            Err(error) => return Err(release_runtime(resource, error).await),
         };
         if let Err(control) = control_before_dispatch(
             request.cancellation().as_ref(),
             agreement.deadline(),
             &services,
         ) {
-            let cleanup = cancel_and_release(&connection, task, resource).await;
-            return match cleanup {
-                CleanupOutcome::Clean | CleanupOutcome::NotApplicable => {
-                    Err(runtime_from_operation(control))
-                }
-                CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-                    Err(RuntimeFailure::new(diagnostic))
-                }
-            };
+            return Err(abort_runtime(
+                &connection,
+                task,
+                resource,
+                runtime_from_operation(control),
+            )
+            .await);
         }
         let deadline_wait = match deadline_wait(agreement.deadline(), &services) {
             Ok(deadline_wait) => deadline_wait,
             Err(error) => {
-                let cleanup = cancel_and_release(&connection, task, resource).await;
-                return match cleanup {
-                    CleanupOutcome::Clean | CleanupOutcome::NotApplicable => {
-                        Err(runtime_from_operation(error))
-                    }
-                    CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-                        Err(RuntimeFailure::new(diagnostic))
-                    }
-                };
+                return Err(abort_runtime(
+                    &connection,
+                    task,
+                    resource,
+                    runtime_from_operation(error),
+                )
+                .await);
             }
         };
-        let response = connection
-            .dispatch_request(
-                "thread/read",
-                serde_json::json!({
-                    "threadId": agreement.binding().provider_session_ref().as_provider_value(),
-                    "includeTurns": true
-                }),
-            )
-            .await;
-        let response = match response {
-            Ok(response) => {
-                wait_controlled(response, request.cancellation().as_ref(), deadline_wait).await
-            }
-            Err(error) => Controlled::Completed(Err(error)),
-        };
+        let response = request_controlled(
+            &connection,
+            "thread/read",
+            json!({
+                "threadId": agreement.binding().provider_session_ref().as_provider_value(),
+                "includeTurns": true
+            }),
+            request.cancellation().as_ref(),
+            deadline_wait,
+        )
+        .await;
         let interrupted = matches!(&response, Controlled::Cancelled | Controlled::Deadline);
         let projected = match response {
             Controlled::Completed(Ok(response)) => (|| {
@@ -114,36 +100,32 @@ impl CodexAppServerDriver {
                 .map_err(runtime_from_operation)?;
                 let replay =
                     project_thread_history(&response, agreement.binding().provider_session_ref())?;
-                let (replay, complete) = swallowtail_runtime::bound_provider_session_replay_tail(
-                    replay,
-                    agreement.bounds(),
-                );
+                let (replay, complete) =
+                    bound_provider_session_replay_tail(replay, agreement.bounds());
                 Ok(match agreement.provider_turn_ref() {
                     Some(provider_turn_ref) => {
-                        swallowtail_runtime::ProviderSessionReconciliationObservation::exact_turn(
+                        ProviderSessionReconciliationObservation::exact_turn(
                             project_interrupted_turn_state(&response, provider_turn_ref)?,
                             provider_turn_ref.clone(),
                             replay,
                             complete,
                         )
                     }
-                    None => {
-                        swallowtail_runtime::ProviderSessionReconciliationObservation::session_scoped(
-                            match activity {
-                                swallowtail_core::ProviderSessionActivityState::Active => {
-                                    swallowtail_runtime::InterruptedTurnState::Active
-                                }
-                                swallowtail_core::ProviderSessionActivityState::Inactive => {
-                                    swallowtail_runtime::InterruptedTurnState::InactiveUnresolved
-                                }
-                                swallowtail_core::ProviderSessionActivityState::Unknown => {
-                                    swallowtail_runtime::InterruptedTurnState::Unknown
-                                }
-                            },
-                            replay,
-                            complete,
-                        )
-                    }
+                    None => ProviderSessionReconciliationObservation::session_scoped(
+                        match activity {
+                            swallowtail_core::ProviderSessionActivityState::Active => {
+                                InterruptedTurnState::Active
+                            }
+                            swallowtail_core::ProviderSessionActivityState::Inactive => {
+                                InterruptedTurnState::InactiveUnresolved
+                            }
+                            swallowtail_core::ProviderSessionActivityState::Unknown => {
+                                InterruptedTurnState::Unknown
+                            }
+                        },
+                        replay,
+                        complete,
+                    ),
                 })
             })(),
             Controlled::Completed(Err(error)) => Err(error),
@@ -156,24 +138,15 @@ impl CodexAppServerDriver {
                 "Codex thread reconciliation timed out",
             ))),
         };
-        let cleanup = if interrupted {
-            cancel_and_release(&connection, task, resource).await
-        } else {
-            close_and_release(
-                &connection,
-                task,
-                resource,
-                close_budget(&services, agreement.deadline()),
-            )
-            .await
-        };
-        let observation = match (projected, &cleanup) {
-            (Ok(observation), CleanupOutcome::Clean | CleanupOutcome::NotApplicable) => observation,
-            (Err(error), _) => return Err(error),
-            (Ok(_), CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic)) => {
-                return Err(RuntimeFailure::new(diagnostic.clone()));
-            }
-        };
+        let cleanup = settle(
+            &connection,
+            task,
+            resource,
+            interrupted,
+            close_budget(&services, agreement.deadline()),
+        )
+        .await;
+        let observation = finish_runtime(projected, &cleanup)?;
         ProviderSessionReconciliationOutcome::new(&plan, &request, observation, cleanup)
     }
 }

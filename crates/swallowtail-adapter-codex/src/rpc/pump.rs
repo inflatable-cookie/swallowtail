@@ -5,23 +5,31 @@ impl RpcConnection {
         loop {
             match self.process.read_output().await {
                 Ok(Some(chunk)) if chunk.stream() == ProcessOutputStream::Stdout => {
-                    pending_bytes.extend_from_slice(chunk.bytes());
-                    while let Some(newline) = pending_bytes.iter().position(|byte| *byte == b'\n') {
-                        if newline > MAX_STDOUT_LINE_BYTES {
+                    let mut rest = chunk.bytes();
+                    while let Some(newline) = rest.iter().position(|byte| *byte == b'\n') {
+                        let (head, tail) = rest.split_at(newline);
+                        // Bound the line before copying it, so an oversized chunk
+                        // never grows the pending buffer past the cap.
+                        if pending_bytes.len() + head.len() > MAX_STDOUT_LINE_BYTES {
                             protocol_failure = Some(line_too_large());
                             break;
                         }
-                        let line: Vec<_> = pending_bytes.drain(..=newline).collect();
-                        let line = trim_newline(&line);
-                        if let Err(error) = self.dispatch(line).await {
-                            let error = with_inbound_context(error, line);
-                            self.emit_malformed_inbound_debug(&error, line);
+                        pending_bytes.extend_from_slice(head);
+                        let line = std::mem::take(&mut pending_bytes);
+                        if let Err(error) = self.dispatch(trim_newline(&line)).await {
+                            let error = with_inbound_context(error, &line);
+                            self.emit_malformed_inbound_debug(&error, &line);
                             protocol_failure = Some(error);
                             break;
                         }
+                        rest = &tail[1..];
                     }
-                    if protocol_failure.is_none() && pending_bytes.len() > MAX_STDOUT_LINE_BYTES {
-                        protocol_failure = Some(line_too_large());
+                    if protocol_failure.is_none() {
+                        if pending_bytes.len() + rest.len() > MAX_STDOUT_LINE_BYTES {
+                            protocol_failure = Some(line_too_large());
+                        } else {
+                            pending_bytes.extend_from_slice(rest);
+                        }
                     }
                     if protocol_failure.is_some() {
                         break;

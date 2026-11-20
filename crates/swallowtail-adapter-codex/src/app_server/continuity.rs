@@ -214,7 +214,7 @@ fn model_metadata(model: &Value) -> Result<ModelMetadata, RuntimeFailure> {
 pub(crate) async fn close_connection(
     connection: &Arc<RpcConnection>,
     task: AppServerTask,
-    budget: Option<CloseBudget>,
+    budget: CloseBudget,
 ) -> CleanupOutcome {
     let close = connection.close_input().await;
     let join = task.join_or_escalate(connection.process(), budget).await;
@@ -245,7 +245,7 @@ fn malformed_response() -> RuntimeFailure {
 fn unsupported(feature: &str) -> RuntimeFailure {
     failure(
         "swallowtail.codex.app_server.unsupported_input",
-        format!("Codex app-server proof driver does not support {feature}"),
+        format!("Codex app-server driver does not support {feature}"),
     )
 }
 

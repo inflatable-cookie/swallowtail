@@ -1,3 +1,4 @@
+use crate::cleanup::merge_cleanup;
 use crate::exec_events::ExecEventParser;
 use crate::exec_handle::ProcessCancellation;
 use crate::exec_input::SharedExecMaterializations;
@@ -211,16 +212,50 @@ fn process_cleanup_failed() -> CleanupOutcome {
 }
 
 fn with_cleanup(outcome: TerminalOutcome, materialization: CleanupOutcome) -> TerminalOutcome {
-    let cleanup = match (outcome.cleanup(), &materialization) {
-        (CleanupOutcome::Failed(_), _) | (CleanupOutcome::Degraded(_), _) => {
-            outcome.cleanup().clone()
-        }
-        (_, CleanupOutcome::Failed(_)) | (_, CleanupOutcome::Degraded(_)) => materialization,
-        _ => outcome.cleanup().clone(),
-    };
+    let cleanup = merge_cleanup(outcome.cleanup().clone(), materialization);
     let mut combined = TerminalOutcome::new(outcome.status().clone(), cleanup);
     if let Some(output) = outcome.output() {
         combined = combined.with_output(output.clone());
     }
     combined
+}
+
+#[cfg(test)]
+mod tests {
+    use super::with_cleanup;
+    use swallowtail_core::SafeDiagnostic;
+    use swallowtail_runtime::{CleanupOutcome, TerminalOutcome, TerminalStatus};
+
+    fn diagnostic(code: &'static str) -> SafeDiagnostic {
+        SafeDiagnostic::new(code, "message")
+    }
+
+    #[test]
+    fn failed_materialization_cleanup_beats_degraded_process_cleanup() {
+        let outcome = TerminalOutcome::new(
+            TerminalStatus::Cancelled,
+            CleanupOutcome::Degraded(diagnostic("process.degraded")),
+        );
+        let combined = with_cleanup(
+            outcome,
+            CleanupOutcome::Failed(diagnostic("materialization.failed")),
+        );
+        assert!(matches!(
+            combined.cleanup(),
+            CleanupOutcome::Failed(found) if found.code() == "materialization.failed"
+        ));
+    }
+
+    #[test]
+    fn degraded_materialization_cleanup_survives_clean_process_cleanup() {
+        let outcome = TerminalOutcome::new(TerminalStatus::Cancelled, CleanupOutcome::Clean);
+        let combined = with_cleanup(
+            outcome,
+            CleanupOutcome::Degraded(diagnostic("materialization.degraded")),
+        );
+        assert!(matches!(
+            combined.cleanup(),
+            CleanupOutcome::Degraded(found) if found.code() == "materialization.degraded"
+        ));
+    }
 }

@@ -1,16 +1,17 @@
 use super::resource::ScopedResource;
 use super::{
-    cancel_and_release, close_and_release, control_before_dispatch, deadline_wait,
-    require_catalogue_version, runtime_from_operation,
+    abort_runtime, control_before_dispatch, deadline_wait, finish_runtime, release_runtime,
+    request_controlled, require_catalogue_version, runtime_from_operation, settle,
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
-use crate::control_wait::{Controlled, wait_controlled};
+use crate::control_wait::Controlled;
 use crate::process_close::close_budget;
 use crate::session_replay::project_thread_history;
+use serde_json::json;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    CleanupOutcome, HostServices, ProviderSessionHistoryPage, ProviderSessionHistoryPlan,
+    HostServices, ProviderSessionHistoryPage, ProviderSessionHistoryPlan,
     ProviderSessionHistoryRequest, ProviderSessionHistoryTotal, RuntimeFailure,
     page_provider_session_history_window,
 };
@@ -35,7 +36,7 @@ impl CodexAppServerDriver {
         let resource = ScopedResource::resolve_history(&plan, operation_scope.clone(), &services)
             .await
             .map_err(runtime_from_operation)?;
-        let connection = self
+        let (connection, task) = match self
             .start_connection(
                 plan.preflight(),
                 behavior,
@@ -44,63 +45,47 @@ impl CodexAppServerDriver {
                 false,
                 &services,
             )
-            .await;
-        let (connection, task) = match connection {
-            Ok(connection) => connection,
-            Err(error) => {
-                let cleanup = resource.release().await;
-                return match cleanup {
-                    CleanupOutcome::Clean | CleanupOutcome::NotApplicable => Err(error),
-                    CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-                        Err(RuntimeFailure::new(diagnostic))
-                    }
-                };
-            }
+            .await
+        {
+            Ok(started) => started,
+            Err(error) => return Err(release_runtime(resource, error).await),
         };
         if let Err(control) = control_before_dispatch(
             request.cancellation().as_ref(),
             agreement.deadline(),
             &services,
         ) {
-            let cleanup = cancel_and_release(&connection, task, resource).await;
-            return match cleanup {
-                CleanupOutcome::Clean | CleanupOutcome::NotApplicable => {
-                    Err(runtime_from_operation(control))
-                }
-                CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-                    Err(RuntimeFailure::new(diagnostic))
-                }
-            };
+            return Err(abort_runtime(
+                &connection,
+                task,
+                resource,
+                runtime_from_operation(control),
+            )
+            .await);
         }
         let deadline_wait = match deadline_wait(agreement.deadline(), &services) {
             Ok(deadline_wait) => deadline_wait,
             Err(error) => {
-                let cleanup = cancel_and_release(&connection, task, resource).await;
-                return match cleanup {
-                    CleanupOutcome::Clean | CleanupOutcome::NotApplicable => {
-                        Err(runtime_from_operation(error))
-                    }
-                    CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-                        Err(RuntimeFailure::new(diagnostic))
-                    }
-                };
+                return Err(abort_runtime(
+                    &connection,
+                    task,
+                    resource,
+                    runtime_from_operation(error),
+                )
+                .await);
             }
         };
-        let response = connection
-            .dispatch_request(
-                "thread/read",
-                serde_json::json!({
-                    "threadId": agreement.binding().provider_session_ref().as_provider_value(),
-                    "includeTurns": true
-                }),
-            )
-            .await;
-        let response = match response {
-            Ok(response) => {
-                wait_controlled(response, request.cancellation().as_ref(), deadline_wait).await
-            }
-            Err(error) => Controlled::Completed(Err(error)),
-        };
+        let response = request_controlled(
+            &connection,
+            "thread/read",
+            json!({
+                "threadId": agreement.binding().provider_session_ref().as_provider_value(),
+                "includeTurns": true
+            }),
+            request.cancellation().as_ref(),
+            deadline_wait,
+        )
+        .await;
         let interrupted = matches!(&response, Controlled::Cancelled | Controlled::Deadline);
         let projected = match response {
             Controlled::Completed(Ok(response)) => (|| {
@@ -112,13 +97,12 @@ impl CodexAppServerDriver {
                         "Codex thread history exceeds portable cardinality",
                     ))
                 })?;
-                let window = page_provider_session_history_window(
+                page_provider_session_history_window(
                     &plan,
                     &request,
                     replay,
                     ProviderSessionHistoryTotal::Exact(total),
-                )?;
-                Ok(window)
+                )
             })(),
             Controlled::Completed(Err(error)) => Err(error),
             Controlled::Cancelled => Err(RuntimeFailure::new(SafeDiagnostic::new(
@@ -130,24 +114,15 @@ impl CodexAppServerDriver {
                 "Codex thread history timed out",
             ))),
         };
-        let cleanup = if interrupted {
-            cancel_and_release(&connection, task, resource).await
-        } else {
-            close_and_release(
-                &connection,
-                task,
-                resource,
-                close_budget(&services, agreement.deadline()),
-            )
-            .await
-        };
-        let window = match (projected, &cleanup) {
-            (Ok(window), CleanupOutcome::Clean | CleanupOutcome::NotApplicable) => window,
-            (Err(error), _) => return Err(error),
-            (Ok(_), CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic)) => {
-                return Err(RuntimeFailure::new(diagnostic.clone()));
-            }
-        };
+        let cleanup = settle(
+            &connection,
+            task,
+            resource,
+            interrupted,
+            close_budget(&services, agreement.deadline()),
+        )
+        .await;
+        let window = finish_runtime(projected, &cleanup)?;
         ProviderSessionHistoryPage::new(&plan, &request, window, cleanup)
     }
 }

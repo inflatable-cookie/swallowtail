@@ -5,26 +5,47 @@ use futures_util::future::{Either, select};
 use std::sync::{Arc, mpsc};
 use std::time::Duration;
 use swallowtail_runtime::{
-    BoxFuture, Deadline, HostServices, JoinedTask, MonotonicInstant, ProcessHandle, RuntimeFailure,
-    ScopeId, ScopedTaskService, TimeService,
+    BlockingJob, BlockingWorkService, BoxFuture, Deadline, HostServices, JoinedTask,
+    MonotonicInstant, ProcessHandle, RuntimeFailure, ScopeId, ScopedTaskService, TimeService,
 };
 
 /// Grace given to EOF and then to graceful stop when there is no caller deadline.
 const CLOSE_GRACE: Duration = Duration::from_millis(250);
 
+/// The host services a close uses to time its escalation stages.
 pub(crate) struct CloseBudget {
-    time: Arc<dyn TimeService>,
-    deadline: Deadline,
+    time: Option<Arc<dyn TimeService>>,
+    blocking: Option<Arc<dyn BlockingWorkService>>,
+    deadline: Option<Deadline>,
 }
 
-pub(crate) fn close_budget(
-    services: &HostServices,
-    deadline: Option<Deadline>,
-) -> Option<CloseBudget> {
-    Some(CloseBudget {
-        time: services.time()?.clone(),
-        deadline: deadline?,
-    })
+pub(crate) fn close_budget(services: &HostServices, deadline: Option<Deadline>) -> CloseBudget {
+    CloseBudget {
+        time: services.time().cloned(),
+        blocking: services.blocking_work().cloned(),
+        deadline,
+    }
+}
+
+/// How one escalation stage waits for the pump to finish.
+enum Wait<'a> {
+    /// Wait until a caller-supplied deadline stage is observed.
+    Until(&'a dyn TimeService, Deadline),
+    /// Wait out the relative grace on the host's blocking pool.
+    Grace(&'a dyn BlockingWorkService),
+    /// No time source can bound the stage, so the close escalates without it.
+    Unavailable,
+}
+
+fn wait_for<'a>(
+    stage: Option<(&'a dyn TimeService, Deadline)>,
+    blocking: Option<&'a dyn BlockingWorkService>,
+) -> Wait<'a> {
+    match (stage, blocking) {
+        (Some((time, deadline)), _) => Wait::Until(time, deadline),
+        (None, Some(blocking)) => Wait::Grace(blocking),
+        (None, None) => Wait::Unavailable,
+    }
 }
 
 /// Owns the pump join and signals when the pump can be joined. Ordinary host
@@ -32,7 +53,6 @@ pub(crate) fn close_budget(
 pub(crate) struct AppServerTask {
     task: Box<dyn JoinedTask>,
     finished: oneshot::Receiver<()>,
-    service: Arc<dyn ScopedTaskService>,
     scope: ScopeId,
 }
 
@@ -54,7 +74,6 @@ impl AppServerTask {
         Ok(Self {
             task,
             finished,
-            service,
             scope,
         })
     }
@@ -67,22 +86,33 @@ impl AppServerTask {
     pub(crate) async fn join_or_escalate(
         mut self,
         process: &dyn ProcessHandle,
-        budget: Option<CloseBudget>,
+        budget: CloseBudget,
     ) -> Result<(), RuntimeFailure> {
-        let stages = budget.as_ref().map(|budget| {
-            let now = budget.time.now().ticks();
-            let remaining = budget.deadline.instant().ticks().saturating_sub(now);
-            let stop_at = at(now + remaining / 2);
-            let kill_at = at(now + remaining - remaining.div_ceil(4));
-            (budget.time.as_ref(), stop_at, kill_at)
-        });
+        let CloseBudget {
+            time,
+            blocking,
+            deadline,
+        } = budget;
+        let stages = match (time.as_deref(), deadline) {
+            (Some(time), Some(deadline)) => {
+                let now = time.now().ticks();
+                let remaining = deadline.instant().ticks().saturating_sub(now);
+                let stop_at = at(now + remaining / 2);
+                let kill_at = at(now + remaining - remaining.div_ceil(4));
+                Some((time, stop_at, kill_at))
+            }
+            _ => None,
+        };
+        let blocking = blocking.as_deref();
 
-        let stop_at = stages.map(|(time, stop_at, _)| (time, stop_at));
-        if self.finishes_before(stop_at).await {
+        let stop = stages.map(|(time, stop_at, _)| (time, stop_at));
+        if self.finishes_before(wait_for(stop, blocking)).await {
             return self.task.join().await;
         }
-        let kill_at = stages.map(|(time, _, kill_at)| (time, kill_at));
-        if process.request_stop().await.is_ok() && self.finishes_before(kill_at).await {
+        let kill = stages.map(|(time, _, kill_at)| (time, kill_at));
+        if process.request_stop().await.is_ok()
+            && self.finishes_before(wait_for(kill, blocking)).await
+        {
             return self.task.join().await;
         }
         let stop = process.force_stop().await;
@@ -90,36 +120,40 @@ impl AppServerTask {
         stop.and(join)
     }
 
-    async fn finishes_before(&mut self, stage: Option<(&dyn TimeService, Deadline)>) -> bool {
+    async fn finishes_before(&mut self, wait: Wait<'_>) -> bool {
         // The sender is dropped upon completion. A closed channel is the signal.
         if self.finished.try_recv().is_err() {
             return true;
         }
-        if let Some((time, deadline)) = stage {
-            return matches!(
+        match wait {
+            Wait::Until(time, deadline) => matches!(
                 select(&mut self.finished, time.wait_until(deadline)).await,
                 Either::Left(_)
-            );
+            ),
+            Wait::Grace(blocking) => self.finishes_within_grace(blocking).await,
+            Wait::Unavailable => false,
         }
+    }
 
-        // Without a caller deadline, wait for a short relative grace period in
-        // the scoped task service. This interval never sets a terminal timeout.
+    /// Waits out the relative grace on the blocking pool. The scoped task
+    /// service is never used here: a blocking receive on one of its workers
+    /// would stall the executor. Dropping `cancel` ends the wait as soon as
+    /// the pump finishes, so a fast exit does not pay the full grace.
+    async fn finishes_within_grace(&mut self, blocking: &dyn BlockingWorkService) -> bool {
         let (cancel, cancelled) = mpsc::channel::<()>();
-        let (elapsed, expiry) = oneshot::channel::<()>();
-        let timer = self.service.spawn(
-            self.scope.clone(),
-            Box::pin(async move {
-                let _ = cancelled.recv_timeout(CLOSE_GRACE);
-                drop(elapsed);
-            }),
-        );
-        let Ok(timer) = timer else {
-            return false;
-        };
-        let finished = matches!(select(&mut self.finished, expiry).await, Either::Left(_));
-        drop(cancel);
-        let _ = timer.join().await;
-        finished
+        let grace: BlockingJob = Box::new(move || {
+            let _ = cancelled.recv_timeout(CLOSE_GRACE);
+            Ok(())
+        });
+        let mut elapsed = blocking.run(self.scope.clone(), grace);
+        match select(&mut self.finished, &mut elapsed).await {
+            Either::Left(_) => {
+                drop(cancel);
+                let _ = elapsed.await;
+                true
+            }
+            Either::Right(_) => false,
+        }
     }
 }
 
@@ -149,6 +183,27 @@ mod tests {
             Box::pin(async move {
                 DeadlineObservation::new(deadline, MonotonicInstant::from_ticks(u64::MAX))
             })
+        }
+    }
+
+    /// Blocking pool stand-in: each job runs on its own OS thread, as a host would run it.
+    #[derive(Default)]
+    struct ThreadBlocking {
+        runs: AtomicUsize,
+    }
+
+    impl BlockingWorkService for ThreadBlocking {
+        fn run(
+            &self,
+            _: ScopeId,
+            job: BlockingJob,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            self.runs.fetch_add(1, Ordering::SeqCst);
+            let (done, result) = oneshot::channel();
+            std::thread::spawn(move || {
+                let _ = done.send(job());
+            });
+            Box::pin(async move { result.await.unwrap_or(Ok(())) })
         }
     }
 
@@ -210,34 +265,30 @@ mod tests {
         }
     }
 
-    struct UnusedTaskService;
-
-    impl ScopedTaskService for UnusedTaskService {
-        fn spawn(
-            &self,
-            _: ScopeId,
-            _: BoxFuture<'static, ()>,
-        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
-            panic!("a deadline-bound close does not spawn a timer")
-        }
-    }
-
     fn task(child: &Arc<StubbornChild>) -> AppServerTask {
         let (finish, finished) = oneshot::channel();
         *child.finished.lock().expect("finish lock") = Some(finish);
         AppServerTask {
             task: Box::new(ChildTask(Arc::clone(child))),
             finished,
-            service: Arc::new(UnusedTaskService),
             scope: ScopeId::new("codex-close-test").unwrap(),
         }
     }
 
-    fn budget() -> Option<CloseBudget> {
-        Some(CloseBudget {
-            time: Arc::new(PastClock),
-            deadline: at(100),
-        })
+    fn budget() -> CloseBudget {
+        CloseBudget {
+            time: Some(Arc::new(PastClock)),
+            blocking: None,
+            deadline: Some(at(100)),
+        }
+    }
+
+    fn unbudgeted(blocking: Option<Arc<dyn BlockingWorkService>>) -> CloseBudget {
+        CloseBudget {
+            time: None,
+            blocking,
+            deadline: None,
+        }
     }
 
     #[test]
@@ -270,5 +321,63 @@ mod tests {
         let result = futures_executor::block_on(task.join_or_escalate(child.as_ref(), budget()));
         assert!(result.is_ok());
         assert!(child.log.lock().expect("log lock").is_empty());
+    }
+
+    #[test]
+    fn unbudgeted_eof_exit_joins_without_waiting_for_grace() {
+        let child = Arc::new(StubbornChild::default());
+        let task = task(&child);
+        child.finished.lock().expect("finish lock").take();
+        let blocking = Arc::new(ThreadBlocking::default());
+        let result = futures_executor::block_on(task.join_or_escalate(
+            child.as_ref(),
+            unbudgeted(Some(blocking.clone() as Arc<dyn BlockingWorkService>)),
+        ));
+        assert!(result.is_ok());
+        assert_eq!(blocking.runs.load(Ordering::SeqCst), 0);
+        assert!(child.log.lock().expect("log lock").is_empty());
+    }
+
+    #[test]
+    fn unbudgeted_child_exiting_during_grace_is_joined_without_escalation() {
+        let child = Arc::new(StubbornChild::default());
+        let task = task(&child);
+        let finish = child.finished.lock().expect("finish lock").take();
+        let exit = std::thread::spawn(move || {
+            std::thread::sleep(Duration::from_millis(20));
+            drop(finish);
+        });
+        let blocking = Arc::new(ThreadBlocking::default());
+        let result = futures_executor::block_on(task.join_or_escalate(
+            child.as_ref(),
+            unbudgeted(Some(blocking.clone() as Arc<dyn BlockingWorkService>)),
+        ));
+        exit.join().expect("exit thread");
+        assert!(result.is_ok());
+        assert_eq!(blocking.runs.load(Ordering::SeqCst), 1);
+        assert!(child.log.lock().expect("log lock").is_empty());
+    }
+
+    #[test]
+    fn unbudgeted_child_ignoring_eof_is_stopped_then_killed_on_blocking_pool() {
+        let child = Arc::new(StubbornChild::default());
+        let blocking = Arc::new(ThreadBlocking::default());
+        let result = futures_executor::block_on(task(&child).join_or_escalate(
+            child.as_ref(),
+            unbudgeted(Some(blocking.clone() as Arc<dyn BlockingWorkService>)),
+        ));
+        assert!(result.is_ok());
+        assert_eq!(blocking.runs.load(Ordering::SeqCst), 2);
+        assert_eq!(*child.log.lock().expect("log lock"), vec!["stop", "kill"]);
+    }
+
+    #[test]
+    fn unbudgeted_close_without_any_timing_service_escalates_without_waiting() {
+        let child = Arc::new(StubbornChild::default());
+        let result = futures_executor::block_on(
+            task(&child).join_or_escalate(child.as_ref(), unbudgeted(None)),
+        );
+        assert!(result.is_ok());
+        assert_eq!(*child.log.lock().expect("log lock"), vec!["stop", "kill"]);
     }
 }

@@ -177,7 +177,8 @@ impl CodexExecDriver {
         let task = task_service.spawn(
             scope,
             Box::pin({
-                let cancellation = Arc::clone(&cancellation);
+                let pump_cancellation = Arc::clone(&cancellation);
+                let finish_marker = Arc::clone(&cancellation);
                 let process = Arc::clone(&process);
                 let materializations = materializations.clone();
                 let services = services.clone();
@@ -185,13 +186,14 @@ impl CodexExecDriver {
                     let outcome = pump(
                         process,
                         event_sender.clone(),
-                        cancellation,
+                        pump_cancellation,
                         deadline,
                         materializations,
                         parser,
                         services,
                     )
                     .await;
+                    finish_marker.mark_finished();
                     let _ = terminal_sender.complete(outcome);
                     event_sender.mark_terminal();
                 }

@@ -11,9 +11,7 @@
 #![deny(missing_docs)]
 
 mod access;
-mod acp_activity;
 mod command;
-mod connection;
 mod consumer_route_projection;
 mod discovery;
 mod driver;
@@ -22,7 +20,6 @@ mod headless;
 mod prepared;
 mod prepared_headless;
 mod selection;
-mod turn;
 
 pub use access::{CLINE_LOCAL_ACCOUNT_AUDIENCE, cline_local_account_access_profile};
 pub use consumer_route_projection::{

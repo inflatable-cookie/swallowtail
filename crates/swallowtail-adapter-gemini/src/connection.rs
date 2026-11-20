@@ -1,47 +1,304 @@
-use crate::failure::{failure, malformed, protocol_failure};
-use crate::turn::ActiveTurn;
+use crate::failure::{failure, malformed, protocol_failure, unsupported};
 use serde_json::{Value, json};
-use std::collections::BTreeMap;
-use std::future::Future;
 use std::num::NonZeroUsize;
-use std::pin::Pin;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex};
-use std::task::{Context, Poll, Waker};
-use swallowtail_core::SafeDiagnostic;
-use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits,
-    Message, NdjsonDecoder, encode_error, encode_notification, encode_request, encode_result,
-    is_session_scoped_metadata_update,
+use std::sync::Arc;
+use swallowtail_acp_client::{
+    AcpActivityConfig, AcpConnection as SharedConnection, AcpConnectionHooks, AcpDiagnostics,
+    AcpTransport, AcpTurnSink, MessageClassification, PendingResponse, PlanProjection,
+    RequestDisposition, default_permission_namespace,
 };
+use swallowtail_core::SafeDiagnostic;
+use swallowtail_protocol_acp::{DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits};
 use swallowtail_runtime::{
-    CleanupOutcome, DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk,
-    ProcessOutputStream, ResourceLease, RuntimeFailure, WorkingResourceIoService,
-    WorkingResourceLocator, WorkingResourceReadRequest, WorkingResourceText,
-    WorkingResourceWriteRequest,
+    BoxFuture, CleanupOutcome, HostServices, ProcessHandle, ResourceLease, RuntimeFailure,
+    WorkingResourceIoService, WorkingResourceLocator, WorkingResourceReadRequest,
+    WorkingResourceText, WorkingResourceWriteRequest,
 };
 
-const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
 const MAXIMUM_WRITE_BYTES: usize = 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
 
-pub(crate) struct AcpConnection {
-    process: Arc<dyn ProcessHandle>,
+pub(crate) fn gemini_acp_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "gemini-cli.acp",
+        activity: AcpActivityConfig {
+            id_prefix: "gemini-cli-acp",
+            namespace_prefix: "gemini-cli.acp",
+            plan_projection: PlanProjection::Ignore,
+            message_classification: MessageClassification::ModeAndWarning,
+            malformed,
+        },
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.gemini.acp.version_mismatch",
+                "Gemini CLI negotiated an incompatible ACP version",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.gemini.acp.connection_closed",
+                "Gemini CLI ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.gemini.acp.correlation_limit",
+                "Gemini CLI ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.gemini.acp.session_duplicate",
+                "Gemini CLI returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.gemini.acp.turn_active",
+                "Gemini CLI session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.gemini.acp.unknown_response",
+                "Gemini CLI returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.gemini.acp.update_without_turn",
+                "Gemini CLI updated a session without an active turn",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.gemini.acp.agent_cancel_unsupported",
+                "Gemini CLI sent an unsupported client cancellation notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.gemini.acp.notification_unsupported",
+                "Gemini CLI sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.gemini.acp.callback_unsupported",
+                "Gemini CLI requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.gemini.acp.permission_without_turn",
+                "Gemini CLI requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.gemini.acp.session_mismatch",
+                "Gemini CLI callback does not match the active session",
+            )
+        },
+        session_mismatch_update: || {
+            failure(
+                "swallowtail.gemini.acp.session_mismatch",
+                "Gemini CLI update does not match the active session",
+            )
+        },
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.gemini.acp.process_cleanup_failed",
+                "Gemini CLI process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.gemini.acp.cleanup_missing",
+                "Gemini CLI process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.gemini.acp.connection_ended",
+                "Gemini CLI ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.gemini.acp.output_limit_exceeded",
+                "Gemini CLI output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.gemini.acp.prompt_stopped",
+                "Gemini CLI stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.gemini.acp.stop_reason_unsupported",
+                "Gemini CLI returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.gemini.acp.task_service_missing",
+                "Gemini CLI ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.gemini.acp.task_join_failed",
+                "Gemini CLI ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.gemini.acp.turn_join_failed",
+                "Gemini CLI ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.gemini.acp.resource_release_failed",
+                "Gemini CLI ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |error| {
+            let message = error.message().to_ascii_lowercase();
+            if message.contains("authentication required")
+                || message.contains("api key is missing or not configured")
+            {
+                failure(
+                    "swallowtail.gemini.acp.auth_required",
+                    "Gemini CLI requires completed authentication before session work",
+                )
+            } else {
+                failure(
+                    "swallowtail.gemini.acp.request_rejected",
+                    "Gemini CLI rejected an ACP request",
+                )
+            }
+        },
+        permission_namespace: default_permission_namespace,
+        unsupported,
+    }
+}
+
+struct GeminiAcpHooks {
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
     write_enabled: bool,
     permission_allow_once: bool,
-    services: HostServices,
-    next_id: AtomicU64,
-    pending: Mutex<BTreeMap<u64, ResponseSender>>,
-    session_id: Mutex<Option<String>>,
-    active_turn: Mutex<Option<Arc<ActiveTurn>>>,
-    closing: AtomicBool,
-    cancelled: AtomicBool,
-    closed: AtomicBool,
-    cleanup: Mutex<Option<CleanupOutcome>>,
+}
+
+impl AcpConnectionHooks for GeminiAcpHooks {
+    fn handle_request<'a>(
+        &'a self,
+        connection: &'a SharedConnection,
+        id: Value,
+        method: &'a str,
+        params: &'a Value,
+    ) -> BoxFuture<'a, Result<RequestDisposition, RuntimeFailure>> {
+        Box::pin(async move {
+            match method {
+                "fs/read_text_file" => {
+                    connection.verify_session(params)?;
+                    let locator = params
+                        .get("path")
+                        .and_then(Value::as_str)
+                        .ok_or_else(malformed)
+                        .and_then(|value| {
+                            WorkingResourceLocator::new(value).map_err(|_| malformed())
+                        })?;
+                    let request = WorkingResourceReadRequest::new(
+                        locator,
+                        NonZeroUsize::new(MAXIMUM_READ_BYTES).expect("static limit is non-zero"),
+                    )
+                    .with_lines(
+                        optional_usize(params, "line")?,
+                        optional_usize(params, "limit")?,
+                    );
+                    let content = self.resource_io.read_text(&self.resource, request).await?;
+                    connection
+                        .send_result(id, json!({"content": content.as_driver_value()}))
+                        .await?;
+                    Ok(RequestDisposition::Handled)
+                }
+                "fs/write_text_file" if self.write_enabled => {
+                    connection.verify_session(params)?;
+                    let locator = params
+                        .get("path")
+                        .and_then(Value::as_str)
+                        .ok_or_else(malformed)
+                        .and_then(|value| {
+                            WorkingResourceLocator::new(value).map_err(|_| malformed())
+                        })?;
+                    let content = params
+                        .get("content")
+                        .and_then(Value::as_str)
+                        .ok_or_else(malformed)?;
+                    let content = WorkingResourceText::new(
+                        content.to_owned(),
+                        NonZeroUsize::new(MAXIMUM_WRITE_BYTES).expect("static limit is non-zero"),
+                    )
+                    .map_err(|_| malformed())?;
+                    self.resource_io
+                        .write_text(
+                            &self.resource,
+                            WorkingResourceWriteRequest::new(locator, content),
+                        )
+                        .await?;
+                    connection.send_result(id, Value::Null).await?;
+                    Ok(RequestDisposition::Handled)
+                }
+                "session/request_permission" => {
+                    if !self.permission_allow_once {
+                        return Ok(RequestDisposition::RejectPermission);
+                    }
+                    connection.verify_session(params)?;
+                    let options = params
+                        .get("options")
+                        .and_then(Value::as_array)
+                        .ok_or_else(malformed)?;
+                    if options.len() > 32
+                        || params
+                            .get("toolCall")
+                            .and_then(|tool| tool.get("toolCallId"))
+                            .and_then(Value::as_str)
+                            .is_none()
+                    {
+                        return Err(malformed());
+                    }
+                    let has_proceed_once = options.iter().any(|option| {
+                        option.get("optionId").and_then(Value::as_str) == Some("proceed_once")
+                    });
+                    if !has_proceed_once {
+                        return Err(malformed());
+                    }
+                    connection
+                        .send_result(
+                            id,
+                            json!({"outcome": {"outcome": "selected", "optionId": "proceed_once"}}),
+                        )
+                        .await?;
+                    Ok(RequestDisposition::Handled)
+                }
+                _ => Ok(RequestDisposition::Unsupported),
+            }
+        })
+    }
+}
+
+pub(crate) struct AcpConnection {
+    inner: Arc<SharedConnection>,
+    write_enabled: bool,
 }
 
 impl AcpConnection {
@@ -53,63 +310,40 @@ impl AcpConnection {
         permission_allow_once: bool,
         services: HostServices,
     ) -> Arc<Self> {
-        Arc::new(Self {
-            process,
+        let hooks = Arc::new(GeminiAcpHooks {
             resource,
             resource_io,
             write_enabled,
             permission_allow_once,
+        });
+        let inner = SharedConnection::new(
+            AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS),
             services,
-            next_id: AtomicU64::new(1),
-            pending: Mutex::new(BTreeMap::new()),
-            session_id: Mutex::new(None),
-            active_turn: Mutex::new(None),
-            closing: AtomicBool::new(false),
-            cancelled: AtomicBool::new(false),
-            closed: AtomicBool::new(false),
-            cleanup: Mutex::new(None),
+            gemini_acp_diagnostics(),
+            hooks,
+        );
+        Arc::new(Self {
+            inner,
+            write_enabled,
         })
     }
 
-    pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
-        let diagnostic = error.diagnostic();
-        self.services.emit_failure_debug(
-            DebugObservationKind::ProtocolParse,
-            "gemini-cli.acp",
-            stage,
-            diagnostic.code(),
-            diagnostic.message(),
-        );
-    }
-
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {
-        let response = self
-            .request_with_id(
-                0,
-                "initialize",
+        self.inner
+            .initialize_with(
                 json!({
-                    "protocolVersion": ACP_PROTOCOL_VERSION,
-                    "clientCapabilities": {
-                        "fs": {
-                            "readTextFile": true,
-                            "writeTextFile": self.write_enabled
-                        }
-                    },
-                    "clientInfo": {
-                        "name": "swallowtail",
-                        "title": "Swallowtail",
-                        "version": env!("CARGO_PKG_VERSION")
+                    "fs": {
+                        "readTextFile": true,
+                        "writeTextFile": self.write_enabled
                     }
                 }),
+                json!({
+                    "name": "swallowtail",
+                    "title": "Swallowtail",
+                    "version": env!("CARGO_PKG_VERSION")
+                }),
             )
-            .await?;
-        if response.get("protocolVersion").and_then(Value::as_u64) != Some(ACP_PROTOCOL_VERSION) {
-            return Err(failure(
-                "swallowtail.gemini.acp.version_mismatch",
-                "Gemini CLI negotiated an incompatible ACP version",
-            ));
-        }
-        Ok(response)
+            .await
     }
 
     pub(crate) async fn request(
@@ -117,7 +351,7 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
-        self.begin_request(method, params).await?.await
+        self.inner.request(method, params).await
     }
 
     pub(crate) async fn begin_request(
@@ -125,50 +359,7 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<PendingResponse, RuntimeFailure> {
-        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        self.begin_request_with_id(id, method, params).await
-    }
-
-    async fn request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<Value, RuntimeFailure> {
-        self.begin_request_with_id(id, method, params).await?.await
-    }
-
-    async fn begin_request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<PendingResponse, RuntimeFailure> {
-        if self.closed.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.gemini.acp.connection_closed",
-                "Gemini CLI ACP connection is closed",
-            ));
-        }
-        let (sender, response) = response_channel();
-        {
-            let mut pending = self.pending.lock().expect("ACP pending lock poisoned");
-            if pending.len() >= MAXIMUM_PENDING_REQUESTS || pending.insert(id, sender).is_some() {
-                return Err(failure(
-                    "swallowtail.gemini.acp.correlation_limit",
-                    "Gemini CLI ACP request correlation limit was exceeded",
-                ));
-            }
-        }
-        let bytes = encode_request(id, method, params).map_err(|_| protocol_failure())?;
-        if let Err(error) = self.write(bytes).await {
-            self.pending
-                .lock()
-                .expect("ACP pending lock poisoned")
-                .remove(&id);
-            return Err(error);
-        }
-        Ok(PendingResponse(response))
+        self.inner.begin_request(method, params).await
     }
 
     pub(crate) async fn notify(
@@ -176,100 +367,50 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<(), RuntimeFailure> {
-        let bytes = encode_notification(method, params).map_err(|_| protocol_failure())?;
-        self.write(bytes).await
+        self.inner.notify(method, params).await
     }
 
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {
-        let mut current = self.session_id.lock().expect("ACP session lock poisoned");
-        if current.is_some() {
-            return Err(failure(
-                "swallowtail.gemini.acp.session_duplicate",
-                "Gemini CLI returned more than one ACP session",
-            ));
-        }
-        *current = Some(session_id);
-        Ok(())
+        self.inner.set_session_id(session_id)
     }
 
-    pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active.as_ref().is_some_and(|active| !active.is_finished()) {
-            return Err(failure(
-                "swallowtail.gemini.acp.turn_active",
-                "Gemini CLI session already has an active turn",
-            ));
-        }
-        *active = Some(turn);
-        Ok(())
+    pub(crate) fn set_active_turn(
+        &self,
+        turn: Arc<crate::turn::ActiveTurn>,
+    ) -> Result<(), RuntimeFailure> {
+        self.inner
+            .set_active_turn(Arc::clone(&turn) as Arc<dyn AcpTurnSink>)
     }
 
-    pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active
-            .as_ref()
-            .is_some_and(|current| Arc::ptr_eq(current, turn))
-        {
-            *active = None;
-        }
+    pub(crate) fn clear_active_turn(&self, turn: &Arc<crate::turn::ActiveTurn>) {
+        let sink: Arc<dyn AcpTurnSink> = Arc::clone(turn) as Arc<dyn AcpTurnSink>;
+        self.inner.clear_active_turn(&sink);
     }
 
     pub(crate) async fn begin_close(&self) {
-        self.closing.store(true, Ordering::SeqCst);
-        let _ = self.process.close_stdin().await;
-        let _ = self.process.request_stop().await;
+        self.inner.begin_close().await;
     }
 
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
-        self.cancelled.store(true, Ordering::SeqCst);
-        self.process.force_stop().await
+        self.inner.cancel_session().await
     }
 
     pub(crate) fn cleanup_outcome(&self) -> CleanupOutcome {
-        self.cleanup
-            .lock()
-            .expect("ACP cleanup lock poisoned")
-            .clone()
-            .unwrap_or_else(|| {
-                CleanupOutcome::Failed(SafeDiagnostic::new(
-                    "swallowtail.gemini.acp.cleanup_missing",
-                    "Gemini CLI process cleanup did not complete",
-                ))
-            })
+        self.inner.cleanup_outcome()
     }
 
-    async fn write(&self, bytes: Vec<u8>) -> Result<(), RuntimeFailure> {
-        self.process
-            .write_stdin(ProcessInputChunk::new(bytes))
-            .await
-    }
-
-    fn fail_pending(&self, error: RuntimeFailure) {
-        let pending = std::mem::take(&mut *self.pending.lock().expect("ACP pending lock poisoned"));
-        for (_, sender) in pending {
-            sender.complete(Err(error.clone()));
-        }
+    pub(crate) async fn pump(self: Arc<Self>) {
+        Arc::clone(&self.inner).pump().await;
     }
 }
 
-include!("connection_dispatch.rs");
-include!("connection_pump.rs");
-
-include!("connection_response.rs");
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn receive_framing_profile_is_explicit() {
-        assert_eq!(
-            RECEIVE_FRAMING_LIMITS.maximum_frame_bytes(),
-            DEFAULT_MAX_FRAME_BYTES
-        );
-        assert_eq!(
-            RECEIVE_FRAMING_LIMITS.maximum_buffer_bytes(),
-            DEFAULT_MAX_BUFFER_BYTES
-        );
+fn optional_usize(params: &Value, key: &str) -> Result<Option<usize>, RuntimeFailure> {
+    match params.get(key) {
+        None | Some(Value::Null) => Ok(None),
+        Some(value) => value
+            .as_u64()
+            .and_then(|number| usize::try_from(number).ok())
+            .map(Some)
+            .ok_or_else(malformed),
     }
 }

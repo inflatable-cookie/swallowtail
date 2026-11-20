@@ -1,0 +1,29 @@
+[package]
+name = "swallowtail-acp-client"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "Shared ACP v1 client engine, activity projection, and HTTP MCP placement for Swallowtail"
+
+[lib]
+doctest = false
+
+[dependencies]
+futures-channel.workspace = true
+serde_json.workspace = true
+swallowtail-core.workspace = true
+swallowtail-protocol-acp.workspace = true
+swallowtail-runtime.workspace = true
+swallowtail-transport-acp-remote.workspace = true
+url.workspace = true
+
+[dev-dependencies]
+futures-executor.workspace = true
+swallowtail-testkit.workspace = true
+
+[lints]
+workspace = true

@@ -1,30 +1,202 @@
 use crate::{
     command::arguments,
-    connection::AcpConnection,
-    failure::{failure, malformed, unsupported},
+    failure::{failure, malformed, protocol_failure, unsupported},
     mcp::{KiroAcpRemoteMcpPlacement, production_mcp_servers},
-    turn::ActiveTurn,
 };
 use serde_json::{Value, json};
-use std::sync::{
-    Arc, Mutex,
-    atomic::{AtomicBool, Ordering},
+use std::sync::Arc;
+use swallowtail_acp_client::{
+    AcpActivityConfig, AcpDiagnostics, AcpSessionConfig, AcpSessionOpenContext, AcpTransport,
+    ActiveTurnConfig, MessageClassification, PlanProjection, default_permission_namespace,
+    open_acp_session,
 };
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, CredentialMechanism,
-    DriverDescriptor, DriverRole, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
-    HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy, SessionRef, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess, ResourceRepresentation,
+    SafeDiagnostic, SessionAccessPolicy, TransportFamilyId,
 };
+use swallowtail_protocol_acp::{DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits};
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, OpenSessionRequest, ProcessHandle, ProcessRequest,
-    RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
+    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
+    InteractiveSessionHandle, OpenSessionRequest, ProcessHandle, ProcessRequest, ResourceLease,
+    ResumeSessionRequest, RuntimeFailure, ScopeId, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.kiro.acp";
+const RECEIVE_FRAMING_LIMITS: FramingLimits =
+    FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
+
+fn kiro_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "kiro.acp",
+        activity: AcpActivityConfig {
+            id_prefix: "kiro-acp",
+            namespace_prefix: "kiro.acp",
+            plan_projection: PlanProjection::Ignore,
+            message_classification: MessageClassification::Standard,
+            malformed,
+        },
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.kiro.acp.version_mismatch",
+                "Kiro negotiated an incompatible ACP version",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.kiro.acp.connection_closed",
+                "Kiro ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.kiro.acp.correlation_limit",
+                "Kiro ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.kiro.acp.session_duplicate",
+                "Kiro returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.kiro.acp.turn_active",
+                "Kiro session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.kiro.acp.unknown_response",
+                "Kiro returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.kiro.acp.update_without_turn",
+                "Kiro updated a session without an active turn",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.kiro.acp.agent_cancel_unsupported",
+                "Kiro sent an unsupported client cancellation notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.kiro.acp.notification_unsupported",
+                "Kiro sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.kiro.acp.callback_unsupported",
+                "Kiro requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.kiro.acp.permission_without_turn",
+                "Kiro requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.kiro.acp.session_mismatch",
+                "Kiro callback does not match the active session",
+            )
+        },
+        session_mismatch_update: || {
+            failure(
+                "swallowtail.kiro.acp.session_mismatch",
+                "Kiro update does not match the active session",
+            )
+        },
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.kiro.acp.process_cleanup_failed",
+                "Kiro process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.kiro.acp.cleanup_missing",
+                "Kiro process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.kiro.acp.connection_ended",
+                "Kiro ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.kiro.acp.output_limit_exceeded",
+                "Kiro output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.kiro.acp.prompt_stopped",
+                "Kiro stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.kiro.acp.stop_reason_unsupported",
+                "Kiro returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.kiro.acp.task_service_missing",
+                "Kiro ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.kiro.acp.task_join_failed",
+                "Kiro ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.kiro.acp.turn_join_failed",
+                "Kiro ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.kiro.acp.resource_release_failed",
+                "Kiro ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |error| {
+            if error.message().contains("not authenticated")
+                || error.message().contains("sign in")
+                || error.message().contains("API key")
+            {
+                failure(
+                    "swallowtail.kiro.acp.host_auth_required",
+                    "Kiro ACP requires host-owned login or API key before session work",
+                )
+            } else {
+                failure(
+                    "swallowtail.kiro.acp.request_rejected",
+                    "Kiro rejected an ACP request",
+                )
+            }
+        },
+        permission_namespace: default_permission_namespace,
+        unsupported,
+    }
+}
 
 /// Low-level interactive driver for the installed Kiro ACP agent.
 pub struct KiroAcpDriver {
@@ -202,7 +374,8 @@ impl KiroAcpDriver {
         scope: ScopeId,
         resource: ResourceLease,
         selected: crate::selection::KiroPlanSelection,
-    ) -> Result<KiroSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
+    ) -> Result<swallowtail_acp_client::AcpSessionHandle, Box<(RuntimeFailure, ResourceLease)>>
+    {
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -228,74 +401,75 @@ impl KiroAcpDriver {
                 Ok(process) => Arc::from(process),
                 Err(error) => return Err(Box::new((error, resource))),
             };
-        let connection = AcpConnection::new(Arc::clone(&process), services.clone());
-        let pump_connection = Arc::clone(&connection);
-        let task_service = services.task().cloned().expect("validated task service");
-        let pump_task = match task_service
-            .spawn(scope, Box::pin(async move { pump_connection.pump().await }))
-        {
-            Ok(task) => task,
-            Err(error) => {
-                let _ = process.force_stop().await;
-                let _ = process.wait().await;
-                return Err(Box::new((error, resource)));
-            }
-        };
-        let opened = async {
-            let initialize = connection.initialize().await?;
-            validate_initialize(&initialize, selected.version())?;
-            let mcp_servers = production_mcp_servers(self.http_mcp.as_ref())?;
-            connection
-                .request(
-                    "session/new",
-                    json!({"cwd": cwd, "mcpServers": mcp_servers}),
-                )
-                .await
-                .and_then(parse_new_session)
-        }
-        .await;
-        let provider_id = match opened {
-            Ok(provider_id) => provider_id,
-            Err(error) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((error, resource)));
-            }
-        };
-        if let Err(error) = connection.set_session_id(provider_id.clone()) {
-            connection.begin_close().await;
-            let _ = pump_task.join().await;
-            return Err(Box::new((error, resource)));
-        }
-        let provider_ref = match SessionRef::new(&provider_id) {
-            Ok(provider_ref) => provider_ref,
-            Err(_) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((malformed(), resource)));
-            }
-        };
-        let runtime_id =
-            RuntimeSessionId::new(format!("kiro-acp:{}", request.request_id().as_str()))
-                .map_err(|_| Box::new((malformed(), resource.clone())))?;
-        let active = Arc::new(Mutex::new(None));
-        Ok(KiroSessionHandle {
-            request_id: request.request_id().clone(),
-            runtime_id,
-            provider_ref,
-            provider_id,
-            execution_host_id: plan.execution_host_id().clone(),
-            connection: Arc::clone(&connection),
-            cancellation: SessionCancellation::new(connection),
-            pump_task: Some(pump_task),
-            services: services.clone(),
-            resource: Some(resource),
-            active,
-        })
+        let transport = AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS);
+        let http_mcp = self.http_mcp.clone();
+        open_acp_session(
+            transport,
+            AcpSessionOpenContext {
+                scope,
+                request_id: request.request_id().clone(),
+                execution_host_id: plan.execution_host_id().clone(),
+                resource,
+                services: services.clone(),
+                config: kiro_session_config(),
+            },
+            move |connection| async move {
+                let initialize = connection.initialize().await?;
+                validate_initialize(&initialize, selected.version())?;
+                let mcp_servers = production_mcp_servers(http_mcp.as_ref())?;
+                connection
+                    .request(
+                        "session/new",
+                        json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                    )
+                    .await
+                    .and_then(parse_new_session)
+            },
+        )
+        .await
     }
 }
 
+fn kiro_session_config() -> AcpSessionConfig {
+    let diagnostics = kiro_diagnostics();
+    AcpSessionConfig::new("kiro-acp", diagnostics).with_turn_config(
+        ActiveTurnConfig::new(diagnostics).with_content_unsupported(|| {
+            failure(
+                "swallowtail.kiro.acp.content_unsupported",
+                "Kiro returned unsupported ACP content",
+            )
+        }),
+    )
+}
+
 include!("driver/validation.rs");
-include!("driver/cancellation.rs");
-include!("driver/turn_handle.rs");
-include!("driver/session.rs");
+
+#[cfg(test)]
+mod driver_tests {
+    use super::*;
+    use swallowtail_acp_client::{AcpTurnSink, ActiveTurn};
+    use swallowtail_runtime::RuntimeTurnId;
+
+    #[test]
+    fn non_text_agent_content_reports_content_unsupported() {
+        let (turn, _events, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("kiro-non-text").expect("valid turn id"),
+            "sess-1".to_owned(),
+            kiro_session_config().turn_config,
+        )
+        .expect("turn creates");
+        let err = turn
+            .handle_update(&json!({
+                "sessionId": "sess-1",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+                }
+            }))
+            .expect_err("non-text content must fail");
+        assert_eq!(
+            err.diagnostic().code(),
+            "swallowtail.kiro.acp.content_unsupported"
+        );
+    }
+}

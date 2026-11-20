@@ -46,6 +46,7 @@ Support:
 
 Protocols and transport:
 
+- `swallowtail-acp-client`
 - `swallowtail-protocol-acp`
 - `swallowtail-protocol-openai-chat`
 - `swallowtail-transport-acp-remote`
@@ -109,7 +110,7 @@ self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
 Release metadata, dependency topology, and semantic API checks distinguish the
-40-package current source and its 51-route inventory from the immutable
+41-package current source and its 51-route inventory from the immutable
 40-package, 51-route `v0.6.0` tag, the 40-package, 50-route `v0.5.4` tag, the
 47-route `v0.3.3` tag, and the
 30-package `v0.3.2` source.
@@ -162,16 +163,19 @@ runtime-to-idioms dependency resolvable from independently packaged source.
 `swallowtail-transport-http` sits beside `swallowtail-transport-acp-remote` in
 that transport stage; every `curl` HTTP/SSE adapter depends on it for its one
 bounded socket, SSE framing, timeout, cancellation and secret-header
-implementation.
+implementation. `swallowtail-acp-client` sits alongside them in that stage and
+owns the shared ACP v1 client engine, activity projection, and HTTP MCP
+placement layer across all 11 ACP adapters, abstracted over both stdio
+`ProcessHandle` and `RemoteAcpConnection`.
 
 The candidate is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 40-package current-source metadata and 102-edge topology, kept distinct from
+- 41-package current-source metadata and 117-edge topology, kept distinct from
   the immutable 40-package `v0.6.0`, `v0.5.4` and `v0.3.3`, 30-package
   `v0.3.2`, 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
-- frozen 40-package current-source semantic API inventory and 51-route
+- frozen 41-package current-source semantic API inventory and 51-route
   inventory, including `opencode.acp`; historical `v0.6.0`, `v0.5.4` and
   `v0.3.3` files stay immutable, with removals from the immutable `v0.5.4`
   baseline forbidden

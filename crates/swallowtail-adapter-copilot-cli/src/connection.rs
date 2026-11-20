@@ -1,101 +1,266 @@
 use crate::{
-    failure::{failure, malformed, protocol_failure},
+    failure::{failure, malformed, protocol_failure, unsupported},
     turn::ActiveTurn,
 };
 use serde_json::{Value, json};
-use std::{
-    collections::BTreeMap,
-    future::Future,
-    pin::Pin,
-    sync::{
-        Arc, Mutex,
-        atomic::{AtomicBool, AtomicU64, Ordering},
-    },
-    task::{Context, Poll, Waker},
+use std::sync::{Arc, Mutex};
+use swallowtail_acp_client::{
+    AcpActivityConfig, AcpConnection as SharedConnection, AcpConnectionHooks, AcpDiagnostics,
+    AcpTransport, AcpTurnSink, MessageClassification, PendingResponse, PlanProjection,
+    RequestDisposition, default_permission_namespace,
 };
 use swallowtail_core::SafeDiagnostic;
-use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits,
-    Message, NdjsonDecoder, encode_error, encode_notification, encode_request, encode_result,
-    is_session_scoped_metadata_update,
-};
-use swallowtail_runtime::{
-    CleanupOutcome, DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk,
-    ProcessOutputStream, RuntimeFailure,
-};
+use swallowtail_protocol_acp::{DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits};
+use swallowtail_runtime::{BoxFuture, CleanupOutcome, HostServices, ProcessHandle, RuntimeFailure};
 
-const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
 
+fn copilot_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "copilot-cli.acp",
+        activity: AcpActivityConfig {
+            id_prefix: "copilot-cli-acp",
+            namespace_prefix: "copilot-cli.acp",
+            plan_projection: PlanProjection::Ignore,
+            message_classification: MessageClassification::Standard,
+            malformed,
+        },
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.copilot-cli.acp.version_mismatch",
+                "Copilot CLI negotiated an incompatible ACP version",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.copilot-cli.acp.connection_closed",
+                "Copilot CLI ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.copilot-cli.acp.correlation_limit",
+                "Copilot CLI ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.copilot-cli.acp.session_duplicate",
+                "Copilot CLI returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.copilot-cli.acp.turn_active",
+                "Copilot CLI session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.copilot-cli.acp.unknown_response",
+                "Copilot CLI returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.copilot-cli.acp.update_without_turn",
+                "Copilot CLI updated a session without an active turn",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.copilot-cli.acp.agent_cancel_unsupported",
+                "Copilot CLI sent an unsupported client cancellation notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.copilot-cli.acp.notification_unsupported",
+                "Copilot CLI sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.copilot-cli.acp.callback_unsupported",
+                "Copilot CLI requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.copilot-cli.acp.permission_without_turn",
+                "Copilot CLI requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.copilot-cli.acp.session_mismatch",
+                "Copilot CLI callback does not match the active session",
+            )
+        },
+        session_mismatch_update: || {
+            failure(
+                "swallowtail.copilot-cli.acp.session_mismatch",
+                "Copilot CLI update does not match the active session",
+            )
+        },
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.process_cleanup_failed",
+                "Copilot CLI process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.cleanup_missing",
+                "Copilot CLI process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.copilot-cli.acp.connection_ended",
+                "Copilot CLI ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.copilot-cli.acp.output_limit_exceeded",
+                "Copilot CLI output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.prompt_stopped",
+                "Copilot CLI stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.copilot-cli.acp.stop_reason_unsupported",
+                "Copilot CLI returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.copilot-cli.acp.task_service_missing",
+                "Copilot CLI ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.task_join_failed",
+                "Copilot CLI ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.turn_join_failed",
+                "Copilot CLI ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.copilot-cli.acp.resource_release_failed",
+                "Copilot CLI ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |error| {
+            let message = error.message().to_ascii_lowercase();
+            if message.contains("unauthorized")
+                || message.contains("unauthenticated")
+                || message.contains("not logged in")
+            {
+                failure(
+                    "swallowtail.copilot-cli.acp.host_auth_required",
+                    "Copilot CLI ACP requires host-owned GitHub login or BYOK before session work",
+                )
+            } else {
+                failure(
+                    "swallowtail.copilot-cli.acp.request_rejected",
+                    "Copilot CLI rejected an ACP request",
+                )
+            }
+        },
+        permission_namespace: default_permission_namespace,
+        unsupported,
+    }
+}
+
+struct CopilotHooks {
+    turn: Mutex<Option<Arc<ActiveTurn>>>,
+}
+
+impl AcpConnectionHooks for CopilotHooks {
+    fn handle_request<'a>(
+        &'a self,
+        connection: &'a SharedConnection,
+        id: Value,
+        method: &'a str,
+        params: &'a Value,
+    ) -> BoxFuture<'a, Result<RequestDisposition, RuntimeFailure>> {
+        Box::pin(async move {
+            if method != "session/request_permission" {
+                return Ok(RequestDisposition::Unsupported);
+            }
+            connection.verify_session(params)?;
+            let options = params
+                .get("options")
+                .and_then(Value::as_array)
+                .ok_or_else(malformed)?;
+            let tool_call_id = params
+                .get("toolCall")
+                .and_then(|tool| tool.get("toolCallId"))
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?;
+            if options.len() > 32 {
+                return Err(malformed());
+            }
+            let turn = self
+                .turn
+                .lock()
+                .expect("ACP active lock poisoned")
+                .clone()
+                .ok_or_else(|| {
+                    failure(
+                        "swallowtail.copilot-cli.acp.permission_without_turn",
+                        "Copilot CLI requested permission without an active turn",
+                    )
+                })?;
+            turn.observe_permission(&id, tool_call_id)?;
+            connection
+                .notify("session/cancel", json!({"sessionId": turn.session_id()}))
+                .await?;
+            connection
+                .send_result(id, json!({"outcome": {"outcome": "cancelled"}}))
+                .await?;
+            Ok(RequestDisposition::Handled)
+        })
+    }
+}
+
 pub(crate) struct AcpConnection {
-    process: Arc<dyn ProcessHandle>,
-    services: HostServices,
-    next_id: AtomicU64,
-    pending: Mutex<BTreeMap<u64, ResponseSender>>,
-    session_id: Mutex<Option<String>>,
-    active_turn: Mutex<Option<Arc<ActiveTurn>>>,
-    closing: AtomicBool,
-    cancelled: AtomicBool,
-    closed: AtomicBool,
-    cleanup: Mutex<Option<CleanupOutcome>>,
+    inner: Arc<SharedConnection>,
+    hooks: Arc<CopilotHooks>,
 }
 
 impl AcpConnection {
     pub(crate) fn new(process: Arc<dyn ProcessHandle>, services: HostServices) -> Arc<Self> {
-        Arc::new(Self {
-            process,
+        let hooks = Arc::new(CopilotHooks {
+            turn: Mutex::new(None),
+        });
+        let inner = SharedConnection::new(
+            AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS),
             services,
-            next_id: AtomicU64::new(1),
-            pending: Mutex::new(BTreeMap::new()),
-            session_id: Mutex::new(None),
-            active_turn: Mutex::new(None),
-            closing: AtomicBool::new(false),
-            cancelled: AtomicBool::new(false),
-            closed: AtomicBool::new(false),
-            cleanup: Mutex::new(None),
-        })
-    }
-
-    pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
-        let diagnostic = error.diagnostic();
-        self.services.emit_failure_debug(
-            DebugObservationKind::ProtocolParse,
-            "copilot-cli.acp",
-            stage,
-            diagnostic.code(),
-            diagnostic.message(),
+            copilot_diagnostics(),
+            Arc::clone(&hooks) as Arc<dyn AcpConnectionHooks>,
         );
+        Arc::new(Self { inner, hooks })
     }
 
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {
-        let response = self
-            .request_with_id(
-                0,
-                "initialize",
-                json!({
-                    "protocolVersion": ACP_PROTOCOL_VERSION,
-                    "clientCapabilities": {
-                        "fs": {
-                            "readTextFile": false,
-                            "writeTextFile": false
-                        },
-                        "terminal": false
-                    },
-                    "clientInfo": {
-                        "name": "swallowtail",
-                        "version": env!("CARGO_PKG_VERSION")
-                    }
-                }),
-            )
-            .await?;
-        if response.get("protocolVersion").and_then(Value::as_u64) != Some(ACP_PROTOCOL_VERSION) {
-            return Err(failure(
-                "swallowtail.copilot-cli.acp.version_mismatch",
-                "Copilot CLI negotiated an incompatible ACP version",
-            ));
-        }
-        Ok(response)
+        self.inner.initialize().await
     }
 
     pub(crate) async fn request(
@@ -103,7 +268,7 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
-        self.begin_request(method, params).await?.await
+        self.inner.request(method, params).await
     }
 
     pub(crate) async fn begin_request(
@@ -111,50 +276,7 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<PendingResponse, RuntimeFailure> {
-        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        self.begin_request_with_id(id, method, params).await
-    }
-
-    async fn request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<Value, RuntimeFailure> {
-        self.begin_request_with_id(id, method, params).await?.await
-    }
-
-    async fn begin_request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<PendingResponse, RuntimeFailure> {
-        if self.closed.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.copilot-cli.acp.connection_closed",
-                "Copilot CLI ACP connection is closed",
-            ));
-        }
-        let (sender, response) = response_channel();
-        {
-            let mut pending = self.pending.lock().expect("ACP pending lock poisoned");
-            if pending.len() >= MAXIMUM_PENDING_REQUESTS || pending.insert(id, sender).is_some() {
-                return Err(failure(
-                    "swallowtail.copilot-cli.acp.correlation_limit",
-                    "Copilot CLI ACP request correlation limit was exceeded",
-                ));
-            }
-        }
-        let bytes = encode_request(id, method, params).map_err(|_| protocol_failure())?;
-        if let Err(error) = self.write(bytes).await {
-            self.pending
-                .lock()
-                .expect("ACP pending lock poisoned")
-                .remove(&id);
-            return Err(error);
-        }
-        Ok(PendingResponse(response))
+        self.inner.begin_request(method, params).await
     }
 
     pub(crate) async fn notify(
@@ -162,104 +284,49 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<(), RuntimeFailure> {
-        let bytes = encode_notification(method, params).map_err(|_| protocol_failure())?;
-        self.write(bytes).await
+        self.inner.notify(method, params).await
     }
 
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {
-        let mut current = self.session_id.lock().expect("ACP session lock poisoned");
-        if current.is_some() {
-            return Err(failure(
-                "swallowtail.copilot-cli.acp.session_duplicate",
-                "Copilot CLI returned more than one ACP session",
-            ));
-        }
-        *current = Some(session_id);
-        Ok(())
+        self.inner.set_session_id(session_id)
     }
 
     pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active.as_ref().is_some_and(|active| !active.is_finished()) {
-            return Err(failure(
-                "swallowtail.copilot-cli.acp.turn_active",
-                "Copilot CLI session already has an active turn",
-            ));
-        }
-        *active = Some(turn);
+        let sink: Arc<dyn AcpTurnSink> = Arc::clone(&turn) as Arc<dyn AcpTurnSink>;
+        self.inner.set_active_turn(sink)?;
+        *self.hooks.turn.lock().expect("ACP active lock poisoned") = Some(turn);
         Ok(())
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active
+        let sink: Arc<dyn AcpTurnSink> = Arc::clone(turn) as Arc<dyn AcpTurnSink>;
+        self.inner.clear_active_turn(&sink);
+        let mut slot = self.hooks.turn.lock().expect("ACP active lock poisoned");
+        if slot
             .as_ref()
             .is_some_and(|current| Arc::ptr_eq(current, turn))
         {
-            *active = None;
+            *slot = None;
         }
     }
 
     pub(crate) async fn begin_close(&self) {
-        self.closing.store(true, Ordering::SeqCst);
-        let _ = self.process.close_stdin().await;
-        let _ = self.process.request_stop().await;
-    }
-
-    pub(crate) async fn force_stop_owned_process(&self) -> Result<(), RuntimeFailure> {
-        self.process.force_stop().await
+        self.inner.begin_close().await;
     }
 
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
-        self.cancelled.store(true, Ordering::SeqCst);
-        self.process.force_stop().await
+        self.inner.cancel_session().await
+    }
+
+    pub(crate) async fn force_stop_owned_process(&self) -> Result<(), RuntimeFailure> {
+        self.inner.cancel_session().await
     }
 
     pub(crate) fn cleanup_outcome(&self) -> CleanupOutcome {
-        self.cleanup
-            .lock()
-            .expect("ACP cleanup lock poisoned")
-            .clone()
-            .unwrap_or_else(|| {
-                CleanupOutcome::Failed(SafeDiagnostic::new(
-                    "swallowtail.copilot-cli.acp.cleanup_missing",
-                    "Copilot CLI process cleanup did not complete",
-                ))
-            })
+        self.inner.cleanup_outcome()
     }
 
-    async fn write(&self, bytes: Vec<u8>) -> Result<(), RuntimeFailure> {
-        self.process
-            .write_stdin(ProcessInputChunk::new(bytes))
-            .await
-    }
-
-    fn fail_pending(&self, error: RuntimeFailure) {
-        let pending = std::mem::take(&mut *self.pending.lock().expect("ACP pending lock poisoned"));
-        for (_, sender) in pending {
-            sender.complete(Err(error.clone()));
-        }
-    }
-}
-
-include!("connection_dispatch.rs");
-include!("connection_pump.rs");
-
-include!("connection_response.rs");
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn receive_framing_profile_is_explicit() {
-        assert_eq!(
-            RECEIVE_FRAMING_LIMITS.maximum_frame_bytes(),
-            DEFAULT_MAX_FRAME_BYTES
-        );
-        assert_eq!(
-            RECEIVE_FRAMING_LIMITS.maximum_buffer_bytes(),
-            DEFAULT_MAX_BUFFER_BYTES
-        );
+    pub(crate) async fn pump(self: Arc<Self>) {
+        Arc::clone(&self.inner).pump().await;
     }
 }

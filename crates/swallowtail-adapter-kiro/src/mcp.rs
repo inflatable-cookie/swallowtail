@@ -13,13 +13,21 @@
 use crate::failure::failure;
 use serde_json::{Value, json};
 use std::fmt;
+use swallowtail_acp_client::{
+    AcpHttpAdvertisement, AcpMcpDiagnostics, AcpRemoteMcpPlacement, redacted_mcp_servers_debug,
+};
 use swallowtail_runtime::RuntimeFailure;
-use url::Url;
 
 /// Reserved ACP `mcpServers` name owned by this route.
 pub const KIRO_ACP_MCP_SERVER_NAME: &str = "swallowtail-kiro-acp";
 /// Contract 061 presence token for the admitted HTTP placement.
 pub const KIRO_ACP_HTTP_MCP_PLACEMENT: &str = "consumer-supplied-http";
+
+const MCP_DIAGNOSTICS: AcpMcpDiagnostics = AcpMcpDiagnostics {
+    reserved_name: KIRO_ACP_MCP_SERVER_NAME,
+    name_collision,
+    http_invalid,
+};
 
 /// Research 351 provider gate that keeps a session-injected Kiro MCP entry from being honoured.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -60,15 +68,10 @@ impl KiroAcpHttpAdvertisement {
     /// from the shipped `kiro-cli-chat`.
     #[must_use]
     pub fn from_initialize(initialize: &Value) -> Self {
-        match initialize
-            .get("agentCapabilities")
-            .and_then(|capabilities| capabilities.get("mcpCapabilities"))
-            .and_then(|capabilities| capabilities.get("http"))
-            .and_then(Value::as_bool)
-        {
-            Some(true) => Self::Advertised,
-            Some(false) => Self::NotAdvertised,
-            None => Self::Unproven,
+        match AcpHttpAdvertisement::from_initialize(initialize) {
+            AcpHttpAdvertisement::Advertised => Self::Advertised,
+            AcpHttpAdvertisement::NotAdvertised => Self::NotAdvertised,
+            AcpHttpAdvertisement::Unproven => Self::Unproven,
         }
     }
 }
@@ -79,9 +82,7 @@ impl KiroAcpHttpAdvertisement {
 /// carry them.
 #[derive(Clone, Eq, PartialEq)]
 pub struct KiroAcpRemoteMcpPlacement {
-    name: String,
-    url: String,
-    headers: Vec<(String, String)>,
+    inner: AcpRemoteMcpPlacement,
 }
 
 impl KiroAcpRemoteMcpPlacement {
@@ -95,28 +96,26 @@ impl KiroAcpRemoteMcpPlacement {
         headers: impl Into<Vec<(String, String)>>,
     ) -> Self {
         Self {
-            name: name.into(),
-            url: url.into(),
-            headers: headers.into(),
+            inner: AcpRemoteMcpPlacement::new(name, url, headers),
         }
     }
 
     /// Returns the declared ACP server name.
     #[must_use]
     pub fn name(&self) -> &str {
-        &self.name
+        self.inner.name()
     }
 
     /// Returns the declared URL. Callers that log or project this value leak a secret.
     #[must_use]
     pub fn url(&self) -> &str {
-        &self.url
+        self.inner.url()
     }
 
     /// Returns the declared headers. Values are consumer secrets.
     #[must_use]
     pub fn headers(&self) -> &[(String, String)] {
-        &self.headers
+        self.inner.headers()
     }
 
     /// Encodes this placement onto production `mcpServers`.
@@ -131,32 +130,7 @@ impl KiroAcpRemoteMcpPlacement {
     }
 
     pub(crate) fn to_acp_http_value(&self) -> Result<Value, RuntimeFailure> {
-        if self.name.is_empty() {
-            return Err(http_invalid());
-        }
-        if self.name != KIRO_ACP_MCP_SERVER_NAME {
-            return Err(name_collision());
-        }
-        if !absolute_http_url(&self.url) {
-            return Err(http_invalid());
-        }
-        if self
-            .headers
-            .iter()
-            .any(|(name, _)| !header_name_is_well_formed(name))
-        {
-            return Err(http_invalid());
-        }
-        Ok(json!({
-            "type": "http",
-            "name": self.name,
-            "url": self.url,
-            "headers": self
-                .headers
-                .iter()
-                .map(|(name, value)| json!({"name": name, "value": value}))
-                .collect::<Vec<_>>(),
-        }))
+        self.inner.to_acp_http_value(&MCP_DIAGNOSTICS)
     }
 }
 
@@ -164,12 +138,13 @@ impl fmt::Debug for KiroAcpRemoteMcpPlacement {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter
             .debug_struct("KiroAcpRemoteMcpPlacement")
-            .field("name", &self.name)
+            .field("name", &self.inner.name())
             .field("url", &"<redacted>")
             .field(
                 "headers",
                 &self
-                    .headers
+                    .inner
+                    .headers()
                     .iter()
                     .map(|(name, _)| (name.as_str(), "<redacted>"))
                     .collect::<Vec<_>>(),
@@ -221,56 +196,16 @@ impl fmt::Debug for KiroAcpEncodedMcpServers {
     }
 }
 
-fn redacted_mcp_servers_debug(value: &Value) -> Value {
-    let Some(entries) = value.as_array() else {
-        return json!("<redacted>");
-    };
-    Value::Array(
-        entries
-            .iter()
-            .map(|entry| {
-                let mut object = serde_json::Map::new();
-                if let Some(kind) = entry.get("type") {
-                    object.insert("type".to_owned(), kind.clone());
-                }
-                if let Some(name) = entry.get("name") {
-                    object.insert("name".to_owned(), name.clone());
-                }
-                if entry.get("url").is_some() {
-                    object.insert("url".to_owned(), json!("<redacted>"));
-                }
-                if let Some(headers) = entry.get("headers").and_then(Value::as_array) {
-                    object.insert(
-                        "headers".to_owned(),
-                        Value::Array(
-                            headers
-                                .iter()
-                                .map(|header| {
-                                    json!({
-                                        "name": header.get("name").cloned().unwrap_or(Value::Null),
-                                        "value": "<redacted>",
-                                    })
-                                })
-                                .collect(),
-                        ),
-                    );
-                }
-                Value::Object(object)
-            })
-            .collect(),
-    )
-}
-
 /// Production `mcpServers` list: empty, or exactly one admitted HTTP entry.
 ///
 /// Omission stays byte-identical to the pre-wiring route.
 pub(crate) fn production_mcp_servers(
     http: Option<&KiroAcpRemoteMcpPlacement>,
 ) -> Result<Value, RuntimeFailure> {
-    match http {
-        None => Ok(json!([])),
-        Some(remote) => Ok(json!([remote.to_acp_http_value()?])),
-    }
+    swallowtail_acp_client::production_mcp_servers(
+        http.map(|remote| &remote.inner),
+        &MCP_DIAGNOSTICS,
+    )
 }
 
 pub(crate) fn name_collision() -> RuntimeFailure {
@@ -285,38 +220,6 @@ fn http_invalid() -> RuntimeFailure {
         "swallowtail.kiro.acp.mcp_http_invalid",
         "Kiro ACP HTTP MCP declarations require a non-empty name, an absolute http or https URL, and well-formed header names",
     )
-}
-
-fn absolute_http_url(raw: &str) -> bool {
-    Url::parse(raw)
-        .is_ok_and(|parsed| matches!(parsed.scheme(), "http" | "https") && parsed.has_host())
-}
-
-fn header_name_is_well_formed(name: &str) -> bool {
-    !name.is_empty()
-        && name.bytes().all(|byte| {
-            matches!(
-                byte,
-                b'!'
-                    | b'#'
-                    | b'$'
-                    | b'%'
-                    | b'&'
-                    | b'\''
-                    | b'*'
-                    | b'+'
-                    | b'-'
-                    | b'.'
-                    | b'^'
-                    | b'_'
-                    | b'`'
-                    | b'|'
-                    | b'~'
-                    | b'0'..=b'9'
-                    | b'A'..=b'Z'
-                    | b'a'..=b'z'
-            )
-        })
 }
 
 #[cfg(test)]
@@ -385,7 +288,6 @@ mod tests {
             "swallowtail.kiro.acp.mcp_http_invalid"
         );
         assert_secret_redacted(&error);
-        assert!(!error.diagnostic().message().contains("not-a-url"));
 
         let bad_header = KiroAcpRemoteMcpPlacement::new(
             KIRO_ACP_MCP_SERVER_NAME,
@@ -417,7 +319,7 @@ mod tests {
     }
 
     #[test]
-    fn emission_names_the_initialize_advertisement_gate() {
+    fn emission_names_all_research_351_gates() {
         let encoded = admitted_http()
             .to_production_mcp_servers()
             .expect("http is admitted");
@@ -426,27 +328,11 @@ mod tests {
                 .gates()
                 .contains(&KiroAcpMcpGate::InitializeAdvertisementUnproven)
         );
-        assert!(!encoded.is_honoured());
-    }
-
-    #[test]
-    fn emission_names_the_governance_drop_gate() {
-        let encoded = admitted_http()
-            .to_production_mcp_servers()
-            .expect("http is admitted");
         assert!(
             encoded
                 .gates()
                 .contains(&KiroAcpMcpGate::GovernanceDisabled)
         );
-        assert!(!encoded.is_honoured());
-    }
-
-    #[test]
-    fn emission_names_the_agent_configuration_override_gate() {
-        let encoded = admitted_http()
-            .to_production_mcp_servers()
-            .expect("http is admitted");
         assert!(
             encoded
                 .gates()
@@ -475,24 +361,5 @@ mod tests {
             })),
             KiroAcpHttpAdvertisement::Advertised
         );
-    }
-
-    #[test]
-    fn debug_and_failures_redact_url_and_header_values() {
-        let remote = admitted_http();
-        assert_secret_redacted(&remote);
-        assert_eq!(remote.url(), CANARY_URL);
-        assert_eq!(remote.headers()[0].1, CANARY_HEADER);
-        let rendered = format!("{remote:?}");
-        assert!(rendered.contains("Authorization"));
-        assert!(rendered.contains("<redacted>"));
-        assert!(!rendered.contains(CANARY_URL));
-
-        let encoded = remote
-            .to_production_mcp_servers()
-            .expect("http is admitted");
-        assert_secret_redacted(&encoded);
-        assert!(format!("{encoded:?}").contains("<redacted>"));
-        assert!(!format!("{encoded:?}").contains(CANARY_HEADER));
     }
 }

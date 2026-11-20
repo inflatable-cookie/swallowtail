@@ -1,33 +1,177 @@
-use crate::failure::{failure, malformed, protocol_failure};
+use crate::acp_activity::CLAUDE_AGENT_ACTIVITY_CONFIG;
+use crate::failure::{failure, malformed, protocol_failure, unsupported};
 use crate::turn::ActiveTurn;
 use serde_json::{Value, json};
-use std::collections::BTreeMap;
-use std::future::Future;
 use std::num::NonZeroUsize;
-use std::pin::Pin;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
-use std::task::{Context, Poll, Waker};
+use swallowtail_acp_client::{
+    AcpConnection as SharedConnection, AcpConnectionHooks, AcpDiagnostics, AcpTransport,
+    AcpTurnSink, PendingResponse, RequestDisposition, SessionUpdateDisposition,
+    default_permission_namespace,
+};
 use swallowtail_core::{ResourceAccess, SafeDiagnostic, SessionRef};
-use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification,
-    encode_request, encode_result, is_session_scoped_metadata_update_kind,
-};
+use swallowtail_protocol_acp::{FramingLimits, RpcError, is_session_scoped_metadata_update_kind};
 use swallowtail_runtime::{
-    CleanupOutcome, DebugObservationKind, HostServices, OperationContent, ProcessHandle,
-    ProcessInputChunk, ProcessOutputStream, ResourceLease, RuntimeFailure, SessionReplayItem,
-    SessionReplayKind, WorkingResourceIoService, WorkingResourceLocator,
-    WorkingResourceReadRequest,
+    BoxFuture, CleanupOutcome, HostServices, OperationContent, ProcessHandle, ResourceLease,
+    RuntimeFailure, SessionReplayItem, SessionReplayKind, WorkingResourceIoService,
+    WorkingResourceLocator, WorkingResourceReadRequest,
 };
 
-use self::response::{PendingResponse, ResponseSender, response_channel};
-
-const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
 const MAXIMUM_RECEIVED_FRAME_BYTES: usize = 4 * 1024 * 1024;
 const MAXIMUM_RECEIVE_BUFFER_BYTES: usize = 8 * 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(MAXIMUM_RECEIVED_FRAME_BYTES, MAXIMUM_RECEIVE_BUFFER_BYTES);
+
+fn claude_agent_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "claude-agent.acp",
+        activity: CLAUDE_AGENT_ACTIVITY_CONFIG,
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.claude_agent.acp.version_mismatch",
+                "Claude Agent negotiated an incompatible ACP version",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.claude_agent.acp.connection_closed",
+                "Claude Agent ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.claude_agent.acp.correlation_limit",
+                "Claude Agent ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.claude_agent.acp.session_duplicate",
+                "Claude Agent returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.claude_agent.acp.turn_active",
+                "Claude Agent session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.claude_agent.acp.unknown_response",
+                "Claude Agent returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.claude_agent.acp.update_without_turn",
+                "Claude Agent updated a session outside an allowed lifecycle phase",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.claude_agent.acp.notification_unsupported",
+                "Claude Agent sent an unsupported ACP notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.claude_agent.acp.notification_unsupported",
+                "Claude Agent sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.claude_agent.acp.callback_unsupported",
+                "Claude Agent requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.claude_agent.acp.permission_without_turn",
+                "Claude Agent requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.claude_agent.acp.session_mismatch",
+                "Claude Agent callback does not match the active session",
+            )
+        },
+        session_mismatch_update: session_mismatch,
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.process_cleanup_failed",
+                "Claude Agent process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.cleanup_missing",
+                "Claude Agent process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.claude_agent.acp.connection_ended",
+                "Claude Agent ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.claude_agent.acp.output_limit_exceeded",
+                "Claude Agent output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.prompt_stopped",
+                "Claude Agent stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.claude_agent.acp.stop_reason_unsupported",
+                "Claude Agent returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.claude_agent.acp.task_service_missing",
+                "Claude Agent ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.task_join_failed",
+                "Claude Agent ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.turn_join_failed",
+                "Claude Agent ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.claude_agent.acp.resource_release_failed",
+                "Claude Agent ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |_| {
+            failure(
+                "swallowtail.claude_agent.acp.request_rejected",
+                "Claude Agent rejected an ACP request",
+            )
+        },
+        permission_namespace: default_permission_namespace,
+        unsupported,
+    }
+}
 
 enum AttachPhase {
     Loading {
@@ -44,18 +188,235 @@ enum AttachPhase {
     },
 }
 
-pub(crate) struct AcpConnection {
-    process: Arc<dyn ProcessHandle>,
+struct ClaudeAgentHooks {
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
-    services: HostServices,
-    next_id: AtomicU64,
-    pending: Mutex<BTreeMap<u64, ResponseSender>>,
-    session_id: Mutex<Option<String>>,
     phase: Mutex<Option<AttachPhase>>,
-    active_turn: Mutex<Option<Arc<ActiveTurn>>>,
-    closed: AtomicBool,
-    cleanup: Mutex<Option<CleanupOutcome>>,
+    turn: Mutex<Option<Arc<ActiveTurn>>>,
+}
+
+impl AcpConnectionHooks for ClaudeAgentHooks {
+    fn on_response(&self, id: u64, _result: &Result<Value, RpcError>) {
+        if let Some(phase) = self.phase.lock().expect("ACP phase lock poisoned").as_mut() {
+            match phase {
+                AttachPhase::Loading {
+                    response_id,
+                    response_seen,
+                    ..
+                }
+                | AttachPhase::Resuming {
+                    response_id,
+                    response_seen,
+                    ..
+                } if *response_id == id => *response_seen = true,
+                _ => {}
+            }
+        }
+    }
+
+    fn on_notification(&self, method: &str, params: &Value) -> Result<bool, RuntimeFailure> {
+        if method == "auth/status_update" {
+            params
+                .get("state")
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?;
+            #[cfg(test)]
+            eprintln!("ACP_TRUSTED_PASSIVE_AUTH_STATUS");
+            Ok(true)
+        } else {
+            Ok(false)
+        }
+    }
+
+    fn on_session_update(
+        &self,
+        params: &Value,
+    ) -> Result<SessionUpdateDisposition, RuntimeFailure> {
+        let mut phase = self.phase.lock().expect("ACP phase lock poisoned");
+        let Some(phase) = phase.as_mut() else {
+            return Ok(SessionUpdateDisposition::RouteToActiveTurn);
+        };
+        let session_id = params
+            .get("sessionId")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)?;
+        let update = params.get("update").ok_or_else(malformed)?;
+        let kind = update
+            .get("sessionUpdate")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)?;
+        match phase {
+            AttachPhase::Loading {
+                session,
+                response_seen,
+                bytes,
+                replay,
+                ..
+            } => {
+                if session.as_provider_value() != session_id {
+                    return Err(session_mismatch());
+                }
+                if *response_seen {
+                    passive_update(kind)?;
+                    return Ok(SessionUpdateDisposition::Handled);
+                }
+                let item = replay_item(session.clone(), replay.len() as u64, kind, update)?;
+                let item_bytes = item.content().map_or(0, OperationContent::byte_len);
+                if replay.len() >= crate::MAXIMUM_REPLAY_ITEMS
+                    || bytes.saturating_add(item_bytes) > crate::MAXIMUM_REPLAY_BYTES
+                {
+                    return Err(failure(
+                        "swallowtail.claude_agent.acp.replay_limit_exceeded",
+                        "Claude Agent session replay exceeded the adapter limit",
+                    ));
+                }
+                *bytes += item_bytes;
+                replay.push(item);
+                Ok(SessionUpdateDisposition::Handled)
+            }
+            AttachPhase::Resuming {
+                session,
+                response_seen,
+                ..
+            } => {
+                if session.as_provider_value() != session_id {
+                    return Err(session_mismatch());
+                }
+                if *response_seen {
+                    passive_update(kind)?;
+                    Ok(SessionUpdateDisposition::Handled)
+                } else {
+                    Err(failure(
+                        "swallowtail.claude_agent.acp.resume_replay_rejected",
+                        "Claude Agent emitted historical replay while resuming",
+                    ))
+                }
+            }
+        }
+    }
+
+    fn handle_request<'a>(
+        &'a self,
+        connection: &'a SharedConnection,
+        id: Value,
+        method: &'a str,
+        params: &'a Value,
+    ) -> BoxFuture<'a, Result<RequestDisposition, RuntimeFailure>> {
+        Box::pin(async move {
+            match method {
+                "fs/read_text_file" => {
+                    connection.verify_session(params)?;
+                    let locator = params
+                        .get("path")
+                        .and_then(Value::as_str)
+                        .ok_or_else(malformed)
+                        .and_then(|value| {
+                            WorkingResourceLocator::new(value).map_err(|_| malformed())
+                        })?;
+                    let request = WorkingResourceReadRequest::new(
+                        locator,
+                        NonZeroUsize::new(MAXIMUM_READ_BYTES).expect("static limit is non-zero"),
+                    )
+                    .with_lines(
+                        optional_usize(params, "line")?,
+                        optional_usize(params, "limit")?,
+                    );
+                    let content = self.resource_io.read_text(&self.resource, request).await?;
+                    connection
+                        .send_result(id, json!({"content": content.as_driver_value()}))
+                        .await?;
+                    Ok(RequestDisposition::Handled)
+                }
+                "session/request_permission" => {
+                    connection.verify_session(params)?;
+                    let turn = self
+                        .turn
+                        .lock()
+                        .expect("ACP active lock poisoned")
+                        .clone()
+                        .filter(|turn| !turn.is_finished())
+                        .ok_or_else(|| {
+                            failure(
+                                "swallowtail.claude_agent.acp.permission_without_turn",
+                                "Claude Agent requested permission without an active turn",
+                            )
+                        })?;
+                    if turn.exchanges_permissions() {
+                        turn.exchange_permission(&id, params)?;
+                        return Ok(RequestDisposition::Handled);
+                    }
+                    let options = params
+                        .get("options")
+                        .and_then(Value::as_array)
+                        .ok_or_else(malformed)?;
+                    if options.len() > 32
+                        || params
+                            .get("toolCall")
+                            .and_then(|tool| tool.get("toolCallId"))
+                            .and_then(Value::as_str)
+                            .is_none()
+                    {
+                        return Err(malformed());
+                    }
+                    let reject = options
+                        .iter()
+                        .find(|option| {
+                            option.get("kind").and_then(Value::as_str) == Some("reject_once")
+                        })
+                        .and_then(|option| option.get("optionId"))
+                        .and_then(Value::as_str)
+                        .ok_or_else(|| {
+                            failure(
+                                "swallowtail.claude_agent.acp.permission_rejection_unavailable",
+                                "Claude Agent permission request offered no one-shot rejection",
+                            )
+                        })?;
+                    turn.observe_permission(&id)?;
+                    connection
+                        .send_result(
+                            id,
+                            json!({"outcome": {"outcome": "selected", "optionId": reject}}),
+                        )
+                        .await?;
+                    connection
+                        .notify("session/cancel", json!({"sessionId": turn.session_id()}))
+                        .await?;
+                    Ok(RequestDisposition::Handled)
+                }
+                "elicitation/create" => {
+                    connection.verify_session(params)?;
+                    let turn = self
+                        .turn
+                        .lock()
+                        .expect("ACP active lock poisoned")
+                        .clone()
+                        .filter(|turn| !turn.is_finished())
+                        .ok_or_else(|| {
+                            failure(
+                                "swallowtail.claude_agent.acp.elicitation_without_turn",
+                                "Claude Agent requested user input without an active turn",
+                            )
+                        })?;
+                    match crate::elicitation::request(params)? {
+                        Some(request) => turn.exchange_user_input(&id, request)?,
+                        None => {
+                            connection
+                                .send_result(id, crate::elicitation::declined_response())
+                                .await?;
+                        }
+                    }
+                    Ok(RequestDisposition::Handled)
+                }
+                _ => Ok(RequestDisposition::Unsupported),
+            }
+        })
+    }
+}
+
+pub(crate) struct AcpConnection {
+    inner: Arc<SharedConnection>,
+    hooks: Arc<ClaudeAgentHooks>,
+    resource: ResourceLease,
 }
 
 impl AcpConnection {
@@ -65,60 +426,43 @@ impl AcpConnection {
         resource_io: Arc<dyn WorkingResourceIoService>,
         services: HostServices,
     ) -> Arc<Self> {
-        Arc::new(Self {
-            process,
-            resource,
+        let hooks = Arc::new(ClaudeAgentHooks {
+            resource: resource.clone(),
             resource_io,
-            services,
-            next_id: AtomicU64::new(1),
-            pending: Mutex::new(BTreeMap::new()),
-            session_id: Mutex::new(None),
             phase: Mutex::new(None),
-            active_turn: Mutex::new(None),
-            closed: AtomicBool::new(false),
-            cleanup: Mutex::new(None),
+            turn: Mutex::new(None),
+        });
+        let inner = SharedConnection::new(
+            AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS),
+            services,
+            claude_agent_diagnostics(),
+            Arc::clone(&hooks) as Arc<dyn AcpConnectionHooks>,
+        );
+        Arc::new(Self {
+            inner,
+            hooks,
+            resource,
         })
     }
 
     pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
-        let diagnostic = error.diagnostic();
-        #[cfg(test)]
-        eprintln!("ACP_TRUSTED_PROTOCOL {stage} {}", diagnostic.code());
-        self.services.emit_failure_debug(
-            DebugObservationKind::ProtocolParse,
-            "claude-agent.acp",
-            stage,
-            diagnostic.code(),
-            diagnostic.message(),
-        );
+        self.inner.emit_protocol_debug(error, stage);
     }
 
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {
-        let response = self
-            .request_with_id(
-                0,
-                "initialize",
+        self.inner
+            .initialize_with(
                 json!({
-                    "protocolVersion": ACP_PROTOCOL_VERSION,
-                    "clientCapabilities": {
-                        "fs": {"readTextFile": true, "writeTextFile": false},
-                        "elicitation": {"form": {}}
-                    },
-                    "clientInfo": {
-                        "name": "swallowtail",
-                        "title": "Swallowtail",
-                        "version": env!("CARGO_PKG_VERSION")
-                    }
+                    "fs": {"readTextFile": true, "writeTextFile": false},
+                    "elicitation": {"form": {}}
+                }),
+                json!({
+                    "name": "swallowtail",
+                    "title": "Swallowtail",
+                    "version": env!("CARGO_PKG_VERSION")
                 }),
             )
-            .await?;
-        if response.get("protocolVersion").and_then(Value::as_u64) != Some(ACP_PROTOCOL_VERSION) {
-            return Err(failure(
-                "swallowtail.claude_agent.acp.version_mismatch",
-                "Claude Agent negotiated an incompatible ACP version",
-            ));
-        }
-        Ok(response)
+            .await
     }
 
     pub(crate) async fn new_session(
@@ -214,12 +558,87 @@ impl AcpConnection {
         .await
     }
 
+    pub(crate) async fn load_session(
+        &self,
+        session: SessionRef,
+        cwd: String,
+    ) -> Result<(Value, Vec<SessionReplayItem>), RuntimeFailure> {
+        let id = self.inner.allocate_request_id();
+        self.set_session_id(session.as_provider_value().to_owned())?;
+        *self.hooks.phase.lock().expect("ACP phase lock poisoned") = Some(AttachPhase::Loading {
+            response_id: id,
+            session: session.clone(),
+            response_seen: false,
+            bytes: 0,
+            replay: Vec::new(),
+        });
+        let response = self
+            .inner
+            .begin_request_with_id(
+                id,
+                "session/load",
+                json!({"sessionId": session.as_provider_value(), "cwd": cwd, "mcpServers": []}),
+            )
+            .await?
+            .await?;
+        match self
+            .hooks
+            .phase
+            .lock()
+            .expect("ACP phase lock poisoned")
+            .take()
+        {
+            Some(AttachPhase::Loading {
+                response_seen: true,
+                replay,
+                ..
+            }) => Ok((response, replay)),
+            _ => Err(protocol_failure()),
+        }
+    }
+
+    pub(crate) async fn resume_session(
+        &self,
+        session: SessionRef,
+        cwd: String,
+    ) -> Result<Value, RuntimeFailure> {
+        let id = self.inner.allocate_request_id();
+        self.set_session_id(session.as_provider_value().to_owned())?;
+        *self.hooks.phase.lock().expect("ACP phase lock poisoned") = Some(AttachPhase::Resuming {
+            response_id: id,
+            session: session.clone(),
+            response_seen: false,
+        });
+        let response = self
+            .inner
+            .begin_request_with_id(
+                id,
+                "session/resume",
+                json!({"sessionId": session.as_provider_value(), "cwd": cwd, "mcpServers": []}),
+            )
+            .await?
+            .await?;
+        match self
+            .hooks
+            .phase
+            .lock()
+            .expect("ACP phase lock poisoned")
+            .take()
+        {
+            Some(AttachPhase::Resuming {
+                response_seen: true,
+                ..
+            }) => Ok(response),
+            _ => Err(protocol_failure()),
+        }
+    }
+
     pub(crate) async fn request(
         &self,
         method: &'static str,
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
-        self.begin_request(method, params).await?.await
+        self.inner.request(method, params).await
     }
 
     pub(crate) async fn begin_request(
@@ -227,50 +646,7 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<PendingResponse, RuntimeFailure> {
-        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        self.begin_request_with_id(id, method, params).await
-    }
-
-    async fn request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<Value, RuntimeFailure> {
-        self.begin_request_with_id(id, method, params).await?.await
-    }
-
-    pub(crate) async fn begin_request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<PendingResponse, RuntimeFailure> {
-        if self.closed.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.claude_agent.acp.connection_closed",
-                "Claude Agent ACP connection is closed",
-            ));
-        }
-        let (sender, response) = response_channel();
-        {
-            let mut pending = self.pending.lock().expect("ACP pending lock poisoned");
-            if pending.len() >= MAXIMUM_PENDING_REQUESTS || pending.insert(id, sender).is_some() {
-                return Err(failure(
-                    "swallowtail.claude_agent.acp.correlation_limit",
-                    "Claude Agent ACP request correlation limit was exceeded",
-                ));
-            }
-        }
-        let bytes = encode_request(id, method, params).map_err(|_| protocol_failure())?;
-        if let Err(error) = self.write(bytes).await {
-            self.pending
-                .lock()
-                .expect("ACP pending lock poisoned")
-                .remove(&id);
-            return Err(error);
-        }
-        Ok(PendingResponse(response))
+        self.inner.begin_request(method, params).await
     }
 
     pub(crate) async fn notify(
@@ -278,8 +654,7 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<(), RuntimeFailure> {
-        let bytes = encode_notification(method, params).map_err(|_| protocol_failure())?;
-        self.write(bytes).await
+        self.inner.notify(method, params).await
     }
 
     pub(crate) async fn respond_permission(
@@ -287,14 +662,12 @@ impl AcpConnection {
         id: Value,
         option_id: &str,
     ) -> Result<(), RuntimeFailure> {
-        self.write(
-            encode_result(
+        self.inner
+            .send_result(
                 id,
                 json!({"outcome": {"outcome": "selected", "optionId": option_id}}),
             )
-            .map_err(|_| protocol_failure())?,
-        )
-        .await
+            .await
     }
 
     pub(crate) async fn respond_elicitation(
@@ -302,89 +675,126 @@ impl AcpConnection {
         id: Value,
         response: Value,
     ) -> Result<(), RuntimeFailure> {
-        self.write(encode_result(id, response).map_err(|_| protocol_failure())?)
-            .await
+        self.inner.send_result(id, response).await
     }
 
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {
-        let mut current = self.session_id.lock().expect("ACP session lock poisoned");
-        if current.is_some() {
-            return Err(failure(
-                "swallowtail.claude_agent.acp.session_duplicate",
-                "Claude Agent returned more than one ACP session",
-            ));
-        }
-        *current = Some(session_id);
-        Ok(())
+        self.inner.set_session_id(session_id)
     }
 
     pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active.as_ref().is_some_and(|active| !active.is_finished()) {
-            return Err(failure(
-                "swallowtail.claude_agent.acp.turn_active",
-                "Claude Agent session already has an active turn",
-            ));
-        }
-        *active = Some(turn);
+        self.inner
+            .set_active_turn(Arc::clone(&turn) as Arc<dyn AcpTurnSink>)?;
+        *self.hooks.turn.lock().expect("ACP active lock poisoned") = Some(turn);
         Ok(())
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active
-            .as_ref()
-            .is_some_and(|current| Arc::ptr_eq(current, turn))
-            && !turn.retains_terminal_tail()
-        {
-            *active = None;
+        if !turn.retains_terminal_tail() {
+            let sink: Arc<dyn AcpTurnSink> = Arc::clone(turn) as Arc<dyn AcpTurnSink>;
+            self.inner.clear_active_turn(&sink);
+            let mut slot = self.hooks.turn.lock().expect("ACP active lock poisoned");
+            if slot
+                .as_ref()
+                .is_some_and(|current| Arc::ptr_eq(current, turn))
+            {
+                *slot = None;
+            }
         }
     }
 
     pub(crate) async fn begin_close(&self) {
-        let _ = self.process.close_stdin().await;
-        let _ = self.process.request_stop().await;
+        self.inner.begin_close().await;
     }
 
     pub(crate) fn is_closed(&self) -> bool {
-        self.closed.load(Ordering::SeqCst)
+        self.inner.is_closed()
     }
 
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
-        self.process.force_stop().await
+        self.inner.cancel_session().await
     }
 
     pub(crate) fn cleanup_outcome(&self) -> CleanupOutcome {
-        self.cleanup
-            .lock()
-            .expect("ACP cleanup lock poisoned")
-            .clone()
-            .unwrap_or_else(|| {
-                CleanupOutcome::Failed(SafeDiagnostic::new(
-                    "swallowtail.claude_agent.acp.cleanup_missing",
-                    "Claude Agent process cleanup did not complete",
-                ))
-            })
+        self.inner.cleanup_outcome()
     }
 
-    async fn write(&self, bytes: Vec<u8>) -> Result<(), RuntimeFailure> {
-        self.process
-            .write_stdin(ProcessInputChunk::new(bytes))
-            .await
-    }
-
-    fn fail_pending(&self, error: RuntimeFailure) {
-        let pending = std::mem::take(&mut *self.pending.lock().expect("ACP pending lock poisoned"));
-        for (_, sender) in pending {
-            sender.complete(Err(error.clone()));
-        }
+    pub(crate) async fn pump(self: Arc<Self>) {
+        Arc::clone(&self.inner).pump().await;
     }
 }
 
-mod attachment;
-mod dispatch;
-mod pump;
-mod response;
+fn replay_item(
+    session: SessionRef,
+    sequence: u64,
+    kind: &str,
+    update: &Value,
+) -> Result<SessionReplayItem, RuntimeFailure> {
+    let replay_kind = match kind {
+        "user_message_chunk" => SessionReplayKind::UserMessage,
+        "agent_message_chunk" => SessionReplayKind::AgentMessage,
+        "agent_thought_chunk" => SessionReplayKind::AgentReasoning,
+        "tool_call" => SessionReplayKind::ToolCall,
+        "tool_call_update" => SessionReplayKind::ToolCallUpdate,
+        "plan" => SessionReplayKind::Plan,
+        "available_commands_update" | "config_option_update" | "current_mode_update" => {
+            SessionReplayKind::Configuration
+        }
+        _ => {
+            return Err(failure(
+                "swallowtail.claude_agent.acp.replay_unsupported",
+                "Claude Agent returned unsupported replay content",
+            ));
+        }
+    };
+    match kind {
+        "user_message_chunk" | "agent_message_chunk" | "agent_thought_chunk" => {
+            let text = update
+                .get("content")
+                .filter(|content| content.get("type").and_then(Value::as_str) == Some("text"))
+                .and_then(|content| content.get("text"))
+                .and_then(Value::as_str)
+                .ok_or_else(malformed)?;
+            Ok(SessionReplayItem::with_content(
+                session,
+                sequence,
+                replay_kind,
+                OperationContent::new(text).map_err(|_| malformed())?,
+            ))
+        }
+        _ => Ok(SessionReplayItem::new(session, sequence, replay_kind)),
+    }
+}
+
+fn passive_update(kind: &str) -> Result<(), RuntimeFailure> {
+    if is_session_scoped_metadata_update_kind(kind) {
+        Ok(())
+    } else {
+        Err(failure(
+            "swallowtail.claude_agent.acp.update_without_turn",
+            "Claude Agent updated a session outside an allowed lifecycle phase",
+        ))
+    }
+}
+
+fn session_mismatch() -> RuntimeFailure {
+    failure(
+        "swallowtail.claude_agent.acp.session_mismatch",
+        "Claude Agent message does not match the bound session",
+    )
+}
+
+fn optional_usize(params: &Value, field: &str) -> Result<Option<usize>, RuntimeFailure> {
+    params
+        .get(field)
+        .map(|value| {
+            value
+                .as_u64()
+                .and_then(|value| usize::try_from(value).ok())
+                .ok_or_else(malformed)
+        })
+        .transpose()
+}
 
 #[cfg(test)]
 mod tests {

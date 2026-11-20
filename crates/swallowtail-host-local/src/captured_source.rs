@@ -10,29 +10,15 @@ use std::io::{self, Read};
 use std::path::{Component, Path, PathBuf};
 use std::sync::Arc;
 
+/// One host-policy path and its expected SHA-256.
+///
+/// This is the provider-neutral runtime descriptor; the local host owns the
+/// capture that consumes it.
+pub use swallowtail_runtime::ExpectedSource as LocalExpectedSource;
+
 const MAX_MODULES: usize = 1024;
 const MAX_MODULE_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_TOTAL_BYTES: usize = 64 * 1024 * 1024;
-
-/// One host-policy path and its expected SHA-256.
-///
-/// The digest is an input to capture, not an attestation of vendor identity.
-#[derive(Clone)]
-pub struct LocalExpectedSource {
-    path: PathBuf,
-    sha256: [u8; 32],
-}
-
-impl LocalExpectedSource {
-    /// Creates one relative source specification.
-    #[must_use]
-    pub fn new(path: impl Into<PathBuf>, sha256: [u8; 32]) -> Self {
-        Self {
-            path: path.into(),
-            sha256,
-        }
-    }
-}
 
 /// Immutable captured bytes for a bounded host-supplied source manifest.
 ///
@@ -63,19 +49,19 @@ impl LocalCapturedSources {
         let mut objects = BTreeSet::new();
         let mut total = 0usize;
         for source in expected {
-            if source.path.as_os_str().is_empty()
-                || !source
-                    .path
+            let source_path = source.path();
+            if source_path.as_os_str().is_empty()
+                || !source_path
                     .components()
                     .all(|part| matches!(part, Component::Normal(_)))
             {
                 return Err(invalid("invalid source path"));
             }
-            if entries.contains_key(&source.path) {
+            if entries.contains_key(source_path) {
                 return Err(invalid("duplicate source path"));
             }
             let mut candidate = root.to_path_buf();
-            for part in source.path.components() {
+            for part in source_path.components() {
                 candidate.push(part.as_os_str());
                 if std::fs::symlink_metadata(&candidate)?
                     .file_type()
@@ -98,7 +84,7 @@ impl LocalCapturedSources {
             let mut bytes = Vec::new();
             file.take(MAX_MODULE_BYTES + 1).read_to_end(&mut bytes)?;
             let actual: [u8; 32] = Sha256::digest(&bytes).into();
-            if bytes.len() as u64 > MAX_MODULE_BYTES || actual != source.sha256 {
+            if bytes.len() as u64 > MAX_MODULE_BYTES || &actual != source.sha256() {
                 return Err(invalid("source digest mismatch"));
             }
             total = total
@@ -107,7 +93,7 @@ impl LocalCapturedSources {
             if total > MAX_TOTAL_BYTES {
                 return Err(invalid("source size limit"));
             }
-            entries.insert(source.path.clone(), Arc::<[u8]>::from(bytes));
+            entries.insert(source_path.to_path_buf(), Arc::<[u8]>::from(bytes));
         }
         if ancestors != crate::trusted_runtime::capture_ancestors(&root.join("captured-source"))? {
             return Err(invalid("source ancestor custody changed"));

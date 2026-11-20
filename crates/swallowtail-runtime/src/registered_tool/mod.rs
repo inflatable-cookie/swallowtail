@@ -9,6 +9,7 @@
 mod admission;
 mod attachment;
 mod call;
+mod courier;
 mod declaration;
 mod dispatch;
 mod failure;
@@ -37,6 +38,7 @@ pub use admission::{
     ConsumerAdmissionBinding, ConsumerAdmissionHostService, ConsumerProcessIncarnation,
 };
 pub use attachment::{
+    REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION, REGISTERED_TOOL_PROXY_SERVER_NAME,
     REGISTERED_TOOL_PROXY_WIRE_TAG, RegisteredToolAttachment, RegisteredToolAttachmentDescriptor,
     RegisteredToolProxyRecipe,
 };
@@ -45,6 +47,7 @@ pub use call::{
     RegisteredToolOutcome, RegisteredToolProgress, RegisteredToolResult,
     ValidatedRegisteredToolBinding,
 };
+pub use courier::{RegisteredToolCourierLaunch, RegisteredToolCourierService};
 pub use declaration::{
     RegisteredToolDeclaration, RegisteredToolEffectPosture, RegisteredToolEnforcedPosture,
     RegisteredToolRetryPosture,

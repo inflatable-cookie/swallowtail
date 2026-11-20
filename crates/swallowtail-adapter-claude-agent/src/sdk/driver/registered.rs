@@ -4,11 +4,10 @@ use crate::sdk::failure::failure;
 use crate::sdk::mcp::{OpenStdioMcpServer, env_key_allowed};
 use crate::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding;
 use swallowtail_core::{PreflightPlan, SafeDiagnostic};
-use swallowtail_host_local::RegisteredToolProxyLaunch;
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, OpenSessionRequest, RegisteredToolBridgeLease,
-    RegisteredToolCleanupCause, RegisteredToolFailure, RegisteredToolReadiness, RuntimeFailure,
-    RuntimeTurnId,
+    RegisteredToolCleanupCause, RegisteredToolCourierLaunch, RegisteredToolFailure,
+    RegisteredToolReadiness, RuntimeFailure, RuntimeTurnId,
 };
 
 /// Live registered-tool lease bound to one open sidecar session.
@@ -28,7 +27,7 @@ impl ClaudeAgentSdkRegisteredToolSession {
 /// Partial registered-tool open that never holds a courier process handle.
 pub(in crate::sdk) struct PendingRegisteredOpen {
     lease: Option<RegisteredToolBridgeLease>,
-    launch: Option<RegisteredToolProxyLaunch>,
+    launch: Option<Box<dyn RegisteredToolCourierLaunch>>,
     declaration: OpenStdioMcpServer,
     claimed: bool,
 }

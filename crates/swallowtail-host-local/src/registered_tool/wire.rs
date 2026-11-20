@@ -18,9 +18,11 @@ pub const REGISTERED_TOOL_PROXY_WIRE_TAG: &str = RUNTIME_REGISTERED_TOOL_PROXY_W
 /// Exact JSON-RPC version carried by the reference courier.
 pub const REGISTERED_TOOL_PROXY_JSONRPC_VERSION: &str = "2.0";
 /// Exact MCP protocol version carried by the pinned SDK corpus.
-pub const REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION: &str = "2025-11-25";
+pub const REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION: &str =
+    swallowtail_runtime::REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION;
 /// Reserved server name for this attachment.
-pub const REGISTERED_TOOL_PROXY_SERVER_NAME: &str = "swallowtail-registered-tools";
+pub const REGISTERED_TOOL_PROXY_SERVER_NAME: &str =
+    swallowtail_runtime::REGISTERED_TOOL_PROXY_SERVER_NAME;
 /// Private loopback path used by the registered-tool HTTP profile.
 pub const REGISTERED_TOOL_PROXY_HTTP_PATH: &str = "/registered-tools";
 /// Maximum one JSON-RPC record on either wire.

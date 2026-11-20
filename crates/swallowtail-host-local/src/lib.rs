@@ -16,6 +16,7 @@ mod connection_lifecycle;
 mod credential;
 mod deadline;
 mod executable_launch;
+mod guarded_capture;
 mod host;
 mod hosted;
 mod installed_target;
@@ -49,6 +50,7 @@ pub use captured_source::{
 pub use checked_node::LocalCheckedNodeLaunch;
 pub use connection_lifecycle::{JsonFileConnectionLifecycleStore, MemoryConnectionLifecycleStore};
 pub use executable_launch::LocalExecutableLaunch;
+pub use guarded_capture::capture_frozen_guarded_recipe;
 pub use host::{LocalProcessHost, LocalProcessHostBuilder};
 pub use limits::{LocalMaterializationLimits, LocalProcessLimits};
 pub use services::LocalHostServices;

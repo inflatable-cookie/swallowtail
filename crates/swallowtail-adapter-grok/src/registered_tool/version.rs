@@ -28,7 +28,7 @@ pub const GROK_ACP_REGISTERED_TOOL_CARRIER_REVISION: &str =
 /// Exact MCP protocol version the Contract 063 courier answers `initialize`
 /// with on this route.
 pub const GROK_ACP_REGISTERED_TOOL_MCP_PROTOCOL_VERSION: &str =
-    swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION;
+    swallowtail_runtime::REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION;
 
 /// Binds the exact opaque registered-tool carrier revision.
 #[must_use]

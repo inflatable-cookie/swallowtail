@@ -208,9 +208,13 @@ to preserve native
 user/managed no-prompt denial. Exact 0.101.0 retains v7: its native version does
 not support that key and still requests consumer permission.
 
-Use `capture_claude_agent_acp_guarded_v1` for the exact frozen graph on Linux x64
-or Darwin arm64, register the resulting recipe with the local checked-process
-service, and pass that opaque binding to preparation. The host verifies runtime,
+Use `claude_agent_acp_guarded_v1_frozen` for the exact frozen graph on Linux
+x64 or Darwin arm64. It returns only the manifest, loader and identity digests
+this route froze; the host captures them with
+`swallowtail_host_local::capture_frozen_guarded_recipe`, registers the resulting
+recipe with its local checked-process service, and passes that opaque binding to
+preparation. The adapter thus names no local-host type, and the host captures
+the bytes it will launch. The host verifies runtime,
 native and required `ps` identity and retains custody through spawn. Drift or
 revocation refuses; there is no unchecked fallback. This trusted-host boundary
 does not claim protection against hostile same-user runtime replacement.

@@ -7,6 +7,17 @@ use crate::host_reference::{EnvironmentRef, ExecutableRef};
 /// Fixed wire tag used by the Swallowtail reference mediated-stdio courier.
 pub const REGISTERED_TOOL_PROXY_WIRE_TAG: &str = "swallowtail-registered-tool-mcp-v1";
 
+/// Reserved server name of the Swallowtail reference mediated-stdio courier.
+///
+/// This is the courier's own `serverInfo` name. Declaring the attachment on a
+/// provider wire under any other name would let the provider connect a server
+/// whose identity does not match the lease the host opened.
+pub const REGISTERED_TOOL_PROXY_SERVER_NAME: &str = "swallowtail-registered-tools";
+
+/// Exact MCP protocol version the pinned courier corpus answers `initialize`
+/// with.
+pub const REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION: &str = "2025-11-25";
+
 /// Exact provider-facing attachment shape for one registered-tool selection.
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub enum RegisteredToolAttachment {

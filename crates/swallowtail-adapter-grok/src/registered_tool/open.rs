@@ -18,11 +18,10 @@ use super::projection::GROK_ACP_REGISTERED_TOOL_VERSION_NOT_ADMITTED_CODE;
 use crate::failure::failure;
 use std::sync::Mutex;
 use swallowtail_core::{InterfaceVersion, PreflightPlan, SafeDiagnostic};
-use swallowtail_host_local::RegisteredToolProxyLaunch;
 use swallowtail_runtime::{
     CleanupOutcome, HostServices, RegisteredToolBridgeLease, RegisteredToolCleanupCause,
-    RegisteredToolFailure, RegisteredToolReadiness, RequestId, RuntimeFailure, RuntimeTurnId,
-    ScopeId,
+    RegisteredToolCourierLaunch, RegisteredToolFailure, RegisteredToolReadiness, RequestId,
+    RuntimeFailure, RuntimeTurnId, ScopeId,
 };
 
 /// Live registered-tool lease bound to one open ACP session and one turn.
@@ -154,7 +153,7 @@ impl GrokRegisteredToolSession {
 /// Partial registered-tool open that never holds a courier process handle.
 pub(crate) struct PendingRegisteredOpen {
     lease: Option<RegisteredToolBridgeLease>,
-    launch: Option<RegisteredToolProxyLaunch>,
+    launch: Option<Box<dyn RegisteredToolCourierLaunch>>,
     declaration: GrokAcpMcpServerDeclaration,
     turn: RuntimeTurnId,
     settled: Option<CleanupOutcome>,
@@ -172,7 +171,7 @@ impl PendingRegisteredOpen {
     /// and races it against the same opening deadline as every other step.
     /// Settling the lease closes the proxy, which releases a waiting barrier,
     /// so the task always joins promptly.
-    pub(crate) fn take_launch(&mut self) -> Option<RegisteredToolProxyLaunch> {
+    pub(crate) fn take_launch(&mut self) -> Option<Box<dyn RegisteredToolCourierLaunch>> {
         self.launch.take()
     }
 

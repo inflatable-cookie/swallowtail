@@ -125,7 +125,7 @@ pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnly
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_effort(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort) -> Self
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_host<H>(self, H) -> Self where H: swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService + 'static
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_permission_mode(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_persist_session(self, bool) -> Self
 pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredTool
@@ -136,11 +136,11 @@ pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkReg
 pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding
 impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding
 pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::carrier(&self) -> &swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier
-pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::host(&self) -> core::option::Option<&swallowtail_host_local::services::LocalHostServices>
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::host(&self) -> core::option::Option<&dyn swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService>
 pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::preparation(&self) -> &swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::qualify(swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation) -> core::result::Result<Self, swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::selection(&self) -> &swallowtail_runtime::registered_tool::selection::RegisteredToolSelection
-pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding::with_host<H>(self, H) -> Self where H: swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService + 'static
 pub struct swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier
 impl swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier
 pub fn swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolCarrier::admitted_tool_names(&self) -> alloc::vec::Vec<alloc::string::String>
@@ -374,7 +374,7 @@ pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnly
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::resource_access(&self) -> swallowtail_core::session_access::ResourceAccess
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::session_profile(&self) -> swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_effort(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkEffort) -> Self
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_host(self, swallowtail_host_local::services::LocalHostServices) -> Self
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_host<H>(self, H) -> Self where H: swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService + 'static
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_permission_mode(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding::with_persist_session(self, bool) -> Self
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding
@@ -418,10 +418,10 @@ pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::new(swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::runtime_identity::InstanceRevision, swallowtail_core::runtime_identity::ExecutionHostId, swallowtail_core::runtime_identity::InstanceTargetRef, swallowtail_runtime::host_reference::EnvironmentRef, swallowtail_core::runtime_identity::CredentialRef, swallowtail_core::runtime_identity::AccessProfileId, swallowtail_core::runtime_identity::ModelRouteId, swallowtail_core::runtime_identity::ModelRouteRevision, swallowtail_core::model::ModelId, swallowtail_runtime::host_reference::WorkingResourceRef, swallowtail_runtime::identity::RequestId, swallowtail_runtime::time::Deadline) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_mcp_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkMcpBinding) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_package_native_pair(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair) -> Self
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_host_local::services::LocalHostServices, swallowtail_core::session_access::ResourceAccess) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only<H>(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, H, swallowtail_core::session_access::ResourceAccess) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure> where H: swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService + 'static
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_only_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkRegisteredOnlyBinding) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_tool_binding(self, swallowtail_adapter_claude_agent::sdk::registered_tool::ClaudeAgentSdkRegisteredToolBinding) -> Self
-pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_tools(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, swallowtail_host_local::services::LocalHostServices) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_registered_tools<H>(self, swallowtail_runtime::registered_tool::preparation::RegisteredToolPreparation, H) -> core::result::Result<Self, swallowtail_runtime::preparation::PreparationFailure> where H: swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService + 'static
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_selected_skill_binding(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSelectedSkillBinding) -> Self
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_selected_skill_bundle(self, swallowtail_runtime::registered_tool::selected_skill_resolution::ResolvedSkillBundle) -> Self
 pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionPreparation::with_session_profile(self, swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionProfile) -> Self
@@ -758,12 +758,12 @@ pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_BASELINE_V
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_DENIED_VERSIONS: &[&str]
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_LATEST_QUALIFIED_VERSION: &str
 pub const swallowtail_adapter_claude_agent::CLAUDE_CODE_RESPONSE_ONLY_VERSION: &str
-pub fn swallowtail_adapter_claude_agent::capture_claude_agent_acp_guarded_v1(&str, &std::path::Path, &str, &swallowtail_host_local::trusted_runtime::LocalTrustedRuntime, &swallowtail_host_local::trusted_runtime::LocalTrustedRuntime, core::option::Option<&swallowtail_host_local::trusted_runtime::LocalTrustedRuntime>) -> core::io::error::Result<swallowtail_host_local::captured_source::LocalCapturedNodeRecipe>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_addable_route_descriptor(&swallowtail_runtime::host_registry::HostServices) -> swallowtail_core::connection_lifecycle::descriptor::AddableRouteDescriptor
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_claim() -> swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_descriptor() -> swallowtail_core::registration::DriverDescriptor
-pub fn swallowtail_adapter_claude_agent::claude_agent_acp_guard_v1_source_manifest(&str) -> core::option::Option<alloc::vec::Vec<swallowtail_host_local::captured_source::LocalExpectedSource>>
+pub fn swallowtail_adapter_claude_agent::claude_agent_acp_guard_v1_source_manifest(&str) -> core::option::Option<alloc::vec::Vec<swallowtail_runtime::guarded_node::ExpectedSource>>
+pub fn swallowtail_adapter_claude_agent::claude_agent_acp_guarded_v1_frozen<'a>(&str, &'a str) -> core::option::Option<swallowtail_runtime::guarded_node::FrozenGuardedNodeCapture<'a>>
 pub fn swallowtail_adapter_claude_agent::claude_agent_acp_subscription_access_profile(swallowtail_core::runtime_identity::AccessProfileId) -> swallowtail_core::access::AccessProfile
 pub fn swallowtail_adapter_claude_agent::claude_agent_permission_namespace() -> swallowtail_core::event::ExtensionNamespace
 pub fn swallowtail_adapter_claude_agent::claude_code_headless_binding(&str) -> core::option::Option<swallowtail_core::interface_version::InterfaceVersionBinding>

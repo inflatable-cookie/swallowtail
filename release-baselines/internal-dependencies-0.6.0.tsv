@@ -14,7 +14,6 @@ swallowtail-adapter-bedrock	swallowtail-core	^0.6.0
 swallowtail-adapter-bedrock	swallowtail-runtime	^0.6.0
 swallowtail-adapter-claude-agent	swallowtail-acp-client	^0.6.0
 swallowtail-adapter-claude-agent	swallowtail-core	^0.6.0
-swallowtail-adapter-claude-agent	swallowtail-host-local	^0.6.0
 swallowtail-adapter-claude-agent	swallowtail-protocol-acp	^0.6.0
 swallowtail-adapter-claude-agent	swallowtail-runtime	^0.6.0
 swallowtail-adapter-cline	swallowtail-acp-client	^0.6.0
@@ -55,7 +54,6 @@ swallowtail-adapter-goose	swallowtail-protocol-acp	^0.6.0
 swallowtail-adapter-goose	swallowtail-runtime	^0.6.0
 swallowtail-adapter-grok	swallowtail-acp-client	^0.6.0
 swallowtail-adapter-grok	swallowtail-core	^0.6.0
-swallowtail-adapter-grok	swallowtail-host-local	^0.6.0
 swallowtail-adapter-grok	swallowtail-protocol-acp	^0.6.0
 swallowtail-adapter-grok	swallowtail-runtime	^0.6.0
 swallowtail-adapter-kimi	swallowtail-acp-client	^0.6.0

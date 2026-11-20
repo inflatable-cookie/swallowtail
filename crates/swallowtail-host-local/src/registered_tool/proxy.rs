@@ -571,6 +571,20 @@ pub struct RegisteredToolProxyLaunch {
     server: Arc<RegisteredToolProxyServer>,
 }
 
+impl swallowtail_runtime::RegisteredToolCourierLaunch for RegisteredToolProxyLaunch {
+    fn process_request(&self) -> &swallowtail_runtime::ProcessRequest {
+        Self::process_request(self)
+    }
+
+    fn rendezvous_path(&self) -> &Path {
+        Self::rendezvous_path(self)
+    }
+
+    fn wait_until_ready(&mut self) -> Result<(), RuntimeFailure> {
+        Self::wait_until_ready(self)
+    }
+}
+
 impl RegisteredToolProxyLaunch {
     pub(crate) fn new(
         request: swallowtail_runtime::ProcessRequest,

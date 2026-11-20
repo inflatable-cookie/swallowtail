@@ -284,23 +284,20 @@ impl RpcConnection {
                 .lock()
                 .expect("RPC stderr-tail lock poisoned"),
         );
-        let Some(excerpt) = sanitize_stderr(&tail, false) else {
-            return diagnostic.clone();
-        };
-        self.services.emit_debug_observation(
-            &DebugObservation::new(
-                DebugObservationKind::StderrRing,
-                format!("stderr={excerpt}"),
-            )
-            .with_route("codex.app_server")
-            .with_stage("rpc.pump.protocol_terminal")
-            .with_correlated_code(diagnostic.code()),
-        );
-        SafeDiagnostic::new(
-            diagnostic.code(),
-            format!("{}; stderr: {excerpt}", diagnostic.message()),
-        )
-        .with_failure_classification(diagnostic.failure_classification())
+        // The stderr tail is raw provider output: it goes only to the opt-in
+        // debug observer, never into the public diagnostic.
+        if let Some(excerpt) = sanitize_stderr(&tail, false) {
+            self.services.emit_debug_observation(
+                &DebugObservation::new(
+                    DebugObservationKind::StderrRing,
+                    format!("stderr={excerpt}"),
+                )
+                .with_route("codex.app_server")
+                .with_stage("rpc.pump.protocol_terminal")
+                .with_correlated_code(diagnostic.code()),
+            );
+        }
+        diagnostic.clone()
     }
 
     fn emit_malformed_inbound_debug(&self, error: &RuntimeFailure, line: &[u8]) {
@@ -360,14 +357,12 @@ fn with_inbound_context(error: RuntimeFailure, line: &[u8]) -> RuntimeFailure {
             .map_or_else(|| "<absent>".to_owned(), bounded_method),
         Err(_) => "<unparseable>".to_owned(),
     };
-    let excerpt = sanitize_stderr(line, false).unwrap_or_else(|| "<empty>".to_owned());
+    // The public message carries the bounded method name only; the raw line is
+    // kept for the opt-in debug observer.
     RuntimeFailure::new(
         SafeDiagnostic::new(
             diagnostic.code(),
-            format!(
-                "{} (method `{method}`, excerpt `{excerpt}`)",
-                diagnostic.message()
-            ),
+            format!("{} (method `{method}`)", diagnostic.message()),
         )
         .with_failure_classification(diagnostic.failure_classification()),
     )

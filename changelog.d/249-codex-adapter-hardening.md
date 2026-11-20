@@ -23,9 +23,13 @@
   stop or interrupt fails, so a retry can run.
 - RPC requests cannot register after the connection closes: the closed flag
   is set under the pending-response lock.
+- Public protocol diagnostics no longer carry the raw inbound wire excerpt or
+  the stderr tail. The public message keeps the bounded method name; the raw
+  excerpt and stderr tail go only to the opt-in `DiagnosticObserver`.
 
 ### Compatibility
 
+- Consumer-facing diagnostic message change: `swallowtail.codex.app_server.malformed_notification` and `malformed_message` messages no longer include `excerpt` or `; stderr:` text. Consumers that matched those fragments must read the observer.
 - Behavior of Bovine Desktop (`AppServer`, `prepare_codex`, registered
   editing) and Soundcheck (`CodexExecProfileInput`, `CodexPreparedDriver`,
   `CODEX_CLI_AXIS`) is unchanged on the success path. No public shape changes.

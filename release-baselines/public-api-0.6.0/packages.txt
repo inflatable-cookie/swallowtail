@@ -1,3 +1,4 @@
+swallowtail-acp-client
 swallowtail-adapter-alibaba-model-studio
 swallowtail-adapter-anthropic
 swallowtail-adapter-antigravity

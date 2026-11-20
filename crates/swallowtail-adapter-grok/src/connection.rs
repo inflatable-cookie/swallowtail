@@ -1,30 +1,182 @@
-use crate::failure::{failure, malformed, protocol_failure};
+use crate::activity::GROK_ACTIVITY_CONFIG;
+use crate::failure::{failure, malformed, protocol_failure, unsupported};
 use crate::turn::ActiveTurn;
+use futures_channel::oneshot;
 use serde_json::{Value, json};
-use std::collections::BTreeMap;
-use std::future::Future;
 use std::num::NonZeroUsize;
-use std::pin::Pin;
-use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
-use std::task::{Context, Poll, Waker};
-use swallowtail_core::{SafeDiagnostic, SessionRef};
-use swallowtail_protocol_acp::{
-    ACP_PROTOCOL_VERSION, FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification,
-    encode_request, encode_result, is_session_scoped_metadata_update,
+use swallowtail_acp_client::{
+    AcpConnection as SharedConnection, AcpConnectionHooks, AcpDiagnostics, AcpTransport,
+    AcpTurnSink, PendingResponse, RequestDisposition, SessionUpdateDisposition,
 };
+use swallowtail_core::{SafeDiagnostic, SessionRef};
+use swallowtail_protocol_acp::{FramingLimits, RpcError};
 use swallowtail_runtime::{
-    CleanupOutcome, DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk,
-    ProcessOutputStream, ResourceLease, RuntimeFailure, WorkingResourceIoService,
-    WorkingResourceLocator, WorkingResourceReadRequest,
+    BoxFuture, CleanupOutcome, HostServices, ProcessHandle, RegisteredToolCleanupCause,
+    ResourceLease, RuntimeFailure, WorkingResourceIoService, WorkingResourceLocator,
+    WorkingResourceReadRequest,
 };
 
-const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const MAXIMUM_READ_BYTES: usize = 1024 * 1024;
 const MAXIMUM_RECEIVE_FRAME_BYTES: usize = 16 * 1024 * 1024;
 const MAXIMUM_RECEIVE_BUFFER_BYTES: usize = 32 * 1024 * 1024;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(MAXIMUM_RECEIVE_FRAME_BYTES, MAXIMUM_RECEIVE_BUFFER_BYTES);
+
+fn grok_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "grok-build.acp",
+        activity: GROK_ACTIVITY_CONFIG,
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.grok.acp.version_mismatch",
+                "Grok Build negotiated an incompatible ACP version",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.grok.acp.connection_closed",
+                "Grok Build ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.grok.acp.correlation_limit",
+                "Grok Build ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.grok.acp.session_duplicate",
+                "Grok Build returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.grok.acp.turn_active",
+                "Grok Build session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.grok.acp.unknown_response",
+                "Grok Build returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.grok.acp.update_without_turn",
+                "Grok Build updated a session without an active turn",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.grok.acp.notification_unsupported",
+                "Grok Build sent an unsupported ACP notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.grok.acp.notification_unsupported",
+                "Grok Build sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.grok.acp.callback_unsupported",
+                "Grok Build requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.grok.acp.permission_without_turn",
+                "Grok Build requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.grok.acp.session_mismatch",
+                "Grok Build callback does not match the active session",
+            )
+        },
+        session_mismatch_update: || {
+            failure(
+                "swallowtail.grok.acp.session_mismatch",
+                "Grok Build update does not match the active session",
+            )
+        },
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.grok.acp.process_cleanup_failed",
+                "Grok Build process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.grok.acp.cleanup_missing",
+                "Grok Build process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.grok.acp.connection_ended",
+                "Grok Build ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.grok.acp.output_limit_exceeded",
+                "Grok Build output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.grok.acp.prompt_stopped",
+                "Grok Build stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.grok.acp.stop_reason_unsupported",
+                "Grok Build returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.grok.acp.task_service_missing",
+                "Grok Build ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.grok.acp.task_join_failed",
+                "Grok Build ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.grok.acp.turn_join_failed",
+                "Grok Build ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.grok.acp.resource_release_failed",
+                "Grok Build ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |_| {
+            failure(
+                "swallowtail.grok.acp.request_rejected",
+                "Grok Build rejected an ACP request",
+            )
+        },
+        permission_namespace: crate::grok_build_permission_namespace,
+        unsupported,
+    }
+}
 
 struct AttachmentRecoveryPhase {
     response_id: u64,
@@ -32,22 +184,186 @@ struct AttachmentRecoveryPhase {
     response_seen: bool,
     updates: usize,
     bytes: usize,
-    batch_completion: Option<ResponseSender>,
+    batch_completion: Option<oneshot::Sender<Result<(), RuntimeFailure>>>,
 }
 
-pub(crate) struct AcpConnection {
-    process: Arc<dyn ProcessHandle>,
+struct GrokHooks {
     resource: ResourceLease,
     resource_io: Arc<dyn WorkingResourceIoService>,
     services: HostServices,
-    next_id: AtomicU64,
-    pending: Mutex<BTreeMap<u64, ResponseSender>>,
-    session_id: Mutex<Option<String>>,
-    active_turn: Mutex<Option<Arc<ActiveTurn>>>,
+    turn: Mutex<Option<Arc<ActiveTurn>>>,
     registered: Mutex<Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>>,
     attachment_recovery: Mutex<Option<AttachmentRecoveryPhase>>,
-    closed: AtomicBool,
-    cleanup: Mutex<Option<CleanupOutcome>>,
+}
+
+impl AcpConnectionHooks for GrokHooks {
+    fn on_response(&self, id: u64, _result: &Result<Value, RpcError>) {
+        if let Some(phase) = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .as_mut()
+            && phase.response_id == id
+        {
+            phase.response_seen = true;
+        }
+    }
+
+    fn on_session_update(
+        &self,
+        params: &Value,
+    ) -> Result<SessionUpdateDisposition, RuntimeFailure> {
+        let mut phase = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned");
+        let Some(phase) = phase.as_mut() else {
+            return Ok(SessionUpdateDisposition::RouteToActiveTurn);
+        };
+        let session_id = params
+            .get("sessionId")
+            .and_then(Value::as_str)
+            .ok_or_else(malformed)?;
+        if session_id != phase.session.as_provider_value() {
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_session_mismatch",
+                "Grok Build recovery update belongs to another provider session",
+            ));
+        }
+        if !params.get("update").is_some_and(Value::is_object) {
+            return Err(malformed());
+        }
+        if phase.response_seen {
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_late_update",
+                "Grok Build emitted recovery replay after attachment readiness",
+            ));
+        }
+        let bytes = serde_json::to_vec(params).map_err(|_| malformed())?.len();
+        if phase.updates >= crate::MAXIMUM_ATTACHMENT_RECOVERY_UPDATES
+            || phase.bytes.saturating_add(bytes) > crate::MAXIMUM_ATTACHMENT_RECOVERY_BYTES
+        {
+            return Err(failure(
+                "swallowtail.grok.acp.attachment_recovery_limit_exceeded",
+                "Grok Build attachment recovery exceeded its bounded discard limit",
+            ));
+        }
+        phase.updates += 1;
+        phase.bytes += bytes;
+        Ok(SessionUpdateDisposition::Handled)
+    }
+
+    fn on_batch_complete(&self) {
+        let sender = self
+            .attachment_recovery
+            .lock()
+            .expect("ACP attachment-recovery lock poisoned")
+            .as_mut()
+            .filter(|phase| phase.response_seen)
+            .and_then(|phase| phase.batch_completion.take());
+        if let Some(sender) = sender {
+            let _ = sender.send(Ok(()));
+        }
+    }
+
+    fn handle_request<'a>(
+        &'a self,
+        connection: &'a SharedConnection,
+        id: Value,
+        method: &'a str,
+        params: &'a Value,
+    ) -> BoxFuture<'a, Result<RequestDisposition, RuntimeFailure>> {
+        Box::pin(async move {
+            if self
+                .attachment_recovery
+                .lock()
+                .expect("ACP attachment-recovery lock poisoned")
+                .is_some()
+            {
+                connection
+                    .send_error(id, -32600, "Request unavailable during session recovery")
+                    .await?;
+                return Err(failure(
+                    "swallowtail.grok.acp.attachment_recovery_callback_rejected",
+                    "Grok Build requested a callback during session attachment recovery",
+                ));
+            }
+            match method {
+                "fs/read_text_file" => {
+                    connection.verify_session(params)?;
+                    let locator = params
+                        .get("path")
+                        .and_then(Value::as_str)
+                        .ok_or_else(malformed)
+                        .and_then(|value| {
+                            WorkingResourceLocator::new(value).map_err(|_| malformed())
+                        })?;
+                    let request = WorkingResourceReadRequest::new(
+                        locator,
+                        NonZeroUsize::new(MAXIMUM_READ_BYTES).expect("static limit is non-zero"),
+                    )
+                    .with_lines(
+                        optional_usize(params, "line")?,
+                        optional_usize(params, "limit")?,
+                    );
+                    let content = self.resource_io.read_text(&self.resource, request).await?;
+                    connection
+                        .send_result(id, json!({"content": content.as_driver_value()}))
+                        .await?;
+                    Ok(RequestDisposition::Handled)
+                }
+                "session/request_permission" => {
+                    connection.verify_session(params)?;
+                    let turn = self.turn.lock().expect("ACP active lock poisoned").clone();
+                    let Some(turn) = turn else {
+                        connection
+                            .send_error(id, -32600, "Permission request requires an active turn")
+                            .await?;
+                        return Err(failure(
+                            "swallowtail.grok.acp.permission_without_turn",
+                            "Grok Build requested permission without an active turn",
+                        ));
+                    };
+                    if turn.exchanges_permissions() {
+                        turn.exchange_permission(&id, params)?;
+                        return Ok(RequestDisposition::Handled);
+                    }
+                    Ok(RequestDisposition::RejectPermission)
+                }
+                _ => Ok(RequestDisposition::Unsupported),
+            }
+        })
+    }
+
+    fn on_transport_ended<'a>(&'a self, error: &'a RuntimeFailure) -> BoxFuture<'a, ()> {
+        let error = error.clone();
+        Box::pin(async move {
+            let sender = self
+                .attachment_recovery
+                .lock()
+                .expect("ACP attachment-recovery lock poisoned")
+                .as_mut()
+                .and_then(|phase| phase.batch_completion.take());
+            if let Some(sender) = sender {
+                let _ = sender.send(Err(error));
+            }
+            let registered = self
+                .registered
+                .lock()
+                .expect("ACP registered lock poisoned")
+                .clone();
+            if let Some(registered) = registered {
+                let _ = registered
+                    .settle(&self.services, RegisteredToolCleanupCause::TransportFailure)
+                    .await;
+            }
+        })
+    }
+}
+
+pub(crate) struct AcpConnection {
+    inner: Arc<SharedConnection>,
+    hooks: Arc<GrokHooks>,
 }
 
 impl AcpConnection {
@@ -57,78 +373,48 @@ impl AcpConnection {
         resource_io: Arc<dyn WorkingResourceIoService>,
         services: HostServices,
     ) -> Arc<Self> {
-        Arc::new(Self {
-            process,
+        let hooks = Arc::new(GrokHooks {
             resource,
             resource_io,
-            services,
-            next_id: AtomicU64::new(1),
-            pending: Mutex::new(BTreeMap::new()),
-            session_id: Mutex::new(None),
-            active_turn: Mutex::new(None),
+            services: services.clone(),
+            turn: Mutex::new(None),
             registered: Mutex::new(None),
             attachment_recovery: Mutex::new(None),
-            closed: AtomicBool::new(false),
-            cleanup: Mutex::new(None),
-        })
+        });
+        let inner = SharedConnection::new(
+            AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS),
+            services,
+            grok_diagnostics(),
+            Arc::clone(&hooks) as Arc<dyn AcpConnectionHooks>,
+        );
+        Arc::new(Self { inner, hooks })
     }
 
-    /// Binds the registered lease this connection must settle on transport
-    /// failure, before it publishes the turn's terminal outcome.
     pub(crate) fn set_registered_session(
         &self,
         registered: Option<Arc<crate::registered_tool::GrokRegisteredToolSession>>,
     ) {
         *self
+            .hooks
             .registered
             .lock()
             .expect("ACP registered lock poisoned") = registered;
     }
 
-    fn registered_session(&self) -> Option<Arc<crate::registered_tool::GrokRegisteredToolSession>> {
-        self.registered
-            .lock()
-            .expect("ACP registered lock poisoned")
-            .clone()
-    }
-
-    pub(crate) fn emit_protocol_debug(&self, error: &RuntimeFailure, stage: &'static str) {
-        let diagnostic = error.diagnostic();
-        self.services.emit_failure_debug(
-            DebugObservationKind::ProtocolParse,
-            "grok-build.acp",
-            stage,
-            diagnostic.code(),
-            diagnostic.message(),
-        );
-    }
-
     pub(crate) async fn initialize(&self) -> Result<Value, RuntimeFailure> {
-        let response = self
-            .request_with_id(
-                0,
-                "initialize",
+        self.inner
+            .initialize_with(
                 json!({
-                    "protocolVersion": ACP_PROTOCOL_VERSION,
-                    "clientCapabilities": {
-                        "fs": {"readTextFile": true, "writeTextFile": false},
-                        "terminal": false
-                    },
-                    "clientInfo": {
-                        "name": "swallowtail",
-                        "title": "Swallowtail",
-                        "version": env!("CARGO_PKG_VERSION")
-                    }
+                    "fs": {"readTextFile": true, "writeTextFile": false},
+                    "terminal": false
+                }),
+                json!({
+                    "name": "swallowtail",
+                    "title": "Swallowtail",
+                    "version": env!("CARGO_PKG_VERSION")
                 }),
             )
-            .await?;
-        if response.get("protocolVersion").and_then(Value::as_u64) != Some(ACP_PROTOCOL_VERSION) {
-            return Err(failure(
-                "swallowtail.grok.acp.version_mismatch",
-                "Grok Build negotiated an incompatible ACP version",
-            ));
-        }
-        Ok(response)
+            .await
     }
 
     pub(crate) async fn activate_cached_token(&self) -> Result<(), RuntimeFailure> {
@@ -146,7 +432,15 @@ impl AcpConnection {
         method: &'static str,
         params: Value,
     ) -> Result<Value, RuntimeFailure> {
-        self.begin_request(method, params).await?.await
+        self.inner.request(method, params).await
+    }
+
+    pub(crate) async fn begin_request(
+        &self,
+        method: &'static str,
+        params: Value,
+    ) -> Result<PendingResponse, RuntimeFailure> {
+        self.inner.begin_request(method, params).await
     }
 
     pub(crate) async fn recover_session_attachment(
@@ -154,10 +448,11 @@ impl AcpConnection {
         session: SessionRef,
         cwd: String,
     ) -> Result<Value, RuntimeFailure> {
-        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        let (batch_sender, batch_completion) = response_channel();
+        let id = self.inner.allocate_request_id();
+        let (batch_sender, batch_completion) = oneshot::channel();
         self.set_session_id(session.as_provider_value().to_owned())?;
         *self
+            .hooks
             .attachment_recovery
             .lock()
             .expect("ACP attachment-recovery lock poisoned") = Some(AttachmentRecoveryPhase {
@@ -169,6 +464,7 @@ impl AcpConnection {
             batch_completion: Some(batch_sender),
         });
         let pending = self
+            .inner
             .begin_request_with_id(
                 id,
                 "session/load",
@@ -178,15 +474,21 @@ impl AcpConnection {
         let response = match pending {
             Ok(response) => {
                 let response = response.await;
-                let batch = batch_completion.await;
+                let batch = batch_completion.await.unwrap_or_else(|_| {
+                    Err(failure(
+                        "swallowtail.grok.acp.connection_ended",
+                        "Grok Build ACP connection ended",
+                    ))
+                });
                 match (response, batch) {
-                    (Ok(response), Ok(_)) => Ok(response),
+                    (Ok(response), Ok(())) => Ok(response),
                     (Err(error), _) | (_, Err(error)) => Err(error),
                 }
             }
             Err(error) => Err(error),
         };
         let phase = self
+            .hooks
             .attachment_recovery
             .lock()
             .expect("ACP attachment-recovery lock poisoned")
@@ -204,89 +506,12 @@ impl AcpConnection {
         }
     }
 
-    fn complete_attachment_recovery_batch(&self) {
-        let sender = self
-            .attachment_recovery
-            .lock()
-            .expect("ACP attachment-recovery lock poisoned")
-            .as_mut()
-            .filter(|phase| phase.response_seen)
-            .and_then(|phase| phase.batch_completion.take());
-        if let Some(sender) = sender {
-            sender.complete(Ok(Value::Null));
-        }
-    }
-
-    fn fail_attachment_recovery(&self, error: RuntimeFailure) {
-        let sender = self
-            .attachment_recovery
-            .lock()
-            .expect("ACP attachment-recovery lock poisoned")
-            .as_mut()
-            .and_then(|phase| phase.batch_completion.take());
-        if let Some(sender) = sender {
-            sender.complete(Err(error));
-        }
-    }
-
-    pub(crate) async fn begin_request(
-        &self,
-        method: &'static str,
-        params: Value,
-    ) -> Result<PendingResponse, RuntimeFailure> {
-        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        self.begin_request_with_id(id, method, params).await
-    }
-
-    async fn request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<Value, RuntimeFailure> {
-        self.begin_request_with_id(id, method, params).await?.await
-    }
-
-    async fn begin_request_with_id(
-        &self,
-        id: u64,
-        method: &'static str,
-        params: Value,
-    ) -> Result<PendingResponse, RuntimeFailure> {
-        if self.closed.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.grok.acp.connection_closed",
-                "Grok Build ACP connection is closed",
-            ));
-        }
-        let (sender, response) = response_channel();
-        {
-            let mut pending = self.pending.lock().expect("ACP pending lock poisoned");
-            if pending.len() >= MAXIMUM_PENDING_REQUESTS || pending.insert(id, sender).is_some() {
-                return Err(failure(
-                    "swallowtail.grok.acp.correlation_limit",
-                    "Grok Build ACP request correlation limit was exceeded",
-                ));
-            }
-        }
-        let bytes = encode_request(id, method, params).map_err(|_| protocol_failure())?;
-        if let Err(error) = self.write(bytes).await {
-            self.pending
-                .lock()
-                .expect("ACP pending lock poisoned")
-                .remove(&id);
-            return Err(error);
-        }
-        Ok(PendingResponse(response))
-    }
-
     pub(crate) async fn notify(
         &self,
         method: &'static str,
         params: Value,
     ) -> Result<(), RuntimeFailure> {
-        let bytes = encode_notification(method, params).map_err(|_| protocol_failure())?;
-        self.write(bytes).await
+        self.inner.notify(method, params).await
     }
 
     pub(crate) async fn respond_permission(
@@ -294,86 +519,62 @@ impl AcpConnection {
         id: Value,
         option_id: &str,
     ) -> Result<(), RuntimeFailure> {
-        self.write(
-            encode_result(
+        self.inner
+            .send_result(
                 id,
                 json!({"outcome": {"outcome": "selected", "optionId": option_id}}),
             )
-            .map_err(|_| protocol_failure())?,
-        )
-        .await
+            .await
     }
 
     pub(crate) fn set_session_id(&self, session_id: String) -> Result<(), RuntimeFailure> {
-        let mut current = self.session_id.lock().expect("ACP session lock poisoned");
-        if current.is_some() {
-            return Err(failure(
-                "swallowtail.grok.acp.session_duplicate",
-                "Grok Build returned more than one ACP session",
-            ));
-        }
-        *current = Some(session_id);
-        Ok(())
+        self.inner.set_session_id(session_id)
     }
 
     pub(crate) fn set_active_turn(&self, turn: Arc<ActiveTurn>) -> Result<(), RuntimeFailure> {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active.as_ref().is_some_and(|active| !active.is_finished()) {
-            return Err(failure(
-                "swallowtail.grok.acp.turn_active",
-                "Grok Build session already has an active turn",
-            ));
-        }
-        *active = Some(turn);
+        self.inner
+            .set_active_turn(Arc::clone(&turn) as Arc<dyn AcpTurnSink>)?;
+        *self.hooks.turn.lock().expect("ACP active lock poisoned") = Some(turn);
         Ok(())
     }
 
     pub(crate) fn clear_active_turn(&self, turn: &Arc<ActiveTurn>) {
-        let mut active = self.active_turn.lock().expect("ACP active lock poisoned");
-        if active
+        let sink: Arc<dyn AcpTurnSink> = Arc::clone(turn) as Arc<dyn AcpTurnSink>;
+        self.inner.clear_active_turn(&sink);
+        let mut slot = self.hooks.turn.lock().expect("ACP active lock poisoned");
+        if slot
             .as_ref()
             .is_some_and(|current| Arc::ptr_eq(current, turn))
         {
-            *active = None;
+            *slot = None;
         }
     }
 
     pub(crate) async fn begin_close(&self) {
-        let _ = self.process.close_stdin().await;
-        let _ = self.process.request_stop().await;
+        self.inner.begin_close().await;
     }
 
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
-        self.process.force_stop().await
+        self.inner.cancel_session().await
     }
 
     pub(crate) fn cleanup_outcome(&self) -> CleanupOutcome {
-        self.cleanup
-            .lock()
-            .expect("ACP cleanup lock poisoned")
-            .clone()
-            .unwrap_or_else(|| {
-                CleanupOutcome::Failed(SafeDiagnostic::new(
-                    "swallowtail.grok.acp.cleanup_missing",
-                    "Grok Build process cleanup did not complete",
-                ))
-            })
+        self.inner.cleanup_outcome()
     }
 
-    async fn write(&self, bytes: Vec<u8>) -> Result<(), RuntimeFailure> {
-        self.process
-            .write_stdin(ProcessInputChunk::new(bytes))
-            .await
-    }
-
-    fn fail_pending(&self, error: RuntimeFailure) {
-        let pending = std::mem::take(&mut *self.pending.lock().expect("ACP pending lock poisoned"));
-        for (_, sender) in pending {
-            sender.complete(Err(error.clone()));
-        }
+    pub(crate) async fn pump(self: Arc<Self>) {
+        Arc::clone(&self.inner).pump().await;
     }
 }
 
-include!("connection/dispatch.rs");
-include!("connection/pump.rs");
-include!("connection/response.rs");
+fn optional_usize(params: &Value, field: &str) -> Result<Option<usize>, RuntimeFailure> {
+    params
+        .get(field)
+        .map(|value| {
+            value
+                .as_u64()
+                .and_then(|value| usize::try_from(value).ok())
+                .ok_or_else(malformed)
+        })
+        .transpose()
+}

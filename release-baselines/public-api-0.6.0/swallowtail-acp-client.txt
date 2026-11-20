@@ -1,0 +1,242 @@
+pub mod swallowtail_acp_client
+pub enum swallowtail_acp_client::AcpHttpAdvertisement
+pub swallowtail_acp_client::AcpHttpAdvertisement::Advertised
+pub swallowtail_acp_client::AcpHttpAdvertisement::NotAdvertised
+pub swallowtail_acp_client::AcpHttpAdvertisement::Unproven
+impl swallowtail_acp_client::AcpHttpAdvertisement
+pub fn swallowtail_acp_client::AcpHttpAdvertisement::from_initialize(&serde_json::value::Value) -> Self
+pub enum swallowtail_acp_client::AcpTransport
+pub swallowtail_acp_client::AcpTransport::Remote
+pub swallowtail_acp_client::AcpTransport::Remote::connection: alloc::boxed::Box<swallowtail_transport_acp_remote::RemoteAcpConnection>
+pub swallowtail_acp_client::AcpTransport::Stdio
+pub swallowtail_acp_client::AcpTransport::Stdio::framing_limits: swallowtail_protocol_acp::FramingLimits
+pub swallowtail_acp_client::AcpTransport::Stdio::process: alloc::sync::Arc<dyn swallowtail_runtime::host_traits::ProcessHandle>
+impl swallowtail_acp_client::AcpTransport
+pub fn swallowtail_acp_client::AcpTransport::remote(swallowtail_transport_acp_remote::RemoteAcpConnection) -> Self
+pub fn swallowtail_acp_client::AcpTransport::stdio(alloc::sync::Arc<dyn swallowtail_runtime::host_traits::ProcessHandle>, swallowtail_protocol_acp::FramingLimits) -> Self
+pub enum swallowtail_acp_client::MessageClassification
+pub swallowtail_acp_client::MessageClassification::ModeAndWarning
+pub swallowtail_acp_client::MessageClassification::Standard
+pub enum swallowtail_acp_client::PlanProjection
+pub swallowtail_acp_client::PlanProjection::Ignore
+pub swallowtail_acp_client::PlanProjection::TaskList
+pub enum swallowtail_acp_client::RequestDisposition
+pub swallowtail_acp_client::RequestDisposition::Handled
+pub swallowtail_acp_client::RequestDisposition::RejectPermission
+pub swallowtail_acp_client::RequestDisposition::Unsupported
+pub enum swallowtail_acp_client::SessionUpdateDisposition
+pub swallowtail_acp_client::SessionUpdateDisposition::Handled
+pub swallowtail_acp_client::SessionUpdateDisposition::RouteToActiveTurn
+pub enum swallowtail_acp_client::StopReasonPolicy
+pub swallowtail_acp_client::StopReasonPolicy::ExtendedProviderStops
+pub swallowtail_acp_client::StopReasonPolicy::Standard
+pub enum swallowtail_acp_client::TurnValidationPolicy
+pub swallowtail_acp_client::TurnValidationPolicy::RejectDeadlineAttachmentsStructured
+pub enum swallowtail_acp_client::UsageProgressPolicy
+pub swallowtail_acp_client::UsageProgressPolicy::EmitProgress
+pub swallowtail_acp_client::UsageProgressPolicy::Silent
+pub struct swallowtail_acp_client::AcpActivityConfig
+pub swallowtail_acp_client::AcpActivityConfig::id_prefix: &'static str
+pub swallowtail_acp_client::AcpActivityConfig::malformed: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpActivityConfig::message_classification: swallowtail_acp_client::MessageClassification
+pub swallowtail_acp_client::AcpActivityConfig::namespace_prefix: &'static str
+pub swallowtail_acp_client::AcpActivityConfig::plan_projection: swallowtail_acp_client::PlanProjection
+impl core::fmt::Debug for swallowtail_acp_client::AcpActivityConfig
+pub fn swallowtail_acp_client::AcpActivityConfig::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_acp_client::AcpActivityProjection
+impl swallowtail_acp_client::AcpActivityProjection
+pub fn swallowtail_acp_client::AcpActivityProjection::complete(&mut self, &swallowtail_runtime::outcome::TerminalStatus) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::activity::record::ActivityObservation>, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpActivityProjection::is_pending_execute(&self, &str) -> bool
+pub fn swallowtail_acp_client::AcpActivityProjection::new(swallowtail_runtime::identity::RuntimeTurnId, swallowtail_acp_client::AcpActivityConfig) -> Self
+pub fn swallowtail_acp_client::AcpActivityProjection::project(&mut self, &swallowtail_protocol_acp::activity::record::AcpSessionUpdate) -> core::result::Result<alloc::vec::Vec<swallowtail_runtime::activity::record::ActivityObservation>, swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_acp_client::AcpConnection
+impl swallowtail_acp_client::AcpConnection
+pub fn swallowtail_acp_client::AcpConnection::active_turn(&self) -> core::option::Option<alloc::sync::Arc<dyn swallowtail_acp_client::AcpTurnSink>>
+pub fn swallowtail_acp_client::AcpConnection::allocate_request_id(&self) -> u64
+pub async fn swallowtail_acp_client::AcpConnection::begin_close(&self)
+pub async fn swallowtail_acp_client::AcpConnection::begin_request(&self, &'static str, serde_json::value::Value) -> core::result::Result<swallowtail_acp_client::PendingResponse, swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::begin_request_with_id(&self, u64, &'static str, serde_json::value::Value) -> core::result::Result<swallowtail_acp_client::PendingResponse, swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::cancel_session(&self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnection::cleanup_outcome(&self) -> swallowtail_runtime::outcome::CleanupOutcome
+pub fn swallowtail_acp_client::AcpConnection::clear_active_turn(&self, &alloc::sync::Arc<dyn swallowtail_acp_client::AcpTurnSink>)
+pub const fn swallowtail_acp_client::AcpConnection::diagnostics(&self) -> &swallowtail_acp_client::AcpDiagnostics
+pub fn swallowtail_acp_client::AcpConnection::emit_protocol_debug(&self, &swallowtail_runtime::failure::RuntimeFailure, &'static str)
+pub async fn swallowtail_acp_client::AcpConnection::initialize(&self) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::initialize_with(&self, serde_json::value::Value, serde_json::value::Value) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnection::is_closed(&self) -> bool
+pub fn swallowtail_acp_client::AcpConnection::new(swallowtail_acp_client::AcpTransport, swallowtail_runtime::host_registry::HostServices, swallowtail_acp_client::AcpDiagnostics, alloc::sync::Arc<dyn swallowtail_acp_client::AcpConnectionHooks>) -> alloc::sync::Arc<Self>
+pub async fn swallowtail_acp_client::AcpConnection::notify(&self, &'static str, serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::pump(alloc::sync::Arc<Self>)
+pub async fn swallowtail_acp_client::AcpConnection::reject_permission(&self, serde_json::value::Value, &serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::request(&self, &'static str, serde_json::value::Value) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::request_with_id(&self, u64, &'static str, serde_json::value::Value) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::send_error(&self, serde_json::value::Value, i64, &'static str) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub async fn swallowtail_acp_client::AcpConnection::send_result(&self, serde_json::value::Value, serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnection::session_id(&self) -> core::option::Option<alloc::string::String>
+pub fn swallowtail_acp_client::AcpConnection::set_active_turn(&self, alloc::sync::Arc<dyn swallowtail_acp_client::AcpTurnSink>) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnection::set_session_id(&self, alloc::string::String) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnection::verify_session(&self, &serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub struct swallowtail_acp_client::AcpDiagnostics
+pub swallowtail_acp_client::AcpDiagnostics::activity: swallowtail_acp_client::AcpActivityConfig
+pub swallowtail_acp_client::AcpDiagnostics::agent_cancel_unsupported: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::callback_unsupported: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::classify_rpc_error: fn(&swallowtail_protocol_acp::RpcError) -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::cleanup_missing: fn() -> swallowtail_core::diagnostic::SafeDiagnostic
+pub swallowtail_acp_client::AcpDiagnostics::connection_closed: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::connection_ended: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::correlation_limit: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::malformed: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::notification_unsupported: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::output_limit_exceeded: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::permission_namespace: fn() -> swallowtail_core::event::ExtensionNamespace
+pub swallowtail_acp_client::AcpDiagnostics::permission_without_turn: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::process_cleanup_failed: fn() -> swallowtail_core::diagnostic::SafeDiagnostic
+pub swallowtail_acp_client::AcpDiagnostics::prompt_stopped: fn() -> swallowtail_core::diagnostic::SafeDiagnostic
+pub swallowtail_acp_client::AcpDiagnostics::protocol_failure: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::resource_release_failed: fn() -> swallowtail_core::diagnostic::SafeDiagnostic
+pub swallowtail_acp_client::AcpDiagnostics::route_name: &'static str
+pub swallowtail_acp_client::AcpDiagnostics::session_duplicate: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::session_mismatch_callback: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::session_mismatch_update: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::stop_reason_unsupported: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::task_join_failed: fn() -> swallowtail_core::diagnostic::SafeDiagnostic
+pub swallowtail_acp_client::AcpDiagnostics::task_service_missing: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::turn_active: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::turn_join_failed: fn() -> swallowtail_core::diagnostic::SafeDiagnostic
+pub swallowtail_acp_client::AcpDiagnostics::unknown_response: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::unsupported: fn(&'static str) -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::update_without_turn: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpDiagnostics::version_mismatch: fn() -> swallowtail_runtime::failure::RuntimeFailure
+impl core::fmt::Debug for swallowtail_acp_client::AcpDiagnostics
+pub fn swallowtail_acp_client::AcpDiagnostics::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_acp_client::AcpMcpDiagnostics
+pub swallowtail_acp_client::AcpMcpDiagnostics::http_invalid: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpMcpDiagnostics::name_collision: fn() -> swallowtail_runtime::failure::RuntimeFailure
+pub swallowtail_acp_client::AcpMcpDiagnostics::reserved_name: &'static str
+impl core::fmt::Debug for swallowtail_acp_client::AcpMcpDiagnostics
+pub fn swallowtail_acp_client::AcpMcpDiagnostics::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_acp_client::AcpRemoteMcpPlacement
+impl swallowtail_acp_client::AcpRemoteMcpPlacement
+pub fn swallowtail_acp_client::AcpRemoteMcpPlacement::headers(&self) -> &[(alloc::string::String, alloc::string::String)]
+pub fn swallowtail_acp_client::AcpRemoteMcpPlacement::name(&self) -> &str
+pub fn swallowtail_acp_client::AcpRemoteMcpPlacement::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+pub fn swallowtail_acp_client::AcpRemoteMcpPlacement::to_acp_http_value(&self, &swallowtail_acp_client::AcpMcpDiagnostics) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpRemoteMcpPlacement::url(&self) -> &str
+impl core::fmt::Debug for swallowtail_acp_client::AcpRemoteMcpPlacement
+pub fn swallowtail_acp_client::AcpRemoteMcpPlacement::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_acp_client::AcpSessionConfig
+pub swallowtail_acp_client::AcpSessionConfig::scope_prefix: &'static str
+pub swallowtail_acp_client::AcpSessionConfig::turn_config: swallowtail_acp_client::ActiveTurnConfig
+pub swallowtail_acp_client::AcpSessionConfig::turn_validation: swallowtail_acp_client::TurnValidationPolicy
+impl swallowtail_acp_client::AcpSessionConfig
+pub const fn swallowtail_acp_client::AcpSessionConfig::new(&'static str, swallowtail_acp_client::AcpDiagnostics) -> Self
+pub struct swallowtail_acp_client::AcpSessionHandle
+impl swallowtail_acp_client::AcpSessionHandle
+pub fn swallowtail_acp_client::AcpSessionHandle::with_negotiated_model_options(self, core::option::Option<swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>) -> Self
+impl swallowtail_runtime::handles::InteractiveSessionHandle for swallowtail_acp_client::AcpSessionHandle
+pub fn swallowtail_acp_client::AcpSessionHandle::cancellation(&self) -> &dyn swallowtail_runtime::cancellation::CancellationControl
+pub fn swallowtail_acp_client::AcpSessionHandle::close(alloc::boxed::Box<Self>, swallowtail_runtime::session_cleanup::SessionCleanupRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+pub fn swallowtail_acp_client::AcpSessionHandle::negotiated_model_options(&self) -> core::option::Option<&swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>
+pub fn swallowtail_acp_client::AcpSessionHandle::provider_session_ref(&self) -> core::option::Option<&swallowtail_core::provider_reference::SessionRef>
+pub fn swallowtail_acp_client::AcpSessionHandle::request_id(&self) -> &swallowtail_runtime::identity::RequestId
+pub fn swallowtail_acp_client::AcpSessionHandle::resume_binding(&self) -> core::option::Option<&swallowtail_runtime::session_binding::SessionResumeBinding>
+pub fn swallowtail_acp_client::AcpSessionHandle::session_id(&self) -> &swallowtail_runtime::identity::RuntimeSessionId
+pub fn swallowtail_acp_client::AcpSessionHandle::start_turn<'a>(&'a mut self, swallowtail_runtime::roles::TurnRequest, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'a, core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::handles::TurnHandle>, swallowtail_runtime::failure::RuntimeFailure>>
+pub struct swallowtail_acp_client::AcpSessionOpenContext
+pub swallowtail_acp_client::AcpSessionOpenContext::config: swallowtail_acp_client::AcpSessionConfig
+pub swallowtail_acp_client::AcpSessionOpenContext::execution_host_id: swallowtail_core::runtime_identity::ExecutionHostId
+pub swallowtail_acp_client::AcpSessionOpenContext::request_id: swallowtail_runtime::identity::RequestId
+pub swallowtail_acp_client::AcpSessionOpenContext::resource: swallowtail_runtime::host_traits::ResourceLease
+pub swallowtail_acp_client::AcpSessionOpenContext::scope: swallowtail_runtime::identity::ScopeId
+pub swallowtail_acp_client::AcpSessionOpenContext::services: swallowtail_runtime::host_registry::HostServices
+pub struct swallowtail_acp_client::AcpTurnHandle
+impl swallowtail_runtime::handles::TurnHandle for swallowtail_acp_client::AcpTurnHandle
+pub fn swallowtail_acp_client::AcpTurnHandle::cancellation(&self) -> &dyn swallowtail_runtime::cancellation::CancellationControl
+pub fn swallowtail_acp_client::AcpTurnHandle::close(alloc::boxed::Box<Self>) -> swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::CleanupOutcome>
+pub fn swallowtail_acp_client::AcpTurnHandle::provider_turn_ref(&self) -> core::option::Option<&swallowtail_core::provider_reference::TurnRef>
+pub fn swallowtail_acp_client::AcpTurnHandle::take_events(&mut self) -> core::option::Option<swallowtail_runtime::async_types::BoxEventStream>
+pub fn swallowtail_acp_client::AcpTurnHandle::take_terminal_outcome(&mut self) -> core::option::Option<swallowtail_runtime::async_types::BoxFuture<'static, swallowtail_runtime::outcome::TerminalOutcome>>
+pub fn swallowtail_acp_client::AcpTurnHandle::turn_id(&self) -> &swallowtail_runtime::identity::RuntimeTurnId
+pub struct swallowtail_acp_client::ActiveTurn
+impl swallowtail_acp_client::ActiveTurn
+pub fn swallowtail_acp_client::ActiveTurn::new(swallowtail_runtime::identity::RuntimeTurnId, alloc::string::String, swallowtail_acp_client::ActiveTurnConfig) -> core::result::Result<(alloc::sync::Arc<Self>, swallowtail_runtime::async_types::BoxEventStream, swallowtail_runtime::outcome::TerminalOutcomeFuture), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::was_cancelled(&self) -> bool
+impl swallowtail_acp_client::AcpTurnSink for swallowtail_acp_client::ActiveTurn
+pub fn swallowtail_acp_client::ActiveTurn::fail(&self, &swallowtail_runtime::failure::RuntimeFailure)
+pub fn swallowtail_acp_client::ActiveTurn::finish_prompt(&self, &str)
+pub fn swallowtail_acp_client::ActiveTurn::handle_update(&self, &serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::is_finished(&self) -> bool
+pub fn swallowtail_acp_client::ActiveTurn::mark_cancelled(&self)
+pub fn swallowtail_acp_client::ActiveTurn::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::session_id(&self) -> &str
+pub struct swallowtail_acp_client::ActiveTurnConfig
+pub swallowtail_acp_client::ActiveTurnConfig::diagnostics: swallowtail_acp_client::AcpDiagnostics
+pub swallowtail_acp_client::ActiveTurnConfig::stop_reason_policy: swallowtail_acp_client::StopReasonPolicy
+pub swallowtail_acp_client::ActiveTurnConfig::usage_progress_policy: swallowtail_acp_client::UsageProgressPolicy
+impl swallowtail_acp_client::ActiveTurnConfig
+pub const fn swallowtail_acp_client::ActiveTurnConfig::new(swallowtail_acp_client::AcpDiagnostics) -> Self
+pub const fn swallowtail_acp_client::ActiveTurnConfig::with_stop_reason_policy(self, swallowtail_acp_client::StopReasonPolicy) -> Self
+pub const fn swallowtail_acp_client::ActiveTurnConfig::with_usage_progress_policy(self, swallowtail_acp_client::UsageProgressPolicy) -> Self
+pub struct swallowtail_acp_client::PendingResponse
+impl core::future::future::Future for swallowtail_acp_client::PendingResponse
+pub type swallowtail_acp_client::PendingResponse::Output = core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::PendingResponse::poll(core::pin::Pin<&mut Self>, &mut core::task::wake::Context<'_>) -> core::task::poll::Poll<Self::Output>
+pub struct swallowtail_acp_client::SessionCancellation
+impl swallowtail_acp_client::SessionCancellation
+pub fn swallowtail_acp_client::SessionCancellation::new(alloc::sync::Arc<swallowtail_acp_client::AcpConnection>) -> Self
+impl swallowtail_runtime::cancellation::CancellationControl for swallowtail_acp_client::SessionCancellation
+pub fn swallowtail_acp_client::SessionCancellation::request(&self) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::cancellation::CancellationAcknowledgement, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_acp_client::SessionCancellation::scope(&self) -> swallowtail_core::requirement::CancellationScope
+pub struct swallowtail_acp_client::StandardAcpHooks
+impl swallowtail_acp_client::AcpConnectionHooks for swallowtail_acp_client::StandardAcpHooks
+pub fn swallowtail_acp_client::StandardAcpHooks::handle_request<'a>(&'a self, &'a swallowtail_acp_client::AcpConnection, serde_json::value::Value, &'a str, &'a serde_json::value::Value) -> swallowtail_runtime::async_types::BoxFuture<'a, core::result::Result<swallowtail_acp_client::RequestDisposition, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_batch_complete(&self)
+pub fn swallowtail_acp_client::StandardAcpHooks::on_begin_close<'a>(&'a self, &'a swallowtail_acp_client::AcpConnection) -> swallowtail_runtime::async_types::BoxFuture<'a, ()>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_notification(&self, &str, &serde_json::value::Value) -> core::result::Result<bool, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_response(&self, u64, &core::result::Result<serde_json::value::Value, swallowtail_protocol_acp::RpcError>)
+pub fn swallowtail_acp_client::StandardAcpHooks::on_session_update(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_acp_client::SessionUpdateDisposition, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_transport_ended<'a>(&'a self, &'a swallowtail_runtime::failure::RuntimeFailure) -> swallowtail_runtime::async_types::BoxFuture<'a, ()>
+pub struct swallowtail_acp_client::TurnCancellation
+impl swallowtail_acp_client::TurnCancellation
+pub fn swallowtail_acp_client::TurnCancellation::new(alloc::sync::Arc<swallowtail_acp_client::AcpConnection>, alloc::string::String, alloc::sync::Arc<dyn swallowtail_acp_client::AcpTurnSink>) -> Self
+impl swallowtail_runtime::cancellation::CancellationControl for swallowtail_acp_client::TurnCancellation
+pub fn swallowtail_acp_client::TurnCancellation::request(&self) -> swallowtail_runtime::async_types::BoxFuture<'_, core::result::Result<swallowtail_runtime::cancellation::CancellationAcknowledgement, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_acp_client::TurnCancellation::scope(&self) -> swallowtail_core::requirement::CancellationScope
+pub trait swallowtail_acp_client::AcpConnectionHooks: core::marker::Send + core::marker::Sync
+pub fn swallowtail_acp_client::AcpConnectionHooks::handle_request<'a>(&'a self, &'a swallowtail_acp_client::AcpConnection, serde_json::value::Value, &'a str, &'a serde_json::value::Value) -> swallowtail_runtime::async_types::BoxFuture<'a, core::result::Result<swallowtail_acp_client::RequestDisposition, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_acp_client::AcpConnectionHooks::on_batch_complete(&self)
+pub fn swallowtail_acp_client::AcpConnectionHooks::on_begin_close<'a>(&'a self, &'a swallowtail_acp_client::AcpConnection) -> swallowtail_runtime::async_types::BoxFuture<'a, ()>
+pub fn swallowtail_acp_client::AcpConnectionHooks::on_notification(&self, &str, &serde_json::value::Value) -> core::result::Result<bool, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnectionHooks::on_response(&self, u64, &core::result::Result<serde_json::value::Value, swallowtail_protocol_acp::RpcError>)
+pub fn swallowtail_acp_client::AcpConnectionHooks::on_session_update(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_acp_client::SessionUpdateDisposition, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpConnectionHooks::on_transport_ended<'a>(&'a self, &'a swallowtail_runtime::failure::RuntimeFailure) -> swallowtail_runtime::async_types::BoxFuture<'a, ()>
+impl swallowtail_acp_client::AcpConnectionHooks for swallowtail_acp_client::StandardAcpHooks
+pub fn swallowtail_acp_client::StandardAcpHooks::handle_request<'a>(&'a self, &'a swallowtail_acp_client::AcpConnection, serde_json::value::Value, &'a str, &'a serde_json::value::Value) -> swallowtail_runtime::async_types::BoxFuture<'a, core::result::Result<swallowtail_acp_client::RequestDisposition, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_batch_complete(&self)
+pub fn swallowtail_acp_client::StandardAcpHooks::on_begin_close<'a>(&'a self, &'a swallowtail_acp_client::AcpConnection) -> swallowtail_runtime::async_types::BoxFuture<'a, ()>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_notification(&self, &str, &serde_json::value::Value) -> core::result::Result<bool, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_response(&self, u64, &core::result::Result<serde_json::value::Value, swallowtail_protocol_acp::RpcError>)
+pub fn swallowtail_acp_client::StandardAcpHooks::on_session_update(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_acp_client::SessionUpdateDisposition, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::StandardAcpHooks::on_transport_ended<'a>(&'a self, &'a swallowtail_runtime::failure::RuntimeFailure) -> swallowtail_runtime::async_types::BoxFuture<'a, ()>
+pub trait swallowtail_acp_client::AcpTurnSink: core::marker::Send + core::marker::Sync
+pub fn swallowtail_acp_client::AcpTurnSink::fail(&self, &swallowtail_runtime::failure::RuntimeFailure)
+pub fn swallowtail_acp_client::AcpTurnSink::finish_prompt(&self, &str)
+pub fn swallowtail_acp_client::AcpTurnSink::handle_update(&self, &serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpTurnSink::is_finished(&self) -> bool
+pub fn swallowtail_acp_client::AcpTurnSink::mark_cancelled(&self)
+pub fn swallowtail_acp_client::AcpTurnSink::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpTurnSink::session_id(&self) -> &str
+impl swallowtail_acp_client::AcpTurnSink for swallowtail_acp_client::ActiveTurn
+pub fn swallowtail_acp_client::ActiveTurn::fail(&self, &swallowtail_runtime::failure::RuntimeFailure)
+pub fn swallowtail_acp_client::ActiveTurn::finish_prompt(&self, &str)
+pub fn swallowtail_acp_client::ActiveTurn::handle_update(&self, &serde_json::value::Value) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::is_finished(&self) -> bool
+pub fn swallowtail_acp_client::ActiveTurn::mark_cancelled(&self)
+pub fn swallowtail_acp_client::ActiveTurn::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::session_id(&self) -> &str
+pub fn swallowtail_acp_client::default_permission_namespace() -> swallowtail_core::event::ExtensionNamespace
+pub async fn swallowtail_acp_client::open_acp_session<F, Fut>(swallowtail_acp_client::AcpTransport, swallowtail_acp_client::AcpSessionOpenContext, F) -> core::result::Result<swallowtail_acp_client::AcpSessionHandle, alloc::boxed::Box<(swallowtail_runtime::failure::RuntimeFailure, swallowtail_runtime::host_traits::ResourceLease)>> where F: core::ops::function::FnOnce(alloc::sync::Arc<swallowtail_acp_client::AcpConnection>) -> Fut, Fut: core::future::future::Future<Output = core::result::Result<alloc::string::String, swallowtail_runtime::failure::RuntimeFailure>>
+pub async fn swallowtail_acp_client::open_acp_session_with_hooks<F, Fut>(swallowtail_acp_client::AcpTransport, swallowtail_acp_client::AcpSessionOpenContext, alloc::sync::Arc<dyn swallowtail_acp_client::AcpConnectionHooks>, F) -> core::result::Result<swallowtail_acp_client::AcpSessionHandle, alloc::boxed::Box<(swallowtail_runtime::failure::RuntimeFailure, swallowtail_runtime::host_traits::ResourceLease)>> where F: core::ops::function::FnOnce(alloc::sync::Arc<swallowtail_acp_client::AcpConnection>) -> Fut, Fut: core::future::future::Future<Output = core::result::Result<alloc::string::String, swallowtail_runtime::failure::RuntimeFailure>>
+pub fn swallowtail_acp_client::production_mcp_servers(core::option::Option<&swallowtail_acp_client::AcpRemoteMcpPlacement>, &swallowtail_acp_client::AcpMcpDiagnostics) -> core::result::Result<serde_json::value::Value, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::redacted_mcp_servers_debug(&serde_json::value::Value) -> serde_json::value::Value
+pub fn swallowtail_acp_client::text_content(&swallowtail_protocol_acp::activity::content_record::AcpContentBlock, fn() -> swallowtail_runtime::failure::RuntimeFailure) -> core::result::Result<&str, swallowtail_runtime::failure::RuntimeFailure>

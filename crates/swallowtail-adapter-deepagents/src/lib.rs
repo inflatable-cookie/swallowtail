@@ -12,16 +12,13 @@
 #![deny(missing_docs)]
 
 mod access;
-mod acp_activity;
 mod command;
-mod connection;
 mod consumer_route_projection;
 mod discovery;
 mod driver;
 mod failure;
 mod prepared;
 mod selection;
-mod turn;
 
 pub use access::{
     DEEPAGENTS_PROVIDER_API_KEY_AUDIENCE, deepagents_provider_api_key_access_profile,

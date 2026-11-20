@@ -290,6 +290,38 @@ fn emit_remote_failure_debug(services: &HostServices, error: &RemoteAcpError, st
     services.emit_failure_debug(kind, ROUTE, stage, diagnostic.code(), diagnostic.message());
 }
 
+/// Cloneable sender handle for sending messages and control signals on a [`RemoteAcpConnection`].
+#[derive(Clone)]
+pub struct RemoteAcpSender {
+    commands: mpsc::Sender<WorkerCommand>,
+}
+
+impl RemoteAcpSender {
+    /// Sends one ACP message to the peer.
+    pub async fn send(&self, message: Message) -> Result<(), RemoteAcpError> {
+        let mut commands = self.commands.clone();
+        commands
+            .send(WorkerCommand::Send(message))
+            .await
+            .map_err(|_| transport_error())
+    }
+
+    /// Requests cancellation of the connection worker.
+    pub async fn cancel(&self) -> Result<(), RemoteAcpError> {
+        let mut commands = self.commands.clone();
+        commands
+            .send(WorkerCommand::Cancel)
+            .await
+            .map_err(|_| transport_error())
+    }
+
+    /// Signals the connection worker to close.
+    pub async fn request_close(&self) {
+        let mut commands = self.commands.clone();
+        let _ = commands.send(WorkerCommand::Close).await;
+    }
+}
+
 #[must_use = "remote ACP connections must be closed and joined"]
 /// Owned remote ACP connection with bounded send and receive streams.
 pub struct RemoteAcpConnection {
@@ -302,6 +334,14 @@ pub struct RemoteAcpConnection {
 }
 
 impl RemoteAcpConnection {
+    /// Returns a cloneable sender handle for concurrent full-duplex writes.
+    #[must_use]
+    pub fn sender(&self) -> RemoteAcpSender {
+        RemoteAcpSender {
+            commands: self.commands.clone(),
+        }
+    }
+
     /// Sends one ACP message to the peer.
     pub async fn send(&mut self, message: Message) -> Result<(), RemoteAcpError> {
         self.commands

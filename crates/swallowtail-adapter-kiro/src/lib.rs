@@ -9,9 +9,7 @@
 #![deny(missing_docs)]
 
 mod access;
-mod acp_activity;
 mod command;
-mod connection;
 mod consumer_route_projection;
 mod discovery;
 mod driver;
@@ -19,7 +17,6 @@ mod failure;
 mod mcp;
 mod prepared;
 mod selection;
-mod turn;
 
 pub use access::{KIRO_LOCAL_ACCOUNT_AUDIENCE, kiro_local_account_access_profile};
 pub use driver::{KiroAcpDriver, kiro_acp_descriptor};

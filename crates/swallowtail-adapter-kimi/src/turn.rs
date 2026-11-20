@@ -185,6 +185,36 @@ impl ActiveTurn {
     }
 }
 
+impl swallowtail_acp_client::AcpTurnSink for ActiveTurn {
+    fn session_id(&self) -> &str {
+        &self.session_id
+    }
+    fn is_finished(&self) -> bool {
+        self.is_finished()
+    }
+    fn mark_cancelled(&self) {
+        self.mark_cancelled();
+    }
+    fn observe_permission(
+        &self,
+        _provider_request_id: &Value,
+    ) -> Result<swallowtail_runtime::ProviderRequestObservation, RuntimeFailure> {
+        Err(failure(
+            "swallowtail.kimi.acp.callback_unsupported",
+            "Kimi Code requested an unsupported ACP client callback",
+        ))
+    }
+    fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
+        self.handle_update(params)
+    }
+    fn finish_prompt(&self, stop_reason: &str) {
+        self.finish_prompt(stop_reason);
+    }
+    fn fail(&self, error: &RuntimeFailure) {
+        self.fail(error);
+    }
+}
+
 fn text_content(content: &AcpContentBlock) -> Result<&str, RuntimeFailure> {
     match content {
         AcpContentBlock::Text(text) => Ok(text.as_str()),

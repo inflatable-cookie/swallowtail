@@ -25,6 +25,7 @@ pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::cancel(&mut 
 pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::close(self) -> swallowtail_runtime::outcome::CleanupOutcome
 pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::next_event(&mut self) -> core::option::Option<core::result::Result<swallowtail_protocol_acp::Message, swallowtail_transport_acp_remote::RemoteAcpError>>
 pub async fn swallowtail_transport_acp_remote::RemoteAcpConnection::send(&mut self, swallowtail_protocol_acp::Message) -> core::result::Result<(), swallowtail_transport_acp_remote::RemoteAcpError>
+pub fn swallowtail_transport_acp_remote::RemoteAcpConnection::sender(&self) -> swallowtail_transport_acp_remote::RemoteAcpSender
 pub struct swallowtail_transport_acp_remote::RemoteAcpError
 impl swallowtail_transport_acp_remote::RemoteAcpError
 pub const fn swallowtail_transport_acp_remote::RemoteAcpError::diagnostic(&self) -> &swallowtail_core::diagnostic::SafeDiagnostic
@@ -32,3 +33,8 @@ pub const fn swallowtail_transport_acp_remote::RemoteAcpError::kind(&self) -> sw
 impl core::error::Error for swallowtail_transport_acp_remote::RemoteAcpError
 impl core::fmt::Display for swallowtail_transport_acp_remote::RemoteAcpError
 pub fn swallowtail_transport_acp_remote::RemoteAcpError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_transport_acp_remote::RemoteAcpSender
+impl swallowtail_transport_acp_remote::RemoteAcpSender
+pub async fn swallowtail_transport_acp_remote::RemoteAcpSender::cancel(&self) -> core::result::Result<(), swallowtail_transport_acp_remote::RemoteAcpError>
+pub async fn swallowtail_transport_acp_remote::RemoteAcpSender::request_close(&self)
+pub async fn swallowtail_transport_acp_remote::RemoteAcpSender::send(&self, swallowtail_protocol_acp::Message) -> core::result::Result<(), swallowtail_transport_acp_remote::RemoteAcpError>

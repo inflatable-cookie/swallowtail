@@ -1,4 +1,5 @@
 release_internal_patch_packages=(
+  swallowtail-acp-client
   swallowtail-core
   swallowtail-host-local
   swallowtail-idioms
@@ -39,6 +40,7 @@ release_stage_4=(
   swallowtail-testkit
   swallowtail-transport-acp-remote
   swallowtail-transport-http
+  swallowtail-acp-client
   swallowtail-adapter-alibaba-model-studio
   swallowtail-adapter-anthropic
   swallowtail-adapter-antigravity

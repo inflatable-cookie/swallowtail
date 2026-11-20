@@ -1,33 +1,222 @@
 use super::{
     command::arguments,
-    connection::AcpConnection,
-    failure::{failure, malformed, unsupported},
+    failure::{failure, malformed, protocol_failure, unsupported},
     mcp::{
         OpenCodeAcpRemoteMcpPlacement, OpenCodeAcpStdioMcpServer, entry_conflict,
         production_mcp_servers,
     },
-    turn::ActiveTurn,
 };
 use serde_json::{Value, json};
-use std::sync::{
-    Arc, Mutex,
-    atomic::{AtomicBool, Ordering},
+use std::sync::Arc;
+use swallowtail_acp_client::{
+    AcpActivityConfig, AcpConnection, AcpConnectionHooks, AcpDiagnostics, AcpSessionConfig,
+    AcpSessionHandle, AcpSessionOpenContext, AcpTransport, MessageClassification, PlanProjection,
+    default_permission_namespace, open_acp_session_with_hooks,
 };
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, CredentialMechanism,
-    DriverDescriptor, DriverRole, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
-    HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy, SessionRef, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess, ResourceRepresentation,
+    SafeDiagnostic, SessionAccessPolicy, TransportFamilyId,
 };
+use swallowtail_protocol_acp::{DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits};
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, OpenSessionRequest, ProcessHandle, ProcessRequest,
-    RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
+    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
+    InteractiveSessionHandle, OpenSessionRequest, ProcessHandle, ProcessRequest, ResourceLease,
+    ResumeSessionRequest, RuntimeFailure, ScopeId, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.opencode.acp";
+const RECEIVE_FRAMING_LIMITS: FramingLimits =
+    FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
+
+struct OpenCodeAcpHooks;
+
+impl AcpConnectionHooks for OpenCodeAcpHooks {
+    fn on_begin_close<'a>(&'a self, connection: &'a AcpConnection) -> BoxFuture<'a, ()> {
+        Box::pin(async move {
+            if let Some(session_id) = connection.session_id()
+                && let Ok(close) = connection
+                    .begin_request("session/close", json!({"sessionId": session_id}))
+                    .await
+            {
+                drop(close);
+            }
+        })
+    }
+}
+
+fn opencode_acp_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "opencode.acp",
+        activity: AcpActivityConfig {
+            id_prefix: "opencode-acp",
+            namespace_prefix: "opencode.acp",
+            plan_projection: PlanProjection::Ignore,
+            message_classification: MessageClassification::Standard,
+            malformed,
+        },
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.opencode.acp.version_mismatch",
+                "OpenCode answered a provider-fixed ACP protocolVersion other than 1",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.opencode.acp.connection_closed",
+                "OpenCode ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.opencode.acp.correlation_limit",
+                "OpenCode ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.opencode.acp.session_duplicate",
+                "OpenCode returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.opencode.acp.turn_active",
+                "OpenCode session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.opencode.acp.unknown_response",
+                "OpenCode returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.opencode.acp.update_without_turn",
+                "OpenCode updated a session without an active turn",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.opencode.acp.agent_cancel_unsupported",
+                "OpenCode sent an unsupported client cancellation notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.opencode.acp.notification_unsupported",
+                "OpenCode sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.opencode.acp.callback_unsupported",
+                "OpenCode requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.opencode.acp.permission_without_turn",
+                "OpenCode requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.opencode.acp.session_mismatch",
+                "OpenCode callback does not match the active session",
+            )
+        },
+        session_mismatch_update: || {
+            failure(
+                "swallowtail.opencode.acp.session_mismatch",
+                "OpenCode update does not match the active session",
+            )
+        },
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.opencode.acp.process_cleanup_failed",
+                "OpenCode process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.opencode.acp.cleanup_missing",
+                "OpenCode process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.opencode.acp.connection_ended",
+                "OpenCode ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.opencode.acp.output_limit_exceeded",
+                "OpenCode output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.opencode.acp.prompt_stopped",
+                "OpenCode stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.opencode.acp.stop_reason_unsupported",
+                "OpenCode returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.opencode.acp.task_service_missing",
+                "OpenCode ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.opencode.acp.task_join_failed",
+                "OpenCode ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.opencode.acp.turn_join_failed",
+                "OpenCode ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.opencode.acp.resource_release_failed",
+                "OpenCode ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |error| {
+            let message = error.message().to_ascii_lowercase();
+            if message.contains("unauthorized")
+                || message.contains("unauthenticated")
+                || message.contains("not logged in")
+            {
+                failure(
+                    "swallowtail.opencode.acp.host_auth_required",
+                    "OpenCode ACP requires host-owned OpenCode login before session work",
+                )
+            } else {
+                failure(
+                    "swallowtail.opencode.acp.request_rejected",
+                    "OpenCode rejected an ACP request",
+                )
+            }
+        },
+        permission_namespace: default_permission_namespace,
+        unsupported,
+    }
+}
 
 /// Low-level interactive driver for the installed OpenCode ACP agent.
 pub struct OpenCodeAcpDriver {
@@ -230,7 +419,7 @@ impl OpenCodeAcpDriver {
         scope: ScopeId,
         resource: ResourceLease,
         selected: super::selection::OpenCodeAcpPlanSelection,
-    ) -> Result<OpenCodeAcpSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
+    ) -> Result<AcpSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -256,83 +445,35 @@ impl OpenCodeAcpDriver {
                 Ok(process) => Arc::from(process),
                 Err(error) => return Err(Box::new((error, resource))),
             };
-        let connection = AcpConnection::new(Arc::clone(&process), services.clone());
-        let pump_connection = Arc::clone(&connection);
-        let task_service = services.task().cloned().expect("validated task service");
-        let pump_task = match task_service
-            .spawn(scope, Box::pin(async move { pump_connection.pump().await }))
-        {
-            Ok(task) => task,
-            Err(error) => {
-                let _ = process.force_stop().await;
-                let _ = process.wait().await;
-                return Err(Box::new((error, resource)));
-            }
-        };
-        let opened = async {
-            let initialize = connection.initialize().await?;
-            validate_initialize(&initialize, selected.version())?;
-            let mcp_servers =
-                production_mcp_servers(self.stdio_mcp.as_ref(), self.http_mcp.as_ref())?;
-            connection
-                .request(
-                    "session/new",
-                    json!({"cwd": cwd, "mcpServers": mcp_servers}),
-                )
-                .await
-                .and_then(parse_new_session)
-        }
-        .await;
-        let provider_id = match opened {
-            Ok(provider_id) => provider_id,
-            Err(error) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((error, resource)));
-            }
-        };
-        if let Err(error) = connection.set_session_id(provider_id.clone()) {
-            connection.begin_close().await;
-            let _ = pump_task.join().await;
-            return Err(Box::new((error, resource)));
-        }
-        let provider_ref = match SessionRef::new(&provider_id) {
-            Ok(provider_ref) => provider_ref,
-            Err(_) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((malformed(), resource)));
-            }
-        };
-        let runtime_id = match RuntimeSessionId::new(format!(
-            "opencode-acp:{}",
-            request.request_id().as_str()
-        )) {
-            Ok(runtime_id) => runtime_id,
-            Err(_) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((malformed(), resource)));
-            }
-        };
-        let active = Arc::new(Mutex::new(None));
-        Ok(OpenCodeAcpSessionHandle {
-            request_id: request.request_id().clone(),
-            runtime_id,
-            provider_ref,
-            provider_id,
-            execution_host_id: plan.execution_host_id().clone(),
-            connection: Arc::clone(&connection),
-            cancellation: SessionCancellation::new(connection),
-            pump_task: Some(pump_task),
-            services: services.clone(),
-            resource: Some(resource),
-            active,
-        })
+        let transport = AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS);
+        let stdio_mcp = self.stdio_mcp.clone();
+        let http_mcp = self.http_mcp.clone();
+        open_acp_session_with_hooks(
+            transport,
+            AcpSessionOpenContext {
+                scope,
+                request_id: request.request_id().clone(),
+                execution_host_id: plan.execution_host_id().clone(),
+                resource,
+                services: services.clone(),
+                config: AcpSessionConfig::new("opencode-acp", opencode_acp_diagnostics()),
+            },
+            Arc::new(OpenCodeAcpHooks),
+            move |connection| async move {
+                let initialize = connection.initialize().await?;
+                validate_initialize(&initialize, selected.version())?;
+                let mcp_servers = production_mcp_servers(stdio_mcp.as_ref(), http_mcp.as_ref())?;
+                connection
+                    .request(
+                        "session/new",
+                        json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                    )
+                    .await
+                    .and_then(parse_new_session)
+            },
+        )
+        .await
     }
 }
 
 include!("driver/validation.rs");
-include!("driver/cancellation.rs");
-include!("driver/turn_handle.rs");
-include!("driver/session.rs");

@@ -2807,6 +2807,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 
 [[package]]
+name = "swallowtail-acp-client"
+version = "0.6.0"
+dependencies = [
+ "futures-channel",
+ "futures-executor",
+ "serde_json",
+ "swallowtail-core",
+ "swallowtail-protocol-acp",
+ "swallowtail-runtime",
+ "swallowtail-testkit",
+ "swallowtail-transport-acp-remote",
+ "url",
+]
+
+[[package]]
 name = "swallowtail-adapter-alibaba-model-studio"
 version = "0.6.0"
 dependencies = [
@@ -2888,6 +2903,7 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-protocol-acp",
@@ -2910,6 +2926,7 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
@@ -2961,12 +2978,12 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
- "url",
 ]
 
 [[package]]
@@ -2978,6 +2995,7 @@ dependencies = [
  "futures-util",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
@@ -2994,6 +3012,7 @@ dependencies = [
  "futures-util",
  "semver",
  "serde_json",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
@@ -3047,6 +3066,7 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-protocol-acp",
@@ -3069,11 +3089,11 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
- "url",
 ]
 
 [[package]]
@@ -3087,6 +3107,7 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-protocol-acp",
@@ -3105,6 +3126,7 @@ dependencies = [
  "semver",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
@@ -3141,11 +3163,11 @@ dependencies = [
  "futures-util",
  "semver",
  "serde_json",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-protocol-acp",
  "swallowtail-runtime",
  "swallowtail-testkit",
- "url",
 ]
 
 [[package]]
@@ -3264,6 +3286,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.9",
+ "swallowtail-acp-client",
  "swallowtail-core",
  "swallowtail-host-local",
  "swallowtail-protocol-acp",

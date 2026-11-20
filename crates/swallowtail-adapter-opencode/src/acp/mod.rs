@@ -1,9 +1,7 @@
 //! OpenCode ACP stdio route, kept unflattened from the attached HTTP family.
 
 mod access;
-mod activity;
 mod command;
-mod connection;
 mod consumer_route_projection;
 mod discovery;
 mod driver;
@@ -11,7 +9,6 @@ mod failure;
 mod mcp;
 mod prepared;
 mod selection;
-mod turn;
 
 pub use access::{OPENCODE_ACP_HOST_ACCOUNT_AUDIENCE, opencode_acp_host_account_access_profile};
 pub use driver::{OpenCodeAcpDriver, opencode_acp_descriptor};

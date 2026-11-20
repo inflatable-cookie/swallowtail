@@ -7,10 +7,16 @@
 
 use serde_json::{Value, json};
 use std::fmt;
+use swallowtail_acp_client::{AcpMcpDiagnostics, AcpRemoteMcpPlacement};
 use swallowtail_runtime::RuntimeFailure;
-use url::Url;
 
 use super::failure::failure;
+
+const MCP_DIAGNOSTICS: AcpMcpDiagnostics = AcpMcpDiagnostics {
+    reserved_name: OPENCODE_ACP_MCP_SERVER_NAME,
+    name_collision,
+    http_invalid,
+};
 
 /// Reserved ACP `mcpServers` name owned by this route.
 pub const OPENCODE_ACP_MCP_SERVER_NAME: &str = "swallowtail-opencode-acp";
@@ -186,32 +192,8 @@ impl OpenCodeAcpRemoteMcpPlacement {
                 "OpenCode ACP models sse MCP entries but emits the http form only",
             ));
         }
-        if self.name.is_empty() {
-            return Err(http_invalid());
-        }
-        if self.name != OPENCODE_ACP_MCP_SERVER_NAME {
-            return Err(name_collision());
-        }
-        if !absolute_http_url(&self.url) {
-            return Err(http_invalid());
-        }
-        if self
-            .headers
-            .iter()
-            .any(|(name, _)| !header_name_is_well_formed(name))
-        {
-            return Err(http_invalid());
-        }
-        Ok(json!({
-            "type": "http",
-            "name": self.name,
-            "url": self.url,
-            "headers": self
-                .headers
-                .iter()
-                .map(|(name, value)| json!({"name": name, "value": value}))
-                .collect::<Vec<_>>(),
-        }))
+        AcpRemoteMcpPlacement::new(self.name.clone(), self.url.clone(), self.headers.clone())
+            .to_acp_http_value(&MCP_DIAGNOSTICS)
     }
 }
 
@@ -328,38 +310,6 @@ fn http_invalid() -> RuntimeFailure {
         "swallowtail.opencode.acp.mcp_http_invalid",
         "OpenCode ACP HTTP MCP declarations require a non-empty name, an absolute http or https URL, and well-formed header names",
     )
-}
-
-fn absolute_http_url(raw: &str) -> bool {
-    Url::parse(raw)
-        .is_ok_and(|parsed| matches!(parsed.scheme(), "http" | "https") && parsed.has_host())
-}
-
-fn header_name_is_well_formed(name: &str) -> bool {
-    !name.is_empty()
-        && name.bytes().all(|byte| {
-            matches!(
-                byte,
-                b'!'
-                    | b'#'
-                    | b'$'
-                    | b'%'
-                    | b'&'
-                    | b'\''
-                    | b'*'
-                    | b'+'
-                    | b'-'
-                    | b'.'
-                    | b'^'
-                    | b'_'
-                    | b'`'
-                    | b'|'
-                    | b'~'
-                    | b'0'..=b'9'
-                    | b'A'..=b'Z'
-                    | b'a'..=b'z'
-            )
-        })
 }
 
 #[cfg(test)]

@@ -22,6 +22,7 @@ futures-core.workspace = true
 semver.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
+swallowtail-acp-client.workspace = true
 swallowtail-core.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-protocol-acp.workspace = true

@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "crates/swallowtail-acp-client",
   "crates/swallowtail-adapter-alibaba-model-studio",
   "crates/swallowtail-adapter-anthropic",
   "crates/swallowtail-adapter-antigravity",
@@ -53,6 +54,7 @@ publish = false
 rust-version = "1.95"
 
 [workspace.dependencies]
+swallowtail-acp-client = { path = "crates/swallowtail-acp-client", version = "0.6.0" }
 swallowtail-core = { path = "crates/swallowtail-core", version = "0.6.0" }
 swallowtail-host-local = { path = "crates/swallowtail-host-local", version = "0.6.0" }
 swallowtail-idioms = { path = "crates/swallowtail-idioms", version = "0.6.0" }

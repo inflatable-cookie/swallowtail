@@ -1,30 +1,205 @@
 use crate::{
     command::arguments,
-    connection::AcpConnection,
-    failure::{failure, malformed, unsupported},
+    failure::{failure, malformed, protocol_failure, unsupported},
     mcp::{GooseAcpRemoteMcpPlacement, production_mcp_servers},
-    turn::ActiveTurn,
 };
 use serde_json::{Value, json};
-use std::sync::{
-    Arc, Mutex,
-    atomic::{AtomicBool, Ordering},
+use std::sync::Arc;
+use swallowtail_acp_client::{
+    AcpActivityConfig, AcpDiagnostics, AcpSessionConfig, AcpSessionOpenContext, AcpTransport,
+    MessageClassification, PlanProjection, default_permission_namespace, open_acp_session,
 };
 use swallowtail_core::{
-    AdapterId, AdapterIdentity, AdapterVersion, CancellationScope, CredentialMechanism,
-    DriverDescriptor, DriverRole, ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation,
-    HostServiceKind, IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess,
-    ResourceRepresentation, SessionAccessPolicy, SessionRef, TransportFamilyId,
+    AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
+    ExecutionLayer, HarnessConfigurationPosture, HarnessIsolation, HostServiceKind,
+    IntegrationFamilyId, OperationShape, PreflightPlan, ResourceAccess, ResourceRepresentation,
+    SafeDiagnostic, SessionAccessPolicy, TransportFamilyId,
 };
+use swallowtail_protocol_acp::{DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits};
 use swallowtail_runtime::{
-    BoxEventStream, BoxFuture, CancellationAcknowledgement, CancellationControl, CleanupOutcome,
-    EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
-    InteractiveSessionHandle, JoinedTask, OpenSessionRequest, ProcessHandle, ProcessRequest,
-    RequestId, ResourceLease, ResumeSessionRequest, RuntimeFailure, RuntimeSessionId, ScopeId,
-    TerminalOutcome, TurnHandle, TurnRequest, validate_session_resource_lease,
+    BoxFuture, EnvironmentRef, ExecutableRef, HostServices, InteractiveSessionDriver,
+    InteractiveSessionHandle, OpenSessionRequest, ProcessHandle, ProcessRequest, ResourceLease,
+    ResumeSessionRequest, RuntimeFailure, ScopeId, validate_session_resource_lease,
 };
 
 const DRIVER_ID: &str = "swallowtail.goose.acp";
+const RECEIVE_FRAMING_LIMITS: FramingLimits =
+    FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
+
+fn goose_diagnostics() -> AcpDiagnostics {
+    AcpDiagnostics {
+        route_name: "goose.acp",
+        activity: AcpActivityConfig {
+            id_prefix: "goose-acp",
+            namespace_prefix: "goose.acp",
+            plan_projection: PlanProjection::Ignore,
+            message_classification: MessageClassification::Standard,
+            malformed,
+        },
+        malformed,
+        protocol_failure,
+        version_mismatch: || {
+            failure(
+                "swallowtail.goose.acp.version_mismatch",
+                "Goose negotiated an incompatible ACP version",
+            )
+        },
+        connection_closed: || {
+            failure(
+                "swallowtail.goose.acp.connection_closed",
+                "Goose ACP connection is closed",
+            )
+        },
+        correlation_limit: || {
+            failure(
+                "swallowtail.goose.acp.correlation_limit",
+                "Goose ACP request correlation limit was exceeded",
+            )
+        },
+        session_duplicate: || {
+            failure(
+                "swallowtail.goose.acp.session_duplicate",
+                "Goose returned more than one ACP session",
+            )
+        },
+        turn_active: || {
+            failure(
+                "swallowtail.goose.acp.turn_active",
+                "Goose session already has an active turn",
+            )
+        },
+        unknown_response: || {
+            failure(
+                "swallowtail.goose.acp.unknown_response",
+                "Goose returned an unknown ACP response",
+            )
+        },
+        update_without_turn: || {
+            failure(
+                "swallowtail.goose.acp.update_without_turn",
+                "Goose updated a session without an active turn",
+            )
+        },
+        agent_cancel_unsupported: || {
+            failure(
+                "swallowtail.goose.acp.agent_cancel_unsupported",
+                "Goose sent an unsupported client cancellation notification",
+            )
+        },
+        notification_unsupported: || {
+            failure(
+                "swallowtail.goose.acp.notification_unsupported",
+                "Goose sent an unsupported ACP notification",
+            )
+        },
+        callback_unsupported: || {
+            failure(
+                "swallowtail.goose.acp.callback_unsupported",
+                "Goose requested an unsupported ACP client callback",
+            )
+        },
+        permission_without_turn: || {
+            failure(
+                "swallowtail.goose.acp.permission_without_turn",
+                "Goose requested permission without an active turn",
+            )
+        },
+        session_mismatch_callback: || {
+            failure(
+                "swallowtail.goose.acp.session_mismatch",
+                "Goose callback does not match the active session",
+            )
+        },
+        session_mismatch_update: || {
+            failure(
+                "swallowtail.goose.acp.session_mismatch",
+                "Goose update does not match the active session",
+            )
+        },
+        process_cleanup_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.goose.acp.process_cleanup_failed",
+                "Goose process cleanup failed",
+            )
+        },
+        cleanup_missing: || {
+            SafeDiagnostic::new(
+                "swallowtail.goose.acp.cleanup_missing",
+                "Goose process cleanup did not complete",
+            )
+        },
+        connection_ended: || {
+            failure(
+                "swallowtail.goose.acp.connection_ended",
+                "Goose ACP connection ended",
+            )
+        },
+        output_limit_exceeded: || {
+            failure(
+                "swallowtail.goose.acp.output_limit_exceeded",
+                "Goose output exceeded the adapter limit",
+            )
+        },
+        prompt_stopped: || {
+            SafeDiagnostic::new(
+                "swallowtail.goose.acp.prompt_stopped",
+                "Goose stopped before completing the turn",
+            )
+        },
+        stop_reason_unsupported: || {
+            failure(
+                "swallowtail.goose.acp.stop_reason_unsupported",
+                "Goose returned an unsupported ACP stop reason",
+            )
+        },
+        task_service_missing: || {
+            failure(
+                "swallowtail.goose.acp.task_service_missing",
+                "Goose ACP requires a scoped task service",
+            )
+        },
+        task_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.goose.acp.task_join_failed",
+                "Goose ACP protocol task did not join cleanly",
+            )
+        },
+        turn_join_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.goose.acp.turn_join_failed",
+                "Goose ACP prompt task did not join cleanly",
+            )
+        },
+        resource_release_failed: || {
+            SafeDiagnostic::new(
+                "swallowtail.goose.acp.resource_release_failed",
+                "Goose ACP working-resource service disappeared during cleanup",
+            )
+        },
+        classify_rpc_error: |error| {
+            if error.message() == "auth_required" {
+                failure(
+                    "swallowtail.goose.acp.auth_required",
+                    "Goose requires host-owned credentials before ACP work",
+                )
+            } else if error.message().contains("Failed to resolve provider")
+                || error.message().contains("Failed to resolve model")
+            {
+                failure(
+                    "swallowtail.goose.acp.host_provider_unconfigured",
+                    "Goose ACP requires a host-owned provider and model before session work",
+                )
+            } else {
+                failure(
+                    "swallowtail.goose.acp.request_rejected",
+                    "Goose rejected an ACP request",
+                )
+            }
+        },
+        permission_namespace: default_permission_namespace,
+        unsupported,
+    }
+}
 
 /// Low-level interactive driver for the installed Goose ACP agent.
 pub struct GooseAcpDriver {
@@ -202,7 +377,8 @@ impl GooseAcpDriver {
         scope: ScopeId,
         resource: ResourceLease,
         selected: crate::selection::GoosePlanSelection,
-    ) -> Result<GooseSessionHandle, Box<(RuntimeFailure, ResourceLease)>> {
+    ) -> Result<swallowtail_acp_client::AcpSessionHandle, Box<(RuntimeFailure, ResourceLease)>>
+    {
         let cwd = resource
             .filesystem()
             .expect("validated filesystem lease")
@@ -228,74 +404,33 @@ impl GooseAcpDriver {
                 Ok(process) => Arc::from(process),
                 Err(error) => return Err(Box::new((error, resource))),
             };
-        let connection = AcpConnection::new(Arc::clone(&process), services.clone());
-        let pump_connection = Arc::clone(&connection);
-        let task_service = services.task().cloned().expect("validated task service");
-        let pump_task = match task_service
-            .spawn(scope, Box::pin(async move { pump_connection.pump().await }))
-        {
-            Ok(task) => task,
-            Err(error) => {
-                let _ = process.force_stop().await;
-                let _ = process.wait().await;
-                return Err(Box::new((error, resource)));
-            }
-        };
-        let opened = async {
-            let initialize = connection.initialize().await?;
-            validate_initialize(&initialize, selected.version())?;
-            let mcp_servers = production_mcp_servers(self.http_mcp.as_ref())?;
-            connection
-                .request(
-                    "session/new",
-                    json!({"cwd": cwd, "mcpServers": mcp_servers}),
-                )
-                .await
-                .and_then(parse_new_session)
-        }
-        .await;
-        let provider_id = match opened {
-            Ok(provider_id) => provider_id,
-            Err(error) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((error, resource)));
-            }
-        };
-        if let Err(error) = connection.set_session_id(provider_id.clone()) {
-            connection.begin_close().await;
-            let _ = pump_task.join().await;
-            return Err(Box::new((error, resource)));
-        }
-        let provider_ref = match SessionRef::new(&provider_id) {
-            Ok(provider_ref) => provider_ref,
-            Err(_) => {
-                connection.begin_close().await;
-                let _ = pump_task.join().await;
-                return Err(Box::new((malformed(), resource)));
-            }
-        };
-        let runtime_id =
-            RuntimeSessionId::new(format!("goose-acp:{}", request.request_id().as_str()))
-                .map_err(|_| Box::new((malformed(), resource.clone())))?;
-        let active = Arc::new(Mutex::new(None));
-        Ok(GooseSessionHandle {
-            request_id: request.request_id().clone(),
-            runtime_id,
-            provider_ref,
-            provider_id,
-            execution_host_id: plan.execution_host_id().clone(),
-            connection: Arc::clone(&connection),
-            cancellation: SessionCancellation::new(connection),
-            pump_task: Some(pump_task),
-            services: services.clone(),
-            resource: Some(resource),
-            active,
-        })
+        let transport = AcpTransport::stdio(process, RECEIVE_FRAMING_LIMITS);
+        let http_mcp = self.http_mcp.clone();
+        open_acp_session(
+            transport,
+            AcpSessionOpenContext {
+                scope,
+                request_id: request.request_id().clone(),
+                execution_host_id: plan.execution_host_id().clone(),
+                resource,
+                services: services.clone(),
+                config: AcpSessionConfig::new("goose-acp", goose_diagnostics()),
+            },
+            move |connection| async move {
+                let initialize = connection.initialize().await?;
+                validate_initialize(&initialize, selected.version())?;
+                let mcp_servers = production_mcp_servers(http_mcp.as_ref())?;
+                connection
+                    .request(
+                        "session/new",
+                        json!({"cwd": cwd, "mcpServers": mcp_servers}),
+                    )
+                    .await
+                    .and_then(parse_new_session)
+            },
+        )
+        .await
     }
 }
 
 include!("driver/validation.rs");
-include!("driver/cancellation.rs");
-include!("driver/turn_handle.rs");
-include!("driver/session.rs");

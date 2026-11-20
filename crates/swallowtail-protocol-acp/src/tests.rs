@@ -1,7 +1,9 @@
 use super::{
-    DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits, Message, NdjsonDecoder,
-    ProtocolErrorKind, decode_message, encode_message, encode_request,
-    is_session_scoped_metadata_update, is_session_scoped_metadata_update_kind,
+    AcpSessionUpdate, DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_FRAME_BYTES, FramingLimits,
+    MeasureJsonError, Message, NdjsonDecoder, ProtocolErrorKind, decode_message,
+    decode_message_with_limits, decode_session_update, encode_message, encode_message_with_limits,
+    encode_request, is_session_scoped_metadata_update, is_session_scoped_metadata_update_kind,
+    measure_json_bytes,
 };
 use serde_json::json;
 
@@ -119,4 +121,70 @@ fn complete_message_codec_preserves_protocol_shapes() {
         let decoded = decode_message(&encoded[..encoded.len() - 1]).expect("message decodes");
         assert_eq!(decoded, message);
     }
+}
+
+#[test]
+fn message_codec_with_limits_supports_frames_above_shared_default() {
+    let message = Message::Notification {
+        method: "session/update".to_owned(),
+        params: json!({"payload": "x".repeat(DEFAULT_MAX_FRAME_BYTES)}),
+    };
+    assert_eq!(
+        encode_message(&message)
+            .expect_err("default encoder rejects frames above 64 KiB")
+            .kind(),
+        ProtocolErrorKind::FrameLimitExceeded
+    );
+
+    let limits = FramingLimits::new(DEFAULT_MAX_BUFFER_BYTES, DEFAULT_MAX_BUFFER_BYTES);
+    let encoded = encode_message_with_limits(&message, limits)
+        .expect("configured limits encode frames above 64 KiB");
+    let frame = &encoded[..encoded.len() - 1];
+    assert!(frame.len() > DEFAULT_MAX_FRAME_BYTES);
+    assert_eq!(
+        decode_message(frame)
+            .expect_err("default decoder rejects frames above 64 KiB")
+            .kind(),
+        ProtocolErrorKind::FrameLimitExceeded
+    );
+    assert_eq!(
+        decode_message_with_limits(frame, limits).expect("configured limits decode frame"),
+        message
+    );
+}
+
+#[test]
+fn measure_json_bytes_matches_encoded_len_and_stops_at_limit() {
+    let value = json!({"a": "hello", "b": [1, 2, 3]});
+    let expected = serde_json::to_vec(&value).expect("serializes").len();
+    assert_eq!(measure_json_bytes(&value, expected).ok(), Some(expected));
+    assert!(matches!(
+        measure_json_bytes(&value, expected - 1),
+        Err(MeasureJsonError::LimitExceeded)
+    ));
+}
+
+#[test]
+fn tool_call_locations_treat_null_line_as_none() {
+    let decoded = decode_session_update(&json!({
+        "sessionId": "session-1",
+        "update": {
+            "sessionUpdate": "tool_call",
+            "toolCallId": "tool-1",
+            "title": "Read file",
+            "locations": [
+                {"path": "src/lib.rs", "line": null},
+                {"path": "src/main.rs", "line": 42}
+            ]
+        }
+    }))
+    .expect("null line decodes as None");
+    let AcpSessionUpdate::ToolCall(call) = decoded.update else {
+        panic!("expected tool_call update");
+    };
+    assert_eq!(call.locations.len(), 2);
+    assert_eq!(call.locations[0].path.as_str(), "src/lib.rs");
+    assert_eq!(call.locations[0].line, None);
+    assert_eq!(call.locations[1].path.as_str(), "src/main.rs");
+    assert_eq!(call.locations[1].line, Some(42));
 }

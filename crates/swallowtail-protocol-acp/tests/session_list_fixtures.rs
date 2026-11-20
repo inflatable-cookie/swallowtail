@@ -181,3 +181,23 @@ fn frozen_schema_identity_and_security_posture_are_explicit() {
     assert_eq!(protocol["pagination"]["cursor_persistence"], "forbidden");
     assert!(std::path::Path::new(ROOT).ends_with("acp-v1-session-list-stable-2026-03-09"));
 }
+
+#[test]
+fn invalid_cursor_returns_request_invalid() {
+    let capabilities = decode_session_list_capabilities(&json!({
+        "protocolVersion": 1,
+        "agentCapabilities": {"sessionCapabilities": {"list": {}}}
+    }))
+    .expect("capability decodes");
+    for cursor in ["", "   "] {
+        let error = AcpSessionListRequest::new(
+            json!(1),
+            capabilities,
+            None,
+            Some(cursor.to_owned()),
+            AcpSessionListLimits::default(),
+        )
+        .expect_err("empty or whitespace cursor must fail");
+        assert_eq!(error.kind(), AcpSessionListDecodeErrorKind::RequestInvalid);
+    }
+}

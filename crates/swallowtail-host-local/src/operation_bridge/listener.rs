@@ -424,14 +424,15 @@ impl OperationBridgeListener {
         // idle wait is bound to that frame's route registration, not its path.
         let unauthenticated_deadline = Instant::now() + self.timing.io;
         let mut authenticated: Option<(String, u64)> = None;
+        let mut pending = Vec::new();
         loop {
             let waiting_on = authenticated
                 .as_ref()
                 .map(|(path, route_id)| (path.as_str(), *route_id));
-            if !self.await_frame_start(&stream, waiting_on, unauthenticated_deadline) {
+            if !self.await_frame_start(&stream, &pending, waiting_on, unauthenticated_deadline) {
                 break;
             }
-            let frame = match read_request(&mut stream, self.timing) {
+            let frame = match read_request(&mut stream, &mut pending, self.timing) {
                 Ok(frame) => frame,
                 Err(reject) => {
                     let _ = write_response(&mut stream, reject.response());
@@ -501,13 +502,14 @@ impl OperationBridgeListener {
             ) {
                 let _ = write_response(
                     &mut stream,
-                    OperationBridgeResponse::keep_alive(
+                    OperationBridgeResponse::close(
                         401,
                         "Unauthorized",
                         json_error("Operation bridge request was not authenticated"),
                     ),
                 );
-                continue;
+                let _ = stream.shutdown(Shutdown::Write);
+                break;
             }
             if authenticated.is_none() {
                 authenticated = Some((frame.path.clone(), route_id));
@@ -551,6 +553,7 @@ impl OperationBridgeListener {
     fn await_frame_start(
         &self,
         stream: &TcpStream,
+        pending: &[u8],
         authenticated: Option<(&str, u64)>,
         unauthenticated_deadline: Instant,
     ) -> bool {
@@ -581,6 +584,9 @@ impl OperationBridgeListener {
                     remaining
                 }
             };
+            if !pending.is_empty() {
+                return true;
+            }
             if stream.set_read_timeout(Some(wait)).is_err() {
                 return false;
             }
@@ -657,11 +663,21 @@ fn read_within(
     stream.read(chunk).map_err(|_| HttpReject::Malformed)
 }
 
-fn read_request(stream: &mut TcpStream, timing: Timing) -> Result<HttpRequest, HttpReject> {
+fn read_request(
+    stream: &mut TcpStream,
+    pending: &mut Vec<u8>,
+    timing: Timing,
+) -> Result<HttpRequest, HttpReject> {
     let deadline = Instant::now() + timing.frame;
-    let mut buffer = Vec::new();
+    let mut buffer = std::mem::take(pending);
     let mut chunk = [0_u8; 512];
     let header_end = loop {
+        if let Some(index) = find_subslice(&buffer, HEADER_TERMINATOR) {
+            if index > swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_BYTES {
+                return Err(HttpReject::Oversized);
+            }
+            break index;
+        }
         if buffer.len() > swallowtail_runtime::WATCHER_BRIDGE_MAX_HEADER_BYTES {
             return Err(HttpReject::Oversized);
         }
@@ -670,9 +686,6 @@ fn read_request(stream: &mut TcpStream, timing: Timing) -> Result<HttpRequest, H
             return Err(HttpReject::Malformed);
         }
         buffer.extend_from_slice(&chunk[..read]);
-        if let Some(index) = find_subslice(&buffer, HEADER_TERMINATOR) {
-            break index;
-        }
     };
     let header_text =
         std::str::from_utf8(&buffer[..header_end]).map_err(|_| HttpReject::Malformed)?;
@@ -710,18 +723,36 @@ fn read_request(stream: &mut TcpStream, timing: Timing) -> Result<HttpRequest, H
         let name = name.trim();
         let value = value.trim();
         if name.eq_ignore_ascii_case("authorization") {
+            if bearer.is_some() {
+                return Err(HttpReject::Malformed);
+            }
             bearer = Some(parse_bearer(value)?);
         } else if name.eq_ignore_ascii_case("content-type") {
+            if content_type.is_some() {
+                return Err(HttpReject::Malformed);
+            }
             content_type = Some(value.to_ascii_lowercase());
         } else if name.eq_ignore_ascii_case("content-length") {
+            if content_length.is_some() {
+                return Err(HttpReject::Malformed);
+            }
             content_length = Some(value.parse::<usize>().map_err(|_| HttpReject::Malformed)?);
         } else if name.eq_ignore_ascii_case("transfer-encoding") {
             return Err(HttpReject::Malformed);
         } else if name.eq_ignore_ascii_case("x-swallowtail-lease-generation") {
+            if lease_generation.is_some() {
+                return Err(HttpReject::Malformed);
+            }
             lease_generation = Some(value.parse::<u64>().map_err(|_| HttpReject::Malformed)?);
         } else if name.eq_ignore_ascii_case("x-swallowtail-transport-generation") {
+            if transport_generation.is_some() {
+                return Err(HttpReject::Malformed);
+            }
             transport_generation = Some(value.parse::<u64>().map_err(|_| HttpReject::Malformed)?);
         } else if name.eq_ignore_ascii_case("x-swallowtail-server-name") {
+            if server_name.is_some() {
+                return Err(HttpReject::Malformed);
+            }
             server_name = Some(value.to_owned());
         }
     }
@@ -750,7 +781,9 @@ fn read_request(stream: &mut TcpStream, timing: Timing) -> Result<HttpRequest, H
         }
         body.extend_from_slice(&chunk[..read]);
     }
-    body.truncate(content_length);
+    if body.len() > content_length {
+        *pending = body.split_off(content_length);
+    }
     Ok(HttpRequest {
         path,
         bearer,
@@ -947,25 +980,62 @@ mod tests {
     }
 
     #[test]
-    fn a_wrong_bearer_gets_401_and_a_peer_that_never_authenticates_closes_after_the_window() {
+    fn a_wrong_bearer_gets_401_and_closes_the_connection() {
         let fixture = fixture();
         let mut stream = connect(&fixture.listener);
         stream
             .write_all(&frame("not-the-bearer", b"{}"))
             .expect("wrong-bearer frame");
         assert_eq!(read_status(&mut stream), Some(401));
-        // Inside the accept window every frame is bearer-checked again.
-        stream
-            .write_all(&frame("still-not-the-bearer", b"{}"))
-            .expect("second wrong-bearer frame");
-        assert_eq!(read_status(&mut stream), Some(401));
-        // The window never renews. Past the IO timeout of accept, a peer that has
-        // never authenticated gets no response, even with a correct frame.
+        // The server closes the connection immediately after 401, so even a
+        // subsequent valid bearer on the same socket gets no response.
         let bearer = fixture.listener.bearer();
-        std::thread::sleep(TIMING.io * 3);
         let _ = stream.write_all(&frame(&bearer, b"{}"));
         assert_eq!(read_status(&mut stream), None);
         assert_eq!(fixture.handled.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    fn duplicate_sensitive_headers_are_rejected_with_400() {
+        let fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let bearer = bearer.as_str();
+        let cases = [
+            format!(
+                "POST {PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: 2\r\nContent-Length: 2\r\n\r\n{{}}"
+            ),
+            format!(
+                "POST {PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{{}}"
+            ),
+            format!(
+                "POST {PATH} HTTP/1.1\r\nHost: 127.0.0.1\r\nAuthorization: Bearer {bearer}\r\nContent-Type: application/json\r\nContent-Type: application/json\r\nContent-Length: 2\r\n\r\n{{}}"
+            ),
+        ];
+        for request in cases {
+            let mut stream = connect(&fixture.listener);
+            stream
+                .write_all(request.as_bytes())
+                .expect("duplicate header request");
+            assert_eq!(read_status(&mut stream), Some(400));
+            assert_eq!(read_status(&mut stream), None);
+        }
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 0);
+    }
+
+    #[test]
+    fn pipelined_requests_on_one_connection_are_not_discarded() {
+        let fixture = fixture();
+        let bearer = fixture.listener.bearer();
+        let mut batch = Vec::new();
+        for _ in 0..3 {
+            batch.extend_from_slice(&frame(&bearer, b"{}"));
+        }
+        let mut stream = connect(&fixture.listener);
+        stream.write_all(&batch).expect("pipelined batch");
+        for _ in 0..3 {
+            assert_eq!(read_status(&mut stream), Some(200));
+        }
+        assert_eq!(fixture.handled.load(Ordering::SeqCst), 3);
     }
 
     #[test]

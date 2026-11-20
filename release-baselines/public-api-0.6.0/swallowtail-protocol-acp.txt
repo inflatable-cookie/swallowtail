@@ -298,11 +298,13 @@ pub const swallowtail_protocol_acp::ACP_SESSION_LIST_METHOD: &str
 pub const swallowtail_protocol_acp::DEFAULT_MAX_BUFFER_BYTES: usize
 pub const swallowtail_protocol_acp::DEFAULT_MAX_FRAME_BYTES: usize
 pub fn swallowtail_protocol_acp::decode_message(&[u8]) -> core::result::Result<swallowtail_protocol_acp::Message, swallowtail_protocol_acp::ProtocolError>
+pub fn swallowtail_protocol_acp::decode_message_with_limits(&[u8], swallowtail_protocol_acp::FramingLimits) -> core::result::Result<swallowtail_protocol_acp::Message, swallowtail_protocol_acp::ProtocolError>
 pub fn swallowtail_protocol_acp::decode_session_list_capabilities(&serde_json::value::Value) -> core::result::Result<swallowtail_protocol_acp::AcpSessionListCapabilities, swallowtail_protocol_acp::AcpSessionListDecodeError>
 pub fn swallowtail_protocol_acp::decode_session_update(&serde_json::value::Value) -> core::result::Result<swallowtail_protocol_acp::DecodedSessionUpdate, swallowtail_protocol_acp::ActivityDecodeError>
 pub fn swallowtail_protocol_acp::decode_session_update_with_limits(&serde_json::value::Value, swallowtail_protocol_acp::ActivityDecodeLimits) -> core::result::Result<swallowtail_protocol_acp::DecodedSessionUpdate, swallowtail_protocol_acp::ActivityDecodeError>
 pub fn swallowtail_protocol_acp::encode_error(serde_json::value::Value, i64, &'static str) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_acp::ProtocolError>
 pub fn swallowtail_protocol_acp::encode_message(&swallowtail_protocol_acp::Message) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_acp::ProtocolError>
+pub fn swallowtail_protocol_acp::encode_message_with_limits(&swallowtail_protocol_acp::Message, swallowtail_protocol_acp::FramingLimits) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_acp::ProtocolError>
 pub fn swallowtail_protocol_acp::encode_notification(&str, serde_json::value::Value) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_acp::ProtocolError>
 pub fn swallowtail_protocol_acp::encode_request(u64, &str, serde_json::value::Value) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_acp::ProtocolError>
 pub fn swallowtail_protocol_acp::encode_result(serde_json::value::Value, serde_json::value::Value) -> core::result::Result<alloc::vec::Vec<u8>, swallowtail_protocol_acp::ProtocolError>

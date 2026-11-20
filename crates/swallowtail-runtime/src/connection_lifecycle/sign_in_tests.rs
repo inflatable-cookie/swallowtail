@@ -1098,11 +1098,400 @@ fn sync_sign_in_handles_poll_pending_without_panicking() {
         poll_sign_in(&mut session, &services).expect("second poll advances pending future"),
         SignInStatus::ReadyToComplete
     );
+    let cancel_err = cancel_sign_in(session, &services)
+        .expect_err("sync cancel with pending release must fail closed");
+    assert_eq!(cancel_err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
-        cancel_sign_in(session, &services).expect("sync cancel with pending release succeeds"),
-        SignInStatus::Cancelled
+        cancel_err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
     );
     assert!(ports.inner.calls().contains(&"loopback_release"));
+}
+
+#[test]
+fn sync_sign_in_cleanup_fails_closed_when_host_cleanup_is_pending() {
+    struct ImmediateStartPendingReleasePorts {
+        release_completed: Arc<std::sync::atomic::AtomicBool>,
+    }
+    impl UrlOpenService for ImmediateStartPendingReleasePorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for ImmediateStartPendingReleasePorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.pending.release").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            let callback_id = lease.callback_id().clone();
+            Box::pin(async move { Ok(Some(LoopbackCallbackReceipt::new(callback_id))) })
+        }
+        fn materialize_credential(
+            &self,
+            _receipt: &LoopbackCallbackReceipt,
+            _audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            Ok(credential())
+        }
+        fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            let completed = Arc::clone(&self.release_completed);
+            let mut yielded = false;
+            Box::pin(std::future::poll_fn(move |context| {
+                if !yielded {
+                    yielded = true;
+                    context.waker().wake_by_ref();
+                    std::task::Poll::Pending
+                } else {
+                    completed.store(true, std::sync::atomic::Ordering::SeqCst);
+                    std::task::Poll::Ready(CleanupOutcome::Clean)
+                }
+            }))
+        }
+    }
+
+    struct ImmediateStartPendingCleanupProcess {
+        stop_completed: Arc<std::sync::atomic::AtomicBool>,
+        wait_completed: Arc<std::sync::atomic::AtomicBool>,
+    }
+    struct PendingCleanupHandle {
+        stop_completed: Arc<std::sync::atomic::AtomicBool>,
+        wait_completed: Arc<std::sync::atomic::AtomicBool>,
+    }
+    impl ProcessHandle for PendingCleanupHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let stop_completed = Arc::clone(&self.stop_completed);
+            yield_once_then(move || {
+                stop_completed.store(true, std::sync::atomic::Ordering::SeqCst);
+                Ok(())
+            })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            yield_once_then(|| Ok(()))
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            let wait_completed = Arc::clone(&self.wait_completed);
+            yield_once_then(move || {
+                wait_completed.store(true, std::sync::atomic::Ordering::SeqCst);
+                Ok(ProcessExit::new(true, Some(0)))
+            })
+        }
+    }
+    impl ProcessService for ImmediateStartPendingCleanupProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let stop_completed = Arc::clone(&self.stop_completed);
+            let wait_completed = Arc::clone(&self.wait_completed);
+            Box::pin(async move {
+                Ok(Box::new(PendingCleanupHandle {
+                    stop_completed,
+                    wait_completed,
+                }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+
+    let delegated_request = || {
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        )
+    };
+
+    // 1. poll_sign_in timeout with pending loopback release fails closed and retains cleanup for async completion.
+    let release_completed = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let loopback_ports = Arc::new(ImmediateStartPendingReleasePorts {
+        release_completed: Arc::clone(&release_completed),
+    });
+    let loopback_services = HostServices::new(host_id())
+        .with_url_open(loopback_ports.clone())
+        .with_loopback_callback(loopback_ports.clone())
+        .with_time(Arc::new(FixedTime(1)));
+
+    let mut timed_out = start_sign_in(
+        &loopback_services,
+        interactive_request().with_deadline(Deadline::at(MonotonicInstant::from_ticks(0))),
+    )
+    .expect("start succeeds");
+    let err = poll_sign_in(&mut timed_out, &loopback_services)
+        .expect_err("sync timeout with pending loopback release must fail closed");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+    assert_ne!(timed_out.status(), SignInStatus::TimedOut);
+    assert!(!release_completed.load(std::sync::atomic::Ordering::SeqCst));
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut timed_out, &loopback_services))
+            .expect("async follow-up completes retained release"),
+        SignInStatus::TimedOut
+    );
+    assert!(release_completed.load(std::sync::atomic::Ordering::SeqCst));
+
+    // 2. complete_sign_in on Incomplete and ReadyToComplete with pending loopback release fails closed without mutating store.
+    let incomplete_session =
+        start_sign_in(&loopback_services, interactive_request()).expect("start succeeds");
+    let err = complete_sign_in(incomplete_session, &loopback_services, None)
+        .expect_err("sync complete error path with pending release must fail closed");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+
+    let store = MemoryStore::new();
+    admitted(&store);
+    let mut ready_session =
+        start_sign_in(&loopback_services, interactive_request()).expect("start succeeds");
+    assert_eq!(
+        poll_sign_in(&mut ready_session, &loopback_services).expect("ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let err = complete_sign_in(ready_session, &loopback_services, Some(&store))
+        .expect_err("sync complete with pending release must fail closed");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+    assert!(
+        store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .next()
+            .is_none(),
+        "store must not be mutated when sync cleanup fails closed"
+    );
+
+    // 3. Delegated process pending cleanup fails closed on cancel_sign_in, poll_sign_in timeout, and complete_sign_in.
+    let stop_completed = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let wait_completed = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let proc_services = HostServices::new(host_id())
+        .with_process(Arc::new(ImmediateStartPendingCleanupProcess {
+            stop_completed: Arc::clone(&stop_completed),
+            wait_completed: Arc::clone(&wait_completed),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+
+    let delegated_cancel =
+        start_sign_in(&proc_services, delegated_request()).expect("delegated start");
+    let err = cancel_sign_in(delegated_cancel, &proc_services)
+        .expect_err("sync cancel with pending process cleanup must fail closed");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+
+    let delegated_complete =
+        start_sign_in(&proc_services, delegated_request()).expect("delegated start");
+    let err = complete_sign_in(delegated_complete, &proc_services, None)
+        .expect_err("sync complete error path with pending process cleanup must fail closed");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+
+    let mut delegated_timeout = start_sign_in(
+        &proc_services,
+        delegated_request().with_deadline(Deadline::at(MonotonicInstant::from_ticks(0))),
+    )
+    .expect("delegated start");
+    let err = poll_sign_in(&mut delegated_timeout, &proc_services)
+        .expect_err("sync timeout with pending process cleanup must fail closed");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.host_port_pending"
+    );
+    assert_ne!(delegated_timeout.status(), SignInStatus::TimedOut);
+    assert!(!wait_completed.load(std::sync::atomic::Ordering::SeqCst));
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut delegated_timeout, &proc_services))
+            .expect("async follow-up completes process cleanup"),
+        SignInStatus::TimedOut
+    );
+    assert!(stop_completed.load(std::sync::atomic::Ordering::SeqCst));
+    assert!(wait_completed.load(std::sync::atomic::Ordering::SeqCst));
+}
+
+#[test]
+fn async_delegated_poll_awaits_stateful_pending_wait_future() {
+    struct StatefulWaitProcess {
+        wait_invocations: Arc<std::sync::atomic::AtomicUsize>,
+        exit_success: bool,
+    }
+    struct StatefulWaitHandle {
+        wait_invocations: Arc<std::sync::atomic::AtomicUsize>,
+        exit_success: bool,
+    }
+    impl ProcessHandle for StatefulWaitHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_invocations
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            let exit_success = self.exit_success;
+            let mut remaining_pending = 2usize;
+            Box::pin(std::future::poll_fn(move |context| {
+                if remaining_pending > 0 {
+                    remaining_pending -= 1;
+                    context.waker().wake_by_ref();
+                    std::task::Poll::Pending
+                } else if exit_success {
+                    std::task::Poll::Ready(Ok(ProcessExit::new(true, Some(0))))
+                } else {
+                    std::task::Poll::Ready(Ok(ProcessExit::new(false, Some(1))))
+                }
+            }))
+        }
+    }
+    impl ProcessService for StatefulWaitProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let wait_invocations = Arc::clone(&self.wait_invocations);
+            let exit_success = self.exit_success;
+            yield_once_then(move || {
+                Ok(Box::new(StatefulWaitHandle {
+                    wait_invocations,
+                    exit_success,
+                }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+
+    let request = || {
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        )
+    };
+
+    let ok_invocations = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let ok_services = HostServices::new(host_id())
+        .with_process(Arc::new(StatefulWaitProcess {
+            wait_invocations: Arc::clone(&ok_invocations),
+            exit_success: true,
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+
+    let mut session =
+        block_on(start_sign_in_async(&ok_services, request())).expect("async start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut session, &ok_services))
+            .expect("async delegated poll awaits stateful wait future"),
+        SignInStatus::ReadyToComplete
+    );
+    assert_eq!(
+        ok_invocations.load(std::sync::atomic::Ordering::SeqCst),
+        1,
+        "poll_sign_in_async must await a single wait() future without dropping it"
+    );
+    let outcome = block_on(complete_sign_in_async(session, &ok_services, None))
+        .expect("async complete succeeds");
+    assert_eq!(outcome.audience(), &audience());
+
+    let fail_invocations = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let fail_services = HostServices::new(host_id())
+        .with_process(Arc::new(StatefulWaitProcess {
+            wait_invocations: Arc::clone(&fail_invocations),
+            exit_success: false,
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+
+    let mut failed_session =
+        block_on(start_sign_in_async(&fail_services, request())).expect("async start succeeds");
+    let err = block_on(poll_sign_in_async(&mut failed_session, &fail_services))
+        .expect_err("non-zero helper exit must fail");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.sign_in.login_helper_failed"
+    );
+    assert_eq!(
+        fail_invocations.load(std::sync::atomic::Ordering::SeqCst),
+        1
+    );
 }
 
 #[test]

@@ -755,7 +755,7 @@ fn the_effective_call_deadline_takes_the_earliest_bound() {
 }
 
 #[test]
-fn dropping_an_issued_call_future_releases_the_reserved_slot() {
+fn dropping_a_dispatched_call_future_frees_the_slot_but_not_the_teardown_truth() {
     let hosts = ready_hosts();
     let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
         .require_ready()
@@ -782,17 +782,57 @@ fn dropping_an_issued_call_future_releases_the_reserved_slot() {
         "the dispatched call owns the one slot"
     );
     drop(abandoned);
+
+    let observed = kernel.observe();
     assert_eq!(
-        kernel.outstanding_calls(),
-        0,
-        "dropping the future at its dispatch await must release the slot"
+        observed.outstanding_calls(),
+        1,
+        "an abandoned dispatch was never joined, so teardown still sees it"
+    );
+    assert!(
+        !observed.allows_successful_completion(),
+        "an unjoined dispatch never allows a claim of clean completion"
     );
 
     let mut next = lease.call(call_request("after-abandon"));
     assert!(
         next.as_mut().poll(&mut context).is_pending(),
-        "the next call is admitted instead of failing with LimitExceeded"
+        "the next call is admitted instead of failing with LimitExceeded forever"
     );
+}
+
+#[test]
+fn dropping_a_reserved_call_before_dispatch_leaves_no_outstanding_call() {
+    let port = Arc::new(HoldableAdmission::default());
+    let clock = Arc::new(FixedClock::default());
+    let (kernel, lease) = held_kernel(
+        &port,
+        &clock,
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
+    );
+    // Hold the first live verdict so the future is dropped between reservation
+    // and dispatch.
+    port.hold_from(1);
+    let mut reserved = lease.call(call_request("reserved-only"));
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+    assert!(
+        reserved.as_mut().poll(&mut context).is_pending(),
+        "the call is suspended inside its dispatch verdict"
+    );
+    drop(reserved);
+
+    assert_eq!(
+        kernel.outstanding_calls(),
+        0,
+        "a reservation that never dispatched leaves nothing outstanding"
+    );
+    port.release();
+    let outcome = block(lease.call(call_request("after-reserved"))).expect("the call settles");
+    assert_eq!(
+        outcome.disposition(),
+        RegisteredToolExecutionDisposition::Executed
+    );
+    assert_eq!(kernel.outstanding_calls(), 0);
 }
 
 #[test]

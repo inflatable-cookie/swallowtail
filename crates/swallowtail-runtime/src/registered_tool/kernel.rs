@@ -62,6 +62,12 @@ struct KernelState {
     revoked: bool,
     cleanup_failed: bool,
     active: Option<CallSlot>,
+    /// Dispatches whose future died before a settled result was committed.
+    ///
+    /// An abandoned dispatch frees the one call slot so the kernel keeps
+    /// admitting calls, but its effect was never joined: teardown cannot
+    /// claim a clean close while this count is non-zero.
+    abandoned_calls: usize,
     seen_calls: BTreeSet<RegisteredToolCallId>,
     progress: VecDeque<RegisteredToolProgress>,
     /// Bumped whenever admission truth changes under the gate.
@@ -89,17 +95,56 @@ pub struct RegisteredToolOperationKernel {
     gate: AdmissionGate,
 }
 
+/// Position of one issued call that the release guard must undo.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+enum CallRelease {
+    /// Reserved but never dispatched: dropping the future simply releases the
+    /// slot.
+    Reserved,
+    /// Dispatched to the host but not yet settled: dropping the future
+    /// abandons the call, so its unjoined effect stays visible to teardown.
+    Dispatched,
+    /// Settled: dropping the future releases the slot after the terminal
+    /// commit.
+    Settled,
+}
+
 /// Releases the one active call slot on every exit path, including a dropped
 /// `issue` future.
 ///
 /// Without this guard, dropping the future at an `.await` after `reserve`
 /// permanently jams the kernel: the slot stays occupied, so every later call
-/// is rejected with `LimitExceeded`.
-struct ActiveCallRelease(Arc<RegisteredToolOperationKernel>);
+/// is rejected with `LimitExceeded`. A dispatch the host already started and
+/// never settled is recorded as abandoned instead of silently disappearing,
+/// so close still reports `TeardownFailed` rather than a clean join.
+struct ActiveCallRelease {
+    kernel: Arc<RegisteredToolOperationKernel>,
+    position: CallRelease,
+}
+
+impl ActiveCallRelease {
+    fn new(kernel: Arc<RegisteredToolOperationKernel>) -> Self {
+        Self {
+            kernel,
+            position: CallRelease::Reserved,
+        }
+    }
+
+    fn mark_dispatched(&mut self) {
+        self.position = CallRelease::Dispatched;
+    }
+
+    fn mark_settled(&mut self) {
+        self.position = CallRelease::Settled;
+    }
+}
 
 impl Drop for ActiveCallRelease {
     fn drop(&mut self) {
-        self.0.release();
+        match self.position {
+            CallRelease::Dispatched => self.kernel.abandon_dispatched_call(),
+            CallRelease::Reserved | CallRelease::Settled => self.kernel.release(),
+        }
     }
 }
 
@@ -177,6 +222,7 @@ impl RegisteredToolOperationKernel {
                 revoked: false,
                 cleanup_failed: false,
                 active: None,
+                abandoned_calls: 0,
                 seen_calls: BTreeSet::new(),
                 progress: VecDeque::new(),
                 epoch: 0,
@@ -305,9 +351,14 @@ impl RegisteredToolOperationKernel {
     }
 
     /// Returns the bounded outstanding-call count.
+    ///
+    /// A dispatched call that was abandoned without a settled result stays
+    /// counted: its effect was never joined, so teardown must not observe an
+    /// empty lease.
     #[must_use]
     pub fn outstanding_calls(&self) -> usize {
-        usize::from(self.locked().active.is_some())
+        let state = self.locked();
+        usize::from(state.active.is_some()) + state.abandoned_calls
     }
 
     /// Returns the effective expiry of one call issued at an exact instant.
@@ -549,6 +600,19 @@ impl RegisteredToolOperationKernel {
         }
     }
 
+    /// Releases the slot for a dispatch whose future died before settling.
+    ///
+    /// The slot must be free so later calls are not refused forever, but the
+    /// call's effect was never joined: the abandoned count keeps teardown
+    /// honest, and a result, progress, or verdict that arrives later is
+    /// already foreign to a released slot.
+    fn abandon_dispatched_call(&self) {
+        let mut state = self.locked();
+        state.abandoned_calls = state.abandoned_calls.saturating_add(1);
+        drop(state);
+        self.release();
+    }
+
     /// Issues one bounded call through the kernel's serialized admission point.
     pub fn issue<'kernel>(
         kernel: &'kernel Arc<Self>,
@@ -587,7 +651,7 @@ impl RegisteredToolOperationKernel {
             let (cancelled, epoch) = self.reserve(&request, expires_at, started)?;
             // From here the reserved slot is released by the guard, not by
             // each individual exit path, so a dropped future cannot leak it.
-            let release = ActiveCallRelease(Arc::clone(&self));
+            let release = ActiveCallRelease::new(Arc::clone(&self));
             self.require_current(AdmissionPhase::BeforeDispatch, &permit)
                 .await?;
             if self.locked().epoch != epoch {
@@ -600,7 +664,7 @@ impl RegisteredToolOperationKernel {
             (cancelled, epoch, release)
         };
         let _ = epoch;
-        let _release = release;
+        let mut release = release;
         let call = match RegisteredToolCall::mint(
             self.binding.clone(),
             request.call_id().clone(),
@@ -626,8 +690,11 @@ impl RegisteredToolOperationKernel {
                 }),
             ),
         );
+        release.mark_dispatched();
         let dispatched = self.dispatcher.dispatch(call.clone(), context).await;
-        self.settle(&call, expires_at, dispatched).await
+        let settled = self.settle(&call, expires_at, dispatched).await;
+        release.mark_settled();
+        settled
     }
 
     async fn settle(
@@ -790,7 +857,10 @@ impl std::fmt::Debug for RegisteredToolOperationKernel {
             .debug_struct("RegisteredToolOperationKernel")
             .field("admission", &state.admission)
             .field("lifecycle", &state.lifecycle)
-            .field("outstanding_calls", &usize::from(state.active.is_some()))
+            .field(
+                "outstanding_calls",
+                &(usize::from(state.active.is_some()) + state.abandoned_calls),
+            )
             .field("cleanup_failed", &state.cleanup_failed)
             .finish()
     }
@@ -804,7 +874,7 @@ fn completion_state(state: &KernelState) -> RegisteredToolCompletionState {
     RegisteredToolCompletionState::new(
         state.admission,
         state.lifecycle,
-        usize::from(state.active.is_some()),
+        usize::from(state.active.is_some()) + state.abandoned_calls,
         state.cleanup_failed,
     )
 }

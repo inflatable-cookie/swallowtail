@@ -16,8 +16,10 @@ unchanged confidence outcome; `BoundedTextError`, `ConfidenceErrorKind`, and
 
 Runtime: `SecretLease` zeroizes through `Zeroize`; the registered-tool kernel
 releases its call slot through an RAII guard so a dropped `issue` future cannot
-jam it, and duration bounds convert through the one documented monotonic-tick
-boundary (`MonotonicInstant::saturating_add_duration`); event-channel,
+jam it, while a dispatch the host had already started stays counted as an
+abandoned, unjoined call so teardown still reports `TeardownFailed` instead of
+a clean close; duration bounds convert through the one documented monotonic-
+tick boundary (`MonotonicInstant::saturating_add_duration`); event-channel,
 terminal-outcome, and cancellation notifications wake outside their locks,
 single-consumer waits hold one waker, and drop paths recover poisoned locks;
 late-event quarantine evidence is bounded; installed-executable discovery

@@ -108,8 +108,8 @@ impl CopilotCliAcpRemoteMcpPlacement {
     pub(crate) fn to_acp_http_value(&self) -> Result<Value, RuntimeFailure> {
         if self.transport != CopilotCliAcpRemoteMcpTransport::Http {
             return Err(failure(
-                "swallowtail.copilot-cli.acp.mcp_sse_unsupported",
-                "Copilot CLI ACP does not emit sse MCP entries on this route",
+                "swallowtail.copilot-cli.acp.mcp_sse_not_emitted",
+                "Copilot CLI ACP models sse MCP entries but emits the http form only",
             ));
         }
         self.inner.to_acp_http_value(&MCP_DIAGNOSTICS)
@@ -213,7 +213,7 @@ mod tests {
         let error = sse.to_production_mcp_servers().expect_err("sse refused");
         assert_eq!(
             error.diagnostic().code(),
-            "swallowtail.copilot-cli.acp.mcp_sse_unsupported"
+            "swallowtail.copilot-cli.acp.mcp_sse_not_emitted"
         );
     }
 }

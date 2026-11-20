@@ -72,9 +72,12 @@ fn assert_topology_and_join(
         recording.calls(),
         [
             RecordedHostCall::ProcessStart,
-            RecordedHostCall::ProcessCloseStdin,
             RecordedHostCall::ProcessWait
         ]
+    );
+    assert_eq!(
+        recording.process_io_calls(),
+        [crate::recording_host::RecordedProcessIoCall::CloseStdin]
     );
 }
 

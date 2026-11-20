@@ -36,12 +36,6 @@ pub enum RecordedHostCall {
     TimeWaitUntil,
     /// A child process was started.
     ProcessStart,
-    /// Stdin bytes were written to a child process.
-    ProcessWriteStdin,
-    /// Standard input of a child process was closed.
-    ProcessCloseStdin,
-    /// Process output was read from a child process.
-    ProcessReadOutput,
     /// Graceful process stop was requested.
     ProcessGracefulStop,
     /// Forced process stop was requested.
@@ -120,9 +114,17 @@ impl RecordingOutcome {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+pub(crate) enum RecordedProcessIoCall {
+    WriteStdin,
+    CloseStdin,
+    ReadOutput,
+}
+
 #[derive(Default)]
 struct RecordingState {
     calls: Mutex<Vec<RecordedHostCall>>,
+    process_io_calls: Mutex<Vec<RecordedProcessIoCall>>,
 }
 
 impl RecordingState {
@@ -139,6 +141,20 @@ impl RecordingState {
             .expect("recording host call lock poisoned")
             .clone()
     }
+
+    fn record_process_io(&self, call: RecordedProcessIoCall) {
+        self.process_io_calls
+            .lock()
+            .expect("recording host process IO lock poisoned")
+            .push(call);
+    }
+
+    fn process_io_calls(&self) -> Vec<RecordedProcessIoCall> {
+        self.process_io_calls
+            .lock()
+            .expect("recording host process IO lock poisoned")
+            .clone()
+    }
 }
 
 #[derive(Clone)]
@@ -150,6 +166,11 @@ struct RecordingService {
 impl RecordingService {
     fn record(&self, call: RecordedHostCall) -> Result<(), RuntimeFailure> {
         self.state.record(call);
+        self.outcome.result()
+    }
+
+    fn record_process_io(&self, call: RecordedProcessIoCall) -> Result<(), RuntimeFailure> {
+        self.state.record_process_io(call);
         self.outcome.result()
     }
 
@@ -209,19 +230,19 @@ struct RecordingProcessHandle(RecordingService);
 
 impl ProcessHandle for RecordingProcessHandle {
     fn write_stdin(&self, _chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        let result = self.0.record(RecordedHostCall::ProcessWriteStdin);
+        let result = self.0.record_process_io(RecordedProcessIoCall::WriteStdin);
         Box::pin(async move { result })
     }
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        let result = self.0.record(RecordedHostCall::ProcessCloseStdin);
+        let result = self.0.record_process_io(RecordedProcessIoCall::CloseStdin);
         Box::pin(async move { result })
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
         let result = self
             .0
-            .record(RecordedHostCall::ProcessReadOutput)
+            .record_process_io(RecordedProcessIoCall::ReadOutput)
             .map(|()| None);
         Box::pin(async move { result })
     }
@@ -573,6 +594,10 @@ impl RecordingHostServices {
         self.state.calls()
     }
 
+    pub(crate) fn process_io_calls(&self) -> Vec<RecordedProcessIoCall> {
+        self.state.process_io_calls()
+    }
+
     /// Counts occurrences of one host-service interaction.
     #[must_use]
     pub fn count(&self, call: RecordedHostCall) -> usize {
@@ -599,12 +624,14 @@ pub fn poll_immediate<T>(future: impl Future<Output = T>) -> T {
 #[cfg(test)]
 mod tests {
     use super::{
-        RecordedHostCall, RecordingHostServices, RecordingOutcome, RecordingProcessHandle,
-        RecordingService, RecordingState, poll_immediate,
+        RecordedHostCall, RecordedProcessIoCall, RecordingHostServices, RecordingOutcome,
+        RecordingProcessHandle, RecordingService, RecordingState, poll_immediate,
     };
     use std::sync::Arc;
     use swallowtail_core::{HostServiceKind, SafeDiagnostic};
-    use swallowtail_runtime::{ProcessHandle, ProcessInputChunk};
+    use swallowtail_runtime::{
+        ExecutableRef, ProcessHandle, ProcessInputChunk, ProcessRequest, ScopeId,
+    };
 
     #[test]
     fn sign_in_ports_are_opt_in_and_registration_records_no_calls() {
@@ -642,6 +669,37 @@ mod tests {
 
     #[test]
     fn recording_process_io_records_calls_and_honors_fail_outcome() {
+        let recording = RecordingHostServices::default();
+        let process = poll_immediate(
+            recording
+                .services()
+                .process()
+                .expect("process service is registered")
+                .start(
+                    ScopeId::new("io-ok").expect("scope is valid"),
+                    ProcessRequest::new(
+                        ExecutableRef::new("fixture-executable").expect("reference is valid"),
+                    ),
+                ),
+        )
+        .expect("process start succeeds");
+        poll_immediate(process.write_stdin(ProcessInputChunk::new(b"x".to_vec())))
+            .expect("write_stdin succeeds");
+        poll_immediate(process.close_stdin()).expect("close_stdin succeeds");
+        assert!(
+            poll_immediate(process.read_output())
+                .expect("read_output succeeds")
+                .is_none()
+        );
+        assert_eq!(
+            recording.process_io_calls(),
+            [
+                RecordedProcessIoCall::WriteStdin,
+                RecordedProcessIoCall::CloseStdin,
+                RecordedProcessIoCall::ReadOutput,
+            ]
+        );
+
         let state = Arc::new(RecordingState::default());
         let handle = RecordingProcessHandle(RecordingService {
             state: Arc::clone(&state),
@@ -662,11 +720,11 @@ mod tests {
         assert_eq!(read_err.diagnostic().code(), "fixture.process_io_failed");
 
         assert_eq!(
-            state.calls(),
+            state.process_io_calls(),
             [
-                RecordedHostCall::ProcessWriteStdin,
-                RecordedHostCall::ProcessCloseStdin,
-                RecordedHostCall::ProcessReadOutput,
+                RecordedProcessIoCall::WriteStdin,
+                RecordedProcessIoCall::CloseStdin,
+                RecordedProcessIoCall::ReadOutput,
             ]
         );
     }

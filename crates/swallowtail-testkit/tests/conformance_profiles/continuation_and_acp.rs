@@ -2,7 +2,7 @@ use super::*;
 
 #[test]
 fn long_lived_rpc_profile_proves_callback_exchange() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let rpc = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::LongLivedRpcHarness)
@@ -13,7 +13,7 @@ fn long_lived_rpc_profile_proves_callback_exchange() {
 
 #[test]
 fn locally_continued_profile_proves_contract_030_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let direct = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::LocallyContinuedDirectSession)
@@ -35,7 +35,7 @@ fn locally_continued_profile_proves_contract_030_boundaries() {
 
 #[test]
 fn long_lived_acp_profile_proves_process_callback_and_topology_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let acp = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::LongLivedAcpHarness)

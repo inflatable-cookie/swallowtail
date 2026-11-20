@@ -42,6 +42,11 @@ import re
 import shlex
 import sys
 
+try:
+    import tomllib
+except ModuleNotFoundError:
+    tomllib = None
+
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / "effigy.toml"
 RELEASE_INCLUDE = ROOT / "config" / "release.toml"
@@ -256,7 +261,33 @@ def parse_array(lines, index):
     fail("unterminated array in [tasks]")
 
 
-def parse_tasks(path):
+def parse_tasks_tomllib(path):
+    data = tomllib.loads(path.read_text(encoding="utf-8"))
+    raw_tasks = data.get("tasks", {})
+    if not isinstance(raw_tasks, dict):
+        fail("[tasks] must be a TOML table")
+    tasks = {}
+    for name, value in raw_tasks.items():
+        if isinstance(value, str):
+            tasks[name] = [value]
+        elif isinstance(value, list):
+            elements = []
+            for item in value:
+                if isinstance(item, str):
+                    elements.append(item)
+                elif isinstance(item, dict):
+                    elements.append(None)
+                else:
+                    fail("unsupported array element for %s: %r" % (name, item))
+            tasks[name] = elements
+        elif isinstance(value, dict):
+            tasks[name] = [None]
+        else:
+            fail("unsupported value for %s: %r" % (name, value))
+    return tasks
+
+
+def parse_tasks_fallback(path):
     lines = path.read_text().splitlines()
     tasks = {}
     in_tasks = False
@@ -291,6 +322,12 @@ def parse_tasks(path):
         else:
             fail("unsupported value for %s: %r" % (name, rest))
     return tasks
+
+
+def parse_tasks(path):
+    if tomllib is not None:
+        return parse_tasks_tomllib(path)
+    return parse_tasks_fallback(path)
 
 
 def command_word(command):
@@ -751,15 +788,6 @@ def check_workflows():
                 token in text for token in ("workflow_dispatch:", "secrets:", "cargo ")
             ):
                 fail("trusted SDK original job routing/authority changed")
-            continue
-        if path.name == "sdk240-host-setup.yml":
-            # Planner ruling 7059541d admits only the reviewed manual host job.
-            # Keep every other workflow on the existing plain-Cargo boundary.
-            if (
-                hashlib.sha256(workflow_bytes).hexdigest()
-                != "94b2bfd65dd46773a740c97e88f15a167028ac73cefeb6c389baa6721f1cda4c"
-            ):
-                fail("SDK240 host workflow differs from its exact approved bytes")
             continue
         if "oxide" in text:
             fail(

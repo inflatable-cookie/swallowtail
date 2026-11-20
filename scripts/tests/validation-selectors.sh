@@ -7,6 +7,20 @@ cd "$validation_repo_root"
 source "$validation_repo_root/scripts/validation/archive.sh"
 source "$validation_repo_root/scripts/validation/path.sh"
 
+validation_scratch_base=${TMPDIR:-/tmp}
+while [[ "$validation_scratch_base" == */ && "$validation_scratch_base" != / ]]; do
+  validation_scratch_base=${validation_scratch_base%/}
+done
+validation_real_mktemp=$(command -v mktemp)
+validation_real_tar=$(command -v tar)
+validation_cleanup_paths=()
+validation_cleanup() {
+  if ((${#validation_cleanup_paths[@]})); then
+    rm -rf "${validation_cleanup_paths[@]}"
+  fi
+}
+trap validation_cleanup EXIT
+
 validation_expect_failure() {
   local validation_expected=$1
   shift
@@ -74,7 +88,8 @@ then
   exit 1
 fi
 
-validation_audit_tree=$(mktemp -d)
+validation_audit_tree=$(mktemp -d "${validation_scratch_base}/validation-audit.XXXXXXXX")
+validation_cleanup_paths+=("$validation_audit_tree")
 validation_audit_repo_root="/nonexistent-repo-root-for-archive-audit"
 printf '%s\n' \
   "headless-background-task-waiting-notice-occasionally-skipped" \
@@ -84,9 +99,25 @@ if ! validation_extracted_tree_is_safe \
   "$validation_audit_repo_root"
 then
   printf 'hyphenated English tripped the secret pattern\n' >&2
-  rm -rf "$validation_audit_tree"
   exit 1
 fi
+printf '%s\n' "/repoxwithmeta1" >"$validation_audit_tree/regex-like-path.txt"
+if ! validation_extracted_tree_is_safe \
+  "$validation_audit_tree" \
+  "/repo.with+meta[1]"
+then
+  printf 'regex metacharacters in repo root were not escaped\n' >&2
+  exit 1
+fi
+printf '%s\n' "/repo.with+meta[1]/file" >"$validation_audit_tree/literal-meta-path.txt"
+if validation_extracted_tree_is_safe \
+  "$validation_audit_tree" \
+  "/repo.with+meta[1]"
+then
+  printf 'literal repo root with regex metacharacters was not flagged\n' >&2
+  exit 1
+fi
+rm -f "$validation_audit_tree/literal-meta-path.txt"
 printf '%s\n' "sk-abcdefghijklmnopqrstuvwxyz123456" \
   >"$validation_audit_tree/synthetic-key.txt"
 if validation_extracted_tree_is_safe \
@@ -94,13 +125,28 @@ if validation_extracted_tree_is_safe \
   "$validation_audit_repo_root"
 then
   printf 'synthetic sk- key was not flagged\n' >&2
-  rm -rf "$validation_audit_tree"
   exit 1
 fi
 rm -rf "$validation_audit_tree"
 
-validation_real_root=$(mktemp -d)
+validation_rg_fail_bin=$(mktemp -d "${validation_scratch_base}/validation-rg-fail.XXXXXXXX")
+validation_cleanup_paths+=("$validation_rg_fail_bin")
+cat >"$validation_rg_fail_bin/rg" <<'EOF'
+#!/usr/bin/env bash
+exit 2
+EOF
+chmod +x "$validation_rg_fail_bin/rg"
+if PATH="$validation_rg_fail_bin:$PATH" \
+  validation_archive_member_list_is_safe <<< "package-0.1.0/src/lib.rs" 2>/dev/null
+then
+  printf 'archive member audit false-passed on rg exit 2\n' >&2
+  exit 1
+fi
+rm -rf "$validation_rg_fail_bin"
+
+validation_real_root=$(mktemp -d "${validation_scratch_base}/validation-real.XXXXXXXX")
 validation_alias_root="${validation_real_root}-alias"
+validation_cleanup_paths+=("$validation_real_root" "$validation_alias_root")
 ln -s "$validation_real_root" "$validation_alias_root"
 validation_canonical_real=$(validation_canonical_path "$validation_real_root")
 validation_canonical_alias=$(validation_canonical_path "$validation_alias_root")
@@ -129,13 +175,17 @@ if env | rg -q '^GROK_HOME='; then
   exit 1
 fi
 
-validation_shim_root=$(mktemp -d)
+validation_shim_root=$(mktemp -d "${validation_scratch_base}/validation-shim.XXXXXXXX")
+validation_cleanup_paths+=("$validation_shim_root")
 validation_mktemp_log="$validation_shim_root/mktemp.log"
-cat >"$validation_shim_root/mktemp" <<'EOF'
-#!/usr/bin/env bash
+{
+  printf '#!/usr/bin/env bash\n'
+  printf 'validation_real_mktemp=%q\n' "$validation_real_mktemp"
+  cat <<'EOF'
 printf '%s\n' "$*" >>"${VALIDATION_MKTEMP_LOG:?}"
-exec /usr/bin/mktemp "$@"
+exec "$validation_real_mktemp" "$@"
 EOF
+} >"$validation_shim_root/mktemp"
 chmod +x "$validation_shim_root/mktemp"
 validation_shim_path="$validation_shim_root:$PATH"
 if VALIDATION_MKTEMP_LOG="$validation_mktemp_log" PATH="$validation_shim_path" \
@@ -160,7 +210,8 @@ rm -rf "$validation_shim_root"
 # Exercise the affected-package driver through a fake Oxide lease. The mktemp
 # shim models BSD's refusal to honor TMPDIR for an unqualified template, while
 # keeping that simulated host temp inside this test's own fixture.
-validation_driver_fixture=$(mktemp -d "$TMPDIR/affected-driver-fixture.XXXXXXXX")
+validation_driver_fixture=$(mktemp -d "${validation_scratch_base}/affected-driver-fixture.XXXXXXXX")
+validation_cleanup_paths+=("$validation_driver_fixture")
 validation_driver_bin="$validation_driver_fixture/bin"
 validation_host_temp="$validation_driver_fixture/host temp"
 mkdir -p "$validation_driver_bin" "$validation_host_temp"
@@ -202,8 +253,10 @@ case ${1:-} in
   *) printf 'unexpected fake cargo arguments: %s\n' "$*" >&2; exit 91 ;;
 esac
 EOF
-cat >"$validation_driver_bin/mktemp" <<'EOF'
-#!/usr/bin/env bash
+{
+  printf '#!/usr/bin/env bash\n'
+  printf 'validation_real_mktemp=%q\n' "$validation_real_mktemp"
+  cat <<'EOF'
 set -euo pipefail
 validation_mktemp_has_template=false
 for validation_mktemp_arg in "$@"; do
@@ -215,13 +268,16 @@ done
 if [[ "$validation_mktemp_has_template" == false ]]; then
   # Simulate BSD mktemp's system-temp default without touching host temp.
   printf 'options-only: %s\n' "$*" >>"${VALIDATION_DRIVER_LOG:?}/mktemp.log"
-  exec /usr/bin/mktemp "$@" "${VALIDATION_HOST_TEMP:?}/bsd-default.XXXXXXXX"
+  exec "$validation_real_mktemp" "$@" "${VALIDATION_HOST_TEMP:?}/bsd-default.XXXXXXXX"
 fi
 printf '%s\n' "$*" >>"${VALIDATION_DRIVER_LOG:?}/mktemp.log"
-exec /usr/bin/mktemp "$@"
+exec "$validation_real_mktemp" "$@"
 EOF
-cat >"$validation_driver_bin/tar" <<'EOF'
-#!/usr/bin/env bash
+} >"$validation_driver_bin/mktemp"
+{
+  printf '#!/usr/bin/env bash\n'
+  printf 'validation_real_tar=%q\n' "$validation_real_tar"
+  cat <<'EOF'
 set -euo pipefail
 validation_tar_args=("$@")
 if [[ ${validation_tar_args[0]:-} == *x* ]]; then
@@ -232,8 +288,9 @@ if [[ ${validation_tar_args[0]:-} == *x* ]]; then
     fi
   done
 fi
-exec /usr/bin/tar "$@"
+exec "$validation_real_tar" "$@"
 EOF
+} >"$validation_driver_bin/tar"
 chmod +x "$validation_driver_bin/oxide" "$validation_driver_bin/cargo" \
   "$validation_driver_bin/mktemp" "$validation_driver_bin/tar"
 
@@ -320,7 +377,8 @@ rm -rf "$validation_driver_fixture"
 # Host-path debt is exempt by exact line, never by file. A listed line passes;
 # the same file with a new or altered host path fails, as does any host path in
 # an unlisted file.
-validation_debt_root=$(mktemp -d)
+validation_debt_root=$(mktemp -d "${validation_scratch_base}/validation-debt.XXXXXXXX")
+validation_cleanup_paths+=("$validation_debt_root")
 validation_debt_file=scripts/validation/host-path-debt.tsv
 validation_debt_path=swallowtail-adapter-antigravity/src/discovery/probe.rs
 validation_debt_line=$(grep -F -- "$validation_debt_path"$'\t' "$validation_debt_file" | head -1 | cut -f2-)

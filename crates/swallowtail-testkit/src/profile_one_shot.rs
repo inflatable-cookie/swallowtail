@@ -5,9 +5,7 @@ use crate::{
 use swallowtail_runtime::{Deadline, ExecutableRef, MonotonicInstant, ProcessRequest, ScopeId};
 
 pub(crate) fn run() -> ConformanceReport {
-    run_with_common_contract(&CommonContract::prove(
-        SyntheticProfile::OneShotStructuredCli,
-    ))
+    run_with_common_contract(&CommonContract::prove())
 }
 
 /// Runs this profile, recording an already-proved shared contract.

@@ -76,12 +76,10 @@ current_routes = {
 }
 if not current_routes:
     fail("current route inventory is empty")
-if not immutable_routes < current_routes:
+if not immutable_routes <= current_routes:
     fail(
-        "current source route inventory must strictly extend immutable "
-        f"v{previous_version}: post-tag additions "
-        f"{sorted(current_routes - immutable_routes)} must stay declared while "
-        f"v{previous_version} stays frozen; rewritten history "
+        "current source route inventory must extend immutable "
+        f"v{previous_version}: rewritten history "
         f"{sorted(immutable_routes - current_routes)} collapses the split"
     )
 
@@ -96,6 +94,11 @@ if candidate_routes != current_routes:
         f"{len(current_routes)}-route set: "
         f"added={sorted(candidate_routes - current_routes)}, "
         f"missing={sorted(current_routes - candidate_routes)}"
+    )
+if candidate_routes > immutable_routes and not (immutable_routes < current_routes):
+    fail(
+        "current source route inventory must strictly extend immutable "
+        f"v{previous_version} when candidate routes grew"
     )
 
 with ledger_file.open(newline="") as stream:

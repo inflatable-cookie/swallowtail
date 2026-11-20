@@ -64,9 +64,15 @@ while IFS= read -r release_package; do
   release_api="$release_baseline_dir/$release_package.txt"
   if [[ $release_removal_policy == immutable && -f "$release_immutable_baseline_dir/$release_package.txt" ]]; then
     release_removed_api="$release_actual_dir/$release_package.removed.txt"
+    release_grep_status=0
     grep -Fvx -f "$release_api" \
       "$release_immutable_baseline_dir/$release_package.txt" \
-      > "$release_removed_api" || true
+      > "$release_removed_api" || release_grep_status=$?
+    if [[ $release_grep_status -ne 0 && $release_grep_status -ne 1 ]]; then
+      printf 'public API removal check failed for %s (grep exit %s)\n' \
+        "$release_package" "$release_grep_status" >&2
+      exit "$release_grep_status"
+    fi
     if [[ -s "$release_removed_api" ]]; then
       printf 'v%s release API removes an immutable v%s item: %s\n' \
         "$release_current_version" "$release_previous_version" "$release_package" >&2

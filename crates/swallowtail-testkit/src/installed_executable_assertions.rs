@@ -75,6 +75,10 @@ fn assert_topology_and_join(
             RecordedHostCall::ProcessWait
         ]
     );
+    assert_eq!(
+        recording.process_io_calls(),
+        [crate::recording_host::RecordedProcessIoCall::CloseStdin]
+    );
 }
 
 fn assert_classification_and_safe_outcomes(claim: &InterfaceCompatibilityClaim) {

@@ -21,6 +21,7 @@ jobs:
   stable-format-and-lint:
     name: Stable format and lint
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -107,6 +108,7 @@ jobs:
   stable-contracts:
     name: Stable examples, metadata, and route contracts
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -129,10 +131,11 @@ jobs:
   docs-and-api:
     name: Documentation and semantic API
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: nightly-2026-08-05
       - uses: Swatinem/rust-cache@v2
@@ -150,6 +153,7 @@ jobs:
   research-numbers:
     name: Research number uniqueness
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - name: Collision check against canonical main
@@ -160,6 +164,7 @@ jobs:
   rust-floor:
     name: Pinned MSRV floor
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - name: Install pinned MSRV from baseline
@@ -178,6 +183,7 @@ jobs:
     name: Pinned MSRV floor tests
     if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
       - name: Install pinned MSRV from baseline
@@ -199,6 +205,7 @@ jobs:
   supply-chain:
     name: Dependency security, licenses, and sources
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
@@ -215,6 +222,7 @@ jobs:
   external-source:
     name: External Git-source consumer
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable

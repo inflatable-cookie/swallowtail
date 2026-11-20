@@ -26,7 +26,7 @@ impl AttachedServingHandle for SyntheticAttachedHandle {
 }
 
 pub(crate) fn run() -> ConformanceReport {
-    run_with_common_contract(&CommonContract::prove(SyntheticProfile::AttachedSelfHosted))
+    run_with_common_contract(&CommonContract::prove())
 }
 
 /// Runs this profile, recording an already-proved shared contract.

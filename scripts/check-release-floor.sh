@@ -6,7 +6,11 @@ cd "$release_repo_root"
 
 source release-baselines/rust-toolchains-0.2.0.env
 
-if ! rustup toolchain list | rg -q "^${SWALLOWTAIL_MSRV}(-|$)"; then
+release_installed_toolchains=$(rustup toolchain list)
+# Escape the dots so `1.95.0` cannot match `1x95y0`. The list is captured
+# first, so grep -q closing early cannot race rustup under pipefail.
+release_pattern=${SWALLOWTAIL_MSRV//./\\.}
+if ! grep -Eq "^${release_pattern}(-|\$)" <<< "$release_installed_toolchains"; then
   printf 'missing required Rust toolchain: %s\n' "$SWALLOWTAIL_MSRV" >&2
   exit 1
 fi

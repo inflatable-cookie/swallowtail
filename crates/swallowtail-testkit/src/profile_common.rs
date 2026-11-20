@@ -23,36 +23,37 @@ use swallowtail_runtime::{
 
 /// Shared assertions every synthetic profile proves, proved once per run.
 ///
-/// The proof reuses one fixture and the same invariant set for every profile,
-/// so a run that covers many profiles proves it once and records the result on
-/// each report instead of repeating the whole proof per profile.
+/// Profile-independent contract assertions are proved once and reused across
+/// profiles, while `BoundSelection` still executes against each profile's
+/// exact preflight fixture when `record_on` runs.
 pub(crate) struct CommonContract {
     passed: BTreeSet<ConformanceAssertion>,
 }
 
 impl CommonContract {
-    /// Proves every shared contract assertion once.
-    pub(crate) fn prove(profile: SyntheticProfile) -> Self {
-        let mut report = ConformanceReport::new(profile);
-        assert_common_contract(profile, &mut report);
-        Self {
-            passed: report.passed().collect(),
-        }
+    /// Proves every profile-independent shared contract assertion once.
+    pub(crate) fn prove() -> Self {
+        let mut passed = BTreeSet::new();
+        assert_profile_independent_common_contract(&mut passed);
+        Self { passed }
     }
 
-    /// Records the proved shared assertions on one profile report.
+    /// Records the proved shared assertions and checks `BoundSelection` for
+    /// this report's exact profile.
     pub(crate) fn record_on(&self, report: &mut ConformanceReport) {
         for assertion in &self.passed {
             report.record(*assertion);
         }
+        assert_bound_selection(report.profile(), report);
     }
 }
 
 pub(crate) fn assert_common_contract(profile: SyntheticProfile, report: &mut ConformanceReport) {
-    assert_rejections_precede_effects();
-    report.record(ConformanceAssertion::PreflightBeforeSideEffects);
+    CommonContract::prove().record_on(report);
+    debug_assert_eq!(profile, report.profile());
+}
 
-    assert_successful_preflight_binding();
+fn assert_bound_selection(profile: SyntheticProfile, report: &mut ConformanceReport) {
     let fixture = ProfilePreflightFixture::new(profile);
     let plan = fixture.preflight().expect("profile preflight must succeed");
     assert_eq!(plan.instance_id(), fixture.instance().id());
@@ -62,42 +63,49 @@ pub(crate) fn assert_common_contract(profile: SyntheticProfile, report: &mut Con
         fixture.instance().execution_host_id()
     );
     report.record(ConformanceAssertion::BoundSelection);
+}
+
+fn assert_profile_independent_common_contract(passed: &mut BTreeSet<ConformanceAssertion>) {
+    assert_rejections_precede_effects();
+    passed.insert(ConformanceAssertion::PreflightBeforeSideEffects);
+
+    assert_successful_preflight_binding();
 
     assert_changed_revision_invalidates_plan();
-    report.record(ConformanceAssertion::StalePlanRejected);
+    passed.insert(ConformanceAssertion::StalePlanRejected);
 
     assert_event_order();
-    report.record(ConformanceAssertion::OrderedEvents);
+    passed.insert(ConformanceAssertion::OrderedEvents);
 
     assert_single_terminal_outcome();
-    report.record(ConformanceAssertion::SingleTerminalOutcome);
+    passed.insert(ConformanceAssertion::SingleTerminalOutcome);
 
     assert_semantic_overflow();
-    report.record(ConformanceAssertion::SemanticOverflowFails);
+    passed.insert(ConformanceAssertion::SemanticOverflowFails);
 
     assert_cancellation_timeout_and_join();
-    report.record(ConformanceAssertion::CancellationAndTimeoutDistinct);
+    passed.insert(ConformanceAssertion::CancellationAndTimeoutDistinct);
 
     assert_cleanup_visibility();
-    report.record(ConformanceAssertion::CleanupRemainsVisible);
+    passed.insert(ConformanceAssertion::CleanupRemainsVisible);
 
     assert_external_ownership();
-    report.record(ConformanceAssertion::ExternalOwnershipPreserved);
+    passed.insert(ConformanceAssertion::ExternalOwnershipPreserved);
 
     assert_redaction();
-    report.record(ConformanceAssertion::Redaction);
+    passed.insert(ConformanceAssertion::Redaction);
 
     assert_scoped_inputs();
-    report.record(ConformanceAssertion::ScopedInputs);
+    passed.insert(ConformanceAssertion::ScopedInputs);
 
     assert_schema_is_transport_only();
-    report.record(ConformanceAssertion::SchemaTransportOnly);
+    passed.insert(ConformanceAssertion::SchemaTransportOnly);
 
     assert_extension_policies(ContractKernelFixture::canonical().event_with_extension());
-    report.record(ConformanceAssertion::ExtensionPolicyExplicit);
+    passed.insert(ConformanceAssertion::ExtensionPolicyExplicit);
 
     assert_no_implicit_fallback();
-    report.record(ConformanceAssertion::NoImplicitFallback);
+    passed.insert(ConformanceAssertion::NoImplicitFallback);
 }
 
 fn assert_rejections_precede_effects() {

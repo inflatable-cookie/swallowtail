@@ -538,6 +538,9 @@ impl RegisteredToolOperationKernel {
             state.admission = RegisteredToolAdmissionState::Frozen;
             state.lifecycle = RegisteredToolLifecycleState::Frozen;
         }
+        if let Some(active) = state.active.as_ref() {
+            active.cancelled.store(true, Ordering::SeqCst);
+        }
         state.progress.clear();
         state.bump_epoch();
         Err(fail(RegisteredToolFailureKind::Revoked))
@@ -608,6 +611,9 @@ impl RegisteredToolOperationKernel {
     /// already foreign to a released slot.
     fn abandon_dispatched_call(&self) {
         let mut state = self.locked();
+        if let Some(active) = state.active.as_ref() {
+            active.cancelled.store(true, Ordering::SeqCst);
+        }
         state.abandoned_calls = state.abandoned_calls.saturating_add(1);
         drop(state);
         self.release();

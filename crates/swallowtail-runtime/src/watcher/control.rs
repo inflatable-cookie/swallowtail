@@ -2,7 +2,7 @@ use super::{
     WatcherFailure, WatcherRegistry, WatcherSnapshot, WatcherStopAcknowledgement,
     WatcherWaitRepresentation,
 };
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, PoisonError};
 use swallowtail_core::{
     WatcherCleanupCause, WatcherId, WatcherOperationData, WatcherOwningTurn, WatcherRequester,
 };
@@ -176,11 +176,7 @@ impl ModelWatcherRole {
         &self,
         operation: impl FnOnce(&mut WatcherRegistry) -> Result<T, WatcherFailure>,
     ) -> Result<T, WatcherFailure> {
-        let mut registry = self
-            .registry
-            .lock()
-            .expect("watcher registry lock poisoned");
-        operation(&mut registry)
+        with_locked_registry(&self.registry, operation)
     }
 }
 
@@ -244,10 +240,53 @@ impl OperatorWatcherRole {
         &self,
         operation: impl FnOnce(&mut WatcherRegistry) -> Result<T, WatcherFailure>,
     ) -> Result<T, WatcherFailure> {
-        let mut registry = self
-            .registry
-            .lock()
-            .expect("watcher registry lock poisoned");
-        operation(&mut registry)
+        with_locked_registry(&self.registry, operation)
+    }
+}
+
+fn with_locked_registry<T>(
+    registry: &SharedWatcherRegistry,
+    operation: impl FnOnce(&mut WatcherRegistry) -> Result<T, WatcherFailure>,
+) -> Result<T, WatcherFailure> {
+    let mut guard = registry.lock().unwrap_or_else(PoisonError::into_inner);
+    operation(&mut guard)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::WatcherControlSurface;
+    use crate::RuntimeTurnId;
+    use crate::watcher::WatcherRegistry;
+    use crate::watcher::control::{ModelWatcherControl, OperatorWatcherControl};
+    use std::sync::{Arc, Mutex};
+    use swallowtail_core::WatcherOwningTurn;
+
+    #[test]
+    fn model_and_operator_roles_recover_poisoned_registry_lock() {
+        let registry = Arc::new(Mutex::new(
+            WatcherRegistry::new(RuntimeTurnId::new("turn-1").expect("turn"), 4).expect("registry"),
+        ));
+        let poisoned = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _guard = registry.lock().expect("registry lock");
+            panic!("poison watcher registry lock");
+        }));
+        assert!(poisoned.is_err());
+
+        let surface = WatcherControlSurface::new(registry);
+        let turn = WatcherOwningTurn::new("turn-1").expect("turn is valid");
+        assert!(
+            surface
+                .model()
+                .list(&turn)
+                .expect("model recovers")
+                .is_empty()
+        );
+        assert!(
+            surface
+                .operator()
+                .list(&turn)
+                .expect("operator recovers")
+                .is_empty()
+        );
     }
 }

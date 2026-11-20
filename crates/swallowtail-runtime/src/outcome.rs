@@ -388,6 +388,14 @@ impl Future for TerminalOutcomeFuture {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct TerminalAlreadySet;
 
+impl std::fmt::Display for TerminalAlreadySet {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("Operation already has a terminal outcome")
+    }
+}
+
+impl std::error::Error for TerminalAlreadySet {}
+
 impl From<TerminalAlreadySet> for RuntimeFailure {
     fn from(_: TerminalAlreadySet) -> Self {
         Self::new(SafeDiagnostic::new(

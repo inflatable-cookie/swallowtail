@@ -82,3 +82,67 @@ fn poll_immediate<T>(future: impl std::future::Future<Output = T>) -> T {
         Poll::Pending => panic!("fixture future must be immediately ready"),
     }
 }
+
+#[test]
+fn discovery_cancellation_wakes_outside_lock_and_cleans_up_dropped_waiters() {
+    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+    use std::sync::{Arc, Mutex};
+    use std::task::{Context, Poll, Wake, Waker};
+
+    let cancellation = DiscoveryCancellation::new();
+    let mut dropped_future = cancellation.wait_requested();
+    let mut noop_context = Context::from_waker(Waker::noop());
+    assert_eq!(
+        dropped_future.as_mut().poll(&mut noop_context),
+        Poll::Pending
+    );
+    assert_eq!(cancellation.inner().pending_waiter_count(), 1);
+    drop(dropped_future);
+    assert_eq!(
+        cancellation.inner().pending_waiter_count(),
+        0,
+        "dropped DiscoveryCancellation wait future must release its waker"
+    );
+
+    struct ReentrantWake {
+        cancellation: DiscoveryCancellation,
+        lock_was_free: AtomicBool,
+        wake_count: AtomicUsize,
+        pending: Mutex<Option<crate::BoxFuture<'static, ()>>>,
+    }
+
+    impl Wake for ReentrantWake {
+        fn wake(self: Arc<Self>) {
+            self.wake_count.fetch_add(1, Ordering::SeqCst);
+            self.lock_was_free
+                .store(self.cancellation.inner().try_lock_free(), Ordering::SeqCst);
+            // Re-entering DiscoveryCancellation from inside wake() must never deadlock.
+            if let Some(mut future) = self.pending.lock().expect("pending lock").take() {
+                let mut context = Context::from_waker(Waker::noop());
+                assert_eq!(future.as_mut().poll(&mut context), Poll::Ready(()));
+            }
+        }
+    }
+
+    let probe = Arc::new(ReentrantWake {
+        cancellation: cancellation.clone(),
+        lock_was_free: AtomicBool::new(false),
+        wake_count: AtomicUsize::new(0),
+        pending: Mutex::new(None),
+    });
+    let waker = Waker::from(Arc::clone(&probe));
+    let mut context = Context::from_waker(&waker);
+    let mut waiter = cancellation.wait_requested();
+    assert_eq!(waiter.as_mut().poll(&mut context), Poll::Pending);
+    *probe.pending.lock().expect("pending lock") = Some(waiter);
+
+    assert_eq!(
+        poll_immediate(cancellation.request()).expect("request succeeds"),
+        crate::CancellationAcknowledgement::Requested
+    );
+    assert_eq!(probe.wake_count.load(Ordering::SeqCst), 1);
+    assert!(
+        probe.lock_was_free.load(Ordering::SeqCst),
+        "DiscoveryCancellation must drop its waiter lock before calling wake()"
+    );
+}

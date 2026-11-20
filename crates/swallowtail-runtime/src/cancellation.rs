@@ -1,8 +1,11 @@
 use crate::{BoxFuture, RuntimeFailure};
+use std::collections::BTreeMap;
 use std::fmt;
+use std::future::Future;
+use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Mutex, PoisonError};
-use std::task::{Poll, Waker};
+use std::task::{Context, Poll, Waker};
 use swallowtail_core::CancellationScope;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -25,11 +28,16 @@ pub trait CancellationControl: Send + Sync {
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>>;
 }
 
+struct WaiterRegistry {
+    next_id: u64,
+    waiters: BTreeMap<u64, Waker>,
+}
+
 /// In-memory idempotent cancellation signal with waiter notification.
 pub struct ImmediateCancellation {
     scope: CancellationScope,
     requested: AtomicBool,
-    waiters: Mutex<Vec<Waker>>,
+    waiters: Mutex<WaiterRegistry>,
 }
 
 impl fmt::Debug for ImmediateCancellation {
@@ -49,7 +57,10 @@ impl ImmediateCancellation {
         Self {
             scope,
             requested: AtomicBool::new(false),
-            waiters: Mutex::new(Vec::new()),
+            waiters: Mutex::new(WaiterRegistry {
+                next_id: 0,
+                waiters: BTreeMap::new(),
+            }),
         }
     }
 
@@ -59,34 +70,83 @@ impl ImmediateCancellation {
         self.requested.load(Ordering::SeqCst)
     }
 
-    fn locked(&self) -> std::sync::MutexGuard<'_, Vec<Waker>> {
+    fn locked(&self) -> std::sync::MutexGuard<'_, WaiterRegistry> {
         self.waiters.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+
+    fn remove_waiter(&self, id: u64) {
+        self.locked().waiters.remove(&id);
+    }
+
+    #[cfg(test)]
+    pub(crate) fn pending_waiter_count(&self) -> usize {
+        self.locked().waiters.len()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn try_lock_free(&self) -> bool {
+        self.waiters.try_lock().is_ok()
     }
 
     /// Resolves when cancellation is first requested.
     ///
     /// Concurrent waiters are all notified; each registered waker is woken
-    /// exactly once when the request is recorded. Registration holds one waker
-    /// per distinct waiter and the set is drained on request, so it never
-    /// outlives the cancellation it observes.
+    /// exactly once when the request is recorded. Each future registers under
+    /// its own waiter id and deregisters on drop, so abandoned futures never
+    /// accumulate wakers on a long-lived signal.
     pub fn wait_requested(&self) -> BoxFuture<'_, ()> {
-        Box::pin(std::future::poll_fn(|context| {
-            if self.is_requested() {
-                return Poll::Ready(());
+        Box::pin(WaitRequestedFuture {
+            signal: self,
+            waiter_id: None,
+        })
+    }
+}
+
+struct WaitRequestedFuture<'a> {
+    signal: &'a ImmediateCancellation,
+    waiter_id: Option<u64>,
+}
+
+impl Drop for WaitRequestedFuture<'_> {
+    fn drop(&mut self) {
+        if let Some(id) = self.waiter_id.take() {
+            self.signal.remove_waiter(id);
+        }
+    }
+}
+
+impl Future for WaitRequestedFuture<'_> {
+    type Output = ();
+
+    fn poll(mut self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
+        if self.signal.is_requested() {
+            if let Some(id) = self.waiter_id.take() {
+                self.signal.remove_waiter(id);
             }
-            let mut waiters = self.locked();
-            if self.is_requested() {
-                Poll::Ready(())
-            } else {
-                if !waiters
-                    .iter()
-                    .any(|waiter| waiter.will_wake(context.waker()))
-                {
-                    waiters.push(context.waker().clone());
+            return Poll::Ready(());
+        }
+        let mut registry = self.signal.locked();
+        if self.signal.is_requested() {
+            if let Some(id) = self.waiter_id.take() {
+                registry.waiters.remove(&id);
+            }
+            return Poll::Ready(());
+        }
+        if let Some(id) = self.waiter_id {
+            match registry.waiters.get_mut(&id) {
+                Some(existing) if existing.will_wake(context.waker()) => {}
+                Some(existing) => *existing = context.waker().clone(),
+                None => {
+                    registry.waiters.insert(id, context.waker().clone());
                 }
-                Poll::Pending
             }
-        }))
+        } else {
+            let id = registry.next_id;
+            registry.next_id = registry.next_id.wrapping_add(1);
+            registry.waiters.insert(id, context.waker().clone());
+            self.waiter_id = Some(id);
+        }
+        Poll::Pending
     }
 }
 
@@ -102,7 +162,12 @@ impl CancellationControl for ImmediateCancellation {
             // Waiters leave the lock before they are woken: a waker may poll
             // its own future immediately, and that poll must never observe a
             // held lock.
-            let waiters: Vec<Waker> = self.locked().drain(..).collect();
+            let waiters: Vec<Waker> = {
+                let mut registry = self.locked();
+                std::mem::take(&mut registry.waiters)
+                    .into_values()
+                    .collect()
+            };
             for waiter in waiters {
                 waiter.wake();
             }
@@ -230,5 +295,73 @@ mod tests {
         assert_eq!(future.as_mut().poll(&mut context), Poll::Pending);
         request_and_expect(&signal);
         assert_eq!(count.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn dropped_waiters_do_not_accumulate_on_long_lived_signal() {
+        let signal = Arc::new(ImmediateCancellation::new(CancellationScope::StructuredRun));
+        let dropped_wakes = Arc::new(AtomicUsize::new(0));
+
+        for _ in 0..256 {
+            let waker = Waker::from(Arc::new(CountingWake {
+                count: Arc::clone(&dropped_wakes),
+                thread: thread::current(),
+            }));
+            let mut context = Context::from_waker(&waker);
+            let mut future = std::pin::pin!(signal.wait_requested());
+            assert_eq!(future.as_mut().poll(&mut context), Poll::Pending);
+        }
+
+        assert_eq!(
+            signal.pending_waiter_count(),
+            0,
+            "dropping polled wait_requested futures must remove their wakers"
+        );
+
+        let surviving_wakes = Arc::new(AtomicUsize::new(0));
+        let surviving_waker = Waker::from(Arc::new(CountingWake {
+            count: Arc::clone(&surviving_wakes),
+            thread: thread::current(),
+        }));
+        let mut surviving_context = Context::from_waker(&surviving_waker);
+        let mut surviving = std::pin::pin!(signal.wait_requested());
+        assert_eq!(
+            surviving.as_mut().poll(&mut surviving_context),
+            Poll::Pending
+        );
+        assert_eq!(signal.pending_waiter_count(), 1);
+
+        request_and_expect(&signal);
+        assert_eq!(dropped_wakes.load(Ordering::SeqCst), 0);
+        assert_eq!(surviving_wakes.load(Ordering::SeqCst), 1);
+        assert_eq!(signal.pending_waiter_count(), 0);
+        assert_eq!(
+            surviving.as_mut().poll(&mut surviving_context),
+            Poll::Ready(())
+        );
+    }
+
+    #[test]
+    fn dropping_one_waiter_does_not_drop_another_sharing_the_same_waker() {
+        let signal = Arc::new(ImmediateCancellation::new(CancellationScope::ActiveTurn));
+        let count = Arc::new(AtomicUsize::new(0));
+        let waker = Waker::from(Arc::new(CountingWake {
+            count: Arc::clone(&count),
+            thread: thread::current(),
+        }));
+        let mut context = Context::from_waker(&waker);
+
+        let mut first = signal.wait_requested();
+        let mut second = signal.wait_requested();
+        assert_eq!(first.as_mut().poll(&mut context), Poll::Pending);
+        assert_eq!(second.as_mut().poll(&mut context), Poll::Pending);
+        assert_eq!(signal.pending_waiter_count(), 2);
+
+        drop(first);
+        assert_eq!(signal.pending_waiter_count(), 1);
+
+        request_and_expect(&signal);
+        assert_eq!(count.load(Ordering::SeqCst), 1);
+        assert_eq!(second.as_mut().poll(&mut context), Poll::Ready(()));
     }
 }

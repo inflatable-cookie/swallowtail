@@ -1,12 +1,9 @@
 use crate::{
     BoxFuture, CancellationAcknowledgement, CancellationControl, Deadline, ExecutableRef,
-    HostServices, RequestId, RuntimeFailure, ScopeId,
+    HostServices, ImmediateCancellation, RequestId, RuntimeFailure, ScopeId,
 };
 use std::fmt;
-use std::future::poll_fn;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
-use std::task::Poll;
+use std::sync::Arc;
 use swallowtail_core::{CancellationScope, ExecutionHostId, InterfaceVersionAxis, SafeDiagnostic};
 
 /// One opaque executable candidate selected and approved by the execution host.
@@ -42,12 +39,7 @@ impl InstalledExecutableTarget {
 #[derive(Clone)]
 /// Shared operation-scoped cancellation signal for an executable probe.
 pub struct DiscoveryCancellation {
-    state: Arc<DiscoveryCancellationState>,
-}
-
-struct DiscoveryCancellationState {
-    requested: AtomicBool,
-    waiters: Mutex<Vec<std::task::Waker>>,
+    inner: Arc<ImmediateCancellation>,
 }
 
 impl DiscoveryCancellation {
@@ -55,46 +47,32 @@ impl DiscoveryCancellation {
     /// Creates a cancellation signal in the not-requested state.
     pub fn new() -> Self {
         Self {
-            state: Arc::new(DiscoveryCancellationState {
-                requested: AtomicBool::new(false),
-                waiters: Mutex::new(Vec::new()),
-            }),
+            inner: Arc::new(ImmediateCancellation::new(
+                CancellationScope::DiscoveryProbe,
+            )),
         }
     }
 
     #[must_use]
     /// Returns whether cancellation has been requested.
     pub fn is_requested(&self) -> bool {
-        self.state.requested.load(Ordering::SeqCst)
+        self.inner.is_requested()
     }
 
     /// Resolves once cancellation is requested.
     ///
     /// Concurrent waiters are all notified; each registered waker is woken
-    /// exactly once when the request is recorded.
+    /// exactly once outside the waiter lock when the request is recorded.
     pub fn wait_requested(&self) -> BoxFuture<'static, ()> {
-        let state = Arc::clone(&self.state);
-        Box::pin(poll_fn(move |context| {
-            if state.requested.load(Ordering::SeqCst) {
-                Poll::Ready(())
-            } else {
-                let mut waiters = state
-                    .waiters
-                    .lock()
-                    .expect("discovery cancellation waiter lock poisoned");
-                if state.requested.load(Ordering::SeqCst) {
-                    Poll::Ready(())
-                } else {
-                    if !waiters
-                        .iter()
-                        .any(|waiter| waiter.will_wake(context.waker()))
-                    {
-                        waiters.push(context.waker().clone());
-                    }
-                    Poll::Pending
-                }
-            }
-        }))
+        let inner = Arc::clone(&self.inner);
+        Box::pin(async move {
+            inner.wait_requested().await;
+        })
+    }
+
+    #[cfg(test)]
+    pub(crate) fn inner(&self) -> &ImmediateCancellation {
+        &self.inner
     }
 }
 
@@ -115,24 +93,11 @@ impl fmt::Debug for DiscoveryCancellation {
 
 impl CancellationControl for DiscoveryCancellation {
     fn scope(&self) -> CancellationScope {
-        CancellationScope::DiscoveryProbe
+        self.inner.scope()
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
-        let acknowledgement = if self.state.requested.swap(true, Ordering::SeqCst) {
-            CancellationAcknowledgement::AlreadyRequested
-        } else {
-            let mut waiters = self
-                .state
-                .waiters
-                .lock()
-                .expect("discovery cancellation waiter lock poisoned");
-            for waiter in waiters.drain(..) {
-                waiter.wake();
-            }
-            CancellationAcknowledgement::Requested
-        };
-        Box::pin(async move { Ok(acknowledgement) })
+        self.inner.request()
     }
 }
 

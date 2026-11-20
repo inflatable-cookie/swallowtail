@@ -8,14 +8,15 @@
 
 use super::{ConnectionLifecycleStore, ConnectionLifecycleStoreFailure};
 use crate::{
-    ApprovedUrlRef, CredentialRef, Deadline, DeviceCodePrompt, HostServices, ProcessHandle,
-    ProcessRequest, RuntimeFailure, ScopeId,
+    ApprovedUrlRef, BoxFuture, CredentialRef, Deadline, DeviceCodePrompt, HostServices,
+    ProcessHandle, ProcessRequest, RuntimeFailure, ScopeId,
 };
 use std::collections::BTreeMap;
 use std::error::Error;
 use std::fmt;
 use std::future::Future;
 use std::pin::Pin;
+use std::sync::{Mutex, PoisonError};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{
     AccessProfileId, AddableRouteId, AdmittedInstanceRecord, ConfiguredInstanceId,
@@ -346,6 +347,11 @@ impl SignInOutcome {
     }
 }
 
+enum PendingSignInPoll {
+    Loopback(BoxFuture<'static, Result<Option<crate::LoopbackCallbackReceipt>, RuntimeFailure>>),
+    Device(BoxFuture<'static, Result<Option<crate::DeviceAuthorizationReceipt>, RuntimeFailure>>),
+}
+
 /// In-flight library-owned sign-in session.
 pub struct SignInSession {
     scope: ScopeId,
@@ -364,6 +370,8 @@ pub struct SignInSession {
     credential_field: Option<CredentialFieldId>,
     api_key_fields: BTreeMap<CredentialFieldId, CredentialFieldDescriptor>,
     submitted_refs: BTreeMap<CredentialFieldId, CredentialRef>,
+    pending_poll: Mutex<Option<PendingSignInPoll>>,
+    pending_loopback_release: Mutex<Option<BoxFuture<'static, crate::CleanupOutcome>>>,
 }
 
 impl fmt::Debug for SignInSession {
@@ -401,10 +409,91 @@ impl SignInSession {
 ///
 /// Registration of a port is not enough. This call performs host work for the
 /// selected method. [`swallowtail_core::SignInAction`] is not consulted.
+///
+/// Host start futures that yield `Poll::Pending` fail closed with
+/// [`SignInFailureKind::HostPort`] after cleaning up any partial lease; use
+/// [`start_sign_in_async`] when host ports are asynchronous.
 pub fn start_sign_in(
     services: &HostServices,
     request: SignInStartRequest,
 ) -> Result<SignInSession, SignInFailure> {
+    let (mut session, method) = prepare_session(services, request)?;
+    match method {
+        SignInMethod::InteractiveOauth {
+            authorize_url,
+            credential_field,
+        } => {
+            session.credential_field = Some(credential_field);
+            start_interactive(services, &mut session, authorize_url)?;
+        }
+        SignInMethod::DeviceOauth {
+            prompt,
+            credential_field,
+        } => {
+            session.credential_field = Some(credential_field);
+            start_device(services, &mut session, prompt)?;
+        }
+        SignInMethod::DelegatedCliLogin {
+            process,
+            credential,
+            credential_field,
+        } => {
+            session.credential_field = Some(credential_field);
+            session.delegated_credential = Some(credential);
+            start_delegated(services, &mut session, process)?;
+        }
+        SignInMethod::ApiKeyCollection { fields } => {
+            start_api_key(&mut session, fields)?;
+        }
+    }
+    Ok(session)
+}
+
+/// Starts one sign-in loop asynchronously through the required host ports.
+///
+/// Registration of a port is not enough. This call awaits host work for the
+/// selected method and releases any acquired loopback lease if opening the
+/// authorize URL fails. [`swallowtail_core::SignInAction`] is not consulted.
+pub async fn start_sign_in_async(
+    services: &HostServices,
+    request: SignInStartRequest,
+) -> Result<SignInSession, SignInFailure> {
+    let (mut session, method) = prepare_session(services, request)?;
+    match method {
+        SignInMethod::InteractiveOauth {
+            authorize_url,
+            credential_field,
+        } => {
+            session.credential_field = Some(credential_field);
+            start_interactive_async(services, &mut session, authorize_url).await?;
+        }
+        SignInMethod::DeviceOauth {
+            prompt,
+            credential_field,
+        } => {
+            session.credential_field = Some(credential_field);
+            start_device_async(services, &mut session, prompt).await?;
+        }
+        SignInMethod::DelegatedCliLogin {
+            process,
+            credential,
+            credential_field,
+        } => {
+            session.credential_field = Some(credential_field);
+            session.delegated_credential = Some(credential);
+            start_delegated_async(services, &mut session, process).await?;
+        }
+        SignInMethod::ApiKeyCollection { fields } => {
+            start_api_key(&mut session, fields)?;
+        }
+    }
+    Ok(session)
+}
+
+fn prepare_session(
+    services: &HostServices,
+    request: SignInStartRequest,
+) -> Result<(SignInSession, SignInMethod), SignInFailure> {
     let kind = match (&request.method, &request.binding.mechanism) {
         (SignInMethod::InteractiveOauth { .. }, CredentialMechanism::InteractiveOauth) => {
             SignInKind::InteractiveOauth
@@ -430,7 +519,7 @@ pub fn start_sign_in(
         return Err(SignInFailure::missing_port(HostServiceKind::Time));
     }
 
-    let mut session = SignInSession {
+    let session = SignInSession {
         scope: request.scope,
         instance_id: request.instance_id,
         family: request.family,
@@ -447,57 +536,46 @@ pub fn start_sign_in(
         credential_field: None,
         api_key_fields: BTreeMap::new(),
         submitted_refs: BTreeMap::new(),
+        pending_poll: Mutex::new(None),
+        pending_loopback_release: Mutex::new(None),
     };
+    Ok((session, request.method))
+}
 
-    match request.method {
-        SignInMethod::InteractiveOauth {
-            authorize_url,
-            credential_field,
-        } => {
-            session.credential_field = Some(credential_field);
-            start_interactive(services, &mut session, authorize_url)?;
-        }
-        SignInMethod::DeviceOauth {
-            prompt,
-            credential_field,
-        } => {
-            session.credential_field = Some(credential_field);
-            start_device(services, &mut session, prompt)?;
-        }
-        SignInMethod::DelegatedCliLogin {
-            process,
-            credential,
-            credential_field,
-        } => {
-            session.credential_field = Some(credential_field);
-            session.delegated_credential = Some(credential);
-            start_delegated(services, &mut session, process)?;
-        }
-        SignInMethod::ApiKeyCollection { fields } => {
-            if fields.is_empty() {
-                return Err(SignInFailure::new(
-                    SignInFailureKind::UnknownCredentialField,
-                    "swallowtail.sign_in.unknown_credential_field",
-                    "API-key collection requires advertised credential-field descriptors",
-                ));
-            }
-            session.api_key_fields = fields
-                .into_iter()
-                .map(|field| (field.id().clone(), field))
-                .collect();
-            session.status = SignInStatus::InProgress;
-        }
+fn start_api_key(
+    session: &mut SignInSession,
+    fields: Vec<CredentialFieldDescriptor>,
+) -> Result<(), SignInFailure> {
+    if fields.is_empty() {
+        return Err(SignInFailure::new(
+            SignInFailureKind::UnknownCredentialField,
+            "swallowtail.sign_in.unknown_credential_field",
+            "API-key collection requires advertised credential-field descriptors",
+        ));
     }
-    Ok(session)
+    session.api_key_fields = fields
+        .into_iter()
+        .map(|field| (field.id().clone(), field))
+        .collect();
+    session.status = SignInStatus::InProgress;
+    Ok(())
 }
 
 /// Observes timeout, host callback, device finish, or helper exit.
+///
+/// Pending host port futures advance one poll without panicking and leave the
+/// session in [`SignInStatus::InProgress`]. Timeout releases host leases and
+/// stops/reaps any child process; if cleanup returns `Poll::Pending`, this
+/// call fails closed with [`SignInFailureKind::HostPort`] without transitioning
+/// to [`SignInStatus::TimedOut`] so callers can finish cleanup with
+/// [`poll_sign_in_async`] or [`cancel_sign_in_async`].
 pub fn poll_sign_in(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<SignInStatus, SignInFailure> {
     reject_terminal(session)?;
     if timed_out(session, services)? {
+        cleanup_session_now(session, services)?;
         session.status = SignInStatus::TimedOut;
         return Ok(session.status);
     }
@@ -505,15 +583,42 @@ pub fn poll_sign_in(
         SignInKind::InteractiveOauth => poll_interactive(session, services)?,
         SignInKind::DeviceOauth => poll_device(session, services)?,
         SignInKind::DelegatedCliLogin => poll_delegated(session)?,
-        SignInKind::ApiKeyCollection => {
-            if session.submitted_refs.len() == session.api_key_fields.len() {
-                session.status = SignInStatus::ReadyToComplete;
-            } else {
-                session.status = SignInStatus::InProgress;
-            }
-        }
+        SignInKind::ApiKeyCollection => poll_api_key(session),
     }
     Ok(session.status)
+}
+
+/// Asynchronously observes timeout, host callback, device finish, or helper exit.
+///
+/// When a deadline is set on the session, awaiting a host callback, device
+/// authorization, or delegated login helper races against
+/// [`crate::TimeService::wait_until`] and cleans up host leases and child
+/// processes if the deadline elapses while waiting.
+pub async fn poll_sign_in_async(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<SignInStatus, SignInFailure> {
+    reject_terminal(session)?;
+    if timed_out(session, services)? {
+        cleanup_session_async(session, services).await;
+        session.status = SignInStatus::TimedOut;
+        return Ok(session.status);
+    }
+    match session.kind {
+        SignInKind::InteractiveOauth => poll_interactive_async(session, services).await?,
+        SignInKind::DeviceOauth => poll_device_async(session, services).await?,
+        SignInKind::DelegatedCliLogin => poll_delegated_async(session, services).await?,
+        SignInKind::ApiKeyCollection => poll_api_key(session),
+    }
+    Ok(session.status)
+}
+
+fn poll_api_key(session: &mut SignInSession) {
+    if session.submitted_refs.len() == session.api_key_fields.len() {
+        session.status = SignInStatus::ReadyToComplete;
+    } else {
+        session.status = SignInStatus::InProgress;
+    }
 }
 
 /// Submits one host-stored API-key field as an opaque credential reference.
@@ -553,11 +658,60 @@ pub fn submit_sign_in_credential_field(
 ///
 /// When `store` is present, references are written onto the admitted instance.
 /// Contract 014 still owns acquire, audience binding, redaction, and release.
+/// Releases any held host leases and stops/reaps any child process on both
+/// success and error paths; if cleanup returns `Poll::Pending`, fails closed
+/// with [`SignInFailureKind::HostPort`] without mutating the store. Use
+/// [`complete_sign_in_async`] when host cleanup ports are asynchronous.
 pub fn complete_sign_in(
     mut session: SignInSession,
     services: &HostServices,
     store: Option<&dyn ConnectionLifecycleStore>,
 ) -> Result<SignInOutcome, SignInFailure> {
+    let refs = validate_complete(&session, services);
+    cleanup_session_now(&mut session, services)?;
+    let refs = refs?;
+    if let Some(store) = store {
+        persist_refs(
+            store,
+            &session.instance_id,
+            &session.family,
+            &session.route_id,
+            &refs,
+        )?;
+    }
+    session.status = SignInStatus::Completed;
+    Ok(build_outcome(session, refs))
+}
+
+/// Asynchronously completes a ready sign-in loop and materializes opaque credential references.
+///
+/// Releases any held host leases and stops/reaps any child process on both
+/// success and error paths.
+pub async fn complete_sign_in_async(
+    mut session: SignInSession,
+    services: &HostServices,
+    store: Option<&dyn ConnectionLifecycleStore>,
+) -> Result<SignInOutcome, SignInFailure> {
+    let refs = validate_complete(&session, services);
+    cleanup_session_async(&mut session, services).await;
+    let refs = refs?;
+    if let Some(store) = store {
+        persist_refs(
+            store,
+            &session.instance_id,
+            &session.family,
+            &session.route_id,
+            &refs,
+        )?;
+    }
+    session.status = SignInStatus::Completed;
+    Ok(build_outcome(session, refs))
+}
+
+fn validate_complete(
+    session: &SignInSession,
+    services: &HostServices,
+) -> Result<BTreeMap<CredentialFieldId, CredentialRef>, SignInFailure> {
     if session.status == SignInStatus::TimedOut {
         return Err(SignInFailure::new(
             SignInFailureKind::InvalidState,
@@ -581,55 +735,51 @@ pub fn complete_sign_in(
     }
 
     let refs = match session.kind {
-        SignInKind::InteractiveOauth => materialize_interactive(&session, services)?,
-        SignInKind::DeviceOauth => materialize_device(&session, services)?,
-        SignInKind::DelegatedCliLogin => materialize_delegated(&session)?,
+        SignInKind::InteractiveOauth => materialize_interactive(session, services)?,
+        SignInKind::DeviceOauth => materialize_device(session, services)?,
+        SignInKind::DelegatedCliLogin => materialize_delegated(session)?,
         SignInKind::ApiKeyCollection => session.submitted_refs.clone(),
     };
     reject_account_change(&session.binding, &refs)?;
 
-    if let Some(store) = store {
-        persist_refs(
-            store,
-            &session.instance_id,
-            &session.family,
-            &session.route_id,
-            &refs,
-        )?;
-    }
+    Ok(refs)
+}
 
-    release_loopback(services, session.loopback.take());
-    session.status = SignInStatus::Completed;
-    Ok(SignInOutcome {
+fn build_outcome(
+    session: SignInSession,
+    refs: BTreeMap<CredentialFieldId, CredentialRef>,
+) -> SignInOutcome {
+    SignInOutcome {
         instance_id: session.instance_id,
         route_id: session.route_id,
         audience: session.binding.audience,
         mechanism: session.binding.mechanism,
         billing: session.binding.billing,
         credential_refs: refs,
-    })
+    }
 }
 
 /// Cancels an in-flight sign-in loop and releases host port leases.
+///
+/// Fails closed with [`SignInFailureKind::HostPort`] if cleanup futures return
+/// `Poll::Pending`; use [`cancel_sign_in_async`] when host ports are asynchronous.
 pub fn cancel_sign_in(
     mut session: SignInSession,
     services: &HostServices,
 ) -> Result<SignInStatus, SignInFailure> {
-    if matches!(
-        session.status,
-        SignInStatus::Completed | SignInStatus::Cancelled | SignInStatus::TimedOut
-    ) {
-        return Err(SignInFailure::new(
-            SignInFailureKind::InvalidState,
-            "swallowtail.sign_in.invalid_state",
-            "Sign-in loop is already terminal",
-        ));
-    }
-    release_loopback(services, session.loopback.take());
-    if let Some(process) = session.process.take() {
-        let _ = poll_now(process.request_stop());
-        let _ = poll_now(process.force_stop());
-    }
+    reject_terminal(&session)?;
+    cleanup_session_now(&mut session, services)?;
+    Ok(SignInStatus::Cancelled)
+}
+
+/// Asynchronously cancels an in-flight sign-in loop, releases host port leases,
+/// and stops and reaps any child process.
+pub async fn cancel_sign_in_async(
+    mut session: SignInSession,
+    services: &HostServices,
+) -> Result<SignInStatus, SignInFailure> {
+    reject_terminal(&session)?;
+    cleanup_session_async(&mut session, services).await;
     Ok(SignInStatus::Cancelled)
 }
 
@@ -638,17 +788,65 @@ fn start_interactive(
     session: &mut SignInSession,
     url: ApprovedUrlRef,
 ) -> Result<(), SignInFailure> {
+    let (loopback, url_open) = interactive_ports(services)?;
+    let lease = poll_ready_or_pending_error(
+        loopback.bind(session.scope.clone()),
+        "Sign-in loopback bind did not resolve immediately; use start_sign_in_async",
+    )?;
+    let opened = poll_ready_or_pending_error(
+        url_open.open(session.scope.clone(), url),
+        "Sign-in URL open did not resolve immediately; use start_sign_in_async",
+    );
+    if let Err(failure) = opened {
+        if release_loopback_lease_now(services, lease) {
+            return Err(SignInFailure::new(
+                SignInFailureKind::HostPort,
+                "swallowtail.sign_in.host_port_pending",
+                "Sign-in loopback release did not resolve immediately; use start_sign_in_async",
+            ));
+        }
+        return Err(failure);
+    }
+    session.loopback = Some(lease);
+    session.status = SignInStatus::Started;
+    Ok(())
+}
+
+async fn start_interactive_async(
+    services: &HostServices,
+    session: &mut SignInSession,
+    url: ApprovedUrlRef,
+) -> Result<(), SignInFailure> {
+    let (loopback, url_open) = interactive_ports(services)?;
+    let lease = loopback
+        .bind(session.scope.clone())
+        .await
+        .map_err(SignInFailure::from_port)?;
+    if let Err(failure) = url_open.open(session.scope.clone(), url).await {
+        release_loopback_async(services, Some(lease)).await;
+        return Err(SignInFailure::from_port(failure));
+    }
+    session.loopback = Some(lease);
+    session.status = SignInStatus::Started;
+    Ok(())
+}
+
+fn interactive_ports(
+    services: &HostServices,
+) -> Result<
+    (
+        &dyn crate::LoopbackCallbackService,
+        &dyn crate::UrlOpenService,
+    ),
+    SignInFailure,
+> {
     let loopback = services
         .loopback_callback()
         .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
     let url_open = services
         .url_open()
         .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::UrlOpen))?;
-    let lease = poll_now(loopback.bind(session.scope.clone())).map_err(SignInFailure::from_port)?;
-    poll_now(url_open.open(session.scope.clone(), url)).map_err(SignInFailure::from_port)?;
-    session.loopback = Some(lease);
-    session.status = SignInStatus::Started;
-    Ok(())
+    Ok((loopback.as_ref(), url_open.as_ref()))
 }
 
 fn start_device(
@@ -659,7 +857,26 @@ fn start_device(
     let display = services
         .device_code_display()
         .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::DeviceCodeDisplay))?;
-    poll_now(display.display(session.scope.clone(), prompt)).map_err(SignInFailure::from_port)?;
+    poll_ready_or_pending_error(
+        display.display(session.scope.clone(), prompt),
+        "Sign-in device display did not resolve immediately; use start_sign_in_async",
+    )?;
+    session.status = SignInStatus::Started;
+    Ok(())
+}
+
+async fn start_device_async(
+    services: &HostServices,
+    session: &mut SignInSession,
+    prompt: DeviceCodePrompt,
+) -> Result<(), SignInFailure> {
+    let display = services
+        .device_code_display()
+        .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::DeviceCodeDisplay))?;
+    display
+        .display(session.scope.clone(), prompt)
+        .await
+        .map_err(SignInFailure::from_port)?;
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -672,7 +889,26 @@ fn start_delegated(
     let process = services
         .process()
         .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::Process))?;
-    let handle = poll_now(process.start(session.scope.clone(), request))
+    let handle = poll_ready_or_pending_error(
+        process.start(session.scope.clone(), request),
+        "Sign-in process start did not resolve immediately; use start_sign_in_async",
+    )?;
+    session.process = Some(handle);
+    session.status = SignInStatus::Started;
+    Ok(())
+}
+
+async fn start_delegated_async(
+    services: &HostServices,
+    session: &mut SignInSession,
+    request: ProcessRequest,
+) -> Result<(), SignInFailure> {
+    let process = services
+        .process()
+        .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::Process))?;
+    let handle = process
+        .start(session.scope.clone(), request)
+        .await
         .map_err(SignInFailure::from_port)?;
     session.process = Some(handle);
     session.status = SignInStatus::Started;
@@ -683,36 +919,131 @@ fn poll_interactive(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<(), SignInFailure> {
-    let Some(lease) = session.loopback.as_ref() else {
-        return Err(SignInFailure::new(
-            SignInFailureKind::InvalidState,
-            "swallowtail.sign_in.invalid_state",
-            "Interactive sign-in is missing its loopback lease",
-        ));
+    let mut future = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Loopback(future)) => future,
+        _ => {
+            let lease = session.loopback.as_ref().ok_or_else(|| {
+                SignInFailure::new(
+                    SignInFailureKind::InvalidState,
+                    "swallowtail.sign_in.invalid_state",
+                    "Interactive sign-in is missing its loopback lease",
+                )
+            })?;
+            let loopback = services
+                .loopback_callback()
+                .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
+            loopback.poll(lease)
+        }
     };
-    let loopback = services
-        .loopback_callback()
-        .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
-    if let Some(receipt) = poll_now(loopback.poll(lease)).map_err(SignInFailure::from_port)? {
-        session.loopback_receipt = Some(receipt);
-        session.status = SignInStatus::ReadyToComplete;
-    } else {
-        session.status = SignInStatus::InProgress;
+    match poll_box_future_once(&mut future) {
+        Poll::Pending => {
+            set_pending_poll(session, PendingSignInPoll::Loopback(future));
+            session.status = SignInStatus::InProgress;
+        }
+        Poll::Ready(Ok(Some(receipt))) => {
+            session.loopback_receipt = Some(receipt);
+            session.status = SignInStatus::ReadyToComplete;
+        }
+        Poll::Ready(Ok(None)) => {
+            session.status = SignInStatus::InProgress;
+        }
+        Poll::Ready(Err(failure)) => return Err(SignInFailure::from_port(failure)),
+    }
+    Ok(())
+}
+
+async fn poll_interactive_async(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<(), SignInFailure> {
+    let future = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Loopback(future)) => future,
+        _ => {
+            let lease = session.loopback.as_ref().ok_or_else(|| {
+                SignInFailure::new(
+                    SignInFailureKind::InvalidState,
+                    "swallowtail.sign_in.invalid_state",
+                    "Interactive sign-in is missing its loopback lease",
+                )
+            })?;
+            let loopback = services
+                .loopback_callback()
+                .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
+            loopback.poll(lease)
+        }
+    };
+    match await_with_deadline(future, session.deadline, services).await? {
+        DeadlineRace::TimedOut => {
+            cleanup_session_async(session, services).await;
+            session.status = SignInStatus::TimedOut;
+        }
+        DeadlineRace::Completed(result) => match result.map_err(SignInFailure::from_port)? {
+            Some(receipt) => {
+                session.loopback_receipt = Some(receipt);
+                session.status = SignInStatus::ReadyToComplete;
+            }
+            None => {
+                session.status = SignInStatus::InProgress;
+            }
+        },
     }
     Ok(())
 }
 
 fn poll_device(session: &mut SignInSession, services: &HostServices) -> Result<(), SignInFailure> {
-    let display = services
-        .device_code_display()
-        .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::DeviceCodeDisplay))?;
-    if let Some(receipt) =
-        poll_now(display.poll_authorization(&session.scope)).map_err(SignInFailure::from_port)?
-    {
-        session.device_receipt = Some(receipt);
-        session.status = SignInStatus::ReadyToComplete;
-    } else {
-        session.status = SignInStatus::InProgress;
+    let mut future = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Device(future)) => future,
+        _ => {
+            let display = services
+                .device_code_display()
+                .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::DeviceCodeDisplay))?;
+            display.poll_authorization(&session.scope)
+        }
+    };
+    match poll_box_future_once(&mut future) {
+        Poll::Pending => {
+            set_pending_poll(session, PendingSignInPoll::Device(future));
+            session.status = SignInStatus::InProgress;
+        }
+        Poll::Ready(Ok(Some(receipt))) => {
+            session.device_receipt = Some(receipt);
+            session.status = SignInStatus::ReadyToComplete;
+        }
+        Poll::Ready(Ok(None)) => {
+            session.status = SignInStatus::InProgress;
+        }
+        Poll::Ready(Err(failure)) => return Err(SignInFailure::from_port(failure)),
+    }
+    Ok(())
+}
+
+async fn poll_device_async(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<(), SignInFailure> {
+    let future = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Device(future)) => future,
+        _ => {
+            let display = services
+                .device_code_display()
+                .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::DeviceCodeDisplay))?;
+            display.poll_authorization(&session.scope)
+        }
+    };
+    match await_with_deadline(future, session.deadline, services).await? {
+        DeadlineRace::TimedOut => {
+            cleanup_session_async(session, services).await;
+            session.status = SignInStatus::TimedOut;
+        }
+        DeadlineRace::Completed(result) => match result.map_err(SignInFailure::from_port)? {
+            Some(receipt) => {
+                session.device_receipt = Some(receipt);
+                session.status = SignInStatus::ReadyToComplete;
+            }
+            None => {
+                session.status = SignInStatus::InProgress;
+            }
+        },
     }
     Ok(())
 }
@@ -726,18 +1057,55 @@ fn poll_delegated(session: &mut SignInSession) -> Result<(), SignInFailure> {
         ));
     };
     match poll_now_or_pending(handle.wait()) {
-        None => session.status = SignInStatus::InProgress,
-        Some(Ok(exit)) if exit.success() => session.status = SignInStatus::ReadyToComplete,
-        Some(Ok(_)) => {
-            return Err(SignInFailure::new(
-                SignInFailureKind::HostPort,
-                "swallowtail.sign_in.login_helper_failed",
-                "Approved login helper exited unsuccessfully",
-            ));
+        None => {
+            session.status = SignInStatus::InProgress;
+            Ok(())
         }
-        Some(Err(failure)) => return Err(SignInFailure::from_port(failure)),
+        Some(result) => finish_delegated_wait(session, result),
     }
-    Ok(())
+}
+
+async fn poll_delegated_async(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<(), SignInFailure> {
+    let wait_outcome = {
+        let Some(handle) = session.process.as_ref() else {
+            return Err(SignInFailure::new(
+                SignInFailureKind::InvalidState,
+                "swallowtail.sign_in.invalid_state",
+                "Delegated CLI login is missing its process handle",
+            ));
+        };
+        await_with_deadline(handle.wait(), session.deadline, services).await?
+    };
+    match wait_outcome {
+        DeadlineRace::Completed(result) => finish_delegated_wait(session, result),
+        DeadlineRace::TimedOut => {
+            cleanup_session_async(session, services).await;
+            session.status = SignInStatus::TimedOut;
+            Ok(())
+        }
+    }
+}
+
+fn finish_delegated_wait(
+    session: &mut SignInSession,
+    result: Result<crate::ProcessExit, RuntimeFailure>,
+) -> Result<(), SignInFailure> {
+    session.process = None;
+    match result {
+        Ok(exit) if exit.success() => {
+            session.status = SignInStatus::ReadyToComplete;
+            Ok(())
+        }
+        Ok(_) => Err(SignInFailure::new(
+            SignInFailureKind::HostPort,
+            "swallowtail.sign_in.login_helper_failed",
+            "Approved login helper exited unsuccessfully",
+        )),
+        Err(failure) => Err(SignInFailure::from_port(failure)),
+    }
 }
 
 fn materialize_interactive(
@@ -894,21 +1262,179 @@ fn reject_terminal(session: &SignInSession) -> Result<(), SignInFailure> {
     Ok(())
 }
 
-fn release_loopback(services: &HostServices, lease: Option<crate::LoopbackCallbackLease>) {
+fn take_pending_poll(session: &SignInSession) -> Option<PendingSignInPoll> {
+    session
+        .pending_poll
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner)
+        .take()
+}
+
+fn set_pending_poll(session: &SignInSession, pending: PendingSignInPoll) {
+    *session
+        .pending_poll
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner) = Some(pending);
+}
+
+fn take_pending_loopback_release(
+    session: &SignInSession,
+) -> Option<BoxFuture<'static, crate::CleanupOutcome>> {
+    session
+        .pending_loopback_release
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner)
+        .take()
+}
+
+fn set_pending_loopback_release(
+    session: &SignInSession,
+    pending: BoxFuture<'static, crate::CleanupOutcome>,
+) {
+    *session
+        .pending_loopback_release
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner) = Some(pending);
+}
+
+fn cleanup_session_now(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<(), SignInFailure> {
+    let _ = take_pending_poll(session);
+    let mut pending_cleanup = release_loopback_now(session, services);
+    if let Some(process) = session.process.take() {
+        let stop_pending = poll_now_or_pending(process.request_stop()).is_none();
+        let force_pending = poll_now_or_pending(process.force_stop()).is_none();
+        let wait_pending = poll_now_or_pending(process.wait()).is_none();
+        if stop_pending || force_pending || wait_pending {
+            session.process = Some(process);
+            pending_cleanup = true;
+        }
+    }
+    if pending_cleanup {
+        return Err(SignInFailure::new(
+            SignInFailureKind::HostPort,
+            "swallowtail.sign_in.host_port_pending",
+            "Sign-in cleanup did not resolve immediately; use *_sign_in_async",
+        ));
+    }
+    Ok(())
+}
+
+async fn cleanup_session_async(session: &mut SignInSession, services: &HostServices) {
+    let _ = take_pending_poll(session);
+    if let Some(future) = take_pending_loopback_release(session) {
+        let _ = future.await;
+    }
+    release_loopback_async(services, session.loopback.take()).await;
+    if let Some(process) = session.process.take() {
+        let _ = process.request_stop().await;
+        let _ = process.force_stop().await;
+        let _ = process.wait().await;
+    }
+}
+
+fn release_loopback_now(session: &mut SignInSession, services: &HostServices) -> bool {
+    let mut future = if let Some(future) = take_pending_loopback_release(session) {
+        future
+    } else if let Some(lease) = session.loopback.take() {
+        let Some(loopback) = services.loopback_callback() else {
+            return false;
+        };
+        loopback.release(lease)
+    } else {
+        return false;
+    };
+    match poll_box_future_once(&mut future) {
+        Poll::Ready(_) => false,
+        Poll::Pending => {
+            set_pending_loopback_release(session, future);
+            true
+        }
+    }
+}
+
+fn release_loopback_lease_now(
+    services: &HostServices,
+    lease: crate::LoopbackCallbackLease,
+) -> bool {
+    let Some(loopback) = services.loopback_callback() else {
+        return false;
+    };
+    poll_now_or_pending(loopback.release(lease)).is_none()
+}
+
+async fn release_loopback_async(
+    services: &HostServices,
+    lease: Option<crate::LoopbackCallbackLease>,
+) {
     let Some(lease) = lease else {
         return;
     };
     let Some(loopback) = services.loopback_callback() else {
         return;
     };
-    let _ = poll_now(loopback.release(lease));
+    let _ = loopback.release(lease).await;
 }
 
-fn poll_now<T>(future: impl Future<Output = T>) -> T {
-    match poll_now_or_pending(future) {
-        Some(value) => value,
-        None => panic!("sign-in host port future must be immediately ready"),
+enum DeadlineRace<T> {
+    Completed(T),
+    TimedOut,
+}
+
+async fn await_with_deadline<T>(
+    future: impl Future<Output = T>,
+    deadline: Option<Deadline>,
+    services: &HostServices,
+) -> Result<DeadlineRace<T>, SignInFailure> {
+    let Some(deadline) = deadline else {
+        return Ok(DeadlineRace::Completed(future.await));
+    };
+    let time = services
+        .time()
+        .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::Time))?;
+    if time.now() >= deadline.instant() {
+        return Ok(DeadlineRace::TimedOut);
     }
+    let mut future = std::pin::pin!(future);
+    let mut timer = None;
+    let outcome = std::future::poll_fn(|context| {
+        if let Poll::Ready(value) = future.as_mut().poll(context) {
+            return Poll::Ready(DeadlineRace::Completed(value));
+        }
+        if time.now() >= deadline.instant() {
+            return Poll::Ready(DeadlineRace::TimedOut);
+        }
+        let timer = timer.get_or_insert_with(|| time.wait_until(deadline));
+        if timer.as_mut().poll(context).is_ready() {
+            Poll::Ready(DeadlineRace::TimedOut)
+        } else {
+            Poll::Pending
+        }
+    })
+    .await;
+    Ok(outcome)
+}
+
+fn poll_ready_or_pending_error<T>(
+    future: impl Future<Output = Result<T, RuntimeFailure>>,
+    pending_message: &'static str,
+) -> Result<T, SignInFailure> {
+    match poll_now_or_pending(future) {
+        Some(Ok(value)) => Ok(value),
+        Some(Err(failure)) => Err(SignInFailure::from_port(failure)),
+        None => Err(SignInFailure::new(
+            SignInFailureKind::HostPort,
+            "swallowtail.sign_in.host_port_pending",
+            pending_message,
+        )),
+    }
+}
+
+fn poll_box_future_once<T>(future: &mut BoxFuture<'static, T>) -> Poll<T> {
+    let mut context = Context::from_waker(Waker::noop());
+    future.as_mut().poll(&mut context)
 }
 
 fn poll_now_or_pending<T>(future: impl Future<Output = T>) -> Option<T> {

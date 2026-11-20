@@ -91,7 +91,7 @@ impl WatcherBinding {
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
             match held.as_ref() {
-                Some(lease) => futures_executor::block_on(bridge.completion_gate(lease)),
+                Some(lease) => block_on_thread(bridge.completion_gate(lease)),
                 None => Err(closed_binding()),
             }
         })
@@ -225,7 +225,7 @@ impl Drop for WatcherBinding {
         self.observe_abandoned("watcher_cleanup=detached_thread");
         let _ = std::thread::Builder::new()
             .name("swallowtail-claude-watcher-drop".to_owned())
-            .spawn(move || futures_executor::block_on(cleanup));
+            .spawn(move || block_on_thread(cleanup));
     }
 }
 
@@ -253,11 +253,11 @@ fn cleanup(
                 .unwrap_or_else(std::sync::PoisonError::into_inner)
                 .take();
             let bridge = match lease {
-                Some(lease) => futures_executor::block_on(bridge.close(lease, cause))
+                Some(lease) => block_on_thread(bridge.close(lease, cause))
                     .unwrap_or_else(|error| CleanupOutcome::Failed(error.diagnostic().clone())),
                 None => CleanupOutcome::NotApplicable,
             };
-            let resource = futures_executor::block_on(resources.release(resource));
+            let resource = block_on_thread(resources.release(resource));
             CleanupOutcome::merge(bridge, resource)
         })
         .await
@@ -280,6 +280,49 @@ async fn host_call<T: Send + 'static>(
         })
         .map_err(|_| host_worker_failure())?;
     receiver.await.map_err(|_| host_worker_failure())
+}
+
+struct ThreadWaker {
+    thread: std::thread::Thread,
+    unparked: std::sync::atomic::AtomicBool,
+}
+
+impl std::task::Wake for ThreadWaker {
+    fn wake(self: Arc<Self>) {
+        self.wake_by_ref();
+    }
+
+    fn wake_by_ref(self: &Arc<Self>) {
+        if !self
+            .unparked
+            .swap(true, std::sync::atomic::Ordering::AcqRel)
+        {
+            self.thread.unpark();
+        }
+    }
+}
+
+/// Drives one future to completion on a thread this module already owns without
+/// pulling a third-party executor into normal adapter dependencies.
+fn block_on_thread<F: std::future::Future>(future: F) -> F::Output {
+    let waker_state = Arc::new(ThreadWaker {
+        thread: std::thread::current(),
+        unparked: std::sync::atomic::AtomicBool::new(false),
+    });
+    let waker = std::task::Waker::from(Arc::clone(&waker_state));
+    let mut context = std::task::Context::from_waker(&waker);
+    let mut future = std::pin::pin!(future);
+    loop {
+        if let std::task::Poll::Ready(output) = future.as_mut().poll(&mut context) {
+            return output;
+        }
+        while !waker_state
+            .unparked
+            .swap(false, std::sync::atomic::Ordering::AcqRel)
+        {
+            std::thread::park();
+        }
+    }
 }
 
 fn host_worker_failure() -> RuntimeFailure {

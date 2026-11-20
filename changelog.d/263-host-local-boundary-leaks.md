@@ -2,8 +2,10 @@
 
 - `swallowtail-adapter-claude-agent` and `swallowtail-adapter-grok` no longer
   depend on `swallowtail-host-local` in `[dependencies]`; it stays a
-  dev-dependency for tests that compose a real local host. No adapter now has a
-  normal internal edge into host support.
+  dev-dependency for tests that compose a real local host. `futures-executor`
+  also moves from `swallowtail-adapter-claude-agent`'s `[dependencies]` to
+  `[dev-dependencies]`. No adapter now has a normal internal edge into host
+  support.
 - `swallowtail-runtime` gains the provider-neutral ports both routes needed:
   `RegisteredToolCourierService` and `RegisteredToolCourierLaunch` for the
   mediated-stdio courier, and `ExpectedSource` plus `FrozenGuardedNodeCapture`

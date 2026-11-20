@@ -19,10 +19,6 @@ doctest = false
 [dependencies]
 futures-channel.workspace = true
 futures-core.workspace = true
-# `claude_code_watcher` drives host-port futures to completion on threads it
-# owns; `swallowtail-runtime` is executor-neutral, so the adapter keeps its own
-# executor dependency.
-futures-executor.workspace = true
 semver.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
@@ -34,6 +30,7 @@ url.workspace = true
 
 [dev-dependencies]
 async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
+futures-executor.workspace = true
 futures-util.workspace = true
 swallowtail-host-local.workspace = true
 swallowtail-testkit.workspace = true

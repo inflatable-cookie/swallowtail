@@ -18,15 +18,15 @@ mediated-stdio-proxy = []
 
 [dependencies]
 async-io = "2"
-futures-executor = "0.3"
+futures-executor.workspace = true
 futures-lite = "2"
 getrandom = "0.2"
 serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-sha2 = "0.10"
+serde_json.workspace = true
+sha2.workspace = true
 swallowtail-core.workspace = true
 swallowtail-runtime.workspace = true
-zeroize = "1"
+zeroize.workspace = true
 
 [dev-dependencies]
 swallowtail-testkit.workspace = true

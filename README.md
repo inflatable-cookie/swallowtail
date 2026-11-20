@@ -27,11 +27,10 @@ annotated Git tags from the
 There is no crates.io publication, GitHub Release object, binary bundle, or
 installer in this release line.
 
-The 40 packages share version `0.6.0` and provide 51 production
+The 39 packages share version `0.6.0` and provide 51 production
 routes, including `pi.sdk-sidecar`, `claude-agent.sdk`, additive
-`grok-build.catalogue`, and additive `opencode.acp`. OpenHands remains a
-package without a production route. The release line preserves the Rust
-`1.95.0` floor and is not an API 1.0 promise.
+`grok-build.catalogue`, and additive `opencode.acp`. The release line preserves
+the Rust `1.95.0` floor and is not an API 1.0 promise.
 
 ## Choose A Route First
 
@@ -83,7 +82,7 @@ There is no umbrella crate. Every package is independently selectable.
 | Portable contracts and execution | `swallowtail-core`, `swallowtail-runtime` |
 | Host integration, idioms, and conformance | `swallowtail-host-local`, `swallowtail-idioms`, `swallowtail-testkit` |
 | Protocols and transport | `swallowtail-protocol-acp`, `swallowtail-protocol-openai-chat`, `swallowtail-transport-acp-remote` |
-| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-cline`, `swallowtail-adapter-codex`, `swallowtail-adapter-command-code`, `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-cursor`, `swallowtail-adapter-deepagents`, `swallowtail-adapter-deepseek-harness`, `swallowtail-adapter-goose`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-kiro`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-openhands`, `swallowtail-adapter-pi`, `swallowtail-adapter-qoder`, `swallowtail-adapter-qwen`, `swallowtail-adapter-zcode` |
+| Installed agent harnesses | `swallowtail-adapter-antigravity`, `swallowtail-adapter-claude-agent`, `swallowtail-adapter-cline`, `swallowtail-adapter-codex`, `swallowtail-adapter-command-code`, `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-cursor`, `swallowtail-adapter-deepagents`, `swallowtail-adapter-deepseek-harness`, `swallowtail-adapter-goose`, `swallowtail-adapter-grok`, `swallowtail-adapter-kimi`, `swallowtail-adapter-kiro`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-muse`, `swallowtail-adapter-oh-my-pi`, `swallowtail-adapter-opencode`, `swallowtail-adapter-pi`, `swallowtail-adapter-qoder`, `swallowtail-adapter-qwen`, `swallowtail-adapter-zcode` |
 | Hosted APIs and SDKs | `swallowtail-adapter-alibaba-model-studio`, `swallowtail-adapter-anthropic`, `swallowtail-adapter-bedrock`, `swallowtail-adapter-deepseek`, `swallowtail-adapter-gemini`, `swallowtail-adapter-kimi-platform`, `swallowtail-adapter-openai`, `swallowtail-adapter-xai` |
 | Local model runtimes | `swallowtail-adapter-llama-cpp`, `swallowtail-adapter-ollama` |
 

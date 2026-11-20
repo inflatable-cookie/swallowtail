@@ -1,5 +1,5 @@
 use serde_json::Value;
-use swallowtail_testkit::{
+use swallowtail_adapter_grok::grok_acp_client_mcp_probe::{
     ClientMcpOracleShape, ClientMcpVerdict, ECHO_MCP_SERVER_NAME, ECHO_MCP_TOOL, ECHO_PROMPT,
     EchoMcpTranscript, InconclusiveCause, echo_mcp_helper_is_live,
     grok_acp_client_mcp_fixture_probe, grok_acp_client_mcp_oracle_fixture_probe,
@@ -315,7 +315,7 @@ fn disposable_echo_server_has_one_tool_and_no_resource_authority() {
 fn spawned_echo_server_records_transcript_from_args() {
     use std::io::{BufRead, BufReader, Write};
     use std::process::{Command, Stdio};
-    use swallowtail_testkit::{
+    use swallowtail_adapter_grok::grok_acp_client_mcp_probe::{
         ECHO_MCP_TRANSCRIPT_FLAG, create_echo_mcp_transcript, read_echo_mcp_transcript,
     };
 
@@ -439,7 +439,7 @@ fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
     }
     // The workspace target directory that plain Cargo builds into, derived
     // from the package manifest rather than from wherever the test binary was
-    // placed. `crates/swallowtail-testkit` lives two levels below the root.
+    // placed. A crate directory under `crates/` lives two levels below the root.
     if let Some(manifest) = std::env::var_os("CARGO_MANIFEST_DIR") {
         let package = std::path::PathBuf::from(manifest);
         if let Some(root) = package.parent().and_then(std::path::Path::parent) {
@@ -461,7 +461,9 @@ fn grok_acp_echo_mcp_bin() -> std::path::PathBuf {
             "--offline",
             "--locked",
             "-p",
-            "swallowtail-testkit",
+            "swallowtail-adapter-grok",
+            "--features",
+            "live-probes",
             "--example",
             "grok-acp-echo-mcp",
             "--message-format=json-render-diagnostics",

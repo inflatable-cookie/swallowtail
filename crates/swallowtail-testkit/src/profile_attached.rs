@@ -1,6 +1,6 @@
 use crate::{
-    ConformanceAssertion, ConformanceReport, ProfilePreflightFixture, RecordedHostCall,
-    RecordingHostServices, SyntheticProfile, assert_common_contract, poll_immediate,
+    CommonContract, ConformanceAssertion, ConformanceReport, ProfilePreflightFixture,
+    RecordedHostCall, RecordingHostServices, SyntheticProfile, poll_immediate,
 };
 use std::sync::{
     Arc,
@@ -26,9 +26,14 @@ impl AttachedServingHandle for SyntheticAttachedHandle {
 }
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(SyntheticProfile::AttachedSelfHosted))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::AttachedSelfHosted;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     let fixture = ProfilePreflightFixture::new(profile);
     let plan = fixture.preflight().expect("attached preflight succeeds");

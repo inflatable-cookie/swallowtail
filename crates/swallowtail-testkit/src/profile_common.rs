@@ -7,6 +7,7 @@ use crate::{
     poll_immediate,
 };
 use futures_core::Stream;
+use std::collections::BTreeSet;
 use std::pin::Pin;
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{
@@ -19,6 +20,33 @@ use swallowtail_runtime::{
     TerminalOutcome, TerminalStatus, WorkingResourceRef, runtime_event_channel,
     terminal_outcome_channel,
 };
+
+/// Shared assertions every synthetic profile proves, proved once per run.
+///
+/// The proof reuses one fixture and the same invariant set for every profile,
+/// so a run that covers many profiles proves it once and records the result on
+/// each report instead of repeating the whole proof per profile.
+pub(crate) struct CommonContract {
+    passed: BTreeSet<ConformanceAssertion>,
+}
+
+impl CommonContract {
+    /// Proves every shared contract assertion once.
+    pub(crate) fn prove(profile: SyntheticProfile) -> Self {
+        let mut report = ConformanceReport::new(profile);
+        assert_common_contract(profile, &mut report);
+        Self {
+            passed: report.passed().collect(),
+        }
+    }
+
+    /// Records the proved shared assertions on one profile report.
+    pub(crate) fn record_on(&self, report: &mut ConformanceReport) {
+        for assertion in &self.passed {
+            report.record(*assertion);
+        }
+    }
+}
 
 pub(crate) fn assert_common_contract(profile: SyntheticProfile, report: &mut ConformanceReport) {
     assert_rejections_precede_effects();

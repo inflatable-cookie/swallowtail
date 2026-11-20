@@ -1,7 +1,6 @@
 use crate::{
-    ConformanceAssertion, ConformanceReport, ProfilePreflightFixture, RecordedHostCall,
-    RecordingHostServices, RecordingOutcome, SyntheticProfile, assert_common_contract,
-    poll_immediate,
+    CommonContract, ConformanceAssertion, ConformanceReport, ProfilePreflightFixture,
+    RecordedHostCall, RecordingHostServices, RecordingOutcome, SyntheticProfile, poll_immediate,
 };
 
 mod topology;
@@ -52,9 +51,14 @@ impl OwnedServingHandle for SyntheticOwnedHandle {
 }
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(SyntheticProfile::OwnedSelfHosted))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::OwnedSelfHosted;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     let fixture = ProfilePreflightFixture::new(profile);
     let missing_artifact = fixture

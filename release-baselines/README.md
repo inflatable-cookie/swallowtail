@@ -7,7 +7,10 @@ Two public-API directory roles:
   `effigy package:api` diffs the live API against this directory.
 - `public-api-<previous>` is immutable. It is the newest tagged `public-api-*`
   directory older than current. A patch may not remove an item that exists
-  there.
+  there. A pre-1.0 minor bump may remove one, because Contract 036 classifies
+  that as a breaking change belonging to a minor: the removal lands only when
+  it is written into `public-api-<current>` deliberately, and the gate's exact
+  snapshot diff is what reviews it.
 
 Do not recreate `public-api-unreleased`. Additive API lands in
 `public-api-<current>`.

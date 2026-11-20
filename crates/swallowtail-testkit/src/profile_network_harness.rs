@@ -1,6 +1,6 @@
 use crate::{
-    ConformanceAssertion, ConformanceReport, ProfilePreflightFixture, RecordedHostCall,
-    RecordingHostServices, SyntheticProfile, assert_common_contract, poll_immediate,
+    CommonContract, ConformanceAssertion, ConformanceReport, ProfilePreflightFixture,
+    RecordedHostCall, RecordingHostServices, SyntheticProfile, poll_immediate,
 };
 use swallowtail_core::{DriverRole, EndpointAudience, HostServiceKind};
 use swallowtail_runtime::{
@@ -9,9 +9,16 @@ use swallowtail_runtime::{
 };
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(
+        SyntheticProfile::AttachedNetworkHarness,
+    ))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::AttachedNetworkHarness;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     let fixture = ProfilePreflightFixture::new(profile);
     fixture

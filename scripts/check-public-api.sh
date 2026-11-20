@@ -46,9 +46,23 @@ release_expected_packages="$release_baseline_dir/packages.txt"
 diff -u "$release_expected_packages" "$release_actual_dir/packages.txt"
 release_package_count=$(wc -l < "$release_expected_packages" | tr -d ' ')
 release_immutable_count=$(wc -l < "$release_immutable_baseline_dir/packages.txt" | tr -d ' ')
+
+# The zero-removal rule is the patch bump's guarantee: a patch keeps every item
+# the previous tag released. A pre-1.0 minor bump may remove public items, as
+# Contract 036 permits, but only through review of the committed working
+# baseline: the exact diff below still fails until every removal is written
+# into `public-api-<current>` deliberately.
+release_current_line=${release_current_version%.*}
+release_previous_line=${release_previous_version%.*}
+if [[ $release_current_line == "$release_previous_line" ]]; then
+  release_removal_policy=immutable
+else
+  release_removal_policy=reviewed
+fi
+
 while IFS= read -r release_package; do
   release_api="$release_baseline_dir/$release_package.txt"
-  if [[ -f "$release_immutable_baseline_dir/$release_package.txt" ]]; then
+  if [[ $release_removal_policy == immutable && -f "$release_immutable_baseline_dir/$release_package.txt" ]]; then
     release_removed_api="$release_actual_dir/$release_package.removed.txt"
     grep -Fvx -f "$release_api" \
       "$release_immutable_baseline_dir/$release_package.txt" \
@@ -64,6 +78,13 @@ while IFS= read -r release_package; do
     "$release_api" \
     "$release_actual_dir/$release_package.txt"
 done < "$release_expected_packages"
-printf 'semantic API passed: %s packages at v%s; immutable v%s remains %s; no API removals are permitted in this patch\n' \
-  "$release_package_count" "$release_current_version" \
-  "$release_previous_version" "$release_immutable_count"
+
+if [[ $release_removal_policy == immutable ]]; then
+  printf 'semantic API passed: %s packages at v%s; immutable v%s remains %s; no API removals are permitted in this patch\n' \
+    "$release_package_count" "$release_current_version" \
+    "$release_previous_version" "$release_immutable_count"
+else
+  printf 'semantic API passed: %s packages at v%s; v%s removals are reviewed in the exact v%s snapshot diff\n' \
+    "$release_package_count" "$release_current_version" \
+    "$release_previous_version" "$release_current_version"
+fi

@@ -1,7 +1,7 @@
 use crate::{
-    CallbackExchangeFixture, ConformanceAssertion, ConformanceReport, ProfilePreflightFixture,
-    RecordedHostCall, RecordingHostServices, RecordingOutcome, SyntheticProfile,
-    assert_common_contract, poll_immediate, successful_callback_response,
+    CallbackExchangeFixture, CommonContract, ConformanceAssertion, ConformanceReport,
+    ProfilePreflightFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
+    SyntheticProfile, poll_immediate, successful_callback_response,
 };
 use swallowtail_core::{CancellationScope, SessionRef};
 use swallowtail_runtime::{
@@ -12,9 +12,16 @@ use swallowtail_runtime::{
 };
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(
+        SyntheticProfile::LongLivedRpcHarness,
+    ))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::LongLivedRpcHarness;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     let plan = ProfilePreflightFixture::new(profile)
         .preflight()

@@ -1,7 +1,7 @@
 use crate::{
-    CallbackExchangeFixture, ConformanceAssertion, ConformanceReport, ExecutionTopologyFixture,
-    ProfilePreflightFixture, RecordedHostCall, RecordingHostServices, RecordingOutcome,
-    SyntheticProfile, assert_common_contract, poll_immediate, remote_acp_requirements,
+    CallbackExchangeFixture, CommonContract, ConformanceAssertion, ConformanceReport,
+    ExecutionTopologyFixture, ProfilePreflightFixture, RecordedHostCall, RecordingHostServices,
+    RecordingOutcome, SyntheticProfile, poll_immediate, remote_acp_requirements,
     successful_callback_response,
 };
 use swallowtail_core::{
@@ -14,9 +14,14 @@ use swallowtail_runtime::{
 };
 
 pub(crate) fn run() -> ConformanceReport {
+    run_with_common_contract(&CommonContract::prove(SyntheticProfile::RemoteAcpHarness))
+}
+
+/// Runs this profile, recording an already-proved shared contract.
+pub(crate) fn run_with_common_contract(common: &CommonContract) -> ConformanceReport {
     let profile = SyntheticProfile::RemoteAcpHarness;
     let mut report = ConformanceReport::new(profile);
-    assert_common_contract(profile, &mut report);
+    common.record_on(&mut report);
 
     assert_exact_preflight(profile);
     assert_transport_records_are_closed();

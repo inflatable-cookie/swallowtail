@@ -10,8 +10,8 @@ use serde_json::{Value, json};
 use std::sync::Arc;
 use swallowtail_acp_client::{
     AcpActivityConfig, AcpConnection, AcpConnectionHooks, AcpDiagnostics, AcpSessionConfig,
-    AcpSessionHandle, AcpSessionOpenContext, AcpTransport, MessageClassification, PlanProjection,
-    default_permission_namespace, open_acp_session_with_hooks,
+    AcpSessionHandle, AcpSessionOpenContext, AcpTransport, ActiveTurnConfig, MessageClassification,
+    PlanProjection, default_permission_namespace, open_acp_session_with_hooks,
 };
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
@@ -456,7 +456,7 @@ impl OpenCodeAcpDriver {
                 execution_host_id: plan.execution_host_id().clone(),
                 resource,
                 services: services.clone(),
-                config: AcpSessionConfig::new("opencode-acp", opencode_acp_diagnostics()),
+                config: opencode_acp_session_config(),
             },
             Arc::new(OpenCodeAcpHooks),
             move |connection| async move {
@@ -476,4 +476,46 @@ impl OpenCodeAcpDriver {
     }
 }
 
+fn opencode_acp_session_config() -> AcpSessionConfig {
+    let diagnostics = opencode_acp_diagnostics();
+    AcpSessionConfig::new("opencode-acp", diagnostics).with_turn_config(
+        ActiveTurnConfig::new(diagnostics).with_content_unsupported(|| {
+            failure(
+                "swallowtail.opencode.acp.content_unsupported",
+                "OpenCode returned unsupported ACP content",
+            )
+        }),
+    )
+}
+
 include!("driver/validation.rs");
+
+#[cfg(test)]
+mod driver_tests {
+    use super::*;
+    use swallowtail_acp_client::{AcpTurnSink, ActiveTurn};
+    use swallowtail_runtime::RuntimeTurnId;
+
+    #[test]
+    fn non_text_agent_content_reports_content_unsupported() {
+        let (turn, _events, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("opencode-non-text").expect("valid turn id"),
+            "sess-1".to_owned(),
+            opencode_acp_session_config().turn_config,
+        )
+        .expect("turn creates");
+        let err = turn
+            .handle_update(&json!({
+                "sessionId": "sess-1",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+                }
+            }))
+            .expect_err("non-text content must fail");
+        assert_eq!(
+            err.diagnostic().code(),
+            "swallowtail.opencode.acp.content_unsupported"
+        );
+    }
+}

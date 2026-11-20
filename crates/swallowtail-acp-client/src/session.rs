@@ -47,6 +47,13 @@ impl AcpSessionConfig {
             turn_validation: TurnValidationPolicy::RejectDeadlineAttachmentsStructured,
         }
     }
+
+    /// Replaces the turn configuration used for active turns on this session.
+    #[must_use]
+    pub const fn with_turn_config(mut self, turn_config: ActiveTurnConfig) -> Self {
+        self.turn_config = turn_config;
+        self
+    }
 }
 
 /// Session-level cancellation controller backed by [`AcpConnection::cancel_session`].

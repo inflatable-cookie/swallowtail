@@ -6,7 +6,7 @@ use std::sync::{
     Arc, Mutex,
     atomic::{AtomicBool, AtomicU64, Ordering},
 };
-use swallowtail_core::{CancellationScope, ProviderRequestRef, TurnRef};
+use swallowtail_core::{CancellationScope, ProviderRequestRef, SafeDiagnostic, TurnRef};
 use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
 use swallowtail_runtime::{
     BoxEventStream, BoxFuture, CallbackId, CancellationAcknowledgement, CancellationControl,
@@ -57,6 +57,11 @@ pub struct ActiveTurnConfig {
     pub stop_reason_policy: StopReasonPolicy,
     /// Policy for emitting progress events on `Usage` updates.
     pub usage_progress_policy: UsageProgressPolicy,
+    /// Optional provider-scoped failure for non-text ACP message content.
+    /// Defaults to `diagnostics.malformed` when unset.
+    pub content_unsupported: Option<fn() -> RuntimeFailure>,
+    /// Optional provider-scoped failure diagnostic for `"auth_required"` stop reasons.
+    pub auth_required_stop: Option<fn() -> SafeDiagnostic>,
 }
 
 impl ActiveTurnConfig {
@@ -67,6 +72,8 @@ impl ActiveTurnConfig {
             diagnostics,
             stop_reason_policy: StopReasonPolicy::Standard,
             usage_progress_policy: UsageProgressPolicy::Silent,
+            content_unsupported: None,
+            auth_required_stop: None,
         }
     }
 
@@ -81,6 +88,26 @@ impl ActiveTurnConfig {
     #[must_use]
     pub const fn with_usage_progress_policy(mut self, policy: UsageProgressPolicy) -> Self {
         self.usage_progress_policy = policy;
+        self
+    }
+
+    /// Sets the provider-scoped failure returned for non-text ACP message content.
+    #[must_use]
+    pub const fn with_content_unsupported(
+        mut self,
+        content_unsupported: fn() -> RuntimeFailure,
+    ) -> Self {
+        self.content_unsupported = Some(content_unsupported);
+        self
+    }
+
+    /// Maps the `"auth_required"` ACP stop reason to `TerminalStatus::ProviderFailed`.
+    #[must_use]
+    pub const fn with_auth_required_stop(
+        mut self,
+        auth_required_stop: fn() -> SafeDiagnostic,
+    ) -> Self {
+        self.auth_required_stop = Some(auth_required_stop);
         self
     }
 }
@@ -256,19 +283,20 @@ impl AcpTurnSink for ActiveTurn {
 
     fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
         let malformed = self.config.diagnostics.malformed;
+        let content_unsupported = self.config.content_unsupported.unwrap_or(malformed);
         let decoded =
             swallowtail_protocol_acp::decode_session_update(params).map_err(|_| malformed())?;
         self.verify_session(decoded.session_id.as_str())?;
         match &decoded.update {
             AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Agent => {
-                let text = text_content(&message.content, malformed)?;
+                let text = text_content(&message.content, content_unsupported)?;
                 self.append_output(text)?;
                 self.emit_content(RuntimeEventKind::OutputDelta, text)?;
             }
             AcpSessionUpdate::Message(message) if message.role == AcpMessageRole::Thought => {
                 self.emit_content(
                     RuntimeEventKind::ReasoningProgress,
-                    text_content(&message.content, malformed)?,
+                    text_content(&message.content, content_unsupported)?,
                 )?;
             }
             AcpSessionUpdate::CurrentMode(_)
@@ -311,6 +339,13 @@ impl AcpTurnSink for ActiveTurn {
             match stop_reason {
                 "end_turn" => TerminalStatus::Completed,
                 "cancelled" => TerminalStatus::Cancelled,
+                "auth_required" if self.config.auth_required_stop.is_some() => {
+                    let diagnostic = self
+                        .config
+                        .auth_required_stop
+                        .expect("auth_required_stop checked above");
+                    TerminalStatus::ProviderFailed(diagnostic())
+                }
                 "max_tokens" => {
                     TerminalStatus::ProviderFailed((self.config.diagnostics.prompt_stopped)())
                 }

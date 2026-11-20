@@ -7,7 +7,8 @@ use serde_json::{Value, json};
 use std::sync::Arc;
 use swallowtail_acp_client::{
     AcpActivityConfig, AcpDiagnostics, AcpSessionConfig, AcpSessionOpenContext, AcpTransport,
-    MessageClassification, PlanProjection, default_permission_namespace, open_acp_session,
+    ActiveTurnConfig, MessageClassification, PlanProjection, default_permission_namespace,
+    open_acp_session,
 };
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
@@ -414,7 +415,7 @@ impl GooseAcpDriver {
                 execution_host_id: plan.execution_host_id().clone(),
                 resource,
                 services: services.clone(),
-                config: AcpSessionConfig::new("goose-acp", goose_diagnostics()),
+                config: goose_session_config(),
             },
             move |connection| async move {
                 let initialize = connection.initialize().await?;
@@ -433,4 +434,46 @@ impl GooseAcpDriver {
     }
 }
 
+fn goose_session_config() -> AcpSessionConfig {
+    let diagnostics = goose_diagnostics();
+    AcpSessionConfig::new("goose-acp", diagnostics).with_turn_config(
+        ActiveTurnConfig::new(diagnostics).with_content_unsupported(|| {
+            failure(
+                "swallowtail.goose.acp.content_unsupported",
+                "Goose returned unsupported ACP content",
+            )
+        }),
+    )
+}
+
 include!("driver/validation.rs");
+
+#[cfg(test)]
+mod driver_tests {
+    use super::*;
+    use swallowtail_acp_client::{AcpTurnSink, ActiveTurn};
+    use swallowtail_runtime::RuntimeTurnId;
+
+    #[test]
+    fn non_text_agent_content_reports_content_unsupported() {
+        let (turn, _events, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("goose-non-text").expect("valid turn id"),
+            "sess-1".to_owned(),
+            goose_session_config().turn_config,
+        )
+        .expect("turn creates");
+        let err = turn
+            .handle_update(&json!({
+                "sessionId": "sess-1",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+                }
+            }))
+            .expect_err("non-text content must fail");
+        assert_eq!(
+            err.diagnostic().code(),
+            "swallowtail.goose.acp.content_unsupported"
+        );
+    }
+}

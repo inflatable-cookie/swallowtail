@@ -325,3 +325,83 @@ fn mcp_placement_validates_and_redacts_secrets() {
         AcpHttpAdvertisement::Advertised
     );
 }
+
+#[test]
+fn active_turn_uses_content_unsupported_for_non_text_message_chunks() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+
+    let config = ActiveTurnConfig::new(test_diagnostics()).with_content_unsupported(|| {
+        test_failure(
+            "swallowtail.test.acp.content_unsupported",
+            "unsupported content",
+        )
+    });
+    let (turn, _events, _terminal) = ActiveTurn::new(
+        RuntimeTurnId::new("turn-content").expect("valid turn id"),
+        "sess-1".to_owned(),
+        config,
+    )
+    .expect("turn creates");
+
+    let non_text_agent = json!({
+        "sessionId": "sess-1",
+        "update": {
+            "sessionUpdate": "agent_message_chunk",
+            "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+        }
+    });
+    let err = turn
+        .handle_update(&non_text_agent)
+        .expect_err("non-text agent chunk must fail");
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.test.acp.content_unsupported"
+    );
+
+    let non_text_thought = json!({
+        "sessionId": "sess-1",
+        "update": {
+            "sessionUpdate": "agent_thought_chunk",
+            "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+        }
+    });
+    let err = turn
+        .handle_update(&non_text_thought)
+        .expect_err("non-text thought chunk must fail");
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.test.acp.content_unsupported"
+    );
+}
+
+#[test]
+fn active_turn_maps_auth_required_and_extended_stop_reasons_to_provider_failed() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig, StopReasonPolicy};
+
+    let config = ActiveTurnConfig::new(test_diagnostics())
+        .with_stop_reason_policy(StopReasonPolicy::ExtendedProviderStops)
+        .with_auth_required_stop(|| {
+            SafeDiagnostic::new("swallowtail.test.acp.auth_required", "auth required")
+        });
+
+    for (stop_reason, expected_code) in [
+        ("auth_required", "swallowtail.test.acp.auth_required"),
+        ("max_turn_requests", "swallowtail.test.acp.stopped"),
+        ("refusal", "swallowtail.test.acp.stopped"),
+    ] {
+        let (turn, _events, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-stop").expect("valid turn id"),
+            "sess-1".to_owned(),
+            config,
+        )
+        .expect("turn creates");
+        turn.finish_prompt(stop_reason);
+        let outcome = block_on(terminal);
+        match outcome.status() {
+            TerminalStatus::ProviderFailed(diag) => {
+                assert_eq!(diag.code(), expected_code, "stop_reason={stop_reason}");
+            }
+            other => panic!("expected ProviderFailed for {stop_reason}, got {other:?}"),
+        }
+    }
+}

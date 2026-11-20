@@ -130,6 +130,7 @@ pub swallowtail_acp_client::AcpSessionConfig::turn_config: swallowtail_acp_clien
 pub swallowtail_acp_client::AcpSessionConfig::turn_validation: swallowtail_acp_client::TurnValidationPolicy
 impl swallowtail_acp_client::AcpSessionConfig
 pub const fn swallowtail_acp_client::AcpSessionConfig::new(&'static str, swallowtail_acp_client::AcpDiagnostics) -> Self
+pub const fn swallowtail_acp_client::AcpSessionConfig::with_turn_config(self, swallowtail_acp_client::ActiveTurnConfig) -> Self
 pub struct swallowtail_acp_client::AcpSessionHandle
 impl swallowtail_acp_client::AcpSessionHandle
 pub fn swallowtail_acp_client::AcpSessionHandle::with_negotiated_model_options(self, core::option::Option<swallowtail_runtime::negotiated_session_options::NegotiatedSessionModelOptions>) -> Self
@@ -170,11 +171,15 @@ pub fn swallowtail_acp_client::ActiveTurn::mark_cancelled(&self)
 pub fn swallowtail_acp_client::ActiveTurn::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_acp_client::ActiveTurn::session_id(&self) -> &str
 pub struct swallowtail_acp_client::ActiveTurnConfig
+pub swallowtail_acp_client::ActiveTurnConfig::auth_required_stop: core::option::Option<fn() -> swallowtail_core::diagnostic::SafeDiagnostic>
+pub swallowtail_acp_client::ActiveTurnConfig::content_unsupported: core::option::Option<fn() -> swallowtail_runtime::failure::RuntimeFailure>
 pub swallowtail_acp_client::ActiveTurnConfig::diagnostics: swallowtail_acp_client::AcpDiagnostics
 pub swallowtail_acp_client::ActiveTurnConfig::stop_reason_policy: swallowtail_acp_client::StopReasonPolicy
 pub swallowtail_acp_client::ActiveTurnConfig::usage_progress_policy: swallowtail_acp_client::UsageProgressPolicy
 impl swallowtail_acp_client::ActiveTurnConfig
 pub const fn swallowtail_acp_client::ActiveTurnConfig::new(swallowtail_acp_client::AcpDiagnostics) -> Self
+pub const fn swallowtail_acp_client::ActiveTurnConfig::with_auth_required_stop(self, fn() -> swallowtail_core::diagnostic::SafeDiagnostic) -> Self
+pub const fn swallowtail_acp_client::ActiveTurnConfig::with_content_unsupported(self, fn() -> swallowtail_runtime::failure::RuntimeFailure) -> Self
 pub const fn swallowtail_acp_client::ActiveTurnConfig::with_stop_reason_policy(self, swallowtail_acp_client::StopReasonPolicy) -> Self
 pub const fn swallowtail_acp_client::ActiveTurnConfig::with_usage_progress_policy(self, swallowtail_acp_client::UsageProgressPolicy) -> Self
 pub struct swallowtail_acp_client::PendingResponse

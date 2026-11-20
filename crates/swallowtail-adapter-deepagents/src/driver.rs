@@ -6,7 +6,8 @@ use serde_json::{Value, json};
 use std::sync::Arc;
 use swallowtail_acp_client::{
     AcpActivityConfig, AcpDiagnostics, AcpSessionConfig, AcpSessionOpenContext, AcpTransport,
-    MessageClassification, PlanProjection, default_permission_namespace, open_acp_session,
+    ActiveTurnConfig, MessageClassification, PlanProjection, default_permission_namespace,
+    open_acp_session,
 };
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, CredentialMechanism, DriverDescriptor, DriverRole,
@@ -385,7 +386,7 @@ impl DeepAgentsAcpDriver {
                 execution_host_id: plan.execution_host_id().clone(),
                 resource,
                 services: services.clone(),
-                config: AcpSessionConfig::new("deepagents-acp", deepagents_diagnostics()),
+                config: deepagents_session_config(),
             },
             move |connection| async move {
                 let initialize = connection.initialize().await?;
@@ -400,4 +401,46 @@ impl DeepAgentsAcpDriver {
     }
 }
 
+fn deepagents_session_config() -> AcpSessionConfig {
+    let diagnostics = deepagents_diagnostics();
+    AcpSessionConfig::new("deepagents-acp", diagnostics).with_turn_config(
+        ActiveTurnConfig::new(diagnostics).with_content_unsupported(|| {
+            failure(
+                "swallowtail.deepagents.acp.content_unsupported",
+                "Deep Agents returned unsupported ACP content",
+            )
+        }),
+    )
+}
+
 include!("driver/validation.rs");
+
+#[cfg(test)]
+mod driver_tests {
+    use super::*;
+    use swallowtail_acp_client::{AcpTurnSink, ActiveTurn};
+    use swallowtail_runtime::RuntimeTurnId;
+
+    #[test]
+    fn non_text_agent_content_reports_content_unsupported() {
+        let (turn, _events, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("deepagents-non-text").expect("valid turn id"),
+            "sess-1".to_owned(),
+            deepagents_session_config().turn_config,
+        )
+        .expect("turn creates");
+        let err = turn
+            .handle_update(&json!({
+                "sessionId": "sess-1",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+                }
+            }))
+            .expect_err("non-text content must fail");
+        assert_eq!(
+            err.diagnostic().code(),
+            "swallowtail.deepagents.acp.content_unsupported"
+        );
+    }
+}

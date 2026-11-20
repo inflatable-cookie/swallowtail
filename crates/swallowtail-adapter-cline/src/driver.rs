@@ -6,8 +6,8 @@ use serde_json::{Value, json};
 use std::sync::{Arc, Mutex};
 use swallowtail_acp_client::{
     AcpActivityConfig, AcpDiagnostics, AcpSessionConfig, AcpSessionHandle, AcpSessionOpenContext,
-    AcpTransport, MessageClassification, PlanProjection, default_permission_namespace,
-    open_acp_session,
+    AcpTransport, ActiveTurnConfig, MessageClassification, PlanProjection, StopReasonPolicy,
+    default_permission_namespace, open_acp_session,
 };
 use swallowtail_core::{
     AdapterId, AdapterIdentity, AdapterVersion, Capability, CapabilityConstraint,
@@ -355,7 +355,7 @@ impl ClineAcpDriver {
                 execution_host_id: plan.execution_host_id().clone(),
                 resource,
                 services: services.clone(),
-                config: AcpSessionConfig::new("cline-acp", cline_diagnostics()),
+                config: cline_session_config(),
             },
             move |connection| async move {
                 let initialize = connection.initialize().await?;
@@ -425,7 +425,88 @@ impl ClineAcpDriver {
     }
 }
 
+fn cline_session_config() -> AcpSessionConfig {
+    let diagnostics = cline_diagnostics();
+    AcpSessionConfig::new("cline-acp", diagnostics).with_turn_config(
+        ActiveTurnConfig::new(diagnostics)
+            .with_content_unsupported(|| {
+                failure(
+                    "swallowtail.cline.acp.content_unsupported",
+                    "Cline returned unsupported ACP content",
+                )
+            })
+            .with_stop_reason_policy(StopReasonPolicy::ExtendedProviderStops)
+            .with_auth_required_stop(|| {
+                SafeDiagnostic::new(
+                    "swallowtail.cline.acp.auth_required",
+                    "Cline requires host-owned credentials before ACP work",
+                )
+            }),
+    )
+}
+
 include!("driver/open.rs");
 include!("driver/model.rs");
 include!("driver/mode.rs");
 include!("driver/validation.rs");
+
+#[cfg(test)]
+mod driver_tests {
+    use super::*;
+    use std::future::Future;
+    use std::pin::pin;
+    use std::task::{Context, Poll, Waker};
+    use swallowtail_acp_client::{AcpTurnSink, ActiveTurn};
+    use swallowtail_runtime::{RuntimeTurnId, TerminalStatus};
+
+    #[test]
+    fn non_text_agent_content_reports_content_unsupported() {
+        let (turn, _events, _terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("cline-non-text").expect("valid turn id"),
+            "sess-1".to_owned(),
+            cline_session_config().turn_config,
+        )
+        .expect("turn creates");
+        let err = turn
+            .handle_update(&json!({
+                "sessionId": "sess-1",
+                "update": {
+                    "sessionUpdate": "agent_message_chunk",
+                    "content": {"type": "image", "mimeType": "image/png", "data": "AAAA"}
+                }
+            }))
+            .expect_err("non-text content must fail");
+        assert_eq!(
+            err.diagnostic().code(),
+            "swallowtail.cline.acp.content_unsupported"
+        );
+    }
+
+    #[test]
+    fn stop_reasons_map_auth_required_max_turn_requests_and_refusal_to_provider_failed() {
+        for (stop_reason, expected_code) in [
+            ("auth_required", "swallowtail.cline.acp.auth_required"),
+            ("max_turn_requests", "swallowtail.cline.acp.prompt_stopped"),
+            ("refusal", "swallowtail.cline.acp.prompt_stopped"),
+        ] {
+            let (turn, _events, terminal) = ActiveTurn::new(
+                RuntimeTurnId::new("cline-stop-reason").expect("valid turn id"),
+                "sess-1".to_owned(),
+                cline_session_config().turn_config,
+            )
+            .expect("turn creates");
+            turn.finish_prompt(stop_reason);
+            let waker = Waker::noop();
+            let mut cx = Context::from_waker(waker);
+            let Poll::Ready(outcome) = pin!(terminal).poll(&mut cx) else {
+                panic!("terminal outcome must be ready immediately after finish_prompt");
+            };
+            match outcome.status() {
+                TerminalStatus::ProviderFailed(diag) => {
+                    assert_eq!(diag.code(), expected_code, "stop_reason={stop_reason}");
+                }
+                other => panic!("expected ProviderFailed for {stop_reason}, got {other:?}"),
+            }
+        }
+    }
+}

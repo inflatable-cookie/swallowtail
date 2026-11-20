@@ -135,7 +135,8 @@ from GitHub synthetic merge metadata, with exact hashes and actual wait/order
 facts. Earlier 100 cases/platform and component 140 remain at their old scopes.
 Final independent review, required CI and planner hold release remain gates.
 
-The normal process-test job now uses standard macos-15 arm64 after macos-latest
-repeatedly failed acquisition before checkout. Test commands, selected coverage,
-Node 22.23.2 and execution bound of 20 minutes remain unchanged. This is test routing,
+The normal process-test job now runs on ubuntu-latest and standard macos-15
+arm64; macos-15 replaced macos-latest after macos-latest repeatedly failed
+acquisition before checkout. Test commands, selected coverage, Node 22.23.2 and
+execution bound of 20 minutes remain unchanged. This is test routing,
 not a public OS/runtime qualification or permission-policy change.

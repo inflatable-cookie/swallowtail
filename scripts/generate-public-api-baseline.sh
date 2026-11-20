@@ -45,12 +45,35 @@ fi
 
 printf '%s\n' "$release_packages" > "$release_output_dir/packages.txt"
 
-while IFS= read -r release_package; do
-  RUSTUP_TOOLCHAIN=$release_toolchain \
-    bash "$release_repo_root/scripts/oxide-rust.sh" public-api \
-    --package "$release_package" \
-    --all-features \
-    --simplified --simplified --simplified \
-    --color never \
-    > "$release_output_dir/$release_package.txt"
-done <<< "$release_packages"
+# Packages run concurrently, each through its own Oxide route. Every invocation
+# writes only its own file, and packages.txt fixes the order, so the baseline
+# bytes match a sequential run. xargs exits non-zero when any invocation fails,
+# which fails this script. SWALLOWTAIL_PUBLIC_API_JOBS overrides the default of
+# the CPU count, capped at eight.
+release_jobs=${SWALLOWTAIL_PUBLIC_API_JOBS:-}
+if [[ -z $release_jobs ]]; then
+  release_jobs=$(getconf _NPROCESSORS_ONLN 2>/dev/null || printf '4')
+  if (( release_jobs > 8 )); then
+    release_jobs=8
+  fi
+fi
+if [[ ! $release_jobs =~ ^[1-9][0-9]*$ ]]; then
+  printf 'SWALLOWTAIL_PUBLIC_API_JOBS must be a positive integer, found %s\n' \
+    "$release_jobs" >&2
+  exit 2
+fi
+
+printf '%s\n' "$release_packages" | xargs -P "$release_jobs" -I {} \
+  bash -c '
+    release_status=0
+    RUSTUP_TOOLCHAIN=$1 bash "$2/scripts/oxide-rust.sh" public-api \
+      --package "$3" \
+      --all-features \
+      --simplified --simplified --simplified \
+      --color never \
+      > "$4/$3.txt" < /dev/null || release_status=$?
+    if (( release_status != 0 )); then
+      printf "public-api extraction failed for %s (exit %s)\n" "$3" "$release_status" >&2
+      exit "$release_status"
+    fi
+  ' _ "$release_toolchain" "$release_repo_root" {} "$release_output_dir"

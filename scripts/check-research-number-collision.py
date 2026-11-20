@@ -23,7 +23,7 @@ from canonical_main_authority import (  # noqa: E402
 
 
 SCRIPT_ROOT = Path(__file__).resolve().parent.parent
-NUMBERED_NAME = re.compile(r"^(?P<number>\d{3})-(?P<slug>.+)\.(?:md|tsv|csv)$")
+NUMBERED_NAME = re.compile(r"^(?P<number>\d{3})-(?P<slug>.+)\.(?:md|tsv|csv|json)$")
 RESEARCH_PATH = re.compile(r"^docs/research/(?P<name>[^/]+)$")
 ALLOWLISTED_COLLISIONS = {
     "328": frozenset(
@@ -36,6 +36,52 @@ ALLOWLISTED_COLLISIONS = {
         {
             "opencode-acp-1-18-32-identity",
             "opencode-acp-unavailable-cells",
+        }
+    ),
+    # JSON evidence families that predate the .json rule. Each entry is the
+    # exact slug set on main; the number is frozen. A slug added to any of these
+    # numbers, or a new number collision, still fails. Renumbering needs edits to
+    # crates/swallowtail-adapter-pi tests that name the 396 paths.
+    "396": frozenset(
+        {
+            "pi-sdk-sidecar-node-22-23-3-hop-review",
+            "pi-sdk-sidecar-node-22-23-3-identity",
+            "pi-sdk-sidecar-node-22-23-3-identity-and-qualification",
+            "pi-sdk-sidecar-node-22-23-3-inventory-22.23.2",
+            "pi-sdk-sidecar-node-22-23-3-inventory-22.23.3",
+            "pi-sdk-sidecar-node-22-23-3-root-certificate-diff",
+            "pi-sdk-sidecar-node-22-23-3-tls-offline-proof",
+            "pi-sdk-sidecar-node-22-23-3-tree-diff",
+        }
+    ),
+    "435": frozenset(
+        {
+            "copilot-acp-normal-host-permission-attempt",
+            "copilot-acp-normal-host-permission-fake-pass",
+            "copilot-acp-normal-host-permission-observation",
+        }
+    ),
+    "437": frozenset(
+        {
+            "copilot-acp-corrected-normal-host-attempt",
+            "copilot-acp-corrected-normal-host-execution",
+            "copilot-acp-corrected-normal-host-fake-pass",
+            "copilot-acp-corrected-normal-host-prompt-slot",
+        }
+    ),
+    "439": frozenset(
+        {
+            "copilot-acp-pending-announcement-cancellation",
+            "copilot-acp-pending-announcement-cancellation-attempt",
+            "copilot-acp-pending-announcement-cancellation-execution",
+            "copilot-acp-pending-announcement-cancellation-fake-pass",
+            "copilot-acp-pending-announcement-cancellation-prompt-slot",
+        }
+    ),
+    "483": frozenset(
+        {
+            "claude-agent-acp-0-106-0-evidence",
+            "claude-agent-acp-idle-component-observations",
         }
     ),
 }

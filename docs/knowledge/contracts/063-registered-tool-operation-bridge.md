@@ -904,6 +904,16 @@ courier build share one fresh step-owned target, which is removed afterward.
 Packages, features, profile, failure propagation and the twenty-minute timeout
 remain unchanged; no test is skipped.
 
+Revision under task 250 (planner review of PR 573): the outer test build no
+longer shares that step-owned target. The step first runs `cargo nextest
+archive` for the same three packages, features and `--locked` in the workspace
+target that `Swatinem/rust-cache` restores and saves. The wrapper then runs the
+archive with `cargo nextest run --archive-file ... --profile ci-process`, so the
+wrapper's fresh target holds only the nested courier build, which the test
+creates and the wrapper removes. The test binaries, packages, profile and
+timeout are unchanged. The courier isolation the approval described is kept;
+only the outer build moved out of it, so the workspace build is cached again.
+
 The approval includes one final independent review despite the exhausted
 revision budget. It grants no live provider, credential, consumer mutation or
 release/tag authority.

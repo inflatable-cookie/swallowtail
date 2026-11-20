@@ -73,6 +73,17 @@ write_record "$worker" 101-companion.csv
 expect_pass "${checker[@]}" --root "$worker" --local-base main
 expect_pass "${checker[@]}" --root "$worker" --authority "$canonical"
 
+# JSON records are numbered research records too: a same-slug .json companion
+# passes, and a .json record under another slug collides like any other.
+write_record "$worker" 101-companion.json
+expect_pass "${checker[@]}" --root "$worker" --local-base main
+rm "$worker/docs/research/101-companion.json"
+write_record "$worker" 103-first.json
+write_record "$worker" 103-second.md
+expect_failure 'working tree research number 103' \
+  "${checker[@]}" --root "$worker" --local-base main
+rm "$worker/docs/research/103-first.json" "$worker/docs/research/103-second.md"
+
 # Other differing slugs fail, including a substituted member of the 337 pair.
 write_record "$worker" 102-first.md
 write_record "$worker" 102-second.csv

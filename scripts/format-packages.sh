@@ -12,13 +12,11 @@ if [[ "$validation_plan" == true ]]; then
   printf 'selector=format:package\n'
   printf 'mode=plan\n'
   validation_print_packages
-  printf 'proof=cargo-fmt-check\n'
+  printf 'proof=cargo-fmt\n'
   exit 0
 fi
 
 bash "$format_repo_root/scripts/oxide-rust.sh" \
   fmt "${validation_cargo_package_args[@]}"
-bash "$format_repo_root/scripts/oxide-rust.sh" \
-  fmt "${validation_cargo_package_args[@]}" -- --check
 
 printf 'package formatting passed for %s package(s)\n' "${#validation_packages[@]}"

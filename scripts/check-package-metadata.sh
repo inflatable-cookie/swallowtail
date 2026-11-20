@@ -25,11 +25,24 @@ release_package_count=$(wc -l < "$release_baseline_packages" | tr -d ' ')
 release_metadata=$(mktemp)
 release_edges=$(mktemp)
 release_names=$(mktemp)
-release_tag_names=$(mktemp)
 release_expected_names=$(mktemp)
 release_expected_edges=$(mktemp)
 release_order_names=$(mktemp)
-trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_tag_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
+trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
+
+# Runs one named jq -e assertion over the metadata. A failing assertion stops
+# the script with its label and jq's own output, so the failure is named rather
+# than silenced. The assertions are a conjunction, exactly as before.
+release_assert() {
+  local release_label=$1
+  shift
+  local release_output
+  if ! release_output=$(jq -e "$@" "$release_metadata" 2>&1); then
+    printf 'package metadata assertion failed: %s\n%s\n' \
+      "$release_label" "$release_output" >&2
+    exit 1
+  fi
+}
 
 bash "$release_repo_root/scripts/oxide-rust.sh" \
   metadata --no-deps --format-version 1 > "$release_metadata"
@@ -40,50 +53,57 @@ if [[ $release_version != "$release_current_version" ]]; then
   exit 1
 fi
 
-jq -e --arg version "$release_version" --arg rust_msrv "$release_msrv_cargo" \
-  --argjson package_count "$release_package_count" '
-  (.packages | length) == $package_count and
-  all(.packages[];
-    .version == $version and
+release_assert "package count" \
+  --argjson package_count "$release_package_count" \
+  '(.packages | length) == $package_count'
+release_assert "package version" --arg version "$release_version" \
+  'all(.packages[]; .version == $version)'
+release_assert "package fields (edition, license, repository, publish, readme, description)" \
+  'all(.packages[];
     .edition == "2024" and
     .license == "MIT" and
     .repository == "https://github.com/inflatable-cookie/swallowtail" and
     .publish == [] and
     .readme == "../../README.md" and
-    (.description | type == "string" and length > 0) and
+    (.description | type == "string" and length > 0)
+  )'
+release_assert "feature sets" \
+  'all(.packages[];
+    (.features | length == 0) or
     (
-      (.features | length == 0) or
-      (
-        (.name == "swallowtail-adapter-claude-agent" or
-         .name == "swallowtail-adapter-gemini" or
-         .name == "swallowtail-adapter-grok" or
-         .name == "swallowtail-adapter-kimi" or
-         .name == "swallowtail-adapter-opencode" or
-         .name == "swallowtail-adapter-ollama" or
-         .name == "swallowtail-adapter-oh-my-pi" or
-         .name == "swallowtail-adapter-muse" or
-         .name == "swallowtail-adapter-command-code" or
-         .name == "swallowtail-adapter-deepseek-harness" or
-         .name == "swallowtail-adapter-zcode" or
-         .name == "swallowtail-adapter-pi" or
-         .name == "swallowtail-adapter-qwen") and
-        .features == {"live-probes":[]} or
-        (.name == "swallowtail-host-local" and
-         .features == {"mediated-stdio-proxy":[]})
-      )
-    ) and
+      (.name == "swallowtail-adapter-claude-agent" or
+       .name == "swallowtail-adapter-gemini" or
+       .name == "swallowtail-adapter-grok" or
+       .name == "swallowtail-adapter-kimi" or
+       .name == "swallowtail-adapter-opencode" or
+       .name == "swallowtail-adapter-ollama" or
+       .name == "swallowtail-adapter-oh-my-pi" or
+       .name == "swallowtail-adapter-muse" or
+       .name == "swallowtail-adapter-command-code" or
+       .name == "swallowtail-adapter-deepseek-harness" or
+       .name == "swallowtail-adapter-zcode" or
+       .name == "swallowtail-adapter-pi" or
+       .name == "swallowtail-adapter-qwen") and
+      .features == {"live-probes":[]} or
+      (.name == "swallowtail-host-local" and
+       .features == {"mediated-stdio-proxy":[]})
+    )
+  )'
+release_assert "target kinds and required features" \
+  'all(.packages[];
     all(.targets[];
       all(.kind[]; . == "lib" or . == "test" or . == "example") or
       (.name == "swallowtail-registered-tool-courier" and
        .kind == ["bin"] and
        ."required-features" == ["mediated-stdio-proxy"])
     )
-  ) and
-  all(.packages[]; .rust_version == $rust_msrv) and
-  all(.packages[].dependencies[];
+  )'
+release_assert "rust-version (MSRV)" --arg rust_msrv "$release_msrv_cargo" \
+  'all(.packages[]; .rust_version == $rust_msrv)'
+release_assert "path dependency requirements" --arg version "$release_version" \
+  'all(.packages[].dependencies[];
     if .path != null then .req == ("^" + $version) else true end
-  )
-' "$release_metadata" > /dev/null
+  )'
 
 jq -r '.packages[].name' "$release_metadata" | LC_ALL=C sort > "$release_names"
 LC_ALL=C sort "$release_baseline_packages" > "$release_expected_names"

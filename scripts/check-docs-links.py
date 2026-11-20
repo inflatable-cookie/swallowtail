@@ -22,15 +22,11 @@ FRONT_DOOR = [
     "SECURITY.md",
     "SUPPORT.md",
     "docs/README.md",
-    "docs/releases/README.md",
-    "docs/releases/0.1.0.md",
-    "docs/releases/0.1.1.md",
-    "docs/releases/0.2.0.md",
-    "docs/releases/0.3.0.md",
-    "docs/releases/0.3.1.md",
-    "docs/releases/0.3.2.md",
-    "docs/releases/0.3.3.md",
 ]
+
+# Every release note is a front-door surface, so the list is read from the
+# directory rather than maintained by hand; a new note is checked on arrival.
+RELEASE_DIR = ROOT / "docs/releases"
 
 CORPUS_DIRS = (
     ROOT / "docs/knowledge",
@@ -44,6 +40,13 @@ def fail(message: str) -> None:
     raise SystemExit(1)
 
 
+def release_markdown() -> list[str]:
+    if not RELEASE_DIR.is_dir():
+        fail(f"missing release directory {RELEASE_DIR.relative_to(ROOT)}")
+    files = [path for path in RELEASE_DIR.glob("*.md") if path.is_file()]
+    return sorted(path.relative_to(ROOT).as_posix() for path in files)
+
+
 def corpus_markdown() -> list[str]:
     files: list[Path] = []
     for directory in CORPUS_DIRS:
@@ -54,9 +57,10 @@ def corpus_markdown() -> list[str]:
 
 
 def main() -> None:
+    front_door = [*FRONT_DOOR, *release_markdown()]
     ordered: list[str] = []
     seen: set[str] = set()
-    for relative in [*FRONT_DOOR, *corpus_markdown()]:
+    for relative in [*front_door, *corpus_markdown()]:
         if relative in seen:
             continue
         path = ROOT / relative
@@ -65,7 +69,7 @@ def main() -> None:
         seen.add(relative)
         ordered.append(relative)
 
-    front_door_count = sum(1 for path in FRONT_DOOR if path in seen)
+    front_door_count = sum(1 for path in front_door if path in seen)
     corpus_count = len(ordered) - front_door_count
     print(
         f"docs link check: {front_door_count} front-door + "

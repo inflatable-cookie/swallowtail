@@ -9,7 +9,7 @@ const INVENTORY: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/dist-invento
 const PROTOCOL: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/protocol.json");
 const DEPENDENCIES: &str = include_str!("fixtures/pi-sdk-sidecar-1.1.0/dependency-surface.json");
 const SIDECAR_SOURCE_SHA256: &str =
-    "b4a87c838d8884813d90eb4dac7306f3c571aef7892ee112a4f448ebfd463415";
+    "10f308151743d528f865e7ec334ab68cb5a8641d6252af2765ed9eaa63685cec";
 
 const QUALIFIED_POINTS: [&str; 18] = [
     "0.84.2", "0.84.3", "0.84.4", "0.85.0", "0.85.1", "0.86.0", "0.86.1", "0.87.0", "0.87.1",

@@ -34,10 +34,18 @@ fn configure(
     easy: &mut Easy,
     url: &Url,
     cancelled: &Arc<AtomicBool>,
+    transfer_timeout: Option<Duration>,
 ) -> Result<(), RuntimeFailure> {
     easy.url(url.as_str()).map_err(curl_failure)?;
     easy.follow_location(false).map_err(curl_failure)?;
     easy.proxy("").map_err(curl_failure)?;
+    // A wedged peer must not pin the blocking-work slot forever. Connecting is
+    // always bounded; whole-transfer bounding applies to finite responses only,
+    // because an event stream is intentionally long-lived.
+    easy.connect_timeout(CONNECT_TIMEOUT).map_err(curl_failure)?;
+    if let Some(timeout) = transfer_timeout {
+        easy.timeout(timeout).map_err(curl_failure)?;
+    }
     easy.progress(true).map_err(curl_failure)?;
     let progress_cancelled = Arc::clone(cancelled);
     easy.progress_function(move |_, _, _, _| !progress_cancelled.load(Ordering::SeqCst))
@@ -51,7 +59,7 @@ fn perform_request(
     cancelled: Arc<AtomicBool>,
 ) -> Result<Response, RuntimeFailure> {
     let mut easy = Easy::new();
-    configure(&mut easy, &url, &cancelled)?;
+    configure(&mut easy, &url, &cancelled, Some(TRANSFER_TIMEOUT))?;
     match request.method {
         Method::Delete => {
             easy.custom_request("DELETE").map_err(curl_failure)?;
@@ -114,7 +122,11 @@ fn perform_request(
             .write_function(|chunk| {
                 if body.len().saturating_add(chunk.len()) > RESPONSE_LIMIT {
                     callback_overflow.store(true, Ordering::SeqCst);
-                    return Err(WriteError::Pause);
+                    // A short write aborts the transfer with a write error.
+                    // `WriteError::Pause` would only pause it, so the bounded
+                    // limit could never finish and the blocking slot would wait
+                    // for the peer instead of failing closed.
+                    return Ok(0);
                 }
                 body.extend_from_slice(chunk);
                 Ok(chunk.len())
@@ -155,7 +167,7 @@ fn perform_sse(
     cancelled: Arc<AtomicBool>,
 ) -> Result<(), RuntimeFailure> {
     let mut easy = Easy::new();
-    configure(&mut easy, &url, &cancelled)?;
+    configure(&mut easy, &url, &cancelled, None)?;
     let mut headers = List::new();
     headers
         .append("Accept: text/event-stream")
@@ -183,6 +195,9 @@ fn perform_sse(
                 }
                 Err(error) => {
                     *callback_failure.lock().expect("SSE failure lock poisoned") = Some(error);
+                    // `Ok(0)` is a short write, which aborts the transfer. The
+                    // recorded failure above is reported ahead of the write
+                    // error, so the caller sees the exact projection failure.
                     Ok(0)
                 }
             })

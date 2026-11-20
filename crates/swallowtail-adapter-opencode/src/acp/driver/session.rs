@@ -60,11 +60,9 @@ impl InteractiveSessionHandle for OpenCodeAcpSessionHandle {
             }
             let (turn, events, terminal) =
                 ActiveTurn::new(request.turn_id().clone(), self.provider_id.clone())?;
-            self.connection.set_active_turn(Arc::clone(&turn))?;
-            let connection = Arc::clone(&self.connection);
-            let prompt_turn = Arc::clone(&turn);
-            let prompt = request.content().as_str().to_owned();
-            let session_id = self.provider_id.clone();
+            // Everything that can fail without a side effect is validated before
+            // the shared active-turn slot is claimed, so an error cannot wedge
+            // the session behind a turn nobody owns.
             let task_service = services.task().cloned().ok_or_else(|| {
                 failure(
                     "swallowtail.opencode.acp.task_service_missing",
@@ -76,6 +74,11 @@ impl InteractiveSessionHandle for OpenCodeAcpSessionHandle {
                 request.turn_id().as_str()
             ))
             .map_err(|_| malformed())?;
+            self.connection.set_active_turn(Arc::clone(&turn))?;
+            let connection = Arc::clone(&self.connection);
+            let prompt_turn = Arc::clone(&turn);
+            let prompt = request.content().as_str().to_owned();
+            let session_id = self.provider_id.clone();
             let response = match connection
                 .begin_request(
                     "session/prompt",

@@ -18,12 +18,33 @@ pub const OPENCODE_ACP_MCP_SERVER_NAME: &str = "swallowtail-opencode-acp";
 pub const OPENCODE_ACP_HTTP_MCP_PLACEMENT: &str = "consumer-supplied-http";
 
 /// One admitted stdio MCP declaration for production `session/new`.
-#[derive(Clone, Debug, Eq, PartialEq)]
+///
+/// Environment values are consumer secrets: `Debug` redacts them.
+#[derive(Clone, Eq, PartialEq)]
 pub struct OpenCodeAcpStdioMcpServer {
     name: String,
     command: String,
     arguments: Vec<String>,
     environment: Vec<(String, String)>,
+}
+
+impl fmt::Debug for OpenCodeAcpStdioMcpServer {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("OpenCodeAcpStdioMcpServer")
+            .field("name", &self.name)
+            .field("command", &self.command)
+            .field("arguments", &self.arguments)
+            .field(
+                "environment",
+                &self
+                    .environment
+                    .iter()
+                    .map(|(name, _)| (name.as_str(), "<redacted>"))
+                    .collect::<Vec<_>>(),
+            )
+            .finish()
+    }
 }
 
 impl OpenCodeAcpStdioMcpServer {
@@ -518,5 +539,24 @@ mod tests {
         assert_secret_redacted(&encoded);
         assert!(format!("{encoded:?}").contains("<redacted>"));
         assert!(!format!("{encoded:?}").contains(CANARY_HEADER));
+    }
+
+    #[test]
+    fn stdio_debug_redacts_environment_values() {
+        let canary = "SWALLOWTAIL_MCP_ENVIRONMENT_CANARY";
+        let admitted = OpenCodeAcpStdioMcpServer::new(
+            OPENCODE_ACP_MCP_SERVER_NAME,
+            "/usr/bin/echo-mcp",
+            vec!["--stdio".to_owned()],
+            vec![("SWALLOWTAIL_MCP_TOKEN".to_owned(), canary.to_owned())],
+        );
+        let rendered = format!("{admitted:?}");
+        assert!(
+            !rendered.contains(canary),
+            "stdio debug leaked an environment value: {rendered}"
+        );
+        assert!(rendered.contains("SWALLOWTAIL_MCP_TOKEN"));
+        assert!(rendered.contains("/usr/bin/echo-mcp"));
+        assert!(rendered.contains("<redacted>"));
     }
 }

@@ -115,7 +115,10 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 .map_or_else(SharedAttachmentMaterialization::default, |input| {
                     input.materialization()
                 });
-            self.connection.set_active_turn(Arc::clone(&turn))?;
+            if let Err(error) = self.connection.set_active_turn(Arc::clone(&turn)) {
+                let _ = materialization.release().await;
+                return Err(error);
+            }
             let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
@@ -168,6 +171,10 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                         "Pi SDK sidecar rejected the prompt before acceptance",
                     ));
                     self.connection.clear_active_turn(&turn);
+                    // Join the deadline task and release the attachment this turn
+                    // already registered; a rejected prompt must leave nothing
+                    // running behind the session.
+                    let _ = reap_finished(&self.active).await;
                     let _ = materialization.release().await;
                     Err(failure(
                         "swallowtail.pi.sdk-sidecar.prompt_rejected",
@@ -177,6 +184,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 Err(error) => {
                     turn.fail_connection(error.diagnostic().clone());
                     self.connection.clear_active_turn(&turn);
+                    let _ = reap_finished(&self.active).await;
                     let _ = materialization.release().await;
                     Err(error)
                 }

@@ -115,13 +115,23 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 .map_or_else(SharedAttachmentMaterialization::default, |input| {
                     input.materialization()
                 });
-            self.connection.set_active_turn(Arc::clone(&turn))?;
-            let deadline_task = spawn_deadline(
+            if let Err(error) = self.connection.set_active_turn(Arc::clone(&turn)) {
+                let _ = materialization.release().await;
+                return Err(error);
+            }
+            let deadline_task = match spawn_deadline(
                 &services,
                 Arc::clone(&self.connection),
                 Arc::clone(&turn),
                 request.deadline().expect("validated turn deadline"),
-            )?;
+            ) {
+                Ok(task) => task,
+                Err(error) => {
+                    self.connection.clear_active_turn(&turn);
+                    let _ = materialization.release().await;
+                    return Err(error);
+                }
+            };
             *self.active.lock().expect("Pi active-task lock poisoned") = Some(ActiveTask {
                 turn: Arc::clone(&turn),
                 deadline_task: Some(deadline_task),
@@ -177,6 +187,10 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 Err(error) => {
                     turn.fail_connection(error.diagnostic().clone());
                     self.connection.clear_active_turn(&turn);
+                    // Join the deadline task and release the attachment this turn
+                    // already registered; a rejected prompt must leave nothing
+                    // running behind the session.
+                    let _ = reap_finished(&self.active).await;
                     let _ = materialization.release().await;
                     Err(error)
                 }

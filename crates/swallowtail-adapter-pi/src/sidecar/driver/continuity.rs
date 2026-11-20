@@ -91,10 +91,13 @@ impl PiSdkSidecarDriver {
             )
             .await
         {
-            Ok((binding, replay_items)) => Ok(AttachedSession {
-                handle: Box::new(pending.into_handle(&plan, binding)),
-                replay: replay_items,
-            }),
+            Ok((binding, replay_items)) => {
+                let handle = pending.into_handle(&plan, binding).await?;
+                Ok(AttachedSession {
+                    handle: Box::new(handle),
+                    replay: replay_items,
+                })
+            }
             Err(error) => {
                 pending.abort().await;
                 Err(error)

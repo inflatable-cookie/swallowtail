@@ -40,20 +40,27 @@ impl ExecEventParser {
         }
     }
 
-    pub(crate) fn push(&mut self, bytes: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
-        self.pending.extend_from_slice(bytes);
+    pub(crate) fn push(&mut self, mut bytes: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         let mut events = Vec::new();
-        while let Some(newline) = self.pending.iter().position(|byte| *byte == b'\n') {
-            if newline > MAX_STDOUT_LINE_BYTES {
-                return Err(line_too_large());
-            }
-            let line: Vec<_> = self.pending.drain(..=newline).collect();
+        while let Some(newline) = bytes.iter().position(|byte| *byte == b'\n') {
+            let (head, rest) = bytes.split_at(newline);
+            self.append_bounded(head)?;
+            let line = std::mem::take(&mut self.pending);
             events.extend(self.parse_line(trim_newline(&line))?);
+            bytes = &rest[1..];
         }
-        if self.pending.len() > MAX_STDOUT_LINE_BYTES {
+        self.append_bounded(bytes)?;
+        Ok(events)
+    }
+
+    /// Checks the line bound before copying, so an oversized chunk never grows
+    /// the pending line past `MAX_STDOUT_LINE_BYTES`.
+    fn append_bounded(&mut self, bytes: &[u8]) -> Result<(), RuntimeFailure> {
+        if self.pending.len() + bytes.len() > MAX_STDOUT_LINE_BYTES {
             return Err(line_too_large());
         }
-        Ok(events)
+        self.pending.extend_from_slice(bytes);
+        Ok(())
     }
 
     pub(crate) fn finish(mut self) -> Result<(Vec<RuntimeEvent>, ParsedTerminal), RuntimeFailure> {

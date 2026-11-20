@@ -1,14 +1,15 @@
 use super::super::protocol::project_revalidation;
 use super::resource::ScopedResource;
 use super::{
-    cancel_and_release, cleanup_or, close_and_release, control_before_dispatch, control_failure,
-    deadline_wait, finish, from_runtime, require_catalogue_version,
+    cancel_and_release, cleanup_or, control_before_dispatch, control_failure, deadline_wait,
+    finish, from_runtime, request_controlled, require_catalogue_version, settle,
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
-use crate::control_wait::{Controlled, wait_controlled};
+use crate::control_wait::Controlled;
 use crate::process_close::close_budget;
 use crate::session_replay::project_thread_history;
+use serde_json::json;
 use swallowtail_runtime::{
     HostServices, ProviderSessionImportOutcome, ProviderSessionImportPlan,
     ProviderSessionImportRequest, ProviderSessionOperationFailure,
@@ -76,21 +77,17 @@ impl CodexAppServerDriver {
                 return Err(cleanup_or(cleanup, error));
             }
         };
-        let response = connection
-            .dispatch_request(
-                "thread/read",
-                serde_json::json!({
-                    "threadId": request.provider_session_ref().as_provider_value(),
-                    "includeTurns": true
-                }),
-            )
-            .await;
-        let response = match response {
-            Ok(response) => {
-                wait_controlled(response, request.cancellation().as_ref(), deadline_wait).await
-            }
-            Err(error) => Controlled::Completed(Err(error)),
-        };
+        let response = request_controlled(
+            &connection,
+            "thread/read",
+            json!({
+                "threadId": request.provider_session_ref().as_provider_value(),
+                "includeTurns": true
+            }),
+            request.cancellation().as_ref(),
+            deadline_wait,
+        )
+        .await;
         let revalidation = match &response {
             Controlled::Completed(Ok(response)) => {
                 project_thread_history(response, request.provider_session_ref())
@@ -126,17 +123,14 @@ impl CodexAppServerDriver {
                 "Codex thread import timed out",
             )),
         };
-        let cleanup = if matches!(response, Controlled::Cancelled | Controlled::Deadline) {
-            cancel_and_release(&connection, task, resource).await
-        } else {
-            close_and_release(
-                &connection,
-                task,
-                resource,
-                close_budget(&services, deadline),
-            )
-            .await
-        };
+        let cleanup = settle(
+            &connection,
+            task,
+            resource,
+            matches!(response, Controlled::Cancelled | Controlled::Deadline),
+            close_budget(&services, deadline),
+        )
+        .await;
         let revalidation = finish(revalidation, cleanup.clone())?;
         ProviderSessionImportOutcome::new(&plan, &request, revalidation, cleanup)
     }

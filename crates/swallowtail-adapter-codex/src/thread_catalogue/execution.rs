@@ -11,14 +11,16 @@ mod reconciliation;
 mod resource;
 
 use crate::app_server::close_connection;
+use crate::control_wait::{Controlled, wait_controlled};
 use crate::process_close::{AppServerTask, CloseBudget};
 use crate::rpc::RpcConnection;
 use crate::selection::supports_thread_catalogue_version;
 use resource::ScopedResource;
+use serde_json::Value;
 use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices, ImmediateCancellation,
     ProviderSessionOperationFailure, ProviderSessionOperationFailureStage, RuntimeFailure,
 };
 
@@ -89,11 +91,42 @@ pub(super) fn deadline_wait(
         .transpose()
 }
 
+/// Sends one RPC and waits for its response, honouring cancellation and the
+/// caller's deadline. A failed dispatch is reported as a completed error.
+pub(super) async fn request_controlled(
+    connection: &RpcConnection,
+    method: &str,
+    params: Value,
+    cancellation: &ImmediateCancellation,
+    deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+) -> Controlled<Result<Value, RuntimeFailure>> {
+    match connection.dispatch_request(method, params).await {
+        Ok(response) => wait_controlled(response, cancellation, deadline).await,
+        Err(error) => Controlled::Completed(Err(error)),
+    }
+}
+
+/// The one teardown every RPC operation shares: an interrupted run cancels,
+/// a completed run closes within its budget, and the lease is released last.
+async fn settle(
+    connection: &Arc<RpcConnection>,
+    task: AppServerTask,
+    resource: ScopedResource,
+    interrupted: bool,
+    budget: CloseBudget,
+) -> CleanupOutcome {
+    if interrupted {
+        cancel_and_release(connection, task, resource).await
+    } else {
+        close_and_release(connection, task, resource, budget).await
+    }
+}
+
 async fn close_and_release(
     connection: &Arc<RpcConnection>,
     task: AppServerTask,
     resource: ScopedResource,
-    budget: Option<CloseBudget>,
+    budget: CloseBudget,
 ) -> CleanupOutcome {
     let connection = close_connection(connection, task, budget).await;
     merge_cleanup(connection, resource.release().await)
@@ -139,6 +172,42 @@ pub(super) fn cleanup_or(
     finish::<()>(Err(otherwise.clone()), cleanup).unwrap_err()
 }
 
+/// Runtime-error twin of [`finish`]: a cleanup failure or degradation replaces
+/// the projected result, even when that result is itself an error.
+pub(super) fn finish_runtime<T>(
+    result: Result<T, RuntimeFailure>,
+    cleanup: &CleanupOutcome,
+) -> Result<T, RuntimeFailure> {
+    match cleanup {
+        CleanupOutcome::Clean | CleanupOutcome::NotApplicable => result,
+        CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
+            Err(RuntimeFailure::new(diagnostic.clone()))
+        }
+    }
+}
+
+pub(super) fn cleanup_or_runtime(
+    cleanup: CleanupOutcome,
+    otherwise: RuntimeFailure,
+) -> RuntimeFailure {
+    finish_runtime::<()>(Err(otherwise), &cleanup).unwrap_err()
+}
+
+/// Releases the lease after a failure before any connection exists.
+async fn release_runtime(resource: ScopedResource, error: RuntimeFailure) -> RuntimeFailure {
+    cleanup_or_runtime(resource.release().await, error)
+}
+
+/// Cancels and releases after a failure once a connection exists.
+async fn abort_runtime(
+    connection: &Arc<RpcConnection>,
+    task: AppServerTask,
+    resource: ScopedResource,
+    error: RuntimeFailure,
+) -> RuntimeFailure {
+    cleanup_or_runtime(cancel_and_release(connection, task, resource).await, error)
+}
+
 pub(super) fn from_runtime(
     stage: ProviderSessionOperationFailureStage,
     error: RuntimeFailure,
@@ -156,4 +225,62 @@ pub(super) fn control_failure(
     message: &'static str,
 ) -> ProviderSessionOperationFailure {
     ProviderSessionOperationFailure::new(stage, SafeDiagnostic::new(code, message))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{cleanup_or_runtime, finish_runtime};
+    use swallowtail_core::SafeDiagnostic;
+    use swallowtail_runtime::{CleanupOutcome, RuntimeFailure};
+
+    fn runtime_failure(code: &'static str) -> RuntimeFailure {
+        RuntimeFailure::new(SafeDiagnostic::new(code, "message"))
+    }
+
+    fn cleanup_failed() -> CleanupOutcome {
+        CleanupOutcome::Failed(SafeDiagnostic::new("cleanup.failed", "cleanup failed"))
+    }
+
+    #[test]
+    fn failed_cleanup_replaces_a_projected_error() {
+        let error =
+            finish_runtime::<()>(Err(runtime_failure("projection.failed")), &cleanup_failed())
+                .unwrap_err();
+        assert_eq!(error.diagnostic().code(), "cleanup.failed");
+    }
+
+    #[test]
+    fn degraded_cleanup_replaces_a_projected_error() {
+        let cleanup = CleanupOutcome::Degraded(SafeDiagnostic::new("cleanup.degraded", "degraded"));
+        let error =
+            finish_runtime::<()>(Err(runtime_failure("projection.failed")), &cleanup).unwrap_err();
+        assert_eq!(error.diagnostic().code(), "cleanup.degraded");
+    }
+
+    #[test]
+    fn degraded_cleanup_replaces_a_projected_success() {
+        let cleanup = CleanupOutcome::Degraded(SafeDiagnostic::new("cleanup.degraded", "degraded"));
+        let error = finish_runtime(Ok(7_u8), &cleanup).unwrap_err();
+        assert_eq!(error.diagnostic().code(), "cleanup.degraded");
+    }
+
+    #[test]
+    fn clean_cleanup_keeps_the_projected_result() {
+        let error = finish_runtime::<()>(
+            Err(runtime_failure("projection.failed")),
+            &CleanupOutcome::Clean,
+        )
+        .unwrap_err();
+        assert_eq!(error.diagnostic().code(), "projection.failed");
+        assert_eq!(
+            finish_runtime(Ok(7_u8), &CleanupOutcome::NotApplicable).ok(),
+            Some(7)
+        );
+    }
+
+    #[test]
+    fn pre_dispatch_error_is_replaced_by_failed_cleanup() {
+        let error = cleanup_or_runtime(cleanup_failed(), runtime_failure("start.failed"));
+        assert_eq!(error.diagnostic().code(), "cleanup.failed");
+    }
 }

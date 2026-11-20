@@ -1,13 +1,14 @@
 use super::super::protocol::project_page;
 use super::resource::ScopedResource;
 use super::{
-    cancel_and_release, cleanup_or, close_and_release, control_before_dispatch, control_failure,
-    deadline_wait, finish, from_runtime, require_catalogue_version,
+    cancel_and_release, cleanup_or, control_before_dispatch, control_failure, deadline_wait,
+    finish, from_runtime, request_controlled, require_catalogue_version, settle,
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
-use crate::control_wait::{Controlled, wait_controlled};
+use crate::control_wait::Controlled;
 use crate::process_close::close_budget;
+use serde_json::json;
 use swallowtail_runtime::{
     HostServices, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
     ProviderSessionCatalogueRequest, ProviderSessionOperationFailure,
@@ -74,24 +75,20 @@ impl CodexAppServerDriver {
                 return Err(cleanup_or(cleanup, error));
             }
         };
-        let response = connection
-            .dispatch_request(
-                "thread/list",
-                serde_json::json!({
-                    "cursor": request.cursor().map(|cursor| cursor.as_provider_value()),
-                    "limit": plan.agreement().bounds().maximum_page_size().get(),
-                    "sourceKinds": ["cli", "vscode", "appServer"],
-                    "archived": false,
-                    "cwd": cwd
-                }),
-            )
-            .await;
-        let response = match response {
-            Ok(response) => {
-                wait_controlled(response, request.cancellation().as_ref(), deadline_wait).await
-            }
-            Err(error) => Controlled::Completed(Err(error)),
-        };
+        let response = request_controlled(
+            &connection,
+            "thread/list",
+            json!({
+                "cursor": request.cursor().map(|cursor| cursor.as_provider_value()),
+                "limit": plan.agreement().bounds().maximum_page_size().get(),
+                "sourceKinds": ["cli", "vscode", "appServer"],
+                "archived": false,
+                "cwd": cwd
+            }),
+            request.cancellation().as_ref(),
+            deadline_wait,
+        )
+        .await;
         let interrupted = matches!(&response, Controlled::Cancelled | Controlled::Deadline);
         let projected = match response {
             Controlled::Completed(Ok(response)) => project_page(
@@ -117,17 +114,14 @@ impl CodexAppServerDriver {
                 "Codex thread catalogue timed out",
             )),
         };
-        let cleanup = if interrupted {
-            cancel_and_release(&connection, task, resource).await
-        } else {
-            close_and_release(
-                &connection,
-                task,
-                resource,
-                close_budget(&services, deadline),
-            )
-            .await
-        };
+        let cleanup = settle(
+            &connection,
+            task,
+            resource,
+            interrupted,
+            close_budget(&services, deadline),
+        )
+        .await;
         let page = finish(projected, cleanup.clone())?;
         ProviderSessionCatalogueOutcome::new(
             &plan,

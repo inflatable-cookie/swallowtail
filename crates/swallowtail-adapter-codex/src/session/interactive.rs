@@ -323,6 +323,6 @@ fn start_deadline_task(
 fn unsupported(feature: &str) -> RuntimeFailure {
     failure(
         "swallowtail.codex.app_server.unsupported_input",
-        format!("Codex app-server proof driver does not support {feature}"),
+        format!("Codex app-server driver does not support {feature}"),
     )
 }

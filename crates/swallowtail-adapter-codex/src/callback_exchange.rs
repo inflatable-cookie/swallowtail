@@ -67,16 +67,16 @@ impl CallbackHub {
         if state.closed {
             return Err(callback_closed());
         }
-        if !state.provider_call_ids.insert(provider_call_id) {
-            return Err(failure(
-                "swallowtail.codex.app_server.callback_provider_id_reused",
-                "Codex app-server reused a dynamic tool call id",
-            ));
-        }
         if state.pending.len() >= CALLBACK_CAPACITY || state.requests.len() >= CALLBACK_CAPACITY {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_capacity_exceeded",
                 "Codex app-server exceeded the bounded callback capacity",
+            ));
+        }
+        if !state.provider_call_ids.insert(provider_call_id) {
+            return Err(failure(
+                "swallowtail.codex.app_server.callback_provider_id_reused",
+                "Codex app-server reused a dynamic tool call id",
             ));
         }
         state.pending.insert(
@@ -103,16 +103,16 @@ impl CallbackHub {
         if state.closed {
             return Err(callback_closed());
         }
-        if !state.provider_call_ids.insert(provider_call_id) {
-            return Err(failure(
-                "swallowtail.codex.app_server.callback_provider_id_reused",
-                "Codex app-server reused a user-input item id",
-            ));
-        }
         if state.pending.len() >= CALLBACK_CAPACITY || state.requests.len() >= CALLBACK_CAPACITY {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_capacity_exceeded",
                 "Codex app-server exceeded the bounded callback capacity",
+            ));
+        }
+        if !state.provider_call_ids.insert(provider_call_id) {
+            return Err(failure(
+                "swallowtail.codex.app_server.callback_provider_id_reused",
+                "Codex app-server reused a user-input item id",
             ));
         }
         state.pending.insert(

@@ -1,5 +1,7 @@
 use super::error::InvalidInterfaceCompatibilityClaim;
-use super::ordering::{compare_versions, is_semantic_prerelease, validate_version};
+use super::ordering::{
+    compare_versions, is_semantic_prerelease, same_version_point, validate_version,
+};
 use super::{
     InterfaceBehaviorRevision, InterfaceCompatibilityAssessment, InterfaceCompatibilityClaimId,
     InterfaceCompatibilityMatch, InterfaceNewerVersionPosture, InterfaceSupportStatus,
@@ -203,7 +205,7 @@ impl InterfaceCompatibilityClaim {
     ///
     /// Unverified newer versions are deliberately not returned here.
     pub fn classify(&self, version: &InterfaceVersion) -> Option<InterfaceCompatibilityMatch> {
-        if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
+        if self.excludes(version) || validate_version(self.scheme, version).is_err() {
             return None;
         }
         if self.scheme == InterfaceVersionScheme::Opaque {
@@ -235,7 +237,7 @@ impl InterfaceCompatibilityClaim {
     #[must_use]
     /// Assesses `version` as qualified, unverified newer, or incompatible.
     pub fn assess(&self, version: &InterfaceVersion) -> InterfaceCompatibilityAssessment {
-        if self.exclusions.contains(version) || validate_version(self.scheme, version).is_err() {
+        if self.excludes(version) || validate_version(self.scheme, version).is_err() {
             return InterfaceCompatibilityAssessment::Incompatible;
         }
         if let Some(matched) = self.classify(version) {
@@ -261,6 +263,17 @@ impl InterfaceCompatibilityClaim {
     /// Reports whether the claim permits use of `version`.
     pub fn permits(&self, version: &InterfaceVersion) -> bool {
         self.assess(version).is_permitted()
+    }
+
+    /// Reports whether an exclusion covers `version` under the claim's scheme.
+    ///
+    /// Raw text equality would let a scheme-equivalent spelling through: semver
+    /// ignores build metadata, so an exclusion written `1.2.3+build1` must also
+    /// exclude the observed `1.2.3`. Opaque claims stay exact-text.
+    fn excludes(&self, version: &InterfaceVersion) -> bool {
+        self.exclusions
+            .iter()
+            .any(|excluded| same_version_point(self.scheme, excluded, version))
     }
 
     fn validate(&self) -> Result<(), InvalidInterfaceCompatibilityClaim> {

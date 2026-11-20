@@ -162,7 +162,9 @@ pub use direct_continuation::{
     validate_direct_continuation_plan,
 };
 pub use event::{EventDelivery, RuntimeEvent, RuntimeEventKind};
-pub use event_buffer::{EventBufferFailure, EventBufferFailureKind, OrderedEventBuffer};
+pub use event_buffer::{
+    EventBufferFailure, EventBufferFailureKind, MAX_QUARANTINED_LATE_EVENTS, OrderedEventBuffer,
+};
 pub use event_channel::{RuntimeEventSender, RuntimeEventStream, runtime_event_channel};
 pub use failure::RuntimeFailure;
 pub use handles::{

@@ -9,6 +9,13 @@ use std::error::Error;
 use std::fmt;
 use swallowtail_core::SafeDiagnostic;
 
+/// Maximum late events retained as quarantine evidence after terminal state.
+///
+/// Quarantine is bounded diagnostics, not a second buffer: a provider that
+/// keeps streaming after its terminal outcome cannot grow unbounded memory.
+/// Later events are still rejected; only their retained evidence is capped.
+pub const MAX_QUARANTINED_LATE_EVENTS: usize = 32;
+
 /// Stable reason an ordered event buffer rejected an event.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum EventBufferFailureKind {
@@ -133,7 +140,9 @@ impl OrderedEventBuffer {
     /// Validates and appends an event, coalescing only declared replaceable events.
     pub fn push(&mut self, event: RuntimeEvent) -> Result<(), EventBufferFailure> {
         if self.terminal {
-            self.quarantined_late_events.push(event);
+            if self.quarantined_late_events.len() < MAX_QUARANTINED_LATE_EVENTS {
+                self.quarantined_late_events.push(event);
+            }
             return Err(EventBufferFailure::new(
                 EventBufferFailureKind::LateEvent,
                 "Operation event arrived after the terminal outcome",

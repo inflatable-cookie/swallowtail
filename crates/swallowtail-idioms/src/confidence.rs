@@ -1,4 +1,5 @@
 use crate::time::MonotonicInstant;
+use std::fmt;
 
 /// Default decay half-life in host monotonic ticks (one day at second
 /// granularity; hosts choose a tick unit and may pass their own half-life).
@@ -15,6 +16,19 @@ pub enum ConfidenceErrorKind {
     /// The decay half-life was zero.
     ZeroHalfLife,
 }
+
+impl fmt::Display for ConfidenceErrorKind {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::OutOfRange => formatter.write_str("confidence value is outside 0..=100"),
+            Self::ZeroHalfLife => {
+                formatter.write_str("confidence decay half-life must be greater than zero")
+            }
+        }
+    }
+}
+
+impl std::error::Error for ConfidenceErrorKind {}
 
 /// Stored confidence with time-based decay (Contract 055).
 ///
@@ -102,6 +116,21 @@ mod tests {
 
     fn at(ticks: u64) -> MonotonicInstant {
         MonotonicInstant::from_ticks(ticks)
+    }
+
+    #[test]
+    fn error_reports_the_rejection_reason() {
+        assert!(
+            ConfidenceErrorKind::OutOfRange
+                .to_string()
+                .contains("0..=100")
+        );
+        assert!(
+            ConfidenceErrorKind::ZeroHalfLife
+                .to_string()
+                .contains("half-life")
+        );
+        let _: &dyn std::error::Error = &ConfidenceErrorKind::OutOfRange;
     }
 
     #[test]

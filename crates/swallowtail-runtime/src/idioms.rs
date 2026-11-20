@@ -106,27 +106,46 @@ pub fn fold_idioms(set: &IdiomSet) -> String {
     fold_idioms_with_bound(set, DEFAULT_MAX_FOLD_BYTES)
 }
 
+/// Explicit marker appended when a folded block overflows its byte bound.
+const TRUNCATION_MARKER: &str = "… [idioms truncated]";
+
 /// Renders a selected set into one idioms block with an explicit byte bound.
+///
+/// The returned block never exceeds `maximum_bytes`, including its truncation
+/// marker: when no room remains for the marker, the block is cut short rather
+/// than overshooting the bound. A first-line overflow adds no leading newline.
 #[must_use]
 pub fn fold_idioms_with_bound(set: &IdiomSet, maximum_bytes: usize) -> String {
     let mut output = String::new();
     for idiom in set.idioms() {
         let line = render_line(idiom);
-        let needed = if output.is_empty() {
-            line.len()
-        } else {
-            output.len() + 1 + line.len()
-        };
-        if needed > maximum_bytes {
-            output.push_str("\n… [idioms truncated]");
-            break;
+        let separator = usize::from(!output.is_empty());
+        if output.len() + separator + line.len() <= maximum_bytes {
+            if separator == 1 {
+                output.push('\n');
+            }
+            output.push_str(&line);
+            continue;
         }
-        if !output.is_empty() {
-            output.push('\n');
-        }
-        output.push_str(&line);
+        push_truncation_marker(&mut output, maximum_bytes);
+        break;
     }
     output
+}
+
+/// Appends the truncation marker inside the remaining byte budget.
+///
+/// The marker is only appended when it fits whole; a marker that would exceed
+/// the bound is omitted, so the bound always wins over the diagnostic.
+fn push_truncation_marker(output: &mut String, maximum_bytes: usize) {
+    let separator = usize::from(!output.is_empty());
+    let needed = output.len() + separator + TRUNCATION_MARKER.len();
+    if needed <= maximum_bytes {
+        if separator == 1 {
+            output.push('\n');
+        }
+        output.push_str(TRUNCATION_MARKER);
+    }
 }
 
 /// Appends a folded idioms block after consumer-supplied developer
@@ -186,6 +205,7 @@ mod tests {
         fold_idioms_with_bound,
     };
     use crate::content::OperationContent;
+    use crate::host_registry::HostServices;
     use swallowtail_idioms::{
         BoundedText, Idiom, IdiomConstraint, IdiomId, IdiomScope, IdiomSet, MonotonicInstant,
         Provenance,
@@ -269,6 +289,149 @@ mod tests {
         let folded = fold_idioms_with_bound(&set, 64);
         assert!(folded.ends_with("… [idioms truncated]"));
         assert!(folded.len() <= 64 + "… [idioms truncated]".len() + 1);
+    }
+
+    #[test]
+    fn a_first_line_overflow_adds_no_leading_newline_and_keeps_the_bound() {
+        let set = IdiomSet::new(
+            vec![idiom(
+                "a",
+                IdiomScope::Project,
+                IdiomConstraint::text("use named exports").expect("constraint"),
+                90,
+            )],
+            false,
+        );
+
+        let marker_only = fold_idioms_with_bound(&set, 30);
+        assert_eq!(marker_only, "… [idioms truncated]");
+        assert!(!marker_only.starts_with('\n'));
+
+        let no_room = fold_idioms_with_bound(&set, 8);
+        assert!(no_room.is_empty(), "no room means no overshooting marker");
+        assert!(no_room.len() <= 8);
+    }
+
+    #[test]
+    fn every_fold_stays_within_its_byte_bound() {
+        let set = IdiomSet::new(
+            vec![
+                idiom(
+                    "a",
+                    IdiomScope::Project,
+                    IdiomConstraint::text("use named exports").expect("constraint"),
+                    90,
+                ),
+                idiom(
+                    "b",
+                    IdiomScope::User,
+                    IdiomConstraint::tool("edit_*").expect("constraint"),
+                    80,
+                ),
+            ],
+            false,
+        );
+        for maximum_bytes in 0..64 {
+            let folded = fold_idioms_with_bound(&set, maximum_bytes);
+            assert!(
+                folded.len() <= maximum_bytes,
+                "bound {maximum_bytes} was exceeded by {} bytes",
+                folded.len()
+            );
+            assert!(!folded.starts_with('\n'));
+        }
+    }
+
+    #[test]
+    fn a_later_line_overflow_keeps_the_marker_inside_the_bound() {
+        let set = IdiomSet::new(
+            vec![
+                idiom(
+                    "a",
+                    IdiomScope::Project,
+                    IdiomConstraint::text("first").expect("constraint"),
+                    90,
+                ),
+                idiom(
+                    "b",
+                    IdiomScope::Project,
+                    IdiomConstraint::text("y".repeat(100)).expect("constraint"),
+                    80,
+                ),
+            ],
+            false,
+        );
+        let folded = fold_idioms_with_bound(&set, 45);
+        assert_eq!(folded, "[project static] first\n… [idioms truncated]");
+        assert!(folded.len() <= 45);
+
+        // A marker that cannot fit whole is omitted, so the bound still wins.
+        let cut_short = fold_idioms_with_bound(&set, 40);
+        assert_eq!(cut_short, "[project static] first");
+        assert!(cut_short.len() <= 40);
+    }
+
+    #[test]
+    fn resolve_without_the_opt_in_passes_consumer_instructions_through() {
+        let services = HostServices::new(
+            swallowtail_core::ExecutionHostId::new("fixture.host").expect("host id"),
+        );
+        let instructions = OperationContent::new("consumer guidance".to_owned()).expect("content");
+        let options = crate::SessionOptions::default().with_developer_instructions(instructions);
+        let resolved = super::resolve_idiom_instructions(&services, &options)
+            .expect("no opt-in needs no source");
+        assert_eq!(
+            resolved.map(|content| content.as_str().to_owned()),
+            Some("consumer guidance".to_owned())
+        );
+    }
+
+    #[test]
+    fn resolve_fails_closed_when_the_opt_in_has_no_source() {
+        let services = HostServices::new(
+            swallowtail_core::ExecutionHostId::new("fixture.host").expect("host id"),
+        );
+        let options = crate::SessionOptions::default()
+            .with_idioms(IdiomSessionOption::new(IdiomScope::Project, 8).expect("option"));
+        assert_eq!(
+            super::resolve_idiom_instructions(&services, &options).expect_err("no source"),
+            super::IdiomSourceUnavailable
+        );
+    }
+
+    #[test]
+    fn resolve_appends_the_folded_block_after_consumer_text() {
+        let set = IdiomSet::new(
+            vec![idiom(
+                "a",
+                IdiomScope::Project,
+                IdiomConstraint::text("use named exports").expect("constraint"),
+                90,
+            )],
+            false,
+        );
+        let services = HostServices::new(
+            swallowtail_core::ExecutionHostId::new("fixture.host").expect("host id"),
+        )
+        .with_idiom_source(std::sync::Arc::new(FixedSource(set)));
+        let instructions = OperationContent::new("consumer guidance".to_owned()).expect("content");
+        let options = crate::SessionOptions::default()
+            .with_developer_instructions(instructions)
+            .with_idioms(IdiomSessionOption::new(IdiomScope::Project, 8).expect("option"));
+        let resolved = super::resolve_idiom_instructions(&services, &options)
+            .expect("a registered source resolves");
+        assert_eq!(
+            resolved.map(|content| content.as_str().to_owned()),
+            Some("consumer guidance\n\n[idioms]\n[project static] use named exports".to_owned())
+        );
+    }
+
+    struct FixedSource(IdiomSet);
+
+    impl swallowtail_idioms::IdiomSource for FixedSource {
+        fn select(&self, _context: &swallowtail_idioms::IdiomContext) -> IdiomSet {
+            self.0.clone()
+        }
     }
 
     #[test]

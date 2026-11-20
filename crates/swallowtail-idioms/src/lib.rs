@@ -20,6 +20,12 @@ mod registry;
 mod static_rules;
 mod time;
 
+/// Caller-facing name for the reason one bounded text value was rejected.
+pub type BoundedTextError = bounded::BoundedTextError;
+
+/// Caller-facing name for the reason one confidence record was rejected.
+pub type ConfidenceErrorKind = confidence::ConfidenceErrorKind;
+
 pub use bounded::{
     BoundedText, DEFAULT_MAX_CORRELATION_BYTES, DEFAULT_MAX_ID_BYTES, DEFAULT_MAX_PATTERN_BYTES,
     DEFAULT_MAX_SOURCE_BYTES, DEFAULT_MAX_TARGET_BYTES,

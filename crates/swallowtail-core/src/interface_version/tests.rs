@@ -55,6 +55,128 @@ fn semantic_window_tracks_baseline_milestones_deprecation_and_exclusion() {
 }
 
 #[test]
+fn integer_and_calendar_versions_reject_non_canonical_spellings() {
+    for invalid in ["+123", "0123", "0012", "-1", " 12", "12 ", "1_000"] {
+        let error = InterfaceCompatibilityClaim::new(
+            claim_id(),
+            axis(),
+            InterfaceVersionScheme::Integer,
+            InterfaceNewerVersionPosture::QualifiedOnly,
+            [segment(
+                "98",
+                "102",
+                "integer-v1",
+                InterfaceSupportStatus::Maintained,
+            )],
+            [version(invalid)],
+        )
+        .expect_err("non-canonical integer text must be rejected");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.interface_compatibility_claim_rejected"
+        );
+    }
+    assert!(
+        InterfaceCompatibilityClaim::new(
+            claim_id(),
+            axis(),
+            InterfaceVersionScheme::Integer,
+            InterfaceNewerVersionPosture::QualifiedOnly,
+            [segment(
+                "0",
+                "10",
+                "integer-v1",
+                InterfaceSupportStatus::Maintained,
+            )],
+            [version("5")],
+        )
+        .is_ok()
+    );
+
+    for invalid in [
+        "2026-+1-+2",
+        "2026-01-+2",
+        "+026-01-02",
+        "2026-01-0\u{ff12}",
+    ] {
+        let error = InterfaceCompatibilityClaim::new(
+            claim_id(),
+            axis(),
+            InterfaceVersionScheme::CalendarDate,
+            InterfaceNewerVersionPosture::QualifiedOnly,
+            [segment(
+                "2026-01-01",
+                "2026-02-01",
+                "calendar-v1",
+                InterfaceSupportStatus::Maintained,
+            )],
+            [version(invalid)],
+        )
+        .expect_err("non-canonical calendar text must be rejected");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.interface_compatibility_claim_rejected"
+        );
+    }
+}
+
+#[test]
+fn exclusions_compare_under_the_claim_scheme() {
+    let excluded_by_metadata = InterfaceCompatibilityClaim::new(
+        claim_id(),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [segment(
+            "1.0.0",
+            "2.0.0",
+            "stable-v1",
+            InterfaceSupportStatus::Maintained,
+        )],
+        [version("1.2.3+build1")],
+    )
+    .unwrap();
+    assert!(!excluded_by_metadata.supports(&version("1.2.3")));
+    assert!(!excluded_by_metadata.permits(&version("1.2.3")));
+    assert_eq!(
+        excluded_by_metadata.assess(&version("1.2.3")),
+        InterfaceCompatibilityAssessment::Incompatible
+    );
+
+    let excluded_by_exact_text = InterfaceCompatibilityClaim::new(
+        claim_id(),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [segment(
+            "1.0.0",
+            "2.0.0",
+            "stable-v1",
+            InterfaceSupportStatus::Maintained,
+        )],
+        [version("1.2.3")],
+    )
+    .unwrap();
+    assert!(!excluded_by_exact_text.supports(&version("1.2.3+build2")));
+
+    let unrelated = InterfaceCompatibilityClaim::new(
+        claim_id(),
+        axis(),
+        InterfaceVersionScheme::Semantic,
+        InterfaceNewerVersionPosture::QualifiedOnly,
+        [segment(
+            "1.0.0",
+            "2.0.0",
+            "stable-v1",
+            InterfaceSupportStatus::Maintained,
+        )],
+        [version("1.2.4")],
+    )
+    .unwrap();
+    assert!(unrelated.supports(&version("1.2.3")));
+}
+
+#[test]
 fn semantic_prerelease_requires_a_separate_exact_segment() {
     let claim = InterfaceCompatibilityClaim::new(
         claim_id(),

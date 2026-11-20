@@ -25,3 +25,19 @@ fn manifest_digest_accepts_only_sha256_evidence() {
     assert!(ModelManifestDigest::new("/private/model/manifest").is_err());
     assert!(ModelManifestDigest::new("sha256:short").is_err());
 }
+
+#[test]
+fn manifest_digest_equality_is_case_consistent() {
+    let lowercase = ModelManifestDigest::new(format!("sha256:{}", "ab".repeat(32)))
+        .expect("lowercase digest is valid");
+    let uppercase = ModelManifestDigest::new(format!("sha256:{}", "AB".repeat(32)))
+        .expect("uppercase digest is valid");
+    assert_eq!(lowercase, uppercase);
+    assert_eq!(uppercase.as_str(), lowercase.as_str());
+    assert!(
+        uppercase
+            .as_str()
+            .bytes()
+            .all(|byte| !byte.is_ascii_uppercase())
+    );
+}

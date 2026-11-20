@@ -166,17 +166,19 @@ fn merge_store(
                 store.push(merged);
                 summary.new += 1;
             }
-            MergeOutcome::Raised | MergeOutcome::Lowered => {
+            MergeOutcome::Raised | MergeOutcome::Lowered | MergeOutcome::Unchanged => {
+                // Fresh incoming evidence wins even when effective confidence
+                // is unchanged: `as_of`, provenance, and signal history move
+                // forward with the incoming record, exactly as `merge` does.
                 if let Some(slot) = store.iter_mut().find(|record| store_key(record) == key) {
                     *slot = merged;
                 }
-                if outcome == MergeOutcome::Raised {
-                    summary.raised += 1;
-                } else {
-                    summary.lowered += 1;
+                match outcome {
+                    MergeOutcome::Raised => summary.raised += 1,
+                    MergeOutcome::Lowered => summary.lowered += 1,
+                    _ => summary.unchanged += 1,
                 }
             }
-            MergeOutcome::Unchanged => summary.unchanged += 1,
         }
     }
     (store, summary)
@@ -304,6 +306,52 @@ mod tests {
             }
         );
         assert_eq!(outcome.store()[0].confidence().value(), 80);
+    }
+
+    #[test]
+    fn unchanged_confidence_still_keeps_fresh_incoming_evidence() {
+        // Effective confidence at the merge instant is equal, so the outcome is
+        // `Unchanged`, but the incoming record carries newer evidence.
+        let existing = Idiom::new(
+            IdiomId::new("a").expect("id"),
+            IdiomScope::Project,
+            IdiomConstraint::text("use named exports").expect("constraint"),
+            40,
+            at(0),
+            static_source(),
+        )
+        .expect("idiom");
+        let incoming = Idiom::new(
+            IdiomId::new("a").expect("id"),
+            IdiomScope::Project,
+            IdiomConstraint::text("use named exports").expect("constraint"),
+            20,
+            at(86_400),
+            crate::record::Provenance::Learned {
+                signal_count: 3,
+                last_signal: at(86_400),
+            },
+        )
+        .expect("idiom");
+        let package =
+            RegistryPackage::new(reference("cli"), vec![incoming.clone()]).expect("package");
+
+        let outcome = pull_package(&[existing], &package, at(86_400));
+
+        assert_eq!(
+            outcome.summary(),
+            MergeSummary {
+                unchanged: 1,
+                ..MergeSummary::empty()
+            }
+        );
+        assert_eq!(outcome.store().len(), 1);
+        assert_eq!(
+            outcome.store()[0],
+            incoming,
+            "fresh as_of and provenance are not discarded on an unchanged merge"
+        );
+        assert_eq!(outcome.store()[0].confidence().as_of(), at(86_400));
     }
 
     #[test]

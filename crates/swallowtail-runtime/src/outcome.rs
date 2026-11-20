@@ -4,7 +4,7 @@ use crate::{CallbackId, OperationContent, RuntimeFailure};
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{
     ExtensionNamespace, OwnedRemoteResourceKind, ProviderRequestRef, SafeDiagnostic,
@@ -275,7 +275,12 @@ impl TerminalOutcome {
 struct TerminalState {
     outcome: Option<TerminalOutcome>,
     sender_count: usize,
-    waiters: Vec<Waker>,
+    /// One consumer awaits terminal truth; a wake is never held under the lock.
+    waiter: Option<Waker>,
+}
+
+fn locked(state: &Arc<Mutex<TerminalState>>) -> std::sync::MutexGuard<'_, TerminalState> {
+    state.lock().unwrap_or_else(PoisonError::into_inner)
 }
 
 /// Exactly-once completion end of a terminal outcome channel.
@@ -289,7 +294,7 @@ pub struct TerminalOutcomeSender {
 
 impl Clone for TerminalOutcomeSender {
     fn clone(&self) -> Self {
-        let mut state = self.state.lock().expect("terminal state lock poisoned");
+        let mut state = locked(&self.state);
         state.sender_count = state.sender_count.saturating_add(1);
         drop(state);
         Self {
@@ -300,17 +305,29 @@ impl Clone for TerminalOutcomeSender {
 
 impl Drop for TerminalOutcomeSender {
     fn drop(&mut self) {
-        let mut state = self.state.lock().expect("terminal state lock poisoned");
-        state.sender_count = state.sender_count.saturating_sub(1);
-        if state.sender_count == 0 && state.outcome.is_none() {
-            // Every producer is gone without publishing terminal truth. This
-            // is an anomaly; resolve the pending future with a visible
-            // failure instead of hanging it forever.
-            state.outcome = Some(dropped_without_outcome());
-            for waiter in state.waiters.drain(..) {
-                waiter.wake();
+        // A poisoned lock in `Drop` must not panic: the pending consumer still
+        // has to learn that no terminal truth will arrive.
+        let waiter = {
+            let mut state = locked(&self.state);
+            state.sender_count = state.sender_count.saturating_sub(1);
+            if state.sender_count == 0 && state.outcome.is_none() {
+                // Every producer is gone without publishing terminal truth.
+                // This is an anomaly; resolve the pending future with a
+                // visible failure instead of hanging it forever.
+                state.outcome = Some(dropped_without_outcome());
+                state.waiter.take()
+            } else {
+                None
             }
-        }
+        };
+        wake(waiter);
+    }
+}
+
+/// Wakes the single consumer after every lock is released.
+fn wake(waiter: Option<Waker>) {
+    if let Some(waiter) = waiter {
+        waiter.wake();
     }
 }
 
@@ -331,14 +348,15 @@ impl TerminalOutcomeSender {
     ///
     /// A second completion attempt returns [`TerminalAlreadySet`].
     pub fn complete(&self, outcome: TerminalOutcome) -> Result<(), TerminalAlreadySet> {
-        let mut state = self.state.lock().expect("terminal state lock poisoned");
-        if state.outcome.is_some() {
-            return Err(TerminalAlreadySet);
-        }
-        state.outcome = Some(outcome);
-        for waiter in state.waiters.drain(..) {
-            waiter.wake();
-        }
+        let waiter = {
+            let mut state = locked(&self.state);
+            if state.outcome.is_some() {
+                return Err(TerminalAlreadySet);
+            }
+            state.outcome = Some(outcome);
+            state.waiter.take()
+        };
+        wake(waiter);
         Ok(())
     }
 }
@@ -352,16 +370,14 @@ impl Future for TerminalOutcomeFuture {
     type Output = TerminalOutcome;
 
     fn poll(self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
-        let mut state = self.state.lock().expect("terminal state lock poisoned");
+        let mut state = locked(&self.state);
         if let Some(outcome) = &state.outcome {
             Poll::Ready(outcome.clone())
         } else {
-            if !state
-                .waiters
-                .iter()
-                .any(|waiter| waiter.will_wake(context.waker()))
-            {
-                state.waiters.push(context.waker().clone());
+            match &mut state.waiter {
+                Some(existing) if existing.will_wake(context.waker()) => {}
+                Some(existing) => *existing = context.waker().clone(),
+                None => state.waiter = Some(context.waker().clone()),
             }
             Poll::Pending
         }
@@ -387,7 +403,7 @@ pub fn terminal_outcome_channel() -> (TerminalOutcomeSender, TerminalOutcomeFutu
     let state = Arc::new(Mutex::new(TerminalState {
         outcome: None,
         sender_count: 1,
-        waiters: Vec::new(),
+        waiter: None,
     }));
     (
         TerminalOutcomeSender {

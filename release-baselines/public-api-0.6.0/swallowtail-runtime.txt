@@ -2049,6 +2049,7 @@ pub fn swallowtail_runtime::ModelWatcherRole::wait(&self, &swallowtail_core::wat
 pub struct swallowtail_runtime::MonotonicInstant(_)
 impl swallowtail_runtime::MonotonicInstant
 pub const fn swallowtail_runtime::MonotonicInstant::from_ticks(u64) -> Self
+pub fn swallowtail_runtime::MonotonicInstant::saturating_add_duration(self, core::time::Duration) -> Self
 pub const fn swallowtail_runtime::MonotonicInstant::ticks(self) -> u64
 pub struct swallowtail_runtime::NegotiatedReasoningSetup
 impl swallowtail_runtime::NegotiatedReasoningSetup
@@ -3880,6 +3881,7 @@ pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_SESSION_START_ROWS: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_SOURCE_IDENTITIES: usize
 pub const swallowtail_runtime::MAX_CONSUMER_ROUTE_SOURCE_ID_BYTES: usize
 pub const swallowtail_runtime::MAX_DEBUG_DETAIL_CHARS: usize
+pub const swallowtail_runtime::MAX_QUARANTINED_LATE_EVENTS: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_AGGREGATE_SCHEMA_BYTES: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_ARGUMENT_BYTES: usize
 pub const swallowtail_runtime::MAX_REGISTERED_TOOL_CREDENTIAL_REFERENCES: usize

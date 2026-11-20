@@ -420,6 +420,20 @@ impl TimeService for FixedClock {
 
 struct EchoDispatcher;
 
+/// Dispatcher that never settles, so a dropped call future leaves the kernel
+/// exactly at its dispatch await.
+struct PendingDispatcher;
+
+impl RegisteredToolDispatcher for PendingDispatcher {
+    fn dispatch(
+        &self,
+        _call: RegisteredToolCall,
+        _context: RegisteredToolDispatchContext,
+    ) -> crate::BoxFuture<'_, Result<RegisteredToolOutcome, crate::RuntimeFailure>> {
+        Box::pin(std::future::pending())
+    }
+}
+
 impl RegisteredToolDispatcher for EchoDispatcher {
     fn dispatch(
         &self,
@@ -738,6 +752,87 @@ fn the_effective_call_deadline_takes_the_earliest_bound() {
         u64::try_from(REGISTERED_TOOL_MAX_CALL_DURATION.as_nanos()).expect("bounded"),
         "the maximum call duration bounds a caller deadline that never arrives"
     );
+}
+
+#[test]
+fn dropping_a_dispatched_call_future_frees_the_slot_but_not_the_teardown_truth() {
+    let hosts = ready_hosts();
+    let proof = RegisteredToolReadiness::evaluate(&hosts, &selection())
+        .require_ready()
+        .expect("proof");
+    let (kernel, lease) = RegisteredToolOperationKernel::open(
+        open_request(selection(), Deadline::at(MonotonicInstant::from_ticks(500))),
+        &proof,
+        Arc::new(PendingDispatcher),
+        Arc::new(FixedClock::default()),
+        RegisteredToolLeaseGeneration::initial(),
+        RegisteredToolTransportGeneration::initial(),
+    )
+    .expect("open");
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+
+    let mut abandoned = lease.call(call_request("abandoned"));
+    assert!(
+        abandoned.as_mut().poll(&mut context).is_pending(),
+        "the call is suspended in its dispatcher"
+    );
+    assert_eq!(
+        kernel.outstanding_calls(),
+        1,
+        "the dispatched call owns the one slot"
+    );
+    drop(abandoned);
+
+    let observed = kernel.observe();
+    assert_eq!(
+        observed.outstanding_calls(),
+        1,
+        "an abandoned dispatch was never joined, so teardown still sees it"
+    );
+    assert!(
+        !observed.allows_successful_completion(),
+        "an unjoined dispatch never allows a claim of clean completion"
+    );
+
+    let mut next = lease.call(call_request("after-abandon"));
+    assert!(
+        next.as_mut().poll(&mut context).is_pending(),
+        "the next call is admitted instead of failing with LimitExceeded forever"
+    );
+}
+
+#[test]
+fn dropping_a_reserved_call_before_dispatch_leaves_no_outstanding_call() {
+    let port = Arc::new(HoldableAdmission::default());
+    let clock = Arc::new(FixedClock::default());
+    let (kernel, lease) = held_kernel(
+        &port,
+        &clock,
+        Deadline::at(MonotonicInstant::from_ticks(10_000)),
+    );
+    // Hold the first live verdict so the future is dropped between reservation
+    // and dispatch.
+    port.hold_from(1);
+    let mut reserved = lease.call(call_request("reserved-only"));
+    let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+    assert!(
+        reserved.as_mut().poll(&mut context).is_pending(),
+        "the call is suspended inside its dispatch verdict"
+    );
+    drop(reserved);
+
+    assert_eq!(
+        kernel.outstanding_calls(),
+        0,
+        "a reservation that never dispatched leaves nothing outstanding"
+    );
+    port.release();
+    let outcome = block(lease.call(call_request("after-reserved"))).expect("the call settles");
+    assert_eq!(
+        outcome.disposition(),
+        RegisteredToolExecutionDisposition::Executed
+    );
+    assert_eq!(kernel.outstanding_calls(), 0);
 }
 
 #[test]

@@ -19,6 +19,7 @@ mod harness_configuration;
 mod plan;
 mod planned_connection_rollover;
 mod realtime_media;
+mod remote_acp;
 mod session_access;
 mod session_provider_state;
 mod validation;
@@ -120,6 +121,8 @@ pub enum PreflightDimension {
     RealtimeMedia,
     /// Planned connection rollover is incompatible.
     PlannedConnectionRollover,
+    /// Remote ACP transport requirements are incompatible.
+    RemoteAcp,
     /// Direct tool-continuation requirements are incompatible.
     DirectContinuation,
     /// Attached-runtime evidence is incompatible.

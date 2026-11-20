@@ -7,6 +7,7 @@ release_internal_patch_packages=(
   swallowtail-runtime
   swallowtail-testkit
   swallowtail-transport-acp-remote
+  swallowtail-transport-http
 )
 
 release_patch_args=()
@@ -37,6 +38,7 @@ release_stage_4=(
   swallowtail-host-local
   swallowtail-testkit
   swallowtail-transport-acp-remote
+  swallowtail-transport-http
   swallowtail-adapter-alibaba-model-studio
   swallowtail-adapter-anthropic
   swallowtail-adapter-antigravity

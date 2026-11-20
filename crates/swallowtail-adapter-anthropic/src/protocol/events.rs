@@ -244,80 +244,41 @@ impl std::fmt::Debug for SseFrame {
 }
 
 #[derive(Default)]
-pub(crate) struct SseDecoder {
-    buffer: Vec<u8>,
-}
-
-impl Drop for SseDecoder {
-    fn drop(&mut self) {
-        self.buffer.fill(0);
-    }
-}
+pub(crate) struct SseDecoder(swallowtail_transport_http::SseDecoder);
 
 impl SseDecoder {
     pub(crate) fn push(&mut self, chunk: &[u8]) -> Result<Vec<SseFrame>, RuntimeFailure> {
-        if self.buffer.len().saturating_add(chunk.len()) > 1_048_576 {
-            return Err(failure(
-                "swallowtail.anthropic.sse_limit",
-                "Anthropic SSE event exceeded its input limit",
-            ));
-        }
-        self.buffer.extend_from_slice(chunk);
-        let mut frames = Vec::new();
-        while let Some(end) = boundary(&self.buffer) {
-            let frame = ZeroizingBuf(self.buffer.drain(..end).collect());
-            let separator = if self.buffer.starts_with(b"\r\n\r\n") {
-                4
-            } else {
-                2
-            };
-            self.buffer.drain(..separator);
-            frames.push(decode_frame(&frame.0)?);
-        }
-        Ok(frames)
+        self.0
+            .push(chunk)
+            .map_err(map_sse_failure)?
+            .into_iter()
+            .map(|frame| {
+                let (name, data) = frame.into_parts();
+                Ok(SseFrame {
+                    name: name.ok_or_else(|| protocol_failure("SSE event name"))?,
+                    data: RedactedBytes::from_vec(data),
+                })
+            })
+            .collect()
     }
 
-    pub(crate) fn finish(mut self) -> Result<(), RuntimeFailure> {
-        let disconnected = !self.buffer.iter().all(u8::is_ascii_whitespace);
-        self.buffer.fill(0);
-        if disconnected {
-            Err(failure(
-                "swallowtail.anthropic.sse_disconnected",
-                "Anthropic SSE disconnected during an event",
-            ))
-        } else {
-            Ok(())
-        }
+    pub(crate) fn finish(self) -> Result<(), RuntimeFailure> {
+        self.0.finish().map_err(map_sse_failure)
     }
 }
 
-fn boundary(buffer: &[u8]) -> Option<usize> {
-    buffer
-        .windows(2)
-        .position(|value| value == b"\n\n")
-        .or_else(|| {
-            buffer
-                .windows(4)
-                .position(|value| value == b"\r\n\r\n")
-        })
-}
-
-fn decode_frame(frame: &[u8]) -> Result<SseFrame, RuntimeFailure> {
-    let text = std::str::from_utf8(frame).map_err(|_| protocol_failure("SSE encoding"))?;
-    let mut name = None;
-    let mut data = RedactedBytes::from_vec(Vec::new());
-    for line in text.lines() {
-        if let Some(value) = line.strip_prefix("event:") {
-            name = Some(value.trim().to_owned());
-        } else if let Some(value) = line.strip_prefix("data:") {
-            if !data.as_bytes().is_empty() {
-                data.extend_from_slice(b"\n");
-            }
-            data.extend_from_slice(value.trim_start().as_bytes());
+fn map_sse_failure(error: swallowtail_transport_http::SseDecodeError) -> RuntimeFailure {
+    match error.kind() {
+        swallowtail_transport_http::SseDecodeErrorKind::InvalidUtf8 => {
+            protocol_failure("SSE encoding")
         }
+        swallowtail_transport_http::SseDecodeErrorKind::LimitExceeded => failure(
+            "swallowtail.anthropic.sse_limit",
+            "Anthropic SSE event exceeded its input limit",
+        ),
+        swallowtail_transport_http::SseDecodeErrorKind::IncompleteFrame => failure(
+            "swallowtail.anthropic.sse_disconnected",
+            "Anthropic SSE disconnected during an event",
+        ),
     }
-    Ok(SseFrame {
-        name: name.ok_or_else(|| protocol_failure("SSE event name"))?,
-        data,
-    })
 }

@@ -1,20 +1,16 @@
 use crate::failure::failure;
 use crate::protocol::{Method, Request, Response, SseDecoder};
-use curl::easy::{Easy, List};
-use futures_channel::{mpsc, oneshot};
-use futures_core::Stream;
-use std::pin::Pin;
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
+use std::collections::BTreeMap;
+use std::sync::Arc;
+use std::sync::atomic::AtomicBool;
 use std::task::{Context, Poll};
-use std::time::Duration;
-use swallowtail_runtime::{BoxFuture, HostServices, RuntimeFailure, ScopeId};
-use url::Url;
+use swallowtail_runtime::{HostServices, RuntimeFailure, ScopeId};
+use swallowtail_transport_http::{
+    BodyDecoder, HttpRequest, HttpTransport, Method as HttpMethod, StreamError,
+    StreamItem as SharedStreamItem, Subscription as SharedSubscription, TransportError,
+};
 
 const RESPONSE_LIMIT: usize = 4 * 1024 * 1024;
-const SSE_CAPACITY: usize = 64;
-const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
-const TRANSFER_TIMEOUT: Duration = Duration::from_secs(120);
 
 #[derive(Clone, Default)]
 pub(crate) struct CurlTransport;
@@ -28,30 +24,16 @@ impl CurlTransport {
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
     ) -> Result<Response, RuntimeFailure> {
-        let blocking = services.blocking_work().cloned().ok_or_else(|| {
-            failure(
-                "swallowtail.opencode.blocking_service_missing",
-                "OpenCode HTTP requires a blocking-work service",
-            )
-        })?;
-        let url = request_url(&endpoint, &request)?;
-        let (sender, receiver) = oneshot::channel();
-        blocking
-            .run(
-                scope,
-                Box::new(move || {
-                    let result = perform_request(url, request, cancelled);
-                    let _ = sender.send(result);
-                    Ok(())
-                }),
-            )
-            .await?;
-        receiver.await.map_err(|_| {
-            failure(
-                "swallowtail.opencode.blocking_result_missing",
-                "OpenCode blocking HTTP work did not return a result",
-            )
-        })?
+        let shared = shared_request(&request)?;
+        let response = HttpTransport::new()
+            .execute(scope, &endpoint, shared, services, cancelled)
+            .await
+            .map_err(transport_failure)?;
+        Ok(Response {
+            status: response.status,
+            body: response.body,
+            next_cursor: pagination_cursor(&response.headers)?,
+        })
     }
 
     pub(crate) async fn subscribe(
@@ -62,77 +44,150 @@ impl CurlTransport {
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
     ) -> Result<Subscription, RuntimeFailure> {
-        let blocking = services.blocking_work().cloned().ok_or_else(|| {
-            failure(
-                "swallowtail.opencode.blocking_service_missing",
-                "OpenCode SSE requires a blocking-work service",
-            )
-        })?;
         let request = Request::get("/event").with_directory(&directory);
-        let url = request_url(&endpoint, &request)?;
-        let (sender, receiver) = mpsc::channel(SSE_CAPACITY);
-        let job_cancelled = Arc::clone(&cancelled);
-        let work = blocking.run(
-            scope,
-            Box::new(move || perform_sse(url, sender, job_cancelled)),
-        );
-        Ok(Subscription {
-            receiver,
-            cancelled,
-            work: Some(work),
-        })
+        let shared = shared_request(&request)?;
+        let subscription = HttpTransport::new()
+            .subscribe(
+                scope,
+                &endpoint,
+                shared,
+                SseDecoder::default(),
+                services,
+                cancelled,
+            )
+            .map_err(transport_failure)?;
+        Ok(Subscription(subscription))
     }
 }
 
-pub(crate) struct Subscription {
-    receiver: mpsc::Receiver<Result<Vec<u8>, RuntimeFailure>>,
-    cancelled: Arc<AtomicBool>,
-    work: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
-}
+pub(crate) struct Subscription(SharedSubscription<Vec<u8>, RuntimeFailure>);
 
 impl Subscription {
-    pub(crate) async fn close(mut self) -> Result<(), RuntimeFailure> {
-        self.cancelled.store(true, Ordering::SeqCst);
-        match self.work.take() {
-            Some(work) => work.await,
-            None => Ok(()),
-        }
+    pub(crate) async fn close(self) -> Result<(), RuntimeFailure> {
+        self.0.close().await.map_err(stream_failure)
     }
 
     pub(crate) fn poll_next(
         &mut self,
         context: &mut Context<'_>,
     ) -> Poll<Option<Result<Vec<u8>, RuntimeFailure>>> {
-        if let Poll::Ready(item) = Pin::new(&mut self.receiver).poll_next(context)
-            && item.is_some()
-        {
-            return Poll::Ready(item);
-        }
-        let work = self
-            .work
-            .as_mut()
-            .map_or(Poll::Ready(Ok(())), |work| work.as_mut().poll(context));
-        match work {
-            Poll::Ready(result) => {
-                self.work = None;
-                match result {
-                    Err(error) => Poll::Ready(Some(Err(error))),
-                    Ok(()) => Pin::new(&mut self.receiver).poll_next(context),
+        loop {
+            match self.0.poll_next(context) {
+                Poll::Ready(Some(Ok(SharedStreamItem::Body(event)))) => {
+                    return Poll::Ready(Some(Ok(event)));
                 }
+                Poll::Ready(Some(Ok(SharedStreamItem::Headers(_)))) => {}
+                Poll::Ready(Some(Err(error))) => {
+                    return Poll::Ready(Some(Err(stream_failure(error))));
+                }
+                Poll::Ready(None) => return Poll::Ready(None),
+                Poll::Pending => return Poll::Pending,
             }
-            Poll::Pending => Poll::Pending,
         }
     }
 }
 
-impl Drop for Subscription {
-    /// Stops the blocking SSE worker when a subscription is dropped without an
-    /// explicit `close`. Without this, an abandoned subscription keeps the
-    /// worker, its socket, and the blocking slot alive until the peer hangs up.
-    fn drop(&mut self) {
-        self.cancelled.store(true, Ordering::SeqCst);
+impl BodyDecoder for SseDecoder {
+    type Item = Vec<u8>;
+    type Error = RuntimeFailure;
+
+    fn push(&mut self, chunk: &[u8]) -> Result<Vec<Self::Item>, Self::Error> {
+        SseDecoder::push(self, chunk)
+    }
+
+    fn finish(self) -> Result<(), Self::Error> {
+        SseDecoder::finish(self)
     }
 }
 
-include!("transport/io.rs");
+fn shared_request(request: &Request) -> Result<HttpRequest, RuntimeFailure> {
+    let method = match request.method {
+        Method::Delete => HttpMethod::Delete,
+        Method::Get => HttpMethod::Get,
+        Method::Post => HttpMethod::Post,
+    };
+    let mut shared = HttpRequest::new(method, request.path.as_str())
+        .with_response_limit(RESPONSE_LIMIT)
+        .capture_headers(capture_cursor);
+    for (name, value) in &request.query {
+        shared = shared.with_query(name.as_str(), value.as_str());
+    }
+    match request.method {
+        Method::Post => {
+            if let Some(body) = &request.body {
+                shared = shared
+                    .with_header("content-type", "application/json")
+                    .with_body(body.clone());
+            }
+        }
+        Method::Get if request.path == "/event" => {
+            shared = shared.with_header("accept", "text/event-stream");
+        }
+        Method::Get | Method::Delete => {}
+    }
+    Ok(shared)
+}
+
+fn capture_cursor(name: &str) -> bool {
+    name == "x-next-cursor"
+}
+
+fn pagination_cursor(headers: &BTreeMap<String, String>) -> Result<Option<String>, RuntimeFailure> {
+    let Some(value) = headers.get("x-next-cursor") else {
+        return Ok(None);
+    };
+    if value.is_empty() || value.len() > 4096 || !value.bytes().all(|byte| byte.is_ascii_graphic())
+    {
+        return Err(failure(
+            "swallowtail.opencode.pagination_cursor_invalid",
+            "OpenCode returned an invalid pagination cursor",
+        ));
+    }
+    Ok(Some(value.clone()))
+}
+
+fn transport_failure(error: TransportError) -> RuntimeFailure {
+    match error {
+        TransportError::BlockingServiceMissing => failure(
+            "swallowtail.opencode.blocking_service_missing",
+            "OpenCode HTTP requires a blocking-work service",
+        ),
+        TransportError::BlockingResultMissing => failure(
+            "swallowtail.opencode.blocking_result_missing",
+            "OpenCode blocking HTTP work did not return a result",
+        ),
+        TransportError::EndpointInvalid => failure(
+            "swallowtail.opencode.endpoint_invalid",
+            "Host-approved OpenCode endpoint is not an eligible HTTP endpoint",
+        ),
+        TransportError::CredentialInvalid => failure(
+            "swallowtail.opencode.credential_invalid",
+            "OpenCode request carried an invalid credential",
+        ),
+        TransportError::ResponseLimit => failure(
+            "swallowtail.opencode.response_limit",
+            "OpenCode HTTP response exceeded the bounded input limit",
+        ),
+        TransportError::Cancelled => failure(
+            "swallowtail.opencode.request_cancelled",
+            "OpenCode HTTP request was cancelled",
+        ),
+        TransportError::Transport => failure(
+            "swallowtail.opencode.transport_failed",
+            "OpenCode HTTP transport failed",
+        ),
+    }
+}
+
+fn stream_failure(error: StreamError<RuntimeFailure>) -> RuntimeFailure {
+    match error {
+        StreamError::Transport(error) => transport_failure(error),
+        StreamError::Decode(error) => error,
+        StreamError::Status { .. } => failure(
+            "swallowtail.opencode.sse_http_failed",
+            "OpenCode SSE subscription failed",
+        ),
+    }
+}
+
 include!("transport/tests.rs");

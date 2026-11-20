@@ -14,15 +14,13 @@ description = "DeepSeek direct-inference adapter for Swallowtail"
 doctest = false
 
 [dependencies]
-curl.workspace = true
 futures-channel.workspace = true
-futures-core.workspace = true
 serde = { version = "1", features = ["derive"] }
 serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-protocol-openai-chat.workspace = true
 swallowtail-runtime.workspace = true
-url.workspace = true
+swallowtail-transport-http.workspace = true
 
 [dev-dependencies]
 futures-executor.workspace = true

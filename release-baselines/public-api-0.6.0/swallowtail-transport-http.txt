@@ -1,0 +1,127 @@
+pub mod swallowtail_transport_http
+pub enum swallowtail_transport_http::Method
+pub swallowtail_transport_http::Method::Delete
+pub swallowtail_transport_http::Method::Get
+pub swallowtail_transport_http::Method::Patch
+pub swallowtail_transport_http::Method::Post
+pub swallowtail_transport_http::Method::Put
+pub enum swallowtail_transport_http::SseDecodeErrorKind
+pub swallowtail_transport_http::SseDecodeErrorKind::IncompleteFrame
+pub swallowtail_transport_http::SseDecodeErrorKind::InvalidUtf8
+pub swallowtail_transport_http::SseDecodeErrorKind::LimitExceeded
+pub enum swallowtail_transport_http::StreamError<Error>
+pub swallowtail_transport_http::StreamError::Decode(Error)
+pub swallowtail_transport_http::StreamError::Status
+pub swallowtail_transport_http::StreamError::Status::body: alloc::vec::Vec<u8>
+pub swallowtail_transport_http::StreamError::Status::headers: alloc::collections::btree::map::BTreeMap<alloc::string::String, alloc::string::String>
+pub swallowtail_transport_http::StreamError::Status::status: u32
+pub swallowtail_transport_http::StreamError::Transport(swallowtail_transport_http::TransportError)
+pub enum swallowtail_transport_http::StreamItem<Item>
+pub swallowtail_transport_http::StreamItem::Body(Item)
+pub swallowtail_transport_http::StreamItem::Headers(alloc::collections::btree::map::BTreeMap<alloc::string::String, alloc::string::String>)
+pub enum swallowtail_transport_http::TransportError
+pub swallowtail_transport_http::TransportError::BlockingResultMissing
+pub swallowtail_transport_http::TransportError::BlockingServiceMissing
+pub swallowtail_transport_http::TransportError::Cancelled
+pub swallowtail_transport_http::TransportError::CredentialInvalid
+pub swallowtail_transport_http::TransportError::EndpointInvalid
+pub swallowtail_transport_http::TransportError::ResponseLimit
+pub swallowtail_transport_http::TransportError::Transport
+impl swallowtail_transport_http::TransportError
+pub const fn swallowtail_transport_http::TransportError::description(self) -> &'static str
+pub const fn swallowtail_transport_http::TransportError::is_cancelled(self) -> bool
+impl core::error::Error for swallowtail_transport_http::TransportError
+impl core::fmt::Display for swallowtail_transport_http::TransportError
+pub fn swallowtail_transport_http::TransportError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_transport_http::HttpRequest
+impl swallowtail_transport_http::HttpRequest
+pub const fn swallowtail_transport_http::HttpRequest::capture_headers(self, fn(&str) -> bool) -> Self
+pub fn swallowtail_transport_http::HttpRequest::new(swallowtail_transport_http::Method, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn swallowtail_transport_http::HttpRequest::resolve(&self, &str) -> core::result::Result<url::Url, swallowtail_transport_http::TransportError>
+pub const fn swallowtail_transport_http::HttpRequest::stream_response_headers(self) -> Self
+pub fn swallowtail_transport_http::HttpRequest::with_body(self, impl core::convert::Into<alloc::vec::Vec<u8>>) -> Self
+pub const fn swallowtail_transport_http::HttpRequest::with_connect_timeout(self, core::time::Duration) -> Self
+pub fn swallowtail_transport_http::HttpRequest::with_header(self, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn swallowtail_transport_http::HttpRequest::with_query(self, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>) -> Self
+pub const fn swallowtail_transport_http::HttpRequest::with_response_limit(self, usize) -> Self
+pub fn swallowtail_transport_http::HttpRequest::with_secret_header(self, swallowtail_transport_http::SecretHeader) -> Self
+pub const fn swallowtail_transport_http::HttpRequest::with_transfer_timeout(self, core::time::Duration) -> Self
+pub const fn swallowtail_transport_http::HttpRequest::without_connect_timeout(self) -> Self
+pub struct swallowtail_transport_http::HttpResponse
+pub swallowtail_transport_http::HttpResponse::body: alloc::vec::Vec<u8>
+pub swallowtail_transport_http::HttpResponse::headers: alloc::collections::btree::map::BTreeMap<alloc::string::String, alloc::string::String>
+pub swallowtail_transport_http::HttpResponse::status: u32
+pub struct swallowtail_transport_http::HttpTransport
+impl swallowtail_transport_http::HttpTransport
+pub async fn swallowtail_transport_http::HttpTransport::execute(&self, swallowtail_runtime::identity::ScopeId, &str, swallowtail_transport_http::HttpRequest, &swallowtail_runtime::host_registry::HostServices, alloc::sync::Arc<core::sync::atomic::AtomicBool>) -> core::result::Result<swallowtail_transport_http::HttpResponse, swallowtail_transport_http::TransportError>
+pub fn swallowtail_transport_http::HttpTransport::execute_blocking(&self, &str, swallowtail_transport_http::HttpRequest, &alloc::sync::Arc<core::sync::atomic::AtomicBool>) -> core::result::Result<swallowtail_transport_http::HttpResponse, swallowtail_transport_http::TransportError>
+pub const fn swallowtail_transport_http::HttpTransport::new() -> Self
+pub fn swallowtail_transport_http::HttpTransport::subscribe<Decoder>(&self, swallowtail_runtime::identity::ScopeId, &str, swallowtail_transport_http::HttpRequest, Decoder, &swallowtail_runtime::host_registry::HostServices, alloc::sync::Arc<core::sync::atomic::AtomicBool>) -> core::result::Result<swallowtail_transport_http::Subscription<<Decoder as swallowtail_transport_http::BodyDecoder>::Item, <Decoder as swallowtail_transport_http::BodyDecoder>::Error>, swallowtail_transport_http::TransportError> where Decoder: swallowtail_transport_http::BodyDecoder
+pub struct swallowtail_transport_http::SecretHeader
+impl swallowtail_transport_http::SecretHeader
+pub fn swallowtail_transport_http::SecretHeader::bearer(alloc::vec::Vec<u8>) -> core::result::Result<Self, swallowtail_transport_http::TransportError>
+pub fn swallowtail_transport_http::SecretHeader::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, swallowtail_transport_http::TransportError>
+pub fn swallowtail_transport_http::SecretHeader::prefixed(impl core::convert::Into<alloc::string::String>, &str, alloc::vec::Vec<u8>) -> core::result::Result<Self, swallowtail_transport_http::TransportError>
+impl core::fmt::Debug for swallowtail_transport_http::SecretHeader
+pub fn swallowtail_transport_http::SecretHeader::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_transport_http::SseDecodeError
+impl swallowtail_transport_http::SseDecodeError
+pub const fn swallowtail_transport_http::SseDecodeError::kind(self) -> swallowtail_transport_http::SseDecodeErrorKind
+pub const fn swallowtail_transport_http::SseDecodeError::new(swallowtail_transport_http::SseDecodeErrorKind) -> Self
+impl core::error::Error for swallowtail_transport_http::SseDecodeError
+impl core::fmt::Display for swallowtail_transport_http::SseDecodeError
+pub fn swallowtail_transport_http::SseDecodeError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_transport_http::SseDecoder
+impl swallowtail_transport_http::SseDecoder
+pub fn swallowtail_transport_http::SseDecoder::finish(self) -> core::result::Result<(), swallowtail_transport_http::SseDecodeError>
+pub fn swallowtail_transport_http::SseDecoder::new() -> Self
+pub fn swallowtail_transport_http::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<swallowtail_transport_http::SseFrame>, swallowtail_transport_http::SseDecodeError>
+pub const fn swallowtail_transport_http::SseDecoder::with_framer(swallowtail_transport_http::SseFramer) -> Self
+impl swallowtail_transport_http::BodyDecoder for swallowtail_transport_http::SseDecoder
+pub type swallowtail_transport_http::SseDecoder::Error = swallowtail_transport_http::SseDecodeError
+pub type swallowtail_transport_http::SseDecoder::Item = swallowtail_transport_http::SseFrame
+pub fn swallowtail_transport_http::SseDecoder::finish(self) -> core::result::Result<(), Self::Error>
+pub fn swallowtail_transport_http::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<Self::Item>, Self::Error>
+pub struct swallowtail_transport_http::SseFrame
+impl swallowtail_transport_http::SseFrame
+pub fn swallowtail_transport_http::SseFrame::data(&self) -> &[u8]
+pub fn swallowtail_transport_http::SseFrame::into_parts(self) -> (core::option::Option<alloc::string::String>, alloc::vec::Vec<u8>)
+pub fn swallowtail_transport_http::SseFrame::name(&self) -> core::option::Option<&str>
+impl core::fmt::Debug for swallowtail_transport_http::SseFrame
+pub fn swallowtail_transport_http::SseFrame::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::ops::drop::Drop for swallowtail_transport_http::SseFrame
+pub fn swallowtail_transport_http::SseFrame::drop(&mut self)
+pub struct swallowtail_transport_http::SseFramer
+impl swallowtail_transport_http::SseFramer
+pub fn swallowtail_transport_http::SseFramer::finish(self) -> core::result::Result<(), swallowtail_transport_http::SseDecodeError>
+pub fn swallowtail_transport_http::SseFramer::new() -> Self
+pub fn swallowtail_transport_http::SseFramer::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<alloc::vec::Vec<u8>>, swallowtail_transport_http::SseDecodeError>
+pub const fn swallowtail_transport_http::SseFramer::with_event_limit(self, usize) -> Self
+pub const fn swallowtail_transport_http::SseFramer::with_stream_limit(self, usize) -> Self
+pub const fn swallowtail_transport_http::SseFramer::without_event_limit(self) -> Self
+impl core::default::Default for swallowtail_transport_http::SseFramer
+pub fn swallowtail_transport_http::SseFramer::default() -> Self
+impl core::ops::drop::Drop for swallowtail_transport_http::SseFramer
+pub fn swallowtail_transport_http::SseFramer::drop(&mut self)
+pub struct swallowtail_transport_http::Subscription<Item, Error>
+impl<Item, Error> swallowtail_transport_http::Subscription<Item, Error>
+pub fn swallowtail_transport_http::Subscription<Item, Error>::cancellation(&self) -> alloc::sync::Arc<core::sync::atomic::AtomicBool>
+pub async fn swallowtail_transport_http::Subscription<Item, Error>::close(self) -> core::result::Result<(), swallowtail_transport_http::StreamError<Error>>
+pub fn swallowtail_transport_http::Subscription<Item, Error>::poll_next(&mut self, &mut core::task::wake::Context<'_>) -> core::task::poll::Poll<core::option::Option<core::result::Result<swallowtail_transport_http::StreamItem<Item>, swallowtail_transport_http::StreamError<Error>>>>
+impl<Item, Error> core::ops::drop::Drop for swallowtail_transport_http::Subscription<Item, Error>
+pub fn swallowtail_transport_http::Subscription<Item, Error>::drop(&mut self)
+pub const swallowtail_transport_http::DEFAULT_CONNECT_TIMEOUT: core::time::Duration
+pub const swallowtail_transport_http::DEFAULT_EVENT_LIMIT: usize
+pub const swallowtail_transport_http::DEFAULT_RESPONSE_LIMIT: usize
+pub const swallowtail_transport_http::DEFAULT_TRANSFER_TIMEOUT: core::time::Duration
+pub const swallowtail_transport_http::STREAM_CAPACITY: usize
+pub trait swallowtail_transport_http::BodyDecoder: core::marker::Send + 'static
+pub type swallowtail_transport_http::BodyDecoder::Error: core::marker::Send + 'static
+pub type swallowtail_transport_http::BodyDecoder::Item: core::marker::Send + 'static
+pub fn swallowtail_transport_http::BodyDecoder::finish(self) -> core::result::Result<(), Self::Error>
+pub fn swallowtail_transport_http::BodyDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<Self::Item>, Self::Error>
+impl swallowtail_transport_http::BodyDecoder for swallowtail_transport_http::SseDecoder
+pub type swallowtail_transport_http::SseDecoder::Error = swallowtail_transport_http::SseDecodeError
+pub type swallowtail_transport_http::SseDecoder::Item = swallowtail_transport_http::SseFrame
+pub fn swallowtail_transport_http::SseDecoder::finish(self) -> core::result::Result<(), Self::Error>
+pub fn swallowtail_transport_http::SseDecoder::push(&mut self, &[u8]) -> core::result::Result<alloc::vec::Vec<Self::Item>, Self::Error>

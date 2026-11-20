@@ -71,6 +71,7 @@ Protocols and transport:
 - `swallowtail-protocol-acp`
 - `swallowtail-protocol-openai-chat`
 - `swallowtail-transport-acp-remote`
+- `swallowtail-transport-http`
 
 Opt-in adapters:
 

@@ -1,0 +1,366 @@
+use crate::stream::result_channel;
+use crate::{
+    BodyDecoder, HttpRequest, HttpTransport, Method, SecretHeader, SseDecodeError,
+    SseDecodeErrorKind, SseDecoder, SseFramer, StreamError, StreamItem, TransportError,
+};
+use std::io::{Read, Write};
+use std::net::{TcpListener, TcpStream};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::task::Poll;
+use std::thread;
+use std::time::Duration;
+use swallowtail_core::{ExecutionHostId, SafeDiagnostic};
+use swallowtail_runtime::{
+    BlockingJob, BlockingWorkService, BoxFuture, HostServices, RuntimeFailure, ScopeId,
+};
+
+struct ThreadedBlocking;
+
+impl BlockingWorkService for ThreadedBlocking {
+    fn run(
+        &self,
+        _scope: ScopeId,
+        job: BlockingJob,
+    ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+        let (sender, receiver) = result_channel();
+        thread::spawn(move || {
+            let _ = sender.send(job());
+        });
+        Box::pin(async move {
+            receiver.recv().await.ok_or_else(|| {
+                RuntimeFailure::new(SafeDiagnostic::new(
+                    "fixture.blocking_panicked",
+                    "Fixture blocking work panicked",
+                ))
+            })?
+        })
+    }
+}
+
+fn services() -> HostServices {
+    HostServices::new(ExecutionHostId::new("transport-fixture").expect("fixture host id is valid"))
+        .with_blocking_work(Arc::new(ThreadedBlocking))
+}
+
+fn scope() -> ScopeId {
+    ScopeId::new("transport-fixture-scope").expect("fixture scope is valid")
+}
+
+fn cancelled() -> Arc<AtomicBool> {
+    Arc::new(AtomicBool::new(false))
+}
+
+fn serve(responder: impl FnOnce(TcpStream) + Send + 'static) -> String {
+    let listener = TcpListener::bind("127.0.0.1:0").expect("fixture listener binds");
+    let endpoint = format!(
+        "http://{}",
+        listener.local_addr().expect("fixture address is available")
+    );
+    thread::spawn(move || {
+        if let Ok((stream, _)) = listener.accept() {
+            responder(stream);
+        }
+    });
+    endpoint
+}
+
+fn read_request(stream: &mut TcpStream) {
+    let mut request = Vec::new();
+    let mut chunk = [0u8; 1024];
+    while !request.windows(4).any(|window| window == b"\r\n\r\n") {
+        match stream.read(&mut chunk) {
+            Ok(0) | Err(_) => break,
+            Ok(read) => request.extend_from_slice(&chunk[..read]),
+        }
+    }
+}
+
+fn write_all(stream: &mut TcpStream, bytes: &[u8]) {
+    let _ = stream.write_all(bytes);
+    let _ = stream.flush();
+}
+
+#[test]
+fn unary_exchange_returns_the_bounded_response() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(
+            &mut stream,
+            b"HTTP/1.1 200 OK\r\nX-Request-Id: fixture-id\r\nContent-Length: 2\r\n\r\nok",
+        );
+    });
+    let response = futures_executor::block_on(HttpTransport::new().execute(
+        scope(),
+        &endpoint,
+        HttpRequest::new(Method::Get, "/route").capture_headers(|name| name == "x-request-id"),
+        &services(),
+        cancelled(),
+    ))
+    .expect("fixture response is returned");
+    assert_eq!(response.status, 200);
+    assert_eq!(response.body, b"ok");
+    assert_eq!(
+        response.headers.get("x-request-id").map(String::as_str),
+        Some("fixture-id")
+    );
+}
+
+#[test]
+fn response_limit_aborts_instead_of_truncating() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        let body = vec![b'x'; 65];
+        let header = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n", body.len());
+        write_all(&mut stream, header.as_bytes());
+        write_all(&mut stream, &body);
+    });
+    let error = futures_executor::block_on(HttpTransport::new().execute(
+        scope(),
+        &endpoint,
+        HttpRequest::new(Method::Get, "/overflow").with_response_limit(64),
+        &services(),
+        cancelled(),
+    ))
+    .expect_err("an oversized response aborts");
+    assert_eq!(error, TransportError::ResponseLimit);
+}
+
+#[test]
+fn finite_exchanges_honour_an_explicit_transfer_timeout() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        thread::sleep(Duration::from_secs(2));
+    });
+    let error = futures_executor::block_on(HttpTransport::new().execute(
+        scope(),
+        &endpoint,
+        HttpRequest::new(Method::Get, "/slow").with_transfer_timeout(Duration::from_millis(200)),
+        &services(),
+        cancelled(),
+    ))
+    .expect_err("a wedged peer times out");
+    assert_eq!(error, TransportError::Transport);
+}
+
+#[test]
+fn streaming_backpressure_delivers_every_frame_beyond_the_channel_capacity() {
+    const FRAMES: usize = 200;
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(&mut stream, b"HTTP/1.1 200 OK\r\n\r\n");
+        let mut body = Vec::new();
+        for index in 0..FRAMES {
+            body.extend_from_slice(format!("event: delta\ndata: {index}\n\n").as_bytes());
+        }
+        write_all(&mut stream, &body);
+    });
+    let mut subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint,
+            HttpRequest::new(Method::Get, "/events").stream_response_headers(),
+            SseDecoder::new(),
+            &services(),
+            cancelled(),
+        )
+        .expect("fixture subscription starts");
+    let items = futures_executor::block_on(async {
+        let mut items = Vec::new();
+        loop {
+            let next =
+                futures_util::future::poll_fn(|context| match subscription.poll_next(context) {
+                    Poll::Ready(item) => Poll::Ready(item),
+                    Poll::Pending => Poll::Pending,
+                })
+                .await;
+            match next {
+                Some(Ok(item)) => items.push(item),
+                Some(Err(error)) => panic!("stream failed: {error:?}"),
+                None => break,
+            }
+        }
+        items
+    });
+    let frames = items
+        .iter()
+        .filter(|item| matches!(item, StreamItem::Body(_)))
+        .count();
+    assert_eq!(
+        frames, FRAMES,
+        "backpressure must not abort a stream that outruns the channel capacity"
+    );
+}
+
+#[test]
+fn non_success_stream_reports_the_bounded_error_body() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(
+            &mut stream,
+            b"HTTP/1.1 429 Too Many Requests\r\nContent-Length: 7\r\n\r\nlimited",
+        );
+    });
+    let mut subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint,
+            HttpRequest::new(Method::Get, "/events"),
+            SseDecoder::new(),
+            &services(),
+            cancelled(),
+        )
+        .expect("fixture subscription starts");
+    let error = futures_executor::block_on(async {
+        futures_util::future::poll_fn(|context| match subscription.poll_next(context) {
+            Poll::Ready(item) => Poll::Ready(item),
+            Poll::Pending => Poll::Pending,
+        })
+        .await
+    })
+    .expect("the rejection is surfaced")
+    .expect_err("a rejection is a stream error");
+    match error {
+        StreamError::Status { status, body, .. } => {
+            assert_eq!(status, 429);
+            assert_eq!(body, b"limited");
+        }
+        other => panic!("expected a status failure, got {other:?}"),
+    }
+}
+
+#[test]
+fn dropping_a_subscription_cancels_its_worker() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(&mut stream, b"HTTP/1.1 200 OK\r\n\r\n");
+        write_all(&mut stream, b"event: delta\ndata: held\n\n");
+        thread::sleep(Duration::from_secs(2));
+    });
+    let subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint,
+            HttpRequest::new(Method::Get, "/events"),
+            SseDecoder::new(),
+            &services(),
+            cancelled(),
+        )
+        .expect("fixture subscription starts");
+    let cancellation = subscription.cancellation();
+    assert!(!cancellation.load(Ordering::SeqCst));
+    drop(subscription);
+    assert!(
+        cancellation.load(Ordering::SeqCst),
+        "dropping a subscription must cancel its blocking worker"
+    );
+}
+
+#[test]
+fn secret_headers_reject_header_injection_and_non_utf8_credentials() {
+    assert_eq!(
+        SecretHeader::bearer(b"secret\r\nx-injected: 1".to_vec()).expect_err("line breaks fail"),
+        TransportError::CredentialInvalid
+    );
+    assert_eq!(
+        SecretHeader::bearer(vec![0xff]).expect_err("non-UTF-8 fails"),
+        TransportError::CredentialInvalid
+    );
+    assert_eq!(
+        SecretHeader::bearer(Vec::new()).expect_err("an empty credential fails"),
+        TransportError::CredentialInvalid
+    );
+    assert!(SecretHeader::bearer(b"secret".to_vec()).is_ok());
+}
+
+#[test]
+fn endpoints_reject_credentials_queries_and_fragments() {
+    let request = HttpRequest::new(Method::Get, "/v1/models").with_query("limit", "2");
+    let url = request
+        .resolve("https://provider.example/base/")
+        .expect("an eligible endpoint resolves");
+    assert_eq!(
+        url.as_str(),
+        "https://provider.example/base/v1/models?limit=2"
+    );
+    for rejected in [
+        "ftp://provider.example",
+        "https://user@provider.example",
+        "https://provider.example?token=secret",
+        "https://provider.example#fragment",
+    ] {
+        assert_eq!(
+            request.resolve(rejected).expect_err("ineligible endpoint"),
+            TransportError::EndpointInvalid
+        );
+    }
+}
+
+#[test]
+fn sse_decoder_frames_names_payloads_and_keep_alives() {
+    let mut decoder = SseDecoder::new();
+    let frames = decoder
+        .push(b": keep-alive\n\nevent: delta\r\ndata: first\r\ndata: second\r\n\r\n")
+        .expect("frames decode");
+    assert_eq!(frames.len(), 1);
+    assert_eq!(frames[0].name(), Some("delta"));
+    assert_eq!(frames[0].data(), b"first\nsecond");
+    decoder.finish().expect("drained stream finishes");
+}
+
+#[test]
+fn sse_decoder_bounds_events_and_rejects_partial_streams() {
+    let mut decoder = SseDecoder::with_framer(SseFramer::new().with_event_limit(8));
+    let error = decoder
+        .push(b"data: oversized\n\n")
+        .expect_err("an oversized event fails");
+    assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
+
+    let mut decoder = SseDecoder::new();
+    decoder
+        .push(b"event: delta\ndata: partial")
+        .expect("prefix decodes");
+    let error = decoder.finish().expect_err("a partial stream fails");
+    assert_eq!(error.kind(), SseDecodeErrorKind::IncompleteFrame);
+
+    let mut decoder = SseDecoder::new();
+    let error = decoder
+        .push(b"\xff\xfe\n\n")
+        .expect_err("invalid UTF-8 fails");
+    assert_eq!(error.kind(), SseDecodeErrorKind::InvalidUtf8);
+}
+
+#[test]
+fn raw_sse_frames_are_delimited_and_normalised() {
+    let mut framer = SseFramer::new();
+    let frames = framer
+        .push(b"event: first\r\ndata: one\r\n\r\nevent: second\ndata: two\n\n")
+        .expect("frames decode");
+    assert_eq!(
+        frames,
+        vec![
+            b"event: first\ndata: one\n\n".to_vec(),
+            b"event: second\ndata: two\n\n".to_vec(),
+        ]
+    );
+}
+
+#[test]
+fn sse_frame_diagnostics_redact_the_payload() {
+    let mut decoder = SseDecoder::new();
+    let frames = decoder
+        .push(b"event: delta\ndata: private-payload\n\n")
+        .expect("frame decodes");
+    let dump = format!("{frames:?}");
+    assert!(!dump.contains("private-payload"));
+    let error = SseDecodeError::new(SseDecodeErrorKind::IncompleteFrame);
+    assert!(!format!("{error} {error:?}").contains("private-payload"));
+}
+
+#[test]
+fn body_decoder_trait_is_implemented_for_the_shared_decoder() {
+    let mut decoder = SseDecoder::new();
+    let frames = BodyDecoder::push(&mut decoder, b"data: item\n\n").expect("frame decodes");
+    assert_eq!(frames.len(), 1);
+    BodyDecoder::finish(decoder).expect("drained decoder finishes");
+}

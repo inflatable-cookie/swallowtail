@@ -1,5 +1,4 @@
 use crate::failure::failure;
-use curl::easy::{Easy, List, WriteError};
 use futures_channel::{mpsc, oneshot};
 use futures_util::{Stream, future::poll_fn};
 use serde_json::Value;
@@ -10,6 +9,9 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::task::Poll;
 use std::time::Duration;
 use swallowtail_runtime::{BoxFuture, Deadline, HostServices, RuntimeFailure, ScopeId};
+use swallowtail_transport_http::{
+    HttpRequest, HttpTransport, Method as HttpMethod, TransportError,
+};
 use tungstenite::client::{IntoClientRequest, connect_with_config};
 use tungstenite::http::{HeaderValue, header::ORIGIN};
 use tungstenite::protocol::WebSocketConfig;
@@ -366,76 +368,24 @@ fn perform_request(
             "DeepSeek Harness Web request body exceeds its bound",
         ));
     }
-    let mut easy = Easy::new();
-    easy.url(url.as_str()).map_err(|_| transport_failure())?;
-    easy.proxy("").map_err(|_| transport_failure())?;
-    easy.follow_location(false)
-        .map_err(|_| transport_failure())?;
-    easy.post(true).map_err(|_| transport_failure())?;
-    easy.post_fields_copy(body)
-        .map_err(|_| transport_failure())?;
-    let mut headers = List::new();
-    headers
-        .append("Content-Type: application/json")
-        .map_err(|_| transport_failure())?;
-    headers
-        .append("Sec-Fetch-Site: same-origin")
-        .map_err(|_| transport_failure())?;
-    headers
-        .append(&format!(
-            "Origin: http://{}:{}",
-            url.host_str().unwrap_or("127.0.0.1"),
-            url.port().ok_or_else(transport_failure)?,
-        ))
-        .map_err(|_| transport_failure())?;
-    easy.http_headers(headers)
-        .map_err(|_| transport_failure())?;
-    easy.progress(true).map_err(|_| transport_failure())?;
-    let mut response_body = Vec::new();
-    let overflow = Arc::new(AtomicBool::new(false));
-    {
-        let overflow = Arc::clone(&overflow);
-        let mut transfer = easy.transfer();
-        let progress_cancelled = Arc::clone(cancelled);
-        transfer
-            .progress_function(move |_, _, _, _| !progress_cancelled.load(Ordering::SeqCst))
-            .map_err(|_| transport_failure())?;
-        transfer
-            .write_function(|chunk| {
-                if response_body.len().saturating_add(chunk.len()) > MAX_HTTP_BODY_BYTES {
-                    overflow.store(true, Ordering::SeqCst);
-                    return Err(WriteError::Pause);
-                }
-                response_body.extend_from_slice(chunk);
-                Ok(chunk.len())
-            })
-            .map_err(|_| transport_failure())?;
-        let perform_result = transfer.perform();
-        if overflow.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.deepseek_harness.web.response_limit",
-                "DeepSeek Harness Web response exceeds its bound",
-            ));
-        }
-        perform_result.map_err(|_| transport_failure())?;
-    }
-    if cancelled.load(Ordering::SeqCst) {
-        return Err(failure(
-            "swallowtail.deepseek_harness.web.request_cancelled",
-            "DeepSeek Harness Web request was cancelled",
-        ));
-    }
-    if overflow.load(Ordering::SeqCst) {
-        return Err(failure(
-            "swallowtail.deepseek_harness.web.response_limit",
-            "DeepSeek Harness Web response exceeds its bound",
-        ));
-    }
-    let status = easy.response_code().map_err(|_| transport_failure())?;
-    let status = u16::try_from(status).map_err(|_| transport_failure())?;
+    let origin = format!(
+        "http://{}:{}",
+        url.host_str().unwrap_or("127.0.0.1"),
+        url.port().ok_or_else(endpoint_failure)?,
+    );
+    let request = HttpRequest::new(HttpMethod::Post, path)
+        .with_response_limit(MAX_HTTP_BODY_BYTES)
+        .with_header("content-type", "application/json")
+        .with_header("sec-fetch-site", "same-origin")
+        .with_header("origin", origin)
+        .with_body(body.to_vec());
+    let response = HttpTransport::new()
+        .execute_blocking(endpoint, request, cancelled)
+        .map_err(transport_error)?;
+    let status = u16::try_from(response.status).map_err(|_| transport_failure())?;
     Ok(Response {
         status,
-        body: response_body,
+        body: response.body,
     })
 }
 
@@ -603,4 +553,28 @@ fn transport_failure() -> RuntimeFailure {
         "swallowtail.deepseek_harness.web.transport_failed",
         "DeepSeek Harness Web transport failed",
     )
+}
+
+fn transport_error(error: TransportError) -> RuntimeFailure {
+    match error {
+        TransportError::BlockingServiceMissing => failure(
+            "swallowtail.deepseek_harness.web.blocking_service_missing",
+            "DeepSeek Harness Web HTTP requires a blocking-work service",
+        ),
+        TransportError::BlockingResultMissing => failure(
+            "swallowtail.deepseek_harness.web.blocking_result_missing",
+            "DeepSeek Harness Web HTTP did not return a bounded result",
+        ),
+        TransportError::EndpointInvalid => endpoint_failure(),
+        TransportError::CredentialInvalid => transport_failure(),
+        TransportError::ResponseLimit => failure(
+            "swallowtail.deepseek_harness.web.response_limit",
+            "DeepSeek Harness Web response exceeds its bound",
+        ),
+        TransportError::Cancelled => failure(
+            "swallowtail.deepseek_harness.web.request_cancelled",
+            "DeepSeek Harness Web request was cancelled",
+        ),
+        TransportError::Transport => transport_failure(),
+    }
 }

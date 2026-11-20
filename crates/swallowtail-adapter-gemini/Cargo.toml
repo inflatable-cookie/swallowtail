@@ -18,7 +18,6 @@ doctest = false
 
 [dependencies]
 base64.workspace = true
-curl.workspace = true
 futures-channel.workspace = true
 futures-core.workspace = true
 semver.workspace = true
@@ -26,6 +25,7 @@ serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
+swallowtail-transport-http.workspace = true
 tungstenite.workspace = true
 url.workspace = true
 zeroize.workspace = true

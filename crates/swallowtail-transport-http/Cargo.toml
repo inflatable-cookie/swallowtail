@@ -1,0 +1,27 @@
+[package]
+name = "swallowtail-transport-http"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+description = "Bounded provider-neutral HTTP and SSE transport for Swallowtail adapters"
+
+[lib]
+doctest = false
+
+[dependencies]
+curl.workspace = true
+swallowtail-runtime.workspace = true
+url.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+futures-executor.workspace = true
+futures-util.workspace = true
+swallowtail-core.workspace = true
+
+[lints]
+workspace = true

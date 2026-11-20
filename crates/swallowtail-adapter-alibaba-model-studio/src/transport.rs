@@ -1,16 +1,20 @@
-use crate::failure::failure;
-use crate::protocol::{SseFrame, WireRequest};
-use futures_channel::{mpsc, oneshot};
-use futures_core::Stream;
+use crate::AlibabaProtocolFailure;
+use crate::failure::protocol;
+use crate::protocol::{Method, SseDecoder, SseFrame, WireRequest, parse_provider_failure};
 use std::collections::BTreeMap;
-use std::pin::Pin;
 use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::AtomicBool;
 use std::task::{Context, Poll};
-use swallowtail_core::ProviderRequestRef;
-use swallowtail_runtime::{BoxFuture, HostServices, RuntimeFailure, ScopeId};
+use swallowtail_core::{
+    FailureClassification, FailureKind, FailureOrigin, FailureRecovery, ProviderRequestRef,
+};
+use swallowtail_runtime::{HostServices, RuntimeFailure, ScopeId};
+use swallowtail_transport_http::{
+    BodyDecoder, HttpRequest, HttpTransport, Method as HttpMethod, SecretHeader, StreamError,
+    StreamItem as SharedStreamItem, Subscription as SharedSubscription, TransportError,
+};
 
-const STREAM_CAPACITY: usize = 64;
+const RESPONSE_LIMIT: usize = 4 * 1024 * 1024;
 
 #[derive(Clone, Default)]
 pub(crate) struct CurlTransport;
@@ -25,25 +29,15 @@ impl CurlTransport {
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
     ) -> Result<Response, RuntimeFailure> {
-        let blocking = services.blocking_work().cloned().ok_or_else(missing)?;
-        let url = request_url(&endpoint, &request)?;
-        let (sender, receiver) = oneshot::channel();
-        blocking
-            .run(
-                scope,
-                Box::new(move || {
-                    let result = perform_request(url, credential, request, cancelled);
-                    let _ = sender.send(result);
-                    Ok(())
-                }),
-            )
-            .await?;
-        receiver.await.map_err(|_| {
-            failure(
-                "swallowtail.alibaba_model_studio.blocking_result_missing",
-                "Alibaba Model Studio blocking HTTP work returned no result",
-            )
-        })?
+        let shared = shared_request(&request, credential, false)?;
+        let response = HttpTransport::new()
+            .execute(scope, &endpoint, shared, services, cancelled)
+            .await
+            .map_err(transport_failure)?;
+        require_success(Response {
+            status: response.status,
+            body: response.body,
+        })
     }
 
     pub(crate) fn subscribe(
@@ -55,19 +49,18 @@ impl CurlTransport {
         services: &HostServices,
         cancelled: Arc<AtomicBool>,
     ) -> Result<Subscription, RuntimeFailure> {
-        let blocking = services.blocking_work().cloned().ok_or_else(missing)?;
-        let url = request_url(&endpoint, &request)?;
-        let (sender, receiver) = mpsc::channel(STREAM_CAPACITY);
-        let work_cancelled = Arc::clone(&cancelled);
-        let work = blocking.run(
-            scope,
-            Box::new(move || perform_sse(url, credential, request, sender, work_cancelled)),
-        );
-        Ok(Subscription {
-            receiver,
-            cancelled,
-            work: Some(work),
-        })
+        let shared = shared_request(&request, credential, true)?;
+        let subscription = HttpTransport::new()
+            .subscribe(
+                scope,
+                &endpoint,
+                shared,
+                SseDecoder::default(),
+                services,
+                cancelled,
+            )
+            .map_err(transport_failure)?;
+        Ok(Subscription(subscription))
     }
 }
 
@@ -81,54 +74,177 @@ pub(crate) enum StreamItem {
     Frame(SseFrame),
 }
 
-pub(crate) struct Subscription {
-    receiver: mpsc::Receiver<StreamItem>,
-    cancelled: Arc<AtomicBool>,
-    work: Option<BoxFuture<'static, Result<(), RuntimeFailure>>>,
-}
+pub(crate) struct Subscription(SharedSubscription<SseFrame, RuntimeFailure>);
 
 impl Subscription {
-    pub(crate) async fn close(mut self) -> Result<(), RuntimeFailure> {
-        self.cancelled.store(true, Ordering::SeqCst);
-        match self.work.take() {
-            Some(work) => work.await,
-            None => Ok(()),
-        }
+    pub(crate) async fn close(self) -> Result<(), RuntimeFailure> {
+        self.0.close().await.map_err(stream_failure)
     }
 
     pub(crate) fn poll_next(
         &mut self,
         context: &mut Context<'_>,
     ) -> Poll<Option<Result<StreamItem, RuntimeFailure>>> {
-        if let Poll::Ready(item) = Pin::new(&mut self.receiver).poll_next(context)
-            && item.is_some()
-        {
-            return Poll::Ready(item.map(Ok));
-        }
-        match self
-            .work
-            .as_mut()
-            .map_or(Poll::Ready(Ok(())), |work| work.as_mut().poll(context))
-        {
-            Poll::Ready(result) => {
-                self.work = None;
-                match result {
+        match self.0.poll_next(context) {
+            Poll::Ready(Some(Ok(SharedStreamItem::Headers(headers)))) => {
+                match request_correlation(&headers) {
+                    Ok(reference) => Poll::Ready(Some(Ok(StreamItem::Correlation(reference)))),
                     Err(error) => Poll::Ready(Some(Err(error))),
-                    Ok(()) => Pin::new(&mut self.receiver)
-                        .poll_next(context)
-                        .map(|item| item.map(Ok)),
                 }
             }
+            Poll::Ready(Some(Ok(SharedStreamItem::Body(frame)))) => {
+                Poll::Ready(Some(Ok(StreamItem::Frame(frame))))
+            }
+            Poll::Ready(Some(Err(error))) => Poll::Ready(Some(Err(stream_failure(error)))),
+            Poll::Ready(None) => Poll::Ready(None),
             Poll::Pending => Poll::Pending,
         }
     }
 }
 
-fn missing() -> RuntimeFailure {
+impl BodyDecoder for SseDecoder {
+    type Item = SseFrame;
+    type Error = RuntimeFailure;
+
+    fn push(&mut self, chunk: &[u8]) -> Result<Vec<Self::Item>, Self::Error> {
+        SseDecoder::push(self, chunk).map_err(protocol_runtime)
+    }
+
+    fn finish(self) -> Result<(), Self::Error> {
+        SseDecoder::finish(self).map_err(protocol_runtime)
+    }
+}
+
+fn shared_request(
+    request: &WireRequest,
+    credential: Vec<u8>,
+    sse: bool,
+) -> Result<HttpRequest, RuntimeFailure> {
+    let method = match request.method() {
+        Method::Get => HttpMethod::Get,
+        Method::Post => HttpMethod::Post,
+        Method::Delete => HttpMethod::Delete,
+    };
+    let mut shared = HttpRequest::new(method, request.path())
+        .with_response_limit(RESPONSE_LIMIT)
+        .capture_headers(|_| true)
+        .with_secret_header(SecretHeader::bearer(credential).map_err(transport_failure)?)
+        .with_header(
+            "accept",
+            if sse {
+                "text/event-stream"
+            } else {
+                "application/json"
+            },
+        );
+    if request.body().is_some() {
+        shared = shared.with_header("content-type", "application/json");
+    }
+    if request.method() == Method::Post {
+        let body = serde_json::to_vec(request.body().expect("POST body exists"))
+            .map_err(|_| protocol_failure())?;
+        shared = shared.with_body(body);
+    }
+    if sse {
+        shared = shared.stream_response_headers();
+    }
+    Ok(shared)
+}
+
+fn request_correlation(
+    headers: &BTreeMap<String, String>,
+) -> Result<ProviderRequestRef, RuntimeFailure> {
+    headers
+        .get("x-request-id")
+        .ok_or_else(protocol_failure)
+        .and_then(|value| ProviderRequestRef::new(value.clone()).map_err(|_| protocol_failure()))
+}
+
+fn require_success(response: Response) -> Result<Response, RuntimeFailure> {
+    match response.status {
+        200..=299 => Ok(response),
+        404 => Err(failure(
+            "swallowtail.alibaba_model_studio.provider_resource_missing",
+            "Alibaba Model Studio reported that the requested provider resource was missing",
+        )
+        .with_failure_classification(FailureClassification::new(
+            FailureOrigin::Provider,
+            FailureKind::ResourceNotFound,
+            FailureRecovery::ConfigurationChangeRequired,
+        ))),
+        401 | 403 => Err(failure(
+            "swallowtail.alibaba_model_studio.provider_access_rejected",
+            "Alibaba Model Studio rejected access to the requested provider resource",
+        )
+        .with_failure_classification(FailureClassification::new(
+            FailureOrigin::Provider,
+            FailureKind::AuthorizationDenied,
+            FailureRecovery::ReauthenticationRequired,
+        ))),
+        _ => Err(provider_error(&response.body)),
+    }
+}
+
+fn provider_error(body: &[u8]) -> RuntimeFailure {
+    parse_provider_failure(body).map_or_else(protocol_runtime, protocol_runtime)
+}
+
+fn protocol_runtime(error: AlibabaProtocolFailure) -> RuntimeFailure {
+    protocol(error)
+}
+
+fn failure(code: &'static str, message: impl Into<String>) -> RuntimeFailure {
+    RuntimeFailure::new(swallowtail_core::SafeDiagnostic::new(code, message))
+}
+
+fn endpoint_failure() -> RuntimeFailure {
     failure(
-        "swallowtail.alibaba_model_studio.blocking_service_missing",
-        "Alibaba Model Studio HTTP requires a blocking-work service",
+        "swallowtail.alibaba_model_studio.endpoint_invalid",
+        "Alibaba Model Studio authorized endpoint was invalid",
     )
 }
 
-include!("transport/io.rs");
+fn protocol_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.alibaba_model_studio.http_protocol_invalid",
+        "Alibaba Model Studio HTTP response was invalid",
+    )
+}
+
+fn transport_failure(error: TransportError) -> RuntimeFailure {
+    match error {
+        TransportError::BlockingServiceMissing => failure(
+            "swallowtail.alibaba_model_studio.blocking_service_missing",
+            "Alibaba Model Studio HTTP requires a blocking-work service",
+        ),
+        TransportError::BlockingResultMissing => failure(
+            "swallowtail.alibaba_model_studio.blocking_result_missing",
+            "Alibaba Model Studio blocking HTTP work returned no result",
+        ),
+        TransportError::EndpointInvalid => endpoint_failure(),
+        TransportError::CredentialInvalid => failure(
+            "swallowtail.alibaba_model_studio.credential_invalid",
+            "Alibaba Model Studio API-key credential was invalid",
+        ),
+        TransportError::ResponseLimit => failure(
+            "swallowtail.alibaba_model_studio.response_limit_exceeded",
+            "Alibaba Model Studio response exceeded its byte limit",
+        ),
+        TransportError::Cancelled => failure(
+            "swallowtail.alibaba_model_studio.connection_cancelled",
+            "Alibaba Model Studio local connection was cancelled",
+        ),
+        TransportError::Transport => failure(
+            "swallowtail.alibaba_model_studio.http_failed",
+            "Alibaba Model Studio HTTP work failed",
+        ),
+    }
+}
+
+fn stream_failure(error: StreamError<RuntimeFailure>) -> RuntimeFailure {
+    match error {
+        StreamError::Transport(error) => transport_failure(error),
+        StreamError::Decode(error) => error,
+        StreamError::Status { body, .. } => provider_error(&body),
+    }
+}

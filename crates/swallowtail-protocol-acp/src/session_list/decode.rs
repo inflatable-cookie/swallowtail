@@ -3,7 +3,7 @@ use super::{
     AcpSessionListDecodeError, AcpSessionListDecodeErrorKind, AcpSessionListRequest,
     bounded_nonempty, error,
 };
-use crate::AcpBoundedText;
+use crate::{AcpBoundedText, MeasureJsonError, measure_json_bytes};
 use serde_json::{Map, Value};
 use std::collections::BTreeSet;
 use std::path::Path;
@@ -14,11 +14,14 @@ pub(super) fn decode_result(
     request: &AcpSessionListRequest,
     result: &Value,
 ) -> Result<AcpSessionListPage, AcpSessionListDecodeError> {
-    let encoded = serde_json::to_vec(result)
-        .map_err(|_| error(AcpSessionListDecodeErrorKind::ResponseInvalid))?;
-    if encoded.len() > request.limits.maximum_response_bytes {
-        return Err(error(AcpSessionListDecodeErrorKind::LimitExceeded));
-    }
+    measure_json_bytes(result, request.limits.maximum_response_bytes).map_err(|failure| {
+        match failure {
+            MeasureJsonError::LimitExceeded => error(AcpSessionListDecodeErrorKind::LimitExceeded),
+            MeasureJsonError::SerializationFailed => {
+                error(AcpSessionListDecodeErrorKind::ResponseInvalid)
+            }
+        }
+    })?;
     let result = result
         .as_object()
         .ok_or_else(|| error(AcpSessionListDecodeErrorKind::ResponseInvalid))?;
@@ -176,7 +179,13 @@ fn required_bounded_nonempty(
         .get(key)
         .and_then(Value::as_str)
         .ok_or_else(|| error(AcpSessionListDecodeErrorKind::ResponseInvalid))
-        .and_then(|value| bounded_nonempty(value.to_owned(), limit))
+        .and_then(|value| {
+            bounded_nonempty(
+                value.to_owned(),
+                limit,
+                AcpSessionListDecodeErrorKind::ResponseInvalid,
+            )
+        })
 }
 
 fn optional_bounded_nonempty(
@@ -185,7 +194,12 @@ fn optional_bounded_nonempty(
 ) -> Result<Option<AcpBoundedText>, AcpSessionListDecodeError> {
     match value {
         None | Some(Value::Null) => Ok(None),
-        Some(Value::String(value)) => bounded_nonempty(value.clone(), limit).map(Some),
+        Some(Value::String(value)) => bounded_nonempty(
+            value.clone(),
+            limit,
+            AcpSessionListDecodeErrorKind::ResponseInvalid,
+        )
+        .map(Some),
         Some(_) => Err(error(AcpSessionListDecodeErrorKind::ResponseInvalid)),
     }
 }
@@ -197,5 +211,5 @@ fn bounded_response_path(
     if !Path::new(&value).is_absolute() {
         return Err(error(AcpSessionListDecodeErrorKind::ResponseInvalid));
     }
-    bounded_nonempty(value, limit)
+    bounded_nonempty(value, limit, AcpSessionListDecodeErrorKind::ResponseInvalid)
 }

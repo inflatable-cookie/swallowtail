@@ -32,6 +32,9 @@ const WEBSOCKET_DISCONNECT_CORPUS: &str = include_str!(
 #[test]
 fn remote_transport_lifecycles_run_sequentially() {
     run_scenario(host::host_blocking_runtime_is_owned_and_joined());
+    run_scenario(host::full_events_channel_close_does_not_deadlock());
+    run_scenario(host::deadline_task_spawn_failure_joins_connection_task());
+    run_scenario(host::connect_timeout_signals_close_and_joins_tasks());
     run_scenario(http::http2_incomplete_sse_disconnect_invalidates_without_recovery());
     run_scenario(http::http2_sse_runs_raw_corpus_affinity_callback_cancel_and_close());
     run_scenario(portability::public_profile_runs_both_transports_and_topologies());

@@ -171,7 +171,13 @@ impl AcpSessionListRequest {
             .map(|value| bounded_path(value, limits.maximum_path_bytes))
             .transpose()?;
         let cursor = cursor
-            .map(|value| bounded_nonempty(value, limits.maximum_cursor_bytes))
+            .map(|value| {
+                bounded_nonempty(
+                    value,
+                    limits.maximum_cursor_bytes,
+                    AcpSessionListDecodeErrorKind::RequestInvalid,
+                )
+            })
             .transpose()?;
         Ok(Self {
             id,
@@ -342,15 +348,16 @@ fn bounded_path(value: String, limit: usize) -> Result<AcpBoundedText, AcpSessio
     if !Path::new(&value).is_absolute() {
         return Err(error(AcpSessionListDecodeErrorKind::RequestInvalid));
     }
-    bounded_nonempty(value, limit)
+    bounded_nonempty(value, limit, AcpSessionListDecodeErrorKind::RequestInvalid)
 }
 
 fn bounded_nonempty(
     value: String,
     limit: usize,
+    empty_kind: AcpSessionListDecodeErrorKind,
 ) -> Result<AcpBoundedText, AcpSessionListDecodeError> {
     if value.trim().is_empty() {
-        return Err(error(AcpSessionListDecodeErrorKind::ResponseInvalid));
+        return Err(error(empty_kind));
     }
     if value.len() > limit {
         return Err(error(AcpSessionListDecodeErrorKind::LimitExceeded));

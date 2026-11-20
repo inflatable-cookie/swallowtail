@@ -788,12 +788,6 @@ fn mounted_proxy_rejects_foreign_auth_and_tool_identity() {
     assert!(String::from_utf8_lossy(&initialized.1).contains("2025-11-25"));
     assert!(!fixture.launch.rendezvous_path().exists());
 
-    let foreign = raw_post(
-        &mut stream,
-        "foreign-bearer",
-        br#"{"jsonrpc":"2.0","id":2,"method":"tools/list"}"#,
-    );
-    assert_eq!(foreign.0, 401);
     let unknown = raw_post(
         &mut stream,
         &fixture.document.bearer,
@@ -815,6 +809,19 @@ fn mounted_proxy_rejects_foreign_auth_and_tool_identity() {
     );
     assert_eq!(duplicate.0, 200);
     assert!(String::from_utf8_lossy(&duplicate.1).contains("-32000"));
+    let foreign = raw_post(
+        &mut stream,
+        "foreign-bearer",
+        br#"{"jsonrpc":"2.0","id":2,"method":"tools/list"}"#,
+    );
+    assert_eq!(foreign.0, 401);
+    let mut eof = [0_u8; 1];
+    assert_eq!(
+        stream
+            .read(&mut eof)
+            .expect("peer observes closed socket after 401"),
+        0
+    );
     assert_eq!(fixture.calls.load(Ordering::SeqCst), 1);
     drop(stream);
     fixture.close();

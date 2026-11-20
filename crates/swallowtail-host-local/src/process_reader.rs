@@ -94,6 +94,7 @@ fn read_output<R>(
                     overflowed = true;
                 }
             }
+            Err(error) if error.kind() == io::ErrorKind::Interrupted => continue,
             Err(error) if error.kind() == io::ErrorKind::WouldBlock => {
                 thread::sleep(std::time::Duration::from_millis(10));
             }
@@ -115,4 +116,55 @@ fn set_nonblocking<R: AsFd>(reader: &R) -> io::Result<()> {
     fcntl(reader, FcntlArg::F_SETFL(flags))
         .map(|_| ())
         .map_err(io::Error::other)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    struct InterruptedReader {
+        interrupts_remaining: usize,
+        payload: &'static [u8],
+        offset: usize,
+    }
+
+    impl Read for InterruptedReader {
+        fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+            if self.interrupts_remaining > 0 {
+                self.interrupts_remaining -= 1;
+                return Err(io::Error::from(io::ErrorKind::Interrupted));
+            }
+            if self.offset >= self.payload.len() {
+                return Ok(0);
+            }
+            let n = (self.payload.len() - self.offset).min(buf.len());
+            buf[..n].copy_from_slice(&self.payload[self.offset..self.offset + n]);
+            self.offset += n;
+            Ok(n)
+        }
+    }
+
+    #[test]
+    fn retries_eintr_without_failing_read() {
+        let state = Arc::new(OutputState::default());
+        let control = ReaderControl::default();
+        let reader = InterruptedReader {
+            interrupts_remaining: 3,
+            payload: b"hello world",
+            offset: 0,
+        };
+        read_output(reader, 1024, ProcessOutputStream::Stdout, &state, &control);
+        state.close_reader();
+        state.complete_supervision();
+
+        let chunk = futures_executor::block_on(state.read())
+            .expect("EINTR must be retried")
+            .expect("chunk arrives");
+        assert_eq!(chunk.bytes(), b"hello world");
+        assert!(
+            futures_executor::block_on(state.read())
+                .expect("clean EOF")
+                .is_none()
+        );
+    }
 }

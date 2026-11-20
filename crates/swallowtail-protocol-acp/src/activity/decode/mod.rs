@@ -2,6 +2,7 @@ use super::{
     AcpBoundedText, AcpMessageChunk, AcpMessageRole, AcpSessionUpdate, ActivityDecodeError,
     ActivityDecodeErrorKind, ActivityDecodeLimits, DecodedSessionUpdate,
 };
+use crate::{MeasureJsonError, measure_json_bytes};
 use fields::{error, object, optional_identifier, required_identifier, validate_identifier};
 use serde_json::{Map, Value};
 
@@ -15,11 +16,10 @@ pub(super) fn decode(
     params: &Value,
     limits: ActivityDecodeLimits,
 ) -> Result<DecodedSessionUpdate, ActivityDecodeError> {
-    let encoded =
-        serde_json::to_vec(params).map_err(|_| error(ActivityDecodeErrorKind::ContentInvalid))?;
-    if encoded.len() > limits.maximum_update_bytes() {
-        return Err(error(ActivityDecodeErrorKind::LimitExceeded));
-    }
+    measure_json_bytes(params, limits.maximum_update_bytes()).map_err(|failure| match failure {
+        MeasureJsonError::LimitExceeded => error(ActivityDecodeErrorKind::LimitExceeded),
+        MeasureJsonError::SerializationFailed => error(ActivityDecodeErrorKind::ContentInvalid),
+    })?;
     let params = object(params, ActivityDecodeErrorKind::ContentInvalid)?;
     let session_id = required_identifier(
         params,

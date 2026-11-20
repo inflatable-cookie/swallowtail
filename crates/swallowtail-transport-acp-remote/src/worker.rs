@@ -2,7 +2,6 @@ use crate::config::TransportConfig;
 use crate::error::{RemoteAcpError, RemoteAcpErrorKind, transport_error};
 use crate::{http, websocket};
 use futures_channel::mpsc;
-use futures_util::SinkExt;
 use std::future::Future;
 use std::sync::{Arc, Mutex};
 use swallowtail_core::RemoteAcpTransport;
@@ -52,7 +51,7 @@ pub(crate) fn run(
         if let Err(error) = &result {
             emit_worker_failure_debug(&services, error);
             let mut events = events;
-            let _ = events.send(WorkerEvent::Failed(error.clone())).await;
+            let _ = events.try_send(WorkerEvent::Failed(error.clone()));
         }
         result.map_err(runtime_failure)
     })

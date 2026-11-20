@@ -20,7 +20,9 @@ pub use activity::{
     ActivityDecodeError, ActivityDecodeErrorKind, ActivityDecodeLimits, DecodedSessionUpdate,
     decode_session_update, decode_session_update_with_limits,
 };
-pub use message::{decode_message, encode_message};
+pub use message::{
+    decode_message, decode_message_with_limits, encode_message, encode_message_with_limits,
+};
 pub use session_list::{
     ACP_SESSION_LIST_METHOD, AcpOpaqueExtensions, AcpSessionInfo, AcpSessionListCapabilities,
     AcpSessionListDecodeError, AcpSessionListDecodeErrorKind, AcpSessionListLimits,
@@ -278,13 +280,63 @@ pub fn encode_error(id: Value, code: i64, message: &'static str) -> Result<Vec<u
 }
 
 pub(crate) fn encode(value: Value) -> Result<Vec<u8>, ProtocolError> {
+    encode_with_limit(value, DEFAULT_MAX_FRAME_BYTES)
+}
+
+pub(crate) fn encode_with_limit(
+    value: Value,
+    maximum_frame_bytes: usize,
+) -> Result<Vec<u8>, ProtocolError> {
     let mut bytes = serde_json::to_vec(&value)
         .map_err(|_| ProtocolError::new(ProtocolErrorKind::SerializationFailed))?;
-    if bytes.len() > DEFAULT_MAX_FRAME_BYTES {
+    if bytes.len() > maximum_frame_bytes {
         return Err(ProtocolError::new(ProtocolErrorKind::FrameLimitExceeded));
     }
     bytes.push(b'\n');
     Ok(bytes)
+}
+
+pub(crate) enum MeasureJsonError {
+    LimitExceeded,
+    SerializationFailed,
+}
+
+struct CountingWriter {
+    bytes: usize,
+    limit: usize,
+    exceeded: bool,
+}
+
+impl std::io::Write for CountingWriter {
+    fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
+        match self.bytes.checked_add(buf.len()) {
+            Some(next) if next <= self.limit => {
+                self.bytes = next;
+                Ok(buf.len())
+            }
+            _ => {
+                self.exceeded = true;
+                Err(std::io::Error::other("byte limit exceeded"))
+            }
+        }
+    }
+
+    fn flush(&mut self) -> std::io::Result<()> {
+        Ok(())
+    }
+}
+
+pub(crate) fn measure_json_bytes(value: &Value, limit: usize) -> Result<usize, MeasureJsonError> {
+    let mut writer = CountingWriter {
+        bytes: 0,
+        limit,
+        exceeded: false,
+    };
+    match serde_json::to_writer(&mut writer, value) {
+        Ok(()) => Ok(writer.bytes),
+        Err(_) if writer.exceeded => Err(MeasureJsonError::LimitExceeded),
+        Err(_) => Err(MeasureJsonError::SerializationFailed),
+    }
 }
 
 pub(crate) fn decode_frame(frame: &[u8]) -> Result<Message, ProtocolError> {

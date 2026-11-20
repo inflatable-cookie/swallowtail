@@ -168,8 +168,8 @@ async fn connect_bound(
             return Err(error);
         }
     };
-    let (commands, command_rx) = mpsc::channel(command_capacity);
-    let (event_tx, events) = mpsc::channel(event_capacity);
+    let (mut commands, command_rx) = mpsc::channel(command_capacity);
+    let (event_tx, mut events) = mpsc::channel(event_capacity);
     let (ready_tx, ready_rx) = oneshot::channel();
     let ready: ReadySignal = Arc::new(Mutex::new(Some(ready_tx)));
     let ready_for_job = Arc::clone(&ready);
@@ -210,25 +210,30 @@ async fn connect_bound(
     // the deadline inside the worker.
     let (mut deadline_done, mut deadline_task) = if let Some(deadline) = deadline {
         let (done_tx, done_rx) = oneshot::channel();
-        let mut commands = commands.clone();
+        let mut deadline_commands = commands.clone();
         let wait = time.wait_until(deadline);
-        let deadline_task = task
-            .spawn(
-                scope,
-                Box::pin(async move {
-                    match futures_util::future::select(wait, Box::pin(done_rx)).await {
-                        futures_util::future::Either::Left((_observation, _)) => {
-                            let _ = commands.send(WorkerCommand::Deadline).await;
-                        }
-                        futures_util::future::Either::Right(_) => {}
+        let deadline_task = match task.spawn(
+            scope,
+            Box::pin(async move {
+                match futures_util::future::select(wait, Box::pin(done_rx)).await {
+                    futures_util::future::Either::Left((_observation, _)) => {
+                        let _ = deadline_commands.send(WorkerCommand::Deadline).await;
                     }
-                }),
-            )
-            .map_err(|_| {
+                    futures_util::future::Either::Right(_) => {}
+                }
+            }),
+        ) {
+            Ok(deadline_task) => deadline_task,
+            Err(_) => {
                 let error = host_service_failure();
                 emit_remote_failure_debug(&services, &error, "remote.acp.connect");
-                error
-            })?;
+                let _ = commands.try_send(WorkerCommand::Close);
+                drop(commands);
+                events.close();
+                let _ = connection_task.join().await;
+                return Err(error);
+            }
+        };
         (Some(done_tx), Some(deadline_task))
     } else {
         (None, None)
@@ -250,6 +255,9 @@ async fn connect_bound(
         Ok(Ok(())) => {}
         Ok(Err(error)) | Err(error) => {
             emit_remote_failure_debug(&services, &error, "remote.acp.connect");
+            let _ = commands.try_send(WorkerCommand::Close);
+            drop(commands);
+            events.close();
             if let Some(done) = deadline_done.take() {
                 let _ = done.send(());
             }
@@ -321,6 +329,7 @@ impl RemoteAcpConnection {
 
     /// Closes the transport and joins all host-owned work.
     pub async fn close(mut self) -> CleanupOutcome {
+        self.events.close();
         let _ = self.commands.send(WorkerCommand::Close).await;
         if let Some(done) = self.deadline_done.take() {
             let _ = done.send(());

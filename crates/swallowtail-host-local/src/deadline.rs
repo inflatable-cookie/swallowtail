@@ -1,9 +1,8 @@
 use crate::host::LocalProcessHost;
+use async_io::Timer;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Arc, Condvar, Mutex};
-use std::task::{Context, Poll, Waker};
-use std::thread::JoinHandle;
+use std::task::{Context, Poll};
 use std::time::{Duration, Instant, SystemTime};
 use swallowtail_core::{CatalogTimestamp, SafeDiagnostic};
 use swallowtail_runtime::{
@@ -20,7 +19,7 @@ impl TimeService for LocalProcessHost {
         if now >= deadline.instant() {
             return Box::pin(async move { DeadlineObservation::new(deadline, now) });
         }
-        Box::pin(DeadlineWait::new(self.monotonic_origin, deadline))
+        Box::pin(DeadlineWait::new(self.monotonic_origin, deadline, now))
     }
 
     fn catalog_now(&self) -> Result<CatalogTimestamp, RuntimeFailure> {
@@ -40,32 +39,18 @@ fn observation_clock_failure() -> RuntimeFailure {
     ))
 }
 
-struct WaitState {
-    cancelled: bool,
-    observation: Option<DeadlineObservation>,
-    waker: Option<Waker>,
-}
-
 struct DeadlineWait {
-    shared: Arc<(Mutex<WaitState>, Condvar)>,
-    worker: Option<JoinHandle<()>>,
+    origin: Instant,
+    deadline: Deadline,
+    timer: Timer,
 }
 
 impl DeadlineWait {
-    fn new(origin: Instant, deadline: Deadline) -> Self {
-        let shared = Arc::new((
-            Mutex::new(WaitState {
-                cancelled: false,
-                observation: None,
-                waker: None,
-            }),
-            Condvar::new(),
-        ));
-        let worker_shared = Arc::clone(&shared);
-        let worker = std::thread::spawn(move || observe_deadline(origin, deadline, worker_shared));
+    fn new(origin: Instant, deadline: Deadline, now: MonotonicInstant) -> Self {
         Self {
-            shared,
-            worker: Some(worker),
+            origin,
+            deadline,
+            timer: timer_for(origin, deadline, now),
         }
     }
 }
@@ -73,65 +58,74 @@ impl DeadlineWait {
 impl Future for DeadlineWait {
     type Output = DeadlineObservation;
 
-    fn poll(self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
-        let (state, _) = &*self.shared;
-        let mut state = state.lock().unwrap_or_else(|error| error.into_inner());
-        if let Some(observation) = state.observation {
-            Poll::Ready(observation)
-        } else {
-            if !state
-                .waker
-                .as_ref()
-                .is_some_and(|waker| waker.will_wake(context.waker()))
-            {
-                state.waker = Some(context.waker().clone());
+    fn poll(mut self: Pin<&mut Self>, context: &mut Context<'_>) -> Poll<Self::Output> {
+        loop {
+            match Pin::new(&mut self.timer).poll(context) {
+                Poll::Pending => return Poll::Pending,
+                Poll::Ready(_) => {
+                    let now = monotonic_instant(self.origin);
+                    if now >= self.deadline.instant() {
+                        return Poll::Ready(DeadlineObservation::new(self.deadline, now));
+                    }
+                    self.timer = timer_for(self.origin, self.deadline, now);
+                }
             }
-            Poll::Pending
         }
     }
 }
 
-impl Drop for DeadlineWait {
-    fn drop(&mut self) {
-        let (state, wake) = &*self.shared;
-        {
-            let mut state = state.lock().unwrap_or_else(|error| error.into_inner());
-            state.cancelled = true;
-            wake.notify_all();
-        }
-        if let Some(worker) = self.worker.take() {
-            let _ = worker.join();
-        }
-    }
-}
-
-fn observe_deadline(origin: Instant, deadline: Deadline, shared: Arc<(Mutex<WaitState>, Condvar)>) {
-    let (state, wake) = &*shared;
-    let mut state = state.lock().unwrap_or_else(|error| error.into_inner());
-    loop {
-        if state.cancelled {
-            return;
-        }
-        let now = monotonic_instant(origin);
-        if now >= deadline.instant() {
-            let observation = DeadlineObservation::new(deadline, monotonic_instant(origin));
-            state.observation = Some(observation);
-            let waker = state.waker.take();
-            drop(state);
-            if let Some(waker) = waker {
-                waker.wake();
-            }
-            return;
-        }
-        let remaining = Duration::from_nanos(deadline.instant().ticks() - now.ticks());
-        let (next, _) = wake
-            .wait_timeout(state, remaining)
-            .unwrap_or_else(|error| error.into_inner());
-        state = next;
+fn timer_for(origin: Instant, deadline: Deadline, now: MonotonicInstant) -> Timer {
+    let target = origin
+        .checked_add(Duration::from_nanos(deadline.instant().ticks()))
+        .or_else(|| {
+            let remaining =
+                Duration::from_nanos(deadline.instant().ticks().saturating_sub(now.ticks()));
+            Instant::now().checked_add(remaining)
+        });
+    match target {
+        Some(target) => Timer::at(target),
+        None => Timer::after(Duration::from_secs(86_400 * 365 * 50)),
     }
 }
 
 fn monotonic_instant(origin: Instant) -> MonotonicInstant {
     let ticks = u64::try_from(origin.elapsed().as_nanos()).unwrap_or(u64::MAX);
     MonotonicInstant::from_ticks(ticks)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::task::Waker;
+
+    #[test]
+    fn deadline_wait_completes_and_drops_without_thread_churn() {
+        let origin = Instant::now();
+        let now = monotonic_instant(origin);
+        let short = Deadline::at(MonotonicInstant::from_ticks(
+            now.ticks().saturating_add(5_000_000),
+        ));
+        let observation = futures_executor::block_on(DeadlineWait::new(origin, short, now));
+        assert_eq!(observation.deadline(), short);
+        assert!(observation.observed_at() >= short.instant());
+
+        let waker = Waker::noop();
+        let mut context = Context::from_waker(waker);
+        let started = Instant::now();
+        for _ in 0..500 {
+            let current = monotonic_instant(origin);
+            let distant = Deadline::at(MonotonicInstant::from_ticks(
+                current.ticks().saturating_add(60_000_000_000),
+            ));
+            let mut wait = DeadlineWait::new(origin, distant, current);
+            assert!(Pin::new(&mut wait).poll(&mut context).is_pending());
+            drop(wait);
+        }
+        assert!(started.elapsed() < Duration::from_secs(1));
+
+        // Saturation/overflow deadlines do not panic on timer setup or drop.
+        let overflow = Deadline::at(MonotonicInstant::from_ticks(u64::MAX));
+        let mut wait = DeadlineWait::new(origin, overflow, monotonic_instant(origin));
+        assert!(Pin::new(&mut wait).poll(&mut context).is_pending());
+    }
 }

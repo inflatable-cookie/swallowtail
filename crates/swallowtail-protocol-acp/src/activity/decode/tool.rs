@@ -1,7 +1,7 @@
 use super::content;
 use super::fields::{
     error, object, optional_array, optional_identifier, optional_text, required_identifier,
-    required_str, required_text, required_u64,
+    required_str, required_text,
 };
 use crate::activity::{
     AcpBoundedText, AcpToolCall, AcpToolCallContent, AcpToolCallLocation, AcpToolCallStatus,
@@ -174,17 +174,14 @@ fn tool_locations(
         .iter()
         .map(|value| {
             let value = object(value, ActivityDecodeErrorKind::ContentInvalid)?;
-            let line = value
-                .get("line")
-                .map(|_| {
-                    required_u64(value, "line", ActivityDecodeErrorKind::ContentInvalid).and_then(
-                        |line| {
-                            u32::try_from(line)
-                                .map_err(|_| error(ActivityDecodeErrorKind::ContentInvalid))
-                        },
-                    )
-                })
-                .transpose()?;
+            let line = match value.get("line") {
+                None | Some(Value::Null) => None,
+                Some(line) => Some(
+                    line.as_u64()
+                        .and_then(|line| u32::try_from(line).ok())
+                        .ok_or_else(|| error(ActivityDecodeErrorKind::ContentInvalid))?,
+                ),
+            };
             Ok(AcpToolCallLocation {
                 path: required_text(value, "path", ActivityDecodeErrorKind::ContentInvalid)?,
                 line,

@@ -52,16 +52,15 @@ impl CorrelationState {
         match message {
             Message::Response { id, result } => {
                 let method = self.requests.remove(&key(id)?).ok_or_else(protocol_error)?;
-                if method == "session/new" {
-                    opened_session = result
-                        .as_ref()
-                        .ok()
-                        .and_then(|value| value.get("sessionId"))
+                if method == "session/new"
+                    && let Ok(value) = result
+                {
+                    let session_id = value
+                        .get("sessionId")
                         .and_then(Value::as_str)
-                        .map(str::to_owned);
-                    if opened_session.is_none() {
-                        return Err(protocol_error());
-                    }
+                        .map(str::to_owned)
+                        .ok_or_else(protocol_error)?;
+                    opened_session = Some(session_id);
                 }
                 completed_method = Some(method);
             }
@@ -134,5 +133,43 @@ mod tests {
             })
             .unwrap();
         assert_eq!(metadata.opened_session.as_deref(), Some("session-private"));
+    }
+
+    #[test]
+    fn session_new_jsonrpc_error_response_is_delivered_without_protocol_error() {
+        let mut state = CorrelationState::new(1, 1);
+        state
+            .outbound(&Message::Request {
+                id: json!(1),
+                method: "session/new".to_owned(),
+                params: json!({}),
+            })
+            .unwrap();
+        let error_frame = swallowtail_protocol_acp::decode_message(
+            br#"{"jsonrpc":"2.0","id":1,"error":{"code":-32000,"message":"auth required"}}"#,
+        )
+        .expect("JSON-RPC error decodes");
+        let metadata = state
+            .inbound(&error_frame)
+            .expect("valid JSON-RPC error response for session/new is delivered");
+        assert_eq!(metadata.opened_session, None);
+        assert_eq!(metadata.completed_method.as_deref(), Some("session/new"));
+
+        // Missing sessionId on an Ok response still fails as a protocol error.
+        state
+            .outbound(&Message::Request {
+                id: json!(2),
+                method: "session/new".to_owned(),
+                params: json!({}),
+            })
+            .unwrap();
+        assert!(
+            state
+                .inbound(&Message::Response {
+                    id: json!(2),
+                    result: Ok(json!({})),
+                })
+                .is_err()
+        );
     }
 }

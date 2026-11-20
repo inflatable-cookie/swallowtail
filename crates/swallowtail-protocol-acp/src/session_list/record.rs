@@ -1,5 +1,5 @@
 use super::{AcpSessionListDecodeError, AcpSessionListDecodeErrorKind, error};
-use crate::AcpBoundedText;
+use crate::{AcpBoundedText, MeasureJsonError, measure_json_bytes};
 use serde_json::{Map, Value};
 use std::collections::BTreeSet;
 use std::fmt;
@@ -25,12 +25,12 @@ impl AcpOpaqueExtensions {
                 .map(|(key, value)| (key.clone(), value.clone()))
                 .collect(),
         );
-        let encoded_bytes = serde_json::to_vec(&value)
-            .map_err(|_| error(AcpSessionListDecodeErrorKind::ExtensionInvalid))?
-            .len();
-        if encoded_bytes > limit {
-            return Err(error(AcpSessionListDecodeErrorKind::LimitExceeded));
-        }
+        let encoded_bytes = measure_json_bytes(&value, limit).map_err(|failure| match failure {
+            MeasureJsonError::LimitExceeded => error(AcpSessionListDecodeErrorKind::LimitExceeded),
+            MeasureJsonError::SerializationFailed => {
+                error(AcpSessionListDecodeErrorKind::ExtensionInvalid)
+            }
+        })?;
         Ok(Self {
             value,
             encoded_bytes,

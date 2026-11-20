@@ -1,4 +1,5 @@
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "prepared_facade/fixtures.rs"]
 mod fixtures;

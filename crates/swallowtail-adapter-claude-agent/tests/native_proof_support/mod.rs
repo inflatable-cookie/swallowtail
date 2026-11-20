@@ -16,7 +16,9 @@
 //! the caller presents the authority token the plan names. The committed plan
 //! has that mode disabled, so the refusal is the only reachable outcome today.
 
-use crate::sidecar_asset_support::{NativeProofLaunch, SidecarProcess};
+use crate::claude_agent_sdk_native_proof_harness::sidecar_asset_support::{
+    NativeProofLaunch, SidecarProcess,
+};
 use serde_json::{Value, json};
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};

@@ -1,5 +1,5 @@
-use crate::discovery_support::DiscoveryHost;
-use crate::support::{FixtureHost, Scenario};
+use crate::consumer_route_projection::discovery_support::DiscoveryHost;
+use crate::consumer_route_projection::support::{FixtureHost, Scenario};
 
 use futures_executor::block_on;
 use std::collections::{BTreeMap, BTreeSet};

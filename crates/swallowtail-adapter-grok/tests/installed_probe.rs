@@ -1,4 +1,4 @@
-use crate::discovery_support as support;
+use crate::discovery_suite::discovery_support as support;
 
 use futures_executor::block_on;
 use support::{FakeProcessService, ImmediateTime, services, services_with_time};

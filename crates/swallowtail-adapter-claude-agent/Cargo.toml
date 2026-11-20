@@ -43,31 +43,12 @@ nix = { version = "0.31.3", default-features = false, features = ["fs"] }
 workspace = true
 
 [[test]]
-name = "live_response_only_probe"
-path = "tests/live_response_only_probe.rs"
-required-features = ["live-probes"]
-
-[[test]]
-name = "live_watcher_probe"
-path = "tests/live_watcher_probe.rs"
-required-features = ["live-probes"]
-
-[[test]]
-name = "http_mcp_live_harness"
-path = "tests/http_mcp_live_harness.rs"
-
-[[test]]
-name = "http_mcp_live_gate"
-path = "tests/http_mcp_live_gate.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
 
 [[test]]
 name = "acp_guard_capture"
 path = "tests/acp_guard_capture.rs"
-
-[[test]]
-name = "integration"
-path = "tests/integration/main.rs"
 
 [[test]]
 name = "claude_agent_sdk_driver"
@@ -76,18 +57,6 @@ path = "tests/claude_agent_sdk_driver.rs"
 [[test]]
 name = "claude_agent_sdk_sidecar_asset"
 path = "tests/claude_agent_sdk_sidecar_asset.rs"
-
-[[test]]
-name = "claude_agent_sdk_native_proof_harness"
-path = "tests/claude_agent_sdk_native_proof_harness.rs"
-
-[[test]]
-name = "claude_agent_sdk_0_3_322_identity"
-path = "tests/claude_agent_sdk_0_3_322_identity.rs"
-
-[[test]]
-name = "claude_agent_sdk_node_22_23_3_identity"
-path = "tests/claude_agent_sdk_node_22_23_3_identity.rs"
 
 [[test]]
 name = "claude_code_structured_run"

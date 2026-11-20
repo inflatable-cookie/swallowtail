@@ -1,4 +1,5 @@
 use crate::realtime_reasoning_prepare::{ADMITTED, mode};
+#[allow(unused_imports)]
 use crate::realtime_support;
 
 use futures_executor::block_on;

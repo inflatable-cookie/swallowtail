@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "http_mcp_live/mod.rs"]
 mod http_mcp_live;

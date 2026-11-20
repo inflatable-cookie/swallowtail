@@ -2,8 +2,8 @@
 
 #![allow(dead_code)]
 
-#[path = "headless_support/mod.rs"]
-mod headless_support;
+#[allow(unused_imports)]
+use crate::headless_support;
 
 use serde_json::{Value, json};
 use std::collections::BTreeSet;

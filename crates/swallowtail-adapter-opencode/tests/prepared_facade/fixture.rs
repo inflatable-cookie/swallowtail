@@ -1,4 +1,4 @@
-use crate::http_support::{FixtureServer, StreamFixture, ThreadServices};
+use crate::runtime_suite::http_support::{FixtureServer, StreamFixture, ThreadServices};
 use futures_channel::oneshot;
 use futures_executor::block_on;
 use std::path::PathBuf;

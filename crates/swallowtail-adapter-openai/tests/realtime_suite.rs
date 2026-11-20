@@ -1,5 +1,5 @@
-#[path = "realtime_support/mod.rs"]
-mod realtime_support;
+#[allow(unused_imports)]
+use crate::realtime_support;
 
 #[path = "realtime_driver.rs"]
 mod realtime_driver;
@@ -13,7 +13,7 @@ mod realtime_projection;
 mod realtime_reasoning_ack;
 #[path = "realtime_reasoning_dispatch.rs"]
 mod realtime_reasoning_dispatch;
-#[path = "realtime_reasoning_prepare.rs"]
-mod realtime_reasoning_prepare;
+#[allow(unused_imports)]
+use crate::realtime_reasoning_prepare;
 #[path = "realtime_success.rs"]
 mod realtime_success;

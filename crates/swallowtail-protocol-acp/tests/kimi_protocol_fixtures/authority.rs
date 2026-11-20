@@ -2,7 +2,9 @@ use super::{
     AUTH_REQUIRED, AUTHORITY, CAPABILITY_DRIFT, DISCONNECT, FILESYSTEM_WRITE,
     FILESYSTEM_WRITE_REJECTED, INITIALIZE, NEW_SESSION, PROTOCOL, ROOT, SESSION_ID, VERSION_DRIFT,
 };
-use crate::support::{Direction, ParseError, methods, parse_json, parse_transcript};
+use crate::protocol_suite::support::{
+    Direction, ParseError, methods, parse_json, parse_transcript,
+};
 use serde_json::{Value, json};
 use swallowtail_protocol_acp::ACP_PROTOCOL_VERSION;
 

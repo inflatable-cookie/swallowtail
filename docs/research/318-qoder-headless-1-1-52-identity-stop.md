@@ -49,7 +49,8 @@ The reproducible identity and inventory records are frozen in
 `protocol.json` holds the selected-surface presence map and the per-hop
 `--max-turns` authority classification. The mutation-sensitive assertions live
 in
-[`qoder_1_1_52_delta_ledger.rs`](../../crates/swallowtail-adapter-qoder/tests/qoder_1_1_52_delta_ledger.rs).
+the per-hop `qoder_1_1_52_delta_ledger` test, which Wave 1C retired when the
+crate's version-identity suite moved to one table-driven integration binary.
 
 ## Complete shipped-tree result
 

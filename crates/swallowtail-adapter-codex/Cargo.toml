@@ -34,53 +34,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "activity_corpus"
-path = "tests/activity_suite.rs"
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "app_server"
-path = "tests/app_server_suite.rs"
-
-[[test]]
-name = "connection_lifecycle"
-path = "tests/connection_lifecycle_suite.rs"
-
-[[test]]
-name = "prepared_profiles"
-path = "tests/exec_suite.rs"
-
-[[test]]
-name = "codex_0_152_1_identity"
-path = "tests/codex_0_152_1_identity.rs"
-
-[[test]]
-name = "codex_0_154_0_identity"
-path = "tests/codex_0_154_0_identity.rs"
-
-[[test]]
-name = "codex_0_155_1_identity"
-path = "tests/codex_0_155_1_identity.rs"
-
-[[test]]
-name = "codex_app_server_currentness_qualification"
-path = "tests/codex_app_server_currentness_qualification.rs"
-
-[[test]]
-name = "codex_app_server_currentness_review"
-path = "tests/codex_app_server_currentness_review.rs"
-
-[[test]]
-name = "codex_0_161_0_identity"
-path = "tests/codex_0_161_0_identity.rs"
-
-[[test]]
-name = "codex_0_164_0_identity"
-path = "tests/codex_0_164_0_identity.rs"
-
-[[test]]
-name = "codex_0_165_0_identity"
-path = "tests/codex_0_165_0_identity.rs"
-
-[[test]]
-name = "exec_currentness"
-path = "tests/exec_currentness_suite.rs"

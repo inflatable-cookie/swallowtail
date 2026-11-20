@@ -1,4 +1,5 @@
 [package]
+autotests = false
 name = "swallowtail-adapter-oh-my-pi"
 version.workspace = true
 edition.workspace = true
@@ -35,6 +36,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "live_installed_probe"
-path = "tests/live_installed_probe.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
+

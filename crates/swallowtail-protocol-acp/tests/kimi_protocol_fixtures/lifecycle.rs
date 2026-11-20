@@ -2,7 +2,7 @@ use super::{
     CANCEL, LOAD_EARLY_RESPONSE, LOAD_SUCCESS, LOAD_WRONG_SESSION, PROMPT, RESUME_SUCCESS,
     RESUME_WITH_REPLAY, SESSION_ID, historical_updates, response_index,
 };
-use crate::support::{methods, parse_transcript};
+use crate::protocol_suite::support::{methods, parse_transcript};
 use serde_json::json;
 
 #[test]

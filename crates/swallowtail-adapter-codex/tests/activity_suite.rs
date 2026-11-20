@@ -1,7 +1,7 @@
 #[path = "legacy_corpus_support/mod.rs"]
 mod legacy_corpus_support;
-#[path = "support/mod.rs"]
-mod support;
+#[allow(unused_imports)]
+use crate::support;
 
 #[path = "activity_corpus.rs"]
 mod activity_corpus;

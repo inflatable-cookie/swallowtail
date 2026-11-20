@@ -1,5 +1,5 @@
-#[path = "headless_support/mod.rs"]
-mod headless_support;
+#[allow(unused_imports)]
+use crate::headless_support;
 
 #[path = "activity_corpus.rs"]
 mod activity_corpus;

@@ -1,6 +1,6 @@
 use super::{PROTOCOL, RELEASES};
-use crate::claude_agent_support::{compatibility_claim, version};
-use crate::support::parse_json;
+use crate::protocol_suite::claude_agent_support::{compatibility_claim, version};
+use crate::protocol_suite::support::parse_json;
 use swallowtail_core::InterfaceCompatibilityAssessment;
 use swallowtail_protocol_acp::ACP_PROTOCOL_VERSION;
 

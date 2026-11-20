@@ -1,3 +1,4 @@
+#[allow(unused_imports)]
 use crate::support;
 
 use serde_json::Value;

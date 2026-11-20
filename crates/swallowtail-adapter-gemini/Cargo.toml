@@ -41,47 +41,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "live_installed_probe"
-path = "tests/live_installed_probe.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "http_mcp_live_harness"
-path = "tests/http_mcp_live_harness.rs"
-
-[[test]]
-name = "http_mcp_live_gate"
-path = "tests/http_mcp_live_gate.rs"
-required-features = ["live-probes"]
-
-[[test]]
-name = "prepared_facade"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "headless_structured_run"
-path = "tests/headless_suite.rs"
-
-[[test]]
-name = "live_prepared_facade"
-path = "tests/live_suite.rs"
-
-[[test]]
-name = "consumer_route_projection"
-path = "tests/consumer_route_projection.rs"
-
-[[test]]
-name = "gemini_cli_0_59_0_delta_ledger"
-path = "tests/gemini_cli_0_59_0_delta_ledger.rs"
-
-[[test]]
-name = "gemini_cli_0_61_0_delta_ledger"
-path = "tests/gemini_cli_0_61_0_delta_ledger.rs"
-
-[[test]]
-name = "gemini_cli_0_63_0_delta_ledger"
-path = "tests/gemini_cli_0_63_0_delta_ledger.rs"
-
-[[test]]
-name = "gemini_cli_0_63_0_headless_authority_stop"
-path = "tests/gemini_cli_0_63_0_headless_authority_stop.rs"

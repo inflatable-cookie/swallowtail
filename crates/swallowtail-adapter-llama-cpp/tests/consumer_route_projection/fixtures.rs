@@ -1,4 +1,4 @@
-use crate::prepared_support::{
+use crate::consumer_route_projection::prepared_support::{
     Fixture, FixtureServer, OwnedFixture, ProcessStop, PropertiesFixture, ScriptedOwnedServices,
     StreamFixture,
 };

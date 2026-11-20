@@ -1,5 +1,5 @@
-#[path = "http_support/mod.rs"]
-mod http_support;
+#[allow(unused_imports)]
+use crate::http_support;
 
 #[path = "conformance.rs"]
 mod conformance;

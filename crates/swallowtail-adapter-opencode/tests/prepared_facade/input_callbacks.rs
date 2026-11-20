@@ -1,5 +1,5 @@
 use super::fixture::PreparedFixture;
-use crate::http_support::StreamFixture;
+use crate::runtime_suite::http_support::StreamFixture;
 use futures_executor::block_on;
 use futures_util::StreamExt;
 use std::sync::atomic::Ordering;

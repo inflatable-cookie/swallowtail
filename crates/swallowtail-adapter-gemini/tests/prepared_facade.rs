@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::{discovery_support, support};
+use crate::acp_suite::{discovery_support, support};
 
 use discovery_support::DiscoveryHost;
 use futures_executor::block_on;

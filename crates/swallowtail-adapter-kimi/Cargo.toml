@@ -38,26 +38,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "live_installed_probe"
-path = "tests/live_installed_probe.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "prepared_facade"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "kimi_code_2_1_1_acp_identity"
-path = "tests/kimi_code_2_1_1_acp_identity.rs"
-
-[[test]]
-name = "headless_structured_run"
-path = "tests/headless_suite.rs"
-
-[[test]]
-name = "local_server_interactive"
-path = "tests/local_suite.rs"
-
-[[test]]
-name = "executable_identity"
-path = "tests/identity_suite.rs"

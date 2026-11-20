@@ -1,5 +1,5 @@
-#[path = "live_support/mod.rs"]
-mod live_support;
+#[allow(unused_imports)]
+use crate::live_support;
 
 #[path = "live_conformance.rs"]
 mod live_conformance;

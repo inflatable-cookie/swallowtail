@@ -40,55 +40,6 @@ swallowtail-testkit.workspace = true
 workspace = true
 
 [[test]]
-name = "installed_probe"
-path = "tests/installed_probe.rs"
-required-features = ["live-probes"]
+name = "integration"
+path = "tests/integration/main.rs"
 
-[[test]]
-name = "http_mcp_live_harness"
-path = "tests/http_mcp_live_harness.rs"
-
-[[test]]
-name = "http_mcp_live_gate"
-path = "tests/http_mcp_live_gate.rs"
-required-features = ["live-probes"]
-
-[[test]]
-name = "prepared_facade"
-path = "tests/runtime_suite.rs"
-
-[[test]]
-name = "protocol_fixtures"
-path = "tests/protocol_suite.rs"
-
-[[test]]
-name = "opencode_http_1_18_35_delta_ledger"
-path = "tests/opencode_http_1_18_35_delta_ledger.rs"
-
-[[test]]
-name = "opencode_http_1_19_4_delta_ledger"
-path = "tests/opencode_http_1_19_4_delta_ledger.rs"
-
-[[test]]
-name = "opencode_http_1_19_5_delta_ledger"
-path = "tests/opencode_http_1_19_5_delta_ledger.rs"
-
-[[test]]
-name = "acp_suite"
-path = "tests/acp_suite.rs"
-
-[[test]]
-name = "acp_prepared_facade"
-path = "tests/acp_prepared_facade.rs"
-
-[[test]]
-name = "opencode_acp_1_18_35_delta_ledger"
-path = "tests/opencode_acp_1_18_35_delta_ledger.rs"
-
-[[test]]
-name = "opencode_acp_1_19_4_delta_ledger"
-path = "tests/opencode_acp_1_19_4_delta_ledger.rs"
-
-[[test]]
-name = "opencode_acp_1_19_5_delta_ledger"
-path = "tests/opencode_acp_1_19_5_delta_ledger.rs"

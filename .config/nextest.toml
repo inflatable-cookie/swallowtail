@@ -13,9 +13,14 @@ status-level = "fail"
 # from another package means adding that package there too, or the binary runs
 # nowhere.
 #
+# Every other test in a package is a module of that package's single
+# `tests/integration` binary, declared in `tests/integration/main.rs`. A new
+# test file becomes a module there rather than a new `[[test]]` target, so the
+# workspace keeps one integration binary per package.
+#
 # Terminate after two 60s slow periods so a hang fails with the test name
 # instead of running to the GitHub job limit. A healthy ci-process run is
-# about 52s wall clock for 329 tests; fixture hang guards are failure
+# about 75s wall clock for 375 tests; fixture hang guards are failure
 # oracles and passing tests do not rely on them. The nextest jobs in
 # .github/workflows/ci.yml also set timeout-minutes as a backstop.
 [profile.ci]

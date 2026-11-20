@@ -12,7 +12,8 @@
 //! real native; the separate trusted-runner suite supplies original evidence.
 
 mod native_proof_support;
-mod sdk_support;
+#[allow(unused_imports)]
+use crate::sdk_support;
 // Every integration binary compiles the shared fixture tree but uses a subset.
 #[allow(dead_code)]
 mod sidecar_asset_support;

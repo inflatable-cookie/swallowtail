@@ -1,4 +1,3 @@
-use crate::cleanup::merge_cleanup;
 use crate::process_close::AppServerTask;
 use crate::registered_tools::CodexRegisteredTurn;
 use crate::rpc::{RpcConnection, failure};
@@ -167,7 +166,7 @@ impl TurnHandle for CodexTurnHandle {
             } else {
                 CleanupOutcome::NotApplicable
             };
-            merge_cleanup(registered_cleanup, task_cleanup)
+            CleanupOutcome::merge(registered_cleanup, task_cleanup)
         })
     }
 }

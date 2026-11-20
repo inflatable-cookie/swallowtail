@@ -1,3 +1,7 @@
+use crate::claude_code_plan_checks::{
+    RESPONSE_ONLY_PLAN_ROUTE, plan_mismatch, reject_capability, require_capability,
+    require_constraint, require_service, unsupported,
+};
 use crate::failure::failure;
 use swallowtail_core::{
     CancellationScope, Capability, CapabilityConstraint, CredentialMechanism,
@@ -26,72 +30,92 @@ pub(crate) fn validate(
         ),
         (services.time().is_some(), HostServiceKind::Time, "time"),
     ] {
-        require_service(plan, available, service, name)?;
+        require_service(&RESPONSE_ONLY_PLAN_ROUTE, plan, available, service, name)?;
     }
     if plan.ownership() != InstanceOwnership::HostOwnedEphemeral
         || plan.model_id().is_none()
         || plan.model_route_id().is_none()
     {
-        return Err(plan_mismatch("instance or model route"));
+        return Err(plan_mismatch(
+            &RESPONSE_ONLY_PLAN_ROUTE,
+            "instance or model route",
+        ));
     }
     validate_harness_configuration_policy(plan, request.policy())
-        .map_err(|_| plan_mismatch("harness configuration posture"))?;
+        .map_err(|_| plan_mismatch(&RESPONSE_ONLY_PLAN_ROUTE, "harness configuration posture"))?;
     validate_harness_isolation_policy(plan, request.policy())
-        .map_err(|_| plan_mismatch("harness isolation"))?;
+        .map_err(|_| plan_mismatch(&RESPONSE_ONLY_PLAN_ROUTE, "harness isolation"))?;
     if request.policy().harness_configuration_posture()
         != Some(HarnessConfigurationPosture::ProviderSuppressed)
         || request.policy().harness_isolation() != Some(HarnessIsolation::AmbientHost)
     {
-        return Err(plan_mismatch("response-only harness authority"));
+        return Err(plan_mismatch(
+            &RESPONSE_ONLY_PLAN_ROUTE,
+            "response-only harness authority",
+        ));
     }
     if request.policy().provider_execution() != ProviderExecutionPolicy::Attached
         || request.policy().provider_retention() != ProviderRetentionPolicy::Prohibited
         || request.policy().provider_recovery() != ProviderRecoveryPolicy::Prohibited
         || request.policy().stream_reattachment() != StreamReattachmentPolicy::Disabled
     {
-        return Err(unsupported("provider lifecycle policy"));
+        return Err(unsupported(
+            &RESPONSE_ONLY_PLAN_ROUTE,
+            "provider lifecycle policy",
+        ));
     }
     if request.policy().external_network() != ExternalNetworkPolicy::Denied
         || request.policy().external_search() != ExternalSearchPolicy::Disabled
     {
-        return Err(unsupported("provider search or external tool network"));
+        return Err(unsupported(
+            &RESPONSE_ONLY_PLAN_ROUTE,
+            "provider search or external tool network",
+        ));
     }
     if request.policy().harness_mode().is_some() {
-        return Err(unsupported("harness mode"));
+        return Err(unsupported(&RESPONSE_ONLY_PLAN_ROUTE, "harness mode"));
     }
     if let Some(reasoning) = request.policy().reasoning_mode() {
         require_constraint(
+            &RESPONSE_ONLY_PLAN_ROUTE,
             plan,
             Capability::ReasoningSelection,
             CapabilityConstraint::ReasoningMode(reasoning.clone()),
         )?;
     }
     if request.deadline().is_none() {
-        return Err(unsupported("missing host deadline"));
+        return Err(unsupported(
+            &RESPONSE_ONLY_PLAN_ROUTE,
+            "missing host deadline",
+        ));
     }
     if request.working_resource().is_some() {
         require_service(
+            &RESPONSE_ONLY_PLAN_ROUTE,
             plan,
             services.working_resource().is_some(),
             HostServiceKind::WorkingResource,
             "working resource",
         )?;
         require_constraint(
+            &RESPONSE_ONLY_PLAN_ROUTE,
             plan,
             Capability::WorkingResource,
             CapabilityConstraint::ResourceAccess(ResourceAccess::Read),
         )?;
         require_constraint(
+            &RESPONSE_ONLY_PLAN_ROUTE,
             plan,
             Capability::WorkingResource,
             CapabilityConstraint::ResourceRepresentation(ResourceRepresentation::Filesystem),
         )?;
     } else {
-        reject_capability(plan, Capability::WorkingResource)?;
+        reject_capability(&RESPONSE_ONLY_PLAN_ROUTE, plan, Capability::WorkingResource)?;
         if crate::claude_code_response_selection::version_uses_narrowed_builtin_hooks(
             observed_version.version(),
         ) {
             require_service(
+                &RESPONSE_ONLY_PLAN_ROUTE,
                 plan,
                 services.working_resource().is_some(),
                 HostServiceKind::WorkingResource,
@@ -105,6 +129,7 @@ pub(crate) fn validate(
         || request.maximum_output_tokens().is_some()
     {
         return Err(unsupported(
+            &RESPONSE_ONLY_PLAN_ROUTE,
             "attachments, consumer tools, schema, or output-token limit",
         ));
     }
@@ -113,15 +138,16 @@ pub(crate) fn validate(
         Capability::StreamingEvents,
         Capability::UsageReporting,
     ] {
-        require_capability(plan, required)?;
+        require_capability(&RESPONSE_ONLY_PLAN_ROUTE, plan, required)?;
     }
     for forbidden in [
         Capability::StructuredOutput,
         Capability::HarnessModeSelection,
     ] {
-        reject_capability(plan, forbidden)?;
+        reject_capability(&RESPONSE_ONLY_PLAN_ROUTE, plan, forbidden)?;
     }
     require_constraint(
+        &RESPONSE_ONLY_PLAN_ROUTE,
         plan,
         Capability::Interruption,
         CapabilityConstraint::CancellationScope(CancellationScope::StructuredRun),
@@ -156,83 +182,4 @@ pub(crate) fn validate_plan(
         ));
     }
     crate::claude_code_response_selection::select_response_only_plan(plan)
-}
-
-fn require_service(
-    plan: &PreflightPlan,
-    available: bool,
-    service: HostServiceKind,
-    name: &str,
-) -> Result<(), RuntimeFailure> {
-    if !plan
-        .requirements()
-        .host_services()
-        .any(|required| required == service)
-    {
-        Err(plan_mismatch(name))
-    } else if !available {
-        Err(failure(
-            "swallowtail.claude_code.response_only.host_service_missing",
-            format!(
-                "Claude Code response-only execution requires the preflight-bound {name} service"
-            ),
-        ))
-    } else {
-        Ok(())
-    }
-}
-
-fn require_capability(plan: &PreflightPlan, capability: Capability) -> Result<(), RuntimeFailure> {
-    if plan
-        .requirements()
-        .capabilities()
-        .any(|required| required.capability() == capability)
-    {
-        Ok(())
-    } else {
-        Err(plan_mismatch("capability"))
-    }
-}
-
-fn reject_capability(plan: &PreflightPlan, capability: Capability) -> Result<(), RuntimeFailure> {
-    if plan
-        .requirements()
-        .capabilities()
-        .any(|required| required.capability() == capability)
-    {
-        Err(plan_mismatch("forbidden capability"))
-    } else {
-        Ok(())
-    }
-}
-
-fn require_constraint(
-    plan: &PreflightPlan,
-    capability: Capability,
-    constraint: CapabilityConstraint,
-) -> Result<(), RuntimeFailure> {
-    if plan.requirements().capabilities().any(|required| {
-        required.capability() == capability
-            && required
-                .constraints()
-                .any(|required| required == &constraint)
-    }) {
-        Ok(())
-    } else {
-        Err(plan_mismatch("capability constraint"))
-    }
-}
-
-fn plan_mismatch(dimension: &str) -> RuntimeFailure {
-    failure(
-        "swallowtail.claude_code.response_only.request_plan_mismatch",
-        format!("Claude Code response-only request does not match its preflight-bound {dimension}"),
-    )
-}
-
-fn unsupported(feature: &str) -> RuntimeFailure {
-    failure(
-        "swallowtail.claude_code.response_only.unsupported_input",
-        format!("Claude Code response-only execution does not support {feature}"),
-    )
 }

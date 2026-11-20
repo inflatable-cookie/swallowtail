@@ -1,16 +1,16 @@
 use crate::claude_code_handle::ClaudeCodeCancellation;
+use crate::claude_code_pump_common::{
+    self as common, RESPONSE_ONLY_PUMP_ROUTE, cleanup_from_wait, emit_host_process_debug,
+    emit_protocol_debug, event_delivery_failed, force_cleanup, process_wait_failed, send_all,
+};
 use crate::claude_code_response_events::ClaudeCodeResponseEventParser;
-use std::future::poll_fn;
 use std::sync::Arc;
-use std::task::Poll;
-use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, DeadlineObservation, DebugObservationKind, HostServices,
-    ProcessHandle, ProcessOutputChunk, ProcessOutputStream, RuntimeEventSender, RuntimeFailure,
-    TerminalOutcome, TerminalStatus,
+    BoxFuture, CleanupOutcome, DeadlineObservation, HostServices, ProcessHandle,
+    ProcessOutputStream, RuntimeEventSender, TerminalOutcome, TerminalStatus,
 };
 
-const ROUTE: &str = "claude-code.response-only";
+const ROUTE: common::PumpRoute = RESPONSE_ONLY_PUMP_ROUTE;
 
 pub(crate) async fn pump(
     process: Arc<dyn ProcessHandle>,
@@ -22,24 +22,24 @@ pub(crate) async fn pump(
 ) -> TerminalOutcome {
     let mut deadline = Some(deadline);
     loop {
-        match next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
-            NextOutput::Deadline => {
-                let cleanup = force_cleanup(process.as_ref()).await;
+        match common::next_output(process.as_ref(), cancellation.as_ref(), &mut deadline).await {
+            common::NextOutput::Deadline => {
+                let cleanup = force_cleanup(&ROUTE, process.as_ref()).await;
                 return TerminalOutcome::new(TerminalStatus::TimedOut, cleanup);
             }
-            NextOutput::Process(Ok(Some(chunk)))
+            common::NextOutput::Process(Ok(Some(chunk)))
                 if chunk.stream() == ProcessOutputStream::Stdout =>
             {
                 match parser.push(chunk.bytes()) {
                     Ok(parsed) => {
                         if send_all(&events, parsed).is_err() {
-                            let cleanup = force_cleanup(process.as_ref()).await;
-                            return event_delivery_failed(cleanup);
+                            let cleanup = force_cleanup(&ROUTE, process.as_ref()).await;
+                            return event_delivery_failed(&ROUTE, cleanup);
                         }
                     }
                     Err(error) => {
-                        emit_protocol_debug(&services, &error, "response-only.pump.decode");
-                        let cleanup = force_cleanup(process.as_ref()).await;
+                        emit_protocol_debug(&ROUTE, &services, &error, ROUTE.decode_stage);
+                        let cleanup = force_cleanup(&ROUTE, process.as_ref()).await;
                         return TerminalOutcome::new(
                             TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                             cleanup,
@@ -47,11 +47,11 @@ pub(crate) async fn pump(
                     }
                 }
             }
-            NextOutput::Process(Ok(Some(_))) => {}
-            NextOutput::Process(Ok(None)) => break,
-            NextOutput::Process(Err(error)) => {
-                emit_host_process_debug(&services, &error, "response-only.pump.read");
-                let cleanup = force_cleanup(process.as_ref()).await;
+            common::NextOutput::Process(Ok(Some(_))) => {}
+            common::NextOutput::Process(Ok(None)) => break,
+            common::NextOutput::Process(Err(error)) => {
+                emit_host_process_debug(&ROUTE, &services, &error, ROUTE.read_stage);
+                let cleanup = force_cleanup(&ROUTE, process.as_ref()).await;
                 return TerminalOutcome::new(
                     TerminalStatus::HostFailed(error.diagnostic().clone()),
                     cleanup,
@@ -61,137 +61,25 @@ pub(crate) async fn pump(
     }
     let exit = process.wait().await;
     if cancellation.is_requested() {
-        return TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&exit));
+        return TerminalOutcome::new(TerminalStatus::Cancelled, cleanup_from_wait(&ROUTE, &exit));
     }
     match exit {
         Ok(exit) => match parser.finish(exit) {
             Ok((trailing, outcome)) => {
                 if send_all(&events, trailing).is_err() {
-                    event_delivery_failed(CleanupOutcome::Clean)
+                    event_delivery_failed(&ROUTE, CleanupOutcome::Clean)
                 } else {
                     outcome
                 }
             }
             Err(error) => {
-                emit_protocol_debug(&services, &error, "response-only.pump.finish");
+                emit_protocol_debug(&ROUTE, &services, &error, ROUTE.finish_stage);
                 TerminalOutcome::new(
                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                     CleanupOutcome::Clean,
                 )
             }
         },
-        Err(_) => {
-            let diagnostic = SafeDiagnostic::new(
-                "swallowtail.claude_code.response_only.process_wait_failed",
-                "Claude Code response-only process wait failed",
-            );
-            services.emit_failure_debug(
-                DebugObservationKind::HostProcess,
-                ROUTE,
-                "response-only.pump.wait",
-                diagnostic.code(),
-                diagnostic.message(),
-            );
-            TerminalOutcome::new(
-                TerminalStatus::HostFailed(diagnostic),
-                process_cleanup_failed(),
-            )
-        }
+        Err(_) => process_wait_failed(&ROUTE, &services),
     }
-}
-
-pub(crate) async fn cleanup_failed_start(process: &dyn ProcessHandle) {
-    let _ = force_cleanup(process).await;
-}
-
-fn emit_protocol_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
-    let diagnostic = error.diagnostic();
-    services.emit_failure_debug(
-        DebugObservationKind::ProtocolParse,
-        ROUTE,
-        stage,
-        diagnostic.code(),
-        diagnostic.message(),
-    );
-}
-
-fn emit_host_process_debug(services: &HostServices, error: &RuntimeFailure, stage: &'static str) {
-    let diagnostic = error.diagnostic();
-    services.emit_failure_debug(
-        DebugObservationKind::HostProcess,
-        ROUTE,
-        stage,
-        diagnostic.code(),
-        diagnostic.message(),
-    );
-}
-
-enum NextOutput {
-    Process(Result<Option<ProcessOutputChunk>, RuntimeFailure>),
-    Deadline,
-}
-
-async fn next_output(
-    process: &dyn ProcessHandle,
-    cancellation: &ClaudeCodeCancellation,
-    deadline: &mut Option<BoxFuture<'static, DeadlineObservation>>,
-) -> NextOutput {
-    let mut read = process.read_output();
-    poll_fn(|context| {
-        if !cancellation.is_requested()
-            && let Some(wait) = deadline.as_mut()
-            && wait.as_mut().poll(context).is_ready()
-        {
-            return Poll::Ready(NextOutput::Deadline);
-        }
-        read.as_mut().poll(context).map(NextOutput::Process)
-    })
-    .await
-}
-
-fn send_all(
-    sender: &RuntimeEventSender,
-    events: impl IntoIterator<Item = swallowtail_runtime::RuntimeEvent>,
-) -> Result<(), RuntimeFailure> {
-    for event in events {
-        sender.send(event)?;
-    }
-    Ok(())
-}
-
-async fn force_cleanup(process: &dyn ProcessHandle) -> CleanupOutcome {
-    let force = process.force_stop().await;
-    let wait = process.wait().await;
-    if force.is_err() || wait.is_err() {
-        process_cleanup_failed()
-    } else {
-        CleanupOutcome::Clean
-    }
-}
-
-fn cleanup_from_wait(
-    exit: &Result<swallowtail_runtime::ProcessExit, RuntimeFailure>,
-) -> CleanupOutcome {
-    if exit.is_ok() {
-        CleanupOutcome::Clean
-    } else {
-        process_cleanup_failed()
-    }
-}
-
-fn event_delivery_failed(cleanup: CleanupOutcome) -> TerminalOutcome {
-    TerminalOutcome::new(
-        TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
-            "swallowtail.claude_code.response_only.event_delivery_failed",
-            "Claude Code response-only event delivery failed",
-        )),
-        cleanup,
-    )
-}
-
-fn process_cleanup_failed() -> CleanupOutcome {
-    CleanupOutcome::Failed(SafeDiagnostic::new(
-        "swallowtail.claude_code.response_only.process_cleanup_failed",
-        "Claude Code response-only process cleanup failed",
-    ))
 }

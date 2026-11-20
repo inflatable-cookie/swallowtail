@@ -165,7 +165,7 @@ impl AccessLeases {
             },
             None => CleanupOutcome::NotApplicable,
         };
-        merge_cleanup(resource, credential)
+        CleanupOutcome::merge(resource, credential)
     }
 }
 

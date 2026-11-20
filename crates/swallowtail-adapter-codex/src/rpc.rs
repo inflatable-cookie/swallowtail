@@ -315,11 +315,6 @@ impl LifecycleNotification {
     }
 }
 
-fn trim_newline(line: &[u8]) -> &[u8] {
-    let line = line.strip_suffix(b"\n").unwrap_or(line);
-    line.strip_suffix(b"\r").unwrap_or(line)
-}
-
 fn malformed_inbound() -> RuntimeFailure {
     failure(
         "swallowtail.codex.app_server.malformed_message",

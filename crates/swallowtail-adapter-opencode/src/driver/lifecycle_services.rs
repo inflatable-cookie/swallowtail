@@ -87,7 +87,7 @@ async fn join_active(active: &ActiveSlot) -> CleanupOutcome {
                 Some(task) => cleanup_from_result(task.join().await),
                 None => CleanupOutcome::NotApplicable,
             };
-            merge_cleanup(task, turn.attachment.release().await)
+            CleanupOutcome::merge(task, turn.attachment.release().await)
         }
         None => CleanupOutcome::NotApplicable,
     }
@@ -110,7 +110,7 @@ async fn close_active(active: &ActiveSlot) -> CleanupOutcome {
         Some(cancellation) => cleanup_from_result(cancellation.request().await.map(|_| ())),
         None => CleanupOutcome::NotApplicable,
     };
-    merge_cleanup(cancel_cleanup, join_active(active).await)
+    CleanupOutcome::merge(cancel_cleanup, join_active(active).await)
 }
 
 fn cleanup_from_result(result: Result<(), RuntimeFailure>) -> CleanupOutcome {
@@ -120,17 +120,7 @@ fn cleanup_from_result(result: Result<(), RuntimeFailure>) -> CleanupOutcome {
     }
 }
 
-fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcome {
-    match (&current, &next) {
-        (CleanupOutcome::Failed(_), _) => current,
-        (_, CleanupOutcome::Failed(_)) => next,
-        (CleanupOutcome::Degraded(_), _) => current,
-        (_, CleanupOutcome::Degraded(_)) => next,
-        (CleanupOutcome::Clean, _) => current,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => next,
-        _ => current,
-    }
-}
+
 
 fn scope(kind: &str, id: &str) -> Result<ScopeId, RuntimeFailure> {
     ScopeId::new(format!("opencode-http:{kind}:{id}")).map_err(|_| {

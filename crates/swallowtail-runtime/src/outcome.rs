@@ -146,6 +146,27 @@ impl CleanupOutcome {
             Self::Clean | Self::NotApplicable => None,
         }
     }
+
+    /// Combines two sequential cleanup results into the worse of the two.
+    ///
+    /// An operation usually releases several resources one after another and
+    /// reports their combined outcome as one value. A failure outranks a
+    /// degradation, which outranks a clean release; two kits that each report
+    /// nothing applicable stay nothing applicable. When both sides report the
+    /// same severity the receiver's own diagnostic is kept, so the first
+    /// observed reason survives a later duplicate.
+    #[must_use]
+    pub fn merge(self, next: Self) -> Self {
+        match (&self, &next) {
+            (Self::Failed(_), _) => self,
+            (_, Self::Failed(_)) => next,
+            (Self::Degraded(_), _) => self,
+            (_, Self::Degraded(_)) => next,
+            (Self::Clean, _) => self,
+            (Self::NotApplicable, Self::Clean) => next,
+            (Self::NotApplicable, Self::NotApplicable) => self,
+        }
+    }
 }
 
 /// Best available truth about provider-side cancellation.

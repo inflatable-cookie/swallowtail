@@ -1,5 +1,6 @@
 use crate::input::required_text;
 use crate::{AttachmentRef, InputValueRequired};
+use std::io::Read;
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 /// Host-supported representation used to transport an attachment.
@@ -138,3 +139,38 @@ impl AttachmentDescriptor {
         self.digest.as_ref()
     }
 }
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+/// Reason a bounded attachment read produced no bytes.
+///
+/// The set is closed on purpose: every adapter matches it exhaustively, so a
+/// new refusal has to be classified by each caller instead of defaulting.
+pub enum AttachmentReadFailure {
+    /// The materialized file could not be opened or read.
+    Unreadable,
+    /// The materialized file held more than the permitted number of bytes.
+    TooLarge,
+}
+
+/// Reads one host-materialized attachment file without exceeding `maximum` bytes.
+///
+/// The read stops one byte past `maximum`, so an oversized file is rejected
+/// from a buffer bounded by the caller's own limit instead of being drained
+/// into memory first. That bound is what makes this safe on a stream that never
+/// ends. A refusal carries only its reason, so each adapter keeps its own
+/// provider-specific code and message.
+pub fn read_bounded_attachment(path: &str, maximum: u64) -> Result<Vec<u8>, AttachmentReadFailure> {
+    let file = std::fs::File::open(path).map_err(|_| AttachmentReadFailure::Unreadable)?;
+    let mut bytes = Vec::new();
+    file.take(maximum.saturating_add(1))
+        .read_to_end(&mut bytes)
+        .map_err(|_| AttachmentReadFailure::Unreadable)?;
+    if bytes.len() as u64 > maximum {
+        return Err(AttachmentReadFailure::TooLarge);
+    }
+    Ok(bytes)
+}
+
+#[cfg(test)]
+#[path = "attachment/tests.rs"]
+mod tests;

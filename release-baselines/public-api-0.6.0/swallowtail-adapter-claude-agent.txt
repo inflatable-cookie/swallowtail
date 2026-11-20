@@ -263,47 +263,6 @@ pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::SupportedM
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkOpenSubcode::ToolsInvalid
 impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode
 pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenSubcode::as_str(self) -> &'static str
-pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_284Native2_1_284
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_285Native2_1_285
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_286Native2_1_286
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_287Native2_1_287
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_288Native2_1_288
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_289Native2_1_289
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_290Native2_1_290
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_291Native2_1_291
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_292Native2_1_292
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_293Native2_1_293
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_294Native2_1_294
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_295Native2_1_295
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_296Native2_1_296
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_299Native2_1_299
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_300Native2_1_300
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_301Native2_1_301
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_302Native2_1_302
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_303Native2_1_303
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_304Native2_1_304
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_305Native2_1_305
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_306Native2_1_306
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_307Native2_1_307
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_308Native2_1_308
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_309Native2_1_309
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_310Native2_1_310
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_311Native2_1_311
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_312Native2_1_312
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_314Native2_1_314
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_315Native2_1_315
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_316Native2_1_316
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_317Native2_1_317
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_318Native2_1_318
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_319Native2_1_319
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_321Native2_1_321
-pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::V0_3_322Native2_1_322
-impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair
-pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::DEFAULT: Self
-pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::MAINTAINED: [Self; 35]
-pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::native_version(self) -> &'static str
-pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::package_version(self) -> &'static str
 pub enum swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::AcceptEdits
 pub swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPermissionMode::Default
@@ -382,6 +341,14 @@ impl swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenReje
 pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::failure(&self) -> &swallowtail_runtime::failure::RuntimeFailure
 pub fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::into_failure(self) -> swallowtail_runtime::failure::RuntimeFailure
 pub const fn swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkOpenRejection::receipt(&self) -> &swallowtail_adapter_claude_agent::sdk::open_receipt::ClaudeAgentSdkFailedOpenReceipt
+pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair(_)
+impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair
+pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::DEFAULT: Self
+pub const swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::MAINTAINED: [Self; 35]
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::from_package_version(&str) -> core::option::Option<Self>
+pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::from_versions(&str, &str) -> core::option::Option<Self>
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::native_version(self) -> &'static str
+pub const fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPackageNativePair::package_version(self) -> &'static str
 pub struct swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
 impl swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession
 pub fn swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkPreparedSession::list_sessions(&self, swallowtail_runtime::host_registry::HostServices) -> swallowtail_runtime::async_types::BoxFuture<'static, core::result::Result<alloc::vec::Vec<swallowtail_adapter_claude_agent::sdk::ClaudeAgentSdkSessionListing>, swallowtail_runtime::failure::RuntimeFailure>>

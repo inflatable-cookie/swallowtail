@@ -222,7 +222,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 self.connection.cleanup_outcome()
             };
             let resource_cleanup = self.access.release().await;
-                merge_cleanup(process_cleanup, resource_cleanup)
+                CleanupOutcome::merge(process_cleanup, resource_cleanup)
             }),
         )
     }

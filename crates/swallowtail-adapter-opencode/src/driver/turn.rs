@@ -52,7 +52,7 @@ impl TurnHandle for OpenCodeTurnHandle {
                 let _ = self.cancellation.request().await;
             }
             let active = join_active(&self.active).await;
-            merge_cleanup(active, self.attachment.release().await)
+            CleanupOutcome::merge(active, self.attachment.release().await)
         })
     }
 }
@@ -340,7 +340,7 @@ async fn pump_turn(pump: TurnPump) {
         };
         callbacks.abandon(reason);
     }
-    let cleanup = merge_cleanup(status.1, stream_cleanup);
+    let cleanup = CleanupOutcome::merge(status.1, stream_cleanup);
     let activity_status = match &status.0 {
         TerminalStatus::Detached => None,
         TerminalStatus::Completed => Some(swallowtail_runtime::ActivityStatus::Completed),

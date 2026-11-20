@@ -1,5 +1,5 @@
 use super::super::access::{release_credential, release_resource};
-use super::super::session::{cleanup_failure, merge_cleanup};
+use super::super::session::cleanup_failure;
 use super::*;
 use crate::failure::{failure, malformed};
 use swallowtail_core::ResourceRepresentation;
@@ -170,6 +170,6 @@ impl PendingManagement {
         };
         let resource = release_resource(self.resource.take(), services).await;
         let credential = release_credential(self.credential.take(), services).await;
-        merge_cleanup(merge_cleanup(task, resource), credential)
+        CleanupOutcome::merge(CleanupOutcome::merge(task, resource), credential)
     }
 }

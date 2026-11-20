@@ -1,4 +1,3 @@
-use crate::cleanup::merge_cleanup;
 use crate::exec_validation::validate;
 use crate::model_verbosity::CodexModelVerbosity;
 use crate::selection::CodexExecBehavior;
@@ -67,11 +66,11 @@ impl ExecMaterializations {
         if let Some(service) = self.schema_service
             && let Some(lease) = self.schema
         {
-            cleanup = merge_cleanup(cleanup, service.release_file(lease).await);
+            cleanup = CleanupOutcome::merge(cleanup, service.release_file(lease).await);
         }
         if let Some(service) = self.attachment_service {
             for lease in self.attachments.into_iter().rev() {
-                cleanup = merge_cleanup(cleanup, service.release_file(lease).await);
+                cleanup = CleanupOutcome::merge(cleanup, service.release_file(lease).await);
             }
         }
         cleanup

@@ -33,6 +33,7 @@ mod input;
 mod installed_discovery;
 mod installed_executable;
 mod model_artifact;
+mod ndjson;
 mod negotiated_session_options;
 mod network;
 mod operation_policy;
@@ -94,8 +95,8 @@ pub use async_types::{
     BoxRealtimeMediaEventStream,
 };
 pub use attachment::{
-    AttachmentDescriptor, AttachmentDigest, AttachmentRepresentation, AttachmentRole,
-    LeaseCleanupAuthority,
+    AttachmentDescriptor, AttachmentDigest, AttachmentReadFailure, AttachmentRepresentation,
+    AttachmentRole, LeaseCleanupAuthority, read_bounded_attachment,
 };
 pub use callback::{
     CallbackAbandonment, CallbackExchange, CallbackFailureKind, CallbackOperationId,
@@ -215,6 +216,7 @@ pub use installed_executable::{
     validate_installed_executable_discovery_services,
 };
 pub use model_artifact::{ModelArtifactAccess, ModelArtifactLease, ModelArtifactService};
+pub use ndjson::{scan_lines, strip_carriage_return};
 pub use negotiated_session_options::{
     EffectiveReasoningSetup, NegotiatedReasoningSetup, NegotiatedSessionModelOption,
     NegotiatedSessionModelOptions, SessionLifecycleOperation, prepare_negotiated_reasoning_setup,

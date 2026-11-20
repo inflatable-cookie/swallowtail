@@ -193,7 +193,7 @@ impl InteractiveSessionHandle for OpenCodeAcpSessionHandle {
                 None => CleanupOutcome::NotApplicable,
             };
             // Credential lease is absent: LocalUnauthenticated, host-owned state.
-                merge_cleanup(task_cleanup, resource_cleanup)
+                CleanupOutcome::merge(task_cleanup, resource_cleanup)
             }),
         )
     }
@@ -232,18 +232,3 @@ async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
     Ok(())
 }
 
-fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(error), _) | (_, CleanupOutcome::Failed(error)) => {
-            CleanupOutcome::Failed(error)
-        }
-        (CleanupOutcome::Degraded(error), _) | (_, CleanupOutcome::Degraded(error)) => {
-            CleanupOutcome::Degraded(error)
-        }
-        (CleanupOutcome::Clean, CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
-        | (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
-}

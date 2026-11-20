@@ -52,7 +52,7 @@ impl ClaudeCodeEventParser {
     pub(crate) fn push(&mut self, bytes: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
         let mut pending = std::mem::take(&mut self.pending);
         let mut events = Vec::new();
-        let scanned = crate::ndjson::scan_lines(
+        let scanned = swallowtail_runtime::scan_lines(
             &mut pending,
             bytes,
             MAXIMUM_LINE_BYTES,

@@ -5,8 +5,9 @@ use swallowtail_runtime::{
     installed_probe_codes, probe_installed_executable_version,
 };
 
-use crate::claude_code_discovery::CLAUDE_CODE_INSTALL_GUIDANCE;
-use crate::claude_code_discovery::attach_install_guidance;
+use crate::claude_code_discovery::{
+    CLAUDE_CODE_INSTALL_GUIDANCE, attach_install_guidance, parse_version_output,
+};
 use crate::claude_code_response::ClaudeCodeResponseOnlyDriver;
 use crate::failure::failure;
 
@@ -56,10 +57,7 @@ impl DiscoveryDriver for ClaudeCodeResponseOnlyDriver {
 }
 
 fn parse_version(output: &[u8]) -> Option<swallowtail_core::InterfaceVersionBinding> {
-    let output = std::str::from_utf8(output).ok()?;
-    let output = output.strip_suffix('\n').unwrap_or(output);
-    let version = output.strip_suffix(" (Claude Code)")?;
-    crate::claude_code_response_only_binding(version)
+    parse_version_output(output, crate::claude_code_response_only_binding)
 }
 
 #[cfg(test)]

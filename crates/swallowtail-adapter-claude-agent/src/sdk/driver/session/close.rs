@@ -150,9 +150,9 @@ fn decide(report: &CleanupReport) -> CleanupOutcome {
         .cooperative_failure
         .clone()
         .map_or(CleanupOutcome::NotApplicable, CleanupOutcome::Failed);
-    let outcome = merge_cleanup(
-        merge_cleanup(
-            merge_cleanup(state.cleanup_outcome(), cooperative),
+    let outcome = CleanupOutcome::merge(
+        CleanupOutcome::merge(
+            CleanupOutcome::merge(state.cleanup_outcome(), cooperative),
             report.resource.clone(),
         ),
         report.credential.clone(),
@@ -198,20 +198,4 @@ fn guardian_unavailable() -> CleanupOutcome {
         "swallowtail.claude-agent.sdk.close_guardian_unavailable",
         "Claude Agent SDK sidecar could not start its enclosing cleanup guardian",
     ))
-}
-
-fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(error), _) | (_, CleanupOutcome::Failed(error)) => {
-            CleanupOutcome::Failed(error)
-        }
-        (CleanupOutcome::Degraded(error), _) | (_, CleanupOutcome::Degraded(error)) => {
-            CleanupOutcome::Degraded(error)
-        }
-        (CleanupOutcome::Clean, CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
-        | (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
 }

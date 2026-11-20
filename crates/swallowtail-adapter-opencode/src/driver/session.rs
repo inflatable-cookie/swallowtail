@@ -253,7 +253,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 Some(access) => access.release(&self.services).await,
                 None => CleanupOutcome::NotApplicable,
             };
-                merge_cleanup(active_cleanup, lease_cleanup)
+                CleanupOutcome::merge(active_cleanup, lease_cleanup)
             }),
         )
     }

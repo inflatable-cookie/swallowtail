@@ -1,4 +1,4 @@
-use self::cleanup::{merge_cleanup, release_credential, release_resource};
+use self::cleanup::{release_credential, release_resource};
 use super::handle::{PiTurnBinding, PiTurnHandle, SessionCancellation};
 use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
@@ -243,8 +243,8 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 let callbacks = self.connection.join_callback_tasks().await;
                 let resource = release_resource(self.resource.take(), &self.services).await;
                 let credential = release_credential(self.credential.take(), &self.services).await;
-                merge_cleanup(
-                    merge_cleanup(merge_cleanup(process, callbacks), resource),
+                CleanupOutcome::merge(
+                    CleanupOutcome::merge(CleanupOutcome::merge(process, callbacks), resource),
                     credential,
                 )
             }),

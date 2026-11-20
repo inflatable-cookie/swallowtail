@@ -266,7 +266,7 @@ impl TurnHandle for PiTurnHandle {
                 } else {
                     CleanupOutcome::NotApplicable
                 };
-            super::session::cleanup::merge_cleanup(task_cleanup, self.attachment.release().await)
+            CleanupOutcome::merge(task_cleanup, self.attachment.release().await)
         })
     }
 }

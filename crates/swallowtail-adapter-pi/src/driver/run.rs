@@ -1,5 +1,4 @@
 use super::session::PiSessionHandle;
-use super::session::cleanup::merge_cleanup;
 use super::validation::validate_run;
 use super::{PiRpcDriver, failure};
 use crate::connection::PiConnection;
@@ -130,7 +129,7 @@ impl StructuredRunDriver for PiRpcDriver {
                     let session_cleanup = Box::new(resources.session)
                         .close(cleanup, task_services)
                         .await;
-                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup);
+                    let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), session_cleanup);
                     let finished = copy_outcome_with_cleanup(outcome, cleanup);
                     let _ = terminal_sender.complete(finished);
                 }),

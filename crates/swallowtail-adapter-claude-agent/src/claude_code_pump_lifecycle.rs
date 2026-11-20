@@ -120,25 +120,10 @@ fn cleanup_cause(status: &TerminalStatus) -> WatcherCleanupCause {
 }
 
 fn replace_cleanup(outcome: TerminalOutcome, watcher_cleanup: CleanupOutcome) -> TerminalOutcome {
-    let cleanup = merge_cleanup(outcome.cleanup().clone(), watcher_cleanup);
+    let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), watcher_cleanup);
     let rebuilt = TerminalOutcome::new(outcome.status().clone(), cleanup);
     match outcome.output().cloned() {
         Some(output) => rebuilt.with_output(output),
         None => rebuilt,
-    }
-}
-
-fn merge_cleanup(left: CleanupOutcome, right: CleanupOutcome) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(diagnostic), _) | (_, CleanupOutcome::Failed(diagnostic)) => {
-            CleanupOutcome::Failed(diagnostic)
-        }
-        (CleanupOutcome::Degraded(diagnostic), _) | (_, CleanupOutcome::Degraded(diagnostic)) => {
-            CleanupOutcome::Degraded(diagnostic)
-        }
-        (CleanupOutcome::Clean, _) | (_, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
     }
 }

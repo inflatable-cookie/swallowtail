@@ -1,5 +1,4 @@
 use base64::Engine;
-use std::io::Read;
 use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, CleanupOutcome,
@@ -103,20 +102,17 @@ pub(super) async fn prepare_attachment(
 }
 
 /// Reads one materialized image without ever holding more than the bound.
-///
-/// The read stops one byte past `MAXIMUM_IMAGE_BYTES`, so an oversized file is
-/// rejected from a bounded buffer instead of exhausting memory first.
 fn read_bounded_image(path: &str) -> Result<Vec<u8>, RuntimeFailure> {
-    let file =
-        std::fs::File::open(path).map_err(|_| failure("materialized image was unreadable"))?;
-    let mut bytes = Vec::new();
-    file.take(MAXIMUM_IMAGE_BYTES + 1)
-        .read_to_end(&mut bytes)
-        .map_err(|_| failure("materialized image was unreadable"))?;
-    if bytes.len() as u64 > MAXIMUM_IMAGE_BYTES {
-        return Err(failure("materialized image exceeded the one MiB bound"));
-    }
-    Ok(bytes)
+    swallowtail_runtime::read_bounded_attachment(path, MAXIMUM_IMAGE_BYTES).map_err(|reason| {
+        match reason {
+            swallowtail_runtime::AttachmentReadFailure::Unreadable => {
+                failure("materialized image was unreadable")
+            }
+            swallowtail_runtime::AttachmentReadFailure::TooLarge => {
+                failure("materialized image exceeded the one MiB bound")
+            }
+        }
+    })
 }
 
 fn failure(reason: &'static str) -> RuntimeFailure {

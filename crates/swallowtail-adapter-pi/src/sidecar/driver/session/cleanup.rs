@@ -29,22 +29,3 @@ pub(in crate::sidecar::driver) async fn release_credential(
         (None, _) => CleanupOutcome::NotApplicable,
     }
 }
-
-pub(in crate::sidecar::driver) fn merge_cleanup(
-    left: CleanupOutcome,
-    right: CleanupOutcome,
-) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(error), _) | (_, CleanupOutcome::Failed(error)) => {
-            CleanupOutcome::Failed(error)
-        }
-        (CleanupOutcome::Degraded(error), _) | (_, CleanupOutcome::Degraded(error)) => {
-            CleanupOutcome::Degraded(error)
-        }
-        (CleanupOutcome::Clean, CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
-        | (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
-}

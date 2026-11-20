@@ -18,7 +18,6 @@ mod addable;
 mod app_server;
 mod app_server_activity;
 mod callback_exchange;
-mod cleanup;
 mod cli_version;
 mod consumer_route_projection;
 mod control_wait;

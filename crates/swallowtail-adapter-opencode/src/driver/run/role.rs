@@ -103,7 +103,7 @@ impl StructuredRunDriver for OpenCodeHttpDriver {
                     drop(resources.turn);
                     let session_cleanup =
                         close_run_session(resources.session, task_cleanup_boundary).await;
-                    let cleanup = merge_cleanup(outcome.cleanup().clone(), session_cleanup.cleanup);
+                    let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), session_cleanup.cleanup);
                     let mut finished = copy_terminal_outcome(outcome, cleanup);
                     finished = finished.with_remote_resource_deletion(
                         OwnedRemoteResourceKind::Session,

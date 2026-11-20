@@ -66,8 +66,8 @@ pub(super) async fn finish_cleanup(
 ) -> CleanupOutcome {
     let resource = release_resource(session.resource.take(), &session.services).await;
     let credential = release_credential(session.credential.take(), &session.services).await;
-    merge_cleanup(
-        merge_cleanup(merge_cleanup(native_close, task), resource),
+    CleanupOutcome::merge(
+        CleanupOutcome::merge(CleanupOutcome::merge(native_close, task), resource),
         credential,
     )
 }
@@ -80,23 +80,4 @@ pub(in crate::driver) fn cleanup_failure(
         "swallowtail.claude_agent.acp.cleanup_failed",
         format!("{message} ({code})"),
     ))
-}
-
-pub(in crate::driver) fn merge_cleanup(
-    left: CleanupOutcome,
-    right: CleanupOutcome,
-) -> CleanupOutcome {
-    match (left, right) {
-        (CleanupOutcome::Failed(error), _) | (_, CleanupOutcome::Failed(error)) => {
-            CleanupOutcome::Failed(error)
-        }
-        (CleanupOutcome::Degraded(error), _) | (_, CleanupOutcome::Degraded(error)) => {
-            CleanupOutcome::Degraded(error)
-        }
-        (CleanupOutcome::Clean, CleanupOutcome::Clean | CleanupOutcome::NotApplicable)
-        | (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => CleanupOutcome::Clean,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::NotApplicable) => {
-            CleanupOutcome::NotApplicable
-        }
-    }
 }

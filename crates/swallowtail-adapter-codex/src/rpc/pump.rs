@@ -5,31 +5,32 @@ impl RpcConnection {
         loop {
             match self.process.read_output().await {
                 Ok(Some(chunk)) if chunk.stream() == ProcessOutputStream::Stdout => {
-                    let mut rest = chunk.bytes();
-                    while let Some(newline) = rest.iter().position(|byte| *byte == b'\n') {
-                        let (head, tail) = rest.split_at(newline);
-                        // Bound the line before copying it, so an oversized chunk
-                        // never grows the pending buffer past the cap.
-                        if pending_bytes.len() + head.len() > MAX_STDOUT_LINE_BYTES {
-                            protocol_failure = Some(line_too_large());
-                            break;
-                        }
-                        pending_bytes.extend_from_slice(head);
-                        let line = std::mem::take(&mut pending_bytes);
-                        if let Err(error) = self.dispatch(trim_newline(&line)).await {
+                    let mut lines = Vec::new();
+                    let scanned = swallowtail_runtime::scan_lines(
+                        &mut pending_bytes,
+                        chunk.bytes(),
+                        MAX_STDOUT_LINE_BYTES,
+                        line_too_large,
+                        |line| {
+                            lines.push(swallowtail_runtime::strip_carriage_return(line).to_vec());
+                            Ok(())
+                        },
+                    );
+                    // Every line that completed before an oversized line is
+                    // dispatched in arrival order, so the framing bound is the
+                    // only thing that ends a chunk early.
+                    for line in lines {
+                        if let Err(error) = self.dispatch(&line).await {
                             let error = with_inbound_context(error, &line);
                             self.emit_malformed_inbound_debug(&error, &line);
                             protocol_failure = Some(error);
                             break;
                         }
-                        rest = &tail[1..];
                     }
-                    if protocol_failure.is_none() {
-                        if pending_bytes.len() + rest.len() > MAX_STDOUT_LINE_BYTES {
-                            protocol_failure = Some(line_too_large());
-                        } else {
-                            pending_bytes.extend_from_slice(rest);
-                        }
+                    if protocol_failure.is_none()
+                        && let Err(error) = scanned
+                    {
+                        protocol_failure = Some(error);
                     }
                     if protocol_failure.is_some() {
                         break;

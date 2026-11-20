@@ -120,7 +120,6 @@ SCRIPT_CLASSES = {
     "scripts/check-public-api.sh": "delegated",
     "scripts/run-grok-acp-client-mcp-probe.sh": "host-tool",
     "scripts/run-with-owned-cargo-target.sh": "private-build",
-    "scripts/release/backports/sdk-v0.5.2/runner.sh": "foreign-workspace",
     "scripts/verify-affected-packages.sh": "foreign-workspace",
     "scripts/verify-lease-api-fixture.sh": "foreign-workspace",
     "scripts/verify-source-consumer.sh": "foreign-workspace",
@@ -164,8 +163,6 @@ SCRIPT_REASONS = {
 FROZEN_ROUTES = {
     "check:lease-api-fixture": "c6fdb7bbbb927e11739933b34e77139bd7692efc9e6514ed28ab9a7195fc724c",
     "check:sdk-courier-timeout": "ba9f90cf3dd74e199741424b90bb59f2f9aad70804770ccd3b72b1333b56a7ed",
-    "check:sdk-patch-backport": "1534d2c04ffcf0f10cb02108f4a074b0add733cc947950267a8e08b0da35600e",
-    "format:sdk-patch-backport": "72fe81d697eaddbfc6ccdf14437a65ce3779d653a944d71006e7bb1358d79fec",
     "package:release-floor": "0cb71d915a9fe88738d5aaa5ce1e2ca84e50aedc931de4c77d409c5afcd50aea",
     "package:source-consumer": "ba60e274b11fcd880914c93f8a9668d54dc3c5755e694cccd8748aa226abc123",
     "package:verify-affected": "7bf8687e2b046979607f0f126b3d9b18a811ed4d4db0fd9cdbefde747a890d27",
@@ -175,7 +172,6 @@ FROZEN_ROUTES = {
     "validate:focused": "c14780de9a78c0e78c9badd6ff76fee8910471c2067691a5fd51c27ac5d7571b",
     "validate:sdk-courier-idle": "3407911648ad02cb060b4c391cf44ac3fe7daafed946fd8f036ac4f5c0c50154",
     "validate:sdk-courier-timeout": "a8ad8d435a62eb1fb33fe7bd1b44deca4fb4681b12b9314f98d5f38f6d939be8",
-    "validate:sdk-patch-backport": "961d8dc37f61806046f31958a642e25d79551f1fe25081a55b9c3f0e988eb055",
     "validate:sdk-registered-lifetime": "9f1b942a2d9698dcec791cc469ae5c732e9508dced5fd9c522ce65eeb4c96559",
     "validate:sdk-unsolicited-close": "0a0ee775a6fcb39fd05435acdb97ec5da39a322df26ef6c39c6a78ed59c1d210",
 }

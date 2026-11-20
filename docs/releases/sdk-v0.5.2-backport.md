@@ -1,7 +1,11 @@
 # v0.5.2 SDK Backport Proof
 
-Status: preparatory patch recipe against released `v0.5.1`; not a candidate
-release or compatibility claim.
+Status: retired recipe, kept as the proof of record against released `v0.5.1`;
+not a candidate release or compatibility claim. The runner, patch, manifest and
+consumer fixture were removed on 2026-11-21 as a spent one-off proof (Wave 1B of
+lane `workspace-slimming-and-acp-consolidation`). Their bytes stay in Git
+history before that removal; the selectors named below no longer exist. The
+recorded results below remain the historical proof, not a live entry point.
 
 ## Frozen Base
 
@@ -12,14 +16,14 @@ The recipe applies only to annotated tag `v0.5.1` with tag object
 current `main` into that source.
 
 The reviewable text patch, source manifest, exact changed-file inventory, and
-runner live under
-[`scripts/release/backports/sdk-v0.5.2/`](../../scripts/release/backports/sdk-v0.5.2/).
-The manifest pins the expected resulting tree and patch SHA-256. The runner
-refuses a different tag, commit, tree, dirty checkout, or an already-applied
-patch. Its self-check applies the patch twice to fresh exact-base clones and
-compares tree and file inventory.
+runner lived under `scripts/release/backports/sdk-v0.5.2/` until their removal.
+The manifest pinned the expected resulting tree and patch SHA-256. The runner
+refused a different tag, commit, tree, dirty checkout, or an already-applied
+patch. Its self-check applied the patch twice to fresh exact-base clones and
+compared tree and file inventory. Reconstruct them from Git history before the
+removal if the recipe is ever needed again.
 
-Apply it only in a fresh task-owned clone:
+The retired recipe applied it only in a fresh task-owned clone:
 
 ```sh
 scratch=$(mktemp -d)
@@ -29,9 +33,9 @@ git -C "$scratch/source" checkout --detach e9140b4634ee8ccd7cb0b08979cafe7d9e1e9
 bash scripts/release/backports/sdk-v0.5.2/runner.sh apply --source "$scratch/source"
 ```
 
-The final command stages the exact patch in that clone and prints its tree
-hash. To reconstruct the refusal and independent-reapplication checks, run
-`effigy check:sdk-patch-backport` from the recipe checkout.
+The final command staged the exact patch in that clone and printed its tree
+hash. The recipe checkout's `effigy check:sdk-patch-backport` is retired with
+the runner.
 
 ## Minimal Closure
 
@@ -113,17 +117,17 @@ MSRV, and current-stable checks remain required.
 
 ## Deterministic Proof
 
-Effigy selectors on the main-based recipe run against an isolated checkout
-derived from the exact tag:
+These Effigy selectors ran on the main-based recipe against an isolated
+checkout derived from the exact tag, before the runner's 2026-11-21 removal:
 
-- `effigy format:sdk-patch-backport` checks formatting in the three touched
+- `effigy format:sdk-patch-backport` checked formatting in the three touched
   packages and the external consumer harness.
-- `effigy check:sdk-patch-backport` proves clean-base refusal/application,
+- `effigy check:sdk-patch-backport` proved clean-base refusal/application,
   fresh reapplication identity, package compilation, scoped public API
   compatibility, and an external Git-source prepared-facade consumer.
-- `effigy validate:sdk-patch-backport` runs the bounded lease, late call,
+- `effigy validate:sdk-patch-backport` ran the bounded lease, late call,
   explicit deadline, permission wait, close/failure, usage/cache decoding, and
-  untouched-route guard fixtures. Its task-local nextest profile terminates a
+  untouched-route guard fixtures. Its task-local nextest profile terminated a
   hung test after two 60-second slow periods.
 
 The external consumer fixture includes a locked dependency graph and pins the

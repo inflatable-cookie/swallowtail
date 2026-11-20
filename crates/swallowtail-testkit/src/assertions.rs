@@ -111,7 +111,7 @@ pub fn assert_extension_isolation(event: &EventEnvelope) {
     );
 }
 
-/// Proves preserve, ignore, and reject extension policies remain distinct.
+/// Proves preserve and reject extension policies remain distinct.
 pub fn assert_extension_policies(event: &EventEnvelope) {
     let extension = event
         .extension()
@@ -141,5 +141,17 @@ pub fn assert_extension_policies(event: &EventEnvelope) {
         rejection.diagnostic().code(),
         "swallowtail.provider_extension_rejected",
         "{EXTENSION_POLICY_RULE}: rejection used the wrong diagnostic code"
+    );
+
+    let common_event = EventEnvelope::common(event.sequence(), event.kind());
+    let accepted_common = common_event
+        .clone()
+        .apply_extension_policy(ExtensionPolicy::Reject)
+        .unwrap_or_else(|error| {
+            panic!("{EXTENSION_POLICY_RULE}: reject policy rejected common event: {error}")
+        });
+    assert_eq!(
+        accepted_common, common_event,
+        "{EXTENSION_POLICY_RULE}: reject policy changed a common event"
     );
 }

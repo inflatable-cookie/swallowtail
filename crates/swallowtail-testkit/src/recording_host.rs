@@ -36,6 +36,12 @@ pub enum RecordedHostCall {
     TimeWaitUntil,
     /// A child process was started.
     ProcessStart,
+    /// Stdin bytes were written to a child process.
+    ProcessWriteStdin,
+    /// Standard input of a child process was closed.
+    ProcessCloseStdin,
+    /// Process output was read from a child process.
+    ProcessReadOutput,
     /// Graceful process stop was requested.
     ProcessGracefulStop,
     /// Forced process stop was requested.
@@ -203,15 +209,21 @@ struct RecordingProcessHandle(RecordingService);
 
 impl ProcessHandle for RecordingProcessHandle {
     fn write_stdin(&self, _chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        Box::pin(async { Ok(()) })
+        let result = self.0.record(RecordedHostCall::ProcessWriteStdin);
+        Box::pin(async move { result })
     }
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        Box::pin(async { Ok(()) })
+        let result = self.0.record(RecordedHostCall::ProcessCloseStdin);
+        Box::pin(async move { result })
     }
 
     fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
-        Box::pin(async { Ok(None) })
+        let result = self
+            .0
+            .record(RecordedHostCall::ProcessReadOutput)
+            .map(|()| None);
+        Box::pin(async move { result })
     }
 
     fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
@@ -586,8 +598,13 @@ pub fn poll_immediate<T>(future: impl Future<Output = T>) -> T {
 
 #[cfg(test)]
 mod tests {
-    use super::{RecordedHostCall, RecordingHostServices};
-    use swallowtail_core::HostServiceKind;
+    use super::{
+        RecordedHostCall, RecordingHostServices, RecordingOutcome, RecordingProcessHandle,
+        RecordingService, RecordingState, poll_immediate,
+    };
+    use std::sync::Arc;
+    use swallowtail_core::{HostServiceKind, SafeDiagnostic};
+    use swallowtail_runtime::{ProcessHandle, ProcessInputChunk};
 
     #[test]
     fn sign_in_ports_are_opt_in_and_registration_records_no_calls() {
@@ -621,5 +638,36 @@ mod tests {
         assert_eq!(recording.count(RecordedHostCall::UrlOpen), 0);
         assert_eq!(recording.count(RecordedHostCall::LoopbackBind), 0);
         assert_eq!(recording.count(RecordedHostCall::DeviceCodeDisplay), 0);
+    }
+
+    #[test]
+    fn recording_process_io_records_calls_and_honors_fail_outcome() {
+        let state = Arc::new(RecordingState::default());
+        let handle = RecordingProcessHandle(RecordingService {
+            state: Arc::clone(&state),
+            outcome: RecordingOutcome::Fail(SafeDiagnostic::new(
+                "fixture.process_io_failed",
+                "Process IO rejected",
+            )),
+        });
+
+        let write_err = poll_immediate(handle.write_stdin(ProcessInputChunk::new(b"x".to_vec())))
+            .expect_err("write_stdin honors Fail");
+        assert_eq!(write_err.diagnostic().code(), "fixture.process_io_failed");
+
+        let close_err = poll_immediate(handle.close_stdin()).expect_err("close_stdin honors Fail");
+        assert_eq!(close_err.diagnostic().code(), "fixture.process_io_failed");
+
+        let read_err = poll_immediate(handle.read_output()).expect_err("read_output honors Fail");
+        assert_eq!(read_err.diagnostic().code(), "fixture.process_io_failed");
+
+        assert_eq!(
+            state.calls(),
+            [
+                RecordedHostCall::ProcessWriteStdin,
+                RecordedHostCall::ProcessCloseStdin,
+                RecordedHostCall::ProcessReadOutput,
+            ]
+        );
     }
 }

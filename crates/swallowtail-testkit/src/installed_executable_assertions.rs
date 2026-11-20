@@ -72,6 +72,7 @@ fn assert_topology_and_join(
         recording.calls(),
         [
             RecordedHostCall::ProcessStart,
+            RecordedHostCall::ProcessCloseStdin,
             RecordedHostCall::ProcessWait
         ]
     );

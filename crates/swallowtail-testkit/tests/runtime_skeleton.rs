@@ -3,8 +3,9 @@ use swallowtail_runtime::{
     AttachmentDescriptor, AttachmentRef, AttachmentRole, CancellationControl, CredentialRef,
     Deadline, EndpointRef, ExecutableRef, ExternalNetworkPolicy, ExternalSearchPolicy,
     ImmediateCancellation, LeaseCleanupAuthority, MonotonicInstant, OperationPolicy,
-    ProcessRequest, RequestId, ResourceAccess, ResourceRepresentation, SchemaDocument, SchemaRef,
-    ScopeId, StructuredOutputDescriptor, StructuredRunRequest, WorkingResourceRef,
+    ProcessInputChunk, ProcessRequest, RequestId, ResourceAccess, ResourceRepresentation,
+    SchemaDocument, SchemaRef, ScopeId, StructuredOutputDescriptor, StructuredRunRequest,
+    WorkingResourceRef,
 };
 use swallowtail_testkit::{
     RecordedHostCall, RecordingHostServices, RecordingOutcome,
@@ -58,6 +59,14 @@ fn every_recording_host_service_exposes_attempted_effects() {
             .start(scope.clone(), ProcessRequest::new(executable)),
     )
     .expect("process start is scripted to succeed");
+    poll_immediate(process.write_stdin(ProcessInputChunk::new(b"ping\n".to_vec())))
+        .expect("stdin write succeeds");
+    poll_immediate(process.close_stdin()).expect("stdin close succeeds");
+    assert!(
+        poll_immediate(process.read_output())
+            .expect("output read succeeds")
+            .is_none()
+    );
     poll_immediate(process.request_stop()).expect("graceful stop succeeds");
     poll_immediate(process.force_stop()).expect("force stop succeeds");
     poll_immediate(process.wait()).expect("wait succeeds");
@@ -211,6 +220,9 @@ fn every_recording_host_service_exposes_attempted_effects() {
         RecordedHostCall::TimeNow,
         RecordedHostCall::TimeWaitUntil,
         RecordedHostCall::ProcessStart,
+        RecordedHostCall::ProcessWriteStdin,
+        RecordedHostCall::ProcessCloseStdin,
+        RecordedHostCall::ProcessReadOutput,
         RecordedHostCall::ProcessGracefulStop,
         RecordedHostCall::ProcessForceStop,
         RecordedHostCall::ProcessWait,

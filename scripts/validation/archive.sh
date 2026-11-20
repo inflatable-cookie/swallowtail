@@ -1,17 +1,26 @@
 #!/usr/bin/env bash
 
 validation_archive_member_list_is_safe() {
-  if rg -q \
-    '/(\.git|\.effigy|target|\.env|credentials?)(/|$)|\.(pem|key)$'
-  then
-    return 1
-  fi
+  local validation_status=0
+  rg -q \
+    '/(\.git|\.effigy|target|\.env|credentials?)(/|$)|\.(pem|key)$' ||
+    validation_status=$?
+  case $validation_status in
+    0) return 1 ;;
+    1) return 0 ;;
+    *)
+      printf 'archive member audit failed (rg exit %s)\n' \
+        "$validation_status" >&2
+      return 1
+      ;;
+  esac
 }
 
 validation_archive_is_safe() {
   local validation_archive=$1
-  tar -tzf "$validation_archive" |
-    validation_archive_member_list_is_safe
+  local validation_members
+  validation_members=$(tar -tzf "$validation_archive") || return 1
+  validation_archive_member_list_is_safe <<< "$validation_members"
 }
 
 # A packaged manifest must carry no path or git dependency. The dependency
@@ -85,13 +94,23 @@ validation_unlisted_host_path_hits() {
 validation_extracted_tree_is_safe() {
   local validation_tree=$1
   local validation_repo_root=$2
+  local validation_escaped_repo_root=""
+  local validation_pattern='BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|\bsk-[A-Za-z0-9_-]{20,}'
   local validation_hits=""
   local validation_status=0
   local validation_host_hits=""
   local validation_host_status=0
 
+  if [[ -n $validation_repo_root ]]; then
+    validation_escaped_repo_root=$(
+      printf '%s' "$validation_repo_root" |
+        sed 's/[][\\.^$*+?(){}|]/\\&/g'
+    )
+    validation_pattern="${validation_escaped_repo_root}|${validation_pattern}"
+  fi
+
   validation_hits=$(rg -l -- \
-    "$validation_repo_root|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|\\bsk-[A-Za-z0-9_-]{20,}" \
+    "$validation_pattern" \
     "$validation_tree") || validation_status=$?
   if [[ $validation_status -ne 0 && $validation_status -ne 1 ]]; then
     printf 'content audit could not scan %s (rg exit %s)\n' \

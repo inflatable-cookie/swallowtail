@@ -328,10 +328,11 @@ pub fn run_owned_self_hosted_profile() -> ConformanceReport {
 #[must_use]
 /// Runs every primary synthetic conformance profile.
 ///
-/// The shared contract is proved once and recorded on every report, so this
-/// run pays for it once instead of once per profile.
+/// Profile-independent shared contract assertions are proved once, while each
+/// profile still proves its own `BoundSelection` preflight and profile-specific
+/// boundaries.
 pub fn run_all_synthetic_profiles() -> Vec<ConformanceReport> {
-    let common = crate::CommonContract::prove(SyntheticProfile::OneShotStructuredCli);
+    let common = crate::CommonContract::prove();
     vec![
         crate::profile_one_shot::run_with_common_contract(&common),
         crate::profile_rpc::run_with_common_contract(&common),

@@ -1,8 +1,8 @@
-use swallowtail_testkit::{ConformanceAssertion, SyntheticProfile, run_all_synthetic_profiles};
+use super::{ConformanceAssertion, SyntheticProfile, shared_profiles};
 
 #[test]
 fn profile_adds_network_affinity_version_and_no_recovery_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let remote = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::RemoteAcpHarness)

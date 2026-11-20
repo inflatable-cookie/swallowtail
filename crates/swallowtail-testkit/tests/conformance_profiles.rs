@@ -1,10 +1,16 @@
+use std::sync::OnceLock;
 use swallowtail_core::PreflightDimension;
 use swallowtail_testkit::{
-    ConformanceAssertion, PreflightFixtureCase, SyntheticProfile,
+    ConformanceAssertion, ConformanceReport, PreflightFixtureCase, SyntheticProfile,
     assert_preflight_rejection_without_side_effects, run_acp_single_turn_projection_assertions,
     run_all_synthetic_profiles, run_harness_rpc_contract_assertions,
     run_structured_harness_native_boundary_assertions,
 };
+
+fn shared_profiles() -> &'static [ConformanceReport] {
+    static REPORTS: OnceLock<Vec<ConformanceReport>> = OnceLock::new();
+    REPORTS.get_or_init(run_all_synthetic_profiles)
+}
 
 const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
     ConformanceAssertion::PreflightBeforeSideEffects,
@@ -25,10 +31,10 @@ const COMMON_ASSERTIONS: [ConformanceAssertion; 14] = [
 
 #[test]
 fn all_thirteen_profiles_cover_every_common_contract_assertion() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     assert_eq!(reports.len(), 13);
 
-    for report in &reports {
+    for report in reports {
         for assertion in COMMON_ASSERTIONS {
             assert!(
                 report.covers(assertion),
@@ -41,7 +47,7 @@ fn all_thirteen_profiles_cover_every_common_contract_assertion() {
 
 #[test]
 fn each_profile_proves_its_shape_specific_boundary() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let expected = [
         (
             SyntheticProfile::OneShotStructuredCli,
@@ -137,7 +143,7 @@ fn acp_projection_pack_proves_one_turn_retention_callback_and_close_boundaries()
 
 #[test]
 fn persistent_acp_profile_adds_lifecycle_write_auth_and_ambient_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let persistent = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::PersistentAcpHarness)
@@ -159,7 +165,7 @@ fn persistent_acp_profile_adds_lifecycle_write_auth_and_ambient_boundaries() {
 
 #[test]
 fn owned_profile_proves_artifact_endpoint_cleanup_and_topology_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let owned = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::OwnedSelfHosted)
@@ -177,7 +183,7 @@ fn owned_profile_proves_artifact_endpoint_cleanup_and_topology_boundaries() {
 
 #[test]
 fn hosted_profile_proves_contract_014_foundations() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let hosted = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::HostedDirectApi)
@@ -194,7 +200,7 @@ fn hosted_profile_proves_contract_014_foundations() {
 
 #[test]
 fn connection_scoped_profile_proves_contract_016_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let direct = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::ConnectionScopedDirectSession)
@@ -215,7 +221,7 @@ fn connection_scoped_profile_proves_contract_016_boundaries() {
 
 #[test]
 fn managed_harness_profile_proves_contract_022_boundaries() {
-    let reports = run_all_synthetic_profiles();
+    let reports = shared_profiles();
     let managed = reports
         .iter()
         .find(|report| report.profile() == SyntheticProfile::ProviderManagedRemoteHarness)

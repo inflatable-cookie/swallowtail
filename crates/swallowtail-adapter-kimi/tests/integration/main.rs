@@ -1,3 +1,8 @@
+// The consolidated suites keep per-suite instances of shared helper files,
+// exactly as the former one-binary-per-suite layout did, so the same source
+// file is still loaded as more than one module.
+#![allow(clippy::duplicate_mod)]
+
 #[path = "../installed_discovery/support.rs"]
 mod discovery_support;
 #[path = "../local_server_interactive/fixture.rs"]

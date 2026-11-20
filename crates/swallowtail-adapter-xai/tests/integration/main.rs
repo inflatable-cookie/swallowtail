@@ -1,3 +1,7 @@
+// Each consolidated suite keeps its own instance of a shared helper file, the
+// way the separate binaries did; the copies are used by disjoint tests.
+#![allow(clippy::duplicate_mod)]
+
 #[path = "../catalogue_activity.rs"]
 mod catalogue_activity;
 

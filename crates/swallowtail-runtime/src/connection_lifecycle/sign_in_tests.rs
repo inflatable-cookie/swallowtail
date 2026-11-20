@@ -1648,6 +1648,221 @@ fn sign_in_releases_loopback_and_stops_reaps_process_on_timeout_and_errors() {
     );
 }
 
+#[test]
+fn async_poll_times_out_and_cleans_up_hung_delegated_and_loopback_waits() {
+    struct AdvancingTime {
+        now: Arc<std::sync::atomic::AtomicU64>,
+    }
+    impl TimeService for AdvancingTime {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(self.now.load(std::sync::atomic::Ordering::SeqCst))
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
+            let now = Arc::clone(&self.now);
+            let mut yielded = false;
+            Box::pin(std::future::poll_fn(move |context| {
+                if !yielded {
+                    yielded = true;
+                    context.waker().wake_by_ref();
+                    std::task::Poll::Pending
+                } else {
+                    now.store(
+                        deadline.instant().ticks(),
+                        std::sync::atomic::Ordering::SeqCst,
+                    );
+                    std::task::Poll::Ready(crate::DeadlineObservation::new(
+                        deadline,
+                        deadline.instant(),
+                    ))
+                }
+            }))
+        }
+    }
+
+    struct HungProcess {
+        calls: Mutex<Vec<&'static str>>,
+        force_stopped: std::sync::atomic::AtomicBool,
+    }
+    struct HungProcessHandle {
+        shared: Arc<HungProcess>,
+    }
+    impl ProcessHandle for HungProcessHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.shared.calls.lock().expect("lock").push("request_stop");
+            yield_once_then(|| Ok(()))
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.shared.calls.lock().expect("lock").push("force_stop");
+            self.shared
+                .force_stopped
+                .store(true, std::sync::atomic::Ordering::SeqCst);
+            yield_once_then(|| Ok(()))
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            let shared = Arc::clone(&self.shared);
+            shared.calls.lock().expect("lock").push("wait");
+            Box::pin(std::future::poll_fn(move |_context| {
+                if shared
+                    .force_stopped
+                    .load(std::sync::atomic::Ordering::SeqCst)
+                {
+                    std::task::Poll::Ready(Ok(ProcessExit::new(false, None)))
+                } else {
+                    // Never completes on its own until deadline triggers cleanup.
+                    std::task::Poll::Pending
+                }
+            }))
+        }
+    }
+    struct HungProcessService(Arc<HungProcess>);
+    impl ProcessService for HungProcessService {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            self.0.calls.lock().expect("lock").push("start");
+            let shared = Arc::clone(&self.0);
+            Box::pin(
+                async move { Ok(Box::new(HungProcessHandle { shared }) as Box<dyn ProcessHandle>) },
+            )
+        }
+    }
+
+    // 1. Hung delegated helper wait observes deadline via wait_until and stops/reaps the child.
+    let hung = Arc::new(HungProcess {
+        calls: Mutex::new(Vec::new()),
+        force_stopped: std::sync::atomic::AtomicBool::new(false),
+    });
+    let time = Arc::new(AdvancingTime {
+        now: Arc::new(std::sync::atomic::AtomicU64::new(1)),
+    });
+    let services = HostServices::new(host_id())
+        .with_process(Arc::new(HungProcessService(Arc::clone(&hung))))
+        .with_time(time);
+
+    let mut session = block_on(start_sign_in_async(
+        &services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        )
+        .with_deadline(Deadline::at(MonotonicInstant::from_ticks(10))),
+    ))
+    .expect("async delegated start succeeds");
+
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut session, &services))
+            .expect("hung delegated helper must time out at deadline"),
+        SignInStatus::TimedOut
+    );
+    assert_eq!(session.status(), SignInStatus::TimedOut);
+    assert_eq!(
+        *hung.calls.lock().expect("lock"),
+        vec!["start", "wait", "request_stop", "force_stop", "wait"]
+    );
+    let terminal_err = block_on(poll_sign_in_async(&mut session, &services))
+        .expect_err("timed-out session must be terminal");
+    assert_eq!(terminal_err.kind(), SignInFailureKind::InvalidState);
+
+    // 2. Hung interactive loopback poll also observes deadline and releases the loopback lease.
+    struct HungLoopbackPorts {
+        released: Arc<std::sync::atomic::AtomicBool>,
+    }
+    impl UrlOpenService for HungLoopbackPorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for HungLoopbackPorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.hung.loopback").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            _lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn materialize_credential(
+            &self,
+            _receipt: &LoopbackCallbackReceipt,
+            _audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            Ok(credential())
+        }
+        fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            let released = Arc::clone(&self.released);
+            yield_once_then(move || {
+                released.store(true, std::sync::atomic::Ordering::SeqCst);
+                CleanupOutcome::Clean
+            })
+        }
+    }
+
+    let released = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    let hung_loopback = Arc::new(HungLoopbackPorts {
+        released: Arc::clone(&released),
+    });
+    let loopback_time = Arc::new(AdvancingTime {
+        now: Arc::new(std::sync::atomic::AtomicU64::new(1)),
+    });
+    let loopback_services = HostServices::new(host_id())
+        .with_url_open(hung_loopback.clone())
+        .with_loopback_callback(hung_loopback)
+        .with_time(loopback_time);
+
+    let mut interactive = block_on(start_sign_in_async(
+        &loopback_services,
+        interactive_request().with_deadline(Deadline::at(MonotonicInstant::from_ticks(10))),
+    ))
+    .expect("async interactive start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut interactive, &loopback_services))
+            .expect("hung loopback poll must time out at deadline"),
+        SignInStatus::TimedOut
+    );
+    assert!(released.load(std::sync::atomic::Ordering::SeqCst));
+}
+
 fn interactive_services_fn(ports: Arc<MockSignInPorts>) -> HostServices {
     interactive_services(ports)
 }

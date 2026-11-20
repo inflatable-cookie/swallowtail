@@ -589,6 +589,11 @@ pub fn poll_sign_in(
 }
 
 /// Asynchronously observes timeout, host callback, device finish, or helper exit.
+///
+/// When a deadline is set on the session, awaiting a host callback, device
+/// authorization, or delegated login helper races against
+/// [`crate::TimeService::wait_until`] and cleans up host leases and child
+/// processes if the deadline elapses while waiting.
 pub async fn poll_sign_in_async(
     session: &mut SignInSession,
     services: &HostServices,
@@ -602,7 +607,7 @@ pub async fn poll_sign_in_async(
     match session.kind {
         SignInKind::InteractiveOauth => poll_interactive_async(session, services).await?,
         SignInKind::DeviceOauth => poll_device_async(session, services).await?,
-        SignInKind::DelegatedCliLogin => poll_delegated_async(session).await?,
+        SignInKind::DelegatedCliLogin => poll_delegated_async(session, services).await?,
         SignInKind::ApiKeyCollection => poll_api_key(session),
     }
     Ok(session.status)
@@ -967,14 +972,20 @@ async fn poll_interactive_async(
             loopback.poll(lease)
         }
     };
-    match future.await.map_err(SignInFailure::from_port)? {
-        Some(receipt) => {
-            session.loopback_receipt = Some(receipt);
-            session.status = SignInStatus::ReadyToComplete;
+    match await_with_deadline(future, session.deadline, services).await? {
+        DeadlineRace::TimedOut => {
+            cleanup_session_async(session, services).await;
+            session.status = SignInStatus::TimedOut;
         }
-        None => {
-            session.status = SignInStatus::InProgress;
-        }
+        DeadlineRace::Completed(result) => match result.map_err(SignInFailure::from_port)? {
+            Some(receipt) => {
+                session.loopback_receipt = Some(receipt);
+                session.status = SignInStatus::ReadyToComplete;
+            }
+            None => {
+                session.status = SignInStatus::InProgress;
+            }
+        },
     }
     Ok(())
 }
@@ -1019,14 +1030,20 @@ async fn poll_device_async(
             display.poll_authorization(&session.scope)
         }
     };
-    match future.await.map_err(SignInFailure::from_port)? {
-        Some(receipt) => {
-            session.device_receipt = Some(receipt);
-            session.status = SignInStatus::ReadyToComplete;
+    match await_with_deadline(future, session.deadline, services).await? {
+        DeadlineRace::TimedOut => {
+            cleanup_session_async(session, services).await;
+            session.status = SignInStatus::TimedOut;
         }
-        None => {
-            session.status = SignInStatus::InProgress;
-        }
+        DeadlineRace::Completed(result) => match result.map_err(SignInFailure::from_port)? {
+            Some(receipt) => {
+                session.device_receipt = Some(receipt);
+                session.status = SignInStatus::ReadyToComplete;
+            }
+            None => {
+                session.status = SignInStatus::InProgress;
+            }
+        },
     }
     Ok(())
 }
@@ -1048,16 +1065,28 @@ fn poll_delegated(session: &mut SignInSession) -> Result<(), SignInFailure> {
     }
 }
 
-async fn poll_delegated_async(session: &mut SignInSession) -> Result<(), SignInFailure> {
-    let Some(handle) = session.process.as_ref() else {
-        return Err(SignInFailure::new(
-            SignInFailureKind::InvalidState,
-            "swallowtail.sign_in.invalid_state",
-            "Delegated CLI login is missing its process handle",
-        ));
+async fn poll_delegated_async(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<(), SignInFailure> {
+    let wait_outcome = {
+        let Some(handle) = session.process.as_ref() else {
+            return Err(SignInFailure::new(
+                SignInFailureKind::InvalidState,
+                "swallowtail.sign_in.invalid_state",
+                "Delegated CLI login is missing its process handle",
+            ));
+        };
+        await_with_deadline(handle.wait(), session.deadline, services).await?
     };
-    let result = handle.wait().await;
-    finish_delegated_wait(session, result)
+    match wait_outcome {
+        DeadlineRace::Completed(result) => finish_delegated_wait(session, result),
+        DeadlineRace::TimedOut => {
+            cleanup_session_async(session, services).await;
+            session.status = SignInStatus::TimedOut;
+            Ok(())
+        }
+    }
 }
 
 fn finish_delegated_wait(
@@ -1347,6 +1376,45 @@ async fn release_loopback_async(
         return;
     };
     let _ = loopback.release(lease).await;
+}
+
+enum DeadlineRace<T> {
+    Completed(T),
+    TimedOut,
+}
+
+async fn await_with_deadline<T>(
+    future: impl Future<Output = T>,
+    deadline: Option<Deadline>,
+    services: &HostServices,
+) -> Result<DeadlineRace<T>, SignInFailure> {
+    let Some(deadline) = deadline else {
+        return Ok(DeadlineRace::Completed(future.await));
+    };
+    let time = services
+        .time()
+        .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::Time))?;
+    if time.now() >= deadline.instant() {
+        return Ok(DeadlineRace::TimedOut);
+    }
+    let mut future = std::pin::pin!(future);
+    let mut timer = None;
+    let outcome = std::future::poll_fn(|context| {
+        if let Poll::Ready(value) = future.as_mut().poll(context) {
+            return Poll::Ready(DeadlineRace::Completed(value));
+        }
+        if time.now() >= deadline.instant() {
+            return Poll::Ready(DeadlineRace::TimedOut);
+        }
+        let timer = timer.get_or_insert_with(|| time.wait_until(deadline));
+        if timer.as_mut().poll(context).is_ready() {
+            Poll::Ready(DeadlineRace::TimedOut)
+        } else {
+            Poll::Pending
+        }
+    })
+    .await;
+    Ok(outcome)
 }
 
 fn poll_ready_or_pending_error<T>(

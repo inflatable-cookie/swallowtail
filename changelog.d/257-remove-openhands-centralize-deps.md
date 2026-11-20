@@ -10,4 +10,8 @@ Centralize the shared external crate requirements (`base64`, `curl`,
 `semver`, `serde_json`, `sha2`, `tokio`, `tungstenite`, `url`, `zeroize`) in
 root `[workspace.dependencies]` and inherit them with `workspace = true`, so
 `sha2 = "0.10.9"` versus `"0.10"` and `url = "2.5"` versus `"2"` drift cannot
-recur. Crate-local feature selections stay local; no locked version moves.
+recur. Crate-local feature selections stay local. The shared `tokio` entry
+keeps Tokio's default feature set, which is empty in every 1.x release, so
+Bedrock keeps the defaults its own declaration inherited while `claude-agent`
+and `transport-acp-remote`, which spelled `default-features = false`, resolve
+to the same features. No locked version moves.

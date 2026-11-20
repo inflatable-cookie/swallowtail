@@ -50,9 +50,8 @@ pub(crate) struct WatcherBinding {
     /// Host authority, reserved before the first acquisition, to start and
     /// transfer one cancellation cleanup task without waiting on it.
     reservation: Option<Box<dyn TaskReapReservation>>,
-    /// The lease lives in a shared slot rather than in this struct, because a
-    /// host callback can panic on its own thread. The slot keeps the lease
-    /// reachable for cleanup on every path.
+    /// Host workers share this slot so cleanup can wait for a running gate
+    /// and recover the lease even if the gate panics.
     lease: Arc<Mutex<Option<WatcherBridgeLease>>>,
     resource: Option<ResourceLease>,
     files: WatcherCommandFiles,
@@ -101,59 +100,59 @@ impl WatcherBinding {
 
     /// Closes the bridge lease and releases the private material, in that order.
     pub(crate) async fn close(mut self, cause: WatcherCleanupCause) -> CleanupOutcome {
-        let lease = self.take_lease();
-        let resource = self.resource.take();
+        let resource = self
+            .resource
+            .take()
+            .expect("open binding owns its private material");
         // The explicit path needs no reap authority; an unused grant releases
         // its reservation when it is dropped here.
         self.reservation = None;
         cleanup(
             Arc::clone(&self.bridge),
             Arc::clone(&self.resources),
-            lease,
+            Arc::clone(&self.lease),
             resource,
             cause,
         )
         .await
     }
 
-    /// Takes the lease out of its slot for cleanup.
-    ///
-    /// A panicking host callback can poison the slot while it holds the guard,
-    /// and that must not stop cleanup from reaching the lease it still owns, so
-    /// poisoning is ignored here.
-    fn take_lease(&self) -> Option<WatcherBridgeLease> {
-        self.lease
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .take()
-    }
-
     /// Hands one cleanup job to the host's reap lane without waiting for it.
-    ///
-    /// The reservation was taken before the first acquisition, so the host has
-    /// already committed the lane. `Err` returns the still-owned cleanup future,
-    /// so a host without a reap lane loses no cleanup.
-    fn hand_off(&mut self, cleanup: BoxFuture<'static, ()>) -> Result<(), BoxFuture<'static, ()>> {
+    /// Returns any work that still needs to run off the dropping thread.
+    fn hand_off(&mut self, cleanup: BoxFuture<'static, ()>) -> Option<BoxFuture<'static, ()>> {
         let Some(service) = self.services.task().cloned() else {
-            return Err(cleanup);
+            return Some(cleanup);
         };
         let Some(reservation) = self.reservation.take() else {
-            return Err(cleanup);
+            return Some(cleanup);
         };
-        match service.spawn_reapable(reservation, cleanup) {
-            Ok(task) => {
-                let mut task = Some(task);
-                if ScopedTaskService::relinquish(service.as_ref(), &self.scope, &mut task).is_err()
-                {
-                    self.observe_abandoned("watcher_cleanup=relinquish_refused");
-                }
-                Ok(())
+        // The host consumes its future even on refusal. Give it a way to
+        // claim cleanup on first poll and retain the slot until spawn succeeds.
+        let pending = Arc::new(Mutex::new(Some(cleanup)));
+        let host_pending = Arc::clone(&pending);
+        let host_cleanup = Box::pin(async move {
+            let cleanup = host_pending.lock().expect("watcher cleanup slot").take();
+            if let Some(cleanup) = cleanup {
+                cleanup.await;
             }
+        });
+        let mut task = match service.spawn_reapable(reservation, host_cleanup) {
+            Ok(task) => Some(task),
             Err(_) => {
                 self.observe_abandoned("watcher_cleanup=spawn_refused");
-                Ok(())
+                return pending.lock().expect("watcher cleanup slot").take();
             }
+        };
+        if ScopedTaskService::relinquish(service.as_ref(), &self.scope, &mut task).is_err() {
+            self.observe_abandoned("watcher_cleanup=relinquish_refused");
+            // An ordinary task handle may join on drop.
+            return task.map(|task| {
+                Box::pin(async move {
+                    let _ = task.join().await;
+                }) as BoxFuture<'static, ()>
+            });
         }
+        None
     }
 
     fn observe_abandoned(&self, detail: &'static str) {
@@ -200,19 +199,16 @@ impl WatcherBinding {
 /// The pump closes its binding on every terminal path, so this is the
 /// cancellation fallback: the pump future was dropped before it could run its
 /// own cleanup. The work is handed to the host's reap lane, where it runs to
-/// completion without being joined here. Hosts that cannot pre-admit a reap
-/// (a fixture or standalone task service) get one detached host thread running
-/// the same cleanup, which is the only remaining way to release the leases
-/// without a synchronous join.
+/// completion without being joined here. If the host cannot accept the work,
+/// a detached thread runs the cleanup or joins the task that already owns it.
 impl Drop for WatcherBinding {
     fn drop(&mut self) {
-        let lease = self.take_lease();
-        let resource = self.resource.take();
-        if lease.is_none() && resource.is_none() {
+        let Some(resource) = self.resource.take() else {
             return;
-        }
+        };
         let bridge = Arc::clone(&self.bridge);
         let resources = Arc::clone(&self.resources);
+        let lease = Arc::clone(&self.lease);
         let cleanup: BoxFuture<'static, ()> = Box::pin(async move {
             let _ = cleanup(
                 bridge,
@@ -223,12 +219,9 @@ impl Drop for WatcherBinding {
             )
             .await;
         });
-        let cleanup = match self.hand_off(cleanup) {
-            Ok(()) => return,
-            Err(cleanup) => cleanup,
+        let Some(cleanup) = self.hand_off(cleanup) else {
+            return;
         };
-        // No reap lane: one detached host thread runs the same cleanup. It is
-        // never joined, so the dropping thread cannot block on host work.
         self.observe_abandoned("watcher_cleanup=detached_thread");
         let _ = std::thread::Builder::new()
             .name("swallowtail-claude-watcher-drop".to_owned())
@@ -247,21 +240,24 @@ impl Drop for WatcherBinding {
 fn cleanup(
     bridge: Arc<dyn WatcherBridgeHostService>,
     resources: Arc<dyn WorkingResourceService>,
-    lease: Option<WatcherBridgeLease>,
-    resource: Option<ResourceLease>,
+    lease: Arc<Mutex<Option<WatcherBridgeLease>>>,
+    resource: ResourceLease,
     cause: WatcherCleanupCause,
 ) -> BoxFuture<'static, CleanupOutcome> {
     Box::pin(async move {
         host_call(move || {
+            // A pending gate can still be borrowing the lease, and a panicking
+            // gate can poison its slot. Wait and recover it on the host worker.
+            let lease = lease
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .take();
             let bridge = match lease {
                 Some(lease) => futures_executor::block_on(bridge.close(lease, cause))
                     .unwrap_or_else(|error| CleanupOutcome::Failed(error.diagnostic().clone())),
                 None => CleanupOutcome::NotApplicable,
             };
-            let resource = match resource {
-                Some(lease) => futures_executor::block_on(resources.release(lease)),
-                None => CleanupOutcome::NotApplicable,
-            };
+            let resource = futures_executor::block_on(resources.release(resource));
             merge_cleanup(bridge, resource)
         })
         .await
@@ -564,23 +560,13 @@ mod tests {
         }
     }
 
-    /// One bridge whose close only finishes when the test releases it.
+    /// Holds a completion or close callback pending until the test releases it.
+    #[derive(Default)]
     struct GatedBridge {
-        close_calls: Arc<AtomicUsize>,
-        gate: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
-    }
-
-    impl GatedBridge {
-        fn new(close_calls: Arc<AtomicUsize>) -> (Self, futures_channel::oneshot::Sender<()>) {
-            let (sender, receiver) = futures_channel::oneshot::channel();
-            (
-                Self {
-                    close_calls,
-                    gate: Mutex::new(Some(receiver)),
-                },
-                sender,
-            )
-        }
+        completion_started: AtomicBool,
+        completion: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
+        close_calls: AtomicUsize,
+        close: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
     }
 
     impl WatcherBridgeHostService for GatedBridge {
@@ -595,7 +581,14 @@ mod tests {
             &self,
             _lease: &WatcherBridgeLease,
         ) -> BoxFuture<'_, Result<WatcherBridgeCompletionState, RuntimeFailure>> {
-            Box::pin(async { Err(unused("completion gate")) })
+            let completion = self.completion.lock().expect("completion lock").take();
+            Box::pin(async move {
+                self.completion_started.store(true, Ordering::SeqCst);
+                if let Some(completion) = completion {
+                    let _ = completion.await;
+                }
+                Ok(fixture_state())
+            })
         }
 
         fn close(
@@ -604,7 +597,7 @@ mod tests {
             _cause: WatcherCleanupCause,
         ) -> BoxFuture<'_, Result<CleanupOutcome, RuntimeFailure>> {
             self.close_calls.fetch_add(1, Ordering::SeqCst);
-            let gate = self.gate.lock().expect("gate lock").take();
+            let gate = self.close.lock().expect("close lock").take();
             Box::pin(async move {
                 if let Some(gate) = gate {
                     let _ = gate.await;
@@ -696,6 +689,7 @@ mod tests {
     /// so a test can prove it was not run on the dropping thread.
     #[derive(Default)]
     struct RecordingTasks {
+        refuse_spawn: bool,
         reserved: AtomicUsize,
         spawned: AtomicUsize,
         relinquished: AtomicUsize,
@@ -732,6 +726,9 @@ mod tests {
             task: BoxFuture<'static, ()>,
         ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
             self.spawned.fetch_add(1, Ordering::SeqCst);
+            if self.refuse_spawn {
+                return Err(unused("spawn_reapable"));
+            }
             *self.handed.lock().expect("handoff lock") = Some(task);
             Ok(Box::new(FixtureJoinedTask {
                 handed_back: AtomicBool::new(false),
@@ -882,9 +879,11 @@ mod tests {
 
     #[test]
     fn drop_without_a_reap_lane_still_releases_on_a_detached_thread() {
-        let close_calls = Arc::new(AtomicUsize::new(0));
-        let (bridge, release) = GatedBridge::new(Arc::clone(&close_calls));
-        let bridge = Arc::new(bridge);
+        let (release, close) = futures_channel::oneshot::channel();
+        let bridge = Arc::new(GatedBridge {
+            close: Mutex::new(Some(close)),
+            ..GatedBridge::default()
+        });
         let resources = PendingOnceResources::new();
         let binding = WatcherBinding::for_test(
             host_without_tasks(),
@@ -906,6 +905,71 @@ mod tests {
         release.send(()).expect("the gated close is waiting");
         wait_for(|| resources.release_calls.load(Ordering::SeqCst) == 1);
         worker.join().expect("drop worker finishes");
-        assert_eq!(close_calls.load(Ordering::SeqCst), 1);
+        assert_eq!(bridge.close_calls.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn drop_returns_before_pending_completion_gate_releases_the_lease() {
+        let (release, completion) = futures_channel::oneshot::channel();
+        let bridge = Arc::new(GatedBridge {
+            completion: Mutex::new(Some(completion)),
+            ..GatedBridge::default()
+        });
+        let resources = PendingOnceResources::new();
+        let mut binding = WatcherBinding::for_test(
+            host_without_tasks(),
+            bridge.clone(),
+            resources.clone(),
+            fixture_lease(),
+            fixture_resource(),
+        );
+        let (dropped, dropped_rx) = std::sync::mpsc::channel();
+        let worker_bridge = bridge.clone();
+        let worker = std::thread::spawn(move || {
+            {
+                let mut gate = std::pin::pin!(binding.completion_gate());
+                let mut context = std::task::Context::from_waker(std::task::Waker::noop());
+                assert!(gate.as_mut().poll(&mut context).is_pending());
+                wait_for(|| worker_bridge.completion_started.load(Ordering::SeqCst));
+            }
+            drop(binding);
+            dropped.send(()).expect("test awaits the drop");
+        });
+
+        let dropped_while_pending = dropped_rx.recv_timeout(Duration::from_secs(5)).is_ok();
+        let closes_while_pending = bridge.close_calls.load(Ordering::SeqCst);
+        let releases_while_pending = resources.release_calls.load(Ordering::SeqCst);
+        release.send(()).expect("completion gate is waiting");
+        worker.join().expect("drop worker finishes");
+
+        assert!(dropped_while_pending, "drop waited for the completion gate");
+        assert_eq!(closes_while_pending, 0);
+        assert_eq!(releases_while_pending, 0);
+        wait_for(|| resources.release_calls.load(Ordering::SeqCst) == 1);
+        assert_eq!(bridge.close_calls.load(Ordering::SeqCst), 1);
+    }
+
+    #[test]
+    fn refused_reap_spawn_still_closes_the_bridge_and_releases_material() {
+        let bridge = PendingOnceBridge::new(fixture_state());
+        let resources = PendingOnceResources::new();
+        let tasks = Arc::new(RecordingTasks {
+            refuse_spawn: true,
+            ..RecordingTasks::default()
+        });
+        let binding = WatcherBinding::for_test(
+            tasks.services(),
+            bridge.clone(),
+            resources.clone(),
+            fixture_lease(),
+            fixture_resource(),
+        );
+        drop(binding);
+
+        assert_eq!(tasks.reserved.load(Ordering::SeqCst), 1);
+        assert_eq!(tasks.spawned.load(Ordering::SeqCst), 1);
+        assert_eq!(tasks.relinquished.load(Ordering::SeqCst), 0);
+        wait_for(|| resources.release_calls.load(Ordering::SeqCst) == 1);
+        assert_eq!(bridge.close_calls.load(Ordering::SeqCst), 1);
     }
 }

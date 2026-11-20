@@ -1,9 +1,9 @@
 # 245: Claude Agent adapter Drop, lease, scope, and NDJSON framing
 
-- `WatcherBinding::completion_gate` and `close` are async calls awaited by the
-  pump task. Dropping an unclosed binding hands one cleanup task to the host
-  reap lane instead of spawning an OS thread and joining it, and a panicking
-  completion gate no longer loses the bridge lease.
+- The Claude Code pump awaits watcher completion and cleanup. Dropping an
+  unclosed binding hands cleanup off without waiting for a pending completion
+  gate. A panicking gate leaves its lease available for cleanup, and a refused
+  reap task falls back to detached cleanup.
 - A refused task spawn releases the response-only launch-directory lease
   instead of leaving the operation-scoped resource held.
 - The ACP turn, run, and run-cleanup scopes are derived and bounded before the

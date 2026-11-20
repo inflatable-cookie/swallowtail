@@ -136,13 +136,17 @@ let writes = Promise.resolve();
 
 function writeRecord(record) {
   const line = `${JSON.stringify(record)}\n`;
-  writes = writes.then(
+  const write = writes.then(
     () =>
       new Promise((resolve, reject) => {
         process.stdout.write(line, (error) => (error ? reject(error) : resolve()));
       }),
   );
-  return writes;
+  // Keep the queue usable after a failed write. The rejection still reaches the
+  // caller that awaits this record, but one broken write must not leave the
+  // global chain rejected and silently drop every later record.
+  writes = write.catch(() => {});
+  return write;
 }
 
 async function respond(id, command, success, body) {
@@ -299,7 +303,7 @@ function subscribeSession(session) {
     } else if (projected === "retry") {
       void terminal("retry_observed");
     } else {
-      void writeRecord({ type: "event", ...projected });
+      void writeRecord({ type: "event", ...projected }).catch(() => terminal("write_failed"));
     }
   });
 }

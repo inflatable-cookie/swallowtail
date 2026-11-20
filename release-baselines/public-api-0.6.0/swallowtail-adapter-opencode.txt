@@ -64,6 +64,8 @@ pub struct swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer
 impl swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer
 pub fn swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer::name(&self) -> &str
 pub fn swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer::new(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::vec::Vec<alloc::string::String>>, impl core::convert::Into<alloc::vec::Vec<(alloc::string::String, alloc::string::String)>>) -> Self
+impl core::fmt::Debug for swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer
+pub fn swallowtail_adapter_opencode::OpenCodeAcpStdioMcpServer::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput
 impl swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput
 pub const fn swallowtail_adapter_opencode::OpenCodeCatalogueProfileInput::new(swallowtail_runtime::identity::RequestId) -> Self

@@ -1,17 +1,20 @@
 use crate::failure::failure;
 use crate::protocol::{Method, Request, Response, SseDecoder};
-use curl::easy::{Easy, List, WriteError};
+use curl::easy::{Easy, List};
 use futures_channel::{mpsc, oneshot};
 use futures_core::Stream;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll};
+use std::time::Duration;
 use swallowtail_runtime::{BoxFuture, HostServices, RuntimeFailure, ScopeId};
 use url::Url;
 
 const RESPONSE_LIMIT: usize = 4 * 1024 * 1024;
 const SSE_CAPACITY: usize = 64;
+const CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
+const TRANSFER_TIMEOUT: Duration = Duration::from_secs(120);
 
 #[derive(Clone, Default)]
 pub(crate) struct CurlTransport;
@@ -119,6 +122,15 @@ impl Subscription {
             }
             Poll::Pending => Poll::Pending,
         }
+    }
+}
+
+impl Drop for Subscription {
+    /// Stops the blocking SSE worker when a subscription is dropped without an
+    /// explicit `close`. Without this, an abandoned subscription keeps the
+    /// worker, its socket, and the blocking slot alive until the peer hangs up.
+    fn drop(&mut self) {
+        self.cancelled.store(true, Ordering::SeqCst);
     }
 }
 

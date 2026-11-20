@@ -90,6 +90,12 @@ impl PiConnection {
         let (sender, response) = response_channel();
         {
             let mut pending = self.pending.lock().expect("Pi pending lock poisoned");
+            // The pump can close the connection after the fast check above.
+            // Recheck under the lock `fail_pending` drains, so a sender cannot
+            // register after that drain and wait forever.
+            if self.closed.load(Ordering::SeqCst) {
+                return Err(connection_closed());
+            }
             if pending.len() >= MAXIMUM_PENDING_COMMANDS {
                 return Err(failure(
                     "swallowtail.pi.rpc.command_capacity_exceeded",
@@ -172,15 +178,17 @@ impl PiConnection {
         if tasks.is_empty() {
             return CleanupOutcome::NotApplicable;
         }
+        // Join every task: one failing callback must not strand the rest.
+        let mut outcome = CleanupOutcome::Clean;
         for task in tasks {
             if task.join().await.is_err() {
-                return CleanupOutcome::Failed(SafeDiagnostic::new(
+                outcome = CleanupOutcome::Failed(SafeDiagnostic::new(
                     "swallowtail.pi.rpc.callback_join_failed",
                     "Pi RPC callback deadline task did not join cleanly",
                 ));
             }
         }
-        CleanupOutcome::Clean
+        outcome
     }
 }
 
@@ -233,3 +241,5 @@ fn connection_closed() -> RuntimeFailure {
         "Pi RPC connection is closed",
     )
 }
+
+include!("connection/tests.rs");

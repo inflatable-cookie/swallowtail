@@ -15,8 +15,12 @@ The package claim admits these 18 exact points only:
 The other three axes stay separate and unchanged: exact Node `22.23.2`,
 exact opaque `swallowtail-pi-sdk-jsonl-v1`, and the single exact source tag
 `swallowtail-pi-sdk-sidecar@0.5.1`. The sidecar asset content SHA-256 is
-`b4a87c838d8884813d90eb4dac7306f3c571aef7892ee112a4f448ebfd463415`; it is
+`10f308151743d528f865e7ec334ab68cb5a8641d6252af2765ed9eaa63685cec`; it is
 frozen as artifact identity without changing the existing source-tag axis.
+That digest moved from
+`b4a87c838d8884813d90eb4dac7306f3c571aef7892ee112a4f448ebfd463415` when the
+record-write queue was made resilient to a single failed write; the wire
+protocol, identity axes and qualified points are unchanged.
 
 Unpublished points are not inferred: `0.84.5`, `0.85.2`, `0.86.2`,
 `0.87.2`, `0.88.x` through `0.98.x`, `0.99.3`, `1.0.5`, and

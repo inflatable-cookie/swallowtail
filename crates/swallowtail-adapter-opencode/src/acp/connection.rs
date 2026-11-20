@@ -28,6 +28,13 @@ const MAXIMUM_PENDING_REQUESTS: usize = 32;
 const RECEIVE_FRAMING_LIMITS: FramingLimits =
     FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES);
 
+fn connection_closed() -> RuntimeFailure {
+    failure(
+        "swallowtail.opencode.acp.connection_closed",
+        "OpenCode ACP connection is closed",
+    )
+}
+
 pub(crate) struct AcpConnection {
     process: Arc<dyn ProcessHandle>,
     services: HostServices,
@@ -35,8 +42,6 @@ pub(crate) struct AcpConnection {
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     session_id: Mutex<Option<String>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
-    closing: AtomicBool,
-    cancelled: AtomicBool,
     closed: AtomicBool,
     cleanup: Mutex<Option<CleanupOutcome>>,
 }
@@ -50,8 +55,6 @@ impl AcpConnection {
             pending: Mutex::new(BTreeMap::new()),
             session_id: Mutex::new(None),
             active_turn: Mutex::new(None),
-            closing: AtomicBool::new(false),
-            cancelled: AtomicBool::new(false),
             closed: AtomicBool::new(false),
             cleanup: Mutex::new(None),
         })
@@ -131,14 +134,18 @@ impl AcpConnection {
         params: Value,
     ) -> Result<PendingResponse, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
-            return Err(failure(
-                "swallowtail.opencode.acp.connection_closed",
-                "OpenCode ACP connection is closed",
-            ));
+            return Err(connection_closed());
         }
+        let bytes = encode_request(id, method, params).map_err(|_| protocol_failure())?;
         let (sender, response) = response_channel();
         {
             let mut pending = self.pending.lock().expect("ACP pending lock poisoned");
+            // The pump can close the connection after the fast check above.
+            // Recheck under the lock `fail_pending` drains, so a sender cannot
+            // register after that drain and wait forever.
+            if self.closed.load(Ordering::SeqCst) {
+                return Err(connection_closed());
+            }
             if pending.len() >= MAXIMUM_PENDING_REQUESTS || pending.insert(id, sender).is_some() {
                 return Err(failure(
                     "swallowtail.opencode.acp.correlation_limit",
@@ -146,7 +153,6 @@ impl AcpConnection {
                 ));
             }
         }
-        let bytes = encode_request(id, method, params).map_err(|_| protocol_failure())?;
         if let Err(error) = self.write(bytes).await {
             self.pending
                 .lock()
@@ -211,13 +217,11 @@ impl AcpConnection {
                 .request("session/close", json!({"sessionId": session_id}))
                 .await;
         }
-        self.closing.store(true, Ordering::SeqCst);
         let _ = self.process.close_stdin().await;
         let _ = self.process.request_stop().await;
     }
 
     pub(crate) async fn cancel_session(&self) -> Result<(), RuntimeFailure> {
-        self.cancelled.store(true, Ordering::SeqCst);
         self.process.force_stop().await
     }
 

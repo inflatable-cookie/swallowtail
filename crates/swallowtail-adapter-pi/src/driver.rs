@@ -227,8 +227,24 @@ impl PiRpcDriver {
                 .await;
             return Err(error);
         }
-        let runtime_id = RuntimeSessionId::new(format!("pi-rpc:{}", request.request_id().as_str()))
-            .expect("validated request id produces a valid Pi runtime session id");
+        let runtime_id =
+            match RuntimeSessionId::new(format!("pi-rpc:{}", request.request_id().as_str())) {
+                Ok(runtime_id) => runtime_id,
+                Err(_) => {
+                    connection.begin_close().await;
+                    let _ = pump_task.join().await;
+                    let _ = resource_service
+                        .release(resource.take().expect("Pi resource was resolved"))
+                        .await;
+                    let _ = credential_service
+                        .release(credential.take().expect("Pi credential was acquired"))
+                        .await;
+                    return Err(failure(
+                        "swallowtail.pi.rpc.runtime_session_id_invalid",
+                        "Pi RPC runtime session id was invalid",
+                    ));
+                }
+            };
         let active: ActiveSlot = Arc::new(Mutex::new(None));
         Ok(PiSessionHandle {
             request_id: request.request_id().clone(),
@@ -252,3 +268,26 @@ impl PiRpcDriver {
 }
 
 pub use descriptor::pi_rpc_descriptor;
+
+#[cfg(test)]
+mod tests {
+    use swallowtail_runtime::{RequestId, RuntimeSessionId};
+
+    #[test]
+    fn oversized_request_ids_derive_runtime_session_ids_without_panicking() {
+        // Runtime session identities accept any non-blank text, so derivation
+        // must stay total for the largest request ids callers can construct.
+        let request_id = RequestId::new("r".repeat(4096)).expect("a long request id is valid");
+        let runtime_id = RuntimeSessionId::new(format!("pi-rpc:{}", request_id.as_str()))
+            .expect("derived runtime session id is valid");
+        assert_eq!(runtime_id.as_str().len(), "pi-rpc:".len() + 4096);
+    }
+
+    #[test]
+    fn ordinary_request_ids_derive_runtime_session_ids() {
+        let request_id = RequestId::new("pi-unit-request").expect("request id is valid");
+        let runtime_id = RuntimeSessionId::new(format!("pi-rpc:{}", request_id.as_str()))
+            .expect("derived runtime session id is valid");
+        assert_eq!(runtime_id.as_str(), "pi-rpc:pi-unit-request");
+    }
+}

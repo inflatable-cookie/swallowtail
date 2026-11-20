@@ -82,19 +82,29 @@ impl PendingSession {
         }
     }
 
-    pub(in crate::sidecar::driver) fn into_handle(
+    /// Builds the ready session handle, aborting the pending attachment when the
+    /// derived runtime session id is rejected so no process, pump task or lease
+    /// outlives the failed open.
+    pub(in crate::sidecar::driver) async fn into_handle(
         self,
         plan: &PreflightPlan,
         binding: SessionResumeBinding,
-    ) -> PiSdkSidecarSessionHandle {
+    ) -> Result<PiSdkSidecarSessionHandle, RuntimeFailure> {
+        let runtime_id =
+            match RuntimeSessionId::new(format!("pi-sdk-sidecar:{}", self.request_id.as_str())) {
+                Ok(runtime_id) => runtime_id,
+                Err(_) => {
+                    self.abort().await;
+                    return Err(failure(
+                        "swallowtail.pi.sdk-sidecar.runtime_session_id_invalid",
+                        "Pi SDK sidecar runtime session id was invalid",
+                    ));
+                }
+            };
         let active: ActiveSlot = Arc::new(Mutex::new(None));
-        PiSdkSidecarSessionHandle {
+        Ok(PiSdkSidecarSessionHandle {
             request_id: self.request_id.clone(),
-            runtime_id: RuntimeSessionId::new(format!(
-                "pi-sdk-sidecar:{}",
-                self.request_id.as_str()
-            ))
-            .expect("validated request id produces a valid sidecar runtime session id"),
+            runtime_id,
             execution_host_id: plan.execution_host_id().clone(),
             binding,
             connection: Arc::clone(&self.connection),
@@ -112,7 +122,7 @@ impl PendingSession {
                 .requirements()
                 .capabilities()
                 .any(|required| required.capability() == swallowtail_core::Capability::Attachments),
-        }
+        })
     }
 }
 
@@ -176,15 +186,22 @@ impl InteractiveSessionDriver for PiSdkSidecarDriver {
                 pending.abort().await;
                 return Err(error);
             }
-            let binding = session_binding(
+            let binding = match session_binding(
                 &plan,
                 &session_ref,
                 request
                     .working_resource()
                     .expect("validated sidecar working resource"),
                 request.access_policy(),
-            )?;
-            Ok(Box::new(pending.into_handle(&plan, binding)) as Box<dyn InteractiveSessionHandle>)
+            ) {
+                Ok(binding) => binding,
+                Err(error) => {
+                    pending.abort().await;
+                    return Err(error);
+                }
+            };
+            let handle = pending.into_handle(&plan, binding).await?;
+            Ok(Box::new(handle) as Box<dyn InteractiveSessionHandle>)
         })
     }
 

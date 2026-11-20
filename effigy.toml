@@ -549,6 +549,4 @@ section = "Research Records"
 ]
 
 [bootstrap]
-run = [
-  { task = "hooks:install" },
-]
+setup = ["hooks:install"]

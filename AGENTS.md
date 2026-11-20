@@ -36,7 +36,7 @@ effigy test --plan
   one to four exact workspace packages; milestone proof, not a task default
 - `effigy package:verify-affected <pkg>...` — package archive assembly for the
   same scope
-- `effigy format:package <pkg>...` — exact-package fmt plus check for one to
+- `effigy format:package <pkg>...` — exact-package fmt for one to
   four workspace packages; never the whole workspace
 - `effigy qa:docs` — docs, link, index and guide checks
 - `effigy qa:routes` — route, feature and activity matrix checks

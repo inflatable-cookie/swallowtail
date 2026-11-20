@@ -36,7 +36,7 @@ format_plan=$(
 [[ "$format_plan" == *"selector=format:package"* ]]
 [[ "$format_plan" == *"package=swallowtail-core"* ]]
 [[ "$format_plan" == *"package=swallowtail-runtime"* ]]
-[[ "$format_plan" == *"proof=cargo-fmt-check"* ]]
+[[ "$format_plan" == *"proof=cargo-fmt"* ]]
 
 format_expect_failure \
   "requires one to four package names" \
@@ -92,7 +92,6 @@ PATH="$format_shim:$PATH" bash scripts/format-packages.sh \
   swallowtail-core swallowtail-runtime
 format_expected_cargo=$(cat <<'EOF'
 [fmt][--package][swallowtail-core][--package][swallowtail-runtime]
-[fmt][--package][swallowtail-core][--package][swallowtail-runtime][--][--check]
 EOF
 )
 if [[ "$(cat "$format_work/cargo.log")" != "$format_expected_cargo" ]]; then

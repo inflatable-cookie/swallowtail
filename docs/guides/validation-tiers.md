@@ -70,7 +70,8 @@ Run only the relevant static truth:
 - `effigy qa:routes` for route, lifecycle, feature, or activity matrices
 - `effigy format:check` for Rust formatting across the workspace
 - `effigy format:package <pkg>...` for Rust formatting of one to four exact
-  workspace packages; runs `cargo fmt` then a check pass for that scope only
+  workspace packages; runs `cargo fmt` for that scope only. The check-only
+  workspace gate is `effigy format:check`, which CI runs too
 - `effigy check:copilot-acp-host-permission-format` for the Python formatting
   of the host-permission proof runner; check-only, needs the pinned Ruff on
   `PATH` (see [Python Format Prerequisite](#python-format-prerequisite)).

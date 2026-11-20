@@ -134,7 +134,7 @@ fn require_continuity(plan: &PreflightPlan, capability: Capability) -> Result<()
 }
 
 #[allow(clippy::too_many_arguments)]
-fn build_attached_handle(
+async fn build_attached_handle(
     plan: &PreflightPlan,
     request_id: RequestId,
     resume_binding: SessionResumeBinding,
@@ -142,10 +142,59 @@ fn build_attached_handle(
     directory: String,
     services: HostServices,
     transport: CurlTransport,
-    access: AccessLeases,
+    mut access: AccessLeases,
     provider_callbacks: bool,
     image_attachments: bool,
 ) -> Result<Box<dyn InteractiveSessionHandle>, RuntimeFailure> {
+    let parts = attached_handle_parts(plan, &request_id);
+    let (active_turn_detachment, provider_id, model_id, runtime_id, active, cancellation) =
+        match parts {
+            Ok(parts) => parts,
+            Err(error) => {
+                // The caller already acquired these leases: an identity that
+                // cannot be bound must give them back instead of leaking them.
+                let _ = access.release(&services).await;
+                return Err(error);
+            }
+        };
+    Ok(Box::new(OpenCodeSessionHandle {
+        request_id,
+        runtime_id,
+        resume_binding,
+        provider_id,
+        model_id,
+        provider_session_id: provider_ref.as_provider_value().to_owned(),
+        directory,
+        endpoint: access.endpoint.clone(),
+        services,
+        transport,
+        access: Some(access),
+        active,
+        cancellation,
+        reasoning_mode: None,
+        structured_output: None,
+        image_attachments,
+        provider_callbacks,
+        active_turn_detachment,
+        callback_run_id: None,
+    }))
+}
+
+type AttachedHandleParts = (
+    bool,
+    ProviderId,
+    swallowtail_core::ModelId,
+    RuntimeSessionId,
+    ActiveSlot,
+    SessionCancellation,
+);
+
+/// Validates every fallible part of an attached handle before any acquired
+/// lease becomes owned by the handle.
+fn attached_handle_parts(
+    plan: &PreflightPlan,
+    request_id: &RequestId,
+) -> Result<AttachedHandleParts, RuntimeFailure> {
     let active_turn_detachment = active_turn_detachment(plan)?;
     let provider_id = plan.provider_id().cloned().ok_or_else(|| {
         failure(
@@ -169,27 +218,14 @@ fn build_attached_handle(
     )?;
     let active = Arc::new(Mutex::new(None));
     let cancellation = SessionCancellation::new(Arc::clone(&active));
-    Ok(Box::new(OpenCodeSessionHandle {
-        request_id,
-        runtime_id,
-        resume_binding,
+    Ok((
+        active_turn_detachment,
         provider_id,
         model_id,
-        provider_session_id: provider_ref.as_provider_value().to_owned(),
-        directory,
-        endpoint: access.endpoint.clone(),
-        services,
-        transport,
-        access: Some(access),
+        runtime_id,
         active,
         cancellation,
-        reasoning_mode: None,
-        structured_output: None,
-        image_attachments,
-        provider_callbacks,
-        active_turn_detachment,
-        callback_run_id: None,
-    }))
+    ))
 }
 
 fn continuity_limit() -> RuntimeFailure {

@@ -103,7 +103,8 @@ fn respond_sse(
         | StreamFixture::DeleteGated
         | StreamFixture::DeleteHealthDrift
         | StreamFixture::ImportTitleDrift
-        | StreamFixture::ImportGated => write_fixture(stream, SUCCESS.as_bytes()),
+        | StreamFixture::ImportGated
+        | StreamFixture::RepeatedCursor => write_fixture(stream, SUCCESS.as_bytes()),
         StreamFixture::ProviderError => write_fixture(stream, PROVIDER_ERROR.as_bytes()),
         StreamFixture::Unknown => write_fixture(stream, UNKNOWN.as_bytes()),
         StreamFixture::Disconnect => write_fixture(stream, DISCONNECT.as_bytes()),

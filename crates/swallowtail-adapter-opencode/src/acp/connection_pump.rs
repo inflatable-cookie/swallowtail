@@ -39,26 +39,18 @@ impl AcpConnection {
             self.emit_protocol_debug(&error, "acp.pump.finish");
             transport_failure = Some(error);
         }
-        if transport_failure.is_some() {
-            let _ = self.process.force_stop().await;
-        }
-        let waited = self.process.wait().await;
-        self.closed.store(true, Ordering::SeqCst);
-        let cleanup = if waited.is_ok() {
-            CleanupOutcome::Clean
-        } else {
-            CleanupOutcome::Failed(SafeDiagnostic::new(
-                "swallowtail.opencode.acp.process_cleanup_failed",
-                "OpenCode process cleanup failed",
-            ))
-        };
-        *self.cleanup.lock().expect("ACP cleanup lock poisoned") = Some(cleanup.clone());
+        let needs_stop = transport_failure.is_some();
         let error = transport_failure.unwrap_or_else(|| {
             failure(
                 "swallowtail.opencode.acp.connection_ended",
                 "OpenCode ACP connection ended",
             )
         });
+        // No response can arrive after this pump has ended. Close request
+        // admission and resolve existing waiters before force-stop or process
+        // wait can suspend, so a later request cannot register against a dead
+        // reader and hang the shutdown.
+        self.closed.store(true, Ordering::SeqCst);
         if let Some(turn) = self
             .active_turn
             .lock()
@@ -69,5 +61,18 @@ impl AcpConnection {
             turn.fail(&error);
         }
         self.fail_pending(error);
+        if needs_stop {
+            let _ = self.process.force_stop().await;
+        }
+        let waited = self.process.wait().await;
+        let cleanup = if waited.is_ok() {
+            CleanupOutcome::Clean
+        } else {
+            CleanupOutcome::Failed(SafeDiagnostic::new(
+                "swallowtail.opencode.acp.process_cleanup_failed",
+                "OpenCode process cleanup failed",
+            ))
+        };
+        *self.cleanup.lock().expect("ACP cleanup lock poisoned") = Some(cleanup);
     }
 }

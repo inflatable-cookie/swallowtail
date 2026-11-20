@@ -6,7 +6,75 @@ struct Fixture {
     resource: WorkingResourceRef,
     server_version: String,
     host: LocalProcessHost,
+    lease_counters: LeaseCounters,
     thread: ThreadServices,
+}
+
+/// Counts the cleanup calls a driver makes against the leases it acquired.
+#[derive(Clone, Default)]
+struct LeaseCounters {
+    credential_releases: Arc<AtomicUsize>,
+    resource_releases: Arc<AtomicUsize>,
+}
+
+/// Delegates to the local host service and counts every lease release.
+#[derive(Clone)]
+struct CountingHost {
+    inner: LocalProcessHost,
+    counters: LeaseCounters,
+}
+
+impl CredentialService for CountingHost {
+    fn acquire(
+        &self,
+        scope: ScopeId,
+        reference: CredentialRef,
+        audience: EndpointAudience,
+    ) -> BoxFuture<'static, Result<CredentialLease, RuntimeFailure>> {
+        self.inner.acquire(scope, reference, audience)
+    }
+
+    fn release(&self, lease: CredentialLease) -> BoxFuture<'static, CleanupOutcome> {
+        let counters = self.counters.clone();
+        let released = CredentialService::release(&self.inner, lease);
+        Box::pin(async move {
+            let outcome = released.await;
+            counters.credential_releases.fetch_add(1, Ordering::SeqCst);
+            outcome
+        })
+    }
+}
+
+impl WorkingResourceService for CountingHost {
+    fn resolve(
+        &self,
+        scope: ScopeId,
+        reference: WorkingResourceRef,
+        access: ResourceAccess,
+        representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        self.inner
+            .resolve(scope, reference, access, representation)
+    }
+
+    fn create_temporary(
+        &self,
+        scope: ScopeId,
+        access: ResourceAccess,
+        representation: ResourceRepresentation,
+    ) -> BoxFuture<'static, Result<ResourceLease, RuntimeFailure>> {
+        self.inner.create_temporary(scope, access, representation)
+    }
+
+    fn release(&self, lease: ResourceLease) -> BoxFuture<'static, CleanupOutcome> {
+        let counters = self.counters.clone();
+        let released = WorkingResourceService::release(&self.inner, lease);
+        Box::pin(async move {
+            let outcome = released.await;
+            counters.resource_releases.fetch_add(1, Ordering::SeqCst);
+            outcome
+        })
+    }
 }
 
 impl Fixture {
@@ -37,19 +105,32 @@ impl Fixture {
             resource,
             server_version: server_version.to_owned(),
             host,
+            lease_counters: LeaseCounters::default(),
             thread: ThreadServices::new(),
         }
     }
 
+    fn credential_releases(&self) -> usize {
+        self.lease_counters.credential_releases.load(Ordering::SeqCst)
+    }
+
+    fn resource_releases(&self) -> usize {
+        self.lease_counters.resource_releases.load(Ordering::SeqCst)
+    }
+
     fn services(&self) -> HostServices {
         let thread = Arc::new(self.thread.clone());
+        let counting = Arc::new(CountingHost {
+            inner: self.host.clone(),
+            counters: self.lease_counters.clone(),
+        });
         HostServices::new(self.host_id.clone())
             .with_task(Arc::clone(&thread) as Arc<dyn ScopedTaskService>)
             .with_blocking_work(Arc::clone(&thread) as Arc<dyn BlockingWorkService>)
             .with_time(thread as Arc<dyn TimeService>)
             .with_network(Arc::new(self.host.clone()) as Arc<dyn NetworkPolicyService>)
-            .with_credential(Arc::new(self.host.clone()) as Arc<dyn CredentialService>)
-            .with_working_resource(Arc::new(self.host.clone()) as Arc<dyn WorkingResourceService>)
+            .with_credential(Arc::clone(&counting) as Arc<dyn CredentialService>)
+            .with_working_resource(counting as Arc<dyn WorkingResourceService>)
     }
 
     fn plan(&self, role: DriverRole) -> PreflightPlan {

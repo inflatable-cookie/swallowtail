@@ -47,6 +47,7 @@ pub enum StreamFixture {
     ImportTitleDrift,
     ImportGated,
     ReconciliationActive,
+    RepeatedCursor,
     PanicOnEvent,
 }
 

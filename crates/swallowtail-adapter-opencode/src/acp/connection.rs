@@ -213,9 +213,16 @@ impl AcpConnection {
             .expect("ACP session lock poisoned")
             .clone();
         if let Some(session_id) = session_id {
-            let _ = self
-                .request("session/close", json!({"sessionId": session_id}))
-                .await;
+            // Write the documented `session/close` request before the stdin
+            // close, but never wait on its response: a harness that stops
+            // answering must not keep stdin open and the stop request unsent.
+            // The pump owns settlement of any pending correlation id.
+            if let Ok(close) = self
+                .begin_request("session/close", json!({"sessionId": session_id}))
+                .await
+            {
+                drop(close);
+            }
         }
         let _ = self.process.close_stdin().await;
         let _ = self.process.request_stop().await;
@@ -260,6 +267,51 @@ include!("connection_response.rs");
 #[cfg(test)]
 mod tests {
     use super::*;
+    use futures_executor::block_on;
+    use std::sync::atomic::AtomicUsize;
+    use std::time::Duration;
+    use swallowtail_core::ExecutionHostId;
+    use swallowtail_runtime::{BoxFuture, ProcessExit, ProcessOutputChunk};
+
+    /// Accepts writes but never answers, as a harness that hangs on
+    /// `session/close` does.
+    struct SilentCloseProcess {
+        writes: Arc<AtomicUsize>,
+        stdin_closed: Arc<AtomicBool>,
+        stop_requested: Arc<AtomicBool>,
+    }
+
+    impl ProcessHandle for SilentCloseProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.writes.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async { Ok(()) })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.stdin_closed.store(true, Ordering::SeqCst);
+            Box::pin(async { Ok(()) })
+        }
+
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.stop_requested.store(true, Ordering::SeqCst);
+            Box::pin(async { Ok(()) })
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
 
     #[test]
     fn receive_framing_profile_is_explicit() {
@@ -270,6 +322,56 @@ mod tests {
         assert_eq!(
             RECEIVE_FRAMING_LIMITS.maximum_buffer_bytes(),
             DEFAULT_MAX_BUFFER_BYTES
+        );
+    }
+
+    #[test]
+    fn a_silent_session_close_still_closes_stdin_and_requests_stop() {
+        let writes = Arc::new(AtomicUsize::new(0));
+        let stdin_closed = Arc::new(AtomicBool::new(false));
+        let stop_requested = Arc::new(AtomicBool::new(false));
+        let process = SilentCloseProcess {
+            writes: Arc::clone(&writes),
+            stdin_closed: Arc::clone(&stdin_closed),
+            stop_requested: Arc::clone(&stop_requested),
+        };
+        let connection = AcpConnection::new(
+            Arc::new(process),
+            HostServices::new(
+                ExecutionHostId::new("opencode.acp.close-test").expect("host id is valid"),
+            ),
+        );
+        connection
+            .set_session_id("ses_fixture".to_owned())
+            .expect("session id sets once");
+
+        // A harness that never answers `session/close` must not hold the
+        // shutdown stages: the call has to return on its own.
+        let (sender, receiver) = std::sync::mpsc::channel();
+        let closing = {
+            let connection = Arc::clone(&connection);
+            std::thread::spawn(move || {
+                block_on(connection.begin_close());
+                let _ = sender.send(());
+            })
+        };
+        receiver
+            .recv_timeout(Duration::from_secs(10))
+            .expect("begin_close must not wait on a silent session/close response");
+        closing.join().expect("close thread joins");
+
+        assert_eq!(
+            writes.load(Ordering::SeqCst),
+            1,
+            "the documented session/close request must still be written"
+        );
+        assert!(
+            stdin_closed.load(Ordering::SeqCst),
+            "stdin must close even when session/close is never answered"
+        );
+        assert!(
+            stop_requested.load(Ordering::SeqCst),
+            "the stop request must run even when session/close is never answered"
         );
     }
 }

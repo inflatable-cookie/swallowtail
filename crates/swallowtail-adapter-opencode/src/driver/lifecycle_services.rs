@@ -36,24 +36,21 @@ where
     })?;
     let mut work = Box::pin(work);
     let mut wait = time.wait_until(deadline);
-    let mut timed_out = false;
-    let result = poll_fn(|context| {
+    poll_fn(|context| {
+        // A completed request always wins over a deadline observed on the same
+        // poll, so a fast response is never reported as a timeout.
         if let Poll::Ready(result) = work.as_mut().poll(context) {
             return Poll::Ready(result);
         }
-        if !timed_out && wait.as_mut().poll(context).is_ready() {
-            timed_out = true;
+        if wait.as_mut().poll(context).is_ready() {
+            // Abandon the in-flight request instead of re-polling it without a
+            // wake source. The host's cancelled flag aborts the blocking work.
             cancelled.store(true, Ordering::SeqCst);
-            context.waker().wake_by_ref();
+            return Poll::Ready(Err(failure(timeout_code, timeout_message)));
         }
         Poll::Pending
     })
-    .await;
-    if timed_out {
-        Err(failure(timeout_code, timeout_message))
-    } else {
-        result
-    }
+    .await
 }
 
 async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {

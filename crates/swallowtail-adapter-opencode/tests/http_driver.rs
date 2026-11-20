@@ -4,6 +4,7 @@ use futures_executor::block_on;
 use futures_util::StreamExt;
 use http_support::{FixtureServer, StreamFixture, ThreadServices};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 use swallowtail_adapter_opencode::{
     OpenCodeHttpDriver, opencode_http_descriptor, opencode_server_binding,
@@ -15,23 +16,25 @@ use swallowtail_core::{
     EntitlementState, ExecutionHostId, ExecutionLayer, ExtensionNamespace, InstanceOwnership,
     InstancePolicyId, InstanceRevision, InstanceTargetRef, ModelId, ModelRoute, ModelRouteId,
     ModelRouteRevision, OperationRequirements, OperationShape, PreflightContext, PreflightPlan,
-    ProtocolFacadeId, ProviderId, RuntimeReadiness, SessionAccessPolicy,
-    SessionProviderStatePolicy, SupportAuthority, preflight,
+    ProtocolFacadeId, ProviderId, ResourceAccess, ResourceRepresentation, RuntimeReadiness,
+    SessionAccessPolicy, SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 use swallowtail_host_local::{LocalProcessHost, LocalProcessLimits};
 use swallowtail_runtime::{
-    BlockingWorkService, CredentialRef, CredentialService, EndpointRef, HostServices,
-    InteractiveSessionDriver, LoadSessionRequest, ModelCatalogDriver, ModelCatalogRequest,
-    NetworkPolicyService, OpenSessionRequest, OperationContent, OperationDetachmentAcknowledgement,
-    PersistedSessionResumeBinding, ProviderObservation, ProviderSessionHistoryAgreement,
-    ProviderSessionHistoryBounds, ProviderSessionHistoryDriver, ProviderSessionHistoryId,
-    ProviderSessionHistoryPlan, ProviderSessionHistoryRequest, ProviderSessionHistoryTotal,
+    BlockingWorkService, BoxFuture, CleanupOutcome, CredentialLease, CredentialRef,
+    CredentialService, EndpointRef, HostServices, InteractiveSessionDriver, LoadSessionRequest,
+    ModelCatalogDriver, ModelCatalogRequest, NetworkPolicyService, OpenSessionRequest,
+    OperationContent, OperationDetachmentAcknowledgement, PersistedSessionResumeBinding,
+    ProviderObservation, ProviderSessionHistoryAgreement, ProviderSessionHistoryBounds,
+    ProviderSessionHistoryDriver, ProviderSessionHistoryId, ProviderSessionHistoryPlan,
+    ProviderSessionHistoryRequest, ProviderSessionHistoryTotal,
     ProviderSessionReconciliationAgreement, ProviderSessionReconciliationBounds,
     ProviderSessionReconciliationDriver, ProviderSessionReconciliationPlan,
-    ProviderSessionReconciliationRequest, RequestId, ResumeSessionRequest, RuntimeEventKind,
-    RuntimeTurnId, ScopedTaskService, SessionCleanupRequest, SessionPlanAgreement,
-    SessionResumeBinding, SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService,
-    TurnRequest, WorkingResourceRef, WorkingResourceService,
+    ProviderSessionReconciliationRequest, RequestId, ResourceLease, ResumeSessionRequest,
+    RuntimeEventKind, RuntimeFailure, RuntimeTurnId, ScopeId, ScopedTaskService,
+    SessionCleanupRequest, SessionPlanAgreement, SessionResumeBinding,
+    SessionResumeBindingPersistenceFailureKind, TerminalStatus, TimeService, TurnRequest,
+    WorkingResourceRef, WorkingResourceService,
 };
 
 fn close_session(

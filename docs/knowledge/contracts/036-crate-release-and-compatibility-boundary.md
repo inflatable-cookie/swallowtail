@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-23
+Updated: 2026-11-20
 
 ## Purpose
 
@@ -50,9 +50,10 @@ the reviewed additive `swallowtail-adapter-zcode`,
 `swallowtail-adapter-copilot-cli`, `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
 `swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
 `swallowtail-adapter-deepagents`. The tag is 40 packages and 47
-production routes. OpenHands Agent Server is deferred: that package exists
-without a production route. The additive packages are not part of the
-immutable `v0.3.2` inventories.
+production routes. OpenHands Agent Server never reached a production route;
+task 257 removed that package from the current source while every tag that
+the package released keeps its inventory. The additive packages are not part
+of the immutable `v0.3.2` inventories.
 
 Foundations:
 
@@ -99,12 +100,15 @@ Opt-in adapters:
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
 - `swallowtail-adapter-openai`
-- `swallowtail-adapter-openhands`
 - `swallowtail-adapter-pi`
 - `swallowtail-adapter-qoder`
 - `swallowtail-adapter-qwen`
 - `swallowtail-adapter-xai`
 - `swallowtail-adapter-zcode`
+
+The current source set is 39 packages and 51 production routes; `v0.6.0`
+remains the immutable 40-package tag that still carries the unwired
+`swallowtail-adapter-openhands` package.
 
 There is no umbrella crate or intentionally private implementation crate.
 Every package remains separately selectable. Selecting one grants no authority
@@ -558,7 +562,9 @@ receipts are in the [release note](../../releases/0.6.0.md).
 
 - all 40 `v0.3.3` packages are separately consumable from one exact source
   identity
-- OpenHands exists as a package without a production route
+- OpenHands Agent Server stays deferred with no production route; the current
+  source carries no package for it, and the tags that released
+  `swallowtail-adapter-openhands` keep their inventories
 - the 29th and 30th Command Code and idioms packages first appear in `v0.3.2`
 - the breaking binding-helper migration is explicit and limited to Codex and
   Ollama callers

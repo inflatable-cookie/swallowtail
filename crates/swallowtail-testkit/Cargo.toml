@@ -14,13 +14,13 @@ autotests = false
 doctest = false
 
 [dependencies]
-futures-core = "0.3"
+futures-core.workspace = true
 swallowtail-core.workspace = true
 swallowtail-idioms.workspace = true
 swallowtail-runtime.workspace = true
 
 [dev-dependencies]
-serde_json = "1"
+serde_json.workspace = true
 
 [lints]
 workspace = true

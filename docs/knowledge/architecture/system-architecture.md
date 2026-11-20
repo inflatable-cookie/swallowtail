@@ -2,15 +2,15 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-08-30
+Updated: 2026-11-20
 
 ## Realized State
 
-Swallowtail has a forty-package current-source Rust workspace plus its
+Swallowtail has a thirty-nine-package current-source Rust workspace plus its
 strict Northstar authority spine. The immutable `v0.3.2` tag remains a
 thirty-package source baseline; immutable `v0.3.3` adds ten reviewed
 adapters. Those ten contribute eleven additional production route surfaces.
-OpenHands adds a package without a production route.
+No current-source package exists without a production route.
 
 - `swallowtail-core` owns pure provider-neutral contract records, including
   runtime identities, access state, configured instances, model routes,
@@ -310,12 +310,12 @@ OpenHands adds a package without a production route.
   failure.
   `--acp`, SDK stdio, TUI, `--yolo` / `bypass_permissions` / `accept_edits`,
   and the `qoder` IDE dispatcher stay out.
-- `swallowtail-adapter-openhands` holds exact PyPI `1.42.1` discovery, owned
+- `swallowtail-adapter-openhands` held exact PyPI `1.42.1` discovery, owned
   loopback spawn `python -m openhands.agent_server --host 127.0.0.1`, and
-  `prepare_openhands_agent_server`. `openhands.agent-server` is not a
-  production route: live HTTP/WebSocket conversation stays unwired and
-  `start_run` fail-closes. V0 Socket.IO, Contract 035 remote ACP, the
-  Python SDK, Docker/hosted sandbox, and `NeverConfirm` stay out.
+  `prepare_openhands_agent_server`. Its route stayed unwired, so task 257
+  removed the package from the current source. V0 Socket.IO, Contract 035
+  remote ACP, the Python SDK, Docker/hosted sandbox, and `NeverConfirm` stay
+  out.
 - `swallowtail-adapter-kiro` implements exact installer-manifest `2.21.4` ACP
   on `kiro-cli acp` through `prepare_kiro_acp`. Credentials stay host-owned
   local account. `--cloud`, `--agent`, `kiro-cli chat --no-interactive`,
@@ -758,11 +758,12 @@ Crate status:
   with an adapter-owned eight-turn AgentLoop ceiling, and
   `prepare_qoder_headless`. The package remains an unreleased additive
   candidate after `v0.3.2`.
-- `swallowtail-adapter-openhands` — realized for exact PyPI `1.42.1`
+- `swallowtail-adapter-openhands` — removed by task 257. Exact PyPI `1.42.1`
   Agent Server discovery, owned loopback spawn, and
-  `prepare_openhands_agent_server`. `openhands.agent-server` is deferred:
-  live HTTP/WebSocket conversation is unwired. The package remains an
-  unreleased additive candidate after `v0.3.2`.
+  `prepare_openhands_agent_server` were realized, but `openhands.agent-server`
+  stayed deferred with live HTTP/WebSocket conversation unwired, so the
+  package contributed no production route. The `v0.3.3` through `v0.6.0` tags
+  keep the package they released; the current source does not carry it.
 - `swallowtail-adapter-kiro` — realized for exact installer-manifest
   `2.21.4` ACP with qualified-only claim, local-account access, no
   credential lease, and `prepare_kiro_acp`. `kiro.acp` is a production

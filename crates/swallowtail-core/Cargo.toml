@@ -13,7 +13,7 @@ description = "Provider-neutral contract vocabulary for Swallowtail"
 doctest = false
 
 [dependencies]
-semver = "1"
+semver.workspace = true
 
 [lints]
 workspace = true

@@ -63,7 +63,6 @@ release_stage_4=(
   swallowtail-adapter-opencode
   swallowtail-adapter-ollama
   swallowtail-adapter-openai
-  swallowtail-adapter-openhands
   swallowtail-adapter-pi
   swallowtail-adapter-qoder
   swallowtail-adapter-qwen

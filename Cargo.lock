@@ -3284,23 +3284,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "swallowtail-adapter-openhands"
-version = "0.6.0"
-dependencies = [
- "curl",
- "futures-channel",
- "futures-core",
- "futures-executor",
- "futures-util",
- "semver",
- "serde_json",
- "swallowtail-core",
- "swallowtail-runtime",
- "swallowtail-testkit",
- "url",
-]
-
-[[package]]
 name = "swallowtail-adapter-pi"
 version = "0.6.0"
 dependencies = [

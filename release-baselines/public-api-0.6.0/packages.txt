@@ -24,7 +24,6 @@ swallowtail-adapter-oh-my-pi
 swallowtail-adapter-ollama
 swallowtail-adapter-openai
 swallowtail-adapter-opencode
-swallowtail-adapter-openhands
 swallowtail-adapter-pi
 swallowtail-adapter-qoder
 swallowtail-adapter-qwen

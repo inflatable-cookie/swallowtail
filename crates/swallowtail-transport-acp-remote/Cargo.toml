@@ -16,22 +16,22 @@ doctest = false
 agent-client-protocol = "=2.0.0"
 async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
 cookie_store = { version = "=0.22.1", default-features = false }
-futures-channel = "0.3"
-futures-core = "0.3"
-futures-util = { version = "0.3", features = ["sink"] }
+futures-channel.workspace = true
+futures-core.workspace = true
+futures-util = { workspace = true, features = ["sink"] }
 reqwest = { version = "0.13", default-features = false, features = ["http2", "json", "rustls", "stream"] }
-serde_json = "1"
+serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
-tokio = { version = "1.52", default-features = false, features = ["macros", "net", "rt", "sync", "time"] }
-url = "2.5"
+tokio = { workspace = true, features = ["macros", "net", "rt", "sync", "time"] }
+url.workspace = true
 
 [dev-dependencies]
 agent-client-protocol-http = { version = "=2.0.0", features = ["server"] }
 axum = "0.8"
 bytes = "1"
-futures-executor = "0.3"
+futures-executor.workspace = true
 h2 = "0.4"
 http = "1"
 http-body-util = { version = "0.1", features = ["channel"] }

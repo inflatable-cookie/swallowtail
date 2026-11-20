@@ -66,8 +66,6 @@ swallowtail-adapter-openai	swallowtail-runtime	^0.6.0
 swallowtail-adapter-opencode	swallowtail-core	^0.6.0
 swallowtail-adapter-opencode	swallowtail-protocol-acp	^0.6.0
 swallowtail-adapter-opencode	swallowtail-runtime	^0.6.0
-swallowtail-adapter-openhands	swallowtail-core	^0.6.0
-swallowtail-adapter-openhands	swallowtail-runtime	^0.6.0
 swallowtail-adapter-pi	swallowtail-core	^0.6.0
 swallowtail-adapter-pi	swallowtail-runtime	^0.6.0
 swallowtail-adapter-qoder	swallowtail-core	^0.6.0

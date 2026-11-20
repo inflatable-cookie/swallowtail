@@ -2,7 +2,7 @@
 
 Status: active
 Owner: Tom
-Updated: 2026-10-23
+Updated: 2026-11-20
 Realization: roadmap g02.001; g03.043; g03.059; g04.003; g05.021
 
 ## Boundary
@@ -15,8 +15,9 @@ adds `swallowtail-adapter-deepseek-harness` and its two routes,
 `swallowtail-adapter-goose`, `swallowtail-adapter-copilot-cli`,
 `swallowtail-adapter-mistral-vibe`, `swallowtail-adapter-qoder`,
 `swallowtail-adapter-openhands`, `swallowtail-adapter-kiro`, and
-`swallowtail-adapter-deepagents`. OpenHands Agent Server is deferred: that
-package exists without a production route. Immutable `v0.3.2` inventories stay
+`swallowtail-adapter-deepagents`. OpenHands Agent Server carried no production
+route; task 257 removed that package from the current source. Immutable
+`v0.3.2` inventories stay
 30 packages and 36 routes. `v0.4.0` kept those 40 packages and added two
 routes, `pi.sdk-sidecar` and `claude-agent.sdk`, for a 49-route inventory.
 `v0.5.4` tags 40 packages and 50 routes; the prepared `0.6.0` candidate keeps
@@ -77,7 +78,6 @@ Adapters:
 - `swallowtail-adapter-ollama`
 - `swallowtail-adapter-oh-my-pi`
 - `swallowtail-adapter-openai`
-- `swallowtail-adapter-openhands`
 - `swallowtail-adapter-pi`
 - `swallowtail-adapter-qoder`
 - `swallowtail-adapter-qwen`
@@ -108,8 +108,9 @@ self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
 Release metadata, dependency topology, and semantic API checks distinguish the
-40-package `0.6.0` candidate and its 51-route inventory from the immutable
-40-package, 50-route `v0.5.4` tag, the 47-route `v0.3.3` tag, and the
+39-package current source and its 51-route inventory from the immutable
+40-package, 51-route `v0.6.0` tag, the 40-package, 50-route `v0.5.4` tag, the
+47-route `v0.3.3` tag, and the
 30-package `v0.3.2` source.
 Immutable `v0.1.x` inventories retain their 27
 packages and 33 routes; `v0.2.0` and `v0.3.1` retain their 28-package,
@@ -162,12 +163,13 @@ The candidate is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 40-package `v0.6.0` metadata and 92-edge topology, kept distinct from the
-  immutable 40-package `v0.5.4` and `v0.3.3`, 30-package `v0.3.2`,
-  28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
-- frozen 40-package `v0.6.0` semantic API inventory and 51-route candidate
-  inventory, including `opencode.acp`; historical `v0.5.4` and `v0.3.3` files
-  stay immutable, with removals from the immutable `v0.5.4` baseline forbidden
+- 39-package current-source metadata and 89-edge topology, kept distinct from
+  the immutable 40-package `v0.6.0`, `v0.5.4` and `v0.3.3`, 30-package
+  `v0.3.2`, 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
+- frozen 39-package current-source semantic API inventory and 51-route
+  inventory, including `opencode.acp`; historical `v0.6.0`, `v0.5.4` and
+  `v0.3.3` files stay immutable, with removals from the immutable `v0.5.4`
+  baseline forbidden
 - documented public API
 - dependency and security policy
 - MSRV and current-stable checks

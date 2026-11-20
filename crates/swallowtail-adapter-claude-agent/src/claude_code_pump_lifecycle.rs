@@ -25,7 +25,7 @@ pub(super) async fn finish_with_watchers(
     )
     .err();
     if matches!(outcome.status(), TerminalStatus::Completed) {
-        match binding.completion_gate() {
+        match binding.completion_gate().await {
             Ok(state) if state.allows_successful_completion() => {}
             Ok(_) => {
                 outcome = TerminalOutcome::new(
@@ -44,7 +44,7 @@ pub(super) async fn finish_with_watchers(
             }
         }
     }
-    let watcher_cleanup = binding.close(cleanup_cause(outcome.status()));
+    let watcher_cleanup = binding.close(cleanup_cause(outcome.status())).await;
     let outcome = replace_cleanup(outcome, watcher_cleanup);
     let later = drain_lifecycle(
         parser,

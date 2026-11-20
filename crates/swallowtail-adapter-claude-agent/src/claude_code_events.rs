@@ -50,19 +50,25 @@ impl ClaudeCodeEventParser {
     }
 
     pub(crate) fn push(&mut self, bytes: &[u8]) -> Result<Vec<RuntimeEvent>, RuntimeFailure> {
-        self.pending.extend_from_slice(bytes);
+        let mut pending = std::mem::take(&mut self.pending);
         let mut events = Vec::new();
-        while let Some(newline) = self.pending.iter().position(|byte| *byte == b'\n') {
-            if newline > MAXIMUM_LINE_BYTES {
-                return Err(stream_limit());
-            }
-            let line: Vec<_> = self.pending.drain(..=newline).collect();
-            events.extend(self.parse_line(trim_newline(&line))?);
-        }
-        if self.pending.len() > MAXIMUM_LINE_BYTES {
-            return Err(stream_limit());
-        }
-        Ok(events)
+        let scanned = crate::ndjson::scan_lines(
+            &mut pending,
+            bytes,
+            MAXIMUM_LINE_BYTES,
+            stream_limit,
+            |line| {
+                events.extend(self.parse_line(trim_newline(line))?);
+                Ok(())
+            },
+        );
+        self.pending = pending;
+        scanned.map(|()| events)
+    }
+
+    #[cfg(test)]
+    pub(crate) fn buffered_bytes(&self) -> usize {
+        self.pending.len()
     }
 
     pub(crate) fn activity_event(
@@ -347,4 +353,55 @@ fn stream_limit() -> RuntimeFailure {
         "swallowtail.claude_code.headless.stream_limit",
         "Claude Code exceeded the bounded stream-json limits",
     )
+}
+
+#[cfg(test)]
+mod framing_tests {
+    use super::{ClaudeCodeEventParser, MAXIMUM_LINE_BYTES};
+    use swallowtail_runtime::{ActivityOperationId, RuntimeRunId};
+
+    fn parser() -> ClaudeCodeEventParser {
+        ClaudeCodeEventParser::new(
+            swallowtail_core::ModelId::new("claude-opus-5").expect("model"),
+            ActivityOperationId::Run(RuntimeRunId::new("framing-bounds").expect("run")),
+        )
+    }
+
+    #[test]
+    fn one_oversized_chunk_is_rejected_without_being_held() {
+        let mut parser = parser();
+        let oversized = vec![b'x'; MAXIMUM_LINE_BYTES * 2];
+        let error = parser
+            .push(&oversized)
+            .expect_err("an oversized chunk must fail");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.claude_code.headless.stream_limit"
+        );
+        assert_eq!(
+            parser.buffered_bytes(),
+            0,
+            "the rejected chunk is not retained for the next call"
+        );
+    }
+
+    #[test]
+    fn a_held_partial_line_is_only_completed_by_its_delimiter() {
+        let mut parser = parser();
+        assert!(
+            parser
+                .push(b"{\"type\":\"sys")
+                .expect("a bounded partial line is accepted")
+                .is_empty()
+        );
+        assert_eq!(parser.buffered_bytes(), 12);
+        let error = parser
+            .push(b"nope\n")
+            .expect_err("the completed line is not valid JSON");
+        assert_eq!(
+            error.diagnostic().code(),
+            "swallowtail.claude_code.headless.malformed_stream"
+        );
+        assert_eq!(parser.buffered_bytes(), 0);
+    }
 }

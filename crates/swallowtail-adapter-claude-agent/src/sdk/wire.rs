@@ -39,23 +39,26 @@ impl ClaudeAgentSdkDecoder {
         &mut self,
         bytes: &[u8],
     ) -> Result<Vec<ClaudeAgentSdkRecord>, ClaudeAgentSdkProtocolFailure> {
-        self.buffer.extend_from_slice(bytes);
-        if self.buffer.len() > MAXIMUM_RECORD_BYTES && !self.buffer.contains(&b'\n') {
-            return Err(failure(ClaudeAgentSdkProtocolFailureKind::RecordTooLarge));
-        }
+        let mut buffer = std::mem::take(&mut self.buffer);
         let mut records = Vec::new();
-        while let Some(end) = self.buffer.iter().position(|byte| *byte == b'\n') {
-            if end > MAXIMUM_RECORD_BYTES {
-                return Err(failure(ClaudeAgentSdkProtocolFailureKind::RecordTooLarge));
-            }
-            let mut line: Vec<_> = self.buffer.drain(..=end).collect();
-            line.pop();
-            if line.last() == Some(&b'\r') {
-                line.pop();
-            }
-            records.push(decode_record(&line)?);
-        }
-        Ok(records)
+        let scanned = crate::ndjson::scan_lines(
+            &mut buffer,
+            bytes,
+            MAXIMUM_RECORD_BYTES,
+            || failure(ClaudeAgentSdkProtocolFailureKind::RecordTooLarge),
+            |line| {
+                let line = line.strip_suffix(b"\r").unwrap_or(line);
+                records.push(decode_record(line)?);
+                Ok(())
+            },
+        );
+        self.buffer = buffer;
+        scanned.map(|()| records)
+    }
+
+    #[cfg(test)]
+    pub(crate) fn buffered_bytes(&self) -> usize {
+        self.buffer.len()
     }
 
     pub(crate) fn finish(self) -> Result<(), ClaudeAgentSdkProtocolFailure> {

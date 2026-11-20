@@ -132,6 +132,11 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
                 &self.provider_requests,
                 Arc::downgrade(&self.connection),
             )?;
+            // Every fallible derivation runs before the first provider side
+            // effect. A rejected scope must not leave an active turn bound to
+            // the connection or a `session/prompt` already on the wire, which
+            // would wedge every later turn on this session.
+            let prompt_scope = derived_scope("claude-agent-acp:turn:", request.turn_id().as_str())?;
             self.connection.set_active_turn(Arc::clone(&turn))?;
             let response = match self
                 .connection
@@ -153,11 +158,6 @@ impl InteractiveSessionHandle for ClaudeAgentSessionHandle {
             };
             let connection = Arc::clone(&self.connection);
             let prompt_turn = Arc::clone(&turn);
-            let prompt_scope = ScopeId::new(format!(
-                "claude-agent-acp:turn:{}",
-                request.turn_id().as_str()
-            ))
-            .map_err(|_| malformed())?;
             let prompt_task = match services.task().expect("validated task service").spawn(
                 prompt_scope,
                 Box::pin(async move {

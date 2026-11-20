@@ -803,3 +803,42 @@ fn sdk_identity_record() -> Value {
         }
     })
 }
+
+#[test]
+fn decoder_rejects_one_oversized_chunk_without_holding_it() {
+    let oversized = vec![b'x'; super::MAXIMUM_RECORD_BYTES * 2];
+    let mut decoder = super::ClaudeAgentSdkDecoder::new();
+    assert_eq!(
+        decoder.push(&oversized).err().map(|error| error.kind()),
+        Some(ClaudeAgentSdkProtocolFailureKind::RecordTooLarge)
+    );
+    assert_eq!(
+        decoder.buffered_bytes(),
+        0,
+        "the rejected chunk is not retained for the next call"
+    );
+
+    let oversized_without_newline = vec![b'x'; super::MAXIMUM_RECORD_BYTES + 1];
+    let mut decoder = super::ClaudeAgentSdkDecoder::new();
+    assert_eq!(
+        decoder
+            .push(&oversized_without_newline)
+            .err()
+            .map(|error| error.kind()),
+        Some(ClaudeAgentSdkProtocolFailureKind::RecordTooLarge)
+    );
+    assert_eq!(decoder.buffered_bytes(), 0);
+}
+
+#[test]
+fn decoder_enforces_the_trailing_partial_record_bound_before_finish() {
+    let mut decoder = super::ClaudeAgentSdkDecoder::new();
+    let mut chunk = b"{\"type\":\"event\",\"event\":\"progress\"}\n".to_vec();
+    chunk.extend(std::iter::repeat_n(b'x', super::MAXIMUM_RECORD_BYTES + 1));
+    assert_eq!(
+        decoder.push(&chunk).err().map(|error| error.kind()),
+        Some(ClaudeAgentSdkProtocolFailureKind::RecordTooLarge),
+        "an oversized tail is refused in the same call, not only at finish"
+    );
+    assert_eq!(decoder.buffered_bytes(), 0);
+}

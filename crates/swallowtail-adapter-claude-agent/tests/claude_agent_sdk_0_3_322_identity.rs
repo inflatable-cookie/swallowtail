@@ -1,6 +1,7 @@
-//! Frozen evidence for the published Claude Agent SDK hops above `0.3.317`
-//! (Research 480). The hops are identity evidence only: no pair above
-//! `0.3.317`/`2.1.317` is qualified, because every newer native binary changed
+//! Frozen identity evidence for the published Claude Agent SDK hops `0.3.317`
+//! through `0.3.322` (Research 480). The hops are identity evidence only: the
+//! claims permit those frozen package/native pairs, and no pair above
+//! `0.3.322`/`2.1.322` is qualified, because every newer native binary changed
 //! without selected native behavior proof. These tests keep that boundary
 //! mutation-sensitive: the evidence must match its pins, and the claims must
 //! keep refusing every published point above the accepted pair.

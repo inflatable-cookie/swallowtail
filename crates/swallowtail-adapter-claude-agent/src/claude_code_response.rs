@@ -193,6 +193,10 @@ impl ClaudeCodeResponseOnlyDriver {
             observed_version.version().clone(),
             ActivityOperationId::Run(pump_run_id),
         );
+        // The pump owns one copy of the launch-directory lease because the
+        // future it runs in is consumed by `spawn`. The binding keeps another
+        // copy so a refused spawn can still release the lease it created.
+        let pump_launch_directory = launch_directory.clone();
         let task = task_service.spawn(
             scope,
             Box::pin({
@@ -209,7 +213,7 @@ impl ClaudeCodeResponseOnlyDriver {
                         services,
                     )
                     .await;
-                    release_launch_directory(launch_directory).await;
+                    release_launch_directory(pump_launch_directory).await;
                     let _ = terminal_sender.complete(outcome);
                     event_sender.mark_terminal();
                 }
@@ -219,6 +223,7 @@ impl ClaudeCodeResponseOnlyDriver {
             Ok(task) => task,
             Err(error) => {
                 cleanup_failed_start(process.as_ref()).await;
+                release_launch_directory(launch_directory).await;
                 return Err(error);
             }
         };

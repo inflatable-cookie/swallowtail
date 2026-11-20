@@ -112,7 +112,10 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             if let Err(error) =
                 event_sender.send(RuntimeEvent::new(1, RuntimeEventKind::Started))
             {
-                drop(subscription);
+                // Join the SSE worker instead of detaching it: dropping the
+                // subscription alone leaves the blocking fetch, its socket and
+                // its blocking slot running behind a turn that never started.
+                let _ = subscription.close().await;
                 let _ = attachment.release().await;
                 return Err(error);
             }

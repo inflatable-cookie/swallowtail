@@ -83,7 +83,15 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         body["version"] = serde_json::Value::String(server_version.to_owned());
         respond_json(&mut stream, 200, &body.to_string());
     } else if target.starts_with("GET ") && path.starts_with("/session/ses_fixture/message?") {
-        if path.contains("before=") {
+        if matches!(fixture, StreamFixture::RepeatedCursor) {
+            // A repeated pagination cursor must be rejected instead of looping.
+            respond_json_with_cursor(
+                &mut stream,
+                &message_page(&[("msg_3", "Later question."), ("msg_4", "Later answer.")])
+                    .to_string(),
+                "cursor-older",
+            );
+        } else if path.contains("before=") {
             respond_json(
                 &mut stream,
                 200,

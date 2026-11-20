@@ -93,12 +93,18 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     return Err(error);
                 }
             };
-            let provider_ref = SessionRef::new(&provider_session_id).map_err(|_| {
-                failure(
-                    "swallowtail.opencode.session_invalid",
-                    "OpenCode returned an invalid session identity",
-                )
-            })?;
+            let provider_ref = match SessionRef::new(&provider_session_id) {
+                Ok(provider_ref) => provider_ref,
+                Err(_) => {
+                    // The leases are already held: release them before the
+                    // rejection so a bad provider identity cannot strand them.
+                    let _ = access.release(&services).await;
+                    return Err(failure(
+                        "swallowtail.opencode.session_invalid",
+                        "OpenCode returned an invalid session identity",
+                    ));
+                }
+            };
             let resume_binding = SessionResumeBinding::new(
                 provider_ref,
                 plan.instance_id().clone(),
@@ -112,13 +118,17 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 request.access_policy().clone(),
             );
             let runtime_id =
-                RuntimeSessionId::new(format!("opencode:{}", request.request_id().as_str()))
-                    .map_err(|_| {
-                        failure(
+                match RuntimeSessionId::new(format!("opencode:{}", request.request_id().as_str()))
+                {
+                    Ok(runtime_id) => runtime_id,
+                    Err(_) => {
+                        let _ = access.release(&services).await;
+                        return Err(failure(
                             "swallowtail.opencode.session_invalid",
                             "OpenCode runtime session identity was invalid",
-                        )
-                    })?;
+                        ));
+                    }
+                };
             let active = Arc::new(Mutex::new(None));
             let cancellation = SessionCancellation::new(Arc::clone(&active));
             Ok(Box::new(OpenCodeSessionHandle {
@@ -250,7 +260,8 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 access,
                 callback_enabled,
                 image_attachments,
-            )?;
+            )
+            .await?;
             Ok(LoadedSession::new(replay, handle))
         })
     }
@@ -345,6 +356,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                 callback_enabled,
                 image_attachments,
             )
+            .await
         })
     }
 }

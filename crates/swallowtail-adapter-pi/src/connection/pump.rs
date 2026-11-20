@@ -51,26 +51,18 @@ impl PiConnection {
             self.emit_protocol_debug(&error, "rpc.pump.finish");
             transport_failure = Some(error);
         }
-        if transport_failure.is_some() {
-            let _ = self.process.force_stop().await;
-        }
-        let waited = self.process.wait().await;
-        self.closed.store(true, std::sync::atomic::Ordering::SeqCst);
-        let cleanup = if waited.is_ok() {
-            CleanupOutcome::Clean
-        } else {
-            CleanupOutcome::Failed(SafeDiagnostic::new(
-                "swallowtail.pi.rpc.process_cleanup_failed",
-                "Pi RPC process cleanup failed",
-            ))
-        };
-        *self.cleanup.lock().expect("Pi cleanup lock poisoned") = Some(cleanup);
+        let needs_stop = transport_failure.is_some();
         let error = transport_failure.unwrap_or_else(|| {
             failure(
                 "swallowtail.pi.rpc.connection_ended",
                 "Pi RPC connection ended",
             )
         });
+        // No response can arrive after this pump has ended. Close command
+        // admission and resolve existing waiters before force-stop or process
+        // wait can suspend, so a later command cannot register against a dead
+        // reader and hang the shutdown.
+        self.closed.store(true, std::sync::atomic::Ordering::SeqCst);
         if let Some(turn) = self
             .active_turn
             .lock()
@@ -81,6 +73,19 @@ impl PiConnection {
             turn.fail_connection(error.diagnostic().clone());
         }
         self.fail_pending(error);
+        if needs_stop {
+            let _ = self.process.force_stop().await;
+        }
+        let waited = self.process.wait().await;
+        let cleanup = if waited.is_ok() {
+            CleanupOutcome::Clean
+        } else {
+            CleanupOutcome::Failed(SafeDiagnostic::new(
+                "swallowtail.pi.rpc.process_cleanup_failed",
+                "Pi RPC process cleanup failed",
+            ))
+        };
+        *self.cleanup.lock().expect("Pi cleanup lock poisoned") = Some(cleanup);
     }
 
     fn dispatch(self: &Arc<Self>, record: PiRpcRecord) -> Result<(), RuntimeFailure> {

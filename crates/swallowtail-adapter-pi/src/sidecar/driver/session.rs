@@ -218,11 +218,10 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     active.turn.mark_cancelled();
                 }
                 let id = format!("close:{}", self.request_id.as_str());
-                let _ = self
-                    .connection
-                    .command(id, PiSdkSidecarCommand::Close, json!({}))
-                    .await;
-                self.connection.begin_close().await;
+                // The documented `close` command is bounded inside the
+                // connection, so a harness that stops answering it cannot keep
+                // stdin open or the stop request unsent.
+                self.connection.close_session(id).await;
                 if let Some(mut active) = active {
                     if let Some(task) = active.deadline_task.take() {
                         let _ = task.join().await;

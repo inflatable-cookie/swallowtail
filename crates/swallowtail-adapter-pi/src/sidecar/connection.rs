@@ -2,7 +2,7 @@ use super::failure::{failure, protocol_failure};
 use super::replay::ReplayCollector;
 use super::turn::SidecarActiveTurn;
 use super::wire::{PiSdkSidecarCommand, encode_command};
-use serde_json::Value;
+use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
@@ -13,8 +13,8 @@ use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{SafeDiagnostic, SessionRef};
 use swallowtail_runtime::{
-    CleanupOutcome, DebugObservationKind, HostServices, ProcessHandle, ProcessInputChunk,
-    RuntimeFailure,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, DebugObservationKind, HostServices,
+    MonotonicInstant, ProcessHandle, ProcessInputChunk, RuntimeFailure,
 };
 
 #[cfg(test)]
@@ -22,6 +22,8 @@ mod connection_tests;
 mod pump;
 
 const MAXIMUM_PENDING_COMMANDS: usize = 16;
+/// How long one `close` acknowledgement may hold the shutdown stages.
+const CLOSE_ACKNOWLEDGEMENT_GRACE_TICKS: u64 = 500;
 
 pub(crate) struct CommandResult {
     pub(crate) success: bool,
@@ -100,6 +102,9 @@ impl SidecarConnection {
                 "Pi SDK sidecar command id was reused",
             ));
         }
+        // Encode before registering the correlation id: a record that cannot be
+        // encoded must not consume one of the bounded pending slots forever.
+        let bytes = encode_command(&id, command, params).map_err(|_| protocol_failure())?;
         let (sender, response) = response_channel();
         {
             let mut pending = self.pending.lock().expect("sidecar pending lock poisoned");
@@ -117,7 +122,6 @@ impl SidecarConnection {
             }
             pending.insert(id.clone(), PendingCommand { command, sender });
         }
-        let bytes = encode_command(&id, command, params).map_err(|_| protocol_failure())?;
         if let Err(error) = self
             .process
             .write_stdin(ProcessInputChunk::new(bytes))
@@ -191,6 +195,46 @@ impl SidecarConnection {
         self.closed.store(true, Ordering::SeqCst);
         let _ = self.process.close_stdin().await;
         let _ = self.process.request_stop().await;
+    }
+
+    /// Closes one session through the documented `close` command, then always
+    /// runs the process shutdown stages.
+    ///
+    /// The acknowledgement is best effort: the shutdown stages run as soon as
+    /// one grace expires, so a harness that never answers `close` cannot keep
+    /// stdin open or the stop request unsent. The abandoned acknowledgement is
+    /// still held afterwards, so the caller's own cleanup bound owns whatever
+    /// remains.
+    pub(crate) async fn close_session(&self, id: String) {
+        let mut close = Box::pin(self.command(id, PiSdkSidecarCommand::Close, json!({})));
+        let mut grace = self.close_acknowledgement_wait();
+        let acknowledged = std::future::poll_fn(|context| {
+            if close.as_mut().poll(context).is_ready() {
+                return Poll::Ready(true);
+            }
+            if grace
+                .as_mut()
+                .is_some_and(|wait| wait.as_mut().poll(context).is_ready())
+            {
+                return Poll::Ready(false);
+            }
+            Poll::Pending
+        })
+        .await;
+        self.begin_close().await;
+        if !acknowledged {
+            let _ = close.await;
+        }
+    }
+
+    fn close_acknowledgement_wait(&self) -> Option<BoxFuture<'static, DeadlineObservation>> {
+        let time = self.services.time().cloned()?;
+        let deadline = Deadline::at(MonotonicInstant::from_ticks(
+            time.now()
+                .ticks()
+                .saturating_add(CLOSE_ACKNOWLEDGEMENT_GRACE_TICKS),
+        ));
+        Some(time.wait_until(deadline))
     }
 
     pub(crate) async fn force_stop(&self) -> Result<(), RuntimeFailure> {

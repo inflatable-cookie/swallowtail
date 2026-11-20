@@ -323,3 +323,81 @@ fn low_level_unverified_newer_plan_cannot_inherit_detachment() {
     );
     assert!(server.requests().is_empty());
 }
+
+#[test]
+fn a_rejected_health_binding_releases_every_acquired_lease() {
+    // The server reports 1.14.48 while the plan binds 1.18.35, so the session
+    // open fails after the credential and resource leases are already held.
+    let server = FixtureServer::start_with_version(StreamFixture::Success, "1.14.48");
+    let fixture = Fixture::new_with_version(
+        server.endpoint(),
+        "host.lease-release-open",
+        "1.18.35",
+    );
+    let failure = block_on(OpenCodeHttpDriver::new().open_session(
+        fixture.plan(DriverRole::InteractiveSession),
+        open_session_request("release-open", fixture.resource.clone()),
+        fixture.services(),
+    ))
+    .err()
+    .expect("a health binding mismatch is rejected");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.opencode.version_mismatch"
+    );
+    assert_eq!(
+        fixture.credential_releases(),
+        1,
+        "a rejected session open must release the credential lease it acquired"
+    );
+    assert_eq!(
+        fixture.resource_releases(),
+        1,
+        "a rejected session open must release the working-resource lease it acquired"
+    );
+}
+
+#[test]
+fn a_rejected_replay_releases_every_acquired_lease() {
+    let server = FixtureServer::start(StreamFixture::RepeatedCursor);
+    let fixture = Fixture::new(server.endpoint(), "host.lease-release-load");
+    let plan = fixture.plan(DriverRole::InteractiveSession);
+    let binding = SessionResumeBinding::new(
+        swallowtail_core::SessionRef::new("ses_fixture").expect("session reference is valid"),
+        plan.instance_id().clone(),
+        plan.execution_host_id().clone(),
+        plan.model_route_id().expect("plan carries a route").clone(),
+        plan.model_id().expect("plan carries a model").clone(),
+        fixture.resource.clone(),
+        SessionAccessPolicy::ambient_harness(ResourceAccess::Read),
+    );
+    let request = LoadSessionRequest::from_plan(
+        &plan,
+        RequestId::new("release-load").expect("request id is valid"),
+        binding,
+        fixture.resource.clone(),
+        None,
+    )
+    .expect("load request binds to its plan");
+    let failure = block_on(OpenCodeHttpDriver::new().load_session(
+        plan,
+        request,
+        fixture.services(),
+    ))
+    .err()
+    .expect("a repeated replay cursor is rejected");
+    assert_eq!(
+        failure.diagnostic().code(),
+        "swallowtail.opencode.pagination_cursor_repeated"
+    );
+    assert_eq!(
+        fixture.credential_releases(),
+        1,
+        "a rejected replay must release the credential lease it acquired"
+    );
+    assert_eq!(
+        fixture.resource_releases(),
+        1,
+        "a rejected replay must release the working-resource lease it acquired"
+    );
+}

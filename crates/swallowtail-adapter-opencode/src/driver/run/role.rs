@@ -184,6 +184,14 @@ impl OpenCodeHttpDriver {
             SessionAccessPolicy::ambient_harness(ResourceAccess::Read)
         };
         let operation_scope = scope("run", request.request_id().as_str())?;
+        // Identity and attachment checks run before any lease is acquired: a
+        // rejected run must not leave a credential or resource lease behind.
+        let image_attachments = validate_attachment_plan(plan, services)?;
+        let callback_run_id = RuntimeRunId::new(format!(
+            "opencode:run:{}",
+            request.request_id().as_str()
+        ))
+        .map_err(|_| invalid_run_identity())?;
         let mut access = AccessLeases::acquire(
             plan,
             operation_scope.clone(),
@@ -196,7 +204,6 @@ impl OpenCodeHttpDriver {
             .clone()
             .expect("OpenCode run resource was acquired");
         let cancelled = Arc::new(AtomicBool::new(false));
-        let image_attachments = validate_attachment_plan(plan, services)?;
         let open = async {
             let health = complete_before_deadline(
                 self.transport.request(
@@ -244,12 +251,16 @@ impl OpenCodeHttpDriver {
                 return Err(error);
             }
         };
-        let provider_ref = SessionRef::new(&provider_session_id).map_err(|_| {
-            failure(
-                "swallowtail.opencode.session_invalid",
-                "OpenCode returned an invalid session identity",
-            )
-        })?;
+        let provider_ref = match SessionRef::new(&provider_session_id) {
+            Ok(provider_ref) => provider_ref,
+            Err(_) => {
+                let _ = access.release(services).await;
+                return Err(failure(
+                    "swallowtail.opencode.session_invalid",
+                    "OpenCode returned an invalid session identity",
+                ));
+            }
+        };
         let resume_binding = SessionResumeBinding::new(
             provider_ref,
             plan.instance_id().clone(),
@@ -279,13 +290,7 @@ impl OpenCodeHttpDriver {
             image_attachments,
             provider_callbacks: callback_enabled,
             active_turn_detachment: false,
-            callback_run_id: Some(
-                RuntimeRunId::new(format!(
-                    "opencode:run:{}",
-                    request.request_id().as_str()
-                ))
-                .map_err(|_| invalid_run_identity())?,
-            ),
+            callback_run_id: Some(callback_run_id),
         })
     }
 }

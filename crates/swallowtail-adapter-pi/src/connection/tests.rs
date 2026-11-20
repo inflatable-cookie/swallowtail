@@ -4,8 +4,8 @@ mod tests {
     use crate::failure::failure;
     use futures_executor::block_on;
     use serde_json::json;
-    use std::sync::atomic::{AtomicUsize, Ordering};
-    use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+    use std::sync::{Arc, Mutex};
     use std::thread;
     use std::time::{Duration, Instant};
     use swallowtail_core::ExecutionHostId;
@@ -214,5 +214,109 @@ mod tests {
         let connection = connection();
         let outcome = block_on(connection.join_callback_tasks());
         assert!(matches!(outcome, CleanupOutcome::NotApplicable));
+    }
+
+    /// Ends its output stream at once, then holds the process wait until the
+    /// test releases it, so the pump's shutdown ordering is observable.
+    struct BlockedWaitProcess {
+        wait_started: Arc<AtomicBool>,
+        gate: Mutex<Option<futures_channel::oneshot::Receiver<()>>>,
+    }
+
+    impl ProcessHandle for BlockedWaitProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn read_output(
+            &self,
+        ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_started.store(true, Ordering::SeqCst);
+            let gate = self.gate.lock().expect("fixture gate lock poisoned").take();
+            Box::pin(async move {
+                if let Some(gate) = gate {
+                    let _ = gate.await;
+                }
+                Ok(ProcessExit::new(true, Some(0)))
+            })
+        }
+    }
+
+    #[test]
+    fn the_pump_closes_and_drains_pending_work_before_it_waits_for_the_process() {
+        let wait_started = Arc::new(AtomicBool::new(false));
+        let (gate, gate_receiver) = futures_channel::oneshot::channel();
+        let process = BlockedWaitProcess {
+            wait_started: Arc::clone(&wait_started),
+            gate: Mutex::new(Some(gate_receiver)),
+        };
+        let connection = PiConnection::new(
+            Arc::new(process),
+            Arc::new(FixtureTasks),
+            Arc::new(FixtureClock),
+            HostServices::new(
+                ExecutionHostId::new("pi.unit.pump-order").expect("host id is valid"),
+            ),
+        );
+        let (sender, _response) = super::response_channel();
+        connection
+            .pending
+            .lock()
+            .expect("Pi pending lock poisoned")
+            .insert(
+                "pending-1".to_owned(),
+                super::PendingCommand {
+                    command: "state",
+                    sender,
+                },
+            );
+
+        let pumped = {
+            let connection = Arc::clone(&connection);
+            thread::spawn(move || block_on(connection.pump()))
+        };
+        let deadline = Instant::now() + Duration::from_secs(5);
+        while !wait_started.load(Ordering::SeqCst) {
+            assert!(
+                Instant::now() < deadline,
+                "the pump never reached the process wait"
+            );
+            thread::sleep(Duration::from_millis(1));
+        }
+        assert!(
+            connection.closed.load(Ordering::SeqCst),
+            "the pump must close command admission before it waits for the process"
+        );
+        assert!(
+            connection
+                .pending
+                .lock()
+                .expect("Pi pending lock poisoned")
+                .is_empty(),
+            "the pump must drain pending waiters before it waits for the process"
+        );
+
+        let _ = gate.send(());
+        pumped.join().expect("pump thread joins");
+        assert!(matches!(
+            connection.cleanup_outcome(),
+            CleanupOutcome::Clean
+        ));
     }
 }

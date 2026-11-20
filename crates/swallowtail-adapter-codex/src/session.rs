@@ -1,3 +1,5 @@
+use crate::cleanup::merge_cleanup;
+use crate::process_close::AppServerTask;
 use crate::registered_tools::CodexRegisteredTurn;
 use crate::rpc::{RpcConnection, failure};
 use crate::session_access::CodexSessionAccess;
@@ -35,14 +37,15 @@ impl CancellationControl for SessionCancellation {
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
-        let already = self.requested.swap(true, Ordering::SeqCst);
         Box::pin(async move {
-            if already {
-                Ok(CancellationAcknowledgement::AlreadyRequested)
-            } else {
-                self.connection.cancel_session().await?;
-                Ok(CancellationAcknowledgement::Requested)
+            if self.requested.swap(true, Ordering::SeqCst) {
+                return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
+            if let Err(error) = self.connection.cancel_session().await {
+                self.requested.store(false, Ordering::SeqCst);
+                return Err(error);
+            }
+            Ok(CancellationAcknowledgement::Requested)
         })
     }
 }
@@ -55,38 +58,50 @@ struct TurnCancellation {
     requested: AtomicBool,
 }
 
+impl TurnCancellation {
+    /// Marks the turn cancelled, freezes registered admission, rejects abandoned
+    /// callbacks and interrupts the provider turn.
+    async fn interrupt(&self) -> Result<(), RuntimeFailure> {
+        self.turn.mark_cancelled();
+        // Freeze registered admission before the interrupt: no new
+        // registered call is admitted once cancellation is requested.
+        self.turn.freeze_registered_tools().await;
+        let callbacks = self
+            .connection
+            .reject_abandoned_callbacks(self.turn.take_abandoned_provider_requests())
+            .await;
+        let interruption = self
+            .connection
+            .request(
+                "turn/interrupt",
+                serde_json::json!({
+                    "threadId": self.thread_id,
+                    "turnId": self.turn_id
+                }),
+            )
+            .await;
+        callbacks?;
+        interruption?;
+        Ok(())
+    }
+}
+
 impl CancellationControl for TurnCancellation {
     fn scope(&self) -> CancellationScope {
         CancellationScope::ActiveTurn
     }
 
     fn request(&self) -> BoxFuture<'_, Result<CancellationAcknowledgement, RuntimeFailure>> {
-        let already = self.requested.swap(true, Ordering::SeqCst);
         Box::pin(async move {
-            if already {
+            if self.requested.swap(true, Ordering::SeqCst) {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
-            self.turn.mark_cancelled();
-            // Freeze registered admission before the interrupt: no new
-            // registered call is admitted once cancellation is requested.
-            self.turn.freeze_registered_tools().await;
-            let callbacks = self
-                .connection
-                .reject_abandoned_callbacks(self.turn.take_abandoned_provider_requests())
-                .await;
-            let interruption = self
-                .connection
-                .request(
-                    "turn/interrupt",
-                    serde_json::json!({
-                        "threadId": self.thread_id,
-                        "turnId": self.turn_id
-                    }),
-                )
-                .await;
-            callbacks?;
-            interruption?;
-            Ok(CancellationAcknowledgement::Requested)
+            let interrupted = self.interrupt().await;
+            if interrupted.is_err() {
+                // A failed interrupt leaves cancellation unrequested, so a retry may try again.
+                self.requested.store(false, Ordering::SeqCst);
+            }
+            interrupted.map(|()| CancellationAcknowledgement::Requested)
         })
     }
 }
@@ -163,7 +178,7 @@ pub(crate) struct CodexSessionHandle {
     resume_binding: SessionResumeBinding,
     connection: Arc<RpcConnection>,
     cancellation: SessionCancellation,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     runtime: CodexSessionRuntime,
     access: CodexSessionAccess,
 }
@@ -174,7 +189,7 @@ impl CodexSessionHandle {
         runtime_id: RuntimeSessionId,
         resume_binding: SessionResumeBinding,
         connection: Arc<RpcConnection>,
-        task: Box<dyn JoinedTask>,
+        task: AppServerTask,
         runtime: CodexSessionRuntime,
         access: CodexSessionAccess,
     ) -> Self {

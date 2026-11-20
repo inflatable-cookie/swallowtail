@@ -43,6 +43,7 @@ pub enum AppServerMode {
 #[derive(Clone, Copy)]
 pub enum ThreadCatalogueMode {
     Available,
+    IgnoreEof,
     AttachedChildHidden,
     EmptyHistory,
     WrongResource,
@@ -65,6 +66,7 @@ pub struct AppServerState {
     active_thread: Mutex<Option<String>>,
     experimental_api: AtomicBool,
     closed: AtomicBool,
+    stop_requested: AtomicBool,
     forced: AtomicBool,
     waited: AtomicBool,
 }
@@ -121,6 +123,10 @@ impl AppServerState {
             .find(|message| predicate(message))
             .cloned()
             .expect("waited fixture message exists")
+    }
+
+    pub fn stop_requested(&self) -> bool {
+        self.stop_requested.load(Ordering::SeqCst)
     }
 
     pub fn forced(&self) -> bool {

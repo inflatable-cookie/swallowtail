@@ -3,12 +3,25 @@
 #![forbid(unsafe_code)]
 #![deny(missing_docs)]
 
+// Keep the session-open unit regression on the same preflight fixtures as the
+// public app-server route tests.
+#[cfg(test)]
+extern crate self as swallowtail_adapter_codex;
+
+#[cfg(test)]
+#[allow(dead_code, unused_imports)]
+#[path = "../tests/support/preflight.rs"]
+mod preflight_fixture;
+
 mod access;
 mod addable;
 mod app_server;
 mod app_server_activity;
 mod callback_exchange;
+mod cleanup;
+mod cli_version;
 mod consumer_route_projection;
+mod control_wait;
 mod discovery;
 mod exec;
 mod exec_activity;
@@ -17,9 +30,11 @@ mod exec_handle;
 mod exec_input;
 mod exec_pump;
 mod exec_validation;
+mod limits;
 mod model_verbosity;
 mod prepared;
 mod prepared_profile;
+mod process_close;
 mod registered_tools;
 mod rpc;
 mod safe_excerpt;

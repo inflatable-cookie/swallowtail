@@ -240,7 +240,10 @@ fn structured_output_is_rejected_before_turn_provider_work() {
 #[test]
 fn malformed_notification_carries_bounded_method_context_and_stderr_tail() {
     let (process, state) = ScriptedAppServer::new(AppServerMode::MalformedNotification);
-    let services = host_services(process);
+    let capture = Arc::new(DebugCapture::default());
+    let services = host_services(process).with_diagnostic_observer(
+        Arc::clone(&capture) as Arc<dyn swallowtail_runtime::DiagnosticObserver>,
+    );
     let mut session = block_on(driver().open_session(
         app_server_plan(DriverRole::InteractiveSession),
         read_only_open_request(
@@ -272,12 +275,27 @@ fn malformed_notification_carries_bounded_method_context_and_stderr_tail() {
         "swallowtail.codex.app_server.malformed_notification"
     );
     let message = diagnostic.message();
+    // The public message is redacted: method name only, no raw line or stderr tail.
     assert!(message.contains("method `item/plan/delta`"));
-    assert!(message.contains("excerpt `"));
-    assert!(message.contains("; stderr: "));
-    assert!(message.contains("unrecognized plan delta field"));
-    assert!(message.contains("[stderr truncated]"));
+    assert!(!message.contains("excerpt `"));
+    assert!(!message.contains("; stderr: "));
+    assert!(!message.contains("unrecognized plan delta field"));
+    assert!(!message.contains("[stderr truncated]"));
     assert!(!message.contains("xxx"));
+    // The raw line and stderr tail reach only the opt-in debug observer.
+    let details = capture.details();
+    assert!(
+        details
+            .iter()
+            .any(|detail| detail.starts_with("method=item/plan/delta; excerpt=")),
+        "inbound excerpt reaches the opt-in observer: {details:?}"
+    );
+    assert!(
+        details.iter().any(|detail| detail.starts_with("stderr=")
+            && detail.contains("unrecognized plan delta field")
+            && detail.contains("[stderr truncated]")),
+        "stderr tail reaches the opt-in observer: {details:?}"
+    );
     assert!(message.chars().count() <= 640);
 
     let result = block_on(session.start_turn(
@@ -408,5 +426,50 @@ impl DiagnosticObserver for CapturingDebugObserver {
             .lock()
             .expect("observation lock")
             .push(observation.clone());
+    }
+}
+
+#[test]
+fn plan_mode_without_a_bound_model_is_refused_before_provider_work() {
+    let (process, state) = ScriptedAppServer::new(AppServerMode::CompleteTurn);
+    let services = host_services(process);
+    let result = block_on(driver().open_session(
+        app_server_session_plan_without_model_route([harness_mode_capability()]),
+        read_only_open_request(
+            RequestId::new("session-plan-without-model").expect("request id is valid"),
+            working_resource(),
+            None,
+        )
+        .with_options(SessionOptions::default().with_harness_mode(HarnessMode::Plan)),
+        services.clone(),
+    ));
+
+    let Err(error) = result else {
+        panic!("plan mode without a bound model is refused");
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.codex.app_server.model_missing"
+    );
+    assert!(state.methods().is_empty());
+}
+
+#[derive(Default)]
+struct DebugCapture(Mutex<Vec<String>>);
+
+impl DebugCapture {
+    fn details(&self) -> Vec<String> {
+        self.0.lock().expect("capture lock").clone()
+    }
+}
+
+impl swallowtail_runtime::DiagnosticObserver for DebugCapture {
+    fn observe(&self, _diagnostic: &swallowtail_core::Diagnostic) {}
+
+    fn observe_debug(&self, observation: &swallowtail_runtime::DebugObservation) {
+        self.0
+            .lock()
+            .expect("capture lock")
+            .push(observation.detail().to_owned());
     }
 }

@@ -1,14 +1,16 @@
+//! Cancellation- and deadline-aware waiting shared by Codex operations.
+
 use std::future::Future;
 use std::task::Poll;
 use swallowtail_runtime::{BoxFuture, DeadlineObservation};
 
-pub(super) enum Controlled<T> {
+pub(crate) enum Controlled<T> {
     Completed(T),
     Cancelled,
     Deadline,
 }
 
-pub(super) async fn wait_controlled<F, T>(
+pub(crate) async fn wait_controlled<F, T>(
     operation: F,
     cancellation: &swallowtail_runtime::ImmediateCancellation,
     deadline: Option<BoxFuture<'static, DeadlineObservation>>,

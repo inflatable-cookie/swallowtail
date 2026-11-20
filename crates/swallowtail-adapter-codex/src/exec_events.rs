@@ -1,4 +1,5 @@
 use crate::exec_activity::ExecActivityProjection;
+use crate::limits::MAX_STDOUT_LINE_BYTES;
 use semver::Version;
 use serde_json::Value;
 use swallowtail_core::SafeDiagnostic;
@@ -21,10 +22,8 @@ impl ExecEventParser {
         run_id: RuntimeRunId,
         plan: &swallowtail_core::PreflightPlan,
     ) -> Result<Self, RuntimeFailure> {
-        let binding = plan
-            .interface_versions()
-            .find(|binding| binding.axis().as_str() == crate::CODEX_CLI_AXIS)
-            .ok_or_else(malformed_stream)?;
+        let binding =
+            crate::cli_version::bound_codex_cli_version(plan).ok_or_else(malformed_stream)?;
         let observed =
             Version::parse(binding.version().as_str()).map_err(|_| malformed_stream())?;
         Ok(Self::new(run_id, observed.min(Version::new(0, 145, 0))))
@@ -45,8 +44,14 @@ impl ExecEventParser {
         self.pending.extend_from_slice(bytes);
         let mut events = Vec::new();
         while let Some(newline) = self.pending.iter().position(|byte| *byte == b'\n') {
+            if newline > MAX_STDOUT_LINE_BYTES {
+                return Err(line_too_large());
+            }
             let line: Vec<_> = self.pending.drain(..=newline).collect();
             events.extend(self.parse_line(trim_newline(&line))?);
+        }
+        if self.pending.len() > MAX_STDOUT_LINE_BYTES {
+            return Err(line_too_large());
         }
         Ok(events)
     }
@@ -209,6 +214,13 @@ impl ParsedTerminal {
 fn trim_newline(line: &[u8]) -> &[u8] {
     let line = line.strip_suffix(b"\n").unwrap_or(line);
     line.strip_suffix(b"\r").unwrap_or(line)
+}
+
+pub(crate) fn line_too_large() -> RuntimeFailure {
+    RuntimeFailure::new(SafeDiagnostic::new(
+        "swallowtail.codex.exec.line_too_large",
+        "Codex exec stdout line exceeded its byte bound",
+    ))
 }
 
 pub(crate) fn malformed_stream() -> RuntimeFailure {

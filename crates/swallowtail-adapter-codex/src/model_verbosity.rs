@@ -77,7 +77,7 @@ pub(crate) fn validate_runtime(
     let Some(_verbosity) = model_verbosity else {
         return Ok(());
     };
-    let version = plan.interface_versions().next().ok_or_else(|| {
+    let version = crate::cli_version::bound_codex_cli_version(plan).ok_or_else(|| {
         failure(
             "swallowtail.codex.exec.version_missing",
             "Codex exec requires a preflight-bound executable version",

@@ -1,14 +1,12 @@
 //! One turn-scoped registered-tool lease bound to one Codex turn attempt.
 //!
-//! The lease is checked out for the exact duration of one dispatch and checked
-//! back in before its result reaches the provider. Teardown joins that dispatch
-//! before it takes the lease back, so a call is never abandoned silently and a
-//! failed join never reports a clean close: the lease stays owned here and the
-//! turn reports the failure.
+//! A dispatch holds the lease through the kernel call. Closing freezes admission,
+//! joins every dispatch, then takes the lease back and closes the kernel scope.
 
 use super::binding::CodexRegisteredToolBinding;
 use super::result::provider_result;
 use crate::rpc::{RpcConnection, failure};
+use futures_util::lock::Mutex as AsyncMutex;
 use serde_json::Value;
 use std::sync::{Arc, Mutex, Weak};
 use swallowtail_core::SafeDiagnostic;
@@ -24,6 +22,11 @@ const CODEX_ARGUMENT_MEDIA_TYPE: &str = "application/json";
 /// Bounded registered dispatch count for one turn attempt.
 const MAX_REGISTERED_DISPATCHES_PER_TURN: usize = 64;
 
+struct Dispatches {
+    accepting: bool,
+    tasks: Vec<Box<dyn JoinedTask>>,
+}
+
 /// Registered-tool state owned by exactly one Codex turn attempt.
 pub(crate) struct CodexRegisteredTurn {
     binding: CodexRegisteredToolBinding,
@@ -31,11 +34,9 @@ pub(crate) struct CodexRegisteredTurn {
     tasks: Arc<dyn ScopedTaskService>,
     connection: Weak<RpcConnection>,
     scope: ScopeId,
-    /// The lease, present whenever no dispatch holds it.
-    lease: Mutex<Option<RegisteredToolBridgeLease>>,
-    /// Every dispatch this turn started, all joined before teardown closes.
-    dispatches: Mutex<Vec<Box<dyn JoinedTask>>>,
-    closed: Mutex<bool>,
+    lease: Arc<AsyncMutex<Option<RegisteredToolBridgeLease>>>,
+    /// Admission and task registration share one lock with close.
+    dispatches: Mutex<Option<Dispatches>>,
 }
 
 impl CodexRegisteredTurn {
@@ -53,9 +54,11 @@ impl CodexRegisteredTurn {
             tasks,
             connection,
             scope,
-            lease: Mutex::new(Some(lease)),
-            dispatches: Mutex::new(Vec::new()),
-            closed: Mutex::new(false),
+            lease: Arc::new(AsyncMutex::new(Some(lease))),
+            dispatches: Mutex::new(Some(Dispatches {
+                accepting: true,
+                tasks: Vec::new(),
+            })),
         }
     }
 
@@ -76,55 +79,53 @@ impl CodexRegisteredTurn {
         arguments: &Value,
         deadline: Deadline,
     ) -> Result<(), RuntimeFailure> {
-        if self
+        let mut dispatches = self
             .dispatches
             .lock()
-            .expect("registered dispatch lock poisoned")
-            .len()
-            >= MAX_REGISTERED_DISPATCHES_PER_TURN
-        {
+            .expect("registered dispatch lock poisoned");
+        let dispatches = dispatches
+            .as_mut()
+            .filter(|state| state.accepting)
+            .ok_or_else(|| {
+                failure(
+                    "swallowtail.codex.app_server.registered_admission_closed",
+                    "Codex registered tool admission is closed",
+                )
+            })?;
+        if dispatches.tasks.len() >= MAX_REGISTERED_DISPATCHES_PER_TURN {
             return Err(dispatch_bound_failure());
         }
         let lease = self
             .lease
-            .lock()
-            .expect("registered lease lock poisoned")
-            .take()
+            .try_lock_owned()
             .ok_or_else(outstanding_call_failure)?;
-        let prepared = self.prepare_call(&lease, provider_call_id, tool, arguments, deadline);
-        let request = match prepared {
-            Ok(request) => request,
-            Err(error) => {
-                self.check_in(lease);
-                return Err(error);
-            }
-        };
-        let owner = Arc::clone(self);
+        let request = self.prepare_call(
+            lease.as_ref().expect("an accepting turn owns a lease"),
+            provider_call_id,
+            tool,
+            arguments,
+            deadline,
+        )?;
+        let connection = self.connection.clone();
         let task = self.tasks.spawn(
             self.scope.clone(),
             Box::pin(async move {
-                let settled = lease.call(request).await;
+                let settled = lease
+                    .as_ref()
+                    .expect("dispatch owns a lease")
+                    .call(request)
+                    .await;
+                drop(lease);
                 let (result, _executed) = provider_result(settled);
-                // The lease returns before the provider is answered, so joined
-                // teardown never waits on the response write.
-                owner.check_in(lease);
-                if let Some(connection) = owner.connection.upgrade() {
+                if let Some(connection) = connection.upgrade() {
                     let _ = connection
                         .respond_server_request(provider_request_id, result)
                         .await;
                 }
             }),
-        );
-        match task {
-            Ok(task) => {
-                self.dispatches
-                    .lock()
-                    .expect("registered dispatch lock poisoned")
-                    .push(task);
-                Ok(())
-            }
-            Err(error) => Err(error),
-        }
+        )?;
+        dispatches.tasks.push(task);
+        Ok(())
     }
 
     fn prepare_call(
@@ -166,65 +167,47 @@ impl CodexRegisteredTurn {
         ))
     }
 
-    fn check_in(&self, lease: RegisteredToolBridgeLease) {
-        *self.lease.lock().expect("registered lease lock poisoned") = Some(lease);
-    }
-
-    /// Freezes new registered admission when no dispatch is outstanding.
-    ///
-    /// Cancellation cannot take a lease a live dispatch holds, so an
-    /// outstanding call keeps settling under its own deadline and is joined by
-    /// teardown. This never reports a close and never abandons the call.
+    /// Freezes admission and gates the kernel immediately if its lease is free.
     pub(crate) async fn freeze_when_clear(&self) {
-        let held = self
-            .lease
-            .lock()
-            .expect("registered lease lock poisoned")
-            .take();
-        let Some(lease) = held else {
-            return;
-        };
-        let _ = self.port.completion_gate(&lease).await;
-        self.check_in(lease);
-    }
-
-    /// Takes the lease back, joins its dispatches, and closes.
-    ///
-    /// A lease a live dispatch still holds is never taken, never abandoned, and
-    /// never reported clean. Ownership stays here, the defensive release runs
-    /// when the dispatch returns it, and the turn reports a failed cleanup.
-    pub(crate) async fn close(&self, cause: RegisteredToolCleanupCause) -> CleanupOutcome {
-        if std::mem::replace(
-            &mut *self.closed.lock().expect("registered close lock poisoned"),
-            true,
-        ) {
-            return CleanupOutcome::NotApplicable;
-        }
-        let lease = self
-            .lease
-            .lock()
-            .expect("registered lease lock poisoned")
-            .take();
-        let Some(lease) = lease else {
-            return CleanupOutcome::Failed(SafeDiagnostic::new(
-                "swallowtail.codex.app_server.registered_lease_retained",
-                "Codex registered tool lease is still held by an unsettled dispatch",
-            ));
-        };
-        // Every dispatch returned the lease before its response, so these joins
-        // are bounded by the responses already in flight.
-        let dispatches = std::mem::take(
-            &mut *self
+        {
+            let mut dispatches = self
                 .dispatches
                 .lock()
-                .expect("registered dispatch lock poisoned"),
-        );
+                .expect("registered dispatch lock poisoned");
+            let Some(dispatches) = dispatches.as_mut() else {
+                return;
+            };
+            dispatches.accepting = false;
+        }
+        if let Some(lease) = self.lease.try_lock()
+            && let Some(lease) = lease.as_ref()
+        {
+            let _ = self.port.completion_gate(lease).await;
+        }
+    }
+
+    /// Freezes admission, joins every dispatch, and closes the returned lease.
+    pub(crate) async fn close(&self, cause: RegisteredToolCleanupCause) -> CleanupOutcome {
+        let dispatches = self
+            .dispatches
+            .lock()
+            .expect("registered dispatch lock poisoned")
+            .take();
+        let Some(dispatches) = dispatches else {
+            return CleanupOutcome::NotApplicable;
+        };
         let mut joined = Ok(());
-        for task in dispatches {
+        for task in dispatches.tasks {
             if let Err(error) = task.join().await {
                 joined = Err(error);
             }
         }
+        let lease = self
+            .lease
+            .lock()
+            .await
+            .take()
+            .expect("first close owns the lease");
         // Observe before close: a lease that still holds outstanding work must
         // not be reported as a clean completion barrier.
         let completion = self.port.completion_gate(&lease).await;

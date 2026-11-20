@@ -1,3 +1,4 @@
+use crate::process_close::close_budget;
 impl InteractiveSessionHandle for CodexSessionHandle {
     fn request_id(&self) -> &RequestId {
         &self.request_id
@@ -44,7 +45,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 ),
                 None => None,
             };
-            let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            let (turn, events, callbacks, terminal) = match ActiveTurn::new(
                 runtime_id.clone(),
                 request.deadline(),
                 self.runtime.declared_tools.clone(),
@@ -52,7 +53,13 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 self.runtime.provider_requests.clone(),
                 provider_thread_id.clone(),
                 Arc::downgrade(&self.connection),
-            )?;
+            ) {
+                Ok(parts) => parts,
+                Err(error) => {
+                    close_registered(registered.as_ref()).await;
+                    return Err(error);
+                }
+            };
             // Registered tools are dispatched by the kernel, not by a consumer
             // callback, so they never expose a callback exchange on their own.
             let exposes_callbacks = (!self.runtime.declared_tools.is_empty()
@@ -60,7 +67,10 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 || self.runtime.provider_requests.observed_extensions().len() != 0
                 || self.runtime.provider_requests.exchanged_extensions().len() != 0;
             let callbacks = exposes_callbacks.then_some(callbacks);
-            self.connection.set_active_turn(Arc::clone(&turn))?;
+            if let Err(error) = self.connection.set_active_turn(Arc::clone(&turn)) {
+                close_registered(registered.as_ref()).await;
+                return Err(error);
+            }
             let mut params = serde_json::json!({
                 "threadId": provider_thread_id,
                 "input": [{"type": "text", "text": request.content().as_str()}]
@@ -147,7 +157,6 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                 Ok(task) => task,
                 Err(error) => {
                     turn.mark_cancelled();
-                    close_registered(registered.as_ref()).await;
                     let _ = self
                         .connection
                         .request_without_waiting(
@@ -158,6 +167,7 @@ impl InteractiveSessionHandle for CodexSessionHandle {
                             }),
                         )
                         .await;
+                    close_registered(registered.as_ref()).await;
                     turn.finish(
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                         CleanupOutcome::NotApplicable,
@@ -195,13 +205,14 @@ impl InteractiveSessionHandle for CodexSessionHandle {
         services: HostServices,
     ) -> BoxFuture<'static, CleanupOutcome> {
         let execution_host_id = self.resume_binding.execution_host_id().clone();
+        let budget = close_budget(&services, Some(request.deadline()));
         swallowtail_runtime::bound_session_cleanup(
             execution_host_id,
             request,
             services,
             Box::pin(async move {
             let close = self.connection.close_input().await;
-            let join = self.task.join().await;
+            let join = self.task.join_or_escalate(self.connection.process(), budget).await;
             let process_cleanup = if close.is_err() || join.is_err() {
                 CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
                     "swallowtail.codex.app_server.session_close_failed",
@@ -222,18 +233,6 @@ async fn close_registered(registered: Option<&Arc<crate::registered_tools::Codex
         let _ = registered
             .close(swallowtail_runtime::RegisteredToolCleanupCause::ProviderFailure)
             .await;
-    }
-}
-
-fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcome {
-    match (&current, &next) {
-        (CleanupOutcome::Failed(_), _) => current,
-        (_, CleanupOutcome::Failed(_)) => next,
-        (CleanupOutcome::Degraded(_), _) => current,
-        (_, CleanupOutcome::Degraded(_)) => next,
-        (CleanupOutcome::Clean, CleanupOutcome::NotApplicable) => current,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => next,
-        _ => current,
     }
 }
 
@@ -299,6 +298,8 @@ fn start_deadline_task(
                         return;
                     }
                     turn.mark_timed_out();
+                    // Freeze registered admission before the interrupt, as cancellation does.
+                    turn.freeze_registered_tools().await;
                     let _ = connection
                         .reject_abandoned_callbacks(turn.take_abandoned_provider_requests())
                         .await;

@@ -1,3 +1,4 @@
+use crate::cleanup::merge_cleanup;
 use crate::exec_validation::validate;
 use crate::model_verbosity::CodexModelVerbosity;
 use crate::selection::CodexExecBehavior;
@@ -211,14 +212,4 @@ fn search_config(policy: ExternalSearchPolicy, behavior: CodexExecBehavior) -> S
 fn config_string(key: &str, value: &str) -> String {
     let encoded = serde_json::to_string(value).expect("a string always serializes");
     format!("{key}={encoded}")
-}
-
-fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcome {
-    match (&current, &next) {
-        (CleanupOutcome::Failed(_), _) => current,
-        (_, CleanupOutcome::Failed(_)) => next,
-        (CleanupOutcome::Degraded(_), _) => current,
-        (_, CleanupOutcome::Degraded(_)) => next,
-        _ => current,
-    }
 }

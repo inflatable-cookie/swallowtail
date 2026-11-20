@@ -13,7 +13,9 @@ use swallowtail_core::{
     SessionProviderStatePolicy, SupportAuthority, preflight,
 };
 
+#[path = "preflight/exec.rs"]
 mod exec;
+#[path = "preflight/unqualified.rs"]
 mod unqualified;
 
 const CODEX_APP_SERVER_TEST_QUALIFIED_VERSION: &str = "0.161.0";
@@ -83,6 +85,26 @@ pub fn app_server_plan_for_version(
         optional_host_services,
         SessionAccessPolicy::read_only(),
         [],
+        true,
+    )
+}
+
+/// Builds an interactive-session plan whose preflight binds no model route.
+pub fn app_server_session_plan_without_model_route(
+    optional_capabilities: impl IntoIterator<Item = CapabilityRequirement>,
+) -> PreflightPlan {
+    app_server_plan_for_policy(
+        DriverRole::InteractiveSession,
+        ExecutionHostId::new("host.local").expect("host id is valid"),
+        ConfiguredInstanceId::new("codex.app-server.local").expect("instance id is valid"),
+        InstanceTargetRef::new("codex-app-server-executable").expect("target is valid"),
+        Some(CODEX_APP_SERVER_TEST_QUALIFIED_VERSION),
+        Some(CODEX_APP_SERVER_TEST_QUALIFIED_VERSION),
+        optional_capabilities,
+        [],
+        SessionAccessPolicy::read_only(),
+        [],
+        false,
     )
 }
 
@@ -98,6 +120,7 @@ fn app_server_plan_for_policy(
     optional_host_services: impl IntoIterator<Item = HostServiceKind>,
     access_policy: SessionAccessPolicy,
     extensions: impl IntoIterator<Item = swallowtail_core::ExtensionNamespace>,
+    model_routed: bool,
 ) -> PreflightPlan {
     let descriptor = codex_app_server_descriptor();
     let access_id = AccessProfileId::new("access.codex").expect("access id is valid");
@@ -160,7 +183,7 @@ fn app_server_plan_for_policy(
         required_version,
     );
     let context = PreflightContext::new(&descriptor, &instance, &access, &status, host_services);
-    if role == DriverRole::ModelCatalog {
+    if role == DriverRole::ModelCatalog || !model_routed {
         preflight(&context, &requirements).expect("app-server catalog preflight succeeds")
     } else {
         preflight(
@@ -215,6 +238,7 @@ pub fn bounded_workspace_plan_for_version(
         [HostServiceKind::WorkingResource],
         policy,
         extensions,
+        true,
     )
 }
 

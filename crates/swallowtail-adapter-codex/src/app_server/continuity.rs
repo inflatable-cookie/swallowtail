@@ -1,3 +1,4 @@
+use crate::process_close::{AppServerTask, CloseBudget};
 impl CodexAppServerDriver {
     pub(crate) fn validate_plan(
         &self,
@@ -22,7 +23,7 @@ impl CodexAppServerDriver {
         working_resource: Option<WorkingResourceRef>,
         experimental_api: bool,
         services: &HostServices,
-    ) -> Result<(Arc<RpcConnection>, Box<dyn JoinedTask>), RuntimeFailure> {
+    ) -> Result<(Arc<RpcConnection>, AppServerTask), RuntimeFailure> {
         let (connection, task) = self
             .spawn_connection(plan, behavior, scope, working_resource, services)
             .await?;
@@ -41,7 +42,7 @@ impl CodexAppServerDriver {
         scope: ScopeId,
         working_resource: Option<WorkingResourceRef>,
         services: &HostServices,
-    ) -> Result<(Arc<RpcConnection>, Box<dyn JoinedTask>), RuntimeFailure> {
+    ) -> Result<(Arc<RpcConnection>, AppServerTask), RuntimeFailure> {
         services.require_execution_host(plan.execution_host_id())?;
         let task_service = services.task().cloned().ok_or_else(|| {
             failure(
@@ -69,8 +70,9 @@ impl CodexAppServerDriver {
         );
         let connection = RpcConnection::new(Arc::clone(&process), services.clone());
         let pump_connection = Arc::clone(&connection);
-        let task = match task_service
-            .spawn(scope, Box::pin(async move { pump_connection.pump().await }))
+        let task = match AppServerTask::spawn(
+            task_service, scope, Box::pin(async move { pump_connection.pump().await }),
+        )
         {
             Ok(task) => task,
             Err(error) => {
@@ -163,7 +165,7 @@ fn require_continuity_capabilities(
 }
 
 fn supports_exclude_turns(plan: &PreflightPlan) -> Result<bool, RuntimeFailure> {
-    let binding = plan.interface_versions().next().ok_or_else(|| {
+    let binding = crate::cli_version::bound_codex_cli_version(plan).ok_or_else(|| {
         failure(
             "swallowtail.codex.app_server.version_missing",
             "Codex app-server continuity requires an exact executable version",
@@ -211,10 +213,11 @@ fn model_metadata(model: &Value) -> Result<ModelMetadata, RuntimeFailure> {
 
 pub(crate) async fn close_connection(
     connection: &Arc<RpcConnection>,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
+    budget: Option<CloseBudget>,
 ) -> CleanupOutcome {
     let close = connection.close_input().await;
-    let join = task.join().await;
+    let join = task.join_or_escalate(connection.process(), budget).await;
     if close.is_err() || join.is_err() {
         CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
             "swallowtail.codex.app_server.close_failed",

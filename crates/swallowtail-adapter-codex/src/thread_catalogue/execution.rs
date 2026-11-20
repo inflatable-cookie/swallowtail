@@ -1,7 +1,6 @@
+use crate::cleanup::merge_cleanup;
 #[path = "execution/catalogue.rs"]
 mod catalogue;
-#[path = "execution/control.rs"]
-mod control;
 #[path = "execution/history.rs"]
 mod history;
 #[path = "execution/import.rs"]
@@ -12,20 +11,21 @@ mod reconciliation;
 mod resource;
 
 use crate::app_server::close_connection;
+use crate::process_close::{AppServerTask, CloseBudget};
 use crate::rpc::RpcConnection;
 use crate::selection::supports_thread_catalogue_version;
 use resource::ScopedResource;
 use std::sync::Arc;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
-    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices, JoinedTask,
+    BoxFuture, CleanupOutcome, Deadline, DeadlineObservation, HostServices,
     ProviderSessionOperationFailure, ProviderSessionOperationFailureStage, RuntimeFailure,
 };
 
 pub(super) fn require_catalogue_version(
     plan: &swallowtail_core::PreflightPlan,
 ) -> Result<(), ProviderSessionOperationFailure> {
-    let version = plan.interface_versions().next().ok_or_else(|| {
+    let version = crate::cli_version::bound_codex_cli_version(plan).ok_or_else(|| {
         control_failure(
             ProviderSessionOperationFailureStage::BeforeDispatch,
             "swallowtail.codex.thread_catalogue.version_missing",
@@ -91,16 +91,17 @@ pub(super) fn deadline_wait(
 
 async fn close_and_release(
     connection: &Arc<RpcConnection>,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     resource: ScopedResource,
+    budget: Option<CloseBudget>,
 ) -> CleanupOutcome {
-    let connection = close_connection(connection, task).await;
+    let connection = close_connection(connection, task, budget).await;
     merge_cleanup(connection, resource.release().await)
 }
 
 async fn cancel_and_release(
     connection: &Arc<RpcConnection>,
-    task: Box<dyn JoinedTask>,
+    task: AppServerTask,
     resource: ScopedResource,
 ) -> CleanupOutcome {
     let stop = connection.cancel_session().await;
@@ -114,18 +115,6 @@ async fn cancel_and_release(
         connection.cleanup_outcome()
     };
     merge_cleanup(connection_cleanup, resource.release().await)
-}
-
-pub(super) fn merge_cleanup(current: CleanupOutcome, next: CleanupOutcome) -> CleanupOutcome {
-    match (&current, &next) {
-        (CleanupOutcome::Failed(_), _) => current,
-        (_, CleanupOutcome::Failed(_)) => next,
-        (CleanupOutcome::Degraded(_), _) => current,
-        (_, CleanupOutcome::Degraded(_)) => next,
-        (CleanupOutcome::Clean, CleanupOutcome::NotApplicable) => current,
-        (CleanupOutcome::NotApplicable, CleanupOutcome::Clean) => next,
-        _ => current,
-    }
 }
 
 pub(super) fn finish<T>(

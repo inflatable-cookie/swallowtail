@@ -176,7 +176,7 @@ impl ActiveTurn {
         self.callbacks.take_abandoned_provider_requests()
     }
 
-    /// Freezes registered-tool admission when no dispatch is outstanding.
+    /// Freezes new registered-tool admission.
     pub(crate) async fn freeze_registered_tools(&self) {
         if let Some(registered) = &self.registered {
             registered.freeze_when_clear().await;

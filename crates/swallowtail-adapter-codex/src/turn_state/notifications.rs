@@ -2,6 +2,7 @@ use super::{
     ActiveTurn, MAX_ADMITTED_CHILD_THREADS, activity_notification, child_lifecycle_after_terminal,
     child_turn_mismatch, malformed_notification, required_text,
 };
+use crate::limits::MAX_TURN_OUTPUT_BYTES;
 use crate::rpc::failure;
 use serde_json::Value;
 use std::collections::BTreeSet;
@@ -71,10 +72,16 @@ impl ActiveTurn {
                 }
                 self.verify_turn(params)?;
                 let delta = required_text(params, "delta")?;
-                self.delta_output
-                    .lock()
-                    .expect("turn delta lock poisoned")
-                    .push_str(delta);
+                {
+                    let mut buffered = self.delta_output.lock().expect("turn delta lock poisoned");
+                    if buffered.len().saturating_add(delta.len()) > MAX_TURN_OUTPUT_BYTES {
+                        return Err(failure(
+                            "swallowtail.codex.app_server.turn_output_too_large",
+                            "Codex app-server turn output exceeded its byte bound",
+                        ));
+                    }
+                    buffered.push_str(delta);
+                }
                 match OperationContent::new(delta) {
                     Ok(content) => self.emit(RuntimeEventKind::OutputDelta, Some(content)),
                     Err(_) if delta.trim().is_empty() => Ok(()),

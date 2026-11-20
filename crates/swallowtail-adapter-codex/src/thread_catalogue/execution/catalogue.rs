@@ -1,5 +1,4 @@
 use super::super::protocol::project_page;
-use super::control::{Controlled, wait_controlled};
 use super::resource::ScopedResource;
 use super::{
     cancel_and_release, cleanup_or, close_and_release, control_before_dispatch, control_failure,
@@ -7,6 +6,8 @@ use super::{
 };
 use crate::CodexAppServerDriver;
 use crate::app_server::scope;
+use crate::control_wait::{Controlled, wait_controlled};
+use crate::process_close::close_budget;
 use swallowtail_runtime::{
     HostServices, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
     ProviderSessionCatalogueRequest, ProviderSessionOperationFailure,
@@ -65,6 +66,14 @@ impl CodexAppServerDriver {
             return Err(cleanup_or(cleanup, control));
         }
 
+        let deadline = request.agreement().deadline();
+        let deadline_wait = match deadline_wait(deadline, &services) {
+            Ok(wait) => wait,
+            Err(error) => {
+                let cleanup = cancel_and_release(&connection, task, resource).await;
+                return Err(cleanup_or(cleanup, error));
+            }
+        };
         let response = connection
             .dispatch_request(
                 "thread/list",
@@ -79,12 +88,7 @@ impl CodexAppServerDriver {
             .await;
         let response = match response {
             Ok(response) => {
-                wait_controlled(
-                    response,
-                    request.cancellation().as_ref(),
-                    deadline_wait(request.agreement().deadline(), &services)?,
-                )
-                .await
+                wait_controlled(response, request.cancellation().as_ref(), deadline_wait).await
             }
             Err(error) => Controlled::Completed(Err(error)),
         };
@@ -116,7 +120,13 @@ impl CodexAppServerDriver {
         let cleanup = if interrupted {
             cancel_and_release(&connection, task, resource).await
         } else {
-            close_and_release(&connection, task, resource).await
+            close_and_release(
+                &connection,
+                task,
+                resource,
+                close_budget(&services, deadline),
+            )
+            .await
         };
         let page = finish(projected, cleanup.clone())?;
         ProviderSessionCatalogueOutcome::new(

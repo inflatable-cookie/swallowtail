@@ -23,6 +23,7 @@ mod task_time;
 #[allow(dead_code)]
 pub enum Scenario {
     Complete,
+    AbortRejected,
     Disconnect,
     Hold,
     Malformed,

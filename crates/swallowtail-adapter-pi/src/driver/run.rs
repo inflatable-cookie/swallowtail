@@ -4,7 +4,7 @@ use super::{PiRpcDriver, failure};
 use crate::connection::PiConnection;
 use crate::turn::ActiveTurn;
 use serde_json::json;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use swallowtail_core::{
     CancellationScope, HarnessConfigurationPosture, PreflightPlan, ResourceAccess, RunRef,
@@ -107,6 +107,7 @@ impl StructuredRunDriver for PiRpcDriver {
                 connection: Arc::clone(&session.connection),
                 turn: active,
                 requested: AtomicBool::new(false),
+                attempts: AtomicU64::new(0),
             });
             let pending = Arc::new(Mutex::new(Some(PiRunResources {
                 turn,
@@ -168,6 +169,9 @@ struct PiRunCancellation {
     connection: Arc<PiConnection>,
     turn: Arc<ActiveTurn>,
     requested: AtomicBool,
+    /// Counts abort attempts so a retry after a refused abort carries a fresh
+    /// command id; the connection rejects reused ids.
+    attempts: AtomicU64,
 }
 
 impl CancellationControl for PiRunCancellation {
@@ -182,18 +186,31 @@ impl CancellationControl for PiRunCancellation {
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_cancelled();
-            let id = format!("abort:{}", self.turn.runtime_id().as_str());
+            let attempt = self.attempts.fetch_add(1, Ordering::SeqCst);
+            let id = if attempt == 0 {
+                format!("abort:{}", self.turn.runtime_id().as_str())
+            } else {
+                format!("abort:{}:{attempt}", self.turn.runtime_id().as_str())
+            };
             let response = self
                 .connection
                 .command(id.clone(), "abort", json!({"id": id, "type": "abort"}))
-                .await?;
-            if response.success {
-                Ok(CancellationAcknowledgement::Requested)
-            } else {
-                Err(failure(
-                    "swallowtail.pi.rpc.abort_rejected",
-                    "Pi RPC rejected native abort",
-                ))
+                .await;
+            match response {
+                Ok(response) if response.success => Ok(CancellationAcknowledgement::Requested),
+                Ok(_) => {
+                    // A refused abort is not acknowledged, so a later request
+                    // (including the close escalation) may try again.
+                    self.requested.store(false, Ordering::SeqCst);
+                    Err(failure(
+                        "swallowtail.pi.rpc.abort_rejected",
+                        "Pi RPC rejected native abort",
+                    ))
+                }
+                Err(error) => {
+                    self.requested.store(false, Ordering::SeqCst);
+                    Err(error)
+                }
             }
         })
     }
@@ -240,8 +257,19 @@ impl RunHandle for PiRunHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let _ = self.cancellation.request().await;
-            self.task.join().await.map_or_else(
+            let cancellation = match self.cancellation.request().await {
+                Ok(_) => CleanupOutcome::NotApplicable,
+                Err(error) => {
+                    if error.diagnostic().code() == "swallowtail.pi.rpc.abort_rejected" {
+                        // A rejected native abort leaves the run live, so the join
+                        // below would wait for provider completion. Escalate to a
+                        // forced stop so the RPC process ends and the join can settle.
+                        let _ = self.cancellation.connection.force_stop().await;
+                    }
+                    CleanupOutcome::Failed(error.diagnostic().clone())
+                }
+            };
+            let join = self.task.join().await.map_or_else(
                 |_| {
                     CleanupOutcome::Failed(SafeDiagnostic::new(
                         "swallowtail.pi.rpc.run_join_failed",
@@ -249,7 +277,8 @@ impl RunHandle for PiRunHandle {
                     ))
                 },
                 |_| CleanupOutcome::Clean,
-            )
+            );
+            CleanupOutcome::merge(cancellation, join)
         })
     }
 }

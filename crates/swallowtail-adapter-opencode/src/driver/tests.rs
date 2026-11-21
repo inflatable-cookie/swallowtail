@@ -64,3 +64,45 @@ mod tests {
         ));
     }
 }
+
+#[test]
+fn session_history_control_failures_use_the_history_namespace() {
+    let cancelled = HISTORY_CONTROL_CODES.failure(ControlFailureKind::Cancelled);
+    let timed_out = HISTORY_CONTROL_CODES.failure(ControlFailureKind::TimedOut);
+    assert_eq!(
+        cancelled.diagnostic().code(),
+        "swallowtail.opencode.session_history.cancelled"
+    );
+    assert_eq!(
+        timed_out.diagnostic().code(),
+        "swallowtail.opencode.session_history.timed_out"
+    );
+
+    let reconciliation = RECONCILIATION_CONTROL_CODES.failure(ControlFailureKind::Cancelled);
+    assert_eq!(
+        reconciliation.diagnostic().code(),
+        "swallowtail.opencode.session_reconciliation.cancelled"
+    );
+}
+
+#[test]
+fn a_refused_cancellation_at_close_is_reported_not_discarded() {
+    let refused = cancellation_cleanup(Err(RuntimeFailure::new(
+        swallowtail_core::SafeDiagnostic::new("fixture.abort_refused", "abort refused"),
+    )));
+    assert_eq!(
+        refused.diagnostic().map(swallowtail_core::SafeDiagnostic::code),
+        Some("fixture.abort_refused")
+    );
+    assert_eq!(
+        cancellation_cleanup(Ok(swallowtail_runtime::CancellationAcknowledgement::Requested)),
+        CleanupOutcome::NotApplicable
+    );
+    assert_eq!(
+        CleanupOutcome::merge(refused, CleanupOutcome::Clean)
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("fixture.abort_refused"),
+        "a refused cancellation is not hidden by a clean join"
+    );
+}

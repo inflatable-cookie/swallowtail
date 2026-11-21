@@ -5,7 +5,7 @@ use super::{
     finish, from_runtime, request_controlled, require_catalogue_version, settle,
 };
 use crate::CodexAppServerDriver;
-use crate::app_server::scope;
+use crate::app_server::{INITIALIZE_TIMED_OUT, InitBound, InitControl, initialize_control, scope};
 use crate::control_wait::Controlled;
 use crate::process_close::close_budget;
 use serde_json::json;
@@ -40,21 +40,36 @@ impl CodexAppServerDriver {
                 behavior,
                 operation_scope,
                 Some(resource.reference().clone()),
-                false,
                 &services,
+                InitBound {
+                    experimental_api: false,
+                    cancellation: Some(request.cancellation().as_ref()),
+                    deadline: request.agreement().deadline(),
+                    timed_out: INITIALIZE_TIMED_OUT,
+                },
             )
             .await;
         let (connection, task) = match connection {
             Ok(connection) => connection,
             Err(error) => {
                 let cleanup = resource.release().await;
-                return Err(cleanup_or(
-                    cleanup,
-                    from_runtime(
+                let failure = match initialize_control(&error) {
+                    Some(InitControl::Cancelled) => control_failure(
+                        ProviderSessionOperationFailureStage::Cancelled,
+                        "swallowtail.codex.thread_catalogue.cancelled",
+                        "Codex thread catalogue was cancelled",
+                    ),
+                    Some(InitControl::TimedOut) => control_failure(
+                        ProviderSessionOperationFailureStage::TimedOut,
+                        "swallowtail.codex.thread_catalogue.timed_out",
+                        "Codex thread catalogue timed out",
+                    ),
+                    None => from_runtime(
                         ProviderSessionOperationFailureStage::CatalogueDispatch,
                         error,
                     ),
-                ));
+                };
+                return Err(cleanup_or(cleanup, failure));
             }
         };
 

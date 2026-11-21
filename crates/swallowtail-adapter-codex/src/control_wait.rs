@@ -18,14 +18,30 @@ pub(crate) async fn wait_controlled<F, T>(
 where
     F: Future<Output = T>,
 {
+    wait_controlled_optional(operation, Some(cancellation), deadline).await
+}
+
+/// Like [`wait_controlled`], for operations whose caller supplies no
+/// cancellation signal: only the deadline can end the wait early.
+pub(crate) async fn wait_controlled_optional<F, T>(
+    operation: F,
+    cancellation: Option<&swallowtail_runtime::ImmediateCancellation>,
+    deadline: Option<BoxFuture<'static, DeadlineObservation>>,
+) -> Controlled<T>
+where
+    F: Future<Output = T>,
+{
     let mut operation = Box::pin(operation);
-    let mut cancelled = cancellation.wait_requested();
+    let mut cancelled = cancellation.map(|cancellation| cancellation.wait_requested());
     let mut deadline = deadline;
     std::future::poll_fn(|context| {
         if let Poll::Ready(result) = operation.as_mut().poll(context) {
             return Poll::Ready(Controlled::Completed(result));
         }
-        if cancelled.as_mut().poll(context).is_ready() {
+        if cancelled
+            .as_mut()
+            .is_some_and(|cancelled| cancelled.as_mut().poll(context).is_ready())
+        {
             return Poll::Ready(Controlled::Cancelled);
         }
         if deadline

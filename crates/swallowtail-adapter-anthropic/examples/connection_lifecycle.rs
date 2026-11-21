@@ -73,7 +73,7 @@ fn collect_api_key(
             .expect("field id is valid"),
         credential,
     )?;
-    complete_sign_in(session, services, Some(store))
+    complete_sign_in(session, services, Some(store)).map_err(|(failure, _)| failure)
 }
 
 fn refresh_hosted_messages(

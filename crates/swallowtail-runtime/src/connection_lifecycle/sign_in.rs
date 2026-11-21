@@ -16,7 +16,7 @@ use std::error::Error;
 use std::fmt;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Mutex, PoisonError};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{
     AccessProfileId, AddableRouteId, AdmittedInstanceRecord, ConfiguredInstanceId,
@@ -350,6 +350,7 @@ impl SignInOutcome {
 enum PendingSignInPoll {
     Loopback(BoxFuture<'static, Result<Option<crate::LoopbackCallbackReceipt>, RuntimeFailure>>),
     Device(BoxFuture<'static, Result<Option<crate::DeviceAuthorizationReceipt>, RuntimeFailure>>),
+    Delegated(BoxFuture<'static, Result<crate::ProcessExit, RuntimeFailure>>),
 }
 
 /// In-flight library-owned sign-in session.
@@ -365,7 +366,7 @@ pub struct SignInSession {
     loopback: Option<crate::LoopbackCallbackLease>,
     loopback_receipt: Option<crate::LoopbackCallbackReceipt>,
     device_receipt: Option<crate::DeviceAuthorizationReceipt>,
-    process: Option<Box<dyn ProcessHandle>>,
+    process: Option<Arc<dyn ProcessHandle>>,
     delegated_credential: Option<CredentialRef>,
     credential_field: Option<CredentialFieldId>,
     api_key_fields: BTreeMap<CredentialFieldId, CredentialFieldDescriptor>,
@@ -654,30 +655,46 @@ pub fn submit_sign_in_credential_field(
     Ok(session.status)
 }
 
+/// Failure from a synchronous sign-in finish or cancel, returned with the
+/// session so host cleanup that returned `Poll::Pending` is not abandoned.
+///
+/// Finish the retained cleanup with [`complete_sign_in_async`] or
+/// [`cancel_sign_in_async`], or drop the session once its host ports are gone.
+pub type SignInFinishFailure = (SignInFailure, SignInSession);
+
 /// Completes a ready sign-in loop and materializes opaque credential references.
 ///
 /// When `store` is present, references are written onto the admitted instance.
 /// Contract 014 still owns acquire, audience binding, redaction, and release.
 /// Releases any held host leases and stops/reaps any child process on both
-/// success and error paths; if cleanup returns `Poll::Pending`, fails closed
-/// with [`SignInFailureKind::HostPort`] without mutating the store. Use
+/// success and error paths. If cleanup returns `Poll::Pending`, fails closed
+/// with [`SignInFailureKind::HostPort`] without mutating the store, and returns
+/// the session with its in-flight cleanup retained. Use
 /// [`complete_sign_in_async`] when host cleanup ports are asynchronous.
+#[allow(clippy::result_large_err)] // The session must travel with the failure so pending cleanup is not abandoned.
 pub fn complete_sign_in(
     mut session: SignInSession,
     services: &HostServices,
     store: Option<&dyn ConnectionLifecycleStore>,
-) -> Result<SignInOutcome, SignInFailure> {
+) -> Result<SignInOutcome, SignInFinishFailure> {
     let refs = validate_complete(&session, services);
-    cleanup_session_now(&mut session, services)?;
-    let refs = refs?;
-    if let Some(store) = store {
-        persist_refs(
+    if let Err(failure) = cleanup_session_now(&mut session, services) {
+        return Err((failure, session));
+    }
+    let refs = match refs {
+        Ok(refs) => refs,
+        Err(failure) => return Err((failure, session)),
+    };
+    if let Some(store) = store
+        && let Err(failure) = persist_refs(
             store,
             &session.instance_id,
             &session.family,
             &session.route_id,
             &refs,
-        )?;
+        )
+    {
+        return Err((failure, session));
     }
     session.status = SignInStatus::Completed;
     Ok(build_outcome(session, refs))
@@ -762,13 +779,19 @@ fn build_outcome(
 /// Cancels an in-flight sign-in loop and releases host port leases.
 ///
 /// Fails closed with [`SignInFailureKind::HostPort`] if cleanup futures return
-/// `Poll::Pending`; use [`cancel_sign_in_async`] when host ports are asynchronous.
+/// `Poll::Pending`, and returns the session with that cleanup retained. Use
+/// [`cancel_sign_in_async`] when host ports are asynchronous.
+#[allow(clippy::result_large_err)] // The session must travel with the failure so pending cleanup is not abandoned.
 pub fn cancel_sign_in(
     mut session: SignInSession,
     services: &HostServices,
-) -> Result<SignInStatus, SignInFailure> {
-    reject_terminal(&session)?;
-    cleanup_session_now(&mut session, services)?;
+) -> Result<SignInStatus, SignInFinishFailure> {
+    if let Err(failure) = reject_terminal(&session) {
+        return Err((failure, session));
+    }
+    if let Err(failure) = cleanup_session_now(&mut session, services) {
+        return Err((failure, session));
+    }
     Ok(SignInStatus::Cancelled)
 }
 
@@ -893,7 +916,7 @@ fn start_delegated(
         process.start(session.scope.clone(), request),
         "Sign-in process start did not resolve immediately; use start_sign_in_async",
     )?;
-    session.process = Some(handle);
+    session.process = Some(Arc::from(handle));
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -910,7 +933,7 @@ async fn start_delegated_async(
         .start(session.scope.clone(), request)
         .await
         .map_err(SignInFailure::from_port)?;
-    session.process = Some(handle);
+    session.process = Some(Arc::from(handle));
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -1049,19 +1072,29 @@ async fn poll_device_async(
 }
 
 fn poll_delegated(session: &mut SignInSession) -> Result<(), SignInFailure> {
-    let Some(handle) = session.process.as_ref() else {
-        return Err(SignInFailure::new(
-            SignInFailureKind::InvalidState,
-            "swallowtail.sign_in.invalid_state",
-            "Delegated CLI login is missing its process handle",
-        ));
+    let mut wait = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Delegated(wait)) => wait,
+        _ => {
+            let handle = session.process.as_ref().ok_or_else(|| {
+                SignInFailure::new(
+                    SignInFailureKind::InvalidState,
+                    "swallowtail.sign_in.invalid_state",
+                    "Delegated CLI login is missing its process handle",
+                )
+            })?;
+            // Own the handle inside the retained future so the pending wait
+            // survives across polls instead of being dropped after one poll.
+            let handle = Arc::clone(handle);
+            Box::pin(async move { handle.wait().await })
+        }
     };
-    match poll_now_or_pending(handle.wait()) {
-        None => {
+    match poll_box_future_once(&mut wait) {
+        Poll::Pending => {
+            set_pending_poll(session, PendingSignInPoll::Delegated(wait));
             session.status = SignInStatus::InProgress;
             Ok(())
         }
-        Some(result) => finish_delegated_wait(session, result),
+        Poll::Ready(result) => finish_delegated_wait(session, result),
     }
 }
 

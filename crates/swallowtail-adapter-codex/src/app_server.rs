@@ -182,7 +182,22 @@ impl ModelCatalogDriver for CodexAppServerDriver {
                 .transpose()?;
             let scope = scope("catalog", request.request_id());
             let (connection, task) = self
-                .start_connection(&plan, behavior, scope, None, false, &services)
+                .start_connection(
+                    &plan,
+                    behavior,
+                    scope,
+                    None,
+                    &services,
+                    InitBound {
+                        experimental_api: false,
+                        cancellation: None,
+                        deadline: request.deadline(),
+                        timed_out: (
+                            "swallowtail.codex.app_server.catalog_timed_out",
+                            "Codex model discovery timed out",
+                        ),
+                    },
+                )
                 .await?;
             let result = match deadline {
                 Some(deadline) => {
@@ -307,3 +322,7 @@ fn validate_app_server_plan(
 }
 
 include!("app_server/continuity.rs");
+
+#[cfg(test)]
+#[path = "app_server/continuity_tests.rs"]
+mod continuity_tests;

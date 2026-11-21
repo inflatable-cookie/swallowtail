@@ -1,4 +1,46 @@
+use crate::control_wait::{Controlled, wait_controlled_optional};
 use crate::process_close::{AppServerTask, CloseBudget};
+use std::collections::BTreeSet;
+
+/// Upper bound on `model/list` pages, so a server that keeps issuing cursors
+/// cannot keep one discovery call running indefinitely.
+const MAXIMUM_MODEL_CATALOG_PAGES: usize = 64;
+
+/// Caller bounds for the `initialize` handshake run while a connection starts.
+pub(crate) struct InitBound<'a> {
+    /// Whether the handshake requests experimental API access.
+    pub(crate) experimental_api: bool,
+    /// Cancellation that aborts the handshake, when the caller has one.
+    pub(crate) cancellation: Option<&'a swallowtail_runtime::ImmediateCancellation>,
+    /// Deadline that bounds the handshake.
+    pub(crate) deadline: Option<swallowtail_runtime::Deadline>,
+    /// Code and message reported when the deadline ends the handshake.
+    pub(crate) timed_out: (&'static str, &'static str),
+}
+
+/// Control outcome that ended a connection handshake, so each operation can
+/// report it in its own stage and namespace.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub(crate) enum InitControl {
+    Cancelled,
+    TimedOut,
+}
+
+/// Recognises a handshake that `start_connection` ended by cancellation or deadline.
+pub(crate) fn initialize_control(error: &RuntimeFailure) -> Option<InitControl> {
+    match error.diagnostic().code() {
+        "swallowtail.codex.app_server.initialize_cancelled" => Some(InitControl::Cancelled),
+        "swallowtail.codex.app_server.initialize_timed_out" => Some(InitControl::TimedOut),
+        _ => None,
+    }
+}
+
+/// Timeout report for a handshake that the caller deadline ends.
+pub(crate) const INITIALIZE_TIMED_OUT: (&str, &str) = (
+    "swallowtail.codex.app_server.initialize_timed_out",
+    "Codex app-server initialization timed out",
+);
+
 impl CodexAppServerDriver {
     pub(crate) fn validate_plan(
         &self,
@@ -21,18 +63,44 @@ impl CodexAppServerDriver {
         behavior: CodexAppServerBehavior,
         scope: ScopeId,
         working_resource: Option<WorkingResourceRef>,
-        experimental_api: bool,
         services: &HostServices,
+        bound: InitBound<'_>,
     ) -> Result<(Arc<RpcConnection>, AppServerTask), RuntimeFailure> {
         let (connection, task) = self
             .spawn_connection(plan, behavior, scope, working_resource, services)
             .await?;
-        if let Err(error) = connection.initialize(experimental_api).await {
-            let _ = connection.cancel_session().await;
-            let _ = task.join().await;
-            return Err(error);
-        }
-        Ok((connection, task))
+        let deadline = match bound.deadline {
+            Some(deadline) => Some(
+                services
+                    .time()
+                    .ok_or_else(|| {
+                        failure(
+                            "swallowtail.codex.app_server.time_service_missing",
+                            "Codex app-server initialization deadline requires a time service",
+                        )
+                    })?
+                    .wait_until(deadline),
+            ),
+            None => None,
+        };
+        let initialized = wait_controlled_optional(
+            connection.initialize(bound.experimental_api),
+            bound.cancellation,
+            deadline,
+        )
+        .await;
+        let error = match initialized {
+            Controlled::Completed(Ok(())) => return Ok((connection, task)),
+            Controlled::Completed(Err(error)) => error,
+            Controlled::Cancelled => failure(
+                "swallowtail.codex.app_server.initialize_cancelled",
+                "Codex app-server initialization was cancelled",
+            ),
+            Controlled::Deadline => failure(bound.timed_out.0, bound.timed_out.1),
+        };
+        let _ = connection.cancel_session().await;
+        let _ = task.join().await;
+        Err(error)
     }
 
     pub(crate) async fn spawn_connection(
@@ -88,35 +156,61 @@ impl CodexAppServerDriver {
         &self,
         connection: &RpcConnection,
     ) -> Result<Vec<ModelCatalogEntry>, RuntimeFailure> {
-        let mut models = Vec::new();
-        let mut cursor: Option<String> = None;
-        loop {
-            let response = connection
+        collect_model_pages(|cursor| async move {
+            connection
                 .request(
                     "model/list",
                     serde_json::json!({"cursor": cursor, "includeHidden": false}),
                 )
-                .await?;
-            let data = response
-                .get("data")
-                .and_then(Value::as_array)
-                .ok_or_else(malformed_response)?;
-            for model in data {
-                let id = required_text(model, "model")?;
-                models.push(ModelCatalogEntry::new(
-                    ModelId::new(id).map_err(|_| malformed_response())?,
-                    model_metadata(model)?,
-                ));
-            }
-            cursor = response
-                .get("nextCursor")
-                .and_then(Value::as_str)
-                .map(str::to_owned);
-            if cursor.is_none() {
-                return Ok(models);
-            }
-        }
+                .await
+        })
+        .await
     }
+}
+
+/// Walks `model/list` pages through `fetch_page`, bounding both the page count
+/// and the cursor chain: a page count over [`MAXIMUM_MODEL_CATALOG_PAGES`] or a
+/// cursor the server has already issued is a malformed catalogue.
+async fn collect_model_pages<F, Fut>(mut fetch_page: F) -> Result<Vec<ModelCatalogEntry>, RuntimeFailure>
+where
+    F: FnMut(Option<String>) -> Fut,
+    Fut: std::future::Future<Output = Result<Value, RuntimeFailure>>,
+{
+    let mut models = Vec::new();
+    let mut cursor: Option<String> = None;
+    let mut issued = BTreeSet::new();
+    for _ in 0..MAXIMUM_MODEL_CATALOG_PAGES {
+        let response = fetch_page(cursor.clone()).await?;
+        let data = response
+            .get("data")
+            .and_then(Value::as_array)
+            .ok_or_else(malformed_response)?;
+        for model in data {
+            let id = required_text(model, "model")?;
+            models.push(ModelCatalogEntry::new(
+                ModelId::new(id).map_err(|_| malformed_response())?,
+                model_metadata(model)?,
+            ));
+        }
+        let Some(next) = response
+            .get("nextCursor")
+            .and_then(Value::as_str)
+            .map(str::to_owned)
+        else {
+            return Ok(models);
+        };
+        if !issued.insert(next.clone()) {
+            return Err(failure(
+                "swallowtail.codex.app_server.catalog_cursor_repeated",
+                "Codex app-server model catalogue repeated a page cursor",
+            ));
+        }
+        cursor = Some(next);
+    }
+    Err(failure(
+        "swallowtail.codex.app_server.catalog_page_limit",
+        "Codex app-server model catalogue exceeded its page limit",
+    ))
 }
 
 fn validate_attachment_binding(

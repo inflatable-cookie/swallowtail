@@ -144,9 +144,26 @@ impl TurnHandle for CodexTurnHandle {
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
             let cancelled = !self.cancellation.turn.is_finished();
-            if cancelled {
-                let _ = self.cancellation.request().await;
-            }
+            let interrupt = if cancelled {
+                match self.cancellation.request().await {
+                    Ok(_) => CleanupOutcome::NotApplicable,
+                    Err(error) => {
+                        // Without an acknowledged interrupt no provider terminal
+                        // event finishes the turn, so the deadline watcher would
+                        // otherwise wait out the whole turn deadline. Finish the
+                        // turn so the watcher exits, and report the failure.
+                        if !self.cancellation.turn.is_finished() {
+                            self.cancellation.turn.finish(
+                                TerminalStatus::Cancelled,
+                                CleanupOutcome::Failed(error.diagnostic().clone()),
+                            );
+                        }
+                        CleanupOutcome::Failed(error.diagnostic().clone())
+                    }
+                }
+            } else {
+                CleanupOutcome::NotApplicable
+            };
             let registered_cleanup = match self.registered {
                 Some(registered) => {
                     let cause = if cancelled {
@@ -166,10 +183,17 @@ impl TurnHandle for CodexTurnHandle {
             } else {
                 CleanupOutcome::NotApplicable
             };
-            CleanupOutcome::merge(registered_cleanup, task_cleanup)
+            CleanupOutcome::merge(
+                interrupt,
+                CleanupOutcome::merge(registered_cleanup, task_cleanup),
+            )
         })
     }
 }
+
+#[cfg(test)]
+#[path = "session/turn_close_tests.rs"]
+mod turn_close_tests;
 
 pub(crate) struct CodexSessionHandle {
     request_id: RequestId,

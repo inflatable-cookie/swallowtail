@@ -139,7 +139,7 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
                 endpoint: self.endpoint.clone(),
                 services: services.clone(),
                 transport: self.transport.clone(),
-                stream_cancelled,
+                stream_cancelled: Arc::clone(&stream_cancelled),
                 requested: AtomicBool::new(false),
                 callbacks: callback_hub.clone(),
             });
@@ -164,9 +164,21 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             let pump_services = services.clone();
             let pump_callback_hub = callback_hub.clone();
             let pump_detachment = detachment.clone();
+            // The pump takes the subscription from this slot only when it runs.
+            // If the spawn is refused the slot still holds it, so the failure
+            // path can close the SSE worker instead of detaching it.
+            let subscription_slot = Arc::new(Mutex::new(Some(subscription)));
+            let pump_subscription_slot = Arc::clone(&subscription_slot);
             let task = match task_service.spawn(
                 turn_scope.clone(),
                 Box::pin(async move {
+                    let Some(subscription) = pump_subscription_slot
+                        .lock()
+                        .expect("OpenCode subscription slot lock poisoned")
+                        .take()
+                    else {
+                        return;
+                    };
                     pump_turn(TurnPump {
                         turn_id: pump_turn_id,
                         subscription,
@@ -185,6 +197,16 @@ impl InteractiveSessionHandle for OpenCodeSessionHandle {
             ) {
                 Ok(task) => task,
                 Err(error) => {
+                    // Stop the SSE worker before returning: dropping the
+                    // subscription alone leaves its blocking fetch running.
+                    stream_cancelled.store(true, Ordering::SeqCst);
+                    let unspawned = subscription_slot
+                        .lock()
+                        .expect("OpenCode subscription slot lock poisoned")
+                        .take();
+                    if let Some(subscription) = unspawned {
+                        let _ = subscription.close().await;
+                    }
                     if let Some(callback_hub) = callback_hub {
                         callback_hub.abandon(swallowtail_runtime::CallbackAbandonment::Closed);
                     }

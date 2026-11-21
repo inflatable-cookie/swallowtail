@@ -182,6 +182,55 @@ fn structured_run_deadline_aborts_then_joins_the_rpc_process() {
 }
 
 #[test]
+fn rejected_native_abort_is_reported_and_escalated_when_the_run_closes() {
+    let topology = ExecutionTopologyFixture::local();
+    let fixture = FixtureHost::new(Scenario::AbortRejected);
+    let selected = run_selection_for_topology(&topology);
+    let services = fixture.services(topology.execution_host_id().clone());
+    let driver = PiRpcDriver::new(
+        EnvironmentRef::new("pi.fixture.environment").expect("valid environment"),
+        selected.credential,
+    );
+    let handle = block_on(driver.start_run(
+        selected.plan,
+        run_request(
+            "pi-abort-rejected",
+            selected.resource,
+            Deadline::at(MonotonicInstant::from_ticks(1_001)),
+        ),
+        services,
+    ))
+    .expect("run starts");
+
+    let refusal = block_on(handle.cancellation().request())
+        .expect_err("the fixture refuses the native abort");
+    assert_eq!(
+        refusal.diagnostic().code(),
+        "swallowtail.pi.rpc.abort_rejected"
+    );
+
+    // Close retries the abort; a refused abort escalates to a forced stop so the
+    // run task can join instead of waiting for provider completion.
+    let cleanup = block_on(handle.close());
+    assert_eq!(
+        cleanup
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("swallowtail.pi.rpc.abort_rejected"),
+        "a refused abort is reported by close, not discarded"
+    );
+    assert_eq!(
+        fixture
+            .inputs()
+            .iter()
+            .filter(|value| value["type"] == "abort")
+            .count(),
+        2,
+        "close retries the abort once after the refused request"
+    );
+}
+
+#[test]
 fn structured_run_relays_the_qualified_pi_ui_callback() {
     let topology = ExecutionTopologyFixture::local();
     let fixture = FixtureHost::new(Scenario::PromptUi);

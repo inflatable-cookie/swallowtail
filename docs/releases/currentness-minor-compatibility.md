@@ -216,6 +216,20 @@ required for constructor and lifecycle narrowing.
   honouring)
 - Testkit consumer-route ledger helpers
 
+### Sign-in finish signature change on the `0.6.0` candidate
+
+- Breaking pre-1.0 signature change: `complete_sign_in` and `cancel_sign_in`
+  return `Result<_, (SignInFailure, SignInSession)>` through the
+  `SignInFinishFailure` alias. The session comes back so host cleanup that
+  returned `Poll::Pending` stays owned and can be finished with
+  `complete_sign_in_async` or `cancel_sign_in_async`. Before, that session was
+  dropped and its in-flight loopback release and process stop were abandoned.
+- Consumers migrate by mapping the error, for example
+  `complete_sign_in(session, services, store).map_err(|(failure, _)| failure)`.
+- The async variants and their `SignInFailure` error are unchanged.
+- The `release-baselines/public-api-0.6.0/swallowtail-runtime.txt` lines for
+  both functions are updated to match.
+
 ## Compatibility Versus `v0.5.4` Consumers
 
 Preserve the released line as the home of old consumers. The minor does not

@@ -118,6 +118,16 @@ impl Fixture {
         self.lease_counters.resource_releases.load(Ordering::SeqCst)
     }
 
+    /// Refuses every later task spawn on this fixture's host services.
+    fn refuse_task_spawns(&self) {
+        self.thread.refuse_spawns();
+    }
+
+    /// Blocking jobs completed on this fixture's host services so far.
+    fn completed_blocking_jobs(&self) -> usize {
+        self.thread.completed_blocking_jobs()
+    }
+
     fn services(&self) -> HostServices {
         let thread = Arc::new(self.thread.clone());
         let counting = Arc::new(CountingHost {

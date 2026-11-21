@@ -163,12 +163,10 @@ async fn reconciliation_request(
         cancellation,
         deadline,
         cancelled,
+        codes,
     } = control;
     if cancellation.is_requested() {
-        return Err(failure(
-            "swallowtail.opencode.session_reconciliation.cancelled",
-            "OpenCode session reconciliation was cancelled",
-        ));
+        return Err(codes.failure(ControlFailureKind::Cancelled));
     }
     let mut work = Box::pin(transport.request(
         scope,
@@ -190,31 +188,73 @@ async fn reconciliation_request(
         }
         if cancellation_wait.as_mut().poll(context).is_ready() {
             cancelled.store(true, Ordering::SeqCst);
-            return Poll::Ready(Err(failure(
-                "swallowtail.opencode.session_reconciliation.cancelled",
-                "OpenCode session reconciliation was cancelled",
-            )));
+            return Poll::Ready(Err(codes.failure(ControlFailureKind::Cancelled)));
         }
         if deadline_wait
             .as_mut()
             .is_some_and(|wait| wait.as_mut().poll(context).is_ready())
         {
             cancelled.store(true, Ordering::SeqCst);
-            return Poll::Ready(Err(failure(
-                "swallowtail.opencode.session_reconciliation.timed_out",
-                "OpenCode session reconciliation timed out",
-            )));
+            return Poll::Ready(Err(codes.failure(ControlFailureKind::TimedOut)));
         }
         Poll::Pending
     })
     .await
 }
 
+/// Which control outcome a bounded provider request reports.
+#[derive(Clone, Copy)]
+enum ControlFailureKind {
+    Cancelled,
+    TimedOut,
+}
+
+/// Diagnostic codes for cancelled and timed-out bounded requests, so each
+/// operation reports its own namespace.
+#[derive(Clone, Copy)]
+struct ControlFailureCodes {
+    cancelled: (&'static str, &'static str),
+    timed_out: (&'static str, &'static str),
+}
+
+impl ControlFailureCodes {
+    fn failure(self, kind: ControlFailureKind) -> RuntimeFailure {
+        let (code, message) = match kind {
+            ControlFailureKind::Cancelled => self.cancelled,
+            ControlFailureKind::TimedOut => self.timed_out,
+        };
+        failure(code, message)
+    }
+}
+
+const RECONCILIATION_CONTROL_CODES: ControlFailureCodes = ControlFailureCodes {
+    cancelled: (
+        "swallowtail.opencode.session_reconciliation.cancelled",
+        "OpenCode session reconciliation was cancelled",
+    ),
+    timed_out: (
+        "swallowtail.opencode.session_reconciliation.timed_out",
+        "OpenCode session reconciliation timed out",
+    ),
+};
+
+const HISTORY_CONTROL_CODES: ControlFailureCodes = ControlFailureCodes {
+    cancelled: (
+        "swallowtail.opencode.session_history.cancelled",
+        "OpenCode session history was cancelled",
+    ),
+    timed_out: (
+        "swallowtail.opencode.session_history.timed_out",
+        "OpenCode session history timed out",
+    ),
+};
+
 struct ReconciliationControl<'a> {
     services: &'a HostServices,
     cancellation: &'a swallowtail_runtime::ImmediateCancellation,
     deadline: Option<Deadline>,
     cancelled: Arc<AtomicBool>,
+    codes: ControlFailureCodes,
 }
 
 impl<'a> ReconciliationControl<'a> {
@@ -229,6 +269,13 @@ impl<'a> ReconciliationControl<'a> {
             cancellation,
             deadline,
             cancelled,
+            codes: RECONCILIATION_CONTROL_CODES,
         }
+    }
+
+    /// Reports this control's cancellation and timeout under the session-history namespace.
+    fn for_session_history(mut self) -> Self {
+        self.codes = HISTORY_CONTROL_CODES;
+        self
     }
 }

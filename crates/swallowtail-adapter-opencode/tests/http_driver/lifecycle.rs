@@ -401,3 +401,33 @@ fn a_rejected_replay_releases_every_acquired_lease() {
         "a rejected replay must release the working-resource lease it acquired"
     );
 }
+
+#[test]
+fn a_refused_turn_spawn_joins_the_sse_worker_before_the_error_returns() {
+    let server = FixtureServer::start(StreamFixture::WaitForAbort);
+    let fixture = Fixture::new(server.endpoint(), "host.local");
+    let driver = OpenCodeHttpDriver::new();
+    let mut session = block_on(driver.open_session(
+        fixture.plan(DriverRole::InteractiveSession),
+        open_session_request("spawn-refused-session", fixture.resource.clone()),
+        fixture.services(),
+    ))
+    .expect("session opens");
+
+    let completed_before_turn = fixture.completed_blocking_jobs();
+    fixture.refuse_task_spawns();
+    let refusal = block_on(session.start_turn(
+        TurnRequest::new(
+            RuntimeTurnId::new("turn-spawn-refused").expect("turn id is valid"),
+            OperationContent::new("fixture input").expect("content is valid"),
+        ),
+        fixture.services(),
+    ));
+
+    assert!(refusal.is_err(), "a refused task spawn fails the turn start");
+    assert_eq!(
+        fixture.completed_blocking_jobs(),
+        completed_before_turn + 1,
+        "the SSE worker is joined before the spawn error returns, not left detached"
+    );
+}

@@ -245,11 +245,15 @@ impl SseDecoder {
     }
 }
 
+/// Finds the earliest event boundary, whether it is LF or CRLF framed, so a
+/// mixed-framing buffer splits at the first real boundary.
 fn find_boundary(buffer: &[u8]) -> Option<usize> {
-    buffer
-        .windows(2)
-        .position(|window| window == b"\n\n")
-        .or_else(|| buffer.windows(4).position(|window| window == b"\r\n\r\n"))
+    let lf = buffer.windows(2).position(|window| window == b"\n\n");
+    let crlf = buffer.windows(4).position(|window| window == b"\r\n\r\n");
+    match (lf, crlf) {
+        (Some(lf), Some(crlf)) => Some(lf.min(crlf)),
+        (lf, crlf) => lf.or(crlf),
+    }
 }
 
 fn boundary_len(buffer: &[u8]) -> usize {
@@ -281,4 +285,19 @@ fn frame_data(frame: &[u8]) -> Result<Option<Vec<u8>>, RuntimeFailure> {
         data.extend_from_slice(value.strip_prefix(' ').unwrap_or(value).as_bytes());
     }
     Ok((!data.is_empty()).then_some(data))
+}
+
+#[cfg(test)]
+mod boundary_tests {
+    use super::SseDecoder;
+
+    #[test]
+    fn a_crlf_boundary_before_a_later_lf_boundary_splits_at_the_first_one() {
+        let mut decoder = SseDecoder::default();
+        let events = decoder
+            .push(b"data: first\r\n\r\ndata: second\n\n")
+            .expect("both frames decode");
+
+        assert_eq!(events, vec![b"first".to_vec(), b"second".to_vec()]);
+    }
 }

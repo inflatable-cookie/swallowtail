@@ -100,3 +100,15 @@ impl OperationDetachmentControl for TurnDetachment {
         })
     }
 }
+
+/// Maps the cancellation request a close makes into its cleanup outcome. A
+/// refused request leaves the turn or run unconfirmed, so its failure is
+/// reported instead of discarded.
+fn cancellation_cleanup(
+    result: Result<swallowtail_runtime::CancellationAcknowledgement, RuntimeFailure>,
+) -> CleanupOutcome {
+    match result {
+        Ok(_) => CleanupOutcome::NotApplicable,
+        Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
+    }
+}

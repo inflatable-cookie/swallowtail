@@ -10,7 +10,7 @@
 #![deny(missing_docs)]
 
 use crate::{
-    BoxFuture, DebugObservationKind, HostServices, InstalledExecutableDiscoveryRequest,
+    BoxFuture, Deadline, DebugObservationKind, HostServices, InstalledExecutableDiscoveryRequest,
     PreparationFailure, PreparationStage, ProcessHandle, ProcessOutputStream, ProcessRequest,
     RuntimeFailure, validate_installed_executable_discovery_services,
 };
@@ -174,6 +174,12 @@ async fn probe_process(
     codes: InstalledProbeCodes,
     solution: &'static str,
 ) -> Result<DiscoveryOutcome, RuntimeFailure> {
+    // Start the deadline and cancellation watchers before the child is spawned
+    // so that the budget covers process startup and stdin setup, not only the
+    // output loop.
+    let time = services.time().expect("validated time service");
+    let mut deadline = time.wait_until(request.deadline());
+    let mut cancelled = request.cancellation().wait_requested();
     let process = match services
         .process()
         .expect("validated process service")
@@ -195,22 +201,40 @@ async fn probe_process(
             return Ok(outcome(&services, codes, solution, status));
         }
     };
-    if process.close_stdin().await.is_err() {
-        return Ok(stop_and_classify(
-            process.as_ref(),
-            &services,
-            codes,
-            solution,
-            DiscoveryStatus::Failed,
-        )
-        .await);
+    match race_probe(process.close_stdin(), &mut deadline, &mut cancelled).await {
+        ProbeRace::Completed(Ok(())) => {}
+        ProbeRace::Completed(Err(_)) => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::Failed,
+            )
+            .await);
+        }
+        ProbeRace::Cancelled => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::Cancelled,
+            )
+            .await);
+        }
+        ProbeRace::TimedOut => {
+            return Ok(stop_and_classify(
+                process.as_ref(),
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::TimedOut,
+            )
+            .await);
+        }
     }
 
-    let mut deadline = services
-        .time()
-        .expect("validated time service")
-        .wait_until(request.deadline());
-    let mut cancelled = request.cancellation().wait_requested();
     let mut stdout = Vec::new();
     loop {
         match next_output(process.as_ref(), &mut deadline, &mut cancelled).await {
@@ -377,6 +401,37 @@ async fn next_output(
     .await
 }
 
+/// Upper bound on child teardown, so a child that ignores stop cannot stall discovery.
+const TEARDOWN_BUDGET: std::time::Duration = std::time::Duration::from_secs(5);
+
+enum ProbeRace<T> {
+    Completed(T),
+    Cancelled,
+    TimedOut,
+}
+
+/// Resolves `future` unless the probe's cancellation or deadline settles first.
+async fn race_probe<T>(
+    future: BoxFuture<'_, T>,
+    deadline: &mut BoxFuture<'static, crate::DeadlineObservation>,
+    cancelled: &mut BoxFuture<'static, ()>,
+) -> ProbeRace<T> {
+    let mut future = future;
+    poll_fn(|context| {
+        if let Poll::Ready(value) = future.as_mut().poll(context) {
+            return Poll::Ready(ProbeRace::Completed(value));
+        }
+        if cancelled.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ProbeRace::Cancelled);
+        }
+        if deadline.as_mut().poll(context).is_ready() {
+            return Poll::Ready(ProbeRace::TimedOut);
+        }
+        Poll::Pending
+    })
+    .await
+}
+
 async fn stop_and_classify(
     process: &dyn ProcessHandle,
     services: &HostServices,
@@ -384,14 +439,40 @@ async fn stop_and_classify(
     solution: &'static str,
     status: DiscoveryStatus,
 ) -> DiscoveryOutcome {
-    let graceful = process.request_stop().await;
-    let forced = process.force_stop().await;
-    let waited = process.wait().await;
-    if graceful.is_err() || forced.is_err() || waited.is_err() {
-        outcome(services, codes, solution, DiscoveryStatus::CleanupFailed)
-    } else {
+    let clean = bounded_teardown(process, services).await;
+    if clean {
         outcome(services, codes, solution, status)
+    } else {
+        outcome(services, codes, solution, DiscoveryStatus::CleanupFailed)
     }
+}
+
+/// Stops, force-stops and reaps the child, reporting `false` if that does not
+/// finish within [`TEARDOWN_BUDGET`] or any step fails.
+async fn bounded_teardown(process: &dyn ProcessHandle, services: &HostServices) -> bool {
+    let teardown = async {
+        let graceful = process.request_stop().await;
+        let forced = process.force_stop().await;
+        let waited = process.wait().await;
+        graceful.is_ok() && forced.is_ok() && waited.is_ok()
+    };
+    let Some(time) = services.time() else {
+        return teardown.await;
+    };
+    let mut budget = time.wait_until(Deadline::at(
+        time.now().saturating_add_duration(TEARDOWN_BUDGET),
+    ));
+    let mut teardown = std::pin::pin!(teardown);
+    poll_fn(|context| {
+        if let Poll::Ready(clean) = teardown.as_mut().poll(context) {
+            return Poll::Ready(clean);
+        }
+        if budget.as_mut().poll(context).is_ready() {
+            return Poll::Ready(false);
+        }
+        Poll::Pending
+    })
+    .await
 }
 
 fn outcome(
@@ -604,6 +685,58 @@ mod tests {
     }
 
     #[test]
+    fn a_child_whose_teardown_hangs_is_reported_as_cleanup_failure() {
+        let codes = fixture_codes();
+        let services = HostServices::new(host_id())
+            .with_task(Arc::new(InlineTask))
+            .with_time(Arc::new(ImmediateDeadline))
+            .with_process(Arc::new(StopHangsProcess));
+        let outcome = block(Box::pin(probe_installed_executable_version(
+            fixture_request(),
+            services,
+            fixture_claim(),
+            |_| None,
+            codes,
+            "Fixture harness",
+        )))
+        .expect("the bounded probe reports an outcome");
+
+        assert_eq!(
+            outcome.status(),
+            DiscoveryStatus::CleanupFailed,
+            "a teardown that never settles is bounded and reported, not awaited forever"
+        );
+        assert_eq!(
+            outcome.diagnostic().map(SafeDiagnostic::code),
+            Some(codes.cleanup_failed)
+        );
+    }
+
+    #[test]
+    fn a_stdin_close_that_never_settles_honors_the_deadline() {
+        let codes = fixture_codes();
+        let services = HostServices::new(host_id())
+            .with_task(Arc::new(InlineTask))
+            .with_time(Arc::new(ImmediateDeadline))
+            .with_process(Arc::new(CloseStdinHangsProcess));
+        let outcome = block(Box::pin(probe_installed_executable_version(
+            fixture_request(),
+            services,
+            fixture_claim(),
+            |_| None,
+            codes,
+            "Fixture harness",
+        )))
+        .expect("the bounded probe reports an outcome");
+
+        assert_eq!(outcome.status(), DiscoveryStatus::TimedOut);
+        assert_eq!(
+            outcome.diagnostic().map(SafeDiagnostic::code),
+            Some(codes.timed_out)
+        );
+    }
+
+    #[test]
     fn outcome_failure_keeps_the_exact_outcome_diagnostic() {
         let diagnostic = SafeDiagnostic::new("fixture.exact", "exact failure");
         let outcome = DiscoveryOutcome::new(DiscoveryStatus::Malformed, Some(diagnostic));
@@ -774,6 +907,124 @@ mod tests {
         {
             Box::pin(std::future::ready(Ok(
                 Box::new(Self::default()) as Box<dyn crate::ProcessHandle>
+            )))
+        }
+    }
+
+    /// Deadline that is already past when the probe starts waiting on it.
+    struct ImmediateDeadline;
+
+    impl crate::TimeService for ImmediateDeadline {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+
+        fn wait_until(
+            &self,
+            deadline: Deadline,
+        ) -> crate::BoxFuture<'static, crate::DeadlineObservation> {
+            Box::pin(std::future::ready(crate::DeadlineObservation::new(
+                deadline,
+                deadline.instant(),
+            )))
+        }
+    }
+
+    /// Child whose stop request never settles, so only the teardown budget ends it.
+    struct StopHangsProcess;
+
+    impl crate::ProcessHandle for StopHangsProcess {
+        fn write_stdin(
+            &self,
+            _chunk: crate::ProcessInputChunk,
+        ) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn close_stdin(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn read_output(
+            &self,
+        ) -> crate::BoxFuture<'_, Result<Option<crate::ProcessOutputChunk>, RuntimeFailure>>
+        {
+            Box::pin(std::future::pending())
+        }
+
+        fn request_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn force_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn wait(&self) -> crate::BoxFuture<'_, Result<crate::ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    impl crate::ProcessService for StopHangsProcess {
+        fn start(
+            &self,
+            _scope: crate::ScopeId,
+            _request: crate::ProcessRequest,
+        ) -> crate::BoxFuture<'static, Result<Box<dyn crate::ProcessHandle>, RuntimeFailure>>
+        {
+            Box::pin(std::future::ready(Ok(
+                Box::new(StopHangsProcess) as Box<dyn crate::ProcessHandle>
+            )))
+        }
+    }
+
+    /// Child whose stdin close never settles.
+    struct CloseStdinHangsProcess;
+
+    impl crate::ProcessHandle for CloseStdinHangsProcess {
+        fn write_stdin(
+            &self,
+            _chunk: crate::ProcessInputChunk,
+        ) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn close_stdin(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+
+        fn read_output(
+            &self,
+        ) -> crate::BoxFuture<'_, Result<Option<crate::ProcessOutputChunk>, RuntimeFailure>>
+        {
+            Box::pin(std::future::ready(Ok(None)))
+        }
+
+        fn request_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn force_stop(&self) -> crate::BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(())))
+        }
+
+        fn wait(&self) -> crate::BoxFuture<'_, Result<crate::ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(crate::ProcessExit::new(
+                true,
+                Some(0),
+            ))))
+        }
+    }
+
+    impl crate::ProcessService for CloseStdinHangsProcess {
+        fn start(
+            &self,
+            _scope: crate::ScopeId,
+            _request: crate::ProcessRequest,
+        ) -> crate::BoxFuture<'static, Result<Box<dyn crate::ProcessHandle>, RuntimeFailure>>
+        {
+            Box::pin(std::future::ready(Ok(
+                Box::new(CloseStdinHangsProcess) as Box<dyn crate::ProcessHandle>
             )))
         }
     }

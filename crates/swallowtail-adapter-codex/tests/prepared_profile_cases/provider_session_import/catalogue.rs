@@ -219,7 +219,9 @@ fn catalogue_close_escalates_with_or_without_a_caller_deadline() {
         assert!(state.waited());
         assert_eq!(recording.count(RecordedHostCall::WorkingResourceRelease), 1);
     }
-    assert_eq!(*clock.waits.lock().unwrap(), [100, 50, 75]);
+    // The first 100 is the handshake's own bounded wait; the second is the
+    // request deadline, then the close escalation stages.
+    assert_eq!(*clock.waits.lock().unwrap(), [100, 100, 50, 75]);
 }
 
 #[derive(Default)]

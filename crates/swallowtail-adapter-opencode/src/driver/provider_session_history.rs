@@ -44,7 +44,8 @@ impl ProviderSessionHistoryDriver for OpenCodeHttpDriver {
                         request.cancellation(),
                         agreement.deadline(),
                         Arc::clone(&cancelled),
-                    ),
+                    )
+                    .for_session_history(),
                 )
                 .await?;
                 require_health_matches(&health, &version)?;
@@ -61,7 +62,8 @@ impl ProviderSessionHistoryDriver for OpenCodeHttpDriver {
                         request.cancellation(),
                         agreement.deadline(),
                         Arc::clone(&cancelled),
-                    ),
+                    )
+                    .for_session_history(),
                 )
                 .await?;
                 let observed = parse_session_lookup(&lookup)?;

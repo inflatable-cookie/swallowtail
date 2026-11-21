@@ -50,8 +50,15 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                     behavior,
                     scope,
                     Some(access.working_resource().clone()),
-                    experimental_api,
                     &services,
+                    // Session open, load and resume keep their existing unbounded
+                    // handshake; bounding it is tracked separately.
+                    InitBound {
+                        experimental_api,
+                        cancellation: None,
+                        deadline: None,
+                        timed_out: INITIALIZE_TIMED_OUT,
+                    },
                 )
                 .await;
             let (connection, task) = match connection {
@@ -132,8 +139,15 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                     behavior,
                     scope,
                     Some(access.working_resource().clone()),
-                    experimental_api,
                     &services,
+                    // Session open, load and resume keep their existing unbounded
+                    // handshake; bounding it is tracked separately.
+                    InitBound {
+                        experimental_api,
+                        cancellation: None,
+                        deadline: None,
+                        timed_out: INITIALIZE_TIMED_OUT,
+                    },
                 )
                 .await;
             let (connection, task) = match connection {
@@ -217,8 +231,15 @@ impl InteractiveSessionDriver for CodexAppServerDriver {
                     behavior,
                     scope,
                     Some(access.working_resource().clone()),
-                    experimental_api,
                     &services,
+                    // Session open, load and resume keep their existing unbounded
+                    // handshake; bounding it is tracked separately.
+                    InitBound {
+                        experimental_api,
+                        cancellation: None,
+                        deadline: None,
+                        timed_out: INITIALIZE_TIMED_OUT,
+                    },
                 )
                 .await;
             let (connection, task) = match connection {

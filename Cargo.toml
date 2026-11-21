@@ -51,7 +51,7 @@ license = "MIT"
 repository = "https://github.com/inflatable-cookie/swallowtail"
 readme = "README.md"
 publish = false
-rust-version = "1.95"
+rust-version = "1.97.1"
 
 [workspace.dependencies]
 swallowtail-acp-client = { path = "crates/swallowtail-acp-client", version = "0.6.0" }

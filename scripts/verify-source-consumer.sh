@@ -4,7 +4,7 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
-source release-baselines/rust-toolchains-0.2.0.env
+source release-baselines/rust-toolchains-0.7.0.env
 
 # Temporary-workspace proof: this driver enters once through the shared
 # helper's host-tool mode, one `oxide exec --` lease. The consumer workspace it

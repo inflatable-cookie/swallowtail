@@ -4,14 +4,14 @@ set -euo pipefail
 release_repo_root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$release_repo_root"
 
-source release-baselines/rust-toolchains-0.2.0.env
+source release-baselines/rust-toolchains-0.7.0.env
 
 release_installed_toolchains=$(rustup toolchain list)
 for release_toolchain in \
   "$SWALLOWTAIL_MSRV" \
   "$SWALLOWTAIL_CURRENT_STABLE"
 do
-  # Escape the dots so `1.95.0` cannot match `1x95y0`. The list is captured
+  # Escape the dots so `1.97.1` cannot match `1x97y1`. The list is captured
   # first, so grep -q closing early cannot race rustup under pipefail.
   release_pattern=${release_toolchain//./\\.}
   if ! grep -Eq "^${release_pattern}(-|\$)" <<< "$release_installed_toolchains"; then

@@ -415,8 +415,8 @@ fn sse_decoder_frames_names_payloads_and_keep_alives() {
 }
 
 #[test]
-fn sse_framer_drains_complete_frames_before_applying_the_event_limit() {
-    let mut framer = SseFramer::new().with_event_limit(16);
+fn sse_framer_applies_the_event_limit_to_each_event_in_a_chunk() {
+    let mut framer = SseFramer::new().with_event_limit(b"data: one\n\n".len());
     let frames = framer
         .push(b"data: one\n\ndata: two\n\n")
         .expect("each complete event fits the event bound");
@@ -427,6 +427,25 @@ fn sse_framer_drains_complete_frames_before_applying_the_event_limit() {
     let error = framer
         .push(b"data: four-oversized")
         .expect_err("an oversized retained event fails");
+    assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
+}
+
+#[test]
+fn sse_framer_rejects_oversized_complete_frames() {
+    let event_limit = b"data: 1234\n\n".len();
+    let mut framer = SseFramer::new().with_event_limit(event_limit);
+    let error = framer
+        .push(b"data: ok\n\ndata: 12345\n\n")
+        .expect_err("an oversized complete event fails even after a bounded event");
+    assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
+
+    let mut framer = SseFramer::new().with_event_limit(event_limit);
+    framer
+        .push(b"data: 1234\r\n")
+        .expect("a retained partial event fits the bound");
+    let error = framer
+        .push(b"\r\n")
+        .expect_err("the complete event exceeds the bound before CRLF normalization");
     assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
 }
 

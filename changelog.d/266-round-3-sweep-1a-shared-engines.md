@@ -5,9 +5,8 @@
   `TransportError::Transport`.
 - `Method::Put` and `Method::Patch` requests attach their body, so non-POST
   write verbs no longer silently send an empty payload.
-- `SseFramer::push` drains every complete frame before applying the per-event
-  bound, so one chunk carrying several bounded events no longer fails with
-  `LimitExceeded`.
+- `SseFramer::push` checks each complete frame and any partial frame against
+  the per-event byte limit. A chunk can carry several events that each fit.
 - `SseFramer` and `SseFrame` zeroize retained and decoded bytes with
   `zeroize::Zeroize` instead of a dead-store-eliminable `Vec::fill(0)`.
 - `swallowtail-adapter-openai` migrates its Responses SSE decoder onto the

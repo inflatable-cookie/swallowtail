@@ -85,7 +85,7 @@ impl SseFramer {
         Self::default()
     }
 
-    /// Bounds the undecoded event bytes retained at any time.
+    /// Bounds each event's raw bytes, including its delimiter.
     #[must_use]
     pub const fn with_event_limit(mut self, limit: usize) -> Self {
         self.event_limit = Some(limit);
@@ -120,11 +120,13 @@ impl SseFramer {
         self.pending.extend_from_slice(chunk);
         let mut frames = Vec::new();
         while let Some((end, separator)) = boundary(&self.pending) {
-            let frame: Vec<u8> = self.pending.drain(..end + separator).collect();
+            let frame_len = end + separator;
+            if self.event_limit.is_some_and(|limit| frame_len > limit) {
+                return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+            }
+            let frame: Vec<u8> = self.pending.drain(..frame_len).collect();
             frames.push(normalize_line_endings(frame));
         }
-        // Only the undecoded remainder is retained, so a chunk carrying several
-        // complete events is bounded by its own events rather than by their sum.
         if self
             .event_limit
             .is_some_and(|limit| self.pending.len() > limit)

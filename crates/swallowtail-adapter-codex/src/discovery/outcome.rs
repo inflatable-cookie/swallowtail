@@ -1,6 +1,6 @@
 use crate::safe_excerpt::sanitize_stderr;
 use swallowtail_core::{DiscoveryOutcome, DiscoveryStatus, SafeDiagnostic};
-use swallowtail_runtime::RuntimeFailure;
+use swallowtail_runtime::{EXECUTABLE_NOT_FOUND_CODE, RuntimeFailure};
 
 pub(super) fn outcome(status: DiscoveryStatus) -> DiscoveryOutcome {
     DiscoveryOutcome::new(
@@ -37,7 +37,7 @@ pub(super) fn missing_executable() -> DiscoveryOutcome {
 }
 
 pub(super) fn process_start_failed(error: &RuntimeFailure) -> DiscoveryOutcome {
-    if error.diagnostic().code() == "swallowtail.local_process.executable_not_found" {
+    if error.diagnostic().code() == EXECUTABLE_NOT_FOUND_CODE {
         missing_executable()
     } else {
         spawn_failed()

@@ -3886,6 +3886,7 @@ pub fn swallowtail_runtime::ZeroIdiomMaximum::fmt(&self, &mut core::fmt::Formatt
 pub const swallowtail_runtime::ADAPTER_UNQUALIFIED_CODE: &str
 pub const swallowtail_runtime::DEBUG_DETAIL_TRUNCATED_SUFFIX: &str
 pub const swallowtail_runtime::DEFAULT_MAX_FOLD_BYTES: usize
+pub const swallowtail_runtime::EXECUTABLE_NOT_FOUND_CODE: &str
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_INSTANCES: usize
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_MODELS_PER_INSTANCE: usize
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_ROUTES_PER_INSTANCE: usize

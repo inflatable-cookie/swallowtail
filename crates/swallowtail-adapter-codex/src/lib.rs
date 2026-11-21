@@ -44,6 +44,7 @@ mod session_input;
 mod session_management;
 mod session_open;
 mod session_replay;
+mod subagent_description;
 mod thread_catalogue;
 mod turn_state;
 mod user_input;

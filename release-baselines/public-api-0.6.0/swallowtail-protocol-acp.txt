@@ -291,6 +291,7 @@ pub struct swallowtail_protocol_acp::RpcError
 impl swallowtail_protocol_acp::RpcError
 pub const fn swallowtail_protocol_acp::RpcError::code(&self) -> i64
 pub fn swallowtail_protocol_acp::RpcError::message(&self) -> &str
+pub fn swallowtail_protocol_acp::RpcError::new(i64, impl core::convert::Into<alloc::string::String>) -> Self
 impl core::fmt::Debug for swallowtail_protocol_acp::RpcError
 pub fn swallowtail_protocol_acp::RpcError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub const swallowtail_protocol_acp::ACP_PROTOCOL_VERSION: u64

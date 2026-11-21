@@ -81,10 +81,18 @@ impl CodexAppServerDriver {
             }
             Controlled::Cancelled | Controlled::Deadline => {
                 let _ = connection.cancel_session().await;
-                let _ = task.join().await;
-                return Ok(outcome(
-                    agreement,
-                    ProviderSessionManagementEffect::failed_before_effect(action),
+                let cleanup = close_connection(
+                    &connection,
+                    task,
+                    close_budget(&services, agreement.deadline()),
+                )
+                .await;
+                return Ok(with_cleanup(
+                    outcome(
+                        agreement,
+                        ProviderSessionManagementEffect::failed_before_effect(action),
+                    ),
+                    cleanup,
                 ));
             }
         }
@@ -134,10 +142,18 @@ impl CodexAppServerDriver {
         let result = match response {
             Controlled::Cancelled | Controlled::Deadline => {
                 let _ = connection.cancel_session().await;
-                let _ = task.join().await;
-                return Ok(outcome(
-                    agreement,
-                    ProviderSessionManagementEffect::unconfirmed_after_effect(action),
+                let cleanup = close_connection(
+                    &connection,
+                    task,
+                    close_budget(&services, agreement.deadline()),
+                )
+                .await;
+                return Ok(with_cleanup(
+                    outcome(
+                        agreement,
+                        ProviderSessionManagementEffect::unconfirmed_after_effect(action),
+                    ),
+                    cleanup,
                 ));
             }
             Controlled::Completed(result) => result,

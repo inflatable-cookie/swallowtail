@@ -223,9 +223,9 @@ impl SseDecoder {
         }
         self.buffer.extend_from_slice(chunk);
         let mut events = Vec::new();
-        while let Some(end) = find_boundary(&self.buffer) {
+        while let Some((end, boundary)) = find_boundary(&self.buffer) {
             let frame: Vec<u8> = self.buffer.drain(..end).collect();
-            self.buffer.drain(..boundary_len(&self.buffer));
+            self.buffer.drain(..boundary);
             if let Some(data) = frame_data(&frame)? {
                 events.push(data);
             }
@@ -245,23 +245,31 @@ impl SseDecoder {
     }
 }
 
-/// Finds the earliest event boundary, whether it is LF or CRLF framed, so a
-/// mixed-framing buffer splits at the first real boundary.
-fn find_boundary(buffer: &[u8]) -> Option<usize> {
-    let lf = buffer.windows(2).position(|window| window == b"\n\n");
-    let crlf = buffer.windows(4).position(|window| window == b"\r\n\r\n");
-    match (lf, crlf) {
-        (Some(lf), Some(crlf)) => Some(lf.min(crlf)),
-        (lf, crlf) => lf.or(crlf),
+/// Finds the first blank line, which ends an event, in a buffer framed by LF,
+/// CRLF, or a mix of both. Returns the end of the event's data and the length
+/// of the blank line that closes it.
+///
+/// The scan walks line terminators in order, so the earliest blank line wins
+/// whatever its framing. A bare `\r` is line content, as in the frame parser.
+fn find_boundary(buffer: &[u8]) -> Option<(usize, usize)> {
+    let mut line_start = 0;
+    let mut index = 0;
+    while index < buffer.len() {
+        let terminator = match buffer[index] {
+            b'\n' => 1,
+            b'\r' if buffer.get(index + 1) == Some(&b'\n') => 2,
+            _ => {
+                index += 1;
+                continue;
+            }
+        };
+        if index == line_start {
+            return Some((line_start, terminator));
+        }
+        index += terminator;
+        line_start = index;
     }
-}
-
-fn boundary_len(buffer: &[u8]) -> usize {
-    if buffer.starts_with(b"\r\n\r\n") {
-        4
-    } else {
-        2
-    }
+    None
 }
 
 fn frame_data(frame: &[u8]) -> Result<Option<Vec<u8>>, RuntimeFailure> {
@@ -299,5 +307,36 @@ mod boundary_tests {
             .expect("both frames decode");
 
         assert_eq!(events, vec![b"first".to_vec(), b"second".to_vec()]);
+    }
+
+    #[test]
+    fn a_crlf_line_before_an_lf_blank_line_leaves_no_carriage_return_in_data() {
+        let mut decoder = SseDecoder::default();
+        let events = decoder
+            .push(b"data: mixed\r\n\ndata: next\r\n\r\n")
+            .expect("both frames decode");
+
+        assert_eq!(events, vec![b"mixed".to_vec(), b"next".to_vec()]);
+    }
+
+    #[test]
+    fn a_lf_line_before_a_crlf_blank_line_splits_on_the_blank_line() {
+        let mut decoder = SseDecoder::default();
+        let events = decoder
+            .push(b"data: lf\n\r\ndata: tail\n\n")
+            .expect("both frames decode");
+
+        assert_eq!(events, vec![b"lf".to_vec(), b"tail".to_vec()]);
+    }
+
+    #[test]
+    fn a_frame_split_between_crlf_bytes_waits_for_the_blank_line() {
+        let mut decoder = SseDecoder::default();
+        assert!(decoder.push(b"data: split\r").expect("partial frame").is_empty());
+        let events = decoder
+            .push(b"\n\r\n")
+            .expect("completed frame decodes");
+
+        assert_eq!(events, vec![b"split".to_vec()]);
     }
 }

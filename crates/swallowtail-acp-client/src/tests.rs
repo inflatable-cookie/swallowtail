@@ -416,3 +416,33 @@ fn active_turn_maps_auth_required_and_extended_stop_reasons_to_provider_failed()
         }
     }
 }
+
+#[test]
+fn mcp_placement_rejects_line_breaks_in_header_names_and_values() {
+    let diag = AcpMcpDiagnostics {
+        reserved_name: "swallowtail-test-acp",
+        name_collision: || test_failure("swallowtail.test.acp.collision", "collision"),
+        http_invalid: || test_failure("swallowtail.test.acp.invalid", "invalid"),
+    };
+    let well_formed = AcpRemoteMcpPlacement::new(
+        "swallowtail-test-acp",
+        "https://example.invalid/mcp",
+        vec![("authorization".to_owned(), "Bearer token".to_owned())],
+    );
+    assert!(production_mcp_servers(Some(&well_formed), &diag).is_ok());
+    for (name, value) in [
+        ("x-injected\r\nset-cookie", "value"),
+        ("x-injected", "value\r\nset-cookie: stolen"),
+        ("x-injected", "value\nset-cookie: stolen"),
+        ("x-injected\n", "value"),
+    ] {
+        let placement = AcpRemoteMcpPlacement::new(
+            "swallowtail-test-acp",
+            "https://example.invalid/mcp",
+            vec![(name.to_owned(), value.to_owned())],
+        );
+        let failure = production_mcp_servers(Some(&placement), &diag)
+            .expect_err("a header with a line break is rejected");
+        assert_eq!(failure.diagnostic().code(), "swallowtail.test.acp.invalid");
+    }
+}

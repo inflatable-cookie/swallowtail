@@ -168,10 +168,10 @@ impl AcpTransportWriter {
             }
             #[cfg(feature = "remote")]
             Self::Remote(sender) => {
-                let bytes = encode_error(id, code, message)
-                    .map_err(|_| (diagnostics.protocol_failure)())?;
-                let decoded = swallowtail_protocol_acp::decode_message(&bytes)
-                    .map_err(|_| (diagnostics.protocol_failure)())?;
+                let decoded = Message::Response {
+                    id,
+                    result: Err(swallowtail_protocol_acp::RpcError::new(code, message)),
+                };
                 sender.send(decoded).await.map_err(remote_error_to_runtime)
             }
         }

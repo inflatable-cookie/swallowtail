@@ -291,6 +291,12 @@ fn activity_transition_failure(failure: ActivityTransitionFailure) -> EventBuffe
             EventBufferFailureKind::ActivityAfterCompletion,
             "Activity emitted an observation after completion",
         ),
+        // Reuses the existing capacity kind rather than widening the public
+        // failure enum: the tracker's bound is a capacity limit.
+        ActivityTransitionFailure::TrackerFull => (
+            EventBufferFailureKind::SemanticOverflow,
+            "Too many activities are in flight to track another",
+        ),
     };
     EventBufferFailure::new(kind, message)
 }

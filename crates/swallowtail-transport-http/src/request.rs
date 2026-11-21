@@ -259,6 +259,17 @@ impl HttpRequest {
             return Err(TransportError::EndpointInvalid);
         }
         url.set_path(&format!("{base}/{}", route.trim_start_matches('/')));
+        // `Url::set_path` resolves dot segments, so a route such as `../other`
+        // could climb out of the endpoint base. The resolved path must stay
+        // under the base; `..` that lands back inside it is still accepted.
+        let under_base = url.path() == base
+            || url
+                .path()
+                .strip_prefix(base.as_str())
+                .is_some_and(|rest| rest.starts_with('/'));
+        if !under_base {
+            return Err(TransportError::EndpointInvalid);
+        }
         if let Some(query) = embedded_query {
             if query.is_empty() {
                 return Err(TransportError::EndpointInvalid);

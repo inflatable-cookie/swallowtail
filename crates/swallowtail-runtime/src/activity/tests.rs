@@ -23,3 +23,4 @@ include!("tests/task_list.rs");
 include!("tests/subagent.rs");
 include!("tests/streams.rs");
 include!("tests/failure.rs");
+include!("tests/lifecycle.rs");

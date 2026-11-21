@@ -109,11 +109,9 @@ impl AcpRemoteMcpPlacement {
         if !absolute_http_url(&self.url) {
             return Err((diagnostics.http_invalid)());
         }
-        if self
-            .headers
-            .iter()
-            .any(|(name, _)| !header_name_is_well_formed(name))
-        {
+        if self.headers.iter().any(|(name, value)| {
+            !header_name_is_well_formed(name) || value.bytes().any(is_line_break)
+        }) {
             return Err((diagnostics.http_invalid)());
         }
         Ok(json!({
@@ -203,6 +201,12 @@ pub fn redacted_mcp_servers_debug(value: &Value) -> Value {
 fn absolute_http_url(raw: &str) -> bool {
     Url::parse(raw)
         .is_ok_and(|parsed| matches!(parsed.scheme(), "http" | "https") && parsed.has_host())
+}
+
+/// A carriage return or line feed would split the outgoing HTTP header block,
+/// so header values reject both, as `SecretHeader` does in the HTTP transport.
+const fn is_line_break(byte: u8) -> bool {
+    matches!(byte, b'\r' | b'\n')
 }
 
 fn header_name_is_well_formed(name: &str) -> bool {

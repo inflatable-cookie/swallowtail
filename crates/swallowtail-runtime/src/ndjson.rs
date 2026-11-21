@@ -45,7 +45,7 @@ pub fn scan_lines<E>(
             let Some(end) = rest.iter().position(|byte| *byte == b'\n') else {
                 break;
             };
-            if pending.len() + end > maximum {
+            if pending.len().saturating_add(end) > maximum {
                 return Err(too_long());
             }
             pending.extend_from_slice(&rest[..end]);
@@ -54,7 +54,7 @@ pub fn scan_lines<E>(
             rest = &rest[end + 1..];
         }
     }
-    if pending.len() + rest.len() > maximum {
+    if pending.len().saturating_add(rest.len()) > maximum {
         return Err(too_long());
     }
     pending.extend_from_slice(rest);

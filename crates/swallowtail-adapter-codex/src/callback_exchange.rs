@@ -15,6 +15,7 @@ const CALLBACK_CAPACITY: usize = 64;
 
 struct PendingCallback {
     provider_request_id: Value,
+    provider_call_id: String,
     operation_id: CallbackOperationId,
     kind: PendingCallbackKind,
 }
@@ -27,6 +28,9 @@ enum PendingCallbackKind {
 struct CallbackState {
     requests: VecDeque<CallbackRequest>,
     pending: BTreeMap<CallbackId, PendingCallback>,
+    /// Call ids of outstanding callbacks only. An id is released when its
+    /// callback is answered or abandoned, so the set is bounded by the pending
+    /// callbacks (at most `CALLBACK_CAPACITY`) rather than the session length.
     provider_call_ids: BTreeSet<String>,
     abandoned_provider_requests: Vec<Value>,
     closed: bool,
@@ -73,7 +77,7 @@ impl CallbackHub {
                 "Codex app-server exceeded the bounded callback capacity",
             ));
         }
-        if !state.provider_call_ids.insert(provider_call_id) {
+        if !state.provider_call_ids.insert(provider_call_id.clone()) {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_provider_id_reused",
                 "Codex app-server reused a dynamic tool call id",
@@ -83,6 +87,7 @@ impl CallbackHub {
             request.callback_id().clone(),
             PendingCallback {
                 provider_request_id,
+                provider_call_id,
                 operation_id: request.operation_id().clone(),
                 kind: PendingCallbackKind::DynamicTool,
             },
@@ -109,7 +114,7 @@ impl CallbackHub {
                 "Codex app-server exceeded the bounded callback capacity",
             ));
         }
-        if !state.provider_call_ids.insert(provider_call_id) {
+        if !state.provider_call_ids.insert(provider_call_id.clone()) {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_provider_id_reused",
                 "Codex app-server reused a user-input item id",
@@ -119,6 +124,7 @@ impl CallbackHub {
             request.callback_id().clone(),
             PendingCallback {
                 provider_request_id,
+                provider_call_id,
                 operation_id: request.operation_id().clone(),
                 kind: PendingCallbackKind::UserInput(user_input),
             },
@@ -152,6 +158,7 @@ impl CallbackHub {
         }
         state.closed = true;
         state.requests.clear();
+        state.provider_call_ids.clear();
         let pending = std::mem::take(&mut state.pending);
         state
             .abandoned_provider_requests
@@ -239,10 +246,11 @@ fn claim_response(
     }
     let provider_request_id = pending.provider_request_id.clone();
     let (result, invalid_success) = provider_result(&pending.kind, response.result())?;
-    state
+    let answered = state
         .pending
         .remove(response.callback_id())
         .expect("validated callback remains pending");
+    state.provider_call_ids.remove(&answered.provider_call_id);
     Ok((provider_request_id, result, invalid_success))
 }
 

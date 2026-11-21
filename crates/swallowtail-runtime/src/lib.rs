@@ -209,7 +209,7 @@ pub use idioms::{
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_discovery::{
-    InstalledProbeCodes, MAX_VERSION_BYTES, MAX_VERSION_OUTPUT_BYTES,
+    EXECUTABLE_NOT_FOUND_CODE, InstalledProbeCodes, MAX_VERSION_BYTES, MAX_VERSION_OUTPUT_BYTES,
     parse_semantic_version_binding, preparation_failure, probe_installed_executable_version,
     probe_outcome_failure, probe_runtime_failure,
 };

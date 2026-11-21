@@ -505,3 +505,26 @@ fn body_decoder_trait_is_implemented_for_the_shared_decoder() {
     assert_eq!(frames.len(), 1);
     BodyDecoder::finish(decoder).expect("drained decoder finishes");
 }
+
+#[test]
+fn routes_cannot_escape_the_endpoint_base_path() {
+    let endpoint = "https://provider.example/base/v1";
+    for escaping in [
+        "../../other",
+        "../../../secret",
+        "/../../other",
+        "%2e%2e/%2e%2e/other",
+    ] {
+        assert_eq!(
+            HttpRequest::new(Method::Get, escaping)
+                .resolve(endpoint)
+                .expect_err("a route that climbs above the base is rejected"),
+            TransportError::EndpointInvalid,
+            "route {escaping}"
+        );
+    }
+    let inside = HttpRequest::new(Method::Get, "a/../models")
+        .resolve(endpoint)
+        .expect("a dot segment that stays under the base resolves");
+    assert_eq!(inside.as_str(), "https://provider.example/base/v1/models");
+}

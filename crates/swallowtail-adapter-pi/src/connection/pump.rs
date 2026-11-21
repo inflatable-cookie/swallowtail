@@ -77,13 +77,13 @@ impl PiConnection {
             let _ = self.process.force_stop().await;
         }
         let waited = self.process.wait().await;
-        let cleanup = if waited.is_ok() {
-            CleanupOutcome::Clean
-        } else {
-            CleanupOutcome::Failed(SafeDiagnostic::new(
+        // A non-zero exit is a failed cleanup, as the SDK sidecar reports it.
+        let cleanup = match waited {
+            Ok(exit) if exit.success() => CleanupOutcome::Clean,
+            Ok(_) | Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
                 "swallowtail.pi.rpc.process_cleanup_failed",
                 "Pi RPC process cleanup failed",
-            ))
+            )),
         };
         *self.cleanup.lock().expect("Pi cleanup lock poisoned") = Some(cleanup);
     }

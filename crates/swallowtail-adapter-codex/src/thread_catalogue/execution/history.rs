@@ -1,20 +1,30 @@
+use super::pipeline::{Controls, Operation, run_controlled_rpc};
 use super::resource::ScopedResource;
-use super::{
-    abort_runtime, control_before_dispatch, deadline_wait, finish_runtime, release_runtime,
-    request_controlled, require_catalogue_version, runtime_from_operation, settle,
-};
+use super::{control_before_dispatch, finish, require_catalogue_version, runtime_from_operation};
 use crate::CodexAppServerDriver;
-use crate::app_server::{INITIALIZE_TIMED_OUT, InitBound, InitControl, initialize_control, scope};
-use crate::control_wait::Controlled;
-use crate::process_close::close_budget;
+use crate::app_server::scope;
 use crate::session_replay::project_thread_history;
 use serde_json::json;
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_runtime::{
     HostServices, ProviderSessionHistoryPage, ProviderSessionHistoryPlan,
-    ProviderSessionHistoryRequest, ProviderSessionHistoryTotal, RuntimeFailure,
-    page_provider_session_history_window,
+    ProviderSessionHistoryRequest, ProviderSessionHistoryTotal,
+    ProviderSessionOperationFailureStage, RuntimeFailure, page_provider_session_history_window,
 };
+
+/// History reports runtime failures, so its dispatch stage is only a label:
+/// the stage is dropped when the failure crosses back to the runtime.
+const OPERATION: Operation = Operation::new(
+    (
+        "swallowtail.codex.thread_history.cancelled",
+        "Codex thread history was cancelled",
+    ),
+    (
+        "swallowtail.codex.thread_history.timed_out",
+        "Codex thread history timed out",
+    ),
+    ProviderSessionOperationFailureStage::CatalogueDispatch,
+);
 
 impl CodexAppServerDriver {
     pub(crate) async fn execute_thread_history(
@@ -27,6 +37,7 @@ impl CodexAppServerDriver {
         let behavior = self.validate_plan(plan.preflight())?;
         let agreement = plan.agreement();
         control_before_dispatch(
+            OPERATION,
             request.cancellation().as_ref(),
             agreement.deadline(),
             &services,
@@ -36,84 +47,32 @@ impl CodexAppServerDriver {
         let resource = ScopedResource::resolve_history(&plan, operation_scope.clone(), &services)
             .await
             .map_err(runtime_from_operation)?;
-        let (connection, task) = match self
-            .start_connection(
-                plan.preflight(),
-                behavior,
-                operation_scope,
-                Some(resource.reference().clone()),
-                &services,
-                InitBound {
-                    experimental_api: false,
-                    cancellation: Some(request.cancellation().as_ref()),
-                    deadline: agreement.deadline(),
-                    timed_out: INITIALIZE_TIMED_OUT,
-                },
-            )
-            .await
-        {
-            Ok(started) => started,
-            Err(error) => {
-                let error = match initialize_control(&error) {
-                    Some(InitControl::Cancelled) => RuntimeFailure::new(SafeDiagnostic::new(
-                        "swallowtail.codex.thread_history.cancelled",
-                        "Codex thread history was cancelled",
-                    )),
-                    Some(InitControl::TimedOut) => RuntimeFailure::new(SafeDiagnostic::new(
-                        "swallowtail.codex.thread_history.timed_out",
-                        "Codex thread history timed out",
-                    )),
-                    None => error,
-                };
-                return Err(release_runtime(resource, error).await);
-            }
-        };
-        if let Err(control) = control_before_dispatch(
-            request.cancellation().as_ref(),
-            agreement.deadline(),
+        let settled = run_controlled_rpc(
+            self,
+            plan.preflight(),
+            behavior,
+            operation_scope,
+            resource,
+            Controls {
+                operation: OPERATION,
+                cancellation: request.cancellation().as_ref(),
+                deadline: agreement.deadline(),
+            },
             &services,
-        ) {
-            return Err(abort_runtime(
-                &connection,
-                task,
-                resource,
-                runtime_from_operation(control),
-            )
-            .await);
-        }
-        let deadline_wait = match deadline_wait(agreement.deadline(), &services) {
-            Ok(deadline_wait) => deadline_wait,
-            Err(error) => {
-                return Err(abort_runtime(
-                    &connection,
-                    task,
-                    resource,
-                    runtime_from_operation(error),
-                )
-                .await);
-            }
-        };
-        let response = request_controlled(
-            &connection,
             "thread/read",
             json!({
                 "threadId": agreement.binding().provider_session_ref().as_provider_value(),
                 "includeTurns": true
             }),
-            request.cancellation().as_ref(),
-            deadline_wait,
-        )
-        .await;
-        let interrupted = matches!(&response, Controlled::Cancelled | Controlled::Deadline);
-        let projected = match response {
-            Controlled::Completed(Ok(response)) => (|| {
+            |response| {
                 let replay =
-                    project_thread_history(&response, agreement.binding().provider_session_ref())?;
+                    project_thread_history(response, agreement.binding().provider_session_ref())
+                        .map_err(|error| OPERATION.runtime(error))?;
                 let total = u32::try_from(replay.len()).map_err(|_| {
-                    RuntimeFailure::new(SafeDiagnostic::new(
+                    OPERATION.runtime(RuntimeFailure::new(SafeDiagnostic::new(
                         "swallowtail.codex.thread_history.total_invalid",
                         "Codex thread history exceeds portable cardinality",
-                    ))
+                    )))
                 })?;
                 page_provider_session_history_window(
                     &plan,
@@ -121,26 +80,13 @@ impl CodexAppServerDriver {
                     replay,
                     ProviderSessionHistoryTotal::Exact(total),
                 )
-            })(),
-            Controlled::Completed(Err(error)) => Err(error),
-            Controlled::Cancelled => Err(RuntimeFailure::new(SafeDiagnostic::new(
-                "swallowtail.codex.thread_history.cancelled",
-                "Codex thread history was cancelled",
-            ))),
-            Controlled::Deadline => Err(RuntimeFailure::new(SafeDiagnostic::new(
-                "swallowtail.codex.thread_history.timed_out",
-                "Codex thread history timed out",
-            ))),
-        };
-        let cleanup = settle(
-            &connection,
-            task,
-            resource,
-            interrupted,
-            close_budget(&services, agreement.deadline()),
+                .map_err(|error| OPERATION.runtime(error))
+            },
         )
-        .await;
-        let window = finish_runtime(projected, &cleanup)?;
-        ProviderSessionHistoryPage::new(&plan, &request, window, cleanup)
+        .await
+        .map_err(runtime_from_operation)?;
+        let window =
+            finish(settled.projected, settled.cleanup.clone()).map_err(runtime_from_operation)?;
+        ProviderSessionHistoryPage::new(&plan, &request, window, settled.cleanup)
     }
 }

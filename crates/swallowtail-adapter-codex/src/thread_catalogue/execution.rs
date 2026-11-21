@@ -4,6 +4,8 @@ mod catalogue;
 mod history;
 #[path = "execution/import.rs"]
 mod import;
+#[path = "execution/pipeline.rs"]
+mod pipeline;
 #[path = "execution/reconciliation.rs"]
 mod reconciliation;
 #[path = "execution/resource.rs"]
@@ -44,28 +46,21 @@ pub(super) fn require_catalogue_version(
     }
 }
 
-pub(super) fn control_before_dispatch(
+fn control_before_dispatch(
+    operation: pipeline::Operation,
     cancellation: &swallowtail_runtime::ImmediateCancellation,
     deadline: Option<Deadline>,
     services: &HostServices,
 ) -> Result<(), ProviderSessionOperationFailure> {
     if cancellation.is_requested() {
-        return Err(control_failure(
-            ProviderSessionOperationFailureStage::Cancelled,
-            "swallowtail.codex.thread_catalogue.cancelled",
-            "Codex provider-session operation was cancelled",
-        ));
+        return Err(operation.cancelled());
     }
     if deadline.is_some_and(|deadline| {
         services
             .time()
             .is_some_and(|time| time.now() >= deadline.instant())
     }) {
-        return Err(control_failure(
-            ProviderSessionOperationFailureStage::TimedOut,
-            "swallowtail.codex.thread_catalogue.timed_out",
-            "Codex provider-session operation timed out",
-        ));
+        return Err(operation.timed_out());
     }
     Ok(())
 }
@@ -171,42 +166,6 @@ pub(super) fn cleanup_or(
     finish::<()>(Err(otherwise.clone()), cleanup).unwrap_err()
 }
 
-/// Runtime-error twin of [`finish`]: a cleanup failure or degradation replaces
-/// the projected result, even when that result is itself an error.
-pub(super) fn finish_runtime<T>(
-    result: Result<T, RuntimeFailure>,
-    cleanup: &CleanupOutcome,
-) -> Result<T, RuntimeFailure> {
-    match cleanup {
-        CleanupOutcome::Clean | CleanupOutcome::NotApplicable => result,
-        CleanupOutcome::Degraded(diagnostic) | CleanupOutcome::Failed(diagnostic) => {
-            Err(RuntimeFailure::new(diagnostic.clone()))
-        }
-    }
-}
-
-pub(super) fn cleanup_or_runtime(
-    cleanup: CleanupOutcome,
-    otherwise: RuntimeFailure,
-) -> RuntimeFailure {
-    finish_runtime::<()>(Err(otherwise), &cleanup).unwrap_err()
-}
-
-/// Releases the lease after a failure before any connection exists.
-async fn release_runtime(resource: ScopedResource, error: RuntimeFailure) -> RuntimeFailure {
-    cleanup_or_runtime(resource.release().await, error)
-}
-
-/// Cancels and releases after a failure once a connection exists.
-async fn abort_runtime(
-    connection: &Arc<RpcConnection>,
-    task: AppServerTask,
-    resource: ScopedResource,
-    error: RuntimeFailure,
-) -> RuntimeFailure {
-    cleanup_or_runtime(cancel_and_release(connection, task, resource).await, error)
-}
-
 pub(super) fn from_runtime(
     stage: ProviderSessionOperationFailureStage,
     error: RuntimeFailure,
@@ -228,12 +187,17 @@ pub(super) fn control_failure(
 
 #[cfg(test)]
 mod tests {
-    use super::{cleanup_or_runtime, finish_runtime};
+    use super::{cleanup_or, finish};
     use swallowtail_core::SafeDiagnostic;
-    use swallowtail_runtime::{CleanupOutcome, RuntimeFailure};
+    use swallowtail_runtime::{
+        CleanupOutcome, ProviderSessionOperationFailure, ProviderSessionOperationFailureStage,
+    };
 
-    fn runtime_failure(code: &'static str) -> RuntimeFailure {
-        RuntimeFailure::new(SafeDiagnostic::new(code, "message"))
+    fn projection_failure(code: &'static str) -> ProviderSessionOperationFailure {
+        ProviderSessionOperationFailure::new(
+            ProviderSessionOperationFailureStage::CatalogueProjection,
+            SafeDiagnostic::new(code, "message"),
+        )
     }
 
     fn cleanup_failed() -> CleanupOutcome {
@@ -242,9 +206,11 @@ mod tests {
 
     #[test]
     fn failed_cleanup_replaces_a_projected_error() {
-        let error =
-            finish_runtime::<()>(Err(runtime_failure("projection.failed")), &cleanup_failed())
-                .unwrap_err();
+        let error = finish::<()>(
+            Err(projection_failure("projection.failed")),
+            cleanup_failed(),
+        )
+        .unwrap_err();
         assert_eq!(error.diagnostic().code(), "cleanup.failed");
     }
 
@@ -252,34 +218,34 @@ mod tests {
     fn degraded_cleanup_replaces_a_projected_error() {
         let cleanup = CleanupOutcome::Degraded(SafeDiagnostic::new("cleanup.degraded", "degraded"));
         let error =
-            finish_runtime::<()>(Err(runtime_failure("projection.failed")), &cleanup).unwrap_err();
+            finish::<()>(Err(projection_failure("projection.failed")), cleanup).unwrap_err();
         assert_eq!(error.diagnostic().code(), "cleanup.degraded");
     }
 
     #[test]
     fn degraded_cleanup_replaces_a_projected_success() {
         let cleanup = CleanupOutcome::Degraded(SafeDiagnostic::new("cleanup.degraded", "degraded"));
-        let error = finish_runtime(Ok(7_u8), &cleanup).unwrap_err();
+        let error = finish(Ok(7_u8), cleanup).unwrap_err();
         assert_eq!(error.diagnostic().code(), "cleanup.degraded");
     }
 
     #[test]
     fn clean_cleanup_keeps_the_projected_result() {
-        let error = finish_runtime::<()>(
-            Err(runtime_failure("projection.failed")),
-            &CleanupOutcome::Clean,
+        let error = finish::<()>(
+            Err(projection_failure("projection.failed")),
+            CleanupOutcome::Clean,
         )
         .unwrap_err();
         assert_eq!(error.diagnostic().code(), "projection.failed");
         assert_eq!(
-            finish_runtime(Ok(7_u8), &CleanupOutcome::NotApplicable).ok(),
+            finish(Ok(7_u8), CleanupOutcome::NotApplicable).ok(),
             Some(7)
         );
     }
 
     #[test]
     fn pre_dispatch_error_is_replaced_by_failed_cleanup() {
-        let error = cleanup_or_runtime(cleanup_failed(), runtime_failure("start.failed"));
+        let error = cleanup_or(cleanup_failed(), projection_failure("start.failed"));
         assert_eq!(error.diagnostic().code(), "cleanup.failed");
     }
 }

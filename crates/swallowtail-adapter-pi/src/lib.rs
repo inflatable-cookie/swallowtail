@@ -8,6 +8,7 @@
 #![deny(missing_docs)]
 
 mod activity;
+mod attachment_input;
 mod callback;
 mod catalogue;
 mod connection;

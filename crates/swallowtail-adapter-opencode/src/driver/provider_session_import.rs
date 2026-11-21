@@ -194,28 +194,16 @@ async fn controlled_request(
     if cancellation.is_requested() { return Err(cancelled()); }
     if deadline.is_some_and(|deadline| services.time().is_some_and(|time| time.now() >= deadline.instant())) { return Err(timed_out()); }
     let cancelled_flag = Arc::new(AtomicBool::new(false));
-    let mut work = Box::pin(transport.request(scope, endpoint, request, services, Arc::clone(&cancelled_flag)));
-    let mut cancellation_wait = cancellation.wait_requested();
-    let mut deadline_wait = deadline.map(|deadline| services.time().expect("validated time service").wait_until(deadline));
-    let mut control = None;
-    let result = std::future::poll_fn(|context| {
-        if let Poll::Ready(result) = work.as_mut().poll(context) { return Poll::Ready(result); }
-        if control.is_none() && cancellation_wait.as_mut().poll(context).is_ready() {
-            control = Some(ProviderSessionOperationFailureStage::Cancelled);
-            cancelled_flag.store(true, Ordering::SeqCst);
-            context.waker().wake_by_ref();
-        }
-        if control.is_none() && deadline_wait.as_mut().is_some_and(|wait| wait.as_mut().poll(context).is_ready()) {
-            control = Some(ProviderSessionOperationFailureStage::TimedOut);
-            cancelled_flag.store(true, Ordering::SeqCst);
-            context.waker().wake_by_ref();
-        }
-        Poll::Pending
-    }).await;
-    match control {
-        Some(ProviderSessionOperationFailureStage::Cancelled) => Err(cancelled()),
-        Some(ProviderSessionOperationFailureStage::TimedOut) => Err(timed_out()),
-        _ => result.map_err(|error| from_runtime(failure_stage, error)),
+    let work = transport.request(scope, endpoint, request, services, Arc::clone(&cancelled_flag));
+    let deadline = deadline.map(|deadline| services.time().expect("validated time service").wait_until(deadline));
+    let race = race_controls(work, Some(cancellation), deadline, &cancelled_flag, OnInterrupt::Drain).await;
+    match race.interrupt {
+        Some(Interrupt::Cancelled) => Err(cancelled()),
+        Some(Interrupt::Deadline) => Err(timed_out()),
+        None => race
+            .value
+            .expect("an undisturbed draining race completes its work")
+            .map_err(|error| from_runtime(failure_stage, error)),
     }
 }
 

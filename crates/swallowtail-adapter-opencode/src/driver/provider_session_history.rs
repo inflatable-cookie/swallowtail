@@ -109,20 +109,9 @@ impl ProviderSessionHistoryDriver for OpenCodeHttpDriver {
             }
             .await;
             let cleanup = access.release(&services).await;
-            let window = match result {
-                Ok(window)
-                    if matches!(cleanup, CleanupOutcome::Clean | CleanupOutcome::NotApplicable) =>
-                {
-                    window
-                }
-                Ok(_) => {
-                    return Err(failure(
-                        "swallowtail.opencode.session_history.cleanup_incomplete",
-                        "OpenCode session history cleanup did not complete",
-                    ));
-                }
-                Err(error) => return Err(error),
-            };
+            // The runtime page owns the cleanup check, so a non-clean cleanup
+            // reports the provider-neutral cleanup-incomplete code only once.
+            let window = result?;
             ProviderSessionHistoryPage::new(&plan, &request, window, cleanup)
         })
     }

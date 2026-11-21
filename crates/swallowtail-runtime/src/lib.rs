@@ -96,8 +96,9 @@ pub use async_types::{
     BoxRealtimeMediaEventStream,
 };
 pub use attachment::{
-    AttachmentDescriptor, AttachmentDigest, AttachmentReadFailure, AttachmentRepresentation,
-    AttachmentRole, LeaseCleanupAuthority, read_bounded_attachment,
+    AttachmentDescriptor, AttachmentDigest, AttachmentMaterializationFailure,
+    AttachmentReadFailure, AttachmentRepresentation, AttachmentRole, LeaseCleanupAuthority,
+    SharedAttachmentMaterialization, materialize_bounded_attachment, read_bounded_attachment,
 };
 pub use callback::{
     CallbackAbandonment, CallbackExchange, CallbackFailureKind, CallbackOperationId,

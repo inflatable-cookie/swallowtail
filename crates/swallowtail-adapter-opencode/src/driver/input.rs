@@ -1,8 +1,7 @@
 use base64::Engine;
-use std::sync::{Arc, Mutex};
 use swallowtail_runtime::{
-    AttachmentDescriptor, AttachmentFileLease, AttachmentService, BlockingJob, CleanupOutcome,
-    HostServices, RuntimeFailure, ScopeId,
+    AttachmentDescriptor, AttachmentMaterializationFailure, AttachmentReadFailure, HostServices,
+    RuntimeFailure, ScopeId, SharedAttachmentMaterialization, materialize_bounded_attachment,
 };
 
 const MAXIMUM_IMAGE_BYTES: u64 = 1024 * 1024;
@@ -13,39 +12,8 @@ pub(crate) struct FilePart {
     pub(crate) data_url: String,
 }
 
-#[derive(Clone, Default)]
-pub(super) struct SharedAttachment(Arc<Mutex<Option<Materialization>>>);
-
-struct Materialization {
-    service: Arc<dyn AttachmentService>,
-    lease: AttachmentFileLease,
-}
-
-impl SharedAttachment {
-    fn new(service: Arc<dyn AttachmentService>, lease: AttachmentFileLease) -> Self {
-        Self(Arc::new(Mutex::new(Some(Materialization {
-            service,
-            lease,
-        }))))
-    }
-
-    pub(super) async fn release(&self) -> CleanupOutcome {
-        let materialization = self
-            .0
-            .lock()
-            .unwrap_or_else(|error| error.into_inner())
-            .take();
-        match materialization {
-            Some(materialization) => {
-                materialization
-                    .service
-                    .release_file(materialization.lease)
-                    .await
-            }
-            None => CleanupOutcome::NotApplicable,
-        }
-    }
-}
+/// The materialized attachment's lease, released once after the turn.
+pub(super) type SharedAttachment = SharedAttachmentMaterialization;
 
 pub(super) async fn prepare(
     descriptor: Option<AttachmentDescriptor>,
@@ -56,37 +24,10 @@ pub(super) async fn prepare(
         return Ok((None, SharedAttachment::default()));
     };
     let media_type = descriptor.media_type().to_owned();
-    let service = services
-        .attachment()
-        .cloned()
-        .ok_or_else(|| failure("attachment service was unavailable"))?;
-    // Resolve the blocking-work service before materializing anything: a host
-    // without it must fail before it holds a file lease it cannot read.
-    let blocking_work = services
-        .blocking_work()
-        .cloned()
-        .ok_or_else(|| failure("blocking-work service was unavailable"))?;
-    let lease = service.materialize_file(scope.clone(), descriptor).await?;
-    let path = lease.file().as_driver_value().to_owned();
-    let output = Arc::new(Mutex::new(None));
-    let job_output = Arc::clone(&output);
-    let job = Box::new(move || {
-        let bytes = read_bounded_image(&path)?;
-        *job_output.lock().unwrap_or_else(|error| error.into_inner()) = Some(bytes);
-        Ok(())
-    }) as BlockingJob;
-    if let Err(error) = blocking_work.run(scope, job).await {
-        let _ = service.release_file(lease).await;
-        return Err(error);
-    }
-    let bytes = output
-        .lock()
-        .unwrap_or_else(|error| error.into_inner())
-        .take();
-    let Some(bytes) = bytes else {
-        let _ = service.release_file(lease).await;
-        return Err(failure("materialized image read produced no bytes"));
-    };
+    let (bytes, materialization) =
+        materialize_bounded_attachment(services, scope, descriptor, MAXIMUM_IMAGE_BYTES)
+            .await
+            .map_err(refusal)?;
     let encoded = base64::engine::general_purpose::STANDARD.encode(bytes);
     Ok((
         Some(FilePart {
@@ -94,22 +35,29 @@ pub(super) async fn prepare(
             filename: "approved-image.png",
             data_url: format!("data:{media_type};base64,{encoded}"),
         }),
-        SharedAttachment::new(service, lease),
+        materialization,
     ))
 }
 
-/// Reads one materialized image without ever holding more than the bound.
-fn read_bounded_image(path: &str) -> Result<Vec<u8>, RuntimeFailure> {
-    swallowtail_runtime::read_bounded_attachment(path, MAXIMUM_IMAGE_BYTES).map_err(|reason| {
-        match reason {
-            swallowtail_runtime::AttachmentReadFailure::Unreadable => {
-                failure("materialized image was unreadable")
-            }
-            swallowtail_runtime::AttachmentReadFailure::TooLarge => {
-                failure("materialized image exceeded the one MiB bound")
-            }
+fn refusal(reason: AttachmentMaterializationFailure) -> RuntimeFailure {
+    match reason {
+        AttachmentMaterializationFailure::Host(error) => error,
+        AttachmentMaterializationFailure::AttachmentServiceUnavailable => {
+            failure("attachment service was unavailable")
         }
-    })
+        AttachmentMaterializationFailure::BlockingWorkUnavailable => {
+            failure("blocking-work service was unavailable")
+        }
+        AttachmentMaterializationFailure::Read(AttachmentReadFailure::Unreadable) => {
+            failure("materialized image was unreadable")
+        }
+        AttachmentMaterializationFailure::Read(AttachmentReadFailure::TooLarge) => {
+            failure("materialized image exceeded the one MiB bound")
+        }
+        AttachmentMaterializationFailure::NoBytes => {
+            failure("materialized image read produced no bytes")
+        }
+    }
 }
 
 fn failure(reason: &'static str) -> RuntimeFailure {
@@ -121,7 +69,7 @@ fn failure(reason: &'static str) -> RuntimeFailure {
 
 #[cfg(test)]
 mod tests {
-    use super::{prepare, read_bounded_image};
+    use super::prepare;
     use futures_executor::block_on;
     use std::io::Write;
     use std::path::PathBuf;
@@ -333,18 +281,14 @@ mod tests {
     #[test]
     fn a_read_of_an_unbounded_stream_stops_at_the_size_bound() {
         // `/dev/zero` never ends, so an unbounded read cannot return at all.
-        // A bounded read must reject after the extra byte instead of draining
-        // an arbitrary stream into memory.
-        let (sender, receiver) = std::sync::mpsc::channel();
-        std::thread::spawn(move || {
-            let outcome = read_bounded_image("/dev/zero")
-                .map(|bytes| bytes.len())
-                .map_err(|error| error.diagnostic().code().to_owned());
-            let _ = sender.send(outcome);
-        });
-        let outcome = receiver
-            .recv_timeout(std::time::Duration::from_secs(10))
-            .expect("a bounded image read returns without draining the stream");
-        assert_eq!(outcome, Err(FAILURE_CODE.to_owned()));
+        // The shared bounded read must refuse it instead of draining it.
+        let state = Arc::new(AttachmentState::default());
+        let services = services(&state, "/dev/zero".to_owned())
+            .with_blocking_work(Arc::new(InlineBlockingWork));
+
+        let error = prepare_error(&services);
+
+        assert_eq!(error.diagnostic().code(), FAILURE_CODE);
+        assert_eq!(state.releases.load(Ordering::SeqCst), 1);
     }
 }

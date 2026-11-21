@@ -317,8 +317,53 @@ fn wake(state: &mut CallbackState) {
 
 #[cfg(test)]
 mod tests {
-    use super::{PendingCallbackKind, provider_result};
-    use swallowtail_runtime::{CallbackFailureKind, CallbackPayload, CallbackResult};
+    use super::{CallbackHub, PendingCallbackKind, provider_result};
+    use serde_json::json;
+    use std::sync::Weak;
+    use swallowtail_runtime::{
+        CallbackFailureKind, CallbackId, CallbackPayload, CallbackRequest, CallbackResponse,
+        CallbackResult, RuntimeTurnId,
+    };
+
+    fn tool_request(callback: &str) -> CallbackRequest {
+        CallbackRequest::tool_call(
+            CallbackId::new(callback).expect("callback id is valid"),
+            RuntimeTurnId::new("turn-callback").expect("turn id is valid"),
+            1,
+            None,
+            "lookup",
+            CallbackPayload::new(b"{}".to_vec(), 64).expect("payload is bounded"),
+        )
+        .expect("tool call request is valid")
+    }
+
+    #[test]
+    fn an_answered_callback_releases_its_provider_call_id_for_reuse() {
+        // The connection is absent, so the answer cannot reach the provider.
+        // The claim still runs first, which is the point of this test.
+        let (hub, exchange) = CallbackHub::new(Weak::new());
+        hub.enqueue_tool(tool_request("callback-1"), json!(1), "call-1".to_owned())
+            .expect("the first call is admitted");
+        let duplicate = hub
+            .enqueue_tool(tool_request("callback-2"), json!(2), "call-1".to_owned())
+            .expect_err("an outstanding call id is refused");
+        assert_eq!(
+            duplicate.diagnostic().code(),
+            "swallowtail.codex.app_server.callback_provider_id_reused"
+        );
+
+        let response = CallbackResponse::new(
+            CallbackId::new("callback-1").expect("callback id is valid"),
+            RuntimeTurnId::new("turn-callback").expect("turn id is valid"),
+            CallbackResult::Success(CallbackPayload::new(b"ok".to_vec(), 64).expect("bounded")),
+        );
+        let responder = exchange.responder();
+        let answered = futures_executor::block_on(responder.respond(response));
+        assert!(answered.is_err(), "no connection can carry the answer");
+
+        hub.enqueue_tool(tool_request("callback-3"), json!(3), "call-1".to_owned())
+            .expect("an answered call id is released for a new callback");
+    }
 
     #[test]
     fn consumer_failure_becomes_a_provider_tool_failure() {

@@ -34,23 +34,20 @@ where
             "OpenCode deadline requires a time service",
         )
     })?;
-    let mut work = Box::pin(work);
-    let mut wait = time.wait_until(deadline);
-    poll_fn(|context| {
-        // A completed request always wins over a deadline observed on the same
-        // poll, so a fast response is never reported as a timeout.
-        if let Poll::Ready(result) = work.as_mut().poll(context) {
-            return Poll::Ready(result);
-        }
-        if wait.as_mut().poll(context).is_ready() {
-            // Abandon the in-flight request instead of re-polling it without a
-            // wake source. The host's cancelled flag aborts the blocking work.
-            cancelled.store(true, Ordering::SeqCst);
-            return Poll::Ready(Err(failure(timeout_code, timeout_message)));
-        }
-        Poll::Pending
-    })
-    .await
+    // Abandon the in-flight request at the deadline. The abort flag stops the
+    // blocking work, and completed work still wins a same-poll deadline.
+    let race = race_controls(
+        work,
+        None,
+        Some(time.wait_until(deadline)),
+        &cancelled,
+        OnInterrupt::Abandon,
+    )
+    .await;
+    match race.value {
+        Some(result) => result,
+        None => Err(failure(timeout_code, timeout_message)),
+    }
 }
 
 async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {

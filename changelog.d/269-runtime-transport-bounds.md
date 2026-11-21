@@ -24,10 +24,30 @@
 - OpenCode SSE framing finds the first blank line whether the framing is LF,
   CRLF, or mixed, so a CRLF line before an LF blank line no longer leaves a
   carriage return in event data.
+- OpenCode attachment input and Pi attachment input share one runtime
+  materialization path (`materialize_bounded_attachment`), so the lease,
+  bounded read, and release-on-refusal rules exist once. Each driver still
+  reports its own diagnostic namespace.
+- OpenCode's cancellation and deadline waits share one race helper. A
+  deadline-only wait abandons the work, and a drained wait keeps the result
+  while reporting the interrupt.
+- OpenCode session history returns the runtime's provider-neutral
+  `swallowtail.provider_session_history.cleanup_incomplete` code, instead of an
+  adapter-namespaced copy of it.
+- Pi's SDK-sidecar and RPC drivers both fail a non-zero process exit at
+  cleanup. The RPC driver previously reported it clean.
+- Pi close reports a failed native abort as a cleanup failure, instead of
+  discarding it.
+- Codex thread catalogue, history, import, and reconciliation share one
+  controlled-RPC lifecycle. Each keeps its own diagnostic codes; a pre-dispatch
+  cancellation or timeout in import, history, or reconciliation now reports
+  that operation's codes rather than the catalogue's.
 
 ### Compatibility
 
-- Additive public API: `swallowtail_runtime::EXECUTABLE_NOT_FOUND_CODE` and
+- Additive public API: `swallowtail_runtime::EXECUTABLE_NOT_FOUND_CODE`,
+  `swallowtail_runtime::{AttachmentMaterializationFailure,
+  SharedAttachmentMaterialization, materialize_bounded_attachment}`, and
   `swallowtail_protocol_acp::RpcError::new`. No public item is removed or
   changed.
 - An event buffer whose activity tracker is full of in-flight activities now

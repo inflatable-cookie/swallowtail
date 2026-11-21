@@ -56,6 +56,40 @@ mod tests {
         }
     }
 
+    /// A process that ends its output cleanly and reports a chosen exit.
+    struct ExitingProcess {
+        success: bool,
+    }
+
+    impl ProcessHandle for ExitingProcess {
+        fn write_stdin(&self, chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            FixtureProcess.write_stdin(chunk)
+        }
+
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            FixtureProcess.close_stdin()
+        }
+
+        fn read_output(
+            &self,
+        ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            FixtureProcess.read_output()
+        }
+
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            FixtureProcess.request_stop()
+        }
+
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            FixtureProcess.force_stop()
+        }
+
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            let success = self.success;
+            Box::pin(async move { Ok(ProcessExit::new(success, Some(if success { 0 } else { 1 }))) })
+        }
+    }
+
     struct FixtureTasks;
 
     impl ScopedTaskService for FixtureTasks {
@@ -318,5 +352,25 @@ mod tests {
             connection.cleanup_outcome(),
             CleanupOutcome::Clean
         ));
+    }
+
+    #[test]
+    fn a_non_zero_exit_fails_the_rpc_cleanup_like_the_sdk_sidecar() {
+        for (success, clean) in [(true, true), (false, false)] {
+            let connection = PiConnection::new(
+                Arc::new(ExitingProcess { success }),
+                Arc::new(FixtureTasks),
+                Arc::new(FixtureClock),
+                HostServices::new(ExecutionHostId::new("pi.unit.fixture").expect("host id is valid")),
+            );
+
+            block_on(Arc::clone(&connection).pump());
+
+            assert_eq!(
+                matches!(connection.cleanup_outcome(), CleanupOutcome::Clean),
+                clean,
+                "exit success {success} must map to clean={clean}"
+            );
+        }
     }
 }

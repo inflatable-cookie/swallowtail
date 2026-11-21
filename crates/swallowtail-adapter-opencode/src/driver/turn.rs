@@ -49,10 +49,7 @@ impl TurnHandle for OpenCodeTurnHandle {
                     .as_ref()
                     .is_some_and(|detachment| detachment.is_requested())
             {
-                match self.cancellation.request().await {
-                    Ok(_) => CleanupOutcome::NotApplicable,
-                    Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
-                }
+                cancellation_cleanup(self.cancellation.request().await)
             } else {
                 CleanupOutcome::NotApplicable
             };

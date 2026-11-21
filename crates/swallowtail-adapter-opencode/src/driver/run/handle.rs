@@ -69,10 +69,7 @@ impl RunHandle for OpenCodeRunHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let cancellation = match self.cancellation.request().await {
-                Ok(_) => CleanupOutcome::NotApplicable,
-                Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
-            };
+            let cancellation = cancellation_cleanup(self.cancellation.request().await);
             let join = self.task.join().await.map_or_else(
                 |_| {
                     CleanupOutcome::Failed(SafeDiagnostic::new(

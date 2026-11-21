@@ -84,3 +84,25 @@ fn session_history_control_failures_use_the_history_namespace() {
         "swallowtail.opencode.session_reconciliation.cancelled"
     );
 }
+
+#[test]
+fn a_refused_cancellation_at_close_is_reported_not_discarded() {
+    let refused = cancellation_cleanup(Err(RuntimeFailure::new(
+        swallowtail_core::SafeDiagnostic::new("fixture.abort_refused", "abort refused"),
+    )));
+    assert_eq!(
+        refused.diagnostic().map(swallowtail_core::SafeDiagnostic::code),
+        Some("fixture.abort_refused")
+    );
+    assert_eq!(
+        cancellation_cleanup(Ok(swallowtail_runtime::CancellationAcknowledgement::Requested)),
+        CleanupOutcome::NotApplicable
+    );
+    assert_eq!(
+        CleanupOutcome::merge(refused, CleanupOutcome::Clean)
+            .diagnostic()
+            .map(swallowtail_core::SafeDiagnostic::code),
+        Some("fixture.abort_refused"),
+        "a refused cancellation is not hidden by a clean join"
+    );
+}

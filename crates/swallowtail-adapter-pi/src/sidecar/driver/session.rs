@@ -222,23 +222,13 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 // connection, so a harness that stops answering it cannot keep
                 // stdin open or the stop request unsent.
                 self.connection.close_session(id).await;
-                let mut active_cleanup = CleanupOutcome::NotApplicable;
-                if let Some(mut active) = active {
-                    if let Some(task) = active.deadline_task.take() {
-                        active_cleanup = CleanupOutcome::merge(
-                            active_cleanup,
-                            match task.join().await {
-                                Ok(()) => CleanupOutcome::Clean,
-                                Err(_) => cleanup_failure(
-                                    "deadline_join_failed",
-                                    "Pi SDK sidecar deadline task did not join cleanly",
-                                ),
-                            },
-                        );
+                let active_cleanup = match active {
+                    Some(active) => {
+                        settle_deadline_and_attachment(active.deadline_task, active.attachment)
+                            .await
                     }
-                    active_cleanup =
-                        CleanupOutcome::merge(active_cleanup, active.attachment.release().await);
-                }
+                    None => CleanupOutcome::NotApplicable,
+                };
                 let process = match self.pump_task.take() {
                     Some(task) => match task.join().await {
                         Ok(()) => self.connection.cleanup_outcome(),
@@ -309,6 +299,29 @@ fn spawn_deadline(
             }),
         )
 }
+
+/// Joins the active turn's deadline task and releases its attachment when a
+/// sidecar session closes. Each failure merges into the returned outcome.
+async fn settle_deadline_and_attachment(
+    deadline_task: Option<Box<dyn JoinedTask>>,
+    attachment: SharedAttachmentMaterialization,
+) -> CleanupOutcome {
+    let deadline = match deadline_task {
+        Some(task) => match task.join().await {
+            Ok(()) => CleanupOutcome::Clean,
+            Err(_) => cleanup_failure(
+                "deadline_join_failed",
+                "Pi SDK sidecar deadline task did not join cleanly",
+            ),
+        },
+        None => CleanupOutcome::NotApplicable,
+    };
+    CleanupOutcome::merge(deadline, attachment.release().await)
+}
+
+#[cfg(test)]
+#[path = "session/tests.rs"]
+mod tests;
 
 async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
     let finished = {

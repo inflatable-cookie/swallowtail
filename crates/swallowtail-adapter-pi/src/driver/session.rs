@@ -218,29 +218,7 @@ impl InteractiveSessionHandle for PiSessionHandle {
                     .lock()
                     .expect("Pi active-task lock poisoned")
                     .take();
-                let mut active_cleanup = CleanupOutcome::NotApplicable;
-                if let Some(mut active) = active {
-                    if !active.turn.is_finished() {
-                        active.turn.mark_cancelled();
-                    }
-                    self.connection.begin_close().await;
-                    if let Some(task) = active.deadline_task.take() {
-                        active_cleanup = CleanupOutcome::merge(
-                            active_cleanup,
-                            match task.join().await {
-                                Ok(()) => CleanupOutcome::Clean,
-                                Err(_) => cleanup_failure(
-                                    "deadline_join_failed",
-                                    "Pi session deadline task did not join cleanly",
-                                ),
-                            },
-                        );
-                    }
-                    active_cleanup =
-                        CleanupOutcome::merge(active_cleanup, active.attachment.release().await);
-                } else {
-                    self.connection.begin_close().await;
-                }
+                let active_cleanup = settle_active_task(active, &self.connection).await;
                 let process = match self.pump_task.take() {
                     Some(task) => match task.join().await {
                         Ok(()) => self.connection.cleanup_outcome(),
@@ -268,6 +246,38 @@ impl InteractiveSessionHandle for PiSessionHandle {
         )
     }
 }
+
+/// Settles the active turn when a session closes: cancels it, joins its
+/// deadline task, and releases its attachment. Each failure merges into the
+/// returned outcome instead of being discarded.
+async fn settle_active_task(
+    active: Option<ActiveTask>,
+    connection: &PiConnection,
+) -> CleanupOutcome {
+    let Some(mut active) = active else {
+        connection.begin_close().await;
+        return CleanupOutcome::NotApplicable;
+    };
+    if !active.turn.is_finished() {
+        active.turn.mark_cancelled();
+    }
+    connection.begin_close().await;
+    let deadline = match active.deadline_task.take() {
+        Some(task) => match task.join().await {
+            Ok(()) => CleanupOutcome::Clean,
+            Err(_) => cleanup_failure(
+                "deadline_join_failed",
+                "Pi session deadline task did not join cleanly",
+            ),
+        },
+        None => CleanupOutcome::NotApplicable,
+    };
+    CleanupOutcome::merge(deadline, active.attachment.release().await)
+}
+
+#[cfg(test)]
+#[path = "session/tests.rs"]
+mod tests;
 
 fn spawn_deadline(
     services: &HostServices,

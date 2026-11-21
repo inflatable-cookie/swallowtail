@@ -3,6 +3,13 @@
 - `swallowtail-runtime` delegated CLI sign-in keeps its pending process wait
   across polls instead of re-polling once with a no-op waker and dropping the
   future.
+- Breaking (pre-1.0): `swallowtail-runtime` `complete_sign_in` and
+  `cancel_sign_in` return `(SignInFailure, SignInSession)` on failure, through
+  the `SignInFinishFailure` alias. When host cleanup returns `Poll::Pending` the
+  session comes back with its in-flight loopback release and process stop, so
+  `complete_sign_in_async` or `cancel_sign_in_async` finishes them instead of
+  the cleanup being abandoned. Map the error with
+  `.map_err(|(failure, _)| failure)` to keep the old shape.
 - `swallowtail-runtime` admission gate deregisters a cancelled waiter's waker
   when its future is dropped, and wakes one waiter on release instead of every
   queued waiter. A waiter dropped after being woken passes the wake-up on.
@@ -28,7 +35,8 @@
   when the turn task spawn is refused, instead of leaving the worker detached.
 - `swallowtail-adapter-opencode` and `swallowtail-adapter-pi` merge task,
   attachment, and cancellation failures into the `CleanupOutcome` returned by
-  `close()` instead of discarding them.
+  `close()` instead of discarding them. Pi session and sidecar close report a
+  deadline task that fails to join.
 - `swallowtail-adapter-opencode` session-history cancellation and timeout report
   `swallowtail.opencode.session_history.{cancelled,timed_out}` instead of the
   `session_reconciliation.*` codes.

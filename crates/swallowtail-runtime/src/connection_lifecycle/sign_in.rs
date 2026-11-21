@@ -655,30 +655,46 @@ pub fn submit_sign_in_credential_field(
     Ok(session.status)
 }
 
+/// Failure from a synchronous sign-in finish or cancel, returned with the
+/// session so host cleanup that returned `Poll::Pending` is not abandoned.
+///
+/// Finish the retained cleanup with [`complete_sign_in_async`] or
+/// [`cancel_sign_in_async`], or drop the session once its host ports are gone.
+pub type SignInFinishFailure = (SignInFailure, SignInSession);
+
 /// Completes a ready sign-in loop and materializes opaque credential references.
 ///
 /// When `store` is present, references are written onto the admitted instance.
 /// Contract 014 still owns acquire, audience binding, redaction, and release.
 /// Releases any held host leases and stops/reaps any child process on both
-/// success and error paths; if cleanup returns `Poll::Pending`, fails closed
-/// with [`SignInFailureKind::HostPort`] without mutating the store. Use
+/// success and error paths. If cleanup returns `Poll::Pending`, fails closed
+/// with [`SignInFailureKind::HostPort`] without mutating the store, and returns
+/// the session with its in-flight cleanup retained. Use
 /// [`complete_sign_in_async`] when host cleanup ports are asynchronous.
+#[allow(clippy::result_large_err)] // The session must travel with the failure so pending cleanup is not abandoned.
 pub fn complete_sign_in(
     mut session: SignInSession,
     services: &HostServices,
     store: Option<&dyn ConnectionLifecycleStore>,
-) -> Result<SignInOutcome, SignInFailure> {
+) -> Result<SignInOutcome, SignInFinishFailure> {
     let refs = validate_complete(&session, services);
-    cleanup_session_now(&mut session, services)?;
-    let refs = refs?;
-    if let Some(store) = store {
-        persist_refs(
+    if let Err(failure) = cleanup_session_now(&mut session, services) {
+        return Err((failure, session));
+    }
+    let refs = match refs {
+        Ok(refs) => refs,
+        Err(failure) => return Err((failure, session)),
+    };
+    if let Some(store) = store
+        && let Err(failure) = persist_refs(
             store,
             &session.instance_id,
             &session.family,
             &session.route_id,
             &refs,
-        )?;
+        )
+    {
+        return Err((failure, session));
     }
     session.status = SignInStatus::Completed;
     Ok(build_outcome(session, refs))
@@ -763,13 +779,19 @@ fn build_outcome(
 /// Cancels an in-flight sign-in loop and releases host port leases.
 ///
 /// Fails closed with [`SignInFailureKind::HostPort`] if cleanup futures return
-/// `Poll::Pending`; use [`cancel_sign_in_async`] when host ports are asynchronous.
+/// `Poll::Pending`, and returns the session with that cleanup retained. Use
+/// [`cancel_sign_in_async`] when host ports are asynchronous.
+#[allow(clippy::result_large_err)] // The session must travel with the failure so pending cleanup is not abandoned.
 pub fn cancel_sign_in(
     mut session: SignInSession,
     services: &HostServices,
-) -> Result<SignInStatus, SignInFailure> {
-    reject_terminal(&session)?;
-    cleanup_session_now(&mut session, services)?;
+) -> Result<SignInStatus, SignInFinishFailure> {
+    if let Err(failure) = reject_terminal(&session) {
+        return Err((failure, session));
+    }
+    if let Err(failure) = cleanup_session_now(&mut session, services) {
+        return Err((failure, session));
+    }
     Ok(SignInStatus::Cancelled)
 }
 

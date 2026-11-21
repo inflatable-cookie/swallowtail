@@ -108,6 +108,9 @@ Portable records carry only `CredentialRef`.
 
 The library-owned loop is `start_sign_in`, `poll_sign_in`,
 `submit_sign_in_credential_field`, `complete_sign_in`, `cancel_sign_in`.
+The synchronous finish and cancel return the session with their failure when
+host cleanup is still pending, so the caller finishes it with the async
+variant instead of losing the in-flight release or process stop.
 API-key collection writes opaque refs and does not need URL-open, loopback,
 or device-code ports. Presence of a port does not start sign-in. Missing
 ports fail the loop that requires them. A loop that would change mechanism,

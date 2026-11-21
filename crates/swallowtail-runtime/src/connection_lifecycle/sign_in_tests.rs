@@ -506,6 +506,7 @@ fn mechanism_or_account_change_fails_closed() {
     *ports.loopback_ready.lock().expect("lock") = true;
     poll_sign_in(&mut session, &services).expect("ready");
     let account = complete_sign_in(session, &services, None)
+        .map_err(|(failure, _)| failure)
         .expect_err("replacing the bound credential fails closed");
     assert_eq!(account.kind(), SignInFailureKind::AccountMismatch);
 }
@@ -1098,7 +1099,7 @@ fn sync_sign_in_handles_poll_pending_without_panicking() {
         poll_sign_in(&mut session, &services).expect("second poll advances pending future"),
         SignInStatus::ReadyToComplete
     );
-    let cancel_err = cancel_sign_in(session, &services)
+    let (cancel_err, session) = cancel_sign_in(session, &services)
         .expect_err("sync cancel with pending release must fail closed");
     assert_eq!(cancel_err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
@@ -1106,6 +1107,13 @@ fn sync_sign_in_handles_poll_pending_without_panicking() {
         "swallowtail.sign_in.host_port_pending"
     );
     assert!(ports.inner.calls().contains(&"loopback_release"));
+
+    // The returned session keeps the pending release, so async cleanup finishes it.
+    assert_eq!(
+        block_on(cancel_sign_in_async(session, &services))
+            .expect("async cancel completes the retained release"),
+        SignInStatus::Cancelled
+    );
 }
 
 #[test]
@@ -1276,6 +1284,7 @@ fn sync_sign_in_cleanup_fails_closed_when_host_cleanup_is_pending() {
     let incomplete_session =
         start_sign_in(&loopback_services, interactive_request()).expect("start succeeds");
     let err = complete_sign_in(incomplete_session, &loopback_services, None)
+        .map_err(|(failure, _)| failure)
         .expect_err("sync complete error path with pending release must fail closed");
     assert_eq!(err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
@@ -1292,6 +1301,7 @@ fn sync_sign_in_cleanup_fails_closed_when_host_cleanup_is_pending() {
         SignInStatus::ReadyToComplete
     );
     let err = complete_sign_in(ready_session, &loopback_services, Some(&store))
+        .map_err(|(failure, _)| failure)
         .expect_err("sync complete with pending release must fail closed");
     assert_eq!(err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
@@ -1322,6 +1332,7 @@ fn sync_sign_in_cleanup_fails_closed_when_host_cleanup_is_pending() {
     let delegated_cancel =
         start_sign_in(&proc_services, delegated_request()).expect("delegated start");
     let err = cancel_sign_in(delegated_cancel, &proc_services)
+        .map_err(|(failure, _)| failure)
         .expect_err("sync cancel with pending process cleanup must fail closed");
     assert_eq!(err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
@@ -1332,6 +1343,7 @@ fn sync_sign_in_cleanup_fails_closed_when_host_cleanup_is_pending() {
     let delegated_complete =
         start_sign_in(&proc_services, delegated_request()).expect("delegated start");
     let err = complete_sign_in(delegated_complete, &proc_services, None)
+        .map_err(|(failure, _)| failure)
         .expect_err("sync complete error path with pending process cleanup must fail closed");
     assert_eq!(err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
@@ -1683,6 +1695,7 @@ fn sign_in_releases_loopback_and_stops_reaps_process_on_timeout_and_errors() {
     let incomplete_session =
         start_sign_in(&services_incomplete, interactive_request()).expect("start");
     let err = complete_sign_in(incomplete_session, &services_incomplete, None)
+        .map_err(|(failure, _)| failure)
         .expect_err("incomplete fails");
     assert_eq!(err.kind(), SignInFailureKind::Incomplete);
     assert!(
@@ -1698,6 +1711,7 @@ fn sign_in_releases_loopback_and_stops_reaps_process_on_timeout_and_errors() {
     poll_sign_in(&mut store_err_session, &services_store_err).expect("ready");
     let empty_store = MemoryStore::new();
     let err = complete_sign_in(store_err_session, &services_store_err, Some(&empty_store))
+        .map_err(|(failure, _)| failure)
         .expect_err("absent instance fails");
     assert_eq!(err.kind(), SignInFailureKind::InstanceAbsent);
     assert!(
@@ -1734,6 +1748,7 @@ fn sign_in_releases_loopback_and_stops_reaps_process_on_timeout_and_errors() {
     )
     .expect("start");
     let err = complete_sign_in(proc_session, &services_proc_err, None)
+        .map_err(|(failure, _)| failure)
         .expect_err("incomplete delegated fails");
     assert_eq!(err.kind(), SignInFailureKind::Incomplete);
     assert_eq!(

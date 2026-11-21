@@ -17,6 +17,8 @@ set -euo pipefail
 # directory before starting the tool, so a driver that assigned its private
 # target before the lease is caught rather than accidentally passing.
 
+unset GITHUB_ACTIONS EFFIGY_OXIDE_ESCAPE
+
 routing_root=$(cd "$(dirname "$0")/../.." && pwd)
 routing_helper="$routing_root/scripts/oxide-rust.sh"
 routing_scratch=$(mktemp -d "${TMPDIR:-/tmp}/swallowtail-oxide-routing.XXXXXXXX")

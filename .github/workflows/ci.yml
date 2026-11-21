@@ -54,11 +54,9 @@ jobs:
         with:
           shared-key: nextest
           cache-on-failure: true
-      - uses: taiki-e/install-action@cargo-nextest
-      - name: Node runtime for the Claude Agent SDK sidecar asset proof
-        uses: actions/setup-node@v6
+      - uses: taiki-e/install-action@v2
         with:
-          node-version: 22.23.2
+          tool: cargo-nextest@0.9.145
       - name: Test
         run: cargo nextest run --workspace --all-features --locked --profile ci --partition count:${{ matrix.shard }}/2
 
@@ -79,7 +77,9 @@ jobs:
         with:
           shared-key: nextest
           cache-on-failure: true
-      - uses: taiki-e/install-action@cargo-nextest
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-nextest@0.9.145
       - name: Node runtime for the Claude Agent SDK sidecar asset proof
         uses: actions/setup-node@v6
         with:
@@ -126,6 +126,25 @@ jobs:
           python3 scripts/check-consumer-front-door.py
           python3 scripts/check-literal-version-expects.py --self-test
           python3 scripts/check-literal-version-expects.py
+      - name: Ephemeral pinned Effigy for docs link gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools=$(mktemp -d "$RUNNER_TEMP/effigy-tools.XXXXXXXX")
+          asset=effigy-x86_64-unknown-linux-gnu
+          digest=18c6e6b1626cdeafa05c97547d9da6c177825592814f837c9119980f9aa1fc34
+          curl --fail --location --max-time 60 --max-filesize 67108864 "https://github.com/inflatable-cookie/effigy/releases/download/v0.14.1/$asset" -o "$tools/effigy"
+          test "$(shasum -a 256 "$tools/effigy" | cut -d' ' -f1)" = "$digest"
+          chmod 700 "$tools/effigy"
+          echo "$tools" >> "$GITHUB_PATH"
+      - name: Docs links and selector gate tests
+        run: |
+          python3 scripts/check-docs-links.py
+          python3 scripts/tests/oxide-selector-routing.py
+          bash scripts/tests/oxide-rust-routing.sh
+          bash scripts/tests/release-version-identity.sh
+          bash scripts/tests/validation-selectors.sh
+          bash scripts/tests/format-selectors.sh
 
   docs-and-api:
     name: Documentation and semantic API
@@ -198,7 +217,7 @@ jobs:
         with:
           node-version: 22.23.2
       - name: Test
-        run: cargo +${{ env.RUST_MSRV }} test --workspace --all-features --locked
+        run: bash scripts/run-with-owned-cargo-target.sh cargo +${{ env.RUST_MSRV }} test --workspace --all-features --locked
 
   supply-chain:
     name: Dependency security, licenses, and sources
@@ -210,7 +229,9 @@ jobs:
         with:
           cache-targets: false
           cache-on-failure: true
-      - uses: taiki-e/install-action@cargo-deny
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deny@0.19.4
       - run: |
           python3 -B scripts/check-chrono-maintenance.py --self-test
           python3 -B scripts/check-chrono-maintenance.py

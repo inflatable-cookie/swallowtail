@@ -1,5 +1,5 @@
 use sha2::{Digest, Sha256};
-use swallowtail_host_local::LocalExpectedSource;
+use swallowtail_runtime::{ExpectedSource, FrozenGuardedNodeCapture};
 
 /// Guarded permission behavior for the frozen ACP 0.101.1–0.106.0 points.
 /// Preserves inherited managed denial without fabricating a permission callback.
@@ -10,6 +10,8 @@ const INVENTORY: &str = include_str!("../sidecar/claude-agent-acp-guard-v1-inven
 const HOPS: [&str; 8] = [
     "0.101.0", "0.101.1", "0.102.0", "0.103.0", "0.104.0", "0.104.1", "0.105.0", "0.106.0",
 ];
+/// Platforms this frozen capture was inventoried for.
+const PLATFORMS: [&str; 2] = ["darwin-arm64", "linux-x64"];
 
 pub(crate) fn requires_checked_process(version: &str) -> bool {
     HOPS.contains(&version)
@@ -21,9 +23,7 @@ pub(crate) fn requires_checked_process(version: &str) -> bool {
 /// a complete dependency graph, establish an installed identity or authorize
 /// a checked launch. Unlisted versions and malformed inventories fail closed.
 #[must_use]
-pub fn claude_agent_acp_guard_v1_source_manifest(
-    version: &str,
-) -> Option<Vec<LocalExpectedSource>> {
+pub fn claude_agent_acp_guard_v1_source_manifest(version: &str) -> Option<Vec<ExpectedSource>> {
     if !HOPS.contains(&version) {
         return None;
     }
@@ -35,12 +35,57 @@ pub fn claude_agent_acp_guard_v1_source_manifest(
     paths
         .iter()
         .map(|(path, digest)| {
-            Some(LocalExpectedSource::new(
+            Some(ExpectedSource::new(
                 path.as_str(),
                 decode_sha256(digest.as_str()?)?,
             ))
         })
         .collect()
+}
+
+/// Returns the frozen guarded v1 capture inputs for one exact hop and platform.
+///
+/// The result carries only the manifest, loader and identity digests this route
+/// froze. It captures no bytes, verifies no custody and authorizes no launch:
+/// the host captures the graph under its own trust roots and binds the derived
+/// recipe into its checked-process service. Unknown versions, unknown platforms
+/// or malformed manifests return `None`, so nothing falls back to an ordinary
+/// stock invocation.
+#[must_use]
+pub fn claude_agent_acp_guarded_v1_frozen<'a>(
+    version: &str,
+    platform: &'a str,
+) -> Option<FrozenGuardedNodeCapture<'a>> {
+    if !PLATFORMS.contains(&platform) {
+        return None;
+    }
+    let manifest: &'static [u8] = match version {
+        "0.101.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.101.0.json"),
+        "0.101.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.101.1.json"),
+        "0.102.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.102.0.json"),
+        "0.103.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.103.0.json"),
+        "0.104.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.104.0.json"),
+        "0.104.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.104.1.json"),
+        "0.105.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.105.0.json"),
+        "0.106.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.106.0.json"),
+        _ => return None,
+    };
+    let value: serde_json::Value = serde_json::from_slice(manifest).ok()?;
+    let vendor = value["vendor"].as_str().and_then(decode_sha256)?;
+    let policy: [u8; 32] = Sha256::digest(
+        format!(
+            "swallowtail.claude-agent-acp.guarded-v1.trusted-host-installed-node-v2\0{CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR}"
+        )
+        .as_bytes(),
+    )
+    .into();
+    Some(FrozenGuardedNodeCapture::new(
+        platform,
+        manifest,
+        crate::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
+        vendor,
+        policy,
+    ))
 }
 
 fn decode_sha256(value: &str) -> Option<[u8; 32]> {
@@ -58,60 +103,4 @@ fn decode_sha256(value: &str) -> Option<[u8; 32]> {
         result[index] = nibble(pair[0])? * 16 + nibble(pair[1])?;
     }
     Some(result)
-}
-
-/// Captures the exact official guarded v1 graph under approved host roots.
-///
-/// `root` contains `acp`, `acpsdk`, `agentsdk`, `diff` and `zod` package trees.
-/// The host must maintain custody of Node and native loader dependencies.
-/// This establishes checked recipe inputs, not execution authority or version
-/// qualification. Unknown versions/platforms or artifact substitutions refuse;
-/// this never falls back to an ordinary stock invocation.
-pub fn capture_claude_agent_acp_guarded_v1(
-    version: &str,
-    root: &std::path::Path,
-    platform: &str,
-    node: &swallowtail_host_local::LocalTrustedRuntime,
-    native: &swallowtail_host_local::LocalTrustedRuntime,
-    ps: Option<&swallowtail_host_local::LocalTrustedRuntime>,
-) -> std::io::Result<swallowtail_host_local::LocalCapturedNodeRecipe> {
-    let manifest: &[u8] = match version {
-        "0.101.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.101.0.json"),
-        "0.101.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.101.1.json"),
-        "0.102.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.102.0.json"),
-        "0.103.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.103.0.json"),
-        "0.104.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.104.0.json"),
-        "0.104.1" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.104.1.json"),
-        "0.105.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.105.0.json"),
-        "0.106.0" => include_bytes!("../sidecar/claude-agent-acp-guard-graphs/0.106.0.json"),
-        _ => return Err(guard_identity_failure()),
-    };
-    if !matches!(platform, "darwin-arm64" | "linux-x64") {
-        return Err(guard_identity_failure());
-    }
-    node.verify()?;
-    let value: serde_json::Value = serde_json::from_slice(manifest)?;
-    let vendor = value["vendor"]
-        .as_str()
-        .and_then(decode_sha256)
-        .ok_or_else(guard_identity_failure)?;
-    let graph = swallowtail_host_local::LocalCapturedGraph::capture_manifest(
-        root, manifest, platform, native, ps,
-    )?;
-    swallowtail_host_local::LocalCapturedNodeRecipe::for_trusted_runtime(
-        &graph,
-        crate::CLAUDE_AGENT_ACP_GUARD_LOADER_SOURCE,
-        vendor,
-        node,
-        Sha256::digest(
-            format!("swallowtail.claude-agent-acp.guarded-v1.trusted-host-installed-node-v2\0{CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR}").as_bytes()
-        ).into(),
-    )
-}
-
-fn guard_identity_failure() -> std::io::Error {
-    std::io::Error::new(
-        std::io::ErrorKind::InvalidData,
-        "guarded ACP identity is not admitted",
-    )
 }

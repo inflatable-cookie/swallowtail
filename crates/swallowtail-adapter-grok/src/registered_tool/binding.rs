@@ -8,10 +8,10 @@
 
 use super::carrier::GrokRegisteredToolCarrier;
 use crate::failure::failure;
-use swallowtail_host_local::LocalHostServices;
+use std::sync::Arc;
 use swallowtail_runtime::{
-    Deadline, PreparationFailure, RegisteredToolPreparation, RegisteredToolSelection,
-    RuntimeFailure, RuntimeTurnId,
+    Deadline, PreparationFailure, RegisteredToolCourierService, RegisteredToolPreparation,
+    RegisteredToolSelection, RuntimeFailure, RuntimeTurnId,
 };
 
 /// One registered selection qualified for the Grok ACP courier seam.
@@ -19,7 +19,7 @@ use swallowtail_runtime::{
 pub struct GrokRegisteredToolBinding {
     preparation: RegisteredToolPreparation,
     carrier: GrokRegisteredToolCarrier,
-    host: Option<LocalHostServices>,
+    host: Option<Arc<dyn RegisteredToolCourierService>>,
     deadline: Option<Deadline>,
     turn: Option<RuntimeTurnId>,
 }
@@ -48,8 +48,11 @@ impl GrokRegisteredToolBinding {
     /// only. The courier process itself is spawned by Grok from the declared
     /// ACP `mcpServers` entry.
     #[must_use]
-    pub fn with_host(mut self, host: LocalHostServices) -> Self {
-        self.host = Some(host);
+    pub fn with_host<H>(mut self, host: H) -> Self
+    where
+        H: RegisteredToolCourierService + 'static,
+    {
+        self.host = Some(Arc::new(host));
         self
     }
 
@@ -97,8 +100,8 @@ impl GrokRegisteredToolBinding {
 
     /// Returns the host composition bound for path resolution and rendezvous.
     #[must_use]
-    pub const fn host(&self) -> Option<&LocalHostServices> {
-        self.host.as_ref()
+    pub fn host(&self) -> Option<&dyn RegisteredToolCourierService> {
+        self.host.as_deref()
     }
 
     /// Returns the bound registered-tool open deadline.
@@ -113,8 +116,8 @@ impl GrokRegisteredToolBinding {
         self.turn.as_ref()
     }
 
-    pub(crate) fn require_host(&self) -> Result<&LocalHostServices, RuntimeFailure> {
-        self.host.as_ref().ok_or_else(|| {
+    pub(crate) fn require_host(&self) -> Result<&dyn RegisteredToolCourierService, RuntimeFailure> {
+        self.host.as_deref().ok_or_else(|| {
             failure(
                 "swallowtail.grok.acp.registered_tool.host_missing",
                 "Grok Build ACP registered-tool open requires the local host composition that mints the courier rendezvous",

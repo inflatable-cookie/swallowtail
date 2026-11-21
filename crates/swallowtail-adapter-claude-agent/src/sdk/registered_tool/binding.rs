@@ -7,10 +7,10 @@
 
 use super::carrier::ClaudeAgentSdkRegisteredToolCarrier;
 use crate::sdk::failure::failure;
-use swallowtail_host_local::LocalHostServices;
+use std::sync::Arc;
 use swallowtail_runtime::{
-    RegisteredToolAttachment, RegisteredToolPreparation, RegisteredToolSelection,
-    RegisteredToolTransport, RuntimeFailure,
+    RegisteredToolAttachment, RegisteredToolCourierService, RegisteredToolPreparation,
+    RegisteredToolSelection, RegisteredToolTransport, RuntimeFailure,
 };
 
 /// One registered selection qualified for the Claude Agent SDK mediated-stdio
@@ -23,7 +23,7 @@ use swallowtail_runtime::{
 pub struct ClaudeAgentSdkRegisteredToolBinding {
     preparation: RegisteredToolPreparation,
     carrier: ClaudeAgentSdkRegisteredToolCarrier,
-    host: Option<LocalHostServices>,
+    host: Option<Arc<dyn RegisteredToolCourierService>>,
 }
 
 impl ClaudeAgentSdkRegisteredToolBinding {
@@ -61,8 +61,11 @@ impl ClaudeAgentSdkRegisteredToolBinding {
     /// only. The courier process itself is spawned by the provider from the
     /// declared `McpStdioServerConfig`.
     #[must_use]
-    pub fn with_host(mut self, host: LocalHostServices) -> Self {
-        self.host = Some(host);
+    pub fn with_host<H>(mut self, host: H) -> Self
+    where
+        H: RegisteredToolCourierService + 'static,
+    {
+        self.host = Some(Arc::new(host));
         self
     }
 
@@ -86,7 +89,7 @@ impl ClaudeAgentSdkRegisteredToolBinding {
 
     /// Returns the host composition bound for path resolution and rendezvous.
     #[must_use]
-    pub const fn host(&self) -> Option<&LocalHostServices> {
-        self.host.as_ref()
+    pub fn host(&self) -> Option<&dyn RegisteredToolCourierService> {
+        self.host.as_deref()
     }
 }

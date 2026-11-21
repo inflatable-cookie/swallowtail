@@ -1,4 +1,5 @@
 pub mod swallowtail_host_local
+pub use swallowtail_host_local::LocalExpectedSource
 pub mod swallowtail_host_local::wire
 pub enum swallowtail_host_local::wire::RegisteredToolProxyRequest
 pub swallowtail_host_local::wire::RegisteredToolProxyRequest::Initialize
@@ -115,7 +116,7 @@ impl core::fmt::Debug for swallowtail_host_local::LocalCapturedNodeRecipe
 pub fn swallowtail_host_local::LocalCapturedNodeRecipe::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_host_local::LocalCapturedSources
 impl swallowtail_host_local::LocalCapturedSources
-pub fn swallowtail_host_local::LocalCapturedSources::capture(&std::path::Path, &[swallowtail_host_local::LocalExpectedSource]) -> core::io::error::Result<Self>
+pub fn swallowtail_host_local::LocalCapturedSources::capture(&std::path::Path, &[swallowtail_runtime::guarded_node::ExpectedSource]) -> core::io::error::Result<Self>
 pub const fn swallowtail_host_local::LocalCapturedSources::fingerprint(&self) -> &[u8; 32]
 pub fn swallowtail_host_local::LocalCapturedSources::source(&self, &std::path::Path) -> core::option::Option<&[u8]>
 impl core::fmt::Debug for swallowtail_host_local::LocalCapturedSources
@@ -135,9 +136,6 @@ pub fn swallowtail_host_local::LocalExecutableLaunch::with_node_startup_environm
 pub fn swallowtail_host_local::LocalExecutableLaunch::with_prefix_arguments(self, impl core::iter::traits::collect::IntoIterator<Item = std::ffi::os_str::OsString>) -> Self
 impl core::fmt::Debug for swallowtail_host_local::LocalExecutableLaunch
 pub fn swallowtail_host_local::LocalExecutableLaunch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-pub struct swallowtail_host_local::LocalExpectedSource
-impl swallowtail_host_local::LocalExpectedSource
-pub fn swallowtail_host_local::LocalExpectedSource::new(impl core::convert::Into<std::path::PathBuf>, [u8; 32]) -> Self
 pub struct swallowtail_host_local::LocalHostServices
 impl swallowtail_host_local::LocalHostServices
 pub fn swallowtail_host_local::LocalHostServices::approved_environment(&self, &swallowtail_runtime::host_reference::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
@@ -154,6 +152,10 @@ pub const fn swallowtail_host_local::LocalHostServices::services(&self) -> &swal
 pub fn swallowtail_host_local::LocalHostServices::shutdown_task_reapers(&self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
 pub const fn swallowtail_host_local::LocalHostServices::task_service(&self) -> &alloc::sync::Arc<swallowtail_host_local::LocalScopedTaskService>
 pub fn swallowtail_host_local::LocalHostServices::watcher_bridge_proof(&self, &swallowtail_runtime::identity::RuntimeTurnId) -> alloc::vec::Vec<swallowtail_host_local::WatcherBridgeProofKind>
+impl swallowtail_runtime::registered_tool::courier::RegisteredToolCourierService for swallowtail_host_local::LocalHostServices
+pub fn swallowtail_host_local::LocalHostServices::approved_environment(&self, &swallowtail_runtime::host_reference::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
+pub fn swallowtail_host_local::LocalHostServices::approved_executable_path(&self, &swallowtail_runtime::host_reference::ExecutableRef) -> core::option::Option<&std::path::Path>
+pub fn swallowtail_host_local::LocalHostServices::registered_tool_proxy_launch(&self, &swallowtail_runtime::registered_tool::lease::RegisteredToolBridgeLease) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::registered_tool::courier::RegisteredToolCourierLaunch>, swallowtail_runtime::failure::RuntimeFailure>
 pub struct swallowtail_host_local::LocalMaterializationLimits
 impl swallowtail_host_local::LocalMaterializationLimits
 pub const fn swallowtail_host_local::LocalMaterializationLimits::attachment_bytes(self) -> u64
@@ -300,3 +302,8 @@ impl swallowtail_host_local::RegisteredToolProxyLaunch
 pub const fn swallowtail_host_local::RegisteredToolProxyLaunch::process_request(&self) -> &swallowtail_runtime::process_input::ProcessRequest
 pub fn swallowtail_host_local::RegisteredToolProxyLaunch::rendezvous_path(&self) -> &std::path::Path
 pub fn swallowtail_host_local::RegisteredToolProxyLaunch::wait_until_ready(&mut self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+impl swallowtail_runtime::registered_tool::courier::RegisteredToolCourierLaunch for swallowtail_host_local::RegisteredToolProxyLaunch
+pub fn swallowtail_host_local::RegisteredToolProxyLaunch::process_request(&self) -> &swallowtail_runtime::process_input::ProcessRequest
+pub fn swallowtail_host_local::RegisteredToolProxyLaunch::rendezvous_path(&self) -> &std::path::Path
+pub fn swallowtail_host_local::RegisteredToolProxyLaunch::wait_until_ready(&mut self) -> core::result::Result<(), swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_host_local::capture_frozen_guarded_recipe(&std::path::Path, swallowtail_runtime::guarded_node::FrozenGuardedNodeCapture<'_>, &swallowtail_host_local::LocalTrustedRuntime, &swallowtail_host_local::LocalTrustedRuntime, core::option::Option<&swallowtail_host_local::LocalTrustedRuntime>) -> core::io::error::Result<swallowtail_host_local::LocalCapturedNodeRecipe>

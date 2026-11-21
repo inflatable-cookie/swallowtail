@@ -8,8 +8,9 @@
 use super::ClaudeAgentSdkRegisteredToolBinding;
 use crate::sdk::profile::{ClaudeAgentSdkPermissionMode, ClaudeAgentSdkSessionProfile};
 use swallowtail_core::{Diagnostic, ResourceAccess};
-use swallowtail_host_local::LocalHostServices;
-use swallowtail_runtime::{PreparationFailure, PreparationStage, RegisteredToolPreparation};
+use swallowtail_runtime::{
+    PreparationFailure, PreparationStage, RegisteredToolCourierService, RegisteredToolPreparation,
+};
 
 /// Zero-native session bound to one qualified registered-tool selection.
 ///
@@ -52,7 +53,10 @@ impl ClaudeAgentSdkRegisteredOnlyBinding {
 
     /// Binds the host composition that resolves the approved courier path.
     #[must_use]
-    pub fn with_host(mut self, host: LocalHostServices) -> Self {
+    pub fn with_host<H>(mut self, host: H) -> Self
+    where
+        H: RegisteredToolCourierService + 'static,
+    {
         self.registered = self.registered.with_host(host);
         self
     }

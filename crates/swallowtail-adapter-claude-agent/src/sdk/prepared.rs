@@ -23,11 +23,11 @@ use swallowtail_core::{
     Diagnostic, ExecutionHostId, InstanceRevision, InstanceTargetRef, ModelId, ModelRouteId,
     ModelRouteRevision, PreflightPlan,
 };
-use swallowtail_host_local::LocalHostServices;
 use swallowtail_runtime::{
     BoxFuture, Deadline, EnvironmentRef, HostServices, InteractiveSessionHandle,
-    OpenSessionRequest, PreparationFailure, PreparationStage, RegisteredToolPreparation, RequestId,
-    ResumeSessionRequest, RuntimeFailure, SessionOptions, SessionResumeBinding, WorkingResourceRef,
+    OpenSessionRequest, PreparationFailure, PreparationStage, RegisteredToolCourierService,
+    RegisteredToolPreparation, RequestId, ResumeSessionRequest, RuntimeFailure, SessionOptions,
+    SessionResumeBinding, WorkingResourceRef,
 };
 
 /// Explicit inputs for preparing one fresh Claude Agent SDK sidecar session.
@@ -161,11 +161,14 @@ impl ClaudeAgentSdkSessionPreparation {
     /// This is the openable consumer entry. Absence preserves every previous
     /// open. The binding is a separate path from card 084 consumer-declared
     /// servers: neither may present the other's reserved name.
-    pub fn with_registered_tools(
+    pub fn with_registered_tools<H>(
         mut self,
         preparation: RegisteredToolPreparation,
-        host: LocalHostServices,
-    ) -> Result<Self, PreparationFailure> {
+        host: H,
+    ) -> Result<Self, PreparationFailure>
+    where
+        H: RegisteredToolCourierService + 'static,
+    {
         self.registered_tools = Some(
             ClaudeAgentSdkRegisteredToolBinding::qualify(preparation)
                 .map_err(|error| {
@@ -195,12 +198,15 @@ impl ClaudeAgentSdkSessionPreparation {
     /// Additive [`Self::with_registered_tools`] is unchanged. Consumer-declared
     /// MCP servers cannot share this shape: `tools[]` must contain only the
     /// selected carrier spellings.
-    pub fn with_registered_only(
+    pub fn with_registered_only<H>(
         self,
         preparation: RegisteredToolPreparation,
-        host: LocalHostServices,
+        host: H,
         resource_access: swallowtail_core::ResourceAccess,
-    ) -> Result<Self, PreparationFailure> {
+    ) -> Result<Self, PreparationFailure>
+    where
+        H: RegisteredToolCourierService + 'static,
+    {
         self.with_registered_only_binding(
             ClaudeAgentSdkRegisteredOnlyBinding::new(
                 preparation,

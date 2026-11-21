@@ -78,8 +78,8 @@ pub use consumer_route_projection::{
 };
 pub use driver::{ClaudeAgentAcpDriver, claude_agent_acp_descriptor};
 pub use guard_manifest::{
-    CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR, capture_claude_agent_acp_guarded_v1,
-    claude_agent_acp_guard_v1_source_manifest,
+    CLAUDE_AGENT_ACP_GUARDED_PERMISSION_BEHAVIOR, claude_agent_acp_guard_v1_source_manifest,
+    claude_agent_acp_guarded_v1_frozen,
 };
 pub use mcp::{
     CLAUDE_AGENT_ACP_HTTP_MCP_PLACEMENT, CLAUDE_AGENT_ACP_MCP_SERVER_NAME,

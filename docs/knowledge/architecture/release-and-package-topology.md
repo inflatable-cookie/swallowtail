@@ -109,6 +109,14 @@ No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
 identity without claiming registry availability.
 
+No adapter depends on `swallowtail-host-local`. A route that needs local
+facilities binds them through provider-neutral runtime ports —
+`RegisteredToolCourierService` for the mediated-stdio courier and
+`FrozenGuardedNodeCapture` plus `ExpectedSource` for a frozen guarded capture —
+and the host composition, not the adapter, owns the concrete local behavior.
+`swallowtail-host-local` stays an adapter dev-dependency for tests that compose
+a real local host.
+
 Release metadata, dependency topology, and semantic API checks distinguish the
 41-package current source and its 51-route inventory from the immutable
 40-package, 51-route `v0.6.0` tag, the 40-package, 50-route `v0.5.4` tag, the
@@ -172,7 +180,7 @@ The candidate is one clean canonical commit plus deterministic evidence:
 
 - exact commit and parent
 - clean worktree
-- 41-package current-source metadata and 117-edge topology, kept distinct from
+- 41-package current-source metadata and 115-edge topology, kept distinct from
   the immutable 40-package `v0.6.0`, `v0.5.4` and `v0.3.3`, 30-package
   `v0.3.2`, 28-package `v0.2.0` / `v0.3.1` and 27-package `v0.1.x` evidence
 - frozen 41-package current-source semantic API inventory and 51-route

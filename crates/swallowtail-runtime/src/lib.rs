@@ -21,6 +21,7 @@ mod event;
 mod event_buffer;
 mod event_channel;
 mod failure;
+mod guarded_node;
 mod handles;
 mod harness_rpc;
 mod harness_user_input;
@@ -169,6 +170,7 @@ pub use event_buffer::{
 };
 pub use event_channel::{RuntimeEventSender, RuntimeEventStream, runtime_event_channel};
 pub use failure::RuntimeFailure;
+pub use guarded_node::{ExpectedSource, FrozenGuardedNodeCapture};
 pub use handles::{
     AttachedServingHandle, InteractiveSessionHandle, OwnedServingHandle,
     RealtimeMediaResponseHandle, RealtimeMediaSessionHandle, RunHandle, TurnHandle,
@@ -343,29 +345,31 @@ pub use registered_tool::{
     MAX_SELECTED_SKILL_CONTENT_BYTES, MAX_SELECTED_SKILL_REQUIRED_REFERENCES,
     PreparedRegisteredToolBinding, REGISTERED_TOOL_CLEANUP_BUDGET,
     REGISTERED_TOOL_CONFORMANCE_PROTOCOL_VERSION, REGISTERED_TOOL_MAX_CALL_DURATION,
-    REGISTERED_TOOL_OPEN_BUDGET, REGISTERED_TOOL_PROXY_WIRE_TAG,
+    REGISTERED_TOOL_OPEN_BUDGET, REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION,
+    REGISTERED_TOOL_PROXY_SERVER_NAME, REGISTERED_TOOL_PROXY_WIRE_TAG,
     REGISTERED_TOOL_QUALIFIED_TRANSPORTS, RegisteredServerId, RegisteredServerRevision,
     RegisteredToolAdmissionState, RegisteredToolAttachment, RegisteredToolAttachmentDescriptor,
     RegisteredToolBounds, RegisteredToolBridgeHostService, RegisteredToolBridgeLease,
     RegisteredToolCall, RegisteredToolCallId, RegisteredToolCallRequest,
     RegisteredToolCancellation, RegisteredToolCancellationSource, RegisteredToolCleanupCause,
-    RegisteredToolCompletionState, RegisteredToolDeclaration, RegisteredToolDispatchContext,
-    RegisteredToolDispatcher, RegisteredToolEffectPosture, RegisteredToolEnforcedPosture,
-    RegisteredToolExecutionDisposition, RegisteredToolExecutionKind, RegisteredToolFailure,
-    RegisteredToolFailureKind, RegisteredToolId, RegisteredToolLeaseGeneration,
-    RegisteredToolLifecycleState, RegisteredToolLimits, RegisteredToolLocalName,
-    RegisteredToolMountedTopology, RegisteredToolNamespace, RegisteredToolOpenRequest,
-    RegisteredToolOperationKernel, RegisteredToolOutcome, RegisteredToolPayload,
-    RegisteredToolPortAvailability, RegisteredToolPreparation, RegisteredToolProgress,
-    RegisteredToolProgressChannel, RegisteredToolProgressSink, RegisteredToolProtocolVersion,
-    RegisteredToolProxyRecipe, RegisteredToolReadiness, RegisteredToolReasonCode,
-    RegisteredToolResult, RegisteredToolRetryPosture, RegisteredToolSchema,
-    RegisteredToolSchemaDialect, RegisteredToolSchemaDigest, RegisteredToolSchemaDocument,
-    RegisteredToolSchemaMediaType, RegisteredToolSchemaNamespace, RegisteredToolSelection,
-    RegisteredToolSnapshot, RegisteredToolSnapshotInput, RegisteredToolSource,
-    RegisteredToolSourceId, RegisteredToolTopologyProof, RegisteredToolTransport,
-    RegisteredToolTransportGeneration, RegisteredToolTransportSupport, RequiredReferenceDescriptor,
-    RequiredReferenceId, ResolvedRequiredReference, ResolvedSkillBundle, SelectedContentDescriptor,
+    RegisteredToolCompletionState, RegisteredToolCourierLaunch, RegisteredToolCourierService,
+    RegisteredToolDeclaration, RegisteredToolDispatchContext, RegisteredToolDispatcher,
+    RegisteredToolEffectPosture, RegisteredToolEnforcedPosture, RegisteredToolExecutionDisposition,
+    RegisteredToolExecutionKind, RegisteredToolFailure, RegisteredToolFailureKind,
+    RegisteredToolId, RegisteredToolLeaseGeneration, RegisteredToolLifecycleState,
+    RegisteredToolLimits, RegisteredToolLocalName, RegisteredToolMountedTopology,
+    RegisteredToolNamespace, RegisteredToolOpenRequest, RegisteredToolOperationKernel,
+    RegisteredToolOutcome, RegisteredToolPayload, RegisteredToolPortAvailability,
+    RegisteredToolPreparation, RegisteredToolProgress, RegisteredToolProgressChannel,
+    RegisteredToolProgressSink, RegisteredToolProtocolVersion, RegisteredToolProxyRecipe,
+    RegisteredToolReadiness, RegisteredToolReasonCode, RegisteredToolResult,
+    RegisteredToolRetryPosture, RegisteredToolSchema, RegisteredToolSchemaDialect,
+    RegisteredToolSchemaDigest, RegisteredToolSchemaDocument, RegisteredToolSchemaMediaType,
+    RegisteredToolSchemaNamespace, RegisteredToolSelection, RegisteredToolSnapshot,
+    RegisteredToolSnapshotInput, RegisteredToolSource, RegisteredToolSourceId,
+    RegisteredToolTopologyProof, RegisteredToolTransport, RegisteredToolTransportGeneration,
+    RegisteredToolTransportSupport, RequiredReferenceDescriptor, RequiredReferenceId,
+    ResolvedRequiredReference, ResolvedSkillBundle, SelectedContentDescriptor,
     SelectedContentDigest, SelectedContentResolution, SelectedSkillBundle,
     SelectedSkillBundleBounds, SelectedSkillHostResources, SelectedSkillId, SelectedSkillIdentity,
     SelectedSkillProvenance, SelectedSkillRevision, ValidatedRegisteredToolBinding,

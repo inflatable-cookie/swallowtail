@@ -11,10 +11,10 @@
 //! without ambiguity.
 
 use super::registered_preparation_failure;
-use swallowtail_host_local::wire::REGISTERED_TOOL_PROXY_SERVER_NAME;
 use swallowtail_runtime::{
-    PreparationFailure, RegisteredToolAttachment, RegisteredToolExecutionKind, RegisteredToolId,
-    RegisteredToolSelection, RegisteredToolTransport,
+    PreparationFailure, REGISTERED_TOOL_PROXY_SERVER_NAME, RegisteredToolAttachment,
+    RegisteredToolExecutionKind, RegisteredToolId, RegisteredToolSelection,
+    RegisteredToolTransport,
 };
 
 /// Reserved ACP MCP server name of the Swallowtail-owned courier.

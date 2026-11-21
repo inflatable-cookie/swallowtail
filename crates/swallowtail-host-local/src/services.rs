@@ -11,8 +11,8 @@ use std::time::Duration;
 use swallowtail_core::ExecutionHostId;
 use swallowtail_runtime::{
     CleanupOutcome, Deadline, EnvironmentRef, ExecutableRef, HostServices, MonotonicInstant,
-    RegisteredToolBridgeLease, RegisteredToolMountedTopology, RuntimeFailure, RuntimeTurnId,
-    TimeService,
+    RegisteredToolBridgeLease, RegisteredToolCourierLaunch, RegisteredToolCourierService,
+    RegisteredToolMountedTopology, RuntimeFailure, RuntimeTurnId, TimeService,
 };
 
 /// Inspectable host-owned local service composition for one execution host.
@@ -237,6 +237,28 @@ impl LocalHostServices {
     #[must_use]
     pub fn deadline_after(&self, duration: Duration) -> Deadline {
         deadline_after(self.process_host.now(), duration)
+    }
+}
+
+/// Local composition as the provider-neutral registered-tool courier port.
+///
+/// An adapter binds this composition without naming a local-host type; the
+/// two resolution methods stay lookups, and the launch stays one-shot.
+impl RegisteredToolCourierService for LocalHostServices {
+    fn approved_executable_path(&self, reference: &ExecutableRef) -> Option<&Path> {
+        LocalHostServices::approved_executable_path(self, reference)
+    }
+
+    fn approved_environment(&self, reference: &EnvironmentRef) -> Option<&[(OsString, OsString)]> {
+        LocalHostServices::approved_environment(self, reference)
+    }
+
+    fn registered_tool_proxy_launch(
+        &self,
+        lease: &RegisteredToolBridgeLease,
+    ) -> Result<Box<dyn RegisteredToolCourierLaunch>, RuntimeFailure> {
+        LocalHostServices::registered_tool_proxy_launch(self, lease)
+            .map(|launch| Box::new(launch) as Box<dyn RegisteredToolCourierLaunch>)
     }
 }
 

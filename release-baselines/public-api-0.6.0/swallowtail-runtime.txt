@@ -1690,6 +1690,11 @@ pub fn swallowtail_runtime::ExecutableRef::from_config_field(&swallowtail_core::
 pub fn swallowtail_runtime::ExecutableRef::from_instance_target(&swallowtail_core::runtime_identity::InstanceTargetRef) -> Self
 impl core::fmt::Debug for swallowtail_runtime::ExecutableRef
 pub fn swallowtail_runtime::ExecutableRef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+pub struct swallowtail_runtime::ExpectedSource
+impl swallowtail_runtime::ExpectedSource
+pub fn swallowtail_runtime::ExpectedSource::new(impl core::convert::Into<std::path::PathBuf>, [u8; 32]) -> Self
+pub fn swallowtail_runtime::ExpectedSource::path(&self) -> &std::path::Path
+pub const fn swallowtail_runtime::ExpectedSource::sha256(&self) -> &[u8; 32]
 pub struct swallowtail_runtime::FreshRealtimeSessionReplacementOutcome
 impl swallowtail_runtime::FreshRealtimeSessionReplacementOutcome
 pub const fn swallowtail_runtime::FreshRealtimeSessionReplacementOutcome::interrupted_turn_id(&self) -> &swallowtail_runtime::RuntimeTurnId
@@ -1700,6 +1705,14 @@ impl swallowtail_runtime::FreshSessionReplacementOutcome
 pub const fn swallowtail_runtime::FreshSessionReplacementOutcome::interrupted_turn_id(&self) -> &swallowtail_runtime::RuntimeTurnId
 pub fn swallowtail_runtime::FreshSessionReplacementOutcome::into_parts(self) -> (swallowtail_runtime::RuntimeTurnId, alloc::boxed::Box<dyn swallowtail_runtime::InteractiveSessionHandle>)
 pub const fn swallowtail_runtime::FreshSessionReplacementOutcome::new(swallowtail_runtime::RuntimeTurnId, alloc::boxed::Box<dyn swallowtail_runtime::InteractiveSessionHandle>) -> Self
+pub struct swallowtail_runtime::FrozenGuardedNodeCapture<'a>
+impl<'a> swallowtail_runtime::FrozenGuardedNodeCapture<'a>
+pub const fn swallowtail_runtime::FrozenGuardedNodeCapture<'a>::loader(self) -> &'a str
+pub const fn swallowtail_runtime::FrozenGuardedNodeCapture<'a>::manifest(self) -> &'a [u8]
+pub const fn swallowtail_runtime::FrozenGuardedNodeCapture<'a>::new(&'a str, &'a [u8], &'a str, [u8; 32], [u8; 32]) -> Self
+pub const fn swallowtail_runtime::FrozenGuardedNodeCapture<'a>::platform(self) -> &'a str
+pub const fn swallowtail_runtime::FrozenGuardedNodeCapture<'a>::policy_sha256(self) -> [u8; 32]
+pub const fn swallowtail_runtime::FrozenGuardedNodeCapture<'a>::vendor_sha256(self) -> [u8; 32]
 pub struct swallowtail_runtime::HarnessCommandId(_)
 impl swallowtail_runtime::HarnessCommandId
 pub fn swallowtail_runtime::HarnessCommandId::as_str(&self) -> &str
@@ -3917,6 +3930,8 @@ pub const swallowtail_runtime::REGISTERED_TOOL_MAX_CALL_DURATION: core::time::Du
 pub const swallowtail_runtime::REGISTERED_TOOL_OPEN_BUDGET: core::time::Duration
 pub const swallowtail_runtime::REGISTERED_TOOL_PERMISSION_SEMANTIC_ID: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_PROGRESS_SEMANTIC_ID: &str
+pub const swallowtail_runtime::REGISTERED_TOOL_PROXY_MCP_PROTOCOL_VERSION: &str
+pub const swallowtail_runtime::REGISTERED_TOOL_PROXY_SERVER_NAME: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_PROXY_WIRE_TAG: &str
 pub const swallowtail_runtime::REGISTERED_TOOL_QUALIFIED_TRANSPORTS: &[swallowtail_runtime::RegisteredToolTransport]
 pub const swallowtail_runtime::REGISTERED_TOOL_SCHEDULING_SEMANTIC_ID: &str
@@ -4104,6 +4119,14 @@ pub fn swallowtail_runtime::RegisteredToolBridgeHostService::completion_gate(&se
 pub fn swallowtail_runtime::RegisteredToolBridgeHostService::open(&self, swallowtail_runtime::RegisteredToolOpenRequest) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::RegisteredToolBridgeLease, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::RegisteredToolCancellationSource: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::RegisteredToolCancellationSource::is_cancelled(&self) -> bool
+pub trait swallowtail_runtime::RegisteredToolCourierLaunch: core::marker::Send
+pub fn swallowtail_runtime::RegisteredToolCourierLaunch::process_request(&self) -> &swallowtail_runtime::ProcessRequest
+pub fn swallowtail_runtime::RegisteredToolCourierLaunch::rendezvous_path(&self) -> &std::path::Path
+pub fn swallowtail_runtime::RegisteredToolCourierLaunch::wait_until_ready(&mut self) -> core::result::Result<(), swallowtail_runtime::RuntimeFailure>
+pub trait swallowtail_runtime::RegisteredToolCourierService: core::marker::Send + core::marker::Sync
+pub fn swallowtail_runtime::RegisteredToolCourierService::approved_environment(&self, &swallowtail_runtime::EnvironmentRef) -> core::option::Option<&[(std::ffi::os_str::OsString, std::ffi::os_str::OsString)]>
+pub fn swallowtail_runtime::RegisteredToolCourierService::approved_executable_path(&self, &swallowtail_runtime::ExecutableRef) -> core::option::Option<&std::path::Path>
+pub fn swallowtail_runtime::RegisteredToolCourierService::registered_tool_proxy_launch(&self, &swallowtail_runtime::RegisteredToolBridgeLease) -> core::result::Result<alloc::boxed::Box<dyn swallowtail_runtime::RegisteredToolCourierLaunch>, swallowtail_runtime::RuntimeFailure>
 pub trait swallowtail_runtime::RegisteredToolDispatcher: core::marker::Send + core::marker::Sync
 pub fn swallowtail_runtime::RegisteredToolDispatcher::dispatch(&self, swallowtail_runtime::RegisteredToolCall, swallowtail_runtime::RegisteredToolDispatchContext) -> swallowtail_runtime::BoxFuture<'_, core::result::Result<swallowtail_runtime::RegisteredToolOutcome, swallowtail_runtime::RuntimeFailure>>
 pub trait swallowtail_runtime::RegisteredToolProgressChannel: core::marker::Send + core::marker::Sync

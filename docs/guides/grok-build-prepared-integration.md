@@ -195,8 +195,11 @@ reconciliation. There is no public load or resume operation.
 
 On the exact accepted live versions `1.0.4` and `1.0.5` the route carries
 consumer registered tools. `GrokRegisteredToolBinding::qualify` binds one Contract 063
-`RegisteredToolPreparation`, and an interactive session opens with
-`GrokPreparedSession::open_registered_session`. The Swallowtail-owned
+`RegisteredToolPreparation`, `GrokRegisteredToolBinding::with_host` binds the
+host composition, and an interactive session opens with
+`GrokPreparedSession::open_registered_session`. The bound composition is the
+provider-neutral `swallowtail_runtime::RegisteredToolCourierService` port, so the
+adapter names no local-host type. The Swallowtail-owned
 mediated-stdio courier is then declared as one reserved entry in the ACP
 `session/new` `mcpServers` list; Grok spawns that child, and every admitted
 call settles through the Contract 063 kernel. The lease is bound to one exact

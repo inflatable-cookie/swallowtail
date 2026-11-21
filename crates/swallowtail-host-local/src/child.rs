@@ -198,15 +198,22 @@ impl StdinCoordinator {
     }
 
     pub(crate) fn shutdown_and_join(&self) {
-        let _ = self.shutdown_and_join_bounded(Duration::from_secs(2));
+        if let Err((_, Some(pending))) = self.shutdown_and_join_bounded(Duration::from_secs(2)) {
+            let _ = pending.join();
+        }
     }
 
     /// Requests stdin closure and joins any stdin actor within `bound`.
     ///
-    /// If a blocking writer cannot exit within `bound`, ownership of its
-    /// [`thread::JoinHandle`] is retained in `actor_handle` and a typed
-    /// failure is returned so supervised process exit never hangs.
-    pub(crate) fn shutdown_and_join_bounded(&self, bound: Duration) -> Result<(), RuntimeFailure> {
+    /// If a blocking writer cannot exit within `bound`, this returns the typed
+    /// failure together with the unjoined [`thread::JoinHandle`] so the caller
+    /// (the process supervisor) retains direct ownership and joins the actor
+    /// after publishing the bounded exit failure, rather than leaving the
+    /// handle inside the coordinator.
+    pub(crate) fn shutdown_and_join_bounded(
+        &self,
+        bound: Duration,
+    ) -> Result<(), (RuntimeFailure, Option<thread::JoinHandle<()>>)> {
         self.close_nonblocking();
         let handle = self
             .inbox
@@ -222,17 +229,13 @@ impl StdinCoordinator {
             .expect("stdin join deadline is representable");
         loop {
             if handle.is_finished() {
-                return handle.join().map_err(|_| stdin_join_failed_failure());
+                return handle
+                    .join()
+                    .map_err(|_| (stdin_join_failed_failure(), None));
             }
             let now = Instant::now();
             if now >= deadline {
-                // Preserve ownership of the still-running actor handle so
-                // pending cleanup is never detached or silently dropped.
-                self.inbox
-                    .lock()
-                    .expect("local process stdin lock poisoned")
-                    .actor_handle = Some(handle);
-                return Err(stdin_join_failed_failure());
+                return Err((stdin_join_failed_failure(), Some(handle)));
             }
             let remaining = (deadline - now).min(Duration::from_millis(10));
             let inbox = self
@@ -1328,15 +1331,15 @@ mod tests {
         });
 
         // Process exit must still be published within READER_JOIN_BOUND with a
-        // typed failure instead of hanging on the blocked writer, while
-        // preserving ownership of the still-running actor handle.
+        // typed failure instead of hanging on the blocked writer, while the
+        // supervisor retains direct ownership of the pending actor handle
+        // instead of returning it to the coordinator.
         let exit_err = futures_lite::future::block_on(exit.future())
             .expect_err("stalled blocking stdin writer must publish typed join failure");
         assert_eq!(
             exit_err.diagnostic().code(),
             "swallowtail.local_process.stdin_join_failed"
         );
-        supervisor.join().expect("supervisor exits promptly");
         assert!(
             !state.dropped.load(Ordering::SeqCst),
             "writer is still blocked when bounded exit publishes"
@@ -1347,27 +1350,33 @@ mod tests {
                 .lock()
                 .expect("stdin lock")
                 .actor_handle
-                .is_some(),
-            "pending actor handle ownership must be preserved after bounded timeout"
+                .is_none(),
+            "supervisor must own the pending actor handle rather than leaving it in the coordinator"
+        );
+        // Simulate caller teardown after wait() returns: drop the caller's
+        // handles without calling any private shutdown helper a second time.
+        drop(_reply);
+        drop(coordinator);
+        drop(exit);
+        drop(output);
+        assert!(
+            !supervisor.is_finished(),
+            "supervisor must remain alive owning the pending actor handle until it completes"
         );
 
-        // Once the blocked writer unblocks, the retained handle joins cleanly.
+        // Once the blocked writer eventually unblocks, the supervisor itself
+        // joins the actor and exits cleanly.
         {
             let mut release = state.release.lock().expect("release lock");
             *release = true;
             state.release_cv.notify_all();
         }
-        coordinator
-            .shutdown_and_join_bounded(Duration::from_secs(2))
-            .expect("retained actor handle joins cleanly once writer unblocks");
-        assert!(state.dropped.load(Ordering::SeqCst));
+        supervisor
+            .join()
+            .expect("supervisor joins pending stdin actor and exits cleanly");
         assert!(
-            coordinator
-                .inbox
-                .lock()
-                .expect("stdin lock")
-                .actor_handle
-                .is_none()
+            state.dropped.load(Ordering::SeqCst),
+            "blocked writer must be dropped before the supervisor finishes joining the actor"
         );
     }
 

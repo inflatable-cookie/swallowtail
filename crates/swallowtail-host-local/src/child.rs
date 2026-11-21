@@ -84,17 +84,39 @@ enum StdinPipeState {
     Closed,
 }
 
+/// Maximum number of queued stdin write requests allowed while an active write
+/// is in progress.
+const MAX_QUEUED_STDIN_REQUESTS: usize = 64;
+
 struct StdinInbox {
     pipe: StdinPipeState,
     close_requested: bool,
     queue: VecDeque<WriteRequest>,
     actor_waker: Option<Waker>,
+    actor_handle: Option<thread::JoinHandle<()>>,
     close_done_waiters: Vec<(u64, Waker)>,
     next_waiter_id: u64,
     written_bytes: usize,
+    active_remaining_bytes: usize,
+    queued_bytes: usize,
 }
 
-pub(super) struct StdinCoordinator {
+impl StdinInbox {
+    fn purge_cancelled_queue(&mut self) {
+        let mut retained = VecDeque::with_capacity(self.queue.len());
+        let mut retained_bytes = 0usize;
+        while let Some(request) = self.queue.pop_front() {
+            if !request.reply.is_cancelled() {
+                retained_bytes = retained_bytes.saturating_add(request.bytes.len());
+                retained.push_back(request);
+            }
+        }
+        self.queue = retained;
+        self.queued_bytes = retained_bytes;
+    }
+}
+
+pub(crate) struct StdinCoordinator {
     inbox: Mutex<StdinInbox>,
     stdin_limit: usize,
 }
@@ -107,21 +129,26 @@ impl StdinCoordinator {
                 close_requested: false,
                 queue: VecDeque::new(),
                 actor_waker: None,
+                actor_handle: None,
                 close_done_waiters: Vec::new(),
                 next_waiter_id: 1,
                 written_bytes: 0,
+                active_remaining_bytes: 0,
+                queued_bytes: 0,
             }),
             stdin_limit,
         })
     }
 
-    fn wake_actor(&self) {
-        let waker = self
-            .inbox
-            .lock()
-            .expect("local process stdin lock poisoned")
-            .actor_waker
-            .take();
+    fn cancel_queued_and_wake(&self) {
+        let waker = {
+            let mut inbox = self
+                .inbox
+                .lock()
+                .expect("local process stdin lock poisoned");
+            inbox.purge_cancelled_queue();
+            inbox.actor_waker.take()
+        };
         if let Some(waker) = waker {
             waker.wake();
         }
@@ -135,6 +162,8 @@ impl StdinCoordinator {
                 .expect("local process stdin lock poisoned");
             inbox.pipe = StdinPipeState::Closed;
             inbox.actor_waker = None;
+            inbox.active_remaining_bytes = 0;
+            inbox.queued_bytes = 0;
             let pending = std::mem::take(&mut inbox.queue);
             let waiters = std::mem::take(&mut inbox.close_done_waiters);
             (pending, waiters)
@@ -147,33 +176,62 @@ impl StdinCoordinator {
         }
     }
 
+    pub(crate) fn shutdown_and_join(&self) {
+        self.close_nonblocking();
+        let handle = self
+            .inbox
+            .lock()
+            .expect("local process stdin lock poisoned")
+            .actor_handle
+            .take();
+        if let Some(handle) = handle {
+            let _ = handle.join();
+        }
+    }
+
     fn close_nonblocking(&self) {
-        let (dropped, actor_waker, waiters) = {
+        let (dropped, pending, actor_waker, waiters) = {
             let mut inbox = self
                 .inbox
                 .lock()
                 .expect("local process stdin lock poisoned");
             inbox.close_requested = true;
+            inbox.queued_bytes = 0;
+            let pending = std::mem::take(&mut inbox.queue);
             match std::mem::replace(&mut inbox.pipe, StdinPipeState::Closed) {
                 StdinPipeState::Raw(stdin) => {
                     let waiters = std::mem::take(&mut inbox.close_done_waiters);
-                    (Some(stdin), None, waiters)
+                    (Some(stdin), pending, None, waiters)
                 }
                 StdinPipeState::ActorRunning => {
-                    inbox.pipe = StdinPipeState::ActorRunning;
-                    (None, inbox.actor_waker.take(), Vec::new())
+                    #[cfg(unix)]
+                    {
+                        inbox.pipe = StdinPipeState::ActorRunning;
+                        (None, pending, inbox.actor_waker.take(), Vec::new())
+                    }
+                    #[cfg(not(unix))]
+                    {
+                        // On non-Unix, synchronous pipe writes cannot be interrupted
+                        // until the child exits; mark Closed immediately so close_stdin()
+                        // never stalls on a non-reading child.
+                        let waiters = std::mem::take(&mut inbox.close_done_waiters);
+                        (None, pending, inbox.actor_waker.take(), waiters)
+                    }
                 }
                 StdinPipeState::Bootstrapping => {
                     inbox.pipe = StdinPipeState::Bootstrapping;
-                    (None, None, Vec::new())
+                    (None, pending, None, Vec::new())
                 }
                 StdinPipeState::Closed => {
                     let waiters = std::mem::take(&mut inbox.close_done_waiters);
-                    (None, None, waiters)
+                    (None, pending, None, waiters)
                 }
             }
         };
         drop(dropped);
+        for request in pending {
+            request.reply.complete(Err(stdin_closed_failure()));
+        }
         if let Some(waker) = actor_waker {
             waker.wake();
         }
@@ -195,12 +253,26 @@ impl StdinCoordinator {
             if matches!(inbox.pipe, StdinPipeState::Bootstrapping) {
                 return Err(stdin_closed_failure());
             }
+            inbox.purge_cancelled_queue();
+            let committed = inbox
+                .written_bytes
+                .saturating_add(inbox.active_remaining_bytes)
+                .saturating_add(inbox.queued_bytes);
+            if bytes.len() > self.stdin_limit.saturating_sub(committed)
+                || inbox.queue.len() >= MAX_QUEUED_STDIN_REQUESTS
+            {
+                return Err(failure(
+                    "swallowtail.local_process.stdin_limit_exceeded",
+                    "Local process input exceeded its host-approved limit",
+                ));
+            }
             let spawn_stdin = match std::mem::replace(&mut inbox.pipe, StdinPipeState::ActorRunning)
             {
                 StdinPipeState::Raw(stdin) => Some(stdin),
                 StdinPipeState::ActorRunning => None,
                 StdinPipeState::Bootstrapping | StdinPipeState::Closed => unreachable!(),
             };
+            inbox.queued_bytes = inbox.queued_bytes.saturating_add(bytes.len());
             inbox.queue.push_back(WriteRequest {
                 bytes,
                 reply: Arc::clone(&reply),
@@ -209,13 +281,21 @@ impl StdinCoordinator {
         };
         if let Some(stdin) = spawn_stdin {
             let coordinator = Arc::clone(self);
-            if thread::Builder::new()
+            match thread::Builder::new()
                 .name("swallowtail-stdin".to_owned())
                 .spawn(move || run_stdin_actor(coordinator, stdin))
-                .is_err()
             {
-                self.finish_actor_close();
-                return Err(stdin_write_failed_failure());
+                Ok(handle) => {
+                    let mut inbox = self
+                        .inbox
+                        .lock()
+                        .expect("local process stdin lock poisoned");
+                    inbox.actor_handle = Some(handle);
+                }
+                Err(_) => {
+                    self.finish_actor_close();
+                    return Err(stdin_write_failed_failure());
+                }
             }
         } else if let Some(waker) = actor_waker {
             waker.wake();
@@ -263,7 +343,7 @@ impl Drop for WriteFuture {
             .lock()
             .expect("local process stdin reply lock poisoned")
             .waker = None;
-        self.coordinator.wake_actor();
+        self.coordinator.cancel_queued_and_wake();
     }
 }
 
@@ -342,7 +422,9 @@ fn run_stdin_actor(coordinator: Arc<StdinCoordinator>, stdin: ChildStdin) {
                     return Poll::Ready(None);
                 }
                 while let Some(request) = inbox.queue.pop_front() {
+                    inbox.queued_bytes = inbox.queued_bytes.saturating_sub(request.bytes.len());
                     if !request.reply.is_cancelled() {
+                        inbox.active_remaining_bytes = request.bytes.len();
                         return Poll::Ready(Some(request));
                     }
                 }
@@ -353,20 +435,6 @@ fn run_stdin_actor(coordinator: Arc<StdinCoordinator>, stdin: ChildStdin) {
             let Some(request) = next else {
                 break;
             };
-            let within_limit = {
-                let inbox = coordinator
-                    .inbox
-                    .lock()
-                    .expect("local process stdin lock poisoned");
-                request.bytes.len() <= coordinator.stdin_limit.saturating_sub(inbox.written_bytes)
-            };
-            if !within_limit {
-                request.reply.complete(Err(failure(
-                    "swallowtail.local_process.stdin_limit_exceeded",
-                    "Local process input exceeded its host-approved limit",
-                )));
-                continue;
-            }
             let write_all = async {
                 let mut offset = 0;
                 while offset < request.bytes.len() {
@@ -379,11 +447,14 @@ fn run_stdin_actor(coordinator: Arc<StdinCoordinator>, stdin: ChildStdin) {
                     }
                     // Charge bytes immediately as they are accepted by the kernel
                     // pipe so cancelling a partial write never grants extra quota.
-                    coordinator
+                    let mut inbox = coordinator
                         .inbox
                         .lock()
-                        .expect("local process stdin lock poisoned")
-                        .written_bytes += count;
+                        .expect("local process stdin lock poisoned");
+                    inbox.written_bytes += count;
+                    inbox.active_remaining_bytes =
+                        inbox.active_remaining_bytes.saturating_sub(count);
+                    drop(inbox);
                     offset += count;
                 }
                 Ok(())
@@ -418,6 +489,11 @@ fn run_stdin_actor(coordinator: Arc<StdinCoordinator>, stdin: ChildStdin) {
                 },
             )
             .await;
+            coordinator
+                .inbox
+                .lock()
+                .expect("local process stdin lock poisoned")
+                .active_remaining_bytes = 0;
             match outcome {
                 WriteOutcome::Finished(result) => request.reply.complete(result),
                 WriteOutcome::Closed => {
@@ -445,46 +521,51 @@ fn run_stdin_actor(coordinator: Arc<StdinCoordinator>, mut stdin: ChildStdin) {
             if inbox.close_requested {
                 break;
             }
-            inbox.queue.pop_front()
+            let mut found = None;
+            while let Some(request) = inbox.queue.pop_front() {
+                inbox.queued_bytes = inbox.queued_bytes.saturating_sub(request.bytes.len());
+                if !request.reply.is_cancelled() {
+                    inbox.active_remaining_bytes = request.bytes.len();
+                    found = Some(request);
+                    break;
+                }
+            }
+            found
         };
         let Some(request) = next else {
             thread::sleep(std::time::Duration::from_millis(5));
             continue;
         };
-        if request.reply.is_cancelled() {
-            continue;
-        }
-        let within_limit = {
-            let inbox = coordinator
-                .inbox
-                .lock()
-                .expect("local process stdin lock poisoned");
-            request.bytes.len() <= coordinator.stdin_limit.saturating_sub(inbox.written_bytes)
-        };
-        if !within_limit {
-            request.reply.complete(Err(failure(
-                "swallowtail.local_process.stdin_limit_exceeded",
-                "Local process input exceeded its host-approved limit",
-            )));
-            continue;
-        }
         let mut offset = 0;
         let mut failed = false;
         while offset < request.bytes.len() {
+            if request.reply.is_cancelled() {
+                break;
+            }
             match stdin.write(&request.bytes[offset..]) {
                 Ok(0) | Err(_) => {
                     failed = true;
                     break;
                 }
                 Ok(count) => {
-                    coordinator
+                    let mut inbox = coordinator
                         .inbox
                         .lock()
-                        .expect("local process stdin lock poisoned")
-                        .written_bytes += count;
+                        .expect("local process stdin lock poisoned");
+                    inbox.written_bytes += count;
+                    inbox.active_remaining_bytes =
+                        inbox.active_remaining_bytes.saturating_sub(count);
                     offset += count;
                 }
             }
+        }
+        coordinator
+            .inbox
+            .lock()
+            .expect("local process stdin lock poisoned")
+            .active_remaining_bytes = 0;
+        if request.reply.is_cancelled() {
+            continue;
         }
         if failed || stdin.flush().is_err() {
             request.reply.complete(Err(stdin_write_failed_failure()));
@@ -783,6 +864,7 @@ fn control_closed_failure() -> RuntimeFailure {
 
 impl Drop for LocalProcessHandle {
     fn drop(&mut self) {
+        self.close_input();
         if !self.shared.exit.is_complete() {
             let _ = self.force();
         }

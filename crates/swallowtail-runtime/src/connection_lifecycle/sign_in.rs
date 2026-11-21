@@ -1457,6 +1457,18 @@ fn cleanup_timed_out_failure() -> SignInFailure {
     )
 }
 
+fn cleanup_outcome_failure(outcome: crate::CleanupOutcome) -> Result<(), SignInFailure> {
+    match outcome {
+        crate::CleanupOutcome::Clean | crate::CleanupOutcome::NotApplicable => Ok(()),
+        crate::CleanupOutcome::Degraded(diagnostic) | crate::CleanupOutcome::Failed(diagnostic) => {
+            Err(SignInFailure {
+                kind: SignInFailureKind::HostPort,
+                diagnostic,
+            })
+        }
+    }
+}
+
 async fn cleanup_session_async(
     session: &mut SignInSession,
     services: &HostServices,
@@ -1501,9 +1513,10 @@ fn release_loopback_now(
     let mut future = if let Some(future) = take_pending_loopback_release(session) {
         future
     } else if session.loopback.is_some() {
-        let loopback = services
-            .loopback_callback()
-            .or(session.loopback_service.as_ref())
+        let loopback = session
+            .loopback_service
+            .as_ref()
+            .or_else(|| services.loopback_callback())
             .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
         let lease = session
             .loopback
@@ -1514,8 +1527,9 @@ fn release_loopback_now(
         return Ok(false);
     };
     match poll_box_future_once(&mut future) {
-        Poll::Ready(_) => {
+        Poll::Ready(outcome) => {
             session.loopback_service = None;
+            cleanup_outcome_failure(outcome)?;
             Ok(false)
         }
         Poll::Pending => {
@@ -1532,9 +1546,10 @@ async fn release_loopback_async(
     let future = if let Some(future) = take_pending_loopback_release(session) {
         Some(future)
     } else if session.loopback.is_some() {
-        let loopback = services
-            .loopback_callback()
-            .or(session.loopback_service.as_ref())
+        let loopback = session
+            .loopback_service
+            .as_ref()
+            .or_else(|| services.loopback_callback())
             .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
         let lease = session
             .loopback
@@ -1545,10 +1560,11 @@ async fn release_loopback_async(
         None
     };
     if let Some(future) = future {
-        if await_cleanup_budget(future, services).await.is_none() {
+        let Some(outcome) = await_cleanup_budget(future, services).await else {
             return Err(cleanup_timed_out_failure());
-        }
+        };
         session.loopback_service = None;
+        cleanup_outcome_failure(outcome)?;
     }
     Ok(())
 }

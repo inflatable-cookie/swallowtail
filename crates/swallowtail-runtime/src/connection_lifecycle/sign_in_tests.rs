@@ -2320,6 +2320,120 @@ fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loo
         "credentials must not be persisted when loopback release did not finish"
     );
 
+    // 2c. Cleanup when a DIFFERENT LoopbackCallbackService is registered still releases
+    // through the original binder, leaving the foreign port untouched.
+    let original_ports = MockSignInPorts::new(credential(), audience());
+    let foreign_ports = MockSignInPorts::new(credential(), audience());
+    let original_services = interactive_services(Arc::clone(&original_ports));
+    let foreign_services = interactive_services(Arc::clone(&foreign_ports));
+    let session = block_on(start_sign_in_async(
+        &original_services,
+        interactive_request(),
+    ))
+    .expect("start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(session, &foreign_services))
+            .expect("cancel releases via original binder"),
+        SignInStatus::Cancelled
+    );
+    assert!(
+        original_ports.calls().contains(&"loopback_release"),
+        "original binder must receive the release"
+    );
+    assert!(
+        !foreign_ports.calls().contains(&"loopback_release"),
+        "foreign loopback port must not receive a lease it never bound"
+    );
+
+    // 2d. A completed CleanupOutcome::Failed from loopback.release surfaces its exact
+    // diagnostic and blocks credential persistence in complete_sign_in_async.
+    struct FailingReleaseLoopbackPorts;
+    impl UrlOpenService for FailingReleaseLoopbackPorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for FailingReleaseLoopbackPorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.failing.release").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            let callback_id = lease.callback_id().clone();
+            Box::pin(async move { Ok(Some(LoopbackCallbackReceipt::new(callback_id))) })
+        }
+        fn materialize_credential(
+            &self,
+            _receipt: &LoopbackCallbackReceipt,
+            _audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            Ok(credential())
+        }
+        fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            Box::pin(async {
+                CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.loopback_release_failed",
+                    "Loopback listener failed to close",
+                ))
+            })
+        }
+    }
+
+    let failing_release_ports = Arc::new(FailingReleaseLoopbackPorts);
+    let failing_release_services = HostServices::new(host_id())
+        .with_url_open(failing_release_ports.clone())
+        .with_loopback_callback(failing_release_ports)
+        .with_time(Arc::new(FixedTime(1)));
+    let failing_store = MemoryStore::new();
+    admitted(&failing_store);
+    let mut failing_session = block_on(start_sign_in_async(
+        &failing_release_services,
+        interactive_request(),
+    ))
+    .expect("start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(
+            &mut failing_session,
+            &failing_release_services
+        ))
+        .expect("poll becomes ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let release_err = block_on(complete_sign_in_async(
+        failing_session,
+        &failing_release_services,
+        Some(&failing_store),
+    ))
+    .expect_err("failed loopback release must fail closed before persisting credentials");
+    assert_eq!(release_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        release_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    let stored_after_fail = failing_store
+        .get_instance(&instance_id())
+        .expect("store read")
+        .expect("instance exists");
+    assert_eq!(
+        stored_after_fail.credential_refs().len(),
+        0,
+        "credentials must not be persisted when loopback release returned CleanupOutcome::Failed"
+    );
+
     // 3. cleanup_session_now retains pending stop futures instead of dropping and restarting them.
     struct CountingStopProcess {
         stop_calls: Arc<std::sync::atomic::AtomicUsize>,

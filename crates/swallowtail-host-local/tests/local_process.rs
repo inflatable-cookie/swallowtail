@@ -781,38 +781,114 @@ fn write_stdin_does_not_deadlock_concurrent_close_or_force_stop() {
 #[cfg(unix)]
 #[test]
 fn dropped_partial_stdin_write_still_charges_written_bytes() {
-    use std::pin::pin;
     use std::task::{Context, Poll, Waker};
-    use std::time::Duration;
+    use std::time::{Duration, Instant};
 
     let resource_directory = temporary_resource();
     let limit = 512 * 1024;
+    let limits = LocalProcessLimits::new(8, 1024, limit, 1024, 1024);
+    let (host, executable, environment, resource) =
+        fixture_host("read-prefix-then-hold", limits, &resource_directory);
+    let process = start(&host, request(&executable, &environment, &resource))
+        .expect("prefix-then-hold fixture starts");
+
+    // Start a write equal to the full stdin_limit. Wait until the child
+    // acknowledges reading a prefix (proving the actor delivered bytes and
+    // charged written_bytes) before dropping the stalled write future.
+    {
+        let mut write_future = process.write_stdin(ProcessInputChunk::new(vec![b'b'; limit]));
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(matches!(
+            write_future.as_mut().poll(&mut context),
+            Poll::Pending
+        ));
+        let ack_deadline = Instant::now() + Duration::from_secs(5);
+        while !resource_directory.join("prefix-received").exists() {
+            assert!(
+                Instant::now() < ack_deadline,
+                "child never acknowledged stdin prefix"
+            );
+            std::thread::sleep(Duration::from_millis(10));
+        }
+    }
+
+    // A second write of the full limit must now fail immediately at admission
+    // with stdin_limit_exceeded because the delivered prefix was already charged.
+    assert_failure_code(
+        block_on(process.write_stdin(ProcessInputChunk::new(vec![b'c'; limit]))),
+        "swallowtail.local_process.stdin_limit_exceeded",
+    );
+    block_on(process.force_stop()).expect("force stop succeeds");
+    let _ = block_on(process.wait()).expect("child joins");
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[cfg(unix)]
+#[test]
+fn natural_child_exit_shuts_down_and_joins_stdin_actor() {
+    let resource_directory = temporary_resource();
+    let limits = LocalProcessLimits::new(8, 1024, 1024, 1024, 1024);
+    let (host, executable, environment, resource) =
+        fixture_host("read-prefix-then-exit", limits, &resource_directory);
+    let process = start(&host, request(&executable, &environment, &resource))
+        .expect("prefix-then-exit fixture starts");
+
+    // Spawn the lazy stdin actor via write_stdin and do NOT call close_stdin.
+    block_on(process.write_stdin(ProcessInputChunk::new(b"done".to_vec())))
+        .expect("prefix write succeeds");
+    let exit = block_on(process.wait()).expect("child exits naturally");
+    assert!(exit.success());
+
+    // The process supervisor must have closed and joined the stdin actor
+    // before publishing exit, so any later write fails with stdin_closed.
+    assert_failure_code(
+        block_on(process.write_stdin(ProcessInputChunk::new(b"late".to_vec()))),
+        "swallowtail.local_process.stdin_closed",
+    );
+    drop(process);
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[cfg(unix)]
+#[test]
+fn stdin_backlog_is_bounded_and_purges_cancelled_writes() {
+    use std::task::{Context, Poll, Waker};
+
+    let resource_directory = temporary_resource();
+    let limit = 256 * 1024;
     let limits = LocalProcessLimits::new(8, 1024, limit, 1024, 1024);
     let (host, executable, environment, resource) =
         fixture_host("hold", limits, &resource_directory);
     let process =
         start(&host, request(&executable, &environment, &resource)).expect("hold fixture starts");
 
-    // Start a write equal to the full stdin_limit while the child does not read.
-    // The actor writes the pipe-buffer prefix and suspends; dropping the future
-    // must keep those already-written bytes charged against stdin_limit.
-    {
-        let mut write_future = pin!(process.write_stdin(ProcessInputChunk::new(vec![b'b'; limit])));
-        let mut context = Context::from_waker(Waker::noop());
-        assert!(matches!(
-            write_future.as_mut().poll(&mut context),
-            Poll::Pending
-        ));
-        std::thread::sleep(Duration::from_millis(50));
-    }
+    // First write occupies half the budget and stalls on the full pipe.
+    let mut first = process.write_stdin(ProcessInputChunk::new(vec![b'a'; 200 * 1024]));
+    let mut context = Context::from_waker(Waker::noop());
+    assert!(matches!(first.as_mut().poll(&mut context), Poll::Pending));
 
-    // A second write of the full limit must now fail with stdin_limit_exceeded
-    // because the prefix delivered to the pipe was already charged.
+    // A queued second write that would exceed stdin_limit is rejected at admission.
     assert_failure_code(
-        block_on(process.write_stdin(ProcessInputChunk::new(vec![b'c'; limit]))),
+        block_on(process.write_stdin(ProcessInputChunk::new(vec![b'b'; 100 * 1024]))),
         "swallowtail.local_process.stdin_limit_exceeded",
     );
+
+    // A queued write within the remaining budget is admitted, and dropping it
+    // purges it from the backlog so the same remaining budget can be reused.
+    {
+        let mut queued = process.write_stdin(ProcessInputChunk::new(vec![b'c'; 40 * 1024]));
+        assert!(matches!(queued.as_mut().poll(&mut context), Poll::Pending));
+        assert_failure_code(
+            block_on(process.write_stdin(ProcessInputChunk::new(vec![b'd'; 30 * 1024]))),
+            "swallowtail.local_process.stdin_limit_exceeded",
+        );
+    }
+    let mut reused = process.write_stdin(ProcessInputChunk::new(vec![b'e'; 40 * 1024]));
+    assert!(matches!(reused.as_mut().poll(&mut context), Poll::Pending));
+
     block_on(process.force_stop()).expect("force stop succeeds");
+    drop(reused);
+    drop(first);
     let _ = block_on(process.wait()).expect("child joins");
     std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
 }

@@ -1,3 +1,4 @@
+use crate::child::StdinCoordinator;
 use crate::output::{OutputState, failure};
 use crate::process_reader::ReaderControl;
 use std::process::{Child, ExitStatus};
@@ -73,6 +74,7 @@ pub(crate) fn supervise_child(
     group_owner: &mut Option<Child>,
     commands: Receiver<ChildCommand>,
     readers: ReaderSupervision,
+    stdin: &StdinCoordinator,
     output: &OutputState,
     exit: &ExitState,
 ) {
@@ -209,6 +211,8 @@ pub(crate) fn supervise_child(
     } else {
         output.complete_supervision();
     }
+
+    stdin.shutdown_and_join();
 
     let cleanup_error = tree_error.or(reader_error);
     exit.complete(match cleanup_error {

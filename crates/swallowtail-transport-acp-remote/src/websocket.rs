@@ -139,8 +139,16 @@ pub(crate) async fn run(
                             }
                             initialized = true;
                         }
-                        if events.send(WorkerEvent::Message(message)).await.is_err() {
-                            break Err(transport_error());
+                        match race_deadline(
+                            deadline,
+                            time.as_deref(),
+                            events.send(WorkerEvent::Message(message)),
+                        )
+                        .await
+                        {
+                            Ok(Ok(())) => {}
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
                         }
                     }
                     Some(Ok(WebSocketMessage::Ping(payload))) => {

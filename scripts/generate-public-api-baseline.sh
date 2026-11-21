@@ -9,10 +9,20 @@ if [[ $# -ne 1 || -z $1 ]]; then
   exit 2
 fi
 
+# shellcheck source=scripts/release-version-identity.sh
+source "$release_repo_root/scripts/release-version-identity.sh"
+release_load_version_identity
+
+release_baseline_packages=release-baselines/public-api-$release_current_version/packages.txt
+if [[ ! -f $release_baseline_packages ]]; then
+  printf 'missing working package inventory %s\n' "$release_baseline_packages" >&2
+  exit 1
+fi
+
 release_output_dir=$1
 release_toolchain=nightly-2026-08-05
 release_tool_version='cargo-public-api 0.52.0'
-release_expected_packages=41
+release_expected_packages=$(wc -l < "$release_baseline_packages" | tr -d ' ')
 
 if ! command -v cargo-public-api >/dev/null 2>&1; then
   printf 'cargo-public-api 0.52.0 is required; install it with cargo install cargo-public-api --version 0.52.0 --locked\n' >&2

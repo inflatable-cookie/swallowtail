@@ -60,13 +60,39 @@ else
   release_removal_policy=reviewed
 fi
 
+release_check_packages="$release_actual_dir/union-packages.txt"
+LC_ALL=C sort -u \
+  "$release_expected_packages" \
+  "$release_immutable_baseline_dir/packages.txt" \
+  > "$release_check_packages"
+
 while IFS= read -r release_package; do
   release_api="$release_baseline_dir/$release_package.txt"
-  if [[ $release_removal_policy == immutable && -f "$release_immutable_baseline_dir/$release_package.txt" ]]; then
+  release_immutable_api="$release_immutable_baseline_dir/$release_package.txt"
+  release_in_expected=false
+  if grep -Fxq "$release_package" "$release_expected_packages"; then
+    release_in_expected=true
+  fi
+  release_in_immutable=false
+  if grep -Fxq "$release_package" "$release_immutable_baseline_dir/packages.txt"; then
+    release_in_immutable=true
+  fi
+
+  if [[ $release_removal_policy == immutable && $release_in_immutable == true ]]; then
+    if [[ ! -f $release_immutable_api ]]; then
+      printf 'missing immutable v%s release API baseline: %s\n' \
+        "$release_previous_version" "$release_immutable_api" >&2
+      exit 1
+    fi
+    if [[ $release_in_expected != true || ! -f $release_api ]]; then
+      printf 'v%s release API removes an immutable v%s package: %s\n' \
+        "$release_current_version" "$release_previous_version" "$release_package" >&2
+      exit 1
+    fi
     release_removed_api="$release_actual_dir/$release_package.removed.txt"
     release_grep_status=0
     grep -Fvx -f "$release_api" \
-      "$release_immutable_baseline_dir/$release_package.txt" \
+      "$release_immutable_api" \
       > "$release_removed_api" || release_grep_status=$?
     if [[ $release_grep_status -ne 0 && $release_grep_status -ne 1 ]]; then
       printf 'public API removal check failed for %s (grep exit %s)\n' \
@@ -80,10 +106,13 @@ while IFS= read -r release_package; do
       exit 1
     fi
   fi
-  diff -u \
-    "$release_api" \
-    "$release_actual_dir/$release_package.txt"
-done < "$release_expected_packages"
+
+  if [[ $release_in_expected == true ]]; then
+    diff -u \
+      "$release_api" \
+      "$release_actual_dir/$release_package.txt"
+  fi
+done < "$release_check_packages"
 
 if [[ $release_removal_policy == immutable ]]; then
   printf 'semantic API passed: %s packages at v%s; immutable v%s remains %s; no API removals are permitted in this patch\n' \

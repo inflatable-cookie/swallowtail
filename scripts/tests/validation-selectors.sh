@@ -300,7 +300,8 @@ chmod +x "$validation_driver_bin/oxide" "$validation_driver_bin/cargo" \
 validation_invalid_log="$validation_driver_fixture/log-invalid-root"
 mkdir -p "$validation_invalid_log"
 validation_invalid_root="$validation_driver_fixture/missing scratch root"
-if env VALIDATION_DRIVER_FAIL_CHECK=0 \
+if env GITHUB_ACTIONS=false EFFIGY_OXIDE_ESCAPE=oxide \
+  VALIDATION_DRIVER_FAIL_CHECK=0 \
   VALIDATION_DRIVER_LOG="$validation_invalid_log" \
   VALIDATION_HOST_TEMP="$validation_host_temp" \
   TMPDIR="$validation_invalid_root" TMP="$validation_driver_fixture" \
@@ -337,7 +338,8 @@ for validation_driver_outcome in success failure; do
   else
     validation_driver_failure_env=(VALIDATION_DRIVER_FAIL_CHECK=0)
   fi
-  if env "${validation_driver_failure_env[@]}" \
+  if env GITHUB_ACTIONS=false EFFIGY_OXIDE_ESCAPE=oxide \
+    "${validation_driver_failure_env[@]}" \
     VALIDATION_DRIVER_LOG="$validation_driver_log" \
     VALIDATION_HOST_TEMP="$validation_host_temp" \
     TMPDIR="$validation_driver_root/" TMP="$validation_driver_root/" \
@@ -419,5 +421,258 @@ if validation_extracted_tree_is_safe "$validation_debt_tree" /nonexistent-repo-r
   exit 1
 fi
 rm -rf "$validation_debt_root"
+
+# Nextest profile.ci / profile.ci-process complement sync and archive package
+# ownership against .github/workflows/ci.yml.
+validation_nextest_sync_check() {
+  local validation_nextest_toml=$1
+  local validation_ci_yml=$2
+  local validation_metadata_json=$3
+  python3 - "$validation_nextest_toml" "$validation_ci_yml" "$validation_metadata_json" <<'PY'
+import json
+import re
+import shlex
+import sys
+from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:
+    tomllib = None
+
+nextest_path = Path(sys.argv[1])
+ci_path = Path(sys.argv[2])
+metadata = json.loads(Path(sys.argv[3]).read_text(encoding="utf-8"))
+
+
+def fail(message: str) -> None:
+    print(f"nextest sync check failed: {message}", file=sys.stderr)
+    raise SystemExit(1)
+
+
+def parse_nextest_filters(path: Path) -> dict[str, str]:
+    text = path.read_text(encoding="utf-8")
+    if tomllib is not None:
+        data = tomllib.loads(text)
+        profiles = data.get("profile", {})
+        return {
+            name: prof["default-filter"]
+            for name, prof in profiles.items()
+            if isinstance(prof, dict) and isinstance(prof.get("default-filter"), str)
+        }
+    filters: dict[str, str] = {}
+    current_profile: str | None = None
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        section = re.match(r"^\[profile\.([A-Za-z0-9_-]+)\]$", line)
+        if section:
+            current_profile = section.group(1)
+            continue
+        if line.startswith("["):
+            current_profile = None
+            continue
+        if current_profile is not None:
+            m = re.match(r'^default-filter\s*=\s*"([^"]*)"$', line)
+            if m:
+                filters[current_profile] = m.group(1)
+    return filters
+
+
+filters = parse_nextest_filters(nextest_path)
+if "ci" not in filters or "ci-process" not in filters:
+    fail("missing default-filter on profile.ci or profile.ci-process")
+
+ci_filter = filters["ci"]
+ci_process_filter = filters["ci-process"]
+
+ci_match = re.fullmatch(
+    r"not \((binary\([A-Za-z0-9_]+\)(?: \| binary\([A-Za-z0-9_]+\))*)\)",
+    ci_filter,
+)
+if ci_match is None:
+    fail(f"profile.ci default-filter is not an exact negated binary list: {ci_filter!r}")
+
+ci_process_match = re.fullmatch(
+    r"(binary\([A-Za-z0-9_]+\)(?: \| binary\([A-Za-z0-9_]+\))*)",
+    ci_process_filter,
+)
+if ci_process_match is None:
+    fail(f"profile.ci-process default-filter is not a binary disjunction: {ci_process_filter!r}")
+
+ci_bins = re.findall(r"binary\(([A-Za-z0-9_]+)\)", ci_match.group(1))
+ci_process_bins = re.findall(r"binary\(([A-Za-z0-9_]+)\)", ci_process_match.group(1))
+
+if len(ci_bins) != len(set(ci_bins)):
+    fail(f"profile.ci lists duplicate binaries: {ci_bins}")
+if len(ci_process_bins) != len(set(ci_process_bins)):
+    fail(f"profile.ci-process lists duplicate binaries: {ci_process_bins}")
+if set(ci_bins) != set(ci_process_bins):
+    fail(
+        f"profile.ci and profile.ci-process binary sets differ: "
+        f"ci_only={sorted(set(ci_bins) - set(ci_process_bins))}, "
+        f"ci_process_only={sorted(set(ci_process_bins) - set(ci_bins))}"
+    )
+
+ci_lines = ci_path.read_text(encoding="utf-8").splitlines()
+in_job = False
+job_lines: list[str] = []
+for line in ci_lines:
+    if re.match(r"^  stable-process-nextest:\s*$", line):
+        in_job = True
+        continue
+    if in_job:
+        if re.match(r"^  [A-Za-z0-9_-]+:\s*$", line):
+            break
+        job_lines.append(line)
+if not job_lines:
+    fail("missing stable-process-nextest job in ci.yml")
+
+job_text = "\n".join(job_lines)
+archive_match = re.search(
+    r"cargo nextest archive\b((?:[^\n]*\\\n)*[^\n]*)",
+    job_text,
+)
+if archive_match is None:
+    fail("missing cargo nextest archive invocation in stable-process-nextest")
+
+archive_cmd = archive_match.group(0).replace("\\\n", " ")
+tokens = shlex.split(archive_cmd)
+archive_packages: list[str] = []
+idx = 0
+while idx < len(tokens):
+    if tokens[idx] in ("-p", "--package"):
+        if idx + 1 >= len(tokens):
+            fail("trailing -p/--package in cargo nextest archive")
+        archive_packages.append(tokens[idx + 1])
+        idx += 2
+    else:
+        idx += 1
+
+if not archive_packages:
+    fail("stable-process-nextest archive step lists no -p packages")
+if len(archive_packages) != len(set(archive_packages)):
+    fail(f"stable-process-nextest archive step lists duplicate -p packages: {archive_packages}")
+archive_pkg_set = set(archive_packages)
+
+test_owners: dict[str, set[str]] = {}
+workspace_packages: set[str] = set()
+for pkg in metadata.get("packages", []):
+    pkg_name = pkg["name"]
+    workspace_packages.add(pkg_name)
+    for target in pkg.get("targets", []):
+        if "test" in target.get("kind", []):
+            test_owners.setdefault(target["name"], set()).add(pkg_name)
+
+unknown_archive_pkgs = sorted(archive_pkg_set - workspace_packages)
+if unknown_archive_pkgs:
+    fail(f"stable-process-nextest lists unknown workspace packages: {unknown_archive_pkgs}")
+
+owned_by_ci_process: set[str] = set()
+for binary in ci_process_bins:
+    owners = test_owners.get(binary)
+    if not owners:
+        fail(f"ci-process binary {binary!r} is not a workspace test target")
+    missing_pkgs = sorted(owners - archive_pkg_set)
+    if missing_pkgs:
+        fail(
+            f"ci-process binary {binary!r} belongs to package(s) {missing_pkgs} "
+            f"omitted from stable-process-nextest archive (-p {sorted(archive_pkg_set)})"
+        )
+    owned_by_ci_process |= owners
+
+unused_archive_pkgs = sorted(archive_pkg_set - owned_by_ci_process)
+if unused_archive_pkgs:
+    fail(
+        f"stable-process-nextest archive lists package(s) with no ci-process binary: "
+        f"{unused_archive_pkgs}"
+    )
+PY
+}
+
+validation_nextest_meta="$validation_scratch_base/validation-nextest-meta.$$.json"
+validation_cleanup_paths+=("$validation_nextest_meta")
+bash scripts/oxide-rust.sh metadata --no-deps --format-version 1 > "$validation_nextest_meta"
+validation_nextest_sync_check \
+  "$validation_repo_root/.config/nextest.toml" \
+  "$validation_repo_root/.github/workflows/ci.yml" \
+  "$validation_nextest_meta"
+rm -f "$validation_nextest_meta"
+
+validation_nextest_fixture=$(mktemp -d "${validation_scratch_base}/validation-nextest-sync.XXXXXXXX")
+validation_cleanup_paths+=("$validation_nextest_fixture")
+cat >"$validation_nextest_fixture/metadata.json" <<'EOF'
+{
+  "packages": [
+    {"name": "pkg-a", "targets": [{"name": "bin_one", "kind": ["test"]}]},
+    {"name": "pkg-b", "targets": [{"name": "bin_two", "kind": ["test"]}]}
+  ]
+}
+EOF
+cat >"$validation_nextest_fixture/nextest.toml" <<'EOF'
+[profile.ci]
+default-filter = "not (binary(bin_one) | binary(bin_two))"
+
+[profile.ci-process]
+default-filter = "binary(bin_one) | binary(bin_two)"
+EOF
+printf '%s\n' \
+  'jobs:' \
+  '  stable-process-nextest:' \
+  '    steps:' \
+  '      - run: |' \
+  '          cargo nextest archive \' \
+  '            -p pkg-a \' \
+  '            -p pkg-b \' \
+  '            --all-features' >"$validation_nextest_fixture/ci.yml"
+validation_nextest_sync_check \
+  "$validation_nextest_fixture/nextest.toml" \
+  "$validation_nextest_fixture/ci.yml" \
+  "$validation_nextest_fixture/metadata.json"
+
+cat >"$validation_nextest_fixture/nextest-mismatch.toml" <<'EOF'
+[profile.ci]
+default-filter = "not (binary(bin_one))"
+
+[profile.ci-process]
+default-filter = "binary(bin_one) | binary(bin_two)"
+EOF
+validation_expect_failure \
+  "binary sets differ" \
+  validation_nextest_sync_check \
+    "$validation_nextest_fixture/nextest-mismatch.toml" \
+    "$validation_nextest_fixture/ci.yml" \
+    "$validation_nextest_fixture/metadata.json"
+
+cat >"$validation_nextest_fixture/nextest-non-complement.toml" <<'EOF'
+[profile.ci]
+default-filter = "binary(bin_one) | binary(bin_two)"
+
+[profile.ci-process]
+default-filter = "binary(bin_one) | binary(bin_two)"
+EOF
+validation_expect_failure \
+  "not an exact negated binary list" \
+  validation_nextest_sync_check \
+    "$validation_nextest_fixture/nextest-non-complement.toml" \
+    "$validation_nextest_fixture/ci.yml" \
+    "$validation_nextest_fixture/metadata.json"
+
+printf '%s\n' \
+  'jobs:' \
+  '  stable-process-nextest:' \
+  '    steps:' \
+  '      - run: |' \
+  '          cargo nextest archive \' \
+  '            -p pkg-a \' \
+  '            --all-features' >"$validation_nextest_fixture/ci-missing-pkg.yml"
+validation_expect_failure \
+  "omitted from stable-process-nextest archive" \
+  validation_nextest_sync_check \
+    "$validation_nextest_fixture/nextest.toml" \
+    "$validation_nextest_fixture/ci-missing-pkg.yml" \
+    "$validation_nextest_fixture/metadata.json"
+rm -rf "$validation_nextest_fixture"
 
 printf 'validation selector argument and archive-scope tests passed\n'

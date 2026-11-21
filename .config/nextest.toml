@@ -35,31 +35,7 @@ default-filter = "binary(acp_guard_capture) | binary(claude_agent_sdk_sidecar_as
 
 # The one unfiltered process profile: the same fixture timeout and forced
 # termination as ci-process, with every binary of the selected packages
-# selectable. The focused validation profiles below all resolve to it.
+# selectable. Focused validation selectors in effigy.toml pass it directly.
 [profile.process-unfiltered]
 inherits = "ci-process"
 default-filter = "all()"
-
-# Each name below is a selector profile that effigy.toml passes with --profile.
-# They stay separate names so those callers keep working, and each one is an
-# alias of process-unfiltered: one body, one place to change it.
-
-# Narrow provider-free Claude SDK usage projection proofs. Reuse the process
-# fixture timeout and forced termination, while allowing the decoder unit-test
-# binary selected by this focused task.
-[profile.sdk-usage]
-inherits = "process-unfiltered"
-
-# Provider-free Codex currentness evidence, with the same bounded test lifetime.
-[profile.current-codex-app-server]
-inherits = "process-unfiltered"
-
-# Pi SDK sidecar identity and lifecycle regression proof. Keep the process
-# fixture timeout while allowing the focused task to select sidecar_driver.
-[profile.current-pi-sdk-sidecar]
-inherits = "process-unfiltered"
-
-# Bounded Pi sidecar load-replay failure and cleanup proof. Same process
-# fixture timeout as current-pi-sdk-sidecar; sidecar_driver stays selectable.
-[profile.pi-replay-cleanup]
-inherits = "process-unfiltered"

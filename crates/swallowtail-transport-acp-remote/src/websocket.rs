@@ -3,8 +3,11 @@ use crate::cookies::BoundedCookieStore;
 use crate::correlation::CorrelationState;
 use crate::error::{RemoteAcpError, capacity_error, protocol_error, transport_error};
 use crate::wire;
-use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error, race_deadline};
+use crate::worker::{
+    WorkerCommand, WorkerEvent, cancellation_error, race_close_grace, race_deadline,
+};
 use async_tungstenite::tungstenite::Message as WebSocketMessage;
+use async_tungstenite::tungstenite::protocol::WebSocketConfig;
 use futures_channel::{mpsc, oneshot};
 use futures_util::{SinkExt, StreamExt};
 use serde_json::Value;
@@ -31,12 +34,18 @@ pub(crate) async fn run(
     let mut cookies =
         BoundedCookieStore::new(config.maximum_cookie_count, config.maximum_cookie_bytes)?;
     let cookie_endpoint = cookie_endpoint(&config.endpoint)?;
+    let ws_config = WebSocketConfig::default()
+        .max_message_size(Some(maximum_frame_bytes))
+        .max_frame_size(Some(maximum_frame_bytes));
     // The initial connect is raced against the deadline so a hanging
     // handshake is interruptible.
     let connection = match race_deadline(
         deadline,
         time.as_deref(),
-        async_tungstenite::tokio::connect_async(config.endpoint.as_str()),
+        async_tungstenite::tokio::connect_async_with_config(
+            config.endpoint.as_str(),
+            Some(ws_config),
+        ),
     )
     .await
     {
@@ -51,8 +60,12 @@ pub(crate) async fn run(
             return Err(error);
         }
     };
-    validate_connection_id(response.headers(), maximum_frame_bytes)?;
-    cookies.store_response(response.headers(), &cookie_endpoint)?;
+    if let Err(error) = validate_connection_id(response.headers(), maximum_frame_bytes)
+        .and_then(|()| cookies.store_response(response.headers(), &cookie_endpoint))
+    {
+        let _ = ready.send(Err(error.clone()));
+        return Err(error);
+    }
     let _ = ready.send(Ok(()));
     let mut initialized = false;
 
@@ -84,7 +97,7 @@ pub(crate) async fn run(
                         return Err(cancellation_error(false));
                     }
                     Some(WorkerCommand::Deadline) => {
-                        let _ = race_deadline(deadline, time.as_deref(), socket.close(None)).await;
+                        let _ = race_close_grace(time.as_deref(), socket.close(None)).await;
                         return Err(cancellation_error(true));
                     }
                     Some(WorkerCommand::Close) | None => {

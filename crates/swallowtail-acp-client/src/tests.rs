@@ -446,3 +446,22 @@ fn mcp_placement_rejects_line_breaks_in_header_names_and_values() {
         assert_eq!(failure.diagnostic().code(), "swallowtail.test.acp.invalid");
     }
 }
+
+#[test]
+fn mcp_placement_preserves_accessors_equality_and_drops_cleanly() {
+    let placement = AcpRemoteMcpPlacement::new(
+        "swallowtail-test-acp",
+        "https://example.invalid/mcp-secret",
+        vec![("Authorization".to_owned(), "Bearer secret-token".to_owned())],
+    );
+    let cloned = placement.clone();
+    assert_eq!(placement, cloned);
+    assert_eq!(placement.name(), "swallowtail-test-acp");
+    assert_eq!(placement.url(), "https://example.invalid/mcp-secret");
+    assert_eq!(
+        placement.headers(),
+        &[("Authorization".to_owned(), "Bearer secret-token".to_owned())]
+    );
+    drop(placement);
+    drop(cloned);
+}

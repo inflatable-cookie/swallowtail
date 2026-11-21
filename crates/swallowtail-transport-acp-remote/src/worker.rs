@@ -25,11 +25,19 @@ pub(crate) enum WorkerEvent {
 pub(crate) type ReadySignal =
     Arc<Mutex<Option<futures_channel::oneshot::Sender<Result<(), RemoteAcpError>>>>>;
 
+pub(crate) type TerminalErrorSlot = Arc<Mutex<Option<RemoteAcpError>>>;
+
+/// Bounded grace window for sending a close frame or DELETE after the
+/// connection deadline has elapsed.
+const CLOSE_GRACE: std::time::Duration = std::time::Duration::from_secs(2);
+
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn run(
     config: TransportConfig,
     commands: mpsc::Receiver<WorkerCommand>,
     events: mpsc::Sender<WorkerEvent>,
     ready: ReadySignal,
+    terminal_error: TerminalErrorSlot,
     deadline: Option<Deadline>,
     time: Option<Arc<dyn TimeService>>,
     services: HostServices,
@@ -51,7 +59,13 @@ pub(crate) fn run(
         if let Err(error) = &result {
             emit_worker_failure_debug(&services, error);
             let mut events = events;
-            let _ = events.try_send(WorkerEvent::Failed(error.clone()));
+            if let Err(send_error) = events.try_send(WorkerEvent::Failed(error.clone()))
+                && send_error.is_full()
+            {
+                *terminal_error
+                    .lock()
+                    .expect("remote ACP terminal error lock poisoned") = Some(error.clone());
+            }
         }
         result.map_err(runtime_failure)
     })
@@ -96,6 +110,26 @@ where
             }
         }
         _ => Ok(future.await),
+    }
+}
+
+/// Races a post-deadline close handshake against a bounded grace period rather
+/// than the already-elapsed connection deadline.
+pub(crate) async fn race_close_grace<F, T>(
+    time: Option<&dyn TimeService>,
+    future: F,
+) -> Result<T, RemoteAcpError>
+where
+    F: Future<Output = T>,
+{
+    match time {
+        Some(time) => {
+            let grace_deadline = Deadline::at(time.now().saturating_add_duration(CLOSE_GRACE));
+            race_deadline(Some(grace_deadline), Some(time), future).await
+        }
+        None => tokio::time::timeout(CLOSE_GRACE, future)
+            .await
+            .map_err(|_| cancellation_error(true)),
     }
 }
 

@@ -741,3 +741,39 @@ fn operation_scoped_resources_feed_processes_then_release_after_exit() {
 
     std::fs::remove_dir_all(materialized).expect("fixture root is removed");
 }
+
+#[cfg(unix)]
+#[test]
+fn write_stdin_does_not_deadlock_concurrent_close_or_force_stop() {
+    use std::pin::pin;
+    use std::task::{Context, Poll, Waker};
+
+    let resource_directory = temporary_resource();
+    let limits = LocalProcessLimits::new(8, 1024, 4 * 1024 * 1024, 1024, 1024);
+    let (host, executable, environment, resource) =
+        fixture_host("hold", limits, &resource_directory);
+    let process =
+        start(&host, request(&executable, &environment, &resource)).expect("hold fixture starts");
+
+    // A 2 MiB write exceeds the OS pipe buffer while the child never reads
+    // stdin. Polling write_stdin once must return Pending instead of blocking
+    // the executor thread, and concurrent force_stop() must not deadlock.
+    let mut write_future =
+        pin!(process.write_stdin(ProcessInputChunk::new(vec![b'a'; 2 * 1024 * 1024])));
+    let mut context = Context::from_waker(Waker::noop());
+    assert!(
+        matches!(write_future.as_mut().poll(&mut context), Poll::Pending),
+        "writing to a full stdin pipe must yield Pending rather than blocking the executor"
+    );
+
+    block_on(process.force_stop()).expect("force_stop must not deadlock with an in-flight write");
+    let write_result = block_on(write_future);
+    assert!(
+        write_result.is_err(),
+        "closing stdin via force_stop must abort the stalled write"
+    );
+    let exit = block_on(process.wait()).expect("force-stopped child joins");
+    assert!(!exit.success());
+
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}

@@ -5,6 +5,7 @@ use std::process::{Child, ChildStderr, ChildStdin, ChildStdout};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::mpsc::Sender;
 use std::sync::{Arc, Mutex};
+use std::task::{Poll, Waker};
 #[cfg(unix)]
 use std::time::Duration;
 use swallowtail_runtime::{
@@ -24,8 +25,36 @@ pub(crate) struct LocalProcessParts {
     pub(crate) stderr: ChildStderr,
 }
 
+enum StdinChannel {
+    Raw(ChildStdin),
+    #[cfg(unix)]
+    Async(async_io::Async<ChildStdin>),
+}
+
+enum StdinSlot {
+    Idle(StdinChannel),
+    Writing,
+    Closed,
+}
+
+struct StdinState {
+    slot: StdinSlot,
+    writer_waiters: Vec<Waker>,
+    close_waiters: Vec<Waker>,
+}
+
+impl StdinState {
+    fn new(stdin: ChildStdin) -> Self {
+        Self {
+            slot: StdinSlot::Idle(StdinChannel::Raw(stdin)),
+            writer_waiters: Vec::new(),
+            close_waiters: Vec::new(),
+        }
+    }
+}
+
 struct SharedChild {
-    stdin: Mutex<Option<ChildStdin>>,
+    stdin: Mutex<StdinState>,
     stdin_bytes: Mutex<usize>,
     stdin_limit: usize,
     output: Arc<OutputState>,
@@ -33,6 +62,41 @@ struct SharedChild {
     commands: Sender<ChildCommand>,
     stop_requested: AtomicBool,
     force_requested: AtomicBool,
+}
+
+struct StdinWriteGuard<'a> {
+    shared: &'a SharedChild,
+    channel: Option<StdinChannel>,
+}
+
+impl Drop for StdinWriteGuard<'_> {
+    fn drop(&mut self) {
+        let channel = self.channel.take();
+        let (dropped, writers) = {
+            let mut state = self
+                .shared
+                .stdin
+                .lock()
+                .expect("local process stdin lock poisoned");
+            let dropped = match (&state.slot, channel) {
+                (StdinSlot::Writing, Some(channel)) => {
+                    state.slot = StdinSlot::Idle(channel);
+                    None
+                }
+                (StdinSlot::Writing, None) => {
+                    state.slot = StdinSlot::Closed;
+                    None
+                }
+                (_, channel) => channel,
+            };
+            let writers = std::mem::take(&mut state.writer_waiters);
+            (dropped, writers)
+        };
+        drop(dropped);
+        for waker in writers {
+            waker.wake();
+        }
+    }
 }
 
 pub(crate) struct LocalProcessHandle {
@@ -60,18 +124,36 @@ impl LocalProcessHandle {
         use async_io::{Async, Timer};
         use nix::fcntl::{FcntlArg, OFlag, fcntl};
 
-        let stdin = self
-            .shared
-            .stdin
-            .lock()
-            .expect("local process stdin lock poisoned")
-            .take()
-            .ok_or_else(|| {
-                failure(
-                    "swallowtail.local_process.stdin_closed",
-                    "Local process input is closed",
-                )
-            })?;
+        let stdin = {
+            let mut state = self
+                .shared
+                .stdin
+                .lock()
+                .expect("local process stdin lock poisoned");
+            match std::mem::replace(&mut state.slot, StdinSlot::Writing) {
+                StdinSlot::Idle(StdinChannel::Raw(stdin)) => stdin,
+                StdinSlot::Idle(StdinChannel::Async(stdin)) => {
+                    stdin.into_inner().map_err(|_| {
+                        state.slot = StdinSlot::Closed;
+                        failure(
+                            "swallowtail.local_process.bootstrap_unavailable",
+                            "Bootstrap input could not be configured",
+                        )
+                    })?
+                }
+                previous => {
+                    state.slot = previous;
+                    return Err(failure(
+                        "swallowtail.local_process.stdin_closed",
+                        "Local process input is closed",
+                    ));
+                }
+            }
+        };
+        let mut restore_guard = StdinWriteGuard {
+            shared: &self.shared,
+            channel: None,
+        };
         let original = fcntl(&stdin, FcntlArg::F_GETFL).map_err(|_| {
             failure(
                 "swallowtail.local_process.bootstrap_unavailable",
@@ -153,59 +235,147 @@ impl LocalProcessHandle {
                 "Bootstrap input could not be restored",
             )
         })?;
-        *self
-            .shared
-            .stdin
-            .lock()
-            .expect("local process stdin lock poisoned") = Some(stdin);
+        restore_guard.channel = Some(StdinChannel::Raw(stdin));
+        drop(restore_guard);
         Ok(())
     }
-    fn write(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
+
+    async fn acquire_stdin(&self) -> Result<StdinWriteGuard<'_>, RuntimeFailure> {
+        let channel = std::future::poll_fn(|context| {
+            let mut state = self
+                .shared
+                .stdin
+                .lock()
+                .expect("local process stdin lock poisoned");
+            match std::mem::replace(&mut state.slot, StdinSlot::Writing) {
+                StdinSlot::Idle(channel) => Poll::Ready(Ok(channel)),
+                StdinSlot::Closed => {
+                    state.slot = StdinSlot::Closed;
+                    Poll::Ready(Err(stdin_closed_failure()))
+                }
+                StdinSlot::Writing => {
+                    state.writer_waiters.push(context.waker().clone());
+                    Poll::Pending
+                }
+            }
+        })
+        .await?;
+        Ok(StdinWriteGuard {
+            shared: &self.shared,
+            channel: Some(channel),
+        })
+    }
+
+    async fn wait_stdin_closed(&self) {
+        std::future::poll_fn(|context| {
+            let mut state = self
+                .shared
+                .stdin
+                .lock()
+                .expect("local process stdin lock poisoned");
+            if matches!(state.slot, StdinSlot::Closed) {
+                Poll::Ready(())
+            } else {
+                state.close_waiters.push(context.waker().clone());
+                Poll::Pending
+            }
+        })
+        .await;
+    }
+
+    async fn write_async(&self, chunk: ProcessInputChunk) -> Result<(), RuntimeFailure> {
         let bytes = chunk.into_bytes();
+        let mut guard = self.acquire_stdin().await?;
+        {
+            let written = self
+                .shared
+                .stdin_bytes
+                .lock()
+                .expect("local process stdin count lock poisoned");
+            if bytes.len() > self.shared.stdin_limit.saturating_sub(*written) {
+                return Err(failure(
+                    "swallowtail.local_process.stdin_limit_exceeded",
+                    "Local process input exceeded its host-approved limit",
+                ));
+            }
+        }
+        #[cfg(unix)]
+        {
+            let channel = guard.channel.take().expect("acquired stdin channel");
+            let async_stdin = match channel {
+                StdinChannel::Async(async_stdin) => async_stdin,
+                StdinChannel::Raw(raw) => async_io::Async::new(raw).map_err(|_| {
+                    failure(
+                        "swallowtail.local_process.stdin_write_failed",
+                        "Local process input could not be written",
+                    )
+                })?,
+            };
+            guard.channel = Some(StdinChannel::Async(async_stdin));
+            let Some(StdinChannel::Async(stdin)) = guard.channel.as_ref() else {
+                unreachable!("stdin channel was just stored as Async");
+            };
+            let write_all = async {
+                let mut offset = 0;
+                while offset < bytes.len() {
+                    let count = stdin
+                        .write_with(|stream| (&*stream).write(&bytes[offset..]))
+                        .await
+                        .map_err(|_| stdin_write_failed_failure())?;
+                    if count == 0 {
+                        return Err(stdin_write_failed_failure());
+                    }
+                    offset += count;
+                }
+                Ok(())
+            };
+            let closed = async {
+                self.wait_stdin_closed().await;
+                Err(stdin_closed_failure())
+            };
+            futures_lite::future::race(write_all, closed).await?;
+        }
+        #[cfg(not(unix))]
+        {
+            let Some(StdinChannel::Raw(stdin)) = guard.channel.as_mut() else {
+                unreachable!("non-unix stdin channel is always Raw");
+            };
+            stdin
+                .write_all(&bytes)
+                .map_err(|_| stdin_write_failed_failure())?;
+            stdin.flush().map_err(|_| stdin_write_failed_failure())?;
+        }
         let mut written = self
             .shared
             .stdin_bytes
             .lock()
             .expect("local process stdin count lock poisoned");
-        if bytes.len() > self.shared.stdin_limit.saturating_sub(*written) {
-            return Err(failure(
-                "swallowtail.local_process.stdin_limit_exceeded",
-                "Local process input exceeded its host-approved limit",
-            ));
-        }
-        let mut stdin = self
-            .shared
-            .stdin
-            .lock()
-            .expect("local process stdin lock poisoned");
-        let Some(stdin) = stdin.as_mut() else {
-            return Err(failure(
-                "swallowtail.local_process.stdin_closed",
-                "Local process input is closed",
-            ));
-        };
-        stdin.write_all(&bytes).map_err(|_| {
-            failure(
-                "swallowtail.local_process.stdin_write_failed",
-                "Local process input could not be written",
-            )
-        })?;
-        stdin.flush().map_err(|_| {
-            failure(
-                "swallowtail.local_process.stdin_write_failed",
-                "Local process input could not be written",
-            )
-        })?;
         *written += bytes.len();
         Ok(())
     }
 
     fn close_input(&self) {
-        self.shared
-            .stdin
-            .lock()
-            .expect("local process stdin lock poisoned")
-            .take();
+        let (dropped, writers, closers) = {
+            let mut state = self
+                .shared
+                .stdin
+                .lock()
+                .expect("local process stdin lock poisoned");
+            let dropped = match std::mem::replace(&mut state.slot, StdinSlot::Closed) {
+                StdinSlot::Idle(channel) => Some(channel),
+                StdinSlot::Writing | StdinSlot::Closed => None,
+            };
+            let writers = std::mem::take(&mut state.writer_waiters);
+            let closers = std::mem::take(&mut state.close_waiters);
+            (dropped, writers, closers)
+        };
+        drop(dropped);
+        for waker in writers {
+            waker.wake();
+        }
+        for waker in closers {
+            waker.wake();
+        }
     }
 
     fn force(&self) -> Result<(), RuntimeFailure> {
@@ -251,8 +421,7 @@ impl LocalProcessHandle {
 
 impl ProcessHandle for LocalProcessHandle {
     fn write_stdin(&self, chunk: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
-        let result = self.write(chunk);
-        Box::pin(async move { result })
+        Box::pin(self.write_async(chunk))
     }
 
     fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
@@ -278,6 +447,20 @@ impl ProcessHandle for LocalProcessHandle {
         let shared = Arc::clone(&self.shared);
         Box::pin(async move { shared.exit.future().await })
     }
+}
+
+fn stdin_closed_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.local_process.stdin_closed",
+        "Local process input is closed",
+    )
+}
+
+fn stdin_write_failed_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.local_process.stdin_write_failed",
+        "Local process input could not be written",
+    )
 }
 
 fn control_closed_failure() -> RuntimeFailure {

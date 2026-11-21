@@ -26,6 +26,7 @@ fn cleanup_failure_is_explicit_and_redacted() {
     let connection = RemoteAcpConnection {
         commands,
         events,
+        terminal_error: std::sync::Arc::new(std::sync::Mutex::new(None)),
         connection_task: Some(Box::new(FailingJoin)),
         deadline_task: None,
         deadline_done: None,

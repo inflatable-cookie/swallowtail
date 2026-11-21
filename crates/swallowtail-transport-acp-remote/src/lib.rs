@@ -29,7 +29,7 @@ use swallowtail_runtime::{
     BlockingJob, CleanupOutcome, Deadline, DebugObservationKind, EndpointRef, HostServices,
     JoinedTask, NetworkGrant, ScopeId,
 };
-use worker::{ReadySignal, WorkerCommand, WorkerEvent};
+use worker::{ReadySignal, TerminalErrorSlot, WorkerCommand, WorkerEvent};
 
 pub use error::{RemoteAcpError, RemoteAcpErrorKind};
 
@@ -173,6 +173,8 @@ async fn connect_bound(
     let (ready_tx, ready_rx) = oneshot::channel();
     let ready: ReadySignal = Arc::new(Mutex::new(Some(ready_tx)));
     let ready_for_job = Arc::clone(&ready);
+    let terminal_error: TerminalErrorSlot = Arc::new(Mutex::new(None));
+    let terminal_error_for_job = Arc::clone(&terminal_error);
     let worker_time = Arc::clone(&time);
     let worker_services = services.clone();
     let job = Box::new(move || {
@@ -181,6 +183,7 @@ async fn connect_bound(
             command_rx,
             event_tx,
             ready_for_job,
+            terminal_error_for_job,
             deadline,
             Some(worker_time),
             worker_services,
@@ -272,6 +275,7 @@ async fn connect_bound(
     Ok(RemoteAcpConnection {
         commands,
         events,
+        terminal_error,
         connection_task: Some(connection_task),
         deadline_task,
         deadline_done,
@@ -327,6 +331,7 @@ impl RemoteAcpSender {
 pub struct RemoteAcpConnection {
     commands: mpsc::Sender<WorkerCommand>,
     events: mpsc::Receiver<WorkerEvent>,
+    terminal_error: TerminalErrorSlot,
     connection_task: Option<Box<dyn JoinedTask>>,
     deadline_task: Option<Box<dyn JoinedTask>>,
     deadline_done: Option<oneshot::Sender<()>>,
@@ -355,7 +360,12 @@ impl RemoteAcpConnection {
         match self.events.next().await {
             Some(WorkerEvent::Message(message)) => Some(Ok(message)),
             Some(WorkerEvent::Failed(error)) => Some(Err(error)),
-            None => None,
+            None => self
+                .terminal_error
+                .lock()
+                .expect("remote ACP terminal error lock poisoned")
+                .take()
+                .map(Err),
         }
     }
 

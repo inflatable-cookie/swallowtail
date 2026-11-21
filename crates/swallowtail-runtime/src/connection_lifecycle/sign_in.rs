@@ -373,6 +373,7 @@ pub struct SignInSession {
     submitted_refs: BTreeMap<CredentialFieldId, CredentialRef>,
     pending_poll: Mutex<Option<PendingSignInPoll>>,
     pending_loopback_release: Mutex<Option<BoxFuture<'static, crate::CleanupOutcome>>>,
+    pending_process_cleanup: Mutex<Option<PendingProcessCleanup>>,
 }
 
 impl fmt::Debug for SignInSession {
@@ -539,6 +540,7 @@ fn prepare_session(
         submitted_refs: BTreeMap::new(),
         pending_poll: Mutex::new(None),
         pending_loopback_release: Mutex::new(None),
+        pending_process_cleanup: Mutex::new(None),
     };
     Ok((session, request.method))
 }
@@ -601,7 +603,7 @@ pub async fn poll_sign_in_async(
 ) -> Result<SignInStatus, SignInFailure> {
     reject_terminal(session)?;
     if timed_out(session, services)? {
-        cleanup_session_async(session, services).await;
+        cleanup_session_async(session, services).await?;
         session.status = SignInStatus::TimedOut;
         return Ok(session.status);
     }
@@ -710,7 +712,7 @@ pub async fn complete_sign_in_async(
     store: Option<&dyn ConnectionLifecycleStore>,
 ) -> Result<SignInOutcome, SignInFailure> {
     let refs = validate_complete(&session, services);
-    cleanup_session_async(&mut session, services).await;
+    cleanup_session_async(&mut session, services).await?;
     let refs = refs?;
     if let Some(store) = store {
         persist_refs(
@@ -802,7 +804,7 @@ pub async fn cancel_sign_in_async(
     services: &HostServices,
 ) -> Result<SignInStatus, SignInFailure> {
     reject_terminal(&session)?;
-    cleanup_session_async(&mut session, services).await;
+    cleanup_session_async(&mut session, services).await?;
     Ok(SignInStatus::Cancelled)
 }
 
@@ -821,7 +823,7 @@ fn start_interactive(
         "Sign-in URL open did not resolve immediately; use start_sign_in_async",
     );
     if let Err(failure) = opened {
-        if release_loopback_lease_now(services, lease) {
+        if poll_now_or_pending(loopback.release(lease)).is_none() {
             return Err(SignInFailure::new(
                 SignInFailureKind::HostPort,
                 "swallowtail.sign_in.host_port_pending",
@@ -846,7 +848,7 @@ async fn start_interactive_async(
         .await
         .map_err(SignInFailure::from_port)?;
     if let Err(failure) = url_open.open(session.scope.clone(), url).await {
-        release_loopback_async(services, Some(lease)).await;
+        let _ = await_cleanup_budget(loopback.release(lease), services).await;
         return Err(SignInFailure::from_port(failure));
     }
     session.loopback = Some(lease);
@@ -997,7 +999,7 @@ async fn poll_interactive_async(
     };
     match await_with_deadline(future, session.deadline, services).await? {
         DeadlineRace::TimedOut => {
-            cleanup_session_async(session, services).await;
+            cleanup_session_async(session, services).await?;
             session.status = SignInStatus::TimedOut;
         }
         DeadlineRace::Completed(result) => match result.map_err(SignInFailure::from_port)? {
@@ -1055,7 +1057,7 @@ async fn poll_device_async(
     };
     match await_with_deadline(future, session.deadline, services).await? {
         DeadlineRace::TimedOut => {
-            cleanup_session_async(session, services).await;
+            cleanup_session_async(session, services).await?;
             session.status = SignInStatus::TimedOut;
         }
         DeadlineRace::Completed(result) => match result.map_err(SignInFailure::from_port)? {
@@ -1102,20 +1104,24 @@ async fn poll_delegated_async(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<(), SignInFailure> {
-    let wait_outcome = {
-        let Some(handle) = session.process.as_ref() else {
-            return Err(SignInFailure::new(
-                SignInFailureKind::InvalidState,
-                "swallowtail.sign_in.invalid_state",
-                "Delegated CLI login is missing its process handle",
-            ));
-        };
-        await_with_deadline(handle.wait(), session.deadline, services).await?
+    let wait = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Delegated(wait)) => wait,
+        _ => {
+            let handle = session.process.as_ref().ok_or_else(|| {
+                SignInFailure::new(
+                    SignInFailureKind::InvalidState,
+                    "swallowtail.sign_in.invalid_state",
+                    "Delegated CLI login is missing its process handle",
+                )
+            })?;
+            let handle = Arc::clone(handle);
+            Box::pin(async move { handle.wait().await })
+        }
     };
-    match wait_outcome {
+    match await_with_deadline(wait, session.deadline, services).await? {
         DeadlineRace::Completed(result) => finish_delegated_wait(session, result),
         DeadlineRace::TimedOut => {
-            cleanup_session_async(session, services).await;
+            cleanup_session_async(session, services).await?;
             session.status = SignInStatus::TimedOut;
             Ok(())
         }
@@ -1330,19 +1336,103 @@ fn set_pending_loopback_release(
         .unwrap_or_else(PoisonError::into_inner) = Some(pending);
 }
 
+/// Upper bound on each async sign-in teardown step so a wedged helper or lease
+/// release cannot hang cancellation, completion, or timeout forever.
+const CLEANUP_TEARDOWN_BUDGET: std::time::Duration = std::time::Duration::from_secs(5);
+
+enum PendingProcessCleanup {
+    RequestStop {
+        process: Arc<dyn ProcessHandle>,
+        future: BoxFuture<'static, Result<(), RuntimeFailure>>,
+    },
+    ForceStop {
+        process: Arc<dyn ProcessHandle>,
+        future: BoxFuture<'static, Result<(), RuntimeFailure>>,
+    },
+    Wait(BoxFuture<'static, Result<crate::ProcessExit, RuntimeFailure>>),
+}
+
+impl PendingProcessCleanup {
+    fn start(process: Arc<dyn ProcessHandle>) -> Self {
+        let handle = Arc::clone(&process);
+        Self::RequestStop {
+            process,
+            future: Box::pin(async move { handle.request_stop().await }),
+        }
+    }
+
+    fn force_stop(process: Arc<dyn ProcessHandle>) -> Self {
+        let handle = Arc::clone(&process);
+        Self::ForceStop {
+            process,
+            future: Box::pin(async move { handle.force_stop().await }),
+        }
+    }
+
+    fn wait(process: Arc<dyn ProcessHandle>) -> Self {
+        Self::Wait(Box::pin(async move { process.wait().await }))
+    }
+}
+
+fn take_pending_process_cleanup(session: &SignInSession) -> Option<PendingProcessCleanup> {
+    session
+        .pending_process_cleanup
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner)
+        .take()
+}
+
+fn set_pending_process_cleanup(session: &SignInSession, pending: PendingProcessCleanup) {
+    *session
+        .pending_process_cleanup
+        .lock()
+        .unwrap_or_else(PoisonError::into_inner) = Some(pending);
+}
+
 fn cleanup_session_now(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<(), SignInFailure> {
     let _ = take_pending_poll(session);
-    let mut pending_cleanup = release_loopback_now(session, services);
-    if let Some(process) = session.process.take() {
-        let stop_pending = poll_now_or_pending(process.request_stop()).is_none();
-        let force_pending = poll_now_or_pending(process.force_stop()).is_none();
-        let wait_pending = poll_now_or_pending(process.wait()).is_none();
-        if stop_pending || force_pending || wait_pending {
-            session.process = Some(process);
-            pending_cleanup = true;
+    let mut pending_cleanup = release_loopback_now(session, services)?;
+    let mut cleanup = take_pending_process_cleanup(session)
+        .or_else(|| session.process.take().map(PendingProcessCleanup::start));
+    while let Some(stage) = cleanup.take() {
+        match stage {
+            PendingProcessCleanup::RequestStop {
+                process,
+                mut future,
+            } => {
+                if poll_box_future_once(&mut future).is_pending() {
+                    set_pending_process_cleanup(
+                        session,
+                        PendingProcessCleanup::RequestStop { process, future },
+                    );
+                    pending_cleanup = true;
+                } else {
+                    cleanup = Some(PendingProcessCleanup::force_stop(process));
+                }
+            }
+            PendingProcessCleanup::ForceStop {
+                process,
+                mut future,
+            } => {
+                if poll_box_future_once(&mut future).is_pending() {
+                    set_pending_process_cleanup(
+                        session,
+                        PendingProcessCleanup::ForceStop { process, future },
+                    );
+                    pending_cleanup = true;
+                } else {
+                    cleanup = Some(PendingProcessCleanup::wait(process));
+                }
+            }
+            PendingProcessCleanup::Wait(mut future) => {
+                if poll_box_future_once(&mut future).is_pending() {
+                    set_pending_process_cleanup(session, PendingProcessCleanup::Wait(future));
+                    pending_cleanup = true;
+                }
+            }
         }
     }
     if pending_cleanup {
@@ -1355,60 +1445,103 @@ fn cleanup_session_now(
     Ok(())
 }
 
-async fn cleanup_session_async(session: &mut SignInSession, services: &HostServices) {
+async fn cleanup_session_async(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<(), SignInFailure> {
     let _ = take_pending_poll(session);
-    if let Some(future) = take_pending_loopback_release(session) {
-        let _ = future.await;
+    release_loopback_async(session, services).await?;
+    let mut cleanup = take_pending_process_cleanup(session)
+        .or_else(|| session.process.take().map(PendingProcessCleanup::start));
+    while let Some(stage) = cleanup.take() {
+        match stage {
+            PendingProcessCleanup::RequestStop { process, future } => {
+                let _ = await_cleanup_budget(future, services).await;
+                cleanup = Some(PendingProcessCleanup::force_stop(process));
+            }
+            PendingProcessCleanup::ForceStop { process, future } => {
+                let _ = await_cleanup_budget(future, services).await;
+                cleanup = Some(PendingProcessCleanup::wait(process));
+            }
+            PendingProcessCleanup::Wait(future) => {
+                let _ = await_cleanup_budget(future, services).await;
+            }
+        }
     }
-    release_loopback_async(services, session.loopback.take()).await;
-    if let Some(process) = session.process.take() {
-        let _ = process.request_stop().await;
-        let _ = process.force_stop().await;
-        let _ = process.wait().await;
-    }
+    Ok(())
 }
 
-fn release_loopback_now(session: &mut SignInSession, services: &HostServices) -> bool {
+fn release_loopback_now(
+    session: &mut SignInSession,
+    services: &HostServices,
+) -> Result<bool, SignInFailure> {
     let mut future = if let Some(future) = take_pending_loopback_release(session) {
         future
-    } else if let Some(lease) = session.loopback.take() {
-        let Some(loopback) = services.loopback_callback() else {
-            return false;
-        };
+    } else if session.loopback.is_some() {
+        let loopback = services
+            .loopback_callback()
+            .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
+        let lease = session
+            .loopback
+            .take()
+            .expect("loopback lease checked present");
         loopback.release(lease)
     } else {
-        return false;
+        return Ok(false);
     };
     match poll_box_future_once(&mut future) {
-        Poll::Ready(_) => false,
+        Poll::Ready(_) => Ok(false),
         Poll::Pending => {
             set_pending_loopback_release(session, future);
-            true
+            Ok(true)
         }
     }
 }
 
-fn release_loopback_lease_now(
+async fn release_loopback_async(
+    session: &mut SignInSession,
     services: &HostServices,
-    lease: crate::LoopbackCallbackLease,
-) -> bool {
-    let Some(loopback) = services.loopback_callback() else {
-        return false;
+) -> Result<(), SignInFailure> {
+    let future = if let Some(future) = take_pending_loopback_release(session) {
+        Some(future)
+    } else if session.loopback.is_some() {
+        let loopback = services
+            .loopback_callback()
+            .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
+        let lease = session
+            .loopback
+            .take()
+            .expect("loopback lease checked present");
+        Some(loopback.release(lease))
+    } else {
+        None
     };
-    poll_now_or_pending(loopback.release(lease)).is_none()
+    if let Some(future) = future {
+        let _ = await_cleanup_budget(future, services).await;
+    }
+    Ok(())
 }
 
-async fn release_loopback_async(
+async fn await_cleanup_budget<T>(
+    future: impl Future<Output = T>,
     services: &HostServices,
-    lease: Option<crate::LoopbackCallbackLease>,
-) {
-    let Some(lease) = lease else {
-        return;
+) -> Option<T> {
+    let Some(time) = services.time() else {
+        return Some(future.await);
     };
-    let Some(loopback) = services.loopback_callback() else {
-        return;
-    };
-    let _ = loopback.release(lease).await;
+    let deadline = Deadline::at(time.now().saturating_add_duration(CLEANUP_TEARDOWN_BUDGET));
+    let mut budget = time.wait_until(deadline);
+    let mut future = std::pin::pin!(future);
+    std::future::poll_fn(|context| {
+        if let Poll::Ready(value) = future.as_mut().poll(context) {
+            return Poll::Ready(Some(value));
+        }
+        if budget.as_mut().poll(context).is_ready() && time.now() >= deadline.instant() {
+            return Poll::Ready(None);
+        }
+        Poll::Pending
+    })
+    .await
 }
 
 enum DeadlineRace<T> {

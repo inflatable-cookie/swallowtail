@@ -23,6 +23,7 @@ swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
 swallowtail-transport-acp-remote = { workspace = true, optional = true }
 url.workspace = true
+zeroize.workspace = true
 
 [dev-dependencies]
 futures-executor.workspace = true

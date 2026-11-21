@@ -1980,3 +1980,293 @@ fn async_poll_times_out_and_cleans_up_hung_delegated_and_loopback_waits() {
 fn interactive_services_fn(ports: Arc<MockSignInPorts>) -> HostServices {
     interactive_services(ports)
 }
+
+#[test]
+fn poll_delegated_async_reuses_retained_pending_poll() {
+    struct CountingWaitProcess {
+        wait_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    struct CountingWaitHandle {
+        wait_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    impl ProcessHandle for CountingWaitHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_calls
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            yield_once_then(|| Ok(ProcessExit::new(true, Some(0))))
+        }
+    }
+    impl ProcessService for CountingWaitProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let wait_calls = Arc::clone(&self.wait_calls);
+            Box::pin(async move {
+                Ok(Box::new(CountingWaitHandle { wait_calls }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+
+    let wait_calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let services = HostServices::new(host_id())
+        .with_process(Arc::new(CountingWaitProcess {
+            wait_calls: Arc::clone(&wait_calls),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+    let mut session = start_sign_in(
+        &services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    )
+    .expect("delegated start succeeds");
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("first sync poll yields InProgress"),
+        SignInStatus::InProgress
+    );
+    assert_eq!(wait_calls.load(std::sync::atomic::Ordering::SeqCst), 1);
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut session, &services))
+            .expect("async poll completes retained wait"),
+        SignInStatus::ReadyToComplete
+    );
+    assert_eq!(
+        wait_calls.load(std::sync::atomic::Ordering::SeqCst),
+        1,
+        "poll_delegated_async must reuse the retained wait future instead of calling wait() twice"
+    );
+}
+
+#[test]
+fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loopback_lease() {
+    // 1. Wedged helper teardown is bounded by CLEANUP_TEARDOWN_BUDGET.
+    struct WedgedStopProcess;
+    impl ProcessHandle for WedgedStopProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+    impl ProcessService for WedgedStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            Box::pin(async { Ok(Box::new(WedgedStopProcess) as Box<dyn ProcessHandle>) })
+        }
+    }
+    struct ImmediateBudgetTime {
+        now: Arc<std::sync::atomic::AtomicU64>,
+    }
+    impl TimeService for ImmediateBudgetTime {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(self.now.load(std::sync::atomic::Ordering::SeqCst))
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
+            let now = Arc::clone(&self.now);
+            Box::pin(async move {
+                now.store(
+                    deadline.instant().ticks(),
+                    std::sync::atomic::Ordering::SeqCst,
+                );
+                crate::DeadlineObservation::new(deadline, deadline.instant())
+            })
+        }
+    }
+
+    let wedged_services = HostServices::new(host_id())
+        .with_process(Arc::new(WedgedStopProcess))
+        .with_time(Arc::new(ImmediateBudgetTime {
+            now: Arc::new(std::sync::atomic::AtomicU64::new(1)),
+        }));
+    let wedged_session = block_on(start_sign_in_async(
+        &wedged_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("delegated start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(wedged_session, &wedged_services))
+            .expect("bounded teardown finishes instead of hanging"),
+        SignInStatus::Cancelled
+    );
+
+    // 2. Missing loopback_callback port does not silently drop the LoopbackCallbackLease.
+    let ports = MockSignInPorts::new(credential(), audience());
+    let full_services = interactive_services(Arc::clone(&ports));
+    let session = start_sign_in(&full_services, interactive_request()).expect("start succeeds");
+    let no_loopback = HostServices::new(host_id()).with_time(Arc::new(FixedTime(1)));
+    let (err, session) = cancel_sign_in(session, &no_loopback)
+        .expect_err("missing loopback port must fail instead of dropping the lease");
+    assert_eq!(err.kind(), SignInFailureKind::MissingHostPort);
+    assert!(
+        !ports.calls().contains(&"loopback_release"),
+        "lease has not been released yet"
+    );
+    assert_eq!(
+        cancel_sign_in(session, &full_services)
+            .expect("retrying with the loopback port releases the retained lease"),
+        SignInStatus::Cancelled
+    );
+    assert!(
+        ports.calls().contains(&"loopback_release"),
+        "retained loopback lease must be released on retry"
+    );
+
+    // 3. cleanup_session_now retains pending stop futures instead of dropping and restarting them.
+    struct CountingStopProcess {
+        stop_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    struct CountingStopHandle {
+        stop_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    impl ProcessHandle for CountingStopHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.stop_calls
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            yield_once_then(|| Ok(()))
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+    impl ProcessService for CountingStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let stop_calls = Arc::clone(&self.stop_calls);
+            Box::pin(async move {
+                Ok(Box::new(CountingStopHandle { stop_calls }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+
+    let stop_calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let stop_services = HostServices::new(host_id())
+        .with_process(Arc::new(CountingStopProcess {
+            stop_calls: Arc::clone(&stop_calls),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+    let session = start_sign_in(
+        &stop_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    )
+    .expect("delegated start succeeds");
+    let (err, session) = cancel_sign_in(session, &stop_services)
+        .expect_err("pending stop fails closed and retains the future");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(stop_calls.load(std::sync::atomic::Ordering::SeqCst), 1);
+    assert_eq!(
+        block_on(cancel_sign_in_async(session, &stop_services))
+            .expect("async cancel drives retained stop future"),
+        SignInStatus::Cancelled
+    );
+    assert_eq!(
+        stop_calls.load(std::sync::atomic::Ordering::SeqCst),
+        1,
+        "retained stop future must not be dropped and restarted"
+    );
+}

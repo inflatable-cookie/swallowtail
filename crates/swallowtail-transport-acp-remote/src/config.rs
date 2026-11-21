@@ -1,4 +1,4 @@
-use crate::error::{RemoteAcpError, binding_error, endpoint_error};
+use crate::error::{RemoteAcpError, binding_error, capacity_error, endpoint_error};
 use std::num::{NonZeroU32, NonZeroU64};
 use swallowtail_core::{
     CredentialMechanism, PreflightPlan, RemoteAcpConnectionBounds, RemoteAcpTransport,
@@ -51,6 +51,8 @@ impl TransportConfig {
             if transport != requirements.transport() {
                 return Err(endpoint_error());
             }
+            usize::try_from(requirements.bounds().maximum_frame_bytes().get())
+                .map_err(|_| capacity_error())?;
             return Ok(Self {
                 endpoint,
                 transport,

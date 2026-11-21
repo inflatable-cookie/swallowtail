@@ -103,8 +103,7 @@ impl HttpState {
         while self.readers.join_next().await.is_some() {}
     }
 
-    pub(super) fn maximum_frame_bytes(&self) -> usize {
-        usize::try_from(self.config.bounds.maximum_frame_bytes().get())
-            .expect("validated frame bound fits usize")
+    pub(super) const fn maximum_frame_bytes(&self) -> usize {
+        self.maximum_frame_bytes
     }
 }

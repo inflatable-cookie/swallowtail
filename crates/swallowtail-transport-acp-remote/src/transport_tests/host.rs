@@ -264,19 +264,23 @@ pub(super) async fn full_events_channel_close_does_not_deadlock() {
             let (rtx, rrx) = oneshot::channel();
             (ctx, crx, etx, erx, rtx, rrx)
         });
-    event_tx
+    while event_tx
         .try_send(WorkerEvent::Message(Message::Notification {
             method: "occupied".to_owned(),
             params: serde_json::json!({}),
         }))
-        .expect("fills events channel");
+        .is_ok()
+    {}
     let worker_services = self::services(ExecutionHostId::new("fixture.host.worker-full").unwrap());
+    let terminal_error = Arc::new(std::sync::Mutex::new(None));
+    let worker_terminal_error = Arc::clone(&terminal_error);
     let worker = tokio::task::spawn_blocking(move || {
         crate::worker::run(
             config(endpoint, RemoteAcpTransport::WebSocket),
             command_rx,
             event_tx,
             Arc::new(std::sync::Mutex::new(Some(ready_tx))),
+            worker_terminal_error,
             None,
             None,
             worker_services,
@@ -289,6 +293,14 @@ pub(super) async fn full_events_channel_close_does_not_deadlock() {
         .expect("worker::run must not deadlock when events is full")
         .unwrap();
     assert!(result.is_err());
+    assert!(
+        terminal_error
+            .lock()
+            .unwrap()
+            .as_ref()
+            .is_some_and(|err| err.kind() == RemoteAcpErrorKind::Cancelled),
+        "terminal failure is preserved in the side slot when events is full"
+    );
     let _ = server2.await;
 }
 
@@ -407,6 +419,54 @@ pub(super) async fn connect_timeout_signals_close_and_joins_tasks() {
     assert_eq!(counts.task_joined.load(Ordering::SeqCst), 2);
     assert_eq!(counts.blocking_completed.load(Ordering::SeqCst), 1);
     let _ = server.await;
+}
+
+pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() {
+    let (endpoint, server) = termination_server(true).await;
+    let counts = Arc::new(LifecycleCounts::default());
+    let services = services_with_counts(
+        ExecutionHostId::new("fixture.host.full-events-error").unwrap(),
+        Arc::clone(&counts),
+    );
+    let small_config = TransportConfig {
+        endpoint,
+        transport: RemoteAcpTransport::WebSocket,
+        bounds: RemoteAcpConnectionBounds::new(
+            NonZeroU64::new(64 * 1024).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(1).unwrap(),
+            NonZeroU32::new(1).unwrap(),
+        ),
+        maximum_cookie_count: NonZeroU32::new(4).unwrap(),
+        maximum_cookie_bytes: NonZeroU64::new(4096).unwrap(),
+    };
+    let mut connection = crate::connect_bound(
+        small_config,
+        ScopeId::new("fixture.full-events-error").unwrap(),
+        None,
+        services,
+    )
+    .await
+    .unwrap();
+    connection.send(super::initialize()).await.unwrap();
+    let _ = server.await;
+    // Drain the initialize response, then verify the terminal transport error is observed
+    // (never clean EOF).
+    let first = tokio::time::timeout(std::time::Duration::from_secs(3), connection.next_event())
+        .await
+        .expect("initialize response arrives")
+        .expect("initialize event present")
+        .expect("initialize response succeeds");
+    super::assert_initialize(&first);
+    let terminal = tokio::time::timeout(std::time::Duration::from_secs(3), connection.next_event())
+        .await
+        .expect("terminal failure arrives")
+        .expect("terminal failure must not collapse to clean EOF")
+        .expect_err("disconnect must surface as Err");
+    assert_eq!(terminal.kind(), RemoteAcpErrorKind::TransportFailed);
+    assert!(connection.next_event().await.is_none());
+    assert_eq!(connection.close().await, CleanupOutcome::Clean);
 }
 
 trait PipeExt: Sized {

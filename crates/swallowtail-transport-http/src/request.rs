@@ -294,6 +294,17 @@ impl HttpRequest {
         &self.headers
     }
 
+    pub(crate) fn validate_headers(&self) -> Result<(), TransportError> {
+        for (name, value) in &self.headers {
+            if !is_header_name_token(name)
+                || value.bytes().any(|byte| matches!(byte, b'\r' | b'\n'))
+            {
+                return Err(TransportError::Transport);
+            }
+        }
+        Ok(())
+    }
+
     pub(crate) fn secret_headers(&self) -> &[SecretHeader] {
         &self.secret_headers
     }
@@ -326,4 +337,30 @@ impl HttpRequest {
             (false, None) => Some(DEFAULT_TRANSFER_TIMEOUT),
         }
     }
+}
+
+fn is_header_name_token(name: &str) -> bool {
+    !name.is_empty()
+        && name.bytes().all(|byte| {
+            matches!(
+                byte,
+                b'!' | b'#'
+                    | b'$'
+                    | b'%'
+                    | b'&'
+                    | b'\''
+                    | b'*'
+                    | b'+'
+                    | b'-'
+                    | b'.'
+                    | b'^'
+                    | b'_'
+                    | b'`'
+                    | b'|'
+                    | b'~'
+                    | b'0'..=b'9'
+                    | b'A'..=b'Z'
+                    | b'a'..=b'z'
+            )
+        })
 }

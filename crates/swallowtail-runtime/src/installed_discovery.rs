@@ -186,24 +186,44 @@ async fn probe_process(
     let time = services.time().expect("validated time service");
     let mut deadline = time.wait_until(request.deadline());
     let mut cancelled = request.cancellation().wait_requested();
-    let process = match services
-        .process()
-        .expect("validated process service")
-        .start(
-            request.scope_id().clone(),
-            ProcessRequest::new(request.target().executable().clone())
-                .with_arguments(["--version".to_owned()]),
-        )
-        .await
+    let process = match race_probe(
+        services
+            .process()
+            .expect("validated process service")
+            .start(
+                request.scope_id().clone(),
+                ProcessRequest::new(request.target().executable().clone())
+                    .with_arguments(["--version".to_owned()]),
+            ),
+        &mut deadline,
+        &mut cancelled,
+    )
+    .await
     {
-        Ok(process) => process,
-        Err(error) => {
+        ProbeRace::Completed(Ok(process)) => process,
+        ProbeRace::Completed(Err(error)) => {
             let status = if error.diagnostic().code() == EXECUTABLE_NOT_FOUND_CODE {
                 DiscoveryStatus::Absent
             } else {
                 DiscoveryStatus::Failed
             };
             return Ok(outcome(&services, codes, solution, status));
+        }
+        ProbeRace::Cancelled => {
+            return Ok(outcome(
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::Cancelled,
+            ));
+        }
+        ProbeRace::TimedOut => {
+            return Ok(outcome(
+                &services,
+                codes,
+                solution,
+                DiscoveryStatus::TimedOut,
+            ));
         }
     };
     match race_probe(process.close_stdin(), &mut deadline, &mut cancelled).await {
@@ -724,6 +744,41 @@ mod tests {
             .with_task(Arc::new(InlineTask))
             .with_time(Arc::new(ImmediateDeadline))
             .with_process(Arc::new(CloseStdinHangsProcess));
+        let outcome = block(Box::pin(probe_installed_executable_version(
+            fixture_request(),
+            services,
+            fixture_claim(),
+            |_| None,
+            codes,
+            "Fixture harness",
+        )))
+        .expect("the bounded probe reports an outcome");
+
+        assert_eq!(outcome.status(), DiscoveryStatus::TimedOut);
+        assert_eq!(
+            outcome.diagnostic().map(SafeDiagnostic::code),
+            Some(codes.timed_out)
+        );
+    }
+
+    #[test]
+    fn a_process_start_that_never_settles_honors_the_deadline() {
+        struct StartHangsProcess;
+        impl crate::ProcessService for StartHangsProcess {
+            fn start(
+                &self,
+                _scope: crate::ScopeId,
+                _request: crate::ProcessRequest,
+            ) -> crate::BoxFuture<'static, Result<Box<dyn crate::ProcessHandle>, RuntimeFailure>>
+            {
+                Box::pin(std::future::pending())
+            }
+        }
+        let codes = fixture_codes();
+        let services = HostServices::new(host_id())
+            .with_task(Arc::new(InlineTask))
+            .with_time(Arc::new(ImmediateDeadline))
+            .with_process(Arc::new(StartHangsProcess));
         let outcome = block(Box::pin(probe_installed_executable_version(
             fixture_request(),
             services,

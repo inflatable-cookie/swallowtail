@@ -139,10 +139,22 @@ pub struct AcpSessionOpenContext {
     pub config: AcpSessionConfig,
 }
 
+/// Reaps a transport that never reached its pump task.
+///
+/// Closing only the write side leaves a spawned stdio child unreaped and a
+/// remote connection open, so the same force-stop, wait and close path the
+/// pump uses runs here as well.
+async fn reap_unstarted_transport(transport: AcpTransport, diagnostics: &AcpDiagnostics) {
+    let (writer, reader) = transport.split();
+    writer.begin_close().await;
+    let _ = reader.finish_and_cleanup(true, diagnostics).await;
+}
+
 /// Opens a standard ACP session over `transport`, ensuring no process or pump leak on failure.
 ///
-/// Validates `runtime_id` before spawning the pump task, and closes the connection and joins
-/// the pump task if handshake or session creation fails.
+/// Validates `runtime_id` before spawning the pump task, and reaps the transport when that
+/// validation or task lookup fails. A failed handshake or session creation closes the
+/// connection and joins the pump task.
 pub async fn open_acp_session<F, Fut>(
     transport: AcpTransport,
     context: AcpSessionOpenContext,
@@ -179,16 +191,14 @@ where
         match RuntimeSessionId::new(format!("{}:{}", config.scope_prefix, request_id.as_str())) {
             Ok(id) => id,
             Err(_) => {
-                let connection = AcpConnection::new(transport, services, diagnostics, hooks);
-                connection.begin_close().await;
+                reap_unstarted_transport(transport, &diagnostics).await;
                 return Err(Box::new(((diagnostics.malformed)(), resource)));
             }
         };
     let task_service = match services.task().cloned() {
         Some(task_service) => task_service,
         None => {
-            let connection = AcpConnection::new(transport, services, diagnostics, hooks);
-            connection.begin_close().await;
+            reap_unstarted_transport(transport, &diagnostics).await;
             return Err(Box::new(((diagnostics.task_service_missing)(), resource)));
         }
     };

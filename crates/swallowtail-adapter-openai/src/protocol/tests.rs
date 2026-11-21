@@ -313,18 +313,51 @@ fn cursor_duplicate_gap_response_mismatch_and_unknown_semantics_fail_closed() {
 }
 
 #[test]
+fn mixed_sse_delimiters_frame_each_event_once() {
+    let frames = decode(
+        b"event: response.created\ndata: {\"type\":\"response.created\"}\r\n\r\n\
+          event: response.queued\ndata: {\"type\":\"response.queued\"}\n\n",
+    );
+    assert_eq!(frames.len(), 2, "an earlier CRLF boundary must win");
+    assert_eq!(frames[0].name(), Some("response.created"));
+    assert_eq!(frames[1].name(), Some("response.queued"));
+}
+
+#[test]
+fn sse_frames_redact_their_payloads() {
+    let frames = decode(b"event: response.output_text.delta\ndata: private-payload\n\n");
+    assert!(!format!("{frames:?}").contains("private-payload"));
+}
+
+#[test]
+fn data_without_an_event_name_stays_malformed() {
+    let mut decoder = SseDecoder::default();
+    let frames = decoder
+        .push(b"data: orphan-payload\n\n")
+        .expect("framing accepts the payload");
+    assert_eq!(frames.len(), 1);
+    let mut stream = BackgroundStream::initial();
+    let error = stream
+        .apply(&frames[0])
+        .expect_err("a nameless frame is malformed");
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.openai.protocol_malformed"
+    );
+}
+
+#[test]
 fn semantic_status_regression_fails_closed() {
     let frames = decode(INITIAL);
     let mut stream = BackgroundStream::initial();
     for frame in &frames[..3] {
         stream.apply(frame).expect("ordered prefix applies");
     }
-    let regression = super::SseFrame {
-        name: "response.queued".to_owned(),
-        data: br#"{"type":"response.queued","sequence_number":3,"response":{"id":"resp_fixture_123","status":"queued"}}"#.to_vec(),
-    };
+    let regression = decode(
+        b"event: response.queued\r\ndata: {\"type\":\"response.queued\",\"sequence_number\":3,\"response\":{\"id\":\"resp_fixture_123\",\"status\":\"queued\"}}\r\n\r\n",
+    );
     let error = stream
-        .apply(&regression)
+        .apply(&regression[0])
         .expect_err("status regression must fail");
     assert_eq!(
         error.diagnostic().code(),

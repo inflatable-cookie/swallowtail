@@ -246,6 +246,9 @@ impl<Item, Error> Subscription<Item, Error> {
     }
 
     /// Polls the next buffered item or terminal failure.
+    ///
+    /// The subscription is fused: once a terminal outcome has been reported,
+    /// every later poll returns [`Poll::Ready`]`(None)`.
     pub fn poll_next(
         &mut self,
         context: &mut Context<'_>,
@@ -256,9 +259,16 @@ impl<Item, Error> Subscription<Item, Error> {
         match receiver.poll_next(context) {
             Poll::Ready(Some(item)) => Poll::Ready(Some(Ok(item))),
             Poll::Ready(None) => match self.terminal.poll_next(context) {
-                Poll::Ready(Some(Ok(()))) => Poll::Ready(None),
-                Poll::Ready(Some(Err(error))) => Poll::Ready(Some(Err(error))),
+                Poll::Ready(Some(Ok(()))) => {
+                    self.receiver = None;
+                    Poll::Ready(None)
+                }
+                Poll::Ready(Some(Err(error))) => {
+                    self.receiver = None;
+                    Poll::Ready(Some(Err(error)))
+                }
                 Poll::Ready(None) => {
+                    self.receiver = None;
                     Poll::Ready(Some(Err(StreamError::Transport(TransportError::Transport))))
                 }
                 Poll::Pending => Poll::Pending,

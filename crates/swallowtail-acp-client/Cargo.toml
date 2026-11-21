@@ -12,13 +12,16 @@ description = "Shared ACP v1 client engine, activity projection, and HTTP MCP pl
 [lib]
 doctest = false
 
+[features]
+remote = ["dep:swallowtail-transport-acp-remote"]
+
 [dependencies]
 futures-channel.workspace = true
 serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-protocol-acp.workspace = true
 swallowtail-runtime.workspace = true
-swallowtail-transport-acp-remote.workspace = true
+swallowtail-transport-acp-remote = { workspace = true, optional = true }
 url.workspace = true
 
 [dev-dependencies]

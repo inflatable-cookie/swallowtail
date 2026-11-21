@@ -103,7 +103,12 @@ host support, testkit, remote ACP transport, adapters
 
 Compatible-chat adapters also depend on
 `swallowtail-protocol-openai-chat`. ACP adapters depend on
-`swallowtail-protocol-acp` where they use the shared codec.
+`swallowtail-protocol-acp` where they use the shared codec and on
+`swallowtail-acp-client` for the shared session engine; HTTP/SSE adapters
+depend on `swallowtail-transport-http` for the one bounded socket.
+`swallowtail-acp-client` reaches `swallowtail-transport-acp-remote` only
+through its off-by-default `remote` feature, so a stdio-only ACP adapter
+compiles no Tokio, `reqwest`, or WebSocket dependency.
 
 No normal internal edge points upward. Workspace paths keep the source tag
 self-contained. Compatible version requirements preserve coordinated package
@@ -181,7 +186,9 @@ bounded socket, SSE framing, timeout, cancellation and secret-header
 implementation. `swallowtail-acp-client` sits alongside them in that stage and
 owns the shared ACP v1 client engine, activity projection, and HTTP MCP
 placement layer across all 11 ACP adapters, abstracted over both stdio
-`ProcessHandle` and `RemoteAcpConnection`.
+`ProcessHandle` and `RemoteAcpConnection`; the remote arm is available only
+under its off-by-default `remote` feature, so the default build stays
+stdio-only.
 
 The candidate is one clean canonical commit plus deterministic evidence:
 

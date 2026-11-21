@@ -19,11 +19,11 @@ capability cell, or validation recipe; those have other owners.
 
 ## Crate Families And Dependency Direction
 
-The workspace is thirty-nine current-source packages: one contract kernel, one
-runtime, three support crates, three protocol and transport crates, and
-thirty-one provider adapters. Every adapter carries at least one production
-route; no package exists only as scaffolding. The root manifests own the exact
-roster, version shape, and dependency topology, and
+The workspace is forty-one current-source packages: one contract kernel, one
+runtime, one shared ACP client engine, three support crates, four protocol and
+transport crates, and thirty-one provider adapters. Every adapter carries at
+least one production route; no package exists only as scaffolding. The root
+manifests own the exact roster, version shape, and dependency topology, and
 [Release And Package Topology](release-and-package-topology.md) records them.
 
 ```text
@@ -36,6 +36,7 @@ host crates   provider adapter crates
           swallowtail-core
 
 provider adapters -> swallowtail-protocol-acp | swallowtail-protocol-openai-chat
+ACP adapters -> swallowtail-acp-client -> protocol-acp | transport-acp-remote
 HTTP/SSE adapters -> swallowtail-transport-http -> runtime
 remote ACP operations -> swallowtail-transport-acp-remote -> core/runtime/protocol-acp
 consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
@@ -48,14 +49,15 @@ consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
   isolation and harness-configuration posture, and exact interface evidence.
   Its only dependency is `semver`.
 - **Runtime.** `swallowtail-runtime` depends on core, `swallowtail-idioms`,
-  `futures-core`, `zeroize`, and `sha2`. It owns executor-neutral dynamic
-  roles, scoped handles, bounded events, terminal outcomes, cleanup-outcome
-  composition, bounded LF-delimited line framing, bounded attachment reads,
-  usage and quota observations, operation policy, plan-derived request and
-  safe evidence records, scope- and audience-bound host ports, and the shared
-  prepared evidence record. It never names a provider, so a helper that any
-  adapter would otherwise copy belongs here and keeps the caller's own
-  provider-specific codes and messages.
+  `futures-channel`, `futures-core`, `semver`, `zeroize`, and `sha2`. It owns
+  executor-neutral dynamic roles, scoped handles, bounded events and their
+  `futures-channel` plumbing, terminal outcomes, cleanup-outcome composition,
+  bounded LF-delimited line framing, bounded attachment reads, usage and quota
+  observations, operation policy, plan-derived request and safe evidence
+  records, scope- and audience-bound host ports, the shared prepared evidence
+  record, and `semver` release comparison for installed discovery. It never
+  names a provider, so a helper that any adapter would otherwise copy belongs
+  here and keeps the caller's own provider-specific codes and messages.
 - **Idioms.** `swallowtail-idioms` depends on core only. It owns portable
   idiom records, deterministic confidence decay, merge outcomes, bounded
   selection, and a fail-soft recorder behind host ports. It composes no prompt
@@ -68,14 +70,21 @@ consumer and adapter tests -> swallowtail-testkit -> core/runtime contracts
   operation bridge listener. Local service composition belongs here; no
   adapter owns process or host policy.
 - **Protocol codecs.** `swallowtail-protocol-acp` and
-  `swallowtail-protocol-openai-chat` are bounded wire codecs over `serde_json`
-  alone. They classify framing, requests, responses, notifications, events,
+  `swallowtail-protocol-openai-chat` are bounded wire codecs over `serde_json`,
+  and `swallowtail-protocol-acp` adds `time` for RFC 3339 timestamp parsing.
+  They classify framing, requests, responses, notifications, events,
   and structured unknowns. They hold no runtime projection and no provider
   policy.
 - **Remote ACP transport.** `swallowtail-transport-acp-remote` owns explicit
   HTTP/SSE or WebSocket selection, connection-private affinity, bounded frames
   and streams, correlation, initialize-version validation, cancellation,
   deadlines, and host-owned joined cleanup.
+- **ACP client engine.** `swallowtail-acp-client` depends on core, runtime, and
+  `swallowtail-protocol-acp`, plus `swallowtail-transport-acp-remote` only
+  behind its off-by-default `remote` feature. It owns the shared ACP v1
+  session and turn engine, activity projection, and HTTP MCP placement used by
+  the ACP adapters, over either a stdio `ProcessHandle` or an authorized
+  `RemoteAcpConnection`. A stdio-only adapter compiles no remote transport.
 - **Bounded HTTP transport.** `swallowtail-transport-http` owns the one
   provider-neutral `curl` exchange shared by every HTTP/SSE adapter: endpoint
   resolution, bounded responses and SSE framing, blocking-worker bridging,

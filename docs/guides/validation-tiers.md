@@ -212,13 +212,13 @@ helper's `--host-tool` mode, which is one `oxide exec --` lease. Its own
 
 - `run-grok-acp-client-mcp-probe.sh` builds and runs its echo example inside the
   lease; final outputs stay in `<checkout>/target/debug/`.
-- `validate-focused-packages.sh`, `check-release-floor.sh`, `check-msrv.sh`,
-  `check-package-metadata.sh`, `generate-public-api-baseline.sh`,
-  `format-packages.sh` and `scripts/validation/package-scope.sh` are ordinary
-  routes: they call the helper, and the whole-workspace and package lanes keep
-  their own scope, filters and pins. Their nested courier builds take the
-  task-owned target the test helper creates when `CARGO_TARGET_DIR` is the
-  checkout's own target.
+- `validate-focused-packages.sh`, the Clippy step of `check-release-floor.sh`,
+  `check-msrv.sh`, `check-package-metadata.sh`,
+  `generate-public-api-baseline.sh`, `format-packages.sh` and
+  `scripts/validation/package-scope.sh` are ordinary routes: they call the
+  helper, and the whole-workspace and package lanes keep their own scope,
+  filters and pins. Their nested courier builds take the task-owned target the
+  test helper creates when `CARGO_TARGET_DIR` is the checkout's own target.
 
 ### Named proof exceptions
 
@@ -227,10 +227,13 @@ target directory and its own build directory inside its run-owned scratch root.
 Its finals and intermediates therefore never enter this checkout's `target` or
 this project's shared slot, and the run removes only the directory it created:
 
-- `run-with-owned-cargo-target.sh` (`check:sdk-courier-timeout`,
-  `validate:sdk-courier-timeout`, `validate:sdk-courier-idle`,
-  `validate:sdk-registered-lifetime`) runs the courier and SDK validation groups
-  under one fresh run-owned `CARGO_TARGET_DIR` plus a build directory inside it.
+- `run-with-owned-cargo-target.sh` (`test:rust`, the test step of
+  `check-release-floor.sh` / `package:release-floor`,
+  `check:sdk-courier-timeout`, `validate:sdk-courier-timeout`,
+  `validate:sdk-courier-idle`, `validate:sdk-registered-lifetime`) runs
+  workspace nextest, the MSRV floor test, and the courier and SDK validation
+  groups under one fresh run-owned `CARGO_TARGET_DIR` plus a build directory
+  inside it.
   The outer build and the nested courier build share that target, which this
   invocation alone owns; the directory is created under the system temp root,
   marked `.swallowtail-run-owned`, and removed on exit. The build directory is

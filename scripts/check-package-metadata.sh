@@ -22,13 +22,16 @@ if [[ ! -f $release_baseline_edges ]]; then
 fi
 release_package_count=$(wc -l < "$release_baseline_packages" | tr -d ' ')
 
-release_metadata=$(mktemp)
-release_edges=$(mktemp)
-release_names=$(mktemp)
-release_expected_names=$(mktemp)
-release_expected_edges=$(mktemp)
-release_order_names=$(mktemp)
-trap 'rm -f "$release_metadata" "$release_edges" "$release_names" "$release_expected_names" "$release_expected_edges" "$release_order_names"' EXIT
+release_tmp_root=${TMPDIR:-/tmp}
+release_tmp_root=${release_tmp_root%/}
+release_tmp=$(mktemp -d "${release_tmp_root}/swallowtail-package-metadata.XXXXXXXX")
+trap 'rm -rf "$release_tmp"' EXIT
+release_metadata="$release_tmp/metadata.json"
+release_edges="$release_tmp/edges.tsv"
+release_names="$release_tmp/names.txt"
+release_expected_names="$release_tmp/expected-names.txt"
+release_expected_edges="$release_tmp/expected-edges.tsv"
+release_order_names="$release_tmp/order-names.txt"
 
 # Runs one named jq -e assertion over the metadata. A failing assertion stops
 # the script with its label and jq's own output, so the failure is named rather

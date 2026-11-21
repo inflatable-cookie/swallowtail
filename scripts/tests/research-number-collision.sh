@@ -4,7 +4,9 @@ set -euo pipefail
 
 test_root=$(cd "$(dirname "$0")/../.." && pwd)
 checker=(python3 "$test_root/scripts/check-research-number-collision.py")
-scratch=$(mktemp -d)
+scratch_base=${TMPDIR:-/tmp}
+scratch_base=${scratch_base%/}
+scratch=$(mktemp -d "${scratch_base}/swallowtail-research-collision.XXXXXXXX")
 trap 'rm -rf "$scratch"' EXIT
 
 git_test() {

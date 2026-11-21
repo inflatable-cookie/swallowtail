@@ -58,7 +58,7 @@ jobs:
         with:
           shared-key: nextest
           cache-on-failure: true
-      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2
+      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2 (v2.90.7)
         with:
           tool: cargo-nextest@0.9.145
       - name: Test
@@ -83,7 +83,7 @@ jobs:
         with:
           shared-key: nextest
           cache-on-failure: true
-      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2
+      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2 (v2.90.7)
         with:
           tool: cargo-nextest@0.9.145
       - name: Node runtime for the Claude Agent SDK sidecar asset proof
@@ -134,7 +134,7 @@ jobs:
           python3 scripts/check-consumer-front-door.py
           python3 scripts/check-literal-version-expects.py --self-test
           python3 scripts/check-literal-version-expects.py
-      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2
+      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2 (v2.90.7)
         with:
           tool: ripgrep@15.2.0
       - name: Ephemeral pinned Effigy for docs link gate
@@ -178,7 +178,7 @@ jobs:
         with:
           shared-key: docs-api
           cache-on-failure: true
-      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2
+      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2 (v2.90.7)
         with:
           tool: cargo-public-api@0.52.0
       - name: Deny missing public documentation
@@ -256,7 +256,7 @@ jobs:
         with:
           cache-targets: false
           cache-on-failure: true
-      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2
+      - uses: taiki-e/install-action@25f51f6b1bf4e18876107cece836f4f77ac17c8c # v2 (v2.90.7)
         with:
           tool: cargo-deny@0.19.4
       - run: |

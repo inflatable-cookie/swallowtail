@@ -126,6 +126,9 @@ jobs:
           python3 scripts/check-consumer-front-door.py
           python3 scripts/check-literal-version-expects.py --self-test
           python3 scripts/check-literal-version-expects.py
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: ripgrep@15.2.0
       - name: Ephemeral pinned Effigy for docs link gate
         shell: bash
         run: |

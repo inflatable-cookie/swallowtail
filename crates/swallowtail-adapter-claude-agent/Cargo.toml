@@ -29,7 +29,7 @@ swallowtail-runtime.workspace = true
 url.workspace = true
 
 [dev-dependencies]
-async-tungstenite = { version = "=0.34.1", default-features = false, features = ["tokio-rustls-webpki-roots"] }
+async-tungstenite.workspace = true
 futures-executor.workspace = true
 futures-util.workspace = true
 swallowtail-host-local.workspace = true
@@ -38,7 +38,7 @@ swallowtail-transport-acp-remote.workspace = true
 tokio = { workspace = true, features = ["macros", "net", "rt", "sync", "time"] }
 
 [target.'cfg(unix)'.dev-dependencies]
-nix = { version = "0.31.3", default-features = false, features = ["fs"] }
+nix = { workspace = true, features = ["fs"] }
 
 [lints]
 workspace = true

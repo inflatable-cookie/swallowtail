@@ -15,7 +15,7 @@ doctest = false
 
 [dependencies]
 futures-channel.workspace = true
-serde = { version = "1", features = ["derive"] }
+serde.workspace = true
 serde_json.workspace = true
 swallowtail-core.workspace = true
 swallowtail-protocol-openai-chat.workspace = true

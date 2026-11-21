@@ -218,15 +218,26 @@ impl InteractiveSessionHandle for PiSessionHandle {
                     .lock()
                     .expect("Pi active-task lock poisoned")
                     .take();
+                let mut active_cleanup = CleanupOutcome::NotApplicable;
                 if let Some(mut active) = active {
                     if !active.turn.is_finished() {
                         active.turn.mark_cancelled();
                     }
                     self.connection.begin_close().await;
                     if let Some(task) = active.deadline_task.take() {
-                        let _ = task.join().await;
+                        active_cleanup = CleanupOutcome::merge(
+                            active_cleanup,
+                            match task.join().await {
+                                Ok(()) => CleanupOutcome::Clean,
+                                Err(_) => cleanup_failure(
+                                    "deadline_join_failed",
+                                    "Pi session deadline task did not join cleanly",
+                                ),
+                            },
+                        );
                     }
-                    let _ = active.attachment.release().await;
+                    active_cleanup =
+                        CleanupOutcome::merge(active_cleanup, active.attachment.release().await);
                 } else {
                     self.connection.begin_close().await;
                 }
@@ -244,7 +255,13 @@ impl InteractiveSessionHandle for PiSessionHandle {
                 let resource = release_resource(self.resource.take(), &self.services).await;
                 let credential = release_credential(self.credential.take(), &self.services).await;
                 CleanupOutcome::merge(
-                    CleanupOutcome::merge(CleanupOutcome::merge(process, callbacks), resource),
+                    CleanupOutcome::merge(
+                        CleanupOutcome::merge(
+                            CleanupOutcome::merge(active_cleanup, process),
+                            callbacks,
+                        ),
+                        resource,
+                    ),
                     credential,
                 )
             }),

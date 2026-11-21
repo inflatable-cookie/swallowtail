@@ -1495,6 +1495,105 @@ fn async_delegated_poll_awaits_stateful_pending_wait_future() {
 }
 
 #[test]
+fn sync_delegated_poll_retains_pending_wait_future_across_polls() {
+    struct StatefulWaitHandle {
+        wait_invocations: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    impl ProcessHandle for StatefulWaitHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_invocations
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            let mut remaining_pending = 2usize;
+            Box::pin(std::future::poll_fn(move |_context| {
+                if remaining_pending > 0 {
+                    remaining_pending -= 1;
+                    std::task::Poll::Pending
+                } else {
+                    std::task::Poll::Ready(Ok(ProcessExit::new(true, Some(0))))
+                }
+            }))
+        }
+    }
+    struct ReadyStartProcess {
+        wait_invocations: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    impl ProcessService for ReadyStartProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            Box::pin(std::future::ready(Ok(Box::new(StatefulWaitHandle {
+                wait_invocations: Arc::clone(&self.wait_invocations),
+            })
+                as Box<dyn ProcessHandle>)))
+        }
+    }
+
+    let invocations = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let services = HostServices::new(host_id())
+        .with_process(Arc::new(ReadyStartProcess {
+            wait_invocations: Arc::clone(&invocations),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+    let request = SignInStartRequest::new(
+        scope(),
+        instance_id(),
+        family(),
+        route_id(),
+        SignInAuthorityBinding::new(
+            CredentialMechanism::GatewayHelper,
+            audience(),
+            EntitlementMetering::PayAsYouGo,
+        ),
+        SignInMethod::DelegatedCliLogin {
+            process: ProcessRequest::new(
+                ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+            ),
+            credential: credential(),
+            credential_field: field_id(),
+        },
+    );
+    let mut session = start_sign_in(&services, request).expect("sync start succeeds");
+
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("first pending poll"),
+        SignInStatus::InProgress
+    );
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("second pending poll"),
+        SignInStatus::InProgress
+    );
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("completed poll"),
+        SignInStatus::ReadyToComplete
+    );
+    assert_eq!(
+        invocations.load(std::sync::atomic::Ordering::SeqCst),
+        1,
+        "a pending sync poll must keep its wait() future instead of re-invoking wait() each time"
+    );
+}
+
+#[test]
 fn sign_in_releases_loopback_and_stops_reaps_process_on_timeout_and_errors() {
     // 1. start_interactive releases bound loopback lease if url_open.open fails.
     let failing_open = Arc::new(AsyncSignInPorts {

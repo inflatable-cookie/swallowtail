@@ -182,6 +182,7 @@ pub(super) fn respond(
                     json!({"type": "summarization_retry_attempt_start", "source": "compaction", "reason": "threshold"}),
                 ),
                 Scenario::Hold
+                | Scenario::AbortRejected
                 | Scenario::ResponseMismatch
                 | Scenario::StateMismatch
                 | Scenario::ScheduledHandled => {}
@@ -196,6 +197,13 @@ pub(super) fn respond(
             }
         }
         "abort" => {
+            if matches!(scenario, Scenario::AbortRejected) {
+                output(
+                    state,
+                    json!({"id": id, "type": "response", "command": "abort", "success": false}),
+                );
+                return Ok(());
+            }
             output(
                 state,
                 json!({"id": id, "type": "response", "command": "abort", "success": true}),

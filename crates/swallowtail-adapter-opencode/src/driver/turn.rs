@@ -43,16 +43,24 @@ impl TurnHandle for OpenCodeTurnHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            if !self.terminal_flag.load(Ordering::SeqCst)
+            let cancellation = if !self.terminal_flag.load(Ordering::SeqCst)
                 && !self
                     .detachment
                     .as_ref()
                     .is_some_and(|detachment| detachment.is_requested())
             {
-                let _ = self.cancellation.request().await;
-            }
+                match self.cancellation.request().await {
+                    Ok(_) => CleanupOutcome::NotApplicable,
+                    Err(error) => CleanupOutcome::Failed(error.diagnostic().clone()),
+                }
+            } else {
+                CleanupOutcome::NotApplicable
+            };
             let active = join_active(&self.active).await;
-            CleanupOutcome::merge(active, self.attachment.release().await)
+            CleanupOutcome::merge(
+                CleanupOutcome::merge(cancellation, active),
+                self.attachment.release().await,
+            )
         })
     }
 }

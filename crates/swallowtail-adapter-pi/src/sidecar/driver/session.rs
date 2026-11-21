@@ -222,11 +222,22 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 // connection, so a harness that stops answering it cannot keep
                 // stdin open or the stop request unsent.
                 self.connection.close_session(id).await;
+                let mut active_cleanup = CleanupOutcome::NotApplicable;
                 if let Some(mut active) = active {
                     if let Some(task) = active.deadline_task.take() {
-                        let _ = task.join().await;
+                        active_cleanup = CleanupOutcome::merge(
+                            active_cleanup,
+                            match task.join().await {
+                                Ok(()) => CleanupOutcome::Clean,
+                                Err(_) => cleanup_failure(
+                                    "deadline_join_failed",
+                                    "Pi SDK sidecar deadline task did not join cleanly",
+                                ),
+                            },
+                        );
                     }
-                    let _ = active.attachment.release().await;
+                    active_cleanup =
+                        CleanupOutcome::merge(active_cleanup, active.attachment.release().await);
                 }
                 let process = match self.pump_task.take() {
                     Some(task) => match task.join().await {
@@ -240,7 +251,10 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 };
                 let resource = release_resource(self.resource.take(), &self.services).await;
                 let credential = release_credential(self.credential.take(), &self.services).await;
-                CleanupOutcome::merge(CleanupOutcome::merge(process, resource), credential)
+                CleanupOutcome::merge(
+                    CleanupOutcome::merge(CleanupOutcome::merge(active_cleanup, process), resource),
+                    credential,
+                )
             }),
         )
     }

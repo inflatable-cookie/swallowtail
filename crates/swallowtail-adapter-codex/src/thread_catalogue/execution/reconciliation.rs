@@ -5,7 +5,7 @@ use super::{
     request_controlled, require_catalogue_version, runtime_from_operation, settle,
 };
 use crate::CodexAppServerDriver;
-use crate::app_server::scope;
+use crate::app_server::{INITIALIZE_TIMED_OUT, InitBound, InitControl, initialize_control, scope};
 use crate::control_wait::Controlled;
 use crate::process_close::close_budget;
 use crate::session_replay::{project_interrupted_turn_state, project_thread_history};
@@ -45,13 +45,31 @@ impl CodexAppServerDriver {
                 behavior,
                 operation_scope,
                 Some(resource.reference().clone()),
-                false,
                 &services,
+                InitBound {
+                    experimental_api: false,
+                    cancellation: Some(request.cancellation().as_ref()),
+                    deadline: agreement.deadline(),
+                    timed_out: INITIALIZE_TIMED_OUT,
+                },
             )
             .await
         {
             Ok(started) => started,
-            Err(error) => return Err(release_runtime(resource, error).await),
+            Err(error) => {
+                let error = match initialize_control(&error) {
+                    Some(InitControl::Cancelled) => RuntimeFailure::new(SafeDiagnostic::new(
+                        "swallowtail.codex.thread_reconciliation.cancelled",
+                        "Codex thread reconciliation was cancelled",
+                    )),
+                    Some(InitControl::TimedOut) => RuntimeFailure::new(SafeDiagnostic::new(
+                        "swallowtail.codex.thread_reconciliation.timed_out",
+                        "Codex thread reconciliation timed out",
+                    )),
+                    None => error,
+                };
+                return Err(release_runtime(resource, error).await);
+            }
         };
         if let Err(control) = control_before_dispatch(
             request.cancellation().as_ref(),

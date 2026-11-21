@@ -16,7 +16,7 @@ use std::error::Error;
 use std::fmt;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::{Mutex, PoisonError};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{
     AccessProfileId, AddableRouteId, AdmittedInstanceRecord, ConfiguredInstanceId,
@@ -350,6 +350,7 @@ impl SignInOutcome {
 enum PendingSignInPoll {
     Loopback(BoxFuture<'static, Result<Option<crate::LoopbackCallbackReceipt>, RuntimeFailure>>),
     Device(BoxFuture<'static, Result<Option<crate::DeviceAuthorizationReceipt>, RuntimeFailure>>),
+    Delegated(BoxFuture<'static, Result<crate::ProcessExit, RuntimeFailure>>),
 }
 
 /// In-flight library-owned sign-in session.
@@ -365,7 +366,7 @@ pub struct SignInSession {
     loopback: Option<crate::LoopbackCallbackLease>,
     loopback_receipt: Option<crate::LoopbackCallbackReceipt>,
     device_receipt: Option<crate::DeviceAuthorizationReceipt>,
-    process: Option<Box<dyn ProcessHandle>>,
+    process: Option<Arc<dyn ProcessHandle>>,
     delegated_credential: Option<CredentialRef>,
     credential_field: Option<CredentialFieldId>,
     api_key_fields: BTreeMap<CredentialFieldId, CredentialFieldDescriptor>,
@@ -893,7 +894,7 @@ fn start_delegated(
         process.start(session.scope.clone(), request),
         "Sign-in process start did not resolve immediately; use start_sign_in_async",
     )?;
-    session.process = Some(handle);
+    session.process = Some(Arc::from(handle));
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -910,7 +911,7 @@ async fn start_delegated_async(
         .start(session.scope.clone(), request)
         .await
         .map_err(SignInFailure::from_port)?;
-    session.process = Some(handle);
+    session.process = Some(Arc::from(handle));
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -1049,19 +1050,29 @@ async fn poll_device_async(
 }
 
 fn poll_delegated(session: &mut SignInSession) -> Result<(), SignInFailure> {
-    let Some(handle) = session.process.as_ref() else {
-        return Err(SignInFailure::new(
-            SignInFailureKind::InvalidState,
-            "swallowtail.sign_in.invalid_state",
-            "Delegated CLI login is missing its process handle",
-        ));
+    let mut wait = match take_pending_poll(session) {
+        Some(PendingSignInPoll::Delegated(wait)) => wait,
+        _ => {
+            let handle = session.process.as_ref().ok_or_else(|| {
+                SignInFailure::new(
+                    SignInFailureKind::InvalidState,
+                    "swallowtail.sign_in.invalid_state",
+                    "Delegated CLI login is missing its process handle",
+                )
+            })?;
+            // Own the handle inside the retained future so the pending wait
+            // survives across polls instead of being dropped after one poll.
+            let handle = Arc::clone(handle);
+            Box::pin(async move { handle.wait().await })
+        }
     };
-    match poll_now_or_pending(handle.wait()) {
-        None => {
+    match poll_box_future_once(&mut wait) {
+        Poll::Pending => {
+            set_pending_poll(session, PendingSignInPoll::Delegated(wait));
             session.status = SignInStatus::InProgress;
             Ok(())
         }
-        Some(result) => finish_delegated_wait(session, result),
+        Poll::Ready(result) => finish_delegated_wait(session, result),
     }
 }
 

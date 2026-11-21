@@ -64,3 +64,23 @@ mod tests {
         ));
     }
 }
+
+#[test]
+fn session_history_control_failures_use_the_history_namespace() {
+    let cancelled = HISTORY_CONTROL_CODES.failure(ControlFailureKind::Cancelled);
+    let timed_out = HISTORY_CONTROL_CODES.failure(ControlFailureKind::TimedOut);
+    assert_eq!(
+        cancelled.diagnostic().code(),
+        "swallowtail.opencode.session_history.cancelled"
+    );
+    assert_eq!(
+        timed_out.diagnostic().code(),
+        "swallowtail.opencode.session_history.timed_out"
+    );
+
+    let reconciliation = RECONCILIATION_CONTROL_CODES.failure(ControlFailureKind::Cancelled);
+    assert_eq!(
+        reconciliation.diagnostic().code(),
+        "swallowtail.opencode.session_reconciliation.cancelled"
+    );
+}

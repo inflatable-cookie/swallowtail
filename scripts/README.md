@@ -80,7 +80,7 @@ Release-preparation scripts:
   dependency topology against `public-api-<current>` and
   `internal-dependencies-<current>.tsv`
 - `check-release-floor.sh` — lockfile-read-only, warnings-denied Clippy and full
-  tests for the unified Rust 1.95 package floor; accepted Effigy release sync
+  tests for the unified Rust 1.97.1 package floor; accepted Effigy release sync
   owns package-aware workspace-member lock updates before gates
 - `verify-source-consumer.sh` — isolated external Cargo consumer against exact
   repository `HEAD` when the worktree is clean; dirty pre-commit simulations
@@ -94,7 +94,7 @@ Release-preparation scripts:
   anchored frozen-evidence cross-classification, producer-gap plan-lane and
   reason guards, evidence-pending question guards, and activity matrices against current and
   previous route inventories, behind `effigy qa:routes`
-- `check-msrv.sh` — unified Rust 1.95 floor and current stable checks
+- `check-msrv.sh` — unified Rust 1.97.1 floor and current stable checks
 
 Archived registry-candidate scripts:
 

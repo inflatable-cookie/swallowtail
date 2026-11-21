@@ -85,7 +85,7 @@ section = "Research Records"
 "lint:current-copilot-cli-acp" = [
   "bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
   "bash scripts/oxide-rust.sh clippy --locked --all-targets --no-default-features -p swallowtail-adapter-copilot-cli -- -D warnings",
-  "RUSTUP_TOOLCHAIN=1.95.0 bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
+  "RUSTUP_TOOLCHAIN=1.97.1 bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-adapter-copilot-cli -- -D warnings",
 ]
 "observe:copilot-acp-private-assessment" = "bash scripts/copilot-acp-original-entry.sh {args}"
 "check:sdk-usage-projection" = "bash scripts/oxide-rust.sh check --locked -p swallowtail-adapter-claude-agent --all-targets"
@@ -117,7 +117,7 @@ section = "Research Records"
 ]
 "validate:acp-guard-captured-child" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci-process -p swallowtail-adapter-claude-agent --test acp_guard_capture"
 "lint:acp-guard" = "bash scripts/oxide-rust.sh clippy --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent -- -D warnings"
-"check:acp-guard-msrv" = "RUSTUP_TOOLCHAIN=1.95.0 bash scripts/oxide-rust.sh check --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent"
+"check:acp-guard-msrv" = "RUSTUP_TOOLCHAIN=1.97.1 bash scripts/oxide-rust.sh check --locked --all-targets --all-features -p swallowtail-runtime -p swallowtail-host-local -p swallowtail-adapter-claude-agent"
 "check:acp-guard-api" = "bash scripts/check-claude-acp-guard-api.sh check"
 "update:acp-guard-api" = "bash scripts/check-claude-acp-guard-api.sh update"
 "validate:acp-checked-prepared" = "bash scripts/oxide-rust.sh nextest run --locked --profile ci -p swallowtail-adapter-claude-agent --test integration -E 'test(prepared_guarded_binding_refuses_missing_mismatch_and_revocation_without_fallback) | test(prepared_guarded_denial_without_callback_preserves_order_and_cleanup)'"
@@ -205,7 +205,7 @@ section = "Research Records"
 ]
 "lint:current-pi-sdk-sidecar" = [
   "bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-pi --test integration -- -D warnings",
-  "RUSTUP_TOOLCHAIN=1.95.0 bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-pi --test integration -- -D warnings",
+  "RUSTUP_TOOLCHAIN=1.97.1 bash scripts/oxide-rust.sh clippy --locked --all-features -p swallowtail-adapter-pi --test integration -- -D warnings",
 ]
 "check:current-pi-sdk-sidecar" = "bash scripts/oxide-rust.sh check --locked --all-targets -p swallowtail-adapter-pi"
 "validate:current-pi-sdk-sidecar" = "bash scripts/oxide-rust.sh nextest run --locked --profile current-pi-sdk-sidecar --no-fail-fast -p swallowtail-adapter-pi --lib --test integration --test sidecar_driver -E 'binary(sidecar_driver) | test(/pi_sdk_sidecar_identity::|pi_sdk_sidecar_artifact_identity::|selection::tests::/) | test(/protocol::tests::(qualified_corpora_decode|corpus_identity_matches_the_frozen_sidecar_identity)/) | test(/wire::tests::/) | test(sdk_sidecar_keeps_its_observed_baseline_independent_of_rpc)'"

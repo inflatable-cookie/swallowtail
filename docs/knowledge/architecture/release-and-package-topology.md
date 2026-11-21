@@ -132,7 +132,11 @@ tag contents, or evidence.
 All packages in the current source candidate share coordinated version `0.6.0`.
 Workspace package version remains Effigy-owned until authorized prepare.
 
-- unified MSRV: Rust `1.95.0`
+- unified MSRV: Rust `1.97.1` for the source after `v0.6.0` (the next
+  pre-1.0 minor, `0.7.0`); `v0.2.0` through `v0.6.0` keep Rust `1.95.0`
+- active toolchain baseline: `release-baselines/rust-toolchains-0.7.0.env`
+  (`SWALLOWTAIL_MSRV=1.97.1`, `SWALLOWTAIL_CURRENT_STABLE=1.100.0`); the
+  earlier env files stay immutable
 - verified target: Apple Silicon macOS
 - development toolchain: the root `rust-toolchain.toml` pins Rust `1.100.0`
   with rustfmt and clippy; it is separate from the MSRV floor above, which it

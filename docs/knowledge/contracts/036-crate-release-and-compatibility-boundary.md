@@ -222,6 +222,10 @@ deliberately replaces that split with one Rust `1.95.0` floor for all
 packages. This is a breaking MSRV raise and therefore uses a new pre-1.0 minor
 version. The `v0.3.0` candidate retains the same floor.
 
+The source after `v0.6.0` raises the one unified floor to Rust `1.97.1`. That
+is another breaking MSRV raise, so it belongs to the next pre-1.0 minor
+(`0.7.0`); `v0.2.0` through `v0.6.0` keep Rust `1.95.0`.
+
 The `v0.3.0` candidate must pass:
 
 - all current-source packages at Rust `1.95.0`
@@ -362,7 +366,8 @@ Credential-free release checks sit behind explicit Effigy selectors and cover:
   28-package `v0.3.0` compatibility baseline
 - denied missing public documentation
 - dependency advisory, license, and source policy
-- Rust `1.95.0` floor and current stable
+- unified Rust floor (`1.97.1` for the source after `v0.6.0`) and current
+  stable
 - formatting, lint, tests, guide coverage, and examples
 - external source-consumer compilation and normal-path preparation
 - release-note, changelog, license, and security-policy presence

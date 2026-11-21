@@ -167,7 +167,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Install pinned MSRV from baseline
         run: |
-          source release-baselines/rust-toolchains-0.2.0.env
+          source release-baselines/rust-toolchains-0.7.0.env
           echo "RUST_MSRV=$SWALLOWTAIL_MSRV" >> "$GITHUB_ENV"
           rustup toolchain install "$SWALLOWTAIL_MSRV" --profile minimal --component clippy
       - uses: Swatinem/rust-cache@v2
@@ -186,7 +186,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Install pinned MSRV from baseline
         run: |
-          source release-baselines/rust-toolchains-0.2.0.env
+          source release-baselines/rust-toolchains-0.7.0.env
           echo "RUST_MSRV=$SWALLOWTAIL_MSRV" >> "$GITHUB_ENV"
           rustup toolchain install "$SWALLOWTAIL_MSRV" --profile minimal
       - uses: Swatinem/rust-cache@v2

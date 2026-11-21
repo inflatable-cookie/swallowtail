@@ -138,7 +138,8 @@ contract file owns the exact rules.
 - **036** fixes the 27-package `v0.1.x` source line, admits Muse as package 28
   in `v0.2.0`, sanctions the fail-closed binding API in the `v0.3.0`
   candidate, and governs the coordinated pre-1.0 version, the
-  unified Rust 1.95 floor, semantic and documented API evidence, dependency
+  unified Rust floor (1.95 through `v0.6.0`, 1.97.1 from `0.7.0`), semantic
+  and documented API evidence, dependency
   policy, exact Git-tag consumption, consumer proof, and explicit human
   authority for every external release mutation. The initial release excludes
   crates.io and a GitHub Release object. Crate versions remain separate from

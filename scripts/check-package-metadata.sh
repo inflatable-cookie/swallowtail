@@ -8,7 +8,7 @@ cd "$release_repo_root"
 source "$release_repo_root/scripts/release-version-identity.sh"
 release_load_version_identity
 
-source release-baselines/rust-toolchains-0.2.0.env
+source release-baselines/rust-toolchains-0.7.0.env
 release_msrv_cargo=${SWALLOWTAIL_MSRV%.0}
 release_baseline_packages=release-baselines/public-api-$release_current_version/packages.txt
 release_baseline_edges=release-baselines/internal-dependencies-$release_current_version.tsv

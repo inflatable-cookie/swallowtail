@@ -292,3 +292,191 @@ pub(super) async fn termination_server(
     });
     (Url::parse(&format!("ws://{address}/acp")).unwrap(), server)
 }
+
+pub(super) async fn websocket_missing_connection_id_reports_protocol_error() {
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        let (stream, _) = listener.accept().await.unwrap();
+        let _socket = async_tungstenite::tokio::accept_async(stream)
+            .await
+            .unwrap();
+    });
+    let endpoint = Url::parse(&format!("ws://{address}/acp")).unwrap();
+    let (_commands, command_rx, event_tx, _events, ready_tx, ready_rx) = channels().await;
+    let worker = tokio::spawn(crate::websocket::run(
+        config(endpoint, RemoteAcpTransport::WebSocket),
+        command_rx,
+        event_tx,
+        ready_tx,
+        None,
+        None,
+    ));
+    let ready_err = ready_rx
+        .await
+        .expect("ready channel must deliver the validation error, not drop")
+        .expect_err("missing acp-connection-id must fail ready");
+    assert_eq!(ready_err.kind(), RemoteAcpErrorKind::ProtocolRejected);
+    let worker_err = worker.await.unwrap().expect_err("worker fails");
+    assert_eq!(worker_err.kind(), RemoteAcpErrorKind::ProtocolRejected);
+    let _ = server.await;
+}
+
+pub(super) async fn websocket_oversized_frame_is_rejected_by_config() {
+    use std::num::{NonZeroU32, NonZeroU64};
+    use swallowtail_core::RemoteAcpConnectionBounds;
+
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        let (stream, _) = listener.accept().await.unwrap();
+        let evidence = Arc::new(Mutex::new(ServerEvidence::default()));
+        let mut socket =
+            async_tungstenite::tokio::accept_hdr_async(stream, UpgradeCallback(evidence))
+                .await
+                .unwrap();
+        let _ = socket.next().await;
+        // Send a text frame larger than the client's 128-byte maximum_frame_bytes.
+        let oversized = "x".repeat(512);
+        let _ = socket.send(WebSocketMessage::Text(oversized.into())).await;
+    });
+    let endpoint = Url::parse(&format!("ws://{address}/acp")).unwrap();
+    let small_frame_config = crate::config::TransportConfig {
+        endpoint,
+        transport: RemoteAcpTransport::WebSocket,
+        bounds: RemoteAcpConnectionBounds::new(
+            NonZeroU64::new(128).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(8).unwrap(),
+            NonZeroU32::new(8).unwrap(),
+        ),
+        maximum_cookie_count: NonZeroU32::new(4).unwrap(),
+        maximum_cookie_bytes: NonZeroU64::new(4096).unwrap(),
+    };
+    let (mut commands, command_rx, event_tx, _events, ready_tx, ready_rx) = channels().await;
+    let worker = tokio::spawn(crate::websocket::run(
+        small_frame_config,
+        command_rx,
+        event_tx,
+        ready_tx,
+        None,
+        None,
+    ));
+    ready_rx.await.unwrap().unwrap();
+    send(&mut commands, initialize()).await;
+    let err = tokio::time::timeout(std::time::Duration::from_secs(3), worker)
+        .await
+        .expect("oversized frame terminates worker")
+        .unwrap()
+        .expect_err("oversized frame must fail transport");
+    assert_eq!(err.kind(), RemoteAcpErrorKind::TransportFailed);
+    let _ = server.await;
+}
+
+pub(super) async fn websocket_cookie_overflow_reports_capacity_error_on_ready() {
+    use std::num::{NonZeroU32, NonZeroU64};
+    use swallowtail_core::RemoteAcpConnectionBounds;
+
+    struct OverflowCookieUpgrade;
+    impl Callback for OverflowCookieUpgrade {
+        fn on_request(
+            self,
+            _request: &Request,
+            mut response: Response,
+        ) -> Result<Response, ErrorResponse> {
+            response.headers_mut().insert(
+                "acp-connection-id",
+                "connection-cookie-overflow".parse().unwrap(),
+            );
+            response
+                .headers_mut()
+                .append("set-cookie", "a=1; Path=/".parse().unwrap());
+            response
+                .headers_mut()
+                .append("set-cookie", "b=2; Path=/".parse().unwrap());
+            Ok(response)
+        }
+    }
+
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        let (stream, _) = listener.accept().await.unwrap();
+        let _socket = async_tungstenite::tokio::accept_hdr_async(stream, OverflowCookieUpgrade)
+            .await
+            .unwrap();
+    });
+    let endpoint = Url::parse(&format!("ws://{address}/acp")).unwrap();
+    let cookie_limited_config = crate::config::TransportConfig {
+        endpoint,
+        transport: RemoteAcpTransport::WebSocket,
+        bounds: RemoteAcpConnectionBounds::new(
+            NonZeroU64::new(64 * 1024).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(8).unwrap(),
+            NonZeroU32::new(8).unwrap(),
+        ),
+        maximum_cookie_count: NonZeroU32::new(1).unwrap(),
+        maximum_cookie_bytes: NonZeroU64::new(4096).unwrap(),
+    };
+    let (_commands, command_rx, event_tx, _events, ready_tx, ready_rx) = channels().await;
+    let worker = tokio::spawn(crate::websocket::run(
+        cookie_limited_config,
+        command_rx,
+        event_tx,
+        ready_tx,
+        None,
+        None,
+    ));
+    let ready_err = ready_rx
+        .await
+        .expect("ready channel must deliver cookie error, not drop")
+        .expect_err("cookie overflow must fail ready");
+    assert_eq!(ready_err.kind(), RemoteAcpErrorKind::CapacityExceeded);
+    let worker_err = worker.await.unwrap().expect_err("worker fails");
+    assert_eq!(worker_err.kind(), RemoteAcpErrorKind::CapacityExceeded);
+    let _ = server.await;
+}
+
+pub(super) async fn websocket_deadline_close_uses_grace_after_elapsed_deadline() {
+    use swallowtail_runtime::{Deadline, MonotonicInstant};
+
+    // Exercise both worker-observed deadline expiry (via socket.next() race)
+    // and explicit WorkerCommand::Deadline after expiry, asserting the peer
+    // actually receives the WebSocket Close frame under a controlled clock.
+    for send_command in [false, true] {
+        let (endpoint, server) = termination_server(false).await;
+        let clock = super::host::ManualClock::new(100);
+        let time: Arc<dyn swallowtail_runtime::TimeService> =
+            Arc::new(super::host::ManualClockHandle(Arc::clone(&clock)));
+        let deadline = Deadline::at(MonotonicInstant::from_ticks(200));
+        let (mut commands, command_rx, event_tx, _events, ready_tx, ready_rx) = channels().await;
+        let worker = tokio::spawn(crate::websocket::run(
+            config(endpoint, RemoteAcpTransport::WebSocket),
+            command_rx,
+            event_tx,
+            ready_tx,
+            Some(deadline),
+            Some(time),
+        ));
+        ready_rx.await.unwrap().unwrap();
+        // Advance the controlled clock past the connection deadline (200), but
+        // well before the close grace deadline (200 + 2s).
+        clock.advance_to(250);
+        if send_command {
+            let _ = commands.send(WorkerCommand::Deadline).await;
+        }
+        let err = tokio::time::timeout(std::time::Duration::from_secs(3), worker)
+            .await
+            .expect("deadline worker exits promptly")
+            .unwrap()
+            .expect_err("deadline returns error");
+        assert_eq!(err.kind(), RemoteAcpErrorKind::DeadlineExceeded);
+        assert!(
+            server.await.unwrap(),
+            "WebSocket peer must receive Close frame during close grace (send_command={send_command})"
+        );
+    }
+}

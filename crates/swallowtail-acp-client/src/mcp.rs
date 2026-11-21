@@ -2,6 +2,7 @@ use serde_json::{Value, json};
 use std::fmt;
 use swallowtail_runtime::RuntimeFailure;
 use url::Url;
+use zeroize::{Zeroize, Zeroizing};
 
 /// Provider-scoped failure factories for HTTP MCP placement validation.
 #[derive(Clone, Copy)]
@@ -51,15 +52,32 @@ impl AcpHttpAdvertisement {
     }
 }
 
+#[derive(Clone, Eq, PartialEq)]
+struct ZeroizingHeaders(Vec<(String, String)>);
+
+impl ZeroizingHeaders {
+    fn zeroize_values(&mut self) {
+        for (_, value) in &mut self.0 {
+            value.zeroize();
+        }
+    }
+}
+
+impl Drop for ZeroizingHeaders {
+    fn drop(&mut self) {
+        self.zeroize_values();
+    }
+}
+
 /// One admitted consumer-supplied streamable-HTTP MCP declaration.
 ///
 /// URL and header values are consumer secrets: `Debug` and failure diagnostics
-/// never carry them.
+/// never carry them, and both are zeroized on drop.
 #[derive(Clone, Eq, PartialEq)]
 pub struct AcpRemoteMcpPlacement {
     name: String,
-    url: String,
-    headers: Vec<(String, String)>,
+    url: Zeroizing<String>,
+    headers: ZeroizingHeaders,
 }
 
 impl AcpRemoteMcpPlacement {
@@ -72,8 +90,8 @@ impl AcpRemoteMcpPlacement {
     ) -> Self {
         Self {
             name: name.into(),
-            url: url.into(),
-            headers: headers.into(),
+            url: Zeroizing::new(url.into()),
+            headers: ZeroizingHeaders(headers.into()),
         }
     }
 
@@ -86,13 +104,19 @@ impl AcpRemoteMcpPlacement {
     /// Returns the declared URL. Callers must not log or project this secret.
     #[must_use]
     pub fn url(&self) -> &str {
-        &self.url
+        self.url.as_str()
     }
 
     /// Returns the declared headers. Values are consumer secrets.
     #[must_use]
     pub fn headers(&self) -> &[(String, String)] {
-        &self.headers
+        &self.headers.0
+    }
+
+    #[cfg(test)]
+    pub(crate) fn wipe_secrets_for_test(&mut self) {
+        self.url.zeroize();
+        self.headers.zeroize_values();
     }
 
     /// Validates and encodes this placement as one ACP `type: "http"` entry.
@@ -109,7 +133,7 @@ impl AcpRemoteMcpPlacement {
         if !absolute_http_url(&self.url) {
             return Err((diagnostics.http_invalid)());
         }
-        if self.headers.iter().any(|(name, value)| {
+        if self.headers.0.iter().any(|(name, value)| {
             !header_name_is_well_formed(name) || value.bytes().any(is_line_break)
         }) {
             return Err((diagnostics.http_invalid)());
@@ -117,9 +141,10 @@ impl AcpRemoteMcpPlacement {
         Ok(json!({
             "type": "http",
             "name": self.name,
-            "url": self.url,
+            "url": self.url.as_str(),
             "headers": self
                 .headers
+                .0
                 .iter()
                 .map(|(name, value)| json!({"name": name, "value": value}))
                 .collect::<Vec<_>>(),
@@ -137,6 +162,7 @@ impl fmt::Debug for AcpRemoteMcpPlacement {
                 "headers",
                 &self
                     .headers
+                    .0
                     .iter()
                     .map(|(name, _)| (name.as_str(), "<redacted>"))
                     .collect::<Vec<_>>(),

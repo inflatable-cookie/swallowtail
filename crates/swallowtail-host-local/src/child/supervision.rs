@@ -1,4 +1,4 @@
-use super::{LocalProcessHandle, LocalProcessParts, SharedChild};
+use super::{LocalProcessHandle, LocalProcessParts, SharedChild, StdinCoordinator};
 use crate::limits::LocalProcessLimits;
 use crate::output::{OutputState, failure};
 use crate::process_exit::{ExitState, ReaderSupervision, cleanup_owned_process, supervise_child};
@@ -57,10 +57,12 @@ impl LocalProcessHandle {
             }
         };
 
+        let stdin_coordinator = StdinCoordinator::new(stdin, limits.stdin_bytes());
         let exit = Arc::new(ExitState::default());
         let (commands, command_receiver) = mpsc::channel();
         let supervisor_exit = Arc::clone(&exit);
         let supervisor_output = Arc::clone(&output);
+        let supervisor_stdin = Arc::clone(&stdin_coordinator);
         let supervision_slot = Arc::new(Mutex::new(Some((
             child,
             group_owner,
@@ -84,11 +86,13 @@ impl LocalProcessHandle {
                     &mut group_owner,
                     command_receiver,
                     readers,
+                    &supervisor_stdin,
                     &supervisor_output,
                     &supervisor_exit,
                 );
             });
         if supervisor.is_err() {
+            stdin_coordinator.shutdown_and_join();
             if let Some((mut child, mut group_owner, readers)) = supervision_slot
                 .lock()
                 .expect("local process supervision lock poisoned")
@@ -107,9 +111,7 @@ impl LocalProcessHandle {
 
         Ok(Self {
             shared: Arc::new(SharedChild {
-                stdin: Mutex::new(Some(stdin)),
-                stdin_bytes: Mutex::new(0),
-                stdin_limit: limits.stdin_bytes(),
+                stdin: stdin_coordinator,
                 output,
                 exit,
                 commands,

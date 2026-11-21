@@ -1,16 +1,55 @@
-use crate::config::TransportConfig;
+use crate::config::{TransportConfig, validate_frame_bound};
 use crate::cookies::BoundedCookieStore;
 use crate::correlation::CorrelationState;
-use crate::error::{RemoteAcpError, capacity_error, protocol_error, transport_error};
+use crate::error::{
+    RemoteAcpError, RemoteAcpErrorKind, capacity_error, protocol_error, transport_error,
+};
 use crate::wire;
-use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error, race_deadline};
+use crate::worker::{
+    WorkerCommand, WorkerEvent, cancellation_error, race_close_grace, race_deadline,
+};
 use async_tungstenite::tungstenite::Message as WebSocketMessage;
+use async_tungstenite::tungstenite::protocol::WebSocketConfig;
 use futures_channel::{mpsc, oneshot};
 use futures_util::{SinkExt, StreamExt};
 use serde_json::Value;
 use std::sync::Arc;
 use swallowtail_protocol_acp::Message;
 use swallowtail_runtime::{Deadline, TimeService};
+
+#[cfg(test)]
+pub(crate) static BLOCKED_EVENT_SEND_HOOK: std::sync::Mutex<Option<Arc<tokio::sync::Notify>>> =
+    std::sync::Mutex::new(None);
+
+async fn send_worker_event(
+    events: &mut mpsc::Sender<WorkerEvent>,
+    event: WorkerEvent,
+) -> Result<(), mpsc::SendError> {
+    #[cfg(not(test))]
+    {
+        events.send(event).await
+    }
+    #[cfg(test)]
+    {
+        let mut send = std::pin::pin!(events.send(event));
+        let mut notified = false;
+        std::future::poll_fn(|context| {
+            let poll = std::future::Future::poll(send.as_mut(), context);
+            if poll.is_pending() && !notified {
+                notified = true;
+                if let Some(hook) = BLOCKED_EVENT_SEND_HOOK
+                    .lock()
+                    .expect("blocked event send hook lock poisoned")
+                    .as_ref()
+                {
+                    hook.notify_one();
+                }
+            }
+            poll
+        })
+        .await
+    }
+}
 
 pub(crate) async fn run(
     config: TransportConfig,
@@ -20,8 +59,7 @@ pub(crate) async fn run(
     deadline: Option<Deadline>,
     time: Option<Arc<dyn TimeService>>,
 ) -> Result<(), RemoteAcpError> {
-    let maximum_frame_bytes =
-        usize::try_from(config.bounds.maximum_frame_bytes().get()).map_err(|_| capacity_error())?;
+    let maximum_frame_bytes = validate_frame_bound(config.bounds.maximum_frame_bytes().get())?;
     let mut correlation = CorrelationState::new(
         usize::try_from(config.bounds.maximum_pending_requests().get())
             .map_err(|_| capacity_error())?,
@@ -31,12 +69,18 @@ pub(crate) async fn run(
     let mut cookies =
         BoundedCookieStore::new(config.maximum_cookie_count, config.maximum_cookie_bytes)?;
     let cookie_endpoint = cookie_endpoint(&config.endpoint)?;
+    let ws_config = WebSocketConfig::default()
+        .max_message_size(Some(maximum_frame_bytes))
+        .max_frame_size(Some(maximum_frame_bytes));
     // The initial connect is raced against the deadline so a hanging
     // handshake is interruptible.
     let connection = match race_deadline(
         deadline,
         time.as_deref(),
-        async_tungstenite::tokio::connect_async(config.endpoint.as_str()),
+        async_tungstenite::tokio::connect_async_with_config(
+            config.endpoint.as_str(),
+            Some(ws_config),
+        ),
     )
     .await
     {
@@ -51,12 +95,16 @@ pub(crate) async fn run(
             return Err(error);
         }
     };
-    validate_connection_id(response.headers(), maximum_frame_bytes)?;
-    cookies.store_response(response.headers(), &cookie_endpoint)?;
+    if let Err(error) = validate_connection_id(response.headers(), maximum_frame_bytes)
+        .and_then(|()| cookies.store_response(response.headers(), &cookie_endpoint))
+    {
+        let _ = ready.send(Err(error.clone()));
+        return Err(error);
+    }
     let _ = ready.send(Ok(()));
     let mut initialized = false;
 
-    loop {
+    let result = loop {
         tokio::select! {
             command = commands.next() => {
                 match command {
@@ -67,30 +115,39 @@ pub(crate) async fn run(
                                 Message::Request { method, .. } if method == "initialize"
                             )
                         {
-                            return Err(protocol_error());
+                            break Err(protocol_error());
                         }
-                        correlation.outbound(&message)?;
-                        let encoded = wire::encode(&message, maximum_frame_bytes)?;
-                        let sent: Result<(), _> = race_deadline(
+                        if let Err(error) = correlation.outbound(&message) {
+                            break Err(error);
+                        }
+                        let encoded = match wire::encode(&message, maximum_frame_bytes) {
+                            Ok(encoded) => encoded,
+                            Err(error) => break Err(error),
+                        };
+                        match race_deadline(
                             deadline,
                             time.as_deref(),
                             socket.send(WebSocketMessage::Text(encoded.into())),
                         )
-                        .await?;
-                        sent.map_err(|_| transport_error())?;
+                        .await
+                        {
+                            Ok(Ok(())) => {}
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
+                        }
                     }
                     Some(WorkerCommand::Cancel) => {
                         let _ = race_deadline(deadline, time.as_deref(), socket.close(None)).await;
-                        return Err(cancellation_error(false));
+                        break Err(cancellation_error(false));
                     }
                     Some(WorkerCommand::Deadline) => {
-                        let _ = race_deadline(deadline, time.as_deref(), socket.close(None)).await;
-                        return Err(cancellation_error(true));
+                        break Err(cancellation_error(true));
                     }
                     Some(WorkerCommand::Close) | None => {
                         match race_deadline(deadline, time.as_deref(), socket.close(None)).await {
-                            Ok(Ok(())) => return Ok(()),
-                            Ok(Err(_)) | Err(_) => return Err(transport_error()),
+                            Ok(Ok(())) => break Ok(()),
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
                         }
                     }
                 }
@@ -98,40 +155,64 @@ pub(crate) async fn run(
             incoming = race_deadline(deadline, time.as_deref(), socket.next()) => {
                 let incoming = match incoming {
                     Ok(incoming) => incoming,
-                    Err(error) => return Err(error),
+                    Err(error) => break Err(error),
                 };
                 match incoming {
                     Some(Ok(WebSocketMessage::Text(text))) => {
-                        let message = wire::decode(text.as_str(), maximum_frame_bytes)?;
-                        let metadata = correlation.inbound(&message)?;
+                        let message = match wire::decode(text.as_str(), maximum_frame_bytes) {
+                            Ok(message) => message,
+                            Err(error) => break Err(error),
+                        };
+                        let metadata = match correlation.inbound(&message) {
+                            Ok(metadata) => metadata,
+                            Err(error) => break Err(error),
+                        };
                         if metadata.completed_method.as_deref() == Some("initialize") {
-                            validate_initialize_response(&message)?;
+                            if let Err(error) = validate_initialize_response(&message) {
+                                break Err(error);
+                            }
                             initialized = true;
                         }
-                        events.send(WorkerEvent::Message(message))
-                            .await
-                            .map_err(|_| transport_error())?;
+                        match race_deadline(
+                            deadline,
+                            time.as_deref(),
+                            send_worker_event(&mut events, WorkerEvent::Message(message)),
+                        )
+                        .await
+                        {
+                            Ok(Ok(())) => {}
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
+                        }
                     }
                     Some(Ok(WebSocketMessage::Ping(payload))) => {
-                        let ponged: Result<(), _> = race_deadline(
+                        match race_deadline(
                             deadline,
                             time.as_deref(),
                             socket.send(WebSocketMessage::Pong(payload)),
                         )
-                        .await?;
-                        ponged.map_err(|_| transport_error())?;
+                        .await
+                        {
+                            Ok(Ok(())) => {}
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
+                        }
                     }
                     Some(Ok(WebSocketMessage::Pong(_))) => {}
                     Some(Ok(WebSocketMessage::Close(_))) | Some(Err(_)) | None => {
-                        return Err(transport_error());
+                        break Err(transport_error());
                     }
                     Some(Ok(WebSocketMessage::Binary(_) | WebSocketMessage::Frame(_))) => {
-                        return Err(protocol_error());
+                        break Err(protocol_error());
                     }
                 }
             }
         }
+    };
+    if matches!(&result, Err(error) if error.kind() == RemoteAcpErrorKind::DeadlineExceeded) {
+        let _ = race_close_grace(time.as_deref(), socket.close(None)).await;
     }
+    result
 }
 
 fn validate_initialize_response(message: &Message) -> Result<(), RemoteAcpError> {

@@ -264,19 +264,23 @@ pub(super) async fn full_events_channel_close_does_not_deadlock() {
             let (rtx, rrx) = oneshot::channel();
             (ctx, crx, etx, erx, rtx, rrx)
         });
-    event_tx
+    while event_tx
         .try_send(WorkerEvent::Message(Message::Notification {
             method: "occupied".to_owned(),
             params: serde_json::json!({}),
         }))
-        .expect("fills events channel");
+        .is_ok()
+    {}
     let worker_services = self::services(ExecutionHostId::new("fixture.host.worker-full").unwrap());
+    let terminal_error = Arc::new(std::sync::Mutex::new(None));
+    let worker_terminal_error = Arc::clone(&terminal_error);
     let worker = tokio::task::spawn_blocking(move || {
         crate::worker::run(
             config(endpoint, RemoteAcpTransport::WebSocket),
             command_rx,
             event_tx,
             Arc::new(std::sync::Mutex::new(Some(ready_tx))),
+            worker_terminal_error,
             None,
             None,
             worker_services,
@@ -289,6 +293,14 @@ pub(super) async fn full_events_channel_close_does_not_deadlock() {
         .expect("worker::run must not deadlock when events is full")
         .unwrap();
     assert!(result.is_err());
+    assert!(
+        terminal_error
+            .lock()
+            .unwrap()
+            .as_ref()
+            .is_some_and(|err| err.kind() == RemoteAcpErrorKind::Cancelled),
+        "terminal failure is preserved in the side slot when events is full"
+    );
     let _ = server2.await;
 }
 
@@ -407,6 +419,234 @@ pub(super) async fn connect_timeout_signals_close_and_joins_tasks() {
     assert_eq!(counts.task_joined.load(Ordering::SeqCst), 2);
     assert_eq!(counts.blocking_completed.load(Ordering::SeqCst), 1);
     let _ = server.await;
+}
+
+/// Deterministic test clock driven explicitly by tests.
+pub(super) struct ManualClock {
+    now: std::sync::atomic::AtomicU64,
+    notify: tokio::sync::Notify,
+}
+
+impl ManualClock {
+    pub(super) fn new(start_ticks: u64) -> Arc<Self> {
+        Arc::new(Self {
+            now: std::sync::atomic::AtomicU64::new(start_ticks),
+            notify: tokio::sync::Notify::new(),
+        })
+    }
+
+    pub(super) fn advance_to(&self, ticks: u64) {
+        self.now.store(ticks, Ordering::SeqCst);
+        self.notify.notify_waiters();
+    }
+}
+
+pub(super) struct ManualClockHandle(pub(super) Arc<ManualClock>);
+
+impl TimeService for ManualClockHandle {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(self.0.now.load(Ordering::SeqCst))
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let clock = Arc::clone(&self.0);
+        let target = deadline.instant().ticks();
+        Box::pin(async move {
+            loop {
+                let notified = clock.notify.notified();
+                let current = clock.now.load(Ordering::SeqCst);
+                if current >= target {
+                    return DeadlineObservation::new(
+                        deadline,
+                        MonotonicInstant::from_ticks(current),
+                    );
+                }
+                notified.await;
+            }
+        })
+    }
+}
+
+pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() {
+    use async_tungstenite::tungstenite::Message as WebSocketMessage;
+    use async_tungstenite::tungstenite::handshake::server::{
+        Callback, ErrorResponse, Request, Response,
+    };
+    use futures_util::StreamExt;
+
+    struct SimpleUpgrade;
+    impl Callback for SimpleUpgrade {
+        fn on_request(
+            self,
+            _request: &Request,
+            mut response: Response,
+        ) -> Result<Response, ErrorResponse> {
+            response.headers_mut().insert(
+                "acp-connection-id",
+                "connection-full-queue".parse().unwrap(),
+            );
+            Ok(response)
+        }
+    }
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let all_sent = Arc::new(tokio::sync::Notify::new());
+    let server_sent = Arc::clone(&all_sent);
+    let server = tokio::spawn(async move {
+        let (stream, _) = listener.accept().await.unwrap();
+        let mut socket = async_tungstenite::tokio::accept_hdr_async(stream, SimpleUpgrade)
+            .await
+            .unwrap();
+        let _initialize = socket.next().await.unwrap().unwrap();
+        // Send initialize response + 3 notifications = 4 messages, which
+        // genuinely fills mpsc::channel(2) plus per-sender capacity so
+        // websocket::run blocks on events.send(...) while the consumer is stalled.
+        let init_response = Message::Response {
+            id: serde_json::json!(1),
+            result: Ok(serde_json::json!({
+                "protocolVersion": swallowtail_core::REMOTE_ACP_WIRE_VERSION
+            })),
+        };
+        socket
+            .send(WebSocketMessage::Text(
+                crate::wire::encode(&init_response, 64 * 1024)
+                    .unwrap()
+                    .into(),
+            ))
+            .await
+            .unwrap();
+        for index in 0..3 {
+            let notification = Message::Notification {
+                method: format!("session/update_{index}"),
+                params: serde_json::json!({}),
+            };
+            socket
+                .send(WebSocketMessage::Text(
+                    crate::wire::encode(&notification, 64 * 1024)
+                        .unwrap()
+                        .into(),
+                ))
+                .await
+                .unwrap();
+        }
+        server_sent.notify_one();
+        // Wait for the client's close frame during post-deadline close grace.
+        while let Some(frame) = socket.next().await {
+            if matches!(frame, Ok(WebSocketMessage::Close(_))) {
+                let _ = socket.close(None).await;
+                return true;
+            }
+        }
+        false
+    });
+
+    let endpoint = url::Url::parse(&format!("ws://{address}/acp")).unwrap();
+    let counts = Arc::new(LifecycleCounts::default());
+    let base = Arc::new(ThreadServices {
+        counts: Arc::clone(&counts),
+    });
+    let clock = ManualClock::new(100);
+    let deadline = Deadline::at(MonotonicInstant::from_ticks(200));
+    let services =
+        HostServices::new(ExecutionHostId::new("fixture.host.full-events-error").unwrap())
+            .with_task(base.clone())
+            .with_blocking_work(base.clone())
+            .with_time(Arc::new(ManualClockHandle(Arc::clone(&clock))))
+            .with_network(base);
+    let small_config = TransportConfig {
+        endpoint,
+        transport: RemoteAcpTransport::WebSocket,
+        bounds: RemoteAcpConnectionBounds::new(
+            NonZeroU64::new(64 * 1024).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(4).unwrap(),
+            NonZeroU32::new(1).unwrap(),
+            NonZeroU32::new(1).unwrap(),
+        ),
+        maximum_cookie_count: NonZeroU32::new(4).unwrap(),
+        maximum_cookie_bytes: NonZeroU64::new(4096).unwrap(),
+    };
+    struct HookResetGuard;
+    impl Drop for HookResetGuard {
+        fn drop(&mut self) {
+            *crate::websocket::BLOCKED_EVENT_SEND_HOOK
+                .lock()
+                .expect("blocked event send hook lock poisoned") = None;
+        }
+    }
+
+    let blocked_on_send = Arc::new(tokio::sync::Notify::new());
+    *crate::websocket::BLOCKED_EVENT_SEND_HOOK
+        .lock()
+        .expect("blocked event send hook lock poisoned") = Some(Arc::clone(&blocked_on_send));
+    let _hook_guard = HookResetGuard;
+
+    let mut connection = crate::connect_bound(
+        small_config,
+        ScopeId::new("fixture.full-events-error").unwrap(),
+        Some(deadline),
+        services,
+    )
+    .await
+    .unwrap();
+    connection.send(super::initialize()).await.unwrap();
+    all_sent.notified().await;
+    // Wait deterministically until websocket::run is actually parked inside
+    // events.send(...) on the full bounded channel, then advance the controlled
+    // clock past the connection deadline (200) while keeping close grace active.
+    tokio::time::timeout(
+        std::time::Duration::from_secs(3),
+        blocked_on_send.notified(),
+    )
+    .await
+    .expect("worker must park on a full events channel before clock advances");
+    clock.advance_to(250);
+
+    let wait_deadline = std::time::Instant::now() + std::time::Duration::from_secs(3);
+    while counts.blocking_completed.load(Ordering::SeqCst) == 0 {
+        assert!(
+            std::time::Instant::now() < wait_deadline,
+            "worker must exit on deadline even when events.send() is blocked on a full channel"
+        );
+        tokio::time::sleep(std::time::Duration::from_millis(5)).await;
+    }
+    assert!(
+        server.await.unwrap(),
+        "WebSocket peer must observe Close frame during close grace even when events channel is full"
+    );
+    assert!(
+        connection.terminal_error.lock().unwrap().is_some(),
+        "terminal error must be recorded in the fallback slot when events channel is full"
+    );
+
+    // Drain the entire buffered set (initialize + 2 notifications filling
+    // mpsc::channel(2) + 1 sender slot), then observe DeadlineExceeded.
+    let first = connection
+        .next_event()
+        .await
+        .expect("initialize event present")
+        .expect("initialize response succeeds");
+    super::assert_initialize(&first);
+    let mut drained_notifications = 0usize;
+    let terminal = loop {
+        match connection
+            .next_event()
+            .await
+            .expect("terminal failure must not collapse to clean EOF")
+        {
+            Ok(Message::Notification { .. }) => drained_notifications += 1,
+            Ok(other) => panic!("unexpected buffered message: {other:?}"),
+            Err(error) => break error,
+        }
+    };
+    assert_eq!(
+        drained_notifications, 2,
+        "full buffered notification set must be drained before the terminal error"
+    );
+    assert_eq!(terminal.kind(), RemoteAcpErrorKind::DeadlineExceeded);
+    assert!(connection.next_event().await.is_none());
+    assert_eq!(connection.close().await, CleanupOutcome::Clean);
 }
 
 trait PipeExt: Sized {

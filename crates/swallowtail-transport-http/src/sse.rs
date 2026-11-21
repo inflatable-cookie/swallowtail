@@ -117,21 +117,42 @@ impl SseFramer {
         if self.stream_limit.is_some_and(|limit| self.observed > limit) {
             return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
         }
-        self.pending.extend_from_slice(chunk);
         let mut frames = Vec::new();
-        while let Some((end, separator)) = boundary(&self.pending) {
-            let frame_len = end + separator;
-            if self.event_limit.is_some_and(|limit| frame_len > limit) {
-                return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+        if let Some(limit) = self.event_limit {
+            let mut remaining = chunk;
+            while !remaining.is_empty() {
+                let take = limit
+                    .saturating_add(1)
+                    .saturating_sub(self.pending.len())
+                    .max(1)
+                    .min(remaining.len());
+                let (piece, rest) = remaining.split_at(take);
+                remaining = rest;
+                if self.pending.len().saturating_add(piece.len()) > limit
+                    && !has_boundary_across(&self.pending, piece)
+                {
+                    return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+                }
+                self.pending.extend_from_slice(piece);
+                while let Some((end, separator)) = boundary(&self.pending) {
+                    let frame_len = end + separator;
+                    if frame_len > limit {
+                        return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+                    }
+                    let frame: Vec<u8> = self.pending.drain(..frame_len).collect();
+                    frames.push(normalize_line_endings(frame));
+                }
+                if self.pending.len() > limit {
+                    return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+                }
             }
-            let frame: Vec<u8> = self.pending.drain(..frame_len).collect();
-            frames.push(normalize_line_endings(frame));
-        }
-        if self
-            .event_limit
-            .is_some_and(|limit| self.pending.len() > limit)
-        {
-            return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+        } else {
+            self.pending.extend_from_slice(chunk);
+            while let Some((end, separator)) = boundary(&self.pending) {
+                let frame_len = end + separator;
+                let frame: Vec<u8> = self.pending.drain(..frame_len).collect();
+                frames.push(normalize_line_endings(frame));
+            }
         }
         Ok(frames)
     }
@@ -151,6 +172,21 @@ impl SseFramer {
             Ok(())
         }
     }
+}
+
+fn has_boundary_across(pending: &[u8], piece: &[u8]) -> bool {
+    if boundary(piece).is_some() {
+        return true;
+    }
+    let tail_len = pending.len().min(3);
+    let head_len = piece.len().min(3);
+    if tail_len == 0 || head_len == 0 {
+        return false;
+    }
+    let mut seam = [0u8; 6];
+    seam[..tail_len].copy_from_slice(&pending[pending.len() - tail_len..]);
+    seam[tail_len..tail_len + head_len].copy_from_slice(&piece[..head_len]);
+    boundary(&seam[..tail_len + head_len]).is_some()
 }
 
 fn boundary(buffer: &[u8]) -> Option<(usize, usize)> {
@@ -316,7 +352,8 @@ fn decode_frame(frame: &[u8]) -> Result<Option<SseFrame>, SseDecodeError> {
                 data.push(b'\n');
             }
             observed_data = true;
-            data.extend_from_slice(value.trim_start().as_bytes());
+            let value = value.strip_prefix(' ').unwrap_or(value);
+            data.extend_from_slice(value.as_bytes());
         }
     }
     if name.is_none() && !observed_data {

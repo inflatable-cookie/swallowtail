@@ -1,9 +1,13 @@
-use crate::config::TransportConfig;
+use crate::config::{TransportConfig, validate_frame_bound};
 use crate::cookies::BoundedCookieStore;
 use crate::correlation::CorrelationState;
-use crate::error::{RemoteAcpError, capacity_error, protocol_error, transport_error};
+use crate::error::{
+    RemoteAcpError, RemoteAcpErrorKind, capacity_error, protocol_error, transport_error,
+};
 use crate::wire;
-use crate::worker::{WorkerCommand, WorkerEvent, cancellation_error, race_deadline};
+use crate::worker::{
+    WorkerCommand, WorkerEvent, cancellation_error, race_close_grace, race_deadline,
+};
 use futures_channel::{mpsc, oneshot};
 use futures_util::{SinkExt, StreamExt};
 use std::sync::Arc;
@@ -29,6 +33,7 @@ enum StreamItem {
 
 struct HttpState {
     config: TransportConfig,
+    maximum_frame_bytes: usize,
     client: reqwest::Client,
     cookies: BoundedCookieStore,
     connection_id: Option<String>,
@@ -49,6 +54,7 @@ pub(crate) async fn run(
     deadline: Option<Deadline>,
     time: Option<Arc<dyn TimeService>>,
 ) -> Result<(), RemoteAcpError> {
+    let maximum_frame_bytes = validate_frame_bound(config.bounds.maximum_frame_bytes().get())?;
     let stream_capacity = usize::try_from(
         config
             .bounds
@@ -75,6 +81,7 @@ pub(crate) async fn run(
             .map_err(|_| capacity_error())?;
     let mut state = HttpState {
         config,
+        maximum_frame_bytes,
         client,
         cookies,
         connection_id: None,
@@ -113,9 +120,6 @@ pub(crate) async fn run(
                         break Err(cancellation_error(false));
                     }
                     Some(WorkerCommand::Deadline) => {
-                        let deadline = state.deadline;
-                        let time = state.time.clone();
-                        let _ = race_deadline(deadline, time.as_deref(), state.close()).await;
                         break Err(cancellation_error(true));
                     }
                     Some(WorkerCommand::Close) | None => {
@@ -152,6 +156,12 @@ pub(crate) async fn run(
             }
         }
     };
+    if matches!(&result, Err(error) if error.kind() == RemoteAcpErrorKind::DeadlineExceeded)
+        && state.connection_id.is_some()
+    {
+        let time = state.time.clone();
+        let _ = race_close_grace(time.as_deref(), state.close()).await;
+    }
     state.join_readers().await;
     result
 }

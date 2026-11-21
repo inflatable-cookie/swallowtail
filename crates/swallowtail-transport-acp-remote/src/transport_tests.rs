@@ -42,8 +42,14 @@ fn remote_transport_lifecycles_run_sequentially() {
     run_scenario(websocket::websocket_disconnect_invalidates_without_recovery());
     run_scenario(websocket::websocket_runs_raw_corpus_callback_cancel_and_close());
     run_scenario(http::http_non_responding_peer_fails_within_deadline());
+    run_scenario(http::http_deadline_expiry_sends_delete_during_close_grace());
     run_scenario(websocket::websocket_hanging_connect_fails_within_deadline());
     run_scenario(websocket::websocket_silent_peer_fails_within_deadline());
+    run_scenario(websocket::websocket_missing_connection_id_reports_protocol_error());
+    run_scenario(websocket::websocket_cookie_overflow_reports_capacity_error_on_ready());
+    run_scenario(websocket::websocket_oversized_frame_is_rejected_by_config());
+    run_scenario(websocket::websocket_deadline_close_uses_grace_after_elapsed_deadline());
+    run_scenario(host::full_events_channel_delivers_terminal_error_on_next_event());
 }
 
 fn run_scenario(scenario: impl Future<Output = ()>) {
@@ -134,6 +140,5 @@ async fn message(events: &mut mpsc::Receiver<WorkerEvent>, stage: &'static str) 
         .expect("transport event exists");
     match event {
         WorkerEvent::Message(message) => message,
-        WorkerEvent::Failed(error) => panic!("transport failed: {error}"),
     }
 }

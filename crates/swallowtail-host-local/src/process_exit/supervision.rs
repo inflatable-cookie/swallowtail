@@ -1,3 +1,4 @@
+use crate::child::StdinCoordinator;
 use crate::output::{OutputState, failure};
 use crate::process_reader::ReaderControl;
 use std::process::{Child, ExitStatus};
@@ -73,6 +74,7 @@ pub(crate) fn supervise_child(
     group_owner: &mut Option<Child>,
     commands: Receiver<ChildCommand>,
     readers: ReaderSupervision,
+    stdin: &StdinCoordinator,
     output: &OutputState,
     exit: &ExitState,
 ) {
@@ -210,11 +212,24 @@ pub(crate) fn supervise_child(
         output.complete_supervision();
     }
 
-    let cleanup_error = tree_error.or(reader_error);
+    let (stdin_error, pending_stdin_actor) =
+        match stdin.shutdown_and_join_bounded(READER_JOIN_BOUND) {
+            Ok(()) => (None, None),
+            Err((error, pending)) => (Some(error), pending),
+        };
+
+    let cleanup_error = tree_error.or(reader_error).or(stdin_error);
     exit.complete(match cleanup_error {
         Some(error) => Err(error),
         None => status.map(exit_record),
     });
+
+    // If a blocking stdin actor outlived READER_JOIN_BOUND, the supervisor
+    // keeps ownership of its JoinHandle after publishing the bounded failure
+    // and joins it once the writer eventually unblocks.
+    if let Some(handle) = pending_stdin_actor {
+        let _ = handle.join();
+    }
 }
 
 /// Records the root exit as root-only evidence.

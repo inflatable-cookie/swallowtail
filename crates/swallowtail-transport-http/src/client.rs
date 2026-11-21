@@ -48,6 +48,7 @@ impl HttpTransport {
             .cloned()
             .ok_or(TransportError::BlockingServiceMissing)?;
         let url = request.resolve(endpoint)?;
+        request.validate_headers()?;
         let (sender, receiver) = crate::stream::result_channel();
         blocking
             .run(
@@ -82,6 +83,7 @@ impl HttpTransport {
         cancelled: &Arc<AtomicBool>,
     ) -> Result<HttpResponse, TransportError> {
         let url = request.resolve(endpoint)?;
+        request.validate_headers()?;
         perform_request(url, &request, cancelled)
     }
 
@@ -108,6 +110,7 @@ impl HttpTransport {
             .cloned()
             .ok_or(TransportError::BlockingServiceMissing)?;
         let url = request.resolve(endpoint)?;
+        request.validate_headers()?;
         let (sender, receiver) = channel(STREAM_CAPACITY);
         let (terminal_sender, terminal_receiver) = channel(1);
         let worker_cancelled = Arc::clone(&cancelled);
@@ -156,6 +159,7 @@ fn configure(
     let progress_cancelled = Arc::clone(cancelled);
     easy.progress_function(move |_, _, _, _| !progress_cancelled.load(Ordering::SeqCst))
         .map_err(|_| TransportError::Transport)?;
+    request.validate_headers()?;
     let mut headers = List::new();
     for (name, value) in request.headers() {
         append_header(&mut headers, &format!("{name}: {value}"))?;
@@ -196,11 +200,13 @@ fn append_header(headers: &mut List, line: &str) -> Result<(), TransportError> {
     headers.append(line).map_err(|_| TransportError::Transport)
 }
 
+pub(crate) fn format_secret_header_line(secret: &SecretHeader) -> Zeroizing<String> {
+    Zeroizing::new(format!("{}: {}", secret.name(), secret.value()))
+}
+
 fn append_secret_header(headers: &mut List, secret: &SecretHeader) -> Result<(), TransportError> {
-    let mut line = Zeroizing::new(format!("{}: {}", secret.name(), secret.value()));
-    append_header(headers, line.as_str())?;
-    line.clear();
-    Ok(())
+    let line = format_secret_header_line(secret);
+    append_header(headers, line.as_str())
 }
 
 fn perform_request(
@@ -217,6 +223,9 @@ fn perform_request(
         let mut transfer = easy.transfer();
         transfer
             .header_function(|line| {
+                if line.starts_with(b"HTTP/") {
+                    headers.clear();
+                }
                 capture_header(line, &mut headers, request.header_filter());
                 true
             })
@@ -275,6 +284,7 @@ where
         transfer
             .header_function(|line| {
                 if line.starts_with(b"HTTP/") {
+                    headers.borrow_mut().clear();
                     status.set(parse_status(line).unwrap_or(0));
                 }
                 capture_header(line, &mut headers.borrow_mut(), header_filter);
@@ -337,6 +347,12 @@ where
             headers: headers.into_inner(),
             body: error_body.into_inner(),
         });
+    }
+    if emit_headers && !sent_headers.replace(true) {
+        let observed = headers.into_inner();
+        if !sender.send(StreamItem::Headers(observed)) {
+            return Err(StreamError::Transport(TransportError::Cancelled));
+        }
     }
     decoder.finish().map_err(StreamError::Decode)
 }

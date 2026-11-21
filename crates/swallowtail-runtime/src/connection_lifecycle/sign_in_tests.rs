@@ -1980,3 +1980,623 @@ fn async_poll_times_out_and_cleans_up_hung_delegated_and_loopback_waits() {
 fn interactive_services_fn(ports: Arc<MockSignInPorts>) -> HostServices {
     interactive_services(ports)
 }
+
+#[test]
+fn poll_delegated_async_reuses_retained_pending_poll() {
+    struct CountingWaitProcess {
+        wait_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    struct CountingWaitHandle {
+        wait_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    impl ProcessHandle for CountingWaitHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            self.wait_calls
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            yield_once_then(|| Ok(ProcessExit::new(true, Some(0))))
+        }
+    }
+    impl ProcessService for CountingWaitProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let wait_calls = Arc::clone(&self.wait_calls);
+            Box::pin(async move {
+                Ok(Box::new(CountingWaitHandle { wait_calls }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+
+    let wait_calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let services = HostServices::new(host_id())
+        .with_process(Arc::new(CountingWaitProcess {
+            wait_calls: Arc::clone(&wait_calls),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+    let mut session = start_sign_in(
+        &services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    )
+    .expect("delegated start succeeds");
+    assert_eq!(
+        poll_sign_in(&mut session, &services).expect("first sync poll yields InProgress"),
+        SignInStatus::InProgress
+    );
+    assert_eq!(wait_calls.load(std::sync::atomic::Ordering::SeqCst), 1);
+    assert_eq!(
+        block_on(poll_sign_in_async(&mut session, &services))
+            .expect("async poll completes retained wait"),
+        SignInStatus::ReadyToComplete
+    );
+    assert_eq!(
+        wait_calls.load(std::sync::atomic::Ordering::SeqCst),
+        1,
+        "poll_delegated_async must reuse the retained wait future instead of calling wait() twice"
+    );
+}
+
+#[test]
+fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loopback_lease() {
+    // 1. Wedged helper teardown is bounded by CLEANUP_TEARDOWN_BUDGET.
+    struct WedgedStopProcess;
+    impl ProcessHandle for WedgedStopProcess {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+    }
+    impl ProcessService for WedgedStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            Box::pin(async { Ok(Box::new(WedgedStopProcess) as Box<dyn ProcessHandle>) })
+        }
+    }
+    struct ImmediateBudgetTime {
+        now: Arc<std::sync::atomic::AtomicU64>,
+    }
+    impl TimeService for ImmediateBudgetTime {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(self.now.load(std::sync::atomic::Ordering::SeqCst))
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, crate::DeadlineObservation> {
+            let now = Arc::clone(&self.now);
+            Box::pin(async move {
+                now.store(
+                    deadline.instant().ticks(),
+                    std::sync::atomic::Ordering::SeqCst,
+                );
+                crate::DeadlineObservation::new(deadline, deadline.instant())
+            })
+        }
+    }
+
+    let wedged_services = HostServices::new(host_id())
+        .with_process(Arc::new(WedgedStopProcess))
+        .with_time(Arc::new(ImmediateBudgetTime {
+            now: Arc::new(std::sync::atomic::AtomicU64::new(1)),
+        }));
+    let wedged_session = block_on(start_sign_in_async(
+        &wedged_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("delegated start succeeds");
+    let wedged_err = block_on(cancel_sign_in_async(wedged_session, &wedged_services))
+        .expect_err("bounded teardown must fail closed instead of hanging or succeeding");
+    assert_eq!(wedged_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        wedged_err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
+    );
+
+    // 1b. Deadline-free session on a host with NO TimeService port fails closed on pending
+    // cleanup instead of hanging, and succeeds when cleanup resolves immediately.
+    let no_time_wedged_services =
+        HostServices::new(host_id()).with_process(Arc::new(WedgedStopProcess));
+    let no_time_wedged_session = block_on(start_sign_in_async(
+        &no_time_wedged_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("deadline-free delegated start succeeds without TimeService");
+    let no_time_err = block_on(cancel_sign_in_async(
+        no_time_wedged_session,
+        &no_time_wedged_services,
+    ))
+    .expect_err("pending cleanup without TimeService must fail closed instead of hanging");
+    assert_eq!(no_time_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        no_time_err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
+    );
+
+    // 2. Missing loopback_callback on cleanup HostServices still releases the lease via the
+    // retained binding service across sync cancel, async cancel, and async complete.
+    let ports = MockSignInPorts::new(credential(), audience());
+    let full_services = interactive_services(Arc::clone(&ports));
+    let no_loopback = HostServices::new(host_id()).with_time(Arc::new(FixedTime(1)));
+    let session = start_sign_in(&full_services, interactive_request()).expect("start succeeds");
+    assert_eq!(
+        cancel_sign_in(session, &no_loopback)
+            .expect("sync cancel releases lease via retained service"),
+        SignInStatus::Cancelled
+    );
+    assert_eq!(
+        ports
+            .calls()
+            .iter()
+            .filter(|&&call| call == "loopback_release")
+            .count(),
+        1
+    );
+
+    let session_async_cancel = block_on(start_sign_in_async(&full_services, interactive_request()))
+        .expect("async start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(session_async_cancel, &no_loopback))
+            .expect("async cancel releases lease via retained service"),
+        SignInStatus::Cancelled
+    );
+    assert_eq!(
+        ports
+            .calls()
+            .iter()
+            .filter(|&&call| call == "loopback_release")
+            .count(),
+        2
+    );
+
+    // 2b. Pending loopback release on async complete fails closed without persisting credentials.
+    struct HangingReleaseLoopbackPorts;
+    impl UrlOpenService for HangingReleaseLoopbackPorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for HangingReleaseLoopbackPorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.hanging.release").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            let callback_id = lease.callback_id().clone();
+            Box::pin(async move { Ok(Some(LoopbackCallbackReceipt::new(callback_id))) })
+        }
+        fn materialize_credential(
+            &self,
+            _receipt: &LoopbackCallbackReceipt,
+            _audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            Ok(credential())
+        }
+        fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    let hanging_release_ports = Arc::new(HangingReleaseLoopbackPorts);
+    let hanging_release_services = HostServices::new(host_id())
+        .with_url_open(hanging_release_ports.clone())
+        .with_loopback_callback(hanging_release_ports)
+        .with_time(Arc::new(ImmediateBudgetTime {
+            now: Arc::new(std::sync::atomic::AtomicU64::new(1)),
+        }));
+    let store = MemoryStore::new();
+    admitted(&store);
+    let mut ready_session = block_on(start_sign_in_async(
+        &hanging_release_services,
+        interactive_request(),
+    ))
+    .expect("start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(
+            &mut ready_session,
+            &hanging_release_services
+        ))
+        .expect("poll becomes ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let complete_err = block_on(complete_sign_in_async(
+        ready_session,
+        &hanging_release_services,
+        Some(&store),
+    ))
+    .expect_err("expired loopback release must fail closed before persisting credentials");
+    assert_eq!(complete_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        complete_err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
+    );
+    let stored = store
+        .get_instance(&instance_id())
+        .expect("store read")
+        .expect("instance exists");
+    assert_eq!(
+        stored.credential_refs().len(),
+        0,
+        "credentials must not be persisted when loopback release did not finish"
+    );
+
+    // 2c. Cleanup when a DIFFERENT LoopbackCallbackService is registered still releases
+    // through the original binder, leaving the foreign port untouched.
+    let original_ports = MockSignInPorts::new(credential(), audience());
+    let foreign_ports = MockSignInPorts::new(credential(), audience());
+    let original_services = interactive_services(Arc::clone(&original_ports));
+    let foreign_services = interactive_services(Arc::clone(&foreign_ports));
+    let session = block_on(start_sign_in_async(
+        &original_services,
+        interactive_request(),
+    ))
+    .expect("start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(session, &foreign_services))
+            .expect("cancel releases via original binder"),
+        SignInStatus::Cancelled
+    );
+    assert!(
+        original_ports.calls().contains(&"loopback_release"),
+        "original binder must receive the release"
+    );
+    assert!(
+        !foreign_ports.calls().contains(&"loopback_release"),
+        "foreign loopback port must not receive a lease it never bound"
+    );
+
+    // 2d. A completed CleanupOutcome::Failed from loopback.release surfaces its exact
+    // diagnostic and blocks credential persistence in complete_sign_in_async.
+    struct FailingReleaseLoopbackPorts;
+    impl UrlOpenService for FailingReleaseLoopbackPorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for FailingReleaseLoopbackPorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.failing.release").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            let callback_id = lease.callback_id().clone();
+            Box::pin(async move { Ok(Some(LoopbackCallbackReceipt::new(callback_id))) })
+        }
+        fn materialize_credential(
+            &self,
+            _receipt: &LoopbackCallbackReceipt,
+            _audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            Ok(credential())
+        }
+        fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            Box::pin(async {
+                CleanupOutcome::Failed(swallowtail_core::SafeDiagnostic::new(
+                    "fixture.loopback_release_failed",
+                    "Loopback listener failed to close",
+                ))
+            })
+        }
+    }
+
+    let failing_release_ports = Arc::new(FailingReleaseLoopbackPorts);
+    let failing_release_services = HostServices::new(host_id())
+        .with_url_open(failing_release_ports.clone())
+        .with_loopback_callback(failing_release_ports)
+        .with_time(Arc::new(FixedTime(1)));
+    let failing_store = MemoryStore::new();
+    admitted(&failing_store);
+    let mut failing_session = block_on(start_sign_in_async(
+        &failing_release_services,
+        interactive_request(),
+    ))
+    .expect("start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(
+            &mut failing_session,
+            &failing_release_services
+        ))
+        .expect("poll becomes ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let release_err = block_on(complete_sign_in_async(
+        failing_session,
+        &failing_release_services,
+        Some(&failing_store),
+    ))
+    .expect_err("failed loopback release must fail closed before persisting credentials");
+    assert_eq!(release_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        release_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    let stored_after_fail = failing_store
+        .get_instance(&instance_id())
+        .expect("store read")
+        .expect("instance exists");
+    assert_eq!(
+        stored_after_fail.credential_refs().len(),
+        0,
+        "credentials must not be persisted when loopback release returned CleanupOutcome::Failed"
+    );
+
+    // 2e. A synchronous complete_sign_in failure on CleanupOutcome::Failed retains
+    // the failure in the returned session so neither a synchronous nor an async
+    // retry forgets the failure or persists credentials.
+    let retry_store = MemoryStore::new();
+    admitted(&retry_store);
+    let mut sync_failing_session = start_sign_in(&failing_release_services, interactive_request())
+        .expect("sync start succeeds");
+    assert_eq!(
+        poll_sign_in(&mut sync_failing_session, &failing_release_services)
+            .expect("sync poll becomes ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let (first_err, returned_session) = complete_sign_in(
+        sync_failing_session,
+        &failing_release_services,
+        Some(&retry_store),
+    )
+    .expect_err("initial sync complete must fail closed on CleanupOutcome::Failed");
+    assert_eq!(first_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        first_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    assert_eq!(
+        retry_store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .len(),
+        0,
+        "store must stay empty after initial sync complete failure"
+    );
+
+    let (sync_retry_err, returned_session) = complete_sign_in(
+        returned_session,
+        &failing_release_services,
+        Some(&retry_store),
+    )
+    .expect_err("sync retry must still surface the retained loopback release failure");
+    assert_eq!(sync_retry_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        sync_retry_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    assert_eq!(
+        retry_store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .len(),
+        0,
+        "store must stay empty after sync retry"
+    );
+
+    let async_retry_err = block_on(complete_sign_in_async(
+        returned_session,
+        &failing_release_services,
+        Some(&retry_store),
+    ))
+    .expect_err("async retry must still surface the retained loopback release failure");
+    assert_eq!(async_retry_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        async_retry_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    assert_eq!(
+        retry_store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .len(),
+        0,
+        "store must stay empty after async retry"
+    );
+
+    // 3. cleanup_session_now retains pending stop futures instead of dropping and restarting them.
+    struct CountingStopProcess {
+        stop_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    struct CountingStopHandle {
+        stop_calls: Arc<std::sync::atomic::AtomicUsize>,
+    }
+    impl ProcessHandle for CountingStopHandle {
+        fn write_stdin(
+            &self,
+            _chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(async { Ok(None) })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.stop_calls
+                .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            yield_once_then(|| Ok(()))
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+    impl ProcessService for CountingStopProcess {
+        fn start(
+            &self,
+            _scope: ScopeId,
+            _request: ProcessRequest,
+        ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+            let stop_calls = Arc::clone(&self.stop_calls);
+            Box::pin(async move {
+                Ok(Box::new(CountingStopHandle { stop_calls }) as Box<dyn ProcessHandle>)
+            })
+        }
+    }
+
+    let stop_calls = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+    let stop_services = HostServices::new(host_id())
+        .with_process(Arc::new(CountingStopProcess {
+            stop_calls: Arc::clone(&stop_calls),
+        }))
+        .with_time(Arc::new(FixedTime(1)));
+    let session = start_sign_in(
+        &stop_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    )
+    .expect("delegated start succeeds");
+    let (err, session) = cancel_sign_in(session, &stop_services)
+        .expect_err("pending stop fails closed and retains the future");
+    assert_eq!(err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(stop_calls.load(std::sync::atomic::Ordering::SeqCst), 1);
+    assert_eq!(
+        block_on(cancel_sign_in_async(session, &stop_services))
+            .expect("async cancel drives retained stop future"),
+        SignInStatus::Cancelled
+    );
+    assert_eq!(
+        stop_calls.load(std::sync::atomic::Ordering::SeqCst),
+        1,
+        "retained stop future must not be dropped and restarted"
+    );
+}

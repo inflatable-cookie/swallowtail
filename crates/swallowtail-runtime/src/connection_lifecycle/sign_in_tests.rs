@@ -2154,32 +2154,170 @@ fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loo
         ),
     ))
     .expect("delegated start succeeds");
+    let wedged_err = block_on(cancel_sign_in_async(wedged_session, &wedged_services))
+        .expect_err("bounded teardown must fail closed instead of hanging or succeeding");
+    assert_eq!(wedged_err.kind(), SignInFailureKind::HostPort);
     assert_eq!(
-        block_on(cancel_sign_in_async(wedged_session, &wedged_services))
-            .expect("bounded teardown finishes instead of hanging"),
-        SignInStatus::Cancelled
+        wedged_err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
     );
 
-    // 2. Missing loopback_callback port does not silently drop the LoopbackCallbackLease.
+    // 1b. Deadline-free session on a host with NO TimeService port fails closed on pending
+    // cleanup instead of hanging, and succeeds when cleanup resolves immediately.
+    let no_time_wedged_services =
+        HostServices::new(host_id()).with_process(Arc::new(WedgedStopProcess));
+    let no_time_wedged_session = block_on(start_sign_in_async(
+        &no_time_wedged_services,
+        SignInStartRequest::new(
+            scope(),
+            instance_id(),
+            family(),
+            route_id(),
+            SignInAuthorityBinding::new(
+                CredentialMechanism::GatewayHelper,
+                audience(),
+                EntitlementMetering::PayAsYouGo,
+            ),
+            SignInMethod::DelegatedCliLogin {
+                process: ProcessRequest::new(
+                    ExecutableRef::new("approved.login.helper").expect("executable is valid"),
+                ),
+                credential: credential(),
+                credential_field: field_id(),
+            },
+        ),
+    ))
+    .expect("deadline-free delegated start succeeds without TimeService");
+    let no_time_err = block_on(cancel_sign_in_async(
+        no_time_wedged_session,
+        &no_time_wedged_services,
+    ))
+    .expect_err("pending cleanup without TimeService must fail closed instead of hanging");
+    assert_eq!(no_time_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        no_time_err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
+    );
+
+    // 2. Missing loopback_callback on cleanup HostServices still releases the lease via the
+    // retained binding service across sync cancel, async cancel, and async complete.
     let ports = MockSignInPorts::new(credential(), audience());
     let full_services = interactive_services(Arc::clone(&ports));
-    let session = start_sign_in(&full_services, interactive_request()).expect("start succeeds");
     let no_loopback = HostServices::new(host_id()).with_time(Arc::new(FixedTime(1)));
-    let (err, session) = cancel_sign_in(session, &no_loopback)
-        .expect_err("missing loopback port must fail instead of dropping the lease");
-    assert_eq!(err.kind(), SignInFailureKind::MissingHostPort);
-    assert!(
-        !ports.calls().contains(&"loopback_release"),
-        "lease has not been released yet"
-    );
+    let session = start_sign_in(&full_services, interactive_request()).expect("start succeeds");
     assert_eq!(
-        cancel_sign_in(session, &full_services)
-            .expect("retrying with the loopback port releases the retained lease"),
+        cancel_sign_in(session, &no_loopback)
+            .expect("sync cancel releases lease via retained service"),
         SignInStatus::Cancelled
     );
-    assert!(
-        ports.calls().contains(&"loopback_release"),
-        "retained loopback lease must be released on retry"
+    assert_eq!(
+        ports
+            .calls()
+            .iter()
+            .filter(|&&call| call == "loopback_release")
+            .count(),
+        1
+    );
+
+    let session_async_cancel = block_on(start_sign_in_async(&full_services, interactive_request()))
+        .expect("async start succeeds");
+    assert_eq!(
+        block_on(cancel_sign_in_async(session_async_cancel, &no_loopback))
+            .expect("async cancel releases lease via retained service"),
+        SignInStatus::Cancelled
+    );
+    assert_eq!(
+        ports
+            .calls()
+            .iter()
+            .filter(|&&call| call == "loopback_release")
+            .count(),
+        2
+    );
+
+    // 2b. Pending loopback release on async complete fails closed without persisting credentials.
+    struct HangingReleaseLoopbackPorts;
+    impl UrlOpenService for HangingReleaseLoopbackPorts {
+        fn open(
+            &self,
+            _scope: ScopeId,
+            _url: ApprovedUrlRef,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+    }
+    impl LoopbackCallbackService for HangingReleaseLoopbackPorts {
+        fn bind(
+            &self,
+            scope: ScopeId,
+        ) -> BoxFuture<'static, Result<LoopbackCallbackLease, RuntimeFailure>> {
+            Box::pin(async move {
+                Ok(LoopbackCallbackLease::new(
+                    scope,
+                    LoopbackCallbackId::new("fixture.hanging.release").expect("id is valid"),
+                ))
+            })
+        }
+        fn poll(
+            &self,
+            lease: &LoopbackCallbackLease,
+        ) -> BoxFuture<'static, Result<Option<LoopbackCallbackReceipt>, RuntimeFailure>> {
+            let callback_id = lease.callback_id().clone();
+            Box::pin(async move { Ok(Some(LoopbackCallbackReceipt::new(callback_id))) })
+        }
+        fn materialize_credential(
+            &self,
+            _receipt: &LoopbackCallbackReceipt,
+            _audience: &EndpointAudience,
+        ) -> Result<CredentialRef, RuntimeFailure> {
+            Ok(credential())
+        }
+        fn release(&self, _lease: LoopbackCallbackLease) -> BoxFuture<'static, CleanupOutcome> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    let hanging_release_ports = Arc::new(HangingReleaseLoopbackPorts);
+    let hanging_release_services = HostServices::new(host_id())
+        .with_url_open(hanging_release_ports.clone())
+        .with_loopback_callback(hanging_release_ports)
+        .with_time(Arc::new(ImmediateBudgetTime {
+            now: Arc::new(std::sync::atomic::AtomicU64::new(1)),
+        }));
+    let store = MemoryStore::new();
+    admitted(&store);
+    let mut ready_session = block_on(start_sign_in_async(
+        &hanging_release_services,
+        interactive_request(),
+    ))
+    .expect("start succeeds");
+    assert_eq!(
+        block_on(poll_sign_in_async(
+            &mut ready_session,
+            &hanging_release_services
+        ))
+        .expect("poll becomes ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let complete_err = block_on(complete_sign_in_async(
+        ready_session,
+        &hanging_release_services,
+        Some(&store),
+    ))
+    .expect_err("expired loopback release must fail closed before persisting credentials");
+    assert_eq!(complete_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        complete_err.diagnostic().code(),
+        "swallowtail.sign_in.cleanup_timed_out"
+    );
+    let stored = store
+        .get_instance(&instance_id())
+        .expect("store read")
+        .expect("instance exists");
+    assert_eq!(
+        stored.credential_refs().len(),
+        0,
+        "credentials must not be persisted when loopback release did not finish"
     );
 
     // 3. cleanup_session_now retains pending stop futures instead of dropping and restarting them.

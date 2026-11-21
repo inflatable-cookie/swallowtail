@@ -19,7 +19,6 @@ pub(crate) enum WorkerCommand {
 
 pub(crate) enum WorkerEvent {
     Message(Message),
-    Failed(RemoteAcpError),
 }
 
 pub(crate) type ReadySignal =
@@ -58,15 +57,11 @@ pub(crate) fn run(
         };
         if let Err(error) = &result {
             emit_worker_failure_debug(&services, error);
-            let mut events = events;
-            if let Err(send_error) = events.try_send(WorkerEvent::Failed(error.clone()))
-                && send_error.is_full()
-            {
-                *terminal_error
-                    .lock()
-                    .expect("remote ACP terminal error lock poisoned") = Some(error.clone());
-            }
+            *terminal_error
+                .lock()
+                .expect("remote ACP terminal error lock poisoned") = Some(error.clone());
         }
+        drop(events);
         result.map_err(runtime_failure)
     })
 }

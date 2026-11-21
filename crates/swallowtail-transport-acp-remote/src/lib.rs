@@ -359,7 +359,6 @@ impl RemoteAcpConnection {
     pub async fn next_event(&mut self) -> Option<Result<Message, RemoteAcpError>> {
         match self.events.next().await {
             Some(WorkerEvent::Message(message)) => Some(Ok(message)),
-            Some(WorkerEvent::Failed(error)) => Some(Err(error)),
             None => self
                 .terminal_error
                 .lock()

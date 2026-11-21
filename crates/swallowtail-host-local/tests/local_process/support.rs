@@ -54,6 +54,14 @@ fn process_fixture() {
                 .read_to_end(&mut input)
                 .expect("fixture waits for eof");
         }
+        "wait-marker-then-drain-eof" => {
+            std::fs::write("child-ready", b"ready").expect("fixture records ready");
+            await_fixture_file("start-drain");
+            let mut input = Vec::new();
+            std::io::stdin()
+                .read_to_end(&mut input)
+                .expect("fixture drains stdin to eof");
+        }
         "working-resource" => {
             std::fs::write("host-owned-marker", b"created")
                 .expect("fixture writes inside the host-owned resource");

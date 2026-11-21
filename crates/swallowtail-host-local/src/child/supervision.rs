@@ -1,4 +1,4 @@
-use super::{LocalProcessHandle, LocalProcessParts, SharedChild, StdinState};
+use super::{LocalProcessHandle, LocalProcessParts, SharedChild, StdinCoordinator};
 use crate::limits::LocalProcessLimits;
 use crate::output::{OutputState, failure};
 use crate::process_exit::{ExitState, ReaderSupervision, cleanup_owned_process, supervise_child};
@@ -107,9 +107,7 @@ impl LocalProcessHandle {
 
         Ok(Self {
             shared: Arc::new(SharedChild {
-                stdin: Mutex::new(StdinState::new(stdin)),
-                stdin_bytes: Mutex::new(0),
-                stdin_limit: limits.stdin_bytes(),
+                stdin: StdinCoordinator::new(stdin, limits.stdin_bytes()),
                 output,
                 exit,
                 commands,

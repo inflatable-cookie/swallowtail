@@ -777,3 +777,86 @@ fn write_stdin_does_not_deadlock_concurrent_close_or_force_stop() {
 
     std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
 }
+
+#[cfg(unix)]
+#[test]
+fn dropped_partial_stdin_write_still_charges_written_bytes() {
+    use std::pin::pin;
+    use std::task::{Context, Poll, Waker};
+    use std::time::Duration;
+
+    let resource_directory = temporary_resource();
+    let limit = 512 * 1024;
+    let limits = LocalProcessLimits::new(8, 1024, limit, 1024, 1024);
+    let (host, executable, environment, resource) =
+        fixture_host("hold", limits, &resource_directory);
+    let process =
+        start(&host, request(&executable, &environment, &resource)).expect("hold fixture starts");
+
+    // Start a write equal to the full stdin_limit while the child does not read.
+    // The actor writes the pipe-buffer prefix and suspends; dropping the future
+    // must keep those already-written bytes charged against stdin_limit.
+    {
+        let mut write_future = pin!(process.write_stdin(ProcessInputChunk::new(vec![b'b'; limit])));
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(matches!(
+            write_future.as_mut().poll(&mut context),
+            Poll::Pending
+        ));
+        std::thread::sleep(Duration::from_millis(50));
+    }
+
+    // A second write of the full limit must now fail with stdin_limit_exceeded
+    // because the prefix delivered to the pipe was already charged.
+    assert_failure_code(
+        block_on(process.write_stdin(ProcessInputChunk::new(vec![b'c'; limit]))),
+        "swallowtail.local_process.stdin_limit_exceeded",
+    );
+    block_on(process.force_stop()).expect("force stop succeeds");
+    let _ = block_on(process.wait()).expect("child joins");
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}
+
+#[cfg(unix)]
+#[test]
+fn close_stdin_delivers_eof_independently_of_unpolled_write_future() {
+    use std::task::{Context, Poll, Waker};
+    use std::time::{Duration, Instant};
+
+    let resource_directory = temporary_resource();
+    let limits = LocalProcessLimits::new(8, 1024, 4 * 1024 * 1024, 1024, 1024);
+    let (host, executable, environment, resource) =
+        fixture_host("wait-marker-then-drain-eof", limits, &resource_directory);
+    let process =
+        start(&host, request(&executable, &environment, &resource)).expect("drain fixture starts");
+
+    let ready_deadline = Instant::now() + Duration::from_secs(5);
+    while !resource_directory.join("child-ready").exists() {
+        assert!(
+            Instant::now() < ready_deadline,
+            "child-ready never appeared"
+        );
+        std::thread::sleep(Duration::from_millis(10));
+    }
+
+    // Start a large write that fills the pipe and yields Pending. Keep the
+    // future alive and never poll or drop it while closing stdin.
+    let mut stalled_write =
+        process.write_stdin(ProcessInputChunk::new(vec![b'z'; 2 * 1024 * 1024]));
+    let mut context = Context::from_waker(Waker::noop());
+    assert!(matches!(
+        stalled_write.as_mut().poll(&mut context),
+        Poll::Pending
+    ));
+
+    // close_stdin() must drop the OS pipe fd independently of stalled_write.
+    block_on(process.close_stdin()).expect("close_stdin succeeds without polling stalled_write");
+    std::fs::write(resource_directory.join("start-drain"), b"go").expect("release drain");
+
+    // The child drains buffered bytes and observes EOF while stalled_write is
+    // still held unpolled.
+    let exit = block_on(process.wait()).expect("child observes EOF and exits");
+    assert!(exit.success());
+    drop(stalled_write);
+    std::fs::remove_dir_all(resource_directory).expect("fixture resource is removed");
+}

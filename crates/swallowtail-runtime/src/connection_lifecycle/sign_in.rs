@@ -364,6 +364,7 @@ pub struct SignInSession {
     deadline: Option<Deadline>,
     status: SignInStatus,
     loopback: Option<crate::LoopbackCallbackLease>,
+    loopback_service: Option<Arc<dyn crate::LoopbackCallbackService>>,
     loopback_receipt: Option<crate::LoopbackCallbackReceipt>,
     device_receipt: Option<crate::DeviceAuthorizationReceipt>,
     process: Option<Arc<dyn ProcessHandle>>,
@@ -531,6 +532,7 @@ fn prepare_session(
         deadline: request.deadline,
         status: SignInStatus::Started,
         loopback: None,
+        loopback_service: None,
         loopback_receipt: None,
         device_receipt: None,
         process: None,
@@ -833,6 +835,7 @@ fn start_interactive(
         return Err(failure);
     }
     session.loopback = Some(lease);
+    session.loopback_service = services.loopback_callback().cloned();
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -852,6 +855,7 @@ async fn start_interactive_async(
         return Err(SignInFailure::from_port(failure));
     }
     session.loopback = Some(lease);
+    session.loopback_service = services.loopback_callback().cloned();
     session.status = SignInStatus::Started;
     Ok(())
 }
@@ -1445,28 +1449,47 @@ fn cleanup_session_now(
     Ok(())
 }
 
+fn cleanup_timed_out_failure() -> SignInFailure {
+    SignInFailure::new(
+        SignInFailureKind::HostPort,
+        "swallowtail.sign_in.cleanup_timed_out",
+        "Sign-in cleanup did not complete within its teardown budget",
+    )
+}
+
 async fn cleanup_session_async(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<(), SignInFailure> {
     let _ = take_pending_poll(session);
-    release_loopback_async(session, services).await?;
+    let loopback_result = release_loopback_async(session, services).await;
+    let mut process_incomplete = false;
     let mut cleanup = take_pending_process_cleanup(session)
         .or_else(|| session.process.take().map(PendingProcessCleanup::start));
     while let Some(stage) = cleanup.take() {
         match stage {
             PendingProcessCleanup::RequestStop { process, future } => {
-                let _ = await_cleanup_budget(future, services).await;
+                if await_cleanup_budget(future, services).await.is_none() {
+                    process_incomplete = true;
+                }
                 cleanup = Some(PendingProcessCleanup::force_stop(process));
             }
             PendingProcessCleanup::ForceStop { process, future } => {
-                let _ = await_cleanup_budget(future, services).await;
+                if await_cleanup_budget(future, services).await.is_none() {
+                    process_incomplete = true;
+                }
                 cleanup = Some(PendingProcessCleanup::wait(process));
             }
             PendingProcessCleanup::Wait(future) => {
-                let _ = await_cleanup_budget(future, services).await;
+                if await_cleanup_budget(future, services).await.is_none() {
+                    process_incomplete = true;
+                }
             }
         }
+    }
+    loopback_result?;
+    if process_incomplete {
+        return Err(cleanup_timed_out_failure());
     }
     Ok(())
 }
@@ -1480,6 +1503,7 @@ fn release_loopback_now(
     } else if session.loopback.is_some() {
         let loopback = services
             .loopback_callback()
+            .or(session.loopback_service.as_ref())
             .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
         let lease = session
             .loopback
@@ -1490,7 +1514,10 @@ fn release_loopback_now(
         return Ok(false);
     };
     match poll_box_future_once(&mut future) {
-        Poll::Ready(_) => Ok(false),
+        Poll::Ready(_) => {
+            session.loopback_service = None;
+            Ok(false)
+        }
         Poll::Pending => {
             set_pending_loopback_release(session, future);
             Ok(true)
@@ -1507,6 +1534,7 @@ async fn release_loopback_async(
     } else if session.loopback.is_some() {
         let loopback = services
             .loopback_callback()
+            .or(session.loopback_service.as_ref())
             .ok_or_else(|| SignInFailure::missing_port(HostServiceKind::LoopbackCallback))?;
         let lease = session
             .loopback
@@ -1517,7 +1545,10 @@ async fn release_loopback_async(
         None
     };
     if let Some(future) = future {
-        let _ = await_cleanup_budget(future, services).await;
+        if await_cleanup_budget(future, services).await.is_none() {
+            return Err(cleanup_timed_out_failure());
+        }
+        session.loopback_service = None;
     }
     Ok(())
 }
@@ -1527,7 +1558,7 @@ async fn await_cleanup_budget<T>(
     services: &HostServices,
 ) -> Option<T> {
     let Some(time) = services.time() else {
-        return Some(future.await);
+        return poll_now_or_pending(future);
     };
     let deadline = Deadline::at(time.now().saturating_add_duration(CLEANUP_TEARDOWN_BUDGET));
     let mut budget = time.wait_until(deadline);

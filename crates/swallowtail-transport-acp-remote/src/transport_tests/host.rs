@@ -421,8 +421,115 @@ pub(super) async fn connect_timeout_signals_close_and_joins_tasks() {
     let _ = server.await;
 }
 
+/// Deterministic test clock driven explicitly by tests.
+pub(super) struct ManualClock {
+    now: std::sync::atomic::AtomicU64,
+    notify: tokio::sync::Notify,
+}
+
+impl ManualClock {
+    pub(super) fn new(start_ticks: u64) -> Arc<Self> {
+        Arc::new(Self {
+            now: std::sync::atomic::AtomicU64::new(start_ticks),
+            notify: tokio::sync::Notify::new(),
+        })
+    }
+
+    pub(super) fn advance_to(&self, ticks: u64) {
+        self.now.store(ticks, Ordering::SeqCst);
+        self.notify.notify_waiters();
+    }
+}
+
+pub(super) struct ManualClockHandle(pub(super) Arc<ManualClock>);
+
+impl TimeService for ManualClockHandle {
+    fn now(&self) -> MonotonicInstant {
+        MonotonicInstant::from_ticks(self.0.now.load(Ordering::SeqCst))
+    }
+
+    fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+        let clock = Arc::clone(&self.0);
+        let target = deadline.instant().ticks();
+        Box::pin(async move {
+            loop {
+                let notified = clock.notify.notified();
+                let current = clock.now.load(Ordering::SeqCst);
+                if current >= target {
+                    return DeadlineObservation::new(
+                        deadline,
+                        MonotonicInstant::from_ticks(current),
+                    );
+                }
+                notified.await;
+            }
+        })
+    }
+}
+
 pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() {
-    let (endpoint, server) = termination_server(true).await;
+    use async_tungstenite::tungstenite::Message as WebSocketMessage;
+    use async_tungstenite::tungstenite::handshake::server::{
+        Callback, ErrorResponse, Request, Response,
+    };
+    use futures_util::StreamExt;
+
+    struct SimpleUpgrade;
+    impl Callback for SimpleUpgrade {
+        fn on_request(
+            self,
+            _request: &Request,
+            mut response: Response,
+        ) -> Result<Response, ErrorResponse> {
+            response.headers_mut().insert(
+                "acp-connection-id",
+                "connection-full-queue".parse().unwrap(),
+            );
+            Ok(response)
+        }
+    }
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let server = tokio::spawn(async move {
+        let (stream, _) = listener.accept().await.unwrap();
+        let mut socket = async_tungstenite::tokio::accept_hdr_async(stream, SimpleUpgrade)
+            .await
+            .unwrap();
+        let _initialize = socket.next().await.unwrap().unwrap();
+        // Send initialize response + 1 notification = 2 messages, filling
+        // mpsc::channel(2) completely before disconnecting so
+        // WorkerEvent::Failed MUST fall back to the terminal_error slot.
+        let init_response = Message::Response {
+            id: serde_json::json!(1),
+            result: Ok(serde_json::json!({
+                "protocolVersion": swallowtail_core::REMOTE_ACP_WIRE_VERSION
+            })),
+        };
+        socket
+            .send(WebSocketMessage::Text(
+                crate::wire::encode(&init_response, 64 * 1024)
+                    .unwrap()
+                    .into(),
+            ))
+            .await
+            .unwrap();
+        let notification = Message::Notification {
+            method: "session/update_0".to_owned(),
+            params: serde_json::json!({}),
+        };
+        socket
+            .send(WebSocketMessage::Text(
+                crate::wire::encode(&notification, 64 * 1024)
+                    .unwrap()
+                    .into(),
+            ))
+            .await
+            .unwrap();
+        // Drop the socket without a clean close to trigger TransportFailed.
+    });
+
+    let endpoint = url::Url::parse(&format!("ws://{address}/acp")).unwrap();
     let counts = Arc::new(LifecycleCounts::default());
     let services = services_with_counts(
         ExecutionHostId::new("fixture.host.full-events-error").unwrap(),
@@ -450,18 +557,38 @@ pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() 
     .await
     .unwrap();
     connection.send(super::initialize()).await.unwrap();
-    let _ = server.await;
-    // Drain the initialize response, then verify the terminal transport error is observed
-    // (never clean EOF).
-    let first = tokio::time::timeout(std::time::Duration::from_secs(3), connection.next_event())
+    server.await.unwrap();
+    // Wait until the worker finishes (having filled the channel and stored
+    // the terminal error in the fallback slot) BEFORE draining events.
+    let wait_deadline = std::time::Instant::now() + std::time::Duration::from_secs(3);
+    while counts.blocking_completed.load(Ordering::SeqCst) == 0 {
+        assert!(
+            std::time::Instant::now() < wait_deadline,
+            "worker must exit without deadlocking on full events channel"
+        );
+        tokio::time::sleep(std::time::Duration::from_millis(5)).await;
+    }
+    assert!(
+        connection.terminal_error.lock().unwrap().is_some(),
+        "terminal error must be recorded in the fallback slot when events channel is full"
+    );
+
+    // Drain both buffered messages, then observe the terminal error from the fallback slot.
+    let first = connection
+        .next_event()
         .await
-        .expect("initialize response arrives")
         .expect("initialize event present")
         .expect("initialize response succeeds");
     super::assert_initialize(&first);
-    let terminal = tokio::time::timeout(std::time::Duration::from_secs(3), connection.next_event())
+    let buffered = connection
+        .next_event()
         .await
-        .expect("terminal failure arrives")
+        .expect("buffered notification present")
+        .expect("buffered notification succeeds");
+    assert!(matches!(buffered, Message::Notification { .. }));
+    let terminal = connection
+        .next_event()
+        .await
         .expect("terminal failure must not collapse to clean EOF")
         .expect_err("disconnect must surface as Err");
     assert_eq!(terminal.kind(), RemoteAcpErrorKind::TransportFailed);

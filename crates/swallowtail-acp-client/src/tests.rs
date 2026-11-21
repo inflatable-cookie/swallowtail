@@ -448,8 +448,8 @@ fn mcp_placement_rejects_line_breaks_in_header_names_and_values() {
 }
 
 #[test]
-fn mcp_placement_preserves_accessors_equality_and_drops_cleanly() {
-    let placement = AcpRemoteMcpPlacement::new(
+fn mcp_placement_zeroizes_url_and_header_values_on_wipe() {
+    let mut placement = AcpRemoteMcpPlacement::new(
         "swallowtail-test-acp",
         "https://example.invalid/mcp-secret",
         vec![("Authorization".to_owned(), "Bearer secret-token".to_owned())],
@@ -461,6 +461,18 @@ fn mcp_placement_preserves_accessors_equality_and_drops_cleanly() {
     assert_eq!(
         placement.headers(),
         &[("Authorization".to_owned(), "Bearer secret-token".to_owned())]
+    );
+    placement.wipe_secrets_for_test();
+    assert!(
+        placement.url().is_empty(),
+        "url must be zeroized on wipe/drop"
+    );
+    assert!(
+        placement
+            .headers()
+            .iter()
+            .all(|(_, value)| value.is_empty()),
+        "header values must be zeroized on wipe/drop"
     );
     drop(placement);
     drop(cloned);

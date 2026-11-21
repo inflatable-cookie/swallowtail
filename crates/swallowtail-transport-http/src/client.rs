@@ -200,8 +200,12 @@ fn append_header(headers: &mut List, line: &str) -> Result<(), TransportError> {
     headers.append(line).map_err(|_| TransportError::Transport)
 }
 
+pub(crate) fn format_secret_header_line(secret: &SecretHeader) -> Zeroizing<String> {
+    Zeroizing::new(format!("{}: {}", secret.name(), secret.value()))
+}
+
 fn append_secret_header(headers: &mut List, secret: &SecretHeader) -> Result<(), TransportError> {
-    let line = Zeroizing::new(format!("{}: {}", secret.name(), secret.value()));
+    let line = format_secret_header_line(secret);
     append_header(headers, line.as_str())
 }
 

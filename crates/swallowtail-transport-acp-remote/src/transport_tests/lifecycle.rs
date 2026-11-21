@@ -65,3 +65,17 @@ fn stable_errors_never_include_raw_transport_material() {
         ));
     }
 }
+
+#[test]
+fn frame_bound_conversion_rejects_values_exceeding_max() {
+    let overflow = crate::config::validate_frame_bound_with_max(
+        u64::from(u32::MAX) + 1,
+        usize::try_from(u32::MAX).expect("u32 fits usize"),
+    )
+    .expect_err("frame bound above target usize max must fail at config time");
+    assert_eq!(overflow.kind(), RemoteAcpErrorKind::CapacityExceeded);
+    assert_eq!(
+        crate::config::validate_frame_bound(64 * 1024).expect("valid frame bound converts"),
+        64 * 1024
+    );
+}

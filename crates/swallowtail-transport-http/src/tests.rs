@@ -657,3 +657,50 @@ fn sse_framer_rejects_oversized_boundary_free_chunk_without_growing_pending() {
         .finish()
         .expect("pending was not grown by the rejected chunk");
 }
+
+#[test]
+fn secret_header_line_retains_bytes_until_zeroize_and_transmits_header() {
+    use zeroize::Zeroize;
+
+    let secret = SecretHeader::bearer(b"top-secret-token".to_vec()).expect("valid secret");
+    let mut line = crate::client::format_secret_header_line(&secret);
+    assert_eq!(
+        line.as_str(),
+        "authorization: Bearer top-secret-token",
+        "formatted secret line must remain intact until Zeroizing::drop / zeroize"
+    );
+    line.zeroize();
+    assert!(
+        line.is_empty(),
+        "zeroize() must wipe the still-owned secret header line"
+    );
+
+    let endpoint = serve(|mut stream| {
+        let mut request = Vec::new();
+        let mut chunk = [0u8; 1024];
+        while !request.windows(4).any(|window| window == b"\r\n\r\n") {
+            match stream.read(&mut chunk) {
+                Ok(0) | Err(_) => break,
+                Ok(read) => request.extend_from_slice(&chunk[..read]),
+            }
+        }
+        let head = String::from_utf8_lossy(&request).to_ascii_lowercase();
+        let body = if head.contains("authorization: bearer top-secret-token") {
+            b"ok".as_slice()
+        } else {
+            b"missing".as_slice()
+        };
+        let response = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n", body.len());
+        write_all(&mut stream, response.as_bytes());
+        write_all(&mut stream, body);
+    });
+    let response = futures_executor::block_on(HttpTransport::new().execute(
+        scope(),
+        &endpoint,
+        HttpRequest::new(Method::Get, "/auth").with_secret_header(secret),
+        &services(),
+        cancelled(),
+    ))
+    .expect("secret header exchange succeeds");
+    assert_eq!(response.body, b"ok");
+}

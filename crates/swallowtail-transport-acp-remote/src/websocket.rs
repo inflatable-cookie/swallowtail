@@ -1,7 +1,9 @@
-use crate::config::TransportConfig;
+use crate::config::{TransportConfig, validate_frame_bound};
 use crate::cookies::BoundedCookieStore;
 use crate::correlation::CorrelationState;
-use crate::error::{RemoteAcpError, capacity_error, protocol_error, transport_error};
+use crate::error::{
+    RemoteAcpError, RemoteAcpErrorKind, capacity_error, protocol_error, transport_error,
+};
 use crate::wire;
 use crate::worker::{
     WorkerCommand, WorkerEvent, cancellation_error, race_close_grace, race_deadline,
@@ -23,8 +25,7 @@ pub(crate) async fn run(
     deadline: Option<Deadline>,
     time: Option<Arc<dyn TimeService>>,
 ) -> Result<(), RemoteAcpError> {
-    let maximum_frame_bytes =
-        usize::try_from(config.bounds.maximum_frame_bytes().get()).map_err(|_| capacity_error())?;
+    let maximum_frame_bytes = validate_frame_bound(config.bounds.maximum_frame_bytes().get())?;
     let mut correlation = CorrelationState::new(
         usize::try_from(config.bounds.maximum_pending_requests().get())
             .map_err(|_| capacity_error())?,
@@ -69,7 +70,7 @@ pub(crate) async fn run(
     let _ = ready.send(Ok(()));
     let mut initialized = false;
 
-    loop {
+    let result = loop {
         tokio::select! {
             command = commands.next() => {
                 match command {
@@ -80,30 +81,39 @@ pub(crate) async fn run(
                                 Message::Request { method, .. } if method == "initialize"
                             )
                         {
-                            return Err(protocol_error());
+                            break Err(protocol_error());
                         }
-                        correlation.outbound(&message)?;
-                        let encoded = wire::encode(&message, maximum_frame_bytes)?;
-                        let sent: Result<(), _> = race_deadline(
+                        if let Err(error) = correlation.outbound(&message) {
+                            break Err(error);
+                        }
+                        let encoded = match wire::encode(&message, maximum_frame_bytes) {
+                            Ok(encoded) => encoded,
+                            Err(error) => break Err(error),
+                        };
+                        match race_deadline(
                             deadline,
                             time.as_deref(),
                             socket.send(WebSocketMessage::Text(encoded.into())),
                         )
-                        .await?;
-                        sent.map_err(|_| transport_error())?;
+                        .await
+                        {
+                            Ok(Ok(())) => {}
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
+                        }
                     }
                     Some(WorkerCommand::Cancel) => {
                         let _ = race_deadline(deadline, time.as_deref(), socket.close(None)).await;
-                        return Err(cancellation_error(false));
+                        break Err(cancellation_error(false));
                     }
                     Some(WorkerCommand::Deadline) => {
-                        let _ = race_close_grace(time.as_deref(), socket.close(None)).await;
-                        return Err(cancellation_error(true));
+                        break Err(cancellation_error(true));
                     }
                     Some(WorkerCommand::Close) | None => {
                         match race_deadline(deadline, time.as_deref(), socket.close(None)).await {
-                            Ok(Ok(())) => return Ok(()),
-                            Ok(Err(_)) | Err(_) => return Err(transport_error()),
+                            Ok(Ok(())) => break Ok(()),
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
                         }
                     }
                 }
@@ -111,40 +121,56 @@ pub(crate) async fn run(
             incoming = race_deadline(deadline, time.as_deref(), socket.next()) => {
                 let incoming = match incoming {
                     Ok(incoming) => incoming,
-                    Err(error) => return Err(error),
+                    Err(error) => break Err(error),
                 };
                 match incoming {
                     Some(Ok(WebSocketMessage::Text(text))) => {
-                        let message = wire::decode(text.as_str(), maximum_frame_bytes)?;
-                        let metadata = correlation.inbound(&message)?;
+                        let message = match wire::decode(text.as_str(), maximum_frame_bytes) {
+                            Ok(message) => message,
+                            Err(error) => break Err(error),
+                        };
+                        let metadata = match correlation.inbound(&message) {
+                            Ok(metadata) => metadata,
+                            Err(error) => break Err(error),
+                        };
                         if metadata.completed_method.as_deref() == Some("initialize") {
-                            validate_initialize_response(&message)?;
+                            if let Err(error) = validate_initialize_response(&message) {
+                                break Err(error);
+                            }
                             initialized = true;
                         }
-                        events.send(WorkerEvent::Message(message))
-                            .await
-                            .map_err(|_| transport_error())?;
+                        if events.send(WorkerEvent::Message(message)).await.is_err() {
+                            break Err(transport_error());
+                        }
                     }
                     Some(Ok(WebSocketMessage::Ping(payload))) => {
-                        let ponged: Result<(), _> = race_deadline(
+                        match race_deadline(
                             deadline,
                             time.as_deref(),
                             socket.send(WebSocketMessage::Pong(payload)),
                         )
-                        .await?;
-                        ponged.map_err(|_| transport_error())?;
+                        .await
+                        {
+                            Ok(Ok(())) => {}
+                            Ok(Err(_)) => break Err(transport_error()),
+                            Err(error) => break Err(error),
+                        }
                     }
                     Some(Ok(WebSocketMessage::Pong(_))) => {}
                     Some(Ok(WebSocketMessage::Close(_))) | Some(Err(_)) | None => {
-                        return Err(transport_error());
+                        break Err(transport_error());
                     }
                     Some(Ok(WebSocketMessage::Binary(_) | WebSocketMessage::Frame(_))) => {
-                        return Err(protocol_error());
+                        break Err(protocol_error());
                     }
                 }
             }
         }
+    };
+    if matches!(&result, Err(error) if error.kind() == RemoteAcpErrorKind::DeadlineExceeded) {
+        let _ = race_close_grace(time.as_deref(), socket.close(None)).await;
     }
+    result
 }
 
 fn validate_initialize_response(message: &Message) -> Result<(), RemoteAcpError> {

@@ -156,6 +156,48 @@ pub(super) async fn http_non_responding_peer_fails_within_deadline() {
     server.await.unwrap();
 }
 
+pub(super) async fn http_deadline_expiry_sends_delete_during_close_grace() {
+    use swallowtail_runtime::{Deadline, MonotonicInstant};
+
+    for send_command in [false, true] {
+        let (endpoint, server, evidence) = portability_server().await;
+        let clock = super::host::ManualClock::new(100);
+        let time: Arc<dyn swallowtail_runtime::TimeService> =
+            Arc::new(super::host::ManualClockHandle(Arc::clone(&clock)));
+        let deadline = Deadline::at(MonotonicInstant::from_ticks(200));
+        let (mut commands, command_rx, event_tx, mut events, ready_tx, ready_rx) = channels().await;
+        let worker = tokio::spawn(crate::http::run(
+            config(endpoint, RemoteAcpTransport::StreamableHttpSse),
+            command_rx,
+            event_tx,
+            ready_tx,
+            Some(deadline),
+            Some(time),
+        ));
+        ready_rx.await.unwrap().unwrap();
+        send(&mut commands, initialize()).await;
+        assert_initialize(&message(&mut events, "HTTP deadline initialize arrives").await);
+        // Advance the controlled clock past the connection deadline (200), while
+        // keeping close grace (250 + 2s) active so DELETE completes.
+        clock.advance_to(250);
+        if send_command {
+            let _ = commands.send(WorkerCommand::Deadline).await;
+        }
+        let error = tokio::time::timeout(std::time::Duration::from_secs(3), worker)
+            .await
+            .expect("HTTP deadline worker exits promptly")
+            .unwrap()
+            .expect_err("HTTP deadline fails transport");
+        assert_eq!(error.kind(), RemoteAcpErrorKind::DeadlineExceeded);
+        assert!(
+            evidence.lock().unwrap().delete_seen,
+            "HTTP peer must receive DELETE during close grace (send_command={send_command})"
+        );
+        server.abort();
+        let _ = server.await;
+    }
+}
+
 async fn read_body(request: Request<h2::RecvStream>) -> Vec<u8> {
     let mut body = request.into_body();
     let mut bytes = BytesMut::new();

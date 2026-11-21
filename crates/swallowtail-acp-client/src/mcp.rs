@@ -55,11 +55,17 @@ impl AcpHttpAdvertisement {
 #[derive(Clone, Eq, PartialEq)]
 struct ZeroizingHeaders(Vec<(String, String)>);
 
-impl Drop for ZeroizingHeaders {
-    fn drop(&mut self) {
+impl ZeroizingHeaders {
+    fn zeroize_values(&mut self) {
         for (_, value) in &mut self.0 {
             value.zeroize();
         }
+    }
+}
+
+impl Drop for ZeroizingHeaders {
+    fn drop(&mut self) {
+        self.zeroize_values();
     }
 }
 
@@ -105,6 +111,12 @@ impl AcpRemoteMcpPlacement {
     #[must_use]
     pub fn headers(&self) -> &[(String, String)] {
         &self.headers.0
+    }
+
+    #[cfg(test)]
+    pub(crate) fn wipe_secrets_for_test(&mut self) {
+        self.url.zeroize();
+        self.headers.zeroize_values();
     }
 
     /// Validates and encodes this placement as one ACP `type: "http"` entry.

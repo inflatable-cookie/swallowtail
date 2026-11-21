@@ -212,9 +212,9 @@ pub(crate) fn supervise_child(
         output.complete_supervision();
     }
 
-    stdin.shutdown_and_join();
+    let stdin_error = stdin.shutdown_and_join_bounded(READER_JOIN_BOUND).err();
 
-    let cleanup_error = tree_error.or(reader_error);
+    let cleanup_error = tree_error.or(reader_error).or(stdin_error);
     exit.complete(match cleanup_error {
         Some(error) => Err(error),
         None => status.map(exit_record),

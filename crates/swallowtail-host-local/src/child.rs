@@ -10,8 +10,7 @@ use std::sync::mpsc::Sender;
 use std::sync::{Arc, Condvar, Mutex};
 use std::task::{Context, Poll, Waker};
 use std::thread;
-#[cfg(unix)]
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use swallowtail_runtime::{
     BoxFuture, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk, RuntimeFailure,
 };
@@ -81,6 +80,7 @@ enum StdinPipeState {
     Raw(ChildStdin),
     Bootstrapping,
     ActorRunning,
+    Closing,
     Closed,
 }
 
@@ -122,6 +122,8 @@ pub(crate) struct StdinCoordinator {
     actor_notify: Condvar,
     stdin_limit: usize,
     blocking_close: bool,
+    #[cfg(test)]
+    before_raw_drop: Mutex<Option<Box<dyn FnOnce() + Send>>>,
 }
 
 impl StdinCoordinator {
@@ -143,6 +145,8 @@ impl StdinCoordinator {
             actor_notify: Condvar::new(),
             stdin_limit,
             blocking_close: cfg!(not(unix)),
+            #[cfg(test)]
+            before_raw_drop: Mutex::new(None),
         })
     }
 
@@ -194,6 +198,15 @@ impl StdinCoordinator {
     }
 
     pub(crate) fn shutdown_and_join(&self) {
+        let _ = self.shutdown_and_join_bounded(Duration::from_secs(2));
+    }
+
+    /// Requests stdin closure and joins any stdin actor within `bound`.
+    ///
+    /// If a blocking writer cannot exit within `bound`, ownership of its
+    /// [`thread::JoinHandle`] is retained in `actor_handle` and a typed
+    /// failure is returned so supervised process exit never hangs.
+    pub(crate) fn shutdown_and_join_bounded(&self, bound: Duration) -> Result<(), RuntimeFailure> {
         self.close_nonblocking();
         let handle = self
             .inbox
@@ -201,8 +214,62 @@ impl StdinCoordinator {
             .expect("local process stdin lock poisoned")
             .actor_handle
             .take();
-        if let Some(handle) = handle {
-            let _ = handle.join();
+        let Some(handle) = handle else {
+            return Ok(());
+        };
+        let deadline = Instant::now()
+            .checked_add(bound)
+            .expect("stdin join deadline is representable");
+        loop {
+            if handle.is_finished() {
+                return handle.join().map_err(|_| stdin_join_failed_failure());
+            }
+            let now = Instant::now();
+            if now >= deadline {
+                // Preserve ownership of the still-running actor handle so
+                // pending cleanup is never detached or silently dropped.
+                self.inbox
+                    .lock()
+                    .expect("local process stdin lock poisoned")
+                    .actor_handle = Some(handle);
+                return Err(stdin_join_failed_failure());
+            }
+            let remaining = (deadline - now).min(Duration::from_millis(10));
+            let inbox = self
+                .inbox
+                .lock()
+                .expect("local process stdin lock poisoned");
+            if !handle.is_finished() {
+                let _ = self
+                    .actor_notify
+                    .wait_timeout(inbox, remaining)
+                    .expect("local process stdin lock poisoned");
+            }
+        }
+    }
+
+    fn finish_raw_drop(&self, stdin: ChildStdin) {
+        #[cfg(test)]
+        if let Some(hook) = self
+            .before_raw_drop
+            .lock()
+            .expect("before_raw_drop lock poisoned")
+            .take()
+        {
+            hook();
+        }
+        drop(stdin);
+        let waiters = {
+            let mut inbox = self
+                .inbox
+                .lock()
+                .expect("local process stdin lock poisoned");
+            inbox.pipe = StdinPipeState::Closed;
+            std::mem::take(&mut inbox.close_done_waiters)
+        };
+        self.actor_notify.notify_all();
+        for (_, waker) in waiters {
+            waker.wake();
         }
     }
 
@@ -215,10 +282,11 @@ impl StdinCoordinator {
             inbox.close_requested = true;
             inbox.queued_bytes = 0;
             let pending = std::mem::take(&mut inbox.queue);
-            match std::mem::replace(&mut inbox.pipe, StdinPipeState::Closed) {
+            match std::mem::replace(&mut inbox.pipe, StdinPipeState::Closing) {
                 StdinPipeState::Raw(stdin) => {
-                    let waiters = std::mem::take(&mut inbox.close_done_waiters);
-                    (Some(stdin), pending, None, waiters)
+                    // Hold Closing until drop(stdin) actually completes so a
+                    // concurrent close_stdin() never observes Closed before EOF.
+                    (Some(stdin), pending, None, Vec::new())
                 }
                 StdinPipeState::ActorRunning => {
                     // Keep ActorRunning until the actor actually drops the pipe
@@ -230,13 +298,17 @@ impl StdinCoordinator {
                     inbox.pipe = StdinPipeState::Bootstrapping;
                     (None, pending, None, Vec::new())
                 }
+                StdinPipeState::Closing => (None, pending, None, Vec::new()),
                 StdinPipeState::Closed => {
+                    inbox.pipe = StdinPipeState::Closed;
                     let waiters = std::mem::take(&mut inbox.close_done_waiters);
                     (None, pending, None, waiters)
                 }
             }
         };
-        drop(dropped);
+        if let Some(stdin) = dropped {
+            self.finish_raw_drop(stdin);
+        }
         for request in pending {
             request.reply.complete(Err(stdin_closed_failure()));
         }
@@ -251,12 +323,14 @@ impl StdinCoordinator {
 
     fn enqueue_write(self: &Arc<Self>, bytes: Vec<u8>) -> Result<Arc<WriteReply>, RuntimeFailure> {
         let reply = WriteReply::new();
-        let (actor_waker, close_waiters_on_spawn_err) = {
+        let actor_waker = {
             let mut inbox = self
                 .inbox
                 .lock()
                 .expect("local process stdin lock poisoned");
-            if inbox.close_requested || matches!(inbox.pipe, StdinPipeState::Closed) {
+            if inbox.close_requested
+                || matches!(inbox.pipe, StdinPipeState::Closing | StdinPipeState::Closed)
+            {
                 return Err(stdin_closed_failure());
             }
             if matches!(inbox.pipe, StdinPipeState::Bootstrapping) {
@@ -308,9 +382,8 @@ impl StdinCoordinator {
                 bytes,
                 reply: Arc::clone(&reply),
             });
-            (inbox.actor_waker.take(), Vec::<(u64, Waker)>::new())
+            inbox.actor_waker.take()
         };
-        let _ = close_waiters_on_spawn_err;
         if let Some(waker) = actor_waker {
             waker.wake();
         }
@@ -645,7 +718,7 @@ struct BootstrapRestoreGuard<'a> {
 impl Drop for BootstrapRestoreGuard<'_> {
     fn drop(&mut self) {
         let stdin = self.stdin.take();
-        let (dropped, waiters) = {
+        let should_close = {
             let mut inbox = self
                 .coordinator
                 .inbox
@@ -656,15 +729,29 @@ impl Drop for BootstrapRestoreGuard<'_> {
                 && let Some(stdin) = stdin
             {
                 inbox.pipe = StdinPipeState::Raw(stdin);
-                (None, Vec::new())
+                None
             } else {
-                inbox.pipe = StdinPipeState::Closed;
-                (stdin, std::mem::take(&mut inbox.close_done_waiters))
+                // Keep Closing until the descriptor has actually dropped before
+                // publishing Closed and waking close_done_waiters.
+                inbox.pipe = StdinPipeState::Closing;
+                Some(stdin)
             }
         };
-        drop(dropped);
-        for (_, waker) in waiters {
-            waker.wake();
+        if let Some(dropped) = should_close {
+            drop(dropped);
+            let waiters = {
+                let mut inbox = self
+                    .coordinator
+                    .inbox
+                    .lock()
+                    .expect("local process stdin lock poisoned");
+                inbox.pipe = StdinPipeState::Closed;
+                std::mem::take(&mut inbox.close_done_waiters)
+            };
+            self.coordinator.actor_notify.notify_all();
+            for (_, waker) in waiters {
+                waker.wake();
+            }
         }
     }
 }
@@ -907,6 +994,13 @@ fn stdin_close_blocked_failure() -> RuntimeFailure {
     )
 }
 
+fn stdin_join_failed_failure() -> RuntimeFailure {
+    failure(
+        "swallowtail.local_process.stdin_join_failed",
+        "Local process input writer could not be joined",
+    )
+}
+
 fn control_closed_failure() -> RuntimeFailure {
     failure(
         "swallowtail.local_process.control_closed",
@@ -986,6 +1080,7 @@ mod tests {
             actor_notify: Condvar::new(),
             stdin_limit,
             blocking_close: true,
+            before_raw_drop: Mutex::new(None),
         });
         let worker = Arc::clone(&coordinator);
         let handle = thread::Builder::new()
@@ -1147,5 +1242,210 @@ mod tests {
             let _ = child.kill();
             let _ = child.wait();
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn supervised_exit_is_bounded_when_blocking_stdin_writer_remains_stalled() {
+        use crate::process_exit::{ReaderSupervision, supervise_child};
+        use crate::process_reader::{ReaderControl, spawn_reader};
+        use std::process::{Command, Stdio};
+
+        let state = Arc::new(BlockingWriterState {
+            entered: Mutex::new(false),
+            entered_cv: Condvar::new(),
+            release: Mutex::new(false),
+            release_cv: Condvar::new(),
+            dropped: AtomicBool::new(false),
+        });
+        let coordinator = blocking_coordinator_with_writer(
+            StalledWriter {
+                state: Arc::clone(&state),
+            },
+            1024,
+        );
+        let _reply = coordinator
+            .enqueue_write(b"surviving-descendant".to_vec())
+            .expect("write enqueues");
+        {
+            let mut entered = state.entered.lock().expect("entered lock");
+            while !*entered {
+                entered = state.entered_cv.wait(entered).expect("entered wait");
+            }
+        }
+
+        // Spawn a root child that exits immediately while the blocking stdin
+        // writer remains stalled (mirroring a surviving Windows descendant
+        // keeping the pipe read end open).
+        let mut child = Command::new("/usr/bin/true")
+            .stdin(Stdio::null())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped())
+            .spawn()
+            .expect("true fixture spawns");
+        let stdout = child.stdout.take().expect("stdout pipe");
+        let stderr = child.stderr.take().expect("stderr pipe");
+        let output = Arc::new(OutputState::default());
+        let reader_control = Arc::new(ReaderControl::default());
+        let stdout_reader = spawn_reader(
+            "swallowtail-test-stdout",
+            stdout,
+            1024,
+            swallowtail_runtime::ProcessOutputStream::Stdout,
+            Arc::clone(&output),
+            Arc::clone(&reader_control),
+        )
+        .expect("stdout reader spawns");
+        let stderr_reader = spawn_reader(
+            "swallowtail-test-stderr",
+            stderr,
+            1024,
+            swallowtail_runtime::ProcessOutputStream::Stderr,
+            Arc::clone(&output),
+            Arc::clone(&reader_control),
+        )
+        .expect("stderr reader spawns");
+        let exit = Arc::new(ExitState::default());
+        let (_cmd_tx, cmd_rx) = std::sync::mpsc::channel();
+        let supervisor_coordinator = Arc::clone(&coordinator);
+        let supervisor_output = Arc::clone(&output);
+        let supervisor_exit = Arc::clone(&exit);
+        let mut group_owner = None;
+        let supervisor = thread::spawn(move || {
+            supervise_child(
+                &mut child,
+                &mut group_owner,
+                cmd_rx,
+                ReaderSupervision {
+                    stdout: stdout_reader,
+                    stderr: stderr_reader,
+                    control: reader_control,
+                },
+                &supervisor_coordinator,
+                &supervisor_output,
+                &supervisor_exit,
+            );
+        });
+
+        // Process exit must still be published within READER_JOIN_BOUND with a
+        // typed failure instead of hanging on the blocked writer, while
+        // preserving ownership of the still-running actor handle.
+        let exit_err = futures_lite::future::block_on(exit.future())
+            .expect_err("stalled blocking stdin writer must publish typed join failure");
+        assert_eq!(
+            exit_err.diagnostic().code(),
+            "swallowtail.local_process.stdin_join_failed"
+        );
+        supervisor.join().expect("supervisor exits promptly");
+        assert!(
+            !state.dropped.load(Ordering::SeqCst),
+            "writer is still blocked when bounded exit publishes"
+        );
+        assert!(
+            coordinator
+                .inbox
+                .lock()
+                .expect("stdin lock")
+                .actor_handle
+                .is_some(),
+            "pending actor handle ownership must be preserved after bounded timeout"
+        );
+
+        // Once the blocked writer unblocks, the retained handle joins cleanly.
+        {
+            let mut release = state.release.lock().expect("release lock");
+            *release = true;
+            state.release_cv.notify_all();
+        }
+        coordinator
+            .shutdown_and_join_bounded(Duration::from_secs(2))
+            .expect("retained actor handle joins cleanly once writer unblocks");
+        assert!(state.dropped.load(Ordering::SeqCst));
+        assert!(
+            coordinator
+                .inbox
+                .lock()
+                .expect("stdin lock")
+                .actor_handle
+                .is_none()
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn concurrent_raw_pipe_close_waits_for_descriptor_drop_before_reporting_ok() {
+        use std::pin::pin;
+        use std::process::{Command, Stdio};
+
+        let mut child = Command::new("/bin/cat")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .spawn()
+            .expect("cat fixture spawns");
+        let stdin = child.stdin.take().expect("stdin pipe present");
+        let coordinator = StdinCoordinator::new(stdin, 1024);
+
+        let drop_entered = Arc::new((Mutex::new(false), Condvar::new()));
+        let allow_drop = Arc::new((Mutex::new(false), Condvar::new()));
+        {
+            let entered = Arc::clone(&drop_entered);
+            let allow = Arc::clone(&allow_drop);
+            *coordinator
+                .before_raw_drop
+                .lock()
+                .expect("before_raw_drop lock") = Some(Box::new(move || {
+                {
+                    let mut flag = entered.0.lock().expect("entered lock");
+                    *flag = true;
+                    entered.1.notify_all();
+                }
+                let mut flag = allow.0.lock().expect("allow lock");
+                while !*flag {
+                    flag = allow.1.wait(flag).expect("allow wait");
+                }
+            }));
+        }
+
+        let first_coordinator = Arc::clone(&coordinator);
+        let first_closer = thread::spawn(move || {
+            first_coordinator.close_nonblocking();
+            futures_lite::future::block_on(first_coordinator.wait_closed_done())
+        });
+
+        // Wait until the first closer has moved the raw pipe into Closing and
+        // is paused immediately before drop(stdin).
+        {
+            let mut flag = drop_entered.0.lock().expect("entered lock");
+            while !*flag {
+                flag = drop_entered.1.wait(flag).expect("entered wait");
+            }
+        }
+
+        // A second concurrent close must NOT observe Closed or return Ok(())
+        // while the first closer still holds the descriptor.
+        coordinator.close_nonblocking();
+        let mut second_wait = pin!(coordinator.wait_closed_done());
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(
+            matches!(second_wait.as_mut().poll(&mut context), Poll::Pending),
+            "concurrent raw-pipe close must stay Pending until descriptor drop finishes"
+        );
+
+        // Release the first closer so it drops stdin and publishes Closed.
+        {
+            let mut flag = allow_drop.0.lock().expect("allow lock");
+            *flag = true;
+            allow_drop.1.notify_all();
+        }
+        first_closer
+            .join()
+            .expect("first closer thread finishes")
+            .expect("first close succeeds after drop");
+        futures_lite::future::block_on(second_wait).expect("second close succeeds after drop");
+
+        // Both successful closes strictly imply EOF on the child pipe.
+        let status = child.wait().expect("cat exits after stdin EOF");
+        assert!(status.success());
     }
 }

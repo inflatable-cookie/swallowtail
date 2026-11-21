@@ -4,7 +4,7 @@ use crate::host::LocalProcessHost;
 use crate::output::failure;
 use std::io;
 use std::process::{Child, Command, Stdio};
-use swallowtail_runtime::{ProcessRequest, RuntimeFailure, ScopeId};
+use swallowtail_runtime::{EXECUTABLE_NOT_FOUND_CODE, ProcessRequest, RuntimeFailure, ScopeId};
 
 #[cfg(unix)]
 use std::os::unix::process::CommandExt;
@@ -71,10 +71,7 @@ impl LocalProcessHost {
             Err(error) => {
                 discard_process_group_owner(group_owner.take());
                 let diagnostic = if error.kind() == io::ErrorKind::NotFound {
-                    failure(
-                        "swallowtail.local_process.executable_not_found",
-                        "Local executable was not found",
-                    )
+                    failure(EXECUTABLE_NOT_FOUND_CODE, "Local executable was not found")
                 } else {
                     failure(
                         "swallowtail.local_process.spawn_failed",

@@ -12,7 +12,16 @@ pub(crate) enum ActivityTransitionFailure {
     StatusRegression,
     DuplicateCompletion,
     AfterCompletion,
+    /// The tracker holds [`MAX_TRACKED_ACTIVITIES`] activities that are all
+    /// still in flight, so a new activity cannot be admitted.
+    TrackerFull,
 }
+
+/// Upper bound on activities the tracker holds at once.
+///
+/// Completed activities are evicted first when a new one needs room, so the
+/// bound only bites when this many activities are simultaneously in flight.
+pub(crate) const MAX_TRACKED_ACTIVITIES: usize = 1024;
 
 #[derive(Debug, Default)]
 pub(crate) struct ActivityLifecycleTracker {
@@ -25,6 +34,14 @@ impl ActivityLifecycleTracker {
         observation: &ActivityObservation,
     ) -> Result<(), ActivityTransitionFailure> {
         let Some(state) = self.activities.get_mut(observation.activity_id()) else {
+            if self.activities.len() >= MAX_TRACKED_ACTIVITIES {
+                // Terminal entries no longer guard anything useful, so they make
+                // room first. Only an all-in-flight tracker refuses the new one.
+                self.activities.retain(|_, state| !state.completed);
+                if self.activities.len() >= MAX_TRACKED_ACTIVITIES {
+                    return Err(ActivityTransitionFailure::TrackerFull);
+                }
+            }
             self.activities.insert(
                 observation.activity_id().clone(),
                 ObservedActivityState::from_observation(observation),

@@ -168,38 +168,32 @@ async fn reconciliation_request(
     if cancellation.is_requested() {
         return Err(codes.failure(ControlFailureKind::Cancelled));
     }
-    let mut work = Box::pin(transport.request(
+    let work = transport.request(
         scope,
         endpoint,
         request,
         services,
         Arc::clone(&cancelled),
-    ));
-    let mut cancellation_wait = cancellation.wait_requested();
-    let mut deadline_wait = deadline.map(|deadline| {
+    );
+    let deadline = deadline.map(|deadline| {
         services
             .time()
             .expect("validated time service")
             .wait_until(deadline)
     });
-    std::future::poll_fn(|context| {
-        if let Poll::Ready(result) = work.as_mut().poll(context) {
-            return Poll::Ready(result);
-        }
-        if cancellation_wait.as_mut().poll(context).is_ready() {
-            cancelled.store(true, Ordering::SeqCst);
-            return Poll::Ready(Err(codes.failure(ControlFailureKind::Cancelled)));
-        }
-        if deadline_wait
-            .as_mut()
-            .is_some_and(|wait| wait.as_mut().poll(context).is_ready())
-        {
-            cancelled.store(true, Ordering::SeqCst);
-            return Poll::Ready(Err(codes.failure(ControlFailureKind::TimedOut)));
-        }
-        Poll::Pending
-    })
-    .await
+    let race = race_controls(
+        work,
+        Some(cancellation),
+        deadline,
+        &cancelled,
+        OnInterrupt::Abandon,
+    )
+    .await;
+    match (race.value, race.interrupt) {
+        (Some(result), _) => result,
+        (None, Some(Interrupt::Cancelled)) => Err(codes.failure(ControlFailureKind::Cancelled)),
+        (None, Some(Interrupt::Deadline) | None) => Err(codes.failure(ControlFailureKind::TimedOut)),
+    }
 }
 
 /// Which control outcome a bounded provider request reports.

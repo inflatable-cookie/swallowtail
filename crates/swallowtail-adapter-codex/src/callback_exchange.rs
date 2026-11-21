@@ -15,6 +15,7 @@ const CALLBACK_CAPACITY: usize = 64;
 
 struct PendingCallback {
     provider_request_id: Value,
+    provider_call_id: String,
     operation_id: CallbackOperationId,
     kind: PendingCallbackKind,
 }
@@ -27,6 +28,9 @@ enum PendingCallbackKind {
 struct CallbackState {
     requests: VecDeque<CallbackRequest>,
     pending: BTreeMap<CallbackId, PendingCallback>,
+    /// Call ids of outstanding callbacks only. An id is released when its
+    /// callback is answered or abandoned, so the set is bounded by the pending
+    /// callbacks (at most `CALLBACK_CAPACITY`) rather than the session length.
     provider_call_ids: BTreeSet<String>,
     abandoned_provider_requests: Vec<Value>,
     closed: bool,
@@ -73,7 +77,7 @@ impl CallbackHub {
                 "Codex app-server exceeded the bounded callback capacity",
             ));
         }
-        if !state.provider_call_ids.insert(provider_call_id) {
+        if !state.provider_call_ids.insert(provider_call_id.clone()) {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_provider_id_reused",
                 "Codex app-server reused a dynamic tool call id",
@@ -83,6 +87,7 @@ impl CallbackHub {
             request.callback_id().clone(),
             PendingCallback {
                 provider_request_id,
+                provider_call_id,
                 operation_id: request.operation_id().clone(),
                 kind: PendingCallbackKind::DynamicTool,
             },
@@ -109,7 +114,7 @@ impl CallbackHub {
                 "Codex app-server exceeded the bounded callback capacity",
             ));
         }
-        if !state.provider_call_ids.insert(provider_call_id) {
+        if !state.provider_call_ids.insert(provider_call_id.clone()) {
             return Err(failure(
                 "swallowtail.codex.app_server.callback_provider_id_reused",
                 "Codex app-server reused a user-input item id",
@@ -119,6 +124,7 @@ impl CallbackHub {
             request.callback_id().clone(),
             PendingCallback {
                 provider_request_id,
+                provider_call_id,
                 operation_id: request.operation_id().clone(),
                 kind: PendingCallbackKind::UserInput(user_input),
             },
@@ -152,6 +158,7 @@ impl CallbackHub {
         }
         state.closed = true;
         state.requests.clear();
+        state.provider_call_ids.clear();
         let pending = std::mem::take(&mut state.pending);
         state
             .abandoned_provider_requests
@@ -239,10 +246,11 @@ fn claim_response(
     }
     let provider_request_id = pending.provider_request_id.clone();
     let (result, invalid_success) = provider_result(&pending.kind, response.result())?;
-    state
+    let answered = state
         .pending
         .remove(response.callback_id())
         .expect("validated callback remains pending");
+    state.provider_call_ids.remove(&answered.provider_call_id);
     Ok((provider_request_id, result, invalid_success))
 }
 
@@ -309,8 +317,53 @@ fn wake(state: &mut CallbackState) {
 
 #[cfg(test)]
 mod tests {
-    use super::{PendingCallbackKind, provider_result};
-    use swallowtail_runtime::{CallbackFailureKind, CallbackPayload, CallbackResult};
+    use super::{CallbackHub, PendingCallbackKind, provider_result};
+    use serde_json::json;
+    use std::sync::Weak;
+    use swallowtail_runtime::{
+        CallbackFailureKind, CallbackId, CallbackPayload, CallbackRequest, CallbackResponse,
+        CallbackResult, RuntimeTurnId,
+    };
+
+    fn tool_request(callback: &str) -> CallbackRequest {
+        CallbackRequest::tool_call(
+            CallbackId::new(callback).expect("callback id is valid"),
+            RuntimeTurnId::new("turn-callback").expect("turn id is valid"),
+            1,
+            None,
+            "lookup",
+            CallbackPayload::new(b"{}".to_vec(), 64).expect("payload is bounded"),
+        )
+        .expect("tool call request is valid")
+    }
+
+    #[test]
+    fn an_answered_callback_releases_its_provider_call_id_for_reuse() {
+        // The connection is absent, so the answer cannot reach the provider.
+        // The claim still runs first, which is the point of this test.
+        let (hub, exchange) = CallbackHub::new(Weak::new());
+        hub.enqueue_tool(tool_request("callback-1"), json!(1), "call-1".to_owned())
+            .expect("the first call is admitted");
+        let duplicate = hub
+            .enqueue_tool(tool_request("callback-2"), json!(2), "call-1".to_owned())
+            .expect_err("an outstanding call id is refused");
+        assert_eq!(
+            duplicate.diagnostic().code(),
+            "swallowtail.codex.app_server.callback_provider_id_reused"
+        );
+
+        let response = CallbackResponse::new(
+            CallbackId::new("callback-1").expect("callback id is valid"),
+            RuntimeTurnId::new("turn-callback").expect("turn id is valid"),
+            CallbackResult::Success(CallbackPayload::new(b"ok".to_vec(), 64).expect("bounded")),
+        );
+        let responder = exchange.responder();
+        let answered = futures_executor::block_on(responder.respond(response));
+        assert!(answered.is_err(), "no connection can carry the answer");
+
+        hub.enqueue_tool(tool_request("callback-3"), json!(3), "call-1".to_owned())
+            .expect("an answered call id is released for a new callback");
+    }
 
     #[test]
     fn consumer_failure_becomes_a_provider_tool_failure() {

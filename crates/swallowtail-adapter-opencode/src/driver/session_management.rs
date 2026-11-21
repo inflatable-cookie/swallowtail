@@ -287,9 +287,7 @@ async fn wait_controlled_joined<F>(
 where
     F: Future<Output = Result<Response, RuntimeFailure>>,
 {
-    let mut work = Box::pin(work);
-    let mut cancellation_wait = cancellation.wait_requested();
-    let mut deadline = agreement
+    let deadline = agreement
         .deadline()
         .map(|deadline| {
             services
@@ -303,28 +301,18 @@ where
                 .map(|time| time.wait_until(deadline))
         })
         .transpose()?;
-    let mut interrupted = false;
-    let result = poll_fn(|context| {
-        if let Poll::Ready(result) = work.as_mut().poll(context) {
-            return Poll::Ready(result);
-        }
-        if !interrupted && cancellation_wait.as_mut().poll(context).is_ready() {
-            interrupted = true;
-            transport_cancelled.store(true, Ordering::SeqCst);
-            context.waker().wake_by_ref();
-        }
-        if !interrupted
-            && deadline
-                .as_mut()
-                .is_some_and(|deadline| deadline.as_mut().poll(context).is_ready())
-        {
-            interrupted = true;
-            transport_cancelled.store(true, Ordering::SeqCst);
-            context.waker().wake_by_ref();
-        }
-        Poll::Pending
-    })
+    let race = race_controls(
+        work,
+        Some(cancellation),
+        deadline,
+        &transport_cancelled,
+        OnInterrupt::Drain,
+    )
     .await;
+    let interrupted = race.interrupt.is_some();
+    let result = race
+        .value
+        .expect("a draining race always completes its work");
     Ok((result, interrupted))
 }
 

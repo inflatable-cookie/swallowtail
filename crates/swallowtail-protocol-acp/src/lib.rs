@@ -180,6 +180,15 @@ pub struct RpcError {
 }
 
 impl RpcError {
+    /// Creates a JSON-RPC error for a response the client originates.
+    #[must_use]
+    pub fn new(code: i64, message: impl Into<String>) -> Self {
+        Self {
+            code,
+            message: message.into(),
+        }
+    }
+
     /// Returns the JSON-RPC error code.
     #[must_use]
     pub const fn code(&self) -> i64 {

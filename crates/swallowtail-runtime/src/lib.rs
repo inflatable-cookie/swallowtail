@@ -96,8 +96,9 @@ pub use async_types::{
     BoxRealtimeMediaEventStream,
 };
 pub use attachment::{
-    AttachmentDescriptor, AttachmentDigest, AttachmentReadFailure, AttachmentRepresentation,
-    AttachmentRole, LeaseCleanupAuthority, read_bounded_attachment,
+    AttachmentDescriptor, AttachmentDigest, AttachmentMaterializationFailure,
+    AttachmentReadFailure, AttachmentRepresentation, AttachmentRole, LeaseCleanupAuthority,
+    SharedAttachmentMaterialization, materialize_bounded_attachment, read_bounded_attachment,
 };
 pub use callback::{
     CallbackAbandonment, CallbackExchange, CallbackFailureKind, CallbackOperationId,
@@ -209,7 +210,7 @@ pub use idioms::{
 };
 pub use input::{InputLimitExceeded, InputValueRequired};
 pub use installed_discovery::{
-    InstalledProbeCodes, MAX_VERSION_BYTES, MAX_VERSION_OUTPUT_BYTES,
+    EXECUTABLE_NOT_FOUND_CODE, InstalledProbeCodes, MAX_VERSION_BYTES, MAX_VERSION_OUTPUT_BYTES,
     parse_semantic_version_binding, preparation_failure, probe_installed_executable_version,
     probe_outcome_failure, probe_runtime_failure,
 };

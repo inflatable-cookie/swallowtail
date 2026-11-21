@@ -171,6 +171,13 @@ pub fn read_bounded_attachment(path: &str, maximum: u64) -> Result<Vec<u8>, Atta
     Ok(bytes)
 }
 
+mod materialization;
+
+pub use materialization::{
+    AttachmentMaterializationFailure, SharedAttachmentMaterialization,
+    materialize_bounded_attachment,
+};
+
 #[cfg(test)]
 #[path = "attachment/tests.rs"]
 mod tests;

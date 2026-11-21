@@ -23,6 +23,12 @@ use swallowtail_core::{
     SafeDiagnostic,
 };
 
+/// Diagnostic code a local host reports when a probed executable is absent.
+///
+/// Hosts emit it and discovery reads it, so both sides share this constant
+/// instead of repeating the string.
+pub const EXECUTABLE_NOT_FOUND_CODE: &str = "swallowtail.local_process.executable_not_found";
+
 /// Maximum captured installed-executable version-output bytes.
 pub const MAX_VERSION_OUTPUT_BYTES: usize = 64;
 
@@ -192,12 +198,11 @@ async fn probe_process(
     {
         Ok(process) => process,
         Err(error) => {
-            let status =
-                if error.diagnostic().code() == "swallowtail.local_process.executable_not_found" {
-                    DiscoveryStatus::Absent
-                } else {
-                    DiscoveryStatus::Failed
-                };
+            let status = if error.diagnostic().code() == EXECUTABLE_NOT_FOUND_CODE {
+                DiscoveryStatus::Absent
+            } else {
+                DiscoveryStatus::Failed
+            };
             return Ok(outcome(&services, codes, solution, status));
         }
     };

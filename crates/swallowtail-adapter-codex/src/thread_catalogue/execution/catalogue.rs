@@ -1,19 +1,27 @@
 use super::super::protocol::project_page;
+use super::pipeline::{Controls, Operation, run_controlled_rpc};
 use super::resource::ScopedResource;
-use super::{
-    cancel_and_release, cleanup_or, control_before_dispatch, control_failure, deadline_wait,
-    finish, from_runtime, request_controlled, require_catalogue_version, settle,
-};
+use super::{control_before_dispatch, finish, from_runtime, require_catalogue_version};
 use crate::CodexAppServerDriver;
-use crate::app_server::{INITIALIZE_TIMED_OUT, InitBound, InitControl, initialize_control, scope};
-use crate::control_wait::Controlled;
-use crate::process_close::close_budget;
+use crate::app_server::scope;
 use serde_json::json;
 use swallowtail_runtime::{
     HostServices, ProviderSessionCatalogueOutcome, ProviderSessionCataloguePlan,
     ProviderSessionCatalogueRequest, ProviderSessionOperationFailure,
     ProviderSessionOperationFailureStage,
 };
+
+const OPERATION: Operation = Operation::new(
+    (
+        "swallowtail.codex.thread_catalogue.cancelled",
+        "Codex thread catalogue was cancelled",
+    ),
+    (
+        "swallowtail.codex.thread_catalogue.timed_out",
+        "Codex thread catalogue timed out",
+    ),
+    ProviderSessionOperationFailureStage::CatalogueDispatch,
+);
 
 impl CodexAppServerDriver {
     pub(crate) async fn execute_thread_catalogue(
@@ -27,6 +35,7 @@ impl CodexAppServerDriver {
             from_runtime(ProviderSessionOperationFailureStage::BeforeDispatch, error)
         })?;
         control_before_dispatch(
+            OPERATION,
             request.cancellation().as_ref(),
             request.agreement().deadline(),
             &services,
@@ -34,64 +43,18 @@ impl CodexAppServerDriver {
         let operation_scope = scope("thread-catalogue", request.request_id());
         let resource = ScopedResource::resolve(&plan, operation_scope.clone(), &services).await?;
         let cwd = resource.root().to_owned();
-        let connection = self
-            .start_connection(
-                plan.preflight(),
-                behavior,
-                operation_scope,
-                Some(resource.reference().clone()),
-                &services,
-                InitBound {
-                    experimental_api: false,
-                    cancellation: Some(request.cancellation().as_ref()),
-                    deadline: request.agreement().deadline(),
-                    timed_out: INITIALIZE_TIMED_OUT,
-                },
-            )
-            .await;
-        let (connection, task) = match connection {
-            Ok(connection) => connection,
-            Err(error) => {
-                let cleanup = resource.release().await;
-                let failure = match initialize_control(&error) {
-                    Some(InitControl::Cancelled) => control_failure(
-                        ProviderSessionOperationFailureStage::Cancelled,
-                        "swallowtail.codex.thread_catalogue.cancelled",
-                        "Codex thread catalogue was cancelled",
-                    ),
-                    Some(InitControl::TimedOut) => control_failure(
-                        ProviderSessionOperationFailureStage::TimedOut,
-                        "swallowtail.codex.thread_catalogue.timed_out",
-                        "Codex thread catalogue timed out",
-                    ),
-                    None => from_runtime(
-                        ProviderSessionOperationFailureStage::CatalogueDispatch,
-                        error,
-                    ),
-                };
-                return Err(cleanup_or(cleanup, failure));
-            }
-        };
-
-        if let Err(control) = control_before_dispatch(
-            request.cancellation().as_ref(),
-            request.agreement().deadline(),
+        let settled = run_controlled_rpc(
+            self,
+            plan.preflight(),
+            behavior,
+            operation_scope,
+            resource,
+            Controls {
+                operation: OPERATION,
+                cancellation: request.cancellation().as_ref(),
+                deadline: request.agreement().deadline(),
+            },
             &services,
-        ) {
-            let cleanup = cancel_and_release(&connection, task, resource).await;
-            return Err(cleanup_or(cleanup, control));
-        }
-
-        let deadline = request.agreement().deadline();
-        let deadline_wait = match deadline_wait(deadline, &services) {
-            Ok(wait) => wait,
-            Err(error) => {
-                let cleanup = cancel_and_release(&connection, task, resource).await;
-                return Err(cleanup_or(cleanup, error));
-            }
-        };
-        let response = request_controlled(
-            &connection,
             "thread/list",
             json!({
                 "cursor": request.cursor().map(|cursor| cursor.as_provider_value()),
@@ -100,50 +63,25 @@ impl CodexAppServerDriver {
                 "archived": false,
                 "cwd": cwd
             }),
-            request.cancellation().as_ref(),
-            deadline_wait,
+            |response| {
+                project_page(
+                    &plan,
+                    response,
+                    &cwd,
+                    request
+                        .cursor()
+                        .map_or(0, |cursor| cursor.observed_candidates()),
+                )
+            },
         )
-        .await;
-        let interrupted = matches!(&response, Controlled::Cancelled | Controlled::Deadline);
-        let projected = match response {
-            Controlled::Completed(Ok(response)) => project_page(
-                &plan,
-                &response,
-                &cwd,
-                request
-                    .cursor()
-                    .map_or(0, |cursor| cursor.observed_candidates()),
-            ),
-            Controlled::Completed(Err(error)) => Err(from_runtime(
-                ProviderSessionOperationFailureStage::CatalogueDispatch,
-                error,
-            )),
-            Controlled::Cancelled => Err(control_failure(
-                ProviderSessionOperationFailureStage::Cancelled,
-                "swallowtail.codex.thread_catalogue.cancelled",
-                "Codex thread catalogue was cancelled",
-            )),
-            Controlled::Deadline => Err(control_failure(
-                ProviderSessionOperationFailureStage::TimedOut,
-                "swallowtail.codex.thread_catalogue.timed_out",
-                "Codex thread catalogue timed out",
-            )),
-        };
-        let cleanup = settle(
-            &connection,
-            task,
-            resource,
-            interrupted,
-            close_budget(&services, deadline),
-        )
-        .await;
-        let page = finish(projected, cleanup.clone())?;
+        .await?;
+        let page = finish(settled.projected, settled.cleanup.clone())?;
         ProviderSessionCatalogueOutcome::new(
             &plan,
             &request,
             page.candidates,
             page.next_cursor,
-            cleanup,
+            settled.cleanup,
         )
     }
 }

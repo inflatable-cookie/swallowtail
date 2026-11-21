@@ -161,10 +161,14 @@ impl RpcConnection {
                 self.clear_active_turn(&turn);
             }
         } else if let Some(notification) = LifecycleNotification::from_message(method, &params) {
-            self.lifecycle_notifications
+            let mut retained = self
+                .lifecycle_notifications
                 .lock()
-                .expect("lifecycle-notification lock poisoned")
-                .push(notification);
+                .expect("lifecycle-notification lock poisoned");
+            if retained.len() >= MAX_RETAINED_LIFECYCLE_NOTIFICATIONS {
+                retained.pop_front();
+            }
+            retained.push_back(notification);
         }
         Ok(())
     }

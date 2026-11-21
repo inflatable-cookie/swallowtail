@@ -1,12 +1,11 @@
+use crate::subagent_description::bounded_description;
 use crate::turn_state::malformed_notification;
 use serde_json::{Map, Value};
 use swallowtail_core::{ModelId, ReasoningMode, SubagentControlActionKind};
 use swallowtail_runtime::{
-    ActivityActor, ActivityContent, ActivityLabel, OperationContent, RuntimeFailure, SubagentId,
-    SubagentParent, SubagentSnapshot, SubagentStatus,
+    ActivityActor, ActivityLabel, RuntimeFailure, SubagentId, SubagentParent, SubagentSnapshot,
+    SubagentStatus,
 };
-
-const MAX_DESCRIPTION_BYTES: usize = 16 * 1024;
 
 pub(super) struct SubagentProjection {
     pub(super) actor: ActivityActor,
@@ -55,7 +54,7 @@ pub(super) fn collaboration(
         .get("prompt")
         .and_then(Value::as_str)
         .filter(|value| !value.trim().is_empty())
-        .map(bounded_description)
+        .map(|value| bounded_description(value, malformed_notification))
         .transpose()?;
     let model = item
         .get("model")
@@ -168,25 +167,6 @@ fn control_action(value: &str) -> Result<SubagentControlActionKind, RuntimeFailu
         "closeAgent" => Ok(SubagentControlActionKind::Close),
         _ => Err(malformed_notification()),
     }
-}
-
-fn bounded_description(value: &str) -> Result<ActivityContent, RuntimeFailure> {
-    let end = value
-        .char_indices()
-        .map(|(index, _)| index)
-        .take_while(|index| *index <= MAX_DESCRIPTION_BYTES)
-        .last()
-        .unwrap_or(0);
-    let value = if value.len() <= MAX_DESCRIPTION_BYTES {
-        value
-    } else {
-        &value[..end]
-    };
-    ActivityContent::new(
-        OperationContent::new(value).map_err(|_| malformed_notification())?,
-        MAX_DESCRIPTION_BYTES,
-    )
-    .map_err(|_| malformed_notification())
 }
 
 fn subagent_id(value: &str) -> Result<SubagentId, RuntimeFailure> {

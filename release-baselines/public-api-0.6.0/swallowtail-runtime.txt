@@ -123,6 +123,12 @@ pub swallowtail_runtime::AdmissionVerdict::Revoked(swallowtail_runtime::Register
 impl swallowtail_runtime::AdmissionVerdict
 pub const fn swallowtail_runtime::AdmissionVerdict::is_current(&self) -> bool
 pub const fn swallowtail_runtime::AdmissionVerdict::reason(&self) -> core::option::Option<&swallowtail_runtime::RegisteredToolReasonCode>
+pub enum swallowtail_runtime::AttachmentMaterializationFailure
+pub swallowtail_runtime::AttachmentMaterializationFailure::AttachmentServiceUnavailable
+pub swallowtail_runtime::AttachmentMaterializationFailure::BlockingWorkUnavailable
+pub swallowtail_runtime::AttachmentMaterializationFailure::Host(swallowtail_runtime::RuntimeFailure)
+pub swallowtail_runtime::AttachmentMaterializationFailure::NoBytes
+pub swallowtail_runtime::AttachmentMaterializationFailure::Read(swallowtail_runtime::AttachmentReadFailure)
 pub enum swallowtail_runtime::AttachmentReadFailure
 pub swallowtail_runtime::AttachmentReadFailure::TooLarge
 pub swallowtail_runtime::AttachmentReadFailure::Unreadable
@@ -3484,6 +3490,12 @@ impl swallowtail_runtime::SettledSessionAttachmentOutcome
 pub const fn swallowtail_runtime::SettledSessionAttachmentOutcome::attachment(&self) -> &swallowtail_runtime::SettledSessionAttachment
 pub fn swallowtail_runtime::SettledSessionAttachmentOutcome::into_parts(self) -> (swallowtail_runtime::ProviderSessionReconciliationOutcome, swallowtail_runtime::SettledSessionAttachment)
 pub const fn swallowtail_runtime::SettledSessionAttachmentOutcome::reconciliation(&self) -> &swallowtail_runtime::ProviderSessionReconciliationOutcome
+pub struct swallowtail_runtime::SharedAttachmentMaterialization(_)
+impl swallowtail_runtime::SharedAttachmentMaterialization
+pub fn swallowtail_runtime::SharedAttachmentMaterialization::new(alloc::sync::Arc<dyn swallowtail_runtime::AttachmentService>, swallowtail_runtime::AttachmentFileLease) -> Self
+pub async fn swallowtail_runtime::SharedAttachmentMaterialization::release(&self) -> swallowtail_runtime::CleanupOutcome
+impl core::fmt::Debug for swallowtail_runtime::SharedAttachmentMaterialization
+pub fn swallowtail_runtime::SharedAttachmentMaterialization::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 pub struct swallowtail_runtime::SignInAuthorityBinding
 impl swallowtail_runtime::SignInAuthorityBinding
 pub const fn swallowtail_runtime::SignInAuthorityBinding::account(&self) -> core::option::Option<&swallowtail_core::runtime_identity::AccessProfileId>
@@ -3886,6 +3898,7 @@ pub fn swallowtail_runtime::ZeroIdiomMaximum::fmt(&self, &mut core::fmt::Formatt
 pub const swallowtail_runtime::ADAPTER_UNQUALIFIED_CODE: &str
 pub const swallowtail_runtime::DEBUG_DETAIL_TRUNCATED_SUFFIX: &str
 pub const swallowtail_runtime::DEFAULT_MAX_FOLD_BYTES: usize
+pub const swallowtail_runtime::EXECUTABLE_NOT_FOUND_CODE: &str
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_INSTANCES: usize
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_MODELS_PER_INSTANCE: usize
 pub const swallowtail_runtime::MAX_CONFIGURED_PROVIDER_ROUTES_PER_INSTANCE: usize
@@ -4229,6 +4242,7 @@ pub const fn swallowtail_runtime::first_progress_sequence() -> core::num::nonzer
 pub fn swallowtail_runtime::fold_idioms(&swallowtail_idioms::engine::IdiomSet) -> alloc::string::String
 pub fn swallowtail_runtime::fold_idioms_with_bound(&swallowtail_idioms::engine::IdiomSet, usize) -> alloc::string::String
 pub fn swallowtail_runtime::instance_with_capabilities(&swallowtail_core::instance::ConfiguredInstance, swallowtail_core::requirement::CapabilityProfile) -> swallowtail_core::instance::ConfiguredInstance
+pub async fn swallowtail_runtime::materialize_bounded_attachment(&swallowtail_runtime::HostServices, swallowtail_runtime::ScopeId, swallowtail_runtime::AttachmentDescriptor, u64) -> core::result::Result<(alloc::vec::Vec<u8>, swallowtail_runtime::SharedAttachmentMaterialization), swallowtail_runtime::AttachmentMaterializationFailure>
 pub fn swallowtail_runtime::observe_authenticated_subject(&dyn swallowtail_runtime::ConnectionLifecycleStore, &swallowtail_core::runtime_identity::ConfiguredInstanceId, swallowtail_core::connection_lifecycle::records::AuthenticatedSubjectObservation) -> core::result::Result<swallowtail_core::connection_lifecycle::records::AuthenticatedSubjectObservation, swallowtail_runtime::SubjectObservationFailure>
 pub fn swallowtail_runtime::observe_instance_update(&swallowtail_core::interface_version::claim::InterfaceCompatibilityClaim, core::option::Option<swallowtail_core::installed_executable::InstalledExecutableObservation>) -> core::result::Result<swallowtail_core::connection_lifecycle::update::InstanceUpdateObservation, swallowtail_core::connection_lifecycle::update::InvalidInstanceUpdateObservation>
 pub fn swallowtail_runtime::page_provider_session_history_window(&swallowtail_runtime::ProviderSessionHistoryPlan, &swallowtail_runtime::ProviderSessionHistoryRequest, alloc::vec::Vec<swallowtail_runtime::SessionReplayItem>, swallowtail_runtime::ProviderSessionHistoryTotal) -> core::result::Result<swallowtail_runtime::ProviderSessionHistoryWindow, swallowtail_runtime::RuntimeFailure>

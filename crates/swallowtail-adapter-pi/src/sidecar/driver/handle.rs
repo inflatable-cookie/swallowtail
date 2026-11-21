@@ -211,9 +211,19 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            if !self.cancellation.turn.is_finished() {
-                let _ = self.cancellation.request().await;
-            }
+            let cancel_cleanup = if self.cancellation.turn.is_finished() {
+                CleanupOutcome::NotApplicable
+            } else {
+                match self.cancellation.request().await {
+                    Ok(_) => CleanupOutcome::NotApplicable,
+                    // A turn that could not be aborted may still be running, so
+                    // close must not report a clean outcome for it.
+                    Err(_) => cleanup_failure(
+                        "cancel_rejected",
+                        "Pi could not abort the active turn during close",
+                    ),
+                }
+            };
             let active = {
                 let mut slot = self
                     .active
@@ -241,7 +251,10 @@ impl TurnHandle for PiSdkSidecarTurnHandle {
                 } else {
                     CleanupOutcome::NotApplicable
                 };
-            CleanupOutcome::merge(task_cleanup, self.attachment.release().await)
+            CleanupOutcome::merge(
+                CleanupOutcome::merge(cancel_cleanup, task_cleanup),
+                self.attachment.release().await,
+            )
         })
     }
 }

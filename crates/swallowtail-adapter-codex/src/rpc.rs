@@ -2,7 +2,7 @@ use crate::limits::MAX_STDOUT_LINE_BYTES;
 use crate::safe_excerpt::{normalized_ascii, sanitize_stderr};
 use crate::turn_state::ActiveTurn;
 use serde_json::Value;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
@@ -15,6 +15,9 @@ use swallowtail_runtime::{
     TerminalStatus,
 };
 
+/// Lifecycle notifications retained for the confirmation that reads them.
+const MAX_RETAINED_LIFECYCLE_NOTIFICATIONS: usize = 256;
+
 pub(crate) struct RpcConnection {
     process: Arc<dyn ProcessHandle>,
     services: HostServices,
@@ -23,7 +26,7 @@ pub(crate) struct RpcConnection {
     pending: Mutex<BTreeMap<u64, ResponseSender>>,
     ignored_responses: Mutex<BTreeSet<u64>>,
     active_turn: Mutex<Option<Arc<ActiveTurn>>>,
-    lifecycle_notifications: Mutex<Vec<LifecycleNotification>>,
+    lifecycle_notifications: Mutex<VecDeque<LifecycleNotification>>,
     closing: AtomicBool,
     session_cancelled: AtomicBool,
     closed: AtomicBool,
@@ -41,7 +44,7 @@ impl RpcConnection {
             pending: Mutex::new(BTreeMap::new()),
             ignored_responses: Mutex::new(BTreeSet::new()),
             active_turn: Mutex::new(None),
-            lifecycle_notifications: Mutex::new(Vec::new()),
+            lifecycle_notifications: Mutex::new(VecDeque::new()),
             closing: AtomicBool::new(false),
             session_cancelled: AtomicBool::new(false),
             closed: AtomicBool::new(false),
@@ -239,11 +242,17 @@ impl RpcConnection {
             })
     }
 
+    /// Returns the retained lifecycle notifications, oldest first.
+    ///
+    /// Only the most recent `MAX_RETAINED_LIFECYCLE_NOTIFICATIONS` are kept, so
+    /// lifecycle confirmation must read them promptly after the request.
     pub(crate) fn lifecycle_notifications(&self) -> Vec<LifecycleNotification> {
         self.lifecycle_notifications
             .lock()
             .expect("lifecycle-notification lock poisoned")
-            .clone()
+            .iter()
+            .cloned()
+            .collect()
     }
 }
 

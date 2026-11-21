@@ -4,7 +4,9 @@ set -euo pipefail
 
 test_root=$(cd "$(dirname "$0")/../.." && pwd)
 checker=(python3 "$test_root/scripts/check-research-number-collision.py")
-scratch=$(mktemp -d)
+scratch_base=${TMPDIR:-/tmp}
+scratch_base=${scratch_base%/}
+scratch=$(mktemp -d "${scratch_base}/swallowtail-research-collision.XXXXXXXX")
 trap 'rm -rf "$scratch"' EXIT
 
 git_test() {
@@ -242,5 +244,39 @@ write_numbered_record "$modern_worker" 377-second.md \
 expect_pass "${checker[@]}" --root "$modern_worker" --local-base main
 expect_pass "${checker[@]}" --root "$modern_worker" \
   --authority "$modern_canonical"
+
+# Canonical main collisions involving .json records must fetch the .json bytes
+# from canonical authority so collision repair verifies retention and rejects
+# silent mutation.
+json_seed=$scratch/json-seed
+json_canonical=$scratch/json-canonical.git
+json_worker=$scratch/json-worker
+json_changed=$scratch/json-changed
+mkdir -p "$json_seed/docs/research"
+git_test "$json_seed" init -q -b main
+write_numbered_record "$json_seed" 378-first.md \
+  $'# 378 First canonical record\nFirst record evidence.\n'
+write_numbered_record "$json_seed" 378-second.json \
+  $'{"record": 378, "status": "frozen"}\n'
+git_test "$json_seed" add docs
+git_test "$json_seed" commit -q -m 'seed canonical json collision records'
+git_test "$scratch" clone -q --bare "$json_seed" "$json_canonical"
+git_test "$scratch" clone -q "$json_canonical" "$json_worker"
+git_test "$scratch" clone -q "$json_canonical" "$json_changed"
+
+expect_failure 'working tree research number 378' \
+  "${checker[@]}" --root "$json_worker" --authority "$json_canonical"
+
+rm "$json_changed/docs/research/378-second.json"
+write_numbered_record "$json_changed" 379-second.json \
+  $'{"record": 379, "status": "mutated"}\n'
+expect_failure 'only its numbered heading and path may change' \
+  "${checker[@]}" --root "$json_changed" --authority "$json_canonical"
+
+mv "$json_worker/docs/research/378-second.json" \
+  "$json_worker/docs/research/379-second.json"
+expect_pass "${checker[@]}" --root "$json_worker" --local-base main
+expect_pass "${checker[@]}" --root "$json_worker" \
+  --authority "$json_canonical"
 
 printf 'research number collision tests passed\n'

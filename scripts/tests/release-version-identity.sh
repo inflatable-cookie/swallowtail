@@ -15,7 +15,9 @@ identity_expect_previous() {
   fi
 }
 
-identity_fixture=$(mktemp -d)
+identity_tmp_root=${TMPDIR:-/tmp}
+identity_tmp_root=${identity_tmp_root%/}
+identity_fixture=$(mktemp -d "${identity_tmp_root}/swallowtail-release-identity.XXXXXXXX")
 trap 'rm -rf "$identity_fixture"' EXIT
 mkdir -p \
   "$identity_fixture/release-baselines/public-api-0.4.2" \

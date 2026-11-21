@@ -15,15 +15,16 @@ if ! grep -Eq "^${release_pattern}(-|\$)" <<< "$release_installed_toolchains"; t
   exit 1
 fi
 
-# Both commands run through the shared helper, so the floor is one ordinary
-# local Rust route; the pin travels as RUSTUP_TOOLCHAIN, the supported mapping
-# for `cargo +<name>`. Reduced priority is kept: `nice` only lowers this run.
+# Clippy runs through the shared helper; tests run through the private-target
+# wrapper so courier-backed process tests get a run-owned target matching CI.
+# The pin travels as RUSTUP_TOOLCHAIN, the supported mapping for `cargo +<name>`.
+# Reduced priority is kept: `nice` only lowers this run.
 nice -n 5 env RUSTUP_TOOLCHAIN="$SWALLOWTAIL_MSRV" \
   bash "$release_repo_root/scripts/oxide-rust.sh" clippy \
   --workspace \
   --all-targets --all-features --locked -- -D warnings
 nice -n 5 env RUSTUP_TOOLCHAIN="$SWALLOWTAIL_MSRV" \
-  bash "$release_repo_root/scripts/oxide-rust.sh" test \
+  bash "$release_repo_root/scripts/run-with-owned-cargo-target.sh" cargo test \
   --workspace \
   --all-features --locked
 

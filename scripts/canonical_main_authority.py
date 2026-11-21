@@ -21,7 +21,7 @@ ISOLATED_CONFIG = (
     "core.quotePath=false",
 )
 NUMBERED_RESEARCH = re.compile(
-    r"^docs/research/(?P<number>\d{3})-(?P<slug>.+)\.(?:md|tsv|csv)$"
+    r"^docs/research/(?P<number>\d{3})-(?P<slug>.+)\.(?:md|tsv|csv|json)$"
 )
 
 

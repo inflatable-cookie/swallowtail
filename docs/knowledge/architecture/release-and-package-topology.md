@@ -20,9 +20,9 @@ route; task 257 removed that package from the current source. Immutable
 `v0.3.2` inventories stay
 30 packages and 36 routes. `v0.4.0` kept those 40 packages and added two
 routes, `pi.sdk-sidecar` and `claude-agent.sdk`, for a 49-route inventory.
-`v0.5.4` tags 40 packages and 50 routes; the prepared `0.6.0` candidate keeps
-the package set and adds the additive `opencode.acp` route for 51. Historical
-inventories stay immutable.
+`v0.5.4` tags 40 packages and 50 routes, and `v0.6.0` tags 40 packages and 51
+routes by adding the additive `opencode.acp` route; the current source holds
+41 packages and 51 routes. Historical inventories stay immutable.
 The immutable `v0.1.x` source tags contain 27 packages; `v0.2.0` and later tags
 contain 28 after adding `swallowtail-adapter-muse`. `swallowtail-adapter-command-code`
 and `swallowtail-idioms` first appear in `v0.3.2`. No crate is published to

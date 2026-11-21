@@ -88,11 +88,11 @@ fn main() {
 }
 EOF
 
-cargo generate-lockfile --manifest-path "$release_consumer_root/Cargo.toml"
-cargo check --manifest-path "$release_consumer_root/Cargo.toml" --locked
+RUSTUP_TOOLCHAIN="$SWALLOWTAIL_CURRENT_STABLE" cargo generate-lockfile --manifest-path "$release_consumer_root/Cargo.toml"
+RUSTUP_TOOLCHAIN="$SWALLOWTAIL_CURRENT_STABLE" cargo check --manifest-path "$release_consumer_root/Cargo.toml" --locked
 
 release_metadata="$release_tmp/metadata.json"
-cargo metadata \
+RUSTUP_TOOLCHAIN="$SWALLOWTAIL_CURRENT_STABLE" cargo metadata \
   --manifest-path "$release_consumer_root/Cargo.toml" \
   --format-version 1 \
   --locked \

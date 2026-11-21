@@ -2434,6 +2434,84 @@ fn cleanup_session_async_bounds_wedged_teardown_and_retains_pending_stop_and_loo
         "credentials must not be persisted when loopback release returned CleanupOutcome::Failed"
     );
 
+    // 2e. A synchronous complete_sign_in failure on CleanupOutcome::Failed retains
+    // the failure in the returned session so neither a synchronous nor an async
+    // retry forgets the failure or persists credentials.
+    let retry_store = MemoryStore::new();
+    admitted(&retry_store);
+    let mut sync_failing_session = start_sign_in(&failing_release_services, interactive_request())
+        .expect("sync start succeeds");
+    assert_eq!(
+        poll_sign_in(&mut sync_failing_session, &failing_release_services)
+            .expect("sync poll becomes ready"),
+        SignInStatus::ReadyToComplete
+    );
+    let (first_err, returned_session) = complete_sign_in(
+        sync_failing_session,
+        &failing_release_services,
+        Some(&retry_store),
+    )
+    .expect_err("initial sync complete must fail closed on CleanupOutcome::Failed");
+    assert_eq!(first_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        first_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    assert_eq!(
+        retry_store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .len(),
+        0,
+        "store must stay empty after initial sync complete failure"
+    );
+
+    let (sync_retry_err, returned_session) = complete_sign_in(
+        returned_session,
+        &failing_release_services,
+        Some(&retry_store),
+    )
+    .expect_err("sync retry must still surface the retained loopback release failure");
+    assert_eq!(sync_retry_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        sync_retry_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    assert_eq!(
+        retry_store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .len(),
+        0,
+        "store must stay empty after sync retry"
+    );
+
+    let async_retry_err = block_on(complete_sign_in_async(
+        returned_session,
+        &failing_release_services,
+        Some(&retry_store),
+    ))
+    .expect_err("async retry must still surface the retained loopback release failure");
+    assert_eq!(async_retry_err.kind(), SignInFailureKind::HostPort);
+    assert_eq!(
+        async_retry_err.diagnostic().code(),
+        "fixture.loopback_release_failed"
+    );
+    assert_eq!(
+        retry_store
+            .get_instance(&instance_id())
+            .expect("store read")
+            .expect("instance exists")
+            .credential_refs()
+            .len(),
+        0,
+        "store must stay empty after async retry"
+    );
+
     // 3. cleanup_session_now retains pending stop futures instead of dropping and restarting them.
     struct CountingStopProcess {
         stop_calls: Arc<std::sync::atomic::AtomicUsize>,

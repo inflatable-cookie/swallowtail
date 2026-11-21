@@ -375,6 +375,7 @@ pub struct SignInSession {
     pending_poll: Mutex<Option<PendingSignInPoll>>,
     pending_loopback_release: Mutex<Option<BoxFuture<'static, crate::CleanupOutcome>>>,
     pending_process_cleanup: Mutex<Option<PendingProcessCleanup>>,
+    cleanup_failure: Option<SignInFailure>,
 }
 
 impl fmt::Debug for SignInSession {
@@ -543,6 +544,7 @@ fn prepare_session(
         pending_poll: Mutex::new(None),
         pending_loopback_release: Mutex::new(None),
         pending_process_cleanup: Mutex::new(None),
+        cleanup_failure: None,
     };
     Ok((session, request.method))
 }
@@ -1510,6 +1512,9 @@ fn release_loopback_now(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<bool, SignInFailure> {
+    if let Some(failure) = session.cleanup_failure.clone() {
+        return Err(failure);
+    }
     let mut future = if let Some(future) = take_pending_loopback_release(session) {
         future
     } else if session.loopback.is_some() {
@@ -1529,7 +1534,10 @@ fn release_loopback_now(
     match poll_box_future_once(&mut future) {
         Poll::Ready(outcome) => {
             session.loopback_service = None;
-            cleanup_outcome_failure(outcome)?;
+            if let Err(failure) = cleanup_outcome_failure(outcome) {
+                session.cleanup_failure = Some(failure.clone());
+                return Err(failure);
+            }
             Ok(false)
         }
         Poll::Pending => {
@@ -1543,6 +1551,9 @@ async fn release_loopback_async(
     session: &mut SignInSession,
     services: &HostServices,
 ) -> Result<(), SignInFailure> {
+    if let Some(failure) = session.cleanup_failure.clone() {
+        return Err(failure);
+    }
     let future = if let Some(future) = take_pending_loopback_release(session) {
         Some(future)
     } else if session.loopback.is_some() {
@@ -1561,10 +1572,15 @@ async fn release_loopback_async(
     };
     if let Some(future) = future {
         let Some(outcome) = await_cleanup_budget(future, services).await else {
-            return Err(cleanup_timed_out_failure());
+            let failure = cleanup_timed_out_failure();
+            session.cleanup_failure = Some(failure.clone());
+            return Err(failure);
         };
         session.loopback_service = None;
-        cleanup_outcome_failure(outcome)?;
+        if let Err(failure) = cleanup_outcome_failure(outcome) {
+            session.cleanup_failure = Some(failure.clone());
+            return Err(failure);
+        }
     }
     Ok(())
 }

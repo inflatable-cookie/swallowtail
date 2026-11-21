@@ -567,6 +567,21 @@ pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() 
         maximum_cookie_count: NonZeroU32::new(4).unwrap(),
         maximum_cookie_bytes: NonZeroU64::new(4096).unwrap(),
     };
+    struct HookResetGuard;
+    impl Drop for HookResetGuard {
+        fn drop(&mut self) {
+            *crate::websocket::BLOCKED_EVENT_SEND_HOOK
+                .lock()
+                .expect("blocked event send hook lock poisoned") = None;
+        }
+    }
+
+    let blocked_on_send = Arc::new(tokio::sync::Notify::new());
+    *crate::websocket::BLOCKED_EVENT_SEND_HOOK
+        .lock()
+        .expect("blocked event send hook lock poisoned") = Some(Arc::clone(&blocked_on_send));
+    let _hook_guard = HookResetGuard;
+
     let mut connection = crate::connect_bound(
         small_config,
         ScopeId::new("fixture.full-events-error").unwrap(),
@@ -577,10 +592,15 @@ pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() 
     .unwrap();
     connection.send(super::initialize()).await.unwrap();
     all_sent.notified().await;
-    // Allow the worker to fill the bounded event channel and block on
-    // events.send(...), then advance the controlled clock past the connection
-    // deadline (200) while keeping close grace (250 + 2s) active.
-    tokio::time::sleep(std::time::Duration::from_millis(30)).await;
+    // Wait deterministically until websocket::run is actually parked inside
+    // events.send(...) on the full bounded channel, then advance the controlled
+    // clock past the connection deadline (200) while keeping close grace active.
+    tokio::time::timeout(
+        std::time::Duration::from_secs(3),
+        blocked_on_send.notified(),
+    )
+    .await
+    .expect("worker must park on a full events channel before clock advances");
     clock.advance_to(250);
 
     let wait_deadline = std::time::Instant::now() + std::time::Duration::from_secs(3);
@@ -600,7 +620,8 @@ pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() 
         "terminal error must be recorded in the fallback slot when events channel is full"
     );
 
-    // Drain every buffered message, then observe the terminal DeadlineExceeded error.
+    // Drain the entire buffered set (initialize + 2 notifications filling
+    // mpsc::channel(2) + 1 sender slot), then observe DeadlineExceeded.
     let first = connection
         .next_event()
         .await
@@ -619,9 +640,9 @@ pub(super) async fn full_events_channel_delivers_terminal_error_on_next_event() 
             Err(error) => break error,
         }
     };
-    assert!(
-        drained_notifications >= 1,
-        "at least one buffered notification must be drained before the terminal error"
+    assert_eq!(
+        drained_notifications, 2,
+        "full buffered notification set must be drained before the terminal error"
     );
     assert_eq!(terminal.kind(), RemoteAcpErrorKind::DeadlineExceeded);
     assert!(connection.next_event().await.is_none());

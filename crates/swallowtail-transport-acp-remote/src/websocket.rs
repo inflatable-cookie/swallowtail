@@ -17,6 +17,40 @@ use std::sync::Arc;
 use swallowtail_protocol_acp::Message;
 use swallowtail_runtime::{Deadline, TimeService};
 
+#[cfg(test)]
+pub(crate) static BLOCKED_EVENT_SEND_HOOK: std::sync::Mutex<Option<Arc<tokio::sync::Notify>>> =
+    std::sync::Mutex::new(None);
+
+async fn send_worker_event(
+    events: &mut mpsc::Sender<WorkerEvent>,
+    event: WorkerEvent,
+) -> Result<(), mpsc::SendError> {
+    #[cfg(not(test))]
+    {
+        events.send(event).await
+    }
+    #[cfg(test)]
+    {
+        let mut send = std::pin::pin!(events.send(event));
+        let mut notified = false;
+        std::future::poll_fn(|context| {
+            let poll = std::future::Future::poll(send.as_mut(), context);
+            if poll.is_pending() && !notified {
+                notified = true;
+                if let Some(hook) = BLOCKED_EVENT_SEND_HOOK
+                    .lock()
+                    .expect("blocked event send hook lock poisoned")
+                    .as_ref()
+                {
+                    hook.notify_one();
+                }
+            }
+            poll
+        })
+        .await
+    }
+}
+
 pub(crate) async fn run(
     config: TransportConfig,
     mut commands: mpsc::Receiver<WorkerCommand>,
@@ -142,7 +176,7 @@ pub(crate) async fn run(
                         match race_deadline(
                             deadline,
                             time.as_deref(),
-                            events.send(WorkerEvent::Message(message)),
+                            send_worker_event(&mut events, WorkerEvent::Message(message)),
                         )
                         .await
                         {

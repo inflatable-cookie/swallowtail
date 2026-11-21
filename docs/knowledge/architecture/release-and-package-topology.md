@@ -134,6 +134,9 @@ Workspace package version remains Effigy-owned until authorized prepare.
 
 - unified MSRV: Rust `1.95.0`
 - verified target: Apple Silicon macOS
+- development toolchain: the root `rust-toolchain.toml` pins Rust `1.100.0`
+  with rustfmt and clippy; it is separate from the MSRV floor above, which it
+  does not change
 
 The immutable `v0.1.x` line used Rust `1.90.0` generally and Rust `1.94.1` for
 Bedrock. `v0.2.0` raised and unified the floor at Rust `1.95.0`. The `v0.3.0`

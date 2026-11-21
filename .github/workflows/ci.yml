@@ -17,6 +17,11 @@ concurrency:
 env:
   CARGO_TERM_COLOR: always
 
+# The root rust-toolchain.toml selects the Rust toolchain (and its rustfmt and
+# clippy components) for every bare cargo command in the checkout, so jobs do
+# not install a stable toolchain that would go unused. Jobs that need another
+# toolchain name it explicitly: nightly-2026-08-05 for docs and the public API
+# baseline, and the MSRV floor from release-baselines.
 jobs:
   stable-format-and-lint:
     name: Stable format and lint
@@ -24,9 +29,6 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: stable
@@ -48,7 +50,6 @@ jobs:
         shard: [1, 2]
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: nextest
@@ -74,7 +75,6 @@ jobs:
         os: [ubuntu-latest, macos-15]
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: nextest
@@ -111,7 +111,6 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: stable
@@ -135,7 +134,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@stable
-      - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: nightly-2026-08-05
       - uses: Swatinem/rust-cache@v2
@@ -146,7 +144,7 @@ jobs:
         with:
           tool: cargo-public-api@0.52.0
       - name: Deny missing public documentation
-        run: RUSTDOCFLAGS='-D missing_docs' cargo doc --workspace --all-features --no-deps --locked
+        run: RUSTDOCFLAGS='-D missing_docs' cargo +nightly-2026-08-05 doc --workspace --all-features --no-deps --locked
       - name: Semantic public API baseline
         run: bash scripts/check-public-api.sh
 
@@ -208,7 +206,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           cache-targets: false

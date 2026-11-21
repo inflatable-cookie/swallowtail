@@ -1,5 +1,6 @@
 use crate::BodyDecoder;
 use std::fmt;
+use zeroize::Zeroize;
 
 /// Default bound on one buffered, undecoded event.
 pub const DEFAULT_EVENT_LIMIT: usize = 1_048_576;
@@ -73,7 +74,7 @@ impl Default for SseFramer {
 
 impl Drop for SseFramer {
     fn drop(&mut self) {
-        self.pending.fill(0);
+        self.pending.zeroize();
     }
 }
 
@@ -84,7 +85,7 @@ impl SseFramer {
         Self::default()
     }
 
-    /// Bounds the undecoded event bytes retained at any time.
+    /// Bounds each event's raw bytes, including its delimiter.
     #[must_use]
     pub const fn with_event_limit(mut self, limit: usize) -> Self {
         self.event_limit = Some(limit);
@@ -113,18 +114,24 @@ impl SseFramer {
     /// bound would be exceeded.
     pub fn push(&mut self, chunk: &[u8]) -> Result<Vec<Vec<u8>>, SseDecodeError> {
         self.observed = self.observed.saturating_add(chunk.len());
-        if self.stream_limit.is_some_and(|limit| self.observed > limit)
-            || self
-                .event_limit
-                .is_some_and(|limit| self.pending.len().saturating_add(chunk.len()) > limit)
-        {
+        if self.stream_limit.is_some_and(|limit| self.observed > limit) {
             return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
         }
         self.pending.extend_from_slice(chunk);
         let mut frames = Vec::new();
         while let Some((end, separator)) = boundary(&self.pending) {
-            let frame: Vec<u8> = self.pending.drain(..end + separator).collect();
+            let frame_len = end + separator;
+            if self.event_limit.is_some_and(|limit| frame_len > limit) {
+                return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
+            }
+            let frame: Vec<u8> = self.pending.drain(..frame_len).collect();
             frames.push(normalize_line_endings(frame));
+        }
+        if self
+            .event_limit
+            .is_some_and(|limit| self.pending.len() > limit)
+        {
+            return Err(SseDecodeError::new(SseDecodeErrorKind::LimitExceeded));
         }
         Ok(frames)
     }
@@ -137,7 +144,7 @@ impl SseFramer {
     /// non-whitespace bytes remain.
     pub fn finish(mut self) -> Result<(), SseDecodeError> {
         let incomplete = !self.pending.iter().all(u8::is_ascii_whitespace);
-        self.pending.fill(0);
+        self.pending.zeroize();
         if incomplete {
             Err(SseDecodeError::new(SseDecodeErrorKind::IncompleteFrame))
         } else {
@@ -209,7 +216,10 @@ impl SseFrame {
 
 impl Drop for SseFrame {
     fn drop(&mut self) {
-        self.data.fill(0);
+        self.data.zeroize();
+        if let Some(name) = self.name.as_mut() {
+            name.zeroize();
+        }
     }
 }
 

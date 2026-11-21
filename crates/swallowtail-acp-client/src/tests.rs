@@ -85,6 +85,7 @@ struct EofProcess {
     stdin_closed: AtomicBool,
     stop_requested: AtomicBool,
     force_stopped: AtomicBool,
+    waited: AtomicBool,
 }
 
 impl EofProcess {
@@ -93,6 +94,7 @@ impl EofProcess {
             stdin_closed: AtomicBool::new(false),
             stop_requested: AtomicBool::new(false),
             force_stopped: AtomicBool::new(false),
+            waited: AtomicBool::new(false),
         })
     }
 }
@@ -122,6 +124,7 @@ impl ProcessHandle for EofProcess {
     }
 
     fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        self.waited.store(true, Ordering::SeqCst);
         Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
     }
 }
@@ -205,6 +208,14 @@ fn open_acp_session_closes_process_when_task_service_is_missing() {
         );
         assert!(process.stdin_closed.load(Ordering::SeqCst));
         assert!(process.stop_requested.load(Ordering::SeqCst));
+        assert!(
+            process.force_stopped.load(Ordering::SeqCst),
+            "an early validation failure must force-stop the spawned transport"
+        );
+        assert!(
+            process.waited.load(Ordering::SeqCst),
+            "an early validation failure must reap the spawned process"
+        );
     });
 }
 

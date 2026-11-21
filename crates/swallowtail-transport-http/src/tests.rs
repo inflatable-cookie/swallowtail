@@ -1,7 +1,8 @@
 use crate::stream::result_channel;
 use crate::{
     BodyDecoder, HttpRequest, HttpTransport, Method, SecretHeader, SseDecodeError,
-    SseDecodeErrorKind, SseDecoder, SseFramer, StreamError, StreamItem, TransportError,
+    SseDecodeErrorKind, SseDecoder, SseFrame, SseFramer, StreamError, StreamItem, Subscription,
+    TransportError,
 };
 use std::io::{Read, Write};
 use std::net::{TcpListener, TcpStream};
@@ -81,6 +82,47 @@ fn write_all(stream: &mut TcpStream, bytes: &[u8]) {
     let _ = stream.flush();
 }
 
+fn read_request_line_and_body(stream: &mut TcpStream) -> (String, Vec<u8>) {
+    let mut request = Vec::new();
+    let mut chunk = [0u8; 1024];
+    while !request.windows(4).any(|window| window == b"\r\n\r\n") {
+        match stream.read(&mut chunk) {
+            Ok(0) | Err(_) => break,
+            Ok(read) => request.extend_from_slice(&chunk[..read]),
+        }
+    }
+    let body_start = request
+        .windows(4)
+        .position(|window| window == b"\r\n\r\n")
+        .map_or(request.len(), |end| end + 4);
+    let head = String::from_utf8_lossy(&request[..body_start]).into_owned();
+    let declared = head
+        .lines()
+        .find_map(|line| {
+            let (name, value) = line.split_once(':')?;
+            if name.eq_ignore_ascii_case("content-length") {
+                value.trim().parse::<usize>().ok()
+            } else {
+                None
+            }
+        })
+        .unwrap_or(0);
+    let mut body = request[body_start..].to_vec();
+    while body.len() < declared {
+        match stream.read(&mut chunk) {
+            Ok(0) | Err(_) => break,
+            Ok(read) => body.extend_from_slice(&chunk[..read]),
+        }
+    }
+    let request_line = head
+        .lines()
+        .next()
+        .unwrap_or_default()
+        .trim_end()
+        .to_owned();
+    (request_line, body)
+}
+
 #[test]
 fn unary_exchange_returns_the_bounded_response() {
     let endpoint = serve(|mut stream| {
@@ -104,6 +146,35 @@ fn unary_exchange_returns_the_bounded_response() {
         response.headers.get("x-request-id").map(String::as_str),
         Some("fixture-id")
     );
+}
+
+#[test]
+fn write_verbs_attach_their_request_bodies() {
+    for (method, verb) in [(Method::Put, "PUT"), (Method::Patch, "PATCH")] {
+        let endpoint = serve(move |mut stream| {
+            let (request_line, body) = read_request_line_and_body(&mut stream);
+            let response_body = format!("{request_line}\n{}", String::from_utf8_lossy(&body));
+            let header = format!(
+                "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n",
+                response_body.len()
+            );
+            write_all(&mut stream, header.as_bytes());
+            write_all(&mut stream, response_body.as_bytes());
+        });
+        let response = futures_executor::block_on(HttpTransport::new().execute(
+            scope(),
+            &endpoint,
+            HttpRequest::new(method, "/route").with_body(b"payload".to_vec()),
+            &services(),
+            cancelled(),
+        ))
+        .expect("fixture response is returned");
+        assert_eq!(
+            String::from_utf8_lossy(&response.body),
+            format!("{verb} /route HTTP/1.1\npayload"),
+            "{verb} must carry its body and its own request line"
+        );
+    }
 }
 
 #[test]
@@ -230,6 +301,41 @@ fn non_success_stream_reports_the_bounded_error_body() {
 }
 
 #[test]
+fn a_terminal_stream_failure_is_polled_once_and_then_fused() {
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(
+            &mut stream,
+            b"HTTP/1.1 500 Internal Server Error\r\nContent-Length: 4\r\n\r\nfail",
+        );
+    });
+    let mut subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint,
+            HttpRequest::new(Method::Get, "/events"),
+            SseDecoder::new(),
+            &services(),
+            cancelled(),
+        )
+        .expect("fixture subscription starts");
+    let poll = |subscription: &mut Subscription<SseFrame, SseDecodeError>| {
+        futures_executor::block_on(futures_util::future::poll_fn(|context| match subscription
+            .poll_next(context)
+        {
+            Poll::Ready(item) => Poll::Ready(item),
+            Poll::Pending => Poll::Pending,
+        }))
+    };
+    let failure = poll(&mut subscription).expect("the rejection is surfaced");
+    assert!(failure.is_err(), "a rejection is a stream error");
+    assert!(
+        poll(&mut subscription).is_none(),
+        "a terminal outcome must fuse the subscription instead of repeating the failure"
+    );
+}
+
+#[test]
 fn dropping_a_subscription_cancels_its_worker() {
     let endpoint = serve(|mut stream| {
         read_request(&mut stream);
@@ -309,11 +415,46 @@ fn sse_decoder_frames_names_payloads_and_keep_alives() {
 }
 
 #[test]
+fn sse_framer_applies_the_event_limit_to_each_event_in_a_chunk() {
+    let mut framer = SseFramer::new().with_event_limit(b"data: one\n\n".len());
+    let frames = framer
+        .push(b"data: one\n\ndata: two\n\n")
+        .expect("each complete event fits the event bound");
+    assert_eq!(frames.len(), 2, "one chunk may carry several events");
+    framer
+        .push(b"data: three")
+        .expect("a retained partial event fits the bound");
+    let error = framer
+        .push(b"data: four-oversized")
+        .expect_err("an oversized retained event fails");
+    assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
+}
+
+#[test]
+fn sse_framer_rejects_oversized_complete_frames() {
+    let event_limit = b"data: 1234\n\n".len();
+    let mut framer = SseFramer::new().with_event_limit(event_limit);
+    let error = framer
+        .push(b"data: ok\n\ndata: 12345\n\n")
+        .expect_err("an oversized complete event fails even after a bounded event");
+    assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
+
+    let mut framer = SseFramer::new().with_event_limit(event_limit);
+    framer
+        .push(b"data: 1234\r\n")
+        .expect("a retained partial event fits the bound");
+    let error = framer
+        .push(b"\r\n")
+        .expect_err("the complete event exceeds the bound before CRLF normalization");
+    assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
+}
+
+#[test]
 fn sse_decoder_bounds_events_and_rejects_partial_streams() {
     let mut decoder = SseDecoder::with_framer(SseFramer::new().with_event_limit(8));
     let error = decoder
-        .push(b"data: oversized\n\n")
-        .expect_err("an oversized event fails");
+        .push(b"data: oversized")
+        .expect_err("an oversized retained event fails");
     assert_eq!(error.kind(), SseDecodeErrorKind::LimitExceeded);
 
     let mut decoder = SseDecoder::new();

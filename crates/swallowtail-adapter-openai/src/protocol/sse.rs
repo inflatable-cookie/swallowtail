@@ -3,7 +3,39 @@ use crate::failure::{failure, malformed};
 use serde_json::Value;
 use swallowtail_runtime::RuntimeFailure;
 
-include!("sse/decoder.rs");
+pub(crate) use swallowtail_transport_http::SseFrame;
+
+/// OpenAI Responses event decoder over the shared bounded SSE framer.
+///
+/// The shared decoder owns framing, delimiters, bounds, and zeroized frame
+/// storage; this wrapper keeps OpenAI's own failure codes and the rule that a
+/// frame carrying data but no event name is malformed.
+#[derive(Default)]
+pub(crate) struct SseDecoder(swallowtail_transport_http::SseDecoder);
+
+impl SseDecoder {
+    pub(crate) fn push(&mut self, chunk: &[u8]) -> Result<Vec<SseFrame>, RuntimeFailure> {
+        self.0.push(chunk).map_err(map_sse_failure)
+    }
+
+    pub(crate) fn finish(self) -> Result<(), RuntimeFailure> {
+        self.0.finish().map_err(map_sse_failure)
+    }
+}
+
+fn map_sse_failure(error: swallowtail_transport_http::SseDecodeError) -> RuntimeFailure {
+    match error.kind() {
+        swallowtail_transport_http::SseDecodeErrorKind::InvalidUtf8 => malformed(),
+        swallowtail_transport_http::SseDecodeErrorKind::LimitExceeded => failure(
+            "swallowtail.openai.sse_limit",
+            "OpenAI Responses SSE event exceeded its input limit",
+        ),
+        swallowtail_transport_http::SseDecodeErrorKind::IncompleteFrame => failure(
+            "swallowtail.openai.sse_disconnected",
+            "OpenAI Responses SSE disconnected during an event",
+        ),
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub(crate) enum ProviderEvent {
@@ -51,8 +83,9 @@ impl BackgroundStream {
     }
 
     pub(crate) fn apply(&mut self, frame: &SseFrame) -> Result<ProviderEvent, RuntimeFailure> {
-        let value: Value = serde_json::from_slice(&frame.data).map_err(|_| malformed())?;
-        if value.get("type").and_then(Value::as_str) != Some(frame.name.as_str()) {
+        let name = frame.name().ok_or_else(malformed)?;
+        let value: Value = serde_json::from_slice(frame.data()).map_err(|_| malformed())?;
+        if value.get("type").and_then(Value::as_str) != Some(name) {
             return Err(protocol_order_failure());
         }
         let sequence = value
@@ -66,7 +99,7 @@ impl BackgroundStream {
             return Err(protocol_order_failure());
         }
 
-        let event = match frame.name.as_str() {
+        let event = match name {
             "response.created" => {
                 if self.response_id.is_some() || self.phase != StreamPhase::Start {
                     return Err(protocol_order_failure());

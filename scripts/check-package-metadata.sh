@@ -86,7 +86,9 @@ release_assert "feature sets" \
        .name == "swallowtail-adapter-qwen") and
       .features == {"live-probes":[]} or
       (.name == "swallowtail-host-local" and
-       .features == {"mediated-stdio-proxy":[]})
+       .features == {"mediated-stdio-proxy":[]}) or
+      (.name == "swallowtail-acp-client" and
+       .features == {"remote":["dep:swallowtail-transport-acp-remote"]})
     )
   )'
 release_assert "target kinds and required features" \

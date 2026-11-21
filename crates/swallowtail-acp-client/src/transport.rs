@@ -1,6 +1,7 @@
 use crate::diagnostics::AcpDiagnostics;
 use serde_json::Value;
 use std::sync::Arc;
+#[cfg(feature = "remote")]
 use swallowtail_core::SafeDiagnostic;
 use swallowtail_protocol_acp::{
     FramingLimits, Message, NdjsonDecoder, encode_error, encode_notification, encode_request,
@@ -9,6 +10,7 @@ use swallowtail_protocol_acp::{
 use swallowtail_runtime::{
     CleanupOutcome, ProcessHandle, ProcessInputChunk, ProcessOutputStream, RuntimeFailure,
 };
+#[cfg(feature = "remote")]
 use swallowtail_transport_acp_remote::{RemoteAcpConnection, RemoteAcpError, RemoteAcpSender};
 
 /// Physical transport backing an [`crate::AcpConnection`].
@@ -21,6 +23,7 @@ pub enum AcpTransport {
         framing_limits: FramingLimits,
     },
     /// Host-authorized remote ACP HTTP/SSE or WebSocket transport.
+    #[cfg(feature = "remote")]
     Remote {
         /// Full-duplex remote ACP transport connection.
         connection: Box<RemoteAcpConnection>,
@@ -38,6 +41,9 @@ impl AcpTransport {
     }
 
     /// Creates a remote ACP transport from a connected [`RemoteAcpConnection`].
+    ///
+    /// Available only with the `remote` feature.
+    #[cfg(feature = "remote")]
     #[must_use]
     pub fn remote(connection: RemoteAcpConnection) -> Self {
         Self::Remote {
@@ -57,6 +63,7 @@ impl AcpTransport {
                     decoder: NdjsonDecoder::new(framing_limits),
                 },
             ),
+            #[cfg(feature = "remote")]
             Self::Remote { connection } => {
                 let sender = connection.sender();
                 (
@@ -70,6 +77,7 @@ impl AcpTransport {
 
 pub(crate) enum AcpTransportWriter {
     Stdio(Arc<dyn ProcessHandle>),
+    #[cfg(feature = "remote")]
     Remote(RemoteAcpSender),
 }
 
@@ -87,6 +95,7 @@ impl AcpTransportWriter {
                     .map_err(|_| (diagnostics.protocol_failure)())?;
                 process.write_stdin(ProcessInputChunk::new(bytes)).await
             }
+            #[cfg(feature = "remote")]
             Self::Remote(sender) => sender
                 .send(Message::Request {
                     id: Value::from(id),
@@ -110,6 +119,7 @@ impl AcpTransportWriter {
                     .map_err(|_| (diagnostics.protocol_failure)())?;
                 process.write_stdin(ProcessInputChunk::new(bytes)).await
             }
+            #[cfg(feature = "remote")]
             Self::Remote(sender) => sender
                 .send(Message::Notification {
                     method: method.to_owned(),
@@ -132,6 +142,7 @@ impl AcpTransportWriter {
                     encode_result(id, result).map_err(|_| (diagnostics.protocol_failure)())?;
                 process.write_stdin(ProcessInputChunk::new(bytes)).await
             }
+            #[cfg(feature = "remote")]
             Self::Remote(sender) => sender
                 .send(Message::Response {
                     id,
@@ -155,6 +166,7 @@ impl AcpTransportWriter {
                     .map_err(|_| (diagnostics.protocol_failure)())?;
                 process.write_stdin(ProcessInputChunk::new(bytes)).await
             }
+            #[cfg(feature = "remote")]
             Self::Remote(sender) => {
                 let bytes = encode_error(id, code, message)
                     .map_err(|_| (diagnostics.protocol_failure)())?;
@@ -171,6 +183,7 @@ impl AcpTransportWriter {
                 let _ = process.close_stdin().await;
                 let _ = process.request_stop().await;
             }
+            #[cfg(feature = "remote")]
             Self::Remote(sender) => {
                 sender.request_close().await;
             }
@@ -180,6 +193,7 @@ impl AcpTransportWriter {
     pub(crate) async fn force_stop(&self) -> Result<(), RuntimeFailure> {
         match self {
             Self::Stdio(process) => process.force_stop().await,
+            #[cfg(feature = "remote")]
             Self::Remote(sender) => sender.cancel().await.map_err(remote_error_to_runtime),
         }
     }
@@ -190,6 +204,7 @@ pub(crate) enum AcpTransportReader {
         process: Arc<dyn ProcessHandle>,
         decoder: NdjsonDecoder,
     },
+    #[cfg(feature = "remote")]
     Remote {
         connection: Box<RemoteAcpConnection>,
     },
@@ -219,6 +234,7 @@ impl AcpTransportReader {
                     Err(error) => return Err(("acp.pump.read", error)),
                 }
             },
+            #[cfg(feature = "remote")]
             Self::Remote { connection } => match connection.next_event().await {
                 Some(Ok(message)) => Ok(ReadStep::Messages(vec![message])),
                 Some(Err(error)) => Err(("acp.pump.read", remote_error_to_runtime(error))),
@@ -248,6 +264,7 @@ impl AcpTransportReader {
                 };
                 (finish_error, cleanup)
             }
+            #[cfg(feature = "remote")]
             Self::Remote { connection } => {
                 let cleanup = connection.close().await;
                 (None, cleanup)
@@ -256,6 +273,7 @@ impl AcpTransportReader {
     }
 }
 
+#[cfg(feature = "remote")]
 fn remote_error_to_runtime(error: RemoteAcpError) -> RuntimeFailure {
     RuntimeFailure::new(SafeDiagnostic::new(
         error.diagnostic().code(),

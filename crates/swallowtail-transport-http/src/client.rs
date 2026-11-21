@@ -172,6 +172,16 @@ fn configure(
             easy.post_fields_copy(request.body().unwrap_or_default())
                 .map_err(|_| TransportError::Transport)?;
         }
+        method @ (Method::Put | Method::Patch) => {
+            // `post_fields_copy` implies POST upload semantics, so the exact
+            // verb is applied afterwards and keeps its own request line.
+            easy.post_fields_copy(request.body().unwrap_or_default())
+                .map_err(|_| TransportError::Transport)?;
+            if let Some(verb) = method.curl_verb() {
+                easy.custom_request(verb)
+                    .map_err(|_| TransportError::Transport)?;
+            }
+        }
         method => {
             if let Some(verb) = method.curl_verb() {
                 easy.custom_request(verb)

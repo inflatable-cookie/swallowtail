@@ -887,3 +887,158 @@ fn active_turn_finish_with_status_and_emit_event() {
     assert_eq!(collected[0].sequence(), 0);
     assert_eq!(collected[1].sequence(), 1);
 }
+
+#[test]
+fn active_turn_serializes_concurrent_updates_and_terminal_completion() {
+    use crate::{AcpTurnSink, ActiveTurn, ActiveTurnConfig};
+    use std::sync::Barrier;
+
+    for iteration in 0..16 {
+        let (turn, events, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new(format!("turn-race-{iteration}")).expect("valid turn id"),
+            "sess-race".to_owned(),
+            ActiveTurnConfig::new(test_diagnostics()),
+        )
+        .expect("turn creates");
+
+        let barrier = Arc::new(Barrier::new(3));
+        let updater = {
+            let turn = Arc::clone(&turn);
+            let barrier = Arc::clone(&barrier);
+            std::thread::spawn(move || {
+                barrier.wait();
+                for chunk in 0..32 {
+                    let params = json!({
+                        "sessionId": "sess-race",
+                        "update": {
+                            "sessionUpdate": "agent_message_chunk",
+                            "content": { "type": "text", "text": format!("c{chunk}-") }
+                        }
+                    });
+                    let _ = turn.handle_update(&params);
+                }
+            })
+        };
+        let finisher = {
+            let turn = Arc::clone(&turn);
+            let barrier = Arc::clone(&barrier);
+            std::thread::spawn(move || {
+                barrier.wait();
+                turn.finish_prompt("end_turn");
+            })
+        };
+        barrier.wait();
+        updater.join().expect("updater thread joins");
+        finisher.join().expect("finisher thread joins");
+
+        let outcome = block_on(terminal);
+        assert_eq!(outcome.status(), &TerminalStatus::Completed);
+
+        let collected: Vec<_> = futures_executor::block_on_stream(events)
+            .map(|event| event.expect("runtime event must stay strictly ordered"))
+            .collect();
+        assert!(!collected.is_empty());
+        for (expected, event) in collected.iter().enumerate() {
+            assert_eq!(
+                event.sequence(),
+                expected as u64,
+                "events must have contiguous monotonic sequence numbers without post-terminal races"
+            );
+        }
+    }
+}
+
+#[test]
+fn reject_permission_forwards_tool_call_id_to_turn_sink() {
+    use crate::{AcpConnection, AcpTransport, AcpTurnSink, StandardAcpHooks};
+    use serde_json::Value;
+    use std::sync::Mutex;
+    use swallowtail_runtime::ProviderRequestObservation;
+
+    struct RecordingTurn {
+        session_id: String,
+        recorded_tool_call_id: Mutex<Option<String>>,
+    }
+
+    impl AcpTurnSink for RecordingTurn {
+        fn session_id(&self) -> &str {
+            &self.session_id
+        }
+
+        fn is_finished(&self) -> bool {
+            false
+        }
+
+        fn mark_cancelled(&self) {}
+
+        fn observe_permission(
+            &self,
+            _provider_request_id: &Value,
+        ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+            panic!("observe_permission_with_tool_call must be invoked")
+        }
+
+        fn observe_permission_with_tool_call(
+            &self,
+            _provider_request_id: &Value,
+            tool_call_id: &str,
+        ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+            *self
+                .recorded_tool_call_id
+                .lock()
+                .expect("tool call lock poisoned") = Some(tool_call_id.to_owned());
+            Ok(ProviderRequestObservation::new(
+                swallowtail_runtime::CallbackId::new("turn:permission:1").expect("valid id"),
+                crate::default_permission_namespace(),
+                swallowtail_core::ProviderRequestRef::new("acp:7").expect("valid ref"),
+            ))
+        }
+
+        fn handle_update(&self, _params: &Value) -> Result<(), RuntimeFailure> {
+            Ok(())
+        }
+
+        fn finish_prompt(&self, _stop_reason: &str) {}
+
+        fn fail(&self, _error: &RuntimeFailure) {}
+    }
+
+    let process = EofProcess::new();
+    let connection = AcpConnection::new(
+        AcpTransport::stdio(
+            process as Arc<dyn ProcessHandle>,
+            FramingLimits::new(DEFAULT_MAX_FRAME_BYTES, DEFAULT_MAX_BUFFER_BYTES),
+        ),
+        HostServices::new(ExecutionHostId::new("test-host").expect("valid host id")),
+        test_diagnostics(),
+        Arc::new(StandardAcpHooks),
+    );
+    connection
+        .set_session_id("sess-perm".to_owned())
+        .expect("session binds");
+    let turn = Arc::new(RecordingTurn {
+        session_id: "sess-perm".to_owned(),
+        recorded_tool_call_id: Mutex::new(None),
+    });
+    connection
+        .set_active_turn(Arc::clone(&turn) as Arc<dyn AcpTurnSink>)
+        .expect("active turn registers");
+
+    block_on(connection.reject_permission(
+        json!(7),
+        &json!({
+            "sessionId": "sess-perm",
+            "toolCall": { "toolCallId": "call-42" },
+            "options": []
+        }),
+    ))
+    .expect("reject_permission succeeds");
+
+    assert_eq!(
+        turn.recorded_tool_call_id
+            .lock()
+            .expect("tool call lock poisoned")
+            .as_deref(),
+        Some("call-42")
+    );
+}

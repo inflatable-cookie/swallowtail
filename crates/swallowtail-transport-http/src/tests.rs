@@ -887,3 +887,88 @@ fn external_stream_cancellation_reports_cancelled_transport_error() {
         .expect("Subscription::close treats TransportError::Cancelled as Ok(())");
     drop(close_release_tx);
 }
+
+#[test]
+fn subscription_poll_next_drives_lazy_blocking_work_service_without_deadlock() {
+    struct LazyThreadedBlocking {
+        started: Arc<AtomicBool>,
+    }
+
+    impl BlockingWorkService for LazyThreadedBlocking {
+        fn run(
+            &self,
+            _scope: ScopeId,
+            job: BlockingJob,
+        ) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let started = Arc::clone(&self.started);
+            // Do not spawn the blocking thread until the returned future is polled.
+            Box::pin(async move {
+                started.store(true, Ordering::SeqCst);
+                let (sender, receiver) = result_channel();
+                thread::spawn(move || {
+                    let _ = sender.send(job());
+                });
+                receiver.recv().await.ok_or_else(|| {
+                    RuntimeFailure::new(SafeDiagnostic::new(
+                        "fixture.lazy_blocking_panicked",
+                        "Fixture lazy blocking work panicked",
+                    ))
+                })?
+            })
+        }
+    }
+
+    let endpoint = serve(|mut stream| {
+        read_request(&mut stream);
+        write_all(
+            &mut stream,
+            b"HTTP/1.1 200 OK\r\n\r\nevent: delta\ndata: lazy-1\n\nevent: delta\ndata: lazy-2\n\n",
+        );
+    });
+    let started = Arc::new(AtomicBool::new(false));
+    let lazy_services = HostServices::new(
+        ExecutionHostId::new("transport-lazy-fixture").expect("fixture host id is valid"),
+    )
+    .with_blocking_work(Arc::new(LazyThreadedBlocking {
+        started: Arc::clone(&started),
+    }));
+
+    let mut subscription = HttpTransport::new()
+        .subscribe(
+            scope(),
+            &endpoint,
+            HttpRequest::new(Method::Get, "/events"),
+            SseDecoder::new(),
+            &lazy_services,
+            cancelled(),
+        )
+        .expect("lazy subscription starts");
+    assert!(
+        !started.load(Ordering::SeqCst),
+        "lazy BlockingWorkService must not start before poll_next"
+    );
+
+    let items = futures_executor::block_on(async {
+        let mut items = Vec::new();
+        while let Some(item) =
+            futures_util::future::poll_fn(|context| subscription.poll_next(context)).await
+        {
+            items.push(item.expect("stream item decodes"));
+        }
+        items
+    });
+
+    assert!(
+        started.load(Ordering::SeqCst),
+        "poll_next must poll and drive the lazy worker future"
+    );
+    assert_eq!(items.len(), 2);
+    assert!(matches!(
+        &items[0],
+        StreamItem::Body(frame) if frame.data() == b"lazy-1"
+    ));
+    assert!(matches!(
+        &items[1],
+        StreamItem::Body(frame) if frame.data() == b"lazy-2"
+    ));
+}

@@ -246,3 +246,65 @@ fn encoder_produces_qualified_lf_terminated_commands() {
     }
     assert_eq!(ids.len(), 10);
 }
+
+#[test]
+fn one_mib_png_prompt_command_round_trips_within_outbound_bound() {
+    use super::PiSdkSidecarDecoder;
+    use base64::Engine;
+
+    let mut png = vec![0x5a_u8; 1024 * 1024];
+    png[..8].copy_from_slice(b"\x89PNG\r\n\x1a\n");
+    let encoded = base64::engine::general_purpose::STANDARD.encode(&png);
+    assert!(
+        encoded.len() > 1024 * 1024,
+        "base64-encoded 1 MiB PNG exceeds 1 MiB"
+    );
+
+    let wire_bytes = encode_command(
+        "c-png-1mib",
+        PiSdkSidecarCommand::Prompt,
+        serde_json::json!({
+            "text": "describe this image",
+            "images": [{ "data": encoded, "mimeType": "image/png" }],
+        }),
+    )
+    .expect("1 MiB PNG prompt must fit within the outbound command record bound");
+    assert_eq!(wire_bytes.last(), Some(&b'\n'));
+    assert!(wire_bytes.len() <= 2 * 1024 * 1024);
+
+    let parsed: serde_json::Value =
+        serde_json::from_slice(&wire_bytes[..wire_bytes.len() - 1]).expect("valid JSON");
+    assert_eq!(parsed["command"], "prompt");
+    let round_tripped_b64 = parsed["params"]["images"][0]["data"]
+        .as_str()
+        .expect("image base64 data present");
+    let decoded = base64::engine::general_purpose::STANDARD
+        .decode(round_tripped_b64)
+        .expect("base64 decodes");
+    assert_eq!(decoded, png);
+
+    // Outbound commands above 2 MiB still fail closed.
+    let oversized_err = encode_command(
+        "c-too-large",
+        PiSdkSidecarCommand::Prompt,
+        serde_json::json!({ "text": "x".repeat(2 * 1024 * 1024) }),
+    )
+    .expect_err("outbound command above 2 MiB must fail");
+    assert_eq!(
+        oversized_err.kind(),
+        PiSdkSidecarProtocolFailureKind::RecordTooLarge
+    );
+
+    // Inbound response/event records remain bounded at 1 MiB.
+    let mut decoder = PiSdkSidecarDecoder::new();
+    let mut oversized_inbound = vec![b'x'; 1024 * 1024 + 1];
+    oversized_inbound.push(b'\n');
+    let inbound_err = decoder
+        .push(&oversized_inbound)
+        .err()
+        .expect("inbound record above 1 MiB must fail");
+    assert_eq!(
+        inbound_err.kind(),
+        PiSdkSidecarProtocolFailureKind::RecordTooLarge
+    );
+}

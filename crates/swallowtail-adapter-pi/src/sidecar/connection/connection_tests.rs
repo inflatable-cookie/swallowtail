@@ -160,8 +160,8 @@ fn a_record_that_cannot_be_encoded_leaves_no_pending_slot() {
     let stdin_closed = Arc::new(AtomicBool::new(false));
     let stop_requested = Arc::new(AtomicBool::new(false));
     let connection = silent_connection(&stdin_closed, &stop_requested);
-    // One record larger than the protocol's maximum cannot be encoded.
-    let oversized = serde_json::json!({"blob": "x".repeat(1024 * 1024 + 1)});
+    // One record larger than the protocol's outbound command maximum cannot be encoded.
+    let oversized = serde_json::json!({"blob": "x".repeat(2 * 1024 * 1024 + 1)});
 
     for index in 0..(MAXIMUM_PENDING_COMMANDS + 4) {
         let result = futures_executor::block_on(connection.command(

@@ -46,6 +46,7 @@ const QUALIFIED_SDK_VERSIONS = new Set([
 const NODE_FLOOR = [22, 19, 0];
 
 const MAXIMUM_RECORD_BYTES = 1024 * 1024;
+const MAXIMUM_COMMAND_RECORD_BYTES = 2 * 1024 * 1024;
 const MAXIMUM_COMMAND_ID_BYTES = 128;
 const MAXIMUM_PENDING_COMMANDS = 16;
 const MAXIMUM_REPLAY_ITEMS = 1024;
@@ -864,7 +865,7 @@ function validCommandId(id) {
 }
 
 function handleLine(line) {
-  if (line.length > MAXIMUM_RECORD_BYTES) {
+  if (line.length > MAXIMUM_COMMAND_RECORD_BYTES) {
     return terminal("record_too_large");
   }
   if (line.length === 0) {
@@ -904,7 +905,7 @@ process.stdin.on("data", (chunk) => {
     void handleLine(line);
     end = buffer.indexOf("\n");
   }
-  if (buffer.length > MAXIMUM_RECORD_BYTES) {
+  if (buffer.length > MAXIMUM_COMMAND_RECORD_BYTES) {
     void terminal("record_too_large");
   }
 });

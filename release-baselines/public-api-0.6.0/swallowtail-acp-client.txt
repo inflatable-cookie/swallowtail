@@ -171,6 +171,7 @@ pub fn swallowtail_acp_client::ActiveTurn::handle_update(&self, &serde_json::val
 pub fn swallowtail_acp_client::ActiveTurn::is_finished(&self) -> bool
 pub fn swallowtail_acp_client::ActiveTurn::mark_cancelled(&self)
 pub fn swallowtail_acp_client::ActiveTurn::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::observe_permission_with_tool_call(&self, &serde_json::value::Value, &str) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_acp_client::ActiveTurn::session_id(&self) -> &str
 pub struct swallowtail_acp_client::ActiveTurnConfig
 pub swallowtail_acp_client::ActiveTurnConfig::auth_required_stop: core::option::Option<fn() -> swallowtail_core::diagnostic::SafeDiagnostic>
@@ -232,6 +233,7 @@ pub fn swallowtail_acp_client::AcpTurnSink::handle_update(&self, &serde_json::va
 pub fn swallowtail_acp_client::AcpTurnSink::is_finished(&self) -> bool
 pub fn swallowtail_acp_client::AcpTurnSink::mark_cancelled(&self)
 pub fn swallowtail_acp_client::AcpTurnSink::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::AcpTurnSink::observe_permission_with_tool_call(&self, &serde_json::value::Value, &str) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_acp_client::AcpTurnSink::session_id(&self) -> &str
 impl swallowtail_acp_client::AcpTurnSink for swallowtail_acp_client::ActiveTurn
 pub fn swallowtail_acp_client::ActiveTurn::fail(&self, &swallowtail_runtime::failure::RuntimeFailure)
@@ -240,6 +242,7 @@ pub fn swallowtail_acp_client::ActiveTurn::handle_update(&self, &serde_json::val
 pub fn swallowtail_acp_client::ActiveTurn::is_finished(&self) -> bool
 pub fn swallowtail_acp_client::ActiveTurn::mark_cancelled(&self)
 pub fn swallowtail_acp_client::ActiveTurn::observe_permission(&self, &serde_json::value::Value) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
+pub fn swallowtail_acp_client::ActiveTurn::observe_permission_with_tool_call(&self, &serde_json::value::Value, &str) -> core::result::Result<swallowtail_runtime::outcome::ProviderRequestObservation, swallowtail_runtime::failure::RuntimeFailure>
 pub fn swallowtail_acp_client::ActiveTurn::session_id(&self) -> &str
 pub fn swallowtail_acp_client::default_permission_namespace() -> swallowtail_core::event::ExtensionNamespace
 pub async fn swallowtail_acp_client::open_acp_session<F, Fut>(swallowtail_acp_client::AcpTransport, swallowtail_acp_client::AcpSessionOpenContext, F) -> core::result::Result<swallowtail_acp_client::AcpSessionHandle, alloc::boxed::Box<(swallowtail_runtime::failure::RuntimeFailure, swallowtail_runtime::host_traits::ResourceLease)>> where F: core::ops::function::FnOnce(alloc::sync::Arc<swallowtail_acp_client::AcpConnection>) -> Fut, Fut: core::future::future::Future<Output = core::result::Result<alloc::string::String, swallowtail_runtime::failure::RuntimeFailure>>

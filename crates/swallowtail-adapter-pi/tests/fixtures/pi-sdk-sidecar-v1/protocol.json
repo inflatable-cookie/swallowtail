@@ -106,6 +106,7 @@
   },
   "bounds": {
     "record_bytes": 1048576,
+    "command_record_bytes": 2097152,
     "command_id_bytes": 128,
     "pending_commands": 16,
     "replay_items": 1024,

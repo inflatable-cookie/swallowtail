@@ -164,6 +164,14 @@ impl AcpTurnSink for ActiveTurn {
         self.observe_permission(provider_request_id, "")
     }
 
+    fn observe_permission_with_tool_call(
+        &self,
+        provider_request_id: &Value,
+        tool_call_id: &str,
+    ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+        self.observe_permission(provider_request_id, tool_call_id)
+    }
+
     fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure> {
         self.handle_update(params)
     }

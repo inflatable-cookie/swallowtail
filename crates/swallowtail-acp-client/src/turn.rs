@@ -4,7 +4,7 @@ use crate::diagnostics::{AcpDiagnostics, StopReasonPolicy, UsageProgressPolicy};
 use serde_json::{Value, json};
 use std::sync::{
     Arc, Mutex,
-    atomic::{AtomicBool, AtomicU64, Ordering},
+    atomic::{AtomicBool, Ordering},
 };
 use swallowtail_core::{CancellationScope, ProviderRequestRef, SafeDiagnostic, TurnRef};
 use swallowtail_protocol_acp::{AcpMessageRole, AcpSessionUpdate};
@@ -37,6 +37,17 @@ pub trait AcpTurnSink: Send + Sync {
         &self,
         provider_request_id: &Value,
     ) -> Result<ProviderRequestObservation, RuntimeFailure>;
+
+    /// Records a rejected/observed provider permission request with its ACP `toolCallId`.
+    ///
+    /// Defaults to delegating to [`Self::observe_permission`].
+    fn observe_permission_with_tool_call(
+        &self,
+        provider_request_id: &Value,
+        _tool_call_id: &str,
+    ) -> Result<ProviderRequestObservation, RuntimeFailure> {
+        self.observe_permission(provider_request_id)
+    }
 
     /// Handles one `session/update` notification parameter payload.
     fn handle_update(&self, params: &Value) -> Result<(), RuntimeFailure>;
@@ -112,14 +123,64 @@ impl ActiveTurnConfig {
     }
 }
 
+struct EventEmission {
+    next_sequence: u64,
+    terminal: bool,
+    events: RuntimeEventSender,
+}
+
+impl EventEmission {
+    fn emit(
+        &mut self,
+        kind: RuntimeEventKind,
+        content: Option<OperationContent>,
+    ) -> Result<(), RuntimeFailure> {
+        if self.terminal {
+            return Ok(());
+        }
+        let sequence = self.next_sequence;
+        let event = match content {
+            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
+            None => RuntimeEvent::new(sequence, kind),
+        };
+        self.next_sequence = sequence + 1;
+        self.events.send(event)
+    }
+
+    fn emit_with<F>(&mut self, build: F) -> Result<(), RuntimeFailure>
+    where
+        F: FnOnce(u64) -> Result<RuntimeEventKind, RuntimeFailure>,
+    {
+        if self.terminal {
+            return Ok(());
+        }
+        let sequence = self.next_sequence;
+        let kind = build(sequence)?;
+        self.next_sequence = sequence + 1;
+        self.events.send(RuntimeEvent::new(sequence, kind))
+    }
+
+    fn allocate_sequence(&mut self) -> u64 {
+        let sequence = self.next_sequence;
+        self.next_sequence = sequence + 1;
+        sequence
+    }
+
+    fn mark_terminal(&mut self) {
+        if !self.terminal {
+            self.terminal = true;
+            self.events.mark_terminal();
+        }
+    }
+}
+
 /// Shared active turn state for standard ACP v1 adapters.
 pub struct ActiveTurn {
     config: ActiveTurnConfig,
     runtime_id: RuntimeTurnId,
     session_id: String,
-    events: RuntimeEventSender,
+    emission: Mutex<EventEmission>,
     terminal: TerminalOutcomeSender,
-    sequence: AtomicU64,
     output: Mutex<String>,
     activity: Mutex<AcpActivityProjection>,
     provider_observation: Mutex<Option<ProviderRequestObservation>>,
@@ -142,9 +203,12 @@ impl ActiveTurn {
                 config,
                 runtime_id: runtime_id.clone(),
                 session_id,
-                events,
+                emission: Mutex::new(EventEmission {
+                    next_sequence: 1,
+                    terminal: false,
+                    events,
+                }),
                 terminal,
-                sequence: AtomicU64::new(1),
                 output: Mutex::new(String::new()),
                 activity: Mutex::new(AcpActivityProjection::new(
                     runtime_id,
@@ -175,36 +239,46 @@ impl ActiveTurn {
     where
         F: FnOnce(u64) -> Result<RuntimeEventKind, RuntimeFailure>,
     {
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let kind = build(sequence)?;
-        self.events.send(RuntimeEvent::new(sequence, kind))
+        self.emission
+            .lock()
+            .expect("turn event emission lock poisoned")
+            .emit_with(build)
     }
 
     fn finish(&self, status: TerminalStatus) {
         if self.finished.swap(true, Ordering::SeqCst) {
             return;
         }
-        if let Ok(observations) = self
+        let observations = self
             .activity
             .lock()
             .expect("turn activity lock poisoned")
             .complete(&status)
-        {
-            for observation in observations {
-                let _ = self.emit(RuntimeEventKind::Activity(observation), None);
-            }
-        }
+            .ok()
+            .unwrap_or_default();
         let output = self
             .output
             .lock()
             .expect("turn output lock poisoned")
             .clone();
         let mut outcome = TerminalOutcome::new(status, CleanupOutcome::NotApplicable);
-        if let Ok(content) = OperationContent::new(output) {
-            let _ = self.emit(RuntimeEventKind::OutputAvailable, Some(content.clone()));
-            outcome = outcome.with_output(content);
+        let output_content = OperationContent::new(output).ok();
+        if let Some(content) = &output_content {
+            outcome = outcome.with_output(content.clone());
         }
-        self.events.mark_terminal();
+        {
+            let mut emission = self
+                .emission
+                .lock()
+                .expect("turn event emission lock poisoned");
+            for observation in observations {
+                let _ = emission.emit(RuntimeEventKind::Activity(observation), None);
+            }
+            if let Some(content) = output_content {
+                let _ = emission.emit(RuntimeEventKind::OutputAvailable, Some(content));
+            }
+            emission.mark_terminal();
+        }
         let _ = self.terminal.complete(outcome);
     }
 
@@ -230,12 +304,10 @@ impl ActiveTurn {
         kind: RuntimeEventKind,
         content: Option<OperationContent>,
     ) -> Result<(), RuntimeFailure> {
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
-        let event = match content {
-            Some(content) => RuntimeEvent::with_content(sequence, kind, content),
-            None => RuntimeEvent::new(sequence, kind),
-        };
-        self.events.send(event)
+        self.emission
+            .lock()
+            .expect("turn event emission lock poisoned")
+            .emit(kind, content)
     }
 
     fn verify_session(&self, session_id: &str) -> Result<(), RuntimeFailure> {
@@ -265,7 +337,11 @@ impl AcpTurnSink for ActiveTurn {
         provider_request_id: &Value,
     ) -> Result<ProviderRequestObservation, RuntimeFailure> {
         let malformed = self.config.diagnostics.malformed;
-        let sequence = self.sequence.fetch_add(1, Ordering::SeqCst);
+        let sequence = self
+            .emission
+            .lock()
+            .expect("turn event emission lock poisoned")
+            .allocate_sequence();
         let callback_id = CallbackId::new(format!(
             "{}:permission:{sequence}",
             self.runtime_id.as_str()

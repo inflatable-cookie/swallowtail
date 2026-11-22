@@ -174,6 +174,61 @@ fn wait_for_exit_bounds_hanging_wait_by_deadline() {
     assert!(matches!(signal, ExitSignal::TimedOut));
 }
 
+struct HangingStopProcess {
+    hang_graceful: bool,
+}
+
+impl ProcessHandle for HangingStopProcess {
+    fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        Box::pin(async { Ok(()) })
+    }
+
+    fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+        Box::pin(async { Ok(None) })
+    }
+
+    fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        if self.hang_graceful {
+            Box::pin(std::future::pending())
+        } else {
+            Box::pin(async { Ok(()) })
+        }
+    }
+
+    fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+        if self.hang_graceful {
+            Box::pin(async { Ok(()) })
+        } else {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+        Box::pin(std::future::pending())
+    }
+}
+
+struct HangingStopProcessService {
+    hang_graceful: bool,
+}
+
+impl ProcessService for HangingStopProcessService {
+    fn start(
+        &self,
+        _scope: ScopeId,
+        _request: ProcessRequest,
+    ) -> BoxFuture<'static, Result<Box<dyn ProcessHandle>, RuntimeFailure>> {
+        let hang_graceful = self.hang_graceful;
+        Box::pin(async move {
+            Ok(Box::new(HangingStopProcess { hang_graceful }) as Box<dyn ProcessHandle>)
+        })
+    }
+}
+
 #[test]
 fn probe_process_bounds_hanging_wait_through_teardown_and_reports_cleanup_failed() {
     let host_id = ExecutionHostId::new("codex.discovery.teardown-test").expect("host id is valid");
@@ -196,4 +251,31 @@ fn probe_process_bounds_hanging_wait_through_teardown_and_reports_cleanup_failed
     let result = futures_executor::block_on(probe_process(request, services, claim))
         .expect("probe returns bounded outcome instead of hanging");
     assert_eq!(result.status(), DiscoveryStatus::CleanupFailed);
+}
+
+#[test]
+fn probe_process_bounds_hanging_stop_requests_through_teardown() {
+    for hang_graceful in [true, false] {
+        let host_id =
+            ExecutionHostId::new("codex.discovery.stop-hang-test").expect("host id is valid");
+        let services = HostServices::new(host_id.clone())
+            .with_time(Arc::new(ImmediateTime))
+            .with_process(Arc::new(HangingStopProcessService { hang_graceful }));
+        let axis = InterfaceVersionAxis::new(CODEX_CLI_AXIS).expect("axis is valid");
+        let request = InstalledExecutableDiscoveryRequest::new(
+            RequestId::new("codex.discovery.stop-hang-req").expect("request id is valid"),
+            ScopeId::new("codex.discovery.stop-hang-scope").expect("scope is valid"),
+            host_id,
+            InstalledExecutableTarget::new(
+                ExecutableRef::new("codex.fixture").expect("executable ref is valid"),
+                axis,
+            ),
+            Deadline::at(MonotonicInstant::from_ticks(20)),
+            DiscoveryCancellation::new(),
+        );
+        let claim = crate::selection::codex_exec_claim();
+        let result = futures_executor::block_on(probe_process(request, services, claim))
+            .expect("probe returns bounded outcome instead of hanging on pending stop");
+        assert_eq!(result.status(), DiscoveryStatus::CleanupFailed);
+    }
 }

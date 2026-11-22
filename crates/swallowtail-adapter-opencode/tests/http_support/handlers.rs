@@ -93,9 +93,7 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             );
         } else if path.contains("before=") {
             if matches!(fixture, StreamFixture::HoldHistoryPage) {
-                while !stop.load(Ordering::SeqCst) {
-                    thread::sleep(Duration::from_millis(5));
-                }
+                delete_gate.mark_dispatched_and_wait_for_release();
                 return;
             }
             respond_json(
@@ -149,7 +147,10 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
             _ => respond_json(&mut stream, 200, "true"),
         }
     } else if path.contains("/prompt_async?") {
-        if matches!(fixture, StreamFixture::HoldPromptAndAbort) {
+        if matches!(
+            fixture,
+            StreamFixture::HoldPromptAndAbort | StreamFixture::HoldPromptAbortAndMalformedSse
+        ) {
             while !stop.load(Ordering::SeqCst) {
                 thread::sleep(Duration::from_millis(5));
             }
@@ -164,7 +165,10 @@ fn handle(mut stream: TcpStream, fixture: StreamFixture, state: HandleState, ser
         respond_json(&mut stream, 200, "true");
     } else if path.contains("/abort?") {
         aborted.store(true, Ordering::SeqCst);
-        if matches!(fixture, StreamFixture::HoldPromptAndAbort) {
+        if matches!(
+            fixture,
+            StreamFixture::HoldPromptAndAbort | StreamFixture::HoldPromptAbortAndMalformedSse
+        ) {
             while !stop.load(Ordering::SeqCst) {
                 thread::sleep(Duration::from_millis(5));
             }

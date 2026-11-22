@@ -21,13 +21,16 @@ impl AppServerActivityProjection {
         child_status: SubagentStatus,
     ) -> Result<ActivityObservation, RuntimeFailure> {
         let source_key = format!("child-turn:{}:{provider_turn_id}", child.as_str());
+        let identity = ItemIdentity::new(
+            ActivityKind::SubagentOrCollaboration,
+            None,
+            ActivityDisclosure::IdentityAndLifecycleOnly,
+        );
+        let active = !matches!(phase, ActivityLifecyclePhase::Completed);
+        self.track_item(&source_key, identity.clone(), None, active)?;
         self.observation(
             ActivitySource::new(&source_key, Some(provider_turn_id)),
-            ItemIdentity::new(
-                ActivityKind::SubagentOrCollaboration,
-                None,
-                ActivityDisclosure::IdentityAndLifecycleOnly,
-            ),
+            identity,
             phase,
             status,
             ObservationDetail::with_subagent(

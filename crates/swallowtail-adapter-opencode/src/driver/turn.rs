@@ -160,7 +160,7 @@ async fn pump_turn(pump: TurnPump) {
                     if let Err(error) =
                         events.send(RuntimeEvent::new(sequence, RuntimeEventKind::Progress))
                     {
-                        let abort = cancellation.request().await;
+                        let abort = cancellation.request_bounded().await;
                         break (
                             TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                             cleanup_from_result(abort.map(|_| ())),
@@ -175,7 +175,7 @@ async fn pump_turn(pump: TurnPump) {
                             RuntimeEventKind::OutputDelta,
                             content,
                         )) {
-                            let abort = cancellation.request().await;
+                            let abort = cancellation.request_bounded().await;
                             break (
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                                 cleanup_from_result(abort.map(|_| ())),
@@ -192,7 +192,7 @@ async fn pump_turn(pump: TurnPump) {
                             RuntimeEventKind::OutputAvailable,
                             content,
                         )) {
-                            let abort = cancellation.request().await;
+                            let abort = cancellation.request_bounded().await;
                             break (
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                                 cleanup_from_result(abort.map(|_| ())),
@@ -208,7 +208,7 @@ async fn pump_turn(pump: TurnPump) {
                             RuntimeEventKind::ReasoningProgress,
                             content,
                         )) {
-                            let abort = cancellation.request().await;
+                            let abort = cancellation.request_bounded().await;
                             break (
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                                 cleanup_from_result(abort.map(|_| ())),
@@ -231,7 +231,7 @@ async fn pump_turn(pump: TurnPump) {
                             diagnostic.message(),
                             "http.pump.map",
                         );
-                        let abort = cancellation.request().await;
+                        let abort = cancellation.request_bounded().await;
                         break (
                             TerminalStatus::RuntimeFailed(diagnostic),
                             cleanup_from_result(abort.map(|_| ())),
@@ -241,7 +241,7 @@ async fn pump_turn(pump: TurnPump) {
                         Some(current) => match current.checked_add_disjoint(observed) {
                             Some(total) => Some(total),
                             None => {
-                                let abort = cancellation.request().await;
+                                let abort = cancellation.request_bounded().await;
                                 break (
                                     TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
                                         "swallowtail.opencode.usage_overflow",
@@ -286,7 +286,7 @@ async fn pump_turn(pump: TurnPump) {
                 }
                 Ok(Event::ProviderRequest(provider)) => {
                     let Some(callbacks) = &callback_hub else {
-                        let abort = cancellation.request().await;
+                        let abort = cancellation.request_bounded().await;
                         break (
                             TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
                                 "swallowtail.opencode.provider_request_rejected",
@@ -306,7 +306,7 @@ async fn pump_turn(pump: TurnPump) {
                                 sequence,
                                 RuntimeEventKind::CallbackRequested(callback_id),
                             )) {
-                                let abort = cancellation.request().await;
+                                let abort = cancellation.request_bounded().await;
                                 break (
                                     TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                                     cleanup_from_result(abort.map(|_| ())),
@@ -315,7 +315,7 @@ async fn pump_turn(pump: TurnPump) {
                             sequence += 1;
                         }
                         Err(error) => {
-                            let abort = cancellation.request().await;
+                            let abort = cancellation.request_bounded().await;
                             break (
                                 TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                                 cleanup_from_result(abort.map(|_| ())),
@@ -325,7 +325,7 @@ async fn pump_turn(pump: TurnPump) {
                 }
                 Err(error) => {
                     emit_protocol_debug(&services, &error, "http.pump.decode");
-                    let abort = cancellation.request().await;
+                    let abort = cancellation.request_bounded().await;
                     break (
                         TerminalStatus::RuntimeFailed(error.diagnostic().clone()),
                         cleanup_from_result(abort.map(|_| ())),

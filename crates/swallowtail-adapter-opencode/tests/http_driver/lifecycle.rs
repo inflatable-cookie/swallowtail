@@ -117,6 +117,72 @@ fn held_prompt_async_and_abort_returns_prompt_timed_out_within_bounded_cleanup()
         started.elapsed() < Duration::from_secs(5),
         "bounded abort cleanup must not wait for the 120s transport timeout"
     );
+    let requests = server.requests();
+    assert!(
+        requests
+            .iter()
+            .any(|request| request.starts_with("POST ") && request.contains("/prompt_async?")),
+        "fixture must observe the held prompt_async POST: {requests:?}"
+    );
+    assert!(
+        requests
+            .iter()
+            .any(|request| request.starts_with("POST ") && request.contains("/abort?")),
+        "fixture must observe the concurrent held abort POST: {requests:?}"
+    );
+    assert_eq!(
+        block_on(close_session(session, &fixture)),
+        swallowtail_runtime::CleanupOutcome::Clean
+    );
+}
+
+#[test]
+fn early_pump_decode_error_during_held_prompt_uses_bounded_abort() {
+    let server = FixtureServer::start(StreamFixture::HoldPromptAbortAndMalformedSse);
+    let fixture = Fixture::new(server.endpoint(), "host.prompt-pump-abort");
+    let driver = OpenCodeHttpDriver::new();
+    let mut session = block_on(driver.open_session(
+        fixture.plan(DriverRole::InteractiveSession),
+        open_session_request("prompt-pump-abort-session", fixture.resource.clone()),
+        fixture.services(),
+    ))
+    .expect("session opens");
+    let deadline = fixture.thread.deadline_after(Duration::from_millis(80));
+    let started = std::time::Instant::now();
+    let error = match block_on(
+        session.start_turn(
+            TurnRequest::new(
+                RuntimeTurnId::new("prompt-pump-abort-turn").expect("turn id is valid"),
+                OperationContent::new("held prompt").expect("content is valid"),
+            )
+            .with_deadline(deadline),
+            fixture.services(),
+        ),
+    ) {
+        Ok(_) => panic!("held prompt_async must time out even when pump claims abort first"),
+        Err(error) => error,
+    };
+    assert_eq!(
+        error.diagnostic().code(),
+        "swallowtail.opencode.prompt_timed_out"
+    );
+    assert!(
+        started.elapsed() < Duration::from_secs(5),
+        "pump-owned abort must use the bounded abort budget rather than blocking join for 120s"
+    );
+    let requests = server.requests();
+    assert!(
+        requests
+            .iter()
+            .any(|request| request.starts_with("POST ") && request.contains("/prompt_async?")),
+        "fixture must observe the held prompt_async POST: {requests:?}"
+    );
+    assert!(
+        requests
+            .iter()
+            .any(|request| request.starts_with("POST ") && request.contains("/abort?")),
+        "fixture must observe the pump-initiated abort POST: {requests:?}"
+    );
     assert_eq!(
         block_on(close_session(session, &fixture)),
         swallowtail_runtime::CleanupOutcome::Clean

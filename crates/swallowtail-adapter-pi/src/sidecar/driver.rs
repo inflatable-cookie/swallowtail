@@ -363,23 +363,9 @@ impl PiSdkSidecarDriver {
         ))
         .with_environment([self.environment.clone()])
         .with_working_resource(working_resource);
-        if crate::driver::deadline_elapsed(deadline, &services) {
-            let _ = resource_service
-                .release(resource.take().expect("sidecar resource was resolved"))
-                .await;
-            let _ = credential_service
-                .release(credential.take().expect("sidecar credential was acquired"))
-                .await;
-            return Err(failure(
-                deadline_code,
-                "Pi SDK sidecar deadline elapsed before process start",
-            ));
-        }
-        let process: Arc<dyn ProcessHandle> = match crate::driver::run_before_deadline(
-            services
-                .process()
-                .expect("validated sidecar process service")
-                .start(scope.clone(), process_request),
+        let process: Arc<dyn ProcessHandle> = match crate::driver::start_process_before_deadline(
+            scope.clone(),
+            process_request,
             deadline,
             &services,
             deadline_code,
@@ -387,7 +373,7 @@ impl PiSdkSidecarDriver {
         )
         .await
         {
-            Ok(process) => Arc::from(process),
+            Ok(process) => process,
             Err(error) => {
                 let _ = resource_service
                     .release(resource.take().expect("sidecar resource was resolved"))
@@ -398,20 +384,6 @@ impl PiSdkSidecarDriver {
                 return Err(error);
             }
         };
-        if crate::driver::deadline_elapsed(deadline, &services) {
-            let _ = process.force_stop().await;
-            let _ = process.wait().await;
-            let _ = resource_service
-                .release(resource.take().expect("sidecar resource was resolved"))
-                .await;
-            let _ = credential_service
-                .release(credential.take().expect("sidecar credential was acquired"))
-                .await;
-            return Err(failure(
-                deadline_code,
-                "Pi SDK sidecar deadline elapsed after process start",
-            ));
-        }
         let connection = SidecarConnection::new(Arc::clone(&process), services.clone());
         let pump = Arc::clone(&connection);
         let pump_task = match services

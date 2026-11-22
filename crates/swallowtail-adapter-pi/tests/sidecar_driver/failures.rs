@@ -203,6 +203,48 @@ fn sidecar_rejected_abort_during_turn_close_blocks_subsequent_turns() {
 }
 
 #[test]
+fn sidecar_explicit_rejected_cancellation_followed_by_close_wakes_deadline_and_blocks_new_turn() {
+    let host_id = make_host_id("pi.fixture.sdk-sidecar.explicit-abort-rejected");
+    let fixture = SidecarFixtureHost::new(SidecarScenario::AbortRejected);
+    let selected = sidecar_selection(host_id.clone());
+    let services = fixture.services(host_id);
+    let mut session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        sidecar_open_request("sidecar-explicit-abort-rejected-session", selected.resource),
+        services.clone(),
+    ))
+    .expect("sidecar session opens");
+    // Do not advance the fixture clock: close must complete without firing the deadline.
+    let turn = block_on(session.start_turn(
+        turn_request("sidecar-explicit-abort-rejected-turn-1", deadline()),
+        services.clone(),
+    ))
+    .expect("first sidecar turn starts");
+    let cancel_error = block_on(turn.cancellation().request())
+        .expect_err("explicit sidecar abort rejection must return an error");
+    assert_eq!(
+        cancel_error.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.abort_rejected"
+    );
+    let close_outcome = block_on(turn.close());
+    assert!(
+        matches!(close_outcome, CleanupOutcome::Failed(ref diagnostic) if diagnostic.message().contains("cancel_rejected")),
+        "close after prior rejected abort must still report cancel_rejected, got {close_outcome:?}"
+    );
+    let second_error = block_on(session.start_turn(
+        turn_request("sidecar-explicit-abort-rejected-turn-2", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("sidecar session must refuse a new turn after prior rejected abort");
+    assert_eq!(
+        second_error.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.cancel_rejected"
+    );
+    let _ = block_on(close_session(session, services));
+}
+
+#[test]
 fn sidecar_startup_deadline_enforced_before_and_after_synchronous_launch() {
     use std::sync::Arc;
     use swallowtail_core::{
@@ -253,15 +295,16 @@ fn sidecar_startup_deadline_enforced_before_and_after_synchronous_launch() {
         );
     }
 
-    // 2. Synchronous ProcessService::start completes after deadline: process is
-    //    cleaned up and bootstrap never runs.
+    // 2. Deadline expires during synchronous ProcessService::start (check 3):
+    //    the ready handle is explicitly stopped and reaped before lease release,
+    //    and bootstrap never runs.
     {
         let host_id = make_host_id("pi.fixture.sdk-sidecar.expire-after-launch");
         let fixture = SidecarFixtureHost::new(SidecarScenario::Complete);
         let selected = sidecar_selection(host_id.clone());
         let services = fixture.services(host_id).with_time(Arc::new(SteppingClock {
             calls: std::sync::atomic::AtomicUsize::new(0),
-            expire_on_call: 4,
+            expire_on_call: 3,
         }));
         let request = OpenSessionRequest::new(
             RequestId::new("sidecar-expire-after-launch").expect("id"),

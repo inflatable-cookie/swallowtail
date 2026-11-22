@@ -394,8 +394,8 @@ mod bounded_map_tests {
             "thread-root".to_owned(),
             3,
         );
-        // Provider ID longer than ActivityId's max length forces a minted ID.
-        let long_id = format!("mcp-{}", "x".repeat(200));
+        // Provider ID longer than ActivityId's 256-byte max length forces a minted ID.
+        let long_id = format!("mcp-{}", "x".repeat(300));
         let started = projection
             .project_notification(
                 "item/started",
@@ -411,6 +411,11 @@ mod bounded_map_tests {
             )
             .expect("long in-flight item starts");
         let started_id = started[0].activity_id().clone();
+        assert!(
+            started_id.as_str().starts_with("codex-app-server:minted-"),
+            "oversized provider ID must take the minted-ID branch, got {}",
+            started_id.as_str()
+        );
         let started_label = started[0].label().cloned();
         assert_eq!(
             started_label.as_ref().map(|label| label.as_str()),
@@ -464,6 +469,118 @@ mod bounded_map_tests {
             .expect("original in-flight item completes");
         assert_eq!(completed[0].activity_id(), &started_id);
         assert_eq!(completed[0].label(), started_label.as_ref());
+    }
+
+    #[test]
+    fn in_flight_hook_and_child_turn_preserve_minted_ids_across_capacity_turnover() {
+        use swallowtail_runtime::{
+            ActivityLifecyclePhase, ActivityStatus, SubagentId, SubagentStatus,
+        };
+
+        let mut projection = AppServerActivityProjection::with_item_capacity(
+            RuntimeTurnId::new("turn-hook-child").expect("turn id"),
+            "thread-root".to_owned(),
+            4,
+        );
+        let long_hook_id = format!("hook-{}", "h".repeat(300));
+        let hook_started = projection
+            .project_notification(
+                "hook/started",
+                &json!({
+                    "run": {
+                        "id": long_hook_id,
+                        "eventName": "pre_turn",
+                        "handlerType": "command",
+                        "status": "running"
+                    }
+                }),
+            )
+            .expect("long hook starts");
+        let hook_started_id = hook_started[0].activity_id().clone();
+        assert!(
+            hook_started_id
+                .as_str()
+                .starts_with("codex-app-server:minted-"),
+            "oversized hook ID must take the minted-ID branch, got {}",
+            hook_started_id.as_str()
+        );
+
+        let child = SubagentId::new("child-subagent").expect("subagent id");
+        let long_child_turn = format!("turn-{}", "c".repeat(300));
+        let child_started = projection
+            .project_child_turn_lifecycle(
+                child.clone(),
+                &long_child_turn,
+                ActivityLifecyclePhase::Started,
+                ActivityStatus::InProgress,
+                SubagentStatus::Running,
+            )
+            .expect("long child turn starts");
+        let child_started_id = child_started.activity_id().clone();
+        assert!(
+            child_started_id
+                .as_str()
+                .starts_with("codex-app-server:minted-"),
+            "oversized child-turn ID must take the minted-ID branch, got {}",
+            child_started_id.as_str()
+        );
+
+        // Cycle more completed items than table capacity to force FIFO eviction.
+        for idx in 0..6 {
+            let short_id = format!("turn-over-{idx}");
+            projection
+                .project_notification(
+                    "item/started",
+                    &json!({
+                        "item": {
+                            "id": short_id,
+                            "type": "commandExecution",
+                            "command": format!("echo {idx}"),
+                            "status": "inProgress"
+                        }
+                    }),
+                )
+                .expect("unrelated item starts");
+            projection
+                .project_notification(
+                    "item/completed",
+                    &json!({
+                        "item": {
+                            "id": short_id,
+                            "type": "commandExecution",
+                            "command": format!("echo {idx}"),
+                            "status": "completed"
+                        }
+                    }),
+                )
+                .expect("unrelated item completes");
+        }
+
+        let hook_completed = projection
+            .project_notification(
+                "hook/completed",
+                &json!({
+                    "run": {
+                        "id": long_hook_id,
+                        "eventName": "pre_turn",
+                        "handlerType": "command",
+                        "status": "completed"
+                    }
+                }),
+            )
+            .expect("long hook completes");
+        assert_eq!(hook_completed[0].activity_id(), &hook_started_id);
+
+        let child_completed = projection
+            .project_child_turn_lifecycle(
+                child,
+                &long_child_turn,
+                ActivityLifecyclePhase::Completed,
+                ActivityStatus::Completed,
+                SubagentStatus::Completed,
+            )
+            .expect("long child turn completes");
+        assert_eq!(child_completed.activity_id(), &child_started_id);
     }
 
     #[test]

@@ -116,8 +116,17 @@ impl AppServerTask {
             return self.task.join().await;
         }
         let stop = process.force_stop().await;
-        let join = self.join().await;
-        stop.and(join)
+        if stop.is_ok() {
+            return self.join().await;
+        }
+        // When `force_stop` is refused and stdout remains open, an unconditional
+        // `self.join().await` would hang forever. Bound the final wait to the
+        // remaining budget and only join if the pump actually finished.
+        let final_wait = stages.and_then(|(time, _, _)| deadline.map(|d| (time, d)));
+        if self.finishes_before(wait_for(final_wait, blocking)).await {
+            let _ = self.task.join().await;
+        }
+        stop
     }
 
     async fn finishes_before(&mut self, wait: Wait<'_>) -> bool {

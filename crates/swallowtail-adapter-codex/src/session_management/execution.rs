@@ -297,6 +297,7 @@ mod tests {
 
     struct CancelTestProcess {
         refuse_force_stop: bool,
+        close_stdin_signals_eof: bool,
         force_stops: AtomicUsize,
         stdin_closes: AtomicUsize,
         eof: AtomicBool,
@@ -304,9 +305,10 @@ mod tests {
     }
 
     impl CancelTestProcess {
-        fn new(refuse_force_stop: bool) -> Self {
+        fn new(refuse_force_stop: bool, close_stdin_signals_eof: bool) -> Self {
             Self {
                 refuse_force_stop,
+                close_stdin_signals_eof,
                 force_stops: AtomicUsize::new(0),
                 stdin_closes: AtomicUsize::new(0),
                 eof: AtomicBool::new(false),
@@ -329,7 +331,9 @@ mod tests {
 
         fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
             self.stdin_closes.fetch_add(1, Ordering::SeqCst);
-            self.signal_eof();
+            if self.close_stdin_signals_eof {
+                self.signal_eof();
+            }
             Box::pin(async { Ok(()) })
         }
 
@@ -398,7 +402,7 @@ mod tests {
     fn successful_cancel_stops_once_without_closing_stdin() {
         let host = ExecutionHostId::new("codex.lifecycle.cancel-ok").expect("host id");
         let services = HostServices::new(host);
-        let process = Arc::new(CancelTestProcess::new(false));
+        let process = Arc::new(CancelTestProcess::new(false, true));
         let connection = RpcConnection::new(
             Arc::clone(&process) as Arc<dyn ProcessHandle>,
             services.clone(),
@@ -422,10 +426,12 @@ mod tests {
     }
 
     #[test]
-    fn refused_force_stop_falls_back_to_bounded_close_and_reports_failure() {
+    fn refused_force_stop_with_open_stdout_returns_failure_without_hanging() {
         let host = ExecutionHostId::new("codex.lifecycle.cancel-refused").expect("host id");
         let services = HostServices::new(host);
-        let process = Arc::new(CancelTestProcess::new(true));
+        // Keep stdout open even after `close_stdin` and refused `force_stop`
+        // to prove the fallback does not unconditionally block on `task.join()`.
+        let process = Arc::new(CancelTestProcess::new(true, false));
         let connection = RpcConnection::new(
             Arc::clone(&process) as Arc<dyn ProcessHandle>,
             services.clone(),
@@ -450,7 +456,9 @@ mod tests {
         assert_eq!(
             process.stdin_closes.load(Ordering::SeqCst),
             1,
-            "fallback must close stdin so the still-running pump can exit"
+            "fallback attempts stdin close before escalating"
         );
+        // Release the background pump thread so the test exits cleanly.
+        process.signal_eof();
     }
 }

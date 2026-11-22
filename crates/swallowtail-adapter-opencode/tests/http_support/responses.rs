@@ -153,6 +153,13 @@ fn respond_sse(
                 write_fixture(stream, ABORTED.as_bytes());
             }
         }
+        StreamFixture::HoldPromptAbortAndMalformedSse => {
+            write_fixture(stream, b"data: {not-valid-json}\n\n");
+            flush_fixture(stream);
+            while !stop.load(Ordering::SeqCst) {
+                thread::sleep(Duration::from_millis(5));
+            }
+        }
         StreamFixture::PanicOnEvent => {
             panic!("unexpected fixture failure");
         }

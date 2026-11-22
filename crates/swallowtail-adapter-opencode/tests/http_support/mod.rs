@@ -50,6 +50,7 @@ pub enum StreamFixture {
     RepeatedCursor,
     PanicOnEvent,
     HoldPromptAndAbort,
+    HoldPromptAbortAndMalformedSse,
     HoldHistoryPage,
 }
 
@@ -100,7 +101,11 @@ impl FixtureServer {
                     Ok((stream, _)) => {
                         if matches!(
                             fixture,
-                            StreamFixture::WaitForAbort | StreamFixture::InputCallbacks
+                            StreamFixture::WaitForAbort
+                                | StreamFixture::InputCallbacks
+                                | StreamFixture::HoldPromptAndAbort
+                                | StreamFixture::HoldPromptAbortAndMalformedSse
+                                | StreamFixture::HoldHistoryPage
                         ) {
                             let requests = Arc::clone(&server_requests);
                             let stop = Arc::clone(&server_stop);

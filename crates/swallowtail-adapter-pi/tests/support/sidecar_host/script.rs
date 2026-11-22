@@ -264,7 +264,7 @@ pub(super) fn respond(
             if matches!(scenario, SidecarScenario::AbortRejected) {
                 output(
                     state,
-                    json!({"type": "response", "id": id, "command": "abort", "success": false, "error": {"code": "abort_rejected", "message": "fixture abort rejected"}}),
+                    json!({"type": "response", "id": id, "command": "abort", "success": false, "failure": {"code": "abort_rejected", "message": "fixture abort rejected"}}),
                 );
             } else {
                 output(

@@ -18,6 +18,7 @@ pub(super) struct TurnCancellation {
     connection: Arc<PiConnection>,
     turn: Arc<ActiveTurn>,
     requested: AtomicBool,
+    rejected: AtomicBool,
 }
 
 impl TurnCancellation {
@@ -26,6 +27,7 @@ impl TurnCancellation {
             connection,
             turn,
             requested: AtomicBool::new(false),
+            rejected: AtomicBool::new(false),
         }
     }
 }
@@ -39,22 +41,41 @@ impl CancellationControl for TurnCancellation {
         let already = self.requested.swap(true, Ordering::SeqCst);
         Box::pin(async move {
             if already {
+                if self.rejected.load(Ordering::SeqCst) {
+                    return Err(failure(
+                        "swallowtail.pi.rpc.abort_rejected",
+                        "Pi RPC rejected native abort",
+                    ));
+                }
                 return Ok(CancellationAcknowledgement::AlreadyRequested);
             }
             self.turn.mark_cancelled();
             let id = format!("abort:{}", self.turn.runtime_id().as_str());
-            let response = self
+            let error = match self
                 .connection
                 .command(id.clone(), "abort", json!({"id": id, "type": "abort"}))
-                .await?;
-            if response.success {
-                Ok(CancellationAcknowledgement::Requested)
-            } else {
-                Err(failure(
+                .await
+            {
+                Ok(response) if response.success => {
+                    return Ok(CancellationAcknowledgement::Requested);
+                }
+                Ok(_) => failure(
                     "swallowtail.pi.rpc.abort_rejected",
                     "Pi RPC rejected native abort",
-                ))
-            }
+                ),
+                Err(error) => error,
+            };
+            // A turn that could not be aborted may still be running on the
+            // provider. Record the refusal and close the connection immediately
+            // so late events can never be assigned to a replacement turn and
+            // the turn's deadline watcher wakes cleanly.
+            self.rejected.store(true, Ordering::SeqCst);
+            self.connection
+                .close_on_rejected_abort(swallowtail_core::SafeDiagnostic::new(
+                    "swallowtail.pi.rpc.cancel_rejected",
+                    "Pi could not abort the active turn",
+                ));
+            Err(error)
         })
     }
 }
@@ -239,27 +260,20 @@ impl TurnHandle for PiTurnHandle {
 
     fn close(self: Box<Self>) -> BoxFuture<'static, CleanupOutcome> {
         Box::pin(async move {
-            let cancel_cleanup = if self.cancellation.turn.is_finished() {
+            let cancel_cleanup = if self.cancellation.rejected.load(Ordering::SeqCst) {
+                cleanup_failure(
+                    "cancel_rejected",
+                    "Pi could not abort the active turn during close",
+                )
+            } else if self.cancellation.turn.is_finished() {
                 CleanupOutcome::NotApplicable
             } else {
                 match self.cancellation.request().await {
                     Ok(_) => CleanupOutcome::NotApplicable,
-                    // A turn that could not be aborted may still be running on
-                    // the provider. Close the connection to further commands
-                    // and turns so late events can never be assigned to a
-                    // replacement turn, and wake the deadline task.
-                    Err(_) => {
-                        self.cancellation.connection.close_on_rejected_abort(
-                            swallowtail_core::SafeDiagnostic::new(
-                                "swallowtail.pi.rpc.cancel_rejected",
-                                "Pi could not abort the active turn during close",
-                            ),
-                        );
-                        cleanup_failure(
-                            "cancel_rejected",
-                            "Pi could not abort the active turn during close",
-                        )
-                    }
+                    Err(_) => cleanup_failure(
+                        "cancel_rejected",
+                        "Pi could not abort the active turn during close",
+                    ),
                 }
             };
             let active = {

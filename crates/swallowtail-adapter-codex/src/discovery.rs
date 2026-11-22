@@ -313,21 +313,12 @@ async fn wait_for_exit(
 /// probe deadline or cancellation has already fired.
 const CLEANUP_WAIT_BUDGET_TICKS: u64 = 500;
 
-async fn stop_and_classify(
-    process: &dyn ProcessHandle,
-    time: &dyn swallowtail_runtime::TimeService,
-    desired: DiscoveryOutcome,
-) -> DiscoveryOutcome {
-    let graceful = process.request_stop().await;
-    let forced = process.force_stop().await;
-    let cleanup_deadline =
-        swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
-            time.now().ticks().saturating_add(CLEANUP_WAIT_BUDGET_TICKS),
-        ));
-    let mut wait = process.wait();
-    let mut cleanup_timer = time.wait_until(cleanup_deadline);
-    let waited = poll_fn(|context| {
-        if let Poll::Ready(result) = wait.as_mut().poll(context) {
+async fn bounded_teardown_step<T>(
+    mut step: BoxFuture<'_, T>,
+    cleanup_timer: &mut BoxFuture<'static, swallowtail_runtime::DeadlineObservation>,
+) -> Option<T> {
+    poll_fn(|context| {
+        if let Poll::Ready(result) = step.as_mut().poll(context) {
             return Poll::Ready(Some(result));
         }
         if cleanup_timer.as_mut().poll(context).is_ready() {
@@ -335,10 +326,30 @@ async fn stop_and_classify(
         }
         Poll::Pending
     })
-    .await;
+    .await
+}
+
+async fn stop_and_classify(
+    process: &dyn ProcessHandle,
+    time: &dyn swallowtail_runtime::TimeService,
+    desired: DiscoveryOutcome,
+) -> DiscoveryOutcome {
+    let cleanup_deadline =
+        swallowtail_runtime::Deadline::at(swallowtail_runtime::MonotonicInstant::from_ticks(
+            time.now().ticks().saturating_add(CLEANUP_WAIT_BUDGET_TICKS),
+        ));
+    let mut cleanup_timer = time.wait_until(cleanup_deadline);
+    let Some(graceful) = bounded_teardown_step(process.request_stop(), &mut cleanup_timer).await
+    else {
+        return outcome(DiscoveryStatus::CleanupFailed);
+    };
+    let Some(forced) = bounded_teardown_step(process.force_stop(), &mut cleanup_timer).await else {
+        return outcome(DiscoveryStatus::CleanupFailed);
+    };
+    let waited = bounded_teardown_step(process.wait(), &mut cleanup_timer).await;
     // A child that already exited cleanly on `request_stop()` may cause
     // `force_stop()` to fail (e.g. ESRCH). Only treat stop as failed when
-    // both stop attempts failed or the bounded `wait()` failed/timed out.
+    // both stop attempts failed or any bounded teardown step timed out/failed.
     match waited {
         Some(Ok(_)) if graceful.is_ok() || forced.is_ok() => desired,
         _ => outcome(DiscoveryStatus::CleanupFailed),

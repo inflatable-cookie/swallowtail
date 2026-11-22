@@ -276,6 +276,48 @@ fn rejected_abort_during_turn_close_blocks_subsequent_turns_on_the_session() {
 }
 
 #[test]
+fn explicit_rejected_cancellation_followed_by_close_wakes_deadline_and_blocks_new_turn() {
+    let topology = ExecutionTopologyFixture::local();
+    let fixture = FixtureHost::new(Scenario::AbortRejected);
+    let selected = selection_for_topology(&topology);
+    let services = fixture.services(topology.execution_host_id().clone());
+    let mut session = block_on(driver(selected.credential.clone()).open_session(
+        selected.plan,
+        open_request("explicit-abort-rejected-session", selected.resource),
+        services.clone(),
+    ))
+    .expect("Pi session opens");
+    // Do not advance the fixture clock: close must complete without firing the deadline.
+    let turn = block_on(session.start_turn(
+        turn_request("explicit-abort-rejected-turn-1", deadline()),
+        services.clone(),
+    ))
+    .expect("first turn starts");
+    let cancel_error = block_on(turn.cancellation().request())
+        .expect_err("explicit abort rejection must return an error");
+    assert_eq!(
+        cancel_error.diagnostic().code(),
+        "swallowtail.pi.rpc.abort_rejected"
+    );
+    let close_outcome = block_on(turn.close());
+    assert!(
+        matches!(close_outcome, CleanupOutcome::Failed(ref diagnostic) if diagnostic.message().contains("cancel_rejected")),
+        "close after prior rejected abort must still report cancel_rejected, got {close_outcome:?}"
+    );
+    let second_error = block_on(session.start_turn(
+        turn_request("explicit-abort-rejected-turn-2", deadline()),
+        services.clone(),
+    ))
+    .err()
+    .expect("session must refuse a new turn after prior rejected abort");
+    assert_eq!(
+        second_error.diagnostic().code(),
+        "swallowtail.pi.rpc.connection_closed"
+    );
+    let _ = block_on(close_session(session, services));
+}
+
+#[test]
 fn startup_deadline_enforced_before_and_after_synchronous_process_launch() {
     use crate::support::CleanupEvent;
     use std::sync::Arc;
@@ -327,8 +369,9 @@ fn startup_deadline_enforced_before_and_after_synchronous_process_launch() {
         );
     }
 
-    // 2. Synchronous ProcessService::start completes after deadline: process is
-    //    cleaned up and handshake never runs.
+    // 2. Deadline expires during synchronous ProcessService::start (check 3):
+    //    the ready handle is explicitly stopped and reaped before lease release,
+    //    and handshake never runs.
     {
         let topology = ExecutionTopologyFixture::local();
         let fixture = FixtureHost::new(Scenario::Complete);
@@ -337,7 +380,7 @@ fn startup_deadline_enforced_before_and_after_synchronous_process_launch() {
             .services(topology.execution_host_id().clone())
             .with_time(Arc::new(SteppingClock {
                 calls: std::sync::atomic::AtomicUsize::new(0),
-                expire_on_call: 4,
+                expire_on_call: 3,
             }));
         let request = OpenSessionRequest::new(
             RequestId::new("pi-rpc-expire-after-launch").expect("id"),

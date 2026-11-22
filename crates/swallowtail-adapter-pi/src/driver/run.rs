@@ -114,6 +114,8 @@ impl StructuredRunDriver for PiRpcDriver {
                 terminal: turn_terminal,
             })));
             let (terminal_sender, terminal) = terminal_outcome_channel();
+            let run_cleanup = Arc::new(Mutex::new(None));
+            let task_cleanup = Arc::clone(&run_cleanup);
             let task_pending = Arc::clone(&pending);
             let task = services.task().expect("validated Pi task service").spawn(
                 task_scope,
@@ -127,6 +129,8 @@ impl StructuredRunDriver for PiRpcDriver {
                     drop(resources.turn);
                     let session_cleanup = resources.session.close_run().await;
                     let cleanup = CleanupOutcome::merge(outcome.cleanup().clone(), session_cleanup);
+                    *task_cleanup.lock().expect("Pi run cleanup lock poisoned") =
+                        Some(cleanup.clone());
                     let finished = copy_outcome_with_cleanup(outcome, cleanup);
                     let _ = terminal_sender.complete(finished);
                 }),
@@ -150,6 +154,7 @@ impl StructuredRunDriver for PiRpcDriver {
                 terminal: Some(Box::pin(terminal)),
                 cancellation,
                 task,
+                cleanup: run_cleanup,
             }) as Box<dyn RunHandle>)
         })
     }
@@ -242,6 +247,7 @@ struct PiRunHandle {
     terminal: Option<BoxFuture<'static, TerminalOutcome>>,
     cancellation: Arc<PiRunCancellation>,
     task: Box<dyn JoinedTask>,
+    cleanup: Arc<Mutex<Option<CleanupOutcome>>>,
 }
 
 impl RunHandle for PiRunHandle {
@@ -292,15 +298,18 @@ impl RunHandle for PiRunHandle {
                     CleanupOutcome::Failed(error.diagnostic().clone())
                 }
             };
-            let join = self.task.join().await.map_or_else(
-                |_| {
-                    CleanupOutcome::Failed(SafeDiagnostic::new(
-                        "swallowtail.pi.rpc.run_join_failed",
-                        "Pi RPC structured-run cleanup task did not join",
-                    ))
-                },
-                |_| CleanupOutcome::Clean,
-            );
+            let join = match self.task.join().await {
+                Ok(()) => self
+                    .cleanup
+                    .lock()
+                    .expect("Pi run cleanup lock poisoned")
+                    .take()
+                    .unwrap_or(CleanupOutcome::Clean),
+                Err(_) => CleanupOutcome::Failed(SafeDiagnostic::new(
+                    "swallowtail.pi.rpc.run_join_failed",
+                    "Pi RPC structured-run cleanup task did not join",
+                )),
+            };
             CleanupOutcome::merge(cancellation, join)
         })
     }
@@ -466,6 +475,7 @@ mod tests {
                 attempts: AtomicU64::new(0),
             }),
             task: Box::new(JoinAfterForceStop(process.clone())),
+            cleanup: Arc::new(Mutex::new(None)),
         });
         let cleanup = handle
             .close()
@@ -516,6 +526,7 @@ mod tests {
             task: Box::new(WaitForStopTask {
                 stopped: stopped_rx,
             }),
+            cleanup: Arc::new(Mutex::new(None)),
         });
         let terminal_fut = handle
             .take_terminal_outcome()

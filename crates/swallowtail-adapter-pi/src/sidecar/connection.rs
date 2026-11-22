@@ -1,14 +1,14 @@
 use super::failure::{failure, protocol_failure};
 use super::replay::ReplayCollector;
 use super::turn::SidecarActiveTurn;
-use super::wire::{PiSdkSidecarCommand, encode_command};
+use super::wire::{MAXIMUM_COMMAND_ID_BYTES, PiSdkSidecarCommand, encode_command};
 use serde_json::{Value, json};
 use std::collections::{BTreeMap, BTreeSet};
 use std::future::Future;
 use std::pin::Pin;
 #[cfg(test)]
 use std::sync::Barrier;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use swallowtail_core::{SafeDiagnostic, SessionRef};
@@ -37,6 +37,9 @@ pub(crate) struct SidecarConnection {
     superseded_aborts: Mutex<BTreeSet<String>>,
     abandoned_close: Mutex<Option<String>>,
     used_ids: Mutex<BTreeSet<String>>,
+    used_caller_turn_ids: Mutex<BTreeSet<String>>,
+    used_caller_command_ids: Mutex<BTreeSet<String>>,
+    next_wire_id: AtomicU64,
     active_turn: Mutex<Option<Arc<SidecarActiveTurn>>>,
     replay: Mutex<Option<ReplayCollector>>,
     closed: AtomicBool,
@@ -55,6 +58,9 @@ impl SidecarConnection {
             superseded_aborts: Mutex::new(BTreeSet::new()),
             abandoned_close: Mutex::new(None),
             used_ids: Mutex::new(BTreeSet::new()),
+            used_caller_turn_ids: Mutex::new(BTreeSet::new()),
+            used_caller_command_ids: Mutex::new(BTreeSet::new()),
+            next_wire_id: AtomicU64::new(1),
             active_turn: Mutex::new(None),
             replay: Mutex::new(None),
             closed: AtomicBool::new(false),
@@ -63,6 +69,55 @@ impl SidecarConnection {
             #[cfg(test)]
             send_registration_gate: Mutex::new(None),
         })
+    }
+
+    /// Allocates a unique, bounded, connection-owned wire command ID.
+    ///
+    /// All caller-derived commands (`prompt`, `abort`, `deadline-abort`,
+    /// `close`, `steer`, `follow-up`) use this namespace so no caller-supplied
+    /// identifier can collide with another command's wire ID or exceed
+    /// `MAXIMUM_COMMAND_ID_BYTES`.
+    pub(crate) fn next_command_id(&self, prefix: &str) -> String {
+        let seq = self.next_wire_id.fetch_add(1, Ordering::SeqCst);
+        let id = format!("{prefix}:w-{seq}");
+        debug_assert!(id.len() <= MAXIMUM_COMMAND_ID_BYTES);
+        id
+    }
+
+    /// Reserves a caller-supplied turn ID for `prompt` independently of wire
+    /// IDs and scheduled command IDs so repeating a settled turn ID is rejected
+    /// before dispatch without colliding with connection-owned wire IDs.
+    pub(crate) fn reserve_caller_turn_id(&self, turn_id: &str) -> Result<(), RuntimeFailure> {
+        if !self
+            .used_caller_turn_ids
+            .lock()
+            .expect("sidecar caller turn id lock poisoned")
+            .insert(turn_id.to_owned())
+        {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.command_id_reused",
+                "Pi SDK sidecar command id was reused",
+            ));
+        }
+        Ok(())
+    }
+
+    /// Reserves a caller-supplied scheduled command ID independently of wire
+    /// IDs so duplicate caller command IDs are rejected without colliding with
+    /// connection-owned wire IDs.
+    pub(crate) fn reserve_caller_command_id(&self, caller_id: &str) -> Result<(), RuntimeFailure> {
+        if !self
+            .used_caller_command_ids
+            .lock()
+            .expect("sidecar caller command id lock poisoned")
+            .insert(caller_id.to_owned())
+        {
+            return Err(failure(
+                "swallowtail.pi.sdk-sidecar.command_id_reused",
+                "Pi SDK sidecar command id was reused",
+            ));
+        }
+        Ok(())
     }
 
     pub(crate) fn services(&self) -> &HostServices {

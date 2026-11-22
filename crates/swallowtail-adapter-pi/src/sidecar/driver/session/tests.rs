@@ -610,7 +610,7 @@ fn sidecar_already_expired_prompt_deadline_makes_zero_writes_and_keeps_session_u
         output: Mutex::new((
             false,
             Some(
-                b"{\"type\":\"response\",\"id\":\"prompt:sidecar-valid\",\"command\":\"prompt\",\"success\":true}\n"
+                b"{\"type\":\"response\",\"id\":\"prompt:w-1\",\"command\":\"prompt\",\"success\":true}\n"
                     .to_vec(),
             ),
         )),
@@ -716,9 +716,9 @@ fn sidecar_deadline_abort_after_deferred_settlement_resolves_timed_out() {
             chunk: ProcessInputChunk,
         ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
             let text = String::from_utf8_lossy(chunk.bytes());
-            if text.contains("deadline-abort:sidecar-deferred-deadline") {
+            if text.contains("deadline-abort:w-1") {
                 self.push_line(
-                    b"{\"type\":\"response\",\"id\":\"deadline-abort:sidecar-deferred-deadline\",\"command\":\"abort\",\"success\":true}\n"
+                    b"{\"type\":\"response\",\"id\":\"deadline-abort:w-1\",\"command\":\"abort\",\"success\":true}\n"
                         .to_vec(),
                 );
             }
@@ -922,4 +922,625 @@ fn close_force_stops_an_unresponsive_sidecar_child_and_releases_leases() {
         image_attachments: false,
     };
     fixture.assert_escalation(session, services, true);
+}
+
+#[test]
+fn sidecar_reap_finished_releases_attachment_lease_when_deadline_join_fails() {
+    use super::{ActiveSlot, ActiveTask, reap_finished};
+    use crate::sidecar::turn::SidecarActiveTurn;
+    use std::sync::atomic::{AtomicU32, AtomicUsize, Ordering};
+    use std::sync::{Arc, Mutex};
+    use swallowtail_runtime::{
+        AttachmentDescriptor, AttachmentFileLease, AttachmentRef, AttachmentService,
+        MaterializedFileRef, RuntimeTurnId, ScopeId,
+    };
+
+    struct TrackingAttachmentService {
+        releases: AtomicUsize,
+    }
+    impl AttachmentService for TrackingAttachmentService {
+        fn materialize_file(
+            &self,
+            _scope: ScopeId,
+            _descriptor: AttachmentDescriptor,
+        ) -> BoxFuture<'static, Result<AttachmentFileLease, RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "fixture.unused",
+                    "unused",
+                )))
+            })
+        }
+        fn release_file(&self, _lease: AttachmentFileLease) -> BoxFuture<'static, CleanupOutcome> {
+            self.releases.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async { CleanupOutcome::Clean })
+        }
+    }
+
+    let (turn, _events, _terminal) = SidecarActiveTurn::new(
+        RuntimeTurnId::new("sidecar-reap-turn").expect("turn id"),
+        Arc::new(AtomicU32::new(0)),
+    )
+    .expect("sidecar turn constructs");
+    turn.fail_connection(SafeDiagnostic::new("fixture.done", "finished"));
+    let attachment_service = Arc::new(TrackingAttachmentService {
+        releases: AtomicUsize::new(0),
+    });
+    let lease = AttachmentFileLease::operation_scoped(
+        ScopeId::new("pi-sdk-sidecar:reap-test").expect("scope id"),
+        AttachmentRef::new("att-sidecar-reap-1").expect("attachment ref"),
+        MaterializedFileRef::new("/fixture/sidecar-reap-test.png").expect("file ref"),
+    );
+    let slot: ActiveSlot = Arc::new(Mutex::new(Some(ActiveTask {
+        turn,
+        deadline_task: Some(Box::new(FailingJoin)),
+        attachment: SharedAttachmentMaterialization::new(
+            Arc::clone(&attachment_service) as Arc<dyn AttachmentService>,
+            lease,
+        ),
+    })));
+
+    let error = futures_executor::block_on(reap_finished(&slot))
+        .expect_err("sidecar deadline join failure must be returned");
+    assert_eq!(error.diagnostic().code(), "fixture.join_failed");
+    assert_eq!(
+        attachment_service.releases.load(Ordering::SeqCst),
+        1,
+        "sidecar reap_finished must release the attachment lease even when deadline_task.join() fails"
+    );
+}
+
+#[test]
+fn sidecar_long_caller_ids_produce_bounded_wire_command_ids() {
+    use super::{PiSdkSidecarSessionHandle, spawn_deadline};
+    use crate::sidecar::connection::SidecarConnection;
+    use crate::sidecar::driver::handle::SessionCancellation;
+    use crate::sidecar::turn::SidecarActiveTurn;
+    use crate::sidecar::wire::{MAXIMUM_COMMAND_ID_BYTES, PiSdkSidecarRecord, decode_record};
+    use std::collections::VecDeque;
+    use std::sync::atomic::AtomicU32;
+    use std::sync::{Arc, Condvar, Mutex};
+    use swallowtail_core::{
+        ConfiguredInstanceId, ExecutionHostId, HarnessMessageClass, ModelId, ModelRouteId,
+        SessionAccessPolicy, SessionRef,
+    };
+    use swallowtail_runtime::{
+        Deadline, DeadlineObservation, HarnessCommandAcknowledgement, HarnessCommandId,
+        HarnessScheduledMessage, HostServices, InteractiveSessionHandle, MonotonicInstant,
+        OperationContent, ProcessExit, ProcessHandle, ProcessInputChunk, ProcessOutputChunk,
+        ProcessOutputStream, RequestId, RuntimeSessionId, RuntimeTurnId, ScopeId,
+        ScopedTaskService, SessionCleanupRequest, SessionResumeBinding, TimeService, TurnRequest,
+        WorkingResourceRef,
+    };
+
+    struct EchoingWireProcess {
+        state: Mutex<(Vec<serde_json::Value>, VecDeque<Vec<u8>>, bool)>,
+        changed: Condvar,
+    }
+    impl EchoingWireProcess {
+        fn new() -> Self {
+            Self {
+                state: Mutex::new((Vec::new(), VecDeque::new(), false)),
+                changed: Condvar::new(),
+            }
+        }
+        fn recorded_ids(&self) -> Vec<(String, String)> {
+            self.state
+                .lock()
+                .expect("process lock")
+                .0
+                .iter()
+                .map(|value| {
+                    (
+                        value["command"].as_str().expect("command").to_owned(),
+                        value["id"].as_str().expect("id").to_owned(),
+                    )
+                })
+                .collect()
+        }
+    }
+    impl ProcessHandle for EchoingWireProcess {
+        fn write_stdin(
+            &self,
+            chunk: ProcessInputChunk,
+        ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let parsed: serde_json::Value =
+                serde_json::from_slice(chunk.bytes()).expect("outbound command is valid JSON");
+            let id = parsed["id"].as_str().expect("id").to_owned();
+            let command = parsed["command"].as_str().expect("command").to_owned();
+            let mut reply = serde_json::to_vec(&serde_json::json!({
+                "type": "response",
+                "id": id,
+                "command": command,
+                "success": true,
+            }))
+            .expect("serialize reply");
+            // Verify the wire decoder itself accepts the echoed response ID.
+            assert!(
+                matches!(decode_record(&reply), Ok(PiSdkSidecarRecord::Response(_))),
+                "wire response for command {command:?} with id {id:?} (len {}) must decode within MAXIMUM_COMMAND_ID_BYTES",
+                id.len()
+            );
+            reply.push(b'\n');
+            let mut state = self.state.lock().expect("process lock");
+            state.0.push(parsed);
+            state.1.push_back(reply);
+            self.changed.notify_all();
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let mut state = self.state.lock().expect("process lock");
+            state.2 = true;
+            self.changed.notify_all();
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            let mut state = self.state.lock().expect("process lock");
+            loop {
+                if let Some(line) = state.1.pop_front() {
+                    return Box::pin(async move {
+                        Ok(Some(ProcessOutputChunk::new(
+                            ProcessOutputStream::Stdout,
+                            line,
+                        )))
+                    });
+                }
+                if state.2 {
+                    return Box::pin(async { Ok(None) });
+                }
+                state = self.changed.wait(state).expect("process lock");
+            }
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            let mut state = self.state.lock().expect("process lock");
+            state.2 = true;
+            self.changed.notify_all();
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct PendingClock;
+    impl TimeService for PendingClock {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+        fn wait_until(&self, _: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    struct ReadyClock;
+    impl TimeService for ReadyClock {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::ready(DeadlineObservation::new(
+                deadline,
+                deadline.instant(),
+            )))
+        }
+    }
+
+    struct ThreadTaskService;
+    struct ThreadJoinedTask(Option<std::thread::JoinHandle<()>>);
+    impl JoinedTask for ThreadJoinedTask {
+        fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let handle = self.0.take();
+            Box::pin(async move {
+                if let Some(handle) = handle {
+                    let _ = handle.join();
+                }
+                Ok(())
+            })
+        }
+    }
+    impl ScopedTaskService for ThreadTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            let handle = std::thread::spawn(move || futures_executor::block_on(task));
+            Ok(Box::new(ThreadJoinedTask(Some(handle))))
+        }
+    }
+
+    let long_request_id = "r".repeat(160);
+    let long_turn_id = "t".repeat(160);
+    let long_steer_id = "s".repeat(160);
+    let long_follow_up_id = "f".repeat(160);
+
+    let host = ExecutionHostId::new("pi.sidecar.long-ids").expect("host id");
+    let process = Arc::new(EchoingWireProcess::new());
+    let services = HostServices::new(host.clone())
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(Arc::new(PendingClock));
+    let connection = SidecarConnection::new(
+        Arc::clone(&process) as Arc<dyn ProcessHandle>,
+        services.clone(),
+    );
+    let pump_conn = Arc::clone(&connection);
+    let pump_task = Box::new(ThreadJoinedTask(Some(std::thread::spawn(move || {
+        futures_executor::block_on(pump_conn.pump());
+    }))));
+
+    let active: super::ActiveSlot = Arc::new(Mutex::new(None));
+    let binding = SessionResumeBinding::new(
+        SessionRef::new("sidecar-long-ids").expect("session ref"),
+        ConfiguredInstanceId::new("pi.sidecar.inst").expect("instance id"),
+        host.clone(),
+        ModelRouteId::new("pi.route").expect("route id"),
+        ModelId::new("pi-model").expect("model id"),
+        WorkingResourceRef::new("workspace.main").expect("resource"),
+        SessionAccessPolicy::read_only(),
+    );
+    let mut session = PiSdkSidecarSessionHandle {
+        request_id: RequestId::new(long_request_id).expect("long request id"),
+        runtime_id: RuntimeSessionId::new("pi-sdk-sidecar:long-ids").expect("session id"),
+        execution_host_id: host.clone(),
+        binding,
+        connection: Arc::clone(&connection),
+        cancellation: SessionCancellation::new(Arc::clone(&connection), Arc::clone(&active)),
+        pump_task: Some(pump_task),
+        services: services.clone(),
+        resource: None,
+        credential: None,
+        active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        image_attachments: false,
+    };
+
+    // 1. Prompt, steer, follow_up, abort, and close with >128-byte caller IDs.
+    let turn_req = TurnRequest::new(
+        RuntimeTurnId::new(long_turn_id.clone()).expect("long turn id"),
+        OperationContent::new("hello").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100)));
+    let mut turn = futures_executor::block_on(session.start_turn(turn_req, services.clone()))
+        .expect("prompt with >128-byte turn id succeeds");
+
+    let steer_cmd_id = HarnessCommandId::new(long_steer_id).expect("long steer id");
+    let steer_resp =
+        futures_executor::block_on(turn.schedule_harness_message(HarnessScheduledMessage::new(
+            steer_cmd_id.clone(),
+            HarnessMessageClass::Steering,
+            OperationContent::new("steer").expect("content"),
+        )))
+        .expect("steer with >128-byte command id succeeds");
+    assert_eq!(steer_resp.command_id(), &steer_cmd_id);
+    assert_eq!(
+        steer_resp.acknowledgement(),
+        HarnessCommandAcknowledgement::Accepted
+    );
+
+    let follow_cmd_id = HarnessCommandId::new(long_follow_up_id).expect("long follow-up id");
+    let follow_resp =
+        futures_executor::block_on(turn.schedule_harness_message(HarnessScheduledMessage::new(
+            follow_cmd_id.clone(),
+            HarnessMessageClass::FollowUp,
+            OperationContent::new("follow").expect("content"),
+        )))
+        .expect("follow_up with >128-byte command id succeeds");
+    assert_eq!(follow_resp.command_id(), &follow_cmd_id);
+    assert_eq!(
+        follow_resp.acknowledgement(),
+        HarnessCommandAcknowledgement::Accepted
+    );
+
+    futures_executor::block_on(turn.cancellation().request())
+        .expect("abort with >128-byte turn id succeeds");
+    drop(turn);
+
+    let cleanup = futures_executor::block_on(Box::new(session).close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(200))),
+        services,
+    ));
+    assert_eq!(cleanup, CleanupOutcome::Clean);
+
+    // 2. Also exercise `deadline-abort` with a >128-byte turn ID.
+    let deadline_process = Arc::new(EchoingWireProcess::new());
+    let deadline_services = HostServices::new(host)
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(Arc::new(ReadyClock));
+    let deadline_conn = SidecarConnection::new(
+        Arc::clone(&deadline_process) as Arc<dyn ProcessHandle>,
+        deadline_services.clone(),
+    );
+    let pump_deadline_conn = Arc::clone(&deadline_conn);
+    let pump_deadline = std::thread::spawn(move || {
+        futures_executor::block_on(pump_deadline_conn.pump());
+    });
+    let (deadline_turn, _events, _terminal) = SidecarActiveTurn::new(
+        RuntimeTurnId::new(long_turn_id).expect("long turn id"),
+        Arc::new(AtomicU32::new(0)),
+    )
+    .expect("turn constructs");
+    deadline_conn
+        .set_active_turn(Arc::clone(&deadline_turn))
+        .expect("turn attaches");
+    let (arm_tx, arm_rx) = futures_channel::oneshot::channel();
+    let _ = arm_tx.send(());
+    let deadline_task = spawn_deadline(
+        &deadline_services,
+        Arc::clone(&deadline_conn),
+        deadline_turn,
+        Deadline::at(MonotonicInstant::from_ticks(1)),
+        arm_rx,
+    )
+    .expect("deadline task spawns");
+    futures_executor::block_on(deadline_task.join()).expect("deadline task joins");
+    futures_executor::block_on(deadline_conn.begin_close());
+    pump_deadline.join().expect("deadline pump joins");
+
+    let mut all_ids = process.recorded_ids();
+    all_ids.extend(deadline_process.recorded_ids());
+    for command in ["prompt", "steer", "follow_up", "abort", "close"] {
+        assert!(
+            all_ids.iter().any(|(cmd, _)| cmd == command),
+            "expected command {command:?} to be recorded, got {all_ids:?}"
+        );
+    }
+    assert!(
+        deadline_process
+            .recorded_ids()
+            .iter()
+            .any(|(cmd, _)| cmd == "abort"),
+        "expected deadline-abort command to be recorded"
+    );
+    for (command, wire_id) in &all_ids {
+        assert!(
+            !wire_id.is_empty() && wire_id.len() <= MAXIMUM_COMMAND_ID_BYTES,
+            "outbound command {command:?} wire id {wire_id:?} exceeded MAXIMUM_COMMAND_ID_BYTES ({})",
+            wire_id.len()
+        );
+    }
+
+    // 3. Mixed short/long caller IDs must never collide with connection-owned
+    // wire IDs or block native abort:
+    // - Short turn ID `"w-1"` followed by an oversized (>128-byte) turn ID;
+    // - Steer command with caller ID `"abort:w-4"` (matching the generated wire
+    //   ID format);
+    // - Duplicate caller command ID still fails with `command_id_reused`;
+    // - Native `abort` still dispatches and succeeds on the wire.
+    let mixed_host = ExecutionHostId::new("pi.sidecar.mixed-ids").expect("host id");
+    let mixed_process = Arc::new(EchoingWireProcess::new());
+    let mixed_services = HostServices::new(mixed_host.clone())
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(Arc::new(PendingClock));
+    let mixed_conn = SidecarConnection::new(
+        Arc::clone(&mixed_process) as Arc<dyn ProcessHandle>,
+        mixed_services.clone(),
+    );
+    let pump_mixed_conn = Arc::clone(&mixed_conn);
+    let mixed_pump_task = Box::new(ThreadJoinedTask(Some(std::thread::spawn(move || {
+        futures_executor::block_on(pump_mixed_conn.pump());
+    }))));
+    let mixed_active: super::ActiveSlot = Arc::new(Mutex::new(None));
+    let mixed_binding = SessionResumeBinding::new(
+        SessionRef::new("sidecar-mixed-ids").expect("session ref"),
+        ConfiguredInstanceId::new("pi.sidecar.inst").expect("instance id"),
+        mixed_host.clone(),
+        ModelRouteId::new("pi.route").expect("route id"),
+        ModelId::new("pi-model").expect("model id"),
+        WorkingResourceRef::new("workspace.main").expect("resource"),
+        SessionAccessPolicy::read_only(),
+    );
+    let mut mixed_session = PiSdkSidecarSessionHandle {
+        request_id: RequestId::new("w-1").expect("short request id"),
+        runtime_id: RuntimeSessionId::new("pi-sdk-sidecar:mixed-ids").expect("session id"),
+        execution_host_id: mixed_host,
+        binding: mixed_binding,
+        connection: Arc::clone(&mixed_conn),
+        cancellation: SessionCancellation::new(Arc::clone(&mixed_conn), Arc::clone(&mixed_active)),
+        pump_task: Some(mixed_pump_task),
+        services: mixed_services.clone(),
+        resource: None,
+        credential: None,
+        active: mixed_active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        image_attachments: false,
+    };
+
+    // Short turn `"w-1"` first fails local startup (`spawn_deadline` refused),
+    // which must NOT consume its caller turn ID; retrying `"w-1"` once local
+    // startup succeeds must dispatch and finish cleanly.
+    struct RefusingTaskService;
+    impl ScopedTaskService for RefusingTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            _task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            Err(RuntimeFailure::new(SafeDiagnostic::new(
+                "fixture.spawn_refused",
+                "fixture refuses deadline task spawn",
+            )))
+        }
+    }
+    let failing_startup_services = HostServices::new(mixed_session.execution_host_id.clone())
+        .with_task(Arc::new(RefusingTaskService))
+        .with_time(Arc::new(PendingClock));
+    let failed_short_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("short turn id"),
+        OperationContent::new("short").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100)));
+    let startup_err = futures_executor::block_on(
+        mixed_session.start_turn(failed_short_req, failing_startup_services),
+    )
+    .err()
+    .expect("refused deadline spawn must fail locally before dispatch");
+    assert_eq!(startup_err.diagnostic().code(), "fixture.spawn_refused");
+    assert!(
+        mixed_process.recorded_ids().is_empty(),
+        "local startup failure must not write a prompt to the sidecar"
+    );
+
+    // If the deadline elapses during local preparation (before `run_before_deadline`
+    // polls the prompt command), the caller turn ID must still remain unconsumed.
+    struct AdvancingClock {
+        calls: std::sync::atomic::AtomicUsize,
+    }
+    impl TimeService for AdvancingClock {
+        fn now(&self) -> MonotonicInstant {
+            let call = self.calls.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+            if call == 0 {
+                MonotonicInstant::from_ticks(0)
+            } else {
+                MonotonicInstant::from_ticks(100)
+            }
+        }
+        fn wait_until(&self, deadline: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::ready(DeadlineObservation::new(
+                deadline,
+                MonotonicInstant::from_ticks(100),
+            )))
+        }
+    }
+    let expiring_services = HostServices::new(mixed_session.execution_host_id.clone())
+        .with_task(Arc::new(ThreadTaskService))
+        .with_time(Arc::new(AdvancingClock {
+            calls: std::sync::atomic::AtomicUsize::new(0),
+        }));
+    let expiring_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("short turn id"),
+        OperationContent::new("short").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(50)));
+    let expire_err =
+        futures_executor::block_on(mixed_session.start_turn(expiring_req, expiring_services))
+            .err()
+            .expect("deadline elapsed during local preparation must time out before dispatch");
+    assert_eq!(
+        expire_err.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.prompt_timed_out"
+    );
+    assert!(
+        mixed_process.recorded_ids().is_empty(),
+        "pre-poll deadline expiry must not write a prompt to the sidecar"
+    );
+
+    // Retry with the exact same turn ID `"w-1"` succeeds and finishes via native abort.
+    let short_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("short turn id"),
+        OperationContent::new("short").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100)));
+    let short_turn =
+        futures_executor::block_on(mixed_session.start_turn(short_req, mixed_services.clone()))
+            .expect("retry of turn id 'w-1' after local startup failure succeeds");
+    assert_eq!(
+        futures_executor::block_on(short_turn.cancellation().request())
+            .expect("short turn aborts cleanly"),
+        swallowtail_runtime::CancellationAcknowledgement::Requested
+    );
+    // Mark the short turn finished so a second turn can start on the same session.
+    {
+        let slot = mixed_session.active.lock().expect("active lock");
+        slot.as_ref()
+            .expect("active turn present")
+            .turn
+            .handle_event(crate::sidecar::wire::PiSdkSidecarEvent::Settled)
+            .expect("short turn settles as cancelled");
+    }
+    drop(short_turn);
+
+    // Repeating a settled turn ID must be rejected before dispatch with no
+    // second prompt write on the wire.
+    let prompt_writes_before = mixed_process
+        .recorded_ids()
+        .iter()
+        .filter(|(cmd, _)| cmd == "prompt")
+        .count();
+    let duplicate_turn_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("duplicate turn id"),
+        OperationContent::new("duplicate prompt").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(150)));
+    let duplicate_turn_err = futures_executor::block_on(
+        mixed_session.start_turn(duplicate_turn_req, mixed_services.clone()),
+    )
+    .err()
+    .expect("repeating a settled turn ID must be rejected before dispatch");
+    assert_eq!(
+        duplicate_turn_err.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.command_id_reused"
+    );
+    assert_eq!(
+        mixed_process
+            .recorded_ids()
+            .iter()
+            .filter(|(cmd, _)| cmd == "prompt")
+            .count(),
+        prompt_writes_before,
+        "repeating a settled turn ID must not write a second prompt to the sidecar"
+    );
+
+    // Oversized turn on the same connection must not collide with `"w-1"`.
+    let oversized_req = TurnRequest::new(
+        RuntimeTurnId::new("x".repeat(160)).expect("long turn id"),
+        OperationContent::new("long").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(200)));
+    let mut oversized_turn =
+        futures_executor::block_on(mixed_session.start_turn(oversized_req, mixed_services.clone()))
+            .expect("oversized turn starts after short turn 'w-1' without wire ID collision");
+
+    // A short steer caller ID matching the next generated abort wire ID must
+    // not collide with wire IDs or block native cancellation.
+    let colliding_caller_id = HarnessCommandId::new("abort:w-5").expect("command id");
+    let steer_resp = futures_executor::block_on(oversized_turn.schedule_harness_message(
+        HarnessScheduledMessage::new(
+            colliding_caller_id.clone(),
+            HarnessMessageClass::Steering,
+            OperationContent::new("steer").expect("content"),
+        ),
+    ))
+    .expect("steer with caller id 'abort:w-5' succeeds");
+    assert_eq!(steer_resp.command_id(), &colliding_caller_id);
+    assert_eq!(
+        steer_resp.acknowledgement(),
+        HarnessCommandAcknowledgement::Accepted
+    );
+
+    // Reusing the same caller command ID for follow-up is still rejected.
+    let duplicate_err = futures_executor::block_on(oversized_turn.schedule_harness_message(
+        HarnessScheduledMessage::new(
+            colliding_caller_id,
+            HarnessMessageClass::FollowUp,
+            OperationContent::new("duplicate").expect("content"),
+        ),
+    ))
+    .expect_err("duplicate caller command id must still be rejected");
+    assert_eq!(
+        duplicate_err.diagnostic().code(),
+        "swallowtail.pi.sdk-sidecar.command_id_reused"
+    );
+
+    // Native abort still dispatches cleanly without colliding with steer's caller ID.
+    assert_eq!(
+        futures_executor::block_on(oversized_turn.cancellation().request())
+            .expect("native abort must succeed after colliding caller steer ID"),
+        swallowtail_runtime::CancellationAcknowledgement::Requested
+    );
+    drop(oversized_turn);
+
+    let mixed_cleanup = futures_executor::block_on(Box::new(mixed_session).close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(300))),
+        mixed_services,
+    ));
+    assert_eq!(mixed_cleanup, CleanupOutcome::Clean);
+    let mixed_ids = mixed_process.recorded_ids();
+    assert_eq!(
+        mixed_ids.iter().filter(|(cmd, _)| cmd == "abort").count(),
+        2,
+        "both short and oversized turns must reach native abort on the wire: {mixed_ids:?}"
+    );
 }

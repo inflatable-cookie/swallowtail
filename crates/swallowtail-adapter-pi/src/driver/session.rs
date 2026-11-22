@@ -469,10 +469,13 @@ async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
         }
     };
     if let Some(mut active) = finished {
-        if let Some(task) = active.deadline_task.take() {
-            task.join().await?;
-        }
-        if matches!(active.attachment.release().await, CleanupOutcome::Failed(_)) {
+        let join_result = match active.deadline_task.take() {
+            Some(task) => task.join().await,
+            None => Ok(()),
+        };
+        let attachment_cleanup = active.attachment.release().await;
+        join_result?;
+        if matches!(attachment_cleanup, CleanupOutcome::Failed(_)) {
             return Err(failure(
                 "swallowtail.pi.rpc.attachment_cleanup_failed",
                 "Pi RPC attachment cleanup failed",

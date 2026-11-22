@@ -218,7 +218,6 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 dispatched: Arc::clone(&prompt_dispatched),
                 active: true,
             };
-            let id = format!("prompt:{}", request.turn_id().as_str());
             let mut params = json!({"text": request.content().as_str()});
             if let Some(attachment) = attachment {
                 params["images"] = json!([{
@@ -227,12 +226,19 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 }]);
             }
             let response = crate::driver::run_before_deadline(
-                self.connection.command_tracked(
-                    id,
-                    PiSdkSidecarCommand::Prompt,
-                    params,
-                    &prompt_dispatched,
-                ),
+                async {
+                    self.connection
+                        .reserve_caller_turn_id(request.turn_id().as_str())?;
+                    let id = self.connection.next_command_id("prompt");
+                    self.connection
+                        .command_tracked(
+                            id,
+                            PiSdkSidecarCommand::Prompt,
+                            params,
+                            &prompt_dispatched,
+                        )
+                        .await
+                },
                 Some(deadline),
                 &services,
                 "swallowtail.pi.sdk-sidecar.prompt_timed_out",
@@ -321,7 +327,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 {
                     active.turn.mark_cancelled();
                 }
-                let id = format!("close:{}", self.request_id.as_str());
+                let id = self.connection.next_command_id("close");
                 let deadline = graceful_shutdown_deadline(&services, Some(request.deadline()));
                 let connection = &self.connection;
                 let process = stop_session_process(
@@ -407,7 +413,7 @@ fn spawn_deadline(
                 .await;
                 if timed_out {
                     deadline_turn.mark_timed_out();
-                    let id = format!("deadline-abort:{}", deadline_turn.runtime_id().as_str());
+                    let id = connection.next_command_id("deadline-abort");
                     let abort = run_before_deadline(
                         connection.abort_command(id, json!({}), Arc::clone(&deadline_turn)),
                         grace_deadline(&deadline_services, ABORT_ACKNOWLEDGEMENT_GRACE_TICKS),
@@ -466,10 +472,13 @@ async fn reap_finished(active: &ActiveSlot) -> Result<(), RuntimeFailure> {
         }
     };
     if let Some(mut active) = finished {
-        if let Some(task) = active.deadline_task.take() {
-            task.join().await?;
-        }
-        if matches!(active.attachment.release().await, CleanupOutcome::Failed(_)) {
+        let join_result = match active.deadline_task.take() {
+            Some(task) => task.join().await,
+            None => Ok(()),
+        };
+        let attachment_cleanup = active.attachment.release().await;
+        join_result?;
+        if matches!(attachment_cleanup, CleanupOutcome::Failed(_)) {
             return Err(failure(
                 "swallowtail.pi.sdk-sidecar.attachment_cleanup_failed",
                 "Pi SDK sidecar attachment cleanup failed",

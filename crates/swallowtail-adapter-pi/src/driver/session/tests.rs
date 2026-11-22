@@ -961,3 +961,64 @@ fn close_force_stops_an_unresponsive_rpc_child_and_releases_leases() {
     };
     fixture.assert_escalation(session, services, false);
 }
+
+#[test]
+fn reap_finished_releases_attachment_lease_when_deadline_join_fails() {
+    use super::{ActiveSlot, reap_finished};
+    use std::sync::Mutex;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use swallowtail_runtime::{
+        AttachmentDescriptor, AttachmentFileLease, AttachmentRef, AttachmentService,
+        MaterializedFileRef,
+    };
+
+    struct TrackingAttachmentService {
+        releases: AtomicUsize,
+    }
+    impl AttachmentService for TrackingAttachmentService {
+        fn materialize_file(
+            &self,
+            _scope: ScopeId,
+            _descriptor: AttachmentDescriptor,
+        ) -> BoxFuture<'static, Result<AttachmentFileLease, RuntimeFailure>> {
+            Box::pin(async {
+                Err(RuntimeFailure::new(SafeDiagnostic::new(
+                    "fixture.unused",
+                    "unused",
+                )))
+            })
+        }
+        fn release_file(&self, _lease: AttachmentFileLease) -> BoxFuture<'static, CleanupOutcome> {
+            self.releases.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async { CleanupOutcome::Clean })
+        }
+    }
+
+    let connection = connection();
+    let mut active = active_turn(&connection, Some(Box::new(FailingJoin)));
+    active
+        .turn
+        .fail_connection(SafeDiagnostic::new("fixture.done", "finished"));
+    let attachment_service = Arc::new(TrackingAttachmentService {
+        releases: AtomicUsize::new(0),
+    });
+    let lease = AttachmentFileLease::operation_scoped(
+        ScopeId::new("pi-rpc:reap-test").expect("scope id"),
+        AttachmentRef::new("att-reap-1").expect("attachment ref"),
+        MaterializedFileRef::new("/fixture/reap-test.png").expect("file ref"),
+    );
+    active.attachment = SharedAttachmentMaterialization::new(
+        Arc::clone(&attachment_service) as Arc<dyn AttachmentService>,
+        lease,
+    );
+
+    let slot: ActiveSlot = Arc::new(Mutex::new(Some(active)));
+    let error = futures_executor::block_on(reap_finished(&slot))
+        .expect_err("deadline join failure must be returned");
+    assert_eq!(error.diagnostic().code(), "fixture.join_failed");
+    assert_eq!(
+        attachment_service.releases.load(Ordering::SeqCst),
+        1,
+        "reap_finished must release the attachment lease even when deadline_task.join() fails"
+    );
+}

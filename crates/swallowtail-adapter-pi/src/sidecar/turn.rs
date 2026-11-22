@@ -41,6 +41,17 @@ impl Future for TurnFinishedFuture {
     }
 }
 
+#[derive(Default)]
+struct AbortSettlementState {
+    abort_in_flight: bool,
+    abort_rejected: bool,
+    cancelled: bool,
+    pending_settled: bool,
+}
+
+#[cfg(test)]
+type ReconcileProbeHook = Arc<dyn Fn(bool) + Send + Sync>;
+
 pub(crate) struct SidecarActiveTurn {
     runtime_id: RuntimeTurnId,
     events: TurnEvents,
@@ -51,14 +62,15 @@ pub(crate) struct SidecarActiveTurn {
     usage: Mutex<Option<TokenUsage>>,
     steering_scheduled: AtomicBool,
     follow_up_scheduled: AtomicBool,
-    abort_in_flight: AtomicBool,
-    abort_rejected: AtomicBool,
-    pending_settled: Mutex<bool>,
-    cancelled: AtomicBool,
+    abort_state: Mutex<AbortSettlementState>,
     timed_out: AtomicBool,
     finished: AtomicBool,
     completed_prompts: Arc<AtomicU32>,
     finish_signal: Arc<Mutex<FinishedState>>,
+    #[cfg(test)]
+    after_abort_in_flight_check: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
+    #[cfg(test)]
+    before_reconcile_lock: Mutex<Option<ReconcileProbeHook>>,
 }
 
 impl SidecarActiveTurn {
@@ -81,14 +93,15 @@ impl SidecarActiveTurn {
                 usage: Mutex::new(None),
                 steering_scheduled: AtomicBool::new(false),
                 follow_up_scheduled: AtomicBool::new(false),
-                abort_in_flight: AtomicBool::new(false),
-                abort_rejected: AtomicBool::new(false),
-                pending_settled: Mutex::new(false),
-                cancelled: AtomicBool::new(false),
+                abort_state: Mutex::new(AbortSettlementState::default()),
                 timed_out: AtomicBool::new(false),
                 finished: AtomicBool::new(false),
                 completed_prompts,
                 finish_signal: Arc::new(Mutex::new(FinishedState::default())),
+                #[cfg(test)]
+                after_abort_in_flight_check: Mutex::new(None),
+                #[cfg(test)]
+                before_reconcile_lock: Mutex::new(None),
             }),
             stream,
             future,
@@ -108,10 +121,10 @@ impl SidecarActiveTurn {
     }
 
     fn has_pending_settled(&self) -> bool {
-        *self
-            .pending_settled
+        self.abort_state
             .lock()
-            .expect("sidecar pending-settled lock poisoned")
+            .expect("sidecar abort-settlement lock poisoned")
+            .pending_settled
     }
 
     pub(crate) fn handle_event(&self, event: PiSdkSidecarEvent) -> Result<(), RuntimeFailure> {
@@ -165,15 +178,27 @@ impl SidecarActiveTurn {
             | PiSdkSidecarEvent::ToolUpdated { .. }
             | PiSdkSidecarEvent::ToolEnded { .. } => Ok(()),
             PiSdkSidecarEvent::Settled => {
-                if !self.timed_out.load(Ordering::SeqCst)
-                    && !self.cancelled.load(Ordering::SeqCst)
-                    && self.abort_in_flight.load(Ordering::SeqCst)
                 {
-                    *self
-                        .pending_settled
+                    let mut state = self
+                        .abort_state
                         .lock()
-                        .expect("sidecar pending-settled lock poisoned") = true;
-                    return Ok(());
+                        .expect("sidecar abort-settlement lock poisoned");
+                    if !self.timed_out.load(Ordering::SeqCst)
+                        && !state.cancelled
+                        && state.abort_in_flight
+                    {
+                        #[cfg(test)]
+                        if let Some(hook) = self
+                            .after_abort_in_flight_check
+                            .lock()
+                            .expect("sidecar test hook lock poisoned")
+                            .clone()
+                        {
+                            hook();
+                        }
+                        state.pending_settled = true;
+                        return Ok(());
+                    }
                 }
                 self.finish_settled()
             }
@@ -183,9 +208,14 @@ impl SidecarActiveTurn {
 
     fn finish_settled(&self) -> Result<(), RuntimeFailure> {
         let usage = *self.usage.lock().expect("sidecar usage lock poisoned");
+        let cancelled = self
+            .abort_state
+            .lock()
+            .expect("sidecar abort-settlement lock poisoned")
+            .cancelled;
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
-        } else if self.cancelled.load(Ordering::SeqCst) {
+        } else if cancelled {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
         } else if usage.is_none() {
             (
@@ -207,32 +237,60 @@ impl SidecarActiveTurn {
     }
 
     pub(crate) fn mark_abort_in_flight(&self) {
-        self.abort_in_flight.store(true, Ordering::SeqCst);
+        self.abort_state
+            .lock()
+            .expect("sidecar abort-settlement lock poisoned")
+            .abort_in_flight = true;
     }
 
     pub(crate) fn mark_abort_acknowledged(&self) {
-        self.cancelled.store(true, Ordering::SeqCst);
-        self.abort_in_flight.store(false, Ordering::SeqCst);
-        self.abort_rejected.store(false, Ordering::SeqCst);
+        let mut state = self
+            .abort_state
+            .lock()
+            .expect("sidecar abort-settlement lock poisoned");
+        state.cancelled = true;
+        state.abort_in_flight = false;
+        state.abort_rejected = false;
     }
 
+    #[cfg(test)]
     pub(crate) fn mark_abort_rejected(&self) {
-        self.abort_rejected.store(true, Ordering::SeqCst);
-        self.abort_in_flight.store(false, Ordering::SeqCst);
+        let mut state = self
+            .abort_state
+            .lock()
+            .expect("sidecar abort-settlement lock poisoned");
+        state.abort_rejected = true;
+        state.abort_in_flight = false;
     }
 
     pub(crate) fn reconcile_abort_response(&self, success: bool) -> Result<(), RuntimeFailure> {
-        if success {
-            self.mark_abort_acknowledged();
-        } else {
-            self.mark_abort_rejected();
+        #[cfg(test)]
+        if let Some(hook) = self
+            .before_reconcile_lock
+            .lock()
+            .expect("sidecar test hook lock poisoned")
+            .clone()
+        {
+            let contended = matches!(
+                self.abort_state.try_lock(),
+                Err(std::sync::TryLockError::WouldBlock)
+            );
+            hook(contended);
         }
         let settled = {
-            let mut pending = self
-                .pending_settled
+            let mut state = self
+                .abort_state
                 .lock()
-                .expect("sidecar pending-settled lock poisoned");
-            std::mem::replace(&mut *pending, false)
+                .expect("sidecar abort-settlement lock poisoned");
+            if success {
+                state.cancelled = true;
+                state.abort_in_flight = false;
+                state.abort_rejected = false;
+            } else {
+                state.abort_rejected = true;
+                state.abort_in_flight = false;
+            }
+            std::mem::replace(&mut state.pending_settled, false)
         };
         if settled && let Err(error) = self.finish_settled() {
             self.finish(TerminalStatus::RuntimeFailed(error.diagnostic().clone()));
@@ -242,7 +300,10 @@ impl SidecarActiveTurn {
     }
 
     pub(crate) fn mark_cancelled(&self) {
-        self.cancelled.store(true, Ordering::SeqCst);
+        self.abort_state
+            .lock()
+            .expect("sidecar abort-settlement lock poisoned")
+            .cancelled = true;
     }
 
     pub(crate) fn mark_timed_out(&self) {
@@ -250,17 +311,19 @@ impl SidecarActiveTurn {
     }
 
     pub(crate) fn fail_connection(&self, diagnostic: SafeDiagnostic) {
-        *self
-            .pending_settled
-            .lock()
-            .expect("sidecar pending-settled lock poisoned") = false;
+        let (cancelled, abort_in_flight, abort_rejected) = {
+            let mut state = self
+                .abort_state
+                .lock()
+                .expect("sidecar abort-settlement lock poisoned");
+            state.pending_settled = false;
+            (state.cancelled, state.abort_in_flight, state.abort_rejected)
+        };
         let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
             (TerminalStatus::TimedOut, ActivityStatus::Failed)
-        } else if self.cancelled.load(Ordering::SeqCst) {
+        } else if cancelled {
             (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
-        } else if self.abort_in_flight.load(Ordering::SeqCst)
-            || self.abort_rejected.load(Ordering::SeqCst)
-        {
+        } else if abort_in_flight || abort_rejected {
             (
                 TerminalStatus::RuntimeFailed(SafeDiagnostic::new(
                     "swallowtail.pi.sdk-sidecar.cancel_rejected",
@@ -278,10 +341,10 @@ impl SidecarActiveTurn {
     }
 
     pub(crate) fn fail_rejected_abort(&self, diagnostic: SafeDiagnostic) {
-        *self
-            .pending_settled
+        self.abort_state
             .lock()
-            .expect("sidecar pending-settled lock poisoned") = false;
+            .expect("sidecar abort-settlement lock poisoned")
+            .pending_settled = false;
         let status = if self.timed_out.load(Ordering::SeqCst) {
             TerminalStatus::TimedOut
         } else {
@@ -603,7 +666,11 @@ mod tests {
             if acknowledged_retry {
                 turn.mark_abort_acknowledged();
                 assert!(
-                    !turn.abort_rejected.load(Ordering::SeqCst),
+                    !turn
+                        .abort_state
+                        .lock()
+                        .expect("sidecar abort-settlement lock poisoned")
+                        .abort_rejected,
                     "retry clears the previous rejection"
                 );
             } else {
@@ -734,5 +801,100 @@ mod tests {
             TerminalStatus::RuntimeFailed(diagnostic)
                 if diagnostic.code() == "swallowtail.pi.sdk-sidecar.usage_missing"
         ));
+    }
+
+    #[test]
+    fn sidecar_settled_and_reconcile_abort_response_share_mutex_and_never_strand_turn() {
+        use futures_util::FutureExt;
+        use std::sync::mpsc;
+        use std::time::Duration;
+
+        // Pause `handle_event(Settled)` between checking `abort_in_flight` and
+        // storing `pending_settled`, then run `reconcile_abort_response`. The
+        // reconciliation probe runs `try_lock()` on `abort_state` while
+        // settlement is still paused and only releases the settlement gate
+        // after recording contention (or after reconciliation completes if
+        // uncontended). Any timeout is strictly a failure watchdog.
+        const WATCHDOG: Duration = Duration::from_secs(5);
+        for success in [true, false] {
+            let (turn, _events, terminal) = SidecarActiveTurn::new(
+                RuntimeTurnId::new(format!("sidecar-toctou-gated-{success}"))
+                    .expect("turn id is valid"),
+                Arc::new(AtomicU32::new(0)),
+            )
+            .expect("sidecar turn constructs");
+            turn.add_usage(TokenUsage::new(Some(3), Some(2)))
+                .expect("usage recorded");
+            turn.mark_abort_in_flight();
+
+            let (checked_tx, checked_rx) = mpsc::channel();
+            let (release_settled_tx, release_settled_rx) = mpsc::channel();
+            let probe_contended = Arc::new(AtomicBool::new(false));
+            let probe_contended_hook = Arc::clone(&probe_contended);
+            let release_settled_rx = Mutex::new(release_settled_rx);
+            let release_settled_hook = Mutex::new(Some(release_settled_tx.clone()));
+
+            *turn
+                .after_abort_in_flight_check
+                .lock()
+                .expect("sidecar test hook lock poisoned") = Some(Arc::new(move || {
+                checked_tx.send(()).expect("signal checked");
+                release_settled_rx
+                    .lock()
+                    .expect("release rx lock")
+                    .recv_timeout(WATCHDOG)
+                    .expect("watchdog: reconcile probe did not release settlement gate");
+            }));
+
+            *turn
+                .before_reconcile_lock
+                .lock()
+                .expect("sidecar test hook lock poisoned") = Some(Arc::new(move |contended| {
+                probe_contended_hook.store(contended, Ordering::SeqCst);
+                if contended && let Some(tx) = release_settled_hook.lock().expect("tx lock").take()
+                {
+                    let _ = tx.send(());
+                }
+            }));
+
+            let settled_turn = Arc::clone(&turn);
+            let settled_thread = std::thread::spawn(move || {
+                settled_turn
+                    .handle_event(PiSdkSidecarEvent::Settled)
+                    .expect("settled succeeds");
+            });
+
+            checked_rx
+                .recv_timeout(WATCHDOG)
+                .expect("watchdog: settled did not reach abort_in_flight check");
+            turn.reconcile_abort_response(success)
+                .expect("reconcile succeeds");
+            // If a broken split-lock implementation allowed `try_lock()` to
+            // succeed uncontended, `reconcile_abort_response` has already
+            // finished without draining `pending_settled`; releasing settlement
+            // now lets it write `pending_settled` late and strand the turn.
+            let _ = release_settled_tx.send(());
+
+            settled_thread.join().expect("settled thread joins");
+
+            assert!(
+                probe_contended.load(Ordering::SeqCst),
+                "reconcile_abort_response must observe abort_state lock contention while handle_event(Settled) is between check and store (success={success})"
+            );
+            assert!(
+                turn.is_finished(),
+                "sidecar turn must not be stranded after gated interleaving (success={success})"
+            );
+            assert!(!turn.has_pending_settled());
+            let outcome = terminal
+                .now_or_never()
+                .expect("terminal outcome must be ready without stranding");
+            let expected = if success {
+                TerminalStatus::Cancelled
+            } else {
+                TerminalStatus::Completed
+            };
+            assert_eq!(outcome.status(), &expected);
+        }
     }
 }

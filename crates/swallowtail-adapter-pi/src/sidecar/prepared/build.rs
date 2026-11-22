@@ -136,13 +136,16 @@ pub(super) fn prepare(
         RuntimeReadiness::Ready,
         SupportAuthority::IntegrationMaintainerSupported,
     );
-    let services = [
+    let mut services = vec![
         HostServiceKind::Task,
         HostServiceKind::Process,
         HostServiceKind::Credential,
         HostServiceKind::WorkingResource,
         HostServiceKind::Time,
     ];
+    if input.image_attachments {
+        services.extend([HostServiceKind::Attachment, HostServiceKind::BlockingWork]);
+    }
     let requirements = OperationRequirements::new(
         ExecutionLayer::HarnessInteraction,
         OperationShape::InteractiveSession,
@@ -156,7 +159,7 @@ pub(super) fn prepare(
             .with_support_authorities([SupportAuthority::IntegrationMaintainerSupported]),
     )
     .with_ownership_modes([InstanceOwnership::HostOwnedEphemeral])
-    .with_host_services(services)
+    .with_host_services(services.clone())
     .with_capabilities(capability_requirements)
     .with_harness_isolation(HarnessIsolation::AmbientHost)
     .with_harness_configuration_posture(HarnessConfigurationPosture::ProviderSuppressed)

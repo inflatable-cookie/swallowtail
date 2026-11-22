@@ -11,7 +11,7 @@ pub(crate) use decode::decode_usage;
 use replay::PiSdkReplayItem;
 
 const MAXIMUM_RECORD_BYTES: usize = 1024 * 1024;
-const MAXIMUM_COMMAND_ID_BYTES: usize = 128;
+pub(crate) const MAXIMUM_COMMAND_ID_BYTES: usize = 128;
 const MAXIMUM_FAILURE_CODE_BYTES: usize = 96;
 const MAXIMUM_FAILURE_MESSAGE_BYTES: usize = 512;
 

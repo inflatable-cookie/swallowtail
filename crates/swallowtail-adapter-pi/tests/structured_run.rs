@@ -296,3 +296,42 @@ fn structured_run_relays_the_qualified_pi_ui_callback() {
     assert_eq!(outcome.status(), &TerminalStatus::Completed);
     assert_eq!(block_on(handle.close()), CleanupOutcome::Clean);
 }
+
+#[test]
+fn structured_run_close_surfaces_session_cleanup_failure() {
+    let topology = ExecutionTopologyFixture::local();
+    let fixture = FixtureHost::new(Scenario::Complete).with_process_wait_failure();
+    let selected = run_selection_for_topology(&topology);
+    let services = fixture.services(topology.execution_host_id().clone());
+    let driver = PiRpcDriver::new(
+        EnvironmentRef::new("pi.fixture.environment").expect("valid environment"),
+        selected.credential,
+    );
+    let mut handle = block_on(driver.start_run(
+        selected.plan,
+        run_request(
+            "pi-structured-cleanup-failure",
+            selected.resource,
+            Deadline::at(MonotonicInstant::from_ticks(100_000)),
+        ),
+        services,
+    ))
+    .expect("run starts");
+    let outcome = block_on(
+        handle
+            .take_terminal_outcome()
+            .expect("terminal outcome is available"),
+    );
+    assert_eq!(outcome.status(), &TerminalStatus::Completed);
+    assert!(
+        matches!(outcome.cleanup(), CleanupOutcome::Failed(_)),
+        "terminal outcome must report the session cleanup failure, got {:?}",
+        outcome.cleanup()
+    );
+    let close_cleanup = block_on(handle.close());
+    assert_eq!(
+        &close_cleanup,
+        outcome.cleanup(),
+        "PiRunHandle::close() must surface the session.close_run() cleanup failure instead of Clean"
+    );
+}

@@ -1348,7 +1348,42 @@ fn sidecar_long_caller_ids_produce_bounded_wire_command_ids() {
         image_attachments: false,
     };
 
-    // Short turn `"w-1"` succeeds and finishes via native abort.
+    // Short turn `"w-1"` first fails local startup (`spawn_deadline` refused),
+    // which must NOT consume its caller turn ID; retrying `"w-1"` once local
+    // startup succeeds must dispatch and finish cleanly.
+    struct RefusingTaskService;
+    impl ScopedTaskService for RefusingTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            _task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            Err(RuntimeFailure::new(SafeDiagnostic::new(
+                "fixture.spawn_refused",
+                "fixture refuses deadline task spawn",
+            )))
+        }
+    }
+    let failing_startup_services = HostServices::new(mixed_session.execution_host_id.clone())
+        .with_task(Arc::new(RefusingTaskService))
+        .with_time(Arc::new(PendingClock));
+    let failed_short_req = TurnRequest::new(
+        RuntimeTurnId::new("w-1").expect("short turn id"),
+        OperationContent::new("short").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100)));
+    let startup_err = futures_executor::block_on(
+        mixed_session.start_turn(failed_short_req, failing_startup_services),
+    )
+    .err()
+    .expect("refused deadline spawn must fail locally before dispatch");
+    assert_eq!(startup_err.diagnostic().code(), "fixture.spawn_refused");
+    assert!(
+        mixed_process.recorded_ids().is_empty(),
+        "local startup failure must not write a prompt to the sidecar"
+    );
+
+    // Retry with the exact same turn ID `"w-1"` succeeds and finishes via native abort.
     let short_req = TurnRequest::new(
         RuntimeTurnId::new("w-1").expect("short turn id"),
         OperationContent::new("short").expect("content"),
@@ -1356,7 +1391,7 @@ fn sidecar_long_caller_ids_produce_bounded_wire_command_ids() {
     .with_deadline(Deadline::at(MonotonicInstant::from_ticks(100)));
     let short_turn =
         futures_executor::block_on(mixed_session.start_turn(short_req, mixed_services.clone()))
-            .expect("short turn id 'w-1' starts");
+            .expect("retry of turn id 'w-1' after local startup failure succeeds");
     assert_eq!(
         futures_executor::block_on(short_turn.cancellation().request())
             .expect("short turn aborts cleanly"),

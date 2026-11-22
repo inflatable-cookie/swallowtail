@@ -112,6 +112,13 @@ impl SidecarConnection {
                     .remove(&response.id)
                     .expect("validated sidecar pending command exists");
                 drop(pending_commands);
+                if let Some(turn) = pending.abort_turn {
+                    if response.success {
+                        turn.mark_abort_acknowledged();
+                    } else {
+                        turn.mark_abort_rejected();
+                    }
+                }
                 Ok(Some((
                     pending.sender,
                     CommandResult {

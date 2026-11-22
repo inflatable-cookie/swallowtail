@@ -53,7 +53,11 @@ impl CancellationControl for TurnCancellation {
             let id = format!("abort:{}", self.turn.runtime_id().as_str());
             let error = match self
                 .connection
-                .command(id.clone(), "abort", json!({"id": id, "type": "abort"}))
+                .abort_command(
+                    id.clone(),
+                    json!({"id": id, "type": "abort"}),
+                    Arc::clone(&self.turn),
+                )
                 .await
             {
                 Ok(response) if response.success => {
@@ -788,6 +792,178 @@ mod tests {
             ),
             "EOF before abort acknowledgement must resolve with cancel_rejected, got {:?}",
             outcome.status()
+        );
+    }
+
+    #[test]
+    fn successful_abort_response_immediately_followed_by_eof_resolves_cancelled() {
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::{ProcessOutputStream, TerminalStatus};
+
+        struct AckThenEof {
+            response: Mutex<Option<Vec<u8>>>,
+        }
+
+        impl ProcessHandle for AckThenEof {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let next = self.response.lock().expect("response lock").take();
+                Box::pin(async move {
+                    Ok(next
+                        .map(|bytes| ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes)))
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.rpc.abort-ack-eof-test").expect("host id is valid"),
+        );
+        let ack_line = b"{\"type\":\"response\",\"id\":\"abort:turn-ack-eof\",\"command\":\"abort\",\"success\":true}\n".to_vec();
+        let connection = PiConnection::new(
+            Arc::new(AckThenEof {
+                response: Mutex::new(Some(ack_line)),
+            }),
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-ack-eof").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            false,
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiTurnHandle::new(
+            RuntimeTurnId::new("turn-ack-eof").expect("turn id is valid"),
+            events,
+            callbacks,
+            Box::pin(terminal),
+            super::PiTurnBinding {
+                connection: Arc::clone(&connection),
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+                command_dispositions: false,
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        // Poll cancellation once so the abort command is registered and written,
+        // then run the entire pump (ack + EOF) to completion BEFORE polling the
+        // cancellation future again.
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        futures_executor::block_on(Arc::clone(&connection).pump());
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::Cancelled,
+            "successful abort reply immediately followed by EOF must resolve Cancelled"
+        );
+        assert!(futures_executor::block_on(cancel_fut).is_ok());
+    }
+
+    #[test]
+    fn normal_rpc_settlement_aborted_false_racing_rejected_abort_resolves_completed() {
+        use crate::protocol::PiAgentEvent;
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::{TerminalStatus, TokenUsage};
+
+        let (release_tx, release_rx) = futures_channel::oneshot::channel();
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.rpc.normal-settle-race").expect("host id is valid"),
+        );
+        let connection = PiConnection::new(
+            Arc::new(HeldRefusingStdin {
+                release: Mutex::new(Some(release_rx)),
+            }),
+            Arc::new(DummyTaskService),
+            Arc::new(DummyTimeService),
+            services,
+        );
+        let (turn, events, callbacks, terminal) = ActiveTurn::new(
+            RuntimeTurnId::new("turn-normal-race").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+            Arc::downgrade(&connection),
+            true,
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiTurnHandle::new(
+            RuntimeTurnId::new("turn-normal-race").expect("turn id is valid"),
+            events,
+            callbacks,
+            Box::pin(terminal),
+            super::PiTurnBinding {
+                connection: Arc::clone(&connection),
+                turn: Arc::clone(&turn),
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+                command_dispositions: false,
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        // Start abort (in-flight), then provider authoritatively settles normally
+        // with `aborted: Some(false)`.
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        turn.handle_event(PiAgentEvent::MessageEnded(Some(TokenUsage::new(
+            Some(10),
+            Some(5),
+        ))))
+        .expect("usage recorded");
+        turn.handle_event(PiAgentEvent::Settled {
+            aborted: Some(false),
+        })
+        .expect("normal settlement succeeds");
+
+        release_tx.send(()).expect("release rejected abort");
+        assert!(futures_executor::block_on(cancel_fut).is_err());
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::Completed,
+            "explicit RPC aborted:false settlement must resolve Completed despite in-flight abort"
         );
     }
 }

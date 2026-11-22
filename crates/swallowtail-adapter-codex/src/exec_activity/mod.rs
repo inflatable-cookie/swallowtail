@@ -4,6 +4,7 @@ mod subagent;
 use crate::exec_events::malformed_stream;
 use semver::Version;
 use serde_json::Value;
+use sha2::{Digest, Sha256};
 use std::collections::{HashMap, VecDeque};
 use swallowtail_core::{ActivityDisclosure, ProviderActivityRef};
 use swallowtail_runtime::{
@@ -14,6 +15,18 @@ use swallowtail_runtime::{
 
 /// Maximum number of tracked item records retained per exec run.
 const MAX_TRACKED_ACTIVITY_ENTRIES: usize = 2048;
+
+/// Fixed-size collision-resistant key for tracked exec items so multi-megabyte
+/// provider item IDs never inflate retained memory.
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+struct ItemKey([u8; 32]);
+
+impl ItemKey {
+    fn from_provider_id(provider_id: &str) -> Self {
+        let digest = Sha256::digest(provider_id.as_bytes());
+        Self(digest.into())
+    }
+}
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct ItemIdentity {
@@ -34,8 +47,8 @@ struct TrackedItem {
 /// when capacity is reached; if every slot is still active, inserting a new
 /// item fails explicitly rather than evicting an in-flight record.
 struct TrackedItemTable {
-    entries: HashMap<String, TrackedItem>,
-    order: VecDeque<String>,
+    entries: HashMap<ItemKey, TrackedItem>,
+    order: VecDeque<ItemKey>,
     capacity: usize,
 }
 
@@ -48,11 +61,11 @@ impl TrackedItemTable {
         }
     }
 
-    fn get_mut(&mut self, key: &str) -> Option<&mut TrackedItem> {
+    fn get_mut(&mut self, key: &ItemKey) -> Option<&mut TrackedItem> {
         self.entries.get_mut(key)
     }
 
-    fn insert(&mut self, key: String, item: TrackedItem) -> Result<(), RuntimeFailure> {
+    fn insert(&mut self, key: ItemKey, item: TrackedItem) -> Result<(), RuntimeFailure> {
         if let Some(existing) = self.entries.get_mut(&key) {
             *existing = item;
             return Ok(());
@@ -72,9 +85,14 @@ impl TrackedItemTable {
                 self.entries.remove(&evicted_key);
             }
         }
-        self.entries.insert(key.clone(), item);
+        self.entries.insert(key, item);
         self.order.push_back(key);
         Ok(())
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.entries.len()
     }
 }
 
@@ -146,8 +164,9 @@ impl ExecActivityProjection {
             &self.qualified_version,
             self.provider_thread_id.as_deref(),
         )?;
+        let key = ItemKey::from_provider_id(provider_id);
         let active = phase != ActivityLifecyclePhase::Completed;
-        let (activity_id, label) = if let Some(existing) = self.items.get_mut(provider_id) {
+        let (activity_id, label) = if let Some(existing) = self.items.get_mut(&key) {
             if existing.identity != projection.identity {
                 return Err(malformed_stream());
             }
@@ -160,7 +179,7 @@ impl ExecActivityProjection {
             let activity_id = self.mint_activity_id(provider_id)?;
             let label = projection.label;
             self.items.insert(
-                provider_id.to_owned(),
+                key,
                 TrackedItem {
                     activity_id: activity_id.clone(),
                     identity: projection.identity.clone(),
@@ -433,5 +452,51 @@ mod bounded_tests {
             .expect("provider item ID over 512 bytes must complete cleanly");
         assert_eq!(completed[0].activity_id(), started[0].activity_id());
         assert!(completed[0].provider_activity_ref().is_none());
+    }
+
+    #[test]
+    fn repeated_oversized_provider_item_ids_use_fixed_size_keys_and_bounded_table() {
+        assert_eq!(std::mem::size_of::<super::ItemKey>(), 32);
+        let mut projection = ExecActivityProjection::with_item_capacity(
+            RuntimeRunId::new("exec-run-bounded-keys").expect("run id"),
+            Version::new(0, 164, 0),
+            3,
+        );
+        for idx in 0..8 {
+            let huge_id = format!("oversized-{idx}-{}", "a".repeat(65_536));
+            let started = projection
+                .project(
+                    "item.started",
+                    &json!({
+                        "item": {
+                            "id": huge_id,
+                            "type": "command_execution",
+                            "command": format!("echo {idx}"),
+                            "status": "in_progress"
+                        }
+                    }),
+                )
+                .expect("oversized item starts");
+            let completed = projection
+                .project(
+                    "item.completed",
+                    &json!({
+                        "item": {
+                            "id": huge_id,
+                            "type": "command_execution",
+                            "command": format!("echo {idx}"),
+                            "status": "completed",
+                            "exit_code": 0
+                        }
+                    }),
+                )
+                .expect("oversized item completes");
+            assert_eq!(completed[0].activity_id(), started[0].activity_id());
+            assert!(
+                projection.items.len() <= 3,
+                "tracked table must remain bounded at capacity, got {}",
+                projection.items.len()
+            );
+        }
     }
 }

@@ -427,3 +427,298 @@ fn unacknowledged_prompt_and_abort_do_not_hang_and_invalidate_connection() {
         &TerminalStatus::TimedOut
     );
 }
+
+#[test]
+fn dropping_pending_start_turn_on_join_on_drop_host_finishes_cleanup_without_deadlock() {
+    use super::PiSessionHandle;
+    use crate::driver::handle::SessionCancellation;
+    use crate::selection::PiRpcVersionFeatures;
+    use std::sync::Mutex;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::task::{Context, Poll, Waker};
+    use swallowtail_runtime::{
+        InteractiveSessionHandle, OperationContent, RequestId, RuntimeSessionId,
+        SessionCleanupRequest, TurnRequest,
+    };
+
+    struct SilentProcess {
+        writes: AtomicUsize,
+    }
+    impl ProcessHandle for SilentProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.writes.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            Box::pin(std::future::pending())
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct PendingClock;
+    impl TimeService for PendingClock {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(0)
+        }
+        fn wait_until(&self, _: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    struct JoinOnDropThread(Option<std::thread::JoinHandle<()>>);
+    impl Drop for JoinOnDropThread {
+        fn drop(&mut self) {
+            if let Some(handle) = self.0.take() {
+                let _ = handle.join();
+            }
+        }
+    }
+    impl JoinedTask for JoinOnDropThread {
+        fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let handle = self.0.take();
+            Box::pin(async move {
+                if let Some(handle) = handle {
+                    let _ = handle.join();
+                }
+                Ok(())
+            })
+        }
+    }
+    struct JoinOnDropTaskService;
+    impl ScopedTaskService for JoinOnDropTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            Ok(Box::new(JoinOnDropThread(Some(std::thread::spawn(
+                move || {
+                    futures_executor::block_on(task);
+                },
+            )))))
+        }
+    }
+
+    let host = ExecutionHostId::new("pi.session.drop-pending-start").expect("host id");
+    let process = Arc::new(SilentProcess {
+        writes: AtomicUsize::new(0),
+    });
+    let services = HostServices::new(host.clone())
+        .with_task(Arc::new(JoinOnDropTaskService))
+        .with_time(Arc::new(PendingClock));
+    let connection = PiConnection::new(
+        Arc::clone(&process) as Arc<dyn ProcessHandle>,
+        Arc::new(JoinOnDropTaskService),
+        Arc::new(PendingClock),
+        services.clone(),
+    );
+    let active: super::ActiveSlot = Arc::new(Mutex::new(None));
+    let mut session = PiSessionHandle {
+        request_id: RequestId::new("req-drop-start").expect("req id"),
+        runtime_id: RuntimeSessionId::new("pi-rpc:drop-start").expect("session id"),
+        execution_host_id: host,
+        connection: Arc::clone(&connection),
+        cancellation: SessionCancellation::new(Arc::clone(&connection), Arc::clone(&active)),
+        pump_task: None,
+        services: services.clone(),
+        resource: None,
+        credential: None,
+        active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        version_features: PiRpcVersionFeatures {
+            command_dispositions: false,
+            aborted_settled: false,
+        },
+        image_attachments: false,
+    };
+
+    {
+        let req = TurnRequest::new(
+            RuntimeTurnId::new("turn-drop-pending").expect("turn id"),
+            OperationContent::new("hello").expect("content"),
+        )
+        .with_deadline(Deadline::at(MonotonicInstant::from_ticks(10)));
+        let mut fut = session.start_turn(req, services.clone());
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(fut.as_mut().poll(&mut cx), Poll::Pending));
+        assert_eq!(process.writes.load(Ordering::SeqCst), 1);
+        // Dropping `fut` here must disarm the deadline task instead of
+        // deadlocking on a join-on-drop host.
+    }
+
+    let cleanup = futures_executor::block_on(Box::new(session).close(
+        SessionCleanupRequest::new(Deadline::at(MonotonicInstant::from_ticks(100))),
+        services,
+    ));
+    assert_eq!(cleanup, CleanupOutcome::Clean);
+}
+
+#[test]
+fn already_expired_prompt_deadline_makes_zero_writes_and_keeps_session_usable() {
+    use super::PiSessionHandle;
+    use crate::driver::handle::SessionCancellation;
+    use crate::selection::PiRpcVersionFeatures;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+    use std::sync::{Condvar, Mutex};
+    use swallowtail_runtime::{
+        InteractiveSessionHandle, OperationContent, ProcessOutputStream, RequestId,
+        RuntimeSessionId, TurnRequest,
+    };
+
+    struct RespondingProcess {
+        writes: AtomicUsize,
+        force_stops: AtomicUsize,
+        output: Mutex<(bool, Option<Vec<u8>>)>,
+        written: Condvar,
+    }
+    impl ProcessHandle for RespondingProcess {
+        fn write_stdin(&self, _: ProcessInputChunk) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.writes.fetch_add(1, Ordering::SeqCst);
+            let mut state = self.output.lock().expect("output lock");
+            state.0 = true;
+            self.written.notify_all();
+            Box::pin(async { Ok(()) })
+        }
+        fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn read_output(&self) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+            let mut state = self.output.lock().expect("output lock");
+            while !state.0 {
+                state = self.written.wait(state).expect("output lock");
+            }
+            let line = state.1.take();
+            Box::pin(async move {
+                Ok(line.map(|bytes| ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes)))
+            })
+        }
+        fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            Box::pin(async { Ok(()) })
+        }
+        fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+            self.force_stops.fetch_add(1, Ordering::SeqCst);
+            Box::pin(async { Ok(()) })
+        }
+        fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+            Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+        }
+    }
+
+    struct AtTenClock;
+    impl TimeService for AtTenClock {
+        fn now(&self) -> MonotonicInstant {
+            MonotonicInstant::from_ticks(10)
+        }
+        fn wait_until(&self, _: Deadline) -> BoxFuture<'static, DeadlineObservation> {
+            Box::pin(std::future::pending())
+        }
+    }
+
+    struct InlineTaskService;
+    struct InlineTask(Option<BoxFuture<'static, ()>>);
+    impl JoinedTask for InlineTask {
+        fn join(mut self: Box<Self>) -> BoxFuture<'static, Result<(), RuntimeFailure>> {
+            let fut = self.0.take();
+            Box::pin(async move {
+                if let Some(fut) = fut {
+                    fut.await;
+                }
+                Ok(())
+            })
+        }
+    }
+    impl ScopedTaskService for InlineTaskService {
+        fn spawn(
+            &self,
+            _scope: ScopeId,
+            task: BoxFuture<'static, ()>,
+        ) -> Result<Box<dyn JoinedTask>, RuntimeFailure> {
+            Ok(Box::new(InlineTask(Some(task))))
+        }
+    }
+
+    let host = ExecutionHostId::new("pi.session.expired-deadline").expect("host id");
+    let process = Arc::new(RespondingProcess {
+        writes: AtomicUsize::new(0),
+        force_stops: AtomicUsize::new(0),
+        output: Mutex::new((
+            false,
+            Some(
+                b"{\"type\":\"response\",\"id\":\"prompt:turn-valid\",\"command\":\"prompt\",\"success\":true}\n"
+                    .to_vec(),
+            ),
+        )),
+        written: Condvar::new(),
+    });
+    let services = HostServices::new(host.clone())
+        .with_task(Arc::new(InlineTaskService))
+        .with_time(Arc::new(AtTenClock));
+    let connection = PiConnection::new(
+        Arc::clone(&process) as Arc<dyn ProcessHandle>,
+        Arc::new(InlineTaskService),
+        Arc::new(AtTenClock),
+        services.clone(),
+    );
+    let active: super::ActiveSlot = Arc::new(Mutex::new(None));
+    let mut session = PiSessionHandle {
+        request_id: RequestId::new("req-expired").expect("req id"),
+        runtime_id: RuntimeSessionId::new("pi-rpc:expired").expect("session id"),
+        execution_host_id: host,
+        connection: Arc::clone(&connection),
+        cancellation: SessionCancellation::new(Arc::clone(&connection), Arc::clone(&active)),
+        pump_task: None,
+        services: services.clone(),
+        resource: None,
+        credential: None,
+        active,
+        completed_prompts: Arc::new(AtomicU32::new(0)),
+        version_features: PiRpcVersionFeatures {
+            command_dispositions: false,
+            aborted_settled: false,
+        },
+        image_attachments: false,
+    };
+
+    // 1. Expired deadline fails before dispatch with zero writes and zero force_stops.
+    let expired_req = TurnRequest::new(
+        RuntimeTurnId::new("turn-expired").expect("turn id"),
+        OperationContent::new("too late").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(5)));
+    let err = futures_executor::block_on(session.start_turn(expired_req, services.clone()))
+        .err()
+        .expect("expired deadline must fail");
+    assert_eq!(
+        err.diagnostic().code(),
+        "swallowtail.pi.rpc.prompt_timed_out"
+    );
+    assert_eq!(process.writes.load(Ordering::SeqCst), 0);
+    assert_eq!(process.force_stops.load(Ordering::SeqCst), 0);
+
+    // 2. Session remains usable for a subsequent valid turn.
+    let pump_conn = Arc::clone(&connection);
+    let pump_thread = std::thread::spawn(move || futures_executor::block_on(pump_conn.pump()));
+    let valid_req = TurnRequest::new(
+        RuntimeTurnId::new("turn-valid").expect("turn id"),
+        OperationContent::new("valid").expect("content"),
+    )
+    .with_deadline(Deadline::at(MonotonicInstant::from_ticks(50)));
+    let turn = futures_executor::block_on(session.start_turn(valid_req, services))
+        .expect("session must still accept a valid turn after pre-dispatch timeout");
+    assert_eq!(process.writes.load(Ordering::SeqCst), 1);
+    assert_eq!(process.force_stops.load(Ordering::SeqCst), 0);
+    drop(turn);
+    pump_thread.join().expect("pump joins");
+}

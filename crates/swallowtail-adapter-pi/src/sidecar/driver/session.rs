@@ -93,6 +93,18 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     "Pi SDK sidecar session already has an active turn",
                 ));
             }
+            let deadline = request.deadline().expect("validated turn deadline");
+            if services
+                .time()
+                .expect("validated sidecar time service")
+                .now()
+                >= deadline.instant()
+            {
+                return Err(failure(
+                    "swallowtail.pi.sdk-sidecar.prompt_timed_out",
+                    "Pi SDK sidecar prompt timed out before acceptance",
+                ));
+            }
             let (turn, events, terminal) = SidecarActiveTurn::new(
                 request.turn_id().clone(),
                 Arc::clone(&self.completed_prompts),
@@ -119,11 +131,13 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 let _ = materialization.release().await;
                 return Err(error);
             }
-            let deadline = request.deadline().expect("validated turn deadline");
             // Spawn the deadline watcher before sending `prompt` so a spawn
             // failure rolls back cleanly without dispatching provider work, but
             // keep it parked on `arm_rx` until `prompt` is accepted so
             // `start_turn` remains the sole deadline owner during dispatch.
+            // Store the task in `self.active` immediately and bind `arm_tx` to
+            // `PendingStartGuard` so dropping a pending `start_turn` future
+            // disarms the task before `session.close()` joins it.
             let (arm_tx, arm_rx) = futures_channel::oneshot::channel();
             let deadline_task = match spawn_deadline(
                 &services,
@@ -140,6 +154,68 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     return Err(error);
                 }
             };
+            *self
+                .active
+                .lock()
+                .expect("sidecar active-task lock poisoned") = Some(ActiveTask {
+                turn: Arc::clone(&turn),
+                deadline_task: Some(deadline_task),
+                attachment: materialization.clone(),
+            });
+            let prompt_dispatched = Arc::new(std::sync::atomic::AtomicBool::new(false));
+            struct PendingStartGuard<'a> {
+                arm_tx: Option<futures_channel::oneshot::Sender<()>>,
+                connection: &'a Arc<SidecarConnection>,
+                turn: &'a Arc<SidecarActiveTurn>,
+                dispatched: Arc<std::sync::atomic::AtomicBool>,
+                active: bool,
+            }
+            impl PendingStartGuard<'_> {
+                fn accept(mut self) {
+                    if let Some(arm_tx) = self.arm_tx.take() {
+                        let _ = arm_tx.send(());
+                    }
+                    self.active = false;
+                }
+
+                fn disarm(mut self) {
+                    drop(self.arm_tx.take());
+                    self.active = false;
+                }
+            }
+            impl Drop for PendingStartGuard<'_> {
+                fn drop(&mut self) {
+                    // Always disarm `spawn_deadline` first so any subsequent
+                    // join (including join-on-drop hosts) never deadlocks.
+                    drop(self.arm_tx.take());
+                    if !self.active {
+                        return;
+                    }
+                    if self.dispatched.load(Ordering::SeqCst) {
+                        let _ = self.connection.close_on_rejected_abort(
+                            self.turn,
+                            swallowtail_core::SafeDiagnostic::new(
+                                "swallowtail.pi.sdk-sidecar.prompt_abandoned",
+                                "Pi SDK sidecar prompt dispatch was dropped before acceptance",
+                            ),
+                        );
+                    } else {
+                        self.turn
+                            .fail_connection(swallowtail_core::SafeDiagnostic::new(
+                                "swallowtail.pi.sdk-sidecar.prompt_abandoned",
+                                "Pi SDK sidecar prompt startup was dropped before dispatch",
+                            ));
+                        self.connection.clear_active_turn(self.turn);
+                    }
+                }
+            }
+            let guard = PendingStartGuard {
+                arm_tx: Some(arm_tx),
+                connection: &self.connection,
+                turn: &turn,
+                dispatched: Arc::clone(&prompt_dispatched),
+                active: true,
+            };
             let id = format!("prompt:{}", request.turn_id().as_str());
             let mut params = json!({"text": request.content().as_str()});
             if let Some(attachment) = attachment {
@@ -149,8 +225,12 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                 }]);
             }
             let response = crate::driver::run_before_deadline(
-                self.connection
-                    .command(id, PiSdkSidecarCommand::Prompt, params),
+                self.connection.command_tracked(
+                    id,
+                    PiSdkSidecarCommand::Prompt,
+                    params,
+                    &prompt_dispatched,
+                ),
                 Some(deadline),
                 &services,
                 "swallowtail.pi.sdk-sidecar.prompt_timed_out",
@@ -159,15 +239,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
             .await;
             match response {
                 Ok(response) if response.success => {
-                    let _ = arm_tx.send(());
-                    *self
-                        .active
-                        .lock()
-                        .expect("sidecar active-task lock poisoned") = Some(ActiveTask {
-                        turn: Arc::clone(&turn),
-                        deadline_task: Some(deadline_task),
-                        attachment: materialization.clone(),
-                    });
+                    guard.accept();
                     Ok(Box::new(PiSdkSidecarTurnHandle::new(
                         request.turn_id().clone(),
                         events,
@@ -181,13 +253,13 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     )) as Box<dyn TurnHandle>)
                 }
                 Ok(_) => {
-                    drop(arm_tx);
+                    guard.disarm();
                     turn.fail_connection(swallowtail_core::SafeDiagnostic::new(
                         "swallowtail.pi.sdk-sidecar.prompt_rejected",
                         "Pi SDK sidecar rejected the prompt before acceptance",
                     ));
                     self.connection.clear_active_turn(&turn);
-                    let _ = deadline_task.join().await;
+                    let _ = reap_finished(&self.active).await;
                     let _ = materialization.release().await;
                     Err(failure(
                         "swallowtail.pi.sdk-sidecar.prompt_rejected",
@@ -195,8 +267,10 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     ))
                 }
                 Err(error) => {
-                    drop(arm_tx);
-                    if error.diagnostic().code() == "swallowtail.pi.sdk-sidecar.prompt_timed_out" {
+                    guard.disarm();
+                    if error.diagnostic().code() == "swallowtail.pi.sdk-sidecar.prompt_timed_out"
+                        && prompt_dispatched.load(Ordering::SeqCst)
+                    {
                         // The prompt write may have already reached the sidecar
                         // with unconfirmed settlement. Close this exact
                         // connection and force-stop so live work cannot outlive
@@ -212,7 +286,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                         turn.fail_connection(error.diagnostic().clone());
                         self.connection.clear_active_turn(&turn);
                     }
-                    let _ = deadline_task.join().await;
+                    let _ = reap_finished(&self.active).await;
                     let _ = materialization.release().await;
                     Err(error)
                 }

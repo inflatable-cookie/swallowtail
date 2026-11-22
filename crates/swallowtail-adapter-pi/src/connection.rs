@@ -73,6 +73,38 @@ impl PiConnection {
         command: &'static str,
         value: Value,
     ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, value, None, None).await
+    }
+
+    pub(crate) async fn command_tracked(
+        &self,
+        id: String,
+        command: &'static str,
+        value: Value,
+        dispatched: &AtomicBool,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, value, Some(dispatched), None)
+            .await
+    }
+
+    pub(crate) async fn abort_command(
+        &self,
+        id: String,
+        value: Value,
+        turn: Arc<ActiveTurn>,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, "abort", value, None, Some(turn))
+            .await
+    }
+
+    async fn send_command(
+        &self,
+        id: String,
+        command: &'static str,
+        value: Value,
+        dispatched: Option<&AtomicBool>,
+        abort_turn: Option<Arc<ActiveTurn>>,
+    ) -> Result<CommandResult, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
             return Err(connection_closed());
         }
@@ -102,7 +134,14 @@ impl PiConnection {
                     "Pi RPC exceeded the pending command limit",
                 ));
             }
-            pending.insert(id.clone(), PendingCommand { command, sender });
+            pending.insert(
+                id.clone(),
+                PendingCommand {
+                    command,
+                    sender,
+                    abort_turn,
+                },
+            );
         }
         struct PendingGuard<'a> {
             pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
@@ -122,6 +161,9 @@ impl PiConnection {
             pending: &self.pending,
             id: Some(id),
         };
+        if let Some(dispatched) = dispatched {
+            dispatched.store(true, Ordering::SeqCst);
+        }
         self.write_value(value).await?;
         let result = response.await;
         guard.id = None;
@@ -245,6 +287,7 @@ impl PiConnection {
 struct PendingCommand {
     command: &'static str,
     sender: ResponseSender,
+    abort_turn: Option<Arc<ActiveTurn>>,
 }
 
 #[derive(Default)]

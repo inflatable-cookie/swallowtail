@@ -78,6 +78,38 @@ impl SidecarConnection {
         command: PiSdkSidecarCommand,
         params: Value,
     ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, params, None, None).await
+    }
+
+    pub(crate) async fn command_tracked(
+        &self,
+        id: String,
+        command: PiSdkSidecarCommand,
+        params: Value,
+        dispatched: &AtomicBool,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, command, params, Some(dispatched), None)
+            .await
+    }
+
+    pub(crate) async fn abort_command(
+        &self,
+        id: String,
+        params: Value,
+        turn: Arc<SidecarActiveTurn>,
+    ) -> Result<CommandResult, RuntimeFailure> {
+        self.send_command(id, PiSdkSidecarCommand::Abort, params, None, Some(turn))
+            .await
+    }
+
+    async fn send_command(
+        &self,
+        id: String,
+        command: PiSdkSidecarCommand,
+        params: Value,
+        dispatched: Option<&AtomicBool>,
+        abort_turn: Option<Arc<SidecarActiveTurn>>,
+    ) -> Result<CommandResult, RuntimeFailure> {
         if self.closed.load(Ordering::SeqCst) {
             return Err(self.closed_failure());
         }
@@ -120,7 +152,14 @@ impl SidecarConnection {
                     "Pi SDK sidecar exceeded the pending command limit",
                 ));
             }
-            pending.insert(id.clone(), PendingCommand { command, sender });
+            pending.insert(
+                id.clone(),
+                PendingCommand {
+                    command,
+                    sender,
+                    abort_turn,
+                },
+            );
         }
         struct PendingGuard<'a> {
             pending: &'a Mutex<BTreeMap<String, PendingCommand>>,
@@ -140,6 +179,9 @@ impl SidecarConnection {
             pending: &self.pending,
             id: Some(id),
         };
+        if let Some(dispatched) = dispatched {
+            dispatched.store(true, Ordering::SeqCst);
+        }
         self.process
             .write_stdin(ProcessInputChunk::new(bytes))
             .await?;
@@ -319,6 +361,7 @@ impl SidecarConnection {
 struct PendingCommand {
     command: PiSdkSidecarCommand,
     sender: ResponseSender,
+    abort_turn: Option<Arc<SidecarActiveTurn>>,
 }
 
 #[derive(Default)]

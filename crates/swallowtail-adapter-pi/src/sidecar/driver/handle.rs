@@ -53,7 +53,7 @@ impl CancellationControl for TurnCancellation {
             let id = format!("abort:{}", self.turn.runtime_id().as_str());
             let error = match self
                 .connection
-                .command(id, PiSdkSidecarCommand::Abort, json!({}))
+                .abort_command(id, json!({}), Arc::clone(&self.turn))
                 .await
             {
                 Ok(response) if response.success => {
@@ -697,6 +697,159 @@ mod tests {
             ),
             "EOF before sidecar abort acknowledgement must resolve with cancel_rejected, got {:?}",
             outcome.status()
+        );
+    }
+
+    #[test]
+    fn sidecar_successful_abort_response_immediately_followed_by_eof_resolves_cancelled() {
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::{ProcessOutputStream, TerminalStatus};
+
+        struct AckThenEof {
+            response: Mutex<Option<Vec<u8>>>,
+        }
+
+        impl ProcessHandle for AckThenEof {
+            fn write_stdin(
+                &self,
+                _: ProcessInputChunk,
+            ) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn close_stdin(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn read_output(
+                &self,
+            ) -> BoxFuture<'_, Result<Option<ProcessOutputChunk>, RuntimeFailure>> {
+                let next = self.response.lock().expect("response lock").take();
+                Box::pin(async move {
+                    Ok(next
+                        .map(|bytes| ProcessOutputChunk::new(ProcessOutputStream::Stdout, bytes)))
+                })
+            }
+            fn request_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn force_stop(&self) -> BoxFuture<'_, Result<(), RuntimeFailure>> {
+                Box::pin(async { Ok(()) })
+            }
+            fn wait(&self) -> BoxFuture<'_, Result<ProcessExit, RuntimeFailure>> {
+                Box::pin(async { Ok(ProcessExit::new(true, Some(0))) })
+            }
+        }
+
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.abort-ack-eof-test").expect("host id is valid"),
+        );
+        let ack_line = b"{\"type\":\"response\",\"id\":\"abort:sidecar-ack-eof\",\"command\":\"abort\",\"success\":true}\n".to_vec();
+        let connection = SidecarConnection::new(
+            Arc::new(AckThenEof {
+                response: Mutex::new(Some(ack_line)),
+            }),
+            services,
+        );
+        let (turn, events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-ack-eof").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-ack-eof").expect("turn id is valid"),
+            events,
+            Box::pin(terminal),
+            super::PiSdkSidecarTurnBinding {
+                connection: Arc::clone(&connection),
+                turn,
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        futures_executor::block_on(Arc::clone(&connection).pump());
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::Cancelled,
+            "successful sidecar abort reply immediately followed by EOF must resolve Cancelled"
+        );
+        assert!(futures_executor::block_on(cancel_fut).is_ok());
+    }
+
+    #[test]
+    fn sidecar_normal_settlement_racing_rejected_abort_resolves_completed() {
+        use crate::sidecar::wire::PiSdkSidecarEvent;
+        use std::task::{Context, Poll, Waker};
+        use swallowtail_runtime::{TerminalStatus, TokenUsage};
+
+        let (release_tx, release_rx) = futures_channel::oneshot::channel();
+        let services = HostServices::new(
+            ExecutionHostId::new("pi.sidecar.normal-settle-race").expect("host id is valid"),
+        );
+        let connection = SidecarConnection::new(
+            Arc::new(HeldRefusingStdin {
+                release: Mutex::new(Some(release_rx)),
+            }),
+            services,
+        );
+        let (turn, events, terminal) = SidecarActiveTurn::new(
+            RuntimeTurnId::new("sidecar-normal-race").expect("turn id is valid"),
+            Arc::new(AtomicU32::new(0)),
+        )
+        .expect("turn constructs");
+        connection
+            .set_active_turn(Arc::clone(&turn))
+            .expect("turn attaches");
+        let active: ActiveSlot = Arc::new(Mutex::new(None));
+        let mut handle = PiSdkSidecarTurnHandle::new(
+            RuntimeTurnId::new("sidecar-normal-race").expect("turn id is valid"),
+            events,
+            Box::pin(terminal),
+            super::PiSdkSidecarTurnBinding {
+                connection: Arc::clone(&connection),
+                turn: Arc::clone(&turn),
+                active,
+                attachment: SharedAttachmentMaterialization::default(),
+            },
+        );
+        let terminal_fut = handle
+            .take_terminal_outcome()
+            .expect("terminal outcome future is present");
+
+        let mut cancel_fut = handle.cancellation().request();
+        let waker = Waker::noop();
+        let mut cx = Context::from_waker(waker);
+        assert!(matches!(cancel_fut.as_mut().poll(&mut cx), Poll::Pending));
+
+        turn.handle_event(PiSdkSidecarEvent::MessageEnded {
+            stop_reason: "stop".to_owned(),
+            usage: Some(TokenUsage::new(Some(10), Some(5))),
+        })
+        .expect("usage recorded");
+        turn.handle_event(PiSdkSidecarEvent::Settled)
+            .expect("normal sidecar settlement succeeds");
+
+        release_tx.send(()).expect("release rejected abort");
+        assert!(futures_executor::block_on(cancel_fut).is_err());
+
+        let outcome = futures_executor::block_on(terminal_fut);
+        assert_eq!(
+            outcome.status(),
+            &TerminalStatus::Completed,
+            "normal sidecar settlement racing a rejected abort must resolve Completed"
         );
     }
 }

@@ -196,10 +196,7 @@ impl ActiveTurn {
                 }
                 let (status, activity_status) = if self.timed_out.load(Ordering::SeqCst) {
                     (TerminalStatus::TimedOut, ActivityStatus::Failed)
-                } else if self.cancelled.load(Ordering::SeqCst)
-                    || self.abort_in_flight.load(Ordering::SeqCst)
-                    || aborted == Some(true)
-                {
+                } else if self.cancelled.load(Ordering::SeqCst) || aborted.unwrap_or(false) {
                     (TerminalStatus::Cancelled, ActivityStatus::Cancelled)
                 } else {
                     self.completed_prompts.fetch_add(1, Ordering::SeqCst);
@@ -229,6 +226,10 @@ impl ActiveTurn {
 
     pub(crate) fn mark_abort_acknowledged(&self) {
         self.cancelled.store(true, Ordering::SeqCst);
+        self.abort_in_flight.store(false, Ordering::SeqCst);
+    }
+
+    pub(crate) fn mark_abort_rejected(&self) {
         self.abort_in_flight.store(false, Ordering::SeqCst);
     }
 

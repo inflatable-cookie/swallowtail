@@ -124,6 +124,11 @@ resource release, and credential release. A stage cannot select a later
 deadline or keep the public close future pending after the shared boundary.
 Post-open abort and cleanup after turn expiry use the same rule.
 
+Pi RPC and Pi SDK sidecar give graceful process shutdown up to 500 ticks,
+capped at half the time remaining to the caller's deadline. That leaves time
+for force-stop, process reaping, and lease release if graceful shutdown
+expires.
+
 The runtime validates the execution-host identity and requires that host's
 time service before polling cleanup. It observes host time before cleanup and
 again before accepting a ready cleanup result. Missing or cross-host time, an

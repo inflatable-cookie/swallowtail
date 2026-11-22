@@ -209,7 +209,7 @@ type AttachedHandleParts = (
     swallowtail_core::ModelId,
     RuntimeSessionId,
     ActiveSlot,
-    SessionCancellation,
+    Arc<SessionCancellation>,
 );
 
 /// Validates every fallible part of an attached handle before any acquired
@@ -240,7 +240,7 @@ fn attached_handle_parts(
         },
     )?;
     let active = Arc::new(Mutex::new(None));
-    let cancellation = SessionCancellation::new(Arc::clone(&active));
+    let cancellation = Arc::new(SessionCancellation::new(Arc::clone(&active)));
     Ok((
         active_turn_detachment,
         provider_id,

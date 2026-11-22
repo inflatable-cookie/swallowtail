@@ -278,7 +278,7 @@ impl OpenCodeHttpDriver {
             transport: self.transport.clone(),
             access: Some(access),
             active: Arc::clone(&active),
-            cancellation: SessionCancellation::new(active),
+            cancellation: Arc::new(SessionCancellation::new(active)),
             reasoning_mode: request.policy().reasoning_mode().cloned(),
             structured_output: request.structured_output().cloned(),
             image_attachments,

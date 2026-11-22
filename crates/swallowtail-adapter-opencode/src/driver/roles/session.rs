@@ -130,7 +130,7 @@ impl InteractiveSessionDriver for OpenCodeHttpDriver {
                     }
                 };
             let active = Arc::new(Mutex::new(None));
-            let cancellation = SessionCancellation::new(Arc::clone(&active));
+            let cancellation = Arc::new(SessionCancellation::new(Arc::clone(&active)));
             Ok(Box::new(OpenCodeSessionHandle {
                 request_id: request.request_id().clone(),
                 runtime_id,

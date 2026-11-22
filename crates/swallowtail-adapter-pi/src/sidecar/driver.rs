@@ -386,24 +386,21 @@ impl PiSdkSidecarDriver {
         };
         let connection = SidecarConnection::new(Arc::clone(&process), services.clone());
         let pump = Arc::clone(&connection);
-        let pump_task = match services
-            .task()
-            .expect("validated sidecar task service")
-            .spawn(scope, Box::pin(async move { pump.pump().await }))
-        {
-            Ok(task) => task,
-            Err(error) => {
-                let _ = process.force_stop().await;
-                let _ = process.wait().await;
-                let _ = resource_service
-                    .release(resource.take().expect("sidecar resource was resolved"))
-                    .await;
-                let _ = credential_service
-                    .release(credential.take().expect("sidecar credential was acquired"))
-                    .await;
-                return Err(error);
-            }
-        };
+        let pump_task =
+            match crate::driver::cleanup::spawn_session_pump(scope, &services, pump.pump()) {
+                Ok(task) => task,
+                Err(error) => {
+                    let _ = process.force_stop().await;
+                    let _ = process.wait().await;
+                    let _ = resource_service
+                        .release(resource.take().expect("sidecar resource was resolved"))
+                        .await;
+                    let _ = credential_service
+                        .release(credential.take().expect("sidecar credential was acquired"))
+                        .await;
+                    return Err(error);
+                }
+            };
         Ok(PendingSession {
             request_id,
             connection,

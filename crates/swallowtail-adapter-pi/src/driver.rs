@@ -17,6 +17,7 @@ use swallowtail_runtime::{
 };
 
 mod catalogue;
+pub(crate) mod cleanup;
 #[cfg(test)]
 pub(crate) mod close_tests;
 mod descriptor;
@@ -201,11 +202,7 @@ impl PiRpcDriver {
             services.clone(),
         );
         let pump = Arc::clone(&connection);
-        let pump_task = match services
-            .task()
-            .expect("validated Pi task service")
-            .spawn(scope, Box::pin(async move { pump.pump().await }))
-        {
+        let pump_task = match cleanup::spawn_session_pump(scope, &services, pump.pump()) {
             Ok(task) => task,
             Err(error) => {
                 let _ = process.force_stop().await;

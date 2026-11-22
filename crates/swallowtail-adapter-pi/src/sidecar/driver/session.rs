@@ -2,6 +2,7 @@ use self::cleanup::{release_credential, release_resource};
 use super::handle::{PiSdkSidecarTurnBinding, PiSdkSidecarTurnHandle, SessionCancellation};
 use super::input::{SharedAttachmentMaterialization, prepare_attachment};
 use super::validation::validate_turn;
+use crate::driver::cleanup::{graceful_shutdown_deadline, stop_session_process};
 use crate::driver::{ABORT_ACKNOWLEDGEMENT_GRACE_TICKS, grace_deadline, run_before_deadline};
 use crate::failure::failure;
 use crate::sidecar::connection::SidecarConnection;
@@ -308,7 +309,7 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
         swallowtail_runtime::bound_session_cleanup(
             execution_host_id,
             request,
-            services,
+            services.clone(),
             Box::pin(async move {
                 let active = self
                     .active
@@ -321,25 +322,32 @@ impl InteractiveSessionHandle for PiSdkSidecarSessionHandle {
                     active.turn.mark_cancelled();
                 }
                 let id = format!("close:{}", self.request_id.as_str());
-                // The documented `close` command is bounded inside the
-                // connection, so a harness that stops answering it cannot keep
-                // stdin open or the stop request unsent.
-                self.connection.close_session(id).await;
+                let deadline = graceful_shutdown_deadline(&services, Some(request.deadline()));
+                let connection = &self.connection;
+                let process = stop_session_process(
+                    connection.close_session(id),
+                    async {
+                        match self.pump_task.take() {
+                            Some(task) => match task.join().await {
+                                Ok(()) => connection.cleanup_outcome(),
+                                Err(_) => cleanup_failure(
+                                    "pump_join_failed",
+                                    "Pi SDK sidecar protocol task did not join cleanly",
+                                ),
+                            },
+                            None => CleanupOutcome::NotApplicable,
+                        }
+                    },
+                    async { connection.force_stop().await },
+                    deadline,
+                    &services,
+                )
+                .await;
                 let active_cleanup = match active {
                     Some(active) => {
                         settle_deadline_and_attachment(active.deadline_task, active.attachment)
                             .await
                     }
-                    None => CleanupOutcome::NotApplicable,
-                };
-                let process = match self.pump_task.take() {
-                    Some(task) => match task.join().await {
-                        Ok(()) => self.connection.cleanup_outcome(),
-                        Err(_) => cleanup_failure(
-                            "pump_join_failed",
-                            "Pi SDK sidecar protocol task did not join cleanly",
-                        ),
-                    },
                     None => CleanupOutcome::NotApplicable,
                 };
                 let resource = release_resource(self.resource.take(), &self.services).await;
